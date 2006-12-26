@@ -27,7 +27,9 @@ Object* And::eval(Environment* env)
         Object* o = (*it);
         if (!isTrue(o->eval(env)))
         {
-            return new Number(0); // false
+            Object* number = new Number(0); // false
+            ASSERT(number);
+            return number;
         }
     }
     return objects_->at(objects_->size() - 1); // true

@@ -15,16 +15,16 @@ int Translator::translatePrimitive(Node* node, Object** object)
     switch(node->type)
     {
     case Node::NUMBER:
-        *object = new Number(node->value);
+        *object = new Number(node->value);ASSERT(*object);
         return SUCCESS;
     case Node::STRING:
-        *object = new String(node->text);
+        *object = new String(node->text);ASSERT(*object);
         return SUCCESS;
     case Node::QUOTE:
-        *object = new Quote(node->text);
+        *object = new Quote(node->text);ASSERT(*object);
         return SUCCESS;
     case Node::SYMBOL:
-        *object = new Variable(node->text);
+        *object = new Variable(node->text);ASSERT(*object);
         return SUCCESS;
     }
     return SYNTAX_ERROR;
@@ -35,11 +35,11 @@ int Translator::translateDefinition(Node* node, Object** object)
     if (node->nodes.size() != 3) return SYNTAX_ERROR;
     Node* symbol = node->nodes[1];
     if (symbol->type != Node::SYMBOL) return SYNTAX_ERROR;
-    Variable* variable = new Variable(symbol->text);
+    Variable* variable = new Variable(symbol->text);ASSERT(variable);
     Node* argument = node->nodes[2];
     Object* argumentObject;
     if (translate(argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
-    *object = new Definition(variable, argumentObject);
+    *object = new Definition(variable, argumentObject);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -55,13 +55,13 @@ int Translator::translateIf(Node* node, Object** object)
     if (ret != SUCCESS) return ret;
     ret = translate(node->nodes[3], &alternative);
     if (ret != SUCCESS) return ret;
-    *object = new SpecialIf(predicate, consequent, alternative);
+    *object = new SpecialIf(predicate, consequent, alternative);ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateCond(Node* node, Object** object)
 {
-    Clauses* clauses = new Clauses;
+    Clauses* clauses = new Clauses;ASSERT(clauses);
     Objects* elseActions = NULL;
     for (int i = 1; i < node->nodes.size(); i++)
     {
@@ -69,7 +69,7 @@ int Translator::translateCond(Node* node, Object** object)
         if (n->nodes.size() < 2) return SYNTAX_ERROR;
         if (i == node->nodes.size() - 1 && n->nodes[0]->type == Node::SYMBOL && n->nodes[0]->text == "else")
         {
-            elseActions = new Objects;
+            elseActions = new Objects;ASSERT(elseActions);
             for (int j = 1; j < n->nodes.size(); j++)
             {
                 Object * action;
@@ -89,19 +89,21 @@ int Translator::translateCond(Node* node, Object** object)
                 Object* action;
                 ret = translate(n->nodes[2], &action);
                 if (ret != SUCCESS) return ret;
-                Objects* arguments = new Objects;
+                Objects* arguments = new Objects;ASSERT(arguments);
                 arguments->push_back(cond);
-                Object* application = new Application(action, arguments);
-                Objects* actions = new Objects;
+                Object* application = new Application(action, arguments);ASSERT(application);
+                Objects* actions = new Objects;ASSERT(actions);
                 actions->push_back(application);
-                clauses->push_back(new Clause(cond, actions));
+                Clause* c = new Clause(cond, actions);
+                ASSERT(c);
+                clauses->push_back(c);
             }
             else
             {
                 Object* cond;
                 int ret = translate(n->nodes[0], &cond);
                 if (ret != SUCCESS) return ret;
-                Objects* actions = new Objects;
+                Objects* actions = new Objects;ASSERT(actions);
                 for (int j = 1; j < n->nodes.size(); j++)
                 {
                     Object * action;
@@ -109,17 +111,19 @@ int Translator::translateCond(Node* node, Object** object)
                     if (ret != SUCCESS) return ret;
                     actions->push_back(action);
                 }
-                clauses->push_back(new Clause(cond, actions));
+                Clause* c = new Clause(cond, actions);
+                ASSERT(c);
+                clauses->push_back(c);
             }
         }
     }
-    *object = new Cond(clauses, elseActions);
+    *object = new Cond(clauses, elseActions);ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateAnd(Node* node, Object** object)
 {
-    Objects* objects = new Objects;
+    Objects* objects = new Objects;ASSERT(objects);
     for (int i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
@@ -127,14 +131,14 @@ int Translator::translateAnd(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new And(objects);
+    *object = new And(objects);ASSERT(*object);
     return SUCCESS;
 }
 
 
 int Translator::translateOr(Node* node, Object** object)
 {
-    Objects* objects = new Objects;
+    Objects* objects = new Objects;ASSERT(objects);
     for (int i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
@@ -142,14 +146,14 @@ int Translator::translateOr(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new Or(objects);
+    *object = new Or(objects);ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateBegin(Node* node, Object** object)
 {
     if (node->nodes.size() <= 1) return SYNTAX_ERROR;
-    Objects* objects = new Objects;
+    Objects* objects = new Objects;ASSERT(objects);
     for (int i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
@@ -157,7 +161,7 @@ int Translator::translateBegin(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new Begin(objects);
+    *object = new Begin(objects);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -165,15 +169,17 @@ int Translator::translateLambda(Node* node, Object** object)
 {
     if (node->nodes.size() <= 2) return SYNTAX_ERROR;
     if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
-    Variables* variables = new Variables;
+    Variables* variables = new Variables;ASSERT(variables);
     for (int i = 0; i < node->nodes[1]->nodes.size(); i++)
     {
         Node* param = node->nodes[1]->nodes[i];
         if (param->type != Node::SYMBOL) return SYNTAX_ERROR;
-        variables->push_back(new Variable(param->text));
+        Variable* v = new Variable(param->text);
+        ASSERT(v);
+        variables->push_back(v);
     }
 
-    Objects* body = new Objects;
+    Objects* body = new Objects;ASSERT(body);
     for (int i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
@@ -181,7 +187,7 @@ int Translator::translateLambda(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Lambda(body, variables);
+    *object = new Lambda(body, variables);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -190,22 +196,24 @@ int Translator::translateLet(Node* node, Object** object)
     if (node->nodes.size() < 3) return SYNTAX_ERROR;
     if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
 
-    Variables* variables = new Variables;
-    Objects* values = new Objects;
+    Variables* variables = new Variables;ASSERT(variables);
+    Objects* values = new Objects;ASSERT(values);
     Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
     for (int i = 0; i < parameterNodes->size(); i++)
     {
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
         if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
-        variables->push_back(new Variable(parameter->nodes[0]->text));
+        Variable* v = new Variable(parameter->nodes[0]->text);
+        ASSERT(v);
+        variables->push_back(v);
         Object* value;
         int ret = translate(parameter->nodes[1], &value);
         if (ret != SUCCESS) return ret;
         values->push_back(value);
     }
 
-    Objects* body = new Objects;
+    Objects* body = new Objects;ASSERT(body);
     for (int i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
@@ -213,7 +221,7 @@ int Translator::translateLet(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Let(body, variables, values);
+    *object = new Let(body, variables, values);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -222,22 +230,24 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
     if (node->nodes.size() < 3) return SYNTAX_ERROR;
     if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
 
-    Variables* variables = new Variables;
-    Objects* values = new Objects;
+    Variables* variables = new Variables;ASSERT(variables);
+    Objects* values = new Objects;ASSERT(values);
     Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
     for (int i = 0; i < parameterNodes->size(); i++)
     {
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
         if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
-        variables->push_back(new Variable(parameter->nodes[0]->text));
+        Variable* v = new Variable(parameter->nodes[0]->text);
+        ASSERT(v);
+        variables->push_back(v);
         Object* value;
         int ret = translate(parameter->nodes[1], &value);
         if (ret != SUCCESS) return ret;
         values->push_back(value);
     }
 
-    Objects* body = new Objects;
+    Objects* body = new Objects;ASSERT(body);
     for (int i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
@@ -245,7 +255,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new LetAsterisk(body, variables, values);
+    *object = new LetAsterisk(body, variables, values);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -253,7 +263,7 @@ int Translator::translateApplication(Node* node, Object** object)
 {
     Object* f;
     int ret = translate(node->nodes[0], &f);
-    Objects* arguments = new Objects;
+    Objects* arguments = new Objects;ASSERT(arguments);
     for (int i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
@@ -261,7 +271,7 @@ int Translator::translateApplication(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         arguments->push_back(object);
     }
-    *object = new Application(f, arguments);
+    *object = new Application(f, arguments);ASSERT(*object);
     return SUCCESS;
 }
 

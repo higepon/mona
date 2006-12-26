@@ -23,6 +23,8 @@ int Assignment::type() const
 Object* Assignment::eval(Environment* env)
 {
     env->setVaribale(variable_, value_);
-    return new Quote("OK"); // different from SICP's
+    Object* quote = new Quote("OK"); // different from SICP's
+    ASSERT(quote);
+    return quote;
 }
 

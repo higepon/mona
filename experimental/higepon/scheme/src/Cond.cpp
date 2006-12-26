@@ -36,15 +36,15 @@ Object* Cond::expandInternal(Clauses::iterator it)
     {
         if (NULL != elseActions_)
         {
-            return new Begin(elseActions_);
+            Object* begin = new Begin(elseActions_);ASSERT(begin); return begin;
         }
         else
         {
-            return new Number(0); // fix me
+            Object* number = new Number(0); ASSERT(number); return number; // fix me
         }
     }
     Clause* clause = *it;
-    return new SpecialIf(clause->first, new Begin(clause->second), expandInternal(++it));
+    Object* specialif = new SpecialIf(clause->first, new Begin(clause->second), expandInternal(++it)); ASSERT(specialif); return specialif;
 }
 
 Object* Cond::eval(Environment* env)

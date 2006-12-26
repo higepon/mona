@@ -59,11 +59,10 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
 	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
 	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
-	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
-	scheme-Cons.$(OBJEXT) scheme-Car.$(OBJEXT) \
-	scheme-Cdr.$(OBJEXT) scheme-Display.$(OBJEXT) \
-	scheme-StringP.$(OBJEXT) scheme-NumberP.$(OBJEXT) \
-	scheme-NumberEqual.$(OBJEXT) scheme-NumberGt.$(OBJEXT) \
+	scheme-Plus.$(OBJEXT) scheme-Cons.$(OBJEXT) \
+	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
+	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
 	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
@@ -126,7 +125,6 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
@@ -137,28 +135,36 @@ am__untar = @am__untar@
 bindir = @bindir@
 build_alias = @build_alias@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host_alias = @host_alias@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg
-scheme_LDFLAGS = -pg
+scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC 
+scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
+Assert.h\
 Object.cpp\
 Object.h\
 Number.cpp\
@@ -210,8 +216,6 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
-PrimitiveProcedures/Minus.cpp\
-PrimitiveProcedures/Minus.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Car.cpp\
@@ -226,8 +230,6 @@ PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
 PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
-PrimitiveProcedures/NumberGt.cpp\
-PrimitiveProcedures/NumberGt.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
@@ -462,12 +464,6 @@ scheme-Plus.o: PrimitiveProcedures/Plus.cpp
 scheme-Plus.obj: PrimitiveProcedures/Plus.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
 
-scheme-Minus.o: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.o `test -f 'PrimitiveProcedures/Minus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Minus.cpp
-
-scheme-Minus.obj: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.obj `if test -f 'PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Minus.cpp'; fi`
-
 scheme-Cons.o: PrimitiveProcedures/Cons.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
 
@@ -509,12 +505,6 @@ scheme-NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
 
 scheme-NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
-
-scheme-NumberGt.o: PrimitiveProcedures/NumberGt.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberGt.o `test -f 'PrimitiveProcedures/NumberGt.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberGt.cpp
-
-scheme-NumberGt.obj: PrimitiveProcedures/NumberGt.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberGt.obj `if test -f 'PrimitiveProcedures/NumberGt.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberGt.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberGt.cpp'; fi`
 
 scheme-StringToNumber.o: PrimitiveProcedures/StringToNumber.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringToNumber.o `test -f 'PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringToNumber.cpp

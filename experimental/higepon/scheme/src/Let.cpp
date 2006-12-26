@@ -22,8 +22,8 @@ int Let::type() const
 
 Application* Let::expand()
 {
-    Lambda* lambda = new Lambda(body_, variables_);
-    return new Application(lambda, values_);
+    Lambda* lambda = new Lambda(body_, variables_);ASSERT(lambda);
+    Application* application = new Application(lambda, values_); ASSERT(application); return application;
 }
 
 Object* Let::eval(Environment* env)

@@ -27,7 +27,7 @@ public:
     virtual Object* expand();
 
 protected:
-    virtual Object* Cond::expandInternal(Clauses::iterator it);
+    virtual Object* expandInternal(Clauses::iterator it);
     Clauses* clauses_;
     Objects* elseActions_;
 };

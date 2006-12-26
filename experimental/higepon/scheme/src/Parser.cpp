@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include "Assert.h"
 #include <stdio.h>
 
 using namespace monash;
@@ -19,7 +20,7 @@ Node* Parser::parse()
     switch(token.type)
     {
     case Token::LEFT_PAREN:
-        node = new Node(Node::NODES);
+        node = new Node(Node::NODES);ASSERT(node);
         for (;;)
         {
             Node* child = parse();
@@ -29,19 +30,19 @@ Node* Parser::parse()
     case Token::RIGHT_PAREN:
         return NULL;
     case Token::NUMBER:
-        node = new Node(Node::NUMBER);
+        node = new Node(Node::NUMBER);ASSERT(node);
         node->value = token.value;
         return node;
     case Token::IDENTIFIER:
-        node = new Node(Node::SYMBOL);
+        node = new Node(Node::SYMBOL);ASSERT(node);
         node->text = token.text;
         return node;
     case Token::QUOTE:
-        node = new Node(Node::QUOTE);
+        node = new Node(Node::QUOTE);ASSERT(node);
         node->text = token.text;
         return node;
     case Token::STRING:
-        node = new Node(Node::STRING);
+        node = new Node(Node::STRING);ASSERT(node);
         node->text = token.text;
         return node;
     default:

@@ -19,7 +19,7 @@ string load(const char* file)
     }
 
     size_t size = ftell(fp);
-    char* buffer = new char[size];
+    char* buffer = new char[size];ASSERT(buffer);
     if (NULL == buffer)
     {
         fprintf(stderr, "memory error \n");

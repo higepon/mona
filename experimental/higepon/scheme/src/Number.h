@@ -21,6 +21,7 @@ public:
 
 protected:
     int value_;
+    char buf_[64];
 };
 
 }; // namespace monash

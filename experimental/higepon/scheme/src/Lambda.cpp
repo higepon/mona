@@ -22,5 +22,5 @@ int Lambda::type() const
 
 Object* Lambda::eval(Environment* env)
 {
-    return new Procedure(this, env);
+    Object* procedure = new Procedure(this, env); ASSERT(procedure); return procedure;
 }

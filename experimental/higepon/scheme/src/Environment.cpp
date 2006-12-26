@@ -7,7 +7,10 @@ using namespace std;
 Environment::Environment()
 {
     frames_ = new Frames();
-    frames_->push_back(new Frame());
+    ASSERT(frames_);
+    Frame* f = new Frame();
+    ASSERT(f);
+    frames_->push_back(f);
 }
 
 Environment::~Environment()
@@ -17,7 +20,7 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment();
+    Environment* env = new Environment();ASSERT(env);
     Frames* target = env->frames();
     for (Frames::iterator it = frames_->begin(); it != frames_->end(); it++)
     {
@@ -52,7 +55,9 @@ void Environment::defineVariable(Variable* variable, Object* value)
 
 void Environment::extend(Variables* variables, Objects* objects)
 {
-    frames_->push_back(new Frame(variables, objects));
+    Frame* f = new Frame(variables, objects);
+    ASSERT(f);
+    frames_->push_back(f);
 }
 
 Object* Environment::lookupVariableValue(Variable* variable)

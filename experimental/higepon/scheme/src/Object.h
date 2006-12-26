@@ -1,6 +1,10 @@
 #ifndef __OBJECT_H__
 #define __OBJECT_H__
 
+#define GC_NOT_DLL
+#include "gc_cpp.h"
+#include "Assert.h"
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -8,7 +12,11 @@ namespace monash {
 
 class Environment;
 
+#ifdef USE_BOEHM_GC
+class Object : public gc_cleanup
+#else
 class Object
+#endif
 {
 public:
     Object();

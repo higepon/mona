@@ -12,9 +12,9 @@ Number::~Number()
 
 std::string Number::toString()
 {
-    char buf[32];
-    snprintf(buf, 32, "%d", value_);
-    return std::string(buf);
+    snprintf(buf_, 64, "%d", value_);
+    printf("[%s]", buf_);fflush(stdout);
+    return std::string(buf_);
 }
 
 int Number::type() const

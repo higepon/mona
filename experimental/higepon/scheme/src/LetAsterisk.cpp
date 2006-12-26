@@ -24,11 +24,11 @@ Object* LetAsterisk::expand()
 {
     Variables::iterator variablesIt = variables_->begin();
     Objects::iterator valuesIt = values_->begin();
-    Variables* variables = new Variables;
+    Variables* variables = new Variables;ASSERT(variables);
     variables->push_back(*variablesIt);
-    Objects* values = new Objects;
+    Objects* values = new Objects;ASSERT(values);
     values->push_back(*valuesIt);
-    return new Let(expandInternal(++variablesIt, ++valuesIt), variables, values);
+    Object* let = new Let(expandInternal(++variablesIt, ++valuesIt), variables, values); ASSERT(let); return let;
 }
 
 Objects* LetAsterisk::expandInternal(Variables::iterator variablesIt, Objects::iterator valuesIt)
@@ -37,12 +37,12 @@ Objects* LetAsterisk::expandInternal(Variables::iterator variablesIt, Objects::i
     {
         return body_;
     }
-    Variables* variables = new Variables;
+    Variables* variables = new Variables;ASSERT(variables);
     variables->push_back(*variablesIt);
-    Objects* values = new Objects;
+    Objects* values = new Objects;ASSERT(values);
     values->push_back(*valuesIt);
-    Let* let = new Let(expandInternal(++variablesIt, ++valuesIt), variables, values);
-    Objects* body = new Objects;
+    Let* let = new Let(expandInternal(++variablesIt, ++valuesIt), variables, values);ASSERT(let);
+    Objects* body = new Objects;ASSERT(body);
     body->push_back(let);
     return body;
 }

@@ -22,7 +22,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    printf("%d\n", clock());
+// for gc test
+//     for (uint32_t i = 0; i < 0xffffffff; i ++)
+//     {
+//         Object* o = new String("hoge");
+//     }
+
+
     if (argc < 2)
     {
         fprintf(stderr, "usage: %s file\n", argv[0]);
@@ -47,11 +53,11 @@ int main(int argc, char *argv[])
         fprintf(stderr, "translate error \n");
         return -1;
     }
-    Environment* environment = new Environment();
+    Environment* environment = new Environment();ASSERT(environment);
     environment->defineVariable(new Variable("+"), new Plus());
-    environment->defineVariable(new Variable("-"), new Minus());
+//    environment->defineVariable(new Variable("-"), new Minus());
     environment->defineVariable(new Variable("="), new NumberEqual());
-    environment->defineVariable(new Variable(">"), new NumberGt());
+//    environment->defineVariable(new Variable(">"), new NumberGt());
     environment->defineVariable(new Variable("cons"), new Cons());
     environment->defineVariable(new Variable("car"), new Car());
     environment->defineVariable(new Variable("cdr"), new Cdr());
@@ -62,6 +68,5 @@ int main(int argc, char *argv[])
     environment->defineVariable(new Variable("#f"), new Number(0));
     environment->defineVariable(new Variable("#t"), new Number(1));
     object->eval(environment);
-    printf("\n%d\n", clock());
     return 0;
 }

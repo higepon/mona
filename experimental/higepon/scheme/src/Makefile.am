@@ -1,9 +1,10 @@
 bin_PROGRAMS = scheme
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg
-scheme_LDFLAGS = -pg
+scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC 
+scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
+Assert.h\
 Object.cpp\
 Object.h\
 Number.cpp\
@@ -55,8 +56,6 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
-PrimitiveProcedures/Minus.cpp\
-PrimitiveProcedures/Minus.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Car.cpp\
@@ -71,14 +70,8 @@ PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
 PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
-PrimitiveProcedures/NumberGt.cpp\
-PrimitiveProcedures/NumberGt.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
 scheme.cpp\
 load.cpp
-
-
-
-

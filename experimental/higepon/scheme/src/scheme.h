@@ -18,7 +18,7 @@
 #include "Parser.h"
 #include "Translator.h"
 #include "PrimitiveProcedures/Plus.h"
-#include "PrimitiveProcedures/Minus.h"
+//#include "PrimitiveProcedures/Minus.h"
 #include "PrimitiveProcedures/Car.h"
 #include "PrimitiveProcedures/Cdr.h"
 #include "PrimitiveProcedures/Cons.h"
@@ -27,7 +27,7 @@
 #include "PrimitiveProcedures/StringP.h"
 #include "PrimitiveProcedures/StringToNumber.h"
 #include "PrimitiveProcedures/NumberEqual.h"
-#include "PrimitiveProcedures/NumberGt.h"
+//#include "PrimitiveProcedures/NumberGt.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

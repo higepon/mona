@@ -8,4 +8,5 @@ Object::Object()
 
 Object::~Object()
 {
+    printf(__func__);fflush(stdout);
 }
