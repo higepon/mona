@@ -22,7 +22,7 @@ Environment* Environment::clone()
 {
     Environment* env = new Environment();ASSERT(env);
     Frames* target = env->frames();
-    for (Frames::iterator it = frames_->begin(); it != frames_->end(); it++)
+    for (Frames::iterator it = frames_->begin(); it != frames_->end(); ++it)
     {
         target->push_back(*it);
     }
@@ -31,7 +31,7 @@ Environment* Environment::clone()
 
 void Environment::setVaribale(Variable* variable, Object* value)
 {
-    for (Frames::iterator it = frames_->begin(); it != frames_->end(); it++)
+    for (Frames::iterator it = frames_->begin(); it != frames_->end(); ++it)
     {
         if ((*it)->lookup(variable) != NULL)
         {

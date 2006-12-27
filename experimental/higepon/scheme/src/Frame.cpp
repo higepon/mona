@@ -46,7 +46,7 @@ void Frame::remove(Variable* variable)
 std::string Frame::toString()
 {
     string result = "";
-    for (FrameMap::iterator it = map_.begin(); it != map_.end(); it++)
+    for (FrameMap::iterator it = map_.begin(); it != map_.end(); ++it)
     {
         result += (*it).first + ":";
         result += (*it).second->toString() + "\n";

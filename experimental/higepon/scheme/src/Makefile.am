@@ -1,6 +1,6 @@
 bin_PROGRAMS = scheme
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC 
+scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall
 scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\

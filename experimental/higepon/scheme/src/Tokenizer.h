@@ -35,7 +35,7 @@ protected:
     void unGetChar();
 
     std::string input_;
-    int postion_;
+    std::string::size_type postion_;
 };
 
 }; // namespace monash

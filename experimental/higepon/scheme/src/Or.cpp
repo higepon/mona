@@ -22,7 +22,7 @@ int Or::type() const
 
 Object* Or::eval(Environment* env)
 {
-    for (int i = 0; i < objects_->size(); i++)
+    for (Objects::size_type i = 0; i < objects_->size(); i++)
     {
         Object* o = objects_->at(i);
         Object* evalResult = o->eval(env);

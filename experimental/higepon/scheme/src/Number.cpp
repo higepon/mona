@@ -12,7 +12,7 @@ Number::~Number()
 
 std::string Number::toString()
 {
-    snprintf(buf_, 64, "%d", value_);
+    snprintf(buf_, 63, "%d", value_);
     printf("[%s]", buf_);fflush(stdout);
     return std::string(buf_);
 }

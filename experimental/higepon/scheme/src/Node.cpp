@@ -38,7 +38,7 @@ void Node::print(int depth /* = 0 */)
     printf(typeToString().c_str());
 
     depth++;
-    for (Nodes::iterator it = nodes.begin(); it != nodes.end(); it++)
+    for (Nodes::iterator it = nodes.begin(); it != nodes.end(); ++it)
     {
         (*it)->print(depth);
     }

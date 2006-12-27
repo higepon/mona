@@ -14,6 +14,7 @@ class Environment;
 
 #ifdef USE_BOEHM_GC
 class Object : public gc_cleanup
+//    class Object : public gc
 #else
 class Object
 #endif

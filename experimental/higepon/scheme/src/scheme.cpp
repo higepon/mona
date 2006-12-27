@@ -8,7 +8,12 @@ Object* evalSequence(Objects* exps, Environment* env)
     Object* ret = NULL;
     for (Objects::iterator it = exps->begin(); it != exps->end(); ++it)
     {
-        ret = (*it)->eval(env);
+        Object* o = (*it);
+        printf("before");fflush(stdout);
+//        printf("%s\n", o->toString().c_str());fflush(stdout);
+        printf("before2");fflush(stdout);
+        ret = o->eval(env);
+        printf("before3");fflush(stdout);
     }
     return ret;
 }
@@ -16,7 +21,7 @@ Object* evalSequence(Objects* exps, Environment* env)
 Objects* listOfValues(Objects* objects, Environment* env)
 {
     Objects* result = new Objects;ASSERT(result);
-    for (Objects::iterator it = objects->begin(); it != objects->end(); it++)
+    for (Objects::iterator it = objects->begin(); it != objects->end(); ++it)
     {
         result->push_back((*it)->eval(env));
     }
@@ -41,7 +46,9 @@ Object* apply(Object* procedure, Objects* arguments)
 //        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
         Environment* env = p->env()->clone();
         env->extend(p->parameters(), arguments); // doubt? we need copy?
-        evalSequence(p->body(), env);
+// bug?
+        //evalSequence(p->body(), env);
+        return evalSequence(p->body(), env);
     }
     else if (isPrimitiveProcedure(procedure))
     {

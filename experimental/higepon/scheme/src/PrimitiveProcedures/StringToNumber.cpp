@@ -32,7 +32,7 @@ Object* StringToNumber::apply(Objects* arguments)
     if (o->type() != Object::STRING) return new Number(0);
     String* str = (String*)o;
     std::string text = str->value();
-    for (int i = 0; i < text.length(); i++)
+    for (std::string::size_type i = 0; i < text.length(); i++)
     {
         if (!isdigit(text[i]))
         {

@@ -22,7 +22,7 @@ int And::type() const
 
 Object* And::eval(Environment* env)
 {
-    for (Objects::iterator it = objects_->begin(); it != objects_->end(); it++)
+    for (Objects::iterator it = objects_->begin(); it != objects_->end(); ++it)
     {
         Object* o = (*it);
         if (!isTrue(o->eval(env)))
