@@ -31,45 +31,31 @@
 	negi4d41@yahoo.co.jp
 */
 
-#ifndef _STRING_H_
-#define _STRING_H_
+#ifndef __DIRENT_P_H__
+#define __DIRENT_P_H__
 
-#include <monalibc/stddef.h>
-#include <monapi/string.h>
+#include <dirent.h>
+#include <stdint.h>
+#include <monapi/cmemoryinfo.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
+struct _dir
+{
+	const char *path; /* used in MonaOS. */
+	int32_t	fileno;	/* unused in MonaOS. */
+	int	index;	/* index of monapi_directoryinfo */
+	monapi_cmemoryinfo *cmi;	/* data buffer */
+};
 
-void *memccpy(void *dest, const void *src, int c, size_t n);
-void *memrchr(const void *s, int c, size_t n);
-//void *memcpy(void *dest, const void *src, size_t n);
-//void *memmove(void *dest, const void *src, size_t n);
-void *memchr(const void *s, int c, size_t n);
-//void *memset(void *s, int c, size_t n);
-int nidastrfind(const char *s, char c);
-//char *strcat(char* dst, const char *src);
-char *strchr(const char *s, char c);
-//int strcmp(const char *s1, const char *s2);
-//char *strcpy(char *dst, const char *src);
-//size_t strcspn(const char *s, const char *reject);
-char *strerror(int n);
-int strcoll(const char *s1, const char *s2);
-//size_t strlen(const char *s);
-char *strncat(char *dst, const char *src, size_t n);
-//int strncmp(const char *s1, const char *s2, size_t n);
-//char *strncpy(char *dst, const char *src, size_t n);
-char *strpbrk(const char *s, const char *accept);
-char *strrchr(const char *s, char c);
-//size_t strspn(const char *s, const char *accept);
-//char *strstr(const char *haystack, const char *needle);
-char *strtok_r(char *s, const char *delim, char **lasts);
-//char *strtok(char *s, const char *delim);
-size_t strxfrm(char *dest, const char *src, size_t n);
-char *strdup(const char *s);
 
-size_t strlcpy(char *dest, const char *src, size_t n);
+struct dirent* convertFromDirInfo(monapi_directoryinfo* di, struct dirent* ent);
+monapi_directoryinfo *getDirInfo(monapi_cmemoryinfo* cmi, int index);
+int getDirInfoNum(monapi_cmemoryinfo* cmi);
+
 
 #ifdef __cplusplus
 }

@@ -31,45 +31,31 @@
 	negi4d41@yahoo.co.jp
 */
 
-#ifndef _STRING_H_
-#define _STRING_H_
+#ifndef _DIRENT_H_
+#define _DIRENT_H_
 
-#include <monalibc/stddef.h>
-#include <monapi/string.h>
+#include <monalibc/stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+struct _dir;
+typedef struct _dir DIR;
 
-void *memccpy(void *dest, const void *src, int c, size_t n);
-void *memrchr(const void *s, int c, size_t n);
-//void *memcpy(void *dest, const void *src, size_t n);
-//void *memmove(void *dest, const void *src, size_t n);
-void *memchr(const void *s, int c, size_t n);
-//void *memset(void *s, int c, size_t n);
-int nidastrfind(const char *s, char c);
-//char *strcat(char* dst, const char *src);
-char *strchr(const char *s, char c);
-//int strcmp(const char *s1, const char *s2);
-//char *strcpy(char *dst, const char *src);
-//size_t strcspn(const char *s, const char *reject);
-char *strerror(int n);
-int strcoll(const char *s1, const char *s2);
-//size_t strlen(const char *s);
-char *strncat(char *dst, const char *src, size_t n);
-//int strncmp(const char *s1, const char *s2, size_t n);
-//char *strncpy(char *dst, const char *src, size_t n);
-char *strpbrk(const char *s, const char *accept);
-char *strrchr(const char *s, char c);
-//size_t strspn(const char *s, const char *accept);
-//char *strstr(const char *haystack, const char *needle);
-char *strtok_r(char *s, const char *delim, char **lasts);
-//char *strtok(char *s, const char *delim);
-size_t strxfrm(char *dest, const char *src, size_t n);
-char *strdup(const char *s);
+struct dirent
+{
+	int32_t	d_fileno;	/* reserved */
+	int32_t	d_off;		/* offset to next entry */
+	int16_t	d_reclen;	/* this is always 24 */
+	int16_t	d_type;		/* this is monapi_directoryinfo.attr */
+	char	d_name[256];	/* Null terminated string. max is 255 */
+};
 
-size_t strlcpy(char *dest, const char *src, size_t n);
+DIR *opendir(const char *name);
+struct dirent *readdir(DIR *);
+void rewinddir(DIR *);
+int closedir(DIR *);
 
 #ifdef __cplusplus
 }

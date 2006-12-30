@@ -65,7 +65,6 @@ typedef struct
 static unsigned int rand_next __attribute__ ((unused));
 
 /* stdlib.hをインクルードするとmonapi.hもインクルードすることに（ry */
-/* #include <monapi/syscall.h> */
 void* malloc(unsigned long size);
 void* calloc(unsigned long n, unsigned long s);
 void* realloc(void* address, unsigned long size);

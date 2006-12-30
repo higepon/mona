@@ -148,6 +148,9 @@ void init_stdio(void)
 	__sF[0] = *(_open_stdin());
 	__sF[1] = *(_open_stdout());
 	__sF[2] = *(_open_stderr());
+	logprintf("monalibc: stdin = %x\n", stdin);
+	logprintf("monalibc: stdout= %x\n", stdout);
+	logprintf("monalibc: stderr= %x\n", stderr);
 }
 
 void fini_stdio(void)
