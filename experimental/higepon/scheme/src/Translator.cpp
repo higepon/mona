@@ -63,14 +63,14 @@ int Translator::translateCond(Node* node, Object** object)
 {
     Clauses* clauses = new Clauses;ASSERT(clauses);
     Objects* elseActions = NULL;
-    for (Node::Nodes::size_type i = 1; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 1; i < node->nodes.size(); i++)
     {
         Node* n = node->nodes[i];
         if (n->nodes.size() < 2) return SYNTAX_ERROR;
         if (i == node->nodes.size() - 1 && n->nodes[0]->type == Node::SYMBOL && n->nodes[0]->text == "else")
         {
             elseActions = new Objects;ASSERT(elseActions);
-            for (Node::Nodes::size_type j = 1; j < n->nodes.size(); j++)
+            for (Nodes::size_type j = 1; j < n->nodes.size(); j++)
             {
                 Object * action;
                 int ret = translate(n->nodes[j], &action);
@@ -104,7 +104,7 @@ int Translator::translateCond(Node* node, Object** object)
                 int ret = translate(n->nodes[0], &cond);
                 if (ret != SUCCESS) return ret;
                 Objects* actions = new Objects;ASSERT(actions);
-                for (Node::Nodes::size_type j = 1; j < n->nodes.size(); j++)
+                for (Nodes::size_type j = 1; j < n->nodes.size(); j++)
                 {
                     Object * action;
                     ret = translate(n->nodes[j], &action);
@@ -124,7 +124,7 @@ int Translator::translateCond(Node* node, Object** object)
 int Translator::translateAnd(Node* node, Object** object)
 {
     Objects* objects = new Objects;ASSERT(objects);
-    for (Node::Nodes::size_type i = 1; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);
@@ -139,7 +139,7 @@ int Translator::translateAnd(Node* node, Object** object)
 int Translator::translateOr(Node* node, Object** object)
 {
     Objects* objects = new Objects;ASSERT(objects);
-    for (Node::Nodes::size_type i = 1; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);
@@ -154,7 +154,7 @@ int Translator::translateBegin(Node* node, Object** object)
 {
     if (node->nodes.size() <= 1) return SYNTAX_ERROR;
     Objects* objects = new Objects;ASSERT(objects);
-    for (Node::Nodes::size_type i = 1; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);
@@ -170,7 +170,7 @@ int Translator::translateLambda(Node* node, Object** object)
     if (node->nodes.size() <= 2) return SYNTAX_ERROR;
     if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
     Variables* variables = new Variables;ASSERT(variables);
-    for (Node::Nodes::size_type i = 0; i < node->nodes[1]->nodes.size(); i++)
+    for (Nodes::size_type i = 0; i < node->nodes[1]->nodes.size(); i++)
     {
         Node* param = node->nodes[1]->nodes[i];
         if (param->type != Node::SYMBOL) return SYNTAX_ERROR;
@@ -180,7 +180,7 @@ int Translator::translateLambda(Node* node, Object** object)
     }
 
     Objects* body = new Objects;ASSERT(body);
-    for (Node::Nodes::size_type i = 2; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
         int ret = translate(node->nodes[i], &o);
@@ -198,8 +198,8 @@ int Translator::translateLet(Node* node, Object** object)
 
     Variables* variables = new Variables;ASSERT(variables);
     Objects* values = new Objects;ASSERT(values);
-    Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
-    for (Node::Nodes::size_type i = 0; i < parameterNodes->size(); i++)
+    Nodes* parameterNodes = &node->nodes[1]->nodes;
+    for (Nodes::size_type i = 0; i < parameterNodes->size(); i++)
     {
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
@@ -214,7 +214,7 @@ int Translator::translateLet(Node* node, Object** object)
     }
 
     Objects* body = new Objects;ASSERT(body);
-    for (Node::Nodes::size_type i = 2; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
         int ret = translate(node->nodes[i], &o);
@@ -232,8 +232,8 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
 
     Variables* variables = new Variables;ASSERT(variables);
     Objects* values = new Objects;ASSERT(values);
-    Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
-    for (Node::Nodes::size_type i = 0; i < parameterNodes->size(); i++)
+    Nodes* parameterNodes = &node->nodes[1]->nodes;
+    for (Nodes::size_type i = 0; i < parameterNodes->size(); i++)
     {
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
@@ -248,7 +248,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
     }
 
     Objects* body = new Objects;ASSERT(body);
-    for (Node::Nodes::size_type i = 2; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 2; i < node->nodes.size(); i++)
     {
         Object* o;
         int ret = translate(node->nodes[i], &o);
@@ -265,7 +265,7 @@ int Translator::translateApplication(Node* node, Object** object)
     int ret = translate(node->nodes[0], &f);
     if (ret != SUCCESS) return ret;
     Objects* arguments = new Objects;ASSERT(arguments);
-    for (Node::Nodes::size_type i = 1; i < node->nodes.size(); i++)
+    for (Nodes::size_type i = 1; i < node->nodes.size(); i++)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);

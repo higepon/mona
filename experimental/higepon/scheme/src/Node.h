@@ -7,13 +7,15 @@
 
 namespace monash {
 
+class Node;
+typedef std::vector<Node*> Nodes;
+
 class Node
 {
 public:
     Node(int type) : type(type) {}
     ~Node() {}
 
-    typedef std::vector<Node*> Nodes;
     Nodes nodes;
     int type;
     std::string text;

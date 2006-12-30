@@ -1,15 +1,14 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT(scheme, 0.0.1, BUG-REPORT-ADDRESS)
+AC_PREREQ(2.60)
+AC_INIT(macrocompiler, 0.0.1, BUG-REPORT-ADDRESS)
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CXX
-AC_PROG_CC
 
 # Checks for libraries.
 
@@ -20,6 +19,5 @@ AC_PROG_CC
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 src/Makefile
-                 test_cpp/Makefile])
+                 src/Makefile])
 AC_OUTPUT

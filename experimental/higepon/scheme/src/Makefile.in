@@ -64,7 +64,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-load.$(OBJEXT)
+	scheme-MacroUtility.$(OBJEXT) scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -92,6 +92,9 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -124,7 +127,10 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
@@ -234,6 +240,8 @@ PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
 scheme.cpp\
+MacroUtility.h\
+MacroUtility.cpp\
 load.cpp
 
 all: all-am
@@ -517,6 +525,12 @@ scheme-scheme.o: scheme.cpp
 
 scheme-scheme.obj: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.obj `if test -f 'scheme.cpp'; then $(CYGPATH_W) 'scheme.cpp'; else $(CYGPATH_W) '$(srcdir)/scheme.cpp'; fi`
+
+scheme-MacroUtility.o: MacroUtility.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroUtility.o `test -f 'MacroUtility.cpp' || echo '$(srcdir)/'`MacroUtility.cpp
+
+scheme-MacroUtility.obj: MacroUtility.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroUtility.obj `if test -f 'MacroUtility.cpp'; then $(CYGPATH_W) 'MacroUtility.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroUtility.cpp'; fi`
 
 scheme-load.o: load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.o `test -f 'load.cpp' || echo '$(srcdir)/'`load.cpp

@@ -14,10 +14,10 @@
 ;;   (a 0)
 ;;   )
 
-(begin
+;;(begin
   (define ok (lambda ()
                (display "OK\n")))
-  
+
 (define not-ok (lambda ()
              (display "Not OK\n")))
 
@@ -28,7 +28,7 @@
                      (not-ok))))
 
 (assert (= 3 3) "hoge")
-)
+;;)
 
 ;;261855で死んだ
 
