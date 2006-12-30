@@ -11,7 +11,7 @@ all:
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/NetServer && $(MAKE) && $(MAKE) install
 ### libraries
-	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
+#	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/libnet && $(MAKE) && $(MAKE) install
