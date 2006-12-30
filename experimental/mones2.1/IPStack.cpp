@@ -17,12 +17,6 @@ IPStack::IPStack() : next_port(0),started(false), loopExit(false)
         delete pDP;
         exit(1);
     }    
-    ///////////////
-    dword id;
-    id=syscall_mthread_create_with_arg(this2fast<TCPIn,&TCPIn::ThreadMain>, &tcp_in);
-    syscall_mthread_join(id);
-    id=syscall_mthread_create_with_arg(this2fast<TCPOut,&TCPOut::ThreadMain>, &tcp_out);
-    syscall_mthread_join(id);
 }
 
 IPStack::~IPStack()

@@ -58,8 +58,8 @@ private:
     void setblockingmode(MessageInfo* msg);
     word next_port;   
     TimeKeeper tcp_timer;
-    TCPIn tcp_in;
-    TCPOut tcp_out;
+    //TCPIn tcp_in;
+    //TCPOut tcp_out;
 protected:
     dword myID;
     bool started;

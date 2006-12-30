@@ -142,7 +142,8 @@ int STFtp(NetClient& client,dword remoteip, List<char*>* args)
     }
     printf("%s",buf);
     //LIST
-    word newport = client.GetFreePort();
+    word newport = client.GetFreePort();   
+    int netdsc2 = client.TCPPasvOpen(newport);
     int p =(newport>>8) & 0xFF;
     int q = newport & 0xFF;
     len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
@@ -156,7 +157,6 @@ int STFtp(NetClient& client,dword remoteip, List<char*>* args)
     if( client.Write(netdsc,(byte*)buf,len) ){
         client.Close(netdsc);
     }
-    int netdsc2 = client.TCPPasvOpen(newport);
     if( client.Read(netdsc,(byte*)buf) <= 0 ){
         client.Close(netdsc);    
     }

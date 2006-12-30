@@ -6,7 +6,7 @@ using namespace MonAPI;
 void TCPIn::ThreadMain()
 {
     for(;;){
-        printf("In\n");
+        printf("In%d\n",id);
         sleep(1000);
     }
 }
@@ -14,7 +14,7 @@ void TCPIn::ThreadMain()
 void TCPOut::ThreadMain()
 {
     for(;;){
-        printf("Out\n");
+        printf("Out%d\n",id);
         sleep(1300);
     }
 }
