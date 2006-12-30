@@ -8,7 +8,7 @@ MacroMatchTest.cpp\
 ../src/Tokenizer.h\
 ../src/Node.h\
 ../src/Node.cpp\
-../src/MacroUtility.h\
-../src/MacroUtility.cpp\
+../src/Macro.h\
+../src/Macro.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp

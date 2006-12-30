@@ -22,11 +22,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    Node* macro = MacroUtility::macroToNode("(_ a b ...)");
-    Node* target = MacroUtility::macroToNode("(and a b c)");
-    printf("macro %s\n", MacroUtility::match("and", macro, target) ? "matched!" : "not matched!");
-    return 0;
-
 // for gc test
 //     for (uint32_t i = 0; i < 0xffffffff; i ++)
 //     {

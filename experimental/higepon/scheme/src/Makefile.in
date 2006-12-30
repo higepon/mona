@@ -64,7 +64,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-MacroUtility.$(OBJEXT) scheme-load.$(OBJEXT)
+	scheme-Macro.$(OBJEXT) scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -240,8 +240,8 @@ PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
 scheme.cpp\
-MacroUtility.h\
-MacroUtility.cpp\
+Macro.h\
+Macro.cpp\
 load.cpp
 
 all: all-am
@@ -526,11 +526,11 @@ scheme-scheme.o: scheme.cpp
 scheme-scheme.obj: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.obj `if test -f 'scheme.cpp'; then $(CYGPATH_W) 'scheme.cpp'; else $(CYGPATH_W) '$(srcdir)/scheme.cpp'; fi`
 
-scheme-MacroUtility.o: MacroUtility.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroUtility.o `test -f 'MacroUtility.cpp' || echo '$(srcdir)/'`MacroUtility.cpp
+scheme-Macro.o: Macro.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Macro.o `test -f 'Macro.cpp' || echo '$(srcdir)/'`Macro.cpp
 
-scheme-MacroUtility.obj: MacroUtility.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroUtility.obj `if test -f 'MacroUtility.cpp'; then $(CYGPATH_W) 'MacroUtility.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroUtility.cpp'; fi`
+scheme-Macro.obj: Macro.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Macro.obj `if test -f 'Macro.cpp'; then $(CYGPATH_W) 'Macro.cpp'; else $(CYGPATH_W) '$(srcdir)/Macro.cpp'; fi`
 
 scheme-load.o: load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.o `test -f 'load.cpp' || echo '$(srcdir)/'`load.cpp

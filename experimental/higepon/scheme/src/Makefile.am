@@ -74,6 +74,6 @@ PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
 scheme.cpp\
-MacroUtility.h\
-MacroUtility.cpp\
+Macro.h\
+Macro.cpp\
 load.cpp

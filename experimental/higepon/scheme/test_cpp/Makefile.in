@@ -49,7 +49,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) \
 	test_cpp-MacroMatchTest.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
-	test_cpp-Node.$(OBJEXT) test_cpp-MacroUtility.$(OBJEXT) \
+	test_cpp-Node.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
 	test_cpp-Parser.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
@@ -160,8 +160,8 @@ MacroMatchTest.cpp\
 ../src/Tokenizer.h\
 ../src/Node.h\
 ../src/Node.cpp\
-../src/MacroUtility.h\
-../src/MacroUtility.cpp\
+../src/Macro.h\
+../src/Macro.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp
 
@@ -261,11 +261,11 @@ test_cpp-Node.o: ../src/Node.cpp
 test_cpp-Node.obj: ../src/Node.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Node.obj `if test -f '../src/Node.cpp'; then $(CYGPATH_W) '../src/Node.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Node.cpp'; fi`
 
-test_cpp-MacroUtility.o: ../src/MacroUtility.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroUtility.o `test -f '../src/MacroUtility.cpp' || echo '$(srcdir)/'`../src/MacroUtility.cpp
+test_cpp-Macro.o: ../src/Macro.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Macro.o `test -f '../src/Macro.cpp' || echo '$(srcdir)/'`../src/Macro.cpp
 
-test_cpp-MacroUtility.obj: ../src/MacroUtility.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroUtility.obj `if test -f '../src/MacroUtility.cpp'; then $(CYGPATH_W) '../src/MacroUtility.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/MacroUtility.cpp'; fi`
+test_cpp-Macro.obj: ../src/Macro.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Macro.obj `if test -f '../src/Macro.cpp'; then $(CYGPATH_W) '../src/Macro.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Macro.cpp'; fi`
 
 test_cpp-Parser.o: ../src/Parser.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Parser.o `test -f '../src/Parser.cpp' || echo '$(srcdir)/'`../src/Parser.cpp
