@@ -273,7 +273,7 @@ bool saveImage(const char *path, uint8_t *bf, uint32_t size)
 */
 uint8_t* loadFromFile(const char* path, uint32_t* size)
 {
-    uint8_t** buf;
+    uint8_t* buf;
     FILE* fp;
 
     fp = fopen(path, "rb");
@@ -392,7 +392,7 @@ bool cp(const char *src, const char *dst)
     return true;
 }
 
-bool read(const char* path, uint8_t** buf, int size)
+bool read(const char* path, uint8_t* buf, int size)
 {
     int entry;
     int cursor;
