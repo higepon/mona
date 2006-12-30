@@ -1,0 +1,44 @@
+-
+ - and
+ - (_ a b ...)
+ - (and a b c)
+-
+ - and
+ - (_ a b ...)
+ - (and a b c)
+-
+ - when
+ - (_ pred a b)
+ - (when (= x 3) (display "x=3") (display "\n"))
+-
+ - my-if
+ - (_ a my-then b)
+ - (my-if (= 3 3) my-then 3)
+-
+ - my-if
+ - (_ a my-then b my-else c)
+ - (my-if (= 3 3) my-then 4 my-else 5)
+-
+ - pp
+ - (_ a b ...)
+ - (pp a b c d)
+-
+ - pp
+ - (_ a)
+ - (pp 3)
+-
+ - my-let*
+ - (_ ((a b) (c d) ...) z ...)
+ - (my-let* ((a 99) (b (+ 1 a)) (c (+ b 1))) (p a) (p b) (p c))
+-
+ - my-let*
+ - (_ ((a b)) z ...)
+ - (my-let* ((a 99)) (p a))
+-
+ - decf
+ - (_ x dx)
+ - (decf x 1)
+-
+ - decf
+ - (_ x)
+ - (decf x)
