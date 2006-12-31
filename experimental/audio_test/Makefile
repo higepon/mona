@@ -3,7 +3,7 @@ MONADIR=$(PWD)/../../mona
 endif
 
 TARGET  = AUDIO
-SOURCES = main.cpp ES1370Register.cpp ES1370Driver.cpp
+SOURCES = main.cpp ES1370Driver.cpp# ES1370Register.cpp 
 INSTDIR = $(BINDIR)/APPS
 INSTFILES = test.raw
 

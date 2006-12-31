@@ -31,17 +31,17 @@ int main(int argc, char *argv[])
 		delete driver;
 		return 1;
 	}
-	buf = (unsigned char*)malloc(102400);
+	buf = (unsigned char*)malloc(0xFFFF);
 
 
 	while( !feof(fp) )
 	{
-		fread(buf, 1, 102400, fp);
+		fread(buf, 1, 0xFFFF, fp);
 
-		driver->playData(buf, 102400);
+		driver->playData(buf, 0xFFFF);
 	}
 
-	driver->MessageLoop();
+//	driver->MessageLoop();
 
 	free(buf);
 	delete driver;

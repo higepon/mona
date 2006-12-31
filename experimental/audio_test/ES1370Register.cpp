@@ -11,7 +11,7 @@ using namespace MonAPI;
 #define BIT_DOWN(reg, x) reg(reg()&~x)
 #define BIT_TEST(reg, x) { bool ret; (reg() & x) ? ret = true : ret = false; return ret; }
 
-ControlRegister::ControlRegister(ES1370 & es1370)
+ControlRegister::ControlRegister(ES1370 *es1370)
 {
 	this->es1370 = es1370;
 }
@@ -42,7 +42,7 @@ void ControlRegister::SerialControlRegister(dword n)
 
 void ControlRegister::ADCStop(bool flag)
 {
-	BitSetter(&ControlRegister::SelectControlRegister, &ES1370::SelectControlRegister, flag, CONTROL.ADC_STOP);
+	BitSetter(&ES1370::SelectControlRegister, &ES1370::SelectControlRegister, flag, CONTROL.ADC_STOP);
 }
 
 bool ControlRegister::ADCStop()

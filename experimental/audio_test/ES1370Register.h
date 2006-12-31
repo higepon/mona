@@ -37,10 +37,12 @@ public:
 			dword (ES1370Register::*getter)(), bool flag, dword mask)
 	{
 		dword n;
-		n = this->getter();
+		ES1370Register *obj;
+		obj = this;
+		n = (obj->*getter)();
 		if( flag ) n |= mask;
 		else n &= ~ mask;
-		this->setter(n);
+		(obj->*setter)(n);
 	}
 	bool BitGetter(dword (ES1370Register::*getter)(), dword mask)
 	{
@@ -51,9 +53,9 @@ public:
 class ControlRegister : ES1370Register
 {
 private:
-	ES1370 & es1370;
+	ES1370 *es1370;
 public:
-	ControlRegister(ES1370 & es1370);
+	ControlRegister(ES1370 * es1370);
 	virtual ~ControlRegister();
 	void ADCStop(bool stop);
 	bool ADCStop();

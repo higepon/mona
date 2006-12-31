@@ -7,6 +7,12 @@
 
 using namespace MonAPI;
 
+typedef struct _frameregister2
+{
+	unsigned short buffersize;
+	unsigned short currentcount;
+} FrameRegister2;
+
 ES1370Driver::ES1370Driver()
 {
 	this->pci = new Pci;
@@ -110,6 +116,9 @@ void ES1370Driver::dumpRegisters()
 
 	result = inp32(baseIO+ES1370_REG_DAC1_FRAMEADR);
 	printf("DAC1 Frame Address: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_DAC1_FRAMECNT);
+	printf("DAC1 Frame Count & Size: %x\n", result);
 }
 
 void ES1370Driver::setMempage(int p)
@@ -151,21 +160,25 @@ void ES1370Driver::playData(void* pm, size_t size)
 {
 	byte *dmabuf;
 
-	printf("%x\n", *(int*)pm);
+	printf("%x\n", (int*)pm);
 	dmabuf = monapi_allocate_dma_memory(size);
 	printf("DMA Address = %x\n", dmabuf);
 
 	memcpy(dmabuf, pm, size);
 
 	enableDAC1Channel();
-	setMempage(12);
+	setMempage(ES1370_PAGE_DAC&0x0f);
 	setSampleRate(44100);
+	setStereoMode(DAC1, 16);
+	printf("size = %x\n", size);
 	DAC1FrameRegister(dmabuf, size);
 	startDAC1();
 
-	sleep(10);
+	sleep(1000);
 
-	monapi_deallocate_dma_memory(dmabuf, size);
+	dumpRegisters();
+
+//	monapi_deallocate_dma_memory(dmabuf, size);
 }
 
 dword ES1370Driver::readControlRegister()
@@ -190,6 +203,24 @@ void ES1370Driver::SerialControlRegister(dword n)
 
 void ES1370Driver::DAC1FrameRegister(void *p, size_t size)
 {
-	outp32(baseIO+0x30, (dword)p);
-	outp32(baseIO+0x32, (dword)size);
+	int n;
+	FrameRegister2 fr;
+	fr.currentcount = 0;
+	fr.buffersize = (unsigned short)size;
+	memcpy(&n, &fr, sizeof(int));
+	outp32(baseIO+ES1370_REG_DAC1_FRAMEADR, (dword)p);
+	outp32(baseIO+ES1370_REG_DAC1_FRAMECNT, (dword)n);
+}
+
+void ES1370Driver::setStereoMode(Channel ch, int bits)
+{
+	if( bits == 16 )
+	{
+		switch(ch)
+		{
+		case DAC1:
+			SerialControlRegister(SerialControlRegister()|ES1370_P1_S_EB|ES1370_P1_S_MB);
+			break;
+		}
+	}
 }
