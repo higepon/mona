@@ -179,6 +179,7 @@ void ES1370Driver::playData(void* pm, size_t size)
 	setMempage(ES1370_PAGE_DAC&0x0f);
 	setSampleRate(44100);
 	setStereoMode(DAC1, 8);
+	setLoopMode(DAC1);
 	printf("size = %x\n", size);
 	DAC1FrameRegister(dmabuf, size);
 //	SerialControlRegister(SerialControlRegister());
