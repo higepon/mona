@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 	driver->readConf();
 	driver->dumpRegisters();
 
+/*
 	fp = fopen("/APPS/TEST.RAW", "r");
 	if( fp == NULL )
 	{
@@ -31,15 +32,19 @@ int main(int argc, char *argv[])
 		delete driver;
 		return 1;
 	}
-	buf = (unsigned char*)malloc(0xFFFF);
-
-
-	while( !feof(fp) )
+*/
+	buf = (unsigned char*)malloc(44100);
+	for(int i = 0 ; i < 44100 ; i++ )
 	{
-		fread(buf, 1, 0xFFFF, fp);
-
-		driver->playData(buf, 0xFFFF);
+		if( i % 20 < 10 )
+			buf[i] = 110;
+		else
+			buf[i] = -110;
 	}
+
+
+//	fread(buf, 1, 0xFFFF, fp);
+	driver->playData(buf, 44100);
 
 //	driver->MessageLoop();
 

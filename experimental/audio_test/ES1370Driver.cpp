@@ -128,8 +128,14 @@ void ES1370Driver::setMempage(int p)
 
 void ES1370Driver::enableDAC1Channel()
 {
-	outp32(baseIO+ES1370_REG_CONTROL,inp32(baseIO+ES1370_REG_CONTROL)|0x40);
+	outp32(baseIO+ES1370_REG_CONTROL,inp32(baseIO+ES1370_REG_CONTROL)|ES1370_DAC1_EN);
 }
+
+void ES1370Driver::disableDAC1Channel()
+{
+	outp32(baseIO+ES1370_REG_CONTROL,inp32(baseIO+ES1370_REG_CONTROL)&~ES1370_DAC1_EN);
+}
+
 
 void ES1370Driver::setSampleRate(int rate)
 {
@@ -151,34 +157,42 @@ void ES1370Driver::setSampleRate(int rate)
 
 void ES1370Driver::startDAC1()
 {
-	dword n = SerialControlRegister();
-	n = n & ~0x0800;
-	SerialControlRegister(n);
+	SerialControlRegister(SerialControlRegister()&~ES1370_P1_PAUSE);
+}
+
+void ES1370Driver::stopDAC1()
+{
+	SerialControlRegister(SerialControlRegister()|ES1370_P1_PAUSE);
 }
 
 void ES1370Driver::playData(void* pm, size_t size)
 {
 	byte *dmabuf;
 
-	printf("%x\n", (int*)pm);
+	printf("%x\n", pm);
 	dmabuf = monapi_allocate_dma_memory(size);
 	printf("DMA Address = %x\n", dmabuf);
 
 	memcpy(dmabuf, pm, size);
 
-	enableDAC1Channel();
+	disableDAC1Channel();
 	setMempage(ES1370_PAGE_DAC&0x0f);
 	setSampleRate(44100);
-	setStereoMode(DAC1, 16);
+	setStereoMode(DAC1, 8);
 	printf("size = %x\n", size);
 	DAC1FrameRegister(dmabuf, size);
+//	SerialControlRegister(SerialControlRegister());
+	SCT_RLD();
 	startDAC1();
+	enableDAC1Channel();
+	printf("playing...\n");
 
 	sleep(1000);
 
 	dumpRegisters();
+	stopDAC1();
 
-//	monapi_deallocate_dma_memory(dmabuf, size);
+	monapi_deallocate_dma_memory(dmabuf, size);
 }
 
 dword ES1370Driver::readControlRegister()
@@ -221,6 +235,51 @@ void ES1370Driver::setStereoMode(Channel ch, int bits)
 		case DAC1:
 			SerialControlRegister(SerialControlRegister()|ES1370_P1_S_EB|ES1370_P1_S_MB);
 			break;
+		case DAC2:
+			SerialControlRegister(SerialControlRegister()|ES1370_P2_S_EB|ES1370_P2_S_MB);
+			break;
+		case ADC:
+			break;
 		}
 	}
+	else if( bits == 8 )
+	{
+		switch(ch)
+		{
+		case DAC1:
+			SerialControlRegister(SerialControlRegister()|ES1370_P1_S_MB);
+			break;
+		case DAC2:
+			SerialControlRegister(SerialControlRegister()|ES1370_P2_S_MB);
+			break;
+		case ADC:
+			break;
+		}
+	}
+
+}
+
+void ES1370Driver::setLoopMode(Channel ch)
+{
+	switch(ch)
+	{
+	case DAC1:
+		SerialControlRegister(SerialControlRegister()&~ES1370_P1_LOOP_SEL);
+		break;
+	}
+}
+
+void ES1370Driver::enableInterrupt(Channel ch)
+{
+	switch(ch)
+	{
+	case DAC1:
+	SerialControlRegister(SerialControlRegister()|ES1370_P1_INTR_EN);
+		break;
+	}
+}
+
+void ES1370Driver::SCT_RLD()
+{
+	SerialControlRegister(SerialControlRegister()|ES1370_P1_SCT_RLD);
 }

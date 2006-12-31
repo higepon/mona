@@ -71,8 +71,8 @@ enum
 	ES1370_P2_DAC_SEN = (1<<6),
 	ES1370_R1_S_EB = (1<<5),
 	ES1370_R1_S_MB = (1<<4),
-	ES1370_R2_S_EB = (1<<3),
-	ES1370_R2_S_MB = (1<<2),
+	ES1370_P2_S_EB = (1<<3),
+	ES1370_P2_S_MB = (1<<2),
 	ES1370_P1_S_EB = (1<<1),
 	ES1370_P1_S_MB = (1<<0),
 
@@ -160,10 +160,15 @@ public:
 
 	void setMempage(int p);
 	void DAC1FrameRegister(void* p, size_t size);
+	inline void disableDAC1Channel();
 	inline void enableDAC1Channel();
 	void setSampleRate(int rate);
 	void startDAC1();
+	void stopDAC1();
 	void setStereoMode(Channel ch, int bits);
+	void setLoopMode(Channel ch);
+	void enableInterrupt(Channel ch);
+	void SCT_RLD();
 
 	void readConf();
 	void dumpRegisters();
