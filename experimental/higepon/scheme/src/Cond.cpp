@@ -5,7 +5,7 @@ using namespace monash;
 Cond::Cond(Clauses* clauses, Objects* elseActions) : clauses_(clauses), elseActions_(elseActions)
 {
 //     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//     for (Clauses::iterator it = clauses->begin(); it != clauses->end(); ++it)
+//     for (Clauses::const_iterator it = clauses->begin(); it != clauses->end(); ++it)
 //     {
 //         printf("[%s]\n", (*it)->first->toString().c_str());
 //     }

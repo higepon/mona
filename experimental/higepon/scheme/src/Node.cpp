@@ -3,7 +3,7 @@
 using namespace monash;
 using namespace std;
 
-string Node::typeToString()
+string Node::typeToStringDetail()
 {
     char buffer[256];
 
@@ -28,6 +28,29 @@ string Node::typeToString()
     return string(buffer);
 }
 
+// string Node::typeToString()
+// {
+//     char buffer[256];
+
+//     switch(type)
+//     {
+//     case NUMBER:
+//         sprintf(buffer, "%d", value);
+//         break;
+//     case SYMBOL:
+//         sprintf(buffer, "%s", text.c_str());
+//         break;
+//     case STRING:
+//         sprintf(buffer, "\"%s\"", text.c_str());
+//         break;
+//     case QUOTE:
+//         sprintf(buffer, "\'%s", text.c_str());
+//         break;
+//     }
+//     printf("typeToString::%s\n", buffer);fflush(stdout);
+//     return string(buffer);
+// }
+
 void Node::print(int depth /* = 0 */)
 {
     for (int i = 0; i < depth; i++)
@@ -35,11 +58,67 @@ void Node::print(int depth /* = 0 */)
         printf(" ");
     }
 
-    printf(typeToString().c_str());
+    printf(typeToStringDetail().c_str());
 
     depth++;
-    for (Nodes::iterator it = nodes.begin(); it != nodes.end(); ++it)
+    for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
     {
         (*it)->print(depth);
     }
+}
+
+// string Node::toSExp()
+// {
+//     return toSExpInternal(this);
+// }
+
+// string Node::toSExpInternal(Node* node)
+// {
+//     string ret;
+//     if (node->isNodes())
+//     {
+//         ret += "(";
+//         for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+//         {
+//             if (it != nodes.begin()) ret += " ";
+//             ret += toSExpInternal(*it);
+//         }
+//         ret += ")";
+//     }
+//     else
+//     {
+//         ret += node->typeToString();
+//     }
+//     return ret;
+// }
+
+
+bool Node::equals(Node* node)
+{
+    return equalsInternal(this, node);
+}
+
+bool Node::equalsInternal(Node* m, Node* n)
+{
+    if (m->type != n->type) return false;
+    if (m->isNodes())
+    {
+        if (m->nodes.size() != n->nodes.size()) return false;
+        for (Nodes::size_type i = 0; i < m->nodes.size(); i++)
+        {
+            if (!equalsInternal(m->nodes[i], n->nodes[i])) return false;
+        }
+        return true;
+    }
+
+    switch(type)
+    {
+    case NUMBER:
+        return m->value == n->value;
+    case SYMBOL:
+    case STRING:
+    case QUOTE:
+        return m->text == n->text;
+    }
+    return false;
 }

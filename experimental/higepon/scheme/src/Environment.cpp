@@ -22,7 +22,7 @@ Environment* Environment::clone()
 {
     Environment* env = new Environment();ASSERT(env);
     Frames* target = env->frames();
-    for (Frames::iterator it = frames_->begin(); it != frames_->end(); ++it)
+    for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
     {
         target->push_back(*it);
     }
@@ -31,7 +31,7 @@ Environment* Environment::clone()
 
 void Environment::setVaribale(Variable* variable, Object* value)
 {
-    for (Frames::iterator it = frames_->begin(); it != frames_->end(); ++it)
+    for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
     {
         if ((*it)->lookup(variable) != NULL)
         {
@@ -45,7 +45,7 @@ void Environment::setVaribale(Variable* variable, Object* value)
 
 void Environment::defineVariable(Variable* variable, Object* value)
 {
-//     Frames::iterator firstFrame = frames_->begin();
+//     Frames::const_iterator firstFrame = frames_->begin();
 //     printf("define %s \n",  variable->name().c_str());
 //     (*firstFrame)->insert(variable, value); insert or overwrite
     Frame* lastFrame = frames_->at(frames_->size() -1);
@@ -62,7 +62,7 @@ void Environment::extend(Variables* variables, Objects* objects)
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
-//     for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+//     for (Frames::const_iterator frame = frames_->begin(); frame != frames_->end(); frame++)
 //     {
 //         Object* found = (*frame)->lookup(variable);
 //         if (NULL != found) return found;
@@ -87,7 +87,7 @@ Object* Environment::lookupVariableValue(Variable* variable)
 std::string Environment::toString()
 {
     string result = "";
-    for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+    for (Frames::const_iterator frame = frames_->begin(); frame != frames_->end(); frame++)
     {
         result += (*frame)->toString() + "\n\n";
     }

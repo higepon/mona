@@ -47,10 +47,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) \
-	test_cpp-MacroMatchTest.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
-	test_cpp-Node.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
-	test_cpp-Parser.$(OBJEXT)
+am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
+	test_cpp-MacroMatchTest.$(OBJEXT) \
+	test_cpp-MacroTranslateTest.$(OBJEXT) \
+	test_cpp-Tokenizer.$(OBJEXT) test_cpp-Node.$(OBJEXT) \
+	test_cpp-Macro.$(OBJEXT) test_cpp-Parser.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -154,12 +155,17 @@ target_alias = @target_alias@
 test_cpp_CXXFLAGS = -g -Wall -O3 -I../src -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall
 test_cpp_LDFLAGS = -lcppunit -lgc
 test_cpp_SOURCES = main.cpp\
+yaml.cpp\
+yaml.h\
 MacroMatchTest.h\
 MacroMatchTest.cpp\
+MacroTranslateTest.h\
+MacroTranslateTest.cpp\
 ../src/Tokenizer.cpp\
 ../src/Tokenizer.h\
 ../src/Node.h\
 ../src/Node.cpp\
+../src/scheme.h\
 ../src/Macro.h\
 ../src/Macro.cpp\
 ../src/Parser.h\
@@ -243,11 +249,23 @@ test_cpp-main.o: main.cpp
 test_cpp-main.obj: main.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
 
+test_cpp-yaml.o: yaml.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-yaml.o `test -f 'yaml.cpp' || echo '$(srcdir)/'`yaml.cpp
+
+test_cpp-yaml.obj: yaml.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-yaml.obj `if test -f 'yaml.cpp'; then $(CYGPATH_W) 'yaml.cpp'; else $(CYGPATH_W) '$(srcdir)/yaml.cpp'; fi`
+
 test_cpp-MacroMatchTest.o: MacroMatchTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroMatchTest.o `test -f 'MacroMatchTest.cpp' || echo '$(srcdir)/'`MacroMatchTest.cpp
 
 test_cpp-MacroMatchTest.obj: MacroMatchTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroMatchTest.obj `if test -f 'MacroMatchTest.cpp'; then $(CYGPATH_W) 'MacroMatchTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroMatchTest.cpp'; fi`
+
+test_cpp-MacroTranslateTest.o: MacroTranslateTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroTranslateTest.o `test -f 'MacroTranslateTest.cpp' || echo '$(srcdir)/'`MacroTranslateTest.cpp
+
+test_cpp-MacroTranslateTest.obj: MacroTranslateTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroTranslateTest.obj `if test -f 'MacroTranslateTest.cpp'; then $(CYGPATH_W) 'MacroTranslateTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroTranslateTest.cpp'; fi`
 
 test_cpp-Tokenizer.o: ../src/Tokenizer.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Tokenizer.o `test -f '../src/Tokenizer.cpp' || echo '$(srcdir)/'`../src/Tokenizer.cpp

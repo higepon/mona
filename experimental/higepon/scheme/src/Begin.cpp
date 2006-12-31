@@ -13,7 +13,7 @@ Begin::~Begin()
 std::string Begin::toString()
 {
     std::string ret = "begin:";
-    for (Objects::iterator it = actions_->begin(); it != actions_->end(); ++it)
+    for (Objects::const_iterator it = actions_->begin(); it != actions_->end(); ++it)
     {
         ret += "[" + (*it)->toString() + "]";
     }

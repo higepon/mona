@@ -6,7 +6,7 @@ using namespace monash;
 Object* evalSequence(Objects* exps, Environment* env)
 {
     Object* ret = NULL;
-    for (Objects::iterator it = exps->begin(); it != exps->end(); ++it)
+    for (Objects::const_iterator it = exps->begin(); it != exps->end(); ++it)
     {
         Object* o = (*it);
         printf("before");fflush(stdout);
@@ -21,7 +21,7 @@ Object* evalSequence(Objects* exps, Environment* env)
 Objects* listOfValues(Objects* objects, Environment* env)
 {
     Objects* result = new Objects;ASSERT(result);
-    for (Objects::iterator it = objects->begin(); it != objects->end(); ++it)
+    for (Objects::const_iterator it = objects->begin(); it != objects->end(); ++it)
     {
         result->push_back((*it)->eval(env));
     }

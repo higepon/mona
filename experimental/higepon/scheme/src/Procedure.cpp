@@ -7,7 +7,7 @@ Procedure::Procedure(Lambda* lamba, Environment* env) : env_(env)
     body_ = lamba->body();
     parameters_ = new Variables();ASSERT(parameters_);
     Variables* lparameters = lamba->parameters();
-    for (Variables::iterator it = lparameters->begin(); it != lparameters->end(); ++it)
+    for (Variables::const_iterator it = lparameters->begin(); it != lparameters->end(); ++it)
     {
         parameters_->push_back(*it);
     }

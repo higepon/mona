@@ -10,6 +10,13 @@ Translator::~Translator()
 {
 }
 
+int Translator::translateMacro(Node* from, Node** to)
+{
+    *to = new Node(Node::NUMBER);
+    (*to)->value = 1234;
+    return SUCCESS;
+}
+
 int Translator::translatePrimitive(Node* node, Object** object)
 {
     switch(node->type)

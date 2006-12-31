@@ -3,6 +3,14 @@
 
 #include <string>
 #include <vector>
+
+namespace std {
+    typedef vector<string> strings;
+};
+
+
+#include <string>
+#include <vector>
 #include "Object.h"
 #include "Environment.h"
 #include "Procedure.h"
@@ -29,6 +37,7 @@
 #include "PrimitiveProcedures/StringToNumber.h"
 #include "PrimitiveProcedures/NumberEqual.h"
 //#include "PrimitiveProcedures/NumberGt.h"
+
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

@@ -1,0 +1,5 @@
+# macro translate test
+-
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+ - (show "higepon")
+ - (display "higepon")

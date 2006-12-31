@@ -77,3 +77,9 @@
 
 
 
+(define-syntax show
+  (syntax-rules ()
+    ((_ a) (display a))))
+
+(show "higeAAA")
+

@@ -16,10 +16,23 @@ public:
     Node(int type) : type(type) {}
     ~Node() {}
 
+    bool isNodes() const { return type == NODES; }
+    bool isNumber() const { return type == NUMBER; }
+    bool isSymbol() const { return type == SYMBOL; }
+    bool isString() const { return type == STRING; }
+    bool isQuote() const { return type == QUOTE; }
+
     Nodes nodes;
-    int type;
     std::string text;
     int value;
+    void print(int depth = 0);
+    std::string typeToStringDetail();
+    bool equals(Node* node);
+    bool equalsInternal(Node* m, Node* n);
+//    std::string typeToString();
+//    std::string toSExpInternal(Node* node);
+//    std::string toSExp();
+    int type;
     enum
     {
         NODES,
@@ -28,8 +41,6 @@ public:
         STRING,
         QUOTE,
     };
-    void print(int depth = 0);
-    std::string typeToString();
 };
 
 }; // namespace monash

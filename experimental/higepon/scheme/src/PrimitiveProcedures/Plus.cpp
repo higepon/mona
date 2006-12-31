@@ -24,7 +24,7 @@ Object* Plus::eval(Environment* env)
 Object* Plus::apply(Objects* arguments)
 {
     int total = 0;
-    for (Objects::iterator it = arguments->begin(); it != arguments->end(); it++)
+    for (Objects::const_iterator it = arguments->begin(); it != arguments->end(); it++)
     {
         Object* o = (*it);
         if (o->type() == Object::NUMBER)
