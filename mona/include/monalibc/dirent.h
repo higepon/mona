@@ -45,6 +45,7 @@ typedef struct _dir DIR;
 
 struct dirent
 {
+	uint32_t d_ino;		/* reserved */
 	int32_t	d_fileno;	/* reserved */
 	int32_t	d_off;		/* offset to next entry */
 	int16_t	d_reclen;	/* this is always 24 */
@@ -56,6 +57,9 @@ DIR *opendir(const char *name);
 struct dirent *readdir(DIR *);
 void rewinddir(DIR *);
 int closedir(DIR *);
+
+long telldir(DIR *);
+void seekdir(DIR *, long);
 
 #ifdef __cplusplus
 }
