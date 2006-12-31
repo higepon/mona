@@ -29,10 +29,10 @@ void MacroTranslateTest::testTranslate()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        Node* macroFrom = Macro::toNode(s->at(0));
-        Translator new
-        Node* t = Macro::toNode(target);
-        Node* r = Macro::toNode(words);
+//         Node* macroFrom = Macro::toNode(s->at(0));
+//         Translator new
+//         Node* t = Macro::toNode(target);
+//         Node* r = Macro::toNode(words);
 
 
         CPPUNIT_ASSERT_MESSAGE("", true);

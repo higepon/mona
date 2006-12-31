@@ -35,7 +35,7 @@ void MacroMatchTest::assertMacroMatch(const string& macroName, const string& wor
 void MacroMatchTest::testMatch()
 {
     YAML yaml;
-    loadYAML("match_ok.yml", yaml);
+    loadYAML("match.yml", yaml);
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {
@@ -51,7 +51,7 @@ void MacroMatchTest::testMatch()
 void MacroMatchTest::testUnmatch()
 {
     YAML yaml;
-    loadYAML("match_ng.yml", yaml);
+    loadYAML("unmatch.yml", yaml);
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {
