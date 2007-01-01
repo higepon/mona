@@ -49,6 +49,8 @@ void ES1370Driver::MessageLoop()
 	while(1)
 	{
 		if( Message::receive(&msg) ) continue;
+		printf("msg.header = %x\n", msg.header);
+		printf("msg.arg1 = %x\n", msg.arg1);
 
 		switch(msg.header)
 		{
@@ -63,7 +65,8 @@ void ES1370Driver::MessageLoop()
 
 void ES1370Driver::setIRQ()
 {
-	syscall_set_irq_receiver(this->pciinfo.IrqLine, MONAPI_FALSE);
+	syscall_set_irq_receiver(this->pciinfo.IrqLine, false);
+//	syscall_set_irq_receiver(0, false);
 }
 
 void ES1370Driver::unsetIRQ()
@@ -176,22 +179,27 @@ void ES1370Driver::playData(void* pm, size_t size)
 	memcpy(dmabuf, pm, size);
 
 	disableDAC1Channel();
+	writeControlRegister(readControlRegister()&~1);
 	setMempage(ES1370_PAGE_DAC&0x0f);
 	setSampleRate(44100);
+//	setMonoMode(DAC1, 8);
 	setStereoMode(DAC1, 8);
 	setLoopMode(DAC1);
+//	setStopMode(DAC1);
 	printf("size = %x\n", size);
 	DAC1FrameRegister(dmabuf, size);
-//	SerialControlRegister(SerialControlRegister());
-	SCT_RLD();
+	SerialControlRegister(SerialControlRegister()&~(ES1370_P1_LOOP_SEL|ES1370_P1_PAUSE|ES1370_P1_SCT_RLD|ES1370_P1_S_EB|ES1370_P1_S_MB));
+//	SCT_RLD();
 	startDAC1();
+	enableInterrupt(DAC1);
 	enableDAC1Channel();
 	printf("playing...\n");
+	MessageLoop();
 
 	sleep(1000);
 
-	dumpRegisters();
 	stopDAC1();
+	dumpRegisters();
 
 	monapi_deallocate_dma_memory(dmabuf, size);
 }
@@ -260,6 +268,40 @@ void ES1370Driver::setStereoMode(Channel ch, int bits)
 
 }
 
+void ES1370Driver::setMonoMode(Channel ch, int bits)
+{
+	if( bits == 16 )
+	{
+		switch(ch)
+		{
+		case DAC1:
+			SerialControlRegister(SerialControlRegister()|ES1370_P1_S_EB);
+			break;
+		case DAC2:
+			SerialControlRegister(SerialControlRegister()|ES1370_P2_S_EB);
+			break;
+		case ADC:
+			break;
+		}
+	}
+	else if( bits == 8 )
+	{
+		switch(ch)
+		{
+		case DAC1:
+			SerialControlRegister(SerialControlRegister()&~(ES1370_P1_S_MB|ES1370_P1_S_EB));
+			break;
+		case DAC2:
+			SerialControlRegister(SerialControlRegister()&~(ES1370_P2_S_MB|ES1370_P2_S_EB));
+			break;
+		case ADC:
+			break;
+		}
+	}
+
+}
+
+
 void ES1370Driver::setLoopMode(Channel ch)
 {
 	switch(ch)
@@ -270,12 +312,25 @@ void ES1370Driver::setLoopMode(Channel ch)
 	}
 }
 
+void ES1370Driver::setStopMode(Channel ch)
+{
+	switch(ch)
+	{
+	case DAC1:
+		SerialControlRegister(SerialControlRegister()|ES1370_P1_LOOP_SEL);
+		break;
+	}
+}
+
 void ES1370Driver::enableInterrupt(Channel ch)
 {
 	switch(ch)
 	{
 	case DAC1:
 	SerialControlRegister(SerialControlRegister()|ES1370_P1_INTR_EN);
+		break;
+	case DAC2:
+	SerialControlRegister(SerialControlRegister()|ES1370_P2_INTR_EN);
 		break;
 	}
 }

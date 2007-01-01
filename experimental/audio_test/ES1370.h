@@ -166,7 +166,9 @@ public:
 	void startDAC1();
 	void stopDAC1();
 	void setStereoMode(Channel ch, int bits);
+	void setMonoMode(Channel ch, int bits);
 	void setLoopMode(Channel ch);
+	void setStopMode(Channel ch);
 	void enableInterrupt(Channel ch);
 	void SCT_RLD();
 

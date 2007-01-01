@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
 	ES1370Driver *driver;
 	FILE* fp;
-	unsigned char *buf;
+	char *buf;
 
 	syscall_get_io();
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	driver->readConf();
 	driver->dumpRegisters();
 
-/*
+	/*
 	fp = fopen("/APPS/TEST.RAW", "r");
 	if( fp == NULL )
 	{
@@ -32,18 +32,21 @@ int main(int argc, char *argv[])
 		delete driver;
 		return 1;
 	}
-*/
-	buf = (unsigned char*)malloc(44100);
+	*/
+	buf = (char*)malloc(44100);
 	for(int i = 0 ; i < 44100 ; i++ )
 	{
 		if( i % 20 < 10 )
-			buf[i] = 110;
+		{
+			buf[i] = 200;
+		}
 		else
-			buf[i] = -110;
+		{
+			buf[i] = -200;
+		}
 	}
 
-
-//	fread(buf, 1, 0xFFFF, fp);
+//	fread(buf, 1, 44100, fp);
 	driver->playData(buf, 44100);
 
 //	driver->MessageLoop();
