@@ -29,14 +29,24 @@ void MacroTranslateTest::testTranslate()
             fprintf(stderr, "bad yaml!\n");
         }
 
-//         Node* macroFrom = Macro::toNode(s->at(0));
-//         Translator new
-//         Node* t = Macro::toNode(target);
-//         Node* r = Macro::toNode(words);
+        string macro = s->at(0).c_str();
+        string code  = s->at(1).c_str();
+        string expected = s->at(2).c_str();
 
-
-        CPPUNIT_ASSERT_MESSAGE("", true);
-        //      assertMacroMatch(s->at(0).c_str(), s->at(1).c_str(), s->at(2).c_str(), s->at(3).c_str());
+        Node* to;
+        Translator translator;
+        int ret = translator.translateMacro(Node::fromString(macro), Node::fromString(code), &to);
+        if (ret != Translator::SUCCESS)
+        {
+            string msg = "translate ";
+            msg += macro + " : " + code;
+            CPPUNIT_ASSERT_MESSAGE(msg.c_str(), false);
+        }
+        else
+        {
+            string msg = "\n[expected]\n" + Node::fromString(expected)->toString() + "\n[translated]\n" + to->toString();
+            CPPUNIT_ASSERT_MESSAGE(msg, Node::fromString(expected)->equals(to));
+        }
     }
 
 }

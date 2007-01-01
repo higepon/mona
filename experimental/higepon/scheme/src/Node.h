@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
+#include "Tokenizer.h"
+#include "Parser.h"
 
 namespace monash {
 
@@ -26,9 +28,12 @@ public:
     std::string text;
     int value;
     void print(int depth = 0);
-    std::string typeToStringDetail();
+    std::string typeToString();
+    std::string toString();
+    void toStringInternal(uint32_t depth, std::string& s);
     bool equals(Node* node);
     bool equalsInternal(Node* m, Node* n);
+    static Node* fromString(const std::string& text);
 //    std::string typeToString();
 //    std::string toSExpInternal(Node* node);
 //    std::string toSExp();

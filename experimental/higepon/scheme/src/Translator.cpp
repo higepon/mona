@@ -10,7 +10,7 @@ Translator::~Translator()
 {
 }
 
-int Translator::translateMacro(Node* from, Node** to)
+int Translator::translateMacro(Node* definition, Node* from, Node** to)
 {
     *to = new Node(Node::NUMBER);
     (*to)->value = 1234;

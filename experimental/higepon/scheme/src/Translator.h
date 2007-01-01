@@ -39,7 +39,7 @@ public:
     static int translateLet(Node* node, Object** object);
     static int translateLetAsterisk(Node* node, Object** object);
     static int translateApplication(Node* node, Object** object);
-    static int translateMacro(Node* from, Node** to);
+    static int translateMacro(Node* definition, Node* from, Node** to);
     enum
     {
         SYNTAX_ERROR,

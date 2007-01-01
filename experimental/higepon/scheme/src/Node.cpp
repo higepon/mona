@@ -3,7 +3,7 @@
 using namespace monash;
 using namespace std;
 
-string Node::typeToStringDetail()
+string Node::typeToString()
 {
     char buffer[256];
 
@@ -53,18 +53,40 @@ string Node::typeToStringDetail()
 
 void Node::print(int depth /* = 0 */)
 {
-    for (int i = 0; i < depth; i++)
+    printf(toString().c_str());
+//     for (int i = 0; i < depth; i++)
+//     {
+//         printf(" ");
+//     }
+
+//     printf(typeToString().c_str());
+
+//     depth++;
+//     for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+//     {
+//         (*it)->print(depth);
+//     }
+}
+
+void Node::toStringInternal(uint32_t depth, string& s)
+{
+    for (uint32_t i = 0; i < depth; i++)
     {
-        printf(" ");
+        s += " ";
     }
-
-    printf(typeToStringDetail().c_str());
-
+    s += typeToString();
     depth++;
     for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
     {
-        (*it)->print(depth);
+        (*it)->toStringInternal(depth, s);
     }
+}
+
+string Node::toString()
+{
+    string ret;
+    toStringInternal(0, ret);
+    return ret;
 }
 
 // string Node::toSExp()
@@ -121,4 +143,11 @@ bool Node::equalsInternal(Node* m, Node* n)
         return m->text == n->text;
     }
     return false;
+}
+
+Node* Node::fromString(const std::string& text)
+{
+    Tokenizer tokenizer(text);
+    Parser parser(&tokenizer);
+    return parser.parse();
 }

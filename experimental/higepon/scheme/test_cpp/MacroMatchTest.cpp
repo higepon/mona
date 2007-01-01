@@ -16,9 +16,9 @@ void MacroMatchTest::tearDown()
 
 void MacroMatchTest::assertMacroMatch(const string& macroName, const string& words, const string& macro, const string& target, bool matchOrNot)
 {
-    Node* m = Macro::toNode(macro);
-    Node* t = Macro::toNode(target);
-    Node* r = Macro::toNode(words);
+    Node* m = Node::fromString(macro);
+    Node* t = Node::fromString(target);
+    Node* r = Node::fromString(words);
     strings ss;
     for (Nodes::iterator it = r->nodes.begin(); it != r->nodes.end(); ++it)
     {

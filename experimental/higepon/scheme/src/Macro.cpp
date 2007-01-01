@@ -142,10 +142,3 @@ bool Macro::matchInternal(const string& macroName, const strings& reservedWords,
     }
     return true;
 }
-
-Node* Macro::toNode(const std::string& text)
-{
-    Tokenizer tokenizer(text);
-    Parser parser(&tokenizer);
-    return parser.parse();
-}

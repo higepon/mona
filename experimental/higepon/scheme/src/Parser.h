@@ -6,6 +6,8 @@
 
 namespace monash {
 
+class Node;
+
 class Parser
 {
 public:

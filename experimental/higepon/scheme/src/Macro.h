@@ -16,7 +16,6 @@ public:
     virtual ~Macro();
 
     static bool match(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
-    static Node* toNode(const std::string& text);
     static std::string error;
 private:
     static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
