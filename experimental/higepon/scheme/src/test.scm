@@ -57,4 +57,4 @@
 (define y 4)
 (my-if (= y 3)
   my-then (pp "3")
-  my-else (pp "not 3\n" "hige\n" "pon\n"))
+  my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))

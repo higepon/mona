@@ -10,7 +10,6 @@ class Macro
 public:
     typedef std::map<Node*, Node*> Patterns;
 
-
     Macro(const std::string& name);
     virtual ~Macro();
     void addPattern(Node* pattern, Node* definition);
@@ -22,8 +21,6 @@ public:
     std::string name;
     Patterns patterns;
     std::strings reservedWords;
-
-
 
 private:
     static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);

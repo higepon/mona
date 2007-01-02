@@ -42,15 +42,15 @@ void MacroTranslateTest::testTranslate()
 
         Node* expanded = NULL;
         Node* tmp = from;
-        for (;;)
-        {
+//        for (;;)
+//        {
             tmp = translator.expandMacroIfMatch(name, tmp);
             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             if (NULL == tmp) break;
             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             expanded = tmp;
 
-        }
+            //      }
         if (NULL == expanded)
         {
             string msg = "translate ";
