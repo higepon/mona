@@ -43,6 +43,8 @@ MacroTranslateTest.cpp\
 ../src/scheme.h\
 ../src/Macro.h\
 ../src/Macro.cpp\
+../src/MacroFilter.h\
+../src/MacroFilter.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp\
 ../src/Cond.cpp\

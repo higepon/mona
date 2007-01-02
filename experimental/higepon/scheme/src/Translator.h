@@ -36,10 +36,12 @@ public:
         SYNTAX_ERROR,
         SUCCESS
     };
-    int translate(Node* node, Object** object);
+
+    void step1(Node* root);
+    int translate(Node** node, Object** object);
 //    int translateMacro(Node* defineSyntax, Node* from, Node** to);
     int translateDefineSyntax(Node* node);
-    Node* expandMacroIfMatch(const std::string& name, Node* node);
+    Node* expandMacroIfMatch(const std::string& name, Node** node);
     void reset() { expanded_ = NULL;}
 
     Node* getExpandedNode() const { return expanded_; }
@@ -57,10 +59,10 @@ private:
     int translateLetAsterisk(Node* node, Object** object);
     int translateApplication(Node* node, Object** object);
 //    int expandMacro(Node* from, BindMap& bindMap);
-    int expandMacroInternal(Node* from, BindMap& bindMap);
+    int expandMacroInternal(Node** from, BindMap& bindMap);
 //    bool matchMacro(const std::string& name, Node* node);
 
-    Node* expandMacro(Macro* macro, Node* matchedPattern, Node* from);
+    Node* expandMacro(Macro* macro, Node* matchedPattern, Node** from);
 
     Node* expanded_;
     Macros macros_;

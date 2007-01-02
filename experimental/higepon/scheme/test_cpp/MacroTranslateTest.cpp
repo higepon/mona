@@ -51,11 +51,11 @@ void MacroTranslateTest::testTranslate()
 
     Object* object = NULL;
     translator.reset();
-    if (translator.translate(node, &object) != Translator::SUCCESS)
+    if (translator.translate(&node, &object) != Translator::SUCCESS)
     {
 
     }
-    expanded = translator.getExpandedNode();
+    expanded = node;//translator.getExpandedNode();
 
 //        for (;;)
 //        {

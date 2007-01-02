@@ -64,7 +64,8 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-Macro.$(OBJEXT) scheme-load.$(OBJEXT)
+	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
+	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -242,6 +243,8 @@ scheme.h\
 scheme.cpp\
 Macro.h\
 Macro.cpp\
+MacroFilter.h\
+MacroFilter.cpp\
 load.cpp
 
 all: all-am
@@ -531,6 +534,12 @@ scheme-Macro.o: Macro.cpp
 
 scheme-Macro.obj: Macro.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Macro.obj `if test -f 'Macro.cpp'; then $(CYGPATH_W) 'Macro.cpp'; else $(CYGPATH_W) '$(srcdir)/Macro.cpp'; fi`
+
+scheme-MacroFilter.o: MacroFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroFilter.o `test -f 'MacroFilter.cpp' || echo '$(srcdir)/'`MacroFilter.cpp
+
+scheme-MacroFilter.obj: MacroFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroFilter.obj `if test -f 'MacroFilter.cpp'; then $(CYGPATH_W) 'MacroFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilter.cpp'; fi`
 
 scheme-load.o: load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.o `test -f 'load.cpp' || echo '$(srcdir)/'`load.cpp

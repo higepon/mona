@@ -76,4 +76,6 @@ scheme.h\
 scheme.cpp\
 Macro.h\
 Macro.cpp\
+MacroFilter.h\
+MacroFilter.cpp\
 load.cpp

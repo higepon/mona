@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     Object* object = NULL;
     Translator translator;
-    if (translator.translate(node, &object) != Translator::SUCCESS)
+    if (translator.translate(&node, &object) != Translator::SUCCESS)
     {
         fprintf(stderr, "translate error \n");
         return -1;

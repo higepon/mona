@@ -17,14 +17,39 @@ Translator::~Translator()
 {
 }
 
-Node* Translator::expandMacroIfMatch(const std::string& name, Node* node)
+void Translator::step1(Node* root)
+{
+    if (root->isNodes())
+    {
+        Node* left = root->nodes[0];
+        if (left->isSymbol() && left->text == "define-syntax")
+        {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            translateDefineSyntax(root);
+            return;
+        }
+        else if (left->isNodes())
+        {
+            for (Nodes::const_iterator p =left->nodes.begin(); p != left->nodes.end(); ++p)
+            {
+                step1(*p);
+            }
+        }
+    }
+    else
+    {
+        return;
+    }
+}
+
+Node* Translator::expandMacroIfMatch(const std::string& name, Node** node)
 {
     Macros::iterator p = macros_.find(name);
     if (p == macros_.end()) return NULL;
     Macro* m = (*p).second;
 
     // todo Macro::Patterを返すべきでは?
-    Node* matchedPattern = m->match(name, node);
+    Node* matchedPattern = m->match(name, *node);
 
     if (NULL == matchedPattern) return NULL;
 #ifdef TRACE_MACRO
@@ -35,12 +60,12 @@ Node* Translator::expandMacroIfMatch(const std::string& name, Node* node)
     return expandMacro(m, matchedPattern, node);
 }
 
-int Translator::expandMacroInternal(Node* from, BindMap& bindMap)
+int Translator::expandMacroInternal(Node** from, BindMap& bindMap)
 {
-    Nodes::size_type nodeSize =from->nodes.size();
+    Nodes::size_type nodeSize = (*from)->nodes.size();
     for (Nodes::size_type i = 0; i < nodeSize; ++i)
     {
-        Node* f = from->nodes[i];
+        Node* f = (*from)->nodes[i];
         if (f->isSymbol() && bindMap.find(f->text) != bindMap.end())
         {
             if (f->text == "...")
@@ -50,35 +75,36 @@ int Translator::expandMacroInternal(Node* from, BindMap& bindMap)
                 {
                     if (j == 0)
                     {
-                        from->nodes[i] = b.nodes[j];
+                        (*from)->nodes[i] = b.nodes[j];
                     }
                     else
                     {
-                        from->nodes.insert(from->nodes.begin() + i + j, b.nodes[j]);
+                        (*from)->nodes.insert((*from)->nodes.begin() + i + j, b.nodes[j]);
                     }
 
                 }
             }
             else
             {
-                from->nodes[i] = bindMap[f->text].node;
+                (*from)->nodes[i] = bindMap[f->text].node;
             }
         }
         else if (f->isNodes())
         {
-            expandMacroInternal(f, bindMap);
+            expandMacroInternal(&f, bindMap);
         }
     }
     return SUCCESS;
 }
 
 
-Node* Translator::expandMacro(Macro* macro, Node* matchedPattern, Node* from)
+Node* Translator::expandMacro(Macro* macro, Node* matchedPattern, Node** from)
 {
     BindMap bindMap;
-    Node::extractBindings(matchedPattern, from, bindMap);
+    Node::extractBindings(matchedPattern, *from, bindMap);
     Node* expanded = macro->patterns[matchedPattern]->clone();//(*(macro->patterns.find(matchedPattern)))->clone();
-    expandMacroInternal(expanded, bindMap);
+    expandMacroInternal(&expanded, bindMap);
+    from = &expanded;
     return expanded;
 }
 
@@ -139,7 +165,7 @@ int Translator::translateDefinition(Node* node, Object** object)
     Variable* variable = new Variable(symbol->text);ASSERT(variable);
     Node* argument = N(2);
     Object* argumentObject;
-    if (translate(argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
+    if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
     *object = new Definition(variable, argumentObject);ASSERT(*object);
     return SUCCESS;
 }
@@ -150,11 +176,11 @@ int Translator::translateIf(Node* node, Object** object)
     Object* predicate;
     Object* consequent;
     Object* alternative;
-    int ret = translate(N(1), &predicate);
+    int ret = translate(&N(1), &predicate);
     if (ret != SUCCESS) return ret;
-    ret = translate(N(2), &consequent);
+    ret = translate(&N(2), &consequent);
     if (ret != SUCCESS) return ret;
-    ret = translate(N(3), &alternative);
+    ret = translate(&N(3), &alternative);
     if (ret != SUCCESS) return ret;
     *object = new SpecialIf(predicate, consequent, alternative);ASSERT(*object);
     return SUCCESS;
@@ -174,7 +200,7 @@ int Translator::translateCond(Node* node, Object** object)
             for (Nodes::size_type j = 1; j < n->nodes.size(); j++)
             {
                 Object * action;
-                int ret = translate(n->nodes[j], &action);
+                int ret = translate(&n->nodes[j], &action);
                 if (ret != SUCCESS) return ret;
                 elseActions->push_back(action);
             }
@@ -185,10 +211,10 @@ int Translator::translateCond(Node* node, Object** object)
             if (n->nodes.size() == 3 && n->nodes[1]->type == Node::SYMBOL && n->nodes[1]->text == "=>")
             {
                 Object* cond;
-                int ret = translate(n->nodes[0], &cond);
+                int ret = translate(&n->nodes[0], &cond);
                 if (ret != SUCCESS) return ret;
                 Object* action;
-                ret = translate(n->nodes[2], &action);
+                ret = translate(&n->nodes[2], &action);
                 if (ret != SUCCESS) return ret;
                 Objects* arguments = new Objects;ASSERT(arguments);
                 arguments->push_back(cond);
@@ -202,13 +228,13 @@ int Translator::translateCond(Node* node, Object** object)
             else
             {
                 Object* cond;
-                int ret = translate(n->nodes[0], &cond);
+                int ret = translate(&n->nodes[0], &cond);
                 if (ret != SUCCESS) return ret;
                 Objects* actions = new Objects;ASSERT(actions);
                 for (Nodes::size_type j = 1; j < n->nodes.size(); j++)
                 {
                     Object * action;
-                    ret = translate(n->nodes[j], &action);
+                    ret = translate(&n->nodes[j], &action);
                     if (ret != SUCCESS) return ret;
                     actions->push_back(action);
                 }
@@ -228,7 +254,7 @@ int Translator::translateAnd(Node* node, Object** object)
     for (Nodes::size_type i = 1; i < L(); i++)
     {
         Object * object;
-        int ret = translate(N(i), &object);
+        int ret = translate(&N(i), &object);
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
@@ -243,7 +269,7 @@ int Translator::translateOr(Node* node, Object** object)
     for (Nodes::size_type i = 1; i < L(); i++)
     {
         Object * object;
-        int ret = translate(N(i), &object);
+        int ret = translate(&N(i), &object);
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
@@ -258,7 +284,7 @@ int Translator::translateBegin(Node* node, Object** object)
     for (Nodes::size_type i = 1; i < L(); i++)
     {
         Object * object;
-        int ret = translate(N(i), &object);
+        int ret = translate(&N(i), &object);
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
@@ -284,7 +310,7 @@ int Translator::translateLambda(Node* node, Object** object)
     for (Nodes::size_type i = 2; i < L(); i++)
     {
         Object* o;
-        int ret = translate(N(i), &o);
+        int ret = translate(&N(i), &o);
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
@@ -309,7 +335,7 @@ int Translator::translateLet(Node* node, Object** object)
         ASSERT(v);
         variables->push_back(v);
         Object* value;
-        int ret = translate(parameter->nodes[1], &value);
+        int ret = translate(&parameter->nodes[1], &value);
         if (ret != SUCCESS) return ret;
         values->push_back(value);
     }
@@ -318,7 +344,7 @@ int Translator::translateLet(Node* node, Object** object)
     for (Nodes::size_type i = 2; i < L(); i++)
     {
         Object* o;
-        int ret = translate(N(i), &o);
+        int ret = translate(&N(i), &o);
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
@@ -343,7 +369,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
         ASSERT(v);
         variables->push_back(v);
         Object* value;
-        int ret = translate(parameter->nodes[1], &value);
+        int ret = translate(&parameter->nodes[1], &value);
         if (ret != SUCCESS) return ret;
         values->push_back(value);
     }
@@ -352,7 +378,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
     for (Nodes::size_type i = 2; i < L(); i++)
     {
         Object* o;
-        int ret = translate(N(i), &o);
+        int ret = translate(&N(i), &o);
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
@@ -363,13 +389,13 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
 int Translator::translateApplication(Node* node, Object** object)
 {
     Object* f;
-    int ret = translate(N(0), &f);
+    int ret = translate(&N(0), &f);
     if (ret != SUCCESS) return ret;
     Objects* arguments = new Objects;ASSERT(arguments);
     for (Nodes::size_type i = 1; i < L(); i++)
     {
         Object * object;
-        int ret = translate(N(i), &object);
+        int ret = translate(&N(i), &object);
         if (ret != SUCCESS) return ret;
         arguments->push_back(object);
     }
@@ -377,8 +403,9 @@ int Translator::translateApplication(Node* node, Object** object)
     return SUCCESS;
 }
 
-int Translator::translate(Node* node, Object** object)
+int Translator::translate(Node** n, Object** object)
 {
+    Node* node = *n;
     if (node->type != Node::NODES)
     {
         return translatePrimitive(node, object);
@@ -394,7 +421,7 @@ int Translator::translate(Node* node, Object** object)
 #ifdef TRACE_MACRO
         Node* backup = node->clone();
 #endif
-        Node* expanded = expandMacroIfMatch(functionName, node);
+        Node* expanded = expandMacroIfMatch(functionName, n);
         if (expanded != NULL)
         {
 #ifdef TRACE_MACRO
@@ -407,7 +434,7 @@ int Translator::translate(Node* node, Object** object)
             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             if (NULL == expanded_) expanded_ = expanded->clone();
             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            return translate(expanded, object);
+            return translate(&expanded, object);
         }
         else if (functionName == "define-syntax")
         {
