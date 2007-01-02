@@ -42,15 +42,33 @@ void MacroTranslateTest::testTranslate()
 
         Node* expanded = NULL;
         Node* tmp = from;
+
+    Tokenizer tokenizer(fromCode);
+    Parser parser(&tokenizer);
+    Node* node = parser.parse();
+
+    node->print();
+
+    Object* object = NULL;
+    translator.reset();
+    if (translator.translate(node, &object) != Translator::SUCCESS)
+    {
+
+    }
+    expanded = translator.getExpandedNode();
+
 //        for (;;)
 //        {
-            tmp = translator.expandMacroIfMatch(name, tmp);
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            if (NULL == tmp) break;
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            expanded = tmp;
+//            tmp = translator.expandMacroIfMatch(name, tmp);
+//         Object* o;
+//         translator.translate(
+//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//             if (NULL == tmp) break;
+//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//             expanded = tmp;
 
             //      }
+    node->print();
         if (NULL == expanded)
         {
             string msg = "translate ";

@@ -58,3 +58,21 @@
 (my-if (= y 3)
   my-then (pp "3")
   my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+
+(define-syntax my-begin
+(syntax-rules ()
+((_ exp ...)
+((lambda () exp ...)))))
+
+(my-begin (display "higepon") (display "is") )
+
+
+(define-syntax my-or
+(syntax-rules ()
+((_) #f)
+((_ test) test)
+((_ test1 test2 ...)
+(let ((x test1))
+(if x x (_ test2 ...))))))
+
+(display (my-or 1 2))

@@ -37,10 +37,12 @@ public:
         SUCCESS
     };
     int translate(Node* node, Object** object);
-    int translateMacro(Node* defineSyntax, Node* from, Node** to);
+//    int translateMacro(Node* defineSyntax, Node* from, Node** to);
     int translateDefineSyntax(Node* node);
     Node* expandMacroIfMatch(const std::string& name, Node* node);
+    void reset() { expanded_ = NULL;}
 
+    Node* getExpandedNode() const { return expanded_; }
 private:
     int translatePrimitive(Node* node, Object** object);
     int translateDefinition(Node* node, Object** object);
@@ -59,6 +61,8 @@ private:
 //    bool matchMacro(const std::string& name, Node* node);
 
     Node* expandMacro(Macro* macro, Node* matchedPattern, Node* from);
+
+    Node* expanded_;
     Macros macros_;
 };
 

@@ -9,7 +9,7 @@ using namespace std;
 #define L()          node->nodes.size()
 #define LL(n)        node->nodes[n]->nodes.size()
 
-Translator::Translator()
+Translator::Translator() : expanded_(NULL)
 {
 }
 
@@ -25,12 +25,13 @@ Node* Translator::expandMacroIfMatch(const std::string& name, Node* node)
 
     // todo Macro::Patterを返すべきでは?
     Node* matchedPattern = m->match(name, node);
+
+    if (NULL == matchedPattern) return NULL;
 #ifdef TRACE_MACRO
     printf("%%%%%%%%%%%%%% matched pattern is %%%%%%%%%%%%%%%%%%%%%%%%\n");
     printf("%s\n", matchedPattern->toString().c_str());
 #endif
 
-    if (NULL == matchedPattern) return NULL;
     return expandMacro(m, matchedPattern, node);
 }
 
@@ -402,6 +403,10 @@ int Translator::translate(Node* node, Object** object)
             printf("$$$$$$$$ after  $$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
             printf("%s", expanded->toString().c_str());
 #endif
+            // yeah, this for unit test
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            if (NULL == expanded_) expanded_ = expanded->clone();
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return translate(expanded, object);
         }
         else if (functionName == "define-syntax")
