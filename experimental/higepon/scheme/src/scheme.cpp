@@ -9,11 +9,7 @@ Object* evalSequence(Objects* exps, Environment* env)
     for (Objects::const_iterator it = exps->begin(); it != exps->end(); ++it)
     {
         Object* o = (*it);
-        printf("before");fflush(stdout);
-//        printf("%s\n", o->toString().c_str());fflush(stdout);
-        printf("before2");fflush(stdout);
         ret = o->eval(env);
-        printf("before3");fflush(stdout);
     }
     return ret;
 }

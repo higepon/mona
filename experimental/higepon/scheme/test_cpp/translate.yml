@@ -3,3 +3,12 @@
  - (define-syntax show (syntax-rules () ((_ a) (display a))))
  - (show "higepon")
  - (display "higepon")
+-
+ - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
+ - (when (= x 3) (display "x=3") (display "\n"))
+ - (if (= x 3) (begin (display "x=3") (display "\n")))
+-
+ - (define-syntax pp (syntax-rules () ((_ a) (begin (display a))) ((_ a ...) (begin (pp a) (pp ...)))))
+ - (pp "hello," "world" "!")
+ - ((begin (display a) (begin (display "world") (display "!"))))
+

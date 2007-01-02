@@ -17,8 +17,12 @@
 #include "Cond.h"
 #include "Let.h"
 #include "LetAsterisk.h"
+#include "Macro.h"
 
 namespace monash {
+
+class Macro;
+typedef std::map<std::string, Macro*> Macros;
 
 class Translator
 {
@@ -27,25 +31,35 @@ public:
     virtual ~Translator();
 
 public:
-    static int translate(Node* node, Object** object);
-    static int translatePrimitive(Node* node, Object** object);
-    static int translateDefinition(Node* node, Object** object);
-    static int translateIf(Node* node, Object** object);
-    static int translateAnd(Node* node, Object** object);
-    static int translateOr(Node* node, Object** object);
-    static int translateCond(Node* node, Object** object);
-    static int translateBegin(Node* node, Object** object);
-    static int translateLambda(Node* node, Object** object);
-    static int translateLet(Node* node, Object** object);
-    static int translateLetAsterisk(Node* node, Object** object);
-    static int translateApplication(Node* node, Object** object);
-    static int translateMacro(Node* definition, Node* from, Node** to);
     enum
     {
         SYNTAX_ERROR,
         SUCCESS
     };
+    int translate(Node* node, Object** object);
+    int translateMacro(Node* defineSyntax, Node* from, Node** to);
+    int translateDefineSyntax(Node* node);
+    Node* expandMacroIfMatch(const std::string& name, Node* node);
 
+private:
+    int translatePrimitive(Node* node, Object** object);
+    int translateDefinition(Node* node, Object** object);
+
+    int translateIf(Node* node, Object** object);
+    int translateAnd(Node* node, Object** object);
+    int translateOr(Node* node, Object** object);
+    int translateCond(Node* node, Object** object);
+    int translateBegin(Node* node, Object** object);
+    int translateLambda(Node* node, Object** object);
+    int translateLet(Node* node, Object** object);
+    int translateLetAsterisk(Node* node, Object** object);
+    int translateApplication(Node* node, Object** object);
+//    int expandMacro(Node* from, BindMap& bindMap);
+    int expandMacroInternal(Node* from, BindMap& bindMap);
+//    bool matchMacro(const std::string& name, Node* node);
+
+    Node* expandMacro(Macro* macro, Node* matchedPattern, Node* from);
+    Macros macros_;
 };
 
 }; // namespace monash

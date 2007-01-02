@@ -3,6 +3,27 @@
 using namespace monash;
 using namespace std;
 
+Node* Node::clone() const
+{
+    Node* node = new Node(type);
+    if (isNodes())
+    {
+        for (Nodes::const_iterator p = nodes.begin(); p != nodes.end(); ++p)
+        {
+            node->nodes.push_back((*p)->clone());
+        }
+    }
+    else if(isNumber())
+    {
+        node->value = value;
+    }
+    else
+    {
+        node->text = text;
+    }
+    return node;
+}
+
 string Node::typeToString()
 {
     char buffer[256];
@@ -26,6 +47,66 @@ string Node::typeToString()
         break;
     }
     return string(buffer);
+}
+
+// macro match しているのが前提
+void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
+{
+    if (m->isSymbol())
+    {
+        BindObject b;
+        b.node = n;
+        bindMap[m->text] = b;
+        return;
+    }
+    else if (m->isNodes() && n->isNodes())
+    {
+        for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
+        {
+            extractBindingsInternal(m->nodes[i], n, i, bindMap);
+        }
+    }
+    else
+    {
+        printf("*************");
+        exit(-1);
+    }
+}
+
+void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap)
+{
+    if (m->isSymbol())
+    {
+        BindObject b;
+        if (m->text == "...")
+        {
+            for (Nodes::size_type j = i; j < n->nodes.size(); ++j)
+            {
+                b.nodes.push_back(n->nodes[j]);
+            }
+        }
+        else
+        {
+            b.node = n->nodes[i];
+        }
+        bindMap[m->text] = b;
+        return;
+    }
+    else if (m->isNodes() && n->nodes[i]->isNodes())
+    {
+        for (Nodes::size_type j = 0; j < m->nodes.size(); ++j)
+        {
+            extractBindingsInternal(m->nodes[j], n->nodes[i], j, bindMap);
+        }
+    }
+    else
+    {
+        printf("*************");
+        exit(-1);
+    }
+
+
+
 }
 
 // string Node::typeToString()
@@ -133,7 +214,7 @@ bool Node::equalsInternal(Node* m, Node* n)
         return true;
     }
 
-    switch(type)
+    switch(m->type)
     {
     case NUMBER:
         return m->value == n->value;

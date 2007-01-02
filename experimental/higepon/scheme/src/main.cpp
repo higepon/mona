@@ -51,7 +51,8 @@ int main(int argc, char *argv[])
 //    node->print();
 
     Object* object = NULL;
-    if (Translator::translate(node, &object) != Translator::SUCCESS)
+    Translator translator;
+    if (translator.translate(node, &object) != Translator::SUCCESS)
     {
         fprintf(stderr, "translate error \n");
         return -1;

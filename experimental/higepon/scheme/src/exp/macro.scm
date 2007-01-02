@@ -83,3 +83,9 @@
 
 (show "higeAAA")
 
+
+;; (define-syntax hige
+;;   (syntax-rules ()
+;;     ((_ a ...) (display (string-join ...)))))
+
+;; (hige "1" "2" "3" "4")
