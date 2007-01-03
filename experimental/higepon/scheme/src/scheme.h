@@ -8,9 +8,9 @@ namespace std {
     typedef vector<string> strings;
 };
 
-
 #include <string>
 #include <vector>
+#include "MacroFilter.h"
 #include "Object.h"
 #include "Environment.h"
 #include "Procedure.h"

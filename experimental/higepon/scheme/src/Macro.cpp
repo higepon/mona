@@ -56,7 +56,9 @@ Node* Macro::match(const string& macroName, Node* target)
 {
     for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (Macro::match(macroName, reservedWords, (*p).first, target)) return (*p).first;
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
     return NULL;
 }

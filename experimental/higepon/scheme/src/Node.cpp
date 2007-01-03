@@ -68,7 +68,7 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     }
     else
     {
-        printf("*************");
+        printf("%s", __func__);
         exit(-1);
     }
 }
@@ -107,7 +107,7 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
 
 
 
-}
+ }
 
 // string Node::typeToString()
 // {

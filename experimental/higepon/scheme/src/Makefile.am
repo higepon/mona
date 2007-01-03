@@ -1,9 +1,10 @@
 bin_PROGRAMS = scheme
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall -DTRACE_MACRO
+scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall #-DTRACE_MACRO
 scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
+Filter.h\
 Assert.h\
 Object.cpp\
 Object.h\

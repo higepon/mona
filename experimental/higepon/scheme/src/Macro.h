@@ -1,7 +1,10 @@
 #ifndef _MACRO_
 #define _MACRO_
 
-#include <scheme.h>
+#include "Node.h"
+#include <string>
+#include <vector>
+#include "scheme.h"
 
 namespace monash {
 
@@ -29,11 +32,7 @@ private:
     static bool checkReservedWord(Node* macro, Node* target, const std::strings& reservedWords);
     static bool mustBeMacroName(Node* node);
     static bool isMacroName(Node* node, const std::string& macroName);
-
 };
-
-
-
 
 }; // namespace monash
 

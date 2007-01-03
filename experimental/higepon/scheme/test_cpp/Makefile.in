@@ -58,11 +58,12 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-Frame.$(OBJEXT) test_cpp-Environment.$(OBJEXT) \
 	test_cpp-Lambda.$(OBJEXT) test_cpp-Procedure.$(OBJEXT) \
 	test_cpp-Begin.$(OBJEXT) test_cpp-Node.$(OBJEXT) \
-	test_cpp-Macro.$(OBJEXT) test_cpp-Parser.$(OBJEXT) \
-	test_cpp-Cond.$(OBJEXT) test_cpp-Pair.$(OBJEXT) \
-	test_cpp-And.$(OBJEXT) test_cpp-Or.$(OBJEXT) \
-	test_cpp-Let.$(OBJEXT) test_cpp-LetAsterisk.$(OBJEXT) \
-	test_cpp-scheme.$(OBJEXT) test_cpp-Application.$(OBJEXT)
+	test_cpp-Macro.$(OBJEXT) test_cpp-MacroFilter.$(OBJEXT) \
+	test_cpp-Parser.$(OBJEXT) test_cpp-Cond.$(OBJEXT) \
+	test_cpp-Pair.$(OBJEXT) test_cpp-And.$(OBJEXT) \
+	test_cpp-Or.$(OBJEXT) test_cpp-Let.$(OBJEXT) \
+	test_cpp-LetAsterisk.$(OBJEXT) test_cpp-scheme.$(OBJEXT) \
+	test_cpp-Application.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -163,11 +164,12 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-test_cpp_CXXFLAGS = -g -Wall -O3 -I../src -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall -DTRACE_MACRO
+test_cpp_CXXFLAGS = -g -Wall -O3 -I../src -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall #-DTRACE_MACRO
 test_cpp_LDFLAGS = -lcppunit -lgc
 test_cpp_SOURCES = main.cpp\
 yaml.cpp\
 yaml.h\
+Filter.h\
 MacroMatchTest.h\
 MacroMatchTest.cpp\
 MacroTranslateTest.h\
@@ -207,6 +209,8 @@ MacroTranslateTest.cpp\
 ../src/scheme.h\
 ../src/Macro.h\
 ../src/Macro.cpp\
+../src/MacroFilter.h\
+../src/MacroFilter.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp\
 ../src/Cond.cpp\
@@ -423,6 +427,12 @@ test_cpp-Macro.o: ../src/Macro.cpp
 
 test_cpp-Macro.obj: ../src/Macro.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Macro.obj `if test -f '../src/Macro.cpp'; then $(CYGPATH_W) '../src/Macro.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Macro.cpp'; fi`
+
+test_cpp-MacroFilter.o: ../src/MacroFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilter.o `test -f '../src/MacroFilter.cpp' || echo '$(srcdir)/'`../src/MacroFilter.cpp
+
+test_cpp-MacroFilter.obj: ../src/MacroFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilter.obj `if test -f '../src/MacroFilter.cpp'; then $(CYGPATH_W) '../src/MacroFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/MacroFilter.cpp'; fi`
 
 test_cpp-Parser.o: ../src/Parser.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Parser.o `test -f '../src/Parser.cpp' || echo '$(srcdir)/'`../src/Parser.cpp

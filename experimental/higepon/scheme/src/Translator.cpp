@@ -9,7 +9,7 @@ using namespace std;
 #define L()          node->nodes.size()
 #define LL(n)        node->nodes[n]->nodes.size()
 
-Translator::Translator() : expanded_(NULL)
+Translator::Translator()
 {
 }
 
@@ -17,96 +17,96 @@ Translator::~Translator()
 {
 }
 
-void Translator::step1(Node* root)
-{
-    if (root->isNodes())
-    {
-        Node* left = root->nodes[0];
-        if (left->isSymbol() && left->text == "define-syntax")
-        {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            translateDefineSyntax(root);
-            return;
-        }
-        else if (left->isNodes())
-        {
-            for (Nodes::const_iterator p =left->nodes.begin(); p != left->nodes.end(); ++p)
-            {
-                step1(*p);
-            }
-        }
-    }
-    else
-    {
-        return;
-    }
-}
+// void Translator::step1(Node* root)
+// {
+//     if (root->isNodes())
+//     {
+//         Node* left = root->nodes[0];
+//         if (left->isSymbol() && left->text == "define-syntax")
+//         {
+//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//             translateDefineSyntax(root);
+//             return;
+//         }
+//         else if (left->isNodes())
+//         {
+//             for (Nodes::const_iterator p =left->nodes.begin(); p != left->nodes.end(); ++p)
+//             {
+//                 step1(*p);
+//             }
+//         }
+//     }
+//     else
+//     {
+//         return;
+//     }
+// }
 
-Node* Translator::expandMacroIfMatch(const std::string& name, Node** node)
-{
-    Macros::iterator p = macros_.find(name);
-    if (p == macros_.end()) return NULL;
-    Macro* m = (*p).second;
+// Node* Translator::expandMacroIfMatch(const std::string& name, Node** node)
+// {
+//     Macros::iterator p = macros_.find(name);
+//     if (p == macros_.end()) return NULL;
+//     Macro* m = (*p).second;
 
-    // todo Macro::Patterを返すべきでは?
-    Node* matchedPattern = m->match(name, *node);
+//     // todo Macro::Patterを返すべきでは?
+//     Node* matchedPattern = m->match(name, *node);
 
-    if (NULL == matchedPattern) return NULL;
-#ifdef TRACE_MACRO
-    printf("%%%%%%%%%%%%%% matched pattern is %%%%%%%%%%%%%%%%%%%%%%%%\n");
-    printf("%s\n", matchedPattern->toString().c_str());
-#endif
+//     if (NULL == matchedPattern) return NULL;
+// #ifdef TRACE_MACRO
+//     printf("%%%%%%%%%%%%%% matched pattern is %%%%%%%%%%%%%%%%%%%%%%%%\n");
+//     printf("%s\n", matchedPattern->toString().c_str());
+// #endif
 
-    return expandMacro(m, matchedPattern, node);
-}
+//     return expandMacro(m, matchedPattern, node);
+// }
 
-int Translator::expandMacroInternal(Node** from, BindMap& bindMap)
-{
-    Nodes::size_type nodeSize = (*from)->nodes.size();
-    for (Nodes::size_type i = 0; i < nodeSize; ++i)
-    {
-        Node* f = (*from)->nodes[i];
-        if (f->isSymbol() && bindMap.find(f->text) != bindMap.end())
-        {
-            if (f->text == "...")
-            {
-                BindObject b = bindMap[f->text];
-                for (Nodes::size_type j = 0; j < b.nodes.size(); j++)
-                {
-                    if (j == 0)
-                    {
-                        (*from)->nodes[i] = b.nodes[j];
-                    }
-                    else
-                    {
-                        (*from)->nodes.insert((*from)->nodes.begin() + i + j, b.nodes[j]);
-                    }
+// int Translator::expandMacroInternal(Node** from, BindMap& bindMap)
+// {
+//     Nodes::size_type nodeSize = (*from)->nodes.size();
+//     for (Nodes::size_type i = 0; i < nodeSize; ++i)
+//     {
+//         Node* f = (*from)->nodes[i];
+//         if (f->isSymbol() && bindMap.find(f->text) != bindMap.end())
+//         {
+//             if (f->text == "...")
+//             {
+//                 BindObject b = bindMap[f->text];
+//                 for (Nodes::size_type j = 0; j < b.nodes.size(); j++)
+//                 {
+//                     if (j == 0)
+//                     {
+//                         (*from)->nodes[i] = b.nodes[j];
+//                     }
+//                     else
+//                     {
+//                         (*from)->nodes.insert((*from)->nodes.begin() + i + j, b.nodes[j]);
+//                     }
 
-                }
-            }
-            else
-            {
-                (*from)->nodes[i] = bindMap[f->text].node;
-            }
-        }
-        else if (f->isNodes())
-        {
-            expandMacroInternal(&f, bindMap);
-        }
-    }
-    return SUCCESS;
-}
+//                 }
+//             }
+//             else
+//             {
+//                 (*from)->nodes[i] = bindMap[f->text].node;
+//             }
+//         }
+//         else if (f->isNodes())
+//         {
+//             expandMacroInternal(&f, bindMap);
+//         }
+//     }
+//     return SUCCESS;
+// }
 
 
-Node* Translator::expandMacro(Macro* macro, Node* matchedPattern, Node** from)
-{
-    BindMap bindMap;
-    Node::extractBindings(matchedPattern, *from, bindMap);
-    Node* expanded = macro->patterns[matchedPattern]->clone();//(*(macro->patterns.find(matchedPattern)))->clone();
-    expandMacroInternal(&expanded, bindMap);
-    from = &expanded;
-    return expanded;
-}
+// Node* Translator::expandMacro(Macro* macro, Node* matchedPattern, Node** from)
+// {
+//     BindMap bindMap;
+//     Node::extractBindings(matchedPattern, *from, bindMap);
+//     Node* expanded = macro->patterns[matchedPattern]->clone();//(*(macro->patterns.find(matchedPattern)))->clone();
+//     expandMacroInternal(&expanded, bindMap);
+//     from = &expanded;
+//     return expanded;
+// }
 
 int Translator::translateDefineSyntax(Node* node)
 {
@@ -132,7 +132,7 @@ int Translator::translateDefineSyntax(Node* node)
         if (!n->isNodes() || n->nodes.size() != 2) return SYNTAX_ERROR;
         macro->addPattern(n->nodes[0], n->nodes[1]);
     }
-    macros_[macro->name] = macro;
+//    macros_[macro->name] = macro;
     return SUCCESS;
 }
 
@@ -421,9 +421,9 @@ int Translator::translate(Node** n, Object** object)
 #ifdef TRACE_MACRO
         Node* backup = node->clone();
 #endif
-        Node* expanded = expandMacroIfMatch(functionName, n);
-        if (expanded != NULL)
-        {
+//        Node* expanded = expandMacroIfMatch(functionName, n);
+//        if (expanded != NULL)
+//        {
 #ifdef TRACE_MACRO
             printf("$$$$$$$$ before $$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
             printf("%s", backup->toString().c_str());
@@ -431,12 +431,12 @@ int Translator::translate(Node** n, Object** object)
             printf("%s", expanded->toString().c_str());
 #endif
             // yeah, this for unit test
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            if (NULL == expanded_) expanded_ = expanded->clone();
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            return translate(&expanded, object);
-        }
-        else if (functionName == "define-syntax")
+//            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//            if (NULL == expanded_) expanded_ = expanded->clone();
+//            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//            return translate(&expanded, object);
+//        }
+        if (functionName == "define-syntax")
         {
             int ret = translateDefineSyntax(node);
 #ifdef TRACE_MACRO

@@ -18,11 +18,9 @@
 #include "Let.h"
 #include "LetAsterisk.h"
 #include "Macro.h"
+#include "Node.h"
 
 namespace monash {
-
-class Macro;
-typedef std::map<std::string, Macro*> Macros;
 
 class Translator
 {
@@ -42,9 +40,9 @@ public:
 //    int translateMacro(Node* defineSyntax, Node* from, Node** to);
     int translateDefineSyntax(Node* node);
     Node* expandMacroIfMatch(const std::string& name, Node** node);
-    void reset() { expanded_ = NULL;}
+//    void reset() { expanded_ = NULL;}
 
-    Node* getExpandedNode() const { return expanded_; }
+//    Node* getExpandedNode() const { return expanded_; }
 private:
     int translatePrimitive(Node* node, Object** object);
     int translateDefinition(Node* node, Object** object);
@@ -59,13 +57,15 @@ private:
     int translateLetAsterisk(Node* node, Object** object);
     int translateApplication(Node* node, Object** object);
 //    int expandMacro(Node* from, BindMap& bindMap);
-    int expandMacroInternal(Node** from, BindMap& bindMap);
+
+
+///    int expandMacroInternal(Node** from, BindMap& bindMap);
 //    bool matchMacro(const std::string& name, Node* node);
 
-    Node* expandMacro(Macro* macro, Node* matchedPattern, Node** from);
+//    Node* expandMacro(Macro* macro, Node* matchedPattern, Node** from);
 
-    Node* expanded_;
-    Macros macros_;
+//    Node* expanded_;
+//    Macros macros_;
 };
 
 }; // namespace monash

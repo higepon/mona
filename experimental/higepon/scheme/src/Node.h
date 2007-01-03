@@ -11,9 +11,16 @@
 namespace monash {
 
 class Node;
-class BindObject;
-
 typedef std::vector<Node*> Nodes;
+
+#define N(n)         node->nodes[n]
+#define NN(i, j)     node->nodes[i]->nodes[j]
+#define NNN(i, j, k) node->nodes[i]->nodes[j]->nodes[k]
+#define L()          node->nodes.size()
+#define LL(n)        node->nodes[n]->nodes.size()
+
+
+class BindObject;
 typedef std::map<std::string, BindObject> BindMap;
 
 class BindObject
