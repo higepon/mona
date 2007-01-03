@@ -11,30 +11,85 @@ MacroFilter::~MacroFilter()
 {
 }
 
-// not used, buf useful for sample
-void ForeachNodes(Node* root, void (*f)(Node*))
-{
-    if (!root->isNodes()) return;
-    (*f)(root);
-    for (Nodes::iterator p = root->nodes.begin(); p != root->nodes.end(); ++p)
-    {
-        ForeachNodes(*p, f);
-    }
-}
-
-int MacroFilter::foreachNodes(Node* root, int (MacroFilter::*f)(Node*))
+// basic & useful
+int MacroFilter::foreachNode(Node* root, bool (Node::*match)() const, int (MacroFilter::*func)(Node* root, Node* node))
 {
     int ret = 0;
-    if (!root->isNodes()) return ret;
-    ret  = (this->*f)(root);
-    for (Nodes::iterator p = root->nodes.begin(); p != root->nodes.end(); ++p)
+//     if ((root->*match)())
+//     {
+//         ret = (this->*func)(root);
+//     }
+
+    if (root->isNodes())
     {
-        ret += foreachNodes(*p, f);
+// node.size()が処理中に変わる可能性があるので iterator 使わない
+//        for (Nodes::iterator p = root->nodes.begin(); p != root->nodes.end(); ++p)
+        for (Nodes::size_type i = 0; i < root->nodes.size(); i++)
+        {
+            Node* node = root->nodes[i];
+            if ((node->*match)())
+            {
+                ret += (this->*func)(root, node);
+            }
+
+            ret += foreachNode(node, match, func);
+        }
     }
     return ret;
 }
 
-int MacroFilter::tryExpandMacro(Node* root)
+int MacroFilter::foreachSymbols(Node* root, int (MacroFilter::*f)(Node* root, Node* node))
+{
+    return foreachNode(root, &Node::isSymbol, f);
+}
+
+int MacroFilter::foreachNodes(Node* root, int (MacroFilter::*f)(Node*root, Node* node))
+{
+    return foreachNode(root, &Node::isNodes, f);
+}
+
+int MacroFilter::expandMacro(Node* root, Node* node)
+{
+    string name = node->text;
+    printf("%s %s:%d[ %s ]\n", __func__, __FILE__, __LINE__, name.c_str());fflush(stdout);// debug
+    if (bindMap_.find(name) == bindMap_.end()) return 0;
+    printf("%s %s:%d[ %s ]\n", __func__, __FILE__, __LINE__, name.c_str());fflush(stdout);// debug
+
+    BindObject b = bindMap_[name];
+    Nodes::size_type i;
+    for (i = 0; i < root->nodes.size(); ++i)
+    {
+        if (root->nodes[i] == node) break;
+    }
+    printf("%s %s:%d[ %s ]\n", __func__, __FILE__, __LINE__, name.c_str());fflush(stdout);// debug
+    if (name == "...")
+    {
+
+        for (Nodes::size_type j = 0; j < b.nodes.size(); j++)
+        {
+            if (j == 0)
+            {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                root->nodes[i] = b.nodes[j];
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            }
+            else
+            {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                root->nodes.insert(root->nodes.begin() + i + j, b.nodes[j]);
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            }
+        }
+    }
+    else
+    {
+        root->nodes[i] = b.node;
+    }
+    return 1;
+}
+
+
+int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
 {
     if (!root->isNodes() || root->nodes.size() <= 0) return 0;
     Node* left = root->nodes[0];
@@ -45,11 +100,9 @@ int MacroFilter::tryExpandMacro(Node* root)
     Macros::iterator p = macros_.find(name);
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (p == macros_.end()) return 0;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Macro* m = (*p).second;
 
     // todo Macro::Patterを返すべきでは?
-    printf("%s:%s\n", name.c_str(), m->name.c_str());
     Node* matchedPattern = m->match(name, root);
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (NULL == matchedPattern) return 0;
@@ -61,17 +114,30 @@ int MacroFilter::tryExpandMacro(Node* root)
 //    expandInternal(expanded, bindMap);
 //    return expanded;
 
-    for (BindMap::iterator q = bindMap.begin(); q != bindMap.end(); ++q)
-    {
-        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, q->first.c_str());fflush(stdout);// debug
-    }
+//     for (BindMap::iterator q = bindMap.begin(); q != bindMap.end(); ++q)
+//     {
+//         printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, q->first.c_str());fflush(stdout);// debug
+//     }
 
     Node* expanded = m->patterns[matchedPattern]->clone();
-    root->nodes.clear();
+
     bool isExpanded = false;
     Nodes::size_type nodeSize = expanded->nodes.size();
-
+    bindMap_ = bindMap;
     // expanded の階層を全て回っておきかえしなくては行けない．
+    // func(root, i, bindMap)
+    int ret = foreachSymbols(expanded, &MacroFilter::expandMacro);
+    if (ret)
+    {
+        root->nodes.clear();
+        for (Nodes::const_iterator p = expanded->nodes.begin(); p != expanded->nodes.end(); ++p)
+        {
+            root->nodes.push_back(*p);
+        }
+    }
+    expanded->print();
+    return ret;
+#if 0
     for (Nodes::size_type i = 0; i < nodeSize; ++i)
     {
         Node* f = expanded->nodes[i];
@@ -102,12 +168,7 @@ int MacroFilter::tryExpandMacro(Node* root)
         }
     }
     return isExpanded ? 1 : 0;
-}
-
-Node* MacroFilter::filterInternal(Node* node)
-{
-
-    return NULL;
+#endif
 }
 
 int MacroFilter::findAndStoreDefineSyntaxes(Node* root)
@@ -126,6 +187,7 @@ int MacroFilter::findAndStoreDefineSyntaxes(Node* root)
 
 int MacroFilter::filter(Node* from, Node** to)
 {
+    tryExpandMacro(NULL, from);
     while (foreachNodes(from,  &MacroFilter::tryExpandMacro));
     *to = from;
 #if 0
