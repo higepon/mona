@@ -110,6 +110,9 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 
     BindMap bindMap;
+    printf("$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+    matchedPattern->print();
+    root->print();
     Node::extractBindings(matchedPattern, root, bindMap);
 //    Nodes saved = root->nodes; // copy
 //    Node* expanded = macro->patterns[matchedPattern]->clone();

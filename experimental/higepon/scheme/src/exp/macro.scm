@@ -34,25 +34,25 @@
     (p a)
     (p b)))
 
-(define-syntax my-let*
-  (syntax-rules ()
-    ((_ ((a b)) z ...) (let ((a b)) z ...))
-    ((_ ((a b) (c d) ...) z ...)
-     (let ((a b))
-       (my-let* ((c d) ...)
-         z ...)))))
+;; (define-syntax my-let*
+;;   (syntax-rules ()
+;;     ((_ ((a b)) z ...) (let ((a b)) z ...))
+;;     ((_ ((a b) (c d) ...) z ...)
+;;      (let ((a b))
+;;        (my-let* ((c d) ...)
+;;          z ...)))))
 ;;    ((_ (a b) z) (my-let* (a) (my-let* (b) z)))))
 ;;    ((_ ((a x)) z) (let ((a x)) z))))
 ;;    ((_ ((a x) (b y) ...) z) (my-let* ((a x)) (my-let* ((b y)) ...)))))
 
 
-(my-let* ((a 99))
-         (p a))
+;; (my-let* ((a 99))
+;;          (p a))
 
-(my-let* ((a 99) (b (+ 1 a)) (c (+ b 1)))
-         (p a)
-         (p b)
-         (p c))
+;; (my-let* ((a 99) (b (+ 1 a)) (c (+ b 1)))
+;;          (p a)
+;;          (p b)
+;;          (p c))
 
 (define-syntax pp
   (syntax-rules ()
@@ -89,3 +89,17 @@
 ;;     ((_ a ...) (display (string-join ...)))))
 
 ;; (hige "1" "2" "3" "4")
+
+
+(define-syntax hoge-let*
+  (syntax-rules ()
+    ((hoge-let* () body1 body2 ...)
+     (let () body1 body2 ...))
+    ((hoge-let* ((name1 val1) (name2 val2) ...)
+       body1 body2 ...)
+     (let ((name1 val1))
+       (hoge-let* ((name2 val2) ...)
+         body1 body2 ...)))))
+
+(hoge-let* ((a 3) (b (+ a 3)))
+         (display "*****"))

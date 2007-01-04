@@ -52,7 +52,6 @@ string Node::typeToString()
 // macro match しているのが前提
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
-    m->print();
     if (m->isSymbol())
     {
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
@@ -78,6 +77,11 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 
 void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap)
 {
+    printf("*************************************\n");
+    m->print();
+    n->print();
+    printf("*************************************\n");
+
     if (m->isSymbol())
     {
         BindObject b;
@@ -107,7 +111,9 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     }
     else
     {
-        printf("*************");
+        printf("*************[%d][%d]", m->isNodes(), n->nodes[i]->type);
+        m->print();
+        n->print();
         exit(-1);
     }
 
