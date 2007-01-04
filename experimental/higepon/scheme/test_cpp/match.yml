@@ -53,3 +53,23 @@
  - ()
  - (_ (a b) ...)
  - (and (3 2) a b)
+-
+ - and
+ - ()
+ - (_ a b ...)
+ - (and 3 2)
+-
+ - let*
+ - ()
+ - (let* ((name1 val1) (name2 val2) ...) body1 body2)
+ - (let* ((n1 v1) (n2 v2)) f g)
+-
+ - let*
+ - ()
+ - (let* ((name1 val1) (name2 val2) ...) body1 body2 ...)
+ - (let* ((n1 v1) (n2 v2)) f g)
+-
+ - let*
+ - ()
+ - (let* () body1 body2 ...)
+ - (let* () f g h)

@@ -52,8 +52,10 @@ string Node::typeToString()
 // macro match しているのが前提
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
+    m->print();
     if (m->isSymbol())
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         BindObject b;
         b.node = n;
         bindMap[m->text] = b;
@@ -63,6 +65,7 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     {
         for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
         {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             extractBindingsInternal(m->nodes[i], n, i, bindMap);
         }
     }
@@ -78,6 +81,7 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     if (m->isSymbol())
     {
         BindObject b;
+        printf("%s %s:%d <<%s>>\n", __func__, __FILE__, __LINE__, m->text.c_str());fflush(stdout);// debug
         if (m->text == "...")
         {
             for (Nodes::size_type j = i; j < n->nodes.size(); ++j)
@@ -94,8 +98,10 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     }
     else if (m->isNodes() && n->nodes[i]->isNodes())
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         for (Nodes::size_type j = 0; j < m->nodes.size(); ++j)
         {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             extractBindingsInternal(m->nodes[j], n->nodes[i], j, bindMap);
         }
     }

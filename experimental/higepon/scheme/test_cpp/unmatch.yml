@@ -5,11 +5,6 @@
  - (_ a b)
  - (and 3 4 5)
 -
- - my-let*
- - ()
- - (_ ((a b)) z ...)
- - (my-let* ((a 99)) (p a))
--
  - and
  - ()
  - (_ a b)
@@ -20,4 +15,9 @@
  - (my-then my-else)
  - (_ a my-then b my-else c)
  - (my-if (= 3 3) "hoge" 4 my-else 5)
+-
+ - let*
+ - ()
+ - (let* () body1 body2 ...)
+ - (let* ((n1 v1) (n2 v2)) f g)
 

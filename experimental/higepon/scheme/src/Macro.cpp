@@ -65,6 +65,16 @@ Node* Macro::match(const string& macroName, Node* target)
 
 bool Macro::match(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
 {
+//    if (macro->nodes.size() == 0 && target->nodes.size() != 0) return false;
+//    if (target->nodes.size() == 0 && macro->nodes.size() != 0) return false;
+
+//     if (!macro->isNodes() && !target->isNodes())
+//     {
+//         return macro->type == target->type;
+//     }
+
+
+    // do right thing
     if (macro->nodes.size() == 0) return true;
 
     // Nodes length is same
@@ -75,10 +85,13 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
     else if (macro->nodes.size() < target->nodes.size())
     {
         Node* last = macro->nodes.at(macro->nodes.size() - 1);
-
+        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
         // Only when "..." comes, length unmatch allowed.
         if (!isMatchAllKeyword(last))
         {
+            printf("%s %s:%d<%s>\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
+            macro->print();
+            target->print();
             error = "macro arguments length unmatch1";
             return false;
         }
@@ -86,8 +99,16 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
     }
     else
     {
-        error = "macro arguments length unmatch2";
-        return false;
+        Node* last = macro->nodes.at(macro->nodes.size() - 1);
+        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
+        // Only when "..." comes, length unmatch allowed.
+        if (!isMatchAllKeyword(last))
+        {
+            error = "macro arguments length unmatch2";
+            return false;
+        }
+
+        return matchInternal(macroName, reservedWords, macro, target);
     }
     return true;
 }
@@ -97,6 +118,19 @@ bool Macro::matchInternal(const string& macroName, const strings& reservedWords,
     for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
     {
         Node* m = macro->nodes[i];
+        if (i > target->nodes.size() -1)
+        {
+            if (m->text == "...") 
+            {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         Node* t = target->nodes[i];
         if (!checkReservedWord(m, t, reservedWords))
         {
