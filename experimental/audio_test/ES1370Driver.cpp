@@ -65,8 +65,8 @@ void ES1370Driver::MessageLoop()
 
 void ES1370Driver::setIRQ()
 {
-	syscall_set_irq_receiver(this->pciinfo.IrqLine, false);
-//	syscall_set_irq_receiver(0, false);
+	syscall_set_irq_receiver(this->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
+//	monapi_set_irq(this->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 }
 
 void ES1370Driver::unsetIRQ()
@@ -179,7 +179,9 @@ void ES1370Driver::playData(void* pm, size_t size)
 	memcpy(dmabuf, pm, size);
 
 	disableDAC1Channel();
-	writeControlRegister(readControlRegister()&~1);
+	CCB_int_enable();
+	SERR_enable();
+	ControlRegister(ControlRegister()&~1);
 	setMempage(ES1370_PAGE_DAC&0x0f);
 	setSampleRate(44100);
 //	setMonoMode(DAC1, 8);
@@ -194,9 +196,14 @@ void ES1370Driver::playData(void* pm, size_t size)
 	enableInterrupt(DAC1);
 	enableDAC1Channel();
 	printf("playing...\n");
+	sleep(1000); dumpRegisters();
 	MessageLoop();
+//	syscall_set_irq_receiver(this->pciinfo.IrqLine, false);
+//	monapi_set_irq(this->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 
-	sleep(1000);
+//	monapi_wait_interrupt(1000, pciinfo.IrqLine, "", 0);
+
+//	sleep(1000);
 
 	stopDAC1();
 	dumpRegisters();
@@ -204,12 +211,12 @@ void ES1370Driver::playData(void* pm, size_t size)
 	monapi_deallocate_dma_memory(dmabuf, size);
 }
 
-dword ES1370Driver::readControlRegister()
+dword ES1370Driver::ControlRegister()
 {
 	return inp32(baseIO+ES1370_REG_CONTROL);
 }
 
-void ES1370Driver::writeControlRegister(dword n)
+void ES1370Driver::ControlRegister(dword n)
 {
 	outp32(baseIO+ES1370_REG_CONTROL, n);
 }
@@ -332,10 +339,23 @@ void ES1370Driver::enableInterrupt(Channel ch)
 	case DAC2:
 	SerialControlRegister(SerialControlRegister()|ES1370_P2_INTR_EN);
 		break;
+	default:
+		printf("Error: Channel\n");
+		break;
 	}
 }
 
 void ES1370Driver::SCT_RLD()
 {
 	SerialControlRegister(SerialControlRegister()|ES1370_P1_SCT_RLD);
+}
+
+void ES1370Driver::CCB_int_enable()
+{
+	ControlRegister(ControlRegister()|ES1370_CCB_INTRM);	
+}
+
+void ES1370Driver::SERR_enable()
+{
+	ControlRegister(ControlRegister()&~ES1370_SERR_DISABLE);
 }

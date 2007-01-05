@@ -145,8 +145,8 @@ private:
 
 	dword baseIO;
 
-	inline dword readControlRegister();
-	inline void writeControlRegister(dword n);
+	inline dword ControlRegister();
+	inline void ControlRegister(dword n);
 	inline dword SerialControlRegister();
 	inline void SerialControlRegister(dword n);
 public:
@@ -171,6 +171,8 @@ public:
 	void setStopMode(Channel ch);
 	void enableInterrupt(Channel ch);
 	void SCT_RLD();
+	void CCB_int_enable();
+	void SERR_enable();
 
 	void readConf();
 	void dumpRegisters();

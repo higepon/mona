@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	driver->setIRQ();
+//	driver->setIRQ();
 	driver->readConf();
 	driver->dumpRegisters();
 
