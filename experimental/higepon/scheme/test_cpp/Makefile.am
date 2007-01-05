@@ -7,8 +7,8 @@ yaml.h\
 Filter.h\
 MacroMatchTest.h\
 MacroMatchTest.cpp\
-MacroTranslateTest.h\
-MacroTranslateTest.cpp\
+MacroFilterTest.h\
+MacroFilterTest.cpp\
 ../src/Translator.h\
 ../src/Translator.cpp\
 ../src/Tokenizer.cpp\

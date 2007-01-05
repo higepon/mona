@@ -1,26 +1,26 @@
 #include <string>
 #include <fstream>
-#include "MacroTranslateTest.h"
+#include "MacroFilterTest.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MacroTranslateTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(MacroFilterTest);
 
 using namespace monash;
 using namespace std;
 
-void MacroTranslateTest::setUp()
+void MacroFilterTest::setUp()
 {
 }
 
-void MacroTranslateTest::tearDown()
+void MacroFilterTest::tearDown()
 {
 }
 
-void MacroTranslateTest::testFindDefineSyntaxes()
+void MacroFilterTest::testFindDefineSyntaxes()
 {
+    char buf[1024];
+    MacroFilter f;
     YAML yaml;
     loadYAML("find_define_syntaxes.yml", yaml);
-    MacroFilter f;
-    char buf[1024];
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {
@@ -30,32 +30,30 @@ void MacroTranslateTest::testFindDefineSyntaxes()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        string text = s->at(0);
+        string defineSyntax = s->at(0);
         Nodes defineSyntaxes;
 
         // check count of define-syntax
-        f.findDefineSyntaxes(Node::fromString(text), defineSyntaxes);
-        sprintf(buf, "In %s %d define-syntax found, but should be %d\n", text.c_str(), defineSyntaxes.size(), s->size() - 1);
+        f.findDefineSyntaxes(Node::fromString(defineSyntax), defineSyntaxes);
+        sprintf(buf, "In %s %d define-syntax found, but should be %d\n", defineSyntax.c_str(), defineSyntaxes.size(), s->size() - 1);
         CPPUNIT_ASSERT_MESSAGE(buf, defineSyntaxes.size() == s->size() - 1);
 
         // check define-syntax exactly same?
         for (Nodes::size_type i = 0; i < defineSyntaxes.size(); i++)
         {
-            Node* defineSyntax = defineSyntaxes[i];
-            Node* expected     = Node::fromString(s->at(i + 1));
-            sprintf(buf, "%s unmatch\n %s\n", defineSyntax->toString().c_str(), expected->toString().c_str());
-            CPPUNIT_ASSERT_MESSAGE(buf, defineSyntax->equals(expected));
+            Node* d        = defineSyntaxes[i];
+            Node* expected = Node::fromString(s->at(i + 1));
+            sprintf(buf, "%s unmatch\n %s\n", d->toString().c_str(), expected->toString().c_str());
+            CPPUNIT_ASSERT_MESSAGE(buf, d->equals(expected));
         }
     }
 }
 
-void MacroTranslateTest::testTranslate()
+void MacroFilterTest::testFilter()
 {
-    YAML yaml;
-    // todo rename to filter.yml
-    loadYAML("translate.yml", yaml);
     char buf[1024];
-
+    YAML yaml;
+    loadYAML("filter.yml", yaml);
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {
@@ -69,15 +67,12 @@ void MacroTranslateTest::testTranslate()
         string macroCall = s->at(1).c_str();
         string expected  = s->at(2).c_str();
 
-        Node* defineSyntax = Node::fromString(macro);
         MacroFilter f;
-        f.findAndStoreDefineSyntaxes(defineSyntax);
+        f.findAndStoreDefineSyntaxes(Node::fromString(macro));
         Node* expectedNode = Node::fromString(expected);
         Node* macroCallNode = Node::fromString(macroCall);
         f.filter(macroCallNode);
         sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", macroCallNode->toString().c_str(), expectedNode->toString().c_str());
         CPPUNIT_ASSERT_MESSAGE(buf, macroCallNode->equals(expectedNode));
     }
-
-
 }

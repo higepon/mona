@@ -418,48 +418,14 @@ int Translator::translate(Node** n, Object** object)
     {
         string functionName = function->text;
 
-#ifdef TRACE_MACRO
-        Node* backup = node->clone();
-#endif
-//        Node* expanded = expandMacroIfMatch(functionName, n);
-//        if (expanded != NULL)
-//        {
-#ifdef TRACE_MACRO
-            printf("$$$$$$$$ before $$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
-            printf("%s", backup->toString().c_str());
-            printf("$$$$$$$$ after  $$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
-            printf("%s", expanded->toString().c_str());
-#endif
-            // yeah, this for unit test
-//            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//            if (NULL == expanded_) expanded_ = expanded->clone();
-//            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//            return translate(&expanded, object);
-//        }
-        if (functionName == "define-syntax")
-        {
-            int ret = translateDefineSyntax(node);
-#ifdef TRACE_MACRO
-            for (Macros::iterator p = macros_.begin(); p != macros_.end(); ++p)
-            {
-                Macro* m = (*p).second;
-
-                for (Macro::Patterns::iterator q = m->patterns.begin(); q != m->patterns.end(); ++q)
-                {
-                    printf("=========== %s =========================\n", (*p).first.c_str());
-                    printf("%s\n", q->first->toString().c_str());
-                    printf("    ||\n\n");
-                    printf("%s\n", q->second->toString().c_str());
-                    printf("==========================================\n");
-                }
-
-            }
-#endif
-            return ret;
-        }
-        else if (functionName == "define")
+        if (functionName == "define")
         {
             return translateDefinition(node, object);
+        }
+        else if (functionName == "define-syntax")
+        {
+            // fix me
+            return SUCCESS;
         }
         else if (functionName == "if")
         {
@@ -502,5 +468,6 @@ int Translator::translate(Node** n, Object** object)
     {
         return translateApplication(node, object);
     }
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return SYNTAX_ERROR;
 }

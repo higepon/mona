@@ -48,4 +48,6 @@ std::string load(const char* file);
 void setInputText(const std::string& text);
 void display(monash::Object* exp);
 
+void registerPrimitives(monash::Environment* env);
+
 #endif // __SCHEME_H__

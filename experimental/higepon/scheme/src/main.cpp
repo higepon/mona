@@ -22,13 +22,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-// for gc test
-//     for (uint32_t i = 0; i < 0xffffffff; i ++)
-//     {
-//         Object* o = new String("hoge");
-//     }
-
-
     if (argc < 2)
     {
         fprintf(stderr, "usage: %s file\n", argv[0]);
@@ -38,17 +31,17 @@ int main(int argc, char *argv[])
     string input = load(argv[1]);
     if (input == "")
     {
+        fprintf(stderr, "can not load: %s file\n", argv[1]);
         return -1;
     }
 
-    // ugly fixme
+    // todo ugly fixme
     input = "(begin " + input + " )";
 
-    Tokenizer tokenizer(input);
-    Parser parser(&tokenizer);
-    Node* node = parser.parse();
+    Node* node = Node::fromString(input);
 
-//    node->print();
+    MacroFilter f;
+    f.filter(node);
 
     Object* object = NULL;
     Translator translator;
@@ -57,20 +50,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "translate error \n");
         return -1;
     }
-    Environment* environment = new Environment();ASSERT(environment);
-    environment->defineVariable(new Variable("+"), new Plus());
-//    environment->defineVariable(new Variable("-"), new Minus());
-    environment->defineVariable(new Variable("="), new NumberEqual());
-//    environment->defineVariable(new Variable(">"), new NumberGt());
-    environment->defineVariable(new Variable("cons"), new Cons());
-    environment->defineVariable(new Variable("car"), new Car());
-    environment->defineVariable(new Variable("cdr"), new Cdr());
-    environment->defineVariable(new Variable("display"), new Display());
-    environment->defineVariable(new Variable("string?"), new StringP());
-    environment->defineVariable(new Variable("number?"), new NumberP());
-    environment->defineVariable(new Variable("string->number"), new StringToNumber());
-    environment->defineVariable(new Variable("#f"), new Number(0));
-    environment->defineVariable(new Variable("#t"), new Number(1));
-    object->eval(environment);
+    Environment* env = new Environment();ASSERT(env);
+    registerPrimitives(env);
+
+    // let's eval!
+    object->eval(env);
     return 0;
 }

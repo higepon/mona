@@ -49,7 +49,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-MacroMatchTest.$(OBJEXT) \
-	test_cpp-MacroTranslateTest.$(OBJEXT) \
+	test_cpp-MacroFilterTest.$(OBJEXT) \
 	test_cpp-Translator.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
 	test_cpp-Number.$(OBJEXT) test_cpp-String.$(OBJEXT) \
 	test_cpp-Definition.$(OBJEXT) test_cpp-Object.$(OBJEXT) \
@@ -177,8 +177,8 @@ yaml.h\
 Filter.h\
 MacroMatchTest.h\
 MacroMatchTest.cpp\
-MacroTranslateTest.h\
-MacroTranslateTest.cpp\
+MacroFilterTest.h\
+MacroFilterTest.cpp\
 ../src/Translator.h\
 ../src/Translator.cpp\
 ../src/Tokenizer.cpp\
@@ -344,11 +344,11 @@ test_cpp-MacroMatchTest.o: MacroMatchTest.cpp
 test_cpp-MacroMatchTest.obj: MacroMatchTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroMatchTest.obj `if test -f 'MacroMatchTest.cpp'; then $(CYGPATH_W) 'MacroMatchTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroMatchTest.cpp'; fi`
 
-test_cpp-MacroTranslateTest.o: MacroTranslateTest.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroTranslateTest.o `test -f 'MacroTranslateTest.cpp' || echo '$(srcdir)/'`MacroTranslateTest.cpp
+test_cpp-MacroFilterTest.o: MacroFilterTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilterTest.o `test -f 'MacroFilterTest.cpp' || echo '$(srcdir)/'`MacroFilterTest.cpp
 
-test_cpp-MacroTranslateTest.obj: MacroTranslateTest.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroTranslateTest.obj `if test -f 'MacroTranslateTest.cpp'; then $(CYGPATH_W) 'MacroTranslateTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroTranslateTest.cpp'; fi`
+test_cpp-MacroFilterTest.obj: MacroFilterTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilterTest.obj `if test -f 'MacroFilterTest.cpp'; then $(CYGPATH_W) 'MacroFilterTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilterTest.cpp'; fi`
 
 test_cpp-Translator.o: ../src/Translator.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Translator.o `test -f '../src/Translator.cpp' || echo '$(srcdir)/'`../src/Translator.cpp

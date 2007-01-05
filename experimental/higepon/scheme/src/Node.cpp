@@ -54,7 +54,6 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
     if (m->isSymbol())
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         BindObject b;
         b.node = n;
         bindMap[m->text] = b;
@@ -64,28 +63,20 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     {
         for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
         {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             extractBindingsInternal(m->nodes[i], n, i, bindMap);
         }
     }
     else
     {
-        printf("%s", __func__);
         exit(-1);
     }
 }
 
 void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap)
 {
-    printf("*************************************\n");
-    m->print();
-    n->print();
-    printf("*************************************\n");
-
     if (m->isSymbol())
     {
         BindObject b;
-        printf("%s %s:%d <<%s>>\n", __func__, __FILE__, __LINE__, m->text.c_str());fflush(stdout);// debug
         if (m->text == "...")
         {
             for (Nodes::size_type j = i; j < n->nodes.size(); ++j)
@@ -102,10 +93,8 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     }
     else if (m->isNodes() && n->nodes[i]->isNodes())
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         for (Nodes::size_type j = 0; j < m->nodes.size(); ++j)
         {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             extractBindingsInternal(m->nodes[j], n->nodes[i], j, bindMap);
         }
     }
@@ -116,49 +105,11 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
         n->print();
         exit(-1);
     }
-
-
-
- }
-
-// string Node::typeToString()
-// {
-//     char buffer[256];
-
-//     switch(type)
-//     {
-//     case NUMBER:
-//         sprintf(buffer, "%d", value);
-//         break;
-//     case SYMBOL:
-//         sprintf(buffer, "%s", text.c_str());
-//         break;
-//     case STRING:
-//         sprintf(buffer, "\"%s\"", text.c_str());
-//         break;
-//     case QUOTE:
-//         sprintf(buffer, "\'%s", text.c_str());
-//         break;
-//     }
-//     printf("typeToString::%s\n", buffer);fflush(stdout);
-//     return string(buffer);
-// }
+}
 
 void Node::print(int depth /* = 0 */)
 {
     printf(toString().c_str());
-//     for (int i = 0; i < depth; i++)
-//     {
-//         printf(" ");
-//     }
-
-//     printf(typeToString().c_str());
-
-//     depth++;
-//     for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
-//     {
-//         (*it)->print(depth);
-//     }
 }
 
 void Node::toStringInternal(uint32_t depth, string& s)
@@ -181,32 +132,6 @@ string Node::toString()
     toStringInternal(0, ret);
     return ret;
 }
-
-// string Node::toSExp()
-// {
-//     return toSExpInternal(this);
-// }
-
-// string Node::toSExpInternal(Node* node)
-// {
-//     string ret;
-//     if (node->isNodes())
-//     {
-//         ret += "(";
-//         for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
-//         {
-//             if (it != nodes.begin()) ret += " ";
-//             ret += toSExpInternal(*it);
-//         }
-//         ret += ")";
-//     }
-//     else
-//     {
-//         ret += node->typeToString();
-//     }
-//     return ret;
-// }
-
 
 bool Node::equals(Node* node)
 {

@@ -26,6 +26,7 @@ public:
     std::strings reservedWords;
 
 private:
+    static bool matchNodes(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
     static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
     static bool isMatchAllKeyword(Node* node);
     static bool isReservedWord(Node* node, const std::strings& reservedWords);

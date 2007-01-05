@@ -41,9 +41,8 @@
 
 (define-syntax pp
   (syntax-rules ()
-  ((_ a) (begin (display a)))
-  ((_ a ...) (begin (pp a) (pp ...)))))
-
+  ((_ a) (display a))
+  ((_ a b ...) (begin (pp a) (pp b ...)))))
 
 (define-syntax p
   (syntax-rules ()
@@ -54,17 +53,20 @@
     ((_ a my-then b) (if a b))
     ((_ a my-then b my-else c) (if a b c))))
 
-(define y 4)
-(my-if (= y 3)
-  my-then (pp "3")
-  my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+(pp "hige\n" "desu\n" "yo")
 
-(define-syntax my-begin
-(syntax-rules ()
-((_ exp ...)
-((lambda () exp ...)))))
 
-(my-begin (display "higepon") (display "is") )
+;; (define y 4)
+;; (my-if (= y 3)
+;;   my-then (pp "3")
+;;   my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+
+;; (define-syntax my-begin
+;; (syntax-rules ()
+;; ((_ exp ...)
+;; ((lambda () exp ...)))))
+
+;; (my-begin (display "higepon") (display "is") )
 
 
 ;; (define-syntax my-or

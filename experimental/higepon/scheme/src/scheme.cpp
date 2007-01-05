@@ -72,3 +72,18 @@ void display(Object* exp)
 {
     printf("%s", exp->toString().c_str());
 }
+
+void registerPrimitives(Environment* env)
+{
+    env->defineVariable(new Variable("+"),              new Plus());
+    env->defineVariable(new Variable("="),              new NumberEqual());
+    env->defineVariable(new Variable("cons"),           new Cons());
+    env->defineVariable(new Variable("car"),            new Car());
+    env->defineVariable(new Variable("cdr"),            new Cdr());
+    env->defineVariable(new Variable("display"),        new Display());
+    env->defineVariable(new Variable("string?"),        new StringP());
+    env->defineVariable(new Variable("number?"),        new NumberP());
+    env->defineVariable(new Variable("string->number"), new StringToNumber());
+    env->defineVariable(new Variable("#f"),             new Number(0));
+    env->defineVariable(new Variable("#t"),             new Number(1));
+}

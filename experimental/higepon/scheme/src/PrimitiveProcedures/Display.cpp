@@ -25,7 +25,7 @@ Object* Display::apply(Objects* arguments)
 {
     if (arguments->size() != 1)
     {
-        printf("display got error");
+        printf("display got error[%d]%s:%s", arguments->size(), arguments->at(0)->toString().c_str(), arguments->at(1)->toString().c_str());
         return NULL;
     }
     printf(arguments->at(0)->toString().c_str());

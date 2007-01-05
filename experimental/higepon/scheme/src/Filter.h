@@ -10,7 +10,7 @@ class Filter
 public:
     Filter() {}
     virtual ~Filter() {}
-    virtual int filter(Node* from, Node** to) = 0;
+    virtual int filter(Node* from) = 0;
     enum
     {
         SYNTAX_ERROR,

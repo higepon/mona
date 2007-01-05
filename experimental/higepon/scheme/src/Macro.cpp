@@ -56,30 +56,34 @@ Node* Macro::match(const string& macroName, Node* target)
 {
     for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (Macro::match(macroName, reservedWords, (*p).first, target)) return (*p).first;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
     return NULL;
 }
 
+bool Macro::matchNodes(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
+{
+    for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
+    {
+        Node* m = macro->nodes[i];
+        Node* t = target->nodes[i];
+        if (!match(macroName, reservedWords, m, t))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 // (_ a b ...)
 // (and "hige" "huga" "hoge" "hoge")
 bool Macro::match(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
 {
-    // (a b) match? (1 3 3 ...)
     if (macro->isNodes() && target->isNodes())
     {
         if (macro->nodes.size() == target->nodes.size())
         {
-            for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
-            {
-                Node* m = macro->nodes[i];
-                Node* t = target->nodes[i];
-                if (!match(macroName, reservedWords, m, t)) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return false;}
-            }
-            return true;
+            return matchNodes(macroName, reservedWords, macro, target);
         }
         else if (macro->nodes.size() < target->nodes.size())
         {
@@ -87,26 +91,10 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
             Node* last = macro->nodes[macro->nodes.size() - 1];
             if (last->isSymbol() && last->text == "...")
             {
-                for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
-                {
-                    Node* m = macro->nodes[i];
-                    m->print();
-                    Node* t = target->nodes[i];
-                    t->print();
-                    // Howerver "_" comes, macro name does not come.
-//                     if (mustBeMacroName(m) && !isMacroName(t, macroName))
-//                     {
-//                         error = "macro name unmatch";
-//                         return false;
-//                     }
-
-                    if (!match(macroName, reservedWords, m, t)) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return false;}
-                }
-                return true;
+                return matchNodes(macroName, reservedWords, macro, target);
             }
             else
             {
-                printf("%s %s:%d<<%s>>\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
                 return false;
             }
         }
@@ -119,140 +107,29 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
                 {
                     Node* m = macro->nodes[i];
                     Node* t = target->nodes[i];
-//                     // Howerver "_" comes, macro name does not come.
-//                     if (mustBeMacroName(m) && !isMacroName(t, macroName))
-//                     {
-//                         error = "macro name unmatch";
-//                         return false;
-//                     }
-                    if (!match(macroName, reservedWords, m, t)) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return false;}
+                    if (!match(macroName, reservedWords, m, t)) return false;
                 }
                 return true;
             }
             else
             {
-                printf("%s %s:%d<<%s>>\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
                 return false;
             }
         }
     }
     else
     {
-                    // Howerver "_" comes, macro name does not come.
-                    if (mustBeMacroName(macro) && !isMacroName(target, macroName))
-                    {
-                        error = "macro name unmatch";
-                        return false;
-                    }
+        // Howerver "_" comes, macro name does not come.
+        if (mustBeMacroName(macro) && !isMacroName(target, macroName))
+        {
+            error = "macro name unmatch";
+            return false;
+        }
         if (!checkReservedWord(macro, target, reservedWords))
         {
             error = "reserved word " + macro->text + " unmatch";
             return false;
         }
-
         return true;
     }
-//         else
-//     {
-// //         // Howerver "_" comes, macro name does not come.
-// //         if (mustBeMacroName(m) && !isMacroName(t, macroName))
-// //         {
-// //             error = "macro name unmatch";
-// //             return false;
-// //         }
-
-
-//     }
-
 }
-
-
-
-#if 0
-bool Macro::match(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
-{
-//    if (macro->nodes.size() == 0 && target->nodes.size() != 0) return false;
-//    if (target->nodes.size() == 0 && macro->nodes.size() != 0) return false;
-
-//     if (!macro->isNodes() && !target->isNodes())
-//     {
-//         return macro->type == target->type;
-//     }
-
-
-    // do right thing
-    if (macro->nodes.size() == 0) return true;
-
-    // Nodes length is same
-    if (macro->nodes.size() == target->nodes.size())
-    {
-        return matchInternal(macroName, reservedWords, macro, target);
-    }
-    else if (macro->nodes.size() < target->nodes.size())
-    {
-        Node* last = macro->nodes.at(macro->nodes.size() - 1);
-        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
-        // Only when "..." comes, length unmatch allowed.
-        if (!isMatchAllKeyword(last))
-        {
-            printf("%s %s:%d<%s>\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
-            macro->print();
-            target->print();
-            error = "macro arguments length unmatch1";
-            return false;
-        }
-        return matchInternal(macroName, reservedWords, macro, target);
-    }
-    else
-    {
-        Node* last = macro->nodes.at(macro->nodes.size() - 1);
-        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, last->text.c_str());fflush(stdout);// debug
-        // Only when "..." comes, length unmatch allowed.
-        if (!isMatchAllKeyword(last))
-        {
-            error = "macro arguments length unmatch2";
-            return false;
-        }
-
-        return matchInternal(macroName, reservedWords, macro, target);
-    }
-    return true;
-}
-
-bool Macro::matchInternal(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
-{
-    for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
-    {
-        Node* m = macro->nodes[i];
-        if (i > target->nodes.size() -1)
-        {
-            if (m->text == "...")
-            {
-                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        Node* t = target->nodes[i];
-        if (!checkReservedWord(m, t, reservedWords))
-        {
-            error = "reserved word " + macro->text + " unmatch";
-            return false;
-        }
-
-        // Howerver "_" comes, macro name does not come.
-        if (mustBeMacroName(m) && !isMacroName(t, macroName))
-        {
-            error = "macro name unmatch";
-            return false;
-        }
-        if (!match(macroName, reservedWords, m, t)) return false;
-    }
-    return true;
-}
-
-#endif
