@@ -73,4 +73,8 @@
  - ()
  - (let* () body1 body2 ...)
  - (let* () f g h)
-
+-
+ - my-if
+ - (my-then my-else)
+ - (_ a my-then b my-else c)
+ - (my-if (= y 3)  my-then (pp "3") my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))

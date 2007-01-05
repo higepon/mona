@@ -35,7 +35,14 @@
  - (define-syntax let* (syntax-rules () ((let* () body1 body2 ...) (let () body1 body2 ...)) ((let* ((name1 val1) (name2 val2) ...) body1 body2 ...) (let ((name1 val1)) (let* ((name2 val2) ...) body1 body2 ...)))))
  - (let* () f g)
  - (let () f g)
-
+-
+ - (define-syntax my-if (syntax-rules (my-then my-else) ((_ a my-then b) (if a b)) ((_ a my-then b my-else c) (if a b c))))
+ - (my-if (= y 3)  my-then (pp "3") my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+ - (if (= y 3) (pp "3") (pp "not 3\n" "hige\n" "pon\n" "desu"))
+-
+ - (define-syntax pp (syntax-rules () ((_ a) (display a)) ((_ a ...) (begin (pp a) (pp ...)))))
+ - (pp "A" "B" "C")
+ - (begin (display "A") (begin (display "B") (display "C")))
 # todo
 #-
 # - (define-syntax let* (syntax-rules () ((let* () body1 body2 ...) (let () body1 body2 ...)) ((let* ((name1 val1) (name2 val2) ...) body1 body2 ...) (let ((name1 val1)) (let* ((name2 val2) ...) body1 body2 ...)))))

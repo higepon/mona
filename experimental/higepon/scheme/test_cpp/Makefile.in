@@ -63,7 +63,12 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-Pair.$(OBJEXT) test_cpp-And.$(OBJEXT) \
 	test_cpp-Or.$(OBJEXT) test_cpp-Let.$(OBJEXT) \
 	test_cpp-LetAsterisk.$(OBJEXT) test_cpp-scheme.$(OBJEXT) \
-	test_cpp-Application.$(OBJEXT)
+	test_cpp-Application.$(OBJEXT) test_cpp-Plus.$(OBJEXT) \
+	test_cpp-Cons.$(OBJEXT) test_cpp-Car.$(OBJEXT) \
+	test_cpp-Cdr.$(OBJEXT) test_cpp-Display.$(OBJEXT) \
+	test_cpp-StringP.$(OBJEXT) test_cpp-NumberP.$(OBJEXT) \
+	test_cpp-NumberEqual.$(OBJEXT) \
+	test_cpp-StringToNumber.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -228,7 +233,26 @@ MacroTranslateTest.cpp\
 ../src/scheme.cpp\
 ../src/scheme.h\
 ../src/Application.cpp\
-../src/Application.h
+../src/Application.h\
+../src/PrimitiveProcedure.h\
+../src/PrimitiveProcedures/Plus.cpp\
+../src/PrimitiveProcedures/Plus.h\
+../src/PrimitiveProcedures/Cons.cpp\
+../src/PrimitiveProcedures/Cons.h\
+../src/PrimitiveProcedures/Car.cpp\
+../src/PrimitiveProcedures/Car.h\
+../src/PrimitiveProcedures/Cdr.cpp\
+../src/PrimitiveProcedures/Cdr.h\
+../src/PrimitiveProcedures/Display.cpp\
+../src/PrimitiveProcedures/Display.h\
+../src/PrimitiveProcedures/StringP.cpp\
+../src/PrimitiveProcedures/StringP.h\
+../src/PrimitiveProcedures/NumberP.cpp\
+../src/PrimitiveProcedures/NumberP.h\
+../src/PrimitiveProcedures/NumberEqual.cpp\
+../src/PrimitiveProcedures/NumberEqual.h\
+../src/PrimitiveProcedures/StringToNumber.cpp\
+../src/PrimitiveProcedures/StringToNumber.h
 
 all: all-am
 
@@ -487,6 +511,60 @@ test_cpp-Application.o: ../src/Application.cpp
 
 test_cpp-Application.obj: ../src/Application.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Application.obj `if test -f '../src/Application.cpp'; then $(CYGPATH_W) '../src/Application.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Application.cpp'; fi`
+
+test_cpp-Plus.o: ../src/PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Plus.o `test -f '../src/PrimitiveProcedures/Plus.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Plus.cpp
+
+test_cpp-Plus.obj: ../src/PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Plus.obj `if test -f '../src/PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Plus.cpp'; fi`
+
+test_cpp-Cons.o: ../src/PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Cons.o `test -f '../src/PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Cons.cpp
+
+test_cpp-Cons.obj: ../src/PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Cons.obj `if test -f '../src/PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Cons.cpp'; fi`
+
+test_cpp-Car.o: ../src/PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Car.o `test -f '../src/PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Car.cpp
+
+test_cpp-Car.obj: ../src/PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Car.obj `if test -f '../src/PrimitiveProcedures/Car.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Car.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Car.cpp'; fi`
+
+test_cpp-Cdr.o: ../src/PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Cdr.o `test -f '../src/PrimitiveProcedures/Cdr.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Cdr.cpp
+
+test_cpp-Cdr.obj: ../src/PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Cdr.obj `if test -f '../src/PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Cdr.cpp'; fi`
+
+test_cpp-Display.o: ../src/PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Display.o `test -f '../src/PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Display.cpp
+
+test_cpp-Display.obj: ../src/PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Display.obj `if test -f '../src/PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Display.cpp'; fi`
+
+test_cpp-StringP.o: ../src/PrimitiveProcedures/StringP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringP.o `test -f '../src/PrimitiveProcedures/StringP.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringP.cpp
+
+test_cpp-StringP.obj: ../src/PrimitiveProcedures/StringP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringP.obj `if test -f '../src/PrimitiveProcedures/StringP.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringP.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringP.cpp'; fi`
+
+test_cpp-NumberP.o: ../src/PrimitiveProcedures/NumberP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberP.o `test -f '../src/PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/NumberP.cpp
+
+test_cpp-NumberP.obj: ../src/PrimitiveProcedures/NumberP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberP.obj `if test -f '../src/PrimitiveProcedures/NumberP.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/NumberP.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/NumberP.cpp'; fi`
+
+test_cpp-NumberEqual.o: ../src/PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberEqual.o `test -f '../src/PrimitiveProcedures/NumberEqual.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/NumberEqual.cpp
+
+test_cpp-NumberEqual.obj: ../src/PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberEqual.obj `if test -f '../src/PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/NumberEqual.cpp'; fi`
+
+test_cpp-StringToNumber.o: ../src/PrimitiveProcedures/StringToNumber.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringToNumber.o `test -f '../src/PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringToNumber.cpp
+
+test_cpp-StringToNumber.obj: ../src/PrimitiveProcedures/StringToNumber.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringToNumber.obj `if test -f '../src/PrimitiveProcedures/StringToNumber.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringToNumber.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringToNumber.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
