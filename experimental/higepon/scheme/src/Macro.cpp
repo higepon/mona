@@ -47,11 +47,6 @@ bool Macro::isMacroName(Node* node, const string& macroName)
     return node->isSymbol() && node->text == macroName;
 }
 
-bool Macro::isMatchAllKeyword(Node* node)
-{
-    return node->isSymbol() && node->text == "...";
-}
-
 Node* Macro::match(const string& macroName, Node* target)
 {
     for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
@@ -89,7 +84,7 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
         {
             if (macro->nodes.size() == 0) return false;
             Node* last = macro->nodes[macro->nodes.size() - 1];
-            if (last->isSymbol() && last->text == "...")
+            if (last->isMatchAllKeyword())
             {
                 return matchNodes(macroName, reservedWords, macro, target);
             }
@@ -101,7 +96,7 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
         else
         {
             Node* last = macro->nodes[macro->nodes.size() - 1];
-            if (last->isSymbol() && last->text == "...")
+            if (last->isMatchAllKeyword())
             {
                 for (Nodes::size_type i = 0; i < target->nodes.size(); i++)
                 {

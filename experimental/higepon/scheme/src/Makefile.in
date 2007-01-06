@@ -55,14 +55,13 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Lambda.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
 	scheme-Begin.$(OBJEXT) scheme-Definition.$(OBJEXT) \
 	scheme-Cond.$(OBJEXT) scheme-Pair.$(OBJEXT) \
-	scheme-And.$(OBJEXT) scheme-Or.$(OBJEXT) scheme-Let.$(OBJEXT) \
-	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
-	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
-	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
-	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
-	scheme-Devide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
-	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
-	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-Let.$(OBJEXT) scheme-LetAsterisk.$(OBJEXT) \
+	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
+	scheme-Tokenizer.$(OBJEXT) scheme-Node.$(OBJEXT) \
+	scheme-Translator.$(OBJEXT) scheme-Plus.$(OBJEXT) \
+	scheme-Minus.$(OBJEXT) scheme-Devide.$(OBJEXT) \
+	scheme-Multiply.$(OBJEXT) scheme-Cons.$(OBJEXT) \
+	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
@@ -205,10 +204,6 @@ Cond.cpp\
 Cond.h\
 Pair.cpp\
 Pair.h\
-And.cpp\
-And.h\
-Or.cpp\
-Or.h\
 Let.cpp\
 Let.h\
 LetAsterisk.cpp\
@@ -427,18 +422,6 @@ scheme-Pair.o: Pair.cpp
 
 scheme-Pair.obj: Pair.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Pair.obj `if test -f 'Pair.cpp'; then $(CYGPATH_W) 'Pair.cpp'; else $(CYGPATH_W) '$(srcdir)/Pair.cpp'; fi`
-
-scheme-And.o: And.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-And.o `test -f 'And.cpp' || echo '$(srcdir)/'`And.cpp
-
-scheme-And.obj: And.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-And.obj `if test -f 'And.cpp'; then $(CYGPATH_W) 'And.cpp'; else $(CYGPATH_W) '$(srcdir)/And.cpp'; fi`
-
-scheme-Or.o: Or.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Or.o `test -f 'Or.cpp' || echo '$(srcdir)/'`Or.cpp
-
-scheme-Or.obj: Or.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Or.obj `if test -f 'Or.cpp'; then $(CYGPATH_W) 'Or.cpp'; else $(CYGPATH_W) '$(srcdir)/Or.cpp'; fi`
 
 scheme-Let.o: Let.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Let.o `test -f 'Let.cpp' || echo '$(srcdir)/'`Let.cpp
@@ -755,6 +738,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am
 
+
+# And.cpp\
+# And.h\
+# Or.cpp\
+# Or.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

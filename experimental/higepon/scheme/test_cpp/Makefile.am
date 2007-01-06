@@ -52,10 +52,6 @@ MacroFilterTest.cpp\
 ../src/Cond.h\
 ../src/Pair.cpp\
 ../src/Pair.h\
-../src/And.cpp\
-../src/And.h\
-../src/Or.cpp\
-../src/Or.h\
 ../src/Let.cpp\
 ../src/Let.h\
 ../src/LetAsterisk.cpp\
@@ -94,3 +90,9 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h
+
+
+#../src/And.cpp\
+#../src/And.h\
+#../src/Or.cpp\
+#../src/Or.h

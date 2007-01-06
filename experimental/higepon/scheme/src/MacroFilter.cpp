@@ -65,7 +65,7 @@ int MacroFilter::expandMacro(Node* root, Node* node)
     {
         if (root->nodes[i] == node) break;
     }
-    if (name == "...")
+    if (node->isMatchAllKeyword())
     {
         if (b.nodes.size() == 0)
         {
@@ -193,8 +193,30 @@ int MacroFilter::storeDefineSyntaxes(Node* node)
     {
         Node* n = NN(2, i);
         if (!n->isNodes() || n->nodes.size() != 2) return SYNTAX_ERROR;
+        renameMatchAllKeywords(n->nodes[0]);
+        renameMatchAllKeywords(n->nodes[1]);
         macro->addPattern(n->nodes[0], n->nodes[1]);
     }
     macros_[macro->name] = macro;
     return SUCCESS;
+}
+
+int MacroFilter::renameMatchAllKeywords(Node* node)
+{
+    index_ = 0;
+    return foreachSymbols(node, &MacroFilter::renameMatchAllKeyword);
+}
+
+// ... => ...n
+int MacroFilter::renameMatchAllKeyword(Node* dummy, Node* root)
+{
+    if (root->text == "...")
+    {
+        char buf[16];
+        sprintf(buf, "%s%d", "...", index_);
+        root->text = buf;
+        index_++;
+        return 1;
+    }
+    return 0;
 }

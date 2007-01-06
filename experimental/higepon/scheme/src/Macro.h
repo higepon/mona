@@ -28,7 +28,6 @@ public:
 private:
     static bool matchNodes(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
     static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
-    static bool isMatchAllKeyword(Node* node);
     static bool isReservedWord(Node* node, const std::strings& reservedWords);
     static bool checkReservedWord(Node* macro, Node* target, const std::strings& reservedWords);
     static bool mustBeMacroName(Node* node);

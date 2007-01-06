@@ -24,9 +24,13 @@ public:
     int foreachNodes(Node* root, int (MacroFilter::*f)(Node*, Node*));
     int foreachSymbols(Node* root, int (MacroFilter::*f)(Node*, Node*));
 
-private:
+protected:
+    int renameMatchAllKeywords(Node* node);
+    int renameMatchAllKeyword(Node* dummy, Node* root);
+
     Macros macros_;
     BindMap bindMap_;
+    int index_;
 };
 
 }; // namespace monash

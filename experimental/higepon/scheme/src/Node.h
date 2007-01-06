@@ -50,6 +50,7 @@ public:
     bool isSymbol() const { return type == SYMBOL; }
     bool isString() const { return type == STRING; }
     bool isQuote()  const { return type == QUOTE; }
+    bool isMatchAllKeyword() const { return isSymbol() && text.find("...") != std::string::npos; }
 
     static Node* fromString(const std::string& text);
     static void extractBindings(Node* m, Node* n, BindMap& bindMap);

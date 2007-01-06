@@ -77,7 +77,7 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     if (m->isSymbol())
     {
         BindObject b;
-        if (m->text == "...")
+        if (m->isMatchAllKeyword())
         {
             for (Nodes::size_type j = i; j < n->nodes.size(); ++j)
             {

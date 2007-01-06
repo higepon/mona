@@ -36,10 +36,6 @@ Cond.cpp\
 Cond.h\
 Pair.cpp\
 Pair.h\
-And.cpp\
-And.h\
-Or.cpp\
-Or.h\
 Let.cpp\
 Let.h\
 LetAsterisk.cpp\
@@ -90,3 +86,8 @@ Macro.cpp\
 MacroFilter.h\
 MacroFilter.cpp\
 load.cpp
+
+# And.cpp\
+# And.h\
+# Or.cpp\
+# Or.h
