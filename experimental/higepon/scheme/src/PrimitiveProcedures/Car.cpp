@@ -21,14 +21,16 @@ Object* Car::eval(Environment* env)
     return NULL;
 }
 
-Object* Car::apply(Objects* arguments)
+Object* Car::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+
+    if (as->size() != 1)
     {
         printf("car need only one argument");
         return NULL;
     }
-    Object* o = arguments->at(0);
+    Object* o = as->at(0);
     if (o->type() != Object::PAIR)
     {
         printf("car argument need to be pair");

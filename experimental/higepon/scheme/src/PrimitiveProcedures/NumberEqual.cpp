@@ -21,11 +21,12 @@ Object* NumberEqual::eval(Environment* env)
     return NULL;
 }
 
-Object* NumberEqual::apply(Objects* arguments)
+Object* NumberEqual::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 2) return new Number(0);
-    Object* o1 = arguments->at(0);
-    Object* o2 = arguments->at(1);
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 2) return new Number(0);
+    Object* o1 = as->at(0);
+    Object* o2 = as->at(1);
     if (o1->type() != Object::NUMBER || o2->type() != Object::NUMBER) return new Number(0);
     Number* n1 = (Number*)o1;
     Number* n2 = (Number*)o2;

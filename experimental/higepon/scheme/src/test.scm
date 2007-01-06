@@ -39,22 +39,26 @@
 ;; (display c)
 ;; )
 
-(define-syntax pp
-  (syntax-rules ()
-  ((_ a) (display a))
-  ((_ a b ...) (begin (pp a) (pp b ...)))))
+;; (define-syntax pp
+;;   (syntax-rules ()
+;;   ((_ a) (display a))
+;;   ((_ a b ...) (begin (pp a) (pp b ...)))))
 
-(define-syntax p
-  (syntax-rules ()
-    ((_ a) (display a))))
+;; (define-syntax p
+;;   (syntax-rules ()
+;;     ((_ a) (display a))))
 
-(define-syntax my-if
-  (syntax-rules (my-then my-else)
-    ((_ a my-then b) (if a b))
-    ((_ a my-then b my-else c) (if a b c))))
+;; (define-syntax my-if
+;;   (syntax-rules (my-then my-else)
+;;     ((_ a my-then b) (if a b))
+;;     ((_ a my-then b my-else c) (if a b c))))
+
+(load "./src/macro.scm")
+
+(display moge)
+(display "hige")
 
 (pp "hige\n" "desu\n" "yo")
-
 
 ;; (define y 4)
 ;; (my-if (= y 3)

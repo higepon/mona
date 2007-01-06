@@ -30,5 +30,16 @@ Object* Application::eval(Environment* env)
         printf("error %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         exit(-1);
     }
-    return apply(procedure, listOfValues(this->arguments(), env));
+
+    Objects* as = arguments();
+
+//        for (Objects::const_iterator i = as->begin(); i != as->end(); ++i)
+//         {
+//             printf("!!!!!!!!!!!!!!!!!apply as %s\n",(*i)->toString().c_str());fflush(stdout);
+//         }
+
+    return apply(procedure, arguments(), env);
+
+ 
+//    return apply(procedure, listOfValues(this->arguments(), env), env);
 }

@@ -21,13 +21,14 @@ Object* StringP::eval(Environment* env)
     return NULL;
 }
 
-Object* StringP::apply(Objects* arguments)
+Object* StringP::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 1)
     {
         printf("string? got error");
         return NULL;
     }
-    Object* o = arguments->at(0);
+    Object* o = as->at(0);
     return o->type() == Object::STRING ? new Number(1) : new Number(0);
 }

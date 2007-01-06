@@ -21,13 +21,14 @@ Object* Display::eval(Environment* env)
     return NULL;
 }
 
-Object* Display::apply(Objects* arguments)
+Object* Display::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 1)
     {
-        printf("display got error[%d]%s:%s", arguments->size(), arguments->at(0)->toString().c_str(), arguments->at(1)->toString().c_str());
+        printf("display got error[%d]", as->size());
         return NULL;
     }
-    printf(arguments->at(0)->toString().c_str());
+    printf(as->at(0)->toString().c_str());
     return new Number(0); // hutei
 }

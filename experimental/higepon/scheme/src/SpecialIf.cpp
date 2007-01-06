@@ -30,6 +30,13 @@ Object* SpecialIf::eval(Environment* env)
     }
     else
     {
-        return this->alternative()->eval(env);
+        if (this->alternative() != NULL)
+        {
+            return this->alternative()->eval(env);
+        }
+        else
+        {
+            return new Number(0); // false
+        }
     }
 }

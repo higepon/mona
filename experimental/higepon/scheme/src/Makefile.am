@@ -59,6 +59,8 @@ PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
+PrimitiveProcedures/Set.cpp\
+PrimitiveProcedures/Set.h\
 PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
 PrimitiveProcedures/Cdr.cpp\

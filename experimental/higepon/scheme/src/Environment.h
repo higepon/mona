@@ -7,14 +7,17 @@
 
 namespace monash {
 
+class MacroFilter;
+
 class Environment
 {
 protected:
     typedef std::vector<Frame*> Frames;
     Frames* frames_;
+    MacroFilter& filter_;
 
 public:
-    Environment();
+    Environment(MacroFilter& filter);
     virtual ~Environment();
     Environment* clone();
     Object* lookupVariableValue(Variable* variable);
@@ -23,6 +26,7 @@ public:
     Frames* frames() {return frames_;}
     void extend(Variables* variables, Objects* objects);
     std::string toString();
+    MacroFilter& macroFilter() { return filter_; }
 };
 
 }; // namespace monash

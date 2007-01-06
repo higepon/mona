@@ -21,13 +21,14 @@ Object* NumberP::eval(Environment* env)
     return NULL;
 }
 
-Object* NumberP::apply(Objects* arguments)
+Object* NumberP::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 1)
     {
         printf("number? got error");
         return NULL;
     }
-    Object* o = arguments->at(0);
+    Object* o = as->at(0);
     return o->type() == Object::NUMBER ? new Number(1) : new Number(0);
 }

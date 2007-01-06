@@ -55,6 +55,7 @@ private:
     int translateLambda(Node* node, Object** object);
     int translateLet(Node* node, Object** object);
     int translateLetAsterisk(Node* node, Object** object);
+    int translateSet(Node* node, Object** object);
     int translateApplication(Node* node, Object** object);
 //    int expandMacro(Node* from, BindMap& bindMap);
 

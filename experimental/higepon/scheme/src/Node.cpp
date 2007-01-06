@@ -169,3 +169,56 @@ Node* Node::fromString(const std::string& text)
     Parser parser(&tokenizer);
     return parser.parse();
 }
+
+int Node::foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node))
+{
+    int ret = 0;
+    if (root->isNodes())
+    {
+        // don't use iterator here, nodes.size() will be changed by func
+        for (Nodes::size_type i = 0; i < root->nodes.size(); i++)
+        {
+            Node* node = root->nodes[i];
+            if ((node->*match)())
+            {
+                ret += (this->*func)(root, node);
+            }
+            ret += foreachNode(node, match, func);
+        }
+    }
+    return ret;
+}
+
+int Node::foreachNodes(Node* root, int (Node::*f)(Node* root, Node* node))
+{
+    return foreachNode(root, &Node::isNodes, f);
+}
+
+int Node::execLoadSyntax(Node* root, Node* node)
+{
+    if (node->nodes.size() == 0) return 0;
+    Node* left = node->nodes[0];
+    if (!left->isSymbol()
+        || left->text != "load"
+        || node->nodes.size() != 2
+        || node->nodes[1]->type != Node::STRING) return 0;
+
+    string path  = node->nodes[1]->text;
+    string input = load(path.c_str());
+    if (input == "") return 0;
+    input = "(begin " + input + ")";
+    Nodes::size_type i;
+    for (i = 0; i < root->nodes.size(); ++i)
+    {
+        if (root->nodes[i] == node) break;
+    }
+    Node* n = Node::fromString(input);
+    root->nodes[i] = n;
+    return 1;
+}
+
+int Node::execLoadSyntaxes()
+{
+    while (foreachNodes(this, &Node::execLoadSyntax));
+    return 0;
+}

@@ -21,14 +21,15 @@ Object* StringToNumber::eval(Environment* env)
     return NULL;
 }
 
-Object* StringToNumber::apply(Objects* arguments)
+Object* StringToNumber::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 1)
     {
         printf("string->number got error");
         return NULL;
     }
-    Object* o = arguments->at(0);
+    Object* o = as->at(0);
     if (o->type() != Object::STRING) return new Number(0);
     String* str = (String*)o;
     std::string text = str->value();

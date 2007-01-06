@@ -61,6 +61,7 @@ MacroFilterTest.cpp\
 ../src/LetAsterisk.cpp\
 ../src/LetAsterisk.h\
 ../src/scheme.cpp\
+../src/load.cpp\
 ../src/scheme.h\
 ../src/Application.cpp\
 ../src/Application.h\
@@ -82,4 +83,6 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/NumberEqual.cpp\
 ../src/PrimitiveProcedures/NumberEqual.h\
 ../src/PrimitiveProcedures/StringToNumber.cpp\
-../src/PrimitiveProcedures/StringToNumber.h
+../src/PrimitiveProcedures/StringToNumber.h\
+../src/PrimitiveProcedures/Set.cpp\
+../src/PrimitiveProcedures/Set.h

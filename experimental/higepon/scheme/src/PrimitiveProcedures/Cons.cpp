@@ -21,12 +21,13 @@ Object* Cons::eval(Environment* env)
     return NULL;
 }
 
-Object* Cons::apply(Objects* arguments)
+Object* Cons::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 2)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 2)
     {
         printf("cons need only two arguments");
         return NULL;
     }
-    return new Pair(arguments->at(0), arguments->at(1));
+    return new Pair(as->at(0), as->at(1));
 }

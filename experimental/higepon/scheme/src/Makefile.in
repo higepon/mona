@@ -60,7 +60,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
 	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
 	scheme-Plus.$(OBJEXT) scheme-Cons.$(OBJEXT) \
-	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
@@ -226,6 +226,8 @@ PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
+PrimitiveProcedures/Set.cpp\
+PrimitiveProcedures/Set.h\
 PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
 PrimitiveProcedures/Cdr.cpp\
@@ -481,6 +483,12 @@ scheme-Cons.o: PrimitiveProcedures/Cons.cpp
 
 scheme-Cons.obj: PrimitiveProcedures/Cons.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.obj `if test -f 'PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cons.cpp'; fi`
+
+scheme-Set.o: PrimitiveProcedures/Set.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Set.o `test -f 'PrimitiveProcedures/Set.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Set.cpp
+
+scheme-Set.obj: PrimitiveProcedures/Set.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Set.obj `if test -f 'PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Set.cpp'; fi`
 
 scheme-Car.o: PrimitiveProcedures/Car.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Car.o `test -f 'PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Car.cpp

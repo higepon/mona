@@ -36,13 +36,13 @@ namespace std {
 #include "PrimitiveProcedures/StringP.h"
 #include "PrimitiveProcedures/StringToNumber.h"
 #include "PrimitiveProcedures/NumberEqual.h"
-//#include "PrimitiveProcedures/NumberGt.h"
+#include "PrimitiveProcedures/Set.h"
 
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);
 monash::Objects* listOfValues(monash::Objects* objects, monash::Environment* env);
-monash::Object* apply(monash::Object* procedure, monash::Objects* arguments);
+monash::Object* apply(monash::Object* procedure, monash::Objects* arguments, monash::Environment* env);
 bool isTrue(monash::Object* exp);
 std::string load(const char* file);
 void setInputText(const std::string& text);

@@ -153,7 +153,14 @@ void MacroFilter::findDefineSyntaxes(Node* root, Nodes& defineSyntaxes)
     Node* left = root->nodes[0];
     if (left->isSymbol() && left->text == "define-syntax")
     {
-        defineSyntaxes.push_back(root);
+        defineSyntaxes.push_back(root->clone());
+
+//         // ugly fix me.
+//         // define-syntax is replaced to true!
+//         root->nodes.clear();
+//         root->type = Node::NUMBER;
+//         root->value = 1;
+        return;
     }
 
     for (Nodes::const_iterator p = root->nodes.begin() + 1; p != root->nodes.end(); ++p)

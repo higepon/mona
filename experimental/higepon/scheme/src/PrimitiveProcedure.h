@@ -4,6 +4,8 @@
 #include "Object.h"
 #include <stdio.h>
 
+monash::Objects* listOfValues(monash::Objects* objects, monash::Environment* env);
+
 namespace monash {
 
 class PrimitiveProcedure : public Object
@@ -14,8 +16,8 @@ public:
 
     virtual std::string toString() = 0;
     virtual int type() const { return Object::PRIMITIVE_PROCEDURE; }
-    virtual Object* eval(Environment* env)    = 0;
-    virtual Object* apply(Objects* arguments) = 0;
+    virtual Object* eval(Environment* env)                      = 0;
+    virtual Object* apply(Objects* arguments, Environment* env) = 0;
 };
 
 }; // namespace monash

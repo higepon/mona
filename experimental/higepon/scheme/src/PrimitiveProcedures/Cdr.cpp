@@ -21,14 +21,15 @@ Object* Cdr::eval(Environment* env)
     return NULL;
 }
 
-Object* Cdr::apply(Objects* arguments)
+Object* Cdr::apply(Objects* arguments, Environment* env)
 {
-    if (arguments->size() != 1)
+    Objects* as = listOfValues(arguments, env);
+    if (as->size() != 1)
     {
         printf("cdr need only one argument");
         return NULL;
     }
-    Object* o = arguments->at(0);
+    Object* o = as->at(0);
     if (o->type() != Object::PAIR)
     {
         printf("cdr argument need to be pair");

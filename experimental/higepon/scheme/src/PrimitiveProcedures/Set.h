@@ -1,16 +1,18 @@
-#ifndef __CDR_H__
-#define __CDR_H__
+#ifndef __SET_H__
+#define __SET_H__
 
 #include "PrimitiveProcedure.h"
-#include "Pair.h"
+#include "Number.h"
+#include "Variable.h"
+#include "Environment.h"
 
 namespace monash {
 
-class Cdr : public PrimitiveProcedure
+class Set : public PrimitiveProcedure
 {
 public:
-    Cdr();
-    virtual ~Cdr();
+    Set();
+    virtual ~Set();
 
     virtual std::string toString();
     virtual Object* eval(Environment* env);
@@ -19,4 +21,4 @@ public:
 
 }; // namespace monash
 
-#endif // __CDR_H__
+#endif // __SET_H__

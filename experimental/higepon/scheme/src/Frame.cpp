@@ -24,7 +24,23 @@ Frame::~Frame()
 Object* Frame::lookup(Variable* variable)
 {
     FrameMap::const_iterator it = map_.find(variable->name());
-    if (it == map_.end()) return NULL;
+
+//     printf("******************frame%d\n", it == map_.end());
+//     for (FrameMap::const_iterator p = map_.begin(); p != map_.end(); ++p)
+//     {
+//         printf("%s\n", (*p).first.c_str());
+//     }
+//     printf("frame end\n");
+//     printf("%d\n", it == map_.end());
+    if (it == map_.end())
+    {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug 
+        return NULL;
+    }
+    else
+    {
+//        printf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, (*it).second);fflush(stdout);// debug
+    }
     return (*it).second;
 }
 

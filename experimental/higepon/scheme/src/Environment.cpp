@@ -4,7 +4,7 @@
 using namespace monash;
 using namespace std;
 
-Environment::Environment()
+Environment::Environment(MacroFilter& filter) : filter_(filter)
 {
     frames_ = new Frames();
     ASSERT(frames_);
@@ -20,7 +20,7 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment();ASSERT(env);
+    Environment* env = new Environment(filter_);ASSERT(env);
     Frames* target = env->frames();
     for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
     {
@@ -62,6 +62,9 @@ void Environment::extend(Variables* variables, Objects* objects)
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
+//    printf("$$$$$$$$$$$$$$ we need %s\n", variable->toString().c_str());
+
+
 //     for (Frames::const_iterator frame = frames_->begin(); frame != frames_->end(); frame++)
 //     {
 //         Object* found = (*frame)->lookup(variable);
@@ -73,6 +76,7 @@ Object* Environment::lookupVariableValue(Variable* variable)
     {
         Frame* frame = frames_->at(i);
         Object* found = frame->lookup(variable);
+//        printf("found=%x\n", found);
         if (NULL != found) {
 //            printf("%s found %d type=%d\n", variable->toString().c_str(), i, found->type());
             return found;

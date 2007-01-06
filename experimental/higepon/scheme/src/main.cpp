@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     input = "(begin " + input + " )";
 
     Node* node = Node::fromString(input);
+    node->execLoadSyntaxes();
 
     MacroFilter f;
     f.filter(node);
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "translate error \n");
         return -1;
     }
-    Environment* env = new Environment();ASSERT(env);
+    Environment* env = new Environment(f);ASSERT(env);
     registerPrimitives(env);
 
     // let's eval!

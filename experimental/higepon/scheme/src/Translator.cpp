@@ -172,16 +172,19 @@ int Translator::translateDefinition(Node* node, Object** object)
 
 int Translator::translateIf(Node* node, Object** object)
 {
-    if (L() != 4) return SYNTAX_ERROR;
-    Object* predicate;
-    Object* consequent;
-    Object* alternative;
+    if (L() > 4 || L() < 3) return SYNTAX_ERROR;
+    Object* predicate = NULL;
+    Object* consequent = NULL;
+    Object* alternative = NULL;
     int ret = translate(&N(1), &predicate);
     if (ret != SUCCESS) return ret;
     ret = translate(&N(2), &consequent);
     if (ret != SUCCESS) return ret;
-    ret = translate(&N(3), &alternative);
-    if (ret != SUCCESS) return ret;
+    if (L() == 4)
+    {
+        ret = translate(&N(3), &alternative);
+        if (ret != SUCCESS) return ret;
+    }
     *object = new SpecialIf(predicate, consequent, alternative);ASSERT(*object);
     return SUCCESS;
 }

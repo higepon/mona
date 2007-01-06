@@ -8,6 +8,7 @@
 #include "Tokenizer.h"
 #include "Parser.h"
 
+std::string load(const char* file);
 namespace monash {
 
 class Node;
@@ -54,6 +55,10 @@ public:
     static void extractBindings(Node* m, Node* n, BindMap& bindMap);
     static void extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap);
 
+    int foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node));
+    int foreachNodes(Node* root, int (Node::*f)(Node*, Node*));
+    int execLoadSyntax(Node* root, Node* node);
+    int execLoadSyntaxes();
     Nodes nodes;
     std::string text;
     int value;

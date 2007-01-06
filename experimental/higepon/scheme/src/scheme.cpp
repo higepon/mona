@@ -34,22 +34,43 @@ bool isPrimitiveProcedure(Object* p)
     return p->type() == Object::PRIMITIVE_PROCEDURE;
 }
 
-Object* apply(Object* procedure, Objects* arguments)
+Object* apply(Object* procedure, Objects* arguments, Environment* env)
 {
     if (isCompoundProcedure(procedure))
     {
+       Objects* as = listOfValues(arguments, env);
         Procedure* p = (Procedure*)procedure;
 //        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
-        Environment* env = p->env()->clone();
-        env->extend(p->parameters(), arguments); // doubt? we need copy?
+        Environment* e = p->env()->clone();
+
+        if (arguments->size() != 0)
+        {
+            printf("arg=%x\n", arguments->at(0));fflush(stdout);
+        }
+
+ 
+        e->extend(p->parameters(), as); // doubt? we need copy?
+//        printf("###############################################################################\n");fflush(stdout);
+        Variables* vs = p->parameters();
+//         for (Variables::const_iterator i = vs->begin(); i != vs->end(); ++i)
+//         {
+//             printf("variable %s\n", (*i)->toString().c_str());fflush(stdout);
+//         }
+
+//         for (Objects::const_iterator i = as->begin(); i != as->end(); ++i)
+//         {
+//             printf("object %x\n",*i);fflush(stdout);
+//         }
+        
+
 // bug?
         //evalSequence(p->body(), env);
-        return evalSequence(p->body(), env);
+        return evalSequence(p->body(), e);
     }
     else if (isPrimitiveProcedure(procedure))
     {
         PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
-        return p->apply(arguments);
+        return p->apply(arguments, env);
     }
     else
     {
@@ -86,4 +107,5 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("string->number"), new StringToNumber());
     env->defineVariable(new Variable("#f"),             new Number(0));
     env->defineVariable(new Variable("#t"),             new Number(1));
+    env->defineVariable(new Variable("set!"),           new Set());
 }

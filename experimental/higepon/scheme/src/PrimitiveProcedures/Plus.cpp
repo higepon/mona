@@ -21,10 +21,11 @@ Object* Plus::eval(Environment* env)
     return NULL;
 }
 
-Object* Plus::apply(Objects* arguments)
+Object* Plus::apply(Objects* arguments, Environment* env)
 {
+    Objects* as = listOfValues(arguments, env);
     int total = 0;
-    for (Objects::const_iterator it = arguments->begin(); it != arguments->end(); it++)
+    for (Objects::const_iterator it = as->begin(); it != as->end(); it++)
     {
         Object* o = (*it);
         if (o->type() == Object::NUMBER)
