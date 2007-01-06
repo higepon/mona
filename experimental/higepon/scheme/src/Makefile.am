@@ -57,6 +57,12 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
+PrimitiveProcedures/Minus.cpp\
+PrimitiveProcedures/Minus.h\
+PrimitiveProcedures/Devide.cpp\
+PrimitiveProcedures/Devide.h\
+PrimitiveProcedures/Multiply.cpp\
+PrimitiveProcedures/Multiply.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
@@ -75,6 +81,8 @@ PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
+PrimitiveProcedures/StringAppend.cpp\
+PrimitiveProcedures/StringAppend.h\
 scheme.h\
 scheme.cpp\
 Macro.h\

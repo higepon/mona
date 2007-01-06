@@ -43,12 +43,6 @@ Object* apply(Object* procedure, Objects* arguments, Environment* env)
 //        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
         Environment* e = p->env()->clone();
 
-        if (arguments->size() != 0)
-        {
-            printf("arg=%x\n", arguments->at(0));fflush(stdout);
-        }
-
- 
         e->extend(p->parameters(), as); // doubt? we need copy?
 //        printf("###############################################################################\n");fflush(stdout);
         Variables* vs = p->parameters();
@@ -97,6 +91,9 @@ void display(Object* exp)
 void registerPrimitives(Environment* env)
 {
     env->defineVariable(new Variable("+"),              new Plus());
+    env->defineVariable(new Variable("-"),              new Minus());
+    env->defineVariable(new Variable("*"),              new Multiply());
+    env->defineVariable(new Variable("/"),              new Devide());
     env->defineVariable(new Variable("="),              new NumberEqual());
     env->defineVariable(new Variable("cons"),           new Cons());
     env->defineVariable(new Variable("car"),            new Car());
@@ -105,6 +102,7 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("string?"),        new StringP());
     env->defineVariable(new Variable("number?"),        new NumberP());
     env->defineVariable(new Variable("string->number"), new StringToNumber());
+    env->defineVariable(new Variable("string-append"),  new StringAppend());
     env->defineVariable(new Variable("#f"),             new Number(0));
     env->defineVariable(new Variable("#t"),             new Number(1));
     env->defineVariable(new Variable("set!"),           new Set());

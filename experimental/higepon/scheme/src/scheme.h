@@ -27,7 +27,9 @@ namespace std {
 #include "Translator.h"
 #include "Macro.h"
 #include "PrimitiveProcedures/Plus.h"
-//#include "PrimitiveProcedures/Minus.h"
+#include "PrimitiveProcedures/Minus.h"
+#include "PrimitiveProcedures/Devide.h"
+#include "PrimitiveProcedures/Multiply.h"
 #include "PrimitiveProcedures/Car.h"
 #include "PrimitiveProcedures/Cdr.h"
 #include "PrimitiveProcedures/Cons.h"
@@ -35,6 +37,7 @@ namespace std {
 #include "PrimitiveProcedures/NumberP.h"
 #include "PrimitiveProcedures/StringP.h"
 #include "PrimitiveProcedures/StringToNumber.h"
+#include "PrimitiveProcedures/StringAppend.h"
 #include "PrimitiveProcedures/NumberEqual.h"
 #include "PrimitiveProcedures/Set.h"
 

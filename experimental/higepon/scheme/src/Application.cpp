@@ -27,7 +27,7 @@ Object* Application::eval(Environment* env)
     Object* procedure =this->function()->eval(env);
     if (procedure->type() != Object::PROCEDURE && procedure->type() != Object::PRIMITIVE_PROCEDURE)
     {
-        printf("error %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        printf("error %s %s:%d[%d]\n", __func__, __FILE__, __LINE__, procedure->type());fflush(stdout);// debug
         exit(-1);
     }
 

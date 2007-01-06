@@ -68,6 +68,12 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedure.h\
 ../src/PrimitiveProcedures/Plus.cpp\
 ../src/PrimitiveProcedures/Plus.h\
+../src/PrimitiveProcedures/Minus.cpp\
+../src/PrimitiveProcedures/Minus.h\
+../src/PrimitiveProcedures/Devide.cpp\
+../src/PrimitiveProcedures/Devide.h\
+../src/PrimitiveProcedures/Multiply.cpp\
+../src/PrimitiveProcedures/Multiply.h\
 ../src/PrimitiveProcedures/Cons.cpp\
 ../src/PrimitiveProcedures/Cons.h\
 ../src/PrimitiveProcedures/Car.cpp\
@@ -84,5 +90,7 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/NumberEqual.h\
 ../src/PrimitiveProcedures/StringToNumber.cpp\
 ../src/PrimitiveProcedures/StringToNumber.h\
+../src/PrimitiveProcedures/StringAppend.cpp\
+../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h
