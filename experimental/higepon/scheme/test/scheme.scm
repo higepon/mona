@@ -1,3 +1,19 @@
+(define caar
+  (lambda (x)
+    (car (car x))))
+
+(define cdar
+  (lambda (x)
+    (cdr (car x))))
+
+(define cadr
+  (lambda (x)
+    (car (cdr x))))
+
+(define cddr
+  (lambda (x)
+    (cdr (cdr x))))
+
 (define newline
   (lambda () (display "\n")))
 
@@ -6,8 +22,8 @@
   (lambda (o) (display o)))
 
 (define zero?
-  (lambda (a)
-    (= 0 a)))
+  (lambda (x)
+    (= 0 x)))
 
 (define for-each
   (lambda (proc items)
@@ -16,13 +32,17 @@
         (begin (proc (car items))
                (for-each proc (cdr items))))))
 
+(define not
+  (lambda (condition)
+    (if condition #f #t)))
+
 ;; fix me!
 (define null 12345678)
 
 
 (define null?
-  (lambda (a)
-    (= a null)))
+  (lambda (x)
+    (= x null)))
 
 (define-syntax list
   (syntax-rules ()
