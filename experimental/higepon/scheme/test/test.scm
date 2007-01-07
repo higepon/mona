@@ -135,31 +135,40 @@
 ;;(assert-true test-name (= 4 (cond (#f 3) (#t 4) (#f 2))))
 
 ;; ...をリネームするコードを書かないとダメだね．
-;; (define-syntax cond*
-;; (syntax-rules (else =>)
+;;(define-syntax cond*
+;;(syntax-rules (else =>)
 ;;     ((cond* (else result1 result2 ...))
-;;      (begin result1 result2 ...))
+;;      (begin result1 result2 ...))))
 ;;     ((cond* (test => result))
 ;;      (let ((temp test))
-;;        (if temp (result temp))))
+;;        (if temp (result temp))))))
 ;;     ((cond* (test => result) clause1 clause2 ...)
 ;;      (let ((temp test))
 ;;        (if temp
 ;;            (result temp)
 ;;            (cond* clause1 clause2 ...))))
-;;      ((cond* (test)) test)
+;;     ((cond* (test)) test)
 ;;     ((cond* (test) clause1 clause2 ...)
 ;;      (let ((temp test))
 ;;        (if temp
 ;;            temp
-;;            (cond* clause1 clause2 ...))))))
+;;            (cond* clause1 clause2 ...))))
 ;;     ((cond* (test result1 result2 ...))
-;;      (if test (begin result1 result2 ...)))
+;;       (if test (begin result1 result2 ...)))))
 ;;     ((cond* (test result1 result2 ...)
 ;;            clause1 clause2 ...)
 ;;      (if test
 ;;          (begin result1 result2 ...)
 ;;          (cond* clause1 clause2 ...)))))
+
+
+;; (define-syntax c
+;;   (syntax-rules ()
+;;     ((c (test result1 result2 ...)
+;;         clause1 clause2 ...)
+;;      (if test
+;;          (begin result1 result2 ...)
+;;          (c clause1 clause2 ...)))))
 
 ;(assert-true test-name (= 3 ((lambda ()  (cond* (1 => (lambda (x) (+ x 2))) (else 8))))))
 ;; todo
@@ -168,8 +177,7 @@
 ;;       (#t (assert-true test-name #t)))
 
 
+
 ;; report
 (total-report)
-
-
 

@@ -49,8 +49,53 @@ string Node::typeToString()
     }
     return string(buffer);
 }
+#if 0
+void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
+{
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    if (m->isSymbol())
+    {
+        BindObject b;
+        b.node = n;
+        bindMap[m->text] = b;
+        return;
+    }
+    else if (m->isNodes() && n->isNodes())
+    {
+        Nodes::size_type nLength = n->nodes.size();
+        Nodes::size_type mLength = m->nodes.size();
+        for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
+        {
+            if (i == nLength) return;
+            Node* mm = m->nodes[i];
+            Node* nn = n->nodes[i];
+            if (mLength != nLength && mm->isMatchAllKeyword())
+            {
+                BindObject b;
+                for (Nodes::size_type j = i; j < nLength; ++j)
+                {
+                    b.nodes.push_back(n->nodes[j]);
+                }
+                bindMap[mm->text] = b;
+                return;
+            }
+            else
+            {
+               extractBindings(mm, nn, bindMap);
+           }
+        }
+        return;
+    }
+    else
+    {
+        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().c_str(), n->toString().c_str());
+        return;
+    }
+}
+
 
 // macro match しているのが前提
+#else
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
     if (m->isSymbol())
@@ -104,7 +149,7 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
         RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().c_str(), n->toString().c_str());
     }
 }
-
+#endif
 void Node::print(int depth /* = 0 */)
 {
     printf(toString().c_str());

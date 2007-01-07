@@ -109,7 +109,24 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     if (NULL == matchedPattern) return 0;
 
     BindMap bindMap;
+    printf("********************%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    matchedPattern->print();
+    root->print();
+
     Node::extractBindings(matchedPattern, root, bindMap);
+
+
+#if 0
+    static int z = 0;
+        for (BindMap::const_iterator p = bindMap.begin(); p != bindMap.end(); ++p)
+        {
+            printf("<<%s:%s>>\n", (*p).first.c_str(), (*p).second.node->toString().c_str());fflush(stdout);
+        }
+        z++;
+        if (z == 4) exit(-1);
+#endif
+
+
     Node* expanded = m->patterns[matchedPattern]->clone();
     bindMap_ = bindMap;
     Node* wrap =new Node(Node::NODES);
