@@ -49,7 +49,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-MacroMatchTest.$(OBJEXT) \
-	test_cpp-MacroFilterTest.$(OBJEXT) \
+	test_cpp-MacroFilterTest.$(OBJEXT) test_cpp-Error.$(OBJEXT) \
 	test_cpp-Translator.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
 	test_cpp-Number.$(OBJEXT) test_cpp-String.$(OBJEXT) \
 	test_cpp-Definition.$(OBJEXT) test_cpp-Object.$(OBJEXT) \
@@ -171,7 +171,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-test_cpp_CXXFLAGS = -g -Wall -O3 -I../src -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall #-DTRACE_MACRO
+test_cpp_CXXFLAGS = -pg -I ../src -I /usr/local/include/gc -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC
 test_cpp_LDFLAGS = -lcppunit -lgc
 test_cpp_SOURCES = main.cpp\
 yaml.cpp\
@@ -181,6 +181,8 @@ MacroMatchTest.h\
 MacroMatchTest.cpp\
 MacroFilterTest.h\
 MacroFilterTest.cpp\
+../src/Error.h\
+../src/Error.cpp\
 ../src/Translator.h\
 ../src/Translator.cpp\
 ../src/Tokenizer.cpp\
@@ -358,6 +360,12 @@ test_cpp-MacroFilterTest.o: MacroFilterTest.cpp
 
 test_cpp-MacroFilterTest.obj: MacroFilterTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilterTest.obj `if test -f 'MacroFilterTest.cpp'; then $(CYGPATH_W) 'MacroFilterTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilterTest.cpp'; fi`
+
+test_cpp-Error.o: ../src/Error.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Error.o `test -f '../src/Error.cpp' || echo '$(srcdir)/'`../src/Error.cpp
+
+test_cpp-Error.obj: ../src/Error.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Error.obj `if test -f '../src/Error.cpp'; then $(CYGPATH_W) '../src/Error.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Error.cpp'; fi`
 
 test_cpp-Translator.o: ../src/Translator.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Translator.o `test -f '../src/Translator.cpp' || echo '$(srcdir)/'`../src/Translator.cpp

@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Procedure::Procedure(Lambda* lamba, Environment* env) : env_(env)
+Procedure::Procedure(Lambda* lamba, Environment* env, uint32_t lineno) : env_(env), lineno_(lineno)
 {
     body_ = lamba->body();
     parameters_ = new Variables();ASSERT(parameters_);
@@ -30,6 +30,6 @@ int Procedure::type() const
 
 Object* Procedure::eval(Environment* env)
 {
-    printf("don't eval procedure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return this;
 }

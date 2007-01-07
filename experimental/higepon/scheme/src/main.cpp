@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <time.h>
 
+
 using namespace monash;
 using namespace std;
 
@@ -34,6 +35,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "can not load: %s file\n", argv[1]);
         return -1;
     }
+
+    Error::initialize();
+    Error::file = argv[1];
 
     // todo ugly fixme
     input = "(begin " + input + " )";

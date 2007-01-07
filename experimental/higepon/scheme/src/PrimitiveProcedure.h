@@ -16,6 +16,7 @@ public:
 
     virtual std::string toString() = 0;
     virtual int type() const { return Object::PRIMITIVE_PROCEDURE; }
+    virtual uint32_t lineno() const { return 0; }
     virtual Object* eval(Environment* env)                      = 0;
     virtual Object* apply(Objects* arguments, Environment* env) = 0;
 };

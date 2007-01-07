@@ -17,7 +17,7 @@ std::string Minus::toString()
 
 Object* Minus::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,7 +26,7 @@ Object* Minus::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() == 0 || as->at(0)->type() != Object::NUMBER)
     {
-        fprintf(stderr, "minus error\n");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "minus got wrong arguments")
         return NULL;
     }
     Number* n = (Number*)as->at(0);

@@ -4,7 +4,7 @@
 using namespace std;
 using namespace monash;
 
-Application::Application(Object* function, Objects* arguments) : function_(function), arguments_(arguments)
+Application::Application(Object* function, Objects* arguments, uint32_t lineno) : function_(function), arguments_(arguments), lineno_(lineno)
 {
 }
 
@@ -27,19 +27,9 @@ Object* Application::eval(Environment* env)
     Object* procedure =this->function()->eval(env);
     if (procedure->type() != Object::PROCEDURE && procedure->type() != Object::PRIMITIVE_PROCEDURE)
     {
-        printf("error %s %s:%d[%d]\n", __func__, __FILE__, __LINE__, procedure->type());fflush(stdout);// debug
-        exit(-1);
+        RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().c_str());
     }
 
-    Objects* as = arguments();
-
-//        for (Objects::const_iterator i = as->begin(); i != as->end(); ++i)
-//         {
-//             printf("!!!!!!!!!!!!!!!!!apply as %s\n",(*i)->toString().c_str());fflush(stdout);
-//         }
-
+    //Objects* as = arguments();
     return apply(procedure, arguments(), env);
-
- 
-//    return apply(procedure, listOfValues(this->arguments(), env), env);
 }

@@ -11,6 +11,7 @@ typedef struct Token
     int type;
     std::string text;
     int value;
+    uint32_t lineno;
     enum
     {
         IDENTIFIER,
@@ -36,6 +37,7 @@ protected:
 
     std::string input_;
     std::string::size_type postion_;
+    uint32_t lineno_;
 };
 
 }; // namespace monash

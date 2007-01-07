@@ -9,17 +9,19 @@ namespace monash {
 class Begin : public Object
 {
 public:
-    Begin(Objects* actions);
+    Begin(Objects* actions, uint32_t lineno = 0);
     virtual ~Begin();
 
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);
     virtual Objects* actions() const { return actions_;}
 
 protected:
     Objects* actions_;
+    uint32_t lineno_;
 };
 
 }; // namespace monash

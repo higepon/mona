@@ -39,15 +39,12 @@ void Environment::setVaribale(Variable* variable, Object* value)
             return;
         }
     }
-    printf("unbound variable\n");
+    RAISE_ERROR(variable->lineno(), "set! unbound variable [%s]", variable->toString().c_str());
     return;
 }
 
 void Environment::defineVariable(Variable* variable, Object* value)
 {
-//     Frames::const_iterator firstFrame = frames_->begin();
-//     printf("define %s \n",  variable->name().c_str());
-//     (*firstFrame)->insert(variable, value); insert or overwrite
     Frame* lastFrame = frames_->at(frames_->size() -1);
     lastFrame->insert(variable, value); // insert or overwrite
     return;
@@ -62,29 +59,17 @@ void Environment::extend(Variables* variables, Objects* objects)
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
-//    printf("$$$$$$$$$$$$$$ we need %s\n", variable->toString().c_str());
-
-
-//     for (Frames::const_iterator frame = frames_->begin(); frame != frames_->end(); frame++)
-//     {
-//         Object* found = (*frame)->lookup(variable);
-//         if (NULL != found) return found;
-//     }
     int size = frames_->size();
-//    printf("size=%d\n",frames_->size());
     for (int i = size - 1; i >= 0; i--)
     {
         Frame* frame = frames_->at(i);
         Object* found = frame->lookup(variable);
-//        printf("found=%x\n", found);
         if (NULL != found) {
-//            printf("%s found %d type=%d\n", variable->toString().c_str(), i, found->type());
             return found;
         }
     }
 
-
-    printf("unbound variable %s \n", variable->toString().c_str());
+    RAISE_ERROR(variable->lineno(), "unbound variable [%s]", variable->toString().c_str());
     return NULL;
 }
 

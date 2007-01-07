@@ -3,7 +3,7 @@
 using namespace monash;
 using namespace std;
 
-String::String(const string& value) : value_(value)
+String::String(const string& value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
 {
 }
 
@@ -12,6 +12,11 @@ String::~String()
 }
 
 std::string String::toString()
+{
+    return "string: \"" + value_ + "\"";
+}
+
+std::string String::toStringValue()
 {
     return value_;
 }

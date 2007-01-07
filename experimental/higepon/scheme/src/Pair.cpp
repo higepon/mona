@@ -3,7 +3,7 @@
 using namespace monash;
 using namespace std;
 
-Pair::Pair(Object* first, Object* second) : first_(first), second_(second)
+Pair::Pair(Object* first, Object* second, uint32_t lineno) : first_(first), second_(second), lineno_(lineno)
 {
 }
 

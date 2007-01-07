@@ -17,7 +17,7 @@ std::string Cons::toString()
 
 Object* Cons::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,7 +26,7 @@ Object* Cons::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() != 2)
     {
-        printf("cons need only two arguments");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "cons got %d arguments, but required %d", as->size(), 2);
         return NULL;
     }
     return new Pair(as->at(0), as->at(1));

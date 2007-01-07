@@ -17,7 +17,7 @@ std::string Display::toString()
 
 Object* Display::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,9 +26,9 @@ Object* Display::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() != 1)
     {
-        printf("display got error[%d]", as->size());
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "display got %d arguments, but required %d", as->size(), 1);
         return NULL;
     }
-    printf(as->at(0)->toString().c_str());
+    printf(as->at(0)->toStringValue().c_str());
     return new Number(0); // hutei
 }

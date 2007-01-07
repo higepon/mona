@@ -17,7 +17,7 @@ std::string Cdr::toString()
 
 Object* Cdr::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,13 +26,13 @@ Object* Cdr::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() != 1)
     {
-        printf("cdr need only one argument");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "cdr got %d arguments, but required %d", as->size(), 1);
         return NULL;
     }
     Object* o = as->at(0);
     if (o->type() != Object::PAIR)
     {
-        printf("cdr argument need to be pair");
+        RAISE_ERROR(o->lineno(), "cdr got [%s], but required pair", o->toString().c_str());
         return NULL;
     }
     Pair* p = (Pair*)o;

@@ -40,25 +40,9 @@ Object* apply(Object* procedure, Objects* arguments, Environment* env)
     {
        Objects* as = listOfValues(arguments, env);
         Procedure* p = (Procedure*)procedure;
-//        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
         Environment* e = p->env()->clone();
 
         e->extend(p->parameters(), as); // doubt? we need copy?
-//        printf("###############################################################################\n");fflush(stdout);
-        Variables* vs = p->parameters();
-//         for (Variables::const_iterator i = vs->begin(); i != vs->end(); ++i)
-//         {
-//             printf("variable %s\n", (*i)->toString().c_str());fflush(stdout);
-//         }
-
-//         for (Objects::const_iterator i = as->begin(); i != as->end(); ++i)
-//         {
-//             printf("object %x\n",*i);fflush(stdout);
-//         }
-        
-
-// bug?
-        //evalSequence(p->body(), env);
         return evalSequence(p->body(), e);
     }
     else if (isPrimitiveProcedure(procedure))
@@ -68,7 +52,7 @@ Object* apply(Object* procedure, Objects* arguments, Environment* env)
     }
     else
     {
-        printf("unknown procedure\n");
+        RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().c_str());
         return NULL;
     }
 }

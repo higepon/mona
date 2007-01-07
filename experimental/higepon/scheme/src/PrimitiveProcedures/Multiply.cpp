@@ -12,12 +12,12 @@ Multiply::~Multiply()
 
 std::string Multiply::toString()
 {
-    return "procedure:+";
+    return "procedure:*";
 }
 
 Object* Multiply::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 

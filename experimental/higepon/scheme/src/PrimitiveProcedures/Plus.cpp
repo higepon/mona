@@ -17,7 +17,7 @@ std::string Plus::toString()
 
 Object* Plus::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 

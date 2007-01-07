@@ -17,7 +17,7 @@ std::string NumberP::toString()
 
 Object* NumberP::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,7 +26,7 @@ Object* NumberP::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() != 1)
     {
-        printf("number? got error");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "number? got %d arguments, but required %d", as->size(), 1);
         return NULL;
     }
     Object* o = as->at(0);

@@ -109,12 +109,12 @@
     (assert-true test-name (= 5 (+ a b)))))
 
 ;; todo
-;; (define test-name "let*")
-;; (let* ((a 3) (b 2))
-;;   (assert-true test-name (= 5 (+ a b))))
-;; (let* ((a 3))
-;;   (let* ((b 2))
-;;     (assert-true test-name (= 5 (+ a b)))))
+(define test-name "let*")
+(let* ((a 3) (b 2))
+  (assert-true test-name (= 5 (+ a b))))
+(let* ((a 3))
+  (let* ((b 2))
+    (assert-true test-name (= 5 (+ a b)))))
 
 
 (define test-name "cond")
@@ -133,43 +133,29 @@
       (#f (assert-fail test-name "not reached")))
 ;(assert-true test-name (= 3 (cond (#t 3))))
 ;;(assert-true test-name (= 4 (cond (#f 3) (#t 4) (#f 2))))
-;; (define-syntax cond*
-;; (syntax-rules (else =>)
-;; ((cond* (else result1 result2 ...))
-;; (begin result1 result2 ...))
-;; ((cond* (test => result))
-;; (let ((temp test))
-;; (if temp (result temp))))
-;; ((cond* (test => result) clause1 clause2 ...)
-;; (let ((temp test))
-;; (if temp
-;; (result temp)
-;; (cond* clause1 clause2 ...))))
-;; ((cond* (test)) test)))
-
 
 ;; ...をリネームするコードを書かないとダメだね．
-;;(define-syntax cond*
-;;  (syntax-rules (else =>)
-;;     ((cond (else result1 result2 ...))
+;; (define-syntax cond*
+;; (syntax-rules (else =>)
+;;     ((cond* (else result1 result2 ...))
 ;;      (begin result1 result2 ...))
-;;     ((cond (test => result))
+;;     ((cond* (test => result))
 ;;      (let ((temp test))
 ;;        (if temp (result temp))))
-;;     ((cond (test => result) clause1 clause2 ...)
+;;     ((cond* (test => result) clause1 clause2 ...)
 ;;      (let ((temp test))
 ;;        (if temp
 ;;            (result temp)
-;;            (cond clause1 clause2 ...))))
-;;     ((cond (test)) test)
-;;     ((cond (test) clause1 clause2 ...)
+;;            (cond* clause1 clause2 ...))))
+;;      ((cond* (test)) test)
+;;     ((cond* (test) clause1 clause2 ...)
 ;;      (let ((temp test))
 ;;        (if temp
 ;;            temp
-;;            (cond clause1 clause2 ...))))
-;;     ((cond (test result1 result2 ...))
+;;            (cond* clause1 clause2 ...))))))
+;;     ((cond* (test result1 result2 ...))
 ;;      (if test (begin result1 result2 ...)))
-;;     ((cond (test result1 result2 ...)
+;;     ((cond* (test result1 result2 ...)
 ;;            clause1 clause2 ...)
 ;;      (if test
 ;;          (begin result1 result2 ...)
@@ -181,7 +167,8 @@
 ;;       (#f (assert-fail test-name "not reached"))
 ;;       (#t (assert-true test-name #t)))
 
-;; repor*t
+
+;; report
 (total-report)
 
 

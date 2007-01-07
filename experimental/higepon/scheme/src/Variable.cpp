@@ -3,7 +3,7 @@
 
 using namespace monash;
 
-Variable::Variable(const std::string& name) : name_(name)
+Variable::Variable(const std::string& name, uint32_t lineno /* = 0 */) : name_(name), lineno_(lineno)
 {
 }
 

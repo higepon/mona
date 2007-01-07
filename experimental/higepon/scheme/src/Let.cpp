@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Let::Let(Objects* body, Variables* variables, Objects* values) : body_(body), variables_(variables), values_(values)
+Let::Let(Objects* body, Variables* variables, Objects* values, uint32_t lineno) : body_(body), variables_(variables), values_(values), lineno_(lineno)
 {
 }
 

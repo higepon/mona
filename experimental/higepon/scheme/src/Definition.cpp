@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Definition::Definition(Variable* variable, Object* value) : variable_(variable), value_(value)
+Definition::Definition(Variable* variable, Object* value, uint32_t lineno /* = 0 */) : variable_(variable), value_(value), lineno_(lineno)
 {
 }
 

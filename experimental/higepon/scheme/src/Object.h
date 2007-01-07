@@ -4,6 +4,7 @@
 #define GC_NOT_DLL
 #include "gc_cpp.h"
 #include "Assert.h"
+#include "Error.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -25,7 +26,9 @@ public:
 
 public:
     virtual std::string toString()         = 0;
+    virtual std::string toStringValue() { return toString(); }
     virtual int type() const               = 0;
+    virtual uint32_t lineno() const        = 0;
     virtual Object* eval(Environment* env) = 0;
     enum
     {

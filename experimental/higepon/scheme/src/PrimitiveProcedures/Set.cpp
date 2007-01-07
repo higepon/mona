@@ -17,7 +17,7 @@ std::string Set::toString()
 
 Object* Set::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -28,13 +28,13 @@ Object* Set::apply(Objects* arguments, Environment* env)
 
     if (arguments->size() != 2)
     {
-        fprintf(stderr, "set! wrong arguments\n");
+        RAISE_ERROR(arguments->size() >= 0 ? arguments->at(0)->lineno() : 0, "set! got %d arguments, but required %d", arguments->size(), 2);
         return NULL;
     }
 
     if (arguments->at(0)->type() != Object::VARIABLE)
     {
-        fprintf(stderr, "set! %d?\n", arguments->at(0)->type());
+        RAISE_ERROR(arguments->at(0)->lineno(), "set! got [%s] , but required variable", arguments->at(0)->toString().c_str());
         return NULL;
     }
 

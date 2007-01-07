@@ -21,6 +21,7 @@ Node* Parser::parse()
     {
     case Token::LEFT_PAREN:
         node = new Node(Node::NODES);ASSERT(node);
+        node->lineno = token.lineno;
         for (;;)
         {
             Node* child = parse();
@@ -32,22 +33,25 @@ Node* Parser::parse()
     case Token::NUMBER:
         node = new Node(Node::NUMBER);ASSERT(node);
         node->value = token.value;
+        node->lineno = token.lineno;
         return node;
     case Token::IDENTIFIER:
         node = new Node(Node::SYMBOL);ASSERT(node);
         node->text = token.text;
+        node->lineno = token.lineno;
         return node;
     case Token::QUOTE:
         node = new Node(Node::QUOTE);ASSERT(node);
         node->text = token.text;
+        node->lineno = token.lineno;
         return node;
     case Token::STRING:
         node = new Node(Node::STRING);ASSERT(node);
         node->text = token.text;
+        node->lineno = token.lineno;
         return node;
     default:
-        printf("unknown token\n");
-        exit(-1);
+        RAISE_ERROR(token.lineno, "unknown token");
     }
     return NULL;
 }

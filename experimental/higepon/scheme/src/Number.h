@@ -10,17 +10,20 @@ namespace monash {
 class Number : public Object
 {
 public:
-    Number(int value);
+    Number(int value, uint32_t lineno = 0);
     virtual ~Number();
 
 public:
     virtual std::string toString();
+    virtual std::string toStringValue();
     virtual int type() const;
+    virtual uint32_t lineno() const { return lineno_; }
     virtual int value() const;
     virtual Object* eval(Environment* env);
 
 protected:
     int value_;
+    uint32_t lineno_;
     char buf_[64];
 };
 

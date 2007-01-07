@@ -17,7 +17,7 @@ std::string NumberEqual::toString()
 
 Object* NumberEqual::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 

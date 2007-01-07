@@ -17,7 +17,7 @@ std::string Devide::toString()
 
 Object* Devide::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -26,7 +26,7 @@ Object* Devide::apply(Objects* arguments, Environment* env)
     Objects* as = listOfValues(arguments, env);
     if (as->size() == 0 || as->at(0)->type() != Object::NUMBER)
     {
-        fprintf(stderr, "minus error\n");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "devide got wrong arguments")
         return NULL;
     }
     Number* n = (Number*)as->at(0);
@@ -40,7 +40,7 @@ Object* Devide::apply(Objects* arguments, Environment* env)
             Number* nn = (Number*)o;
             if (nn->value() == 0)
             {
-                fprintf(stderr, "zero division\n");
+                RAISE_ERROR(nn->lineno(), "devide by zero")
                 return NULL;
             }
             total /= nn->value();

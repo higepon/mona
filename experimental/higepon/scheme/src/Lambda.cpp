@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Lambda::Lambda(Objects* body, Variables* parameters) : body_(body), parameters_(parameters)
+Lambda::Lambda(Objects* body, Variables* parameters, uint32_t lineno) : body_(body), parameters_(parameters), lineno_(lineno)
 {
 }
 

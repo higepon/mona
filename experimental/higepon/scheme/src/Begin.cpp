@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Begin::Begin(Objects* actions) : actions_(actions)
+Begin::Begin(Objects* actions, uint32_t lineno) : actions_(actions), lineno_(lineno)
 {
 }
 

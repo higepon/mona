@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Tokenizer::Tokenizer(const std::string& input) : input_(input), postion_(0)
+Tokenizer::Tokenizer(const std::string& input) : input_(input), postion_(0), lineno_(1)
 {
 }
 
@@ -14,6 +14,7 @@ char Tokenizer::getChar()
 {
     if (input_.size() <= postion_) return EOF;
     int c = input_[postion_];
+    if (c == '\n') lineno_++;
     postion_++;
     return c;
 
@@ -37,12 +38,15 @@ once_more:
     {
     case '(':
         token.type = Token::LEFT_PAREN;
+        token.lineno = lineno_;
         return token;
     case ')':
         token.type = Token::RIGHT_PAREN;
+        token.lineno = lineno_;
         return token;
     case '\'':
         token.type = Token::QUOTE;
+        token.lineno = lineno_;
         return token;
     }
     if (c == '-')
@@ -77,6 +81,7 @@ once_more:
         unGetChar();
         token.type = Token::NUMBER;
         token.value = n * minus;
+        token.lineno = lineno_;
         return token;
     }
     if (c == '\"')
@@ -103,6 +108,7 @@ once_more:
         }
         token.text = str;
         token.type = Token::STRING;
+        token.lineno = lineno_;
         return token;
     }
     else
@@ -121,6 +127,7 @@ once_more:
         }
         token.type = Token::IDENTIFIER;
         token.text = str;
+        token.lineno = lineno_;
         return token;
     }
 }

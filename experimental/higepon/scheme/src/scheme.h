@@ -26,6 +26,7 @@ namespace std {
 #include "Parser.h"
 #include "Translator.h"
 #include "Macro.h"
+#include "Error.h"
 #include "PrimitiveProcedures/Plus.h"
 #include "PrimitiveProcedures/Minus.h"
 #include "PrimitiveProcedures/Devide.h"

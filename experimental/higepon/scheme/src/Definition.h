@@ -10,7 +10,7 @@ namespace monash {
 class Definition : public Object
 {
 public:
-    Definition(Variable* variable, Object* value);
+    Definition(Variable* variable, Object* value, uint32_t lineno = 0);
     virtual ~Definition();
 
 public:
@@ -18,11 +18,13 @@ public:
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual Variable* variable() const { return variable_; }
+    virtual uint32_t lineno() const { return lineno_; }
     virtual Object* value() const { return value_; }
 
 protected:
     Variable* variable_;
     Object* value_;
+    uint32_t lineno_;
 };
 
 }; // namespace monash

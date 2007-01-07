@@ -9,11 +9,12 @@ namespace monash {
 class Lambda : public Object
 {
 public:
-    Lambda(Objects* body, Variables* parameters);
+    Lambda(Objects* body, Variables* parameters, uint32_t lineno = 0);
     virtual ~Lambda();
 
     virtual std::string toString();
     virtual int type() const;
+    virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);
 
     Objects* body() const { return body_; }
@@ -22,6 +23,7 @@ public:
 protected:
     Objects* body_;
     Variables* parameters_;
+    uint32_t lineno_;
 };
 
 }; // namespace monash

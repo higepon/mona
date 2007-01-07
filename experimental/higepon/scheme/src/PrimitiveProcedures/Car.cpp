@@ -17,7 +17,7 @@ std::string Car::toString()
 
 Object* Car::eval(Environment* env)
 {
-    printf("don't eval me");
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
@@ -27,13 +27,13 @@ Object* Car::apply(Objects* arguments, Environment* env)
 
     if (as->size() != 1)
     {
-        printf("car need only one argument");
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "car got %d arguments, but required %d", as->size(), 1);
         return NULL;
     }
     Object* o = as->at(0);
     if (o->type() != Object::PAIR)
     {
-        printf("car argument need to be pair");
+        RAISE_ERROR(o->lineno(), "car got [%s], but required pair", o->toString().c_str());
         return NULL;
     }
     Pair* p = (Pair*)o;

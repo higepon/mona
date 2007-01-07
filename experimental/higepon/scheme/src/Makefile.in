@@ -66,7 +66,8 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
 	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
-	scheme-MacroFilter.$(OBJEXT) scheme-load.$(OBJEXT)
+	scheme-MacroFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
+	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -168,7 +169,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg -I  /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC -O0 -gstabs+ -Wall #-DTRACE_MACRO
+scheme_CXXFLAGS = -pg -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC
 scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
@@ -253,6 +254,8 @@ Macro.h\
 Macro.cpp\
 MacroFilter.h\
 MacroFilter.cpp\
+Error.cpp\
+Error.h\
 load.cpp
 
 all: all-am
@@ -566,6 +569,12 @@ scheme-MacroFilter.o: MacroFilter.cpp
 
 scheme-MacroFilter.obj: MacroFilter.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroFilter.obj `if test -f 'MacroFilter.cpp'; then $(CYGPATH_W) 'MacroFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilter.cpp'; fi`
+
+scheme-Error.o: Error.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Error.o `test -f 'Error.cpp' || echo '$(srcdir)/'`Error.cpp
+
+scheme-Error.obj: Error.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Error.obj `if test -f 'Error.cpp'; then $(CYGPATH_W) 'Error.cpp'; else $(CYGPATH_W) '$(srcdir)/Error.cpp'; fi`
 
 scheme-load.o: load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.o `test -f 'load.cpp' || echo '$(srcdir)/'`load.cpp

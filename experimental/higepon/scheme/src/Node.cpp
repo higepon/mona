@@ -6,6 +6,7 @@ using namespace std;
 Node* Node::clone() const
 {
     Node* node = new Node(type);
+    node->lineno = lineno;
     if (isNodes())
     {
         for (Nodes::const_iterator p = nodes.begin(); p != nodes.end(); ++p)
@@ -100,10 +101,7 @@ void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, B
     }
     else
     {
-        printf("*************[%d][%d]", m->isNodes(), n->nodes[i]->type);
-        m->print();
-        n->print();
-        exit(-1);
+        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().c_str(), n->toString().c_str());
     }
 }
 

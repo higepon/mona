@@ -2,9 +2,10 @@
 
 using namespace monash;
 
-SpecialIf::SpecialIf(Object* predicate, Object* consequent, Object* alternative) : predicate_(predicate)
-                                                                                 , consequent_(consequent)
-                                                                                 , alternative_(alternative)
+SpecialIf::SpecialIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno) : predicate_(predicate)
+                                                                                                  , consequent_(consequent)
+                                                                                                  , alternative_(alternative)
+                                                                                                  , lineno_(lineno)
 {
 }
 
@@ -36,7 +37,7 @@ Object* SpecialIf::eval(Environment* env)
         }
         else
         {
-            return new Number(0); // false
+            return new Number(0, this->predicate()->lineno()); // false
         }
     }
 }

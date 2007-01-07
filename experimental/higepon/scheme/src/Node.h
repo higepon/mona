@@ -6,6 +6,7 @@
 #include <map>
 #include <stdio.h>
 #include "Tokenizer.h"
+#include "Error.h"
 #include "Parser.h"
 
 std::string load(const char* file);
@@ -35,7 +36,7 @@ public:
 class Node
 {
 public:
-    Node(int type) : type(type) {}
+    Node(int type) : type(type), lineno(0) {}
     ~Node() {}
 
 
@@ -64,6 +65,7 @@ public:
     std::string text;
     int value;
     int type;
+    uint32_t lineno;
 
     enum
     {

@@ -17,50 +17,21 @@ Translator::~Translator()
 {
 }
 
-int Translator::translateDefineSyntax(Node* node)
-{
-    if (L() != 3) return SYNTAX_ERROR;
-    if (!N(1)->isSymbol()) return SYNTAX_ERROR;
-    if (!N(2)->isNodes() || LL(2) < 3) return SYNTAX_ERROR;
-    if (!NN(2, 0)->isSymbol() || NN(2, 0)->text != "syntax-rules") return SYNTAX_ERROR;
-    if (!NN(2, 1)->isNodes()) return SYNTAX_ERROR;
-    // macro name
-    Macro* macro = new Macro(N(1)->text);
-
-    // store reserved words
-    for (Nodes::const_iterator p = NN(2, 1)->nodes.begin(); p != NN(2, 1)->nodes.end(); ++p)
-    {
-        Node* n = (*p);
-        if (!n->isSymbol()) return SYNTAX_ERROR;
-        macro->reservedWords.push_back(n->text);
-    }
-    // store pattern / definition
-    for (Nodes::size_type i = 2; i < LL(2); ++i)
-    {
-        Node* n = NN(2, i);
-        if (!n->isNodes() || n->nodes.size() != 2) return SYNTAX_ERROR;
-        macro->addPattern(n->nodes[0], n->nodes[1]);
-    }
-//    macros_[macro->name] = macro;
-    return SUCCESS;
-}
-
-
 int Translator::translatePrimitive(Node* node, Object** object)
 {
     switch(node->type)
     {
     case Node::NUMBER:
-        *object = new Number(node->value);ASSERT(*object);
+        *object = new Number(node->value, node->lineno);ASSERT(*object);
         return SUCCESS;
     case Node::STRING:
-        *object = new String(node->text);ASSERT(*object);
+        *object = new String(node->text, node->lineno);ASSERT(*object);
         return SUCCESS;
     case Node::QUOTE:
-        *object = new Quote(node->text);ASSERT(*object);
+        *object = new Quote(node->text, node->lineno);ASSERT(*object);
         return SUCCESS;
     case Node::SYMBOL:
-        *object = new Variable(node->text);ASSERT(*object);
+        *object = new Variable(node->text, node->lineno);ASSERT(*object);
         return SUCCESS;
     }
     return SYNTAX_ERROR;
@@ -71,11 +42,11 @@ int Translator::translateDefinition(Node* node, Object** object)
     if (L() != 3) return SYNTAX_ERROR;
     Node* symbol = N(1);
     if (symbol->type != Node::SYMBOL) return SYNTAX_ERROR;
-    Variable* variable = new Variable(symbol->text);ASSERT(variable);
+    Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
     Node* argument = N(2);
     Object* argumentObject;
     if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
-    *object = new Definition(variable, argumentObject);ASSERT(*object);
+    *object = new Definition(variable, argumentObject, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -94,7 +65,7 @@ int Translator::translateIf(Node* node, Object** object)
         ret = translate(&N(3), &alternative);
         if (ret != SUCCESS) return ret;
     }
-    *object = new SpecialIf(predicate, consequent, alternative);ASSERT(*object);
+    *object = new SpecialIf(predicate, consequent, alternative, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -130,7 +101,7 @@ int Translator::translateCond(Node* node, Object** object)
                 if (ret != SUCCESS) return ret;
                 Objects* arguments = new Objects;ASSERT(arguments);
                 arguments->push_back(cond);
-                Object* application = new Application(action, arguments);ASSERT(application);
+                Object* application = new Application(action, arguments, action->lineno());ASSERT(application);
                 Objects* actions = new Objects;ASSERT(actions);
                 actions->push_back(application);
                 Clause* c = new Clause(cond, actions);
@@ -156,7 +127,7 @@ int Translator::translateCond(Node* node, Object** object)
             }
         }
     }
-    *object = new Cond(clauses, elseActions);ASSERT(*object);
+    *object = new Cond(clauses, elseActions, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -171,7 +142,7 @@ int Translator::translateBegin(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new Begin(objects);ASSERT(*object);
+    *object = new Begin(objects, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -184,7 +155,7 @@ int Translator::translateLambda(Node* node, Object** object)
     {
         Node* param = NN(1, i);
         if (param->type != Node::SYMBOL) return SYNTAX_ERROR;
-        Variable* v = new Variable(param->text);
+        Variable* v = new Variable(param->text, param->lineno);
         ASSERT(v);
         variables->push_back(v);
     }
@@ -197,7 +168,7 @@ int Translator::translateLambda(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Lambda(body, variables);ASSERT(*object);
+    *object = new Lambda(body, variables, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -214,7 +185,7 @@ int Translator::translateLet(Node* node, Object** object)
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
         if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
-        Variable* v = new Variable(parameter->nodes[0]->text);
+        Variable* v = new Variable(parameter->nodes[0]->text, parameter->nodes[0]->lineno);
         ASSERT(v);
         variables->push_back(v);
         Object* value;
@@ -231,7 +202,7 @@ int Translator::translateLet(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Let(body, variables, values);ASSERT(*object);
+    *object = new Let(body, variables, values, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -248,7 +219,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
         Node* parameter = parameterNodes->at(i);
         if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
         if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
-        Variable* v = new Variable(parameter->nodes[0]->text);
+        Variable* v = new Variable(parameter->nodes[0]->text, parameter->nodes[0]->lineno);
         ASSERT(v);
         variables->push_back(v);
         Object* value;
@@ -265,7 +236,7 @@ int Translator::translateLetAsterisk(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new LetAsterisk(body, variables, values);ASSERT(*object);
+    *object = new LetAsterisk(body, variables, values, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -282,7 +253,7 @@ int Translator::translateApplication(Node* node, Object** object)
         if (ret != SUCCESS) return ret;
         arguments->push_back(object);
     }
-    *object = new Application(f, arguments);ASSERT(*object);
+    *object = new Application(f, arguments, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -353,7 +324,6 @@ int Translator::translate(Node** n, Object** object)
     {
         return translateApplication(node, object);
     }
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return SYNTAX_ERROR;
 }
 
@@ -385,6 +355,34 @@ int Translator::translateOr(Node* node, Object** object)
         objects->push_back(object);
     }
     *object = new Or(objects);ASSERT(*object);
+    return SUCCESS;
+}
+
+int Translator::translateDefineSyntax(Node* node)
+{
+    if (L() != 3) return SYNTAX_ERROR;
+    if (!N(1)->isSymbol()) return SYNTAX_ERROR;
+    if (!N(2)->isNodes() || LL(2) < 3) return SYNTAX_ERROR;
+    if (!NN(2, 0)->isSymbol() || NN(2, 0)->text != "syntax-rules") return SYNTAX_ERROR;
+    if (!NN(2, 1)->isNodes()) return SYNTAX_ERROR;
+    // macro name
+    Macro* macro = new Macro(N(1)->text);
+
+    // store reserved words
+    for (Nodes::const_iterator p = NN(2, 1)->nodes.begin(); p != NN(2, 1)->nodes.end(); ++p)
+    {
+        Node* n = (*p);
+        if (!n->isSymbol()) return SYNTAX_ERROR;
+        macro->reservedWords.push_back(n->text);
+    }
+    // store pattern / definition
+    for (Nodes::size_type i = 2; i < LL(2); ++i)
+    {
+        Node* n = NN(2, i);
+        if (!n->isNodes() || n->nodes.size() != 2) return SYNTAX_ERROR;
+        macro->addPattern(n->nodes[0], n->nodes[1]);
+    }
+//    macros_[macro->name] = macro;
     return SUCCESS;
 }
 #endif
