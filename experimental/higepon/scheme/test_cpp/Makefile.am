@@ -68,8 +68,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/Plus.h\
 ../src/PrimitiveProcedures/Minus.cpp\
 ../src/PrimitiveProcedures/Minus.h\
-../src/PrimitiveProcedures/Devide.cpp\
-../src/PrimitiveProcedures/Devide.h\
+../src/PrimitiveProcedures/Divide.cpp\
+../src/PrimitiveProcedures/Divide.h\
 ../src/PrimitiveProcedures/Multiply.cpp\
 ../src/PrimitiveProcedures/Multiply.h\
 ../src/PrimitiveProcedures/Cons.cpp\

@@ -55,16 +55,16 @@ PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
 PrimitiveProcedures/Minus.cpp\
 PrimitiveProcedures/Minus.h\
-PrimitiveProcedures/Devide.cpp\
-PrimitiveProcedures/Devide.h\
+PrimitiveProcedures/Divide.cpp\
+PrimitiveProcedures/Divide.h\
 PrimitiveProcedures/Multiply.cpp\
 PrimitiveProcedures/Multiply.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
+PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
@@ -88,6 +88,7 @@ MacroFilter.cpp\
 Error.cpp\
 Error.h\
 load.cpp
+
 
 # And.cpp\
 # And.h\

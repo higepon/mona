@@ -64,7 +64,7 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-LetAsterisk.$(OBJEXT) test_cpp-scheme.$(OBJEXT) \
 	test_cpp-load.$(OBJEXT) test_cpp-Application.$(OBJEXT) \
 	test_cpp-Plus.$(OBJEXT) test_cpp-Minus.$(OBJEXT) \
-	test_cpp-Devide.$(OBJEXT) test_cpp-Multiply.$(OBJEXT) \
+	test_cpp-Divide.$(OBJEXT) test_cpp-Multiply.$(OBJEXT) \
 	test_cpp-Cons.$(OBJEXT) test_cpp-Car.$(OBJEXT) \
 	test_cpp-Cdr.$(OBJEXT) test_cpp-Display.$(OBJEXT) \
 	test_cpp-StringP.$(OBJEXT) test_cpp-NumberP.$(OBJEXT) \
@@ -240,8 +240,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/Plus.h\
 ../src/PrimitiveProcedures/Minus.cpp\
 ../src/PrimitiveProcedures/Minus.h\
-../src/PrimitiveProcedures/Devide.cpp\
-../src/PrimitiveProcedures/Devide.h\
+../src/PrimitiveProcedures/Divide.cpp\
+../src/PrimitiveProcedures/Divide.h\
 ../src/PrimitiveProcedures/Multiply.cpp\
 ../src/PrimitiveProcedures/Multiply.h\
 ../src/PrimitiveProcedures/Cons.cpp\
@@ -535,11 +535,11 @@ test_cpp-Minus.o: ../src/PrimitiveProcedures/Minus.cpp
 test_cpp-Minus.obj: ../src/PrimitiveProcedures/Minus.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Minus.obj `if test -f '../src/PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Minus.cpp'; fi`
 
-test_cpp-Devide.o: ../src/PrimitiveProcedures/Devide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Devide.o `test -f '../src/PrimitiveProcedures/Devide.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Devide.cpp
+test_cpp-Divide.o: ../src/PrimitiveProcedures/Divide.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Divide.o `test -f '../src/PrimitiveProcedures/Divide.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Divide.cpp
 
-test_cpp-Devide.obj: ../src/PrimitiveProcedures/Devide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Devide.obj `if test -f '../src/PrimitiveProcedures/Devide.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Devide.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Devide.cpp'; fi`
+test_cpp-Divide.obj: ../src/PrimitiveProcedures/Divide.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Divide.obj `if test -f '../src/PrimitiveProcedures/Divide.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Divide.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Divide.cpp'; fi`
 
 test_cpp-Multiply.o: ../src/PrimitiveProcedures/Multiply.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Multiply.o `test -f '../src/PrimitiveProcedures/Multiply.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Multiply.cpp

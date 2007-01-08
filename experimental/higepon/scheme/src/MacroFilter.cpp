@@ -57,19 +57,27 @@ int MacroFilter::foreachNodes(Node* root, int (MacroFilter::*f)(Node*root, Node*
 int MacroFilter::expandMacro(Node* root, Node* node)
 {
     string name = node->text;
-    if (bindMap_.find(name) == bindMap_.end()) return 0;
-
-    BindObject b = bindMap_[name];
     Nodes::size_type i;
     for (i = 0; i < root->nodes.size(); ++i)
     {
         if (root->nodes[i] == node) break;
     }
+    if (bindMap_.find(name) == bindMap_.end())
+    {
+        if (node->isMatchAllKeyword())
+        {
+            root->nodes.erase(root->nodes.begin() + i);
+        }
+        return 0;
+    }
+
+    BindObject b = bindMap_[name];
+
     if (node->isMatchAllKeyword())
     {
         if (b.nodes.size() == 0)
         {
-            root->nodes.erase(root->nodes.begin() + i);
+            root->nodes[i] = b.node;
         }
         else
         {
@@ -90,6 +98,7 @@ int MacroFilter::expandMacro(Node* root, Node* node)
     {
         root->nodes[i] = b.node;
     }
+    root->print();
     return 1;
 }
 
@@ -109,21 +118,31 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     if (NULL == matchedPattern) return 0;
 
     BindMap bindMap;
-    printf("********************%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     matchedPattern->print();
     root->print();
 
     Node::extractBindings(matchedPattern, root, bindMap);
 
 
-#if 0
+#if 1
     static int z = 0;
         for (BindMap::const_iterator p = bindMap.begin(); p != bindMap.end(); ++p)
         {
-            printf("<<%s:%s>>\n", (*p).first.c_str(), (*p).second.node->toString().c_str());fflush(stdout);
+            BindObject b = (*p).second;
+            if (b.nodes.size() > 0)
+            {
+                for (Nodes::const_iterator q = b.nodes.begin(); q != b.nodes.end(); ++q)
+                {
+                    printf("<<%s:%s>>\n", (*p).first.c_str(), (*q)->toString().c_str());fflush(stdout);
+                }
+            }
+            else
+            {
+                printf("<<%s:%s>>\n", (*p).first.c_str(), b.node->toString().c_str());fflush(stdout);
+            }
         }
         z++;
-        if (z == 4) exit(-1);
+//        if (z == 6) exit(-1);
 #endif
 
 
@@ -174,9 +193,9 @@ void MacroFilter::findDefineSyntaxes(Node* root, Nodes& defineSyntaxes)
 
 //         // ugly fix me.
 //         // define-syntax is replaced to true!
-//         root->nodes.clear();
-//         root->type = Node::NUMBER;
-//         root->value = 1;
+        root->nodes.clear();
+        root->type = Node::NUMBER;
+        root->value = 1;
         return;
     }
 

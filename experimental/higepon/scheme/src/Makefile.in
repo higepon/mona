@@ -59,7 +59,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
 	scheme-Tokenizer.$(OBJEXT) scheme-Node.$(OBJEXT) \
 	scheme-Translator.$(OBJEXT) scheme-Plus.$(OBJEXT) \
-	scheme-Minus.$(OBJEXT) scheme-Devide.$(OBJEXT) \
+	scheme-Minus.$(OBJEXT) scheme-Divide.$(OBJEXT) \
 	scheme-Multiply.$(OBJEXT) scheme-Cons.$(OBJEXT) \
 	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
@@ -224,16 +224,16 @@ PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
 PrimitiveProcedures/Minus.cpp\
 PrimitiveProcedures/Minus.h\
-PrimitiveProcedures/Devide.cpp\
-PrimitiveProcedures/Devide.h\
+PrimitiveProcedures/Divide.cpp\
+PrimitiveProcedures/Divide.h\
 PrimitiveProcedures/Multiply.cpp\
 PrimitiveProcedures/Multiply.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
+PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
@@ -480,11 +480,11 @@ scheme-Minus.o: PrimitiveProcedures/Minus.cpp
 scheme-Minus.obj: PrimitiveProcedures/Minus.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.obj `if test -f 'PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Minus.cpp'; fi`
 
-scheme-Devide.o: PrimitiveProcedures/Devide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Devide.o `test -f 'PrimitiveProcedures/Devide.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Devide.cpp
+scheme-Divide.o: PrimitiveProcedures/Divide.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Divide.o `test -f 'PrimitiveProcedures/Divide.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Divide.cpp
 
-scheme-Devide.obj: PrimitiveProcedures/Devide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Devide.obj `if test -f 'PrimitiveProcedures/Devide.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Devide.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Devide.cpp'; fi`
+scheme-Divide.obj: PrimitiveProcedures/Divide.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Divide.obj `if test -f 'PrimitiveProcedures/Divide.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Divide.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Divide.cpp'; fi`
 
 scheme-Multiply.o: PrimitiveProcedures/Multiply.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Multiply.o `test -f 'PrimitiveProcedures/Multiply.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Multiply.cpp

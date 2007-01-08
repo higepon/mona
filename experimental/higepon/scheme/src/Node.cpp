@@ -49,7 +49,7 @@ string Node::typeToString()
     }
     return string(buffer);
 }
-#if 0
+#if 1
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
@@ -57,6 +57,7 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     {
         BindObject b;
         b.node = n;
+        printf("m->text=%s %s\n", m->text.c_str(), n->text.c_str());fflush(stdout);
         bindMap[m->text] = b;
         return;
     }

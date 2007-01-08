@@ -29,7 +29,7 @@ namespace std {
 #include "Error.h"
 #include "PrimitiveProcedures/Plus.h"
 #include "PrimitiveProcedures/Minus.h"
-#include "PrimitiveProcedures/Devide.h"
+#include "PrimitiveProcedures/Divide.h"
 #include "PrimitiveProcedures/Multiply.h"
 #include "PrimitiveProcedures/Car.h"
 #include "PrimitiveProcedures/Cdr.h"

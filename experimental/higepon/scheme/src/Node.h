@@ -28,6 +28,8 @@ typedef std::map<std::string, BindObject> BindMap;
 class BindObject
 {
 public:
+    BindObject() : node(NULL) {}
+public:
     Node* node;
     Nodes nodes;
 };
