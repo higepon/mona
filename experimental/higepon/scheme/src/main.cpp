@@ -43,6 +43,8 @@ int main(int argc, char *argv[])
     input = "(begin " + input + " )";
 
     Node* node = Node::fromString(input);
+
+// load
     node->execLoadSyntaxes();
 
     MacroFilter f;

@@ -149,7 +149,7 @@ int Translator::translateBegin(Node* node, Object** object)
 int Translator::translateQuote(Node* node, Object** object)
 {
     if (L() <= 1) return SYNTAX_ERROR;
-    *object = new Quote(node, node->lineno);ASSERT(*object);
+    *object = new Quote(node->nodes[1], node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 

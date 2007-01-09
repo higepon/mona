@@ -37,7 +37,7 @@ Object* Car::apply(Objects* arguments, Environment* env)
         Quote* ret = quote->car();
         if (ret == NULL)
         {
-            RAISE_ERROR(o->lineno(), "car got [%s], but required pair", o->toString().c_str());
+            RAISE_ERROR(o->lineno(), "car got error on quote %s", o->toString().c_str());
         }
         return ret;
     }

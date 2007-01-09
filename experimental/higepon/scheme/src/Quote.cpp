@@ -27,20 +27,18 @@ int Quote::type() const
 
 Quote* Quote::car()
 {
-    Node* n = node_->nodes[1];
-    if (n->isNodes() && n->nodes.size() > 1)
+    if (node_->isNodes())
     {
-        return new Quote(n->nodes[0], lineno_);
+        return new Quote(node_->nodes[0], lineno_);
     }
     return NULL;
 }
 
 Quote* Quote::cdr()
 {
-    Node* n = node_->nodes[1];
-    if (n->isNodes() && n->nodes.size() > 1)
+    if (node_->isNodes())
     {
-        return new Quote(n->nodes[1], lineno_);
+        return new Quote(node_->nodes[1], lineno_);
     }
     return NULL;
 }
