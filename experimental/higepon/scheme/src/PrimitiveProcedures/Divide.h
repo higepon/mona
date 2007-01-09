@@ -1,16 +1,16 @@
-#ifndef __DIVIDE_H__
-#define __DIVIDE_H__
+#ifndef __PRIMITIVE_PROCEDURE_DIVIDE_H__
+#define __PRIMITIVE_PROCEDURE_DIVIDE_H__
 
 #include "PrimitiveProcedure.h"
 #include "Number.h"
 
 namespace monash {
 
-class Devide : public PrimitiveProcedure
+class Divide : public PrimitiveProcedure
 {
 public:
-    Devide();
-    virtual ~Devide();
+    Divide();
+    virtual ~Divide();
 
     virtual std::string toString();
 //    virtual int type() const;
@@ -20,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __DIVIDE_H__
+#endif // __PRIMITIVE_PROCEDURE_DIVIDE_H__

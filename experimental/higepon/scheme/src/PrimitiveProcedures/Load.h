@@ -1,16 +1,18 @@
-#ifndef __PRIMITIVE_PROCEDURE_STRING_APPEND__
-#define __PRIMITIVE_PROCEDURE_STRING_APPEND__
+#ifndef _PRIMITIVE_PROCEDURE_LOAD_
+#define _PRIMITIVE_PROCEDURE_LOAD_
 
 #include "PrimitiveProcedure.h"
 #include "String.h"
+#include "Eval.h"
+#include "scheme.h"
 
 namespace monash {
 
-class StringAppend : public PrimitiveProcedure
+class Load : public PrimitiveProcedure
 {
 public:
-    StringAppend();
-    virtual ~StringAppend();
+    Load();
+    virtual ~Load();
 
     virtual std::string toString();
     virtual Object* eval(Environment* env);
@@ -19,4 +21,4 @@ public:
 
 }; // namespace monash
 
-#endif // __PRIMITIVE_PROCEDURE_STRING_APPEND__
+#endif // _PRIMITIVE_PROCEDURE_LOAD_

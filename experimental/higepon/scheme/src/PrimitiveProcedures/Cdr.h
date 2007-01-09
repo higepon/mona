@@ -1,5 +1,5 @@
-#ifndef __CDR_H__
-#define __CDR_H__
+#ifndef __PRIMITIVE_PROCEDURE_CDR_H__
+#define __PRIMITIVE_PROCEDURE_CDR_H__
 
 #include "PrimitiveProcedure.h"
 #include "Pair.h"
@@ -19,4 +19,4 @@ public:
 
 }; // namespace monash
 
-#endif // __CDR_H__
+#endif // __PRIMITIVE_PROCEDURE_CDR_H__

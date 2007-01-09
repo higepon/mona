@@ -9,6 +9,8 @@
 
 namespace monash {
 
+class Application;
+
 class Let : public Object
 {
 public:

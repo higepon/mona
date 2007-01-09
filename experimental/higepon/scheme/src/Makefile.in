@@ -48,26 +48,27 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
-	scheme-Number.$(OBJEXT) scheme-String.$(OBJEXT) \
-	scheme-Quote.$(OBJEXT) scheme-Variable.$(OBJEXT) \
-	scheme-Assignment.$(OBJEXT) scheme-SpecialIf.$(OBJEXT) \
-	scheme-Frame.$(OBJEXT) scheme-Environment.$(OBJEXT) \
-	scheme-Lambda.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
-	scheme-Begin.$(OBJEXT) scheme-Definition.$(OBJEXT) \
-	scheme-Cond.$(OBJEXT) scheme-Pair.$(OBJEXT) \
-	scheme-Let.$(OBJEXT) scheme-LetAsterisk.$(OBJEXT) \
-	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
-	scheme-Tokenizer.$(OBJEXT) scheme-Node.$(OBJEXT) \
-	scheme-Translator.$(OBJEXT) scheme-Plus.$(OBJEXT) \
-	scheme-Minus.$(OBJEXT) scheme-Divide.$(OBJEXT) \
-	scheme-Multiply.$(OBJEXT) scheme-Cons.$(OBJEXT) \
-	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-Eval.$(OBJEXT) scheme-Number.$(OBJEXT) \
+	scheme-String.$(OBJEXT) scheme-Quote.$(OBJEXT) \
+	scheme-Variable.$(OBJEXT) scheme-Assignment.$(OBJEXT) \
+	scheme-SpecialIf.$(OBJEXT) scheme-Frame.$(OBJEXT) \
+	scheme-Environment.$(OBJEXT) scheme-Lambda.$(OBJEXT) \
+	scheme-Procedure.$(OBJEXT) scheme-Begin.$(OBJEXT) \
+	scheme-Definition.$(OBJEXT) scheme-Cond.$(OBJEXT) \
+	scheme-Pair.$(OBJEXT) scheme-Let.$(OBJEXT) \
+	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
+	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
+	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
+	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
+	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
+	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
+	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
-	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
-	scheme-MacroFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
-	scheme-load.$(OBJEXT)
+	scheme-Load.$(OBJEXT) scheme-scheme.$(OBJEXT) \
+	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
+	scheme-Error.$(OBJEXT) scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -169,7 +170,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-scheme_CXXFLAGS = -pg -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY -DUSE_BOEHM_GC
+scheme_CXXFLAGS = -pg -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
@@ -177,6 +178,8 @@ Filter.h\
 Assert.h\
 Object.cpp\
 Object.h\
+Eval.cpp\
+Eval.h\
 Number.cpp\
 Number.h\
 String.cpp\
@@ -248,6 +251,8 @@ PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 PrimitiveProcedures/StringAppend.cpp\
 PrimitiveProcedures/StringAppend.h\
+PrimitiveProcedures/Load.h\
+PrimitiveProcedures/Load.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
@@ -341,6 +346,12 @@ scheme-Object.o: Object.cpp
 
 scheme-Object.obj: Object.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Object.obj `if test -f 'Object.cpp'; then $(CYGPATH_W) 'Object.cpp'; else $(CYGPATH_W) '$(srcdir)/Object.cpp'; fi`
+
+scheme-Eval.o: Eval.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eval.o `test -f 'Eval.cpp' || echo '$(srcdir)/'`Eval.cpp
+
+scheme-Eval.obj: Eval.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eval.obj `if test -f 'Eval.cpp'; then $(CYGPATH_W) 'Eval.cpp'; else $(CYGPATH_W) '$(srcdir)/Eval.cpp'; fi`
 
 scheme-Number.o: Number.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Number.o `test -f 'Number.cpp' || echo '$(srcdir)/'`Number.cpp
@@ -551,6 +562,12 @@ scheme-StringAppend.o: PrimitiveProcedures/StringAppend.cpp
 
 scheme-StringAppend.obj: PrimitiveProcedures/StringAppend.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringAppend.obj `if test -f 'PrimitiveProcedures/StringAppend.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringAppend.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringAppend.cpp'; fi`
+
+scheme-Load.o: PrimitiveProcedures/Load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.o `test -f 'PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Load.cpp
+
+scheme-Load.obj: PrimitiveProcedures/Load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.obj `if test -f 'PrimitiveProcedures/Load.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Load.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Load.cpp'; fi`
 
 scheme-scheme.o: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp

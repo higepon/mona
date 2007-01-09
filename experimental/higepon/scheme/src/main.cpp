@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "translate error \n");
         return -1;
     }
-    Environment* env = new Environment(f);ASSERT(env);
+    Environment* env = new Environment(f, translator);ASSERT(env);
     registerPrimitives(env);
 
     // let's eval!

@@ -8,6 +8,7 @@
 namespace monash {
 
 class MacroFilter;
+class Translator;
 
 class Environment
 {
@@ -15,9 +16,10 @@ protected:
     typedef std::vector<Frame*> Frames;
     Frames* frames_;
     MacroFilter& filter_;
+    Translator& translator_;
 
 public:
-    Environment(MacroFilter& filter);
+    Environment(MacroFilter& filter, Translator& translator);
     virtual ~Environment();
     Environment* clone();
     Object* lookupVariableValue(Variable* variable);
@@ -27,6 +29,7 @@ public:
     void extend(Variables* variables, Objects* objects);
     std::string toString();
     MacroFilter& macroFilter() { return filter_; }
+    Translator& translator() { return translator_; }
 };
 
 }; // namespace monash

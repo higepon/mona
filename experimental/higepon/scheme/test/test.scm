@@ -132,6 +132,28 @@
 (assert-true test-name (= 3 (cond (#t 3))))
 (assert-true test-name (= 4 (cond (#f 3) (#t 4) (#f 2))))
 
+(define test-name "fact")
+(define fact
+  (lambda (n)
+    (if (= n 0)
+        1
+        (* n (fact (- n 1))))))
+
+(assert-true test-name (= 120 (fact 5)))
+
+(define test-name "quote")
+(display (car (quote ((x1 x2) ((y1 y2))))))
+(define xyz 1234)
+(assert-true test-name (= 1234 (eval (quote xyz))))
+
+(define test-name "eval")
+(eval (quote (define hoge+ (lambda (x) (+ 4 x)))))
+(assert-true test-name (= 4 (hoge+ 0)))
+(eval (quote (define-syntax pqr
+               (syntax-rules ()
+                 ((_ a) (+ a 3))))))
+(assert-true test-name (= 7 (pqr 4)))
+
 ;; ...をリネームするコードを書かないとダメだね．
 ;; (define-syntax cond*
 ;;   (syntax-rules (else =>)
@@ -194,3 +216,6 @@
 ;; report
 (total-report)
 
+;; todo
+;; マクロが展開されておかしくなる！
+;;(display (car (quote (list 1 2 3 4))))

@@ -43,6 +43,7 @@ public:
         BEGIN,
         DEFINITION,
         COND,
+        EVAL,
         PAIR,
         APPLICATION,
         PRIMITIVE_PROCEDURE,

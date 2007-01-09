@@ -2,26 +2,26 @@
 
 using namespace monash;
 
-Devide::Devide()
+Divide::Divide()
 {
 }
 
-Devide::~Devide()
+Divide::~Divide()
 {
 }
 
-std::string Devide::toString()
+std::string Divide::toString()
 {
     return "procedure:+";
 }
 
-Object* Devide::eval(Environment* env)
+Object* Divide::eval(Environment* env)
 {
     RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return NULL;
 }
 
-Object* Devide::apply(Objects* arguments, Environment* env)
+Object* Divide::apply(Objects* arguments, Environment* env)
 {
     Objects* as = listOfValues(arguments, env);
     if (as->size() == 0 || as->at(0)->type() != Object::NUMBER)

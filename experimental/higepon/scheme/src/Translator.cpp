@@ -27,9 +27,9 @@ int Translator::translatePrimitive(Node* node, Object** object)
     case Node::STRING:
         *object = new String(node->text, node->lineno);ASSERT(*object);
         return SUCCESS;
-    case Node::QUOTE:
-        *object = new Quote(node->text, node->lineno);ASSERT(*object);
-        return SUCCESS;
+//     case Node::QUOTE:
+//         *object = new Quote(node->text, node->lineno);ASSERT(*object);
+//         return SUCCESS;
     case Node::SYMBOL:
         *object = new Variable(node->text, node->lineno);ASSERT(*object);
         return SUCCESS;
@@ -137,12 +137,31 @@ int Translator::translateBegin(Node* node, Object** object)
     Objects* objects = new Objects;ASSERT(objects);
     for (Nodes::size_type i = 1; i < L(); i++)
     {
-        Object * object;
+        Object* object;
         int ret = translate(&N(i), &object);
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
     *object = new Begin(objects, node->lineno);ASSERT(*object);
+    return SUCCESS;
+}
+
+int Translator::translateQuote(Node* node, Object** object)
+{
+    if (L() <= 1) return SYNTAX_ERROR;
+    *object = new Quote(node, node->lineno);ASSERT(*object);
+    return SUCCESS;
+}
+
+int Translator::translateEval(Node* node, Object** object)
+{
+    if (L() != 2) return SYNTAX_ERROR;
+    Object* o;
+    int ret = translate(&N(1), &o);
+    if (ret != SUCCESS) return ret;
+    if (o->type() != Object::QUOTE) return SYNTAX_ERROR;
+    Quote* quote = (Quote*)o;
+    *object = new Eval(*this, quote, node->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
@@ -281,6 +300,10 @@ int Translator::translate(Node** n, Object** object)
             // fix me
             return SUCCESS;
         }
+        else if (functionName == "eval")
+        {
+            return translateEval(node, object);
+        }
         else if (functionName == "if")
         {
             return translateIf(node, object);
@@ -292,6 +315,10 @@ int Translator::translate(Node** n, Object** object)
         else if (functionName == "lambda")
         {
             return translateLambda(node, object);
+        }
+        else if (functionName == "quote")
+        {
+            return translateQuote(node, object);
         }
 #if 0
         else if (functionName == "and")

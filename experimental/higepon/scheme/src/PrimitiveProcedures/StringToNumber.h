@@ -1,5 +1,5 @@
-#ifndef __STRING_TO_NUMBER__
-#define __STRING_TO_NUMBER__
+#ifndef __PRIMITIVE_PROCEDURE_STRING_TO_NUMBER__
+#define __PRIMITIVE_PROCEDURE_STRING_TO_NUMBER__
 
 #include "PrimitiveProcedure.h"
 #include "String.h"
@@ -20,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __STRING_TO_NUMBER__
+#endif // __PRIMITIVE_PROCEDURE_STRING_TO_NUMBER__

@@ -98,7 +98,6 @@ int MacroFilter::expandMacro(Node* root, Node* node)
     {
         root->nodes[i] = b.node;
     }
-    root->print();
     return 1;
 }
 
@@ -118,13 +117,8 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     if (NULL == matchedPattern) return 0;
 
     BindMap bindMap;
-    matchedPattern->print();
-    root->print();
-
     Node::extractBindings(matchedPattern, root, bindMap);
-
-
-#if 1
+#if 0
     static int z = 0;
         for (BindMap::const_iterator p = bindMap.begin(); p != bindMap.end(); ++p)
         {
@@ -144,7 +138,6 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
         z++;
 //        if (z == 6) exit(-1);
 #endif
-
 
     Node* expanded = m->patterns[matchedPattern]->clone();
     bindMap_ = bindMap;

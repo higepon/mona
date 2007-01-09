@@ -1,5 +1,5 @@
-#ifndef __MULTIPLY_H__
-#define __MULTIPLY_H__
+#ifndef __PRIMITIVE_PROCEDURE_MULTIPLY_H__
+#define __PRIMITIVE_PROCEDURE_MULTIPLY_H__
 
 #include "PrimitiveProcedure.h"
 #include "Number.h"
@@ -20,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __MULTIPLY_H__
+#endif // __PRIMITIVE_PROCEDURE_MULTIPLY_H__

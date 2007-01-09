@@ -52,25 +52,26 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-MacroFilterTest.$(OBJEXT) test_cpp-Error.$(OBJEXT) \
 	test_cpp-Translator.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
 	test_cpp-Number.$(OBJEXT) test_cpp-String.$(OBJEXT) \
-	test_cpp-Definition.$(OBJEXT) test_cpp-Object.$(OBJEXT) \
-	test_cpp-Quote.$(OBJEXT) test_cpp-Variable.$(OBJEXT) \
-	test_cpp-Assignment.$(OBJEXT) test_cpp-SpecialIf.$(OBJEXT) \
-	test_cpp-Frame.$(OBJEXT) test_cpp-Environment.$(OBJEXT) \
-	test_cpp-Lambda.$(OBJEXT) test_cpp-Procedure.$(OBJEXT) \
-	test_cpp-Begin.$(OBJEXT) test_cpp-Node.$(OBJEXT) \
-	test_cpp-Macro.$(OBJEXT) test_cpp-MacroFilter.$(OBJEXT) \
-	test_cpp-Parser.$(OBJEXT) test_cpp-Cond.$(OBJEXT) \
-	test_cpp-Pair.$(OBJEXT) test_cpp-Let.$(OBJEXT) \
-	test_cpp-LetAsterisk.$(OBJEXT) test_cpp-scheme.$(OBJEXT) \
-	test_cpp-load.$(OBJEXT) test_cpp-Application.$(OBJEXT) \
-	test_cpp-Plus.$(OBJEXT) test_cpp-Minus.$(OBJEXT) \
-	test_cpp-Divide.$(OBJEXT) test_cpp-Multiply.$(OBJEXT) \
-	test_cpp-Cons.$(OBJEXT) test_cpp-Car.$(OBJEXT) \
-	test_cpp-Cdr.$(OBJEXT) test_cpp-Display.$(OBJEXT) \
-	test_cpp-StringP.$(OBJEXT) test_cpp-NumberP.$(OBJEXT) \
-	test_cpp-NumberEqual.$(OBJEXT) \
+	test_cpp-Definition.$(OBJEXT) test_cpp-Quote.$(OBJEXT) \
+	test_cpp-Object.$(OBJEXT) test_cpp-Eval.$(OBJEXT) \
+	test_cpp-Variable.$(OBJEXT) test_cpp-Assignment.$(OBJEXT) \
+	test_cpp-SpecialIf.$(OBJEXT) test_cpp-Frame.$(OBJEXT) \
+	test_cpp-Environment.$(OBJEXT) test_cpp-Lambda.$(OBJEXT) \
+	test_cpp-Procedure.$(OBJEXT) test_cpp-Begin.$(OBJEXT) \
+	test_cpp-Node.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
+	test_cpp-MacroFilter.$(OBJEXT) test_cpp-Parser.$(OBJEXT) \
+	test_cpp-Cond.$(OBJEXT) test_cpp-Pair.$(OBJEXT) \
+	test_cpp-Let.$(OBJEXT) test_cpp-LetAsterisk.$(OBJEXT) \
+	test_cpp-scheme.$(OBJEXT) test_cpp-load.$(OBJEXT) \
+	test_cpp-Application.$(OBJEXT) test_cpp-Plus.$(OBJEXT) \
+	test_cpp-Minus.$(OBJEXT) test_cpp-Divide.$(OBJEXT) \
+	test_cpp-Multiply.$(OBJEXT) test_cpp-Cons.$(OBJEXT) \
+	test_cpp-Car.$(OBJEXT) test_cpp-Cdr.$(OBJEXT) \
+	test_cpp-Display.$(OBJEXT) test_cpp-StringP.$(OBJEXT) \
+	test_cpp-NumberP.$(OBJEXT) test_cpp-NumberEqual.$(OBJEXT) \
 	test_cpp-StringToNumber.$(OBJEXT) \
-	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT)
+	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT) \
+	test_cpp-Load.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -193,10 +194,12 @@ MacroFilterTest.cpp\
 ../src/String.h\
 ../src/Definition.cpp\
 ../src/Definition.h\
-../src/Object.cpp\
-../src/Object.h\
 ../src/Quote.cpp\
 ../src/Quote.h\
+../src/Object.cpp\
+../src/Object.h\
+../src/Eval.cpp\
+../src/Eval.h\
 ../src/Variable.cpp\
 ../src/Variable.h\
 ../src/Assignment.cpp\
@@ -263,7 +266,9 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/StringAppend.cpp\
 ../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
-../src/PrimitiveProcedures/Set.h
+../src/PrimitiveProcedures/Set.h\
+../src/PrimitiveProcedures/Load.h\
+../src/PrimitiveProcedures/Load.cpp
 
 all: all-am
 
@@ -397,17 +402,23 @@ test_cpp-Definition.o: ../src/Definition.cpp
 test_cpp-Definition.obj: ../src/Definition.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Definition.obj `if test -f '../src/Definition.cpp'; then $(CYGPATH_W) '../src/Definition.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Definition.cpp'; fi`
 
+test_cpp-Quote.o: ../src/Quote.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Quote.o `test -f '../src/Quote.cpp' || echo '$(srcdir)/'`../src/Quote.cpp
+
+test_cpp-Quote.obj: ../src/Quote.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Quote.obj `if test -f '../src/Quote.cpp'; then $(CYGPATH_W) '../src/Quote.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Quote.cpp'; fi`
+
 test_cpp-Object.o: ../src/Object.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Object.o `test -f '../src/Object.cpp' || echo '$(srcdir)/'`../src/Object.cpp
 
 test_cpp-Object.obj: ../src/Object.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Object.obj `if test -f '../src/Object.cpp'; then $(CYGPATH_W) '../src/Object.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Object.cpp'; fi`
 
-test_cpp-Quote.o: ../src/Quote.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Quote.o `test -f '../src/Quote.cpp' || echo '$(srcdir)/'`../src/Quote.cpp
+test_cpp-Eval.o: ../src/Eval.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Eval.o `test -f '../src/Eval.cpp' || echo '$(srcdir)/'`../src/Eval.cpp
 
-test_cpp-Quote.obj: ../src/Quote.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Quote.obj `if test -f '../src/Quote.cpp'; then $(CYGPATH_W) '../src/Quote.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Quote.cpp'; fi`
+test_cpp-Eval.obj: ../src/Eval.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Eval.obj `if test -f '../src/Eval.cpp'; then $(CYGPATH_W) '../src/Eval.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Eval.cpp'; fi`
 
 test_cpp-Variable.o: ../src/Variable.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Variable.o `test -f '../src/Variable.cpp' || echo '$(srcdir)/'`../src/Variable.cpp
@@ -606,6 +617,12 @@ test_cpp-Set.o: ../src/PrimitiveProcedures/Set.cpp
 
 test_cpp-Set.obj: ../src/PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.obj `if test -f '../src/PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Set.cpp'; fi`
+
+test_cpp-Load.o: ../src/PrimitiveProcedures/Load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Load.o `test -f '../src/PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Load.cpp
+
+test_cpp-Load.obj: ../src/PrimitiveProcedures/Load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Load.obj `if test -f '../src/PrimitiveProcedures/Load.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Load.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Load.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

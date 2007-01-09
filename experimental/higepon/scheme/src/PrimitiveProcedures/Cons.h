@@ -1,5 +1,5 @@
-#ifndef __CONS_H__
-#define __CONS_H__
+#ifndef __PRIMITIVE_PROCEDURE_CONS_H__
+#define __PRIMITIVE_PROCEDURE_CONS_H__
 
 #include "PrimitiveProcedure.h"
 #include "Pair.h"
@@ -19,4 +19,4 @@ public:
 
 }; // namespace monash
 
-#endif // __CONS_H__
+#endif // __PRIMITIVE_PROCEDURE_CONS_H__

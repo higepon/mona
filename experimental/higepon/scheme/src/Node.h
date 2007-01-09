@@ -41,9 +41,7 @@ public:
     Node(int type) : type(type), lineno(0) {}
     ~Node() {}
 
-
     std::string toString();
-
     void print(int depth = 0);
     bool equals(Node* node);
     Node* clone() const;
@@ -57,7 +55,7 @@ public:
 
     static Node* fromString(const std::string& text);
     static void extractBindings(Node* m, Node* n, BindMap& bindMap);
-    static void extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap);
+//    static void extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap);
 
     int foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node));
     int foreachNodes(Node* root, int (Node::*f)(Node*, Node*));

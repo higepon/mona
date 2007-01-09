@@ -31,11 +31,21 @@ Object* Car::apply(Objects* arguments, Environment* env)
         return NULL;
     }
     Object* o = as->at(0);
-    if (o->type() != Object::PAIR)
+    if (o->type() == Object::QUOTE)
     {
-        RAISE_ERROR(o->lineno(), "car got [%s], but required pair", o->toString().c_str());
-        return NULL;
+        Quote* quote = (Quote*)o;
+        Quote* ret = quote->car();
+        if (ret == NULL)
+        {
+            RAISE_ERROR(o->lineno(), "car got [%s], but required pair", o->toString().c_str());
+        }
+        return ret;
     }
-    Pair* p = (Pair*)o;
-    return p->first();
+    else if (o->type() == Object::PAIR)
+    {
+        Pair* p = (Pair*)o;
+        return p->first();
+    }
+    RAISE_ERROR(o->lineno(), "car got [%s], but required pair", o->toString().c_str());
+    return NULL;
 }

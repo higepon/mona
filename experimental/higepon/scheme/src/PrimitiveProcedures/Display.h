@@ -1,5 +1,5 @@
-#ifndef __DISPLAY_H__
-#define __DISPLAY_H__
+#ifndef __PRIMITIVE_PROCEDURE_DISPLAY_H__
+#define __PRIMITIVE_PROCEDURE_DISPLAY_H__
 
 #include "PrimitiveProcedure.h"
 #include "Number.h"
@@ -19,4 +19,4 @@ public:
 
 }; // namespace monash
 
-#endif // __DISPLAY_H__
+#endif // __PRIMITIVE_PROCEDURE_DISPLAY_H__

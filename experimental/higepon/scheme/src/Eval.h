@@ -1,35 +1,35 @@
-#ifndef __QUOTE_H__
-#define __QUOTE_H__
+#ifndef __EVAL_H__
+#define __EVAL_H__
 
 #include "Object.h"
 #include "scheme.h"
 
 namespace monash {
 
-class Quote : public Object
+class Translator;
+
+class Quote;
+
+class Eval : public Object
 {
 public:
-    Quote(Node* node, uint32_t lineno = 0);
-    virtual ~Quote();
+    Eval(Translator& translator, Quote* quote, uint32_t lineno = 0);
+    virtual ~Eval();
 
 public:
     virtual std::string toString();
-    virtual std::string toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual std::string text() const { return value_;}
-    virtual Node* node() { return node_;}
-
-    virtual Quote* car();
-    virtual Quote* cdr();
 
 protected:
-    Node* node_;
+    Translator& translator_;
+    Quote* quote_;
     std::string value_;
     uint32_t lineno_;
 };
 
 }; // namespace monash
 
-#endif // __QUOTE_H__
+#endif // __EVAL_H__

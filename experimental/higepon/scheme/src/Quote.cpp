@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Quote::Quote(const std::string& value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
+Quote::Quote(Node* node, uint32_t lineno /* = 0 */) : node_(node), lineno_(lineno)
 {
 }
 
@@ -12,12 +12,12 @@ Quote::~Quote()
 
 std::string Quote::toString()
 {
-    return "quote: \'" + value_;
+    return "quote: \'";
 }
 
 std::string Quote::toStringValue()
 {
-    return "\'" + value_;
+    return node_->toString();
 }
 
 int Quote::type() const
@@ -25,7 +25,28 @@ int Quote::type() const
     return Object::QUOTE;
 }
 
+Quote* Quote::car()
+{
+    Node* n = node_->nodes[1];
+    if (n->isNodes() && n->nodes.size() > 1)
+    {
+        return new Quote(n->nodes[0], lineno_);
+    }
+    return NULL;
+}
+
+Quote* Quote::cdr()
+{
+    Node* n = node_->nodes[1];
+    if (n->isNodes() && n->nodes.size() > 1)
+    {
+        return new Quote(n->nodes[1], lineno_);
+    }
+    return NULL;
+}
+
 Object* Quote::eval(Environment* env)
 {
-    return this; // different from SICP's
+    return this;
+//    return evalSequence(objects_, env); // different from SICP's
 }

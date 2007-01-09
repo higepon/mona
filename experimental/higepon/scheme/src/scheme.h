@@ -23,6 +23,7 @@ namespace std {
 #include "Definition.h"
 #include "Application.h"
 #include "Node.h"
+#include "Eval.h"
 #include "Parser.h"
 #include "Translator.h"
 #include "Macro.h"
@@ -41,6 +42,7 @@ namespace std {
 #include "PrimitiveProcedures/StringAppend.h"
 #include "PrimitiveProcedures/NumberEqual.h"
 #include "PrimitiveProcedures/Set.h"
+#include "PrimitiveProcedures/Load.h"
 
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);

@@ -21,10 +21,12 @@ MacroFilterTest.cpp\
 ../src/String.h\
 ../src/Definition.cpp\
 ../src/Definition.h\
-../src/Object.cpp\
-../src/Object.h\
 ../src/Quote.cpp\
 ../src/Quote.h\
+../src/Object.cpp\
+../src/Object.h\
+../src/Eval.cpp\
+../src/Eval.h\
 ../src/Variable.cpp\
 ../src/Variable.h\
 ../src/Assignment.cpp\
@@ -91,7 +93,12 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/StringAppend.cpp\
 ../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
-../src/PrimitiveProcedures/Set.h
+../src/PrimitiveProcedures/Set.h\
+../src/PrimitiveProcedures/Load.h\
+../src/PrimitiveProcedures/Load.cpp
+
+
+
 
 
 #../src/And.cpp\

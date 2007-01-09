@@ -1,5 +1,5 @@
-#ifndef __STRING_P_H__
-#define __STRING_P_H__
+#ifndef __PRIMITIVE_PROCEDURE_STRING_P_H__
+#define __PRIMITIVE_PROCEDURE_STRING_P_H__
 
 #include "PrimitiveProcedure.h"
 #include "String.h"
@@ -20,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __STRING_P_H__
+#endif // __PRIMITIVE_PROCEDURE_STRING_P_H__

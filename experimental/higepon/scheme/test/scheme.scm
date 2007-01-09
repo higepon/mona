@@ -2,6 +2,8 @@
   (lambda (x)
     (car (car x))))
 
+(display (caar (cons (cons 3 4) (cons 5 6))))
+
 (define cdar
   (lambda (x)
     (cdr (car x))))
@@ -64,3 +66,4 @@
     ((or test1 test2 ...)
      (let ((x test1))
        (if x x (or test2 ...))))))
+

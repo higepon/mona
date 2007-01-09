@@ -1,8 +1,9 @@
-#ifndef __CAR_H__
-#define __CAR_H__
+#ifndef __PRIMITIVE_PROCEDURE_CAR_H__
+#define __PRIMITIVE_PROCEDURE_CAR_H__
 
 #include "PrimitiveProcedure.h"
 #include "Pair.h"
+#include "Quote.h"
 
 namespace monash {
 
@@ -19,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __CAR_H__
+#endif // __PRIMITIVE_PROCEDURE_CAR_H__

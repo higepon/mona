@@ -4,7 +4,7 @@
 using namespace monash;
 using namespace std;
 
-Environment::Environment(MacroFilter& filter) : filter_(filter)
+Environment::Environment(MacroFilter& filter, Translator& translator) : filter_(filter), translator_(translator)
 {
     frames_ = new Frames();
     ASSERT(frames_);
@@ -20,7 +20,7 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment(filter_);ASSERT(env);
+    Environment* env = new Environment(filter_, translator_);ASSERT(env);
     Frames* target = env->frames();
     for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
     {

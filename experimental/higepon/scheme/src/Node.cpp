@@ -49,15 +49,13 @@ string Node::typeToString()
     }
     return string(buffer);
 }
-#if 1
+
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (m->isSymbol())
     {
         BindObject b;
         b.node = n;
-        printf("m->text=%s %s\n", m->text.c_str(), n->text.c_str());fflush(stdout);
         bindMap[m->text] = b;
         return;
     }
@@ -94,63 +92,6 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     }
 }
 
-
-// macro match しているのが前提
-#else
-void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
-{
-    if (m->isSymbol())
-    {
-        BindObject b;
-        b.node = n;
-        bindMap[m->text] = b;
-        return;
-    }
-    else if (m->isNodes() && n->isNodes())
-    {
-        for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
-        {
-            extractBindingsInternal(m->nodes[i], n, i, bindMap);
-        }
-    }
-    else
-    {
-        exit(-1);
-    }
-}
-
-void Node::Node::extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap)
-{
-    if (m->isSymbol())
-    {
-        BindObject b;
-        if (m->isMatchAllKeyword())
-        {
-            for (Nodes::size_type j = i; j < n->nodes.size(); ++j)
-            {
-                b.nodes.push_back(n->nodes[j]);
-            }
-        }
-        else
-        {
-            b.node = n->nodes[i];
-        }
-        bindMap[m->text] = b;
-        return;
-    }
-    else if (m->isNodes() && n->nodes[i]->isNodes())
-    {
-        for (Nodes::size_type j = 0; j < m->nodes.size(); ++j)
-        {
-            extractBindingsInternal(m->nodes[j], n->nodes[i], j, bindMap);
-        }
-    }
-    else
-    {
-        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().c_str(), n->toString().c_str());
-    }
-}
-#endif
 void Node::print(int depth /* = 0 */)
 {
     printf(toString().c_str());

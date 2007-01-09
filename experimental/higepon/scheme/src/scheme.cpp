@@ -77,7 +77,7 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("+"),              new Plus());
     env->defineVariable(new Variable("-"),              new Minus());
     env->defineVariable(new Variable("*"),              new Multiply());
-    env->defineVariable(new Variable("/"),              new Devide());
+    env->defineVariable(new Variable("/"),              new Divide());
     env->defineVariable(new Variable("="),              new NumberEqual());
     env->defineVariable(new Variable("cons"),           new Cons());
     env->defineVariable(new Variable("car"),            new Car());
@@ -90,4 +90,5 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("#f"),             new Number(0));
     env->defineVariable(new Variable("#t"),             new Number(1));
     env->defineVariable(new Variable("set!"),           new Set());
+//    env->defineVariable(new Variable("load"),           new Load());
 }

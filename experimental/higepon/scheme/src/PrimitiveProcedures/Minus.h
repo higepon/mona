@@ -1,5 +1,5 @@
-#ifndef __MINUS_H__
-#define __MINUS_H__
+#ifndef __PRIMITIVE_PROCEDURE_MINUS_H__
+#define __PRIMITIVE_PROCEDURE_MINUS_H__
 
 #include "PrimitiveProcedure.h"
 #include "Number.h"
@@ -20,4 +20,4 @@ public:
 
 }; // namespace monash
 
-#endif // __MINUS_H__
+#endif // __PRIMITIVE_PROCEDURE_MINUS_H__

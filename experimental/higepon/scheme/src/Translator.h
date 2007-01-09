@@ -57,6 +57,8 @@ private:
     int translateLetAsterisk(Node* node, Object** object);
     int translateSet(Node* node, Object** object);
     int translateApplication(Node* node, Object** object);
+    int translateQuote(Node* node, Object** object);
+    int translateEval(Node* node, Object** object);
 //    int expandMacro(Node* from, BindMap& bindMap);
 
 
