@@ -11,14 +11,14 @@ namespace monash {
 class Macro
 {
 public:
-    typedef std::map<Node*, Node*> Patterns;
+    typedef std::map<SExp*, SExp*> Patterns;
 
     Macro(const std::string& name);
     virtual ~Macro();
-    void addPattern(Node* pattern, Node* definition);
+    void addPattern(SExp* pattern, SExp* definition);
 
-    static bool match(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
-    Node* match(const std::string& macroName, Node* target);
+    static bool match(const std::string& macroName, const std::strings& reservedWords, SExp* macro, SExp* target);
+    SExp* match(const std::string& macroName, SExp* target);
     static std::string error;
 
     std::string name;
@@ -26,12 +26,12 @@ public:
     std::strings reservedWords;
 
 private:
-    static bool matchNodes(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
-    static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, Node* macro, Node* target);
-    static bool isReservedWord(Node* node, const std::strings& reservedWords);
-    static bool checkReservedWord(Node* macro, Node* target, const std::strings& reservedWords);
-    static bool mustBeMacroName(Node* node);
-    static bool isMacroName(Node* node, const std::string& macroName);
+    static bool matchSExps(const std::string& macroName, const std::strings& reservedWords, SExp* macro, SExp* target);
+    static bool matchInternal(const std::string& macroName, const std::strings& reservedWords, SExp* macro, SExp* target);
+    static bool isReservedWord(SExp* sexp, const std::strings& reservedWords);
+    static bool checkReservedWord(SExp* macro, SExp* target, const std::strings& reservedWords);
+    static bool mustBeMacroName(SExp* sexp);
+    static bool isMacroName(SExp* sexp, const std::string& macroName);
 };
 
 }; // namespace monash

@@ -13,12 +13,12 @@ Macro::~Macro()
 {
 }
 
-void Macro::addPattern(Node* pattern, Node* definition)
+void Macro::addPattern(SExp* pattern, SExp* definition)
 {
-    patterns.insert(pair<Node*, Node*>(pattern, definition));
+    patterns.insert(pair<SExp*, SExp*>(pattern, definition));
 }
 
-bool Macro::checkReservedWord(Node* macro, Node* target, const strings& reservedWords)
+bool Macro::checkReservedWord(SExp* macro, SExp* target, const strings& reservedWords)
 {
     if (!isReservedWord(macro, reservedWords)) return true;
     if (!target->isSymbol()) return false;
@@ -26,28 +26,28 @@ bool Macro::checkReservedWord(Node* macro, Node* target, const strings& reserved
 }
 
 // todo c++ cook book! FIX ME
-bool Macro::isReservedWord(Node* node, const strings& reservedWords)
+bool Macro::isReservedWord(SExp* sexp, const strings& reservedWords)
 {
-    if (!node->isSymbol()) return false;
+    if (!sexp->isSymbol()) return false;
 
     for (strings::const_iterator it = reservedWords.begin(); it != reservedWords.end(); ++it)
     {
-        if ((*it) == node->text) return true;
+        if ((*it) == sexp->text) return true;
     }
     return false;
 }
 
-bool Macro::mustBeMacroName(Node* node)
+bool Macro::mustBeMacroName(SExp* sexp)
 {
-    return node->isSymbol() && node->text == "_";
+    return sexp->isSymbol() && sexp->text == "_";
 }
 
-bool Macro::isMacroName(Node* node, const string& macroName)
+bool Macro::isMacroName(SExp* sexp, const string& macroName)
 {
-    return node->isSymbol() && node->text == macroName;
+    return sexp->isSymbol() && sexp->text == macroName;
 }
 
-Node* Macro::match(const string& macroName, Node* target)
+SExp* Macro::match(const string& macroName, SExp* target)
 {
     for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
     {
@@ -56,12 +56,12 @@ Node* Macro::match(const string& macroName, Node* target)
     return NULL;
 }
 
-bool Macro::matchNodes(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
+bool Macro::matchSExps(const string& macroName, const strings& reservedWords, SExp* macro, SExp* target)
 {
-    for (Nodes::size_type i = 0; i < macro->nodes.size(); i++)
+    for (SExps::size_type i = 0; i < macro->sexps.size(); i++)
     {
-        Node* m = macro->nodes[i];
-        Node* t = target->nodes[i];
+        SExp* m = macro->sexps[i];
+        SExp* t = target->sexps[i];
         if (!match(macroName, reservedWords, m, t))
         {
             return false;
@@ -72,21 +72,21 @@ bool Macro::matchNodes(const string& macroName, const strings& reservedWords, No
 
 // (_ a b ...)
 // (and "hige" "huga" "hoge" "hoge")
-bool Macro::match(const string& macroName, const strings& reservedWords, Node* macro, Node* target)
+bool Macro::match(const string& macroName, const strings& reservedWords, SExp* macro, SExp* target)
 {
-    if (macro->isNodes() && target->isNodes())
+    if (macro->isSExps() && target->isSExps())
     {
-        if (macro->nodes.size() == target->nodes.size())
+        if (macro->sexps.size() == target->sexps.size())
         {
-            return matchNodes(macroName, reservedWords, macro, target);
+            return matchSExps(macroName, reservedWords, macro, target);
         }
-        else if (macro->nodes.size() < target->nodes.size())
+        else if (macro->sexps.size() < target->sexps.size())
         {
-            if (macro->nodes.size() == 0) return false;
-            Node* last = macro->nodes[macro->nodes.size() - 1];
+            if (macro->sexps.size() == 0) return false;
+            SExp* last = macro->sexps[macro->sexps.size() - 1];
             if (last->isMatchAllKeyword())
             {
-                return matchNodes(macroName, reservedWords, macro, target);
+                return matchSExps(macroName, reservedWords, macro, target);
             }
             else
             {
@@ -95,13 +95,13 @@ bool Macro::match(const string& macroName, const strings& reservedWords, Node* m
         }
         else
         {
-            Node* last = macro->nodes[macro->nodes.size() - 1];
+            SExp* last = macro->sexps[macro->sexps.size() - 1];
             if (last->isMatchAllKeyword())
             {
-                for (Nodes::size_type i = 0; i < target->nodes.size(); i++)
+                for (SExps::size_type i = 0; i < target->sexps.size(); i++)
                 {
-                    Node* m = macro->nodes[i];
-                    Node* t = target->nodes[i];
+                    SExp* m = macro->sexps[i];
+                    SExp* t = target->sexps[i];
                     if (!match(macroName, reservedWords, m, t)) return false;
                 }
                 return true;

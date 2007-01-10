@@ -11,100 +11,100 @@ MacroFilter::~MacroFilter()
 {
 }
 
-int MacroFilter::filter(Node* from)
+int MacroFilter::filter(SExp* from)
 {
     findAndStoreDefineSyntaxes(from);
-    Node* root = new Node(Node::NODES);
-    Node* left = new Node(Node::SYMBOL);
+    SExp* root = new SExp(SExp::SEXPS);
+    SExp* left = new SExp(SExp::SYMBOL);
     left->text = "dummy";
-    root->nodes.push_back(left);
-    root->nodes.push_back(from);
+    root->sexps.push_back(left);
+    root->sexps.push_back(from);
     tryExpandMacro(NULL, root);
-    while (foreachNodes(root,  &MacroFilter::tryExpandMacro));
+    while (foreachSExps(root,  &MacroFilter::tryExpandMacro));
     return 0;
 }
 
 // basic & useful
-int MacroFilter::foreachNode(Node* root, bool (Node::*match)() const, int (MacroFilter::*func)(Node* root, Node* node))
+int MacroFilter::foreachSExp(SExp* root, bool (SExp::*match)() const, int (MacroFilter::*func)(SExp* root, SExp* sexp))
 {
     int ret = 0;
-    if (root->isNodes())
+    if (root->isSExps())
     {
-        // don't use iterator here, nodes.size() will be changed by func
-        for (Nodes::size_type i = 0; i < root->nodes.size(); i++)
+        // don't use iterator here, sexps.size() will be changed by func
+        for (SExps::size_type i = 0; i < root->sexps.size(); i++)
         {
-            Node* node = root->nodes[i];
-            if ((node->*match)())
+            SExp* sexp = root->sexps[i];
+            if ((sexp->*match)())
             {
-                ret += (this->*func)(root, node);
+                ret += (this->*func)(root, sexp);
             }
-            ret += foreachNode(node, match, func);
+            ret += foreachSExp(sexp, match, func);
         }
     }
     return ret;
 }
 
-int MacroFilter::foreachSymbols(Node* root, int (MacroFilter::*f)(Node* root, Node* node))
+int MacroFilter::foreachSymbols(SExp* root, int (MacroFilter::*f)(SExp* root, SExp* sexp))
 {
-    return foreachNode(root, &Node::isSymbol, f);
+    return foreachSExp(root, &SExp::isSymbol, f);
 }
 
-int MacroFilter::foreachNodes(Node* root, int (MacroFilter::*f)(Node*root, Node* node))
+int MacroFilter::foreachSExps(SExp* root, int (MacroFilter::*f)(SExp*root, SExp* sexp))
 {
-    return foreachNode(root, &Node::isNodes, f);
+    return foreachSExp(root, &SExp::isSExps, f);
 }
 
-int MacroFilter::expandMacro(Node* root, Node* node)
+int MacroFilter::expandMacro(SExp* root, SExp* sexp)
 {
-    string name = node->text;
-    Nodes::size_type i;
-    for (i = 0; i < root->nodes.size(); ++i)
+    string name = sexp->text;
+    SExps::size_type i;
+    for (i = 0; i < root->sexps.size(); ++i)
     {
-        if (root->nodes[i] == node) break;
+        if (root->sexps[i] == sexp) break;
     }
     if (bindMap_.find(name) == bindMap_.end())
     {
-        if (node->isMatchAllKeyword())
+        if (sexp->isMatchAllKeyword())
         {
-            root->nodes.erase(root->nodes.begin() + i);
+            root->sexps.erase(root->sexps.begin() + i);
         }
         return 0;
     }
 
     BindObject b = bindMap_[name];
 
-    if (node->isMatchAllKeyword())
+    if (sexp->isMatchAllKeyword())
     {
-        if (b.nodes.size() == 0)
+        if (b.sexps.size() == 0)
         {
-            root->nodes[i] = b.node;
+            root->sexps[i] = b.sexp;
         }
         else
         {
-            for (Nodes::size_type j = 0; j < b.nodes.size(); j++)
+            for (SExps::size_type j = 0; j < b.sexps.size(); j++)
             {
                 if (j == 0)
                 {
-                    root->nodes[i] = b.nodes[j];
+                    root->sexps[i] = b.sexps[j];
                 }
                 else
                 {
-                    root->nodes.insert(root->nodes.begin() + i + j, b.nodes[j]);
+                    root->sexps.insert(root->sexps.begin() + i + j, b.sexps[j]);
                 }
             }
         }
     }
     else
     {
-        root->nodes[i] = b.node;
+        root->sexps[i] = b.sexp;
     }
     return 1;
 }
 
-int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
+int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
 {
-    if (!root->isNodes() || root->nodes.size() <= 0) return 0;
-    Node* left = root->nodes[0];
+    if (!root->isSExps() || root->sexps.size() <= 0) return 0;
+    SExp* left = root->sexps[0];
     if (!left->isSymbol()) return 0;
 
     string name = left->text;
@@ -113,47 +113,47 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     Macro* m = (*p).second;
 
     // todo we should return Macro::Pattern?
-    Node* matchedPattern = m->match(name, root);
+    SExp* matchedPattern = m->match(name, root);
     if (NULL == matchedPattern) return 0;
 
     BindMap bindMap;
-    Node::extractBindings(matchedPattern, root, bindMap);
+    SExp::extractBindings(matchedPattern, root, bindMap);
 #if 0
     static int z = 0;
         for (BindMap::const_iterator p = bindMap.begin(); p != bindMap.end(); ++p)
         {
             BindObject b = (*p).second;
-            if (b.nodes.size() > 0)
+            if (b.sexps.size() > 0)
             {
-                for (Nodes::const_iterator q = b.nodes.begin(); q != b.nodes.end(); ++q)
+                for (SExps::const_iterator q = b.sexps.begin(); q != b.sexps.end(); ++q)
                 {
                     printf("<<%s:%s>>\n", (*p).first.c_str(), (*q)->toString().c_str());fflush(stdout);
                 }
             }
             else
             {
-                printf("<<%s:%s>>\n", (*p).first.c_str(), b.node->toString().c_str());fflush(stdout);
+                printf("<<%s:%s>>\n", (*p).first.c_str(), b.sexp->toString().c_str());fflush(stdout);
             }
         }
         z++;
 //        if (z == 6) exit(-1);
 #endif
 
-    Node* expanded = m->patterns[matchedPattern]->clone();
+    SExp* expanded = m->patterns[matchedPattern]->clone();
     bindMap_ = bindMap;
-    Node* wrap =new Node(Node::NODES);
+    SExp* wrap =new SExp(SExp::SEXPS);
 
-    // todo fix me! for foreachNode you need to wrap
-    wrap->nodes.push_back(expanded);
+    // todo fix me! for foreachSExp you need to wrap
+    wrap->sexps.push_back(expanded);
 
     int ret = foreachSymbols(wrap, &MacroFilter::expandMacro);
-    expanded = wrap->nodes[0];
+    expanded = wrap->sexps[0];
     if (ret)
     {
-        root->nodes.clear();
-        for (Nodes::const_iterator p = expanded->nodes.begin(); p != expanded->nodes.end(); ++p)
+        root->sexps.clear();
+        for (SExps::const_iterator p = expanded->sexps.begin(); p != expanded->sexps.end(); ++p)
         {
-            root->nodes.push_back(*p);
+            root->sexps.push_back(*p);
         }
         root->type = expanded->type;
         root->value = expanded->value;
@@ -162,13 +162,13 @@ int MacroFilter::tryExpandMacro(Node* dummy, Node* root)
     return ret;
 }
 
-int MacroFilter::findAndStoreDefineSyntaxes(Node* root)
+int MacroFilter::findAndStoreDefineSyntaxes(SExp* root)
 {
-    Nodes defineSyntaxes;
+    SExps defineSyntaxes;
     findDefineSyntaxes(root, defineSyntaxes);
 
     // todo foreach?
-    for (Nodes::const_iterator p = defineSyntaxes.begin(); p != defineSyntaxes.end(); ++p)
+    for (SExps::const_iterator p = defineSyntaxes.begin(); p != defineSyntaxes.end(); ++p)
     {
         int ret = storeDefineSyntaxes(*p);
         if (ret != SUCCESS) return ret;
@@ -176,68 +176,68 @@ int MacroFilter::findAndStoreDefineSyntaxes(Node* root)
     return SUCCESS;
 }
 
-void MacroFilter::findDefineSyntaxes(Node* root, Nodes& defineSyntaxes)
+void MacroFilter::findDefineSyntaxes(SExp* root, SExps& defineSyntaxes)
 {
-    if (!root->isNodes() || root->nodes.size() <= 0) return;
-    Node* left = root->nodes[0];
+    if (!root->isSExps() || root->sexps.size() <= 0) return;
+    SExp* left = root->sexps[0];
     if (left->isSymbol() && left->text == "define-syntax")
     {
         defineSyntaxes.push_back(root->clone());
 
 //         // ugly fix me.
 //         // define-syntax is replaced to true!
-        root->nodes.clear();
-        root->type = Node::NUMBER;
+        root->sexps.clear();
+        root->type = SExp::NUMBER;
         root->value = 1;
         return;
     }
 
-    for (Nodes::const_iterator p = root->nodes.begin() + 1; p != root->nodes.end(); ++p)
+    for (SExps::const_iterator p = root->sexps.begin() + 1; p != root->sexps.end(); ++p)
     {
         findDefineSyntaxes(*p, defineSyntaxes);
     }
     return;
 }
 
-int MacroFilter::storeDefineSyntaxes(Node* node)
+int MacroFilter::storeDefineSyntaxes(SExp* sexp)
 {
     if (L() != 3) return SYNTAX_ERROR;
     if (!N(1)->isSymbol()) return SYNTAX_ERROR;
-    if (!N(2)->isNodes() || LL(2) < 3) return SYNTAX_ERROR;
+    if (!N(2)->isSExps() || LL(2) < 3) return SYNTAX_ERROR;
     if (!NN(2, 0)->isSymbol() || NN(2, 0)->text != "syntax-rules") return SYNTAX_ERROR;
-    if (!NN(2, 1)->isNodes()) return SYNTAX_ERROR;
+    if (!NN(2, 1)->isSExps()) return SYNTAX_ERROR;
 
     // macro name
     Macro* macro = new Macro(N(1)->text);
 
     // store reserved words
-    for (Nodes::const_iterator p = NN(2, 1)->nodes.begin(); p != NN(2, 1)->nodes.end(); ++p)
+    for (SExps::const_iterator p = NN(2, 1)->sexps.begin(); p != NN(2, 1)->sexps.end(); ++p)
     {
-        Node* n = (*p);
+        SExp* n = (*p);
         if (!n->isSymbol()) return SYNTAX_ERROR;
         macro->reservedWords.push_back(n->text);
     }
     // store pattern / definition
-    for (Nodes::size_type i = 2; i < LL(2); ++i)
+    for (SExps::size_type i = 2; i < LL(2); ++i)
     {
-        Node* n = NN(2, i);
-        if (!n->isNodes() || n->nodes.size() != 2) return SYNTAX_ERROR;
-        renameMatchAllKeywords(n->nodes[0]);
-        renameMatchAllKeywords(n->nodes[1]);
-        macro->addPattern(n->nodes[0], n->nodes[1]);
+        SExp* n = NN(2, i);
+        if (!n->isSExps() || n->sexps.size() != 2) return SYNTAX_ERROR;
+        renameMatchAllKeywords(n->sexps[0]);
+        renameMatchAllKeywords(n->sexps[1]);
+        macro->addPattern(n->sexps[0], n->sexps[1]);
     }
     macros_[macro->name] = macro;
     return SUCCESS;
 }
 
-int MacroFilter::renameMatchAllKeywords(Node* node)
+int MacroFilter::renameMatchAllKeywords(SExp* sexp)
 {
     index_ = 0;
-    return foreachSymbols(node, &MacroFilter::renameMatchAllKeyword);
+    return foreachSymbols(sexp, &MacroFilter::renameMatchAllKeyword);
 }
 
 // ... => ...n
-int MacroFilter::renameMatchAllKeyword(Node* dummy, Node* root)
+int MacroFilter::renameMatchAllKeyword(SExp* dummy, SExp* root)
 {
     if (root->text == "...")
     {

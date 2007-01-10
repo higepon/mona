@@ -46,8 +46,8 @@ Object* Load::apply(Objects* arguments, Environment* env)
         return NULL;
     }
     input = "(begin " + input + ")";
-    Node* node = Node::fromString(input);
-    Quote* quote = new Quote(node, o->lineno());
+    SExp* sexp = SExp::fromString(input);
+    Quote* quote = new Quote(sexp, o->lineno());
 //    printf("<<%s>>\n", quote->toStringValue().c_str());
     Eval* e = new Eval(env->translator(), quote, quote->lineno());
     return e->eval(env);

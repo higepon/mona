@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Quote::Quote(Node* node, uint32_t lineno /* = 0 */) : node_(node), lineno_(lineno)
+Quote::Quote(SExp* sexp, uint32_t lineno /* = 0 */) : sexp_(sexp), lineno_(lineno)
 {
 }
 
@@ -17,7 +17,7 @@ std::string Quote::toString()
 
 std::string Quote::toStringValue()
 {
-    return node_->toSExpString();
+    return sexp_->toSExpString();
 }
 
 int Quote::type() const
@@ -27,21 +27,21 @@ int Quote::type() const
 
 Quote* Quote::car()
 {
-    if (node_->isNodes())
+    if (sexp_->isSExps())
     {
-        return new Quote(node_->nodes[0], lineno_);
+        return new Quote(sexp_->sexps[0], lineno_);
     }
     return NULL;
 }
 
 Quote* Quote::cdr()
 {
-    if (node_->isNodes())
+    if (sexp_->isSExps())
     {
-        Node* n = new Node(Node::NODES);
-        for (Nodes::const_iterator p = node_->nodes.begin() + 1; p != node_->nodes.end(); ++p)
+        SExp* n = new SExp(SExp::SEXPS);
+        for (SExps::const_iterator p = sexp_->sexps.begin() + 1; p != sexp_->sexps.end(); ++p)
         {
-            n->nodes.push_back(*p);
+            n->sexps.push_back(*p);
         }
         return new Quote(n, lineno_);
     }

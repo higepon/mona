@@ -1,34 +1,34 @@
 #include "Node.h"
 
+
 using namespace monash;
 using namespace std;
 
-Node* Node::clone() const
+SExp* SExp::clone() const
 {
-    Node* node = new Node(type);
-    node->lineno = lineno;
-    if (isNodes())
+    SExp* sexp = new SExp(type);
+    sexp->lineno = lineno;
+    if (isSExps())
     {
-        for (Nodes::const_iterator p = nodes.begin(); p != nodes.end(); ++p)
+        for (SExps::const_iterator p = sexps.begin(); p != sexps.end(); ++p)
         {
-            node->nodes.push_back((*p)->clone());
+            sexp->sexps.push_back((*p)->clone());
         }
     }
     else if(isNumber())
     {
-        node->value = value;
+        sexp->value = value;
     }
     else
     {
-        node->text = text;
+        sexp->text = text;
     }
-    return node;
+    return sexp;
 }
 
-string Node::typeToString()
+string SExp::typeToString()
 {
     char buffer[256];
-
     switch(type)
     {
     case NUMBER:
@@ -43,14 +43,14 @@ string Node::typeToString()
     case QUOTE:
         sprintf(buffer, "QUOTE[\'%s]\n", text.c_str());
         break;
-    case NODES:
-        sprintf(buffer, "NODES\n");
+    case SEXPS:
+        sprintf(buffer, "SEXPS\n");
         break;
     }
     return string(buffer);
 }
 
-string Node::typeToRawString()
+string SExp::typeToRawString()
 {
     char buffer[256];
     buffer[0] = '\0';
@@ -69,37 +69,37 @@ string Node::typeToRawString()
     case QUOTE:
         sprintf(buffer, "\'%s", text.c_str());
         break;
-//     case NODES:
+//     case SEXPS:
 //         sprintf(buffer, "");
 //         break;
     }
     return string(buffer);
 }
 
-void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
+void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
 {
     if (m->isSymbol())
     {
         BindObject b;
-        b.node = n;
+        b.sexp = n;
         bindMap[m->text] = b;
         return;
     }
-    else if (m->isNodes() && n->isNodes())
+    else if (m->isSExps() && n->isSExps())
     {
-        Nodes::size_type nLength = n->nodes.size();
-        Nodes::size_type mLength = m->nodes.size();
-        for (Nodes::size_type i = 0; i < m->nodes.size(); ++i)
+        SExps::size_type nLength = n->sexps.size();
+        SExps::size_type mLength = m->sexps.size();
+        for (SExps::size_type i = 0; i < m->sexps.size(); ++i)
         {
             if (i == nLength) return;
-            Node* mm = m->nodes[i];
-            Node* nn = n->nodes[i];
+            SExp* mm = m->sexps[i];
+            SExp* nn = n->sexps[i];
             if (mLength != nLength && mm->isMatchAllKeyword())
             {
                 BindObject b;
-                for (Nodes::size_type j = i; j < nLength; ++j)
+                for (SExps::size_type j = i; j < nLength; ++j)
                 {
-                    b.nodes.push_back(n->nodes[j]);
+                    b.sexps.push_back(n->sexps[j]);
                 }
                 bindMap[mm->text] = b;
                 return;
@@ -118,12 +118,12 @@ void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
     }
 }
 
-void Node::print(int depth /* = 0 */)
+void SExp::print(int depth /* = 0 */)
 {
     printf(toString().c_str());
 }
 
-void Node::toStringInternal(uint32_t depth, string& s)
+void SExp::toStringInternal(uint32_t depth, string& s)
 {
     for (uint32_t i = 0; i < depth; i++)
     {
@@ -131,35 +131,35 @@ void Node::toStringInternal(uint32_t depth, string& s)
     }
     s += typeToString();
     depth++;
-    for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+    for (SExps::const_iterator it = sexps.begin(); it != sexps.end(); ++it)
     {
         (*it)->toStringInternal(depth, s);
     }
 }
 
-string Node::toString()
+string SExp::toString()
 {
     string ret;
     toStringInternal(0, ret);
     return ret;
 }
 
-std::string Node::toSExpString()
+std::string SExp::toSExpString()
 {
     string ret;
     toSExpStringInternal(ret);
     return ret;
 }
 
-void Node::toSExpStringInternal(std::string& s)
+void SExp::toSExpStringInternal(std::string& s)
 {
-    if (isNodes())
+    if (isSExps())
     {
         s += "(";
-        for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+        for (SExps::const_iterator it = sexps.begin(); it != sexps.end(); ++it)
         {
             (*it)->toSExpStringInternal(s);
-            if (nodes.end() - 1 != it) s += " ";
+            if (sexps.end() - 1 != it) s += " ";
         }
         s += ")";
     }
@@ -170,20 +170,20 @@ void Node::toSExpStringInternal(std::string& s)
 
 }
 
-bool Node::equals(Node* node)
+bool SExp::equals(SExp* sexp)
 {
-    return equalsInternal(this, node);
+    return equalsInternal(this, sexp);
 }
 
-bool Node::equalsInternal(Node* m, Node* n)
+bool SExp::equalsInternal(SExp* m, SExp* n)
 {
     if (m->type != n->type) return false;
-    if (m->isNodes())
+    if (m->isSExps())
     {
-        if (m->nodes.size() != n->nodes.size()) return false;
-        for (Nodes::size_type i = 0; i < m->nodes.size(); i++)
+        if (m->sexps.size() != n->sexps.size()) return false;
+        for (SExps::size_type i = 0; i < m->sexps.size(); i++)
         {
-            if (!equalsInternal(m->nodes[i], n->nodes[i])) return false;
+            if (!equalsInternal(m->sexps[i], n->sexps[i])) return false;
         }
         return true;
     }
@@ -200,64 +200,64 @@ bool Node::equalsInternal(Node* m, Node* n)
     return false;
 }
 
-Node* Node::fromString(const std::string& text)
+SExp* SExp::fromString(const std::string& text)
 {
     Tokenizer tokenizer(text);
     Parser parser(&tokenizer);
     return parser.parse();
 }
 
-int Node::foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node))
+int SExp::foreachSExp(SExp* root, bool (SExp::*match)() const, int (SExp::*func)(SExp* root, SExp* sexp))
 {
     int ret = 0;
-    if (root->isNodes())
+    if (root->isSExps())
     {
-        // don't use iterator here, nodes.size() will be changed by func
-        for (Nodes::size_type i = 0; i < root->nodes.size(); i++)
+        // don't use iterator here, sexps.size() will be changed by func
+        for (SExps::size_type i = 0; i < root->sexps.size(); i++)
         {
-            Node* node = root->nodes[i];
-            if ((node->*match)())
+            SExp* sexp = root->sexps[i];
+            if ((sexp->*match)())
             {
-                ret += (this->*func)(root, node);
+                ret += (this->*func)(root, sexp);
             }
-            ret += foreachNode(node, match, func);
+            ret += foreachSExp(sexp, match, func);
         }
     }
     return ret;
 }
 
-int Node::foreachNodes(Node* root, int (Node::*f)(Node* root, Node* node))
+int SExp::foreachSExps(SExp* root, int (SExp::*f)(SExp* root, SExp* sexp))
 {
-    return foreachNode(root, &Node::isNodes, f);
+    return foreachSExp(root, &SExp::isSExps, f);
 }
 
 #if 0
-int Node::execLoadSyntax(Node* root, Node* node)
+int SExp::execLoadSyntax(SExp* root, SExp* sexp)
 {
-    if (node->nodes.size() == 0) return 0;
-    Node* left = node->nodes[0];
+    if (sexp->sexps.size() == 0) return 0;
+    SExp* left = sexp->sexps[0];
     if (!left->isSymbol()
         || left->text != "load"
-        || node->nodes.size() != 2
-        || node->nodes[1]->type != Node::STRING) return 0;
+        || sexp->sexps.size() != 2
+        || sexp->sexps[1]->type != SExp::STRING) return 0;
 
-    string path  = node->nodes[1]->text;
+    string path  = sexp->sexps[1]->text;
     string input = load(path.c_str());
     if (input == "") return 0;
     input = "(begin " + input + ")";
-    Nodes::size_type i;
-    for (i = 0; i < root->nodes.size(); ++i)
+    SExps::size_type i;
+    for (i = 0; i < root->sexps.size(); ++i)
     {
-        if (root->nodes[i] == node) break;
+        if (root->sexps[i] == sexp) break;
     }
-    Node* n = Node::fromString(input);
-    root->nodes[i] = n;
+    SExp* n = SExp::fromString(input);
+    root->sexps[i] = n;
     return 1;
 }
 
-int Node::execLoadSyntaxes()
+int SExp::execLoadSyntaxes()
 {
-    while (foreachNodes(this, &Node::execLoadSyntax));
+    while (foreachSExps(this, &SExp::execLoadSyntax));
     return 0;
 }
 #endif

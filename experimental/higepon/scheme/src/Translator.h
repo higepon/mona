@@ -35,39 +35,39 @@ public:
         SUCCESS
     };
 
-    void step1(Node* root);
-    int translate(Node** node, Object** object);
-//    int translateMacro(Node* defineSyntax, Node* from, Node** to);
-    int translateDefineSyntax(Node* node);
-    Node* expandMacroIfMatch(const std::string& name, Node** node);
+    void step1(SExp* root);
+    int translate(SExp** sexp, Object** object);
+//    int translateMacro(SExp* defineSyntax, SExp* from, SExp** to);
+    int translateDefineSyntax(SExp* sexp);
+    SExp* expandMacroIfMatch(const std::string& name, SExp** sexp);
 //    void reset() { expanded_ = NULL;}
 
-//    Node* getExpandedNode() const { return expanded_; }
+//    SExp* getExpandedSExp() const { return expanded_; }
 private:
-    int translatePrimitive(Node* node, Object** object);
-    int translateDefinition(Node* node, Object** object);
+    int translatePrimitive(SExp* sexp, Object** object);
+    int translateDefinition(SExp* sexp, Object** object);
 
-    int translateIf(Node* node, Object** object);
-    int translateAnd(Node* node, Object** object);
-    int translateOr(Node* node, Object** object);
-    int translateCond(Node* node, Object** object);
-    int translateBegin(Node* node, Object** object);
-    int translateLambda(Node* node, Object** object);
-    int translateLet(Node* node, Object** object);
-    int translateLetAsterisk(Node* node, Object** object);
-    int translateSet(Node* node, Object** object);
-    int translateApplication(Node* node, Object** object);
-    int translateQuote(Node* node, Object** object);
-    int translateEval(Node* node, Object** object);
-//    int expandMacro(Node* from, BindMap& bindMap);
+    int translateIf(SExp* sexp, Object** object);
+    int translateAnd(SExp* sexp, Object** object);
+    int translateOr(SExp* sexp, Object** object);
+    int translateCond(SExp* sexp, Object** object);
+    int translateBegin(SExp* sexp, Object** object);
+    int translateLambda(SExp* sexp, Object** object);
+    int translateLet(SExp* sexp, Object** object);
+    int translateLetAsterisk(SExp* sexp, Object** object);
+    int translateSet(SExp* sexp, Object** object);
+    int translateApplication(SExp* sexp, Object** object);
+    int translateQuote(SExp* sexp, Object** object);
+    int translateEval(SExp* sexp, Object** object);
+//    int expandMacro(SExp* from, BindMap& bindMap);
 
 
-///    int expandMacroInternal(Node** from, BindMap& bindMap);
-//    bool matchMacro(const std::string& name, Node* node);
+///    int expandMacroInternal(SExp** from, BindMap& bindMap);
+//    bool matchMacro(const std::string& name, SExp* sexp);
 
-//    Node* expandMacro(Macro* macro, Node* matchedPattern, Node** from);
+//    SExp* expandMacro(Macro* macro, SExp* matchedPattern, SExp** from);
 
-//    Node* expanded_;
+//    SExp* expanded_;
 //    Macros macros_;
 };
 

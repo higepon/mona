@@ -45,19 +45,19 @@ int main(int argc, char *argv[])
     registerPrimitives(env);
 
     input = "(" + input + " )";
-    Node* allNode = Node::fromString(input);
-    Nodes nodes = allNode->nodes;
+    SExp* allSExp = SExp::fromString(input);
+    SExps sexps = allSExp->sexps;
 
 // load
-//    node->execLoadSyntaxes();
-    for (Nodes::iterator p = nodes.begin(); p != nodes.end(); ++p)
+//    sexp->execLoadSyntaxes();
+    for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
     {
-        Node* node = (*p);
-        f.filter(node);
+        SExp* sexp = (*p);
+        f.filter(sexp);
 
         Object* object = NULL;
 
-        if (translator.translate(&node, &object) != Translator::SUCCESS)
+        if (translator.translate(&sexp, &object) != Translator::SUCCESS)
         {
             fprintf(stderr, "translate error \n");
             return -1;

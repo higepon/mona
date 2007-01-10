@@ -9,7 +9,7 @@ namespace monash {
 class Quote : public Object
 {
 public:
-    Quote(Node* node, uint32_t lineno = 0);
+    Quote(SExp* sexp, uint32_t lineno = 0);
     virtual ~Quote();
 
 public:
@@ -19,7 +19,7 @@ public:
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual std::string text() const { return value_;}
-    virtual Node* node() { return node_;}
+    virtual SExp* sexp() { return sexp_;}
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
 
@@ -27,7 +27,7 @@ public:
     virtual Quote* cdr();
 
 protected:
-    Node* node_;
+    SExp* sexp_;
     std::string value_;
     uint32_t lineno_;
 };

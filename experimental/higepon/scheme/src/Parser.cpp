@@ -12,44 +12,44 @@ Parser::~Parser()
 {
 }
 
-Node* Parser::parse()
+SExp* Parser::parse()
 {
-    Node* node = NULL;
+    SExp* sexp = NULL;
     Token token = tokenizer_->nextToken();
 
     switch(token.type)
     {
     case Token::LEFT_PAREN:
-        node = new Node(Node::NODES);ASSERT(node);
-        node->lineno = token.lineno;
+        sexp = new SExp(SExp::SEXPS);ASSERT(sexp);
+        sexp->lineno = token.lineno;
         for (;;)
         {
-            Node* child = parse();
-            if (NULL == child) return node;
-            node->nodes.push_back(child);
+            SExp* child = parse();
+            if (NULL == child) return sexp;
+            sexp->sexps.push_back(child);
         }
     case Token::RIGHT_PAREN:
         return NULL;
     case Token::NUMBER:
-        node = new Node(Node::NUMBER);ASSERT(node);
-        node->value = token.value;
-        node->lineno = token.lineno;
-        return node;
+        sexp = new SExp(SExp::NUMBER);ASSERT(sexp);
+        sexp->value = token.value;
+        sexp->lineno = token.lineno;
+        return sexp;
     case Token::IDENTIFIER:
-        node = new Node(Node::SYMBOL);ASSERT(node);
-        node->text = token.text;
-        node->lineno = token.lineno;
-        return node;
+        sexp = new SExp(SExp::SYMBOL);ASSERT(sexp);
+        sexp->text = token.text;
+        sexp->lineno = token.lineno;
+        return sexp;
     case Token::QUOTE:
-        node = new Node(Node::QUOTE);ASSERT(node);
-        node->text = token.text;
-        node->lineno = token.lineno;
-        return node;
+        sexp = new SExp(SExp::QUOTE);ASSERT(sexp);
+        sexp->text = token.text;
+        sexp->lineno = token.lineno;
+        return sexp;
     case Token::STRING:
-        node = new Node(Node::STRING);ASSERT(node);
-        node->text = token.text;
-        node->lineno = token.lineno;
-        return node;
+        sexp = new SExp(SExp::STRING);ASSERT(sexp);
+        sexp->text = token.text;
+        sexp->lineno = token.lineno;
+        return sexp;
     default:
         RAISE_ERROR(token.lineno, "unknown token");
     }

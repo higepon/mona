@@ -6,14 +6,14 @@
 
 namespace monash {
 
-class Node;
+class SExp;
 
 class Parser
 {
 public:
     Parser(Tokenizer* tokenizer);
     virtual ~Parser();
-    Node* parse();
+    SExp* parse();
 
 protected:
     Tokenizer* tokenizer_;

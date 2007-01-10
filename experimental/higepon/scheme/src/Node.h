@@ -1,5 +1,5 @@
-#ifndef __NODE_H__
-#define __NODE_H__
+#ifndef __SEXP_H__
+#define __SEXP_H__
 
 #include <vector>
 #include <string>
@@ -12,14 +12,14 @@
 std::string load(const char* file);
 namespace monash {
 
-class Node;
-typedef std::vector<Node*> Nodes;
+class SExp;
+typedef std::vector<SExp*> SExps;
 
-#define N(n)         node->nodes[n]
-#define NN(i, j)     node->nodes[i]->nodes[j]
-#define NNN(i, j, k) node->nodes[i]->nodes[j]->nodes[k]
-#define L()          node->nodes.size()
-#define LL(n)        node->nodes[n]->nodes.size()
+#define N(n)         sexp->sexps[n]
+#define NN(i, j)     sexp->sexps[i]->sexps[j]
+#define NNN(i, j, k) sexp->sexps[i]->sexps[j]->sexps[k]
+#define L()          sexp->sexps.size()
+#define LL(n)        sexp->sexps[n]->sexps.size()
 
 
 class BindObject;
@@ -28,42 +28,42 @@ typedef std::map<std::string, BindObject> BindMap;
 class BindObject
 {
 public:
-    BindObject() : node(NULL) {}
+    BindObject() : sexp(NULL) {}
 public:
-    Node* node;
-    Nodes nodes;
+    SExp* sexp;
+    SExps sexps;
 };
 
 
-class Node
+class SExp
 {
 public:
-    Node(int type) : type(type), lineno(0) {}
-    ~Node() {}
+    SExp(int type) : type(type), lineno(0) {}
+    ~SExp() {}
 
     std::string toString();
     std::string toSExpString();
     void print(int depth = 0);
-    bool equals(Node* node);
-    Node* clone() const;
+    bool equals(SExp* sexp);
+    SExp* clone() const;
 
-    bool isNodes()  const { return type == NODES; }
+    bool isSExps()  const { return type == SEXPS; }
     bool isNumber() const { return type == NUMBER; }
     bool isSymbol() const { return type == SYMBOL; }
     bool isString() const { return type == STRING; }
     bool isQuote()  const { return type == QUOTE; }
     bool isMatchAllKeyword() const { return isSymbol() && text.find("...") != std::string::npos; }
 
-    static Node* fromString(const std::string& text);
-    static void extractBindings(Node* m, Node* n, BindMap& bindMap);
+    static SExp* fromString(const std::string& text);
+    static void extractBindings(SExp* m, SExp* n, BindMap& bindMap);
 
-    int foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node));
-    int foreachNodes(Node* root, int (Node::*f)(Node*, Node*));
+    int foreachSExp(SExp* root, bool (SExp::*match)() const, int (SExp::*func)(SExp* root, SExp* sexp));
+    int foreachSExps(SExp* root, int (SExp::*f)(SExp*, SExp*));
 #if 0
-    int execLoadSyntax(Node* root, Node* node);
+    int execLoadSyntax(SExp* root, SExp* sexp);
     int execLoadSyntaxes();
 #endif
-    Nodes nodes;
+    SExps sexps;
     std::string text;
     int value;
     int type;
@@ -71,7 +71,7 @@ public:
 
     enum
     {
-        NODES,
+        SEXPS,
         NUMBER,
         SYMBOL,
         STRING,
@@ -79,7 +79,7 @@ public:
     };
 
 private:
-    static bool equalsInternal(Node* m, Node* n);
+    static bool equalsInternal(SExp* m, SExp* n);
     void toStringInternal(uint32_t depth, std::string& s);
     void toSExpStringInternal(std::string& s);
     std::string typeToString();
@@ -88,4 +88,4 @@ private:
 
 }; // namespace monash
 
-#endif // __NODE_H__
+#endif // __SEXP_H__

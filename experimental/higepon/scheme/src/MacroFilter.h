@@ -14,19 +14,19 @@ public:
     MacroFilter();
     virtual ~MacroFilter();
 
-    int filter(Node* from);
-    void findDefineSyntaxes(Node* root, Nodes& defineSyntaxes);
-    int storeDefineSyntaxes(Node* defineSyntax);
-    int findAndStoreDefineSyntaxes(Node* root);
-    int tryExpandMacro(Node* dummy, Node* node);
-    int expandMacro(Node* root, Node* node);
-    int foreachNode(Node* root, bool (Node::*match)() const, int (MacroFilter::*func)(Node* root, Node* node));
-    int foreachNodes(Node* root, int (MacroFilter::*f)(Node*, Node*));
-    int foreachSymbols(Node* root, int (MacroFilter::*f)(Node*, Node*));
+    int filter(SExp* from);
+    void findDefineSyntaxes(SExp* root, SExps& defineSyntaxes);
+    int storeDefineSyntaxes(SExp* defineSyntax);
+    int findAndStoreDefineSyntaxes(SExp* root);
+    int tryExpandMacro(SExp* dummy, SExp* sexp);
+    int expandMacro(SExp* root, SExp* sexp);
+    int foreachSExp(SExp* root, bool (SExp::*match)() const, int (MacroFilter::*func)(SExp* root, SExp* sexp));
+    int foreachSExps(SExp* root, int (MacroFilter::*f)(SExp*, SExp*));
+    int foreachSymbols(SExp* root, int (MacroFilter::*f)(SExp*, SExp*));
 
 protected:
-    int renameMatchAllKeywords(Node* node);
-    int renameMatchAllKeyword(Node* dummy, Node* root);
+    int renameMatchAllKeywords(SExp* sexp);
+    int renameMatchAllKeyword(SExp* dummy, SExp* root);
 
     Macros macros_;
     BindMap bindMap_;

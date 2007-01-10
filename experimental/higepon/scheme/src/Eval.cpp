@@ -24,7 +24,7 @@ Object* Eval::eval(Environment* env)
 {
     Object* o;
     // see Translator::translateQuote
-    Node* n = quote_->node();
+    SExp* n = quote_->sexp();
     env->macroFilter().filter(n);
 //    n->print();
     int ret = translator_.translate(&n, &o);
