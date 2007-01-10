@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     Node* node = Node::fromString(input);
 
 // load
-    node->execLoadSyntaxes();
+//    node->execLoadSyntaxes();
 
     MacroFilter f;
     f.filter(node);
