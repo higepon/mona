@@ -18,6 +18,8 @@ public:
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual std::string value() { return value_; }
+    virtual bool eqv(Object* o);
+    virtual bool eq(Object* o);
 
 protected:
     std::string value_;

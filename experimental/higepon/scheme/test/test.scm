@@ -1,31 +1,35 @@
 (load "./test/scheme.scm")
 (load "./test/unittest.scm")
 
-(define test-name "procedure +")
-(assert-true test-name (= 3 (+ 1 2)))
-(assert-true test-name (= 2 (+ 4 -2)))
-(assert-true test-name (= 11 (+ 4 2 5)))
+(assert-check-true "procedure +"
+                   (= 3 (+ 1 2))
+                   (= 2 (+ 4 -2))
+                   (= 11 (+ 4 2 5)))
 
-(define test-name "procedure -")
-(assert-true test-name (= 2 (- 3 1)))
-(assert-true test-name (= 0 (- 3 1 2)))
-(assert-true test-name (= -3 (- 3 1 2 3)))
-(assert-true test-name (= -3 (- 3)))
+(assert-check-true "procedure -"
+                   (= 2 (- 3 1))
+                   (= 0 (- 3 1 2))
+                   (= -3 (- 3 1 2 3))
+                   (= -3 (- 3)))
 
-(define test-name "procedure /")
-(assert-true test-name (= 2 (/ 4 2)))
-(assert-true test-name (= 2 (/ 8 2 2)))
-(assert-true test-name (= 1 (/ 54 2 9 3)))
+(assert-check-true "procedure /"
+                   (= 2 (/ 4 2))
+                   (= 2 (/ 8 2 2))
+                   (= 1 (/ 54 2 9 3)))
 
-(define test-name "procedure *")
-(assert-true test-name (= 2 (* 1 2)))
-(assert-true test-name (= -8 (* 4 -2)))
-(assert-true test-name (= 40 (* 4 2 5)))
+(assert-check-true "procedure *"
+                   (= 2 (* 1 2))
+                   (= -8 (* 4 -2))
+                   (= 40 (* 4 2 5)))
 
-(define test-name "if")
-(assert-true test-name (if #t #t #f))
-(assert-false test-name (if #t #f #t))
-(assert-false test-name (if #f #t))
+(assert-check-true "if"
+                   (if #t #t #f))
+
+(assert-check-false "if should be #f"
+                    (if #t #f #t)
+                    (if #f #t))
+
+(define test-name "set")
 (define x 3)
 (if #t (set! x 4) (set! x 5))
 (assert-true test-name (= 4 x))
@@ -33,87 +37,90 @@
 (if #f (set! x 4) (set! x 5))
 (assert-true test-name (= 5 x))
 
-(define test-name "cons")
-(assert-true test-name (= 3 (car (cons 3 4))))
-(assert-true test-name (= 4 (cdr (cons 3 4))))
-(assert-true test-name (= 3 (cadr (cons (cons 1 2) (cons 3 4)))))
-(assert-true test-name (= 2 (cdar (cons (cons 1 2) (cons 3 4)))))
-(assert-true test-name (= 1 (caar (cons (cons 1 2) (cons 3 4)))))
-(assert-true test-name (= 4 (cddr (cons (cons 1 2) (cons 3 4)))))
+(assert-check-true "cons"
+             (= 3 (car (cons 3 4)))
+             (= 4 (cdr (cons 3 4)))
+             (= 3 (cadr (cons (cons 1 2) (cons 3 4))))
+             (= 2 (cdar (cons (cons 1 2) (cons 3 4))))
+             (= 1 (caar (cons (cons 1 2) (cons 3 4))))
+             (= 4 (cddr (cons (cons 1 2) (cons 3 4)))))
 
-(define test-name "number?")
-(assert-true test-name (number? 3))
-(assert-true test-name (number? (+ 1 2)))
-(assert-false test-name (number? "string"))
-(assert-false test-name (number? (cons 1 2)))
+(assert-check-true "number? should be #t"
+                   (number? 3)
+                   (number? (+ 1 2)))
+
+(assert-check-false "number? should be #f"
+                    (number? "string")
+                    (number? (cons 1 2)))
 
 
-(define test-name "string?")
-(assert-false test-name (string? 3))
-(assert-false test-name (string? (+ 1 2)))
-(assert-true test-name (string? "string"))
-(assert-false test-name (string? (cons 1 2)))
+(assert-check-false "string?"
+                    (string? 3)
+                    (string? (cons 1 2))
+                    (string? (+ 1 2)))
+(assert-check-true "string?" (string? "string"))
 
-(define test-name "string->number")
-(assert-true test-name (= 1234 (string->number "1234")))
+(assert-check-true "string->number" (= 1234 (string->number "1234")))
 
-(define test-name "and")
-(assert-true test-name (and 3))
-(assert-true test-name (and #t))
-(assert-true test-name (and #t #t))
-(assert-true test-name (and #t #t #t))
-(assert-true test-name (and 1 3 2))
-(assert-true test-name (= 2 (and 1 3 2)))
-(assert-true test-name (= 4 (and 1 3 2 4)))
-(assert-false test-name (and #f))
-(assert-false test-name (and #t #f))
-(assert-false test-name (and #t #f #t))
-(assert-false test-name (and 1 #f 2))
-(assert-false test-name (= 2 (and 1 #f 2)))
-(assert-false test-name (= 4 (and 1 #f 2 4)))
+(assert-check-true "and"
+                   (and 3)
+                   (and #t #t)
+                   (and #t #t #t)
+                   (and 1 3 2)
+                   (= 2 (and 1 3 2))
+                   (= 4 (and 1 3 2 4)))
 
-(define test-name "or")
-(assert-true test-name (or 3))
-(assert-true test-name (or #t))
-(assert-true test-name (or #t #t))
-(assert-true test-name (or #t #t #t))
-(assert-true test-name (or 1 #f 2))
-(assert-true test-name (or 1 3 2))
-(assert-true test-name (= 2 (or 2 3 1)))
-(assert-true test-name (= 4 (or 4 3 2 4)))
-(assert-true test-name (= 2 (or #f 2 #f)))
-(assert-true test-name (= 4 (or #f #f 4)))
-(assert-false test-name (or #f))
-(assert-false test-name (or #f #f))
-(assert-false test-name (or #f #f #f))
+(assert-check-false "and should be #f"
+                    (and #f)
+                    (and #t #f)
+                    (and #t #f #t)
+                    (and 1 #f 2)
+                    (= 2 (and 1 #f 2))
+                    (= 4 (and 1 #f 2 4)))
 
-(define test-name "begin")
+(assert-check-true "or"
+                   (or 3)
+                   (or #t)
+                   (or #t #t)
+                   (or #t #t #t)
+                   (or 1 #f 2)
+                   (or 1 3 2)
+                   (= 2 (or 2 3 1))
+                   (= 4 (or 4 3 2 4))
+                   (= 2 (or #f 2 #f))
+                   (= 4 (or #f #f 4)))
+
+(assert-check-false "or should be #f"
+                    (or #f)
+                    (or #f #f)
+                    (or #f #f #f))
+
 (define x 0)
-(assert-true test-name (= 4 (begin (+ 3 1))))
-(assert-true test-name (= 4 (begin (set! x 1) 4)))
-(assert-true test-name (= x 1))
+(assert-check-true "begin"
+                   (= 4 (begin (+ 3 1)))
+                   (= 4 (begin (set! x 1) 4))
+                   (= x 1))
 
-(define test-name "lambda")
-(assert-true test-name (= 3 ((lambda (x) (+ x 1)) 2)))
-(assert-true test-name (= 3 ((lambda (x y) (+ x 1 y)) 1 1)))
+(assert-check-true "lambda"
+                   (= 3 ((lambda (x) (+ x 1)) 2))
+                   (= 3 ((lambda (x y) (+ x 1 y)) 1 1)))
 (define x 0)
 ((lambda (x) (set! x 3)) 2)
 ;; todo
 ;; (assert-true test-name (= 0 x))
 
-(define test-name "let")
 (let ((a 3) (b 2))
-  (assert-true test-name (= 5 (+ a b))))
+  (assert-true "let" (= 5 (+ a b))))
 (let ((a 3))
   (let ((b 2))
-    (assert-true test-name (= 5 (+ a b)))))
+    (assert-true "let" (= 5 (+ a b)))))
 
 (define test-name "let*")
 (let* ((a 3) (b 2))
-  (assert-true test-name (= 5 (+ a b))))
+  (assert-true "let*" (= 5 (+ a b))))
 (let* ((a 3))
   (let* ((b 2))
-    (assert-true test-name (= 5 (+ a b)))))
+    (assert-true "let*" (= 5 (+ a b)))))
 
 (define test-name "cond")
 (cond (#t (assert-true test-name #t))
@@ -129,30 +136,31 @@
 (cond (#f (assert-fail test-name "not reached"))
       (#t (assert-true test-name #t))
       (#f (assert-fail test-name "not reached")))
-(assert-true test-name (= 3 (cond (#t 3))))
-(assert-true test-name (= 4 (cond (#f 3) (#t 4) (#f 2))))
 
-(define test-name "fact")
+(assert-check-true "cond"
+                   (= 3 (cond (#t 3)))
+                   (= 4 (cond (#f 3) (#t 4) (#f 2))))
+
 (define fact
   (lambda (n)
     (if (= n 0)
         1
         (* n (fact (- n 1))))))
+(assert-true "fact" (= 120 (fact 5)))
 
-(assert-true test-name (= 120 (fact 5)))
+;; (define test-name "quote")
+;; (display (car (quote ((x1 x2) ((y1 y2))))))
+;; (define xyz 1234)
+;; (assert-true test-name (= 1234 (eval (quote xyz))))
 
-(define test-name "quote")
-(display (car (quote ((x1 x2) ((y1 y2))))))
-(define xyz 1234)
-(assert-true test-name (= 1234 (eval (quote xyz))))
+;; (define test-name "eval")
+;; (eval (quote (define hoge+ (lambda (x) (+ 4 x)))))
+;; (assert-true test-name (= 4 (hoge+ 0)))
+;; (eval (quote (define-syntax pqr
+;;                (syntax-rules ()
+;;                  ((_ a) (+ a 3))))))
+;; (assert-true test-name (= 7 (pqr 4)))
 
-(define test-name "eval")
-(eval (quote (define hoge+ (lambda (x) (+ 4 x)))))
-(assert-true test-name (= 4 (hoge+ 0)))
-(eval (quote (define-syntax pqr
-               (syntax-rules ()
-                 ((_ a) (+ a 3))))))
-(assert-true test-name (= 7 (pqr 4)))
 
 ;; ...をリネームするコードを書かないとダメだね．
 ;; (define-syntax cond*
@@ -213,9 +221,61 @@
 ;;        (#f (assert-fail test-name "not reached"))
 ;;        (#t (assert-true test-name #t)))
 
-;; report
-(total-report)
 
 ;; todo
 ;; マクロが展開されておかしくなる！
-;;(display (car (quote (list 1 2 3 4))))
+;(display (car (quote (list 1 2 3 4))))
+
+(define test-string1 "hige")
+(define test-string2 test-string1)
+(define test-pair1 (cons 1 2))
+(define test-pair2 test-pair1)
+(assert-check-true "eqv? - should be #t"
+                   ;; todo
+                   ;; symbol
+                   ;; char
+                   (eqv? #t #t)
+                   (eqv? #f #f)
+                   (eqv? 3 3)
+                   (eqv? (quote a) (quote a))
+                   (eqv? (quote ()) (quote ()))
+                   (eqv? test-string1 test-string2)
+                   (eqv? test-pair1 test-pair2))
+
+(define p (lambda (x) (+ x 1)))
+(assert-check-false "eqv? - should be #f different type"
+                    ;; todo
+                    ;; symbol
+                    ;; char
+                    (eqv? #t 2)
+                    (eqv? #t "false")
+                    (eqv? #t (quote (a b)))
+                    (eqv? #t (cons 1 2))
+                    (eqv? 2 "number")
+                    (eqv? 2 (quote (a b)))
+                    (eqv? 2 (cons 1 2))
+                    (eqv? (quote (x y)) (cons 1 2))
+                    (eqv? p p))
+
+(assert-check-false "eqv? - should be #f"
+                    ;; todo
+                    ;; symbol
+                    ;; char
+                    (eqv? #t #f)
+                    (eqv? #f #t)
+                    (eqv? (quote ()) 3)
+                    (eqv? (quote a) (quote b))
+                    (eqv? "string" "string")
+                    (eqv? (cons 1 2) (cons 1 2))
+                    (eqv? 2 3)
+                    (eqv? (lambda () 1) (lambda () 2)))
+
+(assert-check-false "eqv? - R5RS doesn't say anything about these. So same as Gauche."
+                    (eqv? "" "")
+                    (eqv? (lambda (x) x)
+                          (lambda (x) x))
+                    (eqv? (lambda (x) x)
+                          (lambda (y) y)))
+
+;; report
+(total-report)

@@ -50,6 +50,32 @@ string Node::typeToString()
     return string(buffer);
 }
 
+string Node::typeToRawString()
+{
+    char buffer[256];
+    buffer[0] = '\0';
+
+    switch(type)
+    {
+    case NUMBER:
+        sprintf(buffer, "%d", value);
+        break;
+    case SYMBOL:
+        sprintf(buffer, "%s", text.c_str());
+        break;
+    case STRING:
+        sprintf(buffer, "\"%s\"", text.c_str());
+        break;
+    case QUOTE:
+        sprintf(buffer, "\'%s", text.c_str());
+        break;
+//     case NODES:
+//         sprintf(buffer, "");
+//         break;
+    }
+    return string(buffer);
+}
+
 void Node::extractBindings(Node* m, Node* n, BindMap& bindMap)
 {
     if (m->isSymbol())
@@ -118,6 +144,32 @@ string Node::toString()
     return ret;
 }
 
+std::string Node::toSExpString()
+{
+    string ret;
+    toSExpStringInternal(ret);
+    return ret;
+}
+
+void Node::toSExpStringInternal(std::string& s)
+{
+    if (isNodes())
+    {
+        s += "(";
+        for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+        {
+            (*it)->toSExpStringInternal(s);
+            if (nodes.end() - 1 != it) s += " ";
+        }
+        s += ")";
+    }
+    else
+    {
+        s += typeToRawString();
+    }
+
+}
+
 bool Node::equals(Node* node)
 {
     return equalsInternal(this, node);
@@ -179,6 +231,7 @@ int Node::foreachNodes(Node* root, int (Node::*f)(Node* root, Node* node))
     return foreachNode(root, &Node::isNodes, f);
 }
 
+#if 0
 int Node::execLoadSyntax(Node* root, Node* node)
 {
     if (node->nodes.size() == 0) return 0;
@@ -207,3 +260,4 @@ int Node::execLoadSyntaxes()
     while (foreachNodes(this, &Node::execLoadSyntax));
     return 0;
 }
+#endif

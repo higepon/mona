@@ -24,3 +24,13 @@ Object* Lambda::eval(Environment* env)
 {
     Object* procedure = new Procedure(this, env); ASSERT(procedure); return procedure;
 }
+
+bool Lambda::eqv() const
+{
+    return false;
+}
+
+bool Lambda::eq() const
+{
+    return false;
+}

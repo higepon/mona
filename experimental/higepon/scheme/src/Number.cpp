@@ -37,3 +37,15 @@ Object* Number::eval(Environment* env)
 {
     return this;
 }
+
+bool Number::eqv(Object* o)
+{
+    if (o->type() != Object::NUMBER) return false;
+    Number* n = (Number*)o;
+    return n->value() == value();
+}
+
+bool Number::eq(Object* o)
+{
+    return false;
+}

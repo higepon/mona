@@ -33,3 +33,13 @@ Object* Procedure::eval(Environment* env)
     RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
     return this;
 }
+
+bool Procedure::eqv() const
+{
+    return false;
+}
+
+bool Procedure::eq() const
+{
+    return false;
+}

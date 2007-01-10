@@ -42,6 +42,7 @@ namespace std {
 #include "PrimitiveProcedures/StringAppend.h"
 #include "PrimitiveProcedures/NumberEqual.h"
 #include "PrimitiveProcedures/Set.h"
+#include "PrimitiveProcedures/Eqv.h"
 #include "PrimitiveProcedures/Load.h"
 
 

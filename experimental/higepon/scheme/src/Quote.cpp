@@ -17,7 +17,7 @@ std::string Quote::toString()
 
 std::string Quote::toStringValue()
 {
-    return node_->toString();
+    return node_->toSExpString();
 }
 
 int Quote::type() const
@@ -38,7 +38,12 @@ Quote* Quote::cdr()
 {
     if (node_->isNodes())
     {
-        return new Quote(node_->nodes[1], lineno_);
+        Node* n = new Node(Node::NODES);
+        for (Nodes::const_iterator p = node_->nodes.begin() + 1; p != node_->nodes.end(); ++p)
+        {
+            n->nodes.push_back(*p);
+        }
+        return new Quote(n, lineno_);
     }
     return NULL;
 }
@@ -47,4 +52,16 @@ Object* Quote::eval(Environment* env)
 {
     return this;
 //    return evalSequence(objects_, env); // different from SICP's
+}
+
+bool Quote::eqv(Object* o)
+{
+    if (!o->isQuote()) return false;
+    Quote* quote = (Quote*)o;
+    return this->toStringValue() == quote->toStringValue();
+}
+
+bool Quote::eq(Object* o)
+{
+    return false;
 }

@@ -20,6 +20,8 @@ public:
     virtual uint32_t lineno() const { return lineno_; }
     virtual std::string text() const { return value_;}
     virtual Node* node() { return node_;}
+    virtual bool eqv(Object* o);
+    virtual bool eq(Object* o);
 
     virtual Quote* car();
     virtual Quote* cdr();

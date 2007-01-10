@@ -94,6 +94,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h\
+../src/PrimitiveProcedures/Eqv.h\
+../src/PrimitiveProcedures/Eqv.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 

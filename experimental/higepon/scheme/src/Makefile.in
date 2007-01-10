@@ -66,9 +66,10 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
-	scheme-Load.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
-	scheme-Error.$(OBJEXT) scheme-load.$(OBJEXT)
+	scheme-Load.$(OBJEXT) scheme-Eqv.$(OBJEXT) \
+	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
+	scheme-MacroFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
+	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -253,6 +254,8 @@ PrimitiveProcedures/StringAppend.cpp\
 PrimitiveProcedures/StringAppend.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
+PrimitiveProcedures/Eqv.h\
+PrimitiveProcedures/Eqv.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
@@ -568,6 +571,12 @@ scheme-Load.o: PrimitiveProcedures/Load.cpp
 
 scheme-Load.obj: PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.obj `if test -f 'PrimitiveProcedures/Load.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Load.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Load.cpp'; fi`
+
+scheme-Eqv.o: PrimitiveProcedures/Eqv.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eqv.o `test -f 'PrimitiveProcedures/Eqv.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Eqv.cpp
+
+scheme-Eqv.obj: PrimitiveProcedures/Eqv.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eqv.obj `if test -f 'PrimitiveProcedures/Eqv.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Eqv.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Eqv.cpp'; fi`
 
 scheme-scheme.o: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp

@@ -71,7 +71,7 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-NumberP.$(OBJEXT) test_cpp-NumberEqual.$(OBJEXT) \
 	test_cpp-StringToNumber.$(OBJEXT) \
 	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT) \
-	test_cpp-Load.$(OBJEXT)
+	test_cpp-Eqv.$(OBJEXT) test_cpp-Load.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -267,6 +267,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h\
+../src/PrimitiveProcedures/Eqv.h\
+../src/PrimitiveProcedures/Eqv.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 
@@ -617,6 +619,12 @@ test_cpp-Set.o: ../src/PrimitiveProcedures/Set.cpp
 
 test_cpp-Set.obj: ../src/PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.obj `if test -f '../src/PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Set.cpp'; fi`
+
+test_cpp-Eqv.o: ../src/PrimitiveProcedures/Eqv.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Eqv.o `test -f '../src/PrimitiveProcedures/Eqv.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Eqv.cpp
+
+test_cpp-Eqv.obj: ../src/PrimitiveProcedures/Eqv.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Eqv.obj `if test -f '../src/PrimitiveProcedures/Eqv.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Eqv.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Eqv.cpp'; fi`
 
 test_cpp-Load.o: ../src/PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Load.o `test -f '../src/PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Load.cpp

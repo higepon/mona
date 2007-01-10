@@ -18,6 +18,9 @@ public:
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);
     virtual Objects* actions() const { return actions_;}
+    virtual bool eqv() const;
+    virtual bool eq()  const;
+
 
 protected:
     Objects* actions_;

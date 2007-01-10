@@ -16,6 +16,9 @@ public:
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);
+    virtual bool eqv() const;
+    virtual bool eq()  const;
+
 
     Objects* body() const { return body_; }
     Variables* parameters() { return parameters_;}

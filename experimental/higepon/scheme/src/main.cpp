@@ -39,28 +39,33 @@ int main(int argc, char *argv[])
     Error::initialize();
     Error::file = argv[1];
 
-    // todo ugly fixme
-    input = "(begin " + input + " )";
-
-    Node* node = Node::fromString(input);
-
-// load
-//    node->execLoadSyntaxes();
-
     MacroFilter f;
-    f.filter(node);
-
-    Object* object = NULL;
     Translator translator;
-    if (translator.translate(&node, &object) != Translator::SUCCESS)
-    {
-        fprintf(stderr, "translate error \n");
-        return -1;
-    }
     Environment* env = new Environment(f, translator);ASSERT(env);
     registerPrimitives(env);
 
-    // let's eval!
-    object->eval(env);
+    input = "(" + input + " )";
+    Node* allNode = Node::fromString(input);
+    Nodes nodes = allNode->nodes;
+
+// load
+//    node->execLoadSyntaxes();
+    for (Nodes::iterator p = nodes.begin(); p != nodes.end(); ++p)
+    {
+        Node* node = (*p);
+        f.filter(node);
+
+        Object* object = NULL;
+
+        if (translator.translate(&node, &object) != Translator::SUCCESS)
+        {
+            fprintf(stderr, "translate error \n");
+            return -1;
+        }
+
+        // let's eval!
+        object->eval(env);
+    }
+
     return 0;
 }

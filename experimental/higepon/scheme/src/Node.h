@@ -42,6 +42,7 @@ public:
     ~Node() {}
 
     std::string toString();
+    std::string toSExpString();
     void print(int depth = 0);
     bool equals(Node* node);
     Node* clone() const;
@@ -55,12 +56,13 @@ public:
 
     static Node* fromString(const std::string& text);
     static void extractBindings(Node* m, Node* n, BindMap& bindMap);
-//    static void extractBindingsInternal(Node* m, Node* n, Nodes::size_type i, BindMap& bindMap);
 
     int foreachNode(Node* root, bool (Node::*match)() const, int (Node::*func)(Node* root, Node* node));
     int foreachNodes(Node* root, int (Node::*f)(Node*, Node*));
+#if 0
     int execLoadSyntax(Node* root, Node* node);
     int execLoadSyntaxes();
+#endif
     Nodes nodes;
     std::string text;
     int value;
@@ -79,7 +81,9 @@ public:
 private:
     static bool equalsInternal(Node* m, Node* n);
     void toStringInternal(uint32_t depth, std::string& s);
+    void toSExpStringInternal(std::string& s);
     std::string typeToString();
+    std::string typeToRawString();
 };
 
 }; // namespace monash

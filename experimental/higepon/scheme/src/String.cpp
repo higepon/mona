@@ -30,3 +30,15 @@ Object* String::eval(Environment* env)
 {
     return this;
 }
+
+bool String::eqv(Object* o)
+{
+    if (!o->isString()) return false;
+    String* s = (String*)o;
+    return this == s;
+}
+
+bool String::eq(Object* o)
+{
+    return false;
+}

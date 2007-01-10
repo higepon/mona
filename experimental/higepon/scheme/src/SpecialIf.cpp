@@ -41,3 +41,14 @@ Object* SpecialIf::eval(Environment* env)
         }
     }
 }
+
+bool SpecialIf::eqv() const
+{
+    return false;
+}
+
+bool SpecialIf::eq() const
+{
+    return false;
+}
+

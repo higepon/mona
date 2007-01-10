@@ -83,6 +83,8 @@ PrimitiveProcedures/StringAppend.cpp\
 PrimitiveProcedures/StringAppend.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
+PrimitiveProcedures/Eqv.h\
+PrimitiveProcedures/Eqv.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\

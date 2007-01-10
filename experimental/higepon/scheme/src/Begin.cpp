@@ -29,3 +29,13 @@ Object* Begin::eval(Environment* env)
 {
     return evalSequence(this->actions(), env);
 }
+
+bool Begin::eqv() const
+{
+    return false;
+}
+
+bool Begin::eq() const
+{
+    return false;
+}

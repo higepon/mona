@@ -24,17 +24,28 @@ Object* Cdr::eval(Environment* env)
 Object* Cdr::apply(Objects* arguments, Environment* env)
 {
     Objects* as = listOfValues(arguments, env);
+
     if (as->size() != 1)
     {
         RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "cdr got %d arguments, but required %d", as->size(), 1);
         return NULL;
     }
     Object* o = as->at(0);
-    if (o->type() != Object::PAIR)
+    if (o->type() == Object::QUOTE)
     {
-        RAISE_ERROR(o->lineno(), "cdr got [%s], but required pair", o->toString().c_str());
-        return NULL;
+        Quote* quote = (Quote*)o;
+        Quote* ret = quote->cdr();
+        if (ret == NULL)
+        {
+            RAISE_ERROR(o->lineno(), "cdr got error on quote %s", o->toString().c_str());
+        }
+        return ret;
     }
-    Pair* p = (Pair*)o;
-    return p->second();
+    else if (o->type() == Object::PAIR)
+    {
+        Pair* p = (Pair*)o;
+        return p->second();
+    }
+    RAISE_ERROR(o->lineno(), "cdr got [%s], but required pair", o->toString().c_str());
+    return NULL;
 }

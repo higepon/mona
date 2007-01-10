@@ -16,6 +16,9 @@ public:
 public:
     virtual std::string toString();
     virtual std::string toStringValue();
+    bool eqv(Object* o);
+    bool eq(Object* o);
+
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual int value() const;

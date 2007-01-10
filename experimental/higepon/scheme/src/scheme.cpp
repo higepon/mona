@@ -90,7 +90,7 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("#f"),             new Number(0));
     env->defineVariable(new Variable("#t"),             new Number(1));
     env->defineVariable(new Variable("set!"),           new Set());
-
+    env->defineVariable(new Variable("eqv?"),           new Eqv());
 // load
     env->defineVariable(new Variable("load"),           new Load());
 }

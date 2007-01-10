@@ -1,17 +1,16 @@
-#ifndef __PRIMITIVE_PROCEDURE_CDR_H__
-#define __PRIMITIVE_PROCEDURE_CDR_H__
+#ifndef _PRIMITIVE_PROCEDURE_EQV_
+#define _PRIMITIVE_PROCEDURE_EQV_
 
 #include "PrimitiveProcedure.h"
-#include "Pair.h"
-#include "Quote.h"
+#include "Number.h"
 
 namespace monash {
 
-class Cdr : public PrimitiveProcedure
+class Eqv : public PrimitiveProcedure
 {
 public:
-    Cdr();
-    virtual ~Cdr();
+    Eqv();
+    virtual ~Eqv();
 
     virtual std::string toString();
     virtual Object* eval(Environment* env);
@@ -20,4 +19,4 @@ public:
 
 }; // namespace monash
 
-#endif // __PRIMITIVE_PROCEDURE_CDR_H__
+#endif // _PRIMITIVE_PROCEDURE_EQV_

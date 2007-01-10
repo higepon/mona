@@ -25,3 +25,16 @@ Object* Pair::eval(Environment* env)
 {
     return this;
 }
+
+bool Pair::eqv(Object* o)
+{
+    if (!o->isPair()) return false;
+    Pair* p = (Pair*)o;
+    return this == p;
+}
+
+bool Pair::eq(Object* o)
+{
+    return false;
+}
+

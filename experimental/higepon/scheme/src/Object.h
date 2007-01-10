@@ -27,9 +27,16 @@ public:
 public:
     virtual std::string toString()         = 0;
     virtual std::string toStringValue() { return toString(); }
+    virtual bool eqv(Object* o) { return false; }
+    virtual bool eq(Object* o) { return false; }
     virtual int type() const               = 0;
     virtual uint32_t lineno() const        = 0;
     virtual Object* eval(Environment* env) = 0;
+    virtual bool isNumber() const { return type() == NUMBER; }
+    virtual bool isString() const { return type() == STRING; }
+    virtual bool isQuote() const { return type() == QUOTE; }
+    virtual bool isPair() const { return type() == PAIR; }
+
     enum
     {
         NUMBER,

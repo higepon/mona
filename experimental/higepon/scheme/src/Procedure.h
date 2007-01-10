@@ -21,6 +21,9 @@ public:
     Objects* body() { return body_; }
     Variables* parameters(){ return parameters_; }
     Environment* env() { return env_; }
+    virtual bool eqv() const;
+    virtual bool eq()  const;
+
 
 protected:
     Objects* body_;

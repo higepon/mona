@@ -98,7 +98,7 @@
           #t
           (begin
             (set! *total-failures* (+ *total-failures* 1))
-            (report-error err-msg)
+;;            (report-error err-msg)
             #f)))))
 
 ;; (define test-skip
@@ -222,3 +222,16 @@
 
 ;; (define fixnum-bits (and (symbol-bound? 'fixnum-width)
 ;;                          (fixnum-width)))
+
+;; add by higepon
+(define-syntax assert-check-true
+  (syntax-rules ()
+    ((_ test-name f) (if (assert-true test-name f) #t
+                         (begin (display test-name) (display " test failed ") (display (quote f)) (newline))))
+    ((_ test-name f ...) (begin (assert-check-true test-name f) (assert-check-true test-name ...)))))
+
+(define-syntax assert-check-false
+  (syntax-rules ()
+    ((_ test-name f) (if (assert-false test-name f) #t
+                         (begin (display test-name) (display " test failed ") (display (quote f)) (newline))))
+    ((_ test-name f ...) (begin (assert-check-false test-name f) (assert-check-false test-name ...)))))

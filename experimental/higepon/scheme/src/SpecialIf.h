@@ -19,6 +19,9 @@ public:
     Object* predicate() const { return predicate_; }
     Object* consequent() const { return consequent_; }
     Object* alternative() const { return alternative_; }
+    virtual bool eqv() const;
+    virtual bool eq()  const;
+
 
 protected:
     Object* predicate_;
