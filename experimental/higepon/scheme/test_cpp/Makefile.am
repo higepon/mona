@@ -43,8 +43,8 @@ MacroFilterTest.cpp\
 ../src/Procedure.h\
 ../src/Begin.cpp\
 ../src/Begin.h\
-../src/Node.h\
-../src/Node.cpp\
+../src/SExp.h\
+../src/SExp.cpp\
 ../src/scheme.h\
 ../src/Macro.h\
 ../src/Macro.cpp\

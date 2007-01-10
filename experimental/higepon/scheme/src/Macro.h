@@ -1,7 +1,7 @@
 #ifndef _MACRO_
 #define _MACRO_
 
-#include "Node.h"
+#include "SExp.h"
 #include <string>
 #include <vector>
 #include "scheme.h"

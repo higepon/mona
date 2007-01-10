@@ -58,7 +58,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Pair.$(OBJEXT) scheme-Let.$(OBJEXT) \
 	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
 	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
-	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
+	scheme-SExp.$(OBJEXT) scheme-Translator.$(OBJEXT) \
 	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
 	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
 	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
@@ -219,8 +219,8 @@ Parser.cpp\
 Parser.h\
 Tokenizer.cpp\
 Tokenizer.h\
-Node.cpp\
-Node.h\
+SExp.cpp\
+SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
@@ -470,11 +470,11 @@ scheme-Tokenizer.o: Tokenizer.cpp
 scheme-Tokenizer.obj: Tokenizer.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Tokenizer.obj `if test -f 'Tokenizer.cpp'; then $(CYGPATH_W) 'Tokenizer.cpp'; else $(CYGPATH_W) '$(srcdir)/Tokenizer.cpp'; fi`
 
-scheme-Node.o: Node.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Node.o `test -f 'Node.cpp' || echo '$(srcdir)/'`Node.cpp
+scheme-SExp.o: SExp.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SExp.o `test -f 'SExp.cpp' || echo '$(srcdir)/'`SExp.cpp
 
-scheme-Node.obj: Node.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Node.obj `if test -f 'Node.cpp'; then $(CYGPATH_W) 'Node.cpp'; else $(CYGPATH_W) '$(srcdir)/Node.cpp'; fi`
+scheme-SExp.obj: SExp.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SExp.obj `if test -f 'SExp.cpp'; then $(CYGPATH_W) 'SExp.cpp'; else $(CYGPATH_W) '$(srcdir)/SExp.cpp'; fi`
 
 scheme-Translator.o: Translator.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Translator.o `test -f 'Translator.cpp' || echo '$(srcdir)/'`Translator.cpp

@@ -1,7 +1,7 @@
 #ifndef __TRANSLATOR_H__
 #define __TRANSLATOR_H__
 
-#include "Node.h"
+#include "SExp.h"
 #include "Object.h"
 #include "Procedure.h"
 #include "Number.h"
@@ -18,7 +18,7 @@
 #include "Let.h"
 #include "LetAsterisk.h"
 #include "Macro.h"
-#include "Node.h"
+#include "SExp.h"
 
 namespace monash {
 

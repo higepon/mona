@@ -16,11 +16,11 @@ void MacroMatchTest::tearDown()
 
 void MacroMatchTest::assertMacroMatch(const string& macroName, const string& words, const string& macro, const string& target, bool matchOrNot)
 {
-    Node* m = Node::fromString(macro);
-    Node* t = Node::fromString(target);
-    Node* r = Node::fromString(words);
+    SExp* m = SExp::fromString(macro);
+    SExp* t = SExp::fromString(target);
+    SExp* r = SExp::fromString(words);
     strings ss;
-    for (Nodes::iterator it = r->nodes.begin(); it != r->nodes.end(); ++it)
+    for (SExps::iterator it = r->sexps.begin(); it != r->sexps.end(); ++it)
     {
         ss.push_back((*it)->text);
     }

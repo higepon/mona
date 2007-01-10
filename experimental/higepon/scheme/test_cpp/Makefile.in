@@ -58,7 +58,7 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-SpecialIf.$(OBJEXT) test_cpp-Frame.$(OBJEXT) \
 	test_cpp-Environment.$(OBJEXT) test_cpp-Lambda.$(OBJEXT) \
 	test_cpp-Procedure.$(OBJEXT) test_cpp-Begin.$(OBJEXT) \
-	test_cpp-Node.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
+	test_cpp-SExp.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
 	test_cpp-MacroFilter.$(OBJEXT) test_cpp-Parser.$(OBJEXT) \
 	test_cpp-Cond.$(OBJEXT) test_cpp-Pair.$(OBJEXT) \
 	test_cpp-Let.$(OBJEXT) test_cpp-LetAsterisk.$(OBJEXT) \
@@ -216,8 +216,8 @@ MacroFilterTest.cpp\
 ../src/Procedure.h\
 ../src/Begin.cpp\
 ../src/Begin.h\
-../src/Node.h\
-../src/Node.cpp\
+../src/SExp.h\
+../src/SExp.cpp\
 ../src/scheme.h\
 ../src/Macro.h\
 ../src/Macro.cpp\
@@ -470,11 +470,11 @@ test_cpp-Begin.o: ../src/Begin.cpp
 test_cpp-Begin.obj: ../src/Begin.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Begin.obj `if test -f '../src/Begin.cpp'; then $(CYGPATH_W) '../src/Begin.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Begin.cpp'; fi`
 
-test_cpp-Node.o: ../src/Node.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Node.o `test -f '../src/Node.cpp' || echo '$(srcdir)/'`../src/Node.cpp
+test_cpp-SExp.o: ../src/SExp.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SExp.o `test -f '../src/SExp.cpp' || echo '$(srcdir)/'`../src/SExp.cpp
 
-test_cpp-Node.obj: ../src/Node.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Node.obj `if test -f '../src/Node.cpp'; then $(CYGPATH_W) '../src/Node.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Node.cpp'; fi`
+test_cpp-SExp.obj: ../src/SExp.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SExp.obj `if test -f '../src/SExp.cpp'; then $(CYGPATH_W) '../src/SExp.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/SExp.cpp'; fi`
 
 test_cpp-Macro.o: ../src/Macro.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Macro.o `test -f '../src/Macro.cpp' || echo '$(srcdir)/'`../src/Macro.cpp

@@ -1,7 +1,7 @@
 #ifndef __FILTER_H__
 #define __FILTER_H__
 
-#include "Node.h"
+#include "SExp.h"
 
 namespace monash {
 

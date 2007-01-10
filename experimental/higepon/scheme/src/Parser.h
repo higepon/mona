@@ -2,7 +2,7 @@
 #define __PARSER_H__
 
 #include "Tokenizer.h"
-#include "Node.h"
+#include "SExp.h"
 
 namespace monash {
 

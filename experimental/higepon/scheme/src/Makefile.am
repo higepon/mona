@@ -48,8 +48,8 @@ Parser.cpp\
 Parser.h\
 Tokenizer.cpp\
 Tokenizer.h\
-Node.cpp\
-Node.h\
+SExp.cpp\
+SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
