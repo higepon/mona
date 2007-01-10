@@ -30,5 +30,12 @@ Object* StringP::apply(Objects* arguments, Environment* env)
         return NULL;
     }
     Object* o = as->at(0);
-    return o->type() == Object::STRING ? new Number(1) : new Number(0);
+    if (o->type() == Object::STRING)
+    {
+        return new True();
+    }
+    else
+    {
+        return new False();
+    }
 }

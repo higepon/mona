@@ -36,6 +36,8 @@ public:
     virtual bool isString() const { return type() == STRING; }
     virtual bool isQuote() const { return type() == QUOTE; }
     virtual bool isPair() const { return type() == PAIR; }
+    virtual bool isTrue() const { return type() == TRUE; }
+    virtual bool isFalse() const { return type() == FALSE; }
 
     enum
     {
@@ -58,6 +60,8 @@ public:
         OR,
         LET,
         LET_ASTERISK,
+        TRUE,
+        FALSE,
     };
 };
 

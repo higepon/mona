@@ -85,6 +85,10 @@ PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\
 PrimitiveProcedures/Eqv.cpp\
+PrimitiveProcedures/True.h\
+PrimitiveProcedures/True.cpp\
+PrimitiveProcedures/False.h\
+PrimitiveProcedures/False.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\

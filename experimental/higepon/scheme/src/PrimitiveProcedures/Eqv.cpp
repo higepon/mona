@@ -34,5 +34,12 @@ Object* Eqv::apply(Objects* arguments, Environment* env)
     }
     Object* o1 = as->at(0);
     Object* o2 = as->at(1);
-    return new Number(o1->eqv(o2) ? 1 : 0); // todo true/false
+    if (o1->eqv(o2))
+    {
+        return new True();
+    }
+    else
+    {
+        return new False();
+    }
 }

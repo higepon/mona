@@ -31,5 +31,5 @@ Object* Or::eval(Environment* env)
             return evalResult;
         }
     }
-    Object* number = new Number(0);ASSERT(number); return number; // false
+    Object* f = new False();ASSERT(f); return f;
 }

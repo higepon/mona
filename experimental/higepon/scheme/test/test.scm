@@ -277,5 +277,10 @@
                     (eqv? (lambda (x) x)
                           (lambda (y) y)))
 
+(assert-check-true "quote"
+                   (eqv? (quote a) (quote a))
+                   (eqv? (car (quote (x y z))) (quote x))
+                   (eqv? (cdr (quote (x y z))) (quote (y z))))
+
 ;; report
 (total-report)

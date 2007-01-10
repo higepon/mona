@@ -30,5 +30,12 @@ Object* NumberP::apply(Objects* arguments, Environment* env)
         return NULL;
     }
     Object* o = as->at(0);
-    return o->type() == Object::NUMBER ? new Number(1) : new Number(0);
+    if (o->type() == Object::NUMBER)
+    {
+        return new True();
+    }
+    else
+    {
+        return new False();
+    }
 }

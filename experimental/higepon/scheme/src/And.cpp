@@ -27,7 +27,7 @@ Object* And::eval(Environment* env)
         Object* o = (*it);
         if (!isTrue(o->eval(env)))
         {
-            Object* number = new Number(0); // false
+            Object* number = new False(); // false
             ASSERT(number);
             return number;
         }

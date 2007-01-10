@@ -22,7 +22,6 @@ public:
     virtual bool eqv() const;
     virtual bool eq()  const;
 
-
 protected:
     Object* predicate_;
     Object* consequent_;

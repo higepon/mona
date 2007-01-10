@@ -67,6 +67,7 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
 	scheme-Load.$(OBJEXT) scheme-Eqv.$(OBJEXT) \
+	scheme-True.$(OBJEXT) scheme-False.$(OBJEXT) \
 	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
 	scheme-MacroFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
 	scheme-load.$(OBJEXT)
@@ -256,6 +257,10 @@ PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\
 PrimitiveProcedures/Eqv.cpp\
+PrimitiveProcedures/True.h\
+PrimitiveProcedures/True.cpp\
+PrimitiveProcedures/False.h\
+PrimitiveProcedures/False.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
@@ -577,6 +582,18 @@ scheme-Eqv.o: PrimitiveProcedures/Eqv.cpp
 
 scheme-Eqv.obj: PrimitiveProcedures/Eqv.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eqv.obj `if test -f 'PrimitiveProcedures/Eqv.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Eqv.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Eqv.cpp'; fi`
+
+scheme-True.o: PrimitiveProcedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-True.o `test -f 'PrimitiveProcedures/True.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/True.cpp
+
+scheme-True.obj: PrimitiveProcedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-True.obj `if test -f 'PrimitiveProcedures/True.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/True.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/True.cpp'; fi`
+
+scheme-False.o: PrimitiveProcedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-False.o `test -f 'PrimitiveProcedures/False.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/False.cpp
+
+scheme-False.obj: PrimitiveProcedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-False.obj `if test -f 'PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/False.cpp'; fi`
 
 scheme-scheme.o: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp

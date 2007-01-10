@@ -71,7 +71,8 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-NumberP.$(OBJEXT) test_cpp-NumberEqual.$(OBJEXT) \
 	test_cpp-StringToNumber.$(OBJEXT) \
 	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT) \
-	test_cpp-Eqv.$(OBJEXT) test_cpp-Load.$(OBJEXT)
+	test_cpp-Eqv.$(OBJEXT) test_cpp-True.$(OBJEXT) \
+	test_cpp-False.$(OBJEXT) test_cpp-Load.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -269,6 +270,10 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/Set.h\
 ../src/PrimitiveProcedures/Eqv.h\
 ../src/PrimitiveProcedures/Eqv.cpp\
+../src/PrimitiveProcedures/True.h\
+../src/PrimitiveProcedures/True.cpp\
+../src/PrimitiveProcedures/False.h\
+../src/PrimitiveProcedures/False.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 
@@ -625,6 +630,18 @@ test_cpp-Eqv.o: ../src/PrimitiveProcedures/Eqv.cpp
 
 test_cpp-Eqv.obj: ../src/PrimitiveProcedures/Eqv.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Eqv.obj `if test -f '../src/PrimitiveProcedures/Eqv.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Eqv.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Eqv.cpp'; fi`
+
+test_cpp-True.o: ../src/PrimitiveProcedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.o `test -f '../src/PrimitiveProcedures/True.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/True.cpp
+
+test_cpp-True.obj: ../src/PrimitiveProcedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.obj `if test -f '../src/PrimitiveProcedures/True.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/True.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/True.cpp'; fi`
+
+test_cpp-False.o: ../src/PrimitiveProcedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.o `test -f '../src/PrimitiveProcedures/False.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/False.cpp
+
+test_cpp-False.obj: ../src/PrimitiveProcedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.obj `if test -f '../src/PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/False.cpp'; fi`
 
 test_cpp-Load.o: ../src/PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Load.o `test -f '../src/PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Load.cpp

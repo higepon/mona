@@ -96,6 +96,10 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/Set.h\
 ../src/PrimitiveProcedures/Eqv.h\
 ../src/PrimitiveProcedures/Eqv.cpp\
+../src/PrimitiveProcedures/True.h\
+../src/PrimitiveProcedures/True.cpp\
+../src/PrimitiveProcedures/False.h\
+../src/PrimitiveProcedures/False.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 

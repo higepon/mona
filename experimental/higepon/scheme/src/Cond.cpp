@@ -35,7 +35,7 @@ Object* Cond::expandInternal(Clauses::iterator it)
         }
         else
         {
-            Object* number = new Number(0); ASSERT(number); return number; // fix me
+            Object* f = new False(); ASSERT(f); return f;
         }
     }
     Clause* clause = *it;

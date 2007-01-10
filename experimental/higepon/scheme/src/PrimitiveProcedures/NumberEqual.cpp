@@ -24,12 +24,12 @@ Object* NumberEqual::eval(Environment* env)
 Object* NumberEqual::apply(Objects* arguments, Environment* env)
 {
     Objects* as = listOfValues(arguments, env);
-    if (as->size() != 2) return new Number(0);
+    if (as->size() != 2) return new False();
     Object* o1 = as->at(0);
     Object* o2 = as->at(1);
-    if (o1->type() != Object::NUMBER || o2->type() != Object::NUMBER) return new Number(0);
+    if (o1->type() != Object::NUMBER || o2->type() != Object::NUMBER) return new False();
     Number* n1 = (Number*)o1;
     Number* n2 = (Number*)o2;
-    if (n1->value() == n2->value()) return new Number(1);
-    return new Number(0);
+    if (n1->value() == n2->value()) return new True();
+    return new False();
 }

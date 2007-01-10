@@ -59,12 +59,7 @@ Object* apply(Object* procedure, Objects* arguments, Environment* env)
 
 bool isTrue(Object* exp)
 {
-    if (exp->type() == Object::NUMBER)
-    {
-        Number* n = (Number*)exp;
-        if (n->value() == 0) return false;
-    }
-    return true;
+    return exp->type() != Object::FALSE;
 }
 
 void display(Object* exp)
@@ -87,8 +82,8 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("number?"),        new NumberP());
     env->defineVariable(new Variable("string->number"), new StringToNumber());
     env->defineVariable(new Variable("string-append"),  new StringAppend());
-    env->defineVariable(new Variable("#f"),             new Number(0));
-    env->defineVariable(new Variable("#t"),             new Number(1));
+    env->defineVariable(new Variable("#f"),             new False());
+    env->defineVariable(new Variable("#t"),             new True());
     env->defineVariable(new Variable("set!"),           new Set());
     env->defineVariable(new Variable("eqv?"),           new Eqv());
 // load

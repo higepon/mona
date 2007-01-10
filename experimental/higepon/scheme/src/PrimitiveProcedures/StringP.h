@@ -3,7 +3,8 @@
 
 #include "PrimitiveProcedure.h"
 #include "String.h"
-#include "Number.h"
+#include "False.h"
+#include "True.h"
 
 namespace monash {
 

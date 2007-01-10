@@ -2,7 +2,8 @@
 #define _PRIMITIVE_PROCEDURE_EQV_
 
 #include "PrimitiveProcedure.h"
-#include "Number.h"
+#include "True.h"
+#include "False.h"
 
 namespace monash {
 
