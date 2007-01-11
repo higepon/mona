@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    QuoteFilter quoteFilter;
+    input = quoteFilter.filter(input);
+//    printf("%s", input.c_str());
     Error::initialize();
     Error::file = argv[1];
 

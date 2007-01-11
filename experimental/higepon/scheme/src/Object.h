@@ -34,6 +34,7 @@ public:
     virtual Object* eval(Environment* env) = 0;
     virtual bool isNumber() const { return type() == NUMBER; }
     virtual bool isString() const { return type() == STRING; }
+    virtual bool isCharcter() const { return type() == CHARCTER; }
     virtual bool isQuote() const { return type() == QUOTE; }
     virtual bool isPair() const { return type() == PAIR; }
     virtual bool isTrue() const { return type() == TRUE; }
@@ -43,6 +44,7 @@ public:
     {
         NUMBER,
         STRING,
+        CHARCTER,
         QUOTE,
         VARIABLE,
         ASSIGNMENT,

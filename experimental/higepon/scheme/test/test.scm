@@ -233,7 +233,7 @@
 (assert-check-true "eqv? - should be #t"
                    ;; todo
                    ;; symbol
-                   ;; char
+                   (eqv? #\a #\a)
                    (eqv? #t #t)
                    (eqv? #f #f)
                    (eqv? 3 3)
@@ -246,7 +246,7 @@
 (assert-check-false "eqv? - should be #f different type"
                     ;; todo
                     ;; symbol
-                    ;; char
+                    (eqv? #\a #\b)
                     (eqv? #t 2)
                     (eqv? #t "false")
                     (eqv? #t (quote (a b)))
@@ -282,5 +282,30 @@
                    (eqv? (car (quote (x y z))) (quote x))
                    (eqv? (cdr (quote (x y z))) (quote (y z))))
 
+(assert-check-true "quote '"
+                   (eqv? (caar (cons (cons 3 4) (cons 5 6))) 3)
+                   (eqv? 'a 'a)
+                   (eqv? (car '(x y z)) 'x)
+                   (eqv? (cdr '(x y z)) '(y z)))
+
+(assert-check-true "should be #t"
+                   0
+                   1
+                   '()
+                   null
+                   'a
+                   #t
+                   (cons 1 2)
+                   (lambda (x) x))
+
+(assert-check-false "should be #f" #f)
+
+(load "./test/char.scm")
+
+
+
+
 ;; report
 (total-report)
+
+(display (quote (#\a #\b)))

@@ -79,6 +79,12 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("cdr"),            new Cdr());
     env->defineVariable(new Variable("display"),        new Display());
     env->defineVariable(new Variable("string?"),        new StringP());
+    env->defineVariable(new Variable("char=?"),         new CharcterEqualP());
+    env->defineVariable(new Variable("char>?"),         new CharcterGtP());
+    env->defineVariable(new Variable("char<?"),         new CharcterLtP());
+    env->defineVariable(new Variable("char>=?"),        new CharcterGeP());
+    env->defineVariable(new Variable("char<=?"),        new CharcterLeP());
+    env->defineVariable(new Variable("eqv?"),           new Eqv());
     env->defineVariable(new Variable("number?"),        new NumberP());
     env->defineVariable(new Variable("string->number"), new StringToNumber());
     env->defineVariable(new Variable("string-append"),  new StringAppend());
@@ -86,6 +92,7 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("#t"),             new True());
     env->defineVariable(new Variable("set!"),           new Set());
     env->defineVariable(new Variable("eqv?"),           new Eqv());
+
 // load
     env->defineVariable(new Variable("load"),           new Load());
 }

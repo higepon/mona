@@ -9,6 +9,8 @@ MacroMatchTest.h\
 MacroMatchTest.cpp\
 MacroFilterTest.h\
 MacroFilterTest.cpp\
+QuoteFilterTest.h\
+QuoteFilterTest.cpp\
 ../src/Error.h\
 ../src/Error.cpp\
 ../src/Translator.h\
@@ -19,6 +21,8 @@ MacroFilterTest.cpp\
 ../src/Number.h\
 ../src/String.cpp\
 ../src/String.h\
+../src/Charcter.cpp\
+../src/Charcter.h\
 ../src/Definition.cpp\
 ../src/Definition.h\
 ../src/Quote.cpp\
@@ -50,6 +54,8 @@ MacroFilterTest.cpp\
 ../src/Macro.cpp\
 ../src/MacroFilter.h\
 ../src/MacroFilter.cpp\
+../src/QuoteFilter.h\
+../src/QuoteFilter.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp\
 ../src/Cond.cpp\
@@ -100,6 +106,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/True.cpp\
 ../src/PrimitiveProcedures/False.h\
 ../src/PrimitiveProcedures/False.cpp\
+../src/PrimitiveProcedures/CharcterP.h\
+../src/PrimitiveProcedures/CharcterP.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 

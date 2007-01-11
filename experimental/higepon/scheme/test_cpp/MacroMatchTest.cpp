@@ -36,6 +36,10 @@ void MacroMatchTest::testMatch()
 {
     YAML yaml;
     loadYAML("match.yml", yaml);
+    if (yaml.size() == 0)
+    {
+        fprintf(stderr, "bad yaml!\n");
+    }
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {
@@ -52,6 +56,10 @@ void MacroMatchTest::testUnmatch()
 {
     YAML yaml;
     loadYAML("unmatch.yml", yaml);
+    if (yaml.size() == 0)
+    {
+        fprintf(stderr, "bad yaml!\n");
+    }
 
     for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
     {

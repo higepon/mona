@@ -11,11 +11,13 @@ namespace std {
 #include <string>
 #include <vector>
 #include "MacroFilter.h"
+#include "QuoteFilter.h"
 #include "Object.h"
 #include "Environment.h"
 #include "Procedure.h"
 #include "Number.h"
 #include "String.h"
+#include "Charcter.h"
 #include "Quote.h"
 #include "SpecialIf.h"
 #include "Assignment.h"
@@ -45,6 +47,7 @@ namespace std {
 #include "PrimitiveProcedures/Eqv.h"
 #include "PrimitiveProcedures/True.h"
 #include "PrimitiveProcedures/False.h"
+#include "PrimitiveProcedures/CharcterP.h"
 #include "PrimitiveProcedures/Load.h"
 
 

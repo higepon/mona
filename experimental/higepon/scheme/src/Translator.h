@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "Procedure.h"
 #include "Number.h"
+#include "Charcter.h"
 #include "String.h"
 #include "Quote.h"
 #include "And.h"

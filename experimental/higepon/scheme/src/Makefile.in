@@ -49,27 +49,28 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Eval.$(OBJEXT) scheme-Number.$(OBJEXT) \
-	scheme-String.$(OBJEXT) scheme-Quote.$(OBJEXT) \
-	scheme-Variable.$(OBJEXT) scheme-Assignment.$(OBJEXT) \
-	scheme-SpecialIf.$(OBJEXT) scheme-Frame.$(OBJEXT) \
-	scheme-Environment.$(OBJEXT) scheme-Lambda.$(OBJEXT) \
-	scheme-Procedure.$(OBJEXT) scheme-Begin.$(OBJEXT) \
-	scheme-Definition.$(OBJEXT) scheme-Cond.$(OBJEXT) \
-	scheme-Pair.$(OBJEXT) scheme-Let.$(OBJEXT) \
-	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
-	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
-	scheme-SExp.$(OBJEXT) scheme-Translator.$(OBJEXT) \
-	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
-	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
-	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
-	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-String.$(OBJEXT) scheme-Charcter.$(OBJEXT) \
+	scheme-Quote.$(OBJEXT) scheme-Variable.$(OBJEXT) \
+	scheme-Assignment.$(OBJEXT) scheme-SpecialIf.$(OBJEXT) \
+	scheme-Frame.$(OBJEXT) scheme-Environment.$(OBJEXT) \
+	scheme-Lambda.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
+	scheme-Begin.$(OBJEXT) scheme-Definition.$(OBJEXT) \
+	scheme-Cond.$(OBJEXT) scheme-Pair.$(OBJEXT) \
+	scheme-Let.$(OBJEXT) scheme-LetAsterisk.$(OBJEXT) \
+	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
+	scheme-Tokenizer.$(OBJEXT) scheme-SExp.$(OBJEXT) \
+	scheme-Translator.$(OBJEXT) scheme-Plus.$(OBJEXT) \
+	scheme-Minus.$(OBJEXT) scheme-Divide.$(OBJEXT) \
+	scheme-Multiply.$(OBJEXT) scheme-Cons.$(OBJEXT) \
+	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
 	scheme-Load.$(OBJEXT) scheme-Eqv.$(OBJEXT) \
 	scheme-True.$(OBJEXT) scheme-False.$(OBJEXT) \
-	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
-	scheme-MacroFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
+	scheme-CharcterP.$(OBJEXT) scheme-scheme.$(OBJEXT) \
+	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
+	scheme-QuoteFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
 	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
@@ -186,6 +187,8 @@ Number.cpp\
 Number.h\
 String.cpp\
 String.h\
+Charcter.cpp\
+Charcter.h\
 Quote.cpp\
 Quote.h\
 Variable.cpp\
@@ -261,12 +264,16 @@ PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
 PrimitiveProcedures/False.cpp\
+PrimitiveProcedures/CharcterP.h\
+PrimitiveProcedures/CharcterP.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
 Macro.cpp\
 MacroFilter.h\
 MacroFilter.cpp\
+QuoteFilter.h\
+QuoteFilter.cpp\
 Error.cpp\
 Error.h\
 load.cpp
@@ -372,6 +379,12 @@ scheme-String.o: String.cpp
 
 scheme-String.obj: String.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-String.obj `if test -f 'String.cpp'; then $(CYGPATH_W) 'String.cpp'; else $(CYGPATH_W) '$(srcdir)/String.cpp'; fi`
+
+scheme-Charcter.o: Charcter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Charcter.o `test -f 'Charcter.cpp' || echo '$(srcdir)/'`Charcter.cpp
+
+scheme-Charcter.obj: Charcter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Charcter.obj `if test -f 'Charcter.cpp'; then $(CYGPATH_W) 'Charcter.cpp'; else $(CYGPATH_W) '$(srcdir)/Charcter.cpp'; fi`
 
 scheme-Quote.o: Quote.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Quote.o `test -f 'Quote.cpp' || echo '$(srcdir)/'`Quote.cpp
@@ -595,6 +608,12 @@ scheme-False.o: PrimitiveProcedures/False.cpp
 scheme-False.obj: PrimitiveProcedures/False.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-False.obj `if test -f 'PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/False.cpp'; fi`
 
+scheme-CharcterP.o: PrimitiveProcedures/CharcterP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-CharcterP.o `test -f 'PrimitiveProcedures/CharcterP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/CharcterP.cpp
+
+scheme-CharcterP.obj: PrimitiveProcedures/CharcterP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-CharcterP.obj `if test -f 'PrimitiveProcedures/CharcterP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/CharcterP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/CharcterP.cpp'; fi`
+
 scheme-scheme.o: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp
 
@@ -612,6 +631,12 @@ scheme-MacroFilter.o: MacroFilter.cpp
 
 scheme-MacroFilter.obj: MacroFilter.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-MacroFilter.obj `if test -f 'MacroFilter.cpp'; then $(CYGPATH_W) 'MacroFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilter.cpp'; fi`
+
+scheme-QuoteFilter.o: QuoteFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-QuoteFilter.o `test -f 'QuoteFilter.cpp' || echo '$(srcdir)/'`QuoteFilter.cpp
+
+scheme-QuoteFilter.obj: QuoteFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-QuoteFilter.obj `if test -f 'QuoteFilter.cpp'; then $(CYGPATH_W) 'QuoteFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/QuoteFilter.cpp'; fi`
 
 scheme-Error.o: Error.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Error.o `test -f 'Error.cpp' || echo '$(srcdir)/'`Error.cpp

@@ -14,6 +14,8 @@ Number.cpp\
 Number.h\
 String.cpp\
 String.h\
+Charcter.cpp\
+Charcter.h\
 Quote.cpp\
 Quote.h\
 Variable.cpp\
@@ -89,12 +91,16 @@ PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
 PrimitiveProcedures/False.cpp\
+PrimitiveProcedures/CharcterP.h\
+PrimitiveProcedures/CharcterP.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
 Macro.cpp\
 MacroFilter.h\
 MacroFilter.cpp\
+QuoteFilter.h\
+QuoteFilter.cpp\
 Error.cpp\
 Error.h\
 load.cpp

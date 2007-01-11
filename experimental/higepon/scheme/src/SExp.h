@@ -52,6 +52,7 @@ public:
     bool isSymbol() const { return type == SYMBOL; }
     bool isString() const { return type == STRING; }
     bool isQuote()  const { return type == QUOTE; }
+    bool isChar()  const { return type == CHAR; }
     bool isMatchAllKeyword() const { return isSymbol() && text.find("...") != std::string::npos; }
 
     static SExp* fromString(const std::string& text);
@@ -76,6 +77,7 @@ public:
         SYMBOL,
         STRING,
         QUOTE,
+        CHAR,
     };
 
 private:

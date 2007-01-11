@@ -36,7 +36,14 @@ SExp* Parser::parse()
         sexp->lineno = token.lineno;
         return sexp;
     case Token::IDENTIFIER:
-        sexp = new SExp(SExp::SYMBOL);ASSERT(sexp);
+        if (token.text.find("#\\") == 0)
+        {
+            sexp = new SExp(SExp::CHAR);ASSERT(sexp);
+        }
+        else
+        {
+            sexp = new SExp(SExp::SYMBOL);ASSERT(sexp);
+        }
         sexp->text = token.text;
         sexp->lineno = token.lineno;
         return sexp;

@@ -2,8 +2,6 @@
   (lambda (x)
     (car (car x))))
 
-(display (caar (cons (cons 3 4) (cons 5 6))))
-
 (define cdar
   (lambda (x)
     (cdr (car x))))
@@ -38,19 +36,16 @@
   (lambda (condition)
     (if condition #f #t)))
 
-;; fix me!
-(define null 12345678)
-
+(define null '())
 
 (define null?
   (lambda (x)
-    (= x null)))
+    (eqv? x null)))
 
 (define-syntax list
   (syntax-rules ()
     ((_ a) (cons a null))
     ((_ a ...) (cons a (list ...)))))
-;; fix me end!
 
 (define-syntax and
   (syntax-rules ()
@@ -66,4 +61,3 @@
     ((or test1 test2 ...)
      (let ((x test1))
        (if x x (or test2 ...))))))
-

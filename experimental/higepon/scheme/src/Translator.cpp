@@ -28,8 +28,12 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
         *object = new String(sexp->text, sexp->lineno);ASSERT(*object);
         return SUCCESS;
 //     case SExp::QUOTE:
-//         *object = new Quote(sexp->text, sexp->lineno);ASSERT(*object);
+//         printf("quote:%s\n", sexp->text.c_str());
+//         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);ASSERT(*object);
 //         return SUCCESS;
+    case SExp::CHAR:
+        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        return SUCCESS;
     case SExp::SYMBOL:
         *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
         return SUCCESS;

@@ -65,6 +65,9 @@ string SExp::typeToRawString()
     case STRING:
         sprintf(buffer, "\"%s\"", text.c_str());
         break;
+    case CHAR:
+        sprintf(buffer, "%s", text.c_str());
+        break;
     case QUOTE:
         sprintf(buffer, "\'%s", text.c_str());
         break;

@@ -49,17 +49,19 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-MacroMatchTest.$(OBJEXT) \
-	test_cpp-MacroFilterTest.$(OBJEXT) test_cpp-Error.$(OBJEXT) \
+	test_cpp-MacroFilterTest.$(OBJEXT) \
+	test_cpp-QuoteFilterTest.$(OBJEXT) test_cpp-Error.$(OBJEXT) \
 	test_cpp-Translator.$(OBJEXT) test_cpp-Tokenizer.$(OBJEXT) \
 	test_cpp-Number.$(OBJEXT) test_cpp-String.$(OBJEXT) \
-	test_cpp-Definition.$(OBJEXT) test_cpp-Quote.$(OBJEXT) \
-	test_cpp-Object.$(OBJEXT) test_cpp-Eval.$(OBJEXT) \
-	test_cpp-Variable.$(OBJEXT) test_cpp-Assignment.$(OBJEXT) \
-	test_cpp-SpecialIf.$(OBJEXT) test_cpp-Frame.$(OBJEXT) \
-	test_cpp-Environment.$(OBJEXT) test_cpp-Lambda.$(OBJEXT) \
-	test_cpp-Procedure.$(OBJEXT) test_cpp-Begin.$(OBJEXT) \
-	test_cpp-SExp.$(OBJEXT) test_cpp-Macro.$(OBJEXT) \
-	test_cpp-MacroFilter.$(OBJEXT) test_cpp-Parser.$(OBJEXT) \
+	test_cpp-Charcter.$(OBJEXT) test_cpp-Definition.$(OBJEXT) \
+	test_cpp-Quote.$(OBJEXT) test_cpp-Object.$(OBJEXT) \
+	test_cpp-Eval.$(OBJEXT) test_cpp-Variable.$(OBJEXT) \
+	test_cpp-Assignment.$(OBJEXT) test_cpp-SpecialIf.$(OBJEXT) \
+	test_cpp-Frame.$(OBJEXT) test_cpp-Environment.$(OBJEXT) \
+	test_cpp-Lambda.$(OBJEXT) test_cpp-Procedure.$(OBJEXT) \
+	test_cpp-Begin.$(OBJEXT) test_cpp-SExp.$(OBJEXT) \
+	test_cpp-Macro.$(OBJEXT) test_cpp-MacroFilter.$(OBJEXT) \
+	test_cpp-QuoteFilter.$(OBJEXT) test_cpp-Parser.$(OBJEXT) \
 	test_cpp-Cond.$(OBJEXT) test_cpp-Pair.$(OBJEXT) \
 	test_cpp-Let.$(OBJEXT) test_cpp-LetAsterisk.$(OBJEXT) \
 	test_cpp-scheme.$(OBJEXT) test_cpp-load.$(OBJEXT) \
@@ -72,7 +74,8 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-StringToNumber.$(OBJEXT) \
 	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT) \
 	test_cpp-Eqv.$(OBJEXT) test_cpp-True.$(OBJEXT) \
-	test_cpp-False.$(OBJEXT) test_cpp-Load.$(OBJEXT)
+	test_cpp-False.$(OBJEXT) test_cpp-CharcterP.$(OBJEXT) \
+	test_cpp-Load.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -183,6 +186,8 @@ MacroMatchTest.h\
 MacroMatchTest.cpp\
 MacroFilterTest.h\
 MacroFilterTest.cpp\
+QuoteFilterTest.h\
+QuoteFilterTest.cpp\
 ../src/Error.h\
 ../src/Error.cpp\
 ../src/Translator.h\
@@ -193,6 +198,8 @@ MacroFilterTest.cpp\
 ../src/Number.h\
 ../src/String.cpp\
 ../src/String.h\
+../src/Charcter.cpp\
+../src/Charcter.h\
 ../src/Definition.cpp\
 ../src/Definition.h\
 ../src/Quote.cpp\
@@ -224,6 +231,8 @@ MacroFilterTest.cpp\
 ../src/Macro.cpp\
 ../src/MacroFilter.h\
 ../src/MacroFilter.cpp\
+../src/QuoteFilter.h\
+../src/QuoteFilter.cpp\
 ../src/Parser.h\
 ../src/Parser.cpp\
 ../src/Cond.cpp\
@@ -274,6 +283,8 @@ MacroFilterTest.cpp\
 ../src/PrimitiveProcedures/True.cpp\
 ../src/PrimitiveProcedures/False.h\
 ../src/PrimitiveProcedures/False.cpp\
+../src/PrimitiveProcedures/CharcterP.h\
+../src/PrimitiveProcedures/CharcterP.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 
@@ -373,6 +384,12 @@ test_cpp-MacroFilterTest.o: MacroFilterTest.cpp
 test_cpp-MacroFilterTest.obj: MacroFilterTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilterTest.obj `if test -f 'MacroFilterTest.cpp'; then $(CYGPATH_W) 'MacroFilterTest.cpp'; else $(CYGPATH_W) '$(srcdir)/MacroFilterTest.cpp'; fi`
 
+test_cpp-QuoteFilterTest.o: QuoteFilterTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-QuoteFilterTest.o `test -f 'QuoteFilterTest.cpp' || echo '$(srcdir)/'`QuoteFilterTest.cpp
+
+test_cpp-QuoteFilterTest.obj: QuoteFilterTest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-QuoteFilterTest.obj `if test -f 'QuoteFilterTest.cpp'; then $(CYGPATH_W) 'QuoteFilterTest.cpp'; else $(CYGPATH_W) '$(srcdir)/QuoteFilterTest.cpp'; fi`
+
 test_cpp-Error.o: ../src/Error.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Error.o `test -f '../src/Error.cpp' || echo '$(srcdir)/'`../src/Error.cpp
 
@@ -402,6 +419,12 @@ test_cpp-String.o: ../src/String.cpp
 
 test_cpp-String.obj: ../src/String.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-String.obj `if test -f '../src/String.cpp'; then $(CYGPATH_W) '../src/String.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/String.cpp'; fi`
+
+test_cpp-Charcter.o: ../src/Charcter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Charcter.o `test -f '../src/Charcter.cpp' || echo '$(srcdir)/'`../src/Charcter.cpp
+
+test_cpp-Charcter.obj: ../src/Charcter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Charcter.obj `if test -f '../src/Charcter.cpp'; then $(CYGPATH_W) '../src/Charcter.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Charcter.cpp'; fi`
 
 test_cpp-Definition.o: ../src/Definition.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Definition.o `test -f '../src/Definition.cpp' || echo '$(srcdir)/'`../src/Definition.cpp
@@ -492,6 +515,12 @@ test_cpp-MacroFilter.o: ../src/MacroFilter.cpp
 
 test_cpp-MacroFilter.obj: ../src/MacroFilter.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-MacroFilter.obj `if test -f '../src/MacroFilter.cpp'; then $(CYGPATH_W) '../src/MacroFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/MacroFilter.cpp'; fi`
+
+test_cpp-QuoteFilter.o: ../src/QuoteFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-QuoteFilter.o `test -f '../src/QuoteFilter.cpp' || echo '$(srcdir)/'`../src/QuoteFilter.cpp
+
+test_cpp-QuoteFilter.obj: ../src/QuoteFilter.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-QuoteFilter.obj `if test -f '../src/QuoteFilter.cpp'; then $(CYGPATH_W) '../src/QuoteFilter.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/QuoteFilter.cpp'; fi`
 
 test_cpp-Parser.o: ../src/Parser.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Parser.o `test -f '../src/Parser.cpp' || echo '$(srcdir)/'`../src/Parser.cpp
@@ -642,6 +671,12 @@ test_cpp-False.o: ../src/PrimitiveProcedures/False.cpp
 
 test_cpp-False.obj: ../src/PrimitiveProcedures/False.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.obj `if test -f '../src/PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/False.cpp'; fi`
+
+test_cpp-CharcterP.o: ../src/PrimitiveProcedures/CharcterP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterP.o `test -f '../src/PrimitiveProcedures/CharcterP.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/CharcterP.cpp
+
+test_cpp-CharcterP.obj: ../src/PrimitiveProcedures/CharcterP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterP.obj `if test -f '../src/PrimitiveProcedures/CharcterP.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/CharcterP.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/CharcterP.cpp'; fi`
 
 test_cpp-Load.o: ../src/PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Load.o `test -f '../src/PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Load.cpp
