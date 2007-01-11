@@ -86,3 +86,16 @@ bool Charcter::le(Object* o)
     Charcter* s = (Charcter*)o;
     return value() <= s->value();
 }
+
+Number* Charcter::toNumber()
+{
+    return new Number((int)value(), lineno());
+
+}
+
+Charcter* Charcter::fromNumber(Number* n)
+{
+    string tmp = "#\\";
+    tmp += (char)n->value();
+    return new Charcter(tmp, n->lineno());
+}

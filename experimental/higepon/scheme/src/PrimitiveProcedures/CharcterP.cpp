@@ -166,3 +166,41 @@ PROCEDURE_BODY(CharcterLeP, arguments, env)
         return new False();
     }
 }
+
+PROCEDURE_BODY(CharcterToInteger, arguments, env)
+{
+    Objects* as = listOfValues(arguments, env);
+    const Objects::size_type ARGUMENT_LENGTH = 1;
+    if (as->size() != ARGUMENT_LENGTH)
+    {
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "%s got %d arguments, but required %d", toString().c_str(), as->size(), ARGUMENT_LENGTH);
+        return NULL;
+    }
+    Object* o = as->at(0);
+    if (!o->isCharcter())
+    {
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "%s got wrong arguments", toString().c_str());
+        return NULL;
+    }
+    Charcter* c = (Charcter*)o;
+    return c->toNumber();
+}
+
+PROCEDURE_BODY(IntegerToCharcter, arguments, env)
+{
+    Objects* as = listOfValues(arguments, env);
+    const Objects::size_type ARGUMENT_LENGTH = 1;
+    if (as->size() != ARGUMENT_LENGTH)
+    {
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "%s got %d arguments, but required %d", toString().c_str(), as->size(), ARGUMENT_LENGTH);
+        return NULL;
+    }
+    Object* o = as->at(0);
+    if (!o->isNumber())
+    {
+        RAISE_ERROR(as->size() >= 0 ? as->at(0)->lineno() : 0, "%s got wrong arguments", toString().c_str());
+        return NULL;
+    }
+    Number* n = (Number*)o;
+    return Charcter::fromNumber(n);
+}

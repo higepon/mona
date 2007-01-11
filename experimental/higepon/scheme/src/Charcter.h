@@ -2,6 +2,7 @@
 #define __CHARCTER_H__
 
 #include "Object.h"
+#include "Number.h"
 
 namespace monash {
 
@@ -24,6 +25,8 @@ public:
     virtual bool lt(Object* o);
     virtual bool ge(Object* o);
     virtual bool le(Object* o);
+    virtual Number* toNumber();
+    static Charcter* fromNumber(Number* n);
 
 protected:
     char value_;

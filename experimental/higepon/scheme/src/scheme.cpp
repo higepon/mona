@@ -84,6 +84,9 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("char<?"),         new CharcterLtP());
     env->defineVariable(new Variable("char>=?"),        new CharcterGeP());
     env->defineVariable(new Variable("char<=?"),        new CharcterLeP());
+    env->defineVariable(new Variable("char->integer"),  new CharcterToInteger());
+    env->defineVariable(new Variable("integer->char"),  new IntegerToCharcter());
+
     env->defineVariable(new Variable("eqv?"),           new Eqv());
     env->defineVariable(new Variable("number?"),        new NumberP());
     env->defineVariable(new Variable("string->number"), new StringToNumber());

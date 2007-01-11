@@ -162,3 +162,10 @@
                    (char>=? #\B #\7)
                    (char>=? #\B #\8)
                    (char>=? #\B #\9))
+
+;; (assert-check-true "char->integer"
+;;                    (= 97 (char->integer #\a))
+;;                    (char<=? #\a #\b)
+;;                    (< (char->integer #a) (char->integer #\b))
+;;                    (char<=? (integer->char 98) (integer->char 100)))
+
