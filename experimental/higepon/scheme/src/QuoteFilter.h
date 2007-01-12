@@ -15,7 +15,7 @@ public:
 protected:
     char getChar();
     std::string getQuoteString(std::string::size_type paren);
-
+    std::string& replace(std::string& str, const std::string& t, const std::string& s);
     std::string input_;
     std::string::size_type postion_;
 };

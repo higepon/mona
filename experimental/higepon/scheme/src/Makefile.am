@@ -18,6 +18,8 @@ Charcter.cpp\
 Charcter.h\
 Quote.cpp\
 Quote.h\
+Vector.cpp\
+Vector.h\
 Variable.cpp\
 Variable.h\
 Assignment.cpp\

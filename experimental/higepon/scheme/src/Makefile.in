@@ -50,19 +50,20 @@ PROGRAMS = $(bin_PROGRAMS)
 am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Eval.$(OBJEXT) scheme-Number.$(OBJEXT) \
 	scheme-String.$(OBJEXT) scheme-Charcter.$(OBJEXT) \
-	scheme-Quote.$(OBJEXT) scheme-Variable.$(OBJEXT) \
-	scheme-Assignment.$(OBJEXT) scheme-SpecialIf.$(OBJEXT) \
-	scheme-Frame.$(OBJEXT) scheme-Environment.$(OBJEXT) \
-	scheme-Lambda.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
-	scheme-Begin.$(OBJEXT) scheme-Definition.$(OBJEXT) \
-	scheme-Cond.$(OBJEXT) scheme-Pair.$(OBJEXT) \
-	scheme-Let.$(OBJEXT) scheme-LetAsterisk.$(OBJEXT) \
-	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
-	scheme-Tokenizer.$(OBJEXT) scheme-SExp.$(OBJEXT) \
-	scheme-Translator.$(OBJEXT) scheme-Plus.$(OBJEXT) \
-	scheme-Minus.$(OBJEXT) scheme-Divide.$(OBJEXT) \
-	scheme-Multiply.$(OBJEXT) scheme-Cons.$(OBJEXT) \
-	scheme-Set.$(OBJEXT) scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
+	scheme-Quote.$(OBJEXT) scheme-Vector.$(OBJEXT) \
+	scheme-Variable.$(OBJEXT) scheme-Assignment.$(OBJEXT) \
+	scheme-SpecialIf.$(OBJEXT) scheme-Frame.$(OBJEXT) \
+	scheme-Environment.$(OBJEXT) scheme-Lambda.$(OBJEXT) \
+	scheme-Procedure.$(OBJEXT) scheme-Begin.$(OBJEXT) \
+	scheme-Definition.$(OBJEXT) scheme-Cond.$(OBJEXT) \
+	scheme-Pair.$(OBJEXT) scheme-Let.$(OBJEXT) \
+	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
+	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
+	scheme-SExp.$(OBJEXT) scheme-Translator.$(OBJEXT) \
+	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
+	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
+	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
+	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
 	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
 	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
 	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
@@ -191,6 +192,8 @@ Charcter.cpp\
 Charcter.h\
 Quote.cpp\
 Quote.h\
+Vector.cpp\
+Vector.h\
 Variable.cpp\
 Variable.h\
 Assignment.cpp\
@@ -391,6 +394,12 @@ scheme-Quote.o: Quote.cpp
 
 scheme-Quote.obj: Quote.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Quote.obj `if test -f 'Quote.cpp'; then $(CYGPATH_W) 'Quote.cpp'; else $(CYGPATH_W) '$(srcdir)/Quote.cpp'; fi`
+
+scheme-Vector.o: Vector.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Vector.o `test -f 'Vector.cpp' || echo '$(srcdir)/'`Vector.cpp
+
+scheme-Vector.obj: Vector.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Vector.obj `if test -f 'Vector.cpp'; then $(CYGPATH_W) 'Vector.cpp'; else $(CYGPATH_W) '$(srcdir)/Vector.cpp'; fi`
 
 scheme-Variable.o: Variable.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Variable.o `test -f 'Variable.cpp' || echo '$(srcdir)/'`Variable.cpp

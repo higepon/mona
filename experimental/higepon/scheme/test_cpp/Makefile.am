@@ -23,6 +23,8 @@ QuoteFilterTest.cpp\
 ../src/String.h\
 ../src/Charcter.cpp\
 ../src/Charcter.h\
+../src/Vector.cpp\
+../src/Vector.h\
 ../src/Definition.cpp\
 ../src/Definition.h\
 ../src/Quote.cpp\

@@ -5,6 +5,7 @@
 #include "Charcter.h"
 #include "True.h"
 #include "False.h"
+#include "Vector.h"
 
 namespace monash {
 
@@ -28,6 +29,12 @@ PROCEDURE_DECLARE(CharcterGeP)
 PROCEDURE_DECLARE(CharcterLeP)
 PROCEDURE_DECLARE(CharcterToInteger)
 PROCEDURE_DECLARE(IntegerToCharcter)
+PROCEDURE_DECLARE(VectorP)
+PROCEDURE_DECLARE(MakeVector)
+PROCEDURE_DECLARE(CreateVector)
+PROCEDURE_DECLARE(VectorLength)
+PROCEDURE_DECLARE(VectorRef)
+PROCEDURE_DECLARE(VectorSet)
 
 
 #endif // _PRIMITIVE_PROCEDURE_CHARCTERP_

@@ -301,11 +301,9 @@
 (assert-check-false "should be #f" #f)
 
 (load "./test/char.scm")
-
-
-
+(load "./test/vector.scm")
 
 ;; report
 (total-report)
 
-(display (quote (#\a #\b)))
+

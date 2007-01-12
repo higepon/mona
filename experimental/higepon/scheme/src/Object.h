@@ -35,6 +35,7 @@ public:
     virtual bool isNumber() const { return type() == NUMBER; }
     virtual bool isString() const { return type() == STRING; }
     virtual bool isCharcter() const { return type() == CHARCTER; }
+    virtual bool isVector() const { return type () == VECTOR; }
     virtual bool isQuote() const { return type() == QUOTE; }
     virtual bool isPair() const { return type() == PAIR; }
     virtual bool isTrue() const { return type() == TRUE; }
@@ -46,6 +47,7 @@ public:
         STRING,
         CHARCTER,
         QUOTE,
+        VECTOR,
         VARIABLE,
         ASSIGNMENT,
         IF,

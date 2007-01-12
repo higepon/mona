@@ -13,10 +13,9 @@ QuoteFilter::~QuoteFilter()
 
 string QuoteFilter::filter(const string& text)
 {
-    string::size_type foundIndex = text.find("\'");
-    if (foundIndex == string::npos) return text;
     postion_ = 0;
     input_ = text;
+    input_ = replace(input_, "#(", "(vector "); // ugly
     string ret;
     char c;
     for (;;)
@@ -103,4 +102,17 @@ char QuoteFilter::getChar()
     postion_++;
     return c;
 
+}
+
+string& QuoteFilter::replace(string& str, const string& t, const string& s)
+{
+    string::size_type pos;
+    string::size_type current = 0;
+
+    while ((pos = str.find(t, current)) != string::npos)
+    {
+        str.replace(pos, t.size(), s);
+        current = pos + s.size();
+    }
+    return str;
 }

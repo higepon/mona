@@ -96,6 +96,14 @@ void registerPrimitives(Environment* env)
     env->defineVariable(new Variable("set!"),           new Set());
     env->defineVariable(new Variable("eqv?"),           new Eqv());
 
+
+    env->defineVariable(new Variable("vector?"),         new VectorP());
+    env->defineVariable(new Variable("make-vector"),     new MakeVector());
+    env->defineVariable(new Variable("vector"),           new CreateVector());
+    env->defineVariable(new Variable("vector-length"),    new VectorLength());
+    env->defineVariable(new Variable("vector-ref"),       new VectorRef());
+    env->defineVariable(new Variable("vector-set!"),      new VectorSet());
+
 // load
     env->defineVariable(new Variable("load"),           new Load());
 }
