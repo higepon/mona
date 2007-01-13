@@ -4,19 +4,19 @@
 #include "PrimitiveProcedure.h"
 #include "String.h"
 
-namespace monash {
+// namespace monash {
 
-class StringAppend : public PrimitiveProcedure
-{
-public:
-    StringAppend();
-    virtual ~StringAppend();
+// class StringAppend : public PrimitiveProcedure
+// {
+// public:
+//     StringAppend();
+//     virtual ~StringAppend();
 
-    virtual std::string toString();
-    virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
+//     virtual std::string toString();
+//     virtual Object* eval(Environment* env);
+//     virtual Object* apply(Objects* arguments, Environment* env);
+// };
 
-}; // namespace monash
+// }; // namespace monash
 
 #endif // __PRIMITIVE_PROCEDURE_STRING_APPEND__

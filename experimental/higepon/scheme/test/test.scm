@@ -61,6 +61,7 @@
 (assert-check-true "string?" (string? "string"))
 
 (assert-check-true "string->number" (= 1234 (string->number "1234")))
+(assert-check-true "string-append" (string=? (string-append "12" "34") "1234"))
 
 (assert-check-true "and"
                    (and 3)
@@ -312,3 +313,4 @@
 ;; report
 (total-report)
 (display '"abc")
+

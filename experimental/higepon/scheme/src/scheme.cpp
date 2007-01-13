@@ -72,6 +72,8 @@ void display(Object* exp)
 #include "PrimitiveProcedures/SymbolProcedures.h"
 #include "PrimitiveProcedures/StringProcedures.h"
 
+
+
 void registerPrimitives(Environment* env)
 {
     env->defineVariable(new Variable("+"),              new Plus());

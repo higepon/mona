@@ -28,7 +28,7 @@
     if (ARGC != n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC >= 0 ? ARGV(0)->lineno() : 0                            \
-                    , "%s got %d arguments, but required %d"                     \
+                    , "%s got %d argument(s), but required %d"                   \
                     , toString().c_str(), ARGC, n);                              \
     }
 
@@ -41,10 +41,10 @@ public:                                                                         
     ClassName()  : procedureName_(name) {}                                       \
     virtual ~ClassName() {}                                                      \
                                                                                  \
-    virtual std::string toString() {    return "procedure:##name";}              \
+    virtual std::string toString() {    return "procedure:" name;}               \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
-        RAISE_ERROR(lineno(), "don't eval procedure ##name");                    \
+        RAISE_ERROR(lineno(), "don't eval procedure " "name");                   \
          return NULL;                                                            \
     }                                                                            \
     virtual Object* apply(Objects* arguments, Environment* env);                 \

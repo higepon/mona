@@ -6,19 +6,19 @@
 #include "False.h"
 #include "True.h"
 
-namespace monash {
+// namespace monash {
 
-class StringP : public PrimitiveProcedure
-{
-public:
-    StringP();
-    virtual ~StringP();
+// class StringP : public PrimitiveProcedure
+// {
+// public:
+//     StringP();
+//     virtual ~StringP();
 
-    virtual std::string toString();
-    virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
+//     virtual std::string toString();
+//     virtual Object* eval(Environment* env);
+//     virtual Object* apply(Objects* arguments, Environment* env);
+// };
 
-}; // namespace monash
+//}; // namespace monash
 
 #endif // __PRIMITIVE_PROCEDURE_STRING_P_H__
