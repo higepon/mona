@@ -3,6 +3,8 @@
 
 #include "PrimitiveProcedure.h"
 
+#define ARGV(i) (as->at(i))
+#define ARGC    (as->size())
 
 #define RETURN_BOOLEAN(condition) \
     if ((condition))              \
@@ -14,10 +16,7 @@
         return new False();       \
     }
 
-#define ARGV(i) (as->at(i))
-#define ARGC  (as->size())
-
-#define SCHEME_CAST(o, type, to)                                                 \
+#define CAST(o, type, to)                                                        \
     if (!o->is##type())                                                          \
     {                                                                            \
         RAISE_ERROR(o->lineno(), "%s got wrong argument", toString().c_str());   \
@@ -33,22 +32,23 @@
                     , toString().c_str(), ARGC, n);                              \
     }
 
-#define PROCEDURE_BEGIN(ClassName, name)       \
-class ClassName : public PrimitiveProcedure\
-{\
-private:\
-    std::string procedureName_;                \
-public:\
-    ClassName()  : procedureName_(""#name"") {} \
-    virtual ~ClassName() {}    \
-\
-    virtual std::string toString() {    return "procedure:" + procedureName_;} \
-    virtual Object* eval(Environment* env) { RAISE_ERROR(lineno(), "don't eval procedure %s", procedureName_.c_str()); return NULL;} \
-    virtual Object* apply(Objects* arguments, Environment* env); \
-};\
+#define PROCEDURE(ClassName, name)                                               \
+class ClassName : public PrimitiveProcedure                                      \
+{                                                                                \
+private:                                                                         \
+    std::string procedureName_;                                                  \
+public:                                                                          \
+    ClassName()  : procedureName_(name) {}                                       \
+    virtual ~ClassName() {}                                                      \
+                                                                                 \
+    virtual std::string toString() {    return "procedure:##name";}              \
+    virtual Object* eval(Environment* env)                                       \
+    {                                                                            \
+        RAISE_ERROR(lineno(), "don't eval procedure ##name");                    \
+         return NULL;                                                            \
+    }                                                                            \
+    virtual Object* apply(Objects* arguments, Environment* env);                 \
+};                                                                               \
 Object* ClassName::apply(Objects* arguments, Environment* env)
-
-
-
 
 #endif // __PRIMITIVE_PROCEDURE_PROCEDURE_H__
