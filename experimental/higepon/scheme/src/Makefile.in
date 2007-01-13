@@ -60,14 +60,12 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
 	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
 	scheme-SExp.$(OBJEXT) scheme-Translator.$(OBJEXT) \
-	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
-	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
-	scheme-Display.$(OBJEXT) scheme-Load.$(OBJEXT) \
-	scheme-Eqv.$(OBJEXT) scheme-True.$(OBJEXT) \
-	scheme-False.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
-	scheme-QuoteFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
-	scheme-load.$(OBJEXT)
+	scheme-Set.$(OBJEXT) scheme-Display.$(OBJEXT) \
+	scheme-Load.$(OBJEXT) scheme-Eqv.$(OBJEXT) \
+	scheme-True.$(OBJEXT) scheme-False.$(OBJEXT) \
+	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
+	scheme-MacroFilter.$(OBJEXT) scheme-QuoteFilter.$(OBJEXT) \
+	scheme-Error.$(OBJEXT) scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -226,14 +224,8 @@ SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
-PrimitiveProcedures/Cons.cpp\
-PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Car.h\
-PrimitiveProcedures/Car.cpp\
-PrimitiveProcedures/Cdr.cpp\
-PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
 PrimitiveProcedures/Load.h\
@@ -484,29 +476,11 @@ scheme-Translator.o: Translator.cpp
 scheme-Translator.obj: Translator.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Translator.obj `if test -f 'Translator.cpp'; then $(CYGPATH_W) 'Translator.cpp'; else $(CYGPATH_W) '$(srcdir)/Translator.cpp'; fi`
 
-scheme-Cons.o: PrimitiveProcedures/Cons.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
-
-scheme-Cons.obj: PrimitiveProcedures/Cons.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.obj `if test -f 'PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cons.cpp'; fi`
-
 scheme-Set.o: PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Set.o `test -f 'PrimitiveProcedures/Set.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Set.cpp
 
 scheme-Set.obj: PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Set.obj `if test -f 'PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Set.cpp'; fi`
-
-scheme-Car.o: PrimitiveProcedures/Car.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Car.o `test -f 'PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Car.cpp
-
-scheme-Car.obj: PrimitiveProcedures/Car.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Car.obj `if test -f 'PrimitiveProcedures/Car.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Car.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Car.cpp'; fi`
-
-scheme-Cdr.o: PrimitiveProcedures/Cdr.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cdr.o `test -f 'PrimitiveProcedures/Cdr.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cdr.cpp
-
-scheme-Cdr.obj: PrimitiveProcedures/Cdr.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cdr.obj `if test -f 'PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cdr.cpp'; fi`
 
 scheme-Display.o: PrimitiveProcedures/Display.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.o `test -f 'PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Display.cpp

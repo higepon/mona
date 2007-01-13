@@ -1,14 +1,13 @@
 #ifndef _MACRO_FILTER_
 #define _MACRO_FILTER_
 
-#include "Filter.h"
 #include "Macro.h"
 namespace monash {
 
 class Macro;
 typedef std::map<std::string, Macro*> Macros;
 
-class MacroFilter : public Filter
+class MacroFilter
 {
 public:
     MacroFilter();

@@ -74,12 +74,6 @@ QuoteFilterTest.cpp\
 ../src/Application.cpp\
 ../src/Application.h\
 ../src/PrimitiveProcedure.h\
-../src/PrimitiveProcedures/Cons.cpp\
-../src/PrimitiveProcedures/Cons.h\
-../src/PrimitiveProcedures/Car.cpp\
-../src/PrimitiveProcedures/Car.h\
-../src/PrimitiveProcedures/Cdr.cpp\
-../src/PrimitiveProcedures/Cdr.h\
 ../src/PrimitiveProcedures/Display.cpp\
 ../src/PrimitiveProcedures/Display.h\
 ../src/PrimitiveProcedures/Set.cpp\
@@ -92,12 +86,3 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/False.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
-
-
-
-
-
-#../src/And.cpp\
-#../src/And.h\
-#../src/Or.cpp\
-#../src/Or.h

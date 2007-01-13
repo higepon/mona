@@ -4,19 +4,19 @@
 #include "PrimitiveProcedure.h"
 #include "Pair.h"
 
-namespace monash {
+// namespace monash {
 
-class Cons : public PrimitiveProcedure
-{
-public:
-    Cons();
-    virtual ~Cons();
+// class Cons : public PrimitiveProcedure
+// {
+// public:
+//     Cons();
+//     virtual ~Cons();
 
-    virtual std::string toString();
-    virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
+//     virtual std::string toString();
+//     virtual Object* eval(Environment* env);
+//     virtual Object* apply(Objects* arguments, Environment* env);
+// };
 
-}; // namespace monash
+// }; // namespace monash
 
 #endif // __PRIMITIVE_PROCEDURE_CONS_H__

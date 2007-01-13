@@ -57,14 +57,8 @@ SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
-PrimitiveProcedures/Cons.cpp\
-PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Car.h\
-PrimitiveProcedures/Car.cpp\
-PrimitiveProcedures/Cdr.cpp\
-PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
 PrimitiveProcedures/Load.h\

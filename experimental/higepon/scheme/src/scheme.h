@@ -19,6 +19,8 @@ namespace std {
 #include "String.h"
 #include "Charcter.h"
 #include "Quote.h"
+#include "Vector.h"
+#include "Pair.h"
 #include "SpecialIf.h"
 #include "Assignment.h"
 #include "Begin.h"
@@ -30,16 +32,11 @@ namespace std {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
-#include "Vector.h"
+
 #include "PrimitiveProcedures/Procedure.h"
-#include "PrimitiveProcedures/Car.h"
-#include "PrimitiveProcedures/Cdr.h"
-#include "PrimitiveProcedures/Cons.h"
 #include "PrimitiveProcedures/Display.h"
 #include "PrimitiveProcedures/Set.h"
 #include "PrimitiveProcedures/Eqv.h"
-#include "PrimitiveProcedures/True.h"
-#include "PrimitiveProcedures/False.h"
 #include "PrimitiveProcedures/Load.h"
 
 
