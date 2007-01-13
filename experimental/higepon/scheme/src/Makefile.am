@@ -75,16 +75,10 @@ PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
-PrimitiveProcedures/StringP.cpp\
-PrimitiveProcedures/StringP.h\
 PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
 PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
-PrimitiveProcedures/StringToNumber.cpp\
-PrimitiveProcedures/StringToNumber.h\
-PrimitiveProcedures/StringAppend.cpp\
-PrimitiveProcedures/StringAppend.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\

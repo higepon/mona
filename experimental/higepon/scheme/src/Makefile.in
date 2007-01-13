@@ -64,15 +64,13 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
 	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
 	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
-	scheme-Display.$(OBJEXT) scheme-StringP.$(OBJEXT) \
-	scheme-NumberP.$(OBJEXT) scheme-NumberEqual.$(OBJEXT) \
-	scheme-StringToNumber.$(OBJEXT) scheme-StringAppend.$(OBJEXT) \
-	scheme-Load.$(OBJEXT) scheme-Eqv.$(OBJEXT) \
-	scheme-True.$(OBJEXT) scheme-False.$(OBJEXT) \
-	scheme-CharcterP.$(OBJEXT) scheme-scheme.$(OBJEXT) \
-	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
-	scheme-QuoteFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
-	scheme-load.$(OBJEXT)
+	scheme-Display.$(OBJEXT) scheme-NumberP.$(OBJEXT) \
+	scheme-NumberEqual.$(OBJEXT) scheme-Load.$(OBJEXT) \
+	scheme-Eqv.$(OBJEXT) scheme-True.$(OBJEXT) \
+	scheme-False.$(OBJEXT) scheme-CharcterP.$(OBJEXT) \
+	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
+	scheme-MacroFilter.$(OBJEXT) scheme-QuoteFilter.$(OBJEXT) \
+	scheme-Error.$(OBJEXT) scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -249,16 +247,10 @@ PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
-PrimitiveProcedures/StringP.cpp\
-PrimitiveProcedures/StringP.h\
 PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
 PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
-PrimitiveProcedures/StringToNumber.cpp\
-PrimitiveProcedures/StringToNumber.h\
-PrimitiveProcedures/StringAppend.cpp\
-PrimitiveProcedures/StringAppend.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\
@@ -563,12 +555,6 @@ scheme-Display.o: PrimitiveProcedures/Display.cpp
 scheme-Display.obj: PrimitiveProcedures/Display.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
 
-scheme-StringP.o: PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringP.o `test -f 'PrimitiveProcedures/StringP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringP.cpp
-
-scheme-StringP.obj: PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringP.obj `if test -f 'PrimitiveProcedures/StringP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringP.cpp'; fi`
-
 scheme-NumberP.o: PrimitiveProcedures/NumberP.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberP.o `test -f 'PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberP.cpp
 
@@ -580,18 +566,6 @@ scheme-NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
 
 scheme-NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
-
-scheme-StringToNumber.o: PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringToNumber.o `test -f 'PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringToNumber.cpp
-
-scheme-StringToNumber.obj: PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringToNumber.obj `if test -f 'PrimitiveProcedures/StringToNumber.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringToNumber.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringToNumber.cpp'; fi`
-
-scheme-StringAppend.o: PrimitiveProcedures/StringAppend.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringAppend.o `test -f 'PrimitiveProcedures/StringAppend.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringAppend.cpp
-
-scheme-StringAppend.obj: PrimitiveProcedures/StringAppend.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringAppend.obj `if test -f 'PrimitiveProcedures/StringAppend.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringAppend.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringAppend.cpp'; fi`
 
 scheme-Load.o: PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.o `test -f 'PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Load.cpp

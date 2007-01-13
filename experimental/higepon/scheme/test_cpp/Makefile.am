@@ -90,16 +90,10 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/Cdr.h\
 ../src/PrimitiveProcedures/Display.cpp\
 ../src/PrimitiveProcedures/Display.h\
-../src/PrimitiveProcedures/StringP.cpp\
-../src/PrimitiveProcedures/StringP.h\
 ../src/PrimitiveProcedures/NumberP.cpp\
 ../src/PrimitiveProcedures/NumberP.h\
 ../src/PrimitiveProcedures/NumberEqual.cpp\
 ../src/PrimitiveProcedures/NumberEqual.h\
-../src/PrimitiveProcedures/StringToNumber.cpp\
-../src/PrimitiveProcedures/StringToNumber.h\
-../src/PrimitiveProcedures/StringAppend.cpp\
-../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h\
 ../src/PrimitiveProcedures/Eqv.h\

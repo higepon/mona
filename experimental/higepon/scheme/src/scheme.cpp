@@ -71,8 +71,7 @@ void display(Object* exp)
 #include "PrimitiveProcedures/CharcterProcedures.h"
 #include "PrimitiveProcedures/SymbolProcedures.h"
 #include "PrimitiveProcedures/StringProcedures.h"
-
-
+#include "PrimitiveProcedures/NumberProcedures.h"
 
 void registerPrimitives(Environment* env)
 {

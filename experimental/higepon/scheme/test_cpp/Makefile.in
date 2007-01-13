@@ -70,13 +70,10 @@ am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-Divide.$(OBJEXT) test_cpp-Multiply.$(OBJEXT) \
 	test_cpp-Cons.$(OBJEXT) test_cpp-Car.$(OBJEXT) \
 	test_cpp-Cdr.$(OBJEXT) test_cpp-Display.$(OBJEXT) \
-	test_cpp-StringP.$(OBJEXT) test_cpp-NumberP.$(OBJEXT) \
-	test_cpp-NumberEqual.$(OBJEXT) \
-	test_cpp-StringToNumber.$(OBJEXT) \
-	test_cpp-StringAppend.$(OBJEXT) test_cpp-Set.$(OBJEXT) \
-	test_cpp-Eqv.$(OBJEXT) test_cpp-True.$(OBJEXT) \
-	test_cpp-False.$(OBJEXT) test_cpp-CharcterP.$(OBJEXT) \
-	test_cpp-Load.$(OBJEXT)
+	test_cpp-NumberP.$(OBJEXT) test_cpp-NumberEqual.$(OBJEXT) \
+	test_cpp-Set.$(OBJEXT) test_cpp-Eqv.$(OBJEXT) \
+	test_cpp-True.$(OBJEXT) test_cpp-False.$(OBJEXT) \
+	test_cpp-CharcterP.$(OBJEXT) test_cpp-Load.$(OBJEXT)
 test_cpp_OBJECTS = $(am_test_cpp_OBJECTS)
 test_cpp_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -268,16 +265,10 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/Cdr.h\
 ../src/PrimitiveProcedures/Display.cpp\
 ../src/PrimitiveProcedures/Display.h\
-../src/PrimitiveProcedures/StringP.cpp\
-../src/PrimitiveProcedures/StringP.h\
 ../src/PrimitiveProcedures/NumberP.cpp\
 ../src/PrimitiveProcedures/NumberP.h\
 ../src/PrimitiveProcedures/NumberEqual.cpp\
 ../src/PrimitiveProcedures/NumberEqual.h\
-../src/PrimitiveProcedures/StringToNumber.cpp\
-../src/PrimitiveProcedures/StringToNumber.h\
-../src/PrimitiveProcedures/StringAppend.cpp\
-../src/PrimitiveProcedures/StringAppend.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h\
 ../src/PrimitiveProcedures/Eqv.h\
@@ -627,12 +618,6 @@ test_cpp-Display.o: ../src/PrimitiveProcedures/Display.cpp
 test_cpp-Display.obj: ../src/PrimitiveProcedures/Display.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Display.obj `if test -f '../src/PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Display.cpp'; fi`
 
-test_cpp-StringP.o: ../src/PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringP.o `test -f '../src/PrimitiveProcedures/StringP.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringP.cpp
-
-test_cpp-StringP.obj: ../src/PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringP.obj `if test -f '../src/PrimitiveProcedures/StringP.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringP.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringP.cpp'; fi`
-
 test_cpp-NumberP.o: ../src/PrimitiveProcedures/NumberP.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberP.o `test -f '../src/PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/NumberP.cpp
 
@@ -644,18 +629,6 @@ test_cpp-NumberEqual.o: ../src/PrimitiveProcedures/NumberEqual.cpp
 
 test_cpp-NumberEqual.obj: ../src/PrimitiveProcedures/NumberEqual.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberEqual.obj `if test -f '../src/PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/NumberEqual.cpp'; fi`
-
-test_cpp-StringToNumber.o: ../src/PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringToNumber.o `test -f '../src/PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringToNumber.cpp
-
-test_cpp-StringToNumber.obj: ../src/PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringToNumber.obj `if test -f '../src/PrimitiveProcedures/StringToNumber.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringToNumber.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringToNumber.cpp'; fi`
-
-test_cpp-StringAppend.o: ../src/PrimitiveProcedures/StringAppend.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringAppend.o `test -f '../src/PrimitiveProcedures/StringAppend.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringAppend.cpp
-
-test_cpp-StringAppend.obj: ../src/PrimitiveProcedures/StringAppend.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringAppend.obj `if test -f '../src/PrimitiveProcedures/StringAppend.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringAppend.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringAppend.cpp'; fi`
 
 test_cpp-Set.o: ../src/PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.o `test -f '../src/PrimitiveProcedures/Set.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Set.cpp
