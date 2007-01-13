@@ -20,6 +20,7 @@ public:
     virtual std::string value() { return value_; }
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
+    virtual bool equal(Object* o);
 
 protected:
     std::string value_;

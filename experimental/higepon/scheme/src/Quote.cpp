@@ -50,8 +50,29 @@ Quote* Quote::cdr()
 
 Object* Quote::eval(Environment* env)
 {
-    return this;
-//    return evalSequence(objects_, env); // different from SICP's
+    if (sexp_->isString())
+    {
+        if (sexp_->text == "#t")
+        {
+            return new True();
+        }
+        else if (sexp_->text == "#f")
+        {
+            return new False();
+        }
+        else
+        {
+            return new String(sexp_->text, sexp_->lineno);
+        }
+    }
+    else if (sexp_->isNumber())
+    {
+        return new Number(sexp_->value, sexp_->lineno);
+    }
+    else
+    {
+        return this;
+    }
 }
 
 bool Quote::eqv(Object* o)

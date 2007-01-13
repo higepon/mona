@@ -42,3 +42,10 @@ bool String::eq(Object* o)
 {
     return false;
 }
+
+bool String::equal(Object* o)
+{
+    if (!o->isString()) return false;
+    String* s = (String*)o;
+    return value() == s->value();
+}

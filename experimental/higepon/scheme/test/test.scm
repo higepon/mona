@@ -288,6 +288,11 @@
                    (eqv? (car '(x y z)) 'x)
                    (eqv? (cdr '(x y z)) '(y z)))
 
+(assert-check-true "quote self evaluate"
+                   '#t
+                   (= '12345 12345)
+                   (string=? '"abc" "abc"))
+
 (assert-check-true "should be #t"
                    0
                    1
@@ -302,8 +307,8 @@
 
 (load "./test/char.scm")
 (load "./test/vector.scm")
+(load "./test/symbol.scm")
 
 ;; report
 (total-report)
-
-
+(display '"abc")
