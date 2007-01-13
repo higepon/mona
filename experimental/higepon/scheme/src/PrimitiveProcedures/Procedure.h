@@ -44,11 +44,20 @@ public:                                                                         
     virtual std::string toString() {    return "procedure:" name;}               \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
-        RAISE_ERROR(lineno(), "don't eval procedure " "name");                   \
+        RAISE_ERROR(lineno(), "don't eval procedure " name);                     \
          return NULL;                                                            \
     }                                                                            \
     virtual Object* apply(Objects* arguments, Environment* env);                 \
 };                                                                               \
+void initialize##ClassName()                                                     \
+{                                                                                \
+    procedures.push_back(                                                        \
+        pair<Variable*, Object*>(new Variable(name), new ClassName()));          \
+}                                                                                \
+static struct Wrapper##ClassName                                                 \
+{                                                                                \
+    Wrapper##ClassName(){initialize##ClassName();}                               \
+} initializer_##ClassName;                                                       \
 Object* ClassName::apply(Objects* arguments, Environment* env)
 
 #endif // __PRIMITIVE_PROCEDURE_PROCEDURE_H__

@@ -55,7 +55,7 @@ PROCEDURE(VectorRef, "vector-ref")
     return ret;
 }
 
-PROCEDURE(VectorSet, "vector-set")
+PROCEDURE(VectorSet, "vector-set!")
 {
     ARGC_SHOULD_BE(3);
     CAST(ARGV(0), Vector, v);

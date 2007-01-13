@@ -67,6 +67,9 @@ void display(Object* exp)
     printf("%s", exp->toString().c_str());
 }
 
+typedef vector< pair<Variable*, Object*> > DefaultProcedures;
+DefaultProcedures procedures;
+
 #include "PrimitiveProcedures/VectorProcedures.h"
 #include "PrimitiveProcedures/CharcterProcedures.h"
 #include "PrimitiveProcedures/SymbolProcedures.h"
@@ -76,43 +79,48 @@ void display(Object* exp)
 
 void registerPrimitives(Environment* env)
 {
-    env->defineVariable(new Variable("+"),              new Plus());
-    env->defineVariable(new Variable("-"),              new Minus());
-    env->defineVariable(new Variable("*"),              new Multiply());
-    env->defineVariable(new Variable("/"),              new Divide());
-    env->defineVariable(new Variable("="),              new NumberEqual());
-    env->defineVariable(new Variable("cons"),           new Cons());
-    env->defineVariable(new Variable("car"),            new Car());
-    env->defineVariable(new Variable("cdr"),            new Cdr());
+    for (DefaultProcedures::const_iterator p = procedures.begin(); p != procedures.end(); ++p)
+    {
+        env->defineVariable((*p).first, (*p).second);
+    }
+
+//     env->defineVariable(new Variable("+"),              new Plus());
+//     env->defineVariable(new Variable("-"),              new Minus());
+//     env->defineVariable(new Variable("*"),              new Multiply());
+//     env->defineVariable(new Variable("/"),              new Divide());
+//     env->defineVariable(new Variable("="),              new NumberEqual());
+//     env->defineVariable(new Variable("cons"),           new Cons());
+//     env->defineVariable(new Variable("car"),            new Car());
+//     env->defineVariable(new Variable("cdr"),            new Cdr());
     env->defineVariable(new Variable("display"),        new Display());
-    env->defineVariable(new Variable("string?"),        new StringP());
-    env->defineVariable(new Variable("char=?"),         new CharcterEqualP());
-    env->defineVariable(new Variable("char>?"),         new CharcterGtP());
-    env->defineVariable(new Variable("char<?"),         new CharcterLtP());
-    env->defineVariable(new Variable("char>=?"),        new CharcterGeP());
-    env->defineVariable(new Variable("char<=?"),        new CharcterLeP());
-    env->defineVariable(new Variable("char->integer"),  new CharcterToInteger());
-    env->defineVariable(new Variable("integer->char"),  new IntegerToCharcter());
+//     env->defineVariable(new Variable("string?"),        new StringP());
+//     env->defineVariable(new Variable("char=?"),         new CharcterEqualP());
+//     env->defineVariable(new Variable("char>?"),         new CharcterGtP());
+//     env->defineVariable(new Variable("char<?"),         new CharcterLtP());
+//     env->defineVariable(new Variable("char>=?"),        new CharcterGeP());
+//     env->defineVariable(new Variable("char<=?"),        new CharcterLeP());
+//     env->defineVariable(new Variable("char->integer"),  new CharcterToInteger());
+//     env->defineVariable(new Variable("integer->char"),  new IntegerToCharcter());
 
     env->defineVariable(new Variable("eqv?"),           new Eqv());
-    env->defineVariable(new Variable("number?"),        new NumberP());
-    env->defineVariable(new Variable("string->number"), new StringToNumber());
-    env->defineVariable(new Variable("string-append"),  new StringAppend());
+//     env->defineVariable(new Variable("number?"),        new NumberP());
+//     env->defineVariable(new Variable("string->number"), new StringToNumber());
+//     env->defineVariable(new Variable("string-append"),  new StringAppend());
     env->defineVariable(new Variable("#f"),             new False());
     env->defineVariable(new Variable("#t"),             new True());
     env->defineVariable(new Variable("set!"),           new Set());
     env->defineVariable(new Variable("eqv?"),           new Eqv());
 
 
-    env->defineVariable(new Variable("vector?"),         new VectorP());
-    env->defineVariable(new Variable("make-vector"),     new MakeVector());
-    env->defineVariable(new Variable("vector"),           new CreateVector());
-    env->defineVariable(new Variable("vector-length"),    new VectorLength());
-    env->defineVariable(new Variable("vector-ref"),       new VectorRef());
-    env->defineVariable(new Variable("vector-set!"),      new VectorSet());
-    env->defineVariable(new Variable("string=?"),      new StringEqualP());
-    env->defineVariable(new Variable("symbol?"),      new SymbolP());
-    env->defineVariable(new Variable("symbol->string"),      new SymbolToString());
+//     env->defineVariable(new Variable("vector?"),         new VectorP());
+//     env->defineVariable(new Variable("make-vector"),     new MakeVector());
+//     env->defineVariable(new Variable("vector"),           new CreateVector());
+//     env->defineVariable(new Variable("vector-length"),    new VectorLength());
+//     env->defineVariable(new Variable("vector-ref"),       new VectorRef());
+//     env->defineVariable(new Variable("vector-set!"),      new VectorSet());
+//     env->defineVariable(new Variable("string=?"),      new StringEqualP());
+//     env->defineVariable(new Variable("symbol?"),      new SymbolP());
+//     env->defineVariable(new Variable("symbol->string"),      new SymbolToString());
 
 // load
     env->defineVariable(new Variable("load"),           new Load());
