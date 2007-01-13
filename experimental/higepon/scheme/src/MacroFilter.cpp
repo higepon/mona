@@ -171,9 +171,9 @@ int MacroFilter::findAndStoreDefineSyntaxes(SExp* root)
     for (SExps::const_iterator p = defineSyntaxes.begin(); p != defineSyntaxes.end(); ++p)
     {
         int ret = storeDefineSyntaxes(*p);
-        if (ret != SUCCESS) return ret;
+        if (ret != Translator::SUCCESS) return ret;
     }
-    return SUCCESS;
+    return Translator::SUCCESS;
 }
 
 void MacroFilter::findDefineSyntaxes(SExp* root, SExps& defineSyntaxes)
@@ -201,11 +201,11 @@ void MacroFilter::findDefineSyntaxes(SExp* root, SExps& defineSyntaxes)
 
 int MacroFilter::storeDefineSyntaxes(SExp* sexp)
 {
-    if (L() != 3) return SYNTAX_ERROR;
-    if (!N(1)->isSymbol()) return SYNTAX_ERROR;
-    if (!N(2)->isSExps() || LL(2) < 3) return SYNTAX_ERROR;
-    if (!NN(2, 0)->isSymbol() || NN(2, 0)->text != "syntax-rules") return SYNTAX_ERROR;
-    if (!NN(2, 1)->isSExps()) return SYNTAX_ERROR;
+    if (L() != 3) return Translator::SYNTAX_ERROR;
+    if (!N(1)->isSymbol()) return Translator::SYNTAX_ERROR;
+    if (!N(2)->isSExps() || LL(2) < 3) return Translator::SYNTAX_ERROR;
+    if (!NN(2, 0)->isSymbol() || NN(2, 0)->text != "syntax-rules") return Translator::SYNTAX_ERROR;
+    if (!NN(2, 1)->isSExps()) return Translator::SYNTAX_ERROR;
 
     // macro name
     Macro* macro = new Macro(N(1)->text);
@@ -214,20 +214,20 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
     for (SExps::const_iterator p = NN(2, 1)->sexps.begin(); p != NN(2, 1)->sexps.end(); ++p)
     {
         SExp* n = (*p);
-        if (!n->isSymbol()) return SYNTAX_ERROR;
+        if (!n->isSymbol()) return Translator::SYNTAX_ERROR;
         macro->reservedWords.push_back(n->text);
     }
     // store pattern / definition
     for (SExps::size_type i = 2; i < LL(2); ++i)
     {
         SExp* n = NN(2, i);
-        if (!n->isSExps() || n->sexps.size() != 2) return SYNTAX_ERROR;
+        if (!n->isSExps() || n->sexps.size() != 2) return Translator::SYNTAX_ERROR;
         renameMatchAllKeywords(n->sexps[0]);
         renameMatchAllKeywords(n->sexps[1]);
         macro->addPattern(n->sexps[0], n->sexps[1]);
     }
     macros_[macro->name] = macro;
-    return SUCCESS;
+    return Translator::SUCCESS;
 }
 
 int MacroFilter::renameMatchAllKeywords(SExp* sexp)

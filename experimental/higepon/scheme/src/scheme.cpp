@@ -73,7 +73,6 @@ void display(Object* exp)
 #include "PrimitiveProcedures/StringProcedures.h"
 #include "PrimitiveProcedures/NumberProcedures.h"
 #include "PrimitiveProcedures/PairProcedures.h"
-#include "PrimitiveProcedures/BooleanProcedures.h"
 
 void registerPrimitives(Environment* env)
 {
