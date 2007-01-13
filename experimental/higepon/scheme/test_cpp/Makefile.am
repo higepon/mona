@@ -74,14 +74,6 @@ QuoteFilterTest.cpp\
 ../src/Application.cpp\
 ../src/Application.h\
 ../src/PrimitiveProcedure.h\
-../src/PrimitiveProcedures/Plus.cpp\
-../src/PrimitiveProcedures/Plus.h\
-../src/PrimitiveProcedures/Minus.cpp\
-../src/PrimitiveProcedures/Minus.h\
-../src/PrimitiveProcedures/Divide.cpp\
-../src/PrimitiveProcedures/Divide.h\
-../src/PrimitiveProcedures/Multiply.cpp\
-../src/PrimitiveProcedures/Multiply.h\
 ../src/PrimitiveProcedures/Cons.cpp\
 ../src/PrimitiveProcedures/Cons.h\
 ../src/PrimitiveProcedures/Car.cpp\
@@ -90,10 +82,6 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/Cdr.h\
 ../src/PrimitiveProcedures/Display.cpp\
 ../src/PrimitiveProcedures/Display.h\
-../src/PrimitiveProcedures/NumberP.cpp\
-../src/PrimitiveProcedures/NumberP.h\
-../src/PrimitiveProcedures/NumberEqual.cpp\
-../src/PrimitiveProcedures/NumberEqual.h\
 ../src/PrimitiveProcedures/Set.cpp\
 ../src/PrimitiveProcedures/Set.h\
 ../src/PrimitiveProcedures/Eqv.h\
@@ -102,8 +90,6 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/True.cpp\
 ../src/PrimitiveProcedures/False.h\
 ../src/PrimitiveProcedures/False.cpp\
-../src/PrimitiveProcedures/CharcterP.h\
-../src/PrimitiveProcedures/CharcterP.cpp\
 ../src/PrimitiveProcedures/Load.h\
 ../src/PrimitiveProcedures/Load.cpp
 

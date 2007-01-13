@@ -60,17 +60,14 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
 	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
 	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
 	scheme-SExp.$(OBJEXT) scheme-Translator.$(OBJEXT) \
-	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
-	scheme-Divide.$(OBJEXT) scheme-Multiply.$(OBJEXT) \
 	scheme-Cons.$(OBJEXT) scheme-Set.$(OBJEXT) \
 	scheme-Car.$(OBJEXT) scheme-Cdr.$(OBJEXT) \
-	scheme-Display.$(OBJEXT) scheme-NumberP.$(OBJEXT) \
-	scheme-NumberEqual.$(OBJEXT) scheme-Load.$(OBJEXT) \
+	scheme-Display.$(OBJEXT) scheme-Load.$(OBJEXT) \
 	scheme-Eqv.$(OBJEXT) scheme-True.$(OBJEXT) \
-	scheme-False.$(OBJEXT) scheme-CharcterP.$(OBJEXT) \
-	scheme-scheme.$(OBJEXT) scheme-Macro.$(OBJEXT) \
-	scheme-MacroFilter.$(OBJEXT) scheme-QuoteFilter.$(OBJEXT) \
-	scheme-Error.$(OBJEXT) scheme-load.$(OBJEXT)
+	scheme-False.$(OBJEXT) scheme-scheme.$(OBJEXT) \
+	scheme-Macro.$(OBJEXT) scheme-MacroFilter.$(OBJEXT) \
+	scheme-QuoteFilter.$(OBJEXT) scheme-Error.$(OBJEXT) \
+	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -229,14 +226,6 @@ SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
-PrimitiveProcedures/Plus.cpp\
-PrimitiveProcedures/Plus.h\
-PrimitiveProcedures/Minus.cpp\
-PrimitiveProcedures/Minus.h\
-PrimitiveProcedures/Divide.cpp\
-PrimitiveProcedures/Divide.h\
-PrimitiveProcedures/Multiply.cpp\
-PrimitiveProcedures/Multiply.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
@@ -247,10 +236,6 @@ PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
-PrimitiveProcedures/NumberP.cpp\
-PrimitiveProcedures/NumberP.h\
-PrimitiveProcedures/NumberEqual.cpp\
-PrimitiveProcedures/NumberEqual.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\
@@ -259,8 +244,6 @@ PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
 PrimitiveProcedures/False.cpp\
-PrimitiveProcedures/CharcterP.h\
-PrimitiveProcedures/CharcterP.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
@@ -501,30 +484,6 @@ scheme-Translator.o: Translator.cpp
 scheme-Translator.obj: Translator.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Translator.obj `if test -f 'Translator.cpp'; then $(CYGPATH_W) 'Translator.cpp'; else $(CYGPATH_W) '$(srcdir)/Translator.cpp'; fi`
 
-scheme-Plus.o: PrimitiveProcedures/Plus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Plus.o `test -f 'PrimitiveProcedures/Plus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Plus.cpp
-
-scheme-Plus.obj: PrimitiveProcedures/Plus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
-
-scheme-Minus.o: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.o `test -f 'PrimitiveProcedures/Minus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Minus.cpp
-
-scheme-Minus.obj: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.obj `if test -f 'PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Minus.cpp'; fi`
-
-scheme-Divide.o: PrimitiveProcedures/Divide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Divide.o `test -f 'PrimitiveProcedures/Divide.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Divide.cpp
-
-scheme-Divide.obj: PrimitiveProcedures/Divide.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Divide.obj `if test -f 'PrimitiveProcedures/Divide.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Divide.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Divide.cpp'; fi`
-
-scheme-Multiply.o: PrimitiveProcedures/Multiply.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Multiply.o `test -f 'PrimitiveProcedures/Multiply.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Multiply.cpp
-
-scheme-Multiply.obj: PrimitiveProcedures/Multiply.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Multiply.obj `if test -f 'PrimitiveProcedures/Multiply.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Multiply.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Multiply.cpp'; fi`
-
 scheme-Cons.o: PrimitiveProcedures/Cons.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
 
@@ -555,18 +514,6 @@ scheme-Display.o: PrimitiveProcedures/Display.cpp
 scheme-Display.obj: PrimitiveProcedures/Display.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
 
-scheme-NumberP.o: PrimitiveProcedures/NumberP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberP.o `test -f 'PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberP.cpp
-
-scheme-NumberP.obj: PrimitiveProcedures/NumberP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberP.obj `if test -f 'PrimitiveProcedures/NumberP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberP.cpp'; fi`
-
-scheme-NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.o `test -f 'PrimitiveProcedures/NumberEqual.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberEqual.cpp
-
-scheme-NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
-
 scheme-Load.o: PrimitiveProcedures/Load.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.o `test -f 'PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Load.cpp
 
@@ -590,12 +537,6 @@ scheme-False.o: PrimitiveProcedures/False.cpp
 
 scheme-False.obj: PrimitiveProcedures/False.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-False.obj `if test -f 'PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/False.cpp'; fi`
-
-scheme-CharcterP.o: PrimitiveProcedures/CharcterP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-CharcterP.o `test -f 'PrimitiveProcedures/CharcterP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/CharcterP.cpp
-
-scheme-CharcterP.obj: PrimitiveProcedures/CharcterP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-CharcterP.obj `if test -f 'PrimitiveProcedures/CharcterP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/CharcterP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/CharcterP.cpp'; fi`
 
 scheme-scheme.o: scheme.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp

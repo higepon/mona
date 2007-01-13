@@ -1,6 +1,12 @@
 #ifndef __PRIMITIVE_PROCEDURE_CHARCTER_PROCEDURES_H__
 #define __PRIMITIVE_PROCEDURE_CHARCTER_PROCEDURES_H__
 
+PROCEDURE(CharcterP, "char?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isCharcter());
+}
+
 PROCEDURE(CharcterEqualP, "char=?")
 {
     ARGC_SHOULD_BE(2);

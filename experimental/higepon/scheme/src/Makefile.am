@@ -57,14 +57,6 @@ SExp.h\
 Translator.cpp\
 Translator.h\
 PrimitiveProcedure.h\
-PrimitiveProcedures/Plus.cpp\
-PrimitiveProcedures/Plus.h\
-PrimitiveProcedures/Minus.cpp\
-PrimitiveProcedures/Minus.h\
-PrimitiveProcedures/Divide.cpp\
-PrimitiveProcedures/Divide.h\
-PrimitiveProcedures/Multiply.cpp\
-PrimitiveProcedures/Multiply.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Set.cpp\
@@ -75,10 +67,6 @@ PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
 PrimitiveProcedures/Display.cpp\
 PrimitiveProcedures/Display.h\
-PrimitiveProcedures/NumberP.cpp\
-PrimitiveProcedures/NumberP.h\
-PrimitiveProcedures/NumberEqual.cpp\
-PrimitiveProcedures/NumberEqual.h\
 PrimitiveProcedures/Load.h\
 PrimitiveProcedures/Load.cpp\
 PrimitiveProcedures/Eqv.h\
@@ -87,8 +75,6 @@ PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
 PrimitiveProcedures/False.cpp\
-PrimitiveProcedures/CharcterP.h\
-PrimitiveProcedures/CharcterP.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\
