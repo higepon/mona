@@ -1,22 +1,22 @@
-#ifndef __PRIMITIVE_PROCEDURE_DISPLAY_H__
-#define __PRIMITIVE_PROCEDURE_DISPLAY_H__
+// #ifndef __PRIMITIVE_PROCEDURE_DISPLAY_H__
+// #define __PRIMITIVE_PROCEDURE_DISPLAY_H__
 
-#include "PrimitiveProcedure.h"
-#include "Number.h"
+// #include "PrimitiveProcedure.h"
+// #include "Number.h"
 
-namespace monash {
+// namespace monash {
 
-class Display : public PrimitiveProcedure
-{
-public:
-    Display();
-    virtual ~Display();
+// class Display : public PrimitiveProcedure
+// {
+// public:
+//     Display();
+//     virtual ~Display();
 
-    virtual std::string toString();
-    virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
+//     virtual std::string toString();
+//     virtual Object* eval(Environment* env);
+//     virtual Object* apply(Objects* arguments, Environment* env);
+// };
 
-}; // namespace monash
+// }; // namespace monash
 
-#endif // __PRIMITIVE_PROCEDURE_DISPLAY_H__
+// #endif // __PRIMITIVE_PROCEDURE_DISPLAY_H__

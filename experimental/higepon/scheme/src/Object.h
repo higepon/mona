@@ -12,7 +12,8 @@
 namespace monash {
 
 class Environment;
-
+class Object;
+typedef std::vector<Object*> Objects;
 #ifdef USE_BOEHM_GC
 class Object : public gc_cleanup
 //    class Object : public gc
@@ -28,18 +29,22 @@ public:
     virtual std::string toString()         = 0;
     virtual std::string toStringValue() { return toString(); }
     virtual bool eqv(Object* o) { return false; }
-    virtual bool eq(Object* o) { return false; }
+    virtual bool eq(Object* o) { return o == this; }
     virtual int type() const               = 0;
     virtual uint32_t lineno() const        = 0;
     virtual Object* eval(Environment* env) = 0;
-    virtual bool isNumber() const { return type() == NUMBER; }
-    virtual bool isString() const { return type() == STRING; }
-    virtual bool isCharcter() const { return type() == CHARCTER; }
-    virtual bool isVector() const { return type () == VECTOR; }
-    virtual bool isQuote() const { return type() == QUOTE; }
-    virtual bool isPair() const { return type() == PAIR; }
-    virtual bool isTrue() const { return type() == TRUE; }
-    virtual bool isFalse() const { return type() == FALSE; }
+    bool isNumber() const { return type() == NUMBER; }
+    bool isString() const { return type() == STRING; }
+    bool isCharcter() const { return type() == CHARCTER; }
+    bool isVector() const { return type () == VECTOR; }
+    bool isQuote() const { return type() == QUOTE; }
+    bool isPair() const { return type() == PAIR; }
+    bool isTrue() const { return type() == TRUE; }
+    bool isFalse() const { return type() == FALSE; }
+    bool isCompoundProcedure() const { return type() == PROCEDURE; }
+    bool isPrimitiveProcedure() const { return type() == PRIMITIVE_PROCEDURE; }
+
+public:
 
     enum
     {
@@ -68,8 +73,6 @@ public:
         FALSE,
     };
 };
-
-typedef std::vector<Object*> Objects;
 
 }; // namespace monash
 

@@ -4,6 +4,8 @@ scheme_CXXFLAGS = -pg -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gs
 scheme_LDFLAGS = -pg -lgc
 scheme_SOURCES = \
 main.cpp\
+Scheme.cpp\
+Scheme.h\
 Filter.h\
 Assert.h\
 Object.cpp\
@@ -69,6 +71,14 @@ PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
 PrimitiveProcedures/False.cpp\
+PrimitiveProcedures/CharcterProcedures.cpp\
+PrimitiveProcedures/VectorProcedures.cpp\
+PrimitiveProcedures/NumberProcedures.cpp\
+PrimitiveProcedures/StringProcedures.cpp\
+PrimitiveProcedures/SymbolProcedures.cpp\
+PrimitiveProcedures/PairProcedures.cpp\
+PrimitiveProcedures/IOProcedures.cpp\
+PrimitiveProcedures/EqualProcedures.cpp\
 scheme.h\
 scheme.cpp\
 Macro.h\

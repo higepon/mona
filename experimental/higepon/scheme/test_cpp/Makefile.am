@@ -11,6 +11,8 @@ MacroFilterTest.h\
 MacroFilterTest.cpp\
 QuoteFilterTest.h\
 QuoteFilterTest.cpp\
+../src/Scheme.cpp\
+../src/Scheme.h\
 ../src/Error.h\
 ../src/Error.cpp\
 ../src/Translator.h\
@@ -85,4 +87,13 @@ QuoteFilterTest.cpp\
 ../src/PrimitiveProcedures/False.h\
 ../src/PrimitiveProcedures/False.cpp\
 ../src/PrimitiveProcedures/Load.h\
-../src/PrimitiveProcedures/Load.cpp
+../src/PrimitiveProcedures/Load.cpp\
+../src/PrimitiveProcedures/CharcterProcedures.cpp\
+../src/PrimitiveProcedures/VectorProcedures.cpp\
+../src/PrimitiveProcedures/NumberProcedures.cpp\
+../src/PrimitiveProcedures/StringProcedures.cpp\
+../src/PrimitiveProcedures/SymbolProcedures.cpp\
+../src/PrimitiveProcedures/PairProcedures.cpp\
+../src/PrimitiveProcedures/IOProcedures.cpp\
+../src/PrimitiveProcedures/EqualProcedures.cpp
+

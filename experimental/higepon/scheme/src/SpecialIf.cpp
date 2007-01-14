@@ -1,7 +1,6 @@
 #include "SpecialIf.h"
 
 using namespace monash;
-bool isTrue(Object* exp);
 
 SpecialIf::SpecialIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno) : predicate_(predicate)
                                                                                                   , consequent_(consequent)
@@ -26,7 +25,7 @@ int SpecialIf::type() const
 
 Object* SpecialIf::eval(Environment* env)
 {
-    if (::isTrue(this->predicate()->eval(env)))
+    if (!predicate()->eval(env)->isFalse())
     {
         return this->consequent()->eval(env);
     }

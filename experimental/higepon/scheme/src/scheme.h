@@ -32,7 +32,8 @@ namespace std {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
-
+#include "PrimitiveProcedures/True.h"
+#include "PrimitiveProcedures/False.h"
 #include "PrimitiveProcedures/Procedure.h"
 #include "PrimitiveProcedures/Display.h"
 #include "PrimitiveProcedures/Set.h"
@@ -40,13 +41,13 @@ namespace std {
 #include "PrimitiveProcedures/Load.h"
 
 
-monash::Object* eval(monash::Object* exp, monash::Environment* env);
-monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);
-monash::Objects* listOfValues(monash::Objects* objects, monash::Environment* env);
-monash::Object* apply(monash::Object* procedure, monash::Objects* arguments, monash::Environment* env);
+//monash::Object* eval(monash::Object* exp, monash::Environment* env);
+//monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);
+//monash::Objects* listOfValues(monash::Objects* objects, monash::Environment* env);
+//monash::Object* apply(monash::Object* procedure, monash::Objects* arguments, monash::Environment* env);
 std::string load(const char* file);
 void setInputText(const std::string& text);
-void display(monash::Object* exp);
+//void display(monash::Object* exp);
 
 void registerPrimitives(monash::Environment* env);
 

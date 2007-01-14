@@ -1,26 +1,6 @@
 (load "./test/scheme.scm")
 (load "./test/unittest.scm")
 
-(assert-check-true "procedure +"
-                   (= 3 (+ 1 2))
-                   (= 2 (+ 4 -2))
-                   (= 11 (+ 4 2 5)))
-
-(assert-check-true "procedure -"
-                   (= 2 (- 3 1))
-                   (= 0 (- 3 1 2))
-                   (= -3 (- 3 1 2 3))
-                   (= -3 (- 3)))
-
-(assert-check-true "procedure /"
-                   (= 2 (/ 4 2))
-                   (= 2 (/ 8 2 2))
-                   (= 1 (/ 54 2 9 3)))
-
-(assert-check-true "procedure *"
-                   (= 2 (* 1 2))
-                   (= -8 (* 4 -2))
-                   (= 40 (* 4 2 5)))
 
 (assert-check-true "if"
                    (if #t #t #f))
@@ -44,15 +24,6 @@
              (= 2 (cdar (cons (cons 1 2) (cons 3 4))))
              (= 1 (caar (cons (cons 1 2) (cons 3 4))))
              (= 4 (cddr (cons (cons 1 2) (cons 3 4)))))
-
-(assert-check-true "number? should be #t"
-                   (number? 3)
-                   (number? (+ 1 2)))
-
-(assert-check-false "number? should be #f"
-                    (number? "string")
-                    (number? (cons 1 2)))
-
 
 (assert-check-false "string?"
                     (string? 3)
@@ -232,8 +203,7 @@
 (define test-pair1 (cons 1 2))
 (define test-pair2 test-pair1)
 (assert-check-true "eqv? - should be #t"
-                   ;; todo
-                   ;; symbol
+                   (eqv? 'a 'a)
                    (eqv? #\a #\a)
                    (eqv? #t #t)
                    (eqv? #f #f)
@@ -245,8 +215,7 @@
 
 (define p (lambda (x) (+ x 1)))
 (assert-check-false "eqv? - should be #f different type"
-                    ;; todo
-                    ;; symbol
+                    (eqv? 'a 'b)
                     (eqv? #\a #\b)
                     (eqv? #t 2)
                     (eqv? #t "false")
@@ -259,9 +228,6 @@
                     (eqv? p p))
 
 (assert-check-false "eqv? - should be #f"
-                    ;; todo
-                    ;; symbol
-                    ;; char
                     (eqv? #t #f)
                     (eqv? #f #t)
                     (eqv? (quote ()) 3)
@@ -306,11 +272,24 @@
 
 (assert-check-false "should be #f" #f)
 
+(assert-check-true "eq?"
+                   (eq? 'a 'a)
+                   (eq? '() '())
+                   (eq? car car)
+                   (let ((x '(a)))
+                     (eq? x x))
+                   (let ((x '#()))
+                     (eq? x x))
+                   (let ((p (lambda (x) x)))
+                     (eq? p p)))
+
+(assert-check-false "eq? should be #f"
+                    (eq? (list 'a) (list 'a)))
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")
+(load "./test/number.scm")
 
 ;; report
 (total-report)
-(display '"abc")
-

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Scheme.h"
 #include "scheme.h"
 
 using namespace std;
@@ -24,12 +25,12 @@ int Application::type() const
 
 Object* Application::eval(Environment* env)
 {
-    Object* procedure =this->function()->eval(env);
+    Object* procedure = function()->eval(env);
     if (procedure->type() != Object::PROCEDURE && procedure->type() != Object::PRIMITIVE_PROCEDURE)
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().c_str());
     }
 
     //Objects* as = arguments();
-    return apply(procedure, arguments(), env);
+    return Scheme::apply(procedure, arguments(), env);
 }

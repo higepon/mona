@@ -84,5 +84,5 @@ bool Quote::eqv(Object* o)
 
 bool Quote::eq(Object* o)
 {
-    return false;
+    return eqv(o);
 }

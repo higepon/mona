@@ -28,7 +28,7 @@ Object* Set::apply(Objects* arguments, Environment* env)
 
     if (arguments->size() != 2)
     {
-        RAISE_ERROR(arguments->size() >= 0 ? arguments->at(0)->lineno() : 0, "set! got %d arguments, but required %d", arguments->size(), 2);
+        RAISE_ERROR(arguments->size() > 0 ? arguments->at(0)->lineno() : 0, "set! got %d arguments, but required %d", arguments->size(), 2);
         return NULL;
     }
 

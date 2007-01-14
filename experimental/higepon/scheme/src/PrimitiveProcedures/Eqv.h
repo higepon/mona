@@ -1,23 +1,23 @@
-#ifndef _PRIMITIVE_PROCEDURE_EQV_
-#define _PRIMITIVE_PROCEDURE_EQV_
+// #ifndef _PRIMITIVE_PROCEDURE_EQV_
+// #define _PRIMITIVE_PROCEDURE_EQV_
 
-#include "PrimitiveProcedure.h"
-#include "True.h"
-#include "False.h"
+// #include "PrimitiveProcedure.h"
+// #include "True.h"
+// #include "False.h"
 
-namespace monash {
+// namespace monash {
 
-class Eqv : public PrimitiveProcedure
-{
-public:
-    Eqv();
-    virtual ~Eqv();
+// class Eqv : public PrimitiveProcedure
+// {
+// public:
+//     Eqv();
+//     virtual ~Eqv();
 
-    virtual std::string toString();
-    virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
+//     virtual std::string toString();
+//     virtual Object* eval(Environment* env);
+//     virtual Object* apply(Objects* arguments, Environment* env);
+// };
 
-}; // namespace monash
+// }; // namespace monash
 
-#endif // _PRIMITIVE_PROCEDURE_EQV_
+// #endif // _PRIMITIVE_PROCEDURE_EQV_

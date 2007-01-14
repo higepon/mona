@@ -35,6 +35,6 @@ bool Pair::eqv(Object* o)
 
 bool Pair::eq(Object* o)
 {
-    return false;
+    return eqv(o);
 }
 

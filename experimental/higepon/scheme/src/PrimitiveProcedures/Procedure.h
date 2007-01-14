@@ -2,6 +2,14 @@
 #define __PRIMITIVE_PROCEDURE_PROCEDURE_H__
 
 #include "PrimitiveProcedure.h"
+#include "Scheme.h"
+#include "scheme.h"
+
+namespace monash {
+    typedef std::vector< std::pair<Variable*, Object*> > DefaultProcedures;
+};
+
+extern monash::DefaultProcedures procedures;
 
 #define ARGV(i) (as->at(i))
 #define ARGC    (as->size())
@@ -23,14 +31,48 @@
     }                                                                            \
     type* to = (type*)o;
 
+#define CAST_RETURN_FALSE(o, type, to)                                           \
+    if (!o->is##type())                                                          \
+    {                                                                            \
+        return new False();                                                      \
+    }                                                                            \
+    type* to = (type*)o;
+
 #define ARGC_SHOULD_BE(n)                                                        \
-    Objects* as = listOfValues(arguments, env);                                  \
+    Objects* as = Scheme::listOfValues(arguments, env);                          \
     if (ARGC != n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC >= 0 ? ARGV(0)->lineno() : 0                            \
                     , "%s got %d argument(s), but required %d"                   \
                     , toString().c_str(), ARGC, n);                              \
     }
+
+#define ARGC_SHOULD_BE_GT(n)                                                     \
+    Objects* as = Scheme::listOfValues(arguments, env);                          \
+    if (ARGC <= n)                                                               \
+    {                                                                            \
+        RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                             \
+                    , "%s got %d argument(s), but required at least %d"          \
+                    , toString().c_str(), ARGC, n + 1);                          \
+    }
+
+#define ARGC_SHOULD_BE_GT_RETURN_FALSE(n)                                        \
+    Objects* as = Scheme::listOfValues(arguments, env);                          \
+    if (ARGC <= n)                                                               \
+    {                                                                            \
+        return new False();                                                      \
+    }
+
+
+#define ARGC_SHOULD_BE_BETWEEN(m, n)                                                         \
+    Objects* as = Scheme::listOfValues(arguments, env);                                      \
+    if (ARGC < m || ARGC > n)                                                                \
+    {                                                                                        \
+        RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                                         \
+                    , "%s got %d argument(s), but required between %d and %d arguments."     \
+                    , toString().c_str(), ARGC, m, n);                                       \
+    }
+
 
 #define PROCEDURE(ClassName, name)                                               \
 class ClassName : public PrimitiveProcedure                                      \
