@@ -39,7 +39,6 @@ namespace std {
 
 
 std::string load(const char* file);
-
 void registerPrimitives(monash::Environment* env);
 
 #endif // __SCHEME_H__
