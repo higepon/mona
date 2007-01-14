@@ -61,9 +61,8 @@ am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Scheme.$(OBJEXT) \
 	scheme-Application.$(OBJEXT) scheme-Parser.$(OBJEXT) \
 	scheme-Tokenizer.$(OBJEXT) scheme-SExp.$(OBJEXT) \
 	scheme-Translator.$(OBJEXT) scheme-Set.$(OBJEXT) \
-	scheme-Display.$(OBJEXT) scheme-Load.$(OBJEXT) \
-	scheme-Eqv.$(OBJEXT) scheme-True.$(OBJEXT) \
-	scheme-False.$(OBJEXT) scheme-CharcterProcedures.$(OBJEXT) \
+	scheme-True.$(OBJEXT) scheme-False.$(OBJEXT) \
+	scheme-CharcterProcedures.$(OBJEXT) \
 	scheme-VectorProcedures.$(OBJEXT) \
 	scheme-NumberProcedures.$(OBJEXT) \
 	scheme-StringProcedures.$(OBJEXT) \
@@ -235,12 +234,6 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Display.cpp\
-PrimitiveProcedures/Display.h\
-PrimitiveProcedures/Load.h\
-PrimitiveProcedures/Load.cpp\
-PrimitiveProcedures/Eqv.h\
-PrimitiveProcedures/Eqv.cpp\
 PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
@@ -505,24 +498,6 @@ scheme-Set.o: PrimitiveProcedures/Set.cpp
 scheme-Set.obj: PrimitiveProcedures/Set.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Set.obj `if test -f 'PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Set.cpp'; fi`
 
-scheme-Display.o: PrimitiveProcedures/Display.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.o `test -f 'PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Display.cpp
-
-scheme-Display.obj: PrimitiveProcedures/Display.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
-
-scheme-Load.o: PrimitiveProcedures/Load.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.o `test -f 'PrimitiveProcedures/Load.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Load.cpp
-
-scheme-Load.obj: PrimitiveProcedures/Load.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Load.obj `if test -f 'PrimitiveProcedures/Load.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Load.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Load.cpp'; fi`
-
-scheme-Eqv.o: PrimitiveProcedures/Eqv.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eqv.o `test -f 'PrimitiveProcedures/Eqv.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Eqv.cpp
-
-scheme-Eqv.obj: PrimitiveProcedures/Eqv.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Eqv.obj `if test -f 'PrimitiveProcedures/Eqv.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Eqv.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Eqv.cpp'; fi`
-
 scheme-True.o: PrimitiveProcedures/True.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-True.o `test -f 'PrimitiveProcedures/True.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/True.cpp
 
@@ -784,11 +759,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am
 
-
-# And.cpp\
-# And.h\
-# Or.cpp\
-# Or.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -61,12 +61,6 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Set.cpp\
 PrimitiveProcedures/Set.h\
-PrimitiveProcedures/Display.cpp\
-PrimitiveProcedures/Display.h\
-PrimitiveProcedures/Load.h\
-PrimitiveProcedures/Load.cpp\
-PrimitiveProcedures/Eqv.h\
-PrimitiveProcedures/Eqv.cpp\
 PrimitiveProcedures/True.h\
 PrimitiveProcedures/True.cpp\
 PrimitiveProcedures/False.h\
@@ -90,9 +84,3 @@ QuoteFilter.cpp\
 Error.cpp\
 Error.h\
 load.cpp
-
-
-# And.cpp\
-# And.h\
-# Or.cpp\
-# Or.h
