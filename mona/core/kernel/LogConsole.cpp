@@ -264,7 +264,7 @@ void LogConsole::print(char* str)
             wait();
         } while (!lsr);
 
-        out_uart(THR, *str++);           /* send byte */
+        out_uart(THR, *str++);           /* send uint8_t */
         wait();
     }
      return;

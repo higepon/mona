@@ -16,12 +16,12 @@
 template <class T> class Array
 {
   public:
-    Array(dword length) : length(length), alloc(true)
+    Array(uint32_t length) : length(length), alloc(true)
     {
         this->array = new T[length];
     }
 
-    Array(T* array, dword length) : array(array), length(length), alloc(false)
+    Array(T* array, uint32_t length) : array(array), length(length), alloc(false)
     {
     }
 
@@ -34,7 +34,7 @@ template <class T> class Array
     }
 
   public:
-    T& operator [](dword index)
+    T& operator [](uint32_t index)
     {
 #if 1
         if (index < 0 || index >= length)
@@ -53,7 +53,7 @@ template <class T> class Array
 
   private:
     T* array;
-    dword length;
+    uint32_t length;
     bool alloc;
 };
 

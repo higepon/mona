@@ -1,34 +1,58 @@
-#ifndef _MONA_USERLIB_THREAD_
-#define _MONA_USERLIB_THREAD_
+#ifndef _MONAPI_THREAD_
+#define _MONAPI_THREAD_
 
 #include <sys/types.h>
 
 namespace MonAPI {
 
 /*----------------------------------------------------------------------
-    Mutex
+    Thread
 ----------------------------------------------------------------------*/
-class Mutex
+class Thread
 {
 public:
-    Mutex();
-    Mutex(dword mutexId);
-    ~Mutex();
-    int lock();
-    int unlock();
-    int tryLock();
-    int destroy();
+    Thread(void (*run)(void*), void* arg, void (*notify)(void*));
+    virtual ~Thread();
 
-public:
-    inline int getId() const {
-        return mutexId_;
-    }
+    void start();
+    void stop();
 
-private:
-    int mutexId_;
-    bool destroyed_;
+protected:
+    void (*run_)(void*);
+    void (*notify_)(void*);
+    void* arg_;
+    uint32_t threadId_;
 };
 
-}
+/*----------------------------------------------------------------------
+    How to use
+----------------------------------------------------------------------*/
+// static void hoge(void* arg)
+// {
+//     const char* m = (const char*)arg;
+//     for (int i = 0; i < 3 ; i++)
+//     {
+//         sleep(3000);
+//         syscall_print(m);
+//     }
+// }
 
+// static void hogeDone(void* arg)
+// {
+//     syscall_print("hoge done\n");
+// }
+
+
+// int main(int argc, char* argv[])
+// {
+//     MonAPI::Thread* thread = new MonAPI::Thread(*hoge, (void*)"message from hige\n", *hogeDone);
+//     thread->start();
+//     sleep(4000);
+//     thread->stop();
+//     printf("stopped\n");
+// }
+
+
+
+};
 #endif

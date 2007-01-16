@@ -6,10 +6,10 @@
 
 namespace MonAPI {
 
-const dword MemoryMap::START_ADDRESS = 0x90000000;
-const dword MemoryMap::MAX_SIZE      = 0x10000000;
-dword MemoryMap::nextAddress;
-dword MemoryMap::lastError;
+const uint32_t MemoryMap::START_ADDRESS = 0x90000000;
+const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
+uint32_t MemoryMap::nextAddress;
+uint32_t MemoryMap::lastError;
 
 void MemoryMap::initialize()
 {
@@ -17,7 +17,7 @@ void MemoryMap::initialize()
     lastError = 0;
 }
 
-dword MemoryMap::create(dword size)
+uint32_t MemoryMap::create(uint32_t size)
 {
     /* error */
     if (size <= 0)
@@ -28,7 +28,7 @@ dword MemoryMap::create(dword size)
 
     size = (size + 4095) & 0xFFFFF000; /* nikq */
 
-    dword result = syscall_memory_map_create(size);
+    uint32_t result = syscall_memory_map_create(size);
 
     /* error */
     if (result == 0)
@@ -40,11 +40,11 @@ dword MemoryMap::create(dword size)
     return result;
 }
 
-byte* MemoryMap::map(dword id)
+uint8_t* MemoryMap::map(uint32_t id)
 {
     /* to be first fit */
 
-    dword size = syscall_memory_map_get_size(id);
+    uint32_t size = syscall_memory_map_get_size(id);
 
     if (size == 0)
     {
@@ -64,12 +64,12 @@ byte* MemoryMap::map(dword id)
         return NULL;
     }
 
-    byte* result = (byte*)(nextAddress);
+    uint8_t* result = (uint8_t*)(nextAddress);
     nextAddress += size;
     return result;
 }
 
-bool MemoryMap::unmap(dword id)
+bool MemoryMap::unmap(uint32_t id)
 {
     if (syscall_memory_map_unmap(id))
     {
@@ -80,29 +80,29 @@ bool MemoryMap::unmap(dword id)
     return true;
 }
 
-dword MemoryMap::getLastError()
+uint32_t MemoryMap::getLastError()
 {
     return lastError;
 }
 
-dword MemoryMap::getSize(dword id)
+uint32_t MemoryMap::getSize(uint32_t id)
 {
     return syscall_memory_map_get_size(id);
 }
 
 }
 
-dword monapi_cmemorymap_create(dword size)
+uint32_t monapi_cmemorymap_create(uint32_t size)
 {
     return MonAPI::MemoryMap::create(size);
 }
 
-byte* monapi_cmemorymap_map(dword id)
+uint8_t* monapi_cmemorymap_map(uint32_t id)
 {
     return MonAPI::MemoryMap::map(id);
 }
 
-int monapi_cmemorymap_unmap(dword id)
+int monapi_cmemorymap_unmap(uint32_t id)
 {
     return MonAPI::MemoryMap::unmap(id) ? 1 : 0;
 }

@@ -25,9 +25,10 @@ endif
 	cd core/secondboot && $(MAKE) && $(MAKE) install
 	cd core/kernel && $(MAKE) && $(MAKE) install
 	cd core/monapi && $(MAKE) && $(MAKE) install
-	cd core/monitor_server && $(MAKE) && $(MAKE) install
-	cd core/keyboard_server && $(MAKE) && $(MAKE) install
 	cd core/monalibc && $(MAKE) && $(MAKE) install
+	cd core/monitor_server && $(MAKE) && $(MAKE) install
+	cd core/screen_server && $(MAKE) && $(MAKE) install
+	cd core/keyboard_server && $(MAKE) && $(MAKE) install
 	cd core/mouse_server && $(MAKE) && $(MAKE) install
 	cd core/file_server && $(MAKE) && $(MAKE) install
 	cd core/process_server && $(MAKE) && $(MAKE) install
@@ -48,6 +49,7 @@ endif
 	$(MAKE) $@ -C core/kernel
 	$(MAKE) $@ -C core/monapi
 	$(MAKE) $@ -C core/monitor_server
+	$(MAKE) $@ -C core/screen_server
 	$(MAKE) $@ -C core/keyboard_server
 	$(MAKE) $@ -C core/monalibc
 	$(MAKE) $@ -C core/mouse_server

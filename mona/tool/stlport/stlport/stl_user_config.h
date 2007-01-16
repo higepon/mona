@@ -133,7 +133,7 @@
 // # define _STLP_DEBUG_UNINITIALIZED 1
 
 /*
- * Uncomment and provide a definition for the byte with which raw memory
+ * Uncomment and provide a definition for the uint8_t with which raw memory
  * will be filled if _STLP_DEBUG_ALLOC or _STLP_DEBUG_UNINITIALIZED is defined. 
  * Choose a value which is likely to cause a noticeable problem if dereferenced 
  * or otherwise abused. A good value may already be defined for your platform; see

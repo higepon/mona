@@ -10,4 +10,4 @@ endif
 OBJECTS   = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o) $(JSOURCES:.java=.o)
 INCLUDE   = -I$(INCDIR)
 LINK      = $(ADDLINK) -lmonapi$(IMPSFX)
-LINKDEP   = $(LIBDIR)/monapi.o $(LIBDIR)/libmonapi$(IMPSFX).a $(ADDLINKDEP)
+LINKDEP   = $(LIBDIR)/monapi_crt.o $(LIBDIR)/libmonapi$(IMPSFX).a $(ADDLINKDEP)

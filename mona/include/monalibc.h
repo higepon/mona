@@ -48,6 +48,10 @@ int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int 
 int ftos(char *s, double n, int width, int precision, char flag);
 size_t strtoi(const char *s, char **endptr, int base, int width, char flag);
 
+int init_libc();
+int fini_libc();
+
+
 #ifdef __cplusplus
 }
 #endif

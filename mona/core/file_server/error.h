@@ -162,7 +162,7 @@ enum
 #define	ENOMSG		83		/* No message of desired type */
 #define	EOVERFLOW	84		/* Value too large to be stored in data type */
 #define	ECANCELED	85		/* Operation canceled */
-#define	EILSEQ		86		/* Illegal byte sequence */
+#define	EILSEQ		86		/* Illegal uint8_t sequence */
 #define	ENOATTR		87		/* Attribute not found */
 
 #define EDOOFUS		88		/* Programming error */

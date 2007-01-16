@@ -48,7 +48,7 @@ void pic_init() {
     /* timer settings 10ms */
     //    setTimerInterval(10);
     /* timer settings 10ms */
-    dword timer_count = 10 * 1193181 / 1000;
+    uint32_t timer_count = 10 * 1193181 / 1000;
     outp8(PIT_MODE, 0x36);
     outp8(PIT_COUNT0, timer_count & 0xff);
     outp8(PIT_COUNT0, timer_count >> 8);
@@ -70,8 +70,8 @@ void pic_init() {
     \author HigePon
     \date   create:2004/01/11 update:
 */
-void setTimerInterval(dword ms) {
-    dword timerCounter = (dword)(ms * 1193.18);
+void setTimerInterval(uint32_t ms) {
+    uint32_t timerCounter = (uint32_t)(ms * 1193.18);
     outp8(PIT_MODE, 0x34);
     outp8(PIT_COUNT0, timerCounter & 0xff);
     outp8(PIT_COUNT0, timerCounter >> 8);

@@ -24,7 +24,7 @@
 class Loader
 {
 public:
-    static int Load(byte* image, dword size, dword entrypoint, const char* name, bool isUser, CommandOption* list);
+    static int Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list);
 
 public:
     enum

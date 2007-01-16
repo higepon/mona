@@ -341,34 +341,34 @@ namespace MonAPI
 
     _A<CString> CString::split_lines() const
     {
-	const char *buf = *this;
-	int length = this->getLength();
-	int lines = 0;
+    const char *buf = *this;
+    int length = this->getLength();
+    int lines = 0;
 
-	for(int i=0; i<length; i++) {
-	    if(buf[i] == '\r') {
-		lines++;
-		if(buf[i+1] == '\n') i++;
-	    } else if(buf[i] == '\n') {
-		lines++;
-	    }
-	}
+    for(int i=0; i<length; i++) {
+        if(buf[i] == '\r') {
+        lines++;
+        if(buf[i+1] == '\n') i++;
+        } else if(buf[i] == '\n') {
+        lines++;
+        }
+    }
 
-	_A<CString> ret(lines);
-	int line_start = 0, cnt = 0;
+    _A<CString> ret(lines);
+    int line_start = 0, cnt = 0;
 
-	for(int i=0; i<length; i++) {
-	    if(buf[i] == '\r') {
-		ret[cnt++] = this->substring(line_start, i - line_start);
-		if(buf[i+1] == '\n') i++;
-		line_start = i+1;
-	    } else if(buf[i] == '\n') {
-		ret[cnt++] = this->substring(line_start, i - line_start);
-		line_start = i+1;
-	    }
-	}
+    for(int i=0; i<length; i++) {
+        if(buf[i] == '\r') {
+        ret[cnt++] = this->substring(line_start, i - line_start);
+        if(buf[i+1] == '\n') i++;
+        line_start = i+1;
+        } else if(buf[i] == '\n') {
+        ret[cnt++] = this->substring(line_start, i - line_start);
+        line_start = i+1;
+        }
+    }
 
-	return ret;
+    return ret;
     }
 
     CString CString::toLower() const
@@ -450,6 +450,51 @@ namespace MonAPI
            result = text.length;
        }
        return result;
+    }
+
+    int CString::trim(char c /* = ' ' */)
+    {
+        this->ltrim(c);
+        this->rtrim(c);
+        return 0;
+    }
+
+    int CString::ltrim(char c /* = ' ' */)
+    {
+        int trimLength = 0;
+        for (int i = 0; i < this->length; i++)
+        {
+            if (this->buffer[i] != c) break;
+            trimLength++;
+        }
+        if (0 == trimLength) return 0;
+        char* buf = new char[this->length - trimLength];
+        if (NULL == buf) return -1;
+        memcpy(buf, &(this->buffer[trimLength]), this->length - trimLength);
+        buf[this->length - trimLength] = '\0';
+        delete [] this->buffer;
+        this->buffer = buf;
+        this->length -= trimLength;
+        return 1;
+    }
+
+    int CString::rtrim(char c /* = ' ' */)
+    {
+        int trimLength = 0;
+        for (int i = this->length - 1; i > 0; i--)
+        {
+            if (this->buffer[i] != c) break;
+            trimLength++;
+        }
+        if (0 == trimLength) return 0;
+        char* buf = new char[this->length - trimLength];
+        if (NULL == buf) return -1;
+        memcpy(buf, this->buffer, this->length - trimLength);
+        buf[this->length - trimLength] = '\0';
+        delete [] this->buffer;
+        this->buffer = buf;
+        this->length -= trimLength;
+        return 1;
     }
 
     /*!

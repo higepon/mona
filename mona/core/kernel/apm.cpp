@@ -5,14 +5,14 @@
 
 typedef struct
 {
-	dword offset;
-	word segment __attribute__((packed));
+	uint32_t offset;
+	uint16_t segment __attribute__((packed));
 } apm_bios_entry;
 
 extern "C"
 {
 	apm_bios_entry apm_eip;
-	word apm_bios_call(byte fn, apm_bios_regs *regs);
+	uint16_t apm_bios_call(uint8_t fn, apm_bios_regs *regs);
 }
 
 void apm_init(void)
@@ -28,7 +28,7 @@ void apm_init(void)
 	//apm_enable();
 }
 
-dword apm_bios(dword fn, apm_bios_regs *regs)
+uint32_t apm_bios(uint32_t fn, apm_bios_regs *regs)
 {
 	return apm_bios_call(0x5300|fn, regs) & 0xFF;
 }

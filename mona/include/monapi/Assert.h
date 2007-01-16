@@ -1,5 +1,5 @@
-#ifndef _MONA_ASSERT_
-#define _MONA_ASSERT_
+#ifndef _MONAPI_ASSERT_
+#define _MONAPI_ASSERT_
 
 #include <sys/types.h>
 

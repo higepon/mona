@@ -34,7 +34,7 @@ strlcat(char *dst, const char *src, size_t siz)
 	size_t n = siz;
 	size_t dlen;
 
-	/* Find the end of dst and adjust bytes left but don't go past end */
+	/* Find the end of dst and adjust uint8_ts left but don't go past end */
 	while (n-- != 0 && *d != '\0')
 		d++;
 	dlen = d - dst;

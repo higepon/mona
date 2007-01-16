@@ -45,11 +45,11 @@ void monapi_set_irq(int irq, MONAPI_BOOL enabled, MONAPI_BOOL auto_ir2)
     \param line   [in] line number for time out info.
     \return MONAPI_TRUE/MONAPI_FALSE OK/NG
 */
-MONAPI_BOOL monapi_wait_interrupt(dword ms, byte irq, const char* file, int line)
+MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, int line)
 {
     MessageInfo msg;
 
-    dword timerId = set_timer(ms);
+    uint32_t timerId = set_timer(ms);
 
     for (int i = 0; ; i++)
     {
@@ -83,36 +83,36 @@ MONAPI_BOOL monapi_wait_interrupt(dword ms, byte irq, const char* file, int line
 }
 
 
-byte inp8(dword port) {
+uint8_t inp8(uint32_t port) {
 
-    byte ret;
+    uint8_t ret;
     asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
     return ret;
 }
 
-void outp8(dword port, byte value) {
+void outp8(uint32_t port, uint8_t value) {
    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
 }
 
-word inp16(dword port) {
+uint16_t inp16(uint32_t port) {
 
-    word ret;
+    uint16_t ret;
     asm volatile ("inw %%dx, %%ax": "=a"(ret): "d"(port));
     return ret;
 }
 
-void outp16(dword port, word value) {
+void outp16(uint32_t port, uint16_t value) {
    asm volatile ("outw %%ax, %%dx": :"d" (port), "a" (value));
 }
 
-dword inp32(dword port) {
+uint32_t inp32(uint32_t port) {
 
-    dword ret;
+    uint32_t ret;
     asm volatile ("inl %%dx, %%eax": "=a"(ret): "d"(port));
     return ret;
 }
 
-void outp32(dword port, dword value) {
+void outp32(uint32_t port, uint32_t value) {
    asm volatile ("outl %%eax, %%dx": :"d" (port), "a" (value));
 }
 

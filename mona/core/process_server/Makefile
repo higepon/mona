@@ -10,4 +10,6 @@ ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 SHAREDIR   = $(MONADIR)/share
 include $(SHAREDIR)/configs/monapi-bin.inc
 
+INCLUDE+=-I$(INCDIR)/stlport
+
 -include dependencies

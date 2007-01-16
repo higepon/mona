@@ -55,12 +55,12 @@ public:
         monapi_cmemoryinfo_delete(memory);
     }
 
-    dword tid;
+    uint32_t tid;
     monapi_cmemoryinfo* memory;
-    dword offset;
-    dword origin;
-    dword size;
-    dword resultSize;
+    uint32_t offset;
+    uint32_t origin;
+    uint32_t size;
+    uint32_t resultSize;
 };
 
 typedef struct

@@ -1,5 +1,5 @@
-#ifndef __MONAPI_CSTRING_H__
-#define __MONAPI_CSTRING_H__
+#ifndef _MONAPI_CSTRING_
+#define _MONAPI_CSTRING_
 
 #include <monapi/Array.h>
 
@@ -51,7 +51,9 @@ namespace MonAPI
         int reset();
         int insert(int start, const CString& text);
         int remove(int start, int length);
-
+        int ltrim(char c = ' ');
+        int rtrim(char c = ' ');
+        int trim(char c = ' ');
     };
 }
 

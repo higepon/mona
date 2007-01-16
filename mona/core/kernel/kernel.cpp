@@ -79,7 +79,7 @@
 #endif
 
 const char* version = "Mona version.0.3.0Alpha8 $Date::                           $";
-dword version_number  = 0x00000300;
+uint32_t version_number  = 0x00000300;
 void  mainProcess();
 
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
@@ -137,43 +137,43 @@ void startKernel()
 #if 1
     int w = g_vesaDetail->xResolution;
     int bpp = g_vesaDetail->bitsPerPixel / 8;
-    byte *vram = (byte*)g_vesaDetail->physBasePtr;
+    uint8_t *vram = (uint8_t*)g_vesaDetail->physBasePtr;
 
     switch (bpp) {
         case 2:
             for (int y = 0; y < 105; y++) {
                 for (int x = 0; x < 55; x++) {
-                    byte *pixel = NULL;
-                    word rgb16  = 0;
+                    uint8_t *pixel = NULL;
+                    uint16_t rgb16  = 0;
                     // hi 4bit
                     pixel = &vram[(x * 2 + y * w) * bpp];
-                    rgb16 = (word)(((palette16[(monaboot[y][x] >> 4) & 0xF] >> 8) & 0xF800) |
+                    rgb16 = (uint16_t)(((palette16[(monaboot[y][x] >> 4) & 0xF] >> 8) & 0xF800) |
                         ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 5) & 0x07E0) |
                         ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 3) & 0x001F));
-                    *((word*)pixel) = rgb16;
+                    *((uint16_t*)pixel) = rgb16;
                     // low 4bit
                     pixel = &vram[(x * 2 + 1 + y * w) * bpp];
-                    rgb16 = (word)(((palette16[monaboot[y][x] & 0xF] >> 8) & 0xF800) |
+                    rgb16 = (uint16_t)(((palette16[monaboot[y][x] & 0xF] >> 8) & 0xF800) |
                         ((palette16[monaboot[y][x] & 0xF] >> 5) & 0x07E0) |
                         ((palette16[monaboot[y][x] & 0xF] >> 3) & 0x001F));
-                    *((word*)pixel) = rgb16;
+                    *((uint16_t*)pixel) = rgb16;
                 }
            }
             break;
         default:
             for (int y = 0; y < 105; y++) {
                 for (int x = 0; x < 55; x++) {
-                    byte *pixel   = NULL;
-                    byte *p_color = NULL;
+                    uint8_t *pixel   = NULL;
+                    uint8_t *p_color = NULL;
                     // hi 4bit
                     pixel = &vram[(x * 2 + y * w) * bpp];
-                    p_color = (byte*)&palette16[(monaboot[y][x] >> 4) & 0xF];
+                    p_color = (uint8_t*)&palette16[(monaboot[y][x] >> 4) & 0xF];
                     pixel[0] = p_color[0];
                     pixel[1] = p_color[1];
                     pixel[2] = p_color[2];
                     // low 4bit
                     pixel = &vram[(x * 2 + 1 + y * w) * bpp];
-                    p_color = (byte*)&palette16[monaboot[y][x] & 0xF];
+                    p_color = (uint8_t*)&palette16[monaboot[y][x] & 0xF];
                     pixel[0] = p_color[0];
                     pixel[1] = p_color[1];
                     pixel[2] = p_color[2];
@@ -238,12 +238,12 @@ void startKernel()
 
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
-    g_idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
+    g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle);
     g_scheduler->Join(g_idleThread, ThreadPriority::Min);
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
-    Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
+    Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
     g_scheduler->Join(initThread);
 
     disableTimer();
@@ -317,8 +317,8 @@ void loadServer(const char* server, const char* name)
     g_console->printf("loading %s....", server);
     if (strstr(server, ".BIN"))
     {
-        byte* image = (byte*)fileptr;
-        dword size = (*(int*)sizeptr) * 512;
+        uint8_t* image = (uint8_t*)fileptr;
+        uint32_t size = (*(int*)sizeptr) * 512;
         sizeptr += 4;
         fileptr += size;
 
@@ -347,7 +347,7 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
-    byte* buf = (byte*)MONA_CFG_ADDR;
+    uint8_t* buf = (uint8_t*)MONA_CFG_ADDR;
     int fileSize = (*(int*)sizeptr) * 512;
     sizeptr += 4;
     fileptr += (*(int*)sizeptr) * 512;

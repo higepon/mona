@@ -59,10 +59,8 @@ bool FAT::initialize (IStorageDevice *p)
 	numberOfDirEntry  = little2host16(*((uint16_t*)( bf + NUMBER_OF_DIRENTRY)));
 	numberOfSectors   = little2host16(*((uint16_t*)( bf + NUMBER_OF_SECTORS )));
 	sectorsPerFat     = little2host16(*((uint16_t*)( bf + SECTORS_PER_FAT   )));
-
 	uint32_t bytesPerFat = bytesPerSector * sectorsPerFat;
 	uint32_t sectorsPerDirEntry = numberOfDirEntry / ( bytesPerSector / 0x20 );
-
 	rootDirectoryEntry = reservedSectors + sectorsPerFat * numberOfFats;
 	dataArea = rootDirectoryEntry + sectorsPerDirEntry;
 	numberOfClusters = numberOfSectors - dataArea;
@@ -427,7 +425,6 @@ uint32_t FatFile::write (uint8_t *bf, uint32_t sz)
 	if (fsize < pos + sz) {
 		uint32_t bytesPerSector = fat->getBytesPerSector();
 		uint32_t size = bytesPerSector * sectors;
-
 		if (size < pos + sz) {
 			// クラスタの確保
 			if (false == expandClusters(sz))
@@ -620,7 +617,6 @@ void FatFile::reduceClusters (uint32_t sz)
 	uint32_t num = fat->getSectorsPerCluster();
 	uint32_t bsize = bytesPerSector * num;
 	uint32_t n = ( sz + bsize - 1 ) / bsize;
-
 	if (sectors > n) {
 		// セクタを開放する場合
 		uint32_t cluster = fat->getClusterFromLba(lba[n]);
@@ -813,7 +809,6 @@ bool FatDirectory::deleteEntry (int entry)
 
 	uint32_t bytesPerSector = fat->getBytesPerSector();
 	uint32_t n = ( tmp - entrys ) / bytesPerSector;
-
 	tmp[0] = MARK_DELETE;
 
 	// VFAT を開放して回る
@@ -1018,7 +1013,6 @@ bool FatDirectory::setFileSize (int entry, uint32_t size)
 	uint32_t bytesPerSector = fat->getBytesPerSector();
 	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
-
 	return true;
 }
 
@@ -1166,7 +1160,6 @@ int FatDirectory::newEntry (uint8_t *bf, uint32_t sz, uint8_t attr, uint32_t fsi
 	uint32_t bytesPerSector = fat->getBytesPerSector();
 	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
-
 	return entry;
 }
 

@@ -13,7 +13,7 @@ int fesetenv(const fenv_t *f)
 	}
 	else if( tmp == FE_PC53_ENV )
 	{
-		tmp->__status_word = 0x2f;
+		tmp->__status_uint16_t = 0x2f;
 		asm volatile("fldenv %0" : : "m"(*tmp));
 	}
 	else if( tmp == FE_DFL_ENV )

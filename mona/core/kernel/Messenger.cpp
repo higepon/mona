@@ -26,7 +26,7 @@ MessageInfo* Messenger::allocateMessageInfo() {
     return result;
 }
 
-int Messenger::send(dword id, MessageInfo* message)
+int Messenger::send(uint32_t id, MessageInfo* message)
 {
     Thread* thread;
     MessageInfo* info;

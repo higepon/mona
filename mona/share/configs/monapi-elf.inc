@@ -15,7 +15,7 @@ include $(SHAREDIR)/configs/monapi.inc
 all: $(TARGET).ELF
 
 $(TARGET).ELF: $(OBJECTS) $(LINKDEP)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@

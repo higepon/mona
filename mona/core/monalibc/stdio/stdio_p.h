@@ -49,20 +49,21 @@ struct __sFILEX
 
 enum
 {
-	__STDIN,
-	__STDOUT,
-	__STDERR,
+	__STDIN = 1,
+	__STDOUT = 2,
+	__STDERR = 3,
 };
 
 int _read(int, void*, size_t);
 int _write(int,void*, size_t);
 int _seek(int, fpos_t, int);
 
-FILE *_open_stdin(void);
-FILE *_open_stdout(void);
-FILE *_open_stderr(void);
+void _open_stdin(FILE*);
+void _open_stdout(FILE*);
+void _open_stderr(FILE*);
 
-size_t __nida_read_keyboard(void *, size_t, FILE *);
+uint32_t writeStream(void* s, const void* buf, uint32_t size);
+uint32_t readStream(void* s, void* buf, uint32_t size);
 
 #ifdef __cplusplus
 }

@@ -51,18 +51,18 @@ public:
 
 ///@name ビットマップ操作
 //@{
-	byte* createCanvas(int iWidth,int iHeight);		///<バッファにサイズが収まるだけの容量を確保。
-	byte* createCanvas(const class Size* cpSize);	///<バッファにサイズが収まるだけの容量を確保。
+	uint8_t* createCanvas(int iWidth,int iHeight);		///<バッファにサイズが収まるだけの容量を確保。
+	uint8_t* createCanvas(const class Size* cpSize);	///<バッファにサイズが収まるだけの容量を確保。
 	void copy(const Bitmap* cpBitmap);				///<cpBitmapをコピー
 	void clear();									///<現在の内容を消去する
 //@}
 
 ///@name ピクセル操作
 //@{
-	byte* getPixelBuffer();										///<データバッファの始点の位置を返す。
-	byte* getPixelBuffer(int x,int y);							///<(x,y)のピクセルのデータバッファの位置を返す。
-	const byte* getPixelBufferConst() const;					///<データバッファの始点の位置を返す。const版。
-	const byte* getPixelBufferConst(int x,int y) const;			///<(x,y)のピクセルのデータ位置を返す。const版。
+	uint8_t* getPixelBuffer();										///<データバッファの始点の位置を返す。
+	uint8_t* getPixelBuffer(int x,int y);							///<(x,y)のピクセルのデータバッファの位置を返す。
+	const uint8_t* getPixelBufferConst() const;					///<データバッファの始点の位置を返す。const版。
+	const uint8_t* getPixelBufferConst(int x,int y) const;			///<(x,y)のピクセルのデータ位置を返す。const版。
 	colort getPixel(int x,int y) const;							///<(x,y)のピクセルの色位置を返す
 //	class Color* getPixel(int x,int y,Color* pColorMan) const;	///<(x,y)の位置にある色データを取得
 //	void setPixel(int x,int y,const Color* pColorMan);			///<(x,y)の位置に色データをセット。24ビット用。
@@ -85,7 +85,7 @@ public:
 
 protected:
 	void init();									///<初期化
-	byte* getNewBuffer(int iWidth,int iHeight);		///<引数のサイズのバッファを確保
+	uint8_t* getNewBuffer(int iWidth,int iHeight);		///<引数のサイズのバッファを確保
 	void setLineBits();								///<m_iLineSizeをセット
 	bool isValid()const	{return	(m_oSize.getWidth()!=0);}		///<正しいバッファが存在しているか
 

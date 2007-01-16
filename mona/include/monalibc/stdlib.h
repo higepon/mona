@@ -60,6 +60,8 @@ typedef struct
 #define S_FORMAT_LONGLONG	4
 #define S_FORMAT_UNSIGNED	8
 
+#define ATEXIT_MAX	32
+
 /* これは関係ないニダ */
 #define RAND_MAX 0x7fff
 static unsigned int rand_next __attribute__ ((unused));
@@ -71,6 +73,11 @@ void* realloc(void* address, unsigned long size);
 void free(void* address);
 int exit(int);
 int atexit(void (*function)(void));
+int __nc_atexit(void (*function)(void));
+#ifdef atexit
+#undef atexit
+#endif
+#define atexit __nc_atexit
 
 void abort(void);
 int abs(int);

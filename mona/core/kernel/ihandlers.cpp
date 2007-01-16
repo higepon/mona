@@ -90,7 +90,7 @@ void SendInterrupt(int irq)
 void irqHandler_0()
 {
 
-    static dword i = 0;
+    static uint32_t i = 0;
     bool isProcessChange;
 
     /* EOI */
@@ -139,12 +139,12 @@ void irqHandler_6()
   \author HigePon
   \date   create:2002/09/06 update:2003/01/26
 */
-void fault0dHandler(dword error)
+void fault0dHandler(uint32_t error)
 {
     dokodemoView();
     g_console->printf("%s, error=%x\n fault=%d\n", g_currentThread->process->getName(), error);
 
-     dword realcr3;
+     uint32_t realcr3;
      asm volatile("mov %%cr3, %%eax  \n"
                   "mov %%eax, %0     \n"
                   : "=m"(realcr3): : "eax");
@@ -205,7 +205,7 @@ void cpufaultHandler_6(void)
 {
     dokodemoView();
 
-    dword realcr3;
+    uint32_t realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                   "mov %%eax, %0     \n"
                   : "=m"(realcr3): : "eax");
@@ -252,16 +252,16 @@ void cpufaultHandler_b(void)
     panic("unhandled:fault0B - segment not presents");
 }
 
-void cpufaultHandler_c(dword error)
+void cpufaultHandler_c(uint32_t error)
 {
     dokodemoView();
     panic("unhandled:fault0C - stack fault");
 }
 
-void cpufaultHandler_e(dword address, dword error)
+void cpufaultHandler_e(uint32_t address, uint32_t error)
 {
 #if 0
-    dword realcr3;
+    uint32_t realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                  "mov %%eax, %0     \n"
                  : "=m"(realcr3): : "eax");

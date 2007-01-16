@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_SERVER_
-#define _MONA_USERLIB_SERVER_
+#ifndef _MONAPI_SERVER_
+#define _MONAPI_SERVER_
 
 #include <sys/types.h>
 
@@ -11,7 +11,8 @@ namespace MonAPI {
 class Server {
 
   public:
-    virtual ~Server(){};
+    Server();
+    virtual ~Server();
     virtual void service() = 0;
 
 };

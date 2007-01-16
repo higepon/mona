@@ -3,8 +3,8 @@
 
 #include <sys/types.h>
 
-dword shutdown(dword op, dword device);
-dword shutdown_by_apm(dword op, dword device);
-dword shutdown_by_reboot();
+uint32_t shutdown(uint32_t op, uint32_t device);
+uint32_t shutdown_by_apm(uint32_t op, uint32_t device);
+uint32_t shutdown_by_reboot();
 
 #endif

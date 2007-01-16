@@ -9,9 +9,7 @@ enum
     MSG_PROCESS_CREATED,
     MSG_PROCESS_TERMINATED,
     MSG_PROCESS_GET_COMMON_PARAMS,
-    MSG_PROCESS_GRAB_STDOUT = 0x10f0,  // temporary
-    MSG_PROCESS_UNGRAB_STDOUT,         // temporary
-    MSG_PROCESS_STDOUT_DATA,           // temporary
+    MSG_PROCESS_GET_PROCESS_STDIO,
 };
 
 #endif

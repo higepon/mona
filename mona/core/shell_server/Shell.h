@@ -1,3 +1,4 @@
+
 #ifndef _MONA_SHELL_
 #define _MONA_SHELL_
 
@@ -8,9 +9,6 @@
 
 #define SVR "Shell Server"
 #define FONT_WIDTH   8
-#define FONT_HEIGHT 16
-#define FOREGROUND 0x000000
-#define BACKGROUND 0xffffff
 #define APPSDIR  "/APPS"
 
 /*----------------------------------------------------------------------
@@ -19,21 +17,20 @@
 class Shell {
 
   public:
-    Shell(bool callAutoExec);
+    Shell(uint32_t outHandle);
     virtual ~Shell();
 
   public:
     void run();
     void onKeyDown(int keycode, int modifiers);
-    void printPrompt(const MonAPI::CString& prefix = NULL);
-    void drawCaret(bool erase = false);
-    inline bool getHasExited() { return this->hasExited; }
 
   protected:
     void backspace();
     void commandChar(char c);
+    bool isPipeCommand();
+    void commandExecutePipe();
     void commandExecute(bool prompt);
-    bool commandExecute(_A<MonAPI::CString> args);
+    bool commandExecute(_A<MonAPI::CString> args, uint32_t stdout_id, uint32_t stdin_id);
     void commandTerminate();
     int isInternalCommand(const MonAPI::CString& command);
     bool internalCommandExecute(int command, _A<MonAPI::CString> args);
@@ -43,25 +40,35 @@ class Shell {
     MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2);
     void printFiles(const MonAPI::CString& dir);
     void executeMSH(const MonAPI::CString& msh);
-    void checkCaretPosition();
-    bool pathHasDriveLetter(const MonAPI::CString& path);
-    void setCurrentDirectory();
     bool changeDirecotory(const MonAPI::CString& path);
 
-  protected:
-    char commandLine[1024];
-    int position;
-    HList<MonAPI::CString> apps;
-    bool hasExited, callAutoExec, doExec;
-    dword waiting;
-    dword self;
-    MonAPI::Screen screen;
-    int prevX, prevY;
-    HList<MonAPI::CString> history;
+    int writeToOutBuffer();
+    int prompt(bool newline = true);
+    int formatWrite(const char* format, ...);
+    enum
+    {
+        CURSOR_UP    = 'A',
+        CURSOR_DOWN  = 'B',
+        CURSOR_RIGHT = 'C',
+        CURSOR_LEFT  = 'D',
+        OUT_BUFFER_SIZE = 512,
+    };
 
-    MonAPI::CString startDirectory;
-    MonAPI::CString currentDirectory;
-    bool firstTimeOfCD0;
+    char outbuffer_[OUT_BUFFER_SIZE];
+
+  protected:
+    char commandLine_[1024];
+    int position_;
+    HList<MonAPI::CString> apps_;
+    bool doExec_;
+    uint32_t waiting_;
+    MonAPI::Screen screen_;
+    HList<MonAPI::CString> history_;
+    MonAPI::CString startDirectory_;
+    MonAPI::CString currentDirectory_;
+    MonAPI::Stream* inStream_;
+    MonAPI::Stream* outStream_;
+    MonAPI::TerminalUtil* terminal_;
 };
 
 #endif

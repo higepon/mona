@@ -52,7 +52,6 @@ private:
 	uint32_t rootDirectoryEntry;
 	uint32_t dataArea;
 	uint32_t numberOfClusters;
-
 	IStorageDevice *floppy;
 	uint8_t *flag;
 	uint8_t *fat;
@@ -207,7 +206,7 @@ private:
 	void expandFileName (uint8_t *name, uint8_t *bf);
 	bool clearDirectory (int entry);
 	int newEntry (uint8_t *bf, uint32_t sz, uint8_t attr, uint32_t fsize);
-	void setEntry (uint8_t *ent, uint8_t *n, uint8_t a,uint16_t , uint32_t s);
+	void setEntry (uint8_t *ent, uint8_t *n, uint8_t a, uint16_t c, uint32_t s);
 	int searchFreeEntry ();
 	bool expandEntry ();
 };

@@ -19,25 +19,25 @@
 #include "IDTUtil.h"
 
 /*!
-    \brief check size of byte,word,dword
+    \brief check size of uint8_t,uint16_t,uint32_t
 
-    check size of byte,word,dword
+    check size of uint8_t,uint16_t,uint32_t
 
     \author HigePon
     \date   create:2002/12/02 update:2003/06/08
 */
 void checkTypeSize() {
 
-    bool isByte     = sizeof(byte)     == 1;
-    bool isWord     = sizeof(word)     == 2;
-    bool isDword    = sizeof(dword)    == 4;
+    bool isByte     = sizeof(uint8_t)     == 1;
+    bool isWord     = sizeof(uint16_t)     == 2;
+    bool isDuint16_t    = sizeof(uint32_t)    == 4;
     bool isTSS      = sizeof(TSS)      == 104;
     bool isGDTR     = sizeof(GDTR)     == 6;
     bool isSegDesc  = sizeof(SegDesc)  == 8;
     bool isGateDesc = sizeof(GateDesc) == 8;
 
     /* check size of some types */
-    if (isByte && isWord && isDword && isTSS && isGDTR && isSegDesc && isGateDesc) {
+    if (isByte && isWord && isDuint16_t && isTSS && isGDTR && isSegDesc && isGateDesc) {
         return;
     } else {
         panic("checkTypeSize()");

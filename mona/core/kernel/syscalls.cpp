@@ -20,22 +20,22 @@
 #include "shutdown.h"
 
 extern const char* version;
-extern dword version_number;
+extern uint32_t version_number;
 
-dword systemcall_mutex_create()
+uint32_t systemcall_mutex_create()
 {
     KMutex* mutex = new KMutex();
     return g_id->allocateID(mutex);
 }
 
-dword systemcall_mutex_lock(dword id)
+uint32_t systemcall_mutex_lock(uint32_t id)
 {
-    dword result;
+    uint32_t result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_LOCK, result, id);
     return result;
 }
 
-dword systemcall_mutex_unlock(dword id)
+uint32_t systemcall_mutex_unlock(uint32_t id)
 {
    int result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
@@ -45,7 +45,7 @@ dword systemcall_mutex_unlock(dword id)
 // don't call without systemcall
 // this has context change
 // use systemcall_mutex_lock()
-static dword systemcall_mutex_lock2(dword id)
+static uint32_t systemcall_mutex_lock2(uint32_t id)
 {
     KObject* object = g_id->get(id, g_currentThread->thread);
     if (object == NULL)
@@ -54,7 +54,7 @@ static dword systemcall_mutex_lock2(dword id)
     }
     else if (object->getType() != KObject::KMUTEX)
     {
-        return (dword)-10;
+        return (uint32_t)-10;
     }
     return ((KMutex*)object)->lock(g_currentThread->thread);
 }
@@ -62,7 +62,7 @@ static dword systemcall_mutex_lock2(dword id)
 // don't call without systemcall
 // this has context change
 // use systemcall_mutex_unlock()
-static dword systemcall_mutex_unlock2(dword id)
+static uint32_t systemcall_mutex_unlock2(uint32_t id)
 {
     KObject* object = g_id->get(id, g_currentThread->thread);
 
@@ -72,7 +72,7 @@ static dword systemcall_mutex_unlock2(dword id)
     }
     else if (object->getType() != KObject::KMUTEX)
     {
-        return (dword)-10;
+        return (uint32_t)-10;
     }
 
     return ((KMutex*)object)->unlock();
@@ -121,14 +121,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_KILL_THREAD:
     {
-        dword tid = SYSTEM_CALL_ARG_1;
+        uint32_t tid = SYSTEM_CALL_ARG_1;
         info->eax = ThreadOperation::kill(tid);
         break;
     }
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = g_messenger->send((dword)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2));
+        info->eax = g_messenger->send((uint32_t)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2));
         g_scheduler->SwitchToNext();
 
         /* not reached */
@@ -147,16 +147,17 @@ void syscall_entrance()
         break;
     }
 
+
     case SYSTEM_CALL_MTHREAD_CREATE:
     {
-        dword arg = SYSTEM_CALL_ARG_2;
+        uint32_t arg = SYSTEM_CALL_ARG_2;
         Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
         thread->tinfo->archinfo->ecx = arg;
+        g_scheduler->Join(thread);
         info->eax = g_id->allocateID(thread);
         break;
     }
-
-    case SYSTEM_CALL_MTHREAD_JOIN:
+    case SYSTEM_CALL_MTHREAD_KILL:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
 
@@ -166,11 +167,12 @@ void syscall_entrance()
         }
         else if (object->getType() != KObject::THREAD)
         {
-            info->eax = (dword)-10;
+            info->eax = (uint32_t)-10;
         }
         else
         {
-            g_scheduler->Join((Thread*)object);
+            Thread* t = (Thread*)object;
+            info->eax = ThreadOperation::kill(t->id);
         }
 
         break;
@@ -184,7 +186,7 @@ void syscall_entrance()
             }
             else if (object->getType() != KObject::KMUTEX)
             {
-                info->eax = (dword)-10;
+                info->eax = (uint32_t)-10;
             }
             else
             {
@@ -212,10 +214,11 @@ void syscall_entrance()
         }
         else if (object->getType() != KObject::KMUTEX)
         {
-            info->eax = (dword)-10;
+            info->eax = (uint32_t)-10;
         }
         else
         {
+
             info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
         }
         break;
@@ -237,7 +240,7 @@ void syscall_entrance()
         }
         else if (object->getType() != KObject::KMUTEX)
         {
-            info->eax = (dword)-10;
+            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -255,10 +258,10 @@ void syscall_entrance()
 
     case SYSTEM_CALL_GET_VRAM_INFO:
         screenInfo = (ScreenInfo*)(SYSTEM_CALL_ARG_1);
-        screenInfo->vram = (dword)(g_vesaDetail->physBasePtr);
-        screenInfo->bpp  = (dword)(g_vesaDetail->bitsPerPixel);
-        screenInfo->x    = (dword)(g_vesaDetail->xResolution);
-        screenInfo->y    = (dword)(g_vesaDetail->yResolution);
+        screenInfo->vram = (uint32_t)(g_vesaDetail->physBasePtr);
+        screenInfo->bpp  = (uint32_t)(g_vesaDetail->bitsPerPixel);
+        screenInfo->x    = (uint32_t)(g_vesaDetail->xResolution);
+        screenInfo->y    = (uint32_t)(g_vesaDetail->yResolution);
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS:
@@ -397,10 +400,10 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:
     {
-        static dword sharedId = 0x9000;
+        static uint32_t sharedId = 0x9000;
         sharedId++;
 
-        dword size = SYSTEM_CALL_ARG_1;
+        uint32_t size = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isOpen = SharedMemoryObject::open(sharedId, size);
@@ -418,7 +421,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_GET_SIZE:
     {
-        dword id = SYSTEM_CALL_ARG_1;
+        uint32_t id = SYSTEM_CALL_ARG_1;
 
         SharedMemoryObject* object = SharedMemoryObject::find(id);
 
@@ -434,8 +437,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
     {
-        dword id      = SYSTEM_CALL_ARG_1;
-        dword address = SYSTEM_CALL_ARG_2;
+        uint32_t id      = SYSTEM_CALL_ARG_1;
+        uint32_t address = SYSTEM_CALL_ARG_2;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
@@ -452,7 +455,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
     {
-        dword id = SYSTEM_CALL_ARG_1;
+        uint32_t id = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
@@ -593,8 +596,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_FREE_PAGES:
     {
-        dword address = SYSTEM_CALL_ARG_1;
-        dword size    = SYSTEM_CALL_ARG_2;
+        uint32_t address = SYSTEM_CALL_ARG_1;
+        uint32_t size    = SYSTEM_CALL_ARG_2;
 
         g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
         break;
@@ -617,8 +620,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
     {
-        dword size = SYSTEM_CALL_ARG_1;
-        info->eax = (dword)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true);
+        uint32_t size = SYSTEM_CALL_ARG_1;
+        info->eax = (uint32_t)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true);
         break;
     }
     case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
@@ -638,7 +641,7 @@ void syscall_entrance()
     break;
 
     case SYSTEM_CALL_APM_BIOS:
-        info->eax = (dword)apm_bios((word)SYSTEM_CALL_ARG_1, (apm_bios_regs*)SYSTEM_CALL_ARG_2);
+        info->eax = (uint32_t)apm_bios((uint16_t)SYSTEM_CALL_ARG_1, (apm_bios_regs*)SYSTEM_CALL_ARG_2);
     break;
 
     case SYSTEM_CALL_SHUTDOWN:

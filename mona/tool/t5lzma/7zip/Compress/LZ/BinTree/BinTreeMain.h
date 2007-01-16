@@ -188,12 +188,12 @@ UInt32 CInTree::GetLongestMatch(UInt32 *distances)
   /*
   if ((_cyclicBufferPos & kBundleMask) == 0)
   {
-    Byte *bytes = _son[_cyclicBufferPos >> kNumBundleBits].Bytes;
+    Byte *uint8_ts = _son[_cyclicBufferPos >> kNumBundleBits].Bytes;
     UInt32 bundleLimit = kNumBundleBytes;
     if (bundleLimit > lenLimit)
       bundleLimit = lenLimit;
     for (UInt32 i = 0; i < bundleLimit; i++)
-      bytes[i] = cur[i];
+      uint8_ts[i] = cur[i];
   }
   */
   

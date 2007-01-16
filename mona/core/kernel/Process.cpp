@@ -33,19 +33,19 @@
 class MemoryManager2
 n{
 public:
-    static dword GetSystemPageSize();
-    static bool AllocateMemory(Process* process, dword size);
+    static uint32_t GetSystemPageSize();
+    static bool AllocateMemory(Process* process, uint32_t size);
 
 };
-dword MemoryManager2::GetSystemPageSize()
+uint32_t MemoryManager2::GetSystemPageSize()
 {
     return 4096;
 }
 
-bool MemoryManager2::AllocateMemory(Process* process, dword size)
+bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
 {
     void* address = NULL;
-    static dword id = 0x5000;
+    static uint32_t id = 0x5000;
 
     address = process->AllocateLinearAddress(size);
     if (address == NULL) {
@@ -54,7 +54,7 @@ bool MemoryManager2::AllocateMemory(Process* process, dword size)
     id++;
     bool isOpen = SharedMemoryObject::open(id, size);
     if (!isOpen) return false;
-    bool isAttaced = SharedMemoryObject::attach(id, process, (dword)address);
+    bool isAttaced = SharedMemoryObject::attach(id, process, (uint32_t)address);
     if (!isAttaced) return false;
     return true;
 }
@@ -123,8 +123,8 @@ Process* ProcessOperation::create(int type, const char* name)
 /*----------------------------------------------------------------------
     ThreadOperation
 ----------------------------------------------------------------------*/
-dword ThreadOperation::id = FIRST_THREAD_ID;
-Thread* ThreadOperation::create(Process* process, dword programCounter)
+uint32_t ThreadOperation::id = FIRST_THREAD_ID;
+Thread* ThreadOperation::create(Process* process, uint32_t programCounter)
 {
     Thread* thread = new Thread();
 
@@ -150,7 +150,7 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     return thread;
 };
 
-void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
+void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCounter
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
     /* stack size from 4KB to 4MB */
@@ -192,7 +192,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
     thread->stackSegment = new StackSegment(stack, 4 * 1024 * 1024);
 }
 
-void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
+void ThreadOperation::archCreateThread(Thread* thread, uint32_t programCounter
                                        , PageEntry* pageDirectory, LinearAddress stack)
 {
     ThreadInfo* info      = thread->tinfo;
@@ -329,7 +329,7 @@ int ThreadOperation::kill()
     return NORMAL;
 }
 
-int ThreadOperation::kill(dword tid)
+int ThreadOperation::kill(uint32_t tid)
 {
     Thread* thread   = g_scheduler->Find(tid);
     if (thread == NULL) return -1;
@@ -365,8 +365,8 @@ int ThreadOperation::kill(dword tid)
 
 void ThreadOperation::sendKilledMessage()
 {
-    dword threadNum;
-    dword* list;
+    uint32_t threadNum;
+    uint32_t* list;
     MessageInfo msg;
 
     list = g_scheduler->GetAllThreadID(&threadNum);
@@ -377,10 +377,10 @@ void ThreadOperation::sendKilledMessage()
 
     if (list == NULL) return;
 
-    for (dword i = 0; i < threadNum; i++)
+    for (uint32_t i = 0; i < threadNum; i++)
     {
 
-        dword id = list[i];
+        uint32_t id = list[i];
         if (id == msg.arg1) continue;
 
         g_messenger->send(id, &msg);
@@ -419,7 +419,7 @@ Thread::~Thread()
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-dword Process::pid = 0;
+uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) : threadNum(0)
 {
     /* name */
@@ -481,7 +481,7 @@ Process::~Process()
     if (this->lallocator != NULL) delete this->lallocator;
 }
 
-dword Process::getStackBottom(Thread* thread)
+uint32_t Process::getStackBottom(Thread* thread)
 {
     for (int i = 0; i < threadList_->size(); i++)
     {
@@ -539,7 +539,7 @@ void monaIdle()
     for (;;)
     {
 #if 0
-        static dword count = 0;
+        static uint32_t count = 0;
         if (count % 0xFFFFFFF)  g_console->printf(".");
         if (count % 20000000) g_scheduler->dump();
         count++;

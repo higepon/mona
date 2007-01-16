@@ -1,11 +1,13 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
 #include <monapi/Message.h>
+#include <monapi/Stream.h>
+#include <monapi/System.h>
 #include <monapi/string.h>
 
 using namespace MonAPI;
 
-static dword server_ids[] =
+static uint32_t server_ids[] =
 {
     THREAD_UNKNOWN,  // ID_MOUSE_SERVER
     THREAD_UNKNOWN,  // ID_KEYBOARD_SERVER
@@ -22,7 +24,7 @@ static const char* server_names[] =
     "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
 };
 
-dword monapi_get_server_thread_id(int id)
+uint32_t monapi_get_server_thread_id(int id)
 {
     if (id < 0 || ID_NUMBER_OF_SERVERS <= id) return THREAD_UNKNOWN;
 
@@ -37,9 +39,9 @@ dword monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle)
+MONAPI_BOOL monapi_call_dispose_handle(int id, uint32_t handle)
 {
-    dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
     if (Message::send(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != 0)
     {
         return MONAPI_FALSE;
@@ -49,7 +51,7 @@ MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle)
 
 MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 {
-    dword tid = monapi_get_server_thread_id(id), header = MSG_NONE;
+    uint32_t tid = monapi_get_server_thread_id(id), header = MSG_NONE;
     switch (id)
     {
         case ID_KEYBOARD_SERVER:
@@ -74,8 +76,8 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 
 MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 {
-    dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
-    dword header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
+    uint32_t tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
+    uint32_t header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, header) != 0)
     {
@@ -88,7 +90,7 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size) != 0)
     {
@@ -107,7 +109,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
 monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != 0)
@@ -127,7 +129,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
 monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, mi->Handle, mi->Size) != 0)
     {
@@ -146,7 +148,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
 monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5_FILE, prompt, 0, 0, file) != 0)
@@ -167,7 +169,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
 monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
     {
@@ -186,15 +188,15 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
 
 int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
-    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL);
+    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);
 }
 
-int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id /* = NULL */)
+int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
-    dword svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+    uint32_t svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
 
     MessageInfo msg;
-    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, stdout_id, 0, command_line) != 0)
+    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;
@@ -205,7 +207,7 @@ int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BO
 }
 
 // size should be 4096 * x
-byte* monapi_allocate_dma_memory(int size)
+uint8_t* monapi_allocate_dma_memory(int size)
 {
     return syscall_allocate_dma_memory(size);
 }
@@ -219,7 +221,7 @@ void monapi_deallocate_dma_memory(void* address, int size)
 monapi_cmemoryinfo* monapi_file_read_all(const char* file)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != 0)
     {
@@ -235,9 +237,9 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     return ret;
 }
 
-dword monapi_file_open(const char* file, MONAPI_BOOL create)
+uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
 {
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, create, 0, 0, file) != 0)
@@ -247,10 +249,10 @@ dword monapi_file_open(const char* file, MONAPI_BOOL create)
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_file_read(dword fileID, dword size)
+monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != 0)
     {
@@ -266,9 +268,9 @@ monapi_cmemoryinfo* monapi_file_read(dword fileID, dword size)
     return ret;
 }
 
-dword monapi_file_seek(dword fileID, dword offset, dword origin)
+uint32_t monapi_file_seek(uint32_t fileID, uint32_t offset, uint32_t origin)
 {
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_SEEK, fileID, offset, origin) != 0)
     {
@@ -277,9 +279,9 @@ dword monapi_file_seek(dword fileID, dword offset, dword origin)
     return msg.arg2;
 }
 
-dword monapi_file_close(dword fileID)
+uint32_t monapi_file_close(uint32_t fileID)
 {
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID) != 0)
     {
@@ -291,7 +293,7 @@ dword monapi_file_close(dword fileID)
 monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
 {
     monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, 0, 0, 0, path) != 0)
     {
@@ -307,9 +309,9 @@ monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
     return ret;
 }
 
-dword monapi_file_get_file_size(dword id)
+uint32_t monapi_file_get_file_size(uint32_t id)
 {
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id) != 0)
@@ -321,7 +323,7 @@ dword monapi_file_get_file_size(dword id)
 
 int monapi_file_stop_server()
 {
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_STOP_SERVER) != 0)
     {
@@ -330,13 +332,66 @@ int monapi_file_stop_server()
     return msg.arg2;
 }
 
-dword monapi_file_write(dword fileID, monapi_cmemoryinfo* mem, dword size)
+uint32_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size)
 {
     MessageInfo msg;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     if (Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem->Handle) != 0)
     {
         return MONA_FAILURE;
     }
     return msg.arg2;
+}
+
+extern Stream* inStream;
+extern Stream* outStream;
+
+uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
+{
+    System::getStdinStream();
+    inStream->waitForRead();
+    return inStream->read(buffer, size);
+}
+
+uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
+{
+    System::getStdoutStream();
+    return outStream->write(buffer, size);
+}
+
+uint32_t monapi_stdin_lock_for_read()
+{
+    System::getStdinStream();
+    return inStream->lockForRead();
+}
+
+uint32_t monapi_stdin_try_lock_for_read()
+{
+    System::getStdinStream();
+    return inStream->tryLockForRead();
+}
+
+uint32_t monapi_stdin_unlock_for_read()
+{
+    System::getStdinStream();
+    return inStream->unlockForRead();
+}
+
+MONAPI_BOOL monapi_notify_server_start(const char* name)
+{
+    uint32_t targetID = Message::lookupMainThread(name);
+
+    if (targetID == THREAD_UNKNOWN)
+    {
+        printf("%s:INIT not found\n", name);
+        return MONAPI_FALSE;
+    }
+
+    /* send */
+    if(Message::send(targetID, MSG_SERVER_START_OK))
+    {
+        printf("%s:INIT error\n", name);
+        return MONAPI_FALSE;
+    }
+    return MONAPI_TRUE;
 }

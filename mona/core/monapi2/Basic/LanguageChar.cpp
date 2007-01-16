@@ -43,7 +43,7 @@ bool CharFn::isLower(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsLowerTable[(byte)c];
+	return abIsLowerTable[(uint8_t)c];
 }
 
 /**
@@ -71,7 +71,7 @@ bool CharFn::isUpper(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsUpperTable[(byte)c];
+	return abIsUpperTable[(uint8_t)c];
 }
 
 /**
@@ -99,7 +99,7 @@ bool CharFn::isAlpha(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsAlphaTable[(byte)c];
+	return abIsAlphaTable[(uint8_t)c];
 }
 
 /**
@@ -127,7 +127,7 @@ bool CharFn::isDigit(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsDigitTable[(byte)c];
+	return abIsDigitTable[(uint8_t)c];
 }
 
 /**
@@ -155,7 +155,7 @@ bool CharFn::isHex(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsHexTable[(byte)c];
+	return abIsHexTable[(uint8_t)c];
 }
 
 /**
@@ -183,7 +183,7 @@ bool CharFn::isAlphaDigit(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsAlphaDigitTable[(byte)c];
+	return abIsAlphaDigitTable[(uint8_t)c];
 }
 
 /**
@@ -211,7 +211,7 @@ bool CharFn::isCSymbol(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsCSymbolTable[(byte)c];
+	return abIsCSymbolTable[(uint8_t)c];
 }
 
 /**
@@ -239,14 +239,14 @@ bool CharFn::isSpace(char1 c)
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xE0
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0xF0
 	};
-	return abIsSpaceTable[(byte)c];
+	return abIsSpaceTable[(uint8_t)c];
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool CharFn::isASCII(char c)	{return ((byte)c < 0x80);}
+bool CharFn::isASCII(char c)	{return ((uint8_t)c < 0x80);}
 
 /*
 テンプレ
@@ -274,9 +274,9 @@ bool CharFn::isASCII(char c)	{return ((byte)c < 0x80);}
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-byte CharFn::toLower(char1 c)
+uint8_t CharFn::toLower(char1 c)
 {
-	static byte abyToLowerTable[256]=
+	static uint8_t abyToLowerTable[256]=
 	{
 		0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,
 		0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,
@@ -295,16 +295,16 @@ byte CharFn::toLower(char1 c)
 		0xE0,0xE1,0xE2,0xE3,0xE4,0xE5,0xE6,0xE7,0xE8,0xE9,0xEA,0xEB,0xEC,0xED,0xEE,0xEF,
 		0xF0,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA,0xFB,0xFC,0xFD,0xFE,0xFF,
 	};
-	return abyToLowerTable[(byte)c];
+	return abyToLowerTable[(uint8_t)c];
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-byte CharFn::toUpper(char1 c)
+uint8_t CharFn::toUpper(char1 c)
 {
-	static byte abyToUpperTable[256]=
+	static uint8_t abyToUpperTable[256]=
 	{
 		0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,
 		0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,
@@ -323,7 +323,7 @@ byte CharFn::toUpper(char1 c)
 		0xE0,0xE1,0xE2,0xE3,0xE4,0xE5,0xE6,0xE7,0xE8,0xE9,0xEA,0xEB,0xEC,0xED,0xEE,0xEF,
 		0xF0,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA,0xFB,0xFC,0xFD,0xFE,0xFF,
 	};
-	return abyToUpperTable[(byte)c];
+	return abyToUpperTable[(uint8_t)c];
 }
 
 }	//namespace monapi2

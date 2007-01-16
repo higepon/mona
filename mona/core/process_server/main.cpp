@@ -8,7 +8,7 @@
 
 using namespace MonAPI;
 
-static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, dword stdout_id, dword* tid)
+static int ExecuteProcess(uint32_t parent, monapi_cmemoryinfo* mi, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
 {
     LoadProcessInfo info;
     info.image = mi->Data;
@@ -20,7 +20,7 @@ static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint
 
     addProcessInfo(name);
     int ret = syscall_load_process_image(&info);
-    *tid = addProcessInfo(parent, name, path);
+    *tid = addProcessInfo(parent, name, path, stdin_id, stdout_id);
 
     if (prompt)
     {
@@ -47,7 +47,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword stdout_id, dword* tid)
+static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
 {
     /* list initilize */
     CommandOption list;
@@ -75,7 +75,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     END_FOREACH
 
     monapi_cmemoryinfo* mi = NULL;
-    dword entryPoint = 0xa0000000;
+    uint32_t entryPoint = 0xa0000000;
     int result = 1, svr_id = -1;
 
     if (path.endsWith(".ELF") || path.endsWith(".EL2") || path.endsWith(".EL5"))
@@ -89,7 +89,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     if (svr_id != -1)
     {
         MessageInfo msg;
-        dword tid = monapi_get_server_thread_id(svr_id);
+        uint32_t tid = monapi_get_server_thread_id(svr_id);
 
         if (tid != THREAD_UNKNOWN)
         {
@@ -129,95 +129,18 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     }
     else
     {
-        result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, stdout_id, tid);
+        result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid);
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
     }
     CommandOption* next;
     for (option = list.next; option; option = next)
     {
-	next = option->next;
-	delete option;
+    next = option->next;
+    delete option;
     }
     return result;
 }
-
-#if 1  // temporary
-HList<dword> grabs;
-
-static void StdoutGrab(dword tid)
-{
-    int size = grabs.size();
-    bool ok = true;
-    for (int i = 0; i < size; i++)
-    {
-        if (grabs[i] == tid)
-        {
-            ok = false;
-            break;
-        }
-    }
-    if (ok) grabs.add(tid);
-}
-
-static void StdoutUngrab(dword tid)
-{
-    int size = grabs.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (grabs[i] == tid)
-        {
-            grabs.removeAt(i);
-            return;
-        }
-    }
-}
-
-static void StdoutMessageLoop()
-{
-    for (MessageInfo msg;;)
-    {
-        if (Message::receive(&msg) != 0) continue;
-
-        switch (msg.header)
-        {
-            case MSG_PROCESS_STDOUT_DATA:
-            {
-#if 0  /// DEBUG for message
-                char buf[128];
-                sprintf(buf, "?%d?", msg.from);
-                syscall_print(buf);
-#endif
-                int size;
-                bool ok = false;
-                while ((size = grabs.size()) > 0)
-                {
-                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) == 0)
-                    {
-                        ok = true;
-                        break;
-                    }
-                    StdoutUngrab(grabs[size - 1]);
-                }
-                if (!ok) syscall_print(msg.str);
-#if 0  /// DEBUG for message
-                syscall_print("?E?");
-#endif
-                Message::reply(&msg);
-                break;
-            }
-            case MSG_PROCESS_GRAB_STDOUT:
-                StdoutGrab(msg.arg1);
-                Message::reply(&msg);
-                break;
-            case MSG_PROCESS_UNGRAB_STDOUT:
-                StdoutUngrab(msg.arg1);
-                Message::reply(&msg);
-                break;
-        }
-    }
-}
-#endif
 
 static void MessageLoop()
 {
@@ -225,21 +148,12 @@ static void MessageLoop()
     {
         if (Message::receive(&msg) != 0) continue;
 
-#if 0  /// DEBUG for message
-        if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
-        {
-            char buf[128];
-            sprintf(buf, "**** INVALID MESSAGE!! ****[%d: %d, %d]\n", syscall_get_tid(), msg.header, msg.arg1);
-            syscall_print(buf);
-            for (;;);
-        }
-#endif
         switch (msg.header)
         {
             case MSG_PROCESS_EXECUTE_FILE:
             {
-                dword tid = 0;
-                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
+                uint32_t tid;
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid);
                 Message::reply(&msg, result, tid);
                 break;
             }
@@ -250,18 +164,13 @@ static void MessageLoop()
     }
 }
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     initCommonParameters();
-#if 1  // temporary
-    dword id = syscall_mthread_create((dword)StdoutMessageLoop);
-    syscall_mthread_join(id);
-#endif
 
-    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
+    if (MONAPI_FALSE == monapi_notify_server_start("INIT"))
     {
-        printf("%s: INIT error\n", SVR);
-        exit(1);
+        exit(-1);
     }
 
     MessageLoop();

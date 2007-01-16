@@ -84,9 +84,9 @@ bool Scheduler::Schedule2()
 
 void Scheduler::SetPriority(Thread* thread, unsigned char rate)
 {
-    thread->lastCpuUsedTick = (dword)(thread->lastCpuUsedTick / rate);
+    thread->lastCpuUsedTick = (uint32_t)(thread->lastCpuUsedTick / rate);
 
-    dword priority = thread->basePriority + thread->lastCpuUsedTick;
+    uint32_t priority = thread->basePriority + thread->lastCpuUsedTick;
 
     if (priority >= maxPriority)
     {
@@ -99,7 +99,7 @@ void Scheduler::SetPriority(Thread* thread, unsigned char rate)
 
 void Scheduler::SetPriority(Thread* thread)
 {
-    dword priority = thread->basePriority + thread->lastCpuUsedTick;
+    uint32_t priority = thread->basePriority + thread->lastCpuUsedTick;
 
     if (priority >= maxPriority)
     {
@@ -219,9 +219,9 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-dword Scheduler::SetTimer(Thread* thread, dword tick)
+uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
-    dword id;
+    uint32_t id;
 
     KTimer* timer = new KTimer(thread, tick);
     id = g_id->allocateID(timer);
@@ -232,7 +232,7 @@ dword Scheduler::SetTimer(Thread* thread, dword tick)
     return id;
 }
 
-dword Scheduler::KillTimer(dword id, Thread* thread)
+uint32_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 {
     KObject* object = g_id->get(id, thread);
 
@@ -248,12 +248,12 @@ dword Scheduler::KillTimer(dword id, Thread* thread)
     return 0;
 }
 
-void Scheduler::Sleep(Thread* thread, dword tick)
+void Scheduler::Sleep(Thread* thread, uint32_t tick)
 {
     ASSERT(thread);
     ASSERT(tick > 0);
 
-    dword now = this->totalTick;
+    uint32_t now = this->totalTick;
     thread->wakeupSleep = now + tick;
 
     WaitEvent(thread, MEvent::SLEEP);
@@ -284,7 +284,7 @@ int Scheduler::EventComes(Thread* thread, int waitEvent)
     return 1;
 }
 
-Process* Scheduler::FindProcess(dword pid)
+Process* Scheduler::FindProcess(uint32_t pid)
 {
     FOREACH(Thread*, queue, runq)
     {
@@ -318,14 +318,14 @@ Process* Scheduler::FindProcess(dword pid)
 }
 
 
-dword Scheduler::LookupMainThread(Process* process)
+uint32_t Scheduler::LookupMainThread(Process* process)
 {
     List<Thread*>* list = process->getThreadList();
-    dword found = 0xFFFFFFFF;
+    uint32_t found = 0xFFFFFFFF;
 
     for (int i = 0; i < list->size(); i++)
     {
-        dword id = list->get(i)->id;
+        uint32_t id = list->get(i)->id;
 
         if (id < found)
         {
@@ -335,7 +335,7 @@ dword Scheduler::LookupMainThread(Process* process)
     return found;
 }
 
-dword Scheduler::LookupMainThread(const char* name)
+uint32_t Scheduler::LookupMainThread(const char* name)
 {
     Process* process = FindProcess(name);
 
@@ -347,7 +347,7 @@ dword Scheduler::LookupMainThread(const char* name)
     return LookupMainThread(process);
 }
 
-Thread* Scheduler::Find(dword id)
+Thread* Scheduler::Find(uint32_t id)
 {
     FOREACH(Thread*, queue, runq)
     {
@@ -370,7 +370,7 @@ Thread* Scheduler::Find(dword id)
     return (Thread*)NULL;
 }
 
-dword Scheduler::Lookup(const char* name)
+uint32_t Scheduler::Lookup(const char* name)
 {
     Process* process = FindProcess(name);
 
@@ -452,11 +452,11 @@ PsInfo* Scheduler::ReadDump()
     return info;
 }
 
-dword* Scheduler::GetAllThreadID(dword* threadNum)
+uint32_t* Scheduler::GetAllThreadID(uint32_t* threadNum)
 {
-    dword* result;
-    dword i     = 0;
-    dword count = 0;
+    uint32_t* result;
+    uint32_t i     = 0;
+    uint32_t count = 0;
 
     FOREACH(Thread*, queue, runq)
     {
@@ -476,7 +476,7 @@ dword* Scheduler::GetAllThreadID(dword* threadNum)
     }
     END_FOREACH
 
-    result = new dword[count];
+    result = new uint32_t[count];
     if (result == NULL) return NULL;
 
     FOREACH(Thread*, queue, runq)

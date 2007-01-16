@@ -7,7 +7,7 @@
 
 using namespace MonAPI;
 
-static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
+static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
 {
     ELFParser parser;
     if (!parser.set(mi->Data, mi->Size))
@@ -43,13 +43,13 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmem
         monapi_cmemoryinfo_delete(dst);
         return 3;
     }
-    
+
     *dest = dst;
     *entryPoint = parser.getEntryPoint();
     return 0;
 }
 
-static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CString& path, bool prompt)
+static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, const CString& path, bool prompt)
 {
     monapi_cmemoryinfo* mi = NULL;
     if (path.endsWith(".EL2"))
@@ -91,7 +91,7 @@ static void MessageLoop()
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 monapi_cmemoryinfo* mi = NULL;
-                dword entryPoint = 0;
+                uint32_t entryPoint = 0;
                 int result = CreateImage(&mi, &entryPoint, msg.str, msg.arg1 == MONAPI_TRUE);
                 if (result == 0)
                 {
@@ -112,12 +112,11 @@ static void MessageLoop()
     }
 }
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-    if (Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK) != 0)
+    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
-        printf("%s: MONITOR error\n", SVR);
-        exit(1);
+        exit(-1);
     }
 
     MessageLoop();

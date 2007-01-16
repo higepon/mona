@@ -413,7 +413,7 @@ bool read(const char* path, uint8_t* buf, int size)
         return false;
     }
 
-    fprintf(stderr, "size = %d uint8_t*s", df->size());
+    fprintf(stderr, "size = %d bytes", df->size());
 
     if (!df->read(buf, size))
      {
@@ -486,7 +486,7 @@ bool writeMBR(const char *src)
     \author Higepon
     \date   create:2003/03/08 update:2004/04/27
 */
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     if (argc != 4) {
         printf("usage: fat_write image source/--mkdir/--mbr path\n");

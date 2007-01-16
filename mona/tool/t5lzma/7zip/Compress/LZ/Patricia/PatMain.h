@@ -365,18 +365,18 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
       node->Descendants[i].NodePointer = kDescendantEmptyValue;
     node->LastMatch = pos;
       
-    Byte byteNew = GetIndexByte(fullMatchLen);
-    Byte byteOld = GetIndexByte(fullMatchLen - backReal);
+    Byte uint8_tNew = GetIndexByte(fullMatchLen);
+    Byte uint8_tOld = GetIndexByte(fullMatchLen - backReal);
     Byte bitsNew, bitsOld;
     UInt32 numSameBits = matchLen * MY_BYTE_SIZE;
     while (true)
     {
-      bitsNew = (byteNew & kSubNodesMask);
-      bitsOld = (byteOld & kSubNodesMask);
+      bitsNew = (uint8_tNew & kSubNodesMask);
+      bitsOld = (uint8_tOld & kSubNodesMask);
       if(bitsNew != bitsOld) 
         break;
-      byteNew >>= kNumSubBits;
-      byteOld >>= kNumSubBits;
+      uint8_tNew >>= kNumSubBits;
+      uint8_tOld >>= kNumSubBits;
       numSameBits += kNumSubBits;
     }
     node->NumSameBits = CSameBitsType(numSameBits);
@@ -391,7 +391,7 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
   CIndex *nodePointerPointer = &hashDescendant.NodePointer;
   CNodePointer node = &m_Nodes[*nodePointerPointer];
   distances += kNumHashBytes;
-  const Byte *bytePointerLimit = baseCurrentBytePointer + currentLimit;
+  const Byte *uint8_tPointerLimit = baseCurrentBytePointer + currentLimit;
   const Byte *currentAddingOffset = _buffer;
 
   #ifdef __AUTO_REMOVE
@@ -417,7 +417,7 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
     if(numLoadedBits == 0)
     {
       *distances++ = pos - node->LastMatch - 1;
-      if(currentBytePointer >= bytePointerLimit)
+      if(currentBytePointer >= uint8_tPointerLimit)
       {
         for (UInt32 i = 0; i < kNumSubNodes; i++)
           node->Descendants[i].MatchPointer = pos + kMatchStartValue;
@@ -432,19 +432,19 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
     UInt32 numSameBits = node->NumSameBits;
     if(numSameBits > 0)
     {
-      Byte byteXOR = ((*(currentAddingOffset + node->LastMatch -1)) >> 
+      Byte uint8_tXOR = ((*(currentAddingOffset + node->LastMatch -1)) >> 
           (MY_BYTE_SIZE - numLoadedBits)) ^ curByte;
       while(numLoadedBits <= numSameBits)
       {
-        if(byteXOR != 0)
+        if(uint8_tXOR != 0)
         {
-          AddInternalNode(node, nodePointerPointer, curByte, byteXOR,
+          AddInternalNode(node, nodePointerPointer, curByte, uint8_tXOR,
               numSameBits, pos);
           return kNumHashBytes + (currentBytePointer - baseCurrentBytePointer - 1);
         }
         *distances++ = pos - node->LastMatch - 1;
         numSameBits -= numLoadedBits;
-        if(currentBytePointer >= bytePointerLimit)
+        if(currentBytePointer >= uint8_tPointerLimit)
         {
           for (UInt32 i = 0; i < kNumSubNodes; i++)
             node->Descendants[i].MatchPointer = pos + kMatchStartValue;
@@ -454,12 +454,12 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
         }
         numLoadedBits = MY_BYTE_SIZE; 
         curByte = (*currentBytePointer++);
-        byteXOR = curByte ^ (*(currentAddingOffset + node->LastMatch));
+        uint8_tXOR = curByte ^ (*(currentAddingOffset + node->LastMatch));
         currentAddingOffset++;
       }
-      if((byteXOR & ((1 << numSameBits) - 1)) != 0)
+      if((uint8_tXOR & ((1 << numSameBits) - 1)) != 0)
       {
-        AddInternalNode(node, nodePointerPointer, curByte, byteXOR,
+        AddInternalNode(node, nodePointerPointer, curByte, uint8_tXOR,
             numSameBits, pos);
         return kNumHashBytes + (currentBytePointer - baseCurrentBytePointer - 1);
       }
@@ -499,16 +499,16 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
   }
   #endif
 
-  Byte byteXOR;
+  Byte uint8_tXOR;
   UInt32 numSameBits = 0;
   if(numLoadedBits != 0)
   {
     Byte matchByte = *(currentAddingOffset + realMatchPointer -1);  
     matchByte >>= (MY_BYTE_SIZE - numLoadedBits);
-    byteXOR = matchByte ^ curByte;
-    if(byteXOR != 0)
+    uint8_tXOR = matchByte ^ curByte;
+    if(uint8_tXOR != 0)
     {
-      AddLeafNode(node, curByte, byteXOR, numSameBits, pos, descendantIndex);
+      AddLeafNode(node, curByte, uint8_tXOR, numSameBits, pos, descendantIndex);
       return kNumHashBytes + (currentBytePointer - baseCurrentBytePointer - 1);
     }
     numSameBits += numLoadedBits;
@@ -516,14 +516,14 @@ UInt32 CPatricia::GetLongestMatch(UInt32 *distances)
 
   const Byte *matchBytePointer = _buffer + realMatchPointer + 
       (currentBytePointer - baseCurrentBytePointer);
-  for(; currentBytePointer < bytePointerLimit; numSameBits += MY_BYTE_SIZE)
+  for(; currentBytePointer < uint8_tPointerLimit; numSameBits += MY_BYTE_SIZE)
   {
     curByte = (*currentBytePointer++);
     *distances++ = pos - realMatchPointer - 1;
-    byteXOR = curByte ^ (*matchBytePointer++);
-    if(byteXOR != 0)
+    uint8_tXOR = curByte ^ (*matchBytePointer++);
+    if(uint8_tXOR != 0)
     {
-      AddLeafNode(node, curByte, byteXOR, numSameBits, pos, descendantIndex);
+      AddLeafNode(node, curByte, uint8_tXOR, numSameBits, pos, descendantIndex);
       return kNumHashBytes + (currentBytePointer - baseCurrentBytePointer - 1);
     }
   }

@@ -338,7 +338,7 @@ void MemoryFn::set(void* pTo,int iValue,uint nCount)
 	*pdwTo &= anMask2[i1ByteCount];
 	*pdwTo |= 0x12345678 & anMask1[i1ByteCount];
 のように書けば少なくて済むと思うが
-いかんせんこれだと一時的にとは言えdwordでバッファの垣根を越えて
+いかんせんこれだと一時的にとは言えuint32_tでバッファの垣根を越えて
 read、writeしていて保護違反くらいそうなので止める。
 */
 }

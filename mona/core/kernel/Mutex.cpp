@@ -67,18 +67,18 @@ int KMutex::lock(Thread* thread, bool adaptive /* = false */)
         /* not reached */
     }
     exit_kernel_lock_mode();
-    return NORMAL;
+    return MONA_SUCCESS;
 }
 
 int KMutex::tryLock(Thread* thread)
 {
     int result;
 
-    /* not locked */
-    if (!isLocked())
-    {
-        return NORMAL;
-    }
+//     /* not locked */
+//     if (!isLocked())
+//     {
+//         return NORMAL;
+//     }
 
     enter_kernel_lock_mode();
 
@@ -86,11 +86,11 @@ int KMutex::tryLock(Thread* thread)
     if (!isLocked())
     {
         owner_ = thread;
-        result = NORMAL;
+        result = MONA_SUCCESS;
     }
     else
     {
-        result = -1;
+        result = MONA_FAILURE;
     }
 
     exit_kernel_lock_mode();
@@ -102,7 +102,7 @@ int KMutex::unlock()
     /* not locked */
     if (!isLocked())
     {
-        return NORMAL;
+        return MONA_SUCCESS;
     }
 
     enter_kernel_lock_mode();
@@ -121,7 +121,7 @@ int KMutex::unlock()
     }
 
     exit_kernel_lock_mode();
-    return NORMAL;
+    return MONA_SUCCESS;
 }
 
 int KMutex::checkSecurity(Thread* thread)

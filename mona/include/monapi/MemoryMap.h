@@ -2,8 +2,8 @@
     MemoryMap
 ----------------------------------------------------------------------*/
 
-#ifndef _MONA_USERLIB_MEMORY_MAP_
-#define _MONA_USERLIB_MEMORY_MAP_
+#ifndef _MONAPI_MEMORY_MAP_
+#define _MONAPI_MEMORY_MAP_
 
 #include <sys/types.h>
 
@@ -14,17 +14,17 @@ namespace MonAPI
     {
     public:
         static void initialize();
-        static dword create(dword size);
-        static byte* map(dword id);
-        static bool unmap(dword id);
-        static dword getLastError();
-        static dword getSize(dword id);
+        static uint32_t create(uint32_t size);
+        static uint8_t* map(uint32_t id);
+        static bool unmap(uint32_t id);
+        static uint32_t getLastError();
+        static uint32_t getSize(uint32_t id);
 
     private:
-        static const dword START_ADDRESS;
-        static const dword MAX_SIZE;
-        static dword lastError;
-        static dword nextAddress;
+        static const uint32_t START_ADDRESS;
+        static const uint32_t MAX_SIZE;
+        static uint32_t lastError;
+        static uint32_t nextAddress;
     };
 
 }
@@ -32,9 +32,9 @@ namespace MonAPI
 extern "C"
 {
 #endif
-extern dword monapi_cmemorymap_create(dword size);
-extern byte* monapi_cmemorymap_map(dword id);
-extern int monapi_cmemorymap_unmap(dword id);
+extern uint32_t monapi_cmemorymap_create(uint32_t size);
+extern uint8_t* monapi_cmemorymap_map(uint32_t id);
+extern int monapi_cmemorymap_unmap(uint32_t id);
 #ifdef __cplusplus
 }
 #endif

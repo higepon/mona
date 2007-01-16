@@ -44,11 +44,6 @@ typedef unsigned int            uint32_t;
 # define __uint32_t_defined
 #endif
 
-typedef unsigned char  byte;
-typedef unsigned short word;
-typedef unsigned int   dword;
-typedef dword          kevent;
-
 #define interface class
 
 #ifndef SEEK_SET
@@ -60,32 +55,32 @@ typedef dword          kevent;
 // should be less than MessageInfo.str
 #define MAX_PROCESS_ARGUMENT_LENGTH 64
 
-typedef dword linear_addr;  /* 32bit */
-typedef dword virtual_addr; /* 32bit */
-typedef dword phys_addr;    /* 32bit */
+typedef uint32_t linear_addr;  /* 32bit */
+typedef uint32_t virtual_addr; /* 32bit */
+typedef uint32_t phys_addr;    /* 32bit */
 
 typedef struct
 {
-    dword totalMemoryH;
-    dword totalMemoryL;
-    dword freePageNum;
-    dword totalPageNum;
-    dword pageSize;
+    uint32_t totalMemoryH;
+    uint32_t totalMemoryL;
+    uint32_t freePageNum;
+    uint32_t totalPageNum;
+    uint32_t pageSize;
 } MemoryInfo;
 
 typedef struct PsInfo {
     char name[16];
-    dword state;
-    dword cr3;
-    dword eip;
-    dword esp;
-    dword tid;
+    uint32_t state;
+    uint32_t cr3;
+    uint32_t eip;
+    uint32_t esp;
+    uint32_t tid;
     struct PsInfo* next;
 } PsInfo;
 
 typedef struct
 {
-    dword size;
+    uint32_t size;
 } Stat;
 
 typedef struct {
@@ -105,9 +100,9 @@ struct CommandOption {
 typedef struct CommandOption CommandOption;
 
 typedef struct {
-    byte* image;
-    dword size;
-    dword entrypoint;
+    uint8_t* image;
+    uint32_t size;
+    uint32_t entrypoint;
     const char* path;
     const char* name;
     CommandOption* list;
@@ -115,52 +110,52 @@ typedef struct {
 
 
 typedef struct {
-    dword header;
-    dword arg1;
-    dword arg2;
-    dword arg3;
-    dword from;
+    uint32_t header;
+    uint32_t arg1;
+    uint32_t arg2;
+    uint32_t arg3;
+    uint32_t from;
     char str[128];
     int length;
 } MessageInfo;
 
 typedef struct {
-    dword vram;
-    dword bpp;
-    dword x;
-    dword y;
+    uint32_t vram;
+    uint32_t bpp;
+    uint32_t x;
+    uint32_t y;
 } ScreenInfo;
 
 typedef struct {
-    byte p[2];
+    uint8_t p[2];
 } Pixel16;
 
 typedef struct {
-    byte p[3];
+    uint8_t p[3];
 } Pixel24;
 
 typedef struct {
-    dword p;
+    uint32_t p;
 } Pixel32;
 
 typedef struct {
-    byte p;
+    uint8_t p;
 } Pixel8;
 
 typedef struct {
-    dword attachPid;
-    dword linearAddress1;
-    dword linearAddress2;
-    dword size;
-    dword errorCd;
+    uint32_t attachPid;
+    uint32_t linearAddress1;
+    uint32_t linearAddress2;
+    uint32_t size;
+    uint32_t errorCd;
 } MappingInfo;
 
 typedef struct
 {
-    dword arg1;
-    dword arg2;
-    dword arg3;
-    dword arg4;
+    uint32_t arg1;
+    uint32_t arg2;
+    uint32_t arg3;
+    uint32_t arg4;
 } SysArg;
 
 /*!
@@ -239,7 +234,7 @@ enum
 #define SYSTEM_CALL_RECEIVE                  0x0004
 #define SYSTEM_CALL_EXIST_MESSAGE            0x0005
 #define SYSTEM_CALL_MTHREAD_CREATE           0x0006
-#define SYSTEM_CALL_MTHREAD_JOIN             0x0007
+//#define SYSTEM_CALL_MTHREAD_JOIN             0x0007  // not used
 #define SYSTEM_CALL_MTHREAD_SLEEP            0x0008
 #define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE    0x0009
 #define SYSTEM_CALL_MUTEX_CREATE             0x000A
@@ -304,6 +299,7 @@ enum
 #define SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED 0x0045
 #define SYSTEM_CALL_SHUTDOWN                 0x0046
 #define SYSTEM_CALL_APM_BIOS                 0x0047
+#define SYSTEM_CALL_MTHREAD_KILL             0x0048
 
 
 #define SYSCALL_0(syscall_number, result)                                         \

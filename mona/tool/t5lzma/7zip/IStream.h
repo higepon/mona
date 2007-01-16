@@ -17,11 +17,11 @@ public:
   STDMETHOD(ReadPart)(void *data, UInt32 size, UInt32 *processedSize) = 0;
   
   // For both function Out: if (*processedSize == 0) then there are 
-  // no more bytes in stream.
-  // Read function always tries to read "size" bytes from stream. It
+  // no more uint8_ts in stream.
+  // Read function always tries to read "size" uint8_ts from stream. It
   // can read less only if it reaches end of stream.
-  // ReadPart function can read X bytes: (0<=X<="size") and X can 
-  // be less than number of remaining bytes in stream.
+  // ReadPart function can read X uint8_ts: (0<=X<="size") and X can 
+  // be less than number of remaining uint8_ts in stream.
 };
 
 // {23170F69-40C1-278A-0000-000000020000}

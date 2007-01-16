@@ -152,9 +152,9 @@ ICompressFilter: public IUnknown
   STDMETHOD(Init)() PURE;
   STDMETHOD_(UInt32, Filter)(Byte *data, UInt32 size) PURE;
   // Filter return outSize (UInt32)
-  // if (outSize <= size): Filter have converted outSize bytes
+  // if (outSize <= size): Filter have converted outSize uint8_ts
   // if (outSize > size): Filter have not converted anything.
-  //      and it needs at least outSize bytes to convert one block 
+  //      and it needs at least outSize uint8_ts to convert one block 
   //      (it's for crypto block algorithms).
 };
 

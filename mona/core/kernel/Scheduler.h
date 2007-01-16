@@ -27,7 +27,7 @@ public:
         Join(thread, ThreadPriority::Normal);
     }
 
-    void Join(Thread* thread, dword basePriority)
+    void Join(Thread* thread, uint32_t basePriority)
     {
         thread->basePriority = basePriority >= maxPriority ? maxPriority - 1 : basePriority;
         thread->priority     = thread->basePriority;
@@ -38,7 +38,7 @@ public:
         runq[thread->priority]->AddToPrev(thread);
     }
 
-    void ChangeBasePriority(Thread* thread, dword basePriority)
+    void ChangeBasePriority(Thread* thread, uint32_t basePriority)
     {
         ASSERT(thread);
 
@@ -56,28 +56,28 @@ public:
         totalTick++;
     }
 
-    dword GetTick() const
+    uint32_t GetTick() const
     {
         return totalTick;
     }
 
     void Dump();
     void SetDump();
-    void Sleep(Thread* thread, dword tick);
+    void Sleep(Thread* thread, uint32_t tick);
     void WaitEvent(Thread* thread, int waitEvent);
     int EventComes(Thread* thread, int waitEvent);
     int Kill(Thread* thread);
-    dword SetTimer(Thread* thread, dword tick);
-    dword KillTimer(dword id, Thread* thread);
+    uint32_t SetTimer(Thread* thread, uint32_t tick);
+    uint32_t KillTimer(uint32_t id, Thread* thread);
     bool SetNextThread();
-    Process* FindProcess(dword pid);
+    Process* FindProcess(uint32_t pid);
     Process* FindProcess(const char* name);
-    Thread* Find(dword id);
-    dword LookupMainThread(const char* name);
-    dword LookupMainThread(Process* process);
-    dword Lookup(const char* name);
+    Thread* Find(uint32_t id);
+    uint32_t LookupMainThread(const char* name);
+    uint32_t LookupMainThread(Process* process);
+    uint32_t Lookup(const char* name);
     PsInfo* ReadDump();
-    dword* GetAllThreadID(dword* threadNum);
+    uint32_t* GetAllThreadID(uint32_t* threadNum);
 
 protected:
     void WakeupTimer();
@@ -104,8 +104,8 @@ protected:
     Array<Thread*> runq;
     Array<Thread*> waitq;
     HList<KTimer*> timers;
-    dword maxPriority;
-    dword totalTick;
+    uint32_t maxPriority;
+    uint32_t totalTick;
 };
 
 #endif

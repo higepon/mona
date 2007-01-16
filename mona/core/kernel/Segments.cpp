@@ -16,9 +16,9 @@
 #include "Segments.h"
 
 /* Segment Faults */
-const byte Segment::FAULT_STACK_OVERFLOW;
-const byte Segment::FAULT_OUT_OF_RANGE;
-const byte Segment::FAULT_UNKNOWN;
+const uint8_t Segment::FAULT_STACK_OVERFLOW;
+const uint8_t Segment::FAULT_OUT_OF_RANGE;
+const uint8_t Segment::FAULT_UNKNOWN;
 
 /*----------------------------------------------------------------------
     StackSegment
@@ -32,7 +32,7 @@ const byte Segment::FAULT_UNKNOWN;
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-StackSegment::StackSegment(LinearAddress start, dword size) {
+StackSegment::StackSegment(LinearAddress start, uint32_t size) {
 
     start_ = start;
     size_  = size;
@@ -55,7 +55,7 @@ StackSegment::~StackSegment() {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool StackSegment::faultHandler(LinearAddress address, dword error) {
+bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -89,7 +89,7 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-HeapSegment::HeapSegment(LinearAddress start, dword size) {
+HeapSegment::HeapSegment(LinearAddress start, uint32_t size) {
 
     start_ = start;
     size_  = size;
@@ -112,7 +112,7 @@ HeapSegment::~HeapSegment() {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool HeapSegment::faultHandler(LinearAddress address, dword error) {
+bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -146,7 +146,7 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     \author HigePon
     \date   create:2003/10/25 update:
 */
-SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject, bool writable /* = true */)
+SharedMemorySegment::SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable /* = true */)
 {
     start_ = start;
     size_  = size;
@@ -186,7 +186,7 @@ SharedMemorySegment::~SharedMemorySegment()
     \author HigePon
     \date   create:2003/10/25 update:
 */
-bool SharedMemorySegment::faultHandler(LinearAddress address, dword error)
+bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
 {
     int mapResult;
     if (error != PageManager::FAULT_NOT_EXIST)
@@ -202,18 +202,18 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error)
     }
 
     /* page fault point */
-    dword tableIndex1     = PageManager::getTableIndex(address);
-    dword directoryIndex1 = PageManager::getDirectoryIndex(address);
+    uint32_t tableIndex1     = PageManager::getTableIndex(address);
+    uint32_t directoryIndex1 = PageManager::getDirectoryIndex(address);
 
     /* segment start point */
-    dword tableIndex2     = PageManager::getTableIndex(start_);
-    dword directoryIndex2 = PageManager::getDirectoryIndex(start_);
+    uint32_t tableIndex2     = PageManager::getTableIndex(start_);
+    uint32_t directoryIndex2 = PageManager::getDirectoryIndex(start_);
 
     /* check already allocated physical page? */
-    dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
+    uint32_t physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
-    dword pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
+    uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
     Process* current = g_currentThread->process;
 
     if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED)
@@ -238,7 +238,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error)
     \author HigePon
     \date   create:2003/10/29 update:2004/01/08
 */
-SharedMemorySegment* SharedMemorySegment::find(Process* process, dword id)
+SharedMemorySegment* SharedMemorySegment::find(Process* process, uint32_t id)
 {
     List<SharedMemorySegment*>* list = process->getSharedList();
 
@@ -268,13 +268,13 @@ SharedMemorySegment* SharedMemorySegment::find(Process* process, dword id)
     \author HigePon
     \date   create:2003/10/25 update:2003/01/08
 */
-SharedMemoryObject::SharedMemoryObject(dword id, dword size)
+SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size)
 {
     initilize(id, size);
     return;
 }
 
-SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword linearAddress)
+SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
 {
     initilize(id, size);
 
@@ -289,8 +289,8 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword li
 
     for (int i = 0; i < physicalPageCount_; i++, linearAddress += 4096)
     {
-        dword tableIndex     = PageManager::getTableIndex(linearAddress);
-        dword directoryIndex = PageManager::getDirectoryIndex(linearAddress);
+        uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
+        uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
 
         if (PageManager::isPresent(&(directory[directoryIndex])))
         {
@@ -303,7 +303,7 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword li
     }
 }
 
-void SharedMemoryObject::initilize(dword id, dword size)
+void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 {
     if (size <= 0) return;
 
@@ -312,9 +312,9 @@ void SharedMemoryObject::initilize(dword id, dword size)
     checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allocate physicalPages");
     memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
 
-    flags_ = new dword[physicalPageCount_];
+    flags_ = new uint32_t[physicalPageCount_];
     checkMemoryAllocate(flags_, "SharedMemoryObject memory allocate flags");
-    memset(flags_, 0, sizeof(dword) * physicalPageCount_);
+    memset(flags_, 0, sizeof(uint32_t) * physicalPageCount_);
 
     size_ = size;
     id_   = id;
@@ -360,7 +360,7 @@ void SharedMemoryObject::setup()
     \author HigePon
     \date   create:2003/10/25 update:2004/01/08
 */
-SharedMemoryObject* SharedMemoryObject::find(dword id)
+SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 {
     SharedMemoryObject* current;
 
@@ -387,7 +387,7 @@ SharedMemoryObject* SharedMemoryObject::find(dword id)
     \author HigePon
     \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::open(dword id, dword size)
+bool SharedMemoryObject::open(uint32_t id, uint32_t size)
 {
     SharedMemoryObject* target = find(id);
 
@@ -406,7 +406,7 @@ bool SharedMemoryObject::open(dword id, dword size)
     return true;
 }
 
-bool SharedMemoryObject::open(dword id, dword size, dword pid, dword linearAddress)
+bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
 {
     SharedMemoryObject* target = find(id);
 
@@ -434,7 +434,7 @@ bool SharedMemoryObject::open(dword id, dword size, dword pid, dword linearAddre
     \author HigePon
     \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::attach(dword id, Process* process, LinearAddress address)
+bool SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address)
 {
     SharedMemorySegment* segment;
     SharedMemoryObject* target = find(id);
@@ -460,7 +460,7 @@ bool SharedMemoryObject::attach(dword id, Process* process, LinearAddress addres
     \author HigePon
     \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::detach(dword id, Process* process)
+bool SharedMemoryObject::detach(uint32_t id, Process* process)
 {
     SharedMemoryObject* target = find(id);
     if (target == NULL) return false;

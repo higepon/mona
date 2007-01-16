@@ -9,10 +9,21 @@
 #define __TYPES_H_
 
 //=============================================================================
-typedef unsigned char  uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
+#ifndef __uint8_t_defined
+typedef unsigned char       uint8_t;
+#define __uint8_t_defined
+#endif
+#ifndef __uint16_t_defined
+typedef unsigned short      uint16_t;
+#define __uint16_t_defined
+#endif
+#ifndef __uint32_t_defined
+typedef unsigned int            uint32_t;
+#define __uint32_t_defined
+#endif
+
 
 //-----------------------------------------------------------------------------
 
 #endif // __TYPES_H_ //
+

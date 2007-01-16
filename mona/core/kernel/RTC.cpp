@@ -24,9 +24,9 @@ void RTC::init() {
     write(0x0B, 0x02);
 }
 
-void RTC::write(byte reg, byte value) {
+void RTC::write(uint8_t reg, uint8_t value) {
 
-    dword eflags = get_eflags();
+    uint32_t eflags = get_eflags();
     disableInterrupt();
 
     outp8(RTC_ADRS, reg);
@@ -34,13 +34,13 @@ void RTC::write(byte reg, byte value) {
     set_eflags(eflags);
 }
 
-byte RTC::read(byte reg) {
+uint8_t RTC::read(uint8_t reg) {
 
-    byte result;
-    dword eflags = get_eflags();
+    uint8_t result;
+    uint32_t eflags = get_eflags();
     disableInterrupt();
 
-    outp8(RTC_ADRS, (byte)(reg & 0xff));
+    outp8(RTC_ADRS, (uint8_t)(reg & 0xff));
     result = inp8(RTC_DATA);
 
     set_eflags(eflags);
@@ -69,9 +69,9 @@ void RTC::getDate(KDate* date) {
     return;
 }
 
-void rdtsc(dword* timeL, dword* timeH) {
+void rdtsc(uint32_t* timeL, uint32_t* timeH) {
 
-    dword l,h;
+    uint32_t l,h;
     asm volatile("rdtsc           \n"
                  "mov   %%eax, %0 \n"
                  "mov   %%edx, %1 \n"
@@ -82,10 +82,10 @@ void rdtsc(dword* timeL, dword* timeH) {
     *timeH = h;
 }
 
-void rdtscsub(dword* timeL, dword* timeH) {
+void rdtscsub(uint32_t* timeL, uint32_t* timeH) {
 
-    dword l = *timeL;
-    dword h = *timeH;
+    uint32_t l = *timeL;
+    uint32_t h = *timeH;
 
     asm volatile("rdtsc           \n"
                  "sub   %2, %%eax \n"

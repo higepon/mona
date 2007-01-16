@@ -80,7 +80,7 @@ void Color::subtract(colort color)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Color::set(byte _r,byte _g,byte _b)
+void Color::set(uint8_t _r,uint8_t _g,uint8_t _b)
 {
 	r = _r;
 	g = _g;
@@ -127,7 +127,7 @@ void Color::normalize()
 */
 colort Color::getColort() const
 {
-	return makeColor((byte)r,(byte)g,(byte)b);
+	return makeColor((uint8_t)r,(uint8_t)g,(uint8_t)b);
 }
 
 colort monapi2::scaleColor(colort color,float fScale,bool bNormalize)

@@ -16,10 +16,10 @@
 /*----------------------------------------------------------------------
     Loader
 ----------------------------------------------------------------------*/
-int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bool isUser, CommandOption* list)
+int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list)
 {
     /* shared ID */
-    static dword sharedId = 0x2000;
+    static uint32_t sharedId = 0x2000;
     sharedId++;
 
     bool   isOpen;
@@ -49,7 +49,7 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
 
     if (!isOpen || !isAttaced) return 5;
 
-    memcpy((byte*)0x80000000, image, size);
+    memcpy((uint8_t*)0x80000000, image, size);
 
     /* detach from this process */
     systemcall_mutex_lock(g_mutexShared);

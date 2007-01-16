@@ -24,25 +24,25 @@ public:
     void clearScreen();
 
 private:
-    static dword palette[];
+    static uint32_t palette[];
 
-    word xResolution_;
-    word yResolution_;
-    word pos_x_;
-    word pos_y_;
-    word font_x_;
-    word font_y_;
-    word console_x_;
-    word console_y_;
+    uint16_t xResolution_;
+    uint16_t yResolution_;
+    uint16_t pos_x_;
+    uint16_t pos_y_;
+    uint16_t font_x_;
+    uint16_t font_y_;
+    uint16_t console_x_;
+    uint16_t console_y_;
 
-    byte* font_;
-    dword bg_;
-    dword ch_;
+    uint8_t* font_;
+    uint32_t bg_;
+    uint32_t ch_;
 
     char* char_buffer_;
-    dword* palette_buffer_;
+    uint32_t* palette_buffer_;
 
-    dword getColor (char color);
+    uint32_t getColor (char color);
     void nextCursor ();
     void newLine ();
     void print(char* str);
@@ -57,36 +57,36 @@ private:
         void scrollUp (int y, int h);
         void bitblt (int dst_x, int dst_y, int src_x, int src_y, int w, int h);
 
-        void fill (int x, int y, int w, int h, dword c);
+        void fill (int x, int y, int w, int h, uint32_t c);
         void clearScreenWhite(int w, int h);
         void clearScreenBlack(int w, int h);
-        void clear (int w, int h, dword c);
-        void fillPat (int x, int y, int w, int h, dword c, dword b, byte* p);
+        void clear (int w, int h, uint32_t c);
+        void fillPat (int x, int y, int w, int h, uint32_t c, uint32_t b, uint8_t* p);
 
     private:
         void selectMethod (VesaInfoDetail *info);
 
-        void packColor8 (byte *bits, dword c);
-        void packColor15 (byte *bits, dword c);
-        void packColor16 (byte *bits, dword c);
-        void packColor24 (byte *bits, dword c);
+        void packColor8 (uint8_t *bits, uint32_t c);
+        void packColor15 (uint8_t *bits, uint32_t c);
+        void packColor16 (uint8_t *bits, uint32_t c);
+        void packColor24 (uint8_t *bits, uint32_t c);
 
-        dword getColor8 (dword c);
-        dword getColor15 (dword c);
-        dword getColor16 (dword c);
-        dword getColor24 (dword c);
-        void setColor8 (void* p, dword c);
-        void setColor15 (void* p, dword c);
-        void setColor16 (void* p, dword c);
-        void setColor24 (void* p, dword c);
+        uint32_t getColor8 (uint32_t c);
+        uint32_t getColor15 (uint32_t c);
+        uint32_t getColor16 (uint32_t c);
+        uint32_t getColor24 (uint32_t c);
+        void setColor8 (void* p, uint32_t c);
+        void setColor15 (void* p, uint32_t c);
+        void setColor16 (void* p, uint32_t c);
+        void setColor24 (void* p, uint32_t c);
 
-        void (VesaConsole::VesaScreen::* packColor) (byte *bits, dword c);
-        dword (VesaConsole::VesaScreen::* getColor) (dword c);
-        void (VesaConsole::VesaScreen::* setColor) (void* p, dword c);
+        void (VesaConsole::VesaScreen::* packColor) (uint8_t *bits, uint32_t c);
+        uint32_t (VesaConsole::VesaScreen::* getColor) (uint32_t c);
+        void (VesaConsole::VesaScreen::* setColor) (void* p, uint32_t c);
 
-        dword vramAddress;
-        word bytesPerScanLine;
-        word bitsPerPixel;
+        uint32_t vramAddress;
+        uint16_t uint8_tsPerScanLine;
+        uint16_t bitsPerPixel;
     };
 
     VesaScreen screen;

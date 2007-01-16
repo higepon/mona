@@ -41,8 +41,8 @@ public:
 
 
 //操作
-	static byte toLower(char1 c);		///<cを小文字に変換。
-	static byte toUpper(char1 c);		///<cを大文字に変換。
+	static uint8_t toLower(char1 c);		///<cを小文字に変換。
+	static uint8_t toUpper(char1 c);		///<cを大文字に変換。
 };
 
 
@@ -129,10 +129,10 @@ protected:
 //単文字コード変換
 ///SJIS文字コードからUnicode(2バイト幅形式)文字コードに変換
 	static int convertShiftJIStoUnicode(int iSJISCode);
-	static int convertShiftJIStoUnicode(byte x,byte y);
+	static int convertShiftJIStoUnicode(uint8_t x,uint8_t y);
 ///Unicode(2バイト幅形式)文字コードからSJIS文字コードに変換
 	static int convertUnicodetoShiftJIS(int iSJISCode);
-	static int convertUnicodetoShiftJIS(byte x,byte y);
+	static int convertUnicodetoShiftJIS(uint8_t x,uint8_t y);
 
 };
 
@@ -156,13 +156,13 @@ public:
 	bool readTable(cpchar1 cszPath);
 ///SJIS文字コードからUnicode(2バイト幅形式)文字コードに変換
 	int convert1to2(int iCode1);
-	int convert1to2(byte x,byte y);
+	int convert1to2(uint8_t x,uint8_t y);
 ///Unicode(2バイト幅形式)文字コードからSJIS文字コードに変換
 	int convert2to1(int iCode2);
-	int convert2to1(byte x,byte y);
+	int convert2to1(uint8_t x,uint8_t y);
 
 //1→2、または2→1の共通化
-	int convert(byte x,byte y,int i1to2);
+	int convert(uint8_t x,uint8_t y,int i1to2);
 
 public:
 ///変換領域。どこの領域に有効なデータがあるのかRectを設定する。
@@ -170,7 +170,7 @@ public:
 
 protected:
 ///変換データ
-	ArrayAD<word*> m_arrayPWordConversionData[2];
+	ArrayAD<uint16_t*> m_arrayPWordConversionData[2];
 ///準備ができているか
 	bool m_bReady;
 };

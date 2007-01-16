@@ -1,6 +1,9 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 
+extern MonAPI::Stream* inStream;
+extern MonAPI::Stream* outStream;
+
 namespace MonAPI
 {
     static PsInfo psInfo;
@@ -8,7 +11,7 @@ namespace MonAPI
 
     PsInfo* System::getProcessInfo()
     {
-        dword tid = getThreadID();
+        uint32_t tid = getThreadID();
         syscall_set_ps_dump();
         while (syscall_read_ps_dump(&psInfo) == 0)
         {
@@ -17,7 +20,7 @@ namespace MonAPI
         return &psInfo;
     }
 
-    dword System::getParentThreadID()
+    uint32_t System::getParentThreadID()
     {
         MessageInfo msg;
         if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
@@ -37,6 +40,24 @@ namespace MonAPI
         return msg.str;
     }
 
+    uint32_t System::getProcessStdoutID()
+    {
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != 0)
+        {
+            return NULL;
+        }
+        return msg.arg3;
+    }
+    uint32_t System::getProcessStdinID()
+    {
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != 0)
+        {
+            return NULL;
+        }
+        return msg.arg2;
+    }
     const char* System::getBundlePath()
     {
         const char* path = getProcessPath();
@@ -47,5 +68,19 @@ namespace MonAPI
         strncpy(bundlePath, path, len);
         bundlePath[len] = '\0';
         return bundlePath;
+    }
+    Stream* System::getStdinStream()
+    {
+        if (NULL != inStream) return inStream;
+        uint32_t handle = System::getProcessStdinID();
+        inStream = Stream::FromHandle(handle);
+        return inStream;
+    }
+    Stream* System::getStdoutStream()
+    {
+        if (NULL != outStream) return outStream;
+        uint32_t handle = System::getProcessStdoutID();
+        outStream = Stream::FromHandle(handle);
+        return outStream;
     }
 }

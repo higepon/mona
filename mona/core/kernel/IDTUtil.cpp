@@ -38,12 +38,12 @@ void IDTUtil::lidt(IDTR* idtr) {
     \author HigePon
     \date   create:2003/06/08 update:
 */
-void IDTUtil::setGateDesc(GateDesc* descZero, word selector, InterruptHandlers* handler) {
+void IDTUtil::setGateDesc(GateDesc* descZero, uint16_t selector, InterruptHandlers* handler) {
 
     GateDesc* desc = descZero + handler->number;
 
-    desc->offsetL  = (dword)(handler->handler) & 0x0000FFFF;
-    desc->offsetH  = ((dword)(handler->handler) & 0xFFFF0000) >> 16;
+    desc->offsetL  = (uint32_t)(handler->handler) & 0x0000FFFF;
+    desc->offsetH  = ((uint32_t)(handler->handler) & 0xFFFF0000) >> 16;
     desc->selector = selector;
     desc->type     = handler->number == 0x80 ? 0xEE : 0x8E; /* System call use 0x80 */
     desc->unused   = 0x00;
@@ -69,7 +69,7 @@ void IDTUtil::setup() {
 
     /* lidt */
     IDTR idtr;
-    idtr.base  = (dword)g_idt;
+    idtr.base  = (uint32_t)g_idt;
     idtr.limit = sizeof(GateDesc) * IHANDLER_NUM - 1;
     lidt(&idtr);
     return;

@@ -7,7 +7,7 @@
 // {
 //   mspace create_mspace_with_base(void* base, size_t capacity, int locked);
 //   size_t destroy_mspace(mspace msp);
-//   void* mspace_malloc(mspace msp, size_t bytes);
+//   void* mspace_malloc(mspace msp, size_t uint8_ts);
 //   void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
 //   void* mspace_realloc(mspace msp, void* mem, size_t newsize);
 //   void mspace_free(mspace msp, void* mem);
@@ -118,35 +118,35 @@
 
 // * Vital statistics:
 
-//   Supported pointer/size_t representation:       4 or 8 bytes
+//   Supported pointer/size_t representation:       4 or 8 uint8_ts
 //        size_t MUST be an unsigned type of the same width as
 //        pointers. (If you are using an ancient system that declares
 //        size_t as a signed type, or need it to be a different width
 //        than pointers, you can use a previous release of this malloc
 //        (e.g. 2.7.2) supporting these.)
 
-//   Alignment:                                     8 bytes (default)
+//   Alignment:                                     8 uint8_ts (default)
 //        This suffices for nearly all current machines and C compilers.
 //        However, you can define MALLOC_ALIGNMENT to be wider than this
-//        if necessary (up to 128bytes), at the expense of using more space.
+//        if necessary (up to 128uint8_ts), at the expense of using more space.
 
-//   Minimum overhead per allocated chunk:   4 or  8 bytes (if 4byte sizes)
-//                                           8 or 16 bytes (if 8byte sizes)
-//        Each malloced chunk has a hidden word of overhead holding size
-//        and status information, and additional cross-check word
+//   Minimum overhead per allocated chunk:   4 or  8 uint8_ts (if 4uint8_t sizes)
+//                                           8 or 16 uint8_ts (if 8uint8_t sizes)
+//        Each malloced chunk has a hidden uint16_t of overhead holding size
+//        and status information, and additional cross-check uint16_t
 //        if FOOTERS is defined.
 
-//   Minimum allocated size: 4-byte ptrs:  16 bytes    (including overhead)
-//                           8-byte ptrs:  32 bytes    (including overhead)
+//   Minimum allocated size: 4-uint8_t ptrs:  16 uint8_ts    (including overhead)
+//                           8-uint8_t ptrs:  32 uint8_ts    (including overhead)
 
-//        Even a request for zero bytes (i.e., malloc(0)) returns a
+//        Even a request for zero uint8_ts (i.e., malloc(0)) returns a
 //        pointer to something of the minimum allocatable size.
-//        The maximum overhead wastage (i.e., number of extra bytes
+//        The maximum overhead wastage (i.e., number of extra uint8_ts
 //        allocated than were requested in malloc) is less than or equal
 //        to the minimum size, except for requests >= mmap_threshold that
 //        are serviced via mmap(), where the worst case wastage is about
-//        32 bytes plus the remainder from a system page (the minimal
-//        mmap unit); typically 4096 or 8192 bytes.
+//        32 uint8_ts plus the remainder from a system page (the minimal
+//        mmap unit); typically 4096 or 8192 uint8_ts.
 
 //   Security: static-safe; optionally more or less
 //        The "security" of malloc refers to the ability of malicious
@@ -162,8 +162,8 @@
 //        cannot, detect all possible programming errors.
 
 //        If FOOTERS is defined nonzero, then each allocated chunk
-//        carries an additional check word to verify that it was malloced
-//        from its space.  These check words are the same within each
+//        carries an additional check uint16_t to verify that it was malloced
+//        from its space.  These check uint16_ts are the same within each
 //        execution of a program using malloc, but differ across
 //        executions, so externally crafted fake chunks cannot be
 //        freed. This improves security by rejecting frees/reallocs that
@@ -223,7 +223,7 @@
 //   chooses the best-fitting existing chunk for a request, with ties
 //   broken in approximately least-recently-used order. (This strategy
 //   normally maintains low fragmentation.) However, for requests less
-//   than 256bytes, it deviates from best-fit when there is not an
+//   than 256uint8_ts, it deviates from best-fit when there is not an
 //   exactly fitting available chunk by preferring to use space adjacent
 //   to that used for the previous small request, as well as by breaking
 //   ties in approximately most-recently-used order. (These enhance
@@ -262,7 +262,7 @@
 //   and your system malloc for others, you can compile with
 //   ONLY_MSPACES and then do something like...
 //     static mspace mymspace = create_mspace(0,0); // for example
-//     #define mymalloc(bytes)  mspace_malloc(mymspace, bytes)
+//     #define mymalloc(uint8_ts)  mspace_malloc(mymspace, uint8_ts)
 
 //   (Note: If you only need one instance of an mspace, you can instead
 //   use "USE_DL_PREFIX" to relabel the global malloc.)
@@ -270,9 +270,9 @@
 //   You can similarly create thread-local allocators by storing
 //   mspaces as thread-locals. For example:
 //     static __thread mspace tlms = 0;
-//     void*  tlmalloc(size_t bytes) {
+//     void*  tlmalloc(size_t uint8_ts) {
 //       if (tlms == 0) tlms = create_mspace(0, 0);
-//       return mspace_malloc(tlms, bytes);
+//       return mspace_malloc(tlms, uint8_ts);
 //     }
 //     void  tlfree(void* mem) { mspace_free(tlms, mem); }
 
@@ -294,7 +294,7 @@
 //   power of two and at least 8, even on machines for which smaller
 //   alignments would suffice. It may be defined as larger than this
 //   though. Note however that code and data structures are optimized for
-//   the case of 8-byte alignment.
+//   the case of 8-uint8_t alignment.
 
 // MSPACES                  default: 0 (false)
 //   If true, compile in support for independent allocation spaces.
@@ -729,12 +729,12 @@
 
 // /*
 //   malloc(size_t n)
-//   Returns a pointer to a newly allocated chunk of at least n bytes, or
+//   Returns a pointer to a newly allocated chunk of at least n uint8_ts, or
 //   null if no space is available, in which case errno is set to ENOMEM
 //   on ANSI C systems.
 
 //   If n is zero, malloc returns a minimum-sized chunk. (The minimum
-//   size is 16 bytes on most 32bit systems, and 32 bytes on 64bit
+//   size is 16 uint8_ts on most 32bit systems, and 32 uint8_ts on 64bit
 //   systems.)  Note that size_t is an unsigned type, so calls with
 //   arguments that would be negative if signed are interpreted as
 //   requests for huge amounts of space, which will often fail. The
@@ -754,7 +754,7 @@
 
 // /*
 //   calloc(size_t n_elements, size_t element_size);
-//   Returns a pointer to n_elements * element_size bytes, with all locations
+//   Returns a pointer to n_elements * element_size uint8_ts, with all locations
 //   set to zero.
 // */
 // void* dlcalloc(size_t, size_t);
@@ -762,7 +762,7 @@
 // /*
 //   realloc(void* p, size_t n)
 //   Returns a pointer to a chunk of size n that contains the same data
-//   as does chunk p up to the minimum of (n, p's size) bytes, or null
+//   as does chunk p up to the minimum of (n, p's size) uint8_ts, or null
 //   if no space is available.
 
 //   The returned pointer may or may not be the same as p. The algorithm
@@ -774,7 +774,7 @@
 //   If space is not available, realloc returns null, errno is set (if on
 //   ANSI) and p is NOT freed.
 
-//   if n is for fewer bytes than already held by p, the newly unused
+//   if n is for fewer uint8_ts than already held by p, the newly unused
 //   space is lopped off and freed if possible.  realloc with a size
 //   argument of zero (re)allocates a minimum-sized chunk.
 
@@ -786,12 +786,12 @@
 
 // /*
 //   memalign(size_t alignment, size_t n);
-//   Returns a pointer to a newly allocated chunk of n bytes, aligned
+//   Returns a pointer to a newly allocated chunk of n uint8_ts, aligned
 //   in accord with the alignment argument.
 
 //   The alignment argument should be a power of two. If the argument is
 //   not a power of two, the nearest greater power is used.
-//   8-byte alignment is guaranteed by normal malloc calls, so don't
+//   8-uint8_t alignment is guaranteed by normal malloc calls, so don't
 //   bother calling memalign with an argument of 8 or less.
 
 //   Overreliance on memalign is a sure way to fragment space.
@@ -827,8 +827,8 @@
 
 // /*
 //   malloc_footprint();
-//   Returns the number of bytes obtained from the system.  The total
-//   number of bytes allocated by malloc, realloc etc., is less than this
+//   Returns the number of uint8_ts obtained from the system.  The total
+//   number of uint8_ts allocated by malloc, realloc etc., is less than this
 //   value. Unlike mallinfo, this function returns only a precomputed
 //   result, so can be called frequently to monitor memory consumption.
 //   Even if locks are otherwise defined, this function does not use them,
@@ -841,17 +841,17 @@
 //   mallinfo()
 //   Returns (by copy) a struct containing various summary statistics:
 
-//   arena:     current total non-mmapped bytes allocated from system
+//   arena:     current total non-mmapped uint8_ts allocated from system
 //   ordblks:   the number of free chunks
 //   smblks:    always zero.
 //   hblks:     current number of mmapped regions
-//   hblkhd:    total bytes held in mmapped regions
+//   hblkhd:    total uint8_ts held in mmapped regions
 //   usmblks:   the maximum total allocated space. This will be greater
 //                 than current total if trimming has occurred.
 //   fsmblks:   always zero
 //   uordblks:  current total allocated space (normal or mmapped)
 //   fordblks:  total free space
-//   keepcost:  the maximum number of bytes that could ideally be released
+//   keepcost:  the maximum number of uint8_ts that could ideally be released
 //                back to system via malloc_trim. ("ideally" means that
 //                it ignores page restrictions etc.)
 
@@ -1011,10 +1011,10 @@
 // /*
 //   malloc_usable_size(void* p);
 
-//   Returns the number of bytes you can actually use in
+//   Returns the number of uint8_ts you can actually use in
 //   an allocated chunk, which may be more than you requested (although
 //   often not) due to alignment and minimum size constraints.
-//   You can use this many bytes without worrying about
+//   You can use this many uint8_ts without worrying about
 //   overwriting other allocated objects. This is not a particularly great
 //   programming practice. malloc_usable_size can be more useful in
 //   debugging and assertions, for example:
@@ -1029,8 +1029,8 @@
 //   Prints on stderr the amount of space obtained from the system (both
 //   via sbrk and mmap), the maximum amount (which may be more than
 //   current if malloc_trim and/or munmap got called), and the current
-//   number of bytes allocated via malloc (or realloc, etc) but not yet
-//   freed. Note that this is the number of bytes allocated, not the
+//   number of uint8_ts allocated via malloc (or realloc, etc) but not yet
+//   freed. Note that this is the number of uint8_ts allocated, not the
 //   number requested. It will be larger than the number requested
 //   because of alignment and bookkeeping overhead. Because it includes
 //   alignment wastage as being in use, this figure may be greater than
@@ -1071,14 +1071,14 @@
 // /*
 //   destroy_mspace destroys the given space, and attempts to return all
 //   of its memory back to the system, returning the total number of
-//   bytes freed. After destruction, the results of access to all memory
+//   uint8_ts freed. After destruction, the results of access to all memory
 //   used by the space become undefined.
 // */
 // size_t destroy_mspace(mspace msp);
 
 // /*
 //   create_mspace_with_base uses the memory supplied as the initial base
-//   of a new mspace. Part (less than 128*sizeof(size_t) bytes) of this
+//   of a new mspace. Part (less than 128*sizeof(size_t) uint8_ts) of this
 //   space is used for bookkeeping, so the capacity must be at least this
 //   large. (Otherwise 0 is returned.) When this initial space is
 //   exhausted, additional memory will be obtained from the system.
@@ -1091,7 +1091,7 @@
 //   mspace_malloc behaves as malloc, but operates within
 //   the given space.
 // */
-// void* mspace_malloc(mspace msp, size_t bytes);
+// void* mspace_malloc(mspace msp, size_t uint8_ts);
 
 // /*
 //   mspace_free behaves as free, but operates within
@@ -1124,7 +1124,7 @@
 //   mspace_memalign behaves as memalign, but operates within
 //   the given space.
 // */
-// void* mspace_memalign(mspace msp, size_t alignment, size_t bytes);
+// void* mspace_memalign(mspace msp, size_t alignment, size_t uint8_ts);
 
 // /*
 //   mspace_independent_calloc behaves as independent_calloc, but
@@ -1141,7 +1141,7 @@
 //                                    size_t sizes[], void* chunks[]);
 
 // /*
-//   mspace_footprint() returns the number of bytes obtained from the
+//   mspace_footprint() returns the number of uint8_ts obtained from the
 //   system for this space.
 // */
 // size_t mspace_footprint(mspace msp);
@@ -1289,7 +1289,7 @@
 
 // /* ------------------- size_t and alignment properties -------------------- */
 
-// /* The byte and bit size of a size_t */
+// /* The uint8_t and bit size of a size_t */
 // #define SIZE_T_SIZE         (sizeof(size_t))
 // #define SIZE_T_BITSIZE      (sizeof(size_t) << 3)
 
@@ -1302,7 +1302,7 @@
 // /* True if address a has acceptable alignment */
 // #define is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_MASK)) == 0)
 
-// /* the number of bytes to offset an address to align it */
+// /* the number of uint8_ts to offset an address to align it */
 // #define align_offset(A)\
 //  ((((size_t)(A) & CHUNK_ALIGN_MASK) == 0)? 0 :\
 //   ((MALLOC_ALIGNMENT - ((size_t)(A) & CHUNK_ALIGN_MASK)) & CHUNK_ALIGN_MASK))
@@ -1532,7 +1532,7 @@
 //          |                                                               |
 //          +-                                                             -+
 //          |                                                               :
-//          +-      size - sizeof(size_t) available payload bytes          -+
+//          +-      size - sizeof(size_t) available payload uint8_ts          -+
 //          :                                                               |
 //  chunk-> +-                                                             -+
 //          |                                                               |
@@ -1554,7 +1554,7 @@
 //          | Prev pointer                                                  |
 //          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //          |                                                               :
-//          +-      size - sizeof(struct chunk) unused bytes               -+
+//          +-      size - sizeof(struct chunk) unused uint8_ts               -+
 //          :                                                               |
 //  chunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //          | Size of this chunk                                            |
@@ -1576,14 +1576,14 @@
 //   chunks are free, and if so, unlink them from the lists that they
 //   are on and merge them with the current chunk.
 
-//   Chunks always begin on even word boundaries, so the mem portion
-//   (which is returned to the user) is also on an even word boundary, and
-//   thus at least double-word aligned.
+//   Chunks always begin on even uint16_t boundaries, so the mem portion
+//   (which is returned to the user) is also on an even uint16_t boundary, and
+//   thus at least double-uint16_t aligned.
 
 //   The P (PINUSE_BIT) bit, stored in the unused low-order bit of the
-//   chunk size (which is always a multiple of two words), is an in-use
+//   chunk size (which is always a multiple of two uint16_ts), is an in-use
 //   bit for the *previous* chunk.  If that bit is *clear*, then the
-//   word before the current chunk size contains the previous chunk
+//   uint16_t before the current chunk size contains the previous chunk
 //   size, and can be used to find the front of the previous chunk.
 //   The very first chunk allocated always has this bit set, preventing
 //   access to non-existent (or non-owned) memory. If pinuse is set for
@@ -1658,7 +1658,7 @@
 // #define CHUNK_OVERHEAD      (SIZE_T_SIZE)
 // #endif
 
-// /* MMapped chunks need a second word of overhead ... */
+// /* MMapped chunks need a second uint16_t of overhead ... */
 // #define MMAP_CHUNK_OVERHEAD (SIZE_T_SIZE*2U)
 // /* ... and additional padding for fake next-chunk at foot */
 // #define MMAP_FOOT_PAD       (SIZE_T_SIZE*4U)
@@ -1677,7 +1677,7 @@
 // #define MAX_REQUEST         ((-MIN_CHUNK_SIZE) << 2)
 // #define MIN_REQUEST         (MIN_CHUNK_SIZE - CHUNK_OVERHEAD - 1U)
 
-// /* pad request bytes into a usable size */
+// /* pad request uint8_ts into a usable size */
 // #define pad_request(req) \
 //    (((req) + CHUNK_OVERHEAD + CHUNK_ALIGN_MASK) & ~CHUNK_ALIGN_MASK)
 
@@ -1703,7 +1703,7 @@
 // /* Head value for fenceposts */
 // #define FENCEPOST_HEAD      (INUSE_BITS|SIZE_T_SIZE)
 
-// /* extraction of fields from head words */
+// /* extraction of fields from head uint16_ts */
 // #define cinuse(p)           ((p)->head & CINUSE_BIT)
 // #define pinuse(p)           ((p)->head & PINUSE_BIT)
 // #define chunksize(p)        ((p)->head & ~(INUSE_BITS))
@@ -1760,28 +1760,28 @@
 //     chunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //             |             Size of previous chunk                            |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//     `head:' |             Size of chunk, in bytes                         |P|
+//     `head:' |             Size of chunk, in uint8_ts                         |P|
 //       mem-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //             |             Forward pointer to next chunk in list             |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //             |             Back pointer to previous chunk in list            |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//             |             Unused space (may be 0 bytes long)                .
+//             |             Unused space (may be 0 uint8_ts long)                .
 //             .                                                               .
 //             .                                                               |
 // nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//     `foot:' |             Size of chunk, in bytes                           |
+//     `foot:' |             Size of chunk, in uint8_ts                           |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 //   Larger chunks are kept in a form of bitwise digital trees (aka
 //   tries) keyed on chunksizes.  Because malloc_tree_chunks are only for
-//   free chunks greater than 256 bytes, their size doesn't impose any
+//   free chunks greater than 256 uint8_ts, their size doesn't impose any
 //   constraints on user chunk sizes.  Each node looks like:
 
 //     chunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //             |             Size of previous chunk                            |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//     `head:' |             Size of chunk, in bytes                         |P|
+//     `head:' |             Size of chunk, in uint8_ts                         |P|
 //       mem-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //             |             Forward pointer to next chunk of same size        |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1798,7 +1798,7 @@
 //             |             Unused space                                      .
 //             .                                                               |
 // nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//     `foot:' |             Size of chunk, in bytes                           |
+//     `foot:' |             Size of chunk, in uint8_ts                           |
 //             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 //   Each tree holding treenodes is a tree of unique chunk sizes.  Chunks
@@ -1937,8 +1937,8 @@
 
 //   SmallBins
 //     An array of bin headers for free chunks.  These bins hold chunks
-//     with sizes less than MIN_LARGE_SIZE bytes. Each bin contains
-//     chunks of all the same size, spaced 8 bytes apart.  To simplify
+//     with sizes less than MIN_LARGE_SIZE uint8_ts. Each bin contains
+//     chunks of all the same size, spaced 8 uint8_ts apart.  To simplify
 //     use in double-linked lists, each bin header acts as a malloc_chunk
 //     pointing to the real first node, if it exists (else pointing to
 //     itself).  This avoids special-casing for headers.  But to avoid
@@ -1957,7 +1957,7 @@
 //     clears the bit when empty.  Bit operations are then used to avoid
 //     bin-by-bin searching -- nearly all "search" is done without ever
 //     looking at bins that won't be selected.  The bit maps
-//     conservatively use 32 bits per map word, even if on 64bit system.
+//     conservatively use 32 bits per map uint16_t, even if on 64bit system.
 //     For a good description of some of the bit-based techniques used
 //     here, see Henry S. Warren Jr's book "Hacker's Delight" (and
 //     supplement at http://hackersdelight.org/). Many of these are
@@ -2490,7 +2490,7 @@
 
 //     /* Sanity-check configuration:
 //        size_t must be unsigned and as wide as pointer type.
-//        ints must be at least 4 bytes.
+//        ints must be at least 4 uint8_ts.
 //        alignment must be at least 8.
 //        Alignment, min chunk size, and page size must all be powers of 2.
 //     */
@@ -2863,9 +2863,9 @@
 //       }
 //     }
 
-//     fprintf(stderr, "max system bytes = %10lu\n", (unsigned long)(maxfp));
-//     fprintf(stderr, "system bytes     = %10lu\n", (unsigned long)(fp));
-//     fprintf(stderr, "in use bytes     = %10lu\n", (unsigned long)(used));
+//     fprintf(stderr, "max system uint8_ts = %10lu\n", (unsigned long)(maxfp));
+//     fprintf(stderr, "system uint8_ts     = %10lu\n", (unsigned long)(fp));
+//     fprintf(stderr, "in use uint8_ts     = %10lu\n", (unsigned long)(used));
 
 //     POSTACTION(m);
 //   }
@@ -3736,8 +3736,8 @@
 
 // /* --------------------------- realloc support --------------------------- */
 
-// static void* internal_realloc(mstate m, void* oldmem, size_t bytes) {
-//   if (bytes >= MAX_REQUEST) {
+// static void* internal_realloc(mstate m, void* oldmem, size_t uint8_ts) {
+//   if (uint8_ts >= MAX_REQUEST) {
 //     MALLOC_FAILURE_ACTION;
 //     return 0;
 //   }
@@ -3752,7 +3752,7 @@
 
 //     if (RTCHECK(ok_address(m, oldp) && ok_cinuse(oldp) &&
 //                 ok_next(oldp, next) && ok_pinuse(next))) {
-//       size_t nb = request2size(bytes);
+//       size_t nb = request2size(uint8_ts);
 //       if (is_mmapped(oldp))
 //         newp = mmap_resize(m, oldp, nb);
 //       else if (oldsize >= nb) { /* already big enough */
@@ -3793,10 +3793,10 @@
 //       return chunk2mem(newp);
 //     }
 //     else {
-//       void* newmem = internal_malloc(m, bytes);
+//       void* newmem = internal_malloc(m, uint8_ts);
 //       if (newmem != 0) {
 //         size_t oc = oldsize - overhead_for(oldp);
-//         memcpy(newmem, oldmem, (oc < bytes)? oc : bytes);
+//         memcpy(newmem, oldmem, (oc < uint8_ts)? oc : uint8_ts);
 //         internal_free(m, oldmem);
 //       }
 //       return newmem;
@@ -3807,9 +3807,9 @@
 
 // /* --------------------------- memalign support -------------------------- */
 
-// static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
+// static void* internal_memalign(mstate m, size_t alignment, size_t uint8_ts) {
 //   if (alignment <= MALLOC_ALIGNMENT)    /* Can just use malloc */
-//     return internal_malloc(m, bytes);
+//     return internal_malloc(m, uint8_ts);
 //   if (alignment <  MIN_CHUNK_SIZE) /* must be at least a minimum chunk size */
 //     alignment = MIN_CHUNK_SIZE;
 //   if ((alignment & (alignment-1)) != 0) {/* Ensure a power of 2 */
@@ -3818,11 +3818,11 @@
 //     alignment = a;
 //   }
 
-//   if (bytes >= MAX_REQUEST - alignment) {
+//   if (uint8_ts >= MAX_REQUEST - alignment) {
 //     MALLOC_FAILURE_ACTION;
 //   }
 //   else {
-//     size_t nb = request2size(bytes);
+//     size_t nb = request2size(uint8_ts);
 //     size_t req = nb + alignment + MIN_CHUNK_SIZE - CHUNK_OVERHEAD;
 //     char* mem = (char*)internal_malloc(m, req);
 //     if (mem != 0) {
@@ -3909,7 +3909,7 @@
 //   size_t    array_size;     /* request size of pointer array */
 //   void*     mem;            /* malloced aggregate space */
 //   mchunkptr p;              /* corresponding chunk */
-//   size_t    remainder_size; /* remaining bytes while splitting */
+//   size_t    remainder_size; /* remaining uint8_ts while splitting */
 //   void**    marray;         /* either "chunks" or malloced ptr array */
 //   mchunkptr array_chunk;    /* chunk for malloced ptr array */
 //   flag_t    was_enabled;    /* to disable mmap */
@@ -4021,12 +4021,12 @@
 
 // #if !ONLY_MSPACES
 
-// void* dlmalloc(size_t bytes) {
+// void* dlmalloc(size_t uint8_ts) {
 //   /*
 //      Basic algorithm:
-//      If a small request (< 256 bytes minus per-chunk overhead):
+//      If a small request (< 256 uint8_ts minus per-chunk overhead):
 //        1. If one exists, use a remainderless chunk in associated smallbin.
-//           (Remainderless means that there are too few excess bytes to
+//           (Remainderless means that there are too few excess uint8_ts to
 //           represent as a chunk.)
 //        2. If it is big enough, use the dv chunk, which is normally the
 //           chunk adjacent to the one used for the most recent small request.
@@ -4048,10 +4048,10 @@
 //   if (!PREACTION(gm)) {
 //     void* mem;
 //     size_t nb;
-//     if (bytes <= MAX_SMALL_REQUEST) {
+//     if (uint8_ts <= MAX_SMALL_REQUEST) {
 //       bindex_t idx;
 //       binmap_t smallbits;
-//       nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
+//       nb = (uint8_ts < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(uint8_ts);
 //       idx = small_index(nb);
 //       smallbits = gm->smallmap >> idx;
 
@@ -4081,7 +4081,7 @@
 //           assert(chunksize(p) == small_index2size(i));
 //           unlink_first_small_chunk(gm, b, p, i);
 //           rsize = small_index2size(i) - nb;
-//           /* Fit here cannot be remainderless if 4byte sizes */
+//           /* Fit here cannot be remainderless if 4uint8_t sizes */
 //           if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE) 
 //             set_inuse_and_pinuse(gm, p, small_index2size(i));
 //           else {
@@ -4101,10 +4101,10 @@
 //         }
 //       }
 //     }
-//     else if (bytes >= MAX_REQUEST)
+//     else if (uint8_ts >= MAX_REQUEST)
 //       nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
 //     else {
-//       nb = pad_request(bytes);
+//       nb = pad_request(uint8_ts);
 //       if (gm->treemap != 0 && (mem = tmalloc_large(gm, nb)) != 0) {
 //         check_malloced_chunk(gm, mem, nb);
 //         goto postaction;
@@ -4268,9 +4268,9 @@
 //   return mem;
 // }
 
-// void* dlrealloc(void* oldmem, size_t bytes) {
+// void* dlrealloc(void* oldmem, size_t uint8_ts) {
 //   if (oldmem == 0)
-//     return dlmalloc(bytes);
+//     return dlmalloc(uint8_ts);
 //   else {
 // #if ! FOOTERS
 //     mstate m = gm;
@@ -4281,12 +4281,12 @@
 //       return 0;
 //     }
 // #endif
-//     return internal_realloc(m, oldmem, bytes);
+//     return internal_realloc(m, oldmem, uint8_ts);
 //   }
 // }
 
-// void* dlmemalign(size_t alignment, size_t bytes) {
-//   return internal_memalign(gm, alignment, bytes);
+// void* dlmemalign(size_t alignment, size_t uint8_ts) {
+//   return internal_memalign(gm, alignment, uint8_ts);
 // }
 
 // void** dlindependent_calloc(size_t n_elements, size_t elem_size,
@@ -4300,18 +4300,18 @@
 //   return ialloc(gm, n_elements, sizes, 0, chunks);
 // }
 
-// void* dlvalloc(size_t bytes) {
+// void* dlvalloc(size_t uint8_ts) {
 //   size_t pagesz;
 //   init_mparams();
 //   pagesz = mparams.page_size;
-//   return dlmemalign(pagesz, bytes);
+//   return dlmemalign(pagesz, uint8_ts);
 // }
 
-// void* dlpvalloc(size_t bytes) {
+// void* dlpvalloc(size_t uint8_ts) {
 //   size_t pagesz;
 //   init_mparams();
 //   pagesz = mparams.page_size;
-//   return dlmemalign(pagesz, (bytes + pagesz - 1) & ~(pagesz - 1));
+//   return dlmemalign(pagesz, (uint8_ts + pagesz - 1) & ~(pagesz - 1));
 // }
 
 // int dlmalloc_trim(size_t pad) {
@@ -4457,7 +4457,7 @@
 // */
 
 
-// void* mspace_malloc(mspace msp, size_t bytes) {
+// void* mspace_malloc(mspace msp, size_t uint8_ts) {
 //   mstate ms = (mstate)msp;
 //   if (!ok_magic(ms)) {
 //     USAGE_ERROR_ACTION(ms,ms);
@@ -4466,10 +4466,10 @@
 //   if (!PREACTION(ms)) {
 //     void* mem;
 //     size_t nb;
-//     if (bytes <= MAX_SMALL_REQUEST) {
+//     if (uint8_ts <= MAX_SMALL_REQUEST) {
 //       bindex_t idx;
 //       binmap_t smallbits;
-//       nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
+//       nb = (uint8_ts < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(uint8_ts);
 //       idx = small_index(nb);
 //       smallbits = ms->smallmap >> idx;
 
@@ -4499,7 +4499,7 @@
 //           assert(chunksize(p) == small_index2size(i));
 //           unlink_first_small_chunk(ms, b, p, i);
 //           rsize = small_index2size(i) - nb;
-//           /* Fit here cannot be remainderless if 4byte sizes */
+//           /* Fit here cannot be remainderless if 4uint8_t sizes */
 //           if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE) 
 //             set_inuse_and_pinuse(ms, p, small_index2size(i));
 //           else {
@@ -4519,10 +4519,10 @@
 //         }
 //       }
 //     }
-//     else if (bytes >= MAX_REQUEST)
+//     else if (uint8_ts >= MAX_REQUEST)
 //       nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
 //     else {
-//       nb = pad_request(bytes);
+//       nb = pad_request(uint8_ts);
 //       if (ms->treemap != 0 && (mem = tmalloc_large(ms, nb)) != 0) {
 //         check_malloced_chunk(ms, mem, nb);
 //         goto postaction;
@@ -4682,9 +4682,9 @@
 //   return mem;
 // }
 
-// void* mspace_realloc(mspace msp, void* oldmem, size_t bytes) {
+// void* mspace_realloc(mspace msp, void* oldmem, size_t uint8_ts) {
 //   if (oldmem == 0)
-//     return mspace_malloc(msp, bytes);
+//     return mspace_malloc(msp, uint8_ts);
 //   else {
 // #if FOOTERS
 //     mchunkptr p  = mem2chunk(mem);
@@ -4696,17 +4696,17 @@
 //       USAGE_ERROR_ACTION(ms,ms);
 //       return 0;
 //     }
-//     return internal_realloc(ms, oldmem, bytes);
+//     return internal_realloc(ms, oldmem, uint8_ts);
 //   }
 // }
 
-// void* mspace_memalign(mspace msp, size_t alignment, size_t bytes) {
+// void* mspace_memalign(mspace msp, size_t alignment, size_t uint8_ts) {
 //   mstate ms = (mstate)msp;
 //   if (!ok_magic(ms)) {
 //     USAGE_ERROR_ACTION(ms,ms);
 //     return 0;
 //   }
-//   return internal_memalign(ms, alignment, bytes);
+//   return internal_memalign(ms, alignment, uint8_ts);
 // }
 
 // void** mspace_independent_calloc(mspace msp, size_t n_elements,
@@ -4976,7 +4976,7 @@
 //       * Use ordered bins instead of best-fit threshhold
 //       * Eliminate block-local decls to simplify tracing and debugging.
 //       * Support another case of realloc via move into top
-//       * Fix error occuring when initial sbrk_base not word-aligned.
+//       * Fix error occuring when initial sbrk_base not uint16_t-aligned.
 //       * Rely on page size for units instead of SBRK_UNIT to
 //         avoid surprises about sbrk alignment conventions.
 //       * Add mallinfo, mallopt. Thanks to Raymond Nijssen

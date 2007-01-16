@@ -17,7 +17,7 @@ namespace monapi2	{
 //このファイルはコンパイルに時間かかるので実際はしない。代わりにデータファイルとして読み出す。
 #if 0
 
-int LanguageFn::convertShiftJIStoUnicode(byte x,byte y)
+int LanguageFn::convertShiftJIStoUnicode(uint8_t x,uint8_t y)
 {
 	if (0x00<=x&&x<0x01 && 0x00<=y&&y<0xE0)
 	{
@@ -1156,7 +1156,7 @@ int LanguageFn::convertShiftJIStoUnicode(byte x,byte y)
 
 	return 0;
 }
-int LanguageFn::convertUnicodetoShiftJIS(byte x,byte y)
+int LanguageFn::convertUnicodetoShiftJIS(uint8_t x,uint8_t y)
 {
 	if (0x00<=x&&x<0x01 && 0x00<=y&&y<0xF8)
 	{

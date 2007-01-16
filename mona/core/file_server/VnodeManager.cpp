@@ -19,7 +19,7 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
     split(file, '/', directories);
     int ret = MONA_FAILURE;
     Vnode* root = directory;
-    for (dword i = 0; i < directories.size(); i++)
+    for (uint32_t i = 0; i < directories.size(); i++)
     {
         string name = directories[i];
         int vtype = (i == directories.size() - 1) ? type : Vnode::DIRECTORY;
@@ -70,7 +70,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     return MONA_SUCCESS;
 }
 
-int VnodeManager::open(const std::string& name, int mode, bool create, dword tid, dword* fileID)
+int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID)
 {
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
@@ -78,7 +78,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
     if (create)
     {
         Vnode* targetDirectory = NULL;
-        dword foundIndex = name.find_last_of('/');
+        uint32_t foundIndex = name.find_last_of('/');
         string filename = name;
         if (foundIndex == name.npos)
         {
@@ -124,7 +124,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
     FileInfo* fileInfo = new FileInfo;
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
-    fileInfoMap_.insert(pair< dword, FileInfo* >(*fileID, fileInfo));
+    fileInfoMap_.insert(pair< uint32_t, FileInfo* >(*fileID, fileInfo));
     return MONA_SUCCESS;
 }
 
@@ -135,7 +135,7 @@ Vnode* VnodeManager::alloc()
     return v;
 }
 
-int VnodeManager::read(dword fileID, dword size, monapi_cmemoryinfo** mem)
+int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
@@ -150,7 +150,7 @@ int VnodeManager::read(dword fileID, dword size, monapi_cmemoryinfo** mem)
     return result;
 }
 
-int VnodeManager::write(dword fileID, dword size, monapi_cmemoryinfo* mem)
+int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
@@ -164,7 +164,7 @@ int VnodeManager::write(dword fileID, dword size, monapi_cmemoryinfo* mem)
     return fileInfo->vnode->fs->write(fileInfo->vnode, context);
 }
 
-int VnodeManager::close(dword fileID)
+int VnodeManager::close(uint32_t fileID)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
@@ -185,7 +185,7 @@ int VnodeManager::close(dword fileID)
     return MONA_SUCCESS;
 }
 
-int VnodeManager::stat(dword fileID, Stat* st)
+int VnodeManager::stat(uint32_t fileID, Stat* st)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
@@ -198,7 +198,7 @@ int VnodeManager::stat(dword fileID, Stat* st)
     return file->fs->stat(file, st);
 }
 
-int VnodeManager::seek(dword fileID, dword offset, dword origin)
+int VnodeManager::seek(uint32_t fileID, uint32_t offset, uint32_t origin)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
@@ -226,8 +226,8 @@ int VnodeManager::mount(Vnode* a, const std::string& path, Vnode* b)
 
 void VnodeManager::split(string str, char ch, vector<string>& v)
 {
-    dword index = 0;
-    dword next = 0;
+    uint32_t index = 0;
+    uint32_t next = 0;
     while ((index = str.find_first_of(ch, next)) != string::npos)
     {
         v.push_back(string(str.begin() + next, str.begin() + index));

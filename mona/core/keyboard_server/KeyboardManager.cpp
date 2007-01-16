@@ -88,10 +88,10 @@ KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
     \author HigePon
     \date   create:2002/10/12 update:2002/11/04
 */
-int KeyBoardManager::setKeyScanCode(byte scancode) {
+int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
 
-    byte keycode   = 0; /* keycode       */
-    byte modifiers = 0; /* key modifiers */
+    uint8_t keycode   = 0; /* keycode       */
+    uint8_t modifiers = 0; /* key modifiers */
 
     /* first, check some scancodes */
     switch(scancode) {
@@ -179,7 +179,7 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
     return 1;
 }
 
-void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
+void KeyBoardManager::toVirtual(uint8_t keycode, uint8_t modifiers, KeyInfo* info) {
 
     info->modifiers = modifiers;
 

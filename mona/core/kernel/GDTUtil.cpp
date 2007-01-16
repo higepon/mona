@@ -26,13 +26,13 @@
     \author HigePon
     \date   create:2003/06/06 update:
 */
-void GDTUtil::setSegDesc(SegDesc* desc, dword base, dword limit, byte type) {
+void GDTUtil::setSegDesc(SegDesc* desc, uint32_t base, uint32_t limit, uint8_t type) {
 
-    desc->baseL  = (word)(base & 0xFFFF);
-    desc->baseM  = (byte)((base >> 16) & 0xFF);
-    desc->baseH  = (byte)((base >> 24) & 0xFF);
-    desc->limitL = (word)(limit & 0xFFFF);
-    desc->limitH = (byte) (((limit >> 16) & 0x0F) | 0xC0); /* 4KB unit & 32bit segment */
+    desc->baseL  = (uint16_t)(base & 0xFFFF);
+    desc->baseM  = (uint8_t)((base >> 16) & 0xFF);
+    desc->baseH  = (uint8_t)((base >> 24) & 0xFF);
+    desc->limitL = (uint16_t)(limit & 0xFFFF);
+    desc->limitH = (uint8_t) (((limit >> 16) & 0x0F) | 0xC0); /* 4KB unit & 32bit segment */
     desc->type   = type;
     return;
 }
@@ -48,13 +48,13 @@ void GDTUtil::setSegDesc(SegDesc* desc, dword base, dword limit, byte type) {
     \author Yume
     \date   create:2006/08/01 update:
 */
-void GDTUtil::setSegDescExt(SegDesc* desc, dword base, dword limit, byte type, byte gdbavl) {
+void GDTUtil::setSegDescExt(SegDesc* desc, uint32_t base, uint32_t limit, uint8_t type, uint8_t gdbavl) {
 
-    desc->baseL  = (word)(base & 0xFFFF);
-    desc->baseM  = (byte)((base >> 16) & 0xFF);
-    desc->baseH  = (byte)((base >> 24) & 0xFF);
-    desc->limitL = (word)(limit & 0xFFFF);
-    desc->limitH = (byte) (((limit >> 16) & 0x0F) | gdbavl);
+    desc->baseL  = (uint16_t)(base & 0xFFFF);
+    desc->baseM  = (uint8_t)((base >> 16) & 0xFF);
+    desc->baseH  = (uint8_t)((base >> 24) & 0xFF);
+    desc->limitL = (uint16_t)(limit & 0xFFFF);
+    desc->limitH = (uint8_t) (((limit >> 16) & 0x0F) | gdbavl);
     desc->type   = type;
     return;
 }
@@ -82,7 +82,7 @@ void GDTUtil::lgdt(GDTR* gdtr) {
     \author HigePon
     \date   create:2002/12/02 update:
 */
-void GDTUtil::ltr(word selector) {
+void GDTUtil::ltr(uint16_t selector) {
 
     /* ltr */
     asm volatile("ltr %0\n": "=m" (selector));
@@ -117,7 +117,7 @@ void GDTUtil::setup() {
     setSegDesc(&g_gdt[3], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
 
     /* TSS. Mona has only one TSS */
-    setSegDesc(&g_gdt[4], (dword)g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
+    setSegDesc(&g_gdt[4], (uint32_t)g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
 
     /* USER CS 0-4GB */
     setSegDesc(&g_gdt[5], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x0A);
@@ -144,7 +144,7 @@ void GDTUtil::setup() {
 
     /* lgdt */
     GDTR gdtr;
-    gdtr.base  = (dword)g_gdt;
+    gdtr.base  = (uint32_t)g_gdt;
     gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
     lgdt(&gdtr);
 
@@ -160,7 +160,7 @@ void GDTUtil::setup() {
     \author HigePon
     \date   create:2003/07/17 update:2003/08/06
 */
-void GDTUtil::setupTSS(word selector) {
+void GDTUtil::setupTSS(uint16_t selector) {
 
     /* prepare dpl0 stack */
     memset((void*)g_tss, 0, sizeof(TSS));

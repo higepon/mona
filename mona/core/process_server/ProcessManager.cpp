@@ -4,12 +4,14 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <monapi/Assert.h>
+#include <vector>
 
 using namespace MonAPI;
+using namespace std;
 
 static monapi_cmemoryinfo* commonParams = NULL;
-static HList<ProcessInfo> infos;
-static HList<dword> receivers;
+static vector<ProcessInfo> infos;
+static HList<uint32_t> receivers;
 
 void initCommonParameters()
 {
@@ -17,14 +19,13 @@ void initCommonParameters()
     if (!monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1)) exit(1);
 }
 
-ProcessInfo getProcessInfo(dword tid)
+ProcessInfo getProcessInfo(uint32_t tid)
 {
     int size = infos.size();
     for (int i = 0; i < size; i++)
     {
         if (infos[i].tid == tid) return infos[i];
     }
-
     return ProcessInfo();
 }
 
@@ -42,11 +43,11 @@ void addProcessInfo(const CString& name)
 
         pi.tid  = info.tid;
         pi.name = info.name;
-        infos.add(pi);
+        infos.push_back(pi);
     }
 }
 
-void addProcessInfo(dword tid, dword parent, const CString& path)
+void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
 {
     ProcessInfo pi = getProcessInfo(tid);
     if (pi.tid != THREAD_UNKNOWN) return;
@@ -65,13 +66,13 @@ void addProcessInfo(dword tid, dword parent, const CString& path)
     pi.parent = parent;
     pi.name   = found.name;
     pi.path   = path;
-    infos.add(pi);
+    infos.push_back(pi);
     notifyProcessChanged(MSG_PROCESS_CREATED, tid, parent, path);
 }
 
-dword addProcessInfo(dword parent, const CString& name, const CString& path)
+uint32_t addProcessInfo(uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
 {
-    dword ret = THREAD_UNKNOWN;
+    uint32_t ret = THREAD_UNKNOWN;
     syscall_set_ps_dump();
     PsInfo info;
 
@@ -86,32 +87,34 @@ dword addProcessInfo(dword parent, const CString& name, const CString& path)
         pi.parent = parent;
         pi.name   = name;
         pi.path   = path;
-        infos.add(pi);
+        pi.stdin_id = stdin_id;
+        pi.stdout_id = stdout_id;
+        infos.push_back(pi);
         ret = info.tid;
     }
     return ret;
 }
 
-void addProcessInfo(dword tid, dword parent, const CString& name, const CString& path)
+void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
 {
-    ProcessInfo pi(tid, parent, name, path);
-    infos.add(pi);
+    ProcessInfo pi(tid, parent, name, path, stdin_id, stdout_id);
+    infos.push_back(pi);
 }
 
-void removeProcessInfo(dword tid)
+void removeProcessInfo(uint32_t tid)
 {
     int size = infos.size();
     for (int i = 0; i < size; i++)
     {
         if (infos[i].tid != tid) continue;
 
-        infos.removeAt(i);
+        infos.erase(&infos[i]);
         notifyProcessChanged(MSG_PROCESS_TERMINATED, tid);
         return;
     }
 }
 
-static void registerReceiver(dword tid)
+static void registerReceiver(uint32_t tid)
 {
     int size = receivers.size();
     for (int i = 0; i < size; i++)
@@ -121,7 +124,7 @@ static void registerReceiver(dword tid)
     receivers.add(tid);
 }
 
-static void unregisterReceiver(dword tid)
+static void unregisterReceiver(uint32_t tid)
 {
     int size = receivers.size();
     for (int i = 0; i < size; i++)
@@ -133,7 +136,7 @@ static void unregisterReceiver(dword tid)
     }
 }
 
-void notifyProcessChanged(dword header, dword tid, dword parent /*= 0*/, const CString& path /*= NULL*/)
+void notifyProcessChanged(uint32_t header, uint32_t tid, uint32_t parent /*= 0*/, const CString& path /*= NULL*/)
 {
     int i = 0;
     while (i < receivers.size())
@@ -166,7 +169,13 @@ bool processHandler(MessageInfo* msg)
         case MSG_PROCESS_GET_PROCESS_INFO:
         {
             ProcessInfo pi = getProcessInfo(msg->from);
-            Message::reply(msg, pi.parent, 0, pi.path);
+            Message::reply(msg, pi.parent, pi.stdout_id, pi.path);
+            break;
+        }
+        case MSG_PROCESS_GET_PROCESS_STDIO:
+        {
+            ProcessInfo pi = getProcessInfo(msg->from);
+            Message::reply(msg, pi.stdin_id, pi.stdout_id);
             break;
         }
         case MSG_PROCESS_CREATED:

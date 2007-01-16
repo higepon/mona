@@ -24,10 +24,10 @@
 BitMap::BitMap(int number) {
 
     bitsNumber_ = number;
-    dwordNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
+    uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
 
-    map_ = new int[dwordNumber_];
-    memset(map_, 0, sizeof(int) * dwordNumber_);
+    map_ = new int[uint32_tNumber_];
+    memset(map_, 0, sizeof(int) * uint32_tNumber_);
 
     for (int i = 0; i < bitsNumber_; i++) clear(i);
     return;
@@ -103,13 +103,12 @@ int BitMap::find() {
 
 int BitMap::find(int num) {
 
-    //int found = 0;
     for (int i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) {
             int size = 0;
             for (int j  = i; j < bitsNumber_; j++) {
-                if (marked(j)) { 
+                if (marked(j)) {
                     break;
                 }
                 size++;

@@ -56,7 +56,7 @@ struct __sFILEX;
 typedef struct __sFILE
 {
 	int	_flags;	/* flags */
-	dword	_file;	/* fileno, if MonaOS ID, else -1 */
+	uint32_t	_file;	/* fileno, if MonaOS ID, else -1 */
 	struct	__sbuf _bf;
 	int	_lbfpos;
 
@@ -66,6 +66,7 @@ typedef struct __sFILE
 
 	struct __sFILEX *_extra;
 	int _ungetcbuf;
+	void* _stream;
 } FILE;
 
 enum
@@ -103,6 +104,12 @@ enum
 
 #define L_tmpnam	FILENAME_MAX
 
+/*
+#define stdin	0xFFFFFFFF
+#define stdout	0xFFFFFFFE
+#define stderr	0xFFFFFFFD
+*/
+
 #define stdin	(&__sF[0])
 #define stdout	(&__sF[1])
 #define stderr	(&__sF[2])
@@ -113,6 +120,11 @@ extern "C"
 #endif
 
 extern FILE __sF[];
+/*
+extern FILE* __stdin;
+extern FILE* __stdout;
+extern FILE* __stderr;
+*/
 
 /*
  * C99's functions totals 46.

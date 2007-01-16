@@ -32,11 +32,11 @@ public:		//‚Ü‚¾–¢ŽÀ‘•‚È‚Ì‚Å
 	static bool isFile(cpchar1 cszPath);
 	static int getSize(cpchar1 cszPath);
 	static uint getLastModifiedTime(cpchar1 cszPath);
-	static bool read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize);
+	static bool read(cpchar1 cszPath,uint8_t* pBufferOut,int iBufferSize);
 	static bool read(cpchar1 cszPath,class Buffer* pbufOut);
 	static bool read(cpchar1 cszPath,class String* pstrOut);
 
-	static bool write(cpchar1 cszPath,const byte* cpIn,int iCount);
+	static bool write(cpchar1 cszPath,const uint8_t* cpIn,int iCount);
 	static bool write(cpchar1 cszPath,const Buffer* cpbufIn);
 	static bool write(cpchar1 cszPath,const String* cpstrIn);
 	static bool createDirectory(cpchar1 cszPath,cpchar1 cszDirName);

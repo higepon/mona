@@ -15,14 +15,14 @@ public:
     void setRoot(Vnode* root) {root_ = root;}
     int mount(Vnode* a, const std::string& path, Vnode* b);
     int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type = Vnode::REGULAR);
-    int open(const std::string& name, int mode, bool create, dword tid, dword* fileID);
-    int read(dword fileID, dword size, monapi_cmemoryinfo** mem);
-    int write(dword fileID, dword size, monapi_cmemoryinfo* mem);
-    int seek(dword fileID, dword offset, dword origin);
-    int stat(dword fileID, Stat* st);
-    int close(dword fileID);
+    int open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID);
+    int read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem);
+    int write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem);
+    int seek(uint32_t fileID, uint32_t offset, uint32_t origin);
+    int stat(uint32_t fileID, Stat* st);
+    int close(uint32_t fileID);
     int readdir(const std::string& name, monapi_cmemoryinfo** mem);
-    dword fileID(Vnode* file , dword tid) {return (dword)file | tid;} // temporary
+    uint32_t fileID(Vnode* file , uint32_t tid) {return (uint32_t)file | tid;} // temporary
     Vnode* alloc();
     VnodeCacher* cacher() {return cacher_;}
     void split(std::string str, char ch, std::vector<std::string>& v);
@@ -30,7 +30,7 @@ public:
 protected:
 
 private:
-    typedef std::map<dword, io::FileInfo*> FileInfoMap;
+    typedef std::map<uint32_t, io::FileInfo*> FileInfoMap;
     Vnode* root_;
     FileInfoMap fileInfoMap_;
     VnodeCacher* cacher_;

@@ -38,7 +38,7 @@
 
 #define CLOCKS_PER_SEC	100
 
-typedef dword clock_t;
+typedef uint32_t clock_t;
 typedef long time_t;
 
 struct tm

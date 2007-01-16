@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_DATE_
-#define _MONA_USERLIB_DATE_
+#ifndef _MONAPI_DATE_
+#define _MONAPI_DATE_
 
 #include <sys/types.h>
 

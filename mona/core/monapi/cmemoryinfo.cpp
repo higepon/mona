@@ -25,7 +25,7 @@ void monapi_cmemoryinfo_delete(monapi_cmemoryinfo* self)
     free(self);
 }
 
-int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, dword size, int prompt)
+int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int prompt)
 {
     self->Handle = monapi_cmemorymap_create(size);
     if (self->Handle == 0)

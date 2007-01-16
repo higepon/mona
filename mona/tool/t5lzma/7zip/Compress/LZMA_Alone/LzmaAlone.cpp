@@ -81,7 +81,7 @@ static void PrintHelp()
     "<Switches>\n"
     "  -a{N}:  set compression mode - [0, 2], default: 2 (max)\n"
     "  -d{N}:  set dictionary - [0,28], default: 23 (8MB)\n"
-    "  -fb{N}: set number of fast bytes - [5, 255], default: 128\n"
+    "  -fb{N}: set number of fast uint8_ts - [5, 255], default: 128\n"
     "  -lc{N}: set number of literal context bits - [0, 8], default: 0\n" /* !!! */
     "  -lp{N}: set number of literal pos bits - [0, 4], default: 0\n"
     "  -pb{N}: set number of pos bits - [0, 4], default: 0\n" /* !!! */

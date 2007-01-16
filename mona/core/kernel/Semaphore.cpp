@@ -40,7 +40,7 @@ void Semaphore::up(semaphore* sem) {
 */
 int Semaphore::down(semaphore* sem) {
 
-    dword eflags = get_eflags();
+    uint32_t eflags = get_eflags();
     disableInterrupt();
 
     if (*sem) {

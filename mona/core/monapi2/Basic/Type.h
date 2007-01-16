@@ -41,9 +41,9 @@ typedef	unsigned short			uint16;		///<2バイト幅固定のunsigned
 typedef	unsigned int			uint32;		///<4バイト幅固定のunsigned
 
 //固定幅の一般的に使われる別名。
-typedef	uint8					byte;		///<uint8の別名
-typedef	uint16					word;		///<uint16の別名
-typedef	uint32					dword;		///<uint32の別名。オフセット(アドレス)を記述する意味でのときなどによく使われる。
+typedef	uint8					uint8_t;		///<uint8の別名
+typedef	uint16					uint16_t;		///<uint16の別名
+typedef	uint32					uint32_t;		///<uint32の別名。オフセット(アドレス)を記述する意味でのときなどによく使われる。
 
 
 /**
@@ -89,7 +89,7 @@ template<class TYPE>
 class int64Base
 {
 public:
-	word operator =(const word w)	{set(0,w);return w;}
+	uint16_t operator =(const uint16_t w)	{set(0,w);return w;}
 	int operator =(const int i)		{set(0,i);return i;}
 	uint operator =(const uint n)	{set(0,n);return n;}
 	operator uint()	{return m_t[0];}

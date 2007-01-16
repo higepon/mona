@@ -18,14 +18,14 @@ public:
     virtual void setReferance();
     virtual void cancelReferance();
 
-    dword getId() const {return id;}
-    void setId(dword id) {this->id = id;}
+    uint32_t getId() const {return id;}
+    void setId(uint32_t id) {this->id = id;}
 
 private:
     int referanceCount;
 
 public:
-    dword id;
+    uint32_t id;
     static const int KOBJECT;
     static const int THREAD;
     static const int KMUTEX;

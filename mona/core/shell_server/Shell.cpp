@@ -1,55 +1,41 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
+#include <monalibc/stdarg.h>
 
 #include "Shell.h"
-
 using namespace MonAPI;
 
 /*----------------------------------------------------------------------
     Shell
 ----------------------------------------------------------------------*/
-Shell::Shell(bool callAutoExec)
-    : position(0), hasExited(false), callAutoExec(callAutoExec), doExec(false),
-     waiting(THREAD_UNKNOWN), prevX(0), prevY(0), firstTimeOfCD0(true)
+Shell::Shell(uint32_t outHandle) : position_(0), doExec_(false), waiting_(THREAD_UNKNOWN)
 {
-    changeDirecotory("/APPS");
-    this->startDirectory = "/APPS";
+    inStream_ = new Stream();
+    outStream_ = Stream::FromHandle(outHandle);
+    terminal_ = new TerminalUtil(outStream_);
+    changeDirecotory(APPSDIR);
+    startDirectory_ = APPSDIR;
 
-    if (this->callAutoExec)
-    {
-        this->callAutoExec = false;
-        this->executeMSH("/AUTOEXEC.MSH");
-    }
-    this->self = syscall_get_tid();
-    if (!this->doExec) {
-        this->printPrompt("\n");
-        this->drawCaret();
-    }
+    executeMSH("/AUTOEXEC.MSH");
+    prompt();
+    terminal_->drawCursor();
 }
 
 Shell::~Shell()
 {
+    delete inStream_;
+    delete outStream_;
 }
 
 void Shell::run()
 {
-    MessageInfo msg;
-    while (!this->hasExited)
+    for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;
-#if 0  /// DEBUG for message
-        if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
-        {
-            char buf[128];
-            sprintf(buf, "**** INVALID MESSAGE!! ****[%d: %d, %d]\n", syscall_get_tid(), msg.header, msg.arg1);
-            syscall_print(buf);
-            for (;;);
-        }
-#endif
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
-                if (!this->doExec && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
+                if (!doExec_ && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
 
                 {
                     this->onKeyDown(msg.arg1, msg.arg2);
@@ -61,69 +47,126 @@ void Shell::run()
                 break;
 
             case MSG_PROCESS_TERMINATED:
-                if (this->waiting == msg.arg1)
+                if (waiting_ == msg.arg1)
                 {
-                    this->printPrompt("\n");
-                    this->waiting = THREAD_UNKNOWN;
-                    this->doExec = false;
-                    this->drawCaret();
+                    prompt();
+                    waiting_ = THREAD_UNKNOWN;
+                    doExec_ = false;
+                    terminal_->drawCursor();
                 }
-
                 break;
+            case MSG_GET_OUT_STREAM_HANDLE:
+            {
+                Message::reply(&msg, outStream_->handle());
+                break;
+            }
+            case MSG_CHANGE_OUT_STREAM_BY_HANDLE:
+            {
+                uint32_t oldHandle = outStream_->handle();
+                // delete outStream_;
+                outStream_ = Stream::FromHandle(msg.arg1);
+                terminal_ = new TerminalUtil(outStream_);
+                Message::reply(&msg, oldHandle);
+                break;
+            }
         }
     }
 }
 
 void Shell::backspace()
 {
-    if (this->position == 0)
+    if (position_ == 0)
     {
         /* donothing */
         return;
     }
 
-    this->checkCaretPosition();
-
-    int x, y;
-    syscall_get_cursor(&x, &y);
-    syscall_set_cursor(x - 1, y);
-    printf("  ");
-    syscall_set_cursor(x - 1, y);
-    this->drawCaret();
+    terminal_->cursorLeft(1);
+    formatWrite("  ");
+    terminal_->cursorLeft(2);
+    terminal_->drawCursor();
 
     /* backspace */
-    this->position--;
+    position_--;
 }
 
 void Shell::commandChar(char c)
 {
     if (c != '\0')
     {
-        if (!this->doExec)
-        {
-            this->checkCaretPosition();
-            int x, y;
-            syscall_get_cursor(&x, &y);
-            x++;
-            if ((x + 1) * FONT_WIDTH >= this->screen.getWidth()) return;
-        }
-        printf("%c", c);
-        this->drawCaret();
+        formatWrite("%c", c);
+        terminal_->drawCursor();
     }
-    this->commandLine[this->position] = c;
-    this->position++;
+
+    // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
+    if (inStream_->tryLockForRead() == MONA_SUCCESS)
+    {
+        inStream_->unlockForRead();
+        commandLine_[position_] = c;
+        position_++;
+    }
+    else
+    {
+        inStream_->write((uint8_t*)&c, 1);
+    }
 }
 
-void Shell::commandExecute(bool prompt)
+bool Shell::isPipeCommand()
 {
-    if (prompt) printf("\n");
+    CString line(commandLine_);
+    return line.indexOf('|') != -1;
+}
+
+void Shell::commandExecutePipe()
+{
+    _A<CString> commands = CString(commandLine_).split('|');
+    for (int i = 0; i < commands.get_Length(); i++)
+    {
+        commands[i].trim();
+    }
+    _A< _A<CString> > parsedCommands(commands.get_Length());
+    for (int i = 0; i < commands.get_Length(); i++)
+    {
+        parsedCommands[i] = commands[i].split(' ');
+        if (isInternalCommand(parsedCommands[i][0]))
+        {
+            formatWrite("internal command can not use pipe yet\n");
+            prompt(false);
+            return;
+        }
+    }
+
+    _A<Stream*> streams(commands.get_Length() + 1);
+    streams[0] = inStream_;
+    streams[commands.get_Length()] = outStream_;
+    for (int i = 1; i < commands.get_Length(); i++)
+    {
+        streams[i] = new Stream();
+    }
+
+    for (int i = 0; i < commands.get_Length(); i++)
+    {
+        commandExecute(parsedCommands[i], streams[i]->handle(), streams[i + 1]->handle());
+    }
+}
+
+void Shell::commandExecute(bool isPrompt)
+{
+    if (isPrompt) formatWrite("\n");
+
+    if (isPipeCommand())
+    {
+        commandExecutePipe();
+        position_ = 0;
+        return;
+    }
 
     _A<CString> args = this->parseCommandLine();
-    this->position = 0;
+    position_ = 0;
     if (args.get_Length() == 0)
     {
         /* command is empty */
-        this->printPrompt();
+        prompt(false);
         return;
     }
 
@@ -132,27 +175,22 @@ void Shell::commandExecute(bool prompt)
     if (isInternal != 0)
     {
         bool newline = internalCommandExecute(isInternal, args);
-        if (!this->hasExited && prompt)
+        if (isPrompt)
         {
-            this->printPrompt(newline ? "\n" : NULL);
+            prompt(newline);
         }
         return;
     }
 
-    this->commandExecute(args);
+    this->commandExecute(args, inStream_->handle(), outStream_->handle());
 }
 
-bool Shell::pathHasDriveLetter(const CString& path)
+bool Shell::commandExecute(_A<CString> args, uint32_t stdin_id, uint32_t stdout_id)
 {
-    return path.startsWith("CD0:/") || path.startsWith("FD0:/");
-}
-
-bool Shell::commandExecute(_A<CString> args)
-{
-    history.add(this->commandLine);
+    history_.add(commandLine_);
     CString cmdLine;
     CString command = args[0].toUpper();
-    if (command[0] == '/' || pathHasDriveLetter(command))
+    if (command[0] == '/')
     {
         cmdLine = command;
     }
@@ -170,9 +208,9 @@ bool Shell::commandExecute(_A<CString> args)
     else
     {
         CString cmd2 = command + ".";
-        for (int i = 0; i < this->apps.size(); i++)
+        for (int i = 0; i < apps_.size(); i++)
         {
-            CString file = apps.get(i);
+            CString file = apps_.get(i);
             if (file == command + ".APP")
             {
                 cmdLine = APPSDIR"/" + file + "/" + command + ".EX5";
@@ -186,8 +224,8 @@ bool Shell::commandExecute(_A<CString> args)
         }
         if (cmdLine == NULL)
         {
-            printf("Can not find command.\n");
-            if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
+            formatWrite("Can not find command.\n");
+            if (waiting_ == THREAD_UNKNOWN) prompt();
             return false;;
         }
     }
@@ -195,7 +233,7 @@ bool Shell::commandExecute(_A<CString> args)
     if (cmdLine.endsWith(".MSH"))
     {
         this->executeMSH(cmdLine);
-        if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
+        if (waiting_ == THREAD_UNKNOWN) prompt();
         return true;
     }
 
@@ -205,16 +243,16 @@ bool Shell::commandExecute(_A<CString> args)
         cmdLine += args[i];
     }
 
-    dword tid;
-    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, this->self);
+    uint32_t tid;
+    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, stdin_id, stdout_id);
 
-    if (/*!this->callAutoExec &&*/ result == 0 && !this->doExec)
+    if (result == 0 && !doExec_)
     {
-        this->waiting = tid;
+        waiting_ = tid;
     }
     else
     {
-        this->printPrompt("\n");
+        prompt();
     }
 
     return result == 0;
@@ -227,10 +265,10 @@ void Shell::commandTerminate()
 
 void Shell::onKeyDown(int keycode, int modifiers)
 {
-    if (!this->doExec && this->waiting != THREAD_UNKNOWN)
+    if (!doExec_ && waiting_ != THREAD_UNKNOWN)
     {
-        this->printPrompt("\n");
-        this->waiting = THREAD_UNKNOWN;
+        prompt();
+        waiting_ = THREAD_UNKNOWN;
         if (keycode == Keys::Enter) return;
     }
 
@@ -287,6 +325,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
     case(Keys::Space):
     case(Keys::Divide):
     case(Keys::OemPeriod):
+    case(Keys::OemPipe):
     case(Keys::OemQuestion):
     case(Keys::OemMinus):
     case(Keys::OemBackslash):
@@ -299,9 +338,9 @@ void Shell::onKeyDown(int keycode, int modifiers)
         }
         else if (keycode == Keys::P && modifiers & KEY_MODIFIER_CTRL)
         {
-            if (history.size() > 0)
+            if (history_.size() > 0)
             {
-                CString command = history.get(history.size() - 1);
+                CString command = history_.get(history_.size() - 1);
                 for (int i = 0; i < command.getLength(); i++)
                 {
                     this->commandChar(command[i]);
@@ -309,17 +348,18 @@ void Shell::onKeyDown(int keycode, int modifiers)
             }
             break;
         }
- 
+
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
         this->commandChar(Keys::ToChar(key));
         break;
     case(Keys::Enter):
-        this->drawCaret(true);
-        this->commandTerminate();
-        this->commandExecute(true);
-        if (this->waiting == THREAD_UNKNOWN && !this->hasExited) this->drawCaret();
+        terminal_->eraseCursor();
+        commandTerminate();
+        commandTerminate();
+        commandExecute(true);
+        if (waiting_ == THREAD_UNKNOWN) terminal_->drawCursor();
         break;
 
     case(Keys::Up):
@@ -344,7 +384,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
 
 _A<CString> Shell::parseCommandLine()
 {
-    _A<CString> args = CString(this->commandLine).split(' ');
+    _A<CString> args = CString(commandLine_).split(' ');
     int size = 0;
     FOREACH (CString, arg, args)
     {
@@ -367,7 +407,7 @@ _A<CString> Shell::parseCommandLine()
 
 int Shell::makeApplicationList()
 {
-    if (apps.size() > 0) return 0;
+    if (apps_.size() > 0) return 0;
     monapi_cmemoryinfo* mi = monapi_file_read_directory(APPSDIR);
     int size = *(int*)mi->Data;
     if (mi == NULL || size == 0)
@@ -384,19 +424,13 @@ int Shell::makeApplicationList()
             || file.endsWith(".EXE") || file.endsWith(".EX2") || file.endsWith(".EX5")
             || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
-            apps.add(file);
+            apps_.add(file);
         }
     }
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
     return 0;
-}
-
-void Shell::printPrompt(const CString& prefix /*= NULL*/)
-{
-    if (prefix != NULL) printf("%s", (const char*)prefix);
-    printf("[Mona]%s> ", (const char*)this->currentDirectory);
 }
 
 CString Shell::getParentDirectory(const CString& dir)
@@ -439,12 +473,12 @@ void Shell::printFiles(const CString& dir)
     int size;
     if (mi == NULL || (size = *(int*)mi->Data) == 0)
     {
-        printf("%s: directory not found: %s\n", SVR, (const char*)dir);
+        formatWrite("%s: directory not found: %s\n", SVR, (const char*)dir);
         return;
     }
 
     CString spc = "               ";
-    int w = 0, sw = this->screen.getWidth();
+    int w = 0, sw = screen_.getWidth();
 
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     for (int i = 0; i < size; i++, p++)
@@ -460,13 +494,13 @@ void Shell::printFiles(const CString& dir)
         int fw = FONT_WIDTH * file.getLength();
         if (w + fw >= sw)
         {
-            printf("\n");
+            formatWrite("\n");
             w = 0;
         }
-        printf("%s", (const char*)file);
+        formatWrite("%s", (const char*)file);
         w += fw;
     }
-    printf("\n");
+    formatWrite("\n");
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
@@ -477,20 +511,20 @@ void Shell::executeMSH(const CString& msh)
     monapi_cmemoryinfo* mi = monapi_file_read_all(msh);
     if (mi == NULL) return;
 
-    for (dword pos = 0, start = 0; pos <= mi->Size; pos++)
+    for (uint32_t pos = 0, start = 0; pos <= mi->Size; pos++)
     {
         char ch = pos < mi->Size ? (char)mi->Data[pos] : '\n';
         if (ch == '\r' || ch == '\n')
         {
             int len = pos - start;
-            bool prompt = true;
+            bool isPrompt = true;
             if (len > 0)
             {
                 if (mi->Data[start] == '@')
                 {
                     start++;
                     len--;
-                    prompt = false;
+                    isPrompt = false;
                 }
                 if (mi->Data[start] == '#')
                 {
@@ -500,16 +534,16 @@ void Shell::executeMSH(const CString& msh)
             if (len > 0)
             {
                 if (len > 127) len = 127;
-                strncpy(this->commandLine, (const char*)&mi->Data[start], len);
-                this->position = len;
-                this->commandLine[len] = '\0';
-                if (prompt)
+                strncpy(commandLine_, (const char*)&mi->Data[start], len);
+                position_ = len;
+                commandLine_[len] = '\0';
+                if (isPrompt)
                 {
-                    this->printPrompt("\n");
-                    printf("%s", this->commandLine);
+                    prompt();
+                    formatWrite("%s", commandLine_);
                 }
 
-                this->commandExecute(prompt);
+                this->commandExecute(isPrompt);
             }
             start = pos + 1;
         }
@@ -519,43 +553,30 @@ void Shell::executeMSH(const CString& msh)
     monapi_cmemoryinfo_delete(mi);
 }
 
-void Shell::drawCaret(bool erase /*= false*/)
-{
-    if (this->doExec) return;
-
-    int x, y;
-    syscall_get_cursor(&x, &y);
-    this->screen.fillRect16(x * FONT_WIDTH, y * FONT_HEIGHT + FONT_HEIGHT - 2, 8, 2,
-        erase ? BACKGROUND : FOREGROUND);
-    this->prevX = x;
-    this->prevY = y;
-}
-
-void Shell::checkCaretPosition()
-{
-    int x, y;
-    syscall_get_cursor(&x, &y);
-    if (this->prevX == x && this->prevY == y) return;
-
-    monapi_call_mouse_set_cursor(0);
-    this->printPrompt(this->prevX == 0 ? NULL : "\n");
-    this->commandLine[this->position] = '\0';
-    printf(this->commandLine);
-    monapi_call_mouse_set_cursor(1);
-}
-
-void Shell::setCurrentDirectory()
-{
-//     char buff[128];
-//     monapi_call_get_current_directory(buff);
-//     logprintf("buf=%s\n", buff);
-//     this->currentDirectory = buff;
-}
-
 bool Shell::changeDirecotory(const MonAPI::CString& path)
 {
-//     setCurrentDirectory();
-    this->currentDirectory = path;
+    currentDirectory_ = path;
     makeApplicationList();
     return true;
+}
+
+int Shell::prompt(bool newline /* = true */)
+{
+    return formatWrite("%s[Mona]%s> ", newline ? "\n" : "", (const char*)currentDirectory_);
+}
+
+int Shell::formatWrite(const char* format, ...)
+{
+    char str[512];
+    str[0] = '\0';
+    va_list args;
+    int result;
+    va_start(args, format);
+    result = vsprintf(str, format, args);
+    va_end(args);
+    if(result > OUT_BUFFER_SIZE)
+    {
+        printf("Shell::out:overflow");
+    }
+    return terminal_->write(str);
 }

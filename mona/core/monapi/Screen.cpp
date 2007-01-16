@@ -12,7 +12,7 @@ Screen::Screen() {
 
     /* get and set vram information */
     syscall_get_vram_info(&sinfo);
-    vram_        = (byte*)sinfo.vram;
+    vram_        = (uint8_t*)sinfo.vram;
     bpp_         = sinfo.bpp;
     xResolution_ = sinfo.x;
     yResolution_ = sinfo.y;
@@ -21,16 +21,16 @@ Screen::Screen() {
 Screen::~Screen() {
 }
 
-void Screen::putPixel16(int x, int y, dword color) {
+void Screen::putPixel16(int x, int y, uint32_t color) {
 
-    int bytesPerPixel = bpp_ / 8;
-    byte* vram       = &vram_[(x + y * xResolution_) * bytesPerPixel];
-    byte* p_color  = (byte*)&color;
+    int uint8_tsPerPixel = bpp_ / 8;
+    uint8_t* vram       = &vram_[(x + y * xResolution_) * uint8_tsPerPixel];
+    uint8_t* p_color  = (uint8_t*)&color;
 
-    switch (bytesPerPixel)
+    switch (uint8_tsPerPixel)
     {
         case 2:
-            *((word*)vram) = Color::bpp24to565(color);
+            *((uint16_t*)vram) = Color::bpp24to565(color);
             break;
         default:
             vram[0] = p_color[0];
@@ -40,20 +40,20 @@ void Screen::putPixel16(int x, int y, dword color) {
     }
 }
 
-void Screen::fillRect16(int x, int y, int w, int h, dword color) {
+void Screen::fillRect16(int x, int y, int w, int h, uint32_t color) {
 
-    dword bytesPerPixel = bpp_ / 8;
+    uint32_t uint8_tsPerPixel = bpp_ / 8;
 
-    byte* position = &vram_[(x + y * xResolution_) * bytesPerPixel];
-    byte* temp     = position;
-    byte* p_color  = (byte*)&color;
+    uint8_t* position = &vram_[(x + y * xResolution_) * uint8_tsPerPixel];
+    uint8_t* temp     = position;
+    uint8_t* p_color  = (uint8_t*)&color;
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
-            switch (bytesPerPixel)
+            switch (uint8_tsPerPixel)
             {
                 case 2:
-                    *((word*)temp) = Color::bpp24to565(color);
+                    *((uint16_t*)temp) = Color::bpp24to565(color);
                     break;
                 default:
                     temp[0] = p_color[0];
@@ -61,9 +61,9 @@ void Screen::fillRect16(int x, int y, int w, int h, dword color) {
                     temp[2] = p_color[2];
                     break;
             }
-            temp += bytesPerPixel;
+            temp += uint8_tsPerPixel;
         }
-        position += xResolution_ * bytesPerPixel;
+        position += xResolution_ * uint8_tsPerPixel;
         temp = position;
     }
 }
@@ -78,8 +78,8 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     if (destX + width  > maxX) width  = maxX - destX;
     if (destY + height > maxY) height = maxY - destY;
 
-    byte* dvram      = destScreen->getVRAM();
-    byte* svram      = sourceScreen->getVRAM();
+    uint8_t* dvram      = destScreen->getVRAM();
+    uint8_t* svram      = sourceScreen->getVRAM();
     int xResolution  = destScreen->getWidth();
     int bitsPerPixel = destScreen->getBpp();
 
@@ -128,8 +128,8 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     if (destX + width  > maxX) width  = maxX - destX;
     if (destY + height > maxY) height = maxY - destY;
 
-    byte* dvram      = destScreen->getVRAM();
-    byte* svram      = sourceScreen->getVRAM();
+    uint8_t* dvram      = destScreen->getVRAM();
+    uint8_t* svram      = sourceScreen->getVRAM();
     int xResolution  = destScreen->getWidth();
     int bitsPerPixel = destScreen->getBpp();
 
@@ -168,7 +168,7 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
 }
 
 /* from orange pekoe */
-void Screen::circle16(int x, int y, int r, dword color) {
+void Screen::circle16(int x, int y, int r, uint32_t color) {
 
     int w, h, f;
     w = r;
@@ -194,7 +194,7 @@ void Screen::circle16(int x, int y, int r, dword color) {
     }
 }
 
-void Screen::fillCircle16(int x, int y, int r, dword color) {
+void Screen::fillCircle16(int x, int y, int r, uint32_t color) {
 
     int i;
     int w, h;

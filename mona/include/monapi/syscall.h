@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_SYSCALL_H_
-#define _MONA_USERLIB_SYSCALL_H_
+#ifndef _MONAPI_SYSCALL_
+#define _MONAPI_SYSCALL_
 
 #include <sys/types.h>
 
@@ -11,7 +11,7 @@ typedef int (FuncMain)(int argc, char* argv[]);
 
 typedef int (FuncMonaMain)(List<char*>*);
 
-extern void invokeFuncList(FuncVoid** list);
+extern void invokeFuncList(FuncVoid** list, char* file, int line);
 extern bool isInDLL(FuncVoid** ctors);
 extern int MonaMain(List<char*>* pekoe);
 extern void setupArguments(List<char*>* arg);
@@ -20,28 +20,30 @@ extern "C" {
 #endif
 extern void setConstructorList(FuncVoid** crots);
 extern int user_start();
-extern int sleep(dword ms);
-extern int set_timer(dword ms);
-extern int  kill_timer(dword id);
+extern int sleep(uint32_t ms);
+extern int set_timer(uint32_t ms);
+extern int  kill_timer(uint32_t id);
 extern int heavy();
-extern int print(const char*);
+extern int print(const char*, int direct);
 extern int kill();
 extern int exit(int error);
-extern int mthread_create(dword f);
-extern int mthread_join(dword id);
-extern int syscall_test(dword laddress);
-extern int syscall_sleep(dword tick);
-extern int syscall_set_timer(dword tick);
-extern int syscall_kill_timer(dword id);
+extern int mthread_create(uint32_t f);
+extern int mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
+extern int mthread_kill(uint32_t id);
+extern int syscall_test(uint32_t laddress);
+extern int syscall_sleep(uint32_t tick);
+extern int syscall_log_print(const char* msg);
+extern int syscall_set_timer(uint32_t tick);
+extern int syscall_kill_timer(uint32_t id);
 extern int syscall_print(const char*);
 extern int syscall_kill();
-extern int syscall_send(dword id, MessageInfo* message);
+extern int syscall_send(uint32_t id, MessageInfo* message);
 extern int syscall_receive(MessageInfo* message);
 extern int syscall_exist_message();
-extern int syscall_mthread_create(dword f);
+extern int syscall_mthread_create(uint32_t f);
 extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
-extern int syscall_mthread_join(dword id);
-extern int syscall_mutex_create(dword arg);
+extern int syscall_mthread_kill(uint32_t id);
+extern int syscall_mutex_create(uint32_t arg);
 extern int syscall_mutex_trylock(int id);
 extern int syscall_mutex_lock (int id );
 extern int syscall_mutex_unlock(int id);
@@ -49,12 +51,12 @@ extern int syscall_get_vram_info(volatile ScreenInfo* info);
 extern int syscall_get_cursor(int* x, int* y);
 extern int syscall_set_cursor(int x, int y);
 extern int syscall_mutex_destroy(int id);
-extern int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
+extern int syscall_map(uint32_t pid, uint32_t sharedId, uint32_t linearAddress, uint32_t size);
 extern int syscall_map2(MappingInfo* info);
-extern int syscall_unmap2(dword sharedId);
+extern int syscall_unmap2(uint32_t sharedId);
 extern int syscall_lookup_main_thread(const char* name);
-extern dword syscall_get_pid();
-extern dword syscall_get_tid();
+extern uint32_t syscall_get_pid();
+extern uint32_t syscall_get_tid();
 extern int syscall_get_arg_count();
 extern int syscall_get_arg(char* buf, int n);
 extern int syscall_mthread_yield_message();
@@ -63,19 +65,19 @@ extern int syscall_get_io();
 extern int syscall_set_ps_dump();
 extern int syscall_read_ps_dump(PsInfo* info);
 extern int syscall_load_process_image(LoadProcessInfo* info);
-extern int syscall_kill_thread(dword tid);
+extern int syscall_kill_thread(uint32_t tid);
 
-extern dword syscall_memory_map_create(dword size);
-extern dword syscall_memory_map_get_size(dword id);
-extern int syscall_memory_map_map(dword id, dword address);
-extern int syscall_memory_map_unmap(dword id);
+extern uint32_t syscall_memory_map_create(uint32_t size);
+extern uint32_t syscall_memory_map_get_size(uint32_t id);
+extern int syscall_memory_map_map(uint32_t id, uint32_t address);
+extern int syscall_memory_map_unmap(uint32_t id);
 
-extern byte* syscall_allocate_dma_memory(int size); // size should be 4096 * x
-extern dword syscall_deallocate_dma_memory(void* address, int size); //size should be 4096 * x
+extern uint8_t* syscall_allocate_dma_memory(int size); // size should be 4096 * x
+extern uint32_t syscall_deallocate_dma_memory(void* address, int size); //size should be 4096 * x
 
-extern dword syscall_lookup(const char* name);
-extern dword syscall_get_tick();
-extern int syscall_get_kernel_version(char* buf, dword size);
+extern uint32_t syscall_lookup(const char* name);
+extern uint32_t syscall_get_tick();
+extern int syscall_get_kernel_version(char* buf, uint32_t size);
 extern int syscall_clear_screen();
 extern int syscall_peek(MessageInfo* message, int index, int flags);
 
@@ -83,8 +85,8 @@ extern int syscall_set_irq_receiver(int irq, int maskInterrupt);
 extern int syscall_has_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
 extern int syscall_get_memory_info(MemoryInfo* INFO);
-extern int syscall_free_pages(dword address, dword size);
-extern int syscall_change_base_priority(dword priority);
+extern int syscall_free_pages(uint32_t address, uint32_t size);
+extern int syscall_change_base_priority(uint32_t priority);
 
 extern int syscall_set_dll_segment_writable();
 extern int syscall_set_dll_segment_notshared(int index);
@@ -100,12 +102,13 @@ extern void _pure_virtual(void);
 extern void __pure_virtual(void);
 extern int atexit( void (*func)(void));
 
-extern void putCharacter(char ch);
-extern void putInt(size_t n, int base);
+extern void putCharacter(char ch, int direct);
+extern void putInt(size_t n, int base, int direct);
 extern void printf(const char *format, ...);
+extern void _printf(const char *format, ...);
 extern void logprintf(const char* format, ...);
+extern void _logprintf(const char* format, ...);
 #define Log logprintf("%s#%s:%d:", __FILE__, __func__, __LINE__), logprintf
-extern void printInt(int num);
 extern size_t _power(size_t x, size_t y);
 
 #ifdef __cplusplus

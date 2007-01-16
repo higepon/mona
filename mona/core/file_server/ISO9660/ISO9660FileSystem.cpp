@@ -83,9 +83,9 @@ int ISO9660FileSystem::write(Vnode* file, struct io::Context* context)
 int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 {
     Entry* fileEntry = (Entry*)file->fnode;
-    dword offset = context->offset;
-    dword readSize = context->size;
-    dword rest = fileEntry->attribute.size - offset;
+    uint32_t offset = context->offset;
+    uint32_t readSize = context->size;
+    uint32_t rest = fileEntry->attribute.size - offset;
 
     if (rest < readSize)
     {
@@ -94,9 +94,9 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 
     int lba = fileEntry->attribute.extent + offset / SECTOR_SIZE;
     int sectorCount = (offset + readSize + SECTOR_SIZE - 1) / SECTOR_SIZE - offset / SECTOR_SIZE;
-    dword sectorSize = sectorCount * SECTOR_SIZE;
+    uint32_t sectorSize = sectorCount * SECTOR_SIZE;
 
-    byte* temp = new byte[sectorSize];
+    uint8_t* temp = new uint8_t[sectorSize];
     if (temp == NULL) return MONA_FAILURE;
 
     bool readResult = drive_->read(lba, temp, sectorSize) == 0;
@@ -119,7 +119,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     return MONA_SUCCESS;
 }
 
-int ISO9660FileSystem::seek(Vnode* file, dword offset, dword origin)
+int ISO9660FileSystem::seek(Vnode* file, uint32_t offset, uint32_t origin)
 {
     return MONA_SUCCESS;
 }
@@ -145,13 +145,13 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
 {
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
-    dword readSize = ((dword)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
-    byte* buffer = readdirToBuffer(directory, readSize);
+    uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint8_t* buffer = readdirToBuffer(directory, readSize);
     if (buffer == NULL) return MONA_ERROR_MEMORY_NOT_ENOUGH;
     EntryList entryList;
-    for (dword position = 0 ; position < readSize;)
+    for (uint32_t position = 0 ; position < readSize;)
     {
-        DirectoryEntry* iEntry = (DirectoryEntry*)((dword)buffer + position);
+        DirectoryEntry* iEntry = (DirectoryEntry*)((uint32_t)buffer + position);
 
         if (iEntry->length == 0)
         {
@@ -193,9 +193,9 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     private functions
 ----------------------------------------------------------------------*/
 // you should delete return value
-byte* ISO9660FileSystem::readdirToBuffer(Entry* directory, dword readSize)
+uint8_t* ISO9660FileSystem::readdirToBuffer(Entry* directory, uint32_t readSize)
 {
-    byte* buffer = new byte[readSize];
+    uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
     {
@@ -279,10 +279,10 @@ int ISO9660FileSystem::readVolumeDescriptor()
     return MONA_SUCCESS;
 }
 
-byte* ISO9660FileSystem::readPathTableIntoBuffer()
+uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
 {
-    dword readSize = ((dword)((pdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
-    byte* buffer = new byte[readSize];
+    uint32_t readSize = ((uint32_t)((pdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
     {
@@ -296,7 +296,7 @@ byte* ISO9660FileSystem::readPathTableIntoBuffer()
 
 int ISO9660FileSystem::setDirectoryCache()
 {
-     byte* buffer;
+     uint8_t* buffer;
 
     // read path table
     if ((buffer = readPathTableIntoBuffer()) == NULL)
@@ -323,7 +323,7 @@ int ISO9660FileSystem::setDirectoryCache()
     setDetailInformation(rootDirectory_, rootEntry);
 
     // set children
-    for (dword i = 0; i < directoryList.size(); i++)
+    for (uint32_t i = 0; i < directoryList.size(); i++)
     {
         setDirectoryRelation(&directoryList, directoryList[i]);
     }
@@ -334,9 +334,9 @@ int ISO9660FileSystem::setDirectoryCache()
     return MONA_SUCCESS;
 }
 
-void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, byte* buffer)
+void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_t* buffer)
 {
-    for (dword id = 1, position = 0; position < pdescriptor_.path_table_size_l; id++)
+    for (uint32_t id = 1, position = 0; position < pdescriptor_.path_table_size_l; id++)
     {
         Entry* entry = new Entry;
 
@@ -409,9 +409,9 @@ string ISO9660FileSystem::getProperName(const string& name)
 
 void ISO9660FileSystem::setDirectoryRelation(EntryList* list, Entry* directory)
 {
-    dword self = directory->attribute.id;
+    uint32_t self = directory->attribute.id;
 
-    for (dword i = 0; i < list->size(); i++)
+    for (uint32_t i = 0; i < list->size(); i++)
     {
         Entry* entry = list->at(i);
 
@@ -436,8 +436,8 @@ void ISO9660FileSystem::deleteEntry(Entry* entry)
 
 void ISO9660FileSystem::split(string str, char ch, vector<string>& v)
 {
-    dword index = 0;
-    dword next = 0;
+    uint32_t index = 0;
+    uint32_t next = 0;
     while ((index = str.find_first_of(ch, next)) != string::npos)
     {
         v.push_back(string(str.begin() + next, str.begin() + index));
@@ -487,8 +487,8 @@ Entry* ISO9660FileSystem::lookupDirectory(Entry* root, const string& path)
 Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
 {
     setDetailInformation(directory);
-    dword readSize = ((dword)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
-    byte* buffer = new byte[readSize];
+    uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
     {
@@ -503,7 +503,7 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
         return NULL;
     }
 
-    for (dword position = 0; position < readSize;)
+    for (uint32_t position = 0; position < readSize;)
     {
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
 
@@ -541,8 +541,8 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
         setDetailInformation(entry->parent);
     }
 
-    dword readSize = ((dword)((entry->parent->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
-    byte* buffer = new byte[readSize];
+    uint32_t readSize = ((uint32_t)((entry->parent->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
     {
@@ -559,7 +559,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
 
     EntryList* children = &(entry->parent->children);
 
-    for (dword position = 0; position < readSize;)
+    for (uint32_t position = 0; position < readSize;)
     {
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
         string name = string(iEntry->name, iEntry->name_len);

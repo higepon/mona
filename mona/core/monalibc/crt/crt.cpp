@@ -5,7 +5,7 @@
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
+ * copies of the Software, and to permit persons to whom the Software is     * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -21,14 +21,14 @@
  *************************************************************/
 
 /* Please send bug reports to
-	Shotaro Tsuji
-	4-1010,
-	Sakasedai 1-chome,
-	Takaraduka-si,
-	Hyogo-ken,
-	665-0024
-	Japan
-	negi4d41@yahoo.co.jp
+    Shotaro Tsuji
+    4-1010,
+    Sakasedai 1-chome,
+    Takaraduka-si,
+    Hyogo-ken,
+    665-0024
+    Japan
+    negi4d41@yahoo.co.jp
 */
 
 #include <monapi/syscall.h>
@@ -38,6 +38,9 @@ extern int main(int, char*[]);
 
 extern "C" void monapi_initialize_memory(int);
 extern "C" int user_start_c_impl(FuncMain*);
+extern "C" FuncVoid* __CTOR_LIST__[];
+extern "C" FuncVoid* __DTOR_LIST__[];
+extern bool monapi_memory_initialized;
 
 /*
 FILE __sF[3];
@@ -50,31 +53,32 @@ extern "C" void fini_stdio(void);
 
 extern "C" int user_start()
 {
-	monapi_initialize_memory(64*1024*1024);
-	setConstructorList(0);
+    if (!monapi_memory_initialized)
+    {
+        monapi_initialize_memory(64 * 1024 * 1024);
+    }
+    setConstructorList(__CTOR_LIST__);
+    invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 
-	/* Initialize stdin, stdout, stderr. */
+    /* Initialize stdin, stdout, stderr. */
 /*
-	__sF[0] = *(_open_stdin());
-	__sF[1] = *(_open_stdout());
-	__sF[2] = *(_open_stderr());
+    __sF[0] = *(_open_stdin());
+    __sF[1] = *(_open_stdout());
+    __sF[2] = *(_open_stderr());
 */
-	init_stdio();
+    init_stdio();
 
-	/* Call _main */
-	int result = user_start_c_impl(main);
+    /* Call _main */
+    int result = user_start_c_impl(main);
 
-	/* Close stdin, stdout, stderr. */
+    /* Close stdin, stdout, stderr. */
 /*
-	fclose(&__sF[0]);
-	fclose(&__sF[1]);
-	fclose(&__sF[2]);
+    fclose(&__sF[0]);
+    fclose(&__sF[1]);
+    fclose(&__sF[2]);
 */
-	fini_stdio();
+    fini_stdio();
 
-	return result;
-}
-
-extern "C" void __main()
-{
+    invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
+    return result;
 }

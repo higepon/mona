@@ -8,13 +8,13 @@
 
 namespace MonAPI {
 
-int Message::send(dword tid, MessageInfo* info)
+int Message::send(uint32_t tid, MessageInfo* info)
 {
     if (tid == THREAD_UNKNOWN) return 1;
     return syscall_send(tid, info);
 }
 
-int Message::send(dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
+int Message::send(uint32_t tid, uint32_t header, uint32_t arg1 /*= 0*/, uint32_t arg2 /*= 0*/, uint32_t arg3 /*= 0*/, const char* str /*= NULL */)
 {
     MessageInfo info;
     Message::create(&info, header, arg1, arg2, arg3, str);
@@ -32,7 +32,7 @@ int Message::receive(MessageInfo* info)
     return result;
 }
 
-int Message::sendReceiveA(MessageInfo* dst, dword tid, MessageInfo* info)
+int Message::sendReceiveA(MessageInfo* dst, uint32_t tid, MessageInfo* info)
 {
     MessageInfo src;
 
@@ -46,7 +46,7 @@ int Message::sendReceiveA(MessageInfo* dst, dword tid, MessageInfo* info)
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 
-int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /* = 0 */, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
+int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32_t arg1 /* = 0 */, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
 {
     MessageInfo src;
 
@@ -61,7 +61,7 @@ int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 
-int Message::reply(MessageInfo* info, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
+int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
 {
     return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
 }
@@ -94,7 +94,7 @@ int Message::peek(MessageInfo* info, int index, int flags)
     return syscall_peek(info, index, flags);
 }
 
-void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
+void Message::create(MessageInfo* info, uint32_t header, uint32_t arg1 /*= 0*/, uint32_t arg2 /*= 0*/, uint32_t arg3 /*= 0*/, const char* str /*= NULL */)
 {
     info->header = header;
     info->arg1 = arg1;
@@ -114,17 +114,17 @@ bool Message::exist()
     return syscall_exist_message();
 }
 
-dword Message::lookup(const char* name)
+uint32_t Message::lookup(const char* name)
 {
     return syscall_lookup(name);
 }
 
-dword Message::lookupMainThread(const char* name)
+uint32_t Message::lookupMainThread(const char* name)
 {
     return syscall_lookup_main_thread(name);
 }
 
-dword Message::lookupMainThread()
+uint32_t Message::lookupMainThread()
 {
     return syscall_lookup_main_thread(NULL);
 }

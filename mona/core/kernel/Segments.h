@@ -22,9 +22,9 @@ class SharedMemoryObject {
 
   public:
     SharedMemoryObject();
-    SharedMemoryObject(dword id, dword size);
-    SharedMemoryObject(dword id, dword size, dword pid, dword linearAddress);
-    void initilize(dword id, dword size);
+    SharedMemoryObject(uint32_t id, uint32_t size);
+    SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
+    void initilize(uint32_t id, uint32_t size);
     virtual ~SharedMemoryObject();
 
     inline virtual int getAttachedCount() const {
@@ -35,11 +35,11 @@ class SharedMemoryObject {
         attachedCount_ = count;
     }
 
-    inline virtual dword getId() const {
+    inline virtual uint32_t getId() const {
         return id_;
     }
 
-    inline virtual dword getSize() const {
+    inline virtual uint32_t getSize() const {
         return size_;
     }
 
@@ -56,13 +56,13 @@ class SharedMemoryObject {
         physicalPages_[physicalIndex] = address;
     }
 
-    inline virtual dword getPageFlag(int physicalIndex) const {
+    inline virtual uint32_t getPageFlag(int physicalIndex) const {
 
         if (physicalIndex >= physicalPageCount_) return 0;
         return flags_[physicalIndex];
     }
 
-    inline virtual void setPageFlag(int physicalIndex, dword flag) {
+    inline virtual void setPageFlag(int physicalIndex, uint32_t flag) {
 
         if (physicalIndex >= physicalPageCount_) return;
 
@@ -71,11 +71,11 @@ class SharedMemoryObject {
 
   public:
     static void setup();
-    static bool open(dword id, dword size);
-    static bool open(dword id, dword size, dword pid, dword linearAddress);
-    static bool attach(dword id, struct Process* process, LinearAddress address);
-    static bool detach(dword id, struct Process* process);
-    static SharedMemoryObject* find(dword id);
+    static bool open(uint32_t id, uint32_t size);
+    static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
+    static bool attach(uint32_t id, struct Process* process, LinearAddress address);
+    static bool detach(uint32_t id, struct Process* process);
+    static SharedMemoryObject* find(uint32_t id);
     enum
     {
         UN_MAPPED = -1,
@@ -83,19 +83,20 @@ class SharedMemoryObject {
     };
 
   private:
-    dword id_;
-    dword size_;
+    uint32_t id_;
+    uint32_t size_;
     int attachedCount_;
     int physicalPageCount_;
     int* physicalPages_;
-    dword* flags_;
+    uint32_t* flags_;
 };
 
 class Segment {
 
   public:
-    virtual ~Segment(){};
-    virtual bool faultHandler(LinearAddress address, dword error) = 0;
+    Segment() {}
+    virtual ~Segment() {}
+    virtual bool faultHandler(LinearAddress address, uint32_t error) = 0;
 
     inline virtual int getErrorNumber() {
         return errorNumber_;
@@ -105,7 +106,7 @@ class Segment {
         return start_;
     }
 
-    inline virtual dword getSize() {
+    inline virtual uint32_t getSize() {
         return size_;
     }
 
@@ -116,48 +117,48 @@ class Segment {
 
   protected:
     LinearAddress start_;
-    dword         size_;
-    byte errorNumber_;
+    uint32_t         size_;
+    uint8_t errorNumber_;
 
   public:
-    static const byte FAULT_STACK_OVERFLOW = 0x01;
-    static const byte FAULT_OUT_OF_RANGE   = 0x02;
-    static const byte FAULT_UNKNOWN        = 0x03;
+    static const uint8_t FAULT_STACK_OVERFLOW = 0x01;
+    static const uint8_t FAULT_OUT_OF_RANGE   = 0x02;
+    static const uint8_t FAULT_UNKNOWN        = 0x03;
 };
 
 class StackSegment : public Segment {
 
   public:
-    StackSegment(LinearAddress start, dword size);
+    StackSegment(LinearAddress start, uint32_t size);
     virtual ~StackSegment();
     virtual bool inRange(LinearAddress address) {
         return (start_ - size_ <= address && address <= start_);
     }
 
   public:
-    virtual bool faultHandler(LinearAddress address, dword error);
+    virtual bool faultHandler(LinearAddress address, uint32_t error);
 };
 
 class HeapSegment : public Segment {
 
   public:
-    HeapSegment(LinearAddress start, dword size);
+    HeapSegment(LinearAddress start, uint32_t size);
     virtual ~HeapSegment();
 
   public:
-    virtual bool faultHandler(LinearAddress address, dword error);
+    virtual bool faultHandler(LinearAddress address, uint32_t error);
 };
 
 class SharedMemorySegment : public Segment {
 
   public:
     SharedMemorySegment();
-    SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject, bool writable = true);
+    SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable = true);
     virtual ~SharedMemorySegment();
 
   public:
-    virtual bool faultHandler(LinearAddress address, dword error);
-    inline virtual dword getId() const {
+    virtual bool faultHandler(LinearAddress address, uint32_t error);
+    inline virtual uint32_t getId() const {
         return sharedMemoryObject_->getId();
     }
 
@@ -166,7 +167,7 @@ class SharedMemorySegment : public Segment {
     }
 
   public:
-    static SharedMemorySegment* find(Process* process, dword id);
+    static SharedMemorySegment* find(Process* process, uint32_t id);
 
   protected:
     SharedMemoryObject* sharedMemoryObject_;

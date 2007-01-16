@@ -49,7 +49,7 @@ FDCDriver::~FDCDriver()
 */
 void FDCDriver::initilize()
 {
-    byte specifyCommand[] = {FDC_COMMAND_SPECIFY
+    uint8_t specifyCommand[] = {FDC_COMMAND_SPECIFY
                            , 0xC1 /* SRT = 4ms HUT = 16ms */
                            , 0x10 /* HLT = 16ms DMA       */
                             };
@@ -58,7 +58,7 @@ void FDCDriver::initilize()
     dmabuff = monapi_allocate_dma_memory(4096);
 
     /* do not over 64KB align */
-    if (dmabuff == NULL || (dword)dmabuff % 64 * 1024)
+    if (dmabuff == NULL || (uint32_t)dmabuff % 64 * 1024)
     {
         printf("FDDriver:dma buffer allocate error\n");
         return;
@@ -106,14 +106,14 @@ int FDCDriver::close()
     return 0;
 }
 
-int FDCDriver::read(dword lba, void* buf, int size)
+int FDCDriver::read(uint32_t lba, void* buf, int size)
 {
-    return this->read(lba, (byte*)buf) ? 0 : -1;
+    return this->read(lba, (uint8_t*)buf) ? 0 : -1;
 }
 
-int FDCDriver::write(dword lba, void* buf, int size)
+int FDCDriver::write(uint32_t lba, void* buf, int size)
 {
-    return this->write(lba, (byte*)buf) ? 0 : -1;
+    return this->write(lba, (uint8_t*)buf) ? 0 : -1;
 }
 
 /*!
@@ -172,7 +172,7 @@ void FDCDriver::motorAutoOff()
     \author HigePon
     \date   create:2003/02/16 update:2004/12/27
 */
-bool FDCDriver::sendCommand(const byte* command, const byte length)
+bool FDCDriver::sendCommand(const uint8_t* command, const uint8_t length)
 {
     /* send command */
     for (int i = 0; i < length; i++)
@@ -195,7 +195,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length)
 */
 bool FDCDriver::recalibrate()
 {
-    byte command[] = {0x07, 0x00}; /* recalibrate */
+    uint8_t command[] = {0x07, 0x00}; /* recalibrate */
 
     if (!sendCommand(command, sizeof(command)))
     {
@@ -221,9 +221,9 @@ bool FDCDriver::recalibrate()
     \author HigePon
     \date   create:2003/09/19 update:2004/12/27
 */
-void FDCDriver::waitStatus(byte expected)
+void FDCDriver::waitStatus(uint8_t expected)
 {
-    byte status;
+    uint8_t status;
 
     do
     {
@@ -240,9 +240,9 @@ void FDCDriver::waitStatus(byte expected)
     \author HigePon
     \date   create:2003/09/19 update:2004/12/27
 */
-void FDCDriver::waitStatus(byte mask, byte expected)
+void FDCDriver::waitStatus(uint8_t mask, uint8_t expected)
 {
-    byte status;
+    uint8_t status;
 
     do
     {
@@ -258,7 +258,7 @@ void FDCDriver::waitStatus(byte mask, byte expected)
     \author HigePon
     \date   create:2003/09/19 update:2004/12/27
 */
-byte FDCDriver::getResult()
+uint8_t FDCDriver::getResult()
 {
     waitStatus(0xd0, 0xd0);
     return inp8(FDC_DR_PRIMARY);
@@ -272,9 +272,9 @@ byte FDCDriver::getResult()
     \author HigePon
     \date   create:2003/02/11 update:2004/12/27
 */
-bool FDCDriver::seek(byte track)
+bool FDCDriver::seek(uint8_t track)
 {
-    byte command[] = {FDC_COMMAND_SEEK, 0, track};
+    uint8_t command[] = {FDC_COMMAND_SEEK, 0, track};
 
     if (currentTrack == track)
     {
@@ -307,7 +307,7 @@ bool FDCDriver::seek(byte track)
 */
 bool FDCDriver::senseInterrupt()
 {
-    byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
+    uint8_t command[] = {FDC_COMMAND_SENSE_INTERRUPT};
 
     if (!sendCommand(command, sizeof(command)))
     {
@@ -355,23 +355,23 @@ void FDCDriver::stopDMA()
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-void FDCDriver::setupDMARead(dword size)
+void FDCDriver::setupDMARead(uint32_t size)
 {
     size--; /* size should be */
-    dword p = (dword)dmabuff;
+    uint32_t p = (uint32_t)dmabuff;
 
     stopDMA();
 
     /* direction write */
     outp8(FDC_DMA_S_MR, 0x46);
 
-    /* clear byte pointer */
+    /* clear uint8_t pointer */
     outp8(FDC_DMA_S_CBP, 0);
-    outp8(FDC_DMA_S_BASE,  byte(p & 0xff));
-    outp8(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
-    outp8(FDC_DMA_S_COUNT, byte(size & 0xff));
-    outp8(FDC_DMA_S_COUNT, byte(size >>8));
-    outp8(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+    outp8(FDC_DMA_S_BASE,  uint8_t(p & 0xff));
+    outp8(FDC_DMA_S_BASE,  uint8_t((p >> 8) & 0xff));
+    outp8(FDC_DMA_S_COUNT, uint8_t(size & 0xff));
+    outp8(FDC_DMA_S_COUNT, uint8_t(size >>8));
+    outp8(FDC_DMA_PAGE2  , uint8_t((p >>16)&0xFF));
 
     startDMA();
     return;
@@ -383,23 +383,23 @@ void FDCDriver::setupDMARead(dword size)
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-void FDCDriver::setupDMAWrite(dword size)
+void FDCDriver::setupDMAWrite(uint32_t size)
 {
     size--;
-    dword p = (dword)dmabuff;
+    uint32_t p = (uint32_t)dmabuff;
 
     stopDMA();
 
     /* direction read */
     outp8(FDC_DMA_S_MR, 0x4a);
 
-    /* clear byte pointer */
+    /* clear uint8_t pointer */
     outp8(FDC_DMA_S_CBP, 0);
-    outp8(FDC_DMA_S_BASE,  byte(p & 0xff));
-    outp8(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
-    outp8(FDC_DMA_S_COUNT, byte(size & 0xff));
-    outp8(FDC_DMA_S_COUNT, byte(size >>8));
-    outp8(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+    outp8(FDC_DMA_S_BASE,  uint8_t(p & 0xff));
+    outp8(FDC_DMA_S_BASE,  uint8_t((p >> 8) & 0xff));
+    outp8(FDC_DMA_S_COUNT, uint8_t(size & 0xff));
+    outp8(FDC_DMA_S_COUNT, uint8_t(size >>8));
+    outp8(FDC_DMA_PAGE2  , uint8_t((p >>16)&0xFF));
 
     startDMA();
     return;
@@ -415,9 +415,9 @@ void FDCDriver::setupDMAWrite(dword size)
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-bool FDCDriver::read(byte track, byte head, byte sector)
+bool FDCDriver::read(uint8_t track, uint8_t head, uint8_t sector)
 {
-    byte command[] = {FDC_COMMAND_READ
+    uint8_t command[] = {FDC_COMMAND_READ
                    , (head & 1) << 2
                    , track
                    , head
@@ -464,9 +464,9 @@ bool FDCDriver::read(byte track, byte head, byte sector)
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-bool FDCDriver::write(byte track, byte head, byte sector)
+bool FDCDriver::write(uint8_t track, uint8_t head, uint8_t sector)
 {
-    byte command[] = {0xC5//FDC_COMMAND_WRITE
+    uint8_t command[] = {0xC5//FDC_COMMAND_WRITE
                    , (head & 1) << 2
                    , track
                    , head
@@ -499,14 +499,14 @@ bool FDCDriver::write(byte track, byte head, byte sector)
     \brief disk read
 
     \param lba    logical block address
-    \param buf    read result buffer 512byte
+    \param buf    read result buffer 512uint8_t
 
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-bool FDCDriver::read(dword lba, byte* buf)
+bool FDCDriver::read(uint32_t lba, uint8_t* buf)
 {
-    byte track, head, sector;
+    uint8_t track, head, sector;
 
     lbaToTHS(lba, track, head, sector);
 
@@ -527,14 +527,14 @@ bool FDCDriver::read(dword lba, byte* buf)
     \brief disk write
 
     \param lba    logical block address
-    \param buf    write result buffer 512byte
+    \param buf    write result buffer 512uint8_t
 
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-bool FDCDriver::write(dword lba, byte* buf)
+bool FDCDriver::write(uint32_t lba, uint8_t* buf)
 {
-    byte track, head, sector;
+    uint8_t track, head, sector;
 
     lbaToTHS(lba, track, head, sector);
 
@@ -560,7 +560,7 @@ bool FDCDriver::write(dword lba, byte* buf)
     \author HigePon
     \date   create:2003/02/15 update:2004/12/27
 */
-void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector)
+void FDCDriver::lbaToTHS(int lba, uint8_t& track, uint8_t& head, uint8_t& sector)
 {
     track = lba / (2 * 18);
     head = (lba / 18) % 2;
@@ -586,6 +586,6 @@ bool FDCDriver::checkDiskChange()
 bool FDCDriver::isInserted(int drive)
 {
     // now we don't drive parameters
-    bool result = read((byte)0, (byte)0, (byte)2);
+    bool result = read((uint8_t)0, (uint8_t)0, (uint8_t)2);
     return result;
 }

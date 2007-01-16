@@ -22,7 +22,7 @@ FileServer::~FileServer()
 {
     delete vmanager_;
     delete rootFS_;
-    for (FileSystems::iterator it = mountedFSs_.begin(); it != mountedFSs_.end(); it++)
+    for (FileSystems::const_iterator it = mountedFSs_.begin(); it != mountedFSs_.end(); ++it)
     {
         delete (*it);
     }
@@ -98,7 +98,7 @@ int FileServer::initializeRootFileSystem()
     }
 
     // set irq number
-    byte irq = controller == IDEDriver::PRIMARY ? IRQ_PRIMARY : IRQ_SECONDARY;
+    uint8_t irq = controller == IDEDriver::PRIMARY ? IRQ_PRIMARY : IRQ_SECONDARY;
 
     // enable interrupts
     monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
@@ -138,8 +138,8 @@ int FileServer::initializeRootFileSystem()
 
 monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 {
-    dword fileID;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t fileID;
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     int ret = vmanager_->open(file, 0, false, tid, &fileID);
     if (ret != MONA_SUCCESS) return NULL;
 
@@ -172,8 +172,8 @@ void FileServer::messageLoop()
         {
         case MSG_FILE_OPEN:
         {
-            dword tid = msg.from; // temporary
-            dword fildID;
+            uint32_t tid = msg.from; // temporary
+            uint32_t fildID;
             bool create = msg.arg1 == MONAPI_TRUE;
             int ret = vmanager_->open(upperCase(msg.str).c_str(), 0, create, tid, &fildID);
             Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
@@ -188,8 +188,8 @@ void FileServer::messageLoop()
             }
             else
             {
-                dword handle = mi->Handle;
-                dword size = mi->Size;
+                uint32_t handle = mi->Handle;
+                uint32_t size = mi->Size;
                 monapi_cmemoryinfo_delete(mi);
                 Message::reply(&msg, handle, size);
             }
@@ -203,7 +203,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_READ:
         {
-            dword fileID = msg.arg1;
+            uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
             int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
             if (ret != MONA_SUCCESS)
@@ -212,8 +212,8 @@ void FileServer::messageLoop()
             }
             else
             {
-                dword handle = memory->Handle;
-                dword size = memory->Size;
+                uint32_t handle = memory->Handle;
+                uint32_t size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
                 Message::reply(&msg, handle, size);
             }
@@ -221,7 +221,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_WRITE:
         {
-            dword fileID = msg.arg1;
+            uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
             memory = monapi_cmemoryinfo_new();
             memory->Handle = msg.arg3;
@@ -257,8 +257,8 @@ void FileServer::messageLoop()
             }
             else
             {
-                dword handle = memory->Handle;
-                dword size = memory->Size;
+                uint32_t handle = memory->Handle;
+                uint32_t size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
                 Message::reply(&msg, handle, size);
             }
@@ -333,7 +333,7 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
     if ((size >> 32) > 0) return NULL;
 
     monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
-    if (!monapi_cmemoryinfo_create(ret, (dword)(size + 1), 0))
+    if (!monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0))
     {
         monapi_cmemoryinfo_delete(ret);
         return NULL;

@@ -31,12 +31,12 @@ public:
 public:
     int open();
     int close();
-    int read(dword lba, void* buf, int size);
-    int write(dword lba, void* buf, int size);
+    int read(uint32_t lba, void* buf, int size);
+    int write(uint32_t lba, void* buf, int size);
     int ioctl(void* p);
     bool checkDiskChange();
-    bool read(dword lba, byte* buf);
-    bool write(dword lba, byte* buf);
+    bool read(uint32_t lba, uint8_t* buf);
+    bool write(uint32_t lba, uint8_t* buf);
     bool recalibrate();
     void motor(const bool on);
     void motorAutoOff();
@@ -44,21 +44,21 @@ public:
 
 private:
     void initilize();
-    bool seek(byte track);
+    bool seek(uint8_t track);
     bool waitInterrupt();
-    void waitStatus(byte expected);
-    void waitStatus(byte mask, byte expected);
-    bool sendCommand(const byte command[], const byte length);
-    byte getResult();
+    void waitStatus(uint8_t expected);
+    void waitStatus(uint8_t mask, uint8_t expected);
+    bool sendCommand(const uint8_t command[], const uint8_t length);
+    uint8_t getResult();
     bool senseInterrupt();
     bool readResults();
     void startDMA();
     void stopDMA();
-    void setupDMARead(dword size);
-    void setupDMAWrite(dword size);
-    void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
-    bool read(byte track, byte head, byte sector);
-    bool write(byte track, byte head, byte sector);
+    void setupDMARead(uint32_t size);
+    void setupDMAWrite(uint32_t size);
+    void lbaToTHS(int lba, uint8_t& track, uint8_t& head, uint8_t& sector);
+    bool read(uint8_t track, uint8_t head, uint8_t sector);
+    bool write(uint8_t track, uint8_t head, uint8_t sector);
 
     inline void delay(int n)
     {
@@ -68,11 +68,11 @@ private:
         }
     }
 private:
-    byte results[10];
+    uint8_t results[10];
     int motorCount;
     int resultsLength;
     int currentTrack;
-    byte* dmabuff;
+    uint8_t* dmabuff;
 
 private:
     enum

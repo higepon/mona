@@ -15,9 +15,9 @@
 
 #include "VesaConsole.h"
 
-extern "C" dword get_font_address();
+extern "C" uint32_t get_font_address();
 
-dword VesaConsole::palette[] = {
+uint32_t VesaConsole::palette[] = {
                         0x00000000, // black
                         0x000000ff, // blue
                         0x0000ff00, // green
@@ -46,7 +46,7 @@ VesaConsole::VesaConsole (VesaInfoDetail *info)
     pos_x_ = 0;
     pos_y_ = 0;
 
-    byte* font = (byte*)get_font_address();
+    uint8_t* font = (uint8_t*)get_font_address();
     font_x_ = font[14];
     font_y_ = font[15];
     font_ = font + 17;
@@ -55,7 +55,7 @@ VesaConsole::VesaConsole (VesaInfoDetail *info)
 
     int len = console_x_ * console_y_;
     char_buffer_ = new char[len];
-    palette_buffer_ = new dword[len];
+    palette_buffer_ = new uint32_t[len];
 
     bg_ = getColor(GP_BLACK);
     ch_ = getColor(GP_WHITE);
@@ -150,7 +150,7 @@ void VesaConsole::putCharacter(char ch)
     palette_buffer_[idx] = ch_;
 
     if (ch == '\xff') ch = ' ';
-    byte* p = font_ + 16 * ch;
+    uint8_t* p = font_ + 16 * ch;
     screen.fillPat(pos_x_ * font_x_, pos_y_ * font_y_, font_x_, font_y_, ch_, bg_, p);
 
     nextCursor();
@@ -192,7 +192,7 @@ void VesaConsole::clearScreen()
     screen.clearScreenWhite(xResolution_, yResolution_);
 }
 
-dword VesaConsole::getColor (char c)
+uint32_t VesaConsole::getColor (char c)
 {
     if (GP_BLACK > c) c = GP_BLACK;
     if (GP_WHITE < c) c = GP_WHITE;
@@ -219,7 +219,7 @@ void VesaConsole::newLine ()
     for (int i = console_x_, j = 0, x = 0, y = 0; i < len; i++, j++)
     {
         char c_i = char_buffer_[i], c_j = char_buffer_[j];
-        dword p_i = palette_buffer_[i], p_j = palette_buffer_[j];
+        uint32_t p_i = palette_buffer_[i], p_j = palette_buffer_[j];
         if (c_i == '\xff')
         {
             screen.bitblt(x * font_x_, y * font_y_, x * font_x_, (y + 1) * font_y_, font_x_, font_y_);
@@ -228,7 +228,7 @@ void VesaConsole::newLine ()
         {
             if (c_i != c_j || p_i != p_j)
             {
-                byte* p = font_ + 16 * c_i;
+                uint8_t* p = font_ + 16 * c_i;
                 screen.fillPat(x * font_x_, y * font_y_, font_x_, font_y_, p_i, bg_, p);
             }
         }
@@ -258,7 +258,7 @@ void VesaConsole::newLine ()
 VesaConsole::VesaScreen::VesaScreen (VesaInfoDetail *info)
 {
     vramAddress = info->physBasePtr;
-    bytesPerScanLine = info->bytesPerScanLine;
+    uint8_tsPerScanLine = info->uint8_tsPerScanLine;
     bitsPerPixel = info->bitsPerPixel;
 
     selectMethod(info);
@@ -266,51 +266,51 @@ VesaConsole::VesaScreen::VesaScreen (VesaInfoDetail *info)
 
 void VesaConsole::VesaScreen::scrollUp (int y, int h)
 {
-    byte *dst = (byte*)vramAddress;
-    byte *src = (byte*)vramAddress + bytesPerScanLine * y;
+    uint8_t *dst = (uint8_t*)vramAddress;
+    uint8_t *src = (uint8_t*)vramAddress + uint8_tsPerScanLine * y;
 
     for (int i = 0; i < h; i++) {
-        for (int j = 0; j < bytesPerScanLine; j++) {
+        for (int j = 0; j < uint8_tsPerScanLine; j++) {
             if (dst[j] != src[j]) dst[j] = src[j];
         }
-        dst += bytesPerScanLine;
-        src += bytesPerScanLine;
+        dst += uint8_tsPerScanLine;
+        src += uint8_tsPerScanLine;
     }
 }
 
 void VesaConsole::VesaScreen::bitblt (int dst_x, int dst_y, int src_x, int src_y, int w, int h)
 {
-    dword bytesPerPixel = bitsPerPixel/8, wb = w * bytesPerPixel;
-    byte* dst = (byte*)vramAddress + bytesPerScanLine * dst_y + bytesPerPixel * dst_x;
-    byte* src = (byte*)vramAddress + bytesPerScanLine * src_y + bytesPerPixel * src_x;
+    uint32_t uint8_tsPerPixel = bitsPerPixel/8, wb = w * uint8_tsPerPixel;
+    uint8_t* dst = (uint8_t*)vramAddress + uint8_tsPerScanLine * dst_y + uint8_tsPerPixel * dst_x;
+    uint8_t* src = (uint8_t*)vramAddress + uint8_tsPerScanLine * src_y + uint8_tsPerPixel * src_x;
     for (int i = 0; i < h; i++)
     {
         memcpy(dst, src, wb);
-        dst += bytesPerScanLine;
-        src += bytesPerScanLine;
+        dst += uint8_tsPerScanLine;
+        src += uint8_tsPerScanLine;
     }
 }
 
-void VesaConsole::VesaScreen::fill (int x, int y, int w, int h, dword c)
+void VesaConsole::VesaScreen::fill (int x, int y, int w, int h, uint32_t c)
 {
-    dword bytesPerPixel = bitsPerPixel/8;
-    byte *bits = (byte*)vramAddress
-        + bytesPerScanLine * y + bytesPerPixel * x;
-    byte *temp = bits;
+    uint32_t uint8_tsPerPixel = bitsPerPixel/8;
+    uint8_t *bits = (uint8_t*)vramAddress
+        + uint8_tsPerScanLine * y + uint8_tsPerPixel * x;
+    uint8_t *temp = bits;
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
             (this->*packColor)(temp, c);
-            temp += bytesPerPixel;
+            temp += uint8_tsPerPixel;
         }
-        bits += bytesPerScanLine;
+        bits += uint8_tsPerScanLine;
         temp = bits;
     }
 }
 
-void *memsetWord(void* buf, word value, size_t times) {
+void *memsetWord(void* buf, uint16_t value, size_t times) {
 
-    word *p = (word*)buf;
+    uint16_t *p = (uint16_t*)buf;
 
     while (times > 0) {
         *p = value;
@@ -325,7 +325,7 @@ void VesaConsole::VesaScreen::clearScreenWhite(int w, int h)
 #if 0
     const int buffer_size = 512;
     int size = w * h * (bitsPerPixel / 8) / buffer_size;
-    byte* buffer[buffer_size];
+    uint8_t* buffer[buffer_size];
     memset(buffer, 0xFF, buffer_size);
     for (int i = 0; i < size; i++)
     {
@@ -343,22 +343,22 @@ void VesaConsole::VesaScreen::clearScreenBlack(int w, int h)
 }
 
 void VesaConsole::VesaScreen::fillPat
-    (int x, int y, int w, int h, dword c, dword b, byte* p)
+    (int x, int y, int w, int h, uint32_t c, uint32_t b, uint8_t* p)
 {
 #if 0
-    dword bgcolor = (this->*getColor)(b);
-    dword color = (this->*getColor)(c);
+    uint32_t bgcolor = (this->*getColor)(b);
+    uint32_t color = (this->*getColor)(c);
 
-    dword bytesPerPixel = bitsPerPixel/8;
+    uint32_t uint8_tsPerPixel = bitsPerPixel/8;
     static bool first = true;
-    word* pixel;
-    p = (byte*)get_font_address() + 17 + 16 * '3';
+    uint16_t* pixel;
+    p = (uint8_t*)get_font_address() + 17 + 16 * '3';
     if (first)
     {
         int index = 0;
         int k = 0x80;
 
-        pixel = new word[16 * 16];
+        pixel = new uint16_t[16 * 16];
         for (int i = 0; i < 16; i++)
         {
             for (int j = 0; j < 16; j++)
@@ -379,23 +379,23 @@ void VesaConsole::VesaScreen::fillPat
         first = false;
     }
 
-    word *bits = (word*)vramAddress
-        + bytesPerScanLine / 2 * y + bytesPerPixel /2 * x;
+    uint16_t *bits = (uint16_t*)vramAddress
+        + uint8_tsPerScanLine / 2 * y + uint8_tsPerPixel /2 * x;
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
             bits[i * w + j] = pixel[i * w + j];
         }
-        bits += bytesPerScanLine / 2;
+        bits += uint8_tsPerScanLine / 2;
     }
 
 #else
-    dword bytesPerPixel = bitsPerPixel/8;
-    byte *bits = (byte*)vramAddress
-            + bytesPerScanLine * y + bytesPerPixel * x;
-    byte *temp = bits;
-    dword bgcolor = (this->*getColor)(b);
-    dword color = (this->*getColor)(c);
+    uint32_t uint8_tsPerPixel = bitsPerPixel/8;
+    uint8_t *bits = (uint8_t*)vramAddress
+            + uint8_tsPerScanLine * y + uint8_tsPerPixel * x;
+    uint8_t *temp = bits;
+    uint32_t bgcolor = (this->*getColor)(b);
+    uint32_t color = (this->*getColor)(c);
 
     int index = 0;
     int k = 0x80;
@@ -408,7 +408,7 @@ void VesaConsole::VesaScreen::fillPat
             } else {
                 (this->*setColor)(temp, bgcolor);
             }
-            temp += bytesPerPixel;
+            temp += uint8_tsPerPixel;
 
             k >>= 1;
             if (0 == k) {
@@ -416,7 +416,7 @@ void VesaConsole::VesaScreen::fillPat
                 index++;
             }
         }
-        bits += bytesPerScanLine;
+        bits += uint8_tsPerScanLine;
         temp = bits;
 
         if (0x80 != k) {
@@ -461,46 +461,46 @@ void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)
     }
 }
 
-void VesaConsole::VesaScreen::packColor8 (byte *bits, dword c)
+void VesaConsole::VesaScreen::packColor8 (uint8_t *bits, uint32_t c)
 {
     *bits = ((c>>16) & 0xe0) | ((c>>8) & 0x18) | (c & 0x3);
 }
 
-void VesaConsole::VesaScreen::packColor15 (byte *bits, dword c)
+void VesaConsole::VesaScreen::packColor15 (uint8_t *bits, uint32_t c)
 {
-    *((word*)bits) = ((c>>9) & 0x7c00)
+    *((uint16_t*)bits) = ((c>>9) & 0x7c00)
                    | ((c>>6) & 0x03e0)
                    | ((c>>3) & 0x001f);
 }
 
-void VesaConsole::VesaScreen::packColor16 (byte *bits, dword c)
+void VesaConsole::VesaScreen::packColor16 (uint8_t *bits, uint32_t c)
 {
-    *((word*)bits) = ((c>>8) & 0xf800)
+    *((uint16_t*)bits) = ((c>>8) & 0xf800)
                    | ((c>>5) & 0x07e0)
                    | ((c>>3) & 0x001f);
 }
 
-void VesaConsole::VesaScreen::packColor24 (byte *bits, dword c)
+void VesaConsole::VesaScreen::packColor24 (uint8_t *bits, uint32_t c)
 {
-    //    *((dword*)bits) = c;
+    //    *((uint32_t*)bits) = c;
     bits[0] = (  c      & 0xff );
     bits[1] = ( (c>> 8) & 0xff );
     bits[2] = ( (c>>16) & 0xff );
 }
 
-dword VesaConsole::VesaScreen::getColor8 (dword c)
+uint32_t VesaConsole::VesaScreen::getColor8 (uint32_t c)
 {
     return ((c>>16) & 0xe0) | ((c>>8) & 0x18) | (c & 0x3);
 }
 
-dword VesaConsole::VesaScreen::getColor15 (dword c)
+uint32_t VesaConsole::VesaScreen::getColor15 (uint32_t c)
 {
     return ((c>>9) & 0x7c00)
         | ((c>>6) & 0x03e0)
         | ((c>>3) & 0x001f);
 }
 
-dword VesaConsole::VesaScreen::getColor16 (dword c)
+uint32_t VesaConsole::VesaScreen::getColor16 (uint32_t c)
 {
     return ((c>>8) & 0xf800)
         | ((c>>5) & 0x07e0)
@@ -508,32 +508,32 @@ dword VesaConsole::VesaScreen::getColor16 (dword c)
 }
 
 
-dword VesaConsole::VesaScreen::getColor24 (dword c)
+uint32_t VesaConsole::VesaScreen::getColor24 (uint32_t c)
 {
     return c;
 }
 
-void VesaConsole::VesaScreen::setColor8 (void* p, dword c)
+void VesaConsole::VesaScreen::setColor8 (void* p, uint32_t c)
 {
-    if (*((byte*)p) == c) return;
-    *((byte*)p) = c;
+    if (*((uint8_t*)p) == c) return;
+    *((uint8_t*)p) = c;
 }
 
-void VesaConsole::VesaScreen::setColor15 (void* p, dword c)
+void VesaConsole::VesaScreen::setColor15 (void* p, uint32_t c)
 {
-    if (*((word*)p) == c) return;
-    *((word*)p) = c;
+    if (*((uint16_t*)p) == c) return;
+    *((uint16_t*)p) = c;
 }
 
-void VesaConsole::VesaScreen::setColor16 (void* p, dword c)
+void VesaConsole::VesaScreen::setColor16 (void* p, uint32_t c)
 {
-    if (*((word*)p) == c) return;
-    *((word*)p) = c;
+    if (*((uint16_t*)p) == c) return;
+    *((uint16_t*)p) = c;
 }
 
-void VesaConsole::VesaScreen::setColor24 (void* p, dword c)
+void VesaConsole::VesaScreen::setColor24 (void* p, uint32_t c)
 {
-    byte* bits = (byte*)p;
+    uint8_t* bits = (uint8_t*)p;
     bits[0] = (  c      & 0xff );
     bits[1] = ( (c>> 8) & 0xff );
     bits[2] = ( (c>>16) & 0xff );

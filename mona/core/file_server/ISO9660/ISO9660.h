@@ -27,9 +27,9 @@ namespace iso9660
 ----------------------------------------------------------------------*/
 typedef struct BaseVolumeDescriptor
 {
-    byte type;
+    uint8_t type;
     char id  [ISO_POSITION(2, 6)];
-    byte version;
+    uint8_t version;
     char data[ISO_POSITION(8, 2048)];
 };
 
@@ -49,14 +49,14 @@ typedef struct PrimaryVolumeDescriptor
     char unused3               [ISO_POSITION ( 89, 120)];
     char volume_set_size       [ISO_POSITION (121, 124)];
     char volume_sequence_number[ISO_POSITION (125, 128)];
-    word logical_block_size_l;
-    word logical_block_size_b;
-    dword path_table_size_l;
-    dword path_table_size_b;
-    dword type_l_path_table;
-    dword opt_type_l_path_table;
-    dword type_m_path_table;
-    dword opt_type_m_path_table;
+    uint16_t logical_block_size_l;
+    uint16_t logical_block_size_b;
+    uint32_t path_table_size_l;
+    uint32_t path_table_size_b;
+    uint32_t type_l_path_table;
+    uint32_t opt_type_l_path_table;
+    uint32_t type_m_path_table;
+    uint32_t opt_type_m_path_table;
     char root_directory_record [ISO_POSITION (157, 190)];
     char volume_set_id         [ISO_POSITION (191, 318)];
     char publisher_id          [ISO_POSITION (319, 446)];
@@ -81,10 +81,10 @@ typedef struct PrimaryVolumeDescriptor
 #pragma pack(2)
 typedef struct PathTableEntry
 {
-    byte length;
-    byte ext_attr_length;
-    dword extent;
-    word parentDirectory;
+    uint8_t length;
+    uint8_t ext_attr_length;
+    uint32_t extent;
+    uint16_t parentDirectory;
     char name[0];
 };
 #pragma pack(0)
@@ -95,12 +95,12 @@ typedef struct PathTableEntry
 #pragma pack(1)
 typedef struct DirectoryEntry
 {
-    byte length;
-    byte ext_attr_length;
-    dword extent_l;
-    dword extent_b;
-    dword size_l;
-    dword size_b;
+    uint8_t length;
+    uint8_t ext_attr_length;
+    uint32_t extent_l;
+    uint32_t extent_b;
+    uint32_t size_l;
+    uint32_t size_b;
     char date[ISO_POSITION (19, 25)];
     unsigned existence      : 1;
     unsigned directory      : 1;
@@ -109,11 +109,11 @@ typedef struct DirectoryEntry
     unsigned protection     : 1;
     unsigned reserved       : 2;
     unsigned lastRecord     : 1;
-    byte file_unit_size;
-    byte interleave;
-    word volume_sequence_number_l;
-    word volume_sequence_number_b;
-    byte name_len;
+    uint8_t file_unit_size;
+    uint8_t interleave;
+    uint16_t volume_sequence_number_l;
+    uint16_t volume_sequence_number_b;
+    uint8_t name_len;
     char name[0];
 };
 #pragma pack(0)
@@ -123,10 +123,10 @@ typedef struct DirectoryEntry
 ----------------------------------------------------------------------*/
 typedef struct Attribute
 {
-    dword id;
-    dword parentID;
-    dword extent;
-    dword size;
+    uint32_t id;
+    uint32_t parentID;
+    uint32_t extent;
+    uint32_t size;
 };
 
 /*----------------------------------------------------------------------

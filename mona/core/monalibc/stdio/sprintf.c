@@ -32,3 +32,15 @@ int sprintf(char *s, const char *format, ...){
 
   return result;
 }
+
+int init_libc()
+{
+    syscall_print("init_libc");
+    return MONA_SUCCESS;
+}
+
+int fini_libc()
+{
+    syscall_print("fini_libc");
+    return MONA_SUCCESS;
+}

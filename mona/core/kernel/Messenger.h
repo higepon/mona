@@ -15,7 +15,7 @@ class Messenger {
 
   public:
     int send(const char* name, MessageInfo* message);
-    int send(dword tid, MessageInfo* message);
+    int send(uint32_t tid, MessageInfo* message);
     int receive(Thread* thread, MessageInfo* message);
     int peek(Thread* thread, MessageInfo* message, int index, int flags);
 

@@ -6,7 +6,7 @@ typedef void* mspace;
 extern "C"
 {
     mspace create_mspace_with_base(void* base, size_t capacity, int locked);
-    void* mspace_malloc(mspace msp, size_t bytes);
+    void* mspace_malloc(mspace msp, size_t uint8_ts);
     void mspace_free(mspace msp, void* mem);
 }
 
@@ -14,10 +14,10 @@ extern "C"
 class MemoryAllocator
 {
 public:
-    MemoryAllocator(LinearAddress address, dword size);
+    MemoryAllocator(LinearAddress address, uint32_t size);
 
 public:
-    void* Allocate(dword size);
+    void* Allocate(uint32_t size);
     void Free(void* address);
 
 protected:

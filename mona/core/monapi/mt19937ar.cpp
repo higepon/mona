@@ -103,7 +103,7 @@ unsigned long genrand_int32(void)
     static unsigned long mag01[2]={0x0UL, MATRIX_A};
     /* mag01[x] = x * MATRIX_A  for x=0,1 */
 
-    if (mti >= N) { /* generate N words at one time */
+    if (mti >= N) { /* generate N uint16_ts at one time */
         int kk;
 
         if (mti == N+1)   /* if init_genrand() has not been called, */

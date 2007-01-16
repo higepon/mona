@@ -11,8 +11,8 @@
 */
 
 
-#ifndef __ARRAY_H__
-#define __ARRAY_H__
+#ifndef _MONAPI_ARRAY_
+#define _MONAPI_ARRAY_
 
 #if __GNUC_MINOR__ < 4
 /*!

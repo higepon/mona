@@ -60,7 +60,7 @@ void Buffer::clear()
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-byte* Buffer::extendBuffer(int iNewSize,bool bKeepOriginalData)
+uint8_t* Buffer::extendBuffer(int iNewSize,bool bKeepOriginalData)
 {
 //もし格納できる領域があるなら再確保はしないで現在の内容をクリア。
 	if (m_iSize>=iNewSize)
@@ -69,7 +69,7 @@ byte* Buffer::extendBuffer(int iNewSize,bool bKeepOriginalData)
 		return m_pBuffer;
 	}
 
-	byte* pNewBuffer = new byte[iNewSize];
+	uint8_t* pNewBuffer = new uint8_t[iNewSize];
 	m_iSize = iNewSize;
 //	m_iLength = iNewSize;
 
@@ -92,7 +92,7 @@ byte* Buffer::extendBuffer(int iNewSize,bool bKeepOriginalData)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Buffer::copy(const byte* cpSource,int iLength)
+void Buffer::copy(const uint8_t* cpSource,int iLength)
 {
 	extendBuffer(iLength);
 

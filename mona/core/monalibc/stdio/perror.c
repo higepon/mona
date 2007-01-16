@@ -43,8 +43,8 @@ void perror(const char *s)
 
 	no = errno;
 
-	print(s);
-	print(": ");
-	print(strerror(no));
-	print("\n");
+	printf(s);
+	printf(": ");
+	printf(strerror(no));
+	printf("\n");
 }

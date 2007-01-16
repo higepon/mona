@@ -15,12 +15,12 @@
 #include "global.h"
 
 extern "C" void syscall_entrance(void);
-extern "C" dword systemcall_mutex_create();
-extern "C" dword systemcall_mutex_lock(dword id);
-extern "C" dword systemcall_mutex_unlock(dword id);
+extern "C" uint32_t systemcall_mutex_create();
+extern "C" uint32_t systemcall_mutex_lock(uint32_t id);
+extern "C" uint32_t systemcall_mutex_unlock(uint32_t id);
 
 #define enter_kernel_lock_mode()    \
-    dword __eflags = get_eflags();  \
+    uint32_t __eflags = get_eflags();  \
     disableInterrupt();             \
 
 #define exit_kernel_lock_mode() \

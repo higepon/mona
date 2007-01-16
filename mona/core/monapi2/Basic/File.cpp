@@ -84,11 +84,11 @@ bool File::open(const char* cszPath,bool bAllowWrite)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint File::read(byte* pOut,uint nIndex,uint nCount) const
+uint File::read(uint8_t* pOut,uint nIndex,uint nCount) const
 {
 #ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);
-	return fread(pOut,sizeof(byte),nCount,m_pFile);
+	return fread(pOut,sizeof(uint8_t),nCount,m_pFile);
 #else
 	MemoryFn::copy(pOut,m_oBuffer.getData() + nIndex,nCount);
 	return nIndex+nCount;
@@ -99,11 +99,11 @@ uint File::read(byte* pOut,uint nIndex,uint nCount) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint File::write(const byte* cpIn,uint nIndex,uint nCount) const
+uint File::write(const uint8_t* cpIn,uint nIndex,uint nCount) const
 {
 #ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);
-	return fwrite(cpIn,sizeof(byte),nCount,m_pFile);
+	return fwrite(cpIn,sizeof(uint8_t),nCount,m_pFile);
 #endif
 
 	cpIn=NULL,nCount=0;nIndex=0;

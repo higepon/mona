@@ -31,7 +31,7 @@ strlcpy(char *dst, const char *src, size_t siz)
 	const char *s = src;
 	size_t n = siz;
 
-	/* Copy as many bytes as will fit */
+	/* Copy as many uint8_ts as will fit */
 	if (n != 0 && --n != 0) {
 		do {
 			if ((*d++ = *s++) == 0)

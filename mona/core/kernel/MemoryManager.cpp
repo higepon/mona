@@ -21,7 +21,7 @@ MemoryManager::MemoryManager()
 {
 }
 
-void MemoryManager::initialize(dword start, dword end)
+void MemoryManager::initialize(uint32_t start, uint32_t end)
 {
     freeList = (Header*)start;
     freeList->next = freeList;
@@ -40,13 +40,13 @@ void MemoryManager::setNext(Header* p, Header* next)
     p->next = next;
 }
 
-void* MemoryManager::allocate(dword size)
+void* MemoryManager::allocate(uint32_t size)
 {
-    if (size == 0) return (dword)NULL;
+    if (size == 0) return (uint32_t)NULL;
 
     size = (size + 16 - 1) & 0xFFFFFFF0; /* align 16 */
 
-    dword nunits = (size + HEADER_SIZE - 1) / HEADER_SIZE + 1;
+    uint32_t nunits = (size + HEADER_SIZE - 1) / HEADER_SIZE + 1;
     Header* prevp = freeList;
     Header *p;
     for (p = prevp->next; ;prevp = p, p = p->next)
@@ -57,15 +57,15 @@ void* MemoryManager::allocate(dword size)
 
     if (p->size == nunits)
     {
-	setNext(prevp, p->next);
+    setNext(prevp, p->next);
     }
     else
     {
         Header* next = p + nunits;
-	setNext(next, (p == p->next) ? next : p->next);
+    setNext(next, (p == p->next) ? next : p->next);
         next->size = p->size - nunits;
         p->size = nunits;
-	setNext(prevp, next);
+    setNext(prevp, next);
         if (p == freeList)
         {
             freeList = next;
@@ -97,76 +97,76 @@ void MemoryManager::free(void* address)
     Header* prev;
 
     if (bp->magic != MM_MAGIC) {
-	g_console->printf("kernel memory leaked?");
+        g_console->printf("kernel memory leaked?");
     }
 
     for (p = freeList, prev = freeList; ;prev = p, p = p->next)
     {
-	if (p <= bp && bp <= p->next)
-	{
-	    inBetween = true;
-	    break;
-	}
-	if (p->next == freeList)
-	{
-	    tail = p;
-	    break;
-	}
+    if (p <= bp && bp <= p->next)
+    {
+        inBetween = true;
+        break;
+    }
+    if (p->next == freeList)
+    {
+        tail = p;
+        break;
+    }
     }
 
 
     if (bp < freeList)
     {
-	a = tail;
-	b = freeList;
-	tail->next = bp;
-	freeList = bp;
+    a = tail;
+    b = freeList;
+    tail->next = bp;
+    freeList = bp;
     }
     else if (inBetween)
     {
-	a = p;
-	b = p->next;
+    a = p;
+    b = p->next;
     }
     else
     {
-	a = tail;
-	b = freeList;
+    a = tail;
+    b = freeList;
     }
 
     if (a + a->size == bp && bp + bp->size == b)
     {
-	a->size += bp->size + b->size;
-	a->next = b->next;
+    a->size += bp->size + b->size;
+    a->next = b->next;
     }
     else if (a + a->size == bp)
     {
-	a->size += bp->size;
+    a->size += bp->size;
     }
     else if (bp + bp->size == b)
     {
-	bp->next = b->next;
-	a->next = bp;
-	bp->size += b->size;
+    bp->next = b->next;
+    a->next = bp;
+    bp->size += b->size;
     }
     else
     {
-	a->next = bp;
-	bp->next = b;
+    a->next = bp;
+    bp->next = b;
     }
 
     return;
 }
 
-dword MemoryManager::getPhysicalMemorySize() {
+uint32_t MemoryManager::getPhysicalMemorySize() {
 
     /* assume there is at least 1MB memory */
-    dword totalMemorySize  = 1024 * 1024;
+    uint32_t totalMemorySize  = 1024 * 1024;
 
     /* 1MB unit loop */
-    for (dword i = 1024 * 1024; i < 0xFFFFFFFF; i += 1024 * 1024) {
+    for (uint32_t i = 1024 * 1024; i < 0xFFFFFFFF; i += 1024 * 1024) {
 
-        volatile dword* p = (dword*)i;
-        dword value = *p;
+        volatile uint32_t* p = (uint32_t*)i;
+        uint32_t value = *p;
 
         *p = 0x12345678;
         if (*p != 0x12345678) break;
@@ -178,8 +178,8 @@ dword MemoryManager::getPhysicalMemorySize() {
     return totalMemorySize;
 }
 
-dword MemoryManager::getFreeMemorySize() const {
-    dword result = 0;
+uint32_t MemoryManager::getFreeMemorySize() const {
+    uint32_t result = 0;
     for (Header* current = freeList; current->next != freeList; current = current->next) {
 
         result += (current->size);
@@ -187,7 +187,6 @@ dword MemoryManager::getFreeMemorySize() const {
     return result * HEADER_SIZE;
 }
 
-dword MemoryManager::getUsedMemorySize() const {
+uint32_t MemoryManager::getUsedMemorySize() const {
    return (end - start + 1) / HEADER_SIZE - getFreeMemorySize();
 }
-

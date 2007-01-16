@@ -27,7 +27,7 @@ ELFParser::~ELFParser()
 {
 }
 
-bool ELFParser::set(byte* elf, dword size)
+bool ELFParser::set(uint8_t* elf, uint32_t size)
 {
     /* ELF Header */
     if (size < sizeof(ELFHeader)) return false;
@@ -36,12 +36,12 @@ bool ELFParser::set(byte* elf, dword size)
     if (type == TYPE_NOT_ELF) return false;
 
     /* Program Header */
-    dword phdrend = this->header->phdrpos + sizeof(ELFProgramHeader) * this->header->phdrcnt;
+    uint32_t phdrend = this->header->phdrpos + sizeof(ELFProgramHeader) * this->header->phdrcnt;
     if (size < phdrend) return false;
     this->pheader = (ELFProgramHeader*)&elf[this->header->phdrpos];
 
     /* Section Header */
-    dword shdrend = this->header->shdrpos + sizeof(ELFSectionHeader) * this->header->shdrcnt;
+    uint32_t shdrend = this->header->shdrpos + sizeof(ELFSectionHeader) * this->header->shdrcnt;
     if (size < shdrend) return false;
     this->sheader = (ELFSectionHeader*)&elf[this->header->shdrpos];
 
@@ -98,7 +98,7 @@ int ELFParser::getType()
     return TYPE_NOT_SUPPORTED;
 }
 
-const char* ELFParser::getSectionName(dword index)
+const char* ELFParser::getSectionName(uint32_t index)
 {
     if (this->sectionNames == 0) return "";
     if (index >= this->sheader[sectionNames].size) return "";
@@ -106,7 +106,7 @@ const char* ELFParser::getSectionName(dword index)
     return (const char*)&this->elf[this->sheader[sectionNames].offset + index];
 }
 
-const char* ELFParser::getSymbolName(dword index)
+const char* ELFParser::getSymbolName(uint32_t index)
 {
     if (this->symbolNames == 0) return "";
     if (index >= this->sheader[symbolNames].size) return "";
@@ -169,7 +169,7 @@ int ELFParser::parse()
 //             printf("symbol numentry = %d\n", numEntry);
 //#endif
 
-//             ELFSymbolEntry* sym = (ELFSymbolEntry*)((dword)(this->header) + s.offset);
+//             ELFSymbolEntry* sym = (ELFSymbolEntry*)((uint32_t)(this->header) + s.offset);
 //#ifdef _DEBUG_ELF
 //             printf("value = %x\n", sym[8].value);
 //             printf("size  = %x\n", sym[8].size);
@@ -186,7 +186,7 @@ int ELFParser::parse()
         if (s.type == REL)
         {
             int num = s.size / sizeof(ELFRelocationEntry);
-            ELFRelocationEntry* rel = (ELFRelocationEntry*)((dword)(this->header) + s.offset);
+            ELFRelocationEntry* rel = (ELFRelocationEntry*)((uint32_t)(this->header) + s.offset);
 
             for (int j = 0; j < num; j++)
             {
@@ -200,7 +200,7 @@ int ELFParser::parse()
 #endif
 
 #ifdef _DEBUG_ELF
-                dword* p = (dword*)&this->elf[this->sheader[entry.section].offset + rel[j].offset];
+                uint32_t* p = (uint32_t*)&this->elf[this->sheader[entry.section].offset + rel[j].offset];
                 printf("relocate target address = %8x\n", *p);
 #endif
             }
@@ -210,7 +210,7 @@ int ELFParser::parse()
     return 0;
 }
 
-bool ELFParser::load(byte* image)
+bool ELFParser::load(uint8_t* image)
 {
     switch (this->getType())
     {

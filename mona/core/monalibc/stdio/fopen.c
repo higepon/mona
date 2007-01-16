@@ -40,7 +40,7 @@
 FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
-	dword fileno;
+	uint32_t fileno;
 
 	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )

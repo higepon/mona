@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_OBSERVER_
-#define _MONA_USERLIB_OBSERVER_
+#ifndef _MONAPI_OBSERVER_
+#define _MONAPI_OBSERVER_
 
 #include <sys/types.h>
 #include <sys/HList.h>
@@ -13,7 +13,8 @@ class Observable;
 interface Observer {
 
   public:
-    virtual ~Observer(){};
+    Observer();
+    virtual ~Observer();
     virtual void update(Observable* o, void* arg) = 0;
 };
 

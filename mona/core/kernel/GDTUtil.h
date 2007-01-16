@@ -34,12 +34,12 @@
     \struct SegDesc
 */
 typedef struct {
-    word limitL;
-    word baseL;
-    byte baseM;
-    byte type;
-    byte limitH;
-    byte baseH;
+    uint16_t limitL;
+    uint16_t baseL;
+    uint8_t baseM;
+    uint8_t type;
+    uint8_t limitH;
+    uint8_t baseH;
 } SegDesc;
 
 #pragma pack(2)
@@ -48,8 +48,8 @@ typedef struct {
     \struct gdtr
 */
 typedef struct {
-    word  limit;
-    dword base;
+    uint16_t  limit;
+    uint32_t base;
 } GDTR;
 
 #pragma pack()
@@ -57,12 +57,12 @@ typedef struct {
 class GDTUtil {
 
   public:
-    static void setSegDesc(SegDesc* desc, dword base, dword limit, byte type);
-    static void setSegDescExt(SegDesc* desc, dword base, dword limit, byte type, byte gdbavl);
+    static void setSegDesc(SegDesc* desc, uint32_t base, uint32_t limit, uint8_t type);
+    static void setSegDescExt(SegDesc* desc, uint32_t base, uint32_t limit, uint8_t type, uint8_t gdbavl);
     static void lgdt(GDTR* gdtr);
-    static void ltr(word selector) __attribute__ ((noinline)); /* we need this! */
+    static void ltr(uint16_t selector) __attribute__ ((noinline)); /* we need this! */
     static void setup();
-    static void setupTSS(word selector);
+    static void setupTSS(uint16_t selector);
 };
 
 #endif

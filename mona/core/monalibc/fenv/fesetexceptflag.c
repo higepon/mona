@@ -8,7 +8,7 @@ int fesetexceptflag(const fexcept_t *f, int e)
 	fegetenv(&ft);
 	sw = *f;
 	sw &= e;
-	ft.__status_word = sw;
+	ft.__status_uint16_t = sw;
 	fesetenv(&ft);
 	
 	return 0;

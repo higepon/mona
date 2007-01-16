@@ -153,10 +153,10 @@ private:
     size_t __magic: 16;
     size_t __type_size:16;
     _STLP_UINT32_T _M_size;
-  }; // that is 8 bytes for sure
+  }; // that is 8 uint8_ts for sure
   // Sunpro CC has bug on enums, so extra_before/after set explicitly
   enum { __pad=8, __magic=0xdeba, __deleted_magic = 0xdebd,
-	 __shred_byte= _STLP_SHRED_BYTE
+	 __shred_uint8_t= _STLP_SHRED_BYTE
   };
 
   enum { __extra_before = 16, __extra_after = 8 };
@@ -223,7 +223,7 @@ public:
 template <bool __threads, int __inst>
 class __node_alloc {
   _STLP_PRIVATE:
-  static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
+  static inline size_t _STLP_CALL _S_round_up(size_t __uint8_ts) { return (((__uint8_ts) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
   typedef _Node_alloc_obj _Obj;
 private:
   // Returns an object of size __n, and optionally adds to size __n free list.
@@ -323,7 +323,7 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // Note that standard-conforming allocators use many language features
 // that are not yet widely implemented.  In particular, they rely on
 // member templates, partial specialization, partial ordering of function
-// templates, the typename keyword, and the use of the template keyword
+// templates, the typename keyuint16_t, and the use of the template keyuint16_t
 // to refer to a template member of a dependent type.
 
 template <class _Tp>

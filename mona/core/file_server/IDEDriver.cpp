@@ -93,7 +93,7 @@ bool IDEDriver::findDevice(int type, int detail, int* controller, int* deviceNo)
     return false;
 }
 
-int IDEDriver::read(dword lba, void* buffer, int size)
+int IDEDriver::read(uint32_t lba, void* buffer, int size)
 {
 #ifdef DEBUG_READ_TRACE
     void* buffer2 = buffer;
@@ -139,7 +139,7 @@ int IDEDriver::read(dword lba, void* buffer, int size)
                 if (readResult) break;
             }
 
-            buffer = (void*)((byte*)buffer + readSize);
+            buffer = (void*)((uint8_t*)buffer + readSize);
 
             if (!readResult)
             {
@@ -152,8 +152,8 @@ int IDEDriver::read(dword lba, void* buffer, int size)
 
 #ifdef DEBUG_READ_TRACE
 
-        byte* p = (byte*)buffer2;
-        dword s = size / 16;
+        uint8_t* p = (uint8_t*)buffer2;
+        uint32_t s = size / 16;
 
         for (int k= 0; k < s; k++)
         {
@@ -207,7 +207,7 @@ int IDEDriver::close()
     return 0;
 }
 
-int IDEDriver::write(dword lba, void* buf, int size)
+int IDEDriver::write(uint32_t lba, void* buf, int size)
 {
     return 0;
 }
@@ -229,7 +229,7 @@ int IDEDriver::getLastError() const
     return this->lastError;
 }
 
-void IDEDriver::getLastErrorDetail(byte* buffer)
+void IDEDriver::getLastErrorDetail(uint8_t* buffer)
 {
     commandRequestSense(whichController);
     memcpy(buffer, this->requestSenseBuffer, REQUEST_SENSE_BUFFER_SIZE);
@@ -238,28 +238,28 @@ void IDEDriver::getLastErrorDetail(byte* buffer)
 /*----------------------------------------------------------------------
     IDEDRIVER : I/O
 ----------------------------------------------------------------------*/
-void IDEDriver::outp8(IDEController* controller, int reg, byte value)
+void IDEDriver::outp8(IDEController* controller, int reg, uint8_t value)
 {
     ::outp8(controller->registers[reg], value);
 }
 
-byte IDEDriver::inp8(IDEController* controller, int reg)
+uint8_t IDEDriver::inp8(IDEController* controller, int reg)
 {
     return ::inp8(controller->registers[reg]);
 }
 
 
-word IDEDriver::inp16(IDEController* controller, int reg)
+uint16_t IDEDriver::inp16(IDEController* controller, int reg)
 {
     return ::inp16(controller->registers[reg]);
 }
 
-void IDEDriver::outp16(IDEController* controller, int reg, word value)
+void IDEDriver::outp16(IDEController* controller, int reg, uint16_t value)
 {
     ::outp16(controller->registers[reg], value);
 }
 
-void IDEDriver::outp16(IDEController* controller, word* data, int length)
+void IDEDriver::outp16(IDEController* controller, uint16_t* data, int length)
 {
     for(int i=0; i < length; i++)
     {
@@ -268,7 +268,7 @@ void IDEDriver::outp16(IDEController* controller, word* data, int length)
     }
 }
 
-void IDEDriver::inp16(IDEController* controller, word* data, int size)
+void IDEDriver::inp16(IDEController* controller, uint16_t* data, int size)
 {
     int length = size / 2;
 
@@ -294,10 +294,10 @@ void IDEDriver::inp16(IDEController* controller, word* data, int size)
 ----------------------------------------------------------------------*/
 bool IDEDriver::waitBusyAndDataRequestBothClear(IDEController* controller)
 {
-    dword i;
+    uint32_t i;
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
-        byte status = inp8(controller, ATA_ASR);
+        uint8_t status = inp8(controller, ATA_ASR);
         if ((status & BIT_BSY) == 0 && (status & BIT_DRQ) == 0) break;
     }
     return (i != ATA_TIMEOUT);
@@ -305,10 +305,10 @@ bool IDEDriver::waitBusyAndDataRequestBothClear(IDEController* controller)
 
 bool IDEDriver::waitBusyClear(IDEController* controller)
 {
-    dword i;
+    uint32_t i;
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
-        byte status = inp8(controller, ATA_ASR);
+        uint8_t status = inp8(controller, ATA_ASR);
         if ((status & BIT_BSY) == 0) break;
     }
     return (i != ATA_TIMEOUT);
@@ -316,11 +316,11 @@ bool IDEDriver::waitBusyClear(IDEController* controller)
 
 bool IDEDriver::waitDrdySet(IDEController* controller)
 {
-    dword i;
+    uint32_t i;
 
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
-        byte status = inp8(controller, ATA_ASR);
+        uint8_t status = inp8(controller, ATA_ASR);
         if (status & BIT_DRDY) break;
     }
 
@@ -354,15 +354,15 @@ Log("\n");
     /* packet command */
     outp8(controller, ATA_FTR, command->feature);
     outp8(controller, ATA_SCR, 0);
-    outp8(controller, ATA_BLR, (byte)(command->limit & 0xff));
-    outp8(controller, ATA_BHR, (byte)(command->limit >> 8));
+    outp8(controller, ATA_BLR, (uint8_t)(command->limit & 0xff));
+    outp8(controller, ATA_BHR, (uint8_t)(command->limit >> 8));
     outp8(controller, ATA_CMR, 0xa0);
     sleep(1);
 
-    dword i;
+    uint32_t i;
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
-        byte status = inp8(controller, ATA_ASR);
+        uint8_t status = inp8(controller, ATA_ASR);
 
         if ((status & BIT_BSY) != 0) continue;
         if ((status & BIT_CHK) != 0)
@@ -377,7 +377,7 @@ Log("\n");
             return false;
         }
 
-        byte reason = inp8(controller, ATA_IRR);
+        uint8_t reason = inp8(controller, ATA_IRR);
         if (((status & BIT_DRQ) != 0) && ((reason & BIT_IO) == 0) && ((reason & BIT_CD) != 0)) break;
     }
 
@@ -392,13 +392,13 @@ Log("\n");
         return false;
     }
 
-    outp16(controller, (word*)command->packet, 6);
+    outp16(controller, (uint16_t*)command->packet, 6);
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
 
         protocolInterrupt();
 
-        byte status = inp8(controller, ATA_ASR);
+        uint8_t status = inp8(controller, ATA_ASR);
 
         if ((status & BIT_BSY) != 0) continue;
 
@@ -467,7 +467,7 @@ bool IDEDriver::protocolAtaNoneData(IDEController* controller, ATACommand* comma
     inp8(controllers, ATA_ASR); /* read once */
 
     /* check error */
-    byte status = inp8(controllers, ATA_STR);
+    uint8_t status = inp8(controllers, ATA_STR);
     if (status & BIT_ERR)
     {
         inp8(controllers, ATA_ERR); /* must read ? */
@@ -478,9 +478,9 @@ bool IDEDriver::protocolAtaNoneData(IDEController* controller, ATACommand* comma
     return true;
 }
 
-bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command, word count, void* buf)
+bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command, uint16_t count, void* buf)
 {
-    word* p = (word*)buf;
+    uint16_t* p = (uint16_t*)buf;
 
     if (!selectDevice(controller, command->deviceNo))
     {
@@ -518,7 +518,7 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
             return false;
         }
 
-        byte status = inp8(controller, ATA_STR);
+        uint8_t status = inp8(controller, ATA_STR);
 
         /* command error */
         if ((status & BIT_ERR) != 0)
@@ -539,7 +539,7 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
     }
 
     inp8(controller, ATA_ASR);
-    byte status = inp8(controller, ATA_STR);
+    uint8_t status = inp8(controller, ATA_STR);
 
     if (status & BIT_ERR)
     {
@@ -560,8 +560,8 @@ void IDEDriver::protocolInterrupt()
             return;
         }
 
-        byte status = inp8(whichController, ATA_STR);
-        byte reason = inp8(whichController, ATA_IRR);
+        uint8_t status = inp8(whichController, ATA_STR);
+        uint8_t reason = inp8(whichController, ATA_IRR);
 
 #ifdef DEBUG_READ_TRACE
         Log("\n");
@@ -573,7 +573,7 @@ void IDEDriver::protocolInterrupt()
 #ifdef DEBUG_READ_TRACE
             Log("\n");
 #endif
-            word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
+            uint16_t transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
             atapiTransferSize += transferSize;
 
             if (atapiTransferSize > atapiTotalReadSize)
@@ -589,8 +589,8 @@ void IDEDriver::protocolInterrupt()
 #ifdef DEBUG_READ_TRACE
                 Log("\n");
 #endif
-                inp16(whichController, (word*)atapiBuffer, transferSize);
-                atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
+                inp16(whichController, (uint16_t*)atapiBuffer, transferSize);
+                atapiBuffer = (void*)((uint8_t*)atapiBuffer + transferSize);
             }
         }
 
@@ -643,7 +643,7 @@ bool IDEDriver::commandRequestSense(IDEController* controller)
     return protocolPacket(controller, &command);
 }
 
-bool IDEDriver::commandRead10(IDEController* controller, dword lba, void* buffer, int size)
+bool IDEDriver::commandRead10(IDEController* controller, uint32_t lba, void* buffer, int size)
 {
     ATAPICommand command;
     memset(&command, 0, sizeof(command));
@@ -667,7 +667,7 @@ bool IDEDriver::commandRead10(IDEController* controller, dword lba, void* buffer
     return protocolPacket(controller, &command);
 }
 
-bool IDEDriver::commandIdentify(IDEController* controller, int deviceNo, word* buffer)
+bool IDEDriver::commandIdentify(IDEController* controller, int deviceNo, uint16_t* buffer)
 {
     ATACommand command;
     memset(&command, 0, sizeof(command));
@@ -690,10 +690,10 @@ bool IDEDriver::commandIdentify(IDEController* controller, int deviceNo, word* b
 
     if (!commandOK) return false;
 
-    word* p = buffer;
+    uint16_t* p = buffer;
     for(int i = 0; i < 256; i++)
     {
-        word value = *p;
+        uint16_t value = *p;
         *p = ((value >> 8) & 0xff) | ((value << 8) & 0xff00);
         p++;
     }
@@ -727,10 +727,10 @@ void IDEDriver::initialize(IDEController* controller)
 */
 void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
 {
-    dword l;
-    byte c;
-    byte c1 = 0xff; /* unknown signature */
-    byte c2 = 0xff; /* unknown signature */
+    uint32_t l;
+    uint8_t c;
+    uint8_t c1 = 0xff; /* unknown signature */
+    uint8_t c2 = 0xff; /* unknown signature */
    bool timeout;
 
     IDEDevice* device = &controller->devices[deviceNo];
@@ -749,7 +749,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
         if (timeout) break;
 
         /* bad device */
-        byte error = inp8(controller, ATA_ERR);
+        uint8_t error = inp8(controller, ATA_ERR);
         if (deviceNo == MASTER && (error & 0x7f) != 1)
         {
             device->type = DEVICE_UNKNOWN;
@@ -786,7 +786,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
 
 void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
 {
-    word buffer[256]; /* identify buffer */
+    uint16_t buffer[256]; /* identify buffer */
     IDEDevice* device = &(controller->devices[deviceNo]);
 
     if (!waitBusyClear(controller))
@@ -795,7 +795,7 @@ void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
         return;
     }
 
-    byte l;
+    uint8_t l;
     for (l = 0; l < RETRY_MAX; l++)
     {
         bool firstResult = commandIdentify(controller, deviceNo, buffer);
@@ -829,14 +829,14 @@ void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
     {
     case DEVICE_ATA:
 
-        device->name = CString((const char*)((byte*)buffer + 54), 40);
+        device->name = CString((const char*)((uint8_t*)buffer + 54), 40);
         device->typeDetail = -1;
         device->sectorSize = ATA_SECTOR_SIZE;
         break;
 
     case DEVICE_ATAPI:
 
-        device->name       = CString((const char*)((byte*)buffer + 54), 40);
+        device->name       = CString((const char*)((uint8_t*)buffer + 54), 40);
         device->typeDetail = buffer[0] & 0x1f;
         device->sectorSize = ATAPI_SECTOR_SIZE;
         break;
@@ -883,7 +883,7 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
     return true;
 }
 
-byte IDEDriver::deviceValue(int deviceNo) const
+uint8_t IDEDriver::deviceValue(int deviceNo) const
 {
-    return (byte)(DEV_HEAD_OBS | (deviceNo << 4));
+    return (uint8_t)(DEV_HEAD_OBS | (deviceNo << 4));
 }

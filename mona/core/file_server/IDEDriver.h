@@ -28,8 +28,8 @@ public:
 public:
     int open();
     int close();
-    int read(dword lba, void* buf, int size);
-    int write(dword lba, void* buf, int size);
+    int read(uint32_t lba, void* buf, int size);
+    int write(uint32_t lba, void* buf, int size);
     int ioctl(void* p);
     int getLogicalBlockSize();
 
@@ -38,7 +38,7 @@ public:
     bool selectDevice(int controller, int deviceNo);
     bool findDevice(int type, int detail, int* controller, int* deviceNo);
     int getLastError() const;
-    void getLastErrorDetail(byte* buffer);
+    void getLastErrorDetail(uint8_t* buffer);
 
 public:
     enum
@@ -68,14 +68,14 @@ private:
         int type;
         int typeDetail;
         int deviceNo;
-        word sectorSize;
+        uint16_t sectorSize;
         MonAPI::CString name;
     };
 
     typedef struct IDEController
     {
         IDEController() : selectedDevice(NULL) {}
-        byte irq;
+        uint8_t irq;
         int registers[10];
         IDEDevice devices[2];
         IDEDevice* selectedDevice;
@@ -83,34 +83,34 @@ private:
 
     typedef struct
     {
-        byte feature;
-        byte sectorCount;
-        byte sectorNumber;
-        byte cylinderLow;
-        byte cylinderHigh;
-        byte deviceNo;
-        byte command;
+        uint8_t feature;
+        uint8_t sectorCount;
+        uint8_t sectorNumber;
+        uint8_t cylinderLow;
+        uint8_t cylinderHigh;
+        uint8_t deviceNo;
+        uint8_t command;
         bool drdyCheck;
     } ATACommand;
 
     typedef struct ATAPICommand
     {
-        byte feature;
-        byte deviceNo;
-        byte packet[12];
-        word limit;
+        uint8_t feature;
+        uint8_t deviceNo;
+        uint8_t packet[12];
+        uint16_t limit;
         void* buffer;
     };
 
 private:
 
     /* I/O */
-    void outp8(IDEController* controller, int reg, byte value);
-    byte inp8(IDEController* controller, int reg);
-    void inp16(IDEController* controller, word* data, int length);
-    word inp16(IDEController* controller, int reg);
-    void outp16(IDEController* controller, int reg, word value);
-    void outp16(IDEController* controller, word* data, int length);
+    void outp8(IDEController* controller, int reg, uint8_t value);
+    uint8_t inp8(IDEController* controller, int reg);
+    void inp16(IDEController* controller, uint16_t* data, int length);
+    uint16_t inp16(IDEController* controller, int reg);
+    void outp16(IDEController* controller, int reg, uint16_t value);
+    void outp16(IDEController* controller, uint16_t* data, int length);
 
     /* flag utilities */
     bool waitBusyClear(IDEController* controller);
@@ -120,20 +120,20 @@ private:
     /* protocol: param IDEController. this layer returns error code */
     bool protocolAtaNoneData(IDEController* controller, ATACommand* command);
     bool protocolPacket(IDEController* controller, ATAPICommand* command);
-    bool protocolPioDataIn(IDEController* controller, ATACommand* command, word count, void* buf);
+    bool protocolPioDataIn(IDEController* controller, ATACommand* command, uint16_t count, void* buf);
 
     /* command : execute command using protocol function */
     bool commandIdleImmediate(IDEController* controller, int deviceNo);
     bool commandRequestSense(IDEController* controller);
-    bool commandRead10(IDEController* controller, dword lba, void* buffer, int size);
-    bool commandIdentify(IDEController* controller, int deviceNo, word* buffer);
+    bool commandRead10(IDEController* controller, uint32_t lba, void* buffer, int size);
+    bool commandIdentify(IDEController* controller, int deviceNo, uint16_t* buffer);
 
     /* private : functions */
     void initialize(IDEController* controller);
     void setDeviceTypeFirst(IDEController* controller, int deviceNo);
     void setDeviceTypeSecond(IDEController* controller, int deviceNo);
     bool selectDevice(IDEController* controller, int deviceNo);
-    byte deviceValue(int deviceNo) const;
+    uint8_t deviceValue(int deviceNo) const;
 
 private:
     enum
@@ -177,9 +177,9 @@ private:
     IDEController* whichController;
     volatile void* atapiBuffer;
     volatile int atapiReadDone;
-    volatile dword atapiTransferSize;
-    volatile dword atapiTotalReadSize;
-    byte requestSenseBuffer[REQUEST_SENSE_BUFFER_SIZE];
+    volatile uint32_t atapiTransferSize;
+    volatile uint32_t atapiTotalReadSize;
+    uint8_t requestSenseBuffer[REQUEST_SENSE_BUFFER_SIZE];
     int lastError;
 
 };

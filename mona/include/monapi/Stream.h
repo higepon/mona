@@ -2,10 +2,11 @@
     Stream
 ----------------------------------------------------------------------*/
 
-#ifndef __MONAPI_STREAM_H__
-#define __MONAPI_STREAM_H__
+#ifndef _MONAPI_STREAM_
+#define _MONAPI_STREAM_
 
 #include <sys/types.h>
+#include <monapi/Mutex.h>
 
 namespace MonAPI {
 
@@ -13,18 +14,24 @@ class Stream
 {
 public:
     Stream();
-    Stream(dword size, dword handle = 0);
+    Stream(uint32_t size, uint32_t handle = 0);
     virtual ~Stream();
 
 public:
-    static Stream* FromHandle(dword handle);
-    dword write(byte* buffer, dword size);
-    dword read(byte* buffer, dword size);
+    static Stream* FromHandle(uint32_t handle);
+    uint32_t write(uint8_t* buffer, uint32_t size);
+    uint32_t read(uint8_t* buffer, uint32_t size);
     void waitForWrite();
     void waitForRead();
-    dword size() const;
-    dword capacity() const;
-    dword handle() const { return memoryHandle_; }
+    int lockForRead();
+    int unlockForRead();
+    int tryLockForRead();
+    int lockForWrite();
+    int unlockForWrite();
+    int tryLockForWrite();
+    uint32_t size() const;
+    uint32_t capacity() const;
+    uint32_t handle() const { return memoryHandle_; }
 
 protected:
     enum
@@ -34,22 +41,26 @@ protected:
 
     typedef struct
     {
-        dword size;
-        dword capacity;
-        dword mutexHandle;
-        dword waitForReadThreads[MAX_WAIT_THREADS_NUM];
-        dword waitForWriteThreads[MAX_WAIT_THREADS_NUM];
+        uint32_t size;
+        uint32_t capacity;
+        uint32_t accessMutexHandle;
+        uint32_t readMutexHandle;
+        uint32_t writeMutexHandle;
+        uint32_t waitForReadThreads[MAX_WAIT_THREADS_NUM];
+        uint32_t waitForWriteThreads[MAX_WAIT_THREADS_NUM];
     } StreamHeader;
 
-    bool initialize(dword size);
-    bool initializeFromHandle(dword handle);
+    bool initialize(uint32_t size);
+    bool initializeFromHandle(uint32_t handle);
     void setWaitForRead();
     void setWaitForWrite();
 
-    dword memoryHandle_;
+    uint32_t memoryHandle_;
     void* memoryAddress_;
     StreamHeader* header_;
     Mutex* access_;
+    Mutex* readAccess_;
+    Mutex* writeAccess_;
 
 };
 

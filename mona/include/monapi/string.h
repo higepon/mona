@@ -13,8 +13,8 @@
 */
 #include<sys/types.h>
 
-#ifndef _MONA_STRING_
-#define _MONA_STRING_
+#ifndef _MONAPI_STRING_
+#define _MONAPI_STRING_
 
 #ifdef __cplusplus
 extern "C" {

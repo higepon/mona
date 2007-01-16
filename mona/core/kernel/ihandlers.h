@@ -22,7 +22,7 @@ extern "C" void arch_fault0dhandler(void);
 extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
-extern "C" void fault0dHandler(dword error);
+extern "C" void fault0dHandler(uint32_t error);
 extern "C" void SendInterrupt(int irq);
 
 /* IRQ Handler */
@@ -59,8 +59,8 @@ FAULTHANDLERHEADER(10);
 FAULTHANDLERHEADER(11);
 
 
-extern "C" void cpufaultHandler_e(dword address, dword error);
-extern "C" void cpufaultHandler_c(dword error);
+extern "C" void cpufaultHandler_e(uint32_t address, uint32_t error);
+extern "C" void cpufaultHandler_c(uint32_t error);
 extern "C" void arch_cpufaulthandler_c();
 extern "C" void arch_cpufaulthandler_e();
 

@@ -54,27 +54,27 @@ extern "C" void arch_idle();
 ----------------------------------------------------------------------*/
 typedef struct ArchThreadInfo
 {
-    dword  eip;       // 0
-    dword  cs;        // 4
-    dword  eflags;    // 8
-    dword  eax;       // 12
-    dword  ecx;       // 16
-    dword  edx;       // 20
-    dword  ebx;       // 24
-    dword  esp;       // 28
-    dword  ebp;       // 32
-    dword  esi;       // 36
-    dword  edi;       // 40
-    dword  ds;        // 44
-    dword  es;        // 48
-    dword  fs;        // 52
-    dword  gs;        // 56
-    dword  ss;        // 60
-    dword  dpl;       // 64
-    dword  esp0;      // 68
-    dword  ss0;       // 72
-    dword  cr3;       // 76
-    dword  fpu[27];   // 80
+    uint32_t  eip;       // 0
+    uint32_t  cs;        // 4
+    uint32_t  eflags;    // 8
+    uint32_t  eax;       // 12
+    uint32_t  ecx;       // 16
+    uint32_t  edx;       // 20
+    uint32_t  ebx;       // 24
+    uint32_t  esp;       // 28
+    uint32_t  ebp;       // 32
+    uint32_t  esi;       // 36
+    uint32_t  edi;       // 40
+    uint32_t  ds;        // 44
+    uint32_t  es;        // 48
+    uint32_t  fs;        // 52
+    uint32_t  gs;        // 56
+    uint32_t  ss;        // 60
+    uint32_t  dpl;       // 64
+    uint32_t  esp0;      // 68
+    uint32_t  ss0;       // 72
+    uint32_t  cr3;       // 76
+    uint32_t  fpu[27];   // 80
 };
 
 /*----------------------------------------------------------------------
@@ -119,16 +119,16 @@ class ProcessOperation
 class ThreadOperation
 {
   public:
-    static Thread* create(Process* process, dword programCounter);
+    static Thread* create(Process* process, uint32_t programCounter);
     static int switchThread(bool isProcessChanged, int i);
     static int kill();
-    static int kill(dword tid);
+    static int kill(uint32_t tid);
 
   private:
     static void sendKilledMessage();
-    static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
-    static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
-    static dword id;
+    static void archCreateUserThread(Thread* thread, uint32_t programCounter, PageEntry* directory, LinearAddress stack);
+    static void archCreateThread(Thread* thread, uint32_t programCounter, PageEntry* directory, LinearAddress stack);
+    static uint32_t id;
 };
 
 
@@ -144,14 +144,14 @@ class Process
 
   public:
 
-    dword getStackBottom(Thread* thread);
+    uint32_t getStackBottom(Thread* thread);
 
     inline virtual const char* getName() const
     {
         return name_;
     }
 
-    inline virtual dword getPid()
+    inline virtual uint32_t getPid()
     {
         return pid_;
     }
@@ -186,7 +186,7 @@ class Process
         return arguments_;
     }
 
-    inline dword allocateStack() const
+    inline uint32_t allocateStack() const
     {
         return STACK_START - (STACK_SIZE + STACK_SIZE) * (threadNum - 1);
     }
@@ -200,7 +200,7 @@ class Process
         return dllsegment_;
     }
 
-    inline void* AllocateLinearAddress(dword size) {
+    inline void* AllocateLinearAddress(uint32_t size) {
         if (this->lallocator == NULL)
         {
             this->lallocator = new MemoryAllocator(0xd0000000, 256 * 1024 * 1024);
@@ -209,13 +209,13 @@ class Process
     }
 
     static const LinearAddress STACK_START = 0xF0000000;
-    static const dword STACK_SIZE          = 0x400000;
+    static const uint32_t STACK_SIZE          = 0x400000;
 
   public:
     int threadNum;
 
   protected:
-    static dword pid;
+    static uint32_t pid;
     MemoryAllocator* lallocator;
     List<Thread*>* threadList_;
     List<char*>* arguments_;
@@ -226,7 +226,7 @@ class Process
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];
-    dword pid_;
+    uint32_t pid_;
 };
 
 /*----------------------------------------------------------------------

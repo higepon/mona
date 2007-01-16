@@ -54,7 +54,7 @@ class Cursor
 {
 private:
     int width, height, sw, sh, bypp, bx, by;
-    byte* buffer;
+    uint8_t* buffer;
 
 public:
     Cursor() : width(0), height(0), bx(0), by(0), buffer(NULL)
@@ -79,8 +79,8 @@ public:
     {
         if (this->buffer == NULL) return;
 
-        byte* p1 = this->buffer;
-        byte* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
+        uint8_t* p1 = this->buffer;
+        uint8_t* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
         for (int y = 0; y < this->height; y++)
         {
             const char* data = cursor[y];
@@ -104,9 +104,9 @@ public:
     {
         this->bx = pos_x;
         this->by = pos_y;
-        if (this->buffer == NULL) this->buffer = new byte[this->width * this->height * this->bypp];
-        byte* p1 = this->buffer;
-        byte* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
+        if (this->buffer == NULL) this->buffer = new uint8_t[this->width * this->height * this->bypp];
+        uint8_t* p1 = this->buffer;
+        uint8_t* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
         for (int y = 0; y < this->height; y++)
         {
             const char* data = cursor[y];
@@ -149,7 +149,7 @@ public:
 
     static int init()
     {
-        byte data;
+        uint8_t data;
         outp8(0x64, 0x20);
         if (waitReadable())
         {
@@ -195,7 +195,7 @@ public:
 
     static int waitReadable()
     {
-        byte status;
+        uint8_t status;
         int i;
 
         for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
@@ -241,10 +241,10 @@ private:
     int disableCount;
     int posX, posY, prevX, prevY;
     char dx, dy;
-    byte button, prevButton;
+    uint8_t button, prevButton;
     int w, h;
     Screen* vscreen;
-    List<dword>* destList;
+    List<uint32_t>* destList;
     Cursor cursor;
 
 public:
@@ -269,7 +269,7 @@ public:
         commonParams = (CommonParameters*)MemoryMap::map(msg.arg2);
 
         /* mouse information destination list */
-        this->destList = new HList<dword>();
+        this->destList = new HList<uint32_t>();
         if (this->destList == NULL)
         {
             syscall_print("Mouse Server: destList error\n");
@@ -375,19 +375,10 @@ protected:
 
     bool SendServerOK()
     {
-        dword targetID = Message::lookupMainThread(INIT_PROCESS);
-        if (targetID == THREAD_UNKNOWN)
+        if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
         {
-            printf("Mouse Server: MONITER not found\n");
             return false;
         }
-
-        if (Message::send(targetID, MSG_SERVER_START_OK))
-        {
-            printf("Mouse Server: server start send error\n");
-            return false;
-        }
-
         return true;
     }
 
@@ -410,7 +401,7 @@ protected:
     {
         static int state = 0;
 
-        byte data = inp8(0x60);
+        uint8_t data = inp8(0x60);
 
         if(state == 0 && !(data & 0x08)) return -1;
 
@@ -455,7 +446,7 @@ protected:
 /*----------------------------------------------------------------------
     Main
 ----------------------------------------------------------------------*/
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     /* allow I/O from user mode */
     syscall_get_io();

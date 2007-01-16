@@ -41,8 +41,8 @@
 /* Other macros defined by this file:
 
  * bool, true, and false, if _STLP_NO_BOOL is defined.
- * typename, as a null macro if it's not already a keyword.
- * explicit, as a null macro if it's not already a keyword.
+ * typename, as a null macro if it's not already a keyuint16_t.
+ * explicit, as a null macro if it's not already a keyuint16_t.
  * namespace-related macros (_STLP_STD, _STLP_BEGIN_NAMESPACE, etc.)
  * exception-related macros (_STLP_TRY, _STLP_UNWIND, etc.)
  * _STLP_ASSERT, either as a test or as a null macro, depending on
@@ -601,7 +601,7 @@ namespace stlport = _STLP_STD;
 # define __STL_NAMESPACE _STLP_STD
 # define __STL_NAME(name) _STLP_STD::name
 
-/* advanced keywords usage */
+/* advanced keyuint16_ts usage */
 #  ifndef  _STLP_NO_NEW_STYLE_CASTS
 #   define __CONST_CAST(__x,__y) const_cast<__x>(__y)
 #   define __STATIC_CAST(__x,__y) static_cast<__x>(__y)
@@ -641,7 +641,7 @@ namespace stlport = _STLP_STD;
 #   define mutable
 #  endif
 # if defined (_STLP_NO_SIGNED_BUILTINS)
-/* old HP-UX doesn't understand "signed" keyword */
+/* old HP-UX doesn't understand "signed" keyuint16_t */
 #  define signed
 # endif
 
@@ -893,7 +893,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #  define _STLP_IMPORT_DECLSPEC
 # endif
 
-/* a keyword used to instantiate export template */
+/* a keyuint16_t used to instantiate export template */
 #  ifndef _STLP_EXPORT_TEMPLATE_KEYWORD
 #   define _STLP_EXPORT_TEMPLATE_KEYWORD
 #  endif

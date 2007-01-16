@@ -16,14 +16,14 @@
 #include <sys/types.h>
 #include "global.h"
 
-byte inp8(dword port);
-void outp8(dword port, byte value);
-word inp16(dword port);
-void outp16(dword port, word value);
-dword inp32(dword port);
-void outp32(dword port, dword value);
-dword get_eflags();
-void  set_eflags(dword eflags);
+uint8_t inp8(uint32_t port);
+void outp8(uint32_t port, uint8_t value);
+uint16_t inp16(uint32_t port);
+void outp16(uint32_t port, uint16_t value);
+uint32_t inp32(uint32_t port);
+void outp32(uint32_t port, uint32_t value);
+uint32_t get_eflags();
+void  set_eflags(uint32_t eflags);
 
 extern VirtualConsole*g_console;
 

@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_RANDOM_
-#define _MONA_USERLIB_RANDOM_
+#ifndef _MONAPI_RANDOM_
+#define _MONAPI_RANDOM_
 
 #include <sys/types.h>
 

@@ -140,7 +140,7 @@ int LanguageFn::convertShiftJIStoUnicode(int iSJISCode)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertShiftJIStoUnicode(byte x,byte y)
+int LanguageFn::convertShiftJIStoUnicode(uint8_t x,uint8_t y)
 {
 	return g_ShiftJISUnicodeConverter.convert1to2(x,y);
 }
@@ -158,7 +158,7 @@ int LanguageFn::convertUnicodetoShiftJIS(int iUnicodeCode)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertUnicodetoShiftJIS(byte x,byte y)
+int LanguageFn::convertUnicodetoShiftJIS(uint8_t x,uint8_t y)
 {
 	return g_ShiftJISUnicodeConverter.convert2to1(x,y);
 }
@@ -226,7 +226,7 @@ bool CLanguageCodeConverter::readTable(cpchar1 cszPath)
 			if (pRect->getLeft() < 0)	break;		//番兵
 
 //領域を確保
-			word* awBuffer = new word[pRect->getArea()];
+			uint16_t* awBuffer = new uint16_t[pRect->getArea()];
 			m_arrayPWordConversionData[iConversionWay].add(awBuffer);
 
 //awTable_UnicodetoShiftJIS_0_224_0_1などのテーブル文字列を探す。
@@ -249,7 +249,7 @@ bool CLanguageCodeConverter::readTable(cpchar1 cszPath)
 				if (p[0]!='0' && p[1]!='x')		break;
 				int iInt = StringFn::toInt(p+2,16,&p);
 
-				awBuffer[iCount] = (word)iInt;
+				awBuffer[iCount] = (uint16_t)iInt;
 
 				p++;	//','をスキップ
 				while (*p=='\n')	p++;	//改行をスキップ。
@@ -275,7 +275,7 @@ int CLanguageCodeConverter::convert1to2(int iCode1)
 /**
 	@date	2005/08/20	junjunn 作成
 */
-int CLanguageCodeConverter::convert1to2(byte x,byte y)
+int CLanguageCodeConverter::convert1to2(uint8_t x,uint8_t y)
 {
 	return convert(x,y,0);
 }
@@ -283,7 +283,7 @@ int CLanguageCodeConverter::convert1to2(byte x,byte y)
 /**
 	@date	2005/08/20	junjunn 作成
 */
-int CLanguageCodeConverter::convert(byte x,byte y,int i1to2)
+int CLanguageCodeConverter::convert(uint8_t x,uint8_t y,int i1to2)
 {
 	if (! isReady())	return 0;
 
@@ -297,7 +297,7 @@ int CLanguageCodeConverter::convert(byte x,byte y,int i1to2)
 //領域にあるなら
 		if (pRect->isPointInside(x,y))
 		{
-			word* awConversionTable = m_arrayPWordConversionData[i1to2].getAt(iRuleRect);
+			uint16_t* awConversionTable = m_arrayPWordConversionData[i1to2].getAt(iRuleRect);
 			int iReturn = awConversionTable[(y-pRect->getTop()) + pRect->getHeight()*(x - pRect->getLeft())];
 
 			return iReturn;
@@ -318,7 +318,7 @@ int CLanguageCodeConverter::convert2to1(int iCode2)
 /**
 	@date	2005/08/20	junjunn 作成
 */
-int CLanguageCodeConverter::convert2to1(byte x,byte y)
+int CLanguageCodeConverter::convert2to1(uint8_t x,uint8_t y)
 {
 	return convert(x,y,1);
 }

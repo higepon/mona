@@ -338,7 +338,7 @@ _OutputIter fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
 }
 
 
-// Specialization: for one-byte types we can use memset.
+// Specialization: for one-uint8_t types we can use memset.
 
 inline void fill(unsigned char* __first, unsigned char* __last,
                  const unsigned char& __val) {

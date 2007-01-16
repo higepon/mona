@@ -11,7 +11,7 @@ Mutex::Mutex() : destroyed_(false)
     mutexId_ = syscall_mutex_create(0);
 }
 
-Mutex::Mutex(dword mutexId) : destroyed_(false)
+Mutex::Mutex(uint32_t mutexId) : destroyed_(false)
 {
     syscall_mutex_create(mutexId);
     mutexId_ = mutexId;
@@ -42,7 +42,7 @@ int Mutex::tryLock()
 
 int Mutex::destroy()
 {
-    if (destroyed_) return 0;
+    if (destroyed_) return MONA_SUCCESS;
     destroyed_ = true;
     return syscall_mutex_destroy(mutexId_);
 }

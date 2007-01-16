@@ -8,7 +8,7 @@ int feupdateenv(const fenv_t *f)
 	
 	fegetexceptflag(&fe, FE_ALL_EXCEPT);    
 	fesetenv(f);
-	fe |= f->__status_word;
+	fe |= f->__status_uint16_t;
 	fesetexceptflag(&fe, FE_ALL_EXCEPT);
 	
 	return 0;

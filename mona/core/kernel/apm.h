@@ -17,26 +17,26 @@
 
 typedef struct
 {
-	dword eax;
-	dword ebx;
-	dword ecx;
-	dword edx;
-	dword esi;
-	dword edi;
+	uint32_t eax;
+	uint32_t ebx;
+	uint32_t ecx;
+	uint32_t edx;
+	uint32_t esi;
+	uint32_t edi;
 }apm_bios_regs;
 
 #pragma pack(2)
 typedef struct
 {
-	dword cs32;
-	dword eip;
-	dword cs16;
-	dword ds;
-	word cs32_len;
-	word cs16_len;
-	dword ds_len;
-	dword version; // high = major low = minor
-	dword isSupported;
+	uint32_t cs32;
+	uint32_t eip;
+	uint32_t cs16;
+	uint32_t ds;
+	uint16_t cs32_len;
+	uint16_t cs16_len;
+	uint32_t ds_len;
+	uint32_t version; // high = major low = minor
+	uint32_t isSupported;
 } APMInfo;
 #pragma pack()
 
@@ -67,6 +67,6 @@ enum
 
 void apm_init();
 void apm_enable();
-dword apm_bios(dword fn, apm_bios_regs* regs);
+uint32_t apm_bios(uint32_t fn, apm_bios_regs* regs);
 
 #endif

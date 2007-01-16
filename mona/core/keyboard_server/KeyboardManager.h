@@ -35,7 +35,7 @@ class KeyBoardManager{
     KeyInfo* getKeyInfo(KeyInfo* keyinfo);
     int setKeyScanCode(unsigned char);
     void init();
-    void toVirtual(byte keycode, byte modifiers, KeyInfo* info);
+    void toVirtual(uint8_t keycode, uint8_t modifiers, KeyInfo* info);
     inline bool isInit() const {
         return isInit_;
     }
@@ -57,8 +57,8 @@ class KeyBoardManager{
     int keyMapE0[128];
     char keyTopMap[256];
     char keyTopMapS[256];
-    byte idHigh_;
-    byte idLow_;
+    uint8_t idHigh_;
+    uint8_t idLow_;
     List<KeyInfo*>* keyInfoList_;
 
 };

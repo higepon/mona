@@ -41,7 +41,7 @@ GLOBAL SegDesc* g_gdt;
 /* INTERRUPT DESCRIPTOR TABLE */
 GLOBAL GateDesc* g_idt;
 
-GLOBAL dword g_total_system_memory;
+GLOBAL uint32_t g_total_system_memory;
 
 /* Process */
 GLOBAL volatile TSS* g_tss;
@@ -62,7 +62,7 @@ GLOBAL Messenger* g_messenger;
 
 GLOBAL IDManager*   g_id;
 
-GLOBAL dword gt[128];
+GLOBAL uint32_t gt[128];
 
 GLOBAL PsInfo g_ps;
 
@@ -70,7 +70,7 @@ GLOBAL IRQInfo g_irqInfo[16];
 
 GLOBAL Thread* g_idleThread;
 
-GLOBAL dword g_mutexShared;
+GLOBAL uint32_t g_mutexShared;
 
 GLOBAL SharedMemoryObject* g_dllSharedObject;
 

@@ -11,7 +11,6 @@ enum
     COMMAND_LS,
     COMMAND_CD,
     COMMAND_CAT,
-    COMMAND_CHSH,
     COMMAND_UNAME,
     COMMAND_ECHO,
     COMMAND_CLEAR,
@@ -19,8 +18,6 @@ enum
     COMMAND_MEM,
     COMMAND_KILL,
     COMMAND_EXEC,
-    COMMAND_CHANGE_DRIVE_CD0,
-    COMMAND_CHANGE_DRIVE_FD0,
     COMMAND_SHUTDOWN,
     COMMAND_HALT,
     COMMAND_REBOOT,
@@ -44,10 +41,6 @@ int Shell::isInternalCommand(const CString& command)
     else if (cmd == "cat" || cmd == "type")
     {
         return COMMAND_CAT;
-    }
-    else if (cmd == "chsh")
-    {
-        return COMMAND_CHSH;
     }
     else if (cmd == "uname" || cmd == "ver")
     {
@@ -98,8 +91,8 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
     switch (command)
     {
     case COMMAND_HELP:
-        printf("* Mona Shell Internal Commands\n");
-        printf("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL, EXEC, FD0:, CD0:\n");
+        formatWrite("* Mona Shell Internal Commands\n");
+        formatWrite("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL, EXEC, FD0:, CD0:\n");
         break;
 
     case COMMAND_CD:
@@ -108,16 +101,16 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
             if (args.get_Length() < 2)
             {
-                dir = this->startDirectory;
+                dir = startDirectory_;
             }
             else
             {
-                dir = this->mergeDirectory(this->currentDirectory, args[1]);
+                dir = mergeDirectory(currentDirectory_, args[1]);
             }
 
             if (!changeDirecotory(dir))
             {
-                printf("%s: directory not found: %s\n", SVR, (const char*)dir);
+                formatWrite("%s: directory not found: %s\n", SVR, (const char*)dir);
             }
 
             break;
@@ -127,15 +120,15 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printFiles(this->currentDirectory);
+                printFiles(currentDirectory_);
             }
             else
             {
                 for (int i = 1; i < args.get_Length(); i++)
                 {
-                    if (i > 1) printf("\n");
-                    CString dir = this->mergeDirectory(this->currentDirectory, args[i]);
-                    printf("%s:\n", (const char*)dir);
+                    if (i > 1) formatWrite("\n");
+                    CString dir = mergeDirectory(currentDirectory_, args[i]);
+                    formatWrite("%s:\n", (const char*)dir);
                     printFiles(dir);
                 }
             }
@@ -146,7 +139,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printf("usage: CAT/TYPE file\n");
+                formatWrite("usage: CAT/TYPE file\n");
                 break;
             }
 
@@ -155,11 +148,11 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
             if (mi->Size > 0)
             {
-                byte* p = mi->Data;
+                uint8_t* p = mi->Data;
                 bool cr = false;
-                for (dword i = 0; i < mi->Size; i++)
+                for (uint32_t i = 0; i < mi->Size; i++)
                 {
-                    byte b = mi->Data[i];
+                    uint8_t b = mi->Data[i];
                     switch (b)
                     {
                         case '\r':
@@ -177,36 +170,19 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                     }
                 }
                 *p = 0;
-                printf((const char*)mi->Data);
+                formatWrite((const char*)mi->Data);
             }
             monapi_cmemoryinfo_dispose(mi);
             monapi_cmemoryinfo_delete(mi);
             break;
         }
 
-    case COMMAND_CHSH:
-#ifdef USE_CHSH
-        if (monapi_call_process_execute_file("/SERVERS/1LINESH.EX5", MONAPI_TRUE) != 0) break;
-//        if (syscall_load_process("/SERVERS/SHELL.BIN", "SHELL.BIN", NULL) != 0) break;
-#if 1
-        for (MessageInfo msg;;)
-        {
-            if (Message::receive(&msg) != 0) continue;
-            if (msg.header == MSG_SERVER_START_OK) break;
-        }
-#endif
-        hasExited = true;
-#else
-        printf("ERROR: can not use CHSH!\n");
-#endif
-        break;
-
     case COMMAND_UNAME:
         {
              char ver[128];
              syscall_get_kernel_version(ver, 128);
              ver[127] = '\0';
-             printf("%s\n", ver);
+             formatWrite("%s\n", ver);
             break;
         }
 
@@ -226,23 +202,21 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 p += args[i].getLength();
             }
             *p = '\0';
-            printf("%s\n", buf);
+            formatWrite("%s\n", buf);
             delete [] buf;
             break;
         }
 
     case COMMAND_CLEAR:
-        if (this->doExec)
+        if (doExec_)
         {
-            printf("can not clear while exec\n");
+            formatWrite("can not clear while exec\n");
             break;
         }
         else
         {
-            monapi_call_mouse_set_cursor(0);
-            syscall_clear_screen();
-            monapi_call_mouse_set_cursor(1);
-            syscall_set_cursor(0, 0);
+            terminal_->clearScreen();
+            terminal_->cursorMove(0, 0);
         }
         return false;
 
@@ -251,7 +225,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             syscall_set_ps_dump();
             PsInfo info;
 
-            printf("[tid] [state]  [eip]    [esp]    [cr3]    [name]\n");
+            formatWrite("[tid] [state]  [eip]    [esp]    [cr3]    [name]\n");
 
             char buf[256];
             while (syscall_read_ps_dump(&info) == 0)
@@ -259,7 +233,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 sprintf(buf, "%5d %s %08x %08x %08x %s\n",
                     info.tid, info.state ? "running" : "waiting",
                     info.eip, info.esp, info.cr3, info.name);
-                printf(buf);
+                formatWrite(buf);
             }
 
             break;
@@ -269,9 +243,9 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             MemoryInfo meminfo;
             syscall_get_memory_info(&meminfo);
-            printf("   Total Memory : %dbyte\n", meminfo.totalMemoryL);
-            printf(" Free Page Pool : %dbyte\n", meminfo.freePageNum * meminfo.pageSize);
-            printf("Total Page Pool : %dbyte\n", meminfo.totalPageNum * meminfo.pageSize);
+            formatWrite("   Total Memory : %duint8_t\n", meminfo.totalMemoryL);
+            formatWrite(" Free Page Pool : %duint8_t\n", meminfo.freePageNum * meminfo.pageSize);
+            formatWrite("Total Page Pool : %duint8_t\n", meminfo.totalPageNum * meminfo.pageSize);
             break;
         }
 
@@ -279,17 +253,17 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printf("usage: KILL tid\n");
+                formatWrite("usage: KILL tid\n");
                 break;
             }
 
             if (syscall_kill_thread(atoi(args[1])))
             {
-                printf("kill failed. Thread not found\n");
+                formatWrite("kill failed. Thread not found\n");
             }
             else
             {
-                printf("thread %d killed\n", atoi(args[1]));
+                formatWrite("thread %d killed\n", atoi(args[1]));
             }
 
             break;
@@ -298,27 +272,27 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
     case COMMAND_EXEC:
         if (args.get_Length() < 2)
         {
-            printf("usage: EXEC command [arguments ...]\n");
+            formatWrite("usage: EXEC command [arguments ...]\n");
         }
-        else if (this->doExec)
+        else if (doExec_)
         {
-            printf("can not exec while exec\n");
+            formatWrite("can not exec while exec\n");
         }
         else
         {
             _A<CString> args2(args.get_Length() - 1);
             for (int i = 1; i < args.get_Length(); i++) args2[i - 1] = args[i];
-            if (this->commandExecute(args2)) this->doExec = true;
+            if (commandExecute(args2, inStream_->handle(), outStream_->handle())) doExec_ = true;
         }
         break;
 
     case COMMAND_SHUTDOWN:
     {
-        dword result;
+        uint32_t result;
 
         if( args.get_Length() < 2 )
         {
-                printf("usage: shutdown [-rh]");
+                formatWrite("usage: shutdown [-rh]");
                 break;
         }
 
@@ -331,7 +305,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             result = syscall_shutdown(SHUTDOWN_REBOOT, SHUTDOWN_DEVICE_ALL);
         }
 
-        printf("result = %x\n");
+        formatWrite("result = %x\n");
         break;
     }
 

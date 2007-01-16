@@ -31,21 +31,21 @@ public:
 	static const uint m_acnBitMask[32];
 };
 
-inline byte getByte0(dword dw)	{return (byte)((dw & 0x000000FF));}
-inline byte getByte1(dword dw)	{return (byte)((dw & 0x0000FF00) >> 8);}
-inline byte getByte2(dword dw)	{return (byte)((dw & 0x00FF0000) >> 16);}
-inline byte getByte3(dword dw)	{return (byte)((dw & 0xFF000000) >> 24);}
-inline byte getByte0(int i)		{return (byte)((i & 0x000000FF));}
-inline byte getByte1(int i)		{return (byte)((i & 0x0000FF00) >> 8);}
-inline byte getByte2(int i)		{return (byte)((i & 0x00FF0000) >> 16);}
-inline byte getByte3(int i)		{return (byte)((i & 0xFF000000) >> 24);}
-inline byte getByte0(word w)	{return (byte)(w & 0x00FF);}
-inline byte getByte1(word w)	{return (byte)(w >> 8);}
-inline word getWord0(int w)		{return (word)(w & 0xFFFF);}
-inline word getWord1(int w)		{return (word)(w >> 16);}
+inline uint8_t getByte0(uint32_t dw)	{return (uint8_t)((dw & 0x000000FF));}
+inline uint8_t getByte1(uint32_t dw)	{return (uint8_t)((dw & 0x0000FF00) >> 8);}
+inline uint8_t getByte2(uint32_t dw)	{return (uint8_t)((dw & 0x00FF0000) >> 16);}
+inline uint8_t getByte3(uint32_t dw)	{return (uint8_t)((dw & 0xFF000000) >> 24);}
+inline uint8_t getByte0(int i)		{return (uint8_t)((i & 0x000000FF));}
+inline uint8_t getByte1(int i)		{return (uint8_t)((i & 0x0000FF00) >> 8);}
+inline uint8_t getByte2(int i)		{return (uint8_t)((i & 0x00FF0000) >> 16);}
+inline uint8_t getByte3(int i)		{return (uint8_t)((i & 0xFF000000) >> 24);}
+inline uint8_t getByte0(uint16_t w)	{return (uint8_t)(w & 0x00FF);}
+inline uint8_t getByte1(uint16_t w)	{return (uint8_t)(w >> 8);}
+inline uint16_t getWord0(int w)		{return (uint16_t)(w & 0xFFFF);}
+inline uint16_t getWord1(int w)		{return (uint16_t)(w >> 16);}
 
-inline uint packByte(int i,int i2)	{return ((word)i) | (((word)i2)<<8);}
-inline uint packWord(int i,int i2)	{return ((word)i) | (((word)i2)<<16);}
+inline uint packByte(int i,int i2)	{return ((uint16_t)i) | (((uint16_t)i2)<<8);}
+inline uint packWord(int i,int i2)	{return ((uint16_t)i) | (((uint16_t)i2)<<16);}
 
 }	//namespace monapi2
 

@@ -20,21 +20,21 @@
 #include "global.h"
 
 /* independent from architecture */
-const byte PageManager::FAULT_NOT_EXIST;
-const byte PageManager::FAULT_NOT_WRITABLE;
+const uint8_t PageManager::FAULT_NOT_EXIST;
+const uint8_t PageManager::FAULT_NOT_WRITABLE;
 
 /* depend on architecture */
-const byte PageManager::ARCH_FAULT_NOT_EXIST;
-const byte PageManager::ARCH_FAULT_ACCESS_DENIED;
-const byte PageManager::ARCH_FAULT_READ;
-const byte PageManager::ARCH_FAULT_WRITE;
-const byte PageManager::ARCH_FAULT_WHEN_KERNEL;
-const byte PageManager::ARCH_FAULT_WHEN_USER;
-const byte PageManager::ARCH_PAGE_PRESENT;
-const byte PageManager::ARCH_PAGE_RW;
-const byte PageManager::ARCH_PAGE_READ_ONLY;
-const byte PageManager::ARCH_PAGE_USER;
-const byte PageManager::ARCH_PAGE_KERNEL;
+const uint8_t PageManager::ARCH_FAULT_NOT_EXIST;
+const uint8_t PageManager::ARCH_FAULT_ACCESS_DENIED;
+const uint8_t PageManager::ARCH_FAULT_READ;
+const uint8_t PageManager::ARCH_FAULT_WRITE;
+const uint8_t PageManager::ARCH_FAULT_WHEN_KERNEL;
+const uint8_t PageManager::ARCH_FAULT_WHEN_USER;
+const uint8_t PageManager::ARCH_PAGE_PRESENT;
+const uint8_t PageManager::ARCH_PAGE_RW;
+const uint8_t PageManager::ARCH_PAGE_READ_ONLY;
+const uint8_t PageManager::ARCH_PAGE_USER;
+const uint8_t PageManager::ARCH_PAGE_KERNEL;
 const int  PageManager::ARCH_PAGE_SIZE;
 const int  PageManager::ARCH_PAGE_TABLE_NUM;
 const int  PageManager::PAGE_TABLE_POOL_SIZE;
@@ -46,9 +46,9 @@ const int  PageManager::PAGE_TABLE_POOL_SIZE;
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-PageManager::PageManager(dword totalMemorySize)
+PageManager::PageManager(uint32_t totalMemorySize)
 {
-    dword pageNumber = (totalMemorySize + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    uint32_t pageNumber = (totalMemorySize + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
 
     memoryMap_ = new BitMap(pageNumber);
     checkMemoryAllocate(memoryMap_, "PageManager memoryMap");
@@ -58,7 +58,7 @@ PageManager::PageManager(dword totalMemorySize)
      *
      * page table should be at 0-8MB. so use kernel memory allocation.
      */
-    byte* temp = (byte*)malloc(PAGE_TABLE_POOL_SIZE);
+    uint8_t* temp = (uint8_t*)malloc(PAGE_TABLE_POOL_SIZE);
     checkMemoryAllocate(temp, "PageManager page table pool");
 
     /* 4KB align */
@@ -134,8 +134,8 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
                                        , bool present, bool writable, bool isUser) const
 {
     PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(laddress);
-    dword tableIndex     = getTableIndex(laddress);
+    uint32_t directoryIndex = getDirectoryIndex(laddress);
+    uint32_t tableIndex     = getTableIndex(laddress);
 
     if (isPresent(&(directory[directoryIndex])))
     {
@@ -169,8 +169,8 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
 
 {
     PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(laddress);
-    dword tableIndex     = getTableIndex(laddress);
+    uint32_t directoryIndex = getDirectoryIndex(laddress);
+    uint32_t tableIndex     = getTableIndex(laddress);
 
     if (isPresent(&(directory[directoryIndex])))
     {
@@ -185,7 +185,7 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
 }
 
-byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
+uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
     size = (size + 4095) & 0xFFFFF000;
     int pageNum = size / ARCH_PAGE_SIZE;
@@ -197,8 +197,8 @@ byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser
     {
         PageEntry* table;
         PhysicalAddress address = i * ARCH_PAGE_SIZE + 0x800000;
-        dword directoryIndex = getDirectoryIndex(address);
-        dword tableIndex     = getTableIndex(address);
+        uint32_t directoryIndex = getDirectoryIndex(address);
+        uint32_t tableIndex     = getTableIndex(address);
 
         if (isPresent(&(directory[directoryIndex])))
         {
@@ -212,7 +212,7 @@ byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser
         setAttribute(&(table[tableIndex]), true, true, true, address);
     }
 
-    return (byte*)(foundMemory * ARCH_PAGE_SIZE + 0x800000);
+    return (uint8_t*)(foundMemory * ARCH_PAGE_SIZE + 0x800000);
 }
 
 void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size)
@@ -226,9 +226,9 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
     {
         reservedDMAMap_->clear(i);
 
-        dword target         = i * ARCH_PAGE_SIZE + 0x800000;
-        dword directoryIndex = getDirectoryIndex(target);
-        dword tableIndex     = getTableIndex(target);
+        uint32_t target         = i * ARCH_PAGE_SIZE + 0x800000;
+        uint32_t directoryIndex = getDirectoryIndex(target);
+        uint32_t tableIndex     = getTableIndex(target);
         if (!isPresent(&directory[directoryIndex])) return;
 
         PageEntry* table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
@@ -294,8 +294,8 @@ void PageManager::setup(PhysicalAddress vram)
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096)
     {
         PageEntry* table;
-        dword directoryIndex = getDirectoryIndex(vram);
-        dword tableIndex     = getTableIndex(vram);
+        uint32_t directoryIndex = getDirectoryIndex(vram);
+        uint32_t tableIndex     = getTableIndex(vram);
 
         if (isPresent(&(g_page_directory[directoryIndex])))
         {
@@ -343,7 +343,7 @@ PageEntry* PageManager::createKernelPageDirectory()
     }
 
     /* find 4KB align for VRAM */
-    dword vram = vram_;
+    uint32_t vram = vram_;
     vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
@@ -353,8 +353,8 @@ PageEntry* PageManager::createKernelPageDirectory()
     /* Map VRAM */
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
 
-        dword directoryIndex = getDirectoryIndex(vram);
-        dword tableIndex     = getTableIndex(vram);
+        uint32_t directoryIndex = getDirectoryIndex(vram);
+        uint32_t tableIndex     = getTableIndex(vram);
 
         if (isPresent(&(directory[directoryIndex]))) {
 
@@ -399,7 +399,7 @@ PageEntry* PageManager::createNewPageDirectory() {
     }
 
     /* find 4KB align for VRAM */
-    dword vram = vram_;
+    uint32_t vram = vram_;
     vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
@@ -409,8 +409,8 @@ PageEntry* PageManager::createNewPageDirectory() {
     /* Map VRAM */
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
 
-        dword directoryIndex = getDirectoryIndex(vram);
-        dword tableIndex     = getTableIndex(vram);
+        uint32_t directoryIndex = getDirectoryIndex(vram);
+        uint32_t tableIndex     = getTableIndex(vram);
 
         if (isPresent(&(directory[directoryIndex]))) {
 
@@ -429,7 +429,7 @@ PageEntry* PageManager::createNewPageDirectory() {
 
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
-    dword vram = vram_;
+    uint32_t vram = vram_;
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
     int vramIndex = getDirectoryIndex(vram);
 
@@ -460,7 +460,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
                 continue;
             }
 
-            PhysicalAddress address = ((dword)(table[j])) & 0xfffff000;
+            PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
             returnPhysicalPage(address);
         }
         returnPageTable(table);
@@ -469,7 +469,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
     return;
 }
 
-void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword size)
+void PageManager::returnPages(PageEntry* directory, LinearAddress address, uint32_t size)
 {
 #if 0
     if (address < 0xC0000000 || (0xC0000000 + 24 * 1024 * 1024) < address) return;
@@ -481,8 +481,8 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
     for (LinearAddress target = start; target + 4095 <= address + size; target += 4096)
     {
         logprintf("target=%x\n", target);
-        dword directoryIndex = getDirectoryIndex(target);
-        dword tableIndex     = getTableIndex(target);
+        uint32_t directoryIndex = getDirectoryIndex(target);
+        uint32_t tableIndex     = getTableIndex(target);
 
         if (!isPresent(&directory[directoryIndex])) continue;
 
@@ -490,7 +490,7 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
 
         if (isPresent(&table[tableIndex]))
         {
-            PhysicalAddress paddress = ((dword)(table[tableIndex])) & 0xfffff00;
+            PhysicalAddress paddress = ((uint32_t)(table[tableIndex])) & 0xfffff00;
             returnPhysicalPage(paddress);
             table[tableIndex] = 0;
 
@@ -524,15 +524,15 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
 
     logprintf("****** [%s]address = %x size = %d\n", g_currentThread->process->getName(), address, size);
 
-    dword orgAddress = address;
+    uint32_t orgAddress = address;
 
     address = ((address + ARCH_PAGE_SIZE - 1) & 0xFFFFF000);
 
     for (int i = 0; (address + i * ARCH_PAGE_SIZE + ARCH_PAGE_SIZE) < (orgAddress + size); i++)
     {
-        dword targetAddress  = address + i * ARCH_PAGE_SIZE;
-        dword directoryIndex = getDirectoryIndex(targetAddress);
-        dword tableIndex     = getTableIndex(targetAddress);
+        uint32_t targetAddress  = address + i * ARCH_PAGE_SIZE;
+        uint32_t directoryIndex = getDirectoryIndex(targetAddress);
+        uint32_t tableIndex     = getTableIndex(targetAddress);
         PageEntry* table     = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
 
         logprintf("targetAddress = %x \n", targetAddress);
@@ -540,7 +540,7 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
         if (isPresent(&table[tableIndex]))
         {
 
-            PhysicalAddress paddress = ((dword)(table[tableIndex])) & 0xfffff000;
+            PhysicalAddress paddress = ((uint32_t)(table[tableIndex])) & 0xfffff000;
             returnPhysicalPage(paddress);
             table[tableIndex] = 0;
 
@@ -642,16 +642,16 @@ PageEntry* PageManager::allocatePageTable() const
         return NULL;
     }
 
-    byte* address = (byte*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
+    uint8_t* address = (uint8_t*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
     return (PageEntry*)(address);
 }
 
 // PageEntry* PageManager::allocatePageTable() const
 // {
-//     byte* table;
-//     table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
+//     uint8_t* table;
+//     table = (uint8_t*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
 //     checkMemoryAllocate(table, "PageManager table memory allocate");
-//     table = (byte*)(((int)table + 4095) & 0xFFFFF000);
+//     table = (uint8_t*)(((int)table + 4095) & 0xFFFFF000);
 //     g_console->printf("address%x", table);
 //     return (PageEntry*)table;
 // }
@@ -664,7 +664,7 @@ PageEntry* PageManager::allocatePageTable() const
     \author HigePon
     \date   create:2003/10/15 update:2004/01/08
 */
-bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip)
+bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
 {
     Process* current = g_currentThread->process;
 
@@ -705,7 +705,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
 
-        dword stackButtom = current->getStackBottom(g_currentThread->thread);
+        uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
         bool stackOver = address < stackButtom && stackButtom - 4096 < address;
 
         g_console->printf("access denied.address = %x Process %s killed %s eip=%x\n", address, current->getName(), stackOver ? "stack overflow?" : "", eip);
@@ -765,7 +765,7 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
 bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const
 {
     PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(address);
+    uint32_t directoryIndex = getDirectoryIndex(address);
 
     //if (!isPresent(&(directory[directoryIndex]))) return false;
     if (isPresent(&(directory[directoryIndex])))
@@ -790,10 +790,10 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     \author HigePon
     \date   create:2003/10/27 update:
 */
-void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword size) const
+void PageManager::setAbsent(PageEntry* directory, LinearAddress start, uint32_t size) const
 {
     LinearAddress address;
-    dword directoryIndex;
+    uint32_t directoryIndex;
     PageEntry* table;
 
     for (address = start; address < start + size; address += ARCH_PAGE_SIZE)
@@ -823,20 +823,20 @@ void PageManager::returnPhysicalPage(PhysicalAddress address)
 bool PageManager::getPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress* paddress)
 {
     PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(laddress);
-    dword tableIndex     = getTableIndex(laddress);
+    uint32_t directoryIndex = getDirectoryIndex(laddress);
+    uint32_t tableIndex     = getTableIndex(laddress);
 
     /* not present */
     if (!isPresent(&(directory[directoryIndex]))) return false;
 
     table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
 
-    *paddress = ((dword)(table[tableIndex]) & 0xfffff800) + (laddress % 4096);
+    *paddress = ((uint32_t)(table[tableIndex]) & 0xfffff800) + (laddress % 4096);
 
     return true;
 }
 
-void PageManager::getPagePoolInfo(dword* freeNum, dword* totalNum, dword* pageSize)
+void PageManager::getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_t* pageSize)
 {
     *freeNum  = memoryMap_->countClear();
     *totalNum = memoryMap_->getBitsNumber();

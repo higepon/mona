@@ -36,13 +36,13 @@ class BitMap {
     enum
     {
         NOT_FOUND  = -1,
-        DWORD_BITS = sizeof(dword) * 8
+        DWORD_BITS = sizeof(uint32_t) * 8
     };
 
   private:
     int* map_;
     int bitsNumber_;
-    int dwordNumber_;
+    int uint32_tNumber_;
 };
 
 #endif

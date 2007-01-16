@@ -1,12 +1,13 @@
-#ifndef _MONA_USERLIB_System_
-#define _MONA_USERLIB_System_
+#ifndef _MONAPI_SYSTEM_
+#define _MONAPI_SYSTEM_
 
 #include <sys/types.h>
+#include <monapi/Stream.h>
 
-extern "C" dword syscall_get_pid();
-extern "C" dword syscall_get_tid();
-extern "C" dword syscall_get_tick();
-extern "C" int syscall_kill_thread(dword tid);
+extern "C" uint32_t syscall_get_pid();
+extern "C" uint32_t syscall_get_tid();
+extern "C" uint32_t syscall_get_tick();
+extern "C" int syscall_kill_thread(uint32_t tid);
 extern "C" int syscall_kill();
 
 namespace MonAPI {
@@ -17,22 +18,22 @@ namespace MonAPI {
 class System
 {
   public:
-    inline static dword getProcessID()
+    inline static uint32_t getProcessID()
     {
         return syscall_get_pid();
     }
 
-    inline static dword getThreadID()
+    inline static uint32_t getThreadID()
     {
         return syscall_get_tid();
     }
 
-    inline static dword getTick()
+    inline static uint32_t getTick()
     {
         return syscall_get_tick();
     }
 
-    inline static int kill(dword tid)
+    inline static int kill(uint32_t tid)
     {
         return syscall_kill_thread(tid);
     }
@@ -43,9 +44,13 @@ class System
     }
 
     static PsInfo* getProcessInfo();
-    static dword getParentThreadID();
+    static uint32_t getParentThreadID();
     static const char* getProcessPath();
     static const char* getBundlePath();
+    static uint32_t getProcessStdoutID();
+    static uint32_t getProcessStdinID();
+    static Stream* System::getStdinStream();
+    static Stream* System::getStdoutStream();
 };
 
 }

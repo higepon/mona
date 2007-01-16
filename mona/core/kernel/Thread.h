@@ -33,20 +33,20 @@ public:
 
 public:
     int waitEvent;
-    dword priority;
-    dword basePriority;
+    uint32_t priority;
+    uint32_t basePriority;
     int index; // for debug only
     ThreadInfo* tinfo;
     List<MessageInfo*>* messageList;
-    dword id;
-    dword lastCpuUsedTick;
-    dword age;
-    dword schedulerTotalTick;
-    dword flags;
-    dword wakeupSleep;
+    uint32_t id;
+    uint32_t lastCpuUsedTick;
+    uint32_t age;
+    uint32_t schedulerTotalTick;
+    uint32_t flags;
+    uint32_t wakeupSleep;
     class StackSegment* stackSegment;
     //add by TAKA
-    dword kernelStackBottom;
+    uint32_t kernelStackBottom;
 };
 
 #endif

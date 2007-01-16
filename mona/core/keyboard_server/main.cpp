@@ -18,21 +18,21 @@
 
 using namespace MonAPI;
 
-int regist(List<dword>* destList, MessageInfo* info);
-int unregist(List<dword>* destList, MessageInfo* info);
-int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode);
+int regist(List<uint32_t>* destList, MessageInfo* info);
+int unregist(List<uint32_t>* destList, MessageInfo* info);
+int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8_t scancode);
 
 
-bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
+bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file = "no file", int line = 0);
 
 
 #define WAIT_INTERRUPT(ms, irq) WaitInterruptWithTimeout(ms, irq, __FILE__, __LINE__)
 
-bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file, int line)
+bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int line)
 {
     MessageInfo msg;
 
-    dword timerId = set_timer(ms);
+    uint32_t timerId = set_timer(ms);
 
     for (int i = 0; ; i++)
     {
@@ -65,7 +65,7 @@ bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file, int line)
     return false;
 }
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     /* user mode I/O */
     syscall_get_io();
@@ -75,27 +75,15 @@ int MonaMain(List<char*>* pekoe)
     manager->init();
 
     /* initilize destination list */
-    List<dword>* destList = new HList<dword>();
+    List<uint32_t>* destList = new HList<uint32_t>();
     MessageInfo info;
 
-    /* Server start ok */
-    dword targetID = Message::lookupMainThread("MONITOR.BIN");
-    if (targetID == 0xFFFFFFFF)
+    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
-        printf("KeyBoardServer:MONITOR not found\n");
-        exit(1);
-    }
-
-    /* create message */
-    Message::create(&info, MSG_SERVER_START_OK, 0, 0, 0, NULL);
-
-    /* send */
-    if (Message::send(targetID, &info)) {
-        printf("KeyBoardServer:INIT error\n");
+        exit(-1);
     }
 
     syscall_set_irq_receiver(1, 0);
-
 
     /* Message loop */
     for (;;)
@@ -126,7 +114,7 @@ int MonaMain(List<char*>* pekoe)
             case MSG_MEMORY_MAP_ID:
 
                 {
-                    dword id = info.arg1;
+                    uint32_t id = info.arg1;
                     char* p = (char*)(MemoryMap::map(id));
                     printf("[share!]%s\n", p);
                     MemoryMap::unmap(id);
@@ -144,7 +132,7 @@ int MonaMain(List<char*>* pekoe)
     return 0;
 }
 
-int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode)
+int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8_t scancode)
 {
     MessageInfo message;
     KeyInfo keyinfo;
@@ -169,16 +157,16 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte sca
     return 0;
 }
 
-int regist(List<dword>* destList, MessageInfo* info)
+int regist(List<uint32_t>* destList, MessageInfo* info)
 {
-    dword id = info->arg1;
+    uint32_t id = info->arg1;
     destList->add(id);
     return 0;
 }
 
-int unregist(List<dword>* destList, MessageInfo* info)
+int unregist(List<uint32_t>* destList, MessageInfo* info)
 {
-    dword id = info->arg1;
+    uint32_t id = info->arg1;
     destList->remove(id);
     return 0;
 }

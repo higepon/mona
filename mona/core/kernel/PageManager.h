@@ -14,25 +14,25 @@
 
 #include "BitMap.h"
 
-typedef dword PageEntry;
-typedef dword LinearAddress;
-typedef dword PhysicalAddress;
+typedef uint32_t PageEntry;
+typedef uint32_t LinearAddress;
+typedef uint32_t PhysicalAddress;
 
 class PageManager {
 
   public:
-    PageManager(dword totalMemorySize);
+    PageManager(uint32_t totalMemorySize);
 
   public:
     void setup(PhysicalAddress vram);
     void flushPageCache() const;
-    void getPagePoolInfo(dword* freeNum, dword* totalNum, dword* pageSize);
+    void getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_t* pageSize);
 
     void returnPhysicalPage(PhysicalAddress address);
     void returnPhysicalPages(PageEntry* directory);
     void returnPageTable(PageEntry* table);
-    void returnPages(PageEntry* directory, LinearAddress address, dword size);
-    byte* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
+    void returnPages(PageEntry* directory, LinearAddress address, uint32_t size);
+    uint8_t* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
     void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
@@ -46,14 +46,14 @@ class PageManager {
 
     bool getPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress* paddress);
 
-    void setAbsent(PageEntry* directory, LinearAddress start, dword size) const;
+    void setAbsent(PageEntry* directory, LinearAddress start, uint32_t size) const;
 
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
     PageEntry* createNewPageDirectory();
     PageEntry* createKernelPageDirectory();
-    bool pageFaultHandler(LinearAddress address, dword error, dword eip);
+    bool pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip);
     inline static bool isPresent(PageEntry* entry) {
 
         return (*entry) & ARCH_PAGE_PRESENT;
@@ -82,20 +82,20 @@ class PageManager {
     BitMap* reservedDMAMap_;
 
   public:
-    static const byte FAULT_NOT_EXIST          = 0x01;
-    static const byte FAULT_NOT_WRITABLE       = 0x02;
+    static const uint8_t FAULT_NOT_EXIST          = 0x01;
+    static const uint8_t FAULT_NOT_WRITABLE       = 0x02;
 
-    static const byte ARCH_FAULT_NOT_EXIST     = 0x00;
-    static const byte ARCH_FAULT_ACCESS_DENIED = 0x01;
-    static const byte ARCH_FAULT_READ          = 0x00;
-    static const byte ARCH_FAULT_WRITE         = 0x02;
-    static const byte ARCH_FAULT_WHEN_KERNEL   = 0x00;
-    static const byte ARCH_FAULT_WHEN_USER     = 0x04;
-    static const byte ARCH_PAGE_PRESENT        = 0x01;
-    static const byte ARCH_PAGE_RW             = 0x02;
-    static const byte ARCH_PAGE_READ_ONLY      = 0x00;
-    static const byte ARCH_PAGE_USER           = 0x04;
-    static const byte ARCH_PAGE_KERNEL         = 0x00;
+    static const uint8_t ARCH_FAULT_NOT_EXIST     = 0x00;
+    static const uint8_t ARCH_FAULT_ACCESS_DENIED = 0x01;
+    static const uint8_t ARCH_FAULT_READ          = 0x00;
+    static const uint8_t ARCH_FAULT_WRITE         = 0x02;
+    static const uint8_t ARCH_FAULT_WHEN_KERNEL   = 0x00;
+    static const uint8_t ARCH_FAULT_WHEN_USER     = 0x04;
+    static const uint8_t ARCH_PAGE_PRESENT        = 0x01;
+    static const uint8_t ARCH_PAGE_RW             = 0x02;
+    static const uint8_t ARCH_PAGE_READ_ONLY      = 0x00;
+    static const uint8_t ARCH_PAGE_USER           = 0x04;
+    static const uint8_t ARCH_PAGE_KERNEL         = 0x00;
     static const int  ARCH_PAGE_SIZE           = 4096;
     static const int  ARCH_PAGE_TABLE_NUM      = 1024;
     static const int  PAGE_TABLE_POOL_SIZE     = 1 * 1024 * 1024; // 1MB

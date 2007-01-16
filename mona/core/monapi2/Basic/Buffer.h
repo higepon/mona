@@ -39,10 +39,10 @@ public:
 
 ///@name 操作
 //@{
-	void copy(const byte* cpSource,int iLength);	///<領域を確保しコピー。
+	void copy(const uint8_t* cpSource,int iLength);	///<領域を確保しコピー。
 	void copy(const Buffer* cpbuf);					///<十分な領域を確保しcpbufをコピー
 
-	byte* extendBuffer(int iNewSize,bool bKeepOriginalData=false);					///<iLengthバイトの領域を確保
+	uint8_t* extendBuffer(int iNewSize,bool bKeepOriginalData=false);					///<iLengthバイトの領域を確保
 	void clear();									///<内部バッファのクリア
 //@}
 
@@ -51,13 +51,13 @@ public:
 //@{
 //	int getLength()			const {return m_iLength;}
 	int getSize()			const {return m_iSize;}
-	const	byte* getData()	const {return m_pBuffer;}		//内部データにアクセス。const
-			byte* getBuffer()	{return m_pBuffer;}			//内部データにアクセス。
+	const	uint8_t* getData()	const {return m_pBuffer;}		//内部データにアクセス。const
+			uint8_t* getBuffer()	{return m_pBuffer;}			//内部データにアクセス。
 //@}
 
 //メンバ
 protected:
-	byte*	m_pBuffer;					///<内部バッファ
+	uint8_t*	m_pBuffer;					///<内部バッファ
 //	int		m_iLength;					///<長さ。確保している領域のサイズとは別。
 	int		m_iSize;					///<確保している領域のサイズ
 };

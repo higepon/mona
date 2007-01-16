@@ -56,10 +56,6 @@ typedef unsigned short      uint16_t;
 typedef unsigned int            uint32_t;
 # define __uint32_t_defined
 #endif
-
-// typedef unsigned char		uint8_t;
-// typedef unsigned short		uint16_t;
-// typedef unsigned int		uint32_t;
 typedef unsigned long long	uint64_t;
 
 /* 7.18.1.2 Minumum-width integer types */

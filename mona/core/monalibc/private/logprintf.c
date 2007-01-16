@@ -10,13 +10,6 @@
 #include <stdarg.h>
 #include <monapi/syscall.h>
 
-int syscall_log_print(const char* msg) {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_LOG_PRINT, result, msg);
-    return result;
-}
-
-
 void logprintf(const char* format, ...) {
 
     char str[512];

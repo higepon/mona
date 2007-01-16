@@ -116,9 +116,9 @@ public:
   BSTR* operator&() { return &m_str; }
   BSTR MyCopy() const 
   { 
-    int byteLen = ::SysStringByteLen(m_str);
-    BSTR res = ::SysAllocStringByteLen(NULL, byteLen);
-    memmove(res, m_str, byteLen);
+    int uint8_tLen = ::SysStringByteLen(m_str);
+    BSTR res = ::SysAllocStringByteLen(NULL, uint8_tLen);
+    memmove(res, m_str, uint8_tLen);
     return res;
   }
   void Attach(BSTR src) {  m_str = src; }

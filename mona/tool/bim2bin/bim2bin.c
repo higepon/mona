@@ -27,7 +27,7 @@
 /* +0x18 : reserve */
 /* +0x1c : reserve */
 /* +0x20 : static start */
-/* +0x24 : static bytes */
+/* +0x24 : static uint8_ts */
 
 typedef unsigned char UCHAR;
 
@@ -39,7 +39,7 @@ typedef unsigned char UCHAR;
 
 static unsigned char *putb_buf, *putb_overbuf;
 static int putb_ptr;
-static unsigned char putb_byte, putb_count = 8;
+static unsigned char putb_uint8_t, putb_count = 8;
 static UCHAR *tek1_s7ptr;
 static int complev = -1;
 static FILE *hint = NULL;
@@ -789,13 +789,13 @@ void putbc(const int bits, int mask)
 {
 	do {
 	//	putb((bits & mask) != 0);
-		putb_byte = (putb_byte << 1) + ((bits & mask) != 0);
+		putb_uint8_t = (putb_uint8_t << 1) + ((bits & mask) != 0);
 		if (--putb_count == 0) {
 			putb_count = 8;
 			if (putb_ptr < 0)
-				putb_buf[putb_ptr] = putb_byte;
+				putb_buf[putb_ptr] = putb_uint8_t;
 			else
-				putb_overbuf[putb_ptr] = putb_byte;
+				putb_overbuf[putb_ptr] = putb_uint8_t;
 			putb_ptr++;
 		}
 	} while (mask >>= 1);
@@ -805,13 +805,13 @@ void putbc(const int bits, int mask)
 void flushb()
 {
 	if (putb_count != 8) {
-		putb_byte = putb_byte << 1 | 1; /* "1"を送る */
+		putb_uint8_t = putb_uint8_t << 1 | 1; /* "1"を送る */
 		if (--putb_count)
-			putb_byte <<= putb_count;
+			putb_uint8_t <<= putb_count;
 		if (putb_ptr < 0)
-			putb_buf[putb_ptr] = putb_byte;
+			putb_buf[putb_ptr] = putb_uint8_t;
 		else
-			putb_overbuf[putb_ptr] = putb_byte;
+			putb_overbuf[putb_ptr] = putb_uint8_t;
 		putb_ptr++;
 	}
 	putb_count = 8;
@@ -821,13 +821,13 @@ void flushb()
 void flushb0()
 {
 	if (putb_count != 8) {
-		putb_byte = putb_byte << 1 | 0; /* "0"を送る */
+		putb_uint8_t = putb_uint8_t << 1 | 0; /* "0"を送る */
 		if (--putb_count)
-			putb_byte <<= putb_count;
+			putb_uint8_t <<= putb_count;
 		if (putb_ptr < 0)
-			putb_buf[putb_ptr] = putb_byte;
+			putb_buf[putb_ptr] = putb_uint8_t;
 		else
-			putb_overbuf[putb_ptr] = putb_byte;
+			putb_overbuf[putb_ptr] = putb_uint8_t;
 		putb_ptr++;
 	}
 	putb_count = 8;
@@ -841,14 +841,14 @@ const int getbc(int bits)
 		if (putb_count == 8) {
 			if (--putb_ptr < 0)
 				return -1;
-			putb_byte = *putb_overbuf++;
+			putb_uint8_t = *putb_overbuf++;
 		}
 		if (--putb_count == 0)
 			putb_count = 8;
 		ret <<= 1;
-		if (putb_byte & 0x80)
+		if (putb_uint8_t & 0x80)
 			ret |= 0x01;
-		putb_byte <<= 1;
+		putb_uint8_t <<= 1;
 	} while (--bits);
 	return ret;
 }
@@ -860,14 +860,14 @@ const int getbc0(int bits, int ret)
 		if (putb_count == 8) {
 			if (--putb_ptr < 0)
 				return -1;
-			putb_byte = *putb_overbuf++;
+			putb_uint8_t = *putb_overbuf++;
 		}
 		if (--putb_count == 0)
 			putb_count = 8;
 		ret <<= 1;
-		if (putb_byte & 0x80)
+		if (putb_uint8_t & 0x80)
 			ret |= 0x01;
-		putb_byte <<= 1;
+		putb_uint8_t <<= 1;
 	} while (--bits);
 	return ret;
 }
@@ -6029,7 +6029,7 @@ void tek_conv_tek5_setbm(struct STR_RCBITMODEL *bm, int t, int m)
 
 int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR *str_eprm)
 {
-	UCHAR *mclp0 = malloc(osiz * 8), *p, /* *src1 = src + csiz ,*/ pmch, mcby, lastbyte, *mclp;
+	UCHAR *mclp0 = malloc(osiz * 8), *p, /* *src1 = src + csiz ,*/ pmch, mcby, lastuint8_t, *mclp;
 	struct STR_PRB *prb = malloc(sizeof (struct STR_PRB));
 	int i, j, k, m, *ip, l, d, r, rep[MAX_REP], bylz;
 	int lc, lp, pb, s, pos, s_pos, m_pos, m_lp, nst;
@@ -6357,7 +6357,7 @@ phaseloop:
 		}
 	}
 
-	pmch = 0; mcby = 0; lastbyte = 0;
+	pmch = 0; mcby = 0; lastuint8_t = 0;
 	mclp = mclp0;
 	s = 0; pos = 0;
 
@@ -6386,7 +6386,7 @@ phaseloop:
 				for (i = 0; i < 8; i++) {
 					k <<= 1;
 					j = ((0x100 | mclp[1]) >> (8 - i)) + (k & 0x100) + 0x100;
-					ip = &prb->lit[pos & m_lp][lastbyte >> (8 - lc)][j];
+					ip = &prb->lit[pos & m_lp][lastuint8_t >> (8 - lc)][j];
 					if (((mcby ^ mclp[1]) >> (7 - i)) & 1)
 						goto skip0;
 					rc_encode1(rc, ip, (mclp[1] >> (7 - i)) & 1);
@@ -6394,12 +6394,12 @@ phaseloop:
 			} else {
 				for (i = 0; i < 8; i++) {
 					j = (0x100 | mclp[1]) >> (8 - i);
-					ip = &prb->lit[pos & m_lp][lastbyte >> (8 - lc)][j];
+					ip = &prb->lit[pos & m_lp][lastuint8_t >> (8 - lc)][j];
 	skip0:
 					rc_encode1(rc, ip, (mclp[1] >> (7 - i)) & 1);
 				}
 			}
-			lastbyte = mclp[1];
+			lastuint8_t = mclp[1];
 			/* mclp[1]を出力 */
 			mclp += 2;
 			pos++;
@@ -6522,7 +6522,7 @@ skip1:
 			rep[0] = d;
 		} while (--bylz);
 		pmch = 1 /* eprm[EPRM_EPM] */;
-		lastbyte = tmp[pos - 1];
+		lastuint8_t = tmp[pos - 1];
 		mcby = tmp[pos + d];
 	}
 
@@ -6741,7 +6741,7 @@ unsigned int rc_subtest(struct RC *rc, unsigned int *p0, unsigned int *p1, unsig
 /* 前もってprobのバックアップをしておくこと */
 /* totalは 16-旧total の意味 */
 {
-	unsigned int range = 0xffffffff, bytes = 0, prbmax, prbmin;
+	unsigned int range = 0xffffffff, uint8_ts = 0, prbmax, prbmin;
 #if 0
 	if (total == 15) {
 		/* オール0かオール1 */
@@ -6750,11 +6750,11 @@ unsigned int rc_subtest(struct RC *rc, unsigned int *p0, unsigned int *p1, unsig
 			unsigned int *pprob = &rc->prob0[*p0 >> 1];
 			if ((*pprob & 0xffff) != prbmin)
 				*pprob = (*pprob & 0xffff) | prbmin;
-			bytes |= (*p0++ ^ move) & 1;
+			uint8_ts |= (*p0++ ^ move) & 1;
 		} while (p0 < p1);
-		bytes = - bytes;
-		*prange = ~bytes;
-		return (bytes | 1) & 0x7ffffff1; /* 一応それなりに扱いやすい数字に補正 */
+		uint8_ts = - uint8_ts;
+		*prange = ~uint8_ts;
+		return (uint8_ts | 1) & 0x7ffffff1; /* 一応それなりに扱いやすい数字に補正 */
 	}
 #endif
 	prbmax = -1 << (move + total);
@@ -6793,13 +6793,13 @@ fixprob:
 		if (range < (unsigned int) (1 << 24)) {
 			do {
 				range <<= 8;
-				bytes++;
+				uint8_ts++;
 			} while (range < (unsigned int) (1 << 24));
 		}
 		p0++;
 	} while (p0 < p1);
 	*prange = range;
-	return bytes;
+	return uint8_ts;
 }
 
 int rc_subcomp(unsigned int b0, unsigned int r0, unsigned int b1, unsigned int r1)

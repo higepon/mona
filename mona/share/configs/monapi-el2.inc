@@ -18,7 +18,7 @@ $(TARGET).EL2: $(TARGET).ELF
 	bzip2 -c $< > $@
 
 $(TARGET).ELF: $(OBJECTS) $(LINKDEP)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@

@@ -26,23 +26,23 @@ class RTC {
     static void getDate(KDate* date);
 
   private:
-    static byte read(byte reg);
-    static void write(byte reg, byte value);
+    static uint8_t read(uint8_t reg);
+    static void write(uint8_t reg, uint8_t value);
     static int readDateOnce(KDate* date);
-    inline static int convert(byte value) {
+    inline static int convert(uint8_t value) {
         return (value & 0x0f) + ( (value >> 4) * 10);
     }
 
   public:
-    static const byte RTC_ADRS  = 0x70;
-    static const byte RTC_DATA  = 0x71;
-    static const byte RTC_SEC   = 0x00;
-    static const byte RTC_MIN   = 0x02;
-    static const byte RTC_HOUR  = 0x04;
-    static const byte RTC_DOW   = 0x06;
-    static const byte RTC_DAY   = 0x07;
-    static const byte RTC_MONTH = 0x08;
-    static const byte RTC_YEAR  = 0x09;
+    static const uint8_t RTC_ADRS  = 0x70;
+    static const uint8_t RTC_DATA  = 0x71;
+    static const uint8_t RTC_SEC   = 0x00;
+    static const uint8_t RTC_MIN   = 0x02;
+    static const uint8_t RTC_HOUR  = 0x04;
+    static const uint8_t RTC_DOW   = 0x06;
+    static const uint8_t RTC_DAY   = 0x07;
+    static const uint8_t RTC_MONTH = 0x08;
+    static const uint8_t RTC_YEAR  = 0x09;
 };
 
 #endif

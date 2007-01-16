@@ -27,74 +27,74 @@ extern "C" void rectangle(int x, int y, int xx, int yy, char color);
 
 typedef struct {
 
-    dword stack0;
-    dword stack1;
-    dword stack2;
-    dword stack3;
-    dword stack4;
-    dword stack5;
-    dword stack6;
-    dword stack7;
+    uint32_t stack0;
+    uint32_t stack1;
+    uint32_t stack2;
+    uint32_t stack3;
+    uint32_t stack4;
+    uint32_t stack5;
+    uint32_t stack6;
+    uint32_t stack7;
 } StackView;
 
 typedef struct {
-    dword eax;   //0
-    dword ebx;
-    dword ecx;   //2
-    dword edx;
-    dword esp;   //4
-    dword ebp;
-    dword esi;   //6
-    dword edi;
-    dword cs;    //8
-    dword ds;
-    dword ss;    //10
-    dword cr3;
-    dword eflags;//12
+    uint32_t eax;   //0
+    uint32_t ebx;
+    uint32_t ecx;   //2
+    uint32_t edx;
+    uint32_t esp;   //4
+    uint32_t ebp;
+    uint32_t esi;   //6
+    uint32_t edi;
+    uint32_t cs;    //8
+    uint32_t ds;
+    uint32_t ss;    //10
+    uint32_t cr3;
+    uint32_t eflags;//12
 } DokodemoView;
 
 /*!
     \struct TSS
 */
 typedef struct {
-    volatile    word  backlink;     //0
-    volatile    word  pad0;
-    volatile    dword esp0;         //1
-    volatile    word  ss0;          //2
-    volatile    word  pad1;
-    volatile    dword esp1;
-    volatile    word  ss1;
-    volatile    word  pad2;
-    volatile    dword esp2;
-    volatile    word  ss2;
-    volatile    word  pad3;
-    volatile    dword cr3;
-    volatile    dword eip;
-    volatile    dword eflags;
-    volatile    dword eax;
-    volatile    dword ecx;
-    volatile    dword edx;
-    volatile    dword ebx;
-    volatile    dword esp;
-    volatile    dword ebp;
-    volatile    dword esi;
-    volatile    dword edi;
-    volatile    word  es;
-    volatile    word  pad4;
-    volatile    word  cs;
-    volatile    word  pad5;
-    volatile    word  ss;
-    volatile    word  pad6;
-    volatile    word  ds;
-    volatile    word  pad7;
-    volatile    word  fs;
-    volatile    word  pad8;
-    volatile    word  gs;
-    volatile    word  pad9;
-    volatile    word  ldt;
-    volatile    word  padA;
-    volatile    word  debugtrap;
-    volatile    word  iobase;
+    volatile    uint16_t  backlink;     //0
+    volatile    uint16_t  pad0;
+    volatile    uint32_t esp0;         //1
+    volatile    uint16_t  ss0;          //2
+    volatile    uint16_t  pad1;
+    volatile    uint32_t esp1;
+    volatile    uint16_t  ss1;
+    volatile    uint16_t  pad2;
+    volatile    uint32_t esp2;
+    volatile    uint16_t  ss2;
+    volatile    uint16_t  pad3;
+    volatile    uint32_t cr3;
+    volatile    uint32_t eip;
+    volatile    uint32_t eflags;
+    volatile    uint32_t eax;
+    volatile    uint32_t ecx;
+    volatile    uint32_t edx;
+    volatile    uint32_t ebx;
+    volatile    uint32_t esp;
+    volatile    uint32_t ebp;
+    volatile    uint32_t esi;
+    volatile    uint32_t edi;
+    volatile    uint16_t  es;
+    volatile    uint16_t  pad4;
+    volatile    uint16_t  cs;
+    volatile    uint16_t  pad5;
+    volatile    uint16_t  ss;
+    volatile    uint16_t  pad6;
+    volatile    uint16_t  ds;
+    volatile    uint16_t  pad7;
+    volatile    uint16_t  fs;
+    volatile    uint16_t  pad8;
+    volatile    uint16_t  gs;
+    volatile    uint16_t  pad9;
+    volatile    uint16_t  ldt;
+    volatile    uint16_t  padA;
+    volatile    uint16_t  debugtrap;
+    volatile    uint16_t  iobase;
 } TSS;
 
 struct ThreadInfo;
@@ -111,8 +111,8 @@ void panic(const char*);
 void checkMemoryAllocate(void* p, const char* msg);
 inline void printOK(const char*);
 inline void printBanner();
-void rdtscsub(dword* timeL, dword* timeH);
-void rdtsc(dword* timeL, dword* timeH);
+void rdtscsub(uint32_t* timeL, uint32_t* timeH);
+void rdtsc(uint32_t* timeL, uint32_t* timeH);
 
 #define DEBUG_MODE
 

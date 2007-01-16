@@ -21,7 +21,7 @@ public:
     virtual int create(Vnode* file, const std::string& file);
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
-    virtual int seek(Vnode* file, dword offset, dword origin);
+    virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
     virtual int close(Vnode* file);
     virtual int stat(Vnode* file, Stat* st);

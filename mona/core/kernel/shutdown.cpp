@@ -7,9 +7,9 @@
 #if 0
 void kill_all_proc()
 {
-	dword *id_list;
-	dword id_num;
-	dword i;
+	uint32_t *id_list;
+	uint32_t id_num;
+	uint32_t i;
 
 	id_list = g_scheduler->GetAllThreadID(&id_num);
 
@@ -23,7 +23,7 @@ void kill_all_proc()
 }
 #endif
 
-dword shutdown(dword op, dword device)
+uint32_t shutdown(uint32_t op, uint32_t device)
 {
 	if( op == SHUTDOWN_FEATURE )
 	{
@@ -40,13 +40,13 @@ dword shutdown(dword op, dword device)
 		return shutdown_by_apm(op, device);
 	}
 
-	return (dword)-1;
+	return (uint32_t)-1;
 }
 
-dword shutdown_by_apm(dword op, dword device)
+uint32_t shutdown_by_apm(uint32_t op, uint32_t device)
 {
 	apm_bios_regs regs;
-	dword pstate;
+	uint32_t pstate;
 
 	switch(op)
 	{
@@ -66,7 +66,7 @@ dword shutdown_by_apm(dword op, dword device)
 	return apm_bios(0x07, &regs);
 }
 
-dword shutdown_by_reboot()
+uint32_t shutdown_by_reboot()
 {
 	asm volatile("cli");
 

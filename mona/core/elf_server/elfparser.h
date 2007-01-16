@@ -22,28 +22,28 @@ public:
     ~ELFParser();
 
 public:
-    bool set(byte* elf, dword size);
+    bool set(uint8_t* elf, uint32_t size);
     int getType();
     int parse();
-    bool load(byte* image);
+    bool load(uint8_t* image);
 
-    inline dword getStartAddr()  const { return this->startAddr; }
-    inline dword getEndAddr()    const { return this->endAddr; }
-    inline dword getImageSize()  const { return this->imageSize; }
-    inline dword getEntryPoint() const { return this->header->entrypoint; }
-
-private:
-    const char* getSectionName(dword index);
-    const char* getSymbolName(dword index);
+    inline uint32_t getStartAddr()  const { return this->startAddr; }
+    inline uint32_t getEndAddr()    const { return this->endAddr; }
+    inline uint32_t getImageSize()  const { return this->imageSize; }
+    inline uint32_t getEntryPoint() const { return this->header->entrypoint; }
 
 private:
-    byte* elf;
+    const char* getSectionName(uint32_t index);
+    const char* getSymbolName(uint32_t index);
+
+private:
+    uint8_t* elf;
     ELFHeader* header;
     ELFProgramHeader* pheader;
     ELFSectionHeader* sheader;
     ELFSymbolEntry* symbols;
-    dword sectionNames, symbolNames;
-    dword startAddr, endAddr, imageSize;
+    uint32_t sectionNames, symbolNames;
+    uint32_t startAddr, endAddr, imageSize;
 
 public:
     enum

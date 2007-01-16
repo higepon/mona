@@ -21,7 +21,7 @@ public:
     virtual int create(Vnode* file, const std::string& file);
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
-    virtual int seek(Vnode* file, dword offset, dword origin);
+    virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
     virtual int close(Vnode* file);
     virtual int stat(Vnode* file, Stat* st);
@@ -36,9 +36,9 @@ public:
 
 private:
     int readVolumeDescriptor();
-    byte* readPathTableIntoBuffer();
+    uint8_t* readPathTableIntoBuffer();
     int setDirectoryCache();
-    void createDirectoryListFromPathTable(iso9660::EntryList* list, byte* buffer);
+    void createDirectoryListFromPathTable(iso9660::EntryList* list, uint8_t* buffer);
     void setDetailInformation(iso9660::Entry* to, iso9660::DirectoryEntry* from);
     bool setDetailInformation(iso9660::Entry* entry);
     std::string getProperName(const std::string& name);
@@ -48,7 +48,7 @@ private:
     iso9660::Entry* lookupDirectory(iso9660::Entry* root, const std::string& path);
     iso9660::Entry* lookupFile(iso9660::Entry* directory, const std::string& fileName);
     iso9660::Entry* setupEntry(iso9660::DirectoryEntry* from);
-    byte* readdirToBuffer(iso9660::Entry* directory, dword readSize);
+    uint8_t* readdirToBuffer(iso9660::Entry* directory, uint32_t readSize);
     enum
     {
         ISO_PRIMARY_VOLUME_DESCRIPTOR = 1,

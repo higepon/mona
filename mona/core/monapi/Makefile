@@ -1,7 +1,7 @@
 SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
-CRT_OBJECT   = monapi.o
+CRT_OBJECT   = monapi_crt.o
 LIB_STATIC   = libmonapi.a
 TARGET       = $(CRT_OBJECT) $(LIB_STATIC)
 
@@ -31,15 +31,22 @@ SOURCES = monapi_impl.cpp \
           messages.cpp \
           cmemoryinfo.cpp \
           io.cpp \
-          Stream.cpp
+          TerminalUtil.cpp \
+          Stream.cpp \
+          Thread.cpp \
+          audio/Beep.cpp \
+          audio/mml/Config.cpp \
+          audio/mml/Element.cpp \
+          audio/mml/Parser.cpp \
+
 NASMSRCS = _alloca.asm
 
 OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)
 #INCLUDE = -I$(INCDIR) -I. -I..
-INCLUDE = -I. -I.. -I$(INCDIR) 
+INCLUDE = -I. -I.. -I$(INCDIR) -I$(INCDIR)/stlport/
 all : $(TARGET)
 
-$(CRT_OBJECT): monapi.cpp
+$(CRT_OBJECT): monapi_crt.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDE) $<
 
 $(LIB_STATIC): $(OBJECTS)
@@ -50,7 +57,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -Map monapi.map
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
@@ -60,14 +67,16 @@ endif
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+
 
 .SUFFIXES: .asm .o
 .asm.o:
 	$(NASM) $(NFLAGS) -o $@ $<
 
 depend dependencies:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi_crt.cpp $(SOURCES) > dependencies
 
 clean:
 	rm -f $(TARGET) $(OBJECTS) dependencies

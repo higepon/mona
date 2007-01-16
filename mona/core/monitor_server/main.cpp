@@ -30,7 +30,7 @@ public:
     void Service();
 
 private:
-    byte* ReadConfig(CString file);
+    uint8_t* ReadConfig(CString file);
     void ParseConfig(CString content);
     void CheckServers();
 
@@ -44,7 +44,6 @@ private:
 
 Monitor::Monitor() : firstLoad(true)
 {
-
 }
 
 Monitor::~Monitor()
@@ -66,15 +65,12 @@ bool Monitor::Initialize()
 {
     monapi_cmemoryinfo* mi = NULL;
     mi = monapi_file_read_all("/MONITOR.CFG");
-
     if (mi == NULL)
     {
         printf("Config file read error\n");
         return false;
     }
-
     ParseConfig((char*)(mi->Data));
-
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 
@@ -139,9 +135,11 @@ void Monitor::CheckServers()
         if (alive[i]) continue;
         if (!firstLoad && servers[i] == "OLDSHELL.EX5") continue;
 
-        printf("loading %s....", (const char*)paths.get(i));
-
-        printf("%s\n", monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK" : "NG");
+        // sorry we can not use printf before process server starts.
+        syscall_print("loading ");
+        syscall_print((const char*)paths.get(i));
+        syscall_print("....");
+        syscall_print(monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK\n" : "NG\n");
         MessageInfo msg;
         for (;;)
         {
@@ -154,25 +152,15 @@ void Monitor::CheckServers()
     if (firstLoad) firstLoad = false;
 }
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     Monitor monitor;
 
     monitor.Initialize();
 
-    /* Server start ok */
-    dword targetID = Message::lookupMainThread("INIT");
-
-    if(targetID == 0xFFFFFFFF)
+    if (MONAPI_FALSE == monapi_notify_server_start("INIT"))
     {
-        printf("ShellServer:INIT not found\n");
-        exit(1);
-    }
-
-    /* send */
-    if(Message::send(targetID, MSG_SERVER_START_OK))
-    {
-        printf("ShellServer:INIT error\n");
+        exit(-1);
     }
 
     monitor.Service();

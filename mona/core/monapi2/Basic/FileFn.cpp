@@ -81,7 +81,7 @@ uint FileFn::getLastModifiedTime(cpchar1 /*cszPath*/)
 	@date	2005/08/20	junjunn 作成
 	@date	2005/09/20	junjunn 実装
 */
-bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
+bool FileFn::read(cpchar1 cszPath,uint8_t* pBufferOut,int iBufferSize)
 {
 #ifdef MONA
 	monapi_cmemoryinfo* pMemoryInfo = monapi_file_read_all(cszPath);
@@ -91,7 +91,7 @@ bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 	return true;
 #else
 	FILE* p=fopen(cszPath,"r");
-	fread(pBufferOut,sizeof(byte),iBufferSize,p);
+	fread(pBufferOut,sizeof(uint8_t),iBufferSize,p);
 	fclose(p);
 	return true;
 #endif
@@ -157,12 +157,12 @@ bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::write(cpchar1 cszPath,const byte* cpIn,int iCount)
+bool FileFn::write(cpchar1 cszPath,const uint8_t* cpIn,int iCount)
 {
 //デバッグのための応急措置
 #ifdef _WIN32
 	FILE* p=fopen(cszPath,"wb");
-	fwrite(cpIn,sizeof(byte),iCount,p);
+	fwrite(cpIn,sizeof(uint8_t),iCount,p);
 	fclose(p);
 	return true;
 #endif
@@ -185,7 +185,7 @@ bool FileFn::write(cpchar1 cszPath,const Buffer* cpbufIn)
 */
 bool FileFn::write(cpchar1 cszPath,const String* cpstrIn)
 {
-	return write(cszPath,(byte*)cpstrIn->getString(),cpstrIn->getLength());
+	return write(cszPath,(uint8_t*)cpstrIn->getString(),cpstrIn->getLength());
 }
 
 /**

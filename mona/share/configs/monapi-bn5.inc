@@ -19,7 +19,7 @@ $(TARGET).BN5: $(TARGET).BIN
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).BIN: $(OBJECTS) $(LINKDEP)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	$(STRIP) -O binary $@
 
 install: all

@@ -1,3 +1,121 @@
+2007-01-16  higepon  <higepon@users.sourceforge.jp>
+
+        * mona-stdioを merge <<>>
+
+2006-12-25  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/monapi_impl.cpp (__attribute__): DLLのDetachに対応。2chの方に感謝。
+
+2006-12-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/System.cpp (MonAPI): getStdinStream/getStdoutStream 追加
+
+2006-12-23  higepon  <higepon@users.sourceforge.jp>
+
+        * monapi.cpp -> monapi_crt.cpp : 分かりづらいのでリネーム
+
+        * core/monapi/monapi_impl.cpp (dllmain): dllの初期化は invokeFuncList だけにして他は attribute constructor で対応
+
+2006-12-18  higepon  <higepon@users.sourceforge.jp>
+
+        * core/pe_server/PEParser.cpp (PEParser::Link): Link時に import address tableを参照しさらに書き換えていたが、参照元を import lookup tableにした。
+
+2006-12-16  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/syscall.cpp:  _printf 追加。syscall_printに直結しているので stream のデバッグに役立つ。
+
+2006-12-13  higepon  <higepon@users.sourceforge.jp>
+
+        * iterator -> const_iterator
+
+        * it++ -> ++it
+
+        * MonaMain廃止
+
+        * core/shell_server/Shell.cpp (Shell::commandChar): pipeコマンドが半角スペースがあっても動くようになった。
+
+        * core/monapi/CString.cpp: trim/ltrim/rtrim を追加。
+
+2006-12-12  higepon  <higepon@users.sourceforge.jp>
+
+        * include/sys/types.h: byte/word/dword廃止。 uint8_t/uint16_t/uint32_t
+
+2006-12-11  higepon  <higepon@users.sourceforge.jp>
+
+        * core/pe_server/main.cpp : dllのエントリポイントを呼ぶようになった。
+
+2006-11-29  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/syscalls.cpp (syscall_entrance): mthread_join廃止につき、mthread_createで scheduler に追加されるようになった。
+
+        * share/configs/monapi-ex5.inc : target上書きに対応。http://d.hatena.ne.jp/higepon/20061127/1164639881
+
+2006-11-28  higepon  <higepon@users.sourceforge.jp>
+
+        * include/baygui/awt/Event.h: MOUSE_ENTEREDの定義だけ追加
+
+2006-11-25  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Thread.cpp : Threadクラス追加。
+
+        * include/monapi/Mutex.h: 追加。
+
+        * core/kernel/syscalls.cpp (syscall_entrance): SYSTEM_CALL_MTHREAD_KILL追加。
+
+2006-11-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/StringHelper.h (class StringHelper): 追加。
+
+        * include/monapi: include guardの書式を統一した。
+
+2006-11-22  higepon  <higepon@users.sourceforge.jp>
+
+        * configure (CFLAGS): gcc 4.1.1 につき -O2
+
+2006-11-20  higepon  <higepon@users.sourceforge.jp>
+
+        * trunkから monalibc の変更をmona-stdioへmerge
+
+2006-11-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monalibc/crt/crt.cpp: stream.h->Stream.h
+
+2006-11-01  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/TerminalUtil.cpp : 追加
+
+2006-10-21  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/Mutex.cpp (KMutex::tryLock): 戻り値を MONA_SUCCESS/MONA_FALUREにした。
+
+2006-10-18  higepon  <higepon@users.sourceforge.jp>
+
+        * core/shell_server/Shell.cpp (Shell::onKeyDown): | を入力出来るようにした
+
+2006-10-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/pe_server/main.cpp (class PELinker): リンクメッセージを消した。
+
+2006-10-16  higepon  <higepon@users.sourceforge.jp>
+
+        * core/screen_server/main.cpp (MonaMain): Screen Server追加。
+
+        * core/elf_server/main.cpp (MonaMain): monapi_notify_server_startを使うように変更。
+
+        * core/file_server/main.cpp (MonaMain): monapi_notify_server_startを使うように変更。
+
+        * core/keyboard_server/main.cpp (MonaMain): monapi_notify_server_startを使うように変更。
+
+        * core/monitor_server/main.cpp (MonaMain): monapi_notify_server_startを使うように変更。
+
+        * core/process_server/main.cpp (MonaMain): monapi_notify_server_startを使うように変更。
+
+        * core/monapi/messages.cpp (monapi_notify_server_start): 追加。サーバーの最初に呼ばないといけないやつを関数にした。
+
+2006-10-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/process_server/ProcessManager.cpp (processHandler): MSG_PROCESS_GET_PROCESS_STDIO
+
 2006-11-08  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/monapi_impl.cpp: placement newを追加。
@@ -21,6 +139,15 @@
 2006-10-11  higepon  <higepon@users.sourceforge.jp>
 
         * .cvsignoreを消す。
+
+
+2006-10-11  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/System.cpp (MonAPI): getProcessStdoutID追加
+
+        * core/monapi/messages.cpp (monapi_read_stdin): 追加
+
+        * core/process_server/ProcessInfo.cpp (ProcessInfo::ProcessInfo): stdout_id を受け取るように変更。
 
 2006-10-07  higepon  <higepon@users.sourceforge.jp>
 

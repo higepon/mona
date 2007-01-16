@@ -1,5 +1,5 @@
-#ifndef _MONA_USERLIB_MONAAPPLICATION_
-#define _MONA_USERLIB_MONAAPPLICATION_
+#ifndef _MONAPI_MONAAPPLICATION_
+#define _MONAPI_MONAAPPLICATION_
 
 #include <sys/types.h>
 
@@ -10,7 +10,8 @@ namespace MonAPI {
 ----------------------------------------------------------------------*/
 interface Receiver {
   public:
-    virtual ~Receiver(){};
+    Receiver() {}
+    virtual ~Receiver() {}
     virtual void onKeyDown(int keycode, int modifiers) = 0;
     virtual void onMouseClick(int x, int y) = 0;
 };
@@ -34,14 +35,14 @@ class MonaApplication : public Receiver {
     virtual void onMouseClick(int x, int y) {
     }
 
-    virtual inline dword getMyPID() {
+    virtual inline uint32_t getMyPID() {
         return mypid_;
     }
 
     virtual void run();
 
   protected:
-    dword mypid_;
+    uint32_t mypid_;
 };
 
 extern MonaApplication* monaApp;

@@ -9,17 +9,17 @@ class CLZInWindow
 {
   Byte *_bufferBase; // pointer to buffer with data
   ISequentialInStream *_stream;
-  UInt32 _posLimit;  // offset (from _buffer) of first byte when new block reading must be done
+  UInt32 _posLimit;  // offset (from _buffer) of first uint8_t when new block reading must be done
   bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
   const Byte *_pointerToLastSafePosition;
 protected:
   Byte  *_buffer;   // Pointer to virtual Buffer begin
   UInt32 _blockSize;  // Size of Allocated memory block
-  UInt32 _pos;             // offset (from _buffer) of curent byte
+  UInt32 _pos;             // offset (from _buffer) of curent uint8_t
   UInt32 _keepSizeBefore;  // how many BYTEs must be kept in buffer before _pos
   UInt32 _keepSizeAfter;   // how many BYTEs must be kept buffer after _pos
   UInt32 _keepSizeReserv;  // how many BYTEs must be kept as reserv
-  UInt32 _streamPos;   // offset (from _buffer) of first not read byte from Stream
+  UInt32 _streamPos;   // offset (from _buffer) of first not read uint8_t from Stream
 
   virtual void BeforeMoveBlock() {};
   virtual void AfterMoveBlock() {};

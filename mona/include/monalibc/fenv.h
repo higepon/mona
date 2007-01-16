@@ -42,11 +42,11 @@ extern "C" {
 
 typedef struct
 {
-  unsigned short __control_word;
+  unsigned short __control_uint16_t;
   unsigned short __unused0;
-  unsigned short __status_word;
+  unsigned short __status_uint16_t;
   unsigned short __unused1;
-  unsigned short __tag_word;
+  unsigned short __tag_uint16_t;
   unsigned short __unused2;  
   unsigned int	 __ip_offset;    /* instruction pointer offset */
   unsigned short __ip_selector;  

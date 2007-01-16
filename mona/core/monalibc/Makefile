@@ -14,7 +14,7 @@ endif
 
 include src.inc
 
-OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o
+OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o
 INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc
 
 LINK = -L$(SRCTOP)/lib -lmonapi-imp
@@ -29,7 +29,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
+	$(LD) -e _dllmain --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK) -Map monalibc.map
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
@@ -50,6 +50,12 @@ $(CRT_OBJECT):
 
 setjmp/setjmp.o: setjmp/setjmp.asm
 	$(NASM) $< -o $@ -f coff
+
+crt/dllmain.o: crt/dllmain.cpp
+	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
+
+stdio/stream.o: stdio/stream.cpp
+	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
 
 depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies

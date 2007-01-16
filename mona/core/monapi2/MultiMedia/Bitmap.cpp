@@ -39,26 +39,26 @@ namespace monapi2	{
 class BitmapInfoHeader
 {
 public:
-	void set(const byte* p)
+	void set(const uint8_t* p)
 	{
-		m_iWidth	=*(dword*)(p+0x04);
-		m_iHeight	=*(dword*)(p+0x08);
-		m_wBitFormat=* (word*)(p+0x0E);
+		m_iWidth	=*(uint32_t*)(p+0x04);
+		m_iHeight	=*(uint32_t*)(p+0x08);
+		m_wBitFormat=* (uint16_t*)(p+0x0E);
 	}
 
 
 public:
-//	dword	m_dwSizeStructure;		///<この構造体のサイズ。ある意味バージョン情報に使われる。
+//	uint32_t	m_dwSizeStructure;		///<この構造体のサイズ。ある意味バージョン情報に使われる。
 	int		m_iWidth;				///<幅。uintじゃなくてintなのはマイナス値だと上下反転のBMPを生成する意味とか考えられる。
 	int		m_iHeight;				///<高さ。
-//	word	m_wPlanes;				///<不使用。常に1。
-	word	m_wBitFormat;			///<何ビットフォーマットか。1,4,8,16,24,32などがある。
-//	dword	m_dwCompression;		///<圧縮方法。普通は不使用。
-//	dword	m_dwSize;				///<イメージのサイズ。圧縮をしているときの解凍後の大きさに使うが普通は不使用。
+//	uint16_t	m_wPlanes;				///<不使用。常に1。
+	uint16_t	m_wBitFormat;			///<何ビットフォーマットか。1,4,8,16,24,32などがある。
+//	uint32_t	m_dwCompression;		///<圧縮方法。普通は不使用。
+//	uint32_t	m_dwSize;				///<イメージのサイズ。圧縮をしているときの解凍後の大きさに使うが普通は不使用。
 //	long	m_lXPelsPerMeter;		///<水平解像度。普通は不使用。
 //	long	m_lYPelsPerMeter;		///<垂直解像度。普通は不使用。
-//	dword	m_dwClrUsed;			///<実際に使われている色数。普通は不使用。
-//	dword	m_dwClrImportant;		///<重要な色数。普通は不使用。
+//	uint32_t	m_dwClrUsed;			///<実際に使われている色数。普通は不使用。
+//	uint32_t	m_dwClrImportant;		///<重要な色数。普通は不使用。
 }; 
 
 //色指定。いわゆるパレットに使う。
@@ -67,10 +67,10 @@ public:
 */
 struct RGBQuad
 {
-	byte	r; 
-	byte	g; 
-	byte	b;
-	byte	m_byReserved; 
+	uint8_t	r; 
+	uint8_t	g; 
+	uint8_t	b;
+	uint8_t	m_byReserved; 
 }; 
 
 //ビットマップ情報+パレットデータ。24ビットならパレットがないのでパレットデータ部は無効。
@@ -90,19 +90,19 @@ struct BitmapInfo
 struct BitmapFileHeader
 {
 public:
-	void set(const byte* p)	
+	void set(const uint8_t* p)	
 	{
-		m_dwSize		=*(dword*)(p+0x02);
-		m_dwOffsetToData=*(dword*)(p+0x0A);
+		m_dwSize		=*(uint32_t*)(p+0x02);
+		m_dwOffsetToData=*(uint32_t*)(p+0x0A);
 	}
 	int getDataSize()	{return m_dwSize-m_dwOffsetToData;};		//データ本体の大きさ。
 
 public:
-//	word	m_wType;			///<ファイルタイプ識別。常に"BM"。
-	dword	m_dwSize;			///<ファイルの大きさ。
-//	word	m_wReserved1;		///<不使用。
-//	word	m_wReserved2;		///<不使用。
-	dword	m_dwOffsetToData;	///<ファイル先頭からデータ本体までのビット数。
+//	uint16_t	m_wType;			///<ファイルタイプ識別。常に"BM"。
+	uint32_t	m_dwSize;			///<ファイルの大きさ。
+//	uint16_t	m_wReserved1;		///<不使用。
+//	uint16_t	m_wReserved2;		///<不使用。
+	uint32_t	m_dwOffsetToData;	///<ファイル先頭からデータ本体までのビット数。
 }; 
 
 
@@ -136,7 +136,7 @@ void Bitmap::clear()
 	@brief	Monapi2リファレンスを参照。
 	@date	2005/09/20	junjunn 作成
 */
-byte* Bitmap::createCanvas(const Size* cpSize)
+uint8_t* Bitmap::createCanvas(const Size* cpSize)
 {
 	return createCanvas(cpSize->getWidth(),cpSize->getHeight());
 }
@@ -146,7 +146,7 @@ byte* Bitmap::createCanvas(const Size* cpSize)
 	@date	2005/08/20	junjunn 作成
 	@date	2005/09/20	junjunn createCanvasから名前を変更。
 */
-byte* Bitmap::createCanvas(int iWidth,int iHeight)
+uint8_t* Bitmap::createCanvas(int iWidth,int iHeight)
 {
 	return getNewBuffer(iWidth,iHeight);
 }
@@ -155,7 +155,7 @@ byte* Bitmap::createCanvas(int iWidth,int iHeight)
 	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
-byte* Bitmap::getNewBuffer(int iWidth,int iHeight)
+uint8_t* Bitmap::getNewBuffer(int iWidth,int iHeight)
 {
 	clear();
 
@@ -188,7 +188,7 @@ void Bitmap::copy(const Bitmap* cpBitmap)
 	m_bufferData.copy(&cpBitmap->m_bufferData);
 }
 
-byte* Bitmap::getPixelBuffer()
+uint8_t* Bitmap::getPixelBuffer()
 {
 	return m_bufferData.getBuffer();
 }
@@ -197,7 +197,7 @@ byte* Bitmap::getPixelBuffer()
 	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
-byte* Bitmap::getPixelBuffer(int x,int y)
+uint8_t* Bitmap::getPixelBuffer(int x,int y)
 {
 	int iOffset = (m_oSize.getHeight() - y - 1)*m_iLineSize + x*3;
 	return m_bufferData.getBuffer() + iOffset;
@@ -207,7 +207,7 @@ byte* Bitmap::getPixelBuffer(int x,int y)
 	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
-const byte* Bitmap::getPixelBufferConst(int x,int y) const
+const uint8_t* Bitmap::getPixelBufferConst(int x,int y) const
 {
 	int iOffset = (m_oSize.getHeight() - y - 1) * m_iLineSize + x*3;
 	return m_bufferData.getData() + iOffset;
@@ -217,7 +217,7 @@ const byte* Bitmap::getPixelBufferConst(int x,int y) const
 	@brief	Monapi2リファレンスを参照。
 	@date	2005/10/03	junjunn 作成
 */
-const byte* Bitmap::getPixelBufferConst() const
+const uint8_t* Bitmap::getPixelBufferConst() const
 {
 	return m_bufferData.getData();
 }
@@ -228,7 +228,7 @@ const byte* Bitmap::getPixelBufferConst() const
 */
 colort Bitmap::getPixel(int x,int y) const
 {
-	const byte* cpBaseByte = getPixelBufferConst(x,y);
+	const uint8_t* cpBaseByte = getPixelBufferConst(x,y);
 //BGRに並んでいる。
 	return makeColor(cpBaseByte[2],cpBaseByte[1],cpBaseByte[0]);
 }
@@ -242,7 +242,7 @@ void Bitmap::setPixel(int x,int y,colort color)
 {
 //	ASSERT_PIXEL(x,y);
 
-	byte* pBaseByte = getPixelBuffer(x,y);
+	uint8_t* pBaseByte = getPixelBuffer(x,y);
 
 	pBaseByte[0] = getBValue(color);
 	pBaseByte[1] = getGValue(color);
@@ -255,11 +255,11 @@ void Bitmap::setPixel(int x,int y,colort color)
 */
 void Bitmap::fill(colort color)
 {
-	byte* p = getPixelBuffer();
-//dword転送では最後の一つだけはバッファの外に出てしまうので。
+	uint8_t* p = getPixelBuffer();
+//uint32_t転送では最後の一つだけはバッファの外に出てしまうので。
 	for (int i=0;i<(m_oSize.getWidth()*m_oSize.getHeight())-1;i++)
 	{
-		*(dword*)p = color;
+		*(uint32_t*)p = color;
 		p+=3;
 	}
 
@@ -281,7 +281,7 @@ bool Bitmap::read(cpchar1 cszPath,bool bReverseY)
 	BitmapFileHeader bitmapFileHeader;
 	BitmapInfoHeader bitmapInfoHeader;
 
-	byte abyBuffer[100];
+	uint8_t abyBuffer[100];
 	iRead+=file.read(abyBuffer,iRead,14);
 	bitmapFileHeader.set(abyBuffer);
 
@@ -294,7 +294,7 @@ bool Bitmap::read(cpchar1 cszPath,bool bReverseY)
 
 //初期化。設定。
 //	m_strPath = cszPath;
-	byte* pBuffer = createCanvas(bitmapInfoHeader.m_iWidth,bitmapInfoHeader.m_iHeight);
+	uint8_t* pBuffer = createCanvas(bitmapInfoHeader.m_iWidth,bitmapInfoHeader.m_iHeight);
 
 
 	m_bYReverse = bReverseY;
@@ -325,7 +325,7 @@ void Bitmap::write(cpchar1 cszPath) const
 const int iBMP_HEADER_SIZE = 0x36;
 
 //54バイト
-	byte abyHeader[] = {
+	uint8_t abyHeader[] = {
 0x42,0x4D,				//00:ファイルの識別ID
 0x36,0x10,0x0E,0x00,	//02:サイズ。例。640*480*24 = E10000。それにヘッダーを加える 
 0x00,0x00,				//06:固定。0で

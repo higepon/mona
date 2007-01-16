@@ -39,16 +39,8 @@
 
 size_t __nida_write_console(const void *ptr, size_t size, FILE *stream)
 {
-	char* p = malloc(size+1);
-	if( p == NULL )
-	{
-		errno = ENOMEM;
-		return 0;
-	}
-	memset(p, 0, size+1);
-	memcpy(p, ptr, size);
-	print(p);
-
+	size = monapi_stdout_write(ptr, size);
+//	size = (size_t)writeStream(stream->_stream, ptr, (uint32_t)size);
 	return size;
 }
 
@@ -85,6 +77,16 @@ size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
+	_logprintf("monalibc: fwrite\n");
+	_logprintf("monalibc: stream = %x\n", stream);
+	_logprintf("monalibc: stream->_flags = %x\n", stream->_flags);
+	_logprintf("monalibc: stream->_extra = %x\n", stream->_extra);
+	_logprintf("monalibc: stream->_extra->stds = %x\n", stream->_extra->stds);
+	if( stream->_extra->stds == __STDOUT
+				|| stream->_extra->stds == __STDERR )
+	{
+		return __nida_write_console(ptr, size*nmemb, stream);
+	}
 	if( !(stream->_flags & __SWR) )
 	{
 		errno = EBADF;
@@ -93,11 +95,6 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	if( stream->_flags & __SAP )
 	{
 		fseek(stream, 0, SEEK_END);
-	}
-	if( stream->_extra->stds == __STDOUT
-				|| stream->_extra->stds == __STDERR )
-	{
-		return __nida_write_console(ptr, size*nmemb, stream);
 	}
 	if( stream->_flags & __SFBF )
 	{

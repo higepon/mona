@@ -2,12 +2,11 @@
 
 using namespace MonAPI;
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
+    if (MONAPI_FALSE == monapi_notify_server_start("INIT"))
     {
-        printf("%s: INIT error\n", SVR);
-        exit(1);
+        exit(-1);
     }
 
     FileServer server;

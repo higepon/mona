@@ -38,6 +38,13 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
 
+size_t __nida_read_console(void *ptr, size_t size, FILE *stream)
+{
+    syscall_print("hoge");
+	size = (size_t)readStream(stream->_stream, ptr, (uint32_t)size);
+	return size;
+}
+
 size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 {
 	size_t readsize = 0;
@@ -127,17 +134,22 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 {
+  if (stream->_extra == NULL)
+    {
+      syscall_print("panic");
+    }
+  else {
+    syscall_print("not panic");
+  }
 	if( !(stream->_flags & __SRD) )
 	{
 		errno = EBADF;
 		return -1;
 	}
-	/*
 	if( stream->_extra->stds == __STDIN )
 	{
-		return __nida_read_keyboard(buf, size*nmemb, stream);
+		return __nida_read_console(buf, size*nmemb, stream);
 	}
-	*/
 	else if( stream->_ungetcbuf != EOF )
 	{
 		{

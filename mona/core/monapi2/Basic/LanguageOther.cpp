@@ -49,17 +49,17 @@ bool CGenerateConversionCode::generate(cpchar1 cszConversionTableFilePath,cpchar
 	for (uint iLine=0;iLine<SDLine.getCount();iLine++)
 	{
 //タブで分割
-		StringDivide Sdword(SDLine.getAt(iLine),"	");
+		StringDivide Suint32_t(SDLine.getAt(iLine),"	");
 
 //最初はコード1
-		cpchar1 cszCode1= Sdword.getAt(0);
+		cpchar1 cszCode1= Suint32_t.getAt(0);
 		int iCode1	=StringFn::toInt(cszCode1+2,16);
 
 //有効ではない行。
 		if (cszCode1[0] != '0') continue;		//行頭は0xで始まるので
 
 //次はコード2
-		cpchar1 cszCode2 = Sdword.getAt(1);
+		cpchar1 cszCode2 = Suint32_t.getAt(1);
 		int iCode2;
 
 //定義されていない場所には空白が書かれてある。それは無効。		
@@ -161,7 +161,7 @@ void CGenerateConversionCode::generateCCode(int i1to2,String* pstrOut)
 //複数のテーブルに分けて処理
 	{
 		pstrOut->formatJoinSelf(
-			"int LanguageFn::convert%s(byte x,byte y)\n"
+			"int LanguageFn::convert%s(uint8_t x,uint8_t y)\n"
 			"{\n",
 			pConversionRule->m_strName.getString());
 

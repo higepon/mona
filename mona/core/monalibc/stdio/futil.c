@@ -36,8 +36,8 @@
 #include <string.h>
 #include "stdio_p.h"
 
-asm(".section .drectve");
-asm(".ascii \"-export:__sF\"");
+//asm(".section .drectve");
+//asm(".ascii \"-export:__sF\"");
 
 FILE __sF[3];
 
@@ -48,7 +48,7 @@ int _read(int id, void *buf, size_t size)
 	int readsize;
 	int i;
 
-	cmi = monapi_file_read((dword)id, (dword)size);
+	cmi = monapi_file_read((uint32_t)id, (uint32_t)size);
 	if( cmi == NULL )
 	{
 		return -1;
@@ -66,7 +66,7 @@ int _read(int id, void *buf, size_t size)
 
 int _write(int id, void *buf, size_t size)
 {
-	dword result;
+	uint32_t result;
 	monapi_cmemoryinfo* cmi;
 
 	cmi = monapi_cmemoryinfo_new();
@@ -77,7 +77,7 @@ int _write(int id, void *buf, size_t size)
 	}
 	memcpy(cmi->Data, buf, cmi->Size);
 
-	result = monapi_file_write((dword)id, cmi, cmi->Size);
+	result = monapi_file_write((uint32_t)id, cmi, cmi->Size);
 
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
@@ -89,7 +89,7 @@ int _seek(int id, fpos_t pos, int whence)
 {
 	MONAPI_BOOL result;
 
-	result = monapi_file_seek((dword)id, (dword)pos, (dword)whence);
+	result = monapi_file_seek((uint32_t)id, (uint32_t)pos, (uint32_t)whence);
 	if( result == MONAPI_FALSE )
 	{
 		return -1;
@@ -98,56 +98,49 @@ int _seek(int id, fpos_t pos, int whence)
 	return 0;
 }
 
-FILE *_open_stdin(void)
+void _open_stdin(FILE *fp)
 {
-	FILE *fp;
-
-	fp = malloc(sizeof(FILE));
-	if( fp == NULL ) return NULL;
 	memset(fp, 0, sizeof(FILE));
 
+	fp->_flags = 0;
 	fp->_flags = __SRD|__SLBF;
 	fp->_extra = malloc(sizeof(struct __sFILEX));
 	fp->_extra->stds = __STDIN;
-
-	return fp;
 }
 
-FILE *_open_stdout(void)
+void _open_stdout(FILE *fp)
 {
-	FILE *fp;
-
-	fp = malloc(sizeof(FILE));
-	if( fp == NULL ) return NULL;
 	memset(fp, 0, sizeof(FILE));
 
+	fp->_flags = 0;
 	fp->_flags = __SWR|__SLBF;
+	_logprintf("monalibc: fp->_flags = %x\n", fp->_flags);
 	fp->_extra = malloc(sizeof(struct __sFILEX));
 	fp->_extra->stds = __STDOUT;
-
-	return fp;
 }
 
-FILE *_open_stderr(void)
+void _open_stderr(FILE *fp)
 {
-	FILE *fp;
-
-	fp = malloc(sizeof(FILE));
-	if( fp == NULL ) return NULL;
 	memset(fp, 0, sizeof(FILE));
 
+	fp->_flags = 0;
 	fp->_flags = __SWR|__SNBF;
 	fp->_extra = malloc(sizeof(struct __sFILEX));
 	fp->_extra->stds = __STDERR;
-
-	return fp;
 }
 
 void init_stdio(void)
 {
-	__sF[0] = *(_open_stdin());
-	__sF[1] = *(_open_stdout());
-	__sF[2] = *(_open_stderr());
+	_open_stdin(&(__sF[0]));
+	_open_stdout(&(__sF[1]));
+	_open_stderr(&(__sF[2]));
+	stream_opener();
+	_logprintf("monalibc: stdin = %x\n", stdin);
+	_logprintf("monalibc: stdout= %x\n", stdout);
+	_logprintf("monalibc: stderr= %x\n", stderr);
+	_logprintf("monalibc: __sF[0]._extra = %x\n", __sF[0]._extra);
+	_logprintf("monalibc: __sF[1]._extra = %x\n", __sF[1]._extra);
+	_logprintf("monalibc: __sF[2]._extra = %x\n", __sF[2]._extra);
 	logprintf("monalibc: stdin = %x\n", stdin);
 	logprintf("monalibc: stdout= %x\n", stdout);
 	logprintf("monalibc: stderr= %x\n", stderr);
