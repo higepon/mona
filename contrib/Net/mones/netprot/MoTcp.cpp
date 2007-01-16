@@ -85,18 +85,18 @@ MoTcp::~MoTcp()
     \param  char flags [in] 制御フラグ
     \param  struct Packet *packet [in] ソケット
     \param  char *data [in] 送信データ
-    \param  dword size [in] 送信データのサイズ
+    \param  uint32_t size [in] 送信データのサイズ
     \return 無し
 
     \author Yamami
     \date   create:2004/09/20 update:2004/09/20
 */
-void send_tcp(SocketContainer *sock, char flags, struct Packet *packet, char *data, dword size)
+void send_tcp(SocketContainer *sock, char flags, struct Packet *packet, char *data, uint32_t size)
 {
 
 /*
-    dword tsize;
-    dword sum;
+    uint32_t tsize;
+    uint32_t sum;
     char *ip_hdr;
     char *tcp_hdr;
     char *tcp_body;
@@ -121,7 +121,7 @@ void send_tcp(SocketContainer *sock, char flags, struct Packet *packet, char *da
     packet_put_n(tcp_hdr, tcphdr_dest_port, sock->youport);
     packet_put_nl(tcp_hdr, tcphdr_opt_mss, 0x020405b4); // kind = 2, len = 4, mss = 1460
     tcp_hdr[tcphdr_len] &= 0x0f;
-    tcp_hdr[tcphdr_len] |= (5 + 1) << 4; // Unit is 32bit words
+    tcp_hdr[tcphdr_len] |= (5 + 1) << 4; // Unit is 32bit uint16_ts
 
     tcp_hdr[tcphdr_flag] = flags & 0x3f;
     packet_put_n(tcp_hdr, tcphdr_chksum, 0);
@@ -184,7 +184,7 @@ int MoTcp::receiveTcp(IP_HEADER *ipHead)
     
     // チェックサムの確認
     //TODO 面倒なので後回し。この計算じゃダメ
-    //if(MoPacUtl::calcCheckSum((dword*)Tcp,Tcp_size)){
+    //if(MoPacUtl::calcCheckSum((uint32_t*)Tcp,Tcp_size)){
     //    logprintf("Tcp_size = %d\n",Tcp_size);
     //    logprintf("Tcp->chksum = %x\n",MoPacUtl::swapShort(Tcp->chksum));
     //    logprintf("Tcp CheckSum BAD!!\n");

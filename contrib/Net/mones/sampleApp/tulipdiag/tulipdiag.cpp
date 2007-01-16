@@ -19,8 +19,8 @@ using namespace MonAPI;
 
 /* Values read from the EEPROM, and the new image to write. */
 #define EEPROM_SIZE 256         /* Size may be 256x16 for CardBus. */
-static word eeprom_contents[EEPROM_SIZE];
-//static word new_ee_contents[EEPROM_SIZE];
+static uint16_t eeprom_contents[EEPROM_SIZE];
+//static uint16_t new_ee_contents[EEPROM_SIZE];
 
 enum tulip_offsets {
     CSR0=0,    CSR1=0x08, CSR2=0x10, CSR3=0x18, CSR4=0x20, CSR5=0x28,
@@ -116,7 +116,7 @@ static void parse_eeprom(long ioaddr, unsigned char *ee_data, int flags)
 
 
 
-int MonaMain(List<char*>* pekoe) 
+int main(int argc, char* argv[]) 
 {
 
     syscall_get_io();
@@ -131,7 +131,7 @@ int MonaMain(List<char*>* pekoe)
                " '-f' flag to see all values.\n");
     }
     
-    int eeprom_words = 64;
+    int eeprom_uint16_ts = 64;
     int i;
 
     /* Read the EEPROM. */
@@ -139,15 +139,15 @@ int MonaMain(List<char*>* pekoe)
     
 
 
-    word *eew = (word *)eeprom_contents;
-    word andsum = 0xffff;
+    uint16_t *eew = (uint16_t *)eeprom_contents;
+    uint16_t andsum = 0xffff;
     int ee_addr_size = read_eeprom(ioaddr, 0xff, 8) & 0x40000 ? 8 : 6;
-    eeprom_words = ee_addr_size == 8 ? 256 : 64;
+    eeprom_uint16_ts = ee_addr_size == 8 ? 256 : 64;
     
     
-    printf("ee_addr_size = %d  eeprom_words = %d\n",ee_addr_size,eeprom_words);
+    printf("ee_addr_size = %d  eeprom_uint16_ts = %d\n",ee_addr_size,eeprom_uint16_ts);
 
-    for (i = 0; i < eeprom_words; i++)
+    for (i = 0; i < eeprom_uint16_ts; i++)
         andsum &= (eew[i] = read_eeprom(ioaddr, i, ee_addr_size));
     if (andsum == 0xffff)
         printf("WARNING: The EEPROM is missing or erased!\n");

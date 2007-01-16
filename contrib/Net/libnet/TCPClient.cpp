@@ -19,10 +19,10 @@ void TCPClient::initialize()
     serverId_ += 2; // Bad!
 }
 
-bool TCPClient::connect(byte a, byte b, byte c, byte d, dword port)
+bool TCPClient::connect(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint32_t port)
 {
     MessageInfo msg;
-    dword ipAddress = a << 24 | b << 16 | c << 8 | d;
+    uint32_t ipAddress = a << 24 | b << 16 | c << 8 | d;
     if (Message::sendReceive(&msg, serverId_, MSG_NET_TCP_CONNECT, ipAddress, port) != 0)
     {
         printf("can not connect to %s\n", netServer_);
@@ -32,7 +32,7 @@ bool TCPClient::connect(byte a, byte b, byte c, byte d, dword port)
     return true;
 }
 
-dword TCPClient::writeByMap(const byte* data, dword length)
+uint32_t TCPClient::writeByMap(const uint8_t* data, uint32_t length)
 {
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
     if (!monapi_cmemoryinfo_create(mi, length, MONAPI_FALSE))
@@ -55,7 +55,7 @@ dword TCPClient::writeByMap(const byte* data, dword length)
 }
 
 
-dword TCPClient::write(const byte* data, dword length)
+uint32_t TCPClient::write(const uint8_t* data, uint32_t length)
 {
     if (length > 3)
     {

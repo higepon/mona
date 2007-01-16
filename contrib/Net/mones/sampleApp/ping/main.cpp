@@ -27,21 +27,21 @@ using namespace MonAPI;
 
 
 //Code:Mones ICMP送信
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
-    if(pekoe->size() < 1){
+    if(argc < 2)){
         printf("Arguments is few!\n");
         printf("usage: ping host\n");
         return 0;
     }
     
     
-    printf("pekoe->get(0)=%s\n",pekoe->get(0));
+    printf("argv[1]=%s\n",pekoe->get(0));
     
     int a,b,c,d;
     
-    sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
+    sscanf(argv[1],"%d.%d.%d.%d",&a,&b,&c,&d);
     
     printf("a=%d\n",a);
     printf("b=%d\n",b);
@@ -49,19 +49,19 @@ int MonaMain(List<char*>* pekoe)
     printf("d=%d\n",d);
 
     //IPアドレス組み立て
-    dword ipaddr;
+    uint32_t ipaddr;
     ipaddr = 0;
-    ipaddr = (byte)a;
-    ipaddr = (ipaddr << 8) + (byte)b;
-    ipaddr = (ipaddr << 8) + (byte)c;
-    ipaddr = (ipaddr << 8) + (byte)d;
+    ipaddr = (uint8_t)a;
+    ipaddr = (ipaddr << 8) + (uint8_t)b;
+    ipaddr = (ipaddr << 8) + (uint8_t)c;
+    ipaddr = (ipaddr << 8) + (uint8_t)d;
     
-    printf("Pinding %s\n",pekoe->get(0));
+    printf("Pinding %s\n",argv[1]);
 
     //ここで、Monesにメッセージを送る
     MessageInfo info;
 
-    dword targetID = Message::lookupMainThread("MONES.EX5");
+    uint32_t targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF)
     {
         printf("MONES.EX5 not found\n");
@@ -99,7 +99,7 @@ int MonaMain(List<char*>* pekoe)
     icmpHead->code=0;
     //チェックサムはここでは計算しない。Monesに任せる
     //icmpHead->chksum=0;
-    //icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,icmp_size);
+    //icmpHead->chksum=MoPacUtl::calcCheckSum((uint32_t*)icmpHead,icmp_size);
 
     info.arg1 = 1;  //IPPROTO_ICMP
     info.arg2 = ipaddr;
@@ -125,7 +125,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_MONES_ICMP_NOTICE:
                 //IP要求が返ってきたら
-                printf("Reply from %s\n",pekoe->get(0));
+                printf("Reply from %s\n",argv[1]);
                 for(int i = 0 ; i < info.length ; i++){
                     printf("%x ",info.str[i]);
                 }

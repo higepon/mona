@@ -7,7 +7,7 @@
 
 namespace net {
 
-typedef std::vector<byte> Buffer;
+typedef std::vector<uint8_t> Buffer;
 
 class TCPClient
 {
@@ -15,17 +15,17 @@ public:
     TCPClient();
     virtual ~TCPClient();
 
-    bool connect(byte a, byte b, byte c, byte d, dword port);
-    dword write(const byte* data, dword length);
+    bool connect(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint32_t port);
+    uint32_t write(const uint8_t* data, uint32_t length);
     Buffer read();
     bool isClosed();
 
 protected:
     void initialize();
-    dword writeByMap(const byte* data, dword length);
+    uint32_t writeByMap(const uint8_t* data, uint32_t length);
     const char* netServer_;
-    dword serverId_;
-    dword handle_;
+    uint32_t serverId_;
+    uint32_t handle_;
 };
 
 }; // namespace net

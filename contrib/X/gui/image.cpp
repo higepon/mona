@@ -17,7 +17,7 @@ static HList<guiserver_bitmap*> bitmaps;
 
 guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 {
-	dword handle = MemoryMap::create(sizeof(guiserver_bitmap) + width * height * 4);
+	uint32_t handle = MemoryMap::create(sizeof(guiserver_bitmap) + width * height * 4);
 	if (handle == 0) return NULL;
 	
 	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle);
@@ -33,7 +33,7 @@ guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 	return ret;
 }
 
-guiserver_bitmap* GetBitmapPointer(dword handle)
+guiserver_bitmap* GetBitmapPointer(uint32_t handle)
 {
 	int size = bitmaps.size();
 	for (int i = 0; i < size; i++)
@@ -43,7 +43,7 @@ guiserver_bitmap* GetBitmapPointer(dword handle)
 	return NULL;
 }
 
-bool DisposeBitmap(dword handle)
+bool DisposeBitmap(uint32_t handle)
 {
 	int size = bitmaps.size();
 	for (int i = 0; i < size; i++)
@@ -63,7 +63,7 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 	if (mi->Size < 6) return NULL;
 	
 	if (mi->Data[0] != 'B' || mi->Data[1] != 'M') return NULL;
-	if (mi->Size != (dword)BYTE2INT(mi->Data, 2)) return NULL;
+	if (mi->Size != (uint32_t)BYTE2INT(mi->Data, 2)) return NULL;
 	if (BYTE2INT(mi->Data, 6) != 0) return NULL;
 	if (BYTE2INT(mi->Data, 14) != 40) return NULL;
 	if (mi->Data[28] + (mi->Data[29] << 8) != 24) return NULL; // 24bpp only
@@ -73,7 +73,7 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 	int w = BYTE2INT(mi->Data, 18);
 	int h = BYTE2INT(mi->Data, 22);
 
-	dword handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
+	uint32_t handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
 	if (handle == 0) return NULL;
 	
 	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle);
@@ -89,7 +89,7 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 		int p2 = bfOffBits + (h - y - 1) * lineSize;
 		for (int x = 0; x < w; x++)
 		{
-			byte* ptr = (byte*)&ret->Data[p1++];
+			uint8_t* ptr = (uint8_t*)&ret->Data[p1++];
 			ptr[0] = mi->Data[p2++];
 			ptr[1] = mi->Data[p2++];
 			ptr[2] = mi->Data[p2++];
@@ -108,7 +108,7 @@ guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 	int w, h;
 	jpeg.GetInfo(&w, &h);
 
-	dword handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
+	uint32_t handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
 	if (handle == 0) return NULL;
 	
 	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle);
@@ -117,10 +117,10 @@ guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 	ret->Handle = handle;
 	ret->Width  = w;
 	ret->Height = h;
-	jpeg.Decode((byte*)ret->Data);
+	jpeg.Decode((uint8_t*)ret->Data);
 	for (int i = w * h - 1; i >= 0; i--)
 	{
-		byte* ptr1 = (byte*)&ret->Data[i], * ptr2 = &((byte*)ret->Data)[i * 3];
+		uint8_t* ptr1 = (uint8_t*)&ret->Data[i], * ptr2 = &((uint8_t*)ret->Data)[i * 3];
 		ptr1[0] = ptr2[2];
 		ptr1[1] = ptr2[1];
 		ptr1[2] = ptr2[0];
@@ -275,10 +275,10 @@ void DrawImage(guiserver_bitmap* dst, guiserver_bitmap* src, int x /*= 0*/, int 
 			}
 			else
 			{
-				byte* p1 = (byte*)pDst, * p2 = (byte*)pSrc;
-				p1[0] = (byte)((((int)p1[0]) * (255 - opacity) + ((int)p2[0]) * opacity) / 255);
-				p1[1] = (byte)((((int)p1[1]) * (255 - opacity) + ((int)p2[1]) * opacity) / 255);
-				p1[2] = (byte)((((int)p1[2]) * (255 - opacity) + ((int)p2[2]) * opacity) / 255);
+				uint8_t* p1 = (uint8_t*)pDst, * p2 = (uint8_t*)pSrc;
+				p1[0] = (uint8_t)((((int)p1[0]) * (255 - opacity) + ((int)p2[0]) * opacity) / 255);
+				p1[1] = (uint8_t)((((int)p1[1]) * (255 - opacity) + ((int)p2[1]) * opacity) / 255);
+				p1[2] = (uint8_t)((((int)p1[2]) * (255 - opacity) + ((int)p2[2]) * opacity) / 255);
 				p1[3] = 0xff;
 			}
 		}

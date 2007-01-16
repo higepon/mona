@@ -82,7 +82,7 @@ class MoTcp
     ~MoTcp();
     void initTcp(AbstractMonic*);
 
-    void send_tcp(SocketContainer *sock, char flags, struct Packet *packet, char *data, dword size);
+    void send_tcp(SocketContainer *sock, char flags, struct Packet *packet, char *data, uint32_t size);
     
     
     int receiveTcp(IP_HEADER*);

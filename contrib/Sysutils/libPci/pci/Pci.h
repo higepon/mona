@@ -39,7 +39,7 @@ using namespace MonAPI;
  */
 typedef union
 {
-   dword command;
+   uint32_t command;
    struct
    {
        unsigned reserved1 : 2;
@@ -88,13 +88,13 @@ enum
 typedef struct
 {
     int  Exist;       //ë∂ç›ämîFèÓïÒ(ë∂ç›Ç∑ÇÈ=0  , ë∂ç›ÇµÇ»Ç¢=0à»äO)
-    byte DeviceNo;
-    word Vendor;
-    word Device;
+    uint8_t DeviceNo;
+    uint16_t Vendor;
+    uint16_t Device;
     CString VendorName;
     CString DeviceName;
-    dword BaseAd;
-    dword  IrqLine;
+    uint32_t BaseAd;
+    uint32_t  IrqLine;
 } PciInf;
 
 
@@ -127,12 +127,12 @@ class Pci
     Pci();
     ~Pci();
 
-    void CheckPciExist(word , word ,PciInf*);
-    dword ReadConfig(byte , byte , byte , byte , byte );
-    void WriteConfig(byte ,byte ,byte ,byte ,byte ,dword );
+    void CheckPciExist(uint16_t , uint16_t ,PciInf*);
+    uint32_t ReadConfig(uint8_t , uint8_t , uint8_t , uint8_t , uint8_t );
+    void WriteConfig(uint8_t ,uint8_t ,uint8_t ,uint8_t ,uint8_t ,uint32_t );
   private:
     
-    MonAPI::CString getPciInfName( byte* , dword , MonAPI::CString* , MonAPI::CString* );
+    MonAPI::CString getPciInfName( uint8_t* , uint32_t , MonAPI::CString* , MonAPI::CString* );
     bool IsLineSeparator(char );
 };
 

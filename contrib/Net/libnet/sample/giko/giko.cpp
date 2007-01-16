@@ -17,7 +17,7 @@ class Giko : public Frame
 private:
     Button* button1;
     Scrollbar* scroll;
-    dword threadID_;
+    uint32_t threadID_;
 
     const int WIDTH;
     const int HEIGHT;
@@ -181,14 +181,15 @@ private:
             syscall_kill_thread(threadID_);
         }
 
-        threadID_ = syscall_mthread_create((dword)doGet);
-        syscall_mthread_join(threadID_);
+        threadID_ = syscall_mthread_create((uint32_t)doGet);
+// comment out by higepon
+//        syscall_mthread_join(threadID_);
     }
 };
 
 static Giko* window;
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     window = new Giko();
     window->run();
@@ -211,7 +212,7 @@ static void doGet()
     sprintf(buf, "GET %s HTTP/1.0\r\nServer:%d.%d.%d.%d\r\n\r\n", url->getPath().c_str(), url->getA(), url->getB(), url->getC(), url->getD());
     addText(window->contentLabel, buf);
     delete url;
-    client.write((byte*)buf, strlen(buf));
+    client.write((uint8_t*)buf, strlen(buf));
     window->statusLabel->setText(" リクエスト中");
     window->stateChanged();
     window->statusLabel->setText(" 応答を待っています");

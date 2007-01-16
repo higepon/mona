@@ -35,15 +35,15 @@ SocketsManager::SocketsManager()
 /*!
     \brief findSocket
          ソケット検索処理
-    \param  dword ip [in] 先IPアドレス
-    \param  word  myport [in] 自己ポート番号
-    \param  word  youport[in] 相手ポート番号
+    \param  uint32_t ip [in] 先IPアドレス
+    \param  uint16_t  myport [in] 自己ポート番号
+    \param  uint16_t  youport[in] 相手ポート番号
     \return SocketContainer*  検索したSocketContainerへのポインタ。見つからない場合はNULLポインタ
         
     \author Yamami
     \date   create:2005/07/20 update:
 */
-SocketContainer* SocketsManager::findSocket(dword ip ,word  myport ,word youport)
+SocketContainer* SocketsManager::findSocket(uint32_t ip ,uint16_t  myport ,uint16_t youport)
 {
     char SocKey[30];    //SocketContainerキー
     SocketContainer *retSoc;     //SocketContainerリターン
@@ -73,14 +73,14 @@ SocketContainer* SocketsManager::findSocket(dword ip ,word  myport ,word youport
 /*!
     \brief registLisSocket
          リスンソケット登録処理
-    \param  dword tid [in] スレッドid
-    \param  word  myport [in] 自己ポート番号
+    \param  uint32_t tid [in] スレッドid
+    \param  uint16_t  myport [in] 自己ポート番号
     \return 無し
         
     \author Yamami
     \date   create:2005/07/20 update:
 */
-void SocketsManager::registLisSocket(dword tid ,word  myport )
+void SocketsManager::registLisSocket(uint32_t tid ,uint16_t  myport )
 {
     SocketContainer *soc;
     
@@ -99,16 +99,16 @@ void SocketsManager::registLisSocket(dword tid ,word  myport )
 /*!
     \brief registConSocket
          コネクションソケット登録処理
-    \param  dword tid [in] スレッドid
-    \param  word  myport [in] 自己ポート番号
-    \param  dword ip [in] 先IPアドレス
-    \param  word  youport[in] 相手ポート番号    
+    \param  uint32_t tid [in] スレッドid
+    \param  uint16_t  myport [in] 自己ポート番号
+    \param  uint32_t ip [in] 先IPアドレス
+    \param  uint16_t  youport[in] 相手ポート番号    
     \return 無し
         
     \author Yamami
     \date   create:2005/07/20 update:
 */
-void SocketsManager::registConSocket(dword tid ,word myport, dword ip , word youport)
+void SocketsManager::registConSocket(uint32_t tid ,uint16_t myport, uint32_t ip , uint16_t youport)
 {
     SocketContainer *soc;
     

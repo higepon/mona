@@ -32,7 +32,16 @@
 
 #include <monapi.h>
 
-int MonaMain(List<char*>* pekoe)
+extern "C" int dllmain()
+{
+    syscall_print("libnet_dllmain()\n");
+}
+
+int main(int argc, char* argv[])
 {
     return 0;
+}
+
+extern "C" void __main()
+{
 }

@@ -4,9 +4,9 @@
 
 using namespace mones;
 
-extern dword nic_read(dword nicThread, Ether::Frame* frame);
-extern dword nic_write(dword nicThread, OutPacket* packet);
-extern dword nicThread;
+extern uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
+extern uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
+extern uint32_t nicThread;
 
 
 void

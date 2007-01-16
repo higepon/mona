@@ -47,6 +47,11 @@ namespace baygui {
 		static const int MOUSE_DRAGGED    = 202;
 		/** マウス移動 */
 		static const int MOUSE_MOVED      = 203;
+		/** マウスENTERED */
+		static const int MOUSE_ENTERED    = 204;
+		/** マウスEXIT */
+		static const int MOUSE_EXIT       = 205;
+
 		/** フォーカスイン */
 		static const int FOCUS_IN         = 300;
 		/** フォーカスアウト */

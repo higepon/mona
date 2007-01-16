@@ -58,7 +58,7 @@ class Image
 {
 public:
     int w, h;
-    byte* data;
+    uint8_t* data;
 };
 
 // ログインクラス
@@ -283,7 +283,7 @@ private:
         // JPEGデコード開始
         int w, h;
         jpeg->GetInfo(&w, &h);
-        byte* data = new byte[w * h * 3];
+        uint8_t* data = new uint8_t[w * h * 3];
         jpeg->Decode(data);
 
         // イメージオブジェクト初期化
@@ -304,13 +304,13 @@ private:
     {
         int w          = image->w;
         int h          = image->h;
-        byte* data     = image->data;
+        uint8_t* data     = image->data;
         int vesaWidth  = screen.getWidth();
         int vesaHeight = screen.getHeight();
         int vesaBpp    = screen.getBpp() / 8;
         int ww         = w < vesaWidth  ? w : vesaWidth;
         int hh         = h < vesaHeight ? h : vesaHeight;
-        byte* vesaVram = screen.getVRAM();
+        uint8_t* vesaVram = screen.getVRAM();
 
         for (int y = 0; y < hh; y++)
         {
@@ -319,12 +319,12 @@ private:
                 int k  = ((x + x0) + ((y + y0) * vesaWidth)) * vesaBpp;
                 int k2 = (x + (y * w)) * 3;
 
-                byte r0 = data[k2];
-                byte g0 = data[k2 + 1];
-                byte b0 = data[k2 + 2];
+                uint8_t r0 = data[k2];
+                uint8_t g0 = data[k2 + 1];
+                uint8_t b0 = data[k2 + 2];
 
                 // 中央の長方形をアルファブレンドして描く
-                byte r = r0, g = g0, b = b0;
+                uint8_t r = r0, g = g0, b = b0;
                 if (x0 == 0 &&
                         y0 == 0 &&
                         BOX_TOP < y &&
@@ -332,14 +332,14 @@ private:
                         BOX_LEFT < x &&
                         x < (BOX_LEFT + BOX_WIDTH))
                 {
-                    r = (byte)(r0 * 0.6);
-                    g = (byte)(g0 * 0.6);
-                    b = (byte)(b0 * 0.6);
+                    r = (uint8_t)(r0 * 0.6);
+                    g = (uint8_t)(g0 * 0.6);
+                    b = (uint8_t)(b0 * 0.6);
                 }
 
                 if (vesaBpp == 2)
                 {
-                    *(word*)&vesaVram[k] = Color::bpp24to565(r, g, b);
+                    *(uint16_t*)&vesaVram[k] = Color::bpp24to565(r, g, b);
                 }
                 else
                 {
@@ -387,7 +387,7 @@ private:
 
 
 // エントリーポイント
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     // 16bpp 以下では非対応
     if (screen.getBpp() < 16)
@@ -409,8 +409,8 @@ int MonaMain(List<char*>* pekoe)
     const char* args;
     while ((args = startx->getCommand()) != NULL)
     {
-        dword child_id;
-        int result = monapi_call_process_execute_file_get_tid(args, MONAPI_FALSE, &child_id, syscall_get_tid());
+        uint32_t child_id;
+        int result = monapi_call_process_execute_file_get_tid(args, MONAPI_FALSE, &child_id, syscall_get_tid(), NULL);
         if (result != 0) break;
         for (MessageInfo info;;)
         {

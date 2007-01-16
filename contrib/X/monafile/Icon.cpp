@@ -8,7 +8,7 @@ using namespace System::Collections;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-extern dword gui_server;
+extern uint32_t gui_server;
 extern int ProcessStart(const String& file);
 
 _P<Bitmap> icons;

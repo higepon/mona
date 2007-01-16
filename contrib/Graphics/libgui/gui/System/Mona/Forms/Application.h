@@ -6,9 +6,9 @@
 
 #ifdef MONA
 #include <monapi.h>
-#define MAIN_ARGS List<char*>* pekoe
-#define SET_MAIN_CLASS(T) int MonaMain(MAIN_ARGS) { \
-	System::Mona::Forms::Application::__main<T>(pekoe); return 0; }
+#define MAIN_ARGS int argc, char* argv[]
+#define SET_MAIN_CLASS(T) int main(MAIN_ARGS) { \
+	System::Mona::Forms::Application::__main<T>(argc, argv); return 0; }
 #else
 #define MAIN_ARGS int argc, char* argv[]
 #define SET_MAIN_CLASS(T) int main(MAIN_ARGS) { \
@@ -54,9 +54,9 @@ namespace System { namespace Mona { namespace Forms
 		template <class T> static void __main(MAIN_ARGS)
 		{
 #ifdef MONA
-			int len = pekoe->size();
+			int len = argc - 1;
 			_A<String> args(len);
-			for (int i = 0; i < len; i++) args[i] = pekoe->get(i);
+			for (int i = 0; i < len; i++) args[i] = argv[i + 1];
 #else
 			_A<String> args(argc);
 			for (int i = 0; i < argc; i++) args[i] = argv[i];

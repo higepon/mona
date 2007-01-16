@@ -159,7 +159,7 @@ void mine::processEvent(Event* evt){
 	}
 }
 
-int MonaMain(List<char*>* pekoe){
+int main(int argc, char* argv[]){
 	mine* app = new mine();
 	app->run();
 	delete app;

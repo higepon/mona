@@ -46,19 +46,19 @@ UdpSocket::~UdpSocket()
 /*!
     \brief bind
          Socketを指定ポートにbind
-    \param  word port [in] ポート番号
+    \param  uint16_t port [in] ポート番号
     
     \return int 結果 
     
     \author Yamami
     \date   create:2005/08/09 update:$Date$
 */
-int UdpSocket::bind(word port)
+int UdpSocket::bind(uint16_t port)
 {
     //ここで、Monesに登録メッセージを送る
     MessageInfo info;
 
-    dword targetID = Message::lookupMainThread("MONES.EX5");
+    uint32_t targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF)
     {
         logprintf("MONES.EX5 not found\n");
@@ -86,13 +86,13 @@ int UdpSocket::bind(word port)
          bind済みポートからの受信
          バッファサイズより大きいデータは破棄されます。
     \param  char* buff [OUT] 受信バッファ
-    \param  dword len [in] バッファサイズ    
+    \param  uint32_t len [in] バッファサイズ    
     \return int 結果 
     
     \author Yamami
     \date   create:2005/08/09 update:$Date$
 */
-int UdpSocket::recv(char* buff ,dword len)
+int UdpSocket::recv(char* buff ,uint32_t len)
 {
 
     MessageInfo info;
@@ -168,20 +168,20 @@ int UdpSocket::recv(char* buff ,dword len)
     \brief send
          UDP送信
     \param  char* mesg [IN] 送信メッセージバッファ
-    \param  dword len [in] バッファサイズ
+    \param  uint32_t len [in] バッファサイズ
     \param  char* host [in] 送信ホスト (現在 X.X.X.X 形式のみサポート)
-    \param  word port [in] 送信ポート番号
+    \param  uint16_t port [in] 送信ポート番号
     \return int 結果 
     
     \author Yamami
     \date   create:2005/08/09 update:$Date$
 */
-int UdpSocket::send(char* mesg, dword len, char* host, word port)
+int UdpSocket::send(char* mesg, uint32_t len, char* host, uint16_t port)
 {
     
     MessageInfo info;
     SocketContainer *soc;
-    dword ipaddr;
+    uint32_t ipaddr;
 
     if(useport == 0){
         //自己ポートがまだ未割り当てなら
@@ -195,10 +195,10 @@ int UdpSocket::send(char* mesg, dword len, char* host, word port)
     
     sscanf(host,"%d.%d.%d.%d",&a,&b,&c,&d);
     ipaddr = 0;
-    ipaddr = (byte)a;
-    ipaddr = (ipaddr << 8) + (byte)b;
-    ipaddr = (ipaddr << 8) + (byte)c;
-    ipaddr = (ipaddr << 8) + (byte)d;
+    ipaddr = (uint8_t)a;
+    ipaddr = (ipaddr << 8) + (uint8_t)b;
+    ipaddr = (ipaddr << 8) + (uint8_t)c;
+    ipaddr = (ipaddr << 8) + (uint8_t)d;
     
 logprintf("UdpSocket::send ipaddr = %x\n",ipaddr);
     
@@ -220,7 +220,7 @@ logprintf("UdpSocket::send ipaddr = %x\n",ipaddr);
     //メッセージにSocketContainerをセット
     reti = soc->createPacMonaMsg(&info , 17);
     
-    dword targetID = Message::lookupMainThread("MONES.EX5");
+    uint32_t targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF)
     {
         logprintf("MONES.EX5 not found\n");

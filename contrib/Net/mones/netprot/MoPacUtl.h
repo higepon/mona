@@ -34,20 +34,20 @@ class MoPacUtl
     MoPacUtl();
     ~MoPacUtl();
     
-    static dword packet_get_4byte(byte *buf, int offset);
-    static word packet_get_2byte(byte *buf, dword offset);
-    static void packet_put_4byte(byte* buf, int offset, dword val);
-    static void packet_put_2byte(byte* buf, int offset, word val);
-    static word calcCheckSum(dword* ,int );
-    static word calcCheckSumDummyHead(dword *dmhead,dword *data,int dmsize,int size);
+    static uint32_t packet_get_4uint8_t(uint8_t *buf, int offset);
+    static uint16_t packet_get_2uint8_t(uint8_t *buf, uint32_t offset);
+    static void packet_put_4uint8_t(uint8_t* buf, int offset, uint32_t val);
+    static void packet_put_2uint8_t(uint8_t* buf, int offset, uint16_t val);
+    static uint16_t calcCheckSum(uint32_t* ,int );
+    static uint16_t calcCheckSumDummyHead(uint32_t *dmhead,uint32_t *data,int dmsize,int size);
     
 
-    inline static word swapShort(word value)
+    inline static uint16_t swapShort(uint16_t value)
     {
         return (value>>8)+(value<<8);
     }
 
-    inline static dword swapLong(dword value)
+    inline static uint32_t swapLong(uint32_t value)
     {
         return (value>>24)+((value>>8)&0xff00)+((value<<8)&0xff0000)+(value<<24);
     }

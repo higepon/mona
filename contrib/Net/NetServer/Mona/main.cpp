@@ -11,10 +11,10 @@ extern "C" {
 using namespace mones;
 static NicServer* server;
 void NicListenLoop();
-dword nic_read(dword nicThread, Ether::Frame* frame);
-dword nic_write(dword nicThread, OutPacket* packet);
+uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
+uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
 
-dword nicThread;
+uint32_t nicThread;
 
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
@@ -31,17 +31,19 @@ void thread_client()
 
 void thread_init()
 {
-    dword id = syscall_mthread_create((dword)thread_client);
-    syscall_mthread_join(id);
+    uint32_t id = syscall_mthread_create((uint32_t)thread_client);
+// comment out by higepon
+//    syscall_mthread_join(id);
 }
 
 #ifndef NULL
 #define NULL (void *)0
 #endif /* NULL */
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-    dword id = syscall_mthread_create((dword)NicListenLoop);
-    syscall_mthread_join(id);
+    uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
+// comment out by higepon
+//    syscall_mthread_join(id);
 
     for (;;) {
         if (server != NULL && server->isStarted()) {
@@ -145,7 +147,7 @@ void NicListenLoop()
     server->messageLoop();
 }
 
-dword nic_read(dword nicThread, Ether::Frame* frame)
+uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame)
 {
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))
@@ -163,10 +165,10 @@ dword nic_read(dword nicThread, Ether::Frame* frame)
 
 // caller should free() packet, after packet written
 // not thread safe
-dword nic_write(dword nicThread, OutPacket* packet)
+uint32_t nic_write(uint32_t nicThread, OutPacket* packet)
 {
     MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (dword)packet))
+    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (uint32_t)packet))
     {
         printf("send error 1");
         return 1;

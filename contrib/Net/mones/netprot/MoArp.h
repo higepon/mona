@@ -28,15 +28,15 @@ using namespace MonAPI;
  *  \brief ARPヘッダ構造体
  */
 typedef struct{
-    word hardType  __attribute__((packed));    //ﾊｰﾄﾞｳｪｱﾀｲﾌﾟ
-    word protType  __attribute__((packed));    //ﾌﾟﾛﾄｺﾙﾀｲﾌﾟ
-    byte  hardAddrLen  __attribute__((packed)); //ﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ長
-    byte  protAddrLen  __attribute__((packed)); //ﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ長
-    word opeCode  __attribute__((packed));     //ｵﾍﾟﾚｰｼｮﾝ
-    byte  srcMac[6]  __attribute__((packed));   //送信元ﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ
-    dword   srcIp  __attribute__((packed));       //送信元ﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ
-    byte  dstMac[6]  __attribute__((packed));   //ﾀｰｹﾞｯﾄﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ
-    dword   dstIp  __attribute__((packed));       //ﾀｰｹﾞｯﾄﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ
+    uint16_t hardType  __attribute__((packed));    //ﾊｰﾄﾞｳｪｱﾀｲﾌﾟ
+    uint16_t protType  __attribute__((packed));    //ﾌﾟﾛﾄｺﾙﾀｲﾌﾟ
+    uint8_t  hardAddrLen  __attribute__((packed)); //ﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ長
+    uint8_t  protAddrLen  __attribute__((packed)); //ﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ長
+    uint16_t opeCode  __attribute__((packed));     //ｵﾍﾟﾚｰｼｮﾝ
+    uint8_t  srcMac[6]  __attribute__((packed));   //送信元ﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ
+    uint32_t   srcIp  __attribute__((packed));       //送信元ﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ
+    uint8_t  dstMac[6]  __attribute__((packed));   //ﾀｰｹﾞｯﾄﾊｰﾄﾞｳｪｱｱﾄﾞﾚｽ
+    uint32_t   dstIp  __attribute__((packed));       //ﾀｰｹﾞｯﾄﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ
 }ARP_HEADER;
 
 
@@ -75,8 +75,8 @@ class MoArp
     void initArp(AbstractMonic*);
 
     int receiveArp(ARP_HEADER*);
-    byte* searchCache(dword );
-    int getMac(dword ,byte*);
+    uint8_t* searchCache(uint32_t );
+    int getMac(uint32_t ,uint8_t*);
 
     //TO DO Yamami とりあえずPublicメンバ ARPクラスが保持すべきか？
     //ARP要求待ちリスト
@@ -85,13 +85,13 @@ class MoArp
 
   private:
     //ARP応答処理 処理
-    void transArp(dword , byte*, word );
-    void addArpCache(dword , byte*);
+    void transArp(uint32_t , uint8_t*, uint16_t );
+    void addArpCache(uint32_t , uint8_t*);
     //ARP応答受信処理
-    int receiveReply(dword ,byte*);
+    int receiveReply(uint32_t ,uint8_t*);
     
     //ARPキャッシュ用 HashMap
-    HashMap<byte*>* ArpCache;
+    HashMap<uint8_t*>* ArpCache;
 
 
     //NICドライバ

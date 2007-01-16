@@ -223,7 +223,7 @@ static UINT mpegread(void *hdl, void *buf, UINT size) {
 
 
 // ---- めいん
-int MonaMain( List<char*>* pekoe ) {
+int main(int argc, char* argv[]) {
 	UINT			filesize;
 	BYTE			*filebuf;
 	_MVARG			mv;
@@ -232,13 +232,13 @@ int MonaMain( List<char*>* pekoe ) {
 	monapi_cmemoryinfo* mi = NULL;
 
 	// check arguments
-	if (pekoe->size() < 1) {
+	if (argc < 2) {
 		printf("usage: MONAPEG.EX2 [filename.mpg]\n");
 		return(-1);
 	}
 
-	printf("loading %s...\n", pekoe->get(0));
-	mi = monapi_file_read_all(pekoe->get(0));
+	printf("loading %s...\n", argv[1]);
+	mi = monapi_file_read_all(argv[1]);
 	if (mi == NULL || mi->Size == 0) {
 		printf("file read error\n");
 		return(-1);

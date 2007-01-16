@@ -1,0 +1,644 @@
+Archive member included because of file (symbol)
+
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+                              bplayer.o (baygui::Window::stop())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+                              bplayer.o (baygui::Window::setTimer(int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+                              bplayer.o (baygui::Container::remove(baygui::Component*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+                              bplayer.o (baygui::Container::add(baygui::Component*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+                              bplayer.o (baygui::Container::getComponentAt(int, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+                              bplayer.o (baygui::Container::getComponent())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+                              bplayer.o (baygui::Component::setFontStyle(int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+                              bplayer.o (baygui::Component::setForeground(unsigned int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+                              bplayer.o (baygui::Component::setBackground(unsigned int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+                              bplayer.o (baygui::Component::setParent(baygui::Container*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+                              bplayer.o (baygui::Window::setLocation(int, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+                              bplayer.o (baygui::Window::setVisible(bool))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+                              bplayer.o (baygui::Component::setFocused(bool))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+                              bplayer.o (baygui::Component::setEnabled(bool))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+                              bplayer.o (baygui::Component::getMainWindow())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+                              bplayer.o (baygui::Window::getBuffer())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+                              bplayer.o (baygui::Window::getGraphics())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+                              bplayer.o (baygui::Window::update(int, int, int, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+                              bplayer.o (baygui::Window::update())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+                              bplayer.o (baygui::Window::dispatchEvent(baygui::Event*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+                              bplayer.o (baygui::Window::removeNotify())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+                              bplayer.o (baygui::Window::addNotify())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+                              bplayer.o (baygui::Object::equals(baygui::Object*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+                              bplayer.o (baygui::Window::run())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+                              bplayer.o (baygui::Frame::repaint())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+                              bplayer.o (baygui::Graphics::drawImage(baygui::Image*, int, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+                              bplayer.o (baygui::Image::Image(baygui::String const&))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+                              bplayer.o (baygui::String::~String())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+                              bplayer.o (baygui::String::String(char const*, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+                              bplayer.o (baygui::Frame::setTitle(baygui::String const&))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+                              bplayer.o (baygui::Component::setBounds(int, int, int, int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+                              bplayer.o (baygui::Frame::~Frame())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+                              bplayer.o (baygui::Frame::Frame())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+                              bplayer.o (baygui::Window::getInsets())
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000000.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o) (_head_BAYGUI_DLL)
+/home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000278.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000000.o) (BAYGUI_DLL_iname)
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o (user_start_impl(int (*)(List<char*>*)))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o (invokeFuncList(void (**)()))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o (setConstructorList)
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o (monapi_initialize_memory)
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+                              bplayer.o (operator new(unsigned int))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+                              bplayer.o (operator delete(void*))
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000000.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o) (_head_MONAPI_DLL)
+/home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000451.o)
+                              /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000000.o) (MONAPI_DLL_iname)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0xa0000000                __image_base__ = 0xa0000000
+                0x00000000                __dll__ = 0x0
+                0x00001000                __section_alignment__ = 0x1000
+                0x00000200                __file_alignment__ = 0x200
+                0x00000004                __major_os_version__ = 0x4
+                0x00000000                __minor_os_version__ = 0x0
+                0x00000001                __major_image_version__ = 0x1
+                0x00000000                __minor_image_version__ = 0x0
+                0x00000004                __major_subsystem_version__ = 0x4
+                0x00000000                __minor_subsystem_version__ = 0x0
+                0x00000003                __subsystem__ = 0x3
+                0x00200000                __size_of_stack_reserve__ = 0x200000
+                0x00001000                __size_of_stack_commit__ = 0x1000
+                0x00100000                __size_of_heap_reserve__ = 0x100000
+                0x00001000                __size_of_heap_commit__ = 0x1000
+                0x00000000                __loader_flags__ = 0x0
+LOAD /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o
+LOAD bplayer.o
+LOAD /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a
+LOAD /home/taro/repos-monaos/branches/mona-stdio/lib/libmonalibc-imp.a
+LOAD /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a
+                0x000001f0                . = SIZEOF_HEADERS
+                0x00001000                . = ALIGN (__section_alignment__)
+
+.text           0xa0001000      0x600
+ *(.init)
+ *(.text)
+ .text          0xa0001000       0x50 /home/taro/repos-monaos/branches/mona-stdio/lib/monapi.o
+                0xa0001000                user_start
+ .text          0xa0001050       0xf0 bplayer.o
+                0xa0001050                MonaMain(List<char*>*)
+ .text          0xa0001140        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+                0xa0001140                baygui::Window::stop()
+ *fill*         0xa0001148        0x8 00
+ .text          0xa0001150        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+                0xa0001150                baygui::Window::setTimer(int)
+ *fill*         0xa0001158        0x8 00
+ .text          0xa0001160        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+                0xa0001160                baygui::Container::remove(baygui::Component*)
+ *fill*         0xa0001168        0x8 00
+ .text          0xa0001170        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+                0xa0001170                baygui::Container::add(baygui::Component*)
+ *fill*         0xa0001178        0x8 00
+ .text          0xa0001180        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+                0xa0001180                baygui::Container::getComponentAt(int, int)
+ *fill*         0xa0001188        0x8 00
+ .text          0xa0001190        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+                0xa0001190                baygui::Container::getComponent()
+ *fill*         0xa0001198        0x8 00
+ .text          0xa00011a0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+                0xa00011a0                baygui::Component::setFontStyle(int)
+ *fill*         0xa00011a8        0x8 00
+ .text          0xa00011b0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+                0xa00011b0                baygui::Component::setForeground(unsigned int)
+ *fill*         0xa00011b8        0x8 00
+ .text          0xa00011c0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+                0xa00011c0                baygui::Component::setBackground(unsigned int)
+ *fill*         0xa00011c8        0x8 00
+ .text          0xa00011d0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+                0xa00011d0                baygui::Component::setParent(baygui::Container*)
+ *fill*         0xa00011d8        0x8 00
+ .text          0xa00011e0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+                0xa00011e0                baygui::Window::setLocation(int, int)
+ *fill*         0xa00011e8        0x8 00
+ .text          0xa00011f0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+                0xa00011f0                baygui::Window::setVisible(bool)
+ *fill*         0xa00011f8        0x8 00
+ .text          0xa0001200        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+                0xa0001200                baygui::Component::setFocused(bool)
+ *fill*         0xa0001208        0x8 00
+ .text          0xa0001210        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+                0xa0001210                baygui::Component::setEnabled(bool)
+ *fill*         0xa0001218        0x8 00
+ .text          0xa0001220        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+                0xa0001220                baygui::Component::getMainWindow()
+ *fill*         0xa0001228        0x8 00
+ .text          0xa0001230        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+                0xa0001230                baygui::Window::getBuffer()
+ *fill*         0xa0001238        0x8 00
+ .text          0xa0001240        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+                0xa0001240                baygui::Window::getGraphics()
+ *fill*         0xa0001248        0x8 00
+ .text          0xa0001250        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+                0xa0001250                baygui::Window::update(int, int, int, int)
+ *fill*         0xa0001258        0x8 00
+ .text          0xa0001260        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+                0xa0001260                baygui::Window::update()
+ *fill*         0xa0001268        0x8 00
+ .text          0xa0001270        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+                0xa0001270                baygui::Window::dispatchEvent(baygui::Event*)
+ *fill*         0xa0001278        0x8 00
+ .text          0xa0001280        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+                0xa0001280                baygui::Window::removeNotify()
+ *fill*         0xa0001288        0x8 00
+ .text          0xa0001290        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+                0xa0001290                baygui::Window::addNotify()
+ *fill*         0xa0001298        0x8 00
+ .text          0xa00012a0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+                0xa00012a0                baygui::Object::equals(baygui::Object*)
+ *fill*         0xa00012a8        0x8 00
+ .text          0xa00012b0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+                0xa00012b0                baygui::Window::run()
+ *fill*         0xa00012b8        0x8 00
+ .text          0xa00012c0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+                0xa00012c0                baygui::Frame::repaint()
+ *fill*         0xa00012c8        0x8 00
+ .text          0xa00012d0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+                0xa00012d0                baygui::Graphics::drawImage(baygui::Image*, int, int)
+ *fill*         0xa00012d8        0x8 00
+ .text          0xa00012e0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+                0xa00012e0                baygui::Image::Image(baygui::String const&)
+ *fill*         0xa00012e8        0x8 00
+ .text          0xa00012f0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+                0xa00012f0                baygui::String::~String()
+ *fill*         0xa00012f8        0x8 00
+ .text          0xa0001300        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+                0xa0001300                baygui::String::String(char const*, int)
+ *fill*         0xa0001308        0x8 00
+ .text          0xa0001310        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+                0xa0001310                baygui::Frame::setTitle(baygui::String const&)
+ *fill*         0xa0001318        0x8 00
+ .text          0xa0001320        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+                0xa0001320                baygui::Component::setBounds(int, int, int, int)
+ *fill*         0xa0001328        0x8 00
+ .text          0xa0001330        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+                0xa0001330                baygui::Frame::~Frame()
+ *fill*         0xa0001338        0x8 00
+ .text          0xa0001340        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+                0xa0001340                baygui::Frame::Frame()
+ *fill*         0xa0001348        0x8 00
+ .text          0xa0001350        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+                0xa0001350                baygui::Window::getInsets()
+ *fill*         0xa0001358        0x8 00
+ .text          0xa0001360        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+                0xa0001360                user_start_impl(int (*)(List<char*>*))
+ *fill*         0xa0001368        0x8 00
+ .text          0xa0001370        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+                0xa0001370                invokeFuncList(void (**)())
+ *fill*         0xa0001378        0x8 00
+ .text          0xa0001380        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+                0xa0001380                setConstructorList
+ *fill*         0xa0001388        0x8 00
+ .text          0xa0001390        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+                0xa0001390                monapi_initialize_memory
+ *fill*         0xa0001398        0x8 00
+ .text          0xa00013a0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+                0xa00013a0                operator new(unsigned int)
+ *fill*         0xa00013a8        0x8 00
+ .text          0xa00013b0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+                0xa00013b0                operator delete(void*)
+ *(SORT(.text$*))
+ .text$_ZN6baygui5Frame18getTitlebarClickedEii
+                0xa00013b8       0x40 bplayer.o
+                0xa00013b8                baygui::Frame::getTitlebarClicked(int, int)
+ .text$_ZN6baygui5Frame21getCloseButtonClickedEii
+                0xa00013f8       0x40 bplayer.o
+                0xa00013f8                baygui::Frame::getCloseButtonClicked(int, int)
+ .text$_ZN7BPlayer12processEventEPN6baygui5EventE
+                0xa0001438       0x30 bplayer.o
+                0xa0001438                BPlayer::processEvent(baygui::Event*)
+ .text$_ZN7BPlayer5paintEPN6baygui8GraphicsE
+                0xa0001468       0x50 bplayer.o
+                0xa0001468                BPlayer::paint(baygui::Graphics*)
+ .text$_ZN7BPlayerD0Ev
+                0xa00014b8       0x80 bplayer.o
+                0xa00014b8                BPlayer::~BPlayer()
+ .text$_ZN7BPlayerD1Ev
+                0xa0001538       0x70 bplayer.o
+                0xa0001538                BPlayer::~BPlayer()
+ *(.glue_7t)
+ *(.glue_7)
+                0xa00015a8                ___CTOR_LIST__ = .
+                0xa00015a8                __CTOR_LIST__ = .
+                0xa00015a8        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+ *(.ctors)
+                0xa00015ac        0x4 LONG 0x0
+                0xa00015b0                ___DTOR_LIST__ = .
+                0xa00015b0                __DTOR_LIST__ = .
+                0xa00015b0        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+ *(.dtors)
+                0xa00015b4        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0xa00015b8                PROVIDE (etext, .)
+ *(.gcc_except_table)
+
+.data           0xa0002000        0x0
+                0xa0002000                __data_start__ = .
+ *(.data)
+ *(.data2)
+ *(SORT(.data$*))
+ *(.jcr)
+                0xa0002000                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0xa0002000      0x200
+ *(.rdata)
+ .rdata         0xa0002000       0x50 bplayer.o
+ *(SORT(.rdata$*))
+ .rdata$_ZTV7BPlayer
+                0xa0002050       0xa0 bplayer.o
+                0xa0002050                vtable for BPlayer
+ *(.eh_frame)
+                0xa00020f0                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0xa00020f0                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0xa00020f0                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0xa00020f0                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.pdata
+ *(.pdata)
+
+.bss            0xa0003000        0x0
+                0xa0003000                __bss_start__ = .
+ *(.bss)
+ *(COMMON)
+                0xa0003000                __bss_end__ = .
+
+.edata
+ *(.edata)
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+
+.idata          0xa0003000      0x800
+ SORT(*)(.idata$2)
+ .idata$2       0xa0003000       0x14 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000000.o)
+                0xa0003000                _head_BAYGUI_DLL
+ .idata$2       0xa0003014       0x14 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000000.o)
+                0xa0003014                _head_MONAPI_DLL
+ SORT(*)(.idata$3)
+                0xa0003028        0x4 LONG 0x0
+                0xa000302c        0x4 LONG 0x0
+                0xa0003030        0x4 LONG 0x0
+                0xa0003034        0x4 LONG 0x0
+                0xa0003038        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0xa000303c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000000.o)
+ .idata$4       0xa0003040        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+ .idata$4       0xa0003044        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+ .idata$4       0xa0003048        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+ .idata$4       0xa000304c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+ .idata$4       0xa0003050        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+ .idata$4       0xa0003054        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+ .idata$4       0xa0003058        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+ .idata$4       0xa000305c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+ .idata$4       0xa0003060        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+ .idata$4       0xa0003064        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+ .idata$4       0xa0003068        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+ .idata$4       0xa000306c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+ .idata$4       0xa0003070        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+ .idata$4       0xa0003074        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+ .idata$4       0xa0003078        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+ .idata$4       0xa000307c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+ .idata$4       0xa0003080        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+ .idata$4       0xa0003084        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+ .idata$4       0xa0003088        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+ .idata$4       0xa000308c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+ .idata$4       0xa0003090        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+ .idata$4       0xa0003094        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+ .idata$4       0xa0003098        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+ .idata$4       0xa000309c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+ .idata$4       0xa00030a0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+ .idata$4       0xa00030a4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+ .idata$4       0xa00030a8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+ .idata$4       0xa00030ac        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+ .idata$4       0xa00030b0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+ .idata$4       0xa00030b4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+ .idata$4       0xa00030b8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+ .idata$4       0xa00030bc        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+ .idata$4       0xa00030c0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+ .idata$4       0xa00030c4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+ .idata$4       0xa00030c8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000278.o)
+ .idata$4       0xa00030cc        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000000.o)
+ .idata$4       0xa00030d0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+ .idata$4       0xa00030d4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+ .idata$4       0xa00030d8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+ .idata$4       0xa00030dc        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+ .idata$4       0xa00030e0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+ .idata$4       0xa00030e4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+ .idata$4       0xa00030e8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000451.o)
+ SORT(*)(.idata$5)
+ .idata$5       0xa00030ec        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000000.o)
+ .idata$5       0xa00030f0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+                0xa00030f0                _imp___ZN6baygui5Frame7repaintEv
+ .idata$5       0xa00030f4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+                0xa00030f4                _imp___ZN6baygui5Frame8setTitleERKNS_6StringE
+ .idata$5       0xa00030f8        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+                0xa00030f8                _imp___ZN6baygui5FrameC2Ev
+ .idata$5       0xa00030fc        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+                0xa00030fc                _imp___ZN6baygui5FrameD2Ev
+ .idata$5       0xa0003100        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+                0xa0003100                _imp___ZN6baygui5ImageC1ERKNS_6StringE
+ .idata$5       0xa0003104        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+                0xa0003104                _imp___ZN6baygui6Object6equalsEPS0_
+ .idata$5       0xa0003108        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+                0xa0003108                _imp___ZN6baygui6StringC1EPKci
+ .idata$5       0xa000310c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+                0xa000310c                _imp___ZN6baygui6StringD1Ev
+ .idata$5       0xa0003110        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+                0xa0003110                _imp___ZN6baygui6Window10setVisibleEb
+ .idata$5       0xa0003114        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+                0xa0003114                _imp___ZN6baygui6Window11getGraphicsEv
+ .idata$5       0xa0003118        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+                0xa0003118                _imp___ZN6baygui6Window11setLocationEii
+ .idata$5       0xa000311c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+                0xa000311c                _imp___ZN6baygui6Window12removeNotifyEv
+ .idata$5       0xa0003120        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+                0xa0003120                _imp___ZN6baygui6Window13dispatchEventEPNS_5EventE
+ .idata$5       0xa0003124        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+                0xa0003124                _imp___ZN6baygui6Window3runEv
+ .idata$5       0xa0003128        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+                0xa0003128                _imp___ZN6baygui6Window4stopEv
+ .idata$5       0xa000312c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+                0xa000312c                _imp___ZN6baygui6Window6updateEiiii
+ .idata$5       0xa0003130        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+                0xa0003130                _imp___ZN6baygui6Window6updateEv
+ .idata$5       0xa0003134        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+                0xa0003134                _imp___ZN6baygui6Window8setTimerEi
+ .idata$5       0xa0003138        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+                0xa0003138                _imp___ZN6baygui6Window9addNotifyEv
+ .idata$5       0xa000313c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+                0xa000313c                _imp___ZN6baygui6Window9getBufferEv
+ .idata$5       0xa0003140        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+                0xa0003140                _imp___ZN6baygui6Window9getInsetsEv
+ .idata$5       0xa0003144        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+                0xa0003144                _imp___ZN6baygui8Graphics9drawImageEPNS_5ImageEii
+ .idata$5       0xa0003148        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+                0xa0003148                _imp___ZN6baygui9Component10setEnabledEb
+ .idata$5       0xa000314c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+                0xa000314c                _imp___ZN6baygui9Component10setFocusedEb
+ .idata$5       0xa0003150        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+                0xa0003150                _imp___ZN6baygui9Component12setFontStyleEi
+ .idata$5       0xa0003154        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+                0xa0003154                _imp___ZN6baygui9Component13getMainWindowEv
+ .idata$5       0xa0003158        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+                0xa0003158                _imp___ZN6baygui9Component13setBackgroundEj
+ .idata$5       0xa000315c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+                0xa000315c                _imp___ZN6baygui9Component13setForegroundEj
+ .idata$5       0xa0003160        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+                0xa0003160                _imp___ZN6baygui9Component9setBoundsEiiii
+ .idata$5       0xa0003164        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+                0xa0003164                _imp___ZN6baygui9Component9setParentEPNS_9ContainerE
+ .idata$5       0xa0003168        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+                0xa0003168                _imp___ZN6baygui9Container12getComponentEv
+ .idata$5       0xa000316c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+                0xa000316c                _imp___ZN6baygui9Container14getComponentAtEii
+ .idata$5       0xa0003170        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+                0xa0003170                _imp___ZN6baygui9Container3addEPNS_9ComponentE
+ .idata$5       0xa0003174        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+                0xa0003174                _imp___ZN6baygui9Container6removeEPNS_9ComponentE
+ .idata$5       0xa0003178        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000278.o)
+ .idata$5       0xa000317c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000000.o)
+ .idata$5       0xa0003180        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+                0xa0003180                _imp___Z14invokeFuncListPPFvvE
+ .idata$5       0xa0003184        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+                0xa0003184                _imp___Z15user_start_implPFiP4ListIPcEE
+ .idata$5       0xa0003188        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+                0xa0003188                _imp___ZdlPv
+ .idata$5       0xa000318c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+                0xa000318c                _imp___Znwj
+ .idata$5       0xa0003190        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+                0xa0003190                _imp__monapi_initialize_memory
+ .idata$5       0xa0003194        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+                0xa0003194                _imp__setConstructorList
+ .idata$5       0xa0003198        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000451.o)
+ SORT(*)(.idata$6)
+ .idata$6       0xa000319c       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+ .idata$6       0xa00031bc       0x2c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+ .idata$6       0xa00031e8       0x18 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+ .idata$6       0xa0003200       0x18 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+ .idata$6       0xa0003218       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+ .idata$6       0xa000323c       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+ .idata$6       0xa000325c       0x1c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+ .idata$6       0xa0003278       0x18 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+ .idata$6       0xa0003290       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+ .idata$6       0xa00032b4       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+ .idata$6       0xa00032d8       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+ .idata$6       0xa00032fc       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+ .idata$6       0xa0003320       0x30 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+ .idata$6       0xa0003350       0x1c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+ .idata$6       0xa000336c       0x1c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+ .idata$6       0xa0003388       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+ .idata$6       0xa00033a8       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+ .idata$6       0xa00033c8       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+ .idata$6       0xa00033e8       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+ .idata$6       0xa0003408       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+ .idata$6       0xa0003428       0x20 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+ .idata$6       0xa0003448       0x30 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+ .idata$6       0xa0003478       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+ .idata$6       0xa00034a0       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+ .idata$6       0xa00034c8       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+ .idata$6       0xa00034f0       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+ .idata$6       0xa0003518       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+ .idata$6       0xa0003540       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+ .idata$6       0xa0003568       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+ .idata$6       0xa0003590       0x34 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+ .idata$6       0xa00035c4       0x28 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+ .idata$6       0xa00035ec       0x2c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+ .idata$6       0xa0003618       0x2c /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+ .idata$6       0xa0003644       0x30 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+ .idata$6       0xa0003674       0x1c /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+ .idata$6       0xa0003690       0x24 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+ .idata$6       0xa00036b4        0xc /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+ .idata$6       0xa00036c0        0x8 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+ .idata$6       0xa00036c8       0x1c /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+ .idata$6       0xa00036e4       0x18 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+ SORT(*)(.idata$7)
+ .idata$7       0xa00036fc        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000028.o)
+ .idata$7       0xa0003700        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000029.o)
+ .idata$7       0xa0003704        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000033.o)
+ .idata$7       0xa0003708        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000036.o)
+ .idata$7       0xa000370c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000039.o)
+ .idata$7       0xa0003710        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000069.o)
+ .idata$7       0xa0003714        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000075.o)
+ .idata$7       0xa0003718        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000082.o)
+ .idata$7       0xa000371c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000105.o)
+ .idata$7       0xa0003720        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000106.o)
+ .idata$7       0xa0003724        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000107.o)
+ .idata$7       0xa0003728        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000108.o)
+ .idata$7       0xa000372c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000109.o)
+ .idata$7       0xa0003730        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000112.o)
+ .idata$7       0xa0003734        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000113.o)
+ .idata$7       0xa0003738        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000114.o)
+ .idata$7       0xa000373c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000115.o)
+ .idata$7       0xa0003740        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000117.o)
+ .idata$7       0xa0003744        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000118.o)
+ .idata$7       0xa0003748        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000119.o)
+ .idata$7       0xa000374c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000120.o)
+ .idata$7       0xa0003750        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000157.o)
+ .idata$7       0xa0003754        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000169.o)
+ .idata$7       0xa0003758        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000170.o)
+ .idata$7       0xa000375c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000176.o)
+ .idata$7       0xa0003760        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000178.o)
+ .idata$7       0xa0003764        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000179.o)
+ .idata$7       0xa0003768        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000180.o)
+ .idata$7       0xa000376c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000187.o)
+ .idata$7       0xa0003770        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000188.o)
+ .idata$7       0xa0003774        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000194.o)
+ .idata$7       0xa0003778        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000196.o)
+ .idata$7       0xa000377c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000197.o)
+ .idata$7       0xa0003780        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000198.o)
+ .idata$7       0xa0003784        0xc /home/taro/repos-monaos/branches/mona-stdio/lib/libbaygui-imp.a(d000278.o)
+                0xa0003784                BAYGUI_DLL_iname
+ .idata$7       0xa0003790        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000009.o)
+ .idata$7       0xa0003794        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000011.o)
+ .idata$7       0xa0003798        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000295.o)
+ .idata$7       0xa000379c        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000297.o)
+ .idata$7       0xa00037a0        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000353.o)
+ .idata$7       0xa00037a4        0x4 /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000386.o)
+ .idata$7       0xa00037a8        0xc /home/taro/repos-monaos/branches/mona-stdio/lib/libmonapi-imp.a(d000451.o)
+                0xa00037a8                MONAPI_DLL_iname
+
+.CRT            0xa0004000        0x0
+                0xa0004000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0xa0004000                ___crt_xc_end__ = .
+                0xa0004000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0xa0004000                ___crt_xi_end__ = .
+                0xa0004000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0xa0004000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0xa0004000                ___crt_xp_end__ = .
+                0xa0004000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0xa0004000                ___crt_xt_end__ = .
+
+.tls            0xa0004000        0x0
+                0xa0004000                ___tls_start__ = .
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+                0xa0004000                ___tls_end__ = .
+
+.endjunk        0xa0004000        0x0
+                0xa0004000                PROVIDE (end, .)
+                0xa0004000                PROVIDE (_end, .)
+                0xa0004000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc
+ *(.reloc)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(bplayer.EXE pei-i386)

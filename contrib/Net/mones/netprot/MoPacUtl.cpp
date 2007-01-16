@@ -51,41 +51,41 @@ MoPacUtl::~MoPacUtl()
 
 
 /*!
-    \brief packet_get_4byte
+    \brief packet_get_4uint8_t
          4バイトパケット取得
          ネットワークエンディアン変換
-    \param  byte *buf [in] 対象バッファ
+    \param  uint8_t *buf [in] 対象バッファ
     \param  int offset [in] 対象オフセット
-    \return dword 取得値
+    \return uint32_t 取得値
     
     \author Yamami
     \date   create:2004/08/18 update:
 */
-dword MoPacUtl::packet_get_4byte(byte *buf, int offset)
+uint32_t MoPacUtl::packet_get_4uint8_t(uint8_t *buf, int offset)
 {
-    dword a, b, c;
+    uint32_t a, b, c;
 
-    a = (dword)buf[offset++] << 24;
-    b = (dword)buf[offset++] << 16;
-    c = (dword)buf[offset++] << 8;
+    a = (uint32_t)buf[offset++] << 24;
+    b = (uint32_t)buf[offset++] << 16;
+    c = (uint32_t)buf[offset++] << 8;
 
     return a | b | c | buf[offset];
 }
 
 /*!
-    \brief packet_get_2byte
+    \brief packet_get_2uint8_t
          2バイトパケット取得
          ネットワークエンディアン変換
-    \param  byte *buf [in] 対象バッファ
+    \param  uint8_t *buf [in] 対象バッファ
     \param  int offset [in] 対象オフセット
-    \return word 取得値
+    \return uint16_t 取得値
     
     \author Yamami
     \date   create:2004/08/18 update:
 */
-word MoPacUtl::packet_get_2byte(byte *buf, dword offset)
+uint16_t MoPacUtl::packet_get_2uint8_t(uint8_t *buf, uint32_t offset)
 {
-    word a;
+    uint16_t a;
 
     a = buf[offset++] << 8;
     
@@ -94,18 +94,18 @@ word MoPacUtl::packet_get_2byte(byte *buf, dword offset)
 
 
 /*!
-    \brief packet_put_4byte
+    \brief packet_put_4uint8_t
          4バイトパケット設定
          ネットワークエンディアン変換
-    \param  byte *buf [in] 対象バッファ
+    \param  uint8_t *buf [in] 対象バッファ
     \param  int offset [in] 対象オフセット
-    \param  idword [in] 設定値
+    \param  iuint32_t [in] 設定値
     \return void 無し
     
     \author Yamami
     \date   create:2004/08/18 update:
 */
-void MoPacUtl::packet_put_4byte(byte* buf, int offset, dword val)
+void MoPacUtl::packet_put_4uint8_t(uint8_t* buf, int offset, uint32_t val)
 {
     buf += offset;
     *buf++ = (val >> 24) & 0xff;
@@ -115,18 +115,18 @@ void MoPacUtl::packet_put_4byte(byte* buf, int offset, dword val)
 }
 
 /*!
-    \brief packet_put_2byte
+    \brief packet_put_2uint8_t
          2バイトパケット設定
          ネットワークエンディアン変換
-    \param  byte *buf [in] 対象バッファ
+    \param  uint8_t *buf [in] 対象バッファ
     \param  int offset [in] 対象オフセット
-    \param  iword [in] 設定値
+    \param  iuint16_t [in] 設定値
     \return void 無し
     
     \author Yamami
     \date   create:2004/08/18 update:
 */
-void MoPacUtl::packet_put_2byte(byte* buf, int offset, word val)
+void MoPacUtl::packet_put_2uint8_t(uint8_t* buf, int offset, uint16_t val)
 {
     buf += offset;
     *buf++ = (val >> 8) & 0xff;
@@ -138,26 +138,26 @@ void MoPacUtl::packet_put_2byte(byte* buf, int offset, word val)
 /*!
     \brief calcCheckSum
          チェックサム関数
-    \param  dword *data [in] チェック対象
+    \param  uint32_t *data [in] チェック対象
     \param  int size [in] チェック対象サイズ
-    \return word 
+    \return uint16_t 
     
     \author Yamami
     \date   create:2004/09/20 update:
 */
-word MoPacUtl::calcCheckSum(dword *data,int size)
+uint16_t MoPacUtl::calcCheckSum(uint32_t *data,int size)
 {
     union{
         unsigned long long u64;
-        dword            u32[2];
-        word             u16[4];
+        uint32_t            u32[2];
+        uint16_t             u16[4];
     }sum;
 
-    dword tmp;
+    uint32_t tmp;
 
 
     sum.u64=0;
-    for(;(dword)size>=sizeof(dword);size-=sizeof(dword))
+    for(;(uint32_t)size>=sizeof(uint32_t);size-=sizeof(uint32_t))
         sum.u64+=*data++;
     if(size>0)sum.u64+=*data&((1<<(size*8))-1);
 
@@ -183,30 +183,30 @@ word MoPacUtl::calcCheckSum(dword *data,int size)
 /*!
     \brief calcCheckSumDummyHead
          TCP/UDP用。ダミーヘッダ込み チェックサム関数
-    \param  dword *dmhead [in] ダミーヘッダ チェックサム対象
-    \param  dword *data [in] チェック対象データ
+    \param  uint32_t *dmhead [in] ダミーヘッダ チェックサム対象
+    \param  uint32_t *data [in] チェック対象データ
     \param  int dmsize [in] ダミーヘッダ対象サイズ
     \param  int size [in] チェック対象サイズ
-    \return word 
+    \return uint16_t 
     
     \author Yamami
     \date   create:2005/07/17 update:
 */
-word MoPacUtl::calcCheckSumDummyHead(dword *dmhead,dword *data,int dmsize,int size)
+uint16_t MoPacUtl::calcCheckSumDummyHead(uint32_t *dmhead,uint32_t *data,int dmsize,int size)
 {
     union{
         unsigned long long u64;
-        dword               u32[2];
-        word             u16[4];
+        uint32_t               u32[2];
+        uint16_t             u16[4];
     }sum;
     
-    dword tmp;
+    uint32_t tmp;
 
 
     sum.u64=0;
-    for(;dmsize>=sizeof(dword);dmsize-=sizeof(dword))
+    for(;dmsize>=sizeof(uint32_t);dmsize-=sizeof(uint32_t))
         sum.u64+=*dmhead++;
-    for(;size>=sizeof(dword);size-=sizeof(dword))
+    for(;size>=sizeof(uint32_t);size-=sizeof(uint32_t))
         sum.u64+=*data++;
     if(size>0)sum.u64+=*data&((1<<(size*8))-1);
 

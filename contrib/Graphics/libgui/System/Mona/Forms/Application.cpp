@@ -10,8 +10,8 @@
 #include <monapi/messages.h>
 #include <servers/gui.h>
 #include <map>
-extern std::map<dword, System::Mona::Forms::Control*> mapControls;
-extern std::map<dword, System::Mona::Forms::Timer*> mapTimers;
+extern std::map<uint32_t, System::Mona::Forms::Control*> mapControls;
+extern std::map<uint32_t, System::Mona::Forms::Timer*> mapTimers;
 #elif defined(WIN32)
 extern void MonaGUI_Initialize();
 extern void MonaGUI_Run();
@@ -27,8 +27,8 @@ extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
 
 CommonParameters* __commonParams;
-dword __gui_server;
-static dword commonParamsHandle;
+uint32_t __gui_server;
+static uint32_t commonParamsHandle;
 #else
 #include "MONA-12.h"
 #endif
@@ -44,9 +44,10 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Application::Initialize()
 	{
-#ifdef MONA
-		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__);
-#endif
+// move to stub.cpp
+// #ifdef MONA
+// 		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+// #endif
 		Application::forms = new ArrayList<_P<Form> >;
 		Application::messageFilters = new ArrayList<IMessageFilter*>;
 		
@@ -68,7 +69,7 @@ namespace System { namespace Mona { namespace Forms
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			::exit(1);
 		}
-		byte* font_data = MonAPI::MemoryMap::map(msg.arg2);
+		uint8_t* font_data = MonAPI::MemoryMap::map(msg.arg2);
 		if (font_data == NULL)
 		{
 			::printf("%s:%d:ERROR: Can not get font data!\n", __FILE__, __LINE__);
@@ -90,7 +91,7 @@ namespace System { namespace Mona { namespace Forms
 #ifdef MONA
 		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
 		MonAPI::MemoryMap::unmap(commonParamsHandle);
-		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__DTOR_LIST__);
+		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 #endif
 	}
 	

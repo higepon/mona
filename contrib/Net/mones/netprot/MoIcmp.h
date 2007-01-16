@@ -39,7 +39,7 @@ class MoIcmp
 
   private:
     
-    void transIcmp(dword , byte , byte , ICMP_HEADER*, int );
+    void transIcmp(uint32_t , uint8_t , uint8_t , ICMP_HEADER*, int );
     void saveRecv(IP_HEADER*, int );
     //NICƒhƒ‰ƒCƒo
     AbstractMonic* insAbstractNic;

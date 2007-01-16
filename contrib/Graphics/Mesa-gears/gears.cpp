@@ -342,10 +342,10 @@ init(int argc, char *argv[])
 }
 
 #ifdef MONA
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
   const int width = 200, height = 200;
-  _A<byte> buf(width * height * 3);
+  _A<uint8_t> buf(width * height * 3);
 
   OSMesaContext ctx = OSMesaCreateContext(OSMESA_BGR, NULL);
   if (OSMesaMakeCurrent(ctx, buf.get(), GL_UNSIGNED_BYTE, width, height) == GL_FALSE)
@@ -359,22 +359,22 @@ int MonaMain(List<char*>* pekoe)
 
   MonAPI::Screen scr;
   int sw = scr.getWidth(), bypp = scr.getBpp() / 8;
-  byte* vram = scr.getVRAM();
+  uint8_t* vram = scr.getVRAM();
   for (;;)
   {
     draw();
     view_rotx += 5.0;
     view_roty += 5.0;
     angle += 5.0;
-    byte* pBuf = buf.get();
+    uint8_t* pBuf = buf.get();
     for (int y = 0; y < height; y++)
     {
-      byte* p = vram + (sw * (height - y - 1) + 128) * bypp;
+      uint8_t* p = vram + (sw * (height - y - 1) + 128) * bypp;
       for (int x = 0; x < width; x++)
       {
         if (bypp == 2)
         {
-          *(word*)p = MonAPI::Color::bpp24to565(pBuf[2], pBuf[1], pBuf[0]);
+          *(uint16_t*)p = MonAPI::Color::bpp24to565(pBuf[2], pBuf[1], pBuf[0]);
         }
         else
         {

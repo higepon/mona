@@ -6,10 +6,10 @@
 
 using namespace MonAPI;
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     /* check arguments */
-    if (pekoe->size() != 1)
+    if (argc != 2)
     {
         printf("usage: JPEGVIEW /XXXX.JPG\n");
         return -1;
@@ -30,11 +30,11 @@ int MonaMain(List<char*>* pekoe)
     CJPEGLS jpeg;
 
     monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_file_read_all(pekoe->get(0));
+    mi = monapi_file_read_all(argv[1]);
 
     if (mi == NULL)
     {
-        printf("file %s not found", pekoe->get(0));
+        printf("file %s not found", argv[1]);
         return -1;
     }
 
@@ -49,7 +49,7 @@ int MonaMain(List<char*>* pekoe)
 
     int w, h;
     jpeg.GetInfo(&w, &h);
-    byte *picture = new byte[w * h * 3];
+    uint8_t *picture = new uint8_t[w * h * 3];
     jpeg.Decode(picture);
 
     int x, y;
@@ -58,7 +58,7 @@ int MonaMain(List<char*>* pekoe)
     int vesaBpp    = screen.getBpp() / 8;
     int ww         = w < vesaWidth ? w : vesaWidth;
     int hh         = h < vesaHeight ? h : vesaHeight;
-    byte* vesaVram = screen.getVRAM();
+    uint8_t* vesaVram = screen.getVRAM();
 
     for(y = 0; y < hh; y++)
     {
@@ -68,7 +68,7 @@ int MonaMain(List<char*>* pekoe)
             int k2 = (x + (y * w)) * 3;
             if (vesaBpp == 2)
             {
-                *(word*)&vesaVram[k] = Color::bpp24to565(picture[k2], picture[k2 + 1], picture[k2 + 2]);
+                *(uint16_t*)&vesaVram[k] = Color::bpp24to565(picture[k2], picture[k2 + 1], picture[k2 + 2]);
             }
             else
             {

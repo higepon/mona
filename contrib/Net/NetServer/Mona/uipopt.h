@@ -218,7 +218,7 @@ typedef unsigned short uip_stats_t;
  *
  * uIP supports reassembly of fragmented IP packets. This features
  * requires an additonal amount of RAM to hold the reassembly buffer
- * and the reassembly code size is approximately 700 bytes.  The
+ * and the reassembly code size is approximately 700 uint8_ts.  The
  * reassembly buffer is of the same size as the uip_buf buffer
  * (configured by UIP_BUFSIZE).
  *
@@ -305,7 +305,7 @@ typedef unsigned short uip_stats_t;
  *
  * Since the TCP connections are statically allocated, turning this
  * configuration knob down results in less RAM used. Each TCP
- * connection requires approximatly 30 bytes of memory.
+ * connection requires approximatly 30 uint8_ts of memory.
  *
  * \hideinitializer
  */
@@ -314,7 +314,7 @@ typedef unsigned short uip_stats_t;
 /**
  * The maximum number of simultaneously listening TCP ports.
  *
- * Each listening TCP port requires 2 bytes of memory.
+ * Each listening TCP port requires 2 uint8_ts of memory.
  *
  * \hideinitializer
  */
@@ -324,7 +324,7 @@ typedef unsigned short uip_stats_t;
  * The size of the advertised receiver's window.
  *
  * Should be set low (i.e., to the size of the uip_buf buffer) is the
- * application is slow to process incoming data, or high (32768 bytes)
+ * application is slow to process incoming data, or high (32768 uint8_ts)
  * if the application processes data quickly.
  *
  * \hideinitializer
@@ -419,8 +419,8 @@ typedef unsigned short uip_stats_t;
 /**
  * The size of the uIP packet buffer.
  *
- * The uIP packet buffer should not be smaller than 60 bytes, and does
- * not need to be larger than 1500 bytes. Lower size results in lower
+ * The uIP packet buffer should not be smaller than 60 uint8_ts, and does
+ * not need to be larger than 1500 uint8_ts. Lower size results in lower
  * TCP throughput, larger size results in higher TCP throughput.
  *
  * \hideinitializer
@@ -488,10 +488,10 @@ void uip_log(char *msg);
 #endif /* BIGE_ENDIAN */
 
 /**
- * The byte order of the CPU architecture on which uIP is to be run.
+ * The uint8_t order of the CPU architecture on which uIP is to be run.
  *
- * This option can be either BIG_ENDIAN (Motorola byte order) or
- * LITTLE_ENDIAN (Intel byte order).
+ * This option can be either BIG_ENDIAN (Motorola uint8_t order) or
+ * LITTLE_ENDIAN (Intel uint8_t order).
  *
  * \hideinitializer
  */

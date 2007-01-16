@@ -18,7 +18,7 @@ void server_appcall(void);
 struct server_state {
     u8_t state;
     char* message;
-    dword length;
+    uint32_t length;
 };
 #pragma pack(0)
 

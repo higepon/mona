@@ -1,13 +1,13 @@
 /*!
-	\file  main.cpp
-	\brief  MonaForms GUIƒT[ƒo ƒƒCƒ“
+    \file  main.cpp
+    \brief  MonaForms GUI
 
-	This software is in the public domain.
-	There are no restrictions on any sort of usage of this software.
+    This software is in the public domain.
+    There are no restrictions on any sort of usage of this software.
 
-	\author   
-	\version $Revision$
-	\date   create: update:$Date$
+    \author Tino, Higepon
+    \version $Revision$
+    \date   create: update:$Date: 2006-08-17 23:30:38 +0900$
 */
 
 #include "Rectangle.h"
@@ -25,450 +25,399 @@
 
 using namespace MonAPI;
 
-// ‰æ–Êƒoƒbƒtƒ@
+// è­ï¾Šãƒãƒƒãƒ•ã‚¡
 extern guiserver_bitmap* screen_buffer;
 
-// ƒvƒƒZƒXŠÔ‹¤’Êƒpƒ‰ƒ[ƒ^
+// ãƒ—ãƒ­ã‚»ã‚¹Tå…±é€šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 CommonParameters* commonParams;
-// •Ç†
+// å£ç´™
 guiserver_bitmap* wallpaper = NULL;
-// ¶¬Œø‰ÊAíœŒø‰ÊAŒø‰Ê‚ÌƒXƒeƒbƒv•AŒø‰Ê‚Ì‚İŠÔ(ms)
+// ç”ŸæˆåŠ¹ï¾Šã€å‰Šé™¤åŠ¹ï¾Šã€åŠ¹ï¾Šã®ã‚¹ãƒ†ãƒƒãƒ—å¹…ã€åŠ¹ï¾Šã®åˆ»ã¿æ™‚T(ms)
 int we_creation = 0, we_destruction = 0, we_step = 6, we_wait = 30;
 
-// ƒNƒ‰ƒCƒAƒ“ƒg‚ÌƒŠƒXƒg
-static HList<dword> clients;
-// ‹¤—Lƒƒ‚ƒŠã‚ÉŠm•Û‚·‚éƒtƒHƒ“ƒg
+// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®ãƒªã‚¹ãƒˆ
+static HList<uint32_t> clients;
+// å…±æœ‰ãƒ¡ãƒ¢ãƒªä¸Šã«ç¢ºä¿ã™ã‚‹ãƒ•ã‚©ãƒ³ãƒˆ
 static monapi_cmemoryinfo* default_font = NULL;
-// •Ç†‚ğŠJ‚­‚Æ‚«‚Éƒvƒƒ“ƒvƒg‚Éî•ñ‚ğ•\¦‚·‚é‚©‚Ç‚¤‚©
+// å£ç´™ã‚’é–‹ãã¨ãã«ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã«æƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹ã‹ã©ã†ã‹
 static bool wallpaper_prompt = false;
-// ƒXƒ^[ƒgƒAƒbƒvƒAƒvƒŠƒP[ƒVƒ‡ƒ“
+// ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³
 static HList<CString>* startup = NULL;
 
 /*!
 \brief ReadFont
-	 ‹¤—Lƒƒ‚ƒŠ‚Éw’èƒtƒHƒ“ƒg‚ğƒ[ƒh
-\param  const char* file [in] ƒtƒHƒ“ƒgƒtƒ@ƒCƒ‹–¼
-\author 
+     å…±æœ‰ãƒ¡ãƒ¢ãƒªã«æŒ‡å®šãƒ•ã‚©ãƒ³ãƒˆã‚’ãƒ­ãƒ¼ãƒ‰
+\param  const char* file [in] ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«å
+\author
 \date   create: update:$Date$
 */
 static void ReadFont(const char* file)
 {
-	monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(file, true);
-	if (mi == NULL) return;
-	
-	default_font = mi;
+    monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(file, true);
+    if (mi == NULL) return;
+
+    default_font = mi;
 }
 
 /*!
 \brief DrawWallPaper
-	 •Ç†‚ğ•`‰æ‚·‚é
-\param  guiserver_bitmap* bmp [in] •Ç†
-\param  int pos [in] •\¦ˆÊ’u
-\param  unsigned int transparent [in] “§–¾“x (0x0-0xFFFFFF)
-\param  const char* src [in] •Ç†ƒtƒ@ƒCƒ‹–¼
-\param  bool prompt [in] ƒvƒƒ“ƒvƒg‚ğ•\¦‚·‚é‚©‚Ç‚¤‚©
-\author 
+     å£ç´™ã‚’æè¬”ï½·ã‚‹
+\param  guiserver_bitmap* bmp [in] å£ç´™
+\param  int pos [in] è¡¨ç¤ºä½ç½®
+\param  unsigned int transparent [in] é€æ˜åº¦ (0x0-0xFFFFFF)
+\param  const char* src [in] å£ç´™ãƒ•ã‚¡ã‚¤ãƒ«å
+\param  bool prompt [in] ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã‚’è¡¨ç¤ºã™ã‚‹ã‹ã©ã†ã‹
+\author
 \date   create: update:$Date$
 */
 static void DrawWallPaper(guiserver_bitmap* bmp, int pos, unsigned int transparent, const char* src, bool prompt)
 {
-	if (wallpaper == NULL || bmp == NULL) return;
-	
-	int x = 0, y = 0, ww = wallpaper->Width, wh = wallpaper->Height;
-	switch (pos)
-	{
-		case 0: // Stretch
-		{
-			if (ww != bmp->Width || wh != bmp->Height)
-			{
-				if (prompt) printf("%s: Resizing %s....", GUI_SERVER_NAME, (const char*)src);
-				guiserver_bitmap* bmp2 = ResizeBitmap(bmp, ww, wh);
-				DisposeBitmap(bmp->Handle);
-				bmp = bmp2;
-				if (prompt) printf("Done\n");
-			}
-			break;
-		}
-		case 1: // Top Left
-			break;
-		case 2: // Top Center
-			x = (ww - bmp->Width) / 2;
-			break;
-		case 3: // Top Right
-			x = ww - bmp->Width;
-			break;
-		case 4: // Center Left
-			y = (wh - bmp->Height) / 2;
-			break;
-		case 5: // Center Center
-			x = (ww - bmp->Width) / 2;
-			y = (wh - bmp->Height) / 2;
-			break;
-		case 6: // Center Right
-			x = ww - bmp->Width;
-			y = (wh - bmp->Height) / 2;
-			break;
-		case 7: // Bottom Left
-			y = wh - bmp->Height;
-			break;
-		case 8: // Bottom Center
-			x = (ww - bmp->Width) / 2;
-			y = wh - bmp->Height;
-			break;
-		case 9: // Bottom Right
-			x = ww - bmp->Width;
-			y = wh - bmp->Height;
-			break;
-	}
-	DrawImage(wallpaper, bmp, x, y, 0, 0, -1, -1, transparent);
-	DisposeBitmap(bmp->Handle);
+    if (wallpaper == NULL || bmp == NULL) return;
+
+    int x = 0, y = 0, ww = wallpaper->Width, wh = wallpaper->Height;
+    switch (pos)
+    {
+        case 0: // Stretch
+        {
+            if (ww != bmp->Width || wh != bmp->Height)
+            {
+                if (prompt) printf("%s: Resizing %s....", GUI_SERVER_NAME, (const char*)src);
+                guiserver_bitmap* bmp2 = ResizeBitmap(bmp, ww, wh);
+                DisposeBitmap(bmp->Handle);
+                bmp = bmp2;
+                if (prompt) printf("Done\n");
+            }
+            break;
+        }
+        case 1: // Top Left
+            break;
+        case 2: // Top Center
+            x = (ww - bmp->Width) / 2;
+            break;
+        case 3: // Top Right
+            x = ww - bmp->Width;
+            break;
+        case 4: // Center Left
+            y = (wh - bmp->Height) / 2;
+            break;
+        case 5: // Center Center
+            x = (ww - bmp->Width) / 2;
+            y = (wh - bmp->Height) / 2;
+            break;
+        case 6: // Center Right
+            x = ww - bmp->Width;
+            y = (wh - bmp->Height) / 2;
+            break;
+        case 7: // Bottom Left
+            y = wh - bmp->Height;
+            break;
+        case 8: // Bottom Center
+            x = (ww - bmp->Width) / 2;
+            y = wh - bmp->Height;
+            break;
+        case 9: // Bottom Right
+            x = ww - bmp->Width;
+            y = wh - bmp->Height;
+            break;
+    }
+    DrawImage(wallpaper, bmp, x, y, 0, 0, -1, -1, transparent);
+    DisposeBitmap(bmp->Handle);
 }
 
 /*!
 \brief DrawWallPaper
-	 •Ç†‚ğ•`‰æ‚·‚é
-\param  const char* src [in] •Ç†ƒtƒ@ƒCƒ‹–¼
-\param  int pos [in] •\¦ˆÊ’u
-\param  unsigned int transparent [in] “§–¾“x (0x0-0xFFFFFF)
-\param  int background [in] ”wŒiF (0x0-0xFFFFFF)
-\author 
+     å£ç´™ã‚’æè¬”ï½·ã‚‹
+\param  const char* src [in] å£ç´™ãƒ•ã‚¡ã‚¤ãƒ«å
+\param  int pos [in] è¡¨ç¤ºä½ç½®
+\param  unsigned int transparent [in] é€æ˜åº¦ (0x0-0xFFFFFF)
+\param  int background [in] èƒŒæ™¯è‰² (0x0-0xFFFFFF)
+\author
 \date   create: update:$Date$
 */
 static void DrawWallPaper(const char* src, int pos, unsigned int transparent, int background)
 {
-	bool prompt = wallpaper_prompt;
-	wallpaper_prompt = false;
-	
-	Screen* scr = GetDefaultScreen();
-	if (wallpaper == NULL)
-	{
-		wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background);
-		if (wallpaper == NULL) return;
-	}
-	else
-	{
-		FillColor(wallpaper, background);
-	}
-	
-	guiserver_bitmap* bmp = ReadImage(src, prompt);
-	if (bmp != NULL) DrawWallPaper(bmp, pos, transparent, src, prompt);
-	DrawImage(screen_buffer, wallpaper);
-	DrawScreen();
+    bool prompt = wallpaper_prompt;
+    wallpaper_prompt = false;
+
+    Screen* scr = GetDefaultScreen();
+    if (wallpaper == NULL)
+    {
+        wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background);
+        if (wallpaper == NULL) return;
+    }
+    else
+    {
+        FillColor(wallpaper, background);
+    }
+
+    guiserver_bitmap* bmp = ReadImage(src, prompt);
+    if (bmp != NULL) DrawWallPaper(bmp, pos, transparent, src, prompt);
+    DrawImage(screen_buffer, wallpaper);
+    DrawScreen();
 }
 
 
 /*!
 \brief ReadConfig
-	 İ’èƒtƒ@ƒCƒ‹ *.INI ‚æ‚èMonaForms‚Ìİ’è‚ğ“¾‚é
-\author 
+     è¨­å®šãƒ•ã‚¡ã‚¤ãƒ« *.INI ã‚ˆã‚ŠMonaFormsã®è¨­å®šã‚’å¾—ã‚‹
+\author
 \date   create: update:$Date$
 */
-static void ReadConfig(List<char*>* pekoe)
+static void ReadConfig(int argc, char* argv[])
 {
-	monapi_cmemoryinfo* cfg = monapi_file_read_all(pekoe->get(0));
-	if (cfg == NULL) return;
-	
-	if (startup != NULL)
-	{
-		delete startup;
-		startup = NULL;
-	}
-	char line[256];
-	int linepos = 0, wppos = 5;
-	unsigned int wptp = 0, bgcol = 0;
-	CString section, src;
-	for (dword pos = 0; pos <= cfg->Size; pos++)
-	{
-		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
-		if (ch == '\r' || ch == '\n')
-		{
-			if (linepos > 0)
-			{
-				CString ln(line, linepos);
-				if (ln.toUpper().startsWith("REM "))
-				{
-					// ignore remark
-				}
-				else if (ln.startsWith("[") && ln.endsWith("]"))
-				{
-					section = ln.substring(1, ln.getLength() - 2).toUpper();
-				}
-				else if (ln.indexOf('=') > 0)
-				{
-					_A<CString> data = CString(line, linepos).split('=');
-					if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
-					{
-						CString name = data[0].toUpper();
-						if (section == "GENERAL")
-						{
-							if (name == "RUN")
-							{
-								if (startup == NULL) startup = new HList<CString>();
-								_A<CString> runs = data[1].split(',');
-								FOREACH (CString, r, runs) startup->add(r); END_FOREACH
-							}
-						}
-						else if (section == "WALLPAPER")
-						{
-							if (name == "SOURCE")
-							{
-								src = data[1];
-							}
-							else if (name == "POSITION")
-							{
-								wppos = atoi(data[1]);
-							}
-							else if (name == "TRANSPARENCYKEY")
-							{
-								wptp = xtoui(data[1]);
-							}
-							else if (name == "BACKCOLOR")
-							{
-								bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
-							}
-						}
-						else if (section == "WINDOW EFFECT")
-						{
-							if (name == "CREATION")
-							{
-								we_creation = atoi(data[1]);
-							}
-							else if (name == "DESTRUCTION")
-							{
-								we_destruction = atoi(data[1]);
-							}
-							else if (name == "STEP")
-							{
-								we_step = atoi(data[1]);
-							}
-							else if (name == "WAIT")
-							{
-								we_wait = atoi(data[1]);
-							}
-						}
-					}
-				}
-				linepos = 0;
-			}
-		}
-		else if (linepos < 255)
-		{
-			line[linepos++] = ch;
-		}
-	}
-	monapi_cmemoryinfo_dispose(cfg);
-	monapi_cmemoryinfo_delete(cfg);
-	if (src[0] == '\0') return;
+    monapi_cmemoryinfo* cfg = monapi_file_read_all(argv[1]);
+    if (cfg == NULL) return;
 
-	wallpaper_prompt = true;
-	DrawWallPaper(src, wppos, wptp, bgcol);
+    if (startup != NULL)
+    {
+        delete startup;
+        startup = NULL;
+    }
+    char line[256];
+    int linepos = 0, wppos = 5;
+    unsigned int wptp = 0, bgcol = 0;
+    CString section, src;
+    for (uint32_t pos = 0; pos <= cfg->Size; pos++)
+    {
+        char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
+        if (ch == '\r' || ch == '\n')
+        {
+            if (linepos > 0)
+            {
+                CString ln(line, linepos);
+                if (ln.toUpper().startsWith("REM "))
+                {
+                    // ignore remark
+                }
+                else if (ln.startsWith("[") && ln.endsWith("]"))
+                {
+                    section = ln.substring(1, ln.getLength() - 2).toUpper();
+                }
+                else if (ln.indexOf('=') > 0)
+                {
+                    _A<CString> data = CString(line, linepos).split('=');
+                    if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
+                    {
+                        CString name = data[0].toUpper();
+                        if (section == "GENERAL")
+                        {
+                            if (name == "RUN")
+                            {
+                                if (startup == NULL) startup = new HList<CString>();
+                                _A<CString> runs = data[1].split(',');
+                                FOREACH (CString, r, runs) startup->add(r); END_FOREACH
+                            }
+                        }
+                        else if (section == "WALLPAPER")
+                        {
+                            if (name == "SOURCE")
+                            {
+                                src = data[1];
+                            }
+                            else if (name == "POSITION")
+                            {
+                                wppos = atoi(data[1]);
+                            }
+                            else if (name == "TRANSPARENCYKEY")
+                            {
+                                wptp = xtoui(data[1]);
+                            }
+                            else if (name == "BACKCOLOR")
+                            {
+                                bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
+                            }
+                        }
+                        else if (section == "WINDOW EFFECT")
+                        {
+                            if (name == "CREATION")
+                            {
+                                we_creation = atoi(data[1]);
+                            }
+                            else if (name == "DESTRUCTION")
+                            {
+                                we_destruction = atoi(data[1]);
+                            }
+                            else if (name == "STEP")
+                            {
+                                we_step = atoi(data[1]);
+                            }
+                            else if (name == "WAIT")
+                            {
+                                we_wait = atoi(data[1]);
+                            }
+                        }
+                    }
+                }
+                linepos = 0;
+            }
+        }
+        else if (linepos < 255)
+        {
+            line[linepos++] = ch;
+        }
+    }
+    monapi_cmemoryinfo_dispose(cfg);
+    monapi_cmemoryinfo_delete(cfg);
+    if (src[0] == '\0') return;
+
+    wallpaper_prompt = true;
+    DrawWallPaper(src, wppos, wptp, bgcol);
 }
 
 /*!
 \brief CheckGUIServer
-	 MonaFormsƒT[ƒo ‹N“®Ï‚İƒ`ƒFƒbƒN
-	 Šù‚É‹N“®‚µ‚Ä‚¢‚ê‚ÎA2d‹N“®‚¹‚¸I—¹‚·‚éB
-\author 
+     MonaFormsã‚µãƒ¼ãƒ èµ·å‹•æ¸ˆã¿ãƒã‚§ãƒƒã‚¯
+     yã«èµ·å‹•ã—ã¦ã„ã‚Œã°ã€2é‡èµ·å‹•ã›ãšçµ‚äº†ã™ã‚‹ã€‚
+\author
 \date   create: update:$Date$
 */
 static void CheckGUIServer()
 {
-	syscall_set_ps_dump();
-	PsInfo info;
+    syscall_set_ps_dump();
+    PsInfo info;
 
-	bool ok = true;
-	CString self = "GUI.EX5";
-	dword tid = MonAPI::System::getThreadID();
+    bool ok = true;
+    CString self = "GUI.EX5";
+    uint32_t tid = MonAPI::System::getThreadID();
 
-	while (syscall_read_ps_dump(&info) == 0)
-	{
-		if (ok && self == info.name && tid != info.tid) ok = false;
-	}
-	if (ok) return;
+    while (syscall_read_ps_dump(&info) == 0)
+    {
+        if (ok && self == info.name && tid != info.tid) ok = false;
+    }
+    if (ok) return;
 
-	printf("%s: already has executed!\n", GUI_SERVER_NAME);
-	exit(1);
+    printf("%s: already has executed!\n", GUI_SERVER_NAME);
+    exit(1);
 }
 
 /*!
 \brief MessageLoop
-	 MonaFormsƒT[ƒo ƒƒbƒZ[ƒWƒ‹[ƒv
-\author 
+     MonaFormsã‚µãƒ¼ãƒ ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—
+\author
 \date   create: update:$Date$
 */
 static void MessageLoop()
 {
-	for (MessageInfo msg;;)
-	{
-		if (Message::receive(&msg)) continue;
-		
-		switch (msg.header)
-		{
-			// ƒtƒHƒ“ƒgæ“¾—v‹
-			case MSG_GUISERVER_GETFONT:
-				// ƒtƒHƒ“ƒg‚Ìƒnƒ“ƒhƒ‹AƒtƒHƒ“ƒg‚ÌƒTƒCƒY
-				Message::reply(&msg, default_font->Handle, default_font->Size);
-				break;
-			// •Ç†ƒ[ƒh—v‹
-			case MSG_GUISERVER_SETWALLPAPER:
-				// ƒtƒ@ƒCƒ‹–¼A•\¦ˆÊ’uA“§–¾“xA”wŒiF
-				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
-				Message::reply(&msg);
-				break;
-			// ‰æ–ÊXV—v‹
-			case MSG_GUISERVER_DRAWSCREEN:
-				// x, y, w, h
-				DrawScreen(msg.arg1, msg.arg2, GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
-				Message::reply(&msg);
-				break;
-			// “o˜^—v‹
-			case MSG_REGISTER_TO_SERVER:
-				// threadID
-				clients.add(msg.arg1);
-				Message::reply(&msg);
-				break;
-			// íœ—v‹
-			case MSG_UNREGISTER_FROM_SERVER:
-				// threadID
-				clients.remove(msg.arg1);
-				Message::reply(&msg);
-				break;
-			// ESCƒL[‚É‚æ‚éI—¹ƒ`ƒFƒbƒN
-			case MSG_KEY_VIRTUAL_CODE:
-			{
-				if (msg.arg1 == Keys::Escape) {
-					DisposeAllWindow();
-					return;
-				}
-				if (ImageHandler(&msg)) break;
-				if (WindowHandler(&msg)) break;
-				break;
-			}
-			default:
-				if (ImageHandler(&msg)) break;
-				if (WindowHandler(&msg)) break;
-				break;
-		}
-	}
+    for (MessageInfo msg;;)
+    {
+        if (Message::receive(&msg)) continue;
+
+        switch (msg.header)
+        {
+            // ãƒ•ã‚©ãƒ³ãƒˆå–å¾—è¦æ±‚
+            case MSG_GUISERVER_GETFONT:
+                // ãƒ•ã‚©ãƒ³ãƒˆã®ãƒãƒ³ãƒ‰ãƒ«ã€ãƒ•ã‚©ãƒ³ãƒˆã®ã‚µã‚¤ã‚º
+                Message::reply(&msg, default_font->Handle, default_font->Size);
+                break;
+            // å£ç´™ãƒ­ãƒ¼ãƒ‰è¦æ±‚
+            case MSG_GUISERVER_SETWALLPAPER:
+                // ãƒ•ã‚¡ã‚¤ãƒ«åã€è¡¨ç¤ºä½ç½®ã€é€æ˜åº¦ã€èƒŒæ™¯è‰²
+                DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
+                Message::reply(&msg);
+                break;
+            // è­ï¾Šæ›´æ–°è¦æ±‚
+            case MSG_GUISERVER_DRAWSCREEN:
+                // x, y, w, h
+                DrawScreen(msg.arg1, msg.arg2, GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
+                Message::reply(&msg);
+                break;
+            // ç™»éŒ²è¦æ±‚
+            case MSG_REGISTER_TO_SERVER:
+                // threadID
+                clients.add(msg.arg1);
+                Message::reply(&msg);
+                break;
+            // å‰Šé™¤è¦æ±‚
+            case MSG_UNREGISTER_FROM_SERVER:
+                // threadID
+                clients.remove(msg.arg1);
+                Message::reply(&msg);
+                break;
+            // ESCã‚­ãƒ¼ã«ã‚ˆã‚‹çµ‚äº†ãƒã‚§ãƒƒã‚¯
+            case MSG_KEY_VIRTUAL_CODE:
+            {
+                if (msg.arg1 == Keys::Escape) {
+                    DisposeAllWindow();
+                    return;
+                }
+                if (ImageHandler(&msg)) break;
+                if (WindowHandler(&msg)) break;
+                break;
+            }
+            default:
+                if (ImageHandler(&msg)) break;
+                if (WindowHandler(&msg)) break;
+                break;
+        }
+    }
 }
 
-static dword my_tid, stdout_tid;
-
-/** •W€o—Í‚ğˆ¬‚è‚Â‚Ô‚·ƒXƒŒƒbƒh */
-static void StdoutMessageLoop()
-{
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
-
-	for (MessageInfo msg;;)
-	{
-		if (MonAPI::Message::receive(&msg) != 0) continue;
-
-		switch (msg.header)
-		{
-			case MSG_PROCESS_STDOUT_DATA:
-			{
-				MonAPI::Message::reply(&msg);
-				dword tid1 = MonAPI::Message::lookupMainThread("GSHELL.EX5");
-				if (tid1 != THREAD_UNKNOWN) {
-					Message::send(tid1, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str);
-				}
-				break;
-			}
-		}
-	}
-}
-
-/** •W€o—Í—p‚ÌƒXƒŒƒbƒh‚ğì¬ */
-static void InitThread()
-{
-	my_tid = syscall_get_tid();
-	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
-	syscall_mthread_join(id);
-	MessageInfo msg, src;
-	src.header = MSG_SERVER_START_OK;
-	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-	stdout_tid = msg.from;
-}
 
 /*!
 \brief MonaMain
-	MonaFormsƒT[ƒo ƒƒCƒ“
-\param List<char*>* pekoe [in] ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”
+    MonaFormsã‚µãƒ¼ãƒ ãƒ¡ã‚¤ãƒ³
+\param List<char*>* pekoe [in] ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°
 \author
 \date   create: update:$Date$
 */
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-	// ˆø”ƒ`ƒFƒbƒN
-	if (pekoe->size() != 1)
-	{
-		printf("%s: usage GUI.EX5 [.INI FILE]");
-		exit(1);
-	}
+    // å¼•æ•°ãƒã‚§ãƒƒã‚¯
+    if (argc != 2)
+    {
+        printf("%s: usage GUI.EX5 [.INI FILE]");
+        exit(1);
+    }
+    // 2é‡èµ·å‹•ãƒã‚§ãƒƒã‚¯
+    CheckGUIServer();
+    if (!InitScreen()) exit(1);
 
-	// 2d‹N“®ƒ`ƒFƒbƒN
-	CheckGUIServer();
-	if (!InitScreen()) exit(1);
+    MessageInfo msg_cp;
+    if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+    {
+        printf("%s: can not get common parameters!\n", GUI_SERVER_NAME);
+        exit(1);
+    }
+    commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 
-	MessageInfo msg_cp;
-	if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
-	{
-		printf("%s: can not get common parameters!\n", GUI_SERVER_NAME);
-		exit(1);
-	}
-	commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
-	
-	if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
-	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+    if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
 
-	// ƒtƒHƒ“ƒg‚Ìƒ[ƒh
-	ReadFont("/APPS/MONA12.MF5");
-	if (default_font == NULL) exit(1);
-	
-	// İ’èƒtƒ@ƒCƒ‹‚Ìƒ[ƒh
-	ReadConfig(pekoe);
-	if (startup != NULL)
-	{
-		for (int i = 0; i < startup->size(); i++) {
-			monapi_call_process_execute_file(startup->get(i), MONAPI_FALSE);
-		}
-	}
+    // ãƒ•ã‚©ãƒ³ãƒˆã®ãƒ­ãƒ¼ãƒ‰
+    ReadFont("/APPS/MONA12.MF5");
+    if (default_font == NULL) exit(1);
 
-	// MONITORƒT[ƒo‚Ö‚Ì³í‹N“®’Ê’m
-	Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
+    // è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ­ãƒ¼ãƒ‰
+    ReadConfig(argc, argv);
+    if (startup != NULL)
+    {
+        for (int i = 0; i < startup->size(); i++) {
+            monapi_call_process_execute_file(startup->get(i), MONAPI_FALSE);
+        }
+    }
 
-	InitThread();
-	dword process = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-	if (process != THREAD_UNKNOWN)
-	{
-		MonAPI::Message::sendReceive(NULL, process + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
-	}
+    // MONITORã‚µãƒ¼ãƒã¸ã®æ­£å¸¸èµ·å‹•é€šçŸ¥
+    Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
 
-	// ƒƒbƒZ[ƒWƒ‹[ƒv
-	MessageLoop();
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—
+    MessageLoop();
 
-	if (process != THREAD_UNKNOWN)
-	{
-		MonAPI::Message::sendReceive(NULL, process + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
-	}
-	syscall_kill_thread(stdout_tid);
+    // å…±æœ‰ãƒ¡ãƒ¢ãƒªã«ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ã‚‹ãƒ•ã‚©ãƒ³ãƒˆã®ğæ”¾
+    monapi_cmemoryinfo_dispose(default_font);
+    monapi_cmemoryinfo_delete(default_font);
 
-	// ‹¤—Lƒƒ‚ƒŠ‚Éƒ[ƒh‚µ‚Ä‚¢‚éƒtƒHƒ“ƒg‚Ì‰ğ•ú
-	monapi_cmemoryinfo_dispose(default_font);
-	monapi_cmemoryinfo_delete(default_font);
-	
-	// •Ç†‚ÌŠJ•ú
-	if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
-	DisposeScreen();
-	
-	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
-	monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
-	MemoryMap::unmap(msg_cp.arg2);
-	
-	monapi_call_mouse_set_cursor(0);
-	syscall_set_cursor(0,0);
-	syscall_clear_screen();
-	monapi_call_mouse_set_cursor(1);
-	
-	return 0;
+    // å£ç´™ã®é–‹æ”¾
+    if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
+    DisposeScreen();
+
+    monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
+    monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+    MemoryMap::unmap(msg_cp.arg2);
+
+    monapi_call_mouse_set_cursor(0);
+    syscall_set_cursor(0,0);
+    syscall_clear_screen();
+    monapi_call_mouse_set_cursor(1);
+
+    return 0;
 }

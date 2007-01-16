@@ -79,7 +79,7 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
     icmp_size=MoPacUtl::swapShort(ipHead->len)-sizeof(IP_HEADER);
 
     /* チェックサムの確認。 */
-    if(MoPacUtl::calcCheckSum((dword*)icmp,icmp_size)){
+    if(MoPacUtl::calcCheckSum((uint32_t*)icmp,icmp_size)){
         return 0;
     }
 
@@ -101,8 +101,8 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
 /*!
     \brief transIcmp
          ICMP送信 処理
-    \param  word dstip [in] 送信先IPアドレス
-    \param  byte type [in] ICMPタイプ
+    \param  uint16_t dstip [in] 送信先IPアドレス
+    \param  uint8_t type [in] ICMPタイプ
     \param  ICMP_HEADER *icmpHead [in] ICMPヘッダへのポインタ
     \param  int size [in] パケットサイズ
     \return 無し
@@ -110,7 +110,7 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
     \author Yamami
     \date   create:2004/09/20 update:2004/09/20
 */
-void MoIcmp::transIcmp(dword dstip, byte type, byte code, ICMP_HEADER *icmpHead, int size)
+void MoIcmp::transIcmp(uint32_t dstip, uint8_t type, uint8_t code, ICMP_HEADER *icmpHead, int size)
 {
     
     TRANS_BUF_INFO tbi;
@@ -119,7 +119,7 @@ void MoIcmp::transIcmp(dword dstip, byte type, byte code, ICMP_HEADER *icmpHead,
     icmpHead->type=type;
     icmpHead->code=code;
     icmpHead->chksum=0;
-    icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,size);
+    icmpHead->chksum=MoPacUtl::calcCheckSum((uint32_t*)icmpHead,size);
 
     //送信バッファテーブルの設定
     tbi.data[2]=NULL;

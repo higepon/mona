@@ -66,16 +66,16 @@ enum{
  *  \brief IPヘッダ構造体
  */
 typedef struct{
-    byte  verhead;  /* バージョン、ヘッダ長。 */
-    byte  tos;      /* TOS. */
-    word len;       /* トータル長。 */
-    word id;        /* 識別番号。 */
-    word frag;      /* フラグ、フラグメントオフセット。 */
-    byte  ttl;      /* Time to Live. */
-    byte  prot;     /* プロトコル番号。 */
-    word chksum;    /* ヘッダチェックサム。 */
-    dword srcip;        /* 送り元IP。 */
-    dword dstip;        /* 宛先IP。 */
+    uint8_t  verhead;  /* バージョン、ヘッダ長。 */
+    uint8_t  tos;      /* TOS. */
+    uint16_t len;       /* トータル長。 */
+    uint16_t id;        /* 識別番号。 */
+    uint16_t frag;      /* フラグ、フラグメントオフセット。 */
+    uint8_t  ttl;      /* Time to Live. */
+    uint8_t  prot;     /* プロトコル番号。 */
+    uint16_t chksum;    /* ヘッダチェックサム。 */
+    uint32_t srcip;        /* 送り元IP。 */
+    uint32_t dstip;        /* 宛先IP。 */
     char     data[0];
 }IP_HEADER;
 
@@ -93,11 +93,11 @@ enum{
  *  \brief 疑似ヘッダ。TCP/UDPのチェックサム計算に利用される。
  */
 typedef struct{
-    dword srcip;
-    dword dstip;
-    byte  tmp;
-    byte  prot;
-    word len;
+    uint32_t srcip;
+    uint32_t dstip;
+    uint8_t  tmp;
+    uint8_t  prot;
+    uint16_t len;
 }DUMMY_HEADER;
 
 
@@ -140,10 +140,10 @@ typedef struct{
  *  \brief UDPヘッダ構造体
  */
  typedef struct{
-    word srcport;
-    word dstport;
+    uint16_t srcport;
+    uint16_t dstport;
     short len;
-    word chksum;
+    uint16_t chksum;
     char   data[0];
 }UDP_HEADER;
 
@@ -153,16 +153,16 @@ typedef struct{
  *  \brief TCPヘッダ構造体
  */
 typedef struct{
-    word srcport;
-    word dstport;
-    dword seqnum;
-    dword acknum;
-    byte reserved :4;
-    byte  headlen :4 ;
-    byte  flag;
-    word wndsize;
-    word chksum;
-    word urgpoint;
+    uint16_t srcport;
+    uint16_t dstport;
+    uint32_t seqnum;
+    uint32_t acknum;
+    uint8_t reserved :4;
+    uint8_t  headlen :4 ;
+    uint8_t  flag;
+    uint16_t wndsize;
+    uint16_t chksum;
+    uint16_t urgpoint;
     char    option[0];
 }TCP_HEADER;
 
@@ -174,8 +174,8 @@ typedef struct{
 struct TRANS_BUF_INFO{
     char  *data[3];     /* 送信フレームアドレス。 */
     int    size[3];     /* データフレームサイズ。 */
-    word type;        /* フレームタイプ。 */
-    dword  ipType;      /* IPプロトコルタイプ。 */
+    uint16_t type;        /* フレームタイプ。 */
+    uint32_t  ipType;      /* IPプロトコルタイプ。 */
 };
 
 
@@ -184,11 +184,11 @@ struct TRANS_BUF_INFO{
  *  \brief ARP要求待ち管理 構造体
  */
 struct MAC_REPLY_WAIT{
-    dword ip;         //要求中IPアドレス
+    uint32_t ip;         //要求中IPアドレス
     int repFlg;       //Reply flag 0:待ち 1:完了
     int wait;         //ウェイト数 
     char mac[6];      //MACアドレス格納
-    dword  ipType;    /* IPプロトコルタイプ。 */
+    uint32_t  ipType;    /* IPプロトコルタイプ。 */
     //TRANS_BUF_INFO* ipPacketBuf; //IPパケットバッファ
     monapi_cmemoryinfo* ipPacketBuf01;  //IPパケットバッファ01
     monapi_cmemoryinfo* ipPacketBuf02;  //IPパケットバッファ02
@@ -199,9 +199,9 @@ struct MAC_REPLY_WAIT{
  *  \brief Mones登録情報
  */
 struct MONES_IP_REGIST{
-    dword ip;         //通信中IP
-    word port;       //通信中PORT
-    dword tid;        //スレッドID
+    uint32_t ip;         //通信中IP
+    uint16_t port;       //通信中PORT
+    uint32_t tid;        //スレッドID
 };
 
 

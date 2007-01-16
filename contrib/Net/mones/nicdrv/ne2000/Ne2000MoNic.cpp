@@ -94,10 +94,10 @@ int Ne2000MoNic::init()
 void Ne2000MoNic::frame_input(void)
 {
 
-    byte sts,*buf;
+    uint8_t sts,*buf;
     //バウンダリレジスタ と、カレントページレジスタは8ビット幅
     //データにアクセスする際、8ビットシフトして16ビット幅アクセスを行う
-    word  bnd,cpg;
+    uint16_t  bnd,cpg;
 
     buf=frame_buf;
 
@@ -160,7 +160,7 @@ void Ne2000MoNic::frame_input(void)
     // バッファに一旦リードして、代入する処理に変更
     //ne_pio_readmem( bnd << 8, &ne_ringbuf_status, 4 );
 
-    byte bndBuf[4];
+    uint8_t bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
 
 // Yamamiデバッグ リードアドレスの表示
@@ -184,7 +184,7 @@ void Ne2000MoNic::frame_input(void)
     ne_rx_start=(bnd << 8) + 4; // パケット本体の開始アドレス
 
     // CRCの分の長さを引く
-    // CRCの分の長さを引く ? CRCじゃなくてne_ringbuf_*の4 byte?
+    // CRCの分の長さを引く ? CRCじゃなくてne_ringbuf_*の4 uint8_t?
     frame_len=ne_ringbuf_len - 4; /* パケット本体の長さ */
 
     // 受信終了後の境界レジスタ値
@@ -255,22 +255,22 @@ void Ne2000MoNic::frame_input(void)
 /*!
     \brief frame_output
         NE2000 データ出力ルーチン
-    \param  byte *pkt [in] データパケットへのポインタ
-    \param  byte *mac [in] 送り先MACアドレスへのポインタ
-    \param  dword size [in] パケットサイズ
-    \param  word pid [in] プロトコルID(ETHER_PROTO)
+    \param  uint8_t *pkt [in] データパケットへのポインタ
+    \param  uint8_t *mac [in] 送り先MACアドレスへのポインタ
+    \param  uint32_t size [in] パケットサイズ
+    \param  uint16_t pid [in] プロトコルID(ETHER_PROTO)
     \return void
 
     \author Yamami
     \date   create:2004/08/03 update:$Date$
 */
-void Ne2000MoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
+void Ne2000MoNic::frame_output( uint8_t *pkt, uint8_t *mac, uint32_t size, uint16_t pid )
 {
     
-    dword        ptx_type=0;
-    dword        ptx_size=0;
-    byte       *ptx_packet=0;
-    byte       *ptx_dest=0;
+    uint32_t        ptx_type=0;
+    uint32_t        ptx_size=0;
+    uint8_t       *ptx_packet=0;
+    uint8_t       *ptx_dest=0;
     
     
     // 送信が完了しているかどうかチェックする
@@ -289,7 +289,7 @@ void Ne2000MoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
 //Yamami デバッグ
 //int i;
 //for(i=0 ; i<2 ; i++){
-//    printf("ptx[1] = %x \n",(byte *)(&ptx_type + 1));
+//    printf("ptx[1] = %x \n",(uint8_t *)(&ptx_type + 1));
 //}
 
 
@@ -303,7 +303,7 @@ void Ne2000MoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
     // 送信元アドレスの書き込み
     ne_pio_writemem( ether_mac_addr, ( NE_TX_PAGE_START << 8 ) + 6, 6 );
     // プロトコルIDの書き込み
-    ne_pio_writemem( (byte *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
+    ne_pio_writemem( (uint8_t *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
     // データ部分の書き込み
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) + 14, ptx_size );
 
@@ -383,11 +383,11 @@ int Ne2000MoNic::nic_probe(void)
     outp8( NE_P0_PSTOP, NE_MEM_END );
 
     // メモリテストパターン書き込み
-    ne_pio_writemem( (byte *)ne_test_pattern, NE_MEM_START * NE_PAGE_SIZE, ne_sizeof_test_pattern );
+    ne_pio_writemem( (uint8_t *)ne_test_pattern, NE_MEM_START * NE_PAGE_SIZE, ne_sizeof_test_pattern );
     // メモリテストパターン読み込み
     ne_pio_readmem( NE_MEM_START * NE_PAGE_SIZE, ne_test_buffer, ne_sizeof_test_pattern );
     // テストパターンの比較
-    if( ne_bcompare( (byte *)ne_test_pattern, ne_test_buffer, ne_sizeof_test_pattern )!=0 )
+    if( ne_bcompare( (uint8_t *)ne_test_pattern, ne_test_buffer, ne_sizeof_test_pattern )!=0 )
         return(1);  // 不一致なら終了
 
     // EEPROM データ読みだし
@@ -417,7 +417,7 @@ void Ne2000MoNic::nic_init(void)
 {
     // 各変数の初期化
     int i;
-    byte c;
+    uint8_t c;
 
     //NICリセット
     c = inp8(NE_ASIC_RESET);
@@ -523,19 +523,19 @@ void Ne2000MoNic::nic_init(void)
     \brief ne_pio_writemem
         非公開ルーチン
         Ne2000 バッファメモリ書き込み
-    \param  byte *src [in] 転送元アドレス
-    \param  dword dest [in] 転送先アドレス
-    \param  dword size [in] 長さ 
+    \param  uint8_t *src [in] 転送元アドレス
+    \param  uint32_t dest [in] 転送先アドレス
+    \param  uint32_t size [in] 長さ 
     \return void
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-void Ne2000MoNic::ne_pio_writemem( byte *src, dword dest, dword size )
+void Ne2000MoNic::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
-    word writetmp;
+    uint16_t writetmp;
 
     /* ステータスレジスタクリア */
     outp8( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
@@ -559,9 +559,9 @@ void Ne2000MoNic::ne_pio_writemem( byte *src, dword dest, dword size )
 
     // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(i = 0 ; i < size ; i+=2 , src+=2){
-        //writetmp = (word)(*(src) << 8) + (word)*(src+1);
+        //writetmp = (uint16_t)(*(src) << 8) + (uint16_t)*(src+1);
         //リトルエンディアンならこう？？
-        writetmp = (word)(*(src + 1) << 8) + (word)*(src);
+        writetmp = (uint16_t)(*(src + 1) << 8) + (uint16_t)*(src);
         outp16( NE_ASIC_DATA, writetmp );
     }
     
@@ -578,19 +578,19 @@ void Ne2000MoNic::ne_pio_writemem( byte *src, dword dest, dword size )
     \brief ne_pio_readmem
         非公開ルーチン
          NE2000 のメモリから読みだし
-    \param  dword src [in] 転送元アドレス
-    \param  byte *dest [in] 転送先アドレス
-    \param  dword size [in] 長さ 
+    \param  uint32_t src [in] 転送元アドレス
+    \param  uint8_t *dest [in] 転送先アドレス
+    \param  uint32_t size [in] 長さ 
     \return void
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-void Ne2000MoNic::ne_pio_readmem( dword src, byte *dest, dword size )
+void Ne2000MoNic::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
-    word readtmp;
+    uint16_t readtmp;
 
 //Yamami デバッグ
 //printf("ne_pio_readmem src=%x \n",src);
@@ -614,11 +614,11 @@ void Ne2000MoNic::ne_pio_readmem( dword src, byte *dest, dword size )
     // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(i = 0 ; i < size ; i+=2 , dest+=2){
         readtmp=inp16( NE_ASIC_DATA );
-        //*dest=(byte)(readtmp >> 8);
-        //*(dest+1)=(byte)(readtmp & 0xff);
+        //*dest=(uint8_t)(readtmp >> 8);
+        //*(dest+1)=(uint8_t)(readtmp & 0xff);
         //リトルエンディアンならこう？？
-        *(dest+1)=(byte)(readtmp >> 8);
-        *(dest)=(byte)(readtmp & 0xff);
+        *(dest+1)=(uint8_t)(readtmp >> 8);
+        *(dest)=(uint8_t)(readtmp & 0xff);
     }
     
 }
@@ -629,17 +629,17 @@ void Ne2000MoNic::ne_pio_readmem( dword src, byte *dest, dword size )
     \brief ne_bcompare
         非公開ルーチン
          バイナリ比較ルーチン
-    \param  byte *src [in] 比較元アドレス
-    \param  byte *dest [in] 比較先アドレス
-    \param  dword size [in] 長さ
+    \param  uint8_t *src [in] 比較元アドレス
+    \param  uint8_t *dest [in] 比較先アドレス
+    \param  uint32_t size [in] 長さ
     \return int 結果:一致==0,不一致==0以外
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-int Ne2000MoNic::ne_bcompare( byte *src, byte *dest, dword size )
+int Ne2000MoNic::ne_bcompare( uint8_t *src, uint8_t *dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
     for(i=0;i<size;i++){
         if( src[i]!=dest[i] )

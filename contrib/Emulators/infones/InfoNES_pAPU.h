@@ -67,7 +67,7 @@
 /*-------------------------------------------------------------------*/ 
 /* White Noise Channel                                               */
 /* Reg0: 0-3=Volume, 4=Envelope, 5=Hold                              */
-/* Reg2: 7=Small(93byte) sample, 3-0=Freq Lookup                     */
+/* Reg2: 7=Small(93uint8_t) sample, 3-0=Freq Lookup                     */
 /* Reg3: 7-3=vbl length counter                                      */
 /*-------------------------------------------------------------------*/ 
 //#define ApuC4Vol            ( ( ApuC4a & 0x0f ) | ( ( ApuC4a & 0x0f ) << 4 ) )

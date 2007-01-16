@@ -82,7 +82,7 @@ public:
 	}
 };
 
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 	GFire *fire = new GFire();
 	fire->run();
 	delete(fire);

@@ -10,8 +10,8 @@
 #include <monapi/CString.h>
 
 extern guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background);
-extern guiserver_bitmap* GetBitmapPointer(dword handle);
-extern bool DisposeBitmap(dword handle);
+extern guiserver_bitmap* GetBitmapPointer(uint32_t handle);
+extern bool DisposeBitmap(uint32_t handle);
 extern guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi);
 extern guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi);
 extern guiserver_bitmap* ReadImage(const MonAPI::CString& file, bool prompt = false);

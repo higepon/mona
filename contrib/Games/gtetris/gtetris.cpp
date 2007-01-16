@@ -370,7 +370,7 @@ void GTetris::newGame()
 	drawScores(_g);
 }
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 	Block::imgs[0] = new Image("/APPS/BAYGUI/GTETRIS.APP/BLOCK0.BM5");
 	Block::imgs[1] = new Image("/APPS/BAYGUI/GTETRIS.APP/BLOCK1.BM5");

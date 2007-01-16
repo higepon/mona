@@ -27,10 +27,10 @@
  *  \brief イーサネットフレーム構造体
  */
 typedef struct{
-    byte  dstmac[6];   // 送信先 MAC ID
-    byte  srcmac[6];   // 送信元 MAC ID
-    word    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
-    byte   data[0x600];// Data
+    uint8_t  dstmac[6];   // 送信先 MAC ID
+    uint8_t  srcmac[6];   // 送信元 MAC ID
+    uint16_t    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
+    uint8_t   data[0x600];// Data
 }ETHER_FRAME;
 
 
@@ -46,12 +46,12 @@ class MoEther
     MoEther();
     ~MoEther();
     void etherInit(AbstractMonic*);
-    int setEtherFrame(byte* , int);
+    int setEtherFrame(uint8_t* , int);
     int receiveEther();
     
 //    int receiveEther(ETHER_FRAME*); //試験的に多重定義 直接受信(バッファリング無し)
     
-    void sendEther(byte* , dword , dword);
+    void sendEther(uint8_t* , uint32_t , uint32_t);
     
 
 

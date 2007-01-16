@@ -69,7 +69,7 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
 {
 
     /* チェックサムの確認。 */
-    if(MoPacUtl::calcCheckSum((dword*)ipHead,(ipHead->verhead&0xf)*4)){
+    if(MoPacUtl::calcCheckSum((uint32_t*)ipHead,(ipHead->verhead&0xf)*4)){
         return 0;
     }
 
@@ -96,21 +96,21 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
     \brief transIp
          IPプロトコル送信 処理
     \param  TRANS_BUF_INFO *tbi [in] 送信バッファ構造体へのポインタ
-    \param  dword dstip [in] 送信先IPアドレス(エンディアン変換済みが前提)
-    \param  byte tos [in] サービスタイプ
+    \param  uint32_t dstip [in] 送信先IPアドレス(エンディアン変換済みが前提)
+    \param  uint8_t tos [in] サービスタイプ
     \param  int flag [in] フラグ
     \return int 結果 
 
     \author Yamami
     \date   create:2004/09/20 update:2004/09/20
 */
-int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
+int MoIp::transIp(TRANS_BUF_INFO *tbi, uint32_t dstip, uint8_t tos, int flag)
 {
 
-    byte *transPacket; //パケット送信バッファ
+    uint8_t *transPacket; //パケット送信バッファ
 
-    byte dstmac[6];
-    dword transip;
+    uint8_t dstmac[6];
+    uint32_t transip;
     //int num;
     int rest;
     IP_HEADER ipHead;
@@ -179,15 +179,15 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
         //フラグ
         ipHead.frag=MoPacUtl::swapShort(flag<<14);
         //チェックサム
-        ipHead.chksum=MoPacUtl::calcCheckSum((dword*)&ipHead,tbi->size[0]);
+        ipHead.chksum=MoPacUtl::calcCheckSum((uint32_t*)&ipHead,tbi->size[0]);
         
         //抽象NICを使って送信!        
         //パケット作成
-        transPacket = (byte *)malloc(sizeof(IP_HEADER) + total);
-        memcpy(transPacket,(byte *)&ipHead,sizeof(ipHead));
+        transPacket = (uint8_t *)malloc(sizeof(IP_HEADER) + total);
+        memcpy(transPacket,(uint8_t *)&ipHead,sizeof(ipHead));
         memcpy(transPacket + sizeof(ipHead),tbi->data[1],tbi->size[1]);
         
-        insAbstractNic->frame_output(transPacket , (byte *)dstmac , sizeof(IP_HEADER) + total , ETHER_PROTO_IP);
+        insAbstractNic->frame_output(transPacket , (uint8_t *)dstmac , sizeof(IP_HEADER) + total , ETHER_PROTO_IP);
         
         //パケットバッファ解放
         free(transPacket);
@@ -245,14 +245,14 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 /*!
     \brief ipRouting
          IPルーティング 処理
-    \param  word ip [in] 送信先IPアドレス
-    \param  dword dstip [in] 転送先IPアドレス(他のサブネットならルータとなる)
+    \param  uint16_t ip [in] 送信先IPアドレス
+    \param  uint32_t dstip [in] 転送先IPアドレス(他のサブネットならルータとなる)
     \return int 結果 
 
     \author Yamami
     \date   create:2004/10/30 update:2004/10/30
 */
-int MoIp::ipRouting(dword ip,dword *transip)
+int MoIp::ipRouting(uint32_t ip,uint32_t *transip)
 {
 
     //同一サブネット内かチェックする。

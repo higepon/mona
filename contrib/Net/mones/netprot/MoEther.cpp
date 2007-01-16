@@ -69,14 +69,14 @@ MoEther::~MoEther()
     \brief setEtherFrame
          イーサネットフレームセット
 
-    \param  byte *frameBuf [in] イーサネットフレームバッファ
+    \param  uint8_t *frameBuf [in] イーサネットフレームバッファ
     \param  int size [in] イーサネットフレームサイズ
     \return int 結果 
         
     \author Yamami
     \date   create:2004/08/12 update:
 */
-int MoEther::setEtherFrame(byte *frameBuf, int size)
+int MoEther::setEtherFrame(uint8_t *frameBuf, int size)
 {
     
     // allocate ETHER_FRAME
@@ -90,7 +90,7 @@ int MoEther::setEtherFrame(byte *frameBuf, int size)
 
     //ここで、パケットユーティリティクラスを使って、エンディアン変換
     //フレームタイプ
-    Ether_FrameBuf_.type = MoPacUtl::packet_get_2byte(frameBuf , 12);
+    Ether_FrameBuf_.type = MoPacUtl::packet_get_2uint8_t(frameBuf , 12);
 
     return 0;
 
@@ -129,19 +129,19 @@ int MoEther::receiveEther()
 /*!
     \brief sendEther
          イーサネットフレーム送信処理 
-    \param  byte *pkt [in] 送信パケットへのポインタ
-    \param  dword dest_ip [in] 送信先IPアドレス
-    \param  dword size [in] 送信サイズ
+    \param  uint8_t *pkt [in] 送信パケットへのポインタ
+    \param  uint32_t dest_ip [in] 送信先IPアドレス
+    \param  uint32_t size [in] 送信サイズ
     \return int 結果 
         
     \author Yamami
     \date   create:2004/08/28 update:
 */
-void MoEther::sendEther(byte *pkt , dword dest_ip , dword size)
+void MoEther::sendEther(uint8_t *pkt , uint32_t dest_ip , uint32_t size)
 {
 
     //Yamami?? 未実装 送信は、アプリ側からコールされるはず 送受信でクラスは分けるべきか？
-    //byte   *mac;
+    //uint8_t   *mac;
 
     /* ARP テーブル検索 */
     //mac=arp_lookup(dest_ip);

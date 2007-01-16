@@ -6,7 +6,7 @@
 #include <monapi/messages.h>
 #include <servers/gui.h>
 
-extern dword __gui_server;
+extern uint32_t __gui_server;
 #endif
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Application.h>
@@ -136,7 +136,7 @@ namespace System { namespace Mona { namespace Forms
 		this->Refresh();
 	}
 	
-	void Form::WndProc(dword type, _P<EventArgs> e)
+	void Form::WndProc(uint32_t type, _P<EventArgs> e)
 	{
 		switch (type)
 		{

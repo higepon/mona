@@ -30,14 +30,14 @@ public:
     int init();
     int probe();
     void inputFrame();
-    void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
+    void outputFrame(uint8_t* packet, uint8_t* macAddress, uint32_t size, uint16_t protocolId);
 
-    virtual dword getFrameBufferSize();
-    virtual void getFrameBuffer(byte* buffer, dword size);
-    void getMacAddress(byte* dest);
-    byte getIRQ() const {return this->nicIRQ;}
+    virtual uint32_t getFrameBufferSize();
+    virtual void getFrameBuffer(uint8_t* buffer, uint32_t size);
+    void getMacAddress(uint8_t* dest);
+    uint8_t getIRQ() const {return this->nicIRQ;}
     int getIOBase() const {return this->nicIo_Base;}
-    void setIRQ(byte irq) {this->nicIRQ = irq;}
+    void setIRQ(uint8_t irq) {this->nicIRQ = irq;}
     void setIOBase(int iobase) {this->nicIo_Base = iobase;}
 
 private:
@@ -45,31 +45,31 @@ private:
     int nicIo_Base;
 
     void nic_init(void);
-    void ne_pio_writemem( byte *, dword, dword );
-    void ne_pio_readmem( dword, byte *, dword );
-    int ne_bcompare( byte *, byte *, dword );
-    void xfer_buf( byte *, byte *, dword, dword *, dword, dword,dword );
+    void ne_pio_writemem( uint8_t *, uint32_t, uint32_t );
+    void ne_pio_readmem( uint32_t, uint8_t *, uint32_t );
+    int ne_bcompare( uint8_t *, uint8_t *, uint32_t );
+    void xfer_buf( uint8_t *, uint8_t *, uint32_t, uint32_t *, uint32_t, uint32_t,uint32_t );
 
     //privateメンバ
     /* 受信リングバッファのリンク情報領域を読み込むところ */
     /* ne_ring_buffer */
-    byte       ne_ringbuf_status;
-    byte       ne_ringbuf_bound;
-    dword        ne_ringbuf_len;
+    uint8_t       ne_ringbuf_status;
+    uint8_t       ne_ringbuf_bound;
+    uint32_t        ne_ringbuf_len;
 
-    dword        ne_rx_start;      /* 受信パケット本体の開始アドレス */
+    uint32_t        ne_rx_start;      /* 受信パケット本体の開始アドレス */
 
-    byte       ne_rx_bound;      /* 受信後の境界レジスタ値 */
-    dword        ne_rx_write_p;    /* 受信パケット書き込みアドレス */
-    dword        ne_rx_sub_len;    /* 折り返し分の長さ */
-    dword        ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
+    uint8_t       ne_rx_bound;      /* 受信後の境界レジスタ値 */
+    uint32_t        ne_rx_write_p;    /* 受信パケット書き込みアドレス */
+    uint32_t        ne_rx_sub_len;    /* 折り返し分の長さ */
+    uint32_t        ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
     /*! \brief 受信パケット本体の長さ */ 
-    dword    frame_len;
-    byte   frame_buf[1500];
-    byte   ether_mac_addr[6];
+    uint32_t    frame_len;
+    uint8_t   frame_buf[1500];
+    uint8_t   ether_mac_addr[6];
     /* NE2000 ワークエリア */
     int        ne_sizeof_test_pattern;
-    byte       ne_test_buffer[20];
+    uint8_t       ne_test_buffer[20];
 };
 
 }; // namespace mones

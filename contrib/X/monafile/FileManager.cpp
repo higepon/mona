@@ -10,7 +10,7 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-dword gui_server;
+uint32_t gui_server;
 extern _P<Bitmap> icons;
 
 static bool ExistsProcess(const MonAPI::CString& self)
@@ -19,7 +19,7 @@ static bool ExistsProcess(const MonAPI::CString& self)
 	PsInfo info;
 
 	bool ret = false;
-	dword tid = syscall_get_tid();
+	uint32_t tid = syscall_get_tid();
 
 	while (syscall_read_ps_dump(&info) == 0)
 	{

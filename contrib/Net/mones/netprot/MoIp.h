@@ -36,10 +36,10 @@ class MoIp
     void initIp(AbstractMonic*);
 
     int receiveIp(IP_HEADER*);
-    int transIp(TRANS_BUF_INFO*, dword , byte , int );
+    int transIp(TRANS_BUF_INFO*, uint32_t , uint8_t , int );
 
   private:
-    int ipRouting(dword ,dword*);
+    int ipRouting(uint32_t ,uint32_t*);
     
     //NICƒhƒ‰ƒCƒo
     AbstractMonic* insAbstractNic;

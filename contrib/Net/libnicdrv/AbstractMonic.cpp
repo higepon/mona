@@ -54,7 +54,7 @@ AbstractMonic::~AbstractMonic()
 void AbstractMonic::disableNetWork() 
 {
 
-    byte IrqMask;
+    uint8_t IrqMask;
     int  nicIrqNo;
     
     IrqMask = 0x00;
@@ -89,7 +89,7 @@ void AbstractMonic::disableNetWork()
 void AbstractMonic::enableNetWork() 
 {
 
-    byte IrqMask;
+    uint8_t IrqMask;
     int  nicIrqNo;
     
     IrqMask = 0xFF;
@@ -155,7 +155,7 @@ void AbstractMonic::frame_input_public()
     waitFrameBufList->add(addWork);
     
     //プロトコル層へ処理要求メッセージ送信
-    dword targetID = Message::lookupMainThread("MONES.EX5");
+    uint32_t targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF){
         //TODO できなかったらどうする？
     }

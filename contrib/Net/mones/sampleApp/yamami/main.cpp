@@ -42,7 +42,7 @@ using namespace MonAPI;
 
 
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
     std::vector< int > seq;
@@ -77,7 +77,7 @@ int MonaMain(List<char*>* pekoe)
 #include <monesoc/UdpSocket.h>
 
 //Code:Mones UDPライブラリ 使用テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
     //受信バッファ
@@ -114,19 +114,19 @@ class AlcTest
     public:
         int aaa;
         char bbb;
-        byte mema[4096];
+        uint8_t mema[4096];
 };
 
 
 
 //メモリアロケータテスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
-    byte *mem;
+    uint8_t *mem;
     
     //malloc
-    mem = (byte*)malloc(4096);
+    mem = (uint8_t*)malloc(4096);
     
     //free
     free(mem);
@@ -150,7 +150,7 @@ int MonaMain(List<char*>* pekoe)
 #ifdef MAIN_1
 
 //Yamami FileOutputStream使用テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     //Yamami テストロジック
 
@@ -166,7 +166,7 @@ int MonaMain(List<char*>* pekoe)
 
     printf("fileout:open=%d\n", fos.open());
 
-    reti = fos.write((byte*)buf , 512);
+    reti = fos.write((uint8_t*)buf , 512);
     printf("fileout:read=%d\n", reti);
 
     printf("fos close pre\n");
@@ -180,7 +180,7 @@ int MonaMain(List<char*>* pekoe)
 #ifdef MAIN_2
 
 //Yamami Pciライブラリ使用テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     PciInf *pciinfo;
     
@@ -233,7 +233,7 @@ struct REPLY_WAIT{
 };
 
 //HLIST使用テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     List<REPLY_WAIT*>* testList;
     REPLY_WAIT* addWork;
@@ -304,13 +304,13 @@ int MonaMain(List<char*>* pekoe)
 
 
 //Yamami 自己メッセージ通知テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
     MessageInfo info;
 
     // テストサーバのIDを見つける
-    dword targetID = Message::lookupMainThread("YAMAS.EX2");
+    uint32_t targetID = Message::lookupMainThread("YAMAS.EX2");
     if (targetID == 0xFFFFFFFF)
     {
         printf("local!!!! yamas:INIT not found\n");
@@ -344,7 +344,7 @@ struct REPLY_WAIT{
 };
 
 //HashMap使用テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     HashMap<REPLY_WAIT*>* testHash;
     
@@ -400,7 +400,7 @@ struct REPLY_WAIT{
 };
 
 //共有メモリテスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     
     //まず、monapi_cmemoryinfo構造体をnew
@@ -408,7 +408,7 @@ int MonaMain(List<char*>* pekoe)
     
     REPLY_WAIT* addWork;
     
-    if (!monapi_cmemoryinfo_create(cmInfo, (dword)(sizeof(REPLY_WAIT) + 1), 0))
+    if (!monapi_cmemoryinfo_create(cmInfo, (uint32_t)(sizeof(REPLY_WAIT) + 1), 0))
     {
         monapi_cmemoryinfo_delete(cmInfo);
         printf("monapi_cmemoryinfo_create error\n");
@@ -442,7 +442,7 @@ int MonaMain(List<char*>* pekoe)
     //ここで、テスト用サーバに共有メモリのHandleを送る
     MessageInfo info;
 
-    dword targetID = Message::lookupMainThread("YAMAS.EX2");
+    uint32_t targetID = Message::lookupMainThread("YAMAS.EX2");
     if (targetID == 0xFFFFFFFF)
     {
         printf("local!!!! yamas:INIT not found\n");
@@ -475,21 +475,21 @@ int MonaMain(List<char*>* pekoe)
 
 
 //Code:Mones IP送信テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
-    if(pekoe->size() < 1){
+    if(argc < 2)){
         printf("Arguments is few!\n");
         printf("usage: ping host\n");
         return 0;
     }
     
     
-    //printf("pekoe->get(0)=%s\n",pekoe->get(0));
+    //printf("argv[1]=%s\n",pekoe->get(0));
     
     int a,b,c,d;
     
-    sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
+    sscanf(argv[1],"%d.%d.%d.%d",&a,&b,&c,&d);
     
     //printf("a=%d\n",a);
     //printf("b=%d\n",b);
@@ -497,19 +497,19 @@ int MonaMain(List<char*>* pekoe)
     //printf("d=%d\n",d);
 
     //IPアドレス組み立て
-    dword ipaddr;
+    uint32_t ipaddr;
     ipaddr = 0;
-    ipaddr = (byte)a;
-    ipaddr = (ipaddr << 8) + (byte)b;
-    ipaddr = (ipaddr << 8) + (byte)c;
-    ipaddr = (ipaddr << 8) + (byte)d;
+    ipaddr = (uint8_t)a;
+    ipaddr = (ipaddr << 8) + (uint8_t)b;
+    ipaddr = (ipaddr << 8) + (uint8_t)c;
+    ipaddr = (ipaddr << 8) + (uint8_t)d;
     
-    printf("Pinding %s\n",pekoe->get(0));
+    printf("Pinding %s\n",argv[1]);
 
     //ここで、Monesにメッセージを送る
     MessageInfo info;
 
-    dword targetID = Message::lookupMainThread("MONES.EX5");
+    uint32_t targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF)
     {
         printf("MONES.EX5 not found\n");
@@ -547,7 +547,7 @@ int MonaMain(List<char*>* pekoe)
     icmpHead->code=0;
     //チェックサムはここでは計算しない。Monesに任せる
     //icmpHead->chksum=0;
-    //icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,icmp_size);
+    //icmpHead->chksum=MoPacUtl::calcCheckSum((uint32_t*)icmpHead,icmp_size);
 
     info.arg1 = 0;  //共有メモリを使用しない
     info.arg2 = ipaddr;
@@ -574,7 +574,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_MONES_ICMP_NOTICE:
                 //IP要求が返ってきたら
-                printf("Reply from %s\n",pekoe->get(0));
+                printf("Reply from %s\n",argv[1]);
                 return 0;
                 
                 break;
@@ -597,7 +597,7 @@ int MonaMain(List<char*>* pekoe)
 #ifdef MAIN_8
 
 //logprintf の'%' 出力テスト
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 
     printf("%c",'%');  //正常
@@ -620,7 +620,7 @@ int MonaMain(List<char*>* pekoe)
     
     
     for(int i = 0 ; i < 2 ; i++){
-        sprintf(drawBuff , "%2x",(byte)pacbuf[i]);
+        sprintf(drawBuff , "%2x",(uint8_t)pacbuf[i]);
         printf("%s\n",drawBuff);
     }
     

@@ -24,7 +24,7 @@
 
 typedef struct
 {
-    dword Handle, Owner, Size;
+    uint32_t Handle, Owner, Size;
 } packet_cmemoryinfo;
 
 /*!
@@ -39,13 +39,13 @@ class SocketContainer
     SocketContainer();
     ~SocketContainer();
     
-    byte    status;      //遷移状態
-    dword   ip;
-    word    myport;  //自己ポート
-    word    youport; //相手ポート
-    dword   seq;    // 自分からのシーケンス番号
-    dword   ack;    // 相手からのシーケンス番号
-    dword   tid;    //スレッドID
+    uint8_t    status;      //遷移状態
+    uint32_t   ip;
+    uint16_t    myport;  //自己ポート
+    uint16_t    youport; //相手ポート
+    uint32_t   seq;    // 自分からのシーケンス番号
+    uint32_t   ack;    // 相手からのシーケンス番号
+    uint32_t   tid;    //スレッドID
     
     
     //共有メモリでやりとりする入れ物なので、固定確保
@@ -56,7 +56,7 @@ class SocketContainer
     
     packet_cmemoryinfo getBuffer(int rorsFlag);
     
-    int createPacMonaMsg(MessageInfo *info , dword protno);
+    int createPacMonaMsg(MessageInfo *info , uint32_t protno);
 
   private:
     int nowRecvBufCount;

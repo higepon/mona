@@ -83,7 +83,7 @@ public:
 	}
 };
 
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 	HeButton *hebtn = new HeButton();
 	hebtn->run();
 	return 0;

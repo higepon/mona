@@ -21,7 +21,7 @@ public:
 	}
 
 	// 内部描画領域のバッファーを返す
-	dword* getImageData()
+	uint32_t* getImageData()
 	{
 		return this->_buffer->getSource();
 	}
@@ -98,7 +98,7 @@ static MPEGERR mpegdraw(void *hdl, const MPEGDRAW *drawhdl)
 			q[0] = mv->rgblimit[((yy + uu * 7257) >> 12) + 256];
 			q[1] = mv->rgblimit[((yy - uu * 1409 - vv * 2924) >> 12) + 256];
 			q[2] = mv->rgblimit[((yy + vv * 5743) >> 12) + 256];
-			q += 4; // 4byte
+			q += 4; // 4uint8_t
 			p[0]++;
 			p[1] += (x & 1);
 			p[2] += (x & 1);
@@ -152,7 +152,7 @@ static UINT mpegread(void *hdl, void *buf, UINT size)
 	return(readsize);
 }
 
-static dword my_tid, draw_tid;
+static uint32_t my_tid, draw_tid;
 
 static void DrawLoop()
 {
@@ -208,17 +208,17 @@ static void DrawLoop()
 }
 
 // ---- めいん
-int MonaMain( List<char*>* pekoe )
+int main(int argc, char* argv[])
 {
 	// Check Arguments
-	if (pekoe->size() < 1)
+	if (argc < 2)
 	{
 		printf("usage: XMONAPEG.EX5 [filename.mpg]\n");
 		return(-1);
 	}
 	else
 	{
-		filename = pekoe->get(0);
+		filename = argv[1];
 
 		// Check File Exists
 		monapi_cmemoryinfo* mi = monapi_file_read_all(filename);
@@ -231,7 +231,7 @@ int MonaMain( List<char*>* pekoe )
 
 	// Create thread
 	my_tid = syscall_get_tid();
-	syscall_mthread_join(syscall_mthread_create((dword)DrawLoop));
+	syscall_mthread_create((uint32_t)DrawLoop);
 	MessageInfo msg, src;
 	src.header = MSG_SERVER_START_OK;
 	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);

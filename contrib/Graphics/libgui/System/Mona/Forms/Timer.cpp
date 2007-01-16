@@ -5,7 +5,7 @@
 
 #ifdef MONA
 #include <map>
-std::map<dword, System::Mona::Forms::Timer*> mapTimers;
+std::map<uint32_t, System::Mona::Forms::Timer*> mapTimers;
 #endif
 
 using namespace System;

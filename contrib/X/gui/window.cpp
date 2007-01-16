@@ -32,11 +32,11 @@ static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
 static HList<Overlap*> overlaps;
-static dword prevButton = 0;
+static uint32_t prevButton = 0;
 
 guiserver_window* CreateWindow()
 {
-	dword handle = MemoryMap::create(sizeof(guiserver_window));
+	uint32_t handle = MemoryMap::create(sizeof(guiserver_window));
 	if (handle == 0) return NULL;
 	
 	guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle);
@@ -75,7 +75,7 @@ guiserver_window* CreateWindow()
 	return ret;
 }
 
-guiserver_window* GetWindowPointer(dword handle)
+guiserver_window* GetWindowPointer(uint32_t handle)
 {
 	int size = windows.size();
 	for (int i = 0; i < size; i++)
@@ -113,7 +113,7 @@ static void ActivateWindow(guiserver_window* w)
 	if (w->Protocol == 0) DrawWindow(w);
 }
 
-bool DisposeWindow(dword handle)
+bool DisposeWindow(uint32_t handle)
 {
 	if (prevWindow != NULL && prevWindow->Handle == handle) prevWindow = NULL;
 	if (activeWindow != NULL && activeWindow->Handle == handle) ActivateWindow(NULL);
@@ -143,7 +143,7 @@ bool DisposeWindow(dword handle)
 	return false;
 }
 
-void DisposeWindowFromThreadID(dword tid)
+void DisposeWindowFromThreadID(uint32_t tid)
 {
 	for (int i = 0; i < captures.size(); i++)
 	{
@@ -466,7 +466,7 @@ bool WindowHandler(MessageInfo* msg)
 				(int)msg->arg1, (int)msg->arg2,
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
 			overlaps.add(ov);
-			Message::reply(msg, (dword)ov);
+			Message::reply(msg, (uint32_t)ov);
 			break;
 		}
 		// ˆÚ“®—Ìˆæíœ—v‹

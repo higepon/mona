@@ -14,7 +14,7 @@
 #include <monapi.h>
 #include "BfMain.h"
 
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 
   char *str = "NNNnMNNNNOAaMnONNNNNNMAaOo MNNNNNNnONNNNNMAaOAo NNNNNNNoo NNNo MNNNNnMNNNNNNNNOAaMo nMNNNOAaMAAAAAAAAAo OOOo NNNoAAAAAAoAAAAAAAAo M";
   char *str2 = "NNNnMNNNNOAaMnONNNNNNMAaOo MNNNNNNnONNNNNMAaOAo NNNNNNNoo NNNo MNNNNnMNNNNNNNNOAaMo NNNNNNnMNNOAaMNo AAAnMNOAAaMnMNNNOAaMo Ao AAAAAAAAAAAAAo";

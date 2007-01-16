@@ -53,7 +53,7 @@ void DisposeScreen()
 
 void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 {
-	byte* vram = screen.getVRAM();
+	uint8_t* vram = screen.getVRAM();
 	int bpp = screen.getBpp(), sw = screen.getWidth(), sh = screen.getHeight();
 	int bypp = bpp >> 3;
 	if (w < 0) w = sw;
@@ -74,13 +74,13 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 		int pos = x1 + yy * sw;
 		unsigned int* pSBuf = &screen_buffer->Data[pos];
 		unsigned int* pVBuf = &vram_buffer->Data[pos];
-		byte* pVram = &vram[pos * bypp];
+		uint8_t* pVram = &vram[pos * bypp];
 		for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
 		{
 			if (*pVBuf == *pSBuf) continue;
 			
 			*pVBuf = *pSBuf;
-			byte* p = (byte*)pSBuf;
+			uint8_t* p = (uint8_t*)pSBuf;
 			switch (bpp)
 			{
 				case 8: // broken

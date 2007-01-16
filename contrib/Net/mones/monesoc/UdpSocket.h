@@ -37,16 +37,16 @@ class UdpSocket
     ~UdpSocket();
     
     //bind
-    int bind(word port);
+    int bind(uint16_t port);
     
     //recv
-    int recv(char* buff ,dword len);
+    int recv(char* buff ,uint32_t len);
 
     //send
-    int send(char* mesg, dword len, char* host, word port);
+    int send(char* mesg, uint32_t len, char* host, uint16_t port);
 
   private:
-    word useport;       //暗黙的に使うポート
+    uint16_t useport;       //暗黙的に使うポート
 
 };
 

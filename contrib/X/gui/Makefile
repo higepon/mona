@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
 INSTDIR = $(BINDIR)/SERVERS
@@ -17,7 +21,7 @@ $(TARGET).EX5: $(TARGET).EXE
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK) -lmonalibc-imp -ljpegls
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK) -lmonalibc-imp -ljpegls
 	$(STRIP) $@
 
 install: all

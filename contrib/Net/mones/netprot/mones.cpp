@@ -36,7 +36,7 @@ using namespace MonAPI;
     \author  Yamami
     \date    create:2004/08/08 update:2004/10/31
 */
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
     
     int ret;
@@ -85,7 +85,7 @@ int MonaMain(List<char*>* pekoe)
     
     // Server start ok
     MessageInfo info;
-    dword targetID = Message::lookupMainThread("MONITOR.BIN");
+    uint32_t targetID = Message::lookupMainThread("MONITOR.BIN");
     if (targetID == 0xFFFFFFFF)
     {
         printf("Mones:INIT not found\n");
@@ -150,7 +150,7 @@ int MonaMain(List<char*>* pekoe)
                 cmPac->Size   = bgetWork->cmSize;
                 monapi_cmemoryinfo_map(cmPac);
 
-                dword    i;
+                uint32_t    i;
                 //Etherクラスに登録
                 i = g_MoEther->setEtherFrame(cmPac->Data ,cmPac->Size);
                 //イーサネットフレーム受信処理
@@ -172,7 +172,7 @@ int MonaMain(List<char*>* pekoe)
                 //printf("MSG_MONES_REGIST\n");
                 
                 //リスンリストに登録
-                g_SocketsManager->registLisSocket(info.from , (word)info.arg2);
+                g_SocketsManager->registLisSocket(info.from , (uint16_t)info.arg2);
                 
                 break;
 
@@ -194,7 +194,7 @@ int MonaMain(List<char*>* pekoe)
                     int icmp_size;
                     icmp_size=info.length;
 
-                    dword ip;
+                    uint32_t ip;
                     TRANS_BUF_INFO *tbi;
                     tbi = new TRANS_BUF_INFO();
                     
@@ -208,7 +208,7 @@ int MonaMain(List<char*>* pekoe)
                     
                     //ICMP チェックサム計算
                     icmpHead->chksum=0;
-                    icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,icmp_size);
+                    icmpHead->chksum=MoPacUtl::calcCheckSum((uint32_t*)icmpHead,icmp_size);
 
                     //送信バッファテーブルの設定
                     tbi->data[2]=NULL;

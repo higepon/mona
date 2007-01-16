@@ -49,14 +49,14 @@ MonesConfig::~MonesConfig()
         IPアドレスゲッター
 
     \param  無し
-    \return dword IPアドレス
+    \return uint32_t IPアドレス
     \author Yamami
     \date   create:2004/08/29 update:$Date$
 */
-dword MonesConfig::getGl_myIpAdr( )
+uint32_t MonesConfig::getGl_myIpAdr( )
 {
     
-    dword retIp;
+    uint32_t retIp;
     
     //メンバの内容をそのままリターン
     retIp = gl_myIpAdr;
@@ -70,14 +70,14 @@ dword MonesConfig::getGl_myIpAdr( )
         サブネットマスク
 
     \param  無し
-    \return dword サブネットマスク
+    \return uint32_t サブネットマスク
     \author Yamami
     \date   create:2004/09/20 update:$Date$
 */
-dword MonesConfig::getGl_mySubnet( )
+uint32_t MonesConfig::getGl_mySubnet( )
 {
     
-    dword retSubnet;
+    uint32_t retSubnet;
     
     //メンバの内容をそのままリターン
     retSubnet = gl_mySubnet;
@@ -91,14 +91,14 @@ dword MonesConfig::getGl_mySubnet( )
         GW
 
     \param  無し
-    \return dword GW
+    \return uint32_t GW
     \author Yamami
     \date   create:2004/09/20 update:$Date$
 */
-dword MonesConfig::getGl_myGw( )
+uint32_t MonesConfig::getGl_myGw( )
 {
     
-    dword retGw;
+    uint32_t retGw;
     
     //メンバの内容をそのままリターン
     retGw = gl_myGw;
@@ -112,14 +112,14 @@ dword MonesConfig::getGl_myGw( )
         DNS
 
     \param  無し
-    \return dword DNS
+    \return uint32_t DNS
     \author Yamami
     \date   create:2004/09/20 update:$Date$
 */
-dword MonesConfig::getGl_myDns( )
+uint32_t MonesConfig::getGl_myDns( )
 {
     
-    dword retDNS;
+    uint32_t retDNS;
     
     //メンバの内容をそのままリターン
     retDNS = gl_myDns;
@@ -133,14 +133,14 @@ dword MonesConfig::getGl_myDns( )
         MTU
 
     \param  無し
-    \return dword MTU
+    \return uint32_t MTU
     \author Yamami
     \date   create:2004/09/20 update:$Date$
 */
-dword MonesConfig::getGl_myMTU( )
+uint32_t MonesConfig::getGl_myMTU( )
 {
     
-    dword retMTU;
+    uint32_t retMTU;
     
     //メンバの内容をそのままリターン
     retMTU = gl_myMTU;

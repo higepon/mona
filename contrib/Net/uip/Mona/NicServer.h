@@ -14,10 +14,10 @@ namespace mones {
 #define MSG_GET_MAC_ADDRESS 0x41530000
 
 typedef struct {
-    byte destmac[6];
-    byte header[4096];
-    dword size;
-    word protocol;
+    uint8_t destmac[6];
+    uint8_t header[4096];
+    uint32_t size;
+    uint16_t protocol;
 } OutPacket;
 
 class Icmp {
@@ -35,10 +35,10 @@ public :
 class UDP {
 public:
  typedef struct{
-    word srcport;
-    word dstport;
+    uint16_t srcport;
+    uint16_t dstport;
     short len;
-    word chksum;
+    uint16_t chksum;
     char   data[0];
 } Header;
 };
@@ -50,16 +50,16 @@ public:
         UDP = 0x11,
     };
     typedef struct{
-        byte  verhead;  /* バージョン、ヘッダ長。 */
-        byte  tos;      /* TOS. */
-        word len;       /* トータル長。 */
-        word id;        /* 識別番号。 */
-        word frag;      /* フラグ、フラグメントオフセット。 */
-        byte  ttl;      /* Time to Live. */
-        byte  prot;     /* プロトコル番号。 */
-        word chksum;    /* ヘッダチェックサム。 */
-        dword srcip;        /* 送り元IP。 */
-        dword dstip;        /* 宛先IP。 */
+        uint8_t  verhead;  /* バージョン、ヘッダ長。 */
+        uint8_t  tos;      /* TOS. */
+        uint16_t len;       /* トータル長。 */
+        uint16_t id;        /* 識別番号。 */
+        uint16_t frag;      /* フラグ、フラグメントオフセット。 */
+        uint8_t  ttl;      /* Time to Live. */
+        uint8_t  prot;     /* プロトコル番号。 */
+        uint16_t chksum;    /* ヘッダチェックサム。 */
+        uint32_t srcip;        /* 送り元IP。 */
+        uint32_t dstip;        /* 宛先IP。 */
         char     data[0];
     } Header;
 };
@@ -69,10 +69,10 @@ class Ether
 public:
 #pragma pack(2)
     typedef struct{
-        byte  dstmac[6];   // 送信先 MAC ID
-        byte  srcmac[6];   // 送信元 MAC ID
-        word    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
-        byte   data[0x600];// Data
+        uint8_t  dstmac[6];   // 送信先 MAC ID
+        uint8_t  srcmac[6];   // 送信元 MAC ID
+        uint16_t    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
+        uint8_t   data[0x600];// Data
     } Frame;
 #pragma pack(0)
     enum
@@ -88,15 +88,15 @@ class Arp
 public:
     typedef struct
     {
-        word hardType  __attribute__((packed));
-        word protType  __attribute__((packed));
-        byte  hardAddrLen  __attribute__((packed));
-        byte  protAddrLen  __attribute__((packed));
-        word opeCode  __attribute__((packed));
-        byte  srcMac[6]  __attribute__((packed));
-        dword   srcIp  __attribute__((packed));
-        byte  dstMac[6]  __attribute__((packed));
-        dword   dstIp  __attribute__((packed));
+        uint16_t hardType  __attribute__((packed));
+        uint16_t protType  __attribute__((packed));
+        uint8_t  hardAddrLen  __attribute__((packed));
+        uint8_t  protAddrLen  __attribute__((packed));
+        uint16_t opeCode  __attribute__((packed));
+        uint8_t  srcMac[6]  __attribute__((packed));
+        uint32_t   srcIp  __attribute__((packed));
+        uint8_t  dstMac[6]  __attribute__((packed));
+        uint32_t   dstIp  __attribute__((packed));
     } Header;
 
     enum
@@ -122,7 +122,7 @@ public:
 
 public:
     bool initialize();
-    dword getThreadID() const;
+    uint32_t getThreadID() const;
     void messageLoop();
     bool isStarted() {return started;}
     void exit();
@@ -132,10 +132,10 @@ private:
     bool WaitIntteruptWithTimeout(MessageInfo* msg);
 
 protected:
-    byte macAddress[6];
+    uint8_t macAddress[6];
     HList<Ether::Frame*> frameList;
-    dword observerThread;
-    dword myID;
+    uint32_t observerThread;
+    uint32_t myID;
     Nic* nic;
     bool started;
     bool loopExit;

@@ -2,6 +2,10 @@ TARGET  = MSHELL
 SOURCES = Form1.cpp
 INSTDIR = $(BINDIR)/APPS/MONAFRMS
 
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lgui-imp

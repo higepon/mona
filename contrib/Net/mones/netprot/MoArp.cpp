@@ -28,7 +28,7 @@
 MoArp::MoArp()
 {
     //ARPキャッシュ初期化
-    ArpCache = new HashMap<byte*>(ARP_CACHE_NUM);
+    ArpCache = new HashMap<uint8_t*>(ARP_CACHE_NUM);
     //ARP要求待ちリスト初期化
     macWaitList = new HList<MAC_REPLY_WAIT*>();
 }
@@ -113,14 +113,14 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
 /*!
     \brief receiveReply
          ARP受信処理
-    \param  dword srcip [in] 送信元IPアドレス
-    \param  byte *mac [in] 送信元MACアドレス
+    \param  uint32_t srcip [in] 送信元IPアドレス
+    \param  uint8_t *mac [in] 送信元MACアドレス
     \return void 無し 
         
     \author Yamami
     \date   create:2004/11/15 update:$Date$
 */
-int MoArp::receiveReply(dword srcip,byte *mac)
+int MoArp::receiveReply(uint32_t srcip,uint8_t *mac)
 {
     
     MAC_REPLY_WAIT* nowWait;
@@ -148,7 +148,7 @@ int MoArp::receiveReply(dword srcip,byte *mac)
     if(findFlag == 1){
         //Mones自身へメッセージ通知
         MessageInfo info;
-        dword targetID = Message::lookupMainThread("MONES.EX5");  //TO DO この探し方良くないよなー
+        uint32_t targetID = Message::lookupMainThread("MONES.EX5");  //TO DO この探し方良くないよなー
         // create message
         Message::create(&info, MSG_MONES_WAKEUP_ARP_WAIT, 0, 0, 0, NULL);
         Message::send(targetID, &info);
@@ -159,20 +159,20 @@ int MoArp::receiveReply(dword srcip,byte *mac)
 
 
 //static char broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
-static byte broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
+static uint8_t broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
 
 /*!
     \brief transArp
          ARP送信処理 (ARP応答、ARP要求)
-    \param  dword dstip [in] 送信先IPアドレス
-    \param  byte *dstmac [in] 送信先MACアドレス
-    \param  word opecode [in] オペレーションコード
+    \param  uint32_t dstip [in] 送信先IPアドレス
+    \param  uint8_t *dstmac [in] 送信先MACアドレス
+    \param  uint16_t opecode [in] オペレーションコード
     \return void 無し 
         
     \author Yamami
     \date   create:2004/08/28 update:$Date$
 */
-void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
+void MoArp::transArp(uint32_t dstip, uint8_t *dstmac, uint16_t opecode)
 {
     ARP_HEADER head;
 
@@ -192,7 +192,7 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
     head.dstIp=dstip;  //ここは受け取ったまま返却するので、エンディアン変換は不要
 
     //送信処理 ここでは、直接ドライバをコール
-    insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , ETHER_PROTO_ARP);
+    insAbstractNic->frame_output((uint8_t *)&head , dstmac , sizeof(head) , ETHER_PROTO_ARP);
 
 }
 
@@ -200,21 +200,21 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
 /*!
     \brief addArpCache
          ARPキャッシュ登録処理
-    \param  dword ip [in] 登録IPアドレス
+    \param  uint32_t ip [in] 登録IPアドレス
     \param  char *mac [in] 登録MACアドレス
     \return void 無し 
         
     \author Yamami
     \date   create:2004/09/19 update:$Date$
 */
-void MoArp::addArpCache(dword ip, byte *mac)
+void MoArp::addArpCache(uint32_t ip, uint8_t *mac)
 {
 
     char IpKey[10];    //IPアドレスキー
     
-    byte* setMac;
+    uint8_t* setMac;
     
-    setMac = new byte(6);
+    setMac = new uint8_t(6);
     memcpy(setMac,mac,6);
 
     //IPアドレスを、MAPのキー化(String化)
@@ -227,16 +227,16 @@ void MoArp::addArpCache(dword ip, byte *mac)
 /*!
     \brief searchCache
          ARPキャッシュ検索処理
-    \param  dword ip [in] 登録IPアドレス
+    \param  uint32_t ip [in] 登録IPアドレス
     \return char *mac [in] 検索結果MACアドレス 見つからない場合はNULL
         
     \author Yamami
     \date   create:2004/09/19 update:$Date$
 */
-byte* MoArp::searchCache(dword ip)
+uint8_t* MoArp::searchCache(uint32_t ip)
 {
     char IpKey[10];    //IPアドレスキー
-    byte *RetMacValue;
+    uint8_t *RetMacValue;
     
     //HashMapから検索
     //IPアドレスを、MAPのキー化(String化)
@@ -252,14 +252,14 @@ byte* MoArp::searchCache(dword ip)
 /*!
     \brief getMac
          ARP IPアドレス解決処理
-    \param  dword ip [in] IPアドレス
-    \param  byte *mac [OUT] 解決MACアドレスへのポインタ
+    \param  uint32_t ip [in] IPアドレス
+    \param  uint8_t *mac [OUT] 解決MACアドレスへのポインタ
     \return int 0:キャッシュヒット 0以外:ARP要求をかけた、その待ち番号
         
     \author Yamami
     \date   create:2004/09/20 update:$Date$
 */
-int MoArp::getMac(dword ip,byte *mac)
+int MoArp::getMac(uint32_t ip,uint8_t *mac)
 {
     MAC_REPLY_WAIT* nowWait;
     int waitNumber;
@@ -269,7 +269,7 @@ int MoArp::getMac(dword ip,byte *mac)
         REQUEST_TIMEOUT=2000,   // リクエストタイムアウトミリ秒
     };
 
-    byte *retmac;
+    uint8_t *retmac;
     
 
     // キャッシュを検索

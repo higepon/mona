@@ -71,7 +71,7 @@ public:
 };
 
 #if defined(MONA)
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 #else
 int main(int argc, char** argv) {
 #endif

@@ -1,18 +1,18 @@
 ifndef $(MONADIR)
-export MONADIR=$(PWD)/../../../mona
+# export MONADIR=$(PWD)/../mona
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
-TARGET  = STDOUT
+TARGET  = PRINT
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
+ADDLINK    = -lmonalibc-imp
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
-ADDLINK =  -lmonalibc-imp
 else
 include $(SHAREDIR)/configs/monapi-el5.inc
-ADDLINK =  -lmonalibc-imp
 endif
 
 CXXFLAGS += -DDEBUG

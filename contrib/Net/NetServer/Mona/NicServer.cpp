@@ -47,7 +47,7 @@ bool NicServer::initialize()
     return true;
 }
 
-dword NicServer::getThreadID() const
+uint32_t NicServer::getThreadID() const
 {
     return this->myID;
 }
@@ -56,53 +56,53 @@ dword NicServer::getThreadID() const
 
 #pragma pack(2)
     typedef struct{
-        byte  dstmac[6];   // 送信先 MAC ID
-        byte  srcmac[6];   // 送信元 MAC ID
-        word    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
-        byte   data[0x600];// Data
+        uint8_t  dstmac[6];   // 送信先 MAC ID
+        uint8_t  srcmac[6];   // 送信元 MAC ID
+        uint16_t    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
+        uint8_t   data[0x600];// Data
     } Frame;
 
 #pragma pack(2)
     typedef struct{
-        byte  verhead;  /* バージョン、ヘッダ長。 */
-        byte  tos;      /* TOS. */
-        word len;       /* トータル長。 */
-        word id;        /* 識別番号。 */
-        word frag;      /* フラグ、フラグメントオフセット。 */
-        byte  ttl;      /* Time to Live. */
-        byte  prot;     /* プロトコル番号。 */
-        word chksum;    /* ヘッダチェックサム。 */
-        dword srcip;        /* 送り元IP。 */
-        dword dstip;        /* 宛先IP。 */
+        uint8_t  verhead;  /* バージョン、ヘッダ長。 */
+        uint8_t  tos;      /* TOS. */
+        uint16_t len;       /* トータル長。 */
+        uint16_t id;        /* 識別番号。 */
+        uint16_t frag;      /* フラグ、フラグメントオフセット。 */
+        uint8_t  ttl;      /* Time to Live. */
+        uint8_t  prot;     /* プロトコル番号。 */
+        uint16_t chksum;    /* ヘッダチェックサム。 */
+        uint32_t srcip;        /* 送り元IP。 */
+        uint32_t dstip;        /* 宛先IP。 */
         char     data[0];
     } IPHeader;
 #pragma pack(0)
 #pragma pack(2)
 typedef struct
 {
-  word src;                    /* source port */
-  word dst;                    /* destination port */
-  dword seq_number;             /* sequence number */
-  dword ack_number;             /* acknowledgement number */
+  uint16_t src;                    /* source port */
+  uint16_t dst;                    /* destination port */
+  uint32_t seq_number;             /* sequence number */
+  uint32_t ack_number;             /* acknowledgement number */
 #ifdef WORDS_BIGENDIAN
-  byte  header_length:4,        /* data offset */
+  uint8_t  header_length:4,        /* data offset */
             unused:4;               /* (unused) */
 #else
-  byte  unused:4,               /* (unused) */
+  uint8_t  unused:4,               /* (unused) */
             header_length:4;        /* data offset */
 #endif
-  byte  flags;
-  word window;                 /* window */
-  word checksum;               /* checksum */
-  word urgent;                 /* urgent pointer */
+  uint8_t  flags;
+  uint16_t window;                 /* window */
+  uint16_t checksum;               /* checksum */
+  uint16_t urgent;                 /* urgent pointer */
 } TCPHeader;
 #pragma pack(0)
-    inline static dword swapLong(dword value)
+    inline static uint32_t swapLong(uint32_t value)
     {
         return (value>>24)+((value>>8)&0xff00)+((value<<8)&0xff0000)+(value<<24);
     }
 
-    inline static word swapShort(word value)
+    inline static uint16_t swapShort(uint16_t value)
     {
         return (value>>8)+(value<<8);
     }
@@ -117,7 +117,7 @@ void NicServer::interrupt(MessageInfo* msg)
     Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
     this->nic->inputFrame();
     Ether::Frame* frame = new Ether::Frame;
-    this->nic->getFrameBuffer((byte*)frame, sizeof(Ether::Frame));
+    this->nic->getFrameBuffer((uint8_t*)frame, sizeof(Ether::Frame));
 #if 1
     if (frame->type == 0x8) { // IP
         const IPHeader* h = (const IPHeader*)frame->data;
@@ -147,7 +147,7 @@ void NicServer::interrupt(MessageInfo* msg)
 bool NicServer::WaitIntteruptWithTimeout(MessageInfo* msg)
 {
     MessageInfo m;
-    dword timerId = set_timer(30); // 30msだとうまく行く
+    uint32_t timerId = set_timer(30); // 30msだとうまく行く
     for (int i = 0; ; i++)
     {
         int result = MonAPI::Message::peek(&m, i);

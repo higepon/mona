@@ -26,31 +26,31 @@ void MessageLoop()
         {
             case MSG_NET_TCP_CONNECT:
             {
-                dword ipAddress = msg.arg1;
-                dword port = msg.arg2;
-                byte a = (ipAddress >> 24) & 0xff;
-                byte b = (ipAddress >> 16) & 0xff;
-                byte c = (ipAddress >> 8) & 0xff;
-                byte d = (ipAddress & 0xff);
+                uint32_t ipAddress = msg.arg1;
+                uint32_t port = msg.arg2;
+                uint8_t a = (ipAddress >> 24) & 0xff;
+                uint8_t b = (ipAddress >> 16) & 0xff;
+                uint8_t c = (ipAddress >> 8) & 0xff;
+                uint8_t d = (ipAddress & 0xff);
                 printf("connect to %d.%d.%d.%d\n", a ,b , c, d);
-                dword handle = client->Connect(IPAddress(a, b, c, d), port);
+                uint32_t handle = client->Connect(IPAddress(a, b, c, d), port);
                 Message::reply(&msg, handle);
                 break;
             }
             case MSG_NET_TCP_IS_CLOSED:
             {
-                dword handle = msg.arg1;
+                uint32_t handle = msg.arg1;
                 Message::reply(&msg, client->Connected(handle) ? 0 : 1);
                 break;
             }
             case MSG_NET_TCP_SEND:
             {
-                dword handle = msg.arg1;
-                dword length = msg.arg2;
-                dword mapHandle = msg.arg3;
+                uint32_t handle = msg.arg1;
+                uint32_t length = msg.arg2;
+                uint32_t mapHandle = msg.arg3;
 
                 // dame dame
-                dword i;
+                uint32_t i;
                 while (!client->Connected(handle))
                 {
                     for (int j = 0; j < 10000; j++)
@@ -79,8 +79,8 @@ void MessageLoop()
             }
             case MSG_NET_TCP_RECEIVE:
             {
-                dword handle = msg.arg1;
-                dword i;
+                uint32_t handle = msg.arg1;
+                uint32_t i;
                 while (!client->HaveNewData(handle))
                 {
                     for (int j = 0; j < 10000; j++)
@@ -89,7 +89,7 @@ void MessageLoop()
                     }
                 }
                 Buffer buffer = client->Receive(handle);
-                dword bufferSize = buffer.size();
+                uint32_t bufferSize = buffer.size();
                 if (bufferSize > 128)
                 {
                     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();

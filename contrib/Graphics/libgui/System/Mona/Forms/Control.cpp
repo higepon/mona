@@ -5,7 +5,7 @@
 #include <monapi.h>
 #include <servers/gui.h>
 
-extern dword __gui_server;
+extern uint32_t __gui_server;
 #endif
 
 #include <gui/System/Mona/Forms/Application.h>
@@ -22,7 +22,7 @@ using namespace System::Drawing;
 
 #ifdef MONA
 #include <map>
-std::map<dword, System::Mona::Forms::Control*> mapControls;
+std::map<uint32_t, System::Mona::Forms::Control*> mapControls;
 
 static _P<MonAPI::Screen> s_screen;
 
@@ -319,7 +319,7 @@ namespace System { namespace Mona { namespace Forms
 		
 		if (this->parent == NULL)
 		{
-			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->get_Handle(), (dword)p.X, (dword)p.Y);
+			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->get_Handle(), (uint32_t)p.X, (uint32_t)p.Y);
 		}
 		else
 		{
@@ -422,7 +422,7 @@ namespace System { namespace Mona { namespace Forms
 			? NCState_Client : NCState_None;
 	}
 	
-	void Control::WndProc(dword type, _P<EventArgs> e)
+	void Control::WndProc(uint32_t type, _P<EventArgs> e)
 	{
 		switch (type)
 		{

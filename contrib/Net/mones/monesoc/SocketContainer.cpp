@@ -68,7 +68,7 @@ int SocketContainer::addBuffer(char *pac , int pacsize ,int rorsFlag)
     //まず、monapi_cmemoryinfo構造体をnew
     monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();
     
-    if (!monapi_cmemoryinfo_create(cmInfo, (dword)pacsize + 1, 0))
+    if (!monapi_cmemoryinfo_create(cmInfo, (uint32_t)pacsize + 1, 0))
     {
         monapi_cmemoryinfo_delete(cmInfo);
         return 1;
@@ -148,13 +148,13 @@ logprintf("Get pcm.Handle=%d pcm.Owner=%d pcm.Size=%d\n",pcm.Handle , pcm.Owner 
     \brief createPacMonaMsg
          パケット格納メッセージ作成
     \param  MessageInfo *info [OUT] 作成メッセージ
-    \param  dword protno [IN] プロトコルNo
+    \param  uint32_t protno [IN] プロトコルNo
     \return int 結果 
     
     \author Yamami
     \date   create:2005/05/22 update:
 */
-int SocketContainer::createPacMonaMsg(MessageInfo *info , dword protno )
+int SocketContainer::createPacMonaMsg(MessageInfo *info , uint32_t protno )
 {
 
     //共有メモリへSocketContainer格納

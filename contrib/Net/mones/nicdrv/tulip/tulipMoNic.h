@@ -133,7 +133,7 @@
 #define     ne_cr_proto         NE_CR_RD2
 
 
-//const byte ne_test_pattern[]="TULIP test message.\n";
+//const uint8_t ne_test_pattern[]="TULIP test message.\n";
 
 
 /*!
@@ -151,7 +151,7 @@ class tulipMoNic : public AbstractMonic
     int init();
     
     void frame_input(void);
-    void frame_output( byte *, byte *, dword, word );
+    void frame_output( uint8_t *, uint8_t *, uint32_t, uint16_t );
     int nic_probe(void);
     
 
@@ -172,28 +172,28 @@ class tulipMoNic : public AbstractMonic
     //tulip 特有初期化処理
     void nic_init(void);
     
-    void ne_pio_writemem( byte *, dword, dword );
-    void ne_pio_readmem( dword, byte *, dword );
-    int ne_bcompare( byte *, byte *, dword );
-    void xfer_buf( byte *, byte *, dword, dword *, dword, dword,dword );
+    void ne_pio_writemem( uint8_t *, uint32_t, uint32_t );
+    void ne_pio_readmem( uint32_t, uint8_t *, uint32_t );
+    int ne_bcompare( uint8_t *, uint8_t *, uint32_t );
+    void xfer_buf( uint8_t *, uint8_t *, uint32_t, uint32_t *, uint32_t, uint32_t,uint32_t );
     
     //privateメンバ
     /* 受信リングバッファのリンク情報領域を読み込むところ */
     /* ne_ring_buffer */
-    byte       ne_ringbuf_status;
-    byte       ne_ringbuf_bound;
-    dword        ne_ringbuf_len;
+    uint8_t       ne_ringbuf_status;
+    uint8_t       ne_ringbuf_bound;
+    uint32_t        ne_ringbuf_len;
 
-    dword        ne_rx_start;      /* 受信パケット本体の開始アドレス */
+    uint32_t        ne_rx_start;      /* 受信パケット本体の開始アドレス */
     
-    byte       ne_rx_bound;      /* 受信後の境界レジスタ値 */
-    dword        ne_rx_write_p;    /* 受信パケット書き込みアドレス */
-    dword        ne_rx_sub_len;    /* 折り返し分の長さ */
-    dword        ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
+    uint8_t       ne_rx_bound;      /* 受信後の境界レジスタ値 */
+    uint32_t        ne_rx_write_p;    /* 受信パケット書き込みアドレス */
+    uint32_t        ne_rx_sub_len;    /* 折り返し分の長さ */
+    uint32_t        ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
     
     /* tulip ワークエリア */
     int        ne_sizeof_test_pattern;
-    byte       ne_test_buffer[20];
+    uint8_t       ne_test_buffer[20];
     
     
 };

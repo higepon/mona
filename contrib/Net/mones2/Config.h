@@ -10,7 +10,7 @@ namespace mones {
 class Config
 {
 public:
-    Config(dword ipAddress, dword subnetAddress, dword defaultGateway)
+    Config(uint32_t ipAddress, uint32_t subnetAddress, uint32_t defaultGateway)
     {
         this->ipAddress      = ipAddress;
         this->subnetAddress  = subnetAddress;
@@ -18,14 +18,14 @@ public:
     }
     virtual ~Config() {}
 
-    dword getIpAddress() const {return this->ipAddress;}
-    dword getSubnetAddress() const {return this->subnetAddress;}
-    dword getDefaultGateway() const {return this->defaultGateway;}
+    uint32_t getIpAddress() const {return this->ipAddress;}
+    uint32_t getSubnetAddress() const {return this->subnetAddress;}
+    uint32_t getDefaultGateway() const {return this->defaultGateway;}
 
 private:
-    dword ipAddress;
-    dword subnetAddress;
-    dword defaultGateway;
+    uint32_t ipAddress;
+    uint32_t subnetAddress;
+    uint32_t defaultGateway;
 };
 
 }; // namespace mones

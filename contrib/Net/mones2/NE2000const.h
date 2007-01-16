@@ -131,6 +131,6 @@ namespace mones {
 #define     NE_TCR_LB0          2           /* Internal loopback */
 
 #define     ne_cr_proto         NE_CR_RD2
-const byte ne_test_pattern[]="NE2000 test message.\n";
+const uint8_t ne_test_pattern[]="NE2000 test message.\n";
 }; // namespace mones
 #endif

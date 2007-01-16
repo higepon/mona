@@ -27,14 +27,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /** メイン */
 #if defined(MONA)
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-	if (pekoe->size() == 0) {
+	if (argc == 1) {
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISKICON", MONAPI_FALSE);
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERMINALICON", MONAPI_FALSE);
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASHBOXICON", MONAPI_FALSE);
 	} else {
-		char* arg0 = pekoe->get(0);
+		char* arg0 = argv[1];
 		if (strcmp(arg0, "DISKICON") == 0) {
 			ShortCut* shortcut = new ShortCut();
 			shortcut->setType(DISKICON);

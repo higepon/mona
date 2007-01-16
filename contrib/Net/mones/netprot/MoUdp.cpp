@@ -89,7 +89,7 @@ int MoUdp::receiveUdp(IP_HEADER *ipHead)
     dmyhead.tmp=0;
     dmyhead.prot=ipHead->prot;
     dmyhead.len=udp->len;
-    if(MoPacUtl::calcCheckSumDummyHead((dword*)&dmyhead,(dword*)udp,sizeof(DUMMY_HEADER),udp_size)){
+    if(MoPacUtl::calcCheckSumDummyHead((uint32_t*)&dmyhead,(uint32_t*)udp,sizeof(DUMMY_HEADER),udp_size)){
         logprintf("udp_size = %d\n",udp_size);
         logprintf("udp->chksum = %x\n",MoPacUtl::swapShort(udp->chksum));
         logprintf("udp CheckSum BAD!!\n");
@@ -165,7 +165,7 @@ logprintf("MoUdp::transUdp cmPacByte->Data = %s\n",cmPacByte->Data);
     dmyhead.tmp=0;
     dmyhead.prot=IPPROTO_UDP;
     dmyhead.len=udpHead->len;
-    udpHead->chksum = MoPacUtl::calcCheckSumDummyHead((dword*)&dmyhead,(dword*)udpHead,sizeof(DUMMY_HEADER),udp_size);
+    udpHead->chksum = MoPacUtl::calcCheckSumDummyHead((uint32_t*)&dmyhead,(uint32_t*)udpHead,sizeof(DUMMY_HEADER),udp_size);
 
     //送信バッファテーブルの設定
     tbi.data[2]=NULL;

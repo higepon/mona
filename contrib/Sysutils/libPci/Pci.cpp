@@ -26,6 +26,12 @@
 
 #include <pci/Pci.h>
 
+extern "C" int dllmain();
+int dllmain()
+{
+    syscall_print("pci_dllmain()\n");
+}
+
 
 //PCIINFOファイル
 #define PCIINFO_FILE "libPci.a"
@@ -68,22 +74,22 @@ Pci::~Pci()
     \brief CheckPciExist
          Pciデバイス存在確認。指定したVendor/DeviceのPCIデバイスの存在を確認する。
     \author Yamami
-    \param  word Vendor [in] ベンダーID
-    \param  word Device [in] デバイスID
+    \param  uint16_t Vendor [in] ベンダーID
+    \param  uint16_t Device [in] デバイスID
     \return PciInf構造体へのポインタ
     \date   create:2004/10/15 update:$Date$
 */
-void Pci::CheckPciExist(word ChkVendor , word ChkDevice ,PciInf* RetPciInf) 
+void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciInf) 
 {
     
-    byte DeviceNo;
-    dword Vendor_Dev;
+    uint8_t DeviceNo;
+    uint32_t Vendor_Dev;
 
-    word Vendor;
-    word Device;
+    uint16_t Vendor;
+    uint16_t Device;
 
-    dword BaseAd;
-    dword  IrqLine;
+    uint32_t BaseAd;
+    uint32_t  IrqLine;
 
     //返却値初期化 デバイスは存在しない。
     RetPciInf->Exist = 1;
@@ -107,7 +113,7 @@ void Pci::CheckPciExist(word ChkVendor , word ChkDevice ,PciInf* RetPciInf)
             if (Device != 0xFFFF && ChkVendor == Vendor && ChkDevice == Device){
                 //デバイスが存在する。
                 //デバイスとベンダーを結合 getPciInfName にインターフェースをあわせる。
-                Vendor_Dev = Vendor + (dword)(Device << 16);
+                Vendor_Dev = Vendor + (uint32_t)(Device << 16);
                 
                 //Baseアドレスの取得
                 BaseAd = ReadConfig(0, DeviceNo, 0, PCI_BASE_ADDRESS1, 4);
@@ -147,7 +153,7 @@ logprintf(" IrqLine = %x \n"  , IrqLine);
     
 }
 
-void Pci::WriteConfig(byte bus,byte device,byte function,byte reg,byte readSize,dword val)
+void Pci::WriteConfig(uint8_t bus,uint8_t device,uint8_t function,uint8_t reg,uint8_t readSize,uint32_t val)
 {
    PciPacket packet;
    packet.p.enabled   = 1;
@@ -160,7 +166,7 @@ void Pci::WriteConfig(byte bus,byte device,byte function,byte reg,byte readSize,
 
    outp32(REG_CONFIG_ADDRESS,packet.command);
    for(int i =0;i<readSize;i++){
-	  outp8(REG_CONFIG_DATA+ ((reg+i) & 0x0003), (byte)((val>>(i*8)) & 0xFF ));
+	  outp8(REG_CONFIG_DATA+ ((reg+i) & 0x0003), (uint8_t)((val>>(i*8)) & 0xFF ));
    }
    packet.p.enabled=0;
    outp32(REG_CONFIG_ADDRESS,packet.command);
@@ -171,19 +177,19 @@ void Pci::WriteConfig(byte bus,byte device,byte function,byte reg,byte readSize,
 /*!
     \brief ReadConfig
         PCIデバイス情報取得
-    \param  byte bus [in] バス番号
-    \param  byte deviceid [in] デバイス番号
-    \param  byte func [in] ファンクション番号
-    \param  byte reg [in] レジスタアドレス
-    \param  byte readSize [I] 取得サイズ
-    \return dword 取得レジスタの値
+    \param  uint8_t bus [in] バス番号
+    \param  uint8_t deviceid [in] デバイス番号
+    \param  uint8_t func [in] ファンクション番号
+    \param  uint8_t reg [in] レジスタアドレス
+    \param  uint8_t readSize [I] 取得サイズ
+    \return uint32_t 取得レジスタの値
 
     \author Yamami
     \date   create:2004/05/15 update:2004/05/15
 */
-dword Pci::ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
+uint32_t Pci::ReadConfig(uint8_t bus, uint8_t device, uint8_t function, uint8_t reg, uint8_t readSize)
 {
-   dword result;
+   uint32_t result;
    PciPacket packet;
 
    packet.p.enabled   = 1;
@@ -246,8 +252,8 @@ inline bool Pci::IsLineSeparator(char ch)
     \brief getPciInfName
         PCI情報名称(ベンダー、デバイス)情報取得
         PCIレジスタ値 を引数にとり、PCIINF.TXT から該当するベンダー名称ベンダ名称を取得する。。
-    \param  byte* PciInfData [IN] PCI情報データ
-    \param  dword InValue [IN] PCIレジスタ値(ベンダーCD & デバイスCD)
+    \param  uint8_t* PciInfData [IN] PCI情報データ
+    \param  uint32_t InValue [IN] PCIレジスタ値(ベンダーCD & デバイスCD)
     \param  CString& VendorName [OUT] ベンダー名称
     \param  CString& DeviceName [OUT] デバイス名称
 
@@ -256,10 +262,10 @@ inline bool Pci::IsLineSeparator(char ch)
     \author Yamami
     \date   create:2004/05/16 update:2004/06/11
 */
-CString Pci::getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , CString* DeviceName){
+CString Pci::getPciInfName( uint8_t* PciInfData, uint32_t InValue , CString* VendorName , CString* DeviceName){
 
-    word Vendor;
-    word Device;
+    uint16_t Vendor;
+    uint16_t Device;
 
     //ベンダーIDの取得
     Vendor = InValue & 0x0000FFFF;

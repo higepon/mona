@@ -10,12 +10,12 @@ namespace mones {
 class IPAddress
 {
 public:
-    IPAddress(byte a, byte b, byte c, byte d) {uip_ipaddr(address_, a, b, c, d);}
+    IPAddress(uint8_t a, uint8_t b, uint8_t c, uint8_t d) {uip_ipaddr(address_, a, b, c, d);}
     virtual ~IPAddress() {}
-    word* GetAddress() {return address_;}
+    uint16_t* GetAddress() {return address_;}
 
 protected:
-    word address_[2];
+    uint16_t address_[2];
 };
 
 }; // namespace mones

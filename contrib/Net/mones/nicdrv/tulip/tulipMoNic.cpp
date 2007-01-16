@@ -87,10 +87,10 @@ int tulipMoNic::init()
 void tulipMoNic::frame_input(void)
 {
 
-    byte sts,*buf;
+    uint8_t sts,*buf;
     //バウンダリレジスタ と、カレントページレジスタは8ビット幅
     //データにアクセスする際、8ビットシフトして16ビット幅アクセスを行う
-    word  bnd,cpg;
+    uint16_t  bnd,cpg;
 
     buf=frame_buf;
 
@@ -153,7 +153,7 @@ void tulipMoNic::frame_input(void)
     // バッファに一旦リードして、代入する処理に変更
     //ne_pio_readmem( bnd << 8, &ne_ringbuf_status, 4 );
 
-    byte bndBuf[4];
+    uint8_t bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
 
 // Yamamiデバッグ リードアドレスの表示
@@ -177,7 +177,7 @@ void tulipMoNic::frame_input(void)
     ne_rx_start=(bnd << 8) + 4; // パケット本体の開始アドレス
 
     // CRCの分の長さを引く
-    // CRCの分の長さを引く ? CRCじゃなくてne_ringbuf_*の4 byte?
+    // CRCの分の長さを引く ? CRCじゃなくてne_ringbuf_*の4 uint8_t?
     frame_len=ne_ringbuf_len - 4; /* パケット本体の長さ */
 
     // 受信終了後の境界レジスタ値
@@ -248,22 +248,22 @@ void tulipMoNic::frame_input(void)
 /*!
     \brief frame_output
         tulip データ出力ルーチン
-    \param  byte *pkt [in] データパケットへのポインタ
-    \param  byte *mac [in] 送り先MACアドレスへのポインタ
-    \param  dword size [in] パケットサイズ
-    \param  word pid [in] プロトコルID(ETHER_PROTO)
+    \param  uint8_t *pkt [in] データパケットへのポインタ
+    \param  uint8_t *mac [in] 送り先MACアドレスへのポインタ
+    \param  uint32_t size [in] パケットサイズ
+    \param  uint16_t pid [in] プロトコルID(ETHER_PROTO)
     \return void
 
     \author Yamami
     \date   create:2004/08/03 update:$Date$
 */
-void tulipMoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
+void tulipMoNic::frame_output( uint8_t *pkt, uint8_t *mac, uint32_t size, uint16_t pid )
 {
     
-    dword        ptx_type=0;
-    dword        ptx_size=0;
-    byte       *ptx_packet=0;
-    byte       *ptx_dest=0;
+    uint32_t        ptx_type=0;
+    uint32_t        ptx_size=0;
+    uint8_t       *ptx_packet=0;
+    uint8_t       *ptx_dest=0;
     
     
     // 送信が完了しているかどうかチェックする
@@ -282,7 +282,7 @@ void tulipMoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
 //Yamami デバッグ
 //int i;
 //for(i=0 ; i<2 ; i++){
-//    printf("ptx[1] = %x \n",(byte *)(&ptx_type + 1));
+//    printf("ptx[1] = %x \n",(uint8_t *)(&ptx_type + 1));
 //}
 
 
@@ -296,7 +296,7 @@ void tulipMoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
     // 送信元アドレスの書き込み
     ne_pio_writemem( ether_mac_addr, ( NE_TX_PAGE_START << 8 ) + 6, 6 );
     // プロトコルIDの書き込み
-    ne_pio_writemem( (byte *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
+    ne_pio_writemem( (uint8_t *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
     // データ部分の書き込み
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) + 14, ptx_size );
 
@@ -370,9 +370,9 @@ void tulipMoNic::nic_init(void)
     //とりあえずここで、I/O全て表示してみる。
     logprintf("nicIo_Base = %x\n",nicIo_Base);
     
-    dword sts;
-    //byte sts;
-    dword iopt;
+    uint32_t sts;
+    //uint8_t sts;
+    uint32_t iopt;
 
     sts = 1;
     
@@ -392,19 +392,19 @@ void tulipMoNic::nic_init(void)
     \brief ne_pio_writemem
         非公開ルーチン
         tulip バッファメモリ書き込み
-    \param  byte *src [in] 転送元アドレス
-    \param  dword dest [in] 転送先アドレス
-    \param  dword size [in] 長さ 
+    \param  uint8_t *src [in] 転送元アドレス
+    \param  uint32_t dest [in] 転送先アドレス
+    \param  uint32_t size [in] 長さ 
     \return void
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-void tulipMoNic::ne_pio_writemem( byte *src, dword dest, dword size )
+void tulipMoNic::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
-    word writetmp;
+    uint16_t writetmp;
 
     /* ステータスレジスタクリア */
     outp8( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
@@ -428,9 +428,9 @@ void tulipMoNic::ne_pio_writemem( byte *src, dword dest, dword size )
 
     // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(i = 0 ; i < size ; i+=2 , src+=2){
-        //writetmp = (word)(*(src) << 8) + (word)*(src+1);
+        //writetmp = (uint16_t)(*(src) << 8) + (uint16_t)*(src+1);
         //リトルエンディアンならこう？？
-        writetmp = (word)(*(src + 1) << 8) + (word)*(src);
+        writetmp = (uint16_t)(*(src + 1) << 8) + (uint16_t)*(src);
         outp16( NE_ASIC_DATA, writetmp );
     }
     
@@ -447,19 +447,19 @@ void tulipMoNic::ne_pio_writemem( byte *src, dword dest, dword size )
     \brief ne_pio_readmem
         非公開ルーチン
          tulip のメモリから読みだし
-    \param  dword src [in] 転送元アドレス
-    \param  byte *dest [in] 転送先アドレス
-    \param  dword size [in] 長さ 
+    \param  uint32_t src [in] 転送元アドレス
+    \param  uint8_t *dest [in] 転送先アドレス
+    \param  uint32_t size [in] 長さ 
     \return void
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-void tulipMoNic::ne_pio_readmem( dword src, byte *dest, dword size )
+void tulipMoNic::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
-    word readtmp;
+    uint16_t readtmp;
 
 //Yamami デバッグ
 //printf("ne_pio_readmem src=%x \n",src);
@@ -483,11 +483,11 @@ void tulipMoNic::ne_pio_readmem( dword src, byte *dest, dword size )
     // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(i = 0 ; i < size ; i+=2 , dest+=2){
         readtmp=inp16( NE_ASIC_DATA );
-        //*dest=(byte)(readtmp >> 8);
-        //*(dest+1)=(byte)(readtmp & 0xff);
+        //*dest=(uint8_t)(readtmp >> 8);
+        //*(dest+1)=(uint8_t)(readtmp & 0xff);
         //リトルエンディアンならこう？？
-        *(dest+1)=(byte)(readtmp >> 8);
-        *(dest)=(byte)(readtmp & 0xff);
+        *(dest+1)=(uint8_t)(readtmp >> 8);
+        *(dest)=(uint8_t)(readtmp & 0xff);
     }
     
 }
@@ -498,17 +498,17 @@ void tulipMoNic::ne_pio_readmem( dword src, byte *dest, dword size )
     \brief ne_bcompare
         非公開ルーチン
          バイナリ比較ルーチン
-    \param  byte *src [in] 比較元アドレス
-    \param  byte *dest [in] 比較先アドレス
-    \param  dword size [in] 長さ
+    \param  uint8_t *src [in] 比較元アドレス
+    \param  uint8_t *dest [in] 比較先アドレス
+    \param  uint32_t size [in] 長さ
     \return int 結果:一致==0,不一致==0以外
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$
 */
-int tulipMoNic::ne_bcompare( byte *src, byte *dest, dword size )
+int tulipMoNic::ne_bcompare( uint8_t *src, uint8_t *dest, uint32_t size )
 {
-    dword i;
+    uint32_t i;
 
     for(i=0;i<size;i++){
         if( src[i]!=dest[i] )

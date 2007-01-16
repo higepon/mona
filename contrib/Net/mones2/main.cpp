@@ -8,50 +8,51 @@ using namespace mones;
 // nic interface
 static NicServer* server;
 void NicListenLoop();
-dword nic_read(dword nicThread, Ether::Frame* frame);
-dword nic_write(dword nicThread, OutPacket* packet);
-bool getMacAddress(dword nicThread, byte* macAddress);
+uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
+uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
+bool getMacAddress(uint32_t nicThread, uint8_t* macAddress);
 
 // protocol
-void doArp(dword nicThread, const Config& config, Ether::Frame* frame, byte* myMacAddress);
-void doIp(dword nicThread, const Config& config, Ether::Frame* frame);
-void doIcmpReply(dword nicThread, const Config& config, IP::Header* fromIpHeader, Icmp::Header* fromIcmpHeader, byte* destmac);
-dword getIpRoute(const Config& config, dword destIp);
+void doArp(uint32_t nicThread, const Config& config, Ether::Frame* frame, uint8_t* myMacAddress);
+void doIp(uint32_t nicThread, const Config& config, Ether::Frame* frame);
+void doIcmpReply(uint32_t nicThread, const Config& config, IP::Header* fromIpHeader, Icmp::Header* fromIcmpHeader, uint8_t* destmac);
+uint32_t getIpRoute(const Config& config, uint32_t destIp);
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
-    dword ipAddress;
-    dword subnetAddress;
-    dword defaultGateway;
+    uint32_t ipAddress;
+    uint32_t subnetAddress;
+    uint32_t defaultGateway;
 
     if (pekoe->size() < 3) {
         printf("********************************************\n");
         printf("we use default address\n");
         printf("usage: arptest [ip address] [subnet address] [default gateway]\n");
-        ipAddress      = Util::ipAddressToDword(192, 168, 100, 2);
-        subnetAddress  = Util::ipAddressToDword(255, 255, 255, 0);
-        defaultGateway = Util::ipAddressToDword(192, 168, 100, 1);
+        ipAddress      = Util::ipAddressToDuint16_t(192, 168, 100, 2);
+        subnetAddress  = Util::ipAddressToDuint16_t(255, 255, 255, 0);
+        defaultGateway = Util::ipAddressToDuint16_t(192, 168, 100, 1);
     } else {
         int a, b, c, d;
-        sscanf(pekoe->get(0), "%d.%d.%d.%d", &a, &b, &c, &d);
+        sscanf(argv[1], "%d.%d.%d.%d", &a, &b, &c, &d);
         printf("ip address : %d.%d.%d.%d\n", a, b, c, d);
-        ipAddress = Util::ipAddressToDword(a, b, c, d);
+        ipAddress = Util::ipAddressToDuint16_t(a, b, c, d);
 
         sscanf(pekoe->get(1), "%d.%d.%d.%d", &a, &b, &c, &d);
         printf("subnet address : %d.%d.%d.%d\n", a, b, c, d);
-        subnetAddress = Util::ipAddressToDword(a, b, c, d);
+        subnetAddress = Util::ipAddressToDuint16_t(a, b, c, d);
 
         sscanf(pekoe->get(2), "%d.%d.%d.%d", &a, &b, &c, &d);
         printf("default gateway : %d.%d.%d.%d\n", a, b, c, d);
 
-        defaultGateway = Util::ipAddressToDword(a, b, c, d);
+        defaultGateway = Util::ipAddressToDuint16_t(a, b, c, d);
     }
 
-    dword id = syscall_mthread_create((dword)NicListenLoop);
-    syscall_mthread_join(id);
+    uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
+// comment out by higepon
+//    syscall_mthread_join(id);
     Config config(ipAddress, subnetAddress, defaultGateway);
     Ether::Frame frame;
-    byte myMacAddress[6];
+    uint8_t myMacAddress[6];
 
     // 起動待ちいけてない
     for (;;) {
@@ -61,14 +62,14 @@ int MonaMain(List<char*>* pekoe)
         sleep(500);
     }
 
-    dword nicThread = server->getThreadID();
+    uint32_t nicThread = server->getThreadID();
     getMacAddress(nicThread, myMacAddress);
 
     printf("\nlisten start...\n\n");
     for (;;)
     {
         nic_read(nicThread, &frame);
-        word frameType = Util::get2byte((byte*)&frame, 12);
+        uint16_t frameType = Util::get2uint8_t((uint8_t*)&frame, 12);
 
 //        printf("Ether::Frame Read\n");
 
@@ -91,10 +92,10 @@ int MonaMain(List<char*>* pekoe)
     return 0;
 }
 
-dword getIpRoute(const Config& config, dword destIp)
+uint32_t getIpRoute(const Config& config, uint32_t destIp)
 {
-    dword destSubnet = destIp & config.getSubnetAddress();
-    dword mySubnet = config.getIpAddress() & config.getSubnetAddress();
+    uint32_t destSubnet = destIp & config.getSubnetAddress();
+    uint32_t mySubnet = config.getIpAddress() & config.getSubnetAddress();
 
     // 同一サブネット
     if (destSubnet == mySubnet)
@@ -106,7 +107,7 @@ dword getIpRoute(const Config& config, dword destIp)
     return config.getDefaultGateway();
 }
 
-void doIp(dword nicThread, const Config& config, Ether::Frame* frame)
+void doIp(uint32_t nicThread, const Config& config, Ether::Frame* frame)
 {
     IP::Header* fromIpHeader = (IP::Header*)(frame->data);
 
@@ -144,7 +145,7 @@ void doIp(dword nicThread, const Config& config, Ether::Frame* frame)
     }
 }
 
-void doIcmpReply(dword nicThread, const Config& config, IP::Header* fromIpHeader, Icmp::Header* fromIcmpHeader, byte* destmac)
+void doIcmpReply(uint32_t nicThread, const Config& config, IP::Header* fromIpHeader, Icmp::Header* fromIcmpHeader, uint8_t* destmac)
 {
     OutPacket* out = new OutPacket;
     IP::Header* ipHeader = (IP::Header*)(out->header);
@@ -156,7 +157,7 @@ void doIcmpReply(dword nicThread, const Config& config, IP::Header* fromIpHeader
     icmpHeader->type   = 0;
     icmpHeader->code   = 0;
     icmpHeader->chksum = 0;
-    icmpHeader->chksum = Util::calcCheckSum((dword*)icmpHeader, size);
+    icmpHeader->chksum = Util::calcCheckSum((uint32_t*)icmpHeader, size);
 
     // IP
     ipHeader->verhead = (4 << 4) | (sizeof(IP::Header) / 4);
@@ -169,7 +170,7 @@ void doIcmpReply(dword nicThread, const Config& config, IP::Header* fromIpHeader
     ipHeader->chksum = 0;
     ipHeader->len    = Util::swapShort(sizeof(IP::Header) + size);
     ipHeader->frag   = 0;
-    ipHeader->chksum = Util::calcCheckSum((dword*)ipHeader, sizeof(IP::Header));
+    ipHeader->chksum = Util::calcCheckSum((uint32_t*)ipHeader, sizeof(IP::Header));
 
     // OutPacket
     memcpy(out->destmac, destmac, 6);
@@ -180,7 +181,7 @@ void doIcmpReply(dword nicThread, const Config& config, IP::Header* fromIpHeader
     delete out;
 }
 
-void doArp(dword nicThread, const Config& config, Ether::Frame* frame, byte* myMacAddress)
+void doArp(uint32_t nicThread, const Config& config, Ether::Frame* frame, uint8_t* myMacAddress)
 {
     Arp::Header* rheader = (Arp::Header*)(frame->data);
 
@@ -227,7 +228,7 @@ void NicListenLoop()
     server->messageLoop();
 }
 
-dword nic_read(dword nicThread, Ether::Frame* frame)
+uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame)
 {
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))
@@ -241,10 +242,10 @@ dword nic_read(dword nicThread, Ether::Frame* frame)
 
 // caller should free() packet, after packet written
 // not thread safe
-dword nic_write(dword nicThread, OutPacket* packet)
+uint32_t nic_write(uint32_t nicThread, OutPacket* packet)
 {
     MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (dword)packet))
+    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (uint32_t)packet))
     {
         printf("send error 1");
         return 1;
@@ -252,7 +253,7 @@ dword nic_write(dword nicThread, OutPacket* packet)
     return 0;
 }
 
-bool getMacAddress(dword nicThread, byte* macAddress)
+bool getMacAddress(uint32_t nicThread, uint8_t* macAddress)
 {
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_GET_MAC_ADDRESS))

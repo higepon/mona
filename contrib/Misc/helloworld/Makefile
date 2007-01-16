@@ -4,16 +4,18 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = HELLO
-SOURCES = main.cpp
+SOURCES = main.cpp weak.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
+ADDLINK    = -lmonalibc-imp
+#ADDLINK    = -ldlltest-imp
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-CXXFLAGS += -DDEBUG
+CXXFLAGS += -DDEBUG -I . -I ./boost -I$(INCDIR)/stlport
 
 include dependencies

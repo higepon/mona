@@ -84,7 +84,7 @@ public:
   }
 };
 
-int MonaMain(List<char*>* pekoe){
+int main(int argc, char* argv[]){
   GTimer *timer = new GTimer();
   timer->run();
   delete(timer);

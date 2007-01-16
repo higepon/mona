@@ -1,4 +1,4 @@
-TARGET  = GEARS
+	TARGET  = GEARS
 SOURCES = gears.cpp
 INSTDIR = $(BINDIR)/APPS
 

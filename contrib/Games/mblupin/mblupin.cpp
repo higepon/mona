@@ -136,7 +136,7 @@ public:
 	}
 };
 
-int MonaMain(List<char*>* pekoe)
+int main(int argc, char* argv[])
 {
 	MbLupin *lupin = new MbLupin();
 	lupin->run();

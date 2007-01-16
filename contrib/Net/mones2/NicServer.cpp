@@ -41,7 +41,7 @@ bool NicServer::initialize()
     return true;
 }
 
-dword NicServer::getThreadID() const
+uint32_t NicServer::getThreadID() const
 {
     return this->myID;
 }
@@ -52,7 +52,7 @@ void NicServer::interrupt(MessageInfo* msg)
     Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
     this->nic->inputFrame();
     Ether::Frame* frame = new Ether::Frame;
-    this->nic->getFrameBuffer((byte*)frame, sizeof(Ether::Frame));
+    this->nic->getFrameBuffer((uint8_t*)frame, sizeof(Ether::Frame));
     this->frameList.add(frame);
     if (Message::send(this->observerThread, &info)) {
         printf("local!!!! yamas:INIT error\n");

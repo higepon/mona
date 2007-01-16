@@ -19,7 +19,7 @@ namespace System { namespace Mona { namespace Forms
 	private:
 		double opacity;
 #ifdef MONA
-		dword overlap;
+		uint32_t overlap;
 #endif
 		System::Drawing::Point ptRevRect;
 		_P<System::Drawing::Bitmap> formBuffer;
@@ -44,7 +44,7 @@ namespace System { namespace Mona { namespace Forms
 #ifndef MONA
 		void DrawReversibleRectangle();
 #endif
-		virtual void WndProc(dword type, _P<EventArgs> e);
+		virtual void WndProc(uint32_t type, _P<EventArgs> e);
 		virtual void OnPaint();
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e);
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e);

@@ -27,7 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <time.h>
 #endif
 
-#define HALF_WIDTH    8   /* 1byte charcter width */
+#define HALF_WIDTH    8   /* 1uint8_t charcter width */
 #define GSHELL_WIDTH  480 /* 8dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
 
@@ -179,7 +179,7 @@ private:
 		if (mi == NULL) return;
 		if (mi->Size < 0) return;
 		
-		for (dword i = 0; i < mi->Size; i++) {
+		for (uint32_t i = 0; i < mi->Size; i++) {
 			// '\r' は無視する
 			if (mi->Data[i] == '\r') {
 				// NOP
@@ -473,13 +473,13 @@ private:
 			MemoryInfo meminfo;
 			syscall_get_memory_info(&meminfo);
 			memset(temp, 0, sizeof(temp));
-			sprintf(temp, "　　全物理メモリ : %dbyte\n", meminfo.totalMemoryL);
+			sprintf(temp, "　　全物理メモリ : %duint8_t\n", meminfo.totalMemoryL);
 			this->addLine(temp);
 			memset(temp, 0, sizeof(temp));
-			sprintf(temp, "有効ページプール : %dbyte\n", meminfo.freePageNum * meminfo.pageSize);
+			sprintf(temp, "有効ページプール : %duint8_t\n", meminfo.freePageNum * meminfo.pageSize);
 			this->addLine(temp);
 			memset(temp, 0, sizeof(temp));
-			sprintf(temp, "　全ページプール : %dbyte\n", meminfo.totalPageNum * meminfo.pageSize);
+			sprintf(temp, "　全ページプール : %duint8_t\n", meminfo.totalPageNum * meminfo.pageSize);
 			this->addLine(temp);
 		#endif
 		//
@@ -488,7 +488,7 @@ private:
 		} else if (s.equals("kill")) {
 			if (this->argv.size() >= 2) {
 				int pid = atoi(((String *)this->argv.get(1))->getBytes());
-				syscall_kill_thread((dword)pid);
+				syscall_kill_thread((uint32_t)pid);
 			} else {
 				this->addLine("使い方：kill [プロセスID]\n");
 			}
@@ -657,7 +657,7 @@ public:
 
 /** メイン */
 #ifdef MONA
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 #else
 int main(int argc, char** argv) {
 #endif

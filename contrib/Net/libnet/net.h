@@ -2,12 +2,12 @@
 #define __LIBNET_H__
 
 #include "TCPClient.h"
-/* typedef std::vector<byte> Buffer; */
+/* typedef std::vector<uint8_t> Buffer; */
 /* void tcpInitialize(); */
-/* dword tcpConnect(byte a, byte b, byte c, byte d, dword port); */
-/* dword tcpSendMemoryMap(dword handle, const byte* data, dword length); */
-/* dword tcpSend(dword handle, const byte* data, dword length); */
-/* Buffer tcpRead(dword handle); */
-/* bool isConnectionClosed(dword handle); */
+/* uint32_t tcpConnect(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint32_t port); */
+/* uint32_t tcpSendMemoryMap(uint32_t handle, const uint8_t* data, uint32_t length); */
+/* uint32_t tcpSend(uint32_t handle, const uint8_t* data, uint32_t length); */
+/* Buffer tcpRead(uint32_t handle); */
+/* bool isConnectionClosed(uint32_t handle); */
 
 #endif // __LIBNET_H__

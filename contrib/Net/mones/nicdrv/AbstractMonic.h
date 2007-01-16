@@ -24,8 +24,8 @@
  *  \brief 処理待ちフレーム構造体
  */
 typedef struct{
-    dword cmHandle;  //共有メモリハンドル
-    dword cmSize;  //共有メモリサイズ
+    uint32_t cmHandle;  //共有メモリハンドル
+    uint32_t cmSize;  //共有メモリサイズ
 }WAIT_FRAME_BUF;
 
 
@@ -40,10 +40,10 @@ class AbstractMonic {
 
   protected:
     /*! \brief AbstractMonic テンポラリ受信バッファ */ 
-    byte   frame_buf[1500];
+    uint8_t   frame_buf[1500];
     
     /*! \brief 受信パケット本体の長さ */ 
-    dword    frame_len;
+    uint32_t    frame_len;
     
     virtual void frame_input(void) = 0;
     
@@ -55,7 +55,7 @@ class AbstractMonic {
     List<WAIT_FRAME_BUF*>* waitFrameBufList;
     
     /*! \brief MACアドレス */ 
-    byte   ether_mac_addr[6];
+    uint8_t   ether_mac_addr[6];
 
     
     AbstractMonic();
@@ -66,7 +66,7 @@ class AbstractMonic {
     virtual void disableNetWork(void);
     
     //各種インターフェースメソッド サブクラス(具象クラス(NIC)で実装を期待)
-    virtual void frame_output( byte *, byte *, dword, word ) = 0;
+    virtual void frame_output( uint8_t *, uint8_t *, uint32_t, uint16_t ) = 0;
     virtual int init(void) = 0;
     virtual int nic_probe(void) = 0;
     //virtual void nic_init(void) = 0;

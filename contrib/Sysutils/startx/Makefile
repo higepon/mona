@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 TARGET  = STARTX
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS/STARTX.APP

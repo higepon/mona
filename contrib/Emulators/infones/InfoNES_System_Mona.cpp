@@ -22,7 +22,7 @@
 
 static int isExit = 0, waitCount = 0;
 static bool firstPaint = false;
-static dword my_tid = 0, keyevt_tid = 0, dwKeyPad1 = 0, dwKeyPad2 = 0;
+static uint32_t my_tid = 0, keyevt_tid = 0, dwKeyPad1 = 0, dwKeyPad2 = 0;
 
 /*-------------------------------------------------------------------*/
 /*  Class prototypes ( Mona specific )                               */
@@ -42,7 +42,7 @@ public:
 		setTitle("InfoNES");
 	}
 
-	dword* getImageData()
+	uint32_t* getImageData()
 	{
 		return this->_buffer->getSource();
 	}
@@ -147,10 +147,10 @@ WORD NesPalette[ 64 ] =
 /*===================================================================*/
 
 /* Application main */
-int MonaMain( List<char*>* pekoe )
+int main(int argc, char* argv[])
 {
 	/* Command line */
-	if (pekoe->size() == 0) {
+	if (argc == 1) {
 		printf("InfoNES for Mona v0.96J\n");
 		printf("copyright (c) 2005, bayside.\n");
 		printf("\n");
@@ -167,15 +167,16 @@ int MonaMain( List<char*>* pekoe )
 	}
 
 	/* Open ROM file */
-	if (InfoNES_Load(pekoe->get(0)) != 0) exit(1);
+	if (InfoNES_Load(argv[1]) != 0) exit(1);
 
 	/* Set frame skip */
 	FrameSkip = 2;
 	
 	/* Create thread */
 	my_tid = syscall_get_tid();
-	dword id = syscall_mthread_create((dword)EventLoop);
-	syscall_mthread_join(id);
+	uint32_t id = syscall_mthread_create((uint32_t)EventLoop);
+// comment out by higepon
+//	syscall_mthread_join(id);
 	MessageInfo msg, src;
 	src.header = MSG_SERVER_START_OK;
 	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
@@ -299,7 +300,7 @@ void *InfoNES_MemoryCopy( void *dest, const void *src, int count )
  *      Points to the starting address of the block of memory to copy
  *
  *    int count                        (Read)
- *      Specifies the size, in bytes, of the block of memory to copy
+ *      Specifies the size, in uint8_ts, of the block of memory to copy
  *
  *  Return values
  *    Pointer of destination
@@ -323,10 +324,10 @@ void *InfoNES_MemorySet( void *dest, int c, int count )
  *      Points to the starting address of the block of memory to fill
  *
  *    int c                            (Read)
- *      Specifies the byte value with which to fill the memory block
+ *      Specifies the uint8_t value with which to fill the memory block
  *
  *    int count                        (Read)
- *      Specifies the size, in bytes, of the block of memory to fill
+ *      Specifies the size, in uint8_ts, of the block of memory to fill
  *
  *  Return values
  *    Pointer of destination

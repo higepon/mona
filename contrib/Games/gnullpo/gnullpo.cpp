@@ -61,7 +61,7 @@ public:
 	}
 };
 
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 	GNullpo *nullpo = new GNullpo();
 	nullpo->run();
 	return 0;

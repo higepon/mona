@@ -77,7 +77,7 @@ void Overlap::Draw(int rx, int ry, int rw, int rh)
 	// left line
 	if (rx <= x1 && x1 <= rx2)
 	{
-		byte* p = (byte*)&screen_buffer->Data[x1 + _y1 * sw];
+		uint8_t* p = (uint8_t*)&screen_buffer->Data[x1 + _y1 * sw];
 		for (int y = _y1; y <= _y2; y++, p += sw4)
 		{
 			p[0] = ~p[0];
@@ -89,7 +89,7 @@ void Overlap::Draw(int rx, int ry, int rw, int rh)
 	// right line
 	if (rx <= x2 && x2 <= rx2)
 	{
-		byte* p = (byte*)&screen_buffer->Data[x2 + _y1 * sw];
+		uint8_t* p = (uint8_t*)&screen_buffer->Data[x2 + _y1 * sw];
 		for (int y = _y1; y <= _y2; y++, p += sw4)
 		{
 			p[0] = ~p[0];
@@ -101,7 +101,7 @@ void Overlap::Draw(int rx, int ry, int rw, int rh)
 	// top line
 	if (ry <= y1 && y1 <= ry2)
 	{
-		byte* p = (byte*)&screen_buffer->Data[_x1 + y1 * sw];
+		uint8_t* p = (uint8_t*)&screen_buffer->Data[_x1 + y1 * sw];
 		for (int x = _x1; x <= _x2; x++, p += 4)
 		{
 			p[0] = ~p[0];
@@ -113,7 +113,7 @@ void Overlap::Draw(int rx, int ry, int rw, int rh)
 	// bottom line
 	if (ry <= y2 && y2 <= ry2)
 	{
-		byte* p = (byte*)&screen_buffer->Data[_x1 + y2 * sw];
+		uint8_t* p = (uint8_t*)&screen_buffer->Data[_x1 + y2 * sw];
 		for (int x = _x1; x <= _x2; x++, p += 4)
 		{
 			p[0] = ~p[0];

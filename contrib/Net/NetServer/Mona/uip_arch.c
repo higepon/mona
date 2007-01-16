@@ -83,7 +83,7 @@ uip_chksum(u16_t *sdata, u16_t len)
     ++sdata;
   }
 
-  /* add up any odd byte */
+  /* add up any odd uint8_t */
   if(len == 1) {
     acc += htons(((u16_t)(*(u8_t *)sdata)) << 8);
     if(acc < htons(((u16_t)(*(u8_t *)sdata)) << 8)) {

@@ -19,7 +19,7 @@ namespace System { namespace Mona { namespace Forms
 	private:
 		int interval;
 #ifdef MONA
-		dword sleep_tid;
+		uint32_t sleep_tid;
 #endif
 		
 	public:

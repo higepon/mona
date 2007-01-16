@@ -17,10 +17,10 @@ namespace mones {
 //#endif
 
 
-typedef std::map<dword, int> ConnectedMap;
-typedef std::vector<byte> Buffer;
-typedef std::map<dword, Buffer*> SendBuffersMap;
-typedef std::map<dword, Buffer*> ReceiveBuffersMap;
+typedef std::map<uint32_t, int> ConnectedMap;
+typedef std::vector<uint8_t> Buffer;
+typedef std::map<uint32_t, Buffer*> SendBuffersMap;
+typedef std::map<uint32_t, Buffer*> ReceiveBuffersMap;
 class TcpClient
 {
 public:
@@ -28,21 +28,21 @@ public:
     virtual ~TcpClient();
 
     void EventHandler();
-    dword Connect(IPAddress ipAddress, dword port);
-    dword ConnectionToHandle(struct uip_conn* connection)
+    uint32_t Connect(IPAddress ipAddress, uint32_t port);
+    uint32_t ConnectionToHandle(struct uip_conn* connection)
     {
-        return (dword)connection;
+        return (uint32_t)connection;
     }
-    bool Connected(dword handle)
+    bool Connected(uint32_t handle)
     {
         return connected_[handle];
     }
-    bool HaveNewData(dword handle)
+    bool HaveNewData(uint32_t handle)
     {
         return receiveBuffers_[handle] != NULL;
     }
-    void Send(dword handle, std::vector<byte>* data);
-    Buffer Receive(dword handle);
+    void Send(uint32_t handle, std::vector<uint8_t>* data);
+    Buffer Receive(uint32_t handle);
 
 protected:
     void AbortedHandler();

@@ -11,7 +11,7 @@ TcpClient::~TcpClient()
 {
 }
 
-dword TcpClient::Connect(IPAddress ipAddress, dword port)
+uint32_t TcpClient::Connect(IPAddress ipAddress, uint32_t port)
 {
     struct uip_conn* connection = uip_connect(ipAddress.GetAddress(), HTONS(port));
     if (connection == NULL)
@@ -19,15 +19,15 @@ dword TcpClient::Connect(IPAddress ipAddress, dword port)
         return 0;
     }
     TRACE("connection=%x\n", connection);
-    return (dword)connection;
+    return (uint32_t)connection;
 }
 
-void TcpClient::Send(dword handle, vector<byte>* data)
+void TcpClient::Send(uint32_t handle, vector<uint8_t>* data)
 {
     sendBuffers_[handle] = data;
 }
 
-Buffer TcpClient::Receive(dword handle)
+Buffer TcpClient::Receive(uint32_t handle)
 {
     Buffer* buffer = receiveBuffers_[handle];
     if (NULL == buffer)
@@ -43,33 +43,33 @@ Buffer TcpClient::Receive(dword handle)
 
 void TcpClient::AbortedHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
     AfterClosedHandler();
 }
 
 void TcpClient::TimeoutHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
     AfterClosedHandler();
 }
 
 void TcpClient::ClosedHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
     AfterClosedHandler();
 }
 
 void TcpClient::ConnectedHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
-    dword handle = ConnectionToHandle(uip_conn);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
+    uint32_t handle = ConnectionToHandle(uip_conn);
     connected_[handle] = true;
 }
 
 void TcpClient::AckedHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
-    dword handle = ConnectionToHandle(uip_conn);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
+    uint32_t handle = ConnectionToHandle(uip_conn);
     Buffer* buffer = sendBuffers_[handle];
     if (NULL == buffer) return;
 
@@ -89,14 +89,14 @@ void TcpClient::NewDataHandler()
     if (uip_datalen() == 0) return;
     printf("new data comes\n");
     Buffer* data = new Buffer(uip_appdata, &uip_appdata[uip_datalen()]);
-    dword handle = ConnectionToHandle(uip_conn);
+    uint32_t handle = ConnectionToHandle(uip_conn);
     receiveBuffers_[handle] = data;
 }
 
 void TcpClient::SendDataHandler()
 {
-    TRACE("conn=%x %s\n", (dword)uip_conn, __FUNCTION__);
-    dword handle = ConnectionToHandle(uip_conn);
+    TRACE("conn=%x %s\n", (uint32_t)uip_conn, __FUNCTION__);
+    uint32_t handle = ConnectionToHandle(uip_conn);
     Buffer* buffer = sendBuffers_[handle];
     if (NULL == buffer || buffer->empty())
     {

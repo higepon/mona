@@ -268,7 +268,7 @@ void CJPEGLS::sos(void)
         scan_ac[i] = c & 0x0F; // AC Huffman Table
     }
 
-    //3 bytes skip
+    //3 uint8_ts skip
     get_byte();
     get_byte();
     get_byte();

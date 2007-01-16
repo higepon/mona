@@ -28,10 +28,10 @@
 */
 #include "controller.hpp"
 
-int MonaMain(List<char*>* pekoe) {
+int main(int argc, char* argv[]) {
 	gnote::Controller c;
-	if (pekoe->size() > 0) {
-		c.SetFile(String(pekoe->get(0)));
+	if (argc > 1) {
+		c.SetFile(String(argv[1]));
 	}
 	c.Run();
 	return 0;

@@ -5,7 +5,7 @@
 #include <monapi.h>
 #include <servers/gui.h>
 
-extern dword __gui_server;
+extern uint32_t __gui_server;
 #endif
 
 #include <gui/System/Pointer.h>
@@ -90,7 +90,7 @@ namespace System { namespace Drawing
 		
 #ifdef MONA
 		this->buffer.Unset();
-		dword handle = this->get_Handle();
+		uint32_t handle = this->get_Handle();
 		MonAPI::MemoryMap::unmap(handle);
 		if (MonAPI::Message::send(__gui_server, MSG_GUISERVER_DISPOSEBITMAP, handle) != 0)
 		{

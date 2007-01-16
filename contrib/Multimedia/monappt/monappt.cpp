@@ -38,7 +38,7 @@ int OpenJpeg(const char* filename)
 
     int w, h;
     jpeg->GetInfo(&w, &h);
-    byte* picture = new byte[w * h * 3];
+    uint8_t* picture = new uint8_t[w * h * 3];
     jpeg->Decode(picture);
 
     int x, y;
@@ -47,7 +47,7 @@ int OpenJpeg(const char* filename)
     int vesaBpp    = screen.getBpp() / 8;
     int ww         = w < vesaWidth ? w : vesaWidth;
     int hh         = h < vesaHeight ? h : vesaHeight;
-    byte* vesaVram = screen.getVRAM();
+    uint8_t* vesaVram = screen.getVRAM();
 
     for (y = 0; y < hh; y++)
     {
@@ -57,7 +57,7 @@ int OpenJpeg(const char* filename)
             int k2 = (x + (y * w)) * 3;
             if (vesaBpp == 2)
             {
-                *(word*)&vesaVram[k] = Color::bpp24to565(picture[k2], picture[k2 + 1], picture[k2 + 2]);
+                *(uint16_t*)&vesaVram[k] = Color::bpp24to565(picture[k2], picture[k2 + 1], picture[k2 + 2]);
             }
             else
             {
@@ -99,17 +99,17 @@ int OpenSlide(List<CString>* list, int i)
     return 0;
 }
 
-int MonaMain(List<char*>* argv)
+int main(int argc, char* argv[])
 {
     // 設定ファイル名
     const char* filepath;
-    if (argv->size() < 1)
+    if (argc < 2)
     {
         filepath = "/APPS/MONAPPT.INI";
     }
     else
     {
-        filepath = argv->get(0);
+        filepath = argv[1];
     }
 
     // ファイル読み込み
@@ -120,8 +120,8 @@ int MonaMain(List<char*>* argv)
         printf("file read error\n");
         return(-1);
     }
-    dword filesize = mi->Size;
-    byte* filebuff = (byte*)malloc(mi->Size);
+    uint32_t filesize = mi->Size;
+    uint8_t* filebuff = (uint8_t*)malloc(mi->Size);
     if (filebuff == NULL)
     {
         printf("memory allocate error\n");
@@ -135,7 +135,7 @@ int MonaMain(List<char*>* argv)
 
     // ファイル解析
     HList<CString> list;
-    byte temp[128];
+    uint8_t temp[128];
     memset(temp, '\0', sizeof(temp));
     for (int i = 0; i < (int)filesize; i++)
     {

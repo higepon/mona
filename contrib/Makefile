@@ -11,7 +11,7 @@ all:
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/NetServer && $(MAKE) && $(MAKE) install
 ### libraries
-#	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/libnet && $(MAKE) && $(MAKE) install
@@ -21,10 +21,12 @@ all:
 	cd Graphics/jpegview && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/Mesa-gears && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/stdoutclienttest && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/stdoutservertest && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/print && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/reverse && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monappt && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/bplayer && touch dependencies && $(MAKE) && $(MAKE) install
 ### MonaForms applications
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
 	cd X/monafile && touch dependencies && $(MAKE) && $(MAKE) install
@@ -36,7 +38,7 @@ all:
 	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) && $(MAKE) install
 #	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
 ### Network applications
-	cd Net/libnet/sample/giko && $(MAKE) && $(MAKE) install
+#	cd Net/libnet/sample/giko && $(MAKE) && $(MAKE) install
 ### Append
 	cd Benchmarks/gfire && $(MAKE) && $(MAKE) install
 	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) install
@@ -63,8 +65,9 @@ clean:
 	cd Graphics/Mesa && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
 	cd Misc/helloworld && $(MAKE) clean
-	cd Misc/stdoutservertest && $(MAKE) clean
-	cd Misc/stdoutclienttest && $(MAKE) clean
+	cd Misc/print && $(MAKE) clean
+	cd Misc/upper && $(MAKE) clean
+	cd Misc/reverse && $(MAKE) clean
 	cd Misc/gnote && $(MAKE) clean
 	cd Multimedia/monapeg && $(MAKE) clean
 	cd Multimedia/monappt && $(MAKE) clean

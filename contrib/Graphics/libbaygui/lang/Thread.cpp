@@ -50,7 +50,8 @@ namespace baygui {
 	void Thread::start()
 	{
 		dword thread_id = syscall_mthread_create((dword)ExecRun);
-		syscall_mthread_join(thread_id);
+// comment out by higepon
+//		syscall_mthread_join(thread_id);
 		// MSG_SERVER_START_OKが返ってくるのを待つ
 		MessageInfo msg, src;
 		src.header = MSG_SERVER_START_OK;

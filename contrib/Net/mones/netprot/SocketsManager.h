@@ -47,9 +47,9 @@ class SocketsManager
     SocketsManager();
     ~SocketsManager();
     
-    SocketContainer* findSocket(dword ip ,word  myport ,word youport);
-    void registLisSocket(dword tid ,word  myport );
-    void registConSocket(dword tid ,word myport, dword ip , word youport);
+    SocketContainer* findSocket(uint32_t ip ,uint16_t  myport ,uint16_t youport);
+    void registLisSocket(uint32_t tid ,uint16_t  myport );
+    void registConSocket(uint32_t tid ,uint16_t myport, uint32_t ip , uint16_t youport);
 
   private:
     //コネクション中のSocketContainerハッシュ
