@@ -49,8 +49,8 @@ class System
     static const char* getBundlePath();
     static uint32_t getProcessStdoutID();
     static uint32_t getProcessStdinID();
-    static Stream* System::getStdinStream();
-    static Stream* System::getStdoutStream();
+    static Stream* getStdinStream();
+    static Stream* getStdoutStream();
 };
 
 }
