@@ -599,7 +599,8 @@ write:
 	return 0;
 }
 
-const int search0a(int prm0, unsigned char *buf, unsigned char *buf0, const int max0, int *p, const int *table)
+//const int search0a(int prm0, unsigned char *buf, unsigned char *buf0, const int max0, int *p, const int *table)
+int search0a(int prm0, unsigned char *buf, unsigned char *buf0, const int max0, int *p, const int *table)
 {
 	int l, max = 0, d, ld, ld0 = 30;
 	unsigned char *s;
@@ -834,7 +835,8 @@ void flushb0()
 	return;
 }
 
-const int getbc(int bits)
+int getbc(int bits)
+//const int getbc(int bits)
 {
 	int ret = 0;
 	do {
@@ -853,7 +855,8 @@ const int getbc(int bits)
 	return ret;
 }
 
-const int getbc0(int bits, int ret)
+//const int getbc0(int bits, int ret)
+int getbc0(int bits, int ret)
 /* 初期値付き */
 {
 	do {
@@ -903,7 +906,8 @@ UCHAR *get_subbuf(UCHAR *subbuf, int *t, int *d, int *l)
 	return subbuf;
 }
 
-const int get_subbuflen(unsigned char *subbuf, int *pt, int j)
+//const int get_subbuflen(unsigned char *subbuf, int *pt, int j)
+int get_subbuflen(unsigned char *subbuf, int *pt, int j)
 /* リピート長を検出 */
 {
 	int l, d, t, len = 0;
@@ -1142,7 +1146,8 @@ int getnum_s8()
 	return s;
 }
 
-const int getnum_l0a(int z)
+int getnum_l0a(int z)
+//const int getnum_l0a(int z)
 {
 	static int l[4] = { 0x7fffffff, 4, 8, 16 };
 	int i = 1, j;
@@ -1166,7 +1171,8 @@ const int getnum_l0a(int z)
 	return j + i;
 }
 
-const int calclen_l1a(unsigned int i)
+//const int calclen_l1a(unsigned int i)
+int calclen_l1a(unsigned int i)
 /* must i >= 1 */
 /* sxsxsxsxs形式で出力 */
 {
@@ -1185,7 +1191,8 @@ const int calclen_l1a(unsigned int i)
 	return l + 1;
 }
 
-const int calclen_l1b(unsigned int i)
+int calclen_l1b(unsigned int i)
+//const int calclen_l1b(unsigned int i)
 /* must i >= 1 */
 /* sxsxsxsxs形式で出力 */
 {
@@ -1194,7 +1201,8 @@ const int calclen_l1b(unsigned int i)
 	return calclen_l1a(i - 1); /* 3を2にする */
 }
 
-const int calclen_df(int d, unsigned int s)
+//const int calclen_df(int d, unsigned int s)
+int calclen_df(int d, unsigned int s)
 /* sのbitが1だと、そこまで出力したあとに、sビットを出力 */
 {
 	int len, l = 0;

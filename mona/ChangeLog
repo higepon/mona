@@ -1,3 +1,7 @@
+2007-01-19  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/bim2bin/bim2bin.c: const intな戻りをもつ関数を int に変更。(警告を消すため)
+
 2007-01-18  higepon  <higepon@users.sourceforge.jp>
 
         以下2つは hello が2回実行されると死んでしまうのを防ぐ。
