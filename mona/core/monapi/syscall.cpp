@@ -99,7 +99,7 @@ void __pure_virtual() {
 /*----------------------------------------------------------------------
     printf
 ----------------------------------------------------------------------*/
-void printf(const char *format, ...) {
+int printf(const char *format, ...) {
 
     char buf[128];
     int bufpos = 0;
@@ -157,6 +157,7 @@ void printf(const char *format, ...) {
         buf[bufpos] = '\0';
         print(buf, 0);
     }
+    return 0;
 }
 
 void putCharacter(char ch, int direct)

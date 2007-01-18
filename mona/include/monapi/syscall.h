@@ -104,7 +104,7 @@ extern int atexit( void (*func)(void));
 
 extern void putCharacter(char ch, int direct);
 extern void putInt(size_t n, int base, int direct);
-extern void printf(const char *format, ...);
+extern int printf(const char *format, ...);
 extern void _printf(const char *format, ...);
 extern void logprintf(const char* format, ...);
 extern void _logprintf(const char* format, ...);

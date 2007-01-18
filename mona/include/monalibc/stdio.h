@@ -149,7 +149,7 @@ int	 setvbuf(FILE *, char *, int, size_t);
 /* ISO/IEC 9899:1999 7.19.6 Formatted input/output functions*/
 /*int	 fprintf(FILE *, const char *, ...); //stub */
 int fscanf(FILE *fp, const char *format, ...);
-/*int	 printf(const char *, ...); //stub */
+int	 printf(const char *, ...); //stub
 /*int	 scanf(const char *, ...); //stub */
 /*int	 snprintf(char *, size_t, char *, ...); //stub */
 int sprintf(char *str, const char *format, ...);

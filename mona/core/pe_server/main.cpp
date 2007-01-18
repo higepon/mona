@@ -217,7 +217,7 @@ public:
         dlls.erase(dlls.begin());
         reverse(dlls.begin(), dlls.end());
 
-        PEData* exe = this->list[0];
+//        PEData* exe = this->list[0];
 //        this->EntryPoint = exe->Parser.get_EntryPoint();
         this->Load();
         this->EntryPoint = bootstrapEntryPoint;
@@ -374,36 +374,6 @@ private:
                 CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
                 PEData* target = this->Find(dll);
 
-// <<<<<<< .working
-// 		addr = 0;
-// 		for (int i = 0; i < len; i++)
-// 		{
-// 			PEData* data = this->list[i];
-// 			int its = data->Parser.get_ImportTableCount();
-// 			_A<CString> names(its);
-// 			for (int j = 0; j < its; j++)
-// 			{
-// 				CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
-// 				names[j] = dll;
-// 				bool pr = this->prompt;
-// 				for (int k = 0; k < j; k++)
-// 				{
-// 					if (names[k] == dll) pr = false;
-// 				}
-// 				if (pr) printf("%s: Linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
-// 				PEData* target = this->Find(dll);
-// 				if (target != NULL && data->Parser.Link(&dst->Data[addr], j, &target->Parser))
-// 				{
-// 					if (pr) printf("OK\n");
-// 				}
-// 				else
-// 				{
-// 					if (this->prompt)
-// 					{
-// 						if (pr) printf("NG\n");
-// 						printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
-// 					}
-// =======
                 if (target == NULL || !data->Parser.Link(&dst->Data[addr], j, &target->Parser))
                 {
                     if (this->prompt)
@@ -411,7 +381,6 @@ private:
                         _printf("NG\n");
                         _printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
                     }
-//>>>>>>> .merge-right.r3945
 #ifdef NO_CACHE
                     monapi_cmemoryinfo_dispose(dst);
                     monapi_cmemoryinfo_delete(dst);
@@ -436,6 +405,7 @@ private:
         for (i = 0; i < dlls.size(); i++)
         {
             PEData* dll = dlls[i];
+            _printf("dll=%s %x\n", (const char*)dll->Name, dll->Parser.get_EntryPoint());
             start[i * CALL_CODE_SIZE] = 0xB8; // mov eax
             *(uint32_t*)(&start[i * CALL_CODE_SIZE + 1]) = dll->Parser.get_EntryPoint(); // ,address
             start[i * CALL_CODE_SIZE + 5] = 0x68; // push

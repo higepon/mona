@@ -31,12 +31,15 @@ static bool monapi_initialized = false;
 
 int dllmain(uint32_t reason)
 {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     switch (reason)
     {
     case 0: // DLL_PROCESS_ATTACH
         _logprintf("DLL_PROCESS_ATTACH\n");
         monapi_initialize_memory(64 * 1024 * 1024);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_memory_initialized = true;
         break;
     case 1: // DLL_PROCESS_DETACH
@@ -47,11 +50,13 @@ int dllmain(uint32_t reason)
         _printf("%s:%s:%d\n", __FILE__, __func__, __LINE__);
         break;
     }
+_printf("%s:%s:%d\n", __FILE__, __func__, __LINE__);
     return 1;
 }
 
 __attribute__((constructor)) void monapi_initialize()
 {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_initialized) return;
     monapi_initialized = true;
 }
@@ -86,6 +91,7 @@ void invokeFuncList(FuncVoid** list, char* file, int line)
     {
         for (int i = 0; i < count; i++, list++)
         {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             (**list)();
         }
     }
@@ -134,8 +140,9 @@ int user_start_impl(FuncMonaMain* monaMain)
 
 extern "C" int user_start_c_impl(FuncMain* main)
 {
-    bool dll = isInDLL(__CTOR_LIST__);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
+    bool dll = isInDLL(__CTOR_LIST__);
     int argc = syscall_get_arg_count();
     char** _argv = new char*[argc];
     for (int i = 0; i < argc; i++)

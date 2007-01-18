@@ -283,58 +283,6 @@ bool PEParser::Relocate(uint8_t* image, uint32_t address)
 
 bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 {
-// <<<<<<< .working
-// 	if (parser == NULL) return false;
-	
-// 	ImportTable* it = this->GetImportTable(index);
-// 	if (it == NULL) return false;
-	
-// 	uint32_t addr1 = it->ImportLookupTable;
-// 	uint32_t addr2 = it->ImportAddressTable;
-// 	if (addr1 == 0 || addr2 == 0) return false;
-	
-// 	for (;; addr1 += 4, addr2 += 4)
-// 	{
-// 		if (addr1 >= this->imageSize || addr2 >= this->imageSize) return false;
-		
-// 		uint32_t* ptr1 = (uint32_t*)&image[addr1];
-// 		uint32_t* ptr2 = (uint32_t*)&image[addr2];
-// 		if (*ptr1 == 0 || *ptr2 == 0) break;
-		
-// 		int ordinal = -1;
-// 		uint32_t* ptr3 = (uint32_t*)&image[*ptr1];
-// 		if ((*ptr3 & 0x80000000) != 0)
-// 		{
-// 			// Ordinal Number
-// 			ordinal = (int)((*ptr3) & 0x7fffffff);
-// 		}
-// 		else
-// 		{
-// 			// Hint/Name Table RVA
-// 			int hint = (*(uint16_t*)ptr3) + 1;
-// 			const char* name = (const char*)&image[*ptr1 + 2];
-// 			if (!strcmp(name, parser->GetExportName(hint)))
-// 			{
-// 				ordinal = hint;
-// 				//printf("* [%d]%s\n", ordinal, name);
-// 			}
-// 			else
-// 			{
-// 				ordinal = parser->GetExportOrdinal(name);
-// 				//printf("* [%d->%d]%s\n", hint, ordinal, name);
-// 			}
-// 		}
-// 		if (ordinal == -1) return false;
-		
-// 		uint32_t exp_addr = parser->GetExportAddress(ordinal);
-// 		if (exp_addr == 0) return false;
-		
-// 		*ptr2 = exp_addr + parser->address;
-// 		//printf("  address = %x\n", *ptr2);
-// 	}
-	
-// 	return true;
-// =======
 #if DEBUG_LINK
     _printf("Link start table=%d\n", index);
 #endif
@@ -371,12 +319,14 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 
         if (*lookupPtr == 0) break;
 
+// rollback patch
         uint32_t fixup = 0;
         std::map<uint32_t, uint32_t>::iterator it = this->fixups.find(*lookupPtr);
         if (it == this->fixups.end())
             this->fixups.insert(std::pair<uint32_t, uint32_t>(*lookupPtr, addr));
         else
             fixup = *ptr - this->specific->ImageBase - it->second;
+// rollback patch end
 
         int ordinal = -1;
         const char* name = (const char*)&image[(*lookupPtr) + 2];
@@ -399,8 +349,9 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
         const char* exp_name = parser->GetExportName(ordinal);
         if (name != NULL && (exp_name == NULL || strcmp(name, exp_name) != 0)) return false;
         if (exp_addr == 0) return false;
+// rollback patch
         *ptr = exp_addr + parser->address + fixup;
+//        *ptr = exp_addr + parser->address;
     }
     return true;
-//>>>>>>> .merge-right.r3945
 }
