@@ -8,9 +8,13 @@
 
 int main(int argc, char* argv[])
 {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     char buf[128];
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     sprintf(buf, "Hello, World\n");
-    printf(buf);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    _printf(buf);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return 0;
 }
 

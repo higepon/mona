@@ -4,7 +4,7 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = HELLO
-SOURCES = main.cpp weak.cpp
+SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
