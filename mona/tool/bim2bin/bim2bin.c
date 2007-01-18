@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 	int mallocsize = 32 * 1024, reserve = 0, stacksize, datasize, worksize;
 	int i, j, filesize, compress = 7, outtype = 0, prm0 = 12, maxdis = -1, bsiz = -1, submaxdis = 16 * 1024;
 	FILE *fp; /* maxdis = 32 * 1024, bsiz = 32 * 1024 */
-	UCHAR *filepath[2], c, *buf, *overbuf, *s7ptr, *eopt = NULL, *argv0 = argv[0];
+	UCHAR *filepath[2], c, *buf, *overbuf, *s7ptr, *eopt = NULL, *argv0 = (UCHAR *)argv[0];
 	int code_end, data_begin, entry, opt = -1, rjc = -1;
 	static unsigned char signature[15] = "\xff\xff\xff\x01\x00\x00\x00OSASKCMP";
 
@@ -198,17 +198,17 @@ int main(int argc, char **argv)
 
 	/* パラメーター解析 */
 	for (argv++, i = 1; i < argc; argv++, i++) {
-		UCHAR *s = *argv;
+		char *s = *argv;
 		if (strncmp(s, "malloc:", 7) == 0)
-			mallocsize = getnum(s + 7);
+			mallocsize = getnum((UCHAR *)s + 7);
 		else if (strncmp(s, "file:", 5) == 0)
-			reserve = getnum(s + 5) | 0x01;
+			reserve = getnum((UCHAR *)s + 5) | 0x01;
 		else if (strcmp(s, "-simple") == 0)
 			compress = -1;
 		else if (strncmp(s, "input:", 6) == 0)
-			filepath[0] = s + 6;
+			filepath[0] = (UCHAR *)s + 6;
 		else if (strncmp(s, "output:", 7) == 0)
-			filepath[1] = s + 7;
+			filepath[1] = (UCHAR *)s + 7;
 		else if (strcmp(s, "-l2d3") == 0)
 			compress = 1;
 		else if (strcmp(s, "-tek0") == 0)
@@ -232,44 +232,44 @@ int main(int argc, char **argv)
 		else if (strcmp(s, "-restore") == 0)
 			outtype = 3;
 		else if (strncmp(s, "prm0:", 5) == 0)
-			prm0 = getnum(s + 5);
+			prm0 = getnum((UCHAR *)s + 5);
 		else if (strncmp(s, "bsiz:", 5) == 0)
-			bsiz = getnum(s + 5);
+			bsiz = getnum((UCHAR *)s + 5);
 		else if (strncmp(s, "BS:", 3) == 0)
-			bsiz = getnum(s + 3);
+			bsiz = getnum((UCHAR *)s + 3);
 		else if (strncmp(s, "in:", 3) == 0)
-			filepath[0] = s + 3;
+			filepath[0] = (UCHAR *)s + 3;
 		else if (strncmp(s, "out:", 4) == 0)
-			filepath[1] = s + 4;
+			filepath[1] = (UCHAR *)s + 4;
 		else if (strncmp(s, "mmarea:", 7) == 0)
-			reserve = getnum(s + 7) | 0x01;
+			reserve = getnum((UCHAR *)s + 7) | 0x01;
 		else if (strcmp(s, "-bin0") == 0)
 			outtype = 4;
 		else if (strcmp(s, "-osacmp") == 0)
 			outtype = 5;
 		else if (strncmp(s, "opt:", 4) == 0)
-			opt = getnum(s + 4);
+			opt = getnum((UCHAR *)s + 4);
 		else if (strncmp(s, "rjc:", 4) == 0)
-			rjc = getnum(s + 4);
+			rjc = getnum((UCHAR *)s + 4);
 		else if (strncmp(s, "eopt:", 5) == 0)
-			eopt = s + 5;
+			eopt = (UCHAR *)s + 5;
 		else if (strncmp(s, "eprm:", 5) == 0)
-			glb_str_eprm = s + 5;
+			glb_str_eprm = (UCHAR *)s + 5;
 		else if (strncmp(s, "maxdis:", 7) == 0)
-			maxdis = getnum(s + 7);
+			maxdis = getnum((UCHAR *)s + 7);
 		else if (strncmp(s, "MD:", 3) == 0)
-			maxdis = getnum(s + 3);
+			maxdis = getnum((UCHAR *)s + 3);
 		else if (strncmp(s, "submaxdis:", 10) == 0)
-			submaxdis = getnum(s + 10);
+			submaxdis = getnum((UCHAR *)s + 10);
 		else if (strncmp(s, "SD:", 3) == 0)
-			submaxdis = getnum(s + 3);
+			submaxdis = getnum((UCHAR *)s + 3);
 		else if (strncmp(s, "hint:", 5) == 0)
 			hint = fopen(s + 5, "rb");
 		else if (strncmp(s, "clv:", 4) == 0) {
 		//	static UCHAR table_clv[10] = { }; /* 10段階 */
 		//	5が十分、3が中間、1がデフォルト、0がもっとも弱い、9が最強(99)
 		//	10-99 -> 00-88, 90
-			complev = getnum(s + 4);
+			complev = getnum((UCHAR *)s + 4);
 			if (complev > 9)
 				complev = complev / 10 - 1;
 		} else
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
 
 	fp = NULL;
 	if (filepath[0])
-		fp = fopen(filepath[0], "rb");
+		fp = fopen((char *)filepath[0], "rb");
 	if (fp == NULL) {
 		fprintf(stderr, "Commnad line error : can't open input file\n");
 		return 1;
@@ -586,7 +586,7 @@ int main(int argc, char **argv)
 write:
 	fp = NULL;
 	if (filepath[1])
-		fp = fopen(filepath[1], "wb");
+		fp = fopen((char *)filepath[1], "wb");
 	if (fp == NULL) {
 		fprintf(stderr, "Commnad line error : can't open output file\n");
 		return 1;
@@ -3184,7 +3184,7 @@ int lzcompress_tek3h(int srcsiz, int *src, int outsiz, UCHAR *outbuf, UCHAR *wor
 			s256[i] = j;
 		}
 		/* s256のsrcsiz-1個のintに対して符号化する */
-		setstatistics0(srcsiz, stat, srcsiz - 1, s256, 16);
+		setstatistics0(srcsiz, stat, srcsiz - 1, (unsigned int *)s256, 16);
 		i = optimize_uc(&ucstr, stat, calclen_ucstr, tek1_ucprm_s4, tek1_ucprm_s41, NULL);
 	//	i = optimize_uc(&ucstr, stat, calclen_ucstr, tek1_ucprm_s41);
 		initbitbuf(&btbuf, &outbuf[outsiz] - tek1_s7ptr, tek1_s7ptr);
@@ -5643,10 +5643,10 @@ retry:
 	free(shortPathName);
 #endif //HOST_MINGW
 
-	for (p = "t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
+	for (p = (UCHAR *)"t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
 	if (eopt) {
 		if (eopt[0] == '@' && (eopt[1] == '\0' || (eopt[1] == '@' && eopt[2] == '\0'))) {
-			static UCHAR *mfname[] = {
+			static char *mfname[] = {
 				"bt2", "bt3", "bt4", "bt4b",
 				"pat2r", "pat2", "pat2h", "pat3h", "pat4h",
 				"hc3", "hc4"
@@ -5809,11 +5809,11 @@ retry:
 			}
 #endif
 
-			sprintf(eoptmp, "-a%d_-d%d_-fb%d_-lc%d_-lp%d_-pb%d_-mf%s",
+			sprintf((char *)eoptmp, "-a%d_-d%d_-fb%d_-lc%d_-lp%d_-pb%d_-mf%s",
 				testall.a, testall.d, testall.fb, testall.lc, testall.lp, testall.pb, mfname[testall.mf]);
 			p = eoptmp;
 			if (eopt[1])
-				fputs(eoptmp, stderr);
+				fputs((char *)eoptmp, stderr);
 		} else
 			p = eopt;
 		for (; *p; p++, q++) {
@@ -5827,9 +5827,9 @@ retry:
 			printf("eopt:%s\n", eoptmp);
 		}
 	}
-	for (p = " -notitle"; *p; *q++ = *p++);
+	for (p = (UCHAR *)" -notitle"; *p; *q++ = *p++);
 	*q = '\0';
-	i = system(outbuf);
+	i = system((char *)outbuf);
 	if (i != 0) {
 		remove(TEK5_TMPNAME "1");
 		if (testall.phase > 0)
@@ -6137,10 +6137,10 @@ putchar('\n');
 	rc->prob0 = (unsigned int *) prb;
 	rc->probs = sizeof (struct STR_PRB) / sizeof (int);
 
-	rc->fchgprm = prb->fchgprm;
-	rc->tbmt = prb->tbmt;
-	rc->tbmm = prb->tbmm;
-	rc->fchglt = &prb->fchglt;
+	rc->fchgprm = (unsigned int *)prb->fchgprm;
+	rc->tbmt = (unsigned int *)prb->tbmt;
+	rc->tbmm = (unsigned int *)prb->tbmm;
+	rc->fchglt = (unsigned int *)&prb->fchglt;
 
 phaseloop:
 	pb = eprm[EPRM_PB];
@@ -6378,7 +6378,7 @@ phaseloop:
 		/* bylzを出力 */
 		do {
 			s_pos = pos & m_pos;
-			rc_encode1(rc, &prb->pb[s_pos].st[s].mch, 0^nst);
+			rc_encode1(rc, (unsigned int *)&prb->pb[s_pos].st[s].mch, 0^nst);
 			s = state_table[s];
 			if (pmch) {
 				k = mcby;
@@ -6389,14 +6389,14 @@ phaseloop:
 					ip = &prb->lit[pos & m_lp][lastuint8_t >> (8 - lc)][j];
 					if (((mcby ^ mclp[1]) >> (7 - i)) & 1)
 						goto skip0;
-					rc_encode1(rc, ip, (mclp[1] >> (7 - i)) & 1);
+					rc_encode1(rc, (unsigned int *)ip, (mclp[1] >> (7 - i)) & 1);
 				}
 			} else {
 				for (i = 0; i < 8; i++) {
 					j = (0x100 | mclp[1]) >> (8 - i);
 					ip = &prb->lit[pos & m_lp][lastuint8_t >> (8 - lc)][j];
 	skip0:
-					rc_encode1(rc, ip, (mclp[1] >> (7 - i)) & 1);
+					rc_encode1(rc, (unsigned int *)ip, (mclp[1] >> (7 - i)) & 1);
 				}
 			}
 			lastuint8_t = mclp[1];
@@ -6443,10 +6443,10 @@ phaseloop:
 
 			/* i, l, d, rを出力 */
 			s_pos = pos & m_pos;
-			rc_encode1(rc, &prb->pb[s_pos].st[s].mch, 1^nst);
+			rc_encode1(rc, (unsigned int *)&prb->pb[s_pos].st[s].mch, 1^nst);
 			if (i == 2) {
 				k = ~d;
-				rc_encode1(rc, &prb->st[s].rep, 0^nst);
+				rc_encode1(rc, (unsigned int *)&prb->st[s].rep, 0^nst);
 				s = s < 7 ? 7 : 10;
 				tek_conv_tek5_len(rc, prb, 0, s_pos, l, nst);
 				j = l - 2;
@@ -6454,58 +6454,58 @@ phaseloop:
 					j = 3;
 				if (k <= 3) {
 					/* pslotのみ */
-					rc_treeout1(rc, prb->pslot[j], 6, k);
+					rc_treeout1(rc, (unsigned int *)prb->pslot[j], 6, k);
 				} else {
 					/* pslotを算出 */
 					for (m = 0; (1 << m) <= k; m++);
 					/* m = 3 : [4,7], m = 4 : [8,15] */
-					rc_treeout1(rc, prb->pslot[j], 6, (m - 1) * 2 + ((k >> (m - 2)) & 1));
+					rc_treeout1(rc, (unsigned int *)prb->pslot[j], 6, (m - 1) * 2 + ((k >> (m - 2)) & 1));
 					if (m == 3)
-						rc_treeout1(rc, prb->spdis1[(k >> 1) & 1], 1, k & 1);
+						rc_treeout1(rc, (unsigned int *)prb->spdis1[(k >> 1) & 1], 1, k & 1);
 					if (m == 4)
-						rc_treeout1(rc, prb->spdis2[(k >> 2) & 1], 2, rc_revbit(k & 0x03, 2));
+						rc_treeout1(rc, (unsigned int *)prb->spdis2[(k >> 2) & 1], 2, rc_revbit(k & 0x03, 2));
 					if (m == 5)
-						rc_treeout1(rc, prb->spdis3[(k >> 3) & 1], 3, rc_revbit(k & 0x07, 3));
+						rc_treeout1(rc, (unsigned int *)prb->spdis3[(k >> 3) & 1], 3, rc_revbit(k & 0x07, 3));
 					if (m == 6)
-						rc_treeout1(rc, prb->spdis4[(k >> 4) & 1], 4, rc_revbit(k & 0x0f, 4));
+						rc_treeout1(rc, (unsigned int *)prb->spdis4[(k >> 4) & 1], 4, rc_revbit(k & 0x0f, 4));
 					if (m == 7)
-						rc_treeout1(rc, prb->spdis5[(k >> 5) & 1], 5, rc_revbit(k & 0x1f, 5));
+						rc_treeout1(rc, (unsigned int *)prb->spdis5[(k >> 5) & 1], 5, rc_revbit(k & 0x1f, 5));
 					if (m >= 8) {
 						if (nst == 0) {
 							/* align=4 */
 							rc_treeout0(rc, m - 6, (k >> 4) & ((1 << (m - 6)) - 1));
-							rc_treeout1(rc, prb->algn, 4, rc_revbit(k & 0x0f, 4));
+							rc_treeout1(rc, (unsigned int *)prb->algn, 4, rc_revbit(k & 0x0f, 4));
 						} else {
 							/* align=6 */
 							if (m > 8)
 								rc_treeout0(rc, m - 8, (k >> 6) & ((1 << (m - 8)) - 1));
-							rc_treeout1(rc, prb->algn, 6, rc_revbit(k & 0x3f, 6));
+							rc_treeout1(rc, (unsigned int *)prb->algn, 6, rc_revbit(k & 0x3f, 6));
 						}
 					}
 				}
 			} else {
-				rc_encode1(rc, &prb->st[s].rep, 1^nst);
+				rc_encode1(rc, (unsigned int *)&prb->st[s].rep, 1^nst);
 				if (r == 0) {
-					rc_encode1(rc, &prb->st[s].repg0, 0^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg0, 0^nst);
 					if (l == 1) {
-						rc_encode1(rc, &prb->pb[s_pos].st[s].rep0l1, 0);
+						rc_encode1(rc, (unsigned int *)&prb->pb[s_pos].st[s].rep0l1, 0);
 						s = s < 7 ? 9 : 11;
 						goto skip1;
 					}
-					rc_encode1(rc, &prb->pb[s_pos].st[s].rep0l1, 1);
+					rc_encode1(rc, (unsigned int *)&prb->pb[s_pos].st[s].rep0l1, 1);
 				} else if (r == 1) {
-					rc_encode1(rc, &prb->st[s].repg0, 1^nst);
-					rc_encode1(rc, &prb->st[s].repg1, 0^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg0, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg1, 0^nst);
 				} else if (r == 2) {
-					rc_encode1(rc, &prb->st[s].repg0, 1^nst);
-					rc_encode1(rc, &prb->st[s].repg1, 1^nst);
-					rc_encode1(rc, &prb->st[s].repg2, 0^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg0, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg1, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg2, 0^nst);
 				} else if (r == 3) {
-					rc_encode1(rc, &prb->st[s].repg0, 1^nst);
-					rc_encode1(rc, &prb->st[s].repg1, 1^nst);
-					rc_encode1(rc, &prb->st[s].repg2, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg0, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg1, 1^nst);
+					rc_encode1(rc, (unsigned int *)&prb->st[s].repg2, 1^nst);
 					if (nst)
-						rc_encode1(rc, &prb->repg3, 1);
+						rc_encode1(rc, (unsigned int *)&prb->repg3, 1);
 				} else {
 					printf("rep error! "); exit(1);
 				}
@@ -6625,40 +6625,40 @@ void tek_conv_tek5_len(struct RC *rc, struct STR_PRB *prb, int mode, int s_pos, 
 	int l0, l1/*, i, j, k */;
 	len -= 2;
 	if (len < 8) {
-		rc_encode1(rc, &prb->lensel[mode], 0^t);
-		rc_treeout1(rc, prb->pb[s_pos].lenlow[mode], 3, len);
+		rc_encode1(rc, (unsigned int *)&prb->lensel[mode], 0^t);
+		rc_treeout1(rc, (unsigned int *)prb->pb[s_pos].lenlow[mode], 3, len);
 		return;
 	}
 	if (len < 16) {
-		rc_encode1(rc, &prb->lensel[mode], 1^t);
-		rc_encode1(rc, &prb->lensel2[mode], 0^t);
-		rc_treeout1(rc, prb->pb[s_pos].lenmid[mode], 3, len - 8);
+		rc_encode1(rc, (unsigned int *)&prb->lensel[mode], 1^t);
+		rc_encode1(rc, (unsigned int *)&prb->lensel2[mode], 0^t);
+		rc_treeout1(rc, (unsigned int *)prb->pb[s_pos].lenmid[mode], 3, len - 8);
 		return;
 	}
-	rc_encode1(rc, &prb->lensel[mode], 1^t);
-	rc_encode1(rc, &prb->lensel2[mode], 1^t);
+	rc_encode1(rc, (unsigned int *)&prb->lensel[mode], 1^t);
+	rc_encode1(rc, (unsigned int *)&prb->lensel2[mode], 1^t);
 	if (len < 16 + 256 - 8) {
-		rc_treeout1(rc, prb->lenhigh[mode], 8, len - 16);
+		rc_treeout1(rc, (unsigned int *)prb->lenhigh[mode], 8, len - 16);
 		return;
 	}
 	len -= 16 + 256 - 8 - 1;
 	for (l0 = 1; len >= (1 << l0); l0++);
 	for (l1 = 0; l0 >= (2 << l1); l1++);
-	rc_treeout1(rc, prb->lenhigh[mode], 8, 256 - 8 + l1);
+	rc_treeout1(rc, (unsigned int *)prb->lenhigh[mode], 8, 256 - 8 + l1);
 	if (l1 > 0) {
 		/* l1 = 1...7 */
 		if (t != 0 && l1 < 6) {
 			/* t == 0 のときはrmskのせいでうまくいかない */
 			if (l1 == 1)
-				rc_treeout1(rc, prb->lenext1, 1, l0);
+				rc_treeout1(rc, (unsigned int *)prb->lenext1, 1, l0);
 			if (l1 == 2)
-				rc_treeout1(rc, prb->lenext2, 2, l0);
+				rc_treeout1(rc, (unsigned int *)prb->lenext2, 2, l0);
 			if (l1 == 3)
-				rc_treeout1(rc, prb->lenext3, 3, l0);
+				rc_treeout1(rc, (unsigned int *)prb->lenext3, 3, l0);
 			if (l1 == 4)
-				rc_treeout1(rc, prb->lenext4, 4, l0);
+				rc_treeout1(rc, (unsigned int *)prb->lenext4, 4, l0);
 			if (l1 == 5)
-				rc_treeout1(rc, prb->lenext5, 5, l0);
+				rc_treeout1(rc, (unsigned int *)prb->lenext5, 5, l0);
 		} else
 			rc_treeout0(rc, l1, l0);
 	}
