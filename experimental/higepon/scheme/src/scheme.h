@@ -32,10 +32,10 @@ namespace std {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
-#include "PrimitiveProcedures/True.h"
-#include "PrimitiveProcedures/False.h"
-#include "PrimitiveProcedures/Procedure.h"
-#include "PrimitiveProcedures/Set.h"
+#include "procedures/True.h"
+#include "procedures/False.h"
+#include "procedures/Procedure.h"
+#include "procedures/Set.h"
 
 
 std::string load(const char* file);

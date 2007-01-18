@@ -253,20 +253,20 @@ QuoteFilterTest.cpp\
 ../src/Application.cpp\
 ../src/Application.h\
 ../src/PrimitiveProcedure.h\
-../src/PrimitiveProcedures/Set.cpp\
-../src/PrimitiveProcedures/Set.h\
-../src/PrimitiveProcedures/True.h\
-../src/PrimitiveProcedures/True.cpp\
-../src/PrimitiveProcedures/False.h\
-../src/PrimitiveProcedures/False.cpp\
-../src/PrimitiveProcedures/CharcterProcedures.cpp\
-../src/PrimitiveProcedures/VectorProcedures.cpp\
-../src/PrimitiveProcedures/NumberProcedures.cpp\
-../src/PrimitiveProcedures/StringProcedures.cpp\
-../src/PrimitiveProcedures/SymbolProcedures.cpp\
-../src/PrimitiveProcedures/PairProcedures.cpp\
-../src/PrimitiveProcedures/IOProcedures.cpp\
-../src/PrimitiveProcedures/EqualProcedures.cpp
+../src/procedures/Set.cpp\
+../src/procedures/Set.h\
+../src/procedures/True.h\
+../src/procedures/True.cpp\
+../src/procedures/False.h\
+../src/procedures/False.cpp\
+../src/procedures/CharcterProcedures.cpp\
+../src/procedures/VectorProcedures.cpp\
+../src/procedures/NumberProcedures.cpp\
+../src/procedures/StringProcedures.cpp\
+../src/procedures/SymbolProcedures.cpp\
+../src/procedures/PairProcedures.cpp\
+../src/procedures/IOProcedures.cpp\
+../src/procedures/EqualProcedures.cpp
 
 all: all-am
 
@@ -562,71 +562,71 @@ test_cpp-Application.o: ../src/Application.cpp
 test_cpp-Application.obj: ../src/Application.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Application.obj `if test -f '../src/Application.cpp'; then $(CYGPATH_W) '../src/Application.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Application.cpp'; fi`
 
-test_cpp-Set.o: ../src/PrimitiveProcedures/Set.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.o `test -f '../src/PrimitiveProcedures/Set.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/Set.cpp
+test_cpp-Set.o: ../src/procedures/Set.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.o `test -f '../src/procedures/Set.cpp' || echo '$(srcdir)/'`../src/procedures/Set.cpp
 
-test_cpp-Set.obj: ../src/PrimitiveProcedures/Set.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.obj `if test -f '../src/PrimitiveProcedures/Set.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/Set.cpp'; fi`
+test_cpp-Set.obj: ../src/procedures/Set.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Set.obj `if test -f '../src/procedures/Set.cpp'; then $(CYGPATH_W) '../src/procedures/Set.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/Set.cpp'; fi`
 
-test_cpp-True.o: ../src/PrimitiveProcedures/True.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.o `test -f '../src/PrimitiveProcedures/True.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/True.cpp
+test_cpp-True.o: ../src/procedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.o `test -f '../src/procedures/True.cpp' || echo '$(srcdir)/'`../src/procedures/True.cpp
 
-test_cpp-True.obj: ../src/PrimitiveProcedures/True.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.obj `if test -f '../src/PrimitiveProcedures/True.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/True.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/True.cpp'; fi`
+test_cpp-True.obj: ../src/procedures/True.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-True.obj `if test -f '../src/procedures/True.cpp'; then $(CYGPATH_W) '../src/procedures/True.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/True.cpp'; fi`
 
-test_cpp-False.o: ../src/PrimitiveProcedures/False.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.o `test -f '../src/PrimitiveProcedures/False.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/False.cpp
+test_cpp-False.o: ../src/procedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.o `test -f '../src/procedures/False.cpp' || echo '$(srcdir)/'`../src/procedures/False.cpp
 
-test_cpp-False.obj: ../src/PrimitiveProcedures/False.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.obj `if test -f '../src/PrimitiveProcedures/False.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/False.cpp'; fi`
+test_cpp-False.obj: ../src/procedures/False.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-False.obj `if test -f '../src/procedures/False.cpp'; then $(CYGPATH_W) '../src/procedures/False.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/False.cpp'; fi`
 
-test_cpp-CharcterProcedures.o: ../src/PrimitiveProcedures/CharcterProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterProcedures.o `test -f '../src/PrimitiveProcedures/CharcterProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/CharcterProcedures.cpp
+test_cpp-CharcterProcedures.o: ../src/procedures/CharcterProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterProcedures.o `test -f '../src/procedures/CharcterProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/CharcterProcedures.cpp
 
-test_cpp-CharcterProcedures.obj: ../src/PrimitiveProcedures/CharcterProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterProcedures.obj `if test -f '../src/PrimitiveProcedures/CharcterProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/CharcterProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/CharcterProcedures.cpp'; fi`
+test_cpp-CharcterProcedures.obj: ../src/procedures/CharcterProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-CharcterProcedures.obj `if test -f '../src/procedures/CharcterProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/CharcterProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/CharcterProcedures.cpp'; fi`
 
-test_cpp-VectorProcedures.o: ../src/PrimitiveProcedures/VectorProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-VectorProcedures.o `test -f '../src/PrimitiveProcedures/VectorProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/VectorProcedures.cpp
+test_cpp-VectorProcedures.o: ../src/procedures/VectorProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-VectorProcedures.o `test -f '../src/procedures/VectorProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/VectorProcedures.cpp
 
-test_cpp-VectorProcedures.obj: ../src/PrimitiveProcedures/VectorProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-VectorProcedures.obj `if test -f '../src/PrimitiveProcedures/VectorProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/VectorProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/VectorProcedures.cpp'; fi`
+test_cpp-VectorProcedures.obj: ../src/procedures/VectorProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-VectorProcedures.obj `if test -f '../src/procedures/VectorProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/VectorProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/VectorProcedures.cpp'; fi`
 
-test_cpp-NumberProcedures.o: ../src/PrimitiveProcedures/NumberProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberProcedures.o `test -f '../src/PrimitiveProcedures/NumberProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/NumberProcedures.cpp
+test_cpp-NumberProcedures.o: ../src/procedures/NumberProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberProcedures.o `test -f '../src/procedures/NumberProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/NumberProcedures.cpp
 
-test_cpp-NumberProcedures.obj: ../src/PrimitiveProcedures/NumberProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberProcedures.obj `if test -f '../src/PrimitiveProcedures/NumberProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/NumberProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/NumberProcedures.cpp'; fi`
+test_cpp-NumberProcedures.obj: ../src/procedures/NumberProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-NumberProcedures.obj `if test -f '../src/procedures/NumberProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/NumberProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/NumberProcedures.cpp'; fi`
 
-test_cpp-StringProcedures.o: ../src/PrimitiveProcedures/StringProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringProcedures.o `test -f '../src/PrimitiveProcedures/StringProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/StringProcedures.cpp
+test_cpp-StringProcedures.o: ../src/procedures/StringProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringProcedures.o `test -f '../src/procedures/StringProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/StringProcedures.cpp
 
-test_cpp-StringProcedures.obj: ../src/PrimitiveProcedures/StringProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringProcedures.obj `if test -f '../src/PrimitiveProcedures/StringProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/StringProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/StringProcedures.cpp'; fi`
+test_cpp-StringProcedures.obj: ../src/procedures/StringProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-StringProcedures.obj `if test -f '../src/procedures/StringProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/StringProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/StringProcedures.cpp'; fi`
 
-test_cpp-SymbolProcedures.o: ../src/PrimitiveProcedures/SymbolProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SymbolProcedures.o `test -f '../src/PrimitiveProcedures/SymbolProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/SymbolProcedures.cpp
+test_cpp-SymbolProcedures.o: ../src/procedures/SymbolProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SymbolProcedures.o `test -f '../src/procedures/SymbolProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/SymbolProcedures.cpp
 
-test_cpp-SymbolProcedures.obj: ../src/PrimitiveProcedures/SymbolProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SymbolProcedures.obj `if test -f '../src/PrimitiveProcedures/SymbolProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/SymbolProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/SymbolProcedures.cpp'; fi`
+test_cpp-SymbolProcedures.obj: ../src/procedures/SymbolProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-SymbolProcedures.obj `if test -f '../src/procedures/SymbolProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/SymbolProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/SymbolProcedures.cpp'; fi`
 
-test_cpp-PairProcedures.o: ../src/PrimitiveProcedures/PairProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-PairProcedures.o `test -f '../src/PrimitiveProcedures/PairProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/PairProcedures.cpp
+test_cpp-PairProcedures.o: ../src/procedures/PairProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-PairProcedures.o `test -f '../src/procedures/PairProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/PairProcedures.cpp
 
-test_cpp-PairProcedures.obj: ../src/PrimitiveProcedures/PairProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-PairProcedures.obj `if test -f '../src/PrimitiveProcedures/PairProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/PairProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/PairProcedures.cpp'; fi`
+test_cpp-PairProcedures.obj: ../src/procedures/PairProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-PairProcedures.obj `if test -f '../src/procedures/PairProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/PairProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/PairProcedures.cpp'; fi`
 
-test_cpp-IOProcedures.o: ../src/PrimitiveProcedures/IOProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-IOProcedures.o `test -f '../src/PrimitiveProcedures/IOProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/IOProcedures.cpp
+test_cpp-IOProcedures.o: ../src/procedures/IOProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-IOProcedures.o `test -f '../src/procedures/IOProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/IOProcedures.cpp
 
-test_cpp-IOProcedures.obj: ../src/PrimitiveProcedures/IOProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-IOProcedures.obj `if test -f '../src/PrimitiveProcedures/IOProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/IOProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/IOProcedures.cpp'; fi`
+test_cpp-IOProcedures.obj: ../src/procedures/IOProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-IOProcedures.obj `if test -f '../src/procedures/IOProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/IOProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/IOProcedures.cpp'; fi`
 
-test_cpp-EqualProcedures.o: ../src/PrimitiveProcedures/EqualProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-EqualProcedures.o `test -f '../src/PrimitiveProcedures/EqualProcedures.cpp' || echo '$(srcdir)/'`../src/PrimitiveProcedures/EqualProcedures.cpp
+test_cpp-EqualProcedures.o: ../src/procedures/EqualProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-EqualProcedures.o `test -f '../src/procedures/EqualProcedures.cpp' || echo '$(srcdir)/'`../src/procedures/EqualProcedures.cpp
 
-test_cpp-EqualProcedures.obj: ../src/PrimitiveProcedures/EqualProcedures.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-EqualProcedures.obj `if test -f '../src/PrimitiveProcedures/EqualProcedures.cpp'; then $(CYGPATH_W) '../src/PrimitiveProcedures/EqualProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/PrimitiveProcedures/EqualProcedures.cpp'; fi`
+test_cpp-EqualProcedures.obj: ../src/procedures/EqualProcedures.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-EqualProcedures.obj `if test -f '../src/procedures/EqualProcedures.cpp'; then $(CYGPATH_W) '../src/procedures/EqualProcedures.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/procedures/EqualProcedures.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
