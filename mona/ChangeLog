@@ -1,3 +1,14 @@
+2007-01-18  higepon  <higepon@users.sourceforge.jp>
+
+        以下2つは hello が2回実行されると死んでしまうのを防ぐ。
+
+        * core/pe_server/PEParser.cpp (PEParser::Link):     this->fixups.clear(); を追加。
+
+        * core/monalibc/stdio/stream.cpp (stream_opener): 以下のように初期化を変更
+        __sF[0]._stream = inStream;
+        __sF[1]._stream = outStream;
+        __sF[2]._stream = outStream;
+
 2007-01-16  higepon  <higepon@users.sourceforge.jp>
 
         * mona-stdioを merge <<3946>>

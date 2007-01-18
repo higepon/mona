@@ -5,6 +5,10 @@ CONTRIB_DIR = "contrib"
 M_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/branches/mona-stdio"
 C_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/branches/contrib-stdio"
 
+def qemu(revision)
+  system("/usr/bin/qemu -cdrom ~/tmp/#{revision}/mona/tool/mkimg/mona.iso -fda ~/tmp/#{revision}/mona/tool/mkimg/mona.img -boot d -k ja ")
+end
+
 def fetch_and_execute(revision)
   dir = Dir.pwd
   p "===================# revision #{revision} ==================="
@@ -16,14 +20,16 @@ def fetch_and_execute(revision)
   end
   system("cd mona && ./configure --mingw-prefix=/usr/bin/i586-mingw32msvc- && make");
   system("cd contrib && make");
-  system("/usr/bin/qemu -cdrom ~/tmp/#{revision}/mona/tool/mkimg/mona.iso -fda ~/tmp/#{revision}/mona/tool/mkimg/mona.img -boot d -k ja ")
+  qemu(revision)
   Dir.chdir(dir)
 end
 
 
 r = ARGV.shift
 
-if (r)
+if (r && r == 'qemu')
+  qemu(ARGV.shift)
+elsif (r)
   fetch_and_execute(r)
 else
   revisions = []

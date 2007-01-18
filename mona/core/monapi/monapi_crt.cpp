@@ -15,7 +15,6 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 ----------------------------------------------------------------------*/
 extern "C" int user_start()
 {
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!monapi_memory_initialized)
     {
         monapi_initialize_memory(64 * 1024 * 1024);

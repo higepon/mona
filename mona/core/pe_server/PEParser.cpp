@@ -312,6 +312,7 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
     }
 #endif
 
+    this->fixups.clear();
     for (; addr < this->imageSize; addr += 4, lookupAddrr += 4)
     {
         uint32_t* lookupPtr = (uint32_t*)&image[lookupAddrr];

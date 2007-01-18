@@ -405,7 +405,6 @@ private:
         for (i = 0; i < dlls.size(); i++)
         {
             PEData* dll = dlls[i];
-            _printf("dll=%s %x\n", (const char*)dll->Name, dll->Parser.get_EntryPoint());
             start[i * CALL_CODE_SIZE] = 0xB8; // mov eax
             *(uint32_t*)(&start[i * CALL_CODE_SIZE + 1]) = dll->Parser.get_EntryPoint(); // ,address
             start[i * CALL_CODE_SIZE + 5] = 0x68; // push
