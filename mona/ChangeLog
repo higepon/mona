@@ -1,6 +1,6 @@
 2007-01-20  higepon  <higepon@users.sourceforge.jp>
 
-        * core/file_server/IDEDriver.cpp (IDEDriver::protocolPacket): junjunnさんのパッチ。sleepをコメントアウト。<<>>
+        * core/file_server/IDEDriver.cpp (IDEDriver::protocolPacket): junjunnさんのパッチ。sleepをコメントアウト。<<3962>>
 
         * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): junjunnさんのパッチ。
           offset が 0のときに共有メモリに直接読み込む。
