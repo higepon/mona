@@ -1,3 +1,10 @@
+2007-01-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/IDEDriver.cpp (IDEDriver::protocolPacket): junjunnさんのパッチ。sleepをコメントアウト。<<>>
+
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): junjunnさんのパッチ。
+          offset が 0のときに共有メモリに直接読み込む。
+
 2007-01-19  higepon  <higepon@users.sourceforge.jp>
 
         * tool/bim2bin/bim2bin.c: const intな戻りをもつ関数を int に変更。(警告を消すため)

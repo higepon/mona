@@ -17,6 +17,7 @@
 using namespace MonAPI;
 
 //#define DEBUG_READ_TRACE
+#define FAST_JUNJUNN 1
 
 /*----------------------------------------------------------------------
     IDEDRIVER
@@ -357,7 +358,9 @@ Log("\n");
     outp8(controller, ATA_BLR, (uint8_t)(command->limit & 0xff));
     outp8(controller, ATA_BHR, (uint8_t)(command->limit >> 8));
     outp8(controller, ATA_CMR, 0xa0);
+#ifndef FAST_JUNJUNN
     sleep(1);
+#endif
 
     uint32_t i;
     for (i = 0; i < ATA_TIMEOUT; i++)
@@ -455,7 +458,9 @@ bool IDEDriver::protocolAtaNoneData(IDEController* controller, ATACommand* comma
     }
 
     outp8(controllers, ATA_CMR, command->command);
+#ifndef FAST_JUNJUNN
     sleep(1);
+#endif
 
     /* wait busy clear */
     if (!waitBusyClear(controller))
@@ -504,7 +509,9 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
     }
 
     outp8(controller, ATA_CMR, command->command);
+#ifndef FAST_JUNJUNN
     sleep(1);
+#endif
 
     /* read atlternate status once */
     inp8(controller, ATA_ASR);
@@ -708,11 +715,15 @@ void IDEDriver::initialize(IDEController* controller)
 {
     /* software reset */
     outp8(controller, ATA_DCR, 0x06);
+#ifndef FAST_JUNJUNN
     sleep(5);
+#endif
 
     /* no interrupt */
     outp8(controller, ATA_DCR, 0x02);
+#ifndef FAST_JUNJUNN
     sleep(5);
+#endif
 
     setDeviceTypeFirst(controller, MASTER);
     setDeviceTypeSecond(controller, MASTER);
@@ -740,7 +751,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
     {
         /* select device */
         outp8(controller, ATA_DHR, deviceValue(deviceNo));
-        sleep(10);
+//        sleep(10);
 
         c = inp8(controller, ATA_STR);
         if (c == 0xff) break;
@@ -800,7 +811,9 @@ void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
     {
         bool firstResult = commandIdentify(controller, deviceNo, buffer);
         int firstError   = getLastError();
+#ifndef FAST_JUNJUNN
         sleep(5);
+#endif
         bool secondResult = commandIdentify(controller, deviceNo, buffer);
         int secondError   = getLastError();
 
@@ -863,7 +876,9 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
         if (whichController == controller && device->deviceNo == deviceNo)
         {
             outp8(controller, ATA_DHR, deviceValue(deviceNo));
+#ifndef FAST_JUNJUNN
             sleep(10);
+#endif
             return true;
         }
     }
@@ -872,9 +887,10 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
 
     /* select device */
     outp8(controller, ATA_DHR, deviceValue(deviceNo));
+#ifndef FAST_JUNJUNN
     sleep(10);
-
     if (!waitBusyAndDataRequestBothClear(controller)) return false;
+#endif
 
     whichController = controller;
     whichController->selectedDevice = &controller->devices[deviceNo];
