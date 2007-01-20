@@ -1,6 +1,6 @@
 2007-01-20  higepon  <higepon@users.sourceforge.jp>
 
-        * src/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): patch from junjunn. if offset == 0 read directory to context->memory.
+        * src/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): patch from junjunn. if offset == 0 read directory to context->memory.<<3960>>
 
 2006-10-07  higepon  <higepon@users.sourceforge.jp>
 
