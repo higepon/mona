@@ -25,7 +25,7 @@ public:
     int initializeRootFileSystem();
     int initializeMountedFileSystems();
     monapi_cmemoryinfo* readFileAll(const std::string& file);
-    monapi_cmemoryinfo* FileServer::ST5DecompressFile(const char* file);
+    monapi_cmemoryinfo* ST5DecompressFile(const char* file);
     int64_t GetST5DecompressedSize(monapi_cmemoryinfo* mi);
     monapi_cmemoryinfo* ST5Decompress(monapi_cmemoryinfo* mi);
 

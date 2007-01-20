@@ -12,6 +12,7 @@
 
 #ifdef ON_LINUX
 #include <stdio.h>
+#include "types.h"
 #else
 #include <sys/types.h>
 #include <monapi/io.h>

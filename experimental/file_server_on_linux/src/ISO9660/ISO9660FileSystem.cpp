@@ -96,6 +96,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     int sectorCount = (offset + readSize + SECTOR_SIZE - 1) / SECTOR_SIZE - offset / SECTOR_SIZE;
     dword sectorSize = sectorCount * SECTOR_SIZE;
 
+#if 0
     byte* temp = new byte[sectorSize];
     if (temp == NULL) return MONA_FAILURE;
 
@@ -117,6 +118,45 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     delete[] temp;
     context->resultSize = readSize;
     return MONA_SUCCESS;
+#else
+    int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
+
+    context->memory = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
+    {
+        monapi_cmemoryinfo_delete(context->memory);
+        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    }
+
+    // by junjunn
+    if (0 == dataOffset)
+    {
+// by higepon
+//        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
+        bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
+        if (!readResult)
+        {
+            return MONA_FAILURE;
+        }
+    }
+    else
+    {
+        uint8_t* temp = new uint8_t[sectorSize];
+        if (temp == NULL) return MONA_FAILURE;
+
+        bool readResult = drive_->read(lba, temp, sectorSize) == 0;
+        if (!readResult)
+        {
+            delete temp;
+            return MONA_FAILURE;
+        }
+
+        memcpy(context->memory->Data, temp + dataOffset, readSize);
+        delete[] temp;
+    }
+    context->resultSize = readSize;
+    return MONA_SUCCESS;
+#endif
 }
 
 int ISO9660FileSystem::seek(Vnode* file, dword offset, dword origin)
