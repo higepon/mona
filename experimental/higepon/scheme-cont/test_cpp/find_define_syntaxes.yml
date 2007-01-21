@@ -1,0 +1,18 @@
+# find define-syntax in text
+-
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+-
+ - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
+ - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
+-
+ - (define-syntax pp (syntax-rules () ((_ a) (begin (display a))) ((_ a ...) (begin (pp a) (pp ...)))))
+ - (define-syntax pp (syntax-rules () ((_ a) (begin (display a))) ((_ a ...) (begin (pp a) (pp ...)))))
+-
+ - (begin (define-syntax show (syntax-rules () ((_ a) (display a)))))
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+-
+ - (begin (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b))))) (define-syntax show (syntax-rules () ((_ a) (display a)))))
+ - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+
