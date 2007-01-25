@@ -106,6 +106,7 @@ public:
     void setValue(const std::string& value) { value_ = value; }
     int getType() const { return SYMBOL; }
     std::string toString() { return value_; }
+    virtual ZSExp* eval() { return NULL;} 
 
 protected:
     std::string value_;
@@ -124,6 +125,7 @@ public:
     int getType() const { return PAIR; }
     std::string toString();
     std::string toStringCdr();
+    virtual ZSExp* eval() { return NULL;} 
 
 protected:
     ZSExp* car_;

@@ -30,6 +30,21 @@ Object* Begin::eval(Environment* env)
     return Scheme::evalSequence(this->actions(), env);
 }
 
+
+// exp fix me todo
+#include <algorithm>
+Object* Begin::getContinuation(Object* object)
+{
+    Objects* actions = new Objects;
+    Objects::iterator target = find(actions_->begin(), actions_->end(), object);
+    Begin* ret = new Begin(actions, lineno());
+    for (Objects::const_iterator it = target + 1 ; it != actions_->end(); ++it)
+    {
+        actions_->push_back(*it);
+    }
+    return ret;
+}
+
 bool Begin::eqv() const
 {
     return false;
