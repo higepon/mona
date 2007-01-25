@@ -36,110 +36,110 @@ Objects* Scheme::listOfValues(Objects* objects, Environment* env)
 // GCの特性を考えて単方向リストにする
 // env を保持する必要あり
 
-class Arugment
-{
-public:
-    Arugment(Object* objects) : object(object) {}
-    virtual ~Arugment() {}
+// class Arugment
+// {
+// public:
+//     Arugment(Object* objects) : object(object) {}
+//     virtual ~Arugment() {}
 
-    Object* object;
-    Arugment* next;
-};
+//     Object* object;
+//     Arugment* next;
+// };
 
-class Continuation
-{
-public:
-    Continuation(Object* object, Environment* env, uint32_t length, bool evalMe = true) : object(object), env(env), length(length), evalMe(evalMe) {}
-    virtual ~Continuation() {}
+// class Continuation
+// {
+// public:
+//     Continuation(Object* object, Environment* env, uint32_t length, bool evalMe = true) : object(object), env(env), length(length), evalMe(evalMe) {}
+//     virtual ~Continuation() {}
 
-    bool evalMe;
-    Object* object;
-    Environment* env;
-    Continuation* next;
-    uint32_t length;
-};
-
-
-Arugment* asp = NULL;
-Arugment* abottom = NULL;
+//     bool evalMe;
+//     Object* object;
+//     Environment* env;
+//     Continuation* next;
+//     uint32_t length;
+// };
 
 
-Continuation* sp = NULL;
-Continuation* bottom = NULL;
-
-void pushArgument(Arugment* argument)
-{
-    if (NULL == asp)
-    {
-
-        asp = argument;
-    }
-    if (NULL == abottom)
-    {
-        abottom = argument;
-    }
-    else
-    {
-        abottom->next = argument;
-        abottom = argument;
-    }
-}
-
-Arugment* popArgument()
-{
-    if (NULL == asp) return NULL;
-    Arugment* ret = asp;
-    asp = ret->next;
-    return ret;
-}
+// Arugment* asp = NULL;
+// Arugment* abottom = NULL;
 
 
-void pushContinuation(Continuation* continuation)
-{
-    if (NULL == sp)
-    {
+// Continuation* sp = NULL;
+// Continuation* bottom = NULL;
 
-        sp = continuation;
-    }
-    if (NULL == bottom)
-    {
-        bottom = continuation;
-    }
-    else
-    {
-        bottom->next = continuation;
-        bottom = continuation;
-    }
-}
+// void pushArgument(Arugment* argument)
+// {
+//     if (NULL == asp)
+//     {
 
-Continuation* popContinuation()
-{
-    if (NULL == sp) return NULL;
-    Continuation* ret = sp;
-    sp = ret->next;
-    return ret;
-}
+//         asp = argument;
+//     }
+//     if (NULL == abottom)
+//     {
+//         abottom = argument;
+//     }
+//     else
+//     {
+//         abottom->next = argument;
+//         abottom = argument;
+//     }
+// }
+
+// Arugment* popArgument()
+// {
+//     if (NULL == asp) return NULL;
+//     Arugment* ret = asp;
+//     asp = ret->next;
+//     return ret;
+// }
+
+
+// void pushContinuation(Continuation* continuation)
+// {
+//     if (NULL == sp)
+//     {
+
+//         sp = continuation;
+//     }
+//     if (NULL == bottom)
+//     {
+//         bottom = continuation;
+//     }
+//     else
+//     {
+//         bottom->next = continuation;
+//         bottom = continuation;
+//     }
+// }
+
+// Continuation* popContinuation()
+// {
+//     if (NULL == sp) return NULL;
+//     Continuation* ret = sp;
+//     sp = ret->next;
+//     return ret;
+// }
 
 Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
 {
-    static int i = 0;
-    static Object* pr = NULL;
-    i++;
-    if (i == 1) pr = procedure;
+//     static int i = 0;
+//     static Object* pr = NULL;
+//     i++;
+//     if (i == 1) pr = procedure;
 
-    for (Objects::const_iterator p = arguments->begin(); p != arguments->end(); ++p)
-    {
-        // もしも特殊形式だったらひきすうすタックに積むときに eval しない
-        if (0) {
-            pushContinuation(new Continuation(*p, env, 0, false));
-        }
-        else
-        {
-            pushContinuation(new Continuation(*p, env, 0));
-        }
-    }
+//     for (Objects::const_iterator p = arguments->begin(); p != arguments->end(); ++p)
+//     {
+//         // もしも特殊形式だったらひきすうすタックに積むときに eval しない
+//         if (0) {
+//             pushContinuation(new Continuation(*p, env, 0, false));
+//         }
+//         else
+//         {
+//             pushContinuation(new Continuation(*p, env, 0));
+//         }
+//     }
 
-    pushContinuation(new Continuation(procedure, env, arguments->size()));
+//     pushContinuation(new Continuation(procedure, env, arguments->size()));
 
 #if 1
     if (procedure->isCompoundProcedure())
@@ -164,43 +164,43 @@ Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
 #endif
 }
 
-Object* Scheme::doContinuation()
-{
-    for (Continuation* c = popContinuation(); c != NULL; c = popContinuation())
-    {
-        Object* object = c->object;
-        if (object->isCompoundProcedure())
-        {
-            Objects* as = new Objects;
-            for (uint32_t i = c->length - 1 ; i >= 0; i++)
-            {
-                as->push_back(popArgument()->object);
-            }
-            Procedure* p = (Procedure*)object;
-            Environment* e = p->env()->clone();
-            e->extend(p->parameters(), as); // doubt? we need copy?
-            pushArgument(new Arugment(Scheme::evalSequence(p->body(), e)));
-        }
-        else if (object->isPrimitiveProcedure())
-        {
-            Objects* as = new Objects;
-            for (uint32_t i = c->length - 1 ; i >= 0; i++)
-            {
-                as->push_back(popArgument()->object);
-            }
-            PrimitiveProcedure* p = (PrimitiveProcedure*)object;
-            return p->apply(as, c->env);
-        }
-        else
-        {
-            if (c->evalMe)
-            {
-                pushArgument(new Arugment(object->eval(c->env)));
-            }
-            else
-            {
-                pushArgument(new Arugment(object));
-            }
-        }
-    }
-}
+// Object* Scheme::doContinuation()
+// {
+//     for (Continuation* c = popContinuation(); c != NULL; c = popContinuation())
+//     {
+//         Object* object = c->object;
+//         if (object->isCompoundProcedure())
+//         {
+//             Objects* as = new Objects;
+//             for (uint32_t i = c->length - 1 ; i >= 0; i++)
+//             {
+//                 as->push_back(popArgument()->object);
+//             }
+//             Procedure* p = (Procedure*)object;
+//             Environment* e = p->env()->clone();
+//             e->extend(p->parameters(), as); // doubt? we need copy?
+//             pushArgument(new Arugment(Scheme::evalSequence(p->body(), e)));
+//         }
+//         else if (object->isPrimitiveProcedure())
+//         {
+//             Objects* as = new Objects;
+//             for (uint32_t i = c->length - 1 ; i >= 0; i++)
+//             {
+//                 as->push_back(popArgument()->object);
+//             }
+//             PrimitiveProcedure* p = (PrimitiveProcedure*)object;
+//             return p->apply(as, c->env);
+//         }
+//         else
+//         {
+//             if (c->evalMe)
+//             {
+//                 pushArgument(new Arugment(object->eval(c->env)));
+//             }
+//             else
+//             {
+//                 pushArgument(new Arugment(object));
+//             }
+//         }
+//     }
+// }

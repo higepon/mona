@@ -41,4 +41,18 @@ namespace std {
 std::string load(const char* file);
 void registerPrimitives(monash::Environment* env);
 
+namespace monash {
+class Continuation
+{
+public:
+    Continuation(Object* object, uint32_t length) : object(object), length(length) {}
+    virtual ~Continuation() {}
+
+    Object* object;
+    uint32_t length;
+    Continuation* next;
+
+};
+};
+
 #endif // __SCHEME_H__

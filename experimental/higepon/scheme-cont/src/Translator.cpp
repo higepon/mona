@@ -9,6 +9,34 @@ using namespace std;
 #define L()          sexp->sexps.size()
 #define LL(n)        sexp->sexps[n]->sexps.size()
 
+Continuation* bottom = NULL;
+Continuation* sp = NULL;
+
+void pushContinuation(Continuation* continuation)
+{
+    if (NULL == sp)
+    {
+
+        sp = continuation;
+    }
+    if (NULL == bottom)
+    {
+        bottom = continuation;
+    }
+    else
+    {
+        bottom->next = continuation;
+        bottom = continuation;
+    }
+}
+
+Object* __A(Object* o)
+{
+    pushContinuation(new Continuation(o, 0));
+    return o;
+}
+
+
 Translator::Translator()
 {
 }
@@ -22,17 +50,17 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
     switch(sexp->type)
     {
     case SExp::NUMBER:
-        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = __A(new Number(sexp->value, sexp->lineno));ASSERT(*object);
         return SUCCESS;
     case SExp::STRING:
-        *object = new String(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = __A(new String(sexp->text, sexp->lineno));ASSERT(*object);
         return SUCCESS;
 //     case SExp::QUOTE:
 //         printf("quote:%s\n", sexp->text.c_str());
 //         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);ASSERT(*object);
 //         return SUCCESS;
     case SExp::CHAR:
-        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = __A(new Charcter(sexp->text, sexp->lineno));ASSERT(*object);
         return SUCCESS;
     case SExp::SYMBOL:
         *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
@@ -50,7 +78,7 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     SExp* argument = N(2);
     Object* argumentObject;
     if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
-    *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
+    *object = __A(new Definition(variable, argumentObject, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -69,7 +97,7 @@ int Translator::translateIf(SExp* sexp, Object** object)
         ret = translate(&N(3), &alternative);
         if (ret != SUCCESS) return ret;
     }
-    *object = new SpecialIf(predicate, consequent, alternative, sexp->lineno);ASSERT(*object);
+    *object = __A(new SpecialIf(predicate, consequent, alternative, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -105,7 +133,7 @@ int Translator::translateCond(SExp* sexp, Object** object)
                 if (ret != SUCCESS) return ret;
                 Objects* arguments = new Objects;ASSERT(arguments);
                 arguments->push_back(cond);
-                Object* application = new Application(action, arguments, action->lineno());ASSERT(application);
+                Object* application = __A(new Application(action, arguments, action->lineno()));ASSERT(application);
                 Objects* actions = new Objects;ASSERT(actions);
                 actions->push_back(application);
                 Clause* c = new Clause(cond, actions);
@@ -131,7 +159,7 @@ int Translator::translateCond(SExp* sexp, Object** object)
             }
         }
     }
-    *object = new Cond(clauses, elseActions, sexp->lineno);ASSERT(*object);
+    *object = __A(new Cond(clauses, elseActions, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -146,14 +174,14 @@ int Translator::translateBegin(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new Begin(objects, sexp->lineno);ASSERT(*object);
+    *object = __A(new Begin(objects, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateQuote(SExp* sexp, Object** object)
 {
     if (L() <= 1) return SYNTAX_ERROR;
-    *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
+    *object = __A(new Quote(sexp->sexps[1], sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -165,7 +193,7 @@ int Translator::translateEval(SExp* sexp, Object** object)
     if (ret != SUCCESS) return ret;
     if (o->type() != Object::QUOTE) return SYNTAX_ERROR;
     Quote* quote = (Quote*)o;
-    *object = new Eval(*this, quote, sexp->lineno);ASSERT(*object);
+    *object = __A(new Eval(*this, quote, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -191,7 +219,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Lambda(body, variables, sexp->lineno);ASSERT(*object);
+    *object = __A(new Lambda(body, variables, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -225,7 +253,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Let(body, variables, values, sexp->lineno);ASSERT(*object);
+    *object = __A(new Let(body, variables, values, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -259,7 +287,7 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new LetAsterisk(body, variables, values, sexp->lineno);ASSERT(*object);
+    *object = __A(new LetAsterisk(body, variables, values, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -276,7 +304,8 @@ int Translator::translateApplication(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         arguments->push_back(object);
     }
-    *object = new Application(f, arguments, sexp->lineno);ASSERT(*object);
+    pushContinuation(new Continuation(f, 0));
+    *object = __A(new Application(f, arguments, sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -370,7 +399,7 @@ int Translator::translateAnd(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new And(objects);ASSERT(*object);
+    *object = __A(new And(objects));ASSERT(*object);
     return SUCCESS;
 }
 
@@ -385,7 +414,7 @@ int Translator::translateOr(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->push_back(object);
     }
-    *object = new Or(objects);ASSERT(*object);
+    *object = __A(new Or(objects));ASSERT(*object);
     return SUCCESS;
 }
 

@@ -21,6 +21,23 @@
 using namespace monash;
 using namespace std;
 
+extern Continuation* sp;
+
+Continuation* popContinuation()
+{
+    if (NULL == sp) return NULL;
+    Continuation* ret = sp;
+    sp = ret->next;
+    return ret;
+}
+
+ZSExp* eval(ZSExp* exp)
+{
+    // self evaluate
+
+    
+}
+
 int main(int argc, char *argv[])
 {
     if (argc < 2)
@@ -49,7 +66,10 @@ int main(int argc, char *argv[])
 
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
+
     SExps sexps = allSExp->sexps;
+
+    printf("%s\n", allSExp->toZSExp()->toString().c_str());
 
 // load
 //    sexp->execLoadSyntaxes();
@@ -68,6 +88,24 @@ int main(int argc, char *argv[])
 
         // let's eval!
         object->eval(env);
+
+        Objects* args = new Objects;
+        for (Continuation* c = popContinuation(); c != NULL; c = popContinuation())
+        {
+            Object* o = c->object;
+            o = o->eval(env);
+            if (o->isCompoundProcedure() || o->isPrimitiveProcedure())
+            {
+                Object*ret = Scheme::apply(o, args, env);
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                printf("[ret]%s\n", ret->toString().c_str());
+            }
+            else
+            {
+                args->push_back(o);
+            }
+        }
+
     }
 
     return 0;
