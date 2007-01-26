@@ -50,7 +50,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_test_cpp_OBJECTS = test_cpp-main.$(OBJEXT) test_cpp-yaml.$(OBJEXT) \
 	test_cpp-MacroMatchTest.$(OBJEXT) \
 	test_cpp-MacroFilterTest.$(OBJEXT) \
-	test_cpp-QuoteFilterTest.$(OBJEXT) test_cpp-Scheme.$(OBJEXT) \
+	test_cpp-QuoteFilterTest.$(OBJEXT) test_cpp-Kernel.$(OBJEXT) \
 	test_cpp-Error.$(OBJEXT) test_cpp-Translator.$(OBJEXT) \
 	test_cpp-Tokenizer.$(OBJEXT) test_cpp-Number.$(OBJEXT) \
 	test_cpp-String.$(OBJEXT) test_cpp-Charcter.$(OBJEXT) \
@@ -188,8 +188,8 @@ MacroFilterTest.h\
 MacroFilterTest.cpp\
 QuoteFilterTest.h\
 QuoteFilterTest.cpp\
-../src/Scheme.cpp\
-../src/Scheme.h\
+../src/Kernel.cpp\
+../src/Kernel.h\
 ../src/Error.h\
 ../src/Error.cpp\
 ../src/Translator.h\
@@ -370,11 +370,11 @@ test_cpp-QuoteFilterTest.o: QuoteFilterTest.cpp
 test_cpp-QuoteFilterTest.obj: QuoteFilterTest.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-QuoteFilterTest.obj `if test -f 'QuoteFilterTest.cpp'; then $(CYGPATH_W) 'QuoteFilterTest.cpp'; else $(CYGPATH_W) '$(srcdir)/QuoteFilterTest.cpp'; fi`
 
-test_cpp-Scheme.o: ../src/Scheme.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Scheme.o `test -f '../src/Scheme.cpp' || echo '$(srcdir)/'`../src/Scheme.cpp
+test_cpp-Kernel.o: ../src/Kernel.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Kernel.o `test -f '../src/Kernel.cpp' || echo '$(srcdir)/'`../src/Kernel.cpp
 
-test_cpp-Scheme.obj: ../src/Scheme.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Scheme.obj `if test -f '../src/Scheme.cpp'; then $(CYGPATH_W) '../src/Scheme.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Scheme.cpp'; fi`
+test_cpp-Kernel.obj: ../src/Kernel.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Kernel.obj `if test -f '../src/Kernel.cpp'; then $(CYGPATH_W) '../src/Kernel.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Kernel.cpp'; fi`
 
 test_cpp-Error.o: ../src/Error.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_cpp_CXXFLAGS) $(CXXFLAGS) -c -o test_cpp-Error.o `test -f '../src/Error.cpp' || echo '$(srcdir)/'`../src/Error.cpp

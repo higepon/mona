@@ -26,7 +26,7 @@ PROCEDURE(MakeVector, "make-vector")
 
 PROCEDURE(CreateVector, "vector")
 {
-    Objects* as = Scheme::listOfValues(arguments, env);
+    Objects* as = Kernel::listOfValues(arguments, env);
     return new Vector(as, as->empty() ? 0 : ARGV(0)->lineno());
 }
 

@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "Scheme.h"
+#include "Kernel.h"
 #include "scheme.h"
 
 using namespace std;
@@ -32,5 +32,5 @@ Object* Application::eval(Environment* env)
     }
 
     //Objects* as = arguments();
-    return Scheme::apply(procedure, arguments(), env, parent);
+    return Kernel::apply(procedure, arguments(), env, parent);
 }

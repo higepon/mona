@@ -66,8 +66,8 @@ QuoteFilter.cpp\
 QuoteFilter.h\
 SExp.cpp\
 SExp.h\
-Scheme.cpp\
-Scheme.h\
+Kernel.cpp\
+Kernel.h\
 SpecialIf.cpp\
 SpecialIf.h\
 String.cpp\

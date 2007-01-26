@@ -11,7 +11,7 @@ PROCEDURE(NumberP, "number?")
 
 PROCEDURE(Plus, "+")
 {
-    Objects* as = Scheme::listOfValues(arguments, env);
+    Objects* as = Kernel::listOfValues(arguments, env);
     int total = 0;
     for (Objects::const_iterator it = as->begin(); it != as->end(); it++)
     {
@@ -120,7 +120,7 @@ PROCEDURE(NumberLe, "<=")
 
 PROCEDURE(Multiply, "*")
 {
-    Objects* as = Scheme::listOfValues(arguments, env);
+    Objects* as = Kernel::listOfValues(arguments, env);
     int total = 1;
     for (Objects::const_iterator it = as->begin(); it != as->end(); it++)
     {

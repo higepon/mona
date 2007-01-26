@@ -66,7 +66,7 @@ am_scheme_OBJECTS = scheme-Application.$(OBJEXT) \
 	scheme-SymbolProcedures.$(OBJEXT) scheme-True.$(OBJEXT) \
 	scheme-VectorProcedures.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
 	scheme-Quote.$(OBJEXT) scheme-QuoteFilter.$(OBJEXT) \
-	scheme-SExp.$(OBJEXT) scheme-Scheme.$(OBJEXT) \
+	scheme-SExp.$(OBJEXT) scheme-Kernel.$(OBJEXT) \
 	scheme-SpecialIf.$(OBJEXT) scheme-String.$(OBJEXT) \
 	scheme-Tokenizer.$(OBJEXT) scheme-Translator.$(OBJEXT) \
 	scheme-Variable.$(OBJEXT) scheme-Vector.$(OBJEXT) \
@@ -239,8 +239,8 @@ QuoteFilter.cpp\
 QuoteFilter.h\
 SExp.cpp\
 SExp.h\
-Scheme.cpp\
-Scheme.h\
+Kernel.cpp\
+Kernel.h\
 SpecialIf.cpp\
 SpecialIf.h\
 String.cpp\
@@ -534,11 +534,11 @@ scheme-SExp.o: SExp.cpp
 scheme-SExp.obj: SExp.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SExp.obj `if test -f 'SExp.cpp'; then $(CYGPATH_W) 'SExp.cpp'; else $(CYGPATH_W) '$(srcdir)/SExp.cpp'; fi`
 
-scheme-Scheme.o: Scheme.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Scheme.o `test -f 'Scheme.cpp' || echo '$(srcdir)/'`Scheme.cpp
+scheme-Kernel.o: Kernel.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Kernel.o `test -f 'Kernel.cpp' || echo '$(srcdir)/'`Kernel.cpp
 
-scheme-Scheme.obj: Scheme.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Scheme.obj `if test -f 'Scheme.cpp'; then $(CYGPATH_W) 'Scheme.cpp'; else $(CYGPATH_W) '$(srcdir)/Scheme.cpp'; fi`
+scheme-Kernel.obj: Kernel.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Kernel.obj `if test -f 'Kernel.cpp'; then $(CYGPATH_W) 'Kernel.cpp'; else $(CYGPATH_W) '$(srcdir)/Kernel.cpp'; fi`
 
 scheme-SpecialIf.o: SpecialIf.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SpecialIf.o `test -f 'SpecialIf.cpp' || echo '$(srcdir)/'`SpecialIf.cpp

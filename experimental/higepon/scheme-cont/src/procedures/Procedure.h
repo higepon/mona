@@ -2,7 +2,7 @@
 #define __PRIMITIVE_PROCEDURE_PROCEDURE_H__
 
 #include "PrimitiveProcedure.h"
-#include "Scheme.h"
+#include "Kernel.h"
 #include "scheme.h"
 
 namespace monash {
@@ -39,7 +39,7 @@ extern monash::DefaultProcedures procedures;
     type* to = (type*)o;
 
 #define ARGC_SHOULD_BE(n)                                                        \
-    Objects* as = Scheme::listOfValues(arguments, env);                          \
+    Objects* as = Kernel::listOfValues(arguments, env);                          \
     if (ARGC != n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC >= 0 ? ARGV(0)->lineno() : 0                            \
@@ -48,7 +48,7 @@ extern monash::DefaultProcedures procedures;
     }
 
 #define ARGC_SHOULD_BE_GT(n)                                                     \
-    Objects* as = Scheme::listOfValues(arguments, env);                          \
+    Objects* as = Kernel::listOfValues(arguments, env);                          \
     if (ARGC <= n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                             \
@@ -57,7 +57,7 @@ extern monash::DefaultProcedures procedures;
     }
 
 #define ARGC_SHOULD_BE_GT_RETURN_FALSE(n)                                        \
-    Objects* as = Scheme::listOfValues(arguments, env);                          \
+    Objects* as = Kernel::listOfValues(arguments, env);                          \
     if (ARGC <= n)                                                               \
     {                                                                            \
         return new False();                                                      \
@@ -65,7 +65,7 @@ extern monash::DefaultProcedures procedures;
 
 
 #define ARGC_SHOULD_BE_BETWEEN(m, n)                                                         \
-    Objects* as = Scheme::listOfValues(arguments, env);                                      \
+    Objects* as = Kernel::listOfValues(arguments, env);                                      \
     if (ARGC < m || ARGC > n)                                                                \
     {                                                                                        \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                                         \

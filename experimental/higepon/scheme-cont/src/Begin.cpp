@@ -27,7 +27,7 @@ int Begin::type() const
 
 Object* Begin::eval(Environment* env)
 {
-    return Scheme::evalSequence(this->actions(), env);
+    return Kernel::evalSequence(this->actions(), env);
 }
 
 

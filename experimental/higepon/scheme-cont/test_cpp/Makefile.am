@@ -11,8 +11,8 @@ MacroFilterTest.h\
 MacroFilterTest.cpp\
 QuoteFilterTest.h\
 QuoteFilterTest.cpp\
-../src/Scheme.cpp\
-../src/Scheme.h\
+../src/Kernel.cpp\
+../src/Kernel.h\
 ../src/Error.h\
 ../src/Error.cpp\
 ../src/Translator.h\
