@@ -19,6 +19,8 @@ public:
     Object* function() { return function_; }
     Objects* arguments() { return arguments_; }
 
+    //exp
+    Object* parent;
 protected:
     Object* function_;
     Objects* arguments_;

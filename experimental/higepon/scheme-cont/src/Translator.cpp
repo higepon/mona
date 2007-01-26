@@ -45,7 +45,7 @@ Translator::~Translator()
 {
 }
 
-int Translator::translatePrimitive(SExp* sexp, Object** object)
+int Translator::translatePrimitive(SExp* sexp, Object** object, Object* parent)
 {
     switch(sexp->type)
     {
@@ -69,7 +69,7 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
     return SYNTAX_ERROR;
 }
 
-int Translator::translateDefinition(SExp* sexp, Object** object)
+int Translator::translateDefinition(SExp* sexp, Object** object, Object* parent)
 {
     if (L() != 3) return SYNTAX_ERROR;
     SExp* symbol = N(1);
@@ -82,7 +82,7 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateIf(SExp* sexp, Object** object)
+int Translator::translateIf(SExp* sexp, Object** object, Object* parent)
 {
     if (L() > 4 || L() < 3) return SYNTAX_ERROR;
     Object* predicate = NULL;
@@ -101,7 +101,7 @@ int Translator::translateIf(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateCond(SExp* sexp, Object** object)
+int Translator::translateCond(SExp* sexp, Object** object, Object* parent)
 {
     Clauses* clauses = new Clauses;ASSERT(clauses);
     Objects* elseActions = NULL;
@@ -163,7 +163,7 @@ int Translator::translateCond(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateBegin(SExp* sexp, Object** object)
+int Translator::translateBegin(SExp* sexp, Object** object, Object* parent)
 {
     if (L() <= 1) return SYNTAX_ERROR;
     Objects* objects = new Objects;ASSERT(objects);
@@ -175,17 +175,25 @@ int Translator::translateBegin(SExp* sexp, Object** object)
         objects->push_back(object);
     }
     *object = __A(new Begin(objects, sexp->lineno));ASSERT(*object);
+    for (Objects::iterator p = objects->begin(); p != objects->end(); ++p)
+    {
+        if ((*p)->isApplication())
+        {
+            Application* app = (Application*)(*p);
+            app->parent = *object;
+        }
+    }
     return SUCCESS;
 }
 
-int Translator::translateQuote(SExp* sexp, Object** object)
+int Translator::translateQuote(SExp* sexp, Object** object, Object* parent)
 {
     if (L() <= 1) return SYNTAX_ERROR;
     *object = __A(new Quote(sexp->sexps[1], sexp->lineno));ASSERT(*object);
     return SUCCESS;
 }
 
-int Translator::translateEval(SExp* sexp, Object** object)
+int Translator::translateEval(SExp* sexp, Object** object, Object* parent)
 {
     if (L() != 2) return SYNTAX_ERROR;
     Object* o;
@@ -197,7 +205,7 @@ int Translator::translateEval(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateLambda(SExp* sexp, Object** object)
+int Translator::translateLambda(SExp* sexp, Object** object, Object* parent)
 {
     if (L() <= 2) return SYNTAX_ERROR;
     if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
@@ -223,7 +231,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateLet(SExp* sexp, Object** object)
+int Translator::translateLet(SExp* sexp, Object** object, Object* parent)
 {
     if (L() < 3) return SYNTAX_ERROR;
     if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
@@ -257,7 +265,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateLetAsterisk(SExp* sexp, Object** object)
+int Translator::translateLetAsterisk(SExp* sexp, Object** object, Object* parent)
 {
     if (L() < 3) return SYNTAX_ERROR;
     if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
@@ -291,7 +299,7 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateApplication(SExp* sexp, Object** object)
+int Translator::translateApplication(SExp* sexp, Object** object, Object* parent)
 {
     Object* f;
     int ret = translate(&N(0), &f);
@@ -309,7 +317,7 @@ int Translator::translateApplication(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translate(SExp** n, Object** object)
+int Translator::translate(SExp** n, Object** object, Object* parent)
 {
     SExp* sexp = *n;
     if (sexp->type != SExp::SEXPS)
@@ -389,7 +397,7 @@ int Translator::translate(SExp** n, Object** object)
 
 // we use and/or macro now
 # if 0
-int Translator::translateAnd(SExp* sexp, Object** object)
+int Translator::translateAnd(SExp* sexp, Object** object, Object* parent)
 {
     Objects* objects = new Objects;ASSERT(objects);
     for (SExps::size_type i = 1; i < L(); i++)
@@ -404,7 +412,7 @@ int Translator::translateAnd(SExp* sexp, Object** object)
 }
 
 
-int Translator::translateOr(SExp* sexp, Object** object)
+int Translator::translateOr(SExp* sexp, Object** object, Object* parent)
 {
     Objects* objects = new Objects;ASSERT(objects);
     for (SExps::size_type i = 1; i < L(); i++)

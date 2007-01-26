@@ -1,16 +1,16 @@
-#include "Scheme.h"
+#include "Kernel.h"
 
 using namespace monash;
 
-Scheme::Scheme()
+Kernel::Kernel()
 {
 }
 
-Scheme::~Scheme()
+Kernel::~Kernel()
 {
 }
 
-Object* Scheme::evalSequence(Objects* exps, Environment* env)
+Object* Kernel::evalSequence(Objects* exps, Environment* env)
 {
     Object* ret = NULL;
     for (Objects::const_iterator it = exps->begin(); it != exps->end(); ++it)
@@ -21,7 +21,7 @@ Object* Scheme::evalSequence(Objects* exps, Environment* env)
     return ret;
 }
 
-Objects* Scheme::listOfValues(Objects* objects, Environment* env)
+Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 {
     Objects* result = new Objects;ASSERT(result);
     for (Objects::const_iterator it = objects->begin(); it != objects->end(); ++it)
@@ -120,7 +120,7 @@ Objects* Scheme::listOfValues(Objects* objects, Environment* env)
 //     return ret;
 // }
 
-Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
+Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent)
 {
 //     static int i = 0;
 //     static Object* pr = NULL;
@@ -144,17 +144,17 @@ Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
 #if 1
     if (procedure->isCompoundProcedure())
     {
-        Objects* as = Scheme::listOfValues(arguments, env);
+        Objects* as = Kernel::listOfValues(arguments, env);
         Procedure* p = (Procedure*)procedure;
         Environment* e = p->env()->clone();
 
         e->extend(p->parameters(), as); // doubt? we need copy?
-        return Scheme::evalSequence(p->body(), e);
+        return Kernel::evalSequence(p->body(), e);
     }
     else if (procedure->isPrimitiveProcedure())
     {
         PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
-        return p->apply(arguments, env);
+        return p->apply(arguments, env, parent);
     }
     else
     {
@@ -164,7 +164,7 @@ Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
 #endif
 }
 
-// Object* Scheme::doContinuation()
+// Object* Kernel::doContinuation()
 // {
 //     for (Continuation* c = popContinuation(); c != NULL; c = popContinuation())
 //     {
@@ -179,7 +179,7 @@ Object* Scheme::apply(Object* procedure, Objects* arguments, Environment* env)
 //             Procedure* p = (Procedure*)object;
 //             Environment* e = p->env()->clone();
 //             e->extend(p->parameters(), as); // doubt? we need copy?
-//             pushArgument(new Arugment(Scheme::evalSequence(p->body(), e)));
+//             pushArgument(new Arugment(Kernel::evalSequence(p->body(), e)));
 //         }
 //         else if (object->isPrimitiveProcedure())
 //         {

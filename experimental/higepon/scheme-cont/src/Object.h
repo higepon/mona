@@ -42,7 +42,9 @@ public:
     bool isTrue() const { return type() == TRUE; }
     bool isFalse() const { return type() == FALSE; }
     bool isCompoundProcedure() const { return type() == PROCEDURE; }
+    bool isProcedure() const { return isCompoundProcedure() || isPrimitiveProcedure(); }
     bool isPrimitiveProcedure() const { return type() == PRIMITIVE_PROCEDURE; }
+    bool isApplication() const { return type() == APPLICATION; }
 
 public:
 

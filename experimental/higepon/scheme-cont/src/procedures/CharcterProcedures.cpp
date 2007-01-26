@@ -3,6 +3,21 @@
 using namespace monash;
 using namespace std;
 
+PROCEDURE(CallCC, "call/cc")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Procedure, p);
+
+
+    // 現在の継続を取り出す Object* cont = xxx->getContinuation()
+
+    // Procedure を apply する contを引数に
+ 
+            RETURN_BOOLEAN(ARGV(0)->isCharcter());
+}
+
+
+
 PROCEDURE(CharcterP, "char?")
 {
     ARGC_SHOULD_BE(1);
