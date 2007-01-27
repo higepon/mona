@@ -1,4 +1,6 @@
 TARGET  = ./scheme
+TEST_TARGET  = ./scheme_test
+
 SOURCES = \
 Application.cpp\
 Assignment.cpp\
@@ -42,27 +44,39 @@ Translator.cpp\
 Variable.cpp\
 Vector.cpp\
 load.cpp\
-main.cpp\
 scheme.cpp
+
+TEST_SOURCES = \
+test_cpp/yaml.cpp\
+test_cpp/MacroMatchTest.cpp\
+test_cpp/MacroFilterTest.cpp\
+test_cpp/QuoteFilterTest.cpp
+
 
 # TEST_TARGET  = ./test$(EXEEXT)
 # TEST_SOURCES = test.cpp MessageUtilTest.cpp MessageUtil.cpp
-
-CXXFLAGS = -pg -I . -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
+CXXFLAGS = -pg -I . -I /usr/local/include/gc -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
+#CXXFLAGS = -pg -I . -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
 OBJECTS = $(SOURCES:.cpp=.o)
-# TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
+TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 
-all : $(TARGET)
+all : $(TARGET) $(TEST_TARGET)
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $(TARGET)
+$(TARGET): main.o $(OBJECTS)
+	$(CXX) main.o $(OBJECTS) -o $(TARGET)
 
-# check : $(TEST_TARGET)
-# 	$(TEST_TARGET)
+$(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS)
+	$(CXX) -lcppunit test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
 
-# $(TEST_TARGET) : $(TEST_OBJECTS)
-# 	$(CXX) -lcppunit $(TEST_OBJECTS) /usr/local/lib/libcppunit.a -o $(TEST_TARGET)
+check : $(TEST_TARGET)
+	$(TEST_TARGET)
+
+main.o: main.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+
+test_cpp/main.o: test_cpp/main.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -70,9 +84,9 @@ $(TARGET): $(OBJECTS)
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
-# 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(TEST_OBJECTS) $(TEST_TARGET)
+	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(TEST_TARGET)
 
 -include dependencies
