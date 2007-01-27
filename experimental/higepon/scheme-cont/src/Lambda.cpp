@@ -44,19 +44,6 @@ Object* Lambda::getContinuation(Object* calledPoint)
         RAISE_ERROR(lineno(), "can't get continuation!");
     }
 
-#if 1
-    if (parent != NULL)
-    {
-        printf("%d\n", parent->type());
-        // todo
-        if (parent->isApplication())
-        {
-            Application* app = (Application*)parent;
-            app->getContinuation(app);
-            printf("***************\n");
-        }
-    }
-#endif
     Objects* continuationBody = new Objects;
     Variable* returnValue = new Variable("returnValue");
     continuationBody->push_back(returnValue);
@@ -66,5 +53,28 @@ Object* Lambda::getContinuation(Object* calledPoint)
     }
     Variables* arguments = new Variables;
     arguments->push_back(returnValue);
-    return new Lambda(continuationBody, arguments, lineno());
+
+    Lambda* thisCont = new Lambda(continuationBody, arguments, lineno());
+    Lambda* ret = NULL;
+#if 1
+    if (parent != NULL)
+    {
+        printf("%d, %x\n", parent->type(), this);
+        // todo
+        if (parent->isApplication())
+        {
+            Application* app = (Application*)parent;
+            Object* c = app->getContinuation(this);
+            if (c->isLambda())
+            {
+                Lambda* l = (Lambda*)c;
+                l->body()->insert(l->body()->begin(), thisCont);
+                ret = l;
+            printf("***************\n");
+            }
+
+        }
+    }
+#endif
+    return ret ? ret : thisCont;
 }

@@ -42,6 +42,11 @@ Object* Application::getContinuation(Object* calledPoint)
     {
         // todo
         Lambda* lambda = (Lambda*)parent;
+        printf("this=%x parent=%x\n", this, parent);
+
+//this=81def78 parent=81df028
+//15, 81df028
+
         return lambda->getContinuation(this);
     }
     return NULL;

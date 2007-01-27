@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Object::Object()
+Object::Object() : parent(NULL)
 {
 }
 

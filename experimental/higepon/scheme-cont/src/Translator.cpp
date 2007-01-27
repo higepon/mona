@@ -309,6 +309,10 @@ int Translator::translateApplication(SExp* sexp, Object** object, Object* parent
     }
     pushContinuation(new Continuation(f, 0));
     *object = __A(new Application(f, arguments, sexp->lineno));ASSERT(*object);
+    // todo
+    f->parent = *object;
+    setParent(arguments, *object);
+
     return SUCCESS;
 }
 
