@@ -6,6 +6,8 @@
 #include "gc_cpp.h"
 #endif
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include "Assert.h"
 #include "Error.h"
 #include <iostream>
