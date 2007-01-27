@@ -35,7 +35,7 @@ void MacroMatchTest::assertMacroMatch(const string& macroName, const string& wor
 void MacroMatchTest::testMatch()
 {
     YAML yaml;
-    loadYAML("match.yml", yaml);
+    loadYAML("test_cpp/match.yml", yaml);
     if (yaml.size() == 0)
     {
         fprintf(stderr, "bad yaml!\n");
@@ -55,7 +55,7 @@ void MacroMatchTest::testMatch()
 void MacroMatchTest::testUnmatch()
 {
     YAML yaml;
-    loadYAML("unmatch.yml", yaml);
+    loadYAML("test_cpp/unmatch.yml", yaml);
     if (yaml.size() == 0)
     {
         fprintf(stderr, "bad yaml!\n");

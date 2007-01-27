@@ -19,7 +19,7 @@ void QuoteFilterTest::testFilter()
 {
     char buf[1024];
     YAML yaml;
-    loadYAML("quote_filter.yml", yaml);
+    loadYAML("test_cpp/quote_filter.yml", yaml);
 
     if (yaml.size() == 0)
     {

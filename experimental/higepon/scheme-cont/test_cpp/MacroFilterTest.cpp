@@ -20,7 +20,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
     char buf[1024];
     MacroFilter f;
     YAML yaml;
-    loadYAML("find_define_syntaxes.yml", yaml);
+    loadYAML("test_cpp/find_define_syntaxes.yml", yaml);
     if (yaml.size() == 0)
     {
         fprintf(stderr, "bad yaml!\n");
@@ -57,7 +57,7 @@ void MacroFilterTest::testFilter()
 {
     char buf[1024];
     YAML yaml;
-    loadYAML("filter.yml", yaml);
+    loadYAML("test_cpp/filter.yml", yaml);
     if (yaml.size() == 0)
     {
         fprintf(stderr, "bad yaml!\n");
