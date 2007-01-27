@@ -52,11 +52,8 @@ test_cpp/MacroMatchTest.cpp\
 test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp
 
-
-# TEST_TARGET  = ./test$(EXEEXT)
-# TEST_SOURCES = test.cpp MessageUtilTest.cpp MessageUtil.cpp
-CXXFLAGS = -pg -I . -I /usr/local/include/gc -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
-#CXXFLAGS = -pg -I . -I /usr/local/include/gc -fno-exceptions -fno-rtti -O0 -gstabs+ -Wall -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
+CXXFLAGS = -pg -I . -O0 -gstabs+ -Wall
+# -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
 OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
@@ -69,9 +66,9 @@ $(TARGET): main.o $(OBJECTS)
 $(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS)
 	$(CXX) -lcppunit test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
 
-check : $(TEST_TARGET)
+check : $(TEST_TARGET) $(TARGET)
 	$(TEST_TARGET)
-
+	$(TARGET) test/test.scm
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 

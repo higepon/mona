@@ -1,8 +1,10 @@
 #ifndef __OBJECT_H__
 #define __OBJECT_H__
 
+#ifdef USE_BOEHM_GC
 #define GC_NOT_DLL
 #include "gc_cpp.h"
+#endif
 #include "Assert.h"
 #include "Error.h"
 #include <iostream>
