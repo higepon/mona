@@ -1,18 +1,17 @@
 #ifndef __SCHEME_H__
 #define __SCHEME_H__
 
-#include <string>
-#include <vector>
-
-namespace std {
-    typedef vector<string> strings;
-};
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
+
+
+namespace std {
+    typedef vector<string> strings;
+};
+
 #include <algorithm>
 #include "MacroFilter.h"
 #include "QuoteFilter.h"
