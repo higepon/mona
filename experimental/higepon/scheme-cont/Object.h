@@ -5,6 +5,7 @@
 #define GC_NOT_DLL
 #include "gc_cpp.h"
 #endif
+#include <stdint.h>
 #include "Assert.h"
 #include "Error.h"
 #include <iostream>
