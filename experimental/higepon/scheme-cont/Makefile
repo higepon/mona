@@ -64,7 +64,7 @@ $(TARGET): main.o $(OBJECTS)
 	$(CXX) main.o $(OBJECTS) -o $(TARGET)
 
 $(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS)
-	$(CXX) -lcppunit test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
+	$(CXX) -lcppunit -ldl test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
 
 check : $(TEST_TARGET) $(TARGET)
 	$(TEST_TARGET)
