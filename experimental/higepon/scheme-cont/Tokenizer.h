@@ -1,6 +1,8 @@
 #ifndef __TOKNIEZER_H__
 #define __TOKNIEZER_H__
 
+#include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <string>
 #include <stdio.h>

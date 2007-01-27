@@ -1,6 +1,8 @@
 #ifndef _ERROR_
 #define _ERROR_
 
+#include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <setjmp.h>
 #include <string>
