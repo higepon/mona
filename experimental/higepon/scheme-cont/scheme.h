@@ -8,6 +8,7 @@ namespace std {
     typedef vector<string> strings;
 };
 
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <algorithm>
