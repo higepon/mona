@@ -52,7 +52,7 @@ test_cpp/MacroMatchTest.cpp\
 test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp
 
-CXXFLAGS = -pg -I . -O0 -gstabs+ -Wall
+CXXFLAGS = -pg -idirafter . -O0 -gstabs+ -Wall
 # -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
 OBJECTS = $(SOURCES:.cpp=.o)
