@@ -175,14 +175,6 @@ int Translator::translateBegin(SExp* sexp, Object** object, Object* parent)
         objects->push_back(object);
     }
     *object = __A(new Begin(objects, sexp->lineno));ASSERT(*object);
-    for (Objects::iterator p = objects->begin(); p != objects->end(); ++p)
-    {
-        if ((*p)->isApplication())
-        {
-            Application* app = (Application*)(*p);
-            app->parent = *object;
-        }
-    }
     return SUCCESS;
 }
 
@@ -228,6 +220,9 @@ int Translator::translateLambda(SExp* sexp, Object** object, Object* parent)
         body->push_back(o);
     }
     *object = __A(new Lambda(body, variables, sexp->lineno));ASSERT(*object);
+
+    // for cont todo
+    setParent(body, *object);
     return SUCCESS;
 }
 
@@ -393,6 +388,14 @@ int Translator::translate(SExp** n, Object** object, Object* parent)
         return translateApplication(sexp, object);
     }
     return SYNTAX_ERROR;
+}
+
+void Translator::setParent(Objects* objects, Object* parent)
+{
+   for (Objects::iterator p = objects->begin(); p != objects->end(); ++p)
+   {
+        (*p)->parent = parent;
+   }
 }
 
 // we use and/or macro now

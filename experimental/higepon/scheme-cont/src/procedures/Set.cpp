@@ -21,7 +21,7 @@ Object* Set::eval(Environment* env)
     return NULL;
 }
 
-Object* Set::apply(Objects* arguments, Environment* env, Object* parent)
+Object* Set::apply(Objects* arguments, Environment* env, Object* parent, Object* application)
 {
     // we do not eval all arguments, because "a" of (set! a 3) need not to be eval.
     //Objects* as = listOfValues(arguments, env);

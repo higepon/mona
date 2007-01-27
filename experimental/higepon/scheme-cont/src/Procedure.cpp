@@ -43,3 +43,4 @@ bool Procedure::eq() const
 {
     return false;
 }
+

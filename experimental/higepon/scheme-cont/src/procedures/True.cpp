@@ -23,7 +23,7 @@ Object* True::eval(Environment* env)
     return NULL;
 }
 
-Object* True::apply(Objects* arguments, Environment* env, Object* parent)
+Object* True::apply(Objects* arguments, Environment* env, Object* parent, Object* applicationca)
 {
     return this;
 }

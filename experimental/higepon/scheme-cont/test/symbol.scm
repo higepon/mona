@@ -8,7 +8,7 @@
 ;; todo
 ;;                    (symbol? '())
                     (symbol? #f))
-(display (symbol->string 'xyz))
+;;(display (symbol->string 'xyz))
 
 (assert-check-true "symbol->string"
                    (string=? "abc" (symbol->string 'abc)))

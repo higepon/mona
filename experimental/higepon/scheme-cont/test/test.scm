@@ -290,6 +290,7 @@
 (load "./test/vector.scm")
 (load "./test/symbol.scm")
 (load "./test/number.scm")
+(load "./test/continuation.scm")
 
 ;; report
 (total-report)

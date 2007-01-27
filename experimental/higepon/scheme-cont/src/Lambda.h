@@ -18,7 +18,7 @@ public:
     virtual Object* eval(Environment* env);
     virtual bool eqv() const;
     virtual bool eq()  const;
-
+    Object* getContinuation(Object* calledPoint);
 
     Objects* body() const { return body_; }
     Variables* parameters() { return parameters_;}

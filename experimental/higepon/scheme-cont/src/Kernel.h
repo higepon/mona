@@ -14,7 +14,7 @@ public:
 
     static Object* evalSequence(Objects* exps, Environment* env);
     static Objects* listOfValues(Objects* objects, Environment* env);
-    static Object* apply(Object* procedure, Objects* arguments, Environment* env, Object* parent);
+    static Object* apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application);
     static Object* doContinuation();
 };
 

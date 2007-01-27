@@ -6,17 +6,32 @@ using namespace std;
 PROCEDURE(CallCC, "call/cc")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), Procedure, p);
+    CAST(ARGV(0), Procedure, procedure);
 
 
     // 現在の継続を取り出す Object* cont = xxx->getContinuation()
+    if (parent->isBegin())
+    {
+        Begin* b = (Begin*)parent;
+        Object* cont = b->getContinuation(this);
+        // Procedure を apply する contを引数に
+        Objects* s = new Objects;
+        s->push_back(cont);
+        Object* o = Kernel::apply(procedure, s, env, NULL, NULL);
+        return o;
+    }
+    else if (parent->isLambda())
+    {
+        Lambda* lambda = (Lambda*)parent;
 
-    // Procedure を apply する contを引数に
- 
-            RETURN_BOOLEAN(ARGV(0)->isCharcter());
+        // application is called point of call/cc
+        Object* continuation = lambda->getContinuation(application);
+        Objects* arguments = new Objects;
+        arguments->push_back(continuation);
+        return Kernel::apply(procedure, arguments, env, NULL, NULL);
+    }
+    RAISE_ERROR(lineno(), "unknown call/cc");
 }
-
-
 
 PROCEDURE(CharcterP, "char?")
 {
@@ -72,4 +87,3 @@ PROCEDURE(IntegerToCharcter, "integer->char")
     CAST(ARGV(0), Number, n);
     return Charcter::fromNumber(n);
 }
-

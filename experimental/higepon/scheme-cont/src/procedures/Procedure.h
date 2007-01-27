@@ -89,7 +89,7 @@ public:                                                                         
         RAISE_ERROR(lineno(), "don't eval procedure " name);                     \
          return NULL;                                                            \
     }                                                                            \
-    virtual Object* apply(Objects* arguments, Environment* env, Object* parent); \
+    virtual Object* apply(Objects* arguments, Environment* env, Object* parent, Object* application); \
 };                                                                               \
 void initialize##ClassName()                                                     \
 {                                                                                \
@@ -100,6 +100,6 @@ static struct Wrapper##ClassName                                                
 {                                                                                \
     Wrapper##ClassName(){initialize##ClassName();}                               \
 } initializer_##ClassName;                                                       \
-Object* ClassName::apply(Objects* arguments, Environment* env, Object* parent)
+    Object* ClassName::apply(Objects* arguments, Environment* env, Object* parent, Object* application)
 
 #endif // __PRIMITIVE_PROCEDURE_PROCEDURE_H__

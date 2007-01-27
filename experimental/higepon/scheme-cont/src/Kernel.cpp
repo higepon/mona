@@ -120,7 +120,7 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 //     return ret;
 // }
 
-Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent)
+Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application)
 {
 //     static int i = 0;
 //     static Object* pr = NULL;
@@ -154,7 +154,7 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, O
     else if (procedure->isPrimitiveProcedure())
     {
         PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
-        return p->apply(arguments, env, parent);
+        return p->apply(arguments, env, parent, application);
     }
     else
     {

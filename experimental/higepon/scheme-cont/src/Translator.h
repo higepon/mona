@@ -54,6 +54,8 @@ private:
     int translateApplication(SExp* sexp, Object** object, Object* parent = NULL);
     int translateQuote(SExp* sexp, Object** object, Object* parent = NULL);
     int translateEval(SExp* sexp, Object** object, Object* parent = NULL);
+
+    void setParent(Objects* objects, Object* parent);
 };
 
 }; // namespace monash

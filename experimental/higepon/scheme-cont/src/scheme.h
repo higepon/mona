@@ -10,6 +10,7 @@ namespace std {
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "MacroFilter.h"
 #include "QuoteFilter.h"
 #include "Object.h"

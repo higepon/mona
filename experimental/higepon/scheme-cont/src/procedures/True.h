@@ -14,7 +14,7 @@ public:
     virtual std::string toString();
     virtual int type() const { return Object::TRUE; }
     virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env, Object* parent);
+    virtual Object* apply(Objects* arguments, Environment* env, Object* parent, Object* application);
     virtual bool eqv(Object* o);
 };
 

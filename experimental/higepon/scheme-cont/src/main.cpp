@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
     SExps sexps = allSExp->sexps;
 
-    printf("%s\n", allSExp->toZSExp()->toString().c_str());
+//     printf("%s\n", allSExp->toZSExp()->toString().c_str());
 
 // load
 //    sexp->execLoadSyntaxes();

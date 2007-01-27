@@ -45,8 +45,10 @@ public:
     bool isProcedure() const { return isCompoundProcedure() || isPrimitiveProcedure(); }
     bool isPrimitiveProcedure() const { return type() == PRIMITIVE_PROCEDURE; }
     bool isApplication() const { return type() == APPLICATION; }
-
+    bool isBegin() const { return type() == BEGIN; }
+    bool isLambda() const { return type() == LAMBDA; }
 public:
+    Object* parent;
 
     enum
     {
