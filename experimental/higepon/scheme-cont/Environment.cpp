@@ -31,11 +31,12 @@ Environment* Environment::clone()
 
 void Environment::setVaribale(Variable* variable, Object* value)
 {
-    for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
+    if (variable->name() == "puga") printf("set! %s\n", value->toString().c_str());
+    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
     {
-        if ((*it)->lookup(variable) != NULL)
+        if ((*p)->lookup(variable) != NULL)
         {
-            (*it)->insert(variable, value);
+            (*p)->insert(variable, value);
             return;
         }
     }
@@ -59,11 +60,9 @@ void Environment::extend(Variables* variables, Objects* objects)
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
-    int size = frames_->size();
-    for (int i = size - 1; i >= 0; i--)
+    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
     {
-        Frame* frame = frames_->at(i);
-        Object* found = frame->lookup(variable);
+        Object* found = (*p)->lookup(variable);
         if (NULL != found) {
             return found;
         }
@@ -76,9 +75,10 @@ Object* Environment::lookupVariableValue(Variable* variable)
 std::string Environment::toString()
 {
     string result = "";
-    for (Frames::const_iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
     {
-        result += (*frame)->toString() + "\n\n";
+        result += "****************\n";
+        result += (*p)->toString() + "\n\n";
     }
     return result;
 }

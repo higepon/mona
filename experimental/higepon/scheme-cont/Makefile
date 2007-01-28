@@ -53,7 +53,7 @@ test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp
 
 #CXXFLAGS = -g -idirafter . -O0 -gstabs+ -Wall
-CXXFLAGS = -idirafter . -Wall -O0
+CXXFLAGS = -g -gstabs -idirafter . -Wall -O0
 # -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -70,6 +70,10 @@ $(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(TEST_OBJECTS)
 check : $(TEST_TARGET) $(TARGET)
 	$(TEST_TARGET)
 	$(TARGET) test/test.scm
+
+gdb : $(TARGET)
+	gdb -x ./gdb.txt $(TARGET)
+
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 

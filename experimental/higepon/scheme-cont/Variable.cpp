@@ -23,5 +23,6 @@ int Variable::type() const
 
 Object* Variable::eval(Environment* env)
 {
+//    if (name_ == "puga") printf("%s", env->toString().c_str());
     return env->lookupVariableValue(this);
 }

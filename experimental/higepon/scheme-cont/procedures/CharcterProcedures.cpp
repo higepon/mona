@@ -25,7 +25,7 @@ PROCEDURE(CallCC, "call/cc")
         Lambda* lambda = (Lambda*)parent;
 
         // application is called point of call/cc
-        Object* continuation = lambda->getContinuation(application);
+        Object* continuation = lambda->getContinuation(application, env);
         Objects* arguments = new Objects;
         arguments->push_back(continuation);
         return Kernel::apply(procedure, arguments, env, NULL, NULL);

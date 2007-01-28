@@ -23,6 +23,7 @@ int Lambda::type() const
 
 Object* Lambda::eval(Environment* env)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Object* procedure = new Procedure(this, env); ASSERT(procedure); return procedure;
 }
 
@@ -36,7 +37,7 @@ bool Lambda::eq() const
     return false;
 }
 
-Object* Lambda::getContinuation(Object* calledPoint)
+Object* Lambda::getContinuation(Object* calledPoint, Environment* env)
 {
     Objects::iterator target = find(body_->begin(), body_->end(), calledPoint);
     if (target == body_->end())
@@ -47,8 +48,10 @@ Object* Lambda::getContinuation(Object* calledPoint)
     Objects* continuationBody = new Objects;
     Variable* returnValue = new Variable("returnValue");
     continuationBody->push_back(returnValue);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     for (Objects::iterator p = target + 1; p != body_->end(); ++p)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         continuationBody->push_back(*p);
     }
     Variables* arguments = new Variables;
@@ -59,20 +62,20 @@ Object* Lambda::getContinuation(Object* calledPoint)
 #if 1
     if (parent != NULL)
     {
-        printf("%d, %x\n", parent->type(), this);
         // todo
         if (parent->isApplication())
         {
             Application* app = (Application*)parent;
-            Object* c = app->getContinuation(this);
+            Object* c = app->getContinuation(this, env);
             if (c->isLambda())
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 Lambda* l = (Lambda*)c;
-                l->body()->insert(l->body()->begin(), thisCont);
+                MacroFilter mf;
+                Translator t;
+                l->body()->insert(l->body()->begin(), thisCont->eval(env));
                 ret = l;
-            printf("***************\n");
             }
-
         }
     }
 #endif

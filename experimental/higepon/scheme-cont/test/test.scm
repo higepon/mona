@@ -1,7 +1,6 @@
 (load "./test/scheme.scm")
 (load "./test/unittest.scm")
 
-
 (assert-check-true "if"
                    (if #t #t #f))
 
@@ -9,13 +8,19 @@
                     (if #t #f #t)
                     (if #f #t))
 
-(define test-name "set")
+(define test-name "set!")
 (define x 3)
 (if #t (set! x 4) (set! x 5))
 (assert-true test-name (= 4 x))
 (define x 3)
 (if #f (set! x 4) (set! x 5))
-(assert-true test-name (= 5 x))
+
+(define xx 0)
+(assert-check-true test-name
+             (= ((lambda (y) (set! y 3) y) 1) 3)
+             (= 5 x)
+             (= 4 ((lambda (y) (set! y (+ y 2)) y) 2))      ; y has one scope.
+             (= 4 ((lambda (xx) (set! xx (+ xx 2)) xx) 2)))  ; x has two scopes.
 
 (assert-check-true "cons"
              (= 3 (car (cons 3 4)))

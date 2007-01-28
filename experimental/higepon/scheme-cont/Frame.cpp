@@ -10,7 +10,6 @@ Frame::Frame()
 Frame::Frame(Variables* variables, Objects* values)
 {
     int size = variables->size() > values->size() ? variables->size() : values->size();
-
     for (int i = 0; i < size; i++)
     {
         map_.insert(std::pair<string, Object*>(variables->at(i)->name(), values->at(i)));
