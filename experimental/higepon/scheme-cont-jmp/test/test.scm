@@ -296,7 +296,7 @@
 (load "./test/symbol.scm")
 (load "./test/number.scm")
 (load "./test/closure.scm")
-;(load "./test/continuation.scm")
+(load "./test/continuation.scm")
 
 ;; report
 (total-report)
