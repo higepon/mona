@@ -21,7 +21,7 @@ $(TARGET): $(OBJECTS) mysetjmp_asm.o
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 mysetjmp_asm.o: mysetjmp.asm
-	nasm $< -o $@ -felf
+	nasm $< -o $@ -felf -g -F stabs
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies

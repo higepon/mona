@@ -9,32 +9,113 @@ static void stack_destroy(int counter);
 static myjmp_buf env;
 
 extern uint32_t stack_bottom;
-uint32_t my_stack_size;
-uint8_t* my_stack;
-uint32_t stack;
-static int retval = 1;
+//uint32_t my_stack_size;
+//uint8_t* my_stack;
+//uint32_t stack;
+//static int retval = 1;
+
+extern void* get_stack_pointer();
+
+#define OK 0
+
+typedef struct Cont
+{
+    uint32_t stack_size;
+    uint8_t* stack;
+    myjmp_buf registers;
+};
+
+static Cont c;
+
+int dummy()
+{
+    char buf[1024];
+    memset(buf, 1, 1024);
+    return buf[1023]; 
+}
+
+void cont_restore_stack(Cont* c)
+{
+    uint32_t now_stack = (uint32_t)get_stack_pointer();
+    uint32_t next_stack= now_stack -  1000;
+    for (uint32_t i = 0; i < c->stack_size / 4;  i++)
+    {
+        uint32_t* p = (uint32_t*)c->stack;
+        if (now_stack <= p[i] && p[i] <= stack_bottom)
+        {
+            printf("%x to ", p[i]);
+            p[i] -= (c->registers[7] - next_stack);
+            printf("%x\n", p[i]);
+        }
+    }
+
+    for (int i = 0; i < 5; i++)
+    {
+        if (now_stack <= c->registers[i] && c->registers[i] <= stack_bottom)
+        {
+            c->registers[i] -= (c->registers[i] - next_stack);
+        }
+    }
+
+
+
+//    exit(-1);
+    memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
+
+
+    uint32_t diff = c->registers[6] - c->registers[7];
+    c->registers[7] = next_stack;
+    c->registers[6] = next_stack + diff;
+//    dummy();
+    mylongjmp(c->registers, 6);
+}
+
 void jmp_inside_test()
 {
     func1(0);
     stack_destroy(0);
-    memcpy((uint8_t*)env[7], my_stack, my_stack_size);
+#if OK
+    memcpy((uint8_t*)c.registers[7], c.stack, c.stack_size);
+    mylongjmp(c.registers, 6);
+#else
+    cont_restore_stack(&c);
+#endif
+//    cont_restore_stack(&c);
 //     memcpy((uint8_t*)(stack_bottom + 1024), my_stack, my_stack_size);
 //     env[6] = stack_bottom + 1024;
 //     env[7] = stack_bottom + 1000;
-    mylongjmp(env, retval);
+//    int a = 6;
+
 }
 
 void func1(int counter)
 {
     if (counter == 5)
     {
-        if (mysetjmp(env) == 0)
+        int ret = mysetjmp(c.registers);
+
+        printf("ret = %d\n", ret);
+        if (ret == 0)
         {
-            stack = env[7];
-            my_stack_size = stack_bottom - stack;
-            printf("%d %d\n", my_stack_size, env[6] - env[7]);
-            my_stack = (uint8_t*)malloc(my_stack_size);
-            memcpy(my_stack, (uint8_t*)stack, my_stack_size);
+#if OK
+            uint32_t current_stack = c.registers[7];
+            c.stack_size = stack_bottom - c.registers[7];
+            printf("%d %d\n", c.stack_size, c.registers[6] - c.registers[7]);
+            c.stack = (uint8_t*)malloc(c.stack_size);
+            memcpy(c.stack, (uint8_t*)current_stack, c.stack_size);
+#else
+            uint32_t current_stack = c.registers[7];
+            c.stack_size = stack_bottom - c.registers[7];
+            printf("%d %d\n", c.stack_size, c.registers[6] - c.registers[7]);
+            c.stack = (uint8_t*)malloc(c.stack_size);
+            memcpy(c.stack, (uint8_t*)current_stack, c.stack_size);
+    uint32_t* p = (uint32_t*)current_stack;
+    for (int i = 0; i < 10; i++)
+    {
+        printf("moge %x\n", p[i]);
+    }
+
+#endif
 //             int size = my_stack_size / 4;
 //             uint32_t* p = (uint32_t*)my_stack;
 //             for (int i = 0; i < size; i++)
@@ -53,8 +134,9 @@ void func1(int counter)
             return;
         }
     }
-    printf("func1 : %d\n", counter);
+    printf("func1 : %x\n", counter);
     func1(counter + 1);
+    printf("func1 : %x return \n", counter);
 }
 
 void stack_destroy(int counter)
