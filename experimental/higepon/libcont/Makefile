@@ -1,30 +1,30 @@
 TARGET  = ./cont
 
 SOURCES = \
-main.cpp \
-mysetjmp.cpp\
-cont.cpp\
-jmp_outside_test.cpp\
-jmp_inside_test.cpp
+main.c \
+mysetjmp.c\
+cont.c\
+jmp_outside_test.c\
+jmp_inside_test.c
 
-CXXFLAGS = -g -idirafter . -Wall -O0
+CFLAGS = -g -idirafter . -Wall -O0
 
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS = $(SOURCES:.c=.o)
 
 all : $(TARGET)
 
 $(TARGET): $(OBJECTS) mysetjmp_asm.o
-	$(CXX) mysetjmp_asm.o $(OBJECTS) -o $(TARGET)
+	$(CC) mysetjmp_asm.o $(OBJECTS) -o $(TARGET)
 
-.SUFFIXES: .cpp .o
+.SUFFIXES: .c .o
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 mysetjmp_asm.o: mysetjmp.asm
 	nasm $< -o $@ -felf -g -F stabs
 
 depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+	$(CC) -MM $(INCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) mysetjmp_asm.o

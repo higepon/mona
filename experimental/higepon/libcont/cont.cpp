@@ -1,3 +1,51 @@
+/*!
+    COPYRIGHT AND PERMISSION NOTICE
+
+    Copyright (c) 2007 higepon@users.sourceforge.jp
+
+    All rights reserved.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to
+    deal in the Software without restriction, including without limitation the
+    rights to use, copy, modify, merge, publish, distribute, and/or sell copies
+    of the Software, and to permit persons to whom the Software is furnished to
+    do so, provided that the above copyright notice(s) and this permission
+    notice appear in all copies of the Software and that both the above
+    copyright notice(s) and this permission notice appear in supporting
+    documentation.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS.
+    IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE
+    LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR
+    ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
+    IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+    OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    Except as contained in this notice, the name of a copyright holder shall not
+    be used in advertising or otherwise to promote the sale, use or other
+    dealings in this Software without prior written authorization of the
+    copyright holder.
+*/
+
+/*!
+    \file   cont.cpp
+    \brief  mona kernel start at this point
+
+    mona kernel start at this point.
+    before startKernel, os entered protected mode.
+
+    Copyright (c) 2002,2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
+    All rights reserved.
+    License=MIT/X License
+
+    \author  HigePon
+    \version $Revision: 3946 $
+    \date   create:2002/07/21 update:$Date: 2007-01-16 21:48:57 +0900 (火, 16  1月 2007) $
+*/
+
 #include "cont.h"
 
 static uint32_t cont_stack_bottom;
@@ -10,7 +58,7 @@ void* cont_get_stack_pointer()
 
 void cont_initialize()
 {
-    // fix me ugly
+    // fix me!
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
 }
 
