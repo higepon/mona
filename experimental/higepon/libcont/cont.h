@@ -12,7 +12,7 @@ typedef struct Cont
     uint32_t stack_size;
     uint8_t* stack;
     myjmp_buf registers;
-};
+} Cont;
 
 void cont_initialize();
 int cont_save(Cont* c);

@@ -73,9 +73,10 @@ void cont_destroy(Cont* c)
 
 void cont_restore(Cont* c)
 {
+    uint32_t i;
     uint32_t prev_stack = c->registers[7];
     uint32_t next_stack= prev_stack - 1000;
-    for (uint32_t i = 0; i < c->stack_size / 4;  i++)
+    for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
         if (prev_stack <= p[i] && p[i] <= cont_stack_bottom)
@@ -85,7 +86,7 @@ void cont_restore(Cont* c)
     }
 
     // eax ebx ecx edx esi edi
-    for (int i = 0; i < 5; i++)
+    for (i = 0; i < 5; i++)
     {
         if (prev_stack <= c->registers[i] && c->registers[i] <= cont_stack_bottom)
         {
