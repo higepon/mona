@@ -1,8 +1,8 @@
 /*!
-  \file   main.cpp
+  \file   main.c
   \brief  libcont
 
-  Copyright (c) 2007 Higepon
+  Copyright (c) 2007 higepon
   WITHOUT ANY WARRANTY
 
   \author  Higepon

@@ -31,19 +31,14 @@
 */
 
 /*!
-    \file   cont.cpp
-    \brief  mona kernel start at this point
+    \file   cont.c
+    \brief  cotinuation library
 
-    mona kernel start at this point.
-    before startKernel, os entered protected mode.
-
-    Copyright (c) 2002,2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
+    Copyright (c) 2007 higepon
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
-    \version $Revision: 3946 $
-    \date   create:2002/07/21 update:$Date: 2007-01-16 21:48:57 +0900 (火, 16  1月 2007) $
+    \author  higepon
 */
 
 #include "cont.h"

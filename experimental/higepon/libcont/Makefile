@@ -7,7 +7,7 @@ cont.c\
 jmp_outside_test.c\
 jmp_inside_test.c
 
-CFLAGS = -g -idirafter . -Wall -O0
+CFLAGS = -g -idirafter . -Wall -O2
 
 OBJECTS = $(SOURCES:.c=.o)
 

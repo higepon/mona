@@ -1,5 +1,5 @@
 bits 32
-
+;;  Copyright (c) 2006 Shotaro Tsuji
 section .bss
 section .data
 section .text
