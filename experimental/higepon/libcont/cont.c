@@ -42,6 +42,7 @@
 */
 
 #include "cont.h"
+#include <unistd.h>
 
 static uint32_t cont_stack_bottom;
 
@@ -51,10 +52,19 @@ void* cont_get_stack_pointer()
     return (void*)((unsigned int)stack_pointer + 8);
 }
 
+#pragma weak __libc_stack_end
+extern void* __libc_stack_end;
+void* cont_get_stack_bottom()
+{
+    long pagesize = sysconf(_SC_PAGESIZE);
+    return (void*)(((uintptr_t)__libc_stack_end + pagesize) & ~(pagesize - 1));
+}
+
 void cont_initialize()
 {
     // fix me!
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
+    //  cont_stack_bottom = cont_get_stack_bottom() -20;
 }
 
 void cont_destroy(Cont* c)
