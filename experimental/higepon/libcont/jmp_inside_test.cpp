@@ -36,8 +36,9 @@ int dummy()
 
 void cont_restore_stack(Cont* c)
 {
-    uint32_t now_stack = (uint32_t)get_stack_pointer();
+    uint32_t now_stack = c->registers[7];//(uint32_t)get_stack_pointer();
     uint32_t next_stack= now_stack -  1000;
+    printf("now_stack = %x stack_bottom = %x\n", now_stack, stack_bottom);
     for (uint32_t i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -105,10 +106,12 @@ void func1(int counter)
             memcpy(c.stack, (uint8_t*)current_stack, c.stack_size);
 #else
             uint32_t current_stack = c.registers[7];
+            printf("c.registers[7] esp=%x\n", c.registers[7]);
             c.stack_size = stack_bottom - c.registers[7];
             printf("%d %d\n", c.stack_size, c.registers[6] - c.registers[7]);
             c.stack = (uint8_t*)malloc(c.stack_size);
             memcpy(c.stack, (uint8_t*)current_stack, c.stack_size);
+            printf("current_stack esp=%x\n", current_stack);
     uint32_t* p = (uint32_t*)current_stack;
     for (int i = 0; i < 10; i++)
     {
