@@ -16,18 +16,13 @@
 void jmp_outside_test();
 void jmp_inside_test();
 
-
-//uint32_t cont_stack_bottom;
-
 void     cont_initialize();
 
 int main(int argc, char *argv[])
 {
-// stack の底をどう取得するかなぁ
-//    cont_stack_bottom = (uint32_t)get_stack_pointer() + 50;
     cont_initialize();
     jmp_outside_test();
-    jmp_inside_test(); // may be segmentation fault!
-    printf("***********\n");fflush(stdout);
+    jmp_inside_test(); // may be segmentation fault with setjmp!
+    printf("test done\n");
     return 0;
 }

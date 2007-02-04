@@ -10,6 +10,7 @@ void* cont_get_stack_pointer()
 
 void cont_initialize()
 {
+    // fix me ugly
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
 }
 
@@ -35,7 +36,7 @@ void cont_restore(Cont* c)
         }
     }
 
-    // eax ebx ecx edx esi ediも書き換え
+    // eax ebx ecx edx esi edi
     for (int i = 0; i < 5; i++)
     {
         if (prev_stack <= c->registers[i] && c->registers[i] <= cont_stack_bottom)
@@ -43,17 +44,10 @@ void cont_restore(Cont* c)
             c->registers[i] -= (c->registers[i] - next_stack);
         }
     }
-
-
-
-//    exit(-1);
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
-
-
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
-//    dummy();
     mylongjmp(c->registers, 6);
 }
 
