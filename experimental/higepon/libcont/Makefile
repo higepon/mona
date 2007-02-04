@@ -7,8 +7,7 @@ cont.cpp\
 jmp_outside_test.cpp\
 jmp_inside_test.cpp
 
-
-CXXFLAGS = -g -gstabs -idirafter . -Wall -O0
+CXXFLAGS = -g -idirafter . -Wall -O0
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
