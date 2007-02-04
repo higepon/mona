@@ -16,17 +16,16 @@
 void jmp_outside_test();
 void jmp_inside_test();
 
-void* get_stack_pointer()
-{
-    register void* stack_pointer asm ("%esp");
-    return (void*)((unsigned int)stack_pointer + 8);
-}
 
-uint32_t stack_bottom;
+//uint32_t cont_stack_bottom;
+
+void     cont_initialize();
 
 int main(int argc, char *argv[])
 {
-    stack_bottom = (uint32_t)get_stack_pointer() + 50;
+// stack の底をどう取得するかなぁ
+//    cont_stack_bottom = (uint32_t)get_stack_pointer() + 50;
+    cont_initialize();
     jmp_outside_test();
     jmp_inside_test(); // may be segmentation fault!
     printf("***********\n");fflush(stdout);

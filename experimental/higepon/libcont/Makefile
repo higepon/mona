@@ -3,6 +3,7 @@ TARGET  = ./cont
 SOURCES = \
 main.cpp \
 mysetjmp.cpp\
+cont.cpp\
 jmp_outside_test.cpp\
 jmp_inside_test.cpp
 
