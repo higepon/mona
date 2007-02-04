@@ -26,8 +26,9 @@ uint32_t stack_bottom;
 
 int main(int argc, char *argv[])
 {
-    stack_bottom = (uint32_t)get_stack_pointer();
+    stack_bottom = (uint32_t)get_stack_pointer() + 50;
     jmp_outside_test();
     jmp_inside_test(); // may be segmentation fault!
+    printf("***********\n");fflush(stdout);
     return 0;
 }

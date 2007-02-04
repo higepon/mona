@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "mysetjmp.h"
 
-static void func1(int counter);
+static int func1(int counter);
 static void stack_destroy(int counter);
 static myjmp_buf env;
 
@@ -36,6 +36,7 @@ int dummy()
 
 void cont_restore_stack(Cont* c)
 {
+    printf("%s start\n", __func__);fflush(stdout);
     uint32_t now_stack = c->registers[7];//(uint32_t)get_stack_pointer();
     uint32_t next_stack= now_stack -  1000;
     printf("now_stack = %x stack_bottom = %x\n", now_stack, stack_bottom);
@@ -73,7 +74,13 @@ void cont_restore_stack(Cont* c)
 
 void jmp_inside_test()
 {
-    func1(0);
+    printf("%s start\n", __func__);fflush(stdout);
+    int ret = func1(0);
+    if (ret != 0)
+    {
+        printf("ret =%x\n", ret); fflush(stdout);
+        return;
+    }
     stack_destroy(0);
 #if OK
     memcpy((uint8_t*)c.registers[7], c.stack, c.stack_size);
@@ -89,8 +96,9 @@ void jmp_inside_test()
 
 }
 
-void func1(int counter)
+int func1(int counter)
 {
+    printf("%s start\n", __func__);fflush(stdout);
     if (counter == 5)
     {
         int ret = mysetjmp(c.registers);
@@ -129,17 +137,18 @@ void func1(int counter)
 //                     *(&p[i]) = 1024 + *(&p[i]);
 //                 }
 //             }
-            return;
+            return ret;
         }
         else
         {
             printf("jmp inside OK[%d]\n", counter);
-            return;
+            return ret;
         }
     }
     printf("func1 : %x\n", counter);
-    func1(counter + 1);
-    printf("func1 : %x return \n", counter);
+    return func1(counter + 1);
+//    printf("func1 : %x return \n", counter);
+//    return;
 }
 
 void stack_destroy(int counter)
