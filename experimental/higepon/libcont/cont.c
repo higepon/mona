@@ -76,7 +76,7 @@ void cont_destroy(Cont* c)
     }
 }
 
-void cont_restore(Cont* c)
+void cont_restore(Cont* c, int return_value)
 {
     uint32_t i;
     uint32_t prev_stack = c->registers[7];
@@ -102,7 +102,7 @@ void cont_restore(Cont* c)
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
-    mylongjmp(c->registers, 6);
+    mylongjmp(c->registers, return_value);
 }
 
 int cont_save(Cont* c)

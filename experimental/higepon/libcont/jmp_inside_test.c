@@ -14,7 +14,7 @@ void jmp_inside_test()
         return;
     }
     stack_destroy(0);
-    cont_restore(&c);
+    cont_restore(&c, 1);
 }
 
 int func1(int counter)

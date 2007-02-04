@@ -16,7 +16,7 @@ typedef struct Cont
 
 void cont_initialize();
 int cont_save(Cont* c);
-void cont_restore(Cont* c);
+void cont_restore(Cont* c, int return_value);
 void* cont_get_stack_pointer();
 void cont_destroy(Cont* c);
 
