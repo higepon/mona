@@ -2,6 +2,7 @@
 #define __STRING_H__
 
 #include "Object.h"
+#include "Charcter.h"
 
 namespace monash {
 
@@ -9,6 +10,8 @@ class String : public Object
 {
 public:
     String(const std::string& value, uint32_t lineno = 0);
+    String(uint32_t length, uint32_t lineno = 0);
+    String(uint32_t length, char c, uint32_t lineno = 0);
     virtual ~String();
 
 public:
@@ -21,6 +24,8 @@ public:
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
+    virtual Charcter* get(uint32_t index);
+    virtual bool set(uint32_t index, Charcter* c);
 
 protected:
     std::string value_;

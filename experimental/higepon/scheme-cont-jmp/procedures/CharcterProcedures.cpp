@@ -1,5 +1,5 @@
 #include "procedures/Procedure.h"
-#include <setjmp.h>
+#include "libcont/cont.h"
 
 using namespace monash;
 using namespace std;
@@ -13,7 +13,7 @@ PROCEDURE(CallCC, "call/cc")
 
     Continuation* continuation = new Continuation;
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    if (0 == setjmp(continuation->env))
+    if (0 == cont_save(&(continuation->cont)))
     {
         Objects* arguments = new Objects;
         arguments->push_back(continuation);

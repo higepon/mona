@@ -11,8 +11,10 @@ public:
     Pair(Object* first, Object* second, uint32_t lineno = 0);
     virtual ~Pair();
 
-    Object* first() {return first_;}
-    Object* second() {return second_;}
+    Object* getCar() {return car_;}
+    Object* getCdr() {return cdr_;}
+    void setCar(Object* o);
+    void setCdr(Object* o);
 
 public:
     virtual std::string toString();
@@ -23,8 +25,8 @@ public:
     virtual bool eq(Object* o);
 
 protected:
-    Object* first_;
-    Object* second_;
+    Object* car_;
+    Object* cdr_;
     uint32_t lineno_;
 };
 

@@ -16,6 +16,7 @@
 #include "scheme.h"
 #include <stdio.h>
 #include <time.h>
+#include "libcont/cont.h"
 
 
 using namespace monash;
@@ -31,6 +32,7 @@ ZSExp* eval(ZSExp* exp)
 
 int main(int argc, char *argv[])
 {
+    cont_initialize();
     if (argc < 2)
     {
         fprintf(stderr, "usage: %s file\n", argv[0]);

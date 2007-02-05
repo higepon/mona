@@ -10,16 +10,17 @@ namespace monash {
 class MacroFilter;
 class Translator;
 
-class Environment
+class Environment : public Object
 {
 protected:
     typedef std::vector<Frame*> Frames;
     Frames* frames_;
     MacroFilter& filter_;
     Translator& translator_;
+    uint32_t lineno_;
 
 public:
-    Environment(MacroFilter& filter, Translator& translator);
+    Environment(MacroFilter& filter, Translator& translator, uint32_t lineno = 0);
     virtual ~Environment();
     Environment* clone();
     Object* lookupVariableValue(Variable* variable);
@@ -30,6 +31,9 @@ public:
     std::string toString();
     MacroFilter& macroFilter() { return filter_; }
     Translator& translator() { return translator_; }
+    virtual int type() const;
+    virtual uint32_t lineno() const { return lineno_; }
+    virtual Object* eval(Environment* env);
 };
 
 }; // namespace monash

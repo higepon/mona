@@ -3,7 +3,7 @@
 using namespace monash;
 using namespace std;
 
-Pair::Pair(Object* first, Object* second, uint32_t lineno) : first_(first), second_(second), lineno_(lineno)
+Pair::Pair(Object* car, Object* cdr, uint32_t lineno) : car_(car), cdr_(cdr), lineno_(lineno)
 {
 }
 
@@ -13,7 +13,7 @@ Pair::~Pair()
 
 std::string Pair::toString()
 {
-    return "pair(" + first_->toString() + ", " + second_->toString() + ")";
+    return "pair(" + getCar()->toString() + ", " + getCdr()->toString() + ")";
 }
 
 int Pair::type() const
@@ -38,3 +38,12 @@ bool Pair::eq(Object* o)
     return eqv(o);
 }
 
+void Pair::setCar(Object* o)
+{
+    car_ = o;
+}
+
+void Pair::setCdr(Object* o)
+{
+    cdr_ = o;
+}

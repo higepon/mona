@@ -52,6 +52,7 @@ public:
     bool isApplication() const { return type() == APPLICATION; }
     bool isBegin() const { return type() == BEGIN; }
     bool isLambda() const { return type() == LAMBDA; }
+    bool isEnvironment() const { return type() == ENVIRONMENT; }
     bool isContinuation() const { return type() == CONTINUATION; }
 public:
     Object* parent;
@@ -69,6 +70,7 @@ public:
         IF,
         LAMBDA,
         PROCEDURE,
+        ENVIRONMENT,
         BEGIN,
         DEFINITION,
         COND,

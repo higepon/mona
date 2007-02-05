@@ -3,6 +3,12 @@
 using namespace monash;
 using namespace std;
 
+PROCEDURE(PairP, "pair?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isPair());
+}
+
 PROCEDURE(Cons, "cons")
 {
     ARGC_SHOULD_BE(2);
@@ -25,7 +31,7 @@ PROCEDURE(Car, "car")
     else if (ARGV(0)->isPair())
     {
         Pair* p = (Pair*)ARGV(0);
-        return p->first();
+        return p->getCar();
     }
     RAISE_ERROR(ARGV(0)->lineno(), "car got [%s], but required pair", procedureName_.c_str(), ARGV(0)->toString().c_str());
     return NULL;
@@ -48,8 +54,24 @@ PROCEDURE(Cdr, "cdr")
     else if (o->isPair())
     {
         Pair* p = (Pair*)o;
-        return p->second();
+        return p->getCdr();
     }
     RAISE_ERROR(o->lineno(), "%s got [%s], but required pair", procedureName_.c_str(), o->toString().c_str());
     return NULL;
+}
+
+PROCEDURE(SetCar, "set-car!")
+{
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(0), Pair, p);
+    p->setCar(ARGV(1));
+    return new True();
+}
+
+PROCEDURE(SetCdr, "set-cdr!")
+{
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(0), Pair, p);
+    p->setCdr(ARGV(1));
+    return new True();
 }

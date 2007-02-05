@@ -22,23 +22,6 @@
              (= 4 ((lambda (y) (set! y (+ y 2)) y) 2))      ; y has one scope.
              (= 4 ((lambda (xx) (set! xx (+ xx 2)) xx) 2)))  ; x has two scopes.
 
-(assert-check-true "cons"
-             (= 3 (car (cons 3 4)))
-             (= 4 (cdr (cons 3 4)))
-             (= 3 (cadr (cons (cons 1 2) (cons 3 4))))
-             (= 2 (cdar (cons (cons 1 2) (cons 3 4))))
-             (= 1 (caar (cons (cons 1 2) (cons 3 4))))
-             (= 4 (cddr (cons (cons 1 2) (cons 3 4)))))
-
-(assert-check-false "string?"
-                    (string? 3)
-                    (string? (cons 1 2))
-                    (string? (+ 1 2)))
-(assert-check-true "string?" (string? "string"))
-
-(assert-check-true "string->number" (= 1234 (string->number "1234")))
-(assert-check-true "string-append" (string=? (string-append "12" "34") "1234"))
-
 (assert-check-true "and"
                    (and 3)
                    (and #t #t)
@@ -125,18 +108,6 @@
         (* n (fact (- n 1))))))
 (assert-true "fact" (= 120 (fact 5)))
 
-;; (define test-name "quote")
-;; (display (car (quote ((x1 x2) ((y1 y2))))))
-;; (define xyz 1234)
-;; (assert-true test-name (= 1234 (eval (quote xyz))))
-
-;; (define test-name "eval")
-;; (eval (quote (define hoge+ (lambda (x) (+ 4 x)))))
-;; (assert-true test-name (= 4 (hoge+ 0)))
-;; (eval (quote (define-syntax pqr
-;;                (syntax-rules ()
-;;                  ((_ a) (+ a 3))))))
-;; (assert-true test-name (= 7 (pqr 4)))
 
 
 ;; ...をリネームするコードを書かないとダメだね．
@@ -291,12 +262,25 @@
 (assert-check-false "eq? should be #f"
                     (eq? (list 'a) (list 'a)))
 
+(define xyz 1234)
+(assert-true "quote"
+             (= 1234 (eval (quote xyz) (scheme-report-environment 5))))
+
+(eval (quote (define hoge+ (lambda (x) (+ 4 x)))) (scheme-report-environment 5))
+(assert-true "eval" (= 4 (hoge+ 0)))
+;; (eval (quote (define-syntax pqr
+;;                 (syntax-rules ()
+;;                  ((_ a) (+ a 3))))) (scheme-report-environment 5))
+;; (assert-true "eval" (= 7 (pqr 4)))
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")
 (load "./test/number.scm")
 (load "./test/closure.scm")
-(load "./test/continuation.scm")
+;(load "./test/continuation.scm")
+(load "./test/string.scm")
+(load "./test/pair.scm")
 
 ;; report
 (total-report)

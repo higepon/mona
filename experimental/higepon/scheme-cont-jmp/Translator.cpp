@@ -157,18 +157,6 @@ int Translator::translateQuote(SExp* sexp, Object** object, Object* parent)
     return SUCCESS;
 }
 
-int Translator::translateEval(SExp* sexp, Object** object, Object* parent)
-{
-    if (L() != 2) return SYNTAX_ERROR;
-    Object* o;
-    int ret = translate(&N(1), &o);
-    if (ret != SUCCESS) return ret;
-    if (o->type() != Object::QUOTE) return SYNTAX_ERROR;
-    Quote* quote = (Quote*)o;
-    *object = new Eval(*this, quote, sexp->lineno);ASSERT(*object);
-    return SUCCESS;
-}
-
 int Translator::translateLambda(SExp* sexp, Object** object, Object* parent)
 {
     if (L() <= 2) return SYNTAX_ERROR;
@@ -310,10 +298,6 @@ int Translator::translate(SExp** n, Object** object, Object* parent)
         {
             // fix me
             return SUCCESS;
-        }
-        else if (functionName == "eval")
-        {
-            return translateEval(sexp, object);
         }
         else if (functionName == "if")
         {

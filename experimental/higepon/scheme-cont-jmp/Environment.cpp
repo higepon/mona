@@ -4,7 +4,7 @@
 using namespace monash;
 using namespace std;
 
-Environment::Environment(MacroFilter& filter, Translator& translator) : filter_(filter), translator_(translator)
+Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t lineno /* = 0 */) : filter_(filter), translator_(translator), lineno_(lineno)
 {
     frames_ = new Frames();
     ASSERT(frames_);
@@ -81,4 +81,14 @@ std::string Environment::toString()
         result += (*p)->toString() + "\n\n";
     }
     return result;
+}
+
+int Environment::type() const
+{
+    return Object::ENVIRONMENT;
+}
+
+Object* Environment::eval(Environment* env)
+{
+    return this;
 }

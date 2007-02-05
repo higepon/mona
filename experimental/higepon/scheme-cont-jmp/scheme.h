@@ -31,7 +31,6 @@ namespace std {
 #include "Definition.h"
 #include "Application.h"
 #include "SExp.h"
-#include "Eval.h"
 #include "Parser.h"
 #include "Translator.h"
 #include "Macro.h"
