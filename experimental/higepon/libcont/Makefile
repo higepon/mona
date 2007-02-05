@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS) mysetjmp_asm.o
 	$(CC) mysetjmp_asm.o $(OBJECTS) -o $(TARGET)
 
 .SUFFIXES: .c .o
-.cpp.o:
+.c.o:
 	$(CC) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 mysetjmp_asm.o: mysetjmp.asm
