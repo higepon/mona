@@ -8,7 +8,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string>
-
+extern "C" {
+#include "libcont/cont.h"
+};
 namespace monash {
 
 class Error
@@ -18,11 +20,15 @@ private:
     virtual ~Error();
 
 public:
-    static void initialize();
+    static void exitOnError();
+    static void returnOnError();
     static void showErrorAndExit();
+    static void showError();
     static void raise(uint32_t lineno, std::string cppfile, uint32_t cpplineno, std::string cppfunc, const char* format, ...);
 
     static jmp_buf returnPoint;
+    static Cont cont;
+
     static std::string error;
     static std::string file;
     static std::string cppfile;

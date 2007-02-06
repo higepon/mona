@@ -3,87 +3,87 @@
 using namespace monash;
 using namespace std;
 
-string ZNumber::toString()
-{
-    char buf[32];
-    sprintf(buf, "%d", value_);
-    return std::string(buf);
-}
+// string ZNumber::toString()
+// {
+//     char buf[32];
+//     sprintf(buf, "%d", value_);
+//     return std::string(buf);
+// }
 
-string ZPair::toStringCdr()
-{
-    string ret = "";
-    if (NULL != car_)
-    {
-        ret += car_->toString();
-    }
-    else
-    {
-        ret += "NULL";
-    }
+// string ZPair::toStringCdr()
+// {
+//     string ret = "";
+//     if (NULL != car_)
+//     {
+//         ret += car_->toString();
+//     }
+//     else
+//     {
+//         ret += "NULL";
+//     }
 
-    if (NULL != cdr_)
-    {
-        ret += " ";
-        if (cdr_->isPair())
-        {
-            ZPair* pair = (ZPair*)cdr_;
-            ret += pair->toStringCdr();
-        }
-        else
-        {
-            ret += cdr_->toString();
-        }
-    }
-    else
-    {
-    }
-    return ret;
-}
+//     if (NULL != cdr_)
+//     {
+//         ret += " ";
+//         if (cdr_->isPair())
+//         {
+//             ZPair* pair = (ZPair*)cdr_;
+//             ret += pair->toStringCdr();
+//         }
+//         else
+//         {
+//             ret += cdr_->toString();
+//         }
+//     }
+//     else
+//     {
+//     }
+//     return ret;
+// }
 
-string ZPair::toString()
-{
-    string ret = "(";
-    ret += toStringCdr();
-    ret += ")";
-    return ret;
-}
+// string ZPair::toString()
+// {
+//     string ret = "(";
+//     ret += toStringCdr();
+//     ret += ")";
+//     return ret;
+// }
 
 
-ZSExp* SExp::toZSExp()
-{
-    switch(type)
-    {
-    case NUMBER:
-        return new ZNumber(value);
-        break;
-    case SYMBOL:
-        return new ZSymbol(text);
-        break;
-    case STRING:
-        return new ZString(text);
-        break;
-    case SEXPS:
-        ZPair* retPair = new ZPair(NULL, NULL);
-        if (sexps.empty())
-        {
-            return retPair;
-        }
+// ZSExp* SExp::toZSExp()
+// {
+//     switch(type)
+//     {
+//     case NUMBER:
+//         return new ZNumber(value);
+//         break;
+//     case SYMBOL:
+//         return new ZSymbol(text);
+//         break;
+//     case STRING:
+//         return new ZString(text);
+//         break;
+//     case SEXPS:
+//         ZPair* retPair = new ZPair(NULL, NULL);
+//         if (sexps.empty())
+//         {
+//             return retPair;
+//         }
 
-        retPair->setCar(sexps[0]->toZSExp());
-        ZPair* root = retPair;
-        for (SExps::const_iterator p = sexps.begin() + 1; p != sexps.end(); ++p)
-        {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            ZPair* pair = new ZPair((*p)->toZSExp(), NULL);
-            root->setCdr(pair);
-            root = pair;
-        }
-        return retPair;
-        break;
-    }
-    return NULL;
-}
+//         retPair->setCar(sexps[0]->toZSExp());
+//         ZPair* root = retPair;
+//         for (SExps::const_iterator p = sexps.begin() + 1; p != sexps.end(); ++p)
+//         {
+//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//             ZPair* pair = new ZPair((*p)->toZSExp(), NULL);
+//             root->setCdr(pair);
+//             root = pair;
+//         }
+//         return retPair;
+//         break;
+//     }
+//     return NULL;
+// }
 
 
 SExp* SExp::clone() const

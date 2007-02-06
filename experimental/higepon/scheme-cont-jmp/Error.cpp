@@ -1,5 +1,4 @@
 #include "Error.h"
-
 using namespace monash;
 using namespace std;
 
@@ -8,6 +7,7 @@ string Error::file;
 string Error::cppfile;
 string Error::cppfunc;
 jmp_buf Error::returnPoint;
+Cont Error::cont;
 uint32_t Error::lineno;
 uint32_t Error::cpplineno;
 
@@ -19,7 +19,7 @@ Error::~Error()
 {
 }
 
-void Error::initialize()
+void Error::exitOnError()
 {
     if (setjmp(returnPoint) != 0)
     {
@@ -27,11 +27,31 @@ void Error::initialize()
     }
 }
 
+void Error::returnOnError()
+{
+//begin:
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//    if (setjmp(returnPoint) != 0)
+    if (cont_save(&cont) != 0)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        showError();
+        //        goto begin;
+    }
+
+}
+
 void Error::showErrorAndExit()
 {
     fprintf(stderr, "%s:%d: error: %s\n", file.c_str(), lineno, error.c_str());
     fprintf(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
     exit(-1);
+}
+
+void Error::showError()
+{
+    fprintf(stderr, "error: %s\n", error.c_str());
+    fprintf(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
 }
 
 void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* format, ...)
@@ -54,5 +74,6 @@ void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* 
     cppfile = f;
     cpplineno = cppl;
     cppfunc = cppf;
-    longjmp(returnPoint, -1);
+//    longjmp(returnPoint, -1);
+    cont_restore(&cont, -1);
 }
