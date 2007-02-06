@@ -34,6 +34,7 @@ SOURCES = monapi_impl.cpp \
           TerminalUtil.cpp \
           Stream.cpp \
           Thread.cpp \
+          stub_for_linker.cpp\
           audio/Beep.cpp \
           audio/mml/Config.cpp \
           audio/mml/Element.cpp \

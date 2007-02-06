@@ -26,15 +26,3 @@ extern "C" int user_start()
     return result;
 }
 
-extern "C" void __main()
-{
-    // this function is stub
-}
-
-/*----------------------------------------------------------------------
-    auto-import global symbols
-----------------------------------------------------------------------*/
-extern "C" void _pei386_runtime_relocator()
-{
-    // this function is stub
-}
