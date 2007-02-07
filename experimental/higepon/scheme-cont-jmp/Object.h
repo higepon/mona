@@ -46,6 +46,7 @@ public:
     bool isPair() const { return type() == PAIR; }
     bool isTrue() const { return type() == TRUE; }
     bool isFalse() const { return type() == FALSE; }
+    bool isUndef() const { return type() == UNDEF; }
     bool isCompoundProcedure() const { return type() == PROCEDURE; }
     bool isProcedure() const { return isCompoundProcedure() || isPrimitiveProcedure(); }
     bool isPrimitiveProcedure() const { return type() == PRIMITIVE_PROCEDURE; }
@@ -84,6 +85,7 @@ public:
         LET_ASTERISK,
         TRUE,
         FALSE,
+        UNDEF,
     };
 };
 

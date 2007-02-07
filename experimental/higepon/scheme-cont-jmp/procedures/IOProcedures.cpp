@@ -7,7 +7,7 @@ PROCEDURE(Display, "display")
 {
     ARGC_SHOULD_BE(1);
     printf(ARGV(0)->toStringValue().c_str());
-    return new True(); // todo hutei
+    return new Undef();
 }
 
 PROCEDURE(Load, "load")

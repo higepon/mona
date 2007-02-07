@@ -31,6 +31,7 @@ procedures/Set.cpp\
 procedures/StringProcedures.cpp\
 procedures/SymbolProcedures.cpp\
 procedures/True.cpp\
+procedures/Undef.cpp\
 procedures/VectorProcedures.cpp\
 procedures/MiscProcedures.cpp\
 Procedure.cpp\

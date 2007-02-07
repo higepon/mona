@@ -53,12 +53,14 @@ void input_loop()
     size_t length = 0;
     uint32_t open_paren_count = 0;
     uint32_t close_paren_count = 0;
-        Error::returnOnError();
+    bool show_prompt = true;
+    RETURN_ON_ERROR();
+//        Error::returnOnError();
     string input = "";
     for (;;)
     {
 
-        printf(">");
+        if (show_prompt) printf("mona> ");
         size_t size = getline(&line, &length, stdin);
         open_paren_count += count_char(line, '(');
         close_paren_count += count_char(line, ')');
@@ -66,6 +68,7 @@ void input_loop()
         if (input != "" && open_paren_count == close_paren_count)
         {
             input = quoteFilter.filter(input);
+//            printf("input[%s]\n", input.c_str());
             input = "(" + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
@@ -86,15 +89,19 @@ void input_loop()
                     break;
                 }
                 // let's eval!
-                object->eval(env);
+                printf("%s\n", object->eval(env)->toStringValue().c_str());
             }
+                    open_paren_count = 0;
+                    close_paren_count = 0;
+                    show_prompt = true;
+                    input = "";
 
         }
         else
         {
-
-            printf("diff\n");
-        printf("%s[%d]\n", line, length);
+            show_prompt = false;
+            //          printf("diff\n");
+//        printf("%s[%d]\n", line, length);
         }
 
     }

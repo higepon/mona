@@ -273,6 +273,11 @@
 ;;                  ((_ a) (+ a 3))))) (scheme-report-environment 5))
 ;; (assert-true "eval" (= 7 (pqr 4)))
 
+(assert-check-true "apply"
+             (= -1 (apply - (list 2 3)))
+             (= -1 (apply (lambda (a b) (- a b)) (list 2 3))))
+
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")

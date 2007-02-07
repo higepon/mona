@@ -3,6 +3,38 @@
 using namespace monash;
 using namespace std;
 
+Objects* pairToObjects(Pair* pair)
+{
+    Objects* objects = new Objects;
+    Pair* p = pair;
+    for (;;)
+    {
+        Object* car = p->getCar();
+        Object* cdr = p->getCdr();
+        if (car != NULL)
+        {
+            objects->push_back(car);
+        }
+        if (cdr == NULL) break;
+        if (!cdr->isPair()) break;
+        p = (Pair*)cdr;
+    }
+    return objects;
+}
+
+PROCEDURE(Exit, "exit")
+{
+    exit(-1);
+}
+
+
+PROCEDURE(Apply, "apply")
+{
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(1), Pair, p);
+    return Kernel::apply(ARGV(0), pairToObjects(p), env, NULL, NULL);
+}
+
 PROCEDURE(Eval, "eval")
 {
     ARGC_SHOULD_BE(2);

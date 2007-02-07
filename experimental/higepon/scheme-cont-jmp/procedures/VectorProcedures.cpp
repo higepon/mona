@@ -61,5 +61,5 @@ PROCEDURE(VectorSet, "vector-set!")
     {
         RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().c_str());
     }
-    return new True();
+    return new Undef();
 }

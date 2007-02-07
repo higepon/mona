@@ -37,6 +37,7 @@ namespace std {
 #include "Error.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
+#include "procedures/Undef.h"
 #include "procedures/Procedure.h"
 #include "procedures/Set.h"
 

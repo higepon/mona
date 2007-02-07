@@ -41,6 +41,14 @@ public:
     Error::raise(lineno, __FILE__, __LINE__, __func__, __VA_ARGS__); \
     /* NOTREACHED */
 
+#define RETURN_ON_ERROR()                \
+                                         \
+    if (setjmp(Error::returnPoint) != 0) \
+    {                                    \
+        Error::showError();              \
+    }
+
+
 
 }; // namespace monash
 

@@ -65,7 +65,7 @@ PROCEDURE(SetCar, "set-car!")
     ARGC_SHOULD_BE(2);
     CAST(ARGV(0), Pair, p);
     p->setCar(ARGV(1));
-    return new True();
+    return new Undef();
 }
 
 PROCEDURE(SetCdr, "set-cdr!")
@@ -73,5 +73,5 @@ PROCEDURE(SetCdr, "set-cdr!")
     ARGC_SHOULD_BE(2);
     CAST(ARGV(0), Pair, p);
     p->setCdr(ARGV(1));
-    return new True();
+    return new Undef();
 }

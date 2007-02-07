@@ -74,6 +74,6 @@ void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* 
     cppfile = f;
     cpplineno = cppl;
     cppfunc = cppf;
-//    longjmp(returnPoint, -1);
-    cont_restore(&cont, -1);
+    longjmp(returnPoint, -1);
+//    cont_restore(&cont, -1);
 }
