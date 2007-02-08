@@ -63,8 +63,8 @@ void* cont_get_stack_bottom()
 void cont_initialize()
 {
     // fix me!
-    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
-    //  cont_stack_bottom = cont_get_stack_bottom() -20;
+       cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
+  //   cont_stack_bottom = cont_get_stack_bottom() -20;
 }
 
 void cont_destroy(Cont* c)

@@ -16,12 +16,12 @@
 void jmp_outside_test();
 void jmp_inside_test();
 
-void     cont_initialize();
+void cont_initialize();
 
 int main(int argc, char *argv[])
 {
     cont_initialize();
-    //jmp_outside_test();
+    jmp_outside_test();
     jmp_inside_test(); // may be segmentation fault with setjmp!
     printf("test done\n");
     return 0;

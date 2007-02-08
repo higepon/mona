@@ -7,7 +7,7 @@ cont.c\
 jmp_outside_test.c\
 jmp_inside_test.c
 
-CFLAGS = -g -idirafter . -Wall -O2
+CFLAGS = -g -idirafter . -Wall -O0
 
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -18,7 +18,7 @@ $(TARGET): $(OBJECTS) mysetjmp_asm.o
 
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 mysetjmp_asm.o: mysetjmp.asm
 	nasm $< -o $@ -felf -g -F stabs

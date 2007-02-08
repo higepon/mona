@@ -19,7 +19,7 @@ void jmp_inside_test()
 
 int func1(int counter)
 {
-    if (counter == 5)
+    if (counter == 2)
     {
         int ret = cont_save(&c);
         if (ret == 0)
@@ -32,9 +32,9 @@ int func1(int counter)
             return ret;
         }
     }
-    printf("func1 : %x\n", counter);
+    printf("func1 : %d\n", counter);
     int ret = func1(counter + 1);
-    printf("func1 : %x\n", counter);
+    printf("func1 : %d\n", counter);
     return ret;
 }
 

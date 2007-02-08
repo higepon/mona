@@ -79,3 +79,36 @@
 
 (assert-check-true "number->string"
                    (string=? (number->string 1234) "1234"))
+
+(assert-check-true "positive?/negative?"
+                   (positive? 1)
+                   (negative? -2))
+
+(assert-check-false "positive?/negative?"
+                   (positive? 0)
+                   (positive? -1)
+                   (negative? 0)
+                   (negative? 1))
+
+(assert-check-true "abs"
+                   (= (abs 3) 3)
+                   (= (abs 0) 0)
+                   (= (abs -1) 1))
+
+(assert-check-true "not"
+                   (if (not #f) #t #f)
+                   (if (not 3)  #f #t))
+
+(assert-check-true "odd?/even?"
+                   (odd? 1)
+                   (odd? 3)
+                   (odd? 5)
+                   (odd? 7)
+                   (even? 0)
+                   (even? 2)
+                   (even? 4)
+                   (even? 6))
+
+
+
+

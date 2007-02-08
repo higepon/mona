@@ -25,6 +25,15 @@
   (lambda (x)
     (= 0 x)))
 
+(define even?
+  (lambda (x)
+    (let ((quotient (/ x 2)))
+      (= (- (* quotient 2) x) 0))))
+
+(define odd?
+  (lambda (x)
+    (not (even? x))))
+
 (define for-each
   (lambda (proc items)
     (if (null? items)
@@ -61,3 +70,9 @@
     ((or test1 test2 ...)
      (let ((x test1))
        (if x x (or test2 ...))))))
+
+(define positive? (lambda (x) (> x 0)))
+(define negative? (lambda (x) (< x 0)))
+(define abs (lambda (x) (if (negative? x) (* -1 x) x)))
+(define not (lambda (x) (if x #f #t)))
+

@@ -56,7 +56,21 @@ void input_loop()
     bool show_prompt = true;
     RETURN_ON_ERROR();
 //        Error::returnOnError();
-    string input = "";
+    string input = "(load \"test/scheme.scm\")";
+    input = quoteFilter.filter(input);
+    input = "(" + input + " )";
+    SExp* allSExp = SExp::fromString(input);
+    SExps sexps = allSExp->sexps;
+    for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
+    {
+        SExp* sexp = (*p);
+        f.filter(sexp);
+        Object* object = NULL;
+        translator.translate(&sexp, &object);
+        object->eval(env);
+    }
+    input = "";
+
     for (;;)
     {
 

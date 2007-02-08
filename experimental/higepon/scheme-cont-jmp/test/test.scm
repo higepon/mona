@@ -277,6 +277,23 @@
              (= -1 (apply - (list 2 3)))
              (= -1 (apply (lambda (a b) (- a b)) (list 2 3))))
 
+(assert-check-true "procedure?"
+                   (procedure? +)
+                   (procedure? (lambda () 3)))
+
+(assert-check-false "procedure?"
+                   (procedure? 1)
+                   (procedure? (quote 3))
+                   (procedure? "string")
+                   (procedure? (cons 1 2)))
+
+(assert-check-true "boolean?"
+                   (boolean? #t)
+                   (boolean? #f))
+
+(assert-check-false "boolean?"
+                   (boolean? 1)
+                   (boolean? "hige"))
 
 (load "./test/char.scm")
 (load "./test/vector.scm")

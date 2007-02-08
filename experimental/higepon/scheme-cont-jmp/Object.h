@@ -46,6 +46,7 @@ public:
     bool isPair() const { return type() == PAIR; }
     bool isTrue() const { return type() == TRUE; }
     bool isFalse() const { return type() == FALSE; }
+    bool isBoolean() const { isTrue() || isFalse(); }
     bool isUndef() const { return type() == UNDEF; }
     bool isCompoundProcedure() const { return type() == PROCEDURE; }
     bool isProcedure() const { return isCompoundProcedure() || isPrimitiveProcedure(); }

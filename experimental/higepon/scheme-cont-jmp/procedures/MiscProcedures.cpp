@@ -22,6 +22,19 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
+PROCEDURE(ProcedureP, "procedure?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isProcedure());
+}
+
+PROCEDURE(BooleanP, "boolean?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isBoolean());
+}
+
+
 PROCEDURE(Exit, "exit")
 {
     exit(-1);
