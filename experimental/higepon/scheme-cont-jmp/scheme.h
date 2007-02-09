@@ -35,6 +35,8 @@ namespace std {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
+#include "OutputPort.h"
+#include "InputPort.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
 #include "procedures/Undef.h"

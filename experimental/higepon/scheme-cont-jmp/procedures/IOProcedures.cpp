@@ -3,10 +3,167 @@
 using namespace monash;
 using namespace std;
 
-PROCEDURE(Display, "display")
+extern OutputPort* g_currentOutputPort;
+extern InputPort* g_currentInputPort;
+
+PROCEDURE(EOFObjectP, "eof-object?")
 {
     ARGC_SHOULD_BE(1);
-    printf(ARGV(0)->toStringValue().c_str());
+    CAST_RETURN_FALSE(ARGV(0), Charcter, c);
+    RETURN_BOOLEAN(c->value() == EOF);
+}
+
+PROCEDURE(CloseInputPort, "close-input-port")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), InputPort, p);
+    p->close();
+    return new Undef();
+}
+
+PROCEDURE(CloseOutputPort, "close-output-port")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), OutputPort, p);
+    p->close();
+    return new Undef();
+}
+
+PROCEDURE(OpenOutputPort, "open-output-port")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), String, s);
+    FILE* stream = fopen(s->value().c_str(), "w+");
+    if (NULL == stream)
+    {
+        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().c_str());
+    }
+    return new OutputPort(stream, lineno());
+}
+
+PROCEDURE(OpenInputPort, "open-input-port")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), String, s);
+    FILE* stream = fopen(s->value().c_str(), "r");
+    if (NULL == stream)
+    {
+        RAISE_ERROR(s->lineno(), "couldn't open input file: %s", s->value().c_str());
+    }
+    return new InputPort(stream, lineno());
+}
+
+PROCEDURE(CurrentOutputPort, "current-output-port")
+{
+    ARGC_SHOULD_BE(0);
+    return g_currentOutputPort;
+}
+
+PROCEDURE(CurrentInputPort, "current-input-port")
+{
+    ARGC_SHOULD_BE(0);
+    return g_currentInputPort;
+}
+
+PROCEDURE(WriteChar, "write-char")
+{
+    ARGC_SHOULD_BE_BETWEEN(1, 2);
+    OutputPort* port;
+    if (ARGC == 1)
+    {
+        port = g_currentOutputPort;
+    }
+    else
+    {
+        CAST(ARGV(1), OutputPort, p);
+        port = p;
+    }
+    CAST(ARGV(0), Charcter, c);
+    port->writeCharacter(c);
+    return new Undef();
+}
+
+PROCEDURE(ReadChar, "read-char")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    InputPort* port;
+    if (ARGC == 0)
+    {
+        port = g_currentInputPort;
+    }
+    else
+    {
+        printf("%s", ARGV(0)->toString().c_str());
+        CAST(ARGV(0), InputPort, p);
+        port = p;
+    }
+    return port->readCharacter();
+}
+
+PROCEDURE(PeekChar, "peek-char")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    InputPort* port;
+    if (ARGC == 0)
+    {
+        port = g_currentInputPort;
+    }
+    else
+    {
+        CAST(ARGV(0), InputPort, p);
+        port = p;
+    }
+    return port->peekCharacter();
+}
+
+PROCEDURE(Write, "write")
+{
+    ARGC_SHOULD_BE_BETWEEN(1, 2);
+    OutputPort* port;
+    if (ARGC == 1)
+    {
+        port = g_currentOutputPort;
+    }
+    else
+    {
+        CAST(ARGV(1), OutputPort, p);
+        port = p;
+    }
+    port->write(ARGV(0));
+    return new Undef();
+}
+
+PROCEDURE(NewLine, "newline")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    OutputPort* port;
+    if (ARGC == 0)
+    {
+        port = g_currentOutputPort;
+    }
+    else
+    {
+        CAST(ARGV(0), OutputPort, p);
+        port = p;
+    }
+    port->display(new Charcter('\n'));
+    return new Undef();
+}
+
+PROCEDURE(Display, "display")
+{
+    ARGC_SHOULD_BE_BETWEEN(1, 2);
+    OutputPort* port;
+    if (ARGC == 1)
+    {
+        port = g_currentOutputPort;
+    }
+    else
+    {
+        CAST(ARGV(1), OutputPort, p);
+        port = p;
+    }
+    port->display(ARGV(0));
     return new Undef();
 }
 

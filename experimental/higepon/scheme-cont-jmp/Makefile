@@ -20,6 +20,8 @@ Number.cpp\
 Continuation.cpp\
 Object.cpp\
 Pair.cpp\
+OutputPort.cpp\
+InputPort.cpp\
 Parser.cpp\
 procedures/CharcterProcedures.cpp\
 procedures/EqualProcedures.cpp\

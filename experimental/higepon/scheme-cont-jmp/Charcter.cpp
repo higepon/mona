@@ -19,6 +19,10 @@ Charcter::Charcter(const string& value, uint32_t lineno /* = 0 */) : lineno_(lin
     }
 }
 
+Charcter::Charcter(char value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
+{
+}
+
 Charcter::~Charcter()
 {
 }

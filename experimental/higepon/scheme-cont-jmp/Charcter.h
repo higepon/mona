@@ -10,6 +10,7 @@ class Charcter : public Object
 {
 public:
     Charcter(const std::string& value, uint32_t lineno = 0);
+    Charcter(char value, uint32_t lineno = 0);
     virtual ~Charcter();
 
 public:

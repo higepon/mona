@@ -14,12 +14,12 @@
   (lambda (x)
     (cdr (cdr x))))
 
-(define newline
-  (lambda () (display "\n")))
+;; (define newline
+;;   (lambda () (display "\n")))
 
-;; for unittest.scm
-(define write
-  (lambda (o) (display o)))
+;; ;; for unittest.scm
+;; (define write
+;;   (lambda (o) (display o)))
 
 (define zero?
   (lambda (x)
