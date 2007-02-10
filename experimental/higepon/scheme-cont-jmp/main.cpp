@@ -22,14 +22,6 @@
 using namespace monash;
 using namespace std;
 
-
-ZSExp* eval(ZSExp* exp)
-{
-    // self evaluate
-
-
-}
-
 uint32_t count_char(const char* s, char c)
 {
     uint32_t length = strlen(s);
@@ -75,7 +67,7 @@ void input_loop()
     {
 
         if (show_prompt) printf("mona> ");
-        size_t size = getline(&line, &length, stdin);
+        getline(&line, &length, stdin);
         open_paren_count += count_char(line, '(');
         close_paren_count += count_char(line, ')');
         input += line;
@@ -170,7 +162,6 @@ int main(int argc, char *argv[])
             fprintf(stderr, "translate error \n");
             return -1;
         }
-
         // let's eval!
         object->eval(env);
 

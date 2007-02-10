@@ -16,6 +16,11 @@ std::string Variable::toString()
     return "variable: " + name_;
 }
 
+std::string Variable::toStringValue()
+{
+    return name_;
+}
+
 int Variable::type() const
 {
     return Object::VARIABLE;

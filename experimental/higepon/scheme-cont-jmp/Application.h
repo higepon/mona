@@ -19,7 +19,6 @@ public:
     Object* function() { return function_; }
     Objects* arguments() { return arguments_; }
 
-    Object* getContinuation(Object* calledPoint, Environment* env);
     //exp
 protected:
     Object* function_;

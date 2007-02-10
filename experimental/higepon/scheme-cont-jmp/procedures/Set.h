@@ -16,7 +16,7 @@ public:
 
     virtual std::string toString();
     virtual Object* eval(Environment* env);
-    virtual Object* apply(Objects* arguments, Environment* env, Object* parent, Object* application);
+    virtual Object* apply(Objects* arguments, Environment* env);
 };
 
 }; // namespace monash

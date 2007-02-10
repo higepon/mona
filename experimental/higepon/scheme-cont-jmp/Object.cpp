@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Object::Object() : parent(NULL)
+Object::Object()
 {
 }
 
@@ -10,4 +10,3 @@ Object::~Object()
 {
     printf("%s", __func__);fflush(stdout);
 }
-

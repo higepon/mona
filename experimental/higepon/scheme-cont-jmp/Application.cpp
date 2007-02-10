@@ -32,17 +32,6 @@ Object* Application::eval(Environment* env)
     }
 
     //Objects* as = arguments();
-    return Kernel::apply(procedure, arguments(), env, parent, this); // parent, thisは継続のために必要
+    return Kernel::apply(procedure, arguments(), env);
 }
 
-Object* Application::getContinuation(Object* calledPoint, Environment* env)
-{
-    // todo
-    if (parent != NULL && parent->isLambda())
-    {
-        // todo
-        Lambda* lambda = (Lambda*)parent;
-        return lambda->getContinuation(this, env);
-    }
-    return NULL;
-}

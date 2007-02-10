@@ -23,7 +23,7 @@ Object* Undef::eval(Environment* env)
     return NULL;
 }
 
-Object* Undef::apply(Objects* arguments, Environment* env, Object* parent, Object* applicationca)
+Object* Undef::apply(Objects* arguments, Environment* env)
 {
     return this;
 }

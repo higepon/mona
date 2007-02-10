@@ -34,27 +34,24 @@ public:
         SUCCESS
     };
 
-    void step1(SExp* root);
-    int translate(SExp** sexp, Object** object, Object* parent = NULL);
+    int translate(SExp** sexp, Object** object);
     int translateDefineSyntax(SExp* sexp);
     SExp* expandMacroIfMatch(const std::string& name, SExp** sexp);
 private:
-    int translatePrimitive(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateDefinition(SExp* sexp, Object** object, Object* parent = NULL);
+    int translatePrimitive(SExp* sexp, Object** object);
+    int translateDefinition(SExp* sexp, Object** object);
 
-    int translateIf(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateAnd(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateOr(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateCond(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateBegin(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateLambda(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateLet(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateLetAsterisk(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateSet(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateApplication(SExp* sexp, Object** object, Object* parent = NULL);
-    int translateQuote(SExp* sexp, Object** object, Object* parent = NULL);
-
-    void setParent(Objects* objects, Object* parent);
+    int translateIf(SExp* sexp, Object** object);
+    int translateAnd(SExp* sexp, Object** object);
+    int translateOr(SExp* sexp, Object** object);
+    int translateCond(SExp* sexp, Object** object);
+    int translateBegin(SExp* sexp, Object** object);
+    int translateLambda(SExp* sexp, Object** object);
+    int translateLet(SExp* sexp, Object** object);
+    int translateLetAsterisk(SExp* sexp, Object** object);
+    int translateSet(SExp* sexp, Object** object);
+    int translateApplication(SExp* sexp, Object** object);
+    int translateQuote(SExp* sexp, Object** object);
 };
 
 }; // namespace monash

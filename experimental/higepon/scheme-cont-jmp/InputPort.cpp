@@ -55,3 +55,20 @@ void InputPort::close()
 {
     fclose(stream_);
 }
+
+bool InputPort::charReady()
+{
+    fd_set rfds;
+    struct timeval tv;
+    int retval;
+
+    FD_ZERO(&rfds);
+    FD_SET(fileno(stream_), &rfds);
+
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+
+    retval = select(fileno(stream_) + 1, &rfds, NULL, NULL, &tv);
+    if (-1 == retval) return false;
+    return retval != 0;
+}

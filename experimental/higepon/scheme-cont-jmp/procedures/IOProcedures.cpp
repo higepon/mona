@@ -4,7 +4,53 @@ using namespace monash;
 using namespace std;
 
 extern OutputPort* g_currentOutputPort;
-extern InputPort* g_currentInputPort;
+extern OutputPort* g_defaultOutputPort;
+extern InputPort*  g_defaultInputPort;
+extern InputPort*  g_currentInputPort;
+
+PROCEDURE(CharReadyP, "char-ready?")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    InputPort* port;
+    if (ARGC == 0)
+    {
+        port = g_currentInputPort;
+    }
+    else
+    {
+        CAST(ARGV(0), InputPort, p);
+        port = p;
+    }
+    RETURN_BOOLEAN(port->charReady());
+}
+
+PROCEDURE(SetCurrentOutputPort, "set-current-output-port!")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), OutputPort, p);
+    g_currentOutputPort = p;
+    return new Undef();
+}
+
+PROCEDURE(SetCurrentInputPort, "set-current-input-port!")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), InputPort, p);
+    g_currentInputPort = p;
+    return new Undef();
+}
+
+PROCEDURE(InputPortP, "input-port?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isInputPort());
+}
+
+PROCEDURE(OutputPortP, "output-port?")
+{
+    ARGC_SHOULD_BE(1);
+    RETURN_BOOLEAN(ARGV(0)->isOutputPort());
+}
 
 PROCEDURE(EOFObjectP, "eof-object?")
 {
@@ -93,7 +139,6 @@ PROCEDURE(ReadChar, "read-char")
     }
     else
     {
-        printf("%s", ARGV(0)->toString().c_str());
         CAST(ARGV(0), InputPort, p);
         port = p;
     }
@@ -193,7 +238,7 @@ PROCEDURE(Load, "load")
         Objects* args = new Objects;
         args->push_back(quote);
         args->push_back(env);
-        o = Kernel::apply((new Variable("eval"))->eval(env), args, env, NULL, NULL);
+        o = Kernel::apply((new Variable("eval"))->eval(env), args, env);
 // Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application)
 //         e = new Eval(env->translator(), quote, quote->lineno());
 

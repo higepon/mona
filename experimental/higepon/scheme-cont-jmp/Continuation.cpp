@@ -47,7 +47,7 @@ bool Continuation::equal(Object* o)
     return eqv(o);
 }
 
-Object* Continuation::apply(Objects* arguments, Environment* env, Object* parent, Object* application)
+Object* Continuation::apply(Objects* arguments, Environment* env)
 {
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ARGC_SHOULD_BE(1);
@@ -55,5 +55,6 @@ Object* Continuation::apply(Objects* arguments, Environment* env, Object* parent
     callArugument = ARGV(0);
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     cont_restore(&cont, 1);
-    /* NOTREACHED */
+    /* NOT REACHED */
+    return NULL;
 }

@@ -13,126 +13,6 @@
 std::string load(const char* file);
 namespace monash {
 
-class ZSExp
-{
-public:
-    ZSExp() {}
-    virtual ~ZSExp() {}
-
-    enum
-    {
-        NUMBER,
-        CHARCTER,
-        STRING,
-        SYMBOL,
-        PAIR,
-    };
-
-    bool isNumber() const { return getType() == NUMBER; }
-    bool isCharcter() const { return getType() == CHARCTER; }
-    bool isString() const { return getType() == STRING; }
-    bool isPair() const { return getType() == PAIR; }
-
-    virtual ZSExp* eval() = 0;
-    virtual int getType() const = 0;
-    virtual std::string toString() = 0;
-};
-
-class ZSelfEvaluating : public ZSExp
-{
-public:
-    ZSelfEvaluating() {}
-    virtual ~ZSelfEvaluating() {}
-    virtual ZSExp* eval() { return this; }
-};
-
-class ZNumber : public ZSelfEvaluating
-{
-public:
-    ZNumber(int value) : value_(value) {}
-    virtual ~ZNumber() {}
-
-    int getValue() const { return value_; }
-    void setValue(int value) { value_ = value; }
-    int getType() const { return NUMBER; }
-    std::string toString();
-
-protected:
-    int value_;
-};
-
-class ZCharactor : public ZSelfEvaluating
-{
-public:
-    ZCharactor(char value) : value_(value) {}
-    virtual ~ZCharactor() {}
-
-    char getValue() const { return value_; }
-    void setValue(char value) { value_ = value; }
-    int getType() const { return CHARCTER; }
-    std::string toString()
-    {
-        char buf[32];
-        sprintf(buf, "%c", value_);
-        return std::string(buf);
-    }
-
-protected:
-    char value_;
-};
-
-class ZString : public ZSelfEvaluating
-{
-public:
-    ZString(const std::string& value) : value_(value) {}
-    virtual ~ZString() {}
-
-    std::string getValue() const { return value_; }
-    void setValue(const std::string& value) { value_ = value; }
-    int getType() const { return STRING; }
-    std::string toString() { return "\"" + value_ + "\""; }
-
-protected:
-    std::string value_;
-};
-
-class ZSymbol : public ZSExp
-{
-public:
-    ZSymbol(const std::string& value) : value_(value) {}
-    virtual ~ZSymbol() {}
-
-    std::string getValue() const { return value_; }
-    void setValue(const std::string& value) { value_ = value; }
-    int getType() const { return SYMBOL; }
-    std::string toString() { return value_; }
-    virtual ZSExp* eval() { return NULL;} 
-
-protected:
-    std::string value_;
-};
-
-class ZPair : public ZSExp
-{
-public:
-    ZPair(ZSExp* car, ZSExp* cdr) : car_(car), cdr_(cdr) {}
-    virtual ~ZPair() {}
-
-    ZSExp* getCar() const { return car_; }
-    ZSExp* getCdr() const { return cdr_; }
-    void setCar(ZSExp* car) { car_ = car; }
-    void setCdr(ZSExp* cdr) { cdr_ = cdr; }
-    int getType() const { return PAIR; }
-    std::string toString();
-    std::string toStringCdr();
-    virtual ZSExp* eval() { return NULL;} 
-
-protected:
-    ZSExp* car_;
-    ZSExp* cdr_;
-};
-
-
 class SExp;
 typedef std::vector<SExp*> SExps;
 
@@ -167,8 +47,6 @@ public:
     void print(int depth = 0);
     bool equals(SExp* sexp);
     SExp* clone() const;
-
-    ZSExp* toZSExp();
 
     bool isSExps()  const { return type == SEXPS; }
     bool isNumber() const { return type == NUMBER; }

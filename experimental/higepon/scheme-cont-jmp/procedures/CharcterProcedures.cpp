@@ -4,7 +4,7 @@
 using namespace monash;
 using namespace std;
 
-static jmp_buf cont;
+//static jmp_buf cont;
 
 PROCEDURE(CallCC, "call/cc")
 {
@@ -18,7 +18,7 @@ PROCEDURE(CallCC, "call/cc")
         Objects* arguments = new Objects;
         arguments->push_back(continuation);
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-        return Kernel::apply(procedure, arguments, env, NULL, NULL);
+        return Kernel::apply(procedure, arguments, env);
     }
     else
     {

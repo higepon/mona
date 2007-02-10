@@ -76,3 +76,26 @@
 (define abs (lambda (x) (if (negative? x) (* -1 x) x)))
 (define not (lambda (x) (if x #f #t)))
 
+(define call-with-input-file (lambda (file proc)
+                               (let* ((port (open-input-port file)) (ret (proc port)))
+                               (close-input-port port)
+                               ret)))
+
+(define call-with-output-file (lambda (file proc)
+                               (let* ((port (open-output-port file)) (ret (proc port)))
+                               (close-output-port port)
+                               ret)))
+
+(define with-input-from-file (lambda (file proc)
+                               (let* ((default-input-port (current-input-port)) (port (open-input-port file)))
+                                 (set-current-input-port! port)
+                                 (proc)
+                                 (close-input-port port)
+                                 (set-current-input-port! default-input-port))))
+
+(define with-output-from-file (lambda (file proc)
+                               (let* ((default-output-port (current-output-port)) (port (open-output-port file)))
+                                 (set-current-output-port! port)
+                                 (proc)
+                                 (close-output-port port)
+                                 (set-current-output-port! default-output-port))))

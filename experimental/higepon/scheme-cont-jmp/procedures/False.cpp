@@ -23,7 +23,7 @@ Object* False::eval(Environment* env)
     return NULL;
 }
 
-Object* False::apply(Objects* arguments, Environment* env, Object* parent, Object* application)
+Object* False::apply(Objects* arguments, Environment* env)
 {
     return this;
 }

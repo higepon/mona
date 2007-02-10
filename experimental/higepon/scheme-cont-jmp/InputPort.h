@@ -22,6 +22,7 @@ public:
     virtual Charcter* readCharacter();
     virtual Charcter* peekCharacter();
     virtual void close();
+    virtual bool charReady();
 
 protected:
     FILE* stream_;

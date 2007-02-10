@@ -60,7 +60,6 @@ public:
     bool isOutputPort() const { return type() == OUTPUT_PORT; }
     bool isInputPort() const { return type() == INPUT_PORT; }
 public:
-    Object* parent;
 
     enum
     {

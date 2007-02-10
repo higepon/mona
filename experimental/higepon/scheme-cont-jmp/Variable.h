@@ -14,6 +14,7 @@ public:
 
 public:
     virtual std::string toString();
+    virtual std::string toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
