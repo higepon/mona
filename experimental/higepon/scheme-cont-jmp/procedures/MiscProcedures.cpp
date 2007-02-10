@@ -22,6 +22,13 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
+PROCEDURE(NotSupported, "not-supported")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), String, s);
+    RAISE_ERROR(0, "%s not supported\n", s->toStringValue().c_str());
+}
+
 PROCEDURE(ProcedureP, "procedure?")
 {
     ARGC_SHOULD_BE(1);

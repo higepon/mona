@@ -27,7 +27,6 @@
                     (number? "string")
                     (number? (cons 1 2)))
 
-
 (assert-check-true "="
                    (= 1 1 1 1)
                    (= 1 (+ 0 1) 1)
@@ -109,6 +108,45 @@
                    (even? 4)
                    (even? 6))
 
+(assert-check-true "complex? / real? / rational? /integer?"
+                   (complex? 3)
+                   (real? 3)
+                   (rational? 3)
+                   (integer? 3))
 
+(assert-check-false "complex? / real? / rational? /integer? should be #f"
+                   (complex? "abc")
+                   (real? (cons 1 2))
+                   (rational? #\a)
+                   (integer? (current-input-port)))
+
+(assert-check-true "exact?"
+                   (exact? 3)
+                   (exact? -2))
+
+(assert-check-false "exact? should be #f"
+                   (exact? #\a)
+                   (exact? "a")
+                   (exact? (cons 1 2)))
+
+(assert-check-false "inexact? should be #f"
+                   (inexact? 3)
+                   (inexact? #\a)
+                   (inexact? "a")
+                   (inexact? (cons 1 2)))
+
+(assert-check-true "quotient"
+                   (= (quotient 5 3) 1)
+                   (= (quotient 6 3) 2)
+                   (= (quotient 7 3) 2))
+
+(assert-check-true "modulo/reminder"
+                   (= (modulo 13 4) 1)
+                   (= (modulo -13 4) 1)
+                   (= (modulo 13 -4) 1)
+                   (= (reminder 13 4) 1)
+                   (= (reminder -13 4) -1)
+                   (= (reminder 13 -4) 1)
+                   (= (reminder -13 -4) -1))
 
 

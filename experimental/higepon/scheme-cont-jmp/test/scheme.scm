@@ -99,3 +99,50 @@
                                  (proc)
                                  (close-output-port port)
                                  (set-current-output-port! default-output-port))))
+
+
+(define complex? (lambda (x) (number? x)))
+(define real? (lambda (x) (number? x)))
+(define rational? (lambda (x) (number? x)))
+(define integer? (lambda (x) (number? x)))
+
+(define exact? (lambda (x) (number? x)))
+(define inexact? (lambda (x) #f))
+
+(define quotient (lambda (n1 n2) (/ n1 n2)))
+
+(define modulo (lambda (n1 n2)
+                 (let* ((q (quotient n1 n2)) (v (- n1 (* q n2))))
+                   (if (positive? n1) v (* -1 v)))))
+
+(define reminder (lambda (n1 n2)
+                   (let ((q (quotient n1 n2)))
+                     (- n1 (* q n2)))))
+
+(define numerator (lambda (x) (not-supported "numerator")))
+(define denominator (lambda (x) (not-supported "denominator")))
+
+(define exp  (lambda (x) (not-supported "exp ")))
+(define log  (lambda (x) (not-supported "log ")))
+(define sin  (lambda (x) (not-supported "sin ")))
+(define cos  (lambda (x) (not-supported "cos ")))
+(define tan  (lambda (x) (not-supported "tan ")))
+(define asin (lambda (x) (not-supported "asin")))
+(define acos (lambda (x) (not-supported "acos")))
+(define atan (lambda (x) (not-supported "atan")))
+(define sqrt (lambda (x) (not-supported "sqrt")))
+(define expt (lambda (x y) (not-supported "expt")))
+(define make-rectanglar (lambda (x y) (not-supported "make-rectanglar")))
+(define make-polar (lambda (x y) (not-supported "make-polar")))
+(define real-part (lambda (x) (not-supported "real-part")))
+(define imag-part (lambda (x) (not-supported "imag-part")))
+(define magnitude (lambda (z) (not-supported "magnitude")))
+(define angle (lambda (z) (not-supported "angle")))
+(define exact->inexact (lambda (z) (not-supported "exact->inexact")))
+(define inexact->exact (lambda (z) (not-supported "inexact->exact")))
+
+(define floor (lambda (x) x))
+(define ceiling (lambda (x) x))
+(define truncate (lambda (x) x))
+(define round (lambda (x) x))
+
