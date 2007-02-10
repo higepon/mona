@@ -66,6 +66,7 @@ int memcmp(const void* s1, const void* s2, size_t size)
     \author HigePon
     \date   create:2002/12/15 update:
 */
+#if 0 // original
 void *memset(void* buf, int value, size_t size) {
 
     char *p = (char*)buf;
@@ -77,7 +78,28 @@ void *memset(void* buf, int value, size_t size) {
     }
     return buf;
 }
+#else // junjunn
+inline void divide(int iNumerator,int iDenominator,uint32_t* piQuotient,uint32_t* piRemainder)
+{
+    *piQuotient = iNumerator / iDenominator;
+    *piRemainder = iNumerator - iDenominator * *piQuotient;
+}
 
+void *memset(void* pTo,int iValue,size_t nCount)
+{
+    uint32_t* pdwTo=(uint32_t*)pTo;
+    uint8_t byValue=iValue;
+    uint32_t dwValue4 = byValue + (byValue<<8) + (byValue<<16) + (byValue<<24);
+
+    uint32_t i4ByteCount,i1ByteCount;
+    divide(nCount,4,&i4ByteCount,&i1ByteCount);
+
+    uint32_t n;
+    for(n=0;n<i4ByteCount;n++)  {*pdwTo++ = dwValue4;}
+    uint8_t* pcTo=(uint8_t*)pdwTo;
+    for(n=0;n<i1ByteCount;n++)  {*pcTo++ = byValue;}
+}
+#endif
 /*!
     \brief strlen
 
@@ -142,19 +164,34 @@ int strcmp(const char* str1, const char* str2) {
     return (unsigned char)*str1 - (unsigned char)*str2;
 }
 
-void* memcpy(void* s1, void* s2, size_t size) {
+#if 1 // junjunn
+void* memcpy(void* pTo,void* cpFrom,size_t nCount)
+{
+    uint32_t i4ByteCount,i1ByteCount;
+    divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
-//     slow?
-//     char* p = (char*)s1;
-//     const char* s = (char*)s2;
+//4バイト転送部分
+    asm volatile("movl %0, %%edi \n"
+                 "movl %1, %%esi \n"
+                 "movl %2, %%ecx \n"
+                 "cld           \n"
+                 "rep movsd   \n"
+                 :
+                 : "m"(pTo), "m"(cpFrom), "m"(i4ByteCount)
+                 : "edi", "esi", "ecx");
 
-//     while (size > 0) {
-//         *p = *s;
-//         p++;
-//         s++;
-//         size--;
-//     }
+//1バイト転送部分
+    asm volatile("movl %0, %%ecx \n"
+                 "rep movsb   \n"
+                 :
+                 : "m"(i1ByteCount)
+                 : "ecx");
 
+    return pTo;
+}
+#else
+void* memcpy(void* s1, void* s2, size_t size)
+{
     asm volatile("movl %0, %%edi \n"
                  "movl %1, %%esi \n"
                  "movl %2, %%ecx \n"
@@ -167,6 +204,8 @@ void* memcpy(void* s1, void* s2, size_t size) {
 
     return s1;
 }
+#endif
+
 
 char* strncpy(char* s1, const char* s2, size_t n) {
 

@@ -260,6 +260,7 @@ VesaConsole::VesaScreen::VesaScreen (VesaInfoDetail *info)
     vramAddress = info->physBasePtr;
     uint8_tsPerScanLine = info->uint8_tsPerScanLine;
     bitsPerPixel = info->bitsPerPixel;
+    bytesPerPixel = bitsPerPixel / 8;
 
     selectMethod(info);
 }
@@ -333,63 +334,18 @@ void VesaConsole::VesaScreen::clearScreenWhite(int w, int h)
     }
 #else
     // enough speed at -O3
-    memset((void*)vramAddress, 0xff, w * h * (bitsPerPixel / 8));
+    memset((void*)vramAddress, 0xff, w * h * bytesPerPixel);
 #endif
 }
 
 void VesaConsole::VesaScreen::clearScreenBlack(int w, int h)
 {
-    memset((void*)vramAddress, 0x00, w * h * (bitsPerPixel / 8));
+    memset((void*)vramAddress, 0x00, w * h * bytesPerPixel);
 }
 
 void VesaConsole::VesaScreen::fillPat
     (int x, int y, int w, int h, uint32_t c, uint32_t b, uint8_t* p)
 {
-#if 0
-    uint32_t bgcolor = (this->*getColor)(b);
-    uint32_t color = (this->*getColor)(c);
-
-    uint32_t uint8_tsPerPixel = bitsPerPixel/8;
-    static bool first = true;
-    uint16_t* pixel;
-    p = (uint8_t*)get_font_address() + 17 + 16 * '3';
-    if (first)
-    {
-        int index = 0;
-        int k = 0x80;
-
-        pixel = new uint16_t[16 * 16];
-        for (int i = 0; i < 16; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                pixel[i * 16 + j] = p[index] & k ? color : bgcolor;
-
-                k >>= 1;
-                if (0 == k) {
-                    k = 0x80;
-                    index++;
-                }
-            }
-            if (0x80 != k) {
-                k = 0x80;
-                index++;
-            }
-        }
-        first = false;
-    }
-
-    uint16_t *bits = (uint16_t*)vramAddress
-        + uint8_tsPerScanLine / 2 * y + uint8_tsPerPixel /2 * x;
-
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            bits[i * w + j] = pixel[i * w + j];
-        }
-        bits += uint8_tsPerScanLine / 2;
-    }
-
-#else
     uint32_t uint8_tsPerPixel = bitsPerPixel/8;
     uint8_t *bits = (uint8_t*)vramAddress
             + uint8_tsPerScanLine * y + uint8_tsPerPixel * x;
@@ -424,7 +380,6 @@ void VesaConsole::VesaScreen::fillPat
             index++;
         }
     }
-#endif
 }
 
 void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)

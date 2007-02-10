@@ -87,6 +87,7 @@ private:
         uint32_t vramAddress;
         uint16_t uint8_tsPerScanLine;
         uint16_t bitsPerPixel;
+        uint16_t bytesPerPixel;
     };
 
     VesaScreen screen;

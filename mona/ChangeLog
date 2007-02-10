@@ -1,3 +1,9 @@
+2007-02-11  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/VesaConsole.cpp (VesaScreen::fillPat): junjunn‚³‚ñ‚‘¬‰»‚Æ‚è‚±‚İ
+
+        * core/kernel/string.cpp : junjunn‚³‚ñ‚‘¬‰»‚Æ‚è‚±‚İ
+
 2007-02-07  higepon  <higepon@users.sourceforge.jp>
 
         * --disable-runtime-pseudo-reloc ‚ğ’Ç‰Á‚µAmonapi_crt.cpp ‚©‚ç  _pei386_runtime_relocator()‚ğíœ
