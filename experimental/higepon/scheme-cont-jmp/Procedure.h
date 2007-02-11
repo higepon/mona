@@ -21,7 +21,7 @@ public:
     Objects* body() { return body_; }
     Variables* parameters(){ return parameters_; }
     Environment* env() { return env_; }
-
+    virtual Object* apply(Objects* arguments, Environment* env);
     virtual bool eqv() const;
     virtual bool eq()  const;
 
@@ -31,6 +31,7 @@ protected:
     Variables* parameters_;
     Environment* env_;
     uint32_t lineno_;
+    bool extendableParameters_;
 };
 
 }; // namespace monash

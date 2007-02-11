@@ -96,3 +96,12 @@ PROCEDURE(StringToNumber, "string->number")
     }
     return new Number(atoi(text.c_str()));
 }
+
+PROCEDURE(StringToSymbol, "string->symbol")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), String, s);
+    SExp* exp = new SExp(SExp::SYMBOL);
+    exp->text = s->toStringValue();
+    return new Quote(exp);
+}

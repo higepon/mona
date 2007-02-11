@@ -11,7 +11,10 @@
 ;;(display (symbol->string 'xyz))
 
 (assert-check-true "symbol->string"
-                   (string=? "abc" (symbol->string 'abc)))
+                   (string=? "abc" (symbol->string 'abc))
+                   (string=? "abc" (symbol->string (string->symbol "abc"))))
+
+(display (symbol->string (string->symbol "abc")))
 
 
 

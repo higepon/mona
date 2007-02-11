@@ -295,6 +295,44 @@
                    (boolean? 1)
                    (boolean? "hige"))
 
+((lambda (x y . z)
+   (assert-check-true "lambda"
+                      (= x 3)
+                      (= y 4)
+                      (null? z)))
+   3 4)
+
+((lambda (x y . z)
+   (assert-check-true "lambda"
+                      (= x 3)
+                      (= y 4)
+                      (= (car z) 5)))
+   3 4 5)
+
+((lambda (x y . z)
+   (assert-check-true "lambda"
+                      (= x 3)
+                      (= y 4)
+                      (= (car z) 5)
+                      (= (cadr z) 6)))
+   3 4 5 6)
+
+(let hige ((args (list 1 2 3)))
+  (if (null? args) '()
+      (begin (display (car args))
+             (hige (cdr args)))))
+
+((lambda ()
+(define hige
+  (lambda (args)
+   (if (null? args) '()
+       (begin (display (car args))
+              (hige (cdr args))))))
+(hige (list 1 2 3))))
+
+
+
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")
@@ -307,5 +345,3 @@
 
 ;; report
 (total-report)
-
-

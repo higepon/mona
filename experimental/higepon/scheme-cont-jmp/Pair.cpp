@@ -16,6 +16,11 @@ std::string Pair::toString()
     return "pair(" + getCar()->toString() + ", " + getCdr()->toString() + ")";
 }
 
+std::string Pair::toStringValue()
+{
+    return "(" + getCar()->toStringValue() + ", " + getCdr()->toStringValue() + ")";
+}
+
 int Pair::type() const
 {
     return Object::PAIR;

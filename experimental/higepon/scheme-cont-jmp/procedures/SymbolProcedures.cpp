@@ -16,3 +16,4 @@ PROCEDURE(SymbolToString, "symbol->string")
     CAST(ARGV(0), Quote, q);
     return new String(q->toStringValue(), q->lineno());
 }
+

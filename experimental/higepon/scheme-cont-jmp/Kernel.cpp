@@ -35,12 +35,8 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
 {
     if (procedure->isCompoundProcedure())
     {
-        Objects* as = Kernel::listOfValues(arguments, env);
         Procedure* p = (Procedure*)procedure;
-        Environment* e = p->env()->clone();
-
-        e->extend(p->parameters(), as); // doubt? we need copy?
-        return Kernel::evalSequence(p->body(), e);
+        return p->apply(arguments, env);
     }
     else if (procedure->isPrimitiveProcedure())
     {

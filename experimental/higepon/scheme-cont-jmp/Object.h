@@ -32,13 +32,14 @@ public:
     virtual ~Object();
 
 public:
-    virtual std::string toString()         = 0;
+    virtual std::string toString() { return "unknown object"; }
     virtual std::string toStringValue() { return toString(); }
     virtual bool eqv(Object* o) { return false; }
     virtual bool eq(Object* o) { return o == this; }
     virtual int type() const               = 0;
     virtual uint32_t lineno() const        = 0;
     virtual Object* eval(Environment* env) = 0;
+    virtual Object* apply(Objects* arguments, Environment* env);
     bool isNumber() const { return type() == NUMBER; }
     bool isString() const { return type() == STRING; }
     bool isCharcter() const { return type() == CHARCTER; }
