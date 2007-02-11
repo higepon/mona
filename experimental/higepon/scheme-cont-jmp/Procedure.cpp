@@ -12,7 +12,6 @@ Procedure::Procedure(Lambda* lamba, Environment* env, uint32_t lineno) : env_(en
         parameters_->push_back(*it);
         if ((*it)->name() == ".")
         {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             extendableParameters_ = true;
         }
     }

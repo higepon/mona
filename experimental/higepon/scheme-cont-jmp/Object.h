@@ -89,6 +89,7 @@ public:
         OR,
         LET,
         LET_ASTERISK,
+        NAMED_LET,
         TRUE,
         FALSE,
         UNDEF,

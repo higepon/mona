@@ -317,20 +317,14 @@
                       (= (cadr z) 6)))
    3 4 5 6)
 
-(let hige ((args (list 1 2 3)))
-  (if (null? args) '()
-      (begin (display (car args))
-             (hige (cdr args)))))
-
-((lambda ()
-(define hige
-  (lambda (args)
-   (if (null? args) '()
-       (begin (display (car args))
-              (hige (cdr args))))))
-(hige (list 1 2 3))))
-
-
+(let ((count 0))
+  (let func ((l (list 1 2 3)))
+    (if (null? l)
+        0
+        (begin
+          (set! count (+ count (car l)))
+          (func (cdr l)))))
+  (assert-check-true "named let" (= 6 count)))
 
 
 (load "./test/char.scm")

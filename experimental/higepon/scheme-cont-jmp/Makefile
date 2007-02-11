@@ -13,6 +13,7 @@ Error.cpp\
 Frame.cpp\
 Lambda.cpp\
 Let.cpp\
+NamedLet.cpp\
 LetAsterisk.cpp\
 Macro.cpp\
 MacroFilter.cpp\

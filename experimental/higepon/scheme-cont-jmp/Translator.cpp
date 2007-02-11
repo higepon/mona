@@ -183,9 +183,45 @@ int Translator::translateLambda(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
+int Translator::translateNamedLet(SExp* sexp, Object** object)
+{
+    if (N(2)->type != SExp::SEXPS) return SYNTAX_ERROR;
+    Variables* variables = new Variables;ASSERT(variables);
+    Objects* values = new Objects;ASSERT(values);
+    SExps* parameterSExps = &N(2)->sexps;
+    for (SExps::size_type i = 0; i < parameterSExps->size(); i++)
+    {
+        SExp* parameter = parameterSExps->at(i);
+        if (parameter->type != SExp::SEXPS || parameter->sexps.size() != 2) return SYNTAX_ERROR;
+        if (parameter->sexps[0]->type != SExp::SYMBOL) return SYNTAX_ERROR;
+        Variable* v = new Variable(parameter->sexps[0]->text, parameter->sexps[0]->lineno);
+        ASSERT(v);
+        variables->push_back(v);
+        Object* value;
+        int ret = translate(&parameter->sexps[1], &value);
+        if (ret != SUCCESS) return ret;
+        values->push_back(value);
+    }
+
+    Objects* body = new Objects;ASSERT(body);
+    for (SExps::size_type i = 3; i < L(); i++)
+    {
+        Object* o;
+        int ret = translate(&N(i), &o);
+        if (ret != SUCCESS) return ret;
+        body->push_back(o);
+    }
+    *object = new NamedLet(body, variables, values, N(1)->text, sexp->lineno);ASSERT(*object);
+    return SUCCESS;
+}
+
 int Translator::translateLet(SExp* sexp, Object** object)
 {
     if (L() < 3) return SYNTAX_ERROR;
+    if (N(1)->type == SExp::SYMBOL)
+    {
+        return translateNamedLet(sexp, object);
+    }
     if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
 
     Variables* variables = new Variables;ASSERT(variables);

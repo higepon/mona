@@ -15,6 +15,7 @@
 #include "Application.h"
 #include "Cond.h"
 #include "Let.h"
+#include "NamedLet.h"
 #include "LetAsterisk.h"
 #include "Macro.h"
 #include "SExp.h"
@@ -48,6 +49,7 @@ private:
     int translateBegin(SExp* sexp, Object** object);
     int translateLambda(SExp* sexp, Object** object);
     int translateLet(SExp* sexp, Object** object);
+    int translateNamedLet(SExp* sexp, Object** object);
     int translateLetAsterisk(SExp* sexp, Object** object);
     int translateSet(SExp* sexp, Object** object);
     int translateApplication(SExp* sexp, Object** object);
