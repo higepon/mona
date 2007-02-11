@@ -160,17 +160,25 @@ int Translator::translateQuote(SExp* sexp, Object** object)
 int Translator::translateLambda(SExp* sexp, Object** object)
 {
     if (L() <= 2) return SYNTAX_ERROR;
-    if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
+    if (N(1)->type != SExp::SEXPS && N(1)->type != SExp::SYMBOL) return SYNTAX_ERROR;
     Variables* variables = new Variables;ASSERT(variables);
-    for (SExps::size_type i = 0; i < N(1)->sexps.size(); i++)
+    if (N(1)->type == SExp::SEXPS)
     {
-        SExp* param = NN(1, i);
-        if (param->type != SExp::SYMBOL) return SYNTAX_ERROR;
-        Variable* v = new Variable(param->text, param->lineno);
-        ASSERT(v);
+
+        for (SExps::size_type i = 0; i < N(1)->sexps.size(); i++)
+        {
+            SExp* param = NN(1, i);
+            if (param->type != SExp::SYMBOL) return SYNTAX_ERROR;
+            Variable* v = new Variable(param->text, param->lineno);
+            ASSERT(v);
+            variables->push_back(v);
+        }
+    }
+    else if (N(1)->type == SExp::SYMBOL)
+    {
+        Variable* v = new Variable(N(1)->text, N(1)->lineno);
         variables->push_back(v);
     }
-
     Objects* body = new Objects;ASSERT(body);
     for (SExps::size_type i = 2; i < L(); i++)
     {

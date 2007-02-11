@@ -149,4 +149,6 @@
                    (= (reminder 13 -4) 1)
                    (= (reminder -13 -4) -1))
 
-
+(assert-check-true "max / min"
+                   (= 4 (max (list 1 2 4 3)))
+                   (= 1 (min (list 2 1 4 3))))

@@ -23,7 +23,7 @@
 
 (define zero?
   (lambda (x)
-    (= 0 x)))
+    (= 0 x)))n
 
 (define even?
   (lambda (x)
@@ -146,3 +146,114 @@
 (define truncate (lambda (x) x))
 (define round (lambda (x) x))
 
+; Copyright (C) 1995 Danny Dube, Universite de Montreal. All rights reserved.
+
+;
+; Fonctions implantees dans le noyau. Pour savoir lesquelles
+; sont visibles, voir sections plus bas
+;
+
+(define max (lambda l (foldl1 max2 l)))
+(define min (lambda l (foldl1 min2 l)))
+
+
+(define foldl1
+  (lambda (binop l)
+    (if (null? (cdr l))
+    (car l)
+    (foldl1 binop (cons (binop (car l) (cadr l))
+                (cddr l))))))
+
+(define max2 (lambda (x y) (if (> x y) x y)))
+(define min2 (lambda (x y) (if (< x y) x y)))
+
+(define list?
+  (lambda (l)
+    (cond ((null? l)
+       #t)
+      ((not (pair? l))
+       #f)
+      (else
+       (let loop ((slow l) (fast (cdr l)) (phase 2))
+         (cond ((null? fast)
+            #t)
+           ((not (pair? fast))
+            #f)
+           ((eq? slow fast)
+            #f)
+           ((= phase 1)
+            (loop slow (cdr fast) 2))
+           (else
+            (loop (cdr slow) (cdr fast) 1))))))))
+
+(define length
+  (lambda (l)
+    (let loop ((l l) (len 0))
+      (if (null? l)
+      len
+      (loop (cdr l) (+ len 1))))))
+
+;; 引数おかしい
+;; (define append
+;;   (lambda ll
+;;     (foldr1 append2 (cons '() ll))))
+
+;; (define foldr1
+;;   (lambda (binop l)
+;;     (if (null? (cdr l))
+;;     (car l)
+;;     (binop (car l) (foldr1 binop (cdr l))))))
+
+;; (define append2
+;;   (lambda (l1 l2)
+;;     (if (null? l1)
+;;     l2
+;;     (let ((tete (cons (car l1) l2)))
+;;       (let loop ((cur tete) (l1 (cdr l1)))
+;;         (if (null? l1)
+;;         tete
+;;         (begin
+;;           (set-cdr! cur (cons (car l1) l2))
+;;           (loop (cdr cur) (cdr l1)))))))))
+
+(define list-tail
+  (lambda (l pos)
+    (if (= pos 0)
+    l
+    (list-tail (cdr l) (- pos 1)))))
+(define list-ref (lambda (l pos) (car (list-tail l pos))))
+
+(define reverse
+  (lambda (l)
+    (let loop ((l l) (rl '()))
+      (if (null? l)
+      rl
+      (loop (cdr l) (cons (car l) rl))))))
+
+(define generic-member
+  (lambda (releq obj list)
+    (if (null? list)
+    #f
+    (if (releq (car list) obj)
+        list
+        (generic-member releq obj (cdr list))))))
+
+(define memq
+  (lambda (obj list)
+    (generic-member eq? obj list)))
+
+(define memv
+  (lambda (obj list)
+    (generic-member eqv? obj list)))
+
+(define generic-assoc
+  (lambda (releq obj alist)
+    (cond ((null? alist)
+       #f)
+      ((releq (car (car alist)) obj)
+       (car alist))
+      (else
+       (generic-assoc releq obj (cdr alist))))))
+
+(define assq (lambda (obj alist) (generic-assoc eq? obj alist)))
+(define assv (lambda (obj alist) (generic-assoc eqv? obj alist)))
