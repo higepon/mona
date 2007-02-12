@@ -26,7 +26,7 @@ public:
     virtual bool equal(Object* o);
     virtual Charcter* get(uint32_t index);
     virtual bool set(uint32_t index, Charcter* c);
-
+    String* clone();
 protected:
     std::string value_;
     uint32_t lineno_;

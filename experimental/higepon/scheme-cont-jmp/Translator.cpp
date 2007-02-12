@@ -161,6 +161,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
 {
     if (L() <= 2) return SYNTAX_ERROR;
     if (N(1)->type != SExp::SEXPS && N(1)->type != SExp::SYMBOL) return SYNTAX_ERROR;
+    bool extendVariable = false;
     Variables* variables = new Variables;ASSERT(variables);
     if (N(1)->type == SExp::SEXPS)
     {
@@ -177,6 +178,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
     else if (N(1)->type == SExp::SYMBOL)
     {
         Variable* v = new Variable(N(1)->text, N(1)->lineno);
+        extendVariable = true;
         variables->push_back(v);
     }
     Objects* body = new Objects;ASSERT(body);
@@ -187,7 +189,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->push_back(o);
     }
-    *object = new Lambda(body, variables, sexp->lineno);ASSERT(*object);
+    *object = new Lambda(body, variables, extendVariable, sexp->lineno);ASSERT(*object);
     return SUCCESS;
 }
 

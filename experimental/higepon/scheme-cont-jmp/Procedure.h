@@ -31,7 +31,8 @@ protected:
     Variables* parameters_;
     Environment* env_;
     uint32_t lineno_;
-    bool extendableParameters_;
+    bool isExtendableParameter_;
+    bool isExtendableParameters_;
 };
 
 }; // namespace monash

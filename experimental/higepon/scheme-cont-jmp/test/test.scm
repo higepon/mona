@@ -336,6 +336,7 @@
 (load "./test/string.scm")
 (load "./test/pair.scm")
 (load "./test/port.scm")
+(load "./test/util.scm")
 
 ;; report
 (total-report)

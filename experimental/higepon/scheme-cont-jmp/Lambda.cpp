@@ -3,8 +3,19 @@
 using namespace monash;
 using namespace std;
 
-Lambda::Lambda(Objects* body, Variables* parameters, uint32_t lineno) : body_(body), parameters_(parameters), lineno_(lineno)
+// lambda (x)     : normal parameter
+// lambda x       : extendableParameter. x is list.
+// lambda (x . y) : extendableParameters. y is list.
+Lambda::Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno)
+    : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), lineno_(lineno)
 {
+    for (Variables::const_iterator it = parameters->begin(); it != parameters->end(); ++it)
+    {
+        if ((*it)->name() == ".")
+        {
+            isExtendableParameters_ = true;
+        }
+    }
 }
 
 Lambda::~Lambda()

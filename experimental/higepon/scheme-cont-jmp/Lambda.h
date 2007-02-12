@@ -9,7 +9,7 @@ namespace monash {
 class Lambda : public Object
 {
 public:
-    Lambda(Objects* body, Variables* parameters, uint32_t lineno = 0);
+    Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno = 0);
     virtual ~Lambda();
 
     virtual std::string toString();
@@ -18,13 +18,16 @@ public:
     virtual Object* eval(Environment* env);
     virtual bool eqv() const;
     virtual bool eq()  const;
-
+    bool isExtendableParameter() const { return isExtendableParameter_; }
+    bool isExtendableParameters() const { return isExtendableParameters_; }
     Objects* body() const { return body_; }
     Variables* parameters() { return parameters_;}
 
 protected:
     Objects* body_;
     Variables* parameters_;
+    bool isExtendableParameter_;
+    bool isExtendableParameters_;
     uint32_t lineno_;
 };
 

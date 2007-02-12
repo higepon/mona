@@ -3,6 +3,13 @@
 using namespace monash;
 using namespace std;
 
+PROCEDURE(StringCopy, "string-copy")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), String, s);
+    return s->clone();
+}
+
 PROCEDURE(StringP, "string?")
 {
     ARGC_SHOULD_BE(1);
@@ -68,20 +75,6 @@ PROCEDURE(StringEqualP, "string=?")
     RETURN_BOOLEAN(s->equal(ARGV(1)));
 }
 
-PROCEDURE(StringAppend, "string-append")
-{
-    ARGC_SHOULD_BE_GT(0)
-    string text = "";
-
-    for (Objects::const_iterator p = arguments->begin(); p != arguments->end(); ++p)
-    {
-        if ((*p)->type() != Object::STRING) continue;
-        String* s = (String*)(*p);
-        text += s->value();
-    }
-    return new String(text);
-}
-
 PROCEDURE(StringToNumber, "string->number")
 {
     ARGC_SHOULD_BE(1);
@@ -105,3 +98,18 @@ PROCEDURE(StringToSymbol, "string->symbol")
     exp->text = s->toStringValue();
     return new Quote(exp);
 }
+
+// see test/scheme.scm
+// PROCEDURE(StringAppend, "string-append")
+// {
+//     ARGC_SHOULD_BE_GT(0)
+//     string text = "";
+
+//     for (Objects::const_iterator p = arguments->begin(); p != arguments->end(); ++p)
+//     {
+//         if ((*p)->type() != Object::STRING) continue;
+//         String* s = (String*)(*p);
+//         text += s->value();
+//     }
+//     return new String(text);
+// }

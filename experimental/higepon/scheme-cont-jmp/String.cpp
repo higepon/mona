@@ -87,3 +87,8 @@ bool String::set(uint32_t index, Charcter* c)
     value_[index] = c->value();
     return true;
 }
+
+String* String::clone()
+{
+    return new String(value(), lineno());
+}

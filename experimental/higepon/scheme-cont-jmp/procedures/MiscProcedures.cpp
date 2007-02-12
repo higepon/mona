@@ -50,9 +50,9 @@ PROCEDURE(Exit, "exit")
 
 PROCEDURE(Apply, "apply")
 {
-    ARGC_SHOULD_BE(2);
-    CAST(ARGV(1), Pair, p);
-    return Kernel::apply(ARGV(0), pairToObjects(p), env);
+   ARGC_SHOULD_BE(2);
+   CAST(ARGV(1), Pair, p);
+   return Kernel::apply(ARGV(0), pairToObjects(p), env);
 }
 
 PROCEDURE(Eval, "eval")

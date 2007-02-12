@@ -150,5 +150,14 @@
                    (= (reminder -13 -4) -1))
 
 (assert-check-true "max / min"
-                   (= 4 (max (list 1 2 4 3)))
-                   (= 1 (min (list 2 1 4 3))))
+                   (= 4 (max 1 2 4 3))
+                   (= 1 (min 2 1 4 3)))
+
+(assert-check-true "gcd / lcm"
+                   (= (gcd 32 -36) 4)
+                   (= (gcd 36 12) 12)
+                   (= (gcd 1 1) 1)
+                   (= (lcm 2 1) 2)
+                   (= (lcm 3 4) 12)
+                   (= (lcm 12 9) 36
+))

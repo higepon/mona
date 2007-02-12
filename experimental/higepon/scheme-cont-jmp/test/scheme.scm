@@ -1,29 +1,35 @@
-(define caar
-  (lambda (x)
-    (car (car x))))
-
-(define cdar
-  (lambda (x)
-    (cdr (car x))))
-
-(define cadr
-  (lambda (x)
-    (car (cdr x))))
-
-(define cddr
-  (lambda (x)
-    (cdr (cdr x))))
-
-;; (define newline
-;;   (lambda () (display "\n")))
-
-;; ;; for unittest.scm
-;; (define write
-;;   (lambda (o) (display o)))
+(define caar (lambda (p) (car (car p))))
+(define cadr (lambda (p) (car (cdr p))))
+(define cdar (lambda (p) (cdr (car p))))
+(define cddr (lambda (p) (cdr (cdr p))))
+(define caaar (lambda (p) (caar (car p))))
+(define caadr (lambda (p) (caar (cdr p))))
+(define cadar (lambda (p) (cadr (car p))))
+(define caddr (lambda (p) (cadr (cdr p))))
+(define cdaar (lambda (p) (cdar (car p))))
+(define cdadr (lambda (p) (cdar (cdr p))))
+(define cddar (lambda (p) (cddr (car p))))
+(define cdddr (lambda (p) (cddr (cdr p))))
+(define caaaar (lambda (p) (caaar (car p))))
+(define caaadr (lambda (p) (caaar (cdr p))))
+(define caadar (lambda (p) (caadr (car p))))
+(define caaddr (lambda (p) (caadr (cdr p))))
+(define cadaar (lambda (p) (cadar (car p))))
+(define cadadr (lambda (p) (cadar (cdr p))))
+(define caddar (lambda (p) (caddr (car p))))
+(define cadddr (lambda (p) (caddr (cdr p))))
+(define cdaaar (lambda (p) (cdaar (car p))))
+(define cdaadr (lambda (p) (cdaar (cdr p))))
+(define cdadar (lambda (p) (cdadr (car p))))
+(define cdaddr (lambda (p) (cdadr (cdr p))))
+(define cddaar (lambda (p) (cddar (car p))))
+(define cddadr (lambda (p) (cddar (cdr p))))
+(define cdddar (lambda (p) (cdddr (car p))))
+(define cddddr (lambda (p) (cdddr (cdr p))))
 
 (define zero?
   (lambda (x)
-    (= 0 x)))n
+    (= 0 x)))
 
 (define even?
   (lambda (x)
@@ -33,13 +39,6 @@
 (define odd?
   (lambda (x)
     (not (even? x))))
-
-(define for-each
-  (lambda (proc items)
-    (if (null? items)
-        "done"
-        (begin (proc (car items))
-               (for-each proc (cdr items))))))
 
 (define not
   (lambda (condition)
@@ -146,114 +145,27 @@
 (define truncate (lambda (x) x))
 (define round (lambda (x) x))
 
-; Copyright (C) 1995 Danny Dube, Universite de Montreal. All rights reserved.
+(define make-promise
+  (lambda (proc)
+    (let ((result-ready? #f)
+          (result #f))
+      (lambda ()
+        (if result-ready?
+            result
+            (let ((x (proc)))
+              (if result-ready?
+                  result
+                  (begin (set! result-ready? #t)
+                         (set! result x)
+                         result))))))))
 
-;
-; Fonctions implantees dans le noyau. Pour savoir lesquelles
-; sont visibles, voir sections plus bas
-;
+(define-syntax delay
+  (syntax-rules ()
+    ((delay expression)
+     (make-promise (lambda () expression)))))
 
-(define max (lambda l (foldl1 max2 l)))
-(define min (lambda l (foldl1 min2 l)))
+(define force
+  (lambda (object)
+    (object)))
 
-
-(define foldl1
-  (lambda (binop l)
-    (if (null? (cdr l))
-    (car l)
-    (foldl1 binop (cons (binop (car l) (cadr l))
-                (cddr l))))))
-
-(define max2 (lambda (x y) (if (> x y) x y)))
-(define min2 (lambda (x y) (if (< x y) x y)))
-
-(define list?
-  (lambda (l)
-    (cond ((null? l)
-       #t)
-      ((not (pair? l))
-       #f)
-      (else
-       (let loop ((slow l) (fast (cdr l)) (phase 2))
-         (cond ((null? fast)
-            #t)
-           ((not (pair? fast))
-            #f)
-           ((eq? slow fast)
-            #f)
-           ((= phase 1)
-            (loop slow (cdr fast) 2))
-           (else
-            (loop (cdr slow) (cdr fast) 1))))))))
-
-(define length
-  (lambda (l)
-    (let loop ((l l) (len 0))
-      (if (null? l)
-      len
-      (loop (cdr l) (+ len 1))))))
-
-;; 引数おかしい
-;; (define append
-;;   (lambda ll
-;;     (foldr1 append2 (cons '() ll))))
-
-;; (define foldr1
-;;   (lambda (binop l)
-;;     (if (null? (cdr l))
-;;     (car l)
-;;     (binop (car l) (foldr1 binop (cdr l))))))
-
-;; (define append2
-;;   (lambda (l1 l2)
-;;     (if (null? l1)
-;;     l2
-;;     (let ((tete (cons (car l1) l2)))
-;;       (let loop ((cur tete) (l1 (cdr l1)))
-;;         (if (null? l1)
-;;         tete
-;;         (begin
-;;           (set-cdr! cur (cons (car l1) l2))
-;;           (loop (cdr cur) (cdr l1)))))))))
-
-(define list-tail
-  (lambda (l pos)
-    (if (= pos 0)
-    l
-    (list-tail (cdr l) (- pos 1)))))
-(define list-ref (lambda (l pos) (car (list-tail l pos))))
-
-(define reverse
-  (lambda (l)
-    (let loop ((l l) (rl '()))
-      (if (null? l)
-      rl
-      (loop (cdr l) (cons (car l) rl))))))
-
-(define generic-member
-  (lambda (releq obj list)
-    (if (null? list)
-    #f
-    (if (releq (car list) obj)
-        list
-        (generic-member releq obj (cdr list))))))
-
-(define memq
-  (lambda (obj list)
-    (generic-member eq? obj list)))
-
-(define memv
-  (lambda (obj list)
-    (generic-member eqv? obj list)))
-
-(define generic-assoc
-  (lambda (releq obj alist)
-    (cond ((null? alist)
-       #f)
-      ((releq (car (car alist)) obj)
-       (car alist))
-      (else
-       (generic-assoc releq obj (cdr alist))))))
-
-(define assq (lambda (obj alist) (generic-assoc eq? obj alist)))
-(define assv (lambda (obj alist) (generic-assoc eqv? obj alist)))
+(load "test/danny_dube.scm")

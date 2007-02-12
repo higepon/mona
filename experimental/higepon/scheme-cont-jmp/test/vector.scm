@@ -48,3 +48,26 @@
                      (eqv? (vector-ref vv 3) '4))
 )
 
+(let* ((v #(1 2 3))
+       (l (vector->list v)))
+  (assert-check-true "vector->list"
+                     (= 3 (length l))
+                     (= (list-ref l 0) 1)
+                     (= (list-ref l 1) 2)
+                     (= (list-ref l 2) 3)))
+
+(let* ((l (list 1 2 3))
+       (v (list->vector l)))
+  (assert-check-true "list->vector"
+                     (= 3 (vector-length v))
+                     (= (vector-ref v 0) 1)
+                     (= (vector-ref v 1) 2)
+                     (= (vector-ref v 2) 3)))
+
+(let* ((v #(1 2 3)))
+  (vector-fill! v #\a)
+  (assert-check-true "vector-fill!"
+                     (= 3 (vector-length v))
+                     (char=? (vector-ref v 0) #\a)
+                     (char=? (vector-ref v 1) #\a)
+                     (char=? (vector-ref v 2) #\a)))

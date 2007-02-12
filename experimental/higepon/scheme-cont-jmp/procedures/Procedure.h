@@ -86,8 +86,7 @@ public:                                                                         
     virtual std::string toString() {    return "procedure:" name;}               \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
-        RAISE_ERROR(lineno(), "don't eval procedure " name);                     \
-         return NULL;                                                            \
+        return this; \
     }                                                                            \
     virtual Object* apply(Objects* arguments, Environment* env);                 \
 };                                                                               \

@@ -25,12 +25,12 @@ int NamedLet::type() const
 Application* NamedLet::expand()
 {
     Variable* v = new Variable(name_, lineno());
-    Definition* definition = new Definition(v, new Lambda(body_, variables_, lineno()));
+    Definition* definition = new Definition(v, new Lambda(body_, variables_, false, lineno()));
     Application* application = new Application(v, values_, lineno());
     Objects* body = new Objects;
     body->push_back(definition);
     body->push_back(application);
-    Lambda* lambda = new Lambda(body, new Variables());
+    Lambda* lambda = new Lambda(body, new Variables(), false, lineno());
     Application* apps = new Application(lambda, new Objects());
     return apps;
 }

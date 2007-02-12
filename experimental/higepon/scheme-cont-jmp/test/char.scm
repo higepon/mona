@@ -166,6 +166,128 @@
 ;; (assert-check-true "char->integer"
 ;;                    (= 97 (char->integer #\a))
 ;;                    (char<=? #\a #\b)
-;;                    (< (char->integer #a) (char->integer #\b))
+;;                    (< (char->integer #\a) (char->integer #\b))
 ;;                    (char<=? (integer->char 98) (integer->char 100)))
 
+(assert-check-true "char-ci"
+                   (char-ci=? #\a #\A)
+                   (char-ci=? #\b #\B)
+                   (char-ci=? #\a #\a)
+                   (char-ci=? #\0 #\0)
+                   (char-ci>? #\B #\a)
+                   (char-ci>? #\b #\A)
+                   (char-ci<? #\a #\B)
+                   (char-ci<? #\A #\b)
+                   (char-ci>=? #\B #\a)
+                   (char-ci>=? #\b #\A)
+                   (char-ci>=? #\A #\a)
+                   (char-ci>=? #\a #\A)
+                   (char-ci<=? #\a #\B)
+                   (char-ci<=? #\A #\b)
+                   (char-ci<=? #\B #\b)
+                   (char-ci<=? #\b #\B)
+                   )
+
+(assert-check-false "char-ci should be #f"
+                   (char-ci=? #\B #\a)
+                   (char-ci<? #\B #\a)
+                   (char-ci<? #\b #\A)
+                   (char-ci>? #\a #\B)
+                   (char-ci>? #\A #\b)
+                   )
+
+(assert-check-true "char-alphabetic?"
+                   (char-alphabetic? #\a)
+                   (char-alphabetic? #\b)
+                   (char-alphabetic? #\A)
+                   (char-alphabetic? #\B)
+                   (char-alphabetic? #\z)
+                   (char-alphabetic? #\Z)
+)
+
+(assert-check-false "char-alphabetic? should be #f"
+                   (char-alphabetic? #\0)
+                   (char-alphabetic? #\space)
+                   (char-alphabetic? #\newline)
+                   (char-alphabetic? #\9)
+)
+
+(assert-check-true "char-numeric?"
+                   (char-numeric? #\0)
+                   (char-numeric? #\1)
+                   (char-numeric? #\2)
+                   (char-numeric? #\3)
+                   (char-numeric? #\4)
+                   (char-numeric? #\9)
+)
+
+(assert-check-false "char-numeric? should be #f"
+                   (char-numeric? #\a)
+                   (char-numeric? #\space)
+                   (char-numeric? #\newline)
+                   (char-numeric? #\Z)
+)
+
+(assert-check-true "char-whitespace?"
+                   (char-whitespace? #\space)
+                   (char-whitespace? #\newline)
+)
+
+(assert-check-false "char-whitespace? should be #f"
+                   (char-whitespace? #\a)
+                   (char-whitespace? #\0)
+                   (char-whitespace? #\A)
+                   (char-whitespace? #\X)
+)
+
+(assert-check-true "char-upper-case?"
+                   (char-upper-case? #\A)
+                   (char-upper-case? #\B)
+                   (char-upper-case? #\C)
+                   (char-upper-case? #\Z)
+                   (char-upper-case? #\X)
+                   (char-upper-case? #\Y)
+)
+
+(assert-check-false "char-upper-case? should be #f"
+                   (char-upper-case? #\a)
+                   (char-upper-case? #\space)
+                   (char-upper-case? #\newline)
+                   (char-upper-case? #\0)
+)
+
+(assert-check-true "char-lower-case?"
+                   (char-lower-case? #\a)
+                   (char-lower-case? #\b)
+                   (char-lower-case? #\z)
+)
+
+(assert-check-false "char-lower-case? should be #f"
+                   (char-lower-case? #\0)
+                   (char-lower-case? #\space)
+                   (char-lower-case? #\newline)
+                   (char-lower-case? #\A)
+                   (char-lower-case? #\B)
+                   (char-lower-case? #\C)
+                   (char-lower-case? #\Z)
+                   (char-lower-case? #\X)
+                   (char-lower-case? #\Y)
+)
+
+(assert-check-true "char-upcase"
+                   (char=? (char-upcase #\a) #\A)
+                   (char=? (char-upcase #\A) #\A)
+                   (char=? (char-upcase #\z) #\Z)
+                   (char=? (char-upcase #\0) #\0)
+                   (char=? (char-upcase #\space) #\space)
+                   (char=? (char-upcase #\newline) #\newline)
+)
+
+(assert-check-true "char-downcase"
+                   (char=? (char-downcase #\A) #\a)
+                   (char=? (char-downcase #\a) #\a)
+                   (char=? (char-downcase #\Z) #\z)
+                   (char=? (char-downcase #\0) #\0)
+                   (char=? (char-downcase #\space) #\space)
+                   (char=? (char-downcase #\newline) #\newline)
+)
