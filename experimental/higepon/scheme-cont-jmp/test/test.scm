@@ -332,7 +332,7 @@
 (load "./test/symbol.scm")
 (load "./test/number.scm")
 (load "./test/closure.scm")
-;(load "./test/continuation.scm")
+(load "./test/continuation.scm")
 (load "./test/string.scm")
 (load "./test/pair.scm")
 (load "./test/port.scm")

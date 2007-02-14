@@ -1,13 +1,14 @@
-(define for-loop (lambda (max)
-  (let ((i 0) (cont #f))
-    (if (> max (call/cc (lambda (c) (set! cont c) i)))
-        (begin
-          (display i)
-          (newline)
-          (set! i (+ i 1))
-          (cont i))))))
+;; (define for-loop (lambda (max)
+;;   (let ((i 0) (cont #f))
+;;     (if (> max (call/cc (lambda (c) (set! cont c) i)))
+;;         (begin
+;;           (display "hige")
+;;           (display i)
+;;           (newline)
+;;           (set! i (+ i 1))
+;;           (cont i)) (display "else")))))
 
-(for-loop 5)
+;; (for-loop 5)
 
 ;; (define cont '())
 ;; (define f (lambda ()

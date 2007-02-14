@@ -4,34 +4,6 @@
 using namespace monash;
 using namespace std;
 
-//static jmp_buf cont;
-
-PROCEDURE(CallCC, "call/cc")
-{
-    ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), Procedure, procedure);
-
-    Continuation* continuation = new Continuation;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    if (0 == cont_save(&(continuation->cont)))
-    {
-        Objects* arguments = new Objects;
-        arguments->push_back(continuation);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-        return Kernel::apply(procedure, arguments, env);
-    }
-    else
-    {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-        exit(-1);
-
-//        return continuation->callArugument->eval(env);
-        return new Number(1);
-    }
-
-    RAISE_ERROR(lineno(), "unknown call/cc");
-}
-
 PROCEDURE(CharcterP, "char?")
 {
     ARGC_SHOULD_BE(1);

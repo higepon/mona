@@ -19,8 +19,7 @@ std::string True::toString()
 
 Object* True::eval(Environment* env)
 {
-    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
-    return NULL;
+    return this;
 }
 
 Object* True::apply(Objects* arguments, Environment* env)

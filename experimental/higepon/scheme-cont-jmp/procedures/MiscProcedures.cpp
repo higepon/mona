@@ -22,6 +22,27 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
+PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Procedure, procedure);
+
+    Continuation* continuation = new Continuation;
+    if (0 == cont_save(&(continuation->cont)))
+    {
+        Objects* arguments = new Objects;
+        arguments->push_back(continuation);
+        return Kernel::apply(procedure, arguments, env);
+    }
+    else
+    {
+        Object* result = continuation->callArugument->eval(env);
+        return result;
+    }
+
+    RAISE_ERROR(lineno(), "unknown call/cc");
+}
+
 PROCEDURE(NotSupported, "not-supported")
 {
     ARGC_SHOULD_BE(1);

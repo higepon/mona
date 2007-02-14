@@ -79,13 +79,16 @@ void cont_destroy(Cont* c)
 static Cont* c;
 static int r;
 static uint32_t diff;
+static uint32_t prev_stack;
+static uint32_t next_stack;
+
 void cont_restore(Cont* cc, int return_value)
 {
     c = cc;
     r = return_value;
     uint32_t i;
-    uint32_t prev_stack = c->registers[7];
-    uint32_t next_stack= prev_stack - 1000;
+    prev_stack = c->registers[7];
+    next_stack= prev_stack - 1000;
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -112,11 +115,9 @@ void cont_restore(Cont* cc, int return_value)
 
 int cont_save(Cont* c)
 {
-  c->registers[9] = 0x12345678;
     int ret = mysetjmp(c->registers);
     if (ret != 0) return ret;
     uint32_t diff = c->registers[6] - c->registers[7];
-    printf("diff=%x\n", diff);
 
     uint32_t current_stack = c->registers[7];
     c->stack_size = cont_stack_bottom - current_stack;

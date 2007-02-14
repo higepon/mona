@@ -27,6 +27,8 @@
 (define cdddar (lambda (p) (cdddr (car p))))
 (define cddddr (lambda (p) (cdddr (cdr p))))
 
+(define call/cc call-with-current-continuation)
+
 (define zero?
   (lambda (x)
     (= 0 x)))
