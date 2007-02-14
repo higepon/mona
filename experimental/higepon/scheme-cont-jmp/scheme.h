@@ -46,4 +46,30 @@ namespace std {
 std::string load(const char* file);
 void registerPrimitives(monash::Environment* env);
 
+extern FILE* g_transcript;
+
+// notice!
+// don't use like below
+// SCHEME_WRITE(stream, o->eval);
+// o->eval will be called twice!
+#define SCHEME_WRITE(stream, ...)                                       \
+{                                                                       \
+    fprintf(stream, __VA_ARGS__);                                       \
+    int __file = fileno(stream);                                        \
+    int __out  = fileno(stdout);                                        \
+    int __err  = fileno(stderr);                                        \
+    if (g_transcript != NULL && (__file == __out || __file == __err))   \
+    {                                                                   \
+        fprintf(g_transcript, __VA_ARGS__);                             \
+    }                                                                   \
+}
+
+#define TRANSCRIPT_WRITE(...)                                   \
+{                                                               \
+    if (g_transcript != NULL)                                   \
+    {                                                           \
+        fprintf(g_transcript, __VA_ARGS__);                     \
+    }                                                           \
+}
+
 #endif // __SCHEME_H__

@@ -4,7 +4,7 @@ static int func1(int counter);
 static void stack_destroy(int counter);
 
 static Cont c;
-
+extern uint32_t cont_stack_bottom;
 void jmp_inside_test()
 {
     int ret = func1(0);
@@ -19,7 +19,7 @@ void jmp_inside_test()
 
 int func1(int counter)
 {
-    if (counter == 2)
+    if (counter == 20)
     {
         int ret = cont_save(&c);
         if (ret == 0)

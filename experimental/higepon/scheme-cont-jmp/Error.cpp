@@ -1,4 +1,5 @@
 #include "Error.h"
+#include "scheme.h"
 using namespace monash;
 using namespace std;
 
@@ -43,15 +44,15 @@ void Error::returnOnError()
 
 void Error::showErrorAndExit()
 {
-    fprintf(stderr, "%s:%d: error: %s\n", file.c_str(), lineno, error.c_str());
-    fprintf(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
+    SCHEME_WRITE(stderr, "%s:%d: error: %s\n", file.c_str(), lineno, error.c_str());
+    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
     exit(-1);
 }
 
 void Error::showError()
 {
-    fprintf(stderr, "error: %s\n", error.c_str());
-    fprintf(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
+    SCHEME_WRITE(stderr, "error: %s\n", error.c_str());
+    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
 }
 
 void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* format, ...)
@@ -66,7 +67,7 @@ void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* 
     if (result > 512)
     {
         /* over flow */
-        fprintf(stderr, "error message over flow?\n");
+        SCHEME_WRITE(stderr, "error message over flow?\n");
     }
 
     error = buf;

@@ -44,7 +44,8 @@
 #include "cont.h"
 #include <unistd.h>
 
-static uint32_t cont_stack_bottom;
+//static uint32_t cont_stack_bottom;
+uint32_t cont_stack_bottom;
 
 void* cont_get_stack_pointer()
 {

@@ -15,6 +15,7 @@ PROCEDURE(CallCC, "call/cc")
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (0 == cont_save(&(continuation->cont)))
     {
+        cont_restore(&(continuation->cont), 1);
         Objects* arguments = new Objects;
         arguments->push_back(continuation);
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug

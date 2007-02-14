@@ -66,7 +66,7 @@ void input_loop()
     for (;;)
     {
 
-        if (show_prompt) printf("mona> ");
+        if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
         getline(&line, &length, stdin);
         open_paren_count += count_char(line, '(');
         close_paren_count += count_char(line, ')');
@@ -74,7 +74,7 @@ void input_loop()
         if (input != "" && open_paren_count == close_paren_count)
         {
             input = quoteFilter.filter(input);
-//            printf("input[%s]\n", input.c_str());
+            TRANSCRIPT_WRITE(input.c_str());
             input = "(" + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
@@ -95,7 +95,9 @@ void input_loop()
                     break;
                 }
                 // let's eval!
-                printf("%s\n", object->eval(env)->toStringValue().c_str());
+                Object* evaluated = object->eval(env);
+                SCHEME_WRITE(stdout, "%s\n", evaluated->toStringValue().c_str());
+
             }
                     open_paren_count = 0;
                     close_paren_count = 0;
@@ -159,7 +161,7 @@ int main(int argc, char *argv[])
 
         if (translator.translate(&sexp, &object) != Translator::SUCCESS)
         {
-            fprintf(stderr, "translate error \n");
+            SCHEME_WRITE(stderr, "translate error \n");
             return -1;
         }
         // let's eval!

@@ -8,6 +8,35 @@ extern OutputPort* g_defaultOutputPort;
 extern InputPort*  g_defaultInputPort;
 extern InputPort*  g_currentInputPort;
 
+PROCEDURE(TranscriptOn, "transcript-on")
+{
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    ARGC_SHOULD_BE(1);
+    if (g_transcript != NULL)
+    {
+        RAISE_ERROR(lineno(), "already transcipt-on");
+    }
+    CAST(ARGV(0), String, s);
+    g_transcript = fopen(s->value().c_str(), "w+");
+    if (NULL == g_transcript)
+    {
+        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().c_str());
+    }
+    return new Undef();
+}
+
+
+PROCEDURE(TranscriptOff, "transcript-off")
+{
+    ARGC_SHOULD_BE(0);
+    if (g_transcript != NULL)
+    {
+        fclose(g_transcript);
+        g_transcript = NULL;
+    }
+    return new Undef();
+}
+
 PROCEDURE(CharReadyP, "char-ready?")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);

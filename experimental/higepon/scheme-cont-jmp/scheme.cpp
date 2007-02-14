@@ -9,6 +9,7 @@ OutputPort* g_currentOutputPort;
 OutputPort* g_defaultOutputPort;
 InputPort* g_currentInputPort;
 InputPort* g_defaultInputPort;
+FILE* g_transcript;
 
 void registerPrimitives(Environment* env)
 {
@@ -16,7 +17,8 @@ void registerPrimitives(Environment* env)
     g_defaultInputPort  = new InputPort(stdin);
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
-
+    g_transcript = NULL;
+    printf("1 %x\n", g_transcript );
     for (DefaultProcedures::const_iterator p = procedures.begin(); p != procedures.end(); ++p)
     {
         env->defineVariable((*p).first, (*p).second);

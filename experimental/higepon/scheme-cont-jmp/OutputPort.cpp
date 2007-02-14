@@ -1,4 +1,5 @@
 #include "OutputPort.h"
+#include "scheme.h"
 
 using namespace monash;
 using namespace std;
@@ -47,13 +48,13 @@ bool OutputPort::writeCharacter(Charcter* c)
 
 bool OutputPort::write(Object* o)
 {
-    fprintf(stream_, "%s", o->toString().c_str());
+    SCHEME_WRITE(stream_, "%s", o->toString().c_str());
     return true;
 }
 
 bool OutputPort::display(Object* o)
 {
-    fprintf(stream_, "%s", o->toStringValue().c_str());
+    SCHEME_WRITE(stream_, "%s", o->toStringValue().c_str());
     return true;
 }
 
