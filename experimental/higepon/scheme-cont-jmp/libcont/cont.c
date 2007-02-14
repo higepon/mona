@@ -76,8 +76,13 @@ void cont_destroy(Cont* c)
     }
 }
 
-void cont_restore(Cont* c, int return_value)
+static Cont* c;
+static int r;
+static uint32_t diff;
+void cont_restore(Cont* cc, int return_value)
 {
+    c = cc;
+    r = return_value;
     uint32_t i;
     uint32_t prev_stack = c->registers[7];
     uint32_t next_stack= prev_stack - 1000;
@@ -99,16 +104,20 @@ void cont_restore(Cont* c, int return_value)
         }
     }
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
-    uint32_t diff = c->registers[6] - c->registers[7];
+    diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
-    mylongjmp(c->registers, return_value);
+    mylongjmp(c->registers, r);
 }
 
 int cont_save(Cont* c)
 {
+  c->registers[9] = 0x12345678;
     int ret = mysetjmp(c->registers);
     if (ret != 0) return ret;
+    uint32_t diff = c->registers[6] - c->registers[7];
+    printf("diff=%x\n", diff);
+
     uint32_t current_stack = c->registers[7];
     c->stack_size = cont_stack_bottom - current_stack;
     c->stack = (uint8_t*)malloc(c->stack_size);
