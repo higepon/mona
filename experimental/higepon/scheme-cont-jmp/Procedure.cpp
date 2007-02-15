@@ -46,9 +46,12 @@ bool Procedure::eq() const
     return false;
 }
 
+
 Object* Procedure::apply(Objects* arguments, Environment* environment)
 {
     Objects* as = Kernel::listOfValues(arguments, environment);
+//     Objects* as;
+//     moge(arguments, 0, NULL, environment, &as);
     Environment* e = env()->clone();
     Variables* params = parameters();
     if (isExtendableParameter_)

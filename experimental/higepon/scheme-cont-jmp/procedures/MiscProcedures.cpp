@@ -37,7 +37,6 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
     else
     {
         Object* result = continuation->callArugument->eval(env);
-        printf("call arg = %s\n", result->toStringValue().c_str());
         return result;
     }
 

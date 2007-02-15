@@ -3,8 +3,15 @@
 
 #include "Object.h"
 #include "Procedure.h"
+#include <algorithm>
 
 namespace monash {
+
+typedef struct Argument
+{
+    Object* object;
+    Argument* prev;
+} Argument;
 
 class Kernel
 {
@@ -16,6 +23,7 @@ public:
     static Objects* listOfValues(Objects* objects, Environment* env);
     static Object* apply(Object* procedure, Objects* arguments, Environment* env);
     static Object* doContinuation();
+    static void makeListOfValues(Objects* objects, uint32_t i, Argument* prev, Environment* environment, Objects** values);
 };
 
 }; // namespace monash

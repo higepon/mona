@@ -1,3 +1,22 @@
+(define find (lambda (pred list)
+  (call/cc
+    (lambda (return)
+      (for-each
+        (lambda (e) (if (pred e) (return e)))
+        list)
+      #f))))
+
+(assert-check-true "call/cc"
+                    (= (find even? (list 1 2 3 4)) 3)
+                    (= (find odd? (list 1 2 3 4)) 1)
+)
+
+
+;; (define sum (lambda l
+;;               (
+;;               (null? l)
+
+
 ;; (define for-loop (lambda (max)
 ;;   (let ((i 0) (cont #f))
 ;;     (if (> max (call/cc (lambda (c) (set! cont c) i)))
