@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-using namespace std;
+using namespace monash::util;
 
 Undef::Undef()
 {
@@ -12,14 +12,14 @@ Undef::~Undef()
 {
 }
 
-std::string Undef::toString()
+::util::String Undef::toString()
 {
     return "#<undef>";
 }
 
 Object* Undef::eval(Environment* env)
 {
-    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().data());
     return NULL;
 }
 

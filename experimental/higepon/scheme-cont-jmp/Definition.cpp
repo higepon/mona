@@ -10,7 +10,7 @@ Definition::~Definition()
 {
 }
 
-std::string Definition::toString()
+::util::String Definition::toString()
 {
     return variable_->toString() + ": " + value_->toString();
 }

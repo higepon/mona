@@ -10,7 +10,7 @@ Assignment::~Assignment()
 {
 }
 
-std::string Assignment::toString()
+::util::String Assignment::toString()
 {
     return variable_->toString() + ": " + value_->toString();
 }

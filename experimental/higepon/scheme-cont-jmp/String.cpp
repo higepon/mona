@@ -1,9 +1,9 @@
 #include "String.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
-String::String(const string& value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
+String::String(const ::util::String& value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
 {
 }
 
@@ -16,7 +16,7 @@ String::String(uint32_t length, uint32_t lineno /* = 0 */) : lineno_(lineno)
         buf[i] = ' ';
     }
     buf[length] = '\0';
-    value_ = string(buf);
+    value_ = ::util::String(buf);
 }
 
 String::String(uint32_t length, char c, uint32_t lineno /* = 0 */) : lineno_(lineno)
@@ -28,19 +28,19 @@ String::String(uint32_t length, char c, uint32_t lineno /* = 0 */) : lineno_(lin
         buf[i] = c;
     }
     buf[length] = '\0';
-    value_ = string(buf);
+    value_ = ::util::String(buf);
 }
 
 String::~String()
 {
 }
 
-std::string String::toString()
+::util::String String::toString()
 {
     return "string: \"" + value_ + "\"";
 }
 
-std::string String::toStringValue()
+::util::String String::toStringValue()
 {
     return value_;
 }
@@ -78,7 +78,7 @@ Charcter* String::get(int index)
 {
     if (index > value_.size()  || index < 0) return NULL;
     // ugly fix me
-    return new Charcter(string("#\\") + value_[index], lineno());
+    return new Charcter(::util::String("#\\") + value_[index], lineno());
 }
 
 bool String::set(int index, Charcter* c)

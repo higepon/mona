@@ -14,12 +14,13 @@
 #include <iostream>
 #include <string>
 #include "util/Vector.h"
+#include "util/String.h"
 
 namespace monash {
 
 class Environment;
 class Object;
-typedef util::Vector<Object*> Objects;
+typedef ::util::Vector<Object*> Objects;
 #ifdef USE_BOEHM_GC
 class Object : public gc_cleanup
 //    class Object : public gc
@@ -32,8 +33,8 @@ public:
     virtual ~Object();
 
 public:
-    virtual std::string toString() { return "unknown object"; }
-    virtual std::string toStringValue() { return toString(); }
+    virtual ::util::String toString() { return "unknown object"; }
+    virtual ::util::String toStringValue() { return toString(); }
     virtual bool eqv(Object* o) { return false; }
     virtual bool eq(Object* o) { return o == this; }
     virtual int type() const               = 0;

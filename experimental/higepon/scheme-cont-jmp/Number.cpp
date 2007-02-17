@@ -1,7 +1,7 @@
 #include "Number.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 Number::Number(int value, uint32_t lineno /* = 0 */) : value_(value), lineno_(lineno)
 {
@@ -11,16 +11,16 @@ Number::~Number()
 {
 }
 
-std::string Number::toString()
+::util::String Number::toString()
 {
     snprintf(buf_, 63, "number: %d", value_);
-    return string(buf_);
+    return ::util::String(buf_);
 }
 
-std::string Number::toStringValue()
+::util::String Number::toStringValue()
 {
     snprintf(buf_, 63, "%d", value_);
-    return string(buf_);
+    return ::util::String(buf_);
 }
 
 int Number::type() const

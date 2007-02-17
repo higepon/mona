@@ -10,12 +10,12 @@ Quote::~Quote()
 {
 }
 
-std::string Quote::toString()
+::util::String Quote::toString()
 {
     return "quote: \'";
 }
 
-std::string Quote::toStringValue()
+::util::String Quote::toStringValue()
 {
     return sexp_->toSExpString();
 }

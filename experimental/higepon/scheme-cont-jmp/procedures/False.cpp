@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-using namespace std;
+using namespace monash::util;
 
 False::False(uint32_t lineno) : lineno_(lineno)
 {
@@ -12,7 +12,7 @@ False::~False()
 {
 }
 
-std::string False::toString()
+::util::String False::toString()
 {
     return "#f";
 }

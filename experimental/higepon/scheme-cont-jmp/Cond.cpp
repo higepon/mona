@@ -10,9 +10,9 @@ Cond::~Cond()
 {
 }
 
-std::string Cond::toString()
+::util::String Cond::toString()
 {
-    return std::string("cond");
+    return ::util::String("cond");
 }
 
 int Cond::type() const

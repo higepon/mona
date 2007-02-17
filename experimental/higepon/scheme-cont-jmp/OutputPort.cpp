@@ -2,7 +2,7 @@
 #include "scheme.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 OutputPort::OutputPort(FILE* stream, uint32_t lineno) : stream_(stream), lineno_(lineno)
 {
@@ -12,7 +12,7 @@ OutputPort::~OutputPort()
 {
 }
 
-std::string OutputPort::toString()
+::util::String OutputPort::toString()
 {
     return "#<output-port>";
 }
@@ -48,13 +48,13 @@ bool OutputPort::writeCharacter(Charcter* c)
 
 bool OutputPort::write(Object* o)
 {
-    SCHEME_WRITE(stream_, "%s", o->toString().c_str());
+    SCHEME_WRITE(stream_, "%s", o->toString().data());
     return true;
 }
 
 bool OutputPort::display(Object* o)
 {
-    SCHEME_WRITE(stream_, "%s", o->toStringValue().c_str());
+    SCHEME_WRITE(stream_, "%s", o->toStringValue().data());
     return true;
 }
 

@@ -17,8 +17,8 @@ public:
     void setCdr(Object* o);
 
 public:
-    virtual std::string toString();
-    virtual std::string toStringValue();
+    virtual ::util::String toString();
+    virtual ::util::String toStringValue();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);

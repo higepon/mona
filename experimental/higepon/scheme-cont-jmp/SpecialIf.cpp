@@ -13,7 +13,7 @@ SpecialIf::~SpecialIf()
 {
 }
 
-std::string SpecialIf::toString()
+::util::String SpecialIf::toString()
 {
     return "if (" + predicate_->toString() + ") {" + consequent_->toString() + "}else{" + alternative_->toString() + "}";
 }

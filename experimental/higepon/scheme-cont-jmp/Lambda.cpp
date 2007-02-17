@@ -1,7 +1,7 @@
 #include "Lambda.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 // lambda (x)     : normal parameter
 // lambda x       : extendableParameter. x is list.
@@ -22,7 +22,7 @@ Lambda::~Lambda()
 {
 }
 
-std::string Lambda::toString()
+::util::String Lambda::toString()
 {
     return "lambda : " + body_->get(0)->toString();
 }

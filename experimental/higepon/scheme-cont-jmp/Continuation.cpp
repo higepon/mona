@@ -1,6 +1,6 @@
 #include "Continuation.h"
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 Continuation::Continuation(uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
@@ -10,12 +10,12 @@ Continuation::~Continuation()
 {
 }
 
-std::string Continuation::toString()
+::util::String Continuation::toString()
 {
     return "continuation";
 }
 
-std::string Continuation::toStringValue()
+::util::String Continuation::toStringValue()
 {
     return toString();
 }

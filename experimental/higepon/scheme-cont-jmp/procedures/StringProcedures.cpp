@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 PROCEDURE(StringCopy, "string-copy")
 {
@@ -47,7 +47,7 @@ PROCEDURE(StringRef, "string-ref")
     Object* ret = s->get(n->value());
     if (ret == NULL)
     {
-        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong index", toString().c_str());
+        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong index", toString().data());
         return NULL;
     }
     return ret;
@@ -62,7 +62,7 @@ PROCEDURE(StringSet, "string-set!")
     bool isOK = s->set(n->value(), c);
     if (!isOK)
     {
-        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().c_str());
+        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().data());
     }
     return new Undef();
 }
@@ -79,15 +79,15 @@ PROCEDURE(StringToNumber, "string->number")
 {
     ARGC_SHOULD_BE(1);
     CAST_RETURN_FALSE(ARGV(0), String, str);
-    string text = str->value();
-    for (std::string::size_type i = 0; i < text.length(); i++)
+    ::util::String text = str->value();
+    for (::util::String::size_type i = 0; i < text.length(); i++)
     {
         if (!isdigit(text[i]))
         {
             return new False();
         }
     }
-    return new Number(atoi(text.c_str()));
+    return new Number(atoi(text.data()));
 }
 
 PROCEDURE(StringToSymbol, "string->symbol")
@@ -103,7 +103,7 @@ PROCEDURE(StringToSymbol, "string->symbol")
 // PROCEDURE(StringAppend, "string-append")
 // {
 //     ARGC_SHOULD_BE_GT(0)
-//     string text = "";
+//     ::util::String text = "";
 
 //     for (Objects::const_iterator p = arguments->begin(); p != arguments->end(); ++p)
 //     {

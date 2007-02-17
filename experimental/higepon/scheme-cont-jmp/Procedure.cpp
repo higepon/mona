@@ -21,7 +21,7 @@ Procedure::~Procedure()
 //    delete parameters_;
 }
 
-std::string Procedure::toString()
+::util::String Procedure::toString()
 {
     return "procedure : " + body_->get(0)->toString();
 }

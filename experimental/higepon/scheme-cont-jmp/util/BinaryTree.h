@@ -1,7 +1,6 @@
 #ifndef __UTIL_BINARY_TREE_H__
 #define __UTIL_BINARY_TREE_H__
 
-namespace monash {
 namespace util {
 
 /*----------------------------------------------------------------------
@@ -226,6 +225,5 @@ template <class T> T BinaryTree<T>::remove(const int key)
     return result;
 };
 
-};
 };
 #endif // __UTIL_BINARY_TREE_H__

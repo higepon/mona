@@ -10,14 +10,14 @@ Set::~Set()
 {
 }
 
-std::string Set::toString()
+::util::String Set::toString()
 {
     return "procedure:set!";
 }
 
 Object* Set::eval(Environment* env)
 {
-    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().c_str());
+    RAISE_ERROR(lineno(), "don't eval procedure [%s]", toString().data());
     return NULL;
 }
 
@@ -34,7 +34,7 @@ Object* Set::apply(Objects* arguments, Environment* env)
 
     if (arguments->get(0)->type() != Object::VARIABLE)
     {
-        RAISE_ERROR(arguments->get(0)->lineno(), "set! got [%s] , but required variable", arguments->get(0)->toString().c_str());
+        RAISE_ERROR(arguments->get(0)->lineno(), "set! got [%s] , but required variable", arguments->get(0)->toString().data());
         return NULL;
     }
 

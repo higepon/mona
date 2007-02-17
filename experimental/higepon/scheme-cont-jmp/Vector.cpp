@@ -1,7 +1,7 @@
 #include "Vector.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 Vector::Vector(uint32_t size, uint32_t lineno /* = 0 */) : size_(size), lineno_(lineno)
 {
@@ -40,14 +40,14 @@ bool Vector::set(int index, Object* o)
     return true;
 }
 
-string Vector::toString()
+String Vector::toString()
 {
     return "vector";
 }
 
-string Vector::toStringValue()
+String Vector::toStringValue()
 {
-    string ret = "#(";
+    ::util::String ret = "#(";
     for (int i = 0; i < values_->size(); i++)
     {
         ret += values_->get(i)->toStringValue();

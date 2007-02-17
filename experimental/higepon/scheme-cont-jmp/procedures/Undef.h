@@ -11,7 +11,7 @@ public:
     Undef();
     virtual ~Undef();
 
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const { return Object::UNDEF; }
     virtual Object* eval(Environment* env);
     virtual Object* apply(Objects* arguments, Environment* env);

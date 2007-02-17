@@ -3,7 +3,7 @@
 
 using namespace monash;
 
-Variable::Variable(const std::string& name, uint32_t lineno /* = 0 */) : name_(name), lineno_(lineno)
+Variable::Variable(const ::util::String& name, uint32_t lineno /* = 0 */) : name_(name), lineno_(lineno)
 {
 }
 
@@ -11,12 +11,12 @@ Variable::~Variable()
 {
 }
 
-std::string Variable::toString()
+::util::String Variable::toString()
 {
     return "variable: " + name_;
 }
 
-std::string Variable::toStringValue()
+::util::String Variable::toStringValue()
 {
     return name_;
 }
@@ -28,6 +28,6 @@ int Variable::type() const
 
 Object* Variable::eval(Environment* env)
 {
-//    if (name_ == "puga") printf("%s", env->toString().c_str());
+//    if (name_ == "puga") printf("%s", env->toString().data());
     return env->lookupVariableValue(this);
 }

@@ -6,13 +6,14 @@
 #include <stdint.h>
 #include <string>
 #include <stdio.h>
+#include "util/String.h"
 
 namespace monash {
 
 typedef struct Token
 {
     int type;
-    std::string text;
+    ::util::String text;
     int value;
     uint32_t lineno;
     enum
@@ -29,7 +30,7 @@ typedef struct Token
 class Tokenizer
 {
 public:
-    Tokenizer(const std::string& input);
+    Tokenizer(const ::util::String& input);
     virtual ~Tokenizer();
 
     Token nextToken();
@@ -38,8 +39,8 @@ protected:
     char getChar();
     void unGetChar();
 
-    std::string input_;
-    std::string::size_type postion_;
+    ::util::String input_;
+    uint32_t postion_;
     uint32_t lineno_;
 };
 

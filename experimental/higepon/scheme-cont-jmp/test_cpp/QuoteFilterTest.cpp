@@ -5,7 +5,7 @@
 CPPUNIT_TEST_SUITE_REGISTRATION(QuoteFilterTest);
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 void QuoteFilterTest::setUp()
 {
@@ -33,11 +33,11 @@ void QuoteFilterTest::testFilter()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        string before  = s->get(0).c_str();
-        string after   = s->get(1).c_str();
+        util::String before  = s->get(0).data();
+        util::String after   = s->get(1).data();
         QuoteFilter f;
-        string ret = f.filter(before);
-        sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", ret.c_str(), after.c_str());
+        util::String ret = f.filter(before);
+        sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", ret.data(), after.data());
         CPPUNIT_ASSERT_MESSAGE(buf, ret == after);
     }
 }

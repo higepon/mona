@@ -1,8 +1,9 @@
 #include "procedures/Procedure.h"
 #include "libcont/cont.h"
 
-using namespace monash;
 using namespace std;
+using namespace monash;
+using namespace monash::util;
 
 PROCEDURE(CharcterP, "char?")
 {

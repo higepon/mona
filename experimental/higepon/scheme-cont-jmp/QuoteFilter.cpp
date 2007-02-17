@@ -1,7 +1,7 @@
 #include "QuoteFilter.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 QuoteFilter::QuoteFilter()
 {
@@ -11,12 +11,12 @@ QuoteFilter::~QuoteFilter()
 {
 }
 
-string QuoteFilter::filter(const string& text)
+::util::String QuoteFilter::filter(const ::util::String& text)
 {
     postion_ = 0;
     input_ = text;
     input_ = replace(input_, "#(", "(vector "); // ugly
-    string ret;
+    ::util::String ret;
     char c;
     for (;;)
     {
@@ -47,7 +47,7 @@ string QuoteFilter::filter(const string& text)
         }
         else if (c == '\'')
         {
-            string quoteString = getQuoteString(0);
+            ::util::String quoteString = getQuoteString(0);
             ret += "(quote " + quoteString + ")";
         }
         else
@@ -58,9 +58,9 @@ string QuoteFilter::filter(const string& text)
     return ret;
 }
 
-string QuoteFilter::getQuoteString(string::size_type paren)
+::util::String QuoteFilter::getQuoteString(uint32_t paren)
 {
-    string ret;
+    ::util::String ret;
     char c;
     for (;;)
     {
@@ -104,12 +104,12 @@ char QuoteFilter::getChar()
 
 }
 
-string& QuoteFilter::replace(string& str, const string& t, const string& s)
+::util::String& QuoteFilter::replace(::util::String& str, const ::util::String& t, const ::util::String& s)
 {
-    string::size_type pos;
-    string::size_type current = 0;
+    ::util::String::size_type pos;
+    ::util::String::size_type current = 0;
 
-    while ((pos = str.find(t, current)) != string::npos)
+    while ((pos = str.find(t, current)) != ::util::String::npos)
     {
         str.replace(pos, t.size(), s);
         current = pos + s.size();

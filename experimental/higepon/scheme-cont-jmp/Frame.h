@@ -18,9 +18,9 @@ public:
     Object* lookup(Variable* variable);
     void insert(Variable* variable, Object* value);
     void remove(Variable* variable);
-    std::string toString();
+    ::util::String toString();
 protected:
-    typedef util::HashMap<Object*> FrameMap;
+    typedef ::util::HashMap<Object*> FrameMap;
     FrameMap map_;
 };
 

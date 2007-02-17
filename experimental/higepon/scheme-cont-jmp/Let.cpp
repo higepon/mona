@@ -10,9 +10,9 @@ Let::~Let()
 {
 }
 
-std::string Let::toString()
+::util::String Let::toString()
 {
-    return std::string("let");
+    return ::util::String("let");
 }
 
 int Let::type() const

@@ -1,7 +1,8 @@
 #include "procedures/Procedure.h"
 
-using namespace monash;
 using namespace std;
+using namespace monash;
+using namespace monash::util;
 
 extern OutputPort* g_currentOutputPort;
 extern OutputPort* g_defaultOutputPort;
@@ -17,10 +18,10 @@ PROCEDURE(TranscriptOn, "transcript-on")
         RAISE_ERROR(lineno(), "already transcipt-on");
     }
     CAST(ARGV(0), String, s);
-    g_transcript = fopen(s->value().c_str(), "w+");
+    g_transcript = fopen(s->value().data(), "w+");
     if (NULL == g_transcript)
     {
-        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().c_str());
+        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().data());
     }
     return new Undef();
 }
@@ -108,10 +109,10 @@ PROCEDURE(OpenOutputPort, "open-output-port")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), String, s);
-    FILE* stream = fopen(s->value().c_str(), "w+");
+    FILE* stream = fopen(s->value().data(), "w+");
     if (NULL == stream)
     {
-        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().c_str());
+        RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().data());
     }
     return new OutputPort(stream, lineno());
 }
@@ -120,10 +121,10 @@ PROCEDURE(OpenInputPort, "open-input-port")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), String, s);
-    FILE* stream = fopen(s->value().c_str(), "r");
+    FILE* stream = fopen(s->value().data(), "r");
     if (NULL == stream)
     {
-        RAISE_ERROR(s->lineno(), "couldn't open input file: %s", s->value().c_str());
+        RAISE_ERROR(s->lineno(), "couldn't open input file: %s", s->value().data());
     }
     return new InputPort(stream, lineno());
 }
@@ -245,11 +246,11 @@ PROCEDURE(Load, "load")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), String, s);
-    string path  = s->value();
-    string input = load(path.c_str());
+    ::util::String path  = s->value();
+    ::util::String input = load(path.data());
     if (input == "")
     {
-        RAISE_ERROR(s->lineno(), "load error", path.c_str());
+        RAISE_ERROR(s->lineno(), "load error", path.data());
         return NULL;
     }
     input = "( " + input + ")";

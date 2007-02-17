@@ -14,7 +14,7 @@ public:
     Set();
     virtual ~Set();
 
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual Object* eval(Environment* env);
     virtual Object* apply(Objects* arguments, Environment* env);
 };

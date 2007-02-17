@@ -12,7 +12,7 @@ class Translator;
 class Environment : public Object
 {
 protected:
-    typedef util::Vector<Frame*> Frames;
+    typedef ::util::Vector<Frame*> Frames;
     Frames* frames_;
     MacroFilter& filter_;
     Translator& translator_;
@@ -27,7 +27,7 @@ public:
     void defineVariable(Variable* variable, Object* value);
     Frames* frames() {return frames_;}
     void extend(Variables* variables, Objects* objects);
-    std::string toString();
+    ::util::String toString();
     MacroFilter& macroFilter() { return filter_; }
     Translator& translator() { return translator_; }
     virtual int type() const;

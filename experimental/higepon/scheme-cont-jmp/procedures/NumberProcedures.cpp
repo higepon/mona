@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 PROCEDURE(NumberP, "number?")
 {

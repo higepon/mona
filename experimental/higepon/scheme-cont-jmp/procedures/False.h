@@ -11,7 +11,7 @@ public:
     False(uint32_t lineno = 0);
     virtual ~False();
 
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const { return Object::FALSE; }
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }

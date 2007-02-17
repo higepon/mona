@@ -1,10 +1,10 @@
 #include "scheme.h"
 
-using namespace std;
+using namespace monash::util;
 
-string load(const char* file)
+::util::String load(const char* file)
 {
-    string ret;
+    ::util::String ret;
     FILE* fp = fopen(file, "rb");
     if (NULL == fp)
     {
@@ -30,7 +30,7 @@ string load(const char* file)
 
     fread(buffer, 1, size, fp);
     fclose(fp);
-    ret = string(buffer, size);
+    ret = ::util::String(buffer, size);
     delete[] buffer;
     return ret;
 }

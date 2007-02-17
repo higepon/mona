@@ -13,9 +13,9 @@ LetAsterisk::~LetAsterisk()
 {
 }
 
-std::string LetAsterisk::toString()
+::util::String LetAsterisk::toString()
 {
-    return std::string("let");
+    return ::util::String("let");
 }
 
 int LetAsterisk::type() const
@@ -27,11 +27,11 @@ Object* LetAsterisk::expand()
 {
 //     for (int i = 0; i < variables_->size(); i++)
 //     {
-//         printf("v = %s\n", variables_->get(i)->toString().c_str());
+//         printf("v = %s\n", variables_->get(i)->toString().data());
 //     }
 //     for (int i = 0; i < values_->size(); i++)
 //     {
-//         printf("v = %s\n", values_->get(i)->toString().c_str());
+//         printf("v = %s\n", values_->get(i)->toString().data());
 //     }
 
     Variables* variables = new Variables;ASSERT(variables);
@@ -52,7 +52,7 @@ Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
     variables->add(variables_->get(variablesIndex));
     Objects* values = new Objects;ASSERT(values);
     values->add(values_->get(valuesIndex));
-//    printf("(%d, %d) %s %s\n", variablesIndex, valuesIndex, variables_->get(variablesIndex)->toString().c_str(),values_->get(valuesIndex)->toString().c_str());
+//    printf("(%d, %d) %s %s\n", variablesIndex, valuesIndex, variables_->get(variablesIndex)->toString().data(),values_->get(valuesIndex)->toString().data());
     Let* let = new Let(expandInternal(variablesIndex + 1, valuesIndex + 1), variables, values);ASSERT(let);
     Objects* body = new Objects;ASSERT(body);
     body->add(let);

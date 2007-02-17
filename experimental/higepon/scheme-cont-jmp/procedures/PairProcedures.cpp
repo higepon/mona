@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 PROCEDURE(PairP, "pair?")
 {
@@ -24,7 +24,7 @@ PROCEDURE(Car, "car")
         Quote* ret = quote->car();
         if (ret == NULL)
         {
-            RAISE_ERROR(quote->lineno(), "%s got error on quote %s", procedureName_.c_str(), quote->toString().c_str());
+            RAISE_ERROR(quote->lineno(), "%s got error on quote %s", procedureName_.data(), quote->toString().data());
         }
         return ret;
     }
@@ -33,7 +33,7 @@ PROCEDURE(Car, "car")
         Pair* p = (Pair*)ARGV(0);
         return p->getCar();
     }
-    RAISE_ERROR(ARGV(0)->lineno(), "car got [%s], but required pair", procedureName_.c_str(), ARGV(0)->toString().c_str());
+    RAISE_ERROR(ARGV(0)->lineno(), "car got [%s], but required pair", procedureName_.data(), ARGV(0)->toString().data());
     return NULL;
 }
 
@@ -47,7 +47,7 @@ PROCEDURE(Cdr, "cdr")
         Quote* ret = quote->cdr();
         if (ret == NULL)
         {
-            RAISE_ERROR(o->lineno(), "%s got error on quote %s", procedureName_.c_str(), o->toString().c_str());
+            RAISE_ERROR(o->lineno(), "%s got error on quote %s", procedureName_.data(), o->toString().data());
         }
         return ret;
     }
@@ -56,7 +56,7 @@ PROCEDURE(Cdr, "cdr")
         Pair* p = (Pair*)o;
         return p->getCdr();
     }
-    RAISE_ERROR(o->lineno(), "%s got [%s], but required pair", procedureName_.c_str(), o->toString().c_str());
+    RAISE_ERROR(o->lineno(), "%s got [%s], but required pair", procedureName_.data(), o->toString().data());
     return NULL;
 }
 

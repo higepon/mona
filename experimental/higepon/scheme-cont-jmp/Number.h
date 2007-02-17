@@ -14,8 +14,8 @@ public:
     virtual ~Number();
 
 public:
-    virtual std::string toString();
-    virtual std::string toStringValue();
+    virtual ::util::String toString();
+    virtual ::util::String toStringValue();
     bool eqv(Object* o);
     bool eq(Object* o);
 

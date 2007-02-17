@@ -18,7 +18,7 @@ public:
     void testUnmatch();
 
 private:
-    void assertMacroMatch(const std::string& macroName, const std::string& macro, const std::string& words, const std::string& target, bool matchOrNot = true);
+    void assertMacroMatch(const util::String& macroName, const util::String& macro, const util::String& words, const util::String& target, bool matchOrNot = true);
 };
 
 #endif // _MACRO_MATCH_TEST_H_

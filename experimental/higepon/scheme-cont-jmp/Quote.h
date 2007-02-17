@@ -13,12 +13,12 @@ public:
     virtual ~Quote();
 
 public:
-    virtual std::string toString();
-    virtual std::string toStringValue();
+    virtual ::util::String toString();
+    virtual ::util::String toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
-    virtual std::string text() const { return value_;}
+    virtual ::util::String text() const { return value_;}
     virtual SExp* sexp() { return sexp_;}
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
@@ -28,7 +28,7 @@ public:
 
 protected:
     SExp* sexp_;
-    std::string value_;
+    ::util::String value_;
     uint32_t lineno_;
 };
 

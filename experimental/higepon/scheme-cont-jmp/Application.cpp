@@ -2,7 +2,7 @@
 #include "Kernel.h"
 #include "scheme.h"
 
-using namespace std;
+using namespace monash::util;
 using namespace monash;
 
 Application::Application(Object* function, Objects* arguments, uint32_t lineno) : function_(function), arguments_(arguments), lineno_(lineno)
@@ -13,7 +13,7 @@ Application::~Application()
 {
 }
 
-string Application::toString()
+::util::String Application::toString()
 {
     return "Application : " + function_->toString();
 }
@@ -28,7 +28,7 @@ Object* Application::eval(Environment* env)
     Object* procedure = function()->eval(env);
     if (!procedure->isCompoundProcedure() && !procedure->isPrimitiveProcedure() && !procedure->isContinuation())
     {
-        RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().c_str());
+        RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }
 
     //Objects* as = arguments();

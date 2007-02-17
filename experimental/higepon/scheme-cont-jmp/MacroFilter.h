@@ -2,10 +2,11 @@
 #define _MACRO_FILTER_
 
 #include "Macro.h"
+#include "util/HashMap.h"
 namespace monash {
 
 class Macro;
-typedef std::map<std::string, Macro*> Macros;
+typedef ::util::HashMap<Macro*> Macros;
 
 class MacroFilter
 {

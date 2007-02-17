@@ -4,7 +4,6 @@
 #include "util/BinaryTree.h"
 #include "util/Map.h"
 
-namespace monash {
 namespace util {
 
 /*----------------------------------------------------------------------
@@ -77,6 +76,5 @@ template <class T> T HashMap<T>::remove(const char* key)
 {
     return tree_->remove(hash(key));
 }
-};
 };
 #endif

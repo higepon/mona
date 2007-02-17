@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-Tokenizer::Tokenizer(const std::string& input) : input_(input), postion_(0), lineno_(1)
+Tokenizer::Tokenizer(const ::util::String& input) : input_(input), postion_(0), lineno_(1)
 {
 }
 
@@ -86,7 +86,7 @@ once_more:
     }
     if (c == '\"')
     {
-        std::string str("");
+        ::util::String str("");
         for (;;)
         {
             c = getChar();
@@ -113,7 +113,7 @@ once_more:
     }
     else
     {
-        std::string str("");
+        ::util::String str("");
         str += c;
         for (;;)
         {

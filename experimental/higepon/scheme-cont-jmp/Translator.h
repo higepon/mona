@@ -37,7 +37,7 @@ public:
 
     int translate(SExp** sexp, Object** object);
     int translateDefineSyntax(SExp* sexp);
-    SExp* expandMacroIfMatch(const std::string& name, SExp** sexp);
+    SExp* expandMacroIfMatch(const ::util::String& name, SExp** sexp);
 private:
     int translatePrimitive(SExp* sexp, Object** object);
     int translateDefinition(SExp* sexp, Object** object);

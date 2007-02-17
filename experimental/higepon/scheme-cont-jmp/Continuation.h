@@ -16,8 +16,8 @@ public:
     virtual ~Continuation();
 
 public:
-    virtual std::string toString();
-    virtual std::string toStringValue();
+    virtual ::util::String toString();
+    virtual ::util::String toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }

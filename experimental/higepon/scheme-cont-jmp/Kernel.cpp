@@ -81,7 +81,7 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
     }
     else
     {
-        RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().c_str());
+        RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().data());
         return NULL;
     }
 }

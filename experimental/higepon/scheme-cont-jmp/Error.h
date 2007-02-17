@@ -11,6 +11,8 @@
 extern "C" {
 #include "libcont/cont.h"
 };
+#include "util/String.h"
+
 namespace monash {
 
 class Error
@@ -24,15 +26,15 @@ public:
     static void returnOnError();
     static void showErrorAndExit();
     static void showError();
-    static void raise(uint32_t lineno, std::string cppfile, uint32_t cpplineno, std::string cppfunc, const char* format, ...);
+    static void raise(uint32_t lineno, ::util::String cppfile, uint32_t cpplineno, ::util::String cppfunc, const char* format, ...);
 
     static jmp_buf returnPoint;
     static Cont cont;
 
-    static std::string error;
-    static std::string file;
-    static std::string cppfile;
-    static std::string cppfunc;
+    static ::util::String error;
+    static ::util::String file;
+    static ::util::String cppfile;
+    static ::util::String cppfunc;
     static uint32_t lineno;
     static uint32_t cpplineno;
 };

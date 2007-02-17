@@ -1,7 +1,7 @@
 #include "MacroFilter.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 MacroFilter::MacroFilter()
 {
@@ -56,13 +56,13 @@ int MacroFilter::foreachSExps(SExp* root, int (MacroFilter::*f)(SExp*root, SExp*
 
 int MacroFilter::expandMacro(SExp* root, SExp* sexp)
 {
-    string name = sexp->text;
+    ::util::String name = sexp->text;
     int i;
     for (i = 0; i < root->sexps.size(); i++)
     {
         if (root->sexps[i] == sexp) break;
     }
-    if (bindMap_.find(name) == bindMap_.end())
+    if (bindMap_.get(name.data()) == NULL)
     {
         if (sexp->isMatchAllKeyword())
         {
@@ -71,32 +71,32 @@ int MacroFilter::expandMacro(SExp* root, SExp* sexp)
         return 0;
     }
 
-    BindObject b = bindMap_[name];
+    BindObject* b = bindMap_.get(name.data());
 
     if (sexp->isMatchAllKeyword())
     {
-        if (b.sexps.size() == 0)
+        if (b->sexps.size() == 0)
         {
-            root->sexps.set(i, b.sexp);
+            root->sexps.set(i, b->sexp);
         }
         else
         {
-            for (int j = 0; j < b.sexps.size(); j++)
+            for (int j = 0; j < b->sexps.size(); j++)
             {
                 if (j == 0)
                 {
-                    root->sexps.set(i, b.sexps[j]);
+                    root->sexps.set(i, b->sexps[j]);
                 }
                 else
                 {
-                    root->sexps.insert(i + j, b.sexps[j]);
+                    root->sexps.insert(i + j, b->sexps[j]);
                 }
             }
         }
     }
     else
     {
-        root->sexps.set(i, b.sexp);
+        root->sexps.set(i, b->sexp);
     }
     return 1;
 }
@@ -107,10 +107,9 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
     SExp* left = root->sexps[0];
     if (!left->isSymbol()) return 0;
 
-    string name = left->text;
-    Macros::iterator p = macros_.find(name);
-    if (p == macros_.end()) return 0;
-    Macro* m = (*p).second;
+    ::util::String name = left->text;
+    Macro* m = macros_.get(name.data());
+    if (NULL == m) return 0;
 
     // todo we should return Macro::Pattern?
     SExp* matchedPattern = m->match(name, root);
@@ -127,12 +126,12 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
             {
                 for (SExps::const_iterator q = b.sexps.begin(); q != b.sexps.end(); ++q)
                 {
-                    printf("<<%s:%s>>\n", (*p).first.c_str(), (*q)->toString().c_str());fflush(stdout);
+                    printf("<<%s:%s>>\n", (*p).first.data(), (*q)->toString().data());fflush(stdout);
                 }
             }
             else
             {
-                printf("<<%s:%s>>\n", (*p).first.c_str(), b.sexp->toString().c_str());fflush(stdout);
+                printf("<<%s:%s>>\n", (*p).first.data(), b.sexp->toString().data());fflush(stdout);
             }
         }
         z++;
@@ -226,7 +225,7 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
         renameMatchAllKeywords(n->sexps[1]);
         macro->addPattern(n->sexps[0], n->sexps[1]);
     }
-    macros_[macro->name] = macro;
+    macros_.put(macro->name.data(), macro);
     return Translator::SUCCESS;
 }
 

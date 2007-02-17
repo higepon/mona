@@ -17,7 +17,7 @@ public:
     virtual ~Let();
 
 public:
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);

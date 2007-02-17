@@ -13,11 +13,11 @@ class Application;
 class NamedLet : public Object
 {
 public:
-    NamedLet(Objects* body, Variables* variables, Objects* values, std::string name, uint32_t lineno = 0);
+    NamedLet(Objects* body, Variables* variables, Objects* values, ::util::String name, uint32_t lineno = 0);
     virtual ~NamedLet();
 
 public:
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);
@@ -27,7 +27,7 @@ protected:
     Objects* body_;
     Variables* variables_;
     Objects* values_;
-    std::string name_;
+    ::util::String name_;
     uint32_t lineno_;
 };
 

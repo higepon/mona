@@ -1,7 +1,6 @@
 #ifndef __UTIL_VECTOR_H__
 #define __UTIL_VECTOR_H__
 
-namespace monash {
 namespace util {
 /*----------------------------------------------------------------------
     Vector Class
@@ -402,6 +401,5 @@ template <class T> void Vector<T>::reverse()
     return;
 }
 
-};
 };
 #endif // __UTIL_VECTOR_H__

@@ -6,7 +6,7 @@
 #include "scheme.h"
 
 namespace monash {
-    typedef util::Vector< std::pair<Variable*, Object*> > DefaultProcedures;
+    typedef ::util::Vector< std::pair<Variable*, Object*> > DefaultProcedures;
 };
 
 extern monash::DefaultProcedures procedures;
@@ -27,7 +27,7 @@ extern monash::DefaultProcedures procedures;
 #define CAST(o, type, to)                                                        \
     if (!o->is##type())                                                          \
     {                                                                            \
-        RAISE_ERROR(o->lineno(), "%s got wrong argument", toString().c_str());   \
+        RAISE_ERROR(o->lineno(), "%s got wrong argument", toString().data());   \
     }                                                                            \
     type* to = (type*)o;
 
@@ -44,7 +44,7 @@ extern monash::DefaultProcedures procedures;
     {                                                                            \
         RAISE_ERROR(ARGC >= 0 ? ARGV(0)->lineno() : 0                            \
                     , "%s got %d argument(s), but required %d"                   \
-                    , toString().c_str(), ARGC, n);                              \
+                    , toString().data(), ARGC, n);                              \
     }
 
 #define ARGC_SHOULD_BE_GT(n)                                                     \
@@ -53,7 +53,7 @@ extern monash::DefaultProcedures procedures;
     {                                                                            \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                             \
                     , "%s got %d argument(s), but required at least %d"          \
-                    , toString().c_str(), ARGC, n + 1);                          \
+                    , toString().data(), ARGC, n + 1);                          \
     }
 
 #define ARGC_SHOULD_BE_GT_RETURN_FALSE(n)                                        \
@@ -70,7 +70,7 @@ extern monash::DefaultProcedures procedures;
     {                                                                                        \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                                         \
                     , "%s got %d argument(s), but required between %d and %d arguments."     \
-                    , toString().c_str(), ARGC, m, n);                                       \
+                    , toString().data(), ARGC, m, n);                                       \
     }
 
 
@@ -78,12 +78,12 @@ extern monash::DefaultProcedures procedures;
 class ClassName : public PrimitiveProcedure                                      \
 {                                                                                \
 private:                                                                         \
-    std::string procedureName_;                                                  \
+    ::util::String procedureName_;                                                  \
 public:                                                                          \
     ClassName()  : procedureName_(name) {}                                       \
     virtual ~ClassName() {}                                                      \
                                                                                  \
-    virtual std::string toString() {    return "procedure:" name;}               \
+    virtual ::util::String toString() {    return "procedure:" name;}               \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
         return this; \

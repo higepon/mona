@@ -6,9 +6,10 @@
 #include <stdint.h>
 #include <string>
 #include "util/Vector.h"
+#include "util/String.h"
 
-namespace std {
-    typedef monash::util::Vector<std::string> strings;
+namespace util {
+    typedef Vector<String> Strings;
 };
 
 #include <algorithm>
@@ -42,7 +43,7 @@ namespace std {
 #include "procedures/Procedure.h"
 #include "procedures/Set.h"
 
-std::string load(const char* file);
+::util::String load(const char* file);
 void registerPrimitives(monash::Environment* env);
 
 extern FILE* g_transcript;

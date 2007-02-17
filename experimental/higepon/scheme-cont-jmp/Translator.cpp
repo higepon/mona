@@ -1,7 +1,7 @@
 #include "Translator.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 // #define N(n)         (sexp->sexps[n])
 // #define NN(i, j)     sexp->sexps[i]->sexps[j]
@@ -28,7 +28,7 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
         *object = new String(sexp->text, sexp->lineno);ASSERT(*object);
         return SUCCESS;
 //     case SExp::QUOTE:
-//         printf("quote:%s\n", sexp->text.c_str());
+//         printf("quote:%s\n", sexp->text.data());
 //         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);ASSERT(*object);
 //         return SUCCESS;
     case SExp::CHAR:
@@ -345,7 +345,7 @@ int Translator::translate(SExp** n, Object** object)
     SExp* function = N(0);
     if (function->type == SExp::SYMBOL)
     {
-        string functionName = function->text;
+        ::util::String functionName = function->text;
 
         if (functionName == "define")
         {

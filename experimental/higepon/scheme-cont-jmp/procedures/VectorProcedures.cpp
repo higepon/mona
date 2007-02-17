@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 PROCEDURE(VectorP, "vector?")
 {
@@ -45,7 +45,7 @@ PROCEDURE(VectorRef, "vector-ref")
     Object* ret = v->get(n->value());
     if (ret == NULL)
     {
-        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong index", toString().c_str());
+        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong index", toString().data());
         return NULL;
     }
     return ret;
@@ -59,7 +59,7 @@ PROCEDURE(VectorSet, "vector-set!")
     bool isOK = v->set(n->value(), ARGV(2));
     if (!isOK)
     {
-        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().c_str());
+        RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().data());
     }
     return new Undef();
 }

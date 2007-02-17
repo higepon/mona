@@ -1,7 +1,7 @@
 #include "SExp.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 SExp* SExp::clone()
 {
@@ -25,7 +25,7 @@ SExp* SExp::clone()
     return sexp;
 }
 
-string SExp::typeToString()
+String SExp::typeToString()
 {
     char buffer[256];
     switch(type)
@@ -34,22 +34,22 @@ string SExp::typeToString()
         sprintf(buffer, "NUMBER[%d]\n", value);
         break;
     case SYMBOL:
-        sprintf(buffer, "SYMBOL[%s]\n", text.c_str());
+        sprintf(buffer, "SYMBOL[%s]\n", text.data());
         break;
     case STRING:
-        sprintf(buffer, "STRING[\"%s\"]\n", text.c_str());
+        sprintf(buffer, "STRING[\"%s\"]\n", text.data());
         break;
     case QUOTE:
-        sprintf(buffer, "QUOTE[\'%s]\n", text.c_str());
+        sprintf(buffer, "QUOTE[\'%s]\n", text.data());
         break;
     case SEXPS:
         sprintf(buffer, "SEXPS\n");
         break;
     }
-    return string(buffer);
+    return ::util::String(buffer);
 }
 
-string SExp::typeToRawString()
+::util::String SExp::typeToRawString()
 {
     char buffer[256];
     buffer[0] = '\0';
@@ -60,22 +60,22 @@ string SExp::typeToRawString()
         sprintf(buffer, "%d", value);
         break;
     case SYMBOL:
-        sprintf(buffer, "%s", text.c_str());
+        sprintf(buffer, "%s", text.data());
         break;
     case STRING:
-        sprintf(buffer, "\"%s\"", text.c_str());
+        sprintf(buffer, "\"%s\"", text.data());
         break;
     case CHAR:
-        sprintf(buffer, "%s", text.c_str());
+        sprintf(buffer, "%s", text.data());
         break;
     case QUOTE:
-        sprintf(buffer, "\'%s", text.c_str());
+        sprintf(buffer, "\'%s", text.data());
         break;
 //     case SEXPS:
 //         sprintf(buffer, "");
 //         break;
     }
-    return string(buffer);
+    return ::util::String(buffer);
 }
 
 void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
@@ -115,17 +115,17 @@ void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
     }
     else
     {
-        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().c_str(), n->toString().c_str());
+        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().data(), n->toString().data());
         return;
     }
 }
 
 void SExp::print(int depth /* = 0 */)
 {
-    printf(toString().c_str());
+    printf(toString().data());
 }
 
-void SExp::toStringInternal(uint32_t depth, string& s)
+void SExp::toStringInternal(uint32_t depth, String& s)
 {
     for (int i = 0; i < depth; i++)
     {
@@ -139,21 +139,21 @@ void SExp::toStringInternal(uint32_t depth, string& s)
     }
 }
 
-string SExp::toString()
+String SExp::toString()
 {
-    string ret;
+    ::util::String ret;
     toStringInternal(0, ret);
     return ret;
 }
 
-std::string SExp::toSExpString()
+::util::String SExp::toSExpString()
 {
-    string ret;
+    ::util::String ret;
     toSExpStringInternal(ret);
     return ret;
 }
 
-void SExp::toSExpStringInternal(std::string& s)
+void SExp::toSExpStringInternal(::util::String& s)
 {
     if (isSExps())
     {
@@ -202,7 +202,7 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
     return false;
 }
 
-SExp* SExp::fromString(const std::string& text)
+SExp* SExp::fromString(const ::util::String& text)
 {
     Tokenizer tokenizer(text);
     Parser parser(&tokenizer);
@@ -243,8 +243,8 @@ int SExp::execLoadSyntax(SExp* root, SExp* sexp)
         || sexp->sexps.size() != 2
         || sexp->sexps[1]->type != SExp::STRING) return 0;
 
-    string path  = sexp->sexps[1]->text;
-    string input = load(path.c_str());
+    ::util::String path  = sexp->sexps[1]->text;
+    string input = load(path.data());
     if (input == "") return 0;
     input = "(begin " + input + ")";
     int i;

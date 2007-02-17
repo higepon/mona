@@ -10,9 +10,9 @@ Begin::~Begin()
 {
 }
 
-std::string Begin::toString()
+::util::String Begin::toString()
 {
-    std::string ret = "begin:";
+    ::util::String ret = "begin:";
     for (int i = 0; i < actions_->size(); i++)
     {
         ret += "[" + actions_->get(i)->toString() + "]";

@@ -14,7 +14,7 @@ public:
     virtual ~Definition();
 
 public:
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual Variable* variable() const { return variable_; }

@@ -1,7 +1,6 @@
 #ifndef __UTIL_MAP_H__
 #define __UTIL_MAP_H__
 
-namespace monash {
 namespace util {
 
 /*----------------------------------------------------------------------
@@ -18,7 +17,6 @@ public:
     virtual T put(const char* key, T value)   = 0;
     virtual T remove(const char* key)         = 0;
     virtual int size()                  const = 0;
-};
 };
 };
 

@@ -12,7 +12,7 @@ public:
     Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno = 0);
     virtual ~Lambda();
 
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
     virtual Object* eval(Environment* env);

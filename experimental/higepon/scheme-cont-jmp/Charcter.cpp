@@ -1,9 +1,9 @@
 #include "Charcter.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
-Charcter::Charcter(const string& value, uint32_t lineno /* = 0 */) : lineno_(lineno)
+Charcter::Charcter(const ::util::String& value, uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
     if (value == "#\\space")
     {
@@ -27,16 +27,16 @@ Charcter::~Charcter()
 {
 }
 
-std::string Charcter::toString()
+::util::String Charcter::toString()
 {
-    string ret = "char:";
+    ::util::String ret = "char:";
     ret += value_;
     return ret;
 }
 
-std::string Charcter::toStringValue()
+::util::String Charcter::toStringValue()
 {
-    string ret;
+    ::util::String ret;
     ret += value_;
     return ret;
 }
@@ -99,7 +99,7 @@ Number* Charcter::toNumber()
 
 Charcter* Charcter::fromNumber(Number* n)
 {
-    string tmp = "#\\";
+    ::util::String tmp = "#\\";
     tmp += (char)n->value();
     return new Charcter(tmp, n->lineno());
 }

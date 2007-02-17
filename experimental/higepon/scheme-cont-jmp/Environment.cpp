@@ -2,7 +2,7 @@
 #include "Environment.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t lineno /* = 0 */) : filter_(filter), translator_(translator), lineno_(lineno)
 {
@@ -40,7 +40,7 @@ void Environment::setVaribale(Variable* variable, Object* value)
             return;
         }
     }
-    RAISE_ERROR(variable->lineno(), "set! unbound variable [%s]", variable->toString().c_str());
+    RAISE_ERROR(variable->lineno(), "set! unbound variable [%s]", variable->toString().data());
     return;
 }
 
@@ -69,13 +69,13 @@ Object* Environment::lookupVariableValue(Variable* variable)
         }
     }
 
-    RAISE_ERROR(variable->lineno(), "unbound variable [%s]", variable->toString().c_str());
+    RAISE_ERROR(variable->lineno(), "unbound variable [%s]", variable->toString().data());
     return NULL;
 }
 
-std::string Environment::toString()
+::util::String Environment::toString()
 {
-    string result = "";
+    ::util::String result = "";
     for (int i = frames_->size() - 1 ; i >= 0; i--)
     {
         result += "****************\n";

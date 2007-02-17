@@ -1,12 +1,12 @@
 #include "Error.h"
 #include "scheme.h"
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
-string Error::error;
-string Error::file;
-string Error::cppfile;
-string Error::cppfunc;
+::util::String Error::error;
+::util::String Error::file;
+::util::String Error::cppfile;
+::util::String Error::cppfunc;
 jmp_buf Error::returnPoint;
 Cont Error::cont;
 uint32_t Error::lineno;
@@ -44,18 +44,18 @@ void Error::returnOnError()
 
 void Error::showErrorAndExit()
 {
-    SCHEME_WRITE(stderr, "%s:%d: error: %s\n", file.c_str(), lineno, error.c_str());
-    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
+    SCHEME_WRITE(stderr, "%s:%d: error: %s\n", file.data(), lineno, error.data());
+    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
     exit(-1);
 }
 
 void Error::showError()
 {
-    SCHEME_WRITE(stderr, "error: %s\n", error.c_str());
-    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.c_str(), cpplineno, cppfunc.c_str());
+    SCHEME_WRITE(stderr, "error: %s\n", error.data());
+    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
 }
 
-void Error::raise(uint32_t l, string f, uint32_t cppl, string cppf, const char* format, ...)
+void Error::raise(uint32_t l, ::util::String f, uint32_t cppl, ::util::String cppf, const char* format, ...)
 {
     char buf[512];
     buf[0] = '\0';

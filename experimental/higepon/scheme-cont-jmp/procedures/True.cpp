@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-using namespace std;
+using namespace monash::util;
 
 True::True()
 {
@@ -12,7 +12,7 @@ True::~True()
 {
 }
 
-std::string True::toString()
+::util::String True::toString()
 {
     return "#t";
 }

@@ -9,18 +9,18 @@ namespace monash {
 class String : public Object
 {
 public:
-    String(const std::string& value, uint32_t lineno = 0);
+    String(const ::util::String& value, uint32_t lineno = 0);
     String(uint32_t length, uint32_t lineno = 0);
     String(uint32_t length, char c, uint32_t lineno = 0);
     virtual ~String();
 
 public:
-    virtual std::string toString();
-    virtual std::string toStringValue();
+    virtual ::util::String toString();
+    virtual ::util::String toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
-    virtual std::string value() { return value_; }
+    virtual ::util::String value() { return value_; }
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
@@ -28,7 +28,7 @@ public:
     virtual bool set(int index, Charcter* c);
     String* clone();
 protected:
-    std::string value_;
+    ::util::String value_;
     uint32_t lineno_;
 };
 

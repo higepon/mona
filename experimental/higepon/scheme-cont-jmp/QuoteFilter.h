@@ -10,14 +10,14 @@ class QuoteFilter
 public:
     QuoteFilter();
     virtual ~QuoteFilter();
-    std::string filter(const std::string& text);
+    ::util::String filter(const ::util::String& text);
 
 protected:
     char getChar();
-    std::string getQuoteString(std::string::size_type paren);
-    std::string& replace(std::string& str, const std::string& t, const std::string& s);
-    std::string input_;
-    std::string::size_type postion_;
+    ::util::String getQuoteString(uint32_t paren);
+    ::util::String& replace(::util::String& str, const ::util::String& t, const ::util::String& s);
+    ::util::String input_;
+    uint32_t postion_;
 };
 
 }; // namespace monash

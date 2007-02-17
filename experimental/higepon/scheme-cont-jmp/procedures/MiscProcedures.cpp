@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 Objects* pairToObjects(Pair* pair)
 {
@@ -47,7 +47,7 @@ PROCEDURE(NotSupported, "not-supported")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), String, s);
-    RAISE_ERROR(0, "%s not supported\n", s->toStringValue().c_str());
+    RAISE_ERROR(0, "%s not supported\n", s->toStringValue().data());
     RETURN_BOOLEAN(false);
 }
 
@@ -90,7 +90,7 @@ PROCEDURE(Eval, "eval")
     int ret = e->translator().translate(&n, &o);
     if (ret != Translator::SUCCESS)
     {
-        RAISE_ERROR(n->lineno, "eval got error [%s]", toString().c_str(), q->toStringValue().c_str());
+        RAISE_ERROR(n->lineno, "eval got error [%s]", toString().data(), q->toStringValue().data());
     }
     return o->eval(e);
 }
@@ -101,7 +101,7 @@ PROCEDURE(NullEnvironment, "null-environment")
     CAST(ARGV(0), Number, n);
     if (n->value() != 5)
     {
-        RAISE_ERROR(lineno(), "%s got wrong version" , toString().c_str());
+        RAISE_ERROR(lineno(), "%s got wrong version" , toString().data());
     }
     MacroFilter f;
     Translator translator;
@@ -114,7 +114,7 @@ PROCEDURE(SchemeReportEnvironment, "scheme-report-environment")
     CAST(ARGV(0), Number, n);
     if (n->value() != 5)
     {
-        RAISE_ERROR(lineno(), "%s got wrong version" , toString().c_str());
+        RAISE_ERROR(lineno(), "%s got wrong version" , toString().data());
     }
     return env;
 }

@@ -18,7 +18,7 @@
 #include <time.h>
 
 using namespace monash;
-using namespace std;
+using namespace monash::util;
 
 uint32_t count_char(const char* s, char c)
 {
@@ -46,7 +46,7 @@ void input_loop()
     bool show_prompt = true;
     RETURN_ON_ERROR();
 //        Error::returnOnError();
-    string input = "(load \"test/scheme.scm\")";
+    ::util::String input = "(load \"test/scheme.scm\")";
     input = quoteFilter.filter(input);
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
@@ -71,8 +71,8 @@ void input_loop()
         if (input != "" && open_paren_count == close_paren_count)
         {
             input = quoteFilter.filter(input);
-            TRANSCRIPT_WRITE(input.c_str());
-            input = "(" + input + " )";
+            TRANSCRIPT_WRITE(input.data());
+            input = ::util::String("(") + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
             for (int i = 0; i < sexps.size(); i++)
@@ -93,7 +93,7 @@ void input_loop()
                 }
                 // let's eval!
                 Object* evaluated = object->eval(env);
-                SCHEME_WRITE(stdout, "%s\n", evaluated->toStringValue().c_str());
+                SCHEME_WRITE(stdout, "%s\n", evaluated->toStringValue().data());
 
             }
                     open_paren_count = 0;
@@ -115,6 +115,7 @@ void input_loop()
 
 int main(int argc, char *argv[])
 {
+    
     cont_initialize();
     if (argc == 1)
     {
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    string input = load(argv[1]);
+    ::util::String input = load(argv[1]);
     if (input == "")
     {
         fprintf(stderr, "can not load: %s file\n", argv[1]);
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
 
     QuoteFilter quoteFilter;
     input = quoteFilter.filter(input);
-//    printf("%s", input.c_str());
+//    printf("%s", input.data());
     Error::exitOnError();
     Error::file = argv[1];
 
@@ -145,7 +146,7 @@ int main(int argc, char *argv[])
 
     SExps sexps = allSExp->sexps;
 
-//     printf("%s\n", allSExp->toZSExp()->toString().c_str());
+//     printf("%s\n", allSExp->toZSExp()->toString().data());
 
 // load
 //    sexp->execLoadSyntaxes();
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
 //             {
 //                 Object*ret = Scheme::apply(o, args, env, NULL);
 //                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//                 printf("[ret]%s\n", ret->toString().c_str());
+//                 printf("[ret]%s\n", ret->toString().data());
 //             }
 //             else
 //             {

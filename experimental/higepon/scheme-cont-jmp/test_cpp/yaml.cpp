@@ -1,11 +1,11 @@
 #include "yaml.h"
 
-using namespace std;
+using namespace monash::util;
 
-void loadYAML(const string& path, YAML& yaml)
+void loadYAML(const util::String& path, YAML& yaml)
 {
-    ifstream ifs(path.c_str());
-    string line;
+    ifstream ifs(path.data());
+    util::String line;
 
     int index = -1;
     while (getline(ifs, line))
@@ -27,7 +27,7 @@ void loadYAML(const string& path, YAML& yaml)
             strings* ss = yaml.get(index);
             if (NULL == ss)
             {
-                fprintf(stderr, "unknown yaml type %s\n", path.c_str());
+                fprintf(stderr, "unknown yaml type %s\n", path.data());
                 exit(-1);
             }
             ss->add(line.substr(3, line.size()));

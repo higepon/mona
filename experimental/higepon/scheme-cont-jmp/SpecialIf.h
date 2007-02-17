@@ -12,7 +12,7 @@ public:
     virtual ~SpecialIf();
 
 public:
-    virtual std::string toString();
+    virtual ::util::String toString();
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
