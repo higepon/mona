@@ -4,10 +4,10 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = AUDIO
-SOURCES = main.cpp Audio.cpp drivers/es1370.cpp
+SOURCES = main.cpp Audio.cpp ServerCommand.cpp drivers/es1370.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES =
+INSTFILES = 
 CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 
@@ -26,9 +26,10 @@ endif
 install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
 
 
 CXXFLAGS += -DDEBUG -I$(INCDIR)/stlport
-INCLUDE += -I .
+INCLUDE += -I . -I$(MONADIR)/include/monalibc
 
 -include dependencies

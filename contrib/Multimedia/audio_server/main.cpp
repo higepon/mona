@@ -1,6 +1,7 @@
 #include <monalibc/stdio.h>
 #include <monalibc/string.h>
 #include <monalibc/stdlib.h>
+#include "Audio.h"
 extern "C" size_t strlcpy(char*, const char*, size_t);
 
 int usage()
@@ -13,6 +14,7 @@ int main(int argc, char *argv[])
 {
 	int numofdevices = 0;
 	char **devices = NULL;
+	Audio *audio;
 	if( argc < 2 ) exit(usage());
 	for( int i = 1 ; i < argc ; i++ )
 	{
@@ -36,11 +38,15 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	_printf("Devices: %d\n", numofdevices);
+	printf("Devices: %d\n", numofdevices);
 	for( int i = 0 ; i < numofdevices ; i++ )
 	{
-		_printf("%s\n",devices[i]);
+		printf("%s\n",devices[i]);
 	}
+
+	audio = new Audio;
+	audio->init(devices, numofdevices);
+	audio->run();
 
 	free(devices);
 
