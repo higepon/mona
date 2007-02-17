@@ -11,6 +11,13 @@
                     (= (find odd? (list 1 2 3 4)) 1)
 )
 
+;;
+;; (define cont #f)
+;; (+ 5 (call/cc (lambda (c) (begin (set! cont c) 10))))
+;; (cont 20)
+;; (cont 20) ; これで落ちる
+;;
+
 ;; (define sum (lambda l
 ;;               (
 ;;               (null? l)
