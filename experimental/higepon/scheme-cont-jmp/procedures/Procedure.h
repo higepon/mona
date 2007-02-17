@@ -6,12 +6,12 @@
 #include "scheme.h"
 
 namespace monash {
-    typedef std::vector< std::pair<Variable*, Object*> > DefaultProcedures;
+    typedef util::Vector< std::pair<Variable*, Object*> > DefaultProcedures;
 };
 
 extern monash::DefaultProcedures procedures;
 
-#define ARGV(i) (as->at(i))
+#define ARGV(i) (as->get(i))
 #define ARGC    (as->size())
 
 #define RETURN_BOOLEAN(condition) \
@@ -92,7 +92,7 @@ public:                                                                         
 };                                                                               \
 void initialize##ClassName()                                                     \
 {                                                                                \
-    procedures.push_back(                                                        \
+    procedures.add(                                                              \
         pair<Variable*, Object*>(new Variable(name), new ClassName()));          \
 }                                                                                \
 static struct Wrapper##ClassName                                                 \

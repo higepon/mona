@@ -1,7 +1,6 @@
 #ifndef __ENVIRONMENT_H__
 #define __ENVIRONMENT_H__
 
-#include <vector>
 #include <stdio.h>
 #include "Frame.h"
 
@@ -13,7 +12,7 @@ class Translator;
 class Environment : public Object
 {
 protected:
-    typedef std::vector<Frame*> Frames;
+    typedef util::Vector<Frame*> Frames;
     Frames* frames_;
     MacroFilter& filter_;
     Translator& translator_;

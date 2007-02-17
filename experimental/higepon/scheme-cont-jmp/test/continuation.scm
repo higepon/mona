@@ -7,10 +7,9 @@
       #f))))
 
 (assert-check-true "call/cc"
-                    (= (find even? (list 1 2 3 4)) 3)
+                    (= (find even? (list 1 2 3 4)) 2)
                     (= (find odd? (list 1 2 3 4)) 1)
 )
-
 
 ;; (define sum (lambda l
 ;;               (

@@ -17,8 +17,8 @@ int MacroFilter::filter(SExp* from)
     SExp* root = new SExp(SExp::SEXPS);
     SExp* left = new SExp(SExp::SYMBOL);
     left->text = "dummy";
-    root->sexps.push_back(left);
-    root->sexps.push_back(from);
+    root->sexps.add(left);
+    root->sexps.add(from);
     tryExpandMacro(NULL, root);
     while (foreachSExps(root,  &MacroFilter::tryExpandMacro));
     return 0;
@@ -31,7 +31,7 @@ int MacroFilter::foreachSExp(SExp* root, bool (SExp::*match)() const, int (Macro
     if (root->isSExps())
     {
         // don't use iterator here, sexps.size() will be changed by func
-        for (SExps::size_type i = 0; i < root->sexps.size(); i++)
+        for (int i = 0; i < root->sexps.size(); i++)
         {
             SExp* sexp = root->sexps[i];
             if ((sexp->*match)())
@@ -57,8 +57,8 @@ int MacroFilter::foreachSExps(SExp* root, int (MacroFilter::*f)(SExp*root, SExp*
 int MacroFilter::expandMacro(SExp* root, SExp* sexp)
 {
     string name = sexp->text;
-    SExps::size_type i;
-    for (i = 0; i < root->sexps.size(); ++i)
+    int i;
+    for (i = 0; i < root->sexps.size(); i++)
     {
         if (root->sexps[i] == sexp) break;
     }
@@ -66,7 +66,7 @@ int MacroFilter::expandMacro(SExp* root, SExp* sexp)
     {
         if (sexp->isMatchAllKeyword())
         {
-            root->sexps.erase(root->sexps.begin() + i);
+            root->sexps.removeAt(i);
         }
         return 0;
     }
@@ -77,26 +77,26 @@ int MacroFilter::expandMacro(SExp* root, SExp* sexp)
     {
         if (b.sexps.size() == 0)
         {
-            root->sexps[i] = b.sexp;
+            root->sexps.set(i, b.sexp);
         }
         else
         {
-            for (SExps::size_type j = 0; j < b.sexps.size(); j++)
+            for (int j = 0; j < b.sexps.size(); j++)
             {
                 if (j == 0)
                 {
-                    root->sexps[i] = b.sexps[j];
+                    root->sexps.set(i, b.sexps[j]);
                 }
                 else
                 {
-                    root->sexps.insert(root->sexps.begin() + i + j, b.sexps[j]);
+                    root->sexps.insert(i + j, b.sexps[j]);
                 }
             }
         }
     }
     else
     {
-        root->sexps[i] = b.sexp;
+        root->sexps.set(i, b.sexp);
     }
     return 1;
 }
@@ -144,16 +144,16 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
     SExp* wrap =new SExp(SExp::SEXPS);
 
     // todo fix me! for foreachSExp you need to wrap
-    wrap->sexps.push_back(expanded);
+    wrap->sexps.add(expanded);
 
     int ret = foreachSymbols(wrap, &MacroFilter::expandMacro);
     expanded = wrap->sexps[0];
     if (ret)
     {
         root->sexps.clear();
-        for (SExps::const_iterator p = expanded->sexps.begin(); p != expanded->sexps.end(); ++p)
+        for (int i = 0; i < expanded->sexps.size(); i++)
         {
-            root->sexps.push_back(*p);
+            root->sexps.add(expanded->sexps.get(i));
         }
         root->type = expanded->type;
         root->value = expanded->value;
@@ -168,9 +168,9 @@ int MacroFilter::findAndStoreDefineSyntaxes(SExp* root)
     findDefineSyntaxes(root, defineSyntaxes);
 
     // todo foreach?
-    for (SExps::const_iterator p = defineSyntaxes.begin(); p != defineSyntaxes.end(); ++p)
+    for (int i = 0; i < defineSyntaxes.size(); i++)
     {
-        int ret = storeDefineSyntaxes(*p);
+        int ret = storeDefineSyntaxes(defineSyntaxes[i]);
         if (ret != Translator::SUCCESS) return ret;
     }
     return Translator::SUCCESS;
@@ -182,7 +182,7 @@ void MacroFilter::findDefineSyntaxes(SExp* root, SExps& defineSyntaxes)
     SExp* left = root->sexps[0];
     if (left->isSymbol() && left->text == "define-syntax")
     {
-        defineSyntaxes.push_back(root->clone());
+        defineSyntaxes.add(root->clone());
 
 //         // ugly fix me.
 //         // define-syntax is replaced to true!
@@ -192,9 +192,9 @@ void MacroFilter::findDefineSyntaxes(SExp* root, SExps& defineSyntaxes)
         return;
     }
 
-    for (SExps::const_iterator p = root->sexps.begin() + 1; p != root->sexps.end(); ++p)
+    for (int i = 1; i < root->sexps.size(); i++)
     {
-        findDefineSyntaxes(*p, defineSyntaxes);
+        findDefineSyntaxes(root->sexps[i], defineSyntaxes);
     }
     return;
 }
@@ -211,14 +211,14 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
     Macro* macro = new Macro(N(1)->text);
 
     // store reserved words
-    for (SExps::const_iterator p = NN(2, 1)->sexps.begin(); p != NN(2, 1)->sexps.end(); ++p)
+    for (int i = 0; i < NN(2, 1)->sexps.size(); i++)
     {
-        SExp* n = (*p);
+        SExp* n = NN(2, 1)->sexps[i];
         if (!n->isSymbol()) return Translator::SYNTAX_ERROR;
-        macro->reservedWords.push_back(n->text);
+        macro->reservedWords.add(n->text);
     }
     // store pattern / definition
-    for (SExps::size_type i = 2; i < LL(2); ++i)
+    for (int i = 2; i < LL(2); ++i)
     {
         SExp* n = NN(2, i);
         if (!n->isSExps() || n->sexps.size() != 2) return Translator::SYNTAX_ERROR;

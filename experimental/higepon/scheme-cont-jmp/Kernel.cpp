@@ -13,33 +13,33 @@ Kernel::~Kernel()
 Object* Kernel::evalSequence(Objects* exps, Environment* env)
 {
     Object* ret = NULL;
-    for (Objects::const_iterator it = exps->begin(); it != exps->end(); ++it)
+    for (int i = 0; i < exps->size(); i++)
     {
-        Object* o = (*it);
+        Object* o = exps->get(i);
         ret = o->eval(env);
     }
     return ret;
 }
 
-void Kernel::makeListOfValues(Objects* objects, uint32_t i, Argument* prev, Environment* environment, Objects** values)
+void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values)
 {
-    Objects::size_type size = objects->size();
+    uint32_t size = objects->size();
     if (0 == size)
     {
         *values = new Objects;
         return;
     }
     Argument arg;
-    arg.object = objects->at(i)->eval(environment);
+    arg.object = objects->get(i)->eval(environment);
     arg.prev   = prev;
     if (i == objects->size() - 1)
     {
         *values = new Objects;
         for (Argument* a = &arg; a != NULL; a = a->prev)
         {
-            (*values)->push_back(a->object);
+            (*values)->add(a->object);
         }
-        std::reverse((*values)->begin(), (*values)->end());
+        (*values)->reverse();
         return;
     }
     return makeListOfValues(objects, i + 1, &arg, environment, values);
@@ -50,9 +50,9 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 // if you use this, continuation doesn't work.
 #if 0
     Objects* result = new Objects;ASSERT(result);
-    for (Objects::const_iterator it = objects->begin(); it != objects->end(); ++it)
+    for (int i = 0; i < objects->size(); i++)
     {
-        result->push_back((*it)->eval(env));
+        result->add((*it)->eval(env));
     }
     return result;
 #else

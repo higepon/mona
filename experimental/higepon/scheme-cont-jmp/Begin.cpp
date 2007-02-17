@@ -13,10 +13,14 @@ Begin::~Begin()
 std::string Begin::toString()
 {
     std::string ret = "begin:";
-    for (Objects::const_iterator it = actions_->begin(); it != actions_->end(); ++it)
+    for (int i = 0; i < actions_->size(); i++)
     {
-        ret += "[" + (*it)->toString() + "]";
+        ret += "[" + actions_->get(i)->toString() + "]";
     }
+//     for (Objects::const_iterator it = actions_->begin(); it != actions_->end(); ++it)
+//     {
+//         ret += "[" + (*it)->toString() + "]";
+//     }
     return ret;
 }
 
@@ -37,11 +41,11 @@ Object* Begin::getContinuation(Object* object)
 {
     Objects* actions = new Objects;
     Begin* ret = new Begin(actions, lineno());
-    actions->push_back(*(actions_->begin() + 2));
+    actions->add(actions_->get(2));
     Objects* z = new Objects;
-    z->push_back(ret);
+    z->add(ret);
     Variables* v = new Variables;
-    v->push_back(new Variable("hige"));
+    v->add(new Variable("hige"));
     return new Lambda(z, new Variables, lineno());
 }
 

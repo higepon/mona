@@ -13,13 +13,13 @@
 #include "Error.h"
 #include <iostream>
 #include <string>
-#include <vector>
+#include "util/Vector.h"
 
 namespace monash {
 
 class Environment;
 class Object;
-typedef std::vector<Object*> Objects;
+typedef util::Vector<Object*> Objects;
 #ifdef USE_BOEHM_GC
 class Object : public gc_cleanup
 //    class Object : public gc

@@ -25,16 +25,15 @@ void MacroFilterTest::testFindDefineSyntaxes()
     {
         fprintf(stderr, "bad yaml!\n");
     }
-
-    for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
+    for (int i = 0; i < yaml.size(); i++)
     {
-        strings* s = (*it);
+        strings* s = yaml[i];
         if (s->size() < 2)
         {
             fprintf(stderr, "bad yaml!\n");
         }
 
-        string defineSyntax = s->at(0);
+        string defineSyntax = s->get(0);
         SExps defineSyntaxes;
 
         // check count of define-syntax
@@ -43,10 +42,10 @@ void MacroFilterTest::testFindDefineSyntaxes()
         CPPUNIT_ASSERT_MESSAGE(buf, defineSyntaxes.size() == s->size() - 1);
 
         // check define-syntax exactly same?
-        for (SExps::size_type i = 0; i < defineSyntaxes.size(); i++)
+        for (int i = 0; i < defineSyntaxes.size(); i++)
         {
             SExp* d        = defineSyntaxes[i];
-            SExp* expected = SExp::fromString(s->at(i + 1));
+            SExp* expected = SExp::fromString(s->get(i + 1));
             sprintf(buf, "%s unmatch\n %s\n", d->toString().c_str(), expected->toString().c_str());
             CPPUNIT_ASSERT_MESSAGE(buf, d->equals(expected));
         }
@@ -63,17 +62,17 @@ void MacroFilterTest::testFilter()
         fprintf(stderr, "bad yaml!\n");
     }
 
-    for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
+    for (int i = 0; i < yaml.size(); i++)
     {
-        strings* s = (*it);
+        strings* s = yaml[i];
         if (s->size() != 3)
         {
             fprintf(stderr, "bad yaml!\n");
         }
 
-        string macro     = s->at(0).c_str();
-        string macroCall = s->at(1).c_str();
-        string expected  = s->at(2).c_str();
+        string macro     = s->get(0).c_str();
+        string macroCall = s->get(1).c_str();
+        string expected  = s->get(2).c_str();
 
         MacroFilter f;
         f.findAndStoreDefineSyntaxes(SExp::fromString(macro));

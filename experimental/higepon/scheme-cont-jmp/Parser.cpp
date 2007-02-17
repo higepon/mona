@@ -26,7 +26,7 @@ SExp* Parser::parse()
         {
             SExp* child = parse();
             if (NULL == child) return sexp;
-            sexp->sexps.push_back(child);
+            sexp->sexps.add(child);
         }
     case Token::RIGHT_PAREN:
         return NULL;

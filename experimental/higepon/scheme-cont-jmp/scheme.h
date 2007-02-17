@@ -5,11 +5,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string>
-#include <vector>
-
+#include "util/Vector.h"
 
 namespace std {
-    typedef vector<string> strings;
+    typedef monash::util::Vector<std::string> strings;
 };
 
 #include <algorithm>

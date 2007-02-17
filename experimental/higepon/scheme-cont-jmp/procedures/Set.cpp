@@ -28,18 +28,18 @@ Object* Set::apply(Objects* arguments, Environment* env)
 
     if (arguments->size() != 2)
     {
-        RAISE_ERROR(arguments->size() > 0 ? arguments->at(0)->lineno() : 0, "set! got %d arguments, but required %d", arguments->size(), 2);
+        RAISE_ERROR(arguments->size() > 0 ? arguments->get(0)->lineno() : 0, "set! got %d arguments, but required %d", arguments->size(), 2);
         return NULL;
     }
 
-    if (arguments->at(0)->type() != Object::VARIABLE)
+    if (arguments->get(0)->type() != Object::VARIABLE)
     {
-        RAISE_ERROR(arguments->at(0)->lineno(), "set! got [%s] , but required variable", arguments->at(0)->toString().c_str());
+        RAISE_ERROR(arguments->get(0)->lineno(), "set! got [%s] , but required variable", arguments->get(0)->toString().c_str());
         return NULL;
     }
 
-    Variable* v = (Variable*)arguments->at(0);
-    Object* value = arguments->at(1)->eval(env);
+    Variable* v = (Variable*)arguments->get(0);
+    Object* value = arguments->get(1)->eval(env);
     env->setVaribale(v, value);
     return value; // hutei
 }

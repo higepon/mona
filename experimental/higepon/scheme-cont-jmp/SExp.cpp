@@ -3,15 +3,15 @@
 using namespace monash;
 using namespace std;
 
-SExp* SExp::clone() const
+SExp* SExp::clone()
 {
     SExp* sexp = new SExp(type);
     sexp->lineno = lineno;
     if (isSExps())
     {
-        for (SExps::const_iterator p = sexps.begin(); p != sexps.end(); ++p)
+        for (int i = 0; i < sexps.size(); i++)
         {
-            sexp->sexps.push_back((*p)->clone());
+            sexp->sexps.add(sexps[i]->clone());
         }
     }
     else if(isNumber())
@@ -89,9 +89,9 @@ void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
     }
     else if (m->isSExps() && n->isSExps())
     {
-        SExps::size_type nLength = n->sexps.size();
-        SExps::size_type mLength = m->sexps.size();
-        for (SExps::size_type i = 0; i < m->sexps.size(); ++i)
+        uint32_t nLength = n->sexps.size();
+        uint32_t mLength = m->sexps.size();
+        for (int i = 0; i < m->sexps.size(); ++i)
         {
             if (i == nLength) return;
             SExp* mm = m->sexps[i];
@@ -99,9 +99,9 @@ void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
             if (mLength != nLength && mm->isMatchAllKeyword())
             {
                 BindObject b;
-                for (SExps::size_type j = i; j < nLength; ++j)
+                for (int j = i; j < nLength; ++j)
                 {
-                    b.sexps.push_back(n->sexps[j]);
+                    b.sexps.add(n->sexps[j]);
                 }
                 bindMap[mm->text] = b;
                 return;
@@ -127,15 +127,15 @@ void SExp::print(int depth /* = 0 */)
 
 void SExp::toStringInternal(uint32_t depth, string& s)
 {
-    for (uint32_t i = 0; i < depth; i++)
+    for (int i = 0; i < depth; i++)
     {
         s += " ";
     }
     s += typeToString();
     depth++;
-    for (SExps::const_iterator it = sexps.begin(); it != sexps.end(); ++it)
+    for (int i = 0; i < sexps.size(); i++)
     {
-        (*it)->toStringInternal(depth, s);
+        sexps[i]->toStringInternal(depth, s);
     }
 }
 
@@ -158,10 +158,10 @@ void SExp::toSExpStringInternal(std::string& s)
     if (isSExps())
     {
         s += "(";
-        for (SExps::const_iterator it = sexps.begin(); it != sexps.end(); ++it)
+        for (int i = 0; i < sexps.size(); i++)
         {
-            (*it)->toSExpStringInternal(s);
-            if (sexps.end() - 1 != it) s += " ";
+            sexps[i]->toSExpStringInternal(s);
+            if (i != sexps.size() - 1) s += " ";
         }
         s += ")";
     }
@@ -183,7 +183,7 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
     if (m->isSExps())
     {
         if (m->sexps.size() != n->sexps.size()) return false;
-        for (SExps::size_type i = 0; i < m->sexps.size(); i++)
+        for (int i = 0; i < m->sexps.size(); i++)
         {
             if (!equalsInternal(m->sexps[i], n->sexps[i])) return false;
         }
@@ -215,7 +215,7 @@ int SExp::foreachSExp(SExp* root, bool (SExp::*match)() const, int (SExp::*func)
     if (root->isSExps())
     {
         // don't use iterator here, sexps.size() will be changed by func
-        for (SExps::size_type i = 0; i < root->sexps.size(); i++)
+        for (int i = 0; i < root->sexps.size(); i++)
         {
             SExp* sexp = root->sexps[i];
             if ((sexp->*match)())
@@ -247,7 +247,7 @@ int SExp::execLoadSyntax(SExp* root, SExp* sexp)
     string input = load(path.c_str());
     if (input == "") return 0;
     input = "(begin " + input + ")";
-    SExps::size_type i;
+    int i;
     for (i = 0; i < root->sexps.size(); ++i)
     {
         if (root->sexps[i] == sexp) break;

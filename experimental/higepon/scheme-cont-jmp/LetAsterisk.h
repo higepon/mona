@@ -4,7 +4,6 @@
 #include "Begin.h"
 #include "Number.h"
 #include "Lambda.h"
-#include <vector>
 #include <map>
 
 namespace monash {
@@ -23,7 +22,7 @@ public:
     virtual Object* expand();
 
 protected:
-    Objects* expandInternal(Variables::iterator variablesIt, Objects::iterator valuesIt);
+    Objects* expandInternal(int variablesIndex, int valuesIndex);
     Objects* body_;
     Variables* variables_;
     Objects* values_;

@@ -25,17 +25,16 @@ void QuoteFilterTest::testFilter()
     {
         fprintf(stderr, "bad yaml!\n");
     }
-
-    for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
+    for (int i = 0; i < yaml.size(); i++)
     {
-        strings* s = (*it);
+        strings* s = yaml[i];
         if (s->size() != 2)
         {
             fprintf(stderr, "bad yaml!\n");
         }
 
-        string before  = s->at(0).c_str();
-        string after   = s->at(1).c_str();
+        string before  = s->get(0).c_str();
+        string after   = s->get(1).c_str();
         QuoteFilter f;
         string ret = f.filter(before);
         sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", ret.c_str(), after.c_str());

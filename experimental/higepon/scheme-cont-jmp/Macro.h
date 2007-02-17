@@ -3,7 +3,6 @@
 
 #include "SExp.h"
 #include <string>
-#include <vector>
 #include "scheme.h"
 
 namespace monash {

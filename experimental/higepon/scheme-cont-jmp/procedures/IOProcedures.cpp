@@ -260,13 +260,13 @@ PROCEDURE(Load, "load")
     SExps sexps = sexp->sexps;
 //    Eval* e   = NULL;
     Object* o = NULL;
-    for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
+    for (int i = 0; i < sexps.size(); i++)
     {
-        SExp* sex = (*p);
+        SExp* sex = sexps[i];
         Quote* quote = new Quote(sex, s->lineno());
         Objects* args = new Objects;
-        args->push_back(quote);
-        args->push_back(env);
+        args->add(quote);
+        args->add(env);
         o = Kernel::apply((new Variable("eval"))->eval(env), args, env);
 // Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application)
 //         e = new Eval(env->translator(), quote, quote->lineno());

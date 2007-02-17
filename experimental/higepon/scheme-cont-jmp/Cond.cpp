@@ -22,12 +22,12 @@ int Cond::type() const
 
 Object* Cond::expand()
 {
-    return expandInternal(clauses_->begin());
+    return expandInternal(0);
 }
 
-Object* Cond::expandInternal(Clauses::iterator it)
+Object* Cond::expandInternal(int i)
 {
-    if (it == clauses_->end())
+    if (i == clauses_->size())
     {
         if (NULL != elseActions_)
         {
@@ -38,8 +38,10 @@ Object* Cond::expandInternal(Clauses::iterator it)
             Object* f = new False(); ASSERT(f); return f;
         }
     }
-    Clause* clause = *it;
-    Object* specialif = new SpecialIf(clause->first, new Begin(clause->second), expandInternal(++it)); ASSERT(specialif); return specialif;
+    Clause* clause = clauses_->get(i);
+    Object* specialif = new SpecialIf(clause->first, new Begin(clause->second), expandInternal(i + 1));
+    ASSERT(specialif);
+    return specialif;
 }
 
 Object* Cond::eval(Environment* env)

@@ -18,10 +18,9 @@ void registerPrimitives(Environment* env)
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript = NULL;
-    printf("1 %x\n", g_transcript );
-    for (DefaultProcedures::const_iterator p = procedures.begin(); p != procedures.end(); ++p)
+    for (int i = 0; i < procedures.size(); i++)
     {
-        env->defineVariable((*p).first, (*p).second);
+        env->defineVariable(procedures[i].first, procedures[i].second);
     }
     env->defineVariable(new Variable("#f"),             new False());
     env->defineVariable(new Variable("#t"),             new True());

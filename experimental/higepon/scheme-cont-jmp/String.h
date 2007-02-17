@@ -24,8 +24,8 @@ public:
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
-    virtual Charcter* get(uint32_t index);
-    virtual bool set(uint32_t index, Charcter* c);
+    virtual Charcter* get(int index);
+    virtual bool set(int index, Charcter* c);
     String* clone();
 protected:
     std::string value_;

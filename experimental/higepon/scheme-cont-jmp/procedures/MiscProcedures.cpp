@@ -13,7 +13,7 @@ Objects* pairToObjects(Pair* pair)
         Object* cdr = p->getCdr();
         if (car != NULL)
         {
-            objects->push_back(car);
+            objects->add(car);
         }
         if (cdr == NULL) break;
         if (!cdr->isPair()) break;
@@ -31,7 +31,7 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
     if (0 == cont_save(&(continuation->cont)))
     {
         Objects* arguments = new Objects;
-        arguments->push_back(continuation);
+        arguments->add(continuation);
         return Kernel::apply(procedure, arguments, env);
     }
     else
@@ -48,6 +48,7 @@ PROCEDURE(NotSupported, "not-supported")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), String, s);
     RAISE_ERROR(0, "%s not supported\n", s->toStringValue().c_str());
+    RETURN_BOOLEAN(false);
 }
 
 PROCEDURE(ProcedureP, "procedure?")

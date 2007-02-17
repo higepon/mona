@@ -61,7 +61,7 @@ LIBCONT_SOURCES = \
 libcont/cont.c\
 libcont/mysetjmp.c
 
-CXXFLAGS = -g -idirafter . -Wall -O0
+CXXFLAGS = -g -idirafter . -Wall -O0 -DMONASH_DONT_FREE_MEMORY
 CFLAGS   = $(CXXFLAGS)
 # -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 

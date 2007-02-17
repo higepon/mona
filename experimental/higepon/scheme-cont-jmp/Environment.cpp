@@ -10,7 +10,7 @@ Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t l
     ASSERT(frames_);
     Frame* f = new Frame();
     ASSERT(f);
-    frames_->push_back(f);
+    frames_->add(f);
 }
 
 Environment::~Environment()
@@ -22,21 +22,21 @@ Environment* Environment::clone()
 {
     Environment* env = new Environment(filter_, translator_);ASSERT(env);
     Frames* target = env->frames();
-    for (Frames::const_iterator it = frames_->begin(); it != frames_->end(); ++it)
+    for (int i = 0; i < frames_->size(); i++)
     {
-        target->push_back(*it);
+        target->add(frames_->get(i));
     }
     return env;
 }
 
 void Environment::setVaribale(Variable* variable, Object* value)
 {
-    if (variable->name() == "puga") printf("set! %s\n", value->toString().c_str());
-    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
+    for (int i = frames_->size() - 1 ; i >= 0; i--)
     {
-        if ((*p)->lookup(variable) != NULL)
+        Frame* f = frames_->get(i);
+        if (f->lookup(variable) != NULL)
         {
-            (*p)->insert(variable, value);
+            f->insert(variable, value);
             return;
         }
     }
@@ -46,7 +46,7 @@ void Environment::setVaribale(Variable* variable, Object* value)
 
 void Environment::defineVariable(Variable* variable, Object* value)
 {
-    Frame* lastFrame = frames_->at(frames_->size() -1);
+    Frame* lastFrame = frames_->get(frames_->size() -1);
     lastFrame->insert(variable, value); // insert or overwrite
     return;
 }
@@ -55,14 +55,15 @@ void Environment::extend(Variables* variables, Objects* objects)
 {
     Frame* f = new Frame(variables, objects);
     ASSERT(f);
-    frames_->push_back(f);
+    frames_->add(f);
 }
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
-    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
+    for (int i = frames_->size() - 1; i >= 0; i--)
     {
-        Object* found = (*p)->lookup(variable);
+        Frame* f = frames_->get(i);
+        Object* found = f->lookup(variable);
         if (NULL != found) {
             return found;
         }
@@ -75,10 +76,10 @@ Object* Environment::lookupVariableValue(Variable* variable)
 std::string Environment::toString()
 {
     string result = "";
-    for (Frames::const_reverse_iterator p = frames_->rbegin(); p != frames_->rend(); ++p)
+    for (int i = frames_->size() - 1 ; i >= 0; i--)
     {
         result += "****************\n";
-        result += (*p)->toString() + "\n\n";
+        result += frames_->get(i)->toString() + "\n\n";
     }
     return result;
 }

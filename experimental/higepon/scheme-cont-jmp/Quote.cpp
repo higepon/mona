@@ -39,9 +39,9 @@ Quote* Quote::cdr()
     if (sexp_->isSExps())
     {
         SExp* n = new SExp(SExp::SEXPS);
-        for (SExps::const_iterator p = sexp_->sexps.begin() + 1; p != sexp_->sexps.end(); ++p)
+        for (int i = 1; i < sexp_->sexps.size(); i++)
         {
-            n->sexps.push_back(*p);
+            n->sexps.add(sexp_->sexps[i]);
         }
         return new Quote(n, lineno_);
     }

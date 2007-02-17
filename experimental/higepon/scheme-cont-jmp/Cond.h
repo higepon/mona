@@ -4,13 +4,12 @@
 #include "Begin.h"
 #include "Number.h"
 #include "SpecialIf.h"
-#include <vector>
 #include <map>
 
 namespace monash {
 
 typedef std::pair<Object*, Objects*> Clause;
-typedef std::vector<Clause*> Clauses;
+typedef util::Vector<Clause*> Clauses;
 
 class Cond : public Object
 {
@@ -28,7 +27,7 @@ public:
     virtual Object* expand();
 
 protected:
-    virtual Object* expandInternal(Clauses::iterator it);
+    virtual Object* expandInternal(int i);
     Clauses* clauses_;
     Objects* elseActions_;
     uint32_t lineno_;

@@ -29,10 +29,9 @@ bool Macro::checkReservedWord(SExp* macro, SExp* target, const strings& reserved
 bool Macro::isReservedWord(SExp* sexp, const strings& reservedWords)
 {
     if (!sexp->isSymbol()) return false;
-
-    for (strings::const_iterator it = reservedWords.begin(); it != reservedWords.end(); ++it)
+    for (int i = 0; i < reservedWords.size(); i++)
     {
-        if ((*it) == sexp->text) return true;
+        if (reservedWords[i] == sexp->text) return true;
     }
     return false;
 }
@@ -58,10 +57,10 @@ SExp* Macro::match(const string& macroName, SExp* target)
 
 bool Macro::matchSExps(const string& macroName, const strings& reservedWords, SExp* macro, SExp* target)
 {
-    for (SExps::size_type i = 0; i < macro->sexps.size(); i++)
+    for (int i = 0; i < macro->sexps.size(); i++)
     {
-        SExp* m = macro->sexps[i];
-        SExp* t = target->sexps[i];
+        SExp* m = macro->sexps.get(i);
+        SExp* t = target->sexps.get(i);
         if (!match(macroName, reservedWords, m, t))
         {
             return false;
@@ -98,7 +97,7 @@ bool Macro::match(const string& macroName, const strings& reservedWords, SExp* m
             SExp* last = macro->sexps[macro->sexps.size() - 1];
             if (last->isMatchAllKeyword())
             {
-                for (SExps::size_type i = 0; i < target->sexps.size(); i++)
+                for (int i = 0; i < target->sexps.size(); i++)
                 {
                     SExp* m = macro->sexps[i];
                     SExp* t = target->sexps[i];

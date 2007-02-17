@@ -10,9 +10,9 @@ Procedure::Procedure(Lambda* lambda, Environment* env, uint32_t lineno)
     Variables* lparameters = lambda->parameters();
     isExtendableParameters_ = lambda->isExtendableParameters();
     isExtendableParameter_  = lambda->isExtendableParameter();
-    for (Variables::const_iterator it = lparameters->begin(); it != lparameters->end(); ++it)
+    for (int i = 0; i < lparameters->size(); i++)
     {
-        parameters_->push_back(*it);
+        parameters_->add(lparameters->get(i));
     }
 }
 
@@ -23,7 +23,7 @@ Procedure::~Procedure()
 
 std::string Procedure::toString()
 {
-    return "procedure : " + body_->at(0)->toString();
+    return "procedure : " + body_->get(0)->toString();
 }
 
 int Procedure::type() const
@@ -61,9 +61,9 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         Quote* nil = new Quote(sexp);
         Pair* start = new Pair(NULL, nil);
         Pair* p = start;
-        for (Objects:: size_type j = 0; j < as->size(); j++)
+        for (int j = 0; j < as->size(); j++)
         {
-            p->setCar(as->at(j));
+            p->setCar(as->get(j));
             if (j != as->size() -1)
             {
                 Pair* tmp = new Pair(NULL, nil);
@@ -71,7 +71,7 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                 p = tmp;
             }
         }
-        args->push_back(start);
+        args->add(start);
         e->extend(params, args); // doubt? we need copy?
     }
     else if (isExtendableParameters_)
@@ -79,23 +79,23 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         Objects* args = new Objects;
         SExp* sexp = new SExp(SExp::SEXPS);
         Quote* nil = new Quote(sexp);
-        for (Variables::size_type i = 0; i < params->size(); i++)
+        for (int i = 0; i < params->size(); i++)
         {
-            Variable* v = params->at(i);
+            Variable* v = params->get(i);
             if (v->name() == ".")
             {
-                args->push_back(nil); // . => nil
+                args->add(nil); // . => nil
                 if ((params->size() - 1) > as->size())
                 {
-                    args->push_back(nil);
+                    args->add(nil);
                     break;
                 }
 
                 Pair* start = new Pair(NULL, nil);
                 Pair* p = start;
-                for (Objects:: size_type j = i; j < as->size(); j++)
+                for (int j = i; j < as->size(); j++)
                 {
-                    p->setCar(as->at(j));
+                    p->setCar(as->get(j));
                     if (j != as->size() -1)
                     {
                         Pair* tmp = new Pair(NULL, nil);
@@ -103,12 +103,12 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                         p = tmp;
                     }
                 }
-                args->push_back(start);
+                args->add(start);
                 break;
             }
             else
             {
-                args->push_back(as->at(i));
+                args->add(as->get(i));
             }
         }
 

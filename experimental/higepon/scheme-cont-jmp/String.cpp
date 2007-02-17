@@ -11,7 +11,7 @@ String::String(uint32_t length, uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
     // todo ugly
     char* buf = new char[length + 1];
-    for (uint32_t i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         buf[i] = ' ';
     }
@@ -23,7 +23,7 @@ String::String(uint32_t length, char c, uint32_t lineno /* = 0 */) : lineno_(lin
 {
     // todo ugly
     char* buf = new char[length + 1];
-    for (uint32_t i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         buf[i] = c;
     }
@@ -74,14 +74,14 @@ bool String::equal(Object* o)
     return value() == s->value();
 }
 
-Charcter* String::get(uint32_t index)
+Charcter* String::get(int index)
 {
     if (index > value_.size()  || index < 0) return NULL;
     // ugly fix me
     return new Charcter(string("#\\") + value_[index], lineno());
 }
 
-bool String::set(uint32_t index, Charcter* c)
+bool String::set(int index, Charcter* c)
 {
     if (index > value_.size() - 1 || index < 0) return false;
     value_[index] = c->value();

@@ -2,7 +2,6 @@
 #define __BEGIN_H__
 
 #include "Object.h"
-#include <vector>
 
 namespace monash {
 

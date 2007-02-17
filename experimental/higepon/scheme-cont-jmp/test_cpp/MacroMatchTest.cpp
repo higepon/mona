@@ -20,9 +20,9 @@ void MacroMatchTest::assertMacroMatch(const string& macroName, const string& wor
     SExp* t = SExp::fromString(target);
     SExp* r = SExp::fromString(words);
     strings ss;
-    for (SExps::iterator it = r->sexps.begin(); it != r->sexps.end(); ++it)
+    for (int i = 0; i < r->sexps.size(); i++)
     {
-        ss.push_back((*it)->text);
+        ss.add(r->sexps[i]->text);
     }
     string msg(macro);
     msg += matchOrNot ? " matches " : " not match ";
@@ -41,14 +41,14 @@ void MacroMatchTest::testMatch()
         fprintf(stderr, "bad yaml!\n");
     }
 
-    for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
+    for (int i = 0; i < yaml.size(); i++)
     {
-        strings* s = (*it);
+        strings* s = yaml[i];
         if (s->size() != 4)
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->at(0).c_str(), s->at(1).c_str(), s->at(2).c_str(), s->at(3).c_str());
+        assertMacroMatch(s->get(0).c_str(), s->get(1).c_str(), s->get(2).c_str(), s->get(3).c_str());
     }
 }
 
@@ -60,14 +60,13 @@ void MacroMatchTest::testUnmatch()
     {
         fprintf(stderr, "bad yaml!\n");
     }
-
-    for (YAML::iterator it = yaml.begin(); it != yaml.end(); ++it)
+    for (int i = 0; i < yaml.size(); i++)
     {
-        strings* s = (*it);
+        strings* s = yaml[i];
         if (s->size() != 4)
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->at(0).c_str(), s->at(1).c_str(), s->at(2).c_str(), s->at(3).c_str(), false);
+        assertMacroMatch(s->get(0).c_str(), s->get(1).c_str(), s->get(2).c_str(), s->get(3).c_str(), false);
     }
 }

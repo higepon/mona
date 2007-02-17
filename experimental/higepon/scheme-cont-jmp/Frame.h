@@ -2,8 +2,8 @@
 #define __FRAME_H__
 
 //#include <stlport/hash_map>
-#include <vector>
 #include <map>
+#include "util/HashMap.h"
 #include "Variable.h"
 
 namespace monash {
@@ -20,8 +20,7 @@ public:
     void remove(Variable* variable);
     std::string toString();
 protected:
-//    typedef std::hash_map<std::string, Object*> FrameMap;
-    typedef std::map<std::string, Object*> FrameMap;
+    typedef util::HashMap<Object*> FrameMap;
     FrameMap map_;
 };
 

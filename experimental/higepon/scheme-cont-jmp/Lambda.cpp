@@ -9,9 +9,9 @@ using namespace std;
 Lambda::Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno)
     : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), lineno_(lineno)
 {
-    for (Variables::const_iterator it = parameters->begin(); it != parameters->end(); ++it)
+    for (int i = 0; i < parameters->size(); i++)
     {
-        if ((*it)->name() == ".")
+        if (parameters->get(i)->name() == ".")
         {
             isExtendableParameters_ = true;
         }
@@ -24,7 +24,7 @@ Lambda::~Lambda()
 
 std::string Lambda::toString()
 {
-    return "lambda : " + body_->at(0)->toString();
+    return "lambda : " + body_->get(0)->toString();
 }
 
 int Lambda::type() const

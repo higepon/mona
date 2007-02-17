@@ -16,17 +16,15 @@
 #include "scheme.h"
 #include <stdio.h>
 #include <time.h>
-#include "libcont/cont.h"
-
 
 using namespace monash;
 using namespace std;
 
 uint32_t count_char(const char* s, char c)
 {
-    uint32_t length = strlen(s);
+    int length = strlen(s);
     uint32_t count = 0;
-    for (uint32_t i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         if (s[i] == c) count++;
     }
@@ -53,9 +51,9 @@ void input_loop()
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
     SExps sexps = allSExp->sexps;
-    for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
+    for (int i = 0; i < sexps.size(); i++)
     {
-        SExp* sexp = (*p);
+        SExp* sexp = sexps.get(i);
         f.filter(sexp);
         Object* object = NULL;
         translator.translate(&sexp, &object);
@@ -65,7 +63,6 @@ void input_loop()
 
     for (;;)
     {
-
         if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
         getline(&line, &length, stdin);
         open_paren_count += count_char(line, '(');
@@ -78,9 +75,9 @@ void input_loop()
             input = "(" + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
-            for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
+            for (int i = 0; i < sexps.size(); i++)
             {
-                SExp* sexp = (*p);
+                SExp* sexp = sexps.get(i);
                 f.filter(sexp);
 
                 Object* object = NULL;
@@ -152,9 +149,9 @@ int main(int argc, char *argv[])
 
 // load
 //    sexp->execLoadSyntaxes();
-    for (SExps::iterator p = sexps.begin(); p != sexps.end(); ++p)
+    for (int i = 0; i < sexps.size(); i++)
     {
-        SExp* sexp = (*p);
+        SExp* sexp = sexps.get(i);
         f.filter(sexp);
 
         Object* object = NULL;
@@ -180,7 +177,7 @@ int main(int argc, char *argv[])
 //             }
 //             else
 //             {
-//                 args->push_back(o);
+//                 args->add(o);
 //             }
 //         }
 

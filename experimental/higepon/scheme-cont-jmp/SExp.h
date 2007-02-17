@@ -1,11 +1,11 @@
 #ifndef __SEXP_H__
 #define __SEXP_H__
 
-#include <vector>
 #include <string>
 #include <stdio.h>
 #include <map>
 #include <stdio.h>
+#include <util/Vector.h>
 #include "Tokenizer.h"
 #include "Error.h"
 #include "Parser.h"
@@ -14,7 +14,7 @@ std::string load(const char* file);
 namespace monash {
 
 class SExp;
-typedef std::vector<SExp*> SExps;
+typedef util::Vector<SExp*> SExps;
 
 #define N(n)         sexp->sexps[n]
 #define NN(i, j)     sexp->sexps[i]->sexps[j]
@@ -46,7 +46,7 @@ public:
     std::string toSExpString();
     void print(int depth = 0);
     bool equals(SExp* sexp);
-    SExp* clone() const;
+    SExp* clone();
 
     bool isSExps()  const { return type == SEXPS; }
     bool isNumber() const { return type == NUMBER; }

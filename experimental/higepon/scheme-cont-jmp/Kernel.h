@@ -23,7 +23,7 @@ public:
     static Objects* listOfValues(Objects* objects, Environment* env);
     static Object* apply(Object* procedure, Objects* arguments, Environment* env);
     static Object* doContinuation();
-    static void makeListOfValues(Objects* objects, uint32_t i, Argument* prev, Environment* environment, Objects** values);
+    static void makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values);
 };
 
 }; // namespace monash

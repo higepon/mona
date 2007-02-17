@@ -2,7 +2,6 @@
 #define __VARIABLE_H__
 
 #include "Object.h"
-#include <vector>
 
 namespace monash {
 
@@ -25,7 +24,7 @@ protected:
     uint32_t lineno_;
 };
 
-typedef std::vector<Variable*> Variables;
+typedef util::Vector<Variable*> Variables;
 
 }; // namespace monash
 

@@ -28,8 +28,8 @@ Application* NamedLet::expand()
     Definition* definition = new Definition(v, new Lambda(body_, variables_, false, lineno()));
     Application* application = new Application(v, values_, lineno());
     Objects* body = new Objects;
-    body->push_back(definition);
-    body->push_back(application);
+    body->add(definition);
+    body->add(application);
     Lambda* lambda = new Lambda(body, new Variables(), false, lineno());
     Application* apps = new Application(lambda, new Objects());
     return apps;

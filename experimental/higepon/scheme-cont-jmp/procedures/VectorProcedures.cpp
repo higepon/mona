@@ -27,7 +27,7 @@ PROCEDURE(MakeVector, "make-vector")
 PROCEDURE(CreateVector, "vector")
 {
     Objects* as = Kernel::listOfValues(arguments, env);
-    return new Vector(as, as->empty() ? 0 : ARGV(0)->lineno());
+    return new Vector(as, as->isEmpty() ? 0 : ARGV(0)->lineno());
 }
 
 PROCEDURE(VectorLength, "vector-length")

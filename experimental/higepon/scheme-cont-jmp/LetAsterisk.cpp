@@ -25,28 +25,37 @@ int LetAsterisk::type() const
 
 Object* LetAsterisk::expand()
 {
-    Variables::iterator variablesIt = variables_->begin();
-    Objects::iterator valuesIt = values_->begin();
+//     for (int i = 0; i < variables_->size(); i++)
+//     {
+//         printf("v = %s\n", variables_->get(i)->toString().c_str());
+//     }
+//     for (int i = 0; i < values_->size(); i++)
+//     {
+//         printf("v = %s\n", values_->get(i)->toString().c_str());
+//     }
+
     Variables* variables = new Variables;ASSERT(variables);
-    variables->push_back(*variablesIt);
+    variables->add(variables_->get(0));
     Objects* values = new Objects;ASSERT(values);
-    values->push_back(*valuesIt);
-    Object* let = new Let(expandInternal(++variablesIt, ++valuesIt), variables, values); ASSERT(let); return let;
+    values->add(values_->get(0));
+    Object* let = new Let(expandInternal(1, 1), variables, values); ASSERT(let); return let;
 }
 
-Objects* LetAsterisk::expandInternal(Variables::iterator variablesIt, Objects::iterator valuesIt)
+Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
 {
-    if (variablesIt == variables_->end() || valuesIt == values_->end())
+//    printf("%d == %d, %d == %d \n", variablesIndex, variables_->size() - 1, valuesIndex, values_->size() - 1);
+    if (variablesIndex == variables_->size() || valuesIndex == values_->size())
     {
         return body_;
     }
     Variables* variables = new Variables;ASSERT(variables);
-    variables->push_back(*variablesIt);
+    variables->add(variables_->get(variablesIndex));
     Objects* values = new Objects;ASSERT(values);
-    values->push_back(*valuesIt);
-    Let* let = new Let(expandInternal(++variablesIt, ++valuesIt), variables, values);ASSERT(let);
+    values->add(values_->get(valuesIndex));
+//    printf("(%d, %d) %s %s\n", variablesIndex, valuesIndex, variables_->get(variablesIndex)->toString().c_str(),values_->get(valuesIndex)->toString().c_str());
+    Let* let = new Let(expandInternal(variablesIndex + 1, valuesIndex + 1), variables, values);ASSERT(let);
     Objects* body = new Objects;ASSERT(body);
-    body->push_back(let);
+    body->add(let);
     return body;
 }
 

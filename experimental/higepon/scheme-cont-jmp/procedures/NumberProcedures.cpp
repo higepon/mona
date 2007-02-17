@@ -13,9 +13,9 @@ PROCEDURE(Plus, "+")
 {
     Objects* as = Kernel::listOfValues(arguments, env);
     int total = 0;
-    for (Objects::const_iterator it = as->begin(); it != as->end(); it++)
+    for (int i = 0; i < as->size(); i++)
     {
-        Object* o = (*it);
+        Object* o = as->get(i);
         if (o->isNumber())
         {
             Number* n = (Number*)o;
@@ -32,9 +32,9 @@ PROCEDURE(Minus, "-")
     if (ARGC == 1) return new Number(-1 * n->value());
 
     int total = n->value();
-    for (Objects::const_iterator it = as->begin() + 1; it != as->end(); it++)
+    for (int i = 1; i < as->size(); i++)
     {
-        Object* o = (*it);
+        Object* o = as->get(i);
         if (o->isNumber())
         {
             Number* nn = (Number*)o;
@@ -57,9 +57,9 @@ PROCEDURE(NumberEqual, "=")
 {
     ARGC_SHOULD_BE_GT(1);
     CAST_RETURN_FALSE(ARGV(0), Number, n0);
-    for (Objects::const_iterator p = as->begin() + 1; p != as->end(); ++p)
+    for (int i = 1; i < as->size(); i++)
     {
-        CAST_RETURN_FALSE((*p), Number, n);
+        CAST_RETURN_FALSE(as->get(i), Number, n);
         if (n->value() != n0->value()) return new False();
     }
     return new True();
@@ -70,9 +70,9 @@ PROCEDURE(NumberGt, ">")
 {
     ARGC_SHOULD_BE_GT(1);
     CAST_RETURN_FALSE(ARGV(0), Number, prev);
-    for (Objects::const_iterator p = as->begin() + 1; p != as->end(); ++p)
+    for (int i = 1; i < as->size(); i++)
     {
-        CAST_RETURN_FALSE((*p), Number, n);
+        CAST_RETURN_FALSE(as->get(i), Number, n);
         if (prev->value() <= n->value()) return new False();
         prev = n;
     }
@@ -83,9 +83,9 @@ PROCEDURE(NumberLt, "<")
 {
     ARGC_SHOULD_BE_GT(1);
     CAST_RETURN_FALSE(ARGV(0), Number, prev);
-    for (Objects::const_iterator p = as->begin() + 1; p != as->end(); ++p)
+    for (int i = 1; i < as->size(); i++)
     {
-        CAST_RETURN_FALSE((*p), Number, n);
+        CAST_RETURN_FALSE(as->get(i), Number, n);
         if (prev->value() >= n->value()) return new False();
         prev = n;
     }
@@ -96,9 +96,9 @@ PROCEDURE(NumberGe, ">=")
 {
     ARGC_SHOULD_BE_GT(1);
     CAST_RETURN_FALSE(ARGV(0), Number, prev);
-    for (Objects::const_iterator p = as->begin() + 1; p != as->end(); ++p)
+    for (int i = 1; i < as->size(); i++)
     {
-        CAST_RETURN_FALSE((*p), Number, n);
+        CAST_RETURN_FALSE(as->get(i), Number, n);
         if (prev->value() < n->value()) return new False();
         prev = n;
     }
@@ -109,9 +109,9 @@ PROCEDURE(NumberLe, "<=")
 {
     ARGC_SHOULD_BE_GT(1);
     CAST_RETURN_FALSE(ARGV(0), Number, prev);
-    for (Objects::const_iterator p = as->begin() + 1; p != as->end(); ++p)
+    for (int i = 1; i < as->size(); i++)
     {
-        CAST_RETURN_FALSE((*p), Number, n);
+        CAST_RETURN_FALSE(as->get(i), Number, n);
         if (prev->value() > n->value()) return new False();
         prev = n;
     }
@@ -122,9 +122,9 @@ PROCEDURE(Multiply, "*")
 {
     Objects* as = Kernel::listOfValues(arguments, env);
     int total = 1;
-    for (Objects::const_iterator it = as->begin(); it != as->end(); it++)
+    for (int i = 0; i < as->size(); i++)
     {
-        Object* o = (*it);
+        Object* o = as->get(i);
         if (o->isNumber())
         {
             Number* n = (Number*)o;
@@ -139,9 +139,9 @@ PROCEDURE(Divide, "/")
     ARGC_SHOULD_BE_GT(0);
     CAST(ARGV(0), Number, n);
     int total = n->value();
-    for (Objects::const_iterator it = as->begin() + 1; it != as->end(); it++)
+    for (int i = 1; i < as->size(); i++)
     {
-        Object* o = (*it);
+        Object* o = as->get(i);
         if (o->isNumber())
         {
             Number* nn = (Number*)o;
