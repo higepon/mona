@@ -1,7 +1,7 @@
 #include "Frame.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 Frame::Frame()
 {
@@ -40,9 +40,9 @@ void Frame::remove(Variable* variable)
     map_.remove(variable->name().data());
 }
 
-::util::String Frame::toString()
+String Frame::toString()
 {
-    ::util::String result = "";
+    String result = "";
 // todo fix me
 //     for (FrameMap::const_iterator it = map_.begin(); it != map_.end(); ++it)
 //     {

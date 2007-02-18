@@ -1,9 +1,10 @@
 #include "Variable.h"
 #include "Environment.h"
 
+using namespace util;
 using namespace monash;
 
-Variable::Variable(const ::util::String& name, uint32_t lineno /* = 0 */) : name_(name), lineno_(lineno)
+Variable::Variable(const String& name, uint32_t lineno /* = 0 */) : name_(name), lineno_(lineno)
 {
 }
 
@@ -11,12 +12,12 @@ Variable::~Variable()
 {
 }
 
-::util::String Variable::toString()
+String Variable::toString()
 {
     return "variable: " + name_;
 }
 
-::util::String Variable::toStringValue()
+String Variable::toStringValue()
 {
     return name_;
 }

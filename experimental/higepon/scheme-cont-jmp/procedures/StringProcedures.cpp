@@ -1,19 +1,20 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(StringCopy, "string-copy")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     return s->clone();
 }
 
 PROCEDURE(StringP, "string?")
 {
     ARGC_SHOULD_BE(1);
-    RETURN_BOOLEAN(ARGV(0)->isString());
+    RETURN_BOOLEAN(ARGV(0)->isSString());
 }
 
 PROCEDURE(MakeString, "make-string")
@@ -22,27 +23,27 @@ PROCEDURE(MakeString, "make-string")
     if (ARGC == 1)
     {
         CAST(ARGV(0), Number, n)
-        return new String(n->value(), n->lineno());
+        return new SString(n->value(), n->lineno());
     }
     else
     {
         CAST(ARGV(0), Number, n);
         CAST(ARGV(1), Charcter, c);
-        return new String(n->value(), c->value(), n->lineno());
+        return new SString(n->value(), c->value(), n->lineno());
     }
 }
 
 PROCEDURE(StringLength, "string-length")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     return new Number(s->value().size(), s->lineno());
 }
 
 PROCEDURE(StringRef, "string-ref")
 {
     ARGC_SHOULD_BE(2);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     CAST(ARGV(1), Number, n);
     Object* ret = s->get(n->value());
     if (ret == NULL)
@@ -56,7 +57,7 @@ PROCEDURE(StringRef, "string-ref")
 PROCEDURE(StringSet, "string-set!")
 {
     ARGC_SHOULD_BE(3);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     CAST(ARGV(1), Number, n);
     CAST(ARGV(2), Charcter, c);
     bool isOK = s->set(n->value(), c);
@@ -71,16 +72,16 @@ PROCEDURE(StringSet, "string-set!")
 PROCEDURE(StringEqualP, "string=?")
 {
     ARGC_SHOULD_BE(2);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     RETURN_BOOLEAN(s->equal(ARGV(1)));
 }
 
 PROCEDURE(StringToNumber, "string->number")
 {
     ARGC_SHOULD_BE(1);
-    CAST_RETURN_FALSE(ARGV(0), String, str);
-    ::util::String text = str->value();
-    for (::util::String::size_type i = 0; i < text.length(); i++)
+    CAST_RETURN_FALSE(ARGV(0), SString, str);
+    String text = str->value();
+    for (uint32_t i = 0; i < text.size(); i++)
     {
         if (!isdigit(text[i]))
         {
@@ -93,7 +94,7 @@ PROCEDURE(StringToNumber, "string->number")
 PROCEDURE(StringToSymbol, "string->symbol")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     SExp* exp = new SExp(SExp::SYMBOL);
     exp->text = s->toStringValue();
     return new Quote(exp);

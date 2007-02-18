@@ -1,18 +1,18 @@
-#ifndef __STRING_H__
-#define __STRING_H__
+#ifndef __SSTRING_H__
+#define __SSTRING_H__
 
 #include "Object.h"
 #include "Charcter.h"
 
 namespace monash {
 
-class String : public Object
+class SString : public Object
 {
 public:
-    String(const ::util::String& value, uint32_t lineno = 0);
-    String(uint32_t length, uint32_t lineno = 0);
-    String(uint32_t length, char c, uint32_t lineno = 0);
-    virtual ~String();
+    SString(const ::util::String& value, uint32_t lineno = 0);
+    SString(uint32_t length, uint32_t lineno = 0);
+    SString(uint32_t length, char c, uint32_t lineno = 0);
+    virtual ~SString();
 
 public:
     virtual ::util::String toString();
@@ -24,9 +24,9 @@ public:
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
-    virtual Charcter* get(int index);
-    virtual bool set(int index, Charcter* c);
-    String* clone();
+    virtual Charcter* get(uint32_t index);
+    virtual bool set(uint32_t index, Charcter* c);
+    SString* clone();
 protected:
     ::util::String value_;
     uint32_t lineno_;

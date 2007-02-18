@@ -1,7 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 Objects* pairToObjects(Pair* pair)
 {
@@ -46,7 +47,7 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
 PROCEDURE(NotSupported, "not-supported")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     RAISE_ERROR(0, "%s not supported\n", s->toStringValue().data());
     RETURN_BOOLEAN(false);
 }

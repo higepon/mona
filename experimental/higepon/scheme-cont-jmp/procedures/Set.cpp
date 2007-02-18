@@ -1,5 +1,6 @@
 #include "Set.h"
 
+using namespace util;
 using namespace monash;
 
 Set::Set()

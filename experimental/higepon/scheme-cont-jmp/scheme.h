@@ -19,7 +19,7 @@ namespace util {
 #include "Environment.h"
 #include "Procedure.h"
 #include "Number.h"
-#include "String.h"
+#include "SString.h"
 #include "Continuation.h"
 #include "Charcter.h"
 #include "Quote.h"

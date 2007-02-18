@@ -1,7 +1,6 @@
 #include "Vector.h"
 
 using namespace monash;
-using namespace monash::util;
 
 Vector::Vector(uint32_t size, uint32_t lineno /* = 0 */) : size_(size), lineno_(lineno)
 {
@@ -11,7 +10,7 @@ Vector::Vector(uint32_t size, uint32_t lineno /* = 0 */) : size_(size), lineno_(
 Vector::Vector(uint32_t size, Object* o, uint32_t lineno /* = 0 */) : size_(size), lineno_(lineno)
 {
     values_ = new Objects();
-    for (int i = 0; i < size; i++)
+    for (uint32_t i = 0; i < size; i++)
     {
         values_->add(o);
     }
@@ -40,12 +39,12 @@ bool Vector::set(int index, Object* o)
     return true;
 }
 
-String Vector::toString()
+::util::String Vector::toString()
 {
     return "vector";
 }
 
-String Vector::toStringValue()
+::util::String Vector::toStringValue()
 {
     ::util::String ret = "#(";
     for (int i = 0; i < values_->size(); i++)

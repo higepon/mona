@@ -1,5 +1,6 @@
 #include "Quote.h"
 
+using namespace util;
 using namespace monash;
 
 Quote::Quote(SExp* sexp, uint32_t lineno /* = 0 */) : sexp_(sexp), lineno_(lineno)
@@ -10,12 +11,12 @@ Quote::~Quote()
 {
 }
 
-::util::String Quote::toString()
+String Quote::toString()
 {
     return "quote: \'";
 }
 
-::util::String Quote::toStringValue()
+String Quote::toStringValue()
 {
     return sexp_->toSExpString();
 }
@@ -62,7 +63,7 @@ Object* Quote::eval(Environment* env)
         }
         else
         {
-            return new String(sexp_->text, sexp_->lineno);
+            return new SString(sexp_->text, sexp_->lineno);
         }
     }
     else if (sexp_->isNumber())

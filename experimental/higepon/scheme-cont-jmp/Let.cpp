@@ -1,5 +1,6 @@
 #include "Let.h"
 
+using namespace util;
 using namespace monash;
 
 Let::Let(Objects* body, Variables* variables, Objects* values, uint32_t lineno) : body_(body), variables_(variables), values_(values), lineno_(lineno)
@@ -10,9 +11,9 @@ Let::~Let()
 {
 }
 
-::util::String Let::toString()
+String Let::toString()
 {
-    return ::util::String("let");
+    return String("let");
 }
 
 int Let::type() const

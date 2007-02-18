@@ -1,8 +1,7 @@
 #include "False.h"
 
+using namespace util;
 using namespace monash;
-
-using namespace monash::util;
 
 False::False(uint32_t lineno) : lineno_(lineno)
 {

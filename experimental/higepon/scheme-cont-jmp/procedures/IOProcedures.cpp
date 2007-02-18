@@ -1,8 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
 using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 extern OutputPort* g_currentOutputPort;
 extern OutputPort* g_defaultOutputPort;
@@ -17,7 +17,7 @@ PROCEDURE(TranscriptOn, "transcript-on")
     {
         RAISE_ERROR(lineno(), "already transcipt-on");
     }
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     g_transcript = fopen(s->value().data(), "w+");
     if (NULL == g_transcript)
     {
@@ -108,7 +108,7 @@ PROCEDURE(CloseOutputPort, "close-output-port")
 PROCEDURE(OpenOutputPort, "open-output-port")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     FILE* stream = fopen(s->value().data(), "w+");
     if (NULL == stream)
     {
@@ -120,7 +120,7 @@ PROCEDURE(OpenOutputPort, "open-output-port")
 PROCEDURE(OpenInputPort, "open-input-port")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
+    CAST(ARGV(0), SString, s);
     FILE* stream = fopen(s->value().data(), "r");
     if (NULL == stream)
     {
@@ -245,9 +245,9 @@ PROCEDURE(Display, "display")
 PROCEDURE(Load, "load")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), String, s);
-    ::util::String path  = s->value();
-    ::util::String input = load(path.data());
+    CAST(ARGV(0), SString, s);
+    String path  = s->value();
+    String input = load(path.data());
     if (input == "")
     {
         RAISE_ERROR(s->lineno(), "load error", path.data());

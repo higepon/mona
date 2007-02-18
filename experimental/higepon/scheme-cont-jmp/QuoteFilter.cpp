@@ -1,7 +1,9 @@
 #include "QuoteFilter.h"
 
+#include <ctype.h>
+
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 QuoteFilter::QuoteFilter()
 {
@@ -11,12 +13,12 @@ QuoteFilter::~QuoteFilter()
 {
 }
 
-::util::String QuoteFilter::filter(const ::util::String& text)
+String QuoteFilter::filter(const String& text)
 {
     postion_ = 0;
     input_ = text;
-    input_ = replace(input_, "#(", "(vector "); // ugly
-    ::util::String ret;
+    input_.replace("#(", "(vector "); // ugly
+    String ret;
     char c;
     for (;;)
     {
@@ -47,7 +49,7 @@ QuoteFilter::~QuoteFilter()
         }
         else if (c == '\'')
         {
-            ::util::String quoteString = getQuoteString(0);
+            String quoteString = getQuoteString(0);
             ret += "(quote " + quoteString + ")";
         }
         else
@@ -58,9 +60,9 @@ QuoteFilter::~QuoteFilter()
     return ret;
 }
 
-::util::String QuoteFilter::getQuoteString(uint32_t paren)
+String QuoteFilter::getQuoteString(uint32_t paren)
 {
-    ::util::String ret;
+    String ret;
     char c;
     for (;;)
     {
@@ -104,15 +106,3 @@ char QuoteFilter::getChar()
 
 }
 
-::util::String& QuoteFilter::replace(::util::String& str, const ::util::String& t, const ::util::String& s)
-{
-    ::util::String::size_type pos;
-    ::util::String::size_type current = 0;
-
-    while ((pos = str.find(t, current)) != ::util::String::npos)
-    {
-        str.replace(pos, t.size(), s);
-        current = pos + s.size();
-    }
-    return str;
-}

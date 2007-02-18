@@ -1,5 +1,6 @@
 #include "Procedure.h"
 
+using namespace util;
 using namespace monash;
 
 Procedure::Procedure(Lambda* lambda, Environment* env, uint32_t lineno)
@@ -21,7 +22,7 @@ Procedure::~Procedure()
 //    delete parameters_;
 }
 
-::util::String Procedure::toString()
+String Procedure::toString()
 {
     return "procedure : " + body_->get(0)->toString();
 }

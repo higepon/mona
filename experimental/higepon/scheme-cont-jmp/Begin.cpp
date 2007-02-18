@@ -1,5 +1,5 @@
 #include "scheme.h"
-
+using namespace util;
 using namespace monash;
 
 Begin::Begin(Objects* actions, uint32_t lineno) : actions_(actions), lineno_(lineno)
@@ -10,9 +10,9 @@ Begin::~Begin()
 {
 }
 
-::util::String Begin::toString()
+String Begin::toString()
 {
-    ::util::String ret = "begin:";
+    String ret = "begin:";
     for (int i = 0; i < actions_->size(); i++)
     {
         ret += "[" + actions_->get(i)->toString() + "]";

@@ -3,8 +3,9 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MacroMatchTest);
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
+using namespace std;
 
 void MacroMatchTest::setUp()
 {
@@ -14,21 +15,25 @@ void MacroMatchTest::tearDown()
 {
 }
 
-void MacroMatchTest::assertMacroMatch(const util::String& macroName, const util::String& words, const util::String& macro, const util::String& target, bool matchOrNot)
+void MacroMatchTest::assertMacroMatch(const ::util::String& macroName, const ::util::String& words, const ::util::String& macro, const ::util::String& target, bool matchOrNot)
 {
     SExp* m = SExp::fromString(macro);
     SExp* t = SExp::fromString(target);
     SExp* r = SExp::fromString(words);
-    strings ss;
+    Strings ss;
     for (int i = 0; i < r->sexps.size(); i++)
     {
-        ss.add(r->sexps[i]->text);
+        ss.add(r->sexps[i]->text.data());
     }
-    util::String msg(macro);
+    string msg(macro.data());
     msg += matchOrNot ? " matches " : " not match ";
-    msg += target;
+    msg += target.data();
     bool result = Macro::match(macroName, ss, m, t) == matchOrNot;
-    if (!result && matchOrNot) msg += ":" + Macro::error;
+    if (!result && matchOrNot)
+    {
+        msg += ":";
+        msg += Macro::error.data();
+    }
     CPPUNIT_ASSERT_MESSAGE(msg.data(), result);
 }
 
@@ -48,7 +53,7 @@ void MacroMatchTest::testMatch()
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->get(0).data(), s->get(1).data(), s->get(2).data(), s->get(3).data());
+        assertMacroMatch(s->at(0).c_str(), s->at(1).c_str(), s->at(2).c_str(), s->at(3).c_str());
     }
 }
 
@@ -67,6 +72,6 @@ void MacroMatchTest::testUnmatch()
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->get(0).data(), s->get(1).data(), s->get(2).data(), s->get(3).data(), false);
+        assertMacroMatch(s->at(0).c_str(), s->at(1).c_str(), s->at(2).c_str(), s->at(3).c_str(), false);
     }
 }

@@ -42,7 +42,7 @@ public:
     virtual Object* eval(Environment* env) = 0;
     virtual Object* apply(Objects* arguments, Environment* env);
     bool isNumber() const { return type() == NUMBER; }
-    bool isString() const { return type() == STRING; }
+    bool isSString() const { return type() == STRING; }
     bool isCharcter() const { return type() == CHARCTER; }
     bool isVector() const { return type () == VECTOR; }
     bool isQuote() const { return type() == QUOTE; }

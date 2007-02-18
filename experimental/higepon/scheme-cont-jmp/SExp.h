@@ -55,7 +55,7 @@ public:
     bool isString() const { return type == STRING; }
     bool isQuote()  const { return type == QUOTE; }
     bool isChar()  const { return type == CHAR; }
-    bool isMatchAllKeyword() { return isSymbol() && !text.include("..."); }
+    bool isMatchAllKeyword() { return isSymbol() && text.indexOf("...") != -1; }
 
     static SExp* fromString(const ::util::String& text);
     static void extractBindings(SExp* m, SExp* n, BindMap& bindMap);

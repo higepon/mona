@@ -2,7 +2,7 @@
 #include "Kernel.h"
 #include "scheme.h"
 
-using namespace monash::util;
+using namespace util;
 using namespace monash;
 
 Application::Application(Object* function, Objects* arguments, uint32_t lineno) : function_(function), arguments_(arguments), lineno_(lineno)
@@ -13,7 +13,7 @@ Application::~Application()
 {
 }
 
-::util::String Application::toString()
+String Application::toString()
 {
     return "Application : " + function_->toString();
 }

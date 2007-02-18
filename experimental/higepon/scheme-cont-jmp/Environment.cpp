@@ -1,8 +1,8 @@
 
 #include "Environment.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t lineno /* = 0 */) : filter_(filter), translator_(translator), lineno_(lineno)
 {
@@ -73,9 +73,9 @@ Object* Environment::lookupVariableValue(Variable* variable)
     return NULL;
 }
 
-::util::String Environment::toString()
+String Environment::toString()
 {
-    ::util::String result = "";
+    String result = "";
     for (int i = frames_->size() - 1 ; i >= 0; i--)
     {
         result += "****************\n";

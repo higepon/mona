@@ -43,7 +43,7 @@ QuoteFilter.cpp\
 SExp.cpp\
 Kernel.cpp\
 SpecialIf.cpp\
-String.cpp\
+SString.cpp\
 Tokenizer.cpp\
 Translator.cpp\
 Variable.cpp\

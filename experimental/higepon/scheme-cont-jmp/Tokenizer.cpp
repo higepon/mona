@@ -1,8 +1,9 @@
 #include "Tokenizer.h"
 
+using namespace util;
 using namespace monash;
 
-Tokenizer::Tokenizer(const ::util::String& input) : input_(input), postion_(0), lineno_(1)
+Tokenizer::Tokenizer(const String& input) : input_(input), postion_(0), lineno_(1)
 {
 }
 
@@ -86,7 +87,7 @@ once_more:
     }
     if (c == '\"')
     {
-        ::util::String str("");
+        String str("");
         for (;;)
         {
             c = getChar();
@@ -113,7 +114,7 @@ once_more:
     }
     else
     {
-        ::util::String str("");
+        String str("");
         str += c;
         for (;;)
         {

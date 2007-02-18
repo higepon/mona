@@ -1,7 +1,7 @@
 #include "InputPort.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 InputPort::InputPort(FILE* stream, uint32_t lineno) : stream_(stream), lineno_(lineno)
 {
@@ -11,7 +11,7 @@ InputPort::~InputPort()
 {
 }
 
-::util::String InputPort::toString()
+String InputPort::toString()
 {
     return "#<input-port>";
 }

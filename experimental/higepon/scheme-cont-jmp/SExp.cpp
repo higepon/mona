@@ -1,7 +1,7 @@
 #include "SExp.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 SExp* SExp::clone()
 {
@@ -46,10 +46,10 @@ String SExp::typeToString()
         sprintf(buffer, "SEXPS\n");
         break;
     }
-    return ::util::String(buffer);
+    return String(buffer);
 }
 
-::util::String SExp::typeToRawString()
+String SExp::typeToRawString()
 {
     char buffer[256];
     buffer[0] = '\0';
@@ -75,22 +75,22 @@ String SExp::typeToString()
 //         sprintf(buffer, "");
 //         break;
     }
-    return ::util::String(buffer);
+    return String(buffer);
 }
 
 void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
 {
     if (m->isSymbol())
     {
-        BindObject b;
-        b.sexp = n;
-        bindMap[m->text] = b;
+        BindObject* b = new BindObject;
+        b->sexp = n;
+        bindMap.put(m->text.data(), b);
         return;
     }
     else if (m->isSExps() && n->isSExps())
     {
-        uint32_t nLength = n->sexps.size();
-        uint32_t mLength = m->sexps.size();
+        int nLength = n->sexps.size();
+        int mLength = m->sexps.size();
         for (int i = 0; i < m->sexps.size(); ++i)
         {
             if (i == nLength) return;
@@ -98,12 +98,12 @@ void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
             SExp* nn = n->sexps[i];
             if (mLength != nLength && mm->isMatchAllKeyword())
             {
-                BindObject b;
+                BindObject* b = new BindObject;;
                 for (int j = i; j < nLength; ++j)
                 {
-                    b.sexps.add(n->sexps[j]);
+                    b->sexps.add(n->sexps[j]);
                 }
-                bindMap[mm->text] = b;
+                bindMap.put(mm->text.data(), b);
                 return;
             }
             else
@@ -127,7 +127,7 @@ void SExp::print(int depth /* = 0 */)
 
 void SExp::toStringInternal(uint32_t depth, String& s)
 {
-    for (int i = 0; i < depth; i++)
+    for (uint32_t i = 0; i < depth; i++)
     {
         s += " ";
     }
@@ -141,19 +141,19 @@ void SExp::toStringInternal(uint32_t depth, String& s)
 
 String SExp::toString()
 {
-    ::util::String ret;
+    String ret;
     toStringInternal(0, ret);
     return ret;
 }
 
-::util::String SExp::toSExpString()
+String SExp::toSExpString()
 {
-    ::util::String ret;
+    String ret;
     toSExpStringInternal(ret);
     return ret;
 }
 
-void SExp::toSExpStringInternal(::util::String& s)
+void SExp::toSExpStringInternal(String& s)
 {
     if (isSExps())
     {
@@ -202,7 +202,7 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
     return false;
 }
 
-SExp* SExp::fromString(const ::util::String& text)
+SExp* SExp::fromString(const String& text)
 {
     Tokenizer tokenizer(text);
     Parser parser(&tokenizer);
@@ -243,7 +243,7 @@ int SExp::execLoadSyntax(SExp* root, SExp* sexp)
         || sexp->sexps.size() != 2
         || sexp->sexps[1]->type != SExp::STRING) return 0;
 
-    ::util::String path  = sexp->sexps[1]->text;
+    String path  = sexp->sexps[1]->text;
     string input = load(path.data());
     if (input == "") return 0;
     input = "(begin " + input + ")";

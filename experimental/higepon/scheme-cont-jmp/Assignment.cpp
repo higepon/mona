@@ -1,5 +1,6 @@
 #include "Assignment.h"
 
+using namespace util;
 using namespace monash;
 
 Assignment::Assignment(Variable* variable, Object* value) : variable_(variable), value_(value)
@@ -10,7 +11,7 @@ Assignment::~Assignment()
 {
 }
 
-::util::String Assignment::toString()
+String Assignment::toString()
 {
     return variable_->toString() + ": " + value_->toString();
 }

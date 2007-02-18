@@ -1,8 +1,8 @@
 #include "OutputPort.h"
 #include "scheme.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 OutputPort::OutputPort(FILE* stream, uint32_t lineno) : stream_(stream), lineno_(lineno)
 {
@@ -12,7 +12,7 @@ OutputPort::~OutputPort()
 {
 }
 
-::util::String OutputPort::toString()
+String OutputPort::toString()
 {
     return "#<output-port>";
 }

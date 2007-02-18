@@ -1,6 +1,6 @@
 #include "scheme.h"
 
-using namespace monash::util;
+using namespace util;
 using namespace monash;
 
 DefaultProcedures procedures;

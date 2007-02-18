@@ -1,7 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(SymbolP, "symbol?")
 {
@@ -14,6 +15,6 @@ PROCEDURE(SymbolToString, "symbol->string")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Quote, q);
-    return new String(q->toStringValue(), q->lineno());
+    return new SString(q->toStringValue(), q->lineno());
 }
 

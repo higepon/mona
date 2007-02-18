@@ -1,8 +1,7 @@
 #include "Undef.h"
 
+using namespace util;
 using namespace monash;
-
-using namespace monash::util;
 
 Undef::Undef()
 {

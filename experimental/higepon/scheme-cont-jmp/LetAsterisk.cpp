@@ -1,5 +1,6 @@
 #include "LetAsterisk.h"
 
+using namespace util;
 using namespace monash;
 
 LetAsterisk::LetAsterisk(Objects* body, Variables* variables, Objects* values, uint32_t lineno) : body_(body)
@@ -13,9 +14,9 @@ LetAsterisk::~LetAsterisk()
 {
 }
 
-::util::String LetAsterisk::toString()
+String LetAsterisk::toString()
 {
-    return ::util::String("let");
+    return String("let");
 }
 
 int LetAsterisk::type() const

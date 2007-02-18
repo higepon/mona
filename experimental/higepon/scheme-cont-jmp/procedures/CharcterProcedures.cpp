@@ -2,8 +2,8 @@
 #include "libcont/cont.h"
 
 using namespace std;
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(CharcterP, "char?")
 {

@@ -1,12 +1,13 @@
 #include "Error.h"
 #include "scheme.h"
-using namespace monash;
-using namespace monash::util;
 
-::util::String Error::error;
-::util::String Error::file;
-::util::String Error::cppfile;
-::util::String Error::cppfunc;
+using namespace util;
+using namespace monash;
+
+String Error::error;
+String Error::file;
+String Error::cppfile;
+String Error::cppfunc;
 jmp_buf Error::returnPoint;
 Cont Error::cont;
 uint32_t Error::lineno;
@@ -55,7 +56,7 @@ void Error::showError()
     SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
 }
 
-void Error::raise(uint32_t l, ::util::String f, uint32_t cppl, ::util::String cppf, const char* format, ...)
+void Error::raise(uint32_t l, String f, uint32_t cppl, String cppf, const char* format, ...)
 {
     char buf[512];
     buf[0] = '\0';

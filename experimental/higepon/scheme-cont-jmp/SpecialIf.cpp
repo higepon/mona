@@ -1,5 +1,6 @@
 #include "SpecialIf.h"
 
+using namespace util;
 using namespace monash;
 
 SpecialIf::SpecialIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno) : predicate_(predicate)
@@ -13,7 +14,7 @@ SpecialIf::~SpecialIf()
 {
 }
 
-::util::String SpecialIf::toString()
+String SpecialIf::toString()
 {
     return "if (" + predicate_->toString() + ") {" + consequent_->toString() + "}else{" + alternative_->toString() + "}";
 }

@@ -4,8 +4,9 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MacroFilterTest);
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 void MacroFilterTest::setUp()
 {
@@ -33,7 +34,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        util::String defineSyntax = s->get(0);
+        String defineSyntax = s->at(0).c_str();
         SExps defineSyntaxes;
 
         // check count of define-syntax
@@ -45,7 +46,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
         for (int i = 0; i < defineSyntaxes.size(); i++)
         {
             SExp* d        = defineSyntaxes[i];
-            SExp* expected = SExp::fromString(s->get(i + 1));
+            SExp* expected = SExp::fromString(s->at(i + 1).c_str());
             sprintf(buf, "%s unmatch\n %s\n", d->toString().data(), expected->toString().data());
             CPPUNIT_ASSERT_MESSAGE(buf, d->equals(expected));
         }
@@ -70,9 +71,9 @@ void MacroFilterTest::testFilter()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        util::String macro     = s->get(0).data();
-        util::String macroCall = s->get(1).data();
-        util::String expected  = s->get(2).data();
+        String macro     = s->at(0).c_str();
+        String macroCall = s->at(1).c_str();
+        String expected  = s->at(2).c_str();
 
         MacroFilter f;
         f.findAndStoreDefineSyntaxes(SExp::fromString(macro));

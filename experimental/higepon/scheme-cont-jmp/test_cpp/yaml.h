@@ -1,5 +1,14 @@
 #include <scheme.h>
 #include <fstream>
-typedef monash::util::Vector<util::Strings*> YAML;
+#include <string>
+#include <vector>
 
-void loadYAML(const util::String& path, YAML& yaml);
+namespace std {
+typedef vector<string> strings;
+};
+
+typedef std::vector<std::strings*> YAML;
+
+
+void loadYAML(const std::string& path, YAML& yaml);
+

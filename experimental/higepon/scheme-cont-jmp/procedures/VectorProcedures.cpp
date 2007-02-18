@@ -1,7 +1,7 @@
 #include "procedures/Procedure.h"
 
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(VectorP, "vector?")
 {
@@ -14,7 +14,7 @@ PROCEDURE(MakeVector, "make-vector")
     ARGC_SHOULD_BE_BETWEEN(1, 2);
     if (ARGC == 1)
     {
-        CAST(ARGV(0), Number, n)
+        CAST(ARGV(0), Number, n);
         return new Vector(n->value(), n->lineno());
     }
     else

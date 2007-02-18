@@ -1,7 +1,7 @@
 #include "Pair.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 Pair::Pair(Object* car, Object* cdr, uint32_t lineno) : car_(car), cdr_(cdr), lineno_(lineno)
 {
@@ -11,12 +11,12 @@ Pair::~Pair()
 {
 }
 
-::util::String Pair::toString()
+String Pair::toString()
 {
     return "pair(" + getCar()->toString() + ", " + getCdr()->toString() + ")";
 }
 
-::util::String Pair::toStringValue()
+String Pair::toStringValue()
 {
     return "(" + getCar()->toStringValue() + ", " + getCdr()->toStringValue() + ")";
 }

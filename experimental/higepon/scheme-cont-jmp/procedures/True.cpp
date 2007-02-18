@@ -1,8 +1,7 @@
 #include "True.h"
 
+using namespace util;
 using namespace monash;
-
-using namespace monash::util;
 
 True::True()
 {

@@ -1,7 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(PairP, "pair?")
 {

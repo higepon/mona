@@ -1,11 +1,11 @@
 #include "Macro.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
-::util::String Macro::error;
+String Macro::error;
 
-Macro::Macro(const ::util::String& name) : name(name)
+Macro::Macro(const String& name) : name(name)
 {
 }
 
@@ -18,7 +18,7 @@ void Macro::addPattern(SExp* pattern, SExp* definition)
     patterns.insert(std::pair<SExp*, SExp*>(pattern, definition));
 }
 
-bool Macro::checkReservedWord(SExp* macro, SExp* target, const ::util::Strings& reservedWords)
+bool Macro::checkReservedWord(SExp* macro, SExp* target, const Strings& reservedWords)
 {
     if (!isReservedWord(macro, reservedWords)) return true;
     if (!target->isSymbol()) return false;
@@ -26,7 +26,7 @@ bool Macro::checkReservedWord(SExp* macro, SExp* target, const ::util::Strings& 
 }
 
 // todo c++ cook book! FIX ME
-bool Macro::isReservedWord(SExp* sexp, const ::util::Strings& reservedWords)
+bool Macro::isReservedWord(SExp* sexp, const Strings& reservedWords)
 {
     if (!sexp->isSymbol()) return false;
     for (int i = 0; i < reservedWords.size(); i++)
@@ -41,12 +41,12 @@ bool Macro::mustBeMacroName(SExp* sexp)
     return sexp->isSymbol() && sexp->text == "_";
 }
 
-bool Macro::isMacroName(SExp* sexp, const ::util::String& macroName)
+bool Macro::isMacroName(SExp* sexp, const String& macroName)
 {
     return sexp->isSymbol() && sexp->text == macroName;
 }
 
-SExp* Macro::match(const ::util::String& macroName, SExp* target)
+SExp* Macro::match(const String& macroName, SExp* target)
 {
     for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
     {
@@ -55,7 +55,7 @@ SExp* Macro::match(const ::util::String& macroName, SExp* target)
     return NULL;
 }
 
-bool Macro::matchSExps(const ::util::String& macroName, const ::util::Strings& reservedWords, SExp* macro, SExp* target)
+bool Macro::matchSExps(const String& macroName, const Strings& reservedWords, SExp* macro, SExp* target)
 {
     for (int i = 0; i < macro->sexps.size(); i++)
     {
@@ -71,7 +71,7 @@ bool Macro::matchSExps(const ::util::String& macroName, const ::util::Strings& r
 
 // (_ a b ...)
 // (and "hige" "huga" "hoge" "hoge")
-bool Macro::match(const ::util::String& macroName, const ::util::Strings& reservedWords, SExp* macro, SExp* target)
+bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* macro, SExp* target)
 {
     if (macro->isSExps() && target->isSExps())
     {
@@ -81,7 +81,10 @@ bool Macro::match(const ::util::String& macroName, const ::util::Strings& reserv
         }
         else if (macro->sexps.size() < target->sexps.size())
         {
-            if (macro->sexps.size() == 0) return false;
+            if (macro->sexps.size() == 0)
+            {
+                return false;
+            }
             SExp* last = macro->sexps[macro->sexps.size() - 1];
             if (last->isMatchAllKeyword())
             {
@@ -101,7 +104,10 @@ bool Macro::match(const ::util::String& macroName, const ::util::Strings& reserv
                 {
                     SExp* m = macro->sexps[i];
                     SExp* t = target->sexps[i];
-                    if (!match(macroName, reservedWords, m, t)) return false;
+                    if (!match(macroName, reservedWords, m, t))
+                    {
+                        return false;
+                    }
                 }
                 return true;
             }

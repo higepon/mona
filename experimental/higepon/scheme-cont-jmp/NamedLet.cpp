@@ -1,9 +1,9 @@
 #include "NamedLet.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
-NamedLet::NamedLet(Objects* body, Variables* variables, Objects* values, ::util::String name, uint32_t lineno)
+NamedLet::NamedLet(Objects* body, Variables* variables, Objects* values, String name, uint32_t lineno)
     : body_(body), variables_(variables), values_(values), name_(name), lineno_(lineno)
 {
 }
@@ -12,9 +12,9 @@ NamedLet::~NamedLet()
 {
 }
 
-::util::String NamedLet::toString()
+String NamedLet::toString()
 {
-    return ::util::String("named let");
+    return String("named let");
 }
 
 int NamedLet::type() const

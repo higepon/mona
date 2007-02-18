@@ -17,8 +17,9 @@
 #include <stdio.h>
 #include <time.h>
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
+
 
 uint32_t count_char(const char* s, char c)
 {
@@ -46,7 +47,7 @@ void input_loop()
     bool show_prompt = true;
     RETURN_ON_ERROR();
 //        Error::returnOnError();
-    ::util::String input = "(load \"test/scheme.scm\")";
+    String input = "(load \"test/scheme.scm\")";
     input = quoteFilter.filter(input);
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
@@ -72,7 +73,7 @@ void input_loop()
         {
             input = quoteFilter.filter(input);
             TRANSCRIPT_WRITE(input.data());
-            input = ::util::String("(") + input + " )";
+            input = String("(") + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
             for (int i = 0; i < sexps.size(); i++)
@@ -123,7 +124,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    ::util::String input = load(argv[1]);
+    String input = load(argv[1]);
     if (input == "")
     {
         fprintf(stderr, "can not load: %s file\n", argv[1]);

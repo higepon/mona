@@ -1,7 +1,7 @@
 #include "MacroFilter.h"
 
+using namespace util;
 using namespace monash;
-using namespace monash::util;
 
 MacroFilter::MacroFilter()
 {
@@ -56,7 +56,7 @@ int MacroFilter::foreachSExps(SExp* root, int (MacroFilter::*f)(SExp*root, SExp*
 
 int MacroFilter::expandMacro(SExp* root, SExp* sexp)
 {
-    ::util::String name = sexp->text;
+    String name = sexp->text;
     int i;
     for (i = 0; i < root->sexps.size(); i++)
     {
@@ -107,7 +107,7 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
     SExp* left = root->sexps[0];
     if (!left->isSymbol()) return 0;
 
-    ::util::String name = left->text;
+    String name = left->text;
     Macro* m = macros_.get(name.data());
     if (NULL == m) return 0;
 

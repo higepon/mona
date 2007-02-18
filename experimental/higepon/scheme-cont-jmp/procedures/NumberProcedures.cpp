@@ -1,7 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
+using namespace std;
 using namespace monash;
-using namespace monash::util;
 
 PROCEDURE(NumberP, "number?")
 {
@@ -50,7 +51,7 @@ PROCEDURE(NumberToString, "number->string")
     CAST(ARGV(0), Number, n);
     char buf[32];
     snprintf(buf, 32, "%d", n->value());
-    return new String(buf, n->lineno());
+    return new SString(buf, n->lineno());
 }
 
 PROCEDURE(NumberEqual, "=")

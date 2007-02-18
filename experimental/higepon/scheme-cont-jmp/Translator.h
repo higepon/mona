@@ -6,7 +6,7 @@
 #include "Procedure.h"
 #include "Number.h"
 #include "Charcter.h"
-#include "String.h"
+#include "SString.h"
 #include "Quote.h"
 #include "SpecialIf.h"
 #include "Assignment.h"

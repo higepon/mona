@@ -1,7 +1,7 @@
 #ifndef __QUOTE_FILTER_H__
 #define __QUOTE_FILTER_H__
 
-#include <string>
+#include "util/String.h"
 
 namespace monash {
 
@@ -15,7 +15,6 @@ public:
 protected:
     char getChar();
     ::util::String getQuoteString(uint32_t paren);
-    ::util::String& replace(::util::String& str, const ::util::String& t, const ::util::String& s);
     ::util::String input_;
     uint32_t postion_;
 };

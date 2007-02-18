@@ -1,8 +1,8 @@
 #include "procedures/Procedure.h"
 
+using namespace util;
 using namespace monash;
 using namespace std;
-using namespace monash::util;
 
 PROCEDURE(EqvP, "eqv?")
 {

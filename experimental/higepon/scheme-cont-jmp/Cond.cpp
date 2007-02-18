@@ -1,5 +1,6 @@
 #include "Cond.h"
 
+using namespace util;
 using namespace monash;
 
 Cond::Cond(Clauses* clauses, Objects* elseActions, uint32_t lineno /* = 0 */) : clauses_(clauses), elseActions_(elseActions), lineno_(lineno)
@@ -10,9 +11,9 @@ Cond::~Cond()
 {
 }
 
-::util::String Cond::toString()
+String Cond::toString()
 {
-    return ::util::String("cond");
+    return String("cond");
 }
 
 int Cond::type() const
