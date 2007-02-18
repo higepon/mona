@@ -46,7 +46,7 @@ void MacroMatchTest::testMatch()
         fprintf(stderr, "bad yaml!\n");
     }
 
-    for (int i = 0; i < yaml.size(); i++)
+    for (uint32_t i = 0; i < yaml.size(); i++)
     {
         strings* s = yaml[i];
         if (s->size() != 4)
@@ -65,7 +65,7 @@ void MacroMatchTest::testUnmatch()
     {
         fprintf(stderr, "bad yaml!\n");
     }
-    for (int i = 0; i < yaml.size(); i++)
+    for (uint32_t i = 0; i < yaml.size(); i++)
     {
         strings* s = yaml[i];
         if (s->size() != 4)

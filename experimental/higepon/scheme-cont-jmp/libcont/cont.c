@@ -117,7 +117,6 @@ int cont_save(Cont* c)
 {
     int ret = mysetjmp(c->registers);
     if (ret != 0) return ret;
-    uint32_t diff = c->registers[6] - c->registers[7];
 
     uint32_t current_stack = c->registers[7];
     c->stack_size = cont_stack_bottom - current_stack;

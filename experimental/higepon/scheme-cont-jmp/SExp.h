@@ -1,9 +1,7 @@
 #ifndef __SEXP_H__
 #define __SEXP_H__
 
-#include <string>
 #include <stdio.h>
-#include <map>
 #include <stdio.h>
 #include <util/Vector.h>
 #include <util/HashMap.h>

@@ -22,8 +22,8 @@ public:
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual uint32_t size() const { return size_; }
-    virtual Object* get(int index);
-    virtual bool set(int index, Object* o);
+    virtual Object* get(uint32_t index);
+    virtual bool set(uint32_t index, Object* o);
 
 protected:
     Objects* values_;

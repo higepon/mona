@@ -3,13 +3,15 @@
 
 #include "SExp.h"
 #include "scheme.h"
+#include "util/BinaryTree.h"
 #include "util/String.h"
+#include "util/HashMap.h"
 namespace monash {
 
 class Macro
 {
 public:
-    typedef std::map<SExp*, SExp*> Patterns;
+    typedef ::util::BinaryTree<SExp*> Patterns;
 
     Macro(const ::util::String& name);
     virtual ~Macro();

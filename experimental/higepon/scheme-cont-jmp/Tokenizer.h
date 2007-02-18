@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <string>
 #include <stdio.h>
+#include <ctype.h>
 #include "util/String.h"
 
 namespace monash {

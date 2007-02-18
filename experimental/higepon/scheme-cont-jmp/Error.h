@@ -7,7 +7,6 @@
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <string>
 extern "C" {
 #include "libcont/cont.h"
 };

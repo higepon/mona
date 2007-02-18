@@ -26,7 +26,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
     {
         fprintf(stderr, "bad yaml!\n");
     }
-    for (int i = 0; i < yaml.size(); i++)
+    for (uint32_t i = 0; i < yaml.size(); i++)
     {
         strings* s = yaml[i];
         if (s->size() < 2)
@@ -40,7 +40,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
         // check count of define-syntax
         f.findDefineSyntaxes(SExp::fromString(defineSyntax), defineSyntaxes);
         sprintf(buf, "In %s %d define-syntax found, but should be %d\n", defineSyntax.data(), defineSyntaxes.size(), s->size() - 1);
-        CPPUNIT_ASSERT_MESSAGE(buf, defineSyntaxes.size() == s->size() - 1);
+        CPPUNIT_ASSERT_MESSAGE(buf, defineSyntaxes.size() == (int)(s->size() - 1));
 
         // check define-syntax exactly same?
         for (int i = 0; i < defineSyntaxes.size(); i++)
@@ -63,7 +63,7 @@ void MacroFilterTest::testFilter()
         fprintf(stderr, "bad yaml!\n");
     }
 
-    for (int i = 0; i < yaml.size(); i++)
+    for (uint32_t i = 0; i < yaml.size(); i++)
     {
         strings* s = yaml[i];
         if (s->size() != 3)

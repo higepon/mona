@@ -25,13 +25,13 @@ Vector::~Vector()
 {
 }
 
-Object* Vector::get(int index)
+Object* Vector::get(uint32_t index)
 {
     if (index > size_  || index < 0) return NULL;
     return values_->get(index);
 }
 
-bool Vector::set(int index, Object* o)
+bool Vector::set(uint32_t index, Object* o)
 {
     if (index > size_ - 1 || index < 0) return false;
     values_->removeAt(index);

@@ -1,6 +1,7 @@
 #ifndef __UTIL_HASH_MAP_H__
 #define __UTIL_HASH_MAP_H__
 
+#include <string.h>
 #include "util/BinaryTree.h"
 #include "util/Map.h"
 
