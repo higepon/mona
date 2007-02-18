@@ -3,19 +3,20 @@
 
 #include "SExp.h"
 #include "scheme.h"
-#include "util/BinaryTree.h"
 #include "util/String.h"
 #include "util/HashMap.h"
+#include "util/Pair.h"
 namespace monash {
 
 class Macro
 {
 public:
-    typedef ::util::BinaryTree<SExp*> Patterns;
+    typedef ::util::Vector< ::util::Pair<SExp*, SExp*> > Patterns;
 
     Macro(const ::util::String& name);
     virtual ~Macro();
     void addPattern(SExp* pattern, SExp* definition);
+    SExp* findPattern(SExp* pattern);
 
     static bool match(const ::util::String & macroName, const ::util::Strings & reservedWords, SExp* macro, SExp* target);
     SExp* match(const ::util::String& macroName, SExp* target);

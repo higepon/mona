@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include "util/Vector.h"
 #include "util/String.h"
+#include "util/Pair.h"
+#include "util/HashMap.h"
 
 namespace util {
     typedef Vector<String> Strings;

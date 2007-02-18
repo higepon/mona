@@ -4,7 +4,6 @@
 #include "Begin.h"
 #include "Number.h"
 #include "Lambda.h"
-#include <map>
 
 namespace monash {
 

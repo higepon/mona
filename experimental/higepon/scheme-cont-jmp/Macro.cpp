@@ -15,7 +15,16 @@ Macro::~Macro()
 
 void Macro::addPattern(SExp* pattern, SExp* definition)
 {
-    patterns.insert(std::pair<SExp*, SExp*>(pattern, definition));
+    patterns.add(::util::Pair<SExp*, SExp*>(pattern, definition));
+}
+
+SExp* Macro::findPattern(SExp* pattern)
+{
+   for (int i = 0; i < patterns.size(); i++)
+    {
+        if (patterns[i].first == pattern) return patterns[i].second;
+    }
+    return NULL;
 }
 
 bool Macro::checkReservedWord(SExp* macro, SExp* target, const Strings& reservedWords)
@@ -48,9 +57,9 @@ bool Macro::isMacroName(SExp* sexp, const String& macroName)
 
 SExp* Macro::match(const String& macroName, SExp* target)
 {
-    for (Macro::Patterns::const_iterator p = patterns.begin(); p != patterns.end(); ++p)
+    for (int i = 0; i < patterns.size(); i++)
     {
-        if (Macro::match(macroName, reservedWords, (*p).first, target)) return (*p).first;
+        if (Macro::match(macroName, reservedWords, patterns[i].first, target)) return patterns[i].first;
     }
     return NULL;
 }

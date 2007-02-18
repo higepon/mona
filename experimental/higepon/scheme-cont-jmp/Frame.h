@@ -2,7 +2,6 @@
 #define __FRAME_H__
 
 //#include <stlport/hash_map>
-#include <map>
 #include "util/HashMap.h"
 #include "Variable.h"
 

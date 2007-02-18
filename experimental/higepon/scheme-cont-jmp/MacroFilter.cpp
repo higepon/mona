@@ -138,7 +138,7 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
 //        if (z == 6) exit(-1);
 #endif
 
-    SExp* expanded = m->patterns[matchedPattern]->clone();
+    SExp* expanded = m->findPattern(matchedPattern)->clone();
     bindMap_ = bindMap;
     SExp* wrap =new SExp(SExp::SEXPS);
 

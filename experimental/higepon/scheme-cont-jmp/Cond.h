@@ -4,11 +4,11 @@
 #include "Begin.h"
 #include "Number.h"
 #include "SpecialIf.h"
-#include <map>
+#include "util/Pair.h"
 
 namespace monash {
 
-typedef std::pair<Object*, Objects*> Clause;
+typedef ::util::Pair<Object*, Objects*> Clause;
 typedef ::util::Vector<Clause*> Clauses;
 
 class Cond : public Object
