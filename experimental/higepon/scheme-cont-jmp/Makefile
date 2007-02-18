@@ -61,7 +61,7 @@ LIBCONT_SOURCES = \
 libcont/cont.c\
 libcont/mysetjmp.c
 
-CXXFLAGS = -g -idirafter . -Wall -O0 -DMONASH_DONT_FREE_MEMORY
+CXXFLAGS = -pg -idirafter . -Wall -O0 -DMONASH_DONT_FREE_MEMORY
 CFLAGS   = $(CXXFLAGS)
 # -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
@@ -73,7 +73,7 @@ all : $(TARGET) $(TEST_TARGET)
 
 $(TARGET): main.o $(OBJECTS) $(LIBCONT_OBJECTS)
 	echo $(LIBCONT_OBJECTS)
-	$(CXX) main.o $(OBJECTS) $(LIBCONT_OBJECTS) -o $(TARGET)
+	$(CXX) -pg main.o $(OBJECTS) $(LIBCONT_OBJECTS) -o $(TARGET)
 
 $(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS)
 	$(CXX) -lcppunit -ldl test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
