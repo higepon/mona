@@ -18,6 +18,7 @@ public:
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "quote"; }
     virtual ::util::String text() const { return value_;}
     virtual SExp* sexp() { return sexp_;}
     virtual bool eqv(Object* o);

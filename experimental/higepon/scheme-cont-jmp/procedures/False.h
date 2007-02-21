@@ -15,6 +15,7 @@ public:
     virtual int type() const { return Object::FALSE; }
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "#f"; }
     virtual Object* apply(Objects* arguments, Environment* env);
     bool eqv(Object* o);
 

@@ -15,6 +15,7 @@ public:
     virtual ::util::String toString();
     virtual int type() const;
     virtual Object* eval(Environment* env);
+    virtual ::util::String typeString() const { return "if"; }
     virtual uint32_t lineno() const { return lineno_; }
     Object* predicate() const { return predicate_; }
     Object* consequent() const { return consequent_; }

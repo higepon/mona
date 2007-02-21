@@ -15,6 +15,7 @@ public:
     virtual ~Set();
 
     virtual ::util::String toString();
+    virtual ::util::String typeString() const { return "set! proc"; }
     virtual Object* eval(Environment* env);
     virtual Object* apply(Objects* arguments, Environment* env);
 };

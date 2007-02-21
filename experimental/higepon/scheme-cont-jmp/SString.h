@@ -19,6 +19,7 @@ public:
     virtual ::util::String toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
+    virtual ::util::String typeString() const { return "string"; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String value() { return value_; }
     virtual bool eqv(Object* o);

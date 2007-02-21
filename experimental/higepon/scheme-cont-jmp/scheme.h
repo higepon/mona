@@ -38,6 +38,7 @@ namespace util {
 #include "Error.h"
 #include "OutputPort.h"
 #include "InputPort.h"
+#include "Values.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
 #include "procedures/Undef.h"

@@ -27,7 +27,9 @@ extern monash::DefaultProcedures procedures;
 #define CAST(o, type, to)                                                        \
     if (!o->is##type())                                                          \
     {                                                                            \
-        RAISE_ERROR(o->lineno(), "%s got wrong argument", toString().data());    \
+        RAISE_ERROR(o->lineno(), "%s got wrong argument. got %s but required " #type ""  \
+                    , toString().data(), o->typeString().data());                \
+                                                                                 \
     }                                                                            \
     type* to = (type*)o;
 
@@ -84,6 +86,7 @@ public:                                                                         
     virtual ~ClassName() {}                                                      \
                                                                                  \
     virtual ::util::String toString() {    return "procedure:" name;}            \
+    virtual ::util::String typeString() const { return name; }                   \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
         return this; \

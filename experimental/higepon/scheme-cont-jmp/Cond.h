@@ -22,6 +22,7 @@ public:
     virtual int type() const;
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "cond"; }
     virtual Objects* elseActions() const { return elseActions_;}
     virtual Clauses* clauses() const { return clauses_; }
     virtual Object* expand();

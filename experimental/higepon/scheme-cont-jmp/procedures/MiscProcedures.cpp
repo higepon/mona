@@ -6,6 +6,7 @@ using namespace monash;
 Objects* pairToObjects(Pair* pair)
 {
     Objects* objects = new Objects;
+#if 1
     Pair* p = pair;
     for (;;)
     {
@@ -19,7 +20,21 @@ Objects* pairToObjects(Pair* pair)
         if (!cdr->isPair()) break;
         p = (Pair*)cdr;
     }
+#else
+    objects->add(pair);
+#endif
     return objects;
+}
+
+PROCEDURE(CallWithValues, "call-with-values")
+{
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(0), Procedure, producer);
+    CAST(ARGV(1), Procedure, consumer);
+    Object* applyed = Kernel::apply(producer, new Objects, env);
+    Objects* applyeds = new Objects;
+    applyeds->add(applyed);
+    return Kernel::apply(consumer, applyeds, env);
 }
 
 PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
@@ -36,8 +51,15 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
     }
     else
     {
-        Object* result = continuation->callArugument->eval(env);
-        return result;
+        if (continuation->callAruguments->size() == 1)
+        {
+            Object* result = continuation->callAruguments->get(0)->eval(env);
+            return result;
+        }
+        else
+        {
+            return new Values(continuation->callAruguments, lineno());
+        }
     }
 
     RAISE_ERROR(lineno(), "unknown call/cc");
@@ -72,9 +94,20 @@ PROCEDURE(Exit, "exit")
 
 PROCEDURE(Apply, "apply")
 {
-   ARGC_SHOULD_BE(2);
-   CAST(ARGV(1), Pair, p);
-   return Kernel::apply(ARGV(0), pairToObjects(p), env);
+    ARGC_SHOULD_BE_GT(1);
+    CAST(ARGV(ARGC - 1), Pair, p);
+    Objects* os = pairToObjects(p);
+    Objects* tmp = new Objects;
+    for(int i = 1; i < ARGC -1; i++)
+    {
+        tmp->add(ARGV(i));
+    }
+    for (int i = 0; i < os->size(); i++)
+    {
+        tmp->add(os->get(i));
+    }
+
+    return Kernel::apply(ARGV(0), tmp, env);
 }
 
 PROCEDURE(Eval, "eval")
@@ -116,5 +149,10 @@ PROCEDURE(SchemeReportEnvironment, "scheme-report-environment")
     {
         RAISE_ERROR(lineno(), "%s got wrong version" , toString().data());
     }
+    return env;
+}
+
+PROCEDURE(InteractionEnvironment, "interaction-environment")
+{
     return env;
 }

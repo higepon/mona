@@ -20,6 +20,7 @@ public:
     bool eq(Object* o);
 
     virtual int type() const;
+    virtual ::util::String typeString() const { return "number"; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual int value() const;
     virtual Object* eval(Environment* env);

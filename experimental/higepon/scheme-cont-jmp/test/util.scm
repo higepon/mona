@@ -55,3 +55,7 @@
                    (equal? "abc" "abc")
                    (equal? 2 2)
                    (equal? (make-vector 5 'a) (make-vector 5 'a)))
+
+(assert-check-true "apply"
+                   (= 13 (apply + 1 2 3 (list 3 4)))
+)

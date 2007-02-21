@@ -50,8 +50,8 @@ bool Continuation::equal(Object* o)
 
 Object* Continuation::apply(Objects* arguments, Environment* env)
 {
-    ARGC_SHOULD_BE(1);
-    callArugument = ARGV(0);
+    ARGC_SHOULD_BE_GT(0);
+    callAruguments = as;
     cont_restore(&cont, 1);
     /* NOT REACHED */
     return NULL;

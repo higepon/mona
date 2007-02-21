@@ -19,6 +19,7 @@ public:
     virtual Object* eval(Environment* env);
     virtual Variable* variable() const { return variable_; }
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "definition"; }
     virtual Object* value() const { return value_; }
 
 protected:

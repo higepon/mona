@@ -170,4 +170,8 @@
   (lambda (object)
     (object)))
 
+(define values (lambda things
+                 (call-with-current-continuation
+                  (lambda (cont) (apply cont things)))))
+
 (load "test/danny_dube.scm")

@@ -324,7 +324,7 @@
         (begin
           (set! count (+ count (car l)))
           (func (cdr l)))))
-  (assert-check-true "named let" (= 6 count)))
+(assert-check-true "named let" (= 6 count)))
 
 
 (load "./test/char.scm")
@@ -332,11 +332,12 @@
 (load "./test/symbol.scm")
 (load "./test/number.scm")
 (load "./test/closure.scm")
-(load "./test/continuation.scm")
 (load "./test/string.scm")
 (load "./test/pair.scm")
 (load "./test/port.scm")
 (load "./test/util.scm")
+(load "./test/continuation.scm")
 
 ;; report
 (total-report)
+(display "higepon")

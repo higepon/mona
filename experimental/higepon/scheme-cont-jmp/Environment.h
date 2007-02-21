@@ -32,6 +32,7 @@ public:
     Translator& translator() { return translator_; }
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "environment"; }
     virtual Object* eval(Environment* env);
 };
 

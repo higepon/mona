@@ -12,6 +12,7 @@ public:
     virtual ~True();
 
     virtual ::util::String toString();
+    virtual ::util::String typeString() const { return "#t"; }
     virtual int type() const { return Object::TRUE; }
     virtual Object* eval(Environment* env);
     virtual Object* apply(Objects* arguments, Environment* env);

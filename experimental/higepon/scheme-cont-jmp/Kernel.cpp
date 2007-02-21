@@ -64,6 +64,12 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 
 Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
 {
+    if (arguments->size() == 1 && arguments->get(0)->isValues())
+    {
+        Values* vs = (Values*)arguments->get(0);
+        arguments = vs->values();
+    }
+
     if (procedure->isCompoundProcedure())
     {
         Procedure* p = (Procedure*)procedure;

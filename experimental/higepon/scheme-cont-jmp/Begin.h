@@ -15,6 +15,7 @@ public:
     virtual ::util::String toString();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }
+    virtual ::util::String typeString() const { return "begin"; }
     virtual Object* eval(Environment* env);
     virtual Objects* actions() const { return actions_;}
     virtual bool eqv() const;

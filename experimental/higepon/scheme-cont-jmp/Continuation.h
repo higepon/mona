@@ -20,6 +20,7 @@ public:
     virtual ::util::String toStringValue();
     virtual int type() const;
     virtual Object* eval(Environment* env);
+    virtual ::util::String typeString() const { return "continuation"; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
@@ -27,7 +28,7 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 
     Cont cont;
-    Object* callArugument;
+    Objects* callAruguments;
 protected:
 
     uint32_t lineno_;

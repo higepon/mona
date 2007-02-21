@@ -21,8 +21,8 @@ class Environment;
 class Object;
 typedef ::util::Vector<Object*> Objects;
 #ifdef USE_BOEHM_GC
-class Object : public gc_cleanup
-//    class Object : public gc
+//class Object : public gc_cleanup
+class Object : public gc
 #else
 class Object
 #endif
@@ -36,8 +36,9 @@ public:
     virtual ::util::String toStringValue() { return toString(); }
     virtual bool eqv(Object* o) { return false; }
     virtual bool eq(Object* o) { return o == this; }
-    virtual int type() const               = 0;
-    virtual uint32_t lineno() const        = 0;
+    virtual int type() const                  = 0;
+    virtual uint32_t lineno() const           = 0;
+    virtual ::util::String typeString() const = 0;
     virtual Object* eval(Environment* env) = 0;
     virtual Object* apply(Objects* arguments, Environment* env);
     bool isNumber() const { return type() == NUMBER; }
@@ -60,6 +61,7 @@ public:
     bool isContinuation() const { return type() == CONTINUATION; }
     bool isOutputPort() const { return type() == OUTPUT_PORT; }
     bool isInputPort() const { return type() == INPUT_PORT; }
+    bool isValues() const { return type() == VALUES; }
 public:
 
     enum
@@ -89,6 +91,7 @@ public:
         OR,
         LET,
         LET_ASTERISK,
+        VALUES,
         NAMED_LET,
         TRUE,
         FALSE,
