@@ -3,7 +3,7 @@
 using namespace util;
 using namespace monash;
 
-Continuation::Continuation(uint32_t lineno /* = 0 */) : lineno_(lineno)
+Continuation::Continuation(uint32_t lineno /* = 0 */) : dynamicWind(NULL), lineno_(lineno)
 {
 }
 

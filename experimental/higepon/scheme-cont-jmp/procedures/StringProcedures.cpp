@@ -65,7 +65,7 @@ PROCEDURE(StringSet, "string-set!")
     {
         RAISE_ERROR(ARGV(0)->lineno(), "%s got wrong arguments", toString().data());
     }
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 
@@ -85,7 +85,7 @@ PROCEDURE(StringToNumber, "string->number")
     {
         if (!isdigit(text[i]))
         {
-            return new False();
+            return SCM_FALSE;
         }
     }
     return new Number(atoi(text.data()));

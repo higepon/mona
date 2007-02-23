@@ -2,6 +2,7 @@
 #define __LAMBDA_H__
 
 #include "scheme.h"
+#include "Variable.h"
 #include "Object.h"
 
 namespace monash {

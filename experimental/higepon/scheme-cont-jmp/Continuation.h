@@ -2,12 +2,23 @@
 #define __CONTINUATION_H__
 
 #include "Object.h"
+#include "util/Vector.h"
 extern "C" {
 #include "libcont/cont.h"
 }
 #include "procedures/Procedure.h"
 
 namespace monash {
+
+class DynamicWind
+{
+public:
+    DynamicWind(Object* before, Object* thunk, Object* after) : before(before), thunk(thunk), after(after) {}
+    virtual ~DynamicWind() {}
+    Object* before;
+    Object* thunk;
+    Object* after;
+};
 
 class Continuation : public Object
 {
@@ -29,6 +40,7 @@ public:
 
     Cont cont;
     Objects* callAruguments;
+    DynamicWind* dynamicWind;
 protected:
 
     uint32_t lineno_;

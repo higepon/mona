@@ -5,11 +5,6 @@
 #include "Kernel.h"
 #include "scheme.h"
 
-namespace monash {
-    typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
-};
-
-extern monash::DefaultProcedures procedures;
 
 #define ARGV(i) (as->get(i))
 #define ARGC    (as->size())
@@ -17,11 +12,11 @@ extern monash::DefaultProcedures procedures;
 #define RETURN_BOOLEAN(condition) \
     if ((condition))              \
     {                             \
-        return new True();        \
+        return SCM_TRUE;          \
     }                             \
     else                          \
     {                             \
-        return new False();       \
+        return SCM_FALSE;         \
     }
 
 #define CAST(o, type, to)                                                        \
@@ -36,7 +31,7 @@ extern monash::DefaultProcedures procedures;
 #define CAST_RETURN_FALSE(o, type, to)                                           \
     if (!o->is##type())                                                          \
     {                                                                            \
-        return new False();                                                      \
+        return SCM_FALSE;                                                        \
     }                                                                            \
     type* to = (type*)o;
 
@@ -62,7 +57,7 @@ extern monash::DefaultProcedures procedures;
     Objects* as = Kernel::listOfValues(arguments, env);                          \
     if (ARGC <= n)                                                               \
     {                                                                            \
-        return new False();                                                      \
+        return SCM_FALSE;                                                        \
     }
 
 

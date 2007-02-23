@@ -23,7 +23,7 @@ PROCEDURE(TranscriptOn, "transcript-on")
     {
         RAISE_ERROR(s->lineno(), "couldn't open output file: %s", s->value().data());
     }
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 
@@ -35,7 +35,7 @@ PROCEDURE(TranscriptOff, "transcript-off")
         fclose(g_transcript);
         g_transcript = NULL;
     }
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(CharReadyP, "char-ready?")
@@ -59,7 +59,7 @@ PROCEDURE(SetCurrentOutputPort, "set-current-output-port!")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), OutputPort, p);
     g_currentOutputPort = p;
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(SetCurrentInputPort, "set-current-input-port!")
@@ -67,7 +67,7 @@ PROCEDURE(SetCurrentInputPort, "set-current-input-port!")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), InputPort, p);
     g_currentInputPort = p;
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(InputPortP, "input-port?")
@@ -94,7 +94,7 @@ PROCEDURE(CloseInputPort, "close-input-port")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), InputPort, p);
     p->close();
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(CloseOutputPort, "close-output-port")
@@ -102,7 +102,7 @@ PROCEDURE(CloseOutputPort, "close-output-port")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), OutputPort, p);
     p->close();
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(OpenOutputPort, "open-output-port")
@@ -156,7 +156,7 @@ PROCEDURE(WriteChar, "write-char")
     }
     CAST(ARGV(0), Charcter, c);
     port->writeCharacter(c);
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(ReadChar, "read-char")
@@ -205,7 +205,7 @@ PROCEDURE(Write, "write")
         port = p;
     }
     port->write(ARGV(0));
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(NewLine, "newline")
@@ -222,7 +222,7 @@ PROCEDURE(NewLine, "newline")
         port = p;
     }
     port->display(new Charcter('\n'));
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(Display, "display")
@@ -239,7 +239,7 @@ PROCEDURE(Display, "display")
         port = p;
     }
     port->display(ARGV(0));
-    return new Undef();
+    return SCM_UNDEF;
 }
 
 PROCEDURE(Load, "load")

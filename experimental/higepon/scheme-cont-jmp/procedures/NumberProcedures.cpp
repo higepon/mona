@@ -61,9 +61,9 @@ PROCEDURE(NumberEqual, "=")
     for (int i = 1; i < as->size(); i++)
     {
         CAST_RETURN_FALSE(as->get(i), Number, n);
-        if (n->value() != n0->value()) return new False();
+        if (n->value() != n0->value()) return SCM_FALSE;
     }
-    return new True();
+    return SCM_TRUE;
 }
 
 
@@ -74,10 +74,10 @@ PROCEDURE(NumberGt, ">")
     for (int i = 1; i < as->size(); i++)
     {
         CAST_RETURN_FALSE(as->get(i), Number, n);
-        if (prev->value() <= n->value()) return new False();
+        if (prev->value() <= n->value()) return SCM_FALSE;
         prev = n;
     }
-    return new True();
+    return SCM_TRUE;
 }
 
 PROCEDURE(NumberLt, "<")
@@ -87,10 +87,10 @@ PROCEDURE(NumberLt, "<")
     for (int i = 1; i < as->size(); i++)
     {
         CAST_RETURN_FALSE(as->get(i), Number, n);
-        if (prev->value() >= n->value()) return new False();
+        if (prev->value() >= n->value()) return SCM_FALSE;
         prev = n;
     }
-    return new True();
+    return SCM_TRUE;
 }
 
 PROCEDURE(NumberGe, ">=")
@@ -100,10 +100,10 @@ PROCEDURE(NumberGe, ">=")
     for (int i = 1; i < as->size(); i++)
     {
         CAST_RETURN_FALSE(as->get(i), Number, n);
-        if (prev->value() < n->value()) return new False();
+        if (prev->value() < n->value()) return SCM_FALSE;
         prev = n;
     }
-    return new True();
+    return SCM_TRUE;
 }
 
 PROCEDURE(NumberLe, "<=")
@@ -113,10 +113,10 @@ PROCEDURE(NumberLe, "<=")
     for (int i = 1; i < as->size(); i++)
     {
         CAST_RETURN_FALSE(as->get(i), Number, n);
-        if (prev->value() > n->value()) return new False();
+        if (prev->value() > n->value()) return SCM_FALSE;
         prev = n;
     }
-    return new True();
+    return SCM_TRUE;
 }
 
 PROCEDURE(Multiply, "*")

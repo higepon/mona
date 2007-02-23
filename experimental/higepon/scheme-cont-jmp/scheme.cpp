@@ -1,15 +1,8 @@
+#define GLOBAL_VALUE_DEFINED
 #include "scheme.h"
 
 using namespace util;
 using namespace monash;
-
-DefaultProcedures procedures;
-
-OutputPort* g_currentOutputPort;
-OutputPort* g_defaultOutputPort;
-InputPort* g_currentInputPort;
-InputPort* g_defaultInputPort;
-FILE* g_transcript;
 
 void registerPrimitives(Environment* env)
 {
@@ -18,11 +11,16 @@ void registerPrimitives(Environment* env)
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript = NULL;
+    g_dynamic_winds = new DynamicWinds;
+    g_true = new True;
+    g_false = new False;
+    g_undef = new Undef;
+    g_no_arg = new Objects;
     for (int i = 0; i < procedures.size(); i++)
     {
         env->defineVariable(procedures[i].first, procedures[i].second);
     }
-    env->defineVariable(new Variable("#f"),             new False());
-    env->defineVariable(new Variable("#t"),             new True());
+    env->defineVariable(new Variable("#f"),             g_false);
+    env->defineVariable(new Variable("#t"),             g_true);
     env->defineVariable(new Variable("set!"),           new Set());
 }

@@ -1,6 +1,15 @@
 #ifndef __SCHEME_H__
 #define __SCHEME_H__
 
+#ifdef GLOBAL_VALUE_DEFINED
+#define GLOBAL /* */
+#define GLOBAL_VAL(v) = (v)
+#else
+#define GLOBAL extern "C"
+#define GLOBAL_VAL(v) /* */
+#endif
+
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -21,7 +30,6 @@ namespace util {
 #include "Procedure.h"
 #include "Number.h"
 #include "SString.h"
-#include "Continuation.h"
 #include "Charcter.h"
 #include "Quote.h"
 #include "Vector.h"
@@ -31,6 +39,7 @@ namespace util {
 #include "Begin.h"
 #include "Definition.h"
 #include "Application.h"
+#include "Continuation.h"
 #include "SExp.h"
 #include "Parser.h"
 #include "Translator.h"
@@ -48,7 +57,32 @@ namespace util {
 ::util::String load(const char* file);
 void registerPrimitives(monash::Environment* env);
 
-extern FILE* g_transcript;
+class monash::InputPort;
+namespace monash {
+class DynamicWind;
+typedef ::util::Vector<DynamicWind*> DynamicWinds;
+typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
+
+}
+GLOBAL monash::True* g_true;
+GLOBAL monash::False* g_false;
+GLOBAL monash::Undef* g_undef;
+GLOBAL monash::Objects* g_no_arg;
+GLOBAL monash::DynamicWinds* g_dynamic_winds;
+GLOBAL monash::InputPort* g_defaultInputPort;
+GLOBAL monash::DefaultProcedures procedures;
+GLOBAL monash::OutputPort* g_currentOutputPort;
+GLOBAL monash::OutputPort* g_defaultOutputPort;
+GLOBAL monash::InputPort* g_currentInputPort;
+
+
+
+GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
+
+#define SCM_TRUE   g_true
+#define SCM_FALSE  g_false
+#define SCM_UNDEF  g_undef
+#define SCM_NO_ARG g_no_arg
 
 // notice!
 // don't use like below

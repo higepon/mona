@@ -26,6 +26,19 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
+
+PROCEDURE(DynamicWindProc, "dynamic-wind")
+{
+    ARGC_SHOULD_BE(3);
+    DynamicWind* dynamicWind = new DynamicWind(ARGV(0), ARGV(1), ARGV(2));
+    g_dynamic_winds->add(dynamicWind);
+    Kernel::apply(ARGV(0), SCM_NO_ARG, env);
+    Object* ret = Kernel::apply(ARGV(1), SCM_NO_ARG, env);
+    Kernel::apply(ARGV(2), SCM_NO_ARG, env);
+    g_dynamic_winds->removeAt(0);
+    return ret;
+}
+
 PROCEDURE(CallWithValues, "call-with-values")
 {
     ARGC_SHOULD_BE(2);
@@ -45,12 +58,34 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
     Continuation* continuation = new Continuation;
     if (0 == cont_save(&(continuation->cont)))
     {
+        int wind_size = g_dynamic_winds->size();
+        if (wind_size != 0)
+        {
+           continuation->dynamicWind = g_dynamic_winds->get(0);
+           g_dynamic_winds->removeAt(0);
+        }
+
         Objects* arguments = new Objects;
         arguments->add(continuation);
         return Kernel::apply(procedure, arguments, env);
     }
     else
     {
+        int wind_size = g_dynamic_winds->size();
+        if (wind_size != 0)
+        {
+            for (int i = wind_size - 1; i >= 0; i--)
+            {
+                DynamicWind* d = g_dynamic_winds->get(i);
+                Kernel::apply(d->after, SCM_NO_ARG, env);
+                g_dynamic_winds->removeAt(i);
+            }
+        }
+        else if (continuation->dynamicWind != NULL)
+        {
+            Kernel::apply(continuation->dynamicWind->before, SCM_NO_ARG, env);
+        }
+
         if (continuation->callAruguments->size() == 1)
         {
             Object* result = continuation->callAruguments->get(0)->eval(env);

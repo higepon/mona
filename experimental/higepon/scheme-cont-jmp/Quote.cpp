@@ -55,11 +55,11 @@ Object* Quote::eval(Environment* env)
     {
         if (sexp_->text == "#t")
         {
-            return new True();
+            return SCM_TRUE;
         }
         else if (sexp_->text == "#f")
         {
-            return new False();
+            return g_false;
         }
         else
         {

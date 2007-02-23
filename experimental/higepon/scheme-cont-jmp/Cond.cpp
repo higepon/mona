@@ -36,7 +36,7 @@ Object* Cond::expandInternal(int i)
         }
         else
         {
-            Object* f = new False(); ASSERT(f); return f;
+            Object* f = g_false; ASSERT(f); return f;
         }
     }
     Clause* clause = clauses_->get(i);
