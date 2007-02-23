@@ -30,7 +30,6 @@ install: check
 	$(INSTALL) -p -m 0644 ./stlport/config/*.h $(INCDIR)/stlport/config
 	$(INSTALL) -p -m 0644 ./stlport/stl/*.h $(INCDIR)/stlport/stl
 	$(INSTALL) -p -m 0644 ./stlport/stl/*.c $(INCDIR)/stlport/stl
-#	patch -d $(INCDIR) -p0 < tree.patch
 
 uninstall: check
 	rm -rf $(INCDIR)/stlport/stl
