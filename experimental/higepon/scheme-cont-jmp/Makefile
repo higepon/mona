@@ -62,7 +62,8 @@ LIBCONT_SOURCES = \
 libcont/cont.c\
 libcont/mysetjmp.c
 
-CXXFLAGS = -g -idirafter . -Wall -O0 -DMONASH_DONT_FREE_MEMORY -I /usr/local/include/gc -DUSE_BOEHM_GC -DGC_OPERATOR_NEW_ARRAY -DGC_NOT_DLL #	--DGC_DEBUG 
+GC_FLAGS = -DMONASH_DONT_FREE_MEMORY -I /usr/local/include/gc -DUSE_BOEHM_GC -DGC_OPERATOR_NEW_ARRAY -DGC_NOT_DLL # --DGC_DEBUG
+CXXFLAGS = -pg -g -idirafter . -Wall $(GC_FLAGS) -O3
 CFLAGS   = $(CXXFLAGS)
 # -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
 
