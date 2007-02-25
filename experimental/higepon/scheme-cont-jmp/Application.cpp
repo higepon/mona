@@ -26,13 +26,13 @@ int Application::type() const
 Object* Application::eval(Environment* env)
 {
     Object* procedure = function()->eval(env);
-    
+
     if (!procedure->isCompoundProcedure() && !procedure->isPrimitiveProcedure() && !procedure->isContinuation())
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }
-    
-    //Objects* as = arguments();
-    return Kernel::apply(procedure, arguments(), env);
-}
 
+    Object* ret = Kernel::apply(procedure, arguments(), env);
+    procedure = NULL;
+    return ret;
+}

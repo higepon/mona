@@ -16,6 +16,8 @@
 #include "scheme.h"
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>    // rlimit
+#include <sys/resource.h> // rlimit
 using namespace util;
 using namespace monash;
 
@@ -33,47 +35,47 @@ uint32_t count_char(const char* s, char c)
 
 void input_loop()
 {
-    
+
     QuoteFilter quoteFilter;
     MacroFilter f;
     Translator translator;
     Environment* env = new Environment(f, translator);ASSERT(env);
     registerPrimitives(env);
-    
+
     char* line = NULL;;
     size_t length = 0;
     uint32_t open_paren_count = 0;
     uint32_t close_paren_count = 0;
     bool show_prompt = true;
-    
+
     RETURN_ON_ERROR();
 //        Error::returnOnError();
     String input = "(load \"test/scheme.scm\")";
-    
+
     input = quoteFilter.filter(input);
-    
+
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
     SExps sexps = allSExp->sexps;
-    
+
     for (int i = 0; i < sexps.size(); i++)
     {
         SExp* sexp = sexps.get(i);
-    
+
         f.filter(sexp);
-    
+
         Object* object = NULL;
         translator.translate(&sexp, &object);
-    
+
         printf("%s\n", object->typeString().data());
         object->eval(env);
-    
+
     }
     input = "";
 
     for (;;)
    {
-    
+
         if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
         getline(&line, &length, stdin);
         open_paren_count += count_char(line, '(');
@@ -126,6 +128,15 @@ void input_loop()
 
 int main(int argc, char *argv[])
 {
+    struct rlimit r;
+    getrlimit(RLIMIT_STACK, &r);
+    printf("cur = %d max=%d\n", r.rlim_cur / 1024, r.rlim_max);
+    r.rlim_cur = 64 * 1024 * 1024;
+
+    setrlimit(RLIMIT_STACK, &r);
+    getrlimit(RLIMIT_STACK, &r);
+    printf("cur = %d max=%d\n", r.rlim_cur / 1024, r.rlim_max);
+
     cont_initialize();
     if (argc == 1)
     {
@@ -183,7 +194,7 @@ int main(int argc, char *argv[])
 //             if (o->isCompoundProcedure() || o->isPrimitiveProcedure())
 //             {
 //                 Object*ret = Scheme::apply(o, args, env, NULL);
-//  
+//
 //                 printf("[ret]%s\n", ret->toString().data());
 //             }
 //             else
