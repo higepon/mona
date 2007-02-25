@@ -19,7 +19,11 @@ String load(const char* file)
     }
 
     size_t size = ftell(fp);
-    char* buffer = new char[size];ASSERT(buffer);
+#ifdef USE_BOEHM_GC
+    char* buffer = new(GC) char[size + 1];ASSERT(buffer);
+#else
+    char* buffer = new char[size + 1];ASSERT(buffer);
+#endif
     if (NULL == buffer)
     {
         fprintf(stderr, "memory error \n");
@@ -30,7 +34,10 @@ String load(const char* file)
 
     fread(buffer, 1, size, fp);
     fclose(fp);
+    buffer[size] = '\0';
     ret = String(buffer);
+#ifndef USE_BOEHM_GC
     delete[] buffer;
+#endif
     return ret;
 }

@@ -16,10 +16,10 @@ SExp* Parser::parse()
 {
     SExp* sexp = NULL;
     Token token = tokenizer_->nextToken();
-
     switch(token.type)
     {
     case Token::LEFT_PAREN:
+    
         sexp = new SExp(SExp::SEXPS);ASSERT(sexp);
         sexp->lineno = token.lineno;
         for (;;)
@@ -29,13 +29,16 @@ SExp* Parser::parse()
             sexp->sexps.add(child);
         }
     case Token::RIGHT_PAREN:
+    
         return NULL;
     case Token::NUMBER:
+    
         sexp = new SExp(SExp::NUMBER);ASSERT(sexp);
         sexp->value = token.value;
         sexp->lineno = token.lineno;
         return sexp;
     case Token::IDENTIFIER:
+    
         if (token.text.startWith("#\\"))
         {
             sexp = new SExp(SExp::CHAR);ASSERT(sexp);
@@ -48,11 +51,13 @@ SExp* Parser::parse()
         sexp->lineno = token.lineno;
         return sexp;
     case Token::QUOTE:
+    
         sexp = new SExp(SExp::QUOTE);ASSERT(sexp);
         sexp->text = token.text;
         sexp->lineno = token.lineno;
         return sexp;
     case Token::STRING:
+    
         sexp = new SExp(SExp::STRING);ASSERT(sexp);
         sexp->text = token.text;
         sexp->lineno = token.lineno;
@@ -60,5 +65,6 @@ SExp* Parser::parse()
     default:
         RAISE_ERROR(token.lineno, "unknown token");
     }
+    
     return NULL;
 }

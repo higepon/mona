@@ -1,6 +1,10 @@
 #ifndef __CONT_H__
 #define __CONT_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc.h"
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

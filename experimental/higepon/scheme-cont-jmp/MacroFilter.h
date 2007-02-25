@@ -8,7 +8,12 @@ namespace monash {
 class Macro;
 typedef ::util::HashMap<Macro*> Macros;
 
+#ifdef USE_BOEHM_GC
+class MacroFilter : public gc_cleanup
+//class SExp : public gc
+#else
 class MacroFilter
+#endif
 {
 public:
     MacroFilter();

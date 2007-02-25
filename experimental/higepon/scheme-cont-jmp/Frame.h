@@ -7,7 +7,12 @@
 
 namespace monash {
 
+#ifdef USE_BOEHM_GC
+class Frame : public gc_cleanup
+//class Frame : public gc
+#else
 class Frame
+#endif
 {
 public:
     Frame();

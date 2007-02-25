@@ -1,13 +1,23 @@
 #ifndef __UTIL_BINARY_TREE_H__
 #define __UTIL_BINARY_TREE_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc_cpp.h"
+#include "gc_allocator.h"
+extern bool g_gc_initialized;
+#endif
+
 namespace util {
 
 /*----------------------------------------------------------------------
     Bynary Tree
 ----------------------------------------------------------------------*/
 #define NO_DATA (Node*)0
+#ifdef USE_BOEHM_GC
+template <class T> class BinaryTree : public gc_cleanup
+#else
 template <class T> class BinaryTree
+#endif
 {
   public:
     BinaryTree();
@@ -101,7 +111,9 @@ template <class T> void BinaryTree<T>::clear(Node*& tree)
     {
         clear(tree->left);
         clear(tree->right);
+#ifndef USE_BOEHM_GC
         delete tree;
+#endif
         tree = NO_DATA;
     }
 }
@@ -111,7 +123,11 @@ template <class T> T BinaryTree<T>::add(Node*& tree, const int key, const T elem
     /* add */
     if (tree == NO_DATA)
     {
+#ifdef USE_BOEHM_GC
+        tree = new(GC) Node;
+#else
         tree = new Node;
+#endif
         if (tree == NULL)
         {
             /* not implemented */
@@ -220,7 +236,9 @@ template <class T> T BinaryTree<T>::remove(const int key)
 
     temp = *tree;
     *tree = next;
+#ifndef USE_BOEHM_GC
     delete temp;
+#endif
     numberOfElements_--;
     return result;
 };

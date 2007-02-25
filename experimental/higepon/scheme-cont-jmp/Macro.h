@@ -8,7 +8,12 @@
 #include "util/Pair.h"
 namespace monash {
 
+#ifdef USE_BOEHM_GC
+class Macro : public gc_cleanup
+//class SExp : public gc
+#else
 class Macro
+#endif
 {
 public:
     typedef ::util::Vector< ::util::Pair<SExp*, SExp*> > Patterns;

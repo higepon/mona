@@ -2,8 +2,8 @@
 #define __OBJECT_H__
 
 #ifdef USE_BOEHM_GC
-#define GC_NOT_DLL
 #include "gc_cpp.h"
+#include "gc_allocator.h"
 #endif
 #include <stdint.h>
 #include <stdlib.h>

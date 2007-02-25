@@ -11,7 +11,6 @@ extern InputPort*  g_currentInputPort;
 
 PROCEDURE(TranscriptOn, "transcript-on")
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ARGC_SHOULD_BE(1);
     if (g_transcript != NULL)
     {
@@ -247,22 +246,27 @@ PROCEDURE(Load, "load")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
     String path  = s->value();
+
     String input = load(path.data());
+
     if (input == "")
     {
         RAISE_ERROR(s->lineno(), "load error", path.data());
         return NULL;
     }
+
     input = "( " + input + ")";
     QuoteFilter quoteFilter;
     input = quoteFilter.filter(input);
 
     SExp* sexp = SExp::fromString(input);
+
     SExps sexps = sexp->sexps;
 //    Eval* e   = NULL;
     Object* o = NULL;
     for (int i = 0; i < sexps.size(); i++)
     {
+
         SExp* sex = sexps[i];
         Quote* quote = new Quote(sex, s->lineno());
         Objects* args = new Objects;
@@ -275,5 +279,6 @@ PROCEDURE(Load, "load")
 //         // let's eval!
 //         o =  e->eval(env);
     }
+
     return o;
 }

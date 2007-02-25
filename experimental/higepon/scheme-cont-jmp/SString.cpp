@@ -10,7 +10,11 @@ SString::SString(const ::util::String& value, uint32_t lineno /* = 0 */) : value
 SString::SString(uint32_t length, uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
     // todo ugly
+#ifdef USE_BOEHM_GC
+    char* buf = new(GC) char[length + 1];
+#else
     char* buf = new char[length + 1];
+#endif
     for (uint32_t i = 0; i < length; i++)
     {
         buf[i] = ' ';
@@ -22,7 +26,11 @@ SString::SString(uint32_t length, uint32_t lineno /* = 0 */) : lineno_(lineno)
 SString::SString(uint32_t length, char c, uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
     // todo ugly
+#ifdef USE_BOEHM_GC
+    char* buf = new(GC) char[length + 1];
+#else
     char* buf = new char[length + 1];
+#endif
     for (uint32_t i = 0; i < length; i++)
     {
         buf[i] = c;

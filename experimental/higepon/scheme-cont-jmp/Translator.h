@@ -22,7 +22,12 @@
 
 namespace monash {
 
+#ifdef USE_BOEHM_GC
+class Translator : public gc_cleanup
+//class SExp : public gc
+#else
 class Translator
+#endif
 {
 public:
     Translator();

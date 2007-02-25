@@ -9,6 +9,14 @@
 #define ARGV(i) (as->get(i))
 #define ARGC    (as->size())
 
+inline void scheme_gc_init()
+{
+#ifdef USE_BOEHM_GC
+    GC_INIT();
+#else
+#endif
+}
+
 #define RETURN_BOOLEAN(condition) \
     if ((condition))              \
     {                             \
@@ -84,12 +92,17 @@ public:                                                                         
     virtual ::util::String typeString() const { return name; }                   \
     virtual Object* eval(Environment* env)                                       \
     {                                                                            \
-        return this; \
+        return this;                                                             \
     }                                                                            \
     virtual Object* apply(Objects* arguments, Environment* env);                 \
 };                                                                               \
 void initialize##ClassName()                                                     \
 {                                                                                \
+    if (!g_gc_initialized)                                                       \
+    {                                                                            \
+        scheme_gc_init();                                                        \
+        g_gc_initialized = true;                                                 \
+    }                                                                            \
     procedures.add(                                                              \
         ::util::Pair<Variable*, Object*>(new Variable(name), new ClassName()));  \
 }                                                                                \

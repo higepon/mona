@@ -204,8 +204,11 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
 
 SExp* SExp::fromString(const String& text)
 {
+    
     Tokenizer tokenizer(text);
+    
     Parser parser(&tokenizer);
+    
     return parser.parse();
 }
 

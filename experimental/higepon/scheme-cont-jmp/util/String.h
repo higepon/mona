@@ -1,6 +1,11 @@
 #ifndef __UTIL_STRING_H__
 #define __UTIL_STRING_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc_cpp.h"
+#include "gc_allocator.h"
+extern bool g_gc_initialized;
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -11,7 +16,11 @@ namespace util {
 /*----------------------------------------------------------------------
     String
 ----------------------------------------------------------------------*/
+#ifdef USE_BOEHM_GC
+class String : public gc_cleanup
+#else
 class String
+#endif
 {
 public:
     enum
@@ -64,7 +73,11 @@ public:
         length_ += slength;
         char* tmp = data_;
         bufferSize_ = length_ + 1 + BUFFER_SIZE;
+#ifdef USE_BOEHM_GC
+        data_ = new(GC) char[bufferSize_];
+#else
         data_ = new char[bufferSize_];
+#endif
         for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
         for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
         data_[length + slength] = '\0';
@@ -90,7 +103,11 @@ public:
         {
             char* tmp = data_;
             bufferSize_ = length_ + 1 + BUFFER_SIZE;
+#ifdef USE_BOEHM_GC
+            data_ = new(GC) char[bufferSize_];
+#else
             data_ = new char[bufferSize_];
+#endif
             for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
             data_[length] = ch;
             data_[length + 1] = '\0';
@@ -151,7 +168,11 @@ public:
         {
             length_ = prevLength + diffLength;
             bufferSize_ = length_ + 1 + BUFFER_SIZE;
+#ifdef USE_BOEHM_GC
+            data_ = new(GC) char[bufferSize_];
+#else
             data_ = new char[bufferSize_];
+#endif
             memcpy(data_, prevData, index);
             memcpy(&data_[index], b.data(), bsize);
             memcpy(&data_[index + bsize], &prevData[index + asize], prevLength - index - asize);
@@ -177,7 +198,11 @@ private:
     {
         length_ = strlen(text);
         bufferSize_ = length_ + 1 + BUFFER_SIZE;
+#ifdef USE_BOEHM_GC
+        data_ = new(GC) char[bufferSize_];
+#else
         data_ = new char[bufferSize_];
+#endif
         strcpy(data_, text);
     }
 

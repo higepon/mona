@@ -118,6 +118,7 @@ once_more:
         str += c;
         for (;;)
         {
+    
             c = getChar();
             if (isspace(c) || c == '(' || c == ')' || c== '\'')
             {

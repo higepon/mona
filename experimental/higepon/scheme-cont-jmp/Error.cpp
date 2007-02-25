@@ -32,11 +32,11 @@ void Error::exitOnError()
 void Error::returnOnError()
 {
 //begin:
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    
 //    if (setjmp(returnPoint) != 0)
     if (cont_save(&cont) != 0)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    
         showError();
         //        goto begin;
     }

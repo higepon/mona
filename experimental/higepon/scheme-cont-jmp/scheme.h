@@ -74,8 +74,7 @@ GLOBAL monash::DefaultProcedures procedures;
 GLOBAL monash::OutputPort* g_currentOutputPort;
 GLOBAL monash::OutputPort* g_defaultOutputPort;
 GLOBAL monash::InputPort* g_currentInputPort;
-
-
+GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 

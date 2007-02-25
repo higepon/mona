@@ -1,6 +1,6 @@
 (load "./test/scheme.scm")
 (load "./test/unittest.scm")
-
+(display "hige")
 (assert-check-true "if"
                    (if #t #t #f))
 
@@ -326,7 +326,6 @@
           (func (cdr l)))))
 (assert-check-true "named let" (= 6 count)))
 
-
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")
@@ -340,4 +339,3 @@
 
 ;; report
 (total-report)
-(display "higepon")

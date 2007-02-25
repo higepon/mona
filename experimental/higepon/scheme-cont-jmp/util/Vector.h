@@ -1,11 +1,21 @@
 #ifndef __UTIL_VECTOR_H__
 #define __UTIL_VECTOR_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc_cpp.h"
+#include "gc_allocator.h"
+extern bool g_gc_initialized;
+#endif
+
 namespace util {
 /*----------------------------------------------------------------------
     Vector Class
 ----------------------------------------------------------------------*/
+#ifdef USE_BOEHM_GC
+template <class T> class Vector : public gc_cleanup
+#else
 template <class T> class Vector
+#endif
 {
   public:
     Vector();
@@ -94,7 +104,7 @@ template <class T> Vector<T>::Vector(int size, int increase)
 */
 template <class T> Vector<T>::~Vector()
 {
-#ifndef MONASH_DONT_FREE_MEMORY
+#ifndef USE_BOEHM_GC
     /* release memory */
     delete[] data_;
 #endif
@@ -145,7 +155,11 @@ template <class T> void Vector<T>::add(T element)
     {
         /* resize array */
         size_ += increase_;
+#ifdef USE_BOEHM_GC
+        T* temp = new(GC) T[size_];
+#else
         T* temp = new T[size_];
+#endif
 
         /* optimize ? */
         int numElements = numElements_;
@@ -156,7 +170,9 @@ template <class T> void Vector<T>::add(T element)
             temp[i] = data_[i];
         }
 
+#ifndef USE_BOEHM_GC
         delete[] data_;
+#endif
         data_ = temp;
     }
 
@@ -181,7 +197,11 @@ template <class T> void Vector<T>::insert(int index, T element)
     {
         /* resize array */
         size_ += increase_;
+#ifdef USE_BOEHM_GC
+        T* temp = new(GC) T[size_];
+#else
         T* temp = new T[size_];
+#endif
 
         /* optimize ? */
         int numElements = numElements_;
@@ -192,7 +212,9 @@ template <class T> void Vector<T>::insert(int index, T element)
             temp[i] = data_[i];
         }
 
+#ifndef USE_BOEHM_GC
         delete[] data_;
+#endif
         data_ = temp;
     }
 
@@ -346,6 +368,7 @@ template <class T> T Vector<T>::remove(T element)
 */
 template <class T> void Vector<T>::init(int size, int increase)
 {
+
     /* number of elements */
     numElements_ = 0;
 
@@ -354,7 +377,15 @@ template <class T> void Vector<T>::init(int size, int increase)
     increase_ = increase > 0 ? increase : 5;
 
     /* create internal array */
+#ifdef USE_BOEHM_GC
+    if (!g_gc_initialized)
+    {
+        GC_INIT();
+    }
+    data_ = new(GC) T[size_];
+#else
     data_ = new T[size_];
+#endif
     return;
 }
 

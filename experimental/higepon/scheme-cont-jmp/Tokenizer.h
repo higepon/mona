@@ -1,6 +1,10 @@
 #ifndef __TOKNIEZER_H__
 #define __TOKNIEZER_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc_cpp.h"
+#include "gc_allocator.h"
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -10,8 +14,15 @@
 
 namespace monash {
 
-typedef struct Token
+#ifdef USE_BOEHM_GC
+struct Token : public gc_cleanup
+//class SExp : public gc
+#else
+struct Token
+#endif
+//typedef struct Token
 {
+public:
     int type;
     ::util::String text;
     int value;
@@ -27,7 +38,12 @@ typedef struct Token
     };
 };
 
+#ifdef USE_BOEHM_GC
+class Tokenizer : public gc_cleanup
+//class SExp : public gc
+#else
 class Tokenizer
+#endif
 {
 public:
     Tokenizer(const ::util::String& input);

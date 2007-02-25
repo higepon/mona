@@ -1,6 +1,11 @@
 #ifndef __SEXP_H__
 #define __SEXP_H__
 
+#ifdef USE_BOEHM_GC
+#include "gc_cpp.h"
+#include "gc_allocator.h"
+#endif
+
 #include <stdio.h>
 #include <stdio.h>
 #include "util/Vector.h"
@@ -25,7 +30,12 @@ typedef ::util::Vector<SExp*> SExps;
 class BindObject;
 typedef ::util::HashMap<BindObject*> BindMap;
 
+#ifdef USE_BOEHM_GC
+class BindObject : public gc_cleanup
+//class BindObject : public gc
+#else
 class BindObject
+#endif
 {
 public:
     BindObject() : sexp(NULL) {}
@@ -34,8 +44,12 @@ public:
     SExps sexps;
 };
 
-
+#ifdef USE_BOEHM_GC
+class SExp : public gc_cleanup
+//class SExp : public gc
+#else
 class SExp
+#endif
 {
 public:
     SExp(int type) : type(type), lineno(0) {}

@@ -6,7 +6,11 @@ namespace util {
 /*----------------------------------------------------------------------
     Map Interface
 ----------------------------------------------------------------------*/
+#ifdef USE_BOEHM_GC
+template <class T> class Map : public gc_cleanup
+#else
 template <class T> class Map
+#endif
 {
 public:
     virtual ~Map() {}

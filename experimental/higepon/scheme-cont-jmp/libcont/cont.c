@@ -120,7 +120,11 @@ int cont_save(Cont* c)
 
     uint32_t current_stack = c->registers[7];
     c->stack_size = cont_stack_bottom - current_stack;
+#ifdef USE_BOEHM_GC
+    c->stack = (uint8_t*)GC_MALLOC(c->stack_size);
+#else
     c->stack = (uint8_t*)malloc(c->stack_size);
+#endif
     memcpy(c->stack, (uint8_t*)current_stack, c->stack_size);
     return ret;
 }
