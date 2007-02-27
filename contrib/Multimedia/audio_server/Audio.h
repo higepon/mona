@@ -3,6 +3,7 @@
 #include <monalibc/stdint.h>
 #include "drivers/audiodriver.h"
 #include "servers/audio.h"
+#include <stlport/vector>
 #include <stlport/map>
 
 class Audio
@@ -12,10 +13,13 @@ public:
 	Audio();
 	~Audio();
 	bool init(char *devices[], int devnum);
+	bool init_drivers();
 	int run();
 private:
 	int counter;
-	std::map<char*, struct driver_desc*> *drivers;
+	std::vector<struct driver_desc*> *drivers;
+	std::map<char*, int> *drivers_hash;
+	ServerCommand *commander;
 
 	int messageLoop();
 	bool findDevices(char *devices[], int devnum);
@@ -25,10 +29,31 @@ private:
 protected:
 };
 
-class ServerCommand
+class Channel
 {
 public:
-	static int caller(int, Audio*, MessageInfo*);
-	static int GetServerVersion(Audio*, MessageInfo*);
+	Channel();
+	virtual ~Channel();
+	bool init(struct driver_desc *driver);
+	void prepare(int samplerate, int bits, int isStereo);
+	void set_buffer(void *p, int size);
+	void start();
+	void stop();
+private:
+	struct driver_desc *driver;
+	ch_t channel;
+protected:
+};
+
+class ServerCommand
+{
+private:
+	Audio *parent;
+public:
+	ServerCommand(Audio *_parent);
+	virtual ~ServerCommand();
+	int caller(int, MessageInfo*);
+	int Nop(MessageInfo*);
+	int GetServerVersion(MessageInfo*);
 };
 

@@ -18,8 +18,6 @@ enum AudioServerCommand
 	StartChannel,
 	StopChannel,
 	ReleaseChannel,
-	Initialize,
-	Terminate,
 	DevicesInfo,
 	ChannelInfo,
 	NopCommand,

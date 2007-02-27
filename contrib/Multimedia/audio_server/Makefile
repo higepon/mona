@@ -4,7 +4,7 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = AUDIO
-SOURCES = main.cpp Audio.cpp ServerCommand.cpp drivers/es1370.cpp
+SOURCES = main.cpp Audio.cpp ServerCommand.cpp Channel.cpp drivers/es1370.cpp
 
 INSTDIR = $(BINDIR)/APPS/
 INSTFILES = 
@@ -21,6 +21,8 @@ ADDLINK    = -lmonalibc-imp -lmonapi-imp
 ADDLINKDEP = 
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
+
+ADDLINK += -lpci-imp
 
 # overwrite install
 install: all

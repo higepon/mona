@@ -9,19 +9,32 @@ static uint32_t minor_version = 0x00000001;
 
 #define NumOfMembers ((int)(sizeof(memberTable)/sizeof(memberTable[0])))
 
-int (*memberTable[])(Audio*, MessageInfo*) = {
-	NULL,
-	ServerCommand::GetServerVersion,
+int (ServerCommand::*memberTable[])(MessageInfo*) = {
+	&ServerCommand::Nop,
+	&ServerCommand::GetServerVersion
 };
 
-int ServerCommand::caller(int number, Audio* audio, MessageInfo *msg)
+ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
+{
+}
+
+ServerCommand::~ServerCommand()
+{
+}
+
+int ServerCommand::Nop(MessageInfo *msg)
+{
+	return 0;
+}
+
+int ServerCommand::caller(int number, MessageInfo *msg)
 {
 	if( number >= NumOfMembers ) return -1;
 	if( memberTable[number] == NULL ) return -1;
-	return (*memberTable[number])(audio, msg);
+	return (this->*memberTable[number])(msg);
 }
 
-int ServerCommand::GetServerVersion(Audio* audio, MessageInfo *msg)
+int ServerCommand::GetServerVersion(MessageInfo *msg)
 {
 	/* arg2 = major_version, arg3 = minor_version */
 	MonAPI::Message::reply(msg, major_version, minor_version);
