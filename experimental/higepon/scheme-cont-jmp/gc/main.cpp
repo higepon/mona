@@ -2,40 +2,42 @@
 #include <stdint.h>
 
 
-#define GC_TEST
+
 extern GCNode top;
 extern GCNode freeNodes;
-extern char* ebp;
-
 #ifdef GC_TEST
-GCNode test_top;
+extern GCNode test_top;
 #endif
+
 
 
 void test()
 {
     char* p = new char[32];
-    int* q = new int;
+    char* q = new char;
 }
 
 void test2()
 {
-    new int;
+    short* r = new short;
+}
+
+int dummy(int i)
+{
+    if (i > 100) return 100;
+    return dummy(i + 1);
 }
 
 int main(int argc, char *argv[])
 {
-    asm volatile("movl %%ebp, %0" : "=g"(ebp));
-    int x = 0x12345678;
-#ifdef GC_TEST
-    gc_node_initialize(&test_top);
-#endif
-    gc_node_initialize(&top);
-    gc_node_initialize(&freeNodes);
+    gc_init();
 
+    int x = 0x12345678;
+    int* q = new int;
     test();
     test2();
     int y = 0x99998888;
+    dummy(0);
     gc();
     return 0;
 }

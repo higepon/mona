@@ -5,7 +5,7 @@ main.cpp \
 GCNode.cpp \
 gc.cpp
 
-CXXFLAGS = -pg -g -idirafter . -Wall $(GC_FLAGS) -O2 # O2じゃないと gc 
+CXXFLAGS = -pg -g -idirafter . -Wall $(GC_FLAGS) -DGC_TEST #-O3 # O2じゃないと gc 
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

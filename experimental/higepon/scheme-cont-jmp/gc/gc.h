@@ -17,6 +17,9 @@ typedef struct GCNode
 } GCNode;
 
 void* operator new(unsigned int size);
+
+#define gc_init() {char* __ebp; asm volatile("movl %%ebp, %0" : "=g"(__ebp));gc_init_internal(__ebp); }
+void gc_init_internal(char* ebp);
 void gc_mark();
 void gc_sweep();
 void gc();

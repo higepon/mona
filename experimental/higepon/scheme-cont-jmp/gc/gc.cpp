@@ -2,7 +2,7 @@
 
 GCNode top;
 GCNode freeNodes;
-char* ebp;
+static char* gc_stack_bottom;
 
 #ifdef GC_TEST
 GCNode test_top;
@@ -28,14 +28,29 @@ void* operator new(unsigned int size)
     return ret;
 }
 
+void gc_init_internal(char* stack_bottom)
+{
+    gc_stack_bottom = stack_bottom;
+    gc_node_initialize(&top);
+    gc_node_initialize(&freeNodes);
+#ifdef GC_TEST
+    gc_node_initialize(&test_top);
+#endif
+
+    // get caller's gc_stack_bottom, caller may be main().
+//    asm volatile("push (%%esp) \n pop %0" : "=g"(gc_stack_bottom));
+
+
+//    asm volatile("movl (%%esp), %%eax\n movl %%eax,  %0" : "=g"(gc_stack_bottom));
+
+}
+
 void gc_mark()
 {
-    register char* esp asm ("%esp");
+    register char* stack_top asm ("%esp");
     printf("    ==== mark start ====\n");
-    static int c = 0;
-    c++;
 
-    int d = (uint32_t)ebp - (uint32_t)esp;
+    int d = (uint32_t)gc_stack_bottom - (uint32_t)stack_top;
 
     FOREACH_GC_NODE(&top, n)
     {
@@ -44,14 +59,14 @@ void gc_mark()
 
     for (int i = 0; i < d; i++)
     {
-        uint32_t valueOnStack = *((uint32_t *) &esp[i]);
+        uint32_t valueOnStack = *((uint32_t *) &stack_top[i]);
         FOREACH_GC_NODE(&top, n)
         {
-//            printf("[%x]esp[i] = %x\n", &esp[i], valueOnStack);
-            //if (esp[i] >= 0x8000000 && esp[i] < 0x9000000) printf("[%x]esp[i] = %x\n", &esp[i], esp[i]);
+            //printf("          stack_top[i] = %x\n", valueOnStack);
+            //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) printf("[%x]esp[i] = %x\n", &esp[i], esp[i]);
             if ((uint32_t)n->address == valueOnStack && !n->reachable)
             {
-                printf("      [mark reachable%d] %x\n", c, valueOnStack);
+                printf("        [mark ] %x\n", valueOnStack);
                 n->reachable = true;
             }
         }
@@ -62,15 +77,13 @@ void gc_mark()
 void gc_sweep()
 {
     printf("    ==== sweep start ====\n");
-    static int c = 0;
-    c++;
 
     FOREACH_GC_NODE(&top, n)
     {
         if (!n->reachable)
         {
             GCNode* prev = n->prev;
-            printf("      [sweep%d] %p\n", c,  n->address);
+            printf("        [sweep] %p\n",  n->address);
             free(n->address);
             gc_node_remove(n);
             gc_node_add_to_next(&freeNodes, n);
