@@ -13,6 +13,7 @@ void gc_node_add_to_next(GCNode* left, GCNode* right);
 void gc_node_add_to_prev(GCNode* right, GCNode* left);
 void gc_node_remove(GCNode* self);
 bool gc_node_is_empty(GCNode* self);
+int gc_node_size(GCNode* self);
 GCNode* gc_node_remove_next(GCNode* self);
 
 #endif // __GC_NODE_H__

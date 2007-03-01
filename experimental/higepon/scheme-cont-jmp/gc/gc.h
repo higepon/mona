@@ -6,6 +6,11 @@
 #include <stdint.h>
 
 #define ASSERT_NOT_NULL(p) {if (NULL == p) {printf("ASSERT_NOT_NULL %s:%d: %s\n", __FILE__, __LINE__, #p);}}
+#ifdef GC_TRACE
+#define GC_TRACE_OUT(...) printf(__VA_ARGS__);
+#else
+#define GC_TRACE_OUT(...) //
+#endif
 
 typedef struct GCNode
 {

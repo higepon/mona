@@ -1,15 +1,6 @@
 #include "GCNode.h"
-#include <stdint.h>
-
-
 
 extern GCNode top;
-extern GCNode freeNodes;
-#ifdef GC_TEST
-extern GCNode test_top;
-#endif
-
-
 
 void test()
 {
@@ -39,5 +30,17 @@ int main(int argc, char *argv[])
     int y = 0x99998888;
     dummy(0);
     gc();
-    return 0;
+    int size = gc_node_size(&top);
+
+    if (size == 1 && top.next->size == 4)
+    {
+        printf("%s [OK]\n", argv[0]);
+        return 0;
+    }
+    else
+    {
+        printf("%s [NG]\n", argv[0]);
+        return 1;
+    }
+
 }

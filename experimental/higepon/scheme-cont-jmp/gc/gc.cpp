@@ -14,7 +14,7 @@ void* operator new(unsigned int size)
     gc();
     void* ret = malloc(size);
     ASSERT_NOT_NULL(ret);
-    printf("operator new(%d) = %p\n",
+    GC_TRACE_OUT("operator new(%d) = %p\n",
         size, ret);
     GCNode* n = gc_node_alloc();
     n->address = ret;
@@ -48,7 +48,7 @@ void gc_init_internal(char* stack_bottom)
 void gc_mark()
 {
     register char* stack_top asm ("%esp");
-    printf("    ==== mark start ====\n");
+    GC_TRACE_OUT("    ==== mark start ====\n");
 
     int d = (uint32_t)gc_stack_bottom - (uint32_t)stack_top;
 
@@ -62,35 +62,35 @@ void gc_mark()
         uint32_t valueOnStack = *((uint32_t *) &stack_top[i]);
         FOREACH_GC_NODE(&top, n)
         {
-            //printf("          stack_top[i] = %x\n", valueOnStack);
-            //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) printf("[%x]esp[i] = %x\n", &esp[i], esp[i]);
+            //GC_TRACE_OUT("          stack_top[i] = %x\n", valueOnStack);
+            //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) GC_TRACE_OUT("[%x]esp[i] = %x\n", &esp[i], esp[i]);
             if ((uint32_t)n->address == valueOnStack && !n->reachable)
             {
-                printf("        [mark ] %x\n", valueOnStack);
+                GC_TRACE_OUT("        [mark ] %x\n", valueOnStack);
                 n->reachable = true;
             }
         }
     }
-    printf("    ==== mark end   ====\n");
+    GC_TRACE_OUT("    ==== mark end   ====\n");
 }
 
 void gc_sweep()
 {
-    printf("    ==== sweep start ====\n");
+    GC_TRACE_OUT("    ==== sweep start ====\n");
 
     FOREACH_GC_NODE(&top, n)
     {
         if (!n->reachable)
         {
             GCNode* prev = n->prev;
-            printf("        [sweep] %p\n",  n->address);
+            GC_TRACE_OUT("        [sweep] %p\n",  n->address);
             free(n->address);
             gc_node_remove(n);
             gc_node_add_to_next(&freeNodes, n);
             n = prev;
         }
     }
-    printf("    ==== sweep end   ====\n");
+    GC_TRACE_OUT("    ==== sweep end   ====\n");
 }
 
 void gc()

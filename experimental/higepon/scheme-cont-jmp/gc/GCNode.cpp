@@ -63,3 +63,13 @@ GCNode* gc_node_remove_next(GCNode* self)
     result->next->prev = self;
     return result;
 }
+
+int gc_node_size(GCNode* self)
+{
+    int size = 0;
+    FOREACH_GC_NODE(self, element)
+    {
+        size++;
+    }
+    return size;
+}
