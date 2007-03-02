@@ -19,27 +19,26 @@ void* operator new(unsigned int size)
     gc();
     void* ret = malloc(size);
     ASSERT_NOT_NULL(ret);
-    if ((uint32_t)ret < POINTER_GUARD(gc_heap_min)) gc_heap_min = POINTER_GUARD(ret - 1);
-    if ((uint32_t)ret > POINTER_GUARD(gc_heap_max)) gc_heap_max = POINTER_GUARD(ret + 1);
+    if ((uint32_t)ret <= GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(ret - 1);
+    if ((uint32_t)ret >= GC_SAFE_POINTER(gc_heap_max)) gc_heap_max = GC_SAFE_POINTER(ret + 1);
 
     GC_TRACE_OUT("operator new(%d) = %p\n",
         size, ret);
     GCNode* n = gc_node_alloc();
-    n->address = (void*)POINTER_GUARD(ret);
+    n->address = (void*)GC_SAFE_POINTER(ret);
     n->size = size;
     gc_node_add_to_next(&top, n);
 #ifdef GC_TEST
     GCNode* testNode = gc_node_copy(n);
     gc_node_add_to_next(&test_top, testNode);
 #endif
-
     return ret;
 }
 
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
 {
     gc_heap_max = 0;
-    gc_heap_min = POINTER_GUARD(0xfffffff);
+    gc_heap_min = GC_SAFE_POINTER(0xfffffff);
     gc_stack_bottom = stack_bottom;
     gc_data_start   = data_start;
     gc_data_end     = data_end;
@@ -76,7 +75,7 @@ void gc_mark()
         {
             //GC_TRACE_OUT("          stack_top[i] = %x\n", valueOnStack);
             //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) GC_TRACE_OUT("[%x]esp[i] = %x\n", &esp[i], esp[i]);
-            if (POINTER_GUARD(n->address) == valueOnStack && !n->reachable)
+            if (GC_SAFE_POINTER(n->address) == valueOnStack && !n->reachable)
             {
                 GC_TRACE_OUT("        [mark ] %x\n", valueOnStack);
                 n->reachable = true;
@@ -92,7 +91,7 @@ void gc_mark()
         {
             //GC_TRACE_OUT("          stack_top[i] = %x\n", valueOnStack);
             //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) GC_TRACE_OUT("[%x]esp[i] = %x\n", &esp[i], esp[i]);
-            if (POINTER_GUARD(n->address) == valueOnData && !n->reachable)
+            if (GC_SAFE_POINTER(n->address) == valueOnData && !n->reachable)
             {
                 GC_TRACE_OUT("        [mark ] %x\n", valueOnStack);
                 n->reachable = true;
@@ -105,7 +104,6 @@ void gc_mark()
         gc_mark_heap(n);
     }
 
-
     GC_TRACE_OUT("    ==== mark end   ====\n");
 }
 
@@ -113,14 +111,14 @@ void gc_mark_heap(GCNode* node)
 {
     if (!node->reachable) return;
     uint32_t size = node->size;
-    char* address = (char*)POINTER_GUARD(node->address);
+    char* address = (char*)GC_SAFE_POINTER(node->address);
     for (uint32_t i = 0; i < size; i++)
     {
         uint32_t valueOnHeap = *((uint32_t *) &address[i]);
-        if (valueOnHeap > POINTER_GUARD(gc_heap_max) || valueOnHeap < POINTER_GUARD(gc_heap_min)) continue;
+        if (valueOnHeap > GC_SAFE_POINTER(gc_heap_max) || valueOnHeap < GC_SAFE_POINTER(gc_heap_min)) continue;
         FOREACH_GC_NODE(&top, n)
         {
-            if (POINTER_GUARD(n->address) == valueOnHeap && !n->reachable)
+            if (GC_SAFE_POINTER(n->address) == valueOnHeap && !n->reachable)
             {
                 GC_TRACE_OUT("        [mark heap] %x\n", valueOnStack);
                 n->reachable = true;
@@ -139,8 +137,8 @@ void gc_sweep()
         if (!n->reachable)
         {
             GCNode* prev = n->prev;
-            GC_TRACE_OUT("        [sweep] %p\n",  POINTER_GUARD(n->address));
-            free((void*)POINTER_GUARD(n->address));
+            GC_TRACE_OUT("        [sweep] %p\n",  GC_SAFE_POINTER(n->address));
+            free((void*)GC_SAFE_POINTER(n->address));
             gc_node_remove(n);
             gc_node_add_to_next(&freeNodes, n);
             n = prev;

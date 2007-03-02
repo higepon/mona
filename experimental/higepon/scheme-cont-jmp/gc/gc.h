@@ -11,7 +11,8 @@
 #else
 #define GC_TRACE_OUT(...) //
 #endif
-#define POINTER_GUARD(a) (((uint32_t)a >> 16) | (((uint32_t)a & 0x0000ffff) << 16))
+#define GC_SAFE_POINTER(a) (((uint32_t)a >> 16) | (((uint32_t)a & 0x0000ffff) << 16))
+//((uint32_t)a) 
 extern "C" char  __bss_start[];
 extern "C" char  _end[];
 
