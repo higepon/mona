@@ -11,6 +11,7 @@ void test()
 void test2()
 {
     short* r = new short;
+    char* t = new char[5];
 }
 
 int dummy(int i)
@@ -28,11 +29,12 @@ int main(int argc, char *argv[])
     test();
     test2();
     int y = 0x99998888;
+    char* buf = new char[64];
     dummy(0);
     gc();
     int size = gc_node_size(&top);
 
-    if (size == 1 && top.next->size == 4)
+    if (size == 2 && top.next->size == 64 && top.next->next->size == 4)
     {
         printf("[OK] %s\n", argv[0]);
         return 0;
