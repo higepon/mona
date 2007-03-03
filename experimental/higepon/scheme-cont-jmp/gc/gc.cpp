@@ -1,4 +1,5 @@
 #include "GCNode.h"
+#include "mysetjmp.h"
 
 GCNode top;
 GCNode freeNodes;
@@ -13,6 +14,7 @@ GCNode test_top;
 #endif
 
 static void gc_mark_heap(GCNode* node);
+static void gc_mark_registers();
 
 void* operator new(unsigned int size)
 {
@@ -104,7 +106,27 @@ void gc_mark()
         gc_mark_heap(n);
     }
 
+    gc_mark_registers();
+
     GC_TRACE_OUT("    ==== mark end   ====\n");
+}
+
+void gc_mark_registers()
+{
+    myjmp_buf registers;
+    mysetjmp(registers);
+    for (int i = 0; i < _JBLEN; i++)
+    {
+        uint32_t valueOnRegister = registers[i];
+        FOREACH_GC_NODE(&top, n)
+        {
+            if (GC_SAFE_POINTER(n->address) == valueOnRegister && !n->reachable)
+            {
+                GC_TRACE_OUT("        [mark ] %x\n", valueOnRegister);
+                n->reachable = true;
+            }
+        }
+    }
 }
 
 void gc_mark_heap(GCNode* node)
