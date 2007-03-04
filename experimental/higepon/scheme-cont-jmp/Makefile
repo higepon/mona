@@ -1,5 +1,9 @@
-TARGET  = ./scheme
+TARGET       = ./scheme
 TEST_TARGET  = ./scheme_test
+
+#include Makefile.boehm_gc.inc
+#include Makefile.mona_gc.inc
+include Makefile.none_gc.inc
 
 SOURCES = \
 Application.cpp\
@@ -58,27 +62,23 @@ test_cpp/MacroMatchTest.cpp\
 test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp
 
-LIBCONT_SOURCES = \
-libcont/cont.c\
-libcont/mysetjmp.c
+LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
 
-GC_FLAGS = -DMONASH_DONT_FREE_MEMORY -I /usr/local/include/gc -DUSE_BOEHM_GC -DGC_OPERATOR_NEW_ARRAY -DGC_NOT_DLL # --DGC_DEBUG
-CXXFLAGS = -pg -g -idirafter . -Wall $(GC_FLAGS) -O3
+CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS)
 CFLAGS   = $(CXXFLAGS)
-# -fno-exceptions -fno-rtti -I /usr/local/include/gc -DGC_OPERATOR_NEW_ARRAY# -DUSE_BOEHM_GC
+LDFLAGS  = $(GC_LDFLAGS)
 
 OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 LIBCONT_OBJECTS = $(LIBCONT_SOURCES:.c=.o) libcont/mysetjmp_asm.o
-
+GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 all : $(TARGET) $(TEST_TARGET)
 
-$(TARGET): main.o $(OBJECTS) $(LIBCONT_OBJECTS)
-	echo $(LIBCONT_OBJECTS)
-	$(CXX) -pg -lgc main.o $(OBJECTS) $(LIBCONT_OBJECTS) -o $(TARGET)
+$(TARGET): main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS)
+	$(CXX) -pg -g main.o $(OBJECTS) $(LIBCONT_OBJECTS) -o $(TARGET) $(LDFLAGS)
 
-$(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS)
-	$(CXX) -lcppunit -ldl -lgc test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET)
+$(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS)
+	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
 
 libcont/mysetjmp_asm.o: libcont/mysetjmp.asm
 	nasm $< -o $@ -felf -g -F stabs
@@ -92,7 +92,6 @@ gdb : $(TARGET)
 
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
-
 test_cpp/main.o: test_cpp/main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
@@ -109,6 +108,6 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET)
+	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS)
 
 -include dependencies

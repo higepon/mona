@@ -6,7 +6,6 @@
 #define FOREACH_GC_NODE(top, element) \
     for (GCNode* element = (top)->next; element != (top); element = element->next)
 
-GCNode* gc_node_copy(GCNode* n);
 GCNode* gc_node_alloc();
 void gc_node_initialize(GCNode* n);
 void gc_node_add_to_next(GCNode* left, GCNode* right);

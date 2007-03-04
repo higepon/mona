@@ -1,13 +1,5 @@
 #include "GCNode.h"
 
-GCNode* gc_node_copy(GCNode* n)
-{
-    GCNode* ret = gc_node_alloc();
-    ret->address = n->address;
-    ret->size    = n->size;
-    return ret;
-}
-
 GCNode* gc_node_alloc()
 {
     GCNode* result = (GCNode*)malloc(sizeof(GCNode));

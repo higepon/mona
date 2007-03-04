@@ -111,7 +111,7 @@ template <class T> void BinaryTree<T>::clear(Node*& tree)
     {
         clear(tree->left);
         clear(tree->right);
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
         delete tree;
 #endif
         tree = NO_DATA;
@@ -236,7 +236,7 @@ template <class T> T BinaryTree<T>::remove(const int key)
 
     temp = *tree;
     *tree = next;
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
     delete temp;
 #endif
     numberOfElements_--;

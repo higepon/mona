@@ -4,7 +4,9 @@
 #include "PrimitiveProcedure.h"
 #include "Kernel.h"
 #include "scheme.h"
-
+#ifdef USE_MONA_GC
+#include "../gc/gc.h"
+#endif
 
 #define ARGV(i) (as->get(i))
 #define ARGC    (as->size())
@@ -14,6 +16,9 @@ inline void scheme_gc_init()
 #ifdef USE_BOEHM_GC
     GC_INIT();
 #else
+#ifdef USE_MONA_GC
+    gc_init();
+#endif
 #endif
 }
 

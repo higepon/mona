@@ -11,7 +11,6 @@
 #include <string.h>
 #include "Assert.h"
 #include "Error.h"
-#include <iostream>
 #include "util/Vector.h"
 #include "util/String.h"
 

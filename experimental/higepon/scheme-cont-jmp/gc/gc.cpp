@@ -8,6 +8,7 @@ static char* gc_data_start;
 static char* gc_data_end;
 static uint32_t gc_heap_min;
 static uint32_t gc_heap_max;
+static uint32_t gc_count;
 
 #ifdef GC_TEST
 GCNode test_top;
@@ -15,30 +16,39 @@ GCNode test_top;
 
 static void gc_mark_heap(GCNode* node);
 static void gc_mark_registers();
+static GCNode* gc_alloc_node();
+static GCNode* gc_copy_node(GCNode* n);
+
+static bool gc_initialized = false;
 
 void* operator new(unsigned int size)
 {
-    gc();
     void* ret = malloc(size);
     ASSERT_NOT_NULL(ret);
     if ((uint32_t)ret <= GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(ret - 1);
     if ((uint32_t)ret >= GC_SAFE_POINTER(gc_heap_max)) gc_heap_max = GC_SAFE_POINTER(ret + 1);
 
-    GC_TRACE_OUT("operator new(%d) = %p\n",
-        size, ret);
-    GCNode* n = gc_node_alloc();
+    GC_TRACE_OUT("operator new(%d) = %p\n", size, ret);
+    GCNode* n = gc_alloc_node();
     n->address = (void*)GC_SAFE_POINTER(ret);
     n->size = size;
     gc_node_add_to_next(&top, n);
 #ifdef GC_TEST
-    GCNode* testNode = gc_node_copy(n);
+    GCNode* testNode = gc_copy_node(n);
     gc_node_add_to_next(&test_top, testNode);
 #endif
+    gc_count++;
+    bool do_gc = gc_count % 3 == 0;
+    if (do_gc) gc();
     return ret;
 }
 
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
 {
+    if (gc_initialized) return;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    gc_initialized = true;
+    gc_count = 0;
     gc_heap_max = 0;
     gc_heap_min = GC_SAFE_POINTER(0xfffffff);
     gc_stack_bottom = stack_bottom;
@@ -173,4 +183,23 @@ void gc()
 {
     gc_mark();
     gc_sweep();
+}
+
+GCNode* gc_alloc_node()
+{
+    if (gc_node_is_empty(&freeNodes))
+    {
+        return gc_node_alloc();
+    }
+    GCNode* ret = gc_node_remove_next(&freeNodes);
+    gc_node_initialize(ret);
+    return ret;
+}
+
+GCNode* gc_copy_node(GCNode* n)
+{
+    GCNode* ret = gc_alloc_node();
+    ret->address = n->address;
+    ret->size    = n->size;
+    return ret;
 }

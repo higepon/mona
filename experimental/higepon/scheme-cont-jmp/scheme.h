@@ -22,7 +22,7 @@ namespace util {
     typedef Vector<String> Strings;
 };
 
-#include <algorithm>
+//#include <algorithm>
 #include "MacroFilter.h"
 #include "QuoteFilter.h"
 #include "Object.h"

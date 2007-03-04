@@ -5,6 +5,9 @@
 #include "gc_cpp.h"
 #include "gc_allocator.h"
 extern bool g_gc_initialized;
+#else
+extern bool g_gc_initialized;
+#include "../gc/gc.h"
 #endif
 
 namespace util {
@@ -104,7 +107,7 @@ template <class T> Vector<T>::Vector(int size, int increase)
 */
 template <class T> Vector<T>::~Vector()
 {
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
     /* release memory */
     delete[] data_;
 #endif
@@ -170,7 +173,7 @@ template <class T> void Vector<T>::add(T element)
             temp[i] = data_[i];
         }
 
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
         delete[] data_;
 #endif
         data_ = temp;
@@ -212,7 +215,7 @@ template <class T> void Vector<T>::insert(int index, T element)
             temp[i] = data_[i];
         }
 
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
         delete[] data_;
 #endif
         data_ = temp;
@@ -384,6 +387,9 @@ template <class T> void Vector<T>::init(int size, int increase)
     }
     data_ = new(GC) T[size_];
 #else
+#ifdef USE_MONA_GC
+    gc_init();
+#endif
     data_ = new T[size_];
 #endif
     return;

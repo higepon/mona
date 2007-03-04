@@ -37,7 +37,7 @@ template <class T> HashMap<T>::HashMap()
 
 template <class T> HashMap<T>::~HashMap()
 {
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
     delete tree_;
 #endif
 }
