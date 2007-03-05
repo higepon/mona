@@ -23,6 +23,7 @@ static bool gc_initialized = false;
 
 void* operator new(unsigned int size)
 {
+    if (!gc_initialized) gc_init();
     void* ret = malloc(size);
     ASSERT_NOT_NULL(ret);
     if ((uint32_t)ret <= GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(ret - 1);
@@ -46,7 +47,6 @@ void* operator new(unsigned int size)
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
 {
     if (gc_initialized) return;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     gc_initialized = true;
     gc_count = 0;
     gc_heap_max = 0;
@@ -89,7 +89,7 @@ void gc_mark()
             //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) GC_TRACE_OUT("[%x]esp[i] = %x\n", &esp[i], esp[i]);
             if (GC_SAFE_POINTER(n->address) == valueOnStack && !n->reachable)
             {
-                GC_TRACE_OUT("        [mark ] %x\n", valueOnStack);
+                GC_TRACE_OUT("        [mark stack] %x\n", valueOnStack);
                 n->reachable = true;
             }
         }
@@ -105,7 +105,7 @@ void gc_mark()
             //if (stack_top[i] >= 0x8000000 && esp[i] < 0x9000000) GC_TRACE_OUT("[%x]esp[i] = %x\n", &esp[i], esp[i]);
             if (GC_SAFE_POINTER(n->address) == valueOnData && !n->reachable)
             {
-                GC_TRACE_OUT("        [mark ] %x\n", valueOnStack);
+                GC_TRACE_OUT("        [mark global] %x\n", valueOnData);
                 n->reachable = true;
             }
         }
@@ -152,7 +152,7 @@ void gc_mark_heap(GCNode* node)
         {
             if (GC_SAFE_POINTER(n->address) == valueOnHeap && !n->reachable)
             {
-                GC_TRACE_OUT("        [mark heap] %x\n", valueOnStack);
+                GC_TRACE_OUT("        [mark heap] %x\n", valueOnHeap);
                 n->reachable = true;
                 gc_mark_heap(n);
             }

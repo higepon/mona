@@ -36,7 +36,7 @@ String load(const char* file)
     fclose(fp);
     buffer[size] = '\0';
     ret = String(buffer);
-#ifndef USE_BOEHM_GC
+#ifndef MONASH_DONT_FREE_MEMORY
     delete[] buffer;
 #endif
     return ret;
