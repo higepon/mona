@@ -35,7 +35,6 @@ uint32_t count_char(const char* s, char c)
 
 void input_loop()
 {
-
     QuoteFilter quoteFilter;
     MacroFilter f;
     Translator translator;
@@ -128,6 +127,9 @@ void input_loop()
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_MONA_GC
+    gc_init();
+#endif
     struct rlimit r;
     getrlimit(RLIMIT_STACK, &r);
     printf("cur = %d max=%d\n", r.rlim_cur / 1024, r.rlim_max);

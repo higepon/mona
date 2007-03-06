@@ -13,6 +13,7 @@
 
 inline void scheme_gc_init()
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 #ifdef USE_BOEHM_GC
     GC_INIT();
 #else
@@ -85,36 +86,6 @@ inline void scheme_gc_init()
 
 
 #define PROCEDURE(ClassName, name)                                               \
-class ClassName : public PrimitiveProcedure                                      \
-{                                                                                \
-private:                                                                         \
-    ::util::String procedureName_;                                               \
-public:                                                                          \
-    ClassName()  : procedureName_(name) {}                                       \
-    virtual ~ClassName() {}                                                      \
-                                                                                 \
-    virtual ::util::String toString() {    return "procedure:" name;}            \
-    virtual ::util::String typeString() const { return name; }                   \
-    virtual Object* eval(Environment* env)                                       \
-    {                                                                            \
-        return this;                                                             \
-    }                                                                            \
-    virtual Object* apply(Objects* arguments, Environment* env);                 \
-};                                                                               \
-void initialize##ClassName()                                                     \
-{                                                                                \
-    if (!g_gc_initialized)                                                       \
-    {                                                                            \
-        scheme_gc_init();                                                        \
-        g_gc_initialized = true;                                                 \
-    }                                                                            \
-    procedures.add(                                                              \
-        ::util::Pair<Variable*, Object*>(new Variable(name), new ClassName()));  \
-}                                                                                \
-static struct Wrapper##ClassName                                                 \
-{                                                                                \
-    Wrapper##ClassName(){initialize##ClassName();}                               \
-} initializer_##ClassName;                                                       \
     Object* ClassName::apply(Objects* arguments, Environment* env)
 
 #endif // __PRIMITIVE_PROCEDURE_PROCEDURE_H__

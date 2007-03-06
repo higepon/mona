@@ -4,6 +4,8 @@
 using namespace util;
 using namespace monash;
 
+#include "primitive_procedures.h"
+
 void registerPrimitives(Environment* env)
 {
     g_defaultOutputPort = new OutputPort(stdout);
@@ -16,10 +18,14 @@ void registerPrimitives(Environment* env)
     g_false = new False;
     g_undef = new Undef;
     g_no_arg = new Objects;
-    for (int i = 0; i < procedures.size(); i++)
-    {
-        env->defineVariable(procedures[i].first, procedures[i].second);
-    }
+
+#include "register.inc"
+
+
+//     for (int i = 0; i < procedures.size(); i++)
+//     {
+//         env->defineVariable(procedures[i].first, procedures[i].second);
+//     }
     env->defineVariable(new Variable("#f"),             g_false);
     env->defineVariable(new Variable("#t"),             g_true);
     env->defineVariable(new Variable("set!"),           new Set());

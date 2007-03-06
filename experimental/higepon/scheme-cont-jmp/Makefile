@@ -1,11 +1,13 @@
-TARGET       = ./scheme
-TEST_TARGET  = ./scheme_test
+TARGET        = ./scheme
+TEST_TARGET   = ./scheme_test
+REGISTERS_INC = ./register.inc
+PROCEDURES_H  = ./primitive_procedures.h
 
 #include Makefile.boehm_gc.inc
-#include Makefile.mona_gc.inc
-include Makefile.none_gc.inc
+include Makefile.mona_gc.inc
+#include Makefile.none_gc.inc
 
-SOURCES = \
+SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\
 Assignment.cpp\
 Begin.cpp\
@@ -29,19 +31,6 @@ OutputPort.cpp\
 InputPort.cpp\
 Values.cpp\
 Parser.cpp\
-procedures/CharcterProcedures.cpp\
-procedures/EqualProcedures.cpp\
-procedures/False.cpp\
-procedures/IOProcedures.cpp\
-procedures/NumberProcedures.cpp\
-procedures/PairProcedures.cpp\
-procedures/Set.cpp\
-procedures/StringProcedures.cpp\
-procedures/SymbolProcedures.cpp\
-procedures/True.cpp\
-procedures/Undef.cpp\
-procedures/VectorProcedures.cpp\
-procedures/MiscProcedures.cpp\
 Procedure.cpp\
 Quote.cpp\
 QuoteFilter.cpp\
@@ -55,6 +44,22 @@ Variable.cpp\
 Vector.cpp\
 load.cpp\
 scheme.cpp
+
+PROCEDURE_SOURCES =\
+procedures/CharcterProcedures.cpp\
+procedures/EqualProcedures.cpp\
+procedures/False.cpp\
+procedures/IOProcedures.cpp\
+procedures/NumberProcedures.cpp\
+procedures/PairProcedures.cpp\
+procedures/Set.cpp\
+procedures/StringProcedures.cpp\
+procedures/SymbolProcedures.cpp\
+procedures/True.cpp\
+procedures/Undef.cpp\
+procedures/VectorProcedures.cpp\
+procedures/MiscProcedures.cpp
+
 
 TEST_SOURCES = \
 test_cpp/yaml.cpp\
@@ -74,10 +79,10 @@ LIBCONT_OBJECTS = $(LIBCONT_SOURCES:.c=.o) libcont/mysetjmp_asm.o
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 all : $(TARGET) $(TEST_TARGET)
 
-$(TARGET): main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS)
+$(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS)
 	$(CXX) -pg -g main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) -o $(TARGET) $(LDFLAGS)
 
-$(TEST_TARGET): test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS)
+$(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS)
 	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
 
 libcont/mysetjmp_asm.o: libcont/mysetjmp.asm
@@ -103,11 +108,17 @@ test_cpp/main.o: test_cpp/main.cpp
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
+$(REGISTERS_INC): $(PROCEDURE_SOURCES) ./test/generate.scm
+	gosh ./test/generate.scm --register $(PROCEDURE_SOURCES) > $@ ; true
+
+$(PROCEDURES_H): $(PROCEDURE_SOURCES) ./test/generate.scm
+	gosh ./test/generate.scm --header $(PROCEDURE_SOURCES) > $@ ; true
+
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS)
+	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H)
 
 -include dependencies

@@ -23,7 +23,7 @@ static bool gc_initialized = false;
 
 void* operator new(unsigned int size)
 {
-    if (!gc_initialized) gc_init();
+    if (!gc_initialized) {gc_init(); gc_initialized = true;}
     void* ret = malloc(size);
     ASSERT_NOT_NULL(ret);
     if ((uint32_t)ret <= GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(ret - 1);
@@ -39,7 +39,7 @@ void* operator new(unsigned int size)
     gc_node_add_to_next(&test_top, testNode);
 #endif
     gc_count++;
-    bool do_gc = gc_count % 3 == 0;
+    bool do_gc = gc_count % 100 == 0;
     if (do_gc) gc();
     return ret;
 }
