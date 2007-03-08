@@ -12,6 +12,8 @@ SString::SString(uint32_t length, uint32_t lineno /* = 0 */) : lineno_(lineno)
     // todo ugly
 #ifdef USE_BOEHM_GC
     char* buf = new(GC) char[length + 1];
+#elifdef USE_MONA_GC
+    char* buf = new(false) char[length + 1];
 #else
     char* buf = new char[length + 1];
 #endif
@@ -28,6 +30,8 @@ SString::SString(uint32_t length, char c, uint32_t lineno /* = 0 */) : lineno_(l
     // todo ugly
 #ifdef USE_BOEHM_GC
     char* buf = new(GC) char[length + 1];
+#elifdef USE_MONA_GC
+    char* buf = new(false) char[length + 1];
 #else
     char* buf = new char[length + 1];
 #endif

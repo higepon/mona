@@ -120,9 +120,12 @@ PROCEDURE(BooleanP, "boolean?")
     RETURN_BOOLEAN(ARGV(0)->isBoolean());
 }
 
-
+extern "C" {
+#include "gc/gc.h"
+};
 PROCEDURE(Exit, "exit")
 {
+    gc();
     exit(-1);
 }
 

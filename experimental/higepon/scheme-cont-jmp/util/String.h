@@ -75,6 +75,8 @@ public:
         bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
         data_ = new(GC) char[bufferSize_];
+#elifdef USE_MONA_GC
+        data_ = new(false) char[bufferSize_];
 #else
         data_ = new char[bufferSize_];
 #endif
@@ -105,6 +107,8 @@ public:
             bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
+#elifdef USE_MONA_GC
+            data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
 #endif
@@ -170,6 +174,8 @@ public:
             bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
+#elifdef USE_MONA_GC
+            data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
 #endif
@@ -200,6 +206,8 @@ private:
         bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
         data_ = new(GC) char[bufferSize_];
+#elifdef USE_MONA_GC
+        data_ = new(false) char[bufferSize_];
 #else
         data_ = new char[bufferSize_];
 #endif

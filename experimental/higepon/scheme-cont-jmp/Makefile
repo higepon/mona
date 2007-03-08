@@ -109,10 +109,10 @@ test_cpp/main.o: test_cpp/main.cpp
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(REGISTERS_INC): $(PROCEDURE_SOURCES) ./test/generate.scm
-	gosh ./test/generate.scm --register $(PROCEDURE_SOURCES) > $@ ; true
+	gosh ./test/generate.scm --register $(PROCEDURE_SOURCES) > $@
 
 $(PROCEDURES_H): $(PROCEDURE_SOURCES) ./test/generate.scm
-	gosh ./test/generate.scm --header $(PROCEDURE_SOURCES) > $@ ; true
+	gosh ./test/generate.scm --header $(PROCEDURE_SOURCES) > $@
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies

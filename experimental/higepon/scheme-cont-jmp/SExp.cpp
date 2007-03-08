@@ -204,11 +204,11 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
 
 SExp* SExp::fromString(const String& text)
 {
-    
+    printf("[[%s]]", text.data());
     Tokenizer tokenizer(text);
-    
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Parser parser(&tokenizer);
-    
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return parser.parse();
 }
 

@@ -16,6 +16,7 @@ SExp* Parser::parse()
 {
     SExp* sexp = NULL;
     Token token = tokenizer_->nextToken();
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     switch(token.type)
     {
     case Token::LEFT_PAREN:
@@ -24,8 +25,10 @@ SExp* Parser::parse()
         sexp->lineno = token.lineno;
         for (;;)
         {
+//            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             SExp* child = parse();
             if (NULL == child) return sexp;
+//            printf("<<%s>> \n", child->toString().data());
             sexp->sexps.add(child);
         }
     case Token::RIGHT_PAREN:

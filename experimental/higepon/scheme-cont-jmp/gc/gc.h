@@ -23,9 +23,11 @@ typedef struct GCNode
     void* address;
     uint32_t size;
     bool reachable;
+    bool haspointer;
 } GCNode;
 
 void* operator new(unsigned int size);
+void* operator new(unsigned int size, bool haspointer);
 
 #define gc_init() {                                \
     char* __ebp;                                   \
