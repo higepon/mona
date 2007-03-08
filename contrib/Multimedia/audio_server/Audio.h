@@ -55,5 +55,6 @@ public:
 	int caller(int, MessageInfo*);
 	int Nop(MessageInfo*);
 	int GetServerVersion(MessageInfo*);
+	int AllocateChannel(MessageInfo*);
 };
 

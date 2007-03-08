@@ -40,6 +40,7 @@ bool Audio::init(char *devices[], int devnum)
 
 int Audio::run()
 {
+	this->init_drivers();
 	return this->messageLoop();
 }
 
