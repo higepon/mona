@@ -1,0 +1,3 @@
+GCRecord.o: GCRecord.cpp GCRecord.h gc.h
+gc.o: gc.cpp GCRecord.h gc.h
+gc_stack_test_01.o: gc_stack_test_01.cpp GCRecord.h gc.h
