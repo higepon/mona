@@ -5,11 +5,13 @@
 #include "gc_cpp.h"
 #include "gc_allocator.h"
 extern bool g_gc_initialized;
+#else
+#include "../gc3/gc.h"
 #endif
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "util/Assert.h"
+#include "Assert.h"
 
 namespace util {
 
@@ -75,10 +77,12 @@ public:
         bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
         data_ = new(GC) char[bufferSize_];
-#elifdef USE_MONA_GC
+#else
+#ifdef USE_MONA_GC
         data_ = new(false) char[bufferSize_];
 #else
         data_ = new char[bufferSize_];
+#endif
 #endif
         for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
         for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
@@ -107,10 +111,13 @@ public:
             bufferSize_ = length_ + 1 + BUFFER_SIZE;
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
-#elifdef USE_MONA_GC
+#else
+#ifdef USE_MONA_GC
+            printf("false");
             data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
+#endif
 #endif
             for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
             data_[length] = ch;

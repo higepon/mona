@@ -70,7 +70,7 @@ GLOBAL monash::Undef* g_undef;
 GLOBAL monash::Objects* g_no_arg;
 GLOBAL monash::DynamicWinds* g_dynamic_winds;
 GLOBAL monash::InputPort* g_defaultInputPort;
-GLOBAL monash::DefaultProcedures procedures;
+//GLOBAL monash::DefaultProcedures procedures;
 GLOBAL monash::OutputPort* g_currentOutputPort;
 GLOBAL monash::OutputPort* g_defaultOutputPort;
 GLOBAL monash::InputPort* g_currentInputPort;

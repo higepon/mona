@@ -16,7 +16,6 @@ SExp* Parser::parse()
 {
     SExp* sexp = NULL;
     Token token = tokenizer_->nextToken();
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     switch(token.type)
     {
     case Token::LEFT_PAREN:

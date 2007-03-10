@@ -20,7 +20,7 @@ void Macro::addPattern(SExp* pattern, SExp* definition)
 
 SExp* Macro::findPattern(SExp* pattern)
 {
-   for (int i = 0; i < patterns.size(); i++)
+    for (int i = 0; i < patterns.size(); i++)
     {
         if (patterns[i].first == pattern) return patterns[i].second;
     }

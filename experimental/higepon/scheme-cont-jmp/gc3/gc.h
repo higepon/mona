@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 #include "mysetjmp.h"
 #define GC_ASSERT_NOT_NULL(p) {if (NULL == p) {printf("GC_ASSERT_NOT_NULL %s:%d: %s\n", __FILE__, __LINE__, #p);}}
-#define GC_ASSERT(p) {if (!p) {printf("GC_ASSERT %s:%d: %s\n", __FILE__, __LINE__, #p);}}
+#define GC_ASSERT(p) {if (!(p)) {printf("GC_ASSERT %s:%d: %s\n", __FILE__, __LINE__, #p);fflush(stdout);}}
 #ifdef GC_TRACE
 #define GC_TRACE_OUT(...) printf(__VA_ARGS__);
 #else
@@ -39,7 +40,10 @@ typedef struct GCRecord
 
 void gc();
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end);
-void* gc_malloc(uint32_t size);
+void* gc_malloc(uint32_t size, bool haspointer = true);
 void* operator new(unsigned int size);
+void* operator new(unsigned int size, bool haspointer);
+void* operator new[](unsigned int size);
+void* operator new[](unsigned int size, bool haspointer);
 
 #endif // __GC_H__

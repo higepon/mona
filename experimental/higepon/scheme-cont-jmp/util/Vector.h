@@ -7,7 +7,7 @@
 extern bool g_gc_initialized;
 #else
 extern bool g_gc_initialized;
-#include "../gc/gc.h"
+#include "../gc3/gc.h"
 #endif
 
 namespace util {

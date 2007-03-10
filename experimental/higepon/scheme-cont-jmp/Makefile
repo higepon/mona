@@ -82,8 +82,8 @@ all : $(TARGET) $(TEST_TARGET)
 $(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS)
 	$(CXX) -pg -g main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) -o $(TARGET) $(LDFLAGS)
 
-$(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS)
-	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
+$(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS)
+	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
 
 libcont/mysetjmp_asm.o: libcont/mysetjmp.asm
 	nasm $< -o $@ -felf -g -F stabs
