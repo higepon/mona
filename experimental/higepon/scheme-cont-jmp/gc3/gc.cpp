@@ -9,9 +9,13 @@ static char* gc_data_start;
 static char* gc_data_end;
 static bool gc_initialized = false;
 static int gc_count = 0;
+static uint32_t gc_total_allocated_size;
+static uint32_t gc_total_allocated_count;
+static uint32_t gc_total_sweeped_count;
+static uint32_t gc_total_sweeped_size;
 
 static bool gc_check_valid_record(GCRecord* r);
-static GCRecord* gc_is_memory_block(uint32_t address);
+inline static GCRecord* gc_is_memory_block(uint32_t address);
 static bool gc_check_valid_record(GCRecord* r);
 static void gc_mark_stack();
 static void gc_mark_global();
@@ -72,6 +76,10 @@ void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
 #else
     gc_stack_bottom = (char*)get_stack_bottom();
 #endif
+    gc_total_allocated_size = 0;
+    gc_total_allocated_count = 0;
+    gc_total_sweeped_size = 0;
+    gc_total_sweeped_count = 0;
     gc_data_start   = data_start;
     gc_data_end     = data_end;
     gc_initialized  = true;
@@ -86,23 +94,33 @@ void* gc_malloc(uint32_t size, bool haspointer)
 
     // gc の呼出しは割り当て前に行わないとdouble free の可能性が
     gc_count++;
-    if (gc_count % 1000 == 0)
+    if (gc_count % 5000 == 0)
     {
         gc();
     }
 
     uint32_t alloc_size = sizeof(GCRecord) + size;
+    gc_total_allocated_size += size;
+    gc_total_allocated_count++;
     GCRecord* r = (GCRecord*)malloc(alloc_size);
     GC_ASSERT_NOT_NULL(r);
     if ((uint32_t)r < GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(r);
     if ((uint32_t)r + alloc_size > GC_SAFE_POINTER(gc_heap_max)) gc_heap_max = GC_SAFE_POINTER(r + alloc_size);
-
     gc_record_initialize(r);
     gc_record_add_to_next(&root, r);
     r->size = size;
-    r->haspointer = 1;
+    r->haspointer = haspointer;
     GC_TRACE_OUT("    ==== %x(%d) new ====\n", r->data, size);
     return r->data;
+}
+
+void gc_fini()
+{
+    printf("gc:gc_total_allocated_count = %d\n", gc_total_allocated_count);
+    printf("gc:gc_total_allocated_size = %d\n", gc_total_allocated_size / 1024);
+    printf("gc:gc_total_sweeped_count = %d\n", gc_total_sweeped_count);
+    printf("gc:gc_total_sweeped_size = %d\n", gc_total_sweeped_size / 1024);
+
 }
 
 void gc_free(GCRecord* r)
@@ -111,13 +129,6 @@ void gc_free(GCRecord* r)
     free(r);
 }
 
-GCRecord* gc_is_memory_block(uint32_t address)
-{
-    if (address < GC_SAFE_POINTER(gc_heap_min) || address > GC_SAFE_POINTER(gc_heap_max)) return NULL;
-    GCRecord* r = (GCRecord*)(address - sizeof(GCRecord));
-    if (!gc_check_valid_record(r)) return NULL;
-    return r;
-}
 
 bool gc_check_valid_record(GCRecord* r)
 {
@@ -177,6 +188,14 @@ void gc_mark_registers()
     }
 }
 
+GCRecord* gc_is_memory_block(uint32_t address)
+{
+    if (address > GC_SAFE_POINTER(gc_heap_max) || address < GC_SAFE_POINTER(gc_heap_min)) return NULL;
+    GCRecord* r = (GCRecord*)(address - sizeof(GCRecord));
+    if (!gc_check_valid_record(r)) return NULL;
+    return r;
+}
+
 void gc_mark_heap(GCRecord* r)
 {
     if (!r->reachable || !r->haspointer || r->checkdone) return;
@@ -215,6 +234,15 @@ void gc_mark()
     gc_mark_stack();
     gc_mark_global();
     gc_mark_registers();
+
+    uint32_t markedcount = 0;
+    FOREACH_GC_RECORD(&root, r)
+    {
+        if (r->reachable) markedcount++;
+    }
+
+    printf("%x/%x\n", markedcount, gc_record_size(&root));
+
     FOREACH_GC_RECORD(&root, r)
     {
         gc_mark_heap(r);
@@ -234,8 +262,11 @@ void gc_sweep()
 //            printf("      sweep=%x\n", r->data);
             GCRecord* prev = r->prev;
             gc_record_remove(r);
+            gc_total_sweeped_count++;
+            gc_total_sweeped_size += r->size;
             gc_free(r);
             r = prev;
+
         }
     }
     GC_TRACE_OUT("    ==== %s end ====\n", __func__);

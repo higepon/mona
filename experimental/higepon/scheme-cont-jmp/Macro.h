@@ -16,7 +16,7 @@ class Macro
 #endif
 {
 public:
-    typedef ::util::Vector< ::util::Pair<SExp*, SExp*> > Patterns;
+    typedef ::util::Vector< ::util::Pair<SExp*, SExp*>* > Patterns;
 
     Macro(const ::util::String& name);
     virtual ~Macro();

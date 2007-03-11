@@ -22,20 +22,36 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
     switch(sexp->type)
     {
     case SExp::NUMBER:
+#ifdef USE_MONA_GC
         *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+#else
+        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+#endif
         return SUCCESS;
     case SExp::STRING:
+#ifdef USE_MONA_GC
         *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+#else
+        *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+#endif
         return SUCCESS;
 //     case SExp::QUOTE:
 //         printf("quote:%s\n", sexp->text.data());
 //         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);ASSERT(*object);
 //         return SUCCESS;
     case SExp::CHAR:
+#ifdef USE_MONA_GC
         *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+#else
+        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+#endif
         return SUCCESS;
     case SExp::SYMBOL:
+#ifdef USE_MONA_GC
         *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+#else
+        *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+#endif
         return SUCCESS;
     }
     return SYNTAX_ERROR;
@@ -46,7 +62,11 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     if (L() != 3) return SYNTAX_ERROR;
     SExp* symbol = N(1);
     if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
+#ifdef USE_MONA_GC
     Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
+#else
+    Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
+#endif
     SExp* argument = N(2);
     Object* argumentObject;
     if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;

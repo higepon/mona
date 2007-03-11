@@ -23,14 +23,25 @@ PROCEDURE(Plus, "+")
             total += n->value();
         }
     }
+#ifdef USE_MONA_GC
     return new Number(total);
+#else
+    return new Number(total);
+#endif
 }
 
 PROCEDURE(Minus, "-")
 {
     ARGC_SHOULD_BE_GT(0);
     CAST(ARGV(0), Number, n);
-    if (ARGC == 1) return new Number(-1 * n->value());
+    if (ARGC == 1)
+    {
+#ifdef USE_MONA_GC
+        return new Number(-1 * n->value());
+#else
+        return new Number(-1 * n->value());
+#endif
+    }
 
     int total = n->value();
     for (int i = 1; i < as->size(); i++)
@@ -156,4 +167,3 @@ PROCEDURE(Divide, "/")
     }
     return new Number(total);
 }
-

@@ -93,8 +93,11 @@ bool Charcter::le(Object* o)
 
 Number* Charcter::toNumber()
 {
+#ifdef USE_MONA_GC
     return new Number((int)value(), lineno());
-
+#else
+    return new Number((int)value(), lineno());
+#endif
 }
 
 Charcter* Charcter::fromNumber(Number* n)

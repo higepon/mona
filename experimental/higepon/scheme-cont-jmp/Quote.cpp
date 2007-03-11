@@ -63,12 +63,20 @@ Object* Quote::eval(Environment* env)
         }
         else
         {
+#ifdef USE_MONA_GC
             return new SString(sexp_->text, sexp_->lineno);
+#else
+            return new SString(sexp_->text, sexp_->lineno);
+#endif
         }
     }
     else if (sexp_->isNumber())
     {
+#ifdef USE_MONA_GC
         return new Number(sexp_->value, sexp_->lineno);
+#else
+        return new Number(sexp_->value, sexp_->lineno);
+#endif
     }
     else
     {

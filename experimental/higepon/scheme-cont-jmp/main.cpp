@@ -59,19 +59,11 @@ void input_loop()
 
     for (int i = 0; i < sexps.size(); i++)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         SExp* sexp = sexps.get(i);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         f.filter(sexp);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Object* object = NULL;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         translator.translate(&sexp, &object);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-        printf("%s\n", object->typeString().data());
-        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, object->toString().data());fflush(stdout);// debug
         object->eval(env);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 
     }
     input = "";
@@ -136,12 +128,10 @@ int main(int argc, char *argv[])
 #endif
     struct rlimit r;
     getrlimit(RLIMIT_STACK, &r);
-    printf("cur = %d max=%d\n", r.rlim_cur / 1024, r.rlim_max);
     r.rlim_cur = 64 * 1024 * 1024;
 
     setrlimit(RLIMIT_STACK, &r);
     getrlimit(RLIMIT_STACK, &r);
-    printf("cur = %d max=%d\n", r.rlim_cur / 1024, r.rlim_max);
 
     cont_initialize();
     if (argc == 1)

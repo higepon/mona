@@ -246,21 +246,16 @@ PROCEDURE(Load, "load")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
     String path  = s->value();
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     String input = load(path.data());
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (input == "")
     {
         RAISE_ERROR(s->lineno(), "load error", path.data());
         return NULL;
     }
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     input = "( " + input + ")";
     QuoteFilter quoteFilter;
     input = quoteFilter.filter(input);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     SExp* sexp = SExp::fromString(input);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     SExps sexps = sexp->sexps;
 //    Eval* e   = NULL;
     Object* o = NULL;
@@ -268,14 +263,11 @@ PROCEDURE(Load, "load")
     {
 
         SExp* sex = sexps[i];
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Quote* quote = new Quote(sex, s->lineno());
         Objects* args = new Objects;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         args->add(quote);
         args->add(env);
         o = Kernel::apply((new Variable("eval"))->eval(env), args, env);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 // Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application)
 //         e = new Eval(env->translator(), quote, quote->lineno());
 

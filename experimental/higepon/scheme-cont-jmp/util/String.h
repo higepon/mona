@@ -30,16 +30,16 @@ public:
         BUFFER_SIZE = 256,
     };
 
-    String(const char* text)
+    String(const char* text) : extendSize_(8)
     {
         set(text);
     }
-    String(const String& text)
+    String(const String& text) : extendSize_(8)
     {
         set(text.data());
     }
 
-    String()
+    String() : extendSize_(8)
     {
         set("");
     }
@@ -73,20 +73,29 @@ public:
         uint32_t length  = length_;
         uint32_t slength = s.size();
         length_ += slength;
-        char* tmp = data_;
-        bufferSize_ = length_ + 1 + BUFFER_SIZE;
+        if (bufferSize_ >= length_)
+        {
+            for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
+            data_[length_] = '\0';
+        }
+        else
+        {
+            char* tmp = data_;
+            bufferSize_ = length_ + 1 + extendSize_;
+            extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
-        data_ = new(GC) char[bufferSize_];
+            data_ = new(GC) char[bufferSize_];
 #else
 #ifdef USE_MONA_GC
-        data_ = new(false) char[bufferSize_];
+            data_ = new(false) char[bufferSize_];
 #else
-        data_ = new char[bufferSize_];
+            data_ = new char[bufferSize_];
 #endif
 #endif
-        for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
-        for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
-        data_[length + slength] = '\0';
+            for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
+            for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
+            data_[length + slength] = '\0';
+        }
     }
 
     String operator +(const String& s)
@@ -108,12 +117,12 @@ public:
         else
         {
             char* tmp = data_;
-            bufferSize_ = length_ + 1 + BUFFER_SIZE;
+            bufferSize_ = length_ + 1 + extendSize_;
+            extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
 #else
 #ifdef USE_MONA_GC
-            printf("false");
             data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
@@ -178,7 +187,8 @@ public:
         if (diffLength > 0)
         {
             length_ = prevLength + diffLength;
-            bufferSize_ = length_ + 1 + BUFFER_SIZE;
+            bufferSize_ = length_ + 1 + extendSize_;
+            extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
 #elifdef USE_MONA_GC
@@ -210,7 +220,7 @@ private:
     void set(const char* text)
     {
         length_ = strlen(text);
-        bufferSize_ = length_ + 1 + BUFFER_SIZE;
+        bufferSize_ = length_ + 1 + extendSize_;
 #ifdef USE_BOEHM_GC
         data_ = new(GC) char[bufferSize_];
 #elifdef USE_MONA_GC
@@ -225,6 +235,7 @@ protected:
     char* data_;
     uint32_t length_;
     uint32_t bufferSize_;
+    uint32_t extendSize_;
 
 };
 

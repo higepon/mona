@@ -15,14 +15,14 @@ Macro::~Macro()
 
 void Macro::addPattern(SExp* pattern, SExp* definition)
 {
-    patterns.add(::util::Pair<SExp*, SExp*>(pattern, definition));
+    patterns.add(new ::util::Pair<SExp*, SExp*>(pattern, definition));
 }
 
 SExp* Macro::findPattern(SExp* pattern)
 {
     for (int i = 0; i < patterns.size(); i++)
     {
-        if (patterns[i].first == pattern) return patterns[i].second;
+        if (patterns[i]->first == pattern) return patterns[i]->second;
     }
     return NULL;
 }
@@ -59,7 +59,7 @@ SExp* Macro::match(const String& macroName, SExp* target)
 {
     for (int i = 0; i < patterns.size(); i++)
     {
-        if (Macro::match(macroName, reservedWords, patterns[i].first, target)) return patterns[i].first;
+        if (Macro::match(macroName, reservedWords, patterns[i]->first, target)) return patterns[i]->first;
     }
     return NULL;
 }

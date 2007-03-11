@@ -126,6 +126,7 @@ extern "C" {
 PROCEDURE(Exit, "exit")
 {
     gc();
+    gc_fini();
     exit(-1);
 }
 
