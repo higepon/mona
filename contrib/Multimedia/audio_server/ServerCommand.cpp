@@ -13,7 +13,11 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::Nop,
 	&ServerCommand::GetServerVersion,
 	&ServerCommand::Nop,
-	&ServerCommand::AllocateChannel
+	&ServerCommand::AllocateChannel,
+	&ServerCommand::PrepareChannel,
+	&ServerCommand::Nop,
+	&ServerCommand::Nop,
+	&ServerCommand::ReleaseChannel,
 };
 
 ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
@@ -52,3 +56,29 @@ int ServerCommand::AllocateChannel(MessageInfo *msg)
 	MonAPI::Message::reply(msg, ch);
 	return 0;
 }
+
+int ServerCommand::PrepareChannel(MessageInfo *msg)
+{
+	ch_t ch;
+	int rate;
+	int bits;
+	int ret;
+	ch = msg->arg1;
+	rate = msg->arg2;
+	bits = msg->arg3;
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	ret = (*it)->prepare_channel(ch, rate, bits, 1);
+	MonAPI::Message::reply(msg, ret);
+	return ret;
+}
+
+int ServerCommand::ReleaseChannel(MessageInfo *msg)
+{
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	(*it)->destroy_channel(msg->arg1);
+	MonAPI::Message::reply(msg, 0);
+	return 0;
+}
+

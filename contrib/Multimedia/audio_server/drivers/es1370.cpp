@@ -10,6 +10,7 @@ extern "C" ch_t    aud_es1370_create_channel();
 extern "C" int32_t aud_es1370_prepare_channel(ch_t ch, int32_t rate, int32_t bits, int32_t isStereo);
 extern "C" int32_t aud_es1370_set_buffer(ch_t ch, void *buf, size_t size);
 extern "C" int32_t aud_es1370_start_channel(ch_t ch, int32_t loop);
+extern "C" int32_t aud_es1370_destroy_channel(ch_t ch);
 extern "C" int32_t aud_es1370_emit_interrupted();
 
 static es1370 *dev = NULL;
@@ -28,7 +29,7 @@ struct driver_desc desc = {
 	aud_es1370_set_buffer,	// set_buffer
 	aud_es1370_start_channel,	// start_channel
 	NULL,	// stop_channel
-	NULL,	// destroy_channel
+	aud_es1370_destroy_channel,	// destroy_channel
 	aud_es1370_emit_interrupted,	// emit_interrupted
 };
 
@@ -96,6 +97,12 @@ extern "C" int32_t aud_es1370_start_channel(ch_t ch, int32_t loop)
 	return 0;
 }
 
+extern "C" int32_t aud_es1370_destroy_channel(ch_t ch)
+{
+	dev->destroyChannel(ch);
+	return 0;
+}
+
 extern "C" int32_t aud_es1370_emit_interrupted()
 {
 	monapi_set_irq(dev->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
@@ -140,6 +147,12 @@ ch_t es1370::createChannel()
 		if( !usingchannels[i] ) return (ch_t)i+1;
 	}
 	return (ch_t)-1;
+}
+
+void es1370::destroyChannel(ch_t ch)
+{
+	if( ch > 2 && ch < 1 ) return;
+	usingchannels[ch] = false;
 }
 
 void es1370::setSampleRate(int rate)

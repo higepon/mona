@@ -56,5 +56,7 @@ public:
 	int Nop(MessageInfo*);
 	int GetServerVersion(MessageInfo*);
 	int AllocateChannel(MessageInfo*);
+	int PrepareChannel(MessageInfo*);
+	int ReleaseChannel(MessageInfo*);
 };
 

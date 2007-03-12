@@ -20,6 +20,14 @@ int main(int argc, char *argv[])
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, AllocateChannel);
 	ch = msg.arg2;
 	_printf("Channel: %d\n", ch);
+	msg.arg1 = ch;
+	msg.arg2 = 44100;
+	msg.arg3 = 16;
+	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel);
+	_printf("Result: %d\n", msg.arg2);
+	msg.arg1 = ch;
+	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, ReleaseChannel);
+	_printf("Channel was released.\n");
 
 	return 0;
 }
