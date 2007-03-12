@@ -71,11 +71,7 @@ void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
     gc_record_initialize(&root);
     gc_heap_max = GC_SAFE_POINTER(0);
     gc_heap_min = GC_SAFE_POINTER(0xfffffff);
-#if 0
-    gc_stack_bottom = stack_bottom;
-#else
     gc_stack_bottom = (char*)get_stack_bottom();
-#endif
     gc_total_allocated_size = 0;
     gc_total_allocated_count = 0;
     gc_total_sweeped_size = 0;
@@ -111,6 +107,7 @@ void* gc_malloc(uint32_t size, bool haspointer)
     r->size = size;
     r->haspointer = haspointer;
     GC_TRACE_OUT("    ==== %x(%d) new ====\n", r->data, size);
+
     return r->data;
 }
 
@@ -137,19 +134,37 @@ bool gc_check_valid_record(GCRecord* r)
 
 void gc_mark_block(GCRecord* r)
 {
+    if (r->reachable) return;
     r->reachable = 1;
     return;
 }
 
+#define GC_IS_MEMORY_BLOCK(R, A) ((A & 0x3) == 0 && \
+                                             A <= GC_SAFE_POINTER(gc_heap_max) && \
+                                             A >= GC_SAFE_POINTER(gc_heap_min) && \
+                                             (R = (GCRecord*)(A - sizeof(GCRecord)))->magic == GC_MAGIC)
+
 void gc_mark_range(char* from, char* to)
 {
     GC_ASSERT((uint32_t)to > (uint32_t)from);
-    uint32_t size = (uint32_t)to - (uint32_t)from;
+    uint32_t size = ((uint32_t)to - (uint32_t)from) / 4;
+#if 0
     for (uint32_t i = 0; i < size; i++)
     {
-        uint32_t value = *((uint32_t *)&from[i]);
+        uint32_t value = *((uint32_t *)&from[i * 4]);
+#else
+    uint32_t* address = (uint32_t*)from;
+    for (uint32_t i = 0; i < size; i++)
+    {
+        uint32_t value = address[i];
+#endif
+#if 1
         GCRecord* r = gc_is_memory_block(value);
-        if (NULL != r)
+        if (r != NULL)
+#else
+        GCRecord* r;
+        if (GC_IS_MEMORY_BLOCK(r, value))
+#endif
         {
             GC_TRACE_OUT("      mark=%x\n", value);
             gc_mark_block(r);
@@ -176,11 +191,17 @@ void gc_mark_registers()
 {
     myjmp_buf registers;
     mysetjmp(registers);
+    // 4byte単位なのに注意
     for (int i = 0; i < _JBLEN; i++)
     {
         uint32_t valueOnRegister = registers[i];
+#if 1
         GCRecord* r = gc_is_memory_block(valueOnRegister);
         if (NULL != r)
+#else
+        GCRecord* r;
+        if (GC_IS_MEMORY_BLOCK(r, (uint32_t)registers[i]))
+#endif
         {
             GC_TRACE_OUT("      mark=%x\n", valueOnRegister);
             gc_mark_block(r);
@@ -188,32 +209,60 @@ void gc_mark_registers()
     }
 }
 
+
+// not used.
 GCRecord* gc_is_memory_block(uint32_t address)
 {
-    if (address > GC_SAFE_POINTER(gc_heap_max) || address < GC_SAFE_POINTER(gc_heap_min)) return NULL;
-    GCRecord* r = (GCRecord*)(address - sizeof(GCRecord));
-    if (!gc_check_valid_record(r)) return NULL;
-    return r;
+    GCRecord* r;
+    if (GC_IS_MEMORY_BLOCK(r, address)) return r;
+    return NULL;
+
+//     GCRecord* r;
+//     if ((address & 0x3) == 0 &&
+//         address <= GC_SAFE_POINTER(gc_heap_max) &&
+//         address >= GC_SAFE_POINTER(gc_heap_min) &&
+//         (r = (GCRecord*)(address - sizeof(GCRecord)))->magic == GC_MAGIC) return r;
+//     return NULL;
+
+//     GCRecord* r;
+//     if (address & 0x3 ||
+//         address > GC_SAFE_POINTER(gc_heap_max) ||
+//         address < GC_SAFE_POINTER(gc_heap_min) ||
+//         (r = (GCRecord*)(address - sizeof(GCRecord)))->magic != GC_MAGIC) return NULL;
+//     return r;
+
+//     // 4byte align
+//     if (address & 0x3) return NULL;
+//     if (address > GC_SAFE_POINTER(gc_heap_max) || address < GC_SAFE_POINTER(gc_heap_min)) return NULL;
+//     GCRecord* r = (GCRecord*)(address - sizeof(GCRecord));
+//     if (!gc_check_valid_record(r)) return NULL;
+//     return r;
 }
 
 void gc_mark_heap(GCRecord* r)
 {
     if (!r->reachable || !r->haspointer || r->checkdone) return;
     r->checkdone = 1;
-    uint32_t size = r->size;
+    uint32_t size = r->size / 4;
+#if 0
     char* address = r->data;
     for (uint32_t i = 0; i < size; i++)
     {
-        uint32_t valueOnHeap = *((uint32_t *) &address[i]);
-//         if (size == 136 && valueOnHeap > 0x8000000 && valueOnHeap < 0x9000000)
-//         {
-//             printf("valueOnHeap[%d] = %x %d\n", i, valueOnHeap, gc_is_memory_block(valueOnHeap));
-//             GCRecord* r = (GCRecord*)(valueOnHeap - sizeof(GCRecord));
-//             printf("r->magic=%x\n", r->magic);
-//         }
-
+        uint32_t valueOnHeap = *((uint32_t *) &address[i * 4]);
+#else
+    uint32_t* address = (uint32_t*)r->data;
+    for (uint32_t i = 0; i < size; i++)
+    {
+        uint32_t valueOnHeap = address[i];
+#endif
+#if 0
+        if (valueOnHeap & 0x3) continue;
         GCRecord* target = gc_is_memory_block(valueOnHeap);
-        if (NULL != target)
+        if (target != NULL)
+#else
+        GCRecord* target;
+        if (GC_IS_MEMORY_BLOCK(target, valueOnHeap))
+#endif
         {
             GC_TRACE_OUT("      heap mark=%x\n", valueOnHeap);
             gc_mark_block(target);
@@ -235,14 +284,6 @@ void gc_mark()
     gc_mark_global();
     gc_mark_registers();
 
-    uint32_t markedcount = 0;
-    FOREACH_GC_RECORD(&root, r)
-    {
-        if (r->reachable) markedcount++;
-    }
-
-    printf("%x/%x\n", markedcount, gc_record_size(&root));
-
     FOREACH_GC_RECORD(&root, r)
     {
         gc_mark_heap(r);
@@ -256,10 +297,9 @@ void gc_sweep()
     GC_TRACE_OUT("    ==== %s start ====\n", __func__);
     FOREACH_GC_RECORD(&root, r)
     {
-        if (!r->reachable)
-        {
+         if (!r->reachable)
+         {
             GC_TRACE_OUT("      sweep=%x\n", r->data);
-//            printf("      sweep=%x\n", r->data);
             GCRecord* prev = r->prev;
             gc_record_remove(r);
             gc_total_sweeped_count++;
@@ -269,5 +309,6 @@ void gc_sweep()
 
         }
     }
+
     GC_TRACE_OUT("    ==== %s end ====\n", __func__);
 }

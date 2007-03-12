@@ -19,6 +19,8 @@ extern "C" char  __bss_start[];
 extern "C" char  _end[];
 
 // padding に注意
+// 4byte align を前提に mark_heap する
+#pragma pack(4)
 typedef struct GCRecord
 {
     GCRecord* prev;
@@ -31,6 +33,7 @@ typedef struct GCRecord
     uint32_t dummy      : 29;
     char data[0];
 } GCRecord;
+#pragma pack()
 
 #define gc_init() {                                \
     char* __ebp;                                   \
