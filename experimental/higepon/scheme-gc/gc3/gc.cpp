@@ -107,7 +107,7 @@ void* gc_malloc(uint32_t size, bool haspointer)
     gc_record_add_to_next(&root, r);
     r->size = size;
     r->haspointer = haspointer;
-    GC_TRACE_OUT("    ==== %x(%d) new ====\n", r->data, size);
+    GC_TRACE_OUT("    ==== %x:%x(%d) new ====\n", r->data, r, size);
 
     return r->data;
 }
@@ -123,6 +123,7 @@ void gc_fini()
 
 void gc_free(GCRecord* r)
 {
+    GC_ASSERT(r->magic == GC_MAGIC);
     r->magic = GC_MAGIC_NOT_USED;
     free(r);
 }
@@ -141,9 +142,9 @@ void gc_mark_block(GCRecord* r)
 }
 
 #define GC_IS_MEMORY_BLOCK(R, A) ((A & 0x3) == 0 && \
-                                             A <= GC_SAFE_POINTER(gc_heap_max) && \
-                                             A >= GC_SAFE_POINTER(gc_heap_min) && \
-                                             (R = (GCRecord*)(A - sizeof(GCRecord)))->magic == GC_MAGIC)
+                                  A <= GC_SAFE_POINTER(gc_heap_max) && \
+                                  A >= GC_SAFE_POINTER(gc_heap_min) &&  \
+                                  (R = (GCRecord*)(A - sizeof(GCRecord)))->magic == GC_MAGIC)
 
 void gc_mark_range(char* from, char* to)
 {
@@ -245,7 +246,7 @@ void gc_mark_heap(GCRecord* r)
 {
     if (!r->reachable || !r->haspointer || r->checkdone) return;
     r->checkdone = 1;
-    uint32_t size = r->size / 4;
+    uint32_t size = (r->size) / 4;
 #if 0
     char* address = r->data;
     for (uint32_t i = 0; i < size; i++)
@@ -301,7 +302,7 @@ void gc_sweep()
     {
          if (!r->reachable)
          {
-            GC_TRACE_OUT("      sweep=%x\n", r->data);
+             GC_TRACE_OUT("      sweep=%x:%x\n", r->data, r);
             GCRecord* prev = r->prev;
             gc_record_remove(r);
             gc_total_sweeped_count++;

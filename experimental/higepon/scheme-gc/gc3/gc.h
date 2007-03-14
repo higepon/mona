@@ -9,7 +9,7 @@
 #define GC_ASSERT_NOT_NULL(p) {if (NULL == p) {printf("GC_ASSERT_NOT_NULL %s:%d: %s\n", __FILE__, __LINE__, #p);exit(-1);}}
 #define GC_ASSERT(p) {if (!(p)) {printf("GC_ASSERT %s:%d: %s\n", __FILE__, __LINE__, #p);fflush(stdout);exit(-1);}}
 #ifdef GC_TRACE
-#define GC_TRACE_OUT(...) printf(__VA_ARGS__);
+#define GC_TRACE_OUT(...) printf(__VA_ARGS__);fflush(stdout);
 #else
 #define GC_TRACE_OUT(...) //
 #endif

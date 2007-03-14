@@ -23,7 +23,7 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
     {
     case SExp::NUMBER:
 #ifdef USE_MONA_GC
-        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = new(false) Number(sexp->value, sexp->lineno);ASSERT(*object);
 #else
         *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
 #endif

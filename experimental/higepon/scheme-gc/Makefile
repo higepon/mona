@@ -4,10 +4,10 @@ REGISTERS_INC = ./register.inc
 PROCEDURES_H  = ./primitive_procedures.h
 
 #include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+#include Makefile.mona_gc.inc
 
 # たまに これで make checkする
-#include Makefile.none_gc.inc
+include Makefile.none_gc.inc
 
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\

@@ -94,7 +94,7 @@ bool Charcter::le(Object* o)
 Number* Charcter::toNumber()
 {
 #ifdef USE_MONA_GC
-    return new Number((int)value(), lineno());
+    return new(false) Number((int)value(), lineno());
 #else
     return new Number((int)value(), lineno());
 #endif
@@ -104,5 +104,9 @@ Charcter* Charcter::fromNumber(Number* n)
 {
     String tmp = "#\\";
     tmp += (char)n->value();
+#ifdef USE_MONA_GC
+    return new(false) Charcter(tmp, n->lineno());
+#else
     return new Charcter(tmp, n->lineno());
+#endif
 }

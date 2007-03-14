@@ -22,14 +22,22 @@ PROCEDURE(MakeString, "make-string")
     ARGC_SHOULD_BE_BETWEEN(1, 2);
     if (ARGC == 1)
     {
-        CAST(ARGV(0), Number, n)
+        CAST(ARGV(0), Number, n);
+#ifdef USE_MONA_GC
+        return new(false) SString(n->value(), n->lineno());
+#else
         return new SString(n->value(), n->lineno());
+#endif
     }
     else
     {
         CAST(ARGV(0), Number, n);
         CAST(ARGV(1), Charcter, c);
+#ifdef USE_MONA_GC
+        return new(false) SString(n->value(), c->value(), n->lineno());
+#else
         return new SString(n->value(), c->value(), n->lineno());
+#endif
     }
 }
 
@@ -38,7 +46,7 @@ PROCEDURE(StringLength, "string-length")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
 #ifdef USE_MONA_GC
-    return new Number(s->value().size(), s->lineno());
+    return new(false) Number(s->value().size(), s->lineno());
 #else
     return new Number(s->value().size(), s->lineno());
 #endif
@@ -93,7 +101,7 @@ PROCEDURE(StringToNumber, "string->number")
         }
     }
 #ifdef USE_MONA_GC
-    return new Number(atoi(text.data()));
+    return new(false) Number(atoi(text.data()));
 #else
     return new Number(atoi(text.data()));
 #endif

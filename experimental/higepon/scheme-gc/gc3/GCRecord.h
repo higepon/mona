@@ -6,8 +6,8 @@
 #define FOREACH_GC_RECORD(top, element) \
     for (GCRecord* element = (top)->next; element != (top); element = element->next)
 
-#define GC_MAGIC 0xdeadbeef
-#define GC_MAGIC_NOT_USED 0xcafecafe
+#define GC_MAGIC 0xABCDEFAA
+#define GC_MAGIC_NOT_USED 0xBBBBAAAA
 
 void gc_record_initialize(GCRecord* n);
 void gc_record_add_to_next(GCRecord* left, GCRecord* right);

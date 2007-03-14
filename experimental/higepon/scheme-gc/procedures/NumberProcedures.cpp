@@ -24,7 +24,7 @@ PROCEDURE(Plus, "+")
         }
     }
 #ifdef USE_MONA_GC
-    return new Number(total);
+    return new(false) Number(total);
 #else
     return new Number(total);
 #endif
@@ -37,7 +37,7 @@ PROCEDURE(Minus, "-")
     if (ARGC == 1)
     {
 #ifdef USE_MONA_GC
-        return new Number(-1 * n->value());
+        return new(false) Number(-1 * n->value());
 #else
         return new Number(-1 * n->value());
 #endif
@@ -54,7 +54,7 @@ PROCEDURE(Minus, "-")
         }
     }
 #ifdef USE_MONA_GC
-    return new Number(total);
+    return new(false) Number(total);
 #else
     return new Number(total);
 #endif
@@ -148,7 +148,7 @@ PROCEDURE(Multiply, "*")
         }
     }
 #ifdef USE_MONA_GC
-    return new Number(total);
+    return new(false) Number(total);
 #else
     return new Number(total);
 #endif
@@ -174,7 +174,7 @@ PROCEDURE(Divide, "/")
         }
     }
 #ifdef USE_MONA_GC
-    return new Number(total);
+    return new(false) Number(total);
 #else
     return new Number(total);
 #endif

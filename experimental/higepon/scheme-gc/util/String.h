@@ -30,22 +30,28 @@ public:
         BUFFER_SIZE = 256,
     };
 
-    String(const char* text) : extendSize_(8)
+    String(const char* text) : data_(NULL), extendSize_(8)
     {
         set(text);
     }
 
-    String(const String& text) : extendSize_(8)
+    String(const String& text) : data_(NULL), extendSize_(8)
     {
         set(text.data());
     }
 
-    String() : extendSize_(8)
+    String() : data_(NULL), extendSize_(8)
     {
         set("");
     }
     ~String()
     {
+#ifdef USE_BOEHM_GC
+#elif defined(USE_MONA_GC)
+#else
+        if (NULL != data_) delete [] data_;
+#endif
+
     }
 
     uint32_t size() const { return length_; }
@@ -74,7 +80,7 @@ public:
         uint32_t length  = length_;
         uint32_t slength = s.size();
         length_ += slength;
-        if (bufferSize_ >= length_)
+        if (bufferSize_ >= length_ + 1)
         {
             for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
             data_[length_] = '\0';
@@ -86,16 +92,19 @@ public:
             extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
-#else
-#ifdef USE_MONA_GC
+#elif defined(USE_MONA_GC)
             data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
 #endif
-#endif
             for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
             for (uint32_t i = 0; i < slength; i++) data_[i + length] = s[i];
             data_[length + slength] = '\0';
+#ifdef USE_BOEHM_GC
+#elif defined(USE_MONA_GC)
+#else
+           delete[] tmp;
+#endif
         }
     }
 
@@ -110,7 +119,7 @@ public:
     {
         uint32_t length  = length_;
         length_ += 1;
-        if (bufferSize_ >= length_)
+        if (bufferSize_ >= length_ + 1)
         {
             data_[length] = ch;
             data_[length + 1] = '\0';
@@ -122,19 +131,33 @@ public:
             extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
-#else
-#ifdef USE_MONA_GC
+#elif defined(USE_MONA_GC)
             data_ = new(false) char[bufferSize_];
 #else
             data_ = new char[bufferSize_];
 #endif
-#endif
             for (uint32_t i = 0; i < length; i++) data_[i] = tmp[i];
             data_[length] = ch;
             data_[length + 1] = '\0';
+#ifdef USE_BOEHM_GC
+#elif defined(USE_MONA_GC)
+#else
+            delete[] tmp;
+#endif
         }
     }
 
+    String& operator =(const char* text)
+    {
+        set(text);
+        return *this;
+    }
+
+    String& operator =(const String& text)
+    {
+        set(text.data());
+        return *this;
+    }
 
     bool operator ==(const String& s) const
     {
@@ -192,9 +215,10 @@ public:
             extendSize_ = (uint32_t)(extendSize_ * 1.5);
 #ifdef USE_BOEHM_GC
             data_ = new(GC) char[bufferSize_];
-#elifdef USE_MONA_GC
+#elif defined(USE_MONA_GC)
             data_ = new(false) char[bufferSize_];
 #else
+            if (data_ != NULL) delete[] data_;
             data_ = new char[bufferSize_];
 #endif
             memcpy(data_, prevData, index);
@@ -211,10 +235,10 @@ public:
         return index;
     }
 
-    int replace(const String& a, const String& b)
+    void replace(const String& a, const String& b)
     {
         while (replaceOnce(a, b) != -1);
-        return -1;
+        return;
     }
 
 private:
@@ -224,9 +248,10 @@ private:
         bufferSize_ = length_ + 1 + extendSize_;
 #ifdef USE_BOEHM_GC
         data_ = new(GC) char[bufferSize_];
-#elifdef USE_MONA_GC
+#elif defined(USE_MONA_GC)
         data_ = new(false) char[bufferSize_];
 #else
+        if (data_ != NULL) delete[] data_;
         data_ = new char[bufferSize_];
 #endif
         strcpy(data_, text);

@@ -387,12 +387,6 @@ template <class T> void Vector<T>::init(int size, int increase)
     }
     data_ = new(GC) T[size_];
 #else
-#ifdef USE_MONA_GC
-//     if (!g_gc_initialized)
-//     {
-//         gc_init();
-//     }
-#endif
     data_ = new T[size_];
 #endif
     return;
