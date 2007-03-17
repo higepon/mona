@@ -40,7 +40,11 @@ bool InputPort::eq(Object* o)
 
 Charcter* InputPort::readCharacter()
 {
+#ifdef USE_MONA_GC
+    return new(false) Charcter(fgetc(stream_));
+#else
     return new Charcter(fgetc(stream_));
+#endif
 }
 
 Charcter* InputPort::peekCharacter()

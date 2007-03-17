@@ -220,7 +220,11 @@ PROCEDURE(NewLine, "newline")
         CAST(ARGV(0), OutputPort, p);
         port = p;
     }
+#ifdef USE_MONA_GC
+    port->display(new(false) Charcter('\n'));
+#else
     port->display(new Charcter('\n'));
+#endif
     return SCM_UNDEF;
 }
 

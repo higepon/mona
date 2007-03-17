@@ -96,7 +96,11 @@ Charcter* SString::get(uint32_t index)
     // ugly fix me
     String s = "#\\";
     s += value_[index];
+#ifdef USE_MONA_GC
+    return new(false) Charcter(s , lineno());
+#else
     return new Charcter(s , lineno());
+#endif
 }
 
 bool SString::set(uint32_t index, Charcter* c)

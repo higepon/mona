@@ -41,7 +41,7 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
 //         return SUCCESS;
     case SExp::CHAR:
 #ifdef USE_MONA_GC
-        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new(false) Charcter(sexp->text, sexp->lineno);ASSERT(*object);
 #else
         *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
 #endif
