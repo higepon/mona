@@ -7,7 +7,7 @@ using namespace monash;
 // lambda x       : extendableParameter. x is list.
 // lambda (x . y) : extendableParameters. y is list.
 Lambda::Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno)
-    : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), lineno_(lineno)
+    : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), isExtendableParameters_(false), lineno_(lineno)
 {
     for (int i = 0; i < parameters->size(); i++)
     {

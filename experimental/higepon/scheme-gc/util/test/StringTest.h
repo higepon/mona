@@ -16,6 +16,7 @@ class StringTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testStartWith);
     CPPUNIT_TEST(testIndexOf);
     CPPUNIT_TEST(testReplace);
+    CPPUNIT_TEST(testReplaceOnce);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -30,6 +31,7 @@ public:
     void testStartWith();
     void testIndexOf();
     void testReplace();
+    void testReplaceOnce();
 };
 
 #endif // _STRING_TEST_H_

@@ -34,7 +34,11 @@ PROCEDURE(VectorLength, "vector-length")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Vector, v);
+#ifdef USE_MONA_GC
     return new Number(v->size(), v->lineno());
+#else
+    return new Number(v->size(), v->lineno());
+#endif
 }
 
 PROCEDURE(VectorRef, "vector-ref")

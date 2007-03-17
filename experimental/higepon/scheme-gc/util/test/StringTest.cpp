@@ -23,7 +23,20 @@ void StringTest::testReplace()
 
     s.replace("Hello", "Hi");
     CPPUNIT_ASSERT(s == "Hi, world, Hi\n");
+}
 
+void StringTest::testReplaceOnce()
+{
+    String s("ABC");
+    s.replaceOnce("A", "VW");
+    CPPUNIT_ASSERT(s == "VWBC");
+
+    s = "Hello, World\n";
+    s.replaceOnce("W", "The W");
+    CPPUNIT_ASSERT(s == "Hello, The World\n");
+
+    s.replaceOnce("Hello", "Hi");
+    CPPUNIT_ASSERT(s == "Hi, The World\n");
 }
 
 void StringTest::testIndexOf()

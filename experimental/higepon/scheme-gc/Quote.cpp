@@ -73,7 +73,7 @@ Object* Quote::eval(Environment* env)
     else if (sexp_->isNumber())
     {
 #ifdef USE_MONA_GC
-        return new Number(sexp_->value, sexp_->lineno);
+        return new(false) Number(sexp_->value, sexp_->lineno);
 #else
         return new Number(sexp_->value, sexp_->lineno);
 #endif

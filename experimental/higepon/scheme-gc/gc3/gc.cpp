@@ -149,6 +149,7 @@ void gc_mark_block(GCRecord* r)
 void gc_mark_range(char* from, char* to)
 {
     GC_ASSERT((uint32_t)to > (uint32_t)from);
+    GC_TRACE_OUT("    min=%x to max=%x\n", GC_SAFE_POINTER(gc_heap_min), GC_SAFE_POINTER(gc_heap_max));
     GC_TRACE_OUT("    from = %x to = %x\n", from, to);
     uint32_t size = ((uint32_t)to - (uint32_t)from) / 4;
 #if 0
@@ -160,6 +161,7 @@ void gc_mark_range(char* from, char* to)
     for (uint32_t i = 0; i < size; i++)
     {
         uint32_t value = address[i];
+        GC_TRACE_OUT("       address[%d]=%x\n", i, value);
 #endif
 #if 1
         GCRecord* r = gc_is_memory_block(value);
@@ -186,7 +188,15 @@ void gc_mark_stack()
 void gc_mark_global()
 {
     GC_TRACE_OUT("    ==== %s start ====\n", __func__);
+    // root.next が参照されると invalid read size 4 なので
+    root.next = (GCRecord*)GC_SAFE_POINTER(root.next);
+    root.prev = (GCRecord*)GC_SAFE_POINTER(root.prev);
+
     gc_mark_range(gc_data_start, gc_data_end);
+
+    root.next = (GCRecord*)GC_SAFE_POINTER(root.next);
+    root.prev = (GCRecord*)GC_SAFE_POINTER(root.prev);
+
     GC_TRACE_OUT("    ==== %s end ====\n", __func__);
 }
 
@@ -198,7 +208,7 @@ void gc_mark_registers()
     for (int i = 0; i < _JBLEN; i++)
     {
         uint32_t valueOnRegister = registers[i];
-#if 1
+#if 0
         GCRecord* r = gc_is_memory_block(valueOnRegister);
         if (NULL != r)
 #else
@@ -217,7 +227,16 @@ void gc_mark_registers()
 GCRecord* gc_is_memory_block(uint32_t address)
 {
     GCRecord* r;
-    if (GC_IS_MEMORY_BLOCK(r, address)) return r;
+//    if (GC_IS_MEMORY_BLOCK(r, address)) return r;
+//     if ((address & 0x3) == 0 &&
+//         address <= GC_SAFE_POINTER(gc_heap_max) &&
+//         address >= GC_SAFE_POINTER(gc_heap_min) &&  
+//         (r = (GCRecord*)(address - sizeof(GCRecord)))->magic == GC_MAGIC) return r;
+    if (address > sizeof(GCRecord) && (address & 0x3) == 0)
+        if (address <= GC_SAFE_POINTER(gc_heap_max))
+            if ((address - sizeof(GCRecord))>= GC_SAFE_POINTER(gc_heap_min))
+                if ((r = (GCRecord*)(address - sizeof(GCRecord)))->magic == GC_MAGIC) return r;
+
     return NULL;
 
 //     GCRecord* r;

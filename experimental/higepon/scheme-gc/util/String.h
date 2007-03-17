@@ -218,12 +218,16 @@ public:
 #elif defined(USE_MONA_GC)
             data_ = new(false) char[bufferSize_];
 #else
-            if (data_ != NULL) delete[] data_;
             data_ = new char[bufferSize_];
 #endif
-            memcpy(data_, prevData, index);
+            if (index != 0) memcpy(data_, prevData, index);
             memcpy(&data_[index], b.data(), bsize);
-            memcpy(&data_[index + bsize], &prevData[index + asize], prevLength - index - asize);
+            memcpy(&data_[index + bsize], &prevData[index + asize], prevLength - index - asize + 1);
+#ifdef USE_BOEHM_GC
+#elif defined(USE_MONA_GC)
+#else
+            delete [] prevData;
+#endif
         }
         else
         {

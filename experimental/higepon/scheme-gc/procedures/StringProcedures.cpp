@@ -24,7 +24,7 @@ PROCEDURE(MakeString, "make-string")
     {
         CAST(ARGV(0), Number, n);
 #ifdef USE_MONA_GC
-        return new(false) SString(n->value(), n->lineno());
+        return new SString(n->value(), n->lineno());
 #else
         return new SString(n->value(), n->lineno());
 #endif
@@ -34,7 +34,7 @@ PROCEDURE(MakeString, "make-string")
         CAST(ARGV(0), Number, n);
         CAST(ARGV(1), Charcter, c);
 #ifdef USE_MONA_GC
-        return new(false) SString(n->value(), c->value(), n->lineno());
+        return new SString(n->value(), c->value(), n->lineno());
 #else
         return new SString(n->value(), c->value(), n->lineno());
 #endif

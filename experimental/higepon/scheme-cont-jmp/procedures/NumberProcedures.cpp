@@ -53,7 +53,11 @@ PROCEDURE(Minus, "-")
             total -= nn->value();
         }
     }
+#ifdef USE_MONA_GC
     return new Number(total);
+#else
+    return new Number(total);
+#endif
 }
 
 PROCEDURE(NumberToString, "number->string")
@@ -143,7 +147,11 @@ PROCEDURE(Multiply, "*")
             total *= n->value();
         }
     }
+#ifdef USE_MONA_GC
     return new Number(total);
+#else
+    return new Number(total);
+#endif
 }
 
 PROCEDURE(Divide, "/")
@@ -165,5 +173,9 @@ PROCEDURE(Divide, "/")
             total /= nn->value();
         }
     }
+#ifdef USE_MONA_GC
     return new Number(total);
+#else
+    return new Number(total);
+#endif
 }

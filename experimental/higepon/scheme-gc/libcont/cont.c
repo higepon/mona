@@ -44,7 +44,12 @@
 #include "cont.h"
 #include <unistd.h>
 
-static uint32_t cont_stack_bottom;
+static uint32_t cont_stack_bottom = NULL;
+static Cont* c = NULL;
+static int r   = 0;
+static uint32_t diff       = 0;
+static uint32_t prev_stack = 0;
+static uint32_t next_stack = 0;;
 
 void* cont_get_stack_pointer()
 {
@@ -64,6 +69,11 @@ void cont_initialize()
 {
     // fix me!
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
+    c = NULL;
+    r = 0;
+    diff = 0;
+    prev_stack = 0;
+    next_stack = 0;
     //  cont_stack_bottom = cont_get_stack_bottom() -20;
 }
 
@@ -75,12 +85,6 @@ void cont_destroy(Cont* c)
         c->stack = NULL;
     }
 }
-
-static Cont* c;
-static int r;
-static uint32_t diff;
-static uint32_t prev_stack;
-static uint32_t next_stack;
 
 void cont_restore(Cont* cc, int return_value)
 {
