@@ -30,7 +30,7 @@ typedef struct GCRecord
     uint32_t reachable  : 1;
     uint32_t haspointer : 1;
     uint32_t checkdone  : 1;
-    uint32_t dummy      : 29;
+    uint32_t age      : 29;
     char data[0];
 } GCRecord;
 #pragma pack()

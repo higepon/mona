@@ -71,7 +71,7 @@ test_cpp/QuoteFilterTest.cpp
 
 LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
 
-CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS)
+CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS) 
 CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 

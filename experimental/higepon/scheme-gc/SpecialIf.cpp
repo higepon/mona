@@ -38,7 +38,7 @@ Object* SpecialIf::eval(Environment* env)
         }
         else
         {
-            return new False(this->predicate()->lineno()); // false
+            return SCM_FALSE;
         }
     }
 }

@@ -6,7 +6,8 @@ void gc_record_initialize(GCRecord* n)
     n->prev = n;
     n->next = n;
     n->magic = GC_MAGIC;
-    n->reachable = false;
+    n->reachable = 0;
+    n->age = 0;
 }
 
 void gc_record_add_to_next(GCRecord* left, GCRecord* right)

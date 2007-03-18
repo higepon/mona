@@ -1,6 +1,7 @@
 #include "GCRecord.h"
 
 GCRecord root;
+
 //static GCRecord root;
 static uint32_t gc_heap_min;
 static uint32_t gc_heap_max;
@@ -263,28 +264,15 @@ GCRecord* gc_is_memory_block(uint32_t address)
 
 void gc_mark_heap(GCRecord* r)
 {
-    if (!r->reachable || !r->haspointer || r->checkdone) return;
+    if (r->reachable == 0 || r->haspointer == 0 || r->checkdone == 1) return;
     r->checkdone = 1;
     uint32_t size = (r->size) / 4;
-#if 0
-    char* address = r->data;
-    for (uint32_t i = 0; i < size; i++)
-    {
-        uint32_t valueOnHeap = *((uint32_t *) &address[i * 4]);
-#else
     uint32_t* address = (uint32_t*)r->data;
     for (uint32_t i = 0; i < size; i++)
     {
         uint32_t valueOnHeap = address[i];
-#endif
-#if 0
-        if (valueOnHeap & 0x3) continue;
-        GCRecord* target = gc_is_memory_block(valueOnHeap);
-        if (target != NULL)
-#else
         GCRecord* target;
         if (GC_IS_MEMORY_BLOCK(target, valueOnHeap))
-#endif
         {
             GC_TRACE_OUT("      heap mark=%x\n", valueOnHeap);
             gc_mark_block(target);
@@ -300,6 +288,7 @@ void gc_mark()
     {
         r->reachable = 0;
         r->checkdone = 0;
+        r->age++;
     }
 
     gc_mark_stack();
@@ -310,6 +299,7 @@ void gc_mark()
     {
         gc_mark_heap(r);
     }
+
 
     GC_TRACE_OUT("    ==== %s end ====\n", __func__);
 }
@@ -322,12 +312,12 @@ void gc_sweep()
          if (!r->reachable)
          {
              GC_TRACE_OUT("      sweep=%x:%x\n", r->data, r);
-            GCRecord* prev = r->prev;
-            gc_record_remove(r);
-            gc_total_sweeped_count++;
-            gc_total_sweeped_size += r->size;
-            gc_free(r);
-            r = prev;
+             GCRecord* prev = r->prev;
+             gc_record_remove(r);
+             gc_total_sweeped_count++;
+             gc_total_sweeped_size += r->size;
+             gc_free(r);
+             r = prev;
 
         }
     }
