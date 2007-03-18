@@ -143,14 +143,14 @@ void gc_mark_block(GCRecord* r)
 }
 
 #define GC_IS_MEMORY_BLOCK(R, A) ((A & 0x3) == 0 && \
-                                  A <= GC_SAFE_POINTER(gc_heap_max) && \
-                                  A >= GC_SAFE_POINTER(gc_heap_min) &&  \
+                                  A <= gc_heap_max && \
+                                  A >= gc_heap_min &&  \
                                   (R = (GCRecord*)(A - sizeof(GCRecord)))->magic == GC_MAGIC)
 
 void gc_mark_range(char* from, char* to)
 {
     GC_ASSERT((uint32_t)to > (uint32_t)from);
-    GC_TRACE_OUT("    min=%x to max=%x\n", GC_SAFE_POINTER(gc_heap_min), GC_SAFE_POINTER(gc_heap_max));
+    GC_TRACE_OUT("    min=%x to max=%x\n", gc_heap_min, gc_heap_max);
     GC_TRACE_OUT("    from = %x to = %x\n", from, to);
     uint32_t size = ((uint32_t)to - (uint32_t)from) / 4;
 #if 0
@@ -164,7 +164,7 @@ void gc_mark_range(char* from, char* to)
         uint32_t value = address[i];
         GC_TRACE_OUT("       address[%d]=%x\n", i, value);
 #endif
-#if 1
+#if 0
         GCRecord* r = gc_is_memory_block(value);
         if (r != NULL)
 #else
@@ -283,6 +283,10 @@ void gc_mark_heap(GCRecord* r)
 
 void gc_mark()
 {
+    gc_heap_max = GC_SAFE_POINTER(gc_heap_max);
+    gc_heap_min = GC_SAFE_POINTER(gc_heap_min);
+
+
     GC_TRACE_OUT("    ==== %s start ====\n", __func__);
     FOREACH_GC_RECORD(&root, r)
     {
@@ -300,6 +304,8 @@ void gc_mark()
         gc_mark_heap(r);
     }
 
+    gc_heap_max = GC_SAFE_POINTER(gc_heap_max);
+    gc_heap_min = GC_SAFE_POINTER(gc_heap_min);
 
     GC_TRACE_OUT("    ==== %s end ====\n", __func__);
 }
