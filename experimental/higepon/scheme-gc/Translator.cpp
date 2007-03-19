@@ -59,19 +59,51 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
 
 int Translator::translateDefinition(SExp* sexp, Object** object)
 {
+#if 0
     if (L() != 3) return SYNTAX_ERROR;
     SExp* symbol = N(1);
     if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
-#ifdef USE_MONA_GC
     Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
-#else
-    Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
-#endif
     SExp* argument = N(2);
     Object* argumentObject;
     if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
     *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
     return SUCCESS;
+#else
+    if (L() != 3) return SYNTAX_ERROR;
+    if (N(1)->isSExps())
+    {
+        Variable* variable = new Variable(NN(1, 0)->text, NN(1, 0)->lineno);ASSERT(variable);
+        Variables* variables = new Variables;
+        for (int i = 1; i < LL(1); i++)
+        {
+            Variable* v = new Variable(NN(1, i)->text, NN(1, i)->lineno);ASSERT(v);
+            variables->add(v);
+        }
+        Objects* body = new Objects;
+        for (int i = 2; i < L(); i++)
+        {
+            Object* b;
+            SExp* s = N(i);
+            if (translate(&s, &b) != SUCCESS) return SYNTAX_ERROR;
+            body->add(b);
+        }
+        Object* l = new Lambda(body, variables, false, sexp->lineno);ASSERT(l);
+        *object = new Definition(variable, l, sexp->lineno);ASSERT(*object);
+        return SUCCESS;
+    }
+    else
+    {
+        SExp* symbol = N(1);
+        if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
+        Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
+        SExp* argument = N(2);
+        Object* argumentObject;
+        if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
+        *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
+        return SUCCESS;
+    }
+#endif
 }
 
 int Translator::translateIf(SExp* sexp, Object** object)

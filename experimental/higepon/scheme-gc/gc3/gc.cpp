@@ -92,7 +92,8 @@ void* gc_malloc(uint32_t size, bool haspointer)
 
     // gc の呼出しは割り当て前に行わないとdouble free の可能性が
     gc_count++;
-    if (gc_count % 5000 == 0)
+//    if (gc_count % 5000 == 0)
+    if (gc_total_allocated_size - gc_total_sweeped_size > 1500 * 1024)
     {
         gc();
     }
@@ -119,7 +120,14 @@ void gc_fini()
     printf("gc:gc_total_allocated_size = %d\n", gc_total_allocated_size / 1024);
     printf("gc:gc_total_sweeped_count = %d\n", gc_total_sweeped_count);
     printf("gc:gc_total_sweeped_size = %d\n", gc_total_sweeped_size / 1024);
-
+    GCRecord* r = root.next;
+    for (;;)
+    {
+        if (r == &root) break;
+        GCRecord* tmp = r;
+        r = r->next;
+        free(tmp);
+    }
 }
 
 void gc_free(GCRecord* r)

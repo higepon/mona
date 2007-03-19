@@ -1,6 +1,24 @@
 (load "./test/scheme.scm")
 (load "./test/unittest.scm")
-(display "hige")
+
+(define (a b) b)
+(define (b) 4)
+(define (d b c) (+ b c))
+
+(define (x y . z) (if (null? z)
+                      y
+                      (+ y (car z))
+                      ))
+
+(assert-check-true "define/lambda"
+                   (= (a 3) 3)
+                   (= (b) 4)
+                   (= 107 (d 100 7))
+                   (= (x 3) 3)
+                   (= (x 3 4) 7)
+                   (= (x 3 4 5) 7)
+)
+
 (assert-check-true "if"
                    (if #t #t #f))
 
