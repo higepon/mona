@@ -70,7 +70,6 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
     return SUCCESS;
 #else
-    if (L() != 3) return SYNTAX_ERROR;
     if (N(1)->isSExps())
     {
         Variable* variable = new Variable(NN(1, 0)->text, NN(1, 0)->lineno);ASSERT(variable);
@@ -94,6 +93,7 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     }
     else
     {
+        if (L() != 3) return SYNTAX_ERROR;
         SExp* symbol = N(1);
         if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
         Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);

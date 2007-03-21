@@ -50,10 +50,15 @@ void loadYAML(const String& path, YAML& yaml)
 
     String line;
     int index = -1;
+    int start = 0;
     for (uint32_t i = 0; i < size; i++)
     {
         if (content[i] == '\n')
         {
+            content[i] = '\0';
+            char* p = &content[start];
+            line = p;
+            start = i + 1;
             if (line.size() == 0 || line[0] == '#')
             {
                 line = "";

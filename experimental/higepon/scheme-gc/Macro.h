@@ -8,6 +8,12 @@
 #include "util/Pair.h"
 namespace monash {
 
+#ifdef MACRO_TRACE
+#define MACRO_TRACE_OUT(...) printf(__VA_ARGS__);fflush(stdout);
+#else
+#define MACRO_TRACE_OUT(...) //
+#endif
+
 #ifdef USE_BOEHM_GC
 class Macro : public gc_cleanup
 //class SExp : public gc
@@ -24,6 +30,7 @@ public:
     SExp* findPattern(SExp* pattern);
 
     static bool match(const ::util::String & macroName, const ::util::Strings & reservedWords, SExp* macro, SExp* target);
+    static void extractBindings(SExp* m, SExp* n, BindMap& bindMap);
     SExp* match(const ::util::String& macroName, SExp* target);
     static ::util::String error;
 

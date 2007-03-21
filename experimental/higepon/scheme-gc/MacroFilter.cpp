@@ -13,6 +13,7 @@ MacroFilter::~MacroFilter()
 
 int MacroFilter::filter(SExp* from)
 {
+    MACRO_TRACE_OUT("==== filter start ====\n");
     findAndStoreDefineSyntaxes(from);
     SExp* root = new SExp(SExp::SEXPS);
     SExp* left = new SExp(SExp::SYMBOL);
@@ -21,6 +22,7 @@ int MacroFilter::filter(SExp* from)
     root->sexps.add(from);
     tryExpandMacro(NULL, root);
     while (foreachSExps(root,  &MacroFilter::tryExpandMacro));
+    MACRO_TRACE_OUT("==== filter end   ====\n");
     return 0;
 }
 
@@ -67,8 +69,12 @@ int MacroFilter::expandMacro(SExp* root, SExp* sexp)
         if (sexp->isMatchAllKeyword())
         {
             root->sexps.removeAt(i);
+            if (root->sexps[i - 1])
+            {
+                // ここで何かしたい
+            }
         }
-        return 0;
+        return 1;
     }
 
     BindObject* b = bindMap_.get(name.data());
@@ -103,9 +109,17 @@ int MacroFilter::expandMacro(SExp* root, SExp* sexp)
 
 int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
 {
-    if (!root->isSExps() || root->sexps.size() <= 0) return 0;
+    if (!root->isSExps() || root->sexps.size() <= 0)
+    {
+        MACRO_TRACE_OUT("  !root->isSExps() || root->sexps.size() <= 0\n");
+        return 0;
+    }
     SExp* left = root->sexps[0];
-    if (!left->isSymbol()) return 0;
+    if (!left->isSymbol())
+    {
+        MACRO_TRACE_OUT("  !left->isSymbol()\n");
+        return 0;
+    }
 
     String name = left->text;
     Macro* m = macros_.get(name.data());
@@ -115,30 +129,15 @@ int MacroFilter::tryExpandMacro(SExp* dummy, SExp* root)
     SExp* matchedPattern = m->match(name, root);
     if (NULL == matchedPattern) return 0;
 
+    MACRO_TRACE_OUT("  %s %s matched pattern=%s\n", __func__, root->toSExpString().data(), matchedPattern->toSExpString().data());
+
     BindMap bindMap;
-    SExp::extractBindings(matchedPattern, root, bindMap);
-#if 0
-    static int z = 0;
-        for (BindMap::const_iterator p = bindMap.begin(); p != bindMap.end(); ++p)
-        {
-            BindObject b = (*p).second;
-            if (b.sexps.size() > 0)
-            {
-                for (SExps::const_iterator q = b.sexps.begin(); q != b.sexps.end(); ++q)
-                {
-                    printf("<<%s:%s>>\n", (*p).first.data(), (*q)->toString().data());fflush(stdout);
-                }
-            }
-            else
-            {
-                printf("<<%s:%s>>\n", (*p).first.data(), b.sexp->toString().data());fflush(stdout);
-            }
-        }
-        z++;
-//        if (z == 6) exit(-1);
-#endif
+    Macro::extractBindings(matchedPattern, root, bindMap);
 
     SExp* expanded = m->findPattern(matchedPattern)->clone();
+
+    MACRO_TRACE_OUT("  %s expanded %s\n", __func__, expanded->toSExpString().data());
+
     bindMap_ = bindMap;
     SExp* wrap =new SExp(SExp::SEXPS);
 

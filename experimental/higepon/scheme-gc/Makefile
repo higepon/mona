@@ -3,11 +3,15 @@ TEST_TARGET   = ./scheme_test
 REGISTERS_INC = ./register.inc
 PROCEDURES_H  = ./primitive_procedures.h
 
+CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS) -DMACRO_TRACE
+CFLAGS   = $(CXXFLAGS)
+LDFLAGS  = $(GC_LDFLAGS)
+
 #include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+#include Makefile.mona_gc.inc
 
 # たまに これで make checkする
-#include Makefile.none_gc.inc
+include Makefile.none_gc.inc
 
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\
@@ -70,10 +74,6 @@ test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp
 
 LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
-
-CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS) 
-CFLAGS   = $(CXXFLAGS)
-LDFLAGS  = $(GC_LDFLAGS)
 
 OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)

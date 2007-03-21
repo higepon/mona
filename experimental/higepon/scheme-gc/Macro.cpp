@@ -57,10 +57,13 @@ bool Macro::isMacroName(SExp* sexp, const String& macroName)
 
 SExp* Macro::match(const String& macroName, SExp* target)
 {
+//    printf("***** %s:%s\n", __func__, macroName.data());
     for (int i = 0; i < patterns.size(); i++)
     {
+//        printf("*****\n");
         if (Macro::match(macroName, reservedWords, patterns[i]->first, target)) return patterns[i]->first;
     }
+//    printf("***** %s:NULL\n", __func__);
     return NULL;
 }
 
@@ -82,6 +85,7 @@ bool Macro::matchSExps(const String& macroName, const Strings& reservedWords, SE
 // (and "hige" "huga" "hoge" "hoge")
 bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* macro, SExp* target)
 {
+    MACRO_TRACE_OUT("  macro match? %s :: %s\n", macro->toSExpString().data(), target->toSExpString().data());
     if (macro->isSExps() && target->isSExps())
     {
         if (macro->sexps.size() == target->sexps.size())
@@ -92,6 +96,7 @@ bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* m
         {
             if (macro->sexps.size() == 0)
             {
+                MACRO_TRACE_OUT("    unmatch! macro->sexps.size() == 0 %s:%d\n", __FILE__, __LINE__);
                 return false;
             }
             SExp* last = macro->sexps[macro->sexps.size() - 1];
@@ -101,6 +106,7 @@ bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* m
             }
             else
             {
+                MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
                 return false;
             }
         }
@@ -115,13 +121,16 @@ bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* m
                     SExp* t = target->sexps[i];
                     if (!match(macroName, reservedWords, m, t))
                     {
+                        MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
                         return false;
                     }
                 }
+                MACRO_TRACE_OUT("    match %s:%d\n", __FILE__, __LINE__);
                 return true;
             }
             else
             {
+                MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
                 return false;
             }
         }
@@ -132,13 +141,67 @@ bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* m
         if (mustBeMacroName(macro) && !isMacroName(target, macroName))
         {
             error = "macro name unmatch";
+            MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
             return false;
         }
         if (!checkReservedWord(macro, target, reservedWords))
         {
             error = "reserved word " + macro->text + " unmatch";
+            MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
             return false;
         }
+        // add 2007/03/12 ugly
+        if (macro->isSExps() && !target->isSExps())
+        {
+            MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);
+            return false;
+        }
+        MACRO_TRACE_OUT("    match %s:%d\n", __FILE__, __LINE__);
         return true;
+    }
+}
+
+void Macro::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
+{
+    if (m->isSymbol())
+    {
+        BindObject* b = new BindObject;
+        b->sexp = n;
+        MACRO_TRACE_OUT("     bind %s => %s\n", m->text.data(), n->toSExpString().data());
+        bindMap.put(m->text.data(), b);
+        return;
+    }
+    else if (m->isSExps() && n->isSExps())
+    {
+        int nLength = n->sexps.size();
+        int mLength = m->sexps.size();
+        for (int i = 0; i < m->sexps.size(); ++i)
+        {
+            if (i == nLength) return;
+            SExp* mm = m->sexps[i];
+            SExp* nn = n->sexps[i];
+            if (mLength != nLength && mm->isMatchAllKeyword())
+            {
+                BindObject* b = new BindObject;;
+                for (int j = i; j < nLength; ++j)
+                {
+                    b->sexps.add(n->sexps[j]);
+                    MACRO_TRACE_OUT("     bind %s => %s\n", mm->text.data(), n->sexps[j]->toSExpString().data());
+                }
+
+                bindMap.put(mm->text.data(), b);
+                return;
+            }
+            else
+            {
+               extractBindings(mm, nn, bindMap);
+           }
+        }
+        return;
+    }
+    else
+    {
+        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().data(), n->toString().data());
+        return;
     }
 }

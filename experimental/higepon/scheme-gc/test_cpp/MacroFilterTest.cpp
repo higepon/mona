@@ -80,7 +80,7 @@ void MacroFilterTest::testFilter()
         SExp* expectedSExp = SExp::fromString(expected);
         SExp* macroCallSExp = SExp::fromString(macroCall);
         f.filter(macroCallSExp);
-        sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", macroCallSExp->toString().data(), expectedSExp->toString().data());
+        sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", macroCallSExp->toSExpString().data(), expectedSExp->toSExpString().data());
         CPPUNIT_ASSERT_MESSAGE(buf, macroCallSExp->equals(expectedSExp));
     }
 }

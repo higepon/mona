@@ -78,47 +78,50 @@ String SExp::typeToRawString()
     return String(buffer);
 }
 
-void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
-{
-    if (m->isSymbol())
-    {
-        BindObject* b = new BindObject;
-        b->sexp = n;
-        bindMap.put(m->text.data(), b);
-        return;
-    }
-    else if (m->isSExps() && n->isSExps())
-    {
-        int nLength = n->sexps.size();
-        int mLength = m->sexps.size();
-        for (int i = 0; i < m->sexps.size(); ++i)
-        {
-            if (i == nLength) return;
-            SExp* mm = m->sexps[i];
-            SExp* nn = n->sexps[i];
-            if (mLength != nLength && mm->isMatchAllKeyword())
-            {
-                BindObject* b = new BindObject;;
-                for (int j = i; j < nLength; ++j)
-                {
-                    b->sexps.add(n->sexps[j]);
-                }
-                bindMap.put(mm->text.data(), b);
-                return;
-            }
-            else
-            {
-               extractBindings(mm, nn, bindMap);
-           }
-        }
-        return;
-    }
-    else
-    {
-        RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().data(), n->toString().data());
-        return;
-    }
-}
+// void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
+// {
+//     if (m->isSymbol())
+//     {
+//         BindObject* b = new BindObject;
+//         b->sexp = n;
+//         MACRO_TRACE_OUT("     bind %s => %s\n", m->text.data(), n->toSExpString().data());
+//         bindMap.put(m->text.data(), b);
+//         return;
+//     }
+//     else if (m->isSExps() && n->isSExps())
+//     {
+//         int nLength = n->sexps.size();
+//         int mLength = m->sexps.size();
+//         for (int i = 0; i < m->sexps.size(); ++i)
+//         {
+//             if (i == nLength) return;
+//             SExp* mm = m->sexps[i];
+//             SExp* nn = n->sexps[i];
+//             if (mLength != nLength && mm->isMatchAllKeyword())
+//             {
+//                 BindObject* b = new BindObject;;
+//                 for (int j = i; j < nLength; ++j)
+//                 {
+//                     b->sexps.add(n->sexps[j]);
+//                     MACRO_TRACE_OUT("     bind %s => %s\n", mm->text.data(), n->seps[j]->toSExpString().data());
+//                 }
+
+//                 bindMap.put(mm->text.data(), b);
+//                 return;
+//             }
+//             else
+//             {
+//                extractBindings(mm, nn, bindMap);
+//            }
+//         }
+//         return;
+//     }
+//     else
+//     {
+//         RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().data(), n->toString().data());
+//         return;
+//     }
+// }
 
 void SExp::print(int depth /* = 0 */)
 {
