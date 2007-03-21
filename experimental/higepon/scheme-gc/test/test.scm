@@ -344,6 +344,24 @@
           (func (cdr l)))))
 (assert-check-true "named let" (= 6 count)))
 
+(assert-check-true "case"
+                   (case 3
+                     ((5) #f)
+                     ((4) #f)
+                     (else #t))
+                   (case 3
+                     ((3) #t)
+                     ((4) #f)
+                     (else #f))
+                   (case 3
+                     ((5) #f)
+                     ((3) #t)
+                     (else #f))
+                   (case (* 2 3)
+                     ((2 3 5 7) #f)
+                     ((1 4 6 8 9) #t))
+)
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")

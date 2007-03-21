@@ -228,6 +228,8 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
     return Translator::SUCCESS;
 }
 
+
+#if 0
 int MacroFilter::renameMatchAllKeywords(SExp* sexp)
 {
     index_ = 0;
@@ -247,3 +249,37 @@ int MacroFilter::renameMatchAllKeyword(SExp* dummy, SExp* root)
     }
     return 0;
 }
+
+#else
+
+int MacroFilter::renameMatchAllKeywords(SExp* sexp)
+{
+    SExp* root = new SExp(SExp::SEXPS);
+    SExp* left = new SExp(SExp::SYMBOL);
+    left->text = "dummy";
+    root->sexps.add(left);
+    root->sexps.add(sexp);
+    return foreachSExps(root, &MacroFilter::renameMatchAllKeyword);
+}
+
+// a ... => a...
+int MacroFilter::renameMatchAllKeyword(SExp* dummy, SExp* root)
+{
+    int size = root->sexps.size();
+    for (int i = 1; i < size; i++)
+    {
+        SExp* sexp = root->sexps[i];
+        if (sexp->isSymbol() && sexp->text == "...")
+        {
+            SExp* prev = root->sexps[i - 1];
+            if (prev->isSymbol())
+            {
+                prev->text = prev->text + "...";
+                root->sexps.removeAt(i);
+            }
+        }
+    }
+    return 0;
+}
+
+#endif

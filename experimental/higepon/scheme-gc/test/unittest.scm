@@ -228,10 +228,10 @@
   (syntax-rules ()
     ((_ test-name f) (if (assert-true test-name f) #t
                          (begin (display test-name) (display " test failed ") (display (quote f)) (newline))))
-    ((_ test-name f ...) (begin (assert-check-true test-name f) (assert-check-true test-name ...)))))
+    ((_ test-name f g ...) (begin (assert-check-true test-name f) (assert-check-true test-name g ...)))))
 
 (define-syntax assert-check-false
   (syntax-rules ()
     ((_ test-name f) (if (assert-false test-name f) #t
                          (begin (display test-name) (display " test failed ") (display (quote f)) (newline))))
-    ((_ test-name f ...) (begin (assert-check-false test-name f) (assert-check-false test-name ...)))))
+    ((_ test-name f g ...) (begin (assert-check-false test-name f) (assert-check-false test-name g ...)))))

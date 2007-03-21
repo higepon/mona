@@ -1,52 +1,52 @@
 # macro translate test
-#-
-# - (define-syntax show (syntax-rules () ((_ a) (display a))))
-# - (show "higepon")
-# - (display "higepon")
-#-
-# - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
-# - (when (= x 3) (display "x=3") (display "\n"))
-# - (if (= x 3) (begin (display "x=3") (display "\n")))
-#-
-# - (define-syntax pp (syntax-rules () ((_ a) (display a)) ((_ a ...) (begin (pp a) (pp ...)))))
-# - (pp "hello," "world" "!")
-# - (begin (display "hello,") (begin (display "world") (display "!")))
-#-
-# - (define-syntax or (syntax-rules () ((or) #f) ((or test) test) ((or test1 test2 ...) (let ((x test1))(if x x (or test2 ...))))))
-# - (or 1)
-# - 1
-#-
-# - (define-syntax or (syntax-rules () ((or) #f) ((or test) test) ((or test1 test2 ...) (let ((x test1))(if x x (or test2 ...))))))
-# - (or 1 2)
-# - (let ((x 1)) (if x x 2))
-#-
-# - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
-# - (begin f g)
-# - ((lambda () f g))
-#-
-# - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
-# - (begin f g h)
-# - ((lambda () f g h))
-#-
-# - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
-# - (begin f)
-# - ((lambda () f))
-#-
-# - (define-syntax let* (syntax-rules () ((let* () body1 body2 ...) (let () body1 body2 ...)) ((let* ((name1 val1) (name2 val2) ...) body1 body2 ...) (let ((name1 val1)) (let* ((name2 val2) ...) body1 body2 ...)))))
-# - (let* () f g)
-# - (let () f g)
-#-
-# - (define-syntax my-if (syntax-rules (my-then my-else) ((_ a my-then b) (if a b)) ((_ a my-then b my-else c) (if a b c))))
-# - (my-if (= y 3)  my-then (pp "3") my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
-# - (if (= y 3) (pp "3") (pp "not 3\n" "hige\n" "pon\n" "desu"))
-#-
-# - (define-syntax pp (syntax-rules () ((_ a) (display a)) ((_ a ...) (begin (pp a) (pp ...)))))
-# - (pp "A" "B" "C")
-# - (begin (display "A") (begin (display "B") (display "C")))
-#-
-# - (define-syntax hige (syntax-rules () ((_ a ...) (display "matched case 1"))))
-# - (hige)
-# - (display "matched case 1"))
+-
+ - (define-syntax show (syntax-rules () ((_ a) (display a))))
+ - (show "higepon")
+ - (display "higepon")
+-
+ - (define-syntax when (syntax-rules () ((_ pred a b) (if pred (begin a b)))))
+ - (when (= x 3) (display "x=3") (display "\n"))
+ - (if (= x 3) (begin (display "x=3") (display "\n")))
+-
+ - (define-syntax pp (syntax-rules () ((_ a) (display a)) ((_ a b ...) (begin (pp a) (pp b ...)))))
+ - (pp "hello," "world" "!")
+ - (begin (display "hello,") (begin (display "world") (display "!")))
+-
+ - (define-syntax or (syntax-rules () ((or) #f) ((or test) test) ((or test1 test2 ...) (let ((x test1))(if x x (or test2 ...))))))
+ - (or 1)
+ - 1
+-
+ - (define-syntax or (syntax-rules () ((or) #f) ((or test) test) ((or test1 test2 ...) (let ((x test1))(if x x (or test2 ...))))))
+ - (or 1 2)
+ - (let ((x 1)) (if x x 2))
+-
+ - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
+ - (begin f g)
+ - ((lambda () f g))
+-
+ - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
+ - (begin f g h)
+ - ((lambda () f g h))
+-
+ - (define-syntax begin (syntax-rules () ((begin exp ...) ((lambda () exp ...)))))
+ - (begin f)
+ - ((lambda () f))
+-
+ - (define-syntax let* (syntax-rules () ((let* () body1 body2 ...) (let () body1 body2 ...)) ((let* ((name1 val1) (name2 val2) ...) body1 body2 ...) (let ((name1 val1)) (let* ((name2 val2) ...) body1 body2 ...)))))
+ - (let* () f g)
+ - (let () f g)
+-
+ - (define-syntax my-if (syntax-rules (my-then my-else) ((_ a my-then b) (if a b)) ((_ a my-then b my-else c) (if a b c))))
+ - (my-if (= y 3)  my-then (pp "3") my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+ - (if (= y 3) (pp "3") (pp "not 3\n" "hige\n" "pon\n" "desu"))
+-
+ - (define-syntax pp (syntax-rules () ((_ a) (display a)) ((_ a b ...) (begin (pp a) (pp b ...)))))
+ - (pp "A" "B" "C")
+ - (begin (display "A") (begin (display "B") (display "C")))
+-
+ - (define-syntax hige (syntax-rules () ((_ a ...) (display "matched case 1"))))
+ - (hige)
+ - (display "matched case 1"))
 -
  - (define-syntax case (syntax-rules () ((case key ((atoms ...) result1 result2 ...)) (if (memv key '(atoms ...)) (begin result1 result2 ...)))))
  - (case 3 ((3) (display 3)))

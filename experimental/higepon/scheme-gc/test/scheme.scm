@@ -55,7 +55,7 @@
 (define-syntax list
   (syntax-rules ()
     ((_ a) (cons a null))
-    ((_ a ...) (cons a (list ...)))))
+    ((_ a b ...) (cons a (list b ...)))))
 
 (define-syntax and
   (syntax-rules ()
@@ -71,6 +71,26 @@
     ((or test1 test2 ...)
      (let ((x test1))
        (if x x (or test2 ...))))))
+
+(define-syntax case
+  (syntax-rules (else)
+    ((case (key ...)
+       clauses ...)
+     (let ((atom-key (key ...)))
+       (case atom-key clauses ...)))
+    ((case key
+       (else result1 result2 ...))
+     (begin result1 result2 ...))
+    ((case key
+       ((atoms ...) result1 result2 ...))
+     (if (memv key (list atoms ...))
+         (begin result1 result2 ...)))
+    ((case key
+       ((atoms ...) result1 result2 ...)
+       clause clauses ...)
+     (if (memv key (list atoms ...))
+         (begin result1 result2 ...)
+         (case key clause clauses ...)))))
 
 (define positive? (lambda (x) (> x 0)))
 (define negative? (lambda (x) (< x 0)))

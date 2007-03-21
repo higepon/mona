@@ -57,13 +57,10 @@ bool Macro::isMacroName(SExp* sexp, const String& macroName)
 
 SExp* Macro::match(const String& macroName, SExp* target)
 {
-//    printf("***** %s:%s\n", __func__, macroName.data());
     for (int i = 0; i < patterns.size(); i++)
     {
-//        printf("*****\n");
         if (Macro::match(macroName, reservedWords, patterns[i]->first, target)) return patterns[i]->first;
     }
-//    printf("***** %s:NULL\n", __func__);
     return NULL;
 }
 
