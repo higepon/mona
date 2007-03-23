@@ -1,6 +1,8 @@
 #include <Audio.h>
 #include <monapi/Message.h>
 #include <stdint.h>
+#include <string.h>
+#include "servers/audio.h"
 #include "debug.h"
 
 /* A version number is as the BCD. */
@@ -15,9 +17,12 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::Nop,
 	&ServerCommand::AllocateChannel,
 	&ServerCommand::PrepareChannel,
-	&ServerCommand::Nop,
+	&ServerCommand::StartChannel,
 	&ServerCommand::Nop,
 	&ServerCommand::ReleaseChannel,
+	&ServerCommand::Nop,
+	&ServerCommand::Nop,
+	&ServerCommand::SetBuffer,
 };
 
 ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
@@ -60,15 +65,12 @@ int ServerCommand::AllocateChannel(MessageInfo *msg)
 int ServerCommand::PrepareChannel(MessageInfo *msg)
 {
 	ch_t ch;
-	int rate;
-	int bits;
-	int ret;
-	ch = msg->arg1;
-	rate = msg->arg2;
-	bits = msg->arg3;
+	int ret = 0;
+	struct audio_server_channel_info ci;
+	memcpy(&ci, msg->str, sizeof(ci));
 	std::vector<struct driver_desc*>::iterator it;
 	it = parent->drivers->begin();
-	ret = (*it)->prepare_channel(ch, rate, bits, 1);
+	ret = (*it)->prepare_channel((ch_t)ci.channel, ci.samplerate, ci.bitspersample, 1);
 	MonAPI::Message::reply(msg, ret);
 	return ret;
 }
@@ -80,5 +82,38 @@ int ServerCommand::ReleaseChannel(MessageInfo *msg)
 	(*it)->destroy_channel(msg->arg1);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
+}
+
+/*
+ * arg1 is an number of a channel.
+ * str contains data of struct audio_server_buffer_info.
+ */
+int ServerCommand::SetBuffer(MessageInfo *msg)
+{
+	struct audio_server_buffer_info bufinfo;
+	void *p;
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	memcpy(&bufinfo, msg->str, sizeof(bufinfo));
+	if( bufinfo.isDMA != 0 ) /* It's true. */
+	{
+		p = (void*)bufinfo.pointer;
+	}
+	else
+	{
+		memcpy(parent->dmabuf, (void*)bufinfo.pointer, bufinfo.size);
+		p = parent->dmabuf;
+	}
+	(*it)->set_buffer(msg->arg2, bufinfo.pointer, bufinfo.size);
+	MonAPI::Message::reply(msg, 0);
+	return 0;
+}
+
+int ServerCommand::StartChannel(MessageInfo *msg)
+{
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	(*it)->start_channel(msg->arg2, 1);
+	MonAPI::Message::reply(msg, 0);
 }
 

@@ -1,5 +1,6 @@
 #include <monapi/io.h>
 #include <monapi/syscall.h>
+#include "../debug.h"
 #include "es1370.h"
 #include "audiodriver.h"
 
@@ -36,6 +37,7 @@ struct driver_desc desc = {
 
 extern "C" int32_t aud_es1370_init_driver(int16_t device_id)
 {
+	dputs("#Audio: aud_es1370_init_driver");
 	if( dev != NULL ) return 0;
 	desc.driver_id = device_id;
 	syscall_get_io();
@@ -45,12 +47,14 @@ extern "C" int32_t aud_es1370_init_driver(int16_t device_id)
 
 extern "C" int32_t aud_es1370_stop_driver()
 {
+	dputs("#Audio: aud_es1370_stop_driver");
 	if( dev != NULL ) delete dev;
 	return 0;
 }
 
 extern "C" int32_t aud_es1370_init_device()
 {
+	dputs("#Audio: aud_es1370_init_device");
 	if( !dev->existDevice() ) return -1;
 	dev->setIRQ();
 	return 0;
@@ -67,11 +71,13 @@ extern "C" void aud_es1370_release_desc(struct driver_desc *desc)
 
 extern "C" ch_t aud_es1370_create_channel()
 {
+	dputs("#Audio: aud_es1370_create_channel");
 	return dev->createChannel();
 }
 
 extern "C" int32_t aud_es1370_prepare_channel(ch_t ch, int32_t rate, int32_t bits, int32_t isStereo)
 {
+	dprintf("#Audio: aud_es1370_prepare_channel; rate = %d, bits = %d isStereo = %d\n", rate, bits, isStereo);
 	if( ch == 1 )
 	{
 		dev->prepareChannelDAC1(rate, bits, isStereo);
@@ -81,6 +87,7 @@ extern "C" int32_t aud_es1370_prepare_channel(ch_t ch, int32_t rate, int32_t bit
 
 extern "C" int32_t aud_es1370_set_buffer(ch_t ch, void *buf, size_t size)
 {
+	dprintf("#Audio: aud_es1370_set_buffer; ch = %d, buf = %x, size = %d\n", ch, buf, size);
 	if( ch == 1 )
 	{
 		dev->setBufferDAC1(buf, size);
@@ -90,6 +97,7 @@ extern "C" int32_t aud_es1370_set_buffer(ch_t ch, void *buf, size_t size)
 
 extern "C" int32_t aud_es1370_start_channel(ch_t ch, int32_t loop)
 {
+	dprintf("#Audio: aud_es1370_start_channel; ch = %d\n", ch);
 	if( ch == 1 )
 	{
 		dev->startDAC1();

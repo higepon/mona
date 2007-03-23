@@ -1,6 +1,7 @@
 #include <monalibc/stddef.h>
 #include <monalibc/string.h>
 #include <monapi/Message.h>
+#include <monapi/io.h>
 #include <stdio.h>
 #include <vector>
 #include <map>
@@ -19,10 +20,14 @@ Audio::Audio()
 	drivers = new std::vector<struct driver_desc*>;
 	drivers_hash = new std::map<char*, int>;
 	commander = new ServerCommand(this);
+//	stream = new Stream;
+	dmabuf = monapi_allocate_dma_memory(0xFFFF);
 }
 
 Audio::~Audio()
 {
+	monapi_deallocate_dma_memory(dmabuf, 0xFFFF);
+//	delete stream;
 	delete commander;
 	delete drivers_hash;
 	delete drivers;

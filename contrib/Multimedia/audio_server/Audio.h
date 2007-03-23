@@ -1,6 +1,7 @@
 #pragma once
 #include <sys/types.h>
 #include <monalibc/stdint.h>
+#include <monapi/Stream.h>
 #include "drivers/audiodriver.h"
 #include "servers/audio.h"
 #include <stlport/vector>
@@ -20,10 +21,12 @@ private:
 	std::vector<struct driver_desc*> *drivers;
 	std::map<char*, int> *drivers_hash;
 	ServerCommand *commander;
+//	Stream *stream;
 
 	int messageLoop();
 	bool findDevices(char *devices[], int devnum);
 	struct driver_desc *findDriver(const char* name);
+	void *dmabuf;
 
 	inline int makeID(){ return counter++; }
 protected:
@@ -58,5 +61,7 @@ public:
 	int AllocateChannel(MessageInfo*);
 	int PrepareChannel(MessageInfo*);
 	int ReleaseChannel(MessageInfo*);
+	int SetBuffer(MessageInfo*);
+	int StartChannel(MessageInfo*);
 };
 
