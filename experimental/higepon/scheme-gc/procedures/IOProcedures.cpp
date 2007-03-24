@@ -37,6 +37,22 @@ PROCEDURE(TranscriptOff, "transcript-off")
     return SCM_UNDEF;
 }
 
+PROCEDURE(FileExistsP, "file-exists?")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), SString, s);
+    FILE* f = fopen(s->value().data(), "r");
+    if (f == NULL)
+    {
+        return SCM_FALSE;
+    }
+    else
+    {
+        fclose(f);
+        return SCM_TRUE;
+    }
+}
+
 PROCEDURE(CharReadyP, "char-ready?")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
@@ -249,6 +265,9 @@ PROCEDURE(Load, "load")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
+
+    // don't use env, use g_top_env instead !
+    Environment* environment = g_top_env;
     String path  = s->value();
     String input = load(path.data());
     if (input == "")
@@ -261,23 +280,16 @@ PROCEDURE(Load, "load")
     input = quoteFilter.filter(input);
     SExp* sexp = SExp::fromString(input);
     SExps sexps = sexp->sexps;
-//    Eval* e   = NULL;
     Object* o = NULL;
     for (int i = 0; i < sexps.size(); i++)
     {
-
         SExp* sex = sexps[i];
         Quote* quote = new Quote(sex, s->lineno());
         Objects* args = new Objects;
         args->add(quote);
-        args->add(env);
-        o = Kernel::apply((new Variable("eval"))->eval(env), args, env);
-// Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env, Object* parent, Object* application)
-//         e = new Eval(env->translator(), quote, quote->lineno());
-
-//         // let's eval!
-//         o =  e->eval(env);
+        args->add(environment);
+        Object* evalFunc = (new Variable("eval"))->eval(environment);
+        o = Kernel::apply(evalFunc, args, environment);
     }
-
     return o;
 }

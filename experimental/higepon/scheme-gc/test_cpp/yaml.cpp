@@ -81,7 +81,7 @@ void loadYAML(const String& path, YAML& yaml)
                 char b[1024];
                 char* p = (char*)line.data();
                 strcpy(b, &p[3]);
-                ss->add(b);
+                ss->add(new String(b));
             }
         }
     }

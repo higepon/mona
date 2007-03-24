@@ -13,7 +13,7 @@ Quote::~Quote()
 
 String Quote::toString()
 {
-    return "quote: \'";
+    return toStringValue();//"quote: \'";
 }
 
 String Quote::toStringValue()

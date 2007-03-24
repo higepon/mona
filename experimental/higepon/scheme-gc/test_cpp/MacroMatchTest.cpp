@@ -23,7 +23,7 @@ void MacroMatchTest::assertMacroMatch(const ::util::String& macroName, const ::u
     Strings ss;
     for (int i = 0; i < r->sexps.size(); i++)
     {
-        ss.add(r->sexps[i]->text.data());
+        ss.add(new String(r->sexps[i]->text.data()));
     }
     string msg(macro.data());
     msg += matchOrNot ? " matches " : " not match ";
@@ -53,7 +53,7 @@ void MacroMatchTest::testMatch()
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->get(0).data(), s->get(1).data(), s->get(2).data(), s->get(3).data());
+        assertMacroMatch(s->get(0)->data(), s->get(1)->data(), s->get(2)->data(), s->get(3)->data());
     }
 }
 
@@ -72,6 +72,6 @@ void MacroMatchTest::testUnmatch()
         {
             fprintf(stderr, "bad yaml!\n");
         }
-        assertMacroMatch(s->get(0).data(), s->get(1).data(), s->get(2).data(), s->get(3).data(), false);
+        assertMacroMatch(s->get(0)->data(), s->get(1)->data(), s->get(2)->data(), s->get(3)->data(), false);
     }
 }

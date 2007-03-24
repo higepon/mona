@@ -26,6 +26,20 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
+// PROCEDURE(Provide, "provide")
+// {
+//     ARGC_SHOULD_BE(1);
+//     CAST(ARGV(0), SString, s);
+//     g_provide_map->put(s->value().data(), 1);
+//     return s;
+// }
+
+// PROCEDURE(ProvidedP, "provided?")
+// {
+//     ARGC_SHOULD_BE(1);
+//     CAST(ARGV(0), SString, s);
+//     RETURN_BOOLEAN(g_provide_map->get(s->value().data()) != NULL);
+// }
 
 PROCEDURE(DynamicWindProc, "dynamic-wind")
 {

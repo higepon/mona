@@ -206,6 +206,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class FileExistsP : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    FileExistsP()  : procedureName_("file-exists?") {}
+    virtual ~FileExistsP() {}
+
+    virtual ::util::String toString() {    return "procedure:""file-exists?";}
+    virtual ::util::String typeString() const { return "file-exists?"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class CharReadyP : public PrimitiveProcedure
 {
 private:

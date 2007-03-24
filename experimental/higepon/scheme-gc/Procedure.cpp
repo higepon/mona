@@ -60,7 +60,7 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         Objects* args = new Objects;
         SExp* sexp = new SExp(SExp::SEXPS);
         Quote* nil = new Quote(sexp);
-        Pair* start = new Pair(NULL, nil);
+        Pair* start = new Pair(nil, nil);
         Pair* p = start;
         for (int j = 0; j < as->size(); j++)
         {

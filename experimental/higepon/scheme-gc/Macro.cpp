@@ -40,7 +40,7 @@ bool Macro::isReservedWord(SExp* sexp, const Strings& reservedWords)
     if (!sexp->isSymbol()) return false;
     for (int i = 0; i < reservedWords.size(); i++)
     {
-        if (reservedWords[i] == sexp->text) return true;
+        if (sexp->text == reservedWords.get(i)->data()) return true;
     }
     return false;
 }
@@ -116,6 +116,12 @@ bool Macro::match(const String& macroName, const Strings& reservedWords, SExp* m
                 {
                     SExp* m = macro->sexps[i];
                     SExp* t = target->sexps[i];
+//                     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//                     for (int i = 0; i < reservedWords.size(); i++)
+//                     {
+//                         printf("%d:%d %s\n", i, __LINE__, reservedWords.get(i)->data());
+//                     }
+
                     if (!match(macroName, reservedWords, m, t))
                     {
                         MACRO_TRACE_OUT("    unmatch! %s:%d\n", __FILE__, __LINE__);

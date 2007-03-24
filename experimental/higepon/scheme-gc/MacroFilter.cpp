@@ -213,8 +213,9 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
     {
         SExp* n = NN(2, 1)->sexps[i];
         if (!n->isSymbol()) return Translator::SYNTAX_ERROR;
-        macro->reservedWords.add(n->text);
+        macro->reservedWords.add(new String(n->text));
     }
+
     // store pattern / definition
     for (int i = 2; i < LL(2); ++i)
     {

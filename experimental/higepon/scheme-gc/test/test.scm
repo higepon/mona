@@ -362,6 +362,31 @@
                      ((1 4 6 8 9) #t))
 )
 
+(define do-index 0)
+(assert-check-true "do"
+                   (= 5
+                      (do ((i 0 (+ i 1)))
+                          ((= i 5) i)
+                        (set! do-index (+ do-index 2))))
+                   (= do-index 10))
+
+(define do-index 0)
+(assert-check-true "do"
+                   (= 11
+                      (do ((i 0 (+ i 1))
+                           (j 1 (+ j 1)))
+                          ((= i 5) (+ i j))
+                        (set! do-index (+ do-index 2))))
+                   (= do-index 10))
+
+(define do-index 0)
+(assert-check-true "do"
+                   (do ((i 0 (+ i 1))
+                           (j 1))
+                          ((= i 5))
+                        (set! do-index (+ do-index 2)))
+                   (= do-index 10))
+
 (load "./test/char.scm")
 (load "./test/vector.scm")
 (load "./test/symbol.scm")

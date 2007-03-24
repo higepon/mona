@@ -39,6 +39,7 @@ void input_loop()
     MacroFilter f;
     Translator translator;
     Environment* env = new Environment(f, translator);ASSERT(env);
+    g_top_env = env;
     registerPrimitives(env);
 
     char* line = NULL;;
@@ -156,6 +157,7 @@ int main(int argc, char *argv[])
     MacroFilter f;
     Translator translator;
     Environment* env = new Environment(f, translator);ASSERT(env);
+    g_top_env = env;
     registerPrimitives(env);
 
     input = "(" + input + " )";

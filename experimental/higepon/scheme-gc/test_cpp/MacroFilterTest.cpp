@@ -28,13 +28,14 @@ void MacroFilterTest::testFindDefineSyntaxes()
     }
     for (int i = 0; i < yaml.size(); i++)
     {
+
         Strings* s = yaml[i];
         if (s->size() < 2)
         {
             fprintf(stderr, "bad yaml!\n");
         }
 
-        String defineSyntax = s->get(0).data();
+        String defineSyntax = s->get(0)->data();
         SExps defineSyntaxes;
 
         // check count of define-syntax
@@ -46,7 +47,7 @@ void MacroFilterTest::testFindDefineSyntaxes()
         for (int i = 0; i < defineSyntaxes.size(); i++)
         {
             SExp* d        = defineSyntaxes[i];
-            SExp* expected = SExp::fromString(s->get(i + 1).data());
+            SExp* expected = SExp::fromString(s->get(i + 1)->data());
             sprintf(buf, "%s unmatch\n %s\n", d->toString().data(), expected->toString().data());
             CPPUNIT_ASSERT_MESSAGE(buf, d->equals(expected));
         }
@@ -71,9 +72,9 @@ void MacroFilterTest::testFilter()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        String macro     = s->get(0).data();
-        String macroCall = s->get(1).data();
-        String expected  = s->get(2).data();
+        String macro     = s->get(0)->data();
+        String macroCall = s->get(1)->data();
+        String expected  = s->get(2)->data();
 
         MacroFilter f;
         f.findAndStoreDefineSyntaxes(SExp::fromString(macro));

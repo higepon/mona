@@ -91,7 +91,7 @@ once_more:
         for (;;)
         {
             c = getChar();
-            if (c == '\"') break;
+
             if (c == '\\')
             {
                 char next = getChar();
@@ -100,11 +100,21 @@ once_more:
                     str += '\n';
                     continue;
                 }
+                else if (next == '\"')
+                {
+                    str += "\"";
+                    continue;
+                }
                 else
                 {
                     unGetChar();
                 }
             }
+            if (c == '\"')
+            {
+                break;
+            }
+
             str += c;
         }
         token.text = str;
@@ -118,7 +128,7 @@ once_more:
         str += c;
         for (;;)
         {
-    
+
             c = getChar();
             if (isspace(c) || c == '(' || c == ')' || c== '\'')
             {
@@ -133,4 +143,3 @@ once_more:
         return token;
     }
 }
-

@@ -343,4 +343,25 @@
 
 (define string (lambda l (list->string l)))
 
+(define append2
+  (lambda (l1 l2)
+    (if (null? l1)
+    l2
+    (let ((tete (cons (car l1) l2)))
+      (let loop ((cur tete) (l1 (cdr l1)))
+        (if (null? l1)
+        tete
+        (begin
+          (set-cdr! cur (cons (car l1) l2))
+          (loop (cdr cur) (cdr l1)))))))))
+
+(define append
+  (lambda ll
+    (foldr1 append2 (cons '() ll))))
+
+(define foldr1
+  (lambda (binop l)
+    (if (null? (cdr l))
+	(car l)
+	(binop (car l) (foldr1 binop (cdr l))))))
 

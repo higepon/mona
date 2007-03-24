@@ -51,14 +51,10 @@
  - (define-syntax case (syntax-rules () ((case key ((atoms ...) result1 result2 ...)) (if (memv key '(atoms ...)) (begin result1 result2 ...)))))
  - (case 3 ((3) (display 3)))
  - (if (memv 3 '(3)) (begin (display 3)))
-
-
-
 # todo
 #-
 # - (define-syntax let* (syntax-rules () ((let* () body1 body2 ...) (let () body1 body2 ...)) ((let* ((name1 val1) (name2 val2) ...) body1 body2 ...) (let ((name1 val1)) (let* ((name2 val2) ...) body1 body2 ...)))))
 # - (let* ((n1 v1) (n2 v2)) f g)
-# - (let ((n1 v1)) (let* ((n2 v2)) f g))
 # - (let ((n1 v1)) (let ((n2 v2)) f g))
 
 # todo

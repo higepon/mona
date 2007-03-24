@@ -19,7 +19,7 @@
 #include "util/HashMap.h"
 
 namespace util {
-    typedef Vector<String> Strings;
+    typedef Vector<String*> Strings;
 };
 
 //#include <algorithm>
@@ -74,9 +74,12 @@ GLOBAL monash::InputPort* g_defaultInputPort;
 GLOBAL monash::OutputPort* g_currentOutputPort;
 GLOBAL monash::OutputPort* g_defaultOutputPort;
 GLOBAL monash::InputPort* g_currentInputPort;
+GLOBAL monash::Environment* g_top_env;
 GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
+GLOBAL ::util::HashMap<int>* g_provide_map;
+
 
 #define SCM_TRUE   g_true
 #define SCM_FALSE  g_false

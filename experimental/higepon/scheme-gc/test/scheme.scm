@@ -29,6 +29,10 @@
 
 (define call/cc call-with-current-continuation)
 
+(define error (lambda x
+                (display "error:")
+                (for-each (lambda (s) (display s) (display " "))  x)))
+
 (define zero?
   (lambda (x)
     (= 0 x)))
@@ -91,6 +95,32 @@
      (if (memv key (list atoms ...))
          (begin result1 result2 ...)
          (case key clause clauses ...)))))
+
+(define-syntax cond
+  (syntax-rules (else =>)
+    ((cond (else result1 result2 ...))
+     (begin result1 result2 ...))
+    ((cond (test => result))
+     (let ((temp test))
+       (if temp (result temp))))
+    ((cond (test => result) clause1 clause2 ...)
+     (let ((temp test))
+       (if temp
+           (result temp)
+           (cond clause1 clause2 ...))))
+    ((cond (test)) test)
+    ((cond (test) clause1 clause2 ...)
+     (let ((temp test))
+       (if temp
+           temp
+           (cond clause1 clause2 ...))))
+    ((cond (test result1 result2 ...))
+     (if test (begin result1 result2 ...)))
+    ((cond (test result1 result2 ...)
+           clause1 clause2 ...)
+     (if test
+         (begin result1 result2 ...)
+         (cond clause1 clause2 ...)))))
 
 (define positive? (lambda (x) (> x 0)))
 (define negative? (lambda (x) (< x 0)))
@@ -194,4 +224,64 @@
                  (call-with-current-continuation
                   (lambda (cont) (apply cont things)))))
 
+(define-syntax aif
+  (syntax-rules ()
+    ((_ it a b c ...)
+     (let ((it a)) (if it b c ...)))))
+
+(define-syntax awhen
+  (syntax-rules ()
+    ((_ it pred body ...)
+     (aif it pred (begin body ...)))))
+
+(define-syntax awhile
+  (syntax-rules ()
+    ((_ it pred a)
+     (do ((it pred pred))
+         ((not it))
+       a))))
+
+(define-syntax aand
+  (syntax-rules ()
+    ((_ it a) #t
+     (_ it a b c ...) (aif it a (_ it b c ...) #f))))
+
+     
+;; 		      (do ((expr (read port) (read port))
+;; 			   (lst '() (cons expr lst)))
+;; 			  ((eof-object? expr)
+;; 			   (apply append lst))))))))
+
+(define-syntax do
+  (syntax-rules ()
+    ;; 変数2つ commandなし
+    ((_ ((a b c) (d e f))
+        (pred g ...))
+     (let loop ((a b) (d e))
+       (if pred (begin g ...)
+           (begin (loop c f)))))
+    ;; 変数2つ commandあり
+    ((_ ((a b c) (d e f))
+        (pred g ...)
+        x ...)
+     (let loop ((a b) (d e))
+       (if pred (begin g ...)
+           (begin x ... (loop c f)))))
+    ;; 変数2つ commandあり
+    ((_ ((a b c) (d e))
+        (pred)
+        x ...)
+     (let loop ((a b) (d e))
+       (if pred #t
+           (begin x ... (loop c e)))))
+    ;; 変数1つ commandあり
+    ((_ ((a b c))
+        (pred d ...)
+       command ...)
+     (let loop ((a b))
+       (if pred (begin d ...)
+           (begin command ... (loop c)))))))
+
 (load "test/danny_dube.scm")
+;(load "slib/Template.scm")
+;(slib:report)

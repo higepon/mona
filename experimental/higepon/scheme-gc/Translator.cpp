@@ -54,6 +54,7 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
 #endif
         return SUCCESS;
     }
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return SYNTAX_ERROR;
 }
 
@@ -84,7 +85,7 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
         {
             Object* b;
             SExp* s = N(i);
-            if (translate(&s, &b) != SUCCESS) return SYNTAX_ERROR;
+            if (translate(&s, &b) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
             body->add(b);
         }
         Object* l = new Lambda(body, variables, false, sexp->lineno);ASSERT(l);
@@ -93,13 +94,13 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     }
     else
     {
-        if (L() != 3) return SYNTAX_ERROR;
+        if (L() != 3) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
         SExp* symbol = N(1);
-        if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
+        if (symbol->type != SExp::SYMBOL) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
         Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
         SExp* argument = N(2);
         Object* argumentObject;
-        if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
+        if (translate(&argument, &argumentObject) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
         *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
         return SUCCESS;
     }
@@ -213,15 +214,27 @@ int Translator::translateBegin(SExp* sexp, Object** object)
 
 int Translator::translateQuote(SExp* sexp, Object** object)
 {
-    if (L() <= 1) return SYNTAX_ERROR;
+    if (L() < 1)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
     *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateLambda(SExp* sexp, Object** object)
 {
-    if (L() <= 2) return SYNTAX_ERROR;
-    if (N(1)->type != SExp::SEXPS && N(1)->type != SExp::SYMBOL) return SYNTAX_ERROR;
+    if (L() <= 2)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
+    if (N(1)->type != SExp::SEXPS && N(1)->type != SExp::SYMBOL)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
     bool extendVariable = false;
     Variables* variables = new Variables;ASSERT(variables);
     if (N(1)->type == SExp::SEXPS)
@@ -230,7 +243,11 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         for (int i = 0; i < N(1)->sexps.size(); i++)
         {
             SExp* param = NN(1, i);
-            if (param->type != SExp::SYMBOL) return SYNTAX_ERROR;
+            if (param->type != SExp::SYMBOL)
+            {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                return SYNTAX_ERROR;
+            }
             Variable* v = new Variable(param->text, param->lineno);
             ASSERT(v);
             variables->add(v);
@@ -248,7 +265,11 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         Object* o;
         SExp* ni = N(i);
         int ret = translate(&ni, &o);
-        if (ret != SUCCESS) return ret;
+        if (ret != SUCCESS)
+        {
+            printf("%s %s:%d:i=%d\n", __func__, __FILE__, __LINE__, i);fflush(stdout);// debug
+            return ret;
+        }
         body->add(o);
     }
     *object = new Lambda(body, variables, extendVariable, sexp->lineno);ASSERT(*object);
@@ -257,7 +278,10 @@ int Translator::translateLambda(SExp* sexp, Object** object)
 
 int Translator::translateNamedLet(SExp* sexp, Object** object)
 {
-    if (N(2)->type != SExp::SEXPS) return SYNTAX_ERROR;
+    if (N(2)->type != SExp::SEXPS)
+    {
+        return SYNTAX_ERROR;
+    }
     Variables* variables = new Variables;ASSERT(variables);
     Objects* values = new Objects;ASSERT(values);
     SExps* parameterSExps = &N(2)->sexps;
@@ -291,12 +315,20 @@ int Translator::translateNamedLet(SExp* sexp, Object** object)
 
 int Translator::translateLet(SExp* sexp, Object** object)
 {
-    if (L() < 3) return SYNTAX_ERROR;
+    if (L() < 3)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
     if (N(1)->type == SExp::SYMBOL)
     {
         return translateNamedLet(sexp, object);
     }
-    if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
+    if (N(1)->type != SExp::SEXPS)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
 
     Variables* variables = new Variables;ASSERT(variables);
     Objects* values = new Objects;ASSERT(values);
@@ -304,15 +336,27 @@ int Translator::translateLet(SExp* sexp, Object** object)
     for (int i = 0; i < parameterSExps->size(); i++)
     {
         SExp* parameter = parameterSExps->get(i);
-        if (parameter->type != SExp::SEXPS || parameter->sexps.size() != 2) return SYNTAX_ERROR;
-        if (parameter->sexps[0]->type != SExp::SYMBOL) return SYNTAX_ERROR;
+        if (parameter->type != SExp::SEXPS || parameter->sexps.size() != 2)
+        {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            return SYNTAX_ERROR;
+        }
+        if (parameter->sexps[0]->type != SExp::SYMBOL)
+        {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            return SYNTAX_ERROR;
+        }
         Variable* v = new Variable(parameter->sexps[0]->text, parameter->sexps[0]->lineno);
         ASSERT(v);
         variables->add(v);
         Object* value;
         SExp* p1 = parameter->sexps[1];
         int ret = translate(&p1, &value);
-        if (ret != SUCCESS) return ret;
+        if (ret != SUCCESS)
+        {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            return ret;
+        }
         values->add(value);
     }
 
@@ -322,7 +366,12 @@ int Translator::translateLet(SExp* sexp, Object** object)
         Object* o;
         SExp* ni = N(i);
         int ret = translate(&ni, &o);
-        if (ret != SUCCESS) return ret;
+        if (ret != SUCCESS)
+        {
+            printf("i = %d\n", i);
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            return ret;
+        }
         body->add(o);
     }
     *object = new Let(body, variables, values, sexp->lineno);ASSERT(*object);
@@ -434,18 +483,22 @@ int Translator::translate(SExp** n, Object** object)
             return translateOr(sexp, object);
         }
 #endif
+#if 0
         else if (functionName == "cond")
         {
             return translateCond(sexp, object);
         }
+#endif
         else if (functionName == "let")
         {
             return translateLet(sexp, object);
         }
+#if 1
         else if (functionName == "let*")
         {
             return translateLetAsterisk(sexp, object);
         }
+#endif
         else
         {
             return translateApplication(sexp, object);

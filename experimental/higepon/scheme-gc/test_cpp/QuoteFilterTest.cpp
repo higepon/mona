@@ -34,8 +34,8 @@ void QuoteFilterTest::testFilter()
             fprintf(stderr, "bad yaml!\n");
         }
 
-        String before  = s->get(0).data();
-        String after   = s->get(1).data();
+        String before  = s->get(0)->data();
+        String after   = s->get(1)->data();
         QuoteFilter f;
         String ret = f.filter(before);
         sprintf(buf, "[result]\n%s unmatch\n [expected]\n%s\n", ret.data(), after.data());

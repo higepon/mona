@@ -10,6 +10,7 @@ env->defineVariable(new Variable("eqv?"), new EqvP());
 env->defineVariable(new Variable("eq?"), new EqP());
 env->defineVariable(new Variable("transcript-on"), new TranscriptOn());
 env->defineVariable(new Variable("transcript-off"), new TranscriptOff());
+env->defineVariable(new Variable("file-exists?"), new FileExistsP());
 env->defineVariable(new Variable("char-ready?"), new CharReadyP());
 env->defineVariable(new Variable("set-current-output-port!"), new SetCurrentOutputPort());
 env->defineVariable(new Variable("set-current-input-port!"), new SetCurrentInputPort());

@@ -13,6 +13,7 @@ void registerPrimitives(Environment* env)
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript = NULL;
+    //    g_provide_map = new HashMap<int>;
     g_dynamic_winds = new DynamicWinds;
     g_true = new True;
     g_false = new False;
