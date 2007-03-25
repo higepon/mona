@@ -40,10 +40,15 @@ public:
         SUCCESS
     };
 
+    int translateAsData(SExp* sexp, Object** object);
     int translate(SExp** sexp, Object** object);
     int translateDefineSyntax(SExp* sexp);
     SExp* expandMacroIfMatch(const ::util::String& name, SExp** sexp);
 private:
+    int translateAsDataPrimitive(SExp* sexp, Object** object);
+    int translateAsVectorData(SExp* sexp, Object** object);
+    int translateAsListData(SExp* sexp, Object** object);
+
     int translatePrimitive(SExp* sexp, Object** object);
     int translateDefinition(SExp* sexp, Object** object);
 

@@ -169,12 +169,13 @@ PROCEDURE(Apply, "apply")
 
 PROCEDURE(Eval, "eval")
 {
+#if 0
     ARGC_SHOULD_BE(2);
     CAST(ARGV(0), Quote, q);
     CAST(ARGV(1), Environment, e);
 
     Object* o;
-    // see Translator::translateQuote
+   // see Translator::translateQuote
     SExp* n = q->sexp();
     e->macroFilter().filter(n);
     int ret = e->translator().translate(&n, &o);
@@ -183,6 +184,29 @@ PROCEDURE(Eval, "eval")
         RAISE_ERROR(n->lineno, "eval got error [%s]", toString().data(), q->toStringValue().data());
     }
     return o->eval(e);
+#else
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(1), Environment, e);
+    Object* target = ARGV(0);
+
+    if (target->isPair())
+    {
+        Pair* p = (Pair*)target;
+        SExp* sexp = p->toSExp();
+        e->macroFilter().filter(sexp);
+        Object* o;
+        int ret = e->translator().translate(&sexp, &o);
+        if (ret != Translator::SUCCESS)
+        {
+            RAISE_ERROR(sexp->lineno, "eval got error [%s]", toString().data(), target->toStringValue().data());
+        }
+        return o->eval(e);
+    }
+    else
+    {
+        return target->eval(e);
+    }
+#endif
 }
 
 PROCEDURE(NullEnvironment, "null-environment")

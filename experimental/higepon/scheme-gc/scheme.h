@@ -48,6 +48,8 @@ namespace util {
 #include "OutputPort.h"
 #include "InputPort.h"
 #include "Values.h"
+#include "Nil.h"
+#include "RiteralConstant.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
 #include "procedures/Undef.h"
@@ -67,6 +69,7 @@ typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 GLOBAL monash::True* g_true;
 GLOBAL monash::False* g_false;
 GLOBAL monash::Undef* g_undef;
+GLOBAL monash::Nil* g_nil;
 GLOBAL monash::Objects* g_no_arg;
 GLOBAL monash::DynamicWinds* g_dynamic_winds;
 GLOBAL monash::InputPort* g_defaultInputPort;
@@ -85,6 +88,7 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
 #define SCM_FALSE  g_false
 #define SCM_UNDEF  g_undef
 #define SCM_NO_ARG g_no_arg
+#define SCM_NIL    g_nil
 
 // notice!
 // don't use like below

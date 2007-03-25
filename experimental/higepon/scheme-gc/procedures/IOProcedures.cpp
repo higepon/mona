@@ -284,6 +284,8 @@ PROCEDURE(Load, "load")
     for (int i = 0; i < sexps.size(); i++)
     {
         SExp* sex = sexps[i];
+        printf("*** %s\n", sex->toSExpString().data());
+
         Quote* quote = new Quote(sex, s->lineno());
         Objects* args = new Objects;
         args->add(quote);

@@ -39,6 +39,8 @@ Values.cpp\
 Parser.cpp\
 Procedure.cpp\
 Quote.cpp\
+RiteralConstant.cpp\
+Nil.cpp\
 QuoteFilter.cpp\
 SExp.cpp\
 Kernel.cpp\

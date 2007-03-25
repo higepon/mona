@@ -40,6 +40,7 @@ public:
     virtual ::util::String typeString() const = 0;
     virtual Object* eval(Environment* env) = 0;
     virtual Object* apply(Objects* arguments, Environment* env);
+    bool isRiteralConstant() const { return type() == RITERAL_CONSTANT; }
     bool isNumber() const { return type() == NUMBER; }
     bool isSString() const { return type() == STRING; }
     bool isCharcter() const { return type() == CHARCTER; }
@@ -60,7 +61,9 @@ public:
     bool isContinuation() const { return type() == CONTINUATION; }
     bool isOutputPort() const { return type() == OUTPUT_PORT; }
     bool isInputPort() const { return type() == INPUT_PORT; }
+    bool isVariable() const { return type() == VARIABLE; }
     bool isValues() const { return type() == VALUES; }
+    bool isNil() const { return type() == NIL; }
 public:
 
     enum
@@ -86,6 +89,7 @@ public:
         PAIR,
         APPLICATION,
         PRIMITIVE_PROCEDURE,
+        RITERAL_CONSTANT,
         AND,
         OR,
         LET,
@@ -95,6 +99,7 @@ public:
         TRUE,
         FALSE,
         UNDEF,
+        NIL,
     };
 };
 

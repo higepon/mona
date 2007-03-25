@@ -60,7 +60,6 @@ public:
     void print(int depth = 0);
     bool equals(SExp* sexp);
     SExp* clone();
-
     bool isSExps()  const { return type == SEXPS; }
     bool isNumber() const { return type == NUMBER; }
     bool isSymbol() const { return type == SYMBOL; }

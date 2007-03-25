@@ -19,6 +19,7 @@ void registerPrimitives(Environment* env)
     g_false = new False;
     g_undef = new Undef;
     g_no_arg = new Objects;
+    g_nil = new Nil;
 
 #include "register.inc"
 

@@ -17,6 +17,116 @@ Translator::~Translator()
 {
 }
 
+// change from externel representation to Scheme objects
+int Translator::translateAsData(SExp* sexp, Object** object)
+{
+    if (sexp->type != SExp::SEXPS)
+    {
+        return translateAsDataPrimitive(sexp, object);
+    }
+
+    if (L() > 1 && N(0)->text == "VECTOR")
+    {
+        return translateAsVectorData(sexp, object);
+    }
+    else
+    {
+        return translateAsListData(sexp, object);
+    }
+}
+
+int Translator::translateAsVectorData(SExp* sexp, Object** object)
+{
+    ASSERT(L() > 0);
+    ASSERT(N(0)->text == "VECTOR");
+    Vector* v = new Vector(L() - 1, sexp->lineno);
+    for (int i = 1; i < L(); i++)
+    {
+        Object* o;
+        if (translateAsData(N(i), &o) != SUCCESS) return SYNTAX_ERROR;
+        v->set(i - 1, o);
+    }
+    *object = v;
+    return SUCCESS;
+}
+
+int Translator::translateAsListData(SExp* sexp, Object** object)
+{
+    // ()
+    if (L() == 0)
+    {
+        *object = SCM_NIL;
+        return SUCCESS;
+    }
+
+    // (a . b)
+    if (L() == 3 && N(1)->isSymbol() && N(1)->text == ".")
+    {
+        Object* car;
+        Object* cdr;
+        if (translateAsData(N(0), &car) != SUCCESS) return SYNTAX_ERROR;
+        if (translateAsData(N(2), &cdr) != SUCCESS) return SYNTAX_ERROR;
+        *object = new Pair(car, cdr, sexp->lineno);
+        return SUCCESS;
+    }
+
+    // (a b c d)
+    Pair* start = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+    Pair* p = start;
+    for (int i = 0; i < L(); i++)
+    {
+        Object* car;
+        if (translateAsData(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
+        p->setCar(car);
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        if (i != L() -1)
+        {
+            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+            p->setCdr(tmp);
+            p = tmp;
+        }
+    }
+    *object = start;
+    return SUCCESS;
+}
+
+int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
+{
+    switch(sexp->type)
+    {
+    case SExp::NUMBER:
+#ifdef USE_MONA_GC
+        *object = new(false) Number(sexp->value, sexp->lineno);ASSERT(*object);
+#else
+        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+#endif
+        return SUCCESS;
+    case SExp::STRING:
+        *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+        return SUCCESS;
+    case SExp::CHAR:
+#ifdef USE_MONA_GC
+        *object = new(false) Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+#else
+        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+#endif
+        return SUCCESS;
+    case SExp::SYMBOL:
+        if (sexp->text == "#t" || sexp->text == "#f")
+        {
+            *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+        }
+        else
+        {
+            *object = new RiteralConstant(sexp->text, sexp->lineno);ASSERT(*object);
+        }
+        return SUCCESS;
+    }
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    return SYNTAX_ERROR;
+}
+
+
 int Translator::translatePrimitive(SExp* sexp, Object** object)
 {
     switch(sexp->type)
@@ -94,7 +204,7 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     }
     else
     {
-        if (L() != 3) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
+        if (L() != 3) {printf("%s %s:%d L()=%d %s %s\n", __func__, __FILE__, __LINE__, L(), N(0)->toSExpString().data(), N(3)->toSExpString().data());fflush(stdout);return SYNTAX_ERROR;}
         SExp* symbol = N(1);
         if (symbol->type != SExp::SYMBOL) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
         Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
@@ -219,6 +329,7 @@ int Translator::translateQuote(SExp* sexp, Object** object)
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
+    printf("%s %s:%d quote=%x %s\n", __func__, __FILE__, __LINE__, sexp->sexps[1], sexp->toSExpString().data());fflush(stdout);// debug
     *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
     return SUCCESS;
 }

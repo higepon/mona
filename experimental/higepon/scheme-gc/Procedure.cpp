@@ -59,15 +59,17 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     {
         Objects* args = new Objects;
         SExp* sexp = new SExp(SExp::SEXPS);
+#if 0
         Quote* nil = new Quote(sexp);
-        Pair* start = new Pair(nil, nil);
+#endif
+        Pair* start = new Pair(SCM_NIL, SCM_NIL);
         Pair* p = start;
         for (int j = 0; j < as->size(); j++)
         {
             p->setCar(as->get(j));
             if (j != as->size() -1)
             {
-                Pair* tmp = new Pair(NULL, nil);
+                Pair* tmp = new Pair(NULL, SCM_NIL);
                 p->setCdr(tmp);
                 p = tmp;
             }
@@ -79,27 +81,30 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     {
         Objects* args = new Objects;
         SExp* sexp = new SExp(SExp::SEXPS);
+#if 0
         Quote* nil = new Quote(sexp);
+#else
+#endif
         for (int i = 0; i < params->size(); i++)
         {
             Variable* v = params->get(i);
             if (v->name() == ".")
             {
-                args->add(nil); // . => nil
+                args->add(SCM_NIL); // . => nil
                 if ((params->size() - 1) > as->size())
                 {
-                    args->add(nil);
+                    args->add(SCM_NIL);
                     break;
                 }
 
-                Pair* start = new Pair(NULL, nil);
+                Pair* start = new Pair(NULL, g_nil);
                 Pair* p = start;
                 for (int j = i; j < as->size(); j++)
                 {
                     p->setCar(as->get(j));
                     if (j != as->size() -1)
                     {
-                        Pair* tmp = new Pair(NULL, nil);
+                        Pair* tmp = new Pair(NULL, g_nil);
                         p->setCdr(tmp);
                         p = tmp;
                     }

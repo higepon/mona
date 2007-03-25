@@ -2,6 +2,10 @@
 #define __PAIR_H__
 
 #include "Object.h"
+#include "SExp.h"
+#include "Number.h"
+#include "Variable.h"
+#include "RiteralConstant.h"
 
 namespace monash {
 
@@ -15,6 +19,8 @@ public:
     Object* getCdr() {return cdr_;}
     void setCar(Object* o);
     void setCdr(Object* o);
+    SExp* toSExp();
+    SExp* objectToSExp(Object* o);
 
 public:
     virtual ::util::String toString();

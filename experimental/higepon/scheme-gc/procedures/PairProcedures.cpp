@@ -18,6 +18,7 @@ PROCEDURE(Cons, "cons")
 PROCEDURE(Car, "car")
 {
     ARGC_SHOULD_BE(1);
+#if 0
     if (ARGV(0)->isQuote())
     {
         Quote* quote = (Quote*)ARGV(0);
@@ -35,11 +36,21 @@ PROCEDURE(Car, "car")
     }
     RAISE_ERROR(ARGV(0)->lineno(), "car got [%s], but required pair", procedureName_.data(), ARGV(0)->toString().data());
     return NULL;
+#else
+    if (ARGV(0)->isPair())
+    {
+        Pair* p = (Pair*)ARGV(0);
+        return p->getCar();
+    }
+    RAISE_ERROR(ARGV(0)->lineno(), "car got [%s], but required pair", ARGV(0)->toString().data());
+    return NULL;
+#endif
 }
 
 PROCEDURE(Cdr, "cdr")
 {
     ARGC_SHOULD_BE(1);
+#if 0
     Object* o = ARGV(0);
     if (o->isQuote())
     {
@@ -58,6 +69,17 @@ PROCEDURE(Cdr, "cdr")
     }
     RAISE_ERROR(o->lineno(), "%s got [%s], but required pair", procedureName_.data(), o->toString().data());
     return NULL;
+#else
+    Object* o = ARGV(0);
+    if (o->isPair())
+    {
+        Pair* p = (Pair*)o;
+        return p->getCdr();
+    }
+    RAISE_ERROR(o->lineno(), "%s got [%s], but required pair", procedureName_.data(), o->toString().data());
+    return NULL;
+
+#endif
 }
 
 PROCEDURE(SetCar, "set-car!")

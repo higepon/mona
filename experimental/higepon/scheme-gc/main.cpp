@@ -61,6 +61,9 @@ void input_loop()
     for (int i = 0; i < sexps.size(); i++)
     {
         SExp* sexp = sexps.get(i);
+        printf("*** %s\n", sexp->toSExpString().data());
+
+
         f.filter(sexp);
         Object* object = NULL;
         translator.translate(&sexp, &object);

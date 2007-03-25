@@ -9,7 +9,7 @@
                       y
                       (+ y (car z))
                       ))
-
+(display "*********************************************")
 (assert-check-true "define/lambda"
                    (= (a 3) 3)
                    (= (b) 4)
@@ -18,7 +18,7 @@
                    (= (x 3 4) 7)
                    (= (x 3 4 5) 7)
 )
-
+(display "*********************************************")
 (assert-check-true "if"
                    (if #t #t #f))
 
@@ -383,6 +383,13 @@
 (assert-check-true "do"
                    (do ((i 0 (+ i 1))
                            (j 1))
+                          ((= i 5))
+                        (set! do-index (+ do-index 2)))
+                   (= do-index 10))
+
+(define do-index 0)
+(assert-check-true "do"
+                   (do ((i 0 (+ i 1)))
                           ((= i 5))
                         (set! do-index (+ do-index 2)))
                    (= do-index 10))

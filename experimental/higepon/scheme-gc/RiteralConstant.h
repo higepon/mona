@@ -1,16 +1,16 @@
-#ifndef __QUOTE_H__
-#define __QUOTE_H__
+#ifndef __RITERAL_CONSTANT__
+#define __RITERAL_CONSTANT__
 
 #include "Object.h"
 #include "scheme.h"
 
 namespace monash {
 
-class Quote : public Object
+class RiteralConstant : public Object
 {
 public:
-    Quote(SExp* sexp, uint32_t lineno = 0);
-    virtual ~Quote();
+    RiteralConstant(const ::util::String& value, uint32_t lineno = 0);
+    virtual ~RiteralConstant();
 
 public:
     virtual ::util::String toString();
@@ -20,20 +20,14 @@ public:
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "quote"; }
     virtual ::util::String text() const { return value_;}
-    virtual SExp* sexp() { return sexp_;}
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
 
-//     virtual Quote* car();
-//     virtual Quote* cdr();
-
 protected:
-    SExp* sexp_;
-    Object* data_;
     ::util::String value_;
     uint32_t lineno_;
 };
 
 }; // namespace monash
 
-#endif // __QUOTE_H__
+#endif // __RITERAL_CONSTANT__
