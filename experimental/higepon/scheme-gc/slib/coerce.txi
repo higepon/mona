@@ -1,0 +1,14 @@
+
+@defun type-of obj
+
+Returns a symbol name for the type of @var{obj}.
+@end defun
+
+
+@defun coerce obj result-type
+
+Converts and returns @var{obj} of type @code{char}, @code{number},
+@code{string}, @code{symbol}, @code{list}, or @code{vector} to
+@var{result-type} (which must be one of these symbols).
+@end defun
+

@@ -1,0 +1,33 @@
+@code{(require 'matfile)}
+@ftindex matfile
+@ftindex matlab
+
+@uref{http://www.mathworks.com/access/helpdesk/help/pdf_doc/matlab/matfile_format.pdf}
+
+@noindent
+This package reads MAT-File Format version 4 (MATLAB) binary data
+files.  MAT-files written from big-endian or little-endian computers
+having IEEE format numbers are currently supported.  Support for files
+written from VAX or Cray machines could also be added.
+
+@noindent
+The numeric and text matrix types handled; support for @dfn{sparse}
+@cindex sparse
+matrices awaits a sample file.
+
+
+@defun matfile:read filename
+@var{filename} should be a string naming an existing file containing a
+MATLAB Version 4 MAT-File.  The @code{matfile:read} procedure reads matrices from the
+file and returns a list of the results; a list of the name string and
+array for each matrix.
+@end defun
+
+
+@defun matfile:load filename
+@var{filename} should be a string naming an existing file containing a
+MATLAB Version 4 MAT-File.  The @code{matfile:load} procedure reads matrices from the
+file and defines the @code{string-ci->symbol} for each matrix to its
+corresponding array.  @code{matfile:load} returns a list of the symbols defined.
+@end defun
+

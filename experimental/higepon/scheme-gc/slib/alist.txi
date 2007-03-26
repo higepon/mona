@@ -1,0 +1,76 @@
+@code{(require 'alist)}
+@ftindex alist
+
+Alist functions provide utilities for treating a list of key-value pairs
+as an associative database.  These functions take an equality predicate,
+@var{pred}, as an argument.  This predicate should be repeatable,
+symmetric, and transitive.
+
+Alist functions can be used with a secondary index method such as hash
+tables for improved performance.
+
+
+@defun predicate->asso pred
+
+Returns an @dfn{association function} (like @code{assq}, @code{assv}, or
+@cindex association function
+@code{assoc}) corresponding to @var{pred}.  The returned function
+returns a key-value pair whose key is @code{pred}-equal to its first
+argument or @code{#f} if no key in the alist is @var{pred}-equal to the
+first argument.
+@end defun
+
+
+@defun alist-inquirer pred
+
+Returns a procedure of 2 arguments, @var{alist} and @var{key}, which
+returns the value associated with @var{key} in @var{alist} or @code{#f} if
+@var{key} does not appear in @var{alist}.
+@end defun
+
+
+@defun alist-associator pred
+
+Returns a procedure of 3 arguments, @var{alist}, @var{key}, and
+@var{value}, which returns an alist with @var{key} and @var{value}
+associated.  Any previous value associated with @var{key} will be
+lost.  This returned procedure may or may not have side effects on its
+@var{alist} argument.  An example of correct usage is:
+
+@lisp
+(define put (alist-associator string-ci=?))
+(define alist '())
+(set! alist (put alist "Foo" 9))
+@end lisp
+@end defun
+
+
+@defun alist-remover pred
+
+Returns a procedure of 2 arguments, @var{alist} and @var{key}, which
+returns an alist with an association whose @var{key} is key removed.
+This returned procedure may or may not have side effects on its
+@var{alist} argument.  An example of correct usage is:
+
+@lisp
+(define rem (alist-remover string-ci=?))
+(set! alist (rem alist "foo"))
+@end lisp
+@end defun
+
+
+@defun alist-map proc alist
+
+Returns a new association list formed by mapping @var{proc} over the
+keys and values of @var{alist}.   @var{proc} must be a function of 2
+arguments which returns the new value part.
+@end defun
+
+
+@defun alist-for-each proc alist
+
+Applies @var{proc} to each pair of keys and values of @var{alist}.
+@var{proc} must be a function of 2 arguments.  The returned value is
+unspecified.
+@end defun
+

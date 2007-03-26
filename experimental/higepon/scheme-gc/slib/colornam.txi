@@ -1,0 +1,81 @@
+@code{(require 'color-names)}
+@ftindex color-names
+
+@noindent
+Rather than ballast the color dictionaries with numbered grays,
+@code{file->color-dictionary} discards them.  They are provided
+through the @code{grey} procedure:
+
+
+@defun grey k
+
+Returns @code{(inexact->exact (round (* k 2.55)))}, the X11 color
+grey@i{<k>}.
+@end defun
+
+@noindent
+A color dictionary is a database table relating @dfn{canonical}
+@cindex canonical
+color-names to color-strings
+(@pxref{Color Data-Type, External Representation}).
+
+@noindent
+The column names in a color dictionary are unimportant; the first
+field is the key, and the second is the color-string.
+
+
+@defun color-name:canonicalize name
+Returns a downcased copy of the string or symbol @var{name} with
+@samp{_}, @samp{-}, and whitespace removed.
+@end defun
+
+
+@defun color-name->color name table1 table2 @dots{}
+
+
+@var{table1}, @var{table2}, @dots{} must be color-dictionary tables.  @code{color-name->color} searches for the
+canonical form of @var{name} in @var{table1}, @var{table2}, @dots{} in order; returning the
+color-string of the first matching record; #f otherwise.
+@end defun
+
+
+@defun color-dictionaries->lookup table1 table2 @dots{}
+
+
+@var{table1}, @var{table2}, @dots{} must be color-dictionary tables.  @code{color-dictionaries->lookup} returns a
+procedure which searches for the canonical form of its string argument
+in @var{table1}, @var{table2}, @dots{}; returning the color-string of the first matching
+record; and #f otherwise.
+@end defun
+
+
+@defun color-dictionary name rdb base-table-type
+
+
+@var{rdb} must be a string naming a relational database file; and the symbol
+@var{name} a table therein.  The database will be opened as
+@var{base-table-type}.  @code{color-dictionary} returns the read-only table @var{name} in database
+@var{name} if it exists; #f otherwise.
+
+
+@defunx color-dictionary name rdb
+
+@var{rdb} must be an open relational database or a string naming a relational
+database file; and the symbol @var{name} a table therein.  @code{color-dictionary} returns the
+read-only table @var{name} in database @var{name} if it exists; #f otherwise.
+@end defun
+
+
+@defun load-color-dictionary name rdb base-table-type
+
+
+@defunx load-color-dictionary name rdb
+
+@var{rdb} must be a string naming a relational database file; and the symbol
+@var{name} a table therein.  If the symbol @var{base-table-type} is provided, the database will
+be opened as @var{base-table-type}.  @code{load-color-dictionary} creates a top-level definition of the symbol @var{name}
+to a lookup procedure for the color dictionary @var{name} in @var{rdb}.
+
+The value returned by @code{load-color-dictionary} is unspecified.
+@end defun
+

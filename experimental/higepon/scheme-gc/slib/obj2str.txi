@@ -1,0 +1,11 @@
+
+@defun object->string obj
+Returns the textual representation of @var{obj} as a string.
+@end defun
+
+
+@defun object->limited-string obj limit
+Returns the textual representation of @var{obj} as a string of length
+at most @var{limit}.
+@end defun
+

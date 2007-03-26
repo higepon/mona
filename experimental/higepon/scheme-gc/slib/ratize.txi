@@ -1,0 +1,44 @@
+@code{(require 'rationalize)}
+@ftindex rationalize
+
+
+@defun rationalize x e
+
+Computes the correct result for exact arguments (provided the
+implementation supports exact rational numbers of unlimited precision);
+and produces a reasonable answer for inexact arguments when inexact
+arithmetic is implemented using floating-point.
+
+@end defun
+
+@code{Rationalize} has limited use in implementations lacking exact
+(non-integer) rational numbers.  The following procedures return a list
+of the numerator and denominator.
+
+
+@defun find-ratio x e
+
+@code{find-ratio} returns the list of the @emph{simplest}
+numerator and denominator whose quotient differs from @var{x} by no more
+than @var{e}.
+
+@format
+@t{(find-ratio 3/97 .0001)             @result{} (3 97)
+(find-ratio 3/97 .001)              @result{} (1 32)
+}
+@end format
+@end defun
+
+
+@defun find-ratio-between x y
+
+@code{find-ratio-between} returns the list of the @emph{simplest}
+numerator and denominator between @var{x} and @var{y}.
+
+@format
+@t{(find-ratio-between 2/7 3/5)        @result{} (1 2)
+(find-ratio-between -3/5 -2/7)      @result{} (-1 2)
+}
+@end format
+@end defun
+

@@ -1,0 +1,61 @@
+
+@defvar prime:prngs
+
+@var{prime:prngs} is the random-state (@pxref{Random Numbers}) used by these
+procedures.  If you call these procedures from more than one thread
+(or from interrupt), @code{random} may complain about reentrant
+calls.
+@end defvar
+@emph{Note:} The prime test and generation procedures implement (or
+use) the Solovay-Strassen primality test. See
+
+@itemize @bullet
+@item Robert Solovay and Volker Strassen,
+@cite{A Fast Monte-Carlo Test for Primality},
+SIAM Journal on Computing, 1977, pp 84-85.
+@end itemize
+
+
+@defun jacobi-symbol p q
+
+Returns the value (+1, @minus{}1, or 0) of the Jacobi-Symbol of
+exact non-negative integer @var{p} and exact positive odd integer @var{q}.
+@end defun
+
+
+@defvar prime:trials
+
+@var{prime:trials} the maxinum number of iterations of Solovay-Strassen that will
+be done to test a number for primality.
+@end defvar
+
+@defun prime? n
+
+Returns @code{#f} if @var{n} is composite; @code{#t} if @var{n} is prime.
+There is a slight chance @code{(expt 2 (- prime:trials))} that a
+composite will return @code{#t}.
+@end defun
+
+
+@defun primes< start count
+
+Returns a list of the first @var{count} prime numbers less than
+@var{start}.  If there are fewer than @var{count} prime numbers
+less than @var{start}, then the returned list will have fewer than
+@var{start} elements.
+@end defun
+
+
+@defun primes> start count
+
+Returns a list of the first @var{count} prime numbers greater than @var{start}.
+@end defun
+
+
+@defun factor k
+
+Returns a list of the prime factors of @var{k}.  The order of the
+factors is unspecified.  In order to obtain a sorted list do
+@code{(sort! (factor @var{k}) <)}.
+@end defun
+

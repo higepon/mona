@@ -1,0 +1,90 @@
+@code{(require 'dft)} or
+@code{(require 'Fourier-transform)}
+@ftindex dft, Fourier-transform
+
+@code{fft} and @code{fft-1} compute the Fast-Fourier-Transforms
+(O(n*log(n))) of arrays whose dimensions are all powers of 2.
+
+@code{sft} and @code{sft-1} compute the Discrete-Fourier-Transforms
+for all combinations of dimensions (O(n^2)).
+
+
+@defun sft array prot
+
+
+@defunx sft array
+@var{array} is an array of positive rank.  @code{sft} returns an
+array of type @var{prot} (defaulting to @var{array}) of complex numbers comprising
+the @dfn{Discrete Fourier Transform} of @var{array}.
+@cindex Discrete Fourier Transform
+@end defun
+
+
+@defun sft-1 array prot
+
+
+@defunx sft-1 array
+@var{array} is an array of positive rank.  @code{sft-1} returns an
+array of type @var{prot} (defaulting to @var{array}) of complex numbers comprising
+the inverse Discrete Fourier Transform of @var{array}.
+@end defun
+
+
+@defun fft array prot
+
+
+@defunx fft array
+@var{array} is an array of positive rank whose dimensions are all
+powers of 2.  @code{fft} returns an array of type @var{prot} (defaulting to
+@var{array}) of complex numbers comprising the Discrete Fourier Transform of
+@var{array}.
+@end defun
+
+
+@defun fft-1 array prot
+
+
+@defunx fft-1 array
+@var{array} is an array of positive rank whose dimensions are all
+powers of 2.  @code{fft-1} returns an array of type @var{prot} (defaulting
+to @var{array}) of complex numbers comprising the inverse Discrete Fourier
+Transform of @var{array}.
+@end defun
+
+@code{dft} and @code{dft-1} compute the discrete Fourier transforms
+using the best method for decimating each dimension.
+
+
+@defun dft array prot
+
+
+@defunx dft array
+@code{dft} returns an array of type @var{prot} (defaulting to @var{array}) of complex
+numbers comprising the Discrete Fourier Transform of @var{array}.
+@end defun
+
+
+@defun dft-1 array prot
+
+
+@defunx dft-1 array
+@code{dft-1} returns an array of type @var{prot} (defaulting to @var{array}) of
+complex numbers comprising the inverse Discrete Fourier Transform of
+@var{array}.
+@end defun
+
+@noindent
+@code{(fft-1 (fft @var{array}))} will return an array of values close to
+@var{array}.
+
+@example
+(fft '#(1 0+i -1 0-i 1 0+i -1 0-i)) @result{}
+
+#(0.0 0.0 0.0+628.0783185208527e-18i 0.0
+  0.0 0.0 8.0-628.0783185208527e-18i 0.0)
+
+(fft-1 '#(0 0 0 0 0 0 8 0)) @result{}
+
+#(1.0 -61.23031769111886e-18+1.0i -1.0 61.23031769111886e-18-1.0i
+  1.0 -61.23031769111886e-18+1.0i -1.0 61.23031769111886e-18-1.0i)
+@end example

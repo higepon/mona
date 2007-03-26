@@ -1,0 +1,93 @@
+@code{(require 'hash-table)}
+@ftindex hash-table
+
+
+@defun predicate->hash pred
+
+Returns a hash function (like @code{hashq}, @code{hashv}, or
+@code{hash}) corresponding to the equality predicate @var{pred}.
+@var{pred} should be @code{eq?}, @code{eqv?}, @code{equal?}, @code{=},
+@code{char=?}, @code{char-ci=?}, @code{string=?}, or
+@code{string-ci=?}.
+@end defun
+
+@noindent
+A hash table is a vector of association lists.
+
+
+@defun make-hash-table k
+
+Returns a vector of @var{k} empty (association) lists.
+@end defun
+
+@noindent
+Hash table functions provide utilities for an associative database.
+These functions take an equality predicate, @var{pred}, as an argument.
+@var{pred} should be @code{eq?}, @code{eqv?}, @code{equal?}, @code{=},
+@code{char=?}, @code{char-ci=?}, @code{string=?}, or
+@code{string-ci=?}.
+
+
+@defun predicate->hash-asso pred
+
+Returns a hash association function of 2 arguments, @var{key} and
+@var{hashtab}, corresponding to @var{pred}.  The returned function
+returns a key-value pair whose key is @var{pred}-equal to its first
+argument or @code{#f} if no key in @var{hashtab} is @var{pred}-equal to
+the first argument.
+@end defun
+
+
+@defun hash-inquirer pred
+
+Returns a procedure of 2 arguments, @var{hashtab} and @var{key}, which
+returns the value associated with @var{key} in @var{hashtab} or
+@code{#f} if @var{key} does not appear in @var{hashtab}.
+@end defun
+
+
+@defun hash-associator pred
+
+Returns a procedure of 3 arguments, @var{hashtab}, @var{key}, and
+@var{value}, which modifies @var{hashtab} so that @var{key} and
+@var{value} associated.  Any previous value associated with @var{key}
+will be lost.
+@end defun
+
+
+@defun hash-remover pred
+
+Returns a procedure of 2 arguments, @var{hashtab} and @var{key}, which
+modifies @var{hashtab} so that the association whose key is @var{key} is
+removed.
+@end defun
+
+
+@defun hash-map proc hash-table
+
+Returns a new hash table formed by mapping @var{proc} over the
+keys and values of @var{hash-table}.  @var{proc} must be a function of 2
+arguments which returns the new value part.
+@end defun
+
+
+@defun hash-for-each proc hash-table
+
+Applies @var{proc} to each pair of keys and values of @var{hash-table}.
+@var{proc} must be a function of 2 arguments.  The returned value is
+unspecified.
+@end defun
+
+
+@defun hash-rehasher pred
+
+@code{hash-rehasher} accepts a hash table predicate and returns a function of two
+arguments @var{hashtab} and @var{new-k} which is specialized for
+that predicate.
+
+This function is used for nondestrutively resizing a hash table.
+@var{hashtab} should be an existing hash-table using @var{pred}, @var{new-k}
+is the size of a new hash table to be returned.  The new hash table
+will have all of the associations of the old hash table.
+@end defun
+

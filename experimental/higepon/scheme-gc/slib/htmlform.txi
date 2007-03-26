@@ -1,0 +1,238 @@
+@code{(require 'html-form)}
+@ftindex html-form
+
+
+@defun html:atval txt
+Returns a string with character substitutions appropriate to
+send @var{txt} as an @dfn{attribute-value}.
+@cindex attribute-value
+@end defun
+
+
+@defun html:plain txt
+Returns a string with character substitutions appropriate to
+send @var{txt} as an @dfn{plain-text}.
+@cindex plain-text
+@end defun
+
+
+@defun html:meta name content
+Returns a tag of meta-information suitable for passing as the
+third argument to @code{html:head}.  The tag produced is @samp{<META
+NAME="@var{name}" CONTENT="@var{content}">}.  The string or symbol @var{name} can be
+@samp{author}, @samp{copyright}, @samp{keywords}, @samp{description},
+@samp{date}, @samp{robots}, @dots{}.
+@end defun
+
+
+@defun html:http-equiv name content
+Returns a tag of HTTP information suitable for passing as the
+third argument to @code{html:head}.  The tag produced is @samp{<META
+HTTP-EQUIV="@var{name}" CONTENT="@var{content}">}.  The string or symbol @var{name} can be
+@samp{Expires}, @samp{PICS-Label}, @samp{Content-Type},
+@samp{Refresh}, @dots{}.
+@end defun
+
+
+@defun html:meta-refresh delay uri
+
+
+@defunx html:meta-refresh delay
+
+Returns a tag suitable for passing as the third argument to
+@code{html:head}.  If @var{uri} argument is supplied, then @var{delay} seconds after
+displaying the page with this tag, Netscape or IE browsers will fetch
+and display @var{uri}.  Otherwise, @var{delay} seconds after displaying the page with
+this tag, Netscape or IE browsers will fetch and redisplay this page.
+@end defun
+
+
+@defun html:head title backlink tags @dots{}
+
+
+@defunx html:head title backlink
+
+@defunx html:head title
+
+Returns header string for an HTML page named @var{title}.  If @var{backlink} is a string,
+it is used verbatim between the @samp{H1} tags; otherwise @var{title} is
+used.  If string arguments @var{tags} ... are supplied, then they are
+included verbatim within the @t{<HEAD>} section.
+@end defun
+
+
+@defun html:body body @dots{}
+Returns HTML string to end a page.
+@end defun
+
+
+@defun html:pre line1 line @dots{}
+Returns the strings @var{line1}, @var{lines} as @dfn{PRE}formmated plain text
+@cindex PRE
+(rendered in fixed-width font).  Newlines are inserted between @var{line1},
+@var{lines}.  HTML tags (@samp{<tag>}) within @var{lines} will be visible verbatim.
+@end defun
+
+
+@defun html:comment line1 line @dots{}
+Returns the strings @var{line1} as HTML comments.
+@end defun
+
+@section HTML Forms
+
+
+@defun html:form method action body @dots{}
+The symbol @var{method} is either @code{get}, @code{head}, @code{post},
+@code{put}, or @code{delete}.  The strings @var{body} form the body of the
+form.  @code{html:form} returns the HTML @dfn{form}.
+@cindex form
+@end defun
+
+
+@defun html:hidden name value
+Returns HTML string which will cause @var{name}=@var{value} in form.
+@end defun
+
+
+@defun html:checkbox pname default
+Returns HTML string for check box.
+@end defun
+
+
+@defun html:text pname default size @dots{}
+Returns HTML string for one-line text box.
+@end defun
+
+
+@defun html:text-area pname default-list
+Returns HTML string for multi-line text box.
+@end defun
+
+
+@defun html:select pname arity default-list foreign-values
+Returns HTML string for pull-down menu selector.
+@end defun
+
+
+@defun html:buttons pname arity default-list foreign-values
+Returns HTML string for any-of selector.
+@end defun
+
+
+@defun form:submit submit-label command
+
+
+@defunx form:submit submit-label
+
+The string or symbol @var{submit-label} appears on the button which submits the form.
+If the optional second argument @var{command} is given, then @code{*command*=@var{command}}
+and @code{*button*=@var{submit-label}} are set in the query.  Otherwise,
+@code{*command*=@var{submit-label}} is set in the query.
+@end defun
+
+
+@defun form:image submit-label image-src
+The @var{image-src} appears on the button which submits the form.
+@end defun
+
+
+@defun form:reset
+Returns a string which generates a @dfn{reset} button.
+@cindex reset
+@end defun
+
+
+@defun form:element pname arity default-list foreign-values
+Returns a string which generates an INPUT element for the field
+named @var{pname}.  The element appears in the created form with its
+representation determined by its @var{arity} and domain.  For domains which
+are foreign-keys:
+
+@table @code
+@item single
+select menu
+@item optional
+select menu
+@item nary
+check boxes
+@item nary1
+check boxes
+@end table
+
+If the foreign-key table has a field named @samp{visible-name}, then
+the contents of that field are the names visible to the user for
+those choices.  Otherwise, the foreign-key itself is visible.
+
+For other types of domains:
+
+@table @code
+@item single
+text area
+@item optional
+text area
+@item boolean
+check box
+@item nary
+text area
+@item nary1
+text area
+@end table
+@end defun
+
+
+@defun form:delimited pname doc aliat arity default-list foreign-values
+
+
+Returns a HTML string for a form element embedded in a line of a
+delimited list.  Apply map @code{form:delimited} to the list returned by
+@code{command->p-specs}.
+@end defun
+
+
+@defun html:delimited-list row @dots{}
+Wraps its arguments with delimited-list (@samp{DL} command.
+@end defun
+
+
+@defun get-foreign-choices tab
+Returns a list of the @samp{visible-name} or first fields of
+table @var{tab}.
+@end defun
+
+
+@defun command->p-specs rdb command-table command
+
+
+The symbol @var{command-table} names a command table in the @var{rdb} relational database.
+The symbol @var{command} names a key in @var{command-table}.
+
+@code{command->p-specs} returns a list of lists of @var{pname}, @var{doc}, @var{aliat},
+@var{arity}, @var{default-list}, and @var{foreign-values}.  The
+returned list has one element for each parameter of command @var{command}.
+
+This example demonstrates how to create a HTML-form for the @samp{build}
+command.
+
+@example
+(require (in-vicinity (implementation-vicinity) "build.scm"))
+(call-with-output-file "buildscm.html"
+  (lambda (port)
+    (display
+     (string-append
+      (html:head 'commands)
+      (html:body
+       (sprintf #f "<H2>%s:</H2><BLOCKQUOTE>%s</BLOCKQUOTE>\\n"
+                (html:plain 'build)
+                (html:plain ((comtab 'get 'documentation) 'build)))
+       (html:form
+        'post
+        (or "http://localhost:8081/buildscm" "/cgi-bin/build.cgi")
+        (apply html:delimited-list
+               (apply map form:delimited
+                      (command->p-specs build '*commands* 'build)))
+        (form:submit 'build)
+        (form:reset))))
+     port)))
+@end example
+@end defun
+

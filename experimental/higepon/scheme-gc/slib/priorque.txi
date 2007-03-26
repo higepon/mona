@@ -1,0 +1,37 @@
+@code{(require 'priority-queue)}
+@ftindex priority-queue
+
+@noindent
+This algorithm for priority queues is due to
+@cite{Introduction to Algorithms}
+by T. Cormen, C. Leiserson, R. Rivest.
+1989 MIT Press.
+
+
+@defun make-heap pred<?
+
+Returns a binary heap suitable which can be used for priority queue
+operations.
+@end defun
+
+
+@defun heap-length heap
+
+Returns the number of elements in @var{heap}.
+@end defun
+
+
+@deffn {Procedure} heap-insert! heap item
+
+Inserts @var{item} into @var{heap}.  @var{item} can be inserted multiple
+times.  The value returned is unspecified.
+@end deffn
+
+
+@deffn {Procedure} heap-extract-max! heap
+
+Returns the item which is larger than all others according to the
+@var{pred<?} argument to @code{make-heap}.  If there are no items in
+@var{heap}, an error is signaled.
+@end deffn
+

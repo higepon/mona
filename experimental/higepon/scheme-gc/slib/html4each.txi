@@ -1,0 +1,73 @@
+@code{(require 'html-for-each)}
+@ftindex html-for-each
+
+
+@defun html-for-each file word-proc markup-proc white-proc newline-proc
+
+@var{file} is an input port or a string naming an existing file containing
+HTML text.
+@var{word-proc} is a procedure of one argument or #f.
+@var{markup-proc} is a procedure of one argument or #f.
+@var{white-proc} is a procedure of one argument or #f.
+@var{newline-proc} is a procedure of no arguments or #f.
+
+@code{html-for-each} opens and reads characters from port @var{file} or the file named by
+string @var{file}.  Sequential groups of characters are assembled into
+strings which are either
+
+@itemize @bullet
+@item
+enclosed by @samp{<} and @samp{>} (hypertext markups or comments);
+@item
+end-of-line;
+@item
+whitespace; or
+@item
+none of the above (words).
+@end itemize
+
+Procedures are called according to these distinctions in order of
+the string's occurrence in @var{file}.
+
+@var{newline-proc} is called with no arguments for end-of-line @emph{not within a
+markup or comment}.
+
+@var{white-proc} is called with strings of non-newline whitespace.
+
+@var{markup-proc} is called with hypertext markup strings (including @samp{<} and
+@samp{>}).
+
+@var{word-proc} is called with the remaining strings.
+
+@code{html-for-each} returns an unspecified value.
+@end defun
+
+
+@defun html:read-title file limit
+
+
+@defunx html:read-title file
+@var{file} is an input port or a string naming an existing file containing
+HTML text.  If supplied, @var{limit} must be an integer.  @var{limit} defaults to
+1000.
+
+@code{html:read-title} opens and reads HTML from port @var{file} or the file named by string @var{file},
+until reaching the (mandatory) @samp{TITLE} field.  @code{html:read-title} returns the
+title string with adjacent whitespaces collapsed to one space.  @code{html:read-title}
+returns #f if the title field is empty, absent, if the first
+character read from @var{file} is not @samp{#\<}, or if the end of title is
+not found within the first (approximately) @var{limit} words.
+@end defun
+
+
+@defun htm-fields htm
+
+@var{htm} is a hypertext markup string.
+
+If @var{htm} is a (hypertext) comment, then @code{htm-fields} returns #f.
+Otherwise @code{htm-fields} returns the hypertext element symbol (created by
+@code{string-ci->symbol}) consed onto an association list of the
+attribute name-symbols and values.  Each value is a number or
+string; or #t if the name had no value assigned within the markup.
+@end defun
+

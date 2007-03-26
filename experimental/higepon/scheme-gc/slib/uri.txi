@@ -1,0 +1,196 @@
+@code{(require 'uri)}
+@ftindex uri
+
+@noindent Implements @dfn{Uniform Resource Identifiers} (URI) as
+@cindex Uniform Resource Identifiers
+described in RFC 2396.
+
+
+@defun make-uri
+
+
+@defunx make-uri fragment
+
+@defunx make-uri query fragment
+
+@defunx make-uri path query fragment
+
+@defunx make-uri authority path query fragment
+
+@defunx make-uri scheme authority path query fragment
+
+Returns a Uniform Resource Identifier string from component arguments.
+@end defun
+
+
+@defun uri:make-path path
+
+Returns a URI string combining the components of list @var{path}.
+@end defun
+
+
+@defun html:anchor name
+Returns a string which defines this location in the (HTML) file
+as @var{name}.  The hypertext @samp{<A HREF="#@var{name}">} will link to this point.
+
+@example
+(html:anchor "(section 7)")
+@result{}
+"<A NAME=\"(section%207)\"></A>"
+@end example
+@end defun
+
+
+@defun html:link uri highlighted
+Returns a string which links the @var{highlighted} text to @var{uri}.
+
+@example
+(html:link (make-uri "(section 7)") "section 7")
+@result{}
+"<A HREF=\"#(section%207)\">section 7</A>"
+@end example
+@end defun
+
+
+@defun html:base uri
+Returns a string specifying the @dfn{base} @var{uri} of a document, for
+@cindex base
+inclusion in the HEAD of the document (@pxref{HTML, head}).
+@end defun
+
+
+@defun html:isindex prompt
+Returns a string specifying the search @var{prompt} of a document, for
+inclusion in the HEAD of the document (@pxref{HTML, head}).
+@end defun
+
+
+@defun uri->tree uri-reference base-tree
+
+
+@defunx uri->tree uri-reference
+
+Returns a list of 5 elements corresponding to the parts
+(@var{scheme} @var{authority} @var{path} @var{query} @var{fragment})
+of string @var{uri-reference}.  Elements corresponding to absent parts are #f.
+
+The @var{path} is a list of strings.  If the first string is empty,
+then the path is absolute; otherwise relative.  The optional @var{base-tree} is a
+tree as returned by @code{uri->tree}; and is used as the base address for relative
+URIs.
+
+If the @var{authority} component is a
+@dfn{Server-based Naming Authority}, then it is a list of the
+@cindex Server-based Naming Authority
+@var{userinfo}, @var{host}, and @var{port} strings (or #f).  For other
+types of @var{authority} components the @var{authority} will be a
+string.
+
+@example
+(uri->tree "http://www.ics.uci.edu/pub/ietf/uri/#Related")
+@result{}
+(http "www.ics.uci.edu" ("" "pub" "ietf" "uri" "") #f "Related")
+@end example
+@end defun
+
+
+@defun uri:split-fields txt chr
+
+Returns a list of @var{txt} split at each occurrence of @var{chr}.  @var{chr} does not
+appear in the returned list of strings.
+@end defun
+
+
+@defun uri:decode-query query-string
+Converts a @dfn{URI} encoded @var{query-string} to a query-alist.
+@cindex URI
+@end defun
+
+
+@noindent @code{uric:} prefixes indicate procedures dealing with
+URI-components.
+
+
+@defun uric:encode uri-component allows
+Returns a copy of the string @var{uri-component} in which all @dfn{unsafe} octets
+@cindex unsafe
+(as defined in RFC 2396) have been @samp{%} @dfn{escaped}.
+@cindex escaped
+@code{uric:decode} decodes strings encoded by @code{uric:encode}.
+@end defun
+
+
+@defun uric:decode uri-component
+Returns a copy of the string @var{uri-component} in which each @samp{%} escaped
+characters in @var{uri-component} is replaced with the character it encodes.  This
+routine is useful for showing URI contents on error pages.
+@end defun
+
+
+@defun uri:path->keys path-list ptypes
+@var{path-list} is a path-list as returned by @code{uri:split-fields}.  @code{uri:path->keys}
+returns a list of items returned by @code{uri:decode-path}, coerced
+to types @var{ptypes}.
+@end defun
+
+@subheading File-system Locators and Predicates
+
+
+@defun path->uri path
+Returns a URI-string for @var{path} on the local host.
+@end defun
+
+
+@defun absolute-uri? str
+Returns #t if @var{str} is an absolute-URI as indicated by a
+syntactically valid (per RFC 2396) @dfn{scheme}; otherwise returns
+@cindex scheme
+#f.
+@end defun
+
+
+@defun absolute-path? file-name
+Returns #t if @var{file-name} is a fully specified pathname (does not
+depend on the current working directory); otherwise returns #f.
+@end defun
+
+
+@defun null-directory? str
+Returns #t if changing directory to @var{str} would leave the current
+directory unchanged; otherwise returns #f.
+@end defun
+
+
+@defun glob-pattern? str
+Returns #t if the string @var{str} contains characters used for
+specifying glob patterns, namely @samp{*}, @samp{?}, or @samp{[}.
+@end defun
+
+@noindent
+Before RFC 2396, the @dfn{File Transfer Protocol} (FTP) served a
+@cindex File Transfer Protocol
+similar purpose.
+
+
+@defun parse-ftp-address uri
+
+Returns a list of the decoded FTP @var{uri}; or #f if indecipherable.  FTP
+@dfn{Uniform Resource Locator}, @dfn{ange-ftp}, and @dfn{getit}
+@cindex Uniform Resource Locator
+@cindex ange-ftp
+@cindex getit
+formats are handled.  The returned list has four elements which are
+strings or #f:
+
+@enumerate 0
+@item
+username
+@item
+password
+@item
+remote-site
+@item
+remote-directory
+@end enumerate
+@end defun
+

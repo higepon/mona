@@ -1,0 +1,69 @@
+@code{(require 'queue)}
+@ftindex queue
+
+A @dfn{queue} is a list where elements can be added to both the front
+@cindex queue
+and rear, and removed from the front (i.e., they are what are often
+called @dfn{dequeues}).  A queue may also be used like a stack.
+@cindex dequeues
+
+
+@defun make-queue
+
+Returns a new, empty queue.
+@end defun
+
+
+@defun queue? obj
+
+Returns @code{#t} if @var{obj} is a queue.
+@end defun
+
+
+@defun queue-empty? q
+
+Returns @code{#t} if the queue @var{q} is empty.
+@end defun
+
+
+@deffn {Procedure} queue-push! q datum
+
+Adds @var{datum} to the front of queue @var{q}.
+@end deffn
+
+
+@deffn {Procedure} enqueue! q datum
+
+Adds @var{datum} to the rear of queue @var{q}.
+@end deffn
+
+
+@deffn {Procedure} dequeue! q
+
+@deffnx {Procedure} queue-pop! q
+Both of these procedures remove and return the datum at the front of
+the queue.  @code{queue-pop!} is used to suggest that the queue is
+being used like a stack.
+@end deffn
+
+All of the following functions raise an error if the queue @var{q}
+is empty.
+
+
+@deffn {Procedure} dequeue-all! q
+
+Removes and returns (the list) of all contents of queue @var{q}.
+@end deffn
+
+
+@defun queue-front q
+
+Returns the datum at the front of the queue @var{q}.
+@end defun
+
+
+@defun queue-rear q
+
+Returns the datum at the rear of the queue @var{q}.
+@end defun
+

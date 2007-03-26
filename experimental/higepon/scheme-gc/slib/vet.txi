@@ -1,0 +1,39 @@
+@code{(require 'vet)}
+@ftindex vet
+
+
+@defun vet-slib file1 @dots{}
+
+Using the procedures in the @code{top-refs} and @code{manifest}
+modules, @code{vet-slib} analyzes each SLIB module and @var{file1}, @dots{}, reporting
+about any procedure or macro defined whether it is:
+
+@table @asis
+
+@item orphaned
+defined, not called, not exported;
+@item missing
+called, not defined, and not exported by its @code{require}d modules;
+@item undocumented-export
+Exported by module, but no index entry in @file{slib.info};
+
+@end table
+
+And for the library as a whole:
+
+@table @asis
+
+@item documented-unexport
+Index entry in @file{slib.info}, but no module exports it.
+
+@end table
+
+This straightforward analysis caught three full days worth of
+never-executed branches, transitive require assumptions, spelling
+errors, undocumented procedures, missing procedures, and cyclic
+dependencies in SLIB.
+
+The optional arguments @var{file1}, @dots{} provide a simple way to vet
+prospective SLIB modules.
+@end defun
+

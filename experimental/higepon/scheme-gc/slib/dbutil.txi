@@ -1,0 +1,233 @@
+@code{(require 'databases)}
+@ftindex databases
+
+@noindent
+This enhancement wraps a utility layer on @code{relational-database}
+which provides:
+
+@itemize @bullet
+@item
+Identification of open databases by filename.
+@item
+Automatic sharing of open (immutable) databases.
+@item
+Automatic loading of base-table package when creating a database.
+@item
+Detection and automatic loading of the appropriate base-table package
+when opening a database.
+@item
+Table and data definition from Scheme lists.
+@end itemize
+
+@subsubheading Database Sharing
+
+@noindent
+@dfn{Auto-sharing} refers to a call to the procedure
+@cindex Auto-sharing
+@code{open-database} returning an already open database (procedure),
+rather than opening the database file a second time.
+
+@quotation
+@emph{Note:} Databases returned by @code{open-database} do not include
+wrappers applied by packages like @ref{Embedded Commands}.  But
+wrapped databases do work as arguments to these functions.
+@end quotation
+
+@noindent
+When a database is created, it is mutable by the creator and not
+auto-sharable.  A database opened mutably is also not auto-sharable.
+But any number of readers can (open) share a non-mutable database file.
+
+@noindent
+This next set of procedures mirror the whole-database methods in
+@ref{Database Operations}.  Except for @code{create-database}, each
+procedure will accept either a filename or database procedure for its
+first argument.
+
+
+@defun create-database filename base-table-type
+
+@var{filename} should be a string naming a file; or @code{#f}.  @var{base-table-type} must be a
+symbol naming a feature which can be passed to @code{require}.  @code{create-database}
+returns a new, open relational database (with base-table type @var{base-table-type})
+associated with @var{filename}, or a new ephemeral database if @var{filename} is @code{#f}.
+
+@code{create-database} is the only run-time use of require in SLIB
+which crosses module boundaries.  When @var{base-table-type} is @code{require}d by @code{create-database}; it
+adds an association of @var{base-table-type} with its @dfn{relational-system} procedure
+@cindex relational-system
+to @var{mdbm:*databases*}.
+
+alist-table is the default base-table type:
+
+@example
+(require 'databases)
+(define my-rdb (create-database "my.db" 'alist-table))
+@end example
+@end defun
+
+@noindent
+Only @code{alist-table} and base-table modules which have been
+@code{require}d will dispatch correctly from the
+@code{open-database} procedures.  Therefore, either pass two
+arguments to @code{open-database}, or require the base-table of your
+database file uses before calling @code{open-database} with one
+argument.
+
+
+@deffn {Procedure} open-database! rdb base-table-type
+
+Returns @emph{mutable} open relational database or #f.
+@end deffn
+
+
+@defun open-database rdb base-table-type
+
+Returns an open relational database associated with @var{rdb}.  The
+database will be opened with base-table type @var{base-table-type}).
+
+
+@defunx open-database rdb
+Returns an open relational database associated with @var{rdb}.
+@code{open-database} will attempt to deduce the correct base-table-type.
+@end defun
+
+
+@defun write-database rdb filename
+
+Writes the mutable relational-database @var{rdb} to @var{filename}.
+@end defun
+
+
+@defun sync-database rdb
+
+Writes the mutable relational-database @var{rdb} to the filename it was
+opened with.
+@end defun
+
+
+@defun solidify-database rdb
+
+Syncs @var{rdb} and makes it immutable.
+@end defun
+
+
+@defun close-database rdb
+
+@var{rdb} will only be closed when the count of @code{open-database} - @code{close-database}
+calls for @var{rdb} (and its filename) is 0.  @code{close-database} returns #t if successful;
+and #f otherwise.
+@end defun
+
+
+@defun mdbm:report
+
+Prints a table of open database files.  The columns are the
+base-table type, number of opens, @samp{!} for mutable, the
+filename, and the lock certificate (if locked).
+@end defun
+
+@example
+(mdbm:report)
+@print{}
+  alist-table 003   /usr/local/lib/slib/clrnamdb.scm
+  alist-table 001 ! sdram.db jaffer@@aubrey.jaffer.3166:1038628199
+@end example
+
+@subsubheading Opening Tables
+
+
+@defun open-table rdb table-name
+
+@var{rdb} must be a relational database and @var{table-name} a symbol.
+
+@code{open-table} returns a "methods" procedure for an existing relational table in
+@var{rdb} if it exists and can be opened for reading, otherwise returns
+@code{#f}.
+@end defun
+
+
+@deffn {Procedure} open-table! rdb table-name
+
+@var{rdb} must be a relational database and @var{table-name} a symbol.
+
+@code{open-table!} returns a "methods" procedure for an existing relational table in
+@var{rdb} if it exists and can be opened in mutable mode, otherwise returns
+@code{#f}.
+@end deffn
+
+@subsubheading Defining Tables
+
+
+@defun define-domains rdb row5 @dots{}
+
+Adds the domain rows @var{row5} @dots{} to the @samp{*domains-data*} table
+in @var{rdb}.  The format of the row is given in @ref{Catalog
+Representation}.
+
+@example
+(define-domains rdb '(permittivity #f complex? c64 #f))
+@end example
+@end defun
+
+
+@defun add-domain rdb row5
+
+Use @code{define-domains} instead.
+@end defun
+
+
+@defun define-tables rdb spec-0 @dots{}
+
+Adds tables as specified in @var{spec-0} @dots{} to the open
+relational-database @var{rdb}.  Each @var{spec} has the form:
+
+@lisp
+(@r{<name>} @r{<descriptor-name>} @r{<descriptor-name>} @r{<rows>})
+@end lisp
+or
+@lisp
+(@r{<name>} @r{<primary-key-fields>} @r{<other-fields>} @r{<rows>})
+@end lisp
+
+where @r{<name>} is the table name, @r{<descriptor-name>} is the symbol
+name of a descriptor table, @r{<primary-key-fields>} and
+@r{<other-fields>} describe the primary keys and other fields
+respectively, and @r{<rows>} is a list of data rows to be added to the
+table.
+
+@r{<primary-key-fields>} and @r{<other-fields>} are lists of field
+descriptors of the form:
+
+@lisp
+(@r{<column-name>} @r{<domain>})
+@end lisp
+or
+@lisp
+(@r{<column-name>} @r{<domain>} @r{<column-integrity-rule>})
+@end lisp
+
+where @r{<column-name>} is the column name, @r{<domain>} is the domain
+of the column, and @r{<column-integrity-rule>} is an expression whose
+value is a procedure of one argument (which returns @code{#f} to signal
+an error).
+
+If @r{<domain>} is not a defined domain name and it matches the name of
+this table or an already defined (in one of @var{spec-0} @dots{}) single
+key field table, a foreign-key domain will be created for it.
+@end defun
+
+@subsubheading Listing Tables
+
+
+@defun list-table-definition rdb table-name
+
+If symbol @var{table-name} exists in the open relational-database
+@var{rdb}, then returns a list of the table-name, its primary key names
+and domains, its other key names and domains, and the table's records
+(as lists).  Otherwise, returns #f.
+
+The list returned by @code{list-table-definition}, when passed as an
+argument to @code{define-tables}, will recreate the table.
+@end defun
+

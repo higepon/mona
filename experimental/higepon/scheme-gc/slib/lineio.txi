@@ -1,0 +1,55 @@
+
+@defun read-line
+
+
+@defunx read-line port
+Returns a string of the characters up to, but not including a
+newline or end of file, updating @var{port} to point to the
+character following the newline.  If no characters are available, an
+end of file object is returned.  The @var{port} argument may be
+omitted, in which case it defaults to the value returned by
+@code{current-input-port}.
+@end defun
+
+
+@deffn {Procedure} read-line! string
+
+
+@deffnx {Procedure} read-line! string port
+Fills @var{string} with characters up to, but not including a newline or end
+of file, updating the @var{port} to point to the last character read
+or following the newline if it was read.  If no characters are
+available, an end of file object is returned.  If a newline or end
+of file was found, the number of characters read is returned.
+Otherwise, @code{#f} is returned.  The @var{port} argument may be
+omitted, in which case it defaults to the value returned by
+@code{current-input-port}.
+@end deffn
+
+
+@defun write-line string
+
+
+@defunx write-line string port
+Writes @var{string} followed by a newline to the given @var{port} and returns
+an unspecified value.  The @var{Port} argument may be omitted, in
+which case it defaults to the value returned by
+@code{current-input-port}.
+@end defun
+
+
+@defun system->line command tmp
+
+
+@defunx system->line command
+@var{command} must be a string.  The string @var{tmp}, if supplied, is a path to use as
+a temporary file.  @code{system->line} calls @code{system} with @var{command} as argument,
+redirecting stdout to file @var{tmp}.  @code{system->line} returns a string containing the
+first line of output from @var{tmp}.
+
+@code{system->line} is intended to be a portable method for getting one-line results
+from programs like @code{pwd}, @code{whoami}, @code{hostname},
+@code{which}, @code{identify}, and @code{cksum}.  Its behavior when
+called with programs which generate lots of output is unspecified.
+@end defun
+

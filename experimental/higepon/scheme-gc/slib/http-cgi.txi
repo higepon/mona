@@ -1,0 +1,119 @@
+@code{(require 'http)} or @code{(require 'cgi)}
+@ftindex http
+@ftindex cgi
+
+
+@defun http:header alist
+Returns a string containing lines for each element of @var{alist}; the
+@code{car} of which is followed by @samp{: }, then the @code{cdr}.
+@end defun
+
+
+@defun http:content alist body @dots{}
+Returns the concatenation of strings @var{body} with the
+@code{(http:header @var{alist})} and the @samp{Content-Length} prepended.
+@end defun
+
+
+@defvar *http:byline*
+String appearing at the bottom of error pages.
+@end defvar
+
+@defun http:error-page status-code reason-phrase html-string @dots{}
+@var{status-code} and @var{reason-phrase} should be an integer and string as specified in
+@cite{RFC 2068}.  The returned page (string) will show the @var{status-code} and @var{reason-phrase}
+and any additional @var{html-strings} @dots{}; with @var{*http:byline*} or SLIB's
+default at the bottom.
+@end defun
+
+
+@defun http:forwarding-page title dly uri html-string @dots{}
+The string or symbol @var{title} is the page title.  @var{dly} is a non-negative
+integer.  The @var{html-strings} @dots{} are typically used to explain to the user why
+this page is being forwarded.
+
+@code{http:forwarding-page} returns an HTML string for a page which automatically forwards to
+@var{uri} after @var{dly} seconds.  The returned page (string) contains any @var{html-strings}
+@dots{} followed by a manual link to @var{uri}, in case the browser does not
+forward automatically.
+@end defun
+
+
+@defun http:serve-query serve-proc input-port output-port
+reads the @dfn{URI} and @dfn{query-string} from @var{input-port}.  If the
+@cindex URI
+@cindex query-string
+query is a valid @samp{"POST"} or @samp{"GET"} query, then @code{http:serve-query} calls
+@var{serve-proc} with three arguments, the @var{request-line}, @var{query-string},
+and @var{header-alist}.  Otherwise, @code{http:serve-query} calls @var{serve-proc} with the
+@var{request-line}, #f, and @var{header-alist}.
+
+If @var{serve-proc} returns a string, it is sent to @var{output-port}.  If @var{serve-proc} returns a list,
+then an error page with number 525 and strings from the list.  If @var{serve-proc}
+returns #f, then a @samp{Bad Request} (400) page is sent to @var{output-port}.
+
+Otherwise, @code{http:serve-query} replies (to @var{output-port}) with appropriate HTML describing the
+problem.
+@end defun
+
+
+
+This example services HTTP queries from @var{port-number}:
+@example
+
+(define socket (make-stream-socket AF_INET 0))
+(and (socket:bind socket port-number) ; AF_INET INADDR_ANY
+     (socket:listen socket 10)        ; Queue up to 10 requests.
+     (dynamic-wind
+         (lambda () #f)
+         (lambda ()
+           (do ((port (socket:accept socket) (socket:accept socket)))
+               (#f)
+             (let ((iport (duplicate-port port "r"))
+                   (oport (duplicate-port port "w")))
+               (http:serve-query build:serve iport oport)
+               (close-port iport)
+               (close-port oport))
+             (close-port port)))
+         (lambda () (close-port socket))))
+@end example
+
+
+@defun cgi:serve-query serve-proc
+reads the @dfn{URI} and @dfn{query-string} from
+@cindex URI
+@cindex query-string
+@code{(current-input-port)}.  If the query is a valid @samp{"POST"}
+or @samp{"GET"} query, then @code{cgi:serve-query} calls @var{serve-proc} with three arguments, the
+@var{request-line}, @var{query-string}, and @var{header-alist}.
+Otherwise, @code{cgi:serve-query} calls @var{serve-proc} with the @var{request-line}, #f, and
+@var{header-alist}.
+
+If @var{serve-proc} returns a string, it is sent to @code{(current-input-port)}.
+If @var{serve-proc} returns a list, then an error page with number 525 and strings
+from the list.  If @var{serve-proc} returns #f, then a @samp{Bad Request} (400)
+page is sent to @code{(current-input-port)}.
+
+Otherwise, @code{cgi:serve-query} replies (to @code{(current-input-port)}) with
+appropriate HTML describing the problem.
+@end defun
+
+
+@defun make-query-alist-command-server rdb command-table
+
+
+@defunx make-query-alist-command-server rdb command-table #t
+
+Returns a procedure of one argument.  When that procedure is called
+with a @var{query-alist} (as returned by @code{uri:decode-query}, the
+value of the @samp{*command*} association will be the command invoked
+in @var{command-table}.  If @samp{*command*} is not in the @var{query-alist} then the
+value of @samp{*suggest*} is tried.  If neither name is in the
+@var{query-alist}, then the literal value @samp{*default*} is tried in
+@var{command-table}.
+
+If optional third argument is non-false, then the command is called
+with just the parameter-list; otherwise, command is called with the
+arguments described in its table.
+@end defun
+

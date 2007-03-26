@@ -1,0 +1,69 @@
+@code{(require 'pnm)}
+@ftindex pnm
+
+
+@defun pnm:type-dimensions path
+
+The string @var{path} must name a @dfn{portable bitmap graphics} file.
+@cindex portable bitmap graphics
+@code{pnm:type-dimensions} returns a list of 4 items:
+@enumerate
+@item
+A symbol describing the type of the file named by @var{path}.
+@item
+The image width in pixels.
+@item
+The image height in pixels.
+@item
+The maximum value of pixels assume in the file.
+@end enumerate
+
+The current set of file-type symbols is:
+@table @asis
+@item pbm
+@itemx pbm-raw
+@cindex pbm
+@cindex pbm-raw
+Black-and-White image; pixel values are 0 or 1.
+@item pgm
+@itemx pgm-raw
+@cindex pgm
+@cindex pgm-raw
+Gray (monochrome) image; pixel values are from 0 to @var{maxval}
+specified in file header.
+@item ppm
+@itemx ppm-raw
+@cindex ppm
+@cindex ppm-raw
+RGB (full color) image; red, green, and blue interleaved pixel values
+are from 0 to @var{maxval}
+@end table
+@end defun
+
+
+@defun pnm:image-file->array path array
+
+
+Reads the @dfn{portable bitmap graphics} file named by @var{path} into
+@cindex portable bitmap graphics
+@var{array}.  @var{array} must be the correct size and type for
+@var{path}.  @var{array} is returned.
+
+
+@defunx pnm:image-file->array path
+
+@code{pnm:image-file->array} creates and returns an array with the
+@dfn{portable bitmap graphics} file named by @var{path} read into it.
+@cindex portable bitmap graphics
+@end defun
+
+
+@defun pnm:array-write type array maxval path comment @dots{}
+
+
+Writes the contents of @var{array} to a @var{type} image file named @var{path}.  The file
+will have pixel values between 0 and @var{maxval}, which must be compatible
+with @var{type}.  For @samp{pbm} files, @var{maxval} must be @samp{1}.
+@var{comment}s are included in the file header.
+@end defun
+

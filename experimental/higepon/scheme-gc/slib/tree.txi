@@ -1,0 +1,50 @@
+@code{(require 'tree)}
+@ftindex tree
+
+These are operations that treat lists a representations of trees.
+
+
+@defun subst new old tree
+@defunx substq new old tree
+@defunx substv new old tree
+
+
+@defunx subst new old tree equ?
+@code{subst} makes a copy of @var{tree}, substituting @var{new} for
+every subtree or leaf of @var{tree} which is @code{equal?} to @var{old}
+and returns a modified tree.  The original @var{tree} is unchanged, but
+may share parts with the result.
+
+@code{substq} and @code{substv} are similar, but test against @var{old}
+using @code{eq?} and @code{eqv?} respectively.  If @code{subst} is
+called with a fourth argument, @var{equ?} is the equality predicate.
+
+Examples:
+@lisp
+(substq 'tempest 'hurricane '(shakespeare wrote (the hurricane)))
+   @result{} (shakespeare wrote (the tempest))
+(substq 'foo '() '(shakespeare wrote (twelfth night)))
+   @result{} (shakespeare wrote (twelfth night . foo) . foo)
+(subst '(a . cons) '(old . pair)
+       '((old . spice) ((old . shoes) old . pair) (old . pair)))
+   @result{} ((old . spice) ((old . shoes) a . cons) (a . cons))
+@end lisp
+@end defun
+
+
+@defun copy-tree tree
+
+Makes a copy of the nested list structure @var{tree} using new pairs and
+returns it.  All levels are copied, so that none of the pairs in the
+tree are @code{eq?} to the original ones -- only the leaves are.
+
+Example:
+@lisp
+(define bar '(bar))
+(copy-tree (list bar 'foo))
+   @result{} ((bar) foo)
+(eq? bar (car (copy-tree (list bar 'foo))))
+   @result{} #f
+@end lisp
+@end defun
+

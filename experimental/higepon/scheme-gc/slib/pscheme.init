@@ -1,0 +1,290 @@
+;;; "pscheme.init" SLIB init file for Pocket Scheme	 -*-scheme-*-
+;;; Author: Ben Goetter <goetter@mazama.net>
+;;;   last revised for pscheme 1.3 and slib 3a3 on 5 April 2006
+;;; Initial work for 0.2.3 by Robert Goldman (goldman@htc.honeywell.com)
+;;; SLIB orig Author: Aubrey Jaffer (agj @ alum.mit.edu)
+;;;
+;;; This code is in the public domain.
+
+; best fit for Windows CE?
+(define (software-type) 'MS-DOS)
+
+(define (scheme-implementation-type) 'Pocket-Scheme)
+(define (scheme-implementation-version)
+  (let ((v (version)))
+    (string-append
+      (number->string (car v)) "."
+      (number->string (cadr v)) "."
+      (number->string (caddr v)))))
+(define (scheme-implementation-home-page) "http://www.mazama.net/scheme/pscheme.htm")
+
+(define (implementation-vicinity) "\\Program Files\\Pocket Scheme\\")
+(define (library-vicinity)	(in-vicinity (implementation-vicinity) "slib\\"))
+(define (home-vicinity)		"\\My Documents\\")
+;@
+(define in-vicinity string-append)
+;@
+(define (user-vicinity)
+  (case (software-type)
+    ((vms)	"[.]")
+    (else	"")))
+
+(define *load-pathname* #f)
+;@
+(define vicinity:suffix?
+  (let ((suffi
+	 (case (software-type)
+	   ((amiga)				'(#\: #\/))
+	   ((macos thinkc)			'(#\:))
+	   ((ms-dos windows atarist os/2)	'(#\\ #\/))
+	   ((nosve)				'(#\: #\.))
+	   ((unix coherent plan9)		'(#\/))
+	   ((vms)				'(#\: #\]))
+	   (else
+	    (slib:warn "require.scm" 'unknown 'software-type (software-type))
+	    "/"))))
+    (lambda (chr) (and (memv chr suffi) #t))))
+;@
+(define (pathname->vicinity pathname)
+  (let loop ((i (- (string-length pathname) 1)))
+    (cond ((negative? i) "")
+	  ((vicinity:suffix? (string-ref pathname i))
+	   (substring pathname 0 (+ i 1)))
+	  (else (loop (- i 1))))))
+(define (program-vicinity)
+  (if *load-pathname*
+      (pathname->vicinity *load-pathname*)
+      (slib:error 'program-vicinity " called; use slib:load to load")))
+;@
+(define sub-vicinity
+  (case (software-type)
+    ((vms) (lambda
+	       (vic name)
+	     (let ((l (string-length vic)))
+	       (if (or (zero? (string-length vic))
+		       (not (char=? #\] (string-ref vic (- l 1)))))
+		   (string-append vic "[" name "]")
+		   (string-append (substring vic 0 (- l 1))
+				  "." name "]")))))
+    (else (let ((*vicinity-suffix*
+		 (case (software-type)
+		   ((nosve) ".")
+		   ((macos thinkc) ":")
+		   ((ms-dos windows atarist os/2) "\\")
+		   ((unix coherent plan9 amiga) "/"))))
+	    (lambda (vic name)
+	      (string-append vic name *vicinity-suffix*))))))
+;@
+(define (make-vicinity <pathname>) <pathname>)
+;@
+(define with-load-pathname
+  (let ((exchange
+	 (lambda (new)
+	   (let ((old *load-pathname*))
+	     (set! *load-pathname* new)
+	     old))))
+    (lambda (path thunk)
+      (let ((old #f))
+	(dynamic-wind
+	    (lambda () (set! old (exchange path)))
+	    thunk
+	    (lambda () (exchange old)))))))
+;;@ SLIB:FEATURES is a list of symbols naming the (SLIB) features
+;;; initially supported by this implementation.
+(define slib:features
+  '(source
+    r4rs
+    rev4-report
+    ieee-p1178
+    rev4-optional-procedures
+    vicinity
+    srfi-59
+    multiarg/and-
+    multiarg-apply
+    with-file
+    char-ready?
+    defmacro
+    rationalize
+    delay
+; pscheme needs the R5RS arity-2 eval in order to define the following
+;    eval
+    dynamic-wind
+    full-continuation
+    srfi
+; pscheme needs print-call-stack in order to define the following
+;	trace
+    system
+    string-port
+	))
+
+
+;; $BUGBUG completely bogus values.  Need hooks into runtime to get better ones
+;;@ (OUTPUT-PORT-WIDTH <port>)
+(define (output-port-width . arg) 30)
+;;@ (OUTPUT-PORT-HEIGHT <port>)
+(define (output-port-height . arg) 12)
+
+;;@ (TMPNAM) makes a temporary file name.
+(define tmpnam (let ((cntr 100))
+		 (lambda () (set! cntr (+ 1 cntr))
+			 (string-append "slib_" (number->string cntr)))))
+
+;; pscheme: current-error-port, delete-file, force-output, file-exists? already defined
+;@
+(define (make-exchanger obj)
+  (lambda (rep) (let ((old obj)) (set! obj rep) old)))
+(define (open-file filename modes)
+  (case modes
+    ((r) (open-input-file filename))
+    ((rb) (open-input-file filename 'lf-newline 'ascii))
+    ((w) (open-output-file filename))
+    ((wb) (open-output-file filename 'lf-newline 'ascii))
+    (else (slib:error 'open-file 'mode? modes))))
+(define (port? obj) (or (input-port? port) (output-port? port)))
+(define (call-with-open-ports . ports)
+  (define proc (car ports))
+  (cond ((procedure? proc) (set! ports (cdr ports)))
+	(else (set! ports (reverse ports))
+	      (set! proc (car ports))
+	      (set! ports (reverse (cdr ports)))))
+  (let ((ans (apply proc ports)))
+    (for-each close-port ports)
+    ans))
+(define (close-port port)
+  (cond ((input-port? port)
+	 (close-input-port port)
+	 (if (output-port? port) (close-output-port port)))
+	((output-port? port) (close-output-port port))
+	(else (slib:error 'close-port 'port? port))))
+
+;;; $REVIEW - should pscheme make SLIB use its own binary I/O?
+
+;@
+(define (browse-url url)
+  (with-handlers
+    ;; the pscheme SYSTEM procedure raises an exn when it can't find the image to run.
+    ;; SYSTEM uses ShellExecuteEx where available, so we give it the document name to open
+    (((lambda (x) #t) (lambda (x) #f)))
+    (system url)))
+
+
+;;@ CHAR-CODE-LIMIT is one greater than the largest integer which can
+;;; be returned by CHAR->INTEGER.
+;(define char-code-limit
+; (with-handlers (
+;  ((lambda (x) #t) (lambda (x) 256))
+;                )
+;  (integer->char 65535)
+;  65536))
+;;; Currently there are only three clients of this symbol.
+;;; Following observations relate to PScheme 0.3.5, JACAL 1a9, SLIB 2c5.
+;;; JACAL: crashes when set to 65536.
+;;; make-crc: extremely inefficient when set to 65536, spending forever in init
+;;; precedence-parse: ignores any setting in excess of 256
+;;; So we patch it to 256.
+(define char-code-limit 256)
+
+;;@ MOST-POSITIVE-FIXNUM is used in modular.scm
+;;; This is the most positive immediate-value fixnum in PScheme.
+(define most-positive-fixnum #x07FFFFFF)
+
+;;@ Return argument
+(define (identity x) x)
+
+;;@ SLIB:EVAL is single argument eval using the top-level (user) environment.
+(define slib:eval eval)
+
+;;; If your implementation provides R4RS macros:
+;(define macro:eval slib:eval)
+;(define macro:load load)
+
+;;@ Define defmacro in terms of our define-macro
+(define-macro (defmacro name args . body)
+ `(define-macro (,name ,@args) ,@body))
+
+; following defns removed in 0.6.3 while I rethink macro support
+;(define defmacro? macro?)
+;(define macroexpand expand-macro)
+;(define macroexpand-1 expand-macro-1)
+
+;@
+(define gentemp gensym)
+
+(define base:eval slib:eval)
+;@
+(define defmacro:eval slib:eval)
+
+;; slib:eval-load definition moved to  "require.scm"
+;@
+(define (defmacro:load <pathname>)
+  (slib:eval-load <pathname> defmacro:eval))
+;@
+(define slib:warn
+  (lambda args
+    (let ((port (current-error-port)))
+      (display "Warn: " port)
+      (for-each (lambda (x) (display x port)) args))))
+
+;;@ define an error procedure for the library
+(define slib:error error)
+
+;;@ As announced by feature string-port
+(define (call-with-output-string t)
+ (let* ((p (open-output-string))
+        (r (t p))
+        (s (get-output-string p)))
+  (close-output-port p)
+  s))
+(define (call-with-input-string s t)
+ (let* ((p (open-input-string s))
+        (r (t p)))
+  (close-input-port p)
+  r))
+
+;;@ define these as appropriate for your system.
+(define slib:tab (integer->char 9))
+(define slib:form-feed (integer->char 12))
+
+;;@ Support for older versions of Scheme.  Not enough code for its own file.
+(define (last-pair l) (if (pair? (cdr l)) (last-pair (cdr l)) l))
+(define t #t)
+(define nil #f)
+
+;;@ Define these if your implementation's syntax can support it and if
+;;; they are not already defined.
+(define (1+ n) (+ n 1))
+(define (-1+ n) (+ n -1))
+(define 1- -1+)
+
+;;@ Define SLIB:EXIT to be the implementation procedure to exit or
+;;; return if exiting not supported.
+(define slib:exit exit)
+
+;;@ Here for backward compatability
+(define scheme-file-suffix
+  (let ((suffix (case (software-type)
+		  ((nosve) "_scm")
+		  (else ".scm"))))
+    (lambda () suffix)))
+
+;;@ (SLIB:LOAD-SOURCE "foo") should load "foo.scm" or with whatever
+;;; suffix all the module files in SLIB have.  See feature 'SOURCE.
+(define (slib:load-source f)
+ (if (not (file-exists? f))
+  (set! f (string-append f (scheme-file-suffix))))
+ (load f))
+
+;;@ (SLIB:LOAD-COMPILED "foo") should load the file that was produced
+;;; by compiling "foo.scm" if this implementation can compile files.
+;;; See feature 'COMPILED.
+(define slib:load-compiled load)
+
+;;@ At this point SLIB:LOAD must be able to load SLIB files.
+(define slib:load slib:load-source)
+
+;;; Pscheme and SLIB both define REQUIRE, so dispatch on argument type.
+(define pscheme:require require)
+(slib:load (in-vicinity (library-vicinity) "require"))
+(define slib:require require)
+(define (require x)
+ (if (string? x) (pscheme:require x) (slib:require x)))

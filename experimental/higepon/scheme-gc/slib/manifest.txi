@@ -1,0 +1,173 @@
+@code{(require 'manifest)}
+@ftindex manifest
+
+@noindent
+In some of these examples, @var{slib:catalog} is the SLIB part of
+the catalog; it is free of compiled and implementation-specific
+entries.  It would be defined by:
+
+@example
+(define slib:catalog (cdr (member (assq 'null *catalog*) *catalog*)))
+@end example
+
+
+@defun file->requires file provided? catalog
+
+Returns a list of the features @code{require}d by @var{file} assuming the
+predicate @var{provided?} and association-list @var{catalog}.
+@end defun
+
+@example
+(define (provided+? . features)
+  (lambda (feature)
+    (or (memq feature features) (provided? feature))))
+
+(file->requires "obj2str.scm" (provided+? 'compiling) '())
+        @result{} (string-port generic-write)
+
+(file->requires "obj2str.scm" provided? '())
+        @result{} (string-port)
+@end example
+
+
+@defun feature->requires feature provided? catalog
+
+Returns a list of the features @code{require}d by @var{feature} assuming the
+predicate @var{provided?} and association-list @var{catalog}.
+@end defun
+
+@example
+(feature->requires 'batch (provided+? 'compiling) *catalog*)
+        @result{} (tree line-i/o databases parameters string-port
+                   pretty-print common-list-functions posix-time)
+
+(feature->requires 'batch provided? *catalog*)
+        @result{} (tree line-i/o databases parameters string-port
+                   pretty-print common-list-functions)
+
+(feature->requires 'batch provided? '((batch . "batch")))
+        @result{} (tree line-i/o databases parameters string-port
+                   pretty-print common-list-functions)
+@end example
+
+
+@defun feature->requires* feature provided? catalog
+
+Returns a list of the features transitively @code{require}d by @var{feature}
+assuming the predicate @var{provided?} and association-list @var{catalog}.
+@end defun
+
+
+@defun file->requires* file provided? catalog
+
+Returns a list of the features transitively @code{require}d by @var{file}
+assuming the predicate @var{provided?} and association-list @var{catalog}.
+@end defun
+
+
+@defun file->loads file
+
+Returns a list of strings naming existing files loaded (load
+slib:load slib:load-source macro:load defmacro:load syncase:load
+synclo:load macwork:load) by @var{file} or any of the files it loads.
+@end defun
+
+@example
+(file->loads (in-vicinity (library-vicinity) "scainit.scm"))
+        @result{} ("/usr/local/lib/slib/scaexpp.scm"
+            "/usr/local/lib/slib/scaglob.scm"
+            "/usr/local/lib/slib/scaoutp.scm")
+@end example
+
+
+@defun load->path exp
+
+Given a @code{(load '<expr>)}, where <expr> is a string or vicinity
+stuff), @code{(load->path <expr>)} figures a path to the file.
+@code{load->path} returns that path if it names an existing file; otherwise #f.
+@end defun
+
+@example
+(load->path '(in-vicinity (library-vicinity) "mklibcat"))
+        @result{} "/usr/local/lib/slib/mklibcat.scm"
+@end example
+
+
+@defun file->definitions file definer @dots{}
+
+Returns a list of the identifier symbols defined by SLIB (or
+SLIB-style) file @var{file}.  The optional arguments @var{definers} should be symbols
+signifying a defining form.  If none are supplied, then the symbols
+@code{define-operation}, @code{define}, @code{define-syntax}, and
+@code{defmacro} are captured.
+@end defun
+
+@example
+(file->definitions "random.scm")
+        @result{} (*random-state* make-random-state
+           seed->random-state copy-random-state random
+           random:chunk)
+@end example
+
+
+@defun file->exports file definer @dots{}
+
+Returns a list of the identifier symbols exported (advertised) by
+SLIB (or SLIB-style) file @var{file}.  The optional arguments @var{definers} should be
+symbols signifying a defining form.  If none are supplied, then the
+symbols @code{define-operation}, @code{define},
+@code{define-syntax}, and @code{defmacro} are captured.
+@end defun
+
+@example
+(file->exports "random.scm")
+        @result{} (make-random-state seed->random-state
+            copy-random-state random)
+
+(file->exports "randinex.scm")
+        @result{} (random:solid-sphere! random:hollow-sphere!
+            random:normal-vector! random:normal
+            random:exp random:uniform)
+@end example
+
+
+@defun feature->export-alist feature catalog
+
+Returns a list of lists; each sublist holding the name of the file
+implementing @var{feature}, and the identifier symbols exported (advertised) by
+SLIB (or SLIB-style) feature @var{feature}, in @var{catalog}.
+@end defun
+
+
+@defun feature->exports feature catalog
+
+Returns a list of all exports of @var{feature}.
+@end defun
+
+@noindent
+In the case of @code{aggregate} features, more than one file may
+have export lists to report:
+
+@example
+(feature->export-alist 'r5rs slib:catalog))
+        @result{} (("/usr/local/lib/slib/values.scm"
+             call-with-values values)
+            ("/usr/local/lib/slib/mbe.scm"
+             define-syntax macro:expand
+             macro:load macro:eval)
+            ("/usr/local/lib/slib/eval.scm"
+             eval scheme-report-environment
+             null-environment interaction-environment))
+
+(feature->export-alist 'stdio *catalog*)
+        @result{} (("/usr/local/lib/slib/scanf.scm"
+             fscanf sscanf scanf scanf-read-list)
+            ("/usr/local/lib/slib/printf.scm"
+             sprintf printf fprintf)
+            ("/usr/local/lib/slib/stdio.scm"
+             stderr stdout stdin))
+
+(feature->exports 'stdio slib:catalog)
+        @result{} (fscanf sscanf scanf scanf-read-list
+             sprintf printf fprintf stderr stdout stdin)
+@end example

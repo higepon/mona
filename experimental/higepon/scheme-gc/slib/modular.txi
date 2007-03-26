@@ -1,0 +1,110 @@
+@code{(require 'modular)}
+@ftindex modular
+
+
+@defun extended-euclid n1 n2
+
+Returns a list of 3 integers @code{(d x y)} such that d = gcd(@var{n1},
+@var{n2}) = @var{n1} * x + @var{n2} * y.
+@end defun
+
+
+@defun symmetric:modulus m
+
+For odd positive integer @var{m}, returns an object suitable for passing
+as the first argument to @code{modular:} procedures, directing them
+to return a symmetric modular number, ie. an @var{n} such that
+@example
+(<= (quotient @var{m} -2) @var{n} (quotient @var{m} 2)
+@end example
+@end defun
+
+
+@defun modular:characteristic modulus
+
+Returns the non-negative integer characteristic of the ring formed when
+@var{modulus} is used with @code{modular:} procedures.
+@end defun
+
+
+@defun modular:normalize modulus n
+
+Returns the integer @code{(modulo @var{n} (modular:characteristic
+@var{modulus}))} in the representation specified by @var{modulus}.
+@end defun
+
+@noindent
+The rest of these functions assume normalized arguments; That is, the
+arguments are constrained by the following table:
+
+@noindent
+For all of these functions, if the first argument (@var{modulus}) is:
+@table @code
+@item positive?
+Integers mod @var{modulus}.  The result is between 0 and
+@var{modulus}.
+
+@item zero?
+The arguments are treated as integers.  An integer is returned.
+@end table
+
+@noindent
+Otherwise, if @var{modulus} is a value returned by
+@code{(symmetric:modulus @var{radix})}, then the arguments and
+result are treated as members of the integers modulo @var{radix},
+but with @dfn{symmetric} representation; i.e.
+@cindex symmetric
+@example
+(<= (quotient @var{radix} 2) @var{n} (quotient (- -1 @var{radix}) 2)
+@end example
+
+@noindent
+If all the arguments are fixnums the computation will use only fixnums.
+
+
+@defun modular:invertable? modulus k
+
+Returns @code{#t} if there exists an integer n such that @var{k} * n
+@equiv{} 1 mod @var{modulus}, and @code{#f} otherwise.
+@end defun
+
+
+@defun modular:invert modulus n2
+
+Returns an integer n such that 1 = (n * @var{n2}) mod @var{modulus}.  If
+@var{n2} has no inverse mod @var{modulus} an error is signaled.
+@end defun
+
+
+@defun modular:negate modulus n2
+
+Returns (@minus{}@var{n2}) mod @var{modulus}.
+@end defun
+
+
+@defun modular:+ modulus n2 n3
+
+Returns (@var{n2} + @var{n3}) mod @var{modulus}.
+@end defun
+
+
+@defun modular:- modulus n2 n3
+
+Returns (@var{n2} @minus{} @var{n3}) mod @var{modulus}.
+@end defun
+
+
+@defun modular:* modulus n2 n3
+
+Returns (@var{n2} * @var{n3}) mod @var{modulus}.
+
+The Scheme code for @code{modular:*} with negative @var{modulus} is
+not completed for fixnum-only implementations.
+@end defun
+
+
+@defun modular:expt modulus n2 n3
+
+Returns (@var{n2} ^ @var{n3}) mod @var{modulus}.
+@end defun
+

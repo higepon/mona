@@ -1,0 +1,238 @@
+
+@code{(require 'object)}
+@ftindex object
+
+This is the Macroless Object System written by Wade Humeniuk
+(whumeniu@@datap.ca).  Conceptual Tributes: @ref{Yasos}, MacScheme's
+%object, CLOS, Lack of R4RS macros.
+
+@subsection Concepts
+@table @asis
+
+@item OBJECT
+An object is an ordered association-list (by @code{eq?}) of methods
+(procedures).  Methods can be added (@code{make-method!}), deleted
+(@code{unmake-method!}) and retrieved (@code{get-method}).  Objects may
+inherit methods from other objects.  The object binds to the environment
+it was created in, allowing closures to be used to hide private
+procedures and data.
+
+@item GENERIC-METHOD
+A generic-method associates (in terms of @code{eq?}) object's method.
+This allows scheme function style to be used for objects.  The calling
+scheme for using a generic method is @code{(generic-method object param1
+param2 ...)}.
+
+@item METHOD
+A method is a procedure that exists in the object.  To use a method
+get-method must be called to look-up the method.  Generic methods
+implement the get-method functionality.  Methods may be added to an
+object associated with any scheme obj in terms of eq?
+
+@item GENERIC-PREDICATE
+A generic method that returns a boolean value for any scheme obj.
+
+@item PREDICATE
+A object's method asscociated with a generic-predicate. Returns
+@code{#t}.
+@end table
+
+@subsection Procedures
+
+@defun make-object ancestor @dots{}
+Returns an object.  Current object implementation is a tagged vector.
+@var{ancestor}s are optional and must be objects in terms of object?.
+@var{ancestor}s methods are included in the object.  Multiple
+@var{ancestor}s might associate the same generic-method with a method.
+In this case the method of the @var{ancestor} first appearing in the
+list is the one returned by @code{get-method}.
+@end defun
+
+@defun object? obj
+Returns boolean value whether @var{obj} was created by make-object.
+@end defun
+
+@defun make-generic-method exception-procedure
+Returns a procedure which be associated with an object's methods.  If
+@var{exception-procedure} is specified then it is used to process
+non-objects.
+@end defun
+
+@defun make-generic-predicate
+Returns a boolean procedure for any scheme object.
+@end defun
+
+@defun make-method! object generic-method method
+Associates @var{method} to the @var{generic-method} in the object.  The
+@var{method} overrides any previous association with the
+@var{generic-method} within the object.  Using @code{unmake-method!}
+will restore the object's previous association with the
+@var{generic-method}.  @var{method} must be a procedure.
+@end defun
+
+@defun make-predicate! object generic-preciate
+Makes a predicate method associated with the @var{generic-predicate}.
+@end defun
+
+@defun unmake-method! object generic-method
+Removes an object's association with a @var{generic-method} .
+@end defun
+
+@defun get-method object generic-method
+Returns the object's method associated (if any) with the
+@var{generic-method}.  If no associated method exists an error is
+flagged.
+@end defun
+
+@subsection Examples
+
+@example
+(require 'object)
+@ftindex object
+
+(define instantiate (make-generic-method))
+
+(define (make-instance-object . ancestors)
+  (define self (apply make-object
+                      (map (lambda (obj) (instantiate obj)) ancestors)))
+  (make-method! self instantiate (lambda (self) self))
+  self)
+
+(define who (make-generic-method))
+(define imigrate! (make-generic-method))
+(define emigrate! (make-generic-method))
+(define describe (make-generic-method))
+(define name (make-generic-method))
+(define address (make-generic-method))
+(define members (make-generic-method))
+
+(define society
+  (let ()
+    (define self (make-instance-object))
+    (define population '())
+    (make-method! self imigrate!
+                  (lambda (new-person)
+                    (if (not (eq? new-person self))
+                        (set! population (cons new-person population)))))
+    (make-method! self emigrate!
+                  (lambda (person)
+                    (if (not (eq? person self))
+                        (set! population
+                              (comlist:remove-if (lambda (member)
+                                                   (eq? member person))
+                                                 population)))))
+    (make-method! self describe
+                  (lambda (self)
+                    (map (lambda (person) (describe person)) population)))
+    (make-method! self who
+                  (lambda (self) (map (lambda (person) (name person))
+                                      population)))
+    (make-method! self members (lambda (self) population))
+    self))
+
+(define (make-person %name %address)
+  (define self (make-instance-object society))
+  (make-method! self name (lambda (self) %name))
+  (make-method! self address (lambda (self) %address))
+  (make-method! self who (lambda (self) (name self)))
+  (make-method! self instantiate
+                (lambda (self)
+                  (make-person (string-append (name self) "-son-of")
+                               %address)))
+  (make-method! self describe
+                (lambda (self) (list (name self) (address self))))
+  (imigrate! self)
+  self)
+@end example
+
+@subsubsection Inverter Documentation
+Inheritance:
+@lisp
+        <inverter>::(<number> <description>)
+@end lisp
+Generic-methods
+@lisp
+        <inverter>::value      @result{} <number>::value
+        <inverter>::set-value! @result{} <number>::set-value!
+        <inverter>::describe   @result{} <description>::describe
+        <inverter>::help
+        <inverter>::invert
+        <inverter>::inverter?
+@end lisp
+
+@subsubsection Number Documention
+Inheritance
+@lisp
+        <number>::()
+@end lisp
+Slots
+@lisp
+        <number>::<x>
+@end lisp
+Generic Methods
+@lisp
+        <number>::value
+        <number>::set-value!
+@end lisp
+
+@subsubsection Inverter code
+@example
+(require 'object)
+@ftindex object
+
+(define value (make-generic-method (lambda (val) val)))
+(define set-value! (make-generic-method))
+(define invert (make-generic-method
+                (lambda (val)
+                  (if (number? val)
+                      (/ 1 val)
+                      (error "Method not supported:" val)))))
+(define noop (make-generic-method))
+(define inverter? (make-generic-predicate))
+(define describe (make-generic-method))
+(define help (make-generic-method))
+
+(define (make-number x)
+  (define self (make-object))
+  (make-method! self value (lambda (this) x))
+  (make-method! self set-value!
+                (lambda (this new-value) (set! x new-value)))
+  self)
+
+(define (make-description str)
+  (define self (make-object))
+  (make-method! self describe (lambda (this) str))
+  (make-method! self help (lambda (this) "Help not available"))
+  self)
+
+(define (make-inverter)
+  (let* ((self (make-object
+                (make-number 1)
+                (make-description "A number which can be inverted")))
+         (<value> (get-method self value)))
+    (make-method! self invert (lambda (self) (/ 1 (<value> self))))
+    (make-predicate! self inverter?)
+    (unmake-method! self help)
+    (make-method! self help
+                  (lambda (self)
+                    (display "Inverter Methods:") (newline)
+                    (display "  (value inverter) ==> n") (newline)))
+    self))
+
+;;;; Try it out
+
+(define invert! (make-generic-method))
+
+(define x (make-inverter))
+
+(make-method! x invert! (lambda (x) (set-value! x (/ 1 (value x)))))
+
+(value x)                       @result{} 1
+(set-value! x 33)               @result{} undefined
+(invert! x)                     @result{} undefined
+(value x)                       @result{} 1/33
+
+(unmake-method! x invert!)      @result{} undefined
+
+(invert! x)                     @error{}  ERROR: Method not supported: x
+@end example

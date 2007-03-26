@@ -1,0 +1,57 @@
+@subsubheading Dictionary Creation
+
+@code{(require 'color-database)}
+@ftindex color-database
+
+
+@defun file->color-dictionary file table-name rdb base-table-type
+
+
+@defunx file->color-dictionary file table-name rdb
+
+@var{rdb} must be an open relational database or a string naming a relational
+database file, @var{table-name} a symbol, and the string @var{file} must name an existing
+file with colornames and their corresponding xRGB (6-digit hex)
+values.  @code{file->color-dictionary} creates a table @var{table-name} in @var{rdb} and enters the associations found
+in @var{file} into it.
+@end defun
+
+
+@defun url->color-dictionary url table-name rdb base-table-type
+
+
+@defunx url->color-dictionary url table-name rdb
+
+@var{rdb} must be an open relational database or a string naming a relational
+database file and @var{table-name} a symbol.  @code{url->color-dictionary} retrieves the resource named by the
+string @var{url} using the @dfn{wget} program; then calls
+@cindex wget
+@code{file->color-dictionary} to enter its associations in @var{table-name} in @var{url}.
+@end defun
+
+@noindent
+This section has detailed the procedures for creating and loading
+color dictionaries.  So where are the dictionaries to load?
+
+@uref{http://swiss.csail.mit.edu/~jaffer/Color/Dictionaries.html}
+
+@noindent
+Describes and evaluates several color-name dictionaries on the web.
+The following procedure creates a database containing two of these
+dictionaries.
+
+
+@defun make-slib-color-name-db
+
+Creates an @r{alist-table} relational database in @r{library-vicinity}
+containing the @dfn{Resene} and @dfn{saturate} color-name
+@cindex Resene
+@cindex saturate
+dictionaries.
+
+If the files @file{resenecolours.txt}, @file{nbs-iscc.txt}, and
+@file{saturate.txt} exist in the @r{library-vicinity}, then they
+used as the source of color-name data.  Otherwise, @code{make-slib-color-name-db} calls
+url->color-dictionary with the URLs of appropriate source files.
+@end defun
+
