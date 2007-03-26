@@ -256,6 +256,16 @@
                    (= '12345 12345)
                    (string=? '"abc" "abc"))
 
+(assert-check-true "quote (a . b)"
+                   (car '(#t . #f))
+;                   (cdr '(#f . #f))
+)
+
+(display "hage")
+(display (if (cdr '(#t . #f)) #t #f))
+(display "hige")
+
+
 (assert-check-true "should be #t"
                    0
                    1

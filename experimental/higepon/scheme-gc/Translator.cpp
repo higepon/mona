@@ -114,14 +114,14 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
 #endif
         return SUCCESS;
     case SExp::SYMBOL:
-        if (sexp->text == "#t" || sexp->text == "#f")
-        {
-            *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
-        }
-        else
-        {
+//         if (sexp->text == "#t" || sexp->text == "#f")
+//         {
+//             *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+//         }
+//         else
+//         {
             *object = new RiteralConstant(sexp->text, sexp->lineno);ASSERT(*object);
-        }
+//        }
         return SUCCESS;
     }
     return SYNTAX_ERROR;
