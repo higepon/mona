@@ -64,6 +64,9 @@ private:
     int translateSet(SExp* sexp, Object** object);
     int translateApplication(SExp* sexp, Object** object);
     int translateQuote(SExp* sexp, Object** object);
+
+    // ugly
+    bool inLambda_;
 };
 
 }; // namespace monash

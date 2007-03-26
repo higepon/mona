@@ -16,34 +16,40 @@ SExp* Pair::objectToSExp(Object* o)
     SExp* sexp;
     if (o->isNumber())
     {
-        sexp = new SExp(SExp::NUMBER);
+        sexp = new SExp(SExp::NUMBER, lineno());
         Number* n = (Number*)o;
         sexp->value = n->value();
     }
     else if (o->isNil())
     {
-        sexp = new SExp(SExp::SEXPS);
-        SExp* quoteSexp = new SExp(SExp::SYMBOL);
-        quoteSexp->text = "quote";
-        sexp->sexps.add(quoteSexp);
-        sexp->sexps.add(new SExp(SExp::SEXPS));
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        sexp = new SExp(SExp::SEXPS, lineno());
+//        SExp* quoteSexp = new SExp(SExp::SYMBOL);
+        //       quoteSexp->text = "quote";
+//        sexp->sexps.add(quoteSexp);
+//        sexp->sexps.add(new SExp(SExp::SEXPS));
+    }
+    else if (o->isCharcter())
+    {
+        sexp = new SExp(SExp::CHAR, lineno());
+        Charcter* c = (Charcter*)o;
+        sexp->text = c->stringValue();
+
     }
     else if (o->isSString())
     {
-        sexp = new SExp(SExp::STRING);
+        sexp = new SExp(SExp::STRING, lineno());
         SString* s = (SString*)o;
         sexp->text = s->value();
     }
     else if (o->isVariable())
     {
-        sexp = new SExp(SExp::SYMBOL);
+        sexp = new SExp(SExp::SYMBOL, lineno());
         Variable* v = (Variable*)o;
         sexp->text = v->name();
     }
     else if (o->isRiteralConstant())
     {
-        sexp = new SExp(SExp::SYMBOL);
+        sexp = new SExp(SExp::SYMBOL, lineno());
         RiteralConstant* r = (RiteralConstant*)o;
         sexp->text = r->text();
     }
@@ -65,12 +71,13 @@ SExp* Pair::toSExp()
     Object* o = this;
     for (;;)
     {
-        if (o == SCM_NIL) break;
-        if (o->isPair())
+        if (o->isNil())
+        {
+            break;
+        }
+        else if (o->isPair())
         {
             Pair* p = (Pair*)o;
-            if (p->getCar() == SCM_NIL) break;
-
             sexp->sexps.add(objectToSExp(p->getCar()));
             o = p->getCdr();
         }
@@ -80,6 +87,7 @@ SExp* Pair::toSExp()
             break;
         }
     }
+//    printf("result=%s\n", sexp->toSExpString().data());
     return sexp;
 }
 
@@ -87,14 +95,14 @@ SExp* Pair::toSExp()
 {
     ::util::String carString = car_ ? car_->toStringValue() : "NULL";
     ::util::String cdrString = cdr_ ? cdr_->toStringValue() : "NULL";
-    return "pair(" + carString + ", " + cdrString + ")";
+    return "(cons " + carString + " " + cdrString + ")";
 }
 
 ::util::String Pair::toStringValue()
 {
     ::util::String carString = car_ ? car_->toStringValue() : "NULL";
     ::util::String cdrString = cdr_ ? cdr_->toStringValue() : "NULL";
-    return "(" + carString + ", " + cdrString + ")";
+    return "(cons " + carString + " " + cdrString + ")";
 }
 
 int Pair::type() const

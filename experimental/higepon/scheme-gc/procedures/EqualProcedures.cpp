@@ -8,7 +8,6 @@ using namespace std;
 PROCEDURE(EqvP, "eqv?")
 {
     ARGC_SHOULD_BE(2);
-    printf("%s %s", ARGV(0)->typeString().data(),ARGV(1)->typeString().data());
     RETURN_BOOLEAN(ARGV(0)->eqv(ARGV(1)));
 }
 

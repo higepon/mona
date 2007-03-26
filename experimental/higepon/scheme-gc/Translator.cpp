@@ -9,7 +9,7 @@ using namespace monash;
 // #define L()          sexp->sexps.size()
 // #define LL(n)        sexp->sexps[n]->sexps.size()
 
-Translator::Translator()
+Translator::Translator() : inLambda_(false)
 {
 }
 
@@ -31,7 +31,10 @@ int Translator::translateAsData(SExp* sexp, Object** object)
     }
     else
     {
-        return translateAsListData(sexp, object);
+        if (L() > 0 && N(0)->text == "lambda") inLambda_ = true;
+        int ret = translateAsListData(sexp, object);
+        if (inLambda_) inLambda_ = false;
+        return ret;
     }
 }
 
@@ -60,7 +63,7 @@ int Translator::translateAsListData(SExp* sexp, Object** object)
     }
 
     // (a . b)
-    if (L() == 3 && N(1)->isSymbol() && N(1)->text == ".")
+    if (!inLambda_ && L() == 3 && N(1)->isSymbol() && N(1)->text == ".")
     {
         Object* car;
         Object* cdr;
@@ -78,7 +81,6 @@ int Translator::translateAsListData(SExp* sexp, Object** object)
         Object* car;
         if (translateAsData(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
         p->setCar(car);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (i != L() -1)
         {
             Pair* tmp = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
@@ -122,7 +124,6 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
         }
         return SUCCESS;
     }
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return SYNTAX_ERROR;
 }
 
@@ -329,7 +330,6 @@ int Translator::translateQuote(SExp* sexp, Object** object)
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-    printf("%s %s:%d quote=%x %s\n", __func__, __FILE__, __LINE__, sexp->sexps[1], sexp->toSExpString().data());fflush(stdout);// debug
     *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
     return SUCCESS;
 }

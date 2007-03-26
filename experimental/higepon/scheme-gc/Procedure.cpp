@@ -74,6 +74,7 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                 p = tmp;
             }
         }
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         args->add(start);
         e->extend(params, args); // doubt? we need copy?
     }
@@ -97,14 +98,14 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                     break;
                 }
 
-                Pair* start = new Pair(NULL, g_nil);
+                Pair* start = new Pair(SCM_NIL, SCM_NIL);
                 Pair* p = start;
                 for (int j = i; j < as->size(); j++)
                 {
                     p->setCar(as->get(j));
                     if (j != as->size() -1)
                     {
-                        Pair* tmp = new Pair(NULL, g_nil);
+                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
                         p->setCdr(tmp);
                         p = tmp;
                     }

@@ -216,6 +216,12 @@
 
 (define map
   (lambda (proc . ll)
+;;     (display "map")
+;;     (display ll)
+;;     (newline)
+;;     (display "map proc")
+;;     (display proc)
+;;     (newline)
     (if (null? (car ll))
     '()
     (let ((tetes (map1 car ll))
@@ -225,9 +231,19 @@
 
 (define map1
   (lambda (f l)
+;;     (display "map1")
+;;     (display l)
+;;     (newline)
+;;     (display "f")
+;;     (display f)
+;;     (newline)
     (if (null? l)
     l
     (cons (f (car l)) (map1 f (cdr l))))))
+
+(define f (lambda (a . b)
+            (display a)
+            (display b)))
 
 (define foldl
   (lambda (binop start l)
@@ -288,8 +304,14 @@
 
 (define for-each
   (lambda (proc . ll)
+;;     (display "for-each")
+;;     (display ll)
+;;     (newline)
+;;     (display "for-each proc")
+;;     (display proc)
+;;     (newline)
     (if (null? (car ll))
-    #f
+        #f
     (let* ((tetes (map car ll))
            (queues (map cdr ll)))
       (apply proc tetes)

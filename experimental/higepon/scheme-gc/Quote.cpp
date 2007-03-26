@@ -51,10 +51,8 @@ int Quote::type() const
 
 Object* Quote::eval(Environment* env)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (NULL == data_)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (env->translator().translateAsData(sexp_, &data_) != Translator::SUCCESS)
         {
             RAISE_ERROR(lineno(), "quote error\n");
@@ -101,7 +99,7 @@ bool Quote::eqv(Object* o)
 {
     if (!o->isQuote()) return false;
     Quote* quote = (Quote*)o;
-    printf("eqv%s %s\n", this->toStringValue().data(),quote->toStringValue().data());
+    printf("<<%s>>\n<<%s>>\n", toStringValue().data(), quote->toStringValue().data());
     return this->toStringValue() == quote->toStringValue();
 }
 

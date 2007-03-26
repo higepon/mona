@@ -21,6 +21,7 @@ public:
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "char"; }
     virtual char value() { return value_; }
+    virtual ::util::String stringValue();
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool gt(Object* o);

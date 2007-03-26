@@ -7,14 +7,14 @@ using namespace monash;
 PROCEDURE(SymbolP, "symbol?")
 {
     ARGC_SHOULD_BE(1);
-    RETURN_BOOLEAN(ARGV(0)->isQuote());
+    RETURN_BOOLEAN(ARGV(0)->isRiteralConstant());
 }
 
 
 PROCEDURE(SymbolToString, "symbol->string")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), Quote, q);
-    return new SString(q->toStringValue(), q->lineno());
+    CAST(ARGV(0), RiteralConstant, r);
+    return new SString(r->toStringValue(), r->lineno());
 }
 

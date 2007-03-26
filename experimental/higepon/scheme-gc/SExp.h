@@ -52,7 +52,7 @@ class SExp
 #endif
 {
 public:
-    SExp(int type) : type(type), lineno(0) {}
+    SExp(int type, uint32_t lineno = 0) : type(type), lineno(lineno) {}
     ~SExp() {}
 
     ::util::String toString();

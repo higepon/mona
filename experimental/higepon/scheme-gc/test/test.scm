@@ -240,14 +240,16 @@
 
 (assert-check-true "quote"
                    (eqv? (quote a) (quote a))
-                   (eqv? (car (quote (x y z))) (quote x))
-                   (eqv? (cdr (quote (x y z))) (quote (y z))))
+                   (eqv? (car (quote (x y z))) (quote x)))
+; これは MonaScheme では #f 実装依存
+;                   (eqv? (cdr (quote (x y z))) (quote (y z))))
 
 (assert-check-true "quote '"
                    (eqv? (caar (cons (cons 3 4) (cons 5 6))) 3)
                    (eqv? 'a 'a)
-                   (eqv? (car '(x y z)) 'x)
-                   (eqv? (cdr '(x y z)) '(y z)))
+                   (eqv? (car '(x y z)) 'x))
+; これは MonaScheme では #f 実装依存
+;                   (eqv? (cdr '(x y z)) '(y z)))
 
 (assert-check-true "quote self evaluate"
                    '#t
@@ -394,16 +396,16 @@
                         (set! do-index (+ do-index 2)))
                    (= do-index 10))
 
-(load "./test/char.scm")
-(load "./test/vector.scm")
-(load "./test/symbol.scm")
-(load "./test/number.scm")
-(load "./test/closure.scm")
-(load "./test/string.scm")
-(load "./test/pair.scm")
-(load "./test/port.scm")
-(load "./test/util.scm")
-(load "./test/continuation.scm")
+;; (load "./test/char.scm")
+;; (load "./test/vector.scm")
+;; (load "./test/symbol.scm")
+;; (load "./test/number.scm")
+;; (load "./test/closure.scm")
+;; (load "./test/string.scm")
+;; (load "./test/pair.scm")
+;; (load "./test/port.scm")
+;; (load "./test/util.scm")
+;; (load "./test/continuation.scm")
 
 ;; report
 (total-report)

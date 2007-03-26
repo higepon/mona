@@ -35,7 +35,6 @@ bool RiteralConstant::eqv(Object* o)
 {
     if (!o->isRiteralConstant()) return false;
     RiteralConstant* r = (RiteralConstant*)o;
-    printf("riteral eqv%s %s\n", this->toStringValue().data(),r->toStringValue().data());
     return this->toStringValue() == r->toStringValue();
 }
 

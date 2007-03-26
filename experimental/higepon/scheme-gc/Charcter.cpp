@@ -27,6 +27,24 @@ Charcter::~Charcter()
 {
 }
 
+String Charcter::stringValue()
+{
+    if (value_ == ' ')
+    {
+        return "#\\space";
+    }
+    else if (value_ == '\n')
+    {
+        return "#\\newline";
+    }
+    else
+    {
+        String s = "#\\";
+        s += value_;
+        return s;
+    }
+}
+
 String Charcter::toString()
 {
     String ret = "char:";

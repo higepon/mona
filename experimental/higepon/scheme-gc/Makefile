@@ -4,7 +4,7 @@ REGISTERS_INC = ./register.inc
 PROCEDURES_H  = ./primitive_procedures.h
 
 CXXFLAGS = -pg -g -idirafter . -Wall  $(GC_CFLAGS) #-DMACRO_TRACE
-CFLAGS   = $(CXXFLAGS)
+CFLAGS   = $(CXXFLAGS) -j2
 LDFLAGS  = $(GC_LDFLAGS)
 
 #include Makefile.boehm_gc.inc

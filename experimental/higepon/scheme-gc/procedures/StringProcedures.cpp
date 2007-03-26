@@ -111,9 +111,7 @@ PROCEDURE(StringToSymbol, "string->symbol")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
-    SExp* exp = new SExp(SExp::SYMBOL);
-    exp->text = s->toStringValue();
-    return new Quote(exp);
+    return new RiteralConstant(s->value());
 }
 
 // see test/scheme.scm
