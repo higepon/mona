@@ -61,8 +61,6 @@ void input_loop()
     for (int i = 0; i < sexps.size(); i++)
     {
         SExp* sexp = sexps.get(i);
-        printf("*** %s\n", sexp->toSExpString().data());
-
 
         f.filter(sexp);
         Object* object = NULL;
@@ -104,7 +102,7 @@ void input_loop()
                 }
                 // let's eval!
                 Object* evaluated = object->eval(env);
-                SCHEME_WRITE(stdout, "%s\n", evaluated->toStringValue().data());
+                SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
 
             }
                     open_paren_count = 0;

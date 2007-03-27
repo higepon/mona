@@ -136,10 +136,22 @@ void SExp::toStringInternal(uint32_t depth, String& s)
     }
     s += typeToString();
     depth++;
-    for (int i = 0; i < sexps.size(); i++)
-    {
-        sexps[i]->toStringInternal(depth, s);
-    }
+//     if (sexps[0]->isSymbol() && sexps[0]->text == "quote")
+//     {
+//         s += "\'";
+//         for (int i = 1; i < sexps.size(); i++)
+//         {
+//             sexps[i]->toStringInternal(depth, s);
+//         }
+//         return;
+//     }
+//     else
+//     {
+        for (int i = 0; i < sexps.size(); i++)
+        {
+            sexps[i]->toStringInternal(depth, s);
+        }
+//
 }
 
 String SExp::toString()
@@ -160,13 +172,26 @@ void SExp::toSExpStringInternal(String& s)
 {
     if (isSExps())
     {
-        s += "(";
-        for (int i = 0; i < sexps.size(); i++)
-        {
-            sexps[i]->toSExpStringInternal(s);
-            if (i != sexps.size() - 1) s += " ";
-        }
-        s += ")";
+//         if (sexps[0]->isSymbol() && sexps[0]->text == "quote")
+//         {
+//             s += "\'";
+//             for (int i = 0; i < sexps.size(); i++)
+//             {
+//                 sexps[i]->toSExpStringInternal(s);
+//                 if (i != sexps.size() - 1) s += " ";
+//             }
+//         }
+//         else
+//         {
+//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            s += "(";
+            for (int i = 0; i < sexps.size(); i++)
+            {
+                sexps[i]->toSExpStringInternal(s);
+                if (i != sexps.size() - 1) s += " ";
+            }
+            s += ")";
+//         }
     }
     else
     {

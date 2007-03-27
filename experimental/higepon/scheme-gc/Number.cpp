@@ -13,7 +13,7 @@ Number::~Number()
 
 String Number::toString()
 {
-    snprintf(buf_, 63, "number: %d", value_);
+    snprintf(buf_, 63, "%d", value_);
     return String(buf_);
 }
 

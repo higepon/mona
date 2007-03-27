@@ -24,6 +24,7 @@ public:
 
 public:
     virtual ::util::String toString();
+    virtual ::util::String toStringInternal(bool inList = false);
     virtual ::util::String toStringValue();
     virtual int type() const;
     virtual uint32_t lineno() const { return lineno_; }

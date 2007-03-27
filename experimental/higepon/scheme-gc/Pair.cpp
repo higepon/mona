@@ -104,10 +104,35 @@ Pair::~Pair()
 
 ::util::String Pair::toString()
 {
-    ::util::String carString = car_ ? car_->toStringValue() : "NULL";
-    ::util::String cdrString = cdr_ ? cdr_->toStringValue() : "NULL";
-    return "(cons " + carString + " " + cdrString + ")";
+    return toStringInternal(false);
 }
+
+::util::String Pair::toStringInternal(bool inList /* = false */)
+{
+    ::util::String carString = car_ ? car_->toString() : "NULL";
+    ::util::String cdrString = cdr_ ? cdr_->toString() : "NULL";
+    if (cdr_->isPair())
+    {
+        Pair* p = (Pair*)cdr_;
+        if (inList)
+        {
+            return carString + " " + p->toStringInternal(true);
+        }
+        else
+        {
+            return "(" + carString + " " + p->toStringInternal(true) + ")";
+        }
+    }
+    else if (cdr_->isNil())
+    {
+        return carString;
+    }
+    else
+    {
+        return "(" + carString + " . " + cdrString + ")";
+    }
+}
+
 
 ::util::String Pair::toStringValue()
 {

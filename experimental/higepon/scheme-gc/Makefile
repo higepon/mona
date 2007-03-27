@@ -38,7 +38,6 @@ InputPort.cpp\
 Values.cpp\
 Parser.cpp\
 Procedure.cpp\
-Quote.cpp\
 RiteralConstant.cpp\
 Nil.cpp\
 QuoteFilter.cpp\
