@@ -14,6 +14,7 @@ public:
 
 protected:
     char getChar();
+    void unGetChar();
     ::util::String getQuoteString(uint32_t paren);
     ::util::String input_;
     uint32_t postion_;

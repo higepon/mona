@@ -14,7 +14,8 @@
                    (string=? "abc" (symbol->string 'abc))
                    (string=? "abc" (symbol->string (string->symbol "abc"))))
 
-(display (symbol->string (string->symbol "abc")))
-
+(assert-check-true "double quote"
+                   (string=? "a"(symbol->string (eval ''a (scheme-report-environment 5))))
+)
 
 

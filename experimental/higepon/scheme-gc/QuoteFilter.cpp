@@ -71,6 +71,11 @@ String QuoteFilter::getQuoteString(uint32_t paren)
         {
             break;
         }
+        else if (c == '\'')
+        {
+            String quoteString = getQuoteString(0);
+            ret += "(quote " + quoteString + ")";
+        }
         else if (c == '(')
         {
             ret += c;
@@ -83,6 +88,7 @@ String QuoteFilter::getQuoteString(uint32_t paren)
         }
         else if (isspace(c) && paren == 0)
         {
+            unGetChar();
             break;
         }
         else if (isspace(c) && paren != 0)
@@ -104,5 +110,11 @@ char QuoteFilter::getChar()
     postion_++;
     return c;
 
+}
+
+void QuoteFilter::unGetChar()
+{
+    postion_--;
+    if (postion_ < 0) postion_ = 0;
 }
 

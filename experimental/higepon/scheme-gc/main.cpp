@@ -94,7 +94,6 @@ void input_loop()
 
                 Object* object = NULL;
 
-//                sexp->print();
                 if (translator.translate(&sexp, &object) != Translator::SUCCESS)
                 {
 //                    fprintf(stderr, "translate error \n");
