@@ -120,6 +120,7 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
 //         }
 //         else
 //         {
+        printf("riteral = %s\n", sexp->text.data());
             *object = new RiteralConstant(sexp->text, sexp->lineno);ASSERT(*object);
 //        }
         return SUCCESS;

@@ -45,12 +45,14 @@ SExp* Pair::objectToSExp(Object* o)
     {
         sexp = new SExp(SExp::SYMBOL, lineno());
         Variable* v = (Variable*)o;
+        printf("riteral %s\n", v->name().data());
         sexp->text = v->name();
     }
     else if (o->isRiteralConstant())
     {
         sexp = new SExp(SExp::SYMBOL, lineno());
         RiteralConstant* r = (RiteralConstant*)o;
+        printf("riteral %s\n", r->text().data());
         sexp->text = r->text();
     }
     else if (o->isPair())
