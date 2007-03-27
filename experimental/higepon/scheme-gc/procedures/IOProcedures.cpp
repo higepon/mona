@@ -285,7 +285,9 @@ PROCEDURE(Load, "load")
     {
         SExp* sex = sexps[i];
 
-        Quote* quote = new Quote(sex, s->lineno());
+//        Quote* quote = new Quote(sex, s->lineno());
+        Object* quote;
+        env->translator().translateAsData(sex, &quote);
         Objects* args = new Objects;
         args->add(quote);
         args->add(environment);

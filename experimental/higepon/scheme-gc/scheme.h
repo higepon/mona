@@ -56,16 +56,20 @@ namespace util {
 #include "procedures/Procedure.h"
 #include "procedures/Set.h"
 
-::util::String load(const char* file);
-void registerPrimitives(monash::Environment* env);
-
-class monash::InputPort;
 namespace monash {
 class DynamicWind;
+class Pair;
 typedef ::util::Vector<DynamicWind*> DynamicWinds;
 typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 
 }
+
+::util::String load(const char* file);
+void registerPrimitives(monash::Environment* env);
+monash::SExp* objectToSExp(monash::Object* o);
+monash::SExp* pairToSExp(monash::Pair* p);
+
+class monash::InputPort;
 GLOBAL monash::True* g_true;
 GLOBAL monash::False* g_false;
 GLOBAL monash::Undef* g_undef;

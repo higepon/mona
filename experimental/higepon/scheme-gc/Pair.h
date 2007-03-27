@@ -19,8 +19,8 @@ public:
     Object* getCdr() {return cdr_;}
     void setCar(Object* o);
     void setCdr(Object* o);
-    SExp* toSExp();
-    SExp* objectToSExp(Object* o);
+//     SExp* toSExp();
+//     SExp* objectToSExp(Object* o);
 
 public:
     virtual ::util::String toString();

@@ -74,7 +74,6 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                 p = tmp;
             }
         }
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         args->add(start);
         e->extend(params, args); // doubt? we need copy?
     }

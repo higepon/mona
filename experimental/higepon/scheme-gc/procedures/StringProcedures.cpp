@@ -111,7 +111,16 @@ PROCEDURE(StringToSymbol, "string->symbol")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
-    return new RiteralConstant(s->value());
+    Object* object;
+    String text = "(" + s->value() + ")";
+    SExp* sexp = SExp::fromString(text);
+    Translator& t = env->translator();
+    int ret = t.translateAsData(sexp->sexps[0], &object);
+    if (ret != Translator::SUCCESS)
+    {
+        RAISE_ERROR(ARGV(0)->lineno(), "string->symbole got wrong arguments");
+    }
+    return object;
 }
 
 // see test/scheme.scm

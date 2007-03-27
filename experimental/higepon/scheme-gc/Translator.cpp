@@ -114,15 +114,18 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
 #endif
         return SUCCESS;
     case SExp::SYMBOL:
-//         if (sexp->text == "#t" || sexp->text == "#f")
-//         {
-//             *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
-//         }
-//         else
-//         {
-        printf("riteral = %s\n", sexp->text.data());
+        if (sexp->text == "#t")
+        {
+            *object = SCM_TRUE;
+        }
+        else if (sexp->text == "#f")
+        {
+            *object = SCM_FALSE;
+        }
+        else
+        {
             *object = new RiteralConstant(sexp->text, sexp->lineno);ASSERT(*object);
-//        }
+        }
         return SUCCESS;
     }
     return SYNTAX_ERROR;
@@ -331,7 +334,8 @@ int Translator::translateQuote(SExp* sexp, Object** object)
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-    *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
+//    *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
+    translateAsData(sexp->sexps[1], object);
     return SUCCESS;
 }
 

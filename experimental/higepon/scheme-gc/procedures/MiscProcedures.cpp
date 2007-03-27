@@ -189,10 +189,10 @@ PROCEDURE(Eval, "eval")
     CAST(ARGV(1), Environment, e);
     Object* target = ARGV(0);
 
-    if (target->isPair())
-    {
-        Pair* p = (Pair*)target;
-        SExp* sexp = p->toSExp();
+//     if (target->isPair())
+//     {
+//         Pair* p = (Pair*)target;
+        SExp* sexp = objectToSExp(target);//::pairToSExp(p);
         e->macroFilter().filter(sexp);
         Object* o;
         int ret = e->translator().translate(&sexp, &o);
@@ -201,11 +201,12 @@ PROCEDURE(Eval, "eval")
             RAISE_ERROR(sexp->lineno, "eval got error [%s]", toString().data(), target->toStringValue().data());
         }
         return o->eval(e);
-    }
-    else
-    {
-        return target->eval(e);
-    }
+//     }
+//     else
+//     {
+//         printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, target->typeString().data());fflush(stdout);// debug
+//         return target->eval(e);
+//     }
 #endif
 }
 

@@ -9,7 +9,6 @@
                       y
                       (+ y (car z))
                       ))
-(display "*********************************************")
 (assert-check-true "define/lambda"
                    (= (a 3) 3)
                    (= (b) 4)
@@ -18,7 +17,6 @@
                    (= (x 3 4) 7)
                    (= (x 3 4 5) 7)
 )
-(display "*********************************************")
 (assert-check-true "if"
                    (if #t #t #f))
 
@@ -155,8 +153,8 @@
 ;;          (begin result1 result2 ...)
 ;;          (cond* clause1 clause2 ...)))))
 
-;(cond* (3 (display 3)))
-;;(cond* (#f 2) (else 5))
+;; (cond* (3 (display 3)))
+;; (cond* (#f 2) (else 5))
 
 ;; (define test-name "cond*")
 ;; (cond* (#t (assert-true test-name #t))
@@ -181,12 +179,11 @@
 ;;          (begin result1 result2 ...)
 ;;          (c clause1 clause2 ...)))))
 
-;(assert-true test-name (= 3 ((lambda ()  (cond* (1 => (lambda (x) (+ x 2))) (else 8))))))
+;; (assert-true test-name (= 3 ((lambda ()  (cond* (1 => (lambda (x) (+ x 2))) (else 8))))))
 ;; todo
 ;;  (cond (#f (assert-fail test-name "not reached"))
 ;;        (#f (assert-fail test-name "not reached"))
 ;;        (#t (assert-true test-name #t)))
-
 
 ;; todo
 ;; マクロが展開されておかしくなる！
@@ -258,13 +255,9 @@
 
 (assert-check-true "quote (a . b)"
                    (car '(#t . #f))
-;                   (cdr '(#f . #f))
+                   (cdr '(#f . #t))
+                   (not (cdr '(#t . #f)))
 )
-
-(display "hage")
-(display (if (cdr '(#t . #f)) #t #f))
-(display "hige")
-
 
 (assert-check-true "should be #t"
                    0
@@ -406,16 +399,16 @@
                         (set! do-index (+ do-index 2)))
                    (= do-index 10))
 
-;; (load "./test/char.scm")
-;; (load "./test/vector.scm")
-;; (load "./test/symbol.scm")
-;; (load "./test/number.scm")
-;; (load "./test/closure.scm")
-;; (load "./test/string.scm")
-;; (load "./test/pair.scm")
-;; (load "./test/port.scm")
-;; (load "./test/util.scm")
-;; (load "./test/continuation.scm")
+(load "./test/char.scm")
+(load "./test/vector.scm")
+(load "./test/symbol.scm")
+(load "./test/number.scm")
+(load "./test/closure.scm")
+(load "./test/string.scm")
+(load "./test/pair.scm")
+(load "./test/port.scm")
+(load "./test/util.scm")
+(load "./test/continuation.scm")
 
 ;; report
 (total-report)
