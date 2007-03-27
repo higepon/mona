@@ -31,7 +31,6 @@ namespace util {
 #include "Number.h"
 #include "SString.h"
 #include "Charcter.h"
-#include "Quote.h"
 #include "Vector.h"
 #include "Pair.h"
 #include "SpecialIf.h"

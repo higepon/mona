@@ -7,7 +7,6 @@
 #include "Number.h"
 #include "Charcter.h"
 #include "SString.h"
-#include "Quote.h"
 #include "SpecialIf.h"
 #include "Assignment.h"
 #include "Begin.h"
