@@ -62,11 +62,13 @@ extern "C" int32_t aud_es1370_init_device()
 
 extern "C" struct driver_desc *aud_es1370_get_desc()
 {
+	dputs("#Audio: aud_es1370_get_desc");
 	return &desc;
 }
 
 extern "C" void aud_es1370_release_desc(struct driver_desc *desc)
 {
+	dputs("#Audio: aud_es1370_release_desc");
 }
 
 extern "C" ch_t aud_es1370_create_channel()
@@ -107,12 +109,14 @@ extern "C" int32_t aud_es1370_start_channel(ch_t ch, int32_t loop)
 
 extern "C" int32_t aud_es1370_destroy_channel(ch_t ch)
 {
+	dprintf("#Audio: aud_es1370_destroy_channel; ch = %d\n", ch);
 	dev->destroyChannel(ch);
 	return 0;
 }
 
 extern "C" int32_t aud_es1370_emit_interrupted()
 {
+	dputs("#Audio: aud_es1370_emit_interrupted");
 	monapi_set_irq(dev->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 }
 
@@ -138,6 +142,7 @@ bool es1370::existDevice()
 
 void es1370::setIRQ()
 {
+	dputs("#ES1370: setIRQ");
 	syscall_get_io();
 	syscall_set_irq_receiver(this->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
 	monapi_set_irq(this->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
@@ -183,8 +188,18 @@ void es1370::setSampleRate(int rate)
 
 void es1370::prepareChannelDAC1(int rate, int bits, int isStereo)
 {
+	dprintf("#ES1370: prepareChannelDAC1; rate = %d, bits = %d, isStereo = %d\n", rate, bits, isStereo);
 	// Disable DAC1
 	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)&~ES1370_DAC1_EN);
+	// enable ccb interrupt
+	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)|ES1370_CCB_INTRM);
+	// enable SERR
+	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)&~ES1370_SERR_DISABLE);
+	// hoge
+	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)&~1);
+	// set mempage
+	outp32(baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC&0xf);
+	// set sample rate
 	setSampleRate(rate);
 	// set stereo mode & bits
 	if( bits == 16 )
@@ -193,12 +208,7 @@ void es1370::prepareChannelDAC1(int rate, int bits, int isStereo)
 	else if( bits == 8 )
 		if( isStereo != 0 ) outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)|ES1370_P1_S_MB);
 		else outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)&~(ES1370_P1_S_MB|ES1370_P1_S_EB));
-	// enable ccb interrupt
-	outp32(ES1370_REG_SERIAL_CONTROL, inp32(ES1370_REG_SERIAL_CONTROL)|ES1370_CCB_INTRM);
-	// enable SERR
-	outp32(ES1370_REG_SERIAL_CONTROL, inp32(ES1370_REG_SERIAL_CONTROL)&~ES1370_SERR_DISABLE);
-	// enable interrupt
-	outp32(ES1370_REG_SERIAL_CONTROL, inp32(ES1370_REG_SERIAL_CONTROL)|ES1370_P1_INTR_EN);
+
 }
 
 typedef union _fr
@@ -213,17 +223,33 @@ typedef union _fr
 
 void es1370::setBufferDAC1(void *p, size_t size)
 {
+	dputs("#ES1370: setBufferDAC1");
 	outp32(baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC&0xf);
 	FrameRegister fr;
 	fr.s.currentcount = 0;
 	fr.s.buffersize = (unsigned short)size;
 	outp32(baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(baseIO+ES1370_REG_DAC1_FRAMECNT, (uint32_t)fr.n);
+
+	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)&~(ES1370_P1_LOOP_SEL|ES1370_P1_PAUSE|ES1370_P1_SCT_RLD|ES1370_P1_S_EB|ES1370_P1_S_EB));
 }
 
 void es1370::startDAC1()
 {
+	dputs("#ES1370: startDAC1");
+	// enable interrupt
+	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)|ES1370_P1_INTR_EN);
 	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)&~ES1370_P1_PAUSE);
 	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)|ES1370_DAC1_EN);
 }
+
+inline void rgor(int rA, int rS, int rB)
+{
+}
+
+inline void rgori(int rA, int rS, int imm)
+{
+}
+
+
 

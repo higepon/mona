@@ -79,7 +79,7 @@ int ServerCommand::ReleaseChannel(MessageInfo *msg)
 {
 	std::vector<struct driver_desc*>::iterator it;
 	it = parent->drivers->begin();
-	(*it)->destroy_channel(msg->arg1);
+	(*it)->destroy_channel(msg->arg2);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
