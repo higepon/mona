@@ -293,5 +293,5 @@
            (begin command ... (loop c)))))))
 
 (load "test/danny_dube.scm")
-;(load "slib/Template.scm")
+(load "slib/Template.scm")
 ;(slib:report)

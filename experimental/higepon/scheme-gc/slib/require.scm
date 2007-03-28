@@ -93,7 +93,7 @@
 			   *catalog*)))
 	(set! *catalog*
 	      (append (catalog:try-read (user-vicinity) "usercat") *catalog*))))
-  (and feature *catalog* (cdr (or (assq feature *catalog*) (cons #f  #f)))))
+  (and feature *catalog* (cdr (or (assq feature *catalog*) '(#f . #f)))))
 ; for mona higepon
 ;  (and feature *catalog* (cdr (or (assq feature *catalog*) '(#f . #f)))))
 ;@

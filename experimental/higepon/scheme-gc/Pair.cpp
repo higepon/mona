@@ -120,7 +120,14 @@ Pair::~Pair()
         }
         else
         {
-            return "(" + carString + " " + p->toStringInternal(true) + ")";
+            if (carString == "quote")
+            {
+                return "\'" + p->toStringInternal(true);
+            }
+            else
+            {
+                return "(" + carString + " " + p->toStringInternal(true) + ")";
+            }
         }
     }
     else if (cdr_->isNil())
