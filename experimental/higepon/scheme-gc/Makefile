@@ -49,6 +49,7 @@ Tokenizer.cpp\
 Translator.cpp\
 Variable.cpp\
 Vector.cpp\
+Scanner.cpp\
 load.cpp\
 scheme.cpp
 

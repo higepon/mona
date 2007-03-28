@@ -53,7 +53,7 @@ SString::~SString()
 
 String SString::toString()
 {
-    return toStringValue();//return "string: \"" + value_ + "\"";
+    return "\"" + value_ + "\"";
 }
 
 String SString::toStringValue()
