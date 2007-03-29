@@ -1,0 +1,61 @@
+-
+ - #t
+ - BOOLEAN
+ - #t
+-
+ - "test"
+ - STRING
+ - "test"
+-
+ - |
+ - PIPE
+ - |
+-
+ - '
+ - SINGLE_QUOTE
+ - '
+-
+ - .
+ - PERIOD
+ - .
+-
+ - ,
+ - CAMMA
+ - ,
+-
+ - ,@
+ - CAMMA_AT
+ - ,@
+-
+ - "\"test"
+ - STRING
+ - ""test"
+-
+ - "\\test"
+ - STRING
+ - "\test"
+-
+ - #t . #\a "this is test" , '#\b #\space | ,@ #(
+ - BOOLEAN
+ - #t
+ - PERIOD
+ - .
+ - CHARCTER
+ - a
+ - STRING
+ - "this is test"
+ - CAMMA
+ - ,
+ - SINGLE_QUOTE
+ - '
+ - CHARCTER
+ - b
+ - CHARCTER
+ - space
+ - PIPE
+ - |
+ - CAMMA_AT
+ - ,@
+ - VECTOR_START
+ - #(
+

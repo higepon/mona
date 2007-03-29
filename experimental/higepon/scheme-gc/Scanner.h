@@ -2,45 +2,29 @@
 #define __SCANNER_H__
 
 #include "util/String.h"
+#include "SToken.h"
+#include "Reader.h"
 
 namespace monash {
 
-struct SToken
-{
-    SToken(int type) : type(type) {}
-    virtual ~SToken() {}
-    int type;
-    ::util::String string;
-    int integer;
-    enum
-    {
-        IDENTIFIER,
-        BOOLEAN,
-        NUMBER,
-        CHARCTER,
-        STRING,
-        PIPE,
-        VECTOR_START,
-        SINGLE_QUOTE,
-        BACK_QUOTE,
-        CAMMA,
-        CAMMA_AT,
-        PERIOD
-    };
-};
+// あとで消す
+void scanner_test();
 
 class Scanner
 {
 public:
-    Scanner();
+    Scanner(Reader* reader);
     virtual ~Scanner();
 
     SToken* getToken();
 
 protected:
+    char readChar();
+    void unReadChar(char c);
     bool isSpace(char c);
     bool isDelimiter(char c);
-
+    bool isDigit(char c);
+    Reader* reader_;
 };
 
 }; // namespace monash

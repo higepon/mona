@@ -8,10 +8,10 @@ CFLAGS   = $(CXXFLAGS) -j2
 LDFLAGS  = $(GC_LDFLAGS)
 
 #include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+#include Makefile.mona_gc.inc
 
 # たまに これで make checkする
-#include Makefile.none_gc.inc
+include Makefile.none_gc.inc
 
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\
@@ -50,6 +50,8 @@ Translator.cpp\
 Variable.cpp\
 Vector.cpp\
 Scanner.cpp\
+SToken.cpp\
+StringReader.cpp\
 load.cpp\
 scheme.cpp
 
@@ -73,7 +75,8 @@ TEST_SOURCES = \
 test_cpp/yaml.cpp\
 test_cpp/MacroMatchTest.cpp\
 test_cpp/MacroFilterTest.cpp\
-test_cpp/QuoteFilterTest.cpp
+test_cpp/QuoteFilterTest.cpp\
+test_cpp/ScannerTest.cpp
 
 LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
 

@@ -9,7 +9,7 @@
  - (list (quote a))
 -
  - (list 'a 'b 'c)
- - (list (quote a)(quote b)(quote c))
+ - (list (quote a) (quote b) (quote c))
 -
  - (car '(x y z))
  - (car (quote (x y z)))
@@ -18,7 +18,7 @@
  - (eval (quote (define a (lambda (x) (+ 1 x)))))
 -
  - (eqv? 'a 'a)
- - (eqv? (quote a)(quote a))
+ - (eqv? (quote a) (quote a))
 -
  - "'a"
  - "'a"

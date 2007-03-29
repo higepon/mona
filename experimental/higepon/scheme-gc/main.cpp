@@ -121,7 +121,6 @@ void input_loop()
     }
 
 }
-
 int main(int argc, char *argv[])
 {
 #ifdef USE_MONA_GC
