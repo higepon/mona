@@ -61,7 +61,7 @@
  - STRING
  - "\test"
 -
- - #t . #\a "this is test" , '#\b #\space | ,@ #(
+ - #t . #\a "this is test" , test else '#\b #\space | ,@ #(
  - BOOLEAN
  - #t
  - PERIOD
@@ -72,6 +72,10 @@
  - "this is test"
  - CAMMA
  - ,
+ - VARIABLE
+ - test
+ - KEYWORD
+ - else
  - SINGLE_QUOTE
  - '
  - CHARCTER

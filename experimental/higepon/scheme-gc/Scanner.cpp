@@ -11,45 +11,6 @@ using namespace monash;
 
 #define SYNTAX_ERROR(...) printf(__VA_ARGS__);fflush(stdout);
 
-// const char* input = "#t #\\a #\\b #\\space";
-// static int pos = 0;
-// // char readChar()
-// // {
-// //     if (pos >= strlen(input)) return -1;
-// //     char c = input[pos];
-// //     pos++;
-// //     return c;
-// // }
-
-// void scanner_test()
-// {
-//     Reader* reader = new StringReader(input);
-//     Scanner scanner(reader);
-//     Strings expected;
-//     expected.add(new String("BOOLEAN"));
-//     expected.add(new String("#t"));
-//     expected.add(new String("CHARCTER"));
-//     expected.add(new String("a"));
-
-//     for (int i = 0; i < expected.size() / 2; i++)
-//     {
-//         SToken* token = scanner.getToken();
-//         String* type = expected[i * 2];
-//         String* value = expected[i * 2 + 1];
-//         if (token->typeString() == type->data() && token->valueString() == value->data())
-//         {
-//             printf("OK\n");
-//         }
-//         else
-//         {
-//             printf("NG\n");
-//             printf("expected <%s %s> : but got <%s %s>\n", type->data(), value->data(), token->typeString().data(), token->valueString().data());
-//         }
-        
-//     }
-
-// }
-
 Scanner::Scanner(Reader* reader) : reader_(reader)
 {
 
@@ -72,6 +33,21 @@ SToken* Scanner::getToken()
     {
         c = readChar();
     }
+
+    // <identifier> => <initial> <subsequent>*
+    //               | <peculiar identifier>
+    // <initial> => <letter> | <special initial>
+    //
+    // <letter> => a | b | c | ... | z
+    //
+    // <special initial> => ! | $ | % | & | * | / | : | < | =
+    //                       | > | ? | ^ | _ | ~
+    //
+    // <subsequent> => <initial> | <digit> | <special subsequent>
+    //
+    // <special subsequent> => + | - | . | @
+    //
+    //   <peculiar identifier> => + | - | ...
     if (isLetter(c) || isSpecialInitial(c) || c == '+' || c == '-' | c == '.')
     {
         String text;
@@ -82,15 +58,6 @@ SToken* Scanner::getToken()
             if (isDelimiter(c)) break;
             text += c;
         }
-//         if (text == "+" || text == "-" || text == "...")
-//         {
-//             for (int i = text.size() - 1; i >= 0; i--)
-//             {
-//                 unReadChar(text[i]);
-//             }
-//             goto other;
-//         }
-
         if ((text.startWith("+") || text.startWith("-")) && text.size() > 1)
         {
             for (int i =0; i < text.size(); i++)
@@ -115,7 +82,7 @@ SToken* Scanner::getToken()
 
         if (isSynaticKeyword(text))
         {
-            token = new SToken(SToken::IDENTIFIER);
+            token = new SToken(SToken::KEYWORD);
             token->text = text;
             return token;
         }
@@ -249,8 +216,7 @@ other:
     // <num 10> =>  <complex 10>
     else if (c == '+' || c == '-' || isDigit(c))
     {
-// mandokuse
-        if (c == '+') 1;
+        int sign = c == '-' ?  -1 : 1;
     }
 }
 

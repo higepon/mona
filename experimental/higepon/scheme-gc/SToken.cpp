@@ -18,6 +18,8 @@ String SToken::typeString()
     {
     case IDENTIFIER:
         return "IDENTIFIER";
+    case KEYWORD:
+        return "KEYWORD";
     case VARIABLE:
         return "VARIABLE";
     case CHARCTER:
@@ -57,6 +59,7 @@ String SToken::valueString()
     case IDENTIFIER:
     case VARIABLE:
     case CHARCTER:
+    case KEYWORD:
         return text;
     case STRING:
         ret = "\"";

@@ -16,6 +16,7 @@ public:
     enum
     {
         IDENTIFIER,
+        KEYWORD,
         VARIABLE,
         BOOLEAN,
         NUMBER,
