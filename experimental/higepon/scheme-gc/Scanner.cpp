@@ -72,7 +72,67 @@ SToken* Scanner::getToken()
     {
         c = readChar();
     }
+    if (isLetter(c) || isSpecialInitial(c) || c == '+' || c == '-' | c == '.')
+    {
+        String text;
+        text += c;
+        for (;;)
+        {
+            c = readChar();
+            if (isDelimiter(c)) break;
+            text += c;
+        }
+//         if (text == "+" || text == "-" || text == "...")
+//         {
+//             for (int i = text.size() - 1; i >= 0; i--)
+//             {
+//                 unReadChar(text[i]);
+//             }
+//             goto other;
+//         }
 
+        if ((text.startWith("+") || text.startWith("-")) && text.size() > 1)
+        {
+            for (int i =0; i < text.size(); i++)
+            {
+                unReadChar(text[i]);
+            }
+            goto other;
+        }
+        else if (text.startWith("...") && text.size() > 3)
+        {
+            for (int i =0; i < text.size(); i++)
+            {
+                unReadChar(text[i]);
+            }
+            goto other;
+        }
+        else if (text == ".")
+        {
+            unReadChar(text[0]);
+            goto other;
+        }
+
+        if (isSynaticKeyword(text))
+        {
+            token = new SToken(SToken::IDENTIFIER);
+            token->text = text;
+            return token;
+        }
+        else
+        {
+            token = new SToken(SToken::VARIABLE);
+            token->text = text;
+            return token;
+        }
+
+    }
+    else
+    {
+        unReadChar(c);
+    }
+other:
+    c = readChar();
     switch(c)
     {
     case '|':
@@ -81,7 +141,7 @@ SToken* Scanner::getToken()
         return new SToken(SToken::SINGLE_QUOTE);
     case '.':
         return new SToken(SToken::PERIOD);
-    defautl:
+    default:
         break;
     }
 
@@ -148,8 +208,8 @@ SToken* Scanner::getToken()
         }
     }
     // <string> => "<sring element>*"
-    // <string element> => <any character other than " or \>
-    //                   | \" | \\
+    // <string element> => <any character other than " or backslash>
+    //                   | backslash" | backslash
     else if (c == '\"')
     {
         String text;
@@ -204,6 +264,33 @@ void Scanner::unReadChar(char c)
     reader_->unReadChar(c);
 }
 
+bool Scanner::isLetter(char c)
+{
+    return 'a' <= c && c <= 'z';
+}
+
+bool Scanner::isSpecialInitial(char c)
+{
+    switch(c)
+    {
+    case '!':
+    case '$':
+    case '%':
+    case '&':
+    case '*':
+    case '/':
+    case ':':
+    case '<':
+    case '=':
+    case '>':
+    case '?':
+    case '_':
+    case '~':
+        return true;
+    default:
+        return false;
+    }
+}
 
 bool Scanner::isSpace(char c)
 {
@@ -218,4 +305,18 @@ bool Scanner::isDelimiter(char c)
 bool Scanner::isDigit(char c)
 {
     return '0' <= c && c <= '9';
+}
+
+bool Scanner::isExpressionKeyword(const String& s)
+{
+    return s == "quote" || s == "lambda" || s == "if"   || s == "set!"
+        || s == "begin" || s == "cond"   || s == "and"  || s == "or"
+        || s == "case"  || s == "let"    || s == "let*" || s == "letrec"
+        || s == "do"    || s == "delay"  || s == "quasiquote";
+}
+
+bool Scanner::isSynaticKeyword(const String& s)
+{
+    return s == "else" || s == "define" || s == "unquote"
+        || s == "unquote-splicing" || isExpressionKeyword(s);
 }

@@ -1,4 +1,24 @@
 -
+ - abc def
+ - VARIABLE
+ - abc
+ - VARIABLE
+ - def
+-
+ - #t +
+ - BOOLEAN
+ - #t
+ - VARIABLE
+ - +
+-
+ - - #f ...
+ - VARIABLE
+ - -
+ - BOOLEAN
+ - #f
+ - VARIABLE
+ - ...
+-
  - #t
  - BOOLEAN
  - #t
@@ -58,4 +78,3 @@
  - ,@
  - VECTOR_START
  - #(
-

@@ -18,6 +18,8 @@ String SToken::typeString()
     {
     case IDENTIFIER:
         return "IDENTIFIER";
+    case VARIABLE:
+        return "VARIABLE";
     case CHARCTER:
         return "CHARCTER";
     case STRING:
@@ -41,7 +43,7 @@ String SToken::typeString()
     case NUMBER:
         return "NUMBER";
     default:
-        fprintf(stderr, "unknown token\n");
+        fprintf(stderr, "unknown token[%d]\n", type);
         return "";
     };
 }
@@ -53,6 +55,7 @@ String SToken::valueString()
     switch(type)
     {
     case IDENTIFIER:
+    case VARIABLE:
     case CHARCTER:
         return text;
     case STRING:
@@ -80,7 +83,7 @@ String SToken::valueString()
         sprintf(buf, "%d", text.data());
         return buf;
     default:
-        fprintf(stderr, "unknown token\n");
+        fprintf(stderr, "unknown token[%d]\n", type);
         return "";
     };
 }

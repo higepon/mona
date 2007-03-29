@@ -22,4 +22,5 @@ char StringReader::readChar()
 void StringReader::unReadChar(char c)
 {
     position_--;
+    text_.set(position_, c);
 }

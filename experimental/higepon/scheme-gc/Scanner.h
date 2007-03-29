@@ -22,8 +22,12 @@ protected:
     char readChar();
     void unReadChar(char c);
     bool isSpace(char c);
+    bool isLetter(char c);
+    bool isSpecialInitial(char c);
     bool isDelimiter(char c);
     bool isDigit(char c);
+    bool isExpressionKeyword(const ::util::String& s);
+    bool isSynaticKeyword(const ::util::String& s);
     Reader* reader_;
 };
 
