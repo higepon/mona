@@ -16,8 +16,16 @@ public:
 
 protected:
     Object* parseDatum();
+    Object* parseSimpleDatum();
+    Object* parseCompoundDatum();
+    Object* parseVector();
+    Object* parseList();
+
+    SToken* nextToken();
+    int tokenType();
 
     Scanner* scanner_;
+    SToken* token_;
 
 };
 

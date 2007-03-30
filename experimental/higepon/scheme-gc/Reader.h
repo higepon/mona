@@ -8,6 +8,8 @@ namespace monash {
 class Reader
 {
 public:
+    Reader() {}
+    virtual ~Reader() {}
     virtual char readChar() = 0;
     virtual void unReadChar(char c) = 0;
 };
