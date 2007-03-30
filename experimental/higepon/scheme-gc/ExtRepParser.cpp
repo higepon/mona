@@ -26,23 +26,6 @@ SToken* ExtRepParser::nextToken()
 
 // private
 
-
-// <simple datum> => <boolean> | <number> | <character> | <string>
-//                   | <symbol>
-
-// <symbol> => <identifier>
-
-// <compound datum> => <list> | <vector>
-
-// <list> => (<datum>*) | (<datum>+ . <datum>) | <abbreviation>
-
-// <abbreviation> => <abbrev prefix> <datum>
-
-// <abbrev prefix> => ' | ` | , | ,@
-
-// <vector> => #(<datum>*)
-
-
 // <datum> => <simple datum> | <compound datum>
 // <simple datum> => <boolean> | <number> | <character> | <string>
 //                 | <symbol>
