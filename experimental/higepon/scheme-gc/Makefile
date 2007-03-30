@@ -52,6 +52,7 @@ Vector.cpp\
 Scanner.cpp\
 SToken.cpp\
 StringReader.cpp\
+ExtRepParser.cpp\
 load.cpp\
 scheme.cpp
 

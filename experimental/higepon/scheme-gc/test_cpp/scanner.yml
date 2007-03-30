@@ -1,9 +1,87 @@
 -
+ - 100
+ - NUMBER
+ - 100
+-
+ - -100
+ - NUMBER
+ - -100
+-
+ - (a)
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - a
+ - RIGHT_PAREN
+ - )
+-
+ - (a b) ; this is comment
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - a
+ - VARIABLE
+ - b
+ - RIGHT_PAREN
+ - )
+ - COMMENT
+ -  this is comment
+-
+ - (a   )
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - a
+ - RIGHT_PAREN
+ - )
+-
+ - (
+ - LEFT_PAREN
+ - (
+-
+ - )
+ - RIGHT_PAREN
+ - )
+-
+ - ()
+ - LEFT_PAREN
+ - (
+ - RIGHT_PAREN
+ - )
+-
+ - ( )
+ - LEFT_PAREN
+ - (
+ - RIGHT_PAREN
+ - )
+-
+ - ((()
+ - LEFT_PAREN
+ - (
+ - LEFT_PAREN
+ - (
+ - LEFT_PAREN
+ - (
+ - RIGHT_PAREN
+ - )
+-
  - ... abc
  - VARIABLE
  - ...
  - VARIABLE
  - abc
+-
+ - (+ 100 3)
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - +
+ - NUMBER
+ - 100
+ - NUMBER
+ - 3
+ - RIGHT_PAREN
+ - )
 -
  - abc def
  - VARIABLE
@@ -33,10 +111,6 @@
  - STRING
  - "test"
 -
- - |
- - PIPE
- - |
--
  - '
  - SINGLE_QUOTE
  - '
@@ -44,6 +118,22 @@
  - .
  - PERIOD
  - .
+-
+ - (.)
+ - LEFT_PAREN
+ - (
+ - PERIOD
+ - .
+ - RIGHT_PAREN
+ - )
+-
+ - (...)
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - ...
+ - RIGHT_PAREN
+ - )
 -
  - ,
  - CAMMA
@@ -61,13 +151,19 @@
  - STRING
  - "\test"
 -
- - #t . #\a "this is test" , test else '#\b #\space | ,@ #(
+ - ((#t . #\a) "this is test" , test else 100 '#\b #\space ( ,@ #()
+ - LEFT_PAREN
+ - (
+ - LEFT_PAREN
+ - (
  - BOOLEAN
  - #t
  - PERIOD
  - .
  - CHARCTER
  - a
+ - RIGHT_PAREN
+ - )
  - STRING
  - "this is test"
  - CAMMA
@@ -76,15 +172,33 @@
  - test
  - KEYWORD
  - else
+ - NUMBER
+ - 100
  - SINGLE_QUOTE
  - '
  - CHARCTER
  - b
  - CHARCTER
  - space
- - PIPE
- - |
+ - LEFT_PAREN
+ - (
  - CAMMA_AT
  - ,@
  - VECTOR_START
  - #(
+ - RIGHT_PAREN
+ - )
+-
+ - '(a . b)
+ - SINGLE_QUOTE
+ - '
+ - LEFT_PAREN
+ - (
+ - VARIABLE
+ - a
+ - PERIOD
+ - .
+ - VARIABLE
+ - b
+ - RIGHT_PAREN
+ - )

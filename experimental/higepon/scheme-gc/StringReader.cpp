@@ -21,6 +21,7 @@ char StringReader::readChar()
 
 void StringReader::unReadChar(char c)
 {
+    if (c == EOF) return;
     position_--;
     text_.set(position_, c);
 }

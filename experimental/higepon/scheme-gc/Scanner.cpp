@@ -24,7 +24,7 @@ Scanner::~Scanner()
 //
 // <token> => <identifier> | <boolean> | <number>
 //          | <charcter> | <string>
-//          | (|) | #( | ' | ` | , | ,@ | .
+//          | ( | ) | #( | ' | ` | , | ,@ | .
 SToken* Scanner::getToken()
 {
     char c = readChar();
@@ -47,7 +47,7 @@ SToken* Scanner::getToken()
     //
     // <special subsequent> => + | - | . | @
     //
-    //   <peculiar identifier> => + | - | ...
+    // <peculiar identifier> => + | - | ...
     if (isLetter(c) || isSpecialInitial(c) || c == '+' || c == '-' | c == '.')
     {
         String text;
@@ -55,12 +55,16 @@ SToken* Scanner::getToken()
         for (;;)
         {
             c = readChar();
-            if (isDelimiter(c)) break;
+            if (isDelimiter(c))
+            {
+                unReadChar(c);
+                break;
+            }
             text += c;
         }
         if ((text.startWith("+") || text.startWith("-")) && text.size() > 1)
         {
-            for (int i =0; i < text.size(); i++)
+            for (int i = (int)text.size() - 1; i >= 0 ; i--)
             {
                 unReadChar(text[i]);
             }
@@ -68,7 +72,7 @@ SToken* Scanner::getToken()
         }
         else if (text.startWith("...") && text.size() > 3)
         {
-            for (int i =0; i < text.size(); i++)
+            for (int i = (int)text.size() - 1; i >= 0 ; i--)
             {
                 unReadChar(text[i]);
             }
@@ -102,8 +106,10 @@ other:
     c = readChar();
     switch(c)
     {
-    case '|':
-        return new SToken(SToken::PIPE);
+    case '(':
+        return new SToken(SToken::LEFT_PAREN);
+    case ')':
+        return new SToken(SToken::RIGHT_PAREN);
     case '\'':
         return new SToken(SToken::SINGLE_QUOTE);
     case '.':
@@ -112,8 +118,22 @@ other:
         break;
     }
 
+    // <coomment> => ; <all subsequent characters up to a line break>
+    if (c == ';')
+    {
+        String comment;
+        for (;;)
+        {
+            c = readChar();
+            if (c == '\n' || c == EOF) break;
+            comment += c;
+        }
+        token = new SToken(SToken::COMMENT);
+        token->text = comment;
+        return token;
+    }
     // , | ,@
-    if (c == ',')
+    else if (c == ',')
     {
         c =readChar();
         if (c == '@')
@@ -153,7 +173,11 @@ other:
             for (;;)
             {
                 c = readChar();
-                if (isDelimiter(c)) break;
+                if (isDelimiter(c))
+                {
+                    unReadChar(c);
+                    break;
+                }
                 text += c;
             }
 
@@ -216,7 +240,25 @@ other:
     // <num 10> =>  <complex 10>
     else if (c == '+' || c == '-' || isDigit(c))
     {
-        int sign = c == '-' ?  -1 : 1;
+        String text;
+        text += c;
+        for (;;)
+        {
+            c = readChar();
+            if (isDelimiter(c))
+            {
+                unReadChar(c);
+                break;
+            }
+            else if (!isDigit(c))
+            {
+                SYNTAX_ERROR("invalid number");
+            }
+            text += c;
+        }
+        token = new SToken(SToken::NUMBER);
+        token->integer = atoi(text.data());
+        return token;
     }
 }
 
@@ -265,7 +307,7 @@ bool Scanner::isSpace(char c)
 
 bool Scanner::isDelimiter(char c)
 {
-    return isSpace(c) || c == '|' || c == '\"' || c == ';' || c == EOF;
+    return isSpace(c) || c == '(' || c == ')' || c == '\"' || c == ';' || c == EOF;
 }
 
 bool Scanner::isDigit(char c)

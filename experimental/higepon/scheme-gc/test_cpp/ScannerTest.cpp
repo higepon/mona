@@ -47,7 +47,7 @@ void ScannerTest::testScaner()
             else
             {
                 char buf[256];
-                sprintf(buf, "expected <%s %s> : but got <%s %s>\n", type->data(), value->data(), token->typeString().data(), token->valueString().data());
+                sprintf(buf, "test case [%s] expected <%s %s> : but got <%s %s>\n", s->get(0)->data(),type->data(), value->data(), token->typeString().data(), token->valueString().data());
                 CPPUNIT_ASSERT_MESSAGE(buf, false);
             }
         }

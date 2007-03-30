@@ -15,6 +15,9 @@ public:
 
     enum
     {
+        COMMENT,
+        LEFT_PAREN,
+        RIGHT_PAREN,
         IDENTIFIER,
         KEYWORD,
         VARIABLE,
@@ -22,7 +25,6 @@ public:
         NUMBER,
         CHARCTER,
         STRING,
-        PIPE,
         VECTOR_START,
         SINGLE_QUOTE,
         BACK_QUOTE,

@@ -16,6 +16,12 @@ String SToken::typeString()
 {
     switch(type)
     {
+    case COMMENT:
+        return "COMMENT";
+    case LEFT_PAREN:
+        return "LEFT_PAREN";
+    case RIGHT_PAREN:
+        return "RIGHT_PAREN";
     case IDENTIFIER:
         return "IDENTIFIER";
     case KEYWORD:
@@ -26,8 +32,6 @@ String SToken::typeString()
         return "CHARCTER";
     case STRING:
         return "STRING";
-    case PIPE:
-        return "PIPE";
     case VECTOR_START:
         return "VECTOR_START";
     case SINGLE_QUOTE:
@@ -56,6 +60,7 @@ String SToken::valueString()
     char buf[32];
     switch(type)
     {
+    case COMMENT:
     case IDENTIFIER:
     case VARIABLE:
     case CHARCTER:
@@ -66,8 +71,10 @@ String SToken::valueString()
         ret += text;
         ret += "\"";
         return ret;
-    case PIPE:
-        return "|";
+    case RIGHT_PAREN:
+        return ")";
+    case LEFT_PAREN:
+        return "(";
     case VECTOR_START:
         return "#(";
     case SINGLE_QUOTE:
@@ -83,7 +90,7 @@ String SToken::valueString()
     case BOOLEAN:
         return integer == 1 ? "#t" : "#f";
     case NUMBER:
-        sprintf(buf, "%d", text.data());
+        sprintf(buf, "%d", integer);
         return buf;
     default:
         fprintf(stderr, "unknown token[%d]\n", type);
