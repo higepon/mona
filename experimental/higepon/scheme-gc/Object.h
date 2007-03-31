@@ -64,6 +64,7 @@ public:
     bool isVariable() const { return type() == VARIABLE; }
     bool isValues() const { return type() == VALUES; }
     bool isNil() const { return type() == NIL; }
+    bool isEof() const { return type() == SEOF; }
 public:
 
     enum
@@ -100,6 +101,7 @@ public:
         FALSE,
         UNDEF,
         NIL,
+        SEOF,
     };
 };
 

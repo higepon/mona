@@ -6,9 +6,9 @@ using namespace monash;
 
 #include "primitive_procedures.h"
 
-void registerPrimitives(Environment* env)
+void const_init()
 {
-    g_defaultOutputPort = new OutputPort(stdout);
+   g_defaultOutputPort = new OutputPort(stdout);
     g_defaultInputPort  = new InputPort(stdin);
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
@@ -20,17 +20,23 @@ void registerPrimitives(Environment* env)
     g_undef = new Undef;
     g_no_arg = new Objects;
     g_nil = new Nil;
+    g_eof = new Eof;
+}
 
+void registerPrimitives(Environment* env)
+{
+
+    const_init(); 
 #include "register.inc"
+    env->defineVariable(new Variable("#f"),             g_false);
+    env->defineVariable(new Variable("#t"),             g_true);
+    env->defineVariable(new Variable("set!"),           new Set());
 
 
 //     for (int i = 0; i < procedures.size(); i++)
 //     {
 //         env->defineVariable(procedures[i].first, procedures[i].second);
 //     }
-    env->defineVariable(new Variable("#f"),             g_false);
-    env->defineVariable(new Variable("#t"),             g_true);
-    env->defineVariable(new Variable("set!"),           new Set());
 }
 
 SExp* objectToSExp(Object* o)

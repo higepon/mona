@@ -53,6 +53,7 @@ Scanner.cpp\
 SToken.cpp\
 StringReader.cpp\
 ExtRepParser.cpp\
+Eof.cpp\
 load.cpp\
 scheme.cpp
 
@@ -77,7 +78,8 @@ test_cpp/yaml.cpp\
 test_cpp/MacroMatchTest.cpp\
 test_cpp/MacroFilterTest.cpp\
 test_cpp/QuoteFilterTest.cpp\
-test_cpp/ScannerTest.cpp
+test_cpp/ScannerTest.cpp\
+test_cpp/ExtRepParserTest.cpp
 
 LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
 

@@ -132,11 +132,26 @@ Pair::~Pair()
     }
     else if (cdr_->isNil())
     {
-        return carString;
+        if (inList)
+        {
+            return carString;
+        }
+        else
+        {
+            return "(" + carString + ")";
+        }
     }
     else
     {
-        return "(" + carString + " . " + cdrString + ")";
+        if (inList)
+        {
+        return carString + " . " + cdrString;
+        }
+        else
+        {
+            return "(" + carString + " . " + cdrString + ")";
+        }
+
     }
 }
 

@@ -28,6 +28,7 @@ Scanner::~Scanner()
 SToken* Scanner::getToken()
 {
     char c = readChar();
+    if (c == EOF) return NULL;
     SToken* token;
     while (isSpace(c))
     {
@@ -274,7 +275,7 @@ void Scanner::unReadChar(char c)
 
 bool Scanner::isLetter(char c)
 {
-    return 'a' <= c && c <= 'z';
+    return ('a' <= c && c <= 'z') || ('A' <= c && c<= 'Z');
 }
 
 bool Scanner::isSpecialInitial(char c)

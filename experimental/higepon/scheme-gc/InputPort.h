@@ -2,11 +2,13 @@
 #define __INPUT_PORT_H__
 
 #include "Object.h"
+#include "Reader.h"
 #include "Charcter.h"
+#include "scheme.h"
 
 namespace monash {
 
-class InputPort : public Object
+class InputPort : public Object , public Reader
 {
 public:
     InputPort(FILE* stream, uint32_t lineno = 0);
@@ -20,10 +22,12 @@ public:
     virtual Object* eval(Environment* env);
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
-    virtual Charcter* readCharacter();
-    virtual Charcter* peekCharacter();
+    virtual Object* readCharacter();
+    virtual Object* peekCharacter();
     virtual void close();
     virtual bool charReady();
+    virtual char readChar();
+    virtual void unReadChar(char c);
 
 protected:
     FILE* stream_;

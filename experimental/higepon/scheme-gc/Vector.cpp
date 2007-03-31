@@ -41,7 +41,14 @@ bool Vector::set(uint32_t index, Object* o)
 
 ::util::String Vector::toString()
 {
-    return "vector";
+    ::util::String ret = "#(";
+    for (int i = 0; i < values_->size(); i++)
+    {
+        ret += values_->get(i)->toString();
+        if (i != values_->size() - 1) ret += " ";
+    }
+    ret += ")";
+    return ret;
 }
 
 ::util::String Vector::toStringValue()

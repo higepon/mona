@@ -444,6 +444,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class Read : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    Read()  : procedureName_("read") {}
+    virtual ~Read() {}
+
+    virtual ::util::String toString() {    return "procedure:""read";}
+    virtual ::util::String typeString() const { return "read"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class ReadChar : public PrimitiveProcedure
 {
 private:

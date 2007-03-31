@@ -48,6 +48,7 @@ namespace util {
 #include "InputPort.h"
 #include "Values.h"
 #include "Nil.h"
+#include "Eof.h"
 #include "RiteralConstant.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
@@ -58,6 +59,7 @@ namespace util {
 namespace monash {
 class DynamicWind;
 class Pair;
+class InputPort;
 typedef ::util::Vector<DynamicWind*> DynamicWinds;
 typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 
@@ -65,12 +67,14 @@ typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 
 ::util::String load(const char* file);
 void registerPrimitives(monash::Environment* env);
+void const_init();
 monash::SExp* objectToSExp(monash::Object* o);
 monash::SExp* pairToSExp(monash::Pair* p);
 
-class monash::InputPort;
+
 GLOBAL monash::True* g_true;
 GLOBAL monash::False* g_false;
+GLOBAL monash::Eof* g_eof;
 GLOBAL monash::Undef* g_undef;
 GLOBAL monash::Nil* g_nil;
 GLOBAL monash::Objects* g_no_arg;
@@ -92,6 +96,7 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
 #define SCM_UNDEF  g_undef
 #define SCM_NO_ARG g_no_arg
 #define SCM_NIL    g_nil
+#define SCM_EOF    g_eof
 
 // notice!
 // don't use like below

@@ -24,6 +24,7 @@ env->defineVariable(new Variable("open-input-port"), new OpenInputPort());
 env->defineVariable(new Variable("current-output-port"), new CurrentOutputPort());
 env->defineVariable(new Variable("current-input-port"), new CurrentInputPort());
 env->defineVariable(new Variable("write-char"), new WriteChar());
+env->defineVariable(new Variable("read"), new Read());
 env->defineVariable(new Variable("read-char"), new ReadChar());
 env->defineVariable(new Variable("peek-char"), new PeekChar());
 env->defineVariable(new Variable("write"), new Write());

@@ -139,4 +139,41 @@
                                    (assert-check-true "char-ready?"
                                                       (not (char-ready?))
                                                       (char-ready? port))))
+
+;; read / write number
+(call-with-output-file "test/read_write_tmp" (lambda (port)
+                                               (write 10 port)))
+(call-with-input-file "test/read_write_tmp" (lambda (port)
+                                              (assert-check-true "read number"
+                                               (= 10 (eval (read port) (scheme-report-environment 5)))
 )))
+
+;; read /write string
+(call-with-output-file "test/read_write_tmp" (lambda (port)
+                                               (write "test" port)))
+(call-with-input-file "test/read_write_tmp" (lambda (port)
+                                              (assert-check-true
+                                               "read string"
+                                               (string=? "test" (eval (read port) (scheme-report-environment 5)))
+)))
+
+;; read / write charcter and symbol
+(define xyz "xyz-string")
+(call-with-output-file "test/read_write_tmp" (lambda (port)
+                                               (write #\c port)
+                                               (write-char #\space port)
+                                               (write (string->symbol "xyz") port)))
+(call-with-input-file "test/read_write_tmp" (lambda (port)
+                                              (assert-check-true
+                                               "read charcter and symbol"
+                                               (char=? #\c (eval (read port) (scheme-report-environment 5)))
+                                               (string=? "xyz-string" (eval (read port) (scheme-report-environment 5)))
+)))
+
+;; read / write procedure call
+(call-with-output-file "test/read_write_tmp" (lambda (port)
+                                               (write '(+ 2 3) port)))
+(call-with-input-file "test/read_write_tmp" (lambda (port)
+                                              (assert-check-true
+                                               "read procedure call"
+                                               (= 5 (eval (read port) (scheme-report-environment 5))))))

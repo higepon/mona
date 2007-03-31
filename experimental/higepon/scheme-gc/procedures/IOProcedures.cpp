@@ -1,5 +1,6 @@
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
+#include "ExtRepParser.h"
 using namespace util;
 using namespace std;
 using namespace monash;
@@ -100,8 +101,7 @@ PROCEDURE(OutputPortP, "output-port?")
 PROCEDURE(EOFObjectP, "eof-object?")
 {
     ARGC_SHOULD_BE(1);
-    CAST_RETURN_FALSE(ARGV(0), Charcter, c);
-    RETURN_BOOLEAN(c->value() == EOF);
+    RETURN_BOOLEAN(ARGV(0)->isEof());
 }
 
 PROCEDURE(CloseInputPort, "close-input-port")
@@ -172,6 +172,24 @@ PROCEDURE(WriteChar, "write-char")
     CAST(ARGV(0), Charcter, c);
     port->writeCharacter(c);
     return SCM_UNDEF;
+}
+
+PROCEDURE(Read, "read")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    InputPort* port;
+    if (ARGC == 0)
+    {
+        port = g_currentInputPort;
+    }
+    else
+    {
+        CAST(ARGV(0), InputPort, p);
+        port = p;
+    }
+    Scanner* scanner = new Scanner(port);
+    ExtRepParser parser(scanner);
+    return parser.parse();
 }
 
 PROCEDURE(ReadChar, "read-char")

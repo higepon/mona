@@ -38,18 +38,41 @@ bool InputPort::eq(Object* o)
     return eqv(o);
 }
 
-Charcter* InputPort::readCharacter()
-{
-#ifdef USE_MONA_GC
-    return new(false) Charcter(fgetc(stream_));
-#else
-    return new Charcter(fgetc(stream_));
-#endif
-}
-
-Charcter* InputPort::peekCharacter()
+Object* InputPort::readCharacter()
 {
     char c = fgetc(stream_);
+    if (c == EOF)
+    {
+        return SCM_EOF;
+    }
+    else
+    {
+#ifdef USE_MONA_GC
+        return new(false) Charcter(c);
+#else
+        return new Charcter(c);
+#endif
+    }
+}
+
+char InputPort::readChar()
+{
+    return fgetc(stream_);
+}
+
+void InputPort::unReadChar(char c)
+{
+    ungetc(c, stream_);
+}
+
+
+Object* InputPort::peekCharacter()
+{
+    char c = fgetc(stream_);
+    if (c == EOF)
+    {
+        return SCM_EOF;
+    }
     Charcter* ret = new Charcter(c);
     ungetc(c, stream_);
     return ret;

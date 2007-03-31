@@ -13,12 +13,12 @@ Nil::~Nil()
 
 String Nil::toString()
 {
-    return "nil";
+    return "()";
 }
 
 String Nil::toStringValue()
 {
-    return "nil";
+    return "()";
 }
 
 int Nil::type() const

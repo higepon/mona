@@ -31,6 +31,17 @@ SToken* ExtRepParser::nextToken()
 //                 | <symbol>
 Object* ExtRepParser::parseDatum()
 {
+    if (token_ == NULL) return SCM_EOF;
+
+    else if (token_->type == SToken::COMMENT)
+    {
+        for (;;)
+        {
+            nextToken();
+            if (token_->type != SToken::COMMENT) break;
+        }
+    }
+
     switch(token_->type)
     {
     case SToken::BOOLEAN:
@@ -169,9 +180,11 @@ Object* ExtRepParser::parseList()
                         p = tmp;
                     }
                 }
+                return start;
             }
             else if (token_->type == SToken::RIGHT_PAREN)
             {
+                if (objects->size() == 0) return SCM_NIL;
                 Pair* start = new Pair(SCM_NIL, SCM_NIL);
                 Pair* p = start;
                 for (int i = 0; i < objects->size(); i++)
@@ -194,11 +207,13 @@ Object* ExtRepParser::parseList()
     }
     else
     {
+        // <abbreviation> => <abbrev prefix> <datum>
+        // <abbrev prefix> => ' | ` | , | ,@
         switch(token_->type)
         {
         case SToken::SINGLE_QUOTE:
-            break;
-
+            nextToken();
+            return new Pair(new RiteralConstant("quote"), new Pair(parseDatum(), SCM_NIL));
         case SToken::BACK_QUOTE:
         case SToken::CAMMA:
         case SToken::CAMMA_AT:
