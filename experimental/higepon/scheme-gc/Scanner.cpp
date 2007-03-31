@@ -21,6 +21,17 @@ Scanner::~Scanner()
 
 }
 
+::util::String Scanner::getFileName()
+{
+    return reader_->getFileName();
+}
+
+int Scanner::getLineNo()
+{
+    return reader_->getLineNo();
+}
+
+
 //
 // <token> => <identifier> | <boolean> | <number>
 //          | <charcter> | <string>
@@ -260,6 +271,11 @@ other:
         token = new SToken(SToken::NUMBER);
         token->integer = atoi(text.data());
         return token;
+    }
+    else if (c == EOF)
+    {
+        return NULL;
+        printf("%s %s:%d[%c]\n", __func__, __FILE__, __LINE__, c);fflush(stdout);// debug
     }
 }
 

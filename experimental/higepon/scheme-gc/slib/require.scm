@@ -51,12 +51,13 @@
   (or (and vicinity name
 	   (let ((path (in-vicinity vicinity name)))
 	     (and (file-exists? path)
+              (begin (display path)
 		  (call-with-input-file path
 		    (lambda (port)
 		      (do ((expr (read port) (read port))
 			   (lst '() (cons expr lst)))
 			  ((eof-object? expr)
-			   (apply append lst))))))))
+			   (apply append lst)))))))))
       '()))
 (display "************6\n")
 ;@
@@ -79,14 +80,15 @@
   (if (not *catalog*)
       (let ((slibcat (catalog:try-read (implementation-vicinity) "slibcat")))
 	(cond ((not (catalog/require-version-match? slibcat))
-	       (slib:load-source (in-vicinity (library-vicinity) "mklibcat"))
+	       (begin (display "slib:load-source") (slib:load-source (in-vicinity (library-vicinity) "mklibcat"))
+                                                                (display "slib:load-source end$$$"))
 	       (set! slibcat
-		     (catalog:try-read (implementation-vicinity) "slibcat"))))
+		     (catalog:try-read (implementation-vicinity) "slibcat")) (display "set donemmmmmmmmmmmmmmm\n") ))
 	(cond (slibcat
-	       (set! *catalog* ((slib:eval
+	       (begin (display "set!set!")(set! *catalog* ((slib:eval
 				 (cadr (or (assq 'catalog:filter slibcat)
 					   '(#f identity))))
-				slibcat))))
+				slibcat)))))
 	(and (home-vicinity)
 	     (set! *catalog*
 		   (append (catalog:try-read (home-vicinity) "homecat")
@@ -236,7 +238,7 @@
 (define report:print
   (lambda args
     (for-each (lambda (x) (write x) (display #\space)) args)
-    (newline)))
+    (display "report:print end")(newline)))
 ;@
 (display "************7\n")
 (define slib:report
@@ -250,6 +252,7 @@
 	     (slib:report)
 	     (transcript-off))
 	    ((slib:provided? 'with-file)
+         (display "*****************with-file")
 	     (with-output-to-file (car args) slib:report))
 	    (else (slib:report))))))
 (display "************8\n")
@@ -258,7 +261,8 @@
   (lambda ()
     (report:print
      'SLIB *slib-version* 'on (scheme-implementation-type)
-     (scheme-implementation-version) 'on (software-type))))
+     (scheme-implementation-version) 'on (software-type))
+    (display "slib:report-version*****\n")))
 (display "************9\n")
 (define slib:report-locations
   (let ((features slib:features))
@@ -282,14 +286,22 @@
            (write x) (set! i (+ -1 i)))
          slib:features))
       (newline)
+      (display "before siv catalog\n")
+      (display "sit=")
+      (display sit)
+      (newline)
+      (display "siv=")
+      (display siv)
       (report:print sit siv '*CATALOG* ':)
+      (display "before catalog:get")
       (catalog:get #f)
+      (display "catalog:get")
       (cond ((pair? args)
              (for-each (lambda (x) (display slib:tab) (report:print x))
                        *catalog*))
             (else (display slib:tab) (report:print (car *catalog*))
                   (display slib:tab) (report:print '...)))
-      (newline))))
+      (newline) (display "*************** end **********"))))
 (display "************10\n")
 (let ((siv (scheme-implementation-version)))
   (cond ((zero? (string-length siv)))

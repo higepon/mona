@@ -141,7 +141,7 @@ PROCEDURE(OpenInputPort, "open-input-port")
     {
         RAISE_ERROR(s->lineno(), "couldn't open input file: %s", s->value().data());
     }
-    return new InputPort(stream, lineno());
+    return new InputPort(s->value(), stream, lineno());
 }
 
 PROCEDURE(CurrentOutputPort, "current-output-port")

@@ -294,4 +294,5 @@
 
 (load "test/danny_dube.scm")
 (load "slib/Template.scm")
-;(slib:report)
+(slib:report)
+

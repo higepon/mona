@@ -152,9 +152,15 @@ PROCEDURE(Exit, "exit")
 PROCEDURE(Apply, "apply")
 {
     ARGC_SHOULD_BE_GT(1);
+    Objects* tmp = new Objects;
+    if (ARGC == 2 && ARGV(1)->isNil())
+    {
+        tmp->add(ARGV(1));
+        return Kernel::apply(ARGV(0), tmp, env);
+    }
     CAST(ARGV(ARGC - 1), Pair, p);
     Objects* os = pairToObjects(p);
-    Objects* tmp = new Objects;
+
     for(int i = 1; i < ARGC -1; i++)
     {
         tmp->add(ARGV(i));

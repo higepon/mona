@@ -111,6 +111,7 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
     if (g_transcript != NULL && (__file == __out || __file == __err))   \
     {                                                                   \
         fprintf(g_transcript, __VA_ARGS__);                             \
+        fflush(g_transcript);                                           \
     }                                                                   \
 }
 

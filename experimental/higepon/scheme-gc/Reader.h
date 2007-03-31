@@ -12,6 +12,8 @@ public:
     virtual ~Reader() {}
     virtual char readChar() = 0;
     virtual void unReadChar(char c) = 0;
+    virtual ::util::String getFileName() = 0;
+    virtual int getLineNo() = 0;
 };
 
 }; // namespace monash

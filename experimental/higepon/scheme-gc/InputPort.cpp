@@ -3,7 +3,7 @@
 using namespace util;
 using namespace monash;
 
-InputPort::InputPort(FILE* stream, uint32_t lineno) : stream_(stream), lineno_(lineno)
+InputPort::InputPort(const String& fileName, FILE* stream, uint32_t lineno) : fileName_(fileName), stream_(stream), lineno_(lineno), fileLineNo_(1)
 {
 }
 
@@ -41,6 +41,7 @@ bool InputPort::eq(Object* o)
 Object* InputPort::readCharacter()
 {
     char c = fgetc(stream_);
+    if (c == '\n') fileLineNo_++;
     if (c == EOF)
     {
         return SCM_EOF;
@@ -57,11 +58,14 @@ Object* InputPort::readCharacter()
 
 char InputPort::readChar()
 {
-    return fgetc(stream_);
+    char c = fgetc(stream_);
+    if (c == '\n') fileLineNo_++;
+    return c;
 }
 
 void InputPort::unReadChar(char c)
 {
+    if (c == '\n') fileLineNo_--;
     ungetc(c, stream_);
 }
 
@@ -98,4 +102,14 @@ bool InputPort::charReady()
     retval = select(fileno(stream_) + 1, &rfds, NULL, NULL, &tv);
     if (-1 == retval) return false;
     return retval != 0;
+}
+
+::util::String InputPort::getFileName()
+{
+    return fileName_;
+}
+
+int InputPort::getLineNo()
+{
+    return fileLineNo_;
 }

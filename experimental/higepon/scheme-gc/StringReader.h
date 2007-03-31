@@ -12,10 +12,13 @@ public:
     virtual ~StringReader();
     virtual char readChar();
     virtual void unReadChar(char c);
+    virtual ::util::String getFileName();
+    virtual int getLineNo();
 
 protected:
     ::util::String text_;
     int position_;
+    int lineno_;
 };
 
 }; // namespace monash

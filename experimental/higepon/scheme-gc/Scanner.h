@@ -17,6 +17,8 @@ public:
     virtual ~Scanner();
 
     SToken* getToken();
+    ::util::String getFileName();
+    int getLineNo();
 
 protected:
     char readChar();

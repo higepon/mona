@@ -126,6 +126,10 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         uint32_t args_length = as->size();
         if (params_length != args_length)
         {
+            for (int i = 0; i < args_length; i++)
+            {
+                printf("as=%s\n", as->get(i)->toString().data());
+            }
             RAISE_ERROR(lineno(), "procedure got %d argument(s), but required %d", args_length, params_length);
             return NULL;
         }

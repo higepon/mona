@@ -11,7 +11,7 @@ namespace monash {
 class InputPort : public Object , public Reader
 {
 public:
-    InputPort(FILE* stream, uint32_t lineno = 0);
+    InputPort(const ::util::String& fileName, FILE* stream, uint32_t lineno = 0);
     virtual ~InputPort();
 
 public:
@@ -28,10 +28,14 @@ public:
     virtual bool charReady();
     virtual char readChar();
     virtual void unReadChar(char c);
+    virtual ::util::String getFileName();
+    virtual int getLineNo();
 
 protected:
+    ::util::String fileName_;
     FILE* stream_;
     uint32_t lineno_;
+    int fileLineNo_;
 
 };
 

@@ -2,7 +2,7 @@
 
 using namespace monash;
 
-#define SYNTAX_ERROR(...) printf(__VA_ARGS__);fflush(stdout);
+#define SYNTAX_ERROR(...) printf(__VA_ARGS__);printf(" at %s:%d\n", scanner_->getFileName().data(), scanner_->getLineNo());fflush(stdout);
 
 ExtRepParser::ExtRepParser(Scanner* scanner) : scanner_(scanner)
 {

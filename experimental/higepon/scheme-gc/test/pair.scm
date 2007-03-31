@@ -97,6 +97,10 @@
 (let* ((a (cons 2 3)))
   (assert-check-true "member"
                      (member (cons 2 3) (list a 'b))))
+
+
+
+
 ;; (let* ((l (list 1 2)) (l2 (append l 3)))
 ;;   (assert-check-true "append"
 ;;                       (= 1 (list-ref l 0))))

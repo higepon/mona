@@ -23,7 +23,7 @@
 ;;@ (implementation-vicinity) should be defined to be the pathname of
 ;;; the directory where any auxillary files to your Scheme
 ;;; implementation reside.
-(define (implementation-vicinity) "/home/taro/scheme")
+(define (implementation-vicinity) "/home/taro/scheme/")
 ;;   (case (software-type)
 ;;     ((unix)	"/home/taro/scheme")
 ;;     ((vms)	"scheme$src:")
@@ -362,8 +362,12 @@
 ;;; suffix all the module files in SLIB have.  See feature 'SOURCE.
 ;(define (slib:load-source f) (load (string-append f ".scm")))
 (define (slib:load-source f)
+  (display "slib:load-source start**********\n")
+  (display f)
   (begin
-    (load (string-append f ".scm"))))
+    (load (string-append f ".scm"))
+    (display "slib:load-source end ************\n")
+    ))
 
 
 ;;@ (SLIB:LOAD-COMPILED "foo") should load the file that was produced

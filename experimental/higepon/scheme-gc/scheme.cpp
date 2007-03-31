@@ -9,7 +9,7 @@ using namespace monash;
 void const_init()
 {
    g_defaultOutputPort = new OutputPort(stdout);
-    g_defaultInputPort  = new InputPort(stdin);
+   g_defaultInputPort  = new InputPort("stdin", stdin);
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript = NULL;
@@ -118,6 +118,14 @@ SExp* pairToSExp(Pair* p)
         {
             Pair* p = (Pair*)o;
             sexp->sexps.add(::objectToSExp(p->getCar()));
+            if (!p->getCdr()->isPair() && !p->getCdr()->isNil())
+            {
+                SExp* s = new SExp(SExp::SYMBOL);
+                s->text = ".";
+                sexp->sexps.add(s);
+                sexp->sexps.add(::objectToSExp(p->getCdr()));
+                break;
+            }
             o = p->getCdr();
         }
         else
