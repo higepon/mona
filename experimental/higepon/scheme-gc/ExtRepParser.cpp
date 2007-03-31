@@ -131,5 +131,80 @@ Object* ExtRepParser::parseVector()
 // <abbrev prefix> => ' | ` | , | ,@
 Object* ExtRepParser::parseList()
 {
+    // (<datum>*) | (<datum>+ . <datum>)
+    if (token_->type == SToken::LEFT_PAREN)
+    {
+        Objects* objects = new Objects;
+        for (;;)
+        {
+            nextToken();
+            if (token_->type == SToken::PERIOD)
+            {
+                nextToken();
+                Object* o = parseDatum();
+                nextToken();
+                if (token_->type != SToken::RIGHT_PAREN)
+                {
+                    SYNTAX_ERROR("invalid list, . position is wrong");
+                    return NULL;
+                }
+                if (objects->size() == 0)
+                {
+                    SYNTAX_ERROR("invalid list, . position is wrong");
+                    return NULL;
+                }
+                Pair* start = new Pair(SCM_NIL, SCM_NIL);
+                Pair* p = start;
+                for (int i = 0; i < objects->size(); i++)
+                {
+                    p->setCar(objects->get(i));
+                    if (i == objects->size() - 1)
+                    {
+                        p->setCdr(o);
+                    }
+                    else
+                    {
+                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
+                        p->setCdr(tmp);
+                        p = tmp;
+                    }
+                }
+            }
+            else if (token_->type == SToken::RIGHT_PAREN)
+            {
+                Pair* start = new Pair(SCM_NIL, SCM_NIL);
+                Pair* p = start;
+                for (int i = 0; i < objects->size(); i++)
+                {
+                    p->setCar(objects->get(i));
+                    if (i != objects->size() -1)
+                    {
+                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
+                        p->setCdr(tmp);
+                        p = tmp;
+                    }
+                }
+                return start;
+            }
+            else
+            {
+                objects->add(parseDatum());
+            }
+        }
+    }
+    else
+    {
+        switch(token_->type)
+        {
+        case SToken::SINGLE_QUOTE:
+            break;
+
+        case SToken::BACK_QUOTE:
+        case SToken::CAMMA:
+        case SToken::CAMMA_AT:
+            SYNTAX_ERROR("soory not supported\n");
+            return NULL;
+        }
+    }
     return NULL;
 }
