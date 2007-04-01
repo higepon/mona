@@ -292,7 +292,13 @@
        (if pred (begin d ...)
            (begin command ... (loop c)))))))
 
+;; for test
+;; (define-syntax unquote
+;;   (syntax-rules ()
+;;     ((_ a) 
+;;      (eval a (scheme-report-environment 5)))))
+
 (load "test/danny_dube.scm")
-(load "slib/Template.scm")
-(slib:report)
+;(load "slib/Template.scm")
+;(slib:report)
 

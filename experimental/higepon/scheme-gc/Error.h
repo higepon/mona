@@ -42,7 +42,8 @@ public:
     Error::raise(lineno, __FILE__, __LINE__, __func__, __VA_ARGS__); \
     /* NOTREACHED */
 
-#define RETURN_ON_ERROR()                \
+#define RETURN_ON_ERROR(f)               \
+    Error::file = f;                     \
                                          \
     if (setjmp(Error::returnPoint) != 0) \
     {                                    \

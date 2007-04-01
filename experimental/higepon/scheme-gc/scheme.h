@@ -46,6 +46,8 @@ namespace util {
 #include "Error.h"
 #include "OutputPort.h"
 #include "InputPort.h"
+#include "StringReader.h"
+#include "Scanner.h"
 #include "Values.h"
 #include "Nil.h"
 #include "Eof.h"
@@ -122,5 +124,61 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
         fprintf(g_transcript, __VA_ARGS__);                     \
     }                                                           \
 }
+
+#define SCM_APPLY1(name, e, ret, arg1)             \
+{                                                  \
+    Object* proc = (new Variable(name))->eval(e);  \
+    Objects* args = new Objects;                   \
+    args->add(arg1);                               \
+    ret = Kernel::apply(proc, args, e);            \
+}
+
+#define SCM_EVAL(proc, e, ret, arg1)               \
+{                                                  \
+    Objects* args = new Objects;                   \
+    args->add(arg1);                               \
+    args->add(e);                                  \
+    ret = Kernel::apply(proc, args, e);            \
+}
+
+// (a b . c)
+#define SCM_LIST_CONS(objects, o, ret, lineno)              \
+{                                                           \
+    ret = new Pair(SCM_NIL, SCM_NIL, lineno);               \
+    Pair* p = ret;                                          \
+    for (int i = 0; i < objects->size(); i++)               \
+    {                                                       \
+        p->setCar(objects->get(i));                         \
+        if (i == objects->size() - 1)                       \
+        {                                                   \
+            p->setCdr(o);                                   \
+        }                                                   \
+        else                                                \
+        {                                                   \
+            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, lineno); \
+            p->setCdr(tmp);                                 \
+            p = tmp;                                        \
+        }                                                   \
+    }                                                       \
+}
+
+// (a b c)
+#define SCM_LIST(objects, ret, lineno)                      \
+{                                                           \
+    ret = new Pair(SCM_NIL, SCM_NIL, lineno);               \
+    Pair* p = ret;                                          \
+    for (int i = 0; i < objects->size(); i++)               \
+    {                                                       \
+        p->setCar(objects->get(i));                         \
+        if (i != objects->size() - 1)                       \
+        {                                                   \
+            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, lineno); \
+            p->setCdr(tmp);                                 \
+            p = tmp;                                        \
+        }                                                   \
+    }                                                       \
+}
+
+
 
 #endif // __SCHEME_H__

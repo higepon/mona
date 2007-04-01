@@ -2,7 +2,7 @@
 
 using namespace util;
 using namespace monash;
-
+#define SYNTAX_ERROR(...) printf(__VA_ARGS__);fflush(stdout);
 // #define N(n)         (sexp->sexps[n])
 // #define NN(i, j)     sexp->sexps[i]->sexps[j]
 // #define NNN(i, j, k) sexp->sexps[i]->sexps[j]->sexps[k]
@@ -15,6 +15,52 @@ Translator::Translator() : inLambda_(false)
 
 Translator::~Translator()
 {
+}
+
+Object* Translator::translate2(Object* data)
+{
+    if (data->isRiteralConstant())
+    {
+        RiteralConstant* r = (RiteralConstant*)data;
+        return new Variable(r->text());
+    }
+    else
+    {
+        return data;
+    }
+
+    return NULL;
+}
+
+Object* Translator::translateBegin2(Pair* data)
+{
+    Object* ocar = data->getCar();
+    if (!ocar->isRiteralConstant())
+    {
+        SYNTAX_ERROR("begin");
+        return NULL;
+    }
+    RiteralConstant* r = (RiteralConstant*)ocar;
+    if (r->text() != "begin")
+    {
+        SYNTAX_ERROR("begin");
+        return NULL;
+    }
+    Objects* body = new Objects;
+    Pair* pair;
+    for (Object* p = data->getCdr(); !p->isNil();)
+    {
+        if (!p->isPair())
+        {
+            SYNTAX_ERROR("begin");
+            return NULL;
+        }
+        pair = (Pair*)p;
+        body->add(translate2(pair->getCar()));
+        p = pair->getCdr();
+    }
+    return new Begin(body);
+
 }
 
 // change from externel representation to Scheme objects

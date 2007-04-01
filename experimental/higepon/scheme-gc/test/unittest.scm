@@ -57,6 +57,7 @@
                       "OK: "
                       "FAILED: "))
           (total-successes (- *total-assertions* *total-failures*)))
+          (display "####\n")
       (for-each display
                 (list
                  header
@@ -172,8 +173,8 @@
 
 ;; ;; SigScheme and Gauche surely returns #<eof>
 ;; (define eof
-;;   (lambda ()
-;;     (string-read "")))
+;;    (lambda ()
+;;      (string-read "")))
 
 ;; (define obj->literal
 ;;   (lambda (obj)

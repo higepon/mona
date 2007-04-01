@@ -39,6 +39,9 @@ public:
         SUCCESS
     };
 
+    Object* translateBegin2(Pair* data);
+    Object* translate2(Object* data);
+
     int translateAsData(SExp* sexp, Object** object);
     int translate(SExp** sexp, Object** object);
     int translateDefineSyntax(SExp* sexp);

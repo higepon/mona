@@ -63,6 +63,18 @@ SExp* objectToSExp(Object* o)
         sexp->text = c->stringValue();
 
     }
+    else if (o->isVector())
+    {
+        sexp = new SExp(SExp::SEXPS, o->lineno());
+        Vector* v = (Vector*)o;
+        SExp* vectorStart = new SExp(SExp::SYMBOL, o->lineno());
+        vectorStart->text = "vector";
+        sexp->sexps.add(vectorStart);
+        for (int i = 0; i < v->size(); i++)
+        {
+            sexp->sexps.add(objectToSExp(v->get(i)));
+        }
+    }
     else if (o->isSString())
     {
         sexp = new SExp(SExp::STRING, o->lineno());
@@ -97,6 +109,11 @@ SExp* objectToSExp(Object* o)
         sexp = new SExp(SExp::SYMBOL, o->lineno());
         sexp->text = "#f";
     }
+//     else if (o->isEof())
+//     {
+//         sexp = new SExp(SExp::SYMBOL, o->lineno());
+//         sexp->text = "eof";
+//     }
     else
     {
         RAISE_ERROR(o->lineno(), "objectToSExp error %s\n", o->typeString().data());

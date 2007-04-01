@@ -31,16 +31,10 @@ void Error::exitOnError()
 
 void Error::returnOnError()
 {
-//begin:
-    
-//    if (setjmp(returnPoint) != 0)
     if (cont_save(&cont) != 0)
     {
-    
         showError();
-        //        goto begin;
     }
-
 }
 
 void Error::showErrorAndExit()
@@ -52,7 +46,7 @@ void Error::showErrorAndExit()
 
 void Error::showError()
 {
-    SCHEME_WRITE(stderr, "error: %s\n", error.data());
+    SCHEME_WRITE(stderr, "error: %s %s:%d\n", error.data(), file.data(), lineno);
     SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
 }
 

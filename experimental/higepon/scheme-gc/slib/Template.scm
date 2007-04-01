@@ -243,13 +243,14 @@
 ;; If your implementation provides R4RS macros:
 ;(define macro:eval slib:eval)
 ;(define macro:load load)
-(define *defmacros*
-  (list (cons 'defmacro
-	      (lambda (name parms . body)
-		`(set! *defmacros* (cons (cons ',name (lambda ,parms ,@body))
-					 *defmacros*))))))
+;; (define *defmacros*
+;;   (list (cons 'defmacro
+;; 	      (lambda (name parms . body)
+;; 		`(set! *defmacros* (cons (cons ',name (lambda ,parms ,@body))
+;; 					 *defmacros*))))))
 ;@
-(define (defmacro? m) (and (assq m *defmacros*) #t))
+;;(define (defmacro? m) (and (assq m *defmacros*) #t))
+(define (defmacro? m) #f)
 ;@
 (define (macroexpand-1 e)
   (if (pair? e)

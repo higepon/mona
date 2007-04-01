@@ -1,5 +1,6 @@
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
+#include "scheme.h"
 #include "ExtRepParser.h"
 using namespace util;
 using namespace std;
@@ -284,6 +285,22 @@ PROCEDURE(Load, "load")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
 
+#if 1
+    // don't use env, use g_top_env instead !
+    Environment* environment = g_top_env;
+    Object* port;
+    SCM_APPLY1("open-input-port", environment, port, s);
+    CAST(port, InputPort, inputPort);
+    Scanner* scanner = new Scanner(inputPort);
+    ExtRepParser parser(scanner);
+    Object* evalFunc = (new Variable("eval"))->eval(environment);
+    for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
+    {
+        Object* evaluated;
+        SCM_EVAL(evalFunc, env, evaluated, sexp);
+    }
+
+#else
     // don't use env, use g_top_env instead !
     Environment* environment = g_top_env;
     String path  = s->value();
@@ -313,4 +330,5 @@ PROCEDURE(Load, "load")
         o = Kernel::apply(evalFunc, args, environment);
     }
     return o;
+#endif
 }

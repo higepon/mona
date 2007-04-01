@@ -27,6 +27,7 @@ protected:
     bool isLetter(char c);
     bool isSpecialInitial(char c);
     bool isDelimiter(char c);
+    bool isDelimiterWithoutCommentStart(char c);
     bool isDigit(char c);
     bool isExpressionKeyword(const ::util::String& s);
     bool isSynaticKeyword(const ::util::String& s);

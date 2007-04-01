@@ -185,7 +185,7 @@ other:
             for (;;)
             {
                 c = readChar();
-                if (isDelimiter(c))
+                if (isDelimiterWithoutCommentStart(c))
                 {
                     unReadChar(c);
                     break;
@@ -205,7 +205,7 @@ other:
             }
             else
             {
-                SYNTAX_ERROR("invalide character #\\%s", text.data());
+                SYNTAX_ERROR("invalide character #\\<%s>", text.data());
             }
             break;
         }
@@ -230,9 +230,13 @@ other:
                 {
                     text += "\"";
                 }
+                else if (c == 'n')
+                {
+                    text += "\n";
+                }
                 else
                 {
-                    SYNTAX_ERROR("invalid character in string");
+                    SYNTAX_ERROR("invalid character in string<%c>", c);
                 }
             }
             else if (c == '\"')
@@ -319,12 +323,17 @@ bool Scanner::isSpecialInitial(char c)
 
 bool Scanner::isSpace(char c)
 {
-    return c == ' ' || c == '\n' || c == '\r';
+    return c == ' ' || c == '\n' || c == '\r' || c == '\t';
 }
 
 bool Scanner::isDelimiter(char c)
 {
-    return isSpace(c) || c == '(' || c == ')' || c == '\"' || c == ';' || c == EOF;
+    return c == ';' || isDelimiterWithoutCommentStart(c);
+}
+
+bool Scanner::isDelimiterWithoutCommentStart(char c)
+{
+    return isSpace(c) || c == '(' || c == ')' || c == '\"' || c == EOF;
 }
 
 bool Scanner::isDigit(char c)

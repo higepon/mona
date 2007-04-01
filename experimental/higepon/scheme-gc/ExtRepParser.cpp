@@ -3,6 +3,8 @@
 using namespace monash;
 
 #define SYNTAX_ERROR(...) printf(__VA_ARGS__);printf(" at %s:%d\n", scanner_->getFileName().data(), scanner_->getLineNo());fflush(stdout);
+#define NEW(symbol, value) new symbol(value, scanner_->getLineNo())
+#define NEW2(symbol, v1, v2) new symbol(v1, v2, scanner_->getLineNo())
 
 ExtRepParser::ExtRepParser(Scanner* scanner) : scanner_(scanner)
 {
@@ -23,7 +25,6 @@ SToken* ExtRepParser::nextToken()
     return (token_ = scanner_->getToken());
 }
 
-
 // private
 
 // <datum> => <simple datum> | <compound datum>
@@ -31,13 +32,16 @@ SToken* ExtRepParser::nextToken()
 //                 | <symbol>
 Object* ExtRepParser::parseDatum()
 {
-    if (token_ == NULL) return SCM_EOF;
-
+    if (token_ == NULL)
+    {
+        return SCM_EOF;
+    }
     else if (token_->type == SToken::COMMENT)
     {
         for (;;)
         {
             nextToken();
+            if (token_ == NULL) return SCM_EOF;
             if (token_->type != SToken::COMMENT) break;
         }
     }
@@ -65,27 +69,27 @@ Object* ExtRepParser::parseSimpleDatum()
     case SToken::BOOLEAN:
         if (token_->integer == 1)
         {
-            return new True;
+            return SCM_TRUE;
         }
         else
         {
-            return new False;
+            return SCM_FALSE;
         }
     case SToken::NUMBER:
-        return new Number(token_->integer);
+        return NEW(Number, token_->integer);
         break;
     case SToken::CHARCTER:
-        return new Charcter("#\\" + token_->text);
+        return NEW(Charcter, "#\\" + token_->text);
     case SToken::STRING:
-        return new SString(token_->text);
+        return NEW(SString, token_->text);
     case SToken::VARIABLE:
     case SToken::KEYWORD:
-        return new RiteralConstant(token_->text);
+        return NEW(RiteralConstant, token_->text);
     default:
         SYNTAX_ERROR("invalid simple datum %s:%s\n", token_->typeString().data(), token_->valueString().data());
         break;
     }
-    return NULL;
+    return SCM_EOF;
 }
 
 // <compound datum> => <list> | <vector>
@@ -108,7 +112,7 @@ Object* ExtRepParser::parseCompoundDatum()
     default:
         SYNTAX_ERROR("list or vector should be here, but got %s %s", token_->typeString().data(), token_->valueString().data());
     }
-    return NULL;
+    return SCM_EOF;
 }
 
 // <vector> => #(<datum>*)
@@ -117,7 +121,7 @@ Object* ExtRepParser::parseVector()
     if (token_->type != SToken::VECTOR_START)
     {
         SYNTAX_ERROR("vector expected, but got %s %s", token_->typeString().data(), token_->valueString().data());
-        return NULL;
+        return SCM_EOF;
     }
     Objects* objects = new Objects;
     for (;;)
@@ -129,7 +133,7 @@ Object* ExtRepParser::parseVector()
         }
         objects->add(parseDatum());
     }
-    Vector* v = new Vector(objects->size());
+    Vector* v = NEW(Vector, objects->size());
     for (uint32_t i = 0; i < objects->size(); i++)
     {
         v->set(i, objects->get(i));
@@ -149,6 +153,16 @@ Object* ExtRepParser::parseList()
         for (;;)
         {
             nextToken();
+            if (token_->type == SToken::COMMENT)
+            {
+                for (;;)
+                {
+                    nextToken();
+                    if (token_ == NULL) return SCM_EOF;
+                    if (token_->type != SToken::COMMENT) break;
+                }
+            }
+
             if (token_->type == SToken::PERIOD)
             {
                 nextToken();
@@ -164,40 +178,18 @@ Object* ExtRepParser::parseList()
                     SYNTAX_ERROR("invalid list, . position is wrong");
                     return NULL;
                 }
-                Pair* start = new Pair(SCM_NIL, SCM_NIL);
-                Pair* p = start;
-                for (int i = 0; i < objects->size(); i++)
-                {
-                    p->setCar(objects->get(i));
-                    if (i == objects->size() - 1)
-                    {
-                        p->setCdr(o);
-                    }
-                    else
-                    {
-                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
-                        p->setCdr(tmp);
-                        p = tmp;
-                    }
-                }
-                return start;
+
+                Pair* ret;
+                // (objects[0], objects[1] ... . o)
+                SCM_LIST_CONS(objects, o, ret, scanner_->getLineNo());
+                return ret;
             }
             else if (token_->type == SToken::RIGHT_PAREN)
             {
                 if (objects->size() == 0) return SCM_NIL;
-                Pair* start = new Pair(SCM_NIL, SCM_NIL);
-                Pair* p = start;
-                for (int i = 0; i < objects->size(); i++)
-                {
-                    p->setCar(objects->get(i));
-                    if (i != objects->size() -1)
-                    {
-                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
-                        p->setCdr(tmp);
-                        p = tmp;
-                    }
-                }
-                return start;
+                Pair* ret;
+                SCM_LIST(objects, ret, scanner_->getLineNo());
+                return ret;
             }
             else
             {
@@ -213,10 +205,11 @@ Object* ExtRepParser::parseList()
         {
         case SToken::SINGLE_QUOTE:
             nextToken();
-            return new Pair(new RiteralConstant("quote"), new Pair(parseDatum(), SCM_NIL));
+            return NEW2(Pair, new RiteralConstant("quote"), new Pair(parseDatum(), SCM_NIL));
+        case SToken::CAMMA_AT:
         case SToken::BACK_QUOTE:
         case SToken::CAMMA:
-        case SToken::CAMMA_AT:
+
             SYNTAX_ERROR("soory not supported\n");
             return NULL;
         }

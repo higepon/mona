@@ -18,9 +18,9 @@
 #include <time.h>
 #include <sys/time.h>    // rlimit
 #include <sys/resource.h> // rlimit
+#include "ExtRepParser.h"
 using namespace util;
 using namespace monash;
-
 
 uint32_t count_char(const char* s, char c)
 {
@@ -48,7 +48,7 @@ void input_loop()
     uint32_t close_paren_count = 0;
     bool show_prompt = true;
 
-    RETURN_ON_ERROR();
+    RETURN_ON_ERROR("stdin");
 //        Error::returnOnError();
     String input = "(load \"test/scheme.scm\")";
 
@@ -82,6 +82,20 @@ void input_loop()
         {
             input = quoteFilter.filter(input);
             TRANSCRIPT_WRITE(input.data());
+
+#if 1
+            StringReader* reader = new StringReader(input);
+            Scanner* scanner = new Scanner(reader);
+            ExtRepParser parser(scanner);
+            Object* evalFunc = (new Variable("eval"))->eval(env);
+            for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
+            {
+                Object* evaluated;
+                SCM_EVAL(evalFunc, env, evaluated, sexp);
+                SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
+            }
+
+#else
             input = String("(") + input + " )";
             SExp* allSExp = SExp::fromString(input);
             SExps sexps = allSExp->sexps;
@@ -105,6 +119,7 @@ void input_loop()
                 SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
 
             }
+#endif
                     open_paren_count = 0;
                     close_paren_count = 0;
                     show_prompt = true;
@@ -121,6 +136,7 @@ void input_loop()
     }
 
 }
+
 int main(int argc, char *argv[])
 {
 #ifdef USE_MONA_GC
@@ -149,7 +165,6 @@ int main(int argc, char *argv[])
 
     QuoteFilter quoteFilter;
     input = quoteFilter.filter(input);
-//    printf("%s", input.data());
     Error::exitOnError();
     Error::file = argv[1];
 
@@ -159,15 +174,23 @@ int main(int argc, char *argv[])
     g_top_env = env;
     registerPrimitives(env);
 
+#if 1
+    StringReader* reader = new StringReader(input);
+    Scanner* scanner = new Scanner(reader);
+    ExtRepParser parser(scanner);
+    Object* evalFunc = (new Variable("eval"))->eval(env);
+    for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
+    {
+        Object* evaluated;
+        SCM_EVAL(evalFunc, env, evaluated, sexp);
+    }
+#else
+
     input = "(" + input + " )";
     SExp* allSExp = SExp::fromString(input);
 
     SExps sexps = allSExp->sexps;
 
-//     printf("%s\n", allSExp->toZSExp()->toString().data());
-
-// load
-//    sexp->execLoadSyntaxes();
     for (int i = 0; i < sexps.size(); i++)
     {
         SExp* sexp = sexps.get(i);
@@ -183,24 +206,7 @@ int main(int argc, char *argv[])
         // let's eval!
         object->eval(env);
 
-//         Objects* args = new Objects;
-//         for (Continuation* c = popContinuation(); c != NULL; c = popContinuation())
-//         {
-//             Object* o = c->object;
-//             o = o->eval(env);
-//             if (o->isCompoundProcedure() || o->isPrimitiveProcedure())
-//             {
-//                 Object*ret = Scheme::apply(o, args, env, NULL);
-//
-//                 printf("[ret]%s\n", ret->toString().data());
-//             }
-//             else
-//             {
-//                 args->add(o);
-//             }
-//         }
-
     }
-
+#endif
     return 0;
 }
