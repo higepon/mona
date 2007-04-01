@@ -131,7 +131,7 @@
 	eval				;R5RS two-argument eval
 	values				;R5RS multiple values
 	dynamic-wind			;R5RS dynamic-wind
-	macro				;R5RS high level macros
+;	macro				;R5RS high level macros
 	delay				;has DELAY and FORCE
 	multiarg-apply			;APPLY can take more than 2 args.
 	char-ready?
