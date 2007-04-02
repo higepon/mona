@@ -18,6 +18,7 @@
 #include "LetAsterisk.h"
 #include "Macro.h"
 #include "SExp.h"
+#include "Pair.h"
 
 namespace monash {
 
@@ -39,7 +40,7 @@ public:
         SUCCESS
     };
 
-    Object* translateBegin2(Pair* data);
+//    Object* translateBegin2(Pair* data);
     Object* translate2(Object* data);
 
     int translateAsData(SExp* sexp, Object** object);

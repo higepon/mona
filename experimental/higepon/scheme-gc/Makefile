@@ -4,14 +4,14 @@ REGISTERS_INC = ./register.inc
 PROCEDURES_H  = ./primitive_procedures.h
 
 CXXFLAGS = -pg -g -idirafter . -Wall -W $(GC_CFLAGS) #-DMACRO_TRACE
-CFLAGS   = $(CXXFLAGS) -j2
+CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 
 #include Makefile.boehm_gc.inc
-#include Makefile.mona_gc.inc
+include Makefile.mona_gc.inc
 
 # たまに これで make checkする
-include Makefile.none_gc.inc
+#include Makefile.none_gc.inc
 
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\

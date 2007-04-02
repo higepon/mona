@@ -32,36 +32,36 @@ Object* Translator::translate2(Object* data)
     return NULL;
 }
 
-Object* Translator::translateBegin2(Pair* data)
-{
-    Object* ocar = data->getCar();
-    if (!ocar->isRiteralConstant())
-    {
-        SYNTAX_ERROR("begin");
-        return NULL;
-    }
-    RiteralConstant* r = (RiteralConstant*)ocar;
-    if (r->text() != "begin")
-    {
-        SYNTAX_ERROR("begin");
-        return NULL;
-    }
-    Objects* body = new Objects;
-    Pair* pair;
-    for (Object* p = data->getCdr(); !p->isNil();)
-    {
-        if (!p->isPair())
-        {
-            SYNTAX_ERROR("begin");
-            return NULL;
-        }
-        pair = (Pair*)p;
-        body->add(translate2(pair->getCar()));
-        p = pair->getCdr();
-    }
-    return new Begin(body);
+// Object* Translator::translateBegin2(Pair* data)
+// {
+//     Object* ocar = data->getCar();
+//     if (!ocar->isRiteralConstant())
+//     {
+//         SYNTAX_ERROR("begin");
+//         return NULL;
+//     }
+//     RiteralConstant* r = (RiteralConstant*)ocar;
+//     if (r->text() != "begin")
+//     {
+//         SYNTAX_ERROR("begin");
+//         return NULL;
+//     }
+//     Objects* body = new Objects;
+//     Pair* pair;
+//     for (Object* p = data->getCdr(); !p->isNil();)
+//     {
+//         if (!p->isPair())
+//         {
+//             SYNTAX_ERROR("begin");
+//             return NULL;
+//         }
+//         pair = (Pair*)p;
+//         body->add(translate2(pair->getCar()));
+//         p = pair->getCdr();
+//     }
+//     return new Begin(body);
 
-}
+// }
 
 // change from externel representation to Scheme objects
 int Translator::translateAsData(SExp* sexp, Object** object)

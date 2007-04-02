@@ -38,7 +38,8 @@ void input_loop()
     QuoteFilter quoteFilter;
     MacroFilter f;
     Translator translator;
-    Environment* env = new Environment(f, translator);ASSERT(env);
+    Environment* env = new Environment(f, translator);
+    ASSERT(env);
     g_top_env = env;
     registerPrimitives(env);
 
@@ -49,7 +50,6 @@ void input_loop()
     bool show_prompt = true;
 
     RETURN_ON_ERROR("stdin");
-//        Error::returnOnError();
     String input = "(load \"test/scheme.scm\")";
 
     input = quoteFilter.filter(input);
