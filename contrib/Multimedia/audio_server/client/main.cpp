@@ -31,21 +31,34 @@ int main(int argc, char *argv[])
 	_printf("Result: %d\n", msg.arg2);
 
 	struct audio_server_buffer_info bi;
-	bi.pointer = malloc(44100);
-	bi.size = 44100;
+	monapi_cmemoryinfo *mi;
+	mi = monapi_cmemoryinfo_new();
+	if( !monapi_cmemoryinfo_create(mi, 44100, MONAPI_TRUE) )
+	{
+		monapi_cmemoryinfo_delete(mi); return -1;
+	}
 	for( int i = 0 ; i < 44100/2 ; i++ )
 	{
-		if( i % 20 < 10 ) ((short*)bi.pointer)[i] = 200;
-		else ((short*)bi.pointer)[i] = -200;
+		if( i % 20 < 10 ) ((short*)mi->Data)[i] = 200;
+		else ((short*)mi->Data)[i] = -200;
 	}
+	bi.handle = mi->Handle;
+	bi.size = mi->Size;
 	memcpy(str, &bi, sizeof(bi));
+	_printf("%x\n", bi.handle);
+	printf("I will set a buffer...\n");
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
 
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
-	sleep(1000);
+	while(1);
+
+	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, ReleaseChannel, ch);
 	_printf("Channel was released.\n");
+
+	monapi_cmemoryinfo_dispose(mi);
+	monapi_cmemoryinfo_delete(mi);
 
 	return 0;
 }

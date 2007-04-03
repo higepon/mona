@@ -1,5 +1,6 @@
 #include <Audio.h>
 #include <monapi/Message.h>
+#include <monapi/cmemoryinfo.h>
 #include <stdint.h>
 #include <string.h>
 #include "servers/audio.h"
@@ -18,7 +19,7 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::AllocateChannel,
 	&ServerCommand::PrepareChannel,
 	&ServerCommand::StartChannel,
-	&ServerCommand::Nop,
+	&ServerCommand::StopChannel,
 	&ServerCommand::ReleaseChannel,
 	&ServerCommand::Nop,
 	&ServerCommand::Nop,
@@ -91,20 +92,20 @@ int ServerCommand::ReleaseChannel(MessageInfo *msg)
 int ServerCommand::SetBuffer(MessageInfo *msg)
 {
 	struct audio_server_buffer_info bufinfo;
-	void *p;
+	monapi_cmemoryinfo *mi;
 	std::vector<struct driver_desc*>::iterator it;
 	it = parent->drivers->begin();
+	dprintf("msg->str = %x\n", msg->str);
+	dprintf("dmabuf = %x\n", parent->dmabuf);
 	memcpy(&bufinfo, msg->str, sizeof(bufinfo));
-	if( bufinfo.isDMA != 0 ) /* It's true. */
-	{
-		p = (void*)bufinfo.pointer;
-	}
-	else
-	{
-		memcpy(parent->dmabuf, (void*)bufinfo.pointer, bufinfo.size);
-		p = parent->dmabuf;
-	}
-	(*it)->set_buffer(msg->arg2, bufinfo.pointer, bufinfo.size);
+
+	mi = monapi_cmemoryinfo_new();
+	mi->Handle = bufinfo.handle;
+	mi->Size = bufinfo.size;
+	monapi_cmemoryinfo_map(mi);
+
+	memcpy(parent->dmabuf, (void*)mi->Data, bufinfo.size);
+	(*it)->set_buffer(msg->arg2, parent->dmabuf, bufinfo.size);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
@@ -115,5 +116,15 @@ int ServerCommand::StartChannel(MessageInfo *msg)
 	it = parent->drivers->begin();
 	(*it)->start_channel(msg->arg2, 1);
 	MonAPI::Message::reply(msg, 0);
+	return 0;
+}
+
+int ServerCommand::StopChannel(MessageInfo *msg)
+{
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	(*it)->stop_channel(msg->arg2);
+	MonAPI::Message::reply(msg, 0);
+	return 0;
 }
 

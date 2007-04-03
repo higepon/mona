@@ -52,9 +52,8 @@ struct audio_server_channel_info
 struct audio_server_buffer_info
 {
 	int32_t channel;
-	void *pointer;		/* A pointer of the buffer. */
-	size_t size;		/* A size of the buffer, */
-	int32_t isDMA;		/* This is used as a boolean. 1=TRUE */
+	int32_t handle;
+	int32_t size;
 };
 
 #endif

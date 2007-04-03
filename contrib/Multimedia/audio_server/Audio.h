@@ -63,5 +63,6 @@ public:
 	int ReleaseChannel(MessageInfo*);
 	int SetBuffer(MessageInfo*);
 	int StartChannel(MessageInfo*);
+	int StopChannel(MessageInfo*);
 };
 

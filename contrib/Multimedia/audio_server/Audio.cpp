@@ -21,12 +21,12 @@ Audio::Audio()
 	drivers_hash = new std::map<char*, int>;
 	commander = new ServerCommand(this);
 //	stream = new Stream;
-	dmabuf = monapi_allocate_dma_memory(0xFFFF);
+	dmabuf = monapi_allocate_dma_memory(0x10000);
 }
 
 Audio::~Audio()
 {
-	monapi_deallocate_dma_memory(dmabuf, 0xFFFF);
+	monapi_deallocate_dma_memory(dmabuf, 0x10000);
 //	delete stream;
 	delete commander;
 	delete drivers_hash;
@@ -101,9 +101,11 @@ foundDevice:
 int Audio::messageLoop()
 {
 	std::vector<struct driver_desc*>::iterator it = drivers->begin();
-	for( MessageInfo msg ;; )
+	MessageInfo msg;
+	while(1)
 	{
 		if( MonAPI::Message::receive(&msg) ) continue;
+		dprintf("#Audio: msg.header = %x\n", msg.header);
 		switch(msg.header)
 		{
 			case MSG_AUDIO_SERVER_COMMAND:
@@ -114,6 +116,7 @@ int Audio::messageLoop()
 			}
 			case MSG_INTERRUPTED:
 			{
+				dputs("#Aduio: MSG_ITERRUPTED");
 				while( it != drivers->end() )
 				{
 					(*it)->emit_interrupted();
