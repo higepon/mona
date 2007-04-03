@@ -2,8 +2,12 @@
 #define __NUMBER_H__
 
 #include "Object.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef MONA
+#define snprintf(a, b, ...) sprintf(a, __VA_ARGS__)
+#endif
 
 namespace monash {
 

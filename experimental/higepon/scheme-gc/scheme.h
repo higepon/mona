@@ -9,7 +9,6 @@
 #define GLOBAL_VAL(v) /* */
 #endif
 
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>

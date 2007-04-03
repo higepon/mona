@@ -8,54 +8,12 @@ CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 
 #include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+#include Makefile.mona_gc.inc
 
 # たまに これで make checkする
-#include Makefile.none_gc.inc
+include Makefile.none_gc.inc
 
-SOURCES = $(PROCEDURE_SOURCES) \
-Application.cpp\
-Assignment.cpp\
-Begin.cpp\
-Charcter.cpp\
-Cond.cpp\
-Definition.cpp\
-Environment.cpp\
-Error.cpp\
-Frame.cpp\
-Lambda.cpp\
-Let.cpp\
-NamedLet.cpp\
-LetAsterisk.cpp\
-Macro.cpp\
-MacroFilter.cpp\
-Number.cpp\
-Continuation.cpp\
-Object.cpp\
-Pair.cpp\
-OutputPort.cpp\
-InputPort.cpp\
-Values.cpp\
-Parser.cpp\
-Procedure.cpp\
-RiteralConstant.cpp\
-Nil.cpp\
-QuoteFilter.cpp\
-SExp.cpp\
-Kernel.cpp\
-SpecialIf.cpp\
-SString.cpp\
-Tokenizer.cpp\
-Translator.cpp\
-Variable.cpp\
-Vector.cpp\
-Scanner.cpp\
-SToken.cpp\
-StringReader.cpp\
-ExtRepParser.cpp\
-Eof.cpp\
-load.cpp\
-scheme.cpp
+include Makefile.src.inc
 
 PROCEDURE_SOURCES =\
 procedures/CharcterProcedures.cpp\
@@ -81,11 +39,12 @@ test_cpp/QuoteFilterTest.cpp\
 test_cpp/ScannerTest.cpp\
 test_cpp/ExtRepParserTest.cpp
 
-LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
 
 OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
-LIBCONT_OBJECTS = $(LIBCONT_SOURCES:.c=.o) libcont/mysetjmp_asm.o
+
+include Makefile.libcont.inc
+
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 all : $(TARGET) $(TEST_TARGET)
 
@@ -95,8 +54,6 @@ $(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS
 $(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS)
 	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
 
-libcont/mysetjmp_asm.o: libcont/mysetjmp.asm
-	nasm $< -o $@ -felf -g -F stabs
 
 check : $(TEST_TARGET) $(TARGET)
 	$(TEST_TARGET)

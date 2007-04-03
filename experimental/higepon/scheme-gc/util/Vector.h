@@ -5,7 +5,7 @@
 #include "gc_cpp.h"
 #include "gc_allocator.h"
 extern bool g_gc_initialized;
-#else
+#elif defined(USE_MONA_GC)
 extern bool g_gc_initialized;
 #include "../gc3/gc.h"
 #endif

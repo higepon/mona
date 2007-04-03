@@ -89,6 +89,9 @@ void InputPort::close()
 
 bool InputPort::charReady()
 {
+#ifdef MONA
+    return false;
+#else
     fd_set rfds;
     struct timeval tv;
     int retval;
@@ -102,6 +105,7 @@ bool InputPort::charReady()
     retval = select(fileno(stream_) + 1, &rfds, NULL, NULL, &tv);
     if (-1 == retval) return false;
     return retval != 0;
+#endif
 }
 
 ::util::String InputPort::getFileName()
