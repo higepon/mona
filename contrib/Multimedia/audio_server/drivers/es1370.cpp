@@ -226,19 +226,20 @@ void es1370::prepareChannelDAC1(int rate, int bits, int isStereo)
 
 typedef struct _fr
 {
-	uint16_t currentcount;
 	uint16_t buffersize;
+	uint16_t currentcount;
 }FrameRegister;
 
 void es1370::setBufferDAC1(void *p, size_t size)
 {
-	int n;
-	dputs("#ES1370: setBufferDAC1");
+	uint32_t n;
+	dprintf("#ES1370: setBufferDAC1; p = %x, size = %d\n", p, size);
 	outp32(baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC&0xf);
 	FrameRegister fr;
 	fr.currentcount = 0;
-	fr.buffersize = (unsigned short)size-1;
+	fr.buffersize = (unsigned short)(size-1);
 	memcpy(&n, &fr, sizeof(int));
+	dprintf("#ES1370: n = %x\n", n);
 	outp32(baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(baseIO+ES1370_REG_DAC1_FRAMECNT, (uint32_t)n);
 
@@ -252,6 +253,7 @@ void es1370::startDAC1()
 	// enable interrupt
 	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)|ES1370_P1_INTR_EN);
 	outp32(baseIO+ES1370_REG_CONTROL, inp32(baseIO+ES1370_REG_CONTROL)|ES1370_DAC1_EN);
+	dumpRegisters();
 }
 
 void es1370::stopDAC1()
@@ -265,6 +267,38 @@ inline void rgor(int rA, int rS, int rB)
 
 inline void rgori(int rA, int rS, int imm)
 {
+}
+
+void es1370::dumpRegisters()
+{
+	uint32_t result;
+
+	result = inp32(baseIO+ES1370_REG_CONTROL);
+	dprintf("Control: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_SERIAL_CONTROL);
+	dprintf("Serial Control: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_STATUS);
+	dprintf("Status: %x\n", result);
+
+	result = inp8(baseIO+ES1370_REG_UART_DATA);
+	dprintf("UART Data: %x\n", result);
+
+	result = inp8(baseIO+ES1370_REG_UART_STATUS);
+	dprintf("UART Status: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_MEMPAGE);
+	dprintf("Memory Page: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_SERIAL_CONTROL);
+	dprintf("Serial Interface Control: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_DAC1_FRAMEADR);
+	dprintf("DAC1 Frame Address: %x\n", result);
+
+	result = inp32(baseIO+ES1370_REG_DAC1_FRAMECNT);
+	dprintf("DAC1 Frame Count & Size: %x\n", result);
 }
 
 
