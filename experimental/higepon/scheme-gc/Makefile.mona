@@ -2,18 +2,15 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET  = SCHEME
-include Makefile.src.inc
 INSTDIR = $(BINDIR)/SERVERS
+include Makefile.src.inc
 
-ADDINCLUDE = -I $(MONADIR)/include/monalibc -I .
-ADDLINK    = -lmonalibc
-ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
-SHAREDIR   = $(MONADIR)/share
+ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
+ADDLINK      =  main.o  $(LIBCONT_OBJECTS) -lmonalibc
+ADDLINKDEP   =   $(LIBCONT_OBJECTS) $(MONADIR)/lib/libmonalibc.a main.o
+ADDTARGETDEP = $(REGISTERS_INC) $(PROCEDURES_H)
 
-ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
-else
-include $(SHAREDIR)/configs/monapi-el5.inc
-endif
+include Makefile.dep.inc
 
 -include dependencies

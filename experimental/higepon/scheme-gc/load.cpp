@@ -20,9 +20,9 @@ String load(const char* file)
 
     size_t size = ftell(fp);
 #ifdef USE_BOEHM_GC
-    char* buffer = new(GC) char[size + 1];ASSERT(buffer);
+    char* buffer = new(GC) char[size + 1];SCM_ASSERT(buffer);
 #else
-    char* buffer = new char[size + 1];ASSERT(buffer);
+    char* buffer = new char[size + 1];SCM_ASSERT(buffer);
 #endif
     if (NULL == buffer)
     {

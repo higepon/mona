@@ -33,6 +33,7 @@ public:
 
 protected:
     ::util::String fileName_;
+    ::util::Vector<char> buffer_;
     FILE* stream_;
     uint32_t lineno_;
     int fileLineNo_;

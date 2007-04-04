@@ -7,7 +7,7 @@ Procedure::Procedure(Lambda* lambda, Environment* env, uint32_t lineno)
     : env_(env), lineno_(lineno), isExtendableParameter_(false), isExtendableParameters_(false)
 {
     body_ = lambda->body();
-    parameters_ = new Variables();ASSERT(parameters_);
+    parameters_ = new Variables();SCM_ASSERT(parameters_);
     Variables* lparameters = lambda->parameters();
     isExtendableParameters_ = lambda->isExtendableParameters();
     isExtendableParameter_  = lambda->isExtendableParameter();
@@ -58,8 +58,8 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     if (isExtendableParameter_)
     {
         Objects* args = new Objects;
-        SExp* sexp = new SExp(SExp::SEXPS);
 #if 0
+        SExp* sexp = new SExp(SExp::SEXPS);
         Quote* nil = new Quote(sexp);
 #endif
         Pair* start = new Pair(SCM_NIL, SCM_NIL);
@@ -80,8 +80,8 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     else if (isExtendableParameters_)
     {
         Objects* args = new Objects;
-        SExp* sexp = new SExp(SExp::SEXPS);
 #if 0
+        SExp* sexp = new SExp(SExp::SEXPS);
         Quote* nil = new Quote(sexp);
 #else
 #endif
@@ -122,8 +122,8 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     }
     else
     {
-        uint32_t params_length = params->size();
-        uint32_t args_length = as->size();
+        int params_length = params->size();
+        int args_length = as->size();
         if (params_length != args_length)
         {
             for (int i = 0; i < args_length; i++)

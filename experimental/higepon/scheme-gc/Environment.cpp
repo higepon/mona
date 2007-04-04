@@ -7,9 +7,9 @@ using namespace monash;
 Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t lineno /* = 0 */) : filter_(filter), translator_(translator), lineno_(lineno)
 {
     frames_ = new Frames();
-    ASSERT(frames_);
+    SCM_ASSERT(frames_);
     Frame* f = new Frame();
-    ASSERT(f);
+    SCM_ASSERT(f);
     frames_->add(f);
 }
 
@@ -20,7 +20,7 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment(filter_, translator_);ASSERT(env);
+    Environment* env = new Environment(filter_, translator_);SCM_ASSERT(env);
     Frames* target = env->frames();
     for (int i = 0; i < frames_->size(); i++)
     {
@@ -54,7 +54,7 @@ void Environment::defineVariable(Variable* variable, Object* value)
 void Environment::extend(Variables* variables, Objects* objects)
 {
     Frame* f = new Frame(variables, objects);
-    ASSERT(f);
+    SCM_ASSERT(f);
     frames_->add(f);
 }
 

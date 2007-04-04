@@ -16,8 +16,12 @@
 #include "scheme.h"
 #include <stdio.h>
 #include <time.h>
+#ifdef MONA
+#include <monapi.h>
+#else
 #include <sys/time.h>    // rlimit
 #include <sys/resource.h> // rlimit
+#endif
 #include "ExtRepParser.h"
 using namespace util;
 using namespace monash;
@@ -39,12 +43,17 @@ void input_loop()
     MacroFilter f;
     Translator translator;
     Environment* env = new Environment(f, translator);
-    ASSERT(env);
+    SCM_ASSERT(env);
     g_top_env = env;
     registerPrimitives(env);
 
+#ifdef MONA
+    char line[1024];
+#else
     char* line = NULL;;
     size_t length = 0;
+#endif
+
     uint32_t open_paren_count = 0;
     uint32_t close_paren_count = 0;
     bool show_prompt = true;
@@ -74,7 +83,11 @@ void input_loop()
    {
 
         if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
+#ifdef MONA
+        monapi_stdin_read((uint8_t*)line, 1024);
+#else
         getline(&line, &length, stdin);
+#endif
         open_paren_count += count_char(line, '(');
         close_paren_count += count_char(line, ')');
         input += line;
@@ -142,12 +155,15 @@ int main(int argc, char *argv[])
 #ifdef USE_MONA_GC
     gc_init();
 #endif
+
+#ifndef MONA
     struct rlimit r;
     getrlimit(RLIMIT_STACK, &r);
     r.rlim_cur = 64 * 1024 * 1024;
 
     setrlimit(RLIMIT_STACK, &r);
     getrlimit(RLIMIT_STACK, &r);
+#endif
 
     cont_initialize();
     if (argc == 1)
@@ -170,7 +186,7 @@ int main(int argc, char *argv[])
 
     MacroFilter f;
     Translator translator;
-    Environment* env = new Environment(f, translator);ASSERT(env);
+    Environment* env = new Environment(f, translator);SCM_ASSERT(env);
     g_top_env = env;
     registerPrimitives(env);
 

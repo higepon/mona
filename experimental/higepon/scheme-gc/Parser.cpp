@@ -19,7 +19,7 @@ SExp* Parser::parse()
     switch(token.type)
     {
     case Token::LEFT_PAREN:
-        sexp = new SExp(SExp::SEXPS);ASSERT(sexp);
+        sexp = new SExp(SExp::SEXPS);SCM_ASSERT(sexp);
         sexp->lineno = token.lineno;
         for (;;)
         {
@@ -34,7 +34,7 @@ SExp* Parser::parse()
         return NULL;
     case Token::NUMBER:
 
-        sexp = new SExp(SExp::NUMBER);ASSERT(sexp);
+        sexp = new SExp(SExp::NUMBER);SCM_ASSERT(sexp);
         sexp->value = token.value;
         sexp->lineno = token.lineno;
         return sexp;
@@ -42,24 +42,24 @@ SExp* Parser::parse()
 
         if (token.text.startWith("#\\"))
         {
-            sexp = new SExp(SExp::CHAR);ASSERT(sexp);
+            sexp = new SExp(SExp::CHAR);SCM_ASSERT(sexp);
         }
         else
         {
-            sexp = new SExp(SExp::SYMBOL);ASSERT(sexp);
+            sexp = new SExp(SExp::SYMBOL);SCM_ASSERT(sexp);
         }
         sexp->text = token.text;
         sexp->lineno = token.lineno;
         return sexp;
     case Token::QUOTE:
 
-        sexp = new SExp(SExp::QUOTE);ASSERT(sexp);
+        sexp = new SExp(SExp::QUOTE);SCM_ASSERT(sexp);
         sexp->text = token.text;
         sexp->lineno = token.lineno;
         return sexp;
     case Token::STRING:
 
-        sexp = new SExp(SExp::STRING);ASSERT(sexp);
+        sexp = new SExp(SExp::STRING);SCM_ASSERT(sexp);
         sexp->text = token.text;
         sexp->lineno = token.lineno;
         return sexp;

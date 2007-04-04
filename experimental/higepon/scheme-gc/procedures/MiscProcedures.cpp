@@ -146,6 +146,8 @@ PROCEDURE(Exit, "exit")
     gc_fini();
 #endif
     exit(-1);
+    RETURN_BOOLEAN(false);
+    /* NOTREACHED */
 }
 
 

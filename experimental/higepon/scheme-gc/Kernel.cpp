@@ -49,7 +49,7 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 {
 // if you use this, continuation doesn't work.
 #if 0
-    Objects* result = new Objects;ASSERT(result);
+    Objects* result = new Objects;SCM_ASSERT(result);
     for (int i = 0; i < objects->size(); i++)
     {
         result->add((*it)->eval(env));

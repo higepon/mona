@@ -41,7 +41,7 @@ void registerPrimitives(Environment* env)
 
 SExp* objectToSExp(Object* o)
 {
-    SExp* sexp;
+    SExp* sexp = NULL;
     if (o->isNumber())
     {
         sexp = new SExp(SExp::NUMBER, o->lineno());
@@ -70,7 +70,7 @@ SExp* objectToSExp(Object* o)
         SExp* vectorStart = new SExp(SExp::SYMBOL, o->lineno());
         vectorStart->text = "vector";
         sexp->sexps.add(vectorStart);
-        for (int i = 0; i < v->size(); i++)
+        for (uint32_t i = 0; i < v->size(); i++)
         {
             sexp->sexps.add(objectToSExp(v->get(i)));
         }

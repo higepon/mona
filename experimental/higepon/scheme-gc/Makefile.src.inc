@@ -1,3 +1,6 @@
+REGISTERS_INC = ./register.inc
+PROCEDURES_H  = ./primitive_procedures.h
+
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\
 Assignment.cpp\
@@ -41,3 +44,21 @@ ExtRepParser.cpp\
 Eof.cpp\
 load.cpp\
 scheme.cpp
+
+PROCEDURE_SOURCES =\
+procedures/CharcterProcedures.cpp\
+procedures/EqualProcedures.cpp\
+procedures/False.cpp\
+procedures/IOProcedures.cpp\
+procedures/NumberProcedures.cpp\
+procedures/PairProcedures.cpp\
+procedures/Set.cpp\
+procedures/StringProcedures.cpp\
+procedures/SymbolProcedures.cpp\
+procedures/True.cpp\
+procedures/Undef.cpp\
+procedures/VectorProcedures.cpp\
+procedures/MiscProcedures.cpp
+
+LIBCONT_SOURCES = libcont/cont.c libcont/mysetjmp.c
+LIBCONT_OBJECTS = $(LIBCONT_SOURCES:.c=.o) libcont/mysetjmp_asm.o

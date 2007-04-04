@@ -134,7 +134,7 @@ Object* ExtRepParser::parseVector()
         objects->add(parseDatum());
     }
     Vector* v = NEW(Vector, objects->size());
-    for (uint32_t i = 0; i < objects->size(); i++)
+    for (int i = 0; i < objects->size(); i++)
     {
         v->set(i, objects->get(i));
     }

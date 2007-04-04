@@ -86,8 +86,8 @@ int Translator::translateAsData(SExp* sexp, Object** object)
 
 int Translator::translateAsVectorData(SExp* sexp, Object** object)
 {
-    ASSERT(L() > 0);
-    ASSERT(N(0)->text == "VECTOR");
+    SCM_ASSERT(L() > 0);
+    SCM_ASSERT(N(0)->text == "VECTOR");
     Vector* v = new Vector(L() - 1, sexp->lineno);
     for (int i = 1; i < L(); i++)
     {
@@ -144,19 +144,19 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
     {
     case SExp::NUMBER:
 #ifdef USE_MONA_GC
-        *object = new(false) Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = new(false) Number(sexp->value, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = new Number(sexp->value, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
     case SExp::STRING:
-        *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new SString(sexp->text, sexp->lineno);SCM_ASSERT(*object);
         return SUCCESS;
     case SExp::CHAR:
 #ifdef USE_MONA_GC
-        *object = new(false) Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new(false) Charcter(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new Charcter(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
     case SExp::SYMBOL:
@@ -170,7 +170,7 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
         }
         else
         {
-            *object = new RiteralConstant(sexp->text, sexp->lineno);ASSERT(*object);
+            *object = new RiteralConstant(sexp->text, sexp->lineno);SCM_ASSERT(*object);
         }
         return SUCCESS;
     }
@@ -184,34 +184,34 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
     {
     case SExp::NUMBER:
 #ifdef USE_MONA_GC
-        *object = new(false) Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = new(false) Number(sexp->value, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new Number(sexp->value, sexp->lineno);ASSERT(*object);
+        *object = new Number(sexp->value, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
     case SExp::STRING:
 #ifdef USE_MONA_GC
-        *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new SString(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new SString(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new SString(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
 //     case SExp::QUOTE:
 //         printf("quote:%s\n", sexp->text.data());
-//         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);ASSERT(*object);
+//         *object = new Quote(SExp::fromString(sexp->text), sexp->lineno);SCM_ASSERT(*object);
 //         return SUCCESS;
     case SExp::CHAR:
 #ifdef USE_MONA_GC
-        *object = new(false) Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new(false) Charcter(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new Charcter(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new Charcter(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
     case SExp::SYMBOL:
 #ifdef USE_MONA_GC
-        *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new Variable(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #else
-        *object = new Variable(sexp->text, sexp->lineno);ASSERT(*object);
+        *object = new Variable(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #endif
         return SUCCESS;
     }
@@ -225,20 +225,20 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
     if (L() != 3) return SYNTAX_ERROR;
     SExp* symbol = N(1);
     if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
-    Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
+    Variable* variable = new Variable(symbol->text, symbol->lineno);SCM_ASSERT(variable);
     SExp* argument = N(2);
     Object* argumentObject;
     if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
-    *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
+    *object = new Definition(variable, argumentObject, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 #else
     if (N(1)->isSExps())
     {
-        Variable* variable = new Variable(NN(1, 0)->text, NN(1, 0)->lineno);ASSERT(variable);
+        Variable* variable = new Variable(NN(1, 0)->text, NN(1, 0)->lineno);SCM_ASSERT(variable);
         Variables* variables = new Variables;
         for (int i = 1; i < LL(1); i++)
         {
-            Variable* v = new Variable(NN(1, i)->text, NN(1, i)->lineno);ASSERT(v);
+            Variable* v = new Variable(NN(1, i)->text, NN(1, i)->lineno);SCM_ASSERT(v);
             variables->add(v);
         }
         Objects* body = new Objects;
@@ -249,8 +249,8 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
             if (translate(&s, &b) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
             body->add(b);
         }
-        Object* l = new Lambda(body, variables, false, sexp->lineno);ASSERT(l);
-        *object = new Definition(variable, l, sexp->lineno);ASSERT(*object);
+        Object* l = new Lambda(body, variables, false, sexp->lineno);SCM_ASSERT(l);
+        *object = new Definition(variable, l, sexp->lineno);SCM_ASSERT(*object);
         return SUCCESS;
     }
     else
@@ -258,11 +258,11 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
         if (L() != 3) {printf("%s %s:%d L()=%d %s %s\n", __func__, __FILE__, __LINE__, L(), N(0)->toSExpString().data(), N(3)->toSExpString().data());fflush(stdout);return SYNTAX_ERROR;}
         SExp* symbol = N(1);
         if (symbol->type != SExp::SYMBOL) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
-        Variable* variable = new Variable(symbol->text, symbol->lineno);ASSERT(variable);
+        Variable* variable = new Variable(symbol->text, symbol->lineno);SCM_ASSERT(variable);
         SExp* argument = N(2);
         Object* argumentObject;
         if (translate(&argument, &argumentObject) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
-        *object = new Definition(variable, argumentObject, sexp->lineno);ASSERT(*object);
+        *object = new Definition(variable, argumentObject, sexp->lineno);SCM_ASSERT(*object);
         return SUCCESS;
     }
 #endif
@@ -286,13 +286,13 @@ int Translator::translateIf(SExp* sexp, Object** object)
         ret = translate(&n3, &alternative);
         if (ret != SUCCESS) return ret;
     }
-    *object = new SpecialIf(predicate, consequent, alternative, sexp->lineno);ASSERT(*object);
+    *object = new SpecialIf(predicate, consequent, alternative, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateCond(SExp* sexp, Object** object)
 {
-    Clauses* clauses = new Clauses;ASSERT(clauses);
+    Clauses* clauses = new Clauses;SCM_ASSERT(clauses);
     Objects* elseActions = NULL;
     for (int i = 1; i < L(); i++)
     {
@@ -300,7 +300,7 @@ int Translator::translateCond(SExp* sexp, Object** object)
         if (n->sexps.size() < 2) return SYNTAX_ERROR;
         if (i == L() - 1 && n->sexps[0]->type == SExp::SYMBOL && n->sexps[0]->text == "else")
         {
-            elseActions = new Objects;ASSERT(elseActions);
+            elseActions = new Objects;SCM_ASSERT(elseActions);
             for (int j = 1; j < n->sexps.size(); j++)
             {
                 Object * action;
@@ -323,13 +323,13 @@ int Translator::translateCond(SExp* sexp, Object** object)
                 SExp* n2 = n->sexps[2];
                 ret = translate(&n2, &action);
                 if (ret != SUCCESS) return ret;
-                Objects* arguments = new Objects;ASSERT(arguments);
+                Objects* arguments = new Objects;SCM_ASSERT(arguments);
                 arguments->add(cond);
-                Object* application = new Application(action, arguments, action->lineno());ASSERT(application);
-                Objects* actions = new Objects;ASSERT(actions);
+                Object* application = new Application(action, arguments, action->lineno());SCM_ASSERT(application);
+                Objects* actions = new Objects;SCM_ASSERT(actions);
                 actions->add(application);
                 Clause* c = new Clause(cond, actions);
-                ASSERT(c);
+                SCM_ASSERT(c);
                 clauses->add(c);
             }
             else
@@ -338,7 +338,7 @@ int Translator::translateCond(SExp* sexp, Object** object)
                 SExp* n0 = n->sexps[0];
                 int ret = translate(&n0, &cond);
                 if (ret != SUCCESS) return ret;
-                Objects* actions = new Objects;ASSERT(actions);
+                Objects* actions = new Objects;SCM_ASSERT(actions);
                 for (int j = 1; j < n->sexps.size(); j++)
                 {
                     Object * action;
@@ -348,19 +348,19 @@ int Translator::translateCond(SExp* sexp, Object** object)
                     actions->add(action);
                 }
                 Clause* c = new Clause(cond, actions);
-                ASSERT(c);
+                SCM_ASSERT(c);
                 clauses->add(c);
             }
         }
     }
-    *object = new Cond(clauses, elseActions, sexp->lineno);ASSERT(*object);
+    *object = new Cond(clauses, elseActions, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
 int Translator::translateBegin(SExp* sexp, Object** object)
 {
     if (L() <= 1) return SYNTAX_ERROR;
-    Objects* objects = new Objects;ASSERT(objects);
+    Objects* objects = new Objects;SCM_ASSERT(objects);
     for (int i = 1; i < L(); i++)
     {
         Object* object;
@@ -369,7 +369,7 @@ int Translator::translateBegin(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->add(object);
     }
-    *object = new Begin(objects, sexp->lineno);ASSERT(*object);
+    *object = new Begin(objects, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -380,7 +380,7 @@ int Translator::translateQuote(SExp* sexp, Object** object)
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-//    *object = new Quote(sexp->sexps[1], sexp->lineno);ASSERT(*object);
+//    *object = new Quote(sexp->sexps[1], sexp->lineno);SCM_ASSERT(*object);
     translateAsData(sexp->sexps[1], object);
     return SUCCESS;
 }
@@ -398,7 +398,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         return SYNTAX_ERROR;
     }
     bool extendVariable = false;
-    Variables* variables = new Variables;ASSERT(variables);
+    Variables* variables = new Variables;SCM_ASSERT(variables);
     if (N(1)->type == SExp::SEXPS)
     {
 
@@ -411,7 +411,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
                 return SYNTAX_ERROR;
             }
             Variable* v = new Variable(param->text, param->lineno);
-            ASSERT(v);
+            SCM_ASSERT(v);
             variables->add(v);
         }
     }
@@ -421,7 +421,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         extendVariable = true;
         variables->add(v);
     }
-    Objects* body = new Objects;ASSERT(body);
+    Objects* body = new Objects;SCM_ASSERT(body);
     for (int i = 2; i < L(); i++)
     {
         Object* o;
@@ -434,7 +434,7 @@ int Translator::translateLambda(SExp* sexp, Object** object)
         }
         body->add(o);
     }
-    *object = new Lambda(body, variables, extendVariable, sexp->lineno);ASSERT(*object);
+    *object = new Lambda(body, variables, extendVariable, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -444,8 +444,8 @@ int Translator::translateNamedLet(SExp* sexp, Object** object)
     {
         return SYNTAX_ERROR;
     }
-    Variables* variables = new Variables;ASSERT(variables);
-    Objects* values = new Objects;ASSERT(values);
+    Variables* variables = new Variables;SCM_ASSERT(variables);
+    Objects* values = new Objects;SCM_ASSERT(values);
     SExps* parameterSExps = &N(2)->sexps;
     for (int i = 0; i < parameterSExps->size(); i++)
     {
@@ -453,7 +453,7 @@ int Translator::translateNamedLet(SExp* sexp, Object** object)
         if (parameter->type != SExp::SEXPS || parameter->sexps.size() != 2) return SYNTAX_ERROR;
         if (parameter->sexps[0]->type != SExp::SYMBOL) return SYNTAX_ERROR;
         Variable* v = new Variable(parameter->sexps[0]->text, parameter->sexps[0]->lineno);
-        ASSERT(v);
+        SCM_ASSERT(v);
         variables->add(v);
         Object* value;
         SExp* p1 = parameter->sexps[1];
@@ -462,7 +462,7 @@ int Translator::translateNamedLet(SExp* sexp, Object** object)
         values->add(value);
     }
 
-    Objects* body = new Objects;ASSERT(body);
+    Objects* body = new Objects;SCM_ASSERT(body);
     for (int i = 3; i < L(); i++)
     {
         Object* o;
@@ -471,7 +471,7 @@ int Translator::translateNamedLet(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->add(o);
     }
-    *object = new NamedLet(body, variables, values, N(1)->text, sexp->lineno);ASSERT(*object);
+    *object = new NamedLet(body, variables, values, N(1)->text, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -492,8 +492,8 @@ int Translator::translateLet(SExp* sexp, Object** object)
         return SYNTAX_ERROR;
     }
 
-    Variables* variables = new Variables;ASSERT(variables);
-    Objects* values = new Objects;ASSERT(values);
+    Variables* variables = new Variables;SCM_ASSERT(variables);
+    Objects* values = new Objects;SCM_ASSERT(values);
     SExps* parameterSExps = &N(1)->sexps;
     for (int i = 0; i < parameterSExps->size(); i++)
     {
@@ -509,7 +509,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
             return SYNTAX_ERROR;
         }
         Variable* v = new Variable(parameter->sexps[0]->text, parameter->sexps[0]->lineno);
-        ASSERT(v);
+        SCM_ASSERT(v);
         variables->add(v);
         Object* value;
         SExp* p1 = parameter->sexps[1];
@@ -522,7 +522,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
         values->add(value);
     }
 
-    Objects* body = new Objects;ASSERT(body);
+    Objects* body = new Objects;SCM_ASSERT(body);
     for (int i = 2; i < L(); i++)
     {
         Object* o;
@@ -536,7 +536,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
         }
         body->add(o);
     }
-    *object = new Let(body, variables, values, sexp->lineno);ASSERT(*object);
+    *object = new Let(body, variables, values, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -545,8 +545,8 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
     if (L() < 3) return SYNTAX_ERROR;
     if (N(1)->type != SExp::SEXPS) return SYNTAX_ERROR;
 
-    Variables* variables = new Variables;ASSERT(variables);
-    Objects* values = new Objects;ASSERT(values);
+    Variables* variables = new Variables;SCM_ASSERT(variables);
+    Objects* values = new Objects;SCM_ASSERT(values);
     SExps* parameterSExps = &N(1)->sexps;
     for (int i = 0; i < parameterSExps->size(); i++)
     {
@@ -554,7 +554,7 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
         if (parameter->type != SExp::SEXPS || parameter->sexps.size() != 2) return SYNTAX_ERROR;
         if (parameter->sexps[0]->type != SExp::SYMBOL) return SYNTAX_ERROR;
         Variable* v = new Variable(parameter->sexps[0]->text, parameter->sexps[0]->lineno);
-        ASSERT(v);
+        SCM_ASSERT(v);
         variables->add(v);
         Object* value;
         SExp* p1 = parameter->sexps[1];
@@ -563,7 +563,7 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
         values->add(value);
     }
 
-    Objects* body = new Objects;ASSERT(body);
+    Objects* body = new Objects;SCM_ASSERT(body);
     for (int i = 2; i < L(); i++)
     {
         Object* o;
@@ -572,7 +572,7 @@ int Translator::translateLetAsterisk(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         body->add(o);
     }
-    *object = new LetAsterisk(body, variables, values, sexp->lineno);ASSERT(*object);
+    *object = new LetAsterisk(body, variables, values, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -582,7 +582,7 @@ int Translator::translateApplication(SExp* sexp, Object** object)
     SExp* n0 = N(0);
     int ret = translate(&n0, &f);
     if (ret != SUCCESS) return ret;
-    Objects* arguments = new Objects;ASSERT(arguments);
+    Objects* arguments = new Objects;SCM_ASSERT(arguments);
     for (int i = 1; i < L(); i++)
     {
         Object * object;
@@ -591,7 +591,7 @@ int Translator::translateApplication(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         arguments->add(object);
     }
-    *object = new Application(f, arguments, sexp->lineno);ASSERT(*object);
+    *object = new Application(f, arguments, sexp->lineno);SCM_ASSERT(*object);
     return SUCCESS;
 }
 
@@ -677,7 +677,7 @@ int Translator::translate(SExp** n, Object** object)
 # if 0
 int Translator::translateAnd(SExp* sexp, Object** object)
 {
-    Objects* objects = new Objects;ASSERT(objects);
+    Objects* objects = new Objects;SCM_ASSERT(objects);
     for (int i = 1; i < L(); i++)
     {
         Object * object;
@@ -685,14 +685,14 @@ int Translator::translateAnd(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->add(object);
     }
-    *object = __A(new And(objects));ASSERT(*object);
+    *object = __A(new And(objects));SCM_ASSERT(*object);
     return SUCCESS;
 }
 
 
 int Translator::translateOr(SExp* sexp, Object** object)
 {
-    Objects* objects = new Objects;ASSERT(objects);
+    Objects* objects = new Objects;SCM_ASSERT(objects);
     for (int i = 1; i < L(); i++)
     {
         Object * object;
@@ -700,7 +700,7 @@ int Translator::translateOr(SExp* sexp, Object** object)
         if (ret != SUCCESS) return ret;
         objects->add(object);
     }
-    *object = __A(new Or(objects));ASSERT(*object);
+    *object = __A(new Or(objects));SCM_ASSERT(*object);
     return SUCCESS;
 }
 

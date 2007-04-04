@@ -34,7 +34,7 @@ int Lambda::type() const
 
 Object* Lambda::eval(Environment* env)
 {
-    Object* procedure = new Procedure(this, env); ASSERT(procedure); return procedure;
+    Object* procedure = new Procedure(this, env); SCM_ASSERT(procedure); return procedure;
 }
 
 bool Lambda::eqv() const

@@ -23,8 +23,8 @@ int Let::type() const
 
 Application* Let::expand()
 {
-    Lambda* lambda = new Lambda(body_, variables_, false);ASSERT(lambda);
-    Application* application = new Application(lambda, values_); ASSERT(application); return application;
+    Lambda* lambda = new Lambda(body_, variables_, false);SCM_ASSERT(lambda);
+    Application* application = new Application(lambda, values_); SCM_ASSERT(application); return application;
 }
 
 Object* Let::eval(Environment* env)

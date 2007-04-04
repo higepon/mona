@@ -13,7 +13,7 @@ StringReader::~StringReader()
 
 char StringReader::readChar()
 {
-    if (position_ >= text_.size()) return EOF;
+    if (position_ >= (int)text_.size()) return EOF;
     char c = text_[position_];
     if (c == '\n') lineno_++;
     position_++;

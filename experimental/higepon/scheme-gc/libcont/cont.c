@@ -42,9 +42,11 @@
 */
 
 #include "cont.h"
+#ifndef MONA
 #include <unistd.h>
+#endif
 
-static uint32_t cont_stack_bottom = NULL;
+static uint32_t cont_stack_bottom = (uint32_t)NULL;
 static Cont* c = NULL;
 static int r   = 0;
 static uint32_t diff       = 0;
@@ -57,6 +59,13 @@ void* cont_get_stack_pointer()
     return (void*)((unsigned int)stack_pointer + 8);
 }
 
+#ifdef MONA
+void* cont_get_stack_bottom()
+{
+  return (void*)0xF0000000;
+}
+
+#else
 #pragma weak __libc_stack_end
 extern void* __libc_stack_end;
 void* cont_get_stack_bottom()
@@ -64,6 +73,7 @@ void* cont_get_stack_bottom()
     long pagesize = sysconf(_SC_PAGESIZE);
     return (void*)(((uintptr_t)__libc_stack_end + pagesize) & ~(pagesize - 1));
 }
+#endif
 
 void cont_initialize()
 {

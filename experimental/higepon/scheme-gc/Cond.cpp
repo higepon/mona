@@ -32,16 +32,16 @@ Object* Cond::expandInternal(int i)
     {
         if (NULL != elseActions_)
         {
-            Object* begin = new Begin(elseActions_);ASSERT(begin); return begin;
+            Object* begin = new Begin(elseActions_);SCM_ASSERT(begin); return begin;
         }
         else
         {
-            Object* f = g_false; ASSERT(f); return f;
+            Object* f = g_false; SCM_ASSERT(f); return f;
         }
     }
     Clause* clause = clauses_->get(i);
     Object* specialif = new SpecialIf(clause->first, new Begin(clause->second), expandInternal(i + 1));
-    ASSERT(specialif);
+    SCM_ASSERT(specialif);
     return specialif;
 }
 

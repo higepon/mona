@@ -58,7 +58,16 @@ Object* InputPort::readCharacter()
 
 char InputPort::readChar()
 {
-    char c = fgetc(stream_);
+    char c;
+    if (buffer_.isEmpty())
+    {
+        c = fgetc(stream_);
+    }
+    else
+    {
+        c = buffer_.removeAt(buffer_.size() - 1);
+    }
+
     if (c == '\n') fileLineNo_++;
     return c;
 }
@@ -66,19 +75,21 @@ char InputPort::readChar()
 void InputPort::unReadChar(char c)
 {
     if (c == '\n') fileLineNo_--;
-    ungetc(c, stream_);
+    buffer_.add(c);
+//    ungetc(c, stream_);
 }
 
 
 Object* InputPort::peekCharacter()
 {
-    char c = fgetc(stream_);
+    char c = readChar();
     if (c == EOF)
     {
         return SCM_EOF;
     }
     Charcter* ret = new Charcter(c);
-    ungetc(c, stream_);
+//    ungetc(c, stream_);
+    unReadChar(c);
     return ret;
 }
 

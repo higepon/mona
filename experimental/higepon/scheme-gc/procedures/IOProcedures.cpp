@@ -294,12 +294,12 @@ PROCEDURE(Load, "load")
     Scanner* scanner = new Scanner(inputPort);
     ExtRepParser parser(scanner);
     Object* evalFunc = (new Variable("eval"))->eval(environment);
+    Object* evaluated = NULL;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
-        Object* evaluated;
         SCM_EVAL(evalFunc, env, evaluated, sexp);
     }
-
+    return evaluated;
 #else
     // don't use env, use g_top_env instead !
     Environment* environment = g_top_env;

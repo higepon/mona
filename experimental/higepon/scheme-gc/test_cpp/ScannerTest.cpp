@@ -20,7 +20,6 @@ void ScannerTest::tearDown()
 
 void ScannerTest::testScaner()
 {
-    char buf[1024];
     YAML yaml;
     loadYAML("test_cpp/scanner.yml", yaml);
 

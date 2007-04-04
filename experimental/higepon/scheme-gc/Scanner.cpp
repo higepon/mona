@@ -281,6 +281,7 @@ other:
         return NULL;
         printf("%s %s:%d[%c]\n", __func__, __FILE__, __LINE__, c);fflush(stdout);// debug
     }
+    return NULL;
 }
 
 char Scanner::readChar()

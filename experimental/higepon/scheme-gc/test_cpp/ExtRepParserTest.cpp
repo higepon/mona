@@ -21,7 +21,6 @@ void ExtRepParserTest::tearDown()
 
 void ExtRepParserTest::testParser()
 {
-    char buf[1024];
     YAML yaml;
     loadYAML("test_cpp/ext_rep_parser.yml", yaml);
 
