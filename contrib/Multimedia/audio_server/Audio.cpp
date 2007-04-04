@@ -101,6 +101,7 @@ foundDevice:
 int Audio::messageLoop()
 {
 	std::vector<struct driver_desc*>::iterator it = drivers->begin();
+	struct driver_desc* dd = *it;
 	MessageInfo msg;
 	while(1)
 	{
@@ -117,11 +118,14 @@ int Audio::messageLoop()
 			case MSG_INTERRUPTED:
 			{
 				dputs("#Aduio: MSG_ITERRUPTED");
+				dd->emit_interrupted();
+				/*
 				while( it != drivers->end() )
 				{
 					(*it)->emit_interrupted();
 					it++;
 				}
+				*/
 				break;
 			}
 			default: break;
