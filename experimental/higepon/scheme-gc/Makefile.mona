@@ -3,19 +3,19 @@ include $(SRCTOP)/Makefile.inc
 
 TARGET  = SCHEME
 INSTDIR = $(BINDIR)/SERVERS
+include Makefile.src.inc
 
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
-ADDLINK      =  main.o  $(LIBCONT_OBJECTS) -lmonalibc
+ADDLINK      =  main.o $(LIBCONT_OBJECTS) -lmonalibc
 ADDLINKDEP   =   $(LIBCONT_OBJECTS) $(MONADIR)/lib/libmonalibc.a main.o
 ADDTARGETDEP = $(REGISTERS_INC) $(PROCEDURES_H)
 
 include $(SHAREDIR)/configs/monapi-ex5.inc
 include Makefile.dep.inc
 
-install: force
+install:
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTDIR)
-	$(INSTALL) -p lib/mona.scm lib/danny.scm $(INSTDIR)
-force: $(TARGET).EX5 ;
+	$(INSTALL) -p lib/MONA.SCM lib/DANNY.SCM lib/TEST.SCM $(INSTDIR)
 
 -include dependencies

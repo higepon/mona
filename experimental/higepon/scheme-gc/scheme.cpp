@@ -45,11 +45,13 @@ void scheme_register_primitives(Environment* env)
 
 void scheme_expand_stack(uint32_t mb)
 {
+#ifndef MONA
     struct rlimit r;
     getrlimit(RLIMIT_STACK, &r);
     r.rlim_cur = mb * 1024 * 1024;
     setrlimit(RLIMIT_STACK, &r);
     getrlimit(RLIMIT_STACK, &r);
+#endif
 }
 
 uint32_t count_char(const char* s, char c)
@@ -122,7 +124,11 @@ void scheme_input_loop()
 
     RETURN_ON_ERROR("stdin");
 
-    String input = "(load \"lib/mona.scm\")";
+#ifdef MONA
+    String input = "(load \"/servers/MONA.SCM\")";
+#else
+    String input = "(load \"lib/MONA.SCM\")";
+#endif
     scheme_eval_string(input, env);
     input = "";
 
