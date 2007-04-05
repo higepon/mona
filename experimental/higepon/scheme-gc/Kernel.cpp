@@ -47,19 +47,9 @@ void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environme
 
 Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 {
-// if you use this, continuation doesn't work.
-#if 0
-    Objects* result = new Objects;SCM_ASSERT(result);
-    for (int i = 0; i < objects->size(); i++)
-    {
-        result->add((*it)->eval(env));
-    }
-    return result;
-#else
     Objects* result;
     makeListOfValues(objects, 0, NULL, env, &result);
     return result;
-#endif
 }
 
 Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)

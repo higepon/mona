@@ -43,11 +43,5 @@ void Frame::remove(Variable* variable)
 String Frame::toString()
 {
     String result = "";
-// todo fix me
-//     for (FrameMap::const_iterator it = map_.begin(); it != map_.end(); ++it)
-//     {
-//         result += (*it).first + ":";
-//         result += (*it).second->toString() + "\n";
-//     }
     return result;
 }

@@ -19,7 +19,6 @@ Procedure::Procedure(Lambda* lambda, Environment* env, uint32_t lineno)
 
 Procedure::~Procedure()
 {
-//    delete parameters_;
 }
 
 String Procedure::toString()
@@ -51,17 +50,11 @@ bool Procedure::eq() const
 Object* Procedure::apply(Objects* arguments, Environment* environment)
 {
     Objects* as = Kernel::listOfValues(arguments, environment);
-//     Objects* as;
-//     moge(arguments, 0, NULL, environment, &as);
     Environment* e = env()->clone();
     Variables* params = parameters();
     if (isExtendableParameter_)
     {
         Objects* args = new Objects;
-#if 0
-        SExp* sexp = new SExp(SExp::SEXPS);
-        Quote* nil = new Quote(sexp);
-#endif
         Pair* start = new Pair(SCM_NIL, SCM_NIL);
         Pair* p = start;
         for (int j = 0; j < as->size(); j++)
@@ -80,11 +73,6 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     else if (isExtendableParameters_)
     {
         Objects* args = new Objects;
-#if 0
-        SExp* sexp = new SExp(SExp::SEXPS);
-        Quote* nil = new Quote(sexp);
-#else
-#endif
         for (int i = 0; i < params->size(); i++)
         {
             Variable* v = params->get(i);

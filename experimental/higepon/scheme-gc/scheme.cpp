@@ -1,19 +1,30 @@
 #define GLOBAL_VALUE_DEFINED
 #include "scheme.h"
 
-//using namespace util;
+using namespace util;
 using namespace monash;
 
 #include "primitive_procedures.h"
 
-void const_init()
+void scheme_init()
 {
-   g_defaultOutputPort = new OutputPort(stdout);
-   g_defaultInputPort  = new InputPort("stdin", stdin);
+#ifdef USE_MONA_GC
+    gc_init();
+#endif
+
+#ifndef MONA
+    scheme_expand_stack(64);
+#endif
+    cont_initialize();
+}
+
+void scheme_const_init()
+{
+    g_defaultOutputPort = new OutputPort(stdout);
+    g_defaultInputPort  = new InputPort("stdin", stdin);
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript = NULL;
-    //    g_provide_map = new HashMap<int>;
     g_dynamic_winds = new DynamicWinds;
     g_true = new True;
     g_false = new False;
@@ -23,20 +34,123 @@ void const_init()
     g_eof = new Eof;
 }
 
-void registerPrimitives(Environment* env)
+void scheme_register_primitives(Environment* env)
 {
-
-    const_init(); 
+    scheme_const_init();
 #include "register.inc"
-    env->defineVariable(new Variable("#f"),             g_false);
-    env->defineVariable(new Variable("#t"),             g_true);
-    env->defineVariable(new Variable("set!"),           new Set());
+    env->defineVariable(new Variable("#f"),   g_false);
+    env->defineVariable(new Variable("#t"),   g_true);
+    env->defineVariable(new Variable("set!"), new Set());
+}
 
+void scheme_expand_stack(uint32_t mb)
+{
+    struct rlimit r;
+    getrlimit(RLIMIT_STACK, &r);
+    r.rlim_cur = mb * 1024 * 1024;
+    setrlimit(RLIMIT_STACK, &r);
+    getrlimit(RLIMIT_STACK, &r);
+}
 
-//     for (int i = 0; i < procedures.size(); i++)
-//     {
-//         env->defineVariable(procedures[i].first, procedures[i].second);
-//     }
+uint32_t count_char(const char* s, char c)
+{
+    int length = strlen(s);
+    uint32_t count = 0;
+    for (int i = 0; i < length; i++)
+    {
+        if (s[i] == c) count++;
+    }
+    return count;
+}
+
+Object* scheme_eval_string(String& input, Environment* env, bool out /* = false */)
+{
+    QuoteFilter quoteFilter;
+    input = quoteFilter.filter(input);
+    StringReader* reader = new StringReader(input);
+    Scanner* scanner = new Scanner(reader);
+    ExtRepParser parser(scanner);
+    Object* evalFunc = (new Variable("eval"))->eval(env);
+    Object* evaluated = NULL;
+    for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
+    {
+        SCM_EVAL(evalFunc, env, evaluated, sexp);
+        if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
+    }
+    return evaluated;
+}
+
+int scheme_exec_file(const String& file)
+{
+    String input = load(file);
+    if (input == "")
+    {
+        fprintf(stderr, "can not load: %s file\n", input.data());
+        return -1;
+    }
+    Error::exitOnError();
+    Error::file = file;
+    MacroFilter f;
+    Translator translator;
+    Environment* env = new Environment(f, translator);
+    SCM_ASSERT(env);
+    g_top_env = env;
+    scheme_register_primitives(env);
+    scheme_eval_string(input, env);
+    return 0;
+}
+
+void scheme_input_loop()
+{
+    MacroFilter f;
+    Translator translator;
+    Environment* env = new Environment(f, translator);
+    SCM_ASSERT(env);
+    g_top_env = env;
+    scheme_register_primitives(env);
+
+#ifdef MONA
+    char line[1024];
+#else
+    char* line = NULL;;
+    size_t length = 0;
+#endif
+
+    uint32_t open_paren_count = 0;
+    uint32_t close_paren_count = 0;
+    bool show_prompt = true;
+
+    RETURN_ON_ERROR("stdin");
+
+    String input = "(load \"lib/mona.scm\")";
+    scheme_eval_string(input, env);
+    input = "";
+
+    for (;;)
+    {
+        if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
+#ifdef MONA
+        monapi_stdin_read((uint8_t*)line, 1024);
+#else
+        getline(&line, &length, stdin);
+#endif
+        open_paren_count += count_char(line, '(');
+        close_paren_count += count_char(line, ')');
+        input += line;
+        if (input != "" && open_paren_count == close_paren_count)
+        {
+            TRANSCRIPT_WRITE(input.data());
+            scheme_eval_string(input, env, true);
+            open_paren_count = 0;
+            close_paren_count = 0;
+            show_prompt = true;
+            input = "";
+        }
+        else
+        {
+            show_prompt = false;
+        }
+    }
 }
 
 SExp* objectToSExp(Object* o)
@@ -51,10 +165,6 @@ SExp* objectToSExp(Object* o)
     else if (o->isNil())
     {
         sexp = new SExp(SExp::SEXPS, o->lineno());
-//        SExp* quoteSexp = new SExp(SExp::SYMBOL);
-        //       quoteSexp->text = "quote";
-//        sexp->sexps.add(quoteSexp);
-//        sexp->sexps.add(new SExp(SExp::SEXPS));
     }
     else if (o->isCharcter())
     {
@@ -66,7 +176,7 @@ SExp* objectToSExp(Object* o)
     else if (o->isVector())
     {
         sexp = new SExp(SExp::SEXPS, o->lineno());
-        Vector* v = (Vector*)o;
+        ::monash::Vector* v = (::monash::Vector*)o;
         SExp* vectorStart = new SExp(SExp::SYMBOL, o->lineno());
         vectorStart->text = "vector";
         sexp->sexps.add(vectorStart);
@@ -91,12 +201,11 @@ SExp* objectToSExp(Object* o)
     {
         sexp = new SExp(SExp::SYMBOL, o->lineno());
         RiteralConstant* r = (RiteralConstant*)o;
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         sexp->text = r->text();
     }
     else if (o->isPair())
     {
-        Pair* p = (Pair*)o;
+        ::monash::Pair* p = (::monash::Pair*)o;
         sexp = pairToSExp(p);
     }
     else if (o->isTrue())
@@ -109,11 +218,6 @@ SExp* objectToSExp(Object* o)
         sexp = new SExp(SExp::SYMBOL, o->lineno());
         sexp->text = "#f";
     }
-//     else if (o->isEof())
-//     {
-//         sexp = new SExp(SExp::SYMBOL, o->lineno());
-//         sexp->text = "eof";
-//     }
     else
     {
         RAISE_ERROR(o->lineno(), "objectToSExp error %s\n", o->typeString().data());
@@ -121,7 +225,7 @@ SExp* objectToSExp(Object* o)
     return sexp;
 }
 
-SExp* pairToSExp(Pair* p)
+SExp* pairToSExp(monash::Pair* p)
 {
     SExp* sexp = new SExp(SExp::SEXPS);
     Object* o = p;
@@ -133,7 +237,7 @@ SExp* pairToSExp(Pair* p)
         }
         else if (o->isPair())
         {
-            Pair* p = (Pair*)o;
+            ::monash::Pair* p = (::monash::Pair*)o;
             sexp->sexps.add(::objectToSExp(p->getCar()));
             if (!p->getCdr()->isPair() && !p->getCdr()->isNil())
             {
@@ -151,6 +255,5 @@ SExp* pairToSExp(Pair* p)
             break;
         }
     }
-//    printf("result=%s\n", sexp->toSExpString().data());
     return sexp;
 }

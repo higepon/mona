@@ -26,15 +26,6 @@ int LetAsterisk::type() const
 
 Object* LetAsterisk::expand()
 {
-//     for (int i = 0; i < variables_->size(); i++)
-//     {
-//         printf("v = %s\n", variables_->get(i)->toString().data());
-//     }
-//     for (int i = 0; i < values_->size(); i++)
-//     {
-//         printf("v = %s\n", values_->get(i)->toString().data());
-//     }
-
     Variables* variables = new Variables;SCM_ASSERT(variables);
     variables->add(variables_->get(0));
     Objects* values = new Objects;SCM_ASSERT(values);
@@ -44,7 +35,6 @@ Object* LetAsterisk::expand()
 
 Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
 {
-//    printf("%d == %d, %d == %d \n", variablesIndex, variables_->size() - 1, valuesIndex, values_->size() - 1);
     if (variablesIndex == variables_->size() || valuesIndex == values_->size())
     {
         return body_;
@@ -53,7 +43,6 @@ Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
     variables->add(variables_->get(variablesIndex));
     Objects* values = new Objects;SCM_ASSERT(values);
     values->add(values_->get(valuesIndex));
-//    printf("(%d, %d) %s %s\n", variablesIndex, valuesIndex, variables_->get(variablesIndex)->toString().data(),values_->get(valuesIndex)->toString().data());
     Let* let = new Let(expandInternal(variablesIndex + 1, valuesIndex + 1), variables, values);SCM_ASSERT(let);
     Objects* body = new Objects;SCM_ASSERT(body);
     body->add(let);

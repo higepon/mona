@@ -8,7 +8,6 @@ Object::Object()
 
 Object::~Object()
 {
-    printf("%s", __func__);fflush(stdout);
 }
 
 Object* Object::apply(Objects* arguments, Environment* env)

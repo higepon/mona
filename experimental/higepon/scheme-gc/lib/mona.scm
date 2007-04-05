@@ -298,7 +298,7 @@
 ;;     ((_ a) 
 ;;      (eval a (scheme-report-environment 5)))))
 
-(load "test/danny_dube.scm")
+(load "lib/danny.scm")
 ;(load "slib/Template.scm")
 ;(slib:report)
 

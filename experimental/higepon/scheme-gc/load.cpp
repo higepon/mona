@@ -2,13 +2,13 @@
 
 using namespace util;
 
-String load(const char* file)
+String load(const String& file)
 {
     String ret;
-    FILE* fp = fopen(file, "rb");
+    FILE* fp = fopen(file.data(), "rb");
     if (NULL == fp)
     {
-        fprintf(stderr, "can not open %s\n", file);
+        fprintf(stderr, "can not open %s\n", file.data());
         return ret;
     }
 

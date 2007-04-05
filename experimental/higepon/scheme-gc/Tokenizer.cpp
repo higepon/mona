@@ -45,10 +45,6 @@ once_more:
         token.type = Token::RIGHT_PAREN;
         token.lineno = lineno_;
         return token;
-//     case '\'':
-//         token.type = Token::QUOTE;
-//         token.lineno = lineno_;
-//         return token;
     }
     if (c == '-')
     {

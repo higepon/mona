@@ -1,6 +1,6 @@
 #include <string>
 #include <fstream>
-#include "ExtRepParser.h"
+#include "scheme.h"
 #include "ExtRepParserTest.h"
 #include "StringReader.h"
 
@@ -12,7 +12,7 @@ using namespace monash;
 
 void ExtRepParserTest::setUp()
 {
-    const_init();
+    scheme_const_init();
 }
 
 void ExtRepParserTest::tearDown()

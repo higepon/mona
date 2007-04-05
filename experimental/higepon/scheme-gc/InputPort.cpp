@@ -76,7 +76,6 @@ void InputPort::unReadChar(char c)
 {
     if (c == '\n') fileLineNo_--;
     buffer_.add(c);
-//    ungetc(c, stream_);
 }
 
 
@@ -88,7 +87,6 @@ Object* InputPort::peekCharacter()
         return SCM_EOF;
     }
     Charcter* ret = new Charcter(c);
-//    ungetc(c, stream_);
     unReadChar(c);
     return ret;
 }

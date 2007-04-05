@@ -20,7 +20,6 @@ public:
     virtual Objects* actions() const { return actions_;}
     virtual bool eqv() const;
     virtual bool eq()  const;
-    virtual Object* getContinuation(Object* object);
 
 protected:
     Objects* actions_;

@@ -78,7 +78,7 @@ void* cont_get_stack_bottom()
 void cont_initialize()
 {
     // fix me!
-    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
+    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
     c = NULL;
     r = 0;
     diff = 0;

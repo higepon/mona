@@ -1,5 +1,5 @@
-(load "./test/scheme.scm")
-(load "./test/unittest.scm")
+(load "./lib/mona.scm")
+(load "./lib/unittest.scm")
 
 (define (a b) b)
 (define (b) 4)

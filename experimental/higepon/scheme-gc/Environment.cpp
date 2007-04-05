@@ -15,7 +15,6 @@ Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t l
 
 Environment::~Environment()
 {
-//    delete frames_;
 }
 
 Environment* Environment::clone()

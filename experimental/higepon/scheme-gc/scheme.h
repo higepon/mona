@@ -8,10 +8,21 @@
 #define GLOBAL extern "C"
 #define GLOBAL_VAL(v) /* */
 #endif
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <time.h>
+#ifdef MONA
+#include <monapi.h>
+#else
+#include <sys/time.h>    // rlimit
+#include <sys/resource.h> // rlimit
+#endif
 #include "util/Vector.h"
 #include "util/String.h"
 #include "util/Pair.h"
@@ -21,7 +32,6 @@ namespace util {
     typedef Vector<String*> Strings;
 };
 
-//#include <algorithm>
 #include "MacroFilter.h"
 #include "QuoteFilter.h"
 #include "Object.h"
@@ -43,6 +53,7 @@ namespace util {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
+#include "ExtRepParser.h"
 #include "OutputPort.h"
 #include "InputPort.h"
 #include "StringReader.h"
@@ -66,9 +77,14 @@ typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 
 }
 
-::util::String load(const char* file);
-void registerPrimitives(monash::Environment* env);
-void const_init();
+::util::String load(const ::util::String& file);
+void scheme_register_primitives(monash::Environment* env);
+void scheme_const_init();
+void scheme_expand_stack(uint32_t mb);
+void scheme_input_loop();
+void scheme_init();
+monash::Object* scheme_eval_string(::util::String& input, monash::Environment* env, bool out = false);
+int scheme_exec_file(const ::util::String& file);
 monash::SExp* objectToSExp(monash::Object* o);
 monash::SExp* pairToSExp(monash::Pair* p);
 

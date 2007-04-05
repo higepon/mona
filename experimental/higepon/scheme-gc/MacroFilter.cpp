@@ -229,30 +229,6 @@ int MacroFilter::storeDefineSyntaxes(SExp* sexp)
     return Translator::SUCCESS;
 }
 
-
-#if 0
-int MacroFilter::renameMatchAllKeywords(SExp* sexp)
-{
-    index_ = 0;
-    return foreachSymbols(sexp, &MacroFilter::renameMatchAllKeyword);
-}
-
-// ... => ...n
-int MacroFilter::renameMatchAllKeyword(SExp* dummy, SExp* root)
-{
-    if (root->text == "...")
-    {
-        char buf[16];
-        sprintf(buf, "%s%d", "...", index_);
-        root->text = buf;
-        index_++;
-        return 1;
-    }
-    return 0;
-}
-
-#else
-
 int MacroFilter::renameMatchAllKeywords(SExp* sexp)
 {
     SExp* root = new SExp(SExp::SEXPS);
@@ -282,5 +258,3 @@ int MacroFilter::renameMatchAllKeyword(SExp* dummy, SExp* root)
     }
     return 0;
 }
-
-#endif

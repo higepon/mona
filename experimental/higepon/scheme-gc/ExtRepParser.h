@@ -5,7 +5,7 @@
 #include "Scanner.h"
 
 namespace monash {
-
+    class ExtRepParser;
 // External representations Parser
 class ExtRepParser
 {
@@ -26,7 +26,6 @@ protected:
 
     Scanner* scanner_;
     SToken* token_;
-
 };
 
 }; // namespace monash

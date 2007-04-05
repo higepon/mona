@@ -71,57 +71,9 @@ String SExp::typeToRawString()
     case QUOTE:
         sprintf(buffer, "\'%s", text.data());
         break;
-//     case SEXPS:
-//         sprintf(buffer, "");
-//         break;
     }
     return String(buffer);
 }
-
-// void SExp::extractBindings(SExp* m, SExp* n, BindMap& bindMap)
-// {
-//     if (m->isSymbol())
-//     {
-//         BindObject* b = new BindObject;
-//         b->sexp = n;
-//         MACRO_TRACE_OUT("     bind %s => %s\n", m->text.data(), n->toSExpString().data());
-//         bindMap.put(m->text.data(), b);
-//         return;
-//     }
-//     else if (m->isSExps() && n->isSExps())
-//     {
-//         int nLength = n->sexps.size();
-//         int mLength = m->sexps.size();
-//         for (int i = 0; i < m->sexps.size(); ++i)
-//         {
-//             if (i == nLength) return;
-//             SExp* mm = m->sexps[i];
-//             SExp* nn = n->sexps[i];
-//             if (mLength != nLength && mm->isMatchAllKeyword())
-//             {
-//                 BindObject* b = new BindObject;;
-//                 for (int j = i; j < nLength; ++j)
-//                 {
-//                     b->sexps.add(n->sexps[j]);
-//                     MACRO_TRACE_OUT("     bind %s => %s\n", mm->text.data(), n->seps[j]->toSExpString().data());
-//                 }
-
-//                 bindMap.put(mm->text.data(), b);
-//                 return;
-//             }
-//             else
-//             {
-//                extractBindings(mm, nn, bindMap);
-//            }
-//         }
-//         return;
-//     }
-//     else
-//     {
-//         RAISE_ERROR(m->lineno, "macro exception \n%s\n%s", m->toString().data(), n->toString().data());
-//         return;
-//     }
-// }
 
 void SExp::print(int depth /* = 0 */)
 {
@@ -136,22 +88,10 @@ void SExp::toStringInternal(uint32_t depth, String& s)
     }
     s += typeToString();
     depth++;
-//     if (sexps[0]->isSymbol() && sexps[0]->text == "quote")
-//     {
-//         s += "\'";
-//         for (int i = 1; i < sexps.size(); i++)
-//         {
-//             sexps[i]->toStringInternal(depth, s);
-//         }
-//         return;
-//     }
-//     else
-//     {
-        for (int i = 0; i < sexps.size(); i++)
-        {
-            sexps[i]->toStringInternal(depth, s);
-        }
-//
+    for (int i = 0; i < sexps.size(); i++)
+    {
+        sexps[i]->toStringInternal(depth, s);
+    }
 }
 
 String SExp::toString()
@@ -172,26 +112,13 @@ void SExp::toSExpStringInternal(String& s)
 {
     if (isSExps())
     {
-//         if (sexps[0]->isSymbol() && sexps[0]->text == "quote")
-//         {
-//             s += "\'";
-//             for (int i = 0; i < sexps.size(); i++)
-//             {
-//                 sexps[i]->toSExpStringInternal(s);
-//                 if (i != sexps.size() - 1) s += " ";
-//             }
-//         }
-//         else
-//         {
-//             printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-            s += "(";
-            for (int i = 0; i < sexps.size(); i++)
-            {
-                sexps[i]->toSExpStringInternal(s);
-                if (i != sexps.size() - 1) s += " ";
-            }
-            s += ")";
-//         }
+        s += "(";
+        for (int i = 0; i < sexps.size(); i++)
+        {
+            sexps[i]->toSExpStringInternal(s);
+            if (i != sexps.size() - 1) s += " ";
+        }
+        s += ")";
     }
     else
     {
@@ -232,7 +159,6 @@ bool SExp::equalsInternal(SExp* m, SExp* n)
 
 SExp* SExp::fromString(const String& text)
 {
-//    printf("[[%s]]", text.data());
     Tokenizer tokenizer(text);
     Parser parser(&tokenizer);
     return parser.parse();
@@ -262,33 +188,3 @@ int SExp::foreachSExps(SExp* root, int (SExp::*f)(SExp* root, SExp* sexp))
     return foreachSExp(root, &SExp::isSExps, f);
 }
 
-#if 0
-int SExp::execLoadSyntax(SExp* root, SExp* sexp)
-{
-    if (sexp->sexps.size() == 0) return 0;
-    SExp* left = sexp->sexps[0];
-    if (!left->isSymbol()
-        || left->text != "load"
-        || sexp->sexps.size() != 2
-        || sexp->sexps[1]->type != SExp::STRING) return 0;
-
-    String path  = sexp->sexps[1]->text;
-    string input = load(path.data());
-    if (input == "") return 0;
-    input = "(begin " + input + ")";
-    int i;
-    for (i = 0; i < root->sexps.size(); ++i)
-    {
-        if (root->sexps[i] == sexp) break;
-    }
-    SExp* n = SExp::fromString(input);
-    root->sexps[i] = n;
-    return 1;
-}
-
-int SExp::execLoadSyntaxes()
-{
-    while (foreachSExps(this, &SExp::execLoadSyntax));
-    return 0;
-}
-#endif
