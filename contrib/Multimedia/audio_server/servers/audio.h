@@ -12,7 +12,7 @@ enum
 
 enum AudioServerCommand
 {
-	GetCommandInfo = 0,
+	GetThreadID = 0,
 	GetServerVersion,
 	GetServerStatus,
 	AllocateChannel,
@@ -23,7 +23,16 @@ enum AudioServerCommand
 	DevicesInfo,
 	ChannelInfo,
 	SetBuffer,
+	CreateDataStream,
+	CreateChannelObject,
 	NopCommand,
+};
+
+enum AudioServerThreads
+{
+	NOTIFY = 0,
+	MAIN_THREAD,
+	COMMAND_THREAD,
 };
 
 enum AudioServerMesssage

@@ -1,11 +1,16 @@
 #pragma once
+#include <monapi/Mutex.h>
 #include <sys/types.h>
+#include <sys/HList.h>
 #include <monalibc/stdint.h>
 #include <monapi/Stream.h>
 #include "drivers/audiodriver.h"
 #include "servers/audio.h"
 #include <stlport/vector>
 #include <stlport/map>
+#include <monapi/Thread.h>
+
+class Channel;
 
 class Audio
 {
@@ -16,12 +21,18 @@ public:
 	bool init(char *devices[], int devnum);
 	bool init_drivers();
 	int run();
+	uint32_t tid();
 private:
 	int counter;
 	std::vector<struct driver_desc*> *drivers;
 	std::map<char*, int> *drivers_hash;
 	ServerCommand *commander;
-//	Stream *stream;
+	HList<void*> *reservoir;
+	Channel **channels;
+	size_t channelLength;
+	MonAPI::Thread *command_thread;
+	uint32_t tids[4];
+	uint32_t tid_;
 
 	int messageLoop();
 	bool findDevices(char *devices[], int devnum);
@@ -48,6 +59,7 @@ private:
 protected:
 };
 
+
 class ServerCommand
 {
 private:
@@ -56,6 +68,7 @@ public:
 	ServerCommand(Audio *_parent);
 	virtual ~ServerCommand();
 	int caller(int, MessageInfo*);
+	int GetThreadID(MessageInfo*);
 	int Nop(MessageInfo*);
 	int GetServerVersion(MessageInfo*);
 	int AllocateChannel(MessageInfo*);
@@ -64,5 +77,9 @@ public:
 	int SetBuffer(MessageInfo*);
 	int StartChannel(MessageInfo*);
 	int StopChannel(MessageInfo*);
+	int CreateDataStream(MessageInfo*);
+	int CreateChannelObject(MessageInfo*);
+	int BindChannelObject(MessageInfo*);
+	static void command_thread_main_loop(void* arg);
 };
 

@@ -12,8 +12,30 @@ static uint32_t minor_version = 0x00000001;
 
 #define NumOfMembers ((int)(sizeof(memberTable)/sizeof(memberTable[0])))
 
+void ServerCommand::command_thread_main_loop(void* arg)
+{
+	Audio *parent = (Audio*)arg;
+	MessageInfo msg;
+	parent->tids[COMMAND_THREAD-1] = syscall_get_tid();
+	dprintf("COMMAND_THREAD = %x\n", syscall_get_tid());
+	while(1)
+	{
+		if( MonAPI::Message::receive(&msg) ) continue;
+		switch(msg.header)
+		{
+			case MSG_AUDIO_SERVER_COMMAND:
+			{
+				if( msg.arg1 > NopCommand ) break;
+				parent->commander->caller(msg.arg1, &msg);
+				break;
+			}
+			default: break;
+		}
+	}
+}
+
 int (ServerCommand::*memberTable[])(MessageInfo*) = {
-	&ServerCommand::Nop,
+	&ServerCommand::GetThreadID,
 	&ServerCommand::GetServerVersion,
 	&ServerCommand::Nop,
 	&ServerCommand::AllocateChannel,
@@ -24,6 +46,8 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::Nop,
 	&ServerCommand::Nop,
 	&ServerCommand::SetBuffer,
+	&ServerCommand::CreateDataStream,
+	&ServerCommand::CreateChannelObject,
 };
 
 ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
@@ -41,9 +65,31 @@ int ServerCommand::Nop(MessageInfo *msg)
 
 int ServerCommand::caller(int number, MessageInfo *msg)
 {
+	dprintf("number = %d\n", number);
 	if( number >= NumOfMembers ) return -1;
 	if( memberTable[number] == NULL ) return -1;
 	return (this->*memberTable[number])(msg);
+}
+
+int ServerCommand::GetThreadID(MessageInfo *msg)
+{
+	switch(msg->arg2)
+	{
+		case NOTIFY:
+		{
+		/*
+			parent->tids[msg->arg3-1] = msg->from;
+			dprintf("ThreadID: %x:%x\n", msg->arg3, msg->from);
+			MonAPI::Message::reply(msg, 0);
+			*/
+			break;
+		}
+		case COMMAND_THREAD:
+			MonAPI::Message::reply(msg, parent->tids[COMMAND_THREAD-1]);
+			break;
+		default: break;
+	}
+	return 0;
 }
 
 int ServerCommand::GetServerVersion(MessageInfo *msg)
@@ -124,6 +170,62 @@ int ServerCommand::StopChannel(MessageInfo *msg)
 	std::vector<struct driver_desc*>::iterator it;
 	it = parent->drivers->begin();
 	(*it)->stop_channel(msg->arg2);
+	MonAPI::Message::reply(msg, 0);
+	return 0;
+}
+
+int ServerCommand::CreateDataStream(MessageInfo *msg)
+{
+	ch_t ch = msg->arg2;
+	MonAPI::Message::reply(msg, 0);
+	return 0;
+}
+
+int ServerCommand::CreateChannelObject(MessageInfo *msg)
+{
+	Channel **channels = parent->channels;
+	Channel **p;
+	size_t channelLength = parent->channelLength;
+	int handle = 0;
+	for( size_t i = 0 ; i < channelLength ; i++ )
+	{
+		if( channels[i] == NULL )
+		{
+			channels[i] = new Channel;
+			handle = i+1;
+		}
+	}
+	if( handle == 0 )
+	{
+		p = (Channel**)realloc((void*)channels, ++channelLength);
+		if( p == NULL )
+		{
+			MonAPI::Message::reply(msg, 0);
+			return -1;
+		}
+		channels = p;
+		channels[channelLength-1] = new Channel;
+	}
+	MonAPI::Message::reply(msg, handle);
+	return 0;
+}
+
+int ServerCommand::BindChannelObject(MessageInfo *msg)
+{
+	char *device;
+	int handle;
+	int driver_index;
+	struct driver_desc *driver;
+
+	device = msg->str;
+	handle = msg->arg2;
+
+	std::map<char*, int>::iterator it = parent->drivers_hash->find(device);
+	driver_index = (*it).second;
+	std::vector<struct driver_desc*>::iterator it2 = parent->drivers->begin();
+	for( int i = 0 ; i < driver_index ; i++ ) it2++;
+	driver = (*it2);
+	parent->channels[handle-1]->init(driver);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }

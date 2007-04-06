@@ -8,6 +8,7 @@ using namespace MonAPI;
 int main(int argc, char *argv[])
 {
 	uint32_t audioServerID;
+	uint32_t commanderID;
 	int32_t ch;
 	char str[128];
 	MessageInfo msg;
@@ -16,6 +17,12 @@ int main(int argc, char *argv[])
 	if( audioServerID == THREAD_UNKNOWN )
 		exit(printf("Couldn't find an audio server."));
 	dprintf("AUDIO.EX5 : %x\n", audioServerID);
+
+	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, GetThreadID, COMMAND_THREAD);
+	commanderID = msg.arg2;
+	dprintf("AUDIO.EX5 : %x\n", commanderID);
+
+#if 0
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, GetServerVersion);
 	_printf("Server version: %x:%x\n", msg.arg2, msg.arg3);
 	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, AllocateChannel);
@@ -59,6 +66,8 @@ int main(int argc, char *argv[])
 
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
+
+#endif
 
 	return 0;
 }

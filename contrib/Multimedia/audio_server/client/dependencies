@@ -38,4 +38,6 @@ main.o: main.cpp /Users/Yume/tmp/mona_nb/trunk/mona/include/monapi.h \
   /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/stdlib.h \
   /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/stddef.h \
   /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/math.h \
-  /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/float.h
+  /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/float.h \
+  /Users/Yume/tmp/mona_nb/trunk/mona/include/servers/audio.h \
+  /Users/Yume/tmp/mona_nb/trunk/mona/include/monalibc/stdint.h ../debug.h

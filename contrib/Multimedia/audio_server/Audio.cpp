@@ -2,6 +2,7 @@
 #include <monalibc/string.h>
 #include <monapi/Message.h>
 #include <monapi/io.h>
+#include <monapi/Thread.h>
 #include <stdio.h>
 #include <vector>
 #include <map>
@@ -15,19 +16,21 @@ char *knownDevices[] = {"es1370"};
 extern "C" struct driver_desc *aud_es1370_get_desc();
 extern "C" void aud_es1370_release_desc(struct driver_desc*);
 
-Audio::Audio()
+Audio::Audio() : channelLength(0)
 {
 	drivers = new std::vector<struct driver_desc*>;
 	drivers_hash = new std::map<char*, int>;
 	commander = new ServerCommand(this);
-//	stream = new Stream;
+	reservoir = new HList<void*>;
 	dmabuf = monapi_allocate_dma_memory(0x10000);
+	command_thread = new MonAPI::Thread(&ServerCommand::command_thread_main_loop, (void*)this, NULL);
+	tid_ = syscall_get_tid();
 }
 
 Audio::~Audio()
 {
 	monapi_deallocate_dma_memory(dmabuf, 0x10000);
-//	delete stream;
+	delete reservoir;
 	delete commander;
 	delete drivers_hash;
 	delete drivers;
@@ -46,7 +49,13 @@ bool Audio::init(char *devices[], int devnum)
 int Audio::run()
 {
 	this->init_drivers();
+	command_thread->start();
 	return this->messageLoop();
+}
+
+uint32_t Audio::tid()
+{
+	return tid_;
 }
 
 bool Audio::init_drivers()
