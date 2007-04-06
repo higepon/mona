@@ -22,10 +22,10 @@ int main(int argc, char *argv[])
 	commanderID = msg.arg2;
 	dprintf("AUDIO.EX5 : %x\n", commanderID);
 
-#if 0
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, GetServerVersion);
+#if 1
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, GetServerVersion);
 	_printf("Server version: %x:%x\n", msg.arg2, msg.arg3);
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, AllocateChannel);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, AllocateChannel);
 	ch = msg.arg2;
 	_printf("Channel: %d\n", ch);
 	struct audio_server_channel_info ci;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	ci.bitspersample = 16;
 	ci.channels = 2;
 	memcpy(str, &ci, sizeof(ci));
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel, 0, 0, str);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel, 0, 0, str);
 	_printf("Result: %d\n", msg.arg2);
 
 	struct audio_server_buffer_info bi;
@@ -54,14 +54,14 @@ int main(int argc, char *argv[])
 	memcpy(str, &bi, sizeof(bi));
 	_printf("%x\n", bi.handle);
 	printf("I will set a buffer...\n");
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
 
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 	while(1);
 
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 
-	Message::sendReceive(&msg, audioServerID, MSG_AUDIO_SERVER_COMMAND, ReleaseChannel, ch);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, ReleaseChannel, ch);
 	_printf("Channel was released.\n");
 
 	monapi_cmemoryinfo_dispose(mi);
