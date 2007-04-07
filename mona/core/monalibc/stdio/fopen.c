@@ -109,6 +109,7 @@ FILE *fopen(const char *path, const char *mode)
 	}
 	fp->_bf._size = BUFSIZ;
 	fp->_flags |= __SALD|__SFBF;
+	fp->_ungetcbuf = EOF;
 /*
 	fp->_bf._size = 0;
 	fp->_flags |= __SNBF;
