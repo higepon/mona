@@ -1,3 +1,7 @@
+2007-04-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monalibc/stdio/fopen.c (fopen): Yumeさんのアドバイスにより fopen() の末尾に 	fp->_ungetcbuf = EOF; を追加。
+
 2007-02-11  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/VesaConsole.cpp (VesaScreen::fillPat): junjunnさん高速化とりこみ
