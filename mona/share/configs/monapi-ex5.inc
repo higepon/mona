@@ -30,7 +30,7 @@ force: $(TARGET).EX5 ;
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map dependencies
 
-depend dependencies:
+depend dependencies:$(ADDTARGETDEP)
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif
