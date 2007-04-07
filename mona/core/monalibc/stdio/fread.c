@@ -139,7 +139,7 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
       syscall_print("panic");
     }
   else {
-    syscall_print("not panic");
+    //    syscall_print("not panic");
   }
 	if( !(stream->_flags & __SRD) )
 	{
