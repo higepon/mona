@@ -5,6 +5,7 @@ TARGET  = SCHEME
 INSTDIR = $(BINDIR)/SERVERS
 include Makefile.src.inc
 
+CLEANFILES   = $(LIBCONT_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
 ADDLINK      =  main.o $(LIBCONT_OBJECTS) -lmonalibc
 ADDLINKDEP   =   $(LIBCONT_OBJECTS) $(MONADIR)/lib/libmonalibc.a main.o

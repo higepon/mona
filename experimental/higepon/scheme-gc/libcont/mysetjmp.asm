@@ -4,14 +4,14 @@ section .bss
 section .data
 section .text
 %include "libcont/macro.asm"
-cglobal __mysetjmp
-cglobal __mylongjmp
+cglobal _mysetjmp
+cglobal _mylongjmp
 
 ; jmp_buf:
 ;	eax ebx ecx edx esi edi ebp esp eip
 ;	0   4   8   12  16  20  24  28  32
 
-__mysetjmp:	; int _setjmp(jmp_buf env);
+_mysetjmp:	; int _setjmp(jmp_buf env);
 	push	ebp
 	mov	ebp, esp
 
@@ -36,7 +36,7 @@ __mysetjmp:	; int _setjmp(jmp_buf env);
 	leave
 	ret
 
-__mylongjmp:	; void _longjmp(jmp_buf env, int retval);
+_mylongjmp:	; void _longjmp(jmp_buf env, int retval);
 	push	ebp
 	mov	ebp, esp
 

@@ -87,7 +87,7 @@ int scheme_exec_file(const String& file)
     String input = load(file);
     if (input == "")
     {
-        fprintf(stderr, "can not load: %s file\n", input.data());
+        fprintf(stderr, "can not load: %s file\n", file.data());
         return -1;
     }
     Error::exitOnError();
@@ -99,6 +99,7 @@ int scheme_exec_file(const String& file)
     g_top_env = env;
     scheme_register_primitives(env);
     scheme_eval_string(input, env);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return 0;
 }
 
