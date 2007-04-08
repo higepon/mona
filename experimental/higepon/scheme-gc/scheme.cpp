@@ -58,7 +58,7 @@ uint32_t count_char(const char* s, char c)
 {
     int length = strlen(s);
     uint32_t count = 0;
-    for (int i = 0; i < length; i++)
+    for (uint32_t i = 0; i < length; i++)
     {
         if (s[i] == c) count++;
     }
@@ -77,11 +77,11 @@ Object* scheme_eval_string(String& input, Environment* env, bool out /* = false 
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
         SCM_EVAL(evalFunc, env, evaluated, sexp);
+//        _printf("sexp %s\n", evaluated->toString().data());
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
     }
     return evaluated;
 }
-
 int scheme_exec_file(const String& file)
 {
     String input = load(file);
@@ -99,7 +99,6 @@ int scheme_exec_file(const String& file)
     g_top_env = env;
     scheme_register_primitives(env);
     scheme_eval_string(input, env);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return 0;
 }
 

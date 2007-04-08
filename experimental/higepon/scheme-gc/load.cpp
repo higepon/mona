@@ -2,7 +2,7 @@
 
 using namespace util;
 
-#ifdef MONA
+#if MONA
 String load(const String& file)
 {
     String ret;
@@ -31,7 +31,16 @@ String load(const String& file)
         perror("fseek");
         return ret;
     }
+
+#ifdef MONA
+    uint32_t id = monapi_file_open(file.data(), MONAPI_FALSE);
+    size_t size = monapi_file_get_file_size(id);
+// close すると fread に影響が!
+//    monapi_file_close(id);
+#else
     size_t size = ftell(fp);
+#endif
+
 #ifdef USE_BOEHM_GC
     char* buffer = new(GC) char[size + 1];SCM_ASSERT(buffer);
 #else
@@ -43,7 +52,17 @@ String load(const String& file)
         return ret;
     }
     fseek(fp, 0, SEEK_SET);
-    fread(buffer, 1, size, fp);
+    int readSizeTotal = 0;
+    for (;;)
+    {
+        int readSize = fread(&buffer[readSizeTotal], 1, size - readSizeTotal, fp);
+        readSizeTotal += readSize;
+        buffer[readSizeTotal] = '\0';
+        if (readSize == 0 || readSizeTotal >= size)
+        {
+            break;
+        }
+    }
     fclose(fp);
     buffer[size] = '\0';
     ret = String(buffer);

@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#ifndef MONA
 #include <unistd.h>
+#endif
 #include "mysetjmp.h"
 #define GC_ASSERT_NOT_NULL(p) {if (NULL == p) {printf("GC_ASSERT_NOT_NULL %s:%d: %s\n", __FILE__, __LINE__, #p);exit(-1);}}
 #define GC_ASSERT(p) {if (!(p)) {printf("GC_ASSERT %s:%d: %s\n", __FILE__, __LINE__, #p);fflush(stdout);exit(-1);}}

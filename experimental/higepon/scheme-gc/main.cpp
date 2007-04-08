@@ -17,7 +17,7 @@ using namespace monash;
 int main(int argc, char *argv[])
 {
 #if 0
-    FILE* f = fopen("/MONA.CFG", "rb");
+    FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
     if (NULL == f)
     {
         _printf("file open error\n");
@@ -26,6 +26,37 @@ int main(int argc, char *argv[])
     char buf[32];
     uint32_t size = fread(buf, 1, 32, f);
     _printf("read size = %d: %s\n", size, buf);
+    fclose(f);
+#elif 0
+    FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
+    if (NULL == f)
+    {
+        _printf("file open error\n");
+        return -1;
+    }
+    if (-1 == fseek(f, 0, SEEK_END))
+    {
+        perror("fseek");
+        return -1;
+    }
+    size_t size = ftell(f);
+    _printf("file size = %d\n", size);
+    fclose(f);
+
+#elif 0
+    FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
+    if (NULL == f)
+    {
+        _printf("file open error\n");
+        return -1;
+    }
+    size_t size = monapi_file_get_file_size(f->_file); // 19616 byte
+    _printf("file size = %d\n", size);
+    char* buf = new char[size];
+    int readSize = fread(buf, 1, size, f);
+    _printf("readSize = %d pos=%d\n", ftell(f)); // => readSize = 19616 pos=1
+    _printf("buf=%s\n", buf);  // 1024 byte しか読めてない
+    delete[] buf;
     fclose(f);
 #else
     // if continuation failed, see cont_initialize function and fix cont_stack_bottom!
@@ -37,10 +68,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         scheme_exec_file(argv[1]);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//        return scheme_exec_file(argv[1]);
+        return 0;
     }
 #endif
 }
