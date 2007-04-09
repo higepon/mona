@@ -8,6 +8,7 @@ env->defineVariable(new Variable("char->integer"), new CharcterToInteger());
 env->defineVariable(new Variable("integer->char"), new IntegerToCharcter());
 env->defineVariable(new Variable("eqv?"), new EqvP());
 env->defineVariable(new Variable("eq?"), new EqP());
+env->defineVariable(new Variable("ls"), new Ls());
 env->defineVariable(new Variable("transcript-on"), new TranscriptOn());
 env->defineVariable(new Variable("transcript-off"), new TranscriptOff());
 env->defineVariable(new Variable("file-exists?"), new FileExistsP());

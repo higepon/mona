@@ -1,6 +1,7 @@
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
 #include "scheme.h"
+#include "Nil.h"
 //#include "ExtRepParser.h"
 using namespace util;
 using namespace std;
@@ -10,6 +11,38 @@ extern OutputPort* g_currentOutputPort;
 extern OutputPort* g_defaultOutputPort;
 extern InputPort*  g_defaultInputPort;
 extern InputPort*  g_currentInputPort;
+
+#include <dirent.h>
+
+PROCEDURE(Ls, "ls")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    ::util::String path;
+    if (ARGC == 0)
+    {
+        path = "/home/taro/tmp/hoge/app";
+    }
+    else
+    {
+        CAST(ARGV(0), SString, s);
+        path = s->value();
+    }
+    DIR* dir;
+    struct dirent* entry;
+    if ((dir = opendir(path.data())) == NULL)
+    {
+        RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
+    }
+    Objects* entries = new Objects;
+    for(entry = readdir(dir); entry != NULL; entry = readdir(dir))
+    {
+        entries->add(new SString(entry->d_name, lineno()));
+    }
+    closedir(dir);
+    ::monash::Pair* ret;
+    SCM_LIST(entries, ret, lineno());
+    return ret;
+}
 
 PROCEDURE(TranscriptOn, "transcript-on")
 {

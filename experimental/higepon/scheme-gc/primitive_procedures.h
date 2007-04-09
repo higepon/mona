@@ -172,6 +172,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class Ls : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    Ls()  : procedureName_("ls") {}
+    virtual ~Ls() {}
+
+    virtual ::util::String toString() {    return "procedure:""ls";}
+    virtual ::util::String typeString() const { return "ls"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class TranscriptOn : public PrimitiveProcedure
 {
 private:
