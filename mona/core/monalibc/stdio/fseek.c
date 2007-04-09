@@ -56,7 +56,7 @@ int fseek(FILE *stream, long offset, int whence)
 		}
 		case SEEK_END:
 		{
-			stream->_extra->offset += offset;
+			stream->_extra->offset = stream->_extra->filesize-offset;
 			break;
 		}
 		default:

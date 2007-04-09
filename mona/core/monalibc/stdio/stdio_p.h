@@ -45,6 +45,7 @@ struct __sFILEX
 {
 	unsigned char	stds;
 	fpos_t		offset;
+	fpos_t		filesize;
 };
 
 enum
