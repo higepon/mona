@@ -58,6 +58,22 @@ int main(int argc, char *argv[])
     _printf("buf=%s\n", buf);  // 1024 byte しか読めてない
     delete[] buf;
     fclose(f);
+#elif 1
+    FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
+    if (NULL == f)
+    {
+        _printf("file open error\n");
+        return -1;
+    }
+    _printf("%c\n", fgetc(f));
+    _printf("%c\n", fgetc(f));
+    _printf("%c\n", fgetc(f));
+    _printf("%c\n", fgetc(f));
+    _printf("%c\n", fgetc(f));
+    _printf("%c\n", fgetc(f));
+
+    fclose(f);
+
 #else
     // if continuation failed, see cont_initialize function and fix cont_stack_bottom!
     scheme_init();
