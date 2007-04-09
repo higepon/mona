@@ -92,7 +92,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		_printf("buf+readsize = %x\n", buf+readsize);
 		if( size > stream->_bf._size )
 		{
-			stream->_seek(stream->_file, readsize, SEEK_CUR);
+//			stream->_seek(stream->_file, readsize, SEEK_CUR);
 			retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
 		}
 		_printf("retsize = %d\n", retsize);
@@ -135,7 +135,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			stream->_bf._range = readsize;
 			if( size > stream->_bf._size )
 			{
-				stream->_seek(stream->_file, readsize, SEEK_CUR);
+//				stream->_seek(stream->_file, readsize, SEEK_CUR);
 				retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
 			}
 			readsize += retsize;
