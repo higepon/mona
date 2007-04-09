@@ -87,6 +87,16 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		memcpy(buf, stream->_bf._base, size);
 		stream->_bf._offset = stream->_extra->offset;
 		stream->_bf._range = readsize;
+		_printf("readsize = %d\n", readsize);
+		_printf("buf = %x\n", buf);
+		_printf("buf+readsize = %x\n", buf+readsize);
+		if( size > stream->_bf._size )
+		{
+			stream->_seek(stream->_file, readsize, SEEK_CUR);
+			retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
+		}
+		_printf("retsize = %d\n", retsize);
+		readsize += retsize;
 	}
 	else
 	{
@@ -107,6 +117,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		}
 		else
 		{
+		puts("else2");
 			readsize = stream->_read(stream->_file,
 							stream->_bf._base,
 							stream->_bf._size);
@@ -122,6 +133,13 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			memcpy(buf, stream->_bf._base, size);
 			stream->_bf._offset = stream->_extra->offset;
 			stream->_bf._range = readsize;
+			if( size > stream->_bf._size )
+			{
+				stream->_seek(stream->_file, readsize, SEEK_CUR);
+				retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
+			}
+			readsize += retsize;
+
 		}
 	}
 

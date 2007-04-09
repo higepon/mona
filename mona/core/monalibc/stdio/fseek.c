@@ -37,6 +37,7 @@
 int fseek(FILE *stream, long offset, int whence)
 {
 	register int result;
+	stream->_extra->filesize = monapi_file_get_file_size(stream->_file);
 	switch(whence)
 	{
 		case SEEK_SET:
