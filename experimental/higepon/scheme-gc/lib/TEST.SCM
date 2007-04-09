@@ -696,3 +696,4 @@
 ; (load "/SERVERS/DANNY.SCM")
 (display "*+********************************")
 (for-each display '(a b c))
+(for-each display (ls))

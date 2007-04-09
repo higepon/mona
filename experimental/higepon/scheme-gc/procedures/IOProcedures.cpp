@@ -20,7 +20,7 @@ PROCEDURE(Ls, "ls")
     ::util::String path;
     if (ARGC == 0)
     {
-        path = "/home/taro/tmp/hoge/app";
+        path = ".";
     }
     else
     {
