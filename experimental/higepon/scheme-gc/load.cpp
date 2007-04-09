@@ -2,7 +2,7 @@
 
 using namespace util;
 
-#if MONA
+#if 0
 String load(const String& file)
 {
     String ret;
@@ -32,7 +32,7 @@ String load(const String& file)
         return ret;
     }
 
-#ifdef MONA
+#if 0
     uint32_t id = monapi_file_open(file.data(), MONAPI_FALSE);
     size_t size = monapi_file_get_file_size(id);
 // close すると fread に影響が!
