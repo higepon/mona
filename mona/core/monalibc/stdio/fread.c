@@ -62,6 +62,7 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 	}
 
 	stream->_extra->offset += readsize;
+	fseek(stream, stream->_extra->offset, SEEK_SET);
 
 	return readsize;
 }
@@ -187,6 +188,6 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 	}
 	else
 	{
-		return __nida_fullybuf_fread(buf, size*nmemb, stream);
+		return __nida_nonebuf_fread(buf, size*nmemb, stream);
 	}
 }
