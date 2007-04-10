@@ -60,9 +60,9 @@ typedef struct __sFILE
 	struct	__sbuf _bf;
 	int	_lbfpos;
 
-	int (*_read)(int id, void *buf, size_t size);
-	int (*_seek)(int id, fpos_t pos, int whence);
-	int (*_write)(int id, void *buf, size_t size);
+	int (*_read)(void *self, void *buf, size_t size);
+	int (*_seek)(void *self, fpos_t pos, int whence);
+	int (*_write)(void *self, void *buf, size_t size);
 
 	struct __sFILEX *_extra;
 	int _ungetcbuf;

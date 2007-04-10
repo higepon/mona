@@ -41,14 +41,18 @@
 
 FILE __sF[3];
 
-int _read(int id, void *buf, size_t size)
+int _read(void *self, void *buf, size_t size)
 {
 	monapi_cmemoryinfo *cmi = NULL;
+	FILE *f;
+	uint32_t id;
 	unsigned char *p = buf;
 	int readsize;
 	int i;
+	f = (FILE*)self;
+	id = f->_file;
 
-	cmi = monapi_file_read((uint32_t)id, (uint32_t)size);
+	cmi = monapi_file_read(id, (uint32_t)size);
 	if( cmi == NULL )
 	{
 		return -1;
@@ -61,15 +65,18 @@ int _read(int id, void *buf, size_t size)
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
-//	monapi_file_seek((uint32_t)id, (uint32_t)readsize, SEEK_CUR);
+	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
 
 	return readsize;
 }
 
-int _write(int id, void *buf, size_t size)
+int _write(void *self, void *buf, size_t size)
 {
 	uint32_t result;
+	FILE *f;
 	monapi_cmemoryinfo* cmi;
+
+	f = (FILE*)self;
 
 	cmi = monapi_cmemoryinfo_new();
 	if( !monapi_cmemoryinfo_create(cmi, size, 0) )
@@ -79,7 +86,7 @@ int _write(int id, void *buf, size_t size)
 	}
 	memcpy(cmi->Data, buf, cmi->Size);
 
-	result = monapi_file_write((uint32_t)id, cmi, cmi->Size);
+	result = monapi_file_write((uint32_t)f->_file, cmi, cmi->Size);
 
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
@@ -87,11 +94,12 @@ int _write(int id, void *buf, size_t size)
 	return (int)result;
 }
 
-int _seek(int id, fpos_t pos, int whence)
+int _seek(void *self, fpos_t pos, int whence)
 {
 	MONAPI_BOOL result;
+	FILE *f = (FILE*)self;
 
-	result = monapi_file_seek((uint32_t)id, (uint32_t)pos, (uint32_t)whence);
+	result = monapi_file_seek((uint32_t)f->_file, (uint32_t)pos, (uint32_t)whence);
 	if( result == MONAPI_FALSE )
 	{
 		return -1;

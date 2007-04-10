@@ -55,9 +55,9 @@ enum
 	__STDERR = 3,
 };
 
-int _read(int, void*, size_t);
-int _write(int,void*, size_t);
-int _seek(int, fpos_t, int);
+int _read(void*, void*, size_t);
+int _write(void*,void*, size_t);
+int _seek(void*, fpos_t, int);
 
 void _open_stdin(FILE*);
 void _open_stdout(FILE*);

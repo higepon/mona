@@ -49,7 +49,7 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 {
 	size_t readsize = 0;
 
-	readsize = stream->_read(stream->_file, buf, size);
+	readsize = stream->_read(stream, buf, size);
 	if( readsize == -1 )
 	{
 		stream->_flags |= __SERR;
@@ -62,7 +62,7 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 	}
 
 	stream->_extra->offset += readsize;
-	fseek(stream, stream->_extra->offset, SEEK_SET);
+//	fseek(stream, stream->_extra->offset, SEEK_SET);
 
 	return readsize;
 }
@@ -74,7 +74,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 	if( stream->_bf._range == 0 )
 	{
-		readsize = stream->_read(stream->_file, stream->_bf._base,
+		readsize = stream->_read(stream, stream->_bf._base,
 							stream->_bf._size);
 		if( readsize == -1 )
 		{
@@ -94,7 +94,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		if( size > stream->_bf._size )
 		{
 //			stream->_seek(stream->_file, readsize, SEEK_CUR);
-			retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
+			retsize = stream->_read(stream, buf+readsize, size-readsize);
 		}
 		_printf("retsize = %d\n", retsize);
 		readsize += retsize;
@@ -119,7 +119,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		else
 		{
 		puts("else2");
-			readsize = stream->_read(stream->_file,
+			readsize = stream->_read(stream,
 							stream->_bf._base,
 							stream->_bf._size);
 			if( readsize == -1 )
@@ -137,7 +137,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			if( size > stream->_bf._size )
 			{
 //				stream->_seek(stream->_file, readsize, SEEK_CUR);
-				retsize = stream->_read(stream->_file, buf+readsize, size-readsize);
+				retsize = stream->_read(stream, buf+readsize, size-readsize);
 			}
 			readsize += retsize;
 
