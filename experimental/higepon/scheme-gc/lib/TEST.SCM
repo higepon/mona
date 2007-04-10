@@ -1,6 +1,6 @@
-;(load "/SERVERS/MONA.SCM")
+(load "/SERVERS/MONA.SCM")
 ;(load "/SERVERS/DANNY.SCM")
 (display "*+********************************")
-(exit)
+;;(exit)
 ;; (for-each display '(a b c))
 ;; (for-each display (ls "/SERVERS"))
