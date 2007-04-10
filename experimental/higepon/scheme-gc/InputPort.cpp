@@ -62,7 +62,6 @@ char InputPort::readChar()
     if (buffer_.isEmpty())
     {
         c = fgetc(stream_);
-        _printf("[%c]", c);
     }
     else
     {

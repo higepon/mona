@@ -19,23 +19,23 @@ Pair::~Pair()
 ::util::String Pair::toStringInternal(bool inList /* = false */)
 {
     ::util::String carString = car_ ? car_->toString() : "NULL";
-    ::util::String cdrString = cdr_ ? cdr_->toString() : "NULL";
     if (cdr_->isPair())
     {
         Pair* p = (Pair*)cdr_;
+        ::util::String cdrString = p->toStringInternal(true);
         if (inList)
         {
-            return carString + " " + p->toStringInternal(true);
+            return carString + " " + cdrString;
         }
         else
         {
             if (carString == "quote")
             {
-                return "\'" + p->toStringInternal(true);
+                return "\'" + cdrString;
             }
             else
             {
-                return "(" + carString + " " + p->toStringInternal(true) + ")";
+                return "(" + carString + " " + cdrString + ")";
             }
         }
     }
@@ -52,6 +52,7 @@ Pair::~Pair()
     }
     else
     {
+        ::util::String cdrString = cdr_->toString();
         if (inList)
         {
             return carString + " . " + cdrString;
@@ -60,7 +61,6 @@ Pair::~Pair()
         {
             return "(" + carString + " . " + cdrString + ")";
         }
-
     }
 }
 

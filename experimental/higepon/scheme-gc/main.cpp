@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     _printf("buf=%s\n", buf);  // 1024 byte しか読めてない
     delete[] buf;
     fclose(f);
-#elif 1
+#elif 0
     FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
     if (NULL == f)
     {
