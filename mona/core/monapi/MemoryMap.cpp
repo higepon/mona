@@ -49,17 +49,20 @@ uint8_t* MemoryMap::map(uint32_t id)
     if (size == 0)
     {
         lastError = 3;
+        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
 
     if (nextAddress + size > START_ADDRESS + MAX_SIZE)
     {
         lastError = 4;
+        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
 
     if (syscall_memory_map_map(id, nextAddress))
     {
+        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         lastError = 5;
         return NULL;
     }

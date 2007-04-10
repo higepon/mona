@@ -411,9 +411,11 @@ void syscall_entrance()
 
         if (!isOpen)
         {
+            g_console->printf("kernel:::");
             info->eax = 0;
             break;
         }
+            g_console->printf("kernel[[[[");
         info->eax = sharedId;
         break;
      }
@@ -427,6 +429,7 @@ void syscall_entrance()
 
         if (object == NULL)
         {
+            g_console->printf("kernel***");
             break;
         }
 
@@ -459,6 +462,7 @@ void syscall_entrance()
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
+            g_console->printf("unmap***");
         Semaphore::up(&g_semaphore_shared);
 
         info->eax = isDetached ? 0 : 1;
