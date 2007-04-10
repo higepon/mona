@@ -330,7 +330,6 @@ PROCEDURE(Load, "load")
     Object* evaluated = NULL;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         SCM_EVAL(evalFunc, env, evaluated, sexp);
     }
     return evaluated;
