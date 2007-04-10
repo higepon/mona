@@ -1,3 +1,7 @@
+2007-04-10  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Pair.cpp: toStringのバグ修正
+
 2007-04-08  higepon  <higepon@users.sourceforge.jp>
 
         * core/monalibc/stdio/fopen.c (fopen): Yumeさんのアドバイスにより fopen() の末尾に 	fp->_ungetcbuf = EOF; を追加。

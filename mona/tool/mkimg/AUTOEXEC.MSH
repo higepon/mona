@@ -14,7 +14,7 @@ hello
 #hello
 #hello | upper
 #upper higepon
-#HELLO
+#HELLO 
 #print higepon|upper
 #print higepon
 #print higepon|upper
@@ -31,4 +31,4 @@ hello
 #@STDOUT.EX5 
 #@WRITE.EX5 ABCDEFG
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
-/servers/scheme.ex5
+../servers/scheme.ex5 /SERVERS/TEST.SCM

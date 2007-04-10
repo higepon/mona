@@ -46,6 +46,7 @@ FILE *fopen(const char *path, const char *mode)
 	if( fp == NULL )
 	{
 		errno = ENOMEM;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return fp;
 	}
 	memset(fp, 0, sizeof(FILE));
@@ -83,6 +84,7 @@ FILE *fopen(const char *path, const char *mode)
 		{
 			free(fp);
 			errno = EUNKNOWN;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 			return NULL;
 		}
 	}
@@ -96,6 +98,7 @@ FILE *fopen(const char *path, const char *mode)
 	{
 		free(fp);
 		errno = ENOMEM;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return NULL;
 	}
 	memset(fp->_extra, 0, sizeof(struct __sFILEX));
@@ -105,6 +108,7 @@ FILE *fopen(const char *path, const char *mode)
 		free(fp->_extra);
 		free(fp);
 		errno = ENOMEM;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return NULL;
 	}
 	fp->_extra->filesize = (fpos_t)monapi_file_get_file_size(fp->_file);
@@ -116,6 +120,6 @@ FILE *fopen(const char *path, const char *mode)
 	*/
 	fp->_bf._size = 0;
 	fp->_flags |= __SNBF;
-
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	return fp;
 }

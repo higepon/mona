@@ -111,7 +111,7 @@ echo '
 SHAREDIR=$(MONADIR)/share
 PATH:=$(PATH):$(PREFIX)/bin
 export PATH
-CFLAGS=-nostdlib -nostdinc -UWIN32 -U_WIN32 -Wall -fno-builtin -O2 -DMONA -DDEBUG_BUILD $(HOSTDEF)
+CFLAGS=-nostdlib -nostdinc -UWIN32 -U_WIN32 -Wall -fno-builtin -O2 -DMONA -DDEBUG_BUILD $(HOSTDEF) -DMONASH_DONT_FREE_MEMORY $(ADDCFLAGS)
 CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti -fno-strict-aliasing
 NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32 -DMONA
 ' >> $MAKEINC
