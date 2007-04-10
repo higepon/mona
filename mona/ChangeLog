@@ -1,5 +1,7 @@
 2007-04-10  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/gc3/gc.cpp (gc_init_internal): Scheme GC ‚ª Mona ‚É‚à‘Î‰‚µ‚½
+
         * core/scheme/Pair.cpp: toString‚ÌƒoƒOC³
 
 2007-04-08  higepon  <higepon@users.sourceforge.jp>
