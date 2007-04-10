@@ -4,8 +4,9 @@ include $(SRCTOP)/Makefile.inc
 TARGET  = SCHEME
 INSTDIR = $(BINDIR)/SERVERS
 include Makefile.src.inc
-#include Makefile.mona_gc.inc
+include Makefile.mona_gc.inc
 
+ADDCFLAGS    = $(GC_CFLAGS)
 CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) -lmonalibc

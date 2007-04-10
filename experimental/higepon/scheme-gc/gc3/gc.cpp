@@ -25,6 +25,12 @@ static void gc_mark_registers();
 static void gc_mark();
 static void gc_sweep();
 
+#ifdef MONA
+void* get_stack_bottom()
+{
+  return (void*)0xF0000000;
+}
+#else
 #pragma weak __libc_stack_end
 extern void* __libc_stack_end;
 void* get_stack_bottom()
@@ -34,7 +40,7 @@ void* get_stack_bottom()
     GC_TRACE_OUT("__libc_stack_end = %x\n", __libc_stack_end);
     return __libc_stack_end;
 }
-
+#endif
 
 void* operator new(unsigned int size)
 {
@@ -71,7 +77,7 @@ void gc_init_internal(char* stack_bottom, char* data_start, char* data_end)
     }
     gc_record_initialize(&root);
     gc_heap_max = GC_SAFE_POINTER(0);
-    gc_heap_min = GC_SAFE_POINTER(0xfffffff);
+    gc_heap_min = GC_SAFE_POINTER(0xffffffff);
     gc_stack_bottom = (char*)get_stack_bottom();
     gc_total_allocated_size = 0;
     gc_total_allocated_count = 0;
@@ -103,7 +109,11 @@ void* gc_malloc(uint32_t size, bool haspointer)
     gc_total_allocated_count++;
     GCRecord* r = (GCRecord*)malloc(alloc_size);
     GC_ASSERT_NOT_NULL(r);
-    if ((uint32_t)r < GC_SAFE_POINTER(gc_heap_min)) gc_heap_min = GC_SAFE_POINTER(r);
+    if ((uint32_t)r < GC_SAFE_POINTER(gc_heap_min))
+    {
+        GC_TRACE_OUT("gc_heap_min=%x\n", r);
+        gc_heap_min = GC_SAFE_POINTER(r);
+    }
     if ((uint32_t)r + alloc_size > GC_SAFE_POINTER(gc_heap_max)) gc_heap_max = GC_SAFE_POINTER(r + alloc_size);
     gc_record_initialize(r);
     gc_record_add_to_next(&root, r);

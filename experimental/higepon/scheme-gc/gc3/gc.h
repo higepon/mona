@@ -11,7 +11,12 @@
 #define GC_ASSERT_NOT_NULL(p) {if (NULL == p) {printf("GC_ASSERT_NOT_NULL %s:%d: %s\n", __FILE__, __LINE__, #p);exit(-1);}}
 #define GC_ASSERT(p) {if (!(p)) {printf("GC_ASSERT %s:%d: %s\n", __FILE__, __LINE__, #p);fflush(stdout);exit(-1);}}
 #ifdef GC_TRACE
+#ifdef MONA
+#include "monapi.h"
+#define GC_TRACE_OUT(...) _logprintf(__VA_ARGS__);
+#else
 #define GC_TRACE_OUT(...) printf(__VA_ARGS__);fflush(stdout);
+#endif
 #else
 #define GC_TRACE_OUT(...) //
 #endif
@@ -37,11 +42,23 @@ typedef struct GCRecord
 } GCRecord;
 #pragma pack()
 
+#ifdef MONA
+extern "C" char  _data_start__[];
+extern "C" char  _bss_end__[];
+#define gc_init() {                                \
+    char* __ebp;                                   \
+    asm volatile("movl %%ebp, %0" : "=g"(__ebp));  \
+    gc_init_internal(__ebp, _data_start__, _bss_end__);    \
+    }
+#else
+extern "C" char  __bss_start[];
+extern "C" char  _end[];
 #define gc_init() {                                \
     char* __ebp;                                   \
     asm volatile("movl %%ebp, %0" : "=g"(__ebp));  \
     gc_init_internal(__ebp, __bss_start, _end);    \
 }
+#endif
 
 void gc();
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end);
