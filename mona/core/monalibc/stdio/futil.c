@@ -91,6 +91,8 @@ int _write(void *self, void *buf, size_t size)
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
+	monapi_file_seek((uint32_t)f->_file, (uint32_t)size+f->_extra->offset, SEEK_SET);
+
 	return (int)result;
 }
 
