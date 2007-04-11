@@ -213,7 +213,21 @@ int VnodeManager::seek(uint32_t fileID, uint32_t offset, uint32_t origin)
     {
         return ret;
     }
-    fileInfo->context.offset = offset;
+    // by shotaro_tsuji
+    Stat st;
+    ret = file->fs->stat(file, &st);
+    if (MONA_SUCCESS != ret)
+    {
+        return ret;
+    }
+    switch (origin)
+    {
+        case SEEK_SET: fileInfo->context.offset = offset; break;
+	case SEEK_CUR: fileInfo->context.offset +=offset; break;
+	case SEEK_END: fileInfo->context.offset = st.size-offset; break;
+	default: break;
+    }
+//    fileInfo->context.offset = offset;
     fileInfo->context.origin = origin;
     return MONA_SUCCESS;
 }
