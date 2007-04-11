@@ -31,7 +31,7 @@
 class Thread;
 class Process;
 class MemoryAllocator;
-extern VirtualConsole* g_console;
+extern "C" VirtualConsole* g_console;
 
 /*----------------------------------------------------------------------
     Idle function
