@@ -16,7 +16,7 @@ using namespace monash;
 
 int main(int argc, char *argv[])
 {
-#if 0
+#if 1
     FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
     if (NULL == f)
     {
@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
         return -1;
     }
     char buf[32];
-    uint32_t size = fread(buf, 1, 32, f);
+    uint32_t size = fread(buf, 1, 31, f);
+    buf[31] = '\0';
     _printf("read size = %d: %s\n", size, buf);
     fclose(f);
 #elif 0

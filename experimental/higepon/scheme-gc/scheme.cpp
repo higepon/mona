@@ -77,7 +77,6 @@ Object* scheme_eval_string(String& input, Environment* env, bool out /* = false 
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
         SCM_EVAL(evalFunc, env, evaluated, sexp);
-//        _printf("sexp %s\n", evaluated->toString().data());
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
     }
     return evaluated;
