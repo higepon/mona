@@ -411,11 +411,11 @@ void syscall_entrance()
 
         if (!isOpen)
         {
-            g_console->printf("kernel:::");
+            logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
             info->eax = 0;
             break;
         }
-            g_console->printf("kernel[[[[");
+        logprintf("map create id=%x %s:%d:(%s)\n", sharedId, __FILE__, __LINE__, __func__);
         info->eax = sharedId;
         break;
      }
@@ -426,10 +426,10 @@ void syscall_entrance()
         uint32_t id = SYSTEM_CALL_ARG_1;
 
         SharedMemoryObject* object = SharedMemoryObject::find(id);
-
+        logprintf("map get_size id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
         if (object == NULL)
         {
-            g_console->printf("kernel***");
+            logprintf("error get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
             break;
         }
 
@@ -444,10 +444,11 @@ void syscall_entrance()
         uint32_t address = SYSTEM_CALL_ARG_2;
 
         while (Semaphore::down(&g_semaphore_shared));
-        bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
+        bool isAttached = SharedMemoryObject::attach(id, g_currentThread->process, address);
         Semaphore::up(&g_semaphore_shared);
-
-        if (!isAttaced)
+        logprintf("map map id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
+        Semaphore::up(&g_semaphore_shared);
+        if (!isAttached)
         {
             info->eax = 1;
             break;
@@ -462,9 +463,8 @@ void syscall_entrance()
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
-            g_console->printf("unmap***");
         Semaphore::up(&g_semaphore_shared);
-
+        logprintf("map unmap id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
         info->eax = isDetached ? 0 : 1;
         break;
     }

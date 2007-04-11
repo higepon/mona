@@ -23,7 +23,6 @@ Stream::~Stream()
 {
     if (memoryHandle_ != 0)
     {
-        _logprintf("$$$$$$$$$$$$$$$$$$$$$$ delete stream %x\n", this);
         MemoryMap::unmap(memoryHandle_);
     }
     if (access_ != NULL) delete access_;
@@ -40,15 +39,11 @@ Stream* Stream::FromHandle(uint32_t handle)
 
 uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 {
-    _logprintf("%s:%d[%s:%d]\n", __func__, __LINE__, (const char*)buffer, size);
-//    if (-1 == access_->tryLock()) return 0;
     access_->lock();
-//    printf("[write] header->size=%d header->capacity=%d size=%d\n", header_->size, header_->capacity, size);
     uint32_t memorySize = header_->size;
     uint32_t memoryCapacity = header_->capacity;
     uint32_t freeSize = memoryCapacity - memorySize;
     uint32_t writeSize;
-    _logprintf("%s:%d\n", __func__, __LINE__);
     if (0 == freeSize || size <= 0)
     {
         writeSize = 0;
@@ -56,47 +51,36 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
     else if (size < freeSize)
     {
         PsInfo pi = *MonAPI::System::getProcessInfo();
-        _logprintf("%s:%d:%x [%s]\n", __func__, __LINE__, System::getThreadID(), pi.name);
-        _logprintf("this=%x header_ = %x :memorySize = %x:memoryAddress_=%x: dest=%x:buffer=%x:size=%x\n"
-                   , this
-                   , header_
-                   , memorySize
-                   , memoryAddress_
-                   , (void*)((uint32_t)memoryAddress_ + memorySize)
-                   , buffer
-                   , size);
+//         _logprintf("%s:%d:%x [%s]\n", __func__, __LINE__, System::getThreadID(), pi.name);
+//         _logprintf("this=%x header_ = %x :memorySize = %x:memoryAddress_=%x: dest=%x:buffer=%x:size=%x\n"
+//                    , this
+//                    , header_
+//                    , memorySize
+//                    , memoryAddress_
+//                    , (void*)((uint32_t)memoryAddress_ + memorySize)
+//                    , buffer
+//                    , size);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, size);
-    _logprintf("%s:%d\n", __func__, __LINE__);
-//    _printf("%s:%d\n", __FILE__, __LINE__);
-
-    _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memorySize + size);
+//        _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memorySize + size);
         header_->size = memorySize + size;
         writeSize = size;
     }
     else
     {
-    _logprintf("%s:%d\n", __func__, __LINE__);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, freeSize);
-    _logprintf("%s:%d\n", __func__, __LINE__);
-//    _printf("%s:%d\n", __FILE__, __LINE__);
-
-    _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memoryCapacity);
+        //_logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memoryCapacity);
         header_->size = memoryCapacity;
         writeSize = freeSize;
     }
-    _logprintf("%s:%d\n", __func__, __LINE__);
     if (memorySize != 0)
     {
         access_->unlock();
         return writeSize;
     }
-    _logprintf("%s:%d\n", __func__, __LINE__);
     uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
-    _logprintf("%s:%d\n", __func__, __LINE__);
     memcpy(threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
-    _logprintf("%s:%d\n", __func__, __LINE__);
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
     }
     access_->unlock();
@@ -107,7 +91,6 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         if (THREAD_UNKNOWN == thread) continue;
         Message::send(thread, MSG_READ_MEMORY_READY);
     }
-    _logprintf("%s:%d\n", __func__, __LINE__);
     delete[] threads;
 
     return writeSize;
@@ -134,7 +117,6 @@ uint32_t Stream::read(uint8_t* buffer, uint32_t size)
     else
     {
         memcpy(buffer, memoryAddress_, memorySize);
-    _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, 0);
         header_->size = 0;
         readSize = memorySize;
     }
@@ -241,20 +223,20 @@ uint32_t Stream::capacity() const
 ----------------------------------------------------------------------*/
 bool Stream::initialize(uint32_t size)
 {
-    _logprintf("%s:%d", __func__, __LINE__);
+//    _logprintf("%s:%d", __func__, __LINE__);
     access_ = new Mutex();
     readAccess_ = new Mutex();
     writeAccess_ = new Mutex();
     memoryHandle_ = MemoryMap::create(size + sizeof(StreamHeader));
     if (0 == memoryHandle_)
     {
-        printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap error\n");
         return false;
     }
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap error\n");
         return false;
     }
     header_ = (StreamHeader*)address;
@@ -280,24 +262,23 @@ bool Stream::initialize(uint32_t size)
 bool Stream::initializeFromHandle(uint32_t handle)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
-    _logprintf("initializeFromHandle %s:%d[%s]\n", __func__, __LINE__, pi.name);
+//    _logprintf("initializeFromHandle %s:%d[%s]\n", __func__, __LINE__, pi.name);
 
     memoryHandle_ = handle;
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        _printf("map error");
-        printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap error\n");
         return false;
     }
     header_ = (StreamHeader*)address;
-    _logprintf("this = %x, header_=%x\n", this, header_);
+//    _logprintf("this = %x, header_=%x\n", this, header_);
     access_ = new Mutex(header_->accessMutexHandle);
     readAccess_ = new Mutex(header_->readMutexHandle);
     writeAccess_ = new Mutex(header_->writeMutexHandle);
     memoryAddress_ = (void*)((uint32_t)address + sizeof(StreamHeader));
-    _logprintf("memoryAddress_=%x\n", memoryAddress_);
-    _logprintf("memorySize = %x\n", header_->size);
+//    _logprintf("memoryAddress_=%x\n", memoryAddress_);
+//    _logprintf("memorySize = %x\n", header_->size);
 
     return true;
 }
@@ -312,7 +293,7 @@ void Stream::setWaitForRead()
             return;
         }
     }
-    printf("setWaitForRead max reached exit \n");
+    _printf("setWaitForRead max reached exit \n");
     exit(-1);
 }
 
@@ -326,7 +307,7 @@ void Stream::setWaitForWrite()
             return;
         }
     }
-    printf("setWaitForWrite max reached exit \n");
+    _printf("setWaitForWrite max reached exit \n");
     exit(-1);
 }
 

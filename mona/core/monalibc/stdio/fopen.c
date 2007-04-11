@@ -41,7 +41,7 @@ FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
 	uint32_t fileno;
-
+    _logprintf("path=%s %s:%d:(%s)\n", path, __FILE__, __LINE__, __func__);
 	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )
 	{

@@ -50,12 +50,13 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 	size_t readsize = 0;
 
 	readsize = stream->_read(stream, buf, size);
+    _printf("done1");
 	if( readsize == -1 )
 	{
 		stream->_flags |= __SERR;
 		return 0;
 	}
-
+    _printf("done2");
 	if( readsize < size )
 	{
 		stream->_flags |= __SEOF;
@@ -63,7 +64,7 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 
 	stream->_extra->offset += readsize;
 //	fseek(stream, stream->_extra->offset, SEEK_SET);
-
+    _printf("done3");
 	return readsize;
 }
 
@@ -71,27 +72,33 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 {
 	size_t readsize = 0;
 	size_t retsize = 0;
-
+    _printf("done4");
 	if( stream->_bf._range == 0 )
 	{
+      _printf("[5]");
 		readsize = stream->_read(stream, stream->_bf._base,
 							stream->_bf._size);
+      _printf("[6]");
 		if( readsize == -1 )
 		{
 			stream->_flags |= __SERR;
 			return (size_t)-1;
 		}
+      _printf("[7]");
 		if( readsize < size )
 		{
 			stream->_flags |= __SEOF;
 		}
+      _printf("[8]");
 		memcpy(buf, stream->_bf._base, size);
 		stream->_bf._offset = stream->_extra->offset;
 		stream->_bf._range = readsize;
+      _printf("[9]");
 		if( size > stream->_bf._size )
 		{
 			retsize = stream->_read(stream, buf+readsize, size-readsize);
 		}
+      _printf("[10]");
 		readsize += retsize;
 	}
 	else
@@ -103,6 +110,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		_printf("stream->_bf._range = %d\n", stream->_bf._range);
 		_printf("size = %d\n", size);
 	#endif	
+      _printf("[7]");
 		if( stream->_bf._offset == stream->_extra->offset )
 		{
 			if( size <= stream->_bf._range )
@@ -126,9 +134,11 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		{
 	//		_printf("/%d\n", stream->_extra->offset);
 			stream->_seek(stream, stream->_extra->offset, SEEK_SET);
+      _printf("[8]");
 			readsize = stream->_read(stream,
 							stream->_bf._base,
 							stream->_bf._size);
+      _printf("[9]");
 		_printf("!!readsize = %x\n", readsize);
 			if( readsize == -1 )
 			{
@@ -161,7 +171,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 	stream->_extra->offset += readsize;
 
 //	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
-
+      _printf("[11]");
 	return readsize;
 }
 

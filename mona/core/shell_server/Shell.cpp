@@ -1,6 +1,7 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
 #include <monalibc/stdarg.h>
+#include <monalibc/stdio.h>
 
 #include "Shell.h"
 using namespace MonAPI;

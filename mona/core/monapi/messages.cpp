@@ -102,6 +102,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -122,6 +123,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -141,6 +143,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -161,6 +164,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -181,6 +185,7 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -233,7 +238,7 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);    monapi_cmemoryinfo_map(ret);
     return ret;
 }
 
@@ -251,19 +256,22 @@ uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
 
 monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
 {
+    static int count = 0;
+    count++;
     monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != 0)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == MONA_FAILURE) { return NULL;}
 
+    if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != 0)
+     {
+         return NULL;
+     }
+    if (msg.arg2 == MONA_FAILURE) { return NULL;}
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);    monapi_cmemoryinfo_map(ret);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
@@ -281,10 +289,12 @@ uint32_t monapi_file_seek(uint32_t fileID, uint32_t offset, uint32_t origin)
 
 uint32_t monapi_file_close(uint32_t fileID)
 {
+//    _logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID) != 0)
     {
+        _logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
         return MONA_FAILURE;
     }
     return msg.arg2;
@@ -305,6 +315,7 @@ monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
+    _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
     monapi_cmemoryinfo_map(ret);
     return ret;
 }

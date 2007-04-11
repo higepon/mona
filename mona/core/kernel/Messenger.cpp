@@ -87,7 +87,10 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
 
     thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
-
+//     if (message->arg2 > 0x9050)
+//     {
+//         logprintf("message->arg2 = %x\n", message->arg2);
+//     }
     return 0;
 }
 

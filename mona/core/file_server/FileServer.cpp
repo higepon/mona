@@ -205,13 +205,16 @@ void FileServer::messageLoop()
         {
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
+//            _logprintf("%s(%s):%d\n",__FILE__, __func__, __LINE__);
             int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
             if (ret != MONA_SUCCESS)
             {
+//                _logprintf("read error ret= %d %s(%s):%d\n", ret, __FILE__, __func__, __LINE__);
                 Message::reply(&msg, MONA_FAILURE);
             }
             else
             {
+//                _logprintf("ret= %d memory->Handle=%x %s(%s):%d\n", ret, memory->Handle,__FILE__, __func__, __LINE__);
                 uint32_t handle = memory->Handle;
                 uint32_t size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
@@ -227,6 +230,7 @@ void FileServer::messageLoop()
             memory->Handle = msg.arg3;
             memory->Owner  = msg.from;
             memory->Size   = msg.arg2;
+            _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
             monapi_cmemoryinfo_map(memory);
             int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
 //            monapi_cmemoryinfo_dispose(memory);
@@ -270,6 +274,7 @@ void FileServer::messageLoop()
             mi1->Handle = msg.arg1;
             mi1->Size   = msg.arg2;
             monapi_cmemoryinfo* mi2 = NULL;
+            _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
             if (monapi_cmemoryinfo_map(mi1))
             {
                 mi2 = ST5Decompress(mi1);
