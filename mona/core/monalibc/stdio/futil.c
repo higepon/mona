@@ -65,7 +65,9 @@ int _read(void *self, void *buf, size_t size)
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
-	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
+	_printf("!readsize = %d, cmi->Size = %d\n", readsize, cmi->Size);
+//	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
+	monapi_file_seek(id, readsize, SEEK_CUR);
 
 	return readsize;
 }

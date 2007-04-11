@@ -40,7 +40,7 @@
 
 size_t __nida_read_console(void *ptr, size_t size, FILE *stream)
 {
-    syscall_print("hoge");
+//    syscall_print("hoge");
 	size = (size_t)readStream(stream->_stream, ptr, (uint32_t)size);
 	return size;
 }
@@ -88,40 +88,48 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		memcpy(buf, stream->_bf._base, size);
 		stream->_bf._offset = stream->_extra->offset;
 		stream->_bf._range = readsize;
-		_printf("readsize = %d\n", readsize);
-		_printf("buf = %x\n", buf);
-		_printf("buf+readsize = %x\n", buf+readsize);
 		if( size > stream->_bf._size )
 		{
-//			stream->_seek(stream->_file, readsize, SEEK_CUR);
 			retsize = stream->_read(stream, buf+readsize, size-readsize);
 		}
-		_printf("retsize = %d\n", retsize);
 		readsize += retsize;
 	}
 	else
 	{
+	#if 0
+		_printf("stream->_bf._offset = %d\n", stream->_bf._offset);
+		_printf("stream->_extra->offset = %d\n", stream->_extra->offset);
+		_printf("stream->_bf._size = %d\n", stream->_bf._size);
+		_printf("stream->_bf._range = %d\n", stream->_bf._range);
+		_printf("size = %d\n", size);
+	#endif	
 		if( stream->_bf._offset == stream->_extra->offset )
 		{
 			if( size <= stream->_bf._range )
 			{
+	//		_printf("?%d\n", stream->_extra->offset);
 				memcpy(buf, stream->_bf._base,
 						stream->_bf._size);
+				readsize = size;
 			}
 		}
 		else if( stream->_bf._offset < stream->_extra->offset &&
 	stream->_bf._offset+stream->_bf._range > stream->_extra->offset+size )
 		{
+	//	_printf("!%d\n", stream->_extra->offset-stream->_bf._offset);
 			memcpy(buf,
 		stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
 				size);
+			readsize = size;
 		}
 		else
 		{
-		puts("else2");
+	//		_printf("/%d\n", stream->_extra->offset);
+			stream->_seek(stream, stream->_extra->offset, SEEK_SET);
 			readsize = stream->_read(stream,
 							stream->_bf._base,
 							stream->_bf._size);
+		_printf("!!readsize = %x\n", readsize);
 			if( readsize == -1 )
 			{
 				stream->_flags |= __SERR;
@@ -131,20 +139,26 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			{
 				stream->_flags |= __SEOF;
 			}
-			memcpy(buf, stream->_bf._base, size);
-			stream->_bf._offset = stream->_extra->offset;
-			stream->_bf._range = readsize;
-			if( size > stream->_bf._size )
+			if( readsize != 0 )
 			{
-//				stream->_seek(stream->_file, readsize, SEEK_CUR);
-				retsize = stream->_read(stream, buf+readsize, size-readsize);
+				memcpy(buf, stream->_bf._base, size);
+				stream->_bf._offset = stream->_extra->offset;
+				stream->_bf._range = readsize;
+				if( size > stream->_bf._size )
+				{
+					retsize = stream->_read(stream, buf+readsize, size-readsize);
+	//				_printf("@%d\n", retsize);
+					readsize += retsize;
+				}
+				else
+				{
+					readsize = size;
+				}
 			}
-			readsize += retsize;
-
 		}
 	}
 
-	stream->_extra->offset += size;
+	stream->_extra->offset += readsize;
 
 //	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
 
@@ -153,6 +167,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 {
+/*
   if (stream->_extra == NULL)
     {
       syscall_print("panic");
@@ -160,6 +175,7 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
   else {
     //    syscall_print("not panic");
   }
+*/
 	if( !(stream->_flags & __SRD) )
 	{
 		errno = EBADF;
