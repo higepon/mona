@@ -16,7 +16,7 @@ using namespace monash;
 
 int main(int argc, char *argv[])
 {
-#if 1
+#if 0
     FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
     if (NULL == f)
     {
@@ -55,11 +55,12 @@ int main(int argc, char *argv[])
     _printf("file size = %d\n", size);
     char* buf = new char[size];
     int readSize = fread(buf, 1, size, f);
+    buf[readSize - 1] = '\0';
     _printf("readSize = %d pos=%d\n", ftell(f)); // => readSize = 19616 pos=1
     _printf("buf=%s\n", buf);  // 1024 byte しか読めてない
-    delete[] buf;
-    fclose(f);
-#elif 0
+
+//    fclose(f);
+#elif 1
     FILE* f = fopen("/SERVERS/TEST.SCM", "rb");
     if (NULL == f)
     {
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
     _printf("%c\n", fgetc(f));
     _printf("%c\n", fgetc(f));
 
-    fclose(f);
+//    fclose(f);
 
 #else
     // if continuation failed, see cont_initialize function and fix cont_stack_bottom!
