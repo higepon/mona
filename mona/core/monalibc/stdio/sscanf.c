@@ -1,3 +1,4 @@
+#include <monalibc/stdio.h>
 #include <monalibc/stdarg.h>
 
 /*!

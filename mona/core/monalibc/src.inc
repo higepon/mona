@@ -15,6 +15,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
 	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \
 	  stdio/fputs.c stdio/puts.c stdio/getc.c stdio/getchar.c \
+	  stdio/vsprintf.c stdio/vsscanf.c stdio/vfprintf.c \
 	  stdlib/abort.c stdlib/abs.c stdlib/atexit.c \
 	  stdlib/atof.c stdlib/atoi.c stdlib/atol.c stdlib/bsearch.c \
 	  stdlib/div.c stdlib/getenv.c stdlib/labs.c stdlib/ldiv.c \
@@ -29,7 +30,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  time/clock.c time/time.c time/time_util.c time/gmtime_r.c \
 	  time/gmtime.c time/mktime.c time/difftime.c \
 	  inttypes/imaxabs.c \
-	  stdarg/stdarg.c stdarg/vsscanf.c private/uitosn.c private/itos.c \
+	  stdarg/stdarg.c private/uitosn.c private/itos.c \
 	  private/ftos.c private/strcpy2.c private/memswap.c \
 	  private/logprintf.c \
 	  errno/errno.c \

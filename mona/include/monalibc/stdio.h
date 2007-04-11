@@ -36,6 +36,7 @@
 
 #include <sys/types.h>
 #include <monalibc/stdint.h>
+#include <monalibc/stdarg.h>
 
 #ifndef NULL
 #define NULL 0
@@ -154,13 +155,14 @@ int	 printf(const char *, ...); //stub
 /*int	 snprintf(char *, size_t, char *, ...); //stub */
 int sprintf(char *str, const char *format, ...);
 int sscanf(const char *str, const char *format, ...);
-/*int vfprintf(FILE *, const char *, va_list); //stub */
+int vfprintf(FILE *stream, const char *format, va_list ap);
 /*int vfscanf(FILE *, const char *, va_list); //stub */
 /*int vprintf(const char *, va_list); //stub */
 /*int vscanf(const char *, va_list); //stub */
-/*int vsnprintf(char *, size_t, const char *, va_list); //stub */
-/*int vsprintf(char *, const char *, va_list); //stub */
-/*int vsscanf(char *, const char *, va_list); //stub */
+int vsprintf(char *str, const char *format, va_list ap);
+int vsnprintf(char *str, size_t size, const char *format, va_list ap);
+int vsscanf(const char *str, const char *format, va_list ap);
+
 
 /* ISO/IEC 9899:1999 7.19.7 Character input/output functions*/
 int	 fgetc(FILE *fp);

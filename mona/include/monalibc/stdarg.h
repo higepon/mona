@@ -35,8 +35,6 @@
 #ifndef _STDARG_H_
 #define _STDARG_H_
 
-#include <monalibc/stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -46,11 +44,6 @@ typedef char* va_list;
 #define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
 #define va_end(ap) (void)((ap)=NULL)
 
-int vfprintf(FILE *stream, const char *format, va_list ap);
-int vsprintf(char *str, const char *format, va_list ap);
-int vsnprintf(char *str, size_t size, const char *format, va_list ap);
-
-int vsscanf(const char *str, const char *format, va_list ap);
 
 #ifdef __cplusplus
 }
