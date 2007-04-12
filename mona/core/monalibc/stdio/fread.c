@@ -72,33 +72,33 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 {
 	size_t readsize = 0;
 	size_t retsize = 0;
-    _printf("done4");
+//    _printf("done4");
 	if( stream->_bf._range == 0 )
 	{
-      _printf("[5]");
+ //     _printf("[5]");
 		readsize = stream->_read(stream, stream->_bf._base,
 							stream->_bf._size);
-      _printf("[6]");
+  //    _printf("[6]");
 		if( readsize == -1 )
 		{
 			stream->_flags |= __SERR;
 			return (size_t)-1;
 		}
-      _printf("[7]");
+   //   _printf("[7]");
 		if( readsize < size )
 		{
 			stream->_flags |= __SEOF;
 		}
-      _printf("[8]");
+//      _printf("[8]");
 		memcpy(buf, stream->_bf._base, size);
 		stream->_bf._offset = stream->_extra->offset;
 		stream->_bf._range = readsize;
-      _printf("[9]");
+//      _printf("[9]");
 		if( size > stream->_bf._size )
 		{
 			retsize = stream->_read(stream, buf+readsize, size-readsize);
 		}
-      _printf("[10]");
+ //     _printf("[10]");
 		readsize += retsize;
 	}
 	else
@@ -110,11 +110,12 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		_printf("stream->_bf._range = %d\n", stream->_bf._range);
 		_printf("size = %d\n", size);
 	#endif	
-      _printf("[7]");
+//      _printf("[7]");
 		if( stream->_bf._offset == stream->_extra->offset )
 		{
 			if( size <= stream->_bf._range )
 			{
+//			_printf("else1-if1\n");
 	//		_printf("?%d\n", stream->_extra->offset);
 				memcpy(buf, stream->_bf._base,
 						stream->_bf._size);
@@ -125,6 +126,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 	stream->_bf._offset+stream->_bf._range > stream->_extra->offset+size )
 		{
 	//	_printf("!%d\n", stream->_extra->offset-stream->_bf._offset);
+//	_printf("else1-elseif1\n");
 			memcpy(buf,
 		stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
 				size);
@@ -132,14 +134,15 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		}
 		else
 		{
+//	_printf("else1-else2\n");
 	//		_printf("/%d\n", stream->_extra->offset);
 			stream->_seek(stream, stream->_extra->offset, SEEK_SET);
-      _printf("[8]");
+//      _printf("[8]");
 			readsize = stream->_read(stream,
 							stream->_bf._base,
 							stream->_bf._size);
-      _printf("[9]");
-		_printf("!!readsize = %x\n", readsize);
+ //     _printf("[9]");
+//		_printf("!!readsize = %x\n", readsize);
 			if( readsize == -1 )
 			{
 				stream->_flags |= __SERR;
@@ -148,8 +151,10 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			if( readsize < size )
 			{
 				stream->_flags |= __SEOF;
+				memcpy(buf, stream->_bf._base, readsize);
 			}
-			if( readsize != 0 )
+			else
+		//	if( readsize != 0 )
 			{
 				memcpy(buf, stream->_bf._base, size);
 				stream->_bf._offset = stream->_extra->offset;
@@ -159,19 +164,23 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 					retsize = stream->_read(stream, buf+readsize, size-readsize);
 	//				_printf("@%d\n", retsize);
 					readsize += retsize;
+			//		_printf("else1-else2-if-if\n");
 				}
 				else
 				{
+//				_printf("readsize = size\n");
 					readsize = size;
+			//		_printf("else1-else2-if-else\n");
 				}
 			}
 		}
 	}
 
+//	_printf("offset = %d, readsize = %d\n", stream->_extra->offset ,readsize);
 	stream->_extra->offset += readsize;
 
 //	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
-      _printf("[11]");
+  //    _printf("[11]");
 	return readsize;
 }
 
@@ -186,6 +195,11 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
     //    syscall_print("not panic");
   }
 */
+//_printf("filesize = %d, offset = %d\n", monapi_file_get_file_size(stream->_file), stream->_extra->offset);
+	if( monapi_file_get_file_size(stream->_file) <= stream->_extra->offset )
+	{
+		return 0;
+	}
 	if( !(stream->_flags & __SRD) )
 	{
 		errno = EBADF;
@@ -194,6 +208,10 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 	if( stream->_extra->stds == __STDIN )
 	{
 		return __nida_read_console(buf, size*nmemb, stream);
+	}
+	if( stream->_extra->offset == monapi_file_get_file_size(stream->_file) )
+	{
+		return 0;
 	}
 	else if( stream->_ungetcbuf != EOF )
 	{

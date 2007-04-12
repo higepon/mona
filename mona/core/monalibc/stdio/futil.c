@@ -53,6 +53,7 @@ int _read(void *self, void *buf, size_t size)
 	id = f->_file;
     //    _logprintf("monapi_file_read id=%x size=%d %s(%s):%d\n", id, size, __FILE__, __func__, __LINE__);
 	cmi = monapi_file_read(id, (uint32_t)size);
+//	_printf("!cmi = %x\n", cmi);
 	if( cmi == NULL )
 	{
 		return -1;
@@ -63,13 +64,13 @@ int _read(void *self, void *buf, size_t size)
 	memcpy(p, cmi->Data, readsize);
     _logprintf("dispose id = %x %s:%d\n", id, __func__, __LINE__);
 
-	monapi_cmemoryinfo_dispose(cmi);
+//	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
-	_printf("!readsize = %d, cmi->Size = %d\n", readsize, cmi->Size);
+//	_printf("readsize = %d, cmi->Size = %d\n", readsize, cmi->Size);
 //	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
 	monapi_file_seek(id, readsize, SEEK_CUR);
-    _printf("_read end\n");
+ //   _printf("_read end\n");
 	return readsize;
 }
 
