@@ -79,29 +79,38 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
  //     _printf("[5]");
 		readsize = stream->_read(stream, stream->_bf._base,
 							stream->_bf._size);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   //    _printf("[6]");
 		if( readsize == -1 )
 		{
 			stream->_flags |= __SERR;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return (size_t)-1;
 		}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
    //   _printf("[7]");
 		if( readsize < size )
 		{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			stream->_flags |= __SEOF;
 		}
 //      _printf("[8]");
 		memcpy(buf, stream->_bf._base, size);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		stream->_bf._offset = stream->_extra->offset;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		stream->_bf._range = readsize;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //      _printf("[9]");
 		if( size > stream->_bf._size )
 		{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			retsize = stream->_read(stream, buf+readsize, size-readsize);
 			readsize += retsize;
 		}
 		else
 		{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			readsize = size;
 		}
  //     _printf("[10]");
@@ -119,8 +128,10 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 //		_printf("offset+range = %d, offset+size = %d", stream->_bf._offset+stream->_bf._range, stream->_extra->offset+size);
 		if( stream->_bf._offset == stream->_extra->offset )
 		{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if( size <= stream->_bf._range )
 			{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //			_printf("else1-if1\n");
 	//		_printf("?%d\n", stream->_extra->offset);
 				memcpy(buf, stream->_bf._base,
@@ -133,6 +144,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		{
 	//	_printf("!%d\n", stream->_extra->offset-stream->_bf._offset);
 //	_printf("else1-elseif1\n");
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			memcpy(buf,
 		stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
 				size);
@@ -144,20 +156,24 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 	//		_printf("/%d\n", stream->_extra->offset);
 			stream->_seek(stream, stream->_extra->offset, SEEK_SET);
 //      _printf("[8]");
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			readsize = stream->_read(stream,
 							stream->_bf._base,
 							stream->_bf._size);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
  //     _printf("[9]");
 //		_printf("!!readsize = %x\n", readsize);
 			if( readsize == -1 )
 			{
 				stream->_flags |= __SERR;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return (size_t)-1;
 			}
 			if( readsize < size )
 			{
 				stream->_flags |= __SEOF;
 				memcpy(buf, stream->_bf._base, readsize);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			}
 			else
 		//	if( readsize != 0 )
@@ -170,6 +186,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 					retsize = stream->_read(stream, buf+readsize, size-readsize);
 	//				_printf("@%d\n", retsize);
 					readsize += retsize;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			//		_printf("else1-else2-if-if\n");
 				}
 				else

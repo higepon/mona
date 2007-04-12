@@ -402,7 +402,7 @@ void syscall_entrance()
     {
         static uint32_t sharedId = 0x9000;
         sharedId++;
-
+        logprintf("map create start %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
         uint32_t size = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));

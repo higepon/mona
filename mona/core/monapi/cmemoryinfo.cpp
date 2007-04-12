@@ -31,6 +31,7 @@ int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int promp
     if (self->Handle == 0)
     {
         if (prompt) printf("ERROR\n");
+        _logprintf("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         _printf("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
  
         // tempe

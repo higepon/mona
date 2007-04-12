@@ -69,7 +69,9 @@ int _read(void *self, void *buf, size_t size)
 
 //	_printf("readsize = %d, cmi->Size = %d\n", readsize, cmi->Size);
 //	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	monapi_file_seek(id, readsize, SEEK_CUR);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
  //   _printf("_read end\n");
 	return readsize;
 }
