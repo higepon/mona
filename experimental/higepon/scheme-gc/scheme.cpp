@@ -77,6 +77,7 @@ Object* scheme_eval_string(String& input, Environment* env, bool out /* = false 
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
         SCM_EVAL(evalFunc, env, evaluated, sexp);
+        _logprintf("%s %s %s:%d\n", sexp->toString().data(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
     }
     return evaluated;
@@ -98,6 +99,7 @@ int scheme_exec_file(const String& file)
     g_top_env = env;
     scheme_register_primitives(env);
     scheme_eval_string(input, env);
+    _printf("exec end\n");
     return 0;
 }
 

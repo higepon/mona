@@ -54,6 +54,7 @@ bool OutputPort::write(Object* o)
 
 bool OutputPort::display(Object* o)
 {
+    _logprintf("%s", o->toStringValue().data());
     SCHEME_WRITE(stream_, "%s", o->toStringValue().data());
     return true;
 }
