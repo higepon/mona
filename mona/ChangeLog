@@ -1,3 +1,7 @@
+2007-04-13  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): rest == 0 の場合に size = 0 の共有メモリを作っていたのでエラーを返すようにした。
+
 2007-04-10  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/gc3/gc.cpp (gc_init_internal): Scheme GC が Mona にも対応した
