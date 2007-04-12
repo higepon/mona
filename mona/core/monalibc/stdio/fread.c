@@ -73,6 +73,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 	size_t readsize = 0;
 	size_t retsize = 0;
 //    _printf("done4");
+//	_printf("offset = %d\n", stream->_extra->offset);
 	if( stream->_bf._range == 0 )
 	{
  //     _printf("[5]");
@@ -97,9 +98,13 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		if( size > stream->_bf._size )
 		{
 			retsize = stream->_read(stream, buf+readsize, size-readsize);
+			readsize += retsize;
+		}
+		else
+		{
+			readsize = size;
 		}
  //     _printf("[10]");
-		readsize += retsize;
 	}
 	else
 	{
@@ -111,6 +116,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		_printf("size = %d\n", size);
 	#endif	
 //      _printf("[7]");
+//		_printf("offset+range = %d, offset+size = %d", stream->_bf._offset+stream->_bf._range, stream->_extra->offset+size);
 		if( stream->_bf._offset == stream->_extra->offset )
 		{
 			if( size <= stream->_bf._range )
@@ -196,10 +202,15 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
   }
 */
 //_printf("filesize = %d, offset = %d\n", monapi_file_get_file_size(stream->_file), stream->_extra->offset);
+//_printf("fread\n");
+//_printf("buf = %x, size = %d, nmemb = %d\n", buf, size, nmemb);
+//_printf("_read = %x\n", stream->_read);
+/*
 	if( monapi_file_get_file_size(stream->_file) <= stream->_extra->offset )
 	{
 		return 0;
 	}
+	*/
 	if( !(stream->_flags & __SRD) )
 	{
 		errno = EBADF;
@@ -209,10 +220,12 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 	{
 		return __nida_read_console(buf, size*nmemb, stream);
 	}
+	/*
 	if( stream->_extra->offset == monapi_file_get_file_size(stream->_file) )
 	{
 		return 0;
 	}
+	*/
 	else if( stream->_ungetcbuf != EOF )
 	{
 		{
@@ -228,6 +241,7 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 	}
 	else if( stream->_flags & __SFBF )
 	{
+//	_printf("end of fread\n");
 		return __nida_fullybuf_fread(buf, size*nmemb, stream);
 	}
 	else

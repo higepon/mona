@@ -45,5 +45,9 @@ int fflush(FILE *stream)
 		if( stream->_flags & __SWR )
 			stream->_write(stream->_file, stream->_bf._base, stream->_bf._size);
 	}
+	else if( stream->_flags & __SLBF )
+	{
+		return 0;
+	}
 	return 0;
 }
