@@ -31,4 +31,5 @@ hello
 #@STDOUT.EX5 
 #@WRITE.EX5 ABCDEFG
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
+./TEST.APP/TEST.EX5
 ../servers/scheme.ex5 /SERVERS/TEST.SCM
