@@ -266,7 +266,10 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
      {
          return NULL;
      }
-    if (msg.arg2 == MONA_FAILURE) { return NULL;}
+    if (msg.arg2 == MONA_FAILURE) {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return NULL;
+    }
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;

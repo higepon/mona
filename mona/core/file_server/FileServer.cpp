@@ -205,21 +205,23 @@ void FileServer::messageLoop()
         {
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
-//            _logprintf("%s(%s):%d\n",__FILE__, __func__, __LINE__);
+            _logprintf("%s(%s):%d\n",__FILE__, __func__, __LINE__);
             int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
+            _logprintf("%s(%s):%d\n",__FILE__, __func__, __LINE__);
             if (ret != MONA_SUCCESS)
             {
-//                _logprintf("read error ret= %d %s(%s):%d\n", ret, __FILE__, __func__, __LINE__);
+                _logprintf("read error ret= %d %s(%s):%d\n", ret, __FILE__, __func__, __LINE__);
                 Message::reply(&msg, MONA_FAILURE);
             }
             else
             {
-//                _logprintf("ret= %d memory->Handle=%x %s(%s):%d\n", ret, memory->Handle,__FILE__, __func__, __LINE__);
+                _logprintf("ret= %d memory->Handle=%x %s(%s):%d\n", ret, memory->Handle,__FILE__, __func__, __LINE__);
                 uint32_t handle = memory->Handle;
                 uint32_t size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
                 Message::reply(&msg, handle, size);
             }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             break;
         }
         case MSG_FILE_WRITE:

@@ -86,6 +86,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t offset = context->offset;
     uint32_t readSize = context->size;
     uint32_t rest = fileEntry->attribute.size - offset;
+    if (rest == 0) return MONA_FAILURE;
 
     if (rest < readSize)
     {
@@ -120,40 +121,47 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     return MONA_SUCCESS;
 #else
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     context->memory = monapi_cmemoryinfo_new();
+    _logprintf("readSize = %x %s %s:%d\n", readSize, __func__, __FILE__, __LINE__);
     if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
     {
         monapi_cmemoryinfo_delete(context->memory);
         return MONA_ERROR_MEMORY_NOT_ENOUGH;
     }
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // by junjunn
     if (0 == dataOffset)
     {
 // by higepon
 //        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
         if (!readResult)
         {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return MONA_FAILURE;
         }
     }
     else
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint8_t* temp = new uint8_t[sectorSize];
         if (temp == NULL) return MONA_FAILURE;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
         if (!readResult)
         {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             delete temp;
             return MONA_FAILURE;
         }
 
         memcpy(context->memory->Data, temp + dataOffset, readSize);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete[] temp;
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     context->resultSize = readSize;
     return MONA_SUCCESS;
 #endif

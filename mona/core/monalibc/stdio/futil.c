@@ -51,14 +51,17 @@ int _read(void *self, void *buf, size_t size)
 	int i;
 	f = (FILE*)self;
 	id = f->_file;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     //    _logprintf("monapi_file_read id=%x size=%d %s(%s):%d\n", id, size, __FILE__, __func__, __LINE__);
 	cmi = monapi_file_read(id, (uint32_t)size);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //	_printf("!cmi = %x\n", cmi);
 	if( cmi == NULL )
 	{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return -1;
 	}
-
+    _logprintf("cmi->Size = %x %s %s:%d\n", cmi->Size, __func__, __FILE__, __LINE__);
 	readsize = (int)cmi->Size;
 
 	memcpy(p, cmi->Data, readsize);
