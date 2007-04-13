@@ -1,4 +1,10 @@
+2007-04-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/mona_shell.cpp (mona_shell_on_key_down): Scheme がインタラクティブになった
+
 2007-04-13  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/MONA.SCM.in: monaとlinuxで lib の位置が違うので .in で対応
 
         * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read): rest == 0 の場合に size = 0 の共有メモリを作っていたのでエラーを返すようにした。
 

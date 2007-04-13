@@ -32,4 +32,5 @@ hello
 #@WRITE.EX5 ABCDEFG
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
 ./TEST.APP/TEST.EX5
-../servers/scheme.ex5 /SERVERS/TEST.SCM
+#../servers/scheme.ex5 /SERVERS/TEST.SCM
+exec ../servers/scheme.ex5
