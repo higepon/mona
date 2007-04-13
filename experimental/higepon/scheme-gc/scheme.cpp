@@ -102,9 +102,9 @@ int scheme_exec_file(const String& file)
 }
 
 #if 1
-MacroFilter f;
-Translator translator;
-Environment* env;
+static MacroFilter f;
+static Translator translator;
+static Environment* env;
 void onInput(char c)
 {
     static uint32_t open_paren_count = 0;
@@ -135,12 +135,6 @@ void scheme_input_loop()
     g_top_env = env;
     scheme_register_primitives(env);
 
-#ifdef MONA
-    char line[1024];
-#else
-    char* line = NULL;;
-    size_t length = 0;
-#endif
     RETURN_ON_ERROR("stdin");
 #ifdef MONA
     String input = "(load \"/SERVERS/MONA.SCM\")";
