@@ -11,7 +11,7 @@ void TCPCoInfo::SetBlockingMode(MessageInfo* msg)
     return;
 }
 
-void TCPCoInfo::Reset(dword rip, word lport, word rport)
+void TCPCoInfo::Reset(uint32_t rip, uint16_t lport, uint16_t rport)
 {
     remoteip=rip;
     localport=lport;
@@ -37,7 +37,7 @@ void TCPCoInfo::Dump()
     printf("STATUS:%d ACK%d SEC:%d FLAG:%d WINDOW:%d\n",status,seqnum,acknum,flags,window);
 }
 
-int TCPCoInfo::Strip(Ether* frame, byte** data)
+int TCPCoInfo::Strip(Ether* frame, uint8_t** data)
 {
     if( data != NULL ){
         *data=frame->IPHeader->TCPHeader->data;
@@ -84,7 +84,7 @@ bool TCPCoInfo::IsMyPacket(Ether* frame)
     return false;
 }
 
-void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
+void TCPCoInfo::CreateHeader(Ether* frame,uint8_t* data, uint16_t size)
 {
     IP* ip=frame->IPHeader; //for pseudo header
     ip->ttl =0x00;
@@ -101,12 +101,12 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     tcp->chksum=0x0000;
     tcp->urgent=0;
     memcpy(tcp->data,data,size);
-    tcp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(TCP)+12));
+    tcp->chksum=bswap(checksum((uint8_t*)&(ip->ttl),size+sizeof(TCP)+12));
     CreateIPHeader(frame,size+sizeof(TCP)+sizeof(IP),TYPETCP);
     //printf("CreateHeader%d %d\n",seqnum,acknum);
 }
 
-bool TCPCoInfo::TimeoutCheck(dword now)
+bool TCPCoInfo::TimeoutCheck(uint32_t now)
 {
     if( msg.header == MSG_NET_WRITE && write_timeout > now ){
         Message::reply(&msg);
@@ -126,7 +126,7 @@ bool TCPCoInfo::IsExpected(Ether* frame)
 
 bool TCPCoInfo::Read_bottom_half(Ether* frame)
 {
-    byte* data;
+    uint8_t* data;
     if( msg.header == MSG_NET_READ ){
         monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
         if (mi != NULL){
@@ -165,7 +165,7 @@ void TCPCoInfo::Read(MessageInfo* m)
         memset(&msg,'\0',sizeof(MessageInfo));
         return;
     }
-    memcpy(&msg,(byte*)m,sizeof(MessageInfo));         
+    memcpy(&msg,(uint8_t*)m,sizeof(MessageInfo));         
     read_timeout=syscall_get_tick()+500;
 }
 
@@ -180,7 +180,7 @@ void TCPCoInfo::Write(MessageInfo* m)
         monapi_cmemoryinfo_map(ret);
         if( netdsc == m->arg1 ){
             dispatcher->Send(ret->Data,ret->Size,this);
-            memcpy(&msg,(byte*)m,sizeof(MessageInfo)); //Register msg.
+            memcpy(&msg,(uint8_t*)m,sizeof(MessageInfo)); //Register msg.
             //Register to timer.
             dispatcher->DoDispatch();
         }
@@ -215,7 +215,7 @@ int TCPCoInfo::Duplicate()
     printf("DUP\n");
     TCPCoInfo* pT= new TCPCoInfo(dispatcher);
     int n = dispatcher->getSerialNo();  
-    memcpy(&(pT->msg),(byte*)(&msg),sizeof(MessageInfo)); //Setup New Info.
+    memcpy(&(pT->msg),(uint8_t*)(&msg),sizeof(MessageInfo)); //Setup New Info.
     pT->Init(0, localport,0, msg.from, netdsc);
     this->netdsc=n;  
     pT->msg.header=MSG_NET_PASVOPEN;
@@ -242,7 +242,7 @@ void TCPCoInfo::ReplyUnReach(Ether* frame)
 void TCPCoInfo::SendACK(Ether* frame)
 {
     if( status == ESTAB ){
-        byte* tmp;
+        uint8_t* tmp;
         int size=Strip(frame,&tmp);
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+size;
@@ -301,7 +301,7 @@ FIN_WAIT1 6,FIN_WAIT2 7,CLOSE_WAIT 8,LAST_ACK 9,TIME_WAIT 10,CLOSING 11*/
 bool TCPCoInfo::TransStateByPKT(Ether* frame)
 {   
     //printf("[%x %d %d %d]\n",rflag,status,serialno,bswap(frame->IPHeader->id));
-    byte rflag = (frame->IPHeader->TCPHeader->flags) & ~PSH;
+    uint8_t rflag = (frame->IPHeader->TCPHeader->flags) & ~PSH;
     ////ACTIVE 
     if( (status == SYN_SENT) && (rflag == SYN|ACK) ){
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);

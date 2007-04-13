@@ -11,13 +11,13 @@ int NetStat(NetClient& client)
     if( client.Stat(&stat) ){
         printf("\n%s:\nIPaddress:",stat.devname);
         for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.localip)+j));
+            printf("%d.",*(((uint8_t*)&stat.localip)+j));
         printf("NetMask:");
         for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.netmask)+j));
+            printf("%d.",*(((uint8_t*)&stat.netmask)+j));
         printf("\nDefaultRoute:");
         for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.defaultroute)+j));
+            printf("%d.",*(((uint8_t*)&stat.defaultroute)+j));
         printf("MTU:%d MAC:",stat.mtu);
         char buf[16];
         for(int j=0;j<6;j++){
@@ -28,7 +28,7 @@ int NetStat(NetClient& client)
     }
     return 0;
 }
-int Ping(NetClient& client,dword remoteip)
+int Ping(NetClient& client,uint32_t remoteip)
 {
     ///////////////////////////////////////////////
     //printf("   Send ICMP echo request %x\n",remoteip);
@@ -37,10 +37,10 @@ int Ping(NetClient& client,dword remoteip)
         printf("OpenError.\n");
     }
     //printf("Open::netdsc=%d\n",netdsc);
-    if( client.Write(netdsc,(byte*)"How are you?",12) ){
-        print("WriteError\n");
+    if( client.Write(netdsc,(uint8_t*)"How are you?",12) ){
+        printf("WriteError\n");
     }
-    byte buf[1024];//BAD design.
+    uint8_t buf[1024];//BAD design.
     int size= client.Read(netdsc,buf);
     if( size > 0 ){
         //printf("Read: %s\n",buf);
@@ -54,20 +54,20 @@ int Ping(NetClient& client,dword remoteip)
     return 0;
 }
 
-int Udp(NetClient& client,dword remoteip,word port)
+int Udp(NetClient& client,uint32_t remoteip,uint16_t port)
 {
     //printf("   Send UDP to %d\n",port);    
-    word localport = client.GetFreePort();
+    uint16_t localport = client.GetFreePort();
     //printf("Port=%d\n",localport);
     int netdsc = client.UDPOpen(remoteip,localport,port);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
     //printf("Open::netdsc=%d\n",netdsc);
-    if( client.Write(netdsc,(byte*)"What time is it now?",20) ){
+    if( client.Write(netdsc,(uint8_t*)"What time is it now?",20) ){
         printf("WrieError.\n");
     }    
-    byte buf[1024];//BAD design.
+    uint8_t buf[1024];//BAD design.
     int size= client.Read(netdsc,buf);
     if( size > 0 ){
         printf("(UDP)%s\n",buf);
@@ -78,10 +78,10 @@ int Udp(NetClient& client,dword remoteip,word port)
     return 0;
 }
 
-int TcpClient(NetClient& client,dword remoteip,word port)
+int TcpClient(NetClient& client,uint32_t remoteip,uint16_t port)
 {
     //printf("   Send TCP tp %d\n",port);    
-    word localport = client.GetFreePort();
+    uint16_t localport = client.GetFreePort();
     //printf("Port=%d\n",localport);
     int netdsc = client.TCPActvOpen(remoteip,localport,port);
     if( netdsc < 0 ){
@@ -89,11 +89,11 @@ int TcpClient(NetClient& client,dword remoteip,word port)
     }
     //printf("Open::netdsc=%d\n",netdsc);
     if( port == 7 ){
-        if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
+        if( client.Write(netdsc,(uint8_t*)"Hello, How are you?",19) ){
             printf("WrieError.\n");
         }
     }
-    byte buf[1024];//BAD design.
+    uint8_t buf[1024];//BAD design.
     int size= client.Read(netdsc,buf);
     if( size > 0 ){
         printf("(TCP)%s\n",buf);
@@ -104,60 +104,60 @@ int TcpClient(NetClient& client,dword remoteip,word port)
     return 0;
 }
 
-int Reset(NetClient& client,dword remoteip, word localport,word remoteport)
+int Reset(NetClient& client,uint32_t remoteip, uint16_t localport,uint16_t remoteport)
 {
     client.Reset(remoteip,localport,remoteport);
     return 0;
 }
 
-int STFtp(NetClient& client,dword remoteip, List<char*>* args)
+int STFtp(NetClient& client,uint32_t remoteip, List<char*>* args)
 {  
     char buf[1024];
-    word localport = client.GetFreePort();
+    uint16_t localport = client.GetFreePort();
     int netdsc = client.TCPActvOpen(remoteip,localport,FTP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
     memset(buf,'\0',1024);
-    if( client.Read(netdsc,(byte*)buf) <= 0){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0){
         client.Close(netdsc);
     }
     printf("%s",buf);
     //USER
     int len=sprintf(buf,"USER %s\n",args->get(2));
-    if( client.Write(netdsc,(byte*)buf,len) ){ 
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){ 
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     printf("%s",buf);
     //PASS
     len=sprintf(buf,"PASS %s\n",args->get(3));
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     printf("%s",buf);
     //LIST
-    word newport = client.GetFreePort();   
+    uint16_t newport = client.GetFreePort();   
     int netdsc2 = client.TCPPasvOpen(newport);
     int p =(newport>>8) & 0xFF;
     int q = newport & 0xFF;
     len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }        
     len=sprintf(buf,"%s\n",args->get(4));
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     int netdsc3 = client.TCPAccept(netdsc2); 
@@ -165,7 +165,7 @@ int STFtp(NetClient& client,dword remoteip, List<char*>* args)
     //client.SetBlockingMode(netdsc3,W_BLOCK);
     printf("%s",buf);
     int ret=1;
-    while( (ret = client.Read(netdsc3,(byte*)buf)) >=0 ){    
+    while( (ret = client.Read(netdsc3,(uint8_t*)buf)) >=0 ){    
         printf("%s",buf);    
         printf("-----(%d)------\n",ret);
     }
@@ -189,59 +189,58 @@ int FtpDataThread()
     return 0;    
 }
 
-int Ftp(NetClient& client ,dword remoteip, List<char*> *args)
+int Ftp(NetClient& client ,uint32_t remoteip, List<char*> *args)
 {
-    dword id = syscall_mthread_create((dword)FtpDataThread);
+    syscall_mthread_create((uint32_t)FtpDataThread);
     pClient=&client;
-    syscall_mthread_join(id);
     //MainThread
     char buf[1024];
-    word localport = client.GetFreePort();
+    uint16_t localport = client.GetFreePort();
     int netdsc = client.TCPActvOpen(remoteip,localport,FTP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
     memset(buf,'\0',1024);
-    if( client.Read(netdsc,(byte*)buf) <= 0){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0){
         client.Close(netdsc);
     }
     printf("%s",buf);
     //USER
     int len=sprintf(buf,"USER %s\n",args->get(2));
-    if( client.Write(netdsc,(byte*)buf,len) ){ 
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){ 
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     printf("%s",buf);
     //PASS
     len=sprintf(buf,"PASS %s\n",args->get(3));
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     printf("%s",buf);
     //LIST
-    word newport = client.GetFreePort();
+    uint16_t newport = client.GetFreePort();
     int p =(newport>>8) & 0xFF;
     int q = newport & 0xFF;
     len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }        
     len=sprintf(buf,"%s\n",args->get(4));
-    if( client.Write(netdsc,(byte*)buf,len) ){
+    if( client.Write(netdsc,(uint8_t*)buf,len) ){
         client.Close(netdsc);
     }
 
     int netdsc2 = client.TCPPasvOpen(newport);
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+    if( client.Read(netdsc,(uint8_t*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     //netdsc2 must be still waiting for another connection request. 
@@ -249,7 +248,7 @@ int Ftp(NetClient& client ,dword remoteip, List<char*> *args)
     printf("ACCEPTED\n");
     printf("%s",buf);
     int ret=1;
-    while( (ret = client.Read(netdsc3,(byte*)buf)) >=0 ){    
+    while( (ret = client.Read(netdsc3,(uint8_t*)buf)) >=0 ){    
         printf("%s",buf);    
         //printf("-----(%d)------\n",ret);
     }
@@ -281,10 +280,10 @@ int MonaMain(List<char*>* pekoe)
         NetStat(client);
         exit(0);
     }
-    dword a,b,c,d;
+    uint32_t a,b,c,d;
     sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
-    dword remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
-    word rport;
+    uint32_t remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
+    uint16_t rport;
     if( !strcmp(pekoe->get(1),"pong")){
         Ping(client,remoteip);
     }else if( !strcmp(pekoe->get(1), "udp")){
@@ -294,7 +293,7 @@ int MonaMain(List<char*>* pekoe)
         sscanf(pekoe->get(2),"%d",&rport);
         TcpClient(client,remoteip,rport);
     }else if( !strcmp(pekoe->get(1), "reset")){
-        word lport;
+        uint16_t lport;
         sscanf(pekoe->get(3),"%d",&lport); //irregular order sensitiveness.    
         sscanf(pekoe->get(2),"%d",&rport); //later sscanf may deletes previous one. 
                                            //printf(">>%d %d\n",lport,rport);          

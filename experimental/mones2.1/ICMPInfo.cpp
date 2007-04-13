@@ -10,7 +10,7 @@ void ICMPCoInfo::Dump()
     printf("SEQ:%d ID%d\n",seqnum,idnum);
 }
 
-void ICMPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
+void ICMPCoInfo::CreateHeader(Ether* frame,uint8_t* data, uint16_t size)
 {
     ICMP* icmp=frame->IPHeader->ICMPHeader;
     icmp->type=type;
@@ -19,11 +19,11 @@ void ICMPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     icmp->idnum=bswap(idnum);
     icmp->seqnum=bswap(seqnum);    
     memcpy(icmp->data,data,size);
-    icmp->chksum=bswap(checksum((byte*)icmp,size+sizeof(ICMP)));
+    icmp->chksum=bswap(checksum((uint8_t*)icmp,size+sizeof(ICMP)));
     CreateIPHeader(frame,size+sizeof(ICMP)+sizeof(IP),TYPEICMP);
 }
 
-int ICMPCoInfo::Strip(Ether* frame, byte** data)
+int ICMPCoInfo::Strip(Ether* frame, uint8_t** data)
 {
    *data=frame->IPHeader->ICMPHeader->data;
    return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);

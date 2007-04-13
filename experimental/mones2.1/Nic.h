@@ -7,8 +7,8 @@
 #include "Packet.h"
 namespace mones{
 
-inline word  bswap(word w){ return (w>>8)|(w<<8); }
-inline dword bswapl(dword dw){ return (dw>>24)|((dw&0x00FF0000)>>8)|((dw&0x0000FF00)<<8)|(dw<<24);}
+inline uint16_t  bswap(uint16_t w){ return (w>>8)|(w<<8); }
+inline uint32_t bswapl(uint32_t dw){ return (dw>>24)|((dw&0x00FF0000)>>8)|((dw&0x0000FF00)<<8)|(dw<<24);}
 
 class ARPmanager
 {
@@ -19,27 +19,27 @@ public:
     };
     ARPmanager();
     virtual ~ARPmanager();
-    void   getMacAddress(byte* dest){memcpy(dest,macaddress,6);};
-    void   setIP(byte a,byte b,byte c,byte d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
-    dword  getIP(){ return ipaddress; };    
+    void   getMacAddress(uint8_t* dest){memcpy(dest,macaddress,6);};
+    void   setIP(uint8_t a,uint8_t b,uint8_t c,uint8_t d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
+    uint32_t  getIP(){ return ipaddress; };    
     void   DumpTable();
 protected:      
     int    MakeArpReply(Ether*);
     int    Register(Ether*);
     char  devname[64]; 
-    word CalcFrameSize(Ether*);
-    Ether* Query(dword);
-    int Lookup(byte*,dword);  
-    dword ipaddress;    
-    byte  macaddress[6];
-    dword netmask;
-    dword defaultroute;
+    uint16_t CalcFrameSize(Ether*);
+    Ether* Query(uint32_t);
+    int Lookup(uint8_t*,uint32_t);  
+    uint32_t ipaddress;    
+    uint8_t  macaddress[6];
+    uint32_t netmask;
+    uint32_t defaultroute;
 private:    
     struct ARPRec{
-        dword ip;
-        byte mac[6];
+        uint32_t ip;
+        uint8_t mac[6];
     };
-    byte   registerd;
+    uint8_t   registerd;
     enum{ CACHESIZE=0xFF };//Cass C
     ARPRec cache[CACHESIZE];
 
@@ -54,11 +54,11 @@ public:
     virtual int interrupt() =0; 
     virtual void SendFrm(Ether*)=0;
     Ether* RecvFrm(int);    
-    Ether* NewFrame(dword);
+    Ether* NewFrame(uint32_t);
     void  Delete(int);
-    byte  getIRQ() const {return this->irq;}
+    uint8_t  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
-    void  setIRQ(byte n) {this->irq = n;}
+    void  setIRQ(uint8_t n) {this->irq = n;}
     void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
     void  enableNetwork() {if(this->getIRQ()!=0)monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
     void  disableNetwork() {if(this->getIRQ()!=0)monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
@@ -75,10 +75,10 @@ protected:
     HList<Ether*> txFrameList;
     int   irq;
     int   iobase;
-    word  mtu;
-    byte* dma_head;
+    uint16_t  mtu;
+    uint8_t* dma_head;
     int   dma_size;
-    byte* AllocateDmaPages(int);
+    uint8_t* AllocateDmaPages(int);
 };
 
 };

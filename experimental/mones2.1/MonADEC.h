@@ -16,10 +16,10 @@ class MonADEC: public Nic
 private:
     //See H.R.M. (4.1)Figure4-2,(4.2)Figure4-7
     typedef struct DESC{
-        dword status;
-        dword ctlandcnt;
-        dword bufaddr1;
-        dword bufaddr2;
+        uint32_t status;
+        uint32_t ctlandcnt;
+        uint32_t bufaddr1;
+        uint32_t bufaddr2;
     };  
     enum{
         LOGRXRINGLEN=5,
@@ -40,8 +40,8 @@ private:
 protected:
     void rxihandler(); 
     void txihandler();
-    byte* rxbuf;  
-    byte* txbuf;
+    uint8_t* rxbuf;  
+    uint8_t* txbuf;
     DESC* rxdsc;
     DESC* txdsc;
     int rxindex;  
@@ -58,7 +58,7 @@ public:
     };
 private:
     void reset(){ outp32(iobase+CSR_0,CSR0_RESET); }
-    int ReadSROM(word,word*);
+    int ReadSROM(uint16_t,uint16_t*);
     void Delay800nSec(){ };//Be carefull when you use a real device.
     enum{ 
       CSR_0        =0x00,
@@ -114,7 +114,7 @@ private:
       CS           =0x0001,
       SETUPPKTSIZE =0xC0,
     };
-    //dword* setupframe;
+    //uint32_t* setupframe;
 };
 #pragma pack(pop)
 };//mones::

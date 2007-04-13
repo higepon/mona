@@ -12,29 +12,29 @@ class MonAMDpcn: public Nic
 private:
     //See Spec Sheet Page 159.
     typedef struct RXDSC{
-        word  mcnt;
-        word  rccrpc;
-        word  bcnt;
-        word  status;
-        dword rbaddr;
-        dword reservd;
+        uint16_t  mcnt;
+        uint16_t  rccrpc;
+        uint16_t  bcnt;
+        uint16_t  status;
+        uint32_t rbaddr;
+        uint32_t reservd;
     };
     //See spec sheet Page 162.
     typedef struct TXDSC{
-        dword status; 
-        word  bcnt;
-        word  control;
-        dword rbaddr;
-        dword reserved;
+        uint32_t status; 
+        uint16_t  bcnt;
+        uint16_t  control;
+        uint32_t rbaddr;
+        uint32_t reserved;
     };
     typedef struct IBLK{
-        word  mode;
-        byte  rxlen;
-        byte  txlen;
-        byte  mac_addr[6];
-        dword filter[2];
-        dword rx_ring;
-        dword tx_ring;
+        uint16_t  mode;
+        uint8_t  rxlen;
+        uint8_t  txlen;
+        uint8_t  mac_addr[6];
+        uint32_t filter[2];
+        uint32_t rx_ring;
+        uint32_t tx_ring;
     }; 
     enum{
         LOGRXRINGLEN=5,
@@ -51,8 +51,8 @@ private:
 protected:
     void rxihandler();  
     void txihandler();
-    byte* rxbuf;  
-    byte* txbuf;
+    uint8_t* rxbuf;  
+    uint8_t* txbuf;
     RXDSC* rxdsc;  
     TXDSC* txdsc;
     int rxindex;
@@ -69,12 +69,12 @@ public:
     };
 private:
     IBLK* piblock;
-    word r_rap(){ return inp16(iobase+IO_RAP);}
+    uint16_t r_rap(){ return inp16(iobase+IO_RAP);}
     void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
-    word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
-    void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
-    word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
-    void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
+    uint16_t r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
+    void w_csr(int reg,uint16_t val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
+    uint16_t r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
+    void w_bcr(int reg,uint16_t val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
     void reset(){ inp16(iobase+IO_RESET); } //16bitmode;
     void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
     enum{

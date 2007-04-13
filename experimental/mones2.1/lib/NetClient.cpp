@@ -4,7 +4,7 @@
 using namespace MonAPI;
 using namespace mones;
 
-word NetClient::GetFreePort()
+uint16_t NetClient::GetFreePort()
 {
     MessageInfo msg;
     if(Message::sendReceive(&msg,serverid,MSG_NET_GETFREEPORT) !=0 ){
@@ -13,17 +13,17 @@ word NetClient::GetFreePort()
     return msg.arg2;
 }
 
-int NetClient::Config(char* if_name, dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu)
+int NetClient::Config(char* if_name, uint32_t localip, uint32_t gatewayip, uint8_t subnetmask, uint8_t timeout, uint16_t mtu)
 {
     MessageInfo msg;
-    dword mask_timeout_mtu=((subnetmask<<24)&0xFF0000)|((timeout<<16)&0x00FF0000)|(mtu&0x0000FFFF);
+    uint32_t mask_timeout_mtu=((subnetmask<<24)&0xFF0000)|((timeout<<16)&0x00FF0000)|(mtu&0x0000FFFF);
     if (Message::sendReceive(&msg,serverid,MSG_NET_CONFIG,localip,gatewayip,mask_timeout_mtu,if_name)!=0){
         return -1;
     }
     return msg.arg2;
 }
 
-int NetClient::ICMPOpen(dword remoteip)
+int NetClient::ICMPOpen(uint32_t remoteip)
 {
     MessageInfo msg;
     if (Message::sendReceive(&msg, serverid, MSG_NET_ICMPOPEN, remoteip) != 0){
@@ -33,10 +33,10 @@ int NetClient::ICMPOpen(dword remoteip)
 
 }
 
-int NetClient::UDPOpen(dword remoteip, word localport, word remoteport)
+int NetClient::UDPOpen(uint32_t remoteip, uint16_t localport, uint16_t remoteport)
 {
     MessageInfo msg;
-    dword port=((localport)<<16)|remoteport;
+    uint32_t port=((localport)<<16)|remoteport;
     if (Message::sendReceive(&msg, serverid, MSG_NET_UDPOPEN, remoteip,port) != 0){
         return -1;
     }
@@ -44,17 +44,17 @@ int NetClient::UDPOpen(dword remoteip, word localport, word remoteport)
 
 }
 
-int NetClient::TCPActvOpen(dword remoteip, word localport, word remoteport)
+int NetClient::TCPActvOpen(uint32_t remoteip, uint16_t localport, uint16_t remoteport)
 {
     MessageInfo msg;
-    dword port=((localport)<<16)|remoteport;
+    uint32_t port=((localport)<<16)|remoteport;
     if (Message::sendReceive(&msg, serverid, MSG_NET_ACTVOPEN, remoteip,port) != 0){
         return -1;
     }
     return msg.arg2;
 }
 
-int NetClient::TCPPasvOpen( word remoteport )
+int NetClient::TCPPasvOpen( uint16_t remoteport )
 {
     MessageInfo msg;
     if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,remoteport) != 0){
@@ -81,11 +81,11 @@ int NetClient::Close(int netdsc)
     return msg.arg2;
 }
 
-int NetClient::Read(int netdsc,byte* data,bool noblock )
+int NetClient::Read(int netdsc,uint8_t* data,bool noblock )
 {   
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(dword)netdsc,(dword)noblock) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(uint32_t)netdsc,(uint32_t)noblock) != 0){
         return -2;
     }
     if (msg.arg2 == 0) return -3;
@@ -101,7 +101,7 @@ int NetClient::Read(int netdsc,byte* data,bool noblock )
     return size;
 }
 
-int NetClient::Write(int netdsc,byte* data,word size)
+int NetClient::Write(int netdsc,uint8_t* data,uint16_t size)
 {  
     MessageInfo msg;
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();  
@@ -135,10 +135,10 @@ int NetClient::Stat(NetStatus* stat)
     return size;
 }
 
-int NetClient::Reset(dword remoteip,word localport, word remoteport)
+int NetClient::Reset(uint32_t remoteip,uint16_t localport, uint16_t remoteport)
 {
     MessageInfo msg;
-    dword port=((localport)<<16)|remoteport;
+    uint32_t port=((localport)<<16)|remoteport;
     if (Message::sendReceive(&msg, serverid, MSG_NET_RESET, remoteip,port) != 0){
         return -1;
     }

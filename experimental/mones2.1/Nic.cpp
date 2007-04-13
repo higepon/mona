@@ -9,7 +9,7 @@ ARPmanager::ARPmanager():
         memset(cache,'0',sizeof(ARPRec)*CACHESIZE);
 }
 
-Ether* ARPmanager::Query(dword dstip)
+Ether* ARPmanager::Query(uint32_t dstip)
 {
     Ether* frame = new Ether();   
     memset(frame->dstmac,0xFF,6);
@@ -20,15 +20,15 @@ Ether* ARPmanager::Query(dword dstip)
     ah->protType=bswap(ARP::PROTCOL_TYPE_IP);
     ah->hardAddrLen=0x06;
     ah->protAddrLen=0x04;
-    ah->opeCode=bswap(ARP::OPE_CODE_ARP_REQ);// word  opeCode;
-    memcpy(ah->srcMac,macaddress,6); //byte  srcMac[6];
-    ah->dstIp=dstip;                 // dword srcIp;
-    memset(ah->dstMac,0x00,6);       // byte  dstMac[6];
-    ah->srcIp=ipaddress;            //dword dstIp;
+    ah->opeCode=bswap(ARP::OPE_CODE_ARP_REQ);// uint16_t  opeCode;
+    memcpy(ah->srcMac,macaddress,6); //uint8_t  srcMac[6];
+    ah->dstIp=dstip;                 // uint32_t srcIp;
+    memset(ah->dstMac,0x00,6);       // uint8_t  dstMac[6];
+    ah->srcIp=ipaddress;            //uint32_t dstIp;
     return frame;
 }
 
-int ARPmanager::Lookup(byte* dstmac,dword dstip)
+int ARPmanager::Lookup(uint8_t* dstmac,uint32_t dstip)
 {
     for(int i=0;i<CACHESIZE;i++){
         if( dstip==cache[i].ip ){
@@ -75,7 +75,7 @@ int ARPmanager::MakeArpReply(Ether* frame)
     return -1;
 }
 
-word ARPmanager::CalcFrameSize(Ether* frame)
+uint16_t ARPmanager::CalcFrameSize(Ether* frame)
 {
     if( frame->type==bswap(TYPEARP)){
         return 14+sizeof(ARP);
@@ -101,7 +101,7 @@ Nic::~Nic()
     }
 }
 
-byte* Nic::AllocateDmaPages(int dma_size)
+uint8_t* Nic::AllocateDmaPages(int dma_size)
 {
     if( dma_head == NULL ){
         dma_head=monapi_allocate_dma_memory(dma_size);
@@ -145,7 +145,7 @@ Ether* Nic::RecvFrm(int n)
     return NULL;
 }
 
-Ether* Nic::NewFrame(dword dstip)
+Ether* Nic::NewFrame(uint32_t dstip)
 {
     Ether* frame= new Ether();
     memcpy(frame->srcmac,macaddress,6);    

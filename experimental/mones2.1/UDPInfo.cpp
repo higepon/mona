@@ -5,7 +5,7 @@ using namespace mones;
 using namespace MonAPI;
 
 
-void UDPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
+void UDPCoInfo::CreateHeader(Ether* frame,uint8_t* data, uint16_t size)
 {
     IP* ip=frame->IPHeader; //for psedo header
     ip->ttl =0x00;
@@ -18,11 +18,11 @@ void UDPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     udp->len=bswap(size+sizeof(UDP));
     udp->chksum=0x0000;
     memcpy(udp->data,data,size);
-    udp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(UDP)+12));
+    udp->chksum=bswap(checksum((uint8_t*)&(ip->ttl),size+sizeof(UDP)+12));
     CreateIPHeader(frame,size+sizeof(UDP)+sizeof(IP),TYPEUDP);
 }
 
-int UDPCoInfo::Strip(Ether* frame, byte** data)
+int UDPCoInfo::Strip(Ether* frame, uint8_t** data)
 {   
     *data=frame->IPHeader->UDPHeader->data;
     return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(UDP);
@@ -53,7 +53,7 @@ bool UDPCoInfo::Reply(Ether* frame)
         localport=DAYTIME;
         remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
         char* data="I can't see a clock.";    
-        dispatcher->Send((byte*)data,20,this);
+        dispatcher->Send((uint8_t*)data,20,this);
         return true;
     }
     return false;

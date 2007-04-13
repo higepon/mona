@@ -36,7 +36,7 @@ int NE2000::init(void)
     // 受信バッファ終了アドレス
     w_reg( NE_P0_PSTOP, NE_MEM_END );
     // EEPROM データ読みだし
-    byte buf[16];
+    uint8_t buf[16];
     ne_pio_readmem( 0, buf, 16 );
     // イーサネットアドレス取得
     for(int i=0;i<6;i++){
@@ -123,8 +123,8 @@ int NE2000::init(void)
 
 int NE2000::interrupt() 
 {
-    byte ret=0x0000;
-    byte val = r_reg(NE_P0_ISR);
+    uint8_t ret=0x0000;
+    uint8_t val = r_reg(NE_P0_ISR);
     if( val & NE_ISR_PRX){
         rxihandler();
         ret |= RX_INT;
@@ -145,7 +145,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
 {
     // Page 0
     w_reg( NE_P0_COMMAND, NE_CR_STA );
-    byte sts=r_reg( NE_P0_ISR );//Recive Stats Register.
+    uint8_t sts=r_reg( NE_P0_ISR );//Recive Stats Register.
     if( ( sts & NE_RSTAT_OVER ) !=0 ){
         printf("RX FIFO OverFlow\n");
         return ER_INT;
@@ -160,9 +160,9 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
     }
 
     w_reg(NE_P0_COMMAND, NE_CR_PS0 | NE_CR_STA); // Page 0
-    word bnd=r_reg( NE_P0_BNRY ) + 1;      // Boundary
+    uint16_t bnd=r_reg( NE_P0_BNRY ) + 1;      // Boundary
     w_reg(NE_P1_COMMAND, NE_CR_PS1 | NE_CR_STA); // Page 1
-    word cpg=r_reg( NE_P1_CURR );          //Current Page
+    uint16_t cpg=r_reg( NE_P1_CURR );          //Current Page
     //Page0に戻しておく
     w_reg( NE_P0_COMMAND, NE_CR_PS0 );
 
@@ -180,7 +180,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
     }
 
     // bound+1 ページの先頭4バイトを読み込む
-    byte bndBuf[4];
+    uint8_t bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
 
     ne_ringbuf_status = bndBuf[0]; /* Receive Status */
@@ -201,9 +201,9 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
             // パケットの取り込み処理
             // 折り返し分の長さ
             ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
-            //byte* buf=frame_buf;
+            //uint8_t* buf=frame_buf;
             Ether* frame= new Ether;
-            byte* buf=(byte*)frame;
+            uint8_t* buf=(uint8_t*)frame;
             if( ne_rx_sub_len < frame_len ){
                 // 受信すべきパケットは折り返している
                 // 前半部の読み込み
@@ -238,8 +238,8 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
 
 void NE2000::SendFrm(Ether* frame)
 {
-    dword ptx_size=CalcFrameSize(frame);
-    byte* ptx_packet=(byte*)frame;
+    uint32_t ptx_size=CalcFrameSize(frame);
+    uint8_t* ptx_packet=(uint8_t*)frame;
     // 送信が完了しているかどうかチェックする
     while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
     // 送信処理中に受信するとレジスタが狂ってしまう
@@ -267,7 +267,7 @@ void NE2000::SendFrm(Ether* frame)
     enableNetwork();
 }
 
-void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
+void NE2000::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 {
     /* ステータスレジスタクリア */
     w_reg( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
@@ -279,17 +279,17 @@ void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
     w_reg( NE_P0_RSAR0, dest & 0xff );
     w_reg( NE_P0_RSAR1, dest >> 8 );
     w_reg( NE_P0_COMMAND, NE_CR_RD1 + NE_CR_STA );
-    for(dword i = 0 ; i < size ; i+=2){
-        w_regw( NE_ASIC_DATA, *(word*)(src+i) );
+    for(uint32_t i = 0 ; i < size ; i+=2){
+        w_regw( NE_ASIC_DATA, *(uint16_t*)(src+i) );
     }
     //wait 
-    for(dword i=0;i<0xff;i++){
+    for(uint32_t i=0;i<0xff;i++){
         if( ( r_reg(NE_P0_ISR) & NE_ISR_RDC ) == 0 )
             break;
     }
 }
 
-void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
+void NE2000::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 {
     // abort DMA, start NIC
     w_reg( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
@@ -300,7 +300,7 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
     w_reg( NE_P0_RSAR0, src & 0xff );
     w_reg( NE_P0_RSAR1, src >> 8 );
     w_reg( NE_P0_COMMAND, NE_CR_RD0 + NE_CR_STA );
-    for(dword i = 0 ; i < size ; i+=2 , dest+=2){
-        *(word*)dest=r_regw( NE_ASIC_DATA );
+    for(uint32_t i = 0 ; i < size ; i+=2 , dest+=2){
+        *(uint16_t*)dest=r_regw( NE_ASIC_DATA );
     }
 }

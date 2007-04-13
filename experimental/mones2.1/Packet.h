@@ -27,46 +27,46 @@ enum ICMPTYPE {
 
 #pragma pack(push,2)
 struct ICMP {
-    byte  type;
-    byte  code;
-    word  chksum;
-    word  idnum;
-    word  seqnum;
-    byte  data[0];
+    uint8_t  type;
+    uint8_t  code;
+    uint16_t  chksum;
+    uint16_t  idnum;
+    uint16_t  seqnum;
+    uint8_t  data[0];
 };
 
 struct UDP {
-    word  srcport;
-    word  dstport;
-    word  len;
-    word  chksum;
-    byte  data[0];
+    uint16_t  srcport;
+    uint16_t  dstport;
+    uint16_t  len;
+    uint16_t  chksum;
+    uint8_t  data[0];
 };
 
 struct TCP {
-    word  srcport;
-    word  dstport;
-    dword seqnumber;
-    dword acknumber;
-    byte  offset;
-    byte  flags;
-    word  window;
-    word  chksum;
-    word  urgent;
-    byte  data[0];
+    uint16_t  srcport;
+    uint16_t  dstport;
+    uint32_t seqnumber;
+    uint32_t acknumber;
+    uint8_t  offset;
+    uint8_t  flags;
+    uint16_t  window;
+    uint16_t  chksum;
+    uint16_t  urgent;
+    uint8_t  data[0];
 };
 
 struct IP {
-    byte  verhead;
-    byte  tos;
-    word  len;
-    word  id;
-    word  frag;
-    byte  ttl;
-    byte  prot;
-    word  chksum;
-    dword srcip;
-    dword dstip;
+    uint8_t  verhead;
+    uint8_t  tos;
+    uint16_t  len;
+    uint16_t  id;
+    uint16_t  frag;
+    uint8_t  ttl;
+    uint8_t  prot;
+    uint16_t  chksum;
+    uint32_t srcip;
+    uint32_t dstip;
     union{
         ICMP ICMPHeader[0];
         TCP  TCPHeader[0];
@@ -82,15 +82,15 @@ enum{
 };
 
 struct ARP {
-    word  hardType;
-    word  protType;
-    byte  hardAddrLen;
-    byte  protAddrLen;
-    word  opeCode;
-    byte  srcMac[6];
-    dword srcIp;
-    byte  dstMac[6];
-    dword dstIp;
+    uint16_t  hardType;
+    uint16_t  protType;
+    uint8_t  hardAddrLen;
+    uint8_t  protAddrLen;
+    uint16_t  opeCode;
+    uint8_t  srcMac[6];
+    uint32_t srcIp;
+    uint8_t  dstMac[6];
+    uint32_t dstIp;
     enum{
         HARD_TYPE_ETHER= 1,
         PROTCOL_TYPE_IP=0x0800,
@@ -110,12 +110,12 @@ private:
     //so I use friend assignment.
     friend class ARPmanager;
     friend class Nic;
-    byte  dstmac[6];
-    byte  srcmac[6];
-    word  type;
+    uint8_t  dstmac[6];
+    uint8_t  srcmac[6];
+    uint16_t  type;
 public:
     union{
-        byte data[DEFAULT_MTU_SIZE];
+        uint8_t data[DEFAULT_MTU_SIZE];
         IP   IPHeader[0];
         ARP  ARPHeader[0];
     };

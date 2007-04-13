@@ -30,7 +30,7 @@ Dispatch::Dispatch()
     printf("\nIP address is defined in Dispatch constructor. Rewrite it as your environment.\n");
     pcilib->CheckPciExist(MonADEC::VENDORID,MonADEC::DEVICEID,&pciinfo);
     if( pciinfo.Exist== 0){
-        dword val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0,PCI_COMMAND,2);
+        uint32_t val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0,PCI_COMMAND,2);
         pcilib->WriteConfig(0,pciinfo.DeviceNo,0,PCI_COMMAND,2,val|0x4);
         nic=new MonADEC();    
         nic->setIP(192,168,0,6);  //VirtualPC. 
@@ -46,7 +46,7 @@ Dispatch::Dispatch()
 
     pcilib->CheckPciExist(MonAMDpcn::VENDORID,MonAMDpcn::DEVICEID,&pciinfo);
     if( pciinfo.Exist== 0){
-        dword val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0, PCI_COMMAND,2);
+        uint32_t val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0, PCI_COMMAND,2);
         pcilib->WriteConfig(0,pciinfo.DeviceNo,0, PCI_COMMAND,2,val|0x4);
         nic=new MonAMDpcn();    
         nic->setIP(192,168,0,5);  //Vmware. 
@@ -185,7 +185,7 @@ void Dispatch::ReplyUnReach(Ether* frame)
     }
 }
 
-int Dispatch::Send(byte* data,int size, L4Base* cinfo)
+int Dispatch::Send(uint8_t* data,int size, L4Base* cinfo)
 {
     Ether* frame = nic->NewFrame(cinfo->remoteip);
     //header has been already filled.
@@ -196,7 +196,7 @@ int Dispatch::Send(byte* data,int size, L4Base* cinfo)
     return 0;
 }
 
-void Dispatch::RemoveInfo(L4Base* cinfo,dword delay)
+void Dispatch::RemoveInfo(L4Base* cinfo,uint32_t delay)
 {
     for(int i=0;i<cinfolist.size();i++){
         L4Base* c = cinfolist.get(i);
@@ -210,7 +210,7 @@ void Dispatch::RemoveInfo(L4Base* cinfo,dword delay)
 void Dispatch::PeriodicUpdate()
 {
     //remove disposed connection.
-    dword now=syscall_get_tick();
+    uint32_t now=syscall_get_tick();
     for(int i=0;i<cinfolist.size();i++){
         L4Base* c=cinfolist.get(i);
         if( c->TimeoutCheck( now )){

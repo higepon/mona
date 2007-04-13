@@ -21,22 +21,22 @@ public:
     void SendACK(Ether*);
     void ReplyUnReach(Ether*);
     void Accept(MessageInfo* m){
-        memcpy(&msg,(byte*)m,sizeof(MessageInfo));
+        memcpy(&msg,(uint8_t*)m,sizeof(MessageInfo));
     }
-    void Reset(dword, word, word);
-    bool TimeoutCheck(dword);
+    void Reset(uint32_t, uint16_t, uint16_t);
+    bool TimeoutCheck(uint32_t);
     void SetBlockingMode(MessageInfo*);//(;_;)
 private:    
 
-    dword write_timeout;
-    dword read_timeout;
-    dword blockingmode;
+    uint32_t write_timeout;
+    uint32_t read_timeout;
+    uint32_t blockingmode;
     bool nomoredata;
-    dword seqnum;
-    dword acknum;
-    byte  status;
-    byte  flags;
-    word  window;
+    uint32_t seqnum;
+    uint32_t acknum;
+    uint8_t  status;
+    uint8_t  flags;
+    uint16_t  window;
     enum TCP_STAT{
         CLOSED=1,
         LISTEN,
@@ -66,8 +66,8 @@ private:
     void Write_bottom_half(Ether*);
     bool Write_retry();
     bool Read_bottom_half(Ether*);    
-    void CreateHeader(Ether*,byte* ,word);  
-    int  Strip(Ether*, byte**);
+    void CreateHeader(Ether*,uint8_t* ,uint16_t);  
+    int  Strip(Ether*, uint8_t**);
 };
 
 };

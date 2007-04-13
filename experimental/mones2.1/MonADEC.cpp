@@ -41,42 +41,42 @@ int MonADEC::init()
     for(int i=0;i<(1<<LOGRXRINGLEN);i++){
         (rxdsc+i)->status=RX_OWN;
         (rxdsc+i)->ctlandcnt=RCH|ETHER_MAX_PACKET;
-        (rxdsc+i)->bufaddr1=(dword)(rxbuf+i*ETHER_MAX_PACKET);
-        (rxdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
+        (rxdsc+i)->bufaddr1=(uint32_t)(rxbuf+i*ETHER_MAX_PACKET);
+        (rxdsc+i)->bufaddr2=(uint32_t)(rxdsc+i+1);
     }
     (rxdsc+((1<<LOGRXRINGLEN)-1))->ctlandcnt |= RER;
-    (rxdsc+((1<<LOGRXRINGLEN)-1))->bufaddr2=(dword)rxdsc;
+    (rxdsc+((1<<LOGRXRINGLEN)-1))->bufaddr2=(uint32_t)rxdsc;
     txdsc = (DESC*)(rxbuf+(1<<LOGRXRINGLEN)*ETHER_MAX_PACKET);
-    txbuf = (byte*)txdsc+((1<<LOGTXRINGLEN)*sizeof(DESC));
+    txbuf = (uint8_t*)txdsc+((1<<LOGTXRINGLEN)*sizeof(DESC));
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
         (txdsc+i)->ctlandcnt=TCH|ETHER_MAX_PACKET;
-        (txdsc+i)->bufaddr1=(dword)(txbuf+i*ETHER_MAX_PACKET);
-        (txdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
+        (txdsc+i)->bufaddr1=(uint32_t)(txbuf+i*ETHER_MAX_PACKET);
+        (txdsc+i)->bufaddr2=(uint32_t)(rxdsc+i+1);
     }
     (txdsc+((1<<LOGTXRINGLEN)-1))->ctlandcnt|=TER; 
-    (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(dword)txdsc; 
+    (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(uint32_t)txdsc; 
     //Get serial rom contents.
-    word val[SROM_SIZE];
+    uint16_t val[SROM_SIZE];
     if( ReadSROM(SROM_SIZE,val) ){
         return -1;
     }    
     for(int i=0;i<6;i++){
-        macaddress[i]=((byte*)(val+MAC_OFFSET))[i]; 
+        macaddress[i]=((uint8_t*)(val+MAC_OFFSET))[i]; 
         //mac address of VirtualPC is defined in vmc file.
     }    
     //Create setup frame.
     for(int i=0;i<3;i++){
-        *(dword*)(txdsc->bufaddr1+i)=0x0000ffff;
+        *(uint32_t*)(txdsc->bufaddr1+i)=0x0000ffff;
     }    
     for(int i=3;i<SETUPPKTSIZE/4;i++){
-        *(dword*)(txdsc->bufaddr1+i)=val[MAC_OFFSET+(i%3)];
+        *(uint32_t*)(txdsc->bufaddr1+i)=val[MAC_OFFSET+(i%3)];
     }
     txdsc->status=TX_OWN;
     txdsc->ctlandcnt= SET | SETUPPKTSIZE;
     txindex++;
-    outp32(iobase+CSR_3,(dword)rxdsc);
-    outp32(iobase+CSR_4,(dword)txdsc);
+    outp32(iobase+CSR_3,(uint32_t)rxdsc);
+    outp32(iobase+CSR_4,(uint32_t)txdsc);
     //6. Write CSR6 (Section 3.2.2.6) to set global serial parameters and to start both the receive and
     //   transmit processes. The receive and transmit processes enter the running state and attempt to
     //   acquire descriptors from the respective descriptor lists. Then the receive and transmit
@@ -89,8 +89,8 @@ int MonADEC::init()
 int MonADEC::interrupt()
 {
     //see section 4.3.3
-    word ret=0x0000;
-    dword val=inp32(iobase+CSR_5);
+    uint16_t ret=0x0000;
+    uint32_t val=inp32(iobase+CSR_5);
     if( val & CSR5_TI ){
         txihandler();
         ret |= TX_INT;
@@ -119,11 +119,11 @@ void MonADEC::txihandler()
 void MonADEC::rxihandler()
 {
     //printf("RX:%d\n",rxindex);
-    word length;
+    uint16_t length;
     while( ((rxdsc+rxindex)->status & RX_OWN) == 0 ){
         length=(((rxdsc+rxindex)->ctlandcnt)&0x07FF);
         Ether* frame = new Ether; //deleted by server.
-        memcpy(frame,(byte*)((rxdsc+rxindex)->bufaddr1),length);
+        memcpy(frame,(uint8_t*)((rxdsc+rxindex)->bufaddr1),length);
         //printf("%d\n",length);
         rxFrameList.add(frame);
         (rxdsc+rxindex)->status=RX_OWN;
@@ -142,7 +142,7 @@ void MonADEC::SendFrm(Ether* frame)
     //printf("send frame\n");  
     //printf("T:%d R:%d\n",txindex,rxindex);
     enableNetwork();
-    word len=CalcFrameSize(frame);
+    uint16_t len=CalcFrameSize(frame);
     txFrameList.add(frame);
     while( txFrameList.size() != 0 && ( (txdsc+txindex)->status & TX_OWN) != TX_OWN ) {
         Ether* frame = txFrameList.removeAt(0);
@@ -161,7 +161,7 @@ void MonADEC::SendFrm(Ether* frame)
 }
 
 
-int MonADEC::ReadSROM(word Len,word* Data)
+int MonADEC::ReadSROM(uint16_t Len,uint16_t* Data)
 {
     //This function was cited from 
     //"Using the Digital Semiconductor 
@@ -173,8 +173,8 @@ int MonADEC::ReadSROM(word Len,word* Data)
         printf("Data length is too big for SROM\n");
         return -1;
     }
-    // Loop on all DATA words.
-    for (word j=0; j<Len; j++){
+    // Loop on all DATA uint16_ts.
+    for (uint16_t j=0; j<Len; j++){
         // Output the READ command to the SROM
         outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS |       DATA_1);
         outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS | CLK | DATA_1);
@@ -192,8 +192,8 @@ int MonADEC::ReadSROM(word Len,word* Data)
         outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS |       DATA_0);
         Delay800nSec();
         // Output the WORD Address of the SROM
-        for (word i=0; i<=SROM_BITS; i++){
-            dword Dbit = (dword)(( j >> (SROM_BITS-i)) & 1) << 2;
+        for (uint16_t i=0; i<=SROM_BITS; i++){
+            uint32_t Dbit = (uint32_t)(( j >> (SROM_BITS-i)) & 1) << 2;
             outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS |       Dbit);
             outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS | CLK | Dbit);
             Delay800nSec();    
@@ -201,15 +201,15 @@ int MonADEC::ReadSROM(word Len,word* Data)
             Delay800nSec();
         }
         // Verify that the SROM output data became now 0.
-        dword Dout=inp32(iobase+CSR_9);
+        uint32_t Dout=inp32(iobase+CSR_9);
         Dout = (Dout>>3) & 1;
         if (Dout != 0){
             printf("SROM did not become busy in read command\n");
             return -1;    
         }
-        word WordData=0; // !!
+        uint16_t WordData=0; // !!
         // Input the WORD of data from the SROM
-        for (word i=0; i<=15; i++){
+        for (uint16_t i=0; i<=15; i++){
             outp32(iobase+CSR_9, CSR9_WRITE | SEL_SROM | CS | CLK);
             Delay800nSec();
             Dout=inp32(iobase+CSR_9);

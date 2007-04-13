@@ -8,8 +8,8 @@ class UDPCoInfo : public L4Base
 { 
 public:
     UDPCoInfo(Dispatch* p){dispatcher=p;}
-    void CreateHeader(Ether* ,byte* ,word );  
-    int Strip(Ether*, byte**);
+    void CreateHeader(Ether* ,uint8_t* ,uint16_t );  
+    int Strip(Ether*, uint8_t**);
     bool IsMyPacket(Ether*);
     bool IsProcessed(Ether*);
     bool Reply(Ether*);

@@ -20,11 +20,11 @@ void L4Base::Close()
     dispatcher->RemoveInfo(this,0);
 }
 
-word L4Base::checksum(byte *data,word size)
+uint16_t L4Base::checksum(uint8_t *data,uint16_t size)
 {
-    dword sum=0;
+    uint32_t sum=0;
     for(int i=0;i<=size-2;i+=2){
-        sum+=bswap(*(word*)(data+i));
+        sum+=bswap(*(uint16_t*)(data+i));
     }
     if(size%2==1){
         sum+=bswap(*(data+size-1)&0xFF);
@@ -32,7 +32,7 @@ word L4Base::checksum(byte *data,word size)
     return ~(((sum>>16)+sum)&0xFFFF);
 }
 
-void L4Base::CreateIPHeader(Ether* frame,word length,byte protocol)
+void L4Base::CreateIPHeader(Ether* frame,uint16_t length,uint8_t protocol)
 {
     IP* ip=frame->IPHeader;
     ip->verhead=0x45;       //version & headersize
@@ -43,15 +43,15 @@ void L4Base::CreateIPHeader(Ether* frame,word length,byte protocol)
     ip->ttl=0x80;           //TTL
     ip->prot=protocol;      
     ip->chksum=0x0;         //for calculating checksum, it should be zero.  
-    ip->chksum=bswap(checksum((byte*)ip,(ip->verhead&0x0F)<<2));
+    ip->chksum=bswap(checksum((uint8_t*)ip,(ip->verhead&0x0F)<<2));
 }
 
 void L4Base::Read(MessageInfo* m)
 {
-    memcpy(&msg,(byte*)m,sizeof(MessageInfo));
+    memcpy(&msg,(uint8_t*)m,sizeof(MessageInfo));
 }
 
-bool L4Base::TimeoutCheck(dword now)
+bool L4Base::TimeoutCheck(uint32_t now)
 {
     if( disposed==true && disposedtick  < now ){
         return true;
@@ -61,7 +61,7 @@ bool L4Base::TimeoutCheck(dword now)
 
 bool L4Base::Read_bottom_half(Ether* frame)
 {
-    byte* data;
+    uint8_t* data;
     if( msg.header==MSG_NET_READ ){
         monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
         if (mi != NULL){
@@ -95,7 +95,7 @@ void L4Base::Write(MessageInfo* m)
         monapi_cmemoryinfo_map(ret);
         if( netdsc == m->arg1 ){
             dispatcher->Send(ret->Data,ret->Size,this);           
-            memcpy(&msg,(byte*)m,sizeof(MessageInfo)); //Register msg.
+            memcpy(&msg,(uint8_t*)m,sizeof(MessageInfo)); //Register msg.
         }
         monapi_cmemoryinfo_delete(ret);
     }

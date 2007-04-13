@@ -22,24 +22,24 @@ public:
         DEVICEID   =0x8029,
     };
 private:
-    void w_reg(word reg,byte val){ outp8(iobase+reg,val); };
-    byte r_reg(word reg){ return inp8(iobase+reg); };
-    void w_regw(word reg,word val){ outp16(iobase+reg,val); };
-    word r_regw(word reg){ return inp16(iobase+reg); };
+    void w_reg(uint16_t reg,uint8_t val){ outp8(iobase+reg,val); };
+    uint8_t r_reg(uint16_t reg){ return inp8(iobase+reg); };
+    void w_regw(uint16_t reg,uint16_t val){ outp16(iobase+reg,val); };
+    uint16_t r_regw(uint16_t reg){ return inp16(iobase+reg); };
 
-    void ne_pio_writemem( byte*, dword, dword );
-    void ne_pio_readmem( dword, byte*, dword );
+    void ne_pio_writemem( uint8_t*, uint32_t, uint32_t );
+    void ne_pio_readmem( uint32_t, uint8_t*, uint32_t );
     int rxihandler();
 
-    byte       ne_ringbuf_status;
-    byte       ne_ringbuf_bound;
-    dword      ne_ringbuf_len;
-    dword      ne_rx_start;      // 受信パケット本体の開始アドレス //
-    byte       ne_rx_bound;      // 受信後の境界レジスタ値 //
-    dword      ne_rx_write_p;    // 受信パケット書き込みアドレス //
-    dword      ne_rx_sub_len;    // 折り返し分の長さ //
-    dword      ne_rx_remain_len; // 残りの長さ(折り返しがないときは本体の長さと同じ) // 
-    dword      frame_len;
+    uint8_t       ne_ringbuf_status;
+    uint8_t       ne_ringbuf_bound;
+    uint32_t      ne_ringbuf_len;
+    uint32_t      ne_rx_start;      // 受信パケット本体の開始アドレス //
+    uint8_t       ne_rx_bound;      // 受信後の境界レジスタ値 //
+    uint32_t      ne_rx_write_p;    // 受信パケット書き込みアドレス //
+    uint32_t      ne_rx_sub_len;    // 折り返し分の長さ //
+    uint32_t      ne_rx_remain_len; // 残りの長さ(折り返しがないときは本体の長さと同じ) // 
+    uint32_t      frame_len;
     enum{
         // QEMU PCI NE2000
         NE_ASIC          =0x10,

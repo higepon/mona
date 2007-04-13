@@ -23,7 +23,7 @@ public:
      void init_Read();
      static void ThreadMain(void*);
 private:
-     dword timerid;
+     uint32_t timerid;
      int delayack;
      int retransmit;
      int keepalive;
@@ -40,7 +40,7 @@ public:
     virtual ~IPStack();
     void messageLoop();
     bool isStarted() {return started;}
-    dword getThreadID() const { return this->myID; }
+    uint32_t getThreadID() const { return this->myID; }
 private:
     Dispatch* pDP;
     void getfreeport(MessageInfo* msg);
@@ -56,12 +56,12 @@ private:
     void config(MessageInfo* msg);
     void reset(MessageInfo* msg);
     void setblockingmode(MessageInfo* msg);
-    word next_port;   
+    uint16_t next_port;   
     TimeKeeper tcp_timer;
     //TCPIn tcp_in;
     //TCPOut tcp_out;
 protected:
-    dword myID;
+    uint32_t myID;
     bool started;
     bool loopExit;
 };

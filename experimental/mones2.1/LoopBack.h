@@ -14,9 +14,9 @@ public:
     int   interrupt();
     LoopBack();
     ~LoopBack();
-    void  getMacAddress(byte* dest){memcpy(dest, mac_addr, 6); }
+    void  getMacAddress(uint8_t* dest){memcpy(dest, mac_addr, 6); }
 private:
-    byte mac_addr[6];
+    uint8_t mac_addr[6];
 };
 
 };//mones::

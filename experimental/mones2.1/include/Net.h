@@ -3,7 +3,7 @@
 #include <sys/types.h>
 namespace mones {
 
-const dword LOOPBACKIP=0x0100007F;
+const uint32_t LOOPBACKIP=0x0100007F;
 
 //'NET' is 0x4E4554
 enum MESSAGE_NET{
@@ -63,12 +63,12 @@ enum PORT{
 struct NetStatus
 {
     char devname[64];
-    byte instance;
-    dword localip;
-    dword netmask;
-    byte mac[6];
-    word mtu;
-    dword defaultroute;
+    uint8_t instance;
+    uint32_t localip;
+    uint32_t netmask;
+    uint8_t mac[6];
+    uint16_t mtu;
+    uint32_t defaultroute;
 };
 
 };

@@ -11,11 +11,10 @@ void __fastcall this2fast(void* p) {
 
 class TCPStream{
 protected:
-    dword id;
+    uint32_t id;
 public:    
     TCPStream(){  
         id=syscall_mthread_create_with_arg(this2fast<TCPStream,&TCPStream::ThreadMain>, this);
-        syscall_mthread_join(id);
     }
     void** buffer;
     virtual void ThreadMain(){};

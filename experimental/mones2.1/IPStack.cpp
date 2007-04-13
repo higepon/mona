@@ -125,7 +125,7 @@ void IPStack::icmpopen(MessageInfo* msg)
     int netdsc= pDP->getSerialNo();
     ICMPCoInfo* pI=new ICMPCoInfo(pDP);
     pI->type=ECHOREQUEST;
-    pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pI->Init(msg->arg1, (uint16_t)(msg->arg2>>16),(uint16_t)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pI);
     Message::reply(msg, netdsc);
 }
@@ -134,7 +134,7 @@ void IPStack::udpopen(MessageInfo* msg)
 {
     int netdsc= pDP->getSerialNo();
     UDPCoInfo* pU = new UDPCoInfo(pDP);
-    pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pU->Init(msg->arg1, (uint16_t)(msg->arg2>>16),(uint16_t)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pU);  
     Message::reply(msg, netdsc);
 }
@@ -142,7 +142,7 @@ void IPStack::udpopen(MessageInfo* msg)
 void IPStack::reset(MessageInfo* msg)
 {
     TCPCoInfo T(pDP);
-    T.Reset(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF));
+    T.Reset(msg->arg1, (uint16_t)(msg->arg2>>16),(uint16_t)(msg->arg2&0x0000FFFF));
     Message::reply(msg);
 }
 
@@ -150,10 +150,10 @@ void IPStack::tcppasvopen(MessageInfo* msg)
 {    
     int netdsc= pDP->getSerialNo();
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
-    pT->Init(0, (word)(msg->arg1),0, msg->from, netdsc);
+    pT->Init(0, (uint16_t)(msg->arg1),0, msg->from, netdsc);
     pDP->AddInfo(pT);
     pT->PasvOpen();
-    memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
+    memcpy(&(pT->msg),(uint8_t*)msg,sizeof(MessageInfo)); //Register msg.
     Message::reply(msg, netdsc);
 
 }
@@ -161,10 +161,10 @@ void IPStack::tcpactvopen(MessageInfo* msg)
 {
     int netdsc= pDP->getSerialNo();
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
-    pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pT->Init(msg->arg1, (uint16_t)(msg->arg2>>16),(uint16_t)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pT);
     pT->ActvOpen();
-    memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
+    memcpy(&(pT->msg),(uint8_t*)msg,sizeof(MessageInfo)); //Register msg.
 }
 
 void IPStack::tcpaccept(MessageInfo* msg)
@@ -180,7 +180,7 @@ void IPStack::tcpaccept(MessageInfo* msg)
 
 void IPStack::close(MessageInfo* msg)
 {
-    dword ret=1;
+    uint32_t ret=1;
     for(int i=0; i< pDP->InfoNum(); i++){
         L4Base* c  = pDP->GetInfo(i);
         if( c->netdsc == msg->arg1 ){
