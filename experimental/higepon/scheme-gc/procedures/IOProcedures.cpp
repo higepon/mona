@@ -38,7 +38,6 @@ PROCEDURE(Ls, "ls")
     {
         entries->add(new SString(entry->d_name, lineno()));
     }
-    printf("size=%d\n", entries->size());
     ::monash::Pair* ret;
     SCM_LIST(entries, ret, lineno());
     closedir(dir);

@@ -35,12 +35,6 @@ $(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS
 $(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS)
 	$(CXX) -lcppunit -ldl -g test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(TEST_OBJECTS) -o $(TEST_TARGET) $(LDFLAGS)
 
-# lib/MONA.SCM: lib/MONA.SCM.in
-# 	sed -e 's|<LIBDIR>|./lib|g' $< > $@
-
-# lib/DANNY.SCM: lib/DANNY.SCM.in
-# 	sed -e 's|<LIBDIR>|./lib|g' $< > $@
-
 check : $(TEST_TARGET) $(TARGET)
 	$(TEST_TARGET)
 	$(TARGET) test/test.scm

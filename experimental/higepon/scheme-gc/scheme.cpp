@@ -127,7 +127,7 @@ void scheme_on_input_char(char c)
     input = "";
     SCHEME_WRITE(stdout, "mona> ");
 }
-
+using namespace MonAPI;
 void scheme_interactive()
 {
     env = new Environment(f, translator);
@@ -153,11 +153,11 @@ void scheme_interactive()
             case MSG_KEY_VIRTUAL_CODE:
                 if ((msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
-                    this->onKeyDown(msg.arg1, msg.arg2);
+                    mona_shell_on_key_down(msg.arg1, msg.arg2);
                 }
                 else if (msg.arg1 == 0)
                 {
-                    this->onKeyDown(msg.arg2, msg.arg3);
+                    mona_shell_on_key_down(msg.arg2, msg.arg3);
                 }
                 break;
         default:

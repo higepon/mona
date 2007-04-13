@@ -6,12 +6,13 @@ INSTDIR = $(BINDIR)/SERVERS
 include Makefile.src.inc
 include Makefile.mona_gc.inc
 
+TARGET_LIBS = lib/MONA.SCM lib/DANNY.SCM lib/TEST.SCM
 ADDCFLAGS    = $(GC_CFLAGS)
-CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o
+CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS)
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) -lmonalibc
 ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(MONADIR)/lib/libmonalibc.a main.o
-ADDTARGETDEP = $(REGISTERS_INC) $(PROCEDURES_H)
+ADDTARGETDEP =  $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) 
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 include $(SHAREDIR)/configs/monapi-ex5.inc
@@ -20,6 +21,11 @@ include Makefile.dep.inc
 install:
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTDIR)
-	$(INSTALL) -p lib/MONA.SCM lib/DANNY.SCM lib/TEST.SCM $(INSTDIR)
+	$(INSTALL) -p $(TARGET_LIBS) $(INSTDIR)
+
+.SUFFIXES: .SCM.in .SCM
+.SCM.in.SCM:
+	sed -e 's|<LIBDIR>|/SERVERS|g' $< > $@
+
 
 -include dependencies

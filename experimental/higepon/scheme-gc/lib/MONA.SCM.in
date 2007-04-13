@@ -2,6 +2,10 @@
             (display a)
             (display b)))
 
+(define (print s)
+  (display s)
+  (newline))
+
 (define caar (lambda (p) (car (car p))))
 (define cadr (lambda (p) (car (cdr p))))
 (define cdar (lambda (p) (cdr (car p))))

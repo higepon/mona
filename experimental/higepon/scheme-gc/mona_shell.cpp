@@ -5,6 +5,7 @@
 #include "mona_shell.h"
 
 using namespace MonAPI;
+void scheme_on_input_char(char c);
 
 int mona_shell_init()
 {
@@ -66,9 +67,12 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
+        char c = Keys::ToChar(key);
+        _printf("%c", c);
         scheme_on_input_char(Keys::ToChar(key));
         break;
     case(Keys::Enter):
+        _printf("\n");
         scheme_on_input_char('\n');
         break;
 
