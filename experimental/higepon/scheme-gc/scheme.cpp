@@ -101,6 +101,61 @@ int scheme_exec_file(const String& file)
     return 0;
 }
 
+#if 1
+MacroFilter f;
+Translator translator;
+Environment* env;
+void onInput(char c)
+{
+    static uint32_t open_paren_count = 0;
+    static uint32_t close_paren_count= 0;
+    static String input = "";
+
+    input += c;
+    if (c == '(') open_paren_count++;
+    if (c == ')') close_paren_count++;
+
+    if (c != '\n') return;
+    if (open_paren_count != close_paren_count)
+    {
+        return;
+    }
+    TRANSCRIPT_WRITE(input.data());
+    scheme_eval_string(input, env, true);
+    open_paren_count = 0;
+    close_paren_count = 0;
+    input = "";
+    SCHEME_WRITE(stdout, "mona> ");
+}
+
+void scheme_input_loop()
+{
+    env = new Environment(f, translator);
+    SCM_ASSERT(env);
+    g_top_env = env;
+    scheme_register_primitives(env);
+
+#ifdef MONA
+    char line[1024];
+#else
+    char* line = NULL;;
+    size_t length = 0;
+#endif
+    RETURN_ON_ERROR("stdin");
+#ifdef MONA
+    String input = "(load \"/SERVERS/MONA.SCM\")";
+#else
+    String input = "(load \"lib/MONA.SCM\")";
+#endif
+    scheme_eval_string(input, env);
+    SCHEME_WRITE(stdout, "mona> ");
+
+    for (;;)
+    {
+        onInput(fgetc(stdin));
+    }
+}
+#else
 void scheme_input_loop()
 {
     MacroFilter f;
@@ -157,7 +212,7 @@ void scheme_input_loop()
         }
     }
 }
-
+#endif
 SExp* objectToSExp(Object* o)
 {
     SExp* sexp = NULL;
