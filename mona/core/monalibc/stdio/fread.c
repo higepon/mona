@@ -204,6 +204,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 //	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
   //    _printf("[11]");
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return readsize;
 }
 

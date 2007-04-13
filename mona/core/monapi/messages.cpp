@@ -369,7 +369,9 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
 
 uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     System::getStdoutStream();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return outStream->write(buffer, size);
 }
 

@@ -8,6 +8,7 @@ int test1();
 int test2();
 int test3();
 int test4();
+int test5();
 
 int main(int argc, char* argv[])
 {
@@ -16,6 +17,7 @@ int main(int argc, char* argv[])
     test2();
     test3();
     test4();
+    test5();
     _printf("**** File system test end ****\n");
     return 0;
 }
@@ -94,5 +96,12 @@ int test4()
     TEST_ASSERT_EQUAL(buffer[31], 'F');
     delete[] buffer;
     fclose(f);
+    TEST_SUCCESS();
+}
+
+int test5()
+{
+    TEST_ASSERT_EQUAL(fileno(stdout), fileno(stdout));
+    TEST_ASSERT_EQUAL(fileno(stderr), fileno(stderr));
     TEST_SUCCESS();
 }

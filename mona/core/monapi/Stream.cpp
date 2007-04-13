@@ -39,17 +39,21 @@ Stream* Stream::FromHandle(uint32_t handle)
 
 uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     access_->lock();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     uint32_t memorySize = header_->size;
     uint32_t memoryCapacity = header_->capacity;
     uint32_t freeSize = memoryCapacity - memorySize;
     uint32_t writeSize;
     if (0 == freeSize || size <= 0)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writeSize = 0;
     }
     else if (size < freeSize)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         PsInfo pi = *MonAPI::System::getProcessInfo();
 //         _logprintf("%s:%d:%x [%s]\n", __func__, __LINE__, System::getThreadID(), pi.name);
 //         _logprintf("this=%x header_ = %x :memorySize = %x:memoryAddress_=%x: dest=%x:buffer=%x:size=%x\n"
@@ -61,15 +65,20 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 //                    , buffer
 //                    , size);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, size);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //        _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memorySize + size);
         header_->size = memorySize + size;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writeSize = size;
     }
     else
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, freeSize);
         //_logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memoryCapacity);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         header_->size = memoryCapacity;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writeSize = freeSize;
     }
     if (memorySize != 0)
@@ -84,15 +93,16 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
     }
     access_->unlock();
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         uint32_t thread = threads[i];
         if (THREAD_UNKNOWN == thread) continue;
         Message::send(thread, MSG_READ_MEMORY_READY);
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     delete[] threads;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return writeSize;
 }
 

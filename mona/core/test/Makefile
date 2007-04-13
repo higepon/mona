@@ -12,7 +12,11 @@ INSTDIR = $(BINDIR)/APPS/TEST.APP
 INSTFILES = TEST.TXT
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    = -lmonalibc-imp
+# link error
+#ADDLINK    = -lmonalibc-imp
+
+# link ok
+ADDLINK    = -lmonalibc
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
 INCLUDE += -I $(INCDIR)/monalibc

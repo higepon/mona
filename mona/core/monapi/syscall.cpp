@@ -44,7 +44,9 @@ int print(const char* msg, int direct)
     }
     else if (direct == 0)
     {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_stdout_write((uint8_t*)msg, strlen(msg) + 1);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
     else if (direct == 2)
     {
