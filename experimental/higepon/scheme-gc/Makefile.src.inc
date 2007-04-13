@@ -43,6 +43,7 @@ StringReader.cpp\
 ExtRepParser.cpp\
 Eof.cpp\
 load.cpp\
+mona_shell.cpp\
 scheme.cpp
 
 PROCEDURE_SOURCES =\

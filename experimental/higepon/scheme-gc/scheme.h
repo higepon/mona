@@ -67,6 +67,7 @@ namespace util {
 #include "procedures/Undef.h"
 #include "procedures/Procedure.h"
 #include "procedures/Set.h"
+#include "mona_shell.h"
 
 namespace monash {
 class DynamicWind;
@@ -131,6 +132,7 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
         fprintf(g_transcript, __VA_ARGS__);                             \
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);             \
         fflush(g_transcript);                                           \
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);             \
     }                                                                   \
 }
 

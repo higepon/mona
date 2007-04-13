@@ -12,6 +12,7 @@ extern bool g_gc_initialized;
 #include <stdio.h>
 #include <stdint.h>
 #include "Assert.h"
+#include "monapi.h"
 
 namespace util {
 
