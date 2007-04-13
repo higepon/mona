@@ -52,12 +52,9 @@ bool OutputPort::write(Object* o)
     return true;
 }
 
-#include <monapi.h>
 bool OutputPort::display(Object* o)
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     SCHEME_WRITE(stream_, "%s", o->toStringValue().data());
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return true;
 }
 

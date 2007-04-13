@@ -279,7 +279,6 @@ PROCEDURE(Write, "write")
 PROCEDURE(NewLine, "newline")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     OutputPort* port;
     if (ARGC == 0)
@@ -292,7 +291,6 @@ PROCEDURE(NewLine, "newline")
         port = p;
     }
 #ifdef USE_MONA_GC
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     port->display(new(false) Charcter('\n'));
 #else
     port->display(new Charcter('\n'));

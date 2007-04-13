@@ -128,11 +128,8 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
     int __err  = fileno(stderr);                                        \
     if (g_transcript != NULL && (__file == __out || __file == __err))   \
     {                                                                   \
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);             \
         fprintf(g_transcript, __VA_ARGS__);                             \
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);             \
         fflush(g_transcript);                                           \
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);             \
     }                                                                   \
 }
 

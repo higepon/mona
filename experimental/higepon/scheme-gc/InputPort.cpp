@@ -40,7 +40,6 @@ bool InputPort::eq(Object* o)
 
 Object* InputPort::readCharacter()
 {
-    _logprintf("fgetc stream=%x %s(%s):%d:\n", stream_, __FILE__, __func__, __LINE__);
     char c = fgetc(stream_);
     if (c == '\n') fileLineNo_++;
     if (c == EOF)
