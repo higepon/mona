@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     if (argc == 1)
     {
         mona_shell_init();
-        scheme_input_loop();
+        scheme_interactive();
         return 0;
     }
     else

@@ -105,7 +105,7 @@ int scheme_exec_file(const String& file)
 static MacroFilter f;
 static Translator translator;
 static Environment* env;
-void onInput(char c)
+void scheme_on_input_char(char c)
 {
     static uint32_t open_paren_count = 0;
     static uint32_t close_paren_count= 0;
@@ -128,7 +128,7 @@ void onInput(char c)
     SCHEME_WRITE(stdout, "mona> ");
 }
 
-void scheme_input_loop()
+void scheme_interactive()
 {
     env = new Environment(f, translator);
     SCM_ASSERT(env);
@@ -144,13 +144,35 @@ void scheme_input_loop()
     scheme_eval_string(input, env);
     SCHEME_WRITE(stdout, "mona> ");
 
+#ifdef MONA
+    for (MessageInfo msg;;)
+    {
+        if (Message::receive(&msg) != 0) continue;
+        switch (msg.header)
+        {
+            case MSG_KEY_VIRTUAL_CODE:
+                if ((msg.arg2 & KEY_MODIFIER_DOWN) != 0)
+                {
+                    this->onKeyDown(msg.arg1, msg.arg2);
+                }
+                else if (msg.arg1 == 0)
+                {
+                    this->onKeyDown(msg.arg2, msg.arg3);
+                }
+                break;
+        default:
+                break;
+        }
+    }
+#else
     for (;;)
     {
-        onInput(fgetc(stdin));
+        scheme_on_input_char(fgetc(stdin));
     }
+#endif
 }
 #else
-void scheme_input_loop()
+void scheme_interactive()
 {
     MacroFilter f;
     Translator translator;
