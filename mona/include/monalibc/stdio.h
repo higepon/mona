@@ -120,7 +120,7 @@ extern "C"
 {
 #endif
 
-extern FILE __sF[];
+extern __declspec(dllimport) FILE __sF[];
 /*
 extern FILE* __stdin;
 extern FILE* __stdout;
