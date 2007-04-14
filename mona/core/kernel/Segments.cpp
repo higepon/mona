@@ -479,7 +479,7 @@ bool SharedMemoryObject::detach(uint32_t id, Process* process)
     if (target->getAttachedCount() == 0)
     {
 //        logprintf("segment id = %x removed %s(%s):%d\n", id,__FILE__, __func__, __LINE__);
-        logprintf("map removed id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
+//        logprintf("map removed id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
         g_sharedMemoryObjectList->remove(target);
         delete(target);
     }

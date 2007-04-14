@@ -102,7 +102,6 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                 mi->Handle = msg.arg2;
                 mi->Owner  = tid;
                 mi->Size   = atoi(msg.str);
-                _logprintf("call monapi_cmemoryinfo_map %s:%d:(%s)\n", __FILE__, __LINE__, __func__);
                 monapi_cmemoryinfo_map(mi);
             }
             else

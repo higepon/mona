@@ -34,13 +34,11 @@ int dllmain(uint32_t reason)
     switch (reason)
     {
     case 0: // DLL_PROCESS_ATTACH
-        _logprintf("DLL_PROCESS_ATTACH\n");
         monapi_initialize_memory(64 * 1024 * 1024);
         invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
         monapi_memory_initialized = true;
         break;
     case 1: // DLL_PROCESS_DETACH
-        _logprintf("DLL_PROCESS_DETACH\n");
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
         break;
     default:
@@ -58,7 +56,6 @@ __attribute__((constructor)) void monapi_initialize()
 
 __attribute__((destructor)) void monapi_finalize()
 {
-    _logprintf("exit(0)");
     exit(0);
 }
 
@@ -74,8 +71,8 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 void invokeFuncList(FuncVoid** list, char* file, int line)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
-    _logprintf("%s:[%s:%s:%d]address=%x\n", __func__, pi.name, file, line, list);
-    _logprintf("%s:outStream=%x, &outStream=%x, inStream=%x &inStream=%x\n", __func__, outStream, &outStream, inStream, &inStream);
+//    _logprintf("%s:[%s:%s:%d]address=%x\n", __func__, pi.name, file, line, list);
+//    _logprintf("%s:outStream=%x, &outStream=%x, inStream=%x &inStream=%x\n", __func__, outStream, &outStream, inStream, &inStream);
     int count = (int)*list++;
     list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
     if (count == -1)

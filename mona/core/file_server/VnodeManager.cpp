@@ -137,7 +137,6 @@ Vnode* VnodeManager::alloc()
 
 int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
 {
-    _logprintf("id = %x size=%x %s(%s):%d\n", fileID, size, __FILE__, __func__, __LINE__);
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {

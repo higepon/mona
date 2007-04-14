@@ -51,30 +51,19 @@ int _read(void *self, void *buf, size_t size)
 	int i;
 	f = (FILE*)self;
 	id = f->_file;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    //    _logprintf("monapi_file_read id=%x size=%d %s(%s):%d\n", id, size, __FILE__, __func__, __LINE__);
 	cmi = monapi_file_read(id, (uint32_t)size);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//	_printf("!cmi = %x\n", cmi);
 	if( cmi == NULL )
 	{
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return -1;
 	}
-    _logprintf("cmi->Size = %x %s %s:%d\n", cmi->Size, __func__, __FILE__, __LINE__);
 	readsize = (int)cmi->Size;
 
 	memcpy(p, cmi->Data, readsize);
-    _logprintf("dispose id = %x %s:%d\n", id, __func__, __LINE__);
-
 //	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
-//	_printf("readsize = %d, cmi->Size = %d\n", readsize, cmi->Size);
 //	monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	monapi_file_seek(id, readsize, SEEK_CUR);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
  //   _printf("_read end\n");
 	return readsize;
 }
@@ -135,7 +124,6 @@ void _open_stdout(FILE *fp)
 
 	fp->_flags = 0;
 	fp->_flags = __SWR|__SLBF;
-	_logprintf("monalibc: fp->_flags = %x\n", fp->_flags);
 	fp->_extra = malloc(sizeof(struct __sFILEX));
 	fp->_extra->stds = __STDOUT;
 }
@@ -156,15 +144,15 @@ void init_stdio(void)
 	_open_stdout(&(__sF[1]));
 	_open_stderr(&(__sF[2]));
 	stream_opener();
-	_logprintf("monalibc: stdin = %x\n", stdin);
-	_logprintf("monalibc: stdout= %x\n", stdout);
-	_logprintf("monalibc: stderr= %x\n", stderr);
-	_logprintf("monalibc: __sF[0]._extra = %x\n", __sF[0]._extra);
-	_logprintf("monalibc: __sF[1]._extra = %x\n", __sF[1]._extra);
-	_logprintf("monalibc: __sF[2]._extra = %x\n", __sF[2]._extra);
-	logprintf("monalibc: stdin = %x\n", stdin);
-	logprintf("monalibc: stdout= %x\n", stdout);
-	logprintf("monalibc: stderr= %x\n", stderr);
+/* 	_logprintf("monalibc: stdin = %x\n", stdin); */
+/* 	_logprintf("monalibc: stdout= %x\n", stdout); */
+/* 	_logprintf("monalibc: stderr= %x\n", stderr); */
+/* 	_logprintf("monalibc: __sF[0]._extra = %x\n", __sF[0]._extra); */
+/* 	_logprintf("monalibc: __sF[1]._extra = %x\n", __sF[1]._extra); */
+/* 	_logprintf("monalibc: __sF[2]._extra = %x\n", __sF[2]._extra); */
+/* 	logprintf("monalibc: stdin = %x\n", stdin); */
+/* 	logprintf("monalibc: stdout= %x\n", stdout); */
+/* 	logprintf("monalibc: stderr= %x\n", stderr); */
 }
 
 void fini_stdio(void)

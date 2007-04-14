@@ -72,12 +72,30 @@ int TerminalUtil::cursorRight(uint32_t n)
 
 int TerminalUtil::cursorTo(uint32_t n, char direction)
 {
-    outbuffer_[0] = 0x1b;
-    outbuffer_[1] = '[';
-    outbuffer_[2] = '0' + n;
-    outbuffer_[3] = direction;
-    outbuffer_[4] = '\0';
-    return writeToOutBuffer();
+    if (n <= 0) return 0;
+    uint32_t rest = n;
+    int ret;
+    while (rest > 0)
+    {
+        uint32_t offset;
+        if (rest > OFFSET_MAX)
+        {
+            offset = OFFSET_MAX;
+            rest -= OFFSET_MAX;
+        }
+        else
+        {
+            offset = rest;
+            rest = 0;
+        }
+        outbuffer_[0] = 0x1b;
+        outbuffer_[1] = '[';
+        outbuffer_[2] = '0' + offset;
+        outbuffer_[3] = direction;
+        outbuffer_[4] = '\0';
+        ret = writeToOutBuffer();
+    }
+    return ret;
 }
 
 int TerminalUtil::cursorMove(uint32_t x, uint32_t y)

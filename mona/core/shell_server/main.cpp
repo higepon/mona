@@ -72,8 +72,6 @@ int main(int argc, char* argv[])
     }
     uint32_t screenHandle = msg.arg2;
 
-    _logprintf("shell outHandle=%x\n", screenHandle);
-
     /* service loop */
     Shell shell(screenHandle);
     shell.run();

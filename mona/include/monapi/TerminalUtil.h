@@ -32,6 +32,7 @@ protected:
         CURSOR_RIGHT = 'C',
         CURSOR_LEFT  = 'D',
         OUT_BUFFER_SIZE = 512,
+        OFFSET_MAX = 9,
     };
     Stream* out_;
     char outbuffer_[OUT_BUFFER_SIZE];

@@ -41,12 +41,10 @@ FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
 	uint32_t fileno;
-    _logprintf("path=%s %s:%d:(%s)\n", path, __FILE__, __LINE__, __func__);
 	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )
 	{
 		errno = ENOMEM;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return fp;
 	}
 	memset(fp, 0, sizeof(FILE));
@@ -84,7 +82,6 @@ FILE *fopen(const char *path, const char *mode)
 		{
 			free(fp);
 			errno = EUNKNOWN;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 			return NULL;
 		}
 	}
@@ -98,7 +95,6 @@ FILE *fopen(const char *path, const char *mode)
 	{
 		free(fp);
 		errno = ENOMEM;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return NULL;
 	}
 	memset(fp->_extra, 0, sizeof(struct __sFILEX));
@@ -108,7 +104,6 @@ FILE *fopen(const char *path, const char *mode)
 		free(fp->_extra);
 		free(fp);
 		errno = ENOMEM;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 		return NULL;
 	}
 	fp->_extra->filesize = (fpos_t)monapi_file_get_file_size(fp->_file);
