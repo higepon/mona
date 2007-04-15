@@ -80,5 +80,6 @@ extern "C" int user_start()
     fini_stdio();
 
     invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
+    exit(result);
     return result;
 }

@@ -59,9 +59,10 @@ int kill() {
     return syscall_kill();
 }
 
-int exit(int error) {
+int exit(int error)
+{
     MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
-        MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID());
+                          MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error);
     return syscall_kill();
 }
 

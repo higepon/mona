@@ -72,6 +72,7 @@ extern uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size);
 extern uint8_t* monapi_allocate_dma_memory(int size);
 extern void monapi_deallocate_dma_memory(void* address, int size);
 extern MONAPI_BOOL monapi_notify_server_start(const char*);
+extern uint32_t monapi_process_wait_terminated(uint32_t tid);
 
 #ifdef __cplusplus
 }

@@ -52,11 +52,9 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     /* list initilize */
     CommandOption list;
     list.next = NULL;
-
     CommandOption* option = NULL;
     CString path;
     _A<CString> args = commandLine.split(' ');
-
     FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;
@@ -66,7 +64,6 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
             path = arg.toUpper();
             continue;
         }
-
         option = new CommandOption;
         strncpy(option->str, arg, sizeof(option->str));
         option->next = list.next;
@@ -125,7 +122,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
 
     if (mi == NULL)
     {
-        if (prompt) printf("%s: can not execute!\n", SVR);
+        return result;
     }
     else
     {
@@ -136,8 +133,8 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     CommandOption* next;
     for (option = list.next; option; option = next)
     {
-    next = option->next;
-    delete option;
+        next = option->next;
+        delete option;
     }
     return result;
 }

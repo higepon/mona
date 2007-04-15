@@ -159,7 +159,7 @@ extern "C" int user_start_c_impl(FuncMain* main)
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 //    exit(result);
-    return 0;
+    return result;
 }
 
 void setupArguments(List<char*>* arg) {

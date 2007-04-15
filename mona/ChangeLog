@@ -1,3 +1,13 @@
+2007-04-15  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/monapi_crt.cpp (user_start): 必ず exit を呼ぶようにした。これにより確実に MSG_PROCESS_TERMINATED が送信される。
+
+        * core/process_server/ProcessManager.cpp (processHandler): notifyProcessCreated, notifyProcessTerminated に処理を分け status コードを通知するようにした。
+
+        * core/monapi/messages.cpp (monapi_process_wait_terminated): 追加。
+
+        * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE): system 関数を追加。まだ非同期だよ。
+
 2007-04-14  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/mona_shell.cpp (mona_shell_on_key_down): Scheme がインタラクティブになった

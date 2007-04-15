@@ -12,14 +12,22 @@ int test5();
 
 int main(int argc, char* argv[])
 {
-    _printf("**** File system test start ****\n");
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
-    _printf("**** File system test end ****\n");
-    return 0;
+    if (argc > 1)
+    {
+        printf(argv[1]);
+        return -2;
+    }
+    else
+    {
+        printf("**** File system test start ****\n");
+        test1();
+        test2();
+        test3();
+        test4();
+        test5();
+        printf("**** File system test end ****\n");
+        return -1;
+    }
 }
 
 int test1()

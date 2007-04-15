@@ -67,7 +67,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
     pi.name   = found.name;
     pi.path   = path;
     infos.push_back(pi);
-    notifyProcessChanged(MSG_PROCESS_CREATED, tid, parent, path);
+    notifyProcessCreated(tid, parent, path);
 }
 
 uint32_t addProcessInfo(uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
@@ -101,7 +101,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
     infos.push_back(pi);
 }
 
-void removeProcessInfo(uint32_t tid)
+void removeProcessInfo(uint32_t tid, int status /* = -1 */)
 {
     int size = infos.size();
     for (int i = 0; i < size; i++)
@@ -109,7 +109,7 @@ void removeProcessInfo(uint32_t tid)
         if (infos[i].tid != tid) continue;
 
         infos.erase(&infos[i]);
-        notifyProcessChanged(MSG_PROCESS_TERMINATED, tid);
+        notifyProcessTerminated(tid, status);
         return;
     }
 }
@@ -130,18 +130,17 @@ static void unregisterReceiver(uint32_t tid)
     for (int i = 0; i < size; i++)
     {
         if (receivers[i] != tid) continue;
-
         receivers.removeAt(i);
         return;
     }
 }
 
-void notifyProcessChanged(uint32_t header, uint32_t tid, uint32_t parent /*= 0*/, const CString& path /*= NULL*/)
+void notifyProcessCreated(uint32_t tid, uint32_t parent, const CString& path)
 {
     int i = 0;
     while (i < receivers.size())
     {
-        if (Message::send(receivers[i], header, tid, parent, 0, path) == 0)
+        if (Message::send(receivers[i], MSG_PROCESS_CREATED, tid, parent, 0, path) == 0)
         {
             i++;
         }
@@ -153,6 +152,25 @@ void notifyProcessChanged(uint32_t header, uint32_t tid, uint32_t parent /*= 0*/
         }
     }
 }
+
+void notifyProcessTerminated(uint32_t tid, int status)
+{
+    int i = 0;
+    while (i < receivers.size())
+    {
+        if (Message::send(receivers[i], MSG_PROCESS_TERMINATED, tid, status) == 0)
+        {
+            i++;
+        }
+        else
+        {
+            printf("%s: can not connect to %d\n", SVR, receivers[i]);
+            removeProcessInfo(receivers[i]);
+            receivers.removeAt(i);
+        }
+    }
+}
+
 
 bool processHandler(MessageInfo* msg)
 {
@@ -182,7 +200,7 @@ bool processHandler(MessageInfo* msg)
             addProcessInfo(msg->arg1, msg->arg2, msg->str);
             break;
         case MSG_PROCESS_TERMINATED:
-            removeProcessInfo(msg->arg1);
+            removeProcessInfo(msg->arg1, msg->arg2);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:
             Message::reply(msg, commonParams->Handle);

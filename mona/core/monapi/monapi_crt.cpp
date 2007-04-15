@@ -23,6 +23,7 @@ extern "C" int user_start()
     setConstructorList(__CTOR_LIST__);
     int result = user_start_c_impl(main);
     invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
+    exit(result);
     return result;
 }
 

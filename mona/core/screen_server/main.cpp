@@ -61,6 +61,14 @@ void output(char* text, uint32_t length)
     const char ERASE_CURSOR_COMMAND[]  = {0x1b, '[', '2', '7', 'm', ' ', 0x1b, '[', '7', 'm'};
     const uint32_t COMMAND_LENGTH = sizeof(ERASE_CURSOR_COMMAND);
     if (length == 0) return;
+    logprintf("output start\n");
+    for (uint32_t i = 0; i < length; i++)
+    {
+        logprintf("%c", text[i]);
+    }
+    logprintf("\noutput end\n");
+
+
     char c = text[0];
     if (c == 0x1b)
     {
@@ -126,7 +134,7 @@ void output(char* text, uint32_t length)
 
 static void outLoop()
 {
-    const uint32_t BUFFER_SIZE = 256;
+    const uint32_t BUFFER_SIZE = 1024;
     for (;;)
     {
         char buffer[BUFFER_SIZE];
