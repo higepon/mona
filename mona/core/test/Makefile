@@ -16,7 +16,7 @@ SHAREDIR   = $(MONADIR)/share
 #ADDLINK    = -lmonalibc-imp
 
 # link ok
-ADDLINK    = -lmonalibc
+ADDLINK    = -lmonalibc-imp
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
 INCLUDE += -I $(INCDIR)/monalibc

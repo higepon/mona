@@ -120,7 +120,11 @@ extern "C"
 {
 #endif
 
+#ifndef BUILD_MONALIBC
 extern __declspec(dllimport) FILE __sF[];
+#else
+extern __declspec(dllexport) FILE __sF[];
+#endif
 /*
 extern FILE* __stdin;
 extern FILE* __stdout;

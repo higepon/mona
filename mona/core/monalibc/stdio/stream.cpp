@@ -31,7 +31,7 @@ extern MonAPI::Stream* outStream;
 
 extern "C" void stream_opener()
 {
-    __sF[0]._stream = inStream;
-    __sF[1]._stream = outStream;
-    __sF[2]._stream = outStream;
+    stdin->_stream = inStream;
+    stdout->_stream = outStream;
+    stderr->_stream = outStream;
 }

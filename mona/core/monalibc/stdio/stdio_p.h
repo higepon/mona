@@ -34,6 +34,7 @@
 #ifndef __STDIO_P_H__
 #define __STDIO_P_H__
 
+#define BUILD_MONALIBC
 #include <stdio.h>
 
 #ifdef __cplusplus
