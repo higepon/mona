@@ -48,6 +48,12 @@ DIR *opendir(const char *path)
 
 	ret->path = path;
 	ret->cmi = monapi_file_read_directory(path);
+	if( ret->cmi == NULL )
+	{
+		free(ret);
+		errno = ENOENT;
+		return NULL;
+	}
 	return ret;
 }
 

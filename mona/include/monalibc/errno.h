@@ -52,6 +52,7 @@ enum
 	EDOM,		/* out of domain. C99 */
 	ERANGE,		/* Result is too big. C99 */
 	EILSEQ,		/* Illegal byte array. C99 */
+	ENOENT,		/* No such file or directory. */
 };
 
 #define ERRNO_MAX EINVAL
