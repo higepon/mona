@@ -78,12 +78,17 @@ typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
 
 }
 
+#ifdef MONA
+#define SCM_TRACE_OUT(...)  _logprintf(__VA_ARGS__), _logprintf("%s:%d:(%s)\n", __FILE__, __LINE__, __func__) ;
+#else
+#define SCM_TRACE_OUT(...) /* */
+#endif
 ::util::String load(const ::util::String& file);
 void scheme_register_primitives(monash::Environment* env);
 void scheme_const_init();
 void scheme_expand_stack(uint32_t mb);
 void scheme_interactive();
-void scheme_on_input_char(char c);
+bool scheme_on_input_line(const ::util::String& line);
 void scheme_init();
 monash::Object* scheme_eval_string(::util::String& input, monash::Environment* env, bool out = false);
 int scheme_exec_file(const ::util::String& file);

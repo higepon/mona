@@ -78,3 +78,4 @@ env->defineVariable(new Variable("eval"), new Eval());
 env->defineVariable(new Variable("null-environment"), new NullEnvironment());
 env->defineVariable(new Variable("scheme-report-environment"), new SchemeReportEnvironment());
 env->defineVariable(new Variable("interaction-environment"), new InteractionEnvironment());
+env->defineVariable(new Variable("system"), new System());

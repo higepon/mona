@@ -58,7 +58,7 @@ uint32_t count_char(const char* s, char c)
 {
     int length = strlen(s);
     uint32_t count = 0;
-    for (uint32_t i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         if (s[i] == c) count++;
     }
@@ -101,33 +101,27 @@ int scheme_exec_file(const String& file)
     return 0;
 }
 
-#if 1
 static MacroFilter f;
 static Translator translator;
 static Environment* env;
-void scheme_on_input_char(char c)
+static String input = "";
+bool scheme_on_input_line(const String& line)
 {
-    static uint32_t open_paren_count = 0;
-    static uint32_t close_paren_count= 0;
-    static String input = "";
-
-    input += c;
-    if (c == '(') open_paren_count++;
-    if (c == ')') close_paren_count++;
-
-    if (c != '\n') return;
-    if (open_paren_count != close_paren_count)
+    input += line;
+    if (count_char(input.data(), '(') != count_char(input.data(), ')'))
     {
-        return;
+        return false;
     }
     TRANSCRIPT_WRITE(input.data());
     scheme_eval_string(input, env, true);
-    open_paren_count = 0;
-    close_paren_count = 0;
     input = "";
+
     SCHEME_WRITE(stdout, "mona> ");
+    return false;
 }
+#ifdef MONA
 using namespace MonAPI;
+#endif
 void scheme_interactive()
 {
     env = new Environment(f, translator);
@@ -137,14 +131,17 @@ void scheme_interactive()
 
     RETURN_ON_ERROR("stdin");
 #ifdef MONA
-    String input = "(load \"/SERVERS/MONA.SCM\")";
+    input = "(load \"/SERVERS/MONA.SCM\")";
 #else
-    String input = "(load \"lib/MONA.SCM\")";
+    input = "(load \"lib/MONA.SCM\")";
 #endif
     scheme_eval_string(input, env);
     SCHEME_WRITE(stdout, "mona> ");
 
 #ifdef MONA
+    // errorで戻ってくる場合があるので変数を初期化
+    input = "";
+    mona_shell_init_variables();
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;
@@ -167,68 +164,13 @@ void scheme_interactive()
 #else
     for (;;)
     {
-        scheme_on_input_char(fgetc(stdin));
-    }
-#endif
-}
-#else
-void scheme_interactive()
-{
-    MacroFilter f;
-    Translator translator;
-    Environment* env = new Environment(f, translator);
-    SCM_ASSERT(env);
-    g_top_env = env;
-    scheme_register_primitives(env);
-
-#ifdef MONA
-    char line[1024];
-#else
-    char* line = NULL;;
-    size_t length = 0;
-#endif
-
-    uint32_t open_paren_count = 0;
-    uint32_t close_paren_count = 0;
-    bool show_prompt = true;
-
-    RETURN_ON_ERROR("stdin");
-
-#ifdef MONA
-    String input = "(load \"/SERVERS/MONA.SCM\")";
-#else
-    String input = "(load \"lib/MONA.SCM\")";
-#endif
-    scheme_eval_string(input, env);
-    input = "";
-
-    for (;;)
-    {
-        if (show_prompt) SCHEME_WRITE(stdout, "mona> ");
-#ifdef MONA
-        monapi_stdin_read((uint8_t*)line, 1024);
-#else
+        char* line = NULL;;
+        size_t length = 0;
         getline(&line, &length, stdin);
-#endif
-        open_paren_count += count_char(line, '(');
-        close_paren_count += count_char(line, ')');
-        input += line;
-        if (input != "" && open_paren_count == close_paren_count)
-        {
-            TRANSCRIPT_WRITE(input.data());
-            scheme_eval_string(input, env, true);
-            open_paren_count = 0;
-            close_paren_count = 0;
-            show_prompt = true;
-            input = "";
-        }
-        else
-        {
-            show_prompt = false;
-        }
+        scheme_on_input_line(line);
     }
-}
 #endif
+}
 SExp* objectToSExp(Object* o)
 {
     SExp* sexp = NULL;

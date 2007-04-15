@@ -1362,5 +1362,22 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class System : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    System()  : procedureName_("system") {}
+    virtual ~System() {}
+
+    virtual ::util::String toString() {    return "procedure:""system";}
+    virtual ::util::String typeString() const { return "system"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 };
 #endif

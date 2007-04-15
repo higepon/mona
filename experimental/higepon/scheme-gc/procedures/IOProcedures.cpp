@@ -12,7 +12,7 @@ extern OutputPort* g_defaultOutputPort;
 extern InputPort*  g_defaultInputPort;
 extern InputPort*  g_currentInputPort;
 
-#include <dirent.h>
+#include "dirent.h"
 
 PROCEDURE(Ls, "ls")
 {
@@ -29,10 +29,13 @@ PROCEDURE(Ls, "ls")
     }
     DIR* dir;
     struct dirent* entry;
+        SCM_TRACE_OUT("");
     if ((dir = opendir(path.data())) == NULL)
     {
+        SCM_TRACE_OUT("");
         RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
     }
+
     Objects* entries = new Objects;
     for(entry = readdir(dir); entry != NULL; entry = readdir(dir))
     {
@@ -329,9 +332,14 @@ PROCEDURE(Load, "load")
     ExtRepParser parser(scanner);
     Object* evalFunc = (new Variable("eval"))->eval(environment);
     Object* evaluated = NULL;
+//     uint32_t h1, h2;
+//     uint32_t l1, l2;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
+//        rdtsc(&l1, &h1);
         SCM_EVAL(evalFunc, env, evaluated, sexp);
+//        rdtsc(&l1, &h2);
+//        SCM_TRACE_OUT("%x:%x %x:%x\n", h2, l2, h1, l1);
     }
     return evaluated;
 #else

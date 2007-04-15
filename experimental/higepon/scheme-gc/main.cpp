@@ -21,12 +21,13 @@ int main(int argc, char *argv[])
 
     if (argc == 1)
     {
-        mona_shell_init();
+        mona_shell_init(MONA_SHELL_INTERCTIVE);
         scheme_interactive();
         return 0;
     }
     else
     {
+        mona_shell_init(MONA_SHELL_NOT_INTERCTIVE);
         scheme_exec_file(argv[1]);
         return 0;
     }

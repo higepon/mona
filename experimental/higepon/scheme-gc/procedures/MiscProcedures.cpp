@@ -246,3 +246,19 @@ PROCEDURE(InteractionEnvironment, "interaction-environment")
 {
     return env;
 }
+
+PROCEDURE(System, "system")
+{
+#ifdef MONA
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), SString, s);
+    uint32_t tid;
+    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
+    if (result != 0)
+    {
+        RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
+    }
+    return new Number(monapi_process_wait_terminated(tid), lineno());
+#endif
+    RETURN_BOOLEAN(false);
+}

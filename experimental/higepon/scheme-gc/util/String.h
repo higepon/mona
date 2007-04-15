@@ -73,6 +73,20 @@ public:
         data_[index] = c;
     }
 
+    void removeAt(uint32_t index)
+    {
+        ASSERT_UTIL(index < length_);
+        if (index == length_ - 1)
+        {
+            data_[index] = '\0';
+        }
+        else
+        {
+            memmove(&data_[index], &data_[index + 1], length_ - index);
+        }
+        length_--;
+    }
+
     const char* data() const { return data_; }
 
     void operator +=(const String& s)
@@ -194,9 +208,21 @@ public:
         return found - data();
     }
 
+    bool isEmpty() const
+    {
+        return size() == 0;
+    }
+
     int indexOf(const String& text)
     {
         return indexOf(text.data());
+    }
+
+    void chop()
+    {
+        if (length_ == 0) return;
+        data_[length_ - 1] = '\0';
+        length_--;
     }
 
     int replaceOnce(const String& a, const String& b)
