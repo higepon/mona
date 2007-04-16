@@ -262,3 +262,47 @@ PROCEDURE(System, "system")
 #endif
     RETURN_BOOLEAN(false);
 }
+
+PROCEDURE(Exec, "exec")
+{
+#ifdef MONA
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), SString, s);
+
+    uint32_t tid;
+    // fix me who release?
+    MonAPI::Stream* in = new MonAPI::Stream();
+    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, in->handle(), in->handle());
+    if (result != 0)
+    {
+        RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
+    }
+
+
+    const uint32_t bufsize = 256;
+    uint8_t buf[bufsize];
+    ::util::String text;
+    for (;;)
+    {
+        uint32_t size = in->read(buf, bufsize);
+        if (size == 0)
+        {
+            continue;
+        }
+
+        text += ::util::String((char*)buf, size);
+        if (size >= 3)
+        {
+            // bad!
+            if (buf[size - 4] = '^' && buf[size - 3] == 'E' && buf[size - 2] == 'O' && buf[size - 1] == 'P')
+            {
+                break;
+            }
+        }
+
+    }
+    monapi_process_wait_terminated(tid);
+    return new SString(text, lineno());
+#endif
+    RETURN_BOOLEAN(false);
+}

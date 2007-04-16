@@ -14,7 +14,7 @@ extern InputPort*  g_currentInputPort;
 
 #include "dirent.h"
 
-PROCEDURE(Ls, "ls")
+PROCEDURE(MonLs, "mona-ls")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
     ::util::String path;

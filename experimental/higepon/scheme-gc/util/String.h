@@ -35,6 +35,11 @@ public:
         set(text);
     }
 
+    String(const char* text, uint32_t length) : data_(NULL), extendSize_(8)
+    {
+        set(text, length);
+    }
+
     String(const String& text) : data_(NULL), extendSize_(8)
     {
         set(text.data());
@@ -286,6 +291,24 @@ private:
 #endif
         strcpy(data_, text);
     }
+
+    void set(const char* text, uint32_t length)
+    {
+        length_ = length;
+        bufferSize_ = length_ + 1 + extendSize_;
+#ifdef USE_BOEHM_GC
+        data_ = new(GC) char[bufferSize_];
+#elif defined(USE_MONA_GC)
+        data_ = new(false) char[bufferSize_];
+#else
+        if (data_ != NULL) delete[] data_;
+        data_ = new char[bufferSize_];
+#endif
+        strncpy(data_, text, length_);
+        data_[length_] = '\0';
+    }
+
+
 
 protected:
     char* data_;

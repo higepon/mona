@@ -25,7 +25,6 @@ install:
 
 .SUFFIXES: .SCM.in .SCM
 .SCM.in.SCM:
-	sed -e 's|<LIBDIR>|/SERVERS|g' $< > $@
-
+	sed -e 's|<IF_MONA>||g' $< | sed -e 's|<LIBDIR>|/SERVERS|g' > $@
 
 -include dependencies

@@ -1,3 +1,12 @@
+<IF_MONA>(define *cwd* "/APPS")
+
+(define *cwd* "/APPS")
+
+(define (pwd) (display *cwd*))
+(define dir pwd)
+
+(define ls (lambda a (if (null? (car a)) (mona-ls *cwd*) (mona-ls (car a)))))
+
 (define f (lambda (a . b)
             (display a)
             (display b)))

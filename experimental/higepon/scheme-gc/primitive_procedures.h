@@ -172,16 +172,16 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
-class Ls : public PrimitiveProcedure
+class MonLs : public PrimitiveProcedure
 {
 private:
     ::util::String procedureName_;
 public:
-    Ls()  : procedureName_("ls") {}
-    virtual ~Ls() {}
+    MonLs()  : procedureName_("mona-ls") {}
+    virtual ~MonLs() {}
 
-    virtual ::util::String toString() {    return "procedure:""ls";}
-    virtual ::util::String typeString() const { return "ls"; }
+    virtual ::util::String toString() {    return "procedure:""mona-ls";}
+    virtual ::util::String typeString() const { return "mona-ls"; }
     virtual Object* eval(Environment* env)
     {
         return this;
@@ -1372,6 +1372,23 @@ public:
 
     virtual ::util::String toString() {    return "procedure:""system";}
     virtual ::util::String typeString() const { return "system"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class Exec : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    Exec()  : procedureName_("exec") {}
+    virtual ~Exec() {}
+
+    virtual ::util::String toString() {    return "procedure:""exec";}
+    virtual ::util::String typeString() const { return "exec"; }
     virtual Object* eval(Environment* env)
     {
         return this;
