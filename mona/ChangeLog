@@ -1,3 +1,13 @@
+2007-04-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE exec): exec を追加したが様子は分からない。
+
+        * core/scheme/util/String.h (util): String のコンストラクタを追加。length をあれする。
+
+2007-04-16  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/MONA.SCM.in: current working directory を scheme の変数として持つことに。
+
 2007-04-15  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/monapi_crt.cpp (user_start): 必ず exit を呼ぶようにした。これにより確実に MSG_PROCESS_TERMINATED が送信される。
