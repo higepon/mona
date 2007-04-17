@@ -399,6 +399,7 @@
                         (set! do-index (+ do-index 2)))
                    (= do-index 10))
 
+(load "<TESTDIR>/port.scm")
 (load "<TESTDIR>/char.scm")
 (load "<TESTDIR>/vector.scm")
 (load "<TESTDIR>/symbol.scm")
@@ -407,7 +408,7 @@
 (load "<TESTDIR>/string.scm")
 (load "<TESTDIR>/pair.scm")
 (load "<TESTDIR>/util.scm")
-;(load "<TESTDIR>/port.scm")
+
 ;(load "<TESTDIR>/cont.scm")
 
 ;; ;; report
