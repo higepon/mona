@@ -1,6 +1,9 @@
 TARGET        = ./scheme
 TEST_TARGET   = ./scheme_test
 TARGET_LIBS   = lib/mona.scm lib/danny.scm
+TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
+              test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
+              test/test.scm test/util.scm test/vector.scm
 
 CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) #-DMACRO_TRACE
 CFLAGS   = $(CXXFLAGS)
@@ -29,7 +32,7 @@ all : $(TARGET) $(TEST_TARGET)
 
 include Makefile.dep.inc
 
-$(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(TARGET_LIBS)
+$(TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(TARGET_LIBS) $(TEST_FILES)
 	$(CXX) -pg -g main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 $(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS)
@@ -46,8 +49,9 @@ test_cpp/main.o: test_cpp/main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 .SUFFIXES: .scm.in .scm
-.SCM.in.SCM:
+.scm.in.scm:
 	sed -e 's|<LIBDIR>|./lib|g' $< > $@
+	sed -e 's|<IF_MONA>|;|g' $< | sed -e 's|<IF_LINUX>||g' | sed -e 's|<LIBDIR>|./lib|g' | sed -e 's|<TESTDIR>|./test|g' > $@
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -62,6 +66,6 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS)
+	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm
 
 -include dependencies

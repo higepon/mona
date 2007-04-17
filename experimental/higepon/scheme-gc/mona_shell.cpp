@@ -322,7 +322,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
 
 
 #else
-int mona_shell_init()
+int mona_shell_init(bool interactive)
 {
 }
 

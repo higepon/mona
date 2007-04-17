@@ -1,4 +1,4 @@
-(load "<LIBDIR>/MONA.SCM")
+(load "<LIBDIR>/mona.scm")
 (load "<LIBDIR>/unittest.scm")
 
 (define (a b) b)

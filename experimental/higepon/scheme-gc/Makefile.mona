@@ -11,7 +11,7 @@ TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm
 ADDCFLAGS    = $(GC_CFLAGS)
-CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS)
+CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) -lmonalibc-imp --enable-auto-import
 ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a main.o
@@ -23,13 +23,14 @@ include Makefile.dep.inc
 
 install:
 	mkdir -p $(INSTDIR)
+	$(INSTALL) -pd $(BINDIR)/LIBS/SCHEME
 	$(INSTALL) -pd $(INSTDIR)/TEST
 	$(INSTALL) -p $(TARGET).EX5 $(INSTDIR)
 	$(INSTALL) -p  $(TEST_FILES) $(INSTDIR)/TEST
-	$(INSTALL) -p $(TARGET_LIBS) $(INSTDIR)
+	$(INSTALL) -p $(TARGET_LIBS) $(BINDIR)/LIBS/SCHEME
 
 .SUFFIXES: .scm.in .scm
 .scm.in.scm:
-	sed -e 's|<IF_MONA>||g' $< | sed -e 's|<IF_LINUX>|/;|g' | sed -e 's|<LIBDIR>|/SERVERS|g' | sed -e 's|<TESTDIR>|/SERVERS/TEST|g' > $@
+	sed -e 's|<IF_MONA>||g' $< | sed -e 's|<IF_LINUX>|;|g' | sed -e 's|<LIBDIR>|/LIBS/SCHEME|g' | sed -e 's|<TESTDIR>|/SERVERS/TEST|g' > $@
 
 -include dependencies
