@@ -1,6 +1,6 @@
 TARGET        = ./scheme
 TEST_TARGET   = ./scheme_test
-TARGET_LIBS   = lib/MONA.SCM lib/DANNY.SCM
+TARGET_LIBS   = lib/mona.scm lib/danny.scm
 
 CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) #-DMACRO_TRACE
 CFLAGS   = $(CXXFLAGS)
@@ -45,7 +45,7 @@ gdb : $(TARGET)
 test_cpp/main.o: test_cpp/main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
-.SUFFIXES: .SCM.in .SCM
+.SUFFIXES: .scm.in .scm
 .SCM.in.SCM:
 	sed -e 's|<LIBDIR>|./lib|g' $< > $@
 
