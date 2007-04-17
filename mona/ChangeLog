@@ -1,3 +1,7 @@
+2007-04-18  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Makefile.mona : Mona è„Ç≈ Scheme ÇÃ testÇ™ëñÇÈÇÊÇ§Ç…ÇµÇΩÅB
+
 2007-04-17  higepon  <higepon@users.sourceforge.jp>
 
         * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::lookupFile):  upperCaseÇ∑ÇÈÇÊÇ§Ç…ÇµÇΩÅB
