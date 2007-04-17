@@ -243,12 +243,12 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
 uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, create, 0, 0, file) != 0)
     {
         return MONA_FAILURE;
     }
+    _logprintf("return %d %s %s:%d\n", msg.arg2, __func__, __FILE__, __LINE__);
     return msg.arg2;
 }
 

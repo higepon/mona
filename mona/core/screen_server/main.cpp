@@ -61,12 +61,12 @@ void output(char* text, uint32_t length)
     const char ERASE_CURSOR_COMMAND[]  = {0x1b, '[', '2', '7', 'm', ' ', 0x1b, '[', '7', 'm'};
     const uint32_t COMMAND_LENGTH = sizeof(ERASE_CURSOR_COMMAND);
     if (length == 0) return;
-    logprintf("output start\n");
-    for (uint32_t i = 0; i < length; i++)
-    {
-        logprintf("%c", text[i]);
-    }
-    logprintf("\noutput end\n");
+//    logprintf("output start\n");
+//     for (uint32_t i = 0; i < length; i++)
+//     {
+//         logprintf("%c", text[i]);
+//     }
+//    logprintf("\noutput end\n");
 
 
     char c = text[0];

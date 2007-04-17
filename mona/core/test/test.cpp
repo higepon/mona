@@ -12,11 +12,6 @@ int test5();
 
 int main(int argc, char* argv[])
 {
-
-    FILE* f = fopen("/SERVERS/TEST/test.scm", "rb");
-    _printf("open ok? %s\n", f == NULL ? "ng" : "ok");
-
-
     if (argc > 1)
     {
         printf(argv[1]);

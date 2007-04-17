@@ -19,13 +19,16 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
     split(file, '/', directories);
     int ret = MONA_FAILURE;
     Vnode* root = directory;
+    _logprintf("lookup file = %s %s %s:%d\n", file.c_str(), __func__, __FILE__, __LINE__);
     for (uint32_t i = 0; i < directories.size(); i++)
     {
         string name = directories[i];
+        _logprintf("<%s>%s %s:%d\n", name.c_str(), __func__, __FILE__, __LINE__);
         int vtype = (i == directories.size() - 1) ? type : Vnode::DIRECTORY;
         ret = root->fs->lookup(root, name, found, vtype);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (ret != MONA_SUCCESS) return ret;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // link
         if ((*found)->mountedVnode != NULL)
         {
@@ -73,8 +76,9 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
 int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID)
 {
     // now fullpath only. fix me
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (create)
     {
         Vnode* targetDirectory = NULL;
@@ -102,29 +106,35 @@ int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t 
 
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* file;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (lookup(root_, filename, &file) != MONA_SUCCESS)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int ret = file->fs->open(file, mode);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (MONA_SUCCESS != ret)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
     }
     *fileID = this->fileID(file, tid);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //     if (fileInfoMap_.find(*fileID) != fileInfoMap_.end())
 //     {
 //         printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
 //         exit(-1);
 //     }
     FileInfo* fileInfo = new FileInfo;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
     fileInfoMap_.insert(pair< uint32_t, FileInfo* >(*fileID, fileInfo));
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return MONA_SUCCESS;
 }
 

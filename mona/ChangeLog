@@ -1,5 +1,7 @@
 2007-04-17  higepon  <higepon@users.sourceforge.jp>
 
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::lookupFile):  upperCaseするようにした。
+
         * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE exec): exec を追加したが様子は分からない。
 
         * core/scheme/util/String.h (util): String のコンストラクタを追加。length をあれする。

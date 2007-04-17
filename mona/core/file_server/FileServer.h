@@ -17,6 +17,8 @@
 
 #define SVR "File Server"
 
+std::string upperCase(const std::string& s);
+
 class FileServer
 {
 public:

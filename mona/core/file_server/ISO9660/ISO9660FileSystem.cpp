@@ -3,6 +3,8 @@
 using namespace std;
 using namespace iso9660;
 
+extern string upperCase(const string& s);
+
 ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
 {
 }
@@ -37,10 +39,13 @@ int ISO9660FileSystem::initialize()
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
     if (v != NULL && v->type == type)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         *found = v;
         return MONA_SUCCESS;
     }
@@ -49,19 +54,24 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
 
     if (type == Vnode::REGULAR)
     {
+        _logprintf("lookupFile<%s:%s>%s %s:%d\n", directoryEntry->name.c_str(), file.c_str(), __func__, __FILE__, __LINE__);
         target = lookupFile(directoryEntry, file);
     }
     else
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         target = lookupDirectory(directoryEntry, file);
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (target == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = target;
     newVnode->type = type;
     newVnode->fs = this;
     vmanager_->cacher()->add(diretory, file, newVnode);
     *found = newVnode;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return MONA_SUCCESS;
 }
 
@@ -524,12 +534,15 @@ Entry* ISO9660FileSystem::lookupDirectory(Entry* root, const string& path)
 // return value should be delete, when close
 Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     setDetailInformation(directory);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
 
@@ -537,24 +550,29 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
 
     if (!readResult)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete buffer;
         return NULL;
     }
 
     for (uint32_t position = 0; position < readSize;)
     {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
 
         if (iEntry->length == 0)
         {
             // check next sector
             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             continue;
         }
 
         string name = getProperName(string(iEntry->name, iEntry->name_len));
-        if (iEntry->directory == 0 && fileName == name)
+        _logprintf("fileName=%s name=%s %s %s:%d\n", fileName.c_str(), name.c_str(), __func__, __FILE__, __LINE__);
+        if (iEntry->directory == 0 && fileName == upperCase(name))
         {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Entry* foundFile = new Entry;
 
             setDetailInformation(foundFile, iEntry);
@@ -562,10 +580,12 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
             delete[] buffer;
             return foundFile;
         }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
         position += iEntry->length;
         iEntry = (DirectoryEntry*)(buffer + position);
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     delete[] buffer;
     return NULL;
 }
