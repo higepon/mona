@@ -14,11 +14,11 @@
                    (= (call-with-values * -) -1)
                    )
 
-(let ((total 0))
-  (assert-check-true "dynamic-wind"
-                     (= (dynamic-wind
-                            (lambda () (set! total (+ total 1)))
-                            (lambda () (set! total (+ total 1)) total)
-                            (lambda () (set! total (+ total 2)))) 2)
-                     (= total 4)
-))
+;; (let ((total 0))
+;;   (assert-check-true "dynamic-wind"
+;;                      (= (dynamic-wind
+;;                             (lambda () (set! total (+ total 1)))
+;;                             (lambda () (set! total (+ total 1)) total)
+;;                             (lambda () (set! total (+ total 2)))) 2)
+;;                      (= total 4)
+;; ))

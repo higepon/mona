@@ -1,7 +1,5 @@
 <IF_MONA>(define *cwd* "/APPS")
 
-(define *cwd* "/APPS")
-
 (define (pwd) (display *cwd*))
 (define dir pwd)
 
