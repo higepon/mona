@@ -306,3 +306,51 @@ PROCEDURE(Exec, "exec")
 #endif
     RETURN_BOOLEAN(false);
 }
+
+PROCEDURE(MonaHalt, "mona-halt")
+{
+#ifdef MONA
+    syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+#endif
+    RETURN_BOOLEAN(false);
+}
+
+PROCEDURE(MonaReboot, "mona-reboot")
+{
+#ifdef MONA
+    syscall_shutdown(SHUTDOWN_REBOOT, SHUTDOWN_DEVICE_ALL);
+#endif
+    RETURN_BOOLEAN(false);
+}
+
+PROCEDURE(MonaKill, "mona-kill")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Number, n);
+#ifdef MONA
+    RETURN_BOOLEAN(syscall_kill_thread(n->value()) == 0);
+#endif
+    RETURN_BOOLEAN(false);
+}
+
+PROCEDURE(MonaPs, "mona-ps")
+{
+    ARGC_SHOULD_BE(0);
+#ifdef MONA
+    ::util::String result = "[tid] [state]  [eip]    [esp]    [cr3]    [name]\n";
+    char buf[256];
+    syscall_set_ps_dump();
+    PsInfo info;
+    while (syscall_read_ps_dump(&info) == 0)
+    {
+        sprintf(buf, "%5d %s %08x %08x %08x %s\n",
+                info.tid, info.state ? "running" : "waiting",
+                info.eip, info.esp, info.cr3, info.name);
+        result += buf;
+    }
+    return new SString(result, lineno());
+#endif
+    RETURN_BOOLEAN(false);
+}
+
+

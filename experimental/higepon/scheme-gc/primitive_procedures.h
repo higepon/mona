@@ -172,6 +172,57 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class MonaDirOpen : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaDirOpen()  : procedureName_("mona-dir-open") {}
+    virtual ~MonaDirOpen() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-dir-open";}
+    virtual ::util::String typeString() const { return "mona-dir-open"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaDirRead : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaDirRead()  : procedureName_("mona-dir-read") {}
+    virtual ~MonaDirRead() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-dir-read";}
+    virtual ::util::String typeString() const { return "mona-dir-read"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaDirClose : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaDirClose()  : procedureName_("mona-dir-close") {}
+    virtual ~MonaDirClose() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-dir-close";}
+    virtual ::util::String typeString() const { return "mona-dir-close"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class MonLs : public PrimitiveProcedure
 {
 private:
@@ -1389,6 +1440,74 @@ public:
 
     virtual ::util::String toString() {    return "procedure:""exec";}
     virtual ::util::String typeString() const { return "exec"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaHalt : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaHalt()  : procedureName_("mona-halt") {}
+    virtual ~MonaHalt() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-halt";}
+    virtual ::util::String typeString() const { return "mona-halt"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaReboot : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaReboot()  : procedureName_("mona-reboot") {}
+    virtual ~MonaReboot() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-reboot";}
+    virtual ::util::String typeString() const { return "mona-reboot"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaKill : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaKill()  : procedureName_("mona-kill") {}
+    virtual ~MonaKill() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-kill";}
+    virtual ::util::String typeString() const { return "mona-kill"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaPs : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaPs()  : procedureName_("mona-ps") {}
+    virtual ~MonaPs() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-ps";}
+    virtual ::util::String typeString() const { return "mona-ps"; }
     virtual Object* eval(Environment* env)
     {
         return this;

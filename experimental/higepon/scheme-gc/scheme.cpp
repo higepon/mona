@@ -113,7 +113,7 @@ bool scheme_on_input_line(const String& line)
         return false;
     }
     TRANSCRIPT_WRITE(input.data());
-    scheme_eval_string(input, env, true);
+    scheme_eval_string(input, env, false);
     input = "";
 
     SCHEME_WRITE(stdout, "mona> ");
@@ -131,11 +131,11 @@ void scheme_interactive()
 
     RETURN_ON_ERROR("stdin");
 #ifdef MONA
-    input = "(load \"/SERVERS/MONA.SCM\")";
+    input = "(load \"/LIBS/SCHEME/scheme.scm\")";
 #else
-    input = "(load \"lib/MONA.SCM\")";
+    input = "(load \"lib/scheme.scm\")";
 #endif
-    scheme_eval_string(input, env);
+    scheme_eval_string(input, env, false);
     SCHEME_WRITE(stdout, "mona> ");
 
 #ifdef MONA

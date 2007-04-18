@@ -8,6 +8,9 @@ env->defineVariable(new Variable("char->integer"), new CharcterToInteger());
 env->defineVariable(new Variable("integer->char"), new IntegerToCharcter());
 env->defineVariable(new Variable("eqv?"), new EqvP());
 env->defineVariable(new Variable("eq?"), new EqP());
+env->defineVariable(new Variable("mona-dir-open"), new MonaDirOpen());
+env->defineVariable(new Variable("mona-dir-read"), new MonaDirRead());
+env->defineVariable(new Variable("mona-dir-close"), new MonaDirClose());
 env->defineVariable(new Variable("mona-ls"), new MonLs());
 env->defineVariable(new Variable("transcript-on"), new TranscriptOn());
 env->defineVariable(new Variable("transcript-off"), new TranscriptOff());
@@ -80,3 +83,7 @@ env->defineVariable(new Variable("scheme-report-environment"), new SchemeReportE
 env->defineVariable(new Variable("interaction-environment"), new InteractionEnvironment());
 env->defineVariable(new Variable("system"), new System());
 env->defineVariable(new Variable("exec"), new Exec());
+env->defineVariable(new Variable("mona-halt"), new MonaHalt());
+env->defineVariable(new Variable("mona-reboot"), new MonaReboot());
+env->defineVariable(new Variable("mona-kill"), new MonaKill());
+env->defineVariable(new Variable("mona-ps"), new MonaPs());

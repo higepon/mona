@@ -14,6 +14,49 @@ extern InputPort*  g_currentInputPort;
 
 #include "dirent.h"
 
+static DIR* dir;
+PROCEDURE(MonaDirOpen, "mona-dir-open")
+{
+    ARGC_SHOULD_BE_BETWEEN(0, 1);
+    ::util::String path;
+    if (ARGC == 0)
+    {
+        path = ".";
+    }
+    else
+    {
+        CAST(ARGV(0), SString, s);
+        path = s->value();
+    }
+    if ((dir = opendir(path.data())) == NULL)
+    {
+        RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
+    }
+    return SCM_TRUE;
+}
+
+PROCEDURE(MonaDirRead, "mona-dir-read")
+{
+    struct dirent* entry = readdir(dir);
+    if (NULL == entry) return SCM_FALSE;
+    SString* name = new SString(entry->d_name, lineno());
+    bool isDirectory = entry->d_type == ATTRIBUTE_DIRECTORY;
+    if (isDirectory)
+    {
+        return new Pair(name, SCM_TRUE, lineno());
+    }
+    else
+    {
+        return new Pair(name, SCM_FALSE, lineno());
+    }
+}
+
+PROCEDURE(MonaDirClose, "mona-dir-close")
+{
+   closedir(dir);
+   return SCM_TRUE;
+}
+
 PROCEDURE(MonLs, "mona-ls")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
