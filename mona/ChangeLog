@@ -1,5 +1,7 @@
 2007-04-18  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/procedures/MiscProcedures.cpp : halt/reboot/kill ‚ğ’Ç‰Á
+
         * core/scheme/Makefile.mona : Mona ã‚Å Scheme ‚Ì test‚ª‘–‚é‚æ‚¤‚É‚µ‚½B
 
 2007-04-17  higepon  <higepon@users.sourceforge.jp>
