@@ -1,1 +1,1 @@
-(define *cwd* ".")
+(define *current-directory* ".")

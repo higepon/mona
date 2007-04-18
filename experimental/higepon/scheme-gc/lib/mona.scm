@@ -1,1 +1,1 @@
-(define *cwd* "/APPS")
+(define *current-directory* "/APPS")
