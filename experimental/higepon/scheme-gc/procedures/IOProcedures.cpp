@@ -32,6 +32,7 @@ PROCEDURE(MonaDirOpen, "mona-dir-open")
     {
         RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
     }
+
     return SCM_TRUE;
 }
 
@@ -40,7 +41,11 @@ PROCEDURE(MonaDirRead, "mona-dir-read")
     struct dirent* entry = readdir(dir);
     if (NULL == entry) return SCM_FALSE;
     SString* name = new SString(entry->d_name, lineno());
+#ifdef MONA
     bool isDirectory = entry->d_type == ATTRIBUTE_DIRECTORY;
+#else
+    bool isDirectory = entry->d_type;
+#endif
     if (isDirectory)
     {
         return new Pair(name, SCM_TRUE, lineno());
