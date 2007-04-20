@@ -108,6 +108,23 @@ PROCEDURE(StringToNumber, "string->number")
 #endif
 }
 
+PROCEDURE(StringSplit, "string-split")
+{
+    ARGC_SHOULD_BE(2);
+    CAST(ARGV(0), SString, s);
+    CAST(ARGV(1), Charcter, c);
+    ::util::Vector<String>* ss = s->value().split(c->value());
+    Objects* objects = new Objects;
+    for (int i = 0; i < ss->size(); i++)
+    {
+        objects->add(new SString(ss->get(i), lineno()));
+    }
+    Pair* ret;
+    SCM_LIST(objects, ret, lineno());
+    return ret;
+}
+
+
 PROCEDURE(StringToSymbol, "string->symbol")
 {
     ARGC_SHOULD_BE(1);

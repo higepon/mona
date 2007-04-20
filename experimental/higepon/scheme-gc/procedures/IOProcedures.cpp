@@ -14,6 +14,14 @@ extern InputPort*  g_currentInputPort;
 
 #include "dirent.h"
 
+struct DirInfo
+{
+    DirInfo(DIR* dir, ::util::String path) : dir(dir), path(path) {}
+    DIR* dir;
+    ::util::String path;
+};
+
+// full path only
 PROCEDURE(MonaDirOpen, "mona-dir-open")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
@@ -32,21 +40,28 @@ PROCEDURE(MonaDirOpen, "mona-dir-open")
     {
         RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
     }
-    return new Variant(dir, lineno());
+    return new Variant(new DirInfo(dir, path), lineno());
 }
 
 PROCEDURE(MonaDirRead, "mona-dir-read")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Variant, v);
-    DIR* dir = (DIR*)v->data();
+    DirInfo* info = (DirInfo*)v->data();
+    DIR* dir = info->dir;
     struct dirent* entry = readdir(dir);
     if (NULL == entry) return SCM_FALSE;
     SString* name = new SString(entry->d_name, lineno());
 #ifdef MONA
     bool isDirectory = entry->d_type == ATTRIBUTE_DIRECTORY;
 #else
-    bool isDirectory = entry->d_type;
+    struct stat st;
+    ::util::String target = info->path + "/" + entry->d_name;
+    if (0 != stat(target.data(), &st))
+    {
+        RAISE_ERROR(lineno(), "couldn't read dir: %s", target.data());
+    }
+    bool isDirectory = S_ISDIR(st.st_mode);
 #endif
     if (isDirectory)
     {
@@ -62,7 +77,8 @@ PROCEDURE(MonaDirClose, "mona-dir-close")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Variant, v);
-    DIR* dir = (DIR*)v->data();
+    DirInfo* info = (DirInfo*)v->data();
+    DIR* dir = info->dir;
     closedir(dir);
     return SCM_TRUE;
 }

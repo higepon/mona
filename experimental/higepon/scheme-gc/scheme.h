@@ -20,6 +20,7 @@
 #ifdef MONA
 #include <monapi.h>
 #else
+#include <sys/stat.h>    // stat
 #include <sys/time.h>    // rlimit
 #include <sys/resource.h> // rlimit
 #endif

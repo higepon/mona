@@ -1,6 +1,7 @@
 #include "StringTest.h"
 #include <string.h>
 #include "../String.h"
+#include "../Vector.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 
@@ -201,4 +202,14 @@ void StringTest::testAppend()
         s += c;
     }
     CPPUNIT_ASSERT(s == "(This is test.)(This is test.)abcdefghijklmnopqrstuvwxyz");
+}
+
+void StringTest::testSplit()
+{
+    String path = "/hoge/hige";
+    Vector<String>* ss = path.split('/');
+    CPPUNIT_ASSERT(ss->size() == 3);
+    CPPUNIT_ASSERT(ss->get(0) == "");
+    CPPUNIT_ASSERT(ss->get(1) == "hoge");
+    CPPUNIT_ASSERT(ss->get(2) == "hige");
 }

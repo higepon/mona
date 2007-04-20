@@ -59,6 +59,7 @@ env->defineVariable(new Variable("string-ref"), new StringRef());
 env->defineVariable(new Variable("string-set!"), new StringSet());
 env->defineVariable(new Variable("string=?"), new StringEqualP());
 env->defineVariable(new Variable("string->number"), new StringToNumber());
+env->defineVariable(new Variable("string-split"), new StringSplit());
 env->defineVariable(new Variable("string->symbol"), new StringToSymbol());
 env->defineVariable(new Variable("symbol?"), new SymbolP());
 env->defineVariable(new Variable("symbol->string"), new SymbolToString());

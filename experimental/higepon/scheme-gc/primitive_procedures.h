@@ -1039,6 +1039,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class StringSplit : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    StringSplit()  : procedureName_("string-split") {}
+    virtual ~StringSplit() {}
+
+    virtual ::util::String toString() {    return "procedure:""string-split";}
+    virtual ::util::String typeString() const { return "string-split"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class StringToSymbol : public PrimitiveProcedure
 {
 private:

@@ -173,3 +173,9 @@
 
 (assert-check-true "string"
                    (string=? (string #\a #\b) "ab"))
+
+(let ((strings (string-split "/hage/hige" #\/)))
+  (assert-check-true "string-split"
+                     (string=? (list-ref strings 0) "")
+                     (string=? (list-ref strings 1) "hage")
+                     (string=? (list-ref strings 2) "hige")))
