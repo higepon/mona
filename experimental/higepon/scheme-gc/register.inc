@@ -11,7 +11,6 @@ env->defineVariable(new Variable("eq?"), new EqP());
 env->defineVariable(new Variable("mona-dir-open"), new MonaDirOpen());
 env->defineVariable(new Variable("mona-dir-read"), new MonaDirRead());
 env->defineVariable(new Variable("mona-dir-close"), new MonaDirClose());
-env->defineVariable(new Variable("mona-ls"), new MonLs());
 env->defineVariable(new Variable("transcript-on"), new TranscriptOn());
 env->defineVariable(new Variable("transcript-off"), new TranscriptOff());
 env->defineVariable(new Variable("file-exists?"), new FileExistsP());

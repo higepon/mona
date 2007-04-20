@@ -223,23 +223,6 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
-class MonLs : public PrimitiveProcedure
-{
-private:
-    ::util::String procedureName_;
-public:
-    MonLs()  : procedureName_("mona-ls") {}
-    virtual ~MonLs() {}
-
-    virtual ::util::String toString() {    return "procedure:""mona-ls";}
-    virtual ::util::String typeString() const { return "mona-ls"; }
-    virtual Object* eval(Environment* env)
-    {
-        return this;
-    }
-    virtual Object* apply(Objects* arguments, Environment* env);
-};
-
 class TranscriptOn : public PrimitiveProcedure
 {
 private:

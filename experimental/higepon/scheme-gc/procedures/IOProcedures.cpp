@@ -14,11 +14,11 @@ extern InputPort*  g_currentInputPort;
 
 #include "dirent.h"
 
-static DIR* dir;
 PROCEDURE(MonaDirOpen, "mona-dir-open")
 {
     ARGC_SHOULD_BE_BETWEEN(0, 1);
     ::util::String path;
+    DIR* dir;
     if (ARGC == 0)
     {
         path = ".";
@@ -32,12 +32,14 @@ PROCEDURE(MonaDirOpen, "mona-dir-open")
     {
         RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
     }
-
-    return SCM_TRUE;
+    return new Variant(dir, lineno());
 }
 
 PROCEDURE(MonaDirRead, "mona-dir-read")
 {
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Variant, v);
+    Dir* dir = (Dir*)v->data();
     struct dirent* entry = readdir(dir);
     if (NULL == entry) return SCM_FALSE;
     SString* name = new SString(entry->d_name, lineno());
@@ -58,42 +60,45 @@ PROCEDURE(MonaDirRead, "mona-dir-read")
 
 PROCEDURE(MonaDirClose, "mona-dir-close")
 {
-   closedir(dir);
-   return SCM_TRUE;
-}
-
-PROCEDURE(MonLs, "mona-ls")
-{
-    ARGC_SHOULD_BE_BETWEEN(0, 1);
-    ::util::String path;
-    if (ARGC == 0)
-    {
-        path = ".";
-    }
-    else
-    {
-        CAST(ARGV(0), SString, s);
-        path = s->value();
-    }
-    DIR* dir;
-    struct dirent* entry;
-        SCM_TRACE_OUT("");
-    if ((dir = opendir(path.data())) == NULL)
-    {
-        SCM_TRACE_OUT("");
-        RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
-    }
-
-    Objects* entries = new Objects;
-    for(entry = readdir(dir); entry != NULL; entry = readdir(dir))
-    {
-        entries->add(new SString(entry->d_name, lineno()));
-    }
-    ::monash::Pair* ret;
-    SCM_LIST(entries, ret, lineno());
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Variant, v);
+    Dir* dir = (Dir*)v->data();
     closedir(dir);
-    return ret;
+    return SCM_TRUE;
 }
+
+// PROCEDURE(MonLs, "mona-ls")
+// {
+//     ARGC_SHOULD_BE_BETWEEN(0, 1);
+//     ::util::String path;
+//     if (ARGC == 0)
+//     {
+//         path = ".";
+//     }
+//     else
+//     {
+//         CAST(ARGV(0), SString, s);
+//         path = s->value();
+//     }
+//     DIR* dir;
+//     struct dirent* entry;
+//         SCM_TRACE_OUT("");
+//     if ((dir = opendir(path.data())) == NULL)
+//     {
+//         SCM_TRACE_OUT("");
+//         RAISE_ERROR(lineno(), "couldn't open dir: %s", path.data());
+//     }
+
+//     Objects* entries = new Objects;
+//     for(entry = readdir(dir); entry != NULL; entry = readdir(dir))
+//     {
+//         entries->add(new SString(entry->d_name, lineno()));
+//     }
+//     ::monash::Pair* ret;
+//     SCM_LIST(entries, ret, lineno());
+//     closedir(dir);
+//     return ret;
+// }
 
 PROCEDURE(TranscriptOn, "transcript-on")
 {
