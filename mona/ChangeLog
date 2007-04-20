@@ -1,3 +1,7 @@
+2007-04-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/IOProcedures.cpp : Variant型追加。これはScheme側でポインタを保持できるようにという意図である。
+
 2007-04-18  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/procedures/MiscProcedures.cpp : halt/reboot/kill を追加
