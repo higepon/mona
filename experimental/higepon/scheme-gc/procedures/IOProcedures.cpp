@@ -39,7 +39,7 @@ PROCEDURE(MonaDirRead, "mona-dir-read")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Variant, v);
-    Dir* dir = (Dir*)v->data();
+    DIR* dir = (DIR*)v->data();
     struct dirent* entry = readdir(dir);
     if (NULL == entry) return SCM_FALSE;
     SString* name = new SString(entry->d_name, lineno());
@@ -62,7 +62,7 @@ PROCEDURE(MonaDirClose, "mona-dir-close")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Variant, v);
-    Dir* dir = (Dir*)v->data();
+    DIR* dir = (DIR*)v->data();
     closedir(dir);
     return SCM_TRUE;
 }

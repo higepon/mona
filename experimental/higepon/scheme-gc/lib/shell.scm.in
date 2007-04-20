@@ -16,16 +16,16 @@
 
 (define ls
   (lambda dir-path
-    (let ((dir (if (null? (car dir-path)) *cwd* (car dir-path))))
+    (let ((dir (if (null? (car dir-path)) *current-directory* (car dir-path))))
       (for-each (lambda (e) (print (e 'name))) (directory-entries dir)))))
 
 (define (directory-entries path)
-  (mona-dir-open path)
-  (let loop ((entry (mona-dir-read)) (entries '()))
+  (let ((d (mona-dir-open path)))
+  (let loop ((entry (mona-dir-read d)) (entries '()))
     (if entry
-        (loop (mona-dir-read)
+        (loop (mona-dir-read d)
               (cons (make-directory-entry (car entry) (cdr entry)) entries))
-        (begin (mona-dir-close) entries))))
+        (begin (mona-dir-close d) entries)))))
 
 
 (define (make-directory-entry name directoryp)

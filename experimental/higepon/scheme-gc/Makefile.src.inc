@@ -42,6 +42,7 @@ SToken.cpp\
 StringReader.cpp\
 ExtRepParser.cpp\
 Eof.cpp\
+Variant.cpp\
 load.cpp\
 mona_shell.cpp\
 scheme.cpp

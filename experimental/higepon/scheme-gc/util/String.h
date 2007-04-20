@@ -11,6 +11,7 @@ extern bool g_gc_initialized;
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "Vector.h"
 #include "Assert.h"
 
 namespace util {
@@ -213,6 +214,23 @@ public:
         return found - data();
     }
 
+    int indexOf(char c)
+    {
+        return indexOf(c, 0);
+    }
+
+    int indexOf(char c, int start)
+    {
+        int len = size();
+        const char* p = data();
+        for (int i = start; i < len; i++)
+        {
+            if (p[i] == c) return i;
+        }
+        return -1;
+    }
+
+
     bool isEmpty() const
     {
         return size() == 0;
@@ -275,6 +293,37 @@ public:
         while (replaceOnce(a, b) != -1);
         return;
     }
+
+
+    String substring(int start, int length) const
+    {
+        if (start < 0 || (int)size() <= start || length < 1) return String("");
+        int len = size() - start;
+        if (length > len) length = len;
+
+        return String(&data_[start], length);
+    }
+
+    Vector<String>* split(char ch)
+    {
+        Vector<String>* ret = new Vector<String>;
+        int p = 0;
+        int pp = 0;
+        for (;;)
+        {
+            pp = p;
+            p = indexOf(ch, p);
+            if (p < 0)
+            {
+                ret->add(substring(pp, size() - pp));
+                break;
+            }
+            ret->add(substring(pp, p - pp));
+            p++;
+        }
+        return ret;
+    }
+
 
 private:
     void set(const char* text)

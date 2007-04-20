@@ -53,6 +53,7 @@ namespace util {
 #include "Translator.h"
 #include "Macro.h"
 #include "Error.h"
+#include "Variant.h"
 #include "ExtRepParser.h"
 #include "OutputPort.h"
 #include "InputPort.h"
