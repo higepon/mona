@@ -15,6 +15,12 @@
     (foldl1 binop (cons (binop (car l) (cadr l))
                 (cddr l))))))
 
+(define filter
+  (lambda (pred? l)
+    (cond ((null? l) '())
+      ((pred? (car l)) (cons (car l) (filter pred? (cdr l))))
+      (else (filter pred? (cdr l))))))
+
 (define max2 (lambda (x y) (if (> x y) x y)))
 (define min2 (lambda (x y) (if (< x y) x y)))
 
@@ -384,6 +390,5 @@
 (define foldr1
   (lambda (binop l)
     (if (null? (cdr l))
-	(car l)
-	(binop (car l) (foldr1 binop (cdr l))))))
-
+    (car l)
+    (binop (car l) (foldr1 binop (cdr l))))))

@@ -1,6 +1,6 @@
 TARGET        = ./scheme
 TEST_TARGET   = ./scheme_test
-TARGET_LIBS   = lib/scheme.scm lib/danny.scm
+TARGET_LIBS   = lib/scheme.scm lib/danny.scm lib/core.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm

@@ -1,32 +1,8 @@
-;; (load "./lib/scheme.scm")
-;; (load "./lib/unittest.scm")
+;(load "./lib/scheme.scm")
+;(load "./lib/unittest.scm")
 (load "/LIBS/SCHEME/scheme.scm")
 (load "/LIBS/SCHEME/unittest.scm")
 
-
-(define (filter pred lis)           ; Sleazing with EQ? makes this one faster.
-  (let recur ((lis lis))
-    (if (null? lis) lis         ; Use NOT-PAIR? to handle dotted lists.
-    (let ((head (car lis))
-          (tail (cdr lis)))
-      (if (pred head)
-          (let ((new-tail (recur tail)))    ; Replicate the RECUR call so
-        (if (eq? tail new-tail) lis
-            (cons head new-tail)))
-          (recur tail))))))         ; this one can be a tail call.
-
-
-
-(define find (lambda (pred list)
-               (call/cc
-                (lambda (return)
-                  (for-each
-                   (lambda (e) (if (pred e) (return e)))
-                   list)
-                  #f))))
-
-(define (remove pred l)
-  (filter (lambda (s) (not (pred s))) l))
 
 (define (make-directory-entry name directoryp)
   (let ((children '()))
@@ -37,6 +13,7 @@
     (define (dispatch m)
       (cond ((eq? m 'name) name)
             ((eq? m 'directory?) directoryp)
+            ((eq? m 'file?) (not directoryp))
             ((eq? m 'children) children)
             ((eq? m 'add-child) add-child)
             ((eq? m 'has-child?) has-child?)
@@ -86,7 +63,6 @@
                      ((d 'directory-exist?) "/hige/pon")
                      ((d 'directory-exist?) "pon")
                      ))
-(total-report)
 
 ;(for-each (lambda (d) (display (d 'name)) (print (d 'directory?))) (directory-entries "/home/taro/src"))
 
@@ -103,9 +79,34 @@
 
 (define root (make-directory-entry "/" #t))
 ;(create-directory-tree root "/home/taro/mona/bin")
-(create-directory-tree root "/SERVERS")
+(create-directory-tree root "/")
 
 (define (print-directory root space)
 (for-each (lambda (d) (display space )(print (d 'name)) (if (d 'directory?) (print-directory d (string-append space " ")))) (root 'children)))
 
-(print-directory root "")
+;(print-directory root "")
+
+;; create-directory-tree
+(let ((root (make-directory-entry "/" #t)))
+  (create-directory-tree root "/")
+  (let* ((monacfg (find (lambda (d) (string=? (d 'name) "MONA.CFG")) (root 'children)))
+         (servers (find (lambda (d) (string=? (d 'name) "SERVERS")) (root 'children)))
+         (test (find (lambda (d) (string=? (d 'name) "TEST")) (servers 'children)))
+        (libs (find (lambda (d) (string=? (d 'name) "LIBS")) (root 'children)))
+        (scheme (find (lambda (d) (string=? (d 'name) "SCHEME")) (libs 'children)))
+        (unittest (find (lambda (d) (string=? (d 'name) "unittest.scm")) (scheme 'children))))
+    (assert-check-true "root"
+                       monacfg
+                       test
+                       (test 'directory?)
+                       servers
+                       (servers 'directory?)
+                       libs
+                       (libs 'directory?)
+                       scheme
+                       (scheme 'directory?)
+                       unittest
+                       (unittest 'file?)
+)))
+
+(total-report)

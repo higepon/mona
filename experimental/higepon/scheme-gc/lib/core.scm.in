@@ -288,6 +288,18 @@
        (if pred (begin d ...)
            (begin command ... (loop c)))))))
 
+(define find (lambda (pred list)
+               (call/cc
+                (lambda (return)
+                  (for-each
+                   (lambda (e) (if (pred e) (return e)))
+                   list)
+                  #f))))
+
+(define (remove pred l)
+  (filter (lambda (s) (not (pred s))) l))
+
+
 ;; for test
 ;; (define-syntax unquote
 ;;   (syntax-rules ()
