@@ -78,7 +78,11 @@ void* cont_get_stack_bottom()
 void cont_initialize()
 {
     // fix me!
+#ifdef MONA
+    cont_stack_bottom = (uint32_t)cont_get_stack_pointer();
+#else
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
+#endif
     c = NULL;
     r = 0;
     diff = 0;

@@ -66,51 +66,63 @@ PROCEDURE(CallWithValues, "call-with-values")
 
 PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
 {
+    SCM_TRACE_OUT("");
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Procedure, procedure);
-
+    SCM_TRACE_OUT("");
     Continuation* continuation = new Continuation;
+    SCM_TRACE_OUT("");
     if (0 == cont_save(&(continuation->cont)))
     {
+    SCM_TRACE_OUT("");
         int wind_size = g_dynamic_winds->size();
         if (wind_size != 0)
         {
+    SCM_TRACE_OUT("");
            continuation->dynamicWind = g_dynamic_winds->get(0);
            g_dynamic_winds->removeAt(0);
         }
-
+    SCM_TRACE_OUT("");
         Objects* arguments = new Objects;
         arguments->add(continuation);
+    SCM_TRACE_OUT("");
         return Kernel::apply(procedure, arguments, env);
     }
     else
     {
+    SCM_TRACE_OUT("");
         int wind_size = g_dynamic_winds->size();
+    SCM_TRACE_OUT("");
         if (wind_size != 0)
         {
+    SCM_TRACE_OUT("");
             for (int i = wind_size - 1; i >= 0; i--)
             {
                 DynamicWind* d = g_dynamic_winds->get(i);
                 Kernel::apply(d->after, SCM_NO_ARG, env);
                 g_dynamic_winds->removeAt(i);
             }
+    SCM_TRACE_OUT("");
         }
         else if (continuation->dynamicWind != NULL)
         {
+    SCM_TRACE_OUT("");
             Kernel::apply(continuation->dynamicWind->before, SCM_NO_ARG, env);
         }
 
         if (continuation->callAruguments->size() == 1)
         {
+    SCM_TRACE_OUT("");
             Object* result = continuation->callAruguments->get(0)->eval(env);
             return result;
         }
         else
         {
+    SCM_TRACE_OUT("");
             return new Values(continuation->callAruguments, lineno());
         }
     }
-
+    SCM_TRACE_OUT("");
     RAISE_ERROR(lineno(), "unknown call/cc");
 }
 

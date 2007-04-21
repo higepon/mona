@@ -1,5 +1,21 @@
-(load "./lib/scheme.scm")
-(load "./lib/unittest.scm")
+;; (load "./lib/scheme.scm")
+;; (load "./lib/unittest.scm")
+(load "/LIBS/SCHEME/scheme.scm")
+(load "/LIBS/SCHEME/unittest.scm")
+
+
+(define (filter pred lis)           ; Sleazing with EQ? makes this one faster.
+  (let recur ((lis lis))
+    (if (null? lis) lis         ; Use NOT-PAIR? to handle dotted lists.
+    (let ((head (car lis))
+          (tail (cdr lis)))
+      (if (pred head)
+          (let ((new-tail (recur tail)))    ; Replicate the RECUR call so
+        (if (eq? tail new-tail) lis
+            (cons head new-tail)))
+          (recur tail))))))         ; this one can be a tail call.
+
+
 
 (define find (lambda (pred list)
                (call/cc
@@ -78,7 +94,7 @@
   (print path)
   (let ((directories (remove (lambda (d) (or (string=? "." (d 'name)) (string=? ".." (d 'name)))) (directory-entries path))))
     (for-each
-     (lambda (d) 
+     (lambda (d)
        ((root 'add-child) d)
        (if (d 'directory?)
            (create-directory-tree d (string-append (string-append path "/") (d 'name)))))
@@ -86,6 +102,10 @@
 
 
 (define root (make-directory-entry "/" #t))
-(create-directory-tree root "/tmp")
+;(create-directory-tree root "/home/taro/mona/bin")
+(create-directory-tree root "/SERVERS")
 
+(define (print-directory root space)
+(for-each (lambda (d) (display space )(print (d 'name)) (if (d 'directory?) (print-directory d (string-append space " ")))) (root 'children)))
 
+(print-directory root "")

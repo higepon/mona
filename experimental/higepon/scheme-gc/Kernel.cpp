@@ -54,16 +54,13 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 
 Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
 {
-
     if (arguments->size() == 1 && arguments->get(0)->isValues())
     {
         Values* vs = (Values*)arguments->get(0);
         arguments = vs->values();
     }
-
     if (procedure->isCompoundProcedure())
     {
-
         Procedure* p = (Procedure*)procedure;
         return p->apply(arguments, env);
     }
@@ -75,13 +72,11 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
     }
     else if (procedure->isContinuation())
     {
-
         Continuation* cont = (Continuation*)procedure;
         return cont->apply(arguments, env);
     }
     else
     {
-
         RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().data());
         return NULL;
     }

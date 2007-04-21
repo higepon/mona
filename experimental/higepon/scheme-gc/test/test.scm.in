@@ -409,7 +409,7 @@
 (load "<TESTDIR>/pair.scm")
 (load "<TESTDIR>/util.scm")
 
-;(load "<TESTDIR>/cont.scm")
+(load "<TESTDIR>/cont.scm")
 
 ;; ;; report
 (total-report)
