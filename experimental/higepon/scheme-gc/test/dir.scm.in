@@ -1,7 +1,5 @@
-;(load "./lib/scheme.scm")
-;(load "./lib/unittest.scm")
-(load "/LIBS/SCHEME/scheme.scm")
-(load "/LIBS/SCHEME/unittest.scm")
+(load "<LIBDIR>/scheme.scm")
+(load "<LIBDIR>/unittest.scm")
 
 
 (define (make-directory-entry name directoryp)
@@ -67,7 +65,6 @@
 ;(for-each (lambda (d) (display (d 'name)) (print (d 'directory?))) (directory-entries "/home/taro/src"))
 
 (define (create-directory-tree root path)
-  (print path)
   (let ((directories (remove (lambda (d) (or (string=? "." (d 'name)) (string=? ".." (d 'name)))) (directory-entries path))))
     (for-each
      (lambda (d)
@@ -77,18 +74,17 @@
      directories)))
 
 
-(define root (make-directory-entry "/" #t))
+;(define root (make-directory-entry "/" #t))
 ;(create-directory-tree root "/home/taro/mona/bin")
-(create-directory-tree root "/")
+;(create-directory-tree root "/")
 
 (define (print-directory root space)
-(for-each (lambda (d) (display space )(print (d 'name)) (if (d 'directory?) (print-directory d (string-append space " ")))) (root 'children)))
-
-;(print-directory root "")
+  (for-each (lambda (d) (display space )(print (d 'name)) (if (d 'directory?) (print-directory d (string-append space " ")))) (root 'children)))
 
 ;; create-directory-tree
 (let ((root (make-directory-entry "/" #t)))
-  (create-directory-tree root "/")
+<IF_MONA>  (create-directory-tree root "/")
+<IF_LINUX>  (create-directory-tree root "/home/taro/mona/bin")
   (let* ((monacfg (find (lambda (d) (string=? (d 'name) "MONA.CFG")) (root 'children)))
          (servers (find (lambda (d) (string=? (d 'name) "SERVERS")) (root 'children)))
          (test (find (lambda (d) (string=? (d 'name) "TEST")) (servers 'children)))
