@@ -387,6 +387,14 @@
   (lambda ll
     (foldr1 append2 (cons '() ll))))
 
+(define foldr
+  (lambda (binop start l)
+    (if (null? l)
+    start
+    (binop (car l) (foldr binop start (cdr l))))))
+
+(define fold-right foldr)
+
 (define foldr1
   (lambda (binop l)
     (if (null? (cdr l))

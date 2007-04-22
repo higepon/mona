@@ -66,6 +66,7 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm
+	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET)\
+$(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/dir.scm
 
 -include dependencies
