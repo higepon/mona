@@ -1,4 +1,10 @@
+2007-04-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/test/dir.scm.in ("directory-has-child"): 
+
 2007-04-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/StringProcedures.cpp : string-split を追加
 
         * core/scheme/procedures/IOProcedures.cpp : Variant型追加。これはScheme側でポインタを保持できるようにという意図である。
 
