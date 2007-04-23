@@ -27,6 +27,9 @@
   (set-car! (cdr directory) parent)
 )
 
+(define (fs-parent directory)
+  (cadr directory))
+
 (define (fs-add-entry directory entry)
   (let ((entries (fs-entries directory)))
     (fs-set-parent entry directory)
@@ -35,8 +38,17 @@
         (set-cdr! (cdr directory) (cons entry entries)))
     directory))
 
-(define (fs-has-child dir name)
- (assoc name (fs-entries dir)))
+(define (fs-has-child directory name)
+  (cond ((string=? name ".") directory)
+        ((string=? name "..") (fs-parent directory))
+        (else (assoc name (fs-entries directory)))))
+
+(define (fs-path entry)
+  (let ((parent (fs-parent entry)))
+    (if (null? parent) (string-append (fs-name entry))
+        (string-append (if (string=? (fs-path parent) "/") "" (fs-path parent)) "/" (fs-name entry))))
+)
+
 
 ;; ここまで
 
@@ -46,7 +58,7 @@
 (fs-add-entry servers-dir test-dir)
 (fs-add-entry servers-dir (fs-new-file "hoge"))
 
-(define root-dir (fs-new-directory "root"))
+(define root-dir (fs-new-directory "/"))
 (fs-add-entry root-dir servers-dir)
 
 (fs-add-entry root-dir (fs-new-directory "applications"))
@@ -56,7 +68,8 @@
 
 (assert-check-true "fs-has-child"
                    (fs-has-child root-dir "servers")
-                  (fs-has-child root-dir "applications")
+                   (fs-has-child root-dir ".")
+                   (fs-has-child root-dir "applications")
                    (let ((servers-dir (fs-has-child root-dir "servers")))
                      (and (fs-directory? servers-dir)
                      (fs-has-child servers-dir "test")))
@@ -67,17 +80,15 @@
                    (fs-has-child root-dir "application")
 )
 
-
 ;; ここで .. // ..の処理をすべし
 (define (fs-find-entry dir paths)
-  (if dir
-      (if (null? (cdr paths))
-          (fs-has-child dir (car paths))
-          (fs-find-entry (fs-has-child dir (car paths)) (cdr paths)))
-      #f))
+  (cond ((and dir (null? (cdr paths))) (fs-has-child dir (car paths)))
+        (dir (fs-find-entry (fs-has-child dir (car paths)) (cdr paths)))
+        (else #f)))
 
 (assert-check-true "fs-find-entry"
                    (fs-find-entry root-dir '("servers"))
+                   (fs-find-entry root-dir '("." "servers"))
                    (fs-find-entry root-dir '("servers" "test"))
                    (fs-find-entry root-dir '("servers" "test" "test.scm"))
                    (fs-find-entry root-dir '("applications"))
@@ -85,6 +96,9 @@
                      (fs-find-entry servers-dir '("test")))
                    (let ((servers-dir (fs-find-entry root-dir '("servers"))))
                      (fs-directory?(fs-find-entry servers-dir '("test"))))
+                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                     (fs-directory?(fs-find-entry servers-dir '(".." "servers" "test"))))
+
 )
 
 (assert-check-false "fsfind-entry false"
@@ -113,16 +127,56 @@
                    (fs-find "/servers/test/test.scm")
                    (fs-find "/")
                    (fs-find "test")
+                   (fs-find "./test")
                    (fs-find "test/test.scm")
+                   (fs-find "./test/test.scm")
+                   (fs-find "./test/./test.scm")
+                   (fs-find "../servers/test/./test.scm")
+                   (fs-find "../servers/../servers/test/./test.scm")
 )
 
 (assert-check-false "fs-find NG"
                    (fs-find "/servers/tes")
                    (fs-find "/server")
-;                   (fs-find "/serves/tes")
+                   (fs-find "/serves/tes")
                    (fs-find "tes")
 )
 
 
+
+;(trace fs-path)
+
+(define (test-path path)
+  (string=? (fs-path (fs-find path)) path)
+)
+
+(assert-check-true "fs-find OK"
+                   (test-path "/servers/test")
+                   (test-path "/servers")
+                   (test-path "/servers/test/test.scm")
+                   (test-path "/")
+)
+
+(define (fs-current-directory)
+  current-directory
+)
+
+(define (fs-change-directory path)
+  #f
+)
+
+(assert-check-true "change-directory"
+                   (fs-change-directory "/")
+                   (string=? "/" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/servers")
+                   (string=? "/servers" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/servers/test")
+                   (string=? "/servers/test" (fs-path (fs-current-directory)))
+)
+
+(assert-check-false "change-directory NG"
+                   (fs-change-directory "/server")
+                   (fs-change-directory "/servers/test/test.scm")
+)
 
 (total-report)
