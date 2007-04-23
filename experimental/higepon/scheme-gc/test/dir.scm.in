@@ -1,386 +1,128 @@
-(load "<LIBDIR>/scheme.scm")
+;(load "<LIBDIR>/scheme.scm")
 (load "<LIBDIR>/unittest.scm")
+(use slib)
+(use util.list)
+(require 'trace)
 
+;; 構造に依存する部分
+(define (fs-new-directory name)
+  (cons name (cons '() '())))
 
-(define (make-directory-entry name directoryp)
-  (let ((children '()))
-    (define (add-child child)
-      (set! children (cons child children)))
-    (define (has-child? name)
-      (find (lambda (d) (string=? (d 'name) name)) children))
-    (define (dispatch m)
-      (cond ((eq? m 'name) name)
-            ((eq? m 'directory?) directoryp)
-            ((eq? m 'file?) (not directoryp))
-            ((eq? m 'children) children)
-            ((eq? m 'add-child) add-child)
-            ((eq? m 'has-child?) has-child?)
-            (else (print "make-directory-entry error"))))
-    dispatch))
+(define (fs-new-file name)
+  (cons name (cons '() #f)))
 
-;; listの要素を足しあわせる
-
-(define (my-sum l)
-  (if (null? l)
-      0
-      (+ (car l) (my-sum (cdr l)))))
-
-(print (my-sum '(1 2 3 4)))
-
-;; これと同じ
-(print (+ 1 (+ 2 (+ 3 (+ 4 0)))))
-
-;; fold-right で書くとこうなる
-(print (fold-right + 0 '(1 2 3 4)))
-
-;; 負の要素が現れたら和を求めず #f を返したい
-;; 先に find しておけよというツッコミもあるけど実験なので
-(define (my-plus a b)
-  (if (and a b (>= a 0) (>= b 0))
-      (+ a b)
-      #f))
-
-(define (my-sum2 l)
-  (if (null? l)
-      0
-      (my-plus (car l) (my-sum2 (cdr l)))))
-
-(print (my-sum2 '(1 2 3 4)))
-;; これと同じ
-(print (my-plus 1 (my-plus 2 (my-plus 3 (my-plus 4 0)))))
-
-
-(print (my-sum2 '(1 2 3 -5 4)))
-;; これと同じ
-(print (my-plus 1 (my-plus 2 (my-plus 3 (my-plus -5 (my-plus 4 0))))))
-
-;; fold-right で書くとこうなる
-(print (fold-right my-plus 0 '(1 2 3 -5 4)))
-
-;; ディレクトリツリー
-;; /servers
-;;  test
-;;    test.scm
-;; /applications
-(define root-dir '(("servers" . servers-dir) ("applications" . applications-dir)))
-(define applications-dir '())
-(define servers-dir '(("test" . test-dir)))
-(define test-dir '(("test.scm" . '())))
-
-; こんなの作りたい
-; (directory-exist root-dir "servers") => servers-dir
-; (directory-exist root-dir "servers/test") => test-dir
-
-;; まずは root-dir が servers という名前のディレクトリを含むかどうか?
-;; (define (directory-has-child dir name)
-;;   (let ((found (assoc name dir)))
-;;     (if found
-;;         (eval (cdr found) (scheme-report-environment 5))
-;;         #f)))
-
-;; (assert-check-true "directory-has-child"
-;;                    (directory-has-child root-dir "servers")
-;;                    (directory-has-child root-dir "applications")
-;;                    (directory-has-child servers-dir "test")
-;; )
-
-;; (assert-check-false "directory-has-child"
-;;                    (directory-has-child root-dir "server")
-;;                    (directory-has-child root-dir "application")
-;;                    (directory-has-child servers-dir "t")
-;; )
-
-;; ;; paths => '("servers" "test" "test.scm") とするならば
-;; ;; (directory-has-child (directory-has-child (directory-has-child root-dir "servers") "test") "test.scm")と再帰的に調べていければ良い
-;; (define (find-entry dir paths)
-;;   (if (null? (cdr paths))
-;;       (directory-has-child dir (car paths))
-;;       (find-entry (directory-has-child dir (car paths)) (cdr paths))))
-
-;; (assert-check-true "find-entry"
-;;                    (find-entry root-dir '("servers"))
-;;                    (find-entry root-dir '("servers" "test"))
-;;                    (find-entry root-dir '("servers" "test" "test.scm"))
-;;                    (find-entry root-dir '("applications"))
-;; )
-
-;; (assert-check-true "entry-false"
-;;                    (find-entry root-dir '("servers"))
-;;                    (find-entry root-dir '("servers" "test"))
-;;                    (find-entry root-dir '("servers" "test" "test.scm"))
-;;                    (find-entry root-dir '("applications"))
-;;                    (find-entry servers-dir '("test"))
-;; )
-
-;; servers-dir とか変数割り当てなくても良いよね
-;; ディレクトリツリー
-;; /servers
-;;  test
-;;    test.scm
-;;  hoge
-;; /applications
-
-;; ("名前" . #f ) => ファイル
-;; ("名前" . list) => ディレクトリ
-(define root-dir '("/" . (("servers" . (("test" . (("test.scm" . #f)))
-                                        ("hoge" . #f)
-                                        ))
-                          ("applications" . ())
-                          )))
-
-(define (entry-name entry)
+(define (fs-name entry)
   (car entry))
 
-(define (directory? entry)
-  (pair? (cdr entry)))
+(define (fs-directory? entry)
+  (not (fs-file? entry)))
 
-(define (file? entry)
-  (not (directory? entry)))
+(define (fs-file? entry)
+  (not (cddr entry)))
 
-;; root-dir が servers という名前のディレクトリを含むかどうか?
-(define (directory-has-child dir name)
- (assoc name (cdr dir)))
+(define (fs-entries directory)
+  (cddr directory))
 
-(assert-check-true "directory-has-child"
-                   (directory-has-child root-dir "servers")
-                   (directory-has-child root-dir "applications")
-                   (let ((servers-dir (directory-has-child root-dir "servers")))
-                     (and (directory? servers-dir)
-                     (directory-has-child servers-dir "test")))
+(define (fs-set-parent directory parent)
+  (set-car! (cdr directory) parent)
 )
 
-(assert-check-false "directory-has-child"
-                   (directory-has-child root-dir "server")
-                   (directory-has-child root-dir "application")
-)
-
-;; paths => '("servers" "test" "test.scm") とするならば
-;; (directory-has-child (directory-has-child (directory-has-child root-dir "servers") "test") "test.scm")と再帰的に調べていければ良い
-(define (find-entry dir paths)
-  (if (null? (cdr paths))
-      (directory-has-child dir (car paths))
-      (find-entry (directory-has-child dir (car paths)) (cdr paths))))
-
-(assert-check-true "find-entry"
-                   (find-entry root-dir '("servers"))
-                   (find-entry root-dir '("servers" "test"))
-                   (find-entry root-dir '("servers" "test" "test.scm"))
-                   (find-entry root-dir '("applications"))
-                   (let ((servers-dir (find-entry root-dir '("servers"))))
-                     (find-entry servers-dir '("test")))
-                   (let ((servers-dir (find-entry root-dir '("servers"))))
-                     (directory?(find-entry servers-dir '("test"))))
-)
-
-(assert-check-true "entry-false"
-                   (find-entry root-dir '("servers"))
-                   (find-entry root-dir '("servers" "test"))
-                   (find-entry root-dir '("servers" "test" "test.scm"))
-                   (find-entry root-dir '("applications"))
-)
-
-;; servers-dir とか変数割り当てなくても良いよね
-;; ディレクトリツリー
-;; /servers
-;;  test
-;;    test.scm
-;;  hoge
-;; /applications
-(define (make-directory-entry name)
-  (cons name '()))
-
-(define (make-file-entry name)
-  (cons name #f))
-
-(define (entry-name entry)
-  (car entry))
-
-(define (directory? entry)
-  (not (file? entry)))
-
-(define (file? entry)
-  (not (cdr entry)))
-
-(define (entry-list directory)
-  (cdr directory))
-
-(define (add-entry directory entry)
-  (let ((entries (entry-list directory)))
+(define (fs-add-entry directory entry)
+  (let ((entries (fs-entries directory)))
+    (fs-set-parent entry directory)
     (if (null? entries)
-        (set-cdr! directory (cons entry '()))
-        (set-cdr! directory (append entries entry)))
+        (set-cdr! (cdr directory) (cons entry '()))
+        (set-cdr! (cdr directory) (cons entry entries)))
     directory))
 
+(define (fs-has-child dir name)
+ (assoc name (fs-entries dir)))
 
-(define test-dir (make-directory-entry "test"))
-(add-entry test-dir (make-file-entry "test.scm"))
-(define servers-dir (make-directory-entry "servers"))
-(add-entry servers-dir test-dir)
-(add-entry servers-dir (make-file-entry "hoge"))
+;; ここまで
 
-(define root-dir (make-directory-entry "root"))
-(add-entry root-dir servers-dir)
-(add-entry root-dir (make-directory-entry "applications"))
+(define test-dir (fs-new-directory "test"))
+(fs-add-entry test-dir (fs-new-file "test.scm"))
+(define servers-dir (fs-new-directory "servers"))
+(fs-add-entry servers-dir test-dir)
+(fs-add-entry servers-dir (fs-new-file "hoge"))
 
-(define (directory-has-child dir name)
- (assoc name (cdr dir)))
+(define root-dir (fs-new-directory "root"))
+(fs-add-entry root-dir servers-dir)
 
-(assert-check-true "directory-has-child"
-                   (directory-has-child root-dir "servers")
-                  (directory-has-child root-dir "applications")
-                   (let ((servers-dir (directory-has-child root-dir "servers")))
-                     (and (directory? servers-dir)
-                     (directory-has-child servers-dir "test")))
+(fs-add-entry root-dir (fs-new-directory "applications"))
+
+
+;(trace fs-has-child)
+
+(assert-check-true "fs-has-child"
+                   (fs-has-child root-dir "servers")
+                  (fs-has-child root-dir "applications")
+                   (let ((servers-dir (fs-has-child root-dir "servers")))
+                     (and (fs-directory? servers-dir)
+                     (fs-has-child servers-dir "test")))
 )
 
-;; (assert-check-false "directory-has-child"
-;;                    (directory-has-child root-dir "server")
-;;                    (directory-has-child root-dir "application")
-;; )
+(assert-check-false "fs-has-child"
+                   (fs-has-child root-dir "server")
+                   (fs-has-child root-dir "application")
+)
+
+
+;; ここで .. // ..の処理をすべし
+(define (fs-find-entry dir paths)
+  (if dir
+      (if (null? (cdr paths))
+          (fs-has-child dir (car paths))
+          (fs-find-entry (fs-has-child dir (car paths)) (cdr paths)))
+      #f))
+
+(assert-check-true "fs-find-entry"
+                   (fs-find-entry root-dir '("servers"))
+                   (fs-find-entry root-dir '("servers" "test"))
+                   (fs-find-entry root-dir '("servers" "test" "test.scm"))
+                   (fs-find-entry root-dir '("applications"))
+                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                     (fs-find-entry servers-dir '("test")))
+                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                     (fs-directory?(fs-find-entry servers-dir '("test"))))
+)
+
+(assert-check-false "fsfind-entry false"
+                   (fs-find-entry root-dir '("server"))
+                   (fs-find-entry root-dir '("servers" "tes"))
+;                   (trace fs-find-entry)
+                   (fs-find-entry root-dir '("server" "tes"))
+)
+
+(define (fs-start-with-slash? path)
+  (and (> (string-length path) 0) (char=? (string-ref path 0) #\/)))
+
+(define current-directory servers-dir)
+
+(define (fs-find path)
+  (let ((paths (string-split path #\/)))
+    (if (fs-start-with-slash? path)
+        (if (= 1 (string-length path))
+            root-dir ; "/" always exist
+            (fs-find-entry root-dir (cdr paths)))
+        (fs-find-entry current-directory paths))))
+
+(assert-check-true "fs-find OK"
+                   (fs-find "/servers/test")
+                   (fs-find "/servers")
+                   (fs-find "/servers/test/test.scm")
+                   (fs-find "/")
+                   (fs-find "test")
+                   (fs-find "test/test.scm")
+)
+
+(assert-check-false "fs-find NG"
+                   (fs-find "/servers/tes")
+                   (fs-find "/server")
+;                   (fs-find "/serves/tes")
+                   (fs-find "tes")
+)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; (define (make-directory-session root current-directory)
-;;   (define (directory-has-child? dir paths)
-;;     (if (null? paths)
-;;         #t
-;;         (let ((next-dir ((dir 'has-child?) (car paths))))
-;;           (if (and next-dir (next-dir 'directory?))
-;;               (directory-has-child? next-dir (cdr paths))
-;;               #f))))
-;; ;;   (define (directory-has-child1? name dir)
-;; ;;     (if dir
-;; ;;         ((dir 'has-child?) name)
-;; ;;         #f))
-;; ;;   (define (directory-has-child2? dir paths)
-;; ;;     (write paths)
-;; ;;     (if (null? paths)
-;; ;;         dir
-;; ;;         (directory-has-child1? (car paths) (directory-has-child2? dir (cdr paths)))))
-;;   (define (directory-exist? path)
-;;     (define (start-with-slash? path)
-;;       (and (> (string-length path) 0) (char=? (string-ref path 0) #\/)))
-;;     (let ((paths (string-split path #\/)))
-;;       (if (start-with-slash? path)
-;;           (if (= 1 (string-length path))
-;;               #t
-;;               (directory-has-child? root (cdr paths)))
-;;           (directory-has-child? current-directory paths))))
-;;   (define (dispatch m)
-;;     (cond ((eq? m 'current-directory) current-directory)
-;;           ((eq? m 'root) root)
-;;           ((eq? m 'directory-exist?) directory-exist?)
-;;           (else (print "make-directory-session error"))))
-;;   dispatch)
-
-;; ;; (define (make-directory-session root current-directory)
-;; ;;   (define (directory-has-child? dir paths)
-;; ;;     (if (null? paths)
-;; ;;         #t
-;; ;;         (let ((next-dir ((dir 'has-child?) (car paths))))
-;; ;;           (if (and next-dir (next-dir 'directory?))
-;; ;;               (directory-has-child? next-dir (cdr paths))
-;; ;;               #f))))
-;; ;;   (define (directory-exist? path)
-;; ;;     (define (start-with-slash? path)
-;; ;;       (and (> (string-length path) 0) (char=? (string-ref path 0) #\/)))
-;; ;;     (let ((paths (string-split path #\/)))
-;; ;;       (if (start-with-slash? path)
-;; ;;           (if (= 1 (string-length path))
-;; ;;               #t
-;; ;;               (directory-has-child? root (cdr paths)))
-;; ;;           (directory-has-child? current-directory paths))))
-;; ;;   (define (dispatch m)
-;; ;;     (cond ((eq? m 'current-directory) current-directory)
-;; ;;           ((eq? m 'root) root)
-;; ;;           ((eq? m 'directory-exist?) directory-exist?)
-;; ;;           (else (print "make-directory-session error"))))
-;; ;;   dispatch)
-
-;; (let* ((root (make-directory-entry "/" #t))
-;;        (hige (make-directory-entry "hige" #t))
-;;        (hage (make-directory-entry "hage" #f))
-;;        (pon (make-directory-entry "pon" #t))
-;;        (d (make-directory-session root hige)))
-;;   ((root 'add-child) hige)
-;;   ((root 'add-child) hage)
-;;   ((hige 'add-child) pon)
-;;   (assert-check-false "directory-session"
-;;                       ((d 'directory-exist?) "/hage")
-;;                       ((d 'directory-exist?) "/hage/pon")
-;;                       ((d 'directory-exist?) "")
-;;                       )
-;;   (assert-check-true "directory-session"
-;;                      ((d 'directory-exist?) "/")
-;;                      ((d 'directory-exist?) "/hige")
-;;                      ((d 'directory-exist?) "/hige/pon")
-;;                      ((d 'directory-exist?) "pon")
-;;                      ))
-
-;; ;(for-each (lambda (d) (display (d 'name)) (print (d 'directory?))) (directory-entries "/home/taro/src"))
-
-;; (define (create-directory-tree root path)
-;;   (let ((directories (remove (lambda (d) (or (string=? "." (d 'name)) (string=? ".." (d 'name)))) (directory-entries path))))
-;;     (for-each
-;;      (lambda (d)
-;;        ((root 'add-child) d)
-;;        (if (d 'directory?)
-;;            (create-directory-tree d (string-append (string-append path "/") (d 'name)))))
-;;      directories)))
-
-
-;; ;(define root (make-directory-entry "/" #t))
-;; ;(create-directory-tree root "/home/taro/mona/bin")
-;; ;(create-directory-tree root "/")
-
-;; (define (print-directory root space)
-;;   (for-each (lambda (d) (display space )(print (d 'name)) (if (d 'directory?) (print-directory d (string-append space " ")))) (root 'children)))
-
-;; ;; create-directory-tree
-;; (let ((root (make-directory-entry "/" #t)))
-;; <IF_MONA>  (create-directory-tree root "/")
-;; <IF_LINUX>  (create-directory-tree root "/home/taro/mona/bin")
-;;   (let* ((monacfg (find (lambda (d) (string=? (d 'name) "MONA.CFG")) (root 'children)))
-;;          (servers (find (lambda (d) (string=? (d 'name) "SERVERS")) (root 'children)))
-;;          (test (find (lambda (d) (string=? (d 'name) "TEST")) (servers 'children)))
-;;         (libs (find (lambda (d) (string=? (d 'name) "LIBS")) (root 'children)))
-;;         (scheme (find (lambda (d) (string=? (d 'name) "SCHEME")) (libs 'children)))
-;;         (unittest (find (lambda (d) (string=? (d 'name) "unittest.scm")) (scheme 'children))))
-;;     (assert-check-true "root"
-;;                        monacfg
-;;                        test
-;;                        (test 'directory?)
-;;                        servers
-;;                        (servers 'directory?)
-;;                        libs
-;;                        (libs 'directory?)
-;;                        scheme
-;;                        (scheme 'directory?)
-;;                        unittest
-;;                        (unittest 'file?)
-;; )))
-
-;; (let* ((root (make-directory-entry "/" #t))
-;; <IF_MONA>  (dummy (create-directory-tree root "/"))
-;; <IF_LINUX> (dummy (create-directory-tree root "/home/taro/mona/bin"))
-;;        (d (make-directory-session root root)))
-;;   (assert-check-true "directory-exits?"
-;;                      ((d 'directory-exist?) "/SERVERS")
-;;                      ))
 (total-report)
