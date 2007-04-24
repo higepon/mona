@@ -4,130 +4,55 @@
 ;; (use util.list)
 ;; (require 'trace)
 
-;; 構造に依存する部分
-(define (fs-new-directory name)
-  (cons name (cons '() '())))
-
-(define (fs-new-file name)
-  (cons name (cons '() #f)))
-
-(define (fs-name entry)
-  (car entry))
-
-(define (fs-directory? entry)
-  (not (fs-file? entry)))
-
-(define (fs-file? entry)
-  (not (cddr entry)))
-
-(define (fs-entries directory)
-  (cddr directory))
-
-(define (fs-set-parent directory parent)
-  (set-car! (cdr directory) parent)
-)
-
-(define (fs-parent directory)
-  (cadr directory))
-
-(define (fs-add-entry directory entry)
-  (let ((entries (fs-entries directory)))
-    (fs-set-parent entry directory)
-    (if (null? entries)
-        (set-cdr! (cdr directory) (cons entry '()))
-        (set-cdr! (cdr directory) (cons entry entries)))
-    directory))
-
-(define (fs-has-child directory name)
-  (cond ((string=? name ".") directory)
-        ((string=? name "..") (fs-parent directory))
-        (else (assoc name (fs-entries directory)))))
-
-(define (fs-path entry)
-  (let ((parent (fs-parent entry)))
-    (if (null? parent) (string-append (fs-name entry))
-        (string-append (if (string=? (fs-path parent) "/") "" (fs-path parent)) "/" (fs-name entry))))
-)
-
-
-;; ここまで
-
-(define (fs-print root)
-  (define (fs-print-iter directory space)
-    (for-each
-     (lambda (e) (display space) (print (fs-name e)) (if (fs-directory? e) (fs-print-iter e (string-append space " "))))
-     (fs-entries directory)))
-  (fs-print-iter root " "))
-
-
 (define test-dir (fs-new-directory "test"))
 (fs-add-entry test-dir (fs-new-file "test.scm"))
 (define servers-dir (fs-new-directory "servers"))
 (fs-add-entry servers-dir test-dir)
 (fs-add-entry servers-dir (fs-new-file "hoge"))
 
-(define root-dir (fs-new-directory "/"))
-(fs-add-entry root-dir servers-dir)
+(define *fs-root-directory* (fs-new-directory "/"))
+(fs-add-entry *fs-root-directory* servers-dir)
 
-(fs-add-entry root-dir (fs-new-directory "applications"))
-
-
-;(trace fs-has-child)
+(fs-add-entry *fs-root-directory* (fs-new-directory "applications"))
 
 (assert-check-true "fs-has-child"
-                   (fs-has-child root-dir "servers")
-                   (fs-has-child root-dir ".")
-                   (fs-has-child root-dir "applications")
-                   (let ((servers-dir (fs-has-child root-dir "servers")))
+                   (fs-has-child *fs-root-directory* "servers")
+                   (fs-has-child *fs-root-directory* ".")
+                   (fs-has-child *fs-root-directory* "applications")
+                   (let ((servers-dir (fs-has-child *fs-root-directory* "servers")))
                      (and (fs-directory? servers-dir)
                      (fs-has-child servers-dir "test")))
 )
 
 (assert-check-false "fs-has-child"
-                   (fs-has-child root-dir "server")
-                   (fs-has-child root-dir "application")
+                   (fs-has-child *fs-root-directory* "server")
+                   (fs-has-child *fs-root-directory* "application")
 )
 
-;; ここで .. // ..の処理をすべし
-(define (fs-find-entry dir paths)
-  (cond ((and dir (null? (cdr paths))) (fs-has-child dir (car paths)))
-        (dir (fs-find-entry (fs-has-child dir (car paths)) (cdr paths)))
-        (else #f)))
 
 (assert-check-true "fs-find-entry"
-                   (fs-find-entry root-dir '("servers"))
-                   (fs-find-entry root-dir '("." "servers"))
-                   (fs-find-entry root-dir '("servers" "test"))
-                   (fs-find-entry root-dir '("servers" "test" "test.scm"))
-                   (fs-find-entry root-dir '("applications"))
-                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                   (fs-find-entry *fs-root-directory* '("servers"))
+                   (fs-find-entry *fs-root-directory* '("." "servers"))
+                   (fs-find-entry *fs-root-directory* '("servers" "test"))
+                   (fs-find-entry *fs-root-directory* '("servers" "test" "test.scm"))
+                   (fs-find-entry *fs-root-directory* '("applications"))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
                      (fs-find-entry servers-dir '("test")))
-                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
                      (fs-directory?(fs-find-entry servers-dir '("test"))))
-                   (let ((servers-dir (fs-find-entry root-dir '("servers"))))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
                      (fs-directory?(fs-find-entry servers-dir '(".." "servers" "test"))))
 
 )
 
 (assert-check-false "fsfind-entry false"
-                   (fs-find-entry root-dir '("server"))
-                   (fs-find-entry root-dir '("servers" "tes"))
-;                   (trace fs-find-entry)
-                   (fs-find-entry root-dir '("server" "tes"))
+                   (fs-find-entry *fs-root-directory* '("server"))
+                   (fs-find-entry *fs-root-directory* '("servers" "tes"))
+                   (fs-find-entry *fs-root-directory* '("server" "tes"))
 )
 
-(define (fs-start-with-slash? path)
-  (and (> (string-length path) 0) (char=? (string-ref path 0) #\/)))
+(define *fs-current-directory* servers-dir)
 
-(define current-directory servers-dir)
-
-(define (fs-find path)
-  (let ((paths (string-split path #\/)))
-    (if (fs-start-with-slash? path)
-        (if (= 1 (string-length path))
-            root-dir ; "/" always exist
-            (fs-find-entry root-dir (cdr paths)))
-        (fs-find-entry current-directory paths))))
 
 (assert-check-true "fs-find OK"
                    (fs-find "/servers/test")
@@ -150,10 +75,6 @@
                    (fs-find "tes")
 )
 
-
-
-;(trace fs-path)
-
 (define (test-path path)
   (string=? (fs-path (fs-find path)) path)
 )
@@ -165,26 +86,6 @@
                    (test-path "/")
 )
 
-(define (fs-find-generic proc path)
-  (let ((entry (fs-find path)))
-    (and entry (proc entry) entry)))
-
-(define (fs-find-file path)
-  (fs-find-generic fs-file? path))
-
-(define (fs-find-directory path)
-  (fs-find-generic fs-directory? path))
-
-(define (fs-current-directory)
-  current-directory
-)
-
-(define (fs-change-directory path)
-  (let ((directory (fs-find-directory path)))
-    (if directory
-        (begin (set! current-directory directory) directory)
-        #f))
-)
 
 (assert-check-true "change-directory"
                    (fs-change-directory "/")
@@ -200,17 +101,6 @@
                    (fs-change-directory "/servers/test/test.scm")
 )
 
-(define (fs-io-enum-directory-entries path)
-  (define (create-fs-entry entry)
-    (if (cdr entry)
-        (fs-new-directory (car entry))
-        (fs-new-file (car entry))))
-  (let ((d (mona-dir-open path)))
-    (let loop ((entry (mona-dir-read d)) (entries '()))
-      (if entry
-          (loop (mona-dir-read d)
-                (cons (create-fs-entry entry) entries))
-          (begin (mona-dir-close d) entries)))))
 
 (let ((directories (fs-io-enum-directory-entries "/home/taro/mona/bin")))
   (assert-check-true "fs-io-enum-directory-entries"
@@ -227,14 +117,12 @@
      (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
              (fs-io-enum-directory-entries path))))
 
-(define root-dir2 (fs-new-directory "/"))
+(define *fs-root-directory*2 (fs-new-directory "/"))
 
-(fs-create-tree root-dir2 "/home/taro/mona/bin")
+(fs-create-tree *fs-root-directory*2 "/home/taro/mona/bin")
 
-;(fs-print root-dir2)
-
-(set! current-directory root-dir2)
-(set! root-dir root-dir2)
+(set! *fs-current-directory* *fs-root-directory*2)
+(set! *fs-root-directory* *fs-root-directory*2)
 
 (assert-check-true "fs-create-tree"
                    (fs-find "/SERVERS")
@@ -248,10 +136,3 @@
                    (string=? "/SERVERS/TEST" (fs-path (fs-current-directory)))
 )
 
-;(fs-print root-dir2)
-
-;(fs-print (fs-find "SERVERS/TEST"))
-;; (if (fs-find "/SERVERS")
-;;     (print "found")
-;;     (print "not found "))
-(total-report)
