@@ -101,6 +101,22 @@ int scheme_exec_file(const String& file)
     return 0;
 }
 
+String scheme_prompt(Environment* env)
+{
+    String input = "(mona-prompt-string)";
+    Object* o = scheme_eval_string(input, env, false);
+    if (o->isSString())
+    {
+        SString* s = (SString*)o;
+        return s->value();
+    }
+    else
+    {
+        RAISE_ERROR(o->lineno(), "(mona-prompt-string) not defined");
+        return "";
+    }
+}
+
 static MacroFilter f;
 static Translator translator;
 static Environment* env;
@@ -116,7 +132,7 @@ bool scheme_on_input_line(const String& line)
     scheme_eval_string(input, env, false);
     input = "";
 
-    SCHEME_WRITE(stdout, "mona> ");
+    SCHEME_WRITE(stdout, scheme_prompt(env).data());
     return false;
 }
 #ifdef MONA
@@ -136,7 +152,7 @@ void scheme_interactive()
     input = "(load \"lib/scheme.scm\")";
 #endif
     scheme_eval_string(input, env, false);
-    SCHEME_WRITE(stdout, "mona> ");
+    SCHEME_WRITE(stdout, scheme_prompt(env).data());
 
 #ifdef MONA
     // errorで戻ってくる場合があるので変数を初期化

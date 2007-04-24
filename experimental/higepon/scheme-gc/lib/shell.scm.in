@@ -144,3 +144,7 @@
          (fs-create-tree e (string-append path "/" (fs-name e)))))
    (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
            (fs-io-enum-directory-entries path))))
+
+;; special
+(define (mona-prompt-string)
+  (string-append "mona:" (fs-path (fs-current-directory)) ">"))
