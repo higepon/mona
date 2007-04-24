@@ -1,8 +1,8 @@
-;(load "<LIBDIR>/scheme.scm")
+(load "<LIBDIR>/scheme.scm")
 (load "<LIBDIR>/unittest.scm")
-(use slib)
-(use util.list)
-(require 'trace)
+;; (use slib)
+;; (use util.list)
+;; (require 'trace)
 
 ;; 構造に依存する部分
 (define (fs-new-directory name)
@@ -51,6 +51,14 @@
 
 
 ;; ここまで
+
+(define (fs-print root)
+  (define (fs-print-iter directory space)
+    (for-each
+     (lambda (e) (display space) (print (fs-name e)) (if (fs-directory? e) (fs-print-iter e (string-append space " "))))
+     (fs-entries directory)))
+  (fs-print-iter root " "))
+
 
 (define test-dir (fs-new-directory "test"))
 (fs-add-entry test-dir (fs-new-file "test.scm"))
@@ -157,12 +165,25 @@
                    (test-path "/")
 )
 
+(define (fs-find-generic proc path)
+  (let ((entry (fs-find path)))
+    (and entry (proc entry) entry)))
+
+(define (fs-find-file path)
+  (fs-find-generic fs-file? path))
+
+(define (fs-find-directory path)
+  (fs-find-generic fs-directory? path))
+
 (define (fs-current-directory)
   current-directory
 )
 
 (define (fs-change-directory path)
-  #f
+  (let ((directory (fs-find-directory path)))
+    (if directory
+        (begin (set! current-directory directory) directory)
+        #f))
 )
 
 (assert-check-true "change-directory"
@@ -178,5 +199,44 @@
                    (fs-change-directory "/server")
                    (fs-change-directory "/servers/test/test.scm")
 )
+
+(define (fs-io-enum-directory-entries path)
+  (define (create-fs-entry entry)
+    (if (cdr entry)
+        (fs-new-directory (car entry))
+        (fs-new-file (car entry))))
+  (let ((d (mona-dir-open path)))
+    (let loop ((entry (mona-dir-read d)) (entries '()))
+      (if entry
+          (loop (mona-dir-read d)
+                (cons (create-fs-entry entry) entries))
+          (begin (mona-dir-close d) entries)))))
+
+(let ((directories (fs-io-enum-directory-entries "/home/taro/mona/bin")))
+  (assert-check-true "fs-io-enum-directory-entries"
+                     (find (lambda (d) (string=? "APPS" (fs-name d))) directories)
+                     (find (lambda (d) (string=? "SERVERS" (fs-name d))) directories)
+                     ))
+
+(define (fs-create-tree root path)
+  (for-each
+     (lambda (e)
+       (fs-add-entry root e)
+       (if (fs-directory? e)
+           (fs-create-tree e (string-append path "/" (fs-name e)))))
+     (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
+             (fs-io-enum-directory-entries path))))
+
+(define root-dir2 (fs-new-directory "/"))
+
+(fs-create-tree root-dir2 "/home/taro/mona/bin")
+
+;(fs-print root-dir2)
+
+(set! current-directory root-dir2)
+
+;(fs-print root-dir2)
+
+(fs-print (fs-find "/SERVERS"))
 
 (total-report)
