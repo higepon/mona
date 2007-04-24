@@ -234,9 +234,24 @@
 ;(fs-print root-dir2)
 
 (set! current-directory root-dir2)
+(set! root-dir root-dir2)
+
+(assert-check-true "fs-create-tree"
+                   (fs-find "/SERVERS")
+                   (fs-find "/SERVERS/TEST")
+                   (fs-find "/SERVERS/TEST/test.scm")
+                   (fs-change-directory "/")
+                   (string=? "/" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/SERVERS")
+                   (string=? "/SERVERS" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/SERVERS/TEST")
+                   (string=? "/SERVERS/TEST" (fs-path (fs-current-directory)))
+)
 
 ;(fs-print root-dir2)
 
-(fs-print (fs-find "/SERVERS"))
-
+;(fs-print (fs-find "SERVERS/TEST"))
+;; (if (fs-find "/SERVERS")
+;;     (print "found")
+;;     (print "not found "))
 (total-report)
