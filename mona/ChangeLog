@@ -1,3 +1,9 @@
+2007-04-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/shell.scm.in (mona-prompt-string): mona-prompt-string という手続きを参照して prompt を表示するようにした。
+
+        * core/scheme/test/dir.scm.in ("<LIBDIR>/unittest.scm"): . / .. など一通り対応した。残るは change-directory 。
+
 2007-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/test/dir.scm.in ("directory-has-child"): 
