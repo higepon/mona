@@ -7,3 +7,7 @@
 <IF_MONA>(load "<LIBDIR>/mona.scm")
 <IF_LINUX>(load "<LIBDIR>/linux.scm")
 
+(define *fs-root-directory* (fs-new-directory "/"))
+<IF_LINUX>(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
+
+(define *fs-current-directory* *fs-root-directory*)

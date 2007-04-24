@@ -107,16 +107,6 @@
                      (find (lambda (d) (string=? "APPS" (fs-name d))) directories)
                      (find (lambda (d) (string=? "SERVERS" (fs-name d))) directories)
                      ))
-
-(define (fs-create-tree root path)
-  (for-each
-     (lambda (e)
-       (fs-add-entry root e)
-       (if (fs-directory? e)
-           (fs-create-tree e (string-append path "/" (fs-name e)))))
-     (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
-             (fs-io-enum-directory-entries path))))
-
 (define *fs-root-directory*2 (fs-new-directory "/"))
 
 (fs-create-tree *fs-root-directory*2 "/home/taro/mona/bin")

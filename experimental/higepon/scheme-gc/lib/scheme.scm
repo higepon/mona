@@ -7,3 +7,7 @@
 ;(load "./lib/mona.scm")
 (load "./lib/linux.scm")
 
+(define *fs-root-directory* (fs-new-directory "/"))
+(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
+
+(define *fs-current-directory* *fs-root-directory*)
