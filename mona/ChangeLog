@@ -1,3 +1,9 @@
+2007-04-25  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/monapi_impl.cpp (user_start_c_impl): 終了後に EOP を発行するようにした。
+
+        * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE): call-process/call-process-out-string
+
 2007-04-24  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/lib/shell.scm.in (mona-prompt-string): mona-prompt-string という手続きを参照して prompt を表示するようにした。

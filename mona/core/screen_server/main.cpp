@@ -132,6 +132,20 @@ void output(char* text, uint32_t length)
     }
 }
 
+char* strstr_n(const char* str1, const char* str2, int size)
+{
+    if (str1 == NULL || str2 == NULL) return NULL;
+    int i = 0;
+    for (const char* p1 = str1; i < size; p1++, i++) {
+        for (const char* p1a = p1, * p2 = str2;; p1a++, p2++, i++) {
+            if (*p2 == '\0') return (char*)p1;
+            if (*p2 != *p1a) break;
+        }
+    }
+    return NULL;
+}
+
+
 static void outLoop()
 {
     const uint32_t BUFFER_SIZE = 1024;
@@ -141,6 +155,13 @@ static void outLoop()
         in.waitForRead();
         uint32_t size = in.read((uint8_t*)buffer, BUFFER_SIZE);
         buffer[size == BUFFER_SIZE ? BUFFER_SIZE - 1 : size] = '\0';
+
+        // don't display ^EOP
+        char* found = strstr_n(buffer, "^EOP", size);
+        if (NULL != found)
+        {
+            memset(found, '\0', 4);
+        }
         output(buffer, size);
     }
 }

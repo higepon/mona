@@ -12,6 +12,8 @@ int test5();
 
 int main(int argc, char* argv[])
 {
+    printf("test\n");
+    return -1;
     if (argc > 1)
     {
         printf(argv[1]);

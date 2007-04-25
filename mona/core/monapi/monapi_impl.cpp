@@ -154,6 +154,13 @@ extern "C" int user_start_c_impl(FuncMain* main)
     argc++;
 
     int result = (*main)(argc, argv);
+    char eop[5];
+    eop[0] = '^';
+    eop[1] = 'E';
+    eop[2] = 'O';
+    eop[3] = 'P';
+    eop[4] = '\0';
+    outStream->write((uint8_t*)eop, 5);
 
     for (int i = 1; i < argc; i++) delete [] argv[i];
     delete [] argv;
