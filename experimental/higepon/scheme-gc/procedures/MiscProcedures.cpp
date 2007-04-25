@@ -259,7 +259,7 @@ PROCEDURE(InteractionEnvironment, "interaction-environment")
     return env;
 }
 
-PROCEDURE(System, "system")
+PROCEDURE(CallProcess, "call-process")
 {
 #ifdef MONA
     ARGC_SHOULD_BE(1);
@@ -270,12 +270,14 @@ PROCEDURE(System, "system")
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
     }
-    return new Number(monapi_process_wait_terminated(tid), lineno());
+    Number* status = new Number(monapi_process_wait_terminated(tid), lineno());
+    env->setVaribale(new Variable("status", lineno()), status);
+    return status;
 #endif
     RETURN_BOOLEAN(false);
 }
 
-PROCEDURE(Exec, "exec")
+PROCEDURE(CallProcessOutString, "call-process-out-string")
 {
 #ifdef MONA
     ARGC_SHOULD_BE(1);
@@ -296,6 +298,7 @@ PROCEDURE(Exec, "exec")
     ::util::String text;
     for (;;)
     {
+        in->waitForRead();
         uint32_t size = in->read(buf, bufsize);
         if (size == 0)
         {
@@ -313,7 +316,8 @@ PROCEDURE(Exec, "exec")
         }
 
     }
-    monapi_process_wait_terminated(tid);
+    env->setVaribale(new Variable("status", lineno()), new Number(monapi_process_wait_terminated(tid), lineno()));
+//    monapi_process_wait_terminated(tid);
     return new SString(text, lineno());
 #endif
     RETURN_BOOLEAN(false);

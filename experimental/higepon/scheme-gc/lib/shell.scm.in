@@ -145,6 +145,27 @@
    (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
            (fs-io-enum-directory-entries path))))
 
-;; special
+;; for mona users
 (define (mona-prompt-string)
   (string-append "mona:" (fs-path (fs-current-directory)) ">"))
+
+(define cd
+  (lambda path
+    (let ((p (if (null? path) "/APPS" (car path))))
+      (if (fs-change-directory p)
+          #t
+          (begin (display "cd: no such file or directory: ") (print p))))))
+
+(define (pwd)
+  (print (fs-path (fs-current-directory))))
+
+(define dir pwd)
+
+(define ls
+  (lambda path
+    (for-each
+     (lambda (e)
+       (if (fs-directory? e)
+           (begin (display "[") (display (fs-name e)) (print "]"))
+           (print (fs-name e))))
+     (fs-entries (fs-current-directory)))))

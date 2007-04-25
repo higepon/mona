@@ -9,5 +9,7 @@
 
 (define *fs-root-directory* (fs-new-directory "/"))
 <IF_LINUX>(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
-
+<IF_MONA>(fs-create-tree *fs-root-directory* "/")
 (define *fs-current-directory* *fs-root-directory*)
+
+(define status 0)

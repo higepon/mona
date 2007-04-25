@@ -102,14 +102,16 @@
 )
 
 
-(let ((directories (fs-io-enum-directory-entries "/home/taro/mona/bin")))
+<IF_LINUX>(let ((directories (fs-io-enum-directory-entries "/home/taro/mona/bin")))
+<IF_MONA>(let ((directories (fs-io-enum-directory-entries "/")))
   (assert-check-true "fs-io-enum-directory-entries"
                      (find (lambda (d) (string=? "APPS" (fs-name d))) directories)
                      (find (lambda (d) (string=? "SERVERS" (fs-name d))) directories)
                      ))
 (define *fs-root-directory*2 (fs-new-directory "/"))
 
-(fs-create-tree *fs-root-directory*2 "/home/taro/mona/bin")
+<IF_LINUX>(fs-create-tree *fs-root-directory*2 "/home/taro/mona/bin")
+<IF_MONA>(fs-create-tree *fs-root-directory*2 "/")
 
 (set! *fs-current-directory* *fs-root-directory*2)
 (set! *fs-root-directory* *fs-root-directory*2)

@@ -1413,16 +1413,16 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
-class System : public PrimitiveProcedure
+class CallProcess : public PrimitiveProcedure
 {
 private:
     ::util::String procedureName_;
 public:
-    System()  : procedureName_("system") {}
-    virtual ~System() {}
+    CallProcess()  : procedureName_("call-process") {}
+    virtual ~CallProcess() {}
 
-    virtual ::util::String toString() {    return "procedure:""system";}
-    virtual ::util::String typeString() const { return "system"; }
+    virtual ::util::String toString() {    return "procedure:""call-process";}
+    virtual ::util::String typeString() const { return "call-process"; }
     virtual Object* eval(Environment* env)
     {
         return this;
@@ -1430,16 +1430,16 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
-class Exec : public PrimitiveProcedure
+class CallProcessOutString : public PrimitiveProcedure
 {
 private:
     ::util::String procedureName_;
 public:
-    Exec()  : procedureName_("exec") {}
-    virtual ~Exec() {}
+    CallProcessOutString()  : procedureName_("call-process-out-string") {}
+    virtual ~CallProcessOutString() {}
 
-    virtual ::util::String toString() {    return "procedure:""exec";}
-    virtual ::util::String typeString() const { return "exec"; }
+    virtual ::util::String toString() {    return "procedure:""call-process-out-string";}
+    virtual ::util::String typeString() const { return "call-process-out-string"; }
     virtual Object* eval(Environment* env)
     {
         return this;
