@@ -309,7 +309,7 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
         if (size >= 3)
         {
             // bad!
-            if (buf[size - 4] = '^' && buf[size - 3] == 'E' && buf[size - 2] == 'O' && buf[size - 1] == 'P')
+            if (buf[size - 5] = '^' && buf[size - 4] == 'E' && buf[size - 3] == 'O' && buf[size - 2] == 'P')
             {
                 break;
             }
