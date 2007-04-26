@@ -9,13 +9,13 @@ include Makefile.mona_gc.inc
 TARGET_LIBS = lib/scheme.scm lib/danny.scm lib/unittest.scm lib/core.scm lib/shell.scm lib/mona.scm 
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
-              test/test.scm test/util.scm test/vector.scm test/dir.scm
+              test/test.scm test/util.scm test/vector.scm test/dir.scm test/shell.scm
 ADDCFLAGS    = $(GC_CFLAGS)
 CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm test/dir.scm
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I .
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) -lmonalibc-imp --enable-auto-import
 ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a main.o
-ADDTARGETDEP =  $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm
+ADDTARGETDEP =  $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 include $(SHAREDIR)/configs/monapi-ex5.inc
