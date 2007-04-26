@@ -1,0 +1,4 @@
+(display "test works**********************")
+(assert-check-true "call-process"
+                   (string=? (call-process-out-string "/APPS/TEST.APP/TEST.EX5 TEST-STRING") "TEST-STRING")
+                   (= -2 status))
