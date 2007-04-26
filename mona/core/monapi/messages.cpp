@@ -193,19 +193,14 @@ int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL promp
 
 int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     uint32_t svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo msg;
     if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return -1;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (tid != NULL) *tid = msg.arg3;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return msg.arg2;
 }
 
@@ -248,7 +243,6 @@ uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
     {
         return MONA_FAILURE;
     }
-    _logprintf("return %d %s %s:%d\n", msg.arg2, __func__, __FILE__, __LINE__);
     return msg.arg2;
 }
 

@@ -13,8 +13,8 @@ INSTFILES = TEST.TXT
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 # link error
-#ADDLINK    = -lmonalibc-imp
-
+#ADDLINK    = -lmonalibc
+#ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 # link ok
 ADDLINK    = -lmonalibc-imp
 include $(SHAREDIR)/configs/monapi-ex5.inc

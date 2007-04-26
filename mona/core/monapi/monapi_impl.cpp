@@ -152,7 +152,6 @@ extern "C" int user_start_c_impl(FuncMain* main)
     }
     delete [] _argv;
     argc++;
-
     int result = (*main)(argc, argv);
     char eop[5];
     eop[0] = '^';
@@ -160,8 +159,10 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[2] = 'O';
     eop[3] = 'P';
     eop[4] = '\0';
+    outStream =::MonAPI::System::getStdoutStream();
+    _printf("outStream=%x\n", outStream);
+//    ::MonAPI::System::getStdoutStream()->write((uint8_t*)eop, 5);
     outStream->write((uint8_t*)eop, 5);
-
     for (int i = 1; i < argc; i++) delete [] argv[i];
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
