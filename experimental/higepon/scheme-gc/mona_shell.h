@@ -10,6 +10,6 @@ void mona_shell_init_variables();
 #define MONA_SHELL_INTERCTIVE true
 #define MONA_SHELL_NOT_INTERCTIVE false
 #ifdef MONA
-extern MonAPI::Stream* outStream;
+//extern MonAPI::Stream* outStream;
 #endif
 #endif // __MONA_SHELL_H__
