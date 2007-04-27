@@ -164,6 +164,11 @@ extern "C" int user_start_c_impl(FuncMain* main)
     _logprintf("%s%s %s:%d\n", pi.name, __func__, __FILE__, __LINE__);
 //    _printf("outStream=%x\n", outStream);
 //    ::MonAPI::System::getStdoutStream()->write((uint8_t*)eop, 5);
+
+//    uint32_t handle = ::MonAPI::System::getProcessStdoutID();
+//    ::MonAPI::Stream* o = ::MonAPI::Stream::FromHandle(handle);
+//        o->write((uint8_t*)eop, 5);
+
     _logprintf("%s %s %s:%d\n", pi.name, __func__, __FILE__, __LINE__);
 //    outStream->write((uint8_t*)eop, 5);
     _logprintf("%s %s %s:%d\n", pi.name,__func__, __FILE__, __LINE__);

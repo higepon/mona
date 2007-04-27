@@ -61,6 +61,14 @@ int kill() {
 
 int exit(int error)
 {
+    char eop[5];
+    eop[0] = '^';
+    eop[1] = 'E';
+    eop[2] = 'O';
+    eop[3] = 'P';
+    eop[4] = '\0';
+    ::MonAPI::System::getStdoutStream()->write((uint8_t*)eop, 5);
+
     MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
                           MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error);
     return syscall_kill();

@@ -1,4 +1,5 @@
 #include <monapi/syscall.h>
+#include <monapi.h>
 
 extern "C" void monapi_initialize_memory(int memorySize);
 extern "C" int main(int argc, char** argv);
