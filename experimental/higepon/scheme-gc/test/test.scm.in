@@ -410,6 +410,6 @@
 (load "<TESTDIR>/util.scm")
 (load "<TESTDIR>/dir.scm")
 (load "<TESTDIR>/cont.scm")
-<IF_MONA>(load "<TESTDIR>/shell.scm")
-;; ;; report
+;<IF_MONA>(load "<TESTDIR>/shell.scm")
+;; report
 (total-report)
