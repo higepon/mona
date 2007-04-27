@@ -12,6 +12,7 @@ int test5();
 
 int main(int argc, char* argv[])
 {
+//    printf("test start\n");
     if (argc > 1)
     {
         printf(argv[1]);
