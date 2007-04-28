@@ -91,6 +91,7 @@ void scheme_const_init();
 void scheme_expand_stack(uint32_t mb);
 void scheme_interactive();
 bool scheme_on_input_line(const ::util::String& line);
+void scheme_on_reedit();
 void scheme_init();
 monash::Object* scheme_eval_string(::util::String& input, monash::Environment* env, bool out = false);
 int scheme_exec_file(const ::util::String& file);

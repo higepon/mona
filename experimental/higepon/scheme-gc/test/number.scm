@@ -135,29 +135,25 @@
                    (inexact? "a")
                    (inexact? (cons 1 2)))
 
-(assert-check-true "quotient"
-                   (= (quotient 5 3) 1)
-                   (= (quotient 6 3) 2)
-                   (= (quotient 7 3) 2))
 
-(assert-check-true "modulo/reminder"
-                   (= (modulo 13 4) 1)
-                   (= (modulo -13 4) 1)
-                   (= (modulo 13 -4) 1)
-                   (= (reminder 13 4) 1)
-                   (= (reminder -13 4) -1)
-                   (= (reminder 13 -4) 1)
-                   (= (reminder -13 -4) -1))
-
-(assert-check-true "max / min"
-                   (= 4 (max 1 2 4 3))
-                   (= 1 (min 2 1 4 3)))
-
-(assert-check-true "gcd / lcm"
-                   (= (gcd 32 -36) 4)
-                   (= (gcd 36 12) 12)
-                   (= (gcd 1 1) 1)
-                   (= (lcm 2 1) 2)
-                   (= (lcm 3 4) 12)
-                   (= (lcm 12 9) 36
-))
+(assert-check-eqaul
+ =
+ '((quotient 5 3) 1)
+ '((quotient 6 3) 2)
+ '((quotient 7 3) 2)
+ '((modulo 13 4) 1)
+ '((modulo -13 4) 1)
+ '((modulo 13 -4) 1)
+ '((reminder 13 4) 1)
+ '((reminder -13 4) -1)
+ '((reminder 13 -4) 1)
+ '((reminder -13 -4) -1)
+ '(4 (max 1 2 4 3))
+ '(1 (min 2 1 4 3))
+ '((gcd 32 -36) 4)
+ '((gcd 36 12) 12)
+ '((gcd 1 1) 1)
+ '((lcm 2 1) 2)
+ '((lcm 3 4) 12)
+ '((lcm 12 9) 36)
+)

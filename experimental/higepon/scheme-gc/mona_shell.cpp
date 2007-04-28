@@ -7,8 +7,7 @@
 
 using namespace MonAPI;
 
-Stream* outStream;
-TerminalUtil* terminal;
+static TerminalUtil* terminal;
 
 int mona_shell_write(const char* format, ...)
 {
@@ -51,8 +50,7 @@ int mona_shell_init(bool interactive)
         return -1;
     }
     uint32_t screenHandle = msg.arg2;
-    outStream = Stream::FromHandle(screenHandle);
-    terminal = new TerminalUtil(outStream);
+    terminal = new TerminalUtil(Stream::FromHandle(screenHandle));
     return 0;
 
 }
@@ -72,6 +70,14 @@ void mona_shell_init_variables()
 {
     line = "";
     cursorPosition = 0;
+}
+
+void mona_shell_reedit()
+{
+    mona_shell_write("\n");
+    line += '\n';
+    cursorPosition = 0;
+    line = "";
 }
 
 void mona_shell_back_space()
@@ -285,9 +291,18 @@ void mona_shell_on_key_down(int keycode, int modifiers)
             mona_shell_output(keycode, modifiers);
             break;
         }
+    case (Keys::C):
+        if (modifiers & KEY_MODIFIER_CTRL)
+        {
+            scheme_on_reedit();
+            break;
+        }
+        else
+        {
+            mona_shell_output(keycode, modifiers);
+            break;
+        }
 
-
-    case(Keys::C):
     case(Keys::G):
     case(Keys::I):case(Keys::J):case(Keys::L):
     case(Keys::M):case(Keys::N):case(Keys::O):

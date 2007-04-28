@@ -135,6 +135,13 @@ bool scheme_on_input_line(const String& line)
     SCHEME_WRITE(stdout, scheme_prompt(env).data());
     return false;
 }
+
+void scheme_on_reedit()
+{
+    input = "";
+    mona_shell_reedit();
+    SCHEME_WRITE(stdout, scheme_prompt(env).data());
+}
 #ifdef MONA
 using namespace MonAPI;
 #endif
