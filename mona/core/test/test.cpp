@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
         test3();
         test4();
         test5();
-        return -1;
+        return 0;
     }
 }
 

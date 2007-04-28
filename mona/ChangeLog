@@ -1,3 +1,15 @@
+2007-04-28  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/mona_shell.cpp (mona_shell_on_key_down): Ctrl-C に対応
+
+        * core/scheme/lib/unittest.scm.in (assert-check-eqaul): 比較用のマクロ追加。
+
+        * 詳しくは MonaWiki の[[mona/auto-import問題整理]] を参照。
+        
+        * core/monapi/monapi_impl.cpp (dllmain): MonAPI::System::getStdoutStream();
+
+        * core/monapi/monapi_impl.cpp (user_start_c_impl): outStream->write で EOP 発行
+
 2007-04-25  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/monapi_impl.cpp (user_start_c_impl): 終了後に EOP を発行するようにした。

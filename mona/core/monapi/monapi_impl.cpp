@@ -37,6 +37,8 @@ int dllmain(uint32_t reason)
         monapi_initialize_memory(64 * 1024 * 1024);
         invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
         monapi_memory_initialized = true;
+        // see user_start_c_impl
+        MonAPI::System::getStdoutStream();
         break;
     case 1: // DLL_PROCESS_DETACH
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
@@ -159,19 +161,9 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[2] = 'O';
     eop[3] = 'P';
     eop[4] = '\0';
-    _logprintf("%s%s %s:%d\n", pi.name, __func__, __FILE__, __LINE__);
-//    outStream =::MonAPI::System::getStdoutStream();
-    _logprintf("%s%s %s:%d\n", pi.name, __func__, __FILE__, __LINE__);
-//    _printf("outStream=%x\n", outStream);
-//    ::MonAPI::System::getStdoutStream()->write((uint8_t*)eop, 5);
 
-//    uint32_t handle = ::MonAPI::System::getProcessStdoutID();
-//    ::MonAPI::Stream* o = ::MonAPI::Stream::FromHandle(handle);
-//        o->write((uint8_t*)eop, 5);
-
-    _logprintf("%s %s %s:%d\n", pi.name, __func__, __FILE__, __LINE__);
-//    outStream->write((uint8_t*)eop, 5);
-    _logprintf("%s %s %s:%d\n", pi.name,__func__, __FILE__, __LINE__);
+    // ここに Wiki へのリンクを
+    outStream->write((uint8_t*)eop, 5);
     for (int i = 1; i < argc; i++) delete [] argv[i];
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);

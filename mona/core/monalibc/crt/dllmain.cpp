@@ -1,7 +1,5 @@
 #include <monapi.h>
 
-extern MonAPI::Stream* inStream;
-extern MonAPI::Stream* outStream;
 extern "C" void init_stdio(void);
 
 extern "C" int dllmain(uint32_t reason);

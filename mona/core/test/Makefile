@@ -16,7 +16,7 @@ SHAREDIR   = $(MONADIR)/share
 #ADDLINK    = -lmonalibc
 #ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 # link ok
-ADDLINK    = -lmonalibc-imp
+ADDLINK    = -lmonalibc-imp --enable-auto-import
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
 INCLUDE += -I $(INCDIR)/monalibc
