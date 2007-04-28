@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site
+  base_url="http://wiki.monaos.org/"
+  store_into="/home/taro/public_html/wiki.monaos.org/sitemap.xml.gz"
+  verbose="1"
+  >
+
+  <accesslog  path="/var/log/apache2/wiki.monaos.org-access_log" encoding="UTF-8"  />
+
+</site>

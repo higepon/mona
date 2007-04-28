@@ -1,5 +1,5 @@
 body {
-font-size: 100%;
+font-size: 90%;
 margin-left: 20px;
 margin-right: 20px;
 padding: 0;
@@ -116,4 +116,11 @@ padding-bottom:20px
 
 pre {
 font-size: 80%;
+}
+
+h1 {
+  color:#666666;
+  font-size:110%;
+  margin:0pt 0pt 10px;
+  padding:0pt;
 }
