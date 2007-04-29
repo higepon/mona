@@ -1,6 +1,6 @@
 TARGET        = ./scheme
 TEST_TARGET   = ./scheme_test
-TARGET_LIBS   = lib/scheme.scm lib/danny.scm lib/core.scm lib/shell.scm
+TARGET_LIBS   = lib/scheme.scm lib/danny.scm lib/core.scm lib/shell.scm lib/unittest.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm
@@ -67,6 +67,6 @@ depend:
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET)\
-$(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/dir.scm
+$(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
 
 -include dependencies

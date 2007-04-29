@@ -9,6 +9,66 @@ using namespace MonAPI;
 
 static TerminalUtil* terminal;
 
+class CommandHistory
+{
+public:
+    CommandHistory() {}
+    virtual ~CommandHistory() {}
+
+    void add(::util::String history)
+    {
+        if (history.size() == 0) return;
+        if (history.last() == '\n')
+        {
+            history.chop();
+        }
+
+        histories_.add(new ::util::String(history));
+        positionToNewest();
+    }
+
+    ::util::String* getOlderHistory()
+    {
+        positionToOlder();
+        return get();
+    }
+
+    ::util::String* getNewerHistory()
+    {
+        positionToNewer();
+        return get();
+    }
+
+private:
+
+    ::util::String* get()
+    {
+        if (position_ < 0 || position_ >= histories_.size()) return new ::util::String("");
+        return histories_.get(position_);
+    }
+
+    void positionToNewest()
+    {
+        position_ = histories_.size();
+    }
+
+    void positionToOlder()
+    {
+        if (position_ < 0) return;
+        position_--;
+    }
+
+    void positionToNewer()
+    {
+        if (position_ >= histories_.size()) return;
+        position_++;
+    }
+
+private:
+    ::util::Vector< ::util::String* > histories_;
+    int position_;
+};
+
 int mona_shell_write(const char* format, ...)
 {
     char str[512];
@@ -25,6 +85,8 @@ int mona_shell_write(const char* format, ...)
     return terminal->write(str);
 }
 
+static CommandHistory histories;
+
 int mona_shell_init(bool interactive)
 {
     if (interactive == MONA_SHELL_INTERCTIVE)
@@ -34,6 +96,8 @@ int mona_shell_init(bool interactive)
             printf("register to keyboard server failed\n");
             return -1;
         }
+        histories.add("(ls)");
+        histories.add("(pwd)");
     }
 
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
@@ -66,6 +130,11 @@ int mona_shell_fini()
 static util::String line = "";
 static uint32_t cursorPosition = 0;
 
+void mona_shell_add_history(::util::String command)
+{
+    histories.add(command);
+}
+
 void mona_shell_init_variables()
 {
     line = "";
@@ -82,13 +151,10 @@ void mona_shell_reedit()
 
 void mona_shell_back_space()
 {
-    SCM_TRACE_OUT("");
-    SCM_TRACE_OUT("cursorPosition = %d size=%d", cursorPosition, line.size());
     if (cursorPosition == 0) return;
     if (cursorPosition == line.size())
     {
         line.chop();
-        SCM_TRACE_OUT("line = [%s]", line.data());
         terminal->eraseCursor();
         terminal->cursorLeft(1);
         terminal->write(" ");
@@ -116,7 +182,6 @@ void mona_shell_back_space()
 
 void mona_shell_cursor_backward(int n /* = 1 */)
 {
-    SCM_TRACE_OUT("");
     if (cursorPosition == 0) return;
     if ((int)cursorPosition < n)
     {
@@ -130,7 +195,6 @@ void mona_shell_cursor_backward(int n /* = 1 */)
 
 void mona_shell_cursor_forward(int n /* = 1 */)
 {
-    SCM_TRACE_OUT("");
     if (cursorPosition == line.size()) return;
     if (cursorPosition + n > line.size())
     {
@@ -144,7 +208,6 @@ void mona_shell_cursor_forward(int n /* = 1 */)
 
 void mona_shell_del()
 {
-    SCM_TRACE_OUT("");
     if (line.size() == cursorPosition) return;
     mona_shell_cursor_forward();
     mona_shell_back_space();
@@ -152,7 +215,6 @@ void mona_shell_del()
 
 void mona_shell_cursor_beginning_of_line()
 {
-    SCM_TRACE_OUT("");
     terminal->eraseCursor();
     terminal->cursorLeft(cursorPosition);
     cursorPosition = 0;
@@ -161,7 +223,6 @@ void mona_shell_cursor_beginning_of_line()
 
 void mona_shell_cursor_end_of_line()
 {
-    SCM_TRACE_OUT("");
     terminal->eraseCursor();
     terminal->cursorRight(line.size() - cursorPosition);
     cursorPosition = line.size();
@@ -170,7 +231,6 @@ void mona_shell_cursor_end_of_line()
 
 void mona_shell_kill_line()
 {
-    SCM_TRACE_OUT("");
     uint32_t times = line.size() - cursorPosition;
     mona_shell_cursor_end_of_line();
     for (uint32_t i = 0; i < times; i++)
@@ -179,28 +239,39 @@ void mona_shell_kill_line()
     }
 }
 
-void mona_shell_output(int keycode, int modifiers)
+void mona_shell_output_line(::util::String l)
+{
+    mona_shell_cursor_beginning_of_line();
+    mona_shell_kill_line();
+    line = l;
+    mona_shell_write("%s", line.data());
+    cursorPosition = line.size();
+}
+
+void mona_shell_output_char(char c)
+{
+    line.insert(cursorPosition, c);
+    mona_shell_write("%c", c);
+
+    if (cursorPosition != line.size() - 1)
+    {
+        mona_shell_write("%s", line.substring(cursorPosition + 1, line.size() - cursorPosition).data());
+        terminal->cursorLeft(line.size() - cursorPosition - 1);
+    }
+    terminal->drawCursor();
+    cursorPosition++;
+}
+
+void mona_shell_output_key(int keycode, int modifiers)
 {
     KeyInfo key;
     key.keycode = keycode;
     key.modifiers = modifiers;
-    char c = Keys::ToChar(key);
-    mona_shell_write("%c", c);
-    terminal->drawCursor();
-    if (cursorPosition < line.size())
-    {
-        line.set(cursorPosition, c);
-    }
-    else
-    {
-        line += c;
-    }
-    cursorPosition++;
+    mona_shell_output_char(Keys::ToChar(key));
 }
 
 void mona_shell_on_key_down(int keycode, int modifiers)
 {
-
     switch(keycode) {
     case (Keys::H):
         if (modifiers & KEY_MODIFIER_CTRL)
@@ -210,18 +281,36 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
+    case(Keys::Up):
+        mona_shell_output_line(histories.getOlderHistory()->data());
+        break;
+    case(Keys::Down):
+        mona_shell_output_line(histories.getNewerHistory()->data());
+        break;
+
     case (Keys::P):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
-            // history
+            mona_shell_output_line(histories.getOlderHistory()->data());
             break;
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
+            break;
+        }
+    case (Keys::N):
+        if (modifiers & KEY_MODIFIER_CTRL)
+        {
+            mona_shell_output_line(histories.getNewerHistory()->data());
+            break;
+        }
+        else
+        {
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::B):
@@ -232,7 +321,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::A):
@@ -243,7 +332,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::E):
@@ -254,7 +343,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
 
@@ -266,7 +355,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::K):
@@ -277,7 +366,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::D):
@@ -288,7 +377,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
     case (Keys::C):
@@ -299,13 +388,13 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         }
         else
         {
-            mona_shell_output(keycode, modifiers);
+            mona_shell_output_key(keycode, modifiers);
             break;
         }
 
     case(Keys::G):
     case(Keys::I):case(Keys::J):case(Keys::L):
-    case(Keys::M):case(Keys::N):case(Keys::O):
+    case(Keys::M):case(Keys::O):
     case(Keys::Q):case(Keys::R):case(Keys::S):case(Keys::T):
     case(Keys::U):case(Keys::V):case(Keys::W):case(Keys::X):
     case(Keys::Y):case(Keys::Z):case(Keys::Decimal):case(Keys::D0):
@@ -317,7 +406,7 @@ void mona_shell_on_key_down(int keycode, int modifiers)
     case(Keys::Add):case(Keys::Space):case(Keys::Divide):case(Keys::OemPeriod):
     case(Keys::OemPipe):case(Keys::OemQuestion):case(Keys::OemMinus):case(Keys::OemBackslash):
     case(Keys::OemSemicolon):case(Keys::Oemplus):
-        mona_shell_output(keycode, modifiers);
+        mona_shell_output_key(keycode, modifiers);
         break;
     case(Keys::Enter):
         mona_shell_write("\n");
@@ -339,10 +428,20 @@ void mona_shell_on_key_down(int keycode, int modifiers)
 #else
 int mona_shell_init(bool interactive)
 {
+    return 0;
 }
 
 int mona_shell_fini()
 {
+    return 0;
 }
 
+void mona_shell_reedit()
+{
+}
+
+#include "util/String.h"
+void mona_shell_add_history(::util::String command)
+{
+}
 #endif

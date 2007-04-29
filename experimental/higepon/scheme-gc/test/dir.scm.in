@@ -1,5 +1,4 @@
 (load "<LIBDIR>/scheme.scm")
-(load "<LIBDIR>/unittest.scm")
 ;; (use slib)
 ;; (use util.list)
 ;; (require 'trace)

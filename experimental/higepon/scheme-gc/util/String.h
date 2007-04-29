@@ -79,6 +79,35 @@ public:
         data_[index] = c;
     }
 
+    void insert(uint32_t index, char c)
+    {
+        ASSERT_UTIL(index <= length_);
+        ASSERT_UTIL(index >= 0);
+
+        if (bufferSize_ < length_ + 1 + 1)
+        {
+            char* tmp = data_;
+            bufferSize_ = length_ + 1 + 1 + extendSize_;
+            extendSize_ = (uint32_t)(extendSize_ * 1.5);
+#ifdef USE_BOEHM_GC
+            data_ = new(GC) char[bufferSize_];
+#elif defined(USE_MONA_GC)
+            data_ = new(false) char[bufferSize_];
+#else
+            data_ = new char[bufferSize_];
+#endif
+            for (uint32_t i = 0; i <= length_; i++) data_[i] = tmp[i];
+#ifdef USE_BOEHM_GC
+#elif defined(USE_MONA_GC)
+#else
+           delete[] tmp;
+#endif
+        }
+        memmove(&data_[index + 1], &data_[index], length_ - index + 1);
+        data_[index] = c;
+        length_++;
+    }
+
     void removeAt(uint32_t index)
     {
         ASSERT_UTIL(index < length_);
@@ -239,6 +268,16 @@ public:
     int indexOf(const String& text)
     {
         return indexOf(text.data());
+    }
+
+    char last()
+    {
+        return data_[length_ - 1];
+    }
+
+    char first()
+    {
+        return data_[0];
     }
 
     void chop()

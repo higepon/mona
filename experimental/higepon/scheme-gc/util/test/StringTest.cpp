@@ -213,3 +213,48 @@ void StringTest::testSplit()
     CPPUNIT_ASSERT(ss->get(1) == "hoge");
     CPPUNIT_ASSERT(ss->get(2) == "hige");
 }
+
+void StringTest::testInsert()
+{
+    String path = "124568";
+    path.insert(0, '0');
+    CPPUNIT_ASSERT(path == "0124568");
+    path.insert(3, '3');
+    CPPUNIT_ASSERT(path == "01234568");
+    path.insert(7, '7');
+    CPPUNIT_ASSERT(path == "012345678");
+    path.insert(9, '9');
+    CPPUNIT_ASSERT(path == "0123456789");
+
+    {
+        String longString = "0123456789";
+        // nomore extra buffer!
+        for (int i = 0; i < 8; i++)
+        {
+            longString += 'A';
+        }
+        longString.insert(0, 'B');
+        CPPUNIT_ASSERT(longString == "B0123456789AAAAAAAA");
+    }
+    {
+        String longString = "0123456789";
+        // nomore extra buffer!
+        for (int i = 0; i < 8; i++)
+        {
+            longString += 'A';
+        }
+        longString.insert(2, 'B');
+        CPPUNIT_ASSERT(longString == "01B23456789AAAAAAAA");
+    }
+    {
+        String longString = "0123456789";
+        // nomore extra buffer!
+        for (int i = 0; i < 8; i++)
+        {
+            longString += 'A';
+        }
+        longString.insert(18, 'B');
+        CPPUNIT_ASSERT(longString == "0123456789AAAAAAAAB");
+    }
+
+}

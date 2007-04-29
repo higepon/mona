@@ -130,6 +130,7 @@ bool scheme_on_input_line(const String& line)
     }
     TRANSCRIPT_WRITE(input.data());
     scheme_eval_string(input, env, false);
+    mona_shell_add_history(input);
     input = "";
 
     SCHEME_WRITE(stdout, scheme_prompt(env).data());

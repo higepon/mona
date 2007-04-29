@@ -115,7 +115,6 @@ void cont_restore(Cont* cc, int return_value)
             p[i] -= (prev_stack - next_stack);
         }
     }
-
     // eax ebx ecx edx esi edi
     for (i = 0; i < 5; i++)
     {

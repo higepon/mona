@@ -1,6 +1,8 @@
-(assert-check-true "call-process"
-                   (string=? (call-process-out-string "/APPS/TEST.APP/TEST.EX5 TEST-STRING") "TEST-STRING")
+(assert-check-eqaul
+ string=?
+ '((call-process-out-string "/APPS/TEST.APP/TEST.EX5 TEST-STRING") "TEST-STRING")
 )
+
 (assert-check-eqaul
  =
  '(-2 status)

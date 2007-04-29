@@ -1,7 +1,3 @@
-;; (define values (lambda things
-;;                  (call-with-current-continuation
-;;                   (lambda (cont) (apply cont things)))))
-
 ;; (display (values 4 5))
 
 ;; ;; (display (call-with-values (lambda () (values 4 5))
@@ -69,7 +65,7 @@
                    (= (find odd? (list 1 2 3 4)) 1)
 ;;                    (= 5 (call-with-values (lambda () (values 4 5))
 ;;                           (lambda (a b) b)))
-;;                    (= (call-with-values * -) -1)
+;;;                    (= (call-with-values * -) -1)
                   )
 
 ;; ;; ;; (let ((total 0))
