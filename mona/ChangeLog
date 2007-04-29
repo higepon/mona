@@ -1,3 +1,13 @@
+2007-04-29  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/mona_shell.cpp (class CommandHistory): シェルにコマンドヒストリ機能を追加。Ctrl-p, Ctrl-n, Up, Down で操作可能。
+
+        * core/scheme/util/String.h (util): first/last を追加
+
+        * core/scheme/util/String.h (util): insertを追加。
+
+        * core/scheme/util/test/StringTest.cpp (StringTest::testInsert): insert のテストを追加。
+
 2007-04-28  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/mona_shell.cpp (mona_shell_on_key_down): Ctrl-C に対応

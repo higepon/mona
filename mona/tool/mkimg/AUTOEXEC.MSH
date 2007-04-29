@@ -2,6 +2,22 @@
 @ECHO Welcome to Mona!
 @ECHO To show internal commands, please input "HELP".
 @ECHO Thank you! -- Mona Project Team
+# Scheme Test
+/servers/scheme.ex5 /servers/test/test.scm
+# Scheme Interactive
+#exec /servers/scheme.ex5
+
+
+
+
+
+
+
+
+
+
+
+
 #@ECHO Mona Desktop Manager Starting ...
 #@EXEC /APPS/STARTX.APP/STARTX.EX5
 #@EXEC BAYGUI
@@ -10,7 +26,7 @@
 #@EXEC /APPS/BAYGUI.MSH
 #/APPS/BAYGUI/BPLAYER.APP/BPLAYER.EX5
 #gian
-hello
+#hello
 #hello
 #hello | upper
 #upper higepon
@@ -32,7 +48,7 @@ hello
 #@WRITE.EX5 ABCDEFG
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
 #./TEST.APP/TEST.EX5
-../servers/scheme.ex5 /SERVERS/TEST/test.scm
-#exec ../servers/scheme.ex5
+#../servers/scheme.ex5 /SERVERS/TEST/test.scm
+
 
 #../servers/scheme.ex5 /SERVERS/TEST/test.scm
