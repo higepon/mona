@@ -3,9 +3,9 @@ bits 32
 section .bss
 section .data
 section .text
-
-global _mysetjmp
-global _mylongjmp
+%include "macro.asm"
+cglobal _mysetjmp
+cglobal _mylongjmp
 
 ; jmp_buf:
 ;	eax ebx ecx edx esi edi ebp esp eip

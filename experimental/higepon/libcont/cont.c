@@ -42,9 +42,11 @@
 */
 
 #include "cont.h"
+#ifndef MONA
 #include <unistd.h>
+#endif
 
-static uint32_t cont_stack_bottom;
+static uint32_t cont_stack_bottom = (uint32_t)NULL;
 
 void* cont_get_stack_pointer()
 {
@@ -52,6 +54,13 @@ void* cont_get_stack_pointer()
     return (void*)((unsigned int)stack_pointer + 8);
 }
 
+#ifdef MONA
+void* cont_get_stack_bottom()
+{
+  return (void*)0xF0000000;
+}
+
+#else
 #pragma weak __libc_stack_end
 extern void* __libc_stack_end;
 void* cont_get_stack_bottom()
@@ -59,12 +68,16 @@ void* cont_get_stack_bottom()
     long pagesize = sysconf(_SC_PAGESIZE);
     return (void*)(((uintptr_t)__libc_stack_end + pagesize) & ~(pagesize - 1));
 }
+#endif
 
 void cont_initialize()
 {
     // fix me!
-    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 50;
-    //  cont_stack_bottom = cont_get_stack_bottom() -20;
+#ifdef MONA
+    cont_stack_bottom = (uint32_t)cont_get_stack_pointer();
+#else
+    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
+#endif
 }
 
 void cont_destroy(Cont* c)
@@ -76,19 +89,15 @@ void cont_destroy(Cont* c)
     }
 }
 
-static Cont* c;
-static int r;
-static uint32_t diff;
-static uint32_t prev_stack;
-static uint32_t next_stack;
-
-void cont_restore(Cont* cc, int return_value)
+void cont_restore(Cont* c, int r)
 {
-    c = cc;
-    r = return_value;
     uint32_t i;
-    prev_stack = c->registers[7];
-    next_stack= prev_stack - 1000;
+    uint32_t prev_stack = c->registers[7];
+    register void* stack_pointer asm ("%esp");
+
+    // don't over write your current stack
+    uint32_t next_stack = (uint32_t)stack_pointer - (c->stack_size + 1000);
+
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -97,7 +106,6 @@ void cont_restore(Cont* cc, int return_value)
             p[i] -= (prev_stack - next_stack);
         }
     }
-
     // eax ebx ecx edx esi edi
     for (i = 0; i < 5; i++)
     {
@@ -107,7 +115,7 @@ void cont_restore(Cont* cc, int return_value)
         }
     }
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
-    diff = c->registers[6] - c->registers[7];
+    uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
     mylongjmp(c->registers, r);
@@ -117,11 +125,14 @@ int cont_save(Cont* c)
 {
     int ret = mysetjmp(c->registers);
     if (ret != 0) return ret;
-    uint32_t diff = c->registers[6] - c->registers[7];
 
     uint32_t current_stack = c->registers[7];
     c->stack_size = cont_stack_bottom - current_stack;
+#ifdef USE_BOEHM_GC
+    c->stack = (uint8_t*)GC_MALLOC(c->stack_size);
+#else
     c->stack = (uint8_t*)malloc(c->stack_size);
+#endif
     memcpy(c->stack, (uint8_t*)current_stack, c->stack_size);
     return ret;
 }
