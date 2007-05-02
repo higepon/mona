@@ -47,11 +47,6 @@
 #endif
 
 static uint32_t cont_stack_bottom = (uint32_t)NULL;
-static Cont* c = NULL;
-static int r   = 0;
-static uint32_t diff       = 0;
-static uint32_t prev_stack = 0;
-static uint32_t next_stack = 0;;
 
 void* cont_get_stack_pointer()
 {
@@ -83,12 +78,6 @@ void cont_initialize()
 #else
     cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
 #endif
-    c = NULL;
-    r = 0;
-    diff = 0;
-    prev_stack = 0;
-    next_stack = 0;
-    //  cont_stack_bottom = cont_get_stack_bottom() -20;
 }
 
 void cont_destroy(Cont* c)
@@ -100,13 +89,15 @@ void cont_destroy(Cont* c)
     }
 }
 
-void cont_restore(Cont* cc, int return_value)
+void cont_restore(Cont* c, int r)
 {
-    c = cc;
-    r = return_value;
     uint32_t i;
-    prev_stack = c->registers[7];
-    next_stack= prev_stack - 1000;
+    uint32_t prev_stack = c->registers[7];
+    register void* stack_pointer asm ("%esp");
+
+    // don't over write your current stack
+    uint32_t next_stack = (uint32_t)stack_pointer - (c->stack_size + 1000);
+
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -124,7 +115,7 @@ void cont_restore(Cont* cc, int return_value)
         }
     }
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
-    diff = c->registers[6] - c->registers[7];
+    uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
     mylongjmp(c->registers, r);

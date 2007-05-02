@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "mysetjmp.h"
-#include "libcont/cont.h"
 
 typedef struct Cont
 {
