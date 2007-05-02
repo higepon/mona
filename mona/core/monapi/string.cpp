@@ -39,18 +39,18 @@ void *memmove(void* s1, const void* s2, size_t size)
 /*!
     \brief memcmp
 */
+
+
 int memcmp(const void* s1, const void* s2, size_t size)
 {
     char *c1 = (char*)s1;
     char *c2 = (char*)s2;
-
     while (0 < size--) {
         if (*c1 != *c2)
             return *c1 - *c2;
         c1++;
         c2++;
     }
-
     return 0;
 }
 
@@ -143,7 +143,6 @@ int strcmp(const char* str1, const char* str2) {
 }
 
 void* memcpy(void* s1, const void* s2, size_t size) {
-
 //     slow?
 //     char* p = (char*)s1;
 //     const char* s = (char*)s2;
@@ -164,7 +163,6 @@ void* memcpy(void* s1, const void* s2, size_t size) {
                  : /* no output */
                  : "m"(s1), "m"(s2), "m"(size)
                  : "edi", "esi", "ecx");
-
     return s1;
 }
 
