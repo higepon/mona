@@ -8,9 +8,13 @@
 #include "servers/audio.h"
 #include <stlport/vector>
 #include <stlport/map>
+#include <stlport/list>
 #include <monapi/Thread.h>
 
+#define SYNCHRONIZED(x) { mutex->lock(); x; mutex->unlock(); }
+
 class Channel;
+class IntNotifer;
 
 class Audio
 {
@@ -22,6 +26,7 @@ public:
 	bool init_drivers();
 	int run();
 	uint32_t tid();
+	std::list<IntNotifer*> *notifers;
 private:
 	int counter;
 	std::vector<struct driver_desc*> *drivers;
@@ -42,6 +47,8 @@ private:
 	inline int makeID(){ return counter++; }
 protected:
 };
+
+extern MonAPI::Mutex *mutex;
 
 class Channel
 {
@@ -80,6 +87,20 @@ public:
 	int CreateDataStream(MessageInfo*);
 	int CreateChannelObject(MessageInfo*);
 	int BindChannelObject(MessageInfo*);
+	int RegisterTID(MessageInfo*);
 	static void command_thread_main_loop(void* arg);
+};
+
+class IntNotifer
+{
+private:
+	struct driver_desc *driver;
+	ch_t channel;
+	int32_t tid;
+public:
+	IntNotifer(struct driver_desc*, ch_t, int32_t);
+	~IntNotifer();
+
+	void Interrupted();
 };
 

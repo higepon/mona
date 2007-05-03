@@ -14,6 +14,7 @@ extern "C" int32_t aud_es1370_start_channel(ch_t ch, int32_t loop);
 extern "C" int32_t aud_es1370_stop_channel(ch_t ch);
 extern "C" int32_t aud_es1370_destroy_channel(ch_t ch);
 extern "C" int32_t aud_es1370_emit_interrupted();
+extern "C" int32_t aud_es1370_get_int_state();
 
 static es1370 *dev = NULL;
 
@@ -33,6 +34,7 @@ struct driver_desc desc = {
 	aud_es1370_stop_channel,	// stop_channel
 	aud_es1370_destroy_channel,	// destroy_channel
 	aud_es1370_emit_interrupted,	// emit_interrupted
+	aud_es1370_get_int_state,	// int_state
 };
 
 
@@ -128,6 +130,12 @@ extern "C" int32_t aud_es1370_emit_interrupted()
 {
 	dputs("#Audio: aud_es1370_emit_interrupted");
 	monapi_set_irq(dev->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+	dev->set_int_state();
+}
+
+extern "C" int32_t aud_es1370_get_int_state()
+{
+	return dev->int_state;
 }
 
 es1370::es1370()
@@ -259,6 +267,18 @@ void es1370::startDAC1()
 void es1370::stopDAC1()
 {
 	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)|ES1370_P1_PAUSE);
+	outp32(baseIO+ES1370_REG_SERIAL_CONTROL, inp32(baseIO+ES1370_REG_SERIAL_CONTROL)&~ES1370_P1_INTR_EN);
+}
+
+void es1370::set_int_state()
+{
+	uint32_t x;
+	x = inp32(baseIO+ES1370_REG_STATUS);
+	this->int_state = x;
+	if( x & (1<<31) )
+	{
+		outp32(baseIO+ES1370_REG_STATUS, 0);
+	}
 }
 
 inline void rgor(int rA, int rS, int rB)
@@ -272,6 +292,7 @@ inline void rgori(int rA, int rS, int imm)
 void es1370::dumpRegisters()
 {
 	uint32_t result;
+	return;
 
 	result = inp32(baseIO+ES1370_REG_CONTROL);
 	dprintf("Control: %x\n", result);

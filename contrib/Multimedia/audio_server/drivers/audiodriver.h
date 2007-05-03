@@ -19,5 +19,6 @@ struct driver_desc
 	int32_t (*stop_channel)(ch_t ch);
 	int32_t (*destroy_channel)(ch_t ch);
 	int32_t (*emit_interrupted)();
+	int32_t (*get_int_state)();
 };
 

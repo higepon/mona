@@ -15,7 +15,7 @@ enum AudioServerCommand
 	GetThreadID = 0,
 	GetServerVersion,
 	GetServerStatus,
-	AllocateChannel,
+	AllocateChannel, // first generation
 	PrepareChannel,
 	StartChannel,
 	StopChannel,
@@ -24,7 +24,9 @@ enum AudioServerCommand
 	ChannelInfo,
 	SetBuffer,
 	CreateDataStream,
-	CreateChannelObject,
+	CreateChannelObject, // second generation
+	BindChannelObject,
+	RegisterTID,
 	NopCommand,
 };
 

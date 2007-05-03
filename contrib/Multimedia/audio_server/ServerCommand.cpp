@@ -48,6 +48,8 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::SetBuffer,
 	&ServerCommand::CreateDataStream,
 	&ServerCommand::CreateChannelObject,
+	&ServerCommand::BindChannelObject,
+	&ServerCommand::RegisterTID,
 };
 
 ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
@@ -151,7 +153,9 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 	monapi_cmemoryinfo_map(mi);
 
 	memcpy(parent->dmabuf, (void*)mi->Data, bufinfo.size);
+	mutex->lock();
 	(*it)->set_buffer(msg->arg2, parent->dmabuf, bufinfo.size);
+	mutex->unlock();
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
@@ -160,7 +164,9 @@ int ServerCommand::StartChannel(MessageInfo *msg)
 {
 	std::vector<struct driver_desc*>::iterator it;
 	it = parent->drivers->begin();
+	mutex->lock();
 	(*it)->start_channel(msg->arg2, 1);
+	mutex->unlock();
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
@@ -184,8 +190,9 @@ int ServerCommand::CreateDataStream(MessageInfo *msg)
 int ServerCommand::CreateChannelObject(MessageInfo *msg)
 {
 	Channel **channels = parent->channels;
-	Channel **p;
+	Channel **p = NULL;
 	size_t channelLength = parent->channelLength;
+	dprintf("%s: channelLength = %d\n", __func__, channelLength);
 	int handle = 0;
 	for( size_t i = 0 ; i < channelLength ; i++ )
 	{
@@ -197,7 +204,13 @@ int ServerCommand::CreateChannelObject(MessageInfo *msg)
 	}
 	if( handle == 0 )
 	{
-		p = (Channel**)realloc((void*)channels, ++channelLength);
+	dprintf("%s: handle == 0, ", __func__, handle);
+	dprintf("p = %x\n", p);
+		if( p != NULL )
+			p = (Channel**)realloc((void*)channels, ++channelLength*sizeof(void*));
+		else
+			p = (Channel**)calloc(1, sizeof(void*));
+		dprintf("%s: p = %x\n", __func__, p);
 		if( p == NULL )
 		{
 			MonAPI::Message::reply(msg, 0);
@@ -205,8 +218,11 @@ int ServerCommand::CreateChannelObject(MessageInfo *msg)
 		}
 		channels = p;
 		channels[channelLength-1] = new Channel;
+		handle = 1;
 	}
+	parent->channels = channels;
 	MonAPI::Message::reply(msg, handle);
+	dprintf("CreateChannelObject: handle = %d\n", handle);
 	return 0;
 }
 
@@ -222,11 +238,29 @@ int ServerCommand::BindChannelObject(MessageInfo *msg)
 
 	std::map<char*, int>::iterator it = parent->drivers_hash->find(device);
 	driver_index = (*it).second;
+	dprintf("%s: driver_index = %d\n", __func__, driver_index);
 	std::vector<struct driver_desc*>::iterator it2 = parent->drivers->begin();
 	for( int i = 0 ; i < driver_index ; i++ ) it2++;
+	dprintf("%s\n", __func__);
 	driver = (*it2);
-	parent->channels[handle-1]->init(driver);
+	dprintf("%s: driver = %x\n", __func__, driver);
+	dprintf("%s: handle = %x\n", __func__, handle);
+	dprintf("%s: channels = %x\n", __func__, parent->channels);
+	dprintf("%s: handle-1 = %x\n", __func__, handle-1);
+	Channel **channels = parent->channels;
+	channels[handle-1]->init(driver);
 	MonAPI::Message::reply(msg, 0);
+	dprintf("BindChannelObject: handle = %d, device = %s\n", handle, device);
+	return 0;
+}
+
+int ServerCommand::RegisterTID(MessageInfo *msg)
+{
+	std::vector<struct driver_desc*>::iterator it;
+	it = parent->drivers->begin();
+	parent->notifers->push_back(new IntNotifer((*it), msg->arg2, msg->from));
+	MonAPI::Message::reply(msg, 0);
+
 	return 0;
 }
 

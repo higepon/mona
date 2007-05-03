@@ -4,6 +4,7 @@
 #include "../debug.h"
 
 using namespace MonAPI;
+void makeWave(monapi_cmemoryinfo *mi, int x);
 
 int main(int argc, char *argv[])
 {
@@ -38,17 +39,23 @@ int main(int argc, char *argv[])
 	_printf("Result: %d\n", msg.arg2);
 
 	struct audio_server_buffer_info bi;
+	int usingbuf = 1;
 	monapi_cmemoryinfo *mi;
+	monapi_cmemoryinfo *mi2;
 	mi = monapi_cmemoryinfo_new();
+	mi2 = monapi_cmemoryinfo_new();
 	if( !monapi_cmemoryinfo_create(mi, 44100, MONAPI_TRUE) )
 	{
+		_printf("cmi_create\n");
 		monapi_cmemoryinfo_delete(mi); return -1;
 	}
-	for( int i = 0 ; i < 44100/2 ; i++ )
+	if( !monapi_cmemoryinfo_create(mi2, 44100, MONAPI_TRUE) )
 	{
-		if( i % 20 < 10 ) ((short*)mi->Data)[i] = 200;
-		else ((short*)mi->Data)[i] = -200;
+		_printf("cmi_create\n");
+		monapi_cmemoryinfo_delete(mi2); return -1;
 	}
+	makeWave(mi, 20);
+	makeWave(mi2, 100);
 	bi.handle = mi->Handle;
 	bi.size = mi->Size;
 	memcpy(str, &bi, sizeof(bi));
@@ -57,7 +64,30 @@ int main(int argc, char *argv[])
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
 
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
-	while(1);
+
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
+
+	while(1)
+	{
+		if( Message::receive(&msg) ) continue;
+		_printf("%x\n", msg.header);
+	//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
+		if( usingbuf == 1 )
+		{
+			bi.handle = mi2->Handle;
+			bi.size = mi2->Size;
+			usingbuf = 2;
+		}
+		else
+		{
+			bi.handle = mi->Handle;
+			bi.size = mi->Size;
+			usingbuf = 1;
+		}
+		memcpy(str, &bi, sizeof(bi));
+		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+	//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+	}
 
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 
@@ -67,8 +97,21 @@ int main(int argc, char *argv[])
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
 
+#else
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, CreateChannelObject);
+	ch = msg.arg2;
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, BindChannelObject, ch, 0, "es1370");
 #endif
 
 	return 0;
+}
+
+void makeWave(monapi_cmemoryinfo *mi, int x)
+{
+	for( int i = 0 ; i < mi->Size/2 ; i++ )
+	{
+		if( i % x < 10 ) ((short*)mi->Data)[i] = 200;
+		else ((short*)mi->Data)[i] = -200;
+	}
 }
 
