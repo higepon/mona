@@ -87,7 +87,8 @@ int ServerCommand::GetThreadID(MessageInfo *msg)
 			break;
 		}
 		case COMMAND_THREAD:
-			MonAPI::Message::reply(msg, parent->tids[COMMAND_THREAD-1]);
+	//		MonAPI::Message::reply(msg, parent->tids[COMMAND_THREAD-1]);
+			MonAPI::Message::reply(msg, parent->tid());
 			break;
 		default: break;
 	}
@@ -104,9 +105,7 @@ int ServerCommand::GetServerVersion(MessageInfo *msg)
 int ServerCommand::AllocateChannel(MessageInfo *msg)
 {
 	ch_t ch;
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	ch = (*it)->create_channel();
+	ch = driver->create_channel();
 	MonAPI::Message::reply(msg, ch);
 	return 0;
 }
@@ -117,18 +116,14 @@ int ServerCommand::PrepareChannel(MessageInfo *msg)
 	int ret = 0;
 	struct audio_server_channel_info ci;
 	memcpy(&ci, msg->str, sizeof(ci));
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	ret = (*it)->prepare_channel((ch_t)ci.channel, ci.samplerate, ci.bitspersample, 1);
+	ret = driver->prepare_channel((ch_t)ci.channel, ci.samplerate, ci.bitspersample, 1);
 	MonAPI::Message::reply(msg, ret);
 	return ret;
 }
 
 int ServerCommand::ReleaseChannel(MessageInfo *msg)
 {
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	(*it)->destroy_channel(msg->arg2);
+	driver->destroy_channel(msg->arg2);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
@@ -141,8 +136,6 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 {
 	struct audio_server_buffer_info bufinfo;
 	monapi_cmemoryinfo *mi;
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
 	dprintf("msg->str = %x\n", msg->str);
 	dprintf("dmabuf = %x\n", parent->dmabuf);
 	memcpy(&bufinfo, msg->str, sizeof(bufinfo));
@@ -151,31 +144,26 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 	mi->Handle = bufinfo.handle;
 	mi->Size = bufinfo.size;
 	monapi_cmemoryinfo_map(mi);
+	dprintf("Handle = %x\n", mi->Handle);
+	dprintf("P = %x\n", mi->Data);
 
 	memcpy(parent->dmabuf, (void*)mi->Data, bufinfo.size);
-	mutex->lock();
-	(*it)->set_buffer(msg->arg2, parent->dmabuf, bufinfo.size);
-	mutex->unlock();
+	driver->set_buffer(msg->arg2, parent->dmabuf, bufinfo.size);
+	monapi_cmemoryinfo_delete(mi);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
 
 int ServerCommand::StartChannel(MessageInfo *msg)
 {
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	mutex->lock();
-	(*it)->start_channel(msg->arg2, 1);
-	mutex->unlock();
+	driver->start_channel(msg->arg2, 1);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
 
 int ServerCommand::StopChannel(MessageInfo *msg)
 {
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	(*it)->stop_channel(msg->arg2);
+	driver->stop_channel(msg->arg2);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
@@ -231,18 +219,11 @@ int ServerCommand::BindChannelObject(MessageInfo *msg)
 	char *device;
 	int handle;
 	int driver_index;
-	struct driver_desc *driver;
 
 	device = msg->str;
 	handle = msg->arg2;
 
-	std::map<char*, int>::iterator it = parent->drivers_hash->find(device);
-	driver_index = (*it).second;
-	dprintf("%s: driver_index = %d\n", __func__, driver_index);
-	std::vector<struct driver_desc*>::iterator it2 = parent->drivers->begin();
-	for( int i = 0 ; i < driver_index ; i++ ) it2++;
 	dprintf("%s\n", __func__);
-	driver = (*it2);
 	dprintf("%s: driver = %x\n", __func__, driver);
 	dprintf("%s: handle = %x\n", __func__, handle);
 	dprintf("%s: channels = %x\n", __func__, parent->channels);
@@ -256,9 +237,7 @@ int ServerCommand::BindChannelObject(MessageInfo *msg)
 
 int ServerCommand::RegisterTID(MessageInfo *msg)
 {
-	std::vector<struct driver_desc*>::iterator it;
-	it = parent->drivers->begin();
-	parent->notifers->push_back(new IntNotifer((*it), msg->arg2, msg->from));
+	parent->notifers->push_back(new IntNotifer(driver, msg->arg2, msg->from));
 	MonAPI::Message::reply(msg, 0);
 
 	return 0;

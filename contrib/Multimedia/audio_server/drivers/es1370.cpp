@@ -1,5 +1,6 @@
 #include <monapi/io.h>
 #include <monapi/syscall.h>
+#include <monalibc/string.h>
 #include "../debug.h"
 #include "es1370.h"
 #include "audiodriver.h"

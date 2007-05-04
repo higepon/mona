@@ -11,8 +11,6 @@
 #include <stlport/list>
 #include <monapi/Thread.h>
 
-#define SYNCHRONIZED(x) { mutex->lock(); x; mutex->unlock(); }
-
 class Channel;
 class IntNotifer;
 
@@ -23,19 +21,16 @@ public:
 	Audio();
 	~Audio();
 	bool init(char *devices[], int devnum);
-	bool init_drivers();
+	bool init_driver();
 	int run();
 	uint32_t tid();
 	std::list<IntNotifer*> *notifers;
 private:
 	int counter;
-	std::vector<struct driver_desc*> *drivers;
-	std::map<char*, int> *drivers_hash;
+	struct driver_desc *driver;
 	ServerCommand *commander;
-	HList<void*> *reservoir;
 	Channel **channels;
 	size_t channelLength;
-	MonAPI::Thread *command_thread;
 	uint32_t tids[4];
 	uint32_t tid_;
 
@@ -47,8 +42,6 @@ private:
 	inline int makeID(){ return counter++; }
 protected:
 };
-
-extern MonAPI::Mutex *mutex;
 
 class Channel
 {
@@ -72,6 +65,7 @@ class ServerCommand
 private:
 	Audio *parent;
 public:
+	struct driver_desc *driver;
 	ServerCommand(Audio *_parent);
 	virtual ~ServerCommand();
 	int caller(int, MessageInfo*);

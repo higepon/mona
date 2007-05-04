@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
 
 #if 1
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, GetServerVersion);
-	_printf("Server version: %x:%x\n", msg.arg2, msg.arg3);
+	printf("Server version: %x:%x\n", msg.arg2, msg.arg3);
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, AllocateChannel);
 	ch = msg.arg2;
-	_printf("Channel: %d\n", ch);
+	printf("Channel: %d\n", ch);
 	struct audio_server_channel_info ci;
 	ci.channel = ch;
 	ci.samplerate = 44100;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	ci.channels = 2;
 	memcpy(str, &ci, sizeof(ci));
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel, 0, 0, str);
-	_printf("Result: %d\n", msg.arg2);
+	printf("Result: %d\n", msg.arg2);
 
 	struct audio_server_buffer_info bi;
 	int usingbuf = 1;
@@ -50,35 +50,38 @@ int main(int argc, char *argv[])
 	mi2 = monapi_cmemoryinfo_new();
 	if( !monapi_cmemoryinfo_create(mi, 44100, MONAPI_TRUE) )
 	{
-		_printf("cmi_create\n");
+		printf("cmi_create\n");
 		monapi_cmemoryinfo_delete(mi); return -1;
 	}
 	if( !monapi_cmemoryinfo_create(mi2, 44100, MONAPI_TRUE) )
 	{
-		_printf("cmi_create\n");
+		printf("cmi_create\n");
 		monapi_cmemoryinfo_delete(mi2); return -1;
 	}
 	makeWave(mi, 20);
-	makeWave(mi2, 100);
+	makeWave(mi2, 20);
 	bi.handle = mi->Handle;
 	bi.size = mi->Size;
 	memcpy(str, &bi, sizeof(bi));
-	_printf("Client: Handle: %x\n", bi.handle);
-	_printf("Client: P: %x\n", mi->Data);
+	printf("Client: Handle: %x\n", bi.handle);
+	printf("Client: P: %x\n", mi->Data);
 	printf("I will set a buffer...\n");
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
+//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+
 	while(1)
 	{
 		if( Message::receive(&msg) ) continue;
-		_printf("%x\n", msg.header);
+		printf("%x\n", msg.header);
 		if( msg.header == MSG_AUDIO_SERVER_MESSAGE ) switch( msg.arg1 )
 		{
 			case BufferIsEmpty:
 			{
-				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
+		//		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 				if( usingbuf == 1 )
 				{
 					bi.handle = mi2->Handle;
@@ -93,7 +96,7 @@ int main(int argc, char *argv[])
 				}
 				memcpy(str, &bi, sizeof(bi));
 				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
-				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+		//		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 				break;
 			}
 			default: break;
