@@ -1,10 +1,12 @@
 #include <monapi.h>
 #include <monalibc.h>
+#include <servers/keyboard.h>
 #include <servers/audio.h>
 #include "../debug.h"
 
 using namespace MonAPI;
 void makeWave(monapi_cmemoryinfo *mi, int x);
+void connectToKeyboardServer();
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +15,8 @@ int main(int argc, char *argv[])
 	int32_t ch;
 	char str[128];
 	MessageInfo msg;
+
+	connectToKeyboardServer();
 
 	audioServerID = Message::lookupMainThread("AUDIO.EX5");
 	if( audioServerID == THREAD_UNKNOWN )
@@ -59,35 +63,47 @@ int main(int argc, char *argv[])
 	bi.handle = mi->Handle;
 	bi.size = mi->Size;
 	memcpy(str, &bi, sizeof(bi));
-	_printf("%x\n", bi.handle);
+	_printf("Client: Handle: %x\n", bi.handle);
+	_printf("Client: P: %x\n", mi->Data);
 	printf("I will set a buffer...\n");
-	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
-
-	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
-
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
 	while(1)
 	{
 		if( Message::receive(&msg) ) continue;
 		_printf("%x\n", msg.header);
-	//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
-		if( usingbuf == 1 )
+		if( msg.header == MSG_AUDIO_SERVER_MESSAGE ) switch( msg.arg1 )
 		{
-			bi.handle = mi2->Handle;
-			bi.size = mi2->Size;
-			usingbuf = 2;
+			case BufferIsEmpty:
+			{
+				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
+				if( usingbuf == 1 )
+				{
+					bi.handle = mi2->Handle;
+					bi.size = mi2->Size;
+					usingbuf = 2;
+				}
+				else
+				{
+					bi.handle = mi->Handle;
+					bi.size = mi->Size;
+					usingbuf = 1;
+				}
+				memcpy(str, &bi, sizeof(bi));
+				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+				break;
+			}
+			default: break;
 		}
-		else
+		else if( msg.header == MSG_KEY_VIRTUAL_CODE )
 		{
-			bi.handle = mi->Handle;
-			bi.size = mi->Size;
-			usingbuf = 1;
+			goto END;
 		}
-		memcpy(str, &bi, sizeof(bi));
-		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
-	//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 	}
+END:
 
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 
@@ -113,5 +129,13 @@ void makeWave(monapi_cmemoryinfo *mi, int x)
 		if( i % x < 10 ) ((short*)mi->Data)[i] = 200;
 		else ((short*)mi->Data)[i] = -200;
 	}
+}
+
+void connectToKeyboardServer()
+{
+	MessageInfo msg;
+	uint32_t tid;
+	tid = Message::lookupMainThread("KEYBOARD.EX5");
+	Message::sendReceive(&msg, tid, MSG_KEY_REGIST_TO_SERVER, syscall_get_tid());
 }
 
