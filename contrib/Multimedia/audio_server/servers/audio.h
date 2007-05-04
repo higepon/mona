@@ -26,7 +26,8 @@ enum AudioServerCommand
 	CreateDataStream,
 	CreateChannelObject, // second generation
 	BindChannelObject,
-	RegisterTID,
+	RegisterTID, // first generation
+	CreateStream,
 	NopCommand,
 };
 

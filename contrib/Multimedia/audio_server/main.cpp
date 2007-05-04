@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
 			{
 				for( int j = i+1 ; j < argc ; j++ )
 				{
-					int len;
 					if( *argv[j] == '-' ){ i=j-1; break; }
 					devices = (char**)realloc(devices, sizeof(char*)*(j-i));
 					devices[j-i-1] = argv[j];

@@ -6,10 +6,8 @@
 #include <monapi/io.h>
 #include <monapi/Thread.h>
 #include <stdio.h>
-#include <vector>
 #include <functional>
 #include <algorithm>
-#include <map>
 #include "servers/audio.h"
 #include "Audio.h"
 #include "debug.h"
@@ -25,7 +23,7 @@ Audio::Audio() : channelLength(0)
 	commander = new ServerCommand(this);
 	dmabuf = monapi_allocate_dma_memory(0x10000);
 	tid_ = syscall_get_tid();
-	notifers = new std::list<IntNotifer*>;
+	notifers = new std::list<Notifer*>;
 }
 
 Audio::~Audio()
@@ -48,7 +46,6 @@ bool Audio::init(char *devices[], int devnum)
 int Audio::run()
 {
 	this->init_driver();
-//	command_thread->start();
 	return this->messageLoop();
 }
 
@@ -112,19 +109,16 @@ int Audio::messageLoop()
 		{
 			case MSG_AUDIO_SERVER_COMMAND:
 			{
-//				if( msg.arg1 > GetThreadID ) break;
 				commander->caller(msg.arg1, &msg);
 				break;
 			}
-			#if 1
 			case MSG_INTERRUPTED:
 			{
 				dputs("#Audio: MSG_ITERRUPTED");
 				driver->emit_interrupted();
-				std::for_each(notifers->begin(), notifers->end(), std::mem_fun(&IntNotifer::Interrupted));
+				std::for_each(notifers->begin(), notifers->end(), std::mem_fun(&Notifer::Interrupted));
 				break;
 			}
-			#endif
 			default: break;
 		}
 	}

@@ -50,6 +50,7 @@ int (ServerCommand::*memberTable[])(MessageInfo*) = {
 	&ServerCommand::CreateChannelObject,
 	&ServerCommand::BindChannelObject,
 	&ServerCommand::RegisterTID,
+	&ServerCommand::CreateStream,
 };
 
 ServerCommand::ServerCommand(Audio *_parent) : parent(_parent)
@@ -112,7 +113,6 @@ int ServerCommand::AllocateChannel(MessageInfo *msg)
 
 int ServerCommand::PrepareChannel(MessageInfo *msg)
 {
-	ch_t ch;
 	int ret = 0;
 	struct audio_server_channel_info ci;
 	memcpy(&ci, msg->str, sizeof(ci));
@@ -218,7 +218,6 @@ int ServerCommand::BindChannelObject(MessageInfo *msg)
 {
 	char *device;
 	int handle;
-	int driver_index;
 
 	device = msg->str;
 	handle = msg->arg2;
@@ -240,6 +239,19 @@ int ServerCommand::RegisterTID(MessageInfo *msg)
 	parent->notifers->push_back(new IntNotifer(driver, msg->arg2, msg->from));
 	MonAPI::Message::reply(msg, 0);
 
+	return 0;
+}
+
+int ServerCommand::CreateStream(MessageInfo *msg)
+{
+	MonAPI::Stream *s;
+	uint32_t handle;
+	ch_t c;
+	s = new MonAPI::Stream;
+	c = msg->arg2;
+	handle = s->handle();
+	parent->notifers->push_back(new StreamReader(driver, c, s, (uint8_t*)parent->dmabuf));
+	MonAPI::Message::reply(msg, handle);
 	return 0;
 }
 

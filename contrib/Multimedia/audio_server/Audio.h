@@ -6,12 +6,11 @@
 #include <monapi/Stream.h>
 #include "drivers/audiodriver.h"
 #include "servers/audio.h"
-#include <stlport/vector>
-#include <stlport/map>
 #include <stlport/list>
 #include <monapi/Thread.h>
 
 class Channel;
+class Notifer;
 class IntNotifer;
 
 class Audio
@@ -24,7 +23,7 @@ public:
 	bool init_driver();
 	int run();
 	uint32_t tid();
-	std::list<IntNotifer*> *notifers;
+	std::list<Notifer*> *notifers;
 private:
 	int counter;
 	struct driver_desc *driver;
@@ -82,10 +81,17 @@ public:
 	int CreateChannelObject(MessageInfo*);
 	int BindChannelObject(MessageInfo*);
 	int RegisterTID(MessageInfo*);
+	int CreateStream(MessageInfo*);
 	static void command_thread_main_loop(void* arg);
 };
 
-class IntNotifer
+class Notifer
+{
+public:
+	virtual void Interrupted() = 0;
+};
+
+class IntNotifer : public Notifer
 {
 private:
 	struct driver_desc *driver;
@@ -93,8 +99,21 @@ private:
 	int32_t tid;
 public:
 	IntNotifer(struct driver_desc*, ch_t, int32_t);
-	~IntNotifer();
+	virtual ~IntNotifer();
 
-	void Interrupted();
+	virtual void Interrupted();
+};
+
+class StreamReader : public Notifer
+{
+private:
+	struct driver_desc *driver;
+	ch_t channel;
+	MonAPI::Stream *stream;
+	uint8_t *dmabuf;
+public:
+	StreamReader(struct driver_desc*, ch_t, MonAPI::Stream*, uint8_t*);
+	virtual ~StreamReader();
+	virtual void Interrupted();
 };
 

@@ -118,6 +118,7 @@ extern "C" int32_t aud_es1370_stop_channel(ch_t ch)
 	{
 		dev->stopDAC1();
 	}
+	return 0;
 }
 
 extern "C" int32_t aud_es1370_destroy_channel(ch_t ch)
@@ -132,6 +133,7 @@ extern "C" int32_t aud_es1370_emit_interrupted()
 	dputs("#Audio: aud_es1370_emit_interrupted");
 	monapi_set_irq(dev->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 	dev->set_int_state();
+	return 0;
 }
 
 extern "C" int32_t aud_es1370_get_int_state()

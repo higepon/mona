@@ -66,17 +66,24 @@ int main(int argc, char *argv[])
 	printf("Client: Handle: %x\n", bi.handle);
 	printf("Client: P: %x\n", mi->Data);
 	printf("I will set a buffer...\n");
-	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
-	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, CreateStream, ch);
+	Stream *stream;
+	stream = Stream::FromHandle(msg.arg2);
+	stream->write(mi->Data, mi->Size);
+//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
+//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+	printf("Start\n");
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
 //	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
-	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
+//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
 	while(1)
 	{
+		stream->write(mi->Data, mi->Size);
 		if( Message::receive(&msg) ) continue;
 		printf("%x\n", msg.header);
+		#if 0
 		if( msg.header == MSG_AUDIO_SERVER_MESSAGE ) switch( msg.arg1 )
 		{
 			case BufferIsEmpty:
@@ -101,7 +108,8 @@ int main(int argc, char *argv[])
 			}
 			default: break;
 		}
-		else if( msg.header == MSG_KEY_VIRTUAL_CODE )
+		#endif
+		if( msg.header == MSG_KEY_VIRTUAL_CODE )
 		{
 			goto END;
 		}
