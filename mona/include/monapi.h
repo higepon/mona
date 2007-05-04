@@ -21,7 +21,6 @@
 #include <monapi/syscall.h>
 #include <monapi/Keys.h>
 #include <monapi/Stream.h>
-#include <monapi/TerminalUtil.h>
 #include <monapi/Assert.h>
 
 extern "C" __attribute__((constructor)) void monapi_initialize();

@@ -1,3 +1,17 @@
+2007-05-04  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/terminal/Writer.h: ターミナルに対する出力のインターフェース。
+
+        * core/scheme/mona_shell.cpp: MonAPI::terminal::Utilを使うように変更。
+        
+        * Makefile (depend): make depend 追加。
+
+        * core/monapi/terminal/Util.cpp: TerminalUtil を廃止し、TerminalUtilの Stream への出力部分は Util、コマンドの抽象化は CommandCreator に分担。
+
+        * include/monapi/terminal/CommandCreator.h (class CommandCreator): 端末制御クラスを追加。端末に対する出力を抽象化したインターフェースを提供。
+
+        * core/monapi/terminal/test/CommandCreatorTest.cpp : 端末制御クラスの CommandCreator のテストを追加。
+
 2007-05-02  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/libcont/cont.c (cont_restore): 自分自身のスタックを上書きしているバグを修正。

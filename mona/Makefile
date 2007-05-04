@@ -14,7 +14,7 @@ tools:
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
 	cd tool/bim2bin && $(MAKE) && $(MAKE) install
-	
+
 cores:
 	cd core/firstboot && $(MAKE) && $(MAKE) install
 #ifneq ($(SKIP_DOTNET),1)
@@ -37,6 +37,22 @@ endif
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/test && $(MAKE) && $(MAKE) install
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
+
+depend: clean
+	cd core/kernel && $(MAKE) $@
+	cd core/monapi && $(MAKE) $@
+	cd core/monalibc && $(MAKE) $@
+	cd core/monitor_server && $(MAKE) $@
+	cd core/screen_server && $(MAKE) $@
+	cd core/keyboard_server && $(MAKE) $@
+	cd core/mouse_server && $(MAKE) $@
+	cd core/file_server && $(MAKE) $@
+	cd core/process_server && $(MAKE) $@
+	cd core/shell_server && $(MAKE) $@
+	cd core/elf_server && $(MAKE) $@&
+	cd core/pe_server && $(MAKE) $@
+	cd core/test && $(MAKE) $@
+
 
 .PHONY: clean
 clean:

@@ -31,7 +31,6 @@ SOURCES = monapi_impl.cpp \
           messages.cpp \
           cmemoryinfo.cpp \
           io.cpp \
-          TerminalUtil.cpp \
           Stream.cpp \
           Thread.cpp \
           stub_for_linker.cpp\
@@ -39,6 +38,8 @@ SOURCES = monapi_impl.cpp \
           audio/mml/Config.cpp \
           audio/mml/Element.cpp \
           audio/mml/Parser.cpp \
+          terminal/CommandCreator.cpp \
+          terminal/Util.cpp \
 
 NASMSRCS = _alloca.asm
 

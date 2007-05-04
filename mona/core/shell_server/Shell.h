@@ -6,6 +6,7 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monapi/Array.h>
+#include <monapi/terminal/Util.h>
 
 #define SVR "Shell Server"
 #define FONT_WIDTH   8
@@ -42,7 +43,7 @@ class Shell {
     void executeMSH(const MonAPI::CString& msh);
     bool changeDirecotory(const MonAPI::CString& path);
 
-    int writeToOutBuffer();
+//    int writeToOutBuffer();
     int prompt(bool newline = true);
     int formatWrite(const char* format, ...);
     enum
@@ -68,7 +69,7 @@ class Shell {
     MonAPI::CString currentDirectory_;
     MonAPI::Stream* inStream_;
     MonAPI::Stream* outStream_;
-    MonAPI::TerminalUtil* terminal_;
+    MonAPI::terminal::Util* terminal_;
 };
 
 #endif

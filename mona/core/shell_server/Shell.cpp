@@ -13,7 +13,7 @@ Shell::Shell(uint32_t outHandle) : position_(0), doExec_(false), waiting_(THREAD
 {
     inStream_ = new Stream();
     outStream_ = Stream::FromHandle(outHandle);
-    terminal_ = new TerminalUtil(outStream_);
+    terminal_ = new terminal::Util(outStream_);
     changeDirecotory(APPSDIR);
     startDirectory_ = APPSDIR;
 
@@ -66,7 +66,7 @@ void Shell::run()
                 uint32_t oldHandle = outStream_->handle();
                 // delete outStream_;
                 outStream_ = Stream::FromHandle(msg.arg1);
-                terminal_ = new TerminalUtil(outStream_);
+                terminal_ = new terminal::Util(outStream_);
                 Message::reply(&msg, oldHandle);
                 break;
             }
@@ -82,9 +82,9 @@ void Shell::backspace()
         return;
     }
 
-    terminal_->cursorLeft(1);
+    terminal_->moveCursorLeft(1);
     formatWrite("  ");
-    terminal_->cursorLeft(2);
+    terminal_->moveCursorLeft(2);
     terminal_->drawCursor();
 
     /* backspace */
