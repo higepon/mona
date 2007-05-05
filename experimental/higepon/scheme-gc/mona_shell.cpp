@@ -1,13 +1,14 @@
 #ifdef MONA
 
 #include <monapi.h>
+#include <monapi/terminal/Util.h>
 #include <servers/screen.h>
 #include "mona_shell.h"
 #include "scheme.h"
 
 using namespace MonAPI;
 
-static TerminalUtil* terminal;
+static terminal::Util* terminal_;
 
 class CommandHistory
 {
@@ -82,7 +83,7 @@ int mona_shell_write(const char* format, ...)
     {
         _printf("Shell::out:overflow");
     }
-    return terminal->write(str);
+    return terminal_->write(str);
 }
 
 static CommandHistory histories;
@@ -114,7 +115,7 @@ int mona_shell_init(bool interactive)
         return -1;
     }
     uint32_t screenHandle = msg.arg2;
-    terminal = new TerminalUtil(Stream::FromHandle(screenHandle));
+    terminal_ = new terminal::Util(Stream::FromHandle(screenHandle));
     return 0;
 
 }
@@ -155,28 +156,28 @@ void mona_shell_back_space()
     if (cursorPosition == line.size())
     {
         line.chop();
-        terminal->eraseCursor();
-        terminal->cursorLeft(1);
-        terminal->write(" ");
-        terminal->cursorLeft(1);
-        terminal->drawCursor();
+        terminal_->eraseCursor();
+        terminal_->moveCursorLeft(1);
+        terminal_->write(" ");
+        terminal_->moveCursorLeft(1);
+        terminal_->drawCursor();
         cursorPosition--;
     }
     else
     {
-        terminal->eraseCursor();
+        terminal_->eraseCursor();
         cursorPosition--;
-        terminal->cursorLeft(1);
+        terminal_->moveCursorLeft(1);
         // remove end of line. Don't move cursorPosition!
-        terminal->cursorRight(line.size() - cursorPosition - 1);
-        terminal->write(" ");
-        terminal->cursorLeft(line.size() - cursorPosition);
+        terminal_->moveCursorRight(line.size() - cursorPosition - 1);
+        terminal_->write(" ");
+        terminal_->moveCursorLeft(line.size() - cursorPosition);
         // ^ remove end of line
         line.removeAt(cursorPosition);
-        terminal->cursorLeft(cursorPosition);
-        terminal->write(line.data());
-        terminal->cursorLeft(1);
-        terminal->drawCursor();
+        terminal_->moveCursorLeft(cursorPosition);
+        terminal_->write(line.data());
+        terminal_->moveCursorLeft(1);
+        terminal_->drawCursor();
     }
 }
 
@@ -188,9 +189,9 @@ void mona_shell_cursor_backward(int n /* = 1 */)
         n = cursorPosition;
     }
     cursorPosition -= n;
-    terminal->eraseCursor();
-    terminal->cursorLeft(n);
-    terminal->drawCursor();
+    terminal_->eraseCursor();
+    terminal_->moveCursorLeft(n);
+    terminal_->drawCursor();
 }
 
 void mona_shell_cursor_forward(int n /* = 1 */)
@@ -201,9 +202,9 @@ void mona_shell_cursor_forward(int n /* = 1 */)
         n = line.size() - cursorPosition;
     }
     cursorPosition += n;
-    terminal->eraseCursor();
-    terminal->cursorRight(n);
-    terminal->drawCursor();
+    terminal_->eraseCursor();
+    terminal_->moveCursorRight(n);
+    terminal_->drawCursor();
 }
 
 void mona_shell_del()
@@ -215,18 +216,18 @@ void mona_shell_del()
 
 void mona_shell_cursor_beginning_of_line()
 {
-    terminal->eraseCursor();
-    terminal->cursorLeft(cursorPosition);
+    terminal_->eraseCursor();
+    terminal_->moveCursorLeft(cursorPosition);
     cursorPosition = 0;
-    terminal->drawCursor();
+    terminal_->drawCursor();
 }
 
 void mona_shell_cursor_end_of_line()
 {
-    terminal->eraseCursor();
-    terminal->cursorRight(line.size() - cursorPosition);
+    terminal_->eraseCursor();
+    terminal_->moveCursorRight(line.size() - cursorPosition);
     cursorPosition = line.size();
-    terminal->drawCursor();
+    terminal_->drawCursor();
 }
 
 void mona_shell_kill_line()
@@ -256,9 +257,9 @@ void mona_shell_output_char(char c)
     if (cursorPosition != line.size() - 1)
     {
         mona_shell_write("%s", line.substring(cursorPosition + 1, line.size() - cursorPosition).data());
-        terminal->cursorLeft(line.size() - cursorPosition - 1);
+        terminal_->moveCursorLeft(line.size() - cursorPosition - 1);
     }
-    terminal->drawCursor();
+    terminal_->drawCursor();
     cursorPosition++;
 }
 
