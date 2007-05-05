@@ -13,7 +13,7 @@
 #else
 #include <monapi.h>
 #endif
-
+#include <vector>
 namespace MonAPI {
 namespace terminal {
 
@@ -24,6 +24,21 @@ public:
     virtual ~CommandParser();
 
     int parse(const uint8_t* buffer, uint32_t size);
+    int parseInternal();
+    int parseEscape();
+    int parseEcma48CSI();
+    int parseEcma48CSIArgs(std::vector<uint32_t>& args);
+    int getChar();
+    bool isDigit(char c);
+
+    int unGetChar();
+    void prepareParse(const uint8_t* buffer, uint32_t size);
+
+protected:
+    Writer* writer_;
+    const uint8_t* buffer_;
+    uint32_t size_;
+    uint32_t position_;
 };
 
 }; // namespace terminal

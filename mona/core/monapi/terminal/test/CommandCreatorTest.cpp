@@ -34,7 +34,7 @@ void CommandCreatorTest::testEraseCursor()
 
 void CommandCreatorTest::testClearScreen()
 {
-    const uint8_t COMMAND[]  = {0x1b, 'c'};
+    const uint8_t COMMAND[]  = {0x1b, '[', '2', 'J'};
     const uint32_t COMMAND_SIZE = sizeof(COMMAND);
     Command c = creator_->clearScreen();
     CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
@@ -43,7 +43,7 @@ void CommandCreatorTest::testClearScreen()
 
 void CommandCreatorTest::testMoveCursorUp()
 {
-    uint8_t command[]  = {0x1b, '[', 'O', Command::CURSOR_UP};
+    uint8_t command[] = {0x1b, '[', 'O', Command::CURSOR_UP};
     const uint32_t COMMAND_SIZE = sizeof(command);
 
     {
@@ -60,18 +60,6 @@ void CommandCreatorTest::testMoveCursorUp()
         CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
         command[2] = '0' + offset;
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
-    }
-
-    {
-        uint32_t offset = 12;
-        uint8_t expected[8];
-        Command c = creator_->moveCursorUp(offset);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE * 2, c.getSize());
-        command[2] = '0' + 9;
-        memcpy(expected, command, COMMAND_SIZE);
-        command[2] = '0' + 3;
-        memcpy(&expected[4], command, COMMAND_SIZE);
-        CPPUNIT_ASSERT(memcmp(expected, c.getBuffer(), c.getSize()) == 0);
     }
 }
 
@@ -95,18 +83,6 @@ void CommandCreatorTest::testMoveCursorDown()
         command[2] = '0' + offset;
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
     }
-
-    {
-        uint32_t offset = 12;
-        uint8_t expected[8];
-        Command c = creator_->moveCursorDown(offset);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE * 2, c.getSize());
-        command[2] = '0' + 9;
-        memcpy(expected, command, COMMAND_SIZE);
-        command[2] = '0' + 3;
-        memcpy(&expected[4], command, COMMAND_SIZE);
-        CPPUNIT_ASSERT(memcmp(expected, c.getBuffer(), c.getSize()) == 0);
-    }
 }
 
 void CommandCreatorTest::testMoveCursorRight()
@@ -129,18 +105,6 @@ void CommandCreatorTest::testMoveCursorRight()
         command[2] = '0' + offset;
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
     }
-
-    {
-        uint32_t offset = 12;
-        uint8_t expected[8];
-        Command c = creator_->moveCursorRight(offset);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE * 2, c.getSize());
-        command[2] = '0' + 9;
-        memcpy(expected, command, COMMAND_SIZE);
-        command[2] = '0' + 3;
-        memcpy(&expected[4], command, COMMAND_SIZE);
-        CPPUNIT_ASSERT(memcmp(expected, c.getBuffer(), c.getSize()) == 0);
-    }
 }
 
 void CommandCreatorTest::testMoveCursorLeft()
@@ -159,22 +123,28 @@ void CommandCreatorTest::testMoveCursorLeft()
     {
         uint32_t offset = 5;
         Command c = creator_->moveCursorLeft(offset);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
-        command[2] = '0' + offset;
-        CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
+        uint8_t expectedCommand[] = {0x1b, '[', '5', 'D'};
+        CPPUNIT_ASSERT_EQUAL(sizeof(expectedCommand), c.getSize());
+        CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
     }
 
     {
-        uint32_t offset = 12;
-        uint8_t expected[8];
+        uint32_t offset = 10;
         Command c = creator_->moveCursorLeft(offset);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE * 2, c.getSize());
-        command[2] = '0' + 9;
-        memcpy(expected, command, COMMAND_SIZE);
-        command[2] = '0' + 3;
-        memcpy(&expected[4], command, COMMAND_SIZE);
-        CPPUNIT_ASSERT(memcmp(expected, c.getBuffer(), c.getSize()) == 0);
+        uint8_t expectedCommand[] = {0x1b, '[', '1', '0', 'D'};
+        CPPUNIT_ASSERT_EQUAL(sizeof(expectedCommand), c.getSize());
+        CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
     }
+
+    {
+        uint32_t offset = 128;
+        Command c = creator_->moveCursorLeft(offset);
+        uint8_t expectedCommand[] = {0x1b, '[', '1', '2', '8', 'D'};
+        CPPUNIT_ASSERT_EQUAL(sizeof(expectedCommand), c.getSize());
+        CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
+    }
+
+
 }
 
 
@@ -204,34 +174,20 @@ void CommandCreatorTest::testMoveCursorTo()
         command[3] = direction;
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
     }
-
-    {
-        uint32_t offset = 12;
-        uint8_t expected[8];
-        char direction = Command::CURSOR_LEFT;
-        Command c = creator_->moveCursorTo(offset, direction);
-        CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE * 2, c.getSize());
-        command[2] = '0' + 9;
-        command[3] = direction;
-        memcpy(expected, command, COMMAND_SIZE);
-        command[2] = '0' + 3;
-        memcpy(&expected[4], command, COMMAND_SIZE);
-        CPPUNIT_ASSERT(memcmp(expected, c.getBuffer(), c.getSize()) == 0);
-    }
 }
 
 void CommandCreatorTest::testMoveCursor()
 {
-    uint8_t command[]  = {0x1b, '[', '0', 'X', '0', 'Y', ';', 'H'};
+    static uint8_t command[]  = {0x1b, '[', 'X', ';', 'Y', 'H'};
     const uint32_t COMMAND_SIZE = sizeof(command);
 
     {
-        uint32_t x = 0;
-        uint32_t y = 0;
+        uint32_t x = 1;
+        uint32_t y = 1;
         Command c = creator_->moveCursor(x, y);
         CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
-        command[3] = '0' + x;
-        command[5] = '0' + y;
+        command[2] = '0' + x;
+        command[4] = '0' + y;
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
     }
 
@@ -240,10 +196,20 @@ void CommandCreatorTest::testMoveCursor()
         uint32_t y = 4;
         Command c = creator_->moveCursor(x, y);
         CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
-        command[3] = '0' + x;
-        command[5] = '0' + y;
+        command[2] = '0' + x;
+        command[4] = '0' + y;
 
         CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
     }
+
+    {
+        uint32_t x = 50;
+        uint32_t y = 120;
+        Command c = creator_->moveCursor(x, y);
+        uint8_t expectedCommand[] = {0x1b, '[', '5', '0', ';', '1', '2', '0', 'H'};
+        CPPUNIT_ASSERT_EQUAL(sizeof(expectedCommand), c.getSize());
+        CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
+    }
+
 
 }
