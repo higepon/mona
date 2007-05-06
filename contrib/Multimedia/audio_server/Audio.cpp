@@ -18,17 +18,19 @@ char *knownDevices[] = {"es1370"};
 extern "C" struct driver_desc *aud_es1370_get_desc();
 extern "C" void aud_es1370_release_desc(struct driver_desc*);
 
-Audio::Audio() : channelLength(0)
+Audio::Audio() : channelLength(0), usingbuffer(false)
 {
 	commander = new ServerCommand(this);
-	dmabuf = monapi_allocate_dma_memory(0x10000);
+	dmabuf1 = monapi_allocate_dma_memory(0x10000);
+	dmabuf2 = monapi_allocate_dma_memory(0x10000);
 	tid_ = syscall_get_tid();
 	notifers = new std::list<Notifer*>;
 }
 
 Audio::~Audio()
 {
-	monapi_deallocate_dma_memory(dmabuf, 0x10000);
+	monapi_deallocate_dma_memory(dmabuf2, 0x10000);
+	monapi_deallocate_dma_memory(dmabuf1, 0x10000);
 	delete commander;
 	delete notifers;
 }

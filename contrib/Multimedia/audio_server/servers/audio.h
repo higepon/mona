@@ -43,6 +43,7 @@ enum AudioServerMesssage
 	Non = 0,
 	BufferIsEmpty,
 	MessageContinues,
+	StreamHasRead,
 	NopMessage,
 };
 

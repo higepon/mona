@@ -24,6 +24,9 @@ public:
 	int run();
 	uint32_t tid();
 	std::list<Notifer*> *notifers;
+	inline void* getUsingBuffer(){ return usingbuffer ? dmabuf1 : dmabuf2; }
+	inline void* getOffBuffer(){ return !usingbuffer ? dmabuf1 : dmabuf2; }
+	inline void turnBuffer(){ usingbuffer = !usingbuffer; }
 private:
 	int counter;
 	struct driver_desc *driver;
@@ -36,7 +39,9 @@ private:
 	int messageLoop();
 	bool findDevices(char *devices[], int devnum);
 	struct driver_desc *findDriver(const char* name);
-	void *dmabuf;
+	void *dmabuf1;
+	void *dmabuf2;
+	bool usingbuffer;
 
 	inline int makeID(){ return counter++; }
 protected:
@@ -110,9 +115,10 @@ private:
 	struct driver_desc *driver;
 	ch_t channel;
 	MonAPI::Stream *stream;
-	uint8_t *dmabuf;
+	Audio *parent;
+	bool stopping;
 public:
-	StreamReader(struct driver_desc*, ch_t, MonAPI::Stream*, uint8_t*);
+	StreamReader(struct driver_desc*, ch_t, MonAPI::Stream*, Audio*);
 	virtual ~StreamReader();
 	virtual void Interrupted();
 };

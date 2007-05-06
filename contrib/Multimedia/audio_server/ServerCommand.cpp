@@ -147,8 +147,8 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 	dprintf("Handle = %x\n", mi->Handle);
 	dprintf("P = %x\n", mi->Data);
 
-	memcpy(parent->dmabuf, (void*)mi->Data, bufinfo.size);
-	driver->set_buffer(msg->arg2, parent->dmabuf, bufinfo.size);
+	memcpy(parent->getUsingBuffer(), (void*)mi->Data, bufinfo.size);
+	driver->set_buffer(msg->arg2, parent->getUsingBuffer(), bufinfo.size);
 	monapi_cmemoryinfo_delete(mi);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
@@ -250,7 +250,7 @@ int ServerCommand::CreateStream(MessageInfo *msg)
 	s = new MonAPI::Stream;
 	c = msg->arg2;
 	handle = s->handle();
-	parent->notifers->push_back(new StreamReader(driver, c, s, (uint8_t*)parent->dmabuf));
+	parent->notifers->push_back(new StreamReader(driver, c, s, parent));
 	MonAPI::Message::reply(msg, handle);
 	return 0;
 }

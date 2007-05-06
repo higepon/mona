@@ -80,9 +80,10 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
+//		stream->waitForWrite();
 		stream->write(mi->Data, mi->Size);
-		if( Message::receive(&msg) ) continue;
-		printf("%x\n", msg.header);
+//		if( Message::receive(&msg) ) continue;
+//		printf("%x\n", msg.header);
 		#if 0
 		if( msg.header == MSG_AUDIO_SERVER_MESSAGE ) switch( msg.arg1 )
 		{
