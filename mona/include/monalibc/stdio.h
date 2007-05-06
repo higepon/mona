@@ -101,7 +101,7 @@ enum
 #define EOF	(-1)
 
 #define FOPEN_MAX	20
-#define FILENAME_MAX	256
+#define FILENAME_MAX	127
 
 #define L_tmpnam	FILENAME_MAX
 
