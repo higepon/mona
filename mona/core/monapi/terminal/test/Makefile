@@ -1,11 +1,15 @@
 TARGET   = terminal_test
 SOURCES  = \
 main.cpp \
+../../power.cpp \
+../../get_digits.cpp \
+../../uitoa.cpp \
 TestWriter.cpp \
 CommandCreatorTest.cpp \
 CommandParserTest.cpp \
 ../CommandCreator.cpp \
-../CommandParser.cpp
+../CommandParser.cpp \
+
 MONA_INCLUDE_DIR = ../../../../include/
 CXXFLAGS = -pg -g -idirafter . -idirafter $(MONA_INCLUDE_DIR)/monapi -I $(MONA_INCLUDE_DIR) -Wall -D TERMINAL_TEST
 CFLAGS   = $(CXXFLAGS)

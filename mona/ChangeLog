@@ -1,3 +1,15 @@
+2007-05-06  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/terminal/CommandParser.cpp: コマンドのパーサができた。
+        
+        * core/screen_server/ScreenWriter.h: 追加。screen_server の表示部分を CommandParser を利用したものにする。
+
+        * core/monapi/power.cpp (MonAPI::power): 追加。
+
+        * core/monapi/get_digits.cpp (MonAPI::get_digits): 追加。
+
+        * core/monapi/uitoa.cpp (MonAPI::uitoa): 追加。
+
 2007-05-04  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/terminal/Writer.h: ターミナルに対する出力のインターフェース。

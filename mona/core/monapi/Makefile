@@ -34,11 +34,15 @@ SOURCES = monapi_impl.cpp \
           Stream.cpp \
           Thread.cpp \
           stub_for_linker.cpp\
+          power.cpp\
+          uitoa.cpp\
+          get_digits.cpp\
           audio/Beep.cpp \
           audio/mml/Config.cpp \
           audio/mml/Element.cpp \
           audio/mml/Parser.cpp \
           terminal/CommandCreator.cpp \
+          terminal/CommandParser.cpp \
           terminal/Util.cpp \
 
 NASMSRCS = _alloca.asm

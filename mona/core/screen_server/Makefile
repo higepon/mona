@@ -2,7 +2,7 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET  = SCREEN
-SOURCES = main.cpp
+SOURCES = main.cpp ScreenWriter.cpp
 INSTDIR = $(BINDIR)/SERVERS
 
 ADDLINK    = -lmonalibc
@@ -13,5 +13,7 @@ include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
+
+INCLUDE += -I$(INCDIR)/stlport
 
 -include dependencies

@@ -142,7 +142,8 @@ void CommandCreatorTest::testMoveCursorLeft()
         uint8_t expectedCommand[] = {0x1b, '[', '1', '2', '8', 'D'};
         CPPUNIT_ASSERT_EQUAL(sizeof(expectedCommand), c.getSize());
         CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
-    }
+
+   }
 
 
 }

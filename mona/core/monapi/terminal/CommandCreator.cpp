@@ -1,5 +1,7 @@
-#include "monapi/terminal/CommandCreator.h"
+#include <monapi/terminal/CommandCreator.h>
+#include <monapi/uitoa.h>
 
+using namespace MonAPI;
 using namespace MonAPI::terminal;
 
 CommandCreator::CommandCreator()
@@ -39,7 +41,7 @@ Command CommandCreator::moveCursorTo(uint32_t n, char direction)
     static uint8_t command[32];
     command[0] = 0x1b;
     command[1] = '[';
-    sprintf((char*)(&command[2]), "%d", n);
+    uitoa((char*)(&command[2]), n);
     uint32_t length = strlen((char*)(&command[2]));
     command[length + 2] = direction;
     return Command(command, length + 3);
@@ -52,11 +54,11 @@ Command CommandCreator::moveCursor(uint32_t x, uint32_t y)
     static uint8_t command[32];
     command[0] = 0x1b;
     command[1] = '[';
-    sprintf((char*)(&command[2]), "%d", x);
+    uitoa((char*)(&command[2]), x);
     uint32_t length = strlen((char*)(&command[2])) + 2;
     command[length] = ';';
     length += 1;
-    sprintf((char*)(&command[length]), "%d", y);
+    uitoa((char*)(&command[length]), y);
     length += strlen((char*)(&command[length]));
     command[length] = 'H';
     length += 1;

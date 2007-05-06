@@ -18,7 +18,7 @@ class CommandParserTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testMoveCursorDown);
     CPPUNIT_TEST(testMoveCursorLeft);
     CPPUNIT_TEST(testMoveCursorRight);
-    CPPUNIT_TEST(testMoveCursorTo);
+    CPPUNIT_TEST(testMix);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -27,11 +27,11 @@ public:
     void testEraseCursor();
     void testClearScreen();
     void testMoveCursor();
-    void testMoveCursorTo();
     void testMoveCursorUp();
     void testMoveCursorDown();
     void testMoveCursorRight();
     void testMoveCursorLeft();
+    void testMix();
 
 protected:
     MonAPI::terminal::CommandParser* parser_;

@@ -12,8 +12,10 @@
 #include <string.h>
 #else
 #include <monapi.h>
+#include <monalibc.h>
 #endif
 #include <vector>
+#include <string>
 namespace MonAPI {
 namespace terminal {
 
@@ -26,6 +28,7 @@ public:
     int parse(const uint8_t* buffer, uint32_t size);
     int parseInternal();
     int parseEscape();
+    int parseString();
     int parseEcma48CSI();
     int parseEcma48CSIArgs(std::vector<uint32_t>& args);
     int getChar();

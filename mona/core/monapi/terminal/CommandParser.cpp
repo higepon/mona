@@ -42,22 +42,22 @@ int CommandParser::parse(const uint8_t* buffer, uint32_t size)
 int CommandParser::parseInternal()
 {
     int c = getChar();
-    if (c == EOF) return 0;
+    if (c == -1) return 0;
     if (c == 0x1b)
     {
         return parseEscape();
     }
     else
     {
-        SYNTAX_ERROR();
-        return -1;
+        unGetChar();
+        return parseString();;
     }
 }
 
 int CommandParser::parseEscape()
 {
    int c = getChar();
-   if (c == EOF) return 0;
+   if (c == -1) return 0;
    if (c == '[')
    {
        return parseEcma48CSI();
@@ -69,6 +69,28 @@ int CommandParser::parseEscape()
    }
 }
 
+int CommandParser::parseString()
+{
+    string ret = "";
+    for (;;)
+    {
+        int c = getChar();
+        if (c == 0x1b)
+        {
+            unGetChar();
+            writer_->write((uint8_t*)(ret.c_str()), ret.size());
+            return parseInternal();
+        }
+        else if (c == -1 || c == '\0')
+        {
+            writer_->write((uint8_t*)(ret.c_str()), ret.size());
+            return parseInternal();
+        }
+        ret += c;
+    }
+    return 0;
+}
+
 // after ESC [, ';' separated decimal number comes, and command character comes last
 int CommandParser::parseEcma48CSI()
 {
@@ -76,7 +98,7 @@ int CommandParser::parseEcma48CSI()
     int ret = parseEcma48CSIArgs(args);
     if (ret == -1) return -1;
     int c = getChar();
-    if (c == EOF)
+    if (c == -1)
     {
         SYNTAX_ERROR();
         return -1;
@@ -84,6 +106,7 @@ int CommandParser::parseEcma48CSI()
 
     switch(c)
     {
+    // up
     case 'A':
         if (args.size() != 1)
         {
@@ -92,12 +115,56 @@ int CommandParser::parseEcma48CSI()
         }
         writer_->moveCursorUp(args[0]);
         break;
-
+    // down
+    case 'B':
+        if (args.size() != 1)
+        {
+            SYNTAX_ERROR();
+            return -1;
+        }
+        writer_->moveCursorDown(args[0]);
+        break;
+    // right
+    case 'C':
+        if (args.size() != 1)
+        {
+            SYNTAX_ERROR();
+            return -1;
+        }
+        writer_->moveCursorRight(args[0]);
+        break;
+    // left
+    case 'D':
+        if (args.size() != 1)
+        {
+            SYNTAX_ERROR();
+            return -1;
+        }
+        writer_->moveCursorLeft(args[0]);
+        break;
+    // move to (x, y)
+    case 'H':
+        if (args.size() != 2)
+        {
+            SYNTAX_ERROR();
+            return -1;
+        }
+        writer_->moveCursor(args[0], args[1]);
+        break;
+    // clear all screen
+    case 'J':
+        if (args.size() != 1 || args[0] != 2)
+        {
+            SYNTAX_ERROR();
+            return -1;
+        }
+        writer_->clearScreen();
+        break;
     default:
         SYNTAX_ERROR();
         return -1;
     }
-    return 0;
+    return parseInternal();
 }
 
 // after ESC [, ';' separated decimal number comes, and command character comes last
@@ -107,7 +174,7 @@ int CommandParser::parseEcma48CSIArgs(vector<uint32_t>& args)
     for (;;)
     {
         int c = getChar();
-        if (c == EOF)
+        if (c == -1)
         {
             SYNTAX_ERROR();
             return -1;
@@ -122,7 +189,7 @@ int CommandParser::parseEcma48CSIArgs(vector<uint32_t>& args)
             for (uint32_t i = 0; i < numbers.size(); i++)
             {
                 uint32_t power = 1;
-                for (uint32_t j = 0; j < numbers.size() - 1; j++)
+                for (uint32_t j = i; j < numbers.size() - 1; j++)
                 {
                     power *= 10;
                 }
@@ -133,17 +200,29 @@ int CommandParser::parseEcma48CSIArgs(vector<uint32_t>& args)
         }
         else
         {
+            if (numbers.size() > 0)
+            {
+                uint32_t number = 0;
+                for (uint32_t i = 0; i < numbers.size(); i++)
+                {
+                    uint32_t power = 1;
+                    for (uint32_t j = i; j < numbers.size() - 1; j++)
+                    {
+                        power *= 10;
+                    }
+                    number += numbers[i] * power;
+                }
+                args.push_back(number);
+            }
             unGetChar();
             return 0;
         }
     }
 }
 
-
-
 int CommandParser::getChar()
 {
-    if (position_ >= size_) return EOF;
+    if (position_ >= size_) return -1;
     return buffer_[position_++];
 }
 

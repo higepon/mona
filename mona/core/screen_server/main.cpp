@@ -14,8 +14,11 @@
 #include <monapi.h>
 #include <monalibc.h>
 #include <servers/screen.h>
+#include <monapi/terminal/CommandParser.h>
+#include "ScreenWriter.h"
 
 using namespace MonAPI;
+using namespace MonAPI::terminal;
 
 static Stream in;
 static Screen screen;
@@ -55,8 +58,18 @@ void outCharacter(char c)
     syscall_print(buf);
 }
 
+#if 1
+static CommandParser* parser;
 void output(char* text, uint32_t length)
 {
+    if (length == 0) return;
+    parser->parse((uint8_t*)text, length);
+
+}
+#else
+void output(char* text, uint32_t length)
+{
+    CommandParser parser(NULL);
     const char DRAW_CURSOR_COMMAND[] = {0x1b, '[', '7', 'm', ' ', 0x1b, '[', '2', '7', 'm'};
     const char ERASE_CURSOR_COMMAND[]  = {0x1b, '[', '2', '7', 'm', ' ', 0x1b, '[', '7', 'm'};
     const uint32_t COMMAND_LENGTH = sizeof(ERASE_CURSOR_COMMAND);
@@ -131,7 +144,7 @@ void output(char* text, uint32_t length)
         output(&text[1], length - 1);
     }
 }
-
+#endif
 char* strstr_n(const char* str1, const char* str2, int size)
 {
     if (str1 == NULL || str2 == NULL) return NULL;
@@ -168,12 +181,13 @@ static void outLoop()
 
 int main(int argc, char* argv[])
 {
+    parser = new CommandParser(new ScreenWriter());
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
         exit(-1);
     }
 
-    uint32_t id = syscall_mthread_create((uint32_t)outLoop);
+    syscall_mthread_create((uint32_t)outLoop);
 
     for (MessageInfo msg;;)
     {
