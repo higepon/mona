@@ -67,4 +67,8 @@ int TestWriter::moveCursorRight(uint32_t n)
     return 0;
 }
 
-
+int TestWriter::lineFeed()
+{
+    text_ += '\n';
+    return 0;
+}

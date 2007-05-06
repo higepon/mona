@@ -21,7 +21,7 @@ using namespace MonAPI;
 using namespace MonAPI::terminal;
 
 static Stream in;
-static Screen screen;
+Screen screen;
 
 #define FONT_WIDTH   8
 #define FONT_HEIGHT 16
@@ -64,7 +64,6 @@ void output(char* text, uint32_t length)
 {
     if (length == 0) return;
     parser->parse((uint8_t*)text, length);
-
 }
 #else
 void output(char* text, uint32_t length)

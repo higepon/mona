@@ -47,6 +47,11 @@ int CommandParser::parseInternal()
     {
         return parseEscape();
     }
+    else if (c == '\n')
+    {
+        writer_->lineFeed();
+        return parseInternal();
+    }
     else
     {
         unGetChar();
@@ -75,7 +80,7 @@ int CommandParser::parseString()
     for (;;)
     {
         int c = getChar();
-        if (c == 0x1b)
+        if (c == 0x1b || c == '\n')
         {
             unGetChar();
             writer_->write((uint8_t*)(ret.c_str()), ret.size());

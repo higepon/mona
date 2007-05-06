@@ -3,10 +3,10 @@
 @ECHO To show internal commands, please input "HELP".
 @ECHO Thank you! -- Mona Project Team
 # Scheme Test
-/servers/scheme.ex5 /servers/test/test.scm
+#/servers/scheme.ex5 /servers/test/test.scm
 # Scheme Interactive
 
-#exec /servers/scheme.ex5
+exec /servers/scheme.ex5
 #monafrms
 
 

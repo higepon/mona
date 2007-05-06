@@ -91,7 +91,7 @@ void CommandParserTest::testMoveCursor()
 void CommandParserTest::testMix()
 {
     char buf[64];
-    const char hello[] = "Hello";
+    const char hello[] = "Hello\n";
     memcpy(buf, hello, strlen(hello));
     Command c = creator_->moveCursor(1, 2);
     memcpy(&buf[strlen(hello)], c.getBuffer(), c.getSize());
@@ -100,6 +100,6 @@ void CommandParserTest::testMix()
     parser_->parse((uint8_t*)buf, strlen(hello) + c.getSize() + c2.getSize());
     CPPUNIT_ASSERT_EQUAL(1, (int)writer_->getX());
     CPPUNIT_ASSERT_EQUAL(3, (int)writer_->getY());
-    CPPUNIT_ASSERT(writer_->getText() == "Hello");
+    CPPUNIT_ASSERT(writer_->getText() == "Hello\n");
 
 }

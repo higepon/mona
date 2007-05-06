@@ -225,6 +225,7 @@ bool Shell::commandExecute(_A<CString> args, uint32_t stdin_id, uint32_t stdout_
         }
         if (cmdLine == NULL)
         {
+            _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             formatWrite("Can not find command.\n");
             if (waiting_ == THREAD_UNKNOWN) prompt();
             return false;;

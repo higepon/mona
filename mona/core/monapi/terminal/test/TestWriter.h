@@ -25,6 +25,7 @@ public:
     virtual int moveCursorDown(uint32_t n);
     virtual int moveCursorLeft(uint32_t n);
     virtual int moveCursorRight(uint32_t n);
+    virtual int lineFeed();
     virtual int write(uint8_t* buf, uint32_t length);
     virtual uint32_t getX() const { return x_; }
     virtual uint32_t getY() const { return y_; }
