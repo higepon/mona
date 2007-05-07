@@ -52,6 +52,11 @@ int CommandParser::parseInternal()
         writer_->lineFeed();
         return parseInternal();
     }
+    else if (c == 0x08) // ^H=BS
+    {
+        writer_->backSpace();
+        return parseInternal();
+    }
     else
     {
         unGetChar();

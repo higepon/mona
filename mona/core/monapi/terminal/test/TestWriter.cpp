@@ -72,3 +72,8 @@ int TestWriter::lineFeed()
     text_ += '\n';
     return 0;
 }
+
+int TestWriter::backSpace()
+{
+    return 0;
+}

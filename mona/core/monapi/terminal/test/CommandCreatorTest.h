@@ -17,6 +17,7 @@ class CommandCreatorTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testMoveCursorLeft);
     CPPUNIT_TEST(testMoveCursorRight);
     CPPUNIT_TEST(testMoveCursorTo);
+    CPPUNIT_TEST(testBackSpace);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -30,6 +31,7 @@ public:
     void testMoveCursorDown();
     void testMoveCursorRight();
     void testMoveCursorLeft();
+    void testBackSpace();
 
 protected:
    MonAPI::terminal::CommandCreator* creator_;

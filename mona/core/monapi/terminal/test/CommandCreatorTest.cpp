@@ -144,12 +144,16 @@ void CommandCreatorTest::testMoveCursorLeft()
         CPPUNIT_ASSERT(memcmp(expectedCommand, c.getBuffer(), c.getSize()) == 0);
 
    }
-
-
 }
 
-
-
+void CommandCreatorTest::testBackSpace()
+{
+    uint8_t command[]  = {0x08};
+    const uint32_t COMMAND_SIZE = sizeof(command);
+    Command c = creator_->backSpace();
+    CPPUNIT_ASSERT_EQUAL(COMMAND_SIZE, c.getSize());
+    CPPUNIT_ASSERT(memcmp(command, c.getBuffer(), c.getSize()) == 0);
+}
 
 void CommandCreatorTest::testMoveCursorTo()
 {

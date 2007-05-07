@@ -70,7 +70,10 @@ int ScreenWriter::moveCursorLeft(uint32_t n)
     int x, y;
     cursor(true);
     syscall_get_cursor(&x, &y);
+    _logprintf("%s:%d(%d, %d)\n", __FILE__, __LINE__, x, y);
     syscall_set_cursor(x - n, y);
+    syscall_get_cursor(&x, &y);
+    _logprintf("%s:%d(%d, %d)\n", __FILE__, __LINE__, x, y);
     cursor(false);
     return 0;
 }
@@ -96,6 +99,15 @@ int ScreenWriter::lineFeed()
 {
    cursor(true);
    syscall_print("\n");
+   cursor(false);
+   return 0;
+}
+
+int ScreenWriter::backSpace()
+{
+    _logprintf("%s:%d\n", __FILE__, __LINE__);
+   cursor(true);
+   moveCursorLeft(1);
    cursor(false);
    return 0;
 }

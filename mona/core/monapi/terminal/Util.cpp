@@ -24,6 +24,11 @@ int Util::write(const char* text)
     return writeToOutBuffer(Command((const uint8_t*)text, strlen(text)));
 }
 
+int Util::backSpace()
+{
+    return writeToOutBuffer(creator_.backSpace());
+}
+
 int Util::drawCursor()
 {
     return writeToOutBuffer(creator_.drawCursor());

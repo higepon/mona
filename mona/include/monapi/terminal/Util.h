@@ -18,6 +18,7 @@ public:
     int drawCursor();
     int eraseCursor();
     int clearScreen();
+    int backSpace();
     int moveCursor(uint32_t x, uint32_t y);
     int moveCursorUp(uint32_t n);
     int moveCursorDown(uint32_t n);

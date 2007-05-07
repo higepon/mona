@@ -33,6 +33,13 @@ Command CommandCreator::clearScreen()
     return Command(COMMAND, COMMAND_SIZE);
 }
 
+Command CommandCreator::backSpace()
+{
+    static const uint8_t COMMAND[] = {0x08};
+    const uint32_t COMMAND_SIZE = sizeof(COMMAND);
+    return Command(COMMAND, COMMAND_SIZE);
+}
+
 // ESC [ Ps Direction
 Command CommandCreator::moveCursorTo(uint32_t n, char direction)
 {

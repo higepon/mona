@@ -53,6 +53,7 @@ public:
     Command moveCursorLeft(uint32_t n);
     Command moveCursorRight(uint32_t n);
     Command moveCursorTo(uint32_t n, char direction);
+    Command backSpace();
 
 protected:
     enum
