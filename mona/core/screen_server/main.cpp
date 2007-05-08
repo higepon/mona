@@ -167,6 +167,9 @@ static void outLoop()
         in.waitForRead();
         uint32_t size = in.read((uint8_t*)buffer, BUFFER_SIZE);
         buffer[size == BUFFER_SIZE ? BUFFER_SIZE - 1 : size] = '\0';
+        for (int i = 0; i < size; i++) {
+            _logprintf("<%c>", buffer[i]);
+        }
 
         // don't display ^EOP
         char* found = strstr_n(buffer, "^EOP", size);

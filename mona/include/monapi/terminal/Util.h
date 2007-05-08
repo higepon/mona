@@ -15,6 +15,7 @@ public:
     virtual ~Util();
 
     int writeToOutBuffer(Command c);
+    int flush();
     int drawCursor();
     int eraseCursor();
     int clearScreen();
@@ -28,7 +29,13 @@ public:
     int write(const char* text);
 
 protected:
+    enum
+    {
+        BUFFER_SIZE = 512 // should be less than Stream size
+    };
     Stream* out_;
+    uint32_t writtenSize_;
+    uint8_t buffer_[BUFFER_SIZE];
     CommandCreator creator_;
 };
 

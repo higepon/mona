@@ -35,6 +35,7 @@ Command CommandCreator::clearScreen()
 
 Command CommandCreator::backSpace()
 {
+    _logprintf("%s:%d\n", __FILE__, __LINE__);
     static const uint8_t COMMAND[] = {0x08};
     const uint32_t COMMAND_SIZE = sizeof(COMMAND);
     return Command(COMMAND, COMMAND_SIZE);

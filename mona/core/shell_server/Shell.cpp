@@ -86,7 +86,7 @@ void Shell::backspace()
     formatWrite("  ");
     terminal_->moveCursorLeft(2);
     terminal_->drawCursor();
-
+    terminal_->flush();
     /* backspace */
     position_--;
 }
@@ -97,6 +97,7 @@ void Shell::commandChar(char c)
     {
         formatWrite("%c", c);
         terminal_->drawCursor();
+        terminal_->flush();
     }
 
     // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
@@ -132,6 +133,7 @@ void Shell::commandExecutePipe()
         if (isInternalCommand(parsedCommands[i][0]))
         {
             formatWrite("internal command can not use pipe yet\n");
+            terminal_->flush();
             prompt(false);
             return;
         }
@@ -182,7 +184,7 @@ void Shell::commandExecute(bool isPrompt)
         }
         return;
     }
-
+    terminal_->flush();
     this->commandExecute(args, inStream_->handle(), outStream_->handle());
 }
 
@@ -227,6 +229,7 @@ bool Shell::commandExecute(_A<CString> args, uint32_t stdin_id, uint32_t stdout_
         {
             _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             formatWrite("Can not find command.\n");
+            terminal_->flush();
             if (waiting_ == THREAD_UNKNOWN) prompt();
             return false;;
         }
@@ -476,6 +479,7 @@ void Shell::printFiles(const CString& dir)
     if (mi == NULL || (size = *(int*)mi->Data) == 0)
     {
         formatWrite("%s: directory not found: %s\n", SVR, (const char*)dir);
+        terminal_->flush();
         return;
     }
 
@@ -503,7 +507,7 @@ void Shell::printFiles(const CString& dir)
         w += fw;
     }
     formatWrite("\n");
-
+    terminal_->flush();
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 }
@@ -543,6 +547,7 @@ void Shell::executeMSH(const CString& msh)
                 {
                     prompt();
                     formatWrite("%s", commandLine_);
+                    terminal_->flush();
                 }
 
                 this->commandExecute(isPrompt);
@@ -564,7 +569,8 @@ bool Shell::changeDirecotory(const MonAPI::CString& path)
 
 int Shell::prompt(bool newline /* = true */)
 {
-    return formatWrite("%s[Mona]%s> ", newline ? "\n" : "", (const char*)currentDirectory_);
+    formatWrite("%s[Mona]%s> ", newline ? "\n" : "", (const char*)currentDirectory_);
+    return terminal_->flush();
 }
 
 int Shell::formatWrite(const char* format, ...)

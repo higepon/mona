@@ -217,6 +217,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             terminal_->clearScreen();
             terminal_->moveCursor(0, 0);
+            terminal_->flush();
         }
         return false;
 

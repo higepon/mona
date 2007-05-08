@@ -33,6 +33,7 @@ public:
     int parseEcma48CSIArgs(std::vector<uint32_t>& args);
     int getChar();
     bool isDigit(char c);
+    bool isSpecial(char c);
 
     int unGetChar();
     void prepareParse(const uint8_t* buffer, uint32_t size);

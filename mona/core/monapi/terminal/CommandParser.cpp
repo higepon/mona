@@ -54,13 +54,14 @@ int CommandParser::parseInternal()
     }
     else if (c == 0x08) // ^H=BS
     {
+        _logprintf("%s:%d\n", __FILE__, __LINE__);
         writer_->backSpace();
         return parseInternal();
     }
     else
     {
         unGetChar();
-        return parseString();;
+        return parseString();
     }
 }
 
@@ -85,7 +86,7 @@ int CommandParser::parseString()
     for (;;)
     {
         int c = getChar();
-        if (c == 0x1b || c == '\n')
+        if (isSpecial(c))
         {
             unGetChar();
             writer_->write((uint8_t*)(ret.c_str()), ret.size());
@@ -245,4 +246,9 @@ int CommandParser::unGetChar()
 bool CommandParser::isDigit(char c)
 {
     return '0' <= c && c <= '9';
+}
+
+bool CommandParser::isSpecial(char c)
+{
+    return c == '\n' || c == 0x08 || c == 0x1b;
 }

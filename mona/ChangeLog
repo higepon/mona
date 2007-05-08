@@ -1,3 +1,9 @@
+2007-05-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core/screen_server/ScreenWriter.cpp: backSpace など各種カーソル移動に対応。
+
+        * core/scheme/mona_shell.cpp: mona_shell が CommandCreator でカーソル制御をするようになった。
+
 2007-05-06  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/terminal/CommandParser.cpp: コマンドのパーサができた。
