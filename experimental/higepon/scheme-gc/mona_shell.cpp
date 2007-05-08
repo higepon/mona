@@ -83,7 +83,8 @@ int mona_shell_write(const char* format, ...)
     {
         _printf("Shell::out:overflow");
     }
-    return terminal_->write(str);
+    terminal_->write(str);
+    return terminal_->flush();
 }
 
 static CommandHistory histories;
@@ -153,32 +154,32 @@ void mona_shell_reedit()
 void mona_shell_back_space()
 {
     if (cursorPosition == 0) return;
-    if (cursorPosition == line.size())
-    {
-        line.chop();
-        terminal_->eraseCursor();
-        terminal_->moveCursorLeft(1);
-        terminal_->write(" ");
-        terminal_->moveCursorLeft(1);
-        terminal_->drawCursor();
+//     if (cursorPosition == line.size())
+//     {
+//         line.chop();
+//         terminal_->backSpace();
+//         terminal_->write(" ");
+//         terminal_->backSpace();
+//         terminal_->flush();
+//         cursorPosition--;
+//     }
+//     else
+//     {
+        for (uint32_t i = 0; i < cursorPosition; i++)
+        {
+            terminal_->backSpace();
+        }
         cursorPosition--;
-    }
-    else
-    {
-        terminal_->eraseCursor();
-        cursorPosition--;
-        terminal_->moveCursorLeft(1);
-        // remove end of line. Don't move cursorPosition!
-        terminal_->moveCursorRight(line.size() - cursorPosition - 1);
-        terminal_->write(" ");
-        terminal_->moveCursorLeft(line.size() - cursorPosition);
-        // ^ remove end of line
         line.removeAt(cursorPosition);
-        terminal_->moveCursorLeft(cursorPosition);
+
         terminal_->write(line.data());
-        terminal_->moveCursorLeft(1);
-        terminal_->drawCursor();
-    }
+        terminal_->write(" ");
+        for (uint32_t i = 0; i < line.size() - cursorPosition + 1; i++)
+        {
+            terminal_->backSpace();
+        }
+        terminal_->flush();
+//    }
 }
 
 void mona_shell_cursor_backward(int n /* = 1 */)
@@ -189,9 +190,8 @@ void mona_shell_cursor_backward(int n /* = 1 */)
         n = cursorPosition;
     }
     cursorPosition -= n;
-    terminal_->eraseCursor();
     terminal_->moveCursorLeft(n);
-    terminal_->drawCursor();
+    terminal_->flush();
 }
 
 void mona_shell_cursor_forward(int n /* = 1 */)
@@ -202,42 +202,78 @@ void mona_shell_cursor_forward(int n /* = 1 */)
         n = line.size() - cursorPosition;
     }
     cursorPosition += n;
-    terminal_->eraseCursor();
     terminal_->moveCursorRight(n);
-    terminal_->drawCursor();
+    terminal_->flush();
 }
 
 void mona_shell_del()
 {
     if (line.size() == cursorPosition) return;
-    mona_shell_cursor_forward();
-    mona_shell_back_space();
+    for (uint32_t i = 0; i < cursorPosition; i++)
+    {
+        terminal_->backSpace();
+    }
+    line.removeAt(cursorPosition);
+
+    terminal_->write(line.data());
+    terminal_->write(" ");
+    for (uint32_t i = 0; i < line.size() - cursorPosition + 1; i++)
+    {
+        terminal_->backSpace();
+    }
+    terminal_->flush();
+
+//     mona_shell_cursor_forward();
+//     mona_shell_back_space();
+//     terminal_->flush();
 }
 
 void mona_shell_cursor_beginning_of_line()
 {
-    terminal_->eraseCursor();
-    terminal_->moveCursorLeft(cursorPosition);
+//    terminal_->eraseCursor();
+    for (uint32_t i = 0; i < cursorPosition; i++)
+    {
+        terminal_->backSpace();
+    }
     cursorPosition = 0;
-    terminal_->drawCursor();
+    terminal_->flush();
+//    terminal_->drawCursor();
 }
 
 void mona_shell_cursor_end_of_line()
 {
-    terminal_->eraseCursor();
-    terminal_->moveCursorRight(line.size() - cursorPosition);
+    terminal_->write(line.substring(cursorPosition, line.size() - cursorPosition).data());
     cursorPosition = line.size();
-    terminal_->drawCursor();
+    terminal_->flush();
+
+//     terminal_->eraseCursor();
+//     terminal_->moveCursorRight(line.size() - cursorPosition);
+//     cursorPosition = line.size();
+//     terminal_->drawCursor();
+//     terminal_->flush();
 }
 
 void mona_shell_kill_line()
 {
+//     uint32_t times = line.size() - cursorPosition;
+//     mona_shell_cursor_end_of_line();
+//     for (uint32_t i = 0; i < times; i++)
+//     {
+//         mona_shell_back_space();
+//     }
     uint32_t times = line.size() - cursorPosition;
-    mona_shell_cursor_end_of_line();
+    line = line.substring(0, cursorPosition);
+    cursorPosition = line.size();
     for (uint32_t i = 0; i < times; i++)
     {
-        mona_shell_back_space();
+        terminal_->write(" ");
     }
+    for (uint32_t i = 0; i < times; i++)
+    {
+        terminal_->backSpace();
+    }
+    terminal_->flush();
+
 }
 
 void mona_shell_output_line(::util::String l)
@@ -260,6 +296,7 @@ void mona_shell_output_char(char c)
         terminal_->moveCursorLeft(line.size() - cursorPosition - 1);
     }
     terminal_->drawCursor();
+    terminal_->flush();
     cursorPosition++;
 }
 
