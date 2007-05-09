@@ -1,3 +1,7 @@
+2007-05-09  higepon  <higepon@users.sourceforge.jp>
+
+        * Shells/mshell/Form1.cpp (terminal::Writer): use CommandParser/Writer.
+
 2007-01-16  higepon  <higepon@users.sourceforge.jp>
 
         * Makefile: contrib-stdio ‚ð merge<<3948>>

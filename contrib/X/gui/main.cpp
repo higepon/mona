@@ -362,30 +362,35 @@ static void MessageLoop()
 */
 int main(int argc, char* argv[])
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 引数チェック
     if (argc != 2)
     {
         printf("%s: usage GUI.EX5 [.INI FILE]");
         exit(1);
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 2重起動チェック
     CheckGUIServer();
     if (!InitScreen()) exit(1);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo msg_cp;
     if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
     {
         printf("%s: can not get common parameters!\n", GUI_SERVER_NAME);
         exit(1);
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 
     if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // フォントのロード
     ReadFont("/APPS/MONA12.MF5");
     if (default_font == NULL) exit(1);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     // 設定ファイルのロード
     ReadConfig(argc, argv);
@@ -395,21 +400,24 @@ int main(int argc, char* argv[])
             monapi_call_process_execute_file(startup->get(i), MONAPI_FALSE);
         }
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     // MONITORサーバへの正常起動通知
     Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
 
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // メッセージループ
     MessageLoop();
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 共有メモリにロードしているフォントの�放
     monapi_cmemoryinfo_dispose(default_font);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_delete(default_font);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 壁紙の開放
     if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
     DisposeScreen();
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
     monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
     MemoryMap::unmap(msg_cp.arg2);
