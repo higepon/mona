@@ -23,7 +23,7 @@ install: all
 	$(INSTALL) $(TARGET).BIN $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).BIN $(CLEANFILES) $(TARGET).map
+	rm -f $(OBJECTS) $(TARGET).BIN $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
 ifneq ($(SOURCES),)
