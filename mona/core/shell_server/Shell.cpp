@@ -19,7 +19,6 @@ Shell::Shell(uint32_t outHandle) : position_(0), doExec_(false), waiting_(THREAD
 
     executeMSH("/AUTOEXEC.MSH");
     prompt();
-    terminal_->drawCursor();
 }
 
 Shell::~Shell()
@@ -53,7 +52,6 @@ void Shell::run()
                     prompt();
                     waiting_ = THREAD_UNKNOWN;
                     doExec_ = false;
-                    terminal_->drawCursor();
                 }
                 break;
             case MSG_GET_OUT_STREAM_HANDLE:
@@ -85,7 +83,6 @@ void Shell::backspace()
     terminal_->moveCursorLeft(1);
     formatWrite("  ");
     terminal_->moveCursorLeft(2);
-    terminal_->drawCursor();
     terminal_->flush();
     /* backspace */
     position_--;
@@ -96,7 +93,6 @@ void Shell::commandChar(char c)
     if (c != '\0')
     {
         formatWrite("%c", c);
-        terminal_->drawCursor();
         terminal_->flush();
     }
 
@@ -360,11 +356,9 @@ void Shell::onKeyDown(int keycode, int modifiers)
         this->commandChar(Keys::ToChar(key));
         break;
     case(Keys::Enter):
-        terminal_->eraseCursor();
         commandTerminate();
         commandTerminate();
         commandExecute(true);
-        if (waiting_ == THREAD_UNKNOWN) terminal_->drawCursor();
         break;
 
     case(Keys::Up):

@@ -12,20 +12,6 @@ CommandCreator::~CommandCreator()
 {
 }
 
-Command CommandCreator::drawCursor()
-{
-    static const uint8_t COMMAND[] = {0x1b, '[', '7', 'm', ' ', 0x1b, '[', '2', '7', 'm'};
-    const uint32_t COMMAND_SIZE = sizeof(COMMAND);
-    return Command(COMMAND, COMMAND_SIZE);
-}
-
-Command CommandCreator::eraseCursor()
-{
-    static const uint8_t COMMAND[] = {0x1b, '[', '2', '7', 'm', ' ', 0x1b, '[', '7', 'm'};
-    const uint32_t COMMAND_SIZE = sizeof(COMMAND);
-    return Command(COMMAND, COMMAND_SIZE);
-}
-
 Command CommandCreator::clearScreen()
 {
     static const uint8_t COMMAND[] = {0x1b, '[', '2', 'J'};

@@ -44,6 +44,7 @@ SOURCES = monapi_impl.cpp \
           terminal/CommandCreator.cpp \
           terminal/CommandParser.cpp \
           terminal/Util.cpp \
+          text/Line.cpp 
 
 NASMSRCS = _alloca.asm
 

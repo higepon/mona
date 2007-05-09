@@ -29,15 +29,6 @@ ScreenWriter::~ScreenWriter()
 
 }
 
-int ScreenWriter::drawCursor()
-{
-}
-
-int ScreenWriter::eraseCursor()
-{
-
-}
-
 int ScreenWriter::clearScreen()
 {
 }
@@ -70,17 +61,14 @@ int ScreenWriter::moveCursorLeft(uint32_t n)
     int x, y;
     cursor(true);
     syscall_get_cursor(&x, &y);
-    _logprintf("n=%d, %s:%d(%d, %d)\n", n, __FILE__, __LINE__, x, y);
     syscall_set_cursor(x - n, y);
     syscall_get_cursor(&x, &y);
-    _logprintf("%s:%d(%d, %d)\n", __FILE__, __LINE__, x, y);
     cursor(false);
     return 0;
 }
 
 int ScreenWriter::moveCursorRight(uint32_t n)
 {
-    _logprintf("%s:%d\n", __FILE__, __LINE__);
     int x, y;
     cursor(true);
     syscall_get_cursor(&x, &y);
@@ -91,12 +79,6 @@ int ScreenWriter::moveCursorRight(uint32_t n)
 
 int ScreenWriter::write(uint8_t* buf, uint32_t length)
 {
-    _logprintf("%s:%d\n", __FILE__, __LINE__);
-    for (int i = 0; i < length; i++)
-    {
-        _logprintf("!%c!", buf[i]);
-
-    }
     syscall_print((char*)buf);
     cursor(false);
     return 0;
@@ -104,7 +86,6 @@ int ScreenWriter::write(uint8_t* buf, uint32_t length)
 
 int ScreenWriter::lineFeed()
 {
-    _logprintf("%s:%d\n", __FILE__, __LINE__);
    cursor(true);
    syscall_print("\n");
    cursor(false);
@@ -113,7 +94,6 @@ int ScreenWriter::lineFeed()
 
 int ScreenWriter::backSpace()
 {
-    _logprintf("%s:%d\n", __FILE__, __LINE__);
    cursor(true);
    moveCursorLeft(1);
    cursor(false);

@@ -22,8 +22,6 @@ int Util::writeToOutBuffer(Command c)
     memcpy(&buffer_[writtenSize_], c.getBuffer(), c.getSize());
     writtenSize_ += c.getSize();
     return 0;
-//     uint32_t wroteSize = out_->write((uint8_t*)c.getBuffer(), c.getSize());
-//     return c.getSize() == wroteSize ? MONA_SUCCESS : MONA_FAILURE;
 }
 
 int Util::write(const char* text)
@@ -34,16 +32,6 @@ int Util::write(const char* text)
 int Util::backSpace()
 {
     return writeToOutBuffer(creator_.backSpace());
-}
-
-int Util::drawCursor()
-{
-    return writeToOutBuffer(creator_.drawCursor());
-}
-
-int Util::eraseCursor()
-{
-    return writeToOutBuffer(creator_.eraseCursor());
 }
 
 int Util::clearScreen()

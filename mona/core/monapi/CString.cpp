@@ -1,6 +1,12 @@
 #include <monapi/string.h>
 #include <monapi/CString.h>
+#ifdef MONA
 #include <monapi/syscall.h>
+#else
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#endif
 
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 

@@ -47,7 +47,7 @@ int CommandParser::parseInternal()
     {
         return parseEscape();
     }
-    else if (c == '\n')
+    else if (c == 0x0A || c == 0x0B || c == 0x0C)
     {
         writer_->lineFeed();
         return parseInternal();
@@ -250,5 +250,5 @@ bool CommandParser::isDigit(char c)
 
 bool CommandParser::isSpecial(char c)
 {
-    return c == '\n' || c == 0x08 || c == 0x1b;
+    return c == 0x0A || c == 0x0B || c == 0x0C || c == 0x08 || c == 0x1b;
 }

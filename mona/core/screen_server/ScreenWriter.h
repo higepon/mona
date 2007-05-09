@@ -15,8 +15,6 @@ public:
     ScreenWriter();
     virtual ~ScreenWriter();
 
-    virtual int drawCursor();
-    virtual int eraseCursor();
     virtual int clearScreen();
     virtual int moveCursor(uint32_t x, uint32_t y);
     virtual int moveCursorUp(uint32_t n);
