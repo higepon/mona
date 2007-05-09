@@ -1,3 +1,13 @@
+2007-05-09  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/mkimg/MONITOR.CFG : Now We don't use SHELL.EX5, but SCHEME.EX5 instead.
+
+        * core/monitor_server/main.cpp : When SCHEME.EX5 is executed, set out stream.
+
+        * core/monapi/text/test/LineTest.cpp : test for Line Buffer Class.
+
+        * include/monapi/text/Line.h (MonAPI): add Line Buffer Class.
+
 2007-05-08  higepon  <higepon@users.sourceforge.jp>
 
         * core/screen_server/ScreenWriter.cpp: backSpace など各種カーソル移動に対応。

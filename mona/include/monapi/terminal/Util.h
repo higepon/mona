@@ -16,8 +16,6 @@ public:
 
     int writeToOutBuffer(Command c);
     int flush();
-    int drawCursor();
-    int eraseCursor();
     int clearScreen();
     int backSpace();
     int moveCursor(uint32_t x, uint32_t y);

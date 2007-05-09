@@ -44,8 +44,6 @@ public:
     CommandCreator();
     virtual ~CommandCreator();
 
-    Command drawCursor();
-    Command eraseCursor();
     Command clearScreen();
     Command moveCursor(uint32_t x, uint32_t y);
     Command moveCursorUp(uint32_t n);

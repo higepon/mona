@@ -13,6 +13,7 @@
 
 #include <monapi.h>
 #include <monapi/CString.h>
+#include <servers/screen.h>
 #include <monapi/messages.h>
 
 using namespace MonAPI;
@@ -139,8 +140,24 @@ void Monitor::CheckServers()
         syscall_print("loading ");
         syscall_print((const char*)paths.get(i));
         syscall_print("....");
-        syscall_print(monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK\n" : "NG\n");
+
+        // We need OutStream
         MessageInfo msg;
+        if (servers[i] == "SCHEME.EX5")
+        {
+            uint32_t tid;
+            uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
+            if (targetID == THREAD_UNKNOWN || Message::sendReceive(&msg, targetID, MSG_SCREEN_GET_STREAM_HANDLE)) {
+                syscall_print("SCREEN.EX5 not found\n");
+                continue;
+            }
+            syscall_print(monapi_call_process_execute_file_get_tid((const char*)paths.get(i), MONAPI_FALSE, &tid, msg.arg2, msg.arg2) == 0? "OK\n" : "NG\n");
+        }
+        else
+        {
+            syscall_print(monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK\n" : "NG\n");
+        }
+
         for (;;)
         {
             if (Message::receive(&msg)) continue;

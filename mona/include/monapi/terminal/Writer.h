@@ -14,8 +14,6 @@ public:
     Writer() {}
     virtual ~Writer() {}
 
-    virtual int drawCursor()                             = 0;
-    virtual int eraseCursor()                            = 0;
     virtual int clearScreen()                            = 0;
     virtual int moveCursor(uint32_t x, uint32_t y)       = 0;
     virtual int moveCursorUp(uint32_t n)                 = 0;
