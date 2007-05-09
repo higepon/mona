@@ -110,6 +110,7 @@ String scheme_prompt(Environment* env)
         SString* s = (SString*)o;
         return s->value();
     }
+
     else
     {
         RAISE_ERROR(o->lineno(), "(mona-prompt-string) not defined");
