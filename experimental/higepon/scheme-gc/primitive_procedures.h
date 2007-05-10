@@ -1430,6 +1430,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class StartProcess : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    StartProcess()  : procedureName_("start-process") {}
+    virtual ~StartProcess() {}
+
+    virtual ::util::String toString() {    return "procedure:""start-process";}
+    virtual ::util::String typeString() const { return "start-process"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class CallProcessOutString : public PrimitiveProcedure
 {
 private:

@@ -82,6 +82,7 @@ env->defineVariable(new Variable("null-environment"), new NullEnvironment());
 env->defineVariable(new Variable("scheme-report-environment"), new SchemeReportEnvironment());
 env->defineVariable(new Variable("interaction-environment"), new InteractionEnvironment());
 env->defineVariable(new Variable("call-process"), new CallProcess());
+env->defineVariable(new Variable("start-process"), new StartProcess());
 env->defineVariable(new Variable("call-process-out-string"), new CallProcessOutString());
 env->defineVariable(new Variable("mona-halt"), new MonaHalt());
 env->defineVariable(new Variable("mona-reboot"), new MonaReboot());
