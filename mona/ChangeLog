@@ -1,3 +1,7 @@
+2007-05-10  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/shell.scm.in (gui): (gui) ‚Å MonaForms ‚ð‹N“®‚·‚é‚æ‚¤‚É‚·‚é
+
 2007-05-09  higepon  <higepon@users.sourceforge.jp>
 
         * tool/mkimg/MONITOR.CFG : Now We don't use SHELL.EX5, but SCHEME.EX5 instead.
