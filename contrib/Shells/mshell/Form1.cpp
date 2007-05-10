@@ -123,6 +123,8 @@ public:
         line_.write(text);
         Size r = this->get_ClientSize();
         g->FillRectangle(this->get_BackColor(), 0, y_, r.Width, FONT_HEIGHT);
+        CString line = line_.get();
+        g->DrawString((const char*)(line.Substring(0,  ), Control::get_DefaultFont(), Color::get_Black(), 0, y_);
         g->DrawString((const char*)(line_.get()), Control::get_DefaultFont(), Color::get_Black(), 0, y_);
         g->Dispose();
         Refresh();
@@ -152,7 +154,8 @@ static void StdoutMessageLoop()
 {
     MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
     MessageInfo msg;
-    uint32_t targetID = MonAPI::Message::lookupMainThread("SHELL.EX5");
+//    uint32_t targetID = MonAPI::Message::lookupMainThread("SHELL.EX5");
+    uint32_t targetID = MonAPI::Message::lookupMainThread("SCHEME.EX5");
     MonAPI::Stream stream;
     MonAPI::Message::sendReceive(&msg, targetID, MSG_CHANGE_OUT_STREAM_BY_HANDLE, stream.handle());
     oldStreamOutHandle = msg.arg2;
@@ -193,7 +196,7 @@ public:
     {
         this->InitializeComponent();
 
-        this->shell = MonAPI::Message::lookupMainThread("SHELL.EX5");
+        this->shell = MonAPI::Message::lookupMainThread("SCHEME.EX5");
 
         _P<MonAPI::Screen> scr = GetDefaultScreen();
         this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
@@ -201,7 +204,19 @@ public:
         terminal = new Terminal();
         terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
         this->get_Controls()->Add(terminal.get());
+
     }
+
+    virtual void OnPaint()
+    {
+        _P<Graphics> g = Graphics::FromImage(this->buffer);
+        ControlPaint::DrawSunken(g, 0, 0, this->get_Width(), this->get_Height());
+        g->Dispose();
+        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Space, 0);
+        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
+        Form::OnPaint();
+    }
+
 
 protected:
     virtual void OnKeyDown(_P<KeyEventArgs> e)
