@@ -146,6 +146,7 @@ void scheme_on_reedit()
 }
 #ifdef MONA
 using namespace MonAPI;
+extern bool suppressKey;
 #endif
 void scheme_interactive()
 {
@@ -173,7 +174,7 @@ void scheme_interactive()
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
-                if ((msg.arg2 & KEY_MODIFIER_DOWN) != 0)
+                if (!suppressKey && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
                     mona_shell_on_key_down(msg.arg1, msg.arg2);
                 }
@@ -182,6 +183,20 @@ void scheme_interactive()
                     mona_shell_on_key_down(msg.arg2, msg.arg3);
                 }
                 break;
+            case MSG_CHANGE_OUT_STREAM_BY_HANDLE:
+            {
+                MessageInfo m;
+                uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
+                if (targetID == THREAD_UNKNOWN || Message::sendReceive(&m, targetID, MSG_SCREEN_GET_STREAM_HANDLE)) {
+                    printf("SCREEN.EX5 not found\n");
+                    continue;
+                }
+                uint32_t screenHandle = m.arg2;
+                terminal_ = new terminal::Util(Stream::FromHandle(msg.arg1));
+                Message::reply(&msg, screenHandle);
+                break;
+            }
+
         default:
                 break;
         }

@@ -8,7 +8,7 @@
 
 using namespace MonAPI;
 
-static terminal::Util* terminal_;
+terminal::Util* terminal_;
 
 class CommandHistory
 {

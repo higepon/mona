@@ -19,6 +19,7 @@
 #include <time.h>
 #ifdef MONA
 #include <monapi.h>
+#include <servers/screen.h>
 #else
 #include <sys/stat.h>    // stat
 #include <sys/time.h>    // rlimit
@@ -129,6 +130,27 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
 // don't use like below
 // SCHEME_WRITE(stream, o->eval);
 // o->eval will be called twice!
+#ifdef MONA
+#include <monapi/terminal/Util.h>
+extern MonAPI::terminal::Util* terminal_;
+#define SCHEME_WRITE(stream, ...)                                       \
+{                                                                       \
+    char buf[1024];                                                     \
+    sprintf(buf, __VA_ARGS__);                                          \
+    terminal_->write(buf);                                      \
+    terminal_->flush();\
+    int __file = fileno(stream);                                        \
+    int __out  = fileno(stdout);                                        \
+    int __err  = fileno(stderr);                                        \
+    if (g_transcript != NULL && (__file == __out || __file == __err))   \
+    {                                                                   \
+        fprintf(g_transcript, __VA_ARGS__);                             \
+        fflush(g_transcript);                                           \
+    }                                                                   \
+}
+
+#else
+
 #define SCHEME_WRITE(stream, ...)                                       \
 {                                                                       \
     fprintf(stream, __VA_ARGS__);                                       \
@@ -141,6 +163,8 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
         fflush(g_transcript);                                           \
     }                                                                   \
 }
+
+#endif
 
 #define TRANSCRIPT_WRITE(...)                                   \
 {                                                               \

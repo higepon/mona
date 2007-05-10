@@ -268,11 +268,19 @@ PROCEDURE(CallProcess, "call-process")
     RETURN_BOOLEAN(false);
 }
 
+bool suppressKey;
 PROCEDURE(StartProcess, "start-process")
 {
 #ifdef MONA
-    ARGC_SHOULD_BE(1);
+    ARGC_SHOULD_BE_BETWEEN(1, 2);
     CAST(ARGV(0), SString, s);
+    if (ARGC == 2)
+    {
+        if (ARGV(1))
+        {
+            suppressKey = true;
+        }
+    }
     uint32_t tid;
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());

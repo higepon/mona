@@ -171,4 +171,4 @@
      (fs-entries (fs-current-directory)))))
 
 (define (gui)
-  (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI"))
+  (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI" #t))
