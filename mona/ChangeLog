@@ -1,6 +1,8 @@
 2007-05-10  higepon  <higepon@users.sourceforge.jp>
 
-        * core/scheme/lib/shell.scm.in (gui): (gui) ‚Å MonaForms ‚ð‹N“®‚·‚é‚æ‚¤‚É‚·‚é
+        * core/scheme/procedures/MiscProcedures.cpp : add asynchronous procedure start-process.
+
+        * core/scheme/lib/shell.scm.in (gui): (gui) procedure for executing Mona Forms.
 
 2007-05-09  higepon  <higepon@users.sourceforge.jp>
 
