@@ -119,13 +119,17 @@ public:
     virtual int write(uint8_t* buf, uint32_t length)
     {
         _P<Graphics> g = this->CreateGraphics();
-        MonAPI::CString text((char*)buf, length);
+        ::MonAPI::CString text((char*)buf, length);
         line_.write(text);
         Size r = this->get_ClientSize();
         g->FillRectangle(this->get_BackColor(), 0, y_, r.Width, FONT_HEIGHT);
-        CString line = line_.get();
-        g->DrawString((const char*)(line.Substring(0,  ), Control::get_DefaultFont(), Color::get_Black(), 0, y_);
-        g->DrawString((const char*)(line_.get()), Control::get_DefaultFont(), Color::get_Black(), 0, y_);
+        ::MonAPI::CString line = line_.get();
+        ::MonAPI::CString linef = line.substring(0, line_.getCursorPosition());
+        ::MonAPI::CString lineb = line.substring(line_.getCursorPosition(), line.getLength());
+        int w = g->MeasureString((const char*)linef, Control::get_DefaultFont()).Width;
+        g->FillRectangle(Color::FromArgb(0xDB, 0xD6, 0xCE, 230), w, y_ + 1, FONT_WIDTH, FONT_HEIGHT - 2);
+        g->DrawString((const char*)linef, Control::get_DefaultFont(), Color::get_Black(), 0, y_);
+        g->DrawString((const char*)lineb, Control::get_DefaultFont(), Color::get_Black(), w, y_);
         g->Dispose();
         Refresh();
         return 0;
@@ -204,6 +208,8 @@ public:
         terminal = new Terminal();
         terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
         this->get_Controls()->Add(terminal.get());
+        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Space, 0);
+        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
 
     }
 
@@ -212,8 +218,6 @@ public:
         _P<Graphics> g = Graphics::FromImage(this->buffer);
         ControlPaint::DrawSunken(g, 0, 0, this->get_Width(), this->get_Height());
         g->Dispose();
-        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Space, 0);
-        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
         Form::OnPaint();
     }
 
