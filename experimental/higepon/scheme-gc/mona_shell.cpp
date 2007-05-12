@@ -153,19 +153,13 @@ void mona_shell_reedit()
 void mona_shell_back_space()
 {
     if (cursorPosition == 0) return;
-    for (uint32_t i = 0; i < cursorPosition; i++)
-    {
-        terminal_->backSpace();
-    }
+    terminal_->moveCursorLeft(cursorPosition);
     cursorPosition--;
     line.removeAt(cursorPosition);
 
     terminal_->write(line.data());
     terminal_->write(" ");
-    for (uint32_t i = 0; i < line.size() - cursorPosition + 1; i++)
-    {
-        terminal_->backSpace();
-    }
+    terminal_->moveCursorLeft(line.size() - cursorPosition + 1);
     terminal_->flush();
 }
 
@@ -213,10 +207,7 @@ void mona_shell_del()
 
 void mona_shell_cursor_beginning_of_line()
 {
-    for (uint32_t i = 0; i < cursorPosition; i++)
-    {
-        terminal_->backSpace();
-    }
+    terminal_->moveCursorLeft(cursorPosition);
     cursorPosition = 0;
     terminal_->flush();
 }
@@ -237,10 +228,8 @@ void mona_shell_kill_line()
     {
         terminal_->write(" ");
     }
-    for (uint32_t i = 0; i < times; i++)
-    {
-        terminal_->backSpace();
-    }
+
+    terminal_->moveCursorLeft(times);
     terminal_->flush();
 }
 
