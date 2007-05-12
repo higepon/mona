@@ -16,11 +16,14 @@ CString Line::get()
     return text_;
 }
 
+bool Line::isCursorEndOfLine() const
+{
+    return position_ == text_.getLength();
+}
+
 void Line::write(const CString& text)
 {
-    int currentLength = text_.getLength();
-
-    if (currentLength == position_)
+    if (isCursorEndOfLine())
     {
         text_ += text;
         position_ += text.getLength();
@@ -38,16 +41,16 @@ int Line::getCursorPosition()
     return position_;
 }
 
-void Line::moveCursorLeft()
+void Line::moveCursorLeft(uint32_t n /* = 1 */)
 {
-    position_--;
-    if (position_ <0) position_ = 0;
+    position_ -= n;
+    if (position_ < 0) position_ = 0;
     return;
 }
 
-void Line::moveCursorRight()
+void Line::moveCursorRight(uint32_t n /* = 1 */)
 {
-    position_++;
+    position_ += n;
     if (position_ >= text_.getLength()) position_ = text_.getLength();
     return;
 }

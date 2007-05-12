@@ -16,12 +16,13 @@ static uint32_t server_ids[] =
     THREAD_UNKNOWN,  // ID_ELF_SERVER
     THREAD_UNKNOWN,  // ID_PROCESS_SERVER
     THREAD_UNKNOWN,  // ID_PE_SERVER
-    THREAD_UNKNOWN   // ID_MONITOR_SERVER
+    THREAD_UNKNOWN,  // ID_MONITOR_SERVER
+    THREAD_UNKNOWN   // ID_SCHEME_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5"
 };
 
 uint32_t monapi_get_server_thread_id(int id)

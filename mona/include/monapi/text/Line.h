@@ -26,9 +26,10 @@ public:
     void write(const ::MonAPI::CString& text);
     ::MonAPI::CString get();
     int getCursorPosition();
-    void moveCursorLeft();
-    void moveCursorRight();
+    void moveCursorLeft(uint32_t n = 1);
+    void moveCursorRight(uint32_t n = 1);
     void reset();
+    bool isCursorEndOfLine() const;
 
 protected:
     int position_;
