@@ -1,5 +1,5 @@
 TARGET  = MSHELL
-SOURCES = Form1.cpp
+SOURCES = Form1.cpp Terminal.cpp
 INSTDIR = $(BINDIR)/APPS/MONAFRMS
 
 ifndef $(MONADIR)

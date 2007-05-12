@@ -1,3 +1,9 @@
+2007-05-12  higepon  <higepon@users.sourceforge.jp>
+
+        * Shells/mshell/Form1.cpp : GUI Shell for Scheme works well.
+        
+        * Shells/mshell/Form1.cpp (terminal::Writer): erase cursor when line feed.
+
 2007-05-09  higepon  <higepon@users.sourceforge.jp>
 
         * Shells/mshell/Form1.cpp (terminal::Writer): use CommandParser/Writer.
