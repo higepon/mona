@@ -173,4 +173,4 @@
 (define (gui)
   (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI" #t))
 
-(gui)
+;(gui)
