@@ -1,0 +1,6 @@
+(define mona-gui-auto-start #t)
+
+;; prompt string
+(define (mona-prompt-string)
+  (string-append "mona:" (fs-path (fs-current-directory)) ">"))
+

@@ -145,10 +145,6 @@
    (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
            (fs-io-enum-directory-entries path))))
 
-;; for mona users
-(define (mona-prompt-string)
-  (string-append "mona:" (fs-path (fs-current-directory)) ">"))
-
 (define cd
   (lambda path
     (let ((p (if (null? path) "/APPS" (car path))))
@@ -173,4 +169,3 @@
 (define (gui)
   (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI" #t))
 
-;(gui)

@@ -1,4 +1,5 @@
 (load "/LIBS/SCHEME/core.scm")
+(load "/LIBS/SCHEME/conf.scm")
 (load "/LIBS/SCHEME/danny.scm")
 (load "/LIBS/SCHEME/shell.scm")
 ;(load "slib/Template.scm")

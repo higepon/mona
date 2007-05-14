@@ -1,0 +1,3 @@
+(if mona-gui-auto-start
+    (gui)
+    #f)
