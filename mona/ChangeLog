@@ -1,3 +1,7 @@
+2007-05-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/conf.scm.in (mona-gui-auto-start): conf.scm for configuration.
+
 2007-05-10  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/procedures/MiscProcedures.cpp : add asynchronous procedure start-process.
