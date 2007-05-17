@@ -3,7 +3,7 @@ bits 32
 section .bss
 section .data
 section .text
-%include "macro.asm"
+%include "libcont/macro.asm"
 cglobal _mysetjmp
 cglobal _mylongjmp
 

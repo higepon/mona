@@ -2,7 +2,7 @@ libcont/cont.o: libcont/cont.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 libcont/mysetjmp_asm.o: libcont/mysetjmp.asm
-	nasm $(NFLAGS) $< -o $@
+	nasm -I . -I ./libcont $(NFLAGS) $< -o $@
 
 $(REGISTERS_INC): $(PROCEDURE_SOURCES) ./test/generate.scm
 	gosh ./test/generate.scm --register $(PROCEDURE_SOURCES) > $@
