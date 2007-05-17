@@ -247,6 +247,8 @@ PROCEDURE(InteractionEnvironment, "interaction-environment")
     return env;
 }
 
+extern uint32_t screenHandle_;
+
 PROCEDURE(CallProcess, "call-process")
 {
 #ifdef MONA
@@ -255,8 +257,8 @@ PROCEDURE(CallProcess, "call-process")
     uint32_t tid;
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
-    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, out->handle(), out->handle());
+//    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
+    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, screenHandle_, screenHandle_);
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
@@ -269,6 +271,8 @@ PROCEDURE(CallProcess, "call-process")
 }
 
 bool suppressKey;
+
+
 PROCEDURE(StartProcess, "start-process")
 {
 #ifdef MONA
@@ -285,7 +289,7 @@ PROCEDURE(StartProcess, "start-process")
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
     ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, out->handle(), out->handle());
+    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, screenHandle_, screenHandle_);
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());

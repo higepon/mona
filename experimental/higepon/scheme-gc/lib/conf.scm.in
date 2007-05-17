@@ -2,5 +2,7 @@
 
 ;; prompt string
 (define (mona-prompt-string)
-  (string-append "mona:" (fs-path (fs-current-directory)) ">"))
+  (string-append "mona:"
+                 (fs-path (fs-current-directory))
+                 ">"))
 

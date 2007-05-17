@@ -10,6 +10,9 @@ using namespace MonAPI;
 
 terminal::Util* terminal_;
 
+// todo fix me
+uint32_t screenHandle_;
+
 class CommandHistory
 {
 public:
@@ -114,8 +117,8 @@ int mona_shell_init(bool interactive)
         printf("SCREEN.EX5 not found\n");
         return -1;
     }
-    uint32_t screenHandle = msg.arg2;
-    terminal_ = new terminal::Util(Stream::FromHandle(screenHandle));
+    screenHandle_ = msg.arg2;
+    terminal_ = new terminal::Util(Stream::FromHandle(screenHandle_));
     return 0;
 
 }

@@ -146,6 +146,7 @@ void scheme_on_reedit()
 }
 #ifdef MONA
 using namespace MonAPI;
+extern uint32_t screenHandle_;
 extern bool suppressKey;
 #endif
 void scheme_interactive()
@@ -191,9 +192,10 @@ void scheme_interactive()
                     printf("SCREEN.EX5 not found\n");
                     continue;
                 }
-                uint32_t screenHandle = m.arg2;
+                screenHandle_ = msg.arg1;
+                uint32_t s = m.arg2;
                 terminal_ = new terminal::Util(Stream::FromHandle(msg.arg1));
-                Message::reply(&msg, screenHandle);
+                Message::reply(&msg, s);
                 break;
             }
 
