@@ -1,5 +1,9 @@
 2007-05-18  higepon  <higepon@users.sourceforge.jp>
 
+        * core/monapi/strstr_n.cpp: Add.
+
+        * include/monapi/strstr_n.h: Add.
+
         * core/scheme/scheme.cpp (scheme_interactive): fix call-process output bug.
                                  (scheme_on_input_line): eval => print
 

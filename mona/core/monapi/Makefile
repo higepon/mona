@@ -37,6 +37,7 @@ SOURCES = monapi_impl.cpp \
           power.cpp\
           uitoa.cpp\
           get_digits.cpp\
+          strstr_n.cpp\
           audio/Beep.cpp \
           audio/mml/Config.cpp \
           audio/mml/Element.cpp \
