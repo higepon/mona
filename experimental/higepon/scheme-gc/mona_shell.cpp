@@ -103,6 +103,10 @@ int mona_shell_init(bool interactive)
         }
         histories.add("(ls)");
         histories.add("(pwd)");
+        histories.add("(load \"/LIBS/SCHEME/fib.scm\")");
+        histories.add("(call-process-out-string \"/APPS/HELLO.EX5\")");
+        histories.add("(call-process \"/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG\")");
+
     }
 
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
