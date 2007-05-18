@@ -1,3 +1,9 @@
+2007-05-18  higepon  <higepon@users.sourceforge.jp>
+
+        * Shells/mshell/Form1.cpp (StdoutMessageLoop): don't display ^EOP
+
+        * Graphics/bitmap/MONALISA.JPG: add sample jpg.
+
 2007-05-12  higepon  <higepon@users.sourceforge.jp>
 
         * Shells/mshell/Form1.cpp : GUI Shell for Scheme works well.

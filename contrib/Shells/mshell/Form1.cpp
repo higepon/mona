@@ -37,6 +37,13 @@ static void StdoutMessageLoop()
         stream.waitForRead();
         uint32_t size = stream.read(buffer, BUFFER_SIZE);
         if (size == 0) continue;
+        // don't display ^EOP
+        char* found = MonAPI::strstr_n((char*)buffer, "^EOP", size);
+        if (NULL != found)
+        {
+            memset(found, '\0', 4);
+        }
+
         parser->parse(buffer, size);
     }
 }
@@ -63,7 +70,6 @@ public:
         {
             MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
             this->first = false;
-
         }
         _P<Graphics> g = Graphics::FromImage(this->buffer);
         ControlPaint::DrawSunken(g, 0, 0, this->get_Width(), this->get_Height());

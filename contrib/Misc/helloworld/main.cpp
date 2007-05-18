@@ -8,9 +8,9 @@
 
 int main(int argc, char* argv[])
 {
-    char buf[128];
-    sprintf(buf, "Hello, World\n");
-    _printf(buf);
+//    char buf[128];
+    printf("Hello, World\n");
+//    _printf(buf);
     return 0;
 }
 

@@ -84,6 +84,7 @@ int Terminal::lineFeed()
     }
     else
     {
+        _P<Graphics> g = this->CreateGraphics();
         Color* img = this->buffer->get();
         for (int yy = 0; yy < r.Height - FONT_HEIGHT; yy++)
         {
@@ -95,6 +96,9 @@ int Terminal::lineFeed()
             }
         }
         x_ = 0;
+        g->FillRectangle(this->get_BackColor(), 0, y_, r.Width, r.Height - y_);
+        g->Dispose();
+        Refresh();
     }
     drawLine(g);
     g->Dispose();

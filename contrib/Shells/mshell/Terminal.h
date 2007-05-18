@@ -3,6 +3,7 @@
 
 #include <monapi/terminal/Writer.h>
 #include <monapi/text/Line.h>
+#include <monapi/strstr_n.h>
 #include <monapi/CString.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
