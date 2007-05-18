@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
 
 ;; prompt string
 (define (mona-prompt-string)
