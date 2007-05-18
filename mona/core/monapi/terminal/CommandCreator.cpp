@@ -30,7 +30,7 @@ Command CommandCreator::backSpace()
 // ESC [ Ps Direction
 Command CommandCreator::moveCursorTo(uint32_t n, char direction)
 {
-    ASSERT(n > 0);
+    ASSERT(n >= 0);
     ASSERT('A' <= direction && direction <= 'D');
     static uint8_t command[32];
     command[0] = 0x1b;

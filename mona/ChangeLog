@@ -1,6 +1,7 @@
 2007-05-18  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/scheme.cpp (scheme_interactive): fix call-process output bug.
+                                 (scheme_on_input_line): eval => print
 
 2007-05-14  higepon  <higepon@users.sourceforge.jp>
 
