@@ -6,6 +6,7 @@
 
 using namespace MonAPI;
 void makeWave(monapi_cmemoryinfo *mi, int x);
+void makeWave(void *p, size_t size, int x);
 void connectToKeyboardServer();
 
 int main(int argc, char *argv[])
@@ -14,9 +15,13 @@ int main(int argc, char *argv[])
 	uint32_t commanderID;
 	int32_t ch;
 	char str[128];
+	uint8_t buf[65536];
 	MessageInfo msg;
+	FILE *fp;
 
 	connectToKeyboardServer();
+
+	fp = fopen("/APPS/TEST.WAV", "r");
 
 	audioServerID = Message::lookupMainThread("AUDIO.EX5");
 	if( audioServerID == THREAD_UNKNOWN )
@@ -42,88 +47,35 @@ int main(int argc, char *argv[])
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel, 0, 0, str);
 	printf("Result: %d\n", msg.arg2);
 
-	struct audio_server_buffer_info bi;
-	int usingbuf = 1;
-	monapi_cmemoryinfo *mi;
-	monapi_cmemoryinfo *mi2;
-	mi = monapi_cmemoryinfo_new();
-	mi2 = monapi_cmemoryinfo_new();
-	if( !monapi_cmemoryinfo_create(mi, 44100, MONAPI_TRUE) )
-	{
-		printf("cmi_create\n");
-		monapi_cmemoryinfo_delete(mi); return -1;
-	}
-	if( !monapi_cmemoryinfo_create(mi2, 44100, MONAPI_TRUE) )
-	{
-		printf("cmi_create\n");
-		monapi_cmemoryinfo_delete(mi2); return -1;
-	}
-	makeWave(mi, 20);
-	makeWave(mi2, 20);
-	bi.handle = mi->Handle;
-	bi.size = mi->Size;
-	memcpy(str, &bi, sizeof(bi));
-	printf("Client: Handle: %x\n", bi.handle);
-	printf("Client: P: %x\n", mi->Data);
-	printf("I will set a buffer...\n");
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, CreateStream, ch);
 	Stream *stream;
 	stream = Stream::FromHandle(msg.arg2);
-	stream->write(mi->Data, mi->Size);
-//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID, ch);
-//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
+
+	makeWave(buf, 65536, 200);
+/*
+	int readsize;
+	fread(buf, 1, 65536, fp);
+	stream->write(buf, readsize);
+	*/
+	stream->write(buf, 65536);
+
 	printf("Start\n");
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
-//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
-//	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
-
 	while(1)
 	{
-//		stream->waitForWrite();
-		stream->write(mi->Data, mi->Size);
-//		if( Message::receive(&msg) ) continue;
-//		printf("%x\n", msg.header);
-		#if 0
-		if( msg.header == MSG_AUDIO_SERVER_MESSAGE ) switch( msg.arg1 )
-		{
-			case BufferIsEmpty:
-			{
-		//		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
-				if( usingbuf == 1 )
-				{
-					bi.handle = mi2->Handle;
-					bi.size = mi2->Size;
-					usingbuf = 2;
-				}
-				else
-				{
-					bi.handle = mi->Handle;
-					bi.size = mi->Size;
-					usingbuf = 1;
-				}
-				memcpy(str, &bi, sizeof(bi));
-				Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, ch, 0, str);
-		//		Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
-				break;
-			}
-			default: break;
-		}
-		#endif
-		if( msg.header == MSG_KEY_VIRTUAL_CODE )
-		{
-			goto END;
-		}
+		//int readsize = fread(buf, 1, 65536, fp);
+		stream->waitForWrite();
+	//	stream->write(buf, readsize);
+		stream->write(buf, 65536);
 	}
+
 END:
 
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StopChannel, ch);
 
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, ReleaseChannel, ch);
 	_printf("Channel was released.\n");
-
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
 
 #else
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, CreateChannelObject);
@@ -140,6 +92,15 @@ void makeWave(monapi_cmemoryinfo *mi, int x)
 	{
 		if( i % x < 10 ) ((short*)mi->Data)[i] = 200;
 		else ((short*)mi->Data)[i] = -200;
+	}
+}
+
+void makeWave(void *p, size_t size, int x)
+{
+	for( int i = 0 ; i < size/2 ; i++ )
+	{
+		if( i % x < 10 ) ((short*)p)[i] = 200;
+		else ((short*)p)[i] = -200;
 	}
 }
 

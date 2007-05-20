@@ -6,6 +6,7 @@ endif
 TARGET  = ACLI
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
+INSTFILES = test.wav
 
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    = -lmonalibc-imp

@@ -116,6 +116,7 @@ int ServerCommand::PrepareChannel(MessageInfo *msg)
 	int ret = 0;
 	struct audio_server_channel_info ci;
 	memcpy(&ci, msg->str, sizeof(ci));
+	dprintf("channel = %d, samplerate = %d, bitspersample = %d\n", ci.channel, ci.samplerate, ci.bitspersample);
 	ret = driver->prepare_channel((ch_t)ci.channel, ci.samplerate, ci.bitspersample, 1);
 	MonAPI::Message::reply(msg, ret);
 	return ret;
@@ -137,7 +138,7 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 	struct audio_server_buffer_info bufinfo;
 	monapi_cmemoryinfo *mi;
 	dprintf("msg->str = %x\n", msg->str);
-	dprintf("dmabuf = %x\n", parent->dmabuf);
+	//dprintf("dmabuf = %x\n", parent->dmabuf);
 	memcpy(&bufinfo, msg->str, sizeof(bufinfo));
 
 	mi = monapi_cmemoryinfo_new();
