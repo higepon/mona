@@ -1515,6 +1515,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class MonaSleep : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaSleep()  : procedureName_("mona-sleep") {}
+    virtual ~MonaSleep() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-sleep";}
+    virtual ::util::String typeString() const { return "mona-sleep"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class MonaPs : public PrimitiveProcedure
 {
 private:

@@ -87,4 +87,5 @@ env->defineVariable(new Variable("call-process-out-string"), new CallProcessOutS
 env->defineVariable(new Variable("mona-halt"), new MonaHalt());
 env->defineVariable(new Variable("mona-reboot"), new MonaReboot());
 env->defineVariable(new Variable("mona-kill"), new MonaKill());
+env->defineVariable(new Variable("mona-sleep"), new MonaSleep());
 env->defineVariable(new Variable("mona-ps"), new MonaPs());

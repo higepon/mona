@@ -372,6 +372,17 @@ PROCEDURE(MonaKill, "mona-kill")
     RETURN_BOOLEAN(false);
 }
 
+PROCEDURE(MonaSleep, "mona-sleep")
+{
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Number, ms);
+#ifdef MONA
+    sleep(ms->value());
+    return SCM_TRUE;
+#endif
+    RETURN_BOOLEAN(false);
+}
+
 PROCEDURE(MonaPs, "mona-ps")
 {
     ARGC_SHOULD_BE(0);

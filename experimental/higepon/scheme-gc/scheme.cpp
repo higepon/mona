@@ -168,12 +168,18 @@ void scheme_interactive()
 #ifdef MONA
     // errorで戻ってくる場合があるので変数を初期化
     input = "";
+    String mona_timer = "";
     mona_shell_init_variables();
+    set_timer(100);
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;
         switch (msg.header)
         {
+            case MSG_TIMER:
+                mona_timer = "(mona-timer)";
+                scheme_eval_string(mona_timer, env, false);
+                break;
             case MSG_KEY_VIRTUAL_CODE:
                 if (!suppressKey && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
