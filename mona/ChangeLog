@@ -1,3 +1,7 @@
+2007-05-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/MiscProcedures.cpp : Add (mona-sleep ms).
+
 2007-05-18  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/strstr_n.cpp: Add.
