@@ -49,7 +49,7 @@
             ((p (car l)) (loop (cdr l) (cons (car l) yes) no))
             (else (loop (cdr l) yes (cons (car l) no)))))))
 
-;; mona-timer dependent
+;; BEGIN: mona-timer dependent
 (define (mona-timer-make-timer cont ms)
   (cons cont ms))
 
@@ -63,7 +63,7 @@
   (let ((dec-ms (if (null? ms) 100 (car ms))))
     (set-cdr! timer (- (mona-timer-ms timer) dec-ms))))
 
-;; mona-timer
+;; END :mona-timer dependent
 
 
 (define mona-timer-list '())
