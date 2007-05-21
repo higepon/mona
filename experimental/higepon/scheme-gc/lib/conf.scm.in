@@ -40,3 +40,41 @@
           #f))
 
 ; ここまでうまく動いた
+
+; ftp://80.66.73.93//pub/ksi/ksi-3.1.4.tar.gz/ksi-3.1.4/lib/
+(define partition
+  (lambda (p l)
+    (let loop ((l l) (yes '()) (no '()))
+      (cond ((null? l) (values (reverse! yes) (reverse! no)))
+            ((p (car l)) (loop (cdr l) (cons (car l) yes) no))
+            (else (loop (cdr l) yes (cons (car l) no)))))))
+
+;; mona-timer dependent
+(define (mona-timer-make-timer cont ms)
+  (cons cont ms))
+
+(define (mona-timer-cont timer)
+  (car timer))
+
+(define (mona-timer-ms timer)
+  (cdr timer))
+
+(define (mona-timer-decrement timer . ms)
+  (let ((dec-ms (if (null? ms) 100 (car ms))))
+    (set-cdr! timer (- (mona-timer-ms timer) dec-ms))))
+
+;; mona-timer
+
+
+(define mona-timer-list '())
+
+(define (mona-timer-add cont ms)
+  (set! mona-timer-list (append mona-timer-list (cons (mona-timer-make cont ms) '()))))
+
+(define (mona-timer-make cont ms)
+  (cons cont ms))
+
+(mona-timer-add 3 300)
+(mona-timer-add 4 400)
+
+(for-each mona-timer-decrement mona-timer-list)
