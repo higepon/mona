@@ -1,5 +1,3 @@
-(load "./unittest.scm.in")
-(use srfi-1)
 ;; Begin: mona-timer dependent
 (define (mona-timer-make-timer cont ms)
   (cons cont ms))
@@ -28,54 +26,8 @@
     (set! mona-timer-list next-list)
     (for-each (lambda (timer) ((mona-timer-cont timer) 1)) timer-list)))
 
-(define cont '())
-(define number 0)
-
-(define (sample)
-  (if (= 1 (call/cc (lambda (c) (set! cont c) 0)))
-      (set! number (+ 1 number))))
-
-;;;;;;;; Test ;;;;;;;;
-(sample)
-(let ((timer (mona-timer-make-timer '() 3000)))
-  (assert-check-true "mona-timer-make-timer"
-                     (= 3000 (mona-timer-ms timer))
-                     (null? (mona-timer-cont timer)))
-  (mona-timer-decrement timer)
-  (mona-timer-decrement timer 1000)
-  (assert-check-true "mona-timer-make-timer"
-                     (= 1900 (mona-timer-ms timer)))
-)
-
-(mona-timer-add cont 100)
-(mona-timer-add cont 200)
-(mona-timer-add cont 400)
-
-(assert-check-true "mona-timer-add"
-                   (= 100 (mona-timer-ms (list-ref mona-timer-list 0)))
-                   (= 200 (mona-timer-ms (list-ref mona-timer-list 1)))
-                   (= 400 (mona-timer-ms (list-ref mona-timer-list 2)))
-)
-
-(mona-timer-iteration)
-(assert-check-true "mona-timer-iteration"
-                   (= 1 number)
-)
+(define (mona-timer-init)
+  (set! mona-timer-list '()))
 
 
-(mona-timer-iteration)
-(assert-check-true "mona-timer-iteration"
-                   (= 2 number)
-)
-
-(mona-timer-iteration)
-(assert-check-true "mona-timer-iteration"
-                   (= 2 number)
-)
-
-(mona-timer-iteration)
-(assert-check-true "mona-timer-iteration"
-                   (= 3 number)
-)
-(total-report)
 

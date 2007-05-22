@@ -177,7 +177,7 @@ void scheme_interactive()
         switch (msg.header)
         {
             case MSG_TIMER:
-                mona_timer = "(mona-timer)";
+                mona_timer = "(mona-timer-iteration)";
                 scheme_eval_string(mona_timer, env, false);
                 break;
             case MSG_KEY_VIRTUAL_CODE:

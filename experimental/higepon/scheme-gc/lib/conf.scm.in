@@ -6,75 +6,84 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-; ここから
-(define mona-timer-cont '())
-(define mona-timer-on #f)
-(define mona-timer-ms 10000)
+;; ; ここから
+;; (define mona-timer-cont '())
+;; (define mona-timer-on #f)
+;; (define mona-timer-ms 10000)
 
-(define (mona-timer-add cont ms)
-  (set! mona-timer-cont cont)
-  (set! mona-timer-ms ms)
-  (set! mona-timer-on #t))
+;; (define (mona-timer-add cont ms)
+;;   (set! mona-timer-cont cont)
+;;   (set! mona-timer-ms ms)
+;;   (set! mona-timer-on #t))
 
-(define (sample)
-  (print 1)
-  (print 2)
-  (if (= 0 (call/cc (lambda (c) (mona-timer-add c 10000) (c 1))))
-      (begin
-        (print 3)
-        (print 4)
-        (print 5))))
-
-
-(define (mona-timer)
-  (if mona-timer-on
-      (begin
-        (set! mona-timer-ms (- mona-timer-ms 100))
-;        (print mona-timer-ms)
-        (if (negative? mona-timer-ms)
-            (begin
-              (set! mona-timer-on #f)
-              (mona-timer-cont 0)
-            )
-            #f))
-          #f))
-
-; ここまでうまく動いた
-
-; ftp://80.66.73.93//pub/ksi/ksi-3.1.4.tar.gz/ksi-3.1.4/lib/
-(define partition
-  (lambda (p l)
-    (let loop ((l l) (yes '()) (no '()))
-      (cond ((null? l) (values (reverse! yes) (reverse! no)))
-            ((p (car l)) (loop (cdr l) (cons (car l) yes) no))
-            (else (loop (cdr l) yes (cons (car l) no)))))))
-
-;; BEGIN: mona-timer dependent
-(define (mona-timer-make-timer cont ms)
-  (cons cont ms))
-
-(define (mona-timer-cont timer)
-  (car timer))
-
-(define (mona-timer-ms timer)
-  (cdr timer))
-
-(define (mona-timer-decrement timer . ms)
-  (let ((dec-ms (if (null? ms) 100 (car ms))))
-    (set-cdr! timer (- (mona-timer-ms timer) dec-ms))))
-
-;; END :mona-timer dependent
+;; (define (sample)
+;;   (print 1)
+;;   (print 2)
+;;   (if (= 0 (call/cc (lambda (c) (mona-timer-add c 10000) (c 1))))
+;;       (begin
+;;         (print 3)
+;;         (print 4)
+;;         (print 5))))
 
 
-(define mona-timer-list '())
+;; (define (mona-timer)
+;;   (if mona-timer-on
+;;       (begin
+;;         (set! mona-timer-ms (- mona-timer-ms 100))
+;; ;        (print mona-timer-ms)
+;;         (if (negative? mona-timer-ms)
+;;             (begin
+;;               (set! mona-timer-on #f)
+;;               (mona-timer-cont 0)
+;;             )
+;;             #f))
+;;           #f))
 
-(define (mona-timer-add cont ms)
-  (set! mona-timer-list (append mona-timer-list (cons (mona-timer-make cont ms) '()))))
+;; ; ここまでうまく動いた
 
-(define (mona-timer-make cont ms)
-  (cons cont ms))
+;; ; ftp://80.66.73.93//pub/ksi/ksi-3.1.4.tar.gz/ksi-3.1.4/lib/
+;; (define partition
+;;   (lambda (p l)
+;;     (let loop ((l l) (yes '()) (no '()))
+;;       (cond ((null? l) (values (reverse! yes) (reverse! no)))
+;;             ((p (car l)) (loop (cdr l) (cons (car l) yes) no))
+;;             (else (loop (cdr l) yes (cons (car l) no)))))))
 
-(mona-timer-add 3 300)
-(mona-timer-add 4 400)
+;; ;; BEGIN: mona-timer dependent
+;; (define (mona-timer-make-timer cont ms)
+;;   (cons cont ms))
 
-(for-each mona-timer-decrement mona-timer-list)
+;; (define (mona-timer-cont timer)
+;;   (car timer))
+
+;; (define (mona-timer-ms timer)
+;;   (cdr timer))
+
+;; (define (mona-timer-decrement timer . ms)
+;;   (let ((dec-ms (if (null? ms) 100 (car ms))))
+;;     (set-cdr! timer (- (mona-timer-ms timer) dec-ms))))
+
+;; ;; END :mona-timer dependent
+
+
+;; (define mona-timer-list '())
+
+;; (define (mona-timer-add cont ms)
+;;   (set! mona-timer-list (append mona-timer-list (cons (mona-timer-make cont ms) '()))))
+
+;; (define (mona-timer-make cont ms)
+;;   (cons cont ms))
+
+;; (mona-timer-add 3 300)
+;; (mona-timer-add 4 400)
+
+;; (for-each mona-timer-decrement mona-timer-list)
+
+(define greeting-cont '())
+
+(define (greeting)
+  (print "Hello, I'm")
+  (if (= 1 (call/cc (lambda (c) (set! greeting-cont c) 0)))
+      (print "Higepon")
+      (mona-timer-add greeting-cont 3000)
+))
