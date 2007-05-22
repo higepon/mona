@@ -1,3 +1,12 @@
+2007-05-22  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/timer.scm.in (mona-timer-make-timer)
+        (mona-timer-cont, mona-timer-ms, mona-timer-decrement)
+        (mona-timer-list, mona-timer-add, mona-timer-iteration)
+        (mona-timer-init): Add.
+
+        * core/scheme/test/timer.scm.in: Add.
+
 2007-05-20  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/procedures/MiscProcedures.cpp : Add (mona-sleep ms).
