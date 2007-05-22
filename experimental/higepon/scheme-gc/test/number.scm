@@ -136,7 +136,7 @@
                    (inexact? (cons 1 2)))
 
 
-(assert-check-eqaul
+(assert-check-equal
  =
  '((quotient 5 3) 1)
  '((quotient 6 3) 2)
