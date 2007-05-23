@@ -89,6 +89,16 @@ void cont_destroy(Cont* c)
     }
 }
 
+int cont_stack_expander(int i)
+{
+    if (i < 0)
+    {
+        return i;
+    }
+    cont_stack_expander(--i);
+    return 0;
+}
+
 void cont_restore(Cont* c, int r)
 {
     uint32_t i;
@@ -114,6 +124,7 @@ void cont_restore(Cont* c, int r)
             c->registers[i] -= (c->registers[i] - next_stack);
         }
     }
+    cont_stack_expander((c->stack_size + 1000) / 10);
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
