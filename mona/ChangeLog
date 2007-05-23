@@ -1,3 +1,7 @@
+2007-05-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/libcont/cont.c (cont_stack_expander): Fix SIGSEGV bug on Linux. Linux needs stack expands gradually.
+
 2007-05-22  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/lib/timer.scm.in (mona-timer-make-timer)
