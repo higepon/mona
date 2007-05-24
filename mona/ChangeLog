@@ -1,3 +1,8 @@
+2007-05-25  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/scheme.cpp (scheme_interactive): Fix bug on Linux. input string should be initialized.
+        (scheme_interactive): Automatically insert "(".
+
 2007-05-23  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/libcont/cont.c (cont_stack_expander): Fix SIGSEGV bug on Linux. Linux needs stack expands gradually.
