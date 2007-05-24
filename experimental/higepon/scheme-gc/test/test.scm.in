@@ -401,7 +401,7 @@
 
 (load "<TESTDIR>/dir.scm")
 (load "<TESTDIR>/cont.scm")
-(load "<TESTDIR>/timer.scm")
+;(load "<TESTDIR>/timer.scm")
 (load "<TESTDIR>/string.scm")
 (load "<TESTDIR>/pair.scm")
 (load "<TESTDIR>/util.scm")
