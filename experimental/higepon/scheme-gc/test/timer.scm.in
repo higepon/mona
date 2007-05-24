@@ -1,0 +1,47 @@
+(define test-cont '())
+(define test-number 0)
+
+(define (set-test-cont)
+  (if (= 1 (call/cc (lambda (c) (set! test-cont c) 0)))
+      (set! test-number (+ 1 test-number))))
+
+(set-test-cont)
+(let ((timer (mona-timer-make-timer '() 3000)))
+  (assert-check-true "mona-timer-make-timer"
+                     (= 3000 (mona-timer-ms timer))
+                     (null? (mona-timer-cont timer)))
+  (mona-timer-decrement timer)
+  (mona-timer-decrement timer 1000)
+  (assert-check-true "mona-timer-make-timer"
+                     (= 1900 (mona-timer-ms timer)))
+)
+
+(mona-timer-add test-cont 100)
+(mona-timer-add test-cont 200)
+(mona-timer-add test-cont 400)
+(assert-check-true "mona-timer-add"
+                   (find (lambda (t) (= 100 (mona-timer-ms t))) mona-timer-list)
+                   (find (lambda (t) (= 200 (mona-timer-ms t))) mona-timer-list)
+                   (find (lambda (t) (= 400 (mona-timer-ms t))) mona-timer-list)
+)
+
+(mona-timer-iteration)
+(assert-check-true "mona-timer-iteration"
+                   (= 1 test-number)
+)
+
+
+(mona-timer-iteration)
+(assert-check-true "mona-timer-iteration"
+                   (= 2 test-number)
+)
+
+(mona-timer-iteration)
+(assert-check-true "mona-timer-iteration"
+                   (= 2 test-number)
+)
+
+(mona-timer-iteration)
+(assert-check-true "mona-timer-iteration"
+                   (= 3 test-number)
+)

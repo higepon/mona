@@ -135,6 +135,9 @@ bool scheme_on_input_line(const String& line)
     input = "";
 
     SCHEME_WRITE(stdout, scheme_prompt(env).data());
+
+    // we insert "(" automatically
+    SCHEME_WRITE(stdout, "(");
     scheme_on_input_line("(");
     return false;
 }
@@ -165,10 +168,13 @@ void scheme_interactive()
 #endif
     scheme_eval_string(input, env, false);
     SCHEME_WRITE(stdout, scheme_prompt(env).data());
+    input = "";
+    SCHEME_WRITE(stdout, "(");
+    scheme_on_input_line("(");
+
 
 #ifdef MONA
     // errorで戻ってくる場合があるので変数を初期化
-    input = "";
     String mona_timer = "";
     mona_shell_init_variables();
     set_timer(100);
@@ -211,6 +217,7 @@ void scheme_interactive()
         }
     }
 #else
+
     for (;;)
     {
         char* line = NULL;;
