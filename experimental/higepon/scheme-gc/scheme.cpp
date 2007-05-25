@@ -122,12 +122,35 @@ static MacroFilter f;
 static Translator translator;
 static Environment* env;
 static String input = "";
+extern int mona_shell_write(const char* format, ...);
 bool scheme_on_input_line(const String& line)
 {
     input += line;
-    if (count_char(input.data(), '(') != count_char(input.data(), ')'))
+
+    if (input == "(")
     {
         return false;
+    }
+    else if (1 == count_char(input.data(), '(') - count_char(input.data(), ')'))
+    {
+        input.chop();
+        input += ")\n";
+#ifdef MONA
+        mona_shell_write(")\n");
+#endif
+    }
+    else if (count_char(input.data(), '(') != count_char(input.data(), ')'))
+    {
+#ifdef MONA
+        mona_shell_write("\n");
+#endif
+        return false;
+    }
+    else
+    {
+#ifdef MONA
+        mona_shell_write("\n");
+#endif
     }
     TRANSCRIPT_WRITE(input.data());
     mona_shell_add_history(input);

@@ -408,7 +408,6 @@ void mona_shell_on_key_down(int keycode, int modifiers)
         mona_shell_output_key(keycode, modifiers);
         break;
     case(Keys::Enter):
-        mona_shell_write("\n");
         line += '\n';
         scheme_on_input_line(line);
         cursorPosition = 0;
