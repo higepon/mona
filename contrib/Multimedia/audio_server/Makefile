@@ -7,7 +7,7 @@ TARGET  = AUDIO
 SOURCES = main.cpp Audio.cpp ServerCommand.cpp Channel.cpp IntNotifer.cpp StreamReader.cpp drivers/es1370.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES = 
+INSTFILES =  astart.scm
 CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 

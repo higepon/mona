@@ -151,12 +151,17 @@ int ServerCommand::SetBuffer(MessageInfo *msg)
 	memcpy(parent->getUsingBuffer(), (void*)mi->Data, bufinfo.size);
 	driver->set_buffer(msg->arg2, parent->getUsingBuffer(), bufinfo.size);
 	monapi_cmemoryinfo_delete(mi);
+	parent->turnBuffer();
 	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
 
 int ServerCommand::StartChannel(MessageInfo *msg)
 {
+/*
+	Notifer *n = *(parent->notifers->begin());
+	n->Interrupted();
+	*/
 	driver->start_channel(msg->arg2, 1);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
@@ -248,7 +253,7 @@ int ServerCommand::CreateStream(MessageInfo *msg)
 	MonAPI::Stream *s;
 	uint32_t handle;
 	ch_t c;
-	s = new MonAPI::Stream;
+	s = new MonAPI::Stream(512);
 	c = msg->arg2;
 	handle = s->handle();
 	parent->notifers->push_back(new StreamReader(driver, c, s, parent));

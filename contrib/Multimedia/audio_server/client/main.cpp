@@ -18,10 +18,11 @@ int main(int argc, char *argv[])
 	uint8_t buf[65536];
 	MessageInfo msg;
 	FILE *fp;
+	monapi_cmemoryinfo *cmi;
 
 	connectToKeyboardServer();
 
-	fp = fopen("/APPS/TEST.WAV", "r");
+//	fp = fopen("/APPS/TEST.WAV", "r");
 
 	audioServerID = Message::lookupMainThread("AUDIO.EX5");
 	if( audioServerID == THREAD_UNKNOWN )
@@ -47,27 +48,48 @@ int main(int argc, char *argv[])
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, PrepareChannel, 0, 0, str);
 	printf("Result: %d\n", msg.arg2);
 
+/*
+	struct audio_server_buffer_info bi;
+	cmi = monapi_cmemoryinfo_new();
+	monapi_cmemoryinfo_create(cmi, 0x10000, MONAPI_FALSE);
+	bi.channel = ch;
+	bi.handle = cmi->Handle;
+	bi.size = 0x10000;
+	makeWave(cmi, 200);
+	memcpy(str, &bi, sizeof(bi));
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, RegisterTID);
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, 0, 0, str);
+	*/
+
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, CreateStream, ch);
 	Stream *stream;
 	stream = Stream::FromHandle(msg.arg2);
 
-	makeWave(buf, 65536, 200);
+	makeWave(buf, 512, 200);
 /*
 	int readsize;
 	fread(buf, 1, 65536, fp);
 	stream->write(buf, readsize);
 	*/
-	stream->write(buf, 65536);
+	stream->write(buf, 512);
 
 	printf("Start\n");
 	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, StartChannel, ch);
 
 	while(1)
 	{
+	/*
+		if( Message::receive(&msg) ) continue;
+		if( msg.header == MSG_AUDIO_SERVER_MESSAGE )
+		{
+		printf("BufferIsEmpty\n");
+	Message::sendReceive(&msg, commanderID, MSG_AUDIO_SERVER_COMMAND, SetBuffer, 0, 0, str);
+		}
+		*/
 		//int readsize = fread(buf, 1, 65536, fp);
 		stream->waitForWrite();
 	//	stream->write(buf, readsize);
-		stream->write(buf, 65536);
+		stream->write(buf, 512);
 	}
 
 END:

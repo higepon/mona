@@ -21,8 +21,8 @@ extern "C" void aud_es1370_release_desc(struct driver_desc*);
 Audio::Audio() : channelLength(0), usingbuffer(false)
 {
 	commander = new ServerCommand(this);
-	dmabuf1 = monapi_allocate_dma_memory(0x10000);
-	dmabuf2 = monapi_allocate_dma_memory(0x10000);
+	dmabuf1 = monapi_allocate_dma_memory(512);
+	dmabuf2 = monapi_allocate_dma_memory(512);
 	tid_ = syscall_get_tid();
 	notifers = new std::list<Notifer*>;
 }
@@ -118,7 +118,9 @@ int Audio::messageLoop()
 			{
 				dputs("#Audio: MSG_ITERRUPTED");
 				driver->emit_interrupted();
-				std::for_each(notifers->begin(), notifers->end(), std::mem_fun(&Notifer::Interrupted));
+				Notifer *n = *(notifers->begin());
+				n->Interrupted();
+			//	std::for_each(notifers->begin(), notifers->end(), std::mem_fun(&Notifer::Interrupted));
 				break;
 			}
 			default: break;
