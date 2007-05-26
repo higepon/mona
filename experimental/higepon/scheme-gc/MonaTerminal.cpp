@@ -1,3 +1,5 @@
+#ifdef MONA
+
 #include "MonaTerminal.h"
 #include <monapi.h>
 #include <monapi/messages.h>
@@ -396,3 +398,5 @@ void MonaTerminal::outputChar(char c)
     terminal_->flush();
     cursorPosition_++;
 }
+
+#endif // MONA

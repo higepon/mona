@@ -72,7 +72,6 @@ namespace util {
 #include "procedures/Undef.h"
 #include "procedures/Procedure.h"
 #include "procedures/Set.h"
-#include "mona_shell.h"
 
 namespace monash {
 class DynamicWind;
@@ -119,7 +118,10 @@ GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 GLOBAL ::util::HashMap<int>* g_provide_map;
+
+#ifdef MONA
 GLOBAL ::monash::MonaTerminal* g_terminal;
+#endif
 
 
 #define SCM_TRUE   g_true

@@ -28,7 +28,7 @@ void Interaction::onInput(const String& line)
 
     if (input_ == "(\n")
     {
-        g_terminal->formatWrite("\n");
+        SCHEME_WRITE(stdout, "\n");
         showPrompt();
         return ;
     }
@@ -39,7 +39,8 @@ void Interaction::onInput(const String& line)
         input_ += ")\n";
 
         // SCHEME_WRITE と g_terminal->outputChar は違う
-        g_terminal->formatWrite(")\n");
+        SCHEME_WRITE(stdout, ")\n");
+//        g_terminal->formatWrite(")\n");
         //g_terminal->outputChar(')');
         //g_terminal->outputChar('\n');
     }

@@ -17,7 +17,6 @@ void scheme_init()
     scheme_expand_stack(64);
 #endif
     cont_initialize();
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 }
 
 void scheme_const_init()
@@ -26,14 +25,14 @@ void scheme_const_init()
     g_defaultInputPort  = new InputPort("stdin", stdin);
     g_currentInputPort  = g_defaultInputPort;
     g_currentOutputPort = g_defaultOutputPort;
-    g_transcript = NULL;
-    g_dynamic_winds = new DynamicWinds;
-    g_true = new True;
-    g_false = new False;
-    g_undef = new Undef;
-    g_no_arg = new Objects;
-    g_nil = new Nil;
-    g_eof = new Eof;
+    g_transcript        = NULL;
+    g_dynamic_winds     = new DynamicWinds;
+    g_true              = new True;
+    g_false             = new False;
+    g_undef             = new Undef;
+    g_no_arg            = new Objects;
+    g_nil               = new Nil;
+    g_eof               = new Eof;
 }
 
 void scheme_register_primitives(Environment* env)
@@ -55,17 +54,6 @@ void scheme_expand_stack(uint32_t mb)
     getrlimit(RLIMIT_STACK, &r);
 #endif
 }
-
-// uint32_t count_char(const char* s, char c)
-// {
-//     int length = strlen(s);
-//     uint32_t count = 0;
-//     for (int i = 0; i < length; i++)
-//     {
-//         if (s[i] == c) count++;
-//     }
-//     return count;
-// }
 
 Object* scheme_eval_string(const String& input, Environment* env, bool out /* = false */)
 {
@@ -103,108 +91,28 @@ int scheme_exec_file(const String& file)
     return 0;
 }
 
-String scheme_prompt(Environment* env)
-{
-//    String input = "(mona-prompt-string)";
-    Object* o = scheme_eval_string("(mona-prompt-string)", env, false);
-    if (o->isSString())
-    {
-        SString* s = (SString*)o;
-        return s->value();
-    }
-
-    else
-    {
-        RAISE_ERROR(o->lineno(), "(mona-prompt-string) not defined");
-        return "";
-    }
-}
-
-//static String input = "";
-//extern int mona_shell_write(const char* format, ...);
-//void mona_shell_output_char(char c);
-// bool scheme_on_input_line(const String& line)
-// {
-//     input += line;
-
-//     if (input == "(")
-//     {
-//         return false;
-//     }
-//     else if (1 == count_char(input.data(), '(') - count_char(input.data(), ')'))
-//     {
-//         input.chop();
-//         input += ")\n";
-// #ifdef MONA
-// //        mona_shell_write(")\n");
-// #endif
-//     }
-//     else if (count_char(input.data(), '(') != count_char(input.data(), ')'))
-//     {
-// #ifdef MONA
-// //        mona_shell_write("\n");
-// #endif
-//         return false;
-//     }
-//     else
-//     {
-// #ifdef MONA
-// //        mona_shell_write("\n");
-// #endif
-//     }
-//     TRANSCRIPT_WRITE(input.data());
-//     mona_shell_add_history(input);
-//     scheme_eval_string(input, env, true); // eval => print
-//     input = "";
-
-//     SCHEME_WRITE(stdout, scheme_prompt(env).data());
-
-//     // we insert "(" automatically
-// #ifdef MONA
-//     mona_shell_output_char('(');
-// #else
-//     SCHEME_WRITE(stdout, "(");
-// #endif
-//     scheme_on_input_line("(");
-//     return false;
-// }
-
-// void scheme_on_reedit()
-// {
-//     input = "";
-//     mona_shell_reedit();
-//     SCHEME_WRITE(stdout, scheme_prompt(env).data());
-// }
-// #ifdef MONA
-// using namespace MonAPI;
-// //extern uint32_t screenHandle_;
-// //extern bool suppressKey;
-// #endif
-
-static Environment* env;
-
+Environment* env;
 
 void timerFunction()
 {
     scheme_eval_string("(mona-timer-iteration)", env, false);
 }
 
-
 void scheme_interactive()
 {
-MacroFilter f;
-Translator translator;
-
+    MacroFilter f;
+    Translator translator;
     env = new Environment(f, translator);
     Interaction* interaction = new Interaction(env);
+#ifdef MONA
     g_terminal = new monash::MonaTerminal(timerFunction);
+#endif
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
     RETURN_ON_ERROR("stdin");
     scheme_eval_string(LOAD_SCHEME_CORE_LIBRARY, env, false);
 
-//    g_terminal->outputChar('(');
     interaction->showPrompt();
 
 #ifdef MONA
@@ -215,58 +123,6 @@ Translator translator;
         g_terminal->outputChar('(');
         interaction->onInput(g_terminal->getLine());
     }
-
-
-
-    // errorで戻ってくる場合があるので変数を初期化
-
-
-
-//     String mona_timer = "";
-//     mona_shell_init_variables();
-// #ifdef MONA
-//     mona_shell_output_char('(');
-// #endif
-
-//     set_timer(100);
-//     for (MessageInfo msg;;)
-//     {
-//         if (Message::receive(&msg) != 0) continue;
-//         switch (msg.header)
-//         {
-//             case MSG_TIMER:
-//                 mona_timer = "(mona-timer-iteration)";
-//                 scheme_eval_string(mona_timer, env, false);
-//                 break;
-//             case MSG_KEY_VIRTUAL_CODE:
-//                 if (!suppressKey && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
-//                 {
-//                     mona_shell_on_key_down(msg.arg1, msg.arg2);
-//                 }
-//                 else if (msg.arg1 == 0)
-//                 {
-//                     mona_shell_on_key_down(msg.arg2, msg.arg3);
-//                 }
-//                 break;
-//             case MSG_CHANGE_OUT_STREAM_BY_HANDLE:
-//             {
-//                 MessageInfo m;
-//                 uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
-//                 if (targetID == THREAD_UNKNOWN || Message::sendReceive(&m, targetID, MSG_SCREEN_GET_STREAM_HANDLE)) {
-//                     printf("SCREEN.EX5 not found\n");
-//                     continue;
-//                 }
-//                 screenHandle_ = msg.arg1;
-//                 uint32_t s = m.arg2;
-//                 terminal_ = new terminal::Util(Stream::FromHandle(msg.arg1));
-//                 Message::reply(&msg, s);
-//                 break;
-//             }
-
-//         default:
-//                 break;
-//         }
-//     }
 #else
 
     for (;;)
@@ -274,12 +130,7 @@ Translator translator;
         char* line = NULL;;
         size_t length = 0;
         getline(&line, &length, stdin);
-        //       scheme_on_input_line(line);
         interaction->onInput(line);
-//         if (interaction->isEvaluated())
-//         {
-//             SCHEME_WRITE(stdout, scheme_prompt(env).data());
-//         }
     }
 #endif
 }

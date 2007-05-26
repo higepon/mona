@@ -44,7 +44,6 @@ ExtRepParser.cpp\
 Eof.cpp\
 Variant.cpp\
 load.cpp\
-mona_shell.cpp\
 Interaction.cpp\
 MonaTerminal.cpp\
 scheme.cpp

@@ -1,6 +1,8 @@
 #ifndef __MONA_TERMINAL_H__
 #define __MONA_TERMINAL_H__
 
+#ifdef MONA
+
 #include "CommandHistory.h"
 #include <monapi/terminal/Util.h>
 
@@ -43,3 +45,5 @@ protected:
 }; // namespace monash
 
 #endif // __MONA_TERMINAL_H__
+
+#endif // MONA

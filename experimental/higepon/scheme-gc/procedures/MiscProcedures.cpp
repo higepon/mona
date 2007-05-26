@@ -360,8 +360,8 @@ PROCEDURE(MonaReboot, "mona-reboot")
 PROCEDURE(MonaKill, "mona-kill")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), Number, n);
 #ifdef MONA
+    CAST(ARGV(0), Number, n);
     RETURN_BOOLEAN(syscall_kill_thread(n->value()) == 0);
 #endif
     RETURN_BOOLEAN(false);
@@ -370,8 +370,8 @@ PROCEDURE(MonaKill, "mona-kill")
 PROCEDURE(MonaSleep, "mona-sleep")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), Number, ms);
 #ifdef MONA
+    CAST(ARGV(0), Number, ms);
     sleep(ms->value());
     return SCM_TRUE;
 #endif
