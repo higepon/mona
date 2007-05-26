@@ -265,6 +265,18 @@ public:
         return size() == 0;
     }
 
+    int countChar(char c) const
+    {
+        int len = size();
+        int count = 0;
+        const char* p = data();
+        for (int i = 0; i < len; i++)
+        {
+            if (p[i] == c) count++;
+        }
+        return count;
+    }
+
     int indexOf(const String& text)
     {
         return indexOf(text.data());

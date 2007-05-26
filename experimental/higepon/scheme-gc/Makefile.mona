@@ -21,7 +21,7 @@ GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 include Makefile.dep.inc
 
-install:
+install:all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -pd $(BINDIR)/LIBS/SCHEME
 	$(INSTALL) -pd $(INSTDIR)/TEST

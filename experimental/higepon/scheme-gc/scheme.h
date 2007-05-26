@@ -64,6 +64,8 @@ namespace util {
 #include "Values.h"
 #include "Nil.h"
 #include "Eof.h"
+#include "MonaTerminal.h"
+#include "Interaction.h"
 #include "RiteralConstant.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
@@ -94,7 +96,7 @@ void scheme_interactive();
 bool scheme_on_input_line(const ::util::String& line);
 void scheme_on_reedit();
 void scheme_init();
-monash::Object* scheme_eval_string(::util::String& input, monash::Environment* env, bool out = false);
+monash::Object* scheme_eval_string(const ::util::String& input, monash::Environment* env, bool out = false);
 int scheme_exec_file(const ::util::String& file);
 monash::SExp* objectToSExp(monash::Object* o);
 monash::SExp* pairToSExp(monash::Pair* p);
@@ -117,6 +119,7 @@ GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 GLOBAL ::util::HashMap<int>* g_provide_map;
+GLOBAL ::monash::MonaTerminal* g_terminal;
 
 
 #define SCM_TRUE   g_true
@@ -126,19 +129,24 @@ GLOBAL ::util::HashMap<int>* g_provide_map;
 #define SCM_NIL    g_nil
 #define SCM_EOF    g_eof
 
+#ifdef MONA
+#define LOAD_SCHEME_CORE_LIBRARY "(load \"/LIBS/SCHEME/scheme.scm\")"
+#else
+#define LOAD_SCHEME_CORE_LIBRARY "(load \"lib/scheme.scm\")"
+#endif
+
+
 // notice!
 // don't use like below
 // SCHEME_WRITE(stream, o->eval);
 // o->eval will be called twice!
 #ifdef MONA
-#include <monapi/terminal/Util.h>
-extern MonAPI::terminal::Util* terminal_;
+#include "MonaTerminal.h"
 #define SCHEME_WRITE(stream, ...)                                       \
 {                                                                       \
     char buf[1024];                                                     \
     sprintf(buf, __VA_ARGS__);                                          \
-    terminal_->write(buf);                                      \
-    terminal_->flush();\
+    g_terminal->formatWrite(buf);                                       \
     int __file = fileno(stream);                                        \
     int __out  = fileno(stdout);                                        \
     int __err  = fileno(stderr);                                        \
