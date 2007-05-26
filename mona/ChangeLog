@@ -1,5 +1,7 @@
 2007-05-26  higepon  <higepon@users.sourceforge.jp>
 
+        * core/kernel/kernel.cpp: version => 0.3.0 Alpha9.
+
         * core/scheme/mona_shell.cpp: Removed.
 
         * core/scheme/mona_shell.h: Removed.
