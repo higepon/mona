@@ -1,5 +1,9 @@
 2007-05-26  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/mona_shell.cpp: Removed.
+
+        * core/scheme/mona_shell.h: Removed.
+
         * core/scheme/Interaction.cpp (Interaction::onInput): Add. Class for conroling a user input and eval / print.
 
         * core/scheme/CommandHistory.h : Add. Class for command histories.
