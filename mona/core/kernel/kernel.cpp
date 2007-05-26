@@ -40,7 +40,7 @@
     mona kernel start at this point.
     before startKernel, os entered protected mode.
 
-    Copyright (c) 2002,2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
+    Copyright (c) 2002-2007 Higepon and the individuals listed on the ChangeLog entries.
     All rights reserved.
     License=MIT/X License
 
