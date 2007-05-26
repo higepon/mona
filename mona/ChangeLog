@@ -1,3 +1,13 @@
+2007-05-26  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Interaction.cpp (Interaction::onInput): Add. Class for conroling a user input and eval / print.
+
+        * core/scheme/CommandHistory.h : Add. Class for command histories.
+
+        * core/scheme/MonaTerminal.cpp : Add. MonaTerminal controls key inputs, cursors, outputs and command line.
+
+        * core/scheme/util/String.h (util): Add.
+
 2007-05-25  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/scheme.cpp (scheme_interactive): Fix bug on Linux. input string should be initialized.
