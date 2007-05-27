@@ -93,7 +93,7 @@ namespace gnote {
 		item->setEnabled(false);
 
 		//
-		setTitle("ノート");
+		setTitle("note");
 	}
 	//
 	RootWindow::~RootWindow() {

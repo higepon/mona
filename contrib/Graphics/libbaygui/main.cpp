@@ -48,12 +48,15 @@ int dllmain(uint32_t reason)
     return 1;
 }
 
+extern "C" __attribute__((constructor)) void monalibc_initialize();
+
 bool libbaygui_initialized = false;
 
 __attribute__((constructor)) void libbaygui_initialize()
 {
     if (libbaygui_initialized) return;
     monapi_initialize();
+    monalibc_initialize();
     libbaygui_initialized = true;
 }
 
@@ -61,17 +64,17 @@ __attribute__((destructor)) void libbaygui_finalize()
 {
 }
 
+#ifdef SDL
 int main(int argc, char* argv[])
 {
-#ifdef SDL
     Frame* frame = new Frame();
     frame->setBounds(100,100,320,240);
     frame->run();
     delete(frame);
-#endif
     return 0;
 }
-
 extern "C" void __main()
 {
 }
+
+#endif

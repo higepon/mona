@@ -47,7 +47,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)

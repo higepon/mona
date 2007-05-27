@@ -26,11 +26,13 @@ int dllmain(uint32_t reason)
 }
 
 bool libgui_initialized = false;
+extern "C" __attribute__((constructor)) void monalibc_initialize();
 
 __attribute__((constructor)) void libgui_initialize()
 {
     if (libgui_initialized) return;
     monapi_initialize();
+    monalibc_initialize();
     libgui_initialized = true;
 }
 

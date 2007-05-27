@@ -1,3 +1,15 @@
+2007-05-27  higepon  <higepon@users.sourceforge.jp>
+
+        * Graphics/libgui/stub.cpp : Bug fix. libbaygui should depend on libc. If not, dll initialize sequneces will be broken.
+
+        * Graphics/libbaygui/Makefile : Add "-lmonalibc-imp" for the bug below.
+
+        * Graphics/libbaygui/main.cpp: Bug fix. libbaygui should depend on libc. If not, dll initialize sequneces will be broken.
+
+        * Emulators/monasq/monasq.cpp: Remove MonaMain and add main.
+
+        * Graphics/libbaygui/main.cpp: Remove main().
+
 2007-05-18  higepon  <higepon@users.sourceforge.jp>
 
         * Shells/mshell/Form1.cpp (StdoutMessageLoop): don't display ^EOP

@@ -537,7 +537,7 @@ int wrapper_monapi_file_read(HSQUIRRELVM v) {
 
 int wrapper_monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword stdout_id) {
     dword tid;
-    int result = monapi_call_process_execute_file_get_tid(command_line, prompt, &tid, stdout_id);
+    int result = monapi_call_process_execute_file_get_tid(command_line, prompt, &tid, stdout_id, stdout_id);
     if (result != 0) return -1;
     return tid;
 }

@@ -36,7 +36,7 @@ all:
 	cd X/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) && $(MAKE) install
-#	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
 ### Network applications
 #	cd Net/libnet/sample/giko && $(MAKE) && $(MAKE) install
 ### Append
@@ -57,6 +57,7 @@ all:
 
 clean:
 	cd Emulators/infones && $(MAKE) clean
+	cd Emulators/monasq && $(MAKE) clean
 	cd Emulators/monamona && $(MAKE) clean
 	cd Graphics/jpegview && $(MAKE) clean
 	cd Graphics/libbaygui && $(MAKE) clean
