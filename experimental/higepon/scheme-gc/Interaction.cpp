@@ -50,6 +50,7 @@ void Interaction::onInput(const String& line)
     }
 
     // あとで Scheme / eval /print に書き換える
+    SCHEME_WRITE(stdout, "\n");
     scheme_eval_string(input_, env_, true); // eval => print
     showPrompt();
     return;

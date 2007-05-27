@@ -168,6 +168,9 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
             outputKey(keycode, modifiers);
             break;
         }
+    case(Keys::Left):
+        cursorBackward();
+        break;
     case (Keys::B):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
@@ -201,7 +204,9 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
             outputKey(keycode, modifiers);
             break;
         }
-
+    case(Keys::Right):
+        cursorForward();
+        break;
     case (Keys::F):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
@@ -241,7 +246,7 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
             reEdit();
             break;
         }
-        else
+       else
         {
             outputKey(keycode, modifiers);
             break;
