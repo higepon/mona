@@ -25,4 +25,7 @@
 (define (bplayer)
   (start-process "/APPS/BAYGUI/BPLAYER.EX5"))
 
+(define (audio)
+  (start-process "/APPS/AUDIO.EX5"))
+
 (gui)
