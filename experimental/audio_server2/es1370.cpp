@@ -50,7 +50,7 @@ handle_t es1370_new(const struct audio_data_format *f)
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 1024;
+	d->bufsize = 4096;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
 
@@ -91,7 +91,6 @@ error_t es1370_start(handle_t o)
 	{
 		return NG;
 	}
-	es1370_set_sample_count(d, 0);
 	es1370_set_sample_rate(d);
 	es1370_set_bits(d);
 	es1370_start_playback(d);
@@ -126,6 +125,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 	result = d->callback(d->ref, buf, d->bufsize);
 //	puts("set_buffer");
 	es1370_set_buffer(d, buf, d->bufsize);
+	es1370_set_sample_count(d, d->bufsize/2-1);
 	return result;
 }
 
@@ -171,13 +171,26 @@ static void es1370_set_sample_rate(struct es1370_driver* d)
 	outp32(d->baseIO+ES1370_REG_CONTROL, ctrl);
 }
 
+union frame_reg
+{
+	uint32_t x;
+	struct
+	{
+		uint16_t size;
+		uint16_t count;
+	}s;
+};
+
 static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
 //	puts(__func__);
 //	printf("p = %x\n", p);
+	struct frame_reg fr;
+	fr.s.count = 0;
+	fr.s.size = size-1;
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
-	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
+	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, fr.x);
 }
 
 static void es1370_set_bits(struct es1370_driver* d)

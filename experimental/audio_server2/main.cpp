@@ -13,7 +13,7 @@ error_t callback(void* ref, void* buffer, size_t size)
 //	printf("p = %x\n", p);
 	for(unsigned int i = 0 ; i < size/4u ; i++ )
 	{
-		short wave = (short)(200.0*sin(phase));
+		short wave = (short)(1000.0*sin(phase));
 		*p++ = wave;
 		*p++ = wave;
 		phase += freq;
