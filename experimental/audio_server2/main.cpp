@@ -1,15 +1,22 @@
 #include "es1370.h"
+#include <monalibc/math.h>
 #include <monalibc/stdio.h>
 
 error_t callback(void* ref, void* buffer, size_t size)
 {
 	short *p = (short*)buffer;
-	puts(__func__);
-	printf("p = %x\n", p);
-	for(int i = 0 ; i < size/2 ; i++ )
+	static float phase = 0.0;
+	float samplingRate = 44100;
+	float sinewaveFrequency = 440;
+	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;
+//	puts(__func__);
+//	printf("p = %x\n", p);
+	for(unsigned int i = 0 ; i < size/4u ; i++ )
 	{
-		if( i % 200 < 10 ) p[i] = 200;
-		else p[i] = -200;
+		short wave = (short)(200.0*sin(phase));
+		*p++ = wave;
+		*p++ = wave;
+		phase += freq;
 	}
 	return OK;
 }
@@ -22,6 +29,8 @@ int main()
 	format.sample_rate = 44100;
 	format.bits = 16;
 	format.channels = 2;
+
+	printf("callback: %x\n", &callback);
 
 	dev = es1370_new(&format);
 	if( dev == NULL )

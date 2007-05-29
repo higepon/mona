@@ -116,14 +116,15 @@ error_t es1370_set_callback(handle_t o,
 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
-	puts(__func__);
-	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
+//	puts(__func__);
+//	printf("callback = %x\n", d->callback);
+//	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
 	error_t result;
 	void *buf;
 	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 	result = d->callback(d->ref, buf, d->bufsize);
-	puts("set_buffer");
+//	puts("set_buffer");
 	es1370_set_buffer(d, buf, d->bufsize);
 	return result;
 }
@@ -148,6 +149,9 @@ static error_t es1370_device_init(struct es1370_driver *d, const struct audio_da
 	outp32(d->baseIO+ES1370_REG_CONTROL, ctrl);
 	sleep(10);
 
+	outp32(ES1370_REG_CODEC, 0);
+	outp32(ES1370_REG_CODEC, (1<<8));
+
 	ctrl = inp32(d->baseIO+ES1370_REG_CONTROL);
 	ctrl &= ~(ES1370_DAC1_EN|ES1370_DAC2_EN|ES1370_ADC_EN);
 	outp32(d->baseIO+ES1370_REG_CONTROL, ctrl);
@@ -169,8 +173,8 @@ static void es1370_set_sample_rate(struct es1370_driver* d)
 
 static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
-	puts(__func__);
-	printf("p = %x\n", p);
+//	puts(__func__);
+//	printf("p = %x\n", p);
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
