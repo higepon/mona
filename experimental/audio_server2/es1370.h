@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include <pci/pci.h>
+#include <pci/Pci.h>
+#include "audio_driver.h"
 
 enum
 {
@@ -78,23 +79,7 @@ enum STATE
 	RUNNING,
 };
 
-enum AudioResult
-{
-	OK = 0,
-	NG,
-};
-
-typedef void* handle_t;
-typedef int error_t;
-typedef int codec_command_t;
-
-struct audio_data_format
-{
-	int sample_rate;
-	int bits;
-	int channels;
-};
-
+extern "C" struct audio_driver *es1370_get_driver_desc();
 handle_t	es1370_new(const struct audio_data_format *f);
 void		es1370_delete(handle_t o);
 error_t		es1370_codec_command(handle_t o, codec_command_t c, ...);
@@ -102,4 +87,5 @@ error_t		es1370_start(handle_t o);
 error_t		es1370_stop(handle_t o);
 error_t		es1370_set_callback(handle_t o,
 	error_t (*callback)(void* ref, void* buffer, size_t size), void* ref);
+error_t		es1370_set_stopped_callback(handle_t o, audio_stopped_callback_t, void *ref);
 

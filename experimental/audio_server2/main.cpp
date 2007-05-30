@@ -1,16 +1,28 @@
-#include "es1370.h"
-#include <monalibc/math.h>
-#include <monalibc/stdio.h>
+#include "audio_driver.h"
+#include <math.h>
+#include <stdio.h>
+#include <setjmp.h>
+#include <monapi/syscall.h>
 
-error_t callback(void* ref, void* buffer, size_t size)
+jmp_buf jb;
+
+error_t stopped(void *ref)
+{
+	longjmp(jb, 1);
+	return OK;
+}
+
+error_t render(void* ref, void* buffer, size_t size)
 {
 	short *p = (short*)buffer;
 	static float phase = 0.0;
+	static int counter = 0;
 	float samplingRate = 44100;
 	float sinewaveFrequency = 440;
 	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;
 //	puts(__func__);
 //	printf("p = %x\n", p);
+	if( counter >= 44100*2*2*3) return NG;
 	for(unsigned int i = 0 ; i < size/4u ; i++ )
 	{
 		short wave = (short)(1000.0*sin(phase));
@@ -18,6 +30,7 @@ error_t callback(void* ref, void* buffer, size_t size)
 		*p++ = wave;
 		phase += freq;
 	}
+	counter += size;
 	return OK;
 }
 
@@ -25,24 +38,35 @@ int main()
 {
 	handle_t dev;
 	struct audio_data_format format;
+	struct audio_driver *driver;
 
 	format.sample_rate = 44100;
 	format.bits = 16;
 	format.channels = 2;
 
-	printf("callback: %x\n", &callback);
+	printf("callback: %x\n", &render);
 
-	dev = es1370_new(&format);
+	driver = audio_driver_factory("es1370");
+	if( driver == NULL ) return 1;
+
+	dev = driver->driver_new(&format);
 	if( dev == NULL )
 	{
 		puts("Couldn't open the device.");
 		return 1;
 	}
-	es1370_set_callback(dev, &callback, dev);
-	es1370_start(dev);
-	while(1);
+	driver->driver_set_render_callback(dev, &render, dev);
+	driver->driver_set_stopped_callback(dev, &stopped, dev);
+	if( setjmp(jb) != 0 ) goto End;
+	driver->driver_start(dev);
+	while(1) syscall_mthread_yield_message();
+End:
+	puts("Stopped");
 
-	es1370_delete(dev);
+	driver->driver_stop(dev);
+	driver->driver_delete(dev);
+
+	puts("Deleted");
 
 	return 0;
 }
