@@ -1,3 +1,7 @@
+2007-05-30  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Interaction.cpp (Interaction::onInput): Bug fix. Stop an abbreviation on Linux.
+
 2007-05-26  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/kernel.cpp: version => 0.3.0 Alpha9.
