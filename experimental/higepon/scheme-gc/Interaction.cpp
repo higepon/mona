@@ -25,7 +25,6 @@ void Interaction::onInput(const String& line)
     input_ += line;
     int leftParenCount  = input_.countChar('(');
     int rightParenCount = input_.countChar(')');
-
     if (input_ == "(\n")
     {
         SCHEME_WRITE(stdout, "\n");
@@ -35,14 +34,13 @@ void Interaction::onInput(const String& line)
     else if (leftParenCount - rightParenCount == 1)
     {
         // append ')' automatically
+#ifdef MONA
         input_.chop();
         input_ += ")\n";
-
-        // SCHEME_WRITE と g_terminal->outputChar は違う
         SCHEME_WRITE(stdout, ")\n");
-//        g_terminal->formatWrite(")\n");
-        //g_terminal->outputChar(')');
-        //g_terminal->outputChar('\n');
+#else
+        return;
+#endif
     }
     else if (leftParenCount != rightParenCount)
     {

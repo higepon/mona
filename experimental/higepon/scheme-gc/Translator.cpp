@@ -479,7 +479,7 @@ int Translator::translateLet(SExp* sexp, Object** object)
 {
     if (L() < 3)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        printf("%s %s:%d L() = %d\n", __func__, __FILE__, __LINE__, L());fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
     if (N(1)->type == SExp::SYMBOL)
