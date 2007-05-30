@@ -7,13 +7,13 @@ all:
 ### basic libraries
 	cd Graphics/libjpegls && touch dependencies && $(MAKE) && $(MAKE) install
 ### servers
-	cd X/gui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/gui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/NetServer && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Graphics/libgui && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Graphics/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/libnet && $(MAKE) && $(MAKE) install
 ### non-gui applications
 	cd Emulators/infones && touch dependencies && $(MAKE) && $(MAKE) install
@@ -29,11 +29,11 @@ all:
 	cd Multimedia/bplayer && touch dependencies && $(MAKE) && $(MAKE) install
 ### MonaForms applications
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
-	cd X/monafile && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 ### BayGUI applications
 	cd Shells/gshell && touch dependencies && $(MAKE) && $(MAKE) install
-	cd X/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
@@ -60,9 +60,9 @@ clean:
 	cd Emulators/monasq && $(MAKE) clean
 	cd Emulators/monamona && $(MAKE) clean
 	cd Graphics/jpegview && $(MAKE) clean
-	cd Graphics/libbaygui && $(MAKE) clean
+	cd Gui/libbaygui && $(MAKE) clean
 	cd Graphics/libjpegls && $(MAKE) clean
-	cd Graphics/libgui && $(MAKE) clean
+	cd Gui/libgui && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
 	cd Misc/helloworld && $(MAKE) clean
@@ -79,9 +79,9 @@ clean:
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean
 	cd Sysutils/libPci && $(MAKE) clean
-	cd X/gui && $(MAKE) clean
-	cd X/glaunch && $(MAKE) clean
-	cd X/monafile && $(MAKE) clean
+	cd Gui/gui && $(MAKE) clean
+	cd Gui/glaunch && $(MAKE) clean
+	cd Gui/monafile && $(MAKE) clean
 	cd Benchmarks/gfire && $(MAKE) clean
 	cd Benchmarks/gnoiz2bg && $(MAKE) clean
 	cd Games/ghebtn && $(MAKE) clean

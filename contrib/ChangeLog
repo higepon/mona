@@ -1,3 +1,9 @@
+2007-05-30  higepon  <higepon@users.sourceforge.jp>
+
+        * Move libgui from Graphics to Gui.
+
+        * Rename X to Gui.
+
 2007-05-27  higepon  <higepon@users.sourceforge.jp>
 
         * Graphics/libgui/stub.cpp : Bug fix. libbaygui should depend on libc. If not, dll initialize sequneces will be broken.
