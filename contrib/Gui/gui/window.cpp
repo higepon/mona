@@ -446,17 +446,24 @@ bool WindowHandler(MessageInfo* msg)
             }
             else
             {
+
                 max_loop_count = size;
             }
             int i;
-            for (i = 0; i <= max_loop_count; i++)
+            char str[128];
+            for (i = 0; i < max_loop_count; i++)
             {
                 guiserver_window* w = windows[i];
-                *(uint32_t*)(&msg->str[i * sizeof(uint32_t)]) = w->Handle;
+                *((uint32_t*)(&str[i * sizeof(uint32_t)])) = w->Handle;
             }
-            Message::reply(msg, max_loop_count);
+            Message::reply(msg, max_loop_count, NULL, str);
             break;
         }
+        // タイトル情報
+        case MSG_GUISERVER_GETTITLE:
+            guiserver_window* w = GetWindowPointer(msg->arg1);
+            Message::reply(msg, NULL, NULL, w->name);
+            break;
         // マウス情報
         case MSG_MOUSE_INFO:
             ProcessMouseInfo(msg);

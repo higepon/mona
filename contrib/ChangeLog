@@ -1,3 +1,13 @@
+2007-06-01  higepon  <higepon@users.sourceforge.jp>
+
+        * Gui/gui/window.cpp (WindowHandler): Add MSG_GUISERVER_GETTITLE.
+
+        * Gui/libgui/System/Mona/Info.cpp (gui_get_window_title): Add.
+
+        * Gui/gui/servers/gui.h : Add MSG_GUISERVER_GETTITLE.
+
+        * Gui/libgui/System/Mona/Info.cpp (gui_enum_windows): Add.
+
 2007-05-31  higepon  <higepon@users.sourceforge.jp>
 
         * Gui/libgui/System/Mona/Info.cpp : Add.

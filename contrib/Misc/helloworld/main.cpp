@@ -6,10 +6,21 @@
 
 #if 1
 
+#include <gui/System/Mona/Info.h>
+
 int main(int argc, char* argv[])
 {
 //    char buf[128];
     printf("Hello, World\n");
+    int num;
+    uint32_t* handles = System::Mona::gui_enum_windows(&num);
+    for (int i = 0; i < num; i++)
+    {
+        char buffer[WINDOW_TITLE_MAX_LENGTH];
+        System::Mona::gui_get_window_title(handles[i], buffer);
+        printf("handle=%x %s\n", handles[i], buffer);
+    }
+    delete[] handles;
 //    _printf(buf);
     return -1;
 }

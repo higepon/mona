@@ -183,6 +183,7 @@ namespace System { namespace Mona { namespace Forms
             ctrl->Create();
         }
         END_FOREACH_AL
+        this->set_Name();
     }
 
     void Control::Close()
@@ -357,16 +358,22 @@ namespace System { namespace Mona { namespace Forms
     void Control::set_Text(String text)
     {
         if (this->text == text) return;
-
+        this->set_Name();
         this->text = text;
+        this->OnTextChanged(EventArgs::get_Empty());
+    }
+
+    void Control::set_Name()
+    {
+        if (this->buffer == NULL) return;
         int len = text.get_Length();
-        len = len >= 32 ? 31 : len;
+        len = len >= WINDOW_TITLE_MAX_LENGTH ? WINDOW_TITLE_MAX_LENGTH - 1 : len;
+        if (this->buffer == NULL) this->Create();
         for (int i = 0; i < len; i++)
         {
             this->_object->name[i] = this->text[i];
         }
-        this->_object->name[31] = '\0';
-        this->OnTextChanged(EventArgs::get_Empty());
+        this->_object->name[len] = '\0';
     }
 
     void Control::OnTextChanged(_P<EventArgs> e)

@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 LIB_STATIC   = libgui.a
 TARGET       = $(LIB_STATIC)
 
@@ -87,6 +91,7 @@ endif
 	$(INSTALL) -p -m 0644 ./gui/System/Collections/*.h $(INCDIR)/gui/System/Collections
 	$(INSTALL) -p -m 0644 ./gui/System/Drawing/*.h $(INCDIR)/gui/System/Drawing
 	$(INSTALL) -p -m 0644 ./gui/System/Mona/Forms/*.h $(INCDIR)/gui/System/Mona/Forms
+	$(INSTALL) -p -m 0644 ./gui/System/Mona/*.h $(INCDIR)/gui/System/Mona
 	$(INSTALL) -p -m 0644 ./gui/System/Text/*.h $(INCDIR)/gui/System/Text
 	$(INSTALL) -p MONAFRMS.MSH $(BINDIR)/APPS
 	$(INSTALL) -p MONAFRMS.INI $(BINDIR)/APPS
