@@ -28,4 +28,7 @@
 (define (audio)
   (start-process "/APPS/AUDIO.EX5"))
 
+(define (h)
+  (start-process "/APPS/HELLO.EX5"))
+
 (gui)
