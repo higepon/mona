@@ -88,7 +88,10 @@ handle_t es1370_new(const struct audio_data_format *f)
 void es1370_delete(handle_t o)
 {
 	if( o == NULL ) return;
-	delete ((struct es1370_driver*)o)->thread;
+	struct es1370_driver *d = (struct es1370_driver*)o;
+	delete d->thread;
+	monapi_deallocate_dma_memory(d->dmabuf1, d->bufsize);
+	monapi_deallocate_dma_memory(d->dmabuf2, d->bufsize);
 	free(o);
 	instance = NULL;
 	return;

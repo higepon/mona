@@ -22,7 +22,7 @@ error_t render(void* ref, void* buffer, size_t size)
 	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;
 //	puts(__func__);
 //	printf("p = %x\n", p);
-	if( counter >= 44100*2*2*3) return NG;
+	if( counter >= 44100*2*3) return NG;
 	for(unsigned int i = 0 ; i < size/4u ; i++ )
 	{
 		short wave = (short)(1000.0*sin(phase));
@@ -47,6 +47,7 @@ int main()
 	printf("callback: %x\n", &render);
 
 	driver = audio_driver_factory("es1370");
+	puts("got a driver");
 	if( driver == NULL ) return 1;
 
 	dev = driver->driver_new(&format);
@@ -65,8 +66,6 @@ End:
 
 	driver->driver_stop(dev);
 	driver->driver_delete(dev);
-
-	puts("Deleted");
 
 	return 0;
 }
