@@ -19,6 +19,7 @@ SOURCES = \
 	System/Drawing/Font.cpp \
 	System/Drawing/Graphics.cpp \
 	System/Drawing/Rectangle.cpp \
+	System/Mona/Info.cpp \
 	System/Mona/Forms/Application.cpp \
 	System/Mona/Forms/Button.cpp \
 	System/Mona/Forms/Control.cpp \

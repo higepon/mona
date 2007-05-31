@@ -1,3 +1,12 @@
+2007-05-31  higepon  <higepon@users.sourceforge.jp>
+
+        * Gui/libgui/System/Mona/Info.cpp : Add.
+
+        * Gui/libgui/gui/System/Mona/Info.h: Add.
+
+        * Gui/gui/servers/gui.h (struct): Add name attribute to guiserver_window.
+                                  (enum): Add MSG_GUISERVER_ENUMWINDOWS.
+
 2007-05-30  higepon  <higepon@users.sourceforge.jp>
 
         * Move libgui from Graphics to Gui.

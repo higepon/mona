@@ -24,6 +24,7 @@ enum
 	MSG_GUISERVER_ACTIVATED,
 	MSG_GUISERVER_DEACTIVATE,
 	MSG_GUISERVER_ACTIVATEWINDOW,
+	MSG_GUISERVER_ENUMWINDOWS,
 	
 	MSG_GUISERVER_CREATEOVERLAP = 0x41e0,
 	MSG_GUISERVER_DISPOSEOVERLAP,
@@ -71,6 +72,7 @@ typedef struct
 	guiserver_bitmap* __internal1;
 	bool __internal2;
 	int Protocol;
+	char name[32];
 	char __reserved[60];
 } guiserver_window;
 

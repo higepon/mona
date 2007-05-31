@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 //    char buf[128];
     printf("Hello, World\n");
 //    _printf(buf);
-    return 0;
+    return -1;
 }
 
 #endif
