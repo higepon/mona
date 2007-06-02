@@ -1,3 +1,8 @@
+2007-06-01  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE): Add (mona-gui-enum-windows).
+                                                    (PROCEDURE): Add (mona-gui-get-window-title handle).
+
 2007-05-30  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/Interaction.cpp (Interaction::onInput): Bug fix. Stop an abbreviation on Linux.
