@@ -1,8 +1,10 @@
 #include "audio_driver.h"
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <setjmp.h>
 #include <monapi/syscall.h>
+#include <monapi/messages.h>
 
 jmp_buf jb;
 
@@ -43,15 +45,30 @@ error_t frender(void *ref, void *buffer ,size_t size, size_t *wrote)
 	return OK;
 }
 
+error_t cmrender(void *ref, void *buffer ,size_t size, size_t *wrote)
+{
+	monapi_cmemoryinfo *cmi = (monapi_cmemoryinfo*)ref;
+	static unsigned int pos = 0;
+	size_t write = size;
+	pos += size;
+	if( cmi->Size - pos < size ) write = cmi->Size - pos;
+	memcpy(buffer, cmi->Data+pos, write);
+	*wrote = write;
+	if( cmi->Size - pos < size ) return NG;
+	return OK;
+}
+
 int main()
 {
 	handle_t dev;
 	struct audio_data_format format;
 	struct audio_driver *driver;
-	FILE *fp;
-	fp = fopen("/APPS/TEST.RAW", "r");
-	if( fp == NULL ) return 1;
-	setbuf(fp, NULL);
+	monapi_cmemoryinfo *cmi;
+	cmi = monapi_file_read_all("/APPS/TEST.RAW");
+//	FILE *fp;
+//	fp = fopen("/APPS/TEST.RAW", "r");
+//	if( fp == NULL ) return 1;
+//	setbuf(fp, NULL);
 
 	format.sample_rate = 44100;
 	format.bits = 16;
@@ -70,7 +87,8 @@ int main()
 		return 1;
 	}
 	//driver->driver_set_render_callback(dev, &render, dev);
-	driver->driver_set_render_callback(dev, &frender, fp);
+	//driver->driver_set_render_callback(dev, &frender, fp);
+	driver->driver_set_render_callback(dev, &cmrender, cmi);
 	driver->driver_set_stopped_callback(dev, &stopped, dev);
 	if( setjmp(jb) != 0 ) goto End;
 	driver->driver_start(dev);
@@ -78,7 +96,7 @@ int main()
 End:
 	puts("Stopped");
 
-	fclose(fp);
+//	fclose(fp);
 	driver->driver_stop(dev);
 	driver->driver_delete(dev);
 

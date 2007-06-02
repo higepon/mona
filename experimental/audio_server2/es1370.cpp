@@ -291,9 +291,9 @@ static void es1370_interrupt_catcher(void* a)
 				if( d->state == RUNNING )
 				{
 			//		puts("INTERRUPTED");
-			//		es1370_stop_playback(d);
+					es1370_stop_playback(d);
 					result = es1370_buffer_setter(d);
-			//		es1370_start_playback(d);
+					es1370_start_playback(d);
 					if( result != OK )
 					{
 						d->state = PAUSE;
