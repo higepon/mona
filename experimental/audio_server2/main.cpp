@@ -1,71 +1,37 @@
-#include "audio_driver.h"
-#include <math.h>
 #include <stdio.h>
-#include <setjmp.h>
-#include <monapi/syscall.h>
+#include <monapi/Message.h>
+#include "servers/audio.h"
+#include "audio_server.h"
 
-jmp_buf jb;
-
-error_t stopped(void *ref)
+int main(int argc, char *argv[])
 {
-	longjmp(jb, 1);
-	return OK;
-}
+	AudioServer server;
+	MessageInfo msg;
 
-error_t render(void* ref, void* buffer, size_t size)
-{
-	short *p = (short*)buffer;
-	static float phase = 0.0;
-	static int counter = 0;
-	float samplingRate = 44100;
-	float sinewaveFrequency = 440;
-	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;
-//	puts(__func__);
-//	printf("p = %x\n", p);
-	if( counter >= 44100*2*3) return NG;
-	for(unsigned int i = 0 ; i < size/4u ; i++ )
+	server = audio_server_new();
+	printf("Audio server was started.\n");
+	while(1)
 	{
-		short wave = (short)(1000.0*sin(phase));
-		*p++ = wave;
-		*p++ = wave;
-		phase += freq;
+		if( MonAPI::Message::receive(&msg) ) continue;
+		switch(msg.header)
+		{
+			case MSG_AUDIO_NEW_CHANNEL:
+				audio_new_channel(server, &msg);
+				break;
+			case MSG_AUDIO_DELETE_CHANNEL:
+				audio_delete_channel(server, &msg);
+				break;
+			case MSG_AUDIO_START:
+				audio_start(server, &msg);
+				break;
+			case MSG_AUDIO_STOP:
+				audio_stop(server, &msg);
+				break;
+			case MSG_AUDIO_SET_FORMAT:
+				audio_set_format(server, &msg);
+				break;
+			default: break;
+		}
 	}
-	counter += size;
-	return OK;
-}
-
-int main()
-{
-	handle_t dev;
-	struct audio_data_format format;
-	struct audio_driver *driver;
-
-	format.sample_rate = 44100;
-	format.bits = 16;
-	format.channels = 2;
-
-	printf("callback: %x\n", &render);
-
-	driver = audio_driver_factory("es1370");
-	puts("got a driver");
-	if( driver == NULL ) return 1;
-
-	dev = driver->driver_new(&format);
-	if( dev == NULL )
-	{
-		puts("Couldn't open the device.");
-		return 1;
-	}
-	driver->driver_set_render_callback(dev, &render, dev);
-	driver->driver_set_stopped_callback(dev, &stopped, dev);
-	if( setjmp(jb) != 0 ) goto End;
-	driver->driver_start(dev);
-	while(1) syscall_mthread_yield_message();
-End:
-	puts("Stopped");
-
-	driver->driver_stop(dev);
-	driver->driver_delete(dev);
-
 	return 0;
 }

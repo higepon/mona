@@ -30,7 +30,7 @@ struct es1370_driver
 	PciInf pciinfo;
 	Pci *pci;
 	Thread *thread;
-	error_t (*callback)(void* ref, void* buffer, size_t size);
+	error_t (*callback)(void* ref, void* buffer, size_t size, size_t *wrote);
 	error_t (*stopped_callback)(void* ref);
 	void *ref;
 	void *stopped_ref;
@@ -41,12 +41,12 @@ struct es1370_driver
 };
 
 static error_t es1370_device_init(struct es1370_driver *d, const struct audio_data_format *f);
-static void es1370_set_sample_rate(struct es1370_driver* d);
-static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
-static void es1370_set_bits(struct es1370_driver* d);
-static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
-static void es1370_start_playback(struct es1370_driver *d);
-static void es1370_stop_playback(struct es1370_driver *d);
+inline static void es1370_set_sample_rate(struct es1370_driver* d);
+inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
+inline static void es1370_set_bits(struct es1370_driver* d);
+inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
+inline static void es1370_start_playback(struct es1370_driver *d);
+inline static void es1370_stop_playback(struct es1370_driver *d);
 static error_t es1370_buffer_setter(struct es1370_driver *d);
 static void es1370_interrupt_catcher(void* a);
 static void es1370_notifier(void* a);
@@ -125,7 +125,7 @@ error_t es1370_stop(handle_t o)
 }
 
 error_t es1370_set_callback(handle_t o,
-	error_t (*callback)(void* ref, void* buffer, size_t size), void* ref)
+	error_t (*callback)(void* ref, void* buffer, size_t size, size_t*), void* ref)
 {
 	struct es1370_driver* d = (struct es1370_driver*)o;
 	d->callback = callback;
@@ -147,13 +147,14 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	printf("callback = %x\n", d->callback);
 //	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
 	error_t result;
+	size_t wrote;
 	void *buf;
 	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
-	result = d->callback(d->ref, buf, d->bufsize);
+	result = d->callback(d->ref, buf, d->bufsize, &wrote);
 //	puts("set_buffer");
-	es1370_set_buffer(d, buf, d->bufsize);
-	es1370_set_sample_count(d, d->bufsize/2-1);
+	es1370_set_buffer(d, buf, wrote);
+	es1370_set_sample_count(d, wrote/2-1);
 	return result;
 }
 
@@ -192,7 +193,7 @@ static error_t es1370_device_init(struct es1370_driver *d, const struct audio_da
 	return OK;
 }
 
-static void es1370_set_sample_rate(struct es1370_driver* d)
+inline static void es1370_set_sample_rate(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_CONTROL);
 	ctrl |= d->rate;
@@ -209,7 +210,7 @@ union frame_reg
 	}s;
 };
 
-static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
+inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
 //	puts(__func__);
 //	printf("p = %x\n", p);
@@ -223,19 +224,19 @@ static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
 }
 
-static void es1370_set_bits(struct es1370_driver* d)
+inline static void es1370_set_bits(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	ctrl |= d->bits;
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, ctrl);
 }
 
-static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
+inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
 {
 	outp32(d->baseIO+ES1370_REG_DAC1_SCOUNT, count);
 }
 
-static void es1370_start_playback(struct es1370_driver *d)
+inline static void es1370_start_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
 
@@ -256,7 +257,7 @@ static void es1370_start_playback(struct es1370_driver *d)
 	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
 }
 
-static void es1370_stop_playback(struct es1370_driver *d)
+inline static void es1370_stop_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
 
@@ -290,9 +291,9 @@ static void es1370_interrupt_catcher(void* a)
 				if( d->state == RUNNING )
 				{
 			//		puts("INTERRUPTED");
-					es1370_stop_playback(d);
+			//		es1370_stop_playback(d);
 					result = es1370_buffer_setter(d);
-					es1370_start_playback(d);
+			//		es1370_start_playback(d);
 					if( result != OK )
 					{
 						d->state = PAUSE;

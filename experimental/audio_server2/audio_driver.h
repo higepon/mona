@@ -18,7 +18,7 @@ enum AudioResult
 typedef void* handle_t;
 typedef int error_t;
 typedef int codec_command_t;
-typedef error_t (*audio_render_callback_t)(void*, void*, size_t);
+typedef error_t (*audio_render_callback_t)(void*, void*, size_t, size_t*);
 typedef error_t (*audio_stopped_callback_t)(void*);
 
 struct audio_data_format

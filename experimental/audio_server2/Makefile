@@ -4,10 +4,10 @@ export MONADIR=$(shell cd $(PWD)/../../mona; pwd)
 endif
 
 TARGET  = AUDIO
-SOURCES = main.cpp es1370.cpp audio_driver.cpp
+SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES =  
+INSTFILES = test.raw
 CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 
@@ -28,7 +28,7 @@ ADDLINK += -lpci-imp
 install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
-#	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
+	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
 
 
 CXXFLAGS += -I$(INCDIR)/stlport -fpermissive -DDEBUG
