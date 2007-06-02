@@ -84,6 +84,8 @@ env->defineVariable(new Variable("interaction-environment"), new InteractionEnvi
 env->defineVariable(new Variable("call-process"), new CallProcess());
 env->defineVariable(new Variable("start-process"), new StartProcess());
 env->defineVariable(new Variable("call-process-out-string"), new CallProcessOutString());
+env->defineVariable(new Variable("mona-gui-get-window-title"), new MonaGuiGetWindowTitle());
+env->defineVariable(new Variable("mona-gui-enum-windows"), new MonaGuiEnumWindows());
 env->defineVariable(new Variable("mona-halt"), new MonaHalt());
 env->defineVariable(new Variable("mona-reboot"), new MonaReboot());
 env->defineVariable(new Variable("mona-kill"), new MonaKill());

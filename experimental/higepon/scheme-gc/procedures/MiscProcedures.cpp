@@ -341,6 +341,48 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
     RETURN_BOOLEAN(false);
 }
 
+#ifdef MONA
+#include <gui/System/Mona/Info.h>
+#endif
+
+PROCEDURE(MonaGuiGetWindowTitle, "mona-gui-get-window-title")
+{
+#ifdef MONA
+    ARGC_SHOULD_BE(1);
+    CAST(ARGV(0), Number, handle);
+    char buffer[WINDOW_TITLE_MAX_LENGTH];
+    System::Mona::gui_get_window_title((uint32_t)handle->value(), buffer);
+    return new SString(buffer, lineno());
+#endif
+    RETURN_BOOLEAN(false);
+}
+
+PROCEDURE(MonaGuiEnumWindows, "mona-gui-enum-windows")
+{
+#ifdef MONA
+    int num;
+    uint32_t* handles = System::Mona::gui_enum_windows(&num);
+    if (0 == num)
+    {
+        return SCM_NIL;
+    }
+    else
+    {
+        Objects* objects = new Objects;
+
+        for (int i = 0; i < num; i++)
+        {
+            objects->add(new Number(handles[i]));
+        }
+        Pair* ret;
+        SCM_LIST(objects, ret, lineno());
+        delete[] handles;
+        return ret;
+    }
+#endif
+    RETURN_BOOLEAN(false);
+}
+
 PROCEDURE(MonaHalt, "mona-halt")
 {
 #ifdef MONA
@@ -397,5 +439,3 @@ PROCEDURE(MonaPs, "mona-ps")
 #endif
     RETURN_BOOLEAN(false);
 }
-
-

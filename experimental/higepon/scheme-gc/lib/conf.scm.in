@@ -31,4 +31,7 @@
 (define (h)
   (start-process "/APPS/HELLO.EX5"))
 
+(define (w)
+  (map mona-gui-get-window-title (mona-gui-enum-windows)))
+
 (gui)

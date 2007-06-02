@@ -1464,6 +1464,40 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class MonaGuiGetWindowTitle : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaGuiGetWindowTitle()  : procedureName_("mona-gui-get-window-title") {}
+    virtual ~MonaGuiGetWindowTitle() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-gui-get-window-title";}
+    virtual ::util::String typeString() const { return "mona-gui-get-window-title"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class MonaGuiEnumWindows : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaGuiEnumWindows()  : procedureName_("mona-gui-enum-windows") {}
+    virtual ~MonaGuiEnumWindows() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-gui-enum-windows";}
+    virtual ::util::String typeString() const { return "mona-gui-enum-windows"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class MonaHalt : public PrimitiveProcedure
 {
 private:
