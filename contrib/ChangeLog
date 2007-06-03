@@ -1,3 +1,7 @@
+2007-06-02  higepon  <higepon@users.sourceforge.jp>
+
+        * Gui/libgui/System/Mona/Info.cpp (Mona): Add gui_move_window.
+
 2007-06-01  higepon  <higepon@users.sourceforge.jp>
 
         * Gui/gui/window.cpp (WindowHandler): Add MSG_GUISERVER_GETTITLE.

@@ -5,6 +5,73 @@
 #include <monapi.h>
 
 #if 1
+/*
+ * simple.c
+ */
+//#include <stdio.h>
+//#include <string.h>
+#include "oniguruma.h"
+
+extern int main(int argc, char* argv[])
+{
+  int r;
+  unsigned char *start, *range, *end;
+  regex_t* reg;
+  OnigErrorInfo einfo;
+  OnigRegion *region;
+
+  char buf[32];
+  malloc(30);
+  sprintf(buf, "hige");
+
+  static UChar* pattern = (UChar* )"a(.*)b|[e-f]+";
+  static UChar* str     = (UChar* )"zzzzaffffffffb";
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  r = onig_new(&reg, pattern, pattern + strlen((char* )pattern),
+	ONIG_OPTION_DEFAULT, ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &einfo);
+  if (r != ONIG_NORMAL) {
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    char s[ONIG_MAX_ERROR_MESSAGE_LEN];
+    onig_error_code_to_str((uint8_t*)s, r, &einfo);
+    fprintf(stderr, "ERROR: %s\n", s);
+    return -1;
+  }
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  region = onig_region_new();
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  end   = str + strlen((char* )str);
+  start = str;
+  range = end;
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  r = onig_search(reg, str, end, start, range, region, ONIG_OPTION_NONE);
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  if (r >= 0) {
+    int i;
+  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    fprintf(stderr, "match at %d\n", r);
+    for (i = 0; i < region->num_regs; i++) {
+      fprintf(stderr, "%d: (%d-%d)\n", i, region->beg[i], region->end[i]);
+    }
+  }
+  else if (r == ONIG_MISMATCH) {
+    fprintf(stderr, "search fail\n");
+  }
+  else { /* error */
+    char s[ONIG_MAX_ERROR_MESSAGE_LEN];
+    onig_error_code_to_str((uint8_t*)s, r);
+    fprintf(stderr, "ERROR: %s\n", s);
+    return -1;
+  }
+
+  onig_region_free(region, 1 /* 1:free self, 0:free contents only */);
+  onig_free(reg);
+  onig_end();
+  return 0;
+}
+
+#endif
+
+#if 0
 
 #include <gui/System/Mona/Info.h>
 

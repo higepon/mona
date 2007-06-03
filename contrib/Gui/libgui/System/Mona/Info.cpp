@@ -8,7 +8,19 @@
 namespace System { namespace Mona
 {
 
-// caller shoud delete[] ret value.
+int gui_move_window(uint32_t handle, int x, int y)
+{
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle, x, y) != 0)
+    {
+        return MONA_FAILURE;
+    }
+    return MONA_SUCCESS;
+}
+
+
+// caller should delete[] ret value.
 uint32_t* gui_enum_windows(int* num)
 {
     MessageInfo msg;
