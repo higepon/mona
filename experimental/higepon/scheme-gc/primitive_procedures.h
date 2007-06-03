@@ -1464,6 +1464,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class MonaGuiMoveWindow : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaGuiMoveWindow()  : procedureName_("mona-gui-move-window") {}
+    virtual ~MonaGuiMoveWindow() {}
+
+    virtual ::util::String toString() {    return "procedure:""mona-gui-move-window";}
+    virtual ::util::String typeString() const { return "mona-gui-move-window"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class MonaGuiGetWindowTitle : public PrimitiveProcedure
 {
 private:

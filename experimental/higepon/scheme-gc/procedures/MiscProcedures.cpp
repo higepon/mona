@@ -345,6 +345,19 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
 #include <gui/System/Mona/Info.h>
 #endif
 
+PROCEDURE(MonaGuiMoveWindow, "mona-gui-move-window")
+{
+#ifdef MONA
+    ARGC_SHOULD_BE(3);
+    CAST(ARGV(0), Number, handle);
+    CAST(ARGV(1), Number, x);
+    CAST(ARGV(2), Number, y);
+    System::Mona::gui_move_window((uint32_t)handle->value(), x->value(), y->value());
+    RETURN_BOOLEAN(true);
+#endif
+    RETURN_BOOLEAN(false);
+}
+
 PROCEDURE(MonaGuiGetWindowTitle, "mona-gui-get-window-title")
 {
 #ifdef MONA

@@ -31,7 +31,15 @@
 (define (h)
   (start-process "/APPS/HELLO.EX5"))
 
+(define-syntax aif
+  (syntax-rules ()
+    ((_ it a b c ...)
+     (let ((it a)) (if it b c ...)))))
+
 (define (w)
-  (map mona-gui-get-window-title (mona-gui-enum-windows)))
+  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+                (mona-gui-enum-windows))
+       (mona-gui-move-window it 50 100)
+       #f))
 
 (gui)
