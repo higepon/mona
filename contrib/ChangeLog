@@ -1,3 +1,7 @@
+2007-06-03  higepon  <higepon@users.sourceforge.jp>
+
+        * Set svn:inore.
+
 2007-06-02  higepon  <higepon@users.sourceforge.jp>
 
         * Gui/libgui/System/Mona/Info.cpp (Mona): Add gui_move_window.
