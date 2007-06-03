@@ -20,6 +20,7 @@
 #include <monalibc/stdlib.h>
 #include <monalibc/stdio.h>
 #include <monalibc/math.h>
+#include <monalibc/alloca.h>
 
 #ifdef __cplusplus
 extern "C" {

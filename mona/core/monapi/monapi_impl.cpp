@@ -44,7 +44,6 @@ int dllmain(uint32_t reason)
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
         break;
     default:
-        _printf("%s:%s:%d\n", __FILE__, __func__, __LINE__);
         break;
     }
     return 1;

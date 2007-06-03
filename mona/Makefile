@@ -8,12 +8,15 @@ export MINGWPREFIX
 
 COREDIR = core/monalibc core/firstboot
 
-all: tools cores
+all: tools cores externals
 tools:
 	cd tool/stlport && $(MAKE) && $(MAKE) install
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
 	cd tool/bim2bin && $(MAKE) && $(MAKE) install
+
+externals:
+	cd external/onig && $(MAKE) && $(MAKE) install
 
 cores:
 	cd core/firstboot && $(MAKE) && $(MAKE) install
@@ -62,6 +65,7 @@ ifdef CSC
 	$(MAKE) $@ -C core/PEAnalyzerLib
 	$(MAKE) $@ -C core/IL2Asm16
 endif
+	$(MAKE) $@ -C external/onig
 	$(MAKE) $@ -C core/secondboot
 	$(MAKE) $@ -C core/kernel
 	$(MAKE) $@ -C core/monapi

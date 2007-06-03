@@ -82,7 +82,7 @@ static PEData* OpenPE(const CString& path, bool prompt)
 
     if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
     {
-        if (prompt) printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
+        if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
 #ifdef NO_CACHE
         monapi_cmemoryinfo_dispose(ret->Data);
         monapi_cmemoryinfo_delete(ret->Data);
@@ -172,7 +172,7 @@ public:
     {
         if (!this->initialized && !this->Init())
         {
-            if (this->prompt) printf("%s: can not find DLL path!\n", SVR);
+            if (this->prompt) _printf("%s: can not find DLL path!\n", SVR);
             return NULL;
         }
         else if (!this->IsReady())
@@ -188,7 +188,7 @@ public:
         ret = this->Find(this->files2, DLLPATH, dll);
         if (ret == NULL)
         {
-            if (this->prompt) printf("%s: can not find: %s.DLL\n", SVR, (const char*)dll);
+            if (this->prompt) _printf("%s: can not find: %s.DLL\n", SVR, (const char*)dll);
         }
         return ret;
     }
@@ -302,7 +302,7 @@ private:
             CString name = CString(pe->Parser.GetImportTableName(i)).toUpper();
             if (!name.endsWith(".DLL"))
             {
-                if (this->prompt) printf("%s: specified dll is not valid: %s\n", SVR, (const char*)name);
+                if (this->prompt) _printf("%s: specified dll is not valid: %s\n", SVR, (const char*)name);
                 this->Result = 1;
                 return false;
             }
@@ -344,7 +344,7 @@ private:
             uint8_t* ptr = &dst->Data[addr];
             if (!data->Parser.Load(ptr))
             {
-                if (this->prompt) printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
+                if (this->prompt) _printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
                 monapi_cmemoryinfo_dispose(dst);
                 monapi_cmemoryinfo_delete(dst);
@@ -354,7 +354,7 @@ private:
             }
             if (i > 0 && !data->Parser.Relocate(ptr, ORG + addr))
             {
-                if (this->prompt) printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
+                if (this->prompt) _printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
                 monapi_cmemoryinfo_dispose(dst);
                 monapi_cmemoryinfo_delete(dst);

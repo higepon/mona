@@ -1,3 +1,21 @@
+2007-06-03  higepon  <higepon@users.sourceforge.jp>
+
+        * external/onig/onig-5.7.0 : Add a regular expression library oniguruma 5.7.0.
+
+        * core/monalibc/private/alloca.c : Add alloca. 
+
+        * core/monalibc/crt/dllmain.cpp (monalibc_initialize): 
+        We can't controll call order of DLLs. 
+        So, we need to call monapi_initialize_memory(), if it is not initialized.
+
+2007-06-02  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE): Add MonaGuiMoveWindow.
+                (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+                        (mona-gui-enum-windows))
+                        (mona-gui-move-window it 50 100)
+                        #f))
+
 2007-06-01  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/procedures/MiscProcedures.cpp (PROCEDURE): Add (mona-gui-enum-windows).

@@ -106,8 +106,8 @@ bool PEParser::ReadExportTable()
         int idx = this->exp->OrdinalBase + i;
         uint32_t addr = this->GetExportAddress(idx);
         if (addr == 0) return false;
-        //const char* name = this->GetExportName(idx);
-        //printf(name == NULL ? "- %x[%d]\n" : "- %x[%d] %s\n", addr, idx, name);
+//         const char* name = this->GetExportName(idx);
+//         _printf(name == NULL ? "- %x[%d]\n" : "- %x[%d] %s\n", addr, idx, name);
     }
     return true;
 }
