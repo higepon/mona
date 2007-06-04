@@ -8,7 +8,7 @@ export MINGWPREFIX
 
 COREDIR = core/monalibc core/firstboot
 
-all: tools cores externals
+all: mkimg
 tools:
 	cd tool/stlport && $(MAKE) && $(MAKE) install
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
@@ -39,6 +39,8 @@ endif
 	cd core/elf_server && $(MAKE) && $(MAKE) install
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/test && $(MAKE) && $(MAKE) install
+
+mkimg: cores externals tools
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
 depend: clean
