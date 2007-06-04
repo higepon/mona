@@ -15,10 +15,10 @@ tools:
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
 	cd tool/bim2bin && $(MAKE) && $(MAKE) install
 
-externals:
+externals: cores
 	cd external/onig && $(MAKE) && $(MAKE) install
 
-cores:
+cores: tools
 	cd core/firstboot && $(MAKE) && $(MAKE) install
 #ifneq ($(SKIP_DOTNET),1)
 ifdef CSC
