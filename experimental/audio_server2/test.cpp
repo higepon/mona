@@ -41,7 +41,7 @@ error_t frender(void *ref, void *buffer ,size_t size, size_t *wrote)
 {
 	FILE *fp = (FILE*)ref;
 	*wrote = fread(buffer, size, 1, fp);
-//	return feof(fp) != 0 ? NG : OK;
+	return feof(fp) != 0 ? NG : OK;
 	return OK;
 }
 
@@ -64,11 +64,11 @@ int main()
 	struct audio_data_format format;
 	struct audio_driver *driver;
 	monapi_cmemoryinfo *cmi;
-	cmi = monapi_file_read_all("/APPS/TEST.RAW");
-//	FILE *fp;
-//	fp = fopen("/APPS/TEST.RAW", "r");
-//	if( fp == NULL ) return 1;
-//	setbuf(fp, NULL);
+//	cmi = monapi_file_read_all("/APPS/TEST.RAW");
+	FILE *fp;
+	fp = fopen("/APPS/TEST.RAW", "r");
+	if( fp == NULL ) return 1;
+	setbuf(fp, NULL);
 
 	format.sample_rate = 44100;
 	format.bits = 16;
@@ -86,9 +86,9 @@ int main()
 		puts("Couldn't open the device.");
 		return 1;
 	}
-	//driver->driver_set_render_callback(dev, &render, dev);
-	//driver->driver_set_render_callback(dev, &frender, fp);
-	driver->driver_set_render_callback(dev, &cmrender, cmi);
+//	driver->driver_set_render_callback(dev, &render, dev);
+	driver->driver_set_render_callback(dev, &frender, fp);
+//	driver->driver_set_render_callback(dev, &cmrender, cmi);
 	driver->driver_set_stopped_callback(dev, &stopped, dev);
 	if( setjmp(jb) != 0 ) goto End;
 	driver->driver_start(dev);
@@ -96,7 +96,7 @@ int main()
 End:
 	puts("Stopped");
 
-//	fclose(fp);
+	fclose(fp);
 	driver->driver_stop(dev);
 	driver->driver_delete(dev);
 
