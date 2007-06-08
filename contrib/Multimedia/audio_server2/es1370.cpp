@@ -115,6 +115,7 @@ error_t es1370_start(handle_t o)
 	es1370_set_bits(d);
 	es1370_start_playback(d);
 	d->state = RUNNING;
+	es1370_buffer_setter(d);
 	return OK;
 }
 
@@ -312,12 +313,12 @@ static void es1370_interrupt_catcher(void* a)
 					result = es1370_buffer_setter(d);
 					es1370_start_playback(d);
 
-//					result = es1370_buffer_setter(d);
 					if( result != OK )
 					{
 						d->state = PAUSE;
 						return;
 					}
+					result = es1370_buffer_setter(d);
 					/*
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 					result &= ~ES1370_P1_INTR_EN;
