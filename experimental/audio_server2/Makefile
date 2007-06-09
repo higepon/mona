@@ -1,6 +1,6 @@
 ifndef $(MONADIR)
 # export MONADIR=$(PWD)/../mona
-export MONADIR=$(shell cd $(PWD)/../../mona; pwd)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = AUDIO
