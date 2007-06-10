@@ -1,3 +1,19 @@
+2007-06-09  higepon  <higepon@users.sourceforge.jp>
+        
+        * core/scheme/procedures/RegexpProcedures.cpp : Add (rxmatch reg str).        
+        
+        * core/scheme/procedures/RegexpProcedures.cpp : Add (regexp->string o).
+        
+        * core/scheme/procedures/RegexpProcedures.cpp : Add (regexp? o). 
+
+        * core/scheme/procedures/RegexpProcedures.cpp : Add.
+
+        * core/scheme/procedures/StringProcedures.cpp : Add. (string->regexp string) procedure.
+
+        * core/scheme/SRegexp.cpp : Add. For a regular expression.
+
+        * core/scheme/libcont/cont.c (cont_restore): Use stack more effectively.        
+
 2007-06-03  higepon  <higepon@users.sourceforge.jp>
 
         * external/onig/onig-5.7.0 : Add a regular expression library oniguruma 5.7.0.

@@ -39,6 +39,7 @@ endif
 	cd core/elf_server && $(MAKE) && $(MAKE) install
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/test && $(MAKE) && $(MAKE) install
+	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 mkimg: cores externals tools
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
@@ -82,4 +83,4 @@ endif
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
 	$(MAKE) $@ -C core/test
- 
+ 	$(MAKE) $@ -C core/scheme -f Makefile.mona
