@@ -83,4 +83,4 @@ endif
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
 	$(MAKE) $@ -C core/test
- 	$(MAKE) $@ -C core/scheme -f Makefile.mona
+	$(MAKE) $@ -C core/scheme -f Makefile.mona
