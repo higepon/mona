@@ -1,4 +1,9 @@
-2007-06-09  higepon  <higepon@users.sourceforge.jp>
+2007-06-10  higepon  <higepon@users.sourceforge.jp>
+        
+        * core/scheme/procedures/RegexpProcedures.cpp : Add (rxmatch-substring match i), (rxmatch-num-matches match),
+                                                            (rxmatch-end match i), (rxmatch-start match i),
+                                                            (rxmatch-before match i), (rxmatch-after match i),                                                                                                                  (regmatch &optional index), (regmatch 'before &optional index),
+                                                            (regmatch 'after &optional index),
         
         * core/scheme/procedures/RegexpProcedures.cpp : Add (rxmatch reg str).        
         
