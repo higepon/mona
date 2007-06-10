@@ -144,7 +144,7 @@ error_t es1370_set_stopped_callback(handle_t o, error_t (*callback)(void* ref), 
 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
-//	puts(__func__);
+	puts(__func__);
 //	printf("callback = %x\n", d->callback);
 //	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
 	error_t result;
@@ -153,7 +153,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 	result = d->callback(d->ref, buf, d->bufsize, &wrote);
-//	puts("set_buffer");
+	puts("set_buffer");
 	es1370_set_buffer(d, buf, wrote);
 	es1370_set_sample_count(d, wrote/2-1);
 	return result;

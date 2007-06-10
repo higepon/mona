@@ -10,6 +10,7 @@ struct audio_server
 	struct audio_data_format outputFormat;
 	handle_t device;
 	int channels;
+	uint32_t tid;
 };
 
 typedef struct audio_server* AudioServer;
