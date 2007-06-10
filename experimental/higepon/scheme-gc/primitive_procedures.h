@@ -903,6 +903,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class StringToRegexp : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    StringToRegexp()  : procedureName_("string->regexp") {}
+    virtual ~StringToRegexp() {}
+
+    virtual ::util::String toString() {    return "procedure:""string->regexp";}
+    virtual ::util::String typeString() const { return "string->regexp"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class StringCopy : public PrimitiveProcedure
 {
 private:
@@ -1066,6 +1083,57 @@ public:
 
     virtual ::util::String toString() {    return "procedure:""string->symbol";}
     virtual ::util::String typeString() const { return "string->symbol"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RegexpP : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RegexpP()  : procedureName_("regexp?") {}
+    virtual ~RegexpP() {}
+
+    virtual ::util::String toString() {    return "procedure:""regexp?";}
+    virtual ::util::String typeString() const { return "regexp?"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RegexpToString : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RegexpToString()  : procedureName_("regexp->string") {}
+    virtual ~RegexpToString() {}
+
+    virtual ::util::String toString() {    return "procedure:""regexp->string";}
+    virtual ::util::String typeString() const { return "regexp->string"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatch : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatch()  : procedureName_("rxmatch") {}
+    virtual ~RxMatch() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch";}
+    virtual ::util::String typeString() const { return "rxmatch"; }
     virtual Object* eval(Environment* env)
     {
         return this;

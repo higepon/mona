@@ -27,7 +27,10 @@ Object* Application::eval(Environment* env)
 {
     Object* procedure = function()->eval(env);
 
-    if (!procedure->isCompoundProcedure() && !procedure->isPrimitiveProcedure() && !procedure->isContinuation())
+    if (!procedure->isCompoundProcedure() &&
+        !procedure->isPrimitiveProcedure() &&
+        !procedure->isContinuation() &&
+        !procedure->isSRegexp())
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }

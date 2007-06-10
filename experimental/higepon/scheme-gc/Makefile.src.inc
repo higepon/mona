@@ -45,6 +45,8 @@ Eof.cpp\
 Variant.cpp\
 load.cpp\
 Interaction.cpp\
+SRegexp.cpp\
+SRegMatch.cpp\
 MonaTerminal.cpp\
 scheme.cpp
 
@@ -57,6 +59,7 @@ procedures/NumberProcedures.cpp\
 procedures/PairProcedures.cpp\
 procedures/Set.cpp\
 procedures/StringProcedures.cpp\
+procedures/RegexpProcedures.cpp\
 procedures/SymbolProcedures.cpp\
 procedures/True.cpp\
 procedures/Undef.cpp\

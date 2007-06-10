@@ -66,6 +66,8 @@ public:
     bool isNil() const { return type() == NIL; }
     bool isEof() const { return type() == SEOF; }
     bool isVariant() const { return type() == VARIANT; }
+    bool isSRegexp() const { return type() == REGEXP; }
+    bool isSRegMatch() const { return type() == REGMATCH; }
 public:
 
     enum
@@ -104,6 +106,8 @@ public:
         NIL,
         SEOF,
         VARIANT,
+        REGEXP,
+        REGMATCH,
     };
 };
 

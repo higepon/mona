@@ -46,7 +46,10 @@
 #include <unistd.h>
 #endif
 
-static uint32_t cont_stack_bottom = (uint32_t)NULL;
+#define STACK_FOR_RESTORE 200
+
+static uint32_t system_stack_bottom = (uint32_t)NULL;
+static uint32_t current_stack_bottom = (uint32_t)NULL;
 
 void* cont_get_stack_pointer()
 {
@@ -72,12 +75,13 @@ void* cont_get_stack_bottom()
 
 void cont_initialize()
 {
-    // fix me!
+    /* fix me! */
 #ifdef MONA
-    cont_stack_bottom = (uint32_t)cont_get_stack_pointer();
+    system_stack_bottom = (uint32_t)cont_get_stack_pointer();
 #else
-    cont_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
+    system_stack_bottom = (uint32_t)cont_get_stack_pointer() + 150;
 #endif
+    current_stack_bottom = system_stack_bottom;
 }
 
 void cont_destroy(Cont* c)
@@ -99,27 +103,155 @@ int cont_stack_expander(int i)
     return 0;
 }
 
+/*
+
+    There are four Continuation restore patterns.
+    (1)
+
+             0x00000000 ==> +-----------+
+                            |           |
+                            |           |
+                            |           |
+                            |           |
+                            |           |   /+----------+
+                            |           |  / |          |
+          restore point ==> |-----------| /  |          |
+                            |           |/   |   Cont   |
+                            |           |    |          |
+                            |-----------|    |          |
+                            |           |    +----------+
+                            |           |   /
+                            |           |  /  <=== restore!
+                            |           | /
+                            |           |/
+                            |-----------|
+    system stack bottom ==> |           |
+                            |           |
+                            |           |
+             0xffffffff ==> +-----------+
+
+    (2)
+                                            /+-----------+
+                                           / |           |
+             0x00000000 ==> +-----------+ /  |           |
+                            |           |/   |           |
+                            |-----------|    |   Cont    |
+                            |           |    |           |
+                            |           |    |           |
+                            |           |    |           |
+                            |           |    +-----------+
+                            |           |   /
+                            |           |  /
+                            |           | /   <=== restore!
+                            |           |/
+          restore point ==> |-----------|
+                            |           |
+                            |           |
+                            |           |
+                            |           |
+                            |-----------|
+    system stack bottom ==> |           |
+                            |           |
+                            |           |
+             0xffffffff ==> +-----------+
+
+
+    (3)
+             0x00000000 ==> +-----------+
+                            |           |
+                            |           |
+                            |           |
+                            |           |
+                            |           |
+                            |           |   /+----------+
+          restore point ==> |-----------|  / |          |
+                            |           | /  |   Cont   |
+                            |           |/   |          |
+                            |           |    |          |
+   current stack bottom ==> |-----------|    +----------+
+                            |           |   /
+                            |           |  /
+                            |           | /  <== restore!
+                            |           |/
+                            |-----------|
+    System stack bottom ==> |           |
+                            |           |
+                            |           |
+             0xffffffff ==> +-----------+
+
+    (4)
+                                            /+-----------+
+                                           / |           |
+                                          /  |           |
+             0x00000000 ==> +-----------+/   |           |
+                            |           |    |   Cont    |
+                            |           |    |           |
+                            |           |    |           |
+                            |           |    |           |
+                            |           |    +-----------+
+                            |           |   /
+                            |           |  /
+                            |           | /   <=== restore!
+                            |           |/
+          restore point ==> |-----------|
+                            |           |
+                            |           |
+                            |           |
+   current stack bottom ==> |-----------|
+                            |           |
+                            |-----------|
+    System stack bottom ==> |           |
+                            |           |
+                            |           |
+             0xffffffff ==> +-----------+
+
+*/
 void cont_restore(Cont* c, int r)
 {
     uint32_t i;
     uint32_t prev_stack = c->registers[7];
     register void* stack_pointer asm ("%esp");
 
-    // don't over write your current stack
-    uint32_t next_stack = (uint32_t)stack_pointer - (c->stack_size + 1000);
+    uint32_t next_stack;
+    if (system_stack_bottom == current_stack_bottom)
+    {
+        /* pattern 1 */
+        if (system_stack_bottom - ((uint32_t)stack_pointer + STACK_FOR_RESTORE) > c->stack_size)
+        {
+            next_stack = (uint32_t)stack_pointer + STACK_FOR_RESTORE;
+        }
+        /* pattern 2 */
+        else
+        {
+            next_stack = (uint32_t)stack_pointer - (c->stack_size + STACK_FOR_RESTORE);
+        }
+    }
+    else
+    {
+        /* pattern 3 */
+        if (system_stack_bottom - ((uint32_t)stack_pointer + STACK_FOR_RESTORE) > c->stack_size)
+        {
+            next_stack = system_stack_bottom - c->stack_size;
+        }
+        /* patter 4 */
+        else
+        {
+            next_stack = (uint32_t)stack_pointer - (c->stack_size + STACK_FOR_RESTORE);
+        }
+    }
 
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
-        if (prev_stack <= p[i] && p[i] <= cont_stack_bottom)
+        if (prev_stack <= p[i] && p[i] <= current_stack_bottom)
         {
             p[i] -= (prev_stack - next_stack);
         }
     }
-    // eax ebx ecx edx esi edi
+    /* eax ebx ecx edx esi edi */
     for (i = 0; i < 5; i++)
     {
-        if (prev_stack <= c->registers[i] && c->registers[i] <= cont_stack_bottom)
+        if (prev_stack <= c->registers[i] && c->registers[i] <= current_stack_bottom)
         {
             c->registers[i] -= (c->registers[i] - next_stack);
         }
@@ -129,16 +261,20 @@ void cont_restore(Cont* c, int r)
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
+    current_stack_bottom = next_stack + c->stack_size;
     mylongjmp(c->registers, r);
 }
 
 int cont_save(Cont* c)
 {
     int ret = mysetjmp(c->registers);
-    if (ret != 0) return ret;
+    if (ret != 0)
+    {
+        return ret;
+    }
 
     uint32_t current_stack = c->registers[7];
-    c->stack_size = cont_stack_bottom - current_stack;
+    c->stack_size = current_stack_bottom - current_stack;
 #ifdef USE_BOEHM_GC
     c->stack = (uint8_t*)GC_MALLOC(c->stack_size);
 #else

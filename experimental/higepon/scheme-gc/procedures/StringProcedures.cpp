@@ -5,6 +5,18 @@ using namespace util;
 using namespace std;
 using namespace monash;
 
+PROCEDURE(StringToRegexp, "string->regexp")
+{
+    ARGC_SHOULD_BE_BETWEEN(1, 2);
+    CAST(ARGV(0), SString, s);
+    bool caseFold = false;
+    if (ARGC == 2 && ARGV(1)->isTrue())
+    {
+        caseFold = true;
+    }
+    return new SRegexp(s->value(), caseFold, lineno());
+}
+
 PROCEDURE(StringCopy, "string-copy")
 {
     ARGC_SHOULD_BE(1);

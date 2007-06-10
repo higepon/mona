@@ -67,6 +67,7 @@ namespace util {
 #include "MonaTerminal.h"
 #include "Interaction.h"
 #include "RiteralConstant.h"
+#include "SRegexp.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
 #include "procedures/Undef.h"

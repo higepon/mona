@@ -75,6 +75,11 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
         Continuation* cont = (Continuation*)procedure;
         return cont->apply(arguments, env);
     }
+    else if (procedure->isSRegexp())
+    {
+        SRegexp* r = (SRegexp*)procedure;
+        return r->apply(arguments, env);
+    }
     else
     {
         RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().data());
