@@ -1107,6 +1107,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class RxMatchNumMatches : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchNumMatches()  : procedureName_("rxmatch-num-matches") {}
+    virtual ~RxMatchNumMatches() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-num-matches";}
+    virtual ::util::String typeString() const { return "rxmatch-num-matches"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class RegexpToString : public PrimitiveProcedure
 {
 private:
@@ -1134,6 +1151,91 @@ public:
 
     virtual ::util::String toString() {    return "procedure:""rxmatch";}
     virtual ::util::String typeString() const { return "rxmatch"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatchStart : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchStart()  : procedureName_("rxmatch-start") {}
+    virtual ~RxMatchStart() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-start";}
+    virtual ::util::String typeString() const { return "rxmatch-start"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatchEnd : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchEnd()  : procedureName_("rxmatch-end") {}
+    virtual ~RxMatchEnd() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-end";}
+    virtual ::util::String typeString() const { return "rxmatch-end"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatchSubString : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchSubString()  : procedureName_("rxmatch-substring") {}
+    virtual ~RxMatchSubString() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-substring";}
+    virtual ::util::String typeString() const { return "rxmatch-substring"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatchAfter : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchAfter()  : procedureName_("rxmatch-after") {}
+    virtual ~RxMatchAfter() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-after";}
+    virtual ::util::String typeString() const { return "rxmatch-after"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
+class RxMatchBefore : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    RxMatchBefore()  : procedureName_("rxmatch-before") {}
+    virtual ~RxMatchBefore() {}
+
+    virtual ::util::String toString() {    return "procedure:""rxmatch-before";}
+    virtual ::util::String typeString() const { return "rxmatch-before"; }
     virtual Object* eval(Environment* env)
     {
         return this;

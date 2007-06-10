@@ -80,6 +80,11 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
         SRegexp* r = (SRegexp*)procedure;
         return r->apply(arguments, env);
     }
+    else if (procedure->isSRegMatch())
+    {
+        SRegMatch* r = (SRegMatch*)procedure;
+        return r->apply(arguments, env);
+    }
     else
     {
         RAISE_ERROR(procedure->lineno(), "unknown procedure [%s]", procedure->toString().data());

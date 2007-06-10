@@ -74,22 +74,18 @@ Object* SRegexp::apply(Objects* arguments, Environment* env)
     int r = onig_search(reg_, start, end, start, range, region, ONIG_OPTION_NONE);
     if (r >= 0)
     {
-        int i;
-        fprintf(stderr, "match at %d\n", r);
-        for (i = 0; i < region->num_regs; i++) {
-            fprintf(stderr, "%d: (%d-%d)\n", i, region->beg[i], region->end[i]);
-        }
+        return new SRegMatch(this, region, s->value(), lineno());
     }
     else if (r == ONIG_MISMATCH)
     {
         return SCM_FALSE;
     }
     else
-    { /* error */
+    {
         char s[ONIG_MAX_ERROR_MESSAGE_LEN];
         onig_error_code_to_str((uint8_t*)s, r);
-        fprintf(stderr, "ERROR: %s\n", s);
+        RAISE_ERROR(lineno(), "%s", s);
         return NULL;
     }
-    return NULL;
 }
+

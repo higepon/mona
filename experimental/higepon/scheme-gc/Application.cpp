@@ -30,7 +30,8 @@ Object* Application::eval(Environment* env)
     if (!procedure->isCompoundProcedure() &&
         !procedure->isPrimitiveProcedure() &&
         !procedure->isContinuation() &&
-        !procedure->isSRegexp())
+        !procedure->isSRegexp() &&
+        !procedure->isSRegMatch())
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }

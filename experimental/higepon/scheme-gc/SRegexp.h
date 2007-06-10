@@ -25,6 +25,7 @@ public:
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
     virtual Object* apply(Objects* arguments, Environment* env);
+    virtual regex_t* getReg() { return reg_; }
 protected:
     ::util::String pattern_;
     bool caseFold_;

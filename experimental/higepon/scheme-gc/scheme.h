@@ -68,6 +68,7 @@ namespace util {
 #include "Interaction.h"
 #include "RiteralConstant.h"
 #include "SRegexp.h"
+#include "SRegMatch.h"
 #include "procedures/True.h"
 #include "procedures/False.h"
 #include "procedures/Undef.h"
