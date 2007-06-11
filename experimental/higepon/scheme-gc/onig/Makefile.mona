@@ -1,0 +1,123 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../; pwd)
+endif
+
+LIB_STATIC   = libonigurum.a
+TARGET       = $(LIB_STATIC)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+ifneq ($(BUILD_TARGET),ELF)
+LIB_IMPORT   = libonigurum-imp.a
+LIB_DYNAMIC  = ONIGURUM.DLL
+LIB_DYNAMIC5 = ONIGURUM.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+endif
+
+SOURCES = \
+	regcomp.c \
+	regenc.c \
+	regerror.c \
+	regexec.c \
+	regext.c \
+	reggnu.c \
+	regparse.c \
+	regposerr.c \
+	regposix.c \
+	regsyntax.c \
+	regtrav.c \
+	regversion.c \
+	st.c \
+	enc/ascii.c \
+	enc/big5.c \
+	enc/cp1251.c \
+	enc/euc_jp.c \
+	enc/euc_kr.c \
+	enc/euc_tw.c \
+	enc/gb18030.c \
+	enc/iso8859_1.c \
+	enc/iso8859_10.c \
+	enc/iso8859_11.c \
+	enc/iso8859_13.c \
+	enc/iso8859_14.c \
+	enc/iso8859_15.c \
+	enc/iso8859_16.c \
+	enc/iso8859_2.c \
+	enc/iso8859_3.c \
+	enc/iso8859_4.c \
+	enc/iso8859_5.c \
+	enc/iso8859_6.c \
+	enc/iso8859_7.c \
+	enc/iso8859_8.c \
+	enc/iso8859_9.c \
+	enc/sjis.c \
+	enc/unicode.c \
+	enc/utf16_be.c \
+	enc/utf16_le.c \
+	enc/utf32_be.c \
+	enc/utf32_le.c \
+	enc/utf8.c
+
+OBJECTS = dllmain.o $(SOURCES:.c=.o)
+INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc -I$(INCDIR)/stlport -I..
+
+all : $(TARGET)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+ifneq ($(BUILD_TARGET),ELF)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -Map onig.map
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+#	bzip2 -c $(LIB_DYNAMIC) > $@
+	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+endif
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c -o $(<:.c=.o) $(CFLAGS) $(INCLUDE) $<
+
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+	mkdir -p $(LIBDIR)
+	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
+ifneq ($(BUILD_TARGET),ELF)
+	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+	mkdir -p $(BINDIR)/LIBS
+	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+endif
+	mkdir -p $(INCDIR)/onig
+	$(INSTALL) -p -m 0644 oniggnu.h $(INCDIR)/onig
+	$(INSTALL) -p -m 0644 onigposix.h $(INCDIR)/onig
+	$(INSTALL) -p -m 0644 oniguruma.h $(INCDIR)/onig
+
+uninstall:
+	rm -f $(LIBDIR)/$(LIB_STATIC)
+ifneq ($(BUILD_TARGET),ELF)
+	rm -f $(LIBDIR)/$(LIB_IMPORT)
+	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
+endif
+	rm -f $(INCDIR)/onig/*.h
+
+-include dependencies

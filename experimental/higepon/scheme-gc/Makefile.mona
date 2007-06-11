@@ -5,19 +5,21 @@ TARGET  = SCHEME
 INSTDIR = $(BINDIR)/SERVERS
 include Makefile.src.inc
 include Makefile.mona_gc.inc
+include Makefile.onig.inc
 
 TARGET_LIBS = lib/scheme.scm lib/danny.scm lib/unittest.scm lib/core.scm lib/shell.scm lib/mona.scm lib/conf.scm lib/fib.scm lib/timer.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm test/shell.scm test/timer.scm
 ADDCFLAGS    = $(GC_CFLAGS)
-CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
-ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I . -I $(MONADIR)/include/onig
-ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) -lmonalibc-imp --enable-auto-import -lgui-imp -lonig-imp
-ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
+CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
+ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I . -I ./onig/onig-5.7.0
+ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) -lmonalibc-imp --enable-auto-import -lgui-imp
+ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
 ADDTARGETDEP =  $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm test/timer.scm
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
+ONIG_OBJECTS = $(ONIG_SOURCES:.c=.o)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 include Makefile.dep.inc
 
