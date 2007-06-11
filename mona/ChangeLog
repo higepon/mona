@@ -1,5 +1,10 @@
 2007-06-11  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/gc3/gc.cpp (gc_calloc): Add.
+                                 (gc_realloc): Add.
+
+        * core/scheme/onig : Add the oniguruma library.
+
         * core/scheme/ExtRepParser.cpp (ExtRepParser::parseDatum): Add a regexp syntax support.
 
         * core/scheme/SToken.cpp (SToken::valueString): Add a regexp syntax support.
