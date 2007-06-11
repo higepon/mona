@@ -173,6 +173,9 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
             *object = new RiteralConstant(sexp->text, sexp->lineno);SCM_ASSERT(*object);
         }
         return SUCCESS;
+    case SExp::REGEXP:
+        *object = new SRegexp(sexp->text, sexp->value == 1, sexp->lineno);SCM_ASSERT(*object);
+        return SUCCESS;
     }
     return SYNTAX_ERROR;
 }
@@ -213,6 +216,9 @@ int Translator::translatePrimitive(SExp* sexp, Object** object)
 #else
         *object = new Variable(sexp->text, sexp->lineno);SCM_ASSERT(*object);
 #endif
+        return SUCCESS;
+    case SExp::REGEXP:
+        *object = new SRegexp(sexp->text, sexp->value == 1, sexp->lineno);SCM_ASSERT(*object);
         return SUCCESS;
     }
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug

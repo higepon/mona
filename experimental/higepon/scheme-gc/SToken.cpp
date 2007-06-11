@@ -66,6 +66,8 @@ String SToken::valueString()
     case CHARCTER:
     case KEYWORD:
         return text;
+    case REGEXP:
+        return text;
     case STRING:
         ret = "\"";
         ret += text;

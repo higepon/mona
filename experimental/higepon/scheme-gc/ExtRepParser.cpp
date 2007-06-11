@@ -28,7 +28,7 @@ SToken* ExtRepParser::nextToken()
 // private
 
 // <datum> => <simple datum> | <compound datum>
-// <simple datum> => <boolean> | <number> | <character> | <string>
+// <simple datum> => <boolean> | <number> | <character> | <string> | <regexp>
 //                 | <symbol>
 Object* ExtRepParser::parseDatum()
 {
@@ -54,13 +54,14 @@ Object* ExtRepParser::parseDatum()
     case SToken::STRING:
     case SToken::VARIABLE:
     case SToken::KEYWORD:
+    case SToken::REGEXP:
         return parseSimpleDatum();
     default:
         return parseCompoundDatum();
     }
 }
 
-// <simple datum> => <boolean> | <number> | <character> | <string>
+// <simple datum> => <boolean> | <number> | <character> | <string> | <regexp>
 //                 | <symbol>
 Object* ExtRepParser::parseSimpleDatum()
 {
@@ -85,6 +86,8 @@ Object* ExtRepParser::parseSimpleDatum()
     case SToken::VARIABLE:
     case SToken::KEYWORD:
         return NEW(RiteralConstant, token_->text);
+    case SToken::REGEXP:
+        return new SRegexp(token_->text, token_->integer == 1 ? true : false, scanner_->getLineNo());
     default:
         SYNTAX_ERROR("invalid simple datum %s:%s\n", token_->typeString().data(), token_->valueString().data());
         break;

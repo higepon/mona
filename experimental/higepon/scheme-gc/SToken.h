@@ -30,7 +30,8 @@ public:
         BACK_QUOTE,
         CAMMA,
         CAMMA_AT,
-        PERIOD
+        PERIOD,
+        REGEXP,
     };
 
     int type;

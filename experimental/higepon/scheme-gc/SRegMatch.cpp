@@ -136,8 +136,8 @@ int SRegMatch::matchEnd(const ::util::String& name)
 
 Object* SRegMatch::apply(Objects* arguments, Environment* env)
 {
-    ARGC_SHOULD_BE_BETWEEN(1, 2);
-    if (ARGV(0)->isRiteralConstant())
+    ARGC_SHOULD_BE_BETWEEN(0, 2);
+    if (ARGC >= 1 && ARGV(0)->isRiteralConstant())
     {
         RiteralConstant* c = (RiteralConstant*)ARGV(0);
         bool isAfter  = c->text() == "after";

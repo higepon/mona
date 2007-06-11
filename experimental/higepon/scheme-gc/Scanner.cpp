@@ -34,7 +34,7 @@ int Scanner::getLineNo()
 
 //
 // <token> => <identifier> | <boolean> | <number>
-//          | <charcter> | <string>
+//          | <charcter> | <string> | <regexp>
 //          | ( | ) | #( | ' | ` | , | ,@ | .
 SToken* Scanner::getToken()
 {
@@ -163,6 +163,7 @@ other:
     else if (c == '#')
     {
         c = readChar();
+        String text;
         switch(c)
         {
         // <boolean> => #t | #f
@@ -181,7 +182,6 @@ other:
             // <character> => #\ <any character>
             //              | #\ <character name>
             // <character name> => space | newline
-            String text;
             for (;;)
             {
                 c = readChar();
@@ -208,6 +208,31 @@ other:
                 SYNTAX_ERROR("invalide character #\\<%s>", text.data());
             }
             break;
+        case '/':
+            // <regexp> => #/ <any character except for '/' >/i*
+            bool caseFold = false;
+            for (;;)
+            {
+                c = readChar();
+                if (c == '/')
+                {
+                    if (text.at(text.size() - 1) != '\\')
+                    {
+                        c = readChar();
+                        if (c == 'i')
+                        {
+                            caseFold = true;
+                            unReadChar(c);
+                        }
+                        break;
+                    }
+                }
+                text += c;
+            }
+            token = new SToken(SToken::REGEXP);
+            token->text = text;
+            token->integer = caseFold ? 1 : 0;
+            return token;
         }
     }
     // <string> => "<sring element>*"

@@ -66,6 +66,7 @@ public:
     bool isString() const { return type == STRING; }
     bool isQuote()  const { return type == QUOTE; }
     bool isChar()  const { return type == CHAR; }
+    bool isRegep()  const { return type == REGEXP; }
     bool isMatchAllKeyword() { return isSymbol() && text.indexOf("...") != -1; }
 
     static SExp* fromString(const ::util::String& text);
@@ -91,6 +92,7 @@ public:
         STRING,
         QUOTE,
         CHAR,
+        REGEXP,
     };
 
 private:

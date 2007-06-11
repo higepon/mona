@@ -42,6 +42,9 @@ String SExp::typeToString()
     case QUOTE:
         sprintf(buffer, "QUOTE[\'%s]\n", text.data());
         break;
+    case REGEXP:
+        sprintf(buffer, "REGEXP[\'%s]\n", text.data());
+        break;
     case SEXPS:
         sprintf(buffer, "SEXPS\n");
         break;
@@ -60,6 +63,9 @@ String SExp::typeToRawString()
         sprintf(buffer, "%d", value);
         break;
     case SYMBOL:
+        sprintf(buffer, "%s", text.data());
+        break;
+    case REGEXP:
         sprintf(buffer, "%s", text.data());
         break;
     case STRING:

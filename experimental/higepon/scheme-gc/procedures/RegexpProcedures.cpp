@@ -13,6 +13,11 @@ PROCEDURE(RegexpP, "regexp?")
 PROCEDURE(RxMatchNumMatches, "rxmatch-num-matches")
 {
     ARGC_SHOULD_BE(1);
+    if (ARGV(0)->isFalse())
+    {
+        return new Number(0, lineno());
+    }
+
     CAST(ARGV(0), SRegMatch, m);
     return new Number(m->getNumMatches(), lineno());
 }
@@ -45,7 +50,7 @@ PROCEDURE(RxMatchStart, "rxmatch-start")
 
     CAST(ARGV(0), SRegMatch, m);
     int ret;
-    if (ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
     {
         RiteralConstant* c = (RiteralConstant*)ARGV(1);
         ret = m->matchStart(c->text());
@@ -81,7 +86,7 @@ PROCEDURE(RxMatchEnd, "rxmatch-end")
 
     CAST(ARGV(0), SRegMatch, m);
     int ret;
-    if (ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
     {
         RiteralConstant* c = (RiteralConstant*)ARGV(1);
         ret = m->matchEnd(c->text());
@@ -117,7 +122,7 @@ PROCEDURE(RxMatchSubString, "rxmatch-substring")
 
     CAST(ARGV(0), SRegMatch, m);
     String ret;
-    if (ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
     {
         RiteralConstant* c = (RiteralConstant*)ARGV(1);
         int result;

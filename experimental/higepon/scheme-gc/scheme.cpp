@@ -199,6 +199,13 @@ SExp* objectToSExp(Object* o)
         sexp = new SExp(SExp::SYMBOL, o->lineno());
         sexp->text = "#f";
     }
+    else if (o->isSRegexp())
+    {
+        SRegexp* r = (SRegexp*)o;
+        sexp = new SExp(SExp::REGEXP, o->lineno());
+        sexp->text = r->pattern();
+        sexp->value = r->isCaseFold() ? 1 : 0;
+    }
     else
     {
         RAISE_ERROR(o->lineno(), "objectToSExp error %s\n", o->typeString().data());
