@@ -1,3 +1,13 @@
+2007-06-11  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/ExtRepParser.cpp (ExtRepParser::parseDatum): Add a regexp syntax support.
+
+        * core/scheme/SToken.cpp (SToken::valueString): Add a regexp syntax support.
+
+        * core/scheme/Scanner.cpp (Scanner::getToken): Add a regexp syntax support.
+
+        * core/scheme/test/regexp.scm : Add tests for a regexp.
+
 2007-06-10  higepon  <higepon@users.sourceforge.jp>
         
         * core/scheme/procedures/RegexpProcedures.cpp : Add (rxmatch-substring match i), (rxmatch-num-matches match),
