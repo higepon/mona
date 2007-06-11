@@ -1,5 +1,8 @@
 2007-06-12  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/gc3/gc.cpp (gc_realloc): Add.
+                                  (gc_calloc): Add.
+
         * core/scheme/onig/config.h : Add a gc support for oniguruma, but we stil have a bug.
 
 2007-06-11  higepon  <higepon@users.sourceforge.jp>
