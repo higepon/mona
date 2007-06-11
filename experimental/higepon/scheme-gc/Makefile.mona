@@ -15,13 +15,16 @@ ADDCFLAGS    = $(GC_CFLAGS)
 CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I . -I ./onig/onig-5.7.0
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) -lmonalibc-imp --enable-auto-import -lgui-imp
-ADDLINKDEP   =   $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
-ADDTARGETDEP =  $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm test/timer.scm
+ADDLINKDEP   =  $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
+ADDTARGETDEP =  $(ONIG_DIR) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm test/timer.scm
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 ONIG_OBJECTS = $(ONIG_SOURCES:.c=.o)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 include Makefile.dep.inc
+
+$(ONIG_DIR) : 
+	(cd onig && $(MAKE))
 
 install:all
 	mkdir -p $(INSTDIR)

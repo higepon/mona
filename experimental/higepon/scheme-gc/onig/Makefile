@@ -36,14 +36,12 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT
+	patch -p0 < onig-5.7.0.mona.diff
 	cp config.h ${WORKDIR}/
-	cp dllmain.cpp ${WORKDIR}/
-	cp Makefile.mona ${WORKDIR}/Makefile
+	cp alloca.c ${WORKDIR}/
 	touch $@
 
 .MAKE: .PATCH
-	cd ${WORKDIR} && make
 	touch $@
 
 .INSTALL: .MAKE
-	cd ${WORKDIR} && make install

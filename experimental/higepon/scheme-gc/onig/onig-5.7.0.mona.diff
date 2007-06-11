@@ -1,0 +1,19 @@
+diff -ur onig-5.7.0.orig/regint.h onig-5.7.0/regint.h
+--- onig-5.7.0.orig/regint.h	2007-06-11 23:24:01.000000000 +0900
++++ onig-5.7.0/regint.h	2007-06-11 23:25:10.000000000 +0900
+@@ -80,7 +80,6 @@
+ 
+ /* */
+ /* escape other system UChar definition */
+-#include "config.h"
+ #ifdef ONIG_ESCAPE_UCHAR_COLLISION
+ #undef ONIG_ESCAPE_UCHAR_COLLISION
+ #endif
+@@ -101,6 +100,7 @@
+ #define xrealloc    realloc
+ #define xcalloc     calloc
+ #define xfree       free
++#include "config.h"
+ 
+ #define CHECK_INTERRUPT_IN_MATCH_AT
+ 

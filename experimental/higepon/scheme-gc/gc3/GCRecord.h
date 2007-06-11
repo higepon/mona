@@ -2,6 +2,7 @@
 #define __GC_RECORD_H__
 
 #include "gc.h"
+#include "string.h"
 
 #define FOREACH_GC_RECORD(top, element) \
     for (GCRecord* element = (top)->next; element != (top); element = element->next)

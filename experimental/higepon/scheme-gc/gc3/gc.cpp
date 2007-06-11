@@ -124,6 +124,31 @@ void* gc_malloc(uint32_t size, bool haspointer)
     return r->data;
 }
 
+void* gc_realloc(void* p, size_t size)
+{
+    if (NULL == p) return gc_malloc(size);
+    if (0 == size) return NULL;
+    void* allocated = gc_malloc(size);
+    if (NULL == allocated) return NULL;
+
+    memcpy(allocated, p, size);
+    return allocated;
+}
+
+void* gc_calloc(size_t n, size_t size)
+{
+    size_t total = n * size;
+    char* p = (char*)gc_malloc(total);
+    if (NULL == p) return NULL;
+    memset(p, 0, total);
+    return p;
+}
+
+void gc_dont_free(void* p)
+{
+
+}
+
 void gc_fini()
 {
     printf("gc:gc_total_allocated_count = %d\n", gc_total_allocated_count);
