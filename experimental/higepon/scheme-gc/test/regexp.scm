@@ -159,11 +159,11 @@
 (assert-check-equal string=?
                     '((rxmatch-after (rxmatch #/abc(\d+)de/ "abc123de")) "")
                     '((rxmatch-after (rxmatch #/abc(\d+)de/ "abc123de") 0) "")
-;;                     '((rxmatch-after (rxmatch #/abc(\d+)de/ "abc123de") 1) "de")
-;;                     '((rxmatch-after (rxmatch #/abc(\d+)de(.*)/ "abc123de") 2) "")
-;;                     '((rxmatch-after (rxmatch #/abc(\d+)de(.*)/ "abc123def") 2) "")
-;;                     '((rxmatch-after (rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 1) "def")
-;;                     '((rxmatch-after (rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 2) "")
+                    '((rxmatch-after (rxmatch #/abc(\d+)de/ "abc123de") 1) "de")
+                    '((rxmatch-after (rxmatch #/abc(\d+)de(.*)/ "abc123de") 2) "")
+                    '((rxmatch-after (rxmatch #/abc(\d+)de(.*)/ "abc123def") 2) "")
+                    '((rxmatch-after (rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 1) "def")
+                    '((rxmatch-after (rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 2) "")
 )
 
 (assert-check-equal string=?
@@ -177,13 +177,24 @@
 )
 
 (assert-check-equal string=?
-                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'after) "")
-                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'after 0) "")
-                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'after 1) "de")
-                    '(((rxmatch (string->regexp "abc(\\d+)de(.*)") "abc123de") 'after 2) "")
-                    '(((rxmatch (string->regexp "abc(\\d+)de(.*)") "abc123def") 'after 2) "")
-                    '(((rxmatch (string->regexp "abc(?<test>\\d+)de(?<test2>.*)") "abc123def") 'after 1) "def")
-                    '(((rxmatch (string->regexp "abc(?<test>\\d+)de(?<test2>.*)") "abc123def") 'after 2) "")
+                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'before) "")
+                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'before 0) "")
+                    '(((rxmatch (string->regexp "abc(\\d+)de") "abc123de") 'before 1) "abc")
+                    '(((rxmatch (string->regexp "abc(\\d+)de(.*)") "abc123de") 'before 2) "abc123de")
+                    '(((rxmatch (string->regexp "abc(\\d+)de(.*)") "abc123def") 'before 2) "abc123de")
+                    '(((rxmatch (string->regexp "abc(?<test>\\d+)de(?<test2>.*)") "abc123def") 'before 1) "abc")
+                    '(((rxmatch (string->regexp "abc(?<test>\\d+)de(?<test2>.*)") "abc123def") 'before 2) "abc123de")
+)
+
+
+(assert-check-equal string=?
+                    '(((rxmatch #/abc(\d+)de/ "abc123de") 'after) "")
+                    '(((rxmatch #/abc(\d+)de/ "abc123de") 'after 0) "")
+                    '(((rxmatch #/abc(\d+)de/ "abc123de") 'after 1) "de")
+                    '(((rxmatch #/abc(\d+)de(.*)/ "abc123de") 'after 2) "")
+                    '(((rxmatch #/abc(\d+)de(.*)/ "abc123def") 'after 2) "")
+                    '(((rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 'after 1) "def")
+                    '(((rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 'after 2) "")
 )
 
 (assert-check-equal string=?
@@ -196,9 +207,25 @@
                     '(((rxmatch (string->regexp "abc(?<test>\\d+)de(?<test2>.*)") "abc123def") 'test2) "f")
 )
 
+(assert-check-equal string=?
+                    '(((rxmatch #/abc(\d+)de/ "abc123de")) "abc123de")
+                    '(((rxmatch #/abc(\d+)de/ "abc123de") 0) "abc123de")
+                    '(((rxmatch #/abc(\d+)de/ "abc123de") 1) "123")
+                    '(((rxmatch #/abc(\d+)de(.*)/ "abc123de") 2) "")
+                    '(((rxmatch #/abc(\d+)de(.*)/ "abc123def") 2) "f")
+                    '(((rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 'test) "123")
+                    '(((rxmatch #/abc(?<test>\d+)de(?<test2>.*)/ "abc123def") 'test2) "f")
+)
+
+
 (assert-check-equal =
                     '((rxmatch-num-matches (rxmatch (string->regexp "abc(\\d+)de") "abc123de")) 2)
                     '((rxmatch-num-matches (rxmatch (string->regexp "abc(\\d+)de") "hoge")) 0)
+)
+
+(assert-check-equal =
+                    '((rxmatch-num-matches (rxmatch #/abc(\d+)de/ "abc123de")) 2)
+                    '((rxmatch-num-matches (rxmatch #/abc(\d+)de/ "hoge")) 0)
 )
 
 (assert-check-false "false pattern"

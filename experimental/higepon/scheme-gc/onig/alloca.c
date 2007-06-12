@@ -151,7 +151,6 @@ alloca (size)			/* returns pointer to storage */
   if (STACK_DIR == 0)		/* unknown growth direction */
     find_stack_direction ();
 #endif
-
   /* Reclaim garbage, defined as all alloca()ed storage that
      was allocated from deeper in the stack than currently. */
   {

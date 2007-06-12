@@ -124,6 +124,11 @@ void* gc_malloc(uint32_t size, bool haspointer)
     return r->data;
 }
 
+void* gc_malloc_has_pointer(uint32_t size)
+{
+    return gc_malloc(size, true);
+}
+
 void* gc_realloc(void* p, size_t size)
 {
     if (NULL == p) return gc_malloc(size);

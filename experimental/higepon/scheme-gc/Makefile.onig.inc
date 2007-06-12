@@ -1,7 +1,6 @@
 ONIG_DIR = ./onig/onig-5.7.0
 
 ONIG_SOURCES = \
-	onig/onig-5.7.0/alloca.c \
 	onig/onig-5.7.0/regcomp.c \
 	onig/onig-5.7.0/regenc.c \
 	onig/onig-5.7.0/regerror.c \

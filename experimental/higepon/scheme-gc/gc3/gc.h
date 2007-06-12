@@ -64,6 +64,7 @@ void gc();
 void gc_init_internal(char* stack_bottom, char* data_start, char* data_end);
 void gc_fini();
 extern "C" void* gc_malloc(uint32_t size, bool haspointer = true);
+extern "C" void* gc_malloc_has_pointer(uint32_t size);
 extern "C" void* gc_realloc(void* p, size_t size);
 extern "C" void* gc_calloc(size_t n, size_t size);
 extern "C" void gc_dont_free(void* p);
