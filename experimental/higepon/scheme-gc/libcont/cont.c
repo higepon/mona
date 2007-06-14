@@ -241,7 +241,7 @@ void cont_restore(Cont* c, int r)
         }
     }
 
-    printf("current_stack_bottom = %x next_stack = %x system_stack_bottom=%x size=%x\n", current_stack_bottom, next_stack, system_stack_bottom, c->stack_size);fflush(stdout);
+    printf("c = %x current_stack_bottom = %x next_stack = %x system_stack_bottom=%x size=%x\n", c, current_stack_bottom, next_stack, system_stack_bottom, c->stack_size);fflush(stdout);
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -287,5 +287,6 @@ int cont_save(Cont* c)
     c->stack = (uint8_t*)malloc(c->stack_size);
 #endif
     memcpy(c->stack, (uint8_t*)current_stack, c->stack_size);
+    printf("save cont=%x stack=%x size=%x\n", c, c->stack, c->stack_size);fflush(stdout);
     return ret;
 }
