@@ -12,9 +12,9 @@ NFLAGS   = -felf
 include Makefile.src.inc
 
 #include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+#include Makefile.mona_gc.inc
 # たまに これで make checkする
-#include Makefile.none_gc.inc
+include Makefile.none_gc.inc
 
 include Makefile.onig.inc
 

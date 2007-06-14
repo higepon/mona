@@ -99,7 +99,7 @@ void* gc_malloc(uint32_t size, bool haspointer)
     // gc の呼出しは割り当て前に行わないとdouble free の可能性が
     gc_count++;
 //    if (gc_count % 5000 == 0)
-    if (gc_total_allocated_size - gc_total_sweeped_size > 1500 * 1024)
+    if (gc_total_allocated_size - gc_total_sweeped_size > 1500 * 1024 && gc_count % 1000 == 0)
     {
         gc();
     }

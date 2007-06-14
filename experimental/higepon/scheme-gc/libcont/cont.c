@@ -95,8 +95,10 @@ void cont_destroy(Cont* c)
 
 int cont_stack_expander(int i)
 {
+    register void* stack_pointer asm ("%esp");
     if (i < 0)
     {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return i;
     }
     cont_stack_expander(--i);
@@ -211,7 +213,6 @@ void cont_restore(Cont* c, int r)
     uint32_t i;
     uint32_t prev_stack = c->registers[7];
     register void* stack_pointer asm ("%esp");
-
     uint32_t next_stack;
     if (system_stack_bottom == current_stack_bottom)
     {
@@ -240,6 +241,7 @@ void cont_restore(Cont* c, int r)
         }
     }
 
+    printf("current_stack_bottom = %x next_stack = %x system_stack_bottom=%x size=%x\n", current_stack_bottom, next_stack, system_stack_bottom, c->stack_size);fflush(stdout);
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
@@ -256,8 +258,11 @@ void cont_restore(Cont* c, int r)
             c->registers[i] -= (c->registers[i] - next_stack);
         }
     }
+//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     cont_stack_expander((c->stack_size + 1000) / 10);
+//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
+//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
@@ -270,6 +275,7 @@ int cont_save(Cont* c)
     int ret = mysetjmp(c->registers);
     if (ret != 0)
     {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return ret;
     }
 

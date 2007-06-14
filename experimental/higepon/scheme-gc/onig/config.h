@@ -16,27 +16,60 @@ void gc_dont_free(void* p);
 
 #ifdef xmalloc
 #undef xmalloc
+
+#ifdef DUSE_MONA_GC
 #define xmalloc     gc_malloc_has_pointer
+#else
+#define xmalloc     malloc
 #endif
+
+#endif
+
 
 #ifdef xrealloc
 #undef xrealloc
+
+#ifdef DUSE_MONA_GC
 #define xrealloc     gc_realloc
+#else
+#define xrealloc     realloc
 #endif
+
+#endif
+
 
 #ifdef xcalloc
 #undef xcalloc
+
+#ifdef DUSE_MONA_GC
 #define xcalloc     gc_calloc
+#else
+#define xcalloc     calloc
 #endif
+
+#endif
+
 
 #ifdef xfree
 #undef xfree
+
+#ifdef DUSE_MONA_GC
 #define xfree     gc_dont_free
+#else
+#define xfree     free
 #endif
+
+#endif
+
 
 #ifdef xalloca
 #undef xalloca
+#ifdef DUSE_MONA_GC
 #define xalloca   gc_malloc_has_pointer
+#else
+#define xalloca   alloca
+#endif
+
 #endif
 
 #endif
