@@ -89,8 +89,8 @@ int audio_start(AudioServer o, MessageInfo *msg)
 		return -1;
 	}
 	o->driver->driver_set_render_callback(o->device, &audio_render_callback, o);
-	MonAPI::Message::reply(msg, 0);
 	o->driver->driver_start(o->device);
+	MonAPI::Message::reply(msg, 0);
 	return 0;
 }
 
@@ -165,6 +165,8 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 {
 	AudioServer serv = (AudioServer)ref;
 	MonAPI::Stream *stream = serv->stream;
+	stream->waitForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
+	printf("*wrote = %d\n", *wrote);
 	return OK;
 }

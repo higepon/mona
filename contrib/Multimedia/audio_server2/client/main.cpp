@@ -16,6 +16,11 @@ int main()
 	uint32_t readsize;
 
 	fp = fopen("/APPS/TEST.RAW", "r");
+	if( fp == NULL )
+	{
+		puts("fp is NULL");
+		return 1;
+	}
 
 	tid = Message::lookupMainThread("AUDIO.EX5");
 
