@@ -194,15 +194,21 @@ void setupArguments(List<char*>* arg) {
     malloc / free
 ----------------------------------------------------------------------*/
 void* malloc(unsigned long size) {
-    return mspace_malloc(g_msp,size);
+    void* ret = mspace_malloc(g_msp,size);
+    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    return ret;
 }
 
 void* calloc(unsigned long n, unsigned long s) {
-    return mspace_calloc(g_msp,n,s);
+    void* ret =  mspace_calloc(g_msp,n,s);
+    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    return ret;
 }
 
 void* realloc(void* address, unsigned long size) {
-    return mspace_realloc(g_msp, address, size);
+    void* ret = mspace_realloc(g_msp, address, size);
+    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    return ret;
 }
 
 void free(void * address) {
@@ -217,7 +223,9 @@ void* operator new(size_t size) {
     if (size == 0) {
         size = 1;
     }
-    return mspace_malloc(g_msp,size);
+    void* ret =  mspace_malloc(g_msp,size);
+    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    return ret;
 }
 
 void operator delete(void* address) {
@@ -230,7 +238,9 @@ void* operator new[](size_t size) {
     if (size == 0) {
         size = 1;
     }
-    return mspace_malloc(g_msp,size);
+    void* ret = mspace_malloc(g_msp,size);
+    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    return ret;
 }
 
 void operator delete[](void* address) {

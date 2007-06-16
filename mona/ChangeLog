@@ -1,3 +1,11 @@
+2007-06-16  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/monapi_impl.cpp : Warn if new/malloc/calloc/reallo returns NULL.
+
+        * core/scheme/libcont/cont.c (cont_save): Use gc_malloc_has_pointer function instead of malloc.
+
+        * core/scheme/libcont/cont.c (cont_restore): Fix a bug. Add an address relocation for different stack bottoms.
+
 2007-06-12  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/gc3/gc.cpp (gc_realloc): Add.
