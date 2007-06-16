@@ -95,10 +95,8 @@ void cont_destroy(Cont* c)
 
 int cont_stack_expander(int i)
 {
-    register void* stack_pointer asm ("%esp");
     if (i < 0)
     {
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return i;
     }
     cont_stack_expander(--i);
@@ -241,11 +239,10 @@ void cont_restore(Cont* c, int r)
         }
     }
 
-    printf("c = %x current_stack_bottom = %x next_stack = %x system_stack_bottom=%x size=%x\n", c, current_stack_bottom, next_stack, system_stack_bottom, c->stack_size);fflush(stdout);
     for (i = 0; i < c->stack_size / 4;  i++)
     {
         uint32_t* p = (uint32_t*)c->stack;
-        if (prev_stack <= p[i] && p[i] <= current_stack_bottom)
+        if (prev_stack <= p[i] && p[i] <= c->stack_bottom)
         {
             p[i] -= (prev_stack - next_stack);
         }
@@ -253,16 +250,13 @@ void cont_restore(Cont* c, int r)
     /* eax ebx ecx edx esi edi */
     for (i = 0; i < 5; i++)
     {
-        if (prev_stack <= c->registers[i] && c->registers[i] <= current_stack_bottom)
+        if (prev_stack <= c->registers[i] && c->registers[i] <= c->stack_bottom)
         {
             c->registers[i] -= (c->registers[i] - next_stack);
         }
     }
-//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     cont_stack_expander((c->stack_size + 1000) / 10);
-//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     memcpy((uint8_t*)next_stack, c->stack, c->stack_size);
-//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     uint32_t diff = c->registers[6] - c->registers[7];
     c->registers[7] = next_stack;
     c->registers[6] = next_stack + diff;
@@ -275,7 +269,6 @@ int cont_save(Cont* c)
     int ret = mysetjmp(c->registers);
     if (ret != 0)
     {
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return ret;
     }
 
@@ -283,10 +276,12 @@ int cont_save(Cont* c)
     c->stack_size = current_stack_bottom - current_stack;
 #ifdef USE_BOEHM_GC
     c->stack = (uint8_t*)GC_MALLOC(c->stack_size);
+#elif defined(USE_MONA_GC)
+    c->stack = (uint8_t*)gc_malloc_has_pointer(c->stack_size);
 #else
     c->stack = (uint8_t*)malloc(c->stack_size);
 #endif
+    c->stack_bottom = current_stack_bottom;
     memcpy(c->stack, (uint8_t*)current_stack, c->stack_size);
-    printf("save cont=%x stack=%x size=%x\n", c, c->stack, c->stack_size);fflush(stdout);
     return ret;
 }

@@ -14,11 +14,15 @@
 typedef struct Cont
 {
     uint32_t stack_size;
+    uint32_t stack_bottom;
     uint8_t* stack;
     myjmp_buf registers;
 } Cont;
 
 
+#ifdef USE_MONA_GC
+extern void* gc_malloc_has_pointer(uint32_t size);
+#endif
 void cont_initialize();
 int cont_save(Cont* c);
 void cont_restore(Cont* c, int return_value);

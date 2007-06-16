@@ -42,6 +42,7 @@
        (mona-gui-move-window it 50 100)
        #f))
 
+
 (define (wm1)
   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
                 (mona-gui-enum-windows))
@@ -219,3 +220,7 @@
           (else #f))
     (loop (+ 1 i))))
 (gui)
+
+;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
+;; (define (mona-gui-get-window-title w) w)
+;; (define (mona-gui-move-window w x y) w)

@@ -177,7 +177,6 @@ void gc_free(GCRecord* r)
     free(r);
 }
 
-
 bool gc_check_valid_record(GCRecord* r)
 {
     return r->magic == GC_MAGIC;
@@ -256,14 +255,8 @@ void gc_mark_registers()
     // 4byte単位なのに注意
     for (int i = 0; i < _JBLEN; i++)
     {
-        uint32_t valueOnRegister = registers[i];
-#if 0
-        GCRecord* r = gc_is_memory_block(valueOnRegister);
-        if (NULL != r)
-#else
         GCRecord* r;
         if (GC_IS_MEMORY_BLOCK(r, (uint32_t)registers[i]))
-#endif
         {
             GC_TRACE_OUT("      mark=%x:%x\n", valueOnRegister, &registers[i]);
             gc_mark_block(r);
