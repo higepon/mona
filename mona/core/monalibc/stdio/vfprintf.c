@@ -112,18 +112,16 @@ static int __nc_convReal(FILE *stream, double x, int prec, int width, int flags)
 		putc('-', stream); result++;
 	}
 
-#if 0
 	if( isinf(x) )
 	{
-		result += fprintf(stream, "%s", "inf");
+		result += fwrite("inf", 1, 3, stream);
 		return result;
 	}
 	if( isnan(x) )
 	{
-		result += fprintf(stream, "%s", "nan");
+		result += fwrite("nan", 1, 3, stream);
 		return result;
 	}
-#endif
 	n = (int)floor(x);
 	putc(n+0x30, stream);
 	result++;
@@ -156,14 +154,20 @@ static int __nc_vfprintf_format(FILE *stream, char **formatp, va_list argp)
 	int prec = -1;
 	int lmod = 0;
 	int large_char = 0;
-	char *format = *formatp;
+	char *format;
 	static va_list ap;
 	static int apIsAssigned = 0;
+	if( stream == NULL && formatp == NULL )
+	{
+		apIsAssigned = 0;
+		return 0;
+	}
 	if( !apIsAssigned )
 	{
 		va_copy(ap, argp);
 		apIsAssigned = 1;
 	}
+	format = *formatp;
 	char *s;
 	while(*++format) switch(*format)
 	{
@@ -390,6 +394,8 @@ int vfprintf(FILE *stream, const char *format, va_list ap)
 		}
 	}
 	while(*fp++);
+
+	__nc_vfprintf_format(NULL, NULL, ap);
 
 	return result;
 }

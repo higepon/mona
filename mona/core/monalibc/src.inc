@@ -2,7 +2,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  ctype/isblank.c ctype/iscntrl.c ctype/isdigit.c ctype/isgraph.c \
 	  ctype/islower.c ctype/isprint.c ctype/ispunct.c ctype/isspace.c \
 	  ctype/isupper.c ctype/isxdigit.c ctype/tolower.c ctype/toupper.c \
-	  math/acos.c math/asin.c math/atan.c math/atan2.c \
+	  math/acos.c math/asin.c math/atan.c math/atan2.c math/fpclassify.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
 	  math/floor.c math/fmod.c math/frexp.c math/ldexp.c math/log.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
