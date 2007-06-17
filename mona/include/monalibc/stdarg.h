@@ -43,6 +43,7 @@ typedef char* va_list;
 #define va_start(ap,last) (void)((ap)=(va_list)&(last)+sizeof(last))
 #define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
 #define va_end(ap) (void)((ap)=NULL)
+#define va_copy(dest, src) (void)(dest = src)
 
 
 #ifdef __cplusplus
