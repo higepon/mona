@@ -61,6 +61,24 @@ extern "C" {
 #define M_SQRT2		1.41421356237309504880  /* sqrt(2) */
 #define M_SQRT1_2	0.70710678118654752440  /* 1/sqrt(2) */
 
+#define FP_NAN         0
+#define FP_INFINITE    1
+#define FP_ZERO        2
+#define FP_SUBNORMAL   3
+#define FP_NORMAL      4
+
+#define fpclassify(x)   (sizeof(x) == sizeof(double) ? fpclassify_d(x) : \
+			 sizeof(x) == sizeof(double) ? fpclassify_f(x) : \
+			 FP_NAN)
+
+#define isfinite(x) ((fpclassify(x) != FP_NAN && fpclassify(x) != FP_INFINITE)?1:0)
+#define isnormal(x) ((fpclassify(x) == FP_NORMAL) ? 1 : 0)
+#define isnan(x)    ((fpclassify(x) == FP_NAN) ? 1 : 0)
+#define isinf(x)    ((fpclassify(x) == FP_INFINITE) ? 1 : 0)
+
+extern int fpclassify_d(double x);
+extern int fpclassify_f(float x);
+
 double acos(double x);
 double asin(double x);
 double atan(double x);
