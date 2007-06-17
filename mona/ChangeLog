@@ -1,3 +1,11 @@
+2007-06-17  Shotaro Tsuji <negi4d41@yahoo.co.jp>
+        
+        * core/monalibc: Added strftime.
+                         Added fpclassify macro and isfinite, isnormal, isnan, isinf.
+                         Fixed a vfprintf's bug.
+                         Added log2, round and nearbyint to math.h and va_copy to stdarg.h.
+                         Changed a vfprintf. Supported %d,%i,%u,%o,%x,%X,%f,%% and %c conversions.
+
 2007-06-16  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/monapi_impl.cpp : Warn if new/malloc/calloc/reallo returns NULL.
