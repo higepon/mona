@@ -1,6 +1,7 @@
 #include "audio_server.h"
 #include "audio_driver.h"
 #include "servers/audio.h"
+#include "monapi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <monapi/Stream.h>
@@ -53,6 +54,7 @@ int audio_new_channel(AudioServer o, MessageInfo *msg)
 		return -1;
 	}
 	o->channels = 1;
+    _logprintf("o->stream->handle() = %x\n", o->stream->handle());
 	MonAPI::Message::reply(msg, 1, o->stream->handle());
 
 	return 0;
@@ -88,7 +90,9 @@ int audio_start(AudioServer o, MessageInfo *msg)
 		MonAPI::Message::reply(msg, (uint32_t)-1);
 		return -1;
 	}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	o->driver->driver_set_render_callback(o->device, &audio_render_callback, o);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	o->driver->driver_start(o->device);
 	MonAPI::Message::reply(msg, 0);
 	return 0;
