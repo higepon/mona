@@ -17,7 +17,34 @@ ExtRepParser::~ExtRepParser()
 Object* ExtRepParser::parse()
 {
     nextToken();
-    return parseDatum();
+    Object* ret = parseDatum();
+    findSelfCall(ret);
+    return ret;
+}
+
+void ExtRepParser::findSelfCall(Object* o)
+{
+    if (!o->isPair()) return;
+    Pair* p = (Pair*)o;
+    if (!p->getCar()->isRiteralConstant()) return;
+    RiteralConstant* c = (RiteralConstant*)(p->getCar());
+    if (c->text() != "define") return;
+    if (!p->getCdr()->isPair()) return;
+    Pair* p2 = (Pair*)p->getCdr();
+    if (!p2->getCar()->isRiteralConstant()) return;
+    RiteralConstant* c2 = (RiteralConstant*)p2->getCar();
+    ::util::String name = c2->text();
+
+    if (!p2->getCdr()->isPair()) return;
+    Pair* p3 = (Pair*)p2->getCdr();
+    findNameCall(p3, name);
+}
+
+void ExtRepParser::findNameCall(Pair* p, const ::util::String& name)
+{
+
+
+
 }
 
 SToken* ExtRepParser::nextToken()

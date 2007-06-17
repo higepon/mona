@@ -17,7 +17,6 @@ static uint32_t gc_total_sweeped_size;
 
 static bool gc_check_valid_record(GCRecord* r);
 inline static GCRecord* gc_is_memory_block(uint32_t address);
-static bool gc_check_valid_record(GCRecord* r);
 static void gc_mark_stack();
 static void gc_mark_global();
 static void gc_mark_heap(GCRecord* r);
@@ -177,10 +176,10 @@ void gc_free(GCRecord* r)
     free(r);
 }
 
-bool gc_check_valid_record(GCRecord* r)
-{
-    return r->magic == GC_MAGIC;
-}
+// bool gc_check_valid_record(GCRecord* r)
+// {
+//     return r->magic == GC_MAGIC;
+// }
 
 void gc_mark_block(GCRecord* r)
 {

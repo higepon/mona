@@ -67,6 +67,7 @@ Object* SRegexp::apply(Objects* arguments, Environment* env)
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
+    printf("sstring=%s\n", s->value().data());
     OnigRegion* region = onig_region_new();
     const uint8_t* start = (const uint8_t*)s->value().data();
     const uint8_t* end   = start + s->value().size();

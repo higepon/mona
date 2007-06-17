@@ -5,7 +5,8 @@
 #include "Scanner.h"
 
 namespace monash {
-    class ExtRepParser;
+class ExtRepParser;
+class Pair;
 // External representations Parser
 class ExtRepParser
 {
@@ -20,6 +21,9 @@ protected:
     Object* parseCompoundDatum();
     Object* parseVector();
     Object* parseList();
+
+    void findSelfCall(Object* o);
+    void findNameCall(Pair* p, const ::util::String& name);
 
     SToken* nextToken();
     int tokenType();

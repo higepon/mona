@@ -30,7 +30,7 @@ String load(const String& file)
         return ret;
     }
     fseek(fp, 0, SEEK_SET);
-    int readSizeTotal = 0;
+    uint32_t readSizeTotal = 0;
     for (;;)
     {
         int readSize = fread(&buffer[readSizeTotal], 1, size - readSizeTotal, fp);

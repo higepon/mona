@@ -5,11 +5,16 @@ TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm #test/timer.scm
 
+# -O3 では gc がうごかないっぽい
 CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 #-DMACRO_TRACE
 CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 NFLAGS   = -felf
 include Makefile.src.inc
+
+# 動作がおかしかったら
+# gc を OFFに
+# 最適化をやめる
 
 #include Makefile.boehm_gc.inc
 #include Makefile.mona_gc.inc

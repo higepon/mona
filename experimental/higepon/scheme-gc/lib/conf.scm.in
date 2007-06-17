@@ -1,5 +1,9 @@
 (define mona-gui-auto-start #f)
 
+;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
+;; (define (mona-gui-get-window-title w) w)
+;; (define (mona-gui-move-window w x y) w)
+
 ;; prompt string
 (define (mona-prompt-string)
   (string-append "mona:"
@@ -46,55 +50,57 @@
 (define (wm1)
   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
                 (mona-gui-enum-windows))
-       (let loop ((x 300) (y 300))
-         (cond ((and (< x 300) (= y 10))
+       (let loop ((x 300) (y 300) (count 0))
+         (cond ((> count 1000) (print 'done))
+               ((and (< x 300) (= y 10))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop (+ x 10) y)))
+                  (loop (+ x 10) y (+ 1 count))))
                ((and (>= x 300) (<= y 300))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop x (+ 10 y))))
+                  (loop x (+ 10 y) (+ 1 count))))
                ((and (> x 10) (>= y 300))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop (- x 10) y)))
+                  (loop (- x 10) y (+ 1 count))))
                ((and (= x 10) (> y 10))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop x (- y 10))))
-               (else (loop 300 300))))
-       #f))
+                  (loop x (- y 10) (+ 1 count)))
+               (else (loop 300 300 (+ 1 count)))))
+       #f)))
 
 (define (wm2)
   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
                 (mona-gui-enum-windows))
-       (let loop ((x 10) (y 10))
-         (cond ((and (< x 300) (= y 10))
+       (let loop ((x 10) (y 10) (count 0))
+         (cond ((> count 1000) (print 'done))
+               ((and (< x 300) (= y 10))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop (+ x 10) y)))
+                  (loop (+ x 10) y (+ 1 count))))
                ((and (>= x 300) (<= y 300))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop x (+ 10 y))))
+                  (loop x (+ 10 y) (+ 1 count))))
                ((and (> x 10) (>= y 300))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop (- x 10) y)))
+                  (loop (- x 10) y (+ 1 count))))
                ((and (= x 10) (> y 10))
                 (begin
                   (mona-gui-move-window it x y)
                   (pause)
-                  (loop x (- y 10))))
-               (else (loop 10 10))))
+                  (loop x (- y 10) (+ 1 count))))
+               (else (loop 10 10 (+ 1 count)))))
        #f))
 
 
@@ -219,8 +225,15 @@
            (print i))
           (else #f))
     (loop (+ 1 i))))
+
+(define (as)
+  (start-process "/APPS/AUDIO.EX5"))
+
+(define (ac)
+  (call-process "/APPS/ACLI.EX5"))
+
+
 (gui)
 
-;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
-;; (define (mona-gui-get-window-title w) w)
-;; (define (mona-gui-move-window w x y) w)
+
+
