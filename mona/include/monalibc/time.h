@@ -69,7 +69,7 @@ time_t time(time_t *t);
 /*char *ctime(const time_t *timer);*/
 struct tm *gmtime(const time_t *timer);
 /*struct tm *localtime(const time_t *timer); */
-/*size_t strftime(char * restrict s, size_t maxsize, const char * restrict format, const struct tm * restrict timeptr); */
+size_t strftime(char * s, size_t maxsize, const char * format, const struct tm * timeptr);
 
 
 struct tm *gmtime_r(const time_t *timep, struct tm *result);
