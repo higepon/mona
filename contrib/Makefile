@@ -25,6 +25,7 @@ all:
 	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/reverse && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server2 && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server2/client && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monappt && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/bplayer && touch dependencies && $(MAKE) && $(MAKE) install
@@ -71,7 +72,8 @@ clean:
 	cd Misc/upper && $(MAKE) clean
 	cd Misc/reverse && $(MAKE) clean
 	cd Misc/gnote && $(MAKE) clean
-	cd Multimedia/audio && $(MAKE) clean
+	cd Multimedia/audio_server2 && $(MAKE) clean
+	cd Multimedia/audio_server2/client && $(MAKE) clean
 	cd Multimedia/monapeg && $(MAKE) clean
 	cd Multimedia/monappt && $(MAKE) clean
 	cd Multimedia/xmonapeg && $(MAKE) clean
