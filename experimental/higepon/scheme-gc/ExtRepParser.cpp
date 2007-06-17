@@ -42,8 +42,31 @@ void ExtRepParser::findSelfCall(Object* o)
 
 void ExtRepParser::findNameCall(Pair* p, const ::util::String& name)
 {
+    Pair* start = p;
+    for (;;)
+    {
+        Object* o = start->getCar();
+        if (o->isRiteralConstant())
+        {
+            RiteralConstant* c = (RiteralConstant*)o;
+            if (c->text() == name)
+            {
+                printf("name %s found\n", name.data());
+            }
+        }
+        else if (o->isPair())
+        {
+            findNameCall((Pair*)o, name);
+        }
 
 
+        Object* o2 = start->getCdr();
+        if (o2 == NULL || !o2->isPair())
+        {
+            break;
+        }
+        start = (Pair*)o2;
+    }
 
 }
 
