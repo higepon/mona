@@ -1,0 +1,69 @@
+(define (move-window window start-x start-y direction count coroutine-p)
+  (let* ((step (if (and (symbol? direction) (eq? direction 'right)) 10 -10))
+         (unit-size 200)
+         (end-x (+ start-x unit-size))
+         (end-y (+ start-y unit-size)))
+    (let loop ((x start-x) (y start-y) (counter 0))
+      (mona-gui-move-window window x y)
+      (and coroutine-p (pause))
+      (cond ((>= counter (* (/ unit-size step) count 4)) #f)
+            ((and (>= x start-x) (< x end-x) (= y start-y))
+             (loop (+ x step) y (+ 1 counter)))
+            ((and (= x end-x) (>= y start-y) (< y end-y))
+             (loop x (+ y step) (+ 1 counter)))
+            ((and (= y end-y) (> x start-x) (<= x end-x))
+             (loop (- x step) y (+ 1 counter)))
+            ((and (= x start-x) (>= y start-y) (<= y end-y))
+             (loop x (- y step) (+ 1 counter)))))))
+
+(define (move2)
+  (move-window
+   (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+         (mona-gui-enum-windows))
+   100
+   200
+   'right
+   2
+   #t))
+
+(define (move3)
+  (move-window
+   (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
+         (mona-gui-enum-windows))
+   10
+   20
+   'right
+   2
+   #t))
+
+
+
+
+
+(define move1 (lambda coroutine
+  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+                (mona-gui-enum-windows))
+       (let loop ((x 100) (y 100) (c 0))
+         (cond ((> c 80) #f)
+               ((and (>= x 100) (< x 300) (= y 100))
+                (begin
+                  (mona-gui-move-window it x y)
+                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
+                  (loop (+ x 10) y (+ c 1))))
+               ((and (= x 300) (>= y 100) (< y 300))
+                (begin
+                  (mona-gui-move-window it x y)
+                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
+                  (loop x (+ y 10) (+ c 1))))
+               ((and (= y 300) (> x 100) (<= x 300))
+                (begin
+                  (mona-gui-move-window it x y)
+                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
+                  (loop (- x 10) y (+ c 1))))
+               ((and (= x 100) (>= y 100) (<= y 300))
+                (begin
+                  (mona-gui-move-window it x y)
+                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
+                  (loop x (- y 10) (+ c 1))))
+               (else #f))))
+       #f))
