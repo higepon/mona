@@ -47,92 +47,92 @@
        #f))
 
 
-(define (wm1)
-  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
-                (mona-gui-enum-windows))
-       (let loop ((x 300) (y 300) (count 0))
-         (cond ((> count 1000) (print 'done))
-               ((and (< x 300) (= y 10))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop (+ x 10) y (+ 1 count))))
-               ((and (>= x 300) (<= y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop x (+ 10 y) (+ 1 count))))
-               ((and (> x 10) (>= y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop (- x 10) y (+ 1 count))))
-               ((and (= x 10) (> y 10))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop x (- y 10) (+ 1 count)))
-               (else (loop 300 300 (+ 1 count)))))
-       #f)))
+;; (define (wm1)
+;;   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+;;                 (mona-gui-enum-windows))
+;;        (let loop ((x 300) (y 300) (count 0))
+;;          (cond ((> count 1000) (print 'done))
+;;                ((and (< x 300) (= y 10))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop (+ x 10) y (+ 1 count))))
+;;                ((and (>= x 300) (<= y 300))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop x (+ 10 y) (+ 1 count))))
+;;                ((and (> x 10) (>= y 300))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop (- x 10) y (+ 1 count))))
+;;                ((and (= x 10) (> y 10))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop x (- y 10) (+ 1 count)))
+;;                (else (loop 300 300 (+ 1 count)))))
+;;        #f)))
 
-(define (wm2)
-  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
-                (mona-gui-enum-windows))
-       (let loop ((x 10) (y 10) (count 0))
-         (cond ((> count 1000) (print 'done))
-               ((and (< x 300) (= y 10))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop (+ x 10) y (+ 1 count))))
-               ((and (>= x 300) (<= y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop x (+ 10 y) (+ 1 count))))
-               ((and (> x 10) (>= y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop (- x 10) y (+ 1 count))))
-               ((and (= x 10) (> y 10))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (pause)
-                  (loop x (- y 10) (+ 1 count))))
-               (else (loop 10 10 (+ 1 count)))))
-       #f))
+;; (define (wm2)
+;;   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
+;;                 (mona-gui-enum-windows))
+;;        (let loop ((x 10) (y 10) (count 0))
+;;          (cond ((> count 1000) (print 'done))
+;;                ((and (< x 300) (= y 10))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop (+ x 10) y (+ 1 count))))
+;;                ((and (>= x 300) (<= y 300))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop x (+ 10 y) (+ 1 count))))
+;;                ((and (> x 10) (>= y 300))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop (- x 10) y (+ 1 count))))
+;;                ((and (= x 10) (> y 10))
+;;                 (begin
+;;                   (mona-gui-move-window it x y)
+;;                   (pause)
+;;                   (loop x (- y 10) (+ 1 count))))
+;;                (else (loop 10 10 (+ 1 count)))))
+;;        #f))
 
 
-(define queue (cons '() '()))
+;; (define queue (cons '() '()))
 
-(define (enqueue! process)
-  (if (null? (car queue))
-      (set-car! queue process)
-      (set-cdr! queue process)))
+;; (define (enqueue! process)
+;;   (if (null? (car queue))
+;;       (set-car! queue process)
+;;       (set-cdr! queue process)))
 
-(define (dequeue!)
-  (let ((p (cdr queue)))
-    (set-cdr! queue (car queue))
-    (set-car! queue '())
-    p))
+;; (define (dequeue!)
+;;   (let ((p (cdr queue)))
+;;     (set-cdr! queue (car queue))
+;;     (set-car! queue '())
+;;     p))
 
-(define (coroutine process)
-  (enqueue! process))
+;; (define (coroutine process)
+;;   (enqueue! process))
 
-(define (start)
-  (let ((process (dequeue!)))
-    (if (null? process)
-        'end
-        (process))))
+;; (define (start)
+;;   (let ((process (dequeue!)))
+;;     (if (null? process)
+;;         'end
+;;         (process))))
 
-(define (pause)
-  (call/cc (lambda (c)
-             (coroutine (lambda () (c #f)))
-             (start))))
+;; (define (pause)
+;;   (call/cc (lambda (c)
+;;              (coroutine (lambda () (c #f)))
+;;              (start))))
 
-(coroutine wm1)
-(coroutine wm2)
+;; (coroutine wm1)
+;; (coroutine wm2)
 
 ;; (define queue (cons '() '()))
 
@@ -235,5 +235,54 @@
 
 (gui)
 
+(define (make-queue)
+  (cons '() '()))
+
+(define (enqueue! queue obj)
+  (let ((lobj (list obj)))
+    (if (null? (car queue))
+    (begin
+      (set-car! queue lobj)
+      (set-cdr! queue lobj))
+    (begin
+      (set-cdr! (cdr queue) lobj)
+      (set-cdr! queue lobj)))
+    (car queue)))
+
+(define (dequeue! queue)
+  (if (pair? (car queue))
+      (let ((obj (car (car queue))))
+        (set-car! queue (cdr (car queue)))
+        obj)
+      (lambda () 'end)))
+
+(define process-queue (make-queue))
+
+;; (define queue (cons '() '()))
+
+;; (define (enqueue! process)
+;;   (if (null? (car queue))
+;;       (set-car! queue process)
+;;       (set-cdr! queue process)))
+
+;; (define (dequeue!)
+;;   (let ((p (cdr queue)))
+;;     (set-cdr! queue (car queue))
+;;     (set-car! queue '())
+;;     p))
+
+(define (coroutine process)
+  (enqueue!  process-queue process))
+
+(define (start)
+  (let ((process (dequeue! process-queue)))
+    (if (null? process)
+        'end
+        (process))))
+
+(define (pause)
+  (call/cc (lambda (c)
+             (coroutine (lambda () (c #f)))
+             (start))))
 
 
