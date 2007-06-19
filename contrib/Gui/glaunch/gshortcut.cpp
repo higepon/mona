@@ -249,7 +249,7 @@ void ShortCut::setType(int type)
 		setTitle("Mona HD");
 	} else if (this->type == TERMINALICON) {
 		setBounds(720, 86, 64, 64);
-		setTitle("た～みなる");
+		setTitle("Terminal");
 	} else if (this->type == TRASHBOXICON) {
 		setBounds(720, 510, 64, 64);
 		setTitle("ゴミ箱");

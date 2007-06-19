@@ -1,3 +1,8 @@
+ifndef $(MONADIR)
+# export MONADIR=$(PWD)/../mona
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 TARGET  = GLAUNCH
 SOURCES = main.cpp glaunch.cpp gshortcut.cpp
 INSTDIR = $(BINDIR)/APPS/BAYGUI

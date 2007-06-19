@@ -83,7 +83,7 @@ public:
 		
 		_P<Icon> terminal = new Icon();
 		terminal->set_Location(Point(0, offsetX));
-		terminal->set_Text("た～みなる");
+		terminal->set_Text("Terminal");
 		terminal->set_Icon(Icons_Terminal);
 		terminal->set_Target("/APPS/MONAFRMS/MSHELL.EX5");
 		terminal->Show();
