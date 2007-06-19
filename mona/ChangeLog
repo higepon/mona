@@ -1,3 +1,7 @@
+2007-06-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/lib/demo.scm.in: Addes a croutine demo to demo.scm.in.
+
 2007-06-19  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/lib/demo.scm.in: Added demo.scm
