@@ -20,6 +20,59 @@
 ))
 
 
+;; (define (make-queue)
+;;   (cons '() '()))
+
+;; (define (enqueue! queue obj)
+;;   (let ((lobj (list obj)))
+;;     (if (null? (car queue))
+;;     (begin
+;;       (set-car! queue lobj)
+;;       (set-cdr! queue lobj))
+;;     (begin
+;;       (set-cdr! (cdr queue) lobj)
+;;       (set-cdr! queue lobj)))
+;;     (car queue)))
+
+;; (define (dequeue! queue)
+;;   (if (pair? (car queue))
+;;       (let ((obj (car (car queue))))
+;;         (set-car! queue (cdr (car queue)))
+;;         obj)
+;;       (lambda () 'end)))
+
+;; (define process-queue (make-queue))
+
+;; (define queue (cons '() '()))
+
+;; (define (enqueue! process)
+;;   (if (null? (car queue))
+;;       (set-car! queue process)
+;;       (set-cdr! queue process)))
+
+;; (define (dequeue!)
+;;   (let ((p (cdr queue)))
+;;     (set-cdr! queue (car queue))
+;;     (set-car! queue '())
+;;     p))
+
+;; (define (coroutine process)
+;;   (enqueue!  process-queue process))
+
+;; (define (start)
+;;   (let ((process (dequeue! process-queue)))
+;;     (if (null? process)
+;;         'end
+;;         (process))))
+
+;; (define (pause)
+;;   (call/cc (lambda (c)
+;;              (coroutine (lambda () (c #f)))
+;;              (start))))
+
+
+
+
 (define (mona-lisa)
   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG"))
 
@@ -40,11 +93,11 @@
     ((_ it a b c ...)
      (let ((it a)) (if it b c ...)))))
 
-(define (w)
-  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
-                (mona-gui-enum-windows))
-       (mona-gui-move-window it 50 100)
-       #f))
+;; (define (w)
+;;   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+;;                 (mona-gui-enum-windows))
+;;        (mona-gui-move-window it 50 100)
+;;        #f))
 
 
 ;; (define (wm1)
@@ -234,55 +287,4 @@
 
 
 (gui)
-
-(define (make-queue)
-  (cons '() '()))
-
-(define (enqueue! queue obj)
-  (let ((lobj (list obj)))
-    (if (null? (car queue))
-    (begin
-      (set-car! queue lobj)
-      (set-cdr! queue lobj))
-    (begin
-      (set-cdr! (cdr queue) lobj)
-      (set-cdr! queue lobj)))
-    (car queue)))
-
-(define (dequeue! queue)
-  (if (pair? (car queue))
-      (let ((obj (car (car queue))))
-        (set-car! queue (cdr (car queue)))
-        obj)
-      (lambda () 'end)))
-
-(define process-queue (make-queue))
-
-;; (define queue (cons '() '()))
-
-;; (define (enqueue! process)
-;;   (if (null? (car queue))
-;;       (set-car! queue process)
-;;       (set-cdr! queue process)))
-
-;; (define (dequeue!)
-;;   (let ((p (cdr queue)))
-;;     (set-cdr! queue (car queue))
-;;     (set-car! queue '())
-;;     p))
-
-(define (coroutine process)
-  (enqueue!  process-queue process))
-
-(define (start)
-  (let ((process (dequeue! process-queue)))
-    (if (null? process)
-        'end
-        (process))))
-
-(define (pause)
-  (call/cc (lambda (c)
-             (coroutine (lambda () (c #f)))
-             (start))))
-
 

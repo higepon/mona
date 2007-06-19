@@ -1,3 +1,40 @@
+(define (make-queue)
+  (cons '() '()))
+
+(define (enqueue! queue obj)
+  (let ((lobj (list obj)))
+    (if (null? (car queue))
+    (begin
+      (set-car! queue lobj)
+      (set-cdr! queue lobj))
+    (begin
+      (set-cdr! (cdr queue) lobj)
+      (set-cdr! queue lobj)))
+    (car queue)))
+
+(define (dequeue! queue)
+  (if (pair? (car queue))
+      (let ((obj (car (car queue))))
+        (set-car! queue (cdr (car queue)))
+        obj)
+      (lambda () 'end)))
+
+(define process-queue (make-queue))
+
+(define (coroutine process)
+  (enqueue!  process-queue process))
+
+(define (start)
+  (let ((process (dequeue! process-queue)))
+    (if (null? process)
+        'end
+        (process))))
+
+(define (pause)
+  (call/cc (lambda (c)
+             (coroutine (lambda () (c #f)))
+             (start))))
+
 (define (move-window-right window start-x start-y count coroutine-p)
   (let* ((step 10)
          (unit-size 200)
@@ -34,50 +71,29 @@
             ((and (= y start-y) (<= x end-x) (> x start-x))
              (loop (- x  step) y (+ 1 counter)))))))
 
-
-
-(define (move2)
+(define (m1 coroutine-p)
   (move-window-left
-   (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
+   (find (lambda (window) (string=? (mona-gui-get-window-title window) "Terminal"))
          (mona-gui-enum-windows))
    100
    200
    2
-   #t))
+   coroutine-p
+   ))
 
-(define (move3)
+(define (m2 coroutine-p)
   (move-window-right
    (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
          (mona-gui-enum-windows))
    10
    20
    2
-   #t))
+   coroutine-p
+   ))
 
-(define move1 (lambda coroutine
-  (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))
-                (mona-gui-enum-windows))
-       (let loop ((x 100) (y 100) (c 0))
-         (cond ((> c 80) #f)
-               ((and (>= x 100) (< x 300) (= y 100))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
-                  (loop (+ x 10) y (+ c 1))))
-               ((and (= x 300) (>= y 100) (< y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
-                  (loop x (+ y 10) (+ c 1))))
-               ((and (= y 300) (> x 100) (<= x 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
-                  (loop (- x 10) y (+ c 1))))
-               ((and (= x 100) (>= y 100) (<= y 300))
-                (begin
-                  (mona-gui-move-window it x y)
-                  (if (not (null? (car coroutine))) (begin (print coroutine) (pause)) #f)
-                  (loop x (- y 10) (+ c 1))))
-               (else #f))))
-       #f))
+(define move1 (lambda () (m1 #f)))
+(define move2 (lambda () (m2 #f)))
+
+(coroutine (lambda () (m1 #t)))
+(coroutine (lambda () (m2 #t)))
+
