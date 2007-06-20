@@ -42,6 +42,11 @@ void thread_init()
 int main(int argc, char* argv[])
 {
     uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
+    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    {
+        exit(-1);
+    }
+
 // comment out by higepon
 //    syscall_mthread_join(id);
 

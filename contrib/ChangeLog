@@ -1,5 +1,7 @@
 2007-06-20  higepon  <higepon@users.sourceforge.jp>
 
+        * Net/uip/Mona/NicServer.cpp : Fixed for a Mona 0.3.0.
+
         * Net/uip/Mona/Makefile (MONADIR): Fixed $(MONADIR) env.
 
 2007-06-17  higepon  <higepon@users.sourceforge.jp>

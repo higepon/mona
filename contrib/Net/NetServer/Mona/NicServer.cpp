@@ -113,6 +113,7 @@ typedef struct
 
 void NicServer::interrupt(MessageInfo* msg)
 {
+    _printf("interrupt");
     MessageInfo info;
     Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
     this->nic->inputFrame();

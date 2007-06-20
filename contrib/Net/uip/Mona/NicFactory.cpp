@@ -8,22 +8,30 @@ using namespace mones;
 
 Nic* NicFactory::create()
 {
-    PciInf *pciinfo;
+    PciInf pciinfo;
     Pci* pcilib = new Pci();
     Nic* nic;
 
     //TODO 一時しのぎなので、マジックナンバーを用いる
     //QEMU上の、NE2000を探す
-    pciinfo = pcilib->CheckPciExist(0x10EC,0x8029);
+    pcilib->CheckPciExist(0x10EC,0x8029,&pciinfo);
 
-    if (pciinfo->Exist == 0)
+    if (pciinfo.Exist == 0)
     {
         //見つかれば
         //NE2000のロード
+        _printf("found %s %s:%d\n", __func__, __FILE__, __LINE__);
         nic = new NE2000();
 
         //QEMU設定
-        nic->setIRQ(9);
+#define QEMU_0_8_0
+//#ifdef QEMU_0_8_0
+#if 1
+        nic->setIRQ(11);
+#else
+        _printf("******************* irq %s %s:%d\n", __func__, __FILE__, __LINE__);
+        nic->setIRQ(16);
+#endif
         nic->setIOBase(0xC100);
     }
     else{
@@ -40,6 +48,5 @@ Nic* NicFactory::create()
     if (nic->init()) {
 	return NULL;
     }
-
     return nic;
 }

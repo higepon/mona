@@ -32,7 +32,8 @@ bool NicServer::initialize()
         return false;
     }
 
-    syscall_set_irq_receiver(this->nic->getIRQ());
+    syscall_set_irq_receiver(this->nic->getIRQ(), false);
+    monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
     this->nic->enableNetwork();
     this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();

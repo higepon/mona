@@ -130,16 +130,16 @@ typedef unsigned short uip_stats_t;
  */
 #define UIP_PINGADDRCONF 0
 
-#define UIP_IPADDR0     192 /**< The first octet of the IP address of
+#define UIP_IPADDR0     10 /**< The first octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_IPADDR1     168 /**< The second octet of the IP address of
+#define UIP_IPADDR1     0 /**< The second octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_IPADDR2     100   /**< The third octet of the IP address of
+#define UIP_IPADDR2     2   /**< The third octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_IPADDR3     2   /**< The fourth octet of the IP address of
+#define UIP_IPADDR3     15   /**< The fourth octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
 
@@ -156,16 +156,16 @@ typedef unsigned short uip_stats_t;
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
 
-#define UIP_DRIPADDR0   192 /**< The first octet of the IP address of
+#define UIP_DRIPADDR0   10 /**< The first octet of the IP address of
 			       the default router, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_DRIPADDR1   168 /**< The second octet of the IP address of
+#define UIP_DRIPADDR1   0 /**< The second octet of the IP address of
 			       the default router, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_DRIPADDR2   100   /**< The third octet of the IP address of
+#define UIP_DRIPADDR2   2   /**< The third octet of the IP address of
 			       the default router, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
-#define UIP_DRIPADDR3   1   /**< The fourth octet of the IP address of
+#define UIP_DRIPADDR3   2   /**< The fourth octet of the IP address of
 			       the default router, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
 
