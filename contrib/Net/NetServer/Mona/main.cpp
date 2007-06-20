@@ -41,6 +41,11 @@ void thread_init()
 #endif /* NULL */
 int main(int argc, char* argv[])
 {
+    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    {
+        exit(-1);
+    }
+
     uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
 // comment out by higepon
 //    syscall_mthread_join(id);
@@ -61,7 +66,6 @@ int main(int argc, char* argv[])
     uip_init();
     /* Initialize the HTTP server. */
     server_init();
-
 
     arptimer = 0;
 
@@ -158,7 +162,7 @@ uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame)
     if (1 == msg.arg2) {
         return 1;
     }
-
+        _printf("[2]");
     GetFrameFromSharedMemory(frame);
     return 0;
 }

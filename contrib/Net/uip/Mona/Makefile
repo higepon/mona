@@ -11,7 +11,7 @@ IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
 
 UIP_PATH = ../uip
-SERVER_PATH  = ../apps/net
+SERVER_PATH  =  ../../../NetServer/net/ 
 INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
 OBJECTS +=uip.o uip_arp.o uip_arch.o TcpClient.o ServerMessageLoop.o
