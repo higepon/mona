@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../../../mona; pwd)
+endif
+
 TARGET  = NET
 SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp
 INSTDIR = $(BINDIR)/SERVERS
