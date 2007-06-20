@@ -34,6 +34,26 @@
     SendInterrupt(x);                                                         \
 }
 
+void irqHandler_11()
+{
+    outp8(0xA0, 0x20);
+    outp8(0x20, 0x20);
+    g_console->printf("11\n");
+    if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
+    SendInterrupt(11);
+}
+
+void irqHandler_9()
+{
+    outp8(0xA0, 0x20);
+    outp8(0x20, 0x20);
+    g_console->printf("9\n");
+    if (g_irqInfo[9].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (9 - 8)));
+    SendInterrupt(9);
+}
+
+
+
 // IRQHANDLERMaster(0)
 IRQHANDLERMaster(1)
 IRQHANDLERMaster(2)
@@ -43,9 +63,9 @@ IRQHANDLERMaster(5)
 // IRQHANDLERMaster(6)
 IRQHANDLERMaster(7)
 IRQHANDLERSlave(8)
-IRQHANDLERSlave(9)
+//IRQHANDLERSlave(9)
 IRQHANDLERSlave(10)
-IRQHANDLERSlave(11)
+//IRQHANDLERSlave(11)
 IRQHANDLERSlave(12)
 IRQHANDLERSlave(13)
 IRQHANDLERSlave(14)
