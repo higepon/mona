@@ -359,6 +359,12 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
 uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
     System::getStdoutStream();
+    if (NULL == outStream)
+    {
+        _printf("%s You can't use printf, use _printf instead.\n", System::getProcessInfo()->name);
+        _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
+        return 0;
+    }
     return outStream->write(buffer, size);
 }
 

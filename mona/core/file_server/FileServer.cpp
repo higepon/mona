@@ -35,12 +35,12 @@ int FileServer::initializeFileSystems()
 {
     if (initializeRootFileSystem() != MONA_SUCCESS)
     {
-        printf("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        _printf("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
     if (initializeMountedFileSystems() != MONA_SUCCESS)
     {
-        printf("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        _printf("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
     vmanager_->setRoot(rootFS_->getRoot());
@@ -54,7 +54,7 @@ int FileServer::initializeMountedFileSystems()
     FileSystem* pfs = new ProcessFileSystem(vmanager_);
     if (pfs->initialize() != MONA_SUCCESS)
     {
-        printf("ProcessFileSystem initialize Error\n");
+        _printf("ProcessFileSystem initialize Error\n");
         delete pfs;
         return MONA_FAILURE;
     }
@@ -68,7 +68,7 @@ int FileServer::initializeMountedFileSystems()
     FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
     if (ffs->initialize() != MONA_SUCCESS)
     {
-        printf("Warning FAT12FileSystem initialize failed \n");
+        _printf("Warning FAT12FileSystem initialize failed \n");
         delete fd_;
         delete ffs;
         return MONA_SUCCESS;
@@ -92,7 +92,7 @@ int FileServer::initializeRootFileSystem()
     int controller, deviceNo;
     if (!cd_->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
-        printf("CD-ROM Not Found\n");
+        _printf("CD-ROM Not Found\n");
         delete cd_;
         return MONA_FAILURE;
     }
@@ -107,7 +107,7 @@ int FileServer::initializeRootFileSystem()
     // CD Select Device
     if (!cd_->selectDevice(controller, deviceNo))
     {
-        printf("select device NG error code = %d\n", cd_->getLastError());
+        _printf("select device NG error code = %d\n", cd_->getLastError());
         delete cd_;
         return MONA_FAILURE;
     }
@@ -115,7 +115,7 @@ int FileServer::initializeRootFileSystem()
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
     if (rootFS_->initialize() != MONA_SUCCESS)
     {
-        printf("CD Boot Initialize Error\n");
+        _printf("CD Boot Initialize Error\n");
         delete rootFS_;
         delete cd_;
         return MONA_FAILURE;
@@ -127,7 +127,7 @@ int FileServer::initializeRootFileSystem()
 //     rootFS_ = new FAT12FileSystem(fd_, vmanager_);
 //     if (rootFS_->initialize() != MONA_SUCCESS)
 //     {
-//         printf("FD Boot initialize failed \n");
+//         _printf("FD Boot initialize failed \n");
 //         delete fd_;
 //         delete rootFS_;
 //         return MONA_FAILURE;
@@ -311,7 +311,13 @@ void FileServer::messageLoop()
             Message::reply(&msg);
             break;
         default:
-            printf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, msg.header);
+            PsInfo psInfo;
+            syscall_set_ps_dump();
+            while (syscall_read_ps_dump(&psInfo) == 0)
+            {
+                if (psInfo.tid == msg.from) break;
+            }
+//            _printf("%s %s:%d %d %x %s %x\n", __func__, __FILE__, __LINE__, msg.header, msg.from, psInfo.name, msg.arg1);
             break;
         }
     }

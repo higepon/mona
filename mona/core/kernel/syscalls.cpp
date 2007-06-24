@@ -200,7 +200,6 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_MUTEX_LOCK:
-
         info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1);
         break;
 
@@ -422,7 +421,6 @@ void syscall_entrance()
     case SYSTEM_CALL_MEMORY_MAP_GET_SIZE:
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
-        logprintf("kernel handle = %x\n", id);
         SharedMemoryObject* object = SharedMemoryObject::find(id);
         if (object == NULL)
         {

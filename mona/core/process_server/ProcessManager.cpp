@@ -26,7 +26,7 @@ ProcessInfo getProcessInfo(uint32_t tid)
     {
         if (infos[i].tid == tid) return infos[i];
     }
-    return ProcessInfo();
+    return ProcessInfo(tid);
 }
 
 void addProcessInfo(const CString& name)
@@ -146,7 +146,7 @@ void notifyProcessCreated(uint32_t tid, uint32_t parent, const CString& path)
         }
         else
         {
-            printf("%s: can not connect to %d\n", SVR, receivers[i]);
+            _printf("%s: can not connect to %d\n", SVR, receivers[i]);
             removeProcessInfo(receivers[i]);
             receivers.removeAt(i);
         }
@@ -164,7 +164,7 @@ void notifyProcessTerminated(uint32_t tid, int status)
         }
         else
         {
-            printf("%s: can not connect to %d\n", SVR, receivers[i]);
+            _printf("%s: can not connect to %d\n", SVR, receivers[i]);
             removeProcessInfo(receivers[i]);
             receivers.removeAt(i);
         }

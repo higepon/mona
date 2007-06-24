@@ -145,6 +145,8 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 
     f->seek(offset, SEEK_SET);
     context->memory = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
     {
         monapi_cmemoryinfo_delete(context->memory);
@@ -159,6 +161,8 @@ int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
     if (file->type != Vnode::REGULAR) return MONA_FAILURE;
     File* f = (File*)file->fnode;
     monapi_cmemoryinfo* memory = context->memory;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     uint32_t offset = context->offset;
     uint32_t writeSize = context->size;
     f->seek(offset, SEEK_SET);
@@ -207,6 +211,8 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     deviceOff();
 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     int size = files.size();
     if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
     {

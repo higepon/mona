@@ -80,7 +80,14 @@ namespace MonAPI
     {
         if (NULL != outStream) return outStream;
         uint32_t handle = System::getProcessStdoutID();
-        outStream = Stream::FromHandle(handle);
+        if (handle == THREAD_UNKNOWN)
+        {
+            outStream = NULL;
+        }
+        else
+        {
+            outStream = Stream::FromHandle(handle);
+        }
         return outStream;
     }
 }

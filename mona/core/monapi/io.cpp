@@ -67,7 +67,7 @@ MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, in
 
             MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
 
-            printf("interrupt timeout %s:%d\n", file, line);
+            _printf("interrupt timeout %s:%d\n", file, line);
             return MONAPI_FALSE;
         }
         else if (msg.header == MSG_INTERRUPTED)

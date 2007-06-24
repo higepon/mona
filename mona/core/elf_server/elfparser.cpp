@@ -143,14 +143,14 @@ int ELFParser::parse()
     for (int i = 0; i < this->header->phdrcnt; i++)
     {
         ELFProgramHeader p = this->pheader[i];
-        printf("pheaders[%2d].virtualaddr=%08x physaddr=%08x type=%2d\n",
+        _printf("pheaders[%2d].virtualaddr=%08x physaddr=%08x type=%2d\n",
             i, p.virtualaddr, p.physaddr, p.type);
     }
 
     for (int i = 0; i < this->header->shdrcnt; i++)
     {
         ELFSectionHeader s = this->sheader[i];
-        printf("sheaders[%2d].address=%08x size=%8x type=%2d %s\n",
+        _printf("sheaders[%2d].address=%08x size=%8x type=%2d %s\n",
             i, s.address, s.size, s.type, getSectionName(s.name));
     }
 #endif
@@ -166,13 +166,13 @@ int ELFParser::parse()
 //         {
 //             int numEntry = s.size / sizeof(ELFSymbolEntry);
 //#ifdef _DEBUG_ELF
-//             printf("symbol numentry = %d\n", numEntry);
+//             _printf("symbol numentry = %d\n", numEntry);
 //#endif
 
 //             ELFSymbolEntry* sym = (ELFSymbolEntry*)((uint32_t)(this->header) + s.offset);
 //#ifdef _DEBUG_ELF
-//             printf("value = %x\n", sym[8].value);
-//             printf("size  = %x\n", sym[8].size);
+//             _printf("value = %x\n", sym[8].value);
+//             _printf("size  = %x\n", sym[8].size);
 //#endif
 
 //         }
@@ -193,15 +193,15 @@ int ELFParser::parse()
                 ELFSymbolEntry entry = symbols[(rel[j].indexType) >> 8];
 
 #ifdef _DEBUG_ELF
-                printf("relocate offset=%8x symbol [%10s]",
+                _printf("relocate offset=%8x symbol [%10s]",
                     rel[j].offset, getSectionName(this->sheader[entry.section].name));
-                printf("value = %8x size = %8x %s",
+                _printf("value = %8x size = %8x %s",
                     entry.value, entry.size, getSymbolName(entry.name));
 #endif
 
 #ifdef _DEBUG_ELF
                 uint32_t* p = (uint32_t*)&this->elf[this->sheader[entry.section].offset + rel[j].offset];
-                printf("relocate target address = %8x\n", *p);
+                _printf("relocate target address = %8x\n", *p);
 #endif
             }
         }

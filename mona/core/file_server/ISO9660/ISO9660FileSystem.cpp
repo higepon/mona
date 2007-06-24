@@ -21,7 +21,7 @@ int ISO9660FileSystem::initialize()
 {
     if (readVolumeDescriptor() != MONA_SUCCESS)
     {
-        printf("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        _printf("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
 
@@ -111,6 +111,8 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     }
 
     context->memory = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
     {
         monapi_cmemoryinfo_delete(context->memory);
@@ -279,7 +281,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
     BaseVolumeDescriptor* descriptor = new BaseVolumeDescriptor;
     if (descriptor == NULL)
     {
-        printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
     for (i = 16; i < 100; i++)
@@ -289,7 +291,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
         if (!readResult)
         {
             delete descriptor;
-            printf("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
+            _printf("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
             return MONA_FAILURE;
         }
         // read primary descriptor
@@ -311,7 +313,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
     // invalid
     if (i == 100 || !primaryVolumeDescriptorFound)
     {
-        printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
 

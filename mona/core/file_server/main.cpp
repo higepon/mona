@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     FileServer server;
     if (server.initializeFileSystems() != MONA_SUCCESS)
     {
-        printf("fileserver filesystem initialize error\n");
+        _printf("fileserver filesystem initialize error\n");
         exit(1);
     }
     server.messageLoop();

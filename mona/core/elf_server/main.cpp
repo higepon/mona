@@ -12,21 +12,21 @@ static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_c
     ELFParser parser;
     if (!parser.set(mi->Data, mi->Size))
     {
-        if (prompt) printf("%s: file type is not ELF!\n", SVR);
+        if (prompt) _printf("%s: file type is not ELF!\n", SVR);
         return 3;
     }
 
     int type = parser.getType();
     if (type != ELFParser::TYPE_RELOCATABLE && type != ELFParser::TYPE_EXECUTABLE)
     {
-        if (prompt) printf("%s: file type is not supported!\n", SVR);
+        if (prompt) _printf("%s: file type is not supported!\n", SVR);
         return 3;
     }
 
     int result = parser.parse();
     if (result != 0)
     {
-        if (prompt) printf("%s: can not parse!\n", SVR);
+        if (prompt) _printf("%s: can not parse!\n", SVR);
         return 3;
     }
 
@@ -39,7 +39,7 @@ static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_c
 
     if (!parser.load(dst->Data))
     {
-        if (prompt) printf("%s: load failed!\n", SVR);
+        if (prompt) _printf("%s: load failed!\n", SVR);
         monapi_cmemoryinfo_delete(dst);
         return 3;
     }

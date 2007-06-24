@@ -50,7 +50,7 @@ bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int li
 
             Message::peek(&msg, i, PEEK_REMOVE);
 
-            printf("interrupt timeout %s:%d\n", file, line);
+            _printf("interrupt timeout %s:%d\n", file, line);
             return false;
         }
         else if (msg.header == MSG_INTERRUPTED)
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
                 {
                     uint32_t id = info.arg1;
                     char* p = (char*)(MemoryMap::map(id));
-                    printf("[share!]%s\n", p);
+                    _printf("[share!]%s\n", p);
                     MemoryMap::unmap(id);
 
                 }
@@ -150,7 +150,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8
     {
         if (Message::send(destList->get(i), &message))
         {
-            printf("send error to pid = %x", destList->get(i));
+            _printf("send error to pid = %x", destList->get(i));
             destList->removeAt(i);
         }
     }

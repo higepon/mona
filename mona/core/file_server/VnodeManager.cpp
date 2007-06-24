@@ -113,7 +113,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t 
     *fileID = this->fileID(file, tid);
 //     if (fileInfoMap_.find(*fileID) != fileInfoMap_.end())
 //     {
-//         printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
+//         _printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
 //         exit(-1);
 //     }
     FileInfo* fileInfo = new FileInfo;

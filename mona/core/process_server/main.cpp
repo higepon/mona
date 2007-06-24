@@ -27,10 +27,10 @@ static int ExecuteProcess(uint32_t parent, monapi_cmemoryinfo* mi, uint32_t entr
         switch(ret)
         {
             case 4:
-                  printf("%s: Shared Memory error1", SVR);
+                  _printf("%s: Shared Memory error1", SVR);
                   break;
             case 5:
-                  printf("%s: Shared Memory error2", SVR);
+                  _printf("%s: Shared Memory error2", SVR);
                   break;
         }
     }

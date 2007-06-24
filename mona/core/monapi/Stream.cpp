@@ -228,13 +228,13 @@ bool Stream::initialize(uint32_t size)
     memoryHandle_ = MemoryMap::create(size + sizeof(StreamHeader));
     if (0 == memoryHandle_)
     {
-        _printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap initialize error %s at %s \n", MemoryMap::getLastErrorString(), System::getProcessInfo()->name);
         return false;
     }
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        _printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap map() error %s at %s\n", MemoryMap::getLastErrorString(), System::getProcessInfo()->name);
         return false;
     }
     header_ = (StreamHeader*)address;
@@ -266,7 +266,7 @@ bool Stream::initializeFromHandle(uint32_t handle)
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        _printf("Stream: MemoryMap error\n");
+        _printf("Stream: MemoryMap error handle=%x %s at %s \n", handle, MemoryMap::getLastErrorString(),  System::getProcessInfo()->name);
         return false;
     }
     header_ = (StreamHeader*)address;

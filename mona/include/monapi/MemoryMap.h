@@ -19,7 +19,16 @@ namespace MonAPI
         static bool unmap(uint32_t id);
         static uint32_t getLastError();
         static uint32_t getSize(uint32_t id);
+        static const char* getLastErrorString();
+        enum
+        {
+            ERROR_SIZE_ZERO,
+            ERROR_NOT_ENOUGH_KERNEL_MEMORY,
+            ERROR_MEMORY_MAP_NOT_FOUND,
+            ERROR_NOT_ENOUGH_ADDRESS_SPACE,
+            ERROR_NOT_MAP_ATATCH_ERROR
 
+        };
     private:
         static const uint32_t START_ADDRESS;
         static const uint32_t MAX_SIZE;

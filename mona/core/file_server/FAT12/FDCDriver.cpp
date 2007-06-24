@@ -60,7 +60,7 @@ void FDCDriver::initilize()
     /* do not over 64KB align */
     if (dmabuff == NULL || (uint32_t)dmabuff % 64 * 1024)
     {
-        printf("FDDriver:dma buffer allocate error\n");
+        _printf("FDDriver:dma buffer allocate error\n");
         return;
     }
 

@@ -391,6 +391,8 @@ bool SharedMemoryObject::open(uint32_t id, uint32_t size)
 {
     SharedMemoryObject* target = find(id);
 
+    if (0 == size) return false;
+
     /* new SharedMemory */
     if (target == NULL)
     {

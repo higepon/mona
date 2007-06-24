@@ -38,7 +38,7 @@ void irqHandler_11()
 {
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
-    g_console->printf("11\n");
+//    g_console->printf("11\n");
     if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
     SendInterrupt(11);
 }
@@ -90,6 +90,8 @@ void SendInterrupt(int irq)
     msg.header = MSG_INTERRUPTED;
     msg.arg1   = irq;
 
+//    if (irq == 15) g_console->printf("15");
+//    if (irq == 11) g_console->printf("11");
     if (g_messenger->send(g_irqInfo[irq].thread->thread->id, &msg))
     {
         g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);

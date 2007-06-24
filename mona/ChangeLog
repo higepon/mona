@@ -1,3 +1,23 @@
+2007-06-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/FileServer.cpp : Fixed a big bug. FileServer killed bug because of using illegal printf.
+
+        * core/process_server/ProcessInfo.cpp : Added alert for inhibit using printf. 
+
+        * core/mouse_server/main.cpp : Replaced printf -> _printf.
+
+        * core/keyboard_server/main.cpp : Replaced printf -> _printf.
+        
+        * core/file_server: Replaced printf -> _printf.
+
+        * core/monapi/MemoryMap.cpp (MEMORY_MAP_TRACE): Added MEMORY_MAP_TRACE macro for a debug.
+
+        * core/kernel/Segments.cpp (SharedMemoryObject::open): Added size zero check.
+
+        * core/monapi/Stream.cpp : Use MemoryMap::getLastErrorString() for more details.
+
+        * core/monapi/MemoryMap.cpp (MemoryMap::create): Added getLastErrorString().
+
 2007-06-20  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/lib/demo.scm.in: Addes a croutine demo to demo.scm.in.

@@ -354,7 +354,7 @@ public:
 
             default:
                 /* ignore */
-                printf("mouse:header=%x", receive.header);
+                _printf("mouse:header=%x", receive.header);
                 break;
             }
         }
@@ -391,7 +391,7 @@ protected:
         {
             if (Message::send(this->destList->get(i), &info))
             {
-                printf("Mouse Server: send error to thread id = %x", this->destList->get(i));
+                _printf("Mouse Server: send error to thread id = %x", this->destList->get(i));
                 this->destList->removeAt(i);
             }
         }
@@ -458,7 +458,7 @@ int main(int argc, char* argv[])
     int mouse = Mouse::init();
     if (mouse)
     {
-        printf("Mouse init error=%d\n", mouse);
+        _printf("Mouse init error=%d\n", mouse);
         return -1;
     }
 
