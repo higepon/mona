@@ -7,7 +7,6 @@ int main(int argc, char *argv[])
 {
 	AudioServer server;
 	MessageInfo msg;
-
 	server = audio_server_new();
 	printf("Audio server was started.\n");
 	while(1)

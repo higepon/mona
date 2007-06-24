@@ -11,6 +11,7 @@
 AudioServer audio_server_new()
 {
 	struct audio_server *ret;
+    
 	ret = (struct audio_server*)calloc(1, sizeof(struct audio_server));
 	if( ret == NULL ) return NULL;
 	ret->driver = audio_driver_factory("es1370");
