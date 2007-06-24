@@ -13,8 +13,11 @@ int main()
 	MessageInfo msg;
 	Stream *s;
 	FILE *fp;
+	monapi_cmemoryinfo *cmi;
 	uint8_t buf[4096];
 	uint32_t readsize;
+	cmi = monapi_cmemoryinfo_new();
+	monapi_cmemoryinfo_create(cmi, 4096, 0);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	fp = fopen("/APPS/TEST.RAW", "r");
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -45,16 +48,26 @@ int main()
 
 	s->write(buf, readsize);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-	Message::sendReceive(&msg, tid, MSG_AUDIO_START, ch);
-    return 0;
+	Message::send(tid, MSG_AUDIO_START, ch);
+//    return 0;
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 	while(1)
 	{
+		int readsize;
+		if( Message::receive(&msg) ) continue;
+		if( msg.header == 0xFFFFFFFF )
+		{
+			readsize = fread(cmi->Data, 1, msg.arg1, fp);
+			puts("Received a message from the AudioServer.");
+			Message::reply(&msg, cmi->Handle, readsize);
+		}
+	/*
 		s->waitForWrite();
 		readsize = fread(buf, 1, sizeof(buf), fp);
 		if( readsize <= 1 ) break;
 		s->write(buf, readsize);
+	*/
 	}
 
 	Message::sendReceive(&msg, tid, MSG_AUDIO_STOP, ch);

@@ -40,6 +40,16 @@ struct es1370_driver
 	int usingBuffer;
 };
 
+int check_driver_desc(const struct es1370_driver *d)
+{
+	puts("check_driver_desc");
+	if( d->callback == NULL ) return puts("callback is null");
+	if( d->ref == NULL ) return puts("ref is null");
+	if( d->dmabuf1 == NULL ) return puts("dmabuf1 is null");
+	if( d->dmabuf2 == NULL ) return puts("dmabuf2 is null");
+	return 0;
+}
+
 static error_t es1370_device_init(struct es1370_driver *d, const struct audio_data_format *f);
 inline static void es1370_set_sample_rate(struct es1370_driver* d);
 inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
@@ -155,9 +165,10 @@ error_t es1370_set_stopped_callback(handle_t o, error_t (*callback)(void* ref), 
 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
+//	check_driver_desc(d);
+    _logprintf("callback = %x\n", d->callback);
 	puts(__func__);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//	printf("callback = %x\n", d->callback);
 //	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
 	error_t result;
 	size_t wrote;
@@ -259,6 +270,7 @@ inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t cou
 inline static void es1370_start_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
+	_logprintf("d = %x\n", d);
 
 	reg = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	reg &= ~(ES1370_P1_LOOP_SEL|ES1370_P1_PAUSE);
@@ -306,7 +318,6 @@ void rdtsc(uint32_t* timeL, uint32_t* timeH) {
 
 static void es1370_interrupt_catcher(void* a)
 {
-    uint32_t l, h;
 	struct es1370_driver* d = (struct es1370_driver*)a;
     _printf("irq=%x\n", d->pciinfo.IrqLine);
 	syscall_set_irq_receiver(d->pciinfo.IrqLine, SYS_MASK_INTERRUPT);

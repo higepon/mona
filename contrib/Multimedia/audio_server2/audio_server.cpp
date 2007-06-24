@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <monapi/Stream.h>
 #include <monapi/Message.h>
+#include <monapi/cmemoryinfo.h>
 
 AudioServer audio_server_new()
 {
@@ -48,6 +49,7 @@ void audio_server_delete(AudioServer o)
  */
 int audio_new_channel(AudioServer o, MessageInfo *msg)
 {
+	o->tid = msg->from;
 	if( o->channels != 0 )
 	{
 		MonAPI::Message::reply(msg, (uint32_t)-1);
@@ -92,6 +94,7 @@ int audio_start(AudioServer o, MessageInfo *msg)
 	}
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	o->driver->driver_set_render_callback(o->device, &audio_render_callback, o);
+	o->driver->driver_set_stopped_callback(o->device, &audio_stopped_callback, o);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	o->driver->driver_start(o->device);
 	MonAPI::Message::reply(msg, 0);
@@ -168,9 +171,32 @@ int audio_set_format(AudioServer o, MessageInfo *msg)
 int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 {
 	AudioServer serv = (AudioServer)ref;
+/*
 	MonAPI::Stream *stream = serv->stream;
 	stream->waitForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
 	printf("*wrote = %d\n", *wrote);
 	return OK;
+*/
+///*
+	monapi_cmemoryinfo *cmi;
+	puts("Send a message.");
+	MessageInfo msg;
+	MonAPI::Message::sendReceive(&msg, serv->tid, 0xFFFFFFFF, size);
+	puts("Received a message from a client.");
+//	printf("msg->arg2 (handle) = %d\n", msg.arg2);
+	printf("msg->arg3 (size)   = %d\n", msg.arg3);
+	cmi = monapi_cmemoryinfo_new();
+	cmi->Handle = msg.arg2;
+	monapi_cmemoryinfo_map(cmi);
+	memcpy(buf, cmi->Data, msg.arg3);
+	*wrote = msg.arg3;
+	return OK;
+//*/
 }
+
+int audio_stopped_callback(void *ref)
+{
+	return OK;
+}
+
