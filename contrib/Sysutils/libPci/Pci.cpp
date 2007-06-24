@@ -1,7 +1,7 @@
 
 /*!
     \file   Pci.cpp
-    \brief  PCIƒ‰ƒCƒuƒ‰ƒŠ PCIƒNƒ‰ƒX
+    \brief  PCIãƒ©ã‚¤ãƒ–ãƒ©ãƒª PCIã‚¯ãƒ©ã‚¹
 
     Copyright (c) 2004 Yamami
     All rights reserved.
@@ -14,7 +14,7 @@
 */
 
 /*! \class Pci
- *  \brief PCIƒ‰ƒCƒuƒ‰ƒŠ PCIƒNƒ‰ƒX
+ *  \brief PCIãƒ©ã‚¤ãƒ–ãƒ©ãƒª PCIã‚¯ãƒ©ã‚¹
  */
 
 
@@ -33,7 +33,7 @@ int dllmain()
 }
 
 
-//PCIINFOƒtƒ@ƒCƒ‹
+//PCIINFOãƒ•ã‚¡ã‚¤ãƒ«
 #define PCIINFO_FILE "libPci.a"
 
 using namespace MonAPI;
@@ -43,13 +43,13 @@ using namespace MonAPI;
 
 /*!
     \brief initialize
-         Pci ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+         Pci ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     \author Yamami
     \date   create:2004/10/15 update:$Date$
 */
 Pci::Pci()
 {
-    //I/Oæ“¾
+    //I/Oå–å¾—
     syscall_get_io();
 
 }
@@ -57,13 +57,13 @@ Pci::Pci()
 
 /*!
     \brief initialize
-         Pci ƒfƒXƒNƒgƒ‰ƒNƒ^
+         Pci ãƒ‡ã‚¹ã‚¯ãƒˆãƒ©ã‚¯ã‚¿
     \author Yamami
     \date   create:2004/10/15 update:$Date$
 */
 Pci::~Pci() 
 {
-    //‚±‚±‚ÅAI/O‚ğ‰ğœ‚µ‚½‚¢‚ªEEE
+    //ã“ã“ã§ã€I/Oã‚’è§£é™¤ã—ãŸã„ãŒãƒ»ãƒ»ãƒ»
 
 }
 
@@ -72,11 +72,11 @@ Pci::~Pci()
 
 /*!
     \brief CheckPciExist
-         PciƒfƒoƒCƒX‘¶İŠm”FBw’è‚µ‚½Vendor/Device‚ÌPCIƒfƒoƒCƒX‚Ì‘¶İ‚ğŠm”F‚·‚éB
+         Pciãƒ‡ãƒã‚¤ã‚¹å­˜åœ¨ç¢ºèªã€‚æŒ‡å®šã—ãŸVendor/Deviceã®PCIãƒ‡ãƒã‚¤ã‚¹ã®å­˜åœ¨ã‚’ç¢ºèªã™ã‚‹ã€‚
     \author Yamami
-    \param  uint16_t Vendor [in] ƒxƒ“ƒ_[ID
-    \param  uint16_t Device [in] ƒfƒoƒCƒXID
-    \return PciInf\‘¢‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^
+    \param  uint16_t Vendor [in] ãƒ™ãƒ³ãƒ€ãƒ¼ID
+    \param  uint16_t Device [in] ãƒ‡ãƒã‚¤ã‚¹ID
+    \return PciInfæ§‹é€ ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿
     \date   create:2004/10/15 update:$Date$
 */
 void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciInf) 
@@ -91,44 +91,41 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
     uint32_t BaseAd;
     uint32_t  IrqLine;
 
-    //•Ô‹p’l‰Šú‰» ƒfƒoƒCƒX‚Í‘¶İ‚µ‚È‚¢B
+    //è¿”å´å€¤åˆæœŸåŒ– ãƒ‡ãƒã‚¤ã‚¹ã¯å­˜åœ¨ã—ãªã„ã€‚
     RetPciInf->Exist = 1;
 
-    //Yamami!!! 2004/10/18 PCIî•ñƒtƒ@ƒCƒ‹‚ÍAƒoƒ“ƒhƒ‹‚Å‚Í–³‚­A“Æ—§‚³‚¹‚é•ûŒü‚Å
+    //Yamami!!! 2004/10/18 PCIæƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€ãƒãƒ³ãƒ‰ãƒ«ã§ã¯ç„¡ãã€ç‹¬ç«‹ã•ã›ã‚‹æ–¹å‘ã§
     //CString bundlePath = MonAPI::System::getBundlePath();
-    //pciinfoƒtƒ@ƒCƒ‹‚ğƒI[ƒvƒ“
+    //pciinfoãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚ªãƒ¼ãƒ—ãƒ³
     //monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
-    //ƒGƒ‰[ˆ—
+    //ã‚¨ãƒ©ãƒ¼å‡¦ç†
     //if(pciinfData == NULL){
     //    printf("PCI DATA FILE OPEN ERROR !!!\n");
     //}
 
-    //ƒoƒX”Ô†0‚É‚Â‚¢‚ÄAƒfƒoƒCƒX”Ô†‚ğ0`31‚Ì‚»‚ê‚¼‚ê‚É‚Â‚¢‚ÄAƒxƒ“ƒ_[ID‚ğ“Ç‚İo‚·
+    //ãƒã‚¹ç•ªå·0ã«ã¤ã„ã¦ã€ãƒ‡ãƒã‚¤ã‚¹ç•ªå·ã‚’0ã€œ31ã®ãã‚Œãã‚Œã«ã¤ã„ã¦ã€ãƒ™ãƒ³ãƒ€ãƒ¼IDã‚’èª­ã¿å‡ºã™
     for(DeviceNo = 0; DeviceNo < 32 ; DeviceNo++ ){
-        //ReadConfig ‚ğ—p‚¢‚ÄVendor‚Ìæ“¾
+        //ReadConfig ã‚’ç”¨ã„ã¦Vendorã®å–å¾—
         Vendor = ReadConfig(0, DeviceNo, 0, PCI_VENDOR_ID, 2);
         
         if (Vendor != 0xFFFF){
             Device = ReadConfig(0, DeviceNo, 0, PCI_DEVICE_ID, 2);
             if (Device != 0xFFFF && ChkVendor == Vendor && ChkDevice == Device){
-                //ƒfƒoƒCƒX‚ª‘¶İ‚·‚éB
-                //ƒfƒoƒCƒX‚Æƒxƒ“ƒ_[‚ğŒ‹‡ getPciInfName ‚ÉƒCƒ“ƒ^[ƒtƒF[ƒX‚ğ‚ ‚í‚¹‚éB
+                //ãƒ‡ãƒã‚¤ã‚¹ãŒå­˜åœ¨ã™ã‚‹ã€‚
+                //ãƒ‡ãƒã‚¤ã‚¹ã¨ãƒ™ãƒ³ãƒ€ãƒ¼ã‚’çµåˆ getPciInfName ã«ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’ã‚ã‚ã›ã‚‹ã€‚
                 Vendor_Dev = Vendor + (uint32_t)(Device << 16);
                 
-                //BaseƒAƒhƒŒƒX‚Ìæ“¾
+                //Baseã‚¢ãƒ‰ãƒ¬ã‚¹ã®å–å¾—
                 BaseAd = ReadConfig(0, DeviceNo, 0, PCI_BASE_ADDRESS1, 4);
-logprintf(" BaseAd = %x \n"  , BaseAd);                
-                //IRQƒ‰ƒCƒ“‚Ìæ“¾  google PCI IRQæ“¾‚ÅŒŸõ
+                //IRQãƒ©ã‚¤ãƒ³ã®å–å¾—  google PCI IRQå–å¾—ã§æ¤œç´¢
                 IrqLine = ReadConfig(0, DeviceNo, 0, PCI_IRQ_LINE, 1);
-                
-logprintf(" IrqLine = %x \n"  , IrqLine);                
-                //ƒxƒ“ƒ_[–¼Ì/ƒfƒoƒCƒX–¼Ì‚Ìæ“¾
+                //ãƒ™ãƒ³ãƒ€ãƒ¼åç§°/ãƒ‡ãƒã‚¤ã‚¹åç§°ã®å–å¾—
                 CString VendorName;
                 CString DeviceName;
 
                 //CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
                 
-                //•Ô‹p’l¶¬
+                //è¿”å´å€¤ç”Ÿæˆ
                 RetPciInf->Exist = 0;
                 RetPciInf->DeviceNo = DeviceNo;
                 RetPciInf->Vendor = Vendor;
@@ -138,13 +135,13 @@ logprintf(" IrqLine = %x \n"  , IrqLine);
                 RetPciInf->BaseAd = BaseAd;
                 RetPciInf->IrqLine = IrqLine;
                 
-                //Œ©‚Â‚©‚Á‚½ê‡‚ÍA‘¦ƒ‹[ƒv‚ğ”²‚¯‚é
+                //è¦‹ã¤ã‹ã£ãŸå ´åˆã¯ã€å³ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
                 break;
             }
         }
     }
 
-    //ƒtƒ@ƒCƒ‹Œãˆ—
+    //ãƒ•ã‚¡ã‚¤ãƒ«å¾Œå‡¦ç†
     //monapi_cmemoryinfo_dispose(pciinfData);
     //monapi_cmemoryinfo_delete(pciinfData);
 
@@ -176,13 +173,13 @@ void Pci::WriteConfig(uint8_t bus,uint8_t device,uint8_t function,uint8_t reg,ui
 
 /*!
     \brief ReadConfig
-        PCIƒfƒoƒCƒXî•ñæ“¾
-    \param  uint8_t bus [in] ƒoƒX”Ô†
-    \param  uint8_t deviceid [in] ƒfƒoƒCƒX”Ô†
-    \param  uint8_t func [in] ƒtƒ@ƒ“ƒNƒVƒ‡ƒ“”Ô†
-    \param  uint8_t reg [in] ƒŒƒWƒXƒ^ƒAƒhƒŒƒX
-    \param  uint8_t readSize [I] æ“¾ƒTƒCƒY
-    \return uint32_t æ“¾ƒŒƒWƒXƒ^‚Ì’l
+        PCIãƒ‡ãƒã‚¤ã‚¹æƒ…å ±å–å¾—
+    \param  uint8_t bus [in] ãƒã‚¹ç•ªå·
+    \param  uint8_t deviceid [in] ãƒ‡ãƒã‚¤ã‚¹ç•ªå·
+    \param  uint8_t func [in] ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·
+    \param  uint8_t reg [in] ãƒ¬ã‚¸ã‚¹ã‚¿ã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint8_t readSize [I] å–å¾—ã‚µã‚¤ã‚º
+    \return uint32_t å–å¾—ãƒ¬ã‚¸ã‚¹ã‚¿ã®å€¤
 
     \author Yamami
     \date   create:2004/05/15 update:2004/05/15
@@ -202,7 +199,6 @@ uint32_t Pci::ReadConfig(uint8_t bus, uint8_t device, uint8_t function, uint8_t 
    packet.p.reserved2 = 0;
 
    /* set request and enable */
-logprintf(" packet.command = %x \n"  , packet.command);
    outp32(REG_CONFIG_ADDRESS, packet.command);
 
    switch (readSize)
@@ -226,8 +222,6 @@ logprintf(" packet.command = %x \n"  , packet.command);
 
    packet.p.enabled = 0;
    outp32(REG_CONFIG_ADDRESS, packet.command);
-logprintf(" result = %x \n"  , result);
-
    return result;
 }
 
@@ -235,11 +229,11 @@ logprintf(" result = %x \n"  , result);
 
 /*!
     \brief IsLineSeparator
-        ƒZƒpƒŒ[ƒ^”»’è
+        ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿åˆ¤å®š
 
-    \param  char ch [IN] ƒLƒƒƒ‰ƒNƒ^
-    \return bool ƒZƒpƒŒ[ƒ^•¶š‚È‚çtrue ˆÈŠO‚È‚çfalse
-    \author Tino
+    \param  char ch [IN] ã‚­ãƒ£ãƒ©ã‚¯ã‚¿
+    \return bool ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿æ–‡å­—ãªã‚‰true ä»¥å¤–ãªã‚‰false
+    \author Tinoæ°
     \date   create:2004/06/111 update:2004/06/11
 */
 inline bool Pci::IsLineSeparator(char ch)
@@ -250,14 +244,14 @@ inline bool Pci::IsLineSeparator(char ch)
 
 /*!
     \brief getPciInfName
-        PCIî•ñ–¼Ì(ƒxƒ“ƒ_[AƒfƒoƒCƒX)î•ñæ“¾
-        PCIƒŒƒWƒXƒ^’l ‚ğˆø”‚É‚Æ‚èAPCIINF.TXT ‚©‚çŠY“–‚·‚éƒxƒ“ƒ_[–¼Ìƒxƒ“ƒ_–¼Ì‚ğæ“¾‚·‚éBB
-    \param  uint8_t* PciInfData [IN] PCIî•ñƒf[ƒ^
-    \param  uint32_t InValue [IN] PCIƒŒƒWƒXƒ^’l(ƒxƒ“ƒ_[CD & ƒfƒoƒCƒXCD)
-    \param  CString& VendorName [OUT] ƒxƒ“ƒ_[–¼Ì
-    \param  CString& DeviceName [OUT] ƒfƒoƒCƒX–¼Ì
+        PCIæƒ…å ±åç§°(ãƒ™ãƒ³ãƒ€ãƒ¼ã€ãƒ‡ãƒã‚¤ã‚¹)æƒ…å ±å–å¾—
+        PCIãƒ¬ã‚¸ã‚¹ã‚¿å€¤ ã‚’å¼•æ•°ã«ã¨ã‚Šã€PCIINF.TXT ã‹ã‚‰è©²å½“ã™ã‚‹ãƒ™ãƒ³ãƒ€ãƒ¼åç§°ãƒ™ãƒ³ãƒ€åç§°ã‚’å–å¾—ã™ã‚‹ã€‚ã€‚
+    \param  uint8_t* PciInfData [IN] PCIæƒ…å ±ãƒ‡ãƒ¼ã‚¿
+    \param  uint32_t InValue [IN] PCIãƒ¬ã‚¸ã‚¹ã‚¿å€¤(ãƒ™ãƒ³ãƒ€ãƒ¼CD & ãƒ‡ãƒã‚¤ã‚¹CD)
+    \param  CString& VendorName [OUT] ãƒ™ãƒ³ãƒ€ãƒ¼åç§°
+    \param  CString& DeviceName [OUT] ãƒ‡ãƒã‚¤ã‚¹åç§°
 
-    \return MonAPI::CString dummy(ƒ_ƒ~[–ß‚è’l)
+    \return MonAPI::CString dummy(ãƒ€ãƒŸãƒ¼æˆ»ã‚Šå€¤)
 
     \author Yamami
     \date   create:2004/05/16 update:2004/06/11
@@ -267,22 +261,22 @@ CString Pci::getPciInfName( uint8_t* PciInfData, uint32_t InValue , CString* Ven
     uint16_t Vendor;
     uint16_t Device;
 
-    //ƒxƒ“ƒ_[ID‚Ìæ“¾
+    //ãƒ™ãƒ³ãƒ€ãƒ¼IDã®å–å¾—
     Vendor = InValue & 0x0000FFFF;
     Device = InValue >> 16;
 
-    char VendorHex[5];    //ƒxƒ“ƒ_[CDŠi”[—p
-    char DeviceHex[5];    //ƒxƒ“ƒ_[CDŠi”[—p
+    char VendorHex[5];    //ãƒ™ãƒ³ãƒ€ãƒ¼CDæ ¼ç´ç”¨
+    char DeviceHex[5];    //ãƒ™ãƒ³ãƒ€ãƒ¼CDæ ¼ç´ç”¨
     sprintf(VendorHex, "%04X", Vendor);
     sprintf(DeviceHex, "%04X", Device);
 
-    //NULL‚Ü‚ÅŒJ‚è•Ô‚µ
+    //NULLã¾ã§ç¹°ã‚Šè¿”ã—
     while (*PciInfData != 0){
 
         //printf("%c",*PciInfData);
 
-        //‚Ü‚¸Aƒxƒ“ƒ_[–¼Ì‚ğ’T‚·
-        //ƒ‰ƒCƒ“ƒZƒpƒŒ[ƒ^‚È‚çŸ‚Ì•¶š‚Ö
+        //ã¾ãšã€ãƒ™ãƒ³ãƒ€ãƒ¼åç§°ã‚’æ¢ã™
+        //ãƒ©ã‚¤ãƒ³ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ãªã‚‰æ¬¡ã®æ–‡å­—ã¸
         if (IsLineSeparator(*PciInfData)){
             PciInfData++;
         }
@@ -291,19 +285,19 @@ CString Pci::getPciInfName( uint8_t* PciInfData, uint32_t InValue , CString* Ven
             for (; !IsLineSeparator(*pe); pe++);
 
             //return CString(ps, pe - ps);
-            //ƒxƒ“ƒ_[î•ñŠm’è
+            //ãƒ™ãƒ³ãƒ€ãƒ¼æƒ…å ±ç¢ºå®š
             *VendorName = CString(ps, pe - ps);
 
             //printf("%s\n",(const char*)VendorName);
 
-            //ƒxƒ“ƒ_[–¼ˆÈ‰º‚ÌƒfƒoƒCƒX‚ğŒŸõ‚·‚éB
-            //1s“Ç‚İ”ò‚Î‚µ
+            //ãƒ™ãƒ³ãƒ€ãƒ¼åä»¥ä¸‹ã®ãƒ‡ãƒã‚¤ã‚¹ã‚’æ¤œç´¢ã™ã‚‹ã€‚
+            //1è¡Œèª­ã¿é£›ã°ã—
             for (; !IsLineSeparator(*PciInfData); PciInfData++);
             while (*PciInfData != 0){
                 if (IsLineSeparator(*PciInfData)){
                     PciInfData++;
 
-                    //ƒ‰ƒCƒ“ƒZƒpƒŒ[ƒ^‚ÌŸ‚ªƒ^ƒu‚È‚çAƒfƒoƒCƒXî•ñ
+                    //ãƒ©ã‚¤ãƒ³ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ã®æ¬¡ãŒã‚¿ãƒ–ãªã‚‰ã€ãƒ‡ãƒã‚¤ã‚¹æƒ…å ±
                     if (strncmp((const char*)PciInfData, "\t", 1) == 0){
                         PciInfData++;
                         if (strncmp((const char*)PciInfData, DeviceHex, 4) == 0){
@@ -316,11 +310,11 @@ CString Pci::getPciInfName( uint8_t* PciInfData, uint32_t InValue , CString* Ven
                             return "dumy";
                         }
                         else{
-                            //Ÿ‚ÌƒfƒoƒCƒX‚Ö
+                            //æ¬¡ã®ãƒ‡ãƒã‚¤ã‚¹ã¸
                             for (; !IsLineSeparator(*PciInfData); PciInfData++);
                         }
                     }
-                    //ƒxƒ“ƒ_[‚ª•ÏX‚³‚ê‚é‚Ü‚Å“Ç‚ñ‚ÅŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚çA•s–¾‚Æ‚·‚éB
+                    //ãƒ™ãƒ³ãƒ€ãƒ¼ãŒå¤‰æ›´ã•ã‚Œã‚‹ã¾ã§èª­ã‚“ã§è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã‚‰ã€ä¸æ˜ã¨ã™ã‚‹ã€‚
                     else{
                         *DeviceName = "???";
                         //printf("%s\n",(const char*)DeviceName);
@@ -330,19 +324,19 @@ CString Pci::getPciInfName( uint8_t* PciInfData, uint32_t InValue , CString* Ven
                 else{
                     printf("tobashi\n");
 
-                    //‚Ç‚ê‚É‚àŠY“–‚µ‚È‚¢s‚Í“Ç‚İ”ò‚Î‚µ
+                    //ã©ã‚Œã«ã‚‚è©²å½“ã—ãªã„è¡Œã¯èª­ã¿é£›ã°ã—
                     for (; !IsLineSeparator(*PciInfData); PciInfData++);
                 }
 
             }
         }
         else{
-            //‚Ç‚ê‚É‚àŠY“–‚µ‚È‚¢s‚Í“Ç‚İ”ò‚Î‚µ
+            //ã©ã‚Œã«ã‚‚è©²å½“ã—ãªã„è¡Œã¯èª­ã¿é£›ã°ã—
             for (; !IsLineSeparator(*PciInfData); PciInfData++);
         }
     }
 
-    // •s–¾
+    // ä¸æ˜
     *VendorName = "???";
     *DeviceName = "???";
     return "???";

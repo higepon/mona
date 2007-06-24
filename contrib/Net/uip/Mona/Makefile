@@ -2,7 +2,7 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../../../mona; pwd)
 endif
 
-TARGET  = NET
+TARGET  = UIP
 SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp
 INSTDIR = $(BINDIR)/APPS
 
@@ -14,7 +14,7 @@ UIP_PATH = ../uip
 SERVER_PATH  =  ../../../NetServer/net/
 INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
-OBJECTS +=uip.o uip_arp.o uip_arch.o TcpClient.o ServerMessageLoop.o
+OBJECTS +=uip.o uip_arp.o uip_arch.o TcpClient.o ServerMessageLoop.o httpd.o fs.o cgi.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -61,6 +61,16 @@ CXXFLAGS += -DDEBUG
 
 uip.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
 	$(CC) -o uip.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip/uip.c
+
+httpd.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o httpd.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/httpd.c
+
+fs.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o fs.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/fs.c
+
+cgi.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o cgi.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/cgi.c
+
 
 uip_arp.o: ../uip/uip_arp.c ../uip/uip_arp.h ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
 	$(CC) -o uip_arp.o $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c ../uip/uip_arp.c

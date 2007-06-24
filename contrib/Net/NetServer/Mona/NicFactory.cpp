@@ -21,6 +21,8 @@ Nic* NicFactory::create()
         //見つかれば
         //NE2000のロード
         _printf("found %s %s:%d\n", __func__, __FILE__, __LINE__);
+
+        _printf("base=%x\n", pciinfo.BaseAd & ~1);
         nic = new NE2000();
 
         //QEMU設定
@@ -30,7 +32,7 @@ Nic* NicFactory::create()
         nic->setIRQ(11);
 #else
         _printf("******************* irq %s %s:%d\n", __func__, __FILE__, __LINE__);
-        nic->setIRQ(16);
+        nic->setIRQ(9);
 #endif
         nic->setIOBase(0xC100);
     }

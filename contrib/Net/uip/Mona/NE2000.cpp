@@ -1,6 +1,6 @@
 /*!
     \file   NE2000.cpp
-    \brief  NE2000ƒhƒ‰ƒCƒoƒNƒ‰ƒX
+    \brief  NE2000ãƒ‰ãƒ©ã‚¤ãƒã‚¯ãƒ©ã‚¹
 
     Copyright (c) 2004 Yamami, Higepon
     All rights reserved.
@@ -12,7 +12,7 @@
 */
 
 /*! \class Ne2000
- *  \brief Ne2000ƒhƒ‰ƒCƒoƒNƒ‰ƒX
+ *  \brief Ne2000ãƒ‰ãƒ©ã‚¤ãƒã‚¯ãƒ©ã‚¹
  */
 
 #include "NE2000.h"
@@ -22,7 +22,7 @@
 using namespace mones;
 /*!
     \brief initialize
-         NE2000 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+         NE2000 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     \author Yamami
     \date   create:2004/08/08 update:
 */
@@ -38,35 +38,35 @@ NE2000::~NE2000()
     \brief initialize
          NE2000 init
     \author Yamami
-    \return int Œ‹‰Ê 0:³í A 0ˆÈŠO:ˆÙí
+    \return int çµæœ 0:æ­£å¸¸ ã€ 0ä»¥å¤–:ç•°å¸¸
     \date   create:2004/08/12 update:
 */
 int NE2000::init()
 {
     int reti;
 
-    //ƒvƒ‰ƒCƒx[ƒgƒƒ“ƒo‰Šú‰»
+    //ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆãƒ¡ãƒ³ãƒåˆæœŸåŒ–
     ne_ringbuf_status=0;
     ne_ringbuf_bound=0;
     ne_ringbuf_len=0;
 
-    ne_rx_start=0;      /* óMƒpƒPƒbƒg–{‘Ì‚ÌŠJnƒAƒhƒŒƒX */
-    frame_len=0;        /* óMƒpƒPƒbƒg–{‘Ì‚Ì’·‚³ */
-    ne_rx_bound=0;      /* óMŒã‚Ì‹«ŠEƒŒƒWƒXƒ^’l */
-    ne_rx_write_p=0;    /* óMƒpƒPƒbƒg‘‚«‚İƒAƒhƒŒƒX */
-    ne_rx_sub_len=0;    /* Ü‚è•Ô‚µ•ª‚Ì’·‚³ */
-    ne_rx_remain_len=0; /* c‚è‚Ì’·‚³(Ü‚è•Ô‚µ‚ª‚È‚¢‚Æ‚«‚Í–{‘Ì‚Ì’·‚³‚Æ“¯‚¶) */
+    ne_rx_start=0;      /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆæœ¬ä½“ã®é–‹å§‹ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+    frame_len=0;        /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆæœ¬ä½“ã®é•·ã• */
+    ne_rx_bound=0;      /* å—ä¿¡å¾Œã®å¢ƒç•Œãƒ¬ã‚¸ã‚¹ã‚¿å€¤ */
+    ne_rx_write_p=0;    /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆæ›¸ãè¾¼ã¿ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+    ne_rx_sub_len=0;    /* æŠ˜ã‚Šè¿”ã—åˆ†ã®é•·ã• */
+    ne_rx_remain_len=0; /* æ®‹ã‚Šã®é•·ã•(æŠ˜ã‚Šè¿”ã—ãŒãªã„ã¨ãã¯æœ¬ä½“ã®é•·ã•ã¨åŒã˜) */
 
     ne_sizeof_test_pattern=20;
 
-    //Ne2000 ‘¶İŠm”F
+    //Ne2000 å­˜åœ¨ç¢ºèª
     reti = probe();
     if(reti != 0 ){
-        printf("Does Not Exist Ne2K!!!\n");
+        _printf("Does Not Exist Ne2K!!!\n");
         return -1;
     }
 
-    //‚±‚±‚ÅMACƒAƒhƒŒƒX‚ğ•\¦‚µ‚Ä‚İ‚é
+    //ã“ã“ã§MACã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’è¡¨ç¤ºã—ã¦ã¿ã‚‹
     //int i;
     //printf("MAC ADR:");
     //for(i=0 ;i < 6 ; i++){
@@ -74,7 +74,7 @@ int NE2000::init()
     //}
     //printf("\n");
 
-    //Ne2000 ‰Šú‰»
+    //Ne2000 åˆæœŸåŒ–
     nic_init();
 
     return 0;
@@ -82,9 +82,9 @@ int NE2000::init()
 
 /*!
     \brief  inputFrame
-        NE2000 ƒf[ƒ^“ü—Íƒ‹[ƒ`ƒ“
-        –{—ˆ‚ÍANE2000‚©‚ç‚ÌŠ„‚è‚İ‚É‚ÄƒR[ƒ‹‚³‚ê‚éB
-        ƒeƒXƒgƒvƒƒOƒ‰ƒ€‚Å‚ÍAŒ±“I‚ÉMonaMain ‚ÅƒR[ƒ‹B
+        NE2000 ãƒ‡ãƒ¼ã‚¿å…¥åŠ›ãƒ«ãƒ¼ãƒãƒ³
+        æœ¬æ¥ã¯ã€NE2000ã‹ã‚‰ã®å‰²ã‚Šè¾¼ã¿ã«ã¦ã‚³ãƒ¼ãƒ«ã•ã‚Œã‚‹ã€‚
+        ãƒ†ã‚¹ãƒˆãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§ã¯ã€è©¦é¨“çš„ã«MonaMain ã§ã‚³ãƒ¼ãƒ«ã€‚
     \param  void
     \return void
 
@@ -95,48 +95,48 @@ void NE2000::inputFrame(void)
 {
 
     uint8_t sts,*buf;
-    //ƒoƒEƒ“ƒ_ƒŠƒŒƒWƒXƒ^ ‚ÆAƒJƒŒƒ“ƒgƒy[ƒWƒŒƒWƒXƒ^‚Í8ƒrƒbƒg•
-    //ƒf[ƒ^‚ÉƒAƒNƒZƒX‚·‚éÛA8ƒrƒbƒgƒVƒtƒg‚µ‚Ä16ƒrƒbƒg•ƒAƒNƒZƒX‚ğs‚¤
+    //ãƒã‚¦ãƒ³ãƒ€ãƒªãƒ¬ã‚¸ã‚¹ã‚¿ ã¨ã€ã‚«ãƒ¬ãƒ³ãƒˆãƒšãƒ¼ã‚¸ãƒ¬ã‚¸ã‚¹ã‚¿ã¯8ãƒ“ãƒƒãƒˆå¹…
+    //ãƒ‡ãƒ¼ã‚¿ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹éš›ã€8ãƒ“ãƒƒãƒˆã‚·ãƒ•ãƒˆã—ã¦16ãƒ“ãƒƒãƒˆå¹…ã‚¢ã‚¯ã‚»ã‚¹ã‚’è¡Œã†
     uint16_t  bnd,cpg;
 
     buf=frame_buf;
 
     // Page 0
     outp8( NE_P0_COMMAND, NE_CR_STA );
-    // sts <- óMƒXƒe[ƒ^ƒXƒŒƒWƒXƒ^(Receive Status Reg)
+    // sts <- å—ä¿¡ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¬ã‚¸ã‚¹ã‚¿(Receive Status Reg)
     sts=inp8( NE_P0_RSR );
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("sts : %x\n",sts);
 
     if( ( sts & NE_RSTAT_OVER ) !=0 ){
-        printf("FIFO OverFlow\n");
-        return; // óMFIFOƒI[ƒo[ƒtƒ[‚µ‚½
+        _printf("FIFO OverFlow\n");
+        return; // å—ä¿¡FIFOã‚ªãƒ¼ãƒãƒ¼ãƒ•ãƒ­ãƒ¼ã—ãŸ
     }
 
     if( ( inp8( NE_P0_ISR ) & NE_ISR_OVW ) !=0 ){
-        printf("RING OverFlow\n");
-        return; // óMƒŠƒ“ƒOƒoƒbƒtƒ@ƒI[ƒo[ƒtƒ[
+        _printf("RING OverFlow\n");
+        return; // å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ¼ãƒãƒ¼ãƒ•ãƒ­ãƒ¼
     }
 
-    //  óM¬Œ÷
+    //  å—ä¿¡æˆåŠŸ
     if( ( sts & NE_RSTAT_PRX ) ==0 ){
-        printf("Not Exist Packet \n");
-        return; //  óMƒpƒPƒbƒg‚È‚µ
+        _printf("Not Exist Packet \n");
+        return; //  å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆãªã—
     }
 
-    //ƒy[ƒW‚ğ–¾¦“I‚ÉØ‚è‘Ö‚¦‚Ä bnd ‚Æ cpg ‚ğ“Ç‚Ş
+    //ãƒšãƒ¼ã‚¸ã‚’æ˜ç¤ºçš„ã«åˆ‡ã‚Šæ›¿ãˆã¦ bnd ã¨ cpg ã‚’èª­ã‚€
     outp8(NE_P0_COMMAND, NE_CR_PS0 | NE_CR_STA); /* Page 0 */
     bnd=inp8( NE_P0_BNRY ) + 1;      // bnd <-bnd
-    //bnd=inp8( NE_P0_BNRY );      // bnd <-bnd ‚±‚±‚Å+1‚µ‚È‚¢
+    //bnd=inp8( NE_P0_BNRY );      // bnd <-bnd ã“ã“ã§+1ã—ãªã„
     outp8(NE_P1_COMMAND, NE_CR_PS1 | NE_CR_STA); /* Page 1 */
     cpg=inp8( NE_P1_CURR );          // cpg <- Current Page
 
-    //Page0‚É–ß‚µ‚Ä‚¨‚­
+    //Page0ã«æˆ»ã—ã¦ãŠã
     outp8( NE_P0_COMMAND, NE_CR_PS0 );
 
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("bnd : %x\n",bnd);
 //printf("cpg : %x\n",cpg);
 
@@ -151,74 +151,74 @@ void NE2000::inputFrame(void)
     }
     if( cpg == bnd ){        // Current Page = bound ?
         //printf("Not Exist Packet buffer \n");
-        return;         // = ‚È‚ç ƒoƒbƒtƒ@ã‚ÉƒpƒPƒbƒg‚È‚µ
+        return;         // = ãªã‚‰ ãƒãƒƒãƒ•ã‚¡ä¸Šã«ãƒ‘ã‚±ãƒƒãƒˆãªã—
     }
 
 
-    // bound+1 ƒy[ƒW‚Ìæ“ª4ƒoƒCƒg‚ğ“Ç‚İ‚Ş
-    // Yamami «‚¾‚ÆA˜A‘±‚µ‚½•Ï”éŒ¾‚ªA˜A‘±‚µ‚½4ƒoƒCƒg‚Å‚ ‚é–‚É—Š‚Á‚Ä‚¢‚éHH
-    // ƒoƒbƒtƒ@‚Éˆê’UƒŠ[ƒh‚µ‚ÄA‘ã“ü‚·‚éˆ—‚É•ÏX
+    // bound+1 ãƒšãƒ¼ã‚¸ã®å…ˆé ­4ãƒã‚¤ãƒˆã‚’èª­ã¿è¾¼ã‚€
+    // Yamami â†“ã ã¨ã€é€£ç¶šã—ãŸå¤‰æ•°å®£è¨€ãŒã€é€£ç¶šã—ãŸ4ãƒã‚¤ãƒˆã§ã‚ã‚‹äº‹ã«é ¼ã£ã¦ã„ã‚‹ï¼Ÿï¼Ÿ
+    // ãƒãƒƒãƒ•ã‚¡ã«ä¸€æ—¦ãƒªãƒ¼ãƒ‰ã—ã¦ã€ä»£å…¥ã™ã‚‹å‡¦ç†ã«å¤‰æ›´
     //ne_pio_readmem( bnd << 8, &ne_ringbuf_status, 4 );
 
     uint8_t bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
 
-// YamamiƒfƒoƒbƒO ƒŠ[ƒhƒAƒhƒŒƒX‚Ì•\¦
+// Yamamiãƒ‡ãƒãƒƒã‚° ãƒªãƒ¼ãƒ‰ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¡¨ç¤º
 //printf("Read Src = bnd << 8 : %x\n",bnd << 8);
 
     ne_ringbuf_status = bndBuf[0]; /* Receive Status */
     ne_ringbuf_bound = bndBuf[1] & 0xFF; /* Next Packet Pointer */
     ne_ringbuf_len = bndBuf[3] * 256 + bndBuf[2];   /* Receive Byte Count */
 
-    //ª‚±‚ê‚ªA‚»‚ê‚¼‚ê‹t‚Ì‚æ‚¤‚È‹C‚ª‚·‚éBƒGƒ“ƒfƒBƒAƒ“‚Ìˆá‚¢HH
-    //  ‚±‚Ì–‚ÍARead/Write‘¤‚ğ•ÏX
+    //â†‘ã“ã‚ŒãŒã€ãã‚Œãã‚Œé€†ã®ã‚ˆã†ãªæ°—ãŒã™ã‚‹ã€‚ã‚¨ãƒ³ãƒ‡ã‚£ã‚¢ãƒ³ã®é•ã„ï¼Ÿï¼Ÿ
+    //  ã“ã®äº‹ã¯ã€Read/Writeå´ã‚’å¤‰æ›´
     //ne_ringbuf_status = bndBuf[1]; /* Receive Status */
     //ne_ringbuf_bound = bndBuf[0] & 0xFF; /* Next Packet Pointer */
     //ne_ringbuf_len = bndBuf[2] * 256 + bndBuf[3];   /* Receive Byte Count */
 
-// YamamiƒfƒoƒbƒO
+// Yamamiãƒ‡ãƒãƒƒã‚°
 //printf("ne_ringbuf_status : %x\n",ne_ringbuf_status);
 //printf("ne_ringbuf_bound  : %x\n",ne_ringbuf_bound);
 //printf("ne_ringbuf_len : %x\n",ne_ringbuf_len);
 
-    ne_rx_start=(bnd << 8) + 4; // ƒpƒPƒbƒg–{‘Ì‚ÌŠJnƒAƒhƒŒƒX
+    ne_rx_start=(bnd << 8) + 4; // ãƒ‘ã‚±ãƒƒãƒˆæœ¬ä½“ã®é–‹å§‹ã‚¢ãƒ‰ãƒ¬ã‚¹
 
-    // CRC‚Ì•ª‚Ì’·‚³‚ğˆø‚­
-    // CRC‚Ì•ª‚Ì’·‚³‚ğˆø‚­ ? CRC‚¶‚á‚È‚­‚Äne_ringbuf_*‚Ì4 uint8_t?
-    frame_len=ne_ringbuf_len - 4; /* ƒpƒPƒbƒg–{‘Ì‚Ì’·‚³ */
+    // CRCã®åˆ†ã®é•·ã•ã‚’å¼•ã
+    // CRCã®åˆ†ã®é•·ã•ã‚’å¼•ã ? CRCã˜ã‚ƒãªãã¦ne_ringbuf_*ã®4 uint8_t?
+    frame_len=ne_ringbuf_len - 4; /* ãƒ‘ã‚±ãƒƒãƒˆæœ¬ä½“ã®é•·ã• */
 
-    // óMI—¹Œã‚Ì‹«ŠEƒŒƒWƒXƒ^’l
+    // å—ä¿¡çµ‚äº†å¾Œã®å¢ƒç•Œãƒ¬ã‚¸ã‚¹ã‚¿å€¤
     ne_rx_bound=ne_ringbuf_bound;
 
     if( ( ne_ringbuf_status & NE_RSTAT_PRX ) !=0 ){
-                    // óM‚ª³íI—¹‚µ‚½
+                    // å—ä¿¡ãŒæ­£å¸¸çµ‚äº†ã—ãŸ
         if( frame_len >= ETHER_HEADER_SIZE ){
-                    // Å’Z’·‚æ‚è’Z‚¢‚Æ‚«‚ÍƒGƒ‰[
+                    // æœ€çŸ­é•·ã‚ˆã‚ŠçŸ­ã„ã¨ãã¯ã‚¨ãƒ©ãƒ¼
             if( frame_len < ETHER_MAX_PACKET ) {
-                    // Å‘å’·‚æ‚è’·‚¢‚Æ‚«‚ÍƒGƒ‰[
+                    // æœ€å¤§é•·ã‚ˆã‚Šé•·ã„ã¨ãã¯ã‚¨ãƒ©ãƒ¼
 
                 ne_rx_remain_len=frame_len;
 
-                // ƒpƒPƒbƒg‚Ìæ‚è‚İˆ—
-                // Ü‚è•Ô‚µ•ª‚Ì’·‚³
+                // ãƒ‘ã‚±ãƒƒãƒˆã®å–ã‚Šè¾¼ã¿å‡¦ç†
+                // æŠ˜ã‚Šè¿”ã—åˆ†ã®é•·ã•
                 ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
 
-// YamamiƒfƒoƒbƒO
+// Yamamiãƒ‡ãƒãƒƒã‚°
 //printf("frame_input 03 ne_rx_start=%x\n",ne_rx_start);
 //printf("frame_input 04 ne_rx_sub_len=%x\n",ne_rx_sub_len);
 
                 if( ne_rx_sub_len < frame_len ){
-                    // óM‚·‚×‚«ƒpƒPƒbƒg‚ÍÜ‚è•Ô‚µ‚Ä‚¢‚é
-                    // ‘O”¼•”‚Ì“Ç‚İ‚İ
+                    // å—ä¿¡ã™ã¹ããƒ‘ã‚±ãƒƒãƒˆã¯æŠ˜ã‚Šè¿”ã—ã¦ã„ã‚‹
+                    // å‰åŠéƒ¨ã®èª­ã¿è¾¼ã¿
                     ne_pio_readmem( ne_rx_start, buf, ne_rx_sub_len );
                     ne_rx_start=NE_RX_PAGE_START * 256;
 
-                    // ‘‚«‚İƒAƒhƒŒƒX‚ÌXV
+                    // æ›¸ãè¾¼ã¿ã‚¢ãƒ‰ãƒ¬ã‚¹ã®æ›´æ–°
                     buf+=ne_rx_sub_len;
-                    // c‚è‚Ì“Ç‚İ‚İ’·‚ÌXV
+                    // æ®‹ã‚Šã®èª­ã¿è¾¼ã¿é•·ã®æ›´æ–°
                     ne_rx_remain_len=frame_len - ne_rx_sub_len;
                 }
-                // ƒpƒPƒbƒg‚Ì“Ç‚İ‚İ
+                // ãƒ‘ã‚±ãƒƒãƒˆã®èª­ã¿è¾¼ã¿
                 ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
 
             }
@@ -234,18 +234,18 @@ void NE2000::inputFrame(void)
         //printf("Error ne_ringbuf_status & NE_RSTAT_PRX = 0 \n");
     }
 
-    // Yamami ƒoƒEƒ“ƒ_ƒŠƒŒƒWƒXƒ^ ‚ÌXV
+    // Yamami ãƒã‚¦ãƒ³ãƒ€ãƒªãƒ¬ã‚¸ã‚¹ã‚¿ ã®æ›´æ–°
     bnd=ne_rx_bound;
     if( bnd == NE_RX_PAGE_START ){
         bnd=NE_RX_PAGE_STOP;
     }
     bnd--;
-    outp8( NE_P0_BNRY, bnd );    // ‹«ŠEƒŒƒWƒXƒ^ = Ÿ‚Ìƒoƒbƒtƒ@ - 1
+    outp8( NE_P0_BNRY, bnd );    // å¢ƒç•Œãƒ¬ã‚¸ã‚¹ã‚¿ = æ¬¡ã®ãƒãƒƒãƒ•ã‚¡ - 1
 
-    //  Š„‚è‚İƒXƒe[ƒ^ƒXƒŒƒWƒXƒ^ƒNƒŠƒA
+    //  å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¬ã‚¸ã‚¹ã‚¿ã‚¯ãƒªã‚¢
     outp8( NE_P0_ISR, 0xff );
 
-    //H8 ‚æ‚è
+    //H8 ã‚ˆã‚Š
     outp8(NE_P0_IMR, NE_IMR_PRXE); /* Packet Receive interrupt enable */
 
 }
@@ -254,11 +254,11 @@ void NE2000::inputFrame(void)
 
 /*!
     \brief frame_output
-        NE2000 ƒf[ƒ^o—Íƒ‹[ƒ`ƒ“
-    \param  uint8_t *pkt [in] ƒf[ƒ^ƒpƒPƒbƒg‚Ö‚Ìƒ|ƒCƒ“ƒ^
-    \param  uint8_t *mac [in] ‘—‚èæMACƒAƒhƒŒƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
-    \param  uint32_t size [in] ƒpƒPƒbƒgƒTƒCƒY
-    \param  uint16_t pid [in] ƒvƒƒgƒRƒ‹ID(ETHER_PROTO)
+        NE2000 ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›ãƒ«ãƒ¼ãƒãƒ³
+    \param  uint8_t *pkt [in] ãƒ‡ãƒ¼ã‚¿ãƒ‘ã‚±ãƒƒãƒˆã¸ã®ãƒã‚¤ãƒ³ã‚¿
+    \param  uint8_t *mac [in] é€ã‚Šå…ˆMACã‚¢ãƒ‰ãƒ¬ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+    \param  uint32_t size [in] ãƒ‘ã‚±ãƒƒãƒˆã‚µã‚¤ã‚º
+    \param  uint16_t pid [in] ãƒ—ãƒ­ãƒˆã‚³ãƒ«ID(ETHER_PROTO)
     \return void
 
     \author Yamami
@@ -273,72 +273,72 @@ void NE2000::outputFrame( uint8_t *pkt, uint8_t *mac, uint32_t size, uint16_t pi
     uint8_t       *ptx_dest=0;
 
 
-    // ‘—M‚ªŠ®—¹‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
+    // é€ä¿¡ãŒå®Œäº†ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
     while( ( inp8( NE_P0_COMMAND ) & 0x04 ) !=0 );
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("frame_output 01\n");
 
     ptx_dest=mac;
     ptx_size=size;
     ptx_packet=pkt;
-    // ƒlƒbƒgƒ[ƒNƒoƒCƒgƒI[ƒ_[‚É•ÏŠ·‚·‚é
-    // Yamami •ÏŠ·•s—vH
+    // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒã‚¤ãƒˆã‚ªãƒ¼ãƒ€ãƒ¼ã«å¤‰æ›ã™ã‚‹
+    // Yamami å¤‰æ›ä¸è¦ï¼Ÿ
     ptx_type=(pid >> 8)+(pid << 8);
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //int i;
 //for(i=0 ; i<2 ; i++){
 //    printf("ptx[1] = %x \n",(uint8_t *)(&ptx_type + 1));
 //}
 
 
-    // Š„‚è‚İ‹Ö~
-    // ‘—Mˆ—’†‚ÉóM‚·‚é‚ÆƒŒƒWƒXƒ^‚ª‹¶‚Á‚Ä‚µ‚Ü‚¤
+    // å‰²ã‚Šè¾¼ã¿ç¦æ­¢
+    // é€ä¿¡å‡¦ç†ä¸­ã«å—ä¿¡ã™ã‚‹ã¨ãƒ¬ã‚¸ã‚¹ã‚¿ãŒç‹‚ã£ã¦ã—ã¾ã†
     //disableInterrupt();
     disableNetwork();
 
-    // ˆ¶æƒAƒhƒŒƒX‚Ì‘‚«‚İ
+    // å®›å…ˆã‚¢ãƒ‰ãƒ¬ã‚¹ã®æ›¸ãè¾¼ã¿
 //    ne_pio_writemem( ptx_dest, NE_TX_PAGE_START << 8, 6 );
-    // ‘—MŒ³ƒAƒhƒŒƒX‚Ì‘‚«‚İ
+    // é€ä¿¡å…ƒã‚¢ãƒ‰ãƒ¬ã‚¹ã®æ›¸ãè¾¼ã¿
 //    ne_pio_writemem( ether_mac_addr, ( NE_TX_PAGE_START << 8 ) + 6, 6 );
-    // ƒvƒƒgƒRƒ‹ID‚Ì‘‚«‚İ
+    // ãƒ—ãƒ­ãƒˆã‚³ãƒ«IDã®æ›¸ãè¾¼ã¿
 //    ne_pio_writemem( (uint8_t *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
-    // ƒf[ƒ^•”•ª‚Ì‘‚«‚İ
+    // ãƒ‡ãƒ¼ã‚¿éƒ¨åˆ†ã®æ›¸ãè¾¼ã¿
 //    ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) + 14, ptx_size );
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) , ptx_size );
 
     ptx_size+=ETHER_HEADER_SIZE;
 
-    // Å¬ƒpƒPƒbƒg’·‚æ‚è’Z‚¢‚©‚Ç‚¤‚©‚ğƒ`ƒFƒbƒN‚·‚é
+    // æœ€å°ãƒ‘ã‚±ãƒƒãƒˆé•·ã‚ˆã‚ŠçŸ­ã„ã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
     if( ptx_size < ETHER_MIN_PACKET ){
         ptx_size=ETHER_MIN_PACKET;
     }
 
     outp8( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_RD2 + NE_CR_STA );
 
-    // ‘—Mƒoƒbƒtƒ@—Ìˆæ‚Ìw’è
+    // é€ä¿¡ãƒãƒƒãƒ•ã‚¡é ˜åŸŸã®æŒ‡å®š
     outp8( NE_P0_TPSR, NE_TX_PAGE_START );
 
-    // ‘—M’·‚Ìw’è
+    // é€ä¿¡é•·ã®æŒ‡å®š
     outp8( NE_P0_TBCR0, ptx_size & 0xff);
     outp8( NE_P0_TBCR1, ptx_size >> 8 );
 
-    // ‘—M–½—ß‚ğ”­s‚·‚é
+    // é€ä¿¡å‘½ä»¤ã‚’ç™ºè¡Œã™ã‚‹
     outp8( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_TXP + NE_CR_RD2 + NE_CR_STA );
 
-    // Š„‚è‚İ‹–‰Â
+    // å‰²ã‚Šè¾¼ã¿è¨±å¯
     //enableInterrupt();
     enableNetwork();
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("frame_output 02\n");
 
-    // ‘—M‚ªŠ®—¹‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
-    // 2004/11/16 Yamami QEMU on Ne2000 ‚¾‚Æ‚±‚Ìƒ`ƒFƒbƒN‚ª‰i‰“‚É’Ê‚ç‚È‚¢‚æ‚¤‚È‚Ì‚Åƒ`ƒFƒbƒN‚µ‚È‚¢
+    // é€ä¿¡ãŒå®Œäº†ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
+    // 2004/11/16 Yamami QEMU on Ne2000 ã ã¨ã“ã®ãƒã‚§ãƒƒã‚¯ãŒæ°¸é ã«é€šã‚‰ãªã„ã‚ˆã†ãªã®ã§ãƒã‚§ãƒƒã‚¯ã—ãªã„
     //while( ( inp8( NE_P0_COMMAND ) & 0x04 ) !=0 );
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("frame_output 03\n");
 
 }
@@ -346,8 +346,8 @@ void NE2000::outputFrame( uint8_t *pkt, uint8_t *mac, uint32_t size, uint16_t pi
 
 /*!
     \brief nic_probe
-        NE2000ŒŸ¸ƒ‹[ƒ`ƒ“
-        ƒoƒbƒtƒ@ƒƒ‚ƒŠ‚É‘‚«‚İ‚Æ“Ç‚İ‚İ‚ğs‚¢ANE2000‚ª‘¶İ‚·‚é‚±‚Æ‚ğŠm”F‚·‚é
+        NE2000æ¤œæŸ»ãƒ«ãƒ¼ãƒãƒ³
+        ãƒãƒƒãƒ•ã‚¡ãƒ¡ãƒ¢ãƒªã«æ›¸ãè¾¼ã¿ã¨èª­ã¿è¾¼ã¿ã‚’è¡Œã„ã€NE2000ãŒå­˜åœ¨ã™ã‚‹ã“ã¨ã‚’ç¢ºèªã™ã‚‹
     \param  void
     \return void
 
@@ -358,47 +358,47 @@ int NE2000::probe(void)
 {
     int i;
 
-    /* ƒ\ƒtƒgƒEƒFƒAƒŠƒZƒbƒg */
+    /* ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ãƒªã‚»ãƒƒãƒˆ */
     //outp8( NE_ASIC_RESET, inp8( NE_ASIC_RESET ) );
-    /* ƒŠƒZƒbƒgŠ®—¹‚Ü‚Å‘Ò‚Â */
+    /* ãƒªã‚»ãƒƒãƒˆå®Œäº†ã¾ã§å¾…ã¤ */
     //ne_wait_func(0);
 
-    /* DMA ‚ğ‹­§’â~‚·‚éB */
+    /* DMA ã‚’å¼·åˆ¶åœæ­¢ã™ã‚‹ã€‚ */
     outp8( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STP );
 
-    /* ’â~‚·‚é ‚Ü‚Å‘Ò‚Â */
+    /* åœæ­¢ã™ã‚‹é ƒã¾ã§å¾…ã¤ */
     //ne_wait_func(0);
 
-    //  ƒpƒPƒbƒg‚ªƒƒ‚ƒŠ‚É‘‚©‚ê‚È‚¢‚æ‚¤‚É‚·‚é
+    //  ãƒ‘ã‚±ãƒƒãƒˆãŒãƒ¡ãƒ¢ãƒªã«æ›¸ã‹ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹
     outp8( NE_P0_RCR, NE_RCR_MON );
 
-    // ƒ[ƒh•“]‘—Aƒ‹[ƒvƒoƒbƒNƒ‚[ƒh
+    // ãƒ¯ãƒ¼ãƒ‰å¹…è»¢é€ã€ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰
     outp8( NE_P0_DCR, NE_DCR_WTS + NE_DCR_FT1 + NE_DCR_LS );
 
-    // óMƒoƒbƒtƒ@ŠJnƒAƒhƒŒƒX
+    // å—ä¿¡ãƒãƒƒãƒ•ã‚¡é–‹å§‹ã‚¢ãƒ‰ãƒ¬ã‚¹
     // 64
     outp8( NE_P0_PSTART, NE_MEM_START );
 
-    // óMƒoƒbƒtƒ@I—¹ƒAƒhƒŒƒX
+    // å—ä¿¡ãƒãƒƒãƒ•ã‚¡çµ‚äº†ã‚¢ãƒ‰ãƒ¬ã‚¹
     // 128
     outp8( NE_P0_PSTOP, NE_MEM_END );
 
-    // ƒƒ‚ƒŠƒeƒXƒgƒpƒ^[ƒ“‘‚«‚İ
+    // ãƒ¡ãƒ¢ãƒªãƒ†ã‚¹ãƒˆãƒ‘ã‚¿ãƒ¼ãƒ³æ›¸ãè¾¼ã¿
     ne_pio_writemem( (uint8_t *)ne_test_pattern, NE_MEM_START * NE_PAGE_SIZE, ne_sizeof_test_pattern );
-    // ƒƒ‚ƒŠƒeƒXƒgƒpƒ^[ƒ““Ç‚İ‚İ
+    // ãƒ¡ãƒ¢ãƒªãƒ†ã‚¹ãƒˆãƒ‘ã‚¿ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
     ne_pio_readmem( NE_MEM_START * NE_PAGE_SIZE, ne_test_buffer, ne_sizeof_test_pattern );
-    // ƒeƒXƒgƒpƒ^[ƒ“‚Ì”äŠr
+    // ãƒ†ã‚¹ãƒˆãƒ‘ã‚¿ãƒ¼ãƒ³ã®æ¯”è¼ƒ
     if( ne_bcompare( (uint8_t *)ne_test_pattern, ne_test_buffer, ne_sizeof_test_pattern )!=0 )
-        return(1);  // •sˆê’v‚È‚çI—¹
+        return(1);  // ä¸ä¸€è‡´ãªã‚‰çµ‚äº†
 
-    // EEPROM ƒf[ƒ^“Ç‚İ‚¾‚µ
+    // EEPROM ãƒ‡ãƒ¼ã‚¿èª­ã¿ã ã—
     ne_pio_readmem( 0, ne_test_buffer, 16 );
 
-    // ƒC[ƒTƒlƒbƒgƒAƒhƒŒƒXæ“¾
+    // ã‚¤ãƒ¼ã‚µãƒãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
     for(i=0;i<11;i+=2)
         ether_mac_addr[i/2]=ne_test_buffer[i];
 
-    // Š„‚è‚İƒXƒe[ƒ^ƒXƒŒƒWƒXƒ^ƒNƒŠƒA
+    // å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¬ã‚¸ã‚¹ã‚¿ã‚¯ãƒªã‚¢
     outp8( NE_P0_ISR, 0xff );
 
     return(0);
@@ -407,7 +407,7 @@ int NE2000::probe(void)
 
 /*!
     \brief nic_init
-        NE2000‰Šú‰»ƒ‹[ƒ`ƒ“
+        NE2000åˆæœŸåŒ–ãƒ«ãƒ¼ãƒãƒ³
     \param  void
     \return void
 
@@ -416,77 +416,77 @@ int NE2000::probe(void)
 */
 void NE2000::nic_init(void)
 {
-    // Še•Ï”‚Ì‰Šú‰»
+    // å„å¤‰æ•°ã®åˆæœŸåŒ–
     int i;
     uint8_t c;
 
-    //NICƒŠƒZƒbƒg
+    //NICãƒªã‚»ãƒƒãƒˆ
     c = inp8(NE_ASIC_RESET);
     outp8(NE_ASIC_RESET, c);
 
-    //ƒŠƒZƒbƒgŠ®—¹‚Ü‚Å‘Ò‚Â
+    //ãƒªã‚»ãƒƒãƒˆå®Œäº†ã¾ã§å¾…ã¤
     sleep(300);
 
-    // ƒŠƒ‚[ƒgDMA ’â~
+    // ãƒªãƒ¢ãƒ¼ãƒˆDMA åœæ­¢
     outp8( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
 
-    // FIFO ƒXƒŒƒbƒVƒ‡ƒ‹ƒh 8Byte,ƒŠƒ‚[ƒgDMA ©“®‰Šú‰»‹Ö~
-    // 8086 ƒoƒCƒgƒI[ƒ_,16bit• DMA “]‘—
+    // FIFO ã‚¹ãƒ¬ãƒƒã‚·ãƒ§ãƒ«ãƒ‰ 8Byte,ãƒªãƒ¢ãƒ¼ãƒˆDMA è‡ªå‹•åˆæœŸåŒ–ç¦æ­¢
+    // 8086 ãƒã‚¤ãƒˆã‚ªãƒ¼ãƒ€,16bitå¹… DMA è»¢é€
     // Page0_0Eh DATA CONFIGURATION REGISTER (DCR) 0EH (WRITE)
     //   7 6   5   4   3  2   1    0
     //   - FT1 FT0 ARM LS LAS BOS WTS
     //   0 1   0   0   1   0   0    1
     outp8( NE_P0_DCR, NE_DCR_FT1 + NE_DCR_WTS + NE_DCR_LS );
 
-    // ƒŠƒ‚[ƒgDMA ƒoƒCƒgƒJƒEƒ“ƒ^ƒNƒŠƒA
+    // ãƒªãƒ¢ãƒ¼ãƒˆDMA ãƒã‚¤ãƒˆã‚«ã‚¦ãƒ³ã‚¿ã‚¯ãƒªã‚¢
     outp8( NE_P0_RBCR0, 0 );
     outp8( NE_P0_RBCR1, 0 );
 
-    // ƒ‚ƒjƒ^ƒ‚[ƒh
-    // (ƒpƒPƒbƒgóMˆ—‚ğ‚¨‚±‚È‚¤‚ªAƒoƒbƒtƒ@ƒŠƒ“ƒO‚Í‚µ‚È‚¢)
+    // ãƒ¢ãƒ‹ã‚¿ãƒ¢ãƒ¼ãƒ‰
+    // (ãƒ‘ã‚±ãƒƒãƒˆå—ä¿¡å‡¦ç†ã‚’ãŠã“ãªã†ãŒã€ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã¯ã—ãªã„)
     // RECEIVE CONFIGURATION REGISTER (RCR) 0CH (WRITE)
     outp8( NE_P0_RCR, NE_RCR_MON );
 
-    // “à•”ƒ‹[ƒvƒoƒbƒNƒ‚[ƒh
+    // å†…éƒ¨ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰
     // TRANSMIT CONFIGURATION REGISTER (TCR) 0DH (WRITE)
     outp8( NE_P0_TCR, NE_TCR_LB0 );
 
-    // ‘—MƒŠƒ“ƒOƒoƒbƒtƒ@ŠJnƒAƒhƒŒƒX‚Ìİ’è
+    // é€ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡é–‹å§‹ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
     // 64
     outp8( NE_P0_TPSR, NE_TX_PAGE_START );
-    // óMƒŠƒ“ƒOƒoƒbƒtƒ@ŠJnƒAƒhƒŒƒX‚Ìİ’è
+    // å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡é–‹å§‹ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
     // 70
     outp8( NE_P0_PSTART, NE_RX_PAGE_START );
 
-    // óMƒŠƒ“ƒOƒoƒbƒtƒ@‹«ŠEƒAƒhƒŒƒX‚Ìİ’è
+    // å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡å¢ƒç•Œã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
     // 70
     outp8( NE_P0_BNRY, NE_RX_PAGE_START );
-    // óMƒŠƒ“ƒOƒoƒbƒtƒ@I—¹ƒAƒhƒŒƒX‚Ìİ’è
+    // å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡çµ‚äº†ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
     // 128
     outp8( NE_P0_PSTOP, NE_RX_PAGE_STOP );
 
-    // Š„‚è‚İƒXƒe[ƒ^ƒXƒŒƒWƒXƒ^‚ÌƒNƒŠƒA
+    // å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¬ã‚¸ã‚¹ã‚¿ã®ã‚¯ãƒªã‚¢
     outp8( NE_P0_ISR, 0xff );
-    //  Š„‚è‚İ‹–‰ÂğŒ‚Ìİ’è
+    //  å‰²ã‚Šè¾¼ã¿è¨±å¯æ¡ä»¶ã®è¨­å®š
     // Packet recieve successful
     outp8( NE_P0_IMR, NE_IMR_PRXE );
 
-    //Yamami ‘SŠ„‚è‚İ‚ğ‹–‰Â‚µ‚Ä‚İ‚é
+    //Yamami å…¨å‰²ã‚Šè¾¼ã¿ã‚’è¨±å¯ã—ã¦ã¿ã‚‹
     //outp8( NE_P0_IMR, 0x7F );
 
-    // Page 1 ‚Ìİ’è
+    // Page 1 ã®è¨­å®š
     outp8( NE_P0_COMMAND, ne_cr_proto | ( NE_CR_PS1 + NE_CR_STP ) );
 
-    // Ethernet ƒAƒhƒŒƒX‚Ìİ’è
-    // ‚±‚±‚Åw’è‚µ‚½ƒAƒhƒŒƒX‚ÌƒpƒPƒbƒg‚ğó‚¯æ‚é
+    // Ethernet ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
+    // ã“ã“ã§æŒ‡å®šã—ãŸã‚¢ãƒ‰ãƒ¬ã‚¹ã®ãƒ‘ã‚±ãƒƒãƒˆã‚’å—ã‘å–ã‚‹
     for(i=0;i<6;i++){
         outp8( NE_P1_PAR0 + i, ether_mac_addr[i] );
     }
 
-    // Å‰‚ÉóM‚µ‚½ƒpƒPƒbƒg‚ğŠi”[‚·‚éƒAƒhƒŒƒX‚Ìİ’è
+    // æœ€åˆã«å—ä¿¡ã—ãŸãƒ‘ã‚±ãƒƒãƒˆã‚’æ ¼ç´ã™ã‚‹ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
     outp8( NE_P1_CURR, NE_RX_PAGE_START + 1 );
 
-    /* ƒ}ƒ‹ƒ`ƒLƒƒƒXƒgƒŒƒWƒXƒ^‚Ìİ’è */
+    /* ãƒãƒ«ãƒã‚­ãƒ£ã‚¹ãƒˆãƒ¬ã‚¸ã‚¹ã‚¿ã®è¨­å®š */
     outp8( NE_P1_MAR0, 0 );
     outp8( NE_P1_MAR0+1, 0 );
     outp8( NE_P1_MAR0+2, 0 );
@@ -496,23 +496,23 @@ void NE2000::nic_init(void)
     outp8( NE_P1_MAR0+6, 0 );
     outp8( NE_P1_MAR0+7, 0 );
 
-    // Page 0 ‚É‚à‚Ç‚·
+    // Page 0 ã«ã‚‚ã©ã™
     outp8( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
 
-    // óMƒpƒPƒbƒgƒtƒBƒ‹ƒ^‚Ìİ’è
-    // ƒuƒ[ƒhƒLƒƒƒXƒg‚Æ©•ªˆ¶‚Ì‚İ‚ğƒƒ‚ƒŠ‚ÉŠi”[
+    // å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆãƒ•ã‚£ãƒ«ã‚¿ã®è¨­å®š
+    // ãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆã¨è‡ªåˆ†å®›ã®ã¿ã‚’ãƒ¡ãƒ¢ãƒªã«æ ¼ç´
     // accept broadcast
     outp8( NE_P0_RCR, NE_RCR_AB );
-// ª ‚ğƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æ
-// Yamamiƒ‚ƒjƒ^ƒ‚[ƒh‚Ì‚Ü‚Ü‚Æ‚µ‚Ä‚İ‚é!!!!! –‚É‚È‚é
+// â†‘ ã‚’ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹ã¨
+// Yamamiãƒ¢ãƒ‹ã‚¿ãƒ¢ãƒ¼ãƒ‰ã®ã¾ã¾ã¨ã—ã¦ã¿ã‚‹!!!!! äº‹ã«ãªã‚‹
 
-    //Yamami ƒvƒƒ~ƒXƒLƒƒƒXƒg‚Ì‚İó‚¯æ‚é‚æ‚¤‚É‚µ‚Ä‚İ‚é???? ˆá‚¤‚æ‚¤‚¾
+    //Yamami ãƒ—ãƒ­ãƒŸã‚¹ã‚­ãƒ£ã‚¹ãƒˆã®ã¿å—ã‘å–ã‚‹ã‚ˆã†ã«ã—ã¦ã¿ã‚‹???? é•ã†ã‚ˆã†ã 
     //outp8( NE_P0_RCR, NE_RCR_APROMIS );
 
-    // NIC ‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+    // NIC ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
     outp8( NE_P0_COMMAND, ne_cr_proto | NE_CR_STA );
 
-    // ƒ‹[ƒvƒoƒbƒNƒ‚[ƒh‚ğ”²‚¯‚Ä’Êí“®ìƒ‚[ƒh‚É“ü‚é
+    // ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰ã‚’æŠœã‘ã¦é€šå¸¸å‹•ä½œãƒ¢ãƒ¼ãƒ‰ã«å…¥ã‚‹
     outp8( NE_P0_TCR, 0 );
 }
 
@@ -522,11 +522,11 @@ void NE2000::nic_init(void)
 
 /*!
     \brief ne_pio_writemem
-        ”ñŒöŠJƒ‹[ƒ`ƒ“
-        Ne2000 ƒoƒbƒtƒ@ƒƒ‚ƒŠ‘‚«‚İ
-    \param  uint8_t *src [in] “]‘—Œ³ƒAƒhƒŒƒX
-    \param  uint32_t dest [in] “]‘—æƒAƒhƒŒƒX
-    \param  uint32_t size [in] ’·‚³
+        éå…¬é–‹ãƒ«ãƒ¼ãƒãƒ³
+        Ne2000 ãƒãƒƒãƒ•ã‚¡ãƒ¡ãƒ¢ãƒªæ›¸ãè¾¼ã¿
+    \param  uint8_t *src [in] è»¢é€å…ƒã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint32_t dest [in] è»¢é€å…ˆã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint32_t size [in] é•·ã•
     \return void
 
     \author Yamami
@@ -538,15 +538,15 @@ void NE2000::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 
     uint16_t writetmp;
 
-    /* ƒXƒe[ƒ^ƒXƒŒƒWƒXƒ^ƒNƒŠƒA */
+    /* ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¬ã‚¸ã‚¹ã‚¿ã‚¯ãƒªã‚¢ */
     outp8( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
     outp8( NE_P0_ISR, NE_ISR_RDC);
 
-    /* ’·‚³ */
+    /* é•·ã• */
     outp8( NE_P0_RBCR0, size & 0xff );
     outp8( NE_P0_RBCR1, size >> 8 );
 
-    /* “]‘—æƒAƒhƒŒƒX */
+    /* è»¢é€å…ˆã‚¢ãƒ‰ãƒ¬ã‚¹ */
     outp8( NE_P0_RSAR0, dest & 0xff );
     outp8( NE_P0_RSAR1, dest >> 8 );
     outp8( NE_P0_COMMAND, NE_CR_RD1 + NE_CR_STA );
@@ -558,10 +558,10 @@ void NE2000::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 //    }
 
 
-    // 2004/08/02 DATA‚Í16ƒrƒbƒg•‚Å‚â‚è‚Æ‚è‚·‚é‚Ì‚ÅAWord•ÏŠ·‚µ‚ÄI/O
+    // 2004/08/02 DATAã¯16ãƒ“ãƒƒãƒˆå¹…ã§ã‚„ã‚Šã¨ã‚Šã™ã‚‹ã®ã§ã€Wordå¤‰æ›ã—ã¦I/O
     for(i = 0 ; i < size ; i+=2 , src+=2){
         //writetmp = (uint16_t)(*(src) << 8) + (uint16_t)*(src+1);
-        //ƒŠƒgƒ‹ƒGƒ“ƒfƒBƒAƒ“‚È‚ç‚±‚¤HH
+        //ãƒªãƒˆãƒ«ã‚¨ãƒ³ãƒ‡ã‚£ã‚¢ãƒ³ãªã‚‰ã“ã†ï¼Ÿï¼Ÿ
         writetmp = (uint16_t)(*(src + 1) << 8) + (uint16_t)*(src);
         outp16( NE_ASIC_DATA, writetmp );
     }
@@ -577,11 +577,11 @@ void NE2000::ne_pio_writemem( uint8_t *src, uint32_t dest, uint32_t size )
 
 /*!
     \brief ne_pio_readmem
-        ”ñŒöŠJƒ‹[ƒ`ƒ“
-         NE2000 ‚Ìƒƒ‚ƒŠ‚©‚ç“Ç‚İ‚¾‚µ
-    \param  uint32_t src [in] “]‘—Œ³ƒAƒhƒŒƒX
-    \param  uint8_t *dest [in] “]‘—æƒAƒhƒŒƒX
-    \param  uint32_t size [in] ’·‚³
+        éå…¬é–‹ãƒ«ãƒ¼ãƒãƒ³
+         NE2000 ã®ãƒ¡ãƒ¢ãƒªã‹ã‚‰èª­ã¿ã ã—
+    \param  uint32_t src [in] è»¢é€å…ƒã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint8_t *dest [in] è»¢é€å…ˆã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint32_t size [in] é•·ã•
     \return void
 
     \author Yamami
@@ -593,7 +593,7 @@ void NE2000::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 
     uint16_t readtmp;
 
-//Yamami ƒfƒoƒbƒO
+//Yamami ãƒ‡ãƒãƒƒã‚°
 //printf("ne_pio_readmem src=%x \n",src);
 
     // abort DMA, start NIC
@@ -612,12 +612,12 @@ void NE2000::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 //        dest+=2;
 //    }
 
-    // 2004/08/02 DATA‚Í16ƒrƒbƒg•‚Å‚â‚è‚Æ‚è‚·‚é‚Ì‚ÅAWord•ÏŠ·‚µ‚ÄI/O
+    // 2004/08/02 DATAã¯16ãƒ“ãƒƒãƒˆå¹…ã§ã‚„ã‚Šã¨ã‚Šã™ã‚‹ã®ã§ã€Wordå¤‰æ›ã—ã¦I/O
     for(i = 0 ; i < size ; i+=2 , dest+=2){
         readtmp=inp16( NE_ASIC_DATA );
         //*dest=(uint8_t)(readtmp >> 8);
         //*(dest+1)=(uint8_t)(readtmp & 0xff);
-        //ƒŠƒgƒ‹ƒGƒ“ƒfƒBƒAƒ“‚È‚ç‚±‚¤HH
+        //ãƒªãƒˆãƒ«ã‚¨ãƒ³ãƒ‡ã‚£ã‚¢ãƒ³ãªã‚‰ã“ã†ï¼Ÿï¼Ÿ
         *(dest+1)=(uint8_t)(readtmp >> 8);
         *(dest)=(uint8_t)(readtmp & 0xff);
     }
@@ -628,12 +628,12 @@ void NE2000::ne_pio_readmem( uint32_t src, uint8_t *dest, uint32_t size )
 
 /*!
     \brief ne_bcompare
-        ”ñŒöŠJƒ‹[ƒ`ƒ“
-         ƒoƒCƒiƒŠ”äŠrƒ‹[ƒ`ƒ“
-    \param  uint8_t *src [in] ”äŠrŒ³ƒAƒhƒŒƒX
-    \param  uint8_t *dest [in] ”äŠræƒAƒhƒŒƒX
-    \param  uint32_t size [in] ’·‚³
-    \return int Œ‹‰Ê:ˆê’v==0,•sˆê’v==0ˆÈŠO
+        éå…¬é–‹ãƒ«ãƒ¼ãƒãƒ³
+         ãƒã‚¤ãƒŠãƒªæ¯”è¼ƒãƒ«ãƒ¼ãƒãƒ³
+    \param  uint8_t *src [in] æ¯”è¼ƒå…ƒã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint8_t *dest [in] æ¯”è¼ƒå…ˆã‚¢ãƒ‰ãƒ¬ã‚¹
+    \param  uint32_t size [in] é•·ã•
+    \return int çµæœ:ä¸€è‡´==0,ä¸ä¸€è‡´==0ä»¥å¤–
 
     \author Yamami
     \date   create:2004/08/02 update:$Date$

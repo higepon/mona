@@ -35,7 +35,7 @@ bool NicServer::initialize()
     this->nic = NicFactory::create();
     if(this->nic == NULL) 
     {
-        printf("NicFactory error\n");
+        _printf("NicFactory error\n");
         return false;
     }
     syscall_set_irq_receiver(this->nic->getIRQ(), false);

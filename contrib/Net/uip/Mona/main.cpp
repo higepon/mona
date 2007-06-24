@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
     /* Initialize the HTTP server. */
-    server_init();
+    httpd_init();
 
 
     arptimer = 0;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 void
 uip_log(char *m)
 {
-    printf("uIP log message: %s\n", m);
+    _printf("uIP log message: %s\n", m);
 }
 /*-----------------------------------------------------------------------------------*/
 
@@ -146,7 +146,7 @@ void NicListenLoop()
     server = new NicServer;
     if (!server->initialize())
     {
-        printf("NicServer initialize failed\n");
+        _printf("NicServer initialize failed\n");
         exit(1);
     }
     server->messageLoop();
@@ -157,7 +157,7 @@ uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame)
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))
     {
-        printf("send error 1");
+        _printf("send error 1");
         return 1;
     }
     if (1 == msg.arg2) {
@@ -175,7 +175,7 @@ uint32_t nic_write(uint32_t nicThread, OutPacket* packet)
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (uint32_t)packet))
     {
-        printf("send error 1");
+        _printf("send error 1");
         return 1;
     }
     return 0;

@@ -553,7 +553,7 @@ struct httpd_state {
 /* Include the header file for the application program that should be
    used. If you don't use the example web server, you should change
    this. */
-#include "ServerMessageLoop.h"
+#include "../apps/httpd/httpd.h"
 
 
 #endif /* __UIPOPT_H__ */

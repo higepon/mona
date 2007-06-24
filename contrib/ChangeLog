@@ -1,3 +1,12 @@
+2007-06-24  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/uip/Mona/uipopt.h : Set IP Address 10.0.2.15 for QEMU.
+                                  You execute QEMU  with follow options "-net nic -net user -redir tcp:5555:10.0.2.15:80 ".
+
+        * Sysutils/libPci/Pci.cpp : conver to utf-8.
+
+        * Net/uip/Mona/NE2000.cpp: conver to utf-8.
+
 2007-06-20  higepon  <higepon@users.sourceforge.jp>
 
         * Net/uip/Mona/NicServer.cpp : Fixed for a Mona 0.3.0.

@@ -28,13 +28,12 @@ bool NicServer::initialize()
 
     this->nic = NicFactory::create();
     if(this->nic == NULL){
-        printf("NicFactory error\n");
+        _printf("NicFactory error\n");
         return false;
     }
 
-    syscall_set_irq_receiver(this->nic->getIRQ(), false);
+    syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT);
     monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
-    this->nic->enableNetwork();
     this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
@@ -56,7 +55,7 @@ void NicServer::interrupt(MessageInfo* msg)
     this->nic->getFrameBuffer((uint8_t*)frame, sizeof(Ether::Frame));
     this->frameList.add(frame);
     if (Message::send(this->observerThread, &info)) {
-        printf("local!!!! yamas:INIT error\n");
+        _printf("local!!!! yamas:INIT error\n");
     }
     return;
 }
@@ -104,7 +103,9 @@ void NicServer::messageLoop()
         {
         case MSG_INTERRUPTED:
         {
+//            _printf("interrupt intterrupt %s %s:%d\n", __func__, __FILE__, __LINE__);
             this->interrupt(&msg);
+            monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
             break;
         }
         case MSG_FRAME_WRITE:
@@ -137,9 +138,9 @@ void NicServer::messageLoop()
             break;
         }
         default:
-            printf("default come %d", msg.header);
+            _printf("default come %d", msg.header);
             break;
         }
     }
-    printf("NicServer exit\n");
+    _printf("NicServer exit\n");
 }

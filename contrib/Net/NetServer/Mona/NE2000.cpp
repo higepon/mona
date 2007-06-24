@@ -62,7 +62,7 @@ int NE2000::init()
     //Ne2000 存在確認
     reti = probe();
     if(reti != 0 ){
-        printf("Does Not Exist Ne2K!!!\n");
+        _printf("Does Not Exist Ne2K!!!\n");
         return -1;
     }
 
@@ -107,21 +107,21 @@ void NE2000::inputFrame(void)
     sts=inp8( NE_P0_RSR );
 
 //Yamami デバッグ
-//printf("sts : %x\n",sts);
+//_printf("sts : %x\n",sts);
 
     if( ( sts & NE_RSTAT_OVER ) !=0 ){
-        printf("FIFO OverFlow\n");
+        _printf("FIFO OverFlow\n");
         return; // 受信FIFOオーバーフローした
     }
 
     if( ( inp8( NE_P0_ISR ) & NE_ISR_OVW ) !=0 ){
-        printf("RING OverFlow\n");
+        _printf("RING OverFlow\n");
         return; // 受信リングバッファオーバーフロー
     }
 
     //  受信成功
     if( ( sts & NE_RSTAT_PRX ) ==0 ){
-        printf("Not Exist Packet \n");
+        _printf("Not Exist Packet \n");
         return; //  受信パケットなし
     }
 
