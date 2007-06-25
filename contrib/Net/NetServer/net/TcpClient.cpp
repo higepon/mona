@@ -85,10 +85,16 @@ void TcpClient::AckedHandler()
 
 void TcpClient::NewDataHandler()
 {
+port
     if (!uip_newdata()) return;
     if (uip_datalen() == 0) return;
-    printf("new data comes\n");
+    _printf("new data comes\n");
     Buffer* data = new Buffer(uip_appdata, &uip_appdata[uip_datalen()]);
+    for (uint32_t i = 0; i < data->size(); i++)
+    {
+        _printf("%c", data->at(i));
+
+    }
     uint32_t handle = ConnectionToHandle(uip_conn);
     receiveBuffers_[handle] = data;
 }

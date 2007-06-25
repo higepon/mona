@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
     thread_init();
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
+    uip_listen(HTONS(5555));
     /* Initialize the HTTP server. */
     server_init();
 
@@ -108,7 +109,9 @@ int main(int argc, char* argv[])
             }
 
         } else {
+            _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if(BUF->type == htons(UIP_ETHTYPE_IP)) {
+            _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 uip_arp_ipin();
                 uip_input();
                 /* If the above function invocation resulted in data that
@@ -136,7 +139,7 @@ int main(int argc, char* argv[])
 void
 uip_log(char *m)
 {
-    printf("uIP log message: %s\n", m);
+    _printf("uIP log message: %s\n", m);
 }
 /*-----------------------------------------------------------------------------------*/
 

@@ -279,7 +279,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_UDP_APPCALL  udp_appcall
+#define UIP_UDP_APPCALL  server_appcall
 
 /** @} */
 /*------------------------------------------------------------------------------*/

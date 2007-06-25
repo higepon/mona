@@ -121,5 +121,6 @@ void server_init(void)
 
 void server_appcall(void)
 {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     client->EventHandler();
 }
