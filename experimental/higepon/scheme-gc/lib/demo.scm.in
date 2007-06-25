@@ -1,3 +1,11 @@
+(define (on-gui-start)
+  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/SAKEBI.JPG")
+  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 500 100")
+  (mona-sleep 500)
+;;   (mona-gui-move-window (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS/MONAFRMS/SAKEBI.JPG"))
+;;         (mona-gui-enum-windows)) 200 50)
+)
+
 (define (make-queue)
   (cons '() '()))
 
@@ -73,7 +81,7 @@
 
 (define (m1 coroutine-p)
   (move-window-left
-   (find (lambda (window) (string=? (mona-gui-get-window-title window) "Terminal"))
+   (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS/MONAFRMS/SAKEBI.JPG"))
          (mona-gui-enum-windows))
    100
    200
@@ -83,7 +91,7 @@
 
 (define (m2 coroutine-p)
   (move-window-right
-   (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS"))
+   (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS/MONAFRMS/MONALISA.JPG"))
          (mona-gui-enum-windows))
    10
    20

@@ -73,8 +73,6 @@
 
 
 
-(define (mona-lisa)
-  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG"))
 
 (define (squirrel)
   (start-process "/APPS/BAYGUI/MONASQ.EX5"))
@@ -286,5 +284,5 @@
   (call-process "/APPS/ACLI.EX5"))
 
 
-;(gui)
+(gui)
 
