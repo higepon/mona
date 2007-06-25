@@ -38,7 +38,7 @@ bool NicServer::initialize()
         _printf("NicFactory error\n");
         return false;
     }
-    syscall_set_irq_receiver(this->nic->getIRQ(), false);
+    syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT);
     this->nic->enableNetwork();
     this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
@@ -189,6 +189,7 @@ void NicServer::messageLoop()
         case MSG_INTERRUPTED:
         {
             this->interrupt(&msg);
+            monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
             break;
         }
         case MSG_FRAME_WRITE:

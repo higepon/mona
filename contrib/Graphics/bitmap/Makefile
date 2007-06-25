@@ -2,11 +2,11 @@ TARGET  = BITMAP
 SOURCES = Form1.cpp
 
 INSTDIR = $(BINDIR)/APPS/MONAFRMS
-INSTFILES  = MONALISA.JPG
+INSTFILES  = MONALISA.JPG SAKEBI.JPG
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lgui-imp
-ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
+ADDLINK    = -lgui-imp -lmonalibc-imp
+ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 ADDLINK    = -lgui
@@ -15,6 +15,6 @@ include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
 CXXFLAGS += -DDEBUG
-INCLUDE += -I .
+INCLUDE += -I . -I $(INCDIR)/monalibc
 
 -include dependencies

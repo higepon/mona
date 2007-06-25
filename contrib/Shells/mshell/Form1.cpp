@@ -69,6 +69,22 @@ public:
         if (this->first)
         {
             MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
+            // fix me
+            // call (on-gui-start)
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::O, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::N, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::OemMinus, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::G, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::U, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::I, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::OemMinus, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::S, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::T, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::A, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::R, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::T, 0);
+            MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, MonAPI::Keys::Enter, 0);
+
             this->first = false;
         }
         _P<Graphics> g = Graphics::FromImage(this->buffer);

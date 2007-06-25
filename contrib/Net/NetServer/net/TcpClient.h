@@ -11,7 +11,7 @@ extern "C" {
 namespace mones {
 
 //#ifdef DEBUG
-#define TRACE(...) printf(__VA_ARGS__)
+#define TRACE(...) _printf(__VA_ARGS__)
 //#else
 //#define TRACE //
 //#endif
