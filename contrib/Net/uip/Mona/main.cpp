@@ -3,6 +3,9 @@ extern "C" {
 #include <uip_arp.h>
 };
 
+// ~/src/qemu-0.9.0/i386-softmmu/qemu -cdrom ~/mona/tool/mkimg/mona.iso -fda ~/mona/tool/mkimg/mona.img -boot d -soundhw pcspk -k ja -serial file:/tmp/qemu_mona.log -soundhw es1370 -net nic -net user -redir tcp:5555:10.0.2.15:80 -redir udp:5555:10.0.2.15:5555
+// you need a patch for qemu, ask higepon.
+
 #include "ServerMessageLoop.h"
 #include "monadev.h"
 #include "NicServer.h"
