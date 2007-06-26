@@ -85,7 +85,6 @@ void TcpClient::AckedHandler()
 
 void TcpClient::NewDataHandler()
 {
-port
     if (!uip_newdata()) return;
     if (uip_datalen() == 0) return;
     _printf("new data comes\n");

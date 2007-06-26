@@ -50,13 +50,11 @@
     \date   create:2007/06/25 update:$Date $
 */
 
-
 extern "C" {
 #include <uip.h>
 #include <uip_arp.h>
 };
 
-#include "ServerMessageLoop.h"
 #include "monadev.h"
 #include "NicServer.h"
 #include <monapi.h>
@@ -71,27 +69,17 @@ uint32_t nicThread;
 
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
-extern void MessageLoop();
-extern void* test();
-extern void irc();
-void thread_client()
-{
-    MessageLoop();
-//    test();
-//    irc();
-    return;
-}
-
-void thread_init()
-{
-    uint32_t id = syscall_mthread_create((uint32_t)thread_client);
-// comment out by higepon
-//    syscall_mthread_join(id);
-}
-
 #ifndef NULL
 #define NULL (void *)0
 #endif /* NULL */
+
+// net_server は書きかけです。
+// Schemeシェルでリモートシェルを実装しようとして test.rb とのデータのやりとりをやろうと思っていたけど
+// まだうまくいっていません。割り込みは来ているので、uip.c あたりをさぐるかんじで。
+// uipアプリケーションは ドキュメントをよんできれいにつくりましょう。
+// qemuにパッチが必要だよ
+
+
 int main(int argc, char* argv[])
 {
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
@@ -99,9 +87,7 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
-    uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
-// comment out by higepon
-//    syscall_mthread_join(id);
+    syscall_mthread_create((uint32_t)NicListenLoop);
 
     for (;;) {
         if (server != NULL && server->isStarted()) {
@@ -114,12 +100,11 @@ int main(int argc, char* argv[])
 
     /* Initialize the device driver. */
     monadev_init();
-    thread_init();
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
-    uip_listen(HTONS(5555));
+
     /* Initialize the HTTP server. */
-    server_init();
+    net_server_init();
 
     arptimer = 0;
 
