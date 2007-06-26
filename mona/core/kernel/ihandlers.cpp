@@ -38,7 +38,7 @@ void irqHandler_11()
 {
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
-    g_console->printf("11\n");
+//    g_console->printf("11\n");
     if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
     SendInterrupt(11);
 }
