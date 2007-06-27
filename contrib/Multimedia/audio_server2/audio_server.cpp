@@ -12,6 +12,7 @@ AudioServer audio_server_new()
 {
 	struct audio_server *ret;
     
+	syscall_get_io();
 	ret = (struct audio_server*)calloc(1, sizeof(struct audio_server));
 	if( ret == NULL ) return NULL;
 	ret->driver = audio_driver_factory("es1370");
@@ -27,7 +28,6 @@ AudioServer audio_server_new()
 		free(ret);
 		return NULL;
 	}
-	syscall_get_io();
 	return (AudioServer)ret;
 }
 
@@ -98,8 +98,8 @@ int audio_start(AudioServer o, MessageInfo *msg)
 	o->driver->driver_set_render_callback(o->device, &audio_render_callback, o);
 	o->driver->driver_set_stopped_callback(o->device, &audio_stopped_callback, o);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-	o->driver->driver_start(o->device);
 	MonAPI::Message::reply(msg, 0);
+	o->driver->driver_start(o->device);
 	return 0;
 }
 
