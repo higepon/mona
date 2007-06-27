@@ -247,6 +247,60 @@ PROCEDURE(InteractionEnvironment, "interaction-environment")
     return env;
 }
 
+PROCEDURE(CallPipe, "|")
+{
+#ifdef MONA
+    ARGC_SHOULD_BE_GT(1);
+    MonAPI::Stream* resultStream = new MonAPI::Stream();
+    uint32_t* streamHandles = new uint32_t[ARGC + 1];
+    streamHandles[0]    = g_terminal->getScreenHandle();
+    streamHandles[ARGC] = resultStream->handle();
+    for (int i = 1; i < ARGC; i++)
+    {
+        streamHandles[i] = (new MonAPI::Stream())->handle();
+    }
+    uint32_t tid;
+    for (int i = 0; i < ARGC; i++)
+    {
+        CAST(ARGV(i), SString, s);
+        int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, streamHandles[i], streamHandles[i + 1]);
+        if (result != 0)
+        {
+            RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
+        }
+    }
+
+    const uint32_t bufsize = 256;
+    uint8_t buf[bufsize];
+    ::util::String text;
+    for (;;)
+    {
+        resultStream->waitForRead();
+        uint32_t size = resultStream->read(buf, bufsize);
+        if (size == 0)
+        {
+            continue;
+        }
+
+        text += ::util::String((char*)buf, size);
+        if (size >= 3)
+        {
+            // bad!
+            if (buf[size - 5] = '^' && buf[size - 4] == 'E' && buf[size - 3] == 'O' && buf[size - 2] == 'P')
+            {
+                break;
+            }
+        }
+
+    }
+    env->setVaribale(new Variable("status", lineno()), new Number(monapi_process_wait_terminated(tid), lineno()));
+//    monapi_process_wait_terminated(tid);
+    return new SString(text, lineno());
+
+#endif
+    RETURN_BOOLEAN(false);
+}
+
 PROCEDURE(CallProcess, "call-process")
 {
 #ifdef MONA

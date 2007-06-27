@@ -91,6 +91,7 @@ env->defineVariable(new Variable("eval"), new Eval());
 env->defineVariable(new Variable("null-environment"), new NullEnvironment());
 env->defineVariable(new Variable("scheme-report-environment"), new SchemeReportEnvironment());
 env->defineVariable(new Variable("interaction-environment"), new InteractionEnvironment());
+env->defineVariable(new Variable("|"), new CallPipe());
 env->defineVariable(new Variable("call-process"), new CallProcess());
 env->defineVariable(new Variable("start-process"), new StartProcess());
 env->defineVariable(new Variable("call-process-out-string"), new CallProcessOutString());

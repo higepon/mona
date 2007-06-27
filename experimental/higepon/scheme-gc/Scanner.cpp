@@ -54,6 +54,7 @@ SToken* Scanner::getToken()
     //
     // <special initial> => ! | $ | % | & | * | / | : | < | =
     //                       | > | ? | ^ | _ | ~
+    //                      We added '|' to special initial for a pipe.
     //
     // <subsequent> => <initial> | <digit> | <special subsequent>
     //
@@ -341,6 +342,7 @@ bool Scanner::isSpecialInitial(char c)
     case '?':
     case '_':
     case '~':
+    case '|':
         return true;
     default:
         return false;

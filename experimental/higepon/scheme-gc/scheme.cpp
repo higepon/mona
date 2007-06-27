@@ -73,12 +73,14 @@ Object* scheme_eval_string(const String& input, Environment* env, bool out /* = 
 }
 int scheme_exec_file(const String& file)
 {
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     String input = load(file);
     if (input == "")
     {
         fprintf(stderr, "can not load: %s file\n", file.data());
         return -1;
     }
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Error::exitOnError();
     Error::file = file;
     MacroFilter f;
@@ -86,8 +88,11 @@ int scheme_exec_file(const String& file)
     Environment* env = new Environment(f, translator);
     SCM_ASSERT(env);
     g_top_env = env;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scheme_register_primitives(env);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scheme_eval_string(input, env);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return 0;
 }
 

@@ -1583,6 +1583,23 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env);
 };
 
+class CallPipe : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    CallPipe()  : procedureName_("|") {}
+    virtual ~CallPipe() {}
+
+    virtual ::util::String toString() {    return "procedure:""|";}
+    virtual ::util::String typeString() const { return "|"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env);
+};
+
 class CallProcess : public PrimitiveProcedure
 {
 private:

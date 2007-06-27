@@ -19,7 +19,8 @@
       (mona-timer-add greeting-cont 3000)
 ))
 
-
+(define (subshell)
+  (call-process (string-append "/SERVERS/SCHEME.EX5"  " " "/LIBS/SCHEME/fib.scm")))
 ;; (define (make-queue)
 ;;   (cons '() '()))
 
@@ -286,3 +287,4 @@
 
 ;(gui)
 
+(subshell)

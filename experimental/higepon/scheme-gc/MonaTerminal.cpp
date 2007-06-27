@@ -12,7 +12,6 @@ using namespace MonAPI;
 MonaTerminal::MonaTerminal(void (*timerFunc)()) : isKeySuppressed_(false), timerFunc_(timerFunc), line_(""), cursorPosition_(0)
 {
     if (!initialize()) return;
-
 }
 
 MonaTerminal::~MonaTerminal()
@@ -106,6 +105,7 @@ bool MonaTerminal::initialize()
     histories_.add("(load \"/LIBS/SCHEME/fib.scm\")");
     histories_.add("(call-process-out-string \"/APPS/HELLO.EX5\")");
     histories_.add("(call-process \"/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG\")");
+    histories_.add("(| \"/APPS/HELLO.EX5\" \"/APPS/UPPER.EX5\" \"/APPS/REVERSE.EX5\")");
 
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
     {
