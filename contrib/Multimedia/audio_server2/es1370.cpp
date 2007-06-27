@@ -92,6 +92,8 @@ handle_t es1370_new(const struct audio_data_format *f)
 	}
 	d->state = PAUSE;
 	instance = (handle_t)d;
+	syscall_get_io();
+	puts(__func__);
 	return (handle_t)d;
 }
 

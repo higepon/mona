@@ -27,6 +27,7 @@ AudioServer audio_server_new()
 		free(ret);
 		return NULL;
 	}
+	syscall_get_io();
 	return (AudioServer)ret;
 }
 
@@ -172,14 +173,14 @@ int audio_set_format(AudioServer o, MessageInfo *msg)
 int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 {
 	AudioServer serv = (AudioServer)ref;
-/*
+///*
 	MonAPI::Stream *stream = serv->stream;
 	stream->waitForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
 	printf("*wrote = %d\n", *wrote);
 	return OK;
-*/
-///*
+//*/
+/*
 	monapi_cmemoryinfo *cmi;
 	puts("Send a message.");
 	MessageInfo msg;
@@ -193,7 +194,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 	memcpy(buf, cmi->Data, msg.arg3);
 	*wrote = msg.arg3;
 	return OK;
-//*/
+*/
 }
 
 int audio_stopped_callback(void *ref)
