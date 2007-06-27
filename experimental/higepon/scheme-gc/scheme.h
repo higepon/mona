@@ -98,7 +98,7 @@ bool scheme_on_input_line(const ::util::String& line);
 void scheme_on_reedit();
 void scheme_init();
 monash::Object* scheme_eval_string(const ::util::String& input, monash::Environment* env, bool out = false);
-int scheme_exec_file(const ::util::String& file);
+int scheme_batch(const ::util::String& file);
 monash::SExp* objectToSExp(monash::Object* o);
 monash::SExp* pairToSExp(monash::Pair* p);
 
@@ -117,6 +117,7 @@ GLOBAL monash::OutputPort* g_defaultOutputPort;
 GLOBAL monash::InputPort* g_currentInputPort;
 GLOBAL monash::Environment* g_top_env;
 GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
+GLOBAL bool g_batch_mode GLOBAL_VAL(false);
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 GLOBAL ::util::HashMap<int>* g_provide_map;
@@ -134,9 +135,11 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 #define SCM_EOF    g_eof
 
 #ifdef MONA
-#define LOAD_SCHEME_CORE_LIBRARY "(load \"/LIBS/SCHEME/scheme.scm\")"
+#define LOAD_SCHEME_INTERACTIVE_LIBRARY "(load \"/LIBS/SCHEME/interact.scm\")"
+#define LOAD_SCHEME_BATCHLIBRARY        "(load \"/LIBS/SCHEME/batch.scm\")"
 #else
-#define LOAD_SCHEME_CORE_LIBRARY "(load \"lib/scheme.scm\")"
+#define LOAD_SCHEME_INTERACTIVE_LIBRARY "(load \"lib/interact.scm\")"
+#define LOAD_SCHEME_BATCH_LIBRARY       "(load \"lib/scheme.scm\")"
 #endif
 
 
@@ -150,7 +153,14 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 {                                                                       \
     char buf[1024];                                                     \
     sprintf(buf, __VA_ARGS__);                                          \
-    g_terminal->formatWrite(buf);                                       \
+    if (g_batch_mode)                                                   \
+    {                                                                   \
+        printf(buf);                                                    \
+    }                                                                   \
+    else                                                                \
+    {                                                                   \
+        g_terminal->formatWrite(buf);                                   \
+    }                                                                   \
     int __file = fileno(stream);                                        \
     int __out  = fileno(stdout);                                        \
     int __err  = fileno(stderr);                                        \

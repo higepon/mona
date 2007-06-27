@@ -173,3 +173,7 @@
   (start-process "/SERVERS/GUI.EX5 /APPS/BAYGUI.INI" #t))
 
 
+(define (exec script)
+  (call-process (string-append "/SERVERS/SCHEME.EX5"  " " script)))
+
+(define status 0)

@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        scheme_exec_file(argv[1]);
+        scheme_batch(argv[1]);
         return 0;
     }
 }

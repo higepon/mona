@@ -3,17 +3,10 @@
 (load "<LIBDIR>/shell.scm")
 (load "<LIBDIR>/timer.scm")
 (load "<LIBDIR>/demo.scm")
-(load "<LIBDIR>/conf.scm")
-;(load "slib/Template.scm")
-;(slib:report)
-
-<IF_MONA>(load "<LIBDIR>/mona.scm")
-<IF_LINUX>(load "<LIBDIR>/linux.scm")
 
 (define *fs-root-directory* (fs-new-directory "/"))
 <IF_LINUX>(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
 <IF_MONA>(fs-create-tree *fs-root-directory* "/")
 (define *fs-current-directory* *fs-root-directory*)
 
-(define status 0)
 

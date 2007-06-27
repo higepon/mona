@@ -106,6 +106,7 @@ bool MonaTerminal::initialize()
     histories_.add("(call-process-out-string \"/APPS/HELLO.EX5\")");
     histories_.add("(call-process \"/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG\")");
     histories_.add("(| \"/APPS/HELLO.EX5\" \"/APPS/UPPER.EX5\" \"/APPS/REVERSE.EX5\")");
+    histories_.add("(exec \"/LIBS/SCHEME/fib.scm\")");
 
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
     {

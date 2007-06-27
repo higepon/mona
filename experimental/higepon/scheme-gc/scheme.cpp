@@ -71,16 +71,24 @@ Object* scheme_eval_string(const String& input, Environment* env, bool out /* = 
     }
     return evaluated;
 }
-int scheme_exec_file(const String& file)
+
+Environment* env;
+
+void timerFunction()
 {
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    scheme_eval_string("(mona-timer-iteration)", env, false);
+}
+
+
+int scheme_batch(const String& file)
+{
+    g_batch_mode = true;
     String input = load(file);
     if (input == "")
     {
         fprintf(stderr, "can not load: %s file\n", file.data());
         return -1;
     }
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Error::exitOnError();
     Error::file = file;
     MacroFilter f;
@@ -88,19 +96,10 @@ int scheme_exec_file(const String& file)
     Environment* env = new Environment(f, translator);
     SCM_ASSERT(env);
     g_top_env = env;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scheme_register_primitives(env);
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    scheme_eval_string(LOAD_SCHEME_BATCHLIBRARY, env, false);
     scheme_eval_string(input, env);
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return 0;
-}
-
-Environment* env;
-
-void timerFunction()
-{
-    scheme_eval_string("(mona-timer-iteration)", env, false);
 }
 
 void scheme_interactive()
@@ -116,7 +115,7 @@ void scheme_interactive()
     g_top_env = env;
     scheme_register_primitives(env);
     RETURN_ON_ERROR("stdin");
-    scheme_eval_string(LOAD_SCHEME_CORE_LIBRARY, env, false);
+    scheme_eval_string(LOAD_SCHEME_INTERACTIVE_LIBRARY, env, false);
 
     interaction->showPrompt();
 

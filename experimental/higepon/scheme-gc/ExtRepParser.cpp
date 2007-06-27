@@ -18,7 +18,7 @@ Object* ExtRepParser::parse()
 {
     nextToken();
     Object* ret = parseDatum();
-    findSelfCall(ret);
+//    findSelfCall(ret);
     return ret;
 }
 
