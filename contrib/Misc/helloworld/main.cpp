@@ -5,6 +5,15 @@
 #include <monapi.h>
 
 #if 1
+extern int main(int argc, char* argv[])
+{
+    printf("Hello, World");
+    return 0;
+}
+
+#endif
+
+#if 0
 /*
  * simple.c
  */
