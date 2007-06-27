@@ -1,3 +1,8 @@
+2007-06-27  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/MonaTerminal.cpp : Added a pipe syntax for test.
+                                         Ex) (| "/APPS/HELLO.EX5" "/APPS/UPPER.EX5" "/APPS/REVERSE.EX5")
+
 2007-06-24  higepon  <higepon@users.sourceforge.jp>
 
         * core/file_server/FileServer.cpp : Fixed a big bug. FileServer killed bug because of using illegal printf.

@@ -160,7 +160,6 @@ int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
     //printf("{%2x:%2x} ", scancode, modifiers);
     /* allocate keyinfo */
     KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
-
     /* set virtual keyinfo */
     //toVirtual(keycode, modifiers, kinfo);
     kinfo->keycode = keycode;
