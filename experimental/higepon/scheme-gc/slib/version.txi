@@ -1,2 +1,0 @@
-@set SLIBVERSION 3a4
-@set SLIBDATE October 2006

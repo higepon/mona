@@ -1,6 +1,0 @@
-@ECHO
-@ECHO Welcome to Mona!
-@ECHO To show internal commands, please input "HELP".
-@ECHO To start MonaForms, please input "MONAFRMS".
-@ECHO To start BAYGUI, please input "BAYGUI".
-@ECHO Thank you! -- Mona Project Team

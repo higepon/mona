@@ -1,5 +1,0 @@
-非局所分岐 <setjmp.h>
-Name		Standards	Authors			License		Status
--------------------------------------------------------------------------------
-setjmp		ISO C89		Yume
-longjmp		ISO C89		Yume
