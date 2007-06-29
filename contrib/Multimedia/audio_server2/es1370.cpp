@@ -51,12 +51,12 @@ int check_driver_desc(const struct es1370_driver *d)
 }
 
 static error_t es1370_device_init(struct es1370_driver *d, const struct audio_data_format *f);
-inline static void es1370_set_sample_rate(struct es1370_driver* d);
-inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
-inline static void es1370_set_bits(struct es1370_driver* d);
-inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
-inline static void es1370_start_playback(struct es1370_driver *d);
-inline static void es1370_stop_playback(struct es1370_driver *d);
+static void es1370_set_sample_rate(struct es1370_driver* d);
+static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
+static void es1370_set_bits(struct es1370_driver* d);
+static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
+static void es1370_start_playback(struct es1370_driver *d);
+static void es1370_stop_playback(struct es1370_driver *d);
 static error_t es1370_buffer_setter(struct es1370_driver *d);
 static void es1370_interrupt_catcher(void* a);
 static void es1370_notifier(void* a);
@@ -226,7 +226,7 @@ static error_t es1370_device_init(struct es1370_driver *d, const struct audio_da
 	return OK;
 }
 
-inline static void es1370_set_sample_rate(struct es1370_driver* d)
+static void es1370_set_sample_rate(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_CONTROL);
 	ctrl |= d->rate;
@@ -243,7 +243,7 @@ union frame_reg
 	}s;
 };
 
-inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
+static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
 //	puts(__func__);
 //	printf("p = %x\n", p);
@@ -252,24 +252,26 @@ inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t si
 	fr.s.count = 0;
 	fr.s.size = size-1;
 */
+    _logprintf("ES1370 DRI: d = %x\n", d);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
 }
 
-inline static void es1370_set_bits(struct es1370_driver* d)
+static void es1370_set_bits(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	ctrl |= d->bits;
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, ctrl);
 }
 
-inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
+static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
 {
 	outp32(d->baseIO+ES1370_REG_DAC1_SCOUNT, count);
 }
 
-inline static void es1370_start_playback(struct es1370_driver *d)
+static void es1370_start_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
 	_logprintf("d = %x\n", d);
@@ -291,7 +293,7 @@ inline static void es1370_start_playback(struct es1370_driver *d)
 	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
 }
 
-inline static void es1370_stop_playback(struct es1370_driver *d)
+static void es1370_stop_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
 

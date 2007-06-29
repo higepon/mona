@@ -176,8 +176,11 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 ///*
 	MonAPI::Stream *stream = serv->stream;
 	stream->waitForRead();
+	stream->lockForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
+	stream->unlockForRead();
 	printf("*wrote = %d\n", *wrote);
+	if( *wrote < 1 ) return NG;
 	return OK;
 //*/
 /*
@@ -189,6 +192,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 //	printf("msg->arg2 (handle) = %d\n", msg.arg2);
 	printf("msg->arg3 (size)   = %d\n", msg.arg3);
 	cmi = monapi_cmemoryinfo_new();
+	cmi->Size = msg.arg3;
 	cmi->Handle = msg.arg2;
 	monapi_cmemoryinfo_map(cmi);
 	memcpy(buf, cmi->Data, msg.arg3);
@@ -199,6 +203,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 
 int audio_stopped_callback(void *ref)
 {
+	logprintf("%s\n", __func__);
 	return OK;
 }
 

@@ -65,10 +65,12 @@ int main()
 		}
 		*/
 //	/*
-		s->waitForWrite();
 		readsize = fread(buf, 1, sizeof(buf), fp);
 		if( readsize <= 1 ) break;
+		s->waitForWrite();
+		s->lockForWrite();
 		s->write(buf, readsize);
+		s->unlockForWrite();
 //	*/
 	}
 
