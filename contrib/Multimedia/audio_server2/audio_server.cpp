@@ -7,6 +7,7 @@
 #include <monapi/Stream.h>
 #include <monapi/Message.h>
 #include <monapi/cmemoryinfo.h>
+#include <assert.h>
 
 AudioServer audio_server_new()
 {
@@ -51,6 +52,7 @@ void audio_server_delete(AudioServer o)
  */
 int audio_new_channel(AudioServer o, MessageInfo *msg)
 {
+	assert(o!=NULL);
 	o->tid = msg->from;
 	if( o->channels != 0 )
 	{
@@ -72,6 +74,7 @@ int audio_new_channel(AudioServer o, MessageInfo *msg)
  */
 int audio_delete_channel(AudioServer o, MessageInfo *msg)
 {
+	assert(o!=NULL);
 	if( o->channels == 0 )
 	{
 		MonAPI::Message::reply(msg, 0);
@@ -89,6 +92,7 @@ int audio_delete_channel(AudioServer o, MessageInfo *msg)
  */
 int audio_start(AudioServer o, MessageInfo *msg)
 {
+	assert(o!=NULL);
 	if( o->device == NULL || o->driver == NULL )
 	{
 		MonAPI::Message::reply(msg, (uint32_t)-1);

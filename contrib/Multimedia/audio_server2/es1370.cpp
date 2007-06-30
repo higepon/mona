@@ -257,6 +257,8 @@ static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    return;
 }
 
 static void es1370_set_bits(struct es1370_driver* d)
@@ -358,6 +360,7 @@ static void es1370_interrupt_catcher(void* a)
 					if( result != OK )
 					{
 						d->state = PAUSE;
+						_logprintf("state = PAUSE\n");
 						return;
 					}
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);

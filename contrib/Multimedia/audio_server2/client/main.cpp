@@ -3,6 +3,7 @@
 #include <monapi.h>
 #include <monapi/Message.h>
 #include <monapi/Stream.h>
+#include <assert.h>
 
 using namespace MonAPI;
 
@@ -42,6 +43,7 @@ int main()
 
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	Message::sendReceive(&msg, tid, MSG_AUDIO_SET_FORMAT, 2, 16, 44100);
+	assert(msg.arg2 != -1);
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	readsize = fread(buf, 1, sizeof(buf), fp);
     _logprintf("readsize = %d %s %s:%d\n",readsize, __func__, __FILE__, __LINE__);
@@ -75,6 +77,7 @@ int main()
 	}
 
 	Message::sendReceive(&msg, tid, MSG_AUDIO_STOP, ch);
+	assert(msg.arg2 != -1);
 
 	fclose(fp);
 
