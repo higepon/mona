@@ -145,34 +145,6 @@ void NicServer::interrupt(MessageInfo* msg)
     return;
 }
 
-bool NicServer::WaitIntteruptWithTimeout(MessageInfo* msg)
-{
-    MessageInfo m;
-    uint32_t timerId = set_timer(30); // 30msだとうまく行く
-    for (int i = 0; ; i++)
-    {
-        int result = MonAPI::Message::peek(&m, i);
-
-        if (result != 0)
-        {
-            i--;
-            syscall_mthread_yield_message();
-        }
-        else if (m.header == MSG_TIMER)
-        {
-            if (m.arg1 != timerId) continue;
-            kill_timer(timerId);
-            Message::peek(&m, i, PEEK_REMOVE);
-
-            MonAPI::Message::reply(msg, 1);
-            return false;
-        }
-        else if (m.header == MSG_INTERRUPTED)
-        {
-            kill_timer(timerId);
-            MonAPI::Message::peek(&m, i, PEEK_REMOVE);
-            interrupt(&m);
-            return true;
         }
     }
     return false;
@@ -201,27 +173,15 @@ void NicServer::messageLoop()
         }
         case MSG_FRAME_READ:
         {
-//            if (this->frameList.size() == 0)
             if (frameQueue_.empty())
             {
-                if (!WaitIntteruptWithTimeout(&msg)) {
-                    // timeout
-                    break;
-                }
+                break;
             }
-
-//            Ether::Frame* frame = this->frameList.removeAt(0);
             Ether::Frame* frame = frameQueue_.front();
             frameQueue_.pop();
             SetFrameToSharedMemory(frame);
             delete frame;
             MonAPI::Message::reply(&msg);
-            break;
-        }
-        case MSG_GET_MAC_ADDRESS:
-        {
-            memcpy(msg.str, this->macAddress, 6);
-            MonAPI::Message::reply(&msg, 0, 0, msg.str);
             break;
         }
         default:

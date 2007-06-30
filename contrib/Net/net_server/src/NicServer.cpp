@@ -7,6 +7,7 @@ using namespace std;
 // not real shared memory
 static Ether::Frame sharedFrame;
 static Mutex sharedMutex;
+std::queue<Ether::Frame*> frameQueue;
 
 void mones::SetFrameToSharedMemory(Ether::Frame* frame)
 {
@@ -45,11 +46,6 @@ bool NicServer::initialize()
     this->myID = System::getThreadID();
     this->started = true;
     return true;
-}
-
-uint32_t NicServer::getThreadID() const
-{
-    return this->myID;
 }
 
 #if 1 /* for Mona */
@@ -113,13 +109,10 @@ typedef struct
 
 void NicServer::interrupt(MessageInfo* msg)
 {
-    _printf("interrupt");
-    MessageInfo info;
-    Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
     this->nic->inputFrame();
     Ether::Frame* frame = new Ether::Frame;
     this->nic->getFrameBuffer((uint8_t*)frame, sizeof(Ether::Frame));
-#if 1
+
     if (frame->type == 0x8) { // IP
         const IPHeader* h = (const IPHeader*)frame->data;
         if (h->prot == 6) // TCP
@@ -131,51 +124,13 @@ void NicServer::interrupt(MessageInfo* msg)
             logprintf("NICSERVER:%d to %d:len=%4d %s%s seqno=%08x ackno=%08x\n", swapShort(th->src), swapShort(th->dst)
                    , th->header_length, ack ? "ACK " : "", syn ? "SYN " : "   ", swapLong(th->seq_number),swapLong(th->ack_number));
         } else {
-            logprintf("not tcp\n");
+            _printf("not tcp\n");
         }
     } else {
-        logprintf("not ip\n");
+        _printf("not ip\n");
     }
-#endif
-//    this->frameList.add(frame);
-    frameQueue_.push(frame);
-    if (Message::send(this->observerThread, &info)) {
-        printf("local!!!! yamas:INIT error\n");
-    }
+    frameQueue.push(frame);
     return;
-}
-
-bool NicServer::WaitIntteruptWithTimeout(MessageInfo* msg)
-{
-    MessageInfo m;
-    uint32_t timerId = set_timer(30); // 30msだとうまく行く
-    for (int i = 0; ; i++)
-    {
-        int result = MonAPI::Message::peek(&m, i);
-
-        if (result != 0)
-        {
-            i--;
-            syscall_mthread_yield_message();
-        }
-        else if (m.header == MSG_TIMER)
-        {
-            if (m.arg1 != timerId) continue;
-            kill_timer(timerId);
-            Message::peek(&m, i, PEEK_REMOVE);
-
-            MonAPI::Message::reply(msg, 1);
-            return false;
-        }
-        else if (m.header == MSG_INTERRUPTED)
-        {
-            kill_timer(timerId);
-            MonAPI::Message::peek(&m, i, PEEK_REMOVE);
-            interrupt(&m);
-            return true;
-        }
-    }
-    return false;
 }
 
 void NicServer::messageLoop()
@@ -188,40 +143,10 @@ void NicServer::messageLoop()
         {
         case MSG_INTERRUPTED:
         {
+            _printf("start %s %s:%d\n", __func__, __FILE__, __LINE__);
             this->interrupt(&msg);
+            _printf("end %s %s:%d\n", __func__, __FILE__, __LINE__);
             monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
-            break;
-        }
-        case MSG_FRAME_WRITE:
-        {
-            OutPacket* p = (OutPacket*)msg.arg1;
-            this->nic->outputFrame(p->header, p->destmac, p->size, p->protocol);
-            MonAPI::Message::reply(&msg);
-            break;
-        }
-        case MSG_FRAME_READ:
-        {
-//            if (this->frameList.size() == 0)
-            if (frameQueue_.empty())
-            {
-                if (!WaitIntteruptWithTimeout(&msg)) {
-                    // timeout
-                    break;
-                }
-            }
-
-//            Ether::Frame* frame = this->frameList.removeAt(0);
-            Ether::Frame* frame = frameQueue_.front();
-            frameQueue_.pop();
-            SetFrameToSharedMemory(frame);
-            delete frame;
-            MonAPI::Message::reply(&msg);
-            break;
-        }
-        case MSG_GET_MAC_ADDRESS:
-        {
-            memcpy(msg.str, this->macAddress, 6);
-            MonAPI::Message::reply(&msg, 0, 0, msg.str);
             break;
         }
         default:

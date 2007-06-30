@@ -65,8 +65,6 @@ void NicListenLoop();
 uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
 uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
 
-uint32_t nicThread;
-
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
 #ifndef NULL
@@ -82,6 +80,7 @@ uint32_t nicThread;
 
 int main(int argc, char* argv[])
 {
+    syscall_get_io();
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
         exit(-1);
@@ -95,7 +94,6 @@ int main(int argc, char* argv[])
         }
         sleep(500);
     }
-    nicThread = server->getThreadID();
     u8_t i, arptimer;
 
     /* Initialize the device driver. */
@@ -147,9 +145,7 @@ int main(int argc, char* argv[])
             }
 
         } else {
-            _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if(BUF->type == htons(UIP_ETHTYPE_IP)) {
-            _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 uip_arp_ipin();
                 uip_input();
                 /* If the above function invocation resulted in data that
@@ -192,31 +188,27 @@ void NicListenLoop()
     server->messageLoop();
 }
 
-uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame)
+extern std::queue<Ether::Frame*> frameQueue;
+
+uint32_t nic_read(Ether::Frame* frame)
 {
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))
+    if (frameQueue.empty())
     {
-        printf("send error 1");
+        sleep(30);
         return 1;
     }
-    if (1 == msg.arg2) {
-        return 1;
-    }
-        _printf("[2]");
-    GetFrameFromSharedMemory(frame);
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    Ether::Frame* f = frameQueue.front();
+    frameQueue.pop();
+    memcpy(frame, f, sizeof(Ether::Frame));
+    delete f;
     return 0;
 }
 
 // caller should free() packet, after packet written
 // not thread safe
-uint32_t nic_write(uint32_t nicThread, OutPacket* packet)
+uint32_t nic_write(OutPacket* packet)
 {
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (uint32_t)packet))
-    {
-        printf("send error 1");
-        return 1;
-    }
+    server->nic->outputFrame(packet->header, packet->destmac, packet->size, packet->protocol);
     return 0;
 }

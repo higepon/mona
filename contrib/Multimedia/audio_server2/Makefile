@@ -29,6 +29,7 @@ install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
+	(cd client && make && make install)
 
 
 CXXFLAGS += -I$(INCDIR)/stlport -fpermissive -DDEBUG

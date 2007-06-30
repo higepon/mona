@@ -4,13 +4,10 @@
 
 using namespace mones;
 
-extern uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
-extern uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
-extern uint32_t nicThread;
+extern uint32_t nic_read(Ether::Frame* frame);
+extern uint32_t nic_write(OutPacket* packet);
 
-
-void
-monadev_init(void)
+void monadev_init(void)
 {
     return;
 }
@@ -19,18 +16,15 @@ unsigned int
 monadev_read(void)
 {
     Ether::Frame frame;
-    logprintf("monadev_read start\n");
-    if (1 == nic_read(nicThread, &frame)) return 0;
+    if (1 == nic_read(&frame)) return 0;
     memcpy(uip_buf, &frame, UIP_BUFSIZE);
     logprintf("monadev_read end\n");
     return UIP_BUFSIZE;
 }
 
-static OutPacket p;
-
-void
-monadev_send(void)
+void monadev_send(void)
 {
+    static OutPacket p;
     int ret;
     char tmpbuf[UIP_BUFSIZE];
     int i;
@@ -48,6 +42,6 @@ monadev_send(void)
     p.protocol = Util::swapShort(frame->type);
     p.size = uip_len;
 
-    ret = nic_write(nicThread, &p);
+    ret = nic_write(&p);
     return;
 }

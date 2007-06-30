@@ -123,22 +123,17 @@ public:
 
 public:
     bool initialize();
-    uint32_t getThreadID() const;
     void messageLoop();
     bool isStarted() {return started;}
     void exit();
-
+    Nic* nic;
 private:
     void interrupt(MessageInfo* msg);
-    bool WaitIntteruptWithTimeout(MessageInfo* msg);
 
 protected:
     uint8_t macAddress[6];
-//    HList<Ether::Frame*> frameList;
-    std::queue<Ether::Frame*> frameQueue_;
     uint32_t observerThread;
     uint32_t myID;
-    Nic* nic;
     bool started;
     bool loopExit;
 };

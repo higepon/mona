@@ -9,15 +9,41 @@ extern "C"
 
 void net_server_init()
 {
-  uip_listen(HTONS(5555));
+    uip_listen(HTONS(5555));
 }
 
 void net_server_appcall()
 {
    if(uip_newdata() || uip_rexmit())
    {
-       _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-       char* msg = "OK\n";
-       uip_send((uint8_t*)msg, 3);
+       char* msg = "Hello!!!!!\n";
+       int len = uip_datalen();
+       for (int i = 0; i < len; i++)
+       {
+           _printf("%c", uip_appdata[i]);
+       }
+       _printf("\n");
+       uip_send((uint8_t*)msg, strlen(msg));
    }
+
+  if(uip_aborted())
+  {
+      _printf("aborted\n");
+  }
+  if(uip_timedout())
+  {
+      _printf("timeout\n");
+  }
+  if(uip_closed())
+  {
+      _printf("closed\n");
+  }
+  if(uip_connected())
+  {
+      _printf("connected\n");
+  }
+  if(uip_acked())
+  {
+      _printf("acked\n");
+  }
 }
