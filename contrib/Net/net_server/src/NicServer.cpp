@@ -1,5 +1,6 @@
 #include "NicServer.h"
 #include <monapi/Thread.h>
+#include <monapi/io.h>
 using namespace mones;
 using namespace MonAPI;
 using namespace std;
@@ -121,6 +122,12 @@ void NicServer::interrupt(MessageInfo* msg)
             int ack = th->flags & TCP_ACK;
             int syn = th->flags & TCP_SYN;
 
+            uint8_t* tcpdata = (uint8_t*)(h->data + sizeof(TCPHeader));
+            for (int i = 0; i < 24; i ++)
+            {
+                _printf("[%c]", tcpdata[i]);
+            }
+
             logprintf("NICSERVER:%d to %d:len=%4d %s%s seqno=%08x ackno=%08x\n", swapShort(th->src), swapShort(th->dst)
                    , th->header_length, ack ? "ACK " : "", syn ? "SYN " : "   ", swapLong(th->seq_number),swapLong(th->ack_number));
         } else {
@@ -143,9 +150,7 @@ void NicServer::messageLoop()
         {
         case MSG_INTERRUPTED:
         {
-            _printf("start %s %s:%d\n", __func__, __FILE__, __LINE__);
             this->interrupt(&msg);
-            _printf("end %s %s:%d\n", __func__, __FILE__, __LINE__);
             monapi_set_irq(this->nic->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
             break;
         }

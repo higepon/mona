@@ -4,7 +4,7 @@ extern "C"
 #include <uip.h>
 #include <uip_arp.h>
 }
-
+#include <stdio.h>
 #include <monapi.h>
 
 void net_server_init()
@@ -16,14 +16,13 @@ void net_server_appcall()
 {
    if(uip_newdata() || uip_rexmit())
    {
-       char* msg = "Hello!!!!!\n";
-       int len = uip_datalen();
-       for (int i = 0; i < len; i++)
-       {
-           _printf("%c", uip_appdata[i]);
-       }
-       _printf("\n");
-       uip_send((uint8_t*)msg, strlen(msg));
+       char buf1[64];
+       char buf2[256];
+       memcpy(buf1, (void*)uip_appdata, uip_datalen());
+       buf1[uip_datalen()] = '\0';
+       sprintf(buf2, "response to %s\n", buf1);
+       _printf(buf2);
+       uip_send((uint8_t*)buf2, strlen(buf2));
    }
 
   if(uip_aborted())

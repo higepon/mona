@@ -120,6 +120,7 @@ int main(int argc, char* argv[])
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
                 if(uip_len > 0) {
+                    _printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                     uip_arp_out();
                     monadev_send();
                 }
@@ -209,6 +210,7 @@ uint32_t nic_read(Ether::Frame* frame)
 // not thread safe
 uint32_t nic_write(OutPacket* packet)
 {
+    _printf("************ send *************\n");
     server->nic->outputFrame(packet->header, packet->destmac, packet->size, packet->protocol);
     return 0;
 }
