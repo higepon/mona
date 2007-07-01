@@ -1,3 +1,9 @@
+2007-07-01  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/io.h (RDTSC_TRACE): Added RDTSC_TRACE macro.
+
+        * core/monapi/io.cpp (rdtsc): Added rdtsc.
+
 2007-06-27  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/MonaTerminal.cpp : Added a pipe syntax for test.

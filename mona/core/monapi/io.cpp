@@ -116,3 +116,22 @@ void outp32(uint32_t port, uint32_t value) {
    asm volatile ("outl %%eax, %%dx": :"d" (port), "a" (value));
 }
 
+void rdtsc(uint32_t* timeL, uint32_t* timeH)
+{
+    uint32_t l,h;
+    asm volatile("rdtsc           \n"
+                 "mov   %%eax, %0 \n"
+                 "mov   %%edx, %1 \n"
+                 : "=m"(l), "=m"(h)
+                 : /* no */
+                 : "eax", "edx");
+    *timeL = l;
+    *timeH = h;
+}
+
+void rdtsc_trace(const char* file, int lineno, const char* func)
+{
+    uint32_t l, h;
+    rdtsc(&l, &h);
+    _logprintf("%x:%x %s:%d (%s)\n", h, l, file, lineno, func);
+}
