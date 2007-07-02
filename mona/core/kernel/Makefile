@@ -43,8 +43,8 @@ SOURCES      = cstart.cpp            \
                MemoryAllocator.cpp   \
                apm.cpp               \
                shutdown.cpp          \
-               net_server/src/NicFactory.cpp \
-               net_server/src/NE2000.cpp
+               NicFactory.cpp        \
+               NE2000.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
