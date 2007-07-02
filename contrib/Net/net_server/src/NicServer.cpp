@@ -41,6 +41,7 @@ bool NicServer::initialize()
         return false;
     }
     syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT);
+//    syscall_set_irq_receiver(this->nic->getIRQ(), 0);
     this->nic->enableNetwork();
     this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
