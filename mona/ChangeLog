@@ -1,3 +1,7 @@
+2007-07-02  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/net_server/src/NicFactory.cpp : Added NE2000 drive to kernel for an interrupt perfomance test.
+
 2007-07-01  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/io.h (RDTSC_TRACE): Added RDTSC_TRACE macro.

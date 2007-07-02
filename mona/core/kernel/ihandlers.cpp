@@ -34,15 +34,18 @@
     SendInterrupt(x);                                                         \
 }
 
+extern mones::Nic* g_nic;
 void irqHandler_11()
 {
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
-//    g_console->printf("11\n");
+    g_console->printf("11\n");
+    g_nic->inputFrame();
+    uint8_t frame[256];
+    g_nic->getFrameBuffer((uint8_t*)frame, 256);
 
-// 割り込み処理をカーネルに持ってきたみた。
-//    outp8( 0xC100, 2 );
-    if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
+
+//    if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
     SendInterrupt(11);
 }
 

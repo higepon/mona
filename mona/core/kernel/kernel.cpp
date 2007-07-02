@@ -82,6 +82,8 @@ const char* version = "Mona version.0.3.0Alpha9 $Date::                         
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
 
+mones::Nic* g_nic;
+
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
 /*!
@@ -245,6 +247,10 @@ void startKernel()
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
     g_scheduler->Join(initThread);
+
+    g_nic = mones::NicFactory::create();
+    g_nic->enableNetwork();
+
 
     disableTimer();
     disableKeyboard();

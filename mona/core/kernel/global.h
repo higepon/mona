@@ -25,6 +25,7 @@
 #include "Scheduler.h"
 #include "Messenger.h"
 #include "apm.h"
+#include "NicFactory.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
