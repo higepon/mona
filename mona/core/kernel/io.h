@@ -16,14 +16,14 @@
 #include <sys/types.h>
 #include "global.h"
 
-uint8_t inp8(uint32_t port);
-void outp8(uint32_t port, uint8_t value);
-uint16_t inp16(uint32_t port);
-void outp16(uint32_t port, uint16_t value);
-uint32_t inp32(uint32_t port);
-void outp32(uint32_t port, uint32_t value);
-uint32_t get_eflags();
-void  set_eflags(uint32_t eflags);
+extern "C" uint8_t inp8(uint32_t port);
+extern "C" void outp8(uint32_t port, uint8_t value);
+extern "C" uint16_t inp16(uint32_t port);
+extern "C" void outp16(uint32_t port, uint16_t value);
+extern "C" uint32_t inp32(uint32_t port);
+extern "C" void outp32(uint32_t port, uint32_t value);
+extern "C" uint32_t get_eflags();
+extern "C" void  set_eflags(uint32_t eflags);
 
 extern VirtualConsole*g_console;
 

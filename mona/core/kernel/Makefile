@@ -42,7 +42,9 @@ SOURCES      = cstart.cpp            \
                Messenger.cpp         \
                MemoryAllocator.cpp   \
                apm.cpp               \
-               shutdown.cpp
+               shutdown.cpp          \
+               net_server/src/NicFactory.cpp \
+               net_server/src/NE2000.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -56,7 +58,7 @@ $(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
 .SUFFIXES: .cpp .o
 
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 mode12h.o: mode12h.asm
 	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l mode12h.lst

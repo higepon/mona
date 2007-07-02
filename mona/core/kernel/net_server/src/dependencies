@@ -1,0 +1,166 @@
+NE2000.o: NE2000.cpp NE2000.h Nic.h NE2000const.h
+NicFactory.o: NicFactory.cpp NicFactory.h Nic.h NE2000.h
+NicServer.o: NicServer.cpp NicServer.h Nic.h NicFactory.h
+monadev.o: monadev.cpp NicServer.h Nic.h NicFactory.h Util.h
+main.o: main.cpp monadev.h NicServer.h /home/taro/mona/include/monapi.h \
+  /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/Assert.h Nic.h \
+  /home/taro/mona/include/monapi/io.h NicFactory.h
+NE2000.o: NE2000.cpp NE2000.h /home/taro/mona/include/sys/types.h \
+  /home/taro/mona/include/monapi.h /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/Assert.h Nic.h \
+  /home/taro/mona/include/monapi/io.h NE2000const.h
+NicFactory.o: NicFactory.cpp /home/taro/mona/include/pci/Pci.h \
+  /home/taro/mona/include/sys/types.h \
+  /home/taro/mona/include/monapi/CString.h \
+  /home/taro/mona/include/monapi/Array.h NicFactory.h Nic.h \
+  /home/taro/mona/include/monapi/io.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h NE2000.h \
+  /home/taro/mona/include/monapi.h /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/Assert.h
+NicServer.o: NicServer.cpp NicServer.h /home/taro/mona/include/monapi.h \
+  /home/taro/mona/include/sys/types.h /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/Assert.h Nic.h \
+  /home/taro/mona/include/monapi/io.h NicFactory.h
+monadev.o: monadev.cpp NicServer.h /home/taro/mona/include/monapi.h \
+  /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/Assert.h Nic.h \
+  /home/taro/mona/include/monapi/io.h NicFactory.h Util.h \
+  /home/taro/mona/include/monapi/CString.h \
+  /home/taro/mona/include/monapi/Array.h \
+  /home/taro/mona/include/monalibc.h \
+  /home/taro/mona/include/monalibc/ctype.h \
+  /home/taro/mona/include/monalibc/limits.h \
+  /home/taro/mona/include/monalibc/stdarg.h \
+  /home/taro/mona/include/monalibc/stdlib.h \
+  /home/taro/mona/include/monalibc/stddef.h \
+  /home/taro/mona/include/monalibc/stdio.h \
+  /home/taro/mona/include/monalibc/stdint.h \
+  /home/taro/mona/include/monalibc/math.h \
+  /home/taro/mona/include/monalibc/float.h \
+  /home/taro/mona/include/monalibc/alloca.h
+net_server.o: net_server.cpp net_server.h
