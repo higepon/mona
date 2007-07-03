@@ -85,7 +85,7 @@ int main()
 		puts("Couldn't open the device.");
 		return 1;
 	}
-	//driver->driver_set_render_callback(dev, &render, dev);
+//	driver->driver_set_render_callback(dev, &render, dev);
 	driver->driver_set_render_callback(dev, &frender, fp);
 //	driver->driver_set_render_callback(dev, &cmrender, cmi);
 	driver->driver_set_stopped_callback(dev, &stopped, dev);

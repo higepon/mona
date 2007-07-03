@@ -60,7 +60,7 @@ int audio_new_channel(AudioServer o, MessageInfo *msg)
 		return -1;
 	}
 	o->channels = 1;
-    _logprintf("o->stream->handle() = %x\n", o->stream->handle());
+    //_logprintf("o->stream->handle() = %x\n", o->stream->handle());
 	MonAPI::Message::reply(msg, 1, o->stream->handle());
 
 	return 0;
@@ -98,10 +98,10 @@ int audio_start(AudioServer o, MessageInfo *msg)
 		MonAPI::Message::reply(msg, (uint32_t)-1);
 		return -1;
 	}
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	o->driver->driver_set_render_callback(o->device, &audio_render_callback, o);
 	o->driver->driver_set_stopped_callback(o->device, &audio_stopped_callback, o);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	MonAPI::Message::reply(msg, 0);
 	o->driver->driver_start(o->device);
 	return 0;
@@ -177,7 +177,7 @@ int audio_set_format(AudioServer o, MessageInfo *msg)
 int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 {
 	AudioServer serv = (AudioServer)ref;
-///*
+/*
 	MonAPI::Stream *stream = serv->stream;
 	stream->waitForRead();
 	stream->lockForRead();
@@ -186,8 +186,8 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 	printf("*wrote = %d\n", *wrote);
 	if( *wrote < 1 ) return NG;
 	return OK;
-//*/
-/*
+*/
+///*
 	monapi_cmemoryinfo *cmi;
 	puts("Send a message.");
 	MessageInfo msg;
@@ -202,7 +202,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 	memcpy(buf, cmi->Data, msg.arg3);
 	*wrote = msg.arg3;
 	return OK;
-*/
+//*/
 }
 
 int audio_stopped_callback(void *ref)

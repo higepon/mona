@@ -51,12 +51,12 @@ int check_driver_desc(const struct es1370_driver *d)
 }
 
 static error_t es1370_device_init(struct es1370_driver *d, const struct audio_data_format *f);
-static void es1370_set_sample_rate(struct es1370_driver* d);
-static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
-static void es1370_set_bits(struct es1370_driver* d);
-static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
-static void es1370_start_playback(struct es1370_driver *d);
-static void es1370_stop_playback(struct es1370_driver *d);
+inline static void es1370_set_sample_rate(struct es1370_driver* d);
+inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size);
+inline static void es1370_set_bits(struct es1370_driver* d);
+inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count);
+inline static void es1370_start_playback(struct es1370_driver *d);
+inline static void es1370_stop_playback(struct es1370_driver *d);
 static error_t es1370_buffer_setter(struct es1370_driver *d);
 static void es1370_interrupt_catcher(void* a);
 static void es1370_notifier(void* a);
@@ -117,28 +117,28 @@ error_t es1370_codec_command(handle_t o, codec_command_t c, ...)
 error_t es1370_start(handle_t o)
 {
 	puts(__func__);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	struct es1370_driver *d = (struct es1370_driver*)o;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if( es1370_buffer_setter(d) != OK )
 	{
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return NG;
 	}
 
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	es1370_set_sample_rate(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	es1370_set_bits(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	es1370_start_playback(d);
 
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	d->state = RUNNING;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 	es1370_buffer_setter(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return OK;
 }
 
@@ -168,26 +168,26 @@ error_t es1370_set_stopped_callback(handle_t o, error_t (*callback)(void* ref), 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
 //	check_driver_desc(d);
-    _logprintf("callback = %x\n", d->callback);
-	puts(__func__);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("callback = %x\n", d->callback);
+//	puts(__func__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //	printf("buf1 = %x, buf2 = %x\n", d->dmabuf1, d->dmabuf2);
 	error_t result;
 	size_t wrote;
 	void *buf;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	result = d->callback(d->ref, buf, d->bufsize, &wrote);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-	puts("set_buffer");
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//	puts("set_buffer");
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	es1370_set_buffer(d, buf, wrote);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	es1370_set_sample_count(d, wrote/2-1);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return result;
 }
 
@@ -226,7 +226,7 @@ static error_t es1370_device_init(struct es1370_driver *d, const struct audio_da
 	return OK;
 }
 
-static void es1370_set_sample_rate(struct es1370_driver* d)
+inline static void es1370_set_sample_rate(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_CONTROL);
 	ctrl |= d->rate;
@@ -243,7 +243,7 @@ union frame_reg
 	}s;
 };
 
-static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
+inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
 //	puts(__func__);
 //	printf("p = %x\n", p);
@@ -252,31 +252,31 @@ static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 	fr.s.count = 0;
 	fr.s.size = size-1;
 */
-    _logprintf("ES1370 DRI: d = %x\n", d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("ES1370 DRI: d = %x\n", d);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return;
 }
 
-static void es1370_set_bits(struct es1370_driver* d)
+inline static void es1370_set_bits(struct es1370_driver* d)
 {
 	uint32_t ctrl = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	ctrl |= d->bits;
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, ctrl);
 }
 
-static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
+inline static void es1370_set_sample_count(struct es1370_driver* d, uint32_t count)
 {
 	outp32(d->baseIO+ES1370_REG_DAC1_SCOUNT, count);
 }
 
-static void es1370_start_playback(struct es1370_driver *d)
+inline static void es1370_start_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
-	_logprintf("d = %x\n", d);
+	//_logprintf("d = %x\n", d);
 
 	reg = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	reg &= ~(ES1370_P1_LOOP_SEL|ES1370_P1_PAUSE);
@@ -295,7 +295,7 @@ static void es1370_start_playback(struct es1370_driver *d)
 	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
 }
 
-static void es1370_stop_playback(struct es1370_driver *d)
+inline static void es1370_stop_playback(struct es1370_driver *d)
 {
 	uint32_t reg;
 
@@ -325,7 +325,7 @@ void rdtsc(uint32_t* timeL, uint32_t* timeH) {
 static void es1370_interrupt_catcher(void* a)
 {
 	struct es1370_driver* d = (struct es1370_driver*)a;
-    _printf("irq=%x\n", d->pciinfo.IrqLine);
+//    _printf("irq=%x\n", d->pciinfo.IrqLine);
     	syscall_get_io();
 	syscall_set_irq_receiver(d->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
 	monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
@@ -338,35 +338,35 @@ static void es1370_interrupt_catcher(void* a)
 		{
 		case MSG_INTERRUPTED:
 		{
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			uint32_t stat, result;
 			stat = inp32(d->baseIO+ES1370_REG_STATUS);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if( stat & 4 )
 			{
 				if( d->state == RUNNING )
 				{
 			//		puts("INTERRUPTED");
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 					es1370_stop_playback(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 					result = es1370_buffer_setter(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 					es1370_start_playback(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 					if( result != OK )
 					{
 						d->state = PAUSE;
-						_logprintf("state = PAUSE\n");
+						//_logprintf("state = PAUSE\n");
 						return;
 					}
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					result = es1370_buffer_setter(d);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					/*
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 					result &= ~ES1370_P1_INTR_EN;

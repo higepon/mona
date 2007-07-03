@@ -56,7 +56,7 @@ int main()
 
 	while(1)
 	{
-	/*
+//	/*
 		int readsize;
 		if( Message::receive(&msg) ) continue;
 		if( msg.header == 0xFFFFFFFF )
@@ -65,15 +65,15 @@ int main()
 			puts("Received a message from the AudioServer.");
 			Message::reply(&msg, cmi->Handle, readsize);
 		}
-		*/
-//	/*
+//		*/
+	/*
 		readsize = fread(buf, 1, sizeof(buf), fp);
 		if( readsize <= 1 ) break;
 		s->waitForWrite();
 		s->lockForWrite();
 		s->write(buf, readsize);
 		s->unlockForWrite();
-//	*/
+	*/
 	}
 
 	Message::sendReceive(&msg, tid, MSG_AUDIO_STOP, ch);
