@@ -92,6 +92,8 @@ extern int syscall_set_dll_segment_writable();
 extern int syscall_set_dll_segment_notshared(int index);
 
 extern int syscall_shutdown(int op, int device);
+extern int syscall_receive_packet(uint8_t* frame);
+extern int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid);
 
 extern void* malloc(unsigned long size);
 extern void* calloc(unsigned long n, unsigned long s);

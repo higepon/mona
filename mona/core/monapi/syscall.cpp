@@ -708,3 +708,17 @@ int syscall_log_print(const char* msg)
     SYSCALL_1(SYSTEM_CALL_LOG_PRINT, result, msg);
     return result;
 }
+
+int syscall_receive_packet(uint8_t* frame)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_RECEIVE_PACKET, result, frame);
+    return result;
+}
+
+int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid)
+{
+    int result;
+    SYSCALL_4(SYSTEM_CALL_SEND_PACKET, result, pkt, mac, size, pid);
+    return result;
+}

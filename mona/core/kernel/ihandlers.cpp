@@ -35,18 +35,29 @@
 }
 
 extern mones::Nic* g_nic;
+extern mones::FrameNode* g_frames;
+extern mones::FrameNode* g_free_frames;
+
 void irqHandler_11()
 {
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
     g_console->printf("11\n");
     g_nic->inputFrame();
-    uint8_t frame[256];
-    g_nic->getFrameBuffer((uint8_t*)frame, 256);
-
+    if (0 != g_nic->getFrameBufferSize())
+    {
+        if (g_free_frames->IsEmpty())
+        {
+            panic("frame buffer not enough");
+        }
+        mones::FrameNode* node = (mones::FrameNode*)g_free_frames->RemoveNext();
+        mones::Ether::Frame* frame = ((mones::FrameNode*)node)->frame;
+        g_nic->getFrameBuffer((uint8_t*)frame, sizeof(mones::Ether::Frame));
+        g_frames->AddToPrev(node);
+    }
 
 //    if (g_irqInfo[11].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (11 - 8)));
-    SendInterrupt(11);
+//    SendInterrupt(11);
 }
 
 void irqHandler_9()

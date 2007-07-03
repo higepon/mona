@@ -6,6 +6,32 @@
 extern "C" void monapi_set_irq(int irq, int enabled, int auto_ir2);
 namespace mones {
 
+class Ether
+{
+public:
+#pragma pack(2)
+    typedef struct{
+        uint8_t  dstmac[6];   // 送信先 MAC ID
+        uint8_t  srcmac[6];   // 送信元 MAC ID
+        uint16_t    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
+        uint8_t   data[0x600];// Data
+    } Frame;
+#pragma pack(0)
+    enum
+    {
+        ARP = 0x806,
+        IP  = 0x800,
+    };
+};
+
+class FrameNode : public Node
+{
+public:
+    FrameNode() { frame = new Ether::Frame; }
+    ~FrameNode() {}
+    Ether::Frame* frame;
+};
+
 class Nic
 {
 public:

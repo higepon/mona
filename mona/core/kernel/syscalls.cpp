@@ -21,6 +21,8 @@
 
 extern const char* version;
 extern uint32_t version_number;
+extern mones::FrameNode* g_frames;
+extern mones::Nic* g_nic;
 
 uint32_t systemcall_mutex_create()
 {
@@ -89,6 +91,7 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_1 info->esi
 #define SYSTEM_CALL_ARG_2 info->ecx
 #define SYSTEM_CALL_ARG_3 info->edi
+#define SYSTEM_CALL_ARG_4 info->edx
 
     switch(info->ebx)
     {
@@ -644,7 +647,22 @@ void syscall_entrance()
     case SYSTEM_CALL_SHUTDOWN:
         info->eax = shutdown(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
     break;
+    case SYSTEM_CALL_RECEIVE_PACKET:
+        if (g_frames->IsEmpty())
+        {
+            info->eax = 1;
+        }
+        else
+        {
+            mones::FrameNode* node = (mones::FrameNode*)(g_frames->RemoveNext());
+            memcpy((uint8_t*)SYSTEM_CALL_ARG_1, node->frame, sizeof(mones::Ether::Frame));
+            info->eax = 0;
+        }
+        break;
 
+    case SYSTEM_CALL_SEND_PACKET:
+        g_nic->outputFrame((uint8_t*)SYSTEM_CALL_ARG_1, (uint8_t*)SYSTEM_CALL_ARG_2, SYSTEM_CALL_ARG_3, SYSTEM_CALL_ARG_4);
+        break;
     default:
         g_console->printf("syscall:default");
         break;

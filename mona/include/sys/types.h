@@ -300,6 +300,8 @@ enum
 #define SYSTEM_CALL_SHUTDOWN                 0x0046
 #define SYSTEM_CALL_APM_BIOS                 0x0047
 #define SYSTEM_CALL_MTHREAD_KILL             0x0048
+#define SYSTEM_CALL_RECEIVE_PACKET           0x0049
+#define SYSTEM_CALL_SEND_PACKET              0x0050
 
 
 #define SYSCALL_0(syscall_number, result)                                         \

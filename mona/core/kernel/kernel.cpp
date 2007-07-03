@@ -1,4 +1,4 @@
-/*! 
+/*!
     COPYRIGHT AND PERMISSION NOTICE
 
     Copyright (c) 2002-2007 Higepon
@@ -83,6 +83,8 @@ uint32_t version_number  = 0x00000300;
 void  mainProcess();
 
 mones::Nic* g_nic;
+mones::FrameNode* g_frames;
+mones::FrameNode* g_free_frames;
 
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
@@ -249,6 +251,15 @@ void startKernel()
     g_scheduler->Join(initThread);
 
     g_nic = mones::NicFactory::create();
+    g_frames = new mones::FrameNode;
+    g_free_frames = new mones::FrameNode;
+    g_frames->Initialize();
+    g_free_frames->Initialize();
+    for (int i = 0; i < 24; i++)
+    {
+        g_free_frames->AddToNext(new mones::FrameNode);
+    }
+
     g_nic->enableNetwork();
 
 
