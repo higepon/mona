@@ -102,8 +102,12 @@ int main(int argc, char* argv[])
     uip_init();
 
     /* Initialize the HTTP server. */
-    net_server_init();
+//    net_server_init();
 
+    webclient_init();
+
+    webclient_get("203.216.227.176", 80, "/");
+    _printf("done");
     arptimer = 0;
 
     while(1) {

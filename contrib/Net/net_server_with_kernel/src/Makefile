@@ -4,16 +4,18 @@ endif
 
 TARGET      = NET
 INSTDIR     = $(BINDIR)/SERVERS
-SOURCES     = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp net_server.cpp
-UIP_SOURCES = $(UIP_PATH)/uip.c $(UIP_PATH)/uip_arp.c uip_arch.c
+
+SOURCES     = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp #net_server.cpp
+UIP_SOURCES = $(UIP_PATH)/uip/uip.c $(UIP_PATH)/uip/uip_arp.c uip_arch.c $(UIP_PATH)/apps/webclient/webclient.c $(UIP_PATH)/apps/webclient/http-user-agent-string.c $(UIP_PATH)/apps/webclient/http-strings.c  #$(UIP_PATH)/apps/resolv/resolv.c 
 
 SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
 
-UIP_PATH = ../uip-0.9/uip
+UIP_PATH = ../uip-0.9
+
 SERVER_PATH  = ../apps/net
-INCLUDE += -idirafter . -idirafter $(UIP_PATH) -idirafter $(INCDIR)/stlport -idirafter $(INCDIR)/monalibc
+INCLUDE += -idirafter . -idirafter $(UIP_PATH)/uip -idirafter $(UIP_PATH)/apps/webclient -idirafter $(UIP_PATH)/apps/resolv  -idirafter $(INCDIR)/stlport -idirafter $(INCDIR)/monalibc
 
 UIP_OBJECTS = $(UIP_SOURCES:.c=.o)
 OBJECTS += $(UIP_OBJECTS)

@@ -9,7 +9,7 @@ typedef struct net_server_state
 } net_server_state;
 
 #ifndef UIP_APPCALL
-#define UIP_APPCALL net_server_appcall
+#define UIP_APPCALL webclient_appcall
 #endif
 
 #ifndef UIP_APPSTATE_SIZE

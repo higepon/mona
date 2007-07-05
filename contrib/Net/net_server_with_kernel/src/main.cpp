@@ -101,8 +101,16 @@ int main(int argc, char* argv[])
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
 
-    /* Initialize the HTTP server. */
-    net_server_init();
+
+    webclient_init();
+    char addr[4];
+    addr[0] = 0xc8;
+    addr[1] = 0xd8;
+    addr[2] = 0xe3;
+    addr[3] = 0xb0;
+
+    webclient_get(addr, 80, "/");
+    _printf("done");
 
     arptimer = 0;
 
