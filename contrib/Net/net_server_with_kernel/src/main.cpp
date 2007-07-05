@@ -104,10 +104,10 @@ int main(int argc, char* argv[])
 
     webclient_init();
     char addr[4];
-    addr[0] = 0xc8;
-    addr[1] = 0xd8;
-    addr[2] = 0xe3;
-    addr[3] = 0xb0;
+    addr[0] = 0xc0;
+    addr[1] = 0xa8;
+    addr[2] = 0x0b;
+    addr[3] = 0x03;
 
     webclient_get(addr, 80, "/");
     _printf("done");

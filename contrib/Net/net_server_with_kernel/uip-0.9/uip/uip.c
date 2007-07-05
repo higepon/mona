@@ -516,7 +516,14 @@ uip_process(u8_t flag)
 	     ((uip_connr->tcpstateflags == SYN_SENT ||
 	       uip_connr->tcpstateflags == SYN_RCVD) &&
 	      uip_connr->nrtx == UIP_MAXSYNRTX)) {
+        _printf("uip_connr->timer==0? %d\n", uip_connr->timer);
+        _printf("uip_connr->nrtx == UIP_MAXRTX %d\n", uip_connr->nrtx == UIP_MAXRTX);
+        _printf("uip_connr->tcpstateflags == SYN_SENT %d\n", uip_connr->tcpstateflags == SYN_SENT);
+        _printf("uip_connr->tcpstateflags == SYN_RCVD %d\n", uip_connr->tcpstateflags == SYN_RCVD);
+        _printf("uip_connr->nrtx == UIP_MAXSYNRTX %d\n", uip_connr->nrtx == UIP_MAXSYNRTX);
+
 	    uip_connr->tcpstateflags = CLOSED;
+
 
 	    /* We call UIP_APPCALL() with uip_flags set to
 	       UIP_TIMEDOUT to inform the application that the
