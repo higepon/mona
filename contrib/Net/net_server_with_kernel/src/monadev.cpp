@@ -1,11 +1,6 @@
 #include <uip.h>
-#include "NicServer.h"
 #include "Util.h"
-
-using namespace mones;
-
-extern uint32_t nic_read(Ether::Frame* frame);
-extern uint32_t nic_write(OutPacket* packet);
+#include "monadev.h"
 
 void monadev_init(void)
 {
@@ -44,4 +39,20 @@ void monadev_send(void)
 
     ret = nic_write(&p);
     return;
+}
+
+uint32_t nic_read(Ether::Frame* frame)
+{
+   int ret = syscall_receive_packet((uint8_t*)frame);
+   if (1 == ret)
+   {
+//       sleep(30);
+   }
+   return ret;
+}
+
+uint32_t nic_write(OutPacket* packet)
+{
+    syscall_send_packet(packet->header, packet->destmac, packet->size, packet->protocol);
+    return 0;
 }

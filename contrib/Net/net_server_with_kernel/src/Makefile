@@ -5,8 +5,8 @@ endif
 TARGET      = NET
 INSTDIR     = $(BINDIR)/SERVERS
 
-SOURCES     = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp #net_server.cpp
-UIP_SOURCES = $(UIP_PATH)/uip/uip.c $(UIP_PATH)/uip/uip_arp.c uip_arch.c $(UIP_PATH)/apps/webclient/webclient.c $(UIP_PATH)/apps/webclient/http-user-agent-string.c $(UIP_PATH)/apps/webclient/http-strings.c  #$(UIP_PATH)/apps/resolv/resolv.c 
+SOURCES     = main.cpp monadev.cpp
+UIP_SOURCES = $(UIP_PATH)/uip/uip.c $(UIP_PATH)/uip/uip_arp.c uip_arch.c $(UIP_PATH)/apps/webclient/webclient.c $(UIP_PATH)/apps/webclient/http-user-agent-string.c $(UIP_PATH)/apps/webclient/http-strings.c
 
 SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp

@@ -34,10 +34,7 @@
     \file   main.cpp
     \brief  Network Server(daemon)
 
-    This server works for remote shell.
-    It listens at 5555 port and receive commands.
-    And Send the command to Shell Server and receive the response, forward to client.
-
+    This server works for wget.
 
     If you want to add other port to listen, see the uIP manual.
 
@@ -50,67 +47,32 @@
     \date   create:2007/06/25 update:$Date $
 */
 
+#include "monadev.h"
+#include <monapi.h>
+
 extern "C" {
 #include <uip.h>
 #include <uip_arp.h>
 };
 
-#include "monadev.h"
-#include "NicServer.h"
-#include <monapi.h>
-
-using namespace mones;
-static NicServer* server;
-void NicListenLoop();
-uint32_t nic_read(uint32_t nicThread, Ether::Frame* frame);
-uint32_t nic_write(uint32_t nicThread, OutPacket* packet);
-
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
-
-#ifndef NULL
-#define NULL (void *)0
-#endif /* NULL */
-
-// net_server は書きかけです。
-// Schemeシェルでリモートシェルを実装しようとして test.rb とのデータのやりとりをやろうと思っていたけど
-// まだうまくいっていません。割り込みは来ているので、uip.c あたりをさぐるかんじで。
-// uipアプリケーションは ドキュメントをよんできれいにつくりましょう。
-// qemuにパッチが必要だよ
-
 
 int main(int argc, char* argv[])
 {
-//    syscall_get_io();
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
         exit(-1);
     }
 
-//    syscall_mthread_create((uint32_t)NicListenLoop);
-
-//     for (;;) {
-//         if (server != NULL && server->isStarted()) {
-//             break;
-//         }
-//         sleep(500);
-//     }
     u8_t i, arptimer;
 
-    /* Initialize the device driver. */
-//    monadev_init();
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
 
-
     webclient_init();
-    char addr[4];
-    addr[0] = 0xc0;
-    addr[1] = 0xa8;
-    addr[2] = 0x0b;
-    addr[3] = 0x03;
 
-    webclient_get(addr, 80, "/apache2-default/");
-    _printf("done");
+    // now ip address only
+    webclient_get("192.168.11.3", 80, "/apache2-default/");
 
     arptimer = 0;
 
@@ -186,45 +148,5 @@ uip_log(char *m)
 }
 /*-----------------------------------------------------------------------------------*/
 
-void NicListenLoop()
-{
-    server = new NicServer;
-    if (!server->initialize())
-    {
-        printf("NicServer initialize failed\n");
-        exit(1);
-    }
-    server->messageLoop();
-}
+//extern std::queue<Ether::Frame*> frameQueue;
 
-extern std::queue<Ether::Frame*> frameQueue;
-
-uint32_t nic_read(Ether::Frame* frame)
-{
-   int ret = syscall_receive_packet((uint8_t*)frame);
-   if (1 == ret)
-   {
-//       sleep(30);
-   }
-   return ret;
-//     if (frameQueue.empty())
-//     {
-//         sleep(30);
-//         return 1;
-//     }
-//     _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//     Ether::Frame* f = frameQueue.front();
-//     frameQueue.pop();
-//     memcpy(frame, f, sizeof(Ether::Frame));
-//     delete f;
-//     return 0;
-}
-
-// caller should free() packet, after packet written
-// not thread safe
-uint32_t nic_write(OutPacket* packet)
-{
-    syscall_send_packet(packet->header, packet->destmac, packet->size, packet->protocol);
-//    server->nic->outputFrame(packet->header, packet->destmac, packet->size, packet->protocol);
-    return 0;
-}

@@ -553,32 +553,26 @@ struct httpd_state {
 /* Include the header file for the application program that should be
    used. If you don't use the example web server, you should change
    this. */
-//#include "net_server.h"
 #include "webclient.h"
 #ifndef UIP_APPCALL
 #define UIP_APPCALL webclient_appcall
 #endif
 
-
+unsigned char uiplib_ipaddrconv(char *addrstr, unsigned char *ipaddr);
 
 #define WWW_CONF_MAX_URLLEN 200
 struct webclient_state {
   u8_t timer;
   u8_t state;
   u8_t httpflag;
-
   u16_t port;
   char host[40];
   char file[WWW_CONF_MAX_URLLEN];
   u16_t getrequestptr;
   u16_t getrequestleft;
-  
   char httpheaderline[200];
   u16_t httpheaderlineptr;
-
   char mimetype[32];
 };
-
-
 
 #endif /* __UIPOPT_H__ */

@@ -6,7 +6,6 @@
 #include <monapi/CString.h>
 #include <monalibc.h>
 
-namespace mones {
 
 class Util
 {
@@ -75,5 +74,4 @@ public:
 
 };
 
-}; // namespace mones
 #endif
