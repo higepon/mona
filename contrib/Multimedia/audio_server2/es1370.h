@@ -85,6 +85,8 @@ void		es1370_delete(handle_t o);
 error_t		es1370_codec_command(handle_t o, codec_command_t c, ...);
 error_t		es1370_start(handle_t o);
 error_t		es1370_stop(handle_t o);
+error_t         es1370_regist_int_handler(handle_t o);
+error_t         es1370_do_int_proc(handle_t o, MessageInfo *msg);
 error_t		es1370_set_callback(handle_t o,
 	error_t (*callback)(void* ref, void* buffer, size_t size, size_t *wrote), void* ref);
 error_t		es1370_set_stopped_callback(handle_t o, audio_stopped_callback_t, void *ref);

@@ -14,8 +14,11 @@ struct audio_driver es1370_audio_driver_desc =
 	es1370_codec_command,
 	es1370_start,
 	es1370_stop,
+	es1370_regist_int_handler,
+	es1370_do_int_proc,
 	es1370_set_callback,
 	es1370_set_stopped_callback,
+	NULL,
 };
 
 
@@ -38,6 +41,7 @@ struct es1370_driver
 	void *dmabuf1;
 	void *dmabuf2;
 	int usingBuffer;
+	int user_interrupt_catching;
 };
 
 int check_driver_desc(const struct es1370_driver *d)
@@ -321,6 +325,49 @@ void rdtsc(uint32_t* timeL, uint32_t* timeH) {
     *timeH = h;
 }
 
+error_t es1370_regist_int_handler(handle_t o)
+{
+	if( o == NULL ) return NG;
+	struct es1370_driver *d = (struct es1370_driver*)o;
+	syscall_get_io();
+	syscall_set_irq_receiver(d->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
+	monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+	d->user_interrupt_catching = 1;
+	return OK;
+}
+
+error_t es1370_do_int_proc(handle_t o, MessageInfo *msg)
+{
+	if( o == NULL || msg == NULL ) return NG;
+	struct es1370_driver *d = (struct es1370_driver*)o;
+	uint32_t stat, result;
+	stat = inp32(d->baseIO+ES1370_REG_STATUS);
+	if( stat & 4 )
+	{
+		if( d->state == RUNNING )
+		{
+	//		puts("INTERRUPTED");
+			es1370_stop_playback(d);
+			result = es1370_buffer_setter(d);
+			es1370_start_playback(d);
+			if( result != OK )
+			{
+				d->state = PAUSE;
+				return NG;
+			}
+			result = es1370_buffer_setter(d);
+			/*
+			result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
+			result &= ~ES1370_P1_INTR_EN;
+			outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
+			result |= ES1370_P1_INTR_EN;
+			outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
+			*/
+			monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+		}
+	}
+	return OK;
+}
 
 static void es1370_interrupt_catcher(void* a)
 {

@@ -4,7 +4,7 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = AUDIO
-SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp
+SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp
 
 INSTDIR = $(BINDIR)/APPS/
 INSTFILES = test.raw

@@ -2,15 +2,15 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
+#include <monapi/Message.h>
 
-jmp_buf jb;
+int is_stopped = 0;
 
 error_t stopped(void *ref)
 {
-	longjmp(jb, 1);
+	is_stopped = 1;
 	return OK;
 }
 
@@ -63,7 +63,7 @@ int main()
 	struct audio_data_format format;
 	struct audio_driver *driver;
 	monapi_cmemoryinfo *cmi;
-//	cmi = monapi_file_read_all("/APPS/TEST.RAW");
+	cmi = monapi_file_read_all("/APPS/TEST.RAW");
 	FILE *fp;
 	fp = fopen("/APPS/TEST.RAW", "r");
 	if( fp == NULL ) return 1;
@@ -86,18 +86,17 @@ int main()
 		return 1;
 	}
 //	driver->driver_set_render_callback(dev, &render, dev);
-	driver->driver_set_render_callback(dev, &frender, fp);
-//	driver->driver_set_render_callback(dev, &cmrender, cmi);
-	driver->driver_set_stopped_callback(dev, &stopped, dev);
-	if( setjmp(jb) != 0 ) goto End;
+//	driver->driver_set_render_callback(dev, &frender, fp);
+	driver->driver_set_render_callback(dev, &cmrender, cmi);
 	driver->driver_start(dev);
-	while(1) syscall_mthread_yield_message();
-End:
+	while(is_stopped==0);// syscall_mthread_yield_message();
 	puts("Stopped");
 
 	fclose(fp);
 	driver->driver_stop(dev);
 	driver->driver_delete(dev);
+
+	exit(0);
 
 	return 0;
 }

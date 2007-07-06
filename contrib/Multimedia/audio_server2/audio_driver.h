@@ -35,8 +35,11 @@ struct audio_driver
 	error_t	 (*driver_codec_command)(handle_t, codec_command_t, ...);
 	error_t  (*driver_start)(handle_t);
 	error_t  (*driver_stop)(handle_t);
+	error_t  (*driver_regist_int_handler)(handle_t);
+	error_t  (*driver_do_int_proc)(handle_t, MessageInfo*);
 	error_t (*driver_set_render_callback)(handle_t,audio_render_callback_t,void*);
 	error_t (*driver_set_stopped_callback)(handle_t,audio_stopped_callback_t,void*);
+	void *variables;
 };
 
 struct audio_driver *audio_driver_factory(const char *device_name);
