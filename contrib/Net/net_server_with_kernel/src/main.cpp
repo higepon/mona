@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
     addr[2] = 0x0b;
     addr[3] = 0x03;
 
-    webclient_get(addr, 80, "/");
+    webclient_get(addr, 80, "/apache2-default/");
     _printf("done");
 
     arptimer = 0;

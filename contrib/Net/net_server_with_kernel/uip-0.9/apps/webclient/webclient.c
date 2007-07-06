@@ -83,7 +83,12 @@ static struct webclient_state s;
 
 void webclient_datahandler(char *data, u16_t len)
 {
-  _printf("%s", data);
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        _printf("%c", data[i]);
+        _logprintf("%c", data[i]);
+    }
 }
 void webclient_connected()
 {
@@ -158,11 +163,48 @@ webclient_close(void)
 {
   s.state = WEBCLIENT_STATE_CLOSE;
 }
+
+
+// higepon
+unsigned char
+uiplib_ipaddrconv(char *addrstr, unsigned char *ipaddr)
+{
+  unsigned char tmp;
+  char c;
+  unsigned char i, j;
+
+  tmp = 0;
+  
+  for(i = 0; i < 4; ++i) {
+    j = 0;
+    do {
+      c = *addrstr;
+      ++j;
+      if(j > 4) {
+	return 0;
+      }
+      if(c == '.' || c == 0) {
+	*ipaddr = tmp;
+	++ipaddr;
+	tmp = 0;
+      } else if(c >= '0' && c <= '9') {
+	tmp = (tmp * 10) + (c - '0');
+      } else {
+	return 0;
+      }
+      ++addrstr;
+    } while(c != '.' && c != 0);
+  }
+  return 1;
+}
+
+
 /*-----------------------------------------------------------------------------------*/
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
   struct uip_conn *conn;
+  int i;
   u16_t *ipaddr; 
   static u16_t addr[2];
   _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -175,10 +217,23 @@ webclient_get(char *host, u16_t port, char *file)
 /*       return 0; */
 /*     } */
 /*   } */
-  ipaddr[0] = 0xc0a8;
-  ipaddr[1] = 0x0b03;
-  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  conn = uip_connect(ipaddr, htons(port));
+
+  uint8_t buf[12];
+  uiplib_ipaddrconv("192.168.11.3", buf);
+
+
+//   ipaddr[0] = 0xc0a8;
+//   ipaddr[1] = 0x0b03;
+
+//   uint8_t* p = (uint8_t*)ipaddr;
+//   for (i = 0; i < 4; i++)
+//   {
+//       _printf("%x", p[i]);
+//   }
+
+
+//   _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  conn = uip_connect(buf, htons(port));
   
   if(conn == NULL) {
     return 0;
@@ -451,7 +506,6 @@ void webclient_appcall(void)
       _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     senddata();
   } else if(uip_poll()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ++s.timer;
     if(s.timer == WEBCLIENT_TIMEOUT) {
       webclient_timedout();
