@@ -149,7 +149,7 @@ void webclient_init(void);
  *
  * \retval 1 if the connection was initiated.
  */
-unsigned char webclient_get(char *host, u16_t port, char *file);
+extern unsigned char webclient_get(char *host, u16_t port, char *file);
 
 /**
  * Close the currently open HTTP connection.

@@ -42,7 +42,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2007/06/25 update:$Date $
 */
@@ -90,7 +90,6 @@ int main(int argc, char* argv[])
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
                 if(uip_len > 0) {
-                    _printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                     uip_arp_out();
                     monadev_send();
                 }
@@ -147,6 +146,3 @@ uip_log(char *m)
     _printf("uIP log message: %s\n", m);
 }
 /*-----------------------------------------------------------------------------------*/
-
-//extern std::queue<Ether::Frame*> frameQueue;
-

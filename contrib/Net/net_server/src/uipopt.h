@@ -554,6 +554,7 @@ struct httpd_state {
    used. If you don't use the example web server, you should change
    this. */
 //#include "net_server.h"
+
 #include "webclient.h"
 #ifndef UIP_APPCALL
 #define UIP_APPCALL webclient_appcall

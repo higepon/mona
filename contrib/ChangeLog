@@ -1,3 +1,8 @@
+2007-07-07  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/net_server_with_kernel/main.cpp: Modified net server to do interrupt functions on kernel.
+        
+
 2007-06-25  higepon  <higepon@users.sourceforge.jp>
 
         * Graphics/bitmap/Form1.cpp (class Form1): Added (x, y) command line arguments.

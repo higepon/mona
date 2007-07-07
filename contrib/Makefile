@@ -9,8 +9,8 @@ all:
 ### servers
 	cd Gui/gui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Net/NetServer && $(MAKE) && $(MAKE) install
-	cd Net/uip && $(MAKE) && $(MAKE) install
+	cd Net/net_server_with_kernel && $(MAKE) && $(MAKE) install
+#	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
@@ -80,7 +80,7 @@ clean:
 	cd Multimedia/xmonapeg && $(MAKE) clean
 	cd Net/libnet && $(MAKE) clean
 	cd Net/monadat && $(MAKE) clean
-	cd Net/NetServer && $(MAKE) clean
+	cd Net/net_server_with_kernel && $(MAKE) clean
 	cd Net/uip && $(MAKE) clean
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean

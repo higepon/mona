@@ -516,11 +516,6 @@ uip_process(u8_t flag)
 	     ((uip_connr->tcpstateflags == SYN_SENT ||
 	       uip_connr->tcpstateflags == SYN_RCVD) &&
 	      uip_connr->nrtx == UIP_MAXSYNRTX)) {
-        _printf("uip_connr->timer==0? %d\n", uip_connr->timer);
-        _printf("uip_connr->nrtx == UIP_MAXRTX %d\n", uip_connr->nrtx == UIP_MAXRTX);
-        _printf("uip_connr->tcpstateflags == SYN_SENT %d\n", uip_connr->tcpstateflags == SYN_SENT);
-        _printf("uip_connr->tcpstateflags == SYN_RCVD %d\n", uip_connr->tcpstateflags == SYN_RCVD);
-        _printf("uip_connr->nrtx == UIP_MAXSYNRTX %d\n", uip_connr->nrtx == UIP_MAXSYNRTX);
 
 	    uip_connr->tcpstateflags = CLOSED;
 
@@ -1508,4 +1503,38 @@ htons(u16_t val)
   return HTONS(val);
 }
 /*-----------------------------------------------------------------------------------*/
+
+// from contiki
+unsigned char
+uiplib_ipaddrconv(char *addrstr, unsigned char *ipaddr)
+{
+  unsigned char tmp;
+  char c;
+  unsigned char i, j;
+
+  tmp = 0;
+  
+  for(i = 0; i < 4; ++i) {
+    j = 0;
+    do {
+      c = *addrstr;
+      ++j;
+      if(j > 4) {
+	return 0;
+      }
+      if(c == '.' || c == 0) {
+	*ipaddr = tmp;
+	++ipaddr;
+	tmp = 0;
+      } else if(c >= '0' && c <= '9') {
+	tmp = (tmp * 10) + (c - '0');
+      } else {
+	return 0;
+      }
+      ++addrstr;
+    } while(c != '.' && c != 0);
+  }
+  return 1;
+}
+
 /** @} */

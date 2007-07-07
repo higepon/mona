@@ -1,47 +1,65 @@
-CATEGORY = net
-NAME     = uip
-VERSION  = 0.9
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
 
-SOURCE1 = ${NAME}-${VERSION}.tar.gz
-SRCS = ${SOURCE1}
-MASTERSITE = http://monaos.org/downloads
-WORKDIR = ${NAME}-${VERSION}
+TARGET      = NET
+INSTDIR     = $(BINDIR)/SERVERS
 
-TMPDIR = tmp
-DSTDIR = .
+SOURCES     = main.cpp monadev.cpp MessageLoop.cpp
+UIP_SOURCES = $(UIP_PATH)/uip/uip.c $(UIP_PATH)/uip/uip_arp.c uip_arch.c $(UIP_PATH)/apps/webclient/webclient.c $(UIP_PATH)/apps/webclient/http-user-agent-string.c $(UIP_PATH)/apps/webclient/http-strings.c
 
-PROCESSES = .FETCH .EXTRACT .PATCH .MAKE .INSTALL
-all    : .MAKE
-fetch  : .FETCH
-extract: .EXTRACT
-patch  : .PATCH
-make   : .MAKE
-install: .INSTALL
-clean  :
-	rm -rf tmp ${WORKDIR} ${PROCESSES}
-distclean: clean
-	@for f in ${SRCS}; do rm -f ${DSTDIR}/$${f}; done
+SHAREDIR   = $(MONADIR)/share
+IMPSFX = -imp
+include $(SHAREDIR)/configs/monapi.inc
 
-.FETCH: ${SRCS}
-	@if [ ! -f $@ ]; then touch $@; fi
-DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget
-${SOURCE1}:
-	@if [ ! -f ${DSTDIR}/$@ ]; then \
-	  (${DOWNLOAD} ${MASTERSITE}/$@) && \
-	  mv ${TMPDIR}/$@ ${DSTDIR}; \
-	fi
+UIP_PATH = uip-0.9
 
-.EXTRACT: .FETCH
-	tar xvzf ${DSTDIR}/${SOURCE1}
-	touch $@
+SERVER_PATH  = ../apps/net
+INCLUDE += -idirafter . -idirafter $(UIP_PATH)/uip -idirafter $(UIP_PATH)/apps/webclient -idirafter $(UIP_PATH)/apps/resolv  -idirafter $(INCDIR)/stlport -idirafter $(INCDIR)/monalibc
 
-.PATCH: .EXTRACT
-	patch -p0 < patch-aa
-	touch $@
+UIP_OBJECTS = $(UIP_SOURCES:.c=.o)
+OBJECTS += $(UIP_OBJECTS)
 
-.MAKE: .PATCH
-	cd src && make
-	touch $@
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $@ $(CXXFLAGS)  -nostdinc $(INCLUDE) $<
 
-.INSTALL: .MAKE
-	cd ${WORKDIR}/Mona && make install
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c -o $@ $(CFLAGS)  -nostdinc $(INCLUDE) $<
+
+.SUFFIXES: .asm .o
+.asm.o:
+	$(NASM) $(NFLAGS) -o $@ $<
+
+all: $(TARGET).EX5
+
+$(TARGET).EX5: $(TARGET).EXE
+	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+
+$(TARGET).EXE: $(OBJECTS) $(LINKDEP)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(STRIP) $@
+
+install: all
+	mkdir -p $(INSTDIR)
+	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+
+clean:
+	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
+
+depend dependencies:
+ifneq ($(SOURCES),)
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
+endif
+ifneq ($(CSOURCES),)
+	$(CC) -MM $(INCLUDE) $(CFLAGS) $(SOURCES) >> dependencies
+endif
+ifneq ($(NASMSRCS),)
+	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
+endif
+
+ADDLINK += -lpci -lmonalibc
+
+-include dependencies
+

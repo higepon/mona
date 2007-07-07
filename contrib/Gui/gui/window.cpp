@@ -438,7 +438,7 @@ bool WindowHandler(MessageInfo* msg)
         case MSG_GUISERVER_ENUMWINDOWS:
         {
             int size = windows.size();
-            int max_count = 128 / sizeof(uint32_t); // msg.str = 128 bytes
+            int max_count = MESSAGE_INFO_MAX_STR_LENGTH / sizeof(uint32_t); // msg.str = 128 bytes
             int max_loop_count;
             if (size > max_count)
             {

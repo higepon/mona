@@ -58,6 +58,8 @@
 #include "uip.h"
 #include "webclient.h"
 #include "resolv.h"
+extern  void _printf(const char *format, ...);
+extern  void _logprintf(const char* format, ...);
 
 #include <string.h>
 
@@ -77,7 +79,6 @@
 #define ISO_nl       0x0a
 #define ISO_cr       0x0d
 #define ISO_space    0x20
-
 
 static struct webclient_state s;
 
@@ -165,38 +166,6 @@ webclient_close(void)
 }
 
 
-// higepon
-unsigned char
-uiplib_ipaddrconv(char *addrstr, unsigned char *ipaddr)
-{
-  unsigned char tmp;
-  char c;
-  unsigned char i, j;
-
-  tmp = 0;
-  
-  for(i = 0; i < 4; ++i) {
-    j = 0;
-    do {
-      c = *addrstr;
-      ++j;
-      if(j > 4) {
-	return 0;
-      }
-      if(c == '.' || c == 0) {
-	*ipaddr = tmp;
-	++ipaddr;
-	tmp = 0;
-      } else if(c >= '0' && c <= '9') {
-	tmp = (tmp * 10) + (c - '0');
-      } else {
-	return 0;
-      }
-      ++addrstr;
-    } while(c != '.' && c != 0);
-  }
-  return 1;
-}
 
 
 /*-----------------------------------------------------------------------------------*/
@@ -204,45 +173,17 @@ unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
   struct uip_conn *conn;
-  int i;
-  u16_t *ipaddr; 
-  static u16_t addr[2];
-  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  /* First check if the host is an IP address. */
-  ipaddr = &addr[0];
-/*   if(uip_main_ipaddrconv(host, (unsigned char *)addr) == 0) {     */
-/*     //    ipaddr = resolv_lookup(host); */
-    
-/*     if(ipaddr == NULL) { */
-/*       return 0; */
-/*     } */
-/*   } */
+  uint8_t addr[4];
+  uiplib_ipaddrconv(host, addr);
 
-  uint8_t buf[12];
-  uiplib_ipaddrconv("192.168.11.3", buf);
-
-
-//   ipaddr[0] = 0xc0a8;
-//   ipaddr[1] = 0x0b03;
-
-//   uint8_t* p = (uint8_t*)ipaddr;
-//   for (i = 0; i < 4; i++)
-//   {
-//       _printf("%x", p[i]);
-//   }
-
-
-//   _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  conn = uip_connect(buf, htons(port));
+  conn = uip_connect(addr, htons(port));
   
   if(conn == NULL) {
     return 0;
   }
-  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   s.port = port;
   strncpy(s.file, file, sizeof(s.file));
   strncpy(s.host, host, sizeof(s.host));
-  _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   init_connection();
   return 1;
 }
