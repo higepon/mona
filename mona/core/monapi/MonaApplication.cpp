@@ -16,7 +16,7 @@ MonaApplication::MonaApplication() {
     monaApp = this;
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE))
     {
-        printf("MonaApplication:KeyBoardServer not found\n");
+        MONAPI_WARN("MonaApplication:KeyBoardServer not found");
         exit(1);
     }
 }

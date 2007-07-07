@@ -108,6 +108,7 @@ typedef struct {
     CommandOption* list;
 } LoadProcessInfo;
 
+#define MESSAGE_INFO_MAX_STR_LENGTH 128
 
 typedef struct {
     uint32_t header;
@@ -115,7 +116,7 @@ typedef struct {
     uint32_t arg2;
     uint32_t arg3;
     uint32_t from;
-    char str[128];
+    char str[MESSAGE_INFO_MAX_STR_LENGTH];
     int length;
 } MessageInfo;
 

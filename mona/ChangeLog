@@ -1,3 +1,13 @@
+2007-07-07  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/syscall.h (MONAPI_WARN): Added MONAPI_WARN.
+
+        * core/monapi/Message.cpp (Message::create): Use MESSAGE_INFO_MAX_STR_LENGTH.
+
+        * include/sys/types.h : Added MESSAGE_INFO_MAX_STR_LENGTH.
+
+        * include/servers/net.h (enum): Added MSG_NET_WEB_GET.
+
 2007-07-02  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/net_server/src/NicFactory.cpp : Added NE2000 drive to kernel for an interrupt perfomance test.

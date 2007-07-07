@@ -104,7 +104,7 @@ void Message::create(MessageInfo* info, uint32_t header, uint32_t arg1 /*= 0*/, 
     if (str != NULL)
     {
 //        strncpy(info->str, str, sizeof(info->str));
-	memcpy(info->str, str, 128);
+        memcpy(info->str, str, MESSAGE_INFO_MAX_STR_LENGTH);
     }
     return;
 }
