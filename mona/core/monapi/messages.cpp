@@ -17,12 +17,13 @@ static uint32_t server_ids[] =
     THREAD_UNKNOWN,  // ID_PROCESS_SERVER
     THREAD_UNKNOWN,  // ID_PE_SERVER
     THREAD_UNKNOWN,  // ID_MONITOR_SERVER
-    THREAD_UNKNOWN   // ID_SCHEME_SERVER
+    THREAD_UNKNOWN,  // ID_SCHEME_SERVER
+    THREAD_UNKNOWN   // ID_NET_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5"
 };
 
 uint32_t monapi_get_server_thread_id(int id)
@@ -34,7 +35,7 @@ uint32_t monapi_get_server_thread_id(int id)
         server_ids[id] = Message::lookupMainThread(server_names[id]);
         if (server_ids[id] == THREAD_UNKNOWN)
         {
-            printf("%s:%d:ERROR: can not connect to %s\n", __FILE__, __LINE__, server_names[id]);
+           MONAPI_WARN("ERROR: can not connect to %s", server_names[id]);
         }
     }
     return server_ids[id];
@@ -69,7 +70,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 
     if (Message::sendReceive(NULL, tid, header, syscall_get_tid()) != 0)
     {
-        printf("%s:%d:ERROR: can not register to %s\n", __FILE__, __LINE__, server_names[id]);
+        MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
         return MONAPI_FALSE;
     }
     return MONAPI_TRUE;
@@ -361,7 +362,7 @@ uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     System::getStdoutStream();
     if (NULL == outStream)
     {
-        _printf("%s You can't use printf, use _printf instead.\n", System::getProcessInfo()->name);
+       MONAPI_WARN("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
         _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
         return 0;
     }
@@ -413,14 +414,14 @@ MONAPI_BOOL monapi_notify_server_start(const char* name)
 
     if (targetID == THREAD_UNKNOWN)
     {
-        printf("%s:INIT not found\n", name);
+        MONAPI_WARN("%s:INIT not found", name);
         return MONAPI_FALSE;
     }
 
     /* send */
     if(Message::send(targetID, MSG_SERVER_START_OK))
     {
-        printf("%s:INIT error\n", name);
+        MONAPI_WARN("%s:INIT error", name);
         return MONAPI_FALSE;
     }
     return MONAPI_TRUE;

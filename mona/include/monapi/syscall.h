@@ -113,7 +113,7 @@ extern void _logprintf(const char* format, ...);
 #define Log logprintf("%s#%s:%d:", __FILE__, __func__, __LINE__), logprintf
 extern size_t _power(size_t x, size_t y);
 
-#define MONAPI_WARN(...) _printf(__VA_ARGS__), _printf(" %s:%d\n", __FILE__, __LINE__);
+#define MONAPI_WARN(...) _printf(__VA_ARGS__), _printf(" %s:%d\n", __FILE__, __LINE__)
 
 #ifdef __cplusplus
 }

@@ -8,7 +8,7 @@ LFLAGS    = $(MONAELF_LDS) -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstat
 OFLAGS    = --output-target=elf32-i386
 endif
 OBJECTS   = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o) $(JSOURCES:.java=.o)
-INCLUDE   = -I$(INCDIR) $(ADDINCLUDE)
+INCLUDE   = -I$(INCDIR) -I$(INCDIR)/monalibc -I$(INCDIR)/stlport $(ADDINCLUDE)
 LINK      = $(ADDLINK) -lmonapi$(IMPSFX)
 LINKDEP   = $(LIBDIR)/monapi_crt.o $(LIBDIR)/libmonapi$(IMPSFX).a $(ADDLINKDEP)
  

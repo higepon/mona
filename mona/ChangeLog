@@ -1,5 +1,9 @@
 2007-07-07  higepon  <higepon@users.sourceforge.jp>
 
+        * share/configs/monapi.inc (INCLUDE): Added -I include/monalibc, -I include/stlport.
+
+        * core/monapi/messages.cpp: Added ID_NET_SERVER.
+
         * include/monapi/syscall.h (MONAPI_WARN): Added MONAPI_WARN.
 
         * core/monapi/Message.cpp (Message::create): Use MESSAGE_INFO_MAX_STR_LENGTH.
