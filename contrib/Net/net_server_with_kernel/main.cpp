@@ -72,8 +72,10 @@ int main(int argc, char* argv[])
     webclient_init();
 
     // now ip address only
-    webclient_get("192.168.11.3", 80, "/apache2-default/");
+//    webclient_get("192.168.11.3", 80, "/apache2-default/");
+    webclient_get("10.0.2.2", 80, "/");
 
+//    webclient_get("216.109.112.135", 80, "/");
     arptimer = 0;
 
     while(1) {

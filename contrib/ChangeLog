@@ -1,5 +1,7 @@
 2007-07-07  higepon  <higepon@users.sourceforge.jp>
 
+        * Net/net_server_with_kernel/wget/main.cpp: Added wget, does not works yet!.
+
         * Net/net_server_with_kernel/main.cpp: Modified net server to do interrupt functions on kernel.
         
 
