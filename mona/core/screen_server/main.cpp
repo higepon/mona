@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
-    syscall_mthread_create((uint32_t)outLoop);
+    syscall_mthread_create(outLoop);
 
     for (MessageInfo msg;;)
     {

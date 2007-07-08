@@ -13,13 +13,13 @@ int main(int argc, char* argv[])
     /* Server start ok */
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
-        printf("MONITOR not found\n");
+        MONAPI_WARN("MONITOR not found");
         exit(-1);
     }
     MessageInfo msg;
     uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
     if (targetID == THREAD_UNKNOWN || Message::sendReceive(&msg, targetID, MSG_SCREEN_GET_STREAM_HANDLE)) {
-        printf("SCREEN.EX5 not found\n");
+        MONAPI_WARN("SCREEN.EX5 not found");
         exit(-1);
     }
     uint32_t screenHandle = msg.arg2;

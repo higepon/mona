@@ -389,5 +389,5 @@ void Parser::unGetChar()
 
 void Parser::warn(const char* msg)
 {
-    printf("[warn] %s", msg);
+    MONAPI_WARN("[warn] %s", msg);
 }

@@ -24,7 +24,7 @@ MonaApplication::MonaApplication() {
 MonaApplication::~MonaApplication() {
 
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE)) {
-        printf("MonaApp: key unregist error\n");
+        MONAPI_WARN("MonaApp: key unregist error");
     }
 }
 

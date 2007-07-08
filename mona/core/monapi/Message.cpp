@@ -51,9 +51,7 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
     MessageInfo src;
 
     int result = Message::send(tid, header, arg1, arg2, arg3, str);
-
     if (result != 0) return result;
-
     src.from = tid;
     src.header = MSG_RESULT_OK;
     src.arg1 = header;
@@ -65,6 +63,12 @@ int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* 
 {
     return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
 }
+
+int Message::replyError(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
+{
+    return Message::send(info->from, MSG_RESULT_ERROR, info->header, arg2, arg3, str);
+}
+
 
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))
 {

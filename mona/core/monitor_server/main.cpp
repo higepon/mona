@@ -68,7 +68,7 @@ bool Monitor::Initialize()
     mi = monapi_file_read_all("/MONITOR.CFG");
     if (mi == NULL)
     {
-        printf("Config file read error\n");
+       MONAPI_WARN("Config file read error");
         return false;
     }
     ParseConfig((char*)(mi->Data));

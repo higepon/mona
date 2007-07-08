@@ -1,3 +1,13 @@
+2007-07-08  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/qemu/start.sh: Added for QEMU.
+
+        * README: Added for an explanation of executing Mona on QEMU.
+
+        * core/monapi/Message.cpp (Message::replyError): Added.
+
+        * core/monapi/syscall.cpp (mthread_create): Changed arg uint32_t f to void (*f)(void). 
+
 2007-07-07  higepon  <higepon@users.sourceforge.jp>
 
         * share/configs/monapi.inc (INCLUDE): Added -I include/monalibc, -I include/stlport.

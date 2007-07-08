@@ -11,6 +11,6 @@ ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 SHAREDIR   = $(MONADIR)/share
 include $(SHAREDIR)/configs/monapi-bin.inc
 
-INCLUDE += -I$(INCDIR)/monalibc -I$(INCDIR)/stlport -I$(INCDIR)/monapi -I . -I ./FAT12 -I ./ISO9660
+INCLUDE += -I $(INCDIR)/monapi -I . -I ./FAT12 -I ./ISO9660
 
 -include dependencies

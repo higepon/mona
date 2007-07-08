@@ -255,7 +255,7 @@ void startKernel()
     g_free_frames = new mones::FrameNode;
     g_frames->Initialize();
     g_free_frames->Initialize();
-    for (int i = 0; i < 24; i++)
+    for (int i = 0; i < 48; i++)
     {
         g_free_frames->AddToNext(new mones::FrameNode);
     }

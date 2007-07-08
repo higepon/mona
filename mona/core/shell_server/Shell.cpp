@@ -578,7 +578,7 @@ int Shell::formatWrite(const char* format, ...)
     va_end(args);
     if(result > OUT_BUFFER_SIZE)
     {
-        printf("Shell::out:overflow");
+        MONAPI_WARN("Shell::out:overflow");
     }
     return terminal_->write(str);
 }

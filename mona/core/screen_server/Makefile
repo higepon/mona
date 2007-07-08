@@ -14,6 +14,4 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-INCLUDE += -I$(INCDIR)/stlport
-
 -include dependencies

@@ -66,7 +66,7 @@ int exit(int error)
     return syscall_kill();
 }
 
-int mthread_create(uint32_t f) {
+int mthread_create(void (*f)(void)) {
     return syscall_mthread_create(f);
 }
 
@@ -336,10 +336,10 @@ void _logprintf(const char* format, ...)
 /*----------------------------------------------------------------------
     System call
 ----------------------------------------------------------------------*/
-int syscall_mthread_create(uint32_t f)
+int syscall_mthread_create(void (*f)(void))
 {
     int result, arg2 = 0;
-    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, f, arg2);
+    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, (uint32_t)f, arg2);
     return result;
 }
 
