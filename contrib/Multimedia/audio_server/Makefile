@@ -31,7 +31,7 @@ install: all
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
 
 
-CXXFLAGS += -I$(INCDIR)/stlport -fpermissive -DDEBUG
+CXXFLAGS += -fpermissive -DDEBUG
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
 
 -include dependencies

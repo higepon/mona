@@ -11,4 +11,4 @@ endif
 
 ADDLINK = -L. -llen-cygwin
 
-include dependencies
+-include dependencies

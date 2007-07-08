@@ -16,6 +16,6 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-CXXFLAGS += -DDEBUG -I . -I ./boost -I$(INCDIR)/stlport -I $(INCDIR)/onig
+CXXFLAGS += -DDEBUG -I . -I ./boost -I $(INCDIR)/onig
 
-include dependencies
+-include dependencies

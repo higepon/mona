@@ -5,7 +5,7 @@ endif
 TARGET      = NET
 INSTDIR     = $(BINDIR)/SERVERS
 
-SOURCES     = main.cpp monadev.cpp MessageLoop.cpp
+SOURCES     = main.cpp monadev.cpp MessageLoop.cpp uipLoop.cpp
 UIP_SOURCES = $(UIP_PATH)/uip/uip.c $(UIP_PATH)/uip/uip_arp.c uip_arch.c $(UIP_PATH)/apps/webclient/webclient.c $(UIP_PATH)/apps/webclient/http-user-agent-string.c $(UIP_PATH)/apps/webclient/http-strings.c
 
 SHAREDIR   = $(MONADIR)/share
@@ -44,6 +44,7 @@ $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	cd wget && make install
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map

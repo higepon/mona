@@ -17,6 +17,5 @@ include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
 CXXFLAGS += -DDEBUG
-INCLUDE += -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
 
-include dependencies
+-include dependencies

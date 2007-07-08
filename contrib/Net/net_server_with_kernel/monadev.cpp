@@ -46,7 +46,7 @@ uint32_t nic_read(Ether::Frame* frame)
    int ret = syscall_receive_packet((uint8_t*)frame);
    if (1 == ret)
    {
-//       sleep(30);
+       sleep(30);
    }
    return ret;
 }

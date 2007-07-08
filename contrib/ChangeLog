@@ -1,3 +1,11 @@
+2007-07-08  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/net_server_with_kernel/uipLoop.cpp : Added uipLoop for listen loop.
+
+        * Net/uip/Mona/main.cpp (thread_init): Use new mthread_create.
+
+        * Gui/libbaygui/lang/Thread.cpp: Use new mthread_create.
+
 2007-07-07  higepon  <higepon@users.sourceforge.jp>
 
         * Net/net_server_with_kernel/wget/main.cpp: Added wget, does not works yet!.

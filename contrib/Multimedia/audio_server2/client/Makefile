@@ -30,7 +30,7 @@ install: all
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 
 
-CXXFLAGS += -I$(INCDIR)/stlport -fpermissive -DDEBUG
+CXXFLAGS += -fpermissive -DDEBUG
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
 
 -include dependencies

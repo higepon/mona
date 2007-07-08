@@ -32,7 +32,7 @@ install: all
 	(cd client && make && make install)
 
 
-CXXFLAGS += -I$(INCDIR)/stlport -fpermissive -DDEBUG
+CXXFLAGS += -fpermissive -DDEBUG
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
 
 -include dependencies

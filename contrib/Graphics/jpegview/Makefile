@@ -12,4 +12,4 @@ endif
 ADDLINK    = -ljpegls
 ADDLINKDEP = $(MONADIR)/lib/libjpegls.a
 
-include dependencies
+-include dependencies

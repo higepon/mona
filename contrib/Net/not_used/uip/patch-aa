@@ -1,0 +1,27 @@
+diff -ur uip-0.9.orig/apps/httpd/cgi.c uip-0.9/apps/httpd/cgi.c
+--- uip-0.9.orig/apps/httpd/cgi.c	2003-10-07 22:22:27.000000000 +0900
++++ uip-0.9/apps/httpd/cgi.c	2006-01-03 00:04:29.718750000 +0900
+@@ -56,9 +56,10 @@
+ #include "httpd.h"
+ #include "fs.h"
+ 
++#if 0
+ #include <stdio.h>
+ #include <string.h>
+-
++#endif
+ static u8_t print_stats(u8_t next);
+ static u8_t file_stats(u8_t next);
+ static u8_t tcp_stats(u8_t next);
+diff -ur uip-0.9.orig/apps/httpd/makefsdata uip-0.9/apps/httpd/makefsdata
+--- uip-0.9.orig/apps/httpd/makefsdata	2003-10-06 03:49:47.000000000 +0900
++++ uip-0.9/apps/httpd/makefsdata	2006-01-03 00:36:43.656250000 +0900
+@@ -20,7 +20,7 @@
+     } else {
+       print(HEADER "HTTP/1.0 200 OK\r\n");
+     }
+-    print(HEADER "Server: uIP/0.9 (http://dunkels.com/adam/uip/)\r\n");
++    print(HEADER "Server: Mona OS uIP/0.9 (http://dunkels.com/adam/uip/)\r\n");
+     if($file =~ /\.html$/) {
+ 	print(HEADER "Content-type: text/html\r\n");
+     } elsif($file =~ /\.gif$/) {

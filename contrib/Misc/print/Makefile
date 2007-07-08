@@ -17,4 +17,4 @@ endif
 
 CXXFLAGS += -DDEBUG
 
-include dependencies
+-include dependencies

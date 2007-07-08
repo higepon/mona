@@ -45,4 +45,4 @@ distclean: clean
 	rm dependencies
 	touch dependencies
 
-include dependencies
+-include dependencies

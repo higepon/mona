@@ -559,6 +559,11 @@ struct httpd_state {
 #endif
 
 unsigned char uiplib_ipaddrconv(char *addrstr, unsigned char *ipaddr);
+void webclient_datahandler(char *data, u16_t len);
+void webclient_connected();
+void webclient_timedout();
+void webclient_aborted();
+void webclient_closed();
 
 #define WWW_CONF_MAX_URLLEN 200
 struct webclient_state {

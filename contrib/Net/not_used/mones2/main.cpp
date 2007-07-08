@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
         defaultGateway = Util::ipAddressToDuint16_t(a, b, c, d);
     }
 
-    uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
+    uint32_t id = syscall_mthread_create(NicListenLoop);
 // comment out by higepon
 //    syscall_mthread_join(id);
     Config config(ipAddress, subnetAddress, defaultGateway);

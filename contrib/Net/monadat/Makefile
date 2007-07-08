@@ -29,4 +29,4 @@ $(TARGET).EXE: $(INSTFILES)
 dat/MONALOGO.BM5: dat/MonaLogo.bmp
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-include dependencies
+-include dependencies

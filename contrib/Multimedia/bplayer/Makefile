@@ -44,7 +44,7 @@ install: all
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 
 
-CXXFLAGS += -DDEBUG -I$(INCDIR)/stlport
+CXXFLAGS += -DDEBUG
 INCLUDE += -I .
 
 -include dependencies

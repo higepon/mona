@@ -19,4 +19,4 @@ ADDLINKDEP = $(MONADIR)/lib/libjpegls.a
 
 $(TARGET).EXE: $(INSTFILES)
 
-include dependencies
+-include dependencies

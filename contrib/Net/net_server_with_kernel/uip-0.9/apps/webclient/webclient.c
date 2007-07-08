@@ -22,20 +22,20 @@
 
 /*
  * Copyright (c) 2002, Adam Dunkels.
- * All rights reserved. 
+ * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions 
- * are met: 
- * 1. Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above
  *    copyright notice, this list of conditions and the following
  *    disclaimer in the documentation and/or other materials provided
- *    with the distribution. 
+ *    with the distribution.
  * 3. The name of the author may not be used to endorse or promote
  *    products derived from this software without specific prior
- *    written permission.  
+ *    written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -47,7 +47,7 @@
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
  * This file is part of the "contiki" web browser.
  *
@@ -81,35 +81,6 @@ extern  void _logprintf(const char* format, ...);
 #define ISO_space    0x20
 
 static struct webclient_state s;
-
-void webclient_datahandler(char *data, u16_t len)
-{
-    int i;
-    for (i = 0; i < len; i++)
-    {
-        _printf("%c", data[i]);
-        _logprintf("%c", data[i]);
-    }
-}
-void webclient_connected()
-{
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-}
-
-void webclient_timedout()
-{
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-}
-
-void webclient_aborted()
-{
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-}
-void webclient_closed()
-{
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-}
-
 
 /*-----------------------------------------------------------------------------------*/
 char *
@@ -177,7 +148,7 @@ webclient_get(char *host, u16_t port, char *file)
   uiplib_ipaddrconv(host, addr);
 
   conn = uip_connect(addr, htons(port));
-  
+
   if(conn == NULL) {
     return 0;
   }
@@ -190,7 +161,7 @@ webclient_get(char *host, u16_t port, char *file)
 /*-----------------------------------------------------------------------------------*/
 static unsigned char * //CC_FASTCALL
 copy_string(unsigned char *dest,
-	    const unsigned char *src, unsigned char len)
+        const unsigned char *src, unsigned char len)
 {
   return strcpy(dest, src) + len;
 }
@@ -201,7 +172,7 @@ senddata(void)
   u16_t len;
   char *getrequest;
   char *cptr;
-  
+
   if(s.getrequestleft > 0) {
     cptr = getrequest = (char *)uip_appdata;
 
@@ -211,26 +182,26 @@ senddata(void)
     cptr = copy_string(cptr, http_10, sizeof(http_10) - 1);
 
     cptr = copy_string(cptr, http_crnl, sizeof(http_crnl) - 1);
-    
+
     cptr = copy_string(cptr, http_host, sizeof(http_host) - 1);
     cptr = copy_string(cptr, s.host, strlen(s.host));
     cptr = copy_string(cptr, http_crnl, sizeof(http_crnl) - 1);
 
     cptr = copy_string(cptr, http_user_agent_fields,
-		       strlen(http_user_agent_fields));
-    
+               strlen(http_user_agent_fields));
+
     len = s.getrequestleft > uip_mss()?
       uip_mss():
       s.getrequestleft;
     uip_send(&(getrequest[s.getrequestptr]), len);
   }
-}  
+}
 /*-----------------------------------------------------------------------------------*/
 static void
 acked(void)
 {
   u16_t len;
-  
+
   if(s.getrequestleft > 0) {
     len = s.getrequestleft > uip_mss()?
       uip_mss():
@@ -244,7 +215,7 @@ static u16_t
 parse_statusline(u16_t len)
 {
   char *cptr;
-  
+
   while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
     s.httpheaderline[s.httpheaderlineptr] = *uip_appdata;
     ++uip_appdata;
@@ -252,30 +223,30 @@ parse_statusline(u16_t len)
     if(s.httpheaderline[s.httpheaderlineptr] == ISO_nl) {
 
       if((strncmp(s.httpheaderline, http_10,
-		  sizeof(http_10) - 1) == 0) ||
-	 (strncmp(s.httpheaderline, http_11,
-		  sizeof(http_11) - 1) == 0)) {
-	cptr = &(s.httpheaderline[9]);
-	s.httpflag = HTTPFLAG_NONE;
-	if(strncmp(cptr, http_200, sizeof(http_200) - 1) == 0) {
-	  /* 200 OK */
-	  s.httpflag = HTTPFLAG_OK;
-	} else if(strncmp(cptr, http_301, sizeof(http_301) - 1) == 0 ||
-		  strncmp(cptr, http_302, sizeof(http_302) - 1) == 0) {
-	  /* 301 Moved permanently or 302 Found. Location: header line
-	     will contain thw new location. */
-	  s.httpflag = HTTPFLAG_MOVED;
-	} else {
-	  s.httpheaderline[s.httpheaderlineptr - 1] = 0;
-	}
+          sizeof(http_10) - 1) == 0) ||
+     (strncmp(s.httpheaderline, http_11,
+          sizeof(http_11) - 1) == 0)) {
+    cptr = &(s.httpheaderline[9]);
+    s.httpflag = HTTPFLAG_NONE;
+    if(strncmp(cptr, http_200, sizeof(http_200) - 1) == 0) {
+      /* 200 OK */
+      s.httpflag = HTTPFLAG_OK;
+    } else if(strncmp(cptr, http_301, sizeof(http_301) - 1) == 0 ||
+          strncmp(cptr, http_302, sizeof(http_302) - 1) == 0) {
+      /* 301 Moved permanently or 302 Found. Location: header line
+         will contain thw new location. */
+      s.httpflag = HTTPFLAG_MOVED;
+    } else {
+      s.httpheaderline[s.httpheaderlineptr - 1] = 0;
+    }
       } else {
-	uip_abort();
-	webclient_aborted();
-	return 0;
+    uip_abort();
+    webclient_aborted();
+    return 0;
       }
-      
+
       /* We're done parsing the status line, so we reset the pointer
-	 and start parsing the HTTP headers.*/
+     and start parsing the HTTP headers.*/
       s.httpheaderlineptr = 0;
       s.state = WEBCLIENT_STATE_HEADERS;
       break;
@@ -290,7 +261,7 @@ static char
 casecmp(char *str1, const char *str2, char len)
 {
   static char c;
-  
+
   while(len > 0) {
     c = *str1;
     /* Force lower-case characters. */
@@ -312,60 +283,60 @@ parse_headers(u16_t len)
 {
   char *cptr;
   static unsigned char i;
-  
+
   while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
     s.httpheaderline[s.httpheaderlineptr] = *uip_appdata;
     ++uip_appdata;
     --len;
     if(s.httpheaderline[s.httpheaderlineptr] == ISO_nl) {
       /* We have an entire HTTP header line in s.httpheaderline, so
-	 we parse it. */
+     we parse it. */
       if(s.httpheaderline[0] == ISO_cr) {
-	/* This was the last header line (i.e., and empty "\r\n"), so
-	   we are done with the headers and proceed with the actual
-	   data. */
-	s.state = WEBCLIENT_STATE_DATA;
-	return len;
+    /* This was the last header line (i.e., and empty "\r\n"), so
+       we are done with the headers and proceed with the actual
+       data. */
+    s.state = WEBCLIENT_STATE_DATA;
+    return len;
       }
 
       s.httpheaderline[s.httpheaderlineptr - 1] = 0;
-      /* Check for specific HTTP header fields. */      
+      /* Check for specific HTTP header fields. */
       if(casecmp(s.httpheaderline, http_content_type,
-		     sizeof(http_content_type) - 1) == 0) {
-	/* Found Content-type field. */
-	cptr = strchr(s.httpheaderline, ';');
-	if(cptr != NULL) {
-	  *cptr = 0;
-	}
-	strncpy(s.mimetype, s.httpheaderline +
-		sizeof(http_content_type) - 1, sizeof(s.mimetype));
+             sizeof(http_content_type) - 1) == 0) {
+    /* Found Content-type field. */
+    cptr = strchr(s.httpheaderline, ';');
+    if(cptr != NULL) {
+      *cptr = 0;
+    }
+    strncpy(s.mimetype, s.httpheaderline +
+        sizeof(http_content_type) - 1, sizeof(s.mimetype));
       } else if(casecmp(s.httpheaderline, http_location,
-			    sizeof(http_location) - 1) == 0) {
-	cptr = s.httpheaderline +
-	  sizeof(http_location) - 1;
-	
-	if(strncmp(cptr, http_http, 7) == 0) {
-	  cptr += 7; 
-	  for(i = 0; i < s.httpheaderlineptr - 7; ++i) {
-	    if(*cptr == 0 ||
-	       *cptr == '/' ||
-	       *cptr == ' ' ||
-	       *cptr == ':') {
-	      s.host[i] = 0;
-	      break;
-	    }
-	    s.host[i] = *cptr;
-	    ++cptr;
-	  }
-	}
-	strncpy(s.file, cptr, sizeof(s.file));
-	/*	s.file[s.httpheaderlineptr - i] = 0;*/
+                sizeof(http_location) - 1) == 0) {
+    cptr = s.httpheaderline +
+      sizeof(http_location) - 1;
+
+    if(strncmp(cptr, http_http, 7) == 0) {
+      cptr += 7;
+      for(i = 0; i < s.httpheaderlineptr - 7; ++i) {
+        if(*cptr == 0 ||
+           *cptr == '/' ||
+           *cptr == ' ' ||
+           *cptr == ':') {
+          s.host[i] = 0;
+          break;
+        }
+        s.host[i] = *cptr;
+        ++cptr;
+      }
+    }
+    strncpy(s.file, cptr, sizeof(s.file));
+    /*  s.file[s.httpheaderlineptr - i] = 0;*/
       }
 
 
       /* We're done parsing, so we reset the pointer and start the
-	 next line. */
-      s.httpheaderlineptr = 0;      
+     next line. */
+      s.httpheaderlineptr = 0;
     } else {
       ++s.httpheaderlineptr;
     }
@@ -383,7 +354,7 @@ newdata(void)
   if(s.state == WEBCLIENT_STATE_STATUSLINE) {
     len = parse_statusline(len);
   }
-  
+
   if(s.state == WEBCLIENT_STATE_HEADERS && len > 0) {
     len = parse_headers(len);
   }
@@ -397,7 +368,6 @@ newdata(void)
 void webclient_appcall(void)
 {
   if(uip_connected()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     s.timer = 0;
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
@@ -405,7 +375,7 @@ void webclient_appcall(void)
     return;
   }
 
-  
+
 //   if(s.state == NULL) {
 //       _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //     uip_abort();
@@ -413,38 +383,32 @@ void webclient_appcall(void)
 //   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     webclient_closed();
     uip_abort();
     return;
-  }    
-  
-  
+  }
+
+
 
   if(uip_aborted()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     webclient_aborted();
   }
   if(uip_timedout()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     webclient_timedout();
   }
 
-  
+
   if(uip_acked()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     s.timer = 0;
     acked();
   }
   if(uip_newdata()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     s.timer = 0;
     newdata();
   }
   if(uip_rexmit() ||
      uip_newdata() ||
      uip_acked()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     senddata();
   } else if(uip_poll()) {
     ++s.timer;
@@ -457,13 +421,12 @@ void webclient_appcall(void)
   }
 
   if(uip_closed()) {
-      _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if(s.httpflag != HTTPFLAG_MOVED) {
       /* Send NULL data to signal EOF. */
       webclient_datahandler(NULL, 0);
     } else {
 /*       if(resolv_lookup(s.host) == NULL) { */
-/* 	resolv_query(s.host); */
+/*  resolv_query(s.host); */
 /*       } */
 /*       webclient_get(s.host, s.port, s.file); */
     }

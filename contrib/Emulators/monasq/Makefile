@@ -52,6 +52,6 @@ endif
 
 CXXFLAGS += -DMONASQ -DDEBUG
 
-INCLUDE  += -I$(MONADIR)/include/stlport -I./ -I./sq/include -I./sqplus
+INCLUDE  += -I./ -I./sq/include -I./sqplus
 
-include dependencies
+-include dependencies

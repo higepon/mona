@@ -117,7 +117,7 @@ public:
     static void Main(_A<String> args)
     {
         _P<Form1> f = new Form1();
-        uint32_t stdout_tid = syscall_mthread_create((uint32_t)StdoutMessageLoop);
+        uint32_t stdout_tid = syscall_mthread_create(StdoutMessageLoop);
         f->Show();
         if (f->shell != THREAD_UNKNOWN) MonAPI::Message::send(f->shell, MSG_GUISERVER_KEYDOWN, 0, '\r');
         Application::Run(f.get());

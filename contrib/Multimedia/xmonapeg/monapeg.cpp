@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
 
 	// Create thread
 	my_tid = syscall_get_tid();
-	syscall_mthread_create((uint32_t)DrawLoop);
+	syscall_mthread_create(DrawLoop);
 	MessageInfo msg, src;
 	src.header = MSG_SERVER_START_OK;
 	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);

@@ -119,4 +119,4 @@ endif
 	rm -f $(BINDIR)/APPS/MONAFRMS.MSH
 	rm -f $(BINDIR)/APPS/MONAFUN.JPG
 
-include dependencies
+-include dependencies

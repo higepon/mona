@@ -3,7 +3,6 @@
 
 #include "stdint.h"
 
-
 typedef struct {
     uint8_t destmac[6];
     uint8_t header[4096];

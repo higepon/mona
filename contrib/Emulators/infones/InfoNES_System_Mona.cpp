@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 	
 	/* Create thread */
 	my_tid = syscall_get_tid();
-	uint32_t id = syscall_mthread_create((uint32_t)EventLoop);
+	uint32_t id = syscall_mthread_create(EventLoop);
 // comment out by higepon
 //	syscall_mthread_join(id);
 	MessageInfo msg, src;
