@@ -177,24 +177,24 @@ int audio_set_format(AudioServer o, MessageInfo *msg)
 int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 {
 	AudioServer serv = (AudioServer)ref;
-/*
+///*
 	MonAPI::Stream *stream = serv->stream;
 	stream->waitForRead();
 	stream->lockForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
 	stream->unlockForRead();
-	printf("*wrote = %d\n", *wrote);
+//	printf("*wrote = %d\n", *wrote);
 	if( *wrote < 1 ) return NG;
 	return OK;
-*/
-///*
+//*/
+/*
 	monapi_cmemoryinfo *cmi;
-	puts("Send a message.");
+//	puts("Send a message.");
 	MessageInfo msg;
 	MonAPI::Message::sendReceive(&msg, serv->tid, 0xFFFFFFFF, size);
-	puts("Received a message from a client.");
+//	puts("Received a message from a client.");
 //	printf("msg->arg2 (handle) = %d\n", msg.arg2);
-	printf("msg->arg3 (size)   = %d\n", msg.arg3);
+//	printf("msg->arg3 (size)   = %d\n", msg.arg3);
 	cmi = monapi_cmemoryinfo_new();
 	cmi->Size = msg.arg3;
 	cmi->Handle = msg.arg2;
@@ -202,7 +202,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 	memcpy(buf, cmi->Data, msg.arg3);
 	*wrote = msg.arg3;
 	return OK;
-//*/
+*/
 }
 
 int audio_stopped_callback(void *ref)
