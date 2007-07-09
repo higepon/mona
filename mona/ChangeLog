@@ -1,3 +1,7 @@
+2007-07-09  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/SRegexp.cpp (SRegexp::apply): Fixed regexp test failure.
+
 2007-07-08  higepon  <higepon@users.sourceforge.jp>
 
         * tool/qemu/start.sh: Added for QEMU.
