@@ -2,6 +2,8 @@ TARGET  = XMONAPEG
 SOURCES = monapeg.cpp
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 
+#INSTFILES = SAMPLE.MPG
+
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
