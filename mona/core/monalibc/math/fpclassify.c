@@ -28,8 +28,8 @@ int fpclassify_d(double x)
 	union __nc_ieee_754_double u;
 	u.value = x;
 	if( u.n.exp == 0 && u.n.frac1 == 0 && u.n.frac0 == 0 ) return FP_ZERO;
-	if( u.n.exp == 255 && u.n.frac1 == 0 && u.n.frac0 == 0 ) return FP_INFINITE;
-	if( u.n.exp == 255 && u.n.frac1 != 0 && u.n.frac0 != 0 ) return FP_NAN;
+	if( u.n.exp == 2047 && u.n.frac1 == 0 && u.n.frac0 == 0 ) return FP_INFINITE;
+	if( u.n.exp == 2047/* && u.n.frac1 != 0 && u.n.frac0 != 0*/ ) return FP_NAN;
 	return FP_NORMAL;
 }
 
