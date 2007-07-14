@@ -15,7 +15,7 @@ int main()
 	Stream *s;
 	FILE *fp;
 	monapi_cmemoryinfo *cmi;
-	uint8_t buf[4096];
+	uint8_t buf[8192*8];
 	uint32_t readsize;
 	cmi = monapi_cmemoryinfo_new();
 	monapi_cmemoryinfo_create(cmi, 4096, 0);
@@ -70,9 +70,9 @@ int main()
 		readsize = fread(buf, 1, sizeof(buf), fp);
 		if( readsize <= 1 ) break;
 		s->waitForWrite();
-		s->lockForWrite();
+//		s->lockForWrite();
 		s->write(buf, readsize);
-		s->unlockForWrite();
+//		s->unlockForWrite();
 //	*/
 	}
 
