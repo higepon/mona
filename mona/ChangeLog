@@ -1,3 +1,27 @@
+2007-07-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/PageManager.cpp (PageManager::pageFaultHandler): Changed a stack over flow message.
+
+        * core/scheme/test/pair.scm ("lambda's argument"): Added a test for lambda's arguments.
+
+        * core/scheme/Procedure.cpp (Procedure::apply): Fixed a lambda's arguments bug.
+
+        * core/scheme/lib/shell.scm.in (ls): ls takes a argument.
+
+        * core/scheme/histories.cpp: Added for a input history.
+
+        * core/scheme/install-mona.sh: Added for easy development.
+
+2007-07-13  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/SRegexp.cpp (SRegexp::apply): Now we can apply regex to mona object.
+
+2007-07-12  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/scheme.h (SCM_APPLY_PROC): Added for apply proc from string.
+
+        * core/scheme/lib/core.scm.in: Add unless macro.
+
 2007-07-09  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/SRegexp.cpp (SRegexp::apply): Fixed regexp test failure.

@@ -708,8 +708,16 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
         bool stackOver = address < stackButtom && stackButtom - 4096 < address;
 
-        g_console->printf("access denied.address = %x Process %s killed %s eip=%x\n", address, current->getName(), stackOver ? "stack overflow?" : "", eip);
-        logprintf("access denied.address = %x Process %s killed %s eip=%x", address, current->getName(), stackOver ? "stack overflow?" : "", eip);
+        if (stackOver)
+        {
+            g_console->printf("\nstack overflow \n\n access denied.address = %x Process  killed %s eip=%x\n", address, current->getName(), eip);
+            logprintf("\ntack overflow \n\n access denied.address = %x Process %s killed  eip=%x", address, current->getName(), eip);
+        }
+        else
+        {
+            g_console->printf("access denied.address = %x Process  killed %s eip=%x\n", address, current->getName(), eip);
+            logprintf("access denied.address = %x Process %s killed  eip=%x", address, current->getName(), eip);
+        }
 
         ThreadOperation::kill();
         return true;
