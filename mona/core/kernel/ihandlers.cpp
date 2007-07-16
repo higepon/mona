@@ -64,7 +64,6 @@ void irqHandler_9()
 {
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
-    g_console->printf("9\n");
     if (g_irqInfo[9].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (9 - 8)));
     SendInterrupt(9);
 }
