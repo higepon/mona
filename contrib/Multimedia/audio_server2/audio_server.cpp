@@ -127,7 +127,7 @@ int audio_stop(AudioServer o, MessageInfo *msg)
 
 /* Function: MSG_AUDIO_SET_FORMAT
  * To set a audio data format.
- * Params:
+n * Params:
  * 	channels: number of audio channels
  * 	bits: bits per sample
  * 	rate: samples per second
@@ -183,7 +183,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 //	stream->lockForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
 //	stream->unlockForRead();
-//	printf("*wrote = %d\n", *wrote);
+	_printf("*wrote = %d\n", *wrote);
 	if( *wrote < 1 ) return NG;
 	return OK;
 //*/

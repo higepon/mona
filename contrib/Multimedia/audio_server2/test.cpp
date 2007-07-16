@@ -63,12 +63,15 @@ int main()
 	struct audio_data_format format;
 	struct audio_driver *driver;
 	monapi_cmemoryinfo *cmi;
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	cmi = monapi_file_read_all("/APPS/TEST.RAW");
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	FILE *fp;
 	fp = fopen("/APPS/TEST.RAW", "r");
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if( fp == NULL ) return 1;
 	setbuf(fp, NULL);
-
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	format.sample_rate = 44100;
 	format.bits = 16;
 	format.channels = 2;
