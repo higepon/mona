@@ -4,6 +4,8 @@
 #include <monapi/io.h>
 #include <monapi/Thread.h>
 #include <monalibc/stdio.h>
+#include <monapi/syscall.h>
+#include <monapi/Message.h>
 
 static handle_t instance = NULL;
 const static char device_name[] = "es1370";
@@ -81,7 +83,7 @@ handle_t es1370_new(const struct audio_data_format *f)
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 2048;
+	d->bufsize = 8192;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
 
@@ -96,8 +98,8 @@ handle_t es1370_new(const struct audio_data_format *f)
 	}
 	d->state = PAUSE;
 	instance = (handle_t)d;
-	syscall_get_io();
-	puts(__func__);
+//	syscall_get_io();
+//	puts(__func__);
 	return (handle_t)d;
 }
 
@@ -105,6 +107,7 @@ void es1370_delete(handle_t o)
 {
 	if( o == NULL ) return;
 	struct es1370_driver *d = (struct es1370_driver*)o;
+	d->thread->stop();
 	delete d->thread;
 	monapi_deallocate_dma_memory(d->dmabuf1, d->bufsize);
 	monapi_deallocate_dma_memory(d->dmabuf2, d->bufsize);
@@ -222,6 +225,8 @@ static error_t es1370_device_init(struct es1370_driver *d, const struct audio_da
 	ctrl &= ~(ES1370_DAC1_EN|ES1370_DAC2_EN|ES1370_ADC_EN);
 	outp32(d->baseIO+ES1370_REG_CONTROL, ctrl);
 
+	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
+
 	d->thread->start();
 
 	d->rate = 3<<12;
@@ -258,7 +263,7 @@ inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t si
 */
     //_logprintf("ES1370 DRI: d = %x\n", d);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
+//	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMEADR, (uint32_t)p);
 	outp32(d->baseIO+ES1370_REG_DAC1_FRAMECNT, (size>>2)-1);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -282,19 +287,23 @@ inline static void es1370_start_playback(struct es1370_driver *d)
 	uint32_t reg;
 	//_logprintf("d = %x\n", d);
 
+/*
 	reg = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	reg &= ~(ES1370_P1_LOOP_SEL|ES1370_P1_PAUSE);
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, reg);
+*/
+	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL,
+		inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL)&~ES1370_P1_PAUSE);
 
 	reg = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
-	reg &= ~ES1370_P1_INTR_EN;
-	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, reg);
+//	reg &= ~ES1370_P1_INTR_EN;
+//	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, reg);
 	reg |= ES1370_P1_INTR_EN;
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, reg);
 
 	reg = inp32(d->baseIO+ES1370_REG_CONTROL);
-	reg &= ~ES1370_DAC1_EN;
-	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
+//	reg &= ~ES1370_DAC1_EN;
+//	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
 	reg |= ES1370_DAC1_EN;
 	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
 }
@@ -310,6 +319,10 @@ inline static void es1370_stop_playback(struct es1370_driver *d)
 	reg = inp32(d->baseIO+ES1370_REG_CONTROL);
 	reg &= ~ES1370_DAC1_EN;
 	outp32(d->baseIO+ES1370_REG_CONTROL, reg);
+
+	reg = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
+	reg &= ~ES1370_P1_INTR_EN;
+	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, reg);
 }
 
 void rdtsc(uint32_t* timeL, uint32_t* timeH) {
@@ -378,15 +391,17 @@ static void es1370_interrupt_catcher(void* a)
 	monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 
 	MessageInfo msg;
+	uint32_t stat, result;
 	while(1)
 	{
-		if( MonAPI::Message::receive(&msg) ) continue;
-		switch(msg.header)
+		if( MonAPI::Message::receive(&msg) )
 		{
-		case MSG_INTERRUPTED:
+			syscall_mthread_yield_message();
+			continue;
+		}
+		if( msg.header == MSG_INTERRUPTED )
 		{
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-			uint32_t stat, result;
 			stat = inp32(d->baseIO+ES1370_REG_STATUS);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if( stat & 4 )
@@ -402,7 +417,6 @@ static void es1370_interrupt_catcher(void* a)
 					result = es1370_buffer_setter(d);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
-					es1370_start_playback(d);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 					if( result != OK )
@@ -411,6 +425,7 @@ static void es1370_interrupt_catcher(void* a)
 						//_logprintf("state = PAUSE\n");
 						return;
 					}
+					es1370_start_playback(d);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					result = es1370_buffer_setter(d);
     //_logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -422,11 +437,9 @@ static void es1370_interrupt_catcher(void* a)
 					outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
 					*/
 					monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+					syscall_mthread_yield_message();
 				}
 			}
-			break;
-		}
-			default: break;
 		}
 	}
 }

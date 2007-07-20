@@ -15,7 +15,7 @@ int main()
 	Stream *s;
 	FILE *fp;
 	monapi_cmemoryinfo *cmi;
-	uint8_t buf[8192*8];
+	uint8_t buf[8192];
 	uint32_t readsize;
 	cmi = monapi_cmemoryinfo_new();
 	monapi_cmemoryinfo_create(cmi, 4096, 0);

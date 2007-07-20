@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <monapi/Message.h>
+#include <monapi/syscall.h>
+#include <stdlib.h>
 #include "servers/audio.h"
 #include "audio_server.h"
 
@@ -8,10 +10,18 @@ int main(int argc, char *argv[])
 	AudioServer server;
 	MessageInfo msg;
 	server = audio_server_new();
+	if( server == NULL )
+	{
+		puts("abort"); abort();
+	}
 	printf("Audio server was started.\n");
 	while(1)
 	{
-		if( MonAPI::Message::receive(&msg) ) continue;
+		if( MonAPI::Message::receive(&msg) )
+		{
+			syscall_mthread_yield_message();
+			continue;
+		}
 		switch(msg.header)
 		{
 			case MSG_AUDIO_NEW_CHANNEL:

@@ -88,11 +88,11 @@ int main()
 		puts("Couldn't open the device.");
 		return 1;
 	}
-//	driver->driver_set_render_callback(dev, &render, dev);
+	driver->driver_set_render_callback(dev, &render, dev);
 //	driver->driver_set_render_callback(dev, &frender, fp);
-	driver->driver_set_render_callback(dev, &cmrender, cmi);
+//	driver->driver_set_render_callback(dev, &cmrender, cmi);
 	driver->driver_start(dev);
-	while(is_stopped==0);// syscall_mthread_yield_message();
+	while(is_stopped==0) syscall_mthread_yield_message();
 	puts("Stopped");
 
 	fclose(fp);

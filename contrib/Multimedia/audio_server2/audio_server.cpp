@@ -179,7 +179,7 @@ int audio_render_callback(void *ref, void *buf, size_t size, size_t *wrote)
 	AudioServer serv = (AudioServer)ref;
 ///*
 	MonAPI::Stream *stream = serv->stream;
-	stream->waitForRead();
+//	stream->waitForRead();
 //	stream->lockForRead();
 	*wrote = stream->read((uint8_t*)buf, (uint32_t)size);
 //	stream->unlockForRead();
