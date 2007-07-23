@@ -173,6 +173,9 @@ void Stream::waitForWrite()
 
 void Stream::waitForRead()
 {
+#if 0
+    while (header_->size == 0);
+#else
     access_->lock();
     if (header_->size != 0)
     {
@@ -198,6 +201,7 @@ void Stream::waitForRead()
             return;
         }
     }
+#endif
 }
 
 uint32_t Stream::size() const
