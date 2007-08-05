@@ -60,7 +60,8 @@ public:
         this->InitializeComponent();
         this->shell = monapi_get_server_thread_id(ID_SCHEME_SERVER);
         _P<MonAPI::Screen> scr = GetDefaultScreen();
-        this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
+//        this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
+        this->set_Location(Point(250, 50));
     }
 
     virtual void OnPaint()
