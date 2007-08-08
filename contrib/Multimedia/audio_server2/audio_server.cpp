@@ -29,6 +29,7 @@ AudioServer audio_server_new()
 		free(ret);
 		return NULL;
 	}
+	ret->device = ret->driver->driver_new();
 	return (AudioServer)ret;
 }
 
@@ -145,7 +146,7 @@ int audio_set_format(AudioServer o, MessageInfo *msg)
 	o->outputFormat.channels = msg->arg1;
 	o->outputFormat.bits = msg->arg2;
 	o->outputFormat.sample_rate = msg->arg3;
-	o->device = o->driver->driver_new(&o->outputFormat);
+	o->driver->driver_set_format(o, &o->outputFormat);
 	if( o->device == NULL )
 	{
 		MonAPI::Message::reply(msg, (uint32_t)-1);

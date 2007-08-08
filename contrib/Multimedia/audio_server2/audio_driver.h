@@ -30,15 +30,15 @@ struct audio_data_format
 
 struct audio_driver
 {
-	handle_t (*driver_new)(const struct audio_data_format*);
+	handle_t (*driver_new)();
 	void     (*driver_delete)(handle_t);
 	error_t	 (*driver_codec_command)(handle_t, codec_command_t, ...);
 	error_t  (*driver_start)(handle_t);
 	error_t  (*driver_stop)(handle_t);
-	error_t  (*driver_regist_int_handler)(handle_t);
-	error_t  (*driver_do_int_proc)(handle_t, MessageInfo*);
 	error_t (*driver_set_render_callback)(handle_t,audio_render_callback_t,void*);
 	error_t (*driver_set_stopped_callback)(handle_t,audio_stopped_callback_t,void*);
+	error_t (*driver_set_format)(handle_t, const struct audio_data_format*);
+	error_t (*driver_get_format)(handle_t, struct audio_data_format*);
 	void *variables;
 };
 

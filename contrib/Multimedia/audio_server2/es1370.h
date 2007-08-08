@@ -46,6 +46,7 @@ enum
 	ES1370_M_SBB = (1<<14),
 	ES1370_MSFMTSEL = (1<<15),
 	ES1370_PCLKDIV = (1<<16),
+	ES1370_PCLKDIV_SH = 16,
 	ES1370_OPEN = (1<<29),
 	ES1370_XCTL1 = (1<<30),
 	ES1370_ADC_STOP = (1<<31),
@@ -80,13 +81,13 @@ enum STATE
 };
 
 extern "C" struct audio_driver *es1370_get_driver_desc();
-handle_t	es1370_new(const struct audio_data_format *f);
+handle_t	es1370_new();
 void		es1370_delete(handle_t o);
 error_t		es1370_codec_command(handle_t o, codec_command_t c, ...);
 error_t		es1370_start(handle_t o);
 error_t		es1370_stop(handle_t o);
-error_t         es1370_regist_int_handler(handle_t o);
-error_t         es1370_do_int_proc(handle_t o, MessageInfo *msg);
+error_t         es1370_set_format(handle_t o,const struct audio_data_format *f);
+error_t         es1370_get_format(handle_t o,struct audio_data_format *f);
 error_t		es1370_set_callback(handle_t o,
 	error_t (*callback)(void* ref, void* buffer, size_t size, size_t *wrote), void* ref);
 error_t		es1370_set_stopped_callback(handle_t o, audio_stopped_callback_t, void *ref);
