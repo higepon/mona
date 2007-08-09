@@ -1,0 +1,38 @@
+@code{(require 'math-integer)}
+@ftindex math-integer
+
+
+@defun integer-expt n1 n2
+
+Returns @var{n1} raised to the power @var{n2} if that result is an exact
+integer; otherwise signals an error.
+
+@code{(integer-expt 0 @var{n2})}
+
+returns 1 for @var{n2} equal to 0;
+returns 0 for positive integer @var{n2};
+signals an error otherwise.
+@end defun
+
+
+@defun integer-log base k
+
+Returns the largest exact integer whose power of @var{base} is less than or
+equal to @var{k}. If @var{base} or @var{k} is not a positive exact integer, then
+@code{integer-log} signals an error.
+@end defun
+
+
+@defun integer-sqrt k
+
+For non-negative integer @var{k} returns the largest integer whose square
+is less than or equal to @var{k}; otherwise signals an error.
+@end defun
+
+
+@defvar quotient
+@defvarx remainder
+@defvarx modulo
+
+are redefined so that they accept only exact-integer arguments.
+@end defvar

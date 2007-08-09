@@ -1,0 +1,228 @@
+(define (help)
+  (print "\nWelcome to Mona ")
+  (print "(ls path) / (kill tid) / (reboot) / (halt)"))
+
+(define halt
+  (lambda ()
+    (display "system halt")
+    (mona-halt)))
+
+(define reboot
+  (lambda ()
+    (display "system reboot")
+    (mona-reboot)))
+
+(define (kill id)
+  (if (mona-kill id)
+      (print "thread killed.")
+      (print "thread not found.")))
+
+(define ps mona-ps)
+
+(define (read-file file-name)
+  (with-input-from-file file-name
+    (lambda ()
+      (let loop((ls1 '()) (c (read-char)))
+    (if (eof-object? c)
+        (list->string (reverse ls1))
+        (begin (loop (cons c ls1) (read-char))))))))
+
+(define (cat file)
+  (display (read-file file)))
+
+(define (print s)
+  (display s)
+  (newline))
+
+;; directories
+;; depends on directory entry structure
+(define (fs-new-directory name)
+  (cons name (cons '() '())))
+
+(define (fs-new-file name)
+  (cons name (cons '() #f)))
+
+(define (fs-name entry)
+  (car entry))
+
+(define (fs-directory? entry)
+  (not (fs-file? entry)))
+
+(define (fs-file? entry)
+  (not (cddr entry)))
+
+(define (fs-entries directory)
+  (cddr directory))
+
+(define (fs-set-parent directory parent)
+  (set-car! (cdr directory) parent))
+
+(define (fs-parent directory)
+  (cadr directory))
+
+(define (fs-add-entry directory entry)
+  (let ((entries (fs-entries directory)))
+    (fs-set-parent entry directory)
+    (if (null? entries)
+        (set-cdr! (cdr directory) (cons entry '()))
+        (set-cdr! (cdr directory) (cons entry entries)))
+    directory))
+
+(define (fs-has-child directory name)
+  (cond ((string=? name ".") directory)
+        ((string=? name "..") (fs-parent directory))
+        (else (assoc name (fs-entries directory)))))
+
+;; depends on directory entry structure above
+
+;; depends on *fs-root-directory* / *fs-current-directory*
+(define (fs-find path)
+  (let ((paths (string-split path #\/)))
+    (if (fs-start-with-slash? path)
+        (if (= 1 (string-length path))
+            *fs-root-directory*
+            (fs-find-entry *fs-root-directory* (cdr paths)))
+        (begin (fs-find-entry *fs-current-directory* paths)))))
+
+(define (fs-current-directory)
+  *fs-current-directory*)
+
+(define (fs-change-directory path)
+  (aif it (fs-find-directory path)
+       (begin (set! *fs-current-directory* it) it)
+        #f))
+
+(define (fs-io-enum-directory-entries path)
+  (define (create-fs-entry entry)
+    (if (cdr entry)
+        (fs-new-directory (car entry))
+        (fs-new-file (car entry))))
+  (let ((d (mona-dir-open path)))
+    (let loop ((entry (mona-dir-read d)) (entries '()))
+      (if entry
+          (loop (mona-dir-read d)
+                (cons (create-fs-entry entry) entries))
+          (begin (mona-dir-close d) entries)))))
+;; depends on *fs-root-directory* / *fs-current-directory* above
+
+(define (fs-find-entry dir paths)
+  (cond ((and dir (null? (cdr paths))) (fs-has-child dir (car paths)))
+        (dir (fs-find-entry (fs-has-child dir (car paths)) (cdr paths)))
+        (else #f)))
+
+(define (fs-path entry)
+  (let ((parent (fs-parent entry)))
+    (if (null? parent) (string-append (fs-name entry))
+        (string-append (if (string=? (fs-path parent) "/") "" (fs-path parent)) "/" (fs-name entry)))))
+
+(define (fs-print root)
+  (define (fs-print-iter directory space)
+    (for-each
+     (lambda (e) (display space) (print (fs-name e)) (if (fs-directory? e) (fs-print-iter e (string-append space " "))))
+     (fs-entries directory)))
+  (fs-print-iter root " "))
+
+(define (fs-start-with-slash? path)
+  (and (> (string-length path) 0) (char=? (string-ref path 0) #\/)))
+
+(define (fs-find-generic proc path)
+  (let ((entry (fs-find path)))
+    (and entry (proc entry) entry)))
+
+(define (fs-find-file path)
+  (fs-find-generic fs-file? path))
+
+(define (fs-find-directory path)
+  (fs-find-generic fs-directory? path))
+
+(define (fs-create-tree root path)
+  (for-each
+   (lambda (e)
+     (fs-add-entry root e)
+     (if (fs-directory? e)
+         (fs-create-tree e (string-append path "/" (fs-name e)))))
+   (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
+           (fs-io-enum-directory-entries path))))
+
+(define cd
+  (lambda path
+    (let ((p (if (null? path) "/APPS" (car path))))
+      (if (fs-change-directory p)
+          #t
+          (begin (display "cd: no such file or directory: ") (print p))))))
+
+(define (pwd)
+  (print (fs-path (fs-current-directory))))
+
+(define dir pwd)
+
+(define ls
+  (lambda path
+    (let* ((directory (and (not (null? path)) (fs-find (car path)))))
+      (for-each
+       (lambda (e)
+         (if (fs-directory? e)
+             (begin (display "[") (display (fs-name e)) (print "]"))
+             (print (fs-name e))))
+       (fs-entries (if directory directory (fs-current-directory)))))))
+
+(define (gui)
+  (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI" #t))
+
+(define (baygui)
+  (start-process "/SERVERS/GUI.EX5 /APPS/BAYGUI.INI" #t))
+
+
+(define (exec script)
+  (call-process (string-append "/SERVERS/SCHEME.EX5"  " " script)))
+
+(define status 0)
+
+;; mona-object
+(define *mona-object-table* '())
+
+;; return #f if object is #f
+(define (mona.object.become object tag name-proc)
+  (if object
+      (begin
+        (unless (assq tag *mona-object-table*)
+                (set! *mona-object-table* (acons tag name-proc *mona-object-table*)))
+        (cons '*mona-object* (cons tag object)))
+  #f))
+
+(define (mona.object.type o)
+  (cadr o))
+
+(define (mona.object.body o)
+  (cddr o))
+
+(define (mona.object.object? o)
+  (and (pair? o) (eq? (car o) '*mona-object*)))
+
+(define (mona.object.name o)
+  (aif it (assq (mona.object.type o) *mona-object-table*)
+       ((cdr it) (mona.object.body o))))
+
+
+;; wrap code
+;;   mona-gui-xxxx
+(define (mona.gui.enum-windows)
+  (map (lambda (o) (mona.object.become o 'mona.gui.window mona-gui-get-window-title)) (mona-gui-enum-windows)))
+
+(define (mona.gui.window-title window)
+  (mona.object.name window))
+
+;; wrap code
+;;   fs
+(define (mona.fs.become-mona-object o)
+  (mona.object.become o 'mona.fs.entry fs-name))
+
+(define (mona.fs.current-directory)
+  (mona.fs.become-mona-object (fs-current-directory)))
+
+(define (mona.fs.entries)
+  (map mona.fs.become-mona-object (fs-entries (fs-current-directory))))
+
+(define (mona.fs.name o)
+  (fs-name (mona.object.body o)))
+

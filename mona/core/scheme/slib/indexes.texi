@@ -1,0 +1,38 @@
+
+@ifhtml
+@node Index, Procedure and Macro Index, About SLIB, Top
+@unnumbered Index
+@end ifhtml
+
+@ifnotinfo
+@menu
+* Procedure and Macro Index::
+* Variable Index::
+* Concept and Feature Index::
+@end menu
+@end ifnotinfo
+
+@ifnotinfo
+@node Procedure and Macro Index, Variable Index, Index, Index
+@end ifnotinfo
+@unnumbered Procedure and Macro Index
+
+@c This is an alphabetical list of all the procedures and macros in SLIB.
+
+@printindex fn
+
+@ifnotinfo
+@node Variable Index, Concept and Feature Index, Procedure and Macro Index, Index
+@end ifnotinfo
+@unnumbered Variable Index
+
+@c This is an alphabetical list of all the global variables in SLIB.
+
+@printindex vr
+
+@ifnotinfo
+@node Concept and Feature Index, , Variable Index, Index
+@end ifnotinfo
+@unnumbered Concept and Feature Index
+
+@printindex cp

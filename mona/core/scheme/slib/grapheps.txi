@@ -1,0 +1,506 @@
+@code{(require 'eps-graph)}
+
+@noindent
+This is a graphing package creating encapsulated-PostScript files.
+Its motivations and design choice are described in
+@url{http://swiss.csail.mit.edu/~jaffer/Docupage/grapheps}
+
+@noindent
+A dataset to be plotted is taken from a 2-dimensional array.
+Corresponding coordinates are in rows.  Coordinates from any
+pair of columns can be plotted.
+
+
+@defun create-postscript-graph filename.eps size elt1 @dots{}
+
+@var{filename.eps} should be a string naming an output file to be created.  @var{size}
+should be an exact integer, a list of two exact integers, or #f.
+@var{elt1}, ... are values returned by graphing primitives described here.
+
+@code{create-postscript-graph} creates an @dfn{Encapsulated-PostScript} file named @var{filename.eps} containing
+@cindex Encapsulated-PostScript
+graphs as directed by the @var{elt1}, ... arguments.
+
+The size of the graph is determined by the @var{size} argument.  If a list
+of two integers, they specify the width and height.  If one integer,
+then that integer is the width and the height is 3/4 of the width.
+If #f, the graph will be 800 by 600.
+@end defun
+
+@noindent
+These graphing procedures should be called as arguments to
+@code{create-postscript-graph}.  The order of these arguments is
+significant; PostScript graphics state is affected serially from the
+first @var{elt} argument to the last.
+
+
+@defun whole-page
+
+Pushes a rectangle for the whole encapsulated page onto the
+PostScript stack.  This pushed rectangle is an implicit argument to
+@code{partition-page} or @code{setup-plot}.
+@end defun
+
+@menu
+* Column Ranges::
+* Drawing the Graph::
+* Graphics Context::
+* Rectangles::
+* Legending::
+* Legacy Plotting::
+* Example Graph::
+@end menu
+
+@node Column Ranges, Drawing the Graph, PostScript Graphing, PostScript Graphing
+@subsubsection Column Ranges
+
+@noindent
+A @dfn{range} is a list of two numbers, the minimum and the maximum.
+@cindex range
+@cindex range
+Ranges can be given explicity or computed in PostScript by
+@code{column-range}.
+
+
+@defun column-range array k
+
+Returns the range of values in 2-dimensional @var{array} column @var{k}.
+@end defun
+
+
+@defun pad-range range p
+
+Expands @var{range} by @var{p}/100 on each end.
+@end defun
+
+
+@defun snap-range range
+
+Expands @var{range} to round number of ticks.
+@end defun
+
+
+@defun combine-ranges range1 range2 @dots{}
+
+Returns the minimal range covering all @var{range1}, @var{range2}, ...
+@end defun
+
+
+@defun setup-plot x-range y-range pagerect
+
+
+@defunx setup-plot x-range y-range
+@var{x-range} and @var{y-range} should each be a list of two numbers or the value returned
+by @code{pad-range}, @code{snap-range}, or @code{combine-range}.
+@var{pagerect} is the rectangle bounding the graph to be drawn; if missing, the
+rectangle from the top of the PostScript stack is popped and used.
+
+Based on the given ranges, @code{setup-plot} sets up scaling and margins for making
+a graph.  The margins are sized proportional to the @var{fontheight}
+value at the time of the call to setup-plot.  @code{setup-plot} sets two variables:
+
+@table @var
+@item plotrect
+The region where data points will be plotted.
+@item graphrect
+The @var{pagerect} argument to @code{setup-plot}.  Includes plotrect, legends, etc.
+@end table
+@end defun
+
+@node Drawing the Graph, Graphics Context, Column Ranges, PostScript Graphing
+@subsubsection Drawing the Graph
+
+
+@defun plot-column array x-column y-column proc3s
+
+Plots points with x coordinate in @var{x-column} of @var{array} and y coordinate @var{y-column} of
+@var{array}.  The symbol @var{proc3s} specifies the type of glyph or drawing style for
+presenting these coordinates.
+@end defun
+
+@noindent
+The glyphs and drawing styles available are:
+
+@table @code
+@item line
+Draws line connecting points in order.
+@item mountain
+Fill area below line connecting points.
+@item cloud
+Fill area above line connecting points.
+@item impulse
+Draw line from x-axis to each point.
+@item bargraph
+Draw rectangle from x-axis to each point.
+@item disc
+Solid round dot.
+@item point
+Minimal point -- invisible if linewidth is 0.
+@item square
+Square box.
+@item diamond
+Square box at 45.o
+@item plus
+Plus sign.
+@item cross
+X sign.
+@item triup
+Triangle pointing upward
+@item tridown
+Triangle pointing downward
+@item pentagon
+Five sided polygon
+@item circle
+Hollow circle
+@end table
+
+@node Graphics Context, Rectangles, Drawing the Graph, PostScript Graphing
+@subsubsection Graphics Context
+
+
+@defun in-graphic-context arg @dots{}
+
+Saves the current graphics state, executes @var{args}, then restores
+to saved graphics state.
+@end defun
+
+
+@defun set-color color
+
+@var{color} should be a string naming a Resene color, a saturate color, or a
+number between 0 and 100.
+
+@code{set-color} sets the PostScript color to the color of the given string, or a
+grey value between black (0) and white (100).
+@end defun
+
+
+@defun set-font name fontheight
+
+@var{name} should be a (case-sensitive) string naming a PostScript font.
+@var{fontheight} should be a positive real number.
+
+@code{set-font} Changes the current PostScript font to @var{name} with height equal to
+@var{fontheight}.  The default font is Helvetica (12pt).
+@end defun
+
+@noindent
+The base set of PostScript fonts is:
+
+@multitable @columnfractions .20 .25 .25 .30
+@item Times @tab Times-Italic @tab Times-Bold @tab Times-BoldItalic
+@item Helvetica @tab Helvetica-Oblique @tab Helvetica-Bold @tab Helvetica-BoldOblique
+@item Courier @tab Courier-Oblique @tab Courier-Bold @tab Courier-BoldOblique
+@item Symbol
+@end multitable
+
+@noindent
+Line parameters do no affect fonts; they do effect glyphs.
+
+
+@defun set-linewidth w
+
+The default linewidth is 1.  Setting it to 0 makes the lines drawn
+as skinny as possible.  Linewidth must be much smaller than
+glyphsize for readable glyphs.
+@end defun
+
+
+@defun set-linedash j k
+
+Lines are drawn @var{j}-on @var{k}-off.
+
+@defunx set-linedash j
+Lines are drawn @var{j}-on @var{j}-off.
+
+@defunx set-linedash
+Turns off dashing.
+@end defun
+
+
+@defun set-glyphsize w
+
+Sets the (PostScript) variable glyphsize to @var{w}.  The default
+glyphsize is 6.
+@end defun
+
+@noindent
+The effects of @code{clip-to-rect} are also part of the graphic
+context.
+
+@node Rectangles, Legending, Graphics Context, PostScript Graphing
+@subsubsection Rectangles
+
+@noindent
+A @dfn{rectangle} is a list of 4 numbers; the first two elements are
+@cindex rectangle
+the x and y coordinates of lower left corner of the rectangle.  The
+other two elements are the width and height of the rectangle.
+
+
+@defun whole-page
+
+Pushes a rectangle for the whole encapsulated page onto the
+PostScript stack.  This pushed rectangle is an implicit argument to
+@code{partition-page} or @code{setup-plot}.
+@end defun
+
+
+@defun partition-page xparts yparts
+
+Pops the rectangle currently on top of the stack and pushes @var{xparts} * @var{yparts}
+sub-rectangles onto the stack in decreasing y and increasing x order.
+If you are drawing just one graph, then you don't need @code{partition-page}.
+@end defun
+
+
+@defvar plotrect
+
+The rectangle where data points should be plotted.  @var{plotrect} is set by
+@code{setup-plot}.
+@end defvar
+
+@defvar graphrect
+
+The @var{pagerect} argument of the most recent call to
+@code{setup-plot}.  Includes plotrect, legends, etc.
+@end defvar
+
+@defun fill-rect rect
+
+fills @var{rect} with the current color.
+@end defun
+
+
+@defun outline-rect rect
+
+Draws the perimiter of @var{rect} in the current color.
+@end defun
+
+
+@defun clip-to-rect rect
+
+Modifies the current graphics-state so that nothing will be drawn
+outside of the rectangle @var{rect}.  Use @code{in-graphic-context} to limit
+the extent of @code{clip-to-rect}.
+@end defun
+
+@node Legending, Legacy Plotting, Rectangles, PostScript Graphing
+@subsubsection Legending
+
+
+@defun title-top title subtitle
+
+
+@defunx title-top title
+Puts a @var{title} line and an optional @var{subtitle} line above the @code{graphrect}.
+@end defun
+
+
+@defun title-bottom title subtitle
+
+
+@defunx title-bottom title
+Puts a @var{title} line and an optional @var{subtitle} line below the @code{graphrect}.
+@end defun
+
+
+@defvar topedge
+@defvarx bottomedge
+
+These edge coordinates of @code{graphrect} are suitable for passing
+as the first argument to @code{rule-horizontal}.
+@end defvar
+
+@defvar leftedge
+@defvarx rightedge
+
+These edge coordinates of @code{graphrect} are suitable for passing
+as the first argument to @code{rule-vertical}.
+@end defvar
+
+@defun set-margin-templates left right
+
+The margin-templates are strings whose displayed width is used to
+reserve space for the left and right side numerical legends.
+The default values are "-.0123456789".
+@end defun
+
+
+@defun rule-vertical x-coord text tick-width
+
+Draws a vertical ruler with X coordinate @var{x-coord} and labeled with string
+@var{text}.  If @var{tick-width} is positive, then the ticks are @var{tick-width} long on the right side
+of @var{x-coord}; and @var{text} and numeric legends are on the left.  If @var{tick-width} is
+negative, then the ticks are -@var{tick-width} long on the left side of @var{x-coord}; and @var{text}
+and numeric legends are on the right.
+@end defun
+
+
+@defun rule-horizontal y-coord text tick-height
+
+Draws a horizontal ruler with Y coordinate @var{y-coord} and labeled with
+string @var{text}.  If @var{tick-height} is positive, then the ticks are @var{tick-height} long on the top
+side of @var{y-coord}; and @var{text} and numeric legends are on the bottom.  If @var{tick-height} is
+negative, then the ticks are -@var{tick-height} long on the bottom side of @var{y-coord}; and
+@var{text} and numeric legends are on the top.
+@end defun
+
+
+@defun y-axis
+
+Draws the y-axis.
+@end defun
+
+
+@defun x-axis
+
+Draws the x-axis.
+@end defun
+
+
+@defun grid-verticals
+
+Draws vertical lines through @code{graphrect} at each tick on the
+vertical ruler.
+@end defun
+
+
+@defun grid-horizontals
+
+Draws horizontal lines through @code{graphrect} at each tick on the
+horizontal ruler.
+@end defun
+
+@node Legacy Plotting, Example Graph, Legending, PostScript Graphing
+@subsubsection Legacy Plotting
+
+
+@defvar graph:dimensions
+
+A list of the width and height of the graph to be plotted using
+@code{plot}.
+@end defvar
+
+@defun plot func x1 x2 npts
+
+
+@defunx plot func x1 x2
+Creates and displays using @code{(system "gv tmp.eps")} an
+encapsulated PostScript graph of the function of one argument @var{func}
+over the range @var{x1} to @var{x2}.  If the optional integer argument @var{npts} is
+supplied, it specifies the number of points to evaluate @var{func} at.
+
+@defunx x1 x2 npts func1 func2 ...
+Creates and displays an encapsulated PostScript graph of the
+one-argument functions @var{func1}, @var{func2}, ... over the range
+@var{x1} to @var{x2} at @var{npts} points.
+
+@defunx plot coords x-label y-label
+@var{coords} is a list or vector of coordinates, lists of x and y
+coordinates.  @var{x-label} and @var{y-label} are strings with which
+to label the x and y axes.
+@end defun
+
+@node Example Graph,  , Legacy Plotting, PostScript Graphing
+@subsubsection Example Graph
+
+@noindent
+The file @file{am1.5.html}, a table of solar irradiance, is fetched
+with @samp{wget} if it isn't already in the working directory.  The
+file is read and stored into an array, @var{irradiance}.
+
+@code{create-postscript-graph} is then called to create an
+encapsulated-PostScript file, @file{solarad.eps}.  The size of the
+page is set to 600 by 300.  @code{whole-page} is called and leaves
+the rectangle on the PostScript stack.  @code{setup-plot} is called
+with a literal range for x and computes the range for column 1.
+
+Two calls to @code{top-title} are made so a different font can be
+used for the lower half.  @code{in-graphic-context} is used to limit
+the scope of the font change.  The graphing area is outlined and a
+rule drawn on the left side.
+
+Because the X range was intentionally reduced,
+@code{in-graphic-context} is called and @code{clip-to-rect} limits
+drawing to the plotting area.  A black line is drawn from data
+column 1.  That line is then overlayed with a mountain plot of the
+same column colored "Bright Sun".
+
+After returning from the @code{in-graphic-context}, the bottom ruler
+is drawn.  Had it been drawn earlier, all its ticks would have been
+painted over by the mountain plot.
+
+The color is then changed to @samp{seagreen} and the same graphrect
+is setup again, this time with a different Y scale, 0 to 1000.  The
+graphic context is again clipped to @var{plotrect}, linedash is set,
+and column 2 is plotted as a dashed line.  Finally the rightedge is
+ruled.  Having the line and its scale both in green helps
+disambiguate the scales.
+
+@example
+(require 'eps-graph)
+(require 'line-i/o)
+(require 'string-port)
+
+(define irradiance
+  (let ((url "http://www.pv.unsw.edu.au/am1.5.html")
+        (file "am1.5.html"))
+    (define (read->list line)
+      (define elts '())
+      (call-with-input-string line
+        (lambda (iprt) (do ((elt (read iprt) (read iprt)))
+                           ((eof-object? elt) elts)
+                         (set! elts (cons elt elts))))))
+    (if (not (file-exists? file))
+        (system (string-append "wget -c -O" file " " url)))
+    (call-with-input-file file
+      (lambda (iprt)
+        (define lines '())
+        (do ((line (read-line iprt) (read-line iprt)))
+            ((eof-object? line)
+             (let ((nra (make-array (A:floR64b)
+                                      (length lines)
+                                      (length (car lines)))))
+               (do ((lns lines (cdr lns))
+                    (idx (+ -1 (length lines)) (+ -1 idx)))
+                   ((null? lns) nra)
+                 (do ((kdx (+ -1 (length (car lines))) (+ -1 kdx))
+                      (lst (car lns) (cdr lst)))
+                     ((null? lst))
+                   (array-set! nra (car lst) idx kdx)))))
+          (if (and (positive? (string-length line))
+                   (char-numeric? (string-ref line 0)))
+              (set! lines (cons (read->list line) lines))))))))
+
+(let ((xrange '(.25 2.5)))
+  (create-postscript-graph
+   "solarad.eps" '(600 300)
+   (whole-page)
+   (setup-plot xrange (column-range irradiance 1))
+   (title-top
+    "Solar Irradiance   http://www.pv.unsw.edu.au/am1.5.html")
+   (in-graphic-context
+    (set-font "Helvetica-Oblique" 12)
+    (title-top
+     ""
+     "Key Centre for Photovoltaic Engineering UNSW - Air Mass 1.5 Global Spectrum"))
+   (outline-rect plotrect)
+   (rule-vertical leftedge "W/(m^2.um)" 10)
+   (in-graphic-context (clip-to-rect plotrect)
+                       (plot-column irradiance 0 1 'line)
+                       (set-color "Bright Sun")
+                       (plot-column irradiance 0 1 'mountain)
+                       )
+   (rule-horizontal bottomedge "Wavelength in .um" 5)
+   (set-color 'seagreen)
+
+   (setup-plot xrange '(0 1000) graphrect)
+   (in-graphic-context (clip-to-rect plotrect)
+                       (set-linedash 5 2)
+                       (plot-column irradiance 0 2 'line))
+   (rule-vertical rightedge "Integrated .W/(m^2)" -10)
+   ))
+
+(system "gv solarad.eps")
+@end example

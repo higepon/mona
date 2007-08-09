@@ -1,0 +1,33 @@
+@code{(require 'peano-fill)}
+@ftindex peano-fill
+
+
+@defun natural->peano-coordinates scalar rank
+
+Returns a list of @var{rank} nonnegative integer coordinates corresponding
+to exact nonnegative integer @var{scalar}.  The lists returned by @code{natural->peano-coordinates} for @var{scalar}
+arguments 0 and 1 will differ in the first element.
+@end defun
+
+
+@defun peano-coordinates->natural coords
+
+Returns an exact nonnegative integer corresponding to @var{coords}, a list of
+nonnegative integer coordinates.
+@end defun
+
+
+@defun integer->peano-coordinates scalar rank
+
+Returns a list of @var{rank} integer coordinates corresponding to exact
+integer @var{scalar}.  The lists returned by @code{integer->peano-coordinates} for @var{scalar} arguments 0 and 1 will
+differ in the first element.
+@end defun
+
+
+@defun peano-coordinates->integer coords
+
+Returns an exact integer corresponding to @var{coords}, a list of integer
+coordinates.
+@end defun
+

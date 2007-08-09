@@ -1,0 +1,87 @@
+@code{(require 'getopt-parameters)}
+@ftindex getopt-parameters
+
+
+@defun getopt->parameter-list optnames arities types aliases desc @dots{}
+
+Returns @var{*argv*} converted to a parameter-list.  @var{optnames} are
+the parameter-names.  @var{arities} and @var{types} are lists of symbols
+corresponding to @var{optnames}.
+
+@var{aliases} is a list of lists of strings or integers paired with
+elements of @var{optnames}.  Each one-character string will be treated
+as a single @samp{-} option by @code{getopt}.  Longer strings will be
+treated as long-named options (@pxref{Getopt, getopt--}).
+
+If the @var{aliases} association list has only strings as its
+@code{car}s, then all the option-arguments after an option (and before
+the next option) are adjoined to that option.
+
+If the @var{aliases} association list has integers, then each (string)
+option will take at most one option-argument.  Unoptioned arguments are
+collected in a list.  A @samp{-1} alias will take the last argument in
+this list; @samp{+1} will take the first argument in the list.  The
+aliases -2 then +2; -3 then +3; @dots{} are tried so long as a positive
+or negative consecutive alias is found and arguments remain in the list.
+Finally a @samp{0} alias, if found, absorbs any remaining arguments.
+
+In all cases, if unclaimed arguments remain after processing, a warning
+is signaled and #f is returned.
+@end defun
+
+
+@defun getopt->arglist optnames positions arities types defaulters checks aliases desc @dots{}
+
+Like @code{getopt->parameter-list}, but converts @var{*argv*} to an
+argument-list as specified by @var{optnames}, @var{positions},
+@var{arities}, @var{types}, @var{defaulters}, @var{checks}, and
+@var{aliases}.  If the options supplied violate the @var{arities} or
+@var{checks} constraints, then a warning is signaled and #f is returned.
+@end defun
+
+@noindent
+These @code{getopt} functions can be used with SLIB relational
+databases.  For an example, @xref{Using Databases, make-command-server}.
+
+@noindent
+If errors are encountered while processing options, directions for using
+the options (and argument strings @var{desc} @dots{}) are printed to
+@code{current-error-port}.
+
+@example
+(begin
+  (set! *optind* 1)
+  (set! *argv* '("cmd" "-?")
+  (getopt->parameter-list
+   '(flag number symbols symbols string flag2 flag3 num2 num3)
+   '(boolean optional nary1 nary single boolean boolean nary nary)
+   '(boolean integer symbol symbol string boolean boolean integer integer)
+   '(("flag" flag)
+     ("f" flag)
+     ("Flag" flag2)
+     ("B" flag3)
+     ("optional" number)
+     ("o" number)
+     ("nary1" symbols)
+     ("N" symbols)
+     ("nary" symbols)
+     ("n" symbols)
+     ("single" string)
+     ("s" string)
+     ("a" num2)
+     ("Abs" num3))))
+@print{}
+Usage: cmd [OPTION ARGUMENT ...] ...
+
+  -f, --flag
+  -o, --optional=<number>
+  -n, --nary=<symbols> ...
+  -N, --nary1=<symbols> ...
+  -s, --single=<string>
+      --Flag
+  -B
+  -a        <num2> ...
+      --Abs=<num3> ...
+
+ERROR: getopt->parameter-list "unrecognized option" "-?"
+@end example

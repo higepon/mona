@@ -1,0 +1,208 @@
+@code{(require 'byte)}
+@ftindex byte
+
+@noindent
+Some algorithms are expressed in terms of arrays of small integers.
+Using Scheme strings to implement these arrays is not portable vis-a-vis
+the correspondence between integers and characters and non-ascii
+character sets.  These functions abstract the notion of a @dfn{byte}.
+@cindex byte
+@cindex byte
+
+
+@defun byte-ref bytes k
+
+@var{k} must be a valid index of @var{bytes}.  @code{byte-ref} returns byte @var{k} of @var{bytes} using
+zero-origin indexing.
+@end defun
+
+
+@deffn {Procedure} byte-set! bytes k byte
+
+@var{k} must be a valid index of @var{bytes}, and @var{byte} must be a small
+nonnegative integer.  @code{byte-set!} stores @var{byte} in element @var{k} of @var{bytes} and
+returns an unspecified value.  @c <!>
+@end deffn
+
+
+@defun make-bytes k byte
+
+
+@defunx make-bytes k
+@code{make-bytes} returns a newly allocated byte-array of length @var{k}.  If @var{byte} is
+given, then all elements of the byte-array are initialized to @var{byte},
+otherwise the contents of the byte-array are unspecified.
+@end defun
+
+
+@defun bytes-length bytes
+
+@code{bytes-length} returns length of byte-array @var{bytes}.
+@end defun
+
+
+@defun bytes byte @dots{}
+
+Returns a newly allocated byte-array composed of the small
+nonnegative arguments.
+@end defun
+
+
+@defun bytes->list bytes
+
+@code{bytes->list} returns a newly allocated list of the bytes that make up the
+given byte-array.
+@end defun
+
+
+@defun list->bytes bytes
+
+@code{list->bytes} returns a newly allocated byte-array formed from the small
+nonnegative integers in the list @var{bytes}.
+@end defun
+
+@noindent
+@code{Bytes->list} and @code{list->bytes} are inverses so far as
+@code{equal?} is concerned.
+@findex equal?
+
+
+@defun bytes-copy bytes
+
+Returns a newly allocated copy of the given @var{bytes}.
+@end defun
+
+
+@defun subbytes bytes start end
+
+@var{bytes} must be a bytes, and @var{start} and @var{end}
+must be exact integers satisfying
+
+@center 0 <= @var{start} <= @var{end} <= @w{@t{(bytes-length @var{bytes})@r{.}}}
+
+@code{subbytes} returns a newly allocated bytes formed from the bytes of
+@var{bytes} beginning with index @var{start} (inclusive) and ending with index
+@var{end} (exclusive).
+@end defun
+
+
+@deffn {Procedure} bytes-reverse! bytes
+
+Reverses the order of byte-array @var{bytes}.
+@end deffn
+
+
+@defun bytes-reverse bytes
+
+Returns a newly allocated bytes-array consisting of the elements of
+@var{bytes} in reverse order.
+@end defun
+
+@noindent
+@cindex binary
+Input and output of bytes should be with ports opened in @dfn{binary}
+@cindex binary
+mode (@pxref{Input/Output}).  Calling @code{open-file} with @r{'rb} or
+@findex open-file
+@r{'wb} modes argument will return a binary port if the Scheme
+implementation supports it.
+
+
+@defun write-byte byte port
+
+
+@defunx write-byte byte
+Writes the byte @var{byte} (not an external representation of the byte) to
+the given @var{port} and returns an unspecified value.  The @var{port} argument may
+be omitted, in which case it defaults to the value returned by
+@code{current-output-port}.
+@findex current-output-port
+@end defun
+
+
+@defun read-byte port
+
+
+@defunx read-byte
+Returns the next byte available from the input @var{port}, updating the @var{port}
+to point to the following byte.  If no more bytes are available, an
+end-of-file object is returned.  @var{port} may be omitted, in which case it
+defaults to the value returned by @code{current-input-port}.
+@findex current-input-port
+@end defun
+
+@noindent
+When reading and writing binary numbers with @code{read-bytes} and
+@code{write-bytes}, the sign of the length argument determines the
+endianness (order) of bytes.  Positive treats them as big-endian,
+the first byte input or output is highest order.  Negative treats
+them as little-endian, the first byte input or output is the lowest
+order.
+
+@noindent
+Once read in, SLIB treats byte sequences as big-endian.  The
+multi-byte sequences produced and used by number conversion routines
+@pxref{Byte/Number Conversions} are always big-endian.
+
+
+@defun read-bytes n port
+
+
+@defunx read-bytes n
+@code{read-bytes} returns a newly allocated bytes-array filled with
+@code{(abs @var{n})} bytes read from @var{port}.  If @var{n} is positive, then
+the first byte read is stored at index 0; otherwise the last byte
+read is stored at index 0.  Note that the length of the returned
+string will be less than @code{(abs @var{n})} if @var{port} reaches
+end-of-file.
+
+@var{port} may be omitted, in which case it defaults to the value returned
+by @code{current-input-port}.
+@end defun
+
+
+@defun write-bytes bytes n port
+
+
+@defunx write-bytes bytes n
+@code{write-bytes} writes @code{(abs @var{n})} bytes to output-port @var{port}.  If @var{n} is
+positive, then the first byte written is index 0 of @var{bytes}; otherwise
+the last byte written is index 0 of @var{bytes}.  @code{write-bytes} returns an unspecified
+value.
+
+@var{port} may be omitted, in which case it defaults to the value returned
+by @code{current-output-port}.
+@end defun
+
+@noindent
+@code{subbytes-read!} and @code{subbytes-write} provide
+lower-level procedures for reading and writing blocks of bytes.  The
+relative size of @var{start} and @var{end} determines the order of
+writing.
+
+
+@deffn {Procedure} subbytes-read! string start end port
+
+
+@deffnx {Procedure} subbytes-read! string start end
+Fills @var{string} with up to @code{(abs (- @var{start} @var{end}))} bytes
+read from @var{port}.  The first byte read is stored at index @var{string}.
+@code{subbytes-read!} returns the number of bytes read.
+
+@var{port} may be omitted, in which case it defaults to the value returned
+by @code{current-input-port}.
+@end deffn
+
+
+@defun subbytes-write string start end port
+
+
+@defunx subbytes-write string start end
+@code{subbytes-write} writes @code{(abs (- @var{start} @var{end}))} bytes to
+output-port @var{port}.  The first byte written is index @var{start} of @var{string}.  @code{subbytes-write}
+returns the number of bytes written.
+
+@var{port} may be omitted, in which case it defaults to the value returned
+by @code{current-output-port}.
+@end defun
+

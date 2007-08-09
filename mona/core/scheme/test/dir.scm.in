@@ -1,0 +1,129 @@
+;(load "<LIBDIR>/scheme.scm")
+;; (use slib)
+;; (use util.list)
+;; (require 'trace)
+
+(define test-dir (fs-new-directory "test"))
+(fs-add-entry test-dir (fs-new-file "test.scm"))
+(define servers-dir (fs-new-directory "servers"))
+(fs-add-entry servers-dir test-dir)
+(fs-add-entry servers-dir (fs-new-file "hoge"))
+
+(define *fs-root-directory* (fs-new-directory "/"))
+(fs-add-entry *fs-root-directory* servers-dir)
+
+(fs-add-entry *fs-root-directory* (fs-new-directory "applications"))
+
+(assert-check-true "fs-has-child"
+                   (fs-has-child *fs-root-directory* "servers")
+                   (fs-has-child *fs-root-directory* ".")
+                   (fs-has-child *fs-root-directory* "applications")
+                   (let ((servers-dir (fs-has-child *fs-root-directory* "servers")))
+                     (and (fs-directory? servers-dir)
+                     (fs-has-child servers-dir "test")))
+)
+
+(assert-check-false "fs-has-child"
+                   (fs-has-child *fs-root-directory* "server")
+                   (fs-has-child *fs-root-directory* "application")
+)
+
+
+(assert-check-true "fs-find-entry"
+                   (fs-find-entry *fs-root-directory* '("servers"))
+                   (fs-find-entry *fs-root-directory* '("." "servers"))
+                   (fs-find-entry *fs-root-directory* '("servers" "test"))
+                   (fs-find-entry *fs-root-directory* '("servers" "test" "test.scm"))
+                   (fs-find-entry *fs-root-directory* '("applications"))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
+                     (fs-find-entry servers-dir '("test")))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
+                     (fs-directory?(fs-find-entry servers-dir '("test"))))
+                   (let ((servers-dir (fs-find-entry *fs-root-directory* '("servers"))))
+                     (fs-directory?(fs-find-entry servers-dir '(".." "servers" "test"))))
+
+)
+
+(assert-check-false "fsfind-entry false"
+                   (fs-find-entry *fs-root-directory* '("server"))
+                   (fs-find-entry *fs-root-directory* '("servers" "tes"))
+                   (fs-find-entry *fs-root-directory* '("server" "tes"))
+)
+
+(define *fs-current-directory* servers-dir)
+
+
+(assert-check-true "fs-find OK"
+                   (fs-find "/servers/test")
+                   (fs-find "/servers")
+                   (fs-find "/servers/test/test.scm")
+                   (fs-find "/")
+                   (fs-find "test")
+                   (fs-find "./test")
+                   (fs-find "test/test.scm")
+                   (fs-find "./test/test.scm")
+                   (fs-find "./test/./test.scm")
+                   (fs-find "../servers/test/./test.scm")
+                   (fs-find "../servers/../servers/test/./test.scm")
+)
+
+(assert-check-false "fs-find NG"
+                   (fs-find "/servers/tes")
+                   (fs-find "/server")
+                   (fs-find "/serves/tes")
+                   (fs-find "tes")
+)
+
+(define (test-path path)
+  (string=? (fs-path (fs-find path)) path)
+)
+
+(assert-check-true "fs-find OK"
+                   (test-path "/servers/test")
+                   (test-path "/servers")
+                   (test-path "/servers/test/test.scm")
+                   (test-path "/")
+)
+
+
+(assert-check-true "change-directory"
+                   (fs-change-directory "/")
+                   (string=? "/" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/servers")
+                   (string=? "/servers" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/servers/test")
+                   (string=? "/servers/test" (fs-path (fs-current-directory)))
+)
+
+(assert-check-false "change-directory NG"
+                   (fs-change-directory "/server")
+                   (fs-change-directory "/servers/test/test.scm")
+)
+
+
+<IF_LINUX>(let ((directories (fs-io-enum-directory-entries "/home/taro/mona/bin")))
+<IF_MONA>(let ((directories (fs-io-enum-directory-entries "/")))
+  (assert-check-true "fs-io-enum-directory-entries"
+                     (find (lambda (d) (string=? "APPS" (fs-name d))) directories)
+                     (find (lambda (d) (string=? "SERVERS" (fs-name d))) directories)
+                     ))
+(define *fs-root-directory*2 (fs-new-directory "/"))
+
+<IF_LINUX>(fs-create-tree *fs-root-directory*2 "/home/taro/mona/bin")
+<IF_MONA>(fs-create-tree *fs-root-directory*2 "/")
+
+(set! *fs-current-directory* *fs-root-directory*2)
+(set! *fs-root-directory* *fs-root-directory*2)
+
+(assert-check-true "fs-create-tree"
+                   (fs-find "/SERVERS")
+                   (fs-find "/SERVERS/TEST")
+                   (fs-find "/SERVERS/TEST/test.scm")
+                   (fs-change-directory "/")
+                   (string=? "/" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/SERVERS")
+                   (string=? "/SERVERS" (fs-path (fs-current-directory)))
+                   (fs-change-directory "/SERVERS/TEST")
+                   (string=? "/SERVERS/TEST" (fs-path (fs-current-directory)))
+)
+

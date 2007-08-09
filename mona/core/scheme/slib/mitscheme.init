@@ -1,0 +1,453 @@
+;;;"mitscheme.init" Initialization for SLIB for MITScheme        -*-scheme-*-
+;;; Author: Aubrey Jaffer
+;;;
+;;; This code is in the public domain.
+
+;;; Make this part of your ~/.scheme.init file.
+
+(define getenv get-environment-variable)
+
+;;; (software-type) should be set to the generic operating system type.
+(define (software-type)
+  (if (eq? 'unix microcode-id/operating-system) 'unix 'ms-dos))
+
+;;; (scheme-implementation-type) should return the name of the scheme
+;;; implementation loading this file.
+(define (scheme-implementation-type) 'MITScheme)
+
+;;; (scheme-implementation-home-page) should return a (string) URI
+;;; (Uniform Resource Identifier) for this scheme implementation's home
+;;; page; or false if there isn't one.
+(define (scheme-implementation-home-page)
+  "http://swiss.csail.mit.edu/projects/scheme/")
+
+;;; (scheme-implementation-version) should return a string describing
+;;; the version the scheme implementation loading this file.
+(define (scheme-implementation-version)
+  (get-subsystem-version-string "Release"))
+
+(define (mit-scheme-release>= major minor)
+  (let ((version (scheme-implementation-version)))
+    (let ((components (burst-string version #\. #f))
+	  (lose
+	   (lambda ()
+	     (error "Malformed release version string:" version))))
+      (let ((major*
+	     (or (and (pair? components)
+		      (string->number (car components)))
+		 (lose))))
+	(or (> major* major)
+	    (and (= major* major)
+		 (>= (or (and (pair? (cdr components))
+			      (string->number (cadr components)))
+			 (lose))
+		     minor)))))))
+
+;;; (implementation-vicinity) should be defined to be the pathname of
+;;; the directory where any auxillary files to your Scheme
+;;; implementation reside.
+(define (implementation-vicinity)
+  (->namestring (system-library-directory-pathname #f)))
+
+;;; (library-vicinity) should be defined to be the pathname of the
+;;; directory where files of Scheme library functions reside.
+(define library-vicinity
+  (let ((library-path
+	 (or (getenv "SCHEME_LIBRARY_PATH")
+	     ;; Use this path if your scheme does not support GETENV.
+	     (case (software-type)
+	       ((ms-dos) "c:\\slib\\")
+	       ((unix) "/usr/local/lib/slib/")
+	       (else "")))))
+    (lambda () library-path)))
+
+;;; (home-vicinity) should return the vicinity of the user's HOME
+;;; directory, the directory which typically contains files which
+;;; customize a computer environment for a user.
+(define (home-vicinity)
+  (->namestring (user-homedir-pathname)))
+;@
+(define (in-vicinity vicinity file-name)
+  (->namestring (merge-pathnames file-name vicinity)))
+;@
+(define (user-vicinity)
+  (case (software-type)
+    ((vms)	"[.]")
+    (else	"")))
+
+(define *load-pathname* #f)
+;@
+(define vicinity:suffix?
+  (let ((suffi
+	 (case (software-type)
+	   ((amiga)				'(#\: #\/))
+	   ((macos thinkc)			'(#\:))
+	   ((ms-dos windows atarist os/2)	'(#\\ #\/))
+	   ((nosve)				'(#\: #\.))
+	   ((unix coherent plan9)		'(#\/))
+	   ((vms)				'(#\: #\]))
+	   (else
+	    (slib:warn "require.scm" 'unknown 'software-type (software-type))
+	    "/"))))
+    (lambda (chr) (and (memv chr suffi) #t))))
+;@
+(define (pathname->vicinity pathname)
+  (let loop ((i (- (string-length pathname) 1)))
+    (cond ((negative? i) "")
+	  ((vicinity:suffix? (string-ref pathname i))
+	   (substring pathname 0 (+ i 1)))
+	  (else (loop (- i 1))))))
+(define (program-vicinity)
+  (if *load-pathname*
+      (pathname->vicinity *load-pathname*)
+      (slib:error 'program-vicinity " called; use slib:load to load")))
+;@
+(define sub-vicinity
+  (case (software-type)
+    ((vms) (lambda
+	       (vic name)
+	     (let ((l (string-length vic)))
+	       (if (or (zero? (string-length vic))
+		       (not (char=? #\] (string-ref vic (- l 1)))))
+		   (string-append vic "[" name "]")
+		   (string-append (substring vic 0 (- l 1))
+				  "." name "]")))))
+    (else (let ((*vicinity-suffix*
+		 (case (software-type)
+		   ((nosve) ".")
+		   ((macos thinkc) ":")
+		   ((ms-dos windows atarist os/2) "\\")
+		   ((unix coherent plan9 amiga) "/"))))
+	    (lambda (vic name)
+	      (string-append vic name *vicinity-suffix*))))))
+;@
+(define (make-vicinity <pathname>) <pathname>)
+;@
+(define with-load-pathname
+  (let ((exchange
+	 (lambda (new)
+	   (let ((old *load-pathname*))
+	     (set! *load-pathname* new)
+	     old))))
+    (lambda (path thunk)
+      (let ((old #f))
+	(dynamic-wind
+	    (lambda () (set! old (exchange path)))
+	    thunk
+	    (lambda () (exchange old)))))))
+
+;;@ SLIB:FEATURES is a list of symbols naming the (SLIB) features
+;;; initially supported by this implementation.
+(define slib:features
+      '(
+	source				;can load scheme source files
+					;(SLIB:LOAD-SOURCE "filename")
+	compiled			;can load compiled files
+					;(SLIB:LOAD-COMPILED "filename")
+	vicinity
+	srfi-59
+
+		       ;; Scheme report features
+
+; **** no, for several reasons
+;;;	r5rs				;conforms to
+; **** no -- special arguments not supported
+;;;	eval				;R5RS two-argument eval
+; **** sort of -- not integrated with continuations
+	values				;R5RS multiple values
+	dynamic-wind			;R5RS dynamic-wind
+;;;	macro				;R5RS high level macros
+	delay				;has DELAY and FORCE
+	multiarg-apply			;APPLY can take more than 2 args.
+	char-ready?
+	rev4-optional-procedures	;LIST-TAIL, STRING-COPY,
+					;STRING-FILL!, and VECTOR-FILL!
+
+      ;; These four features are optional in both R4RS and R5RS
+
+	multiarg/and-			;/ and - can take more than 2 args.
+	rationalize
+	transcript			;TRANSCRIPT-ON and TRANSCRIPT-OFF
+	with-file			;has WITH-INPUT-FROM-FILE and
+					;WITH-OUTPUT-TO-FILE
+
+	r4rs				;conforms to
+; **** no -- #F and '() are identical
+;;;	ieee-p1178			;conforms to
+
+;;;	r3rs				;conforms to
+
+	rev2-procedures			;SUBSTRING-MOVE-LEFT!,
+					;SUBSTRING-MOVE-RIGHT!,
+					;SUBSTRING-FILL!,
+					;STRING-NULL?, APPEND!, 1+,
+					;-1+, <?, <=?, =?, >?, >=?
+	object-hash			;has OBJECT-HASH
+
+	full-continuation		;can return multiple times
+	ieee-floating-point		;conforms to IEEE Standard 754-1985
+					;IEEE Standard for Binary
+					;Floating-Point Arithmetic.
+
+			;; Other common features
+
+;;;	srfi				;srfi-0, COND-EXPAND finds all srfi-*
+;;;	sicp				;runs code from Structure and
+					;Interpretation of Computer
+					;Programs by Abelson and Sussman.
+	defmacro			;has Common Lisp DEFMACRO
+	record				;has user defined data structures
+	string-port			;has CALL-WITH-INPUT-STRING and
+					;CALL-WITH-OUTPUT-STRING
+	sort
+	pretty-print
+	object->string
+; **** limited subset with (load-option 'format)
+;;;	format				;Common-lisp output formatting
+	trace				;has macros: TRACE and UNTRACE
+	compiler			;has (COMPILER)
+;;;	ed				;(ED) is editor
+	system				;posix (system <string>)
+	getenv				;posix (getenv <string>)
+;;;	program-arguments		;returns list of strings (argv)
+	current-time			;returns time in seconds since 1/1/1970
+
+		  ;; Implementation Specific features
+
+	fluid-let
+	queue
+	Xwindows
+	))
+
+; **** MIT Scheme has SORT, but SORT! accepts only vectors.
+(define sort! sort)
+
+(define mit-scheme-has-r4rs-macros?
+  (mit-scheme-release>= 7 7))
+(if mit-scheme-has-r4rs-macros?
+    (set! slib:features (cons 'macro slib:features)))
+
+(if (get-subsystem-version-string "6.001")
+    ;; Runs code from "Structure and Interpretation of Computer
+    ;; Programs" by Abelson and Sussman.
+    (set! slib:features (cons 'sicp slib:features)))
+
+(define current-time current-file-time)
+(define difftime -)
+(define offset-time +)
+
+;;; (OUTPUT-PORT-WIDTH <port>)
+(define output-port-width output-port/x-size)
+
+;;; (OUTPUT-PORT-HEIGHT <port>)
+(define (output-port-height port)
+  (or (output-port/y-size port)
+      24))
+
+;;; (CURRENT-ERROR-PORT)
+(define current-error-port nearest-cmdl/port)
+
+;;; (TMPNAM) makes a temporary file name.
+(define (tmpnam)
+  (->namestring (temporary-file-pathname)))
+
+;;; FORCE-OUTPUT flushes any pending output on optional arg output port.
+(define force-output flush-output)
+;;; MITScheme 7.2 is missing flush-output.  Use this instead
+;(define (force-output . arg) #t)
+
+;;; CALL-WITH-INPUT-STRING and CALL-WITH-OUTPUT-STRING are the string
+;;; port versions of CALL-WITH-*PUT-FILE.
+(define call-with-output-string with-string-output-port)
+
+(define (call-with-input-string string proc)
+  (proc (string->input-port string)))
+
+(define (make-exchanger obj)
+  (lambda (rep) (let ((old obj)) (set! obj rep) old)))
+(define (open-file filename modes)
+  (case modes
+    ((r) (open-input-file filename))
+    ((r+) (open-i/o-file filename))
+    ((w) (open-output-file filename))
+    ((rb) (open-binary-input-file filename))
+    ((r+b rb+) (open-binary-i/o-file filename))
+    ((wb) (open-binary-output-file filename))
+    (else (slib:error 'open-file 'mode? modes))))
+(define (call-with-open-ports . ports)
+  (define proc (car ports))
+  (cond ((procedure? proc) (set! ports (cdr ports)))
+	(else (set! ports (reverse ports))
+	      (set! proc (car ports))
+	      (set! ports (reverse (cdr ports)))))
+  (let ((ans (apply proc ports)))
+    (for-each close-port ports)
+    ans))
+
+(define object->string write-to-string)
+(define object->limited-string write-to-string)
+
+;;; "rationalize" adjunct procedures.
+(define (find-ratio x e)
+  (let ((rat (rationalize x e)))
+    (list (numerator rat) (denominator rat))))
+(define (find-ratio-between x y)
+  (find-ratio (/ (+ x y) 2) (/ (- x y) 2)))
+
+;;; CHAR-CODE-LIMIT is one greater than the largest integer which can
+;;; be returned by CHAR->INTEGER.
+;;;
+;;; [Note that this definition conflicts with MIT Scheme's definition
+;;; of the same name.]
+;;;
+;;; Can't use correct value because "jacal/types.scm" assumes that
+;;; every possible character can be stored into a string.  In MIT
+;;; Scheme, only 8-bit characters fit in strings, while the character
+;;; object supports 16 bits of character code with 5 bucky bits.  So
+;;; instead provide the limit that is appropriate for string
+;;; characters.
+(define char-code-limit
+  ;;char-integer-limit
+  256)
+
+;;; MOST-POSITIVE-FIXNUM is used in modular.scm
+(define most-positive-fixnum
+  (let loop ((n 1))
+    (if (fix:fixnum? n)
+	(loop (* n 2))
+	(- n 1))))
+
+;;; Return argument
+(define identity identity-procedure)
+
+;;; SLIB:EVAL is single argument eval using the top-level (user) environment.
+;(define (slib:eval form) (eval form (nearest-repl/environment)))
+(define (slib:eval form) (eval form user-initial-environment))
+
+(define *macros* '(defmacro))
+(define (defmacro? m) (and (memq m *macros*) #t))
+
+(if mit-scheme-has-r4rs-macros?
+    (environment-define-macro user-initial-environment 'defmacro
+      (non-hygienic-macro-transformer->expander
+       (lambda arguments
+	 (let ((name (car arguments)))
+	   `(begin
+	      (set! *macros* (cons ',name *macros*))
+	      (environment-define-macro user-initial-environment ',name
+		(non-hygienic-macro-transformer->expander
+		 (lambda ,@(cdr arguments))
+		 user-initial-environment)))))
+       user-initial-environment))
+    (syntax-table-define system-global-syntax-table 'defmacro
+      (macro defmacargs
+	(let ((macname (car defmacargs)) (macargs (cadr defmacargs))
+					 (macbdy (cddr defmacargs)))
+	  `(begin
+	     (set! *macros* (cons ',macname *macros*))
+	     (syntax-table-define system-global-syntax-table ',macname
+	       (macro ,macargs ,@macbdy)))))))
+
+(define macroexpand-1)
+(define macroexpand)
+(let ((finish
+       (lambda (get-transformer apply-transformer)
+	 (set! macroexpand-1
+	       (lambda (form)
+		 (let ((transformer (get-transformer form)))
+		   (if transformer
+		       (apply-transformer transformer form)
+		       form))))
+	 (set! macroexpand
+	       (lambda (form)
+		 (let ((transformer (get-transformer form)))
+		   (if transformer
+		       (macroexpand (apply-transformer transformer form))
+		       form)))))))
+  (if mit-scheme-has-r4rs-macros?
+      (let ((e (->environment '(runtime syntactic-closures))))
+	(let ((transformer-item/expander (access transformer-item/expander e))
+	      (expander-item/expander (access expander-item/expander e))
+	      (expander-item/environment (access expander-item/environment e)))
+	  (finish
+	   (lambda (form)
+	     (and (pair? form)
+		  (let ((a (car form)))
+		    (and (symbol? a)
+			 (defmacro? a)
+			 (environment-lookup-macro user-initial-environment
+						   a)))))
+	   (lambda (item form)
+	     (let ((item (transformer-item/expander item)))
+	       ((expander-item/expander item)
+		form
+		user-initial-environment
+		(expander-item/environment item)))))))
+      (finish
+       (lambda (form)
+	 (and (pair? form)
+	      (let ((a (car form)))
+		(and (symbol? a)
+		     (defmacro? a)
+		     (syntax-table-ref system-global-syntax-table a)))))
+       (apply-transformer
+	(lambda (transformer form)
+	  (apply transformer (cdr form)))))))
+
+(define gentemp generate-uninterned-symbol)
+
+(define defmacro:eval slib:eval)
+(define defmacro:load load)
+(if mit-scheme-has-r4rs-macros?
+    (begin
+      (environment-define (the-environment) 'macro:eval slib:eval)
+      (environment-define (the-environment) 'macro:load load)))
+;; slib:eval-load definition moved to "require.scm"
+
+;; Older implementations need this definition.
+(if (lexical-unreferenceable? (the-environment) 'record-modifier)
+    (local-assignment (the-environment) 'record-modifier record-updater))
+
+(define (slib:warn . args)
+  (if (provided? 'trace) (print-call-stack (notification-output-port)))
+  (apply warn args))
+
+;; define an error procedure for the library
+(define slib:error
+  (let ((error error))
+    (lambda (first . args)
+      (if (provided? 'trace) (print-call-stack (current-error-port)))
+      (case first
+	((wrong-type-argument) (apply error:wrong-type-argument args))
+	((bad-range-argument)  (apply error:bad-range-argument args))
+	(else                  (apply error first args))))))
+
+;; define these as appropriate for your system.
+(define slib:tab (name->char "tab"))
+(define slib:form-feed (name->char "page"))
+
+;;; Define SLIB:EXIT to be the implementation procedure to exit or
+;;; return if exiting not supported.
+(define slib:exit
+  (lambda args
+    (cond ((null? args) (exit))
+	  ((eqv? #t (car args)) (exit))
+	  ((and (number? (car args)) (integer? (car args))) (exit (car args)))
+	  (else (exit 1)))))
+
+;;; Here for backward compatability
+(define (scheme-file-suffix) ".scm")
+
+;;; (SLIB:LOAD-SOURCE "foo") should load "foo.scm" or with whatever
+;;; suffix all the module files in SLIB have.  See feature 'SOURCE.
+(define slib:load-source load)
+
+;;; (SLIB:LOAD-COMPILED "foo") should load the file that was produced
+;;; by compiling "foo.scm" if this implementation can compile files.
+;;; See feature 'COMPILED.
+(define slib:load-compiled load)
+
+;;; At this point SLIB:LOAD must be able to load SLIB files.
+(define slib:load slib:load-source)
+
+(slib:load (in-vicinity (library-vicinity) "require.scm"))

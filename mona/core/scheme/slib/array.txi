@@ -1,0 +1,373 @@
+@code{(require 'array)} or @code{(require 'srfi-63)}
+@ftindex array
+
+
+@defun array? obj
+
+Returns @code{#t} if the @var{obj} is an array, and @code{#f} if not.
+@end defun
+
+@noindent
+@emph{Note:} Arrays are not disjoint from other Scheme types.
+Vectors and possibly strings also satisfy @code{array?}.
+A disjoint array predicate can be written:
+
+@example
+(define (strict-array? obj)
+  (and (array? obj) (not (string? obj)) (not (vector? obj))))
+@end example
+
+
+@defun equal? obj1 obj2
+
+Returns @code{#t} if @var{obj1} and @var{obj2} have the same rank and dimensions and the
+corresponding elements of @var{obj1} and @var{obj2} are @code{equal?}.
+
+@code{equal?} recursively compares the contents of pairs, vectors, strings, and
+@emph{arrays}, applying @code{eqv?} on other objects such as numbers
+and symbols.  A rule of thumb is that objects are generally @code{equal?} if
+they print the same.  @code{equal?} may fail to terminate if its arguments are
+circular data structures.
+
+@example
+(equal? 'a 'a)                             @result{}  #t
+(equal? '(a) '(a))                         @result{}  #t
+(equal? '(a (b) c)
+        '(a (b) c))                        @result{}  #t
+(equal? "abc" "abc")                       @result{}  #t
+(equal? 2 2)                               @result{}  #t
+(equal? (make-vector 5 'a)
+        (make-vector 5 'a))                @result{}  #t
+(equal? (make-array (A:fixN32b 4) 5 3)
+        (make-array (A:fixN32b 4) 5 3))    @result{}  #t
+(equal? (make-array '#(foo) 3 3)
+        (make-array '#(foo) 3 3))          @result{}  #t
+(equal? (lambda (x) x)
+        (lambda (y) y))                    @result{}  @emph{unspecified}
+@end example
+@end defun
+
+
+@defun array-rank obj
+
+Returns the number of dimensions of @var{obj}.  If @var{obj} is not an array, 0 is
+returned.
+@end defun
+
+
+@defun array-dimensions array
+
+Returns a list of dimensions.
+
+@example
+(array-dimensions (make-array '#() 3 5))
+   @result{} (3 5)
+@end example
+@end defun
+
+
+@defun make-array prototype k1 @dots{}
+
+
+Creates and returns an array of type @var{prototype} with dimensions @var{k1}, @dots{}
+and filled with elements from @var{prototype}.  @var{prototype} must be an array, vector, or
+string.  The implementation-dependent type of the returned array
+will be the same as the type of @var{prototype}; except if that would be a vector
+or string with rank not equal to one, in which case some variety of
+array will be returned.
+
+If the @var{prototype} has no elements, then the initial contents of the returned
+array are unspecified.  Otherwise, the returned array will be filled
+with the element at the origin of @var{prototype}.
+@end defun
+
+
+@defun create-array prototype k1 @dots{}
+
+@code{create-array} is an alias for @code{make-array}.
+@end defun
+
+
+@defun make-shared-array array mapper k1 @dots{}
+
+@code{make-shared-array} can be used to create shared subarrays of other
+arrays.  The @var{mapper} is a function that translates coordinates in
+the new array into coordinates in the old array.  A @var{mapper} must be
+linear, and its range must stay within the bounds of the old array, but
+it can be otherwise arbitrary.  A simple example:
+
+@example
+(define fred (make-array '#(#f) 8 8))
+(define freds-diagonal
+  (make-shared-array fred (lambda (i) (list i i)) 8))
+(array-set! freds-diagonal 'foo 3)
+(array-ref fred 3 3)
+   @result{} FOO
+(define freds-center
+  (make-shared-array fred (lambda (i j) (list (+ 3 i) (+ 3 j)))
+                     2 2))
+(array-ref freds-center 0 0)
+   @result{} FOO
+@end example
+@end defun
+
+
+@defun list->array rank proto list
+
+@var{list} must be a rank-nested list consisting of all the elements, in
+row-major order, of the array to be created.
+
+@code{list->array} returns an array of rank @var{rank} and type @var{proto} consisting of all the
+elements, in row-major order, of @var{list}.  When @var{rank} is 0, @var{list} is the lone
+array element; not necessarily a list.
+
+@example
+(list->array 2 '#() '((1 2) (3 4)))
+                @result{} #2A((1 2) (3 4))
+(list->array 0 '#() 3)
+                @result{} #0A 3
+@end example
+@end defun
+
+
+@defun array->list array
+
+Returns a rank-nested list consisting of all the elements, in
+row-major order, of @var{array}.  In the case of a rank-0 array, @code{array->list} returns
+the single element.
+
+@example
+(array->list #2A((ho ho ho) (ho oh oh)))
+                @result{} ((ho ho ho) (ho oh oh))
+(array->list #0A ho)
+                @result{} ho
+@end example
+@end defun
+
+
+@defun vector->array vect proto dim1 @dots{}
+
+@var{vect} must be a vector of length equal to the product of exact
+nonnegative integers @var{dim1}, @dots{}.
+
+@code{vector->array} returns an array of type @var{proto} consisting of all the elements, in
+row-major order, of @var{vect}.  In the case of a rank-0 array, @var{vect} has a
+single element.
+
+@example
+(vector->array #(1 2 3 4) #() 2 2)
+                @result{} #2A((1 2) (3 4))
+(vector->array '#(3) '#())
+                @result{} #0A 3
+@end example
+@end defun
+
+
+@defun array->vector array
+
+Returns a new vector consisting of all the elements of @var{array} in
+row-major order.
+
+@example
+(array->vector #2A ((1 2)( 3 4)))
+                @result{} #(1 2 3 4)
+(array->vector #0A ho)
+                @result{} #(ho)
+@end example
+@end defun
+
+
+@defun array-in-bounds? array index1 @dots{}
+
+Returns @code{#t} if its arguments would be acceptable to
+@code{array-ref}.
+@end defun
+
+
+@defun array-ref array k1 @dots{}
+
+Returns the (@var{k1}, @dots{}) element of @var{array}.
+@end defun
+
+
+@deffn {Procedure} array-set! array obj k1 @dots{}
+
+Stores @var{obj} in the (@var{k1}, @dots{}) element of @var{array}.  The value returned
+by @code{array-set!} is unspecified.
+@end deffn
+
+@noindent
+These functions return a prototypical uniform-array enclosing the
+optional argument (which must be of the correct type).  If the
+uniform-array type is supported by the implementation, then it is
+returned; defaulting to the next larger precision type; resorting
+finally to vector.
+
+
+@defun a:floc128b z
+
+
+@defunx a:floc128b
+Returns an inexact 128.bit flonum complex uniform-array prototype.
+@end defun
+
+
+@defun a:floc64b z
+
+
+@defunx a:floc64b
+Returns an inexact 64.bit flonum complex uniform-array prototype.
+@end defun
+
+
+@defun a:floc32b z
+
+
+@defunx a:floc32b
+Returns an inexact 32.bit flonum complex uniform-array prototype.
+@end defun
+
+
+@defun a:floc16b z
+
+
+@defunx a:floc16b
+Returns an inexact 16.bit flonum complex uniform-array prototype.
+@end defun
+
+
+@defun a:flor128b z
+
+
+@defunx a:flor128b
+Returns an inexact 128.bit flonum real uniform-array prototype.
+@end defun
+
+
+@defun a:flor64b z
+
+
+@defunx a:flor64b
+Returns an inexact 64.bit flonum real uniform-array prototype.
+@end defun
+
+
+@defun a:flor32b z
+
+
+@defunx a:flor32b
+Returns an inexact 32.bit flonum real uniform-array prototype.
+@end defun
+
+
+@defun a:flor16b z
+
+
+@defunx a:flor16b
+Returns an inexact 16.bit flonum real uniform-array prototype.
+@end defun
+
+
+@defun a:flor128b z
+
+
+@defunx a:flor128b
+Returns an exact 128.bit decimal flonum rational uniform-array prototype.
+@end defun
+
+
+@defun a:flor64b z
+
+
+@defunx a:flor64b
+Returns an exact 64.bit decimal flonum rational uniform-array prototype.
+@end defun
+
+
+@defun a:flor32b z
+
+
+@defunx a:flor32b
+Returns an exact 32.bit decimal flonum rational uniform-array prototype.
+@end defun
+
+
+@defun a:fixz64b n
+
+
+@defunx a:fixz64b
+Returns an exact binary fixnum uniform-array prototype with at least
+64 bits of precision.
+@end defun
+
+
+@defun a:fixz32b n
+
+
+@defunx a:fixz32b
+Returns an exact binary fixnum uniform-array prototype with at least
+32 bits of precision.
+@end defun
+
+
+@defun a:fixz16b n
+
+
+@defunx a:fixz16b
+Returns an exact binary fixnum uniform-array prototype with at least
+16 bits of precision.
+@end defun
+
+
+@defun a:fixz8b n
+
+
+@defunx a:fixz8b
+Returns an exact binary fixnum uniform-array prototype with at least
+8 bits of precision.
+@end defun
+
+
+@defun a:fixn64b k
+
+
+@defunx a:fixn64b
+Returns an exact non-negative binary fixnum uniform-array prototype with at
+least 64 bits of precision.
+@end defun
+
+
+@defun a:fixn32b k
+
+
+@defunx a:fixn32b
+Returns an exact non-negative binary fixnum uniform-array prototype with at
+least 32 bits of precision.
+@end defun
+
+
+@defun a:fixn16b k
+
+
+@defunx a:fixn16b
+Returns an exact non-negative binary fixnum uniform-array prototype with at
+least 16 bits of precision.
+@end defun
+
+
+@defun a:fixn8b k
+
+
+@defunx a:fixn8b
+Returns an exact non-negative binary fixnum uniform-array prototype with at
+least 8 bits of precision.
+@end defun
+
+
+@defun a:bool bool
+
+
+@defunx a:bool
+Returns a boolean uniform-array prototype.
+@end defun
+

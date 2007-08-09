@@ -1,0 +1,202 @@
+@code{(require 'db->html)}
+@ftindex db->html
+
+
+@defun html:table options row @dots{}
+
+@end defun
+
+
+@defun html:caption caption align
+
+
+@defunx html:caption caption
+@var{align} can be @samp{top} or @samp{bottom}.
+@end defun
+
+
+@defun html:heading columns
+Outputs a heading row for the currently-started table.
+@end defun
+
+
+@defun html:href-heading columns uris
+Outputs a heading row with column-names @var{columns} linked to URIs @var{uris}.
+@end defun
+
+
+@defun html:linked-row-converter k foreigns
+
+
+The positive integer @var{k} is the primary-key-limit (number of
+primary-keys) of the table.  @var{foreigns} is a list of the filenames of
+foreign-key field pages and #f for non foreign-key fields.
+
+@code{html:linked-row-converter} returns a procedure taking a row for its single argument.  This
+returned procedure returns the html string for that table row.
+@end defun
+
+
+@defun table-name->filename table-name
+
+Returns the symbol @var{table-name} converted to a filename.
+@end defun
+
+
+@defun table->linked-html caption db table-name match-key1 @dots{}
+
+Returns HTML string for @var{db} table @var{table-name} chopped into 50-row HTML tables.
+Every foreign-key value is linked to the page (of the table)
+defining that key.
+
+The optional @var{match-key1} @dots{} arguments restrict actions to a subset of
+the table.  @xref{Table Operations, match-key}.
+@end defun
+
+
+@defun table->linked-page db table-name index-filename arg @dots{}
+
+Returns a complete HTML page.  The string @var{index-filename} names the page which
+refers to this one.
+
+The optional @var{args} @dots{} arguments restrict actions to a subset of
+the table.  @xref{Table Operations, match-key}.
+@end defun
+
+
+@defun catalog->html db caption arg @dots{}
+
+Returns HTML string for the catalog table of @var{db}.
+@end defun
+
+@subsection HTML editing tables
+
+@noindent A client can modify one row of an editable table at a time.
+For any change submitted, these routines check if that row has been
+modified during the time the user has been editing the form.  If so,
+an error page results.
+
+@noindent The behavior of edited rows is:
+
+@itemize @bullet
+@item
+If no fields are changed, then no change is made to the table.
+@item
+If the primary keys equal null-keys (parameter defaults), and no other
+user has modified that row, then that row is deleted.
+@item
+If only primary keys are changed, there are non-key fields, and no
+row with the new keys is in the table, then the old row is
+deleted and one with the new keys is inserted.
+@item
+If only non-key fields are changed, and that row has not been
+modified by another user, then the row is changed to reflect the
+fields.
+@item
+If both keys and non-key fields are changed, and no row with the
+new keys is in the table, then a row is created with the new
+keys and fields.
+@item
+If fields are changed, all fields are primary keys, and no row with
+the new keys is in the table, then a row is created with the new
+keys.
+@end itemize
+
+@noindent After any change to the table, a @code{sync-database} of the
+database is performed.
+
+
+@defun command:modify-table table-name null-keys update delete retrieve
+
+
+@defunx command:modify-table table-name null-keys update delete
+
+@defunx command:modify-table table-name null-keys update
+
+@defunx command:modify-table table-name null-keys
+
+Returns procedure (of @var{db}) which returns procedure to modify
+row of @var{table-name}.  @var{null-keys} is the list of @dfn{null} keys indicating the row is
+@cindex null
+to be deleted when any matches its corresponding primary key.
+Optional arguments @var{update}, @var{delete}, and @var{retrieve} default to the @code{row:update},
+@code{row:delete}, and @code{row:retrieve} of @var{table-name} in @var{db}.
+@end defun
+
+
+@defun command:make-editable-table rdb table-name arg @dots{}
+Given @var{table-name} in @var{rdb}, creates parameter and @code{*command*} tables
+for editing one row of @var{table-name} at a time.  @code{command:make-editable-table} returns a procedure taking a
+row argument which returns the HTML string for editing that row.
+
+Optional @var{args} are expressions (lists) added to the call to
+@code{command:modify-table}.
+
+The domain name of a column determines the expected arity of the data
+stored in that column.  Domain names ending in:
+
+@table @samp
+@item *
+have arity @samp{nary};
+@item +
+have arity @samp{nary1}.
+@end table
+@end defun
+
+
+@defun html:editable-row-converter k names edit-point edit-converter
+
+
+The positive integer @var{k} is the primary-key-limit (number of
+primary-keys) of the table.  @var{names} is a list of the field-names.  @var{edit-point} is
+the list of primary-keys denoting the row to edit (or #f).  @var{edit-converter} is the
+procedure called with @var{k}, @var{names}, and the row to edit.
+
+@code{html:editable-row-converter} returns a procedure taking a row for its single argument.  This
+returned procedure returns the html string for that table row.
+
+Each HTML table constructed using @code{html:editable-row-converter} has first @var{k} fields (typically
+the primary key fields) of each row linked to a text encoding of these
+fields (the result of calling @code{row->anchor}).  The page so
+referenced typically allows the user to edit fields of that row.
+@end defun
+
+@subsection HTML databases
+
+
+@defun db->html-files db dir index-filename caption
+@var{db} must be a relational database.  @var{dir} must be #f or a
+non-empty string naming an existing sub-directory of the current
+directory.
+
+@code{db->html-files} creates an html page for each table in the database @var{db} in the
+sub-directory named @var{dir}, or the current directory if @var{dir} is #f.  The
+top level page with the catalog of tables (captioned @var{caption}) is written
+to a file named @var{index-filename}.
+@end defun
+
+
+@defun db->html-directory db dir index-filename
+
+
+@defunx db->html-directory db dir
+@var{db} must be a relational database.  @var{dir} must be a non-empty
+string naming an existing sub-directory of the current directory or
+one to be created.  The optional string @var{index-filename} names the filename of the
+top page, which defaults to @file{index.html}.
+
+@code{db->html-directory} creates sub-directory @var{dir} if neccessary, and calls
+@code{(db->html-files @var{db} @var{dir} @var{index-filename} @var{dir})}.  The @samp{file:} URI of @var{index-filename} is
+returned.
+@end defun
+
+
+@defun db->netscape db dir index-filename
+
+
+@defunx db->netscape db dir
+@code{db->netscape} is just like @code{db->html-directory}, but calls
+@code{browse-url} with the uri for the top page after the
+pages are created.
+@end defun
+

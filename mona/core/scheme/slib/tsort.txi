@@ -1,0 +1,54 @@
+@code{(require 'topological-sort)} or @code{(require 'tsort)}
+@ftindex topological-sort
+@ftindex tsort
+
+@noindent
+The algorithm is inspired by Cormen, Leiserson and Rivest (1990)
+@cite{Introduction to Algorithms}, chapter 23.
+
+
+@defun tsort dag pred
+
+@defunx topological-sort dag pred
+where
+@table @var
+@item dag
+is a list of sublists.  The car of each sublist is a vertex.  The cdr is
+the adjacency list of that vertex, i.e. a list of all vertices to which
+there exists an edge from the car vertex.
+@item pred
+is one of @code{eq?}, @code{eqv?}, @code{equal?}, @code{=},
+@code{char=?}, @code{char-ci=?}, @code{string=?}, or @code{string-ci=?}.
+@end table
+
+Sort the directed acyclic graph @var{dag} so that for every edge from
+vertex @var{u} to @var{v}, @var{u} will come before @var{v} in the
+resulting list of vertices.
+
+Time complexity: O (|V| + |E|)
+
+Example (from Cormen):
+@quotation
+Prof. Bumstead topologically sorts his clothing when getting
+dressed.  The first argument to @code{tsort} describes which
+garments he needs to put on before others.  (For example,
+Prof Bumstead needs to put on his shirt before he puts on his
+tie or his belt.)  @code{tsort} gives the correct order of dressing:
+@end quotation
+
+@example
+(require 'tsort)
+@ftindex tsort
+(tsort '((shirt tie belt)
+         (tie jacket)
+         (belt jacket)
+         (watch)
+         (pants shoes belt)
+         (undershorts pants shoes)
+         (socks shoes))
+       eq?)
+@result{}
+(socks undershorts pants shoes watch shirt belt tie jacket)
+@end example
+@end defun
+

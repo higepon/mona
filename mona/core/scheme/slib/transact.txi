@@ -1,0 +1,156 @@
+@subsubheading File Locking
+
+@noindent
+Unix file-locking is focussed on write permissions for segments of a
+existing file.  While this might be employed for (binary) database
+access, it is not used for everyday contention (between users) for
+text files.
+
+@noindent
+Microsoft has several file-locking protocols.  Their model denies
+write access to a file if any reader has it open.  This is too
+restrictive.  Write access is denied even when the reader has
+reached end-of-file.  And tracking read access (which is much more
+common than write access) causes havoc when remote hosts crash or
+disconnect.
+
+@noindent
+It is bizarre that the concept of multi-user contention for
+modifying files has not been adequately addressed by either of the
+large operating system development efforts.  There is further irony
+that both camps support contention detection and resolution only
+through weak conventions of some their document editing programs.
+
+@noindent
+@cindex file-lock
+The @dfn{file-lock} procedures implement a transaction method for file
+@cindex file-lock
+replacement compatible with the methods used by the GNU @dfn{emacs}
+@cindex emacs
+text editor on Unix systems and the Microsoft @dfn{Word} editor.
+@cindex Word
+@cindex emacs
+
+@noindent
+@cindex certificate
+Both protocols employ what I term a @dfn{certificate} containing the
+@cindex certificate
+user, hostname, time, and (on Unix) process-id.
+Intent to replace @var{file} is indicated by adding to @var{file}'s
+directory a certificate object whose name is derived from
+@var{file}.
+
+@noindent
+The Microsoft Word certificate is contained in a 162 byte file named
+for the visited @var{file} with a @samp{~$} prefix.
+Emacs/Unix creates a symbolic link to a certificate named for the
+visited @var{file} prefixed with @samp{.#}.
+Because Unix systems can import Microsoft file systems, these
+routines maintain and check both Emacs and Word certificates.
+
+
+@defun file-lock-owner path
+
+Returns the string @samp{@var{user}@@@var{hostname}} associated with
+the lock owner of file @var{path} if locked; and #f otherwise.
+@end defun
+
+
+@deffn {Procedure} file-lock! path email
+
+
+@deffnx {Procedure} file-lock! path
+
+@var{path} must be a string naming the file to be locked.  If supplied, @var{email}
+must be a string formatted as @samp{@var{user}@@@var{hostname}}.  If
+absent, @var{email} defaults to the value returned by @code{user-email-address}.
+
+If @var{path} is already locked, then @code{file-lock!} returns @samp{#f}.  If @var{path} is
+unlocked, then @code{file-lock!} returns the certificate string associated with the
+new lock for file @var{path}.
+@end deffn
+
+
+@deffn {Procedure} file-unlock! path certificate
+
+@var{path} must be a string naming the file to be unlocked.  @var{certificate} must be the
+string returned by @code{file-lock!} for @var{path}.
+
+If @var{path} is locked with @var{certificate}, then @code{file-unlock!} removes the locks and returns
+@samp{#t}.  Otherwise, @code{file-unlock!} leaves the file system unaltered and returns
+@samp{#f}.
+@end deffn
+
+@subsubheading File Transactions
+
+
+@defun emacs:backup-name path backup-style
+
+@var{path} must be a string.  @var{backup-style} must be a symbol.  Depending on @var{backup-style}, @code{emacs:backup-name}
+returns:
+@table @r
+@item none
+#f
+@item simple
+the string "@var{path}~"
+@item numbered
+the string "@var{path}.~@var{n}~", where @var{n} is one greater than the
+highest number appearing in a filename matching "@var{path}.~*~".  @var{n}
+defauls to 1 when no filename matches.
+@item existing
+the string "@var{path}.~@var{n}~" if a numbered backup already exists in
+this directory; otherwise. "@var{path}~"
+@item orig
+the string "@var{path}.orig"
+@item bak
+the string "@var{path}.bak"
+@end table
+@end defun
+
+
+@defun transact-file-replacement proc path backup-style certificate
+
+
+@defunx transact-file-replacement proc path backup-style
+
+@defunx transact-file-replacement proc path
+
+@var{path} must be a string naming an existing file.  @var{backup-style} is one of the
+symbols @r{none}, @r{simple}, @r{numbered}, @r{existing}, @r{orig},
+@r{bak} or @r{#f}; with meanings described above; or a string naming
+the location of a backup file.  @var{backup-style} defaults to @r{#f}.  If supplied,
+@var{certificate} is the certificate with which @var{path} is locked.
+
+@var{proc} must be a procedure taking two string arguments:
+@itemize @bullet
+@item
+@var{path}, the original filename (to be read); and
+@item
+a temporary file-name.
+@end itemize
+
+If @var{path} is locked by other than @var{certificate}, or if @var{certificate} is supplied and @var{path} is not
+locked, then @code{transact-file-replacement} returns #f.  If @var{certificate} is not supplied, then, @code{transact-file-replacement} creates
+temporary (Emacs and Word) locks for @var{path} during the transaction.  The
+lock status of @var{path} will be restored before @code{transact-file-replacement} returns.
+
+@code{transact-file-replacement} calls @var{proc} with @var{path} (which should not be modified) and a temporary
+file path to be written.
+If @var{proc} returns any value other than @r{#t}, then the file named by @var{path}
+is not altered and @code{transact-file-replacement} returns @r{#f}.
+Otherwise, @code{emacs:backup-name} is called with @var{path} and @var{backup-style}.  If it
+returns a string, then @var{path} is renamed to it.
+
+Finally, the temporary file is renamed @var{path}.
+@code{transact-file-replacement} returns #t if @var{path} was successfully replaced; and #f otherwise.
+@end defun
+
+@subsubheading Identification
+
+
+@defun user-email-address
+
+@code{user-email-address} returns a string of the form @samp{username@r{@@}hostname}.  If
+this e-mail address cannot be obtained, #f is returned.
+@end defun
+

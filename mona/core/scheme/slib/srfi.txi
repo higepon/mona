@@ -1,0 +1,34 @@
+@code{(require 'srfi)}
+@ftindex srfi
+
+@noindent Implements @dfn{Scheme Request For Implementation} (SRFI) as
+@cindex Scheme Request For Implementation
+described at @url{http://srfi.schemers.org/}
+
+
+@defmac cond-expand <clause1> <clause2> @dots{}
+
+
+@emph{Syntax:}
+Each @r{<clause>} should be of the form
+
+@format
+@t{(@r{<feature>} @r{<expression1>} @dots{})}
+@end format
+
+where @r{<feature>} is a boolean expression composed of symbols and
+`and', `or', and `not' of boolean expressions.  The last @r{<clause>}
+may be an ``else clause,'' which has the form
+
+@format
+@t{(else @r{<expression1>} @r{<expression2>} @dots{})@r{.}}
+@end format
+
+The first clause whose feature expression is satisfied is expanded.
+If no feature expression is satisfied and there is no else clause, an
+error is signaled.
+
+SLIB @code{cond-expand} is an extension of SRFI-0,
+@url{http://srfi.schemers.org/srfi-0/srfi-0.html}.
+@end defmac
+

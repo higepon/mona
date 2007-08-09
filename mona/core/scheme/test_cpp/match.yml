@@ -1,0 +1,106 @@
+-
+ - and
+ - ()
+ - (_ a b ...)
+ - (and "hige" "huga" "hoge" "hoge")
+-
+ - and
+ - ()
+ - (_ a b)
+ - (and 3 4)
+-
+ - when
+ - ()
+ - (_ pred a b)
+ - (when (= x 3) (display "x=3") (display "\n"))
+-
+ - my-if
+ - (my-then)
+ - (_ a my-then b)
+ - (my-if (= 3 3) my-then 3)
+-
+ - my-if
+ - (my-then my-else)
+ - (_ a my-then b my-else c)
+ - (my-if (= 3 3) my-then 4 my-else 5)
+-
+ - pp
+ - ()
+ - (_ a b ...)
+ - (pp a b c d)
+-
+ - pp
+ - ()
+ - (_ a)
+ - (pp 3)
+-
+ - my-let*
+ - ()
+ - (_ ((a b) (c d) ...) z ...)
+ - (my-let* ((a 99) (b (+ 1 a)) (c (+ b 1))) (p a) (p b) (p c))
+-
+ - decf
+ - ()
+ - (_ x dx)
+ - (decf x 1)
+-
+ - decf
+ - ()
+ - (_ x)
+ - (decf x)
+-
+ - and
+ - ()
+ - (_ (a b) ...)
+ - (and (3 2) a b)
+-
+ - and
+ - ()
+ - (_ a b ...)
+ - (and 3 2)
+-
+ - let*
+ - ()
+ - (let* ((name1 val1) (name2 val2) ...) body1 body2)
+ - (let* ((n1 v1) (n2 v2)) f g)
+-
+ - let*
+ - ()
+ - (let* ((name1 val1) (name2 val2) ...) body1 body2 ...)
+ - (let* ((n1 v1) (n2 v2)) f g)
+-
+ - let*
+ - ()
+ - (let* () body1 body2 ...)
+ - (let* () f g h)
+-
+ - my-if
+ - (my-then my-else)
+ - (_ a my-then b my-else c)
+ - (my-if (= y 3)  my-then (pp "3") my-else (pp "not 3\n" "hige\n" "pon\n" "desu"))
+-
+ - and
+ - ()
+ - (_ a ...)
+ - (and)
+-
+ - and
+ - ()
+ - (_ a ...)
+ - (and a)
+-
+ - and
+ - ()
+ - (_ a ...)
+ - (and a b)
+-
+ - hige
+ - ()
+ - (_ a ...)
+ - (hige)
+-
+ - case
+ - ()
+ - (case key ((atoms ...) result1 result2 ...))
+ - (case 3   ((3) (display 3)))
+

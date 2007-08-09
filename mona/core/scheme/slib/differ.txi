@@ -1,0 +1,117 @@
+@noindent
+@code{diff:edit-length} implements the algorithm:
+
+@ifinfo
+@example
+S. Wu, E. Myers, U. Manber, and W. Miller,
+   "An O(NP) Sequence Comparison Algorithm,"
+   Information Processing Letters 35, 6 (1990), 317-323.
+   @url{http://www.cs.arizona.edu/people/gene/PAPERS/np_diff.ps}
+@end example
+@end ifinfo
+@ifset html
+S. Wu, <A HREF="http://www.cs.arizona.edu/people/gene/vita.html">
+E. Myers,</A> U. Manber, and W. Miller,
+<A HREF="http://www.cs.arizona.edu/people/gene/PAPERS/np_diff.ps">
+"An O(NP) Sequence Comparison Algorithm"</A>,
+Information Processing Letters 35, 6 (1990), 317-323.
+@end ifset
+
+@noindent
+The values returned by @code{diff:edit-length} can be used to gauge
+the degree of match between two sequences.
+
+@noindent
+@code{diff:edits} and @code{diff:longest-common-subsequence} combine
+the algorithm with the divide-and-conquer method outlined in:
+
+@ifinfo
+@example
+E. Myers and W. Miller,
+   "Optimal alignments in linear space",
+   Computer Application in the Biosciences (CABIOS), 4(1):11-17, 1988.
+   @url{http://www.cs.arizona.edu/people/gene/PAPERS/linear.ps}
+@end example
+@end ifinfo
+@ifset html
+<A HREF="http://www.cs.arizona.edu/people/gene/vita.html">
+E. Myers,</A> and W. Miller,
+<A HREF="http://www.cs.arizona.edu/people/gene/PAPERS/linear.ps">
+"Optimal alignments in linear space"</A>,
+Computer Application in the Biosciences (CABIOS), 4(1):11-17, 1988.
+@end ifset
+
+@noindent
+If the items being sequenced are text lines, then the computed
+edit-list is equivalent to the output of the @dfn{diff} utility
+@cindex diff
+program.  If the items being sequenced are words, then it is like the
+lesser known @dfn{spiff} program.
+@cindex spiff
+
+
+@defun diff:longest-common-subsequence array1 array2 p-lim
+
+
+@defunx diff:longest-common-subsequence array1 array2
+@var{array1} and @var{array2} are one-dimensional arrays.
+
+The non-negative integer @var{p-lim}, if provided, is maximum number of
+deletions of the shorter sequence to allow.  @code{diff:longest-common-subsequence} will return @code{#f}
+if more deletions would be necessary.
+
+@code{diff:longest-common-subsequence} returns a one-dimensional array of length @code{(quotient (- (+
+len1 len2) (diff:edit-length @var{array1} @var{array2})) 2)} holding the longest sequence
+common to both @var{array}s.
+@end defun
+
+
+@defun diff:edits array1 array2 p-lim
+
+
+@defunx diff:edits array1 array2
+@var{array1} and @var{array2} are one-dimensional arrays.
+
+The non-negative integer @var{p-lim}, if provided, is maximum number of
+deletions of the shorter sequence to allow.  @code{diff:edits} will return @code{#f}
+if more deletions would be necessary.
+
+@code{diff:edits} returns a vector of length @code{(diff:edit-length @var{array1} @var{array2})} composed
+of a shortest sequence of edits transformaing @var{array1} to @var{array2}.
+
+Each edit is an integer:
+@table @asis
+@item @var{k} > 0
+Inserts @code{(array-ref @var{array1} (+ -1 @var{j}))} into the sequence.
+@item @var{k} < 0
+Deletes @code{(array-ref @var{array2} (- -1 @var{k}))} from the sequence.
+@end table
+@end defun
+
+
+@defun diff:edit-length array1 array2 p-lim
+
+
+@defunx diff:edit-length array1 array2
+@var{array1} and @var{array2} are one-dimensional arrays.
+
+The non-negative integer @var{p-lim}, if provided, is maximum number of
+deletions of the shorter sequence to allow.  @code{diff:edit-length} will return @code{#f}
+if more deletions would be necessary.
+
+@code{diff:edit-length} returns the length of the shortest sequence of edits transformaing
+@var{array1} to @var{array2}.
+@end defun
+
+@example
+(diff:longest-common-subsequence "fghiejcklm" "fgehijkpqrlm")
+@result{} "fghijklm"
+
+(diff:edit-length "fghiejcklm" "fgehijkpqrlm")
+@result{} 6
+
+(diff:edits "fghiejcklm" "fgehijkpqrlm")
+@result{} #A:fixZ32b(3 -5 -7 8 9 10)
+       ; e  c  h p q  r
+@end example
+

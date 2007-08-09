@@ -1,0 +1,83 @@
+@code{(require 'read-command)}
+@ftindex read-command
+
+
+@defun read-command port
+
+
+@defunx read-command
+@code{read-command} converts a @dfn{command line} into a list of strings
+@cindex command line
+@cindex command line
+suitable for parsing by @code{getopt}.  The syntax of command lines
+supported resembles that of popular @dfn{shell}s.  @code{read-command}
+@cindex shell
+updates @var{port} to point to the first character past the command
+delimiter.
+
+If an end of file is encountered in the input before any characters are
+found that can begin an object or comment, then an end of file object is
+returned.
+
+The @var{port} argument may be omitted, in which case it defaults to the
+value returned by @code{current-input-port}.
+
+The fields into which the command line is split are delimited by
+whitespace as defined by @code{char-whitespace?}.  The end of a command
+is delimited by end-of-file or unescaped semicolon (@key{;}) or
+@key{newline}.  Any character can be literally included in a field by
+escaping it with a backslach (@key{\}).
+
+The initial character and types of fields recognized are:
+@table @asis
+@item @samp{\}
+The next character has is taken literally and not interpreted as a field
+delimiter.  If @key{\} is the last character before a @key{newline},
+that @key{newline} is just ignored.  Processing continues from the
+characters after the @key{newline} as though the backslash and
+@key{newline} were not there.
+@item @samp{"}
+The characters up to the next unescaped @key{"} are taken literally,
+according to [R4RS] rules for literal strings (@pxref{Strings, , ,r4rs,
+Revised(4) Scheme}).
+@item @samp{(}, @samp{%'}
+One scheme expression is @code{read} starting with this character.  The
+@code{read} expression is evaluated, converted to a string
+(using @code{display}), and replaces the expression in the returned
+field.
+@item @samp{;}
+Semicolon delimits a command.  Using semicolons more than one command
+can appear on a line.  Escaped semicolons and semicolons inside strings
+do not delimit commands.
+@end table
+
+@noindent
+The comment field differs from the previous fields in that it must be
+the first character of a command or appear after whitespace in order to
+be recognized.  @key{#} can be part of fields if these conditions are
+not met.  For instance, @code{ab#c} is just the field ab#c.
+
+@table @samp
+@item #
+Introduces a comment.  The comment continues to the end of the line on
+which the semicolon appears.  Comments are treated as whitespace by
+@code{read-dommand-line} and backslashes before @key{newline}s in
+comments are also ignored.
+@end table
+@end defun
+
+
+@defun read-options-file filename
+
+@code{read-options-file} converts an @dfn{options file} into a list of
+@cindex options file
+@cindex options file
+strings suitable for parsing by @code{getopt}.  The syntax of options
+files is the same as the syntax for command
+lines, except that @key{newline}s do not terminate reading (only @key{;}
+or end of file).
+
+If an end of file is encountered before any characters are found that
+can begin an object or comment, then an end of file object is returned.
+@end defun
+

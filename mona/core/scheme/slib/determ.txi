@@ -1,0 +1,53 @@
+@code{(require 'determinant)}
+@ftindex determinant
+
+@noindent
+A Matrix can be either a list of lists (rows) or an array.
+Unlike linear-algebra texts, this package uses 0-based coordinates.
+
+
+@defun matrix->lists matrix
+
+Returns the list-of-lists form of @var{matrix}.
+@end defun
+
+
+@defun matrix->array matrix
+
+Returns the (ones-based) array form of @var{matrix}.
+@end defun
+
+
+@defun determinant matrix
+
+@var{matrix} must be a square matrix.
+@code{determinant} returns the determinant of @var{matrix}.
+
+@example
+(require 'determinant)
+(determinant '((1 2) (3 4))) @result{} -2
+(determinant '((1 2 3) (4 5 6) (7 8 9))) @result{} 0
+@end example
+@end defun
+
+
+@defun transpose matrix
+
+Returns a copy of @var{matrix} flipped over the diagonal containing the 1,1
+element.
+@end defun
+
+
+@defun matrix:product m1 m2
+
+Returns the product of matrices @var{m1} and @var{m2}.
+@end defun
+
+
+@defun matrix:inverse matrix
+
+@var{matrix} must be a square matrix.
+If @var{matrix} is singlar, then @code{matrix:inverse} returns #f; otherwise @code{matrix:inverse} returns the
+@code{matrix:product} inverse of @var{matrix}.
+@end defun
+

@@ -1,0 +1,36 @@
+@code{(require 'array-interpolate)}
+
+
+@defun interpolate-array-ref ra x1 @dots{} xj
+
+
+@var{ra} must be an array of rank j containing numbers.  @code{interpolate-array-ref} returns a
+value interpolated from the nearest j-dimensional cube of elements
+of @var{ra}.
+
+@example
+(interpolate-array-ref '#2A:fixZ32b((1 2 3) (4 5 6)) 1 0.1)
+                              ==> 4.1
+(interpolate-array-ref '#2A:fixZ32b((1 2 3) (4 5 6)) 0.5 0.25)
+                              ==> 2.75
+@end example
+@end defun
+
+
+@deffn {Procedure} resample-array! ra1 ra2
+
+
+@var{ra1} and @var{ra2} must be numeric arrays of equal rank.  @code{resample-array!} sets @var{ra1} to
+values interpolated from @var{ra2} such that the values of elements at the
+corners of @var{ra1} and @var{ra2} are equal.
+
+@example
+(define ra (make-array (A:fixZ32b) 2 2))
+(resample-array! ra '#2A:fixZ32b((1 2 3) (4 5 6)))
+ra              ==>  #2A:fixZ32b((1 3) (4 6))
+(define ra (make-array (A:floR64b) 3 2))
+(resample-array! ra '#2A:fixZ32b((1 2 3) (4 5 6)))
+ra              ==>  #2A:floR64b((1.0 3.0) (2.5 4.5) (4.0 6.0))
+@end example
+@end deffn
+

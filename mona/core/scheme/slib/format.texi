@@ -1,0 +1,451 @@
+
+@menu
+* Format Interface::            
+* Format Specification::        
+@end menu
+
+@node Format Interface, Format Specification, Format, Format
+@subsection Format Interface
+
+@defun format destination format-string . arguments
+An almost complete implementation of Common LISP format description
+according to the CL reference book @cite{Common LISP} from Guy L.
+Steele, Digital Press.  Backward compatible to most of the available
+Scheme format implementations.
+
+Returns @code{#t}, @code{#f} or a string; has side effect of printing
+according to @var{format-string}.  If @var{destination} is @code{#t},
+the output is to the current output port and @code{#t} is returned.  If
+@var{destination} is @code{#f}, a formatted string is returned as the
+result of the call.  NEW: If @var{destination} is a string,
+@var{destination} is regarded as the format string; @var{format-string} is
+then the first argument and the output is returned as a string. If
+@var{destination} is a number, the output is to the current error port
+if available by the implementation. Otherwise @var{destination} must be
+an output port and @code{#t} is returned.@refill
+
+@var{format-string} must be a string.  In case of a formatting error
+format returns @code{#f} and prints a message on the current output or
+error port.  Characters are output as if the string were output by the
+@code{display} function with the exception of those prefixed by a tilde
+(~).  For a detailed description of the @var{format-string} syntax
+please consult a Common LISP format reference manual.  For a test suite
+to verify this format implementation load @file{formatst.scm}. Please
+send bug reports to @code{lutzeb@@cs.tu-berlin.de}.
+
+Note: @code{format} is not reentrant, i.e. only one @code{format}-call
+may be executed at a time.
+
+@end defun
+
+@node Format Specification,  , Format Interface, Format
+@subsection Format Specification (Format version 3.1)
+
+Please consult a Common LISP format reference manual for a detailed
+description of the format string syntax.  For a demonstration of the
+implemented directives see @file{formatst.scm}.@refill
+
+This implementation supports directive parameters and modifiers
+(@code{:} and @code{@@} characters). Multiple parameters must be
+separated by a comma (@code{,}).  Parameters can be numerical parameters
+(positive or negative), character parameters (prefixed by a quote
+character (@code{'}), variable parameters (@code{v}), number of rest
+arguments parameter (@code{#}), empty and default parameters.  Directive
+characters are case independent. The general form of a directive
+is:@refill
+
+@noindent
+@var{directive} ::= ~@{@var{directive-parameter},@}[:][@@]@var{directive-character}
+
+@noindent
+@var{directive-parameter} ::= [ [-|+]@{0-9@}+ | '@var{character} | v | # ]
+
+
+@subsubsection Implemented CL Format Control Directives
+
+Documentation syntax: Uppercase characters represent the corresponding
+control directive characters. Lowercase characters represent control
+directive parameter descriptions.
+
+@table @asis
+@item @code{~A}
+Any (print as @code{display} does).
+@table @asis
+@item @code{~@@A}
+left pad.
+@item @code{~@var{mincol},@var{colinc},@var{minpad},@var{padchar}A}
+full padding.
+@end table
+@item @code{~S}
+S-expression (print as @code{write} does).
+@table @asis
+@item @code{~@@S}
+left pad.
+@item @code{~@var{mincol},@var{colinc},@var{minpad},@var{padchar}S}
+full padding.
+@end table
+@item @code{~D}
+Decimal.
+@table @asis
+@item @code{~@@D}
+print number sign always.
+@item @code{~:D}
+print comma separated.
+@item @code{~@var{mincol},@var{padchar},@var{commachar}D}
+padding.
+@end table
+@item @code{~X}
+Hexadecimal.
+@table @asis
+@item @code{~@@X}
+print number sign always.
+@item @code{~:X}
+print comma separated.
+@item @code{~@var{mincol},@var{padchar},@var{commachar}X}
+padding.
+@end table
+@item @code{~O}
+Octal.
+@table @asis
+@item @code{~@@O}
+print number sign always.
+@item @code{~:O}
+print comma separated.
+@item @code{~@var{mincol},@var{padchar},@var{commachar}O}
+padding.
+@end table
+@item @code{~B}
+Binary.
+@table @asis
+@item @code{~@@B}
+print number sign always.
+@item @code{~:B}
+print comma separated.
+@item @code{~@var{mincol},@var{padchar},@var{commachar}B}
+padding.
+@end table
+@item @code{~@var{n}R}
+Radix @var{n}.
+@table @asis
+@item @code{~@var{n},@var{mincol},@var{padchar},@var{commachar}R}
+padding.
+@end table
+@item @code{~@@R}
+print a number as a Roman numeral.
+@item @code{~:@@R}
+print a number as an ``old fashioned'' Roman numeral.
+@item @code{~:R}
+print a number as an ordinal English number.
+@item @code{~R}
+print a number as a cardinal English number.
+@item @code{~P}
+Plural.
+@table @asis
+@item @code{~@@P}
+prints @code{y} and @code{ies}.
+@item @code{~:P}
+as @code{~P but jumps 1 argument backward.}
+@item @code{~:@@P}
+as @code{~@@P but jumps 1 argument backward.}
+@end table
+@item @code{~C}
+Character.
+@table @asis
+@item @code{~@@C}
+prints a character as the reader can understand it (i.e. @code{#\} prefixing).
+@item @code{~:C}
+prints a character as emacs does (eg. @code{^C} for ASCII 03).
+@end table
+@item @code{~F}
+Fixed-format floating-point (prints a flonum like @var{mmm.nnn}).
+@table @asis
+@item @code{~@var{width},@var{digits},@var{scale},@var{overflowchar},@var{padchar}F}
+@item @code{~@@F}
+If the number is positive a plus sign is printed.
+@end table
+@item @code{~E}
+Exponential floating-point (prints a flonum like @var{mmm.nnn}@code{E}@var{ee}).
+@table @asis
+@item @code{~@var{width},@var{digits},@var{exponentdigits},@var{scale},@var{overflowchar},@var{padchar},@var{exponentchar}E}
+@item @code{~@@E}
+If the number is positive a plus sign is printed.
+@end table
+@item @code{~G}
+General floating-point (prints a flonum either fixed or exponential).
+@table @asis
+@item @code{~@var{width},@var{digits},@var{exponentdigits},@var{scale},@var{overflowchar},@var{padchar},@var{exponentchar}G}
+@item @code{~@@G}
+If the number is positive a plus sign is printed.
+@end table
+@item @code{~$}
+Dollars floating-point (prints a flonum in fixed with signs separated).
+@table @asis
+@item @code{~@var{digits},@var{scale},@var{width},@var{padchar}$}
+@item @code{~@@$}
+If the number is positive a plus sign is printed.
+@item @code{~:@@$}
+A sign is always printed and appears before the padding.
+@item @code{~:$}
+The sign appears before the padding.
+@end table
+@item @code{~%}
+Newline.
+@table @asis
+@item @code{~@var{n}%}
+print @var{n} newlines.
+@end table
+@item @code{~&}
+print newline if not at the beginning of the output line.
+@table @asis
+@item @code{~@var{n}&}
+prints @code{~&} and then @var{n-1} newlines.
+@end table
+@item @code{~|}
+Page Separator.
+@table @asis
+@item @code{~@var{n}|}
+print @var{n} page separators.
+@end table
+@item @code{~~}
+Tilde.
+@table @asis
+@item @code{~@var{n}~}
+print @var{n} tildes.
+@end table
+@item @code{~}<newline>
+Continuation Line.
+@table @asis
+@item @code{~:}<newline>
+newline is ignored, white space left.
+@item @code{~@@}<newline>
+newline is left, white space ignored.
+@end table
+@item @code{~T}
+Tabulation.
+@table @asis
+@item @code{~@@T}
+relative tabulation.
+@item @code{~@var{colnum,colinc}T}
+full tabulation.
+@end table
+@item @code{~?}
+Indirection (expects indirect arguments as a list).
+@table @asis
+@item @code{~@@?}
+extracts indirect arguments from format arguments.
+@end table
+@item @code{~(@var{str}~)}
+Case conversion (converts by @code{string-downcase}).
+@table @asis
+@item @code{~:(@var{str}~)}
+converts by @code{string-capitalize}.
+@item @code{~@@(@var{str}~)}
+converts by @code{string-capitalize-first}.
+@item @code{~:@@(@var{str}~)}
+converts by @code{string-upcase}.
+@end table
+@item @code{~*}
+Argument Jumping (jumps 1 argument forward).
+@table @asis
+@item @code{~@var{n}*}
+jumps @var{n} arguments forward.
+@item @code{~:*}
+jumps 1 argument backward.
+@item @code{~@var{n}:*}
+jumps @var{n} arguments backward.
+@item @code{~@@*}
+jumps to the 0th argument.
+@item @code{~@var{n}@@*}
+jumps to the @var{n}th argument (beginning from 0)
+@end table
+@item @code{~[@var{str0}~;@var{str1}~;...~;@var{strn}~]}
+Conditional Expression (numerical clause conditional).
+@table @asis
+@item @code{~@var{n}[}
+take argument from @var{n}.
+@item @code{~@@[}
+true test conditional.
+@item @code{~:[}
+if-else-then conditional.
+@item @code{~;}
+clause separator.
+@item @code{~:;}
+default clause follows.
+@end table
+@item @code{~@{@var{str}~@}}
+Iteration (args come from the next argument (a list)). Iteration
+bounding is controlled by configuration variables
+@var{format:iteration-bounded} and @var{format:max-iterations}.
+With both variables default, a maximum of 100 iterations will be
+performed.
+@table @asis
+@item @code{~@var{n}@{}
+at most @var{n} iterations.
+@item @code{~:@{}
+args from next arg (a list of lists).
+@item @code{~@@@{}
+args from the rest of arguments.
+@item @code{~:@@@{}
+args from the rest args (lists).
+@end table
+@item @code{~^}
+Up and out.
+@table @asis
+@item @code{~@var{n}^}
+aborts if @var{n} = 0
+@item @code{~@var{n},@var{m}^}
+aborts if @var{n} = @var{m}
+@item @code{~@var{n},@var{m},@var{k}^}
+aborts if @var{n} <= @var{m} <= @var{k}
+@end table
+@end table
+
+
+@subsubsection Not Implemented CL Format Control Directives
+
+@table @asis
+@item @code{~:A}
+print @code{#f} as an empty list (see below).
+@item @code{~:S}
+print @code{#f} as an empty list (see below).
+@item @code{~<~>}
+Justification.
+@item @code{~:^}
+(sorry I don't understand its semantics completely)
+@end table
+
+
+@subsubsection Extended, Replaced and Additional Control Directives
+
+@table @asis
+@item @code{~@var{mincol},@var{padchar},@var{commachar},@var{commawidth}D}
+@item @code{~@var{mincol},@var{padchar},@var{commachar},@var{commawidth}X}
+@item @code{~@var{mincol},@var{padchar},@var{commachar},@var{commawidth}O}
+@item @code{~@var{mincol},@var{padchar},@var{commachar},@var{commawidth}B}
+@item @code{~@var{n},@var{mincol},@var{padchar},@var{commachar},@var{commawidth}R}
+@var{commawidth} is the number of characters between two comma characters.
+@end table
+
+@table @asis
+@item @code{~I}
+print a R4RS complex number as @code{~F~@@Fi} with passed parameters for
+@code{~F}.
+@item @code{~Y}
+Pretty print formatting of an argument for scheme code lists.
+@item @code{~K}
+Same as @code{~?.}
+@item @code{~!}
+Flushes the output if format @var{destination} is a port.
+@item @code{~_}
+Print a @code{#\space} character
+@table @asis
+@item @code{~@var{n}_}
+print @var{n} @code{#\space} characters.
+@end table
+@item @code{~/}
+Print a @code{#\tab} character
+@table @asis
+@item @code{~@var{n}/}
+print @var{n} @code{#\tab} characters.
+@end table
+@item @code{~@var{n}C}
+Takes @var{n} as an integer representation for a character. No arguments
+are consumed. @var{n} is converted to a character by
+@code{integer->char}.  @var{n} must be a positive decimal number.@refill
+@item @code{~:S}
+Print out readproof.  Prints out internal objects represented as
+@code{#<...>} as strings @code{"#<...>"} so that the format output can always
+be processed by @code{read}.
+@refill
+@item @code{~:A}
+Print out readproof.  Prints out internal objects represented as
+@code{#<...>} as strings @code{"#<...>"} so that the format output can always
+be processed by @code{read}.
+@item @code{~Q}
+Prints information and a copyright notice on the format implementation.
+@table @asis
+@item @code{~:Q}
+prints format version.
+@end table
+@refill
+@item @code{~F, ~E, ~G, ~$}
+may also print number strings, i.e. passing a number as a string and
+format it accordingly.
+@end table
+
+@subsubsection Configuration Variables
+
+Format has some configuration variables at the beginning of
+@file{format.scm} to suit the systems and users needs. There should be
+no modification necessary for the configuration that comes with SLIB.
+If modification is desired the variable should be set after the format
+code is loaded. Format detects automatically if the running scheme
+system implements floating point numbers and complex numbers.
+
+@table @asis
+
+@item @var{format:symbol-case-conv}
+Symbols are converted by @code{symbol->string} so the case type of the
+printed symbols is implementation dependent.
+@code{format:symbol-case-conv} is a one arg closure which is either
+@code{#f} (no conversion), @code{string-upcase}, @code{string-downcase}
+or @code{string-capitalize}. (default @code{#f})
+
+@item @var{format:iobj-case-conv}
+As @var{format:symbol-case-conv} but applies for the representation of
+implementation internal objects. (default @code{#f})
+
+@item @var{format:expch}
+The character prefixing the exponent value in @code{~E} printing. (default
+@code{#\E})
+
+@item @var{format:iteration-bounded}
+When @code{#t}, a @code{~@{...~@}} control will iterate no more than the
+number of times specified by @var{format:max-iterations} regardless of
+the number of iterations implied by modifiers and arguments.
+When @code{#f}, a @code{~@{...~@}} control will iterate the number of
+times implied by modifiers and arguments, unless termination is forced
+by language or system limitations. (default @code{#t})
+
+@item @var{format:max-iterations}
+The maximum number of iterations performed by a @code{~@{...~@}} control.
+Has effect only when @var{format:iteration-bounded} is @code{#t}.
+(default 100)
+
+@end table
+
+@subsubsection Compatibility With Other Format Implementations
+
+@table @asis
+@item SLIB format 2.x:
+See @file{format.doc}.
+
+@item SLIB format 1.4:
+Downward compatible except for padding support and @code{~A}, @code{~S},
+@code{~P}, @code{~X} uppercase printing.  SLIB format 1.4 uses C-style
+@code{printf} padding support which is completely replaced by the CL
+@code{format} padding style.
+
+@item MIT C-Scheme 7.1:
+Downward compatible except for @code{~}, which is not documented
+(ignores all characters inside the format string up to a newline
+character).  (7.1 implements @code{~a}, @code{~s},
+~@var{newline}, @code{~~}, @code{~%}, numerical and variable
+parameters and @code{:/@@} modifiers in the CL sense).@refill
+
+@item Elk 1.5/2.0:
+Downward compatible except for @code{~A} and @code{~S} which print in
+uppercase.  (Elk implements @code{~a}, @code{~s}, @code{~~}, and
+@code{~%} (no directive parameters or modifiers)).@refill
+
+@item Scheme->C 01nov91:
+Downward compatible except for an optional destination parameter: S2C
+accepts a format call without a destination which returns a formatted
+string. This is equivalent to a #f destination in S2C. (S2C implements
+@code{~a}, @code{~s}, @code{~c}, @code{~%}, and @code{~~} (no directive
+parameters or modifiers)).@refill
+
+@end table
+
+This implementation of format is solely useful in the SLIB context
+because it requires other components provided by SLIB.@refill

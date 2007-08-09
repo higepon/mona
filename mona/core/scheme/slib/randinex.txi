@@ -1,0 +1,65 @@
+@code{(require 'random-inexact)}
+@ftindex random-inexact
+
+
+@defun random:uniform
+
+
+@defunx random:uniform state
+Returns an uniformly distributed inexact real random number in the
+range between 0 and 1.
+@end defun
+
+
+@defun random:exp
+
+
+@defunx random:exp state
+Returns an inexact real in an exponential distribution with mean 1.  For
+an exponential distribution with mean @var{u} use
+@w{@code{(* @var{u} (random:exp))}}.
+@end defun
+
+
+@defun random:normal
+
+
+@defunx random:normal state
+Returns an inexact real in a normal distribution with mean 0 and
+standard deviation 1.  For a normal distribution with mean @var{m} and
+standard deviation @var{d} use
+@w{@code{(+ @var{m} (* @var{d} (random:normal)))}}.
+@end defun
+
+
+@deffn {Procedure} random:normal-vector! vect
+
+
+@deffnx {Procedure} random:normal-vector! vect state
+Fills @var{vect} with inexact real random numbers which are independent
+and standard normally distributed (i.e., with mean 0 and variance 1).
+@end deffn
+
+
+@deffn {Procedure} random:hollow-sphere! vect
+
+
+@deffnx {Procedure} random:hollow-sphere! vect state
+Fills @var{vect} with inexact real random numbers the sum of whose
+squares is equal to 1.0.  Thinking of @var{vect} as coordinates in space
+of dimension n = @code{(vector-length @var{vect})}, the coordinates are
+uniformly distributed over the surface of the unit n-shere.
+@end deffn
+
+
+@deffn {Procedure} random:solid-sphere! vect
+
+
+@deffnx {Procedure} random:solid-sphere! vect state
+Fills @var{vect} with inexact real random numbers the sum of whose
+squares is less than 1.0.  Thinking of @var{vect} as coordinates in
+space of dimension @var{n} = @code{(vector-length @var{vect})}, the
+coordinates are uniformly distributed within the unit @var{n}-shere.
+The sum of the squares of the numbers is returned.
+@end deffn
+

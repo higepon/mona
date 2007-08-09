@@ -1,0 +1,62 @@
+
+@defun ncbi:read-dna-sequence port
+
+Reads the NCBI-format DNA sequence following the word @samp{ORIGIN}
+from @var{port}.
+@end defun
+
+
+@defun ncbi:read-file file
+
+Reads the NCBI-format DNA sequence following the word @samp{ORIGIN}
+from @var{file}.
+@end defun
+
+
+@defun mrna<-cdna str
+
+Replaces @samp{T} with @samp{U} in @var{str}
+@end defun
+
+
+@defun codons<-cdna cdna
+
+Returns a list of three-letter symbol codons comprising the protein
+sequence encoded by @var{cdna} starting with its first occurence of
+@samp{atg}.
+@end defun
+
+
+@defun protein<-cdna cdna
+
+Returns a list of three-letter symbols for the protein sequence
+encoded by @var{cdna} starting with its first occurence of @samp{atg}.
+@end defun
+
+
+@defun p<-cdna cdna
+
+Returns a string of one-letter amino acid codes for the protein
+sequence encoded by @var{cdna} starting with its first occurence of
+@samp{atg}.
+@end defun
+
+
+These cDNA count routines provide a means to check the nucleotide
+sequence with the @samp{BASE COUNT} line preceding the sequence from
+NCBI.
+
+
+@defun cdna:base-count cdna
+
+Returns a list of counts of @samp{a}, @samp{c}, @samp{g}, and
+@samp{t} occurrencing in @var{cdna}.
+@end defun
+
+
+@defun cdna:report-base-count cdna
+
+Prints the counts of @samp{a}, @samp{c}, @samp{g}, and @samp{t}
+occurrencing in @var{cdna}.
+@end defun
+

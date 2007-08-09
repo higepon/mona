@@ -1,0 +1,44 @@
+
+@defun cvs-files directory/
+Returns a list of the local pathnames (with prefix @var{directory/}) of all
+CVS controlled files in @var{directory/} and in @var{directory/}'s subdirectories.
+@end defun
+
+
+@defun cvs-directories directory/
+Returns a list of all of @var{directory/} and all @var{directory/}'s CVS controlled
+subdirectories.
+@end defun
+
+
+@defun cvs-root path/
+Returns the (string) contents of @var{path/}CVS/Root;
+or @code{(getenv "CVSROOT")} if Root doesn't exist.
+@end defun
+
+
+@defun cvs-repository directory/
+Returns the (string) contents of @var{directory/}CVS/Root appended
+with @var{directory/}CVS/Repository; or #f if @var{directory/}CVS/Repository
+doesn't exist.
+@end defun
+
+
+@deffn {Procedure} cvs-set-root! new-root directory/
+
+Writes @var{new-root} to file CVS/Root of @var{directory/}.
+@end deffn
+
+
+@deffn {Procedure} cvs-set-roots! new-root directory/
+
+Writes @var{new-root} to file CVS/Root of @var{directory/} and all its CVS subdirectories.
+@end deffn
+
+
+@defun cvs-vet directory/
+
+Signals an error if CVS/Repository or CVS/Root files in @var{directory/} or any
+subdirectory do not match.
+@end defun
+

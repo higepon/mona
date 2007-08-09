@@ -1,0 +1,104 @@
+
+@cindex schmooz
+@dfn{Schmooz} is a simple, lightweight markup language for interspersing
+Texinfo documentation with Scheme source code.  Schmooz does not create
+the top level Texinfo file; it creates @samp{txi} files which can be
+imported into the documentation using the Texinfo command
+@samp{@@include}.
+
+@ftindex schmooz
+@code{(require 'schmooz)} defines the function @code{schmooz}, which is
+used to process files.  Files containing schmooz documentation should
+not contain @code{(require 'schmooz)}.
+
+@deffn Procedure schmooz filename@r{.scm} @dots{}
+@var{Filename}.scm should be a string ending with @samp{.scm} naming an
+existing file containing Scheme source code.  @code{schmooz} extracts
+top-level comments containing schmooz commands from @var{filename}.scm
+and writes the converted Texinfo source to a file named
+@var{filename}.txi.
+
+@deffnx Procedure schmooz filename@r{.texi} @dots{}
+@deffnx Procedure schmooz filename@r{.tex} @dots{}
+@deffnx Procedure schmooz filename@r{.txi} @dots{}
+@var{Filename} should be a string naming an existing file containing
+Texinfo source code.  For every occurrence of the string @samp{@@include
+@var{filename}.txi} within that file, @code{schmooz} calls itself with
+the argument @samp{@var{filename}.scm}.
+@end deffn
+
+Schmooz comments are distinguished (from non-schmooz comments) by their
+first line, which must start with an at-sign (@@) preceded by one or
+more semicolons (@t{;}).  A schmooz comment ends at the first subsequent
+line which does @emph{not} start with a semicolon.  Currently schmooz
+comments are recognized only at top level.
+
+Schmooz comments are copied to the Texinfo output file with the leading
+contiguous semicolons removed.  Certain character sequences starting
+with at-sign are treated specially.  Others are copied unchanged.
+
+A schmooz comment starting with @samp{@@body} must be followed by a
+Scheme definition.  All comments between the @samp{@@body} line and
+the definition will be included in a Texinfo definition, either
+a @samp{@@defun} or a @samp{@@defvar}, depending on whether a procedure
+or a variable is being defined.
+
+Within the text of that schmooz comment, at-sign
+followed by @samp{0} will be replaced by @code{@@code@{procedure-name@}}
+if the following definition is of a procedure; or
+@code{@@var@{variable@}} if defining a variable.
+
+An at-sign followed by a non-zero digit will expand to the variable
+citation of that numbered argument: @samp{@@var@{argument-name@}}.
+
+If more than one definition follows a @samp{@@body} comment line
+without an intervening blank or comment line, then those definitions
+will be included in the same Texinfo definition using @samp{@@defvarx}
+or @samp{@@defunx}, depending on whether the first definition is of
+a variable or of a procedure.
+
+Schmooz can figure out whether a definition is of a procedure if
+it is of the form:
+
+@samp{(define (<identifier> <arg> ...) <expression>)}
+
+@noindent
+or if the left hand side of the definition is some form ending in
+a lambda expression.  Obviously, it can be fooled.  In order to
+force recognition of a procedure definition, start the documentation
+with @samp{@@args} instead of @samp{@@body}.  @samp{@@args} should
+be followed by the argument list of the function being defined,
+which may be enclosed in parentheses and delimited by whitespace,
+(as in Scheme), enclosed in braces and separated by commas, (as
+in Texinfo), or consist of the remainder of the line, separated
+by whitespace.
+
+For example:
+
+@example
+;;@@args arg1 args ...
+;;@@0 takes argument @@1 and any number of @@2
+(define myfun (some-function-returning-magic))
+@end example
+
+Will result in:
+
+@example
+@@defun myfun arg1 args @@dots@{@}
+
+@@code@{myfun@} takes argument @@var@{arg1@} and any number of @@var@{args@}
+@@end defun
+@end example
+
+@samp{@@args} may also be useful for indicating optional arguments
+by name.  If @samp{@@args} occurs inside a schmooz comment section,
+rather than at the beginning, then it will generate a @samp{@@defunx}
+line with the arguments supplied.
+
+
+If the first at-sign in a schmooz comment is immediately followed by
+whitespace, then the comment will be expanded to whatever follows that
+whitespace.  If the at-sign is followed by a non-whitespace character
+then the at-sign will be included as the first character of the expansion.
+This feature is intended to make it easy to include Texinfo directives
+in schmooz comments.

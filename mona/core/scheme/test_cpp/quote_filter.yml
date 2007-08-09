@@ -1,0 +1,25 @@
+-
+ - 'a
+ - (quote a)
+-
+ - '(x y z)
+ - (quote (x y z))
+-
+ - (list 'a)
+ - (list (quote a))
+-
+ - (list 'a 'b 'c)
+ - (list (quote a) (quote b) (quote c))
+-
+ - (car '(x y z))
+ - (car (quote (x y z)))
+-
+ - (eval '(define a (lambda (x) (+ 1 x))))
+ - (eval (quote (define a (lambda (x) (+ 1 x)))))
+-
+ - (eqv? 'a 'a)
+ - (eqv? (quote a) (quote a))
+-
+ - "'a"
+ - "'a"
+

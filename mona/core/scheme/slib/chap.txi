@@ -1,0 +1,49 @@
+@code{(require 'chapter-order)}
+@ftindex chapter-order
+
+The @samp{chap:} functions deal with strings which are ordered like
+chapter numbers (or letters) in a book.  Each section of the string
+consists of consecutive numeric or consecutive aphabetic characters of
+like case.
+
+
+@defun chap:string<? string1 string2
+
+Returns #t if the first non-matching run of alphabetic upper-case or
+the first non-matching run of alphabetic lower-case or the first
+non-matching run of numeric characters of @var{string1} is
+@code{string<?} than the corresponding non-matching run of
+characters of @var{string2}.
+
+@example
+(chap:string<? "a.9" "a.10")                    @result{} #t
+(chap:string<? "4c" "4aa")                      @result{} #t
+(chap:string<? "Revised^@{3.99@}" "Revised^@{4@}")  @result{} #t
+@end example
+@end defun
+
+
+@defun chap:string>? string1 string2
+@defunx chap:string<=? string1 string2
+@defunx chap:string>=? string1 string2
+
+Implement the corresponding chapter-order predicates.
+@end defun
+
+
+@defun chap:next-string string
+
+Returns the next string in the @emph{chapter order}.  If @var{string}
+has no alphabetic or numeric characters,
+@code{(string-append @var{string} "0")} is returnd.  The argument to
+chap:next-string will always be @code{chap:string<?} than the result.
+
+@example
+(chap:next-string "a.9")                @result{} "a.10"
+(chap:next-string "4c")                 @result{} "4d"
+(chap:next-string "4z")                 @result{} "4aa"
+(chap:next-string "Revised^@{4@}")        @result{} "Revised^@{5@}"
+
+@end example
+@end defun
+

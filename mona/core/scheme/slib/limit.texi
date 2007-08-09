@@ -1,0 +1,100 @@
+
+@deffn {library procedure} limit proc x1 x2 k
+@deffnx {library procedure} limit proc x1 x2
+
+@var{Proc} must be a procedure taking a single inexact real argument.
+@var{K} is the number of points on which @var{proc} will be called; it
+defaults to 8.
+
+If @var{x1} is finite, then @var{Proc} must be continuous on the
+half-open interval:
+
+ ( @var{x1} .. @var{x1}+@var{x2} ]
+
+And @var{x2} should be chosen small enough so that @var{proc} is
+expected to be monotonic or constant on arguments between @var{x1} and
+@var{x1} + @var{x2}.
+
+@code{Limit} computes the limit of @var{proc} as its argument
+approaches @var{x1} from @var{x1} + @var{x2}.
+@code{Limit} returns a real number or real infinity or @samp{#f}.
+
+If @var{x1} is not finite, then @var{x2} must be a finite nonzero real
+with the same sign as @var{x1}; in which case @code{limit} returns:
+
+@code{(limit (lambda (x) (proc (/ x))) 0.0 (/ @var{x2}) @var{k})}
+
+@code{Limit} examines the magnitudes of the differences between
+successive values returned by @var{proc} called with a succession of
+numbers from @var{x1}+@var{x2}/@var{k} to @var{x1}.
+
+If the magnitudes of differences are monotonically decreasing, then
+then the limit is extrapolated from the degree n polynomial passing
+through the samples returned by @var{proc}.
+
+If the magnitudes of differences are increasing as fast or faster than
+a hyperbola matching at @var{x1}+@var{x2}, then a real infinity with
+sign the same as the differences is returned.
+
+If the magnitudes of differences are increasing more slowly than the
+hyperbola matching at @var{x1}+@var{x2}, then the limit is
+extrapolated from the quadratic passing through the three samples
+closest to @var{x1}.
+
+If the magnitudes of differences are not monotonic or are not
+completely within one of the above categories, then #f is returned.
+@end deffn
+
+@example
+;; constant
+(limit (lambda (x) (/ x x)) 0 1.0e-9)           ==> 1.0
+(limit (lambda (x) (expt 0 x)) 0 1.0e-9)        ==> 0.0
+(limit (lambda (x) (expt 0 x)) 0 -1.0e-9)       ==> +inf.0
+;; linear
+(limit + 0 976.5625e-6)                         ==> 0.0
+(limit - 0 976.5625e-6)                         ==> 0.0
+;; vertical point of inflection
+(limit sqrt 0 1.0e-18)                          ==> 0.0
+(limit (lambda (x) (* x (log x))) 0 1.0e-9)     ==> -102.70578127633066e-12
+(limit (lambda (x) (/ x (log x))) 0 1.0e-9)     ==> 96.12123142321669e-15
+;; limits tending to infinity
+(limit + +inf.0 1.0e9)                          ==> +inf.0
+(limit + -inf.0 -1.0e9)                         ==> -inf.0
+(limit / 0 1.0e-9)                              ==> +inf.0
+(limit / 0 -1.0e-9)                             ==> -inf.0
+(limit (lambda (x) (/ (log x) x)) 0 1.0e-9)     ==> -inf.0
+(limit (lambda (x) (/ (magnitude (log x)) x)) 0 -1.0e-9)
+                                                ==> -inf.0
+;; limit doesn't exist
+(limit sin +inf.0 1.0e9)                        ==> #f
+(limit (lambda (x) (sin (/ x))) 0 1.0e-9)       ==> #f
+(limit (lambda (x) (sin (/ x))) 0 -1.0e-9)      ==> #f
+(limit (lambda (x) (/ (log x) x)) 0 -1.0e-9)    ==> #f
+;; conditionally convergent - return #f
+(limit (lambda (x) (/ (sin x) x)) +inf.0 1.0e222)
+                                                ==> #f
+;; asymptotes
+(limit / -inf.0 -1.0e222)                       ==> 0.0
+(limit / +inf.0 1.0e222)                        ==> 0.0
+(limit (lambda (x) (expt x x)) 0 1.0e-18)       ==> 1.0
+(limit (lambda (x) (sin (/ x))) +inf.0 1.0e222) ==> 0.0
+(limit (lambda (x) (/ (+ (exp (/ x)) 1))) 0 1.0e-9)
+                                                ==> 0.0
+(limit (lambda (x) (/ (+ (exp (/ x)) 1))) 0 -1.0e-9)
+                                                ==> 1.0
+(limit (lambda (x) (real-part (expt (tan x) (cos x)))) (/ pi 2) 1.0e-9)
+                                                ==> 1.0
+;; This example from the 1979 Macsyma manual grows so rapidly
+;;  that x2 must be less than 41.  It correctly returns e^2.
+(limit (lambda (x) (expt (+ x (exp x) (exp (* 2 x))) (/ x))) +inf.0 40)
+                                                ==> 7.3890560989306504
+;; LIMIT can calculate the proper answer when evaluation
+;; of the function at the limit point does not:
+(tan (atan +inf.0))                             ==> 16.331778728383844e15
+(limit tan (atan +inf.0) -1.0e-15)              ==> +inf.0
+(tan (atan +inf.0))                             ==> 16.331778728383844e15
+(limit tan (atan +inf.0) 1.0e-15)               ==> -inf.0
+((lambda (x) (expt (exp (/ -1 x)) x)) 0)        ==> 1.0
+(limit (lambda (x) (expt (exp (/ -1 x)) x)) 0 1.0e-9)
+                                                ==> 0.0
+@end example

@@ -1,0 +1,175 @@
+This message announces the availability of Scheme Library release slib3a4.
+
+SLIB is a portable Scheme library providing compatibiliy and utility
+functions for all standard Scheme implementations.
+
+SLIB supports Bigloo, Chez, ELK 3.0, GAMBIT 3.0, Guile, JScheme,
+MacScheme, MITScheme, PLT Scheme (DrScheme and MzScheme), Pocket
+Scheme, RScheme, scheme->C, Scheme48, SCM, SCM Mac, scsh, Stk, T3.1,
+umb-scheme, and VSCM.
+
+SLIB is free software.  It has a Permissive-Non-Warranty license
+(http://swiss.csail.mit.edu/~jaffer/SLIB_COPYING.txt).
+
+Documentation and distributions in several formats are linked from
+SLIB's home page:
+
+             http://swiss.csail.mit.edu/~jaffer/SLIB.html
+
+Links to distributions of SLIB and related softwares are at the end of
+this message.
+
+				-=-=-
+slib3a4 news:
+
++ Discreet Fourier Transforms of any rank.
+
++ Added SRFI-94 and SRFI-23
+
+From Ivan Shmakov
+
+  * scheme48.init (file-exists?): Much simplified.
+
+From Kevin Ryde
+
+  * guile.init: Fixed line-i/o in Guile >= 1.8.
+
+  * srfi-1.scm (reduce-right): Was infinite loop.
+
+From Ben Goetter
+
+  * pscheme.init: Revised for Pscheme 1.3.
+
+From Aubrey Jaffer
+
+  * dft.scm (dft, dft-1): Added routines which use the best method
+  for decimating each dimension.
+  (dft:dft): Call 1d transform only with contiguous arrays.
+  (sft, sft-1, fft, fft-1): Added optional array-prototype argument.
+  (sft, sft-1): Slow Fourier transforms added.
+  (dft:sft1d!, dft:fft1d!): Flipped polarity of exponent to agree
+  with http://en.wikipedia.org/wiki/Discrete_Fourier_transform.
+  Generalized to any positive rank.
+  Renamed from "fft.scm".
+
+  * slib.texi (Sorting): Updated; cleaned up.
+  (Sorting): Added optional KEY arguments.
+  * sort.scm (merge!): Fixed.
+  (sort!): Swap pairs so that list returned EQ? to argument.
+  (sort, sort!, sorted?, merge, merge!): Added optional KEY argument.
+
+  * tzfile.scm (tzfile:read): Use subbytes instead of subarray.
+  * byte.scm (subbytes): Added.
+  (subbytes-read!, subbytes-write): Renamed from substring-...
+
+  * slib.texi (Irrational Real Functions)
+  (Irrational Integer Functions): Sections added.
+  * math-integer.scm, math-real.scm: Added SRFI-94.
+
+  * slib.texi (Feature): Indexed number-system attribute features.
+  * require.scm: Tightened number-system attribute features.
+
+  * modular.scm (modular:characteristic, modular:+): Recoded so `-'
+  has no more than 2 arguments.
+  (mod, rem): Removed.
+  (modular:characteristic): Renamed from modulus->integer.
+  (modular:expt): Handle base = modulus - 1. Corrected documentation.
+
+  * srfi-23.scm (error): Added.
+
+  * simetrix.scm (SI:unit-infos): Updated u and eV to CODATA-2002.
+
+  * peanosfc.scm (peano-coordinates->integer)
+  (integer->peano-coordinates): Fixed; were broken for rank != 2.
+
+  * subarray.scm (subarray): Handle reverse index ranges.
+
+  * pnm.scm (pnm:array-write): Don't lose comments when recursing.
+
+  * slib.spec (%files): Added man1/slib.1.gz.
+
+  * grapheps.ps (sign): Cleaner than inline code.
+  (setup-plot): Now handles decreasing axes.
+  * grapheps.scm (plot): Handle list of lists data.
+
+  * root.scm (integer-sqrt): Streamlined.
+  (secant:find-root-1): Fixed internal argument mismatch
+  for number-of-iterations case.
+
+  * getopt.scm (*argv*): Removed (define *argv* *argv*).
+
+  * solid.scm (solid:prism, solid:lumber): Added.
+
+  * array.scm (make-shared-array): Work for rank-0 arrays.
+  (equal?): Compare element-by-element of two arrays.
+  (make-array): Return string or vector even if prototype is a
+  strict array.
+  (make-array): Return simple string or vector if possible.
+
+  * strcase.scm (symbol-append): Work with case-sensitive or
+  case-insensitive symbols.
+
+  * Makefile (dvi, pdf): New tetex-3.0(-20.FC5) broke them -- fixed.
+  (docs): Added target to make all documentation files and invoke xdvi.
+  (texifiles): Added fdl.texi.
+  (S48LIB): Renamed from LIB.
+  (S48SLIB): Subdirectory of implementation-vicinity.
+  (install48): Make $(S48SLIB) directory and files.
+
+  * indexes.texi (Index): Removed "Full Table of Contents".
+  * slib.texi (SRFI): Added @ftindex entries for SRFIs.
+  Converted to @copying and GNU Free Documentation License.
+
+  * mklibcat.scm: Change all slib files to `source'.
+
+  * require.scm (catalog:get): Handle (home-vicinity) being false.
+  (catalog:get): mklibcat is `source'.
+  (require): Don't provide `new-catalog'.
+
+  * *.init, Template.scm, require.scm (slib:features): Renamed from
+  *features* to avoid conflict with Guile identifier.
+
+  * vscm.init, umbscheme.init, Template.scm, t3.init, STk.init,
+  scsh.init, scheme2c.init, RScheme.init, mitscheme.init,
+  macscheme.init, jscheme.init, gambit.init, elk.init,
+  DrScheme.init, chez.init, bigloo.init (slib:error): Capture
+  `error' identifier (to survive redefinition).
+
+  * elk.init (slib:error): Removed bad insertion.
+
+  * bigloo.init (slib:features): Lacks object-hash.
+  (slib:load): Fixed suffix lossage.
+  (slib:features): Removed object->string and rationalize.
+
+  * guile.init (char-code-limit): Reduced to workaround string
+  ordering bug.
+  (system, delete-file, open-file, make-array): Changed
+  from define to set! to eliminate guile-1.8.0 warning:
+  WARNING: (guile-user): imported module (ice-9 slib) overrides core binding
+  (defined?, in-vicinity, port?, 1+, -1+, 1-): Removed
+  definitions duplicating Guile defines.
+  (*features*): Set, rather than define.
+  (browse-url): Added.
+
+  * scheme48.init: (slib:load-compiled): Loads a native SRFI module.
+  Create "implcat" and new-catalog with native SRFI modules.
+  (slib-primitives): Removed s48-modulo and s48-atan.
+
+				-=-=-
+
+SLIB is available from:
+ http://swiss.csail.mit.edu/ftpdir/scm/slib3a4.zip
+ http://swiss.csail.mit.edu/ftpdir/scm/slib-3a4-1.noarch.rpm
+ swiss.csail.mit.edu:/pub/scm/slib3a4.zip
+ swiss.csail.mit.edu:/pub/scm/slib-3a4-1.noarch.rpm
+
+SLIB-PSD is a portable debugger for Scheme (requires emacs editor):
+ http://swiss.csail.mit.edu/ftpdir/scm/slib-psd1-3.tar.gz
+ swiss.csail.mit.edu:/pub/scm/slib-psd1-3.tar.gz
+
+SCHELOG is an embedding of Prolog in Scheme+SLIB:
+ http://www.ccs.neu.edu/home/dorai/schelog/schelog.html
+
+Programs for printing and viewing TexInfo documentation (which SLIB
+has) come with GNU Emacs or can be obtained via ftp from:
+ ftp://ftp.gnu.org/pub/gnu/texinfo/texinfo-4.8.tar.gz
