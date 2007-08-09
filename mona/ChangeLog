@@ -1,3 +1,7 @@
+2007-08-10  higepon  <higepon@users.sourceforge.jp>
+
+        * Moved scheme-gc to mona/core/scheme.
+
 2007-07-14  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/PageManager.cpp (PageManager::pageFaultHandler): Changed a stack over flow message.

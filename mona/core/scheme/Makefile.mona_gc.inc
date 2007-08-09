@@ -1,3 +1,3 @@
 GC_CFLAGS  = -DMONASH_DONT_FREE_MEMORY -DUSE_MONA_GC #-DGC_TRACE
 GC_LDFLAGS = 
-GC_SOURCES = gc3/GCRecord.cpp gc3/gc.cpp
+GC_SOURCES = gc/GCRecord.cpp gc/gc.cpp

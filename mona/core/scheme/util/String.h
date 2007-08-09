@@ -18,7 +18,7 @@
 #include "gc_allocator.h"
 extern bool g_gc_initialized;
 #elif defined(USE_MONA_GC)
-#include "../gc3/gc.h"
+#include "../gc/gc.h"
 #endif
 #include <string.h>
 #include <stdio.h>

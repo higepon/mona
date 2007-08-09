@@ -19,7 +19,7 @@
 extern bool g_gc_initialized;
 #elif defined(USE_MONA_GC)
 extern bool g_gc_initialized;
-#include "../gc3/gc.h"
+#include "../gc/gc.h"
 #endif
 
 namespace util {
