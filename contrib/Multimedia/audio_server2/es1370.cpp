@@ -87,7 +87,7 @@ handle_t es1370_new()
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 1024;
+	d->bufsize = 1024*8;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
 
@@ -200,6 +200,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 	result = d->callback(d->ref, buf, d->bufsize, &wrote);
+	outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, (uint32_t)buf);
 //	es1370_set_buffer(d, buf, d->bufsize);
 	return result;
 }
@@ -241,6 +242,7 @@ static error_t es1370_device_init(struct es1370_driver *d)
 */
 
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
+	outp32(d->baseIO+ES1370_REG_DAC2_FRAMECNT, d->bufsize-1);
 
 	d->thread->start();
 
@@ -363,6 +365,7 @@ static void es1370_interrupt_catcher(void* a)
 
 	MessageInfo msg;
 	uint32_t stat, result;
+	uint32_t tick;
 	while(1)
 	{
 		if( MonAPI::Message::receive(&msg) )
@@ -371,6 +374,7 @@ static void es1370_interrupt_catcher(void* a)
 		}
 		if( msg.header == MSG_INTERRUPTED )
 		{
+//			tick = syscall_get_tick();
 			stat = inp32(d->baseIO+ES1370_REG_STATUS);
 			if( stat & 2 )
 			{
@@ -378,23 +382,29 @@ static void es1370_interrupt_catcher(void* a)
 				{
 //					puts("INTERRUPTED");
 //					es1370_stop_playback(d);
+
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 					result &= ~ES1370_P2_INTR_EN;
 					outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
+
 					result = es1370_buffer_setter(d);
 					if( result != OK )
 					{
 						d->state = PAUSE;
 						return;
 					}
+
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 					result |= ES1370_P2_INTR_EN;
 					outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
+
 //					es1370_start_playback(d);
 
 					monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 				}
 			}
+//			tick = syscall_get_tick() - tick;
+//			printf("t = %d\n", tick);
 		}
 	}
 }
