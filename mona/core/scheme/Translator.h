@@ -25,6 +25,9 @@
 #include "Definition.h"
 #include "Application.h"
 #include "Cond.h"
+#include "Unquote.h"
+#include "UnquoteSplicing.h"
+#include "QuasiQuote.h"
 #include "Let.h"
 #include "NamedLet.h"
 #include "LetAsterisk.h"
@@ -55,14 +58,17 @@ public:
 //    Object* translateBegin2(Pair* data);
     Object* translate2(Object* data);
 
-    int translateAsData(SExp* sexp, Object** object);
+    int translateAsQuote(SExp* sexp, Object** object);
+    int translateAsQuasiQuote(SExp* sexp, Object** object);
     int translate(SExp** sexp, Object** object);
     int translateDefineSyntax(SExp* sexp);
     SExp* expandMacroIfMatch(const ::util::String& name, SExp** sexp);
 private:
-    int translateAsDataPrimitive(SExp* sexp, Object** object);
-    int translateAsVectorData(SExp* sexp, Object** object);
-    int translateAsListData(SExp* sexp, Object** object);
+    int translateAsQuotePrimitive(SExp* sexp, Object** object);
+    int translateAsVectorQuote(SExp* sexp, Object** object);
+    int translateAsListQuote(SExp* sexp, Object** object);
+    int translateAsVectorQuasiQuote(SExp* sexp, Object** object);
+    int translateAsListQuasiQuote(SExp* sexp, Object** object);
 
     int translatePrimitive(SExp* sexp, Object** object);
     int translateDefinition(SExp* sexp, Object** object);
@@ -80,6 +86,8 @@ private:
     int translateApplication(SExp* sexp, Object** object);
     int translateQuote(SExp* sexp, Object** object);
     int translateQuasiQuote(SExp* sexp, Object** object);
+    int translateQuasiQuoteList(SExp* sexp, Object** object);
+    int translateQuasiQuoteData(SExp* sexp, Object** object);
     int translateUnquote(SExp* sexp, Object** object);
 
     // ugly

@@ -1,5 +1,5 @@
 /*!
-    \file  QuasiQuote.h
+    \file  UnquoteSplicing.h
     \brief
 
     Copyright (c) 2006-2007 HigePon
@@ -10,25 +10,24 @@
     \date   create:2007/08/14 update:$Date$
 */
 
-#ifndef __QUASI_QUAOTE_H__
-#define __QUASI_QUAOTE_H__
+#ifndef __UNQUAOTE_SPLICING_H__
+#define __UNQUAOTE_SPLICING_H__
 
 #include "scheme.h"
 
 namespace monash {
 
-class QuasiQuote : public Object
+class UnquoteSplicing : public Object
 {
 public:
-    QuasiQuote(Object* object, uint32_t lineno = 0);
-    virtual ~QuasiQuote();
+    UnquoteSplicing(Object* object, uint32_t lineno = 0);
+    virtual ~UnquoteSplicing();
 
 public:
     virtual ::util::String toString();
     virtual int type() const;
     virtual Object* eval(Environment* env);
-    virtual Object* evalIter(Object* object, Environment* env);
-    virtual ::util::String typeString() const { return "quasiquote"; }
+    virtual ::util::String typeString() const { return "unquote-splicing"; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual bool eqv() const;
     virtual bool eq()  const;
@@ -40,4 +39,4 @@ protected:
 
 }; // namespace monash
 
-#endif // __QUASI_QUAOTE_H__
+#endif // __UNQUAOTE_SPLICING_H__

@@ -34,6 +34,7 @@ Kernel.cpp\
 SpecialIf.cpp\
 QuasiQuote.cpp\
 Unquote.cpp\
+UnquoteSplicing.cpp\
 SString.cpp\
 Tokenizer.cpp\
 Translator.cpp\

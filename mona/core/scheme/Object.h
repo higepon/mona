@@ -81,6 +81,7 @@ public:
     bool isSRegexp() const { return type() == REGEXP; }
     bool isSRegMatch() const { return type() == REGMATCH; }
     bool isUnquote() const { return type() == UNQUOTE; }
+    bool isUnquoteSplicing() const { return type() == UNQUOTE_SPLICING; }
 public:
 
     enum
@@ -90,6 +91,7 @@ public:
         CHARCTER,
         QUOTE,
         UNQUOTE,
+        UNQUOTE_SPLICING,
         QUASI_QUOTE,
         VECTOR,
         CONTINUATION,

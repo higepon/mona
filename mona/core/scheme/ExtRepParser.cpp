@@ -273,7 +273,6 @@ Object* ExtRepParser::parseList()
             return NEW2(Pair, new RiteralConstant("quote"), new Pair(parseDatum(), SCM_NIL));
         case SToken::BACK_QUOTE:
             nextToken();
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return NEW2(Pair, new RiteralConstant("quasiquote"), new Pair(parseDatum(), SCM_NIL));
         case SToken::CAMMA_AT:
             nextToken();

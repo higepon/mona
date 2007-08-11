@@ -35,6 +35,7 @@ int Unquote::type() const
 
 Object* Unquote::eval(Environment* env)
 {
+    return object_->eval(env);
 }
 
 bool Unquote::eqv() const

@@ -15,11 +15,6 @@
 using namespace util;
 using namespace monash;
 #define SYNTAX_ERROR(...) printf(__VA_ARGS__);fflush(stdout);
-// #define N(n)         (sexp->sexps[n])
-// #define NN(i, j)     sexp->sexps[i]->sexps[j]
-// #define NNN(i, j, k) sexp->sexps[i]->sexps[j]->sexps[k]
-// #define L()          sexp->sexps.size()
-// #define LL(n)        sexp->sexps[n]->sexps.size()
 
 Translator::Translator() : inLambda_(false)
 {
@@ -44,59 +39,49 @@ Object* Translator::translate2(Object* data)
     return NULL;
 }
 
-// Object* Translator::translateBegin2(Pair* data)
-// {
-//     Object* ocar = data->getCar();
-//     if (!ocar->isRiteralConstant())
-//     {
-//         SYNTAX_ERROR("begin");
-//         return NULL;
-//     }
-//     RiteralConstant* r = (RiteralConstant*)ocar;
-//     if (r->text() != "begin")
-//     {
-//         SYNTAX_ERROR("begin");
-//         return NULL;
-//     }
-//     Objects* body = new Objects;
-//     Pair* pair;
-//     for (Object* p = data->getCdr(); !p->isNil();)
-//     {
-//         if (!p->isPair())
-//         {
-//             SYNTAX_ERROR("begin");
-//             return NULL;
-//         }
-//         pair = (Pair*)p;
-//         body->add(translate2(pair->getCar()));
-//         p = pair->getCdr();
-//     }
-//     return new Begin(body);
-
-// }
-
 // change from externel representation to Scheme objects
-int Translator::translateAsData(SExp* sexp, Object** object)
+int Translator::translateAsQuote(SExp* sexp, Object** object)
 {
     if (sexp->type != SExp::SEXPS)
     {
-        return translateAsDataPrimitive(sexp, object);
+        return translateAsQuotePrimitive(sexp, object);
     }
 
     if (L() > 1 && N(0)->text == "VECTOR")
     {
-        return translateAsVectorData(sexp, object);
+        return translateAsVectorQuote(sexp, object);
     }
     else
     {
         if (L() > 0 && N(0)->text == "lambda") inLambda_ = true;
-        int ret = translateAsListData(sexp, object);
+        int ret = translateAsListQuote(sexp, object);
         if (inLambda_) inLambda_ = false;
         return ret;
     }
 }
 
-int Translator::translateAsVectorData(SExp* sexp, Object** object)
+int Translator::translateAsQuasiQuote(SExp* sexp, Object** object)
+{
+    if (sexp->type != SExp::SEXPS)
+    {
+        // sama as quote
+        return translateAsQuotePrimitive(sexp, object);
+    }
+
+    if (L() > 1 && N(0)->text == "VECTOR")
+    {
+        return translateAsVectorQuasiQuote(sexp, object);
+    }
+    else
+    {
+        if (L() > 0 && N(0)->text == "lambda") inLambda_ = true;
+        int ret = translateAsListQuasiQuote(sexp, object);
+        if (inLambda_) inLambda_ = false;
+        return ret;
+    }
+}
+
+int Translator::translateAsVectorQuote(SExp* sexp, Object** object)
 {
     SCM_ASSERT(L() > 0);
     SCM_ASSERT(N(0)->text == "VECTOR");
@@ -104,14 +89,29 @@ int Translator::translateAsVectorData(SExp* sexp, Object** object)
     for (int i = 1; i < L(); i++)
     {
         Object* o;
-        if (translateAsData(N(i), &o) != SUCCESS) return SYNTAX_ERROR;
+        if (translateAsQuote(N(i), &o) != SUCCESS) return SYNTAX_ERROR;
         v->set(i - 1, o);
     }
     *object = v;
     return SUCCESS;
 }
 
-int Translator::translateAsListData(SExp* sexp, Object** object)
+int Translator::translateAsVectorQuasiQuote(SExp* sexp, Object** object)
+{
+    SCM_ASSERT(L() > 0);
+    SCM_ASSERT(N(0)->text == "VECTOR");
+    Vector* v = new Vector(L() - 1, sexp->lineno);
+    for (int i = 1; i < L(); i++)
+    {
+        Object* o;
+        if (translateQuasiQuoteData(N(i), &o) != SUCCESS) return SYNTAX_ERROR;
+        v->set(i - 1, o);
+    }
+    *object = v;
+    return SUCCESS;
+}
+
+int Translator::translateAsListQuote(SExp* sexp, Object** object)
 {
     // ()
     if (L() == 0)
@@ -125,8 +125,8 @@ int Translator::translateAsListData(SExp* sexp, Object** object)
     {
         Object* car;
         Object* cdr;
-        if (translateAsData(N(0), &car) != SUCCESS) return SYNTAX_ERROR;
-        if (translateAsData(N(2), &cdr) != SUCCESS) return SYNTAX_ERROR;
+        if (translateAsQuote(N(0), &car) != SUCCESS) return SYNTAX_ERROR;
+        if (translateAsQuote(N(2), &cdr) != SUCCESS) return SYNTAX_ERROR;
         *object = new Pair(car, cdr, sexp->lineno);
         return SUCCESS;
     }
@@ -137,7 +137,7 @@ int Translator::translateAsListData(SExp* sexp, Object** object)
     for (int i = 0; i < L(); i++)
     {
         Object* car;
-        if (translateAsData(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
+        if (translateAsQuote(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
         p->setCar(car);
         if (i != L() -1)
         {
@@ -150,7 +150,46 @@ int Translator::translateAsListData(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
-int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
+int Translator::translateAsListQuasiQuote(SExp* sexp, Object** object)
+{
+    // ()
+    if (L() == 0)
+    {
+        *object = SCM_NIL;
+        return SUCCESS;
+    }
+
+    // (a . b)
+    if (!inLambda_ && L() == 3 && N(1)->isSymbol() && N(1)->text == ".")
+    {
+        Object* car;
+        Object* cdr;
+        if (translateQuasiQuoteData(N(0), &car) != SUCCESS) return SYNTAX_ERROR;
+        if (translateQuasiQuoteData(N(2), &cdr) != SUCCESS) return SYNTAX_ERROR;
+        *object = new Pair(car, cdr, sexp->lineno);
+        return SUCCESS;
+    }
+
+    // (a b c d)
+    Pair* start = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+    Pair* p = start;
+    for (int i = 0; i < L(); i++)
+    {
+        Object* car;
+        if (translateQuasiQuoteData(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
+        p->setCar(car);
+        if (i != L() -1)
+        {
+            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+            p->setCdr(tmp);
+            p = tmp;
+        }
+    }
+    *object = start;
+    return SUCCESS;
+}
+
+int Translator::translateAsQuotePrimitive(SExp* sexp, Object** object)
 {
     switch(sexp->type)
     {
@@ -191,6 +230,7 @@ int Translator::translateAsDataPrimitive(SExp* sexp, Object** object)
     }
     return SYNTAX_ERROR;
 }
+
 
 
 int Translator::translatePrimitive(SExp* sexp, Object** object)
@@ -395,11 +435,9 @@ int Translator::translateQuote(SExp* sexp, Object** object)
 {
     if (L() < 1)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-//    *object = new Quote(sexp->sexps[1], sexp->lineno);SCM_ASSERT(*object);
-    translateAsData(sexp->sexps[1], object);
+    translateAsQuote(sexp->sexps[1], object);
     return SUCCESS;
 }
 
@@ -407,21 +445,89 @@ int Translator::translateQuasiQuote(SExp* sexp, Object** object)
 {
     if (L() < 1)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-    translateAsData(sexp->sexps[1], object);
+    Object* q;
+    if (translateQuasiQuoteData(sexp->sexps[1], &q) != SUCCESS)
+    {
+        return SYNTAX_ERROR;
+    }
+    *object = new QuasiQuote(q, sexp->lineno);
     return SUCCESS;
 }
+
+int Translator::translateQuasiQuoteData(SExp* sexp, Object** object)
+{
+    if (sexp->type == SExp::SEXPS && L() > 0 && N(0)->text == "unquote")
+    {
+        Object* unquote;
+        SExp* n1 = N(1);
+        if (translate(&n1, &unquote) != SUCCESS) return SYNTAX_ERROR;
+        *object = new Unquote(unquote, sexp->lineno);
+        return SUCCESS;
+    }
+    else if (sexp->type == SExp::SEXPS && L() > 0 && N(0)->text == "unquote-splicing")
+    {
+        Object* unquote;
+        SExp* n1 = N(1);
+        if (translate(&n1, &unquote) != SUCCESS) return SYNTAX_ERROR;
+        *object = new UnquoteSplicing(unquote, sexp->lineno);
+        return SUCCESS;
+    }
+    else
+    {
+        return translateAsQuasiQuote(sexp, object);
+    }
+}
+
+
+int Translator::translateQuasiQuoteList(SExp* sexp, Object** object)
+{
+    // ()
+    if (L() == 0)
+    {
+        *object = SCM_NIL;
+        return SUCCESS;
+    }
+
+    // (a . b)
+    if (!inLambda_ && L() == 3 && N(1)->isSymbol() && N(1)->text == ".")
+    {
+        Object* car;
+        Object* cdr;
+        if (translateQuasiQuoteData(N(0), &car) != SUCCESS) return SYNTAX_ERROR;
+        if (translateQuasiQuoteData(N(2), &cdr) != SUCCESS) return SYNTAX_ERROR;
+        *object = new Pair(car, cdr, sexp->lineno);
+        return SUCCESS;
+    }
+
+    // (a b c d)
+    Pair* start = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+    Pair* p = start;
+    for (int i = 0; i < L(); i++)
+    {
+        Object* car;
+        if (translateQuasiQuoteData(N(i), &car) != SUCCESS) return SYNTAX_ERROR;
+        p->setCar(car);
+        if (i != L() -1)
+        {
+            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, sexp->lineno);
+            p->setCdr(tmp);
+            p = tmp;
+        }
+    }
+    *object = start;
+    return SUCCESS;
+}
+
 
 int Translator::translateUnquote(SExp* sexp, Object** object)
 {
     if (L() < 1)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SYNTAX_ERROR;
     }
-    translateAsData(sexp->sexps[1], object);
+    translateAsQuote(sexp->sexps[1], object);
     return SUCCESS;
 }
 
