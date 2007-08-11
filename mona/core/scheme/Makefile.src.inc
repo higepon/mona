@@ -32,6 +32,8 @@ QuoteFilter.cpp\
 SExp.cpp\
 Kernel.cpp\
 SpecialIf.cpp\
+QuasiQuote.cpp\
+Unquote.cpp\
 SString.cpp\
 Tokenizer.cpp\
 Translator.cpp\

@@ -139,6 +139,8 @@ other:
         return new SToken(SToken::SINGLE_QUOTE);
     case '.':
         return new SToken(SToken::PERIOD);
+    case '`':
+        return new SToken(SToken::BACK_QUOTE);
     default:
         break;
     }

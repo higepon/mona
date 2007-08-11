@@ -80,6 +80,7 @@ public:
     bool isVariant() const { return type() == VARIANT; }
     bool isSRegexp() const { return type() == REGEXP; }
     bool isSRegMatch() const { return type() == REGMATCH; }
+    bool isUnquote() const { return type() == UNQUOTE; }
 public:
 
     enum
@@ -88,6 +89,8 @@ public:
         STRING,
         CHARCTER,
         QUOTE,
+        UNQUOTE,
+        QUASI_QUOTE,
         VECTOR,
         CONTINUATION,
         VARIABLE,

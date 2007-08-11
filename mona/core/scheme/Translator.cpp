@@ -403,6 +403,29 @@ int Translator::translateQuote(SExp* sexp, Object** object)
     return SUCCESS;
 }
 
+int Translator::translateQuasiQuote(SExp* sexp, Object** object)
+{
+    if (L() < 1)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
+    translateAsData(sexp->sexps[1], object);
+    return SUCCESS;
+}
+
+int Translator::translateUnquote(SExp* sexp, Object** object)
+{
+    if (L() < 1)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        return SYNTAX_ERROR;
+    }
+    translateAsData(sexp->sexps[1], object);
+    return SUCCESS;
+}
+
+
 int Translator::translateLambda(SExp* sexp, Object** object)
 {
     if (L() <= 2)
@@ -652,6 +675,14 @@ int Translator::translate(SExp** n, Object** object)
         else if (functionName == "quote")
         {
             return translateQuote(sexp, object);
+        }
+        else if (functionName == "quasiquote")
+        {
+            return translateQuasiQuote(sexp, object);
+        }
+        else if (functionName == "unquote")
+        {
+            return translateUnquote(sexp, object);
         }
 #if 0
         else if (functionName == "and")

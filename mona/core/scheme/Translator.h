@@ -79,6 +79,8 @@ private:
     int translateSet(SExp* sexp, Object** object);
     int translateApplication(SExp* sexp, Object** object);
     int translateQuote(SExp* sexp, Object** object);
+    int translateQuasiQuote(SExp* sexp, Object** object);
+    int translateUnquote(SExp* sexp, Object** object);
 
     // ugly
     bool inLambda_;

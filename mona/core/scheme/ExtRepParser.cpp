@@ -271,10 +271,17 @@ Object* ExtRepParser::parseList()
         case SToken::SINGLE_QUOTE:
             nextToken();
             return NEW2(Pair, new RiteralConstant("quote"), new Pair(parseDatum(), SCM_NIL));
-        case SToken::CAMMA_AT:
         case SToken::BACK_QUOTE:
+            nextToken();
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            return NEW2(Pair, new RiteralConstant("quasiquote"), new Pair(parseDatum(), SCM_NIL));
+        case SToken::CAMMA_AT:
+            nextToken();
+            return NEW2(Pair, new RiteralConstant("unquote-splicing"), new Pair(parseDatum(), SCM_NIL));
         case SToken::CAMMA:
-
+            nextToken();
+            return NEW2(Pair, new RiteralConstant("unquote"), new Pair(parseDatum(), SCM_NIL));
+        default:
             SYNTAX_ERROR("soory not supported\n");
             return NULL;
         }

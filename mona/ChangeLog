@@ -1,3 +1,7 @@
+2007-08-11  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme: Added quasiquote support.
+
 2007-08-10  higepon  <higepon@users.sourceforge.jp>
 
         * Moved scheme-gc to mona/core/scheme.
