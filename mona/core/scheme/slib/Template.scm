@@ -170,7 +170,7 @@
 ;;;	sicp				;runs code from Structure and
 					;Interpretation of Computer
 					;Programs by Abelson and Sussman.
-;;;	defmacro			;has Common Lisp DEFMACRO
+defmacro			;has Common Lisp DEFMACRO
 ;;;	record				;has user defined data structures
 ;;;	string-port			;has CALL-WITH-INPUT-STRING and
 					;CALL-WITH-OUTPUT-STRING
@@ -250,6 +250,7 @@
 ;; 					 *defmacros*))))))
 ;@
 ;;(define (defmacro? m) (and (assq m *defmacros*) #t))
+;;(define (defmacro? m) #f)
 (define (defmacro? m) #f)
 ;@
 (define (macroexpand-1 e)

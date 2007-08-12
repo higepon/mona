@@ -18,8 +18,8 @@ using namespace monash;
 // lambda (x)     : normal parameter
 // lambda x       : extendableParameter. x is list.
 // lambda (x . y) : extendableParameters. y is list.
-Lambda::Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno)
-    : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), isExtendableParameters_(false), lineno_(lineno)
+Lambda::Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, bool isMacro, uint32_t lineno)
+    : body_(body), parameters_(parameters), isExtendableParameter_(isExtendableParameter), isExtendableParameters_(false), isMacro_(isMacro), lineno_(lineno)
 {
     for (int i = 0; i < parameters->size(); i++)
     {
@@ -46,7 +46,9 @@ int Lambda::type() const
 
 Object* Lambda::eval(Environment* env)
 {
-    Object* procedure = new Procedure(this, env); SCM_ASSERT(procedure); return procedure;
+    Object* procedure = new Procedure(this, env, isMacro_);
+    SCM_ASSERT(procedure);
+    return procedure;
 }
 
 bool Lambda::eqv() const
@@ -58,4 +60,3 @@ bool Lambda::eq() const
 {
     return false;
 }
-

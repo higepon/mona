@@ -22,7 +22,7 @@ namespace monash {
 class Lambda : public Object
 {
 public:
-    Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, uint32_t lineno = 0);
+    Lambda(Objects* body, Variables* parameters, bool isExtendableParameter, bool isMacro = false, uint32_t lineno = 0);
     virtual ~Lambda();
 
     virtual ::util::String toString();
@@ -42,6 +42,7 @@ protected:
     Variables* parameters_;
     bool isExtendableParameter_;
     bool isExtendableParameters_;
+    bool isMacro_;
     uint32_t lineno_;
 };
 

@@ -1,3 +1,7 @@
+2007-08-12  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Translator.cpp (Translator::translateDefinitionMacro): Added define-macro.
+
 2007-08-11  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme: Added quasiquote support.

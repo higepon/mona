@@ -23,7 +23,7 @@ class Lambda;
 class Procedure : public Object
 {
 public:
-    Procedure(Lambda* lambda, Environment* env, uint32_t lineno = 0);
+    Procedure(Lambda* lambda, Environment* env, bool isMacro, uint32_t lineno = 0);
     virtual ~Procedure();
 
     virtual ::util::String toString();
@@ -43,9 +43,10 @@ protected:
     Objects* body_;
     Variables* parameters_;
     Environment* env_;
-    uint32_t lineno_;
     bool isExtendableParameter_;
     bool isExtendableParameters_;
+    bool isMacro_;
+    uint32_t lineno_;
 };
 
 }; // namespace monash

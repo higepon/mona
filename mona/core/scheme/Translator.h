@@ -72,6 +72,7 @@ private:
 
     int translatePrimitive(SExp* sexp, Object** object);
     int translateDefinition(SExp* sexp, Object** object);
+    int translateDefinitionMacro(SExp* sexp, Object** object);
 
     int translateIf(SExp* sexp, Object** object);
     int translateAnd(SExp* sexp, Object** object);

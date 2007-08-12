@@ -15,8 +15,8 @@
 using namespace util;
 using namespace monash;
 
-Procedure::Procedure(Lambda* lambda, Environment* env, uint32_t lineno)
-    : env_(env), lineno_(lineno), isExtendableParameter_(false), isExtendableParameters_(false)
+Procedure::Procedure(Lambda* lambda, Environment* env, bool isMacro, uint32_t lineno)
+    : env_(env), isExtendableParameter_(false), isExtendableParameters_(false), isMacro_(isMacro), lineno_(lineno)
 {
     body_ = lambda->body();
     parameters_ = new Variables();SCM_ASSERT(parameters_);
@@ -142,5 +142,22 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         }
         e->extend(params, as); // doubt? we need copy?
     }
-    return Kernel::evalSequence(body(), e);
+    Object* ret = Kernel::evalSequence(body(), e);
+    if (isMacro_)
+    {
+        Object* evalFunc = (new Variable("eval"))->eval(e);
+        Object* evaluated = NULL;
+        SCM_EVAL(evalFunc, e, evaluated, ret);
+
+
+
+
+
+//         Objects* os = new Objects;
+//         os->add(ret);
+//         ret = Kernel::evalSequence(os, e);
+//         printf("%s %s:%d  %s\n", __func__, __FILE__, __LINE__, ret->typeString().data());fflush(stdout);// debug
+        ret = evaluated;
+    }
+    return ret;
 }

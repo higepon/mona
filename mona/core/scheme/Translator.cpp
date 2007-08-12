@@ -326,6 +326,77 @@ int Translator::translateDefinition(SExp* sexp, Object** object)
 #endif
 }
 
+int Translator::translateDefinitionMacro(SExp* sexp, Object** object)
+{
+#if 0
+    if (L() != 3) return SYNTAX_ERROR;
+    SExp* symbol = N(1);
+    if (symbol->type != SExp::SYMBOL) return SYNTAX_ERROR;
+    Variable* variable = new Variable(symbol->text, symbol->lineno);SCM_ASSERT(variable);
+    SExp* argument = N(2);
+    Object* argumentObject;
+    if (translate(&argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
+    *object = new Definition(variable, argumentObject, sexp->lineno);SCM_ASSERT(*object);
+    return SUCCESS;
+#else
+    if (N(1)->isSExps())
+    {
+        Variable* variable = new Variable(NN(1, 0)->text, NN(1, 0)->lineno);SCM_ASSERT(variable);
+        Variables* variables = new Variables;
+        for (int i = 1; i < LL(1); i++)
+        {
+            Variable* v = new Variable(NN(1, i)->text, NN(1, i)->lineno);SCM_ASSERT(v);
+            variables->add(v);
+        }
+        Objects* body = new Objects;
+        for (int i = 2; i < L(); i++)
+        {
+            Object* b;
+            SExp* s = N(i);
+            if (translate(&s, &b) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
+            body->add(b);
+        }
+        Object* l = new Lambda(body, variables, false, true, sexp->lineno);SCM_ASSERT(l);
+        *object = new Definition(variable, l, sexp->lineno);SCM_ASSERT(*object);
+        return SUCCESS;
+    }
+    else if (!N(1)->isSExps() && N(2)->isSExps())
+    {
+        Variable* variable = new Variable(N(1)->text, N(1)->lineno);SCM_ASSERT(variable);
+        Variables* variables = new Variables;
+        for (int i = 0; i < LL(2); i++)
+        {
+            Variable* v = new Variable(NN(2, i)->text, NN(2, i)->lineno);SCM_ASSERT(v);
+            variables->add(v);
+        }
+        Objects* body = new Objects;
+        for (int i = 3; i < L(); i++)
+        {
+            Object* b;
+            SExp* s = N(i);
+            if (translate(&s, &b) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
+            body->add(b);
+        }
+        Object* l = new Lambda(body, variables, false, true, sexp->lineno);SCM_ASSERT(l);
+        *object = new Definition(variable, l, sexp->lineno);SCM_ASSERT(*object);
+        return SUCCESS;
+    }
+    else
+    {
+        if (L() != 3) {printf("%s %s:%d L()=%d %s %s\n", __func__, __FILE__, __LINE__, L(), N(0)->toSExpString().data(), N(3)->toSExpString().data());fflush(stdout);return SYNTAX_ERROR;}
+        SExp* symbol = N(1);
+        if (symbol->type != SExp::SYMBOL) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
+        Variable* variable = new Variable(symbol->text, symbol->lineno);SCM_ASSERT(variable);
+        SExp* argument = N(2);
+        Object* argumentObject;
+        if (translate(&argument, &argumentObject) != SUCCESS) {printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);return SYNTAX_ERROR;}
+        *object = new Definition(variable, argumentObject, sexp->lineno);SCM_ASSERT(*object);
+        return SUCCESS;
+    }
+#endif
+}
+
+
 int Translator::translateIf(SExp* sexp, Object** object)
 {
     if (L() > 4 || L() < 3) return SYNTAX_ERROR;
@@ -760,6 +831,14 @@ int Translator::translate(SExp** n, Object** object)
         if (functionName == "define")
         {
             return translateDefinition(sexp, object);
+        }
+        else if (functionName == "define-macro")
+        {
+            return translateDefinitionMacro(sexp, object);
+        }
+        else if (functionName == "defmacro")
+        {
+            return translateDefinitionMacro(sexp, object);
         }
         else if (functionName == "define-syntax")
         {

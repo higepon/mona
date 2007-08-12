@@ -399,6 +399,18 @@
                         (set! do-index (+ do-index 2)))
                    (= do-index 10))
 
+(define-macro (bar n)
+  (list '+ 1 n))
+
+(define-macro (foo)
+  '(+ 1 2))
+
+(assert-check-true "define-macro"
+                   (= (bar 3) 4)
+                   (= (foo) 3))
+
+
+
 (load "<TESTDIR>/dir.scm")
 (load "<TESTDIR>/cont.scm")
 (load "<TESTDIR>/regexp.scm")
