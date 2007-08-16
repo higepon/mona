@@ -89,11 +89,30 @@ int main()
 		return 1;
 	}
 	driver->driver_set_format(dev, &format);
-	driver->driver_set_render_callback(dev, &render, dev);
+	size_t blocksize = driver->driver_get_block_size(dev);
+	char *buf = (char*)malloc(blocksize);
+	size_t dummy;
+	int r;
+//	driver->driver_set_render_callback(dev, &render, dev);
 //	driver->driver_set_render_callback(dev, &frender, fp);
 //	driver->driver_set_render_callback(dev, &cmrender, cmi);
+	while(1)
+	{
+		render(NULL, buf, blocksize, &dummy);
+		if( driver->driver_write_block(dev, buf) == 0 ) break;
+	}
+
 	driver->driver_start(dev);
-	while(is_stopped==0) syscall_mthread_yield_message();
+	puts("Start");
+//	while(is_stopped==0) syscall_mthread_yield_message();
+	while(1)
+	{
+		render(NULL, buf, blocksize, &dummy);
+	//	frender(fp, buf, blocksize, &dummy);
+		WRITE:
+		r = driver->driver_write_block(dev, buf);
+		if( r != blocksize ) goto WRITE;
+	}
 	puts("Stopped");
 
 	fclose(fp);

@@ -5,8 +5,8 @@ endif
 
 TARGET  = AUDIO
 # server / client
-#SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp
-SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp
+#SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circlular_buffer.cpp
+SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp
 
 # one binary
 # SOURCES = test.cpp es1370.cpp audio_driver.cpp

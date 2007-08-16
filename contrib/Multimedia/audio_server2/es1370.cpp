@@ -1,4 +1,5 @@
 #include "es1370.h"
+#include "circular_buffer.h"
 #include <stdlib.h>
 #include <pci/Pci.h>
 #include <monapi/io.h>
@@ -24,6 +25,8 @@ struct audio_driver es1370_audio_driver_desc =
 	es1370_set_stopped_callback,
 	es1370_set_format,
 	es1370_get_format,
+	es1370_get_block_size,
+	es1370_write_block,
 	NULL,
 };
 
@@ -47,6 +50,7 @@ struct es1370_driver
 	void *dmabuf1;
 	void *dmabuf2;
 	int usingBuffer;
+	CB *cb;
 };
 
 int check_driver_desc(const struct es1370_driver *d)
@@ -87,9 +91,16 @@ handle_t es1370_new()
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 1024*8;
+	d->bufsize = 1024*2;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
+
+	d->cb = cb_init(cb_alloc(), d->bufsize, 10);
+	if( d->cb == NULL )
+	{
+		free(d);
+		return NULL;
+	}
 
 	puts("init thread");
 	d->thread = new MonAPI::Thread(&es1370_interrupt_catcher, d, &es1370_notifier);
@@ -116,6 +127,7 @@ void es1370_delete(handle_t o)
 	struct es1370_driver *d = (struct es1370_driver*)o;
 	d->thread->stop();
 	delete d->thread;
+	cb_free(d->cb);
 	monapi_deallocate_dma_memory(d->dmabuf1, d->bufsize);
 	monapi_deallocate_dma_memory(d->dmabuf2, d->bufsize);
 	free(o);
@@ -152,6 +164,13 @@ error_t es1370_get_format(handle_t o, struct audio_data_format *f)
 	if( o == NULL || f == NULL ) return NG;
 	//struct es1370_driver *d = (struct es1370_driver*)o;
 	return NG;
+}
+
+size_t es1370_get_block_size(handle_t o)
+{
+	if( o == NULL ) return (size_t)-1;
+	struct es1370_driver *d = (struct es1370_driver*)o;
+	return (size_t)d->bufsize;
 }
 
 error_t es1370_start(handle_t o)
@@ -199,10 +218,11 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
     	buf = d->dmabuf1;
 //	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
-	result = d->callback(d->ref, buf, d->bufsize, &wrote);
-	outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, (uint32_t)buf);
+//	result = d->callback(d->ref, buf, d->bufsize, &wrote);
+	result = cb_read(d->cb, buf);
+//	outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, (uint32_t)buf);
 //	es1370_set_buffer(d, buf, d->bufsize);
-	return result;
+	return result == 1 ? OK : NG;
 }
 
 static error_t es1370_device_init(struct es1370_driver *d)
@@ -380,7 +400,7 @@ static void es1370_interrupt_catcher(void* a)
 			{
 				if( d->state == RUNNING )
 				{
-//					puts("INTERRUPTED");
+					puts("INTERRUPTED");
 //					es1370_stop_playback(d);
 
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
@@ -390,8 +410,10 @@ static void es1370_interrupt_catcher(void* a)
 					result = es1370_buffer_setter(d);
 					if( result != OK )
 					{
-						d->state = PAUSE;
-						return;
+					//	d->state = PAUSE;
+						puts("Buffer unset\n");
+//						continue;
+						//return;
 					}
 
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
@@ -414,3 +436,14 @@ static void es1370_notifier(void* a)
 	struct es1370_driver *d = (struct es1370_driver*)a;
 	d->stopped_callback(d->stopped_ref);
 }
+
+size_t es1370_write_block(handle_t o, void *p)
+{
+	struct es1370_driver *d;
+	int result;
+	if( o == NULL || p == NULL ) return (size_t)-1;
+	d = (struct es1370_driver*)o;
+	result = cb_write(d->cb, p, 0);
+	return (size_t)result*d->bufsize;
+}
+

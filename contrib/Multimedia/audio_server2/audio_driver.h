@@ -39,6 +39,8 @@ struct audio_driver
 	error_t (*driver_set_stopped_callback)(handle_t,audio_stopped_callback_t,void*);
 	error_t (*driver_set_format)(handle_t, const struct audio_data_format*);
 	error_t (*driver_get_format)(handle_t, struct audio_data_format*);
+	size_t  (*driver_get_block_size)(handle_t);
+	size_t  (*driver_write_block)(handle_t, void *);
 	void *variables;
 };
 

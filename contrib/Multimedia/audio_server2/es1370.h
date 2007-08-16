@@ -91,4 +91,6 @@ error_t         es1370_get_format(handle_t o,struct audio_data_format *f);
 error_t		es1370_set_callback(handle_t o,
 	error_t (*callback)(void* ref, void* buffer, size_t size, size_t *wrote), void* ref);
 error_t		es1370_set_stopped_callback(handle_t o, audio_stopped_callback_t, void *ref);
+size_t          es1370_get_block_size(handle_t o);
+size_t          es1370_write_block(handle_t o, void *p);
 
