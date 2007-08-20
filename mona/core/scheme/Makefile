@@ -3,7 +3,7 @@ TEST_TARGET   = ./scheme_test
 TARGET_LIBS   = lib/interact.scm lib/batch.scm lib/danny.scm lib/core.scm lib/shell.scm lib/unittest.scm lib/timer.scm lib/conf.scm lib/timer.scm lib/demo.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
-              test/test.scm test/util.scm test/vector.scm test/dir.scm #test/timer.scm
+              test/test.scm test/util.scm test/vector.scm test/dir.scm test/timer.scm
 
 # -O3 では gc がうごかないっぽい
 CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE
