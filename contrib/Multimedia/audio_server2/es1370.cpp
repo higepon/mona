@@ -91,7 +91,7 @@ handle_t es1370_new()
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 1024*2;
+	d->bufsize = 1024*4;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
 
@@ -115,7 +115,7 @@ handle_t es1370_new()
 	instance = (handle_t)d;
 
 	es1370_set_buffer(d, d->dmabuf1, d->bufsize);
-	es1370_set_sample_count(d, d->bufsize);
+	es1370_set_sample_count(d, d->bufsize>>2);
 //	syscall_get_io();
 //	puts(__func__);
 	return (handle_t)d;
@@ -249,6 +249,7 @@ static error_t es1370_device_init(struct es1370_driver *d)
 
 	ctrl = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 	ctrl |= fmt<<sh_FMT;
+	ctrl |= ES1370_P2_DAC_SEN;
 	ctrl &= ~(ES1370_R1_LOOP_SEL|ES1370_P1_LOOP_SEL|ES1370_P2_LOOP_SEL);
 	outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, ctrl);
 
@@ -262,7 +263,7 @@ static error_t es1370_device_init(struct es1370_driver *d)
 */
 
 	outp32(d->baseIO+ES1370_REG_MEMPAGE, ES1370_PAGE_DAC);
-	outp32(d->baseIO+ES1370_REG_DAC2_FRAMECNT, d->bufsize-1);
+//	outp32(d->baseIO+ES1370_REG_DAC2_FRAMECNT, d->bufsize-1);
 
 	d->thread->start();
 
@@ -398,9 +399,9 @@ static void es1370_interrupt_catcher(void* a)
 			stat = inp32(d->baseIO+ES1370_REG_STATUS);
 			if( stat & 2 )
 			{
-				if( d->state == RUNNING )
+			//	if( d->state == RUNNING )
 				{
-					puts("INTERRUPTED");
+				//	puts("INTERRUPTED");
 //					es1370_stop_playback(d);
 
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);

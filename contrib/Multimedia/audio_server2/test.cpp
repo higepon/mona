@@ -24,16 +24,16 @@ error_t render(void* ref, void* buffer, size_t size, size_t *wrote)
 	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;
 //	puts(__func__);
 //	printf("p = %x\n", p);
-	if( counter >= 44100*2*3) return NG;
+//	if( counter >= 44100*2*3) return NG;
 	for(unsigned int i = 0 ; i < size/4u ; i++ )
 	{
-		short wave = (short)(1000.0*sin(phase));
+		short wave = (short)(3000.0*sin(phase));
 		*p++ = wave;
 		*p++ = wave;
 		phase += freq;
 	}
-	counter += size;
-	*wrote = size;
+//	counter += size;
+//	*wrote = size;
 	return OK;
 }
 
@@ -108,10 +108,10 @@ int main()
 	while(1)
 	{
 		render(NULL, buf, blocksize, &dummy);
-	//	frender(fp, buf, blocksize, &dummy);
+///		frender(fp, buf, blocksize, &dummy);
 		WRITE:
 		r = driver->driver_write_block(dev, buf);
-		if( r != blocksize ) goto WRITE;
+		if( r == 0 ) goto WRITE;
 	}
 	puts("Stopped");
 
