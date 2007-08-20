@@ -114,7 +114,7 @@ handle_t es1370_new()
 	d->state = PAUSE;
 	instance = (handle_t)d;
 
-	es1370_set_buffer(d, d->dmabuf1, d->bufsize);
+	es1370_set_buffer(d, d->dmabuf1, d->bufsize>>2);
 	es1370_set_sample_count(d, d->bufsize>>2);
 //	syscall_get_io();
 //	puts(__func__);
