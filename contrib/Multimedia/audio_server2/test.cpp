@@ -107,11 +107,13 @@ int main()
 //	while(is_stopped==0) syscall_mthread_yield_message();
 	while(1)
 	{
-		render(NULL, buf, blocksize, &dummy);
-///		frender(fp, buf, blocksize, &dummy);
+		int isng = OK;
+//		render(NULL, buf, blocksize, &dummy);
+		isng = frender(fp, buf, blocksize, &dummy);
 		WRITE:
 		r = driver->driver_write_block(dev, buf);
 		if( r == 0 ) goto WRITE;
+		if( isng == NG ) break;
 	}
 	puts("Stopped");
 
