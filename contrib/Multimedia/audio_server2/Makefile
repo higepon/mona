@@ -56,10 +56,10 @@ install: all
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
 	(cd client && make && make install)
 
-# overwrite targe
-$(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK)
-	$(STRIP) $@
+# # overwrite targe
+# $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
+# 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK)
+# 	$(STRIP) $@
 
 
 
