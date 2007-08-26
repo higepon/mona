@@ -32,17 +32,17 @@ TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o)
 # SOURCES = test.cpp es1370.cpp audio_driver.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES = test.raw
+INSTFILES = test.raw A.OGG
 CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lmonalibc-imp
+ADDLINK    = -lmonalibc-imp 
 ADDLINKDEP = 
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lmonalibc-imp -lmonapi-imp
+ADDLINK    = -lmonalibc-imp -lmonapi-imp 
 ADDLINKDEP = 
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
@@ -56,10 +56,10 @@ install: all
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
 	(cd client && make && make install)
 
-# # overwrite targe
-# $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
-# 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK)
-# 	$(STRIP) $@
+# overwrite targe
+$(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK) -L /usr/lib/gcc/i586-mingw32msvc/3.4.5/ -lgcc
+	$(STRIP) $@
 
 
 

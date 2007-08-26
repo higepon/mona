@@ -8,83 +8,100 @@
 #include <ivorbisfile.h>
 
 
-// /* FILE I/O functions (replace this) */
-// static size_t
-// exx_read(void* p,size_t s,size_t n,void *fp){
-//     return fread(p,s,n,(FILE*)fp);
-// }
+/* FILE I/O functions (replace this) */
+static size_t
+exx_read(void* p,size_t s,size_t n,void *fp){
+    return fread(p,s,n,(FILE*)fp);
+}
 
-// static
-// int
-// exx_seek64(void* fp,ogg_int64_t l,int w){
-//     return fseek((FILE*)fp,l,w);
-// }
+static
+int
+exx_seek64(void* fp,ogg_int64_t l,int w){
+    return fseek((FILE*)fp,l,w);
+}
 
-// static
-// int
-// exx_close(void *fp){
-//     fclose((FILE*)fp);
-//     return 0;
-// }
+static
+int
+exx_close(void *fp){
+    fclose((FILE*)fp);
+    return 0;
+}
 
-// static
-// long
-// exx_tell(void *fp){
-//     return ftell((FILE*)fp);
-// }
+static
+long
+exx_tell(void *fp){
+    return ftell((FILE*)fp);
+}
 
 
-// /* main routine */
+/* main routine */
 
-// int
-// main2(int ac,char **av){
-//     int i;
-//     int bs_ptr = 0; /* not used, but updated by ov_read */
-//     FILE* fp;
-// #define BUFLEN 8192
-//     char buf[BUFLEN];
-//     OggVorbis_File ovf;
-//     ov_callbacks exx = {
-//         exx_read,exx_seek64,exx_close,exx_tell
-//     };
+int
+main2(int ac,char **av){
+    _printf("hoge");
+    int i;
+    int bs_ptr = 0; /* not used, but updated by ov_read */
+    FILE* fp;
+#define BUFLEN 8192
+    char buf[BUFLEN];
+    OggVorbis_File ovf;
+    ov_callbacks exx = {
+        exx_read,exx_seek64,exx_close,exx_tell
+    };
 
-//     if(ac != 2) return -1;
-//     printf("open %s...",av[1]);
-//     fp = fopen(av[1],"rb");
-//     if(!fp) {
-//         printf("failed.\n");
-//         return -2;
-//     }else{
-//         printf("succeeded.\n");
-//     }
-//     i = ov_open_callbacks(fp,&ovf,NULL,0,exx);
+//    if(ac != 2) return -1;
+    _printf("open %s...", "A.OGG");
+    fp = fopen("/APPS/A.OGG","rb");
+    if(!fp) {
+        _printf("failed.\n");
+        return -2;
+    }else{
+        _printf("succeeded.\n");
+    }
 
-//     switch(i){
-//         case 0:
-//             break;
-//         case OV_EREAD:
-//         case OV_ENOTVORBIS:
-//         case OV_EVERSION:
-//         case OV_EBADHEADER:
-//         case OV_EFAULT:
-//         default:
-//             return -2;
-//     }
+//    _printf("[[[%d]]]\n", fread(buf, 1, 8192,fp));
 
-//     while(1){
-//         i = ov_read(&ovf,buf,BUFLEN,&bs_ptr);
-//         if(i<0){
-//             switch(i){
-//                 case OV_HOLE:
-//                 case OV_EBADLINK:
-//                     continue;
-//             }
-//         }else if(!i){
-//             break;
-//         }
-//         printf("read %d byte(s)\n",i);
-//     }
-// }
+    i = ov_open_callbacks(fp,&ovf,NULL,0,exx);
+
+    switch(i){
+        case 0:
+            break;
+        case OV_EREAD:
+            _printf("OV_EREAD");
+            break;
+        case OV_ENOTVORBIS:
+            _printf("OV_ENOTVORBIS");
+            break;
+        case OV_EVERSION:
+            _printf("OV_EVERSION");
+            break;
+
+        case OV_EBADHEADER:
+            _printf("OV_EBA");
+            break;
+
+        case OV_EFAULT:
+            _printf("OV_EFAULT");
+            break;
+        default:
+            _printf("-2");
+            return -2;
+    }
+
+    while(1){
+        i = ov_read(&ovf,buf,BUFLEN,&bs_ptr);
+        if(i<0){
+            switch(i){
+                case OV_HOLE:
+                case OV_EBADLINK:
+                    continue;
+            }
+        }else if(!i){
+            break;
+        }
+//        _printf("read %d byte(s)\n",i);
+    }
+}
 
 
 
@@ -139,8 +156,9 @@ error_t cmrender(void *ref, void *buffer ,size_t size, size_t *wrote)
     return OK;
 }
 
-int main()
+int main(int argc, char** argv)
 {
+    return main2(argc, argv);
     handle_t dev;
     struct audio_data_format format;
     struct audio_driver *driver;
