@@ -11,7 +11,7 @@ int fgetc(FILE *fp)
 	int result;
 
 	result = fread(&c, 1, 1, fp);
-	if( result < 0 ) return EOF;
+	if(0 == result) return EOF;
 	return (int)c;
 }
 
