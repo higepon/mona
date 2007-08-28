@@ -8,99 +8,124 @@
 #include <ivorbisfile.h>
 
 
-/* FILE I/O functions (replace this) */
-static size_t
-exx_read(void* p,size_t s,size_t n,void *fp){
-    return fread(p,s,n,(FILE*)fp);
-}
+// /* FILE I/O functions (replace this) */
+// static size_t
+// exx_read(void* p,size_t s,size_t n,void *fp){
+//     return fread(p,s,n,(FILE*)fp);
+// }
 
-static
-int
-exx_seek64(void* fp,ogg_int64_t l,int w){
-    return fseek((FILE*)fp,l,w);
-}
+// static
+// int
+// exx_seek64(void* fp,ogg_int64_t l,int w){
+//     return fseek((FILE*)fp,l,w);
+// }
 
-static
-int
-exx_close(void *fp){
-    fclose((FILE*)fp);
-    return 0;
-}
+// static
+// int
+// exx_close(void *fp){
+//     fclose((FILE*)fp);
+//     return 0;
+// }
 
-static
-long
-exx_tell(void *fp){
-    return ftell((FILE*)fp);
-}
+// static
+// long
+// exx_tell(void *fp){
+//     return ftell((FILE*)fp);
+// }
 
 
 /* main routine */
+static char pcmout[4096];
+int main2(int ac,char **av) {
+  OggVorbis_File vf;
+  int eof = 0;
+  int current_section;
 
-int
-main2(int ac,char **av){
-    _printf("hoge");
-    int i;
-    int bs_ptr = 0; /* not used, but updated by ov_read */
-    FILE* fp;
-#define BUFLEN 8192
-    char buf[BUFLEN];
-    OggVorbis_File ovf;
-    ov_callbacks exx = {
-        exx_read,exx_seek64,exx_close,exx_tell
-    };
+  FILE* fp = fopen("/APPS/A.OGG","rb");
+  if (NULL == fp) {
+      _printf("fopen error\n");
+      return -1;
+  }
+  int ret = 0;
+  if ((ret = ov_open(fp, &vf, NULL, 0)) < 0) {
+      fprintf(stderr,"ret=%dInput does not appear to be an Ogg bitstream.\n", ret);
+      exit(1);
+  }
 
-//    if(ac != 2) return -1;
-    _printf("open %s...", "A.OGG");
-    fp = fopen("/APPS/A.OGG","rb");
-    if(!fp) {
-        _printf("failed.\n");
-        return -2;
-    }else{
-        _printf("succeeded.\n");
+    char **ptr=ov_comment(&vf,-1)->user_comments;
+    vorbis_info *vi=ov_info(&vf,-1);
+    while(*ptr){
+      _printf("%s\n",*ptr);
+      ++ptr;
     }
+    _printf("\nBitstream is %d channel, %ldHz\n",vi->channels,vi->rate);
+    _printf("\nDecoded length: %ld samples\n",
+            (long)ov_pcm_total(&vf,-1));
+    _printf("Encoded by: %s\n\n",ov_comment(&vf,-1)->vendor);
 
-//    _printf("[[[%d]]]\n", fread(buf, 1, 8192,fp));
+//     _printf("hoge");
+//     int i;
+//     int bs_ptr = 0; /* not used, but updated by ov_read */
+//     FILE* fp;
+// #define BUFLEN 8192
+//     char buf[BUFLEN];
+//     OggVorbis_File ovf;
+//     ov_callbacks exx = {
+//         exx_read,exx_seek64,exx_close,exx_tell
+//     };
 
-    i = ov_open_callbacks(fp,&ovf,NULL,0,exx);
+// //    if(ac != 2) return -1;
+//     _printf("open %s...", "A.OGG");
+//     fp = fopen("/APPS/A.OGG","rb");
+//     if(!fp) {
+//         _printf("failed.\n");
+//         return -2;
+//     }else{
+//         _printf("succeeded.\n");
+//     }
 
-    switch(i){
-        case 0:
-            break;
-        case OV_EREAD:
-            _printf("OV_EREAD");
-            break;
-        case OV_ENOTVORBIS:
-            _printf("OV_ENOTVORBIS");
-            break;
-        case OV_EVERSION:
-            _printf("OV_EVERSION");
-            break;
+// //    _printf("[[[%d]]]\n", fread(buf, 1, 8192,fp));
 
-        case OV_EBADHEADER:
-            _printf("OV_EBA");
-            break;
+//     i = ov_open_callbacks(fp,&ovf,NULL,0,exx);
 
-        case OV_EFAULT:
-            _printf("OV_EFAULT");
-            break;
-        default:
-            _printf("-2");
-            return -2;
-    }
+//     switch(i){
+//         case 0:
+//             break;
+//         case OV_EREAD:
+//             _printf("OV_EREAD");
+//             break;
+//         case OV_ENOTVORBIS:
+//             _printf("OV_ENOTVORBIS");
+//             break;
+//         case OV_EVERSION:
+//             _printf("OV_EVERSION");
+//             break;
 
-    while(1){
-        i = ov_read(&ovf,buf,BUFLEN,&bs_ptr);
-        if(i<0){
-            switch(i){
-                case OV_HOLE:
-                case OV_EBADLINK:
-                    continue;
-            }
-        }else if(!i){
-            break;
-        }
-//        _printf("read %d byte(s)\n",i);
-    }
+//         case OV_EBADHEADER:
+//             _printf("OV_EBA");
+//             break;
+
+//         case OV_EFAULT:
+//             _printf("OV_EFAULT");
+//             break;
+//         default:
+//             _printf("-2");
+//             return -2;
+//     }
+
+//     while(1){
+//         i = ov_read(&ovf,buf,BUFLEN,&bs_ptr);
+//         if(i<0){
+//             switch(i){
+//                 case OV_HOLE:
+//                 case OV_EBADLINK:
+//                     continue;
+//             }
+//         }else if(!i){
+//             break;
+//         }
+// //        _printf("read %d byte(s)\n",i);
+//     }
 }
 
 
