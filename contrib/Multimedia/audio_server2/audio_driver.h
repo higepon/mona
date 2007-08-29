@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "servers/audio.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -21,12 +22,14 @@ typedef int codec_command_t;
 typedef error_t (*audio_render_callback_t)(void*, void*, size_t, size_t*);
 typedef error_t (*audio_stopped_callback_t)(void*);
 
+/*
 struct audio_data_format
 {
 	int sample_rate;
 	int bits;
 	int channels;
 };
+*/
 
 struct audio_driver
 {

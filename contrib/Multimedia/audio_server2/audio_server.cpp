@@ -9,6 +9,125 @@
 #include <monapi/cmemoryinfo.h>
 #include <assert.h>
 
+struct audio_data_format default_format =
+{
+	0,
+	2,
+	16,
+	44100
+};
+
+AudioServer::AudioServer() : channel_(NULL)
+{
+	driver_ = audio_driver_factory("es1370");
+	device_ = driver_->driver_new();
+	driver_->driver_set_format(device_, &default_format);
+	blocksize_ = driver_->driver_get_block_size(device_);
+	mixer_ = new MonAPI::Thread(&mixer_th, this, mixer_th);
+	mixer_->start();
+}
+
+AudioServer::~AudioServer()
+{
+	driver_->driver_delete(device_);
+}
+
+int AudioServer::createChannel(int direction)
+{
+	if( channel_ != NULL ) return -1;
+	channel_ = new Channel(direction);
+	return 0;
+}
+
+int AudioServer::destroyChannel(int channel)
+{
+	if( channel != 0 ) return -1;
+	delete channel_;
+	channel_ = NULL;
+	return 0;
+}
+
+int AudioServer::setFormat(int channel, struct audio_data_format *format)
+{
+	if( channel != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	return channel_->setFormat(format);
+}
+
+int AudioServer::getFormat(int channel, struct audio_data_format *format)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	return channel_->getFormat(format);
+}
+
+int AudioServer::setStream(int channel, uint32_t handle)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	return channel_->setStream(handle);
+}
+
+int AudioServer::setVolume(int channel, int volume)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	return channel_->setVolume(volume);
+}
+
+int AudioServer::getVolume(int channel)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	return channel_->getVolume();
+}
+
+int AudioServer::setBlockSize(int channel, int blocksize)
+{
+	return -1;
+}
+
+int AudioServer::getBlockSize(int channel)
+{
+	return -1;
+}
+
+int AudioServer::start(int channel)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	driver_->driver_start(device_);
+	return 0;
+}
+
+int AudioServer::stop(int channel)
+{
+	if( channel_ != 0 ) return -1;
+	if( channel_ == NULL ) return -1;
+	driver_->driver_stop(device_);
+	return 0;
+}
+
+void mixer_th(void *arg)
+{
+	AudioServer *server = (AudioServer*)arg;
+	char *buf;
+	buf = (char*)malloc(server->blocksize_);
+	while(1)
+	{
+		if( server->channel_ == NULL ) continue;
+		server->channel_->getStream()->read(buf, server->blocksize_);
+		server->driver_->driver_write_block(server->device_, buf);
+	}
+}
+
+/*
+	struct audio_driver *driver_ = NULL;
+	handle_t device_;
+	Channel *channel_;
+*/
+
+#if 0 
 AudioServer audio_server_new()
 {
 	struct audio_server *ret;
@@ -211,4 +330,4 @@ int audio_stopped_callback(void *ref)
 	logprintf("%s\n", __func__);
 	return OK;
 }
-
+#endif

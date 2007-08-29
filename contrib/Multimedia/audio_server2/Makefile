@@ -6,7 +6,7 @@ endif
 TARGET  = AUDIO
 # server / client
 #SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circlular_buffer.cpp
-SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp
+SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 
 TREMOR_DIR = Tremor-r13614
 TREMOR_SOURCES = \
@@ -54,7 +54,7 @@ install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
-	(cd client && make && make install)
+	#(cd client && make && make install)
 
 # overwrite targe
 $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)

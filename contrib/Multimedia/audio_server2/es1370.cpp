@@ -145,7 +145,7 @@ error_t es1370_set_format(handle_t o, const struct audio_data_format *f)
 	if( o == NULL || f == NULL ) return NG;
 	struct es1370_driver *d = (struct es1370_driver*)o;
 	uint32_t fmt, pclkdiv, reg;
-	pclkdiv = PCLKDIV(f->sample_rate);
+	pclkdiv = PCLKDIV(f->rate);
 	fmt = f_FMT(f->bits, f->channels);
 	reg = inp32(d->baseIO+ES1370_REG_CONTROL);
 	reg |= pclkdiv<<ES1370_PCLKDIV_SH;
