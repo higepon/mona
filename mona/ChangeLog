@@ -1,3 +1,9 @@
+2007-08-30  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monalibc/stdio/fread.c (fread): Changed return value -1 to 0 when error.
+
+        * core/monalibc/stdio/fgetc.c (fgetc): Changed return value check of fread.
+
 2007-08-12  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/Translator.cpp (Translator::translateDefinitionMacro): Added define-macro.
