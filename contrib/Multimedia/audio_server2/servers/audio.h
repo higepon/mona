@@ -1,6 +1,8 @@
 #ifndef _SERVER_AUDIO_H_
 #define _SERVER_AUDIO_H_
 
+#include <stdint.h>
+
 enum
 {
 	MSG_AUDIO_CREATE_CHANNEL = 0x506211e, /* AUD:CCH */
@@ -17,8 +19,9 @@ enum
 	MSG_AUDIO_GET_VOLUME     = 0x5066aba, /* AUD:GVO */
 	MSG_AUDIO_GET_CHANNELS_LIST = 0x506612e, /* AUD:GCL */
 
-#if 0
+
 	MSG_AUDIO_NEW_CHANNEL	 = 0x506d11e, /* AUD:NCH */
+#if 0
 	MSG_AUDIO_DELETE_CHANNEL = 0x506311e, /* AUD:DCH */
 	MSG_AUDIO_START          = 0x5072982, /* AUD:STA */
 	MSG_AUDIO_STOP           = 0x50729be, /* AUD:STP */
