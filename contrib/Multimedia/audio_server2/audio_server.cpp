@@ -2,6 +2,7 @@
 #include "audio_driver.h"
 #include "servers/audio.h"
 #include "monapi.h"
+#include "debug.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <monapi/Stream.h>
@@ -21,9 +22,11 @@ AudioServer::AudioServer() : channel_(NULL)
 {
 	driver_ = audio_driver_factory("es1370");
 	device_ = driver_->driver_new();
+	dprintf("device_ = %x\n", device_);
+	dprintf("this = %x\n", this);
 	driver_->driver_set_format(device_, &default_format);
 	blocksize_ = driver_->driver_get_block_size(device_);
-	mixer_ = new MonAPI::Thread(&mixer_th, this, mixer_th);
+	mixer_ = new MonAPI::Thread(mixer_th, this, mixer_th);
 	mixer_->start();
 }
 
@@ -34,6 +37,7 @@ AudioServer::~AudioServer()
 
 int AudioServer::createChannel(int direction)
 {
+	dputs(__func__);
 	if( channel_ != NULL ) return -1;
 	channel_ = new Channel(direction);
 	return 0;
@@ -41,6 +45,7 @@ int AudioServer::createChannel(int direction)
 
 int AudioServer::destroyChannel(int channel)
 {
+	dputs(__func__);
 	if( channel != 0 ) return -1;
 	delete channel_;
 	channel_ = NULL;
@@ -49,6 +54,7 @@ int AudioServer::destroyChannel(int channel)
 
 int AudioServer::setFormat(int channel, struct audio_data_format *format)
 {
+	dputs(__func__);
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	return channel_->setFormat(format);
@@ -56,45 +62,52 @@ int AudioServer::setFormat(int channel, struct audio_data_format *format)
 
 int AudioServer::getFormat(int channel, struct audio_data_format *format)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	return channel_->getFormat(format);
 }
 
 int AudioServer::setStream(int channel, uint32_t handle)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	return channel_->setStream(handle);
 }
 
 int AudioServer::setVolume(int channel, int volume)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	return channel_->setVolume(volume);
 }
 
 int AudioServer::getVolume(int channel)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	return channel_->getVolume();
 }
 
 int AudioServer::setBlockSize(int channel, int blocksize)
 {
+	dputs(__func__);
 	return -1;
 }
 
 int AudioServer::getBlockSize(int channel)
 {
+	dputs(__func__);
 	return -1;
 }
 
 int AudioServer::start(int channel)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	driver_->driver_start(device_);
 	return 0;
@@ -102,7 +115,8 @@ int AudioServer::start(int channel)
 
 int AudioServer::stop(int channel)
 {
-	if( channel_ != 0 ) return -1;
+	dputs(__func__);
+	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	driver_->driver_stop(device_);
 	return 0;
@@ -110,6 +124,7 @@ int AudioServer::stop(int channel)
 
 void mixer_th(void *arg)
 {
+	dputs(__func__);
 	AudioServer *server = (AudioServer*)arg;
 	char *buf;
 	buf = (char*)malloc(server->blocksize_);

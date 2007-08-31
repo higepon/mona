@@ -8,8 +8,8 @@ TARGET  = AUDIO
 #SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circlular_buffer.cpp
 SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 
-TREMOR_DIR = Tremor-r13614
-TREMOR_SOURCES = \
+#TREMOR_DIR = Tremor-r13614
+#TREMOR_SOURCES = \
 $(TREMOR_DIR)/bitwise.c         \
 $(TREMOR_DIR)/block.c           \
 $(TREMOR_DIR)/codebook.c        \
@@ -25,14 +25,14 @@ $(TREMOR_DIR)/sharedbook.c      \
 $(TREMOR_DIR)/synthesis.c       \
 $(TREMOR_DIR)/vorbisfile.c      \
 $(TREMOR_DIR)/window.c
-TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o)
+#TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o)
 
 
 # one binary
 # SOURCES = test.cpp es1370.cpp audio_driver.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES = test.raw A.OGG
+INSTFILES = test.raw #A.OGG
 CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 
@@ -57,15 +57,15 @@ install: all
 	#(cd client && make && make install)
 
 # overwrite targe
-$(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK) -L /usr/lib/gcc/i586-mingw32msvc/3.4.5/ -lgcc
-	$(STRIP) $@
+#$(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)
+#	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK) -L /usr/lib/gcc/i586-mingw32msvc/3.4.5/ -lgcc
+#	$(STRIP) $@
 
 
 
 CXXFLAGS += -fpermissive -DDEBUG
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
-CFLAGS = -I $(TREMOR_DIR) -I libogg-1.1.3/include -I libvorbis-1.0/include
-CXXFLAGS += -I $(TREMOR_DIR) -I libogg-1.1.3/include -I libvorbis-1.0/include
+CFLAGS = #-I $(TREMOR_DIR) #-I libogg-1.1.3/include -I libvorbis-1.0/include
+CXXFLAGS += #-I $(TREMOR_DIR) #-I libogg-1.1.3/include -I libvorbis-1.0/include
 
 -include dependencies
