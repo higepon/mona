@@ -33,35 +33,137 @@
 //     return ftell((FILE*)fp);
 // }
 
+extern "C" int64_t __divdi3(int64_t a, int64_t b);
+
+
+
 
 /* main routine */
-static char pcmout[4096];
+static uint8_t pcmout[4096];
 int main2(int ac,char **av) {
-  OggVorbis_File vf;
-  int eof = 0;
-  int current_section;
+    OggVorbis_File vf;
+    int eof=0;
+    int current_section;
 
-  FILE* fp = fopen("/APPS/A.OGG","rb");
-  if (NULL == fp) {
-      _printf("fopen error\n");
-      return -1;
-  }
-  int ret = 0;
-  if ((ret = ov_open(fp, &vf, NULL, 0)) < 0) {
-      fprintf(stderr,"ret=%dInput does not appear to be an Ogg bitstream.\n", ret);
-      exit(1);
-  }
+    printf("-1/2 = %d\n", __divdi3(-1, 2));
 
-    char **ptr=ov_comment(&vf,-1)->user_comments;
-    vorbis_info *vi=ov_info(&vf,-1);
-    while(*ptr){
-      _printf("%s\n",*ptr);
-      ++ptr;
+    FILE* fp = fopen("/APPS/A.OGG", "rb");
+    if (NULL == fp) {
+        fprintf(stderr, "file open error\n");
+        return -1;
     }
-    _printf("\nBitstream is %d channel, %ldHz\n",vi->channels,vi->rate);
-    _printf("\nDecoded length: %ld samples\n",
-            (long)ov_pcm_total(&vf,-1));
-    _printf("Encoded by: %s\n\n",ov_comment(&vf,-1)->vendor);
+
+    if (ov_open(fp, &vf, NULL, 0) < 0) {
+        fprintf(stderr,"Input does not appear to be an Ogg bitstream.\n");
+        return -1;
+    }
+
+//     char **ptr=ov_comment(&vf,-1)->user_comments;
+//     vorbis_info *vi=ov_info(&vf,-1);
+//     while(*ptr){
+//         fprintf(stderr, "%s\n",*ptr);
+//         ++ptr;
+//     }
+//     fprintf(stderr, "\nBitstream is %d channel, %ldHz\n", vi->channels, vi->rate);
+//     fprintf(stderr, "\nDecoded length: %ld samples\n",
+//             (long)ov_pcm_total(&vf, -1));
+//     fprintf(stderr, "Encoded by: %s\n\n", ov_comment(&vf, -1)->vendor);
+
+
+
+
+
+    //    while(!eof){
+      long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
+      if (ret == 0) {
+        /* EOF */
+        eof=1;
+      } else if (ret < 0) {
+        /* error in the stream.  Not a problem, just reporting it in
+           case we (the app) cares.  In this case, we don't. */
+          printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+      } else {
+        /* we don't bother dealing with sample rate changes, etc, but
+           you'll have to*/
+        printf("ret=%d\n", ret);
+        int i;
+        for (i = 10; i < 20; i++) {
+            int j = 0;
+            for (j = 0; j < 16; j++) {
+                printf("%d ", pcmout[i * 16 + j]);
+            }
+            printf("\n");
+        }
+      }
+      //    }
+    return 0;
+
+//   OggVorbis_File vf;
+//   int eof = 0;
+//   int current_section;
+
+//   memset(pcmout, 0, 4096);
+//     printf("-1/2 = %d\n", __divdi3(-1, 2));
+//   FILE* fp = fopen("/APPS/A.OGG","rb");
+//   if (NULL == fp) {
+//       _printf("fopen error\n");
+//       return -1;
+//   }
+
+
+//   int ret1 = 0;
+//   if ((ret1 = ov_open(fp, &vf, NULL, 0)) < 0) {
+//       fprintf(stderr,"ret=%dInput does not appear to be an Ogg bitstream.\n", ret1);
+//       exit(1);
+//   }
+
+// //     char **ptr=ov_comment(&vf,-1)->user_comments;
+// //     vorbis_info *vi=ov_info(&vf,-1);
+// //     while(*ptr){
+// //       _printf("%s\n",*ptr);
+// //       ++ptr;
+// //     }
+// //     _printf("\nBitstream is %d channel, %dHz\n",vi->channels,vi->rate);
+// //     _printf("\nDecoded length: %d samples\n",
+// //             (long)ov_pcm_total(&vf,-1));
+// //     _printf("Encoded by: %s\n\n",ov_comment(&vf,-1)->vendor);
+
+// //   fread(pcmout, 1, 4096, fp);
+// //         int i;
+// //         for (i = 0; i < 10; i++) {
+// //             int j = 0;
+// //             for (j = 0; j < 16; j++) {
+// //                 fprintf(stdout, "%x ", 0xff & (pcmout[i * 16 + j]));
+// //             }
+// //             printf("\n");
+// //         }
+
+
+
+//     //    while(!eof){
+//       long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
+//       if (ret == 0) {
+//         /* EOF */
+//         eof=1;
+//       } else if (ret < 0) {
+//         /* error in the stream.  Not a problem, just reporting it in
+//            case we (the app) cares.  In this case, we don't. */
+//           printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//       } else {
+//         /* we don't bother dealing with sample rate changes, etc, but
+//            you'll have to*/
+//         printf("ret=%d\n", ret);
+//         int i;
+//         for (i = 10; i < 20; i++) {
+//             int j = 0;
+//             for (j = 0; j < 16; j++) {
+//                 fprintf(stdout, "%d ", pcmout[i * 16 + j]);
+//             }
+//             printf("\n");
+//         }
+//       }
+//       //    }
+
 
 //     _printf("hoge");
 //     int i;
@@ -184,69 +286,69 @@ error_t cmrender(void *ref, void *buffer ,size_t size, size_t *wrote)
 int main(int argc, char** argv)
 {
     return main2(argc, argv);
-    handle_t dev;
-    struct audio_data_format format;
-    struct audio_driver *driver;
-    monapi_cmemoryinfo *cmi;
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    cmi = monapi_file_read_all("/APPS/TEST.RAW");
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    FILE *fp;
-    fp = fopen("/APPS/TEST.RAW", "r");
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if( fp == NULL ) return 1;
-    setbuf(fp, NULL);
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    format.sample_rate = 44100;
-    format.bits = 16;
-    format.channels = 2;
+//     handle_t dev;
+//     struct audio_data_format format;
+//     struct audio_driver *driver;
+//     monapi_cmemoryinfo *cmi;
+//     _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//     cmi = monapi_file_read_all("/APPS/TEST.RAW");
+//     _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//     FILE *fp;
+//     fp = fopen("/APPS/TEST.RAW", "r");
+//     _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//     if( fp == NULL ) return 1;
+//     setbuf(fp, NULL);
+//     _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//     format.sample_rate = 44100;
+//     format.bits = 16;
+//     format.channels = 2;
 
-    printf("callback: %x\n", &render);
+//     printf("callback: %x\n", &render);
 
-    driver = audio_driver_factory("es1370");
-    puts("got a driver");
-    if( driver == NULL ) return 1;
+//     driver = audio_driver_factory("es1370");
+//     puts("got a driver");
+//     if( driver == NULL ) return 1;
 
-    dev = driver->driver_new();
-    if( dev == NULL )
-    {
-        puts("Couldn't open the device.");
-        return 1;
-    }
-    driver->driver_set_format(dev, &format);
-    size_t blocksize = driver->driver_get_block_size(dev);
-    char *buf = (char*)malloc(blocksize);
-    size_t dummy;
-    int r;
-//  driver->driver_set_render_callback(dev, &render, dev);
-//  driver->driver_set_render_callback(dev, &frender, fp);
-//  driver->driver_set_render_callback(dev, &cmrender, cmi);
-    while(1)
-    {
-        render(NULL, buf, blocksize, &dummy);
-        if( driver->driver_write_block(dev, buf) == 0 ) break;
-    }
+//     dev = driver->driver_new();
+//     if( dev == NULL )
+//     {
+//         puts("Couldn't open the device.");
+//         return 1;
+//     }
+//     driver->driver_set_format(dev, &format);
+//     size_t blocksize = driver->driver_get_block_size(dev);
+//     char *buf = (char*)malloc(blocksize);
+//     size_t dummy;
+//     int r;
+// //  driver->driver_set_render_callback(dev, &render, dev);
+// //  driver->driver_set_render_callback(dev, &frender, fp);
+// //  driver->driver_set_render_callback(dev, &cmrender, cmi);
+//     while(1)
+//     {
+//         render(NULL, buf, blocksize, &dummy);
+//         if( driver->driver_write_block(dev, buf) == 0 ) break;
+//     }
 
-    driver->driver_start(dev);
-    puts("Start");
-//  while(is_stopped==0) syscall_mthread_yield_message();
-    while(1)
-    {
-        int isng = OK;
-//      render(NULL, buf, blocksize, &dummy);
-        isng = frender(fp, buf, blocksize, &dummy);
-        WRITE:
-        r = driver->driver_write_block(dev, buf);
-        if( r == 0 ) goto WRITE;
-        if( isng == NG ) break;
-    }
-    puts("Stopped");
+//     driver->driver_start(dev);
+//     puts("Start");
+// //  while(is_stopped==0) syscall_mthread_yield_message();
+//     while(1)
+//     {
+//         int isng = OK;
+// //      render(NULL, buf, blocksize, &dummy);
+//         isng = frender(fp, buf, blocksize, &dummy);
+//         WRITE:
+//         r = driver->driver_write_block(dev, buf);
+//         if( r == 0 ) goto WRITE;
+//         if( isng == NG ) break;
+//     }
+//     puts("Stopped");
 
-    fclose(fp);
-    driver->driver_stop(dev);
-    driver->driver_delete(dev);
+//     fclose(fp);
+//     driver->driver_stop(dev);
+//     driver->driver_delete(dev);
 
-    exit(0);
+//     exit(0);
 
     return 0;
 }
