@@ -281,6 +281,10 @@
 (define (as)
   (start-process "/APPS/AUDIO.EX5"))
 
+(define (tr)
+  (start-process "/APPS/TREMOR.EX5"))
+
+
 (define (ac)
   (call-process "/APPS/ACLI.EX5"))
 
