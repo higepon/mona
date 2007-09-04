@@ -19,6 +19,9 @@ enum
 	MSG_AUDIO_GET_VOLUME     = 0x5066aba, /* AUD:GVO */
 	MSG_AUDIO_GET_CHANNELS_LIST = 0x506612e, /* AUD:GCL */
 
+	AUDIO_INPUT = 1,
+	AUDIO_OUTPUT= 2,
+
 
 	MSG_AUDIO_NEW_CHANNEL	 = 0x506d11e, /* AUD:NCH */
 #if 0
@@ -49,18 +52,54 @@ struct audio_channel_description
 	struct audio_data_format format;
 };
 
-/* Function: MSG_AUDIO_NEW_CHANNEL
- * To create a new channel.
- * Params:
- * 	type: A type of the channel. It's described by the enum `ChannelType`.
- * Returns: number of the channel, handle of the stream.
+/*
+ * First return number are stored msg.arg2.
+ * I can't recommend amateurs to use these commands.
  */
 
-/* Function: MSG_AUDIO_DELETE_CHANNEL
- * To delete a channel.
+/* Function: MSG_AUDIO_CREATE_CHANNEL
+ * To create a new channel.
  * Params:
- * 	channel: number of a channel.
+ * 	arg1(direction): A type of the channel. It's described by the macros.
+ * Returns: Channel ID.
+ */
+
+/* Function: MSG_AUDIO_DESTROY_CHANNEL
+ * To destroy a channel.
+ * Params:
+ * 	arg1(channel): Channel ID.
  * Retruns: None
+ */
+
+/* Function: MSG_AUDIO_SET_FORMAT
+ * To set a format.
+ * Params:
+ * 	arg1(channel): Channel ID.
+ *	str(format): A format.
+ * Retruns: if it isn't MONA_SUCESS, it was failure.
+ */
+
+/* Function: MSG_AUDIO_GET_FORMAT
+ * To get a format.
+ * Params:
+ * 	arg1(channel): Channel ID.
+ * Retruns: arg2: if it isn't MONA_SUCESS, it was failure.
+ *	    str: format
+ */
+
+/* Function: MSG_AUDIO_SET_STREAM
+ * To set a stream.
+ * Params:
+ * 	arg1(channel): Channel ID.
+ *	arg2(stream): A stream.
+ * Retruns: if it isn't MONA_SUCESS, it was failure.
+ */
+
+/* Function: MSG_AUDIO_GET_STREAM
+ * To get a stream.
+ * Params:
+ * 	arg1(channel): Channel ID.
+ * Retruns: arg2: if it is 0, it was failure. if it isn't 0, it is stream handle.
  */
 
 /* Function: MSG_AUDIO_START
@@ -75,17 +114,6 @@ struct audio_channel_description
  * Params:
  * 	channel: number of a channel.
  * Returns: None
- */
-
-/* Function: MSG_AUDIO_SET_FORMAT
- * To set a audio data format.
- * Params:
- * 	channels: number of audio channels
- * 	bits: bits per sample
- * 	rate: samples per second
- * 	byteorder: Byte ordering in sample. But now, It's a little endian only.
- * 	           Therefore you don't have to set this param.
- * Returns: Error Status
  */
 
 /* Function: MSG_AUDIO_SERVER_VERSION

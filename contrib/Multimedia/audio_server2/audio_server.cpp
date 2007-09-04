@@ -20,6 +20,7 @@ struct audio_data_format default_format =
 
 AudioServer::AudioServer() : channel_(NULL)
 {
+dputs("AudioServer::AudioServer()");
 	driver_ = audio_driver_factory("es1370");
 	device_ = driver_->driver_new();
 	dprintf("device_ = %x\n", device_);
@@ -32,6 +33,7 @@ AudioServer::AudioServer() : channel_(NULL)
 
 AudioServer::~AudioServer()
 {
+dputs("AudioServer::~AudioServer()");
 	driver_->driver_delete(device_);
 }
 
