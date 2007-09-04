@@ -6,8 +6,8 @@ endif
 TARGET  = AUDIO
 # server / client
 #SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circlular_buffer.cpp
-#SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
-SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+#SOURCES = test.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 
 TREMOR_DIR = Tremor-r13614
 TREMOR_SOURCES = \

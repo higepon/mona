@@ -64,8 +64,8 @@ int main2(int ac,char **av) {
 //         fprintf(stderr, "%s\n",*ptr);
 //         ++ptr;
 //     }
-//     fprintf(stderr, "\nBitstream is %d channel, %ldHz\n", vi->channels, vi->rate);
-//     fprintf(stderr, "\nDecoded length: %ld samples\n",
+//     fprintf(stderr, "\nBitstream is %d channel, %dHz\n", vi->channels, vi->rate);
+//     fprintf(stderr, "\nDecoded length: %d samples\n",
 //             (long)ov_pcm_total(&vf, -1));
 //     fprintf(stderr, "Encoded by: %s\n\n", ov_comment(&vf, -1)->vendor);
 
@@ -73,7 +73,7 @@ int main2(int ac,char **av) {
 
 
 
-    //    while(!eof){
+    while(!eof){
       long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
       if (ret == 0) {
         /* EOF */
@@ -81,21 +81,25 @@ int main2(int ac,char **av) {
       } else if (ret < 0) {
         /* error in the stream.  Not a problem, just reporting it in
            case we (the app) cares.  In this case, we don't. */
-          printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+          //      printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       } else {
         /* we don't bother dealing with sample rate changes, etc, but
            you'll have to*/
-        printf("ret=%d\n", ret);
-        int i;
-        for (i = 10; i < 20; i++) {
-            int j = 0;
-            for (j = 0; j < 16; j++) {
-                printf("%d ", pcmout[i * 16 + j]);
-            }
-            printf("\n");
-        }
+//         printf("ret=%d\n", ret);
+//         int i;
+//         for (i = 10; i < 20; i++) {
+//             int j = 0;
+//             for (j = 0; j < 16; j++) {
+//                 printf("%d ", pcmout[i * 16 + j]);
+//             }
+//             printf("\n");
+//         }
+          for (int i = 0; i < ret; i++) {
+              logprintf("%x ", pcmout[i]);
+          }
+          memset(pcmout, 0, sizeof(pcmout));
       }
-      //    }
+    }
     return 0;
 
 //   OggVorbis_File vf;
