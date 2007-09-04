@@ -777,7 +777,7 @@ size_t fread_wrap(void * buf, size_t a , size_t b , void * fp)
   size_t s = fread(buf, a, b, fp);
 /*   int i = 0; */
 /*   for (i = 0; i < s; i++) { */
-/*     logprintf("%d\n", ((char*)buf)[i]); */
+/*     _printf("%d ", ((char*)buf)[i]); */
 /*   } */
   return s;
 }
@@ -1577,6 +1577,8 @@ long ov_read(OggVorbis_File *vf,char *buffer,int bytes_req,int *bitstream){
     }
 
   }
+      ogg_int32_t *src = pcm[0];
+      printf("src[0]=%d\n", src[0]);
 
   if(samples>0){
   

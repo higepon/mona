@@ -10,7 +10,7 @@ static uint8_t pcmout[4096];
 
 int main(int ac,char **av) {
     OggVorbis_File vf;
-    int eof=0;
+    int eof = 0;
     int current_section;
 
 
@@ -39,18 +39,19 @@ int main(int ac,char **av) {
 #endif
 
 
-    while(!eof){
-      long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
-      if (ret == 0) {
-        /* EOF */
-        eof=1;
-      } else if (ret < 0) {
-        /* error in the stream.  Not a problem, just reporting it in
-           case we (the app) cares.  In this case, we don't. */
-          //      printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-      } else {
-        /* we don't bother dealing with sample rate changes, etc, but
-           you'll have to*/
+//    while(!eof){
+//        long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
+    long ret = ov_read(&vf, pcmout, 4, &current_section);
+        if (ret == 0) {
+            /* EOF */
+            eof=1;
+        } else if (ret < 0) {
+            /* error in the stream.  Not a problem, just reporting it in
+               case we (the app) cares.  In this case, we don't. */
+            //      printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        } else {
+            /* we don't bother dealing with sample rate changes, etc, but
+               you'll have to*/
 //         printf("ret=%d\n", ret);
 //         int i;
 //         for (i = 10; i < 20; i++) {
@@ -60,11 +61,12 @@ int main(int ac,char **av) {
 //             }
 //             printf("\n");
 //         }
-          for (int i = 0; i < ret; i++) {
-              logprintf("%x ", pcmout[i]);
-          }
-          memset(pcmout, 0, sizeof(pcmout));
-      }
-    }
+
+// should be e5 ff f2 ff e8 ff f4 ff ec ff f9 ff f0 ff fd ff f5 ff 2 0 fc
+            for (int i = 0; i < 32; i++) {
+                _printf("%x ", pcmout[i]);
+            }
+        }
+//    }
     return 0;
 }

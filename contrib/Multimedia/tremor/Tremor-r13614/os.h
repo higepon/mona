@@ -22,7 +22,6 @@
 
 #ifndef _V_IFDEFJAIL_H_
 #  define _V_IFDEFJAIL_H_
-
 #  ifdef __GNUC__
 #    define STIN static __inline__
 #  elif _WIN32

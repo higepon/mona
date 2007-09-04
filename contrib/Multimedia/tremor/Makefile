@@ -2,7 +2,7 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
-TARGET  = AUDIO
+TARGET  = TREMOR
 SOURCES = test.cpp
 
 TREMOR_DIR = Tremor-r13614
