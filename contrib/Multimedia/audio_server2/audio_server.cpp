@@ -20,7 +20,7 @@ struct audio_data_format default_format =
 
 AudioServer::AudioServer() : channel_(NULL)
 {
-dputs("AudioServer::AudioServer()");
+denter
 	driver_ = audio_driver_factory("es1370");
 	device_ = driver_->driver_new();
 	dprintf("device_ = %x\n", device_);
@@ -29,98 +29,111 @@ dputs("AudioServer::AudioServer()");
 	blocksize_ = driver_->driver_get_block_size(device_);
 	mixer_ = new MonAPI::Thread(mixer_th, this, mixer_th);
 	mixer_->start();
+dleave
 }
 
 AudioServer::~AudioServer()
 {
-dputs("AudioServer::~AudioServer()");
+denter
 	driver_->driver_delete(device_);
+dleave
 }
 
 int AudioServer::createChannel(int direction)
 {
-	dputs(__func__);
+denter
 	if( channel_ != NULL ) return -1;
 	channel_ = new Channel(direction);
+dleave
 	return 0;
 }
 
 int AudioServer::destroyChannel(int channel)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	delete channel_;
 	channel_ = NULL;
+dleave
 	return 0;
 }
 
 int AudioServer::setFormat(int channel, struct audio_data_format *format)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
+dleave
 	return channel_->setFormat(format);
 }
 
 int AudioServer::getFormat(int channel, struct audio_data_format *format)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
+dleave
 	return channel_->getFormat(format);
 }
 
 int AudioServer::setStream(int channel, uint32_t handle)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
+dleave
 	return channel_->setStream(handle);
 }
 
 int AudioServer::setVolume(int channel, int volume)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
+dleave
 	return channel_->setVolume(volume);
 }
 
 int AudioServer::getVolume(int channel)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
+dleave
 	return channel_->getVolume();
 }
 
 int AudioServer::setBlockSize(int channel, int blocksize)
 {
-	dputs(__func__);
+denter
+dleave
 	return -1;
 }
 
 int AudioServer::getBlockSize(int channel)
 {
-	dputs(__func__);
+denter
+dleave
 	return -1;
 }
 
 int AudioServer::start(int channel)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	driver_->driver_start(device_);
+dleave
 	return 0;
 }
 
 int AudioServer::stop(int channel)
 {
-	dputs(__func__);
+denter
 	if( channel != 0 ) return -1;
 	if( channel_ == NULL ) return -1;
 	driver_->driver_stop(device_);
+dleave
 	return 0;
 }
 

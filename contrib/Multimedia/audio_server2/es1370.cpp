@@ -16,18 +16,18 @@ static handle_t instance = NULL;
 const static char device_name[] = "es1370";
 struct audio_driver es1370_audio_driver_desc = 
 {
-	es1370_new,
-	es1370_delete,
-	es1370_codec_command,
-	es1370_start,
-	es1370_stop,
-	es1370_set_callback,
-	es1370_set_stopped_callback,
-	es1370_set_format,
-	es1370_get_format,
-	es1370_get_block_size,
-	es1370_write_block,
-	NULL,
+	/*.driver_new =*/ es1370_new,
+	/*.driver_delete =*/ es1370_delete,
+	/*.driver_codec_command = */es1370_codec_command,
+	/*.driver_start = */es1370_start,
+	/*.driver_stop = */es1370_stop,
+	/*.driver_set_render_callback = */es1370_set_callback,
+	/*.driver_set_stopped_callback = */es1370_set_stopped_callback,
+	/*.driver_set_format = */es1370_set_format,
+	/*.driver_get_format = */es1370_get_format,
+	/*.driver_get_block_size = */es1370_get_block_size,
+	/*.driver_write_block = */es1370_write_block,
+	/*.variables = */NULL,
 };
 
 

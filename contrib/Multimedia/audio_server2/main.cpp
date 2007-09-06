@@ -6,58 +6,37 @@
 #include "audio_server.h"
 #include "debug.h"
 
-#if 0
-class AudioServer
-{
-public:
-	AudioServer();
-	~AudioServer();
-
-	int createChannel(int direction);
-	int destroyChannel(int channel);
-	int setFormat(int channel, struct audio_data_format *format);
-	int getFormat(int channel, struct audio_data_format *format);
-	int setStream(int channel, uint32_t handle);
-	int setBlockSize(int channel, int blocksize);
-	int getBlockSize(int channel);
-	int start(int channel);
-	int stop(int channel);
-	int setVolume(int channel, int volume);
-	int getVolume(int channel);
-//private:
-	struct audio_driver *driver_;
-	handle_t device_;
-	Channel *channel_;
-	size_t blocksize_;
-	MonAPI::Thread* mixer_;
-};
-#endif
-
-#if 0
-
-#endif
-
 int audio_message_reply(int (*iserror)(uint32_t),
 	MessageInfo *info, uint32_t arg2 = 0,
 	uint32_t arg3 = 0, const char *str = NULL)
 {
 	dputs(__func__);
+	/*
 	if( iserror(arg2) )
+	{
+		dputs("Error");
 		return MonAPI::Message::replyError(info, arg2, arg3, str);
+	}
 	else
+	{
+	*/
+	//	dputs("Non Error");
 		return MonAPI::Message::reply(info, arg2, arg3, str);
+//	}
+	dputs("NOTREACHED");
 }
 
 int isnotzero(uint32_t x){ return (x != 0); }
 int iszero(uint32_t x){ return (x == 0); }
-int unsupported(uint32_t x){ return (x != x); }
-int noncheck(uint32_t x){ return (x == x); }
+int unsupported(uint32_t x){ return 1; }
+int noncheck(uint32_t x){ return 0; }
 
 int main(int argc, char *argv[])
 {
 	AudioServer server;
 	MessageInfo msg;
 	uint32_t result;
+denter
 	printf("Audio server was started.\n");
 	while(1)
 	{
@@ -69,8 +48,7 @@ int main(int argc, char *argv[])
 		{
 			case MSG_AUDIO_CREATE_CHANNEL:
 				result = server.createChannel(msg.arg1);
-				MonAPI::Message::reply(&msg, result);
-				//audio_message_reply(noncheck, &msg, result);
+				audio_message_reply(noncheck, &msg, result);
 				break;
 			case MSG_AUDIO_DESTROY_CHANNEL:
 				result = server.destroyChannel(msg.arg1);
@@ -121,5 +99,6 @@ int main(int argc, char *argv[])
 			default: break;
 		}
 	}
+dleave
 	return 0;
 }
