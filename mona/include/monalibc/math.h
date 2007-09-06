@@ -82,7 +82,7 @@ extern int fpclassify_f(float x);
 double acos(double x);
 double asin(double x);
 double atan(double x);
-double atan2(double x, double y);
+double atan2(double y, double x);
 double ceil(double x);
 double cos(double angle);
 double cosh(double x);
