@@ -62,7 +62,7 @@ inline void scheme_gc_init()
     type* to = (type*)o;
 
 #define ARGC_SHOULD_BE(n)                                                        \
-    Objects* as = Kernel::listOfValues(arguments, env);                          \
+    Objects* as = evalArguments ? Kernel::listOfValues(arguments, env) : arguments;          \
     if (ARGC != n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC >= 0 ? ARGV(0)->lineno() : 0                            \
@@ -71,7 +71,7 @@ inline void scheme_gc_init()
     }
 
 #define ARGC_SHOULD_BE_GT(n)                                                     \
-    Objects* as = Kernel::listOfValues(arguments, env);                          \
+    Objects* as = evalArguments ? Kernel::listOfValues(arguments, env) : arguments;          \
     if (ARGC <= n)                                                               \
     {                                                                            \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                             \
@@ -80,7 +80,7 @@ inline void scheme_gc_init()
     }
 
 #define ARGC_SHOULD_BE_GT_RETURN_FALSE(n)                                        \
-    Objects* as = Kernel::listOfValues(arguments, env);                          \
+    Objects* as = evalArguments ? Kernel::listOfValues(arguments, env) : arguments;          \
     if (ARGC <= n)                                                               \
     {                                                                            \
         return SCM_FALSE;                                                        \
@@ -88,7 +88,7 @@ inline void scheme_gc_init()
 
 
 #define ARGC_SHOULD_BE_BETWEEN(m, n)                                                         \
-    Objects* as = Kernel::listOfValues(arguments, env);                                      \
+    Objects* as = evalArguments ? Kernel::listOfValues(arguments, env) : arguments;          \
     if (ARGC < m || ARGC > n)                                                                \
     {                                                                                        \
         RAISE_ERROR(ARGC > 0 ? ARGV(0)->lineno() : 0                                         \
@@ -98,6 +98,6 @@ inline void scheme_gc_init()
 
 
 #define PROCEDURE(ClassName, name)                                               \
-    Object* ClassName::apply(Objects* arguments, Environment* env)
+    Object* ClassName::apply(Objects* arguments, Environment* env, bool evalArguments /* = true */)
 
 #endif // __PRIMITIVE_PROCEDURE_PROCEDURE_H__

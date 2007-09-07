@@ -23,9 +23,11 @@ using namespace monash;
 
 #define SYNTAX_ERROR(...) printf(__VA_ARGS__);fflush(stdout);
 
-Scanner::Scanner(Reader* reader) : reader_(reader)
+// ugly
+// If we use multi extend class
+// a pointer value will change and gc sweep it wrongly!
+Scanner::Scanner(Reader* reader, StringReader* stringReader, InputPort* inputPort) : reader_(reader), stringReader_(stringReader), inputPort_(inputPort)
 {
-
 }
 
 Scanner::~Scanner()
@@ -48,11 +50,11 @@ int Scanner::getLineNo()
 // <token> => <identifier> | <boolean> | <number>
 //          | <charcter> | <string> | <regexp>
 //          | ( | ) | #( | ' | ` | , | ,@ | .
-SToken* Scanner::getToken()
+Token* Scanner::getToken()
 {
     char c = readChar();
     if (c == EOF) return NULL;
-    SToken* token;
+    Token* token;
     while (isSpace(c))
     {
         c = readChar();
@@ -111,13 +113,13 @@ SToken* Scanner::getToken()
 
         if (isSynaticKeyword(text))
         {
-            token = new SToken(SToken::KEYWORD);
+            token = new Token(Token::KEYWORD);
             token->text = text;
             return token;
         }
         else
         {
-            token = new SToken(SToken::VARIABLE);
+            token = new Token(Token::VARIABLE);
             token->text = text;
             return token;
         }
@@ -132,15 +134,15 @@ other:
     switch(c)
     {
     case '(':
-        return new SToken(SToken::LEFT_PAREN);
+        return new Token(Token::LEFT_PAREN);
     case ')':
-        return new SToken(SToken::RIGHT_PAREN);
+        return new Token(Token::RIGHT_PAREN);
     case '\'':
-        return new SToken(SToken::SINGLE_QUOTE);
+        return new Token(Token::SINGLE_QUOTE);
     case '.':
-        return new SToken(SToken::PERIOD);
+        return new Token(Token::PERIOD);
     case '`':
-        return new SToken(SToken::BACK_QUOTE);
+        return new Token(Token::BACK_QUOTE);
     default:
         break;
     }
@@ -155,7 +157,7 @@ other:
             if (c == '\n' || c == EOF) break;
             comment += c;
         }
-        token = new SToken(SToken::COMMENT);
+        token = new Token(Token::COMMENT);
         token->text = comment;
         return token;
     }
@@ -165,13 +167,13 @@ other:
         c =readChar();
         if (c == '@')
         {
-            token = new SToken(SToken::CAMMA_AT);
+            token = new Token(Token::CAMMA_AT);
             return token;
         }
         else
         {
             unReadChar(c);
-            token = new SToken(SToken::CAMMA);
+            token = new Token(Token::CAMMA);
             return token;
         }
     }
@@ -183,15 +185,15 @@ other:
         {
         // <boolean> => #t | #f
         case 't':
-            token = new SToken(SToken::BOOLEAN);
+            token = new Token(Token::BOOLEAN);
             token->integer = 1;
             return token;
         case 'f':
-            token = new SToken(SToken::BOOLEAN);
+            token = new Token(Token::BOOLEAN);
             token->integer = 0;
             return token;
         case '(':
-            token = new SToken(SToken::VECTOR_START);
+            token = new Token(Token::VECTOR_START);
             return token;
         case '\\':
             // <character> => #\ <any character>
@@ -214,7 +216,7 @@ other:
             }
             else if (text.size() == 1 || text == "space" || text == "newline")
             {
-                token = new SToken(SToken::CHARCTER);
+                token = new Token(Token::CHARCTER);
                 token->text = text;
                 return token;
             }
@@ -244,7 +246,7 @@ other:
                 }
                 text += c;
             }
-            token = new SToken(SToken::REGEXP);
+            token = new Token(Token::REGEXP);
             token->text = text;
             token->integer = caseFold ? 1 : 0;
             return token;
@@ -288,7 +290,7 @@ other:
                 text += c;
             }
         }
-        token = new SToken(SToken::STRING);
+        token = new Token(Token::STRING);
         token->text = text;
         return token;
     }
@@ -312,7 +314,7 @@ other:
             }
             text += c;
         }
-        token = new SToken(SToken::NUMBER);
+        token = new Token(Token::NUMBER);
         token->integer = atoi(text.data());
         return token;
     }

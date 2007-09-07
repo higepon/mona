@@ -1,5 +1,5 @@
 /*!
-    \file   ExtRepParserTest.cpp
+    \file   ParserTest.cpp
     \brief
 
     Copyright (c) 2002-2007 Higepon.
@@ -13,28 +13,28 @@
 #include <string>
 #include <fstream>
 #include "scheme.h"
-#include "ExtRepParserTest.h"
+#include "ParserTest.h"
 #include "StringReader.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ExtRepParserTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ParserTest);
 
 using namespace std;
 using namespace util;
 using namespace monash;
 
-void ExtRepParserTest::setUp()
+void ParserTest::setUp()
 {
     scheme_const_init();
 }
 
-void ExtRepParserTest::tearDown()
+void ParserTest::tearDown()
 {
 }
 
-void ExtRepParserTest::testParser()
+void ParserTest::testParser()
 {
     YAML yaml;
-    loadYAML("test_cpp/ext_rep_parser.yml", yaml);
+    loadYAML("test_cpp/parser.yml", yaml);
 
     if (yaml.size() == 0)
     {
@@ -45,9 +45,9 @@ void ExtRepParserTest::testParser()
     {
         Strings* s = yaml[i];
         String extRep = s->get(0)->data();
-        Reader* reader   = new StringReader(extRep);
-        Scanner* scanner = new Scanner(reader);
-        ExtRepParser parser(scanner);
+        StringReader* reader   = new StringReader(extRep);
+        Scanner* scanner = new Scanner(reader, reader, NULL);
+        Parser parser(scanner);
 
 
         Object* o = parser.parse();

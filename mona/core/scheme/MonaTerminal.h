@@ -23,7 +23,7 @@ namespace monash {
 class MonaTerminal
 {
 public:
-    MonaTerminal(void(*timerFunc)(void));
+    MonaTerminal();
     virtual ~MonaTerminal();
 
     ::util::String getLine();
@@ -47,7 +47,6 @@ protected:
     void initHistories();
 
     bool isKeySuppressed_;
-    void(*timerFunc_)(void);
     ::util::String line_;
     uint32_t cursorPosition_;
     CommandHistory histories_;

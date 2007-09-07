@@ -1,5 +1,5 @@
 /*!
-    \file   SToken.cpp
+    \file   Token.cpp
     \brief
 
     Copyright (c) 2002-2007 Higepon.
@@ -10,21 +10,21 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "SToken.h"
+#include "Token.h"
 #include "scheme.h"
 
 using namespace util;
 using namespace monash;
 
-SToken::SToken(int type) : type(type)
+Token::Token(int type) : type(type)
 {
 }
 
-SToken::~SToken()
+Token::~Token()
 {
 }
 
-String SToken::typeString()
+String Token::typeString()
 {
     switch(type)
     {
@@ -66,7 +66,7 @@ String SToken::typeString()
     };
 }
 
-String SToken::valueString()
+String Token::valueString()
 {
     String ret;
     char buf[32];

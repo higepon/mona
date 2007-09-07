@@ -56,6 +56,24 @@
   (lambda (x)
     (eqv? x null)))
 
+(define list (lambda args args))
+
+(define-macro case
+  (lambda (msg . args)
+    (if (null? args)
+	'(void)
+	(let* ((first (car args))
+	       (body (cdr first)))
+	  (if (eq? (car first) 'else)
+	      (if (null? (cdr body))
+		  (car body)
+		  `(begin ,@(cdr first)))
+	      `(if (member ,msg (quote ,(car first)))
+		   ,(if (null? (cdr body))
+			(car body)
+			`(begin ,@(cdr first)))
+		   (case ,msg ,@(cdr args))))))))
+
 (define-syntax list
   (syntax-rules ()
     ((_ a) (cons a null))
@@ -215,6 +233,11 @@
     ((delay expression)
      (make-promise (lambda () expression)))))
 
+(define-macro delay
+  (lambda (expression)
+  `(make-promise (lambda () ,expression))))
+
+
 (define force
   (lambda (object)
     (object)))
@@ -299,6 +322,29 @@
 (define (remove pred l)
   (filter (lambda (s) (not (pred s))) l))
 
+(define-macro letrec
+  ((lambda ()
+     (define (letrec-defs def)
+       `(define  ,(car def) ,@(cdr def)))
+     (lambda (defs . exprs)
+       `((lambda () ,@(map letrec-defs defs) ,@exprs))))))
+
+(define-macro do
+  (lambda (vars final . body)
+    (let ((loop 'xxxx))
+      `(letrec
+     ((,loop
+       (lambda ,(map car vars)
+         (if ,(car final)
+         ,(if (null? (cdr final))
+              `(if #f #f)
+              (cadr final))
+         (begin
+           ,@body
+           (,loop ,@(map caddr vars)))))))
+     (,loop ,@(map cadr vars))))))
+
+
 (define-syntax unless
   (syntax-rules ()
     ((_ pred body ...)
@@ -307,6 +353,18 @@
 (define (acons obj1 obj2 obj3)
   (cons (cons obj1 obj2) obj3))
 
+(define-syntax aif
+  (syntax-rules ()
+    ((_ it a b c ...)
+     (let ((it a)) (if it b c ...)))))
+
+
+(define-macro aif
+  (lambda (predicate consequent alternative)
+    `(let ((it ,predicate))
+       (if it
+           ,consequent
+           ,alternative))))
 
 ;; for test
 ;; (define-syntax unquote

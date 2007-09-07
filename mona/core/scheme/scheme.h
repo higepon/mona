@@ -27,6 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <time.h>
 #ifdef MONA
@@ -46,8 +47,6 @@ namespace util {
     typedef Vector<String*> Strings;
 };
 
-#include "MacroFilter.h"
-#include "QuoteFilter.h"
 #include "Object.h"
 #include "Environment.h"
 #include "Procedure.h"
@@ -55,20 +54,21 @@ namespace util {
 #include "SString.h"
 #include "Charcter.h"
 #include "Vector.h"
-#include "Pair.h"
-#include "SpecialIf.h"
+#include "Cons.h"
+#include "Set.h"
+#include "SIf.h"
+#include "And.h"
+#include "Or.h"
 #include "Assignment.h"
 #include "Begin.h"
 #include "Definition.h"
 #include "Application.h"
 #include "Continuation.h"
-#include "SExp.h"
-#include "Parser.h"
 #include "Translator.h"
-#include "Macro.h"
+#include "TraditionalMacro.h"
 #include "Error.h"
 #include "Variant.h"
-#include "ExtRepParser.h"
+#include "Parser.h"
 #include "OutputPort.h"
 #include "InputPort.h"
 #include "StringReader.h"
@@ -78,18 +78,17 @@ namespace util {
 #include "Eof.h"
 #include "MonaTerminal.h"
 #include "Interaction.h"
-#include "RiteralConstant.h"
+#include "Identifier.h"
 #include "SRegexp.h"
 #include "SRegMatch.h"
-#include "procedures/True.h"
-#include "procedures/False.h"
-#include "procedures/Undef.h"
+#include "True.h"
+#include "False.h"
+#include "Undef.h"
 #include "procedures/Procedure.h"
-#include "procedures/Set.h"
 
 namespace monash {
 class DynamicWind;
-class Pair;
+class Cons;
 class InputPort;
 typedef ::util::Vector<DynamicWind*> DynamicWinds;
 typedef ::util::Vector< ::util::Pair<Variable*, Object*> > DefaultProcedures;
@@ -111,16 +110,16 @@ void scheme_on_reedit();
 void scheme_init();
 monash::Object* scheme_eval_string(const ::util::String& input, monash::Environment* env, bool out = false);
 int scheme_batch(const ::util::String& file);
-monash::SExp* objectToSExp(monash::Object* o);
-monash::SExp* pairToSExp(monash::Pair* p);
+//nmonash::SExp* objectToSExp(monash::Object* o);
+//monash::SExp* pairToSExp(monash::Cons* p);
 
 
-GLOBAL monash::True* g_true;
-GLOBAL monash::False* g_false;
-GLOBAL monash::Eof* g_eof;
-GLOBAL monash::Undef* g_undef;
-GLOBAL monash::Nil* g_nil;
-GLOBAL monash::Objects* g_no_arg;
+GLOBAL ::monash::True* g_true;
+GLOBAL ::monash::False* g_false;
+GLOBAL ::monash::Eof* g_eof;
+GLOBAL ::monash::Undef* g_undef;
+GLOBAL ::monash::Nil* g_nil;
+GLOBAL ::monash::Cons* g_no_arg;
 GLOBAL monash::DynamicWinds* g_dynamic_winds;
 GLOBAL monash::InputPort* g_defaultInputPort;
 //GLOBAL monash::DefaultProcedures procedures;
@@ -134,17 +133,17 @@ GLOBAL bool g_batch_mode GLOBAL_VAL(false);
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 GLOBAL ::util::HashMap<int>* g_provide_map;
 
-#ifdef MONA
-GLOBAL ::monash::MonaTerminal* g_terminal;
-#endif
-
-
 #define SCM_TRUE   g_true
 #define SCM_FALSE  g_false
 #define SCM_UNDEF  g_undef
 #define SCM_NO_ARG g_no_arg
 #define SCM_NIL    g_nil
 #define SCM_EOF    g_eof
+
+
+#ifdef MONA
+GLOBAL ::monash::MonaTerminal* g_terminal;
+#endif
 
 #ifdef MONA
 #define LOAD_SCHEME_INTERACTIVE_LIBRARY "(load \"/LIBS/SCHEME/interact.scm\")"
@@ -211,16 +210,16 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 #define SCM_APPLY1(name, e, ret, arg1)             \
 {                                                  \
     Object* proc = (new Variable(name))->eval(e);  \
-    Objects* args = new Objects;                   \
-    args->add(arg1);                               \
+    Cons* args = new Cons;\
+    args->append(arg1);                               \
     ret = Kernel::apply(proc, args, e);            \
 }
 
 #define SCM_EVAL(proc, e, ret, arg1)               \
 {                                                  \
-    Objects* args = new Objects;                   \
-    args->add(arg1);                               \
-    args->add(e);                                  \
+    Cons* args = new Cons;                         \
+    args->append(arg1);                            \
+    args->append(e);                               \
     ret = Kernel::apply(proc, args, e);            \
 }
 
@@ -234,8 +233,8 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 // (a b . c)
 #define SCM_LIST_CONS(objects, o, ret, lineno)              \
 {                                                           \
-    ret = new Pair(SCM_NIL, SCM_NIL, lineno);               \
-    Pair* p = ret;                                          \
+    ret = new Cons(SCM_NIL, SCM_NIL, lineno);               \
+    Cons* p = ret;                                          \
     for (int i = 0; i < objects->size(); i++)               \
     {                                                       \
         p->setCar(objects->get(i));                         \
@@ -245,7 +244,7 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
         }                                                   \
         else                                                \
         {                                                   \
-            Pair* tmp = new Pair(SCM_NIL, SCM_NIL, lineno); \
+            Cons* tmp = new Cons(SCM_NIL, SCM_NIL, lineno); \
             p->setCdr(tmp);                                 \
             p = tmp;                                        \
         }                                                   \
@@ -255,14 +254,14 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 // (a b c)
 #define SCM_LIST(objects, ret, lineno)                                           \
 {                                                                                \
-    ret = new ::monash::Pair(SCM_NIL, SCM_NIL, lineno);                          \
-    ::monash::Pair* p = ret;                                                     \
+    ret = new ::monash::Cons(SCM_NIL, SCM_NIL, lineno);                          \
+    ::monash::Cons* p = ret;                                                     \
     for (int i = 0; i < objects->size(); i++)                                    \
     {                                                                            \
         p->setCar(objects->get(i));                                              \
         if (i != objects->size() - 1)                                            \
         {                                                                        \
-            ::monash::Pair* tmp = new ::monash::Pair(SCM_NIL, SCM_NIL, lineno);  \
+            ::monash::Cons* tmp = new ::monash::Cons(SCM_NIL, SCM_NIL, lineno);  \
             p->setCdr(tmp);                                                      \
             p = tmp;                                                             \
         }                                                                        \

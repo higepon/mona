@@ -35,7 +35,7 @@ int Unquote::type() const
 
 Object* Unquote::eval(Environment* env)
 {
-    return object_->eval(env);
+    return Kernel::eval(object_, env);
 }
 
 bool Unquote::eqv() const
@@ -47,4 +47,3 @@ bool Unquote::eq() const
 {
     return false;
 }
-

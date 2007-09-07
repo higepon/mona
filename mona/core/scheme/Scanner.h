@@ -14,21 +14,23 @@
 #define __SCANNER_H__
 
 #include "util/String.h"
-#include "SToken.h"
+#include "Token.h"
 #include "Reader.h"
+#include "StringReader.h"
+#include "InputPort.h"
 
 namespace monash {
 
-// あとで消す
-void scanner_test();
+class InputPort;
+class StringReader;
 
 class Scanner
 {
 public:
-    Scanner(Reader* reader);
+    Scanner(Reader* reader, StringReader* stringReader, InputPort* inputPort);
     virtual ~Scanner();
 
-    SToken* getToken();
+    Token* getToken();
     ::util::String getFileName();
     int getLineNo();
 
@@ -44,6 +46,8 @@ protected:
     bool isExpressionKeyword(const ::util::String& s);
     bool isSynaticKeyword(const ::util::String& s);
     Reader* reader_;
+    StringReader* stringReader_;
+    InputPort* inputPort_;
 };
 
 }; // namespace monash

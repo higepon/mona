@@ -34,7 +34,7 @@
 
 (assert-check-false "="
                    (= 1 2 1 1)
-                   (= 1 "1" 1))
+                   (= 1 2 1))
 
 (assert-check-true ">"
                    (> 2 1)
@@ -45,7 +45,7 @@
                    (> 1 2)
                    (> 5 3 4)
                    (> 5 4 4)
-                   (> "4" 3 2 1))
+                   (> 1 3 2 1))
 
 (assert-check-true ">="
                    (>= 2 1)
@@ -55,7 +55,7 @@
 (assert-check-false ">="
                    (>= 1 2)
                    (>= 5 3 4)
-                   (>= "4" 3 2 1))
+                   (>= 1 3 2 1))
 
 (assert-check-false "< #f"
                    (< 2 1)
@@ -138,22 +138,22 @@
 
 (assert-check-equal
  =
- '((quotient 5 3) 1)
- '((quotient 6 3) 2)
- '((quotient 7 3) 2)
- '((modulo 13 4) 1)
- '((modulo -13 4) 1)
- '((modulo 13 -4) 1)
- '((reminder 13 4) 1)
- '((reminder -13 4) -1)
- '((reminder 13 -4) 1)
- '((reminder -13 -4) -1)
- '(4 (max 1 2 4 3))
- '(1 (min 2 1 4 3))
- '((gcd 32 -36) 4)
- '((gcd 36 12) 12)
- '((gcd 1 1) 1)
- '((lcm 2 1) 2)
- '((lcm 3 4) 12)
- '((lcm 12 9) 36)
+ ((quotient 5 3) 1)
+ ((quotient 6 3) 2)
+ ((quotient 7 3) 2)
+ ((modulo 13 4) 1)
+ ((modulo -13 4) 1)
+ ((modulo 13 -4) 1)
+ ((reminder 13 4) 1)
+ ((reminder -13 4) -1)
+ ((reminder 13 -4) 1)
+ ((reminder -13 -4) -1)
+ (4 (max 1 2 4 3))
+ (1 (min 2 1 4 3))
+ ((gcd 32 -36) 4)
+ ((gcd 36 12) 12)
+ ((gcd 1 1) 1)
+ ((lcm 2 1) 2)
+ ((lcm 3 4) 12)
+ ((lcm 12 9) 36)
 )

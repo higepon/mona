@@ -61,7 +61,7 @@ bool Continuation::equal(Object* o)
 }
 
 // if this fail, see cont.c adjust next_stack= prev_stack - 0x1000;
-Object* Continuation::apply(Objects* arguments, Environment* env)
+Object* Continuation::apply(Objects* arguments, Environment* env, bool evalArguments /* true */)
 {
     ARGC_SHOULD_BE_GT(0);
     callAruguments = as;

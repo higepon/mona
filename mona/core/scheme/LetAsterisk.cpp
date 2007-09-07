@@ -15,7 +15,7 @@
 using namespace util;
 using namespace monash;
 
-LetAsterisk::LetAsterisk(Objects* body, Variables* variables, Objects* values, uint32_t lineno) : body_(body)
+LetAsterisk::LetAsterisk(Objects* body, Variables* variables, Cons* values, uint32_t lineno) : body_(body)
                                                                                                 , variables_(variables)
                                                                                                 , values_(values)
                                                                                                 , lineno_(lineno)
@@ -40,21 +40,21 @@ Object* LetAsterisk::expand()
 {
     Variables* variables = new Variables;SCM_ASSERT(variables);
     variables->add(variables_->get(0));
-    Objects* values = new Objects;SCM_ASSERT(values);
-    values->add(values_->get(0));
+    Cons* values = new Cons;
+    values->append(values_->listRef(0));
     Object* let = new Let(expandInternal(1, 1), variables, values); SCM_ASSERT(let); return let;
 }
 
 Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
 {
-    if (variablesIndex == variables_->size() || valuesIndex == values_->size())
+    if (variablesIndex == variables_->size() || valuesIndex == values_->getListLength())
     {
         return body_;
     }
     Variables* variables = new Variables;SCM_ASSERT(variables);
     variables->add(variables_->get(variablesIndex));
-    Objects* values = new Objects;SCM_ASSERT(values);
-    values->add(values_->get(valuesIndex));
+    Cons* values = new Cons;SCM_ASSERT(values);
+    values->append(values_->listRef(valuesIndex));
     Let* let = new Let(expandInternal(variablesIndex + 1, valuesIndex + 1), variables, values);SCM_ASSERT(let);
     Objects* body = new Objects;SCM_ASSERT(body);
     body->add(let);

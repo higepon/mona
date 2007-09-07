@@ -1,7 +1,6 @@
 (load "<LIBDIR>/core.scm")
 (load "<LIBDIR>/danny.scm")
 (load "<LIBDIR>/shell.scm")
-(load "<LIBDIR>/timer.scm")
 (load "<LIBDIR>/demo.scm")
 
 (define *fs-root-directory* (fs-new-directory "/"))

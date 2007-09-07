@@ -1,10 +1,11 @@
 (define make-counter (lambda (init incremental)
                        (let ((x init)
                              (y incremental))
-                         (lambda () (set! x (+ x y))))))
+                         (lambda () (set! x (+ x y)) x))))
 
 (define c1 (make-counter 0 1))
 (define c2 (make-counter 0 2))
+
 
 (assert-check-true "closure: 1"
                    (= (c1) 1)

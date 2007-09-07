@@ -34,7 +34,7 @@ public:
     Objects* body() { return body_; }
     Variables* parameters(){ return parameters_; }
     Environment* env() { return env_; }
-    virtual Object* apply(Objects* arguments, Environment* env);
+    virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);
     virtual bool eqv() const;
     virtual bool eq()  const;
 

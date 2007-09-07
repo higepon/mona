@@ -17,7 +17,7 @@
 using namespace util;
 using namespace monash;
 
-Application::Application(Object* function, Objects* arguments, uint32_t lineno) : function_(function), arguments_(arguments), lineno_(lineno)
+Application::Application(Object* operatorr, Cons* operands, uint32_t lineno) : operatorr_(operatorr), operands_(operands), lineno_(lineno)
 {
 }
 
@@ -27,7 +27,7 @@ Application::~Application()
 
 String Application::toString()
 {
-    return "Application : " + function_->toString();
+    return "Application : " + operatorr_->toString();
 }
 
 int Application::type() const
@@ -37,18 +37,18 @@ int Application::type() const
 
 Object* Application::eval(Environment* env)
 {
-    Object* procedure = function()->eval(env);
-
+    Object* procedure = operatorr()->eval(env);
     if (!procedure->isCompoundProcedure() &&
         !procedure->isPrimitiveProcedure() &&
         !procedure->isContinuation() &&
+        !procedure->isTraditionaMacro() &&
         !procedure->isSRegexp() &&
         !procedure->isSRegMatch())
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }
 
-    Object* ret = Kernel::apply(procedure, arguments(), env);
+    Object* ret = Kernel::apply(procedure, operands(), env);
     procedure = NULL;
     return ret;
 }

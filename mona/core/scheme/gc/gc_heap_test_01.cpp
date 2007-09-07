@@ -10,9 +10,7 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "GCRecord.h"
-
-extern GCRecord root;
+#include "gc_helper.h"
 
 static char* dont_sweep;
 static char** has_heap_ref;
@@ -63,32 +61,13 @@ int main(int argc, char *argv[])
     gc_init();
 
     int x = 0x12345678;
-    int* q = new int;
+    volatile int* volatile q = new int;
     test();
     test2();
     int y = 0x99998888;
     dummy(0);
     dont_sweep = NULL; // can sweep
     gc();
-    int size = gc_record_size(&root);
-
-    if (size == 3
-        && root.next->size == 1
-        && root.next->next->size == 136
-        && root.next->next->next->size == 4)
-    {
-        printf("[OK] %s\n", argv[0]);
-        return 0;
-    }
-    else
-    {
-        printf("%s [NG]\n", argv[0]);
-        FOREACH_GC_RECORD(&root, e)
-        {
-            printf("    not sweeped size = %d\n", e->size);
-        }
-        this_variable_is_refered(q);
-        return 1;
-    }
-
+    int expected[] = {1, 136, 4};
+    show_gc_result(expected, sizeof(expected) /sizeof(int), argv[0]);
 }

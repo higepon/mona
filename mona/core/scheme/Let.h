@@ -24,7 +24,7 @@ class Application;
 class Let : public Object
 {
 public:
-    Let(Objects* body, Variables* variables, Objects* values, uint32_t lineno = 0);
+    Let(Objects* body, Variables* variables, Cons* values, uint32_t lineno = 0);
     virtual ~Let();
 
 public:
@@ -38,7 +38,7 @@ public:
 protected:
     Objects* body_;
     Variables* variables_;
-    Objects* values_;
+    Cons* values_;
     uint32_t lineno_;
 };
 

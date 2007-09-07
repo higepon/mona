@@ -33,16 +33,18 @@ int QuasiQuote::type() const
     return Object::QUASI_QUOTE;
 }
 
+// quasiquote will be evaled sometimes.
+// we need a copy
 Object* QuasiQuote::evalIter(Object* object, Environment* env)
 {
     if (object->isUnquote())
     {
         return object->eval(env);
     }
-    else if (object->isPair())
+    else if (object->isCons())
     {
-        Pair* pair = (Pair*)object;
-        Pair* prevPair = NULL;
+        Cons* pair = (Cons*)object;
+        Cons* prevCons = NULL;
         for (;;)
         {
             Object* car = pair->getCar();
@@ -53,14 +55,14 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
             else if (car->isUnquoteSplicing())
             {
                 Object* evaluated = car->eval(env);
-                if (evaluated->isPair())
+                if (evaluated->isCons())
                 {
-                    Pair* evaluatedPair = (Pair*)evaluated;
+                    Cons* evaluatedCons = (Cons*)evaluated;
                     Object* cdr = pair->getCdr();
-                    pair->setCar(evaluatedPair->getCar());
-                    pair->setCdr(evaluatedPair->getCdr());
+                    pair->setCar(evaluatedCons->getCar());
+                    pair->setCdr(evaluatedCons->getCdr());
 
-                    Pair* start = pair;
+                    Cons* start = pair;
                     for (;;)
                     {
                         if (start->getCdr()->isNil())
@@ -69,17 +71,17 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
                             break;
                         }
                         Object* tmp = start->getCdr();
-                        if (!tmp->isPair())
+                        if (!tmp->isCons())
                         {
                             RAISE_ERROR(object->lineno(), "unquote-splicing got not pair!");
                         }
-                        start = (Pair*)tmp;
+                        start = (Cons*)tmp;
                     }
                 }
                 else if (evaluated->isNil())
                 {
-//                    Pair* p = (Pair*)prevPair->getCdr();
-                    prevPair->setCdr(pair->getCdr());
+//                    Cons* p = (Cons*)prevCons->getCdr();
+                    prevCons->setCdr(pair->getCdr());
                 }
                 else
                 {
@@ -93,13 +95,13 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
 
             Object* cdr = pair->getCdr();
             if (cdr->isNil()) break;
-            if (!cdr->isPair())
+            if (!cdr->isCons())
             {
                 pair->setCdr(evalIter(pair->getCdr(), env));
                 break;
             }
-            prevPair = pair;
-            pair = (Pair*)cdr;
+            prevCons = pair;
+            pair = (Cons*)cdr;
         }
         return object;
     }
@@ -109,9 +111,24 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
     }
 }
 
+// quasiquote will be evaled sometimes.
+// we need a copy
+Object* QuasiQuote::cloneSexp(Object* o)
+{
+    if (o->isCons())
+    {
+        Cons* cons = new Cons(cloneSexp(((Cons*)o)->getCar()), cloneSexp(((Cons*)o)->getCdr()));
+        return cons;
+    }
+    else
+    {
+        return o;
+    }
+}
+
 Object* QuasiQuote::eval(Environment* env)
 {
-    return evalIter(object_, env);
+    return evalIter(cloneSexp(object_), env);
 }
 
 bool QuasiQuote::eqv() const
@@ -123,3 +140,80 @@ bool QuasiQuote::eq() const
 {
     return false;
 }
+
+// Object* QuasiQuote::evalIter(Object* object, Environment* env)
+// {
+//     if (object->isUnquote())
+//     {
+//         printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, object->typeString().data());fflush(stdout);// debug
+//         return object->eval(env);
+//     }
+//     else if (object->isCons())
+//     {
+//         Cons* pair = (Cons*)object;
+//         Cons* prevCons = NULL;
+//         for (;;)
+//         {
+//             Object* car = pair->getCar();
+//             if (car->isUnquote())
+//             {
+//                 pair->setCar(car->eval(env));
+//             }
+//             else if (car->isUnquoteSplicing())
+//             {
+//                 Object* evaluated = car->eval(env);
+//                 if (evaluated->isCons())
+//                 {
+//                     Cons* evaluatedCons = (Cons*)evaluated;
+//                     Object* cdr = pair->getCdr();
+//                     pair->setCar(evaluatedCons->getCar());
+//                     pair->setCdr(evaluatedCons->getCdr());
+
+//                     Cons* start = pair;
+//                     for (;;)
+//                     {
+//                         if (start->getCdr()->isNil())
+//                         {
+//                             start->setCdr(cdr);
+//                             break;
+//                         }
+//                         Object* tmp = start->getCdr();
+//                         if (!tmp->isCons())
+//                         {
+//                             RAISE_ERROR(object->lineno(), "unquote-splicing got not pair!");
+//                         }
+//                         start = (Cons*)tmp;
+//                     }
+//                 }
+//                 else if (evaluated->isNil())
+//                 {
+// //                    Cons* p = (Cons*)prevCons->getCdr();
+//                     prevCons->setCdr(pair->getCdr());
+//                 }
+//                 else
+//                 {
+//                     RAISE_ERROR(object->lineno(), "unquote-splicing got not pair!");
+//                 }
+//             }
+//             else
+//             {
+//                 evalIter(car, env);
+//             }
+
+//             Object* cdr = pair->getCdr();
+//             if (cdr->isNil()) break;
+//             if (!cdr->isCons())
+//             {
+//                 pair->setCdr(evalIter(pair->getCdr(), env));
+//                 break;
+//             }
+//             prevCons = pair;
+//             pair = (Cons*)cdr;
+//         }
+//         return object;
+//     }
+//     else
+//     {
+//         return object;
+//     }
+// }

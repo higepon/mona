@@ -24,7 +24,7 @@ class Application;
 class NamedLet : public Object
 {
 public:
-    NamedLet(Objects* body, Variables* variables, Objects* values, ::util::String name, uint32_t lineno = 0);
+    NamedLet(Objects* body, Variables* variables, Cons* values, ::util::String name, uint32_t lineno = 0);
     virtual ~NamedLet();
 
 public:
@@ -38,7 +38,7 @@ public:
 protected:
     Objects* body_;
     Variables* variables_;
-    Objects* values_;
+    Cons* values_;
     ::util::String name_;
     uint32_t lineno_;
 };

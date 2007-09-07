@@ -62,9 +62,9 @@ PROCEDURE(RxMatchStart, "rxmatch-start")
 
     CAST(ARGV(0), SRegMatch, m);
     int ret;
-    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isIdentifier())
     {
-        RiteralConstant* c = (RiteralConstant*)ARGV(1);
+        Identifier* c = (Identifier*)ARGV(1);
         ret = m->matchStart(c->text());
         if (-1 == ret)
         {
@@ -98,9 +98,9 @@ PROCEDURE(RxMatchEnd, "rxmatch-end")
 
     CAST(ARGV(0), SRegMatch, m);
     int ret;
-    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isIdentifier())
     {
-        RiteralConstant* c = (RiteralConstant*)ARGV(1);
+        Identifier* c = (Identifier*)ARGV(1);
         ret = m->matchEnd(c->text());
         if (-1 == ret)
         {
@@ -134,9 +134,9 @@ PROCEDURE(RxMatchSubString, "rxmatch-substring")
 
     CAST(ARGV(0), SRegMatch, m);
     String ret;
-    if (ARGC == 2 && ARGV(1)->isRiteralConstant())
+    if (ARGC == 2 && ARGV(1)->isIdentifier())
     {
-        RiteralConstant* c = (RiteralConstant*)ARGV(1);
+        Identifier* c = (Identifier*)ARGV(1);
         int result;
         ret = m->matchSubString(&result, c->text());
         if (-1 == result)

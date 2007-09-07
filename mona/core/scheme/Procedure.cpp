@@ -59,9 +59,15 @@ bool Procedure::eq() const
 }
 
 
-Object* Procedure::apply(Objects* arguments, Environment* environment)
+Object* Procedure::apply(Objects* arguments, Environment* environment, bool evalArguments /* = true */)
 {
-    Objects* as = Kernel::listOfValues(arguments, environment);
+    Objects* as = evalArguments? Kernel::listOfValues(arguments, environment) : arguments;
+//     printf("%s", this->toString().data());
+//     for (int i = 0; i < as->size(); i++)
+//     {
+//         printf(" %s<%s>", as->get(i)->toString().data(), as->get(i)->typeString().data());fflush(stdout);
+//     }
+//     printf("\n");
     Environment* e = env()->clone();
     Variables* params = parameters();
     if (isExtendableParameter_)
@@ -73,14 +79,14 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
         }
         else
         {
-            Pair* start = new Pair(SCM_NIL, SCM_NIL);
-            Pair* p = start;
+            Cons* start = new Cons(SCM_NIL, SCM_NIL);
+            Cons* p = start;
             for (int j = 0; j < as->size(); j++)
             {
                 p->setCar(as->get(j));
                 if (j != as->size() -1)
                 {
-                    Pair* tmp = new Pair(NULL, SCM_NIL);
+                    Cons* tmp = new Cons;
                     p->setCdr(tmp);
                     p = tmp;
                 }
@@ -104,14 +110,14 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
                     break;
                 }
 
-                Pair* start = new Pair(SCM_NIL, SCM_NIL);
-                Pair* p = start;
+                Cons* start = new Cons(SCM_NIL, SCM_NIL);
+                Cons* p = start;
                 for (int j = i; j < as->size(); j++)
                 {
                     p->setCar(as->get(j));
                     if (j != as->size() -1)
                     {
-                        Pair* tmp = new Pair(SCM_NIL, SCM_NIL);
+                        Cons* tmp = new Cons(SCM_NIL, SCM_NIL);
                         p->setCdr(tmp);
                         p = tmp;
                     }
@@ -145,9 +151,7 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
     Object* ret = Kernel::evalSequence(body(), e);
     if (isMacro_)
     {
-        Object* evalFunc = (new Variable("eval"))->eval(e);
-        Object* evaluated = NULL;
-        SCM_EVAL(evalFunc, e, evaluated, ret);
+        ret = Kernel::eval(ret, e);
 
 
 
@@ -157,7 +161,6 @@ Object* Procedure::apply(Objects* arguments, Environment* environment)
 //         os->add(ret);
 //         ret = Kernel::evalSequence(os, e);
 //         printf("%s %s:%d  %s\n", __func__, __FILE__, __LINE__, ret->typeString().data());fflush(stdout);// debug
-        ret = evaluated;
     }
     return ret;
 }

@@ -27,7 +27,7 @@ static uint32_t gc_total_allocated_count;
 static uint32_t gc_total_sweeped_count;
 static uint32_t gc_total_sweeped_size;
 
-static bool gc_check_valid_record(GCRecord* r);
+//static bool gc_check_valid_record(GCRecord* r);
 inline static GCRecord* gc_is_memory_block(uint32_t address);
 static void gc_mark_stack();
 static void gc_mark_global();
@@ -269,7 +269,7 @@ void gc_mark_registers()
         GCRecord* r;
         if (GC_IS_MEMORY_BLOCK(r, (uint32_t)registers[i]))
         {
-            GC_TRACE_OUT("      mark=%x:%x\n", valueOnRegister, &registers[i]);
+            GC_TRACE_OUT("      mark=%x\n", &registers[i]);
             gc_mark_block(r);
         }
     }

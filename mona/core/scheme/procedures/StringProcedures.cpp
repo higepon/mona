@@ -12,7 +12,7 @@
 */
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
-//#include "ExtRepParser.h"
+//#include "Parser.h"
 using namespace util;
 using namespace std;
 using namespace monash;
@@ -143,7 +143,7 @@ PROCEDURE(StringSplit, "string-split")
     {
         objects->add(new SString(ss->get(i), lineno()));
     }
-    Pair* ret;
+    Cons* ret;
     SCM_LIST(objects, ret, lineno());
     return ret;
 }
@@ -164,8 +164,8 @@ PROCEDURE(StringToSymbol, "string->symbol")
 //     }
 //    return object;
     StringReader* reader = new StringReader(s->value());
-    Scanner* scanner = new Scanner(reader);
-    ExtRepParser parser(scanner);
+    Scanner* scanner = new Scanner(reader, reader, NULL);
+    Parser parser(scanner);
     return parser.parse();
 }
 

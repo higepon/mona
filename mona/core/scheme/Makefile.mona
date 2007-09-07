@@ -7,7 +7,7 @@ include Makefile.src.inc
 include Makefile.mona_gc.inc
 include Makefile.onig.inc
 
-TARGET_LIBS = lib/interact.scm lib/batch.scm lib/danny.scm lib/unittest.scm lib/core.scm lib/shell.scm lib/mona.scm lib/conf.scm lib/fib.scm lib/timer.scm lib/demo.scm
+TARGET_LIBS = lib/interact.scm lib/batch.scm lib/danny.scm lib/unittest.scm lib/core.scm lib/shell.scm lib/mona.scm lib/conf.scm lib/fib.scm lib/demo.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm test/shell.scm test/timer.scm test/regexp.scm
@@ -16,7 +16,7 @@ CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(REGISTERS_INC)
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I . -I ./onig/onig-5.7.0
 ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) -lmonalibc-imp --enable-auto-import -lgui-imp
 ADDLINKDEP   =  $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
-ADDTARGETDEP =  $(ONIG_DIR) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm test/timer.scm
+ADDTARGETDEP =  $(ONIG_DIR) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 ONIG_OBJECTS = $(ONIG_SOURCES:.c=.o)

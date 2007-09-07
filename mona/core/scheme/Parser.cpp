@@ -10,13 +10,15 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "Parser.h"
-#include "Assert.h"
-#include <stdio.h>
+#include "scheme.h"
 
 using namespace monash;
 
-Parser::Parser(Tokenizer* tokenizer) : tokenizer_(tokenizer)
+#define SYNTAX_ERROR(...) printf(__VA_ARGS__);printf(" at %s:%d\n", scanner_->getFileName().data(), scanner_->getLineNo());fflush(stdout);
+#define NEW(symbol, value) new symbol(value, scanner_->getLineNo())
+#define NEW2(symbol, v1, v2) new symbol(v1, v2, scanner_->getLineNo())
+
+Parser::Parser(Scanner* scanner) : scanner_(scanner)
 {
 }
 
@@ -24,58 +26,264 @@ Parser::~Parser()
 {
 }
 
-SExp* Parser::parse()
+Object* Parser::parse()
 {
-    SExp* sexp = NULL;
-    Token token = tokenizer_->nextToken();
-    switch(token.type)
+    nextToken();
+    Object* ret = parseDatum();
+//    findSelfCall(ret);
+    return ret;
+}
+
+void Parser::findSelfCall(Object* o)
+{
+    if (!o->isCons()) return;
+    Cons* p = (Cons*)o;
+    if (!p->getCar()->isIdentifier()) return;
+    Identifier* c = (Identifier*)(p->getCar());
+    if (c->text() != "define") return;
+    if (!p->getCdr()->isCons()) return;
+    Cons* p2 = (Cons*)p->getCdr();
+    if (!p2->getCar()->isIdentifier()) return;
+    Identifier* c2 = (Identifier*)p2->getCar();
+    ::util::String name = c2->text();
+
+    if (!p2->getCdr()->isCons()) return;
+    Cons* p3 = (Cons*)p2->getCdr();
+    findNameCall(p3, name);
+}
+
+void Parser::findNameCall(Cons* p, const ::util::String& name)
+{
+    Cons* start = p;
+    for (;;)
     {
-    case Token::LEFT_PAREN:
-        sexp = new SExp(SExp::SEXPS);SCM_ASSERT(sexp);
-        sexp->lineno = token.lineno;
+        Object* o = start->getCar();
+        if (o->isIdentifier())
+        {
+            Identifier* c = (Identifier*)o;
+            if (c->text() == name)
+            {
+                printf("name %s found\n", name.data());
+            }
+        }
+        else if (o->isCons())
+        {
+            findNameCall((Cons*)o, name);
+        }
+
+
+        Object* o2 = start->getCdr();
+        if (o2 == NULL || !o2->isCons())
+        {
+            break;
+        }
+        start = (Cons*)o2;
+    }
+
+}
+
+Token* Parser::nextToken()
+{
+    return (token_ = scanner_->getToken());
+}
+
+// private
+
+// <datum> => <simple datum> | <compound datum>
+// <simple datum> => <boolean> | <number> | <character> | <string> | <regexp>
+//                 | <symbol>
+Object* Parser::parseDatum()
+{
+    if (token_ == NULL)
+    {
+        return SCM_EOF;
+    }
+    else if (token_->type == Token::COMMENT)
+    {
         for (;;)
         {
-            SExp* child = parse();
-            if (NULL == child) return sexp;
-            sexp->sexps.add(child);
+            nextToken();
+            if (token_ == NULL) return SCM_EOF;
+            if (token_->type != Token::COMMENT) break;
         }
-    case Token::RIGHT_PAREN:
+    }
 
-        return NULL;
+    switch(token_->type)
+    {
+    case Token::BOOLEAN:
     case Token::NUMBER:
+    case Token::CHARCTER:
+    case Token::STRING:
+    case Token::VARIABLE:
+    case Token::KEYWORD:
+    case Token::REGEXP:
+        return parseSimpleDatum();
+    default:
+        return parseCompoundDatum();
+    }
+}
 
-        sexp = new SExp(SExp::NUMBER);SCM_ASSERT(sexp);
-        sexp->value = token.value;
-        sexp->lineno = token.lineno;
-        return sexp;
-    case Token::IDENTIFIER:
-
-        if (token.text.startWith("#\\"))
+// <simple datum> => <boolean> | <number> | <character> | <string> | <regexp>
+//                 | <symbol>
+Object* Parser::parseSimpleDatum()
+{
+    switch(token_->type)
+    {
+    case Token::BOOLEAN:
+        if (token_->integer == 1)
         {
-            sexp = new SExp(SExp::CHAR);SCM_ASSERT(sexp);
+            return SCM_TRUE;
         }
         else
         {
-            sexp = new SExp(SExp::SYMBOL);SCM_ASSERT(sexp);
+            return SCM_FALSE;
         }
-        sexp->text = token.text;
-        sexp->lineno = token.lineno;
-        return sexp;
-    case Token::QUOTE:
-
-        sexp = new SExp(SExp::QUOTE);SCM_ASSERT(sexp);
-        sexp->text = token.text;
-        sexp->lineno = token.lineno;
-        return sexp;
+    case Token::NUMBER:
+        return NEW(Number, token_->integer);
+        break;
+    case Token::CHARCTER:
+        return NEW(Charcter, "#\\" + token_->text);
     case Token::STRING:
-
-        sexp = new SExp(SExp::STRING);SCM_ASSERT(sexp);
-        sexp->text = token.text;
-        sexp->lineno = token.lineno;
-        return sexp;
+        return NEW(SString, token_->text);
+    case Token::VARIABLE:
+    case Token::KEYWORD:
+        return NEW(Identifier, token_->text);
+    case Token::REGEXP:
+        return new SRegexp(token_->text, token_->integer == 1 ? true : false, scanner_->getLineNo());
     default:
-        RAISE_ERROR(token.lineno, "unknown token");
+        SYNTAX_ERROR("invalid simple datum %s:%s\n", token_->typeString().data(), token_->valueString().data());
+        break;
     }
+    return SCM_EOF;
+}
 
+// <compound datum> => <list> | <vector>
+// <list> => (<datum>*) | (<datum>+ . <datum>) | <abbreviation>
+// <abbreviation> => <abbrev prefix> <datum>
+// <abbrev prefix> => ' | ` | , | ,@
+// <vector> => #(<datum>*)
+Object* Parser::parseCompoundDatum()
+{
+    switch(token_->type)
+    {
+    case Token::VECTOR_START:
+        return parseVector();
+    case Token::LEFT_PAREN:
+    case Token::SINGLE_QUOTE:
+    case Token::BACK_QUOTE:
+    case Token::CAMMA:
+    case Token::CAMMA_AT:
+        return parseList();
+    default:
+        SYNTAX_ERROR("list or vector should be here, but got %s %s", token_->typeString().data(), token_->valueString().data());
+    }
+    return SCM_EOF;
+}
+
+// <vector> => #(<datum>*)
+Object* Parser::parseVector()
+{
+    if (token_->type != Token::VECTOR_START)
+    {
+        SYNTAX_ERROR("vector expected, but got %s %s", token_->typeString().data(), token_->valueString().data());
+        return SCM_EOF;
+    }
+    Objects* objects = new Objects;
+    for (;;)
+    {
+        nextToken();
+        if (token_->type == Token::RIGHT_PAREN)
+        {
+            break;
+        }
+        objects->add(parseDatum());
+    }
+    Vector* v = NEW(Vector, objects->size());
+    for (int i = 0; i < objects->size(); i++)
+    {
+        v->set(i, objects->get(i));
+    }
+    return v;
+}
+
+// <list> => (<datum>*) | (<datum>+ . <datum>) | <abbreviation>
+// <abbreviation> => <abbrev prefix> <datum>
+// <abbrev prefix> => ' | ` | , | ,@
+Object* Parser::parseList()
+{
+    // (<datum>*) | (<datum>+ . <datum>)
+    if (token_->type == Token::LEFT_PAREN)
+    {
+        Objects* objects = new Objects;
+        for (;;)
+        {
+            nextToken();
+            if (token_->type == Token::COMMENT)
+            {
+                for (;;)
+                {
+                    nextToken();
+                    if (token_ == NULL) return SCM_EOF;
+                    if (token_->type != Token::COMMENT) break;
+                }
+            }
+
+            if (token_->type == Token::PERIOD)
+            {
+                nextToken();
+                Object* o = parseDatum();
+                nextToken();
+                if (token_->type != Token::RIGHT_PAREN)
+                {
+                    SYNTAX_ERROR("invalid list, . position is wrong");
+                    return NULL;
+                }
+                if (objects->size() == 0)
+                {
+                    SYNTAX_ERROR("invalid list, . position is wrong");
+                    return NULL;
+                }
+
+                Cons* ret;
+                // (objects[0], objects[1] ... . o)
+                SCM_LIST_CONS(objects, o, ret, scanner_->getLineNo());
+                return ret;
+            }
+            else if (token_->type == Token::RIGHT_PAREN)
+            {
+                if (objects->size() == 0) return SCM_NIL;
+                Cons* ret;
+                SCM_LIST(objects, ret, scanner_->getLineNo());
+                return ret;
+            }
+            else
+            {
+                objects->add(parseDatum());
+            }
+        }
+    }
+    else
+    {
+        // <abbreviation> => <abbrev prefix> <datum>
+        // <abbrev prefix> => ' | ` | , | ,@
+        switch(token_->type)
+        {
+        case Token::SINGLE_QUOTE:
+            nextToken();
+            return NEW2(Cons, new Identifier("quote"), new Cons(parseDatum(), SCM_NIL));
+        case Token::BACK_QUOTE:
+            nextToken();
+            return NEW2(Cons, new Identifier("quasiquote"), new Cons(parseDatum(), SCM_NIL));
+        case Token::CAMMA_AT:
+            nextToken();
+            return NEW2(Cons, new Identifier("unquote-splicing"), new Cons(parseDatum(), SCM_NIL));
+        case Token::CAMMA:
+            nextToken();
+            return NEW2(Cons, new Identifier("unquote"), new Cons(parseDatum(), SCM_NIL));
+        default:
+            SYNTAX_ERROR("soory not supported\n");
+            return NULL;
+        }
+    }
     return NULL;
 }

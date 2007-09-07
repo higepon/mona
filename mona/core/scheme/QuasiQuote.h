@@ -33,6 +33,8 @@ public:
     virtual bool eqv() const;
     virtual bool eq()  const;
 
+    virtual Object* cloneSexp(Object* o);
+
 protected:
     Object* object_;
     uint32_t lineno_;

@@ -1,6 +1,3 @@
-;; (assert-check-true "vector"
-;;                    (vector? (quote #(3 #\a))))
-
 (assert-check-true "vector?"
                    (vector? (vector 3 3 3 3)))
 
@@ -39,16 +36,16 @@
                      (eqv? (vector-ref vv 3) '4))
 )
 
-(let* ((length 4) (str "hoge") (vv #(1 #\2 '3 (quote 4))))
+(let* ((length 4) (str "hoge") (vv '#(1 #\2 '3 (quote 4))))
   (assert-check-true "vector #("
                      (= length (vector-length vv))
                      (eqv? (vector-ref vv 0) 1)
                      (eqv? (vector-ref vv 1) #\2)
-                     (eqv? (vector-ref vv 2) '3)
-                     (eqv? (vector-ref vv 3) '4))
+                     (equal? (vector-ref vv 2) ''3)
+                     (equal? (vector-ref vv 3) ''4))
 )
 
-(let* ((v #(1 2 3))
+(let* ((v '#(1 2 3))
        (l (vector->list v)))
   (assert-check-true "vector->list"
                      (= 3 (length l))
@@ -64,7 +61,7 @@
                      (= (vector-ref v 1) 2)
                      (= (vector-ref v 2) 3)))
 
-(let* ((v #(1 2 3)))
+(let* ((v '#(1 2 3)))
   (vector-fill! v #\a)
   (assert-check-true "vector-fill!"
                      (= 3 (vector-length v))

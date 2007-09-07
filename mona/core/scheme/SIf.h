@@ -1,5 +1,5 @@
 /*!
-    \file  SpecialIf.h
+    \file  SIf.h
     \brief 
 
     Copyright (c) 2006-2007 HigePon
@@ -17,11 +17,11 @@
 
 namespace monash {
 
-class SpecialIf : public Object
+class SIf : public Object
 {
 public:
-    SpecialIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno = 0);
-    virtual ~SpecialIf();
+    SIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno = 0);
+    virtual ~SIf();
 
 public:
     virtual ::util::String toString();

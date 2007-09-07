@@ -15,11 +15,11 @@
 using namespace std;
 using namespace monash;
 
-Objects* pairToObjects(Pair* pair)
+Objects* pairToObjects(Cons* pair)
 {
     Objects* objects = new Objects;
 #if 1
-    Pair* p = pair;
+    Cons* p = pair;
     for (;;)
     {
         Object* car = p->getCar();
@@ -29,8 +29,8 @@ Objects* pairToObjects(Pair* pair)
             objects->add(car);
         }
         if (cdr == NULL) break;
-        if (!cdr->isPair()) break;
-        p = (Pair*)cdr;
+        if (!cdr->isCons()) break;
+        p = (Cons*)cdr;
     }
 #else
     objects->add(pair);
@@ -38,20 +38,16 @@ Objects* pairToObjects(Pair* pair)
     return objects;
 }
 
-// PROCEDURE(Provide, "provide")
-// {
-//     ARGC_SHOULD_BE(1);
-//     CAST(ARGV(0), SString, s);
-//     g_provide_map->put(s->value().data(), 1);
-//     return s;
-// }
+PROCEDURE(DefineMacro, "define-macro")
+{
+    CAST(arguments->get(0), Identifier, r);
+    Variable* v = new Variable(r->text());
+    TraditionalMacro* macro = new TraditionalMacro(Kernel::eval(arguments->get(1), env));
+    SCM_ASSERT(macro);
+    env->defineVariable(v, macro);
+    return SCM_UNDEF;
+}
 
-// PROCEDURE(ProvidedP, "provided?")
-// {
-//     ARGC_SHOULD_BE(1);
-//     CAST(ARGV(0), SString, s);
-//     RETURN_BOOLEAN(g_provide_map->get(s->value().data()) != NULL);
-// }
 
 PROCEDURE(DynamicWindProc, "dynamic-wind")
 {
@@ -71,9 +67,9 @@ PROCEDURE(CallWithValues, "call-with-values")
     ARGC_SHOULD_BE(2);
     CAST(ARGV(0), Procedure, producer);
     CAST(ARGV(1), Procedure, consumer);
-    Object* applyed = Kernel::apply(producer, new Objects, env);
-    Objects* applyeds = new Objects;
-    applyeds->add(applyed);
+    Object* applyed = Kernel::apply(producer, SCM_NO_ARG, env);
+    Cons* applyeds = new Cons;
+    applyeds->append(applyed);
     return Kernel::apply(consumer, applyeds, env);
 }
 
@@ -91,9 +87,9 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
            continuation->dynamicWind = g_dynamic_winds->get(0);
            g_dynamic_winds->removeAt(0);
         }
-        Objects* arguments = new Objects;
-        arguments->add(continuation);
-        return Kernel::apply(procedure, arguments, env);
+        Cons* arguments = new Cons;
+        arguments->append(continuation);
+        return Kernel::apply(procedure, arguments, env, false /* don't eval arguments */);
     }
     else
     {
@@ -166,68 +162,32 @@ PROCEDURE(Exit, "exit")
 PROCEDURE(Apply, "apply")
 {
     ARGC_SHOULD_BE_GT(1);
-    Objects* tmp = new Objects;
+    Cons* tmp = new Cons;
     if (ARGC == 2 && ARGV(1)->isNil())
     {
-        tmp->add(ARGV(1));
+        tmp->append(ARGV(1));
+
         return Kernel::apply(ARGV(0), tmp, env);
     }
-    CAST(ARGV(ARGC - 1), Pair, p);
+    CAST(ARGV(ARGC - 1), Cons, p);
     Objects* os = pairToObjects(p);
 
     for(int i = 1; i < ARGC -1; i++)
     {
-        tmp->add(ARGV(i));
+        tmp->append(ARGV(i));
     }
     for (int i = 0; i < os->size(); i++)
     {
-        tmp->add(os->get(i));
+        tmp->append(os->get(i));
     }
-
-    return Kernel::apply(ARGV(0), tmp, env);
+    return Kernel::apply(ARGV(0), tmp, env, false);
 }
 
 PROCEDURE(Eval, "eval")
 {
-#if 0
-    ARGC_SHOULD_BE(2);
-    CAST(ARGV(0), Quote, q);
-    CAST(ARGV(1), Environment, e);
-
-    Object* o;
-   // see Translator::translateQuote
-    SExp* n = q->sexp();
-    e->macroFilter().filter(n);
-    int ret = e->translator().translate(&n, &o);
-    if (ret != Translator::SUCCESS)
-    {
-        RAISE_ERROR(n->lineno, "eval got error [%s]", toString().data(), q->toStringValue().data());
-    }
-    return o->eval(e);
-#else
-    ARGC_SHOULD_BE(2);
-    CAST(ARGV(1), Environment, e);
-    Object* target = ARGV(0);
-
-//     if (target->isPair())
-//     {
-//         Pair* p = (Pair*)target;
-        SExp* sexp = objectToSExp(target);//::pairToSExp(p);
-        e->macroFilter().filter(sexp);
-        Object* o;
-        int ret = e->translator().translate(&sexp, &o);
-        if (ret != Translator::SUCCESS)
-        {
-            RAISE_ERROR(sexp->lineno, "eval got error [%s]", toString().data(), target->toStringValue().data());
-        }
-        return o->eval(e);
-//     }
-//     else
-//     {
-//         printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, target->typeString().data());fflush(stdout);// debug
-//         return target->eval(e);
-//     }
-#endif
+     Object* sexp = Kernel::eval(arguments->get(0), env);
+     CAST(Kernel::eval(arguments->get(1), env), Environment, e);
+     return Kernel::eval(sexp, e);
 }
 
 PROCEDURE(NullEnvironment, "null-environment")
@@ -238,9 +198,8 @@ PROCEDURE(NullEnvironment, "null-environment")
     {
         RAISE_ERROR(lineno(), "%s got wrong version" , toString().data());
     }
-    MacroFilter f;
     Translator translator;
-    return new Environment(f, translator, lineno());
+    return new Environment(translator, lineno());
 }
 
 PROCEDURE(SchemeReportEnvironment, "scheme-report-environment")
@@ -453,7 +412,7 @@ PROCEDURE(MonaGuiEnumWindows, "mona-gui-enum-windows")
         {
             objects->add(new Number(handles[i]));
         }
-        Pair* ret;
+        Cons* ret;
         SCM_LIST(objects, ret, lineno());
         delete[] handles;
         return ret;

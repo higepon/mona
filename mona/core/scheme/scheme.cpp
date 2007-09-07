@@ -39,12 +39,12 @@ void scheme_const_init()
     g_currentOutputPort = g_defaultOutputPort;
     g_transcript        = NULL;
     g_dynamic_winds     = new DynamicWinds;
-    g_true              = new True;
-    g_false             = new False;
-    g_undef             = new Undef;
-    g_no_arg            = new Objects;
-    g_nil               = new Nil;
-    g_eof               = new Eof;
+    g_true              = True::createInstance();
+    g_false             = False::createInstance();
+    g_undef             = Undef::createInstance();
+    g_no_arg            = NULL;
+    g_nil               = Nil::createInstance();
+    g_eof               = Eof::createInstance();
 }
 
 void scheme_register_primitives(Environment* env)
@@ -53,7 +53,6 @@ void scheme_register_primitives(Environment* env)
 #include "register.inc"
     env->defineVariable(new Variable("#f"),   g_false);
     env->defineVariable(new Variable("#t"),   g_true);
-    env->defineVariable(new Variable("set!"), new Set());
 }
 
 void scheme_expand_stack(uint32_t mb)
@@ -69,28 +68,19 @@ void scheme_expand_stack(uint32_t mb)
 
 Object* scheme_eval_string(const String& input, Environment* env, bool out /* = false */)
 {
-    QuoteFilter quoteFilter;
-    String ret = quoteFilter.filter(input);
-    StringReader* reader = new StringReader(ret);
-    Scanner* scanner = new Scanner(reader);
-    ExtRepParser parser(scanner);
-    Object* evalFunc = (new Variable("eval"))->eval(env);
+    StringReader* reader = new StringReader(input);
+    Scanner* scanner = new Scanner(reader, reader, NULL);
+    Parser parser(scanner);
     Object* evaluated = NULL;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
-        SCM_EVAL(evalFunc, env, evaluated, sexp);
+        evaluated = Kernel::eval(sexp, env);
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
     }
     return evaluated;
 }
 
 Environment* env;
-
-void timerFunction()
-{
-    scheme_eval_string("(mona-timer-iteration)", env, false);
-}
-
 
 int scheme_batch(const String& file)
 {
@@ -103,9 +93,8 @@ int scheme_batch(const String& file)
     }
     Error::exitOnError();
     Error::file = file;
-    MacroFilter f;
     Translator translator;
-    Environment* env = new Environment(f, translator);
+    Environment* env = new Environment(translator);
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
@@ -116,17 +105,17 @@ int scheme_batch(const String& file)
 
 void scheme_interactive()
 {
-    MacroFilter f;
     Translator translator;
-    env = new Environment(f, translator);
+    env = new Environment(translator);
     Interaction* interaction = new Interaction(env);
 #ifdef MONA
-    g_terminal = new monash::MonaTerminal(timerFunction);
+    g_terminal = new monash::MonaTerminal();
 #endif
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
     RETURN_ON_ERROR("stdin");
+
     scheme_eval_string(LOAD_SCHEME_INTERACTIVE_LIBRARY, env, false);
 
     interaction->showPrompt();
@@ -150,114 +139,114 @@ void scheme_interactive()
     }
 #endif
 }
-SExp* objectToSExp(Object* o)
-{
-    SExp* sexp = NULL;
-    if (o->isNumber())
-    {
-        sexp = new SExp(SExp::NUMBER, o->lineno());
-        Number* n = (Number*)o;
-        sexp->value = n->value();
-    }
-    else if (o->isNil())
-    {
-        sexp = new SExp(SExp::SEXPS, o->lineno());
-    }
-    else if (o->isCharcter())
-    {
-        sexp = new SExp(SExp::CHAR, o->lineno());
-        Charcter* c = (Charcter*)o;
-        sexp->text = c->stringValue();
+// SExp* objectToSExp(Object* o)
+// {
+//     SExp* sexp = NULL;
+//     if (o->isNumber())
+//     {
+//         sexp = new SExp(SExp::NUMBER, o->lineno());
+//         Number* n = (Number*)o;
+//         sexp->value = n->value();
+//     }
+//     else if (o->isNil())
+//     {
+//         sexp = new SExp(SExp::SEXPS, o->lineno());
+//     }
+//     else if (o->isCharcter())
+//     {
+//         sexp = new SExp(SExp::CHAR, o->lineno());
+//         Charcter* c = (Charcter*)o;
+//         sexp->text = c->stringValue();
 
-    }
-    else if (o->isVector())
-    {
-        sexp = new SExp(SExp::SEXPS, o->lineno());
-        ::monash::Vector* v = (::monash::Vector*)o;
-        SExp* vectorStart = new SExp(SExp::SYMBOL, o->lineno());
-        vectorStart->text = "vector";
-        sexp->sexps.add(vectorStart);
-        for (uint32_t i = 0; i < v->size(); i++)
-        {
-            sexp->sexps.add(objectToSExp(v->get(i)));
-        }
-    }
-    else if (o->isSString())
-    {
-        sexp = new SExp(SExp::STRING, o->lineno());
-        SString* s = (SString*)o;
-        sexp->text = s->value();
-    }
-    else if (o->isVariable())
-    {
-        sexp = new SExp(SExp::SYMBOL, o->lineno());
-        Variable* v = (Variable*)o;
-        sexp->text = v->name();
-    }
-    else if (o->isRiteralConstant())
-    {
-        sexp = new SExp(SExp::SYMBOL, o->lineno());
-        RiteralConstant* r = (RiteralConstant*)o;
-        sexp->text = r->text();
-    }
-    else if (o->isPair())
-    {
-        ::monash::Pair* p = (::monash::Pair*)o;
-        sexp = pairToSExp(p);
-    }
-    else if (o->isTrue())
-    {
-        sexp = new SExp(SExp::SYMBOL, o->lineno());
-        sexp->text = "#t";
-    }
-    else if (o->isFalse())
-    {
-        sexp = new SExp(SExp::SYMBOL, o->lineno());
-        sexp->text = "#f";
-    }
-    else if (o->isSRegexp())
-    {
-        SRegexp* r = (SRegexp*)o;
-        sexp = new SExp(SExp::REGEXP, o->lineno());
-        sexp->text = r->pattern();
-        sexp->value = r->isCaseFold() ? 1 : 0;
-    }
-    else
-    {
-        RAISE_ERROR(o->lineno(), "objectToSExp error %s\n", o->typeString().data());
-    }
-    return sexp;
-}
+//     }
+//     else if (o->isVector())
+//     {
+//         sexp = new SExp(SExp::SEXPS, o->lineno());
+//         ::monash::Vector* v = (::monash::Vector*)o;
+//         SExp* vectorStart = new SExp(SExp::SYMBOL, o->lineno());
+//         vectorStart->text = "vector";
+//         sexp->sexps.add(vectorStart);
+//         for (uint32_t i = 0; i < v->size(); i++)
+//         {
+//             sexp->sexps.add(objectToSExp(v->get(i)));
+//         }
+//     }
+//     else if (o->isSString())
+//     {
+//         sexp = new SExp(SExp::STRING, o->lineno());
+//         SString* s = (SString*)o;
+//         sexp->text = s->value();
+//     }
+//     else if (o->isVariable())
+//     {
+//         sexp = new SExp(SExp::SYMBOL, o->lineno());
+//         Variable* v = (Variable*)o;
+//         sexp->text = v->name();
+//     }
+//     else if (o->isIdentifier())
+//     {
+//         sexp = new SExp(SExp::SYMBOL, o->lineno());
+//         Identifier* r = (Identifier*)o;
+//         sexp->text = r->text();
+//     }
+//     else if (o->isCons())
+//     {
+//         ::monash::Cons* p = (::monash::Cons*)o;
+//         sexp = pairToSExp(p);
+//     }
+//     else if (o->isTrue())
+//     {
+//         sexp = new SExp(SExp::SYMBOL, o->lineno());
+//         sexp->text = "#t";
+//     }
+//     else if (o->isFalse())
+//     {
+//         sexp = new SExp(SExp::SYMBOL, o->lineno());
+//         sexp->text = "#f";
+//     }
+//     else if (o->isSRegexp())
+//     {
+//         SRegexp* r = (SRegexp*)o;
+//         sexp = new SExp(SExp::REGEXP, o->lineno());
+//         sexp->text = r->pattern();
+//         sexp->value = r->isCaseFold() ? 1 : 0;
+//     }
+//     else
+//     {
+//         RAISE_ERROR(o->lineno(), "objectToSExp error %s\n", o->typeString().data());
+//     }
+//     return sexp;
+// }
 
-SExp* pairToSExp(monash::Pair* p)
-{
-    SExp* sexp = new SExp(SExp::SEXPS);
-    Object* o = p;
-    for (;;)
-    {
-        if (o->isNil())
-        {
-            break;
-        }
-        else if (o->isPair())
-        {
-            ::monash::Pair* p = (::monash::Pair*)o;
-            sexp->sexps.add(::objectToSExp(p->getCar()));
-            if (!p->getCdr()->isPair() && !p->getCdr()->isNil())
-            {
-                SExp* s = new SExp(SExp::SYMBOL);
-                s->text = ".";
-                sexp->sexps.add(s);
-                sexp->sexps.add(::objectToSExp(p->getCdr()));
-                break;
-            }
-            o = p->getCdr();
-        }
-        else
-        {
-            sexp->sexps.add(::objectToSExp(o));
-            break;
-        }
-    }
-    return sexp;
-}
+// SExp* pairToSExp(monash::Cons* p)
+// {
+//     SExp* sexp = new SExp(SExp::SEXPS);
+//     Object* o = p;
+//     for (;;)
+//     {
+//         if (o->isNil())
+//         {
+//             break;
+//         }
+//         else if (o->isCons())
+//         {
+//             ::monash::Cons* p = (::monash::Cons*)o;
+//             sexp->sexps.add(::objectToSExp(p->getCar()));
+//             if (!p->getCdr()->isCons() && !p->getCdr()->isNil())
+//             {
+//                 SExp* s = new SExp(SExp::SYMBOL);
+//                 s->text = ".";
+//                 sexp->sexps.add(s);
+//                 sexp->sexps.add(::objectToSExp(p->getCdr()));
+//                 break;
+//             }
+//             o = p->getCdr();
+//         }
+//         else
+//         {
+//             sexp->sexps.add(::objectToSExp(o));
+//             break;
+//         }
+//     }
+//     return sexp;
+// }

@@ -10,9 +10,7 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "GCRecord.h"
-
-extern GCRecord root;
+#include "gc_helper.h"
 
 static char* dont_sweep;
 
@@ -66,23 +64,6 @@ int main(int argc, char *argv[])
     dummy(0);
     dont_sweep = NULL; // can sweep
     gc();
-    int size = gc_record_size(&root);
-
-    if (size == 2
-        && root.next->size == 16
-        && root.next->next->size == 8)
-    {
-        printf("[OK] %s\n", argv[0]);
-        return 0;
-    }
-    else
-    {
-        printf("%s [NG]\n", argv[0]);
-        FOREACH_GC_RECORD(&root, e)
-        {
-            printf("    not sweeped size = %d\n", e->size);
-        }
-        return 1;
-    }
-
+    int expected[] = {16, 8};
+    show_gc_result(expected, sizeof(expected) /sizeof(int), argv[0]);
 }

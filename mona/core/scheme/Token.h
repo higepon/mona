@@ -1,5 +1,5 @@
 /*!
-    \file  SToken.h
+    \file  Token.h
     \brief 
 
     Copyright (c) 2006-2007 HigePon
@@ -17,11 +17,11 @@
 
 namespace monash {
 
-class SToken
+class Token
 {
 public:
-    SToken(int type);
-    virtual ~SToken();
+    Token(int type);
+    virtual ~Token();
     ::util::String valueString();
     ::util::String typeString();
 

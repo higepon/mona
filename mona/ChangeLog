@@ -1,3 +1,8 @@
+2007-09-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme: Speed up, traditional macro, true S expression.
+                       svn merge -r4499:HEAD scheme-quote ../trunk/mona/core/scheme
+
 2007-08-30  higepon  <higepon@users.sourceforge.jp>
 
         * core/monalibc/stdio/fread.c (fread): Changed return value -1 to 0 when error.

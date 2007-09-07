@@ -1,7 +1,6 @@
 (load "/LIBS/SCHEME/core.scm")
 (load "/LIBS/SCHEME/danny.scm")
 (load "/LIBS/SCHEME/shell.scm")
-(load "/LIBS/SCHEME/timer.scm")
 (load "/LIBS/SCHEME/demo.scm")
 (load "/LIBS/SCHEME/conf.scm")
 ;(load "slib/Template.scm")

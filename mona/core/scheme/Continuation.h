@@ -48,7 +48,7 @@ public:
     virtual bool eqv(Object* o);
     virtual bool eq(Object* o);
     virtual bool equal(Object* o);
-    virtual Object* apply(Objects* arguments, Environment* env);
+    virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);
 
     Cont cont;
     Objects* callAruguments;

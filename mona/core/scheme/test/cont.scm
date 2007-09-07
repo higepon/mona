@@ -14,3 +14,4 @@
                             (lambda () (set! total (+ total 2)))) 2)
                      (= total 4)
 ))
+

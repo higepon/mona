@@ -1,12 +1,12 @@
 TARGET        = ./scheme
 TEST_TARGET   = ./scheme_test
-TARGET_LIBS   = lib/interact.scm lib/batch.scm lib/danny.scm lib/core.scm lib/shell.scm lib/unittest.scm lib/timer.scm lib/conf.scm lib/timer.scm lib/demo.scm
+TARGET_LIBS   = lib/interact.scm lib/batch.scm lib/danny.scm lib/core.scm lib/shell.scm lib/unittest.scm lib/conf.scm lib/demo.scm
 TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
-              test/test.scm test/util.scm test/vector.scm test/dir.scm test/timer.scm
+              test/test.scm test/util.scm test/vector.scm test/dir.scm
 
-# -O3 では gc がうごかないっぽい
-CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE
+# -O3 では gc がうごかなかった => 多重継承時にキャストでポインタの値がかわるのが原因。
+CXXFLAGS = -O3 -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE -pg 
 CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 NFLAGS   = -felf
@@ -25,11 +25,8 @@ include Makefile.onig.inc
 
 TEST_SOURCES = \
 test_cpp/yaml.cpp\
-test_cpp/MacroMatchTest.cpp\
-test_cpp/MacroFilterTest.cpp\
-test_cpp/QuoteFilterTest.cpp\
 test_cpp/ScannerTest.cpp\
-test_cpp/ExtRepParserTest.cpp
+test_cpp/ParserTest.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o) # instrument.o
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)

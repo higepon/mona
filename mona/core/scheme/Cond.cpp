@@ -52,7 +52,7 @@ Object* Cond::expandInternal(int i)
         }
     }
     Clause* clause = clauses_->get(i);
-    Object* specialif = new SpecialIf(clause->first, new Begin(clause->second), expandInternal(i + 1));
+    Object* specialif = new SIf(clause->first, new Begin(clause->second), expandInternal(i + 1));
     SCM_ASSERT(specialif);
     return specialif;
 }

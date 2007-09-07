@@ -10,32 +10,42 @@
     \date   create:2007/07/14 update:$Date$
 */
 
-#ifndef __PARSER_H__
-#define __PARSER_H__
+#ifndef __EXT_REP_PARSER_H__
+#define __EXT_RET_PARSER_H__
 
-#include "Tokenizer.h"
-#include "SExp.h"
+#include "scheme.h"
+#include "Scanner.h"
 
 namespace monash {
+class Parser;
+class Cons;
+    class Scanner;
 
-class SExp;
-
-#ifdef USE_BOEHM_GC
-class Parser : public gc_cleanup
-//class SExp : public gc
-#else
+// External representations Parser
 class Parser
-#endif
 {
 public:
-    Parser(Tokenizer* tokenizer);
+    Parser(Scanner* scanner);
     virtual ~Parser();
-    SExp* parse();
+    Object* parse();
 
 protected:
-    Tokenizer* tokenizer_;
+    Object* parseDatum();
+    Object* parseSimpleDatum();
+    Object* parseCompoundDatum();
+    Object* parseVector();
+    Object* parseList();
+
+    void findSelfCall(Object* o);
+    void findNameCall(Cons* p, const ::util::String& name);
+
+    Token* nextToken();
+    int tokenType();
+
+    Scanner* scanner_;
+    Token* token_;
 };
 
 }; // namespace monash
 
-#endif // __PARSER_H__
+#endif // __EXT_RET_PARSER_H__

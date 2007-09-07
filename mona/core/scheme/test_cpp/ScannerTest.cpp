@@ -43,12 +43,12 @@ void ScannerTest::testScaner()
     for (int i = 0; i < yaml.size(); i++)
     {
         Strings* s = yaml[i];
-        Reader* reader = new StringReader(s->get(0)->data());
-        Scanner scanner(reader);
+        StringReader* reader = new StringReader(s->get(0)->data());
+        Scanner scanner(reader, reader, NULL);
 
         for (int j = 1; j < (s->size() - 1) / 2 + 1; j++)
         {
-            SToken* token = scanner.getToken();
+            Token* token = scanner.getToken();
             String* type = s->get(j * 2 - 1);
             String* value = s->get(j * 2);
             if (token->typeString() == type->data() && token->valueString() == value->data())

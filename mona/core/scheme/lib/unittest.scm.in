@@ -252,3 +252,39 @@
                     #t
                     (begin (display " test failed ") (write (quote f)) (newline))))
     ((_ proc f g ...) (begin (assert-check-equal proc f) (assert-check-equal proc g ...)))))
+
+
+(define-macro assert-check-true
+  (lambda (test-name . test)
+    (if (null? test)
+        #t
+        `(if (assert-true ,test-name ,(car test))
+             (assert-check-true ,test-name ,@(cdr test))
+             (begin (display "test failed ")
+                    (print (quote ,(car test))))))))
+
+(define-macro assert-check-false
+  (lambda (test-name . test)
+    (if (null? test)
+        #t
+        `(if (assert-false ,test-name ,(car test))
+             (assert-check-false ,test-name ,@(cdr test))
+             (begin (display "test failed ")
+                    (print (quote ,(car test))))))))
+
+(define-macro assert-check-equal
+  (lambda (proc . tests)
+    (if (null? tests)
+        #t
+        `(if (assert-equality "test" ,proc ,(caar tests) ,(cadar tests))
+             (assert-check-equal ,proc ,@(cdr tests))
+             (begin (display "test failed ")
+                    (print (quote (,proc ,(caar tests) ,(cadar tests)))))))))
+
+;; (macroexpand-1
+;;  (assert-check-equal
+;;  =
+;;  ((quotient 5 3) 1)
+;;  ((quotient 2 3) 1)
+;; ))
+

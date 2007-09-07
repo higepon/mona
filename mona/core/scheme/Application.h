@@ -15,13 +15,14 @@
 
 #include "Object.h"
 #include "Environment.h"
+#include "Cons.h"
 
 namespace monash {
 
 class Application : public Object
 {
 public:
-    Application(Object* function, Objects* arguments, uint32_t lineno = 0);
+    Application(Object* operatorr, Cons* operands, uint32_t lineno = 0);
     virtual ~Application();
 
     virtual ::util::String toString();
@@ -29,13 +30,13 @@ public:
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "application"; }
-    Object* function() { return function_; }
-    Objects* arguments() { return arguments_; }
+    Object* operatorr() { return operatorr_; }
+    Cons* operands() { return operands_; }
 
     //exp
 protected:
-    Object* function_;
-    Objects* arguments_;
+    Object* operatorr_;
+    Cons* operands_;
     uint32_t lineno_;
 };
 

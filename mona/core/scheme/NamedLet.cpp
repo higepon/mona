@@ -15,7 +15,7 @@
 using namespace util;
 using namespace monash;
 
-NamedLet::NamedLet(Objects* body, Variables* variables, Objects* values, String name, uint32_t lineno)
+NamedLet::NamedLet(Objects* body, Variables* variables, Cons* values, String name, uint32_t lineno)
     : body_(body), variables_(variables), values_(values), name_(name), lineno_(lineno)
 {
 }
@@ -37,13 +37,13 @@ int NamedLet::type() const
 Application* NamedLet::expand()
 {
     Variable* v = new Variable(name_, lineno());
-    Definition* definition = new Definition(v, new Lambda(body_, variables_, false, lineno()));
+    Definition* definition = new Definition(v, new Lambda(body_, variables_, false, false, lineno()));
     Application* application = new Application(v, values_, lineno());
     Objects* body = new Objects;
     body->add(definition);
     body->add(application);
-    Lambda* lambda = new Lambda(body, new Variables(), false, lineno());
-    Application* apps = new Application(lambda, new Objects());
+    Lambda* lambda = new Lambda(body, new Variables(), false, false, lineno());
+    Application* apps = new Application(lambda, NULL);
     return apps;
 }
 

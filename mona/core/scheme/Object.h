@@ -52,13 +52,13 @@ public:
     virtual ::util::String typeString() const = 0;
     virtual Object* eval(Environment* env) = 0;
     virtual Object* apply(Objects* arguments, Environment* env);
-    bool isRiteralConstant() const { return type() == RITERAL_CONSTANT; }
+    bool isIdentifier() const { return type() == IDENTIFIER; }
     bool isNumber() const { return type() == NUMBER; }
     bool isSString() const { return type() == STRING; }
     bool isCharcter() const { return type() == CHARCTER; }
     bool isVector() const { return type () == VECTOR; }
     bool isQuote() const { return type() == QUOTE; }
-    bool isPair() const { return type() == PAIR; }
+    bool isCons() const { return type() == CONS; }
     bool isTrue() const { return type() == TRUE; }
     bool isFalse() const { return type() == FALSE; }
     bool isBoolean() const { return isTrue() || isFalse(); }
@@ -82,6 +82,9 @@ public:
     bool isSRegMatch() const { return type() == REGMATCH; }
     bool isUnquote() const { return type() == UNQUOTE; }
     bool isUnquoteSplicing() const { return type() == UNQUOTE_SPLICING; }
+    bool isSet() const { return type() == SET; }
+    bool isTraditionaMacro() const { return type() == TRADITIONAL_MACRO; }
+
 public:
 
     enum
@@ -98,6 +101,7 @@ public:
         VARIABLE,
         ASSIGNMENT,
         IF,
+        SET,
         OUTPUT_PORT,
         INPUT_PORT,
         LAMBDA,
@@ -107,10 +111,10 @@ public:
         DEFINITION,
         COND,
         EVAL,
-        PAIR,
+        CONS,
         APPLICATION,
         PRIMITIVE_PROCEDURE,
-        RITERAL_CONSTANT,
+        IDENTIFIER,
         AND,
         OR,
         LET,
@@ -125,6 +129,7 @@ public:
         VARIANT,
         REGEXP,
         REGMATCH,
+        TRADITIONAL_MACRO,
     };
 };
 

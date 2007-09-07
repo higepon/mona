@@ -16,7 +16,7 @@
 using namespace util;
 using namespace monash;
 
-Environment::Environment(MacroFilter& filter, Translator& translator, uint32_t lineno /* = 0 */) : filter_(filter), translator_(translator), lineno_(lineno)
+Environment::Environment(Translator& translator, uint32_t lineno /* = 0 */) : translator_(translator), lineno_(lineno)
 {
     frames_ = new Frames();
     SCM_ASSERT(frames_);
@@ -31,7 +31,8 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment(filter_, translator_);SCM_ASSERT(env);
+    Environment* env = new Environment(translator_);
+    SCM_ASSERT(env);
     Frames* target = env->frames();
     for (int i = 0; i < frames_->size(); i++)
     {
@@ -86,13 +87,7 @@ Object* Environment::lookupVariableValue(Variable* variable)
 
 String Environment::toString()
 {
-    String result = "";
-    for (int i = frames_->size() - 1 ; i >= 0; i--)
-    {
-        result += "****************\n";
-        result += frames_->get(i)->toString() + "\n\n";
-    }
-    return result;
+    return "<#environment>";
 }
 
 int Environment::type() const

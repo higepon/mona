@@ -47,7 +47,7 @@ public:
     virtual ::util::String matchBefore(int* result, int i = 0);
     virtual int getNameIndex(const ::util::String& name);
     virtual int getNumMatches() const { return region_->num_regs; }
-    virtual Object* apply(Objects* arguments, Environment* env);
+    virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);
 protected:
     SRegexp* reg_;
     OnigRegion* region_;

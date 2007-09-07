@@ -1,5 +1,5 @@
 /*!
-    \file   SpecialIf.cpp
+    \file   SIf.cpp
     \brief
 
     Copyright (c) 2002-2007 Higepon.
@@ -10,33 +10,33 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "SpecialIf.h"
+#include "SIf.h"
 
 using namespace util;
 using namespace monash;
 
-SpecialIf::SpecialIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno) : predicate_(predicate)
+SIf::SIf(Object* predicate, Object* consequent, Object* alternative, uint32_t lineno) : predicate_(predicate)
                                                                                                   , consequent_(consequent)
                                                                                                   , alternative_(alternative)
                                                                                                   , lineno_(lineno)
 {
 }
 
-SpecialIf::~SpecialIf()
+SIf::~SIf()
 {
 }
 
-String SpecialIf::toString()
+String SIf::toString()
 {
     return "#<syntax if>";
 }
 
-int SpecialIf::type() const
+int SIf::type() const
 {
     return Object::IF;
 }
 
-Object* SpecialIf::eval(Environment* env)
+Object* SIf::eval(Environment* env)
 {
     if (!predicate()->eval(env)->isFalse())
     {
@@ -55,12 +55,12 @@ Object* SpecialIf::eval(Environment* env)
     }
 }
 
-bool SpecialIf::eqv() const
+bool SIf::eqv() const
 {
     return false;
 }
 
-bool SpecialIf::eq() const
+bool SIf::eq() const
 {
     return false;
 }

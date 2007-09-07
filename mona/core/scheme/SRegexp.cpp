@@ -75,7 +75,7 @@ bool SRegexp::equal(Object* o)
     return pattern() == s->pattern();
 }
 
-Object* SRegexp::apply(Objects* arguments, Environment* env)
+Object* SRegexp::apply(Objects* arguments, Environment* env, bool evalArguments /* = true */)
 {
     ARGC_SHOULD_BE(1);
     SString* s;

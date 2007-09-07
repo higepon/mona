@@ -31,9 +31,10 @@ public:
     Kernel();
     virtual ~Kernel();
 
+    static Object* eval(Object* sexp, Environment* environment);
     static Object* evalSequence(Objects* exps, Environment* env);
     static Objects* listOfValues(Objects* objects, Environment* env);
-    static Object* apply(Object* procedure, Objects* arguments, Environment* env);
+    static Object* apply(Object* procedure, Cons* operands, Environment* env, bool evalArguments = true);
     static Object* doContinuation();
     static void makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values);
 };

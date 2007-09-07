@@ -384,37 +384,36 @@
                         (set! do-index (+ do-index 2))))
                    (= do-index 10))
 
-(define do-index 0)
-(assert-check-true "do"
-                   (do ((i 0 (+ i 1))
-                           (j 1))
-                          ((= i 5))
-                        (set! do-index (+ do-index 2)))
-                   (= do-index 10))
+;; (define do-index 0)
+;; (assert-check-true "do"
+;;                    (do ((i 0 (+ i 1))
+;;                            (j 1))
+;;                           ((= i 5))
+;;                         (set! do-index (+ do-index 2)))
+;;                    (= do-index 10))
 
-(define do-index 0)
-(assert-check-true "do"
-                   (do ((i 0 (+ i 1)))
-                          ((= i 5))
-                        (set! do-index (+ do-index 2)))
-                   (= do-index 10))
+;; (define do-index 0)
+;; (assert-check-true "do"
+;;                    (do ((i 0 (+ i 1)))
+;;                           ((= i 5))
+;;                         (set! do-index (+ do-index 2)))
+;;                    (= do-index 10))
 
-(define-macro (bar n)
-  (list '+ 1 n))
+(define-macro bar
+  (lambda (n)
+  (list '+ 1 n)))
 
-(define-macro (foo)
-  '(+ 1 2))
+(define-macro foo
+  (lambda ()
+  '(+ 1 2)))
 
 (assert-check-true "define-macro"
                    (= (bar 3) 4)
                    (= (foo) 3))
 
-
-
 (load "<TESTDIR>/dir.scm")
 (load "<TESTDIR>/cont.scm")
 (load "<TESTDIR>/regexp.scm")
-(load "<TESTDIR>/timer.scm")
 (load "<TESTDIR>/string.scm")
 (load "<TESTDIR>/pair.scm")
 (load "<TESTDIR>/util.scm")
@@ -424,8 +423,7 @@
 (load "<TESTDIR>/symbol.scm")
 (load "<TESTDIR>/number.scm")
 (load "<TESTDIR>/closure.scm")
-
-
 <IF_MONA>(load "<TESTDIR>/shell.scm")
+
 ;; report
 (total-report)

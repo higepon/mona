@@ -19,14 +19,14 @@ using namespace monash;
 PROCEDURE(SymbolP, "symbol?")
 {
     ARGC_SHOULD_BE(1);
-    RETURN_BOOLEAN(ARGV(0)->isRiteralConstant());
+    RETURN_BOOLEAN(ARGV(0)->isIdentifier());
 }
 
 
 PROCEDURE(SymbolToString, "symbol->string")
 {
     ARGC_SHOULD_BE(1);
-    CAST(ARGV(0), RiteralConstant, r);
+    CAST(ARGV(0), Identifier, r);
     return new SString(r->toStringValue(), r->lineno());
 }
 

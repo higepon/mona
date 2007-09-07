@@ -10,9 +10,7 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "GCRecord.h"
-
-extern GCRecord root;
+#include "gc_helper.h"
 
 void test()
 {
@@ -59,25 +57,10 @@ int main(int argc, char *argv[])
     test();
     test2();
     int y = 0x99998888;
-    char* buf = new char[64];
+    volatile char* volatile buf = new char[64];
     dummy(0);
     gc();
-    int size = gc_record_size(&root);
-
-    if (size == 2 && root.next->size == 64 && root.next->next->size == 4)
-    {
-        printf("[OK] %s\n", argv[0]);
-        return 0;
-    }
-    else
-    {
-        printf("%s [NG]\n", argv[0]);
-        FOREACH_GC_RECORD(&root, e)
-        {
-            printf("    not sweeped size = %d\n", e->size);
-        }
-        this_variable_is_refered(q);
-        this_variable_is_refered(buf);
-        return 1;
-    }
+    this_variable_is_refered(q);
+    int expected[] = {4, 64};
+    show_gc_result(expected, sizeof(expected) /sizeof(int), argv[0]);
 }

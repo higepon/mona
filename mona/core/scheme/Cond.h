@@ -15,7 +15,7 @@
 
 #include "Begin.h"
 #include "Number.h"
-#include "SpecialIf.h"
+#include "SIf.h"
 #include "util/Pair.h"
 
 namespace monash {

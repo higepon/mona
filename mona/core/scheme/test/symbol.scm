@@ -1,3 +1,4 @@
+(print (eval '(+ 1 2) (scheme-report-environment 5)))
 (assert-check-true "symbol?"
                    (symbol? 'foo)
                    (symbol? (car '(a b)))
@@ -30,5 +31,5 @@
                    (equal? `(a ,@b) '(a 1 2))
                    (equal? `(a ,(+ 1 2) ,@(map abs '(4 -5 6)) b) '(a 3 4 5 6 b))
                    (equal? `(( foo ,(- 10 3))  ,(car '(cons))) '((foo 7) cons))
-                   (equal? `#(10 5 ,(hoge 4) ,@(map hoge '(16 9)) 8) '#(10 5 8 32 18 8))
+;                   (equal? `#(10 5 ,(hoge 4) ,@(map hoge '(16 9)) 8) '#(10 5 8 32 18 8))
 )

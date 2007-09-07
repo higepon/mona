@@ -88,7 +88,7 @@
   *fs-current-directory*)
 
 (define (fs-change-directory path)
-  (aif it (fs-find-directory path)
+  (aif (fs-find-directory path)
        (begin (set! *fs-current-directory* it) it)
         #f))
 
@@ -200,7 +200,7 @@
   (and (pair? o) (eq? (car o) '*mona-object*)))
 
 (define (mona.object.name o)
-  (aif it (assq (mona.object.type o) *mona-object-table*)
+  (aif (assq (mona.object.type o) *mona-object-table*)
        ((cdr it) (mona.object.body o))))
 
 

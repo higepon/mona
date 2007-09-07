@@ -35,7 +35,7 @@ int UnquoteSplicing::type() const
 
 Object* UnquoteSplicing::eval(Environment* env)
 {
-    return object_->eval(env);
+    return Kernel::eval(object_, env);
 }
 
 bool UnquoteSplicing::eqv() const
@@ -47,4 +47,3 @@ bool UnquoteSplicing::eq() const
 {
     return false;
 }
-

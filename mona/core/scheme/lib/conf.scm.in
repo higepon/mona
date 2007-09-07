@@ -10,15 +10,6 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define greeting-cont '())
-
-(define (greeting)
-  (print "Hello, I'm")
-  (if (= 1 (call/cc (lambda (c) (set! greeting-cont c) 0)))
-      (print "Higepon")
-      (mona-timer-add greeting-cont 3000)
-))
-
 (define (subshell)
   (call-process (string-append "/SERVERS/SCHEME.EX5"  " " "/LIBS/SCHEME/fib.scm")))
 ;; (define (make-queue)
@@ -87,10 +78,7 @@
 (define (h)
   (start-process "/APPS/HELLO.EX5"))
 
-(define-syntax aif
-  (syntax-rules ()
-    ((_ it a b c ...)
-     (let ((it a)) (if it b c ...)))))
+
 
 ;; (define (w)
 ;;   (aif it (find (lambda (window) (string=? (mona-gui-get-window-title window) "GUI Shell"))

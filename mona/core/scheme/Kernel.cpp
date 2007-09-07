@@ -33,6 +33,11 @@ Object* Kernel::evalSequence(Objects* exps, Environment* env)
     return ret;
 }
 
+Object* Kernel::eval(Object* sexp, Environment* environment)
+{
+    return environment->translator().translate(sexp)->eval(environment);
+}
+
 void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values)
 {
     uint32_t size = objects->size();
@@ -42,7 +47,8 @@ void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environme
         return;
     }
     Argument arg;
-    arg.object = objects->get(i)->eval(environment);
+//    printf("makeListOfValues %s to be evaled\n", objects->get(i)->toString().data());
+    arg.object = Kernel::eval(objects->get(i), environment)->eval(environment);
     arg.prev   = prev;
     if (i == objects->size() - 1)
     {
@@ -64,8 +70,32 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
     return result;
 }
 
-Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
+Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool evalArguments /* = true */)
 {
+//    printf("Kernel::apply procedure = %s type=%s\n", procedure->toString().data(), procedure->typeString().data());
+//    printf("Kernel::apply operands = %s\n", operands ? operands->toString().data() : "NULL");
+
+    // traditional macro
+    //    operands should be S Expression
+    if (procedure->isTraditionaMacro())
+    {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        TraditionalMacro* macro = (TraditionalMacro*)procedure;
+        return macro->apply(operands, env);
+    }
+
+    Objects* arguments = new Objects;
+    SCM_ASSERT(arguments);
+    if (operands != NULL)
+    {
+        operands->toObjects(arguments);
+    }
+
+//     for (int i = 0; i < arguments->size(); i++)
+//     {
+//         printf("args[%d] = %s\n", i, arguments->get(i)->toString().data());
+//     }
+
     if (arguments->size() == 1 && arguments->get(0)->isValues())
     {
         Values* vs = (Values*)arguments->get(0);
@@ -74,28 +104,30 @@ Object* Kernel::apply(Object* procedure, Objects* arguments, Environment* env)
     if (procedure->isCompoundProcedure())
     {
         Procedure* p = (Procedure*)procedure;
-        return p->apply(arguments, env);
+        return p->apply(arguments, env, evalArguments);
     }
     else if (procedure->isPrimitiveProcedure())
     {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
 
-        return p->apply(arguments, env);
+        return p->apply(arguments, env, evalArguments);
     }
     else if (procedure->isContinuation())
     {
         Continuation* cont = (Continuation*)procedure;
-        return cont->apply(arguments, env);
+        return cont->apply(arguments, env, evalArguments);
     }
     else if (procedure->isSRegexp())
     {
+//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         SRegexp* r = (SRegexp*)procedure;
-        return r->apply(arguments, env);
+        return r->apply(arguments, env, evalArguments);
     }
     else if (procedure->isSRegMatch())
     {
         SRegMatch* r = (SRegMatch*)procedure;
-        return r->apply(arguments, env);
+        return r->apply(arguments, env, evalArguments);
     }
     else
     {

@@ -94,5 +94,5 @@ bool Vector::eqv(Object* o)
 
 bool Vector::eq(Object* o)
 {
-    return false;
+    return o == this;
 }

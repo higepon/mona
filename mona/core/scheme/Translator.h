@@ -10,16 +10,15 @@
     \date   create:2007/07/14 update:$Date$
 */
 
-#ifndef __TRANSLATOR_H__
-#define __TRANSLATOR_H__
+#ifndef __TRANSLATOR2_H__
+#define __TRANSLATOR2_H__
 
-#include "SExp.h"
 #include "Object.h"
 #include "Procedure.h"
 #include "Number.h"
 #include "Charcter.h"
 #include "SString.h"
-#include "SpecialIf.h"
+#include "SIf.h"
 #include "Assignment.h"
 #include "Begin.h"
 #include "Definition.h"
@@ -31,11 +30,11 @@
 #include "Let.h"
 #include "NamedLet.h"
 #include "LetAsterisk.h"
-#include "Macro.h"
-#include "SExp.h"
-#include "Pair.h"
+#include "Cons.h"
 
 namespace monash {
+
+class Cons;
 
 #ifdef USE_BOEHM_GC
 class Translator : public gc_cleanup
@@ -49,47 +48,26 @@ public:
     virtual ~Translator();
 
 public:
-    enum
-    {
-        SYNTAX_ERROR,
-        SUCCESS
-    };
-
-//    Object* translateBegin2(Pair* data);
-    Object* translate2(Object* data);
-
-    int translateAsQuote(SExp* sexp, Object** object);
-    int translateAsQuasiQuote(SExp* sexp, Object** object);
-    int translate(SExp** sexp, Object** object);
-    int translateDefineSyntax(SExp* sexp);
-    SExp* expandMacroIfMatch(const ::util::String& name, SExp** sexp);
+    Object* translate(Object* sexp);
+    void translateBody(Object* body, Objects* body, const ::util::String& syntax);
 private:
-    int translateAsQuotePrimitive(SExp* sexp, Object** object);
-    int translateAsVectorQuote(SExp* sexp, Object** object);
-    int translateAsListQuote(SExp* sexp, Object** object);
-    int translateAsVectorQuasiQuote(SExp* sexp, Object** object);
-    int translateAsListQuasiQuote(SExp* sexp, Object** object);
+    Object* translateList(Cons* cons);
+    Object* translateIf(Cons* cons);
+    Object* translateLambda(Cons* cons);
+    Object* translateAssignment(Cons* cons);
+    Object* translateBegin(Cons* cons);
+    Object* translateAnd(Cons* cons);
+    Object* translateOr(Cons* cons);
+    Object* translateLet(Cons* cons);
+    Object* translateLetAsterisk(Cons* cons);
+    Object* translateNamedLet(Cons* cons);
+    Object* translateProcedureCall(Cons* cons);
+    Object* translateCond(Cons* cons);
+    Object* translateDefinition(Cons* cons);
+    Object* translateQuasiQuote(Cons* cons);
 
-    int translatePrimitive(SExp* sexp, Object** object);
-    int translateDefinition(SExp* sexp, Object** object);
-    int translateDefinitionMacro(SExp* sexp, Object** object);
-
-    int translateIf(SExp* sexp, Object** object);
-    int translateAnd(SExp* sexp, Object** object);
-    int translateOr(SExp* sexp, Object** object);
-    int translateCond(SExp* sexp, Object** object);
-    int translateBegin(SExp* sexp, Object** object);
-    int translateLambda(SExp* sexp, Object** object);
-    int translateLet(SExp* sexp, Object** object);
-    int translateNamedLet(SExp* sexp, Object** object);
-    int translateLetAsterisk(SExp* sexp, Object** object);
-    int translateSet(SExp* sexp, Object** object);
-    int translateApplication(SExp* sexp, Object** object);
-    int translateQuote(SExp* sexp, Object** object);
-    int translateQuasiQuote(SExp* sexp, Object** object);
-    int translateQuasiQuoteList(SExp* sexp, Object** object);
-    int translateQuasiQuoteData(SExp* sexp, Object** object);
-    int translateUnquote(SExp* sexp, Object** object);
+    Object* translateQuasiQuoteIter(Object* o, bool isUnquote = false);
+    void translateBindingSpec(Object* bindingSpecs, Variables* bindings, Cons* specs);
 
     // ugly
     bool inLambda_;

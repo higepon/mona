@@ -146,32 +146,32 @@ int SRegMatch::matchEnd(const ::util::String& name)
 }
 
 
-Object* SRegMatch::apply(Objects* arguments, Environment* env)
+Object* SRegMatch::apply(Objects* arguments, Environment* env, bool evalArguments /* = true */)
 {
     ARGC_SHOULD_BE_BETWEEN(0, 2);
-    if (ARGC >= 1 && ARGV(0)->isRiteralConstant())
+    if (ARGC >= 1 && ARGV(0)->isIdentifier())
     {
-        RiteralConstant* c = (RiteralConstant*)ARGV(0);
+        Identifier* c = (Identifier*)ARGV(0);
         bool isAfter  = c->text() == "after";
         bool isBefore = c->text() == "before";
         if (isAfter || isBefore)
         {
-            Objects* os = new Objects;
-            os->add(this);
+            Cons* os = new Cons;
+            os->append(this);
             for (int i = 1; i < arguments->size(); i ++)
             {
-                os->add(arguments->get(i));
+                os->append(arguments->get(i));
             }
             Object* proc = scheme_eval_string(isAfter? "rxmatch-after" : "rxmatch-before", env);
             return Kernel::apply(proc, os, env);
         }
     }
 
-    Objects* os = new Objects;
-    os->add(this);
+    Cons* os = new Cons;
+    os->append(this);
     for (int i = 0; i < arguments->size(); i ++)
     {
-        os->add(arguments->get(i));
+        os->append(arguments->get(i));
     }
     Object* proc = scheme_eval_string("rxmatch-substring", env);
     return Kernel::apply(proc, os, env);

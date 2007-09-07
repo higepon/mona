@@ -51,15 +51,15 @@ void Error::returnOnError()
 
 void Error::showErrorAndExit()
 {
-    SCHEME_WRITE(stderr, "%s:%d: error: %s\n", file.data(), lineno, error.data());
-//    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
+//    SCHEME_WRITE(stderr, "%s:%d: error: %s\n", file.data(), lineno, error.data());
+    SCHEME_WRITE(stderr, "%s:%s:%d: debug: %s\n", error.data(), cppfile.data(), cpplineno, cppfunc.data());
     exit(-1);
 }
 
 void Error::showError()
 {
-    SCHEME_WRITE(stderr, "error: %s %s:%d\n", error.data(), file.data(), lineno);
-//    SCHEME_WRITE(stderr, "%s:%d: debug: %s\n", cppfile.data(), cpplineno, cppfunc.data());
+//    SCHEME_WRITE(stderr, "error: %s %s:%d\n", error.data(), file.data(), lineno);
+    SCHEME_WRITE(stderr, "%s:%s:%d: debug: %s\n", error.data(), cppfile.data(), cpplineno, cppfunc.data());
 }
 
 void Error::raise(uint32_t l, String f, uint32_t cppl, String cppf, const char* format, ...)

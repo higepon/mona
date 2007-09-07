@@ -22,7 +22,7 @@ namespace monash {
 class LetAsterisk : public Object
 {
 public:
-    LetAsterisk(Objects* body, Variables* variables, Objects* values, uint32_t lineno = 0);
+    LetAsterisk(Objects* body, Variables* variables, Cons* values, uint32_t lineno = 0);
     virtual ~LetAsterisk();
 
 public:
@@ -37,7 +37,7 @@ protected:
     Objects* expandInternal(int variablesIndex, int valuesIndex);
     Objects* body_;
     Variables* variables_;
-    Objects* values_;
+    Cons* values_;
     uint32_t lineno_;
 };
 

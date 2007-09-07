@@ -14,7 +14,7 @@
 #include "primitive_procedures.h"
 #include "scheme.h"
 #include "Nil.h"
-//#include "ExtRepParser.h"
+//#include "Parser.h"
 using namespace util;
 using namespace std;
 using namespace monash;
@@ -77,11 +77,11 @@ PROCEDURE(MonaDirRead, "mona-dir-read")
 #endif
     if (isDirectory)
     {
-        return new Pair(name, SCM_TRUE, lineno());
+        return new Cons(name, SCM_TRUE, lineno());
     }
     else
     {
-        return new Pair(name, SCM_FALSE, lineno());
+        return new Cons(name, SCM_FALSE, lineno());
     }
 }
 
@@ -122,7 +122,7 @@ PROCEDURE(MonaDirClose, "mona-dir-close")
 //     {
 //         entries->add(new SString(entry->d_name, lineno()));
 //     }
-//     ::monash::Pair* ret;
+//     ::monash::Cons* ret;
 //     SCM_LIST(entries, ret, lineno());
 //     closedir(dir);
 //     return ret;
@@ -305,8 +305,8 @@ PROCEDURE(Read, "read")
         CAST(ARGV(0), InputPort, p);
         port = p;
     }
-    Scanner* scanner = new Scanner(port);
-    ExtRepParser parser(scanner);
+    Scanner* scanner = new Scanner(port, NULL, port);
+    Parser parser(scanner);
     return parser.parse();
 }
 
@@ -403,55 +403,17 @@ PROCEDURE(Load, "load")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
 
-#if 1
     // don't use env, use g_top_env instead !
     Environment* environment = g_top_env;
     Object* port;
     SCM_APPLY1("open-input-port", environment, port, s);
     CAST(port, InputPort, inputPort);
-    Scanner* scanner = new Scanner(inputPort);
-    ExtRepParser parser(scanner);
-    Object* evalFunc = (new Variable("eval"))->eval(environment);
+    Scanner* scanner = new Scanner(inputPort, NULL, inputPort);
+    Parser parser(scanner);
     Object* evaluated = NULL;
-//     uint32_t h1, h2;
-//     uint32_t l1, l2;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
-//        rdtsc(&l1, &h1);
-        SCM_EVAL(evalFunc, env, evaluated, sexp);
-//        rdtsc(&l1, &h2);
-//        SCM_TRACE_OUT("%x:%x %x:%x\n", h2, l2, h1, l1);
+        evaluated = Kernel::eval(sexp, env);
     }
     return evaluated;
-#else
-    // don't use env, use g_top_env instead !
-    Environment* environment = g_top_env;
-    String path  = s->value();
-    String input = load(path.data());
-    if (input == "")
-    {
-        RAISE_ERROR(s->lineno(), "load error", path.data());
-        return NULL;
-    }
-    input = "( " + input + ")";
-    QuoteFilter quoteFilter;
-    input = quoteFilter.filter(input);
-    SExp* sexp = SExp::fromString(input);
-    SExps sexps = sexp->sexps;
-    Object* o = NULL;
-    for (int i = 0; i < sexps.size(); i++)
-    {
-        SExp* sex = sexps[i];
-
-//        Quote* quote = new Quote(sex, s->lineno());
-        Object* quote;
-        env->translator().translateAsData(sex, &quote);
-        Objects* args = new Objects;
-        args->add(quote);
-        args->add(environment);
-        Object* evalFunc = (new Variable("eval"))->eval(environment);
-        o = Kernel::apply(evalFunc, args, environment);
-    }
-    return o;
-#endif
 }

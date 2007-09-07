@@ -15,7 +15,7 @@
 using namespace util;
 using namespace monash;
 
-Let::Let(Objects* body, Variables* variables, Objects* values, uint32_t lineno) : body_(body), variables_(variables), values_(values), lineno_(lineno)
+Let::Let(Objects* body, Variables* variables, Cons* values, uint32_t lineno) : body_(body), variables_(variables), values_(values), lineno_(lineno)
 {
 }
 

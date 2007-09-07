@@ -21,7 +21,7 @@ using namespace util;
 using namespace monash;
 using namespace MonAPI;
 
-MonaTerminal::MonaTerminal(void (*timerFunc)()) : isKeySuppressed_(false), timerFunc_(timerFunc), line_(""), cursorPosition_(0)
+MonaTerminal::MonaTerminal() : isKeySuppressed_(false), line_(""), cursorPosition_(0)
 {
     if (!initialize()) return;
 }
@@ -40,9 +40,6 @@ MonaTerminal::~MonaTerminal()
         if (Message::receive(&msg) != 0) continue;
         switch (msg.header)
         {
-            case MSG_TIMER:
-                (*timerFunc_)();
-                break;
             case MSG_KEY_VIRTUAL_CODE:
 
                 if (!isKeySuppressed_ && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)

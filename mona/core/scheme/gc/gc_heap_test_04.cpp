@@ -10,9 +10,7 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
-#include "GCRecord.h"
-
-extern GCRecord root;
+#include "gc_helper.h"
 
 static char* dont_sweep;
 typedef struct
@@ -46,7 +44,6 @@ void test3()
     dont_sweep = new char[14];
     h = new HasHeapRef;
     h->p = new char[16];
-
 }
 
 int dummy(int i)
@@ -77,22 +74,6 @@ int main(int argc, char *argv[])
     h = NULL;
     gc();
 
-    int size = gc_record_size(&root);
-
-    if (size == 0)
-    {
-        printf("[OK] %s\n", argv[0]);
-        return 0;
-    }
-    else
-    {
-        printf("%s [NG]\n", argv[0]);
-        FOREACH_GC_RECORD(&root, e)
-        {
-            printf("    not sweeped size = %d\n", e->size);
-        }
-        this_variable_is_refered(h);
-        return 1;
-    }
-
+    int expected[] = {};
+    show_gc_result(expected, sizeof(expected) /sizeof(int), argv[0]);
 }

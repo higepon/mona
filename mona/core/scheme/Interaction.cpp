@@ -69,7 +69,8 @@ void Interaction::onInput(const String& line)
 void Interaction::showPrompt()
 {
     reset();
-
+// うまく動いたら戻す
+#if 1
     // 後で書き換える
     Object* o = scheme_eval_string("(mona-prompt-string)", env_, false);
     if (!o->isSString())
@@ -82,5 +83,8 @@ void Interaction::showPrompt()
 
     // あとで書き換える
     SCHEME_WRITE(stdout, "%s", s->value().data());
+#else
+    SCHEME_WRITE(stdout, ">");
+#endif
     return;
 }

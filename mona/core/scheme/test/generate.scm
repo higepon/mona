@@ -19,13 +19,13 @@
               "    ~a()  : procedureName_(~a) {}\n"
               "    virtual ~~~a() {}\n"
               "\n"
-              "    virtual ::util::String toString() {    return \"#<closure \"~a\">\";}\n"
+              "    virtual ::util::String toString() {    return \"#<subr \"~a\">\";}\n"
               "    virtual ::util::String typeString() const { return ~a; }\n"
               "    virtual Object* eval(Environment* env)\n"
               "    {\n"
               "        return this;\n"
               "    }\n"
-              "    virtual Object* apply(Objects* arguments, Environment* env);\n"
+              "    virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);\n"
               "};\n")
           class
           class
