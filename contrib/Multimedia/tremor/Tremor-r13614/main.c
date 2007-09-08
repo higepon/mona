@@ -1,18 +1,23 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <ivorbisfile.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/soundcard.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 static uint8_t pcmout[4096];
 
-quad_t __divdi3(quad_t a, quad_t b);
+#include "hoge.h"
+
 
 int main(int ac,char **av) {
     OggVorbis_File vf;
     int eof=0;
     int current_section;
 
-    printf("-1/2 = %d\n", __divdi3(-1, 2));
-
-    FILE* fp = fopen("./A.OGG", "rb");
+    FILE* fp = fopen("../A.OGG", "rb");
     if (NULL == fp) {
         fprintf(stderr, "file open error\n");
         return -1;
@@ -35,11 +40,8 @@ int main(int ac,char **av) {
 //     fprintf(stderr, "Encoded by: %s\n\n", ov_comment(&vf, -1)->vendor);
 
 
-
-
-
     //    while(!eof){
-      long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
+    long ret = ov_read(&vf, pcmout, 16, &current_section);
       if (ret == 0) {
         /* EOF */
         eof=1;
@@ -50,16 +52,37 @@ int main(int ac,char **av) {
       } else {
         /* we don't bother dealing with sample rate changes, etc, but
            you'll have to*/
-        printf("ret=%d\n", ret);
         int i;
-        for (i = 10; i < 20; i++) {
-            int j = 0;
-            for (j = 0; j < 16; j++) {
-                printf("%d ", pcmout[i * 16 + j]);
-            }
-            printf("\n");
+        char buf[32];
+        for (i = 0; i < 16; i++) {
+          sprintf(buf, "%x ", pcmout[i]);
+          printf(buf);
         }
+            printf("\n");
       }
       //    }
     return 0;
 }
+
+
+
+#if 0
+int main(int ac,char **av) {
+
+  int out = open("/dev/dsp", O_WRONLY);
+  printf("out=%d\n", out);
+  int format = AFMT_S16_LE;
+  ioctl(out, SNDCTL_DSP_SETFMT, &format);
+  format = 1;
+  ioctl(out, SNDCTL_DSP_STEREO, &format);
+  format = 44100;
+  ioctl(out, SNDCTL_DSP_SPEED, &format);
+  int i;
+  printf("sizeof(mbuf)=%d\n", sizeof(mbuf));
+  for (i = 0; i < sizeof(mbuf) / 32; i++) {
+    printf("*");
+    printf("%d", write(out, &mbuf[i * 32], 32));
+  }
+    return 0;
+}
+#endif

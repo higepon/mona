@@ -41,7 +41,7 @@ int main(int ac,char **av) {
 
 //    while(!eof){
 //        long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
-    long ret = ov_read(&vf, pcmout, 4, &current_section);
+    long ret = ov_read(&vf, pcmout, 16, &current_section);
         if (ret == 0) {
             /* EOF */
             eof=1;
@@ -52,19 +52,11 @@ int main(int ac,char **av) {
         } else {
             /* we don't bother dealing with sample rate changes, etc, but
                you'll have to*/
-//         printf("ret=%d\n", ret);
-//         int i;
-//         for (i = 10; i < 20; i++) {
-//             int j = 0;
-//             for (j = 0; j < 16; j++) {
-//                 printf("%d ", pcmout[i * 16 + j]);
-//             }
-//             printf("\n");
-//         }
-
-// should be e5 ff f2 ff e8 ff f4 ff ec ff f9 ff f0 ff fd ff f5 ff 2 0 fc
-            for (int i = 0; i < 32; i++) {
-                _printf("%x ", pcmout[i]);
+            char buf[32];
+            int i;
+            for (i = 0; i < 16; i++) {
+                sprintf(buf, "0x%02x ", pcmout[i]);
+                printf(buf);
             }
         }
 //    }

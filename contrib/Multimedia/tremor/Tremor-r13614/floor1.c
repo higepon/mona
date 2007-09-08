@@ -210,10 +210,8 @@ static int render_point(int x0,int x1,int y0,int y1,int x){
 }
 
 #ifdef _LOW_ACCURACY_
-#warning "_LOW_ACCURACY_"
 #  define XdB(n) ((((n)>>8)+1)>>1)
 #else
-#warning "NOT _LOW_ACCURACY_"
 #  define XdB(n) (n)
 #endif
 

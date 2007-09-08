@@ -16,9 +16,8 @@
  ********************************************************************/
 
 #ifdef _ARM_ASSEM_
-#warning "_ARM_ASSEM_"
+
 #if !defined(_V_WIDE_MATH) && !defined(_LOW_ACCURACY_)
-#warning "_V_WIDE_MATH"
 #define _V_WIDE_MATH
 
 static inline ogg_int32_t MULT32(ogg_int32_t x, ogg_int32_t y) {
@@ -104,7 +103,6 @@ static inline void XNPROD31(ogg_int32_t  a, ogg_int32_t  b,
 #endif
 
 #ifndef _V_CLIP_MATH
-#warning "NOT _V_CLIP_MATH"
 #define _V_CLIP_MATH
 
 static inline ogg_int32_t CLIP_TO_15(ogg_int32_t x) {
@@ -123,7 +121,6 @@ static inline ogg_int32_t CLIP_TO_15(ogg_int32_t x) {
 #endif
 
 #ifndef _V_LSP_MATH_ASM
-#warning "NOT _V_LSP_MATH_ASM"
 #define _V_LSP_MATH_ASM
 
 static inline void lsp_loop_asm(ogg_uint32_t *qip,ogg_uint32_t *pip,

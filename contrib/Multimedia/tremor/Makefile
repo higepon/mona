@@ -52,8 +52,8 @@ $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECT
 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) _divdi3.o $(TREMOR_OBJECTS) -L$(LIBDIR) $(LINK)
 	$(STRIP) $@
 
-CXXFLAGS += -fpermissive -DDEBUG -nostdinc -fno-builtin
+CXXFLAGS += -fpermissive -DDEBUG -nostdinc -fno-builtin -D_LOW_ACCURACY_
 INCLUDE += -I . -I$(MONADIR)/include/monalibc -nostdinc
-CFLAGS = -I $(TREMOR_DIR) -nostdinc -fno-builtin #-I libogg-1.1.3/include -I libvorbis-1.0/include
+CFLAGS = -I $(TREMOR_DIR) -nostdinc -fno-builtin  -D_LOW_ACCURACY_
 
 -include dependencies

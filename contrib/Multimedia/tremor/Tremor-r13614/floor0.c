@@ -149,10 +149,8 @@ void vorbis_lsp_to_curve(ogg_int32_t *curve,int *map,int n,int ln,
   /* lsp is in 8.24, range 0 to PI; coslook wants it in .16 0 to 1*/
   for(i=0;i<m;i++){
 #ifndef _LOW_ACCURACY_
-#warning "NOT _LOW_ACCURACY_"
     ogg_int32_t val=MULT32(lsp[i],0x517cc2);
 #else
-#warning "_LOW_ACCURACY_"
     ogg_int32_t val=((lsp[i]>>10)*0x517d)>>14;
 #endif
 
@@ -174,7 +172,6 @@ void vorbis_lsp_to_curve(ogg_int32_t *curve,int *map,int n,int ln,
     ogg_int32_t wi=icos[k];
 
 #ifdef _V_LSP_MATH_ASM
-#warning "_V_LSP_MATH_ASM"
     lsp_loop_asm(&qi,&pi,&qexp,ilsp,wi,m);
 
     pi=((pi*pi)>>16);
@@ -279,7 +276,6 @@ void vorbis_lsp_to_curve(ogg_int32_t *curve,int *map,int n,int ln,
 			    ampoffseti);              /*  8.12[0]     */
     
 #ifdef _LOW_ACCURACY_
-#warning "_LOW_ACCURACY_"
     amp>>=9;
 #endif
     curve[i]= MULT31_SHIFT15(curve[i],amp);

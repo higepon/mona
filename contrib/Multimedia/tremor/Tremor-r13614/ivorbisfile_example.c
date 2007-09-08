@@ -25,7 +25,6 @@
 #include <vorbis/ivorbisfile.h>
 
 #ifdef _WIN32 /* We need the following two to set stdin/stdout to binary */
-#warning "_WIN32"
 #include <io.h>
 #include <fcntl.h>
 #endif
@@ -38,7 +37,6 @@ int main(){
   int current_section;
 
 #ifdef _WIN32 /* We need to set stdin/stdout to binary mode. Damn windows. */
-#warning "_WIN32"
   /* Beware the evil ifdef. We avoid these where we can, but this one we 
      cannot. Don't add any more, you'll probably go to hell if you do. */
   _setmode( _fileno( stdin ), _O_BINARY );

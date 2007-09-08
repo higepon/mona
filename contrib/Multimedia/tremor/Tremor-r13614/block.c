@@ -77,7 +77,6 @@ static int ilog(unsigned int v){
 /* block abstraction setup *********************************************/
 
 #ifndef WORD_ALIGN
-#warning "WORD_ALIGN"
 #define WORD_ALIGN 8
 #endif
 

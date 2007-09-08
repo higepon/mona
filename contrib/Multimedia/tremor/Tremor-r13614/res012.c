@@ -147,7 +147,6 @@ vorbis_look_residue *res0_look(vorbis_dsp_state *vd,vorbis_info_mode *vm,
 	if(info->secondstages[j]&(1<<k)){
 	  look->partbooks[j][k]=ci->fullbooks+info->booklist[acc++];
 #ifdef TRAIN_RES
-#warning "TRAIN_RES"
 	  look->training_data[k][j]=calloc(look->partbooks[j][k]->entries,
 					   sizeof(***look->training_data));
 #endif

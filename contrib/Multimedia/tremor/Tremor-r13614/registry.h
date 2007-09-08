@@ -28,10 +28,8 @@
 #include "backends.h"
 
 #if defined(_WIN32) && defined(VORBISDLL_IMPORT)
-#warning ""
 # define EXTERN __declspec(dllimport) extern
 #else
-#warning ""
 # define EXTERN extern
 #endif
 

@@ -16,8 +16,6 @@
  ********************************************************************/
 
 #ifndef _V_RANDOM_H_
-#warning "not _V_RANDOM_H_"
-
 #define _V_RANDOM_H_
 #include "ivorbiscodec.h"
 #include "os.h"
@@ -26,21 +24,16 @@
 #include <stdlib.h> /* for abs() */
   
 #ifndef _V_WIDE_MATH
-#warning "_V_WIDE_MATH"
-
 #define _V_WIDE_MATH
   
 #ifndef  _LOW_ACCURACY_
 /* 64 bit multiply */
 
 #if !(defined WIN32 && defined WINCE)
-#warning "WIN32 && WINCE"
 #include <sys/types.h>
 #endif
 
 #if BYTE_ORDER==LITTLE_ENDIAN
-#warning "LITTLE_ENDIAN"
-
 union magic {
   struct {
     ogg_int32_t lo;
@@ -50,7 +43,6 @@ union magic {
 };
 #endif 
 
-// comment out for Mona
 // #if BYTE_ORDER==BIG_ENDIAN
 // union magic {
 //   struct {
@@ -78,8 +70,6 @@ STIN ogg_int32_t MULT31_SHIFT15(ogg_int32_t x, ogg_int32_t y) {
 }
 
 #else
-#warning ""
-
 /* 32 bit multiply, more portable but less accurate */
 
 /*
@@ -127,7 +117,7 @@ STIN ogg_int32_t MULT31_SHIFT15(ogg_int32_t x, ogg_int32_t y) {
  */
 
 #ifdef __i386__
-#warning ""
+
 #define XPROD32(_a, _b, _t, _v, _x, _y)		\
   { *(_x)=MULT32(_a,_t)+MULT32(_b,_v);		\
     *(_y)=MULT32(_b,_t)-MULT32(_a,_v); }
@@ -139,7 +129,7 @@ STIN ogg_int32_t MULT31_SHIFT15(ogg_int32_t x, ogg_int32_t y) {
     *(_y)=MULT31(_b,_t)+MULT31(_a,_v); }
 
 #else
-#warning ""
+
 STIN void XPROD32(ogg_int32_t  a, ogg_int32_t  b,
 			   ogg_int32_t  t, ogg_int32_t  v,
 			   ogg_int32_t *x, ogg_int32_t *y)
@@ -169,7 +159,6 @@ STIN void XNPROD31(ogg_int32_t  a, ogg_int32_t  b,
 #endif
 
 #ifndef _V_CLIP_MATH
-#warning ""
 #define _V_CLIP_MATH
 
 STIN ogg_int32_t CLIP_TO_15(ogg_int32_t x) {
@@ -186,11 +175,9 @@ STIN ogg_int32_t VFLOAT_MULT(ogg_int32_t a,ogg_int32_t ap,
 				      ogg_int32_t *p){
   if(a && b){
 #ifndef _LOW_ACCURACY_
-#warning ""
     *p=ap+bp+32;
     return MULT32(a,b);
 #else
-#warning ""
     *p=ap+bp+31;
     return (a>>15)*(b>>16); 
 #endif
