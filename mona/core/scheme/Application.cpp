@@ -30,11 +30,6 @@ String Application::toString()
     return "Application : " + operatorr_->toString();
 }
 
-int Application::type() const
-{
-    return Object::APPLICATION;
-}
-
 Object* Application::eval(Environment* env)
 {
     Object* procedure = operatorr()->eval(env);

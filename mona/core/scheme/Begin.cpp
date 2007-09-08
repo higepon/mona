@@ -32,22 +32,8 @@ String Begin::toString()
     return ret;
 }
 
-int Begin::type() const
-{
-    return Object::BEGIN;
-}
-
 Object* Begin::eval(Environment* env)
 {
     return Kernel::evalSequence(this->actions(), env);
 }
 
-bool Begin::eqv() const
-{
-    return false;
-}
-
-bool Begin::eq() const
-{
-    return false;
-}

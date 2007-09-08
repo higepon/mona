@@ -25,13 +25,13 @@ public:
 
 public:
     virtual ::util::String toString();
-    virtual int type() const;
+    virtual int type() const { return Object::BEGIN; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "begin"; }
     virtual Object* eval(Environment* env);
     virtual Objects* actions() const { return actions_;}
-    virtual bool eqv() const;
-    virtual bool eq()  const;
+    virtual bool eqv() const { return false; }
+    virtual bool eq()  const { return false; }
 
 protected:
     Objects* actions_;

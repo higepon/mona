@@ -51,7 +51,7 @@ public:
 };
 
 #define RAISE_ERROR(lineno, ...)                                     \
-    Error::raise(lineno, __FILE__, __LINE__, __func__, __VA_ARGS__); \
+    Error::raise(lineno, __FILE__, __LINE__, __func__, __VA_ARGS__) \
     /* NOTREACHED */
 
 #define RETURN_ON_ERROR(f)               \

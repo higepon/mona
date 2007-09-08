@@ -90,11 +90,6 @@ String Environment::toString()
     return "<#environment>";
 }
 
-int Environment::type() const
-{
-    return Object::ENVIRONMENT;
-}
-
 Object* Environment::eval(Environment* env)
 {
     return this;

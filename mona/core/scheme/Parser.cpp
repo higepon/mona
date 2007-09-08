@@ -30,56 +30,7 @@ Object* Parser::parse()
 {
     nextToken();
     Object* ret = parseDatum();
-//    findSelfCall(ret);
     return ret;
-}
-
-void Parser::findSelfCall(Object* o)
-{
-    if (!o->isCons()) return;
-    Cons* p = (Cons*)o;
-    if (!p->getCar()->isIdentifier()) return;
-    Identifier* c = (Identifier*)(p->getCar());
-    if (c->text() != "define") return;
-    if (!p->getCdr()->isCons()) return;
-    Cons* p2 = (Cons*)p->getCdr();
-    if (!p2->getCar()->isIdentifier()) return;
-    Identifier* c2 = (Identifier*)p2->getCar();
-    ::util::String name = c2->text();
-
-    if (!p2->getCdr()->isCons()) return;
-    Cons* p3 = (Cons*)p2->getCdr();
-    findNameCall(p3, name);
-}
-
-void Parser::findNameCall(Cons* p, const ::util::String& name)
-{
-    Cons* start = p;
-    for (;;)
-    {
-        Object* o = start->getCar();
-        if (o->isIdentifier())
-        {
-            Identifier* c = (Identifier*)o;
-            if (c->text() == name)
-            {
-                printf("name %s found\n", name.data());
-            }
-        }
-        else if (o->isCons())
-        {
-            findNameCall((Cons*)o, name);
-        }
-
-
-        Object* o2 = start->getCdr();
-        if (o2 == NULL || !o2->isCons())
-        {
-            break;
-        }
-        start = (Cons*)o2;
-    }
-
 }
 
 Token* Parser::nextToken()

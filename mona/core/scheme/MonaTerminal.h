@@ -54,8 +54,6 @@ protected:
     ::MonAPI::terminal::Util* terminal_;
 };
 
-
-
 }; // namespace monash
 
 

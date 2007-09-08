@@ -1,5 +1,8 @@
 2007-09-08  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme: Removed Asignment.cpp and added FOREACH_LIST.
+                       svn merge -r4572:HEAD . ~/mona/core/scheme
+
         * core/scheme: Speed up, traditional macro, true S expression.
                        svn merge -r4499:HEAD scheme-quote ../trunk/mona/core/scheme
 

@@ -194,14 +194,6 @@ Object* Cons::getNthCdr(uint32_t n) const
 ::util::String Cons::toStringValue()
 {
     return toString();
-//     ::util::String carString = car_ ? car_->toStringValue() : "NULL";
-//     ::util::String cdrString = cdr_ ? cdr_->toStringValue() : "NULL";
-//     return "(cons " + carString + " " + cdrString + ")";
-}
-
-int Cons::type() const
-{
-    return Object::CONS;
 }
 
 Object* Cons::eval(Environment* env)

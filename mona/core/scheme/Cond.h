@@ -31,7 +31,7 @@ public:
 
 public:
     virtual ::util::String toString();
-    virtual int type() const;
+    virtual int type() const { return Object::COND; }
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "cond"; }

@@ -62,12 +62,6 @@ bool Procedure::eq() const
 Object* Procedure::apply(Objects* arguments, Environment* environment, bool evalArguments /* = true */)
 {
     Objects* as = evalArguments? Kernel::listOfValues(arguments, environment) : arguments;
-//     printf("%s", this->toString().data());
-//     for (int i = 0; i < as->size(); i++)
-//     {
-//         printf(" %s<%s>", as->get(i)->toString().data(), as->get(i)->typeString().data());fflush(stdout);
-//     }
-//     printf("\n");
     Environment* e = env()->clone();
     Variables* params = parameters();
     if (isExtendableParameter_)
@@ -152,15 +146,6 @@ Object* Procedure::apply(Objects* arguments, Environment* environment, bool eval
     if (isMacro_)
     {
         ret = Kernel::eval(ret, e);
-
-
-
-
-
-//         Objects* os = new Objects;
-//         os->add(ret);
-//         ret = Kernel::evalSequence(os, e);
-//         printf("%s %s:%d  %s\n", __func__, __FILE__, __LINE__, ret->typeString().data());fflush(stdout);// debug
     }
     return ret;
 }

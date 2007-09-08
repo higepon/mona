@@ -33,11 +33,6 @@ String Continuation::toStringValue()
     return toString();
 }
 
-int Continuation::type() const
-{
-    return Object::CONTINUATION;
-}
-
 Object* Continuation::eval(Environment* env)
 {
     return this;

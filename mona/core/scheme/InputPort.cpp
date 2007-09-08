@@ -28,11 +28,6 @@ String InputPort::toString()
     return "#<input-port>";
 }
 
-int InputPort::type() const
-{
-    return Object::INPUT_PORT;
-}
-
 Object* InputPort::eval(Environment* env)
 {
     return this;

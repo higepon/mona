@@ -59,7 +59,6 @@ namespace util {
 #include "SIf.h"
 #include "And.h"
 #include "Or.h"
-#include "Assignment.h"
 #include "Begin.h"
 #include "Definition.h"
 #include "Application.h"
@@ -268,6 +267,8 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
     }                                                                            \
 }
 
-
+#define FOREACH_LIST(list, kar, kdr, syntax) \
+        for (Object *l = list, *kdr = ((Cons*)l)->getCdr(), *kar = ((Cons*)l)->getCar(); \
+                 ; kdr->isCons() ? (l = kdr, kdr = ((Cons*)l)->getCdr(), kar = ((Cons*)l)->getCar()): (RAISE_ERROR(list->lineno(), "syntax-error: malformed %s", syntax), kar = NULL))
 
 #endif // __SCHEME_H__

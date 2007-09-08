@@ -50,21 +50,6 @@ bool TraditionalMacro::eq() const
 
 Object* TraditionalMacro::apply(Cons* arguments, Environment* environment)
 {
-//     Objects* as = Kernel::listOfValues(arguments, environment);
-//     for (int i = 0; i < as->size(); i++)
-//     {
-//         printf("as=%s\n", as->get(i)->toStringValue().data());
-//     }
-//    printf("proc type=%s\n", procedure_->typeString().data());
-//    printf("macro apply arguments=%s\n", arguments->toString().data());
     Object* form = Kernel::apply(procedure_, arguments, environment, false);
-//    printf("type=%s\n", form->typeString().data());
-//    printf("type=%s\n", form->toString().data());
-    return Kernel::eval(form, environment);//environment->translator2().translate(form)->eval(environment);
-//     Object* evalFunc = (new Variable("eval"))->eval(environment);
-//     Object* evaluated = NULL;
-//     printf("type=%s\n", form->typeString().data());
-//     printf("type=%s\n", form->toString());
-//     SCM_EVAL(evalFunc, environment, evaluated, form);
-//     return evaluated;
+    return Kernel::eval(form, environment);
 }

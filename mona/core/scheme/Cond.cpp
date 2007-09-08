@@ -28,11 +28,6 @@ String Cond::toString()
     return String("cond");
 }
 
-int Cond::type() const
-{
-    return Object::COND;
-}
-
 Object* Cond::expand()
 {
     return expandInternal(0);

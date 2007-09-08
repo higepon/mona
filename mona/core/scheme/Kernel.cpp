@@ -47,7 +47,6 @@ void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environme
         return;
     }
     Argument arg;
-//    printf("makeListOfValues %s to be evaled\n", objects->get(i)->toString().data());
     arg.object = Kernel::eval(objects->get(i), environment)->eval(environment);
     arg.prev   = prev;
     if (i == objects->size() - 1)
@@ -72,14 +71,10 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
 
 Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool evalArguments /* = true */)
 {
-//    printf("Kernel::apply procedure = %s type=%s\n", procedure->toString().data(), procedure->typeString().data());
-//    printf("Kernel::apply operands = %s\n", operands ? operands->toString().data() : "NULL");
-
     // traditional macro
     //    operands should be S Expression
     if (procedure->isTraditionaMacro())
     {
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         TraditionalMacro* macro = (TraditionalMacro*)procedure;
         return macro->apply(operands, env);
     }
@@ -90,11 +85,6 @@ Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool 
     {
         operands->toObjects(arguments);
     }
-
-//     for (int i = 0; i < arguments->size(); i++)
-//     {
-//         printf("args[%d] = %s\n", i, arguments->get(i)->toString().data());
-//     }
 
     if (arguments->size() == 1 && arguments->get(0)->isValues())
     {
@@ -108,7 +98,6 @@ Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool 
     }
     else if (procedure->isPrimitiveProcedure())
     {
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
 
         return p->apply(arguments, env, evalArguments);
@@ -120,7 +109,6 @@ Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool 
     }
     else if (procedure->isSRegexp())
     {
-//        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         SRegexp* r = (SRegexp*)procedure;
         return r->apply(arguments, env, evalArguments);
     }

@@ -47,7 +47,7 @@ public:
     virtual ::util::String toString();
     virtual ::util::String toStringInternal(bool inList = false);
     virtual ::util::String toStringValue();
-    virtual int type() const;
+    virtual int type() const { return Object::CONS; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "pair"; }
     virtual Object* eval(Environment* env);

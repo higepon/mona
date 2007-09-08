@@ -33,11 +33,6 @@ String Identifier::toStringValue()
     return text();
 }
 
-int Identifier::type() const
-{
-    return Object::IDENTIFIER;
-}
-
 Object* Identifier::eval(Environment* env)
 {
     return this;

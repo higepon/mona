@@ -3,7 +3,6 @@ PROCEDURES_H  = ./primitive_procedures.h
 
 SOURCES = $(PROCEDURE_SOURCES) \
 Application.cpp\
-Assignment.cpp\
 Begin.cpp\
 Charcter.cpp\
 Cond.cpp\

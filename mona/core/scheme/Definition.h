@@ -27,7 +27,7 @@ public:
 
 public:
     virtual ::util::String toString();
-    virtual int type() const;
+    virtual int type() const { return Object::DEFINITION; }
     virtual Object* eval(Environment* env);
     virtual Variable* variable() const { return variable_; }
     virtual uint32_t lineno() const { return lineno_; }

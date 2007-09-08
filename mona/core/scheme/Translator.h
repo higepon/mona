@@ -19,7 +19,6 @@
 #include "Charcter.h"
 #include "SString.h"
 #include "SIf.h"
-#include "Assignment.h"
 #include "Begin.h"
 #include "Definition.h"
 #include "Application.h"

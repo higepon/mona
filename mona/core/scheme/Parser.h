@@ -19,9 +19,8 @@
 namespace monash {
 class Parser;
 class Cons;
-    class Scanner;
+class Scanner;
 
-// External representations Parser
 class Parser
 {
 public:
@@ -35,10 +34,6 @@ protected:
     Object* parseCompoundDatum();
     Object* parseVector();
     Object* parseList();
-
-    void findSelfCall(Object* o);
-    void findNameCall(Cons* p, const ::util::String& name);
-
     Token* nextToken();
     int tokenType();
 

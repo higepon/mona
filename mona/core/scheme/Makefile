@@ -5,8 +5,8 @@ TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/number.scm test/pair.scm test/port.scm test/string.scm test/symbol.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm
 
-# -O3 では gc がうごかなかった => 多重継承時にキャストでポインタの値がかわるのが原因。
-CXXFLAGS = -O3 -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE -pg 
+# -O3 では gc がうごかないっぽい
+CXXFLAGS = -pg -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE -pg
 CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 NFLAGS   = -felf
@@ -28,7 +28,7 @@ test_cpp/yaml.cpp\
 test_cpp/ScannerTest.cpp\
 test_cpp/ParserTest.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o) # instrument.o
+OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 
 GC_OBJECTS = $(GC_SOURCES:.cpp=.o)

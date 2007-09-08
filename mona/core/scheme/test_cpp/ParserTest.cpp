@@ -18,7 +18,6 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ParserTest);
 
-using namespace std;
 using namespace util;
 using namespace monash;
 

@@ -42,28 +42,16 @@ Object* Or::eval(Environment* env)
     }
     else if (cdr->isCons())
     {
-        Cons* exp = (Cons*)(cdr);
-        for (;;)
+        FOREACH_LIST(cdr, kar, kdr, "or")
         {
-            Object* kar = exp->getCar();
-            Object* kdr = exp->getCdr();
             Object* o = Kernel::eval(kar, env);
             if (!o->isFalse())
             {
                 return o;
             }
-
-            if (kdr->isNil())
+            else if (kdr->isNil())
             {
                 return SCM_FALSE;
-            }
-            else if (kdr->isCons())
-            {
-                exp = (Cons*)kdr;
-            }
-            else
-            {
-                RAISE_ERROR(cons_->lineno(), "syntax-error: malformed or");
             }
         }
     }

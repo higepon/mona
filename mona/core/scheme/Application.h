@@ -26,14 +26,13 @@ public:
     virtual ~Application();
 
     virtual ::util::String toString();
-    virtual int type() const;
+    virtual int type() const { return Object::APPLICATION; }
     virtual Object* eval(Environment* env);
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "application"; }
     Object* operatorr() { return operatorr_; }
     Cons* operands() { return operands_; }
 
-    //exp
 protected:
     Object* operatorr_;
     Cons* operands_;

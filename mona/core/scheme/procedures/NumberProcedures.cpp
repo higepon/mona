@@ -179,7 +179,7 @@ PROCEDURE(Divide, "/")
             Number* nn = (Number*)o;
             if (nn->value() == 0)
             {
-                RAISE_ERROR(nn->lineno(), "devide by zero")
+                RAISE_ERROR(nn->lineno(), "devide by zero");
                 return NULL;
             }
             total /= nn->value();

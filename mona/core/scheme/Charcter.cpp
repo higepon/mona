@@ -82,11 +82,6 @@ String Charcter::toStringValue()
     return ret;
 }
 
-int Charcter::type() const
-{
-    return Object::CHARCTER;
-}
-
 Object* Charcter::eval(Environment* env)
 {
     return this;
