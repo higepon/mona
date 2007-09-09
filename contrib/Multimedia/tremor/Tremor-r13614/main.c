@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 static uint8_t pcmout[4096];
 
-#if 0
+#if 1
 int main(int ac,char **av) {
     OggVorbis_File vf;
     int eof=0;

@@ -31,6 +31,8 @@ static unsigned long mask[]=
  0x01ffffff,0x03ffffff,0x07ffffff,0x0fffffff,0x1fffffff,
  0x3fffffff,0x7fffffff,0xffffffff };
 
+static int bitcounter = 0;
+
 /* mark read process as having run off the end */
 static void _adv_halt(oggpack_buffer *b){
   b->headptr=b->head->buffer->data+b->head->begin+b->head->length;
@@ -78,18 +80,17 @@ void oggpack_readinit(oggpack_buffer *b,ogg_reference *r){
                         end=head->length;\
                       }
 
+
 /* Read in bits without advancing the bitptr; bits <= 32 */
 long oggpack_look(oggpack_buffer *b,int bits){
   unsigned long m=mask[bits];
   unsigned long ret=-1;
-
   bits+=b->headbit;
 
   if(bits >= b->headend<<3){
     int            end=b->headend;
     unsigned char *ptr=b->headptr;
     ogg_reference *head=b->head;
-
     if(end<0)return -1;
     
     if(bits){
@@ -174,9 +175,9 @@ int oggpack_eop(oggpack_buffer *b){
 
 /* bits <= 32 */
 long oggpack_read(oggpack_buffer *b,int bits){
+
   unsigned long m=mask[bits];
   ogg_uint32_t ret=-1;
-
   bits+=b->headbit;
 
   if(bits >= b->headend<<3){

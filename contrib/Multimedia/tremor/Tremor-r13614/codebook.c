@@ -224,6 +224,8 @@ long vorbis_book_decode(codebook *book, oggpack_buffer *b){
   return(-1);
 }
 
+static int hoge = 0;
+
 /* returns 0 on OK or -1 on eof *************************************/
 long vorbis_book_decodevs_add(codebook *book,ogg_int32_t *a,
 			      oggpack_buffer *b,int n,int point){
