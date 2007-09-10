@@ -36,14 +36,15 @@ int main(int argc, char *argv[])
 	AudioServer server;
 	MessageInfo msg;
 	uint32_t result;
-denter
-	printf("Audio server was started.\n");
+	dputs("Audio server was started.\n");
+	dprintf("I am %d\n", syscall_get_tid());
 	while(1)
 	{
 		if( MonAPI::Message::receive(&msg) )
 		{
 			continue;
 		}
+		dprintf("msg.header = %d\n", msg.header);
 		switch(msg.header)
 		{
 			case MSG_AUDIO_CREATE_CHANNEL:
@@ -99,6 +100,5 @@ denter
 			default: break;
 		}
 	}
-dleave
 	return 0;
 }

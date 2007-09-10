@@ -17,6 +17,7 @@ struct audio_data_format default_format =
 	16,
 	44100
 };
+void stop_cb(void *arg);
 
 AudioServer::AudioServer() : channel_(NULL)
 {
@@ -27,7 +28,7 @@ denter
 	dprintf("this = %x\n", this);
 	driver_->driver_set_format(device_, &default_format);
 	blocksize_ = driver_->driver_get_block_size(device_);
-	mixer_ = new MonAPI::Thread(mixer_th, this, mixer_th);
+	mixer_ = new MonAPI::Thread(mixer_th, this, stop_cb);
 	mixer_->start();
 dleave
 }
@@ -137,17 +138,27 @@ dleave
 	return 0;
 }
 
+void stop_cb(void *arg)
+{
+	dputs("MIXER IS STOPPED!");
+}
+
 void mixer_th(void *arg)
 {
 	dputs(__func__);
+	dprintf("Mixer: Hi, I am %d\n", syscall_get_tid());
 	AudioServer *server = (AudioServer*)arg;
 	char *buf;
 	buf = (char*)malloc(server->blocksize_);
 	while(1)
 	{
 		if( server->channel_ == NULL ) continue;
+		if( server->channel_->getStream() == NULL ) continue;
+		dputs("while(1)");
 		server->channel_->getStream()->read(buf, server->blocksize_);
+		dputs("getStream()->read");
 		server->driver_->driver_write_block(server->device_, buf);
+		dputs("write_block");
 	}
 }
 
