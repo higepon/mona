@@ -38,15 +38,19 @@ int SIf::type() const
 
 Object* SIf::eval(Environment* env)
 {
-    if (!predicate()->eval(env)->isFalse())
+    if (!Kernel::evalTailOpt(predicate(), env)->isFalse())
     {
-        return this->consequent()->eval(env);
+        consequent_->needEval = true;
+        consequent_->env      = env;
+        return consequent_;
     }
     else
     {
         if (this->alternative() != NULL)
         {
-            return this->alternative()->eval(env);
+            alternative_->needEval = true;
+            alternative_->env      = env;
+            return alternative_;
         }
         else
         {

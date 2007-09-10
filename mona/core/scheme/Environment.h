@@ -26,11 +26,10 @@ class Environment : public Object
 protected:
     typedef ::util::Vector<Frame*> Frames;
     Frames* frames_;
-    Translator& translator_;
     uint32_t lineno_;
 
 public:
-    Environment(Translator& translator, uint32_t lineno = 0);
+    Environment(uint32_t lineno = 0);
     virtual ~Environment();
     Environment* clone();
     Object* lookupVariableValue(Variable* variable);
@@ -39,7 +38,6 @@ public:
     Frames* frames() {return frames_;}
     void extend(Variables* variables, Objects* objects);
     ::util::String toString();
-    Translator& translator() { return translator_; }
     virtual int type() const { return Object::ENVIRONMENT; }
     virtual uint32_t lineno() const { return lineno_; }
     virtual ::util::String typeString() const { return "environment"; }

@@ -15,7 +15,6 @@
 
 #include "Object.h"
 #include "Procedure.h"
-//#include <algorithm>
 
 namespace monash {
 
@@ -25,16 +24,29 @@ typedef struct Argument
     Argument* prev;
 } Argument;
 
+    class Translator;
+
 class Kernel
 {
 public:
     Kernel();
     virtual ~Kernel();
 
+    static Object* compile(Object* sexp, Environment* environment);
     static Object* eval(Object* sexp, Environment* environment);
+    static Object* evalTailOpt(Object* sexp, Environment* environment);
     static Object* evalSequence(Objects* exps, Environment* env);
     static Objects* listOfValues(Objects* objects, Environment* env);
     static Object* apply(Object* procedure, Cons* operands, Environment* env, bool evalArguments = true);
+    static inline Object* applyFullEvaled(Object* procedure, Cons* operands, Environment* env, bool evalArguments = true)
+    {
+        Object* ret = apply(procedure, operands, env, evalArguments);
+        if (ret->needEval)
+        {
+            ret = evalTailOpt(ret, ret->env);
+        }
+        return ret;
+    }
     static Object* doContinuation();
     static void makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values);
 };

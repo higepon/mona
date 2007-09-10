@@ -16,7 +16,7 @@
 using namespace util;
 using namespace monash;
 
-Environment::Environment(Translator& translator, uint32_t lineno /* = 0 */) : translator_(translator), lineno_(lineno)
+Environment::Environment(uint32_t lineno /* = 0 */) : lineno_(lineno)
 {
     frames_ = new Frames();
     SCM_ASSERT(frames_);
@@ -31,7 +31,7 @@ Environment::~Environment()
 
 Environment* Environment::clone()
 {
-    Environment* env = new Environment(translator_);
+    Environment* env = new Environment(lineno_);
     SCM_ASSERT(env);
     Frames* target = env->frames();
     for (int i = 0; i < frames_->size(); i++)

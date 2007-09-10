@@ -33,6 +33,7 @@ void scheme_init()
 
 void scheme_const_init()
 {
+    g_translator        = new Translator();
     g_defaultOutputPort = new OutputPort(stdout);
     g_defaultInputPort  = new InputPort("stdin", stdin);
     g_currentInputPort  = g_defaultInputPort;
@@ -93,11 +94,11 @@ int scheme_batch(const String& file)
     }
     Error::exitOnError();
     Error::file = file;
-    Translator translator;
-    Environment* env = new Environment(translator);
+    Environment* env = new Environment();
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
+// todo あとで戻す
     scheme_eval_string(LOAD_SCHEME_BATCH_LIBRARY, env, false);
     scheme_eval_string(input, env);
     return 0;
@@ -105,8 +106,7 @@ int scheme_batch(const String& file)
 
 void scheme_interactive()
 {
-    Translator translator;
-    env = new Environment(translator);
+    env = new Environment();
     Interaction* interaction = new Interaction(env);
 #ifdef MONA
     g_terminal = new monash::MonaTerminal();
@@ -115,9 +115,8 @@ void scheme_interactive()
     g_top_env = env;
     scheme_register_primitives(env);
     RETURN_ON_ERROR("stdin");
-
+// todo あとで戻す
     scheme_eval_string(LOAD_SCHEME_INTERACTIVE_LIBRARY, env, false);
-
     interaction->showPrompt();
 
 #ifdef MONA

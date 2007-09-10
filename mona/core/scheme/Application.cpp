@@ -32,7 +32,9 @@ String Application::toString()
 
 Object* Application::eval(Environment* env)
 {
-    Object* procedure = operatorr()->eval(env);
+    register char* esp asm ("%esp");
+//    if (toString() == "Application : variable: hoge") printf("app:eval %x\n", esp);
+    Object* procedure = Kernel::evalTailOpt(operatorr(), env);
     if (!procedure->isCompoundProcedure() &&
         !procedure->isPrimitiveProcedure() &&
         !procedure->isContinuation() &&

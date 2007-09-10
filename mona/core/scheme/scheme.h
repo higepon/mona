@@ -126,8 +126,10 @@ GLOBAL monash::OutputPort* g_currentOutputPort;
 GLOBAL monash::OutputPort* g_defaultOutputPort;
 GLOBAL monash::InputPort* g_currentInputPort;
 GLOBAL monash::Environment* g_top_env;
+GLOBAL monash::Translator* g_translator;
 GLOBAL bool g_gc_initialized GLOBAL_VAL(false);
 GLOBAL bool g_batch_mode GLOBAL_VAL(false);
+
 
 GLOBAL FILE* g_transcript GLOBAL_VAL(NULL);
 GLOBAL ::util::HashMap<int>* g_provide_map;
@@ -208,7 +210,7 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 
 #define SCM_APPLY1(name, e, ret, arg1)             \
 {                                                  \
-    Object* proc = (new Variable(name))->eval(e);  \
+    Object* proc = Kernel::evalTailOpt((new Variable(name)), e); \
     Cons* args = new Cons;\
     args->append(arg1);                               \
     ret = Kernel::apply(proc, args, e);            \
@@ -224,7 +226,7 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 
 #define SCM_APPLY_PROC(procName, a, e, ret)                \
 {                                                          \
-    CAST((new Variable(procName))->eval(e), Procedure, p); \
+    CAST(Kernel::evalTailOpt((new Variable(procName)), e), Procedure, p); \
     ret = p->apply(arguments, env);                        \
 }
 

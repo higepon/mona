@@ -17,6 +17,6 @@ using namespace monash;
 
 Object* Set::eval(Environment* env)
 {
-    env->setVaribale(variable_, expression_->eval(env));
+    env->setVaribale(variable_, Kernel::evalTailOpt(expression_, env));
     return SCM_UNDEF;
 }

@@ -64,7 +64,7 @@ Object* Translator::translate(Object* sexp)
     }
     else
     {
-        RAISE_ERROR(sexp->lineno(), "pair required, but got %s", sexp->typeString().data());
+        RAISE_ERROR(sexp->lineno(), "pair required, but got %s %s", sexp->typeString().data(), sexp->toString().data());
         return NULL;
     }
 }
@@ -397,7 +397,6 @@ Object* Translator::translateCond(Cons* cons)
     {
         RAISE_ERROR(cons->lineno(), "syntax-error: malformed cond");
     }
-    Cons* c = (Cons*)cons->getCdr();
     FOREACH_LIST(cons->getCdr(), car , cdr, "cond")
     {
         if (!car->isCons() || ((Cons*)car)->getListLength() < 2)

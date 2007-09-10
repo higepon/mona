@@ -39,7 +39,7 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
 {
     if (object->isUnquote())
     {
-        return object->eval(env);
+        return Kernel::evalTailOpt(object, env);
     }
     else if (object->isCons())
     {
@@ -50,11 +50,11 @@ Object* QuasiQuote::evalIter(Object* object, Environment* env)
             Object* car = pair->getCar();
             if (car->isUnquote())
             {
-                pair->setCar(car->eval(env));
+                pair->setCar(Kernel::evalTailOpt(car, env));
             }
             else if (car->isUnquoteSplicing())
             {
-                Object* evaluated = car->eval(env);
+                Object* evaluated = Kernel::evalTailOpt(car, env);
                 if (evaluated->isCons())
                 {
                     Cons* evaluatedCons = (Cons*)evaluated;

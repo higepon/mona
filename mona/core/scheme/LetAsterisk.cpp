@@ -64,5 +64,5 @@ Objects* LetAsterisk::expandInternal(int variablesIndex, int valuesIndex)
 Object* LetAsterisk::eval(Environment* env)
 {
     Object* application = expand();
-    return application->eval(env);
+    return Kernel::evalTailOpt(application, env);
 }

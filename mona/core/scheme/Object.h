@@ -87,6 +87,9 @@ public:
 
 public:
 
+    bool needEval;
+    Environment* env;
+
     enum
     {
         NUMBER,

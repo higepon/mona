@@ -54,9 +54,9 @@ PROCEDURE(DynamicWindProc, "dynamic-wind")
     ARGC_SHOULD_BE(3);
     DynamicWind* dynamicWind = new DynamicWind(ARGV(0), ARGV(1), ARGV(2));
     g_dynamic_winds->add(dynamicWind);
-    Kernel::apply(ARGV(0), SCM_NO_ARG, env);
-    Object* ret = Kernel::apply(ARGV(1), SCM_NO_ARG, env);
-    Kernel::apply(ARGV(2), SCM_NO_ARG, env);
+    Kernel::applyFullEvaled(ARGV(0), SCM_NO_ARG, env);
+    Object* ret = Kernel::applyFullEvaled(ARGV(1), SCM_NO_ARG, env);
+    Kernel::applyFullEvaled(ARGV(2), SCM_NO_ARG, env);
     g_dynamic_winds->removeAt(0);
     return ret;
 }
@@ -68,6 +68,10 @@ PROCEDURE(CallWithValues, "call-with-values")
     CAST(ARGV(0), Procedure, producer);
     CAST(ARGV(1), Procedure, consumer);
     Object* applyed = Kernel::apply(producer, SCM_NO_ARG, env);
+    if (applyed->needEval)
+    {
+        applyed = Kernel::evalTailOpt(applyed, applyed->env);
+    }
     Cons* applyeds = new Cons;
     applyeds->append(applyed);
     return Kernel::apply(consumer, applyeds, env);
@@ -100,18 +104,18 @@ PROCEDURE(CallWithCurrentContinuation, "call-with-current-continuation")
             for (int i = wind_size - 1; i >= 0; i--)
             {
                 DynamicWind* d = g_dynamic_winds->get(i);
-                Kernel::apply(d->after, SCM_NO_ARG, env);
+                Kernel::applyFullEvaled(d->after, SCM_NO_ARG, env);
                 g_dynamic_winds->removeAt(i);
             }
         }
         else if (continuation->dynamicWind != NULL)
         {
-            Kernel::apply(continuation->dynamicWind->before, SCM_NO_ARG, env);
+            Kernel::applyFullEvaled(continuation->dynamicWind->before, SCM_NO_ARG, env);
         }
 
         if (continuation->callAruguments->size() == 1)
         {
-            Object* result = continuation->callAruguments->get(0)->eval(env);
+            Object* result = Kernel::evalTailOpt(continuation->callAruguments->get(0), env);
             return result;
         }
         else
@@ -166,7 +170,6 @@ PROCEDURE(Apply, "apply")
     if (ARGC == 2 && ARGV(1)->isNil())
     {
         tmp->append(ARGV(1));
-
         return Kernel::apply(ARGV(0), tmp, env);
     }
     CAST(ARGV(ARGC - 1), Cons, p);
@@ -199,7 +202,7 @@ PROCEDURE(NullEnvironment, "null-environment")
         RAISE_ERROR(lineno(), "%s got wrong version" , toString().data());
     }
     Translator translator;
-    return new Environment(translator, lineno());
+    return new Environment(lineno());
 }
 
 PROCEDURE(SchemeReportEnvironment, "scheme-report-environment")

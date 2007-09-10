@@ -28,15 +28,40 @@ Object* Kernel::evalSequence(Objects* exps, Environment* env)
     for (int i = 0; i < exps->size(); i++)
     {
         Object* o = exps->get(i);
-        ret = o->eval(env);
+        ret = Kernel::evalTailOpt(o, env);
     }
     return ret;
 }
 
+Object* Kernel::compile(Object* sexp, Environment* environment)
+{
+    return g_translator->translate(sexp);//environment->translator().translate(sexp);
+}
+
 Object* Kernel::eval(Object* sexp, Environment* environment)
 {
-    return environment->translator().translate(sexp)->eval(environment);
+    return Kernel::evalTailOpt(Kernel::compile(sexp, environment), environment);
 }
+
+Object* Kernel::evalTailOpt(Object* sexp, Environment* environment)
+{
+//    register char* esp asm ("%esp");
+//    if (sexp->toString() == "Application : variable: hoge") printf("evalTailOpt Enter[%s] %x\n", sexp->toString().data(), esp);
+    Object* exp = sexp;
+    exp->env = environment;
+eval:
+//    if (sexp->toString() == "Application : variable: hoge")  printf("evalTailOpt eval start[%s]\n", sexp->toString().data());
+    exp = exp->eval(exp->env);
+    if (exp->needEval)
+    {
+        exp->needEval = false;
+//        if (sexp->toString() == "Application : variable: hoge")printf("  evalTailOpt eval once more[%s]\n", sexp->toString().data());
+        goto eval;
+    }
+//    if (sexp->toString() == "Application : variable: hoge") printf("evalTailOpt eval end[%s]\n", sexp->toString().data());
+    return exp;
+}
+
 
 void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environment* environment, Objects** values)
 {
@@ -47,7 +72,7 @@ void Kernel::makeListOfValues(Objects* objects, int i, Argument* prev, Environme
         return;
     }
     Argument arg;
-    arg.object = Kernel::eval(objects->get(i), environment)->eval(environment);
+    arg.object = Kernel::evalTailOpt(Kernel::eval(objects->get(i), environment), environment);
     arg.prev   = prev;
     if (i == objects->size() - 1)
     {
@@ -69,6 +94,10 @@ Objects* Kernel::listOfValues(Objects* objects, Environment* env)
     return result;
 }
 
+
+
+// tail optimization!
+//   if you need return Object to be full evaluted, use applyFullEvaled
 Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool evalArguments /* = true */)
 {
     // traditional macro
@@ -94,7 +123,8 @@ Object* Kernel::apply(Object* procedure, Cons* operands, Environment* env, bool 
     if (procedure->isCompoundProcedure())
     {
         Procedure* p = (Procedure*)procedure;
-        return p->apply(arguments, env, evalArguments);
+        Object* o =  p->apply(arguments, env, evalArguments);
+        return o;
     }
     else if (procedure->isPrimitiveProcedure())
     {

@@ -50,6 +50,14 @@ bool TraditionalMacro::eq() const
 
 Object* TraditionalMacro::apply(Cons* arguments, Environment* environment)
 {
-    Object* form = Kernel::apply(procedure_, arguments, environment, false);
-    return Kernel::eval(form, environment);
+//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    Object* form = Kernel::applyFullEvaled(procedure_, arguments, environment, false);
+//    printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, form->toString().data());fflush(stdout);// debug
+//     if (form->needEval) {
+//         form = Kernel::evalTailOpt(form, form->env);
+//     }
+    // form require compile, so, use eval instead of evalTailOpt
+    Object* ret = Kernel::eval(form, environment);
+//    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    return ret;
 }

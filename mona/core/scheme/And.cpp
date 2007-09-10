@@ -44,14 +44,17 @@ Object* And::eval(Environment* env)
     {
         FOREACH_LIST(cdr, kar, kdr, "and")
         {
+            if (kdr->isNil())
+            {
+                Object* o = Kernel::compile(kar, env);
+                o->needEval = true;
+                o->env      = env;
+                return o;
+            }
             Object* o = Kernel::eval(kar, env);
             if (o->isFalse())
             {
                 return SCM_FALSE;
-            }
-            else if (kdr->isNil())
-            {
-                return o;
             }
         }
     }

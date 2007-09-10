@@ -11,6 +11,7 @@
     \date   create:2007/07/14 update:$Date$
 */
 #include "Definition.h"
+#include "Kernel.h"
 
 using namespace util;
 using namespace monash;
@@ -30,6 +31,6 @@ String Definition::toString()
 
 Object* Definition::eval(Environment* env)
 {
-    env->defineVariable(variable_, value_->eval(env));
+    env->defineVariable(variable_, Kernel::evalTailOpt(value_, env));
     return variable_;
 }

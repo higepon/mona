@@ -42,5 +42,5 @@ Application* Let::expand()
 Object* Let::eval(Environment* env)
 {
     Object* application = expand();
-    return application->eval(env);
+    return Kernel::evalTailOpt(application, env);
 }

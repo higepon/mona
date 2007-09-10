@@ -84,7 +84,7 @@ Object* SRegexp::apply(Objects* arguments, Environment* env, bool evalArguments 
     SCM_APPLY_PROC("mona.object.object?", as, env, isMonaObject);
     if (isMonaObject->isTrue())
     {
-        CAST((new Variable("mona.object.name"))->eval(env), Procedure, p);
+        CAST(Kernel::evalTailOpt((new Variable("mona.object.name")), env), Procedure, p);
         CAST(p->apply(arguments, env), SString, text);
         s = text;
     }

@@ -1,3 +1,8 @@
+2007-09-10  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Kernel.cpp : Added a tail recursive call optimization.
+                                   svn merge -r4576:HEAD scheme-quote ../trunk/mona/core/scheme
+
 2007-09-09  higepon  <higepon@users.sourceforge.jp>
 
         * core/monalibc/stdlib/qsort.c (qsort): Fixed bug of qsort.

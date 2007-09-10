@@ -32,8 +32,20 @@ String Begin::toString()
     return ret;
 }
 
+// Object* Begin::eval(Environment* env)
+// {
+//     return Kernel::evalSequence(this->actions(), env);
+// }
+
 Object* Begin::eval(Environment* env)
 {
-    return Kernel::evalSequence(this->actions(), env);
+    for (int i = 0; i < actions_->size() - 1; i++)
+    {
+        Kernel::evalTailOpt(actions_->get(i), env);
+    }
+    Object* last = actions_->get(actions_->size() - 1);
+    last->needEval = true;
+    last->env = env;
+    return last;
 }
 

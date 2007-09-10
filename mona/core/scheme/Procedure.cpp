@@ -142,10 +142,24 @@ Object* Procedure::apply(Objects* arguments, Environment* environment, bool eval
         }
         e->extend(params, as); // doubt? we need copy?
     }
-    Object* ret = Kernel::evalSequence(body(), e);
+    Object* ret = NULL;
     if (isMacro_)
     {
+        ret = Kernel::evalSequence(body(), e);
         ret = Kernel::eval(ret, e);
+    }
+    else
+    {
+//         ret = Kernel::evalSequence(body(), e);
+        Objects* exps = body();
+        for (int i = 0; i < exps->size() - 1; i++)
+        {
+            Kernel::evalTailOpt(exps->get(i), e);
+        }
+        ret = exps->get(exps->size() - 1);
+
+        ret->needEval = true;
+        ret->env      = e;
     }
     return ret;
 }

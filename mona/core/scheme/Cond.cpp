@@ -55,5 +55,5 @@ Object* Cond::expandInternal(int i)
 Object* Cond::eval(Environment* env)
 {
     Object* specialif = expand();
-    return specialif->eval(env);
+    return Kernel::evalTailOpt(specialif, env);
 }

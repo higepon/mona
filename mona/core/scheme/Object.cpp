@@ -14,7 +14,7 @@
 
 using namespace monash;
 
-Object::Object()
+Object::Object() : needEval(false), env(NULL)
 {
 }
 

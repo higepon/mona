@@ -49,5 +49,5 @@ Application* NamedLet::expand()
 
 Object* NamedLet::eval(Environment* env)
 {
-    return expand()->eval(env);
+    return Kernel::evalTailOpt(expand(), env);
 }
