@@ -97,40 +97,58 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 uint32_t Stream::read(uint8_t* buffer, uint32_t size)
 {
 //    if (-1 == access_->tryLock()) return 0;
+    _printf("[M]");
     access_->lock();
 //    printf("[read] header->size=%d header->capacity=%d size=%d\n", header_->size, header_->capacity, size);
     uint32_t memorySize = header_->size;
     uint32_t readSize;
+    _printf("[N]");
     if (0 == memorySize || size <= 0)
     {
+    _printf("[O]");
         readSize = 0;
     }
     else if (size < memorySize)
     {
+    _printf("[p]");
         memcpy(buffer, memoryAddress_, size);
-        memcpy(memoryAddress_, (uint8_t*)((uint32_t)memoryAddress_ + size), memorySize - size);
+        _printf("[q]size=%x, memorySize=%x, memorySize-size=%x", size, memorySize, memorySize-size);
+        memmove(memoryAddress_, (uint8_t*)((uint32_t)memoryAddress_ + size), memorySize - size);
+    _printf("[r]");
         header_->size = memorySize - size;
+    _printf("[s]");
         readSize = size;
+    _printf("[t]");
     }
     else
     {
+    _printf("[u]");
+    _printf("[v0]%x, memorySize%x buffer=%x memoryAddress_", header_, memorySize, buffer, memoryAddress_);
         memcpy(buffer, memoryAddress_, memorySize);
+        _printf("[v]%x", header_);
         header_->size = 0;
+    _printf("[x]");
         readSize = memorySize;
     }
 //    printf("[read2] header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
     if (readSize ==  0)
     {
+    _printf("[y]");
         access_->unlock();
+    _printf("[z]");
         return readSize;
     }
-
+    _printf("[a1]");
     uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
+    _printf("[b1]");
     memcpy(threads, header_->waitForWriteThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
+    _printf("[c1]");
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
+    _printf("[d1]");
         header_->waitForWriteThreads[i] = THREAD_UNKNOWN;
     }
+    _printf("[e1]");
     access_->unlock();
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
@@ -176,28 +194,38 @@ void Stream::waitForRead()
 #if 0
     while (header_->size == 0);
 #else
+    _printf("[A]");
     access_->lock();
+    _printf("[B]");
     if (header_->size != 0)
     {
         access_->unlock();
+    _printf("[C]");
         return;
     }
+    _printf("[D]");
     setWaitForRead();
+    _printf("[E]");
     access_->unlock();
-
+    _printf("[F]");
     MessageInfo msg;
     for (int i = 0; ; i++)
     {
+    _printf("[G]");
         int result = MonAPI::Message::peek(&msg, i);
-
+    _printf("[H]");
         if (result != 0)
         {
+    _printf("[I]");
             i--;
             syscall_mthread_yield_message();
+    _printf("[J]");
         }
         else if (msg.header == MSG_READ_MEMORY_READY)
         {
+    _printf("[K]");
             MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+    _printf("[L]");
             return;
         }
     }
