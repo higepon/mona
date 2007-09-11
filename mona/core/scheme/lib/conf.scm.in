@@ -276,6 +276,10 @@
 (define (ac)
   (call-process "/APPS/ACLI.EX5"))
 
+(define (hp)
+  (call-process "/APPS/HAPPY.EX5"))
+
+
 (define (wget)
   (call-process "/APPS/WGET.EX5 http://10.0.2.2/hello.html"))
 
