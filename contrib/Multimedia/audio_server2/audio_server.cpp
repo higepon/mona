@@ -140,6 +140,7 @@ size_t stream_block_reader(MonAPI::Stream *stream, void *mem, size_t size)
 	remain = size;
 	do
 	{
+		stream->waitForRead();
 		readsize = stream->read(p, remain);
 		remain = size - readsize;
 		p += readsize;

@@ -1,3 +1,9 @@
+2007-09-12  higepon  <higepon@users.sourceforge.jp>
+
+        * Multimedia/audio_server2/audio_server.cpp (stream_block_reader): Added stream->waitForRead().
+
+        * Multimedia/audio_server2/happy/main.cpp : Added happy music player for ogg using audio_server. Doesn't work now.
+
 2007-07-08  higepon  <higepon@users.sourceforge.jp>
 
         * Net/net_server_with_kernel/uipLoop.cpp : Added uipLoop for listen loop.
@@ -11,7 +17,7 @@
         * Net/net_server_with_kernel/wget/main.cpp: Added wget, does not works yet!.
 
         * Net/net_server_with_kernel/main.cpp: Modified net server to do interrupt functions on kernel.
-        
+
 
 2007-06-25  higepon  <higepon@users.sourceforge.jp>
 
@@ -94,7 +100,7 @@
 2007-05-12  higepon  <higepon@users.sourceforge.jp>
 
         * Shells/mshell/Form1.cpp : GUI Shell for Scheme works well.
-        
+
         * Shells/mshell/Form1.cpp (terminal::Writer): erase cursor when line feed.
 
 2007-05-09  higepon  <higepon@users.sourceforge.jp>
