@@ -52,12 +52,14 @@ public:
 	int stop(int channel);
 	int setVolume(int channel, int volume);
 	int getVolume(int channel);
+	int wait(int channel);
 //private:
 	struct audio_driver *driver_;
 	handle_t device_;
 	Channel *channel_;
 	size_t blocksize_;
 	MonAPI::Thread* mixer_;
+	bool playing;
 };
 
 #if 0

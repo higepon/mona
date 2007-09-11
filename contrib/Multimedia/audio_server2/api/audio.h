@@ -14,6 +14,7 @@ public:
 	int stop();
 	int setVolume(int volume);
 	int getVolume();
+	int wait();
 	size_t write(void *buffer, size_t size);
 	size_t read(void *buffer, size_t size);
 private:

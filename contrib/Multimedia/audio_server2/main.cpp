@@ -94,6 +94,10 @@ int main(int argc, char *argv[])
 				result = server.getVolume(msg.arg1);
 				MonAPI::Message::reply(&msg, result);
 				break;
+			case MSG_AUDIO_WAIT_PLAYING:
+				result = server.wait(msg.arg1);
+				MonAPI::Message::reply(&msg, result);
+				break;
 			case MSG_AUDIO_GET_CHANNELS_LIST:
 				MonAPI::Message::reply(&msg, MONA_FAILURE);
 				break;

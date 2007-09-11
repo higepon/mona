@@ -34,11 +34,12 @@ int main()
 	printf("Audio object was created.\n");
 
 	audio->start();
-	for( ; counter < 44100*2 ; counter += sizeof(buf) )
+	for( ; counter < 44100*10 ; counter += sizeof(buf) )
 	{
 		render(buf, sizeof(buf));
 		audio->write(buf, sizeof(buf));
 	}
+	audio->stop();
 
 	delete audio;
 	printf("AUdio object was deleted.\n");

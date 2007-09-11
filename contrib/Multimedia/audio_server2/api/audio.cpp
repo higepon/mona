@@ -55,6 +55,13 @@ int Audio::stop()
 	return msg.arg2;
 }
 
+int Audio::wait()
+{
+	MessageInfo msg;
+	MonAPI::Message::sendReceive(&msg,server_id, MSG_AUDIO_WAIT_PLAYING, channel_);
+	return msg.arg2;
+}
+
 size_t Audio::write(void *buffer, size_t size)
 {
 	MessageInfo msg;

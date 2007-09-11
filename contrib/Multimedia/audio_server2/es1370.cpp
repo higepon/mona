@@ -412,8 +412,7 @@ static void es1370_interrupt_catcher(void* a)
 					if( result != OK )
 					{
 					//	d->state = PAUSE;
-						puts("Buffer unset\n");
-//						continue;
+						continue;
 						//return;
 					}
 
