@@ -45,9 +45,9 @@ int main()
 	for( ; counter < 44100*10 ; counter += sizeof(buf) )
 //	while(1)
 	{
-		//frender(fp, buf, sizeof(buf));
+frender(fp, buf, sizeof(buf));
 		render(buf, sizeof(buf));
-		audio->write(buf, sizeof(buf));
+//		audio->write(buf, sizeof(buf));
 	}
 	audio->stop();
 
