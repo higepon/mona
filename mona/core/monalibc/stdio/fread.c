@@ -162,6 +162,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 {
+  //  _logprintf("fread(%x, %d, %d, %x)\n", buf, size, nmemb, stream);
 /*
   if (stream->_extra == NULL)
     {

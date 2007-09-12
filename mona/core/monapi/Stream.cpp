@@ -1,7 +1,7 @@
 #include <monapi.h>
 using namespace MonAPI;
 
-#define DEBUG_STREAM
+//#define DEBUG_STREAM
 
 #ifdef DEBUG_STREAM
 #define LOG(...) _logprintf("[%s:%d:%s] ", __FILE__, __LINE__, System::getProcessInfo()->name), _logprintf(__VA_ARGS__), _logprintf("\n")
@@ -107,10 +107,11 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 
 uint32_t Stream::read(uint8_t* buffer, uint32_t size)
 {
+    LOG("read:read(%x, %d)", buffer, size);
 //    if (-1 == access_->tryLock()) return 0;
     LOG("");
     access_->lock();
-    LOG("[read] header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
+    LOG("read: header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
     uint32_t memorySize = header_->size;
     uint32_t readSize;
     LOG("");
@@ -204,38 +205,26 @@ void Stream::waitForRead()
 #if 0
     while (header_->size == 0);
 #else
-    _printf("[A]");
     access_->lock();
-    _printf("[B]");
     if (header_->size != 0)
     {
         access_->unlock();
-    _printf("[C]");
         return;
     }
-    _printf("[D]");
     setWaitForRead();
-    _printf("[E]");
     access_->unlock();
-    _printf("[F]");
     MessageInfo msg;
     for (int i = 0; ; i++)
     {
-    _printf("[G]");
         int result = MonAPI::Message::peek(&msg, i);
-    _printf("[H]");
         if (result != 0)
         {
-    _printf("[I]");
             i--;
             syscall_mthread_yield_message();
-    _printf("[J]");
         }
         else if (msg.header == MSG_READ_MEMORY_READY)
         {
-    _printf("[K]");
             MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
-    _printf("[L]");
             return;
         }
     }
