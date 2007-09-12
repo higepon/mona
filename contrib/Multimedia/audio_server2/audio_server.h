@@ -60,6 +60,7 @@ public:
 	size_t blocksize_;
 	MonAPI::Thread* mixer_;
 	bool playing;
+	MonAPI::Mutex* channelMutex_;
 };
 
 #if 0
