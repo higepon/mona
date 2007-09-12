@@ -54,8 +54,8 @@ install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
-	(cd client && make && make install)
 	(cd api && make && make install)
+	(cd client && make && make install)
 
 # overwrite targe
 #$(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP) $(TREMOR_OBJECTS)

@@ -84,7 +84,7 @@ int main()
         } else {
             /* we don't bother dealing with sample rate changes, etc, but
                you'll have to*/
-            audio->write(pcmout, 2048);
+            audio->write(pcmout, ret);
         }
    }
 

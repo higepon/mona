@@ -26,6 +26,7 @@ all:
 	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/reverse && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server2 && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server2/api && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server2/client && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server2/happy && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
