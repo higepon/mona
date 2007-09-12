@@ -133,6 +133,7 @@ uint32_t Stream::read(uint8_t* buffer, uint32_t size)
     }
     else
     {
+        LOG("header_=%x &header_=%x", header_, &header_);
         LOG("read:memcpy(%x, %x, %d)", buffer, memoryAddress_, memorySize);
         memcpy(buffer, memoryAddress_, memorySize);
         LOG("header_=%x", header_);
