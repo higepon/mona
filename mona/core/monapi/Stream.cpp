@@ -1,6 +1,14 @@
 #include <monapi.h>
 using namespace MonAPI;
 
+#define DEBUG_STREAM
+
+#ifdef DEBUG_STREAM
+#define LOG(...) _logprintf("[%s:%d:%s] ", __FILE__, __LINE__, System::getProcessInfo()->name), _logprintf(__VA_ARGS__), _logprintf("\n")
+#else
+#define LOG /* */
+#endif
+
 Stream::Stream()
 {
     // default stream size is 64KB.
@@ -50,7 +58,7 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
     }
     else if (size < freeSize)
     {
-        PsInfo pi = *MonAPI::System::getProcessInfo();
+//        PsInfo pi = *MonAPI::System::getProcessInfo();
 //         _logprintf("%s:%d:%x [%s]\n", __func__, __LINE__, System::getThreadID(), pi.name);
 //         _logprintf("this=%x header_ = %x :memorySize = %x:memoryAddress_=%x: dest=%x:buffer=%x:size=%x\n"
 //                    , this
@@ -60,6 +68,7 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 //                    , (void*)((uint32_t)memoryAddress_ + memorySize)
 //                    , buffer
 //                    , size);
+        LOG("write:memcpy(%x, %x, %d)", (void*)((uint32_t)memoryAddress_ + memorySize), buffer, size);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, size);
 //        _logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memorySize + size);
         header_->size = memorySize + size;
@@ -67,6 +76,7 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
     }
     else
     {
+        LOG("write:memcpy(%x, %x, %d)", (void*)((uint32_t)memoryAddress_ + memorySize), buffer, freeSize);
         memcpy((void*)((uint32_t)memoryAddress_ + memorySize), buffer, freeSize);
         //_logprintf("%s:%d memorySize from %x to %x\n", __FILE__, __LINE__, header_->size, memoryCapacity);
         header_->size = memoryCapacity;
@@ -78,6 +88,7 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         return writeSize;
     }
     uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
+    LOG("write:memcpy(%x, %x, %d)", threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
     memcpy(threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
@@ -97,58 +108,56 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
 uint32_t Stream::read(uint8_t* buffer, uint32_t size)
 {
 //    if (-1 == access_->tryLock()) return 0;
-    _printf("[M]");
+    LOG("");
     access_->lock();
-//    printf("[read] header->size=%d header->capacity=%d size=%d\n", header_->size, header_->capacity, size);
+    LOG("[read] header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
     uint32_t memorySize = header_->size;
     uint32_t readSize;
-    _printf("[N]");
+    LOG("");
     if (0 == memorySize || size <= 0)
     {
-    _printf("[O]");
+        LOG("");
         readSize = 0;
     }
     else if (size < memorySize)
     {
-    _printf("[p]");
+        LOG("read:memcpy(%x, %x, %d)", buffer, memoryAddress_, size);
         memcpy(buffer, memoryAddress_, size);
-        _printf("[q]size=%x, memorySize=%x, memorySize-size=%x", size, memorySize, memorySize-size);
+        LOG("read:memmove(%x, %x, %d)", memoryAddress_, (uint8_t*)((uint32_t)memoryAddress_ + size), memorySize - size);
         memmove(memoryAddress_, (uint8_t*)((uint32_t)memoryAddress_ + size), memorySize - size);
-    _printf("[r]");
+        LOG("");
         header_->size = memorySize - size;
-    _printf("[s]");
+        LOG("");
         readSize = size;
-    _printf("[t]");
+        LOG("");
     }
     else
     {
-    _printf("[u]");
-    _printf("[v0]%x, memorySize%x buffer=%x memoryAddress_", header_, memorySize, buffer, memoryAddress_);
+        LOG("read:memcpy(%x, %x, %d)", buffer, memoryAddress_, memorySize);
         memcpy(buffer, memoryAddress_, memorySize);
-        _printf("[v]%x", header_);
+        LOG("header_=%x", header_);
         header_->size = 0;
-    _printf("[x]");
+        LOG("");
         readSize = memorySize;
     }
-//    printf("[read2] header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
     if (readSize ==  0)
     {
-    _printf("[y]");
+        LOG("");
         access_->unlock();
-    _printf("[z]");
+        LOG("");
         return readSize;
     }
-    _printf("[a1]");
+    LOG("");
     uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
-    _printf("[b1]");
+    LOG("");
     memcpy(threads, header_->waitForWriteThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
-    _printf("[c1]");
+    LOG("");
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
-    _printf("[d1]");
+        LOG("");
         header_->waitForWriteThreads[i] = THREAD_UNKNOWN;
     }
-    _printf("[e1]");
+    LOG("");
     access_->unlock();
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
