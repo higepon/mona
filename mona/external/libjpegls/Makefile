@@ -13,7 +13,10 @@ INCLUDE = -I$(INCDIR)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+libdir:
+	mkdir -p $(LIBDIR)
+
+$(TARGET): libdir $(OBJECTS)
 	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
@@ -29,6 +32,7 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 install: $(TARGET)
+	mkdir -p $(LIBDIR)
 	$(INSTALL) -p jpegls.h $(INCDIR)
 
 uninstall:
