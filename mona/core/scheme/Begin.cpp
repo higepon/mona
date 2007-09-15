@@ -32,11 +32,6 @@ String Begin::toString()
     return ret;
 }
 
-// Object* Begin::eval(Environment* env)
-// {
-//     return Kernel::evalSequence(this->actions(), env);
-// }
-
 Object* Begin::eval(Environment* env)
 {
     for (int i = 0; i < actions_->size() - 1; i++)

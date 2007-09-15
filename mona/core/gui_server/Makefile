@@ -1,6 +1,5 @@
-ifndef $(MONADIR)
-export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
-endif
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
 
 TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp

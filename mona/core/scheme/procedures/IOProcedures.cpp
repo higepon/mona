@@ -415,10 +415,9 @@ PROCEDURE(Load, "load")
     CAST(port, InputPort, inputPort);
     Scanner* scanner = new Scanner(inputPort, NULL, inputPort);
     Parser parser(scanner);
-    Object* evaluated = NULL;
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
-        evaluated = Kernel::eval(sexp, env);
+        Kernel::eval(sexp, env);
     }
-    return evaluated;
+    return SCM_TRUE;
 }

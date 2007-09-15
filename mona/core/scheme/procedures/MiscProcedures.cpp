@@ -370,7 +370,7 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
 }
 
 #ifdef MONA
-#include <gui/System/Mona/Info.h>
+#include <servers/gui.h>
 #endif
 
 PROCEDURE(MonaGuiMoveWindow, "mona-gui-move-window")
@@ -380,8 +380,16 @@ PROCEDURE(MonaGuiMoveWindow, "mona-gui-move-window")
     CAST(ARGV(0), Number, handle);
     CAST(ARGV(1), Number, x);
     CAST(ARGV(2), Number, y);
-    System::Mona::gui_move_window((uint32_t)handle->value(), x->value(), y->value());
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle->value(), x->value(), y->value()) != 0)
+    {
+        RETURN_BOOLEAN(false);
+    }
     RETURN_BOOLEAN(true);
+
+//     System::Mona::gui_move_window((uint32_t)handle->value(), x->value(), y->value());
+//     RETURN_BOOLEAN(true);
 #endif
     RETURN_BOOLEAN(false);
 }
@@ -392,7 +400,13 @@ PROCEDURE(MonaGuiGetWindowTitle, "mona-gui-get-window-title")
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Number, handle);
     char buffer[WINDOW_TITLE_MAX_LENGTH];
-    System::Mona::gui_get_window_title((uint32_t)handle->value(), buffer);
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_GETTITLE, handle->value()) != 0)
+    {
+        RETURN_BOOLEAN(false);
+    }
+    memcpy(buffer, msg.str, WINDOW_TITLE_MAX_LENGTH);
     return new SString(buffer, lineno());
 #endif
     RETURN_BOOLEAN(false);
@@ -401,25 +415,22 @@ PROCEDURE(MonaGuiGetWindowTitle, "mona-gui-get-window-title")
 PROCEDURE(MonaGuiEnumWindows, "mona-gui-enum-windows")
 {
 #ifdef MONA
-    int num;
-    uint32_t* handles = System::Mona::gui_enum_windows(&num);
-    if (0 == num)
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_ENUMWINDOWS) != 0)
     {
-        return SCM_NIL;
+        RETURN_BOOLEAN(false);
     }
-    else
-    {
-        Objects* objects = new Objects;
 
-        for (int i = 0; i < num; i++)
-        {
-            objects->add(new Number(handles[i]));
-        }
-        Cons* ret;
-        SCM_LIST(objects, ret, lineno());
-        delete[] handles;
-        return ret;
+    int num = msg.arg2;
+    Objects* objects = new Objects;
+    for (int i = 0; i < num; i++)
+    {
+        objects->add(new Number(*((uint32_t*)&msg.str[i * 4])));
     }
+    Cons* ret;
+    SCM_LIST(objects, ret, lineno());
+    return ret;
 #endif
     RETURN_BOOLEAN(false);
 }

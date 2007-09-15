@@ -14,6 +14,7 @@ tools:
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
 	cd tool/bim2bin && $(MAKE) && $(MAKE) install
+	cd external/libjpegls && $(MAKE) && $(MAKE) install
 
 externals: cores
 	cd external/onig && $(MAKE) && $(MAKE) install

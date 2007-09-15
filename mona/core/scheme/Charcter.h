@@ -15,7 +15,6 @@
 
 #include "Object.h"
 #include "Number.h"
-
 namespace monash {
 
 class Charcter : public Object

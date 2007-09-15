@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../; pwd)
+endif
+
 TARGET  = $(LIBDIR)/libjpegls.a
 SOURCES = jpegls.cpp
 

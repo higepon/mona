@@ -5,9 +5,7 @@ endif
 
 all:
 ### basic libraries
-	cd Graphics/libjpegls && touch dependencies && $(MAKE) && $(MAKE) install
 ### servers
-	cd Gui/gui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/net_server_with_kernel && $(MAKE) && $(MAKE) install
 #	cd Net/uip && $(MAKE) && $(MAKE) install
@@ -66,7 +64,6 @@ clean:
 	cd Emulators/monamona && $(MAKE) clean
 	cd Graphics/jpegview && $(MAKE) clean
 	cd Gui/libbaygui && $(MAKE) clean
-	cd Graphics/libjpegls && $(MAKE) clean
 	cd Gui/libgui && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
@@ -88,7 +85,6 @@ clean:
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean
 	cd Sysutils/libPci && $(MAKE) clean
-	cd Gui/gui && $(MAKE) clean
 	cd Gui/glaunch && $(MAKE) clean
 	cd Gui/monafile && $(MAKE) clean
 	cd Benchmarks/gfire && $(MAKE) clean

@@ -44,7 +44,6 @@ Object* Application::eval(Environment* env)
     {
         RAISE_ERROR(lineno(), "invalid application [%s]", procedure->toString().data());
     }
-
     Object* ret = Kernel::apply(procedure, operands(), env);
     procedure = NULL;
     return ret;

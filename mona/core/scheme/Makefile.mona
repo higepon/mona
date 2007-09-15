@@ -15,8 +15,8 @@ TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
 ADDCFLAGS    = $(GC_CFLAGS) -O3
 CLEANFILES   = $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
 ADDINCLUDE   = -I $(MONADIR)/include/monalibc -I . -I ./onig/onig-5.7.0
-ADDLINK      =  main.o $(LIBCONT_OBJECTS)  $(GC_OBJECTS) $(ONIG_OBJECTS) -lmonalibc-imp --enable-auto-import #-lgui-imp
-ADDLINKDEP   =  $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a $(MONADIR)/lib/libgui-imp.a main.o
+ADDLINK      =  main.o $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) -lmonalibc-imp --enable-auto-import #-lgui-imp
+ADDLINKDEP   =  $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(MONADIR)/lib/libmonalibc-imp.a main.o #$(MONADIR)/lib/libgui-imp.a main.o
 ADDTARGETDEP =  $(ONIG_DIR) $(BOEHM_GC_DIR) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/port.scm test/dir.scm test/shell.scm
 
 ONIG_OBJECTS = $(ONIG_SOURCES:.c=.o)
