@@ -1,5 +1,7 @@
 2007-09-15  higepon  <higepon@users.sourceforge.jp>
 
+        * core/gui_server: Moved gui from contrib to mona/core.
+
         * svn merge -r4606:HEAD mona-bohem ../trunk/mona
 
         * core/scheme: Now Boehm GC works well!

@@ -20,7 +20,6 @@ externals: cores
 
 cores: tools
 	cd core/firstboot && $(MAKE) && $(MAKE) install
-#ifneq ($(SKIP_DOTNET),1)
 ifdef CSC
 	cd core/PEAnalyzerLib && $(MAKE) && $(MAKE) install
 	cd core/IL2Asm16 && $(MAKE) && $(MAKE) install
@@ -38,6 +37,7 @@ endif
 	cd core/shell_server && $(MAKE) && $(MAKE) install
 	cd core/elf_server && $(MAKE) && $(MAKE) install
 	cd core/pe_server && $(MAKE) && $(MAKE) install
+	cd core/gui_server && $(MAKE) && $(MAKE) install
 	cd core/test && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
@@ -57,13 +57,13 @@ depend: clean
 	cd core/shell_server && $(MAKE) $@
 	cd core/elf_server && $(MAKE) $@&
 	cd core/pe_server && $(MAKE) $@
+	cd core/gui_server && $(MAKE) $@
 	cd core/test && $(MAKE) $@
 
 
 .PHONY: clean
 clean:
 	$(MAKE) $@ -C core/firstboot
-#ifneq ($(SKIP_DOTNET),1)
 ifdef CSC
 	$(MAKE) $@ -C core/PEAnalyzerLib
 	$(MAKE) $@ -C core/IL2Asm16
@@ -82,5 +82,6 @@ endif
 	$(MAKE) $@ -C core/shell_server
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
+	$(MAKE) $@ -C core/gui_server
 	$(MAKE) $@ -C core/test
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
