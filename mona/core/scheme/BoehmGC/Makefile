@@ -1,6 +1,6 @@
-CATEGORY = text
-NAME     = onig
-VERSION  = 5.7.0
+CATEGORY = system
+NAME     = gc
+VERSION  = 7.0
 
 SOURCE1 = ${NAME}-${VERSION}.tar.gz
 SRCS = ${SOURCE1}
@@ -37,8 +37,6 @@ ${SOURCE1}:
 
 .PATCH: .EXTRACT
 	patch -p0 < ${NAME}-${VERSION}.mona.diff
-	cp config.h ${WORKDIR}/
-	cp alloca.c ${WORKDIR}/
 	touch $@
 
 .MAKE: .PATCH

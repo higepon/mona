@@ -1,0 +1,180 @@
+diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
+--- gc-7.0.org/include/private/gcconfig.h	2007-06-29 09:00:09.000000000 +0900
++++ gc-7.0/include/private/gcconfig.h	2007-09-14 23:51:16.000000000 +0900
+@@ -402,7 +402,9 @@
+ # endif
+ # if defined(__MINGW32__)
+ #   define I386
++# if !defined(MONA)
+ #   define MSWIN32
++# endif
+ #   define mach_type_known
+ # endif
+ # if defined(__BORLANDC__)
+@@ -2303,6 +2305,11 @@
+ #   define GET_MEM(bytes) HBLKPTR((ptr_t)os2_alloc((size_t)bytes \
+ 					    + GC_page_size) \
+ 					    + GC_page_size-1)
++# elif defined(MONA)
++    void * mona_alloc(size_t bytes);
++#   define GET_MEM(bytes) HBLKPTR((ptr_t)mona_alloc((size_t)bytes \
++					    + GC_page_size) \
++					    + GC_page_size-1)
+ # elif defined(NEXT) || defined(DOS4GW) || defined(NONSTOP) || \
+ 		 (defined(AMIGA) && !defined(GC_AMIGA_FASTALLOC)) || \
+ 		 (defined(SOLARIS) && !defined(USE_MMAP))
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops.o
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_malloc.o
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_stack.o
+diff -ur gc-7.0.org/misc.c gc-7.0/misc.c
+--- gc-7.0.org/misc.c	2007-06-29 03:14:55.000000000 +0900
++++ gc-7.0/misc.c	2007-09-15 14:06:35.000000000 +0900
+@@ -904,7 +904,7 @@
+ #endif
+ 
+ #if !defined(MSWIN32) && !defined(MSWINCE) && !defined(OS2) \
+-    && !defined(MACOS)  && !defined(ECOS) && !defined(NOSYS)
++    && !defined(MACOS)  && !defined(ECOS) && !defined(NOSYS) && !defined(MONA)
+ int GC_write(fd, buf, len)
+ int fd;
+ const char *buf;
+@@ -952,6 +952,10 @@
+ #   define WRITE(f, buf, len) (GC_set_files(), \
+ 			       GC_tmp = fwrite((buf), 1, (len), (f)), \
+ 			       fflush(f), GC_tmp)
++#   elif defined(MONA)
++extern void logprintf(const char* format, ...);
++int gc_logprintf(buf, len) { logprintf((char*)buf); return len; }
++#   define WRITE(f, buf, len) gc_logprintf((char*)buf, len)
+ #   else
+ #     define WRITE(f, buf, len) GC_write((f), (buf), (len))
+ #   endif
+diff -ur gc-7.0.org/os_dep.c gc-7.0/os_dep.c
+--- gc-7.0.org/os_dep.c	2007-06-30 04:17:44.000000000 +0900
++++ gc-7.0/os_dep.c	2007-09-15 14:09:24.000000000 +0900
+@@ -49,7 +49,7 @@
+ #   endif
+ # endif
+ # if !defined(OS2) && !defined(PCR) && !defined(AMIGA) && !defined(MACOS) \
+-    && !defined(MSWINCE)
++    && !defined(MSWINCE) && !defined(MONA)
+ #   include <sys/types.h>
+ #   if !defined(MSWIN32)
+ #   	include <unistd.h>
+@@ -605,7 +605,7 @@
+ #  if !defined(PCR) && !defined(AMIGA) && !defined(MSWIN32) \
+       && !defined(MSWINCE) \
+       && !defined(MACOS) && !defined(DJGPP) && !defined(DOS4GW) \
+-      && !defined(NOSYS) && !defined(ECOS)
++      && !defined(NOSYS) && !defined(ECOS) && !defined(MONA)
+ 
+ #   if 0
+ 	/* Use the traditional BSD interface */
+@@ -1097,7 +1097,7 @@
+ 
+ #if !defined(BEOS) && !defined(AMIGA) && !defined(MSWIN32) \
+     && !defined(MSWINCE) && !defined(OS2) && !defined(NOSYS) && !defined(ECOS) \
+-    && !defined(CYGWIN32)
++    && !defined(CYGWIN32) && !defined(MONA)
+ 
+ ptr_t GC_get_main_stack_base(void)
+ {
+@@ -1206,6 +1206,28 @@
+ 
+ #endif /* GC_LINUX_THREADS */
+ 
++#ifdef MONA
++
++int GC_get_stack_base(struct GC_stack_base *b)
++{
++#ifdef MONA_GC_DEBUG
++    GC_print_stats = 1; // ugly
++#endif
++    b -> mem_base = (ptr_t)0xF0000000;
++    return GC_SUCCESS;
++}
++
++ptr_t GC_get_main_stack_base(void)
++{
++    struct GC_stack_base sb;
++    GC_get_stack_base(&sb);
++    return (ptr_t)sb.mem_base;
++}
++
++#define HAVE_GET_STACK_BASE
++
++#endif /* MONA */
++
+ #ifndef HAVE_GET_STACK_BASE
+ /* Retrieve stack base.						*/
+ /* Using the GC_find_limit version is risky.			*/
+@@ -1242,6 +1264,17 @@
+  * Called with allocator lock held.
+  */
+ 
++# ifdef MONA
++
++extern char  _data_start__[];
++extern char  _bss_end__[];
++
++void GC_register_data_segments(void)
++{
++     GC_add_roots_inner(_data_start__, _bss_end__, FALSE);
++}
++
++# else /* !MONA */
+ # ifdef OS2
+ 
+ void GC_register_data_segments(void)
+@@ -1586,7 +1619,7 @@
+ #     endif
+   }
+ 
+-# else /* !OS2 && !Windows */
++# else /* !MONA && !OS2 && !Windows */
+ 
+ # if (defined(SVR4) || defined(AUX) || defined(DGUX) \
+       || (defined(LINUX) && defined(SPARC))) && !defined(PCR)
+@@ -1658,7 +1691,7 @@
+ #  include "AmigaOS.c"
+ #  undef GC_AMIGA_DS
+ 
+-#else /* !OS2 && !Windows && !AMIGA */
++#else /* !MONA && !OS2 && !Windows && !AMIGA */
+ 
+ void GC_register_data_segments(void)
+ {
+@@ -1720,6 +1753,7 @@
+ # endif  /* ! AMIGA */
+ # endif  /* ! MSWIN32 && ! MSWINCE*/
+ # endif  /* ! OS2 */
++# endif  /* ! MONA */
+ 
+ /*
+  * Auxiliary routines for obtaining memory from OS.
+@@ -1727,7 +1761,7 @@
+ 
+ # if !defined(OS2) && !defined(PCR) && !defined(AMIGA) \
+ 	&& !defined(MSWIN32) && !defined(MSWINCE) \
+-	&& !defined(MACOS) && !defined(DOS4GW) && !defined(NONSTOP)
++	&& !defined(MACOS) && !defined(DOS4GW) && !defined(NONSTOP) && !defined(MONA)
+ 
+ # define SBRK_ARG_T ptrdiff_t
+ 
+@@ -1895,6 +1929,16 @@
+ 
+ # endif /* OS2 */
+ 
++# ifdef MONA
++
++void * mona_alloc(size_t bytes)
++{
++    return malloc(bytes);
++}
++
++# endif /* MONA */
++
++
+ 
+ # if defined(MSWIN32) || defined(MSWINCE)
+ SYSTEM_INFO GC_sysinfo;

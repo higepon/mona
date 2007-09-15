@@ -23,17 +23,6 @@
 #define ARGV(i) (as->get(i))
 #define ARGC    (as->size())
 
-inline void scheme_gc_init()
-{
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-#ifdef USE_BOEHM_GC
-    GC_INIT();
-#else
-#ifdef USE_MONA_GC
-    gc_init();
-#endif
-#endif
-}
 
 #define RETURN_BOOLEAN(condition) \
     if ((condition))              \

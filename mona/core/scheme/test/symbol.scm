@@ -1,4 +1,4 @@
-(print (eval '(+ 1 2) (scheme-report-environment 5)))
+;(print (eval '(+ 1 2) (scheme-report-environment 5)))
 (assert-check-true "symbol?"
                    (symbol? 'foo)
                    (symbol? (car '(a b)))

@@ -18,7 +18,11 @@
 
 namespace monash {
 
+#ifdef USE_BOEHM_GC
+typedef struct Argument : public gc
+#else
 typedef struct Argument
+#endif
 {
     Object* object;
     Argument* prev;

@@ -1,3 +1,14 @@
+2007-09-15  higepon  <higepon@users.sourceforge.jp>
+
+        * svn merge -r4606:HEAD mona-bohem ../trunk/mona
+
+        * core/scheme: Now Boehm GC works well!
+
+2007-09-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme: Added Boehm GC support. (not work)
+                       svn merge -r4586:HEAD branches/scheme-quote/ branches/mona-bohem/core/scheme/
+
 2007-09-10  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/Kernel.cpp : Added a tail recursive call optimization.

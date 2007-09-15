@@ -23,6 +23,8 @@ void scheme_init()
 {
 #ifdef USE_MONA_GC
     gc_init();
+#elif USE_BOEHM_GC
+    GC_INIT();
 #endif
 
 #ifndef MONA
@@ -137,3 +139,11 @@ void scheme_interactive()
     }
 #endif
 }
+
+#ifdef USE_BOEHM_GC
+
+extern "C" void dont_free()
+{
+}
+
+#endif

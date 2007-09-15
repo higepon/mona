@@ -26,8 +26,13 @@ extern InputPort*  g_currentInputPort;
 
 #include "dirent.h"
 
-struct DirInfo
+#ifdef USE_BOEHM_GC
+class DirInfo :public gc
+#else
+class DirInfo
+#endif
 {
+public:
     DirInfo(DIR* dir, ::util::String path) : dir(dir), path(path) {}
     DIR* dir;
     ::util::String path;

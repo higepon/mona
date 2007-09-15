@@ -311,7 +311,7 @@ PROCEDURE(StartProcess, "start-process")
     uint32_t tid;
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
-    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
+    ::MonAPI::System::getStdoutStream();
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, g_terminal->getScreenHandle(), g_terminal->getScreenHandle());
     if (result != 0)
     {

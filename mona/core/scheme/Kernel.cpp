@@ -45,20 +45,15 @@ Object* Kernel::eval(Object* sexp, Environment* environment)
 
 Object* Kernel::evalTailOpt(Object* sexp, Environment* environment)
 {
-//    register char* esp asm ("%esp");
-//    if (sexp->toString() == "Application : variable: hoge") printf("evalTailOpt Enter[%s] %x\n", sexp->toString().data(), esp);
     Object* exp = sexp;
     exp->env = environment;
 eval:
-//    if (sexp->toString() == "Application : variable: hoge")  printf("evalTailOpt eval start[%s]\n", sexp->toString().data());
     exp = exp->eval(exp->env);
     if (exp->needEval)
     {
         exp->needEval = false;
-//        if (sexp->toString() == "Application : variable: hoge")printf("  evalTailOpt eval once more[%s]\n", sexp->toString().data());
         goto eval;
     }
-//    if (sexp->toString() == "Application : variable: hoge") printf("evalTailOpt eval end[%s]\n", sexp->toString().data());
     return exp;
 }
 

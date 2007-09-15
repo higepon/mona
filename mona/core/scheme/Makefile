@@ -31,13 +31,12 @@ test_cpp/ParserTest.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 
-GC_OBJECTS = $(GC_SOURCES:.cpp=.o)
 ONIG_OBJECTS = $(ONIG_SOURCES:.c=.o)
 all : $(TARGET) $(TEST_TARGET)
 
 include Makefile.dep.inc
 
-$(TARGET):  $(ONIG_DIR) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(TARGET_LIBS) $(TEST_FILES)
+$(TARGET):  $(ONIG_DIR) $(BOEHM_GC_DIR) $(REGISTERS_INC) $(PROCEDURES_H) main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) $(TARGET_LIBS) $(TEST_FILES)
 	$(CXX) -pg -g main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 $(TEST_TARGET):  $(REGISTERS_INC) $(PROCEDURES_H) test_cpp/main.o $(OBJECTS) $(LIBCONT_OBJECTS) $(TEST_OBJECTS) $(GC_OBJECTS) $(ONIG_OBJECTS)
@@ -53,8 +52,11 @@ gdb : $(TARGET)
 test_cpp/main.o: test_cpp/main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
-$(ONIG_DIR) : 
+$(ONIG_DIR) :
 	(cd onig && $(MAKE))
+
+$(BOEHM_GC_DIR) :
+	(cd BoehmGC && $(MAKE))
 
 .SUFFIXES: .scm.in .scm
 .scm.in.scm:

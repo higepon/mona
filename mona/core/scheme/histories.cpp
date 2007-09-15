@@ -31,5 +31,6 @@ void MonaTerminal::initHistories()
     histories_.add("(| \"/APPS/WGET.EX5 http://10.0.2.2/hello.html\" \"/APPS/UPPER.EX5\")");
     histories_.add("(start-process \"/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/SAKEBI.JPG 50 50\")");
     histories_.add("(start-process \"/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300\")");
+    histories_.add("(load \"/SERVERS/TEST/test.scm\"");
 }
 #endif // MONA
