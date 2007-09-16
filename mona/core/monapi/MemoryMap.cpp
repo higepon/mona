@@ -11,7 +11,7 @@ const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
 uint32_t MemoryMap::nextAddress;
 uint32_t MemoryMap::lastError;
 
-//#define TRACE_MEMORY_MAP
+#define TRACE_MEMORY_MAP
 
 #ifdef TRACE_MEMORY_MAP
 #define MEMORY_MAP_TRACE(...)  _logprintf(__VA_ARGS__), _logprintf("  %s %s:%d:(%s)\n", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__, __func__) ;

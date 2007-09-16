@@ -1,6 +1,6 @@
 diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
 --- gc-7.0.org/include/private/gcconfig.h	2007-06-29 09:00:09.000000000 +0900
-+++ gc-7.0/include/private/gcconfig.h	2007-09-14 23:51:16.000000000 +0900
++++ gc-7.0/include/private/gcconfig.h	2007-09-17 00:45:52.000000000 +0900
 @@ -402,7 +402,9 @@
  # endif
  # if defined(__MINGW32__)
@@ -23,12 +23,41 @@ diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
  # elif defined(NEXT) || defined(DOS4GW) || defined(NONSTOP) || \
  		 (defined(AMIGA) && !defined(GC_AMIGA_FASTALLOC)) || \
  		 (defined(SOLARIS) && !defined(USE_MMAP))
-gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops.o
-gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_malloc.o
-gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_stack.o
+diff -ur gc-7.0.org/mallocx.c gc-7.0/mallocx.c
+--- gc-7.0.org/mallocx.c	2007-07-03 06:37:00.000000000 +0900
++++ gc-7.0/mallocx.c	2007-09-17 00:47:29.000000000 +0900
+@@ -66,6 +66,20 @@
+ /* lb bytes.  The object may be (and quite likely will be) moved.     */
+ /* The kind (e.g. atomic) is the same as that of the old.	      */
+ /* Shrinking of large blocks is not implemented well.                 */
++#ifdef MONA
++
++void* GC_realloc(void* p, size_t lb)
++{
++    void* ret;
++    if (NULL == p) return GC_malloc(lb);
++    if (0 == lb) return NULL;
++    ret = GC_malloc(lb);
++    memcpy(ret, p, lb);
++    return ret;
++}
++
++#else
++
+ void * GC_realloc(void * p, size_t lb)
+ {
+     struct hblk * h;
+@@ -138,6 +152,7 @@
+ 	  return(result);
+     }
+ }
++#endif
+ 
+ # if defined(REDIRECT_MALLOC) && !defined(REDIRECT_REALLOC)
+ #   define REDIRECT_REALLOC GC_realloc
 diff -ur gc-7.0.org/misc.c gc-7.0/misc.c
 --- gc-7.0.org/misc.c	2007-06-29 03:14:55.000000000 +0900
-+++ gc-7.0/misc.c	2007-09-15 14:06:35.000000000 +0900
++++ gc-7.0/misc.c	2007-09-17 00:45:52.000000000 +0900
 @@ -904,7 +904,7 @@
  #endif
  
@@ -51,7 +80,7 @@ diff -ur gc-7.0.org/misc.c gc-7.0/misc.c
  #   endif
 diff -ur gc-7.0.org/os_dep.c gc-7.0/os_dep.c
 --- gc-7.0.org/os_dep.c	2007-06-30 04:17:44.000000000 +0900
-+++ gc-7.0/os_dep.c	2007-09-15 14:09:24.000000000 +0900
++++ gc-7.0/os_dep.c	2007-09-17 00:45:52.000000000 +0900
 @@ -49,7 +49,7 @@
  #   endif
  # endif
