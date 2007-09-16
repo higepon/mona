@@ -48,6 +48,7 @@ int cb_free(CB *cb)
 int cb_write(CB *cb, void *p, int flag)
 {
 	int index;
+BEGIN:
 	if( cb == NULL ) return -1;
 	syscall_mutex_lock(cb->mutex);
 //	if( cb->ei == -1 ) return 0;
@@ -65,9 +66,10 @@ int cb_read(CB *cb, void *p)
 {
 	int index;
 	if( cb == NULL ) return -1;
+BEGIN:
+	if( cb->fi == -1 ){ goto BEGIN; } 
+//	if( cb->fi == -1 ) CB_FIRST(0, syscall_mutex_unlock(cb->mutex));
 	syscall_mutex_lock(cb->mutex);
-//	if( cb->fi == -1 ) return 0;
-	if( cb->fi == -1 ) CB_FIRST(0, syscall_mutex_unlock(cb->mutex));
 	index = cb->blocksize*cb->fi;
 	memcpy(p, cb->p+index, cb->blocksize);
 	if( cb->ei == -1 ) cb->ei = cb->fi;

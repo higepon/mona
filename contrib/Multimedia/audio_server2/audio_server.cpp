@@ -163,20 +163,22 @@ void mixer_th(void *arg)
     AudioServer *server = (AudioServer*)arg;
     bool is_stopped = false;
     char *buf;
+    char *zerobuf;
     int result;
     buf = (char*)malloc(server->blocksize_);
+    zerobuf = (char*)malloc(server->blocksize_);
+    memset(zerobuf, 0, server->blocksize_);
     mutex->lock();
-    if( server->channel_ == NULL )
-    {
-        memset(buf, 0, server->blocksize_);
-    }
+
     while(1)
     {
+        if( server->channel_ == NULL )
+        {
+		server->driver_->driver_write_block(server->device_, zerobuf);
+		continue;
+        }
         result = stream_block_reader(server->channel_->getStream(), buf, server->blocksize_);
-        if( result == 0 )
-            server->playing = false;
-        else
-            server->playing = true;
+	server->playing = (bool)result;
         server->driver_->driver_write_block(server->device_, buf);
     }
 }

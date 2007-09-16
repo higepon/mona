@@ -5,8 +5,8 @@ endif
 
 TARGET  = AUDIO
 # server / client
-SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
-#SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+#SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 
 #TREMOR_DIR = Tremor-r13614
 #TREMOR_SOURCES = \
@@ -64,7 +64,7 @@ install: all
 
 
 
-CXXFLAGS += -fpermissive -DDEBUG
+CXXFLAGS += -fpermissive #-DDEBUG
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
 CFLAGS = #-I $(TREMOR_DIR) #-I libogg-1.1.3/include -I libvorbis-1.0/include
 CXXFLAGS += #-I $(TREMOR_DIR) #-I libogg-1.1.3/include -I libvorbis-1.0/include
