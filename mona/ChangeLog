@@ -1,3 +1,7 @@
+2007-09-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/BoehmGC: Fixed GC_realloc.
+
 2007-09-15  higepon  <higepon@users.sourceforge.jp>
 
         * core/gui_server: Moved gui from contrib to mona/core.
