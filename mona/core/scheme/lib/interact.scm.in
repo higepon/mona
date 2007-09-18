@@ -14,4 +14,6 @@
 <IF_MONA>(fs-create-tree *fs-root-directory* "/")
 (define *fs-current-directory* *fs-root-directory*)
 
+<IF_MONA>(as2)
+
 

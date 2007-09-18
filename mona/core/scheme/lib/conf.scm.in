@@ -296,3 +296,6 @@
 
 ;(as)
 ;(load "/SERVERS/TEST/test.scm")
+
+(define (as2)
+  (start-process "/APPS/AUDIO2.EX5"))
