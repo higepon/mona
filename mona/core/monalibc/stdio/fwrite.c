@@ -77,11 +77,13 @@ size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
+#if 0
 	_logprintf("monalibc: fwrite\n");
 	_logprintf("monalibc: stream = %x\n", stream);
 	_logprintf("monalibc: stream->_flags = %x\n", stream->_flags);
 	_logprintf("monalibc: stream->_extra = %x\n", stream->_extra);
 	_logprintf("monalibc: stream->_extra->stds = %x\n", stream->_extra->stds);
+#endif
 	if( stream->_extra->stds == __STDOUT
 				|| stream->_extra->stds == __STDERR )
 	{
