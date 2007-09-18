@@ -419,5 +419,6 @@ PROCEDURE(Load, "load")
     {
         Kernel::eval(sexp, env);
     }
+    inputPort->close();
     return SCM_TRUE;
 }

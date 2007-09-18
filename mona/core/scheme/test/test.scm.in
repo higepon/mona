@@ -399,17 +399,17 @@
 ;;                         (set! do-index (+ do-index 2)))
 ;;                    (= do-index 10))
 
-(define-macro bar
-  (lambda (n)
-  (list '+ 1 n)))
+;; (define-macro b
+;;   (lambda (n)
+;;   (list '+ 1 n)))
 
-(define-macro foo
-  (lambda ()
-  '(+ 1 2)))
+;; (define-macro foo
+;;   (lambda ()
+;;   '(+ 1 2)))
 
-(assert-check-true "define-macro"
-                   (= (bar 3) 4)
-                   (= (foo) 3))
+;; (assert-check-true "define-macro"
+;;                    (= (bar 3) 4)
+;;                    (= (foo) 3))
 
 (load "<TESTDIR>/dir.scm")
 (load "<TESTDIR>/cont.scm")

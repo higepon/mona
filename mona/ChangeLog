@@ -1,3 +1,7 @@
+2007-09-18  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/procedures/IOProcedures.cpp : Fixed input port close bug.
+
 2007-09-17  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/BoehmGC: Fixed GC_realloc.
