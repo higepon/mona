@@ -3,7 +3,7 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
-TARGET  = AUDIO
+TARGET  = AUDIO2
 # server / client
 #SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
