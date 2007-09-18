@@ -212,6 +212,7 @@ error_t es1370_set_stopped_callback(handle_t o, error_t (*callback)(void* ref), 
 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
+    static count = 0;
 	error_t result;
 	size_t wrote;
 	void *buf;
@@ -220,6 +221,19 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 //	result = d->callback(d->ref, buf, d->bufsize, &wrote);
 	result = cb_read(d->cb, buf);
+    if (count > 1) {
+        for (size_t i = 0; i < 4096; i++)
+        {
+            if (i > 0 && i % 16 == 0) logprintf("\n");
+            uint8_t tmp[32];
+            sprintf(tmp, "%02x ", ((uint8_t*)buf)[i]);
+            logprintf(tmp);
+
+        }
+        logprintf("\n");
+    }
+    count++;
+
 //	outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, (uint32_t)buf);
 //	es1370_set_buffer(d, buf, d->bufsize);
 	return result == 1 ? OK : NG;
