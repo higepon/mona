@@ -1,3 +1,7 @@
+2007-09-19  higepon  <higepon@users.sourceforge.jp>
+
+        * core/screen_server/main.cpp (outLoop): Suppressed debug message.
+
 2007-09-18  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/procedures/IOProcedures.cpp : Fixed input port close bug.

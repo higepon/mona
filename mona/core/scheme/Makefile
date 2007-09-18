@@ -16,8 +16,8 @@ include Makefile.src.inc
 # gc を OFFに
 # 最適化をやめる
 
-#include Makefile.boehm_gc.inc
-include Makefile.mona_gc.inc
+include Makefile.boehm_gc.inc
+#include Makefile.mona_gc.inc
 # たまに これで make checkする
 #include Makefile.none_gc.inc
 
