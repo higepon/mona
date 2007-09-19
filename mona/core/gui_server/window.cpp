@@ -462,9 +462,11 @@ bool WindowHandler(MessageInfo* msg)
         }
         // タイトル情報
         case MSG_GUISERVER_GETTITLE:
+	{
             guiserver_window* w = GetWindowPointer(msg->arg1);
             Message::reply(msg, NULL, NULL, w->name);
             break;
+	}
         // マウス情報
         case MSG_MOUSE_INFO:
             ProcessMouseInfo(msg);
