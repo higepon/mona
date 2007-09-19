@@ -222,7 +222,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	result = d->callback(d->ref, buf, d->bufsize, &wrote);
 	result = cb_read(d->cb, buf);
 
-#if 1
+#if 0
     if (count > 1) {
         for (size_t i = 0; i < 4096; i++)
         {
@@ -461,7 +461,8 @@ size_t es1370_write_block(handle_t o, void *p)
 	if( o == NULL || p == NULL ) return (size_t)-1;
 	d = (struct es1370_driver*)o;
 #if 0
-    static total = 0;
+    static int total = 0;
+    static uint32_t hash = 0;
     if (total >= 2) {
         for (size_t i = 0; i < 4096; i++)
         {
@@ -469,9 +470,10 @@ size_t es1370_write_block(handle_t o, void *p)
             uint8_t tmp[32];
             sprintf(tmp, "%02x ", ((uint8_t*)p)[i]);
             logprintf(tmp);
-            
+            hash += ((uint8_t*)p)[i];            
         }
         logprintf("\n");
+    _printf("hash_w=%x\n", hash);
     }
     total++;
 #endif

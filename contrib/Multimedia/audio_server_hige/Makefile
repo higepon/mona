@@ -5,8 +5,8 @@ endif
 
 TARGET  = AUDIO2
 # server / client
-#SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
-SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+SOURCES = main.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
+#SOURCES = hoge.cpp es1370.cpp audio_driver.cpp audio_server.cpp circular_buffer.cpp channel.cpp
 
 #TREMOR_DIR = Tremor-r13614
 #TREMOR_SOURCES = \
@@ -32,8 +32,8 @@ $(TREMOR_DIR)/window.c
 # SOURCES = test.cpp es1370.cpp audio_driver.cpp
 
 INSTDIR = $(BINDIR)/APPS/
-INSTFILES = test.raw #A.OGG
-CLEANFILES =
+INSTFILES = test.raw happy/A.OGG
+CLEANFILES = 
 $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share

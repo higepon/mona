@@ -44,7 +44,7 @@ int cb_free(CB *cb)
 }
 
 #define CB_FIRST(a, b) { b; return a; }
-
+#include <stdio.h>
 int cb_write(CB *cb, void *p, int flag)
 {
 	int index;
@@ -52,8 +52,29 @@ BEGIN:
 	if( cb == NULL ) return -1;
 	syscall_mutex_lock(cb->mutex);
 //	if( cb->ei == -1 ) return 0;
-	if( cb->ei == -1 ) CB_FIRST(0, syscall_mutex_unlock(cb->mutex));
+	if( cb->ei == -1 ) 
+    {
+        CB_FIRST(0, syscall_mutex_unlock(cb->mutex));
+    }
 	index = cb->blocksize*cb->ei;
+#if 0
+    static int total = 0;
+    static uint32_t hash = 0;
+    if (total >= 8102) {
+        for (size_t i = 0; i < cb->blocksize; i++)
+        {
+            if (i > 0 && i % 16 == 0) logprintf("\n");
+            uint8_t tmp[32];
+            sprintf(tmp, "%02x ", ((uint8_t*)p)[i]);
+            logprintf(tmp);
+            hash += ((uint8_t*)p)[i];
+        }
+    }
+    _printf("hash_c=%x\n", hash);
+    logprintf("\n");
+    total += cb->blocksize;
+#endif
+
 	memcpy(cb->p+index, p, cb->blocksize); 
 	if( cb->fi == -1 ) cb->fi = cb->ei;
 	cb->ei = cb_index_inc(cb->ei, cb->maxblocks);
