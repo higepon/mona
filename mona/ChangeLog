@@ -1,3 +1,7 @@
+2007-09-20  .mjt
+
+        * core/scheme/Makefile.mona (ADDCFLAGS): Fixed compile error on cygwin.
+
 2007-09-19  higepon  <higepon@users.sourceforge.jp>
 
         * core/screen_server/main.cpp (outLoop): Suppressed debug message.
