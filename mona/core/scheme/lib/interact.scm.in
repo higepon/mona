@@ -1,6 +1,6 @@
 (load "<LIBDIR>/core.scm")
-(load "<LIBDIR>/shell.scm")
 (load "<LIBDIR>/danny.scm")
+(load "<LIBDIR>/shell.scm")
 (load "<LIBDIR>/demo.scm")
 (load "<LIBDIR>/conf.scm")
 ;(load "slib/Template.scm")
