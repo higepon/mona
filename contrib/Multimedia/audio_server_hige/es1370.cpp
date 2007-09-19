@@ -221,6 +221,8 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 //	result = d->callback(d->ref, buf, d->bufsize, &wrote);
 	result = cb_read(d->cb, buf);
+
+#if 1
     if (count > 1) {
         for (size_t i = 0; i < 4096; i++)
         {
@@ -233,6 +235,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
         logprintf("\n");
     }
     count++;
+#endif
 
 //	outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, (uint32_t)buf);
 //	es1370_set_buffer(d, buf, d->bufsize);
@@ -457,6 +460,22 @@ size_t es1370_write_block(handle_t o, void *p)
 	int result;
 	if( o == NULL || p == NULL ) return (size_t)-1;
 	d = (struct es1370_driver*)o;
+#if 0
+    static total = 0;
+    if (total >= 2) {
+        for (size_t i = 0; i < 4096; i++)
+        {
+            if (i > 0 && i % 16 == 0) logprintf("\n");
+            uint8_t tmp[32];
+            sprintf(tmp, "%02x ", ((uint8_t*)p)[i]);
+            logprintf(tmp);
+            
+        }
+        logprintf("\n");
+    }
+    total++;
+#endif
+
 	result = cb_write(d->cb, p, 0);
 	return (size_t)result*d->bufsize;
 }

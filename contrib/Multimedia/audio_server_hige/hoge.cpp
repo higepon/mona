@@ -23,8 +23,20 @@ int render(void* buffer, size_t size)
 
 int frender(FILE *fp, void *buffer, size_t size)
 {
-	fread(buffer, size, 1, fp);
-	return feof(fp);
+	size_t readSize = fread(buffer, size, 1, fp);
+#if 0
+    for (size_t i = 0; i < readSize; i++)
+    {
+        if (i > 0 && i % 16 == 0) logprintf("\n");
+        uint8_t tmp[32];
+        sprintf(tmp, "%02x ", ((uint8_t*)buffer)[i]);
+        logprintf(tmp);
+        
+    }
+    logprintf("\n");
+#endif
+    return readSize;
+//	return feof(fp);
 }
 
 int main()
@@ -33,7 +45,7 @@ int main()
 	int channel;
 	MonAPI::Stream stream;
 	struct audio_data_format format = {0, 2, 16, 44100};
-	char buf[4096*2];
+	char buf[4096];
 	FILE *fp = fopen("/APPS/TEST.RAW", "r");
 
 	channel = server.createChannel(0);
@@ -51,9 +63,10 @@ int main()
 	//for( int i = 0 ; i < 44100*2*2*3 ; i+= sizeof(buf) )
 	{
 		//render(buf, sizeof(buf));
-		frender(fp, buf, sizeof(buf));
+		size_t size = frender(fp, buf, sizeof(buf));
+        if (size == 0) break;
 		stream.waitForWrite();
-		stream.write(buf, sizeof(buf));
+		stream.write(buf, size);
 	}
 	server.wait(channel);
 	server.stop(channel);

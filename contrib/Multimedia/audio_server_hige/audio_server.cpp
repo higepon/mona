@@ -153,6 +153,21 @@ size_t stream_block_reader(MonAPI::Stream *stream, void *mem, size_t size)
         p += readsize;
     }
     while(remain);
+#if 0
+    static total = 0;
+    if (total >= 8192) {
+        for (size_t i = 0; i < size; i++)
+        {
+            if (i > 0 && i % 16 == 0) logprintf("\n");
+            uint8_t tmp[32];
+            sprintf(tmp, "%02x ", ((uint8_t*)mem)[i]);
+            logprintf(tmp);
+            
+        }
+        logprintf("\n");
+    }
+    total += size;
+#endif
     return size;
 }
 
@@ -178,7 +193,7 @@ void mixer_th(void *arg)
 		continue;
         }
         result = stream_block_reader(server->channel_->getStream(), buf, server->blocksize_);
-	server->playing = (bool)result;
+        server->playing = (bool)result;
         server->driver_->driver_write_block(server->device_, buf);
     }
 }
