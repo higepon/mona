@@ -54,6 +54,7 @@ install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 	$(INSTALL) -p ./servers/audio.h $(INCDIR)/servers
+	(cd happy && make && make install)
 	(cd api && make && make install)
 	(cd client && make && make install)
 
