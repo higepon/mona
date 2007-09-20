@@ -277,7 +277,7 @@
   (call-process "/APPS/ACLI.EX5"))
 
 (define (hp)
-  (call-process "/APPS/HAPPY.EX5"))
+  (call-process "/APPS/HAPPY.EX5 /APPS/B.OGG /APPS/A.OGG"))
 
 
 (define (wget)
