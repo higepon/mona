@@ -15,5 +15,5 @@
 (define *fs-current-directory* *fs-root-directory*)
 
 <IF_MONA>(as2)
-
+;<IF_MONA>(hp)
 
