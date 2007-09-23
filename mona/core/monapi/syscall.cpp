@@ -34,12 +34,23 @@ int kill_timer(uint32_t id)
     return syscall_kill_timer(id);
 }
 
+#define PRINT_BUFFER_SIZE 128
 int print(const char* msg, int direct)
 {
+    int len = strlen(msg);
     if (direct == 1)
     {
-        char buf[128];
-        memcpy(buf, msg, strlen(msg) + 1);
+        char buf[PRINT_BUFFER_SIZE];
+        if (len >= PRINT_BUFFER_SIZE)
+        {
+            memcpy(buf, msg, PRINT_BUFFER_SIZE - 1);
+            buf[PRINT_BUFFER_SIZE - 1] = '\0';
+            syscall_print("print overflow direct==1");
+        }
+        else
+        {
+            memcpy(buf, msg, len + 1);
+        }
         syscall_print(buf);
     }
     else if (direct == 0)
@@ -48,8 +59,17 @@ int print(const char* msg, int direct)
     }
     else if (direct == 2)
     {
-        char buf[128];
-        memcpy(buf, msg, strlen(msg) + 1);
+        char buf[PRINT_BUFFER_SIZE];
+        if (len >= PRINT_BUFFER_SIZE)
+        {
+            memcpy(buf, msg, PRINT_BUFFER_SIZE - 1);
+            buf[PRINT_BUFFER_SIZE - 1] = '\0';
+            syscall_print("print overflow direct==2");
+        }
+        else
+        {
+            memcpy(buf, msg, len + 1);
+        }
         syscall_log_print(buf);
     }
     return 0;

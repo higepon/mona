@@ -1,3 +1,8 @@
+2007-09-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/syscall.cpp (print): Fixed buffer size bug.
+                                           Thanks for http://d.hatena.ne.jp/h0shu/20070920/p7.
+
 2007-09-23  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/BoehmGC/gc-7.0.mona.diff: Fixed compile error on cygwin.
