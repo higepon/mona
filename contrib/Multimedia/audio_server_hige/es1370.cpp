@@ -1,6 +1,7 @@
 #include "es1370.h"
 #include "circular_buffer.h"
 #include <stdlib.h>
+#include <string.h>
 #include <pci/Pci.h>
 #include <monapi/io.h>
 #include <monapi/Thread.h>
@@ -177,11 +178,14 @@ error_t es1370_start(handle_t o)
 {
 	puts(__func__);
 	struct es1370_driver *d = (struct es1370_driver*)o;
+    char* zerobuf = new char[d->bufsize];
+    memset(zerobuf, 0, d->bufsize);
+	cb_write(d->cb, zerobuf, 0);
+
 	if( es1370_buffer_setter(d) != OK )
 	{
 		return NG;
 	}
-
 	es1370_start_playback(d);
 	d->state = RUNNING;
 	return OK;
@@ -221,7 +225,6 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 //	result = d->callback(d->ref, buf, d->bufsize, &wrote);
 	result = cb_read(d->cb, buf);
-
 #if 0
     if (count > 1) {
         for (size_t i = 0; i < 4096; i++)

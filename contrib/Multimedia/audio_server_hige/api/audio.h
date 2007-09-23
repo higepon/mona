@@ -15,6 +15,7 @@ public:
 	int setVolume(int volume);
 	int getVolume();
 	int wait();
+	int setFonrmat(struct audio_data_format* format);
 	size_t write(void *buffer, size_t size);
 	size_t read(void *buffer, size_t size);
 private:

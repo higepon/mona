@@ -17,16 +17,17 @@ Audio::Audio(struct audio_data_format *format, int direction)
 {
     MessageInfo msg;
     char buf[128];
-    memcpy(&format_, format, sizeof(struct audio_data_format));
+//    memcpy(&format_, format, sizeof(struct audio_data_format));
     if( server_id == THREAD_UNKNOWN )
     {
         server_id = find_audio_server();
     }
     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_CREATE_CHANNEL, direction_);
     channel_ = msg.arg2;
-    memcpy(buf, &format_, sizeof(struct audio_data_format));
-    MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_FORMAT,
-                            channel_, 0, 0, buf);
+    setFonrmat(format);
+//     memcpy(buf, &format_, sizeof(struct audio_data_format));
+//     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_FORMAT,
+//                             channel_, 0, 0, buf);
     stream_ = new MonAPI::Stream;
     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_STREAM,
                         (uint32_t)channel_,
@@ -41,10 +42,28 @@ Audio::~Audio()
     delete stream_;
 }
 
+int Audio::setFonrmat(struct audio_data_format *format)
+{
+    MessageInfo msg;
+    char buf[128];
+    memcpy(&format_, format, sizeof(struct audio_data_format));
+    if( server_id == THREAD_UNKNOWN )
+    {
+        server_id = find_audio_server();
+    }
+    memcpy(buf, &format_, sizeof(struct audio_data_format));
+    MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_FORMAT,
+                            channel_, 0, 0, buf);
+    return msg.arg2;
+}
+
 int Audio::start()
 {
     MessageInfo msg;
-    MonAPI::Message::sendReceive(&msg,server_id, MSG_AUDIO_START, channel_);
+    if (MonAPI::Message::sendReceive(&msg,server_id, MSG_AUDIO_START, channel_) != 0)
+    {
+        return -1;
+    }
     return msg.arg2;
 }
 
