@@ -1,7 +1,26 @@
+diff -ur gc-7.0.org/finalize.c gc-7.0/finalize.c
+--- gc-7.0.org/finalize.c	2007-06-29 09:59:24.000000000 +0900
++++ gc-7.0/finalize.c	2007-09-23 23:47:59.000000000 +0900
+@@ -532,7 +532,7 @@
+ 	    GC_MARKED_FOR_FINALIZATION(real_ptr);
+             GC_MARK_FO(real_ptr, curr_fo -> fo_mark_proc);
+             if (GC_is_marked(real_ptr)) {
+-                WARN("Finalization cycle involving %lx\n", real_ptr);
++              //                WARN("Finalization cycle involving %lx\n", real_ptr);
+             }
+         }
+       }
 diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
 --- gc-7.0.org/include/private/gcconfig.h	2007-06-29 09:00:09.000000000 +0900
-+++ gc-7.0/include/private/gcconfig.h	2007-09-17 00:45:52.000000000 +0900
-@@ -402,7 +402,9 @@
++++ gc-7.0/include/private/gcconfig.h	2007-09-23 23:48:00.000000000 +0900
+@@ -397,12 +397,16 @@
+ # endif
+ # if defined(__CYGWIN32__) || defined(__CYGWIN__)
+ #   define I386
++# if !defined(MONA)
+ #   define CYGWIN32
++# endif
+ #   define mach_type_known
  # endif
  # if defined(__MINGW32__)
  #   define I386
@@ -11,7 +30,7 @@ diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
  #   define mach_type_known
  # endif
  # if defined(__BORLANDC__)
-@@ -2303,6 +2305,11 @@
+@@ -2303,6 +2307,11 @@
  #   define GET_MEM(bytes) HBLKPTR((ptr_t)os2_alloc((size_t)bytes \
  					    + GC_page_size) \
  					    + GC_page_size-1)
@@ -23,9 +42,12 @@ diff -ur gc-7.0.org/include/private/gcconfig.h gc-7.0/include/private/gcconfig.h
  # elif defined(NEXT) || defined(DOS4GW) || defined(NONSTOP) || \
  		 (defined(AMIGA) && !defined(GC_AMIGA_FASTALLOC)) || \
  		 (defined(SOLARIS) && !defined(USE_MMAP))
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops.o
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_malloc.o
+gc-7.0.org/libatomic_ops-1.2/srcだけに発見: atomic_ops_stack.o
 diff -ur gc-7.0.org/mallocx.c gc-7.0/mallocx.c
 --- gc-7.0.org/mallocx.c	2007-07-03 06:37:00.000000000 +0900
-+++ gc-7.0/mallocx.c	2007-09-17 00:47:29.000000000 +0900
++++ gc-7.0/mallocx.c	2007-09-23 23:47:59.000000000 +0900
 @@ -66,6 +66,20 @@
  /* lb bytes.  The object may be (and quite likely will be) moved.     */
  /* The kind (e.g. atomic) is the same as that of the old.	      */
@@ -57,7 +79,7 @@ diff -ur gc-7.0.org/mallocx.c gc-7.0/mallocx.c
  #   define REDIRECT_REALLOC GC_realloc
 diff -ur gc-7.0.org/misc.c gc-7.0/misc.c
 --- gc-7.0.org/misc.c	2007-06-29 03:14:55.000000000 +0900
-+++ gc-7.0/misc.c	2007-09-17 00:45:52.000000000 +0900
++++ gc-7.0/misc.c	2007-09-23 23:47:59.000000000 +0900
 @@ -904,7 +904,7 @@
  #endif
  
@@ -80,7 +102,7 @@ diff -ur gc-7.0.org/misc.c gc-7.0/misc.c
  #   endif
 diff -ur gc-7.0.org/os_dep.c gc-7.0/os_dep.c
 --- gc-7.0.org/os_dep.c	2007-06-30 04:17:44.000000000 +0900
-+++ gc-7.0/os_dep.c	2007-09-17 00:45:52.000000000 +0900
++++ gc-7.0/os_dep.c	2007-09-23 23:47:59.000000000 +0900
 @@ -49,7 +49,7 @@
  #   endif
  # endif

@@ -1,3 +1,8 @@
+2007-09-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/BoehmGC/gc-7.0.mona.diff: Fixed compile error on cygwin.
+                                                Thanks for http://d.hatena.ne.jp/h0shu/20070920/p7.
+
 2007-09-20  .mjt
 
         * core/scheme/Makefile.mona (ADDCFLAGS): Fixed compile error on cygwin.
