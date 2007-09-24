@@ -17,6 +17,7 @@ call("fat_write $g_out AUTOEXEC.MSH AUTOEXEC.MSH");
 call("fat_write $g_out --mkdir APPS");
 call("fat_write $g_out --mkdir LIBS");
 call("fat_write $g_out --mkdir LIBS/SCHEME");
+call("fat_write $g_out --mkdir MUSIC");
 
 writedir("");
 
