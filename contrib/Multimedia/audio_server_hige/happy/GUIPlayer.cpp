@@ -30,7 +30,7 @@ GUIPlayer::~GUIPlayer()
 
 void GUIPlayer::initComponents()
 {
-    setBounds(30, 50, 200, 600);
+    setBounds(20, 20, 140, 80);
     setTitle("happy!!");
 
     forwardButton  = new Button("forward");
