@@ -70,11 +70,7 @@ public:
 	}
 };
 
-#if defined(MONA)
 int main(int argc, char* argv[]) {
-#else
-int main(int argc, char** argv) {
-#endif
 	Mtorz *mtorz = new Mtorz();
 	mtorz->run();
 	delete(mtorz);

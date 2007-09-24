@@ -24,7 +24,7 @@ Audio::Audio(struct audio_data_format *format, int direction)
     }
     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_CREATE_CHANNEL, direction_);
     channel_ = msg.arg2;
-    setFonrmat(format);
+    setFormat(format);
 //     memcpy(buf, &format_, sizeof(struct audio_data_format));
 //     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_FORMAT,
 //                             channel_, 0, 0, buf);
@@ -42,7 +42,7 @@ Audio::~Audio()
     delete stream_;
 }
 
-int Audio::setFonrmat(struct audio_data_format *format)
+int Audio::setFormat(struct audio_data_format *format)
 {
     MessageInfo msg;
     char buf[128];

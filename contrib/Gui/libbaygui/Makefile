@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 LIB_STATIC   = libbaygui.a
 TARGET       = $(LIB_STATIC)
 

@@ -1,3 +1,7 @@
+2007-09-24  higepon  <higepon@users.sourceforge.jp>
+
+        * Games/mtorz/mtorz.cpp (main): Removed MonaMain.
+
 2007-09-12  higepon  <higepon@users.sourceforge.jp>
 
         * Multimedia/audio_server2/audio_server.cpp (stream_block_reader): Added stream->waitForRead().

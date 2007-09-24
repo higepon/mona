@@ -3,7 +3,7 @@ export MONADIR=$(shell cd $(PWD)/../../../../mona; pwd)
 endif
 
 TARGET  = HAPPY
-SOURCES = main.cpp
+SOURCES = happy.cpp CUIPlayer.cpp GUIPlayer.cpp
 
 TREMOR_DIR = Tremor-r13614
 TREMOR_SOURCES = \
@@ -24,13 +24,13 @@ $(TREMOR_DIR)/vorbisfile.c      \
 $(TREMOR_DIR)/window.c
 TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o) _divdi3.o
 
-INSTDIR = $(BINDIR)/APPS/
+INSTDIR = $(BINDIR)/MUSIC/
 INSTFILES = A.OGG C.OGG D.OGG
 CLEANFILES = $(TREMOR_SOURCES:.c=.o)
 $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    = $(TREMOR_OBJECTS) -lmonalibc-imp -laudioapi-imp
+ADDLINK    = $(TREMOR_OBJECTS) -lmonalibc-imp -laudioapi-imp -lbaygui-imp
 ADDLINKDEP = $(TREMOR_OBJECTS)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
