@@ -1,5 +1,6 @@
 (define (on-gui-start)
   (print "Hello!")
+  (hp)
 ;;   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/SAKEBI.JPG 50 50")
 ;;   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
 ;;   (mona-sleep 500)
