@@ -1,5 +1,11 @@
 2007-09-24  higepon  <higepon@users.sourceforge.jp>
 
+        * include/monalibc/stdio.h : Added snprintf macro.
+
+        * include/monapi/syscall.h : Added #ifdef DEBUG for MONAPI_WARN.
+
+        * core/kernel/Scheduler.cpp (Scheduler::LookupMainThread): Apply THREAD_UNKNOWN constant.
+
         * core/monapi/syscall.cpp (print): Fixed buffer size bug.
                                            Thanks for http://d.hatena.ne.jp/h0shu/20070920/p7.
 

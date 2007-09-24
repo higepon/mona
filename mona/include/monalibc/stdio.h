@@ -158,6 +158,10 @@ int	 printf(const char *, ...); //stub
 /*int	 scanf(const char *, ...); //stub */
 /*int	 snprintf(char *, size_t, char *, ...); //stub */
 int sprintf(char *str, const char *format, ...);
+
+/* fix me */
+#define snprintf(a, b, ...) sprintf(a, __VA_ARGS__)
+
 int sscanf(const char *str, const char *format, ...);
 int vfprintf(FILE *stream, const char *format, va_list ap);
 /*int vfscanf(FILE *, const char *, va_list); //stub */

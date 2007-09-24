@@ -322,7 +322,7 @@ Process* Scheduler::FindProcess(uint32_t pid)
 uint32_t Scheduler::LookupMainThread(Process* process)
 {
     List<Thread*>* list = process->getThreadList();
-    uint32_t found = 0xFFFFFFFF;
+    uint32_t found = THREAD_UNKNOWN;
 
     for (int i = 0; i < list->size(); i++)
     {
@@ -342,7 +342,7 @@ uint32_t Scheduler::LookupMainThread(const char* name)
 
     if (process == NULL)
     {
-        return 0xFFFFFFFF;
+        return THREAD_UNKNOWN;
     }
 
     return LookupMainThread(process);
