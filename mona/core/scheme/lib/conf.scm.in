@@ -280,7 +280,7 @@
   (call-process "/MUSIC/HAPPY.EX5 /APPS/C.OGG /APPS/A.OGG"))
 
 (define (hp)
-  (call-process "/MUSIC/HAPPY.EX5 -d /APPS"))
+  (call-process "/MUSIC/HAPPY.EX5 -d /MUSIC"))
 
 (define (bp)
   (call-process "/APPS/BAYGUI/BPLAYER.APP/BPLAYER.EX5"))
