@@ -17,7 +17,7 @@ call("fat_write $g_out AUTOEXEC.MSH AUTOEXEC.MSH");
 call("fat_write $g_out --mkdir APPS");
 call("fat_write $g_out --mkdir LIBS");
 call("fat_write $g_out --mkdir LIBS/SCHEME");
-call("fat_write $g_out --mkdir MUSIC");
+#call("fat_write $g_out --mkdir MUSIC");
 
 writedir("");
 
@@ -46,7 +46,7 @@ sub writedir {
     }
     foreach my $d (@files) {
         next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
-        next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS');
+        next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS' || "$dir$d" eq 'MUSIC');
         call("fat_write $g_out --mkdir $dir$d");
         writedir("$dir$d");
     }
