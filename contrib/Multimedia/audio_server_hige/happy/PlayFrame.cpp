@@ -41,8 +41,9 @@ void PlayFrame::repaint()
     __g->setColor(0xff, 0xff, 0xff);
     __g->fillRect(0, 0, w, h);
 
-#define BORDER_COLOR Color::red
+#define BORDER_COLOR Color::gray
 #define BORDER_COLOR2 Color::blue
+#define TRANSPARENCE 0
 
 #if 0
     __g->drawPixel(0, 0, BORDER_COLOR);
@@ -62,6 +63,7 @@ void PlayFrame::repaint()
     __g->drawPixel(w - 1, h - 2, BORDER_COLOR);
 #endif
 
+#if 0
     __g->setColor(BORDER_COLOR2);
     __g->drawLine(1, 0, w - 2, 0);
     __g->drawLine(1, h - 1, w - 2, h - 1);
@@ -73,7 +75,59 @@ void PlayFrame::repaint()
     __g->drawPixel(0, 4, BORDER_COLOR);
     __g->drawLine(1, 1, 1, 3);
     __g->drawLine(1, 1, 3, 1);
+#endif
 
+
+// 	    □□□□□□■
+// 	    □□□□■■□
+// 	    □□■■□□□
+// 	    □□■□□□□
+// 	    □■□□□□□
+// 	    □■□□□□□
+// 	    ■□□□□□□
+
+    // top-left curve
+    __g->drawPixel(0, 6, BORDER_COLOR);
+    __g->drawPixel(1, 5, BORDER_COLOR);
+    __g->drawPixel(1, 4, BORDER_COLOR);
+    __g->drawPixel(2, 3, BORDER_COLOR);
+    __g->drawPixel(2, 2, BORDER_COLOR);
+    __g->drawPixel(3, 2, BORDER_COLOR);
+    __g->drawPixel(4, 1, BORDER_COLOR);
+    __g->drawPixel(5, 1, BORDER_COLOR);
+    __g->drawPixel(6, 0, BORDER_COLOR);
+    __g->setColor(TRANSPARENCE);
+    __g->drawLine(0, 0, 5, 0);
+    __g->drawLine(0, 1, 3, 1);
+    __g->drawLine(0, 2, 1, 2);
+    __g->drawLine(0, 3, 1, 3);
+    __g->drawLine(0, 4, 0, 5);
+
+
+	// 	    ■□□□□□□
+	// 	    □■□□□□□
+	// 	    □■□□□□□
+	// 	    □□■□□□□
+	// 	    □□■■□□□
+	// 	    □□□□■■□
+	// 	    □□□□□□■
+		
+    // bottom-left curve
+    __g->drawPixel(6, h - 1, BORDER_COLOR);
+    __g->drawPixel(5, h - 2, BORDER_COLOR);
+    __g->drawPixel(4, h - 2, BORDER_COLOR);
+    __g->drawPixel(3, h - 3, BORDER_COLOR);
+    __g->drawPixel(2, h - 3, BORDER_COLOR);
+    __g->drawPixel(2, h - 4, BORDER_COLOR);
+    __g->drawPixel(1, h - 5, BORDER_COLOR);
+    __g->drawPixel(1, h - 6, BORDER_COLOR);
+    __g->drawPixel(0, h - 7, BORDER_COLOR);
+    __g->setColor(TRANSPARENCE);
+    __g->drawLine(0, h - 1, 5, h - 1);
+    __g->drawLine(0, h - 2, 3, h - 2);
+    __g->drawLine(0, h - 3, 1, h - 3);
+    __g->drawLine(0, h - 4, 1, h - 4);
+    __g->drawLine(0, h - 5, 0, h - 6);
 
 
 
