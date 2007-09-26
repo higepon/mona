@@ -3,7 +3,7 @@ export MONADIR=$(shell cd $(PWD)/../../../../mona; pwd)
 endif
 
 TARGET  = HAPPY
-SOURCES = happy.cpp CUIPlayer.cpp GUIPlayer.cpp
+SOURCES = happy.cpp CUIPlayer.cpp GUIPlayer.cpp PlayFrame.cpp
 
 TREMOR_DIR = Tremor-r13614
 TREMOR_SOURCES = \

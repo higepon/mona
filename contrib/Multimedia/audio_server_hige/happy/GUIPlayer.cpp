@@ -11,7 +11,7 @@ static void __fastcall wrapperPlayLoop(void* p)
 }
 
 // GUIPlayer
-GUIPlayer::GUIPlayer() : command(COMMAND_NONE)
+GUIPlayer::GUIPlayer() : PlayFrame(NULL), command(COMMAND_NONE)
 {
     initComponents();
     tid = mthread_create_with_arg(wrapperPlayLoop, this);
@@ -30,8 +30,8 @@ GUIPlayer::~GUIPlayer()
 
 void GUIPlayer::initComponents()
 {
-    setBounds(20, 20, 140, 80);
-    setTitle("happy!!");
+    setBounds(20, 20, 250, 375);
+//    setTitle("happy!!");
 
     forwardButton  = new Button("forward");
     backwardButton = new Button("back");

@@ -16,10 +16,11 @@
 #include <dirent.h>
 #include <ivorbisfile.h>
 #include <monapi.h>
+#include "PlayFrame.h"
 
 typedef std::vector<std::string> strings;
 
-class GUIPlayer : public Frame
+class GUIPlayer : public PlayFrame
 {
 private:
     Audio* audio;
