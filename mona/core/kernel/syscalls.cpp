@@ -80,6 +80,7 @@ static uint32_t systemcall_mutex_unlock2(uint32_t id)
     return ((KMutex*)object)->unlock();
 }
 
+
 void syscall_entrance()
 {
     ScreenInfo* screenInfo;
@@ -201,11 +202,48 @@ void syscall_entrance()
             info->eax = systemcall_mutex_create();
         }
         break;
+    case SYSTEM_CALL_SEMAPHORE_CREATE:
+        if (SYSTEM_CALL_ARG_1 == 0) {
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread);
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::USER_SEMAPHORE)
+            {
+                info->eax = (uint32_t)-10;
+            }
+            else
+            {
+                UserSemaphore* semaphore = (UserSemaphore*)object;
+                semaphore->addRef();
+                info->eax = SYSTEM_CALL_ARG_2;
+            }
+        } else {
+            UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
+            info->eax = g_id->allocateID(semaphore);
+        }
+        break;
+
 
     case SYSTEM_CALL_MUTEX_LOCK:
         info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1);
         break;
 
+    case SYSTEM_CALL_SEMAPHORE_DOWN:
+    {
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        if (object == NULL)
+        {
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::USER_SEMAPHORE)
+        {
+            info->eax =  (uint32_t)-10;
+        }
+        info->eax = ((UserSemaphore*)object)->down(g_currentThread->thread);
+        break;
+    }
     case SYSTEM_CALL_MUTEX_TRYLOCK:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
@@ -225,10 +263,45 @@ void syscall_entrance()
         }
         break;
     }
+    case SYSTEM_CALL_SEMAPHORE_TRYDOWN:
+    {
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+
+        if (object == NULL)
+        {
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::USER_SEMAPHORE)
+        {
+            info->eax = (uint32_t)-10;
+        }
+        else
+        {
+            info->eax = ((UserSemaphore*)object)->tryDown(g_currentThread->thread);
+        }
+        break;
+    }
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
 
         info->eax = systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1);
+        break;
+
+    case SYSTEM_CALL_SEMAPHORE_UP:
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+
+        if (object == NULL)
+        {
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::USER_SEMAPHORE)
+        {
+            info->eax = (uint32_t)-10;
+        }
+        else
+        {
+            info->eax = ((UserSemaphore*)object)->up();
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_DESTROY:
@@ -247,6 +320,28 @@ void syscall_entrance()
         else
         {
             KMutex* mutex = (KMutex*)object;
+            mutex->releaseRef();
+            info->eax = 0;
+        }
+        break;
+    }
+
+    case SYSTEM_CALL_SEMAPHORE_DESTROY:
+
+    {
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+
+        if (object == NULL)
+        {
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::USER_SEMAPHORE)
+        {
+            info->eax = (uint32_t)-10;
+        }
+        else
+        {
+            UserSemaphore* mutex = (UserSemaphore*)object;
             mutex->releaseRef();
             info->eax = 0;
         }

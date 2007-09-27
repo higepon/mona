@@ -15,6 +15,7 @@ typedef struct _circular_buffer
 	int ei;
 	char *p;
 	int mutex;
+    int semaphore;
 } CB;
 
 int cb_index_inc(int x, int limit);

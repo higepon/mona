@@ -21,6 +21,7 @@
 #include "Segments.h"
 #include "kernel.h"
 #include "Mutex.h"
+#include "UserSemaphore.h"
 #include "KObject.h"
 #include "Thread.h"
 #include "MemoryAllocator.h"

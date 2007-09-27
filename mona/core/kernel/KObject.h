@@ -26,10 +26,14 @@ private:
 
 public:
     uint32_t id;
-    static const int KOBJECT;
-    static const int THREAD;
-    static const int KMUTEX;
-    static const int KTIMER;
+    enum
+    {
+        KOBJECT,
+        THREAD,
+        KMUTEX,
+        USER_SEMAPHORE,
+        KTIMER
+    };
 };
 
 #endif

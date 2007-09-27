@@ -14,6 +14,7 @@ public:
         TIMER_MESSAGE    = 19,
         MESSAGE          = 22,
         MUTEX_UNLOCKED   = 27,
+        SEMAPHORE_UPPED  = 28,
         INTERRUPT_HIGH   = 0,
         INTERRUPT_MIDDLE = 7,
         INTERRUPT_LOW    = 17

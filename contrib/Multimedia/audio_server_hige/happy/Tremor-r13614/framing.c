@@ -48,38 +48,24 @@ static ogg_buffer_state *ogg_buffer_create(void){
 static void _ogg_buffer_destroy(ogg_buffer_state *bs){
   ogg_buffer *bt;
   ogg_reference *rt;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(bs->shutdown){
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     bt=bs->unused_buffers;
     rt=bs->unused_references;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     while(bt){
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       ogg_buffer *b=bt;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       bt=b->ptr.next;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       if(b->data)_ogg_free(b->data);
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       _ogg_free(b);
     }
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     bs->unused_buffers=0;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     while(rt){
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       ogg_reference *r=rt;
       rt=r->next;
       _ogg_free(r);
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     bs->unused_references=0;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(!bs->outstanding)
       _ogg_free(bs);
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }
 }
 
@@ -287,32 +273,19 @@ static ogg_reference *ogg_buffer_split(ogg_reference **tail,
 }
 
 static void ogg_buffer_release_one(ogg_reference *or){
-  logprintf("%s %s:%d or=%x\n", __func__, __FILE__, __LINE__, or);fflush(stdout);// debug
-  logprintf("%s %s:%d or->buffer%x\n", __func__, __FILE__, __LINE__, or->buffer);fflush(stdout);// debug
   ogg_buffer *ob=or->buffer;
-  logprintf("%s %s:%d ob->ptr=%x\n", __func__, __FILE__, __LINE__, ob->ptr);fflush(stdout);// debug
-  logprintf("%s %s:%d ob->ptr.owner=%x\n", __func__, __FILE__, __LINE__, ob->ptr.owner);fflush(stdout);// debug
   ogg_buffer_state *bs=ob->ptr.owner;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ob->refcount--;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(ob->refcount==0){
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     bs->outstanding--; /* for the returned buffer */
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ob->ptr.next=bs->unused_buffers;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     bs->unused_buffers=ob;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }
   
   bs->outstanding--; /* for the returned reference */
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   or->next=bs->unused_references;
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   bs->unused_references=or;
 
-logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   _ogg_buffer_destroy(bs); /* lazy cleanup (if needed) */
 
 }
@@ -321,13 +294,9 @@ logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
    they point, release any buffers with a refcount that drops to zero */
 static void ogg_buffer_release(ogg_reference *or){
   while(or){
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_reference *next=or->next;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_buffer_release_one(or);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     or=next;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }
 }
 
@@ -1128,12 +1097,9 @@ int ogg_stream_packetpeek(ogg_stream_state *os,ogg_packet *op){
 
 int ogg_packet_release(ogg_packet *op) {
   if(op){
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_buffer_release(op->packet);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     memset(op, 0, sizeof(*op));
   }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   return OGG_SUCCESS;
 }
 

@@ -449,6 +449,41 @@ int syscall_mutex_destroy(int id)
     return result;
 }
 
+int syscall_semaphore_create(uint32_t n, uint32_t handle)
+{
+    int result;
+    SYSCALL_2(SYSTEM_CALL_SEMAPHORE_CREATE, result, n, handle);
+    return result;
+}
+
+int syscall_semaphore_trydown(int id)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_TRYDOWN, result, id);
+    return result;
+}
+
+int syscall_semaphore_down (int id )
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_DOWN, result, id);
+    return result;
+}
+
+int syscall_semaphore_up(int id)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_UP, result, id);
+    return result;
+}
+
+int syscall_semaphore_destroy(int id)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_DESTROY, result, id);
+    return result;
+}
+
 uint32_t syscall_lookup(const char* name)
 {
     uint32_t pid;

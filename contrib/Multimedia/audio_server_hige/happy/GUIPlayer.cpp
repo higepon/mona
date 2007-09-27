@@ -82,10 +82,27 @@ void GUIPlayer::playLoop()
         delete audio;
     }
 
+    songLabels = new Label*[oggFiles.size()];
+    for (int i = 0; i < oggFiles.size(); i++)
+    {
+        Label* label = new Label(oggFiles[i].data());
+        label->setBounds(0, 20 * i + 50, 100, 20);
+        add(label);
+        labelsMap.insert(pair<string, Label*>(oggFiles[i], label));
+        songLabels[i] = label;
+    }
+
     int playingIndex = 0;
     for (;;)
     {
         string oggFile = oggFiles[playingIndex];
+        LabelsMap::iterator it = labelsMap.find(oggFile);
+        if (it != labelsMap.end())
+        {
+            (*it).second->setBackground(baygui::Color::blue);
+            (*it).second->setForeground(baygui::Color::white);
+            (*it).second->repaint();
+        }
         FILE* fp = fopen(oggFile.data(), "rb");
         if (NULL == fp)
         {
@@ -151,6 +168,12 @@ void GUIPlayer::playLoop()
             }
         }
     replay:
+        if (it != labelsMap.end())
+        {
+            (*it).second->setBackground(baygui::Color::white);
+            (*it).second->setForeground(baygui::Color::black);
+        }
+        (*it).second->repaint();
         fclose(fp);
         playingIndex++;
         if (playingIndex >= oggFiles.size()) playingIndex = 0;

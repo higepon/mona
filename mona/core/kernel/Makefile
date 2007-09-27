@@ -32,6 +32,7 @@ SOURCES      = cstart.cpp            \
                MemoryManager.cpp     \
                Segments.cpp          \
                Mutex.cpp             \
+               UserSemaphore.cpp     \
                VesaConsole.cpp       \
                LogConsole.cpp        \
                IDManager.cpp         \

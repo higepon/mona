@@ -1,3 +1,11 @@
+2007-09-28  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/UserSemaphore.cpp Added Semaphore, not tested yet!.
+
+2007-09-27  higepon  <higepon@users.sourceforge.jp>
+
+        * include/sys/MEvent.h (class MEvent): Added SEMAPHORE_UPPED.
+
 2007-09-24  higepon  <higepon@users.sourceforge.jp>
 
         * include/monalibc/stdio.h : Added snprintf macro.

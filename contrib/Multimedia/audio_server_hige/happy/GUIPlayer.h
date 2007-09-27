@@ -5,6 +5,7 @@
 #include <audio.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <limits.h>
 #include <monapi/messages.h>
 #include <servers/audio.h>
@@ -18,17 +19,20 @@
 #include <monapi.h>
 #include "PlayFrame.h"
 
-typedef std::vector<std::string> strings;
-
 class GUIPlayer : public PlayFrame
 {
 private:
+    typedef std::vector<std::string> strings;
+    typedef std::map<std::string, Label*> LabelsMap;
+
     Audio* audio;
     Button* forwardButton;
     Button* backwardButton;
     Label* statusLabel;
+    Label** songLabels;
     int command;
     uint32_t tid;
+    LabelsMap labelsMap;
 
     enum
     {

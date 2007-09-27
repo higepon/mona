@@ -240,78 +240,50 @@ static int _fetch_headers(OggVorbis_File *vf,
   ogg_page og={0,0,0,0};
   ogg_packet op={0,0,0,0,0,0};
   int i,ret;
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(!og_ptr){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_int64_t llret=_get_next_page(vf,&og,CHUNKSIZE);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(llret==OV_EREAD)return(OV_EREAD);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(llret<0)return OV_ENOTVORBIS;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     og_ptr=&og;
   }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ogg_stream_reset_serialno(vf->os,ogg_page_serialno(og_ptr));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(serialno)*serialno=vf->os->serialno;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->ready_state=STREAMSET;
   
   /* extract the initial header from the first page and verify that the
      Ogg bitstream is in fact Vorbis data */
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vorbis_info_init(vi);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vorbis_comment_init(vc);
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   i=0;
   while(i<3){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_stream_pagein(vf->os,og_ptr);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     while(i<3){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       int result=ogg_stream_packetout(vf->os,&op);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       if(result==0)break;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       if(result==-1){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	ret=OV_EBADHEADER;
 	goto bail_header;
       }
       if((ret=vorbis_synthesis_headerin(vi,vc,&op))){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	goto bail_header;
       }
       i++;
     }
     if(i<3)
       if(_get_next_page(vf,og_ptr,CHUNKSIZE)<0){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	ret=OV_EBADHEADER;
 	goto bail_header;
       }
   }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ogg_packet_release(&op);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ogg_page_release(&og);
   return 0; 
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
  bail_header:
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ogg_packet_release(&op);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   ogg_page_release(&og);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vorbis_info_clear(vi);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vorbis_comment_clear(vc);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->ready_state=OPENED;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   return ret;
 }
 
@@ -684,83 +656,54 @@ static int _fseek64_wrap(FILE *f,ogg_int64_t off,int whence){
 
 static int _ov_open1(void *f,OggVorbis_File *vf,char *initial,
 		     long ibytes, ov_callbacks callbacks){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   int offsettest=(f?callbacks.seek_func(f,0,SEEK_CUR):-1);
   int ret;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   memset(vf,0,sizeof(*vf));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->datasource=f;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->callbacks = callbacks;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 
   /* init the framing state */
   vf->oy=ogg_sync_create();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   /* perhaps some data was previously read into a buffer for testing
      against other stream types.  Allow initialization from this
      previously read data (as we may be reading from a non-seekable
      stream) */
   if(initial){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     unsigned char *buffer=ogg_sync_bufferin(vf->oy,ibytes);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     memcpy(buffer,initial,ibytes);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_sync_wrote(vf->oy,ibytes);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }
 
   /* can we seek? Stevens suggests the seek test was portable */
   if(offsettest!=-1)vf->seekable=1;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   /* No seeking yet; Set up a 'single' (current) logical bitstream
      entry for partial open */
   vf->links=1;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->vi=_ogg_calloc(vf->links,sizeof(*vf->vi));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->vc=_ogg_calloc(vf->links,sizeof(*vf->vc));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   vf->os=ogg_stream_create(-1); /* fill in the serialno later */
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 
-    logprintf("vf=%x\n", vf);
-    logprintf("vf->vi=%x\n", vf->vi);
-    logprintf("vf->vc=%x\n", vf->vc);
-    logprintf("vf->current_serialno=%x\n", vf->current_serialno);
 
   /* Try to fetch the headers, maintaining all the storage */
   if((ret=_fetch_headers(vf,vf->vi,vf->vc,&vf->current_serialno,NULL))<0){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     vf->datasource=NULL;
     ov_clear(vf);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }else if(vf->ready_state < PARTOPEN) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     vf->ready_state=PARTOPEN;
   }
 
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   return(ret);
 }
 
 static int _ov_open2(OggVorbis_File *vf){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(vf->ready_state < OPENED)
     vf->ready_state=OPENED;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(vf->seekable){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     int ret=_open_seekable2(vf);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(ret){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       vf->datasource=NULL;
       ov_clear(vf);
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return(ret);
   }
   return 0;
@@ -771,43 +714,26 @@ static int _ov_open2(OggVorbis_File *vf){
 int ov_clear(OggVorbis_File *vf){
 
   if(vf){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     vorbis_block_clear(&vf->vb);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     vorbis_dsp_clear(&vf->vd);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_stream_destroy(vf->os);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(vf->vi && vf->links){
       int i;
-      printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       for(i=0;i<vf->links;i++){
-          printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	vorbis_info_clear(vf->vi+i);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 	vorbis_comment_clear(vf->vc+i);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       }
       _ogg_free(vf->vi);
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
       _ogg_free(vf->vc);
-      logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
     if(vf->dataoffsets)_ogg_free(vf->dataoffsets);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(vf->pcmlengths)_ogg_free(vf->pcmlengths);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 
     if(vf->serialnos)_ogg_free(vf->serialnos);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(vf->offsets)_ogg_free(vf->offsets);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ogg_sync_destroy(vf->oy);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if(vf->datasource)(vf->callbacks.close_func)(vf->datasource);
-    logprintf("%s %s:%d %d %d\n", __func__, __FILE__, __LINE__, sizeof(*vf), sizeof(OggVorbis_File));fflush(stdout);// debug
     memset(vf,0,sizeof(*vf));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   }
 #ifdef DEBUG_LEAKS
   _VDBG_dump();
@@ -825,11 +751,8 @@ int ov_clear(OggVorbis_File *vf){
 
 int ov_open_callbacks(void *f,OggVorbis_File *vf,char *initial,long ibytes,
     ov_callbacks callbacks){
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   int ret=_ov_open1(f,vf,initial,ibytes,callbacks);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   if(ret)return ret;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
   return _ov_open2(vf);
 }
 

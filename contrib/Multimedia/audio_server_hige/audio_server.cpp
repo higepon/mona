@@ -189,8 +189,8 @@ void mixer_th(void *arg)
     {
         if( server->channel_ == NULL )
         {
-		server->driver_->driver_write_block(server->device_, zerobuf);
-		continue;
+            server->driver_->driver_write_block(server->device_, zerobuf);
+            continue;
         }
         result = stream_block_reader(server->channel_->getStream(), buf, server->blocksize_);
         server->playing = (bool)result;
