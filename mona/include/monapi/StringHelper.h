@@ -75,6 +75,25 @@ public:
         return result;
     }
 
+    static std::string basename(const std::string& path)
+    {
+        Strings paths = StringHelper::split("/", path);
+        if (paths.size() == 0)
+        {
+            return path;
+        }
+        std::string filename = paths[paths.size() - 1];
+        unsigned int found = filename.find(".");
+        if (found == std::string::npos)
+        {
+            return filename;
+        }
+        else
+        {
+            return filename.substr(0, found);
+        }
+    }
+
 private:
     StringHelper() {}
     virtual ~StringHelper() {}

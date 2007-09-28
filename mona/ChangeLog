@@ -1,5 +1,7 @@
 2007-09-28  higepon  <higepon@users.sourceforge.jp>
 
+        * include/monapi/StringHelper.h (MonAPI): Added basename.
+
         * core/kernel/UserSemaphore.cpp Added Semaphore, not tested yet!.
 
 2007-09-27  higepon  <higepon@users.sourceforge.jp>
