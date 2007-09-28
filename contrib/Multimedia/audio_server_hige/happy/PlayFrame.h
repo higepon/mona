@@ -27,12 +27,14 @@ protected:
     virtual bool getCloseButtonClicked(int px, int py)
     {
         int w = getWidth();
-        return (w - 12 <= px && px <= w - 7 && 6 <= py && py <= 11);
+        return (w - 17 <= px && px <= w - 12 && 6 <= py && py <= 11);
     }
 
     virtual bool getTitlebarClicked(int px, int py)
     {
-        return (0 <= px && px < getWidth() - 12 && 0 <= py && py < getInsets()->top);
+        int w = getWidth();
+        return (0 <= px && px < w - 17 && 0 <= py && py < getInsets()->top)
+            || (w - 12 < px && px < w && 0 <= py && py < getInsets()->top);
     }
 
 public:

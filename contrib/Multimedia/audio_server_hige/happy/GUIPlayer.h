@@ -51,6 +51,7 @@ public:
     void playLoop();
 
 protected:
+    void paint(Graphics *g);
     void initComponents();
     void destroyComponents();
     void processEvent(Event* e);

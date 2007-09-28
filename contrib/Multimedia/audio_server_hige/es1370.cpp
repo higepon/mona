@@ -427,7 +427,6 @@ static void es1370_interrupt_catcher(void* a)
 					result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
 					result &= ~ES1370_P2_INTR_EN;
 					outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
-
 					result = es1370_buffer_setter(d);
 					if( result != OK )
 					{

@@ -31,8 +31,6 @@ GUIPlayer::~GUIPlayer()
 void GUIPlayer::initComponents()
 {
     setBounds(20, 20, 250, 375);
-//    setTitle("happy!!");
-
     forwardButton  = new Button("forward");
     backwardButton = new Button("back");
     statusLabel    = new Label("");
@@ -85,7 +83,7 @@ void GUIPlayer::playLoop()
     songLabels = new Label*[oggFiles.size()];
     for (int i = 0; i < oggFiles.size(); i++)
     {
-        Label* label = new Label(oggFiles[i].data());
+        Label* label = new Label(StringHelper::basename(oggFiles[i]).data());
         label->setBounds(0, 20 * i + 50, 100, 20);
         add(label);
         labelsMap.insert(pair<string, Label*>(oggFiles[i], label));
@@ -181,6 +179,14 @@ void GUIPlayer::playLoop()
     audio->stop();
     delete audio;
     audio = NULL;
+}
+
+void GUIPlayer::paint(Graphics *g)
+{
+    int w = getWidth();
+    int h = getHeight();
+    g->setColor(baygui::Color::white);
+    g->fillRect(0, 0, w, h);
 }
 
 void GUIPlayer::listOggfiles(const char* dirPath, strings& oggFiles)
