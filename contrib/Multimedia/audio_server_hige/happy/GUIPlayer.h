@@ -18,21 +18,32 @@
 #include <ivorbisfile.h>
 #include <monapi.h>
 #include "PlayFrame.h"
+#include "ImageSinkButton.h"
 
 class GUIPlayer : public PlayFrame
 {
 private:
+    typedef struct
+    {
+        std::string path;
+        std::string artist;
+        std::string title;
+        Label* label;
+    } Song;
+
     typedef std::vector<std::string> strings;
     typedef std::map<std::string, Label*> LabelsMap;
+    typedef std::vector<Song*> Songs;
 
     Audio* audio;
-    Button* forwardButton;
-    Button* backwardButton;
-    Label* statusLabel;
-    Label** songLabels;
+    Image* forwardImage;
+    Image* backwardImage;
+    ImageSinkButton* forwardButton;
+    ImageSinkButton* backwardButton;
     int command;
     uint32_t tid;
-    LabelsMap labelsMap;
+    Songs songs;
+    static const std::string MUSIC_DIR;
 
     enum
     {
@@ -51,11 +62,13 @@ public:
     void playLoop();
 
 protected:
+    void showError(const char *fmt, ...);
     void paint(Graphics *g);
+    void readSongs();
     void initComponents();
     void destroyComponents();
     void processEvent(Event* e);
-    void listOggfiles(const char* dirPath, strings& oggFiles);
+    void listOggfiles(const std::string& path, strings& oggFiles);
 };
 
 #endif // _GUI_PLAYER_

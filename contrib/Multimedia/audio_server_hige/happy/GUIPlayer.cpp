@@ -11,6 +11,8 @@ static void __fastcall wrapperPlayLoop(void* p)
 }
 
 // GUIPlayer
+const string GUIPlayer::MUSIC_DIR = "/MUSIC";
+
 GUIPlayer::GUIPlayer() : PlayFrame(NULL), command(COMMAND_NONE)
 {
     initComponents();
@@ -25,21 +27,35 @@ GUIPlayer::~GUIPlayer()
         audio->stop();
         delete audio;
     }
+    for (Songs::iterator it = songs.begin(); it != songs.end(); ++it)
+    {
+        delete (*it)->label;
+        delete(*it);
+    }
     mthread_kill(tid);
 }
 
 void GUIPlayer::initComponents()
 {
+    forwardImage  = new Image((MUSIC_DIR + "/FWD.JPG").data());
+    backwardImage = new Image((MUSIC_DIR + "/BACK.JPG").data());
+
     setBounds(20, 20, 250, 375);
-    forwardButton  = new Button("forward");
-    backwardButton = new Button("back");
-    statusLabel    = new Label("");
-    backwardButton->setBounds(0, 0, 50, 20);
-    forwardButton->setBounds(50, 0, 50, 20);
-    statusLabel->setBounds(0, 20, 100, 20);
+    forwardButton  = new ImageSinkButton(forwardImage, forwardImage, forwardImage);
+    backwardButton = new ImageSinkButton(backwardImage, backwardImage, backwardImage);
+    backwardButton->setBounds(0, 0, 25, 14);
+    forwardButton->setBounds(50, 0, 25, 14);
     add(forwardButton);
     add(backwardButton);
-    add(statusLabel);
+
+}
+
+void GUIPlayer::destroyComponents()
+{
+    delete forwardButton;
+    delete backwardButton;
+    delete forwardImage;
+    delete backwardImage;
 }
 
 void GUIPlayer::processEvent(Event* e)
@@ -54,81 +70,90 @@ void GUIPlayer::processEvent(Event* e)
     }
 }
 
-void GUIPlayer::destroyComponents()
+void GUIPlayer::readSongs()
 {
-    delete forwardButton;
-    delete backwardButton;
-    delete statusLabel;
-}
-
-void GUIPlayer::playLoop()
-{
-    static char msg[MSG_BUFFER_SIZE];
-
-    struct audio_data_format defaultFormat = {0, 2, 16, 4400};
-    audio = new Audio(&defaultFormat, AUDIO_OUTPUT);
-    if (-1 == audio->start())
-    {
-        statusLabel->setText("Can not connect to AUDIO server!\n");
-    }
-
     strings oggFiles;
-    listOggfiles("/MUSIC", oggFiles);
-    if (oggFiles.size() == 0)
-    {
-        statusLabel->setText("No ogg files found\n");
-        delete audio;
-    }
-
-    songLabels = new Label*[oggFiles.size()];
+    listOggfiles(MUSIC_DIR, oggFiles);
     for (int i = 0; i < oggFiles.size(); i++)
     {
-        Label* label = new Label(StringHelper::basename(oggFiles[i]).data());
-        label->setBounds(0, 20 * i + 50, 100, 20);
-        add(label);
-        labelsMap.insert(pair<string, Label*>(oggFiles[i], label));
-        songLabels[i] = label;
-    }
-
-    int playingIndex = 0;
-    for (;;)
-    {
-        string oggFile = oggFiles[playingIndex];
-        LabelsMap::iterator it = labelsMap.find(oggFile);
-        if (it != labelsMap.end())
-        {
-            (*it).second->setBackground(baygui::Color::blue);
-            (*it).second->setForeground(baygui::Color::white);
-            (*it).second->repaint();
-        }
-        FILE* fp = fopen(oggFile.data(), "rb");
+        string path = oggFiles[i];
+        FILE* fp = fopen(path.data(), "rb");
         if (NULL == fp)
         {
-            snprintf(msg, MSG_BUFFER_SIZE, "File open error: %s.\n", oggFile.data());
-            statusLabel->setText(msg);
             continue;
         }
         OggVorbis_File vf;
         if (ov_open(fp, &vf, NULL, 0) < 0)
         {
-            snprintf(msg, MSG_BUFFER_SIZE, "Skipped, %s does not appear to be an Ogg bitstream.\n", oggFile.data());
-            statusLabel->setText(msg);
+            fclose(fp);
             continue;
         }
         char** infoTexts = ov_comment(&vf, -1)->user_comments;
         vorbis_info* vi=ov_info(&vf, -1);
-        string title = "";
+        Song* song = new Song;
+        song->path = path;
         while(*infoTexts)
         {
-            if (title != "") title += " - ";
-            title += *infoTexts;
+            if (char* p = strstr(*infoTexts, "title="))
+            {
+                p += strlen("title=");
+                song->title = p;
+            }
+            else if (char* p = strstr(*infoTexts, "artist="))
+            {
+                p += strlen("artist=");
+                song->artist = p;
+            }
             ++infoTexts;
         }
+        if (song->title == "")
+        {
+            song->title = StringHelper::basename(path.data());
+        }
+        if (song->artist == "")
+        {
+            song->artist = "Unknown Artist";
+        }
 
-        // default title is file name
-        if (title == "") title = oggFile;
-        statusLabel->setText(title.data());
+        song->label = new Label((song->title + " - " + song->artist).data());
+        song->label->setBounds(0, 20 * i + 50, 250, 20);
+        add(song->label);
+        songs.push_back(song);
+        fclose(fp);
+    }
+    repaint();
+}
 
+void GUIPlayer::playLoop()
+{
+    struct audio_data_format defaultFormat = {0, 2, 16, 4400};
+    audio = new Audio(&defaultFormat, AUDIO_OUTPUT);
+    if (-1 == audio->start())
+    {
+        showError("Can not connect to AUDIO server!\n");
+    }
+    readSongs();
+    for (int playingIndex = 0;;)
+    {
+        Song* song = songs[playingIndex];
+        song->label->setBackground(baygui::Color::blue);
+        song->label->setForeground(baygui::Color::white);
+        song->label->repaint();
+
+        FILE* fp = fopen(song->path.data(), "rb");
+        if (NULL == fp)
+        {
+            showError("File open error: %s.\n", song->path.data());
+            continue;
+        }
+        OggVorbis_File vf;
+        if (ov_open(fp, &vf, NULL, 0) < 0)
+        {
+            showError("Skipped, %s does not appear to be an Ogg bitstream.\n", song->path.data());
+            fclose(fp);
+            continue;
+        }
+        vorbis_info* vi=ov_info(&vf, -1);
         struct audio_data_format format = {0, vi->channels, 16, vi->rate};
         audio->setFormat(&format);
         int current_section;
@@ -143,7 +168,7 @@ void GUIPlayer::playLoop()
             case COMMAND_BACKWARD:
                 command = COMMAND_NONE;
                 playingIndex -= 2;
-                if (playingIndex < 0) playingIndex = oggFiles.size() -1;
+                if (playingIndex < 0) playingIndex = songs.size() -1;
                 goto replay;
             case COMMAND_VOLUME_UP:
             case COMMAND_VOLUME_DOWN:
@@ -158,7 +183,7 @@ void GUIPlayer::playLoop()
             }
             else if (ret < 0)
             {
-                statusLabel->setText("Warning data broken?\n");
+                showError("Warning data broken?\n");
             }
             else
             {
@@ -166,15 +191,13 @@ void GUIPlayer::playLoop()
             }
         }
     replay:
-        if (it != labelsMap.end())
-        {
-            (*it).second->setBackground(baygui::Color::white);
-            (*it).second->setForeground(baygui::Color::black);
-        }
-        (*it).second->repaint();
+        song->label->setBackground(baygui::Color::lightGray);
+        song->label->setForeground(baygui::Color::black);
+        song->label->repaint();
+
         fclose(fp);
         playingIndex++;
-        if (playingIndex >= oggFiles.size()) playingIndex = 0;
+        if (playingIndex >= songs.size()) playingIndex = 0;
     }
     audio->stop();
     delete audio;
@@ -189,10 +212,10 @@ void GUIPlayer::paint(Graphics *g)
     g->fillRect(0, 0, w, h);
 }
 
-void GUIPlayer::listOggfiles(const char* dirPath, strings& oggFiles)
+void GUIPlayer::listOggfiles(const string& dirPath, strings& oggFiles)
 {
     DIR* dir;
-    if ((dir = opendir(dirPath)) == NULL)
+    if ((dir = opendir(dirPath.data())) == NULL)
     {
         return;
     }
@@ -209,4 +232,18 @@ void GUIPlayer::listOggfiles(const char* dirPath, strings& oggFiles)
         }
     }
     closedir(dir);
+}
+
+void GUIPlayer::showError(const char *fmt, ...)
+{
+    char buf[MSG_BUFFER_SIZE];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, MSG_BUFFER_SIZE, fmt, args);
+    va_end(args);
+#if 1
+    _printf(buf);
+#else
+    statusLabel->setText(buf);
+#endif
 }

@@ -52,11 +52,11 @@ int cb_write(CB *cb, void *p, int flag)
     static int semIndex = 0;
 BEGIN:
     if( cb == NULL ) return -1;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     syscall_semaphore_down(cb->semaphore);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     syscall_mutex_lock(cb->mutex);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if( cb->ei == -1 )
     {
         CB_FIRST(0, syscall_mutex_unlock(cb->mutex));
@@ -70,15 +70,24 @@ BEGIN:
     return 1;
 }
 
+int cb_is_empty(CB* cb)
+{
+    return cb->fi == cb->ei;
+}
+
 int cb_read(CB *cb, void *p)
 {
     int index;
     if( cb == NULL ) return -1;
 BEGIN:
-    if( cb->fi == -1 ){goto BEGIN; }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if( cb->fi == -1 )
+    {
+//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        goto BEGIN;
+    }
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     syscall_mutex_lock(cb->mutex);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     index = cb->blocksize*cb->fi;
     memcpy(p, cb->p+index, cb->blocksize);
     if( cb->ei == -1 ) cb->ei = cb->fi;

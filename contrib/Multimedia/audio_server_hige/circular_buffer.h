@@ -26,6 +26,7 @@ CB *cb_init(CB *cb, int blocksize, int maxblocks);
 int cb_free(CB *cb);
 int cb_write(CB *cb, void *p, int flag);
 int cb_read(CB *cb, void *p);
+int cb_is_empty(CB* cb);
 
 #endif
 

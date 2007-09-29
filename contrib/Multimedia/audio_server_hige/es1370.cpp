@@ -178,10 +178,11 @@ error_t es1370_start(handle_t o)
 {
 	puts(__func__);
 	struct es1370_driver *d = (struct es1370_driver*)o;
-    char* zerobuf = new char[d->bufsize];
-    memset(zerobuf, 0, d->bufsize);
-	cb_write(d->cb, zerobuf, 0);
-
+    if (cb_is_empty(d->cb)) {
+            char* zerobuf = new char[d->bufsize];
+            memset(zerobuf, 0, d->bufsize);
+            cb_write(d->cb, zerobuf, 0);
+        }
 	if( es1370_buffer_setter(d) != OK )
 	{
 		return NG;
