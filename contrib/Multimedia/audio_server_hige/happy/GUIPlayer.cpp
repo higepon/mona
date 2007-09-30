@@ -43,8 +43,8 @@ void GUIPlayer::initComponents()
     setBounds(20, 20, 250, 375);
     forwardButton  = new ImageSinkButton(forwardImage, forwardImage, forwardImage);
     backwardButton = new ImageSinkButton(backwardImage, backwardImage, backwardImage);
-    backwardButton->setBounds(0, 0, 25, 14);
-    forwardButton->setBounds(50, 0, 25, 14);
+    backwardButton->setBounds(0, 0, 16, 16);
+    forwardButton->setBounds(20, 0, 16, 16);
     add(forwardButton);
     add(backwardButton);
 
@@ -116,7 +116,7 @@ void GUIPlayer::readSongs()
         }
 
         song->label = new Label((song->title + " - " + song->artist).data());
-        song->label->setBounds(0, 20 * i + 50, 250, 20);
+        song->label->setBounds(0, 20 * i + 20, 250, 20);
         add(song->label);
         songs.push_back(song);
         fclose(fp);
