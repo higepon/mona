@@ -260,7 +260,10 @@ void startKernel()
         g_free_frames->AddToNext(new mones::FrameNode);
     }
 
-    g_nic->enableNetwork();
+    if (g_nic)
+    {
+        g_nic->enableNetwork();
+    }
 
 
     disableTimer();

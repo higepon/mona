@@ -1,3 +1,7 @@
+2007-10-01  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/kernel.cpp (startKernel): Added check code for g_nic. Thx .mjt
+
 2007-09-28  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/StringHelper.h (MonAPI): Added basename.
