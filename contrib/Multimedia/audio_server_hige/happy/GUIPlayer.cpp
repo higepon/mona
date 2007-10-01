@@ -133,6 +133,11 @@ void GUIPlayer::playLoop()
         showError("Can not connect to AUDIO server!\n");
     }
     readSongs();
+    if (songs.size() == 0)
+    {
+        showError("No songs found\n");
+        exit(-1);
+    }
     for (int playingIndex = 0;;)
     {
         Song* song = songs[playingIndex];
