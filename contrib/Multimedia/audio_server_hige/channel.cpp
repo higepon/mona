@@ -13,10 +13,10 @@ Channel::~Channel()
 
 int Channel::setFormat(struct audio_data_format *format)
 {
-	dprintf("&desc_.format = %x\n", &desc_.format);
+//	dprintf("&desc_.format = %x\n", &desc_.format);
 	desc_.format = *format;
 	//memcpy(&desc_.format, format, sizeof(*format));
-	dputs("The format was set.");
+//	dputs("The format was set.");
 	return 0;
 }
 

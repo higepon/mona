@@ -26,8 +26,8 @@ AudioServer::AudioServer() : channel_(NULL)
 {
     driver_ = audio_driver_factory("es1370");
     device_ = driver_->driver_new();
-    dprintf("device_ = %x\n", device_);
-    dprintf("this = %x\n", this);
+//    dprintf("device_ = %x\n", device_);
+//    dprintf("this = %x\n", this);
     driver_->driver_set_format(device_, &default_format);
     blocksize_ = driver_->driver_get_block_size(device_);
     channelMutex_ = new MonAPI::Mutex;
@@ -173,8 +173,7 @@ size_t stream_block_reader(MonAPI::Stream *stream, void *mem, size_t size)
 
 void mixer_th(void *arg)
 {
-    dputs(__func__);
-    dprintf("Mixer: Hi, I am %d\n", syscall_get_tid());
+//    dprintf("Mixer: Hi, I am %d\n", syscall_get_tid());
     AudioServer *server = (AudioServer*)arg;
     bool is_stopped = false;
     char *buf;

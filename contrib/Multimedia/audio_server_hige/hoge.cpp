@@ -50,15 +50,15 @@ int main()
 
 	channel = server.createChannel(0);
 	server.setStream(channel, stream.handle());
-	dputs("Set stream");
+//	dputs("Set stream");
 	server.setFormat(channel, &format);
-	dputs("Set format");
+//	dputs("Set format");
 	render(buf, sizeof(buf));
 	stream.write(buf, sizeof(buf));
 	render(buf, sizeof(buf));
 	stream.write(buf, sizeof(buf));
 	server.start(channel);
-	dputs("Start");
+//	dputs("Start");
 	while(1)
 	//for( int i = 0 ; i < 44100*2*2*3 ; i+= sizeof(buf) )
 	{

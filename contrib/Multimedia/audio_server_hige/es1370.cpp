@@ -83,7 +83,7 @@ struct audio_driver* es1370_get_driver_desc()
 
 handle_t es1370_new()
 {
-	puts(__func__);
+//	puts(__func__);
 	struct es1370_driver *d;
 	int result;
 	if( instance != NULL ) return (handle_t)NULL;
@@ -103,9 +103,9 @@ handle_t es1370_new()
 		return NULL;
 	}
 
-	puts("init thread");
+//	puts("init thread");
 	d->thread = new MonAPI::Thread(&es1370_interrupt_catcher, d, &es1370_notifier);
-	puts("init device");
+//	puts("init device");
 	result = es1370_device_init(d);
 	if( result != OK )
 	{
@@ -176,7 +176,7 @@ size_t es1370_get_block_size(handle_t o)
 
 error_t es1370_start(handle_t o)
 {
-	puts(__func__);
+//	puts(__func__);
 	struct es1370_driver *d = (struct es1370_driver*)o;
     if (cb_is_empty(d->cb)) {
             char* zerobuf = new char[d->bufsize];
@@ -249,9 +249,9 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 static error_t es1370_device_init(struct es1370_driver *d)
 {
 	uint32_t ctrl, pclkdiv, fmt;
-	puts(__func__);
+//	puts(__func__);
 
-	puts("init pci");
+//	puts("init pci");
 	d->pci = new Pci;
 	d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, &d->pciinfo);
 	if( d->pciinfo.Exist != 0 ) return NG;

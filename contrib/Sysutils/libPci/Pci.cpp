@@ -29,7 +29,6 @@
 extern "C" int dllmain();
 int dllmain()
 {
-    syscall_print("pci_dllmain()\n");
 }
 
 

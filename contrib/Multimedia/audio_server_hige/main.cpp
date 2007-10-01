@@ -10,7 +10,7 @@ int audio_message_reply(int (*iserror)(uint32_t),
 	MessageInfo *info, uint32_t arg2 = 0,
 	uint32_t arg3 = 0, const char *str = NULL)
 {
-	dputs(__func__);
+//	dputs(__func__);
 	/*
 	if( iserror(arg2) )
 	{
@@ -36,15 +36,15 @@ int main(int argc, char *argv[])
 	AudioServer server;
 	MessageInfo msg;
 	uint32_t result;
-	dputs("Audio server was started.\n");
-	dprintf("I am %d\n", syscall_get_tid());
+//	dputs("Audio server was started.\n");
+//	dprintf("I am %d\n", syscall_get_tid());
 	while(1)
 	{
 		if( MonAPI::Message::receive(&msg) )
 		{
 			continue;
 		}
-		dprintf("msg.header = %d\n", msg.header);
+//		dprintf("msg.header = %d\n", msg.header);
 		switch(msg.header)
 		{
 			case MSG_AUDIO_CREATE_CHANNEL:
