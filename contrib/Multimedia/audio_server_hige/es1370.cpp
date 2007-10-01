@@ -416,10 +416,12 @@ static void es1370_interrupt_catcher(void* a)
 		}
 		if( msg.header == MSG_INTERRUPTED )
 		{
+            logprintf("MSG_INTERRUPTED\n");
 //			tick = syscall_get_tick();
 			stat = inp32(d->baseIO+ES1370_REG_STATUS);
 			if( stat & 2 )
 			{
+            logprintf("MSG_INTERRUPTED 2\n");
 			//	if( d->state == RUNNING )
 				{
 				//	puts("INTERRUPTED");
@@ -445,6 +447,10 @@ static void es1370_interrupt_catcher(void* a)
 					monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
 				}
 			}
+            else
+            {
+            logprintf("MSG_INTERRUPTED3\n");
+            }
 //			tick = syscall_get_tick() - tick;
 //			printf("t = %d\n", tick);
 		}
