@@ -266,7 +266,7 @@
           (else #f))
     (loop (+ 1 i))))
 
-(define (as)
+(define (asA)
   (start-process "/APPS/AUDIO.EX5"))
 
 (define (tr)
