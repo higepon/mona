@@ -288,6 +288,7 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_SEMAPHORE_UP:
+    {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
 
         if (object == NULL)
@@ -303,6 +304,7 @@ void syscall_entrance()
             info->eax = ((UserSemaphore*)object)->up();
         }
         break;
+    }
 
     case SYSTEM_CALL_MUTEX_DESTROY:
 
