@@ -92,11 +92,11 @@ handle_t es1370_new()
 	d->self = d;
 	d->devname = device_name;
 
-	d->bufsize = 1024*4;
+    d->bufsize = 1024*4;
 	d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
 	d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
 
-	d->cb = cb_init(cb_alloc(), d->bufsize, 10);
+	d->cb = cb_init(cb_alloc(), d->bufsize, 100);
 	if( d->cb == NULL )
 	{
 		free(d);
@@ -225,7 +225,7 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 //	buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 //	d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 //	result = d->callback(d->ref, buf, d->bufsize, &wrote);
-	result = cb_read(d->cb, buf);
+        result = cb_read(d->cb, buf);
 #if 0
     if (count > 1) {
         for (size_t i = 0; i < 4096; i++)
