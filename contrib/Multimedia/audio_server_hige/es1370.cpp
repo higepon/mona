@@ -95,6 +95,7 @@ handle_t es1370_new()
     d->bufsize = 1024*4;
     d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
     d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
+    d->usingBuffer = 0;
 
     d->cb = cb_init(cb_alloc(), d->bufsize, 100);
     if( d->cb == NULL )
@@ -221,7 +222,16 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
     error_t result;
     size_t wrote;
     void *buf;
-    buf = d->dmabuf1;
+    if (d->usingBuffer == 0)
+    {
+        d->usingBuffer = 1;
+        buf = d->dmabuf1;
+    }
+    else
+    {
+        d->usingBuffer = 0;
+        buf = d->dmabuf2;
+    }
 //  buf = d->usingBuffer == 0 ? d->dmabuf1 : d->dmabuf2;
 //  d->usingBuffer = d->usingBuffer == 0 ? 1 : 0;
 //  result = d->callback(d->ref, buf, d->bufsize, &wrote);
@@ -430,7 +440,13 @@ static void es1370_interrupt_catcher(void* a)
                     result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
                     result &= ~ES1370_P2_INTR_EN;
                     outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
-                    result = es1370_buffer_setter(d);
+
+                    outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2);
+                    es1370_set_buffer(d, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2, d->bufsize);
+//                    result = es1370_buffer_setter(d);
+
+                    //hige
+                    result = OK;
                     if( result != OK )
                     {
                         //  d->state = PAUSE;
@@ -442,9 +458,11 @@ static void es1370_interrupt_catcher(void* a)
                     result |= ES1370_P2_INTR_EN;
                     outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
 
+                    result = es1370_buffer_setter(d);
 //                  es1370_start_playback(d);
 
                     monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+
                 }
             }
             else
