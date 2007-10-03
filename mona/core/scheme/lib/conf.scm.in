@@ -302,5 +302,8 @@
 (define (as)
   (start-process "/APPS/AUDIO.EX5"))
 
+(define (as2)
+  (start-process "/APPS/AUDIO2.EX5"))
+
 (define (hp)
   (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC"))
