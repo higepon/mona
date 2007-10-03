@@ -7,6 +7,7 @@ using namespace std;
 static void __fastcall wrapperPlayLoop(void* p)
 {
     GUIPlayer* player = (GUIPlayer*)p;
+    logprintf("%s tid=%x\n", __func__, syscall_get_tid());
     player->playLoop();
 }
 
@@ -15,6 +16,7 @@ const string GUIPlayer::MUSIC_DIR = "/MUSIC";
 
 GUIPlayer::GUIPlayer() : PlayFrame(NULL), command(COMMAND_NONE)
 {
+    logprintf("%s tid=%x\n", __func__, syscall_get_tid());
     initComponents();
     tid = mthread_create_with_arg(wrapperPlayLoop, this);
 }
@@ -138,6 +140,7 @@ void GUIPlayer::playLoop()
         showError("No songs found\n");
         exit(-1);
     }
+            logprintf("[-1]\n");
     for (int playingIndex = 0;;)
     {
         Song* song = songs[playingIndex];
@@ -152,12 +155,14 @@ void GUIPlayer::playLoop()
             continue;
         }
         OggVorbis_File vf;
+            logprintf("[0]\n");
         if (ov_open(fp, &vf, NULL, 0) < 0)
         {
             showError("Skipped, %s does not appear to be an Ogg bitstream.\n", song->path.data());
             fclose(fp);
             continue;
         }
+            logprintf("[0.5]\n");
         vorbis_info* vi=ov_info(&vf, -1);
         struct audio_data_format format = {0, vi->channels, 16, vi->rate};
         audio->setFormat(&format);
@@ -165,6 +170,7 @@ void GUIPlayer::playLoop()
         char pcmout[4096];
         for (;;)
         {
+            logprintf("[1]\n");
             switch(command)
             {
             case COMMAND_FORWARD:
@@ -181,7 +187,9 @@ void GUIPlayer::playLoop()
             default:
                 break;
             }
+            logprintf("[2]\n");
             long ret = ov_read(&vf, pcmout, sizeof(pcmout), &current_section);
+            logprintf("[3]\n");
             if (ret == 0)
             {
                 break;
@@ -196,6 +204,7 @@ void GUIPlayer::playLoop()
             }
         }
     replay:
+            logprintf("[4]\n");
         song->label->setBackground(baygui::Color::lightGray);
         song->label->setForeground(baygui::Color::black);
         song->label->repaint();

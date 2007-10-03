@@ -411,6 +411,7 @@ static void es1370_interrupt_catcher(void* a)
 {
     struct es1370_driver* d = (struct es1370_driver*)a;
 //    _printf("irq=%x\n", d->pciinfo.IrqLine);
+    logprintf("%s tid=%x\n", __func__, syscall_get_tid());
     syscall_get_io();
     syscall_set_irq_receiver(d->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
     monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
@@ -426,12 +427,12 @@ static void es1370_interrupt_catcher(void* a)
         }
         if( msg.header == MSG_INTERRUPTED )
         {
-            logprintf("MSG_INTERRUPTED\n");
+//            logprintf("MSG_INTERRUPTED\n");
 //          tick = syscall_get_tick();
             stat = inp32(d->baseIO+ES1370_REG_STATUS);
             if( stat & 2 )
             {
-                logprintf("MSG_INTERRUPTED 2\n");
+//                logprintf("MSG_INTERRUPTED 2\n");
                 //  if( d->state == RUNNING )
                 {
                     //  puts("INTERRUPTED");
