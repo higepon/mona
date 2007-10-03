@@ -276,11 +276,7 @@
 (define (ac)
   (call-process "/APPS/ACLI.EX5"))
 
-(define (hp)
-  (call-process "/MUSIC/HAPPY.EX5 /APPS/C.OGG /APPS/A.OGG"))
 
-(define (hp)
-  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC"))
 
 (define (bp)
   (start-process "/APPS/BAYGUI/BPLAYER.APP/BPLAYER.EX5"))
@@ -303,5 +299,8 @@
 ;(as)
 ;(load "/SERVERS/TEST/test.scm")
 
-(define (as2)
-  (start-process "/APPS/AUDIO2.EX5"))
+(define (as)
+  (start-process "/APPS/AUDIO.EX5"))
+
+(define (hp)
+  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC"))
