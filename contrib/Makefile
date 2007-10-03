@@ -23,10 +23,10 @@ all:
 	cd Misc/print && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/reverse && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/audio_server_hige && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/audio_server_hige/api && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/audio_server_hige/client && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/audio_server_hige/happy && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server/api && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server/client && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/audio_server/happy && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/monappt && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/bplayer && touch dependencies && $(MAKE) && $(MAKE) install
@@ -72,9 +72,9 @@ clean:
 	cd Misc/upper && $(MAKE) clean
 	cd Misc/reverse && $(MAKE) clean
 	cd Misc/gnote && $(MAKE) clean
-	cd Multimedia/audio_server_hige && $(MAKE) clean
-	cd Multimedia/audio_server_hige/client && $(MAKE) clean
-	cd Multimedia/audio_server_hige/happy && $(MAKE) clean
+	cd Multimedia/audio_server && $(MAKE) clean
+	cd Multimedia/audio_server/client && $(MAKE) clean
+	cd Multimedia/audio_server/happy && $(MAKE) clean
 	cd Multimedia/monapeg && $(MAKE) clean
 	cd Multimedia/monappt && $(MAKE) clean
 	cd Multimedia/xmonapeg && $(MAKE) clean
