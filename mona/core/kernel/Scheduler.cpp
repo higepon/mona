@@ -192,6 +192,16 @@ bool Scheduler::SetNextThread()
 //    g_currentThread = (root == NULL) ? g_idleThread->tinfo : ((Thread*)(root->Top()))->tinfo;
     g_currentThread = ((Thread*)(root->Top()))->tinfo;
 
+// check cpu usage
+#if 1
+    static int count = 0;
+    count++;
+    if (count % 30 == 0) {
+        logprintf("tid=%x eip=%x\n", g_currentThread->thread->id, g_currentThread->thread->tinfo->archinfo->eip);
+    }
+#endif
+
+
     return !(IN_SAME_SPACE(g_prevThread,  g_currentThread));
 }
 
