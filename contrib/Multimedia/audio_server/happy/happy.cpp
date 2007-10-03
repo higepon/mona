@@ -44,6 +44,19 @@
 
 #include "happy.h"
 
+
+void dumpMemory()
+{
+    uint32_t* p = (uint32_t*)0xA0029D73;
+
+    for (int i = 0; i < 100; i++)
+    {
+        logprintf("%x ", p[i]);
+    }
+
+}
+
+
 int main(int argc, char *argv[])
 {
     if (argc < 2)
@@ -52,7 +65,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "usage: %s -d OGG_DIR\n", argv[0]);
         return -1;
     }
-
+    dumpMemory();
     if (monapi_get_server_thread_id(ID_GUI_SERVER) != THREAD_UNKNOWN)
     {
         GUIPlayer* player = new GUIPlayer;
