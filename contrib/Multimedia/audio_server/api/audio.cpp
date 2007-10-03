@@ -5,7 +5,7 @@
 #include <string.h>
 
 static uint32_t server_id = THREAD_UNKNOWN;
-static const char *server_name = "AUDIO2.EX5";
+static const char *server_name = "AUDIO.EX5";
 
 uint32_t find_audio_server()
 {
