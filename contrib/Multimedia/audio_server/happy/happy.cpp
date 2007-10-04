@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "usage: %s -d OGG_DIR\n", argv[0]);
         return -1;
     }
-    dumpMemory();
+//    dumpMemory();
     if (monapi_get_server_thread_id(ID_GUI_SERVER) != THREAD_UNKNOWN)
     {
         GUIPlayer* player = new GUIPlayer;
