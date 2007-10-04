@@ -203,6 +203,7 @@ void syscall_entrance()
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
+        g_log->printf("Semaphore\n");
         if (SYSTEM_CALL_ARG_1 == 0) {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread);
             if (object == NULL)
