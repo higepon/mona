@@ -5,6 +5,7 @@
 #include <audio.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <map>
 #include <limits.h>
 #include <monapi/messages.h>
@@ -62,6 +63,7 @@ public:
     void playLoop();
 
 protected:
+    std::string upperCase(const std::string& s);
     void showError(const char *fmt, ...);
     void paint(Graphics *g);
     void readSongs();

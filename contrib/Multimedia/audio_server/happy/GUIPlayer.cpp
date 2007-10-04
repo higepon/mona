@@ -238,14 +238,25 @@ void GUIPlayer::listOggfiles(const string& dirPath, strings& oggFiles)
     while ((entry = readdir(dir)) != NULL)
     {
         string name = entry->d_name;
-        if (StringHelper::endsWith(name, ".OGG"))
+        if (StringHelper::endsWith(upperCase(name), ".OGG"))
         {
             name = "/" + name;
             name = dirPath + name;
             oggFiles.push_back(name);
         }
     }
+
+    // hack
+    // we hope startup.ogg to be the first.
+    reverse(oggFiles.begin(), oggFiles.end());
     closedir(dir);
+}
+
+string GUIPlayer::upperCase(const string& s)
+{
+    string result = s;
+    transform(result.begin(), result.end(), result.begin(), toupper);
+    return result;
 }
 
 void GUIPlayer::showError(const char *fmt, ...)

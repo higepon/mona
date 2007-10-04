@@ -1,0 +1,4 @@
+Player icon
+License : MIT(X11)
+
+Author : MASUDA mitiya

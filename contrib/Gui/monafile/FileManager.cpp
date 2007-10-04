@@ -110,6 +110,17 @@ public:
 			mesa->Show();
 			offsetX += 64;
 		}
+		if (DirectoryExists("/MUSIC"))
+		{
+			_P<Icon> mesa = new Icon();
+			mesa->set_Location(Point(0, offsetX));
+			mesa->set_Text("HAPPY");
+			mesa->set_Icon(Icons_Player);
+			mesa->set_Target("/MUSIC/HAPPY.EX5 -d /MUSIC");
+			mesa->Show();
+			offsetX += 64;
+		}
+
 		
 		Application::Run();
 	}

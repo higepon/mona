@@ -1,0 +1,737 @@
+Archive member included because of file (symbol)
+
+../glut/libglut-imp.a(d000035.o)
+                              bounce.o (glutMainLoop)
+../glut/libglut-imp.a(d000034.o)
+                              bounce.o (glutKeyboardFunc)
+../glut/libglut-imp.a(d000043.o)
+                              bounce.o (glutVisibilityFunc)
+../glut/libglut-imp.a(d000040.o)
+                              bounce.o (glutReshapeFunc)
+../glut/libglut-imp.a(d000027.o)
+                              bounce.o (glutDisplayFunc)
+../glut/libglut-imp.a(d000026.o)
+                              bounce.o (glutCreateWindow)
+../glut/libglut-imp.a(d000031.o)
+                              bounce.o (glutInitDisplayMode)
+../glut/libglut-imp.a(d000033.o)
+                              bounce.o (glutInitWindowSize)
+../glut/libglut-imp.a(d000032.o)
+                              bounce.o (glutInitWindowPosition)
+../glut/libglut-imp.a(d000030.o)
+                              bounce.o (glutInit)
+../glut/libglut-imp.a(d000029.o)
+                              bounce.o (glutIdleFunc)
+../glut/libglut-imp.a(d000039.o)
+                              bounce.o (glutPostRedisplay)
+../glut/libglut-imp.a(d000042.o)
+                              bounce.o (glutSwapBuffers)
+../glut/libglut-imp.a(d000025.o)
+                              bounce.o (_glut_exit)
+../glut/libglut-imp.a(d000000.o)
+                              ../glut/libglut-imp.a(d000035.o) (_head_GLUT_DLL)
+../glut/libglut-imp.a(d000044.o)
+                              ../glut/libglut-imp.a(d000000.o) (GLUT_DLL_iname)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+                              bounce.o (glShadeModel)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+                              bounce.o (glDisable)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+                              bounce.o (glEnable)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+                              bounce.o (glCullFace)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+                              bounce.o (fabs)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+                              bounce.o (glFlush)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+                              bounce.o (glPopMatrix)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+                              bounce.o (glCallList)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+                              bounce.o (glRotatef)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+                              bounce.o (glScalef)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+                              bounce.o (glTranslatef)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+                              bounce.o (glPushMatrix)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+                              bounce.o (glVertex2f)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+                              bounce.o (glVertex2i)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+                              bounce.o (glClear)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+                              bounce.o (glOrtho)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+                              bounce.o (glLoadIdentity)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+                              bounce.o (glMatrixMode)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+                              bounce.o (glViewport)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+                              bounce.o (glEndList)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+                              bounce.o (glEnd)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+                              bounce.o (glVertex3f)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+                              bounce.o (glColor3f)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+                              bounce.o (glIndexi)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+                              bounce.o (glBegin)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+                              bounce.o (glNewList)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+                              bounce.o (glGenLists)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d000000.o)
+                              ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o) (_head_OSMESA_DLL)
+../Mesa-6.2.1/lib/libOSMesa-imp.a(d002064.o)
+                              ../Mesa-6.2.1/lib/libOSMesa-imp.a(d000000.o) (OSMESA_DLL_iname)
+/home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+                              bounce.o (sin)
+/home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+                              bounce.o (cos)
+/home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000000.o)
+                              /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o) (_head_MONALIBC_DLL)
+/home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000057.o)
+                              /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000000.o) (MONALIBC_DLL_iname)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+                              bounce.o (strcmp)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+                              bounce.o (user_start_c_impl)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+                              bounce.o (setConstructorList)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+                              bounce.o (monapi_initialize_memory)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000000.o)
+                              /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o) (_head_MONAPI_DLL)
+/home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000351.o)
+                              /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000000.o) (MONAPI_DLL_iname)
+
+Allocating common symbols
+Common symbol       size              file
+
+Mode                0x10              bounce.o
+Ball                0x10              bounce.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0xa0000000                __image_base__ = 0xa0000000
+                0x00000000                __dll__ = 0x0
+                0x00001000                __section_alignment__ = 0x1000
+                0x00000200                __file_alignment__ = 0x200
+                0x00000004                __major_os_version__ = 0x4
+                0x00000000                __minor_os_version__ = 0x0
+                0x00000001                __major_image_version__ = 0x1
+                0x00000000                __minor_image_version__ = 0x0
+                0x00000004                __major_subsystem_version__ = 0x4
+                0x00000000                __minor_subsystem_version__ = 0x0
+                0x00000003                __subsystem__ = 0x3
+                0x00200000                __size_of_stack_reserve__ = 0x200000
+                0x00001000                __size_of_stack_commit__ = 0x1000
+                0x00100000                __size_of_heap_reserve__ = 0x100000
+                0x00001000                __size_of_heap_commit__ = 0x1000
+                0x00000000                __loader_flags__ = 0x0
+LOAD bounce.o
+LOAD ../glut/libglut-imp.a
+LOAD ../Mesa-6.2.1/lib/libOSMesa-imp.a
+LOAD /home/Owner/cvs/Mona/lib/libmonalibc-imp.a
+LOAD /home/Owner/cvs/Mona/lib/libmonapi-imp.a
+                0x000002b8                . = SIZEOF_HEADERS
+                0x00001000                . = ALIGN (__section_alignment__)
+
+.text           0xa0001000      0xc00
+ *(.init)
+ *(.text)
+ .text          0xa0001000      0x7d0 bounce.o
+                0xa0001000                user_start
+                0xa0001030                _glut_main
+ .text          0xa00017d0        0x8 ../glut/libglut-imp.a(d000035.o)
+                0xa00017d0                glutMainLoop
+ *fill*         0xa00017d8        0x8 00
+ .text          0xa00017e0        0x8 ../glut/libglut-imp.a(d000034.o)
+                0xa00017e0                glutKeyboardFunc
+ *fill*         0xa00017e8        0x8 00
+ .text          0xa00017f0        0x8 ../glut/libglut-imp.a(d000043.o)
+                0xa00017f0                glutVisibilityFunc
+ *fill*         0xa00017f8        0x8 00
+ .text          0xa0001800        0x8 ../glut/libglut-imp.a(d000040.o)
+                0xa0001800                glutReshapeFunc
+ *fill*         0xa0001808        0x8 00
+ .text          0xa0001810        0x8 ../glut/libglut-imp.a(d000027.o)
+                0xa0001810                glutDisplayFunc
+ *fill*         0xa0001818        0x8 00
+ .text          0xa0001820        0x8 ../glut/libglut-imp.a(d000026.o)
+                0xa0001820                glutCreateWindow
+ *fill*         0xa0001828        0x8 00
+ .text          0xa0001830        0x8 ../glut/libglut-imp.a(d000031.o)
+                0xa0001830                glutInitDisplayMode
+ *fill*         0xa0001838        0x8 00
+ .text          0xa0001840        0x8 ../glut/libglut-imp.a(d000033.o)
+                0xa0001840                glutInitWindowSize
+ *fill*         0xa0001848        0x8 00
+ .text          0xa0001850        0x8 ../glut/libglut-imp.a(d000032.o)
+                0xa0001850                glutInitWindowPosition
+ *fill*         0xa0001858        0x8 00
+ .text          0xa0001860        0x8 ../glut/libglut-imp.a(d000030.o)
+                0xa0001860                glutInit
+ *fill*         0xa0001868        0x8 00
+ .text          0xa0001870        0x8 ../glut/libglut-imp.a(d000029.o)
+                0xa0001870                glutIdleFunc
+ *fill*         0xa0001878        0x8 00
+ .text          0xa0001880        0x8 ../glut/libglut-imp.a(d000039.o)
+                0xa0001880                glutPostRedisplay
+ *fill*         0xa0001888        0x8 00
+ .text          0xa0001890        0x8 ../glut/libglut-imp.a(d000042.o)
+                0xa0001890                glutSwapBuffers
+ *fill*         0xa0001898        0x8 00
+ .text          0xa00018a0        0x8 ../glut/libglut-imp.a(d000025.o)
+                0xa00018a0                _glut_exit
+ *fill*         0xa00018a8        0x8 00
+ .text          0xa00018b0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+                0xa00018b0                glShadeModel
+ *fill*         0xa00018b8        0x8 00
+ .text          0xa00018c0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+                0xa00018c0                glDisable
+ *fill*         0xa00018c8        0x8 00
+ .text          0xa00018d0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+                0xa00018d0                glEnable
+ *fill*         0xa00018d8        0x8 00
+ .text          0xa00018e0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+                0xa00018e0                glCullFace
+ *fill*         0xa00018e8        0x8 00
+ .text          0xa00018f0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+                0xa00018f0                fabs
+ *fill*         0xa00018f8        0x8 00
+ .text          0xa0001900        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+                0xa0001900                glFlush
+ *fill*         0xa0001908        0x8 00
+ .text          0xa0001910        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+                0xa0001910                glPopMatrix
+ *fill*         0xa0001918        0x8 00
+ .text          0xa0001920        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+                0xa0001920                glCallList
+ *fill*         0xa0001928        0x8 00
+ .text          0xa0001930        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+                0xa0001930                glRotatef
+ *fill*         0xa0001938        0x8 00
+ .text          0xa0001940        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+                0xa0001940                glScalef
+ *fill*         0xa0001948        0x8 00
+ .text          0xa0001950        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+                0xa0001950                glTranslatef
+ *fill*         0xa0001958        0x8 00
+ .text          0xa0001960        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+                0xa0001960                glPushMatrix
+ *fill*         0xa0001968        0x8 00
+ .text          0xa0001970        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+                0xa0001970                glVertex2f
+ *fill*         0xa0001978        0x8 00
+ .text          0xa0001980        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+                0xa0001980                glVertex2i
+ *fill*         0xa0001988        0x8 00
+ .text          0xa0001990        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+                0xa0001990                glClear
+ *fill*         0xa0001998        0x8 00
+ .text          0xa00019a0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+                0xa00019a0                glOrtho
+ *fill*         0xa00019a8        0x8 00
+ .text          0xa00019b0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+                0xa00019b0                glLoadIdentity
+ *fill*         0xa00019b8        0x8 00
+ .text          0xa00019c0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+                0xa00019c0                glMatrixMode
+ *fill*         0xa00019c8        0x8 00
+ .text          0xa00019d0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+                0xa00019d0                glViewport
+ *fill*         0xa00019d8        0x8 00
+ .text          0xa00019e0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+                0xa00019e0                glEndList
+ *fill*         0xa00019e8        0x8 00
+ .text          0xa00019f0        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+                0xa00019f0                glEnd
+ *fill*         0xa00019f8        0x8 00
+ .text          0xa0001a00        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+                0xa0001a00                glVertex3f
+ *fill*         0xa0001a08        0x8 00
+ .text          0xa0001a10        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+                0xa0001a10                glColor3f
+ *fill*         0xa0001a18        0x8 00
+ .text          0xa0001a20        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+                0xa0001a20                glIndexi
+ *fill*         0xa0001a28        0x8 00
+ .text          0xa0001a30        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+                0xa0001a30                glBegin
+ *fill*         0xa0001a38        0x8 00
+ .text          0xa0001a40        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+                0xa0001a40                glNewList
+ *fill*         0xa0001a48        0x8 00
+ .text          0xa0001a50        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+                0xa0001a50                glGenLists
+ *fill*         0xa0001a58        0x8 00
+ .text          0xa0001a60        0x8 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+                0xa0001a60                sin
+ *fill*         0xa0001a68        0x8 00
+ .text          0xa0001a70        0x8 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+                0xa0001a70                cos
+ *fill*         0xa0001a78        0x8 00
+ .text          0xa0001a80        0x8 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+                0xa0001a80                strcmp
+ *fill*         0xa0001a88        0x8 00
+ .text          0xa0001a90        0x8 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+                0xa0001a90                user_start_c_impl
+ *fill*         0xa0001a98        0x8 00
+ .text          0xa0001aa0        0x8 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+                0xa0001aa0                setConstructorList
+ *fill*         0xa0001aa8        0x8 00
+ .text          0xa0001ab0        0x8 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+                0xa0001ab0                monapi_initialize_memory
+ *(SORT(.text$*))
+ *(.glue_7t)
+ *(.glue_7)
+                0xa0001ab8                ___CTOR_LIST__ = .
+                0xa0001ab8                __CTOR_LIST__ = .
+                0xa0001ab8        0x4 LONG 0xffffffff
+ *(.ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+                0xa0001abc        0x4 LONG 0x0
+                0xa0001ac0                ___DTOR_LIST__ = .
+                0xa0001ac0                __DTOR_LIST__ = .
+                0xa0001ac0        0x4 LONG 0xffffffff
+ *(.dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+                0xa0001ac4        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0xa0001ac8                PROVIDE (etext, .)
+ *(.gcc_except_table)
+
+.data           0xa0002000      0x200
+                0xa0002000                __data_start__ = .
+ *(.data)
+ .data          0xa0002000       0x30 bounce.o
+                0xa000201c                G
+                0xa0002010                Xmax
+                0xa0002004                Ypos
+                0xa0002008                Xvel
+                0xa0002000                Zstep
+                0xa0002014                Ymin
+                0xa000200c                Xmin
+                0xa0002018                Ymax
+ *(.data2)
+ *(SORT(.data$*))
+ *(.jcr)
+                0xa0002030                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0xa0003000      0x200
+ *(.rdata)
+ .rdata         0xa0003000       0x50 bounce.o
+ *(SORT(.rdata$*))
+ *(.eh_frame)
+                0xa0003050                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0xa0003050                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0xa0003050                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0xa0003050                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.pdata
+ *(.pdata)
+
+.bss            0xa0004000       0x30
+                0xa0004000                __bss_start__ = .
+ *(.bss)
+ .bss           0xa0004000       0x10 bounce.o
+                0xa0004004                Zrot
+                0xa0004008                Xpos
+                0xa0004000                IndexMode
+                0xa000400c                Yvel
+ *(COMMON)
+ COMMON         0xa0004010       0x20 bounce.o
+                0xa0004010                Mode
+                0xa0004020                Ball
+                0xa0004030                __bss_end__ = .
+
+.edata
+ *(.edata)
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+
+.idata          0xa0005000      0x600
+ SORT(*)(.idata$2)
+ .idata$2       0xa0005000       0x14 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d000000.o)
+                0xa0005000                _head_OSMESA_DLL
+ .idata$2       0xa0005014       0x14 ../glut/libglut-imp.a(d000000.o)
+                0xa0005014                _head_GLUT_DLL
+ .idata$2       0xa0005028       0x14 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000000.o)
+                0xa0005028                _head_MONALIBC_DLL
+ .idata$2       0xa000503c       0x14 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000000.o)
+                0xa000503c                _head_MONAPI_DLL
+ SORT(*)(.idata$3)
+                0xa0005050        0x4 LONG 0x0
+                0xa0005054        0x4 LONG 0x0
+                0xa0005058        0x4 LONG 0x0
+                0xa000505c        0x4 LONG 0x0
+                0xa0005060        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0xa0005064        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d000000.o)
+ .idata$4       0xa0005068        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+ .idata$4       0xa000506c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+ .idata$4       0xa0005070        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+ .idata$4       0xa0005074        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+ .idata$4       0xa0005078        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+ .idata$4       0xa000507c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+ .idata$4       0xa0005080        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+ .idata$4       0xa0005084        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+ .idata$4       0xa0005088        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+ .idata$4       0xa000508c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+ .idata$4       0xa0005090        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+ .idata$4       0xa0005094        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+ .idata$4       0xa0005098        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+ .idata$4       0xa000509c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+ .idata$4       0xa00050a0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+ .idata$4       0xa00050a4        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+ .idata$4       0xa00050a8        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+ .idata$4       0xa00050ac        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+ .idata$4       0xa00050b0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+ .idata$4       0xa00050b4        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+ .idata$4       0xa00050b8        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+ .idata$4       0xa00050bc        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+ .idata$4       0xa00050c0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+ .idata$4       0xa00050c4        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+ .idata$4       0xa00050c8        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+ .idata$4       0xa00050cc        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+ .idata$4       0xa00050d0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+ .idata$4       0xa00050d4        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d002064.o)
+ .idata$4       0xa00050d8        0x4 ../glut/libglut-imp.a(d000000.o)
+ .idata$4       0xa00050dc        0x4 ../glut/libglut-imp.a(d000025.o)
+ .idata$4       0xa00050e0        0x4 ../glut/libglut-imp.a(d000026.o)
+ .idata$4       0xa00050e4        0x4 ../glut/libglut-imp.a(d000027.o)
+ .idata$4       0xa00050e8        0x4 ../glut/libglut-imp.a(d000029.o)
+ .idata$4       0xa00050ec        0x4 ../glut/libglut-imp.a(d000030.o)
+ .idata$4       0xa00050f0        0x4 ../glut/libglut-imp.a(d000031.o)
+ .idata$4       0xa00050f4        0x4 ../glut/libglut-imp.a(d000032.o)
+ .idata$4       0xa00050f8        0x4 ../glut/libglut-imp.a(d000033.o)
+ .idata$4       0xa00050fc        0x4 ../glut/libglut-imp.a(d000034.o)
+ .idata$4       0xa0005100        0x4 ../glut/libglut-imp.a(d000035.o)
+ .idata$4       0xa0005104        0x4 ../glut/libglut-imp.a(d000039.o)
+ .idata$4       0xa0005108        0x4 ../glut/libglut-imp.a(d000040.o)
+ .idata$4       0xa000510c        0x4 ../glut/libglut-imp.a(d000042.o)
+ .idata$4       0xa0005110        0x4 ../glut/libglut-imp.a(d000043.o)
+ .idata$4       0xa0005114        0x4 ../glut/libglut-imp.a(d000044.o)
+ .idata$4       0xa0005118        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000000.o)
+ .idata$4       0xa000511c        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+ .idata$4       0xa0005120        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+ .idata$4       0xa0005124        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000057.o)
+ .idata$4       0xa0005128        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000000.o)
+ .idata$4       0xa000512c        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+ .idata$4       0xa0005130        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+ .idata$4       0xa0005134        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+ .idata$4       0xa0005138        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+ .idata$4       0xa000513c        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000351.o)
+ SORT(*)(.idata$5)
+ .idata$5       0xa0005140        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d000000.o)
+ .idata$5       0xa0005144        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+                0xa0005144                _imp__fabs
+ .idata$5       0xa0005148        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+                0xa0005148                _imp__glBegin
+ .idata$5       0xa000514c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+                0xa000514c                _imp__glCallList
+ .idata$5       0xa0005150        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+                0xa0005150                _imp__glClear
+ .idata$5       0xa0005154        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+                0xa0005154                _imp__glColor3f
+ .idata$5       0xa0005158        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+                0xa0005158                _imp__glCullFace
+ .idata$5       0xa000515c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+                0xa000515c                _imp__glDisable
+ .idata$5       0xa0005160        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+                0xa0005160                _imp__glEnable
+ .idata$5       0xa0005164        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+                0xa0005164                _imp__glEnd
+ .idata$5       0xa0005168        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+                0xa0005168                _imp__glEndList
+ .idata$5       0xa000516c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+                0xa000516c                _imp__glFlush
+ .idata$5       0xa0005170        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+                0xa0005170                _imp__glGenLists
+ .idata$5       0xa0005174        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+                0xa0005174                _imp__glIndexi
+ .idata$5       0xa0005178        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+                0xa0005178                _imp__glLoadIdentity
+ .idata$5       0xa000517c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+                0xa000517c                _imp__glMatrixMode
+ .idata$5       0xa0005180        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+                0xa0005180                _imp__glNewList
+ .idata$5       0xa0005184        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+                0xa0005184                _imp__glOrtho
+ .idata$5       0xa0005188        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+                0xa0005188                _imp__glPopMatrix
+ .idata$5       0xa000518c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+                0xa000518c                _imp__glPushMatrix
+ .idata$5       0xa0005190        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+                0xa0005190                _imp__glRotatef
+ .idata$5       0xa0005194        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+                0xa0005194                _imp__glScalef
+ .idata$5       0xa0005198        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+                0xa0005198                _imp__glShadeModel
+ .idata$5       0xa000519c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+                0xa000519c                _imp__glTranslatef
+ .idata$5       0xa00051a0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+                0xa00051a0                _imp__glVertex2f
+ .idata$5       0xa00051a4        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+                0xa00051a4                _imp__glVertex2i
+ .idata$5       0xa00051a8        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+                0xa00051a8                _imp__glVertex3f
+ .idata$5       0xa00051ac        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+                0xa00051ac                _imp__glViewport
+ .idata$5       0xa00051b0        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d002064.o)
+ .idata$5       0xa00051b4        0x4 ../glut/libglut-imp.a(d000000.o)
+ .idata$5       0xa00051b8        0x4 ../glut/libglut-imp.a(d000025.o)
+                0xa00051b8                _imp___glut_exit
+ .idata$5       0xa00051bc        0x4 ../glut/libglut-imp.a(d000026.o)
+                0xa00051bc                _imp__glutCreateWindow
+ .idata$5       0xa00051c0        0x4 ../glut/libglut-imp.a(d000027.o)
+                0xa00051c0                _imp__glutDisplayFunc
+ .idata$5       0xa00051c4        0x4 ../glut/libglut-imp.a(d000029.o)
+                0xa00051c4                _imp__glutIdleFunc
+ .idata$5       0xa00051c8        0x4 ../glut/libglut-imp.a(d000030.o)
+                0xa00051c8                _imp__glutInit
+ .idata$5       0xa00051cc        0x4 ../glut/libglut-imp.a(d000031.o)
+                0xa00051cc                _imp__glutInitDisplayMode
+ .idata$5       0xa00051d0        0x4 ../glut/libglut-imp.a(d000032.o)
+                0xa00051d0                _imp__glutInitWindowPosition
+ .idata$5       0xa00051d4        0x4 ../glut/libglut-imp.a(d000033.o)
+                0xa00051d4                _imp__glutInitWindowSize
+ .idata$5       0xa00051d8        0x4 ../glut/libglut-imp.a(d000034.o)
+                0xa00051d8                _imp__glutKeyboardFunc
+ .idata$5       0xa00051dc        0x4 ../glut/libglut-imp.a(d000035.o)
+                0xa00051dc                _imp__glutMainLoop
+ .idata$5       0xa00051e0        0x4 ../glut/libglut-imp.a(d000039.o)
+                0xa00051e0                _imp__glutPostRedisplay
+ .idata$5       0xa00051e4        0x4 ../glut/libglut-imp.a(d000040.o)
+                0xa00051e4                _imp__glutReshapeFunc
+ .idata$5       0xa00051e8        0x4 ../glut/libglut-imp.a(d000042.o)
+                0xa00051e8                _imp__glutSwapBuffers
+ .idata$5       0xa00051ec        0x4 ../glut/libglut-imp.a(d000043.o)
+                0xa00051ec                _imp__glutVisibilityFunc
+ .idata$5       0xa00051f0        0x4 ../glut/libglut-imp.a(d000044.o)
+ .idata$5       0xa00051f4        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000000.o)
+ .idata$5       0xa00051f8        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+                0xa00051f8                _imp__cos
+ .idata$5       0xa00051fc        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+                0xa00051fc                _imp__sin
+ .idata$5       0xa0005200        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000057.o)
+ .idata$5       0xa0005204        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000000.o)
+ .idata$5       0xa0005208        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+                0xa0005208                _imp__monapi_initialize_memory
+ .idata$5       0xa000520c        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+                0xa000520c                _imp__setConstructorList
+ .idata$5       0xa0005210        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+                0xa0005210                _imp__strcmp
+ .idata$5       0xa0005214        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+                0xa0005214                _imp__user_start_c_impl
+ .idata$5       0xa0005218        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000351.o)
+ SORT(*)(.idata$6)
+ .idata$6       0xa000521c        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+ .idata$6       0xa0005224        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+ .idata$6       0xa0005230       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+ .idata$6       0xa0005240        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+ .idata$6       0xa000524c        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+ .idata$6       0xa0005258       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+ .idata$6       0xa0005268        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+ .idata$6       0xa0005274        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+ .idata$6       0xa0005280        0x8 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+ .idata$6       0xa0005288        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+ .idata$6       0xa0005294        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+ .idata$6       0xa00052a0       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+ .idata$6       0xa00052b0        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+ .idata$6       0xa00052bc       0x14 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+ .idata$6       0xa00052d0       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+ .idata$6       0xa00052e0        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+ .idata$6       0xa00052ec        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+ .idata$6       0xa00052f8       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+ .idata$6       0xa0005308       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+ .idata$6       0xa0005318        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+ .idata$6       0xa0005324        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+ .idata$6       0xa0005330       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+ .idata$6       0xa0005340       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+ .idata$6       0xa0005350       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+ .idata$6       0xa0005360       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+ .idata$6       0xa0005370       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+ .idata$6       0xa0005380       0x10 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+ .idata$6       0xa0005390       0x10 ../glut/libglut-imp.a(d000025.o)
+ .idata$6       0xa00053a0       0x14 ../glut/libglut-imp.a(d000026.o)
+ .idata$6       0xa00053b4       0x14 ../glut/libglut-imp.a(d000027.o)
+ .idata$6       0xa00053c8       0x10 ../glut/libglut-imp.a(d000029.o)
+ .idata$6       0xa00053d8        0xc ../glut/libglut-imp.a(d000030.o)
+ .idata$6       0xa00053e4       0x18 ../glut/libglut-imp.a(d000031.o)
+ .idata$6       0xa00053fc       0x1c ../glut/libglut-imp.a(d000032.o)
+ .idata$6       0xa0005418       0x18 ../glut/libglut-imp.a(d000033.o)
+ .idata$6       0xa0005430       0x14 ../glut/libglut-imp.a(d000034.o)
+ .idata$6       0xa0005444       0x10 ../glut/libglut-imp.a(d000035.o)
+ .idata$6       0xa0005454       0x14 ../glut/libglut-imp.a(d000039.o)
+ .idata$6       0xa0005468       0x14 ../glut/libglut-imp.a(d000040.o)
+ .idata$6       0xa000547c       0x14 ../glut/libglut-imp.a(d000042.o)
+ .idata$6       0xa0005490       0x18 ../glut/libglut-imp.a(d000043.o)
+ .idata$6       0xa00054a8        0x8 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+ .idata$6       0xa00054b0        0x8 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+ .idata$6       0xa00054b8       0x1c /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+ .idata$6       0xa00054d4       0x18 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+ .idata$6       0xa00054ec        0xc /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+ .idata$6       0xa00054f8       0x14 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+ SORT(*)(.idata$7)
+ .idata$7       0xa000550c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001117.o)
+ .idata$7       0xa0005510        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001134.o)
+ .idata$7       0xa0005514        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001158.o)
+ .idata$7       0xa0005518        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001160.o)
+ .idata$7       0xa000551c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001173.o)
+ .idata$7       0xa0005520        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001263.o)
+ .idata$7       0xa0005524        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001281.o)
+ .idata$7       0xa0005528        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001295.o)
+ .idata$7       0xa000552c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001298.o)
+ .idata$7       0xa0005530        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001299.o)
+ .idata$7       0xa0005534        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001319.o)
+ .idata$7       0xa0005538        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001355.o)
+ .idata$7       0xa000553c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001489.o)
+ .idata$7       0xa0005540        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001525.o)
+ .idata$7       0xa0005544        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001550.o)
+ .idata$7       0xa0005548        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001629.o)
+ .idata$7       0xa000554c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001642.o)
+ .idata$7       0xa0005550        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001677.o)
+ .idata$7       0xa0005554        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001703.o)
+ .idata$7       0xa0005558        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001749.o)
+ .idata$7       0xa000555c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001757.o)
+ .idata$7       0xa0005560        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001797.o)
+ .idata$7       0xa0005564        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001874.o)
+ .idata$7       0xa0005568        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001880.o)
+ .idata$7       0xa000556c        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001882.o)
+ .idata$7       0xa0005570        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001888.o)
+ .idata$7       0xa0005574        0x4 ../Mesa-6.2.1/lib/libOSMesa-imp.a(d001985.o)
+ .idata$7       0xa0005578        0xc ../Mesa-6.2.1/lib/libOSMesa-imp.a(d002064.o)
+                0xa0005578                OSMESA_DLL_iname
+ .idata$7       0xa0005584        0x4 ../glut/libglut-imp.a(d000025.o)
+ .idata$7       0xa0005588        0x4 ../glut/libglut-imp.a(d000026.o)
+ .idata$7       0xa000558c        0x4 ../glut/libglut-imp.a(d000027.o)
+ .idata$7       0xa0005590        0x4 ../glut/libglut-imp.a(d000029.o)
+ .idata$7       0xa0005594        0x4 ../glut/libglut-imp.a(d000030.o)
+ .idata$7       0xa0005598        0x4 ../glut/libglut-imp.a(d000031.o)
+ .idata$7       0xa000559c        0x4 ../glut/libglut-imp.a(d000032.o)
+ .idata$7       0xa00055a0        0x4 ../glut/libglut-imp.a(d000033.o)
+ .idata$7       0xa00055a4        0x4 ../glut/libglut-imp.a(d000034.o)
+ .idata$7       0xa00055a8        0x4 ../glut/libglut-imp.a(d000035.o)
+ .idata$7       0xa00055ac        0x4 ../glut/libglut-imp.a(d000039.o)
+ .idata$7       0xa00055b0        0x4 ../glut/libglut-imp.a(d000040.o)
+ .idata$7       0xa00055b4        0x4 ../glut/libglut-imp.a(d000042.o)
+ .idata$7       0xa00055b8        0x4 ../glut/libglut-imp.a(d000043.o)
+ .idata$7       0xa00055bc        0xc ../glut/libglut-imp.a(d000044.o)
+                0xa00055bc                GLUT_DLL_iname
+ .idata$7       0xa00055c8        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000013.o)
+ .idata$7       0xa00055cc        0x4 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000043.o)
+ .idata$7       0xa00055d0       0x10 /home/Owner/cvs/Mona/lib/libmonalibc-imp.a(d000057.o)
+                0xa00055d0                MONALIBC_DLL_iname
+ .idata$7       0xa00055e0        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000263.o)
+ .idata$7       0xa00055e4        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000289.o)
+ .idata$7       0xa00055e8        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000293.o)
+ .idata$7       0xa00055ec        0x4 /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000350.o)
+ .idata$7       0xa00055f0        0xc /home/Owner/cvs/Mona/lib/libmonapi-imp.a(d000351.o)
+                0xa00055f0                MONAPI_DLL_iname
+
+.CRT            0xa0006000        0x0
+                0xa0006000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0xa0006000                ___crt_xc_end__ = .
+                0xa0006000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0xa0006000                ___crt_xi_end__ = .
+                0xa0006000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0xa0006000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0xa0006000                ___crt_xp_end__ = .
+                0xa0006000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0xa0006000                ___crt_xt_end__ = .
+
+.tls            0xa0006000        0x0
+                0xa0006000                ___tls_start__ = .
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+                0xa0006000                ___tls_end__ = .
+
+.endjunk        0xa0006000        0x0
+                0xa0006000                PROVIDE (end, .)
+                0xa0006000                PROVIDE (_end, .)
+                0xa0006000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc
+ *(.reloc)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(BOUNCE.EXE pei-i386)

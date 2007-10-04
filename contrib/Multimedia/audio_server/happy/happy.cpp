@@ -47,7 +47,7 @@
 
 void dumpMemory()
 {
-    uint32_t* p = (uint32_t*)0xA0029D73;
+    uint32_t* p = (uint32_t*)(0xA0029FCC - 20);
 
     for (int i = 0; i < 100; i++)
     {

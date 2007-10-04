@@ -1,3 +1,13 @@
+2007-10-05  higepon  <higepon@users.sourceforge.jp>
+
+        * Added Graphics/MesaDemo. Not tested.
+
+        * Gui/monafile/FileManager.cpp (class FileManager): Added player icon for Happy.
+
+2007-10-04  nikq
+
+        * Multimedia/audio_server/happy/startup.ogg : Added start up sound.
+
 2007-10-02  higepon  <higepon@users.sourceforge.jp>
 
         * Multimedia/audio_server_hige/es1370.cpp (es1370_new): change buffer size from 8192 * 10 to 8192 to 100.

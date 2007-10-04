@@ -21,7 +21,8 @@ enum Icons
 	Icons_Picture,
 	Icons_Server,
 	Icons_Terminal,
-	Icons_Text
+	Icons_Text,
+	Icons_Player,
 };
 
 class Icon : public System::Mona::Forms::Form
