@@ -100,7 +100,6 @@ int scheme_batch(const String& file)
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
-// todo あとで戻す
     scheme_eval_string(LOAD_SCHEME_BATCH_LIBRARY, env, false);
     scheme_eval_string(input, env);
     return 0;
@@ -116,9 +115,8 @@ void scheme_interactive()
     SCM_ASSERT(env);
     g_top_env = env;
     scheme_register_primitives(env);
-    RETURN_ON_ERROR("stdin");
-// todo あとで戻す
     scheme_eval_string(LOAD_SCHEME_INTERACTIVE_LIBRARY, env, false);
+    RETURN_ON_ERROR("stdin");
     interaction->showPrompt();
 
 #ifdef MONA

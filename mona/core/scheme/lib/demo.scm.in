@@ -1,5 +1,7 @@
 (define (on-gui-start)
-  (print "Hello!")
+  (as)
+  (hp)
+  (mona-sleep 5000))
 ;  (hp)
 ;;   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/SAKEBI.JPG 50 50")
 ;;   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
@@ -7,7 +9,7 @@
 ;;   (map mona.gui.window-title (mona.gui.enum-windows))
 ;;   (mona-gui-move-window (find (lambda (window) (string=? (mona-gui-get-window-title window) "/APPS/MONAFRMS/SAKEBI.JPG"))
 ;;         (mona-gui-enum-windows)) 200 50)
-)
+
 
 (define (make-queue)
   (cons '() '()))

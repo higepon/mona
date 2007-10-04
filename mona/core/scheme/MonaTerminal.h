@@ -46,12 +46,18 @@ protected:
     void outputLine(::util::String l);
     void initHistories();
 
+    enum
+    {
+        FORMAT_BUFFER_SIZE = 8192,
+    };
+
     bool isKeySuppressed_;
     ::util::String line_;
     uint32_t cursorPosition_;
     CommandHistory histories_;
     uint32_t screenHandle_;
     ::MonAPI::terminal::Util* terminal_;
+    char* formatBuffer_;
 };
 
 }; // namespace monash

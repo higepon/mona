@@ -24,6 +24,7 @@ using namespace MonAPI;
 MonaTerminal::MonaTerminal() : isKeySuppressed_(false), line_(""), cursorPosition_(0)
 {
     if (!initialize()) return;
+    formatBuffer_ = new char[FORMAT_BUFFER_SIZE];
 }
 
 MonaTerminal::~MonaTerminal()
@@ -82,19 +83,53 @@ MonaTerminal::~MonaTerminal()
 
 int MonaTerminal::formatWrite(const char* format, ...)
 {
+#if 1
     char str[512];
     str[0] = '\0';
     va_list args;
     int result;
     va_start(args, format);
-    result = vsprintf(str, format, args);
+    result = vsnprintf(str, 512, format, args);
     va_end(args);
+
+    // fix me, buffer size! See MonAPI::Terminal::Util
     if(result > 512)
     {
         _printf("Shell::out:overflow");
+        str[511] = '\0';
     }
     terminal_->write(str);
     return terminal_->flush();
+#else
+    formatBuffer_[0] = '\0';
+    va_list args;
+    int result;
+    va_start(args, format);
+    result = vsprintf(formatBuffer_, format, args);
+    va_end(args);
+
+    _printf("%s:%d\n",formatBuffer_,     strlen(formatBuffer_));
+
+//     if(result > FORMAT_BUFFER_SIZE)
+//     {
+//         _printf("Shell::out:overflow");
+//     }
+//     for (int i = 0; result > 0; i++, result -= 511)
+//     {
+//         if (result >= 512)
+//         {
+//             char str[512];
+//             str[511] = '\0';
+//             memcpy(str, &formatBuffer_[i * 511], 511);
+//             terminal_->write(str);
+//         }
+//         else
+//         {
+//             terminal_->write(&formatBuffer_[i * 511]);
+//         }
+//     }
+    return terminal_->flush();
+#endif
 }
 
 
