@@ -14,6 +14,7 @@ Shell::Shell(uint32_t outHandle) : position_(0), doExec_(false), waiting_(THREAD
     inStream_ = new Stream();
     outStream_ = Stream::FromHandle(outHandle);
     terminal_ = new terminal::Util(outStream_);
+    formatBuffer_ = new char[FORMAT_BUFFER_SIZE];
     changeDirecotory(APPSDIR);
     startDirectory_ = APPSDIR;
 
@@ -569,6 +570,22 @@ int Shell::prompt(bool newline /* = true */)
 
 int Shell::formatWrite(const char* format, ...)
 {
+#if 0
+    char str[512];
+    str[0] = '\0';
+    va_list args;
+    int result;
+    va_start(args, format);
+    result = vsnprintf(formatBuffer_, FORMAT_BUFFER_SIZE, format, args);
+    va_end(args);
+    if(result > FORMAT_BUFFER_SIZE)
+    {
+        MONAPI_WARN("Shell::out:overflow");
+    }
+
+    return terminal_->write(str, result);
+
+#else
     char str[512];
     str[0] = '\0';
     va_list args;
@@ -581,4 +598,5 @@ int Shell::formatWrite(const char* format, ...)
         MONAPI_WARN("Shell::out:overflow");
     }
     return terminal_->write(str);
+#endif
 }

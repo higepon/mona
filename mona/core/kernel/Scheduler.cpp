@@ -193,7 +193,7 @@ bool Scheduler::SetNextThread()
     g_currentThread = ((Thread*)(root->Top()))->tinfo;
 
 // check cpu usage
-#if 1
+#if 0
     static int count = 0;
     count++;
     if (count % 30 == 0) {

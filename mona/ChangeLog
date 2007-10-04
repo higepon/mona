@@ -1,3 +1,7 @@
+2007-10-04  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/scheme.cpp (scheme_interactive): Moved RETURN_ON_ERROR point.
+
 2007-10-01  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/kernel.cpp (startKernel): Added check code for g_nic. Thx .mjt

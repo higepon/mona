@@ -53,9 +53,11 @@ class Shell {
         CURSOR_RIGHT = 'C',
         CURSOR_LEFT  = 'D',
         OUT_BUFFER_SIZE = 512,
+        FORMAT_BUFFER_SIZE = 8192,
     };
 
     char outbuffer_[OUT_BUFFER_SIZE];
+    char* formatBuffer_;
 
   protected:
     char commandLine_[1024];
