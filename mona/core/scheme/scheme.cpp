@@ -107,9 +107,7 @@ int scheme_batch(const String& file)
 
 void scheme_interactive()
 {
-    logprintf("%s:%d\n", __FILE__, __LINE__);
     env = new Environment();
-    logprintf("%s:%d\n", __FILE__, __LINE__);
     Interaction* interaction = new Interaction(env);
 #ifdef MONA
     g_terminal = new monash::MonaTerminal();
@@ -118,11 +116,8 @@ void scheme_interactive()
     g_top_env = env;
     scheme_register_primitives(env);
     RETURN_ON_ERROR("stdin");
-    logprintf("%s:%d\n", __FILE__, __LINE__);
     scheme_eval_string(LOAD_SCHEME_INTERACTIVE_LIBRARY, env, false);
-    logprintf("%s:%d\n", __FILE__, __LINE__);
-
-    logprintf("%s:%d\n", __FILE__, __LINE__);
+    RETURN_ON_ERROR("stdin");
     interaction->showPrompt();
 
 #ifdef MONA
