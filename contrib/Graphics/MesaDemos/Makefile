@@ -1,4 +1,4 @@
-MONADIR = ../../../../mona
+MONADIR = ../../../mona
 
 all: check
 	$(MAKE) $@ -C glut
