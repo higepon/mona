@@ -418,22 +418,43 @@ _P<ArrayList<_P<_glut_window> > > windows;
 
 extern "C" void _glut_exit(int code)
 {
+    _printf("[1]");
 	if (windows->get_Count() > 0)
 	{
+    _printf("[2]");
 		exited = true;
 	}
 	else
 	{
+    _printf("[3]");
 		exit(code);
+    _printf("[4]");
 	}
+    _printf("[5]");
 }
 
 extern "C" void _mona_set_exit(void(*_exit)(int code));
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
 
-extern "C" void _mona_set_exit(void(*_exit)(int code))
+#undef exit
+static void(*_p_exit)(int code) = NULL;
+
+void _mona_set_exit(void(*_exit)(int code))
 {
+	_p_exit = _exit;
+}
+
+void _mona_exit(int code)
+{
+	if (_p_exit == NULL)
+	{
+		exit(code);
+	}
+	else
+	{
+		(*_p_exit)(code);
+	}
 }
 
 GLUTAPI void GLUTAPIENTRY glutInit(int *argcp, char **argv)
