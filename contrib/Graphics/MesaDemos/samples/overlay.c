@@ -36,7 +36,9 @@
 
 
 enum {
+#ifndef MONA
     NORMAL = 0,
+#endif
     WEIRD = 1
 };
 

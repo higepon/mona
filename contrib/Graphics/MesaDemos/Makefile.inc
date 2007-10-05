@@ -1,20 +1,23 @@
-TARGET = $(SRCS:.c=.exe)
+TARGET = $(SRCS:.c=.EXE)
 
 IMPSFX = -imp
-include $(MONADIR)/env/monapi.inc
+MONADIR = ../../../../mona
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+include $(MONADIR)/share/configs/monapi.inc
 
-CRT_OBJECT = $(TOP)/../tmpmonalibc/crt.o
+CRT_OBJECT = $(MONADIR)/lib/monapi_crt.o
 CFLAGS    += -nostdinc -DGLUT_IMPORT_LIB
 CXXFLAGS  += -nostdinc -DGLUT_IMPORT_LIB -DDEBUG
-INCLUDE   += -I$(TOP)/include -I$(TOP)/../Mesa-6.2.1/include -I$(TOP)/../tmpmonalibc
-ADDLINK    = -L$(TOP)/../Mesa-6.2.1/lib -L$(TOP)/glut -L$(TOP)/../tmpmonalibc -lglut-imp -lGLU-imp -lOSMesa-imp -ltmpmonalibc-imp -lmonalibc-imp
+INCLUDE   += -I$(TOP)/include -I$(TOP)/../Mesa-6.2.1/include
+ADDLINK    = -L$(TOP)/../Mesa-6.2.1/lib -L$(TOP)/glut -lglut-imp -lGLU-imp -lOSMesa-imp -lmonalibc-imp
 
 all: $(TARGET)
 
-.SUFFIXES: .c .exe
-.c.exe:
+.SUFFIXES: .c .EXE
+.c.EXE:
 	$(CC) -c $(CFLAGS) $(INCLUDE) $<
-	$(LD) -s --Map $(@:.exe=.map) $(LFLAGS) -o $@ $(CRT_OBJECT) $(<:.c=.o) -L$(LIBDIR) $(LINK)
+	$(LD) -s --Map $(@:.EXE=.map) $(LFLAGS) -o $@ $(CRT_OBJECT) $(<:.c=.o) -L$(LIBDIR) $(LINK)
 
 clean:
-	rm -f *.exe *.o *.map
+	rm -f *.EXE *.o *.map

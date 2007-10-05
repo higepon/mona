@@ -1,3 +1,5 @@
+MONADIR = ../../../../mona
+
 all: check
 	$(MAKE) $@ -C glut
 	$(MAKE) $@ -C demos
@@ -9,8 +11,8 @@ install: check
 	$(MAKE) $@ -C demos
 	$(MAKE) $@ -C redbook
 	$(MAKE) $@ -C samples
-	mkdir -p $(MONADIR)/bin/iso/MESA
-	cp images/*.rgb $(MONADIR)/bin/iso/MESA
+	mkdir -p $(MONADIR)/bin/MESA
+	cp images/*.rgb $(MONADIR)/bin/MESA
 
 clean: check
 	$(MAKE) $@ -C glut

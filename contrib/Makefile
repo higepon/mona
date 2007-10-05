@@ -19,6 +19,7 @@ all:
 	cd Emulators/monamona && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/jpegview && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/Mesa-gears && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/print && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
@@ -67,6 +68,7 @@ clean:
 	cd Gui/libgui && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
+	cd Graphics/MesaDemos && $(MAKE) clean
 	cd Misc/helloworld && $(MAKE) clean
 	cd Misc/print && $(MAKE) clean
 	cd Misc/upper && $(MAKE) clean

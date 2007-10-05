@@ -41,10 +41,10 @@ SRCS= \
 
 TOP = ..
 include $(TOP)/Makefile.inc
-INSTDIR  = $(BINDIR)/iso/APPS/MONAFRMS/MESA/DEMOS
+INSTDIR  = $(BINDIR)/APPS/MONAFRMS/MESA/DEMOS
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) *.exe $(INSTDIR)
-	mkdir -p $(MONADIR)/bin/iso/MESA
-	$(INSTALL) -m 0644 *.dat $(MONADIR)/bin/iso/MESA
+	$(INSTALL) *.EXE $(INSTDIR)
+	mkdir -p $(MONADIR)/bin/MESA
+	$(INSTALL) -m 0644 *.dat $(MONADIR)/bin/MESA

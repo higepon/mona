@@ -3,7 +3,6 @@ SRCS = \
     bitmap1.c \
     bitmap2.c \
     blendeq.c \
-    blendxor.c \
     copy.c \
     cursor.c \
     depth.c \
@@ -28,10 +27,12 @@ SRCS = \
     tri.c \
     wave.c
 
+#    blendxor.c \
+
 TOP = ..
 include $(TOP)/Makefile.inc
-INSTDIR  = $(BINDIR)/iso/APPS/MONAFRMS/MESA/SAMPLES
+INSTDIR  = $(BINDIR)/APPS/MONAFRMS/MESA/SAMPLES
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) *.exe $(INSTDIR)
+	$(INSTALL) *.EXE $(INSTDIR)

@@ -19,7 +19,7 @@ char *__glutProgramName = NULL;
 
 static Point pos;
 static Size size(256, 256);
-static dword start_tick = 0;
+static uint32_t start_tick = 0;
 static int modifiers = 0;
 static bool exited = false, doubleBuffered = false, numLock = false;
 
@@ -432,9 +432,13 @@ extern "C" void _mona_set_exit(void(*_exit)(int code));
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
 
+extern "C" void _mona_set_exit(void(*_exit)(int code))
+{
+}
+
 GLUTAPI void GLUTAPIENTRY glutInit(int *argcp, char **argv)
 {
-	if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__);
+	if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 	Application::Initialize();
 	windows = new ArrayList<_P<_glut_window> >;
 	__glutProgramName = argv[0];
@@ -636,7 +640,7 @@ GLUTAPI void GLUTAPIENTRY glutMainLoop(void)
 		if (w->get_Visible()) w->Dispose();
 	} END_FOREACH
 	Application::Dispose();
-	if (isInDLL(__CTOR_LIST__)) invokeFuncList(__DTOR_LIST__);
+	if (isInDLL(__CTOR_LIST__)) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 }
 
 GLUTAPI int GLUTAPIENTRY glutExtensionSupported(const char *name)

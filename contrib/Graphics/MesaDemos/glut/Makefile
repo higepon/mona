@@ -1,6 +1,10 @@
 LIB_STATIC   = libglut.a
 TARGET       = $(LIB_STATIC)
 
+MONADIR = ../../../../mona
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libglut-imp.a
 LIB_DYNAMIC  = GLUT.DLL
@@ -27,13 +31,15 @@ CSOURCES = \
 	glut_util.c \
 	win32_util.c
 
-include $(MONADIR)/env/monapi.inc
+CXXOBJECTS = $(SOURCES:.cpp=.o)
+COBJECTS = $(CSOURCES:.c=.o)
+OBJECTS = $(CXXOBJECTS) $(COBJECTS)
 
 CFLAGS += -nostdinc -DGLUT_IMPORT_LIB
 CXXFLAGS += -nostdinc -DGLUT_IMPORT_LIB -DDEBUG
 
-INCLUDE = -I$(INCDIR) -I../include -I../../Mesa-6.2.1/include -I../../tmpmonalibc
-LINK    = -L$(MONADIR)/lib -L../../Mesa-6.2.1/lib -L../../tmpmonalibc -lGLU-imp -lOSMesa-imp -ltmpmonalibc-imp -lgui-imp -lmonalibc-imp -lmonapi-imp
+INCLUDE = -I$(INCDIR) -I$(INCDIR)/monalibc -I../include -I../../Mesa-6.2.1/include
+LINK    = -L$(MONADIR)/lib -L../../Mesa-6.2.1/lib -lGLU-imp -lOSMesa-imp -lgui-imp -lmonalibc-imp -lmonapi-imp
 
 all: $(TARGET)
 
@@ -61,5 +67,5 @@ clean:
 
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
-	$(INSTALL) -m 0644 $(LIB_DYNAMIC) $(MONADIR)/bin/iso/LIBS
+	$(INSTALL) -m 0644 $(LIB_DYNAMIC) $(MONADIR)/bin/LIBS
 endif

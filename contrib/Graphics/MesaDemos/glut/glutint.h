@@ -8,6 +8,9 @@
    implied. This program is -not- in the public domain. */
 
 #if defined(MONA)
+#ifndef APIENTRY
+#define APIENTRY
+#endif
 extern void *__glutFont(void *font);
 #elif defined(__CYGWIN32__)
 #include <sys/time.h>

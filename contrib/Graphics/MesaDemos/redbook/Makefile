@@ -65,8 +65,8 @@ SRCS= \
 
 TOP = ..
 include $(TOP)/Makefile.inc
-INSTDIR  = $(BINDIR)/iso/APPS/MONAFRMS/MESA/REDBOOK
+INSTDIR  = $(BINDIR)/APPS/MONAFRMS/MESA/REDBOOK
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) *.exe $(INSTDIR)
+	$(INSTALL) *.EXE $(INSTDIR)
