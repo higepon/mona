@@ -46,7 +46,7 @@ sub writedir {
     }
     foreach my $d (@files) {
         next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
-        next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS' || "$dir$d" eq 'MUSIC');
+        next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS' || "$dir$d" eq 'MUSIC' || "$dir$d" =~ /MESA/);
         call("fat_write $g_out --mkdir $dir$d");
         writedir("$dir$d");
     }
