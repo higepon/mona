@@ -62,7 +62,7 @@ int FileServer::initializeMountedFileSystems()
     mountedFSs_.push_back(pfs);
 #endif
 
-#if 1
+#if 0
     // FAT12FileSystem
     fd_ = new FDCDriver();
     FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
