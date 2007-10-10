@@ -419,6 +419,7 @@ void Scheduler::SetDump()
             current  = current->next;
 
             strncpy(current->name, i->process->getName(), sizeof(current->name));
+            current->name[sizeof(current->name) - 1] = '\0';
             current->cr3   = i->archinfo->cr3;
             current->eip   = i->archinfo->eip;
             current->esp   = i->archinfo->esp;

@@ -1,32 +1,49 @@
 #include <monapi.h>
 #include <monalibc.h>
 #include <monapi/terminal/Util.h>
+#include <monalibc/assert.h>
 
 using namespace MonAPI;
 using namespace MonAPI::terminal;
 
 Util::Util(Stream* out) : out_(out), writtenSize_(0)
 {
+    bufferSize_ = out_->capacity();
+    buffer_ = new uint8_t[bufferSize_];
 }
 
 Util::~Util()
 {
+    delete[] buffer_;
 }
 
 int Util::writeToOutBuffer(Command c)
 {
-    if (writtenSize_ + c.getSize() > BUFFER_SIZE)
-    {
-        flush();
-    }
-    memcpy(&buffer_[writtenSize_], c.getBuffer(), c.getSize());
-    writtenSize_ += c.getSize();
-    return 0;
+    return write(c.getBuffer(), c.getSize());
 }
 
 int Util::write(const char* text)
 {
-    return writeToOutBuffer(Command((const uint8_t*)text, strlen(text)));
+    write((const uint8_t*)text, strlen(text) + 1);
+    return 0;
+}
+
+int Util::write(const uint8_t* text, uint32_t size)
+{
+    while (size > 0)
+    {
+        uint32_t currentCapacity = getCurrentCapacity();
+        if (0 == currentCapacity)
+        {
+            flush();
+            currentCapacity = getCurrentCapacity();
+        }
+        uint32_t writeSize = size > getCurrentCapacity() ? getCurrentCapacity() : size;
+        memcpy(&buffer_[writtenSize_], text, writeSize);
+        writtenSize_ += writeSize;
+        size -= writeSize;
+    }
+    return 0;
 }
 
 int Util::backSpace()
@@ -71,9 +88,19 @@ int Util::moveCursor(uint32_t x, uint32_t y)
 
 int Util::flush()
 {
-    if (writtenSize_ == 0) return 0;
-    uint32_t wroteSize = out_->write(buffer_, writtenSize_);
-    bool ok = writtenSize_ == wroteSize;
-    writtenSize_ = 0;
-    return ok ? MONA_SUCCESS : MONA_FAILURE;
+    uint8_t* p = buffer_;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    while (writtenSize_ > 0)
+    {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        out_->waitForWrite();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        uint32_t wroteSize = out_->write(p, writtenSize_);
+        p += wroteSize;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        writtenSize_ -= wroteSize;
+    }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    assert(writtenSize_ == 0);
+    return MONA_SUCCESS;
 }

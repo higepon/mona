@@ -597,6 +597,6 @@ int Shell::formatWrite(const char* format, ...)
     {
         MONAPI_WARN("Shell::out:overflow");
     }
-    return terminal_->write(str);
+    return terminal_->write((uint8_t*)str, strlen(str) + 1);
 #endif
 }

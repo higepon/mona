@@ -24,16 +24,15 @@ public:
     int moveCursorLeft(uint32_t n);
     int moveCursorRight(uint32_t n);
     int moveCursorTo(uint32_t n, char direction);
+    int write(const uint8_t* text, uint32_t size);
     int write(const char* text);
+    uint32_t getCurrentCapacity() { return bufferSize_ - writtenSize_; }
 
 protected:
-    enum
-    {
-        BUFFER_SIZE = 512 // should be less than Stream size
-    };
     Stream* out_;
     uint32_t writtenSize_;
-    uint8_t buffer_[BUFFER_SIZE];
+    uint32_t bufferSize_;
+    uint8_t* buffer_;
     CommandCreator creator_;
 };
 
