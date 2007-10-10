@@ -25,10 +25,15 @@ StringReader::~StringReader()
 
 char StringReader::readChar()
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (position_ >= (int)text_.size()) return EOF;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     char c = text_[position_];
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (c == '\n') lineno_++;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     position_++;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return c;
 }
 

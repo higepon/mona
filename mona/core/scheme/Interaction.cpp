@@ -61,7 +61,9 @@ void Interaction::onInput(const String& line)
 
     // あとで Scheme / eval /print に書き換える
     SCHEME_WRITE(stdout, "\n");
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scheme_eval_string(input_, env_, true); // eval => print
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     showPrompt();
     return;
 }

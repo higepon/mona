@@ -52,8 +52,11 @@ int Scanner::getLineNo()
 //          | ( | ) | #( | ' | ` | , | ,@ | .
 Token* Scanner::getToken()
 {
+    logprintf("reader = %x &reader=%x %s %s:%d\n", reader_, &reader_, __func__, __FILE__, __LINE__);
     char c = readChar();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (c == EOF) return NULL;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Token* token;
     while (isSpace(c))
     {
@@ -328,7 +331,13 @@ other:
 
 char Scanner::readChar()
 {
+    logprintf("reader = %x &reader=%x %s %s:%d\n", reader_, &reader_, __func__, __FILE__, __LINE__);
     return reader_->readChar();
+}
+
+void Scanner::temp(const char* str)
+{
+    logprintf("*** reader = %x &reader=%x [%s] %s %s:%d\n", reader_, &reader_, str, __func__, __FILE__, __LINE__);
 }
 
 void Scanner::unReadChar(char c)

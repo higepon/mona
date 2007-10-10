@@ -472,21 +472,32 @@ PROCEDURE(MonaSleep, "mona-sleep")
     RETURN_BOOLEAN(false);
 }
 
+extern Scanner* g_scanner;
+
 PROCEDURE(MonaPs, "mona-ps")
 {
     ARGC_SHOULD_BE(0);
 #ifdef MONA
+    g_scanner->temp("[1]");
     ::util::String result = "[tid] [state]  [eip]    [esp]    [cr3]    [name]\n";
+    g_scanner->temp("[2]");
     char buf[256];
+    g_scanner->temp("[3]");
     syscall_set_ps_dump();
+    g_scanner->temp("[4]");
     PsInfo info;
+    g_scanner->temp("[5]");
     while (syscall_read_ps_dump(&info) == 0)
     {
+    g_scanner->temp("[6]");
         sprintf(buf, "%5d %s %08x %08x %08x %s\n",
                 info.tid, info.state ? "running" : "waiting",
                 info.eip, info.esp, info.cr3, info.name);
+    g_scanner->temp("[7]");
         result += buf;
+    g_scanner->temp("[8]");
     }
+    logprintf("before string\n");
     return new SString(result, lineno());
 #endif
     RETURN_BOOLEAN(false);

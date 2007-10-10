@@ -83,7 +83,7 @@ MonaTerminal::~MonaTerminal()
 
 int MonaTerminal::formatWrite(const char* format, ...)
 {
-#if 1
+#if 0
     char str[512];
     str[0] = '\0';
     va_list args;
@@ -98,17 +98,22 @@ int MonaTerminal::formatWrite(const char* format, ...)
         _printf("Shell::out:overflow");
         str[511] = '\0';
     }
-    terminal_->write(str);
+    terminal_->write((const uint8_t*)str, result);
     return terminal_->flush();
 #else
     formatBuffer_[0] = '\0';
     va_list args;
     int result;
     va_start(args, format);
+    logprintf("before\n");
     result = vsprintf(formatBuffer_, format, args);
+    logprintf("after\n");
     va_end(args);
+    logprintf("before terminal write\n");
+    terminal_->write((const uint8_t*)formatBuffer_, result);
+    logprintf("after terminal write\n");
 
-    _printf("%s:%d\n",formatBuffer_,     strlen(formatBuffer_));
+//     _printf("%s:%d\n",formatBuffer_,     strlen(formatBuffer_));
 
 //     if(result > FORMAT_BUFFER_SIZE)
 //     {
@@ -128,6 +133,7 @@ int MonaTerminal::formatWrite(const char* format, ...)
 //             terminal_->write(&formatBuffer_[i * 511]);
 //         }
 //     }
+    logprintf("before flush\n");
     return terminal_->flush();
 #endif
 }

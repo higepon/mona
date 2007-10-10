@@ -69,17 +69,29 @@ void scheme_expand_stack(uint32_t mb)
 #endif
 }
 
+// for debug only
+Scanner* g_scanner;
+
 Object* scheme_eval_string(const String& input, Environment* env, bool out /* = false */)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     StringReader* reader = new StringReader(input);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Scanner* scanner = new Scanner(reader, reader, NULL);
-    Parser parser(scanner);
+    g_scanner = scanner;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    Parser* parser = new Parser(scanner);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Object* evaluated = NULL;
-    for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
+    for (Object* sexp = parser->parse(); sexp != SCM_EOF; sexp = parser->parse())
     {
         evaluated = Kernel::eval(sexp, env);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
+        g_scanner->temp("hoge");
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return evaluated;
 }
 

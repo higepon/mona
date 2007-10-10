@@ -33,6 +33,7 @@ public:
     Token* getToken();
     ::util::String getFileName();
     int getLineNo();
+    void temp(const char* str);
 
 protected:
     char readChar();
@@ -45,6 +46,7 @@ protected:
     bool isDigit(char c);
     bool isExpressionKeyword(const ::util::String& s);
     bool isSynaticKeyword(const ::util::String& s);
+
     Reader* reader_;
     StringReader* stringReader_;
     InputPort* inputPort_;

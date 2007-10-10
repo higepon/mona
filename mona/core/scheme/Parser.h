@@ -28,6 +28,9 @@ public:
     virtual ~Parser();
     Object* parse();
 
+    // public for debug
+    Scanner* scanner_;
+
 protected:
     Object* parseDatum();
     Object* parseSimpleDatum();
@@ -37,7 +40,6 @@ protected:
     Token* nextToken();
     int tokenType();
 
-    Scanner* scanner_;
     Token* token_;
 };
 
