@@ -55,7 +55,6 @@ int Terminal::moveCursorLeft(uint32_t n)
     line_.moveCursorLeft(n);
     drawLine(g);
     g->Dispose();
-    Refresh();
     return 0;
 }
 
@@ -66,7 +65,6 @@ int Terminal::moveCursorRight(uint32_t n)
     line_.moveCursorRight(n);
     drawLine(g);
     g->Dispose();
-    Refresh();
     return 0;
 }
 
@@ -98,11 +96,9 @@ int Terminal::lineFeed()
         x_ = 0;
         g->FillRectangle(this->get_BackColor(), 0, y_, r.Width, r.Height - y_);
         g->Dispose();
-        Refresh();
     }
     drawLine(g);
     g->Dispose();
-    Refresh();
     return 0;
 }
 
@@ -113,8 +109,6 @@ int Terminal::backSpace()
     line_.moveCursorLeft();
     drawLine(g);
     g->Dispose();
-    Refresh();
-
     return 0;
 }
 
@@ -127,7 +121,6 @@ int Terminal::write(uint8_t* buf, uint32_t length)
     Size r = this->get_ClientSize();
     drawLine(g);
     g->Dispose();
-    Refresh();
     return 0;
 }
 

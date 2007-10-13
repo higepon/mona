@@ -1,3 +1,9 @@
+2007-10-13  higepon  <higepon@users.sourceforge.jp>
+
+        * Shells/mshell/Terminal.cpp (Terminal::write): Speed up drawing.
+
+        * Shells/mshell/Form1.cpp (StdoutMessageLoop): Fixed a Scheme shell killed on (ps) bug.
+
 2007-10-05  higepon  <higepon@users.sourceforge.jp>
 
         * Added Graphics/MesaDemo. Not tested.

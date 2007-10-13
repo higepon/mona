@@ -30,13 +30,14 @@ static void StdoutMessageLoop()
     g_oldStreamOutHandle = msg.arg2;
 
     MonAPI::terminal::CommandParser* parser = new MonAPI::terminal::CommandParser(g_terminal.get());
-    const uint32_t BUFFER_SIZE = 256;
+    const uint32_t BUFFER_SIZE = 1024;
     for (;;)
     {
         uint8_t buffer[BUFFER_SIZE];
         stream.waitForRead();
         uint32_t size = stream.read(buffer, BUFFER_SIZE);
         if (size == 0) continue;
+        buffer[size == BUFFER_SIZE ? BUFFER_SIZE - 1 : size] = '\0';
         // don't display ^EOP
         char* found = MonAPI::strstr_n((char*)buffer, "^EOP", size);
         if (NULL != found)
@@ -45,6 +46,7 @@ static void StdoutMessageLoop()
         }
 
         parser->parse(buffer, size);
+        g_terminal->Refresh();
     }
 }
 
