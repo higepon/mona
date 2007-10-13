@@ -397,7 +397,7 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         }
         else
         {
-            entry->name = string((const char*)pathEntry->name, pathEntry->length);
+            entry->name = upperCase(string((const char*)pathEntry->name, pathEntry->length));
         }
         list->push_back(entry);
 
@@ -446,7 +446,7 @@ string ISO9660FileSystem::getProperName(const string& name)
     {
         result = result.substr(0, result.size() - 1);
     }
-    return result;
+    return upperCase(result);
 }
 
 void ISO9660FileSystem::setDirectoryRelation(EntryList* list, Entry* directory)
@@ -606,11 +606,15 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
         string name = string(iEntry->name, iEntry->name_len);
 
-        if (iEntry->length == 0) break;
+        if (iEntry->length == 0)
+        {
+            position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
+            continue;
+        }
         for (EntryList::iterator i = children->begin(); i != children->end(); ++i)
         {
             Entry* child = *i;
-            if (name != child->name) continue;
+            if (upperCase(name) != child->name) continue;
 
             setDetailInformation(child, iEntry);
         }

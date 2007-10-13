@@ -89,18 +89,12 @@ int Util::moveCursor(uint32_t x, uint32_t y)
 int Util::flush()
 {
     uint8_t* p = buffer_;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     while (writtenSize_ > 0)
     {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         out_->waitForWrite();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint32_t wroteSize = out_->write(p, writtenSize_);
         p += wroteSize;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writtenSize_ -= wroteSize;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//    assert(writtenSize_ == 0);
     return MONA_SUCCESS;
 }

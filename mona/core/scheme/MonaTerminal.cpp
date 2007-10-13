@@ -83,62 +83,15 @@ MonaTerminal::~MonaTerminal()
 
 int MonaTerminal::formatWrite(const char* format, ...)
 {
-#if 0
-    char str[512];
-    str[0] = '\0';
-    va_list args;
-    int result;
-    va_start(args, format);
-    result = vsnprintf(str, 512, format, args);
-    va_end(args);
-
-    // fix me, buffer size! See MonAPI::Terminal::Util
-    if(result > 512)
-    {
-        _printf("Shell::out:overflow");
-        str[511] = '\0';
-    }
-    terminal_->write((const uint8_t*)str, result);
-    return terminal_->flush();
-#else
     formatBuffer_[0] = '\0';
     va_list args;
     int result;
     va_start(args, format);
-    logprintf("before\n");
     result = vsprintf(formatBuffer_, format, args);
-    logprintf("after\n");
     va_end(args);
-    logprintf("before terminal write\n");
     terminal_->write((const uint8_t*)formatBuffer_, result);
-    logprintf("after terminal write\n");
-
-//     _printf("%s:%d\n",formatBuffer_,     strlen(formatBuffer_));
-
-//     if(result > FORMAT_BUFFER_SIZE)
-//     {
-//         _printf("Shell::out:overflow");
-//     }
-//     for (int i = 0; result > 0; i++, result -= 511)
-//     {
-//         if (result >= 512)
-//         {
-//             char str[512];
-//             str[511] = '\0';
-//             memcpy(str, &formatBuffer_[i * 511], 511);
-//             terminal_->write(str);
-//         }
-//         else
-//         {
-//             terminal_->write(&formatBuffer_[i * 511]);
-//         }
-//     }
-    logprintf("before flush\n");
     return terminal_->flush();
-#endif
 }
-
-
 
 /*----------------------------------------------------------------------
     private functions
@@ -456,6 +409,11 @@ void MonaTerminal::outputChar(char c)
     }
     terminal_->flush();
     cursorPosition_++;
+}
+
+void MonaTerminal::addHistory(String line)
+{
+    histories_.add(line);
 }
 
 #endif // MONA

@@ -26,19 +26,10 @@ Parser::~Parser()
 {
 }
 
-// for debug only
-extern Scanner* g_scanner;
-
-
 Object* Parser::parse()
 {
-    g_scanner->temp("parse1");
-    logprintf("scanner = %x %s %s:%d\n", scanner_, __func__, __FILE__, __LINE__);
     nextToken();
-    g_scanner->temp("parse2");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Object* ret = parseDatum();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return ret;
 }
 

@@ -32,7 +32,7 @@ void Interaction::reset()
     input_ = "";
 }
 
-void Interaction::onInput(const String& line)
+bool Interaction::onInput(const String& line)
 {
     input_ += line;
     int leftParenCount  = input_.countChar('(');
@@ -41,7 +41,7 @@ void Interaction::onInput(const String& line)
     {
         SCHEME_WRITE(stdout, "\n");
         showPrompt();
-        return ;
+        return false;
     }
     else if (leftParenCount - rightParenCount == 1)
     {
@@ -51,21 +51,19 @@ void Interaction::onInput(const String& line)
         input_ += ")\n";
         SCHEME_WRITE(stdout, ")\n");
 #else
-        return;
+        return false;
 #endif
     }
     else if (leftParenCount != rightParenCount)
     {
-        return;
+        return false;
     }
 
-    // あとで Scheme / eval /print に書き換える
     SCHEME_WRITE(stdout, "\n");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     scheme_eval_string(input_, env_, true); // eval => print
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    showPrompt();
-    return;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    return true;
 }
 
 void Interaction::showPrompt()

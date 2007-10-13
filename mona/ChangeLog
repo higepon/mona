@@ -1,3 +1,7 @@
+2007-10-13  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::setDetailInformation): Fixed a readdir bug. Thx neri.
+
 2007-10-04  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/scheme.cpp (scheme_interactive): Moved RETURN_ON_ERROR point.

@@ -74,24 +74,20 @@ Scanner* g_scanner;
 
 Object* scheme_eval_string(const String& input, Environment* env, bool out /* = false */)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     StringReader* reader = new StringReader(input);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Scanner* scanner = new Scanner(reader, reader, NULL);
     g_scanner = scanner;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Parser* parser = new Parser(scanner);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Object* evaluated = NULL;
     for (Object* sexp = parser->parse(); sexp != SCM_EOF; sexp = parser->parse())
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         evaluated = Kernel::eval(sexp, env);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
-        g_scanner->temp("hoge");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return evaluated;
 }
 
@@ -136,8 +132,20 @@ void scheme_interactive()
     for (;;)
     {
         // insert '(' automatically.y
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         g_terminal->outputChar('(');
-        interaction->onInput(g_terminal->getLine());
+        String line = g_terminal->getLine();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        if (interaction->onInput(line))
+        {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            RETURN_ON_ERROR("stdin");
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            g_terminal->addHistory(line);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            interaction->showPrompt();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        }
     }
 #else
 
@@ -146,7 +154,11 @@ void scheme_interactive()
         char* line = NULL;;
         size_t length = 0;
         getline(&line, &length, stdin);
-        interaction->onInput(line);
+        if (interaction->onInput(line))
+        {
+            RETURN_ON_ERROR("stdin");
+            interaction->showPrompt();
+        }
     }
 #endif
 }

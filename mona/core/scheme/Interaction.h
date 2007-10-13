@@ -26,7 +26,7 @@ public:
     Interaction(Environment* env);
     virtual ~Interaction();
 
-    void onInput(const ::util::String& line);
+    bool onInput(const ::util::String& line);
     void reset();
     void showPrompt();
 

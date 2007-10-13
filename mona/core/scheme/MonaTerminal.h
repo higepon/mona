@@ -31,6 +31,7 @@ public:
     uint32_t getScreenHandle() const { return screenHandle_; }
     void setKeySuppresed() { isKeySuppressed_ = true; }
     void outputChar(char c);
+    void addHistory(::util::String line);
 protected:
     bool initialize();
     bool onKeyDown(int keycode, int modifiers);
