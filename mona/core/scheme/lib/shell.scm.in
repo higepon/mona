@@ -103,7 +103,7 @@
           (loop (mona-dir-read d)
                 (cons (create-fs-entry entry) entries))
           (begin (mona-dir-close d) entries)))))
-;; depends on *fs-root-directory* / *fs-current-directory* above
+;; depends on *fs-root-directory* / *fs-current-directory* end
 
 (define (fs-find-entry dir paths)
   (cond ((and dir (null? (cdr paths))) (fs-has-child dir (car paths)))
