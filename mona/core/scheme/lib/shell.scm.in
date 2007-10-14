@@ -75,7 +75,7 @@
 
 ;; depends on directory entry structure above
 
-;; depends on *fs-root-directory* / *fs-current-directory*
+;; depends on *fs-root-directory* / *fs-current-directory* / *fs-initialized?* / *fs-initialize*
 (define (fs-find path)
   (let ((paths (string-split path #\/)))
     (if (fs-start-with-slash? path)
@@ -142,10 +142,11 @@
      (if (fs-directory? e)
          (fs-create-tree e (string-append path "/" (fs-name e)))))
    (remove (lambda (e) (or (string=? (fs-name e) ".") (string=? (fs-name e) "..")))
-           (fs-io-enum-directory-entries path))))
+           (fs-io-enum-directory-entries  path))))
 
 (define cd
   (lambda path
+    (and (not *fs-initialized?*) (*fs-initialize*))
     (let ((p (if (null? path) "/APPS" (car path))))
       (if (fs-change-directory p)
           #t
@@ -158,6 +159,7 @@
 
 (define ls
   (lambda path
+    (and (not *fs-initialized?*) (*fs-initialize*))
     (let* ((directory (and (not (null? path)) (fs-find (car path)))))
       (for-each
        (lambda (e)
@@ -165,6 +167,7 @@
              (begin (display "[") (display (fs-name e)) (print "]"))
              (print (fs-name e))))
        (fs-entries (if directory directory (fs-current-directory)))))))
+
 
 (define (gui)
   (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI" #t))

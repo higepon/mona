@@ -403,12 +403,50 @@ PROCEDURE(Display, "display")
     return SCM_UNDEF;
 }
 
+#if 0
+uint8_t* loadFile(const String& path, uint32_t* size)
+{
+    uint8_t* buf;
+    FILE* fp;
+
+    fp = fopen(path.data(), "rb");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "%s: file not found\n", __func__);
+        return NULL;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    *size = ftell(fp);
+
+    if (size == 0)
+    {
+        fclose(fp);
+        return NULL;
+    }
+
+    fseek(fp, 0, SEEK_SET);
+
+    buf = new uint8_t [*size];
+    if (buf == NULL)
+    {
+        fprintf(stderr, "%s: memory allocate error\n", __func__);
+        fclose(fp);
+        return NULL;
+    }
+    fread(buf, 1, *size, fp);
+    fclose(fp);
+    return buf;
+}
+#endif
+
 PROCEDURE(Load, "load")
 {
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
 
     // don't use env, use g_top_env instead !
+#if 1
     Environment* environment = g_top_env;
     Object* port;
     SCM_APPLY1("open-input-port", environment, port, s);
@@ -420,5 +458,11 @@ PROCEDURE(Load, "load")
         Kernel::eval(sexp, env);
     }
     inputPort->close();
+#else
+    uint32_t size;
+    uint8_t* buf = loadFile(s->value(), &size);
+    buf[size - 1] = '\0';
+    scheme_eval_string(String((char*)buf), env, false);
+#endif
     return SCM_TRUE;
 }

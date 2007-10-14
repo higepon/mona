@@ -154,7 +154,6 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 #define LOAD_SCHEME_BATCH_LIBRARY       "(load \"lib/batch.scm\")"
 #endif
 
-
 // notice!
 // don't use like below
 // SCHEME_WRITE(stream, o->eval);
@@ -163,15 +162,13 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
 #include "MonaTerminal.h"
 #define SCHEME_WRITE(stream, ...)                                       \
 {                                                                       \
-    char buf[1024];                                                     \
-    sprintf(buf, __VA_ARGS__);                                          \
     if (g_batch_mode)                                                   \
     {                                                                   \
-        printf(buf);                                                    \
+        printf(__VA_ARGS__);                                            \
     }                                                                   \
     else                                                                \
     {                                                                   \
-        g_terminal->formatWrite(buf);                                   \
+        g_terminal->formatWrite(__VA_ARGS__);                           \
     }                                                                   \
     int __file = fileno(stream);                                        \
     int __out  = fileno(stdout);                                        \

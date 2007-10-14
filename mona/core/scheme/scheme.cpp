@@ -81,13 +81,9 @@ Object* scheme_eval_string(const String& input, Environment* env, bool out /* = 
     Object* evaluated = NULL;
     for (Object* sexp = parser->parse(); sexp != SCM_EOF; sexp = parser->parse())
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         evaluated = Kernel::eval(sexp, env);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (out) SCHEME_WRITE(stdout, "%s\n", evaluated->toString().data());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return evaluated;
 }
 
@@ -132,19 +128,13 @@ void scheme_interactive()
     for (;;)
     {
         // insert '(' automatically.y
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         g_terminal->outputChar('(');
         String line = g_terminal->getLine();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (interaction->onInput(line))
         {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             RETURN_ON_ERROR("stdin");
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             g_terminal->addHistory(line);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             interaction->showPrompt();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         }
     }
 #else

@@ -25,13 +25,13 @@ StringReader::~StringReader()
 
 char StringReader::readChar()
 {
-    logprintf("text_ %x text.size=%d %s %s:%d\n", &text_, text_.size(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//    logprintf("text_ %x text.size=%d %s %s:%d\n", &text_, text_.size(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (position_ >= (int)text_.size())
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return EOF;
     }
-    logprintf("position_ = %d %s %s:%d\n", position_, __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//    logprintf("position_ = %d %s %s:%d\n", position_, __func__, __FILE__, __LINE__);fflush(stdout);// debug
     char c = text_[position_];
     if (c == '\n') lineno_++;
     position_++;

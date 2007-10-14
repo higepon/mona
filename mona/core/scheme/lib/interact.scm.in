@@ -9,11 +9,13 @@
 <IF_MONA>(load "<LIBDIR>/mona.scm")
 <IF_LINUX>(load "<LIBDIR>/linux.scm")
 
+(define *fs-initialized?* #f)
 (define *fs-root-directory* (fs-new-directory "/"))
-<IF_LINUX>(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
-<IF_MONA>(fs-create-tree *fs-root-directory* "/")
 (define *fs-current-directory* *fs-root-directory*)
-
-;<IF_MONA>(as2)
-;<IF_MONA>(hp)
+(define (*fs-initialize*)
+  (print "now initializing directory cache...")
+  <IF_LINUX>(fs-create-tree *fs-root-directory* "/home/taro/mona/bin")
+  <IF_MONA>(fs-create-tree *fs-root-directory* "/")
+  (set! *fs-initialized?* #t)
+)
 

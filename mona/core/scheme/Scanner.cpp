@@ -333,7 +333,7 @@ char Scanner::readChar()
 
 void Scanner::temp(const char* str)
 {
-    logprintf("*** reader = %x &reader=%x [%s] %s %s:%d\n", reader_, &reader_, str, __func__, __FILE__, __LINE__);
+//    logprintf("*** reader = %x &reader=%x [%s] %s %s:%d\n", reader_, &reader_, str, __func__, __FILE__, __LINE__);
 }
 
 void Scanner::unReadChar(char c)

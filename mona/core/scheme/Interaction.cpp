@@ -60,9 +60,9 @@ bool Interaction::onInput(const String& line)
     }
 
     SCHEME_WRITE(stdout, "\n");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     scheme_eval_string(input_, env_, true); // eval => print
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return true;
 }
 
