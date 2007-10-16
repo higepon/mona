@@ -48,7 +48,7 @@
 void dumpMemory()
 {
     // should be 4 byte align
-    uint32_t* p = (uint32_t*)((0xA00291EF & 0xfffffffc)); //- 1);
+    uint32_t* p = (uint32_t*)((0xA002A1EF & 0xfffffffc)); //- 1);
 
     for (int i = 0; i < 100; i++)
     {
