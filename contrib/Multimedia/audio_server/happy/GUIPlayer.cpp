@@ -126,19 +126,13 @@ void GUIPlayer::readSongs()
 
 void GUIPlayer::playLoop()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     struct audio_data_format defaultFormat = {0, 2, 16, 4400};
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     audio = new Audio(&defaultFormat, AUDIO_OUTPUT);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (-1 == audio->start())
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         showError("Can not connect to AUDIO server!\n");
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     readSongs();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (songs.size() == 0)
     {
         showError("No songs found\n");

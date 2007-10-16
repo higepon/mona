@@ -47,16 +47,12 @@ int Audio::setFormat(struct audio_data_format *format)
 {
     MessageInfo msg;
     char buf[128];
-    logprintf("memcpy(%x, %x, %d) %s %s:%d\n", &format, format, sizeof(struct audio_data_format), __func__, __FILE__, __LINE__);
     memcpy(&format_, format, sizeof(struct audio_data_format));
-    logprintf("memcpy(%x, %x, %d) %s %s:%d\n", &format, format, sizeof(struct audio_data_format), __func__, __FILE__, __LINE__);
     if( server_id == THREAD_UNKNOWN )
     {
         server_id = find_audio_server();
     }
-    logprintf("memcpy(%x, %x, %d) %s %s:%d\n", buf, &format, sizeof(struct audio_data_format), __func__, __FILE__, __LINE__);
     memcpy(buf, &format_, sizeof(struct audio_data_format));
-    logprintf("memcpy(%x, %x, %d) %s %s:%d\n", buf, &format, sizeof(struct audio_data_format), __func__, __FILE__, __LINE__);
     MonAPI::Message::sendReceive(&msg, server_id, MSG_AUDIO_SET_FORMAT,
                             channel_, 0, 0, buf);
     return msg.arg2;
