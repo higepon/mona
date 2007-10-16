@@ -1,7 +1,7 @@
 #include <monapi.h>
 using namespace MonAPI;
 
-#define DEBUG_STREAM
+//#define DEBUG_STREAM
 
 #ifdef DEBUG_STREAM
 #define LOG(...) _logprintf("[%s:%d:%s] ", __FILE__, __LINE__, System::getProcessInfo()->name), _logprintf(__VA_ARGS__), _logprintf("\n")
