@@ -1,3 +1,7 @@
+2007-10-19  higepon  <higepon@users.sourceforge.jp>
+
+        * Multimedia/audio_server/happy/GUIPlayer.cpp (GUIPlayer::playLoop): You can click a song title button.
+
 2007-10-13  higepon  <higepon@users.sourceforge.jp>
 
         * Shells/mshell/Terminal.cpp (Terminal::write): Speed up drawing.

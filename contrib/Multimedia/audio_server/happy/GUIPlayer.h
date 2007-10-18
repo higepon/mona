@@ -29,11 +29,13 @@ private:
         std::string path;
         std::string artist;
         std::string title;
-        Label* label;
+//        Label* label;
+        Button* label;
     } Song;
 
     typedef std::vector<std::string> strings;
-    typedef std::map<std::string, Label*> LabelsMap;
+//    typedef std::map<std::string, Label*> LabelsMap;
+    typedef std::map<std::string, Button*> LabelsMap;
     typedef std::vector<Song*> Songs;
 
     Audio* audio;
@@ -42,6 +44,7 @@ private:
     ImageSinkButton* forwardButton;
     ImageSinkButton* backwardButton;
     int command;
+    int commandSelectIndex;
     uint32_t tid;
     Songs songs;
     static const std::string MUSIC_DIR;
@@ -53,6 +56,7 @@ private:
         COMMAND_BACKWARD,
         COMMAND_VOLUME_DOWN,
         COMMAND_VOLUME_UP,
+        COMMAND_SELECT,
         COMMAND_EXIT,
         MSG_BUFFER_SIZE = 64,
     };

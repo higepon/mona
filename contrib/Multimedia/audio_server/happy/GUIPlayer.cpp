@@ -68,6 +68,19 @@ void GUIPlayer::processEvent(Event* e)
     {
         command = COMMAND_BACKWARD;
     }
+    else if (e->getType() == Event::MOUSE_PRESSED)
+    {
+        for (int i = 0; i < songs.size(); i++)
+        {
+            Song* song = songs[i];
+            if (e->getSource() == song->label)
+            {
+                command = COMMAND_SELECT;
+                commandSelectIndex = i;
+                break;
+            }
+        }
+    }
 }
 
 void GUIPlayer::readSongs()
@@ -115,8 +128,9 @@ void GUIPlayer::readSongs()
             song->artist = "Unknown Artist";
         }
 
-        song->label = new Label((song->title + " - " + song->artist).data());
-        song->label->setBounds(0, 20 * i + 20, 250, 20);
+//        song->label = new Label((song->title + " - " + song->artist).data());
+        song->label = new Button((song->title + " - " + song->artist).data());
+        song->label->setBounds(0, 20 * i + 20, 235, 20);
         add(song->label);
         songs.push_back(song);
         fclose(fp);
@@ -177,6 +191,11 @@ void GUIPlayer::playLoop()
                 goto replay;
             case COMMAND_VOLUME_UP:
             case COMMAND_VOLUME_DOWN:
+                break;
+            case COMMAND_SELECT:
+                command = COMMAND_NONE;
+                playingIndex = commandSelectIndex - 1;
+                goto replay;
                 break;
             default:
                 break;
