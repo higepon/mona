@@ -153,7 +153,6 @@ void* memcpy(void* s1, const void* s2, size_t size) {
 //         s++;
 //         size--;
 //     }
-
     asm volatile("movl %0, %%edi \n"
                  "movl %1, %%esi \n"
                  "movl %2, %%ecx \n"

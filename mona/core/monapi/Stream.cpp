@@ -167,6 +167,7 @@ uint32_t Stream::read(uint8_t* buffer, uint32_t size)
         if (THREAD_UNKNOWN == thread) continue;
         Message::send(thread, MSG_WRITE_MEMORY_READY);
     }
+    LOG("");
     delete[] threads;
     return readSize;
 }
