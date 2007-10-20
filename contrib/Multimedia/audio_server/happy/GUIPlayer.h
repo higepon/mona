@@ -20,6 +20,7 @@
 #include <monapi.h>
 #include "PlayFrame.h"
 #include "ImageSinkButton.h"
+#include "SongButton.h"
 
 class GUIPlayer : public PlayFrame
 {
@@ -29,13 +30,11 @@ private:
         std::string path;
         std::string artist;
         std::string title;
-//        Label* label;
-        Button* label;
+        SongButton* button;
     } Song;
 
     typedef std::vector<std::string> strings;
-//    typedef std::map<std::string, Label*> LabelsMap;
-    typedef std::map<std::string, Button*> LabelsMap;
+    typedef std::map<std::string, Button*> buttonsMap;
     typedef std::vector<Song*> Songs;
 
     Audio* audio;

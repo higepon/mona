@@ -101,3 +101,6 @@ clean:
 	cd Sysutils/gclock && $(MAKE) clean
 	cd Sysutils/gtimer && $(MAKE) clean
 	cd Sysutils/startx && $(MAKE) clean
+
+depend:
+	cd Multimedia/audio_server/happy && $(MAKE) depend
