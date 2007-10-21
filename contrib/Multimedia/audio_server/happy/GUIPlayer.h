@@ -58,6 +58,11 @@ private:
         COMMAND_SELECT,
         COMMAND_EXIT,
         MSG_BUFFER_SIZE = 64,
+        BACKGROUND_COLOR = baygui::Color::white, //0xff000000 | (0xff << 16) | (0xd3 << 8) | 0x21,
+        BUTTON_BACKGROUND_COLOR1 = baygui::Color::lightGray,
+        BUTTON_BACKGROUND_COLOR2 = baygui::Color::blue,
+        BUTTON_FOREGROUND_COLOR1 = baygui::Color::black,
+        BUTTON_FOREGROUND_COLOR2 = baygui::Color::white,
     };
 
 public:

@@ -23,12 +23,10 @@ PlayFrame::PlayFrame(const char* iconPath)
     this->insets.bottom = 6;
     this->insets.left   = 6;
     this->insets.right  = 6;
-//    icon = new Image(iconPath);
 }
 
 PlayFrame::~PlayFrame()
 {
-//    delete icon;
 }
 
 void PlayFrame::repaint()
@@ -38,7 +36,7 @@ void PlayFrame::repaint()
     int w = getWidth();
     int h = getHeight();
 
-    __g->setColor(Color::white);
+    __g->setColor(getBackground());
     __g->fillRect(0, 0, w, h);
 
 #define BORDER_COLOR Color::gray

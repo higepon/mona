@@ -62,7 +62,9 @@ static long _get_data(OggVorbis_File *vf){
   errno=0;
   if(vf->datasource){
     unsigned char *buffer=ogg_sync_bufferin(vf->oy,CHUNKSIZE);
+    logprintf("%s %s:%d read_func(%x, 1, %x %x)\n", __func__, __FILE__, __LINE__, buffer,CHUNKSIZE,vf->datasource);
     long bytes=(vf->callbacks.read_func)(buffer,1,CHUNKSIZE,vf->datasource);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(bytes>0)ogg_sync_wrote(vf->oy,bytes);
     if(bytes==0 && errno)return(-1);
     return(bytes);
@@ -99,6 +101,7 @@ static void _seek_helper(OggVorbis_File *vf,ogg_int64_t offset){
 
 static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
 				  ogg_int64_t boundary){
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(boundary>0)boundary+=vf->offset;
   while(1){
     long more;
@@ -106,6 +109,7 @@ static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
     if(boundary>0 && vf->offset>=boundary)return(OV_FALSE);
     more=ogg_sync_pageseek(vf->oy,og);
     
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(more<0){
       /* skipped n bytes */
       vf->offset-=more;
@@ -114,7 +118,9 @@ static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
 	/* send more paramedics */
 	if(!boundary)return(OV_FALSE);
 	{
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	  long ret=_get_data(vf);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	  if(ret==0)return(OV_EOF);
 	  if(ret<0)return(OV_EREAD);
 	}
@@ -137,48 +143,42 @@ static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
 /* returns offset or OV_EREAD, OV_FAULT and produces a refcounted page */
 
 static ogg_int64_t _get_prev_page(OggVorbis_File *vf,ogg_page *og){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_int64_t begin=vf->offset;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_int64_t end=begin;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_int64_t ret;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_int64_t offset=-1;
   logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+
   while(offset==-1){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     begin-=CHUNKSIZE;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(begin<0)
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       begin=0;
   logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     _seek_helper(vf,begin);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     while(vf->offset<end){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+      logprintf("%s %s:%d (vf, og, end-vf->offest) (%x %x %x)\n", __func__, __FILE__, __LINE__, vf,og,end-vf->offset);
       ret=_get_next_page(vf,og,end-vf->offset);
   logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if(ret==OV_EREAD)return(OV_EREAD);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if(ret<0){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	break;
       }else{
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	offset=ret;
       }
     }
   }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   /* we have the offset.  Actually snork and hold the page now */
   _seek_helper(vf,offset);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ret=_get_next_page(vf,og,CHUNKSIZE);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(ret<0)
     /* this shouldn't be possible */
     return(OV_EFAULT);
 
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return(offset);
 }
 
@@ -192,6 +192,7 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
 				    ogg_int64_t end,
 				    ogg_uint32_t currentno,
 				    long m){
+
   ogg_int64_t endsearched=end;
   ogg_int64_t next=end;
   ogg_page og={0,0,0,0};
@@ -199,6 +200,8 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
   
   /* the below guards against garbage seperating the last and
      first pages of two links. */
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+
   while(searched<endsearched){
     ogg_int64_t bisect;
     
@@ -207,9 +210,11 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     }else{
       bisect=(searched+endsearched)/2;
     }
-    
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);    
     _seek_helper(vf,bisect);
+    logprintf("*** %s %s:%d  (%x, %x)\n", __func__, __FILE__, __LINE__, vf,&og);
     ret=_get_next_page(vf,&og,-1);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(ret==OV_EREAD)return(OV_EREAD);
     if(ret<0 || ogg_page_serialno(&og)!=currentno){
       endsearched=bisect;
@@ -219,10 +224,12 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     }
     ogg_page_release(&og);
   }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   _seek_helper(vf,next);
   ret=_get_next_page(vf,&og,-1);
   if(ret==OV_EREAD)return(OV_EREAD);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   
   if(searched>=end || ret<0){
     ogg_page_release(&og);
@@ -236,9 +243,12 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     ogg_page_release(&og);
     if(ret==OV_EREAD)return(OV_EREAD);
   }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   
   vf->offsets[m]=begin;
   vf->serialnos[m]=currentno;
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+
   return(0);
 }
 
@@ -254,35 +264,52 @@ static int _fetch_headers(OggVorbis_File *vf,
   ogg_page og={0,0,0,0};
   ogg_packet op={0,0,0,0,0,0};
   int i,ret;
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(!og_ptr){
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     ogg_int64_t llret=_get_next_page(vf,&og,CHUNKSIZE);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(llret==OV_EREAD)return(OV_EREAD);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(llret<0)return OV_ENOTVORBIS;
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     og_ptr=&og;
   }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_stream_reset_serialno(vf->os,ogg_page_serialno(og_ptr));
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(serialno)*serialno=vf->os->serialno;
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vf->ready_state=STREAMSET;
   
   /* extract the initial header from the first page and verify that the
      Ogg bitstream is in fact Vorbis data */
   vorbis_info_init(vi);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vorbis_comment_init(vc);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   i=0;
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   while(i<3){
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     ogg_stream_pagein(vf->os,og_ptr);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     while(i<3){
       int result=ogg_stream_packetout(vf->os,&op);
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if(result==0)break;
       if(result==-1){
 	ret=OV_EBADHEADER;
 	goto bail_header;
       }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if((ret=vorbis_synthesis_headerin(vi,vc,&op))){
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	goto bail_header;
       }
       i++;
     }
+  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(i<3)
       if(_get_next_page(vf,og_ptr,CHUNKSIZE)<0){
 	ret=OV_EBADHEADER;
@@ -435,10 +462,8 @@ static int _open_seekable2(OggVorbis_File *vf){
   /* we're partially open and have a first link header state in
      storage in vf */
   /* we can seek, so set out learning all about this file */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   (vf->callbacks.seek_func)(vf->datasource,0,SEEK_END);
   vf->offset=vf->end=(vf->callbacks.tell_func)(vf->datasource);
-    logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   /* We get the offset for the last page of the physical bitstream.
      Most OggVorbis files will contain a single logical bitstream */
   logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
@@ -447,31 +472,22 @@ static int _open_seekable2(OggVorbis_File *vf){
   if(end<0)return(end);
 
   /* more than one logical bitstream? */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   tempserialno=ogg_page_serialno(&og);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_page_release(&og);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(tempserialno!=serialno){
 
     /* Chained bitstream. Bisect-search each logical bitstream
        section.  Do so based on serial number only */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(_bisect_forward_serialno(vf,0,0,end+1,serialno,0)<0)return(OV_EREAD);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   }else{
 
     /* Only one logical bitstream */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(_bisect_forward_serialno(vf,0,end,end+1,serialno,0))return(OV_EREAD);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   }
 
   /* the initial header memory is referenced by vf after; don't free it */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   _prefetch_all_headers(vf,dataoffset);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return(ov_raw_seek(vf,0));
 }
 
@@ -680,57 +696,38 @@ static int _fseek64_wrap(FILE *f,ogg_int64_t off,int whence){
 
 static int _ov_open1(void *f,OggVorbis_File *vf,char *initial,
 		     long ibytes, ov_callbacks callbacks){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   int offsettest=(f?callbacks.seek_func(f,0,SEEK_CUR):-1);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   int ret;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   memset(vf,0,sizeof(*vf));
   vf->datasource=f;
   vf->callbacks = callbacks;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   /* init the framing state */
   vf->oy=ogg_sync_create();
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   /* perhaps some data was previously read into a buffer for testing
      against other stream types.  Allow initialization from this
      previously read data (as we may be reading from a non-seekable
      stream) */
   if(initial){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     unsigned char *buffer=ogg_sync_bufferin(vf->oy,ibytes);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
-    logprintf("%s %s:%d memcpy(%x, %x, %d)\n", buffer, initial, ibytes, __func__, __FILE__, __LINE__);
     memcpy(buffer,initial,ibytes);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ogg_sync_wrote(vf->oy,ibytes);
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   /* can we seek? Stevens suggests the seek test was portable */
   if(offsettest!=-1)vf->seekable=1;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   /* No seeking yet; Set up a 'single' (current) logical bitstream
      entry for partial open */
   vf->links=1;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vf->vi=_ogg_calloc(vf->links,sizeof(*vf->vi));
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vf->vc=_ogg_calloc(vf->links,sizeof(*vf->vc));
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vf->os=ogg_stream_create(-1); /* fill in the serialno later */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   /* Try to fetch the headers, maintaining all the storage */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if((ret=_fetch_headers(vf,vf->vi,vf->vc,&vf->current_serialno,NULL))<0){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     vf->datasource=NULL;
     ov_clear(vf);
   }else if(vf->ready_state < PARTOPEN) {
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     vf->ready_state=PARTOPEN;
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return(ret);
 }
 
@@ -738,9 +735,7 @@ static int _ov_open2(OggVorbis_File *vf){
   if(vf->ready_state < OPENED)
     vf->ready_state=OPENED;
   if(vf->seekable){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     int ret=_open_seekable2(vf);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(ret){
       vf->datasource=NULL;
       ov_clear(vf);
@@ -792,23 +787,18 @@ int ov_clear(OggVorbis_File *vf){
 
 int ov_open_callbacks(void *f,OggVorbis_File *vf,char *initial,long ibytes,
     ov_callbacks callbacks){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   int ret=_ov_open1(f,vf,initial,ibytes,callbacks);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(ret)return ret;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return _ov_open2(vf);
 }
 
 int ov_open(FILE *f,OggVorbis_File *vf,char *initial,long ibytes){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ov_callbacks callbacks = {
     (size_t (*)(void *, size_t, size_t, void *))  fread,
     (int (*)(void *, ogg_int64_t, int))              _fseek64_wrap,
     (int (*)(void *))                             fclose,
     (long (*)(void *))                            ftell
   };
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return ov_open_callbacks((void *)f, vf, initial, ibytes, callbacks);
 }
   

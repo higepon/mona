@@ -93,7 +93,7 @@ public:
 		{
 			_P<Icon> mesa = new Icon();
 			mesa->set_Location(Point(0, offsetX));
-			mesa->set_Text("3Dデモ");
+			mesa->set_Text("3D Demos");
 			mesa->set_Icon(Icons_Folder);
 			mesa->set_Target("open /APPS/MONAFRMS/MESA");
 			mesa->Show();
