@@ -67,12 +67,15 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 {
+  uint32_t id = syscall_get_tid();
     size_t readsize = 0;
     size_t retsize = 0;
     if( stream->_bf._range == 0 )
     {
+      if (78 == id) logprintf("%s %s:%d stream->_read(%x, %x, %x)\n", __func__, __FILE__, __LINE__, stream, stream->_bf._base,stream->_bf._size);
         readsize = stream->_read(stream, stream->_bf._base,
                             stream->_bf._size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
         if( readsize == -1 )
         {
             stream->_flags |= __SERR;
@@ -82,7 +85,9 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
         {
             stream->_flags |= __SEOF;
         }
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
         memcpy(buf, stream->_bf._base, size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
         stream->_bf._offset = stream->_extra->offset;
         stream->_bf._range = readsize;
         if( size > stream->_bf._size )
@@ -108,17 +113,21 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
         {
             if( size <= stream->_bf._range )
             {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
                 memcpy(buf, stream->_bf._base,
                         stream->_bf._size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
                 readsize = size;
             }
         }
         else if( stream->_bf._offset < stream->_extra->offset &&
     stream->_bf._offset+stream->_bf._range > stream->_extra->offset+size )
         {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             memcpy(buf,
         stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
                 size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             readsize = size;
         }
         else
@@ -135,11 +144,15 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
             if( readsize < size )
             {
                 stream->_flags |= __SEOF;
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
                 memcpy(buf, stream->_bf._base, readsize);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             }
             else
             {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
                 memcpy(buf, stream->_bf._base, size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
                 stream->_bf._offset = stream->_extra->offset;
                 stream->_bf._range = readsize;
                 if( size > stream->_bf._size )
@@ -162,7 +175,8 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 {
-  //  _logprintf("fread(%x, %d, %d, %x)\n", buf, size, nmemb, stream);
+  uint32_t id = syscall_get_tid();
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 /*
   if (stream->_extra == NULL)
     {
@@ -212,6 +226,7 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
     }
     else if( stream->_flags & __SFBF )
     {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
         return __nida_fullybuf_fread(buf, size*nmemb, stream);
     }
     else

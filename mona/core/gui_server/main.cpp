@@ -25,7 +25,6 @@
 
 using namespace MonAPI;
 
-// 譁ﾊバッファ
 extern guiserver_bitmap* screen_buffer;
 
 // プロセスT共通パラメータ
@@ -61,7 +60,7 @@ static void ReadFont(const char* file)
 
 /*!
 \brief DrawWallPaper
-     壁紙を描謔ｷる
+     壁紙を描画する
 \param  guiserver_bitmap* bmp [in] 壁紙
 \param  int pos [in] 表示位置
 \param  unsigned int transparent [in] 透明度 (0x0-0xFFFFFF)
@@ -126,7 +125,7 @@ static void DrawWallPaper(guiserver_bitmap* bmp, int pos, unsigned int transpare
 
 /*!
 \brief DrawWallPaper
-     壁紙を描謔ｷる
+     壁紙を描画する
 \param  const char* src [in] 壁紙ファイル名
 \param  int pos [in] 表示位置
 \param  unsigned int transparent [in] 透明度 (0x0-0xFFFFFF)
@@ -176,7 +175,7 @@ static void ReadConfig(int argc, char* argv[])
     char line[256];
     int linepos = 0, wppos = 5;
     unsigned int wptp = 0, bgcol = 0;
-    CString section, src;
+    CString section, src = "";
     for (uint32_t pos = 0; pos <= cfg->Size; pos++)
     {
         char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
@@ -258,8 +257,10 @@ static void ReadConfig(int argc, char* argv[])
     }
     monapi_cmemoryinfo_dispose(cfg);
     monapi_cmemoryinfo_delete(cfg);
-    if (src[0] == '\0') return;
-
+    if (src.getLength() == 0 || src[0] == '\0')
+    {
+        return;
+    }
     wallpaper_prompt = true;
     DrawWallPaper(src, wppos, wptp, bgcol);
 }
@@ -398,7 +399,7 @@ int main(int argc, char* argv[])
 
     // メッセージループ
     MessageLoop();
-    // 共有メモリにロードしているフォントの�放
+    // 共有メモリにロードしているフォント
     monapi_cmemoryinfo_dispose(default_font);
     monapi_cmemoryinfo_delete(default_font);
     // 壁紙の開放
