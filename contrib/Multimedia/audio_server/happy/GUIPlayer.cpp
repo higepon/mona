@@ -101,6 +101,7 @@ void GUIPlayer::readSongs()
             fclose(fp);
             continue;
         }
+        logprintf("ov_open OK\n");
         char** infoTexts = ov_comment(&vf, -1)->user_comments;
         vorbis_info* vi=ov_info(&vf, -1);
         Song* song = new Song;
@@ -219,8 +220,6 @@ void GUIPlayer::playLoop()
     replay:
         song->button->setForeground(BUTTON_FOREGROUND_COLOR1);
         song->button->setBackground(BUTTON_BACKGROUND_COLOR1);
-
-
         song->button->repaint();
         fclose(fp);
         playingIndex++;

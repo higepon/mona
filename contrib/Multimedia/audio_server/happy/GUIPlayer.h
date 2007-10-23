@@ -47,7 +47,6 @@ private:
     uint32_t tid;
     Songs songs;
     static const std::string MUSIC_DIR;
-
     enum
     {
         COMMAND_NONE,
