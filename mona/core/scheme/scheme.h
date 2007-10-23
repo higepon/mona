@@ -17,7 +17,7 @@
 #define GLOBAL /* */
 #define GLOBAL_VAL(v) = (v)
 #else
-#define GLOBAL extern "C"
+#define GLOBAL extern
 #define GLOBAL_VAL(v) /* */
 #endif
 #ifdef HAVE_CONFIG_H
