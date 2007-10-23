@@ -68,10 +68,12 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 {
   uint32_t id = syscall_get_tid();
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     size_t readsize = 0;
     size_t retsize = 0;
     if( stream->_bf._range == 0 )
     {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if (78 == id) logprintf("%s %s:%d stream->_read(%x, %x, %x)\n", __func__, __FILE__, __LINE__, stream, stream->_bf._base,stream->_bf._size);
         readsize = stream->_read(stream, stream->_bf._base,
                             stream->_bf._size);
@@ -109,8 +111,11 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
         _printf("stream->_bf._range = %d\n", stream->_bf._range);
         _printf("size = %d\n", size);
     #endif
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+  if (78 == id) logprintf("%s %s:%d %x %x\n", __func__, __FILE__, __LINE__, stream->_bf._offset, stream->_extra->offset);
         if( stream->_bf._offset == stream->_extra->offset )
         {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             if( size <= stream->_bf._range )
             {
   if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
@@ -132,15 +137,19 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
         }
         else
         {
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             stream->_seek(stream, stream->_extra->offset, SEEK_SET);
+            if (78 == id) logprintf("%s %s:%d base=%x size=%x\n", __func__, __FILE__, __LINE__, stream->_bf._base, stream->_bf._size);
             readsize = stream->_read(stream,
                             stream->_bf._base,
                             stream->_bf._size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             if( readsize == -1 )
             {
                 stream->_flags |= __SERR;
                 return 0;
             }
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
             if( readsize < size )
             {
                 stream->_flags |= __SEOF;

@@ -43,27 +43,36 @@ FILE __sF[3];
 
 int _read(void *self, void *buf, size_t size)
 {
+  uint32_t id = syscall_get_tid();
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+
     monapi_cmemoryinfo *cmi = NULL;
     FILE *f;
-    uint32_t id;
+    uint32_t fid;
     unsigned char *p = buf;
     int readsize;
     int i;
     f = (FILE*)self;
-    id = f->_file;
-    cmi = monapi_file_read(id, (uint32_t)size);
+    fid = f->_file;
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
+    cmi = monapi_file_read(fid, (uint32_t)size);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if( cmi == NULL )
     {
         return -1;
     }
     readsize = (int)cmi->Size;
-
+    if (78 == id) logprintf("%s %s:%d cmi->Data=%x, readsize=%d\n", __func__, __FILE__, __LINE__, cmi->Data, readsize);
     memcpy(p, cmi->Data, readsize);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 //  monapi_cmemoryinfo_dispose(cmi);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_delete(cmi);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
 //  monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
-    monapi_file_seek(id, readsize, SEEK_CUR);
+    monapi_file_seek(fid, readsize, SEEK_CUR);
+  if (78 == id) logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     return readsize;
 }
 

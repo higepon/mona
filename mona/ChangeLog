@@ -1,3 +1,7 @@
+2007-10-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/scheme.h (GLOBAL): Fixed build error. Thx shadow.
+
 2007-10-14  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/scheme.h (SCHEME_WRITE): Fixed a long string evaluation bug. Thx neri.
