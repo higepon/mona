@@ -1,5 +1,7 @@
 2007-10-24  higepon  <higepon@users.sourceforge.jp>
 
+        * core/monalibc/stdio/fflush.c (fflush): Fixed bug. Thx h0shu.
+
         * core/scheme/scheme.h (GLOBAL): Fixed build error. Thx shadow.
 
 2007-10-14  higepon  <higepon@users.sourceforge.jp>
