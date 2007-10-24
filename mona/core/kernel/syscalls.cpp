@@ -538,9 +538,13 @@ void syscall_entrance()
     {
         uint32_t id      = SYSTEM_CALL_ARG_1;
         uint32_t address = SYSTEM_CALL_ARG_2;
+        uint32_t* hack = (uint32_t*)0xA0036844;
+        if (78 == g_currentThread->thread->id) g_log->printf("*hack=%x %s:%d\n", *hack, __FILE__, __LINE__);
 
         while (Semaphore::down(&g_semaphore_shared));
+        if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
         bool isAttached = SharedMemoryObject::attach(id, g_currentThread->process, address);
+        if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
         Semaphore::up(&g_semaphore_shared);
         Semaphore::up(&g_semaphore_shared);
         if (!isAttached)
@@ -548,6 +552,7 @@ void syscall_entrance()
             info->eax = 1;
             break;
         }
+        if (78 == g_currentThread->thread->id) g_log->printf("*hack=%x %s:%d\n", *hack, __FILE__, __LINE__);
         break;
     }
 
@@ -765,6 +770,9 @@ void syscall_entrance()
         g_console->printf("syscall:default");
         break;
     }
+
+    uint32_t* hack = (uint32_t*)0xA0036844;
+    if (78 == g_currentThread->thread->id && info->ebx != 0x3d) g_log->printf("sysid = %x *hack=%x %s:%d\n", info->ebx, *hack, __FILE__, __LINE__);
 
     return;
 }

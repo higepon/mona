@@ -444,12 +444,15 @@ bool SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress add
     {
         return false;
     }
-
+    if (78 == g_currentThread->thread->id) g_log->printf("address = %x %x %x%s:%d\n", address, target->getSize(), target,__FILE__, __LINE__);
     segment = new SharedMemorySegment(address, target->getSize(), target);
+    if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
     if (segment == NULL) return false;
-
+    if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
     process->getSharedList()->add(segment);
+    if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
     target->setAttachedCount(target->getAttachedCount() + 1);
+    if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
     return true;
 }
 

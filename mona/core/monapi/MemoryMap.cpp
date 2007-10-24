@@ -71,15 +71,22 @@ uint8_t* MemoryMap::map(uint32_t id)
         return NULL;
     }
 
+  uint32_t tid = syscall_get_tid();
+  if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
     if (syscall_memory_map_map(id, nextAddress))
     {
+  if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_MAP_ATATCH_ERROR;
         return NULL;
     }
+    if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
 
     uint8_t* result = (uint8_t*)(nextAddress);
+    if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
     nextAddress += size;
+  if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, nextAddress);
+    if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, result);
     return result;
 }
 
