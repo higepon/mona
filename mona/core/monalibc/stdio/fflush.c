@@ -41,7 +41,7 @@ int fflush(FILE *stream)
 	}
 	else if( stream->_flags & __SFBF )
 	{
-		stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
+		stream->_seek(stream, stream->_extra->offset, SEEK_SET);
 		if( stream->_flags & __SWR )
 			stream->_write(stream, stream->_bf._base, stream->_bf._size);
 	}

@@ -66,7 +66,7 @@ int fseek(FILE *stream, long offset, int whence)
 			return 1;
 		}
 	}
-	result = stream->_seek(stream->_file, offset, whence);
+	result = stream->_seek(stream, offset, whence);
 	if( result != 0 )
 	{
 		errno = EBADF;

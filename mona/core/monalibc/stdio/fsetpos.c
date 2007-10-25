@@ -36,6 +36,6 @@
 int fsetpos(FILE *stream, const fpos_t *pos)
 {
 	stream->_extra->offset = *pos;
-	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
+	stream->_seek(stream, stream->_extra->offset, SEEK_SET);
 	return 0;
 }
