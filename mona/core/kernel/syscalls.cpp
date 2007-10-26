@@ -89,10 +89,10 @@ void syscall_entrance()
     /* result normal */
     info->eax = 0;
 
-#define SYSTEM_CALL_ARG_1 info->esi
-#define SYSTEM_CALL_ARG_2 info->ecx
-#define SYSTEM_CALL_ARG_3 info->edi
-#define SYSTEM_CALL_ARG_4 info->edx
+#define SYSTEM_CALL_ARG_1 (info->esi)
+#define SYSTEM_CALL_ARG_2 (info->ecx)
+#define SYSTEM_CALL_ARG_3 (info->edi)
+#define SYSTEM_CALL_ARG_4 (info->edx)
 
     switch(info->ebx)
     {
@@ -766,6 +766,31 @@ void syscall_entrance()
     case SYSTEM_CALL_SEND_PACKET:
         g_nic->outputFrame((uint8_t*)SYSTEM_CALL_ARG_1, (uint8_t*)SYSTEM_CALL_ARG_2, SYSTEM_CALL_ARG_3, SYSTEM_CALL_ARG_4);
         break;
+    case SYSTEM_CALL_SET_WATCH_POINT:
+    {
+#define B4(a,b,c,d) ((a)*8+(b)*4+(c)*2+(d))
+#define B8(a,b,c,d,e,f,g,h) (B4(a,b,c,d)*16+B4(e,f,g,h))
+
+        uint32_t address = SYSTEM_CALL_ARG_1;
+        uint32_t flag = B8(0,0,0,0,0,0,0,0) << 24
+            | B8(0,0,0,0,1,1,1,1) << 16
+            | B8(0,0,0,0,0,1,1,1) << 8
+            | B8(0,0,0,0,0,0,1,1);
+
+        uint32_t dr0, dr7;
+        asm volatile("movl %2, %%eax    \n"
+                     "movl %%eax, %%dr0 \n"
+                     "movl %3, %%eax    \n"
+                     "movl %%eax, %%dr7 \n"
+                     "movl %%dr0, %%eax  \n"
+                     "movl %%eax, %0    \n"
+                     "movl %%dr7, %%eax  \n"
+                     "movl %%eax, %1    \n"
+                     : "=m"(dr0), "=m"(dr7) : "m"(address), "m"(flag): "eax");
+//       g_console->printf("dr0=%x dr7=%x\n", dr0, dr7);
+        break;
+    }
+
     default:
         g_console->printf("syscall:default");
         break;

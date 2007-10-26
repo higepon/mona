@@ -57,6 +57,17 @@ uint8_t* MemoryMap::map(uint32_t id)
     MEMORY_MAP_TRACE("try to map() id = %x", id);
     uint32_t size = syscall_memory_map_get_size(id);
 
+    uint32_t tid = syscall_get_tid();
+    if (78 == tid) {
+//        _printf("here comes\n");
+        syscall_set_watch_point(&nextAddress);
+        volatile uint32_t tmp = nextAddress - 1;
+        nextAddress = tmp + 1;
+        uint32_t* hoge = (uint32_t*)0xa0037844;
+        *hoge = tmp + 1;
+    }
+
+
     if (size == 0)
     {
         MEMORY_MAP_TRACE("");
@@ -71,7 +82,7 @@ uint8_t* MemoryMap::map(uint32_t id)
         return NULL;
     }
 
-  uint32_t tid = syscall_get_tid();
+//  uint32_t tid = syscall_get_tid();
   if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
     if (syscall_memory_map_map(id, nextAddress))
     {
@@ -80,6 +91,9 @@ uint8_t* MemoryMap::map(uint32_t id)
         lastError = ERROR_NOT_MAP_ATATCH_ERROR;
         return NULL;
     }
+  uint32_t* hack = (uint32_t*)0xA0036844;
+  if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, *hack);
+
     if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
 
     uint8_t* result = (uint8_t*)(nextAddress);

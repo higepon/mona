@@ -308,6 +308,7 @@ enum
 #define SYSTEM_CALL_SEMAPHORE_TRYDOWN         0x0053
 #define SYSTEM_CALL_SEMAPHORE_UP              0x0054
 #define SYSTEM_CALL_SEMAPHORE_DESTROY         0x0055
+#define SYSTEM_CALL_SET_WATCH_POINT           0x0056
 
 
 #define SYSCALL_0(syscall_number, result)                                         \
