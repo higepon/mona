@@ -203,7 +203,6 @@ void syscall_entrance()
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
-        g_log->printf("Semaphore\n");
         if (SYSTEM_CALL_ARG_1 == 0) {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread);
             if (object == NULL)
@@ -538,13 +537,9 @@ void syscall_entrance()
     {
         uint32_t id      = SYSTEM_CALL_ARG_1;
         uint32_t address = SYSTEM_CALL_ARG_2;
-        uint32_t* hack = (uint32_t*)0xA0036844;
-        if (78 == g_currentThread->thread->id) g_log->printf("*hack=%x %s:%d\n", *hack, __FILE__, __LINE__);
 
         while (Semaphore::down(&g_semaphore_shared));
-        if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
         bool isAttached = SharedMemoryObject::attach(id, g_currentThread->process, address);
-        if (78 == g_currentThread->thread->id) g_log->printf("%s:%d\n", __FILE__, __LINE__);
         Semaphore::up(&g_semaphore_shared);
         Semaphore::up(&g_semaphore_shared);
         if (!isAttached)
@@ -552,7 +547,6 @@ void syscall_entrance()
             info->eax = 1;
             break;
         }
-        if (78 == g_currentThread->thread->id) g_log->printf("*hack=%x %s:%d\n", *hack, __FILE__, __LINE__);
         break;
     }
 
@@ -771,10 +765,11 @@ void syscall_entrance()
 #define B4(a,b,c,d) ((a)*8+(b)*4+(c)*2+(d))
 #define B8(a,b,c,d,e,f,g,h) (B4(a,b,c,d)*16+B4(e,f,g,h))
 
-        uint32_t address = SYSTEM_CALL_ARG_1;
+        uint32_t address   = SYSTEM_CALL_ARG_1;
+        uint32_t breakflag = SYSTEM_CALL_ARG_2;
         uint32_t flag = B8(0,0,0,0,0,0,0,0) << 24
-            | B8(0,0,0,0,1,1,1,1) << 16
-            | B8(0,0,0,0,0,1,1,1) << 8
+            | B8(0,0,0,0,1,1, (breakflag & 2) >> 1 ,(breakflag & 1)) << 16
+            | B8(0,0,0,0,0,1,0,1) << 8
             | B8(0,0,0,0,0,0,1,1);
 
         uint32_t dr0, dr7;
@@ -787,7 +782,21 @@ void syscall_entrance()
                      "movl %%dr7, %%eax  \n"
                      "movl %%eax, %1    \n"
                      : "=m"(dr0), "=m"(dr7) : "m"(address), "m"(flag): "eax");
-//       g_console->printf("dr0=%x dr7=%x\n", dr0, dr7);
+#if 0
+        g_console->printf("dr0=%x dr7=%x\n", dr0, dr7);
+#endif
+        break;
+    }
+    case SYSTEM_CALL_REMOVE_WATCH_POINT:
+    {
+        uint32_t flag = B8(0,0,0,0,0,0,0,0) << 24
+            | B8(0,0,0,0,1,1,1,1) << 16
+            | B8(0,0,0,0,0,1,0,1) << 8
+            | B8(0,0,0,0,0,0,0,0);
+
+        asm volatile("movl %0, %%eax    \n"
+                     "movl %%eax, %%dr0 \n"
+                     : : "m"(flag): "eax");
         break;
     }
 
@@ -795,9 +804,6 @@ void syscall_entrance()
         g_console->printf("syscall:default");
         break;
     }
-
-    uint32_t* hack = (uint32_t*)0xA0036844;
-    if (78 == g_currentThread->thread->id && info->ebx != 0x3d) g_log->printf("sysid = %x *hack=%x %s:%d\n", info->ebx, *hack, __FILE__, __LINE__);
 
     return;
 }

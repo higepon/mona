@@ -48,9 +48,7 @@ int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int promp
 
 int monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
 {
-  uint32_t id = syscall_get_tid();
     self->Data = monapi_cmemorymap_map(self->Handle);
-    if (78 == id) _logprintf("%s %s:%d data=%x\n", __func__, __FILE__, __LINE__, self->Data);
     if (self->Data != NULL) return 1;
 
     _printf("%s:%d: map error\n", __FILE__, __LINE__);

@@ -10,6 +10,7 @@ const uint32_t MemoryMap::START_ADDRESS = 0x90000000;
 const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
 uint32_t MemoryMap::nextAddress;
 uint32_t MemoryMap::lastError;
+Mutex MemoryMap::mutex;
 
 //#define TRACE_MEMORY_MAP
 
@@ -57,16 +58,15 @@ uint8_t* MemoryMap::map(uint32_t id)
     MEMORY_MAP_TRACE("try to map() id = %x", id);
     uint32_t size = syscall_memory_map_get_size(id);
 
+#if 0
     uint32_t tid = syscall_get_tid();
     if (78 == tid) {
-//        _printf("here comes\n");
-        syscall_set_watch_point(&nextAddress);
-        volatile uint32_t tmp = nextAddress - 1;
-        nextAddress = tmp + 1;
-        uint32_t* hoge = (uint32_t*)0xa0037844;
-        *hoge = tmp + 1;
+        syscall_set_watch_point(&nextAddress, DEBUG_BREAK_ONLY_ON_READ_WRITE);
+        nextAddress += 2;
+        nextAddress -= 1;
+        nextAddress -= 1;
     }
-
+#endif
 
     if (size == 0)
     {
@@ -75,32 +75,31 @@ uint8_t* MemoryMap::map(uint32_t id)
         return NULL;
     }
 
+    mutex.lock();
     if (nextAddress + size > START_ADDRESS + MAX_SIZE)
     {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_ENOUGH_ADDRESS_SPACE;
+        mutex.unlock();
         return NULL;
     }
 
-//  uint32_t tid = syscall_get_tid();
-  if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
     if (syscall_memory_map_map(id, nextAddress))
     {
-  if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_MAP_ATATCH_ERROR;
+        mutex.unlock();
         return NULL;
     }
-  uint32_t* hack = (uint32_t*)0xA0036844;
-  if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, *hack);
+     uint8_t* result = (uint8_t*)(nextAddress);
 
-    if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
-
-    uint8_t* result = (uint8_t*)(nextAddress);
-    if (78 == tid) _logprintf("%s:%d next Address = %x &=%x\n", __FILE__, __LINE__, nextAddress, &nextAddress);
+#if 0
+    if (78 == tid) {
+        syscall_remove_watch_point();
+    }
+#endif
     nextAddress += size;
-  if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, nextAddress);
-    if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, result);
+    mutex.unlock();
     return result;
 }
 

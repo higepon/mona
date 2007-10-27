@@ -309,7 +309,15 @@ enum
 #define SYSTEM_CALL_SEMAPHORE_UP              0x0054
 #define SYSTEM_CALL_SEMAPHORE_DESTROY         0x0055
 #define SYSTEM_CALL_SET_WATCH_POINT           0x0056
+#define SYSTEM_CALL_REMOVE_WATCH_POINT        0x0057
 
+enum
+{
+    DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,
+    DEBUG_BREAK_ONLY_ON_WRITE      = 1,
+    DEBUG_BREAK_ONLY_ON_IO         = 2,
+    DEBUG_BREAK_ONLY_ON_READ_WRITE = 3,
+};
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

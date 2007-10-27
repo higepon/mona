@@ -267,11 +267,8 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
-    uint32_t id = syscall_get_tid();
     ret->Size   = msg.arg3;
-    if (78 == id) _logprintf("%s %s:%d size=%x data=%x\n", __func__, __FILE__, __LINE__, ret->Size, ret->Data);
     monapi_cmemoryinfo_map(ret);
-    if (78 == id) _logprintf("%s %s:%d size=%x data=%x\n", __func__, __FILE__, __LINE__, ret->Size, ret->Data);
     return ret;
 }
 

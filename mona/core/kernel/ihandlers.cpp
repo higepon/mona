@@ -226,10 +226,38 @@ void cpufaultHandler_0(void)
     panic("unhandled:fault00 - devied by 0");
 }
 
+
+/*!
+  \brief debug fault handler
+
+  \author Higepon
+  \date   create:2007/10/17 update:
+*/
 void cpufaultHandler_1(void)
 {
-    dokodemoView();
-    panic("unhandled:fault01 - debug");
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    uint32_t* dr0;
+    asm volatile("movl %%dr0, %%eax  \n"
+                 "movl %%eax, %0     \n"
+                     : "=m"(dr0) : : "eax");
+
+#if 1
+    logprintf("===== debug fault start ===========================================================\n");
+    logprintf("address=%x value=%x\n", dr0, *dr0);
+    logprintf("name=%s tid=%d\n", g_currentThread->process->getName(), g_currentThread->thread->id);
+    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+    logprintf("===================================================================================\n");
+#else
+    g_console->printf("Debug fault\n");
+    g_console->printf("name=%s tid=%x\n", g_currentThread->process->getName(), g_currentThread->thread->id);
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#endif
 }
 
 void cpufaultHandler_5(void)

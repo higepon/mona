@@ -1,3 +1,9 @@
+2007-10-27  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/syscall.cpp (syscall_set_watch_point): Added for watch point support.
+
+        * core/monapi/MemoryMap.cpp (MemoryMap::map): Changed map() to thread safe. It caused Music player crash.
+
 2007-10-24  higepon  <higepon@users.sourceforge.jp>
 
         * core/monalibc/stdio/fflush.c (fflush): Fixed bug. Thx h0shu.

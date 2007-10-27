@@ -6,6 +6,7 @@
 #define _MONAPI_MEMORY_MAP_
 
 #include <sys/types.h>
+#include <monapi/Mutex.h>
 
 #ifdef __cplusplus
 namespace MonAPI
@@ -34,6 +35,7 @@ namespace MonAPI
         static const uint32_t MAX_SIZE;
         static uint32_t lastError;
         static uint32_t nextAddress;
+        static Mutex mutex;
     };
 
 }

@@ -593,10 +593,6 @@ int syscall_memory_map_map(uint32_t id, uint32_t address)
 {
     int result;
     SYSCALL_2(SYSTEM_CALL_MEMORY_MAP_MAP, result, id, address);
-  uint32_t tid = syscall_get_tid();
-  uint32_t* hack = (uint32_t*)0xA0036844;
-  if (78 == tid) _logprintf("%s:%d next Address = %x\n", __FILE__, __LINE__, *hack);
-
     return result;
 }
 
@@ -782,9 +778,16 @@ int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid)
     return result;
 }
 
-int syscall_set_watch_point(void* address)
+int syscall_set_watch_point(void* address, int flag)
 {
     int result;
-    SYSCALL_1(SYSTEM_CALL_SET_WATCH_POINT, result, address);
+    SYSCALL_2(SYSTEM_CALL_SET_WATCH_POINT, result, address, flag);
+    return result;
+}
+
+int syscall_remove_watch_point()
+{
+    int result;
+    SYSCALL_0(SYSTEM_CALL_REMOVE_WATCH_POINT, result);
     return result;
 }
