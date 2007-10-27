@@ -174,7 +174,7 @@ size_t stream_block_reader(MonAPI::Stream *stream, void *mem, size_t size)
 void mixer_th(void *arg)
 {
 //    dprintf("Mixer: Hi, I am %d\n", syscall_get_tid());
-    logprintf("mixer_th tid=%x\n", syscall_get_tid());
+//    logprintf("mixer_th tid=%x\n", syscall_get_tid());
     AudioServer *server = (AudioServer*)arg;
     bool is_stopped = false;
     char *buf;

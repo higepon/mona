@@ -48,7 +48,7 @@
 void dumpMemory()
 {
     // should be 4 byte align
-    uint32_t* p = (uint32_t*)((0xA00291EF & 0xfffffffc)); //- 1);
+    uint32_t* p = (uint32_t*)((0xA002CF19 & 0xfffffffc)); //- 1);
 
     for (int i = 0; i < 100; i++)
     {
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "usage: %s -d OGG_DIR\n", argv[0]);
         return -1;
     }
-    dumpMemory();
+//    dumpMemory();
     if (monapi_get_server_thread_id(ID_GUI_SERVER) != THREAD_UNKNOWN)
     {
         GUIPlayer* player = new GUIPlayer;

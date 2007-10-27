@@ -16,27 +16,20 @@ const string GUIPlayer::MUSIC_DIR = "/MUSIC";
 GUIPlayer::GUIPlayer() : PlayFrame(NULL), command(COMMAND_NONE)
 {
     initComponents();
-    logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
     tid = mthread_create_with_arg(wrapperPlayLoop, this);
-    logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
     setBackground(BACKGROUND_COLOR);
 }
 
 GUIPlayer::~GUIPlayer()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     destroyComponents();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (NULL != audio)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         audio->stop();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         delete audio;
     }
     for (Songs::iterator it = songs.begin(); it != songs.end(); ++it)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         delete (*it)->button;
         delete(*it);
     }
@@ -45,19 +38,14 @@ GUIPlayer::~GUIPlayer()
 
 void GUIPlayer::initComponents()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     forwardImage  = new Image((MUSIC_DIR + "/FWD.JPG").data());
     backwardImage = new Image((MUSIC_DIR + "/BACK.JPG").data());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     setBounds(200, 20, 250, 375);
     forwardButton  = new ImageSinkButton(forwardImage, forwardImage, forwardImage);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     backwardButton = new ImageSinkButton(backwardImage, backwardImage, backwardImage);
     backwardButton->setBounds(0, 0, 16, 16);
     forwardButton->setBounds(20, 0, 16, 16);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     add(forwardButton);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     add(backwardButton);
 
 }
@@ -72,20 +60,16 @@ void GUIPlayer::destroyComponents()
 
 void GUIPlayer::processEvent(Event* e)
 {
-    logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
     if (e->getType() == Event::MOUSE_PRESSED && e->getSource() == forwardButton)
     {
-        logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
         command = COMMAND_FORWARD;
     }
     else if (e->getType() == Event::MOUSE_PRESSED && e->getSource() == backwardButton)
     {
-        logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
         command = COMMAND_BACKWARD;
     }
     else if (e->getType() == Event::MOUSE_PRESSED)
     {
-        logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
         for (int i = 0; i < songs.size(); i++)
         {
             Song* song = songs[i];
@@ -96,32 +80,27 @@ void GUIPlayer::processEvent(Event* e)
                 break;
             }
         }
-        logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
     }
 }
 
 void GUIPlayer::readSongs()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     strings oggFiles;
     listOggfiles(MUSIC_DIR, oggFiles);
     for (int i = 0; i < oggFiles.size(); i++)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         string path = oggFiles[i];
         FILE* fp = fopen(path.data(), "rb");
         if (NULL == fp)
         {
             continue;
         }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         OggVorbis_File vf;
         if (ov_open(fp, &vf, NULL, 0) < 0)
         {
             fclose(fp);
             continue;
         }
-        logprintf("ov_open OK\n");
         char** infoTexts = ov_comment(&vf, -1)->user_comments;
         vorbis_info* vi=ov_info(&vf, -1);
         Song* song = new Song;
@@ -162,7 +141,6 @@ void GUIPlayer::readSongs()
 
 void GUIPlayer::playLoop()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     struct audio_data_format defaultFormat = {0, 2, 16, 4400};
     audio = new Audio(&defaultFormat, AUDIO_OUTPUT);
     if (-1 == audio->start())
@@ -170,7 +148,6 @@ void GUIPlayer::playLoop()
         showError("Can not connect to AUDIO server!\n");
     }
     readSongs();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     if (songs.size() == 0)
     {
         showError("No songs found\n");
@@ -242,6 +219,14 @@ void GUIPlayer::playLoop()
         song->button->setForeground(BUTTON_FOREGROUND_COLOR1);
         song->button->setBackground(BUTTON_BACKGROUND_COLOR1);
         song->button->repaint();
+// happy killed with this! bug?
+//        ov_clear(&vf);
+
+        if (playingIndex == 2)
+        {
+            logprintf("normal play\n");
+        }
+
         fclose(fp);
         playingIndex++;
         if (playingIndex >= songs.size()) playingIndex = 0;
@@ -255,7 +240,6 @@ void GUIPlayer::paint(Graphics *g)
 {
     int w = getWidth();
     int h = getHeight();
-    logprintf("hack=%x %s:%d\n", *((uint32_t*)0xA0037844), __FILE__, __LINE__);
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
 }

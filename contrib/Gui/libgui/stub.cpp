@@ -11,11 +11,11 @@ int dllmain(uint32_t reason)
     switch (reason)
     {
     case 0: // DLL_PROCESS_ATTACH
-        _logprintf("DLL_PROCESS_ATTACH\n");
+//        _logprintf("DLL_PROCESS_ATTACH\n");
         invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
         break;
     case 1: // DLL_PROCESS_DETACH
-        _logprintf("LIBC DLL_PROCESS_DETACH\n");
+//        _logprintf("LIBC DLL_PROCESS_DETACH\n");
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
         break;
     default:

@@ -62,9 +62,7 @@ static long _get_data(OggVorbis_File *vf){
   errno=0;
   if(vf->datasource){
     unsigned char *buffer=ogg_sync_bufferin(vf->oy,CHUNKSIZE);
-    logprintf("%s %s:%d read_func(%x, 1, %x %x)\n", __func__, __FILE__, __LINE__, buffer,CHUNKSIZE,vf->datasource);
     long bytes=(vf->callbacks.read_func)(buffer,1,CHUNKSIZE,vf->datasource);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(bytes>0)ogg_sync_wrote(vf->oy,bytes);
     if(bytes==0 && errno)return(-1);
     return(bytes);
@@ -101,7 +99,6 @@ static void _seek_helper(OggVorbis_File *vf,ogg_int64_t offset){
 
 static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
 				  ogg_int64_t boundary){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(boundary>0)boundary+=vf->offset;
   while(1){
     long more;
@@ -109,7 +106,6 @@ static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
     if(boundary>0 && vf->offset>=boundary)return(OV_FALSE);
     more=ogg_sync_pageseek(vf->oy,og);
     
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(more<0){
       /* skipped n bytes */
       vf->offset-=more;
@@ -118,9 +114,7 @@ static ogg_int64_t _get_next_page(OggVorbis_File *vf,ogg_page *og,
 	/* send more paramedics */
 	if(!boundary)return(OV_FALSE);
 	{
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	  long ret=_get_data(vf);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	  if(ret==0)return(OV_EOF);
 	  if(ret<0)return(OV_EREAD);
 	}
@@ -147,18 +141,14 @@ static ogg_int64_t _get_prev_page(OggVorbis_File *vf,ogg_page *og){
   ogg_int64_t end=begin;
   ogg_int64_t ret;
   ogg_int64_t offset=-1;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   while(offset==-1){
     begin-=CHUNKSIZE;
     if(begin<0)
       begin=0;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     _seek_helper(vf,begin);
     while(vf->offset<end){
-      logprintf("%s %s:%d (vf, og, end-vf->offest) (%x %x %x)\n", __func__, __FILE__, __LINE__, vf,og,end-vf->offset);
       ret=_get_next_page(vf,og,end-vf->offset);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if(ret==OV_EREAD)return(OV_EREAD);
       if(ret<0){
 	break;
@@ -167,18 +157,14 @@ static ogg_int64_t _get_prev_page(OggVorbis_File *vf,ogg_page *og){
       }
     }
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   /* we have the offset.  Actually snork and hold the page now */
   _seek_helper(vf,offset);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ret=_get_next_page(vf,og,CHUNKSIZE);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(ret<0)
     /* this shouldn't be possible */
     return(OV_EFAULT);
 
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   return(offset);
 }
 
@@ -200,7 +186,6 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
   
   /* the below guards against garbage seperating the last and
      first pages of two links. */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   while(searched<endsearched){
     ogg_int64_t bisect;
@@ -210,11 +195,8 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     }else{
       bisect=(searched+endsearched)/2;
     }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);    
     _seek_helper(vf,bisect);
-    logprintf("*** %s %s:%d  (%x, %x)\n", __func__, __FILE__, __LINE__, vf,&og);
     ret=_get_next_page(vf,&og,-1);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(ret==OV_EREAD)return(OV_EREAD);
     if(ret<0 || ogg_page_serialno(&og)!=currentno){
       endsearched=bisect;
@@ -224,12 +206,10 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     }
     ogg_page_release(&og);
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   _seek_helper(vf,next);
   ret=_get_next_page(vf,&og,-1);
   if(ret==OV_EREAD)return(OV_EREAD);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   
   if(searched>=end || ret<0){
     ogg_page_release(&og);
@@ -243,11 +223,9 @@ static int _bisect_forward_serialno(OggVorbis_File *vf,
     ogg_page_release(&og);
     if(ret==OV_EREAD)return(OV_EREAD);
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   
   vf->offsets[m]=begin;
   vf->serialnos[m]=currentno;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 
   return(0);
 }
@@ -264,52 +242,35 @@ static int _fetch_headers(OggVorbis_File *vf,
   ogg_page og={0,0,0,0};
   ogg_packet op={0,0,0,0,0,0};
   int i,ret;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(!og_ptr){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     ogg_int64_t llret=_get_next_page(vf,&og,CHUNKSIZE);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(llret==OV_EREAD)return(OV_EREAD);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(llret<0)return OV_ENOTVORBIS;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     og_ptr=&og;
   }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   ogg_stream_reset_serialno(vf->os,ogg_page_serialno(og_ptr));
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(serialno)*serialno=vf->os->serialno;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vf->ready_state=STREAMSET;
   
   /* extract the initial header from the first page and verify that the
      Ogg bitstream is in fact Vorbis data */
   vorbis_info_init(vi);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   vorbis_comment_init(vc);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   i=0;
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   while(i<3){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     ogg_stream_pagein(vf->os,og_ptr);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     while(i<3){
       int result=ogg_stream_packetout(vf->os,&op);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if(result==0)break;
       if(result==-1){
 	ret=OV_EBADHEADER;
 	goto bail_header;
       }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
       if((ret=vorbis_synthesis_headerin(vi,vc,&op))){
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
 	goto bail_header;
       }
       i++;
     }
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
     if(i<3)
       if(_get_next_page(vf,og_ptr,CHUNKSIZE)<0){
 	ret=OV_EBADHEADER;
@@ -466,9 +427,7 @@ static int _open_seekable2(OggVorbis_File *vf){
   vf->offset=vf->end=(vf->callbacks.tell_func)(vf->datasource);
   /* We get the offset for the last page of the physical bitstream.
      Most OggVorbis files will contain a single logical bitstream */
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   end=_get_prev_page(vf,&og);
-  logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__);
   if(end<0)return(end);
 
   /* more than one logical bitstream? */
