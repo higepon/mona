@@ -81,6 +81,7 @@ enum
 	__SWR	= 0x0040,	/* writable */
 	__SAP	= 0x0080,	/* append */
 	__SALD	= 0x0100,	/* buffer alloced */
+	__SOAL  = 0x0200,       /* object was alloced */
 };
 
 #ifndef SEEK_SET
