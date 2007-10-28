@@ -29,7 +29,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  string/strlcpy.c string/strncat.c string/strpbrk.c string/strrchr.c \
 	  string/strtok.c string/strtok_r.c string/strxfrm.c string/strdup.c \
 	  time/clock.c time/time.c time/time_util.c time/gmtime_r.c \
-	  time/gmtime.c time/mktime.c time/difftime.c \
+	  time/gmtime.c time/mktime.c time/difftime.c time/strftime.c \
 	  inttypes/imaxabs.c \
 	  stdarg/stdarg.c private/uitosn.c private/itos.c \
 	  private/ftos.c private/strcpy2.c private/memswap.c \

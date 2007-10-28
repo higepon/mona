@@ -45,6 +45,9 @@ int fclose(FILE *fp)
 		free(fp->_bf._base);
 	}
 	free(fp->_extra);
-	free(fp);
+	if( fp->_flags & __SOAL )
+	{
+		free(fp);
+	}
 	return 0;
 }
