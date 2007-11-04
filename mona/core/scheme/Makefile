@@ -77,7 +77,7 @@ depend:
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) main.o $(TEST_OBJECTS) $(LIBCONT_OBJECTS) $(TEST_TARGET) \
-$(ONIG_OBJECTS) $(GC_OBJECTS) $(REGISTERS_INC) $(PROCEDURES_H) $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
+$(ONIG_OBJECTS) $(GC_OBJECTS) $(TARGET_LIBS) test/test.scm test/dir.scm test/port.scm
 #	(cd onig && $(MAKE) $@)
 
 -include dependencies

@@ -95,6 +95,7 @@ clean :
 
 check : $(GC_TESTS)
 #	@ruby -e '"$(GC_TESTS)".split.each{ |s| puts `#{s}`}'
-	@gosh -e '(begin (for-each sys-system (string-split "$(GC_TESTS)" #\SPACE)) (exit))'
-
+ifdef GOSH
+	@$(GOSH) -e '(begin (for-each sys-system (string-split "$(GC_TESTS)" #\SPACE)) (exit))'
+endif
 -include dependencies

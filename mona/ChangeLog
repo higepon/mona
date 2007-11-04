@@ -1,3 +1,7 @@
+2007-11-04  higepon  <higepon@users.sourceforge.jp>
+
+        * core/scheme/Makefile.dep.inc: Check whether gosh exists or not.
+
 2007-10-27  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/syscall.cpp (syscall_set_watch_point): Added for watch point support.

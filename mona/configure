@@ -176,6 +176,17 @@ NASM=`which "$NASM"`
 echo "ok"
 echo "NASM=$NASM" >> $MAKEINC
 
+echo -n 'Checking gosh... '
+[ "x$GOSH" = x ] && GOSH=gosh
+GOSH=`which "$GOSH"`
+if [ "x$GOSH" = x ]
+then
+  echo 'gosh not found'
+else
+  echo "ok"
+  echo "GOSH=$GOSH" >> $MAKEINC
+fi
+
 echo -n 'Checking C# compiler... '
 DOTNET_TYPE=dotnet
 [ "x$CSC" = x ] && { CSC=`search_csc`; }
