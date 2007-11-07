@@ -43,3 +43,16 @@
 (fs-io-enum-directory-entries "/")
 (fs-io-enum-directory-entries "/")
 )
+
+;; ((lambda (a)
+;;          (set! a (lambda (i)
+;;                    (if (= i 2000000)
+;;                        (begin (print i )i)
+;;                        (a (+ i 1)))))
+;;          (a 0)
+;;          )
+;;        '())
+;; (exit)
+;; ./scheme  10.48s user 1.24s system 48% cpu 24.231 total
+;; ./scheme  3.00s user 0.36s system 100% cpu 3.360 total
+

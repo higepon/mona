@@ -60,20 +60,20 @@ PROCEDURE(MonaDirOpen, "mona-dir-open")
     return new Variant(new DirInfo(dir, path), lineno());
 }
 
-#include <monapi/io.h>
+//#include <monapi/io.h>
 
 PROCEDURE(MonaDirRead, "mona-dir-read")
 {
     uint32_t h1, l1, h2, l2, h3, l3;
-    rdtsc(&l1, &h1);
+//    rdtsc(&l1, &h1);
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), Variant, v);
     DirInfo* info = (DirInfo*)v->data();
     DIR* dir = info->dir;
-    rdtsc(&l2, &h2);
+//    rdtsc(&l2, &h2);
     struct dirent* entry = readdir(dir);
-    rdtsc(&l3, &h3);
-    logprintf("l2 - l1 = %d, l3 - l2= %d\n", l2 - l1, l3 -l2);
+//    rdtsc(&l3, &h3);
+//    logprintf("l2 - l1 = %d, l3 - l2= %d\n", l2 - l1, l3 -l2);
     if (NULL == entry) return SCM_FALSE;
     SString* name = new SString(entry->d_name, lineno());
 #ifdef MONA
