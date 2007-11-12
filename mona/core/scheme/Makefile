@@ -6,7 +6,7 @@ TEST_FILES  = test/char.scm test/closure.scm test/cont.scm test/generate.scm \
               test/test.scm test/util.scm test/vector.scm test/dir.scm
 
 # -O3 では gc がうごかなかった => 多重継承時にキャストでポインタの値がかわるのが原因。
-CXXFLAGS = -O3 -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -finstrument-functions #-DMACRO_TRACE -pg 
+CXXFLAGS = -O3 -g -idirafter . -Wall $(GC_CFLAGS) -I ./onig/onig-5.7.0 # -g -finstrument-functions #-DMACRO_TRACE -pg 
 CFLAGS   = $(CXXFLAGS)
 LDFLAGS  = $(GC_LDFLAGS)
 NFLAGS   = -felf
