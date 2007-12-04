@@ -47,7 +47,7 @@ SOURCES      = cstart.cpp            \
                NicFactory.cpp        \
                NE2000.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o
 
 all: $(TARGET)
 
@@ -60,6 +60,10 @@ $(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 mode12h.o: mode12h.asm
 	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l mode12h.lst

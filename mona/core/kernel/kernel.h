@@ -107,7 +107,7 @@ typedef struct
 } IRQInfo;
 
 void startKernel(void);
-void panic(const char*);
+extern "C" void panic(const char*);
 void checkMemoryAllocate(void* p, const char* msg);
 inline void printOK(const char*);
 inline void printBanner();
