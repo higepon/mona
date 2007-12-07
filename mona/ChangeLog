@@ -1,5 +1,7 @@
 2007-12-07  higepon  <higepon@users.sourceforge.jp>
 
+        * core/kernel/gdb-adapter.cpp (gdb_printf): Added for gdb-stub.
+
         * core/kernel/string.cpp (ltona): Removed ltona.
 
         * core/kernel/LogConsole.cpp: Changed to use vsprintf.
