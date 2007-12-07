@@ -9,6 +9,7 @@
 #include "VirtualConsole.h"
 #include "GraphicalConsole.h"
 #include "vbe.h"
+#include "vsprintf.h"
 
 class VesaConsole : public VirtualConsole
 {
@@ -46,7 +47,7 @@ private:
     void nextCursor ();
     void newLine ();
     void print(char* str);
-    void putInt(size_t n, int base);
+//    void putInt(size_t n, int base);
     void putCharacter(char ch);
 
     class VesaScreen

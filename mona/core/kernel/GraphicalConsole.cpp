@@ -67,62 +67,19 @@ void GraphicalConsole::setCHColor(const char color) {
 
     \param  format
     \author HigePon
-    \date   create:2003/02/03 update:
+    \date   create:2003/02/03 update: 2007/12/07
 */
 void GraphicalConsole::printf(const char *format, ...) {
-
-    void **list = (void **)((void *)&format);
-    list++;
-    for (int i = 0; format[i] != '\0'; i++) {
-
-        if (format[i] == '%') {
-            i++;
-
-            switch (format[i]) {
-              case 's':
-                  print((char *)*list);
-                  list++;
-                  break;
-              case 'd':
-                  putInt(*(int*)list, 10);
-                  list++;
-                  break;
-              case 'x':
-                  print("0x");
-                  putInt(*(int*)list, 16);
-                  list++;
-                  break;
-              case 'c':
-                  putCharacter((char)*(int*)(list));
-                  list++;
-                  break;
-              case '%':
-                  putCharacter('%');
-                  break;
-              case '\0':
-                  i--;
-                  break;
-            }
-        } else {
-            putCharacter(format[i]);
-        }
+#define BUFFER_SIZE 512
+    char buf[BUFFER_SIZE];
+    va_list ap;
+    va_start(ap, format);
+    int ret = vsprintf(buf, format, ap);
+    va_end(ap);
+    if (ret >= BUFFER_SIZE) {
+        this->print("bufer over at VesaConsole::printf");
     }
-}
-
-void GraphicalConsole::putInt(size_t n, int base) {
-
-    static char buf[256];
-
-    int geta = 8;
-    int num  = n;
-    if (base == 10 && num != 0) {
-        for (geta = 0; num; num /= 10, geta++);
-    } else if (base == 10 && num == 0) {
-        geta = 1;
-    }
-
-    char* p = ltona(n, buf, geta, base);
-    print(p);
+    print(buf);
 }
 
 /*!

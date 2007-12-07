@@ -17,7 +17,7 @@
 #include <sys/types.h>
 #include "VirtualConsole.h"
 #include "io.h"
-
+#include "vsprintf.h"
 
 /* define 8250 regs */
 #define RDR 0
@@ -82,7 +82,6 @@ class LogConsole : public VirtualConsole
     void newLine();
     void scrollUp();
     void print(char* str);
-    void putInt(size_t n, int base);
     void wait();
 };
 

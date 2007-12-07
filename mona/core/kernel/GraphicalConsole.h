@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include "VirtualConsole.h"
+#include "vsprintf.h"
 
 #define GP_MAX_WIDTH  80
 #define GP_MAX_HEIGHT 28
@@ -65,11 +66,9 @@ class GraphicalConsole : public VirtualConsole {
     void newLine();
     void scrollUp();
     void print(char* str);
-    void putInt(size_t n, int base);
   private:
     char bgcolor_;
     char chcolor_;
 };
-
 
 #endif

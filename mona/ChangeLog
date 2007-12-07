@@ -1,3 +1,16 @@
+2007-12-07  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/string.cpp (ltona): Removed ltona.
+
+        * core/kernel/LogConsole.cpp: Changed to use vsprintf.
+
+        * core/kernel/GraphicalConsole.cpp: Changed to use vsprintf.
+
+        * core/kernel/VesaConsole.cpp (VesaConsole::putInt): Removed putInt.
+                                      (VesaConsole::printf): Changed to use vsprintf.
+
+        * core/kernel/vsprintf.cpp (vsprintf): Added for kernel.
+
 2007-12-05  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/gdb-i386-stub.c: Added.
