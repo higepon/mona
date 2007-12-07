@@ -46,6 +46,7 @@ SOURCES      = cstart.cpp            \
                shutdown.cpp          \
                NicFactory.cpp        \
                vsprintf.cpp          \
+               gdb-adapter.cpp       \
                NE2000.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o

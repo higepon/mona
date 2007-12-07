@@ -94,6 +94,7 @@
 void putDebugChar() {}
 int getDebugChar() {}
 void exceptionHandler() {}
+#include "gdb-adapter.h"
 #else
 #include <stdio.h>
 #include <string.h>
@@ -505,13 +506,9 @@ getpacket (void)
 	    {
 	      if (remote_debug)
 		{
-#ifdef MONA
-		  panic("bad checksum");
-#else
 		  fprintf (stderr,
 			   "bad checksum.  My count = 0x%x, sent=0x%x. buf=%s\n",
 			   checksum, xmitcsum, buffer);
-#endif
 		}
 	      putDebugChar ('-');	/* failed checksum */
 	    }
@@ -571,11 +568,7 @@ debug_error (format, parm)
      char *parm;
 {
   if (remote_debug)
-#ifdef MONA
-    panic(format);
-#else
     fprintf (stderr, format, parm);
-#endif
 }
 
 /* Address of a routine to RTE to if we get a memory fault.  */
@@ -767,11 +760,8 @@ handle_exception (int exceptionVector)
 
   if (remote_debug)
     {
-#ifdef MONA
-#else
       printf ("vector=%d, sr=0x%x, pc=0x%x\n",
 	      exceptionVector, registers[PS], registers[PC]);
-#endif
     }
 
   /* reply to host that an exception has occurred */
