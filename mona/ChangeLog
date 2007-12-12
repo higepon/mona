@@ -1,3 +1,8 @@
+2007-12-13  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/Uart.cpp (Uart::Uart): Added Uart (Universal Asynchronous Receiver Transmitter) driver.
+                                             Not yet completed.
+
 2007-12-07  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/gdb-adapter.cpp (gdb_printf): Added for gdb-stub.
