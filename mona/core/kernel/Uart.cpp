@@ -46,6 +46,19 @@ Uart::~Uart()
 }
 
 /*!
+    \brief write char.
+
+    \param c 1byte char.
+    \author  Higepon
+    \date    create:2008/12/13 update:
+*/
+void Uart::writeChar(char c)
+{
+
+
+}
+
+/*!
     \brief output 1byte value to Uart.
 
     \param reg register number.

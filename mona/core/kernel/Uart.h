@@ -30,6 +30,8 @@ public:
     Uart(Uart::Device device);
     virtual ~Uart();
 
+    void writeChar(char c);
+
 
 protected:
     enum {
