@@ -1,3 +1,15 @@
+2007-12-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/gdb-adapter.cpp (putDebugChar): Added putDebugChar (using Uart driver).
+                                                      Added getDebugChar (using Uart driver).
+
+        * core/kernel/kernel.cpp (startKernel): Added initialize of COM2 serial port.
+
+        * core/kernel/LogConsole.cpp: Chageged to use Uart driver.
+
+        * core/kernel/Uart.cpp: Uart driver works well for both COM1 and COM2.
+                                Added readChar, writeChar support.
+
 2007-12-13  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Uart.cpp (Uart::Uart): Added Uart (Universal Asynchronous Receiver Transmitter) driver.

@@ -18,9 +18,8 @@ Uart::Uart(Uart::Device device) : device_(device)
     // setup some parameters
     //   enable setuping baud rate.
     //   send/recive data size 8bit.
-    //   stop bit 2bit.
     //   no parity
-    out8(LINE_CONTROL_REGISTER, (BAUD_RATE_SETUP_ENABLE | DATA_8BIT | STOP_2BIT | PARITY_NONE));
+    out8(LINE_CONTROL_REGISTER, (BAUD_RATE_SETUP_ENABLE | DATA_8BIT | PARITY_NONE));
     wait();
 
     // set up baud rate to BAUD_RATE
@@ -30,7 +29,7 @@ Uart::Uart(Uart::Device device) : device_(device)
     wait();
 
     // set up is done, so disable the port.
-    out8(LINE_CONTROL_REGISTER, (BAUD_RATE_SETUP_DISABLE | DATA_8BIT | STOP_2BIT | PARITY_NONE));
+    out8(LINE_CONTROL_REGISTER, (BAUD_RATE_SETUP_DISABLE | DATA_8BIT | PARITY_NONE));
     wait();
 
     // disable loopback.
@@ -54,8 +53,29 @@ Uart::~Uart()
 */
 void Uart::writeChar(char c)
 {
+    for (;;) {
+        wait();
+        if (in8(LINE_STATUS_REGISTER) & TRANSMIT_DATA_REGISTER_IS_EMPTY) break;
+        panic("hige");
+    }
+    out8(TRANSMIT_DATA_REGISTER, c);
+    wait();
+}
 
+/*!
+    \brief read char.
 
+    \return char.
+    \author  Higepon
+    \date    create:2008/12/13 update:
+*/
+char Uart::readChar()
+{
+    for (;;) {
+        wait();
+        if (in8(LINE_STATUS_REGISTER) & RECEIVED_DATA) break;
+    }
+    return in8(RECEIVE_DATA_REGISTER);
 }
 
 /*!
@@ -69,6 +89,19 @@ void Uart::writeChar(char c)
 void Uart::out8(uint8_t reg, uint8_t value)
 {
     outp8(device_ + reg, value);
+}
+
+/*!
+    \brief input 1byte value from Uart.
+
+    \param reg register number.
+    \return 1byte input value.
+    \author  Higepon
+    \date    create:2008/12/13 update:
+*/
+uint8_t Uart::in8(uint8_t reg)
+{
+    return inp8(device_ + reg);
 }
 
 /*!

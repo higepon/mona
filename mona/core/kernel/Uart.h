@@ -20,7 +20,6 @@
 class Uart
 {
 public:
-    // devices
     typedef enum {
         COM1 = 0x03F8,
         COM2 = 0x02F8
@@ -31,26 +30,31 @@ public:
     virtual ~Uart();
 
     void writeChar(char c);
-
+    char readChar();
 
 protected:
     enum {
-        LINE_CONTROL_REGISTER   = 3,
-        MODEM_CONTROL_REGISTER  = 4,
-        BAUD_RATE_LSB_REGISTER  = 0,
-        BAUD_RATE_MSB_REGISTER  = 1,
-        CLOCK_BASE              = (1843200 / 16),
-        BAUD_RATE               = 9600,
-        BAUD_RATE_VALUE         = CLOCK_BASE / BAUD_RATE,
-        BAUD_RATE_SETUP_ENABLE  = 0x80,
-        BAUD_RATE_SETUP_DISABLE = 0x00,
+        TRANSMIT_DATA_REGISTER          = 0,
+        RECEIVE_DATA_REGISTER           = 0,
+        LINE_CONTROL_REGISTER           = 3,
+        MODEM_CONTROL_REGISTER          = 4,
+        LINE_STATUS_REGISTER            = 5,
+        BAUD_RATE_LSB_REGISTER          = 0,
+        BAUD_RATE_MSB_REGISTER          = 1,
+        CLOCK_BASE                      = (1843200 / 16),
+        BAUD_RATE                       = 9600,
+        BAUD_RATE_VALUE                 = CLOCK_BASE / BAUD_RATE,
+        BAUD_RATE_SETUP_ENABLE          = 0x80,
+        BAUD_RATE_SETUP_DISABLE         = 0x00,
+        TRANSMIT_DATA_REGISTER_IS_EMPTY = 0x20,
+        RECEIVED_DATA                   = 0x01,
         DATA_8BIT       = 0x03,
-        STOP_2BIT       = 0x04,
         PARITY_NONE     = 0x00,
     };
 
     void wait();
     void out8(uint8_t reg, uint8_t value);
+    uint8_t in8(uint8_t reg);
 
     Uart::Device device_;
 };

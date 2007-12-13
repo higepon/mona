@@ -91,8 +91,6 @@
 
 #ifdef MONA
 #define NULL (0)
-void putDebugChar() {}
-int getDebugChar() {}
 void exceptionHandler() {}
 #include "gdb-adapter.h"
 #else

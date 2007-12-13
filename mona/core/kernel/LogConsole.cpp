@@ -13,11 +13,11 @@
     \author  HigePon
     \version $Revision$
     \date   create:2004/03/05 update:$Date$
+    \date   2007-12-14 Changed to use Uart driver.
 */
 
 #include "LogConsole.h"
 #include "global.h"
-
 
 /*!
     \brief initialize
@@ -27,17 +27,7 @@
 */
 LogConsole::LogConsole()
 {
-    int baud = BAUD_CLK / BAUDRATE;
-    out_uart(LCR,DLAB | TRXFORMAT);
-    wait();
-    out_uart(DLL, (baud & 0xff));
-    wait();
-    out_uart(DLM, (baud & 0xff00) >> 8);
-    wait();
-    out_uart(LCR, TRXFORMAT);
-    wait();
-    out_uart(MCR, 0x03);
-    wait();
+    com1_ = new Uart(Uart::COM1);
 }
 
 /*!
@@ -205,23 +195,9 @@ void LogConsole::putCharacter(char ch)
 */
 void LogConsole::print(char* str)
 {
-    int lsr;
     while (*str)
     {
-        do
-        {
-            lsr = in_uart(LSR) & 0x20;  /* wait TxRDY */
-            wait();
-        } while (!lsr);
-
-        out_uart(THR, *str++);           /* send uint8_t */
-        wait();
+        com1_->writeChar(*str++);
     }
-     return;
-}
-
-void LogConsole::wait(void)
-{
-    volatile int wait;
-    for(wait = 0; wait < 10; wait++);
+    return;
 }

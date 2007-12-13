@@ -1,7 +1,7 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002-2007 Higepon
+    Copyright (c) 2002-2008 Higepon
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
@@ -72,6 +72,7 @@
 #include "monaboot.h"
 #include "RTC.h"
 #include "apm.h"
+#include "Uart.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -187,12 +188,13 @@ void startKernel()
     }
 #endif
 
+    // use COM1 serial port
     g_log = new LogConsole();
-
+    // use COM2 serial port
+    g_com2 = new Uart(Uart::COM2);
     pic_init();
     RTC::init();
     printOK("Setting PIC        ");
-
     IDTUtil::setup();
     printOK("Setting IDT        ");
     printOK("Setting GDT        ");

@@ -27,6 +27,8 @@
 #include "apm.h"
 #include "NicFactory.h"
 
+class Uart;
+
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
@@ -76,6 +78,8 @@ GLOBAL uint32_t g_mutexShared;
 GLOBAL SharedMemoryObject* g_dllSharedObject;
 
 GLOBAL APMInfo *g_apmInfo;
+
+GLOBAL Uart* g_com2;
 
 #ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;

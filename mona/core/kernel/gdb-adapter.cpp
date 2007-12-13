@@ -1,7 +1,9 @@
 #include "gdb-adapter.h"
 #include "VirtualConsole.h"
+#include "Uart.h"
 
 extern "C" VirtualConsole* g_console;
+extern "C" Uart* g_com2;
 
 void gdb_printf(const char* fmt, ...)
 {
@@ -16,4 +18,14 @@ void gdb_printf(const char* fmt, ...)
         g_console->printf(buf);
     }
     va_end(ap);
+}
+
+void putDebugChar(int ch)
+{
+    g_com2->writeChar((char)ch);
+}
+
+int getDebugChar()
+{
+    return g_com2->readChar();
 }

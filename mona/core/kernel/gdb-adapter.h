@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 void gdb_printf(const char* fmt, ...);
-
+void putDebugChar(int ch);
+int getDebugChar();
 #ifdef __cplusplus
 }
 #endif
