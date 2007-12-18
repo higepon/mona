@@ -1,3 +1,7 @@
+2007-12-19  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/gdb-adapter.cpp (exceptionHandler): Added for gdb stub. Not worked yes.
+
 2007-12-14  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/gdb-adapter.cpp (putDebugChar): Added putDebugChar (using Uart driver).
