@@ -98,6 +98,7 @@ ifneq ($(BUILD_TARGET),ELF)
 	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 	$(INSTALL) -p -m 0644 $(CRT_OBJECT) $(LIB_STATIC) $(LIBDIR)/
 endif
+	$(INSTALL) -p $(CRT_OBJECT) $(LIBDIR)
 
 uninstall:
 	rm -f $(LIBDIR)/$(CRT_OBJECT) $(LIBDIR)/$(LIB_STATIC)
