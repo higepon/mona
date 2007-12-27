@@ -1,3 +1,7 @@
+2007-12-28  higepon  <higepon@users.sourceforge.jp>
+
+        * configure : Added wine for Mingw.
+
 2007-12-19  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/gdb-adapter.cpp (exceptionHandler): Added for gdb stub. Not worked yes.
