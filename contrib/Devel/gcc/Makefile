@@ -1,3 +1,7 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 CATEGORY = Devel
 NAME     = go_0020s
 VERSION  = 
@@ -47,7 +51,4 @@ ${SOURCE1}:
 	touch $@
 
 .INSTALL: .MAKE
-# 	install -p -m 0644 ${WORKDIR}/lib/*.DLL ${MONADIR}/bin/LIBS
-# 	install -p ${WORKDIR}/lib/lib*.a ${MONADIR}/lib
-# 	mkdir -p ${MONADIR}/include/GL
-# 	install -p ${WORKDIR}/include/GL/*.h ${MONADIR}/include/GL
+	install -p -m 0644 ${WORKDIR}/gcc/*.exe ${MONADIR}/bin/APPS
