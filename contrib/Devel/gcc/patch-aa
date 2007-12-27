@@ -1,0 +1,345 @@
+diff -ur go_0020s.orig/gcc/makefile go_0020s/gcc/makefile
+--- go_0020s.orig/gcc/makefile	2003-11-11 11:22:16.000000000 +0900
++++ go_0020s/gcc/makefile	2007-12-26 01:01:58.000000000 +0900
+@@ -55,14 +55,14 @@
+ 	-$(DEL) osaskgo.bim
+ 	-$(DEL) osaskgo.bin
+ 
+-libcpp.lib : $(LIBCPP_OBJS) Makefile ../include/rules.mak
++libcpp.lib : $(LIBCPP_OBJS) makefile ../include/rules.mak
+ 	$(LIBRARIAN) out:$@ $(LIBCPP_OBJS)
+ 
+ libbackend.lib : $(OBJS)
+ 	$(LIBRARIAN) out:$@ $(OBJS)
+ 
+ cpp0.exe : cppmain.o intl.o libcpp.lib hashtable.o version.o \
+-		Makefile ../include/rules.mak
++		makefile ../include/rules.mak
+ 	$(MAKEC) ../libiberty
+ 	$(MAKEC) ../intl
+ 	$(MAKEC) ../go_lib
+@@ -70,7 +70,7 @@
+ 	$(LINK) -o $@ $(LINKOPT_CPP0) $(GODRVDIR)/cpp0main.obj cppmain.o intl.o \
+ 		libcpp.lib hashtable.o version.o $(LIBS) $(GODRV) $(LINK_ADDLIB)
+ 
+-cc1.exe : $(C_OBJS) $(BACKEND) Makefile ../include/rules.mak
++cc1.exe : $(C_OBJS) $(BACKEND) makefile ../include/rules.mak
+ 	$(MAKEC) ../libiberty
+ 	$(MAKEC) ../intl
+ 	$(MAKEC) ../go_lib
+@@ -79,7 +79,7 @@
+ 		$(LIBS) $(GODRV) $(LINK_ADDLIB)
+ 
+ cc1plus.exe : $(CXX_OBJS) $(CXX_C_OBJS) $(BACKEND) libcpp.lib \
+-		Makefile ../include/rules.mak
++		makefile ../include/rules.mak
+ 	$(MAKEC) ../libiberty
+ 	$(MAKEC) ../intl
+ 	$(MAKEC) ../go_lib
+@@ -97,7 +97,7 @@
+ 
+ OSADRV = ../drv_osa/drv_osa.lib
+ 
+-osaskgo.org : $(C_OBJS) $(BACKEND) Makefile ../include/rules.mak
++osaskgo.org : $(C_OBJS) $(BACKEND) makefile ../include/rules.mak
+ 	$(MAKEC) ../libiberty
+ 	$(MAKEC) ../intl
+ 	$(MAKEC) ../go_lib
+@@ -107,7 +107,7 @@
+ 		$(OSADRV) $(C_OBJS) $(BACKEND) $(LIBS) ../nasklib/nasklib.lib
+ 	$(BIM2BIN) in:osaskgo.bim out:osaskgo.org malloc:$(MALLOCSIZE) mmarea:$(MMAREA)
+ 
+-osaskgo.bin : $(C_OBJS) $(BACKEND) Makefile ../include/rules.mak
++osaskgo.bin : $(C_OBJS) $(BACKEND) makefile ../include/rules.mak
+ 	$(MAKEC) ../libiberty
+ 	$(MAKEC) ../intl
+ 	$(MAKEC) ../go_lib
+diff -ur go_0020s.orig/go_lib/makefile go_0020s/go_lib/makefile
+--- go_0020s.orig/go_lib/makefile	2003-11-10 19:27:56.000000000 +0900
++++ go_0020s/go_lib/makefile	2007-12-26 00:42:45.000000000 +0900
+@@ -21,5 +21,5 @@
+ 	-$(DEL) *.o
+ 	-$(DEL) $(TARGETLIB)
+ 
+-$(TARGETLIB) : $(OBJS) Makefile ../include/rules.mak
++$(TARGETLIB) : $(OBJS) makefile ../include/rules.mak
+ 	$(LIBRARIAN) out:$@ $(OBJS)
+diff -ur go_0020s.orig/go_lib/malloc.c go_0020s/go_lib/malloc.c
+--- go_0020s.orig/go_lib/malloc.c	2002-11-07 16:35:32.000000000 +0900
++++ go_0020s/go_lib/malloc.c	2007-12-26 00:42:05.000000000 +0900
+@@ -1,6 +1,6 @@
+ /* copyright(C) 2002 H.Kawai (under KL-01). */
+ 
+-#include "GO_lib.h"
++#include "go_lib.h"
+ 
+ struct GOL_STR_MEMMAN GOL_memman;
+ 
+diff -ur go_0020s.orig/go_lib/realloc.c go_0020s/go_lib/realloc.c
+--- go_0020s.orig/go_lib/realloc.c	2002-11-07 16:35:42.000000000 +0900
++++ go_0020s/go_lib/realloc.c	2007-12-26 00:42:08.000000000 +0900
+@@ -1,6 +1,6 @@
+ /* copyright(C) 2002 H.Kawai (under KL-01). */
+ 
+-#include "GO_lib.h"
++#include "go_lib.h"
+ 
+ void *GO_realloc(void *p, size_t size)
+ {
+diff -ur go_0020s.orig/go_lib/symalloc.c go_0020s/go_lib/symalloc.c
+--- go_0020s.orig/go_lib/symalloc.c	2002-11-14 19:22:40.000000000 +0900
++++ go_0020s/go_lib/symalloc.c	2007-12-26 00:42:27.000000000 +0900
+@@ -1,6 +1,6 @@
+ /* copyright(C) 2002 H.Kawai (under KL-01). */
+ 
+-#include "GO_lib.h"
++#include "go_lib.h"
+ 
+ struct GOL_STR_MEMMAN GOL_sysman;
+ 
+diff -ur go_0020s.orig/include/math.h go_0020s/include/math.h
+--- go_0020s.orig/include/math.h	2002-11-05 17:19:26.000000000 +0900
++++ go_0020s/include/math.h	2007-12-26 01:03:38.000000000 +0900
+@@ -8,7 +8,7 @@
+ 	extern "C" {
+ #endif
+ 
+-#include "GO_lib.h"
++#include "go_lib.h"
+ 
+ double GO_ldexp(double x, int n);
+ double GO_frexp(double x, int *exp);
+diff -ur go_0020s.orig/intl/bindtextdom.c go_0020s/intl/bindtextdom.c
+--- go_0020s.orig/intl/bindtextdom.c	2002-11-18 13:59:12.000000000 +0900
++++ go_0020s/intl/bindtextdom.c	2007-12-26 01:06:09.000000000 +0900
+@@ -31,7 +31,7 @@
+ #else
+ # include "libgnuintl.h"
+ #endif
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ #ifdef _LIBC
+ /* We have to handle multi-threaded applications.  */
+diff -ur go_0020s.orig/intl/dcgettext.c go_0020s/intl/dcgettext.c
+--- go_0020s.orig/intl/dcgettext.c	2002-11-24 18:42:06.000000000 +0900
++++ go_0020s/intl/dcgettext.c	2007-12-26 01:06:22.000000000 +0900
+@@ -22,7 +22,7 @@
+ #endif
+ /* end of !kawai! */
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/dcigettext.c go_0020s/intl/dcigettext.c
+--- go_0020s.orig/intl/dcigettext.c	2002-11-19 11:10:36.000000000 +0900
++++ go_0020s/intl/dcigettext.c	2007-12-26 01:07:56.000000000 +0900
+@@ -47,7 +47,7 @@
+ 
+ /* #include <locale.h> */
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/dcngettext.c go_0020s/intl/dcngettext.c
+--- go_0020s.orig/intl/dcngettext.c	2002-11-24 18:42:06.000000000 +0900
++++ go_0020s/intl/dcngettext.c	2007-12-26 01:08:05.000000000 +0900
+@@ -22,7 +22,7 @@
+ #endif
+ /* end of !kawai! */
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/dgettext.c go_0020s/intl/dgettext.c
+--- go_0020s.orig/intl/dgettext.c	2002-11-17 23:16:00.000000000 +0900
++++ go_0020s/intl/dgettext.c	2007-12-26 01:06:44.000000000 +0900
+@@ -24,7 +24,7 @@
+ 
+ /* #include <locale.h> */
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/dngettext.c go_0020s/intl/dngettext.c
+--- go_0020s.orig/intl/dngettext.c	2002-11-17 23:19:52.000000000 +0900
++++ go_0020s/intl/dngettext.c	2007-12-26 01:08:39.000000000 +0900
+@@ -22,7 +22,7 @@
+ #endif
+ /* end of !kawai! */
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/finddomain.c go_0020s/intl/finddomain.c
+--- go_0020s.orig/intl/finddomain.c	2002-11-18 14:00:16.000000000 +0900
++++ go_0020s/intl/finddomain.c	2007-12-26 01:07:06.000000000 +0900
+@@ -32,7 +32,7 @@
+ /* # include <unistd.h> */
+ #endif
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/gettext.c go_0020s/intl/gettext.c
+--- go_0020s.orig/intl/gettext.c	2002-11-18 13:59:46.000000000 +0900
++++ go_0020s/intl/gettext.c	2007-12-26 01:06:56.000000000 +0900
+@@ -29,7 +29,7 @@
+ # include "../include/stdlib.h"		/* Just for NULL.  */
+ #endif
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/intl-compat.c go_0020s/intl/intl-compat.c
+--- go_0020s.orig/intl/intl-compat.c	2002-11-24 18:42:06.000000000 +0900
++++ go_0020s/intl/intl-compat.c	2007-12-26 01:05:15.000000000 +0900
+@@ -25,7 +25,7 @@
+ 
+ 
+ #include "libgnuintl.h"
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ /* @@ end of prolog @@ */
+ 
+Only in go_0020s/intl: libintl.lib
+diff -ur go_0020s.orig/intl/loadmsgcat.c go_0020s/intl/loadmsgcat.c
+--- go_0020s.orig/intl/loadmsgcat.c	2002-11-18 14:08:14.000000000 +0900
++++ go_0020s/intl/loadmsgcat.c	2007-12-26 01:08:39.000000000 +0900
+@@ -51,7 +51,7 @@
+ #endif
+ 
+ #include "gettext.h"
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ #ifdef _LIBC
+ # include "../locale/localeinfo.h"
+diff -ur go_0020s.orig/intl/localcharset.c go_0020s/intl/localcharset.c
+--- go_0020s.orig/intl/localcharset.c	2002-11-19 11:11:30.000000000 +0900
++++ go_0020s/intl/localcharset.c	2007-12-26 01:08:39.000000000 +0900
+@@ -59,7 +59,7 @@
+ # include <windows.h>
+ #endif
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ #ifndef DIRECTORY_SEPARATOR
+ # define DIRECTORY_SEPARATOR '/'
+diff -ur go_0020s.orig/intl/localealias.c go_0020s/intl/localealias.c
+--- go_0020s.orig/intl/localealias.c	2002-11-19 11:12:54.000000000 +0900
++++ go_0020s/intl/localealias.c	2007-12-26 01:07:27.000000000 +0900
+@@ -42,7 +42,7 @@
+ 
+ #include "../include/string.h"
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ /* @@ end of prolog @@ */
+ 
+diff -ur go_0020s.orig/intl/makefile go_0020s/intl/makefile
+--- go_0020s.orig/intl/makefile	2003-11-10 22:35:54.000000000 +0900
++++ go_0020s/intl/makefile	2007-12-26 01:05:04.000000000 +0900
+@@ -15,5 +15,5 @@
+ 	-$(DEL) $(TARGETLIB)
+ 	-$(DEL) *.o
+ 
+-$(TARGETLIB) : $(OBJS) Makefile ../include/rules.mak
++$(TARGETLIB) : $(OBJS) makefile ../include/rules.mak
+ 	$(LIBRARIAN) out:$@ $(OBJS)
+diff -ur go_0020s.orig/intl/ngettext.c go_0020s/intl/ngettext.c
+--- go_0020s.orig/intl/ngettext.c	2002-11-18 14:05:04.000000000 +0900
++++ go_0020s/intl/ngettext.c	2007-12-26 01:08:39.000000000 +0900
+@@ -29,7 +29,7 @@
+ # include "../include/stdlib.h"		/* Just for NULL.  */
+ #endif
+ 
+-#include "gettextP.h"
++#include "gettextp.h"
+ #ifdef _LIBC
+ # include <libintl.h>
+ #else
+diff -ur go_0020s.orig/intl/plural.c go_0020s/intl/plural.c
+--- go_0020s.orig/intl/plural.c	2002-11-18 14:06:14.000000000 +0900
++++ go_0020s/intl/plural.c	2007-12-26 01:08:39.000000000 +0900
+@@ -53,7 +53,7 @@
+ /* end of !kawai! */
+ 
+ #include "../include/stdlib.h"
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ /* Names for the libintl functions are a problem.  They must not clash
+    with existing names and they should follow ANSI C.  But this source
+diff -ur go_0020s.orig/intl/textdomain.c go_0020s/intl/textdomain.c
+--- go_0020s.orig/intl/textdomain.c	2002-11-18 14:02:32.000000000 +0900
++++ go_0020s/intl/textdomain.c	2007-12-26 01:07:37.000000000 +0900
+@@ -30,7 +30,7 @@
+ #else
+ # include "libgnuintl.h"
+ #endif
+-#include "gettextP.h"
++#include "gettextp.h"
+ 
+ #ifdef _LIBC
+ /* We have to handle multi-threaded applications.  */
+Only in go_0020s/libiberty: libiberty.lib
+diff -ur go_0020s.orig/libiberty/makefile go_0020s/libiberty/makefile
+--- go_0020s.orig/libiberty/makefile	2003-11-10 22:36:06.000000000 +0900
++++ go_0020s/libiberty/makefile	2007-12-26 01:04:17.000000000 +0900
+@@ -20,5 +20,5 @@
+ 	-$(DEL) $(TARGETLIB)
+ 	-$(DEL) *.o
+ 
+-$(TARGETLIB) : $(OBJS) Makefile ../include/rules.mak
++$(TARGETLIB) : $(OBJS) makefile ../include/rules.mak
+ 	$(LIBRARIAN) out:$@ $(OBJS)
+diff -ur go_0020s.orig/nasklib/makefile go_0020s/nasklib/makefile
+--- go_0020s.orig/nasklib/makefile	2003-11-12 16:42:46.000000000 +0900
++++ go_0020s/nasklib/makefile	2007-12-26 00:16:36.000000000 +0900
+@@ -12,5 +12,5 @@
+ 	-$(DEL) *.o
+ 	-$(DEL) $(TARGETLIB)
+ 
+-$(TARGETLIB) : $(OBJS) Makefile ../include/rules.mak
++$(TARGETLIB) : $(OBJS) makefile ../include/rules.mak
+ 	$(LIBRARIAN) out:$@ $(OBJS)
+diff -ur go_0020s.orig/toolstdc/makefile go_0020s/toolstdc/makefile
+--- go_0020s.orig/toolstdc/makefile	2003-11-10 21:55:34.000000000 +0900
++++ go_0020s/toolstdc/makefile	2007-12-26 00:11:46.000000000 +0900
+@@ -10,15 +10,15 @@
+ 	-$(DEL) *.obj
+ 	-$(DEL) *.exe
+ 
+-%.exe : %.obj Makefile ../include/rules.mak
++%.exe : %.obj makefile ../include/rules.mak
+ 	$(LINK) -o $*.exe $*.obj
+ 
+-nask.exe : nask.obj Makefile ../include/rules.mak
++nask.exe : nask.obj makefile ../include/rules.mak
+ 	$(MAKEC) ../nasklib
+ 	$(MAKEC) ../go_lib
+ 	$(LINK) -o nask.exe nask.obj ../nasklib/nasklib.lib \
+ 		../go_lib/go_lib.lib ../go_lib/stdin.o
+ 
+-naskcnv0.exe : naskcnv0.obj Makefile ../include/rules.mak
++naskcnv0.exe : naskcnv0.obj makefile ../include/rules.mak
+ 	$(MAKEC) ../go_lib
+ 	$(LINK) -o naskcnv0.exe naskcnv0.obj ../go_lib/go_lib.lib
