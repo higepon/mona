@@ -74,6 +74,7 @@ OSTYPE=`uname | cut -d _ -f 1 | tr [:upper:] [:lower:]`
 if [ "x$HOST" = x ]; then
   if [ "x$MINGWPREFIX" != x ]; then
     HOST=MINGW
+    WINE=wine
   else
     case $OSTYPE in
     cygwin)
@@ -212,6 +213,7 @@ case $DOTNET_TYPE in
 esac
 echo "CSC=$CSC" >> $MAKEINC
 echo "NETRT=$MONO" >> $MAKEINC
+echo "WINE=$WINE" >> $MAKEINC
 
 echo -n 'Checking C Compiler for bim2bin... '
 #if [ x$BIM2BIN_CC == x ]; then
