@@ -13,7 +13,7 @@ DEL = rm -f
 MAKER = $(MAKE) -r
 MAKEC = $(MAKE) -C
 COMPILE = $(GCC) -c $(CFLAGS)
-LINK = $(LD) --Map $@.map $(LFLAGS) $(LIBDIR)/monapi_crt.o 
+LINK = $(LD) --Map $@.map  -n --image-base=0xA0000000 --disable-runtime-pseudo-reloc $(LFLAGS) $(LIBDIR)/monapi_crt.o 
 LINK_ADDLIB = -L$(LIBDIR) -lmonapi-imp -lmonalibc-imp --enable-auto-import
 
 GODRV = ../drv_stdc/drv_stdc.obj
