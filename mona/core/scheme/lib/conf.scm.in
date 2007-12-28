@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
 
 ;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
 ;; (define (mona-gui-get-window-title w) w)
@@ -307,4 +307,13 @@
 
 (define (hp)
   (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC"))
+
+(define (cc1)
+  (start-process "/APPS/cc1.exe"))
+
+(define (cc1p)
+  (start-process "/APPS/cc1plus.exe"))
+
+(define (cpp0)
+  (start-process "/APPS/cpp0.exe"))
 

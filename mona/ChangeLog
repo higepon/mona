@@ -1,5 +1,7 @@
 2007-12-28  higepon  <higepon@users.sourceforge.jp>
 
+        * core/monalibc/stdio/fread.c (__nida_fullybuf_fread): Fixed buffer over flow. Thx id:h0shu.
+
         * configure : Added wine for Mingw.
 
 2007-12-19  higepon  <higepon@users.sourceforge.jp>
