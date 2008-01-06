@@ -2,8 +2,8 @@
 require 'pp'
 MONA_DIR = "mona"
 CONTRIB_DIR = "contrib"
-M_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/branches/mona-stdio"
-C_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/branches/contrib-stdio"
+M_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/trunk/mona"
+C_REPOS = "https://monaos.svn.sourceforge.net/svnroot/monaos/trunk/contrib"
 
 def qemu(revision)
   system("/usr/bin/qemu -cdrom ~/tmp/#{revision}/mona/tool/mkimg/mona.iso -fda ~/tmp/#{revision}/mona/tool/mkimg/mona.img -boot d -k ja ")

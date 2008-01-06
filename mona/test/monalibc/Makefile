@@ -17,4 +17,4 @@ endif
 
 CFLAGS += -DDEBUG -I . -I $(INCDIR)/monalibc
 
-include dependencies
+-include dependencies
