@@ -317,3 +317,6 @@
 (define (cpp0)
   (start-process "/APPS/cpp0.exe"))
 
+(define (tstr)
+  (start-process "/APPS/TSTRING.EX5"))
+
