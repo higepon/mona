@@ -164,22 +164,20 @@ void* memcpy(void* s1, const void* s2, size_t size) {
                  : "edi", "esi", "ecx");
     return s1;
 }
-
+extern "C" int syscall_print(const char* s);
 char* strncpy(char* s1, const char* s2, size_t n) {
-
     char* p = s1;
-
     for (; n > 0; n--) {
-
         if (*s2 == '\0') break;
         *p = *s2;
         p++;
         s2++;
     }
 
-    while (n > 1) {
+    while (n >= 1) {
         n--;
         *p = '\0';
+        p++;
     }
     return s1;
 }

@@ -5,7 +5,7 @@
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
+ * copies of the Software, and to permit persons to whom the Software is     * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -21,23 +21,35 @@
  *************************************************************/
 
 /* Please send bug reports to
-	Shotaro Tsuji
-	4-1010,
-	Sakasedai 1-chome,
-	Takaraduka-si,
-	Hyogo-ken,
-	665-0024
-	Japan
-	negi4d41@yahoo.co.jp
+    Shotaro Tsuji
+    4-1010,
+    Sakasedai 1-chome,
+    Takaraduka-si,
+    Hyogo-ken,
+    665-0024
+    Japan
+    negi4d41@yahoo.co.jp
+
+    \author Shotaro Tsuji, Higepon
 */
 
 #include <string.h>
 
-char *strncpy(char *dst, const char *src, size_t n)
-{
-	register int i = 0;
+// char* strncpy(char* s1, const char* s2, size_t n) {
 
-	for( ; i < n ; i++ )
-		dst[i] = src[i];
-	return dst;
-}
+//     char* p = s1;
+
+//     for (; n > 0; n--) {
+
+//         if (*s2 == '\0') break;
+//         *p = *s2;
+//         p++;
+//         s2++;
+//     }
+
+//     while (n > 1) {
+//         n--;
+//         *p = '\0';
+//     }
+//     return s1;
+// }

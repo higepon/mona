@@ -1,3 +1,13 @@
+2008-01-09  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/string.cpp (strncpy): Fixed when n < strlen(src).
+
+2008-01-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monalibc/string/strncpy.c (strncpy): Fixed when n < strlen(src).
+
+        * core/monalibc/string/strncat.c (strncat): Fixed the bug of size n == 0.
+
 2007-12-28  higepon  <higepon@users.sourceforge.jp>
 
         * core/monalibc/stdio/fread.c (__nida_fullybuf_fread): Fixed buffer over flow. Thx id:h0shu.
