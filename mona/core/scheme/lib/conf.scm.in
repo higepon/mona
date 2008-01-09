@@ -318,8 +318,13 @@
   (start-process "/APPS/cpp0.exe"))
 
 (define (tstr)
-  (print "libc test start")
-  (call-process "/APPS/TSTRING.EX5")
-  (print "libc test end"))
+  (call-process "/APPS/TSTRING.EX5"))
 
+(define (tstd)
+  (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5"))
+
+(display "libc test start")
 (tstr)
+(print "...")
+(tstd)
+(print "done")
