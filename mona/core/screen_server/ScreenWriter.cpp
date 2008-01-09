@@ -31,6 +31,7 @@ ScreenWriter::~ScreenWriter()
 
 int ScreenWriter::clearScreen()
 {
+    return 0; // ToDo
 }
 
 int ScreenWriter::moveCursor(uint32_t x, uint32_t y)
