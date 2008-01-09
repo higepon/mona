@@ -1,5 +1,9 @@
 2008-01-09  higepon  <higepon@users.sourceforge.jp>
 
+        * core/monalibc/string/strncat.c (strncat): Fixed the bug.
+
+        * core/monalibc/string/strchr.c (strchr): Fixed the bug.
+
         * core/monapi/string.cpp (strncpy): Fixed when n < strlen(src).
 
 2008-01-08  higepon  <higepon@users.sourceforge.jp>

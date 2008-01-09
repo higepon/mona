@@ -35,16 +35,14 @@
 
 #include <string.h>
 
-char *strncat(char *dst, const char *src, size_t n)
+char* strncat(char* dst, const char* src, size_t n)
 {
-    if (0 == n) return dst;
-    char *s = dst + strlen(dst);
-    register int i = 0;
-
-    for( ; i < n ; i++ ) {
-        if (src[i] == '\0') break;
-        s[i] = src[i];
+    char* s = dst;
+    dst = dst + strlen(dst);
+    while (n-- != 0 && (*dst++ = *src++)) {
+        if (0 == n) {
+            *dst = '\0';
+        }
     }
-    s[n] = '\0';
-    return dst;
+    return s;
 }
