@@ -354,6 +354,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
+        key.charcode = 0;
         this->commandChar(Keys::ToChar(key));
         break;
     case(Keys::Enter):
