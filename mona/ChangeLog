@@ -1,5 +1,7 @@
 2008-01-09  higepon  <higepon@users.sourceforge.jp>
 
+        * core/scheme/lib/conf.scm.in: libc string all passsed.
+
         * core/monalibc/string/strncat.c (strncat): Fixed the bug.
 
         * core/monalibc/string/strchr.c (strchr): Fixed the bug.

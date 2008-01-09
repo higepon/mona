@@ -1,6 +1,5 @@
 ifndef $(MONADIR)
-# export MONADIR=$(PWD)/../mona
-export MONADIR=$(shell cd $(PWD)/../../; pwd)
+export MONADIR=$(shell cd $(PWD)/../../..	/; pwd)
 endif
 
 TARGET  = TSTRING

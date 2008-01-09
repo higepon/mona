@@ -42,7 +42,10 @@ endif
 	cd core/test && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
-mkimg: cores externals tools
+tests: tools cores
+	cd test/monalibc/string && $(MAKE) && $(MAKE) install
+
+mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
 depend: clean
@@ -60,7 +63,7 @@ depend: clean
 	cd core/pe_server && $(MAKE) $@
 	cd core/gui_server && $(MAKE) $@
 	cd core/test && $(MAKE) $@
-
+	cd test/monalibc/string && $(MAKE) $@
 
 .PHONY: clean
 clean:
@@ -86,3 +89,4 @@ endif
 	$(MAKE) $@ -C core/gui_server
 	$(MAKE) $@ -C core/test
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
+	$(MAKE) $@ -C test/monalibc/string
