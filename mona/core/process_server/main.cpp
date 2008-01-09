@@ -149,7 +149,7 @@ static void MessageLoop()
         {
             case MSG_PROCESS_EXECUTE_FILE:
             {
-                uint32_t tid;
+                uint32_t tid = 0;
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid);
                 Message::reply(&msg, result, tid);
                 break;
