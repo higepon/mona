@@ -2,9 +2,11 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../; pwd)
 endif
 
-TARGET  = TSTRING
-SOURCES = tstring.cpp
-INSTDIR = $(BINDIR)/APPS
+TARGET  = TSTDIO
+SOURCES = test.cpp
+INSTDIR = $(BINDIR)/APPS/TSTDIO.APP
+INSTFILES = TEST.TXT
+$(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    =  -lmonalibc-imp

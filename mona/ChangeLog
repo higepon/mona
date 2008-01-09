@@ -1,3 +1,9 @@
+2008-01-10  higepon  <higepon@users.sourceforge.jp>
+
+        * test/monalibc/stdio/ : Moved from core/test.
+
+        * core/scheme/lib/conf.scm.in: Added auto starting test codes.
+
 2008-01-09  higepon  <higepon@users.sourceforge.jp>
 
         * core/scheme/lib/conf.scm.in: libc string all passsed.
