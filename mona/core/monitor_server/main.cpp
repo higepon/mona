@@ -107,7 +107,7 @@ void Monitor::ParseConfig(CString content)
 
 void Monitor::CheckServers()
 {
-    char buf[256];
+    //char buf[256];
     PsInfo info;
 
     for (int i = 0; i < servers.size(); i++)
