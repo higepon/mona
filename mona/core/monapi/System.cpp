@@ -8,6 +8,7 @@ namespace MonAPI
 {
     static PsInfo psInfo;
     static char bundlePath[128];
+    static char processPath[MESSAGE_INFO_MAX_STR_LENGTH];
 
     PsInfo* System::getProcessInfo()
     {
@@ -37,7 +38,8 @@ namespace MonAPI
         {
             return NULL;
         }
-        return msg.str;
+        memcpy(processPath, msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
+        return processPath;
     }
 
     uint32_t System::getProcessStdoutID()

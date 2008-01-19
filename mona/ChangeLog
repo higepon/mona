@@ -1,3 +1,7 @@
+2008-01-19  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/System.cpp : Fixed bug of return value.
+
 2008-01-10  higepon  <higepon@users.sourceforge.jp>
 
         * test/monalibc/stdio/ : Moved from core/test.
