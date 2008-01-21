@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "test.h"
 
-#define TEST_TXT "/APPS/TEST.APP/TEST.TXT"
+#define TEST_TXT "/APPS/TSTDIO.APP/TEST.TXT"
 
 int test1();
 int test2();
