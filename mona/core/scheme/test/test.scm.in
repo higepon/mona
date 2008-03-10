@@ -126,69 +126,6 @@
 
 
 
-;; ...をリネームするコードを書かないとダメだね．
-;; (define-syntax cond*
-;;   (syntax-rules (else =>)
-;;     ((cond* (else result1 result2 ...))
-;;      (begin result1 result2 ...))
-;;     ((cond* (test => result))
-;;      (let ((temp test))
-;;        (if temp (result temp))))
-;;     ((cond* (test => result) clause1 clause2 ...)
-;;      (let ((temp test))
-;;        (if temp
-;;            (result temp)
-;;            (cond* clause1 clause2 ...))))
-;;    ((cond* (test)) test)
-;;     ((cond* (test) clause1 clause2 ...)
-;;      (let ((temp test))
-;;        (if temp
-;;            temp
-;;            (cond* clause1 clause2 ...))))
-;;     ((cond* (test result1 result2 ...))
-;;      (if test (begin result1 result2 ...)))
-;;     ((cond* (test result1 result2 ...)
-;;             clause1 clause2 ...)
-;;      (if test
-;;          (begin result1 result2 ...)
-;;          (cond* clause1 clause2 ...)))))
-
-;; (cond* (3 (display 3)))
-;; (cond* (#f 2) (else 5))
-
-;; (define test-name "cond*")
-;; (cond* (#t (assert-true test-name #t))
-;;      (else (assert-fail test-name "not reached")))
-;; (cond* (#f (assert-fail test-name "not reached"))
-;;       (else (assert-true test-name #t)))
-;; (cond* (#f (assert-fail test-name "not reached"))
-;;       (#t (assert-true test-name #t))
-;;       (else (assert-fail test-name "not reached")))
-;; (cond* (#f (assert-fail test-name "not reached"))
-;;       ((+ 1 2) (assert-true test-name #t))
-;;       (else (assert-fail test-name "not reached")))
-;; (cond* (#f (assert-fail test-name "not reached"))
-;;       (#t (assert-true test-name #t))
-;;       (#f (assert-fail test-name "not reached")))
-
-;; (define-syntax c
-;;   (syntax-rules ()
-;;     ((c (test result1 result2 ...)
-;;         clause1 clause2 ...)
-;;      (if test
-;;          (begin result1 result2 ...)
-;;          (c clause1 clause2 ...)))))
-
-;; (assert-true test-name (= 3 ((lambda ()  (cond* (1 => (lambda (x) (+ x 2))) (else 8))))))
-;; todo
-;;  (cond (#f (assert-fail test-name "not reached"))
-;;        (#f (assert-fail test-name "not reached"))
-;;        (#t (assert-true test-name #t)))
-
-;; todo
-;; マクロが展開されておかしくなる！
-;(display (car (quote (list 1 2 3 4))))
-
 (define test-string1 "hige")
 (define test-string2 test-string1)
 (define test-pair1 (cons 1 2))
@@ -238,16 +175,11 @@
 (assert-check-true "quote"
                    (eqv? (quote a) (quote a))
                    (eqv? (car (quote (x y z))) (quote x)))
-; これは MonaScheme では #f 実装依存
-;                   (eqv? (cdr (quote (x y z))) (quote (y z))))
 
 (assert-check-true "quote '"
                    (eqv? (caar (cons (cons 3 4) (cons 5 6))) 3)
                    (eqv? 'a 'a)
                    (eqv? (car '(x y z)) 'x))
-; これは MonaScheme では #f 実装依存
-;                   (eqv? (cdr '(x y z)) '(y z)))
-
 (assert-check-true "quote self evaluate"
                    '#t
                    (= '12345 12345)
