@@ -72,6 +72,7 @@
 #include "monaboot.h"
 #include "RTC.h"
 #include "apm.h"
+#include "addressmap.h"
 #include "Uart.h"
 
 #ifdef __GNUC__
@@ -215,6 +216,7 @@ void startKernel()
     {
         apm_init();
     }
+    dumpAddressMap();
 
     /* shared memory object */
     SharedMemoryObject::setup();

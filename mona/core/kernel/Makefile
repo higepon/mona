@@ -48,7 +48,8 @@ SOURCES      = cstart.cpp            \
                vsprintf.cpp          \
                gdb-adapter.cpp       \
                Uart.cpp              \
-               NE2000.cpp
+               NE2000.cpp            \
+	       addressmap.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o
 

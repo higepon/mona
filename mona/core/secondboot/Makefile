@@ -3,7 +3,7 @@ include $(SRCTOP)/Makefile.inc
 
 TARGET = secondboot.bin
 ALIAS  = LOADER.BIN
-SRCS   = SecondBoot.cs Str.cs A20.cs FDC.cs VESA.cs Console.cs APM.cs Memory.cs
+SRCS   = SecondBoot.cs Str.cs A20.cs FDC.cs VESA.cs Console.cs APM.cs Memory.cs AddressMap.cs
 IL2A16 = IL2Asm16.exe
 PEALIB = PEAnalyzerLib.dll
 I8086  = I8086.dll
