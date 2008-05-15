@@ -3,6 +3,8 @@
 
 int __mlibc_mona_file_is_valid(void *f, int fid)
 {
+	puts(__func__);
+	_printf("valid? = %d\n", fid != MONA_FAILURE ? 1 : 0);
 	return fid != MONA_FAILURE ? 1 : 0;
 }
 
@@ -24,11 +26,11 @@ int __mlibc_mona_file_close(void *f, int fid)
 int __mlibc_mona_file_read(void *self, void *buf, size_t size)
 {
     monapi_cmemoryinfo *cmi = NULL;
-    File *f;
-    uint32_t fid;
+    File *f = NULL;
+    uint32_t fid = 0;
     unsigned char *p = buf;
-    int readsize;
-    int i;
+    int readsize = 0;
+    int i = 0;
     f = (File*)self;
     fid = f->file;
     cmi = monapi_file_read(fid, (uint32_t)size);
@@ -48,9 +50,9 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
 
 int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 {
-    uint32_t result;
-    File *f;
-    monapi_cmemoryinfo* cmi;
+    uint32_t result = 0;
+    File *f = NULL;
+    monapi_cmemoryinfo* cmi = NULL;
 
     f = (File*)self;
 
@@ -74,7 +76,7 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 
 int __mlibc_mona_file_seek(void *self, fpos_t pos, int whence)
 {
-    MONAPI_BOOL result;
+    MONAPI_BOOL result = 0;
     File *f = (File*)self;
 
     result = monapi_file_seek((uint32_t)f->file, (uint32_t)pos, (uint32_t)whence);
