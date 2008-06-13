@@ -36,8 +36,8 @@ typedef struct cache_operators_
 	int (*init)(void *, void *, size_t);
 	int (*is_out_of_cache)(void *);
 	int (*is_eof)(void *);
-	void (*flush)(void *);
-	void (*load)(void *);
+	int (*flush)(void *);
+	int (*load)(void *);
 	void (*move_current_ptr)(void *);
 } cacheOp;
 

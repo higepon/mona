@@ -15,6 +15,7 @@ int __mlibc_mona_file_open(void *f, const char *file, int flags)
     fid = monapi_file_open(file, MONAPI_FALSE);
     if( fid == MONA_FAILURE && flags & F_CREATE )
         fid = monapi_file_open(file, MONAPI_TRUE);
+    _logprintf("fid = %x\n", fid);
     return (int)fid;
 }
 
@@ -33,6 +34,7 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
     int i = 0;
     f = (File*)self;
     fid = f->file;
+//    _logprintf("fid = %x, buf = %x, size = %d\n", fid, buf, size);
     cmi = monapi_file_read(fid, (uint32_t)size);
     if( cmi == NULL )
     {
