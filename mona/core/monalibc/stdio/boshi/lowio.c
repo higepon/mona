@@ -27,12 +27,12 @@ int __mlibc_mona_file_close(void *f, int fid)
 int __mlibc_mona_file_read(void *self, void *buf, size_t size)
 {
     monapi_cmemoryinfo *cmi = NULL;
-    File *f = NULL;
+    FILE *f = NULL;
     uint32_t fid = 0;
     unsigned char *p = buf;
     int readsize = 0;
     int i = 0;
-    f = (File*)self;
+    f = (FILE*)self;
     fid = f->file;
 //    _logprintf("fid = %x, buf = %x, size = %d\n", fid, buf, size);
     cmi = monapi_file_read(fid, (uint32_t)size);
@@ -53,10 +53,10 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
 int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 {
     uint32_t result = 0;
-    File *f = NULL;
+    FILE *f = NULL;
     monapi_cmemoryinfo* cmi = NULL;
 
-    f = (File*)self;
+    f = (FILE*)self;
 
     cmi = monapi_cmemoryinfo_new();
     if( !monapi_cmemoryinfo_create(cmi, size, 0) )
@@ -79,7 +79,7 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 int __mlibc_mona_file_seek(void *self, fpos_t pos, int whence)
 {
     MONAPI_BOOL result = 0;
-    File *f = (File*)self;
+    FILE *f = (FILE*)self;
 
     result = monapi_file_seek((uint32_t)f->file, (uint32_t)pos, (uint32_t)whence);
     if( result == MONAPI_FALSE )

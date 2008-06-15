@@ -1,7 +1,36 @@
-#ifndef _File_H_
-#define _File_H_
+#ifndef _FILE_H_
+#define _FILE_H_
 
-#include <stdio.h>
+#include <sys/types.h>
+#include <monalibc/stdint.h>
+#include <monalibc/stdarg.h>
+
+#ifndef NULL
+  #define NULL 0
+#endif
+#ifndef SEEK_SET
+  #define SEEK_SET 0
+#endif
+#ifndef SEEK_CUR
+  #define SEEK_CUR 1
+#endif
+#ifndef SEEK_END
+  #define SEEK_END 2
+#endif
+#define _IOFBF       0
+#define _IOLBF       1
+#define _IONBF       2
+#define BUFSIZ       1024
+#define EOF          (-1)
+#define FOPEN_MAX    20
+#define FILENAME_MAX 127
+#define L_tmpnam     FILENAME_MAX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef long fpos_t;
 
 enum
 {
@@ -14,12 +43,13 @@ enum
 	F_NONEBUF = 0x0040,
 	F_BUFSELF = 0x0080,
 
-	F_EOF     = 0x1000,
-	F_BUFEOF  = 0x2000,
-	F_BUFALCD = 0x4000,
-	F_BUFDIRTY= 0x8000,
-	F_CREATE  = 0x10000,
-	F_TRUNC   = 0x20000,
+	F_EOF     = 0x001000,
+	F_BUFEOF  = 0x002000,
+	F_BUFALCD = 0x004000,
+	F_BUFDIRTY= 0x008000,
+	F_CREATE  = 0x010000,
+	F_TRUNC   = 0x020000,
+	F_ERROR   = 0x100000,
 };
 
 struct cache_
@@ -61,14 +91,18 @@ typedef struct file_
 	cacheOp cachers;
 	fileOp fileops;
 	int ungetcbuf;
-} File;
+} FILE;
 
-File* __mlibc_fopen(const char *path, const char *mode);
-void __mlibc_fclose(File *f);
-size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, File *f);
-size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, File *f);
-int __mlibc_fseek(File *f, long offset, int whence);
-int __mlibc_fflush(File *f);
+FILE* __mlibc_fopen(const char *path, const char *mode);
+void __mlibc_fclose(FILE *f);
+size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, FILE *f);
+size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, FILE *f);
+int __mlibc_fseek(FILE *f, long offset, int whence);
+int __mlibc_fflush(FILE *f);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

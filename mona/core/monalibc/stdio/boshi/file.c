@@ -1,6 +1,10 @@
 #include "file.h"
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+
+#include "private_vars.h"
+#include "filelist.h"
 
 int __mlibc_stdio_parse_mode(const char *s)
 {
@@ -20,21 +24,24 @@ int __mlibc_stdio_parse_mode(const char *s)
 struct cache_operators_ fullbuf_operators;
 struct cache_operators_ linebuf_operators;
 extern struct __mlibc_file_operators_ __file_ops;
+void* opening_files = NULL;
 
-File* __mlibc_fopen(const char *path, const char *mode)
+FILE* __mlibc_fopen(const char *path, const char *mode)
 {
-	File* file = NULL;
+	FILE* file = NULL;
 
-	file = (File*)malloc(sizeof(File));
+	file = (FILE*)malloc(sizeof(FILE));
 	if( file == NULL )
 	{
-		puts("alloc self"); return NULL;
+		errno = ENOMEM;
+		return NULL;
 	}
+	memset(file, 0, sizeof(FILE));
 
 	file->mode = __mlibc_stdio_parse_mode(mode);
 	if( file->mode == 0 )
 	{
-		puts("unsupported mode");
+		errno = EINVAL;
 		free(file);
 		return NULL;
 	}
@@ -44,7 +51,7 @@ File* __mlibc_fopen(const char *path, const char *mode)
 	file->file = file->fileops.open(file, path, file->mode);
 	if( !file->fileops.is_valid_file(file, file->file) )
 	{
-		perror("file open");
+		errno = EUNKNOWN;
 		free(file);
 		return NULL;
 	}
@@ -56,25 +63,18 @@ File* __mlibc_fopen(const char *path, const char *mode)
 	file->cachers = fullbuf_operators;
 	file->ungetcbuf = EOF;
 
+	__monalibc_filelist_add(openeing_files, file);
+
 	return file;
 }
 
 /** common functions */
-void __mlibc_move_cache_current_ptr(File* f);
+void __mlibc_move_cache_current_ptr(FILE* f);
 
-size_t __mlibc_fread_iter(char* p, size_t size, size_t readsize, File* f)
+size_t __mlibc_fread_iter(char* p, size_t size, size_t readsize, FILE* f)
 {
 //	puts(__func__);
-	static int onetime = 0;
 	char *q = NULL;
-
-#if 0
-	if( onetime++ == 0 )
-	{
-		_logprintf("f->cache.current = %x\n", f->cache.current);
-		_logprintf("f->cache.end = %x\n", f->cache.end);
-	}
-#endif
 
 	if( size <= 0 ){ return readsize; }
 	if( f->mode & F_EOF ){ return readsize; }
@@ -83,6 +83,7 @@ size_t __mlibc_fread_iter(char* p, size_t size, size_t readsize, File* f)
 		if( f->cachers.flush(f) < 0 ||
 				f->cachers.load(f) < 0 )
 		{
+			f->mode |= F_ERROR;
 			return readsize;
 		}
 	}
@@ -101,17 +102,22 @@ size_t __mlibc_fread_iter(char* p, size_t size, size_t readsize, File* f)
 	return __mlibc_fread_iter(p+1, size-1, readsize+1, f);
 }
 
-size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, File *f)
+size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, FILE *f)
 {
-	_logprintf("%s\n", __func__);
-	if( !(f->mode & F_READ) ) return (size_t)-1;
+//	_logprintf("%s\n", __func__);
+	if( !(f->mode & F_READ) )
+	{
+		f->mode |= F_ERROR;
+		return (size_t)0;
+	}
 
 	if( !(f->mode & F_BUFALCD) )
 	{
 		f->cachers.init(f, NULL, BUFSIZ);
 		if( f->cachers.load(f) < 0 )
 		{
-			return (size_t)-1;
+			f->mode |= F_ERROR;
+			return (size_t)0;
 		}
 	}
 
@@ -119,17 +125,21 @@ size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, File *f)
 	return __mlibc_fread_iter((char*)buf, size*nmemb, 0, f);
 }
 
-size_t __mlibc_fwrite_iter(char* p, size_t size, size_t writtensize, File* f)
+size_t __mlibc_fwrite_iter(char* p, size_t size, size_t writtensize, FILE* f)
 {
 //	puts(__func__);
 	char *q = NULL;
 	if( size <= 0 ) return writtensize;
-	if( f->cachers.is_eof(f) ){ f->mode |= F_EOF; return writtensize; }
 	if( f->cachers.is_out_of_cache(f) )
 	{
-		f->cachers.flush(f);
-		f->cachers.load(f);
+		if( f->cachers.flush(f) < 0 ||
+				f->cachers.load(f) < 0 )
+		{
+			f->mode |= F_ERROR;
+			return writtensize;
+		}
 	}
+	if( f->cachers.is_eof(f) ){ f->mode |= F_EOF; return writtensize; }
 	q = f->cache.current++;
 	f->cache.end = f->cache.current;
 	*q = *p;
@@ -138,14 +148,21 @@ size_t __mlibc_fwrite_iter(char* p, size_t size, size_t writtensize, File* f)
 	return __mlibc_fwrite_iter(p+1, size-1, writtensize+1, f);
 }
 
-size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, File *f)
+size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, FILE *f)
 {
-	if( !(f->mode & F_WRITE) ) return (size_t)-1;
+	if( !(f->mode & F_WRITE) )
+	{
+		f->mode |= F_ERROR;
+		return (size_t)0;
+	}
 
 	if( !(f->mode & F_BUFALCD) )
 	{
 		f->cachers.init(f, NULL, BUFSIZ);
-		f->cachers.load(f);
+		if( f->cachers.load(f) < 0 )
+		{
+			return 0;
+		}
 	}
 
 	if( f->mode & F_APPEND ) __mlibc_fseek(f, 0, SEEK_END);
@@ -155,7 +172,7 @@ size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, File *f)
 	return __mlibc_fwrite_iter((char*)buf, size*nmemb, 0, f);
 }
 
-int __mlibc_fseek(File *f, long offset, int whence)
+int __mlibc_fseek(FILE *f, long offset, int whence)
 {
 	switch( whence )
 	{
@@ -168,37 +185,38 @@ int __mlibc_fseek(File *f, long offset, int whence)
 					f->offset = f->cache.offset
 					+ (f->cache.current-f->cache.base);
 			break;
-		defalut: return -1;
+		defalut: errno = EINVAL; return -1;
 	}
 
 	f->mode &= ~F_EOF;
 	return 0;
 }
 
-int __mlibc_fflush(File *f)
+int __mlibc_fflush(FILE *f)
 {
 	f->cachers.flush(f);
 	return 0;
 }
 
-void __mlibc_fclose(File *f)
+void __mlibc_fclose(FILE *f)
 {
 	__mlibc_fflush(f);
 
 	f->fileops.close(f, f->file);
 	if( f->mode & F_BUFSELF) free(f->cache.base);
+	__monalibc_filelist_remove_by_element(openeing_files, file);
 	free(f);
 	return;
 }
 
-int __mlibc_ungetc(int c, File *f)
+int __mlibc_ungetc(int c, FILE *f)
 {
 	if( f->ungetcbuf != EOF ) f->offset--;
 	f->ungetcbuf = c;
 	return c;
 }
 
-void __mlibc_init_cache(File *file, char *buf, size_t size, int mode)
+void __mlibc_init_cache(FILE *file, char *buf, size_t size, int mode)
 {
 	file->cache.base = buf;
 	if( file->cache.base == NULL )
@@ -216,7 +234,7 @@ void __mlibc_init_cache(File *file, char *buf, size_t size, int mode)
 	return;
 }
 
-int __mlibc_is_out_of_cache(File *f)
+int __mlibc_is_out_of_cache(FILE *f)
 {
 	int x = 0, p1 = 0, p2 = 0;
 	x = f->offset;
@@ -227,7 +245,7 @@ int __mlibc_is_out_of_cache(File *f)
 	return 0;
 }
 
-int __mlibc_cache_flush(File *f)
+int __mlibc_cache_flush(FILE *f)
 {
 	int result = 0;
 	if( f->mode & F_BUFDIRTY )
@@ -240,7 +258,7 @@ int __mlibc_cache_flush(File *f)
 	return result;
 }
 
-int __mlibc_is_eof(File *f)
+int __mlibc_is_eof(FILE *f)
 {
 //	puts(__func__);
 //	_logprintf("current = %x, end = %x\n", f->cache.current, f->cache.end);
@@ -249,7 +267,7 @@ int __mlibc_is_eof(File *f)
 	return 0;
 }
 
-void __mlibc_move_cache_current_ptr(File* f)
+void __mlibc_move_cache_current_ptr(FILE* f)
 {
 	if( __mlibc_is_out_of_cache(f) ) return;
 	f->cache.current = f->cache.base + (f->offset-f->cache.offset);
@@ -257,14 +275,14 @@ void __mlibc_move_cache_current_ptr(File* f)
 
 /** fully buffer */
 
-void __mlibc_init_cache_fully(File *f, void *p, size_t size)
+void __mlibc_init_cache_fully(FILE *f, void *p, size_t size)
 {
 	__mlibc_init_cache(f, p, size, F_FULLBUF);
 }
 
-int __mlibc_cache_load_fully(File *f)
+int __mlibc_cache_load_fully(FILE *f)
 {
-	_logprintf("%s\n", __func__);
+//	_logprintf("%s\n", __func__);
 	size_t readsize = 0;
 
 	if( !(f->mode & F_READ) )
@@ -275,21 +293,21 @@ int __mlibc_cache_load_fully(File *f)
 		return 0;
 	}
 
-	_logprintf("\tseek : offset = %x\n", f->offset);
+//	_logprintf("\tseek : offset = %x\n", f->offset);
 	int result = f->fileops.seek(f, f->offset, SEEK_SET);
-	_logprintf("\t     : result = %x\n", result);
-	_logprintf("\tread : size = %d\n", f->cache.size);
+//	_logprintf("\t     : result = %x\n", result);
+//	_logprintf("\tread : size = %d\n", f->cache.size);
 	readsize = f->fileops.read(f, f->cache.base, f->cache.size);
 	if( readsize == -1 )
 	{
 		return -1;
 	}
-	_logprintf("\t     : readsize = %d\n", readsize);
+//	_logprintf("\t     : readsize = %d\n", readsize);
 	f->cache.current = f->cache.base;
 	f->cache.end = f->cache.base + readsize;
 	f->mode &= ~F_BUFEOF;
 	f->cache.offset = f->offset;
-	_logprintf("\tcur = %x, end = %x, off = %x\n", f->cache.current, f->cache.end, f->cache.offset);
+//	_logprintf("\tcur = %x, end = %x, off = %x\n", f->cache.current, f->cache.end, f->cache.offset);
 	if( readsize < f->cache.size )
 	{
 		f->mode |= F_BUFEOF;
@@ -309,12 +327,12 @@ struct cache_operators_ fullbuf_operators =
 
 /** line buffer */
 
-void __mlibc_init_cache_line(File *f, void *p, size_t size)
+void __mlibc_init_cache_line(FILE *f, void *p, size_t size)
 {
 	__mlibc_init_cache(f, p, size, F_LINEBUF);
 }
 
-int __mlibc_get_line_iter(File *f, char *buf, size_t size, size_t rsize)
+int __mlibc_get_line_iter(FILE *f, char *buf, size_t size, size_t rsize)
 {
 	if( size <= 0 ) {
 		return rsize;
@@ -328,7 +346,7 @@ int __mlibc_get_line_iter(File *f, char *buf, size_t size, size_t rsize)
 	return __mlibc_get_line_iter(f, buf+1, size-1, rsize+1);
 }
 
-int __mlibc_get_line(File *f)
+int __mlibc_get_line(FILE *f)
 {
 //	puts(__func__);
 	size_t readsize = 0;
