@@ -30,7 +30,11 @@
 extern "C" {
 #endif
 
-typedef long fpos_t;
+typedef struct _fpos_t
+{
+	int offset;
+	int state;
+} fpos_t;
 
 enum
 {
@@ -97,8 +101,13 @@ FILE* __mlibc_fopen(const char *path, const char *mode);
 void __mlibc_fclose(FILE *f);
 size_t __mlibc_fread(void *buf, size_t size, size_t nmemb, FILE *f);
 size_t __mlibc_fwrite(void *buf, size_t size, size_t nmemb, FILE *f);
-int __mlibc_fseek(FILE *f, long offset, int whence);
 int __mlibc_fflush(FILE *f);
+
+int __mlibc_fgetpos(FILE *f, fpos_t *pos);
+int __mlibc_fseek(FILE *f, long offset, int whence);
+int __mlibc_fsetpos(FILE *f, fpos_t *pos);
+long int __mlibc_ftell(FILE *f);
+void __mlibc_rewind(FILE *f);
 
 #ifdef __cplusplus
 }
