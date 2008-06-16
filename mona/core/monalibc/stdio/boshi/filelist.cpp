@@ -2,7 +2,10 @@
 #include <sys/HList.h>
 #include "file.h"
 
-extern "C" void* __mlibc_filelist_initializer(void *p)
+extern "C"
+{
+
+void* __mlibc_filelist_initializer(void *p)
 {
 	HList<FILE*>* list;
 
@@ -11,7 +14,7 @@ extern "C" void* __mlibc_filelist_initializer(void *p)
 	return (void*)list;
 }
 
-extern "C" int __mlibc_filelist_add(void *p, FILE* f)
+int __mlibc_filelist_add(void *p, FILE* f)
 {
 	HList<FILE*>* list;
 
@@ -22,7 +25,7 @@ extern "C" int __mlibc_filelist_add(void *p, FILE* f)
 	return 1;
 }
 
-extern "C" FILE* __mlibc_filelist_get(void *p, int n)
+FILE* __mlibc_filelist_get(void *p, int n)
 {
 	HList<FILE*>* list;
 
@@ -32,7 +35,7 @@ extern "C" FILE* __mlibc_filelist_get(void *p, int n)
 	return list->get(n);
 }
 
-extern "C" int __mlibc_filelist_remove_by_index(void *p, int n)
+int __mlibc_filelist_remove_by_index(void *p, int n)
 {
 	HList<FILE*>* list;
 
@@ -43,7 +46,7 @@ extern "C" int __mlibc_filelist_remove_by_index(void *p, int n)
 	return 1;
 }
 
-extern "C" int __mlibc_filelist_remove_by_element(void *p, FILE* f)
+int __mlibc_filelist_remove_by_element(void *p, FILE* f)
 {
 	HList<FILE*>* list;
 
@@ -52,5 +55,7 @@ extern "C" int __mlibc_filelist_remove_by_element(void *p, FILE* f)
 	if( !list->hasElement(f) ) return 0;
 	list->remove(f);
 	return 1;
+}
+
 }
 
