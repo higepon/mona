@@ -109,6 +109,22 @@ int __mlibc_fsetpos(FILE *f, fpos_t *pos);
 long int __mlibc_ftell(FILE *f);
 void __mlibc_rewind(FILE *f);
 
+void __mlibc_clearerr(FILE *f);
+int __mlibc_feof(FILE *f);
+int __mlibc_ferror(FILE *f);
+void __mlibc_perror(const char *s);
+
+int __mlibc_fgetc(FILE *f);
+char *__mlibc_fgets(char *s, int n, FILE *f);
+int __mlibc_fputc(int c, FILE *f);
+int __mlibc_fputs(const char *s, FILE *f);
+
+#define getc(f) __mlibc_fgetc(f)
+#define getchar() __mlibc_fgetc(STDIN)
+#define putc(c, f) __mlibc_fputc(c, f)
+#define putchar(c) __mlibc_fputc(c, STDOUT)
+#define puts(s) __mlibc_fputs(s)
+
 #ifdef __cplusplus
 }
 #endif
