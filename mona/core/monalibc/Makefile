@@ -74,5 +74,6 @@ ifneq ($(BUILD_TARGET),ELF)
 	$(INSTALL) -p -m 0644 $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
 	$(INSTALL) -p $(CRT_OBJECT) $(LIBDIR)
+	$(INSTALL) -p -m 0644 stdio/boshi/file.h $(INCDIR)/monalibc/
 
 -include dependencies

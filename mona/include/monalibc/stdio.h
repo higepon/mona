@@ -1,5 +1,5 @@
 /*************************************************************
- * Copyright (c) 2006 Shotaro Tsuji
+ * Copyright (c) 2006-2008 Shotaro Tsuji
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,12 @@
  *
  *************************************************************/
 
-/* Please send bug reports to
-	Shotaro Tsuji
-	4-1010,
-	Sakasedai 1-chome,
-	Takaraduka-si,
-	Hyogo-ken,
-	665-0024
-	Japan
-	negi4d41@yahoo.co.jp
-*/
-
 #ifndef _STDIO_H_
 #define _STDIO_H_
+
+#ifdef __MONALIBC_USE_NEW_STDIO__
+ #include <monalibc/file.h>
+#else
 
 #include <sys/types.h>
 #include <monalibc/stdint.h>
@@ -134,7 +127,7 @@ extern FILE* __stderr;
 
 /*
  * C99's functions totals 46.
- * This library is implementing 30 functions.
+ * This library supports 30 functions.
  * 65.2% functions are implemented.
  */
 
@@ -214,5 +207,7 @@ int	 fileno(FILE *);
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* USE_NEW... */
 
 #endif

@@ -13,7 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 int __mlibc_mona_file_is_valid(void *f, int fid)
 {
-	puts(__func__);
+	//puts(__func__);
 	_printf("valid? = %d\n", fid != MONA_FAILURE ? 1 : 0);
 	return fid != MONA_FAILURE ? 1 : 0;
 }
@@ -86,7 +86,7 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
     return (int)result;
 }
 
-int __mlibc_mona_file_seek(void *self, fpos_t pos, int whence)
+int __mlibc_mona_file_seek(void *self, int pos, int whence)
 {
     MONAPI_BOOL result = 0;
     FILE *f = (FILE*)self;
