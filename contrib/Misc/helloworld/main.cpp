@@ -39,50 +39,132 @@
 #define VIRTIO_PCI_STATUS               18
 
 #define VIRTIO_PCI_CONFIG               20
+#define PAGE_SHIFT (12)
+#define PAGE_SIZE  (1<<PAGE_SHIFT)
+#define PAGE_MASK  (PAGE_SIZE-1)
+
+/* Status byte for guest to report progress, and synchronize features. */
+/* We have seen device and processed generic fields (VIRTIO_CONFIG_F_VIRTIO) */
+#define VIRTIO_CONFIG_S_ACKNOWLEDGE     1
+/* We have found a driver for the device. */
+#define VIRTIO_CONFIG_S_DRIVER          2
+/* Driver has used its parts of the config, and is happy */
+#define VIRTIO_CONFIG_S_DRIVER_OK       4
+/* We've given up on this device. */
+#define VIRTIO_CONFIG_S_FAILED          0x80
+
+#define MAX_QUEUE_NUM      (512)
+
+#define VRING_DESC_F_NEXT  1
+#define VRING_DESC_F_WRITE 2
+
+#define VRING_AVAIL_F_NO_INTERRUPT 1
+
+#define VRING_USED_F_NO_NOTIFY     1
+
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
 struct vring_desc
 {
-   uint64_t addr;
-   uint32_t len;
-   uint16_t flags;
-   uint16_t next;
+   u64 addr;
+   u32 len;
+   u16 flags;
+   u16 next;
 };
 
+struct vring_avail
+{
+   u16 flags;
+   u16 idx;
+   u16 ring[0];
+};
+
+struct vring_used_elem
+{
+   u32 id;
+   u32 len;
+};
+
+struct vring_used
+{
+   u16 flags;
+   u16 idx;
+   struct vring_used_elem ring[];
+};
+
+struct vring {
+   unsigned int num;
+   struct vring_desc *desc;
+   struct vring_avail *avail;
+   struct vring_used *used;
+};
+
+#define vring_size(num) \
+   (((((sizeof(struct vring_desc) * num) + \
+      (sizeof(struct vring_avail) + sizeof(u16) * num)) \
+         + PAGE_MASK) & ~PAGE_MASK) + \
+    (sizeof(struct vring_used) + sizeof(struct vring_used_elem) * num))
 
 int main(int argc, char* argv[])
 {
+    // 1. Device probe
     PciInf pciInf;
     Pci pci;
     pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
 
-    if (pciInf.isExist)
+    if (!pciInf.isExist)
     {
-        _printf("device found\n");
-        _printf("base=%x\n", pciInf.baseAdress);
-        _printf("base=%x\n", pciInf.baseAdress & ~1);
-        _printf("irqLine=%x\n", pciInf.irqLine);
-
-    } else {
-        _printf("device not found\n");
+        printf("device not found\n");
+        exit(-1);
     }
 
-//     char* p = new char[4096];
-//     memset(p, 0xfe, 4096);
-//     _printf("addr[0] = %x\n", p[0]);
+    printf("device found\n");
+    printf("baseAdress=%x\n", pciInf.baseAdress);
+    printf("irqLine=%x\n", pciInf.irqLine);
 
-//     char* addr = (char*)syscall_get_physical_address((uint32_t)p, 0);
+    const uintptr_t baseAddress = pciInf.baseAdress & ~1;
 
-//     printf("addr index = %d\n", (uint32_t)addr / 4096);
+    // 2. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1:write queue
 
-    // 0 means reset
-//     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
-//     outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_SEL, 0); // sel = 1 == output
-    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_SEL, 1); // sel = 1 == output
+    // 3. how many descriptors do the queue have?
+    const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+    printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
+    ASSERT(numberOfDesc > 0);
 
-    
+    // 4. Check wheter the queue is already set vring (necessary?).
+    uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
+    if (pfn != 0) {
+        printf("[virtio] pfn=%x\n", pfn);
+        exit(-1);
+    }
 
-    const int num = inp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NUM);
-    _printf("VIRTIO_PCI_QUEUE_NUM=%d\n", num);
-    ASSERT(num > 0);
+    // 5. setup vring
+    const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
+    printf("[virtio] MAX_QUEUE_SIZE=%d\n", MAX_QUEUE_SIZE);
+    uint8_t queueData[MAX_QUEUE_SIZE];
+
+    struct vring vring;
+    vring.num = numberOfDesc;
+
+    // page align is required
+    const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)queueData, NULL);
+    printf("[virtio] physicalAddress=%x\n", physicalAddress);
+    const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    printf("[virtio] alignedAddress=%x\n", alignedAddress);
+
+    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+
+    // vring.desc is page aligned
+    vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
+
+    // vring.avail is follow after the array of desc
+    vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
+
+
+
 
     // addr は vring->desc
     // vring->desc に実際の物理ページのアドレス、長さなどを設定しないとだめ。
@@ -111,7 +193,7 @@ int main(int argc, char* argv[])
 
 //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
 //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr >> 12); // sel = 0
-    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1); 
+    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1);
 
     return 0;
 }
