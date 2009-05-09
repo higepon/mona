@@ -90,17 +90,16 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
     uint32_t BaseAd;
     uint32_t  IrqLine;
 
-    //返却値初期化 デバイスは存在しない。
-    RetPciInf->Exist = 1;
+    RetPciInf->isExist = false;
 
     //Yamami!!! 2004/10/18 PCI情報ファイルは、バンドルでは無く、独立させる方向で
-    //CString bundlePath = MonAPI::System::getBundlePath();
-    //pciinfoファイルをオープン
-    //monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
-    //エラー処理
-    //if(pciinfData == NULL){
-    //    printf("PCI DATA FILE OPEN ERROR !!!\n");
-    //}
+//     CString bundlePath = MonAPI::System::getBundlePath();
+//     //pciinfoファイルをオープン
+//     monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
+//     //エラー処理
+//     if(pciinfData == NULL){
+//         printf("PCI DATA FILE OPEN ERROR !!!\n");
+//     }
 
     //バス番号0について、デバイス番号を0〜31のそれぞれについて、ベンダーIDを読み出す
     for(DeviceNo = 0; DeviceNo < 32 ; DeviceNo++ ){
@@ -122,17 +121,17 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
                 CString VendorName;
                 CString DeviceName;
 
-                //CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
+                //            CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
                 
                 //返却値生成
-                RetPciInf->Exist = 0;
-                RetPciInf->DeviceNo = DeviceNo;
-                RetPciInf->Vendor = Vendor;
-                RetPciInf->Device = Device;
-                RetPciInf->VendorName = VendorName;
-                RetPciInf->DeviceName = DeviceName;
-                RetPciInf->BaseAd = BaseAd;
-                RetPciInf->IrqLine = IrqLine;
+                RetPciInf->isExist = true;
+                RetPciInf->deviceNo = DeviceNo;
+                RetPciInf->vendor = Vendor;
+                RetPciInf->device = Device;
+                RetPciInf->vendorName = VendorName;
+                RetPciInf->deviceName = DeviceName;
+                RetPciInf->baseAdress = BaseAd;
+                RetPciInf->irqLine = IrqLine;
                 
                 //見つかった場合は、即ループを抜ける
                 break;

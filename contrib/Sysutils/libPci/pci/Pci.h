@@ -87,14 +87,14 @@ enum
  */
 typedef struct
 {
-    int  Exist;       //ë∂ç›ämîFèÓïÒ(ë∂ç›Ç∑ÇÈ=0  , ë∂ç›ÇµÇ»Ç¢=0à»äO)
-    uint8_t DeviceNo;
-    uint16_t Vendor;
-    uint16_t Device;
-    CString VendorName;
-    CString DeviceName;
-    uint32_t BaseAd;
-    uint32_t  IrqLine;
+    bool  isExist;
+    uint8_t deviceNo;
+    uint16_t vendor;
+    uint16_t device;
+    CString vendorName;
+    CString deviceName;
+    uint32_t baseAdress;
+    uint32_t  irqLine;
 } PciInf;
 
 

@@ -1,15 +1,198 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monalibc.h>
+#include <pci/Pci.h>
+#include <monapi/io.h>
 
 #include <monapi.h>
 
 #if 1
-extern int main(int argc, char* argv[])
+
+#define PCI_VENDOR_ID_REDHAT_QUMRANET    0x1af4
+#define PCI_SUBVENDOR_ID_REDHAT_QUMRANET 0x1af4
+#define PCI_SUBDEVICE_ID_QEMU            0x1100
+
+#define PCI_DEVICE_ID_VIRTIO_NET         0x1000
+#define PCI_DEVICE_ID_VIRTIO_BLOCK       0x1001
+#define PCI_DEVICE_ID_VIRTIO_BALLOON     0x1002
+#define PCI_DEVICE_ID_VIRTIO_CONSOLE     0x1003
+
+/* A 32-bit r/o bitmask of the features supported by the host */
+#define VIRTIO_PCI_HOST_FEATURES        0
+
+/* A 32-bit r/w bitmask of features activated by the guest */
+#define VIRTIO_PCI_GUEST_FEATURES       4
+
+/* A 32-bit r/w PFN for the currently selected queue */
+#define VIRTIO_PCI_QUEUE_PFN            8
+
+/* A 16-bit r/o queue size for the currently selected queue */
+#define VIRTIO_PCI_QUEUE_NUM            12
+
+/* A 16-bit r/w queue selector */
+#define VIRTIO_PCI_QUEUE_SEL            14
+
+/* A 16-bit r/w queue notifier */
+#define VIRTIO_PCI_QUEUE_NOTIFY         16
+
+/* An 8-bit device status register.  */
+#define VIRTIO_PCI_STATUS               18
+
+#define VIRTIO_PCI_CONFIG               20
+struct vring_desc
 {
-    printf("Hello, World");
+   uint64_t addr;
+   uint32_t len;
+   uint16_t flags;
+   uint16_t next;
+};
+
+
+int main(int argc, char* argv[])
+{
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
+
+    if (pciInf.isExist)
+    {
+        _printf("device found\n");
+        _printf("base=%x\n", pciInf.baseAdress);
+        _printf("base=%x\n", pciInf.baseAdress & ~1);
+        _printf("irqLine=%x\n", pciInf.irqLine);
+
+    } else {
+        _printf("device not found\n");
+    }
+
+//     char* p = new char[4096];
+//     memset(p, 0xfe, 4096);
+//     _printf("addr[0] = %x\n", p[0]);
+
+//     char* addr = (char*)syscall_get_physical_address((uint32_t)p, 0);
+
+//     printf("addr index = %d\n", (uint32_t)addr / 4096);
+
+    // 0 means reset
+//     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
+//     outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_SEL, 0); // sel = 1 == output
+    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_SEL, 1); // sel = 1 == output
+
+    
+
+    const int num = inp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NUM);
+    _printf("VIRTIO_PCI_QUEUE_NUM=%d\n", num);
+    ASSERT(num > 0);
+
+    // addr は vring->desc
+    // vring->desc に実際の物理ページのアドレス、長さなどを設定しないとだめ。
+    char* p = new char[4096];
+    memset(p, 0xfe, 4096);
+
+#define PAGE_SHIFT (12)
+#define PAGE_SIZE  (1<<PAGE_SHIFT)
+#define PAGE_MASK  (PAGE_SIZE-1)
+
+    p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
+    struct vring_desc* desc = (struct vring_desc*)p;
+
+    ASSERT(((uint32_t)desc % 4096) == 0);
+
+    char* q = new char[4096];
+    memset(q, 0xfe, 4096);
+    p = (char*)(((uint32_t)q + PAGE_MASK) & ~PAGE_MASK);
+
+    strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
+    ASSERT(((uint32_t)q % 4096) == 0);
+    desc->len = strlen(q) + 1;
+
+    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0
+
+//    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
+//    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr >> 12); // sel = 0
+    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1); 
+
     return 0;
 }
+
+
+#if 0
+
+struct virtio_net_config
+{
+    /* The config defining mac address (6 bytes) */
+    uint8_t mac[6];
+    /* See VIRTIO_NET_F_STATUS and VIRTIO_NET_S_* above */
+    uint16_t status;
+} __attribute__((packed));
+
+int main(int argc, char* argv[])
+{
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
+
+    if (pciInf.isExist)
+    {
+        _printf("device found\n");
+        _printf("base=%x\n", pciInf.baseAdress);
+        _printf("base=%x\n", pciInf.baseAdress & ~1);
+        _printf("irqLine=%x\n", pciInf.irqLine);
+
+
+        _printf("%x", inp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_HOST_FEATURES));
+
+        struct virtio_net_config config;
+        for (int i = 0; i < sizeof(config); i += 4) {
+            (((uint32_t*)&config)[i / 4]) = inp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_CONFIG + i);
+//            (((uint32_t*)&config)[i / 4]) = pci.ReadConfig(0, pciInf.device, 0, (pciInf.baseAdress & ~1) + VIRTIO_PCI_CONFIG + i, 4);
+        }
+
+        printf("config.mac= %x:%x:%x:%x:%x:%x\n", config.mac[0], config.mac[1], config.mac[2], config.mac[3], config.mac[4], config.mac[5]);
+    } else {
+        _printf("device not found\n");
+    }
+
+    char* p = new char[4096];
+    memset(p, 0xfe, 4096);
+    _printf("addr[0] = %x\n", p[0]);
+
+    char* addr = (char*)syscall_get_physical_address((uint32_t)p, 0);
+
+    printf("addr index = %d\n", (uint32_t)addr / 4096);
+    // 0 means reset
+    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0);
+    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr / 4096);
+    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+
+    return 0;
+}
+
+#endif
+#if 0
+int main(int argc, char* argv[])
+{
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
+
+    if (pciInf.isExist)
+    {
+        _printf("device found\n");
+        _printf("base=%x\n", pciInf.baseAdress & ~1);
+        _printf("irqLine=%x\n", pciInf.irqLine);
+
+        for (int i = 0; i < 0xff; i++) {
+            outp8(pciInf.baseAdress, i);
+        }
+
+    } else {
+        _printf("device not found\n");
+    }
+    return 0;
+}
+#endif
 
 #endif
 
@@ -37,7 +220,7 @@ extern int main(int argc, char* argv[])
   static UChar* str     = (UChar* )"zzzzaffffffffb";
   _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   r = onig_new(&reg, pattern, pattern + strlen((char* )pattern),
-	ONIG_OPTION_DEFAULT, ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &einfo);
+    ONIG_OPTION_DEFAULT, ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &einfo);
   if (r != ONIG_NORMAL) {
   _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     char s[ONIG_MAX_ERROR_MESSAGE_LEN];
