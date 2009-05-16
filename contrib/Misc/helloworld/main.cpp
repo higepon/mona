@@ -38,6 +38,9 @@
 /* An 8-bit device status register.  */
 #define VIRTIO_PCI_STATUS               18
 
+#define VIRTIO_PCI_ISR                  19
+
+
 #define VIRTIO_PCI_CONFIG               20
 #define PAGE_SHIFT (12)
 #define PAGE_SIZE  (1<<PAGE_SHIFT)
@@ -90,7 +93,7 @@ struct vring_used_elem
 struct vring_used
 {
    u16 flags;
-   u16 idx;
+   volatile u16 idx;
    struct vring_used_elem ring[];
 };
 
@@ -101,21 +104,195 @@ struct vring {
    struct vring_used *used;
 };
 
+struct virtio_net_hdr
+{
+#define VIRTIO_NET_HDR_F_NEEDS_CSUM     1       // Use csum_start, csum_offset
+   uint8_t flags;
+#define VIRTIO_NET_HDR_GSO_NONE         0       // Not a GSO frame
+#define VIRTIO_NET_HDR_GSO_TCPV4        1       // GSO frame, IPv4 TCP (TSO)
+/* FIXME: Do we need this?  If they said they can handle ECN, do they care? */
+#define VIRTIO_NET_HDR_GSO_TCPV4_ECN    2       // GSO frame, IPv4 TCP w/ ECN
+#define VIRTIO_NET_HDR_GSO_UDP          3       // GSO frame, IPv4 UDP (UFO)
+#define VIRTIO_NET_HDR_GSO_TCPV6        4       // GSO frame, IPv6 TCP
+#define VIRTIO_NET_HDR_GSO_ECN          0x80    // TCP has ECN set
+   uint8_t gso_type;
+   uint16_t hdr_len;
+   uint16_t gso_size;
+   uint16_t csum_start;
+   uint16_t csum_offset;
+};
+
+
 #define vring_size(num) \
    (((((sizeof(struct vring_desc) * num) + \
       (sizeof(struct vring_avail) + sizeof(u16) * num)) \
          + PAGE_MASK) & ~PAGE_MASK) + \
     (sizeof(struct vring_used) + sizeof(struct vring_used_elem) * num))
 
+// send Ether packet
+
+class Ether
+{
+public:
+#pragma pack(2)
+    typedef struct{
+        uint8_t  dstmac[6];   // 送信先 MAC ID
+        uint8_t  srcmac[6];   // 送信元 MAC ID
+        uint16_t    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
+        uint8_t   data[0x600];// Data
+    } Frame;
+#pragma pack(0)
+    enum
+    {
+        ARP = 0x806,
+        IP  = 0x800,
+    };
+};
+
+struct virtio_net_config
+{
+    /* The config defining mac address (6 bytes) */
+    uint8_t mac[6];
+    /* See VIRTIO_NET_F_STATUS and VIRTIO_NET_S_* above */
+    uint16_t status;
+} __attribute__((packed));
+
+class Util
+{
+public:
+    inline static uint32_t swapLong(uint32_t value)
+    {
+        return (value>>24)+((value>>8)&0xff00)+((value<<8)&0xff0000)+(value<<24);
+    }
+
+    inline static uint16_t swapShort(uint16_t value)
+    {
+        return (value>>8)+(value<<8);
+    }
+
+    inline static uint16_t get2uint8_t(uint8_t *buf, uint32_t offset)
+    {
+        uint16_t a;
+        a = buf[offset++] << 8;
+        return a | buf[offset];
+    }
+
+    inline static uint32_t ipAddressToDuint16_t(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+    {
+        return (d << 24) | (c << 16) | (b << 8) | a;
+    }
+
+    inline static MonAPI::CString ipAddressToCString(uint32_t a)
+    {
+        char buf[64];
+        sprintf(buf, "%d.%d.%d.%d", a & 0xff, (a >> 8) & 0xff, (a >> 16) & 0xff, (a >> 24) & 0xff);
+        return MonAPI::CString(buf);
+    }
+
+    inline static uint16_t calcCheckSum(uint32_t *data,int size)
+    {
+        union{
+            unsigned long long u64;
+            uint32_t            u32[2];
+            uint16_t             u16[4];
+        }sum;
+
+        uint32_t tmp;
+
+
+        sum.u64=0;
+        for(;(uint32_t)size>=sizeof(uint32_t);size-=sizeof(uint32_t))
+            sum.u64+=*data++;
+        if(size>0)sum.u64+=*data&((1<<(size*8))-1);
+
+        tmp=sum.u32[1];
+        sum.u32[1]=0;
+        sum.u64+=tmp;
+        tmp=sum.u32[1];
+        sum.u32[1]=0;
+        sum.u32[0]+=tmp;
+
+        tmp=sum.u16[1];
+        sum.u16[1]=0;
+        sum.u32[0]+=tmp;
+        tmp=sum.u16[1];
+        sum.u16[1]=0;
+        sum.u16[0]+=tmp;
+
+        return ~sum.u16[0];
+    }
+
+};
+
+class Arp
+{
+public:
+    typedef struct
+    {
+        uint16_t hardType  __attribute__((packed));
+        uint16_t protType  __attribute__((packed));
+        uint8_t  hardAddrLen;
+        uint8_t  protAddrLen;
+        uint16_t opeCode  __attribute__((packed));
+        uint8_t  srcMac[6];
+        uint32_t   srcIp  __attribute__((packed));
+        uint8_t  dstMac[6];
+        uint32_t   dstIp  __attribute__((packed));
+    } Header;
+
+    enum
+    {
+        HARD_TYPE_ETHER= 1,
+        PROTCOL_TYPE_IP=0x0800,
+        /* Operation code. */
+        OPE_CODE_ARP_REQ= 1,
+        OPE_CODE_ARP_REP= 2,
+        OPE_CODE_RARP_REQ=3,
+        OPE_CODE_RARP_REP=4,
+    };
+};
+
+#if 1
+
+class Buffer {
+public:
+    Buffer(uintptr_t size) : size_(size + 1)
+    {
+        data_ = new uint8_t[size_];
+        ASSERT(data_ != NULL);
+        memset(data_, 0, size_);
+        data_[size_ - 1] = 0xcc;
+    }
+
+    void check(const char* file, int line) const
+    {
+        if (data_[size_ - 1] != 0xcc) {
+            _printf("ASSERT %s:%d\n", file, line);
+            exit(-1);
+        }
+    }
+
+    uint8_t* data() const { return data_; }
+
+    uintptr_t size() const { return size_; }
+
+private:
+    uintptr_t size_;
+    uint8_t* data_;
+
+};
+
+#define CHECK_BUFFER(buf) buf.check(__FILE__, __LINE__)
+
+// ARP request/reply
 int main(int argc, char* argv[])
 {
     // 1. Device probe
     PciInf pciInf;
     Pci pci;
-    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
 
-    if (!pciInf.isExist)
-    {
+    if (!pciInf.isExist) {
         printf("device not found\n");
         exit(-1);
     }
@@ -126,25 +303,404 @@ int main(int argc, char* argv[])
 
     const uintptr_t baseAddress = pciInf.baseAdress & ~1;
 
-    // 2. Select the queue to use
-    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1:write queue
+        struct virtio_net_config config;
+        for (uintptr_t i = 0; i < sizeof(config); i += 4) {
+            (((uint32_t*)&config)[i / 4]) = inp32(baseAddress + VIRTIO_PCI_CONFIG + i);
+        }
 
-    // 3. how many descriptors do the queue have?
+        printf("config.mac= %x:%x:%x:%x:%x:%x\n", config.mac[0], config.mac[1], config.mac[2], config.mac[3], config.mac[4], config.mac[5]);
+
+
+    // 2. reset the device
+    outp8(baseAddress + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
+    printf("[virtio] isr=%x\n", inp8(baseAddress + VIRTIO_PCI_ISR)); // clear ISR.
+
+    // 3. IRQ receiver
+    monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(pciInf.irqLine, SYS_MASK_INTERRUPT);
+
+    // 4. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1: write queue
+
+    // 5. how many descriptors do the queue have?
     const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
-    ASSERT(numberOfDesc > 0);
+    ASSERT(numberOfDesc == 256);
 
-    // 4. Check wheter the queue is already set vring (necessary?).
+    // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
     if (pfn != 0) {
         printf("[virtio] pfn=%x\n", pfn);
         exit(-1);
     }
 
-    // 5. setup vring
+    // 7. setup vring
+    const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
+    printf("[virtio] MAX_QUEUE_SIZE=%d\n", MAX_QUEUE_SIZE);
+//    uint8_t* queueData= new uint8_t[MAX_QUEUE_SIZE];
+//    uint8_t queueData[MAX_QUEUE_SIZE];
+    Buffer writeDesc(MAX_QUEUE_SIZE);
+    CHECK_BUFFER(writeDesc);
+
+    struct vring vring;
+    vring.num = numberOfDesc;
+    // page align is required
+    const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)writeDesc.data(), NULL);
+    printf("[virtio] physicalAddress=%x\n", physicalAddress);
+    const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    printf("[virtio] alignedAddress=%x\n", alignedAddress);
+    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+
+    // vring.desc is page aligned
+    vring.desc = (struct vring_desc*)(writeDesc.data() + alignedAddress - physicalAddress);
+    //make linked ring
+    for (uintptr_t i = 0; i < vring.num; i++) {
+        vring.desc[i].next = i + 1;
+        vring.desc[i].len = i + 1; // for debug. With it we can know which desc is wrong state
+    }
+    vring.desc[vring.num - 1].next = 0;
+
+    // vring.avail is follow after the array of desc
+    vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
+    ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
+
+
+    //vring.used is also page aligned
+    const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
+    const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    _printf("usedAligendAddress - usedPhysicalAddress= %d\n", usedAligendAddress - usedPhysicalAddress);
+    vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
+
+    printf("vring.desc=%x vring.used=%x diff=%d\n"
+           , syscall_get_physical_address((uintptr_t)vring.desc, NULL)
+           , syscall_get_physical_address((uintptr_t)vring.used, NULL)
+           , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
+
+    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL)) % PAGE_SIZE) == 0);
+
+    ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
+    // 9. set up pfn
+    printf("[virtio] set up PFN\n");
+    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring.desc, NULL) >> 12);
+    //10. prepare the data to write
+
+    Buffer writeData1(PAGE_SIZE * 2);
+    const uintptr_t phys1 = syscall_get_physical_address((uintptr_t)writeData1.data(), NULL);
+    const uintptr_t aphys1 = (phys1+ PAGE_MASK) & ~PAGE_MASK;
+    struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (writeData1.data() + aphys1 - phys1);
+    // This is *necessary*
+   hdr->flags = 0;
+   hdr->csum_offset = 0;
+   hdr->csum_start = 0;
+   hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
+   hdr->gso_size = 0;
+   hdr->hdr_len = 0;
+    vring.desc[0].flags  |= VRING_DESC_F_NEXT; ; // no next
+    vring.desc[0].addr = syscall_get_physical_address((uintptr_t)hdr, NULL);
+    vring.desc[0].len = sizeof(struct virtio_net_hdr);
+
+    Buffer writeData2(PAGE_SIZE * 2);
+
+    const uintptr_t phys2 = syscall_get_physical_address((uintptr_t)writeData2.data(), NULL);
+    const uintptr_t aphys2 = (phys2+ PAGE_MASK) & ~PAGE_MASK;
+    Ether::Frame* frame = (Ether::Frame*) (writeData2.data() + aphys2 - phys2);
+    frame->dstmac[0] = 0xff;
+    frame->dstmac[1] = 0xff;
+    frame->dstmac[2] = 0xff;
+    frame->dstmac[3] = 0xff;
+    frame->dstmac[4] = 0xff;
+    frame->dstmac[5] = 0xff;
+    memcpy(frame->srcmac, config.mac, 6);
+    frame->type = Util::swapShort(Ether::ARP);
+    Arp::Header* header = (Arp::Header*)frame->data;
+        header->hardType =Util::swapShort(Arp::HARD_TYPE_ETHER);
+        header->protType = Util::swapShort(Arp::PROTCOL_TYPE_IP);
+        header->hardAddrLen = 6;
+        header->protAddrLen = 4;
+        memcpy(header->srcMac, config.mac, 6);
+        header->opeCode = Util::swapShort(Arp::OPE_CODE_ARP_REQ);
+        header->srcIp = Util::ipAddressToDuint16_t(10, 0, 2, 10);
+        // QEMU network is 10.0.2.x
+        header->dstIp = Util::ipAddressToDuint16_t(10, 0, 2, 3); // 10.0.2.3 is user mode QEMU DNS
+        memset(header->dstMac, 0, 6);
+    // 11. set the data to vring
+    vring.desc[1].flags = 0; // no next
+    vring.desc[1].addr = syscall_get_physical_address((uintptr_t)frame, NULL);
+    vring.desc[1].len = sizeof(Ether::Frame);
+    vring.avail->idx = 1;
+    vring.avail->ring[0] =0;
+    // setup receive ring
+    // 4. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 0); // 0: read queue, 1: write queue
+    // 5. how many descriptors do the queue have?
+    const int numberOfDesc2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+    printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
+    ASSERT(numberOfDesc2 == 256);
+
+    // 6. Check wheter the queue is already set vring (necessary?).
+    uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
+    if (pfn2 != 0) {
+        printf("[virtio] pfn2=%x\n", pfn2);
+        exit(-1);
+    }
+
+    // 7. setup vring
+//    uint8_t*  queueData2 = new uint8_t[MAX_QUEUE_SIZE];
+//    uint8_t  queueData2[MAX_QUEUE_SIZE];
+//    memset(queueData2, 0, MAX_QUEUE_SIZE);
+
+    Buffer readDesc(MAX_QUEUE_SIZE);
+    struct vring vring2;
+    vring2.num = numberOfDesc2;
+    // page align is required
+    const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
+    printf("[virtio] physicalAddress2=%x\n", physicalAddress2);
+    const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
+    printf("[virtio] alignedAddress2=%x\n", alignedAddress2);
+
+    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+
+    // vring.desc is page aligned
+    vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
+
+    // make linked ring
+    for (uintptr_t i = 0; i < vring2.num; i++) {
+        vring2.desc[i].next = i + 1;
+        vring2.desc[i].flags |= VRING_DESC_F_WRITE;
+    }
+    vring2.desc[vring2.num - 1].next = 0;
+
+
+    // vring.avail is follow after the array of desc
+    vring2.avail = (struct vring_avail *)&vring2.desc[numberOfDesc2];
+
+    // vring.used is also page aligned
+    const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
+    const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
+    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
+
+    printf("vring2.desc=%x vring2.used=%x diff=%d\n"
+           , syscall_get_physical_address((uintptr_t)vring2.desc, NULL)
+           , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
+           , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
+
+    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+
+    // 9. set up pfn
+    printf("[virtio] set up PFN\n");
+    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
+
+    // 10. prepare the data to write
+//    uint8_t data3[PAGE_SIZE * 2];
+    Buffer readData1(PAGE_SIZE * 2);
+    const uintptr_t phys3 = syscall_get_physical_address((uintptr_t)readData1.data(), NULL);
+    const uintptr_t aphys3 = (phys3+ PAGE_MASK) & ~PAGE_MASK;
+    uint8_t* rdata = (uint8_t *) (readData1.data() + aphys3 - phys3);
+
+    vring2.desc[0].flags = VRING_DESC_F_NEXT|VRING_DESC_F_WRITE; // no next
+    vring2.desc[0].addr = syscall_get_physical_address((uintptr_t)rdata, NULL);
+    vring2.desc[0].len = sizeof(struct virtio_net_hdr);
+
+    Buffer readData2(PAGE_SIZE * 2);
+    const uintptr_t phys4 = syscall_get_physical_address((uintptr_t)readData2.data(), NULL);
+    const uintptr_t aphys4 = (phys4+ PAGE_MASK) & ~PAGE_MASK;
+    uint8_t* rdata2 = (uint8_t *) (readData2.data() + aphys4 - phys4);
+    vring2.desc[1].flags = VRING_DESC_F_WRITE; // no next
+    vring2.desc[1].addr = syscall_get_physical_address((uintptr_t)rdata2, NULL);
+    vring2.desc[1].len = PAGE_SIZE;
+    vring2.avail->idx = 1;
+    vring2.avail->ring[0] =0;
+
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+    ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
+    ASSERT(vring.desc[1].flags == 0);
+
+    ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+    ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+    ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+
+
+    CHECK_BUFFER(writeDesc);
+    CHECK_BUFFER(writeData1);
+    CHECK_BUFFER(writeData2);
+    CHECK_BUFFER(readDesc);
+    CHECK_BUFFER(readData1);
+    CHECK_BUFFER(readData2);
+    // 12. Notify!
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+    // 13. wait notification from host
+    MessageInfo msg;
+    Message::receive(&msg);
+
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        CHECK_BUFFER(writeDesc);
+        CHECK_BUFFER(writeData1);
+        CHECK_BUFFER(writeData2);
+        CHECK_BUFFER(readDesc);
+        CHECK_BUFFER(readData1);
+        CHECK_BUFFER(readData2);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
+
+    // if data is written, idx 0 => 1
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+
+    printf("***** send done ****");
+    printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
+
+//    sleep(1000);
+
+    while (vring2.used->idx == 0) {
+        sleep(300);
+        printf("waiting \n");
+    }
+    CHECK_BUFFER(writeDesc);
+    CHECK_BUFFER(writeData1);
+    CHECK_BUFFER(writeData2);
+    CHECK_BUFFER(readDesc);
+    CHECK_BUFFER(readData1);
+    CHECK_BUFFER(readData2);
+    printf("dump***");
+    for (int i = 0; i < 1000; i++) {
+        if (rdata[i] != 0) {
+            printf("[%d]", rdata[i]);
+        }
+    }
+
+    printf("dump2***");
+    for (int i = 0; i < 1000; i++) {
+        if (rdata2[i] != 0) {
+            printf("[%d]", rdata2[i]);
+        }
+    }
+
+    Ether::Frame* rframe = (Ether::Frame*)rdata2;
+    printf("rframe->type=%x\n", rframe->type);
+
+    if (rframe->type == Util::swapShort(Ether::ARP)) {
+        Arp::Header* hdr = (Arp::Header*)rframe->data;
+        printf("hardType=%x\n", hdr->hardType);
+        printf("protType=%x\n", hdr->protType);
+        printf("hardAddrLen=%x\n", hdr->hardAddrLen);
+        printf("protAddrLen=%x\n", hdr->protAddrLen);
+        printf("opeCode =%x\n", hdr->opeCode );
+        for (int i = 0; i < 6 ; i++) {
+            printf("srcMac=[i]=%x\n", hdr->srcMac[i]);
+
+        }
+        printf("  srcIp=%x\n",   hdr->srcIp);
+//        printf("dstMac[6]=%x\n", dstMac[6]);
+
+    } else {
+        printf("rframe->type=%d \n", rframe->type);
+    }
+
+    printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
+    {
+    MessageInfo msg;
+    Message::receive(&msg);
+
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
+    }
+    printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
+
+    CHECK_BUFFER(writeDesc);
+    CHECK_BUFFER(writeData1);
+    CHECK_BUFFER(writeData2);
+    CHECK_BUFFER(readDesc);
+    CHECK_BUFFER(readData1);
+    CHECK_BUFFER(readData2);
+
+}
+
+#endif
+
+#if 0
+
+// ARP request is accepted on QEMU.
+int main(int argc, char* argv[])
+{
+    // 1. Device probe
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
+
+    if (!pciInf.isExist) {
+        printf("device not found\n");
+        exit(-1);
+    }
+
+    printf("device found\n");
+    printf("baseAdress=%x\n", pciInf.baseAdress);
+    printf("irqLine=%x\n", pciInf.irqLine);
+
+    const uintptr_t baseAddress = pciInf.baseAdress & ~1;
+
+        struct virtio_net_config config;
+        for (int i = 0; i < sizeof(config); i += 4) {
+            (((uint32_t*)&config)[i / 4]) = inp32(baseAddress + VIRTIO_PCI_CONFIG + i);
+        }
+
+        printf("config.mac= %x:%x:%x:%x:%x:%x\n", config.mac[0], config.mac[1], config.mac[2], config.mac[3], config.mac[4], config.mac[5]);
+
+
+    // 2. reset the device
+    outp8(baseAddress + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
+    printf("[virtio] isr=%x\n", inp8(baseAddress + VIRTIO_PCI_ISR)); // clear ISR.
+
+    // 3. IRQ receiver
+    monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(pciInf.irqLine, SYS_MASK_INTERRUPT);
+
+    // 4. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1: write queue
+
+    // 5. how many descriptors do the queue have?
+    const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+    printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
+    ASSERT(numberOfDesc > 0);
+
+    // 6. Check wheter the queue is already set vring (necessary?).
+    uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
+    if (pfn != 0) {
+        printf("[virtio] pfn=%x\n", pfn);
+        exit(-1);
+    }
+
+    // 7. setup vring
     const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
     printf("[virtio] MAX_QUEUE_SIZE=%d\n", MAX_QUEUE_SIZE);
     uint8_t queueData[MAX_QUEUE_SIZE];
+    memset(queueData, 0, MAX_QUEUE_SIZE);
 
     struct vring vring;
     vring.num = numberOfDesc;
@@ -160,43 +716,432 @@ int main(int argc, char* argv[])
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
 
+    // make linked ring
+    for (uintptr_t i = 0; i < vring.num; i++) {
+        vring.desc[i].next = i + 1;
+    }
+    vring.desc[vring.num - 1].next = 0;
+
     // vring.avail is follow after the array of desc
     vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
 
+    // vring.used is also page aligned
+    const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
+    const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
+
+    // 9. set up pfn
+    printf("[virtio] set up PFN\n");
+    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring.desc, NULL) >> 12);
+
+    // 10. prepare the data to write
+    uint8_t data1[PAGE_SIZE * 2];
+    const uintptr_t phys1 = syscall_get_physical_address((uintptr_t)data1, NULL);
+    const uintptr_t aphys1 = (phys1+ PAGE_MASK) & ~PAGE_MASK;
+    struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (data1 + aphys1 - phys1);
+
+    // This is *necessary*
+   hdr->flags = 0;
+   hdr->csum_offset = 0;
+   hdr->csum_start = 0;
+   hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
+   hdr->gso_size = 0;
+   hdr->hdr_len = 0;
+
+    vring.desc[0].flags  |= VRING_DESC_F_NEXT; ; // no next
+    vring.desc[0].addr = syscall_get_physical_address((uintptr_t)hdr, NULL);
+    vring.desc[0].len = sizeof(struct virtio_net_hdr);
 
 
+    uint8_t data2[PAGE_SIZE * 2];
+    const uintptr_t phys2 = syscall_get_physical_address((uintptr_t)data2, NULL);
+    const uintptr_t aphys2 = (phys2+ PAGE_MASK) & ~PAGE_MASK;
+    Ether::Frame* frame = (Ether::Frame*) (data2 + aphys2 - phys2);
+    frame->dstmac[0] = 0xff;
+    frame->dstmac[1] = 0xff;
+    frame->dstmac[2] = 0xff;
+    frame->dstmac[3] = 0xff;
+    frame->dstmac[4] = 0xff;
+    frame->dstmac[5] = 0xff;
 
-    // addr は vring->desc
-    // vring->desc に実際の物理ページのアドレス、長さなどを設定しないとだめ。
-    char* p = new char[4096];
-    memset(p, 0xfe, 4096);
+    memcpy(frame->srcmac, config.mac, 6);
 
-#define PAGE_SHIFT (12)
-#define PAGE_SIZE  (1<<PAGE_SHIFT)
-#define PAGE_MASK  (PAGE_SIZE-1)
+    frame->type = Util::swapShort(Ether::ARP);
 
-    p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
-    struct vring_desc* desc = (struct vring_desc*)p;
+    Arp::Header* header = (Arp::Header*)frame->data;
+        header->hardType =Util::swapShort(Arp::HARD_TYPE_ETHER);
+        header->protType = Util::swapShort(Arp::PROTCOL_TYPE_IP);
+        header->hardAddrLen = 6;
+        header->protAddrLen = 4;
+        memcpy(header->srcMac, config.mac, 6);
+        header->opeCode = Util::swapShort(Arp::OPE_CODE_ARP_REQ);
+        header->srcIp = Util::ipAddressToDuint16_t(10, 0, 2, 10);
 
-    ASSERT(((uint32_t)desc % 4096) == 0);
+        // QEMU network is 10.0.2.x
+        header->dstIp = Util::ipAddressToDuint16_t(10, 0, 2, 3); // 10.0.2.3 is user mode QEMU DNS
+        memset(header->dstMac, 0, 6);
 
-    char* q = new char[4096];
-    memset(q, 0xfe, 4096);
-    p = (char*)(((uint32_t)q + PAGE_MASK) & ~PAGE_MASK);
 
-    strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
-    ASSERT(((uint32_t)q % 4096) == 0);
-    desc->len = strlen(q) + 1;
+    // 11. set the data to vring
+    vring.desc[1].flags = 0; // no next
+    vring.desc[1].addr = syscall_get_physical_address((uintptr_t)frame, NULL);
+    vring.desc[1].len = sizeof(Ether::Frame);
 
-    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0
+    vring.avail->idx = 1;
+    vring.avail->ring[0] =0;
 
-//    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
-//    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr >> 12); // sel = 0
-    outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1);
+
+    // 12. Notify!
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+
+    // 13. wait notification from host
+    MessageInfo msg;
+    Message::receive(&msg);
+
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
+
+    // if data is written, idx 0 => 1
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+
+}
+#endif
+#if 0
+// how to use avail
+int main(int argc, char* argv[])
+{
+    // 1. Device probe
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
+
+    if (!pciInf.isExist) {
+        printf("device not found\n");
+        exit(-1);
+    }
+
+    printf("device found\n");
+    printf("baseAdress=%x\n", pciInf.baseAdress);
+    printf("irqLine=%x\n", pciInf.irqLine);
+
+    const uintptr_t baseAddress = pciInf.baseAdress & ~1;
+
+    // 2. reset the device
+    outp8(baseAddress + VIRTIO_PCI_STATUS, 0); // 0: reset
+    printf("[virtio] isr=%x\n", inp8(baseAddress + VIRTIO_PCI_ISR)); // clear ISR.
+
+    // 3. IRQ receiver
+    monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(pciInf.irqLine, SYS_MASK_INTERRUPT);
+
+    // 4. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1: write queue
+
+    // 5. how many descriptors do the queue have?
+    const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+    printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
+    ASSERT(numberOfDesc > 0);
+
+    // 6. Check wheter the queue is already set vring (necessary?).
+    uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
+    if (pfn != 0) {
+        printf("[virtio] pfn=%x\n", pfn);
+        exit(-1);
+    }
+
+    // 7. setup vring
+    const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
+    printf("[virtio] MAX_QUEUE_SIZE=%d\n", MAX_QUEUE_SIZE);
+    uint8_t queueData[MAX_QUEUE_SIZE];
+    memset(queueData, 0, MAX_QUEUE_SIZE);
+
+    struct vring vring;
+    vring.num = numberOfDesc;
+
+    // page align is required
+    const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)queueData, NULL);
+    printf("[virtio] physicalAddress=%x\n", physicalAddress);
+    const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    printf("[virtio] alignedAddress=%x\n", alignedAddress);
+
+    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+
+    // vring.desc is page aligned
+    vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
+
+    // make linked ring
+    for (uintptr_t i = 0; i < vring.num; i++) {
+        vring.desc[i].next = i + 1;
+    }
+    vring.desc[vring.num - 1].next = 0;
+
+    // vring.avail is follow after the array of desc
+    vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
+
+    // vring.used is also page aligned
+    const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
+    const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
+
+    // 9. set up pfn
+    printf("[virtio] set up PFN\n");
+    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring.desc, NULL) >> 12);
+
+    // 10. prepare the data to write
+    uint8_t data1[PAGE_SIZE * 2];
+    const uintptr_t phys1 = syscall_get_physical_address((uintptr_t)data1, NULL);
+    const uintptr_t aphys1 = (phys1+ PAGE_MASK) & ~PAGE_MASK;
+    char* p1 = (char*) (data1 + aphys1 - phys1);
+    strcpy(p1, "Hello, World");
+
+    // 11. set the data to vring
+    vring.desc[0].flags |= VRING_DESC_F_NEXT;
+    vring.desc[0].addr = syscall_get_physical_address((uintptr_t)p1, NULL);
+    vring.desc[0].len = strlen(p1) + 1;
+
+    uint8_t data2[PAGE_SIZE * 2];
+    const uintptr_t phys2 = syscall_get_physical_address((uintptr_t)data2, NULL);
+    const uintptr_t aphys2 = (phys2+ PAGE_MASK) & ~PAGE_MASK;
+    char* p2 = (char*) (data2 + aphys2 - phys2);
+    strcpy(p2, "My name is Higepon");
+
+    // 11. set the data to vring
+    vring.desc[1].flags = 0; // no next
+    vring.desc[1].addr = syscall_get_physical_address((uintptr_t)p2, NULL);
+    vring.desc[1].len = strlen(p2) + 1;
+
+    vring.avail->idx = 1;
+    vring.avail->ring[2] =2;
+
+
+    // 12. Notify!
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+
+    // 13. wait notification from host
+    MessageInfo msg;
+    Message::receive(&msg);
+
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
+
+    // if data is written, idx 0 => 1
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+//     // addr は vring->desc
+//     // vring->desc に実際の物理ページのアドレス、長さなどを設定しないとだめ。
+//     char* p = new char[4096];
+//     memset(p, 0xfe, 4096);
+
+// #define PAGE_SHIFT (12)
+// #define PAGE_SIZE  (1<<PAGE_SHIFT)
+// #define PAGE_MASK  (PAGE_SIZE-1)
+
+//     p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
+//     struct vring_desc* desc = (struct vring_desc*)p;
+
+//     ASSERT(((uint32_t)desc % 4096) == 0);
+
+//     char* q = new char[4096];
+//     memset(q, 0xfe, 4096);
+//     p = (char*)(((uint32_t)q + PAGE_MASK) & ~PAGE_MASK);
+
+//     strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//     desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
+//     ASSERT(((uint32_t)q % 4096) == 0);
+//     desc->len = strlen(q) + 1;
+
+//     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0
+
+// //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
+// //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr >> 12); // sel = 0
+//     outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1);
 
     return 0;
 }
+#endif
+
+#if 0
+int main(int argc, char* argv[])
+{
+    // 1. Device probe
+    PciInf pciInf;
+    Pci pci;
+    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_CONSOLE, &pciInf);
+
+    if (!pciInf.isExist) {
+        printf("device not found\n");
+        exit(-1);
+    }
+
+    printf("device found\n");
+    printf("baseAdress=%x\n", pciInf.baseAdress);
+    printf("irqLine=%x\n", pciInf.irqLine);
+
+    const uintptr_t baseAddress = pciInf.baseAdress & ~1;
+
+    // 2. reset the device
+    outp8(baseAddress + VIRTIO_PCI_STATUS, 0); // 0: reset
+    printf("[virtio] isr=%x\n", inp8(baseAddress + VIRTIO_PCI_ISR)); // clear ISR.
+
+    // 3. IRQ receiver
+    monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(pciInf.irqLine, SYS_MASK_INTERRUPT);
+
+    // 4. Select the queue to use
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 1); // 0: read queue, 1: write queue
+
+    // 5. how many descriptors do the queue have?
+    const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+    printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
+    ASSERT(numberOfDesc > 0);
+
+    // 6. Check wheter the queue is already set vring (necessary?).
+    uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
+    if (pfn != 0) {
+        printf("[virtio] pfn=%x\n", pfn);
+        exit(-1);
+    }
+
+    // 7. setup vring
+    const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
+    printf("[virtio] MAX_QUEUE_SIZE=%d\n", MAX_QUEUE_SIZE);
+    uint8_t queueData[MAX_QUEUE_SIZE];
+    memset(queueData, 0, MAX_QUEUE_SIZE);
+
+    struct vring vring;
+    vring.num = numberOfDesc;
+
+    // page align is required
+    const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)queueData, NULL);
+    printf("[virtio] physicalAddress=%x\n", physicalAddress);
+    const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    printf("[virtio] alignedAddress=%x\n", alignedAddress);
+
+    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+
+    // vring.desc is page aligned
+    vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
+
+    // make linked ring
+    for (uintptr_t i = 0; i < vring.num; i++) {
+        vring.desc[i].next = i + 1;
+    }
+    vring.desc[vring.num - 1].next = 0;
+
+    // vring.avail is follow after the array of desc
+    vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
+
+    // vring.used is also page aligned
+    const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
+    const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
+    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
+
+    // 9. set up pfn
+    printf("[virtio] set up PFN\n");
+    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring.desc, NULL) >> 12);
+
+    // 10. prepare the data to write
+    uint8_t data[PAGE_SIZE * 2];
+    const uintptr_t phys = syscall_get_physical_address((uintptr_t)data, NULL);
+    const uintptr_t aphys = (phys+ PAGE_MASK) & ~PAGE_MASK;
+    char* p = (char*) (data + aphys - phys);
+    strcpy(p, "Hello, World");
+
+    // 11. set the data to vring
+    vring.desc[0].flags = 0; // no next
+    vring.desc[0].addr = syscall_get_physical_address((uintptr_t)p, NULL);
+    vring.desc[0].len = strlen(p) + 1;
+    vring.avail->idx = 1;
+
+
+    // 12. Notify!
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+
+    // 13. wait notification from host
+    MessageInfo msg;
+    Message::receive(&msg);
+
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
+
+    // if data is written, idx 0 => 1
+    printf("[virtio] vring.used->idx = %d \n", vring.used->idx);
+//     // addr は vring->desc
+//     // vring->desc に実際の物理ページのアドレス、長さなどを設定しないとだめ。
+//     char* p = new char[4096];
+//     memset(p, 0xfe, 4096);
+
+// #define PAGE_SHIFT (12)
+// #define PAGE_SIZE  (1<<PAGE_SHIFT)
+// #define PAGE_MASK  (PAGE_SIZE-1)
+
+//     p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
+//     struct vring_desc* desc = (struct vring_desc*)p;
+
+//     ASSERT(((uint32_t)desc % 4096) == 0);
+
+//     char* q = new char[4096];
+//     memset(q, 0xfe, 4096);
+//     p = (char*)(((uint32_t)q + PAGE_MASK) & ~PAGE_MASK);
+
+//     strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//     desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
+//     ASSERT(((uint32_t)q % 4096) == 0);
+//     desc->len = strlen(q) + 1;
+
+//     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0
+
+// //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, 0 /* means reset sel = 1 */);
+// //    outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, (uint32_t)addr >> 12); // sel = 0
+//     outp16((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_NOTIFY, /* sel = 1 */ 1);
+
+    return 0;
+}
+#endif
 
 
 #if 0
