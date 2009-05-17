@@ -256,10 +256,16 @@ public:
 
 class Buffer {
 public:
-    Buffer(uintptr_t size) : size_(size + 1)
+    Buffer(uintptr_t size) : size_(size + 1), pageNum_((size_ + PAGE_SIZE - 1) / PAGE_SIZE)
     {
-        data_ = new uint8_t[size_];
-        ASSERT(data_ != NULL);
+        uintptr_t address = startAddress;
+        bool ret = syscall_allocate_contiguous(address, pageNum_);
+        if (!ret) {
+            _printf("panic virtio buffer error\n");
+            exit(-1);
+        }
+        startAddress += pageNum_ * PAGE_SIZE;
+        data_ = (uint8_t*)address;
         memset(data_, 0, size_);
         data_[size_ - 1] = 0xcc;
     }
@@ -278,9 +284,12 @@ public:
 
 private:
     uintptr_t size_;
+    int pageNum_;
     uint8_t* data_;
-
+    static uintptr_t startAddress;
 };
+
+uintptr_t Buffer::startAddress = 0x9E000000;
 
 #define CHECK_BUFFER(buf) buf.check(__FILE__, __LINE__)
 
@@ -377,7 +386,7 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
 
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL)) % PAGE_SIZE) == 0);
+    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
 
     ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
     // 9. set up pfn
@@ -486,6 +495,7 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
 
+    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
     ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
