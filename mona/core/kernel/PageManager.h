@@ -35,6 +35,10 @@ class PageManager {
     uint8_t* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
     void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
+    bool allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum);
+    void deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
+
+
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
     int allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool present, bool writable, bool isUser) const;

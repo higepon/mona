@@ -102,6 +102,25 @@ void syscall_entrance()
         g_console->printf("%s", (char*)(SYSTEM_CALL_ARG_1));
         break;
 
+    case SYSTEM_CALL_ALLOCATE_CONTIGUOUS:
+    {
+
+        LinearAddress laddress = SYSTEM_CALL_ARG_1;
+        int pageNum = SYSTEM_CALL_ARG_2;
+        info->eax = g_page_manager->allocateContiguous(g_currentThread->process->getPageDirectory(),
+                                                       laddress,
+                                                       pageNum);
+        break;
+    }
+    case SYSTEM_CALL_DEALLOCATE_CONTIGUOUS:
+    {
+        LinearAddress laddress = SYSTEM_CALL_ARG_1;
+        int pageNum = SYSTEM_CALL_ARG_2;
+        g_page_manager->deallocateContiguous(g_currentThread->process->getPageDirectory(),
+                                             laddress,
+                                             pageNum);
+        break;
+    }
     case SYSTEM_CALL_SET_TIMER:
 
         info->eax = g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1);
@@ -153,9 +172,9 @@ void syscall_entrance()
     case SYSTEM_CALL_GET_PHYSICAL_ADDRESS:
     {
         PhysicalAddress ret = 0;
-        g_console->printf("syscall %x\n", ret);
+//        g_console->printf("syscall %x\n", ret);
         g_page_manager->getPhysicalAddress((PageEntry*)g_currentThread->archinfo->cr3, (uint32_t)(SYSTEM_CALL_ARG_1), &ret);
-        g_console->printf("syscall %x\n", ret);
+//        g_console->printf("syscall %x\n", ret);
         info->eax = ret;
         break;
     }

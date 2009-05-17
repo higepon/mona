@@ -44,6 +44,11 @@ typedef unsigned int            uint32_t;
 # define __uint32_t_defined
 #endif
 
+#ifndef __uintptr_t_defined
+typedef unsigned long int	uintptr_t;
+# define __uintptr_t_defined
+#endif
+
 #define interface class
 
 #ifndef SEEK_SET
@@ -311,6 +316,8 @@ enum
 #define SYSTEM_CALL_SET_WATCH_POINT           0x0056
 #define SYSTEM_CALL_REMOVE_WATCH_POINT        0x0057
 #define SYSTEM_CALL_GET_PHYSICAL_ADDRESS      0x0058
+#define SYSTEM_CALL_ALLOCATE_CONTIGUOUS       0x0059
+#define SYSTEM_CALL_DEALLOCATE_CONTIGUOUS     0x0060
 
 enum
 {

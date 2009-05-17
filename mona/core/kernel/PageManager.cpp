@@ -185,6 +185,48 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
 }
 
+// allocate physically contigous memory.
+// virtio requires this.
+bool PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
+{
+    // contigous memory address should be mapped to this Range
+    // http://wiki.monaos.org/edit.php?Mona%2F%A5%E1%A5%E2%A5%EA%A5%DE%A5%C3%A5%D4%A5%F3%A5%B0
+    ASSERT(laddress >= 0x90000000 && laddress <= 0x9FFFFFFF);
+
+    // should be aligned
+    ASSERT((laddress % ARCH_PAGE_SIZE) == 0);
+
+    int foundMemory = memoryMap_->find(pageNum);
+    if (foundMemory == BitMap::NOT_FOUND) return false;
+
+    for (int i = foundMemory; i < foundMemory + pageNum; i++)
+    {
+        PageEntry* table;
+        PhysicalAddress paddress = i * ARCH_PAGE_SIZE;
+        LinearAddress address = laddress + (i - foundMemory) * ARCH_PAGE_SIZE;
+        uint32_t directoryIndex = getDirectoryIndex(address);
+        uint32_t tableIndex     = getTableIndex(address);
+
+        if (isPresent(&(directory[directoryIndex])))
+        {
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else
+        {
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, true, paddress);
+    }
+    return true;
+}
+
+void PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
+{
+    returnPages(directory, laddress, pageNum * ARCH_PAGE_SIZE);
+}
+
+
 uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
     size = (size + 4095) & 0xFFFFF000;

@@ -1,3 +1,7 @@
+2009-05-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/PageManager.cpp (PageManager::allocateContiguous): Added for virtio.
+
 2008-01-19  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/System.cpp : Fixed bug of return value.
