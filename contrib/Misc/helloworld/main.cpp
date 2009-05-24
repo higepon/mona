@@ -341,6 +341,7 @@ uintptr_t Buffer::startAddress = 0x9E000000;
 #if 1
 // with -net tap,if_name=tap0
 // ICMP Request can see on Wireshark !
+// reply is also ok
 int main(int argc, char* argv[])
 {
     // 1. Device probe
@@ -714,74 +715,100 @@ int main(int argc, char* argv[])
     icmp->chksum = Util::calcCheckSum((uint32_t*)icmp, sizeof(Icmp::Header));
 
 
+    printf("before 2nd write vring.avail->idx=%x\n", vring.avail->idx);
+    printf("before 2nd write vring.used->idx=%x\n", vring.used->idx);
+
+
 //     vring.avail->idx = 1;
 //     vring.avail->ring[0] =0;
 //     vring.used->idx  = 0;
 
-//     vring2.desc[2].flags = VRING_DESC_F_NEXT|VRING_DESC_F_WRITE; // no next
-//     vring2.desc[2].addr = syscall_get_physical_address((uintptr_t)rdata, NULL);
-//     vring2.desc[2].len = sizeof(struct virtio_net_hdr);
+    vring2.desc[2].flags = VRING_DESC_F_NEXT|VRING_DESC_F_WRITE; // no next
+    vring2.desc[2].addr = syscall_get_physical_address((uintptr_t)rdata, NULL);
+    vring2.desc[2].len = sizeof(struct virtio_net_hdr);
 
-//     Buffer readData2(PAGE_SIZE * 2);
-//     const uintptr_t phys4 = syscall_get_physical_address((uintptr_t)readData2.data(), NULL);
-//     const uintptr_t aphys4 = (phys4+ PAGE_MASK) & ~PAGE_MASK;
-//     uint8_t* rdata2 = (uint8_t *) (readData2.data() + aphys4 - phys4);
-//     vring2.desc[3].flags = VRING_DESC_F_WRITE; // no next
-//     vring2.desc[3].addr = syscall_get_physical_address((uintptr_t)rdata2, NULL);
-//     vring2.desc[3].len = PAGE_SIZE;
-//     vring2.avail->idx = 3;
-//     vring2.avail->ring[2] =2;
+    Buffer readData2(PAGE_SIZE * 2);
+    const uintptr_t phys4 = syscall_get_physical_address((uintptr_t)readData2.data(), NULL);
+    const uintptr_t aphys4 = (phys4+ PAGE_MASK) & ~PAGE_MASK;
+    uint8_t* rdata2 = (uint8_t *) (readData2.data() + aphys4 - phys4);
+    vring2.desc[3].flags = VRING_DESC_F_WRITE; // no next
+    vring2.desc[3].addr = syscall_get_physical_address((uintptr_t)rdata2, NULL);
+    vring2.desc[3].len = PAGE_SIZE;
+    vring2.avail->idx = 3;
+    vring2.used->idx = 0;
+    vring2.avail->ring[2] =2;
 
+
+    vring.desc[2].flags  |= VRING_DESC_F_NEXT; ; // no next
+    vring.desc[2].addr = syscall_get_physical_address((uintptr_t)hdr, NULL);
+    vring.desc[2].len = sizeof(struct virtio_net_hdr);
+
+    vring.desc[3].flags = 0; // no next
+    vring.desc[3].addr = syscall_get_physical_address((uintptr_t)frame, NULL);
+    vring.desc[3].len = sizeof(Ether::Frame);
+    vring.avail->idx = 3;
+    vring.avail->ring[2] =2;
+
+
+//     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
 //     memset(writeData2.data(), 0, PAGE_SIZE * 2);
 //     memset(rdata2, 0, PAGE_SIZE);
-//     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 1);
 
-//     MessageInfo msg;
-//     Message::receive(&msg);
-//     switch (msg.header)
-//     {
-//     case MSG_INTERRUPTED:
-//     {
-//         printf("[virtio] Interrupt comes2\n");
-//         // clear ISR.
-//         const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
-// //        printf("[virtio] isr=%x\n", isr);
-//         monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
-//         CHECK_BUFFER(writeDesc);
-//         CHECK_BUFFER(writeData1);
-//         CHECK_BUFFER(writeData2);
-//         CHECK_BUFFER(readDesc);
-//         CHECK_BUFFER(readData1);
-//         CHECK_BUFFER(readData2);
-//         break;
-//     }
-//     default:
-//         printf("[virtio] uknown message\n");
-//         break;
-//     }
+    MessageInfo msg;
+    Message::receive(&msg);
+    switch (msg.header)
+    {
+    case MSG_INTERRUPTED:
+    {
+        printf("[virtio] Interrupt comes2\n");
+        // clear ISR.
+        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+//        printf("[virtio] isr=%x\n", isr);
+        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+        CHECK_BUFFER(writeDesc);
+        CHECK_BUFFER(writeData1);
+        CHECK_BUFFER(writeData2);
+        CHECK_BUFFER(readDesc);
+        CHECK_BUFFER(readData1);
+        CHECK_BUFFER(readData2);
+        break;
+    }
+    default:
+        printf("[virtio] uknown message\n");
+        break;
+    }
 
-//     do {
-//         while (vring2.used->idx == 1) {
-//             sleep(300);
-//             printf("waiting \n");
-//         }
+//    do {
+        while (vring2.used->idx == 1) {
+            sleep(300);
+            printf("waiting \n");
+        }
 
 
-//     if (!(vring2.used->flags & VRING_USED_F_NO_NOTIFY)) {
-//         printf("*** NOTIFY ****\n");
-//         outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-//     }
-//     uint8_t* rdata3 = (uint8_t *) (readData2.data() + aphys4 - phys4);
+    if (!(vring2.used->flags & VRING_USED_F_NO_NOTIFY)) {
+        printf("*** NOTIFY ****\n");
+        outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+    }
+    uint8_t* rdata3 = (uint8_t *) (readData2.data() + aphys4 - phys4);
 
-//         printf("vring2.used->idx=%x vr->used->flags=%d\n", vring2.used->idx, vring2.used->flags);
-//         Ether::Frame* rframe2 = (Ether::Frame*)rdata3;
-//         if (rframe2->type == Util::swapShort(Ether::IP)) {
-//             IP::Header* ih = (IP::Header*)rframe2->data;
-            
-//             printf("srciP=%s\n", (const char*)Util::ipAddressToCString(ih->srcip));
-//         } else {
-//             printf("%x %s %s:%d\n", rframe->type, __func__, __FILE__, __LINE__);fflush(stdout);// debug
-//         }
+    printf("vring2.used->idx=%x vr->used->flags=%d\n", vring2.used->idx, vring2.used->flags);
+        Ether::Frame* rframe2 = (Ether::Frame*)rdata3;
+        if (rframe2->type == Util::swapShort(Ether::IP)) {
+            IP::Header* ih = (IP::Header*)rframe2->data;
+
+            printf("srciP=%s\n", (const char*)Util::ipAddressToCString(ih->srcip));
+            if (ih->prot == IP::ICMP) {
+                printf("[ICMP] reply\n");
+//                ICMP::header* icmp = (ICMP::header)ih->data
+            } else {
+                printf("not icmp %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            }
+        } else {
+            printf("%x %s %s:%d\n", rframe->type, __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        }
+//    }
+
 //     vring2.avail->idx = 1;
 //     vring2.avail->ring[0] =0;
 //     vring2.used->idx == 0;
@@ -819,43 +846,43 @@ int main(int argc, char* argv[])
 //         printf("  srcIp=%x\n",   hdr->srcIp);
 //        printf("dstMac[6]=%x\n", dstMac[6]);
 
-    } else {
-//        printf("rframe->type=%d \n", rframe->type);
-    }
+//     } else {
+// //        printf("rframe->type=%d \n", rframe->type);
+//     }
 
 
 
 //    printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
-    {
-    MessageInfo msg;
-    Message::receive(&msg);
+//     {
+//     MessageInfo msg;
+//     Message::receive(&msg);
 
-    switch (msg.header)
-    {
-    case MSG_INTERRUPTED:
-    {
-        printf("[virtio] Interrupt comes\n");
-        // clear ISR.
-        const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
-        printf("[virtio] isr=%x\n", isr);
-        monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
-        break;
-    }
-    default:
-        printf("[virtio] uknown message\n");
-        break;
-    }
-    }
-    printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
+//     switch (msg.header)
+//     {
+//     case MSG_INTERRUPTED:
+//     {
+//         printf("[virtio] Interrupt comes\n");
+//         // clear ISR.
+//         const uint8_t isr = inp8(baseAddress + VIRTIO_PCI_ISR);
+//         printf("[virtio] isr=%x\n", isr);
+//         monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
+//         break;
+//     }
+//     default:
+//         printf("[virtio] uknown message\n");
+//         break;
+//     }
+//     }
+//     printf("[virtio] vring2.used->idx = %d \n", vring2.used->idx);
 
-    CHECK_BUFFER(writeDesc);
-    CHECK_BUFFER(writeData1);
-    CHECK_BUFFER(writeData2);
-    CHECK_BUFFER(readDesc);
-    CHECK_BUFFER(readData1);
-    CHECK_BUFFER(readData2);
+//     CHECK_BUFFER(writeDesc);
+//     CHECK_BUFFER(writeData1);
+//     CHECK_BUFFER(writeData2);
+//     CHECK_BUFFER(readDesc);
+//     CHECK_BUFFER(readData1);
+//     CHECK_BUFFER(readData2);
 
-}
+    }}
 
 #endif
 
