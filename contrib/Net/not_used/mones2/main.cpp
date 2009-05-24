@@ -168,7 +168,7 @@ void doIcmpReply(uint32_t nicThread, const Config& config, IP::Header* fromIpHea
     ipHeader->srcip  = config.getIpAddress();
     ipHeader->dstip  = fromIpHeader->srcip;
     ipHeader->chksum = 0;
-    ipHeader->len    = Util::swapShort(sizeof(IP::Header) + size);
+    ipHeader->len    = Util::swapShort(sizeof(IP::Header) + size); // todododod
     ipHeader->frag   = 0;
     ipHeader->chksum = Util::calcCheckSum((uint32_t*)ipHeader, sizeof(IP::Header));
 
