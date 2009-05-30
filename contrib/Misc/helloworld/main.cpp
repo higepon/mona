@@ -545,7 +545,7 @@ int main(int argc, char* argv[])
 
 
        int next_used = vring2.used->idx;
-       ASSERT(1 == next_used - last_used_idx);
+//       ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -568,7 +568,7 @@ int main(int argc, char* argv[])
 
     // 使用済みのバッファは直ちに末尾にセットする
     vring2.avail->ring[(vring2.avail->idx) % vring2.num] = ((vring2.avail->idx) % 3) * 2;
-    vring2.avail->idx = (vring2.avail->idx + 1) % vring2.num;
+    vring2.avail->idx = vring2.avail->idx + 1; // ここは剰余をとってはいけない。255を超えてもホスト側で面倒を見てくれてる？
 
 
     last_used_idx = next_used;
