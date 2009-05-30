@@ -1,3 +1,7 @@
+2009-05-30  higepon  <higepon@users.sourceforge.jp>
+
+        * Misc/helloworld/main.cpp: various experimental about vring receive.
+
 2009-05-17  higepon  <higepon@users.sourceforge.jp>
 
         * Misc/helloworld/main.cpp : ARP req/rep works.
