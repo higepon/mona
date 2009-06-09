@@ -347,9 +347,11 @@ private:
     int lastUsedIndex_;
     int irqLine_;
     uintptr_t baseAddress_;
+    Ether::Frame** frames_;
 public:
-    Receiver2(vring* vring, int lastUsedIndex, int irqLine, uintptr_t baseAddress) : vring_(vring), lastUsedIndex_(lastUsedIndex),
-                                                                                     irqLine_(irqLine), baseAddress_(baseAddress)
+    Receiver2(vring* vring, int lastUsedIndex, int irqLine, uintptr_t baseAddress, Ether::Frame** frames) : vring_(vring), lastUsedIndex_(lastUsedIndex),
+                                                                                                            irqLine_(irqLine), baseAddress_(baseAddress), 
+                                                                                                            frames_(frames)
     {
     }
 
