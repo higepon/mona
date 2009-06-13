@@ -340,6 +340,9 @@ uintptr_t Buffer::startAddress = 0x9E000000;
 
 #if 1
 
+#define VIRT_LOG(...) printf("[%s:%d] ", __FILE__, __LINE__), printf(__VA_ARGS__), printf("\n")
+
+
 class Receiver2
 {
 private:
@@ -347,9 +350,10 @@ private:
     int lastUsedIndex_;
     int irqLine_;
     uintptr_t baseAddress_;
-    Ether::Frame* frames_[3];
+    Ether::Frame** frames_;
+    int numberOfReadDesc_;
 
-    uint8_t* makeReadDescSet(int startIndex)
+    uint8_t* makeReadDescSet(struct vring* vring, int startIndex)
     {
         // 10. prepare the data to write
         Buffer* readData1 = new Buffer(PAGE_SIZE * 2);
@@ -357,98 +361,138 @@ private:
         const uintptr_t aphys3 = (phys3+ PAGE_MASK) & ~PAGE_MASK;
         uint8_t* rdata = (uint8_t *) (readData1->data() + aphys3 - phys3);
 
-        vring_->desc[startIndex].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE; // no next
-        vring_->desc[startIndex].addr = syscall_get_physical_address((uintptr_t)rdata, NULL);
-        vring_->desc[startIndex].len = sizeof(struct virtio_net_hdr);
+        vring->desc[startIndex].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE; // no next
+        vring->desc[startIndex].addr = syscall_get_physical_address((uintptr_t)rdata, NULL);
+        vring->desc[startIndex].len = sizeof(struct virtio_net_hdr);
 
         Buffer* readData2 = new Buffer(PAGE_SIZE * 2);
         const uintptr_t phys4 = syscall_get_physical_address((uintptr_t)readData2->data(), NULL);
         const uintptr_t aphys4 = (phys4+ PAGE_MASK) & ~PAGE_MASK;
         uint8_t* rdata2 = (uint8_t *) (readData2->data() + aphys4 - phys4);
 
-        vring_->desc[startIndex + 1].flags =  VRING_DESC_F_WRITE; // no next
-        vring_->desc[startIndex + 1].addr = syscall_get_physical_address((uintptr_t)rdata2, NULL);
-        vring_->desc[startIndex + 1].len = PAGE_SIZE;
+        vring->desc[startIndex + 1].flags =  VRING_DESC_F_WRITE; // no next
+        vring->desc[startIndex + 1].addr = syscall_get_physical_address((uintptr_t)rdata2, NULL);
+        vring->desc[startIndex + 1].len = PAGE_SIZE;
         return rdata2;
+    }
 
+    bool probeDevice()
+    {
+        PciInf pciInf;
+        Pci pci;
+        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
+
+        if (!pciInf.isExist) {
+            return false;
+        }
+
+        VIRT_LOG("device found");
+        VIRT_LOG("baseAdress=%x irqLine=%d", pciInf.baseAdress, pciInf.irqLine);
+
+        // set up device specific data
+        baseAddress_ = pciInf.baseAdress & ~1;
+        irqLine_     = pciInf.irqLine;
+
+        // reset the device
+        outp8(baseAddress_ + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
+        return true;
+    }
+
+    struct vring* createReadVring(int numberOfDescToCreate)
+    {
+        // Select the queue to use. 0: read queue, 1: write queue
+        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_SEL, 0);
+
+        // How many descriptors do the queue have?
+        const int numberOfDesc2 = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_NUM);
+        ASSERT(numberOfDesc2 == 256);
+
+        // Check whether the queue is already set vring (necessary?).
+        uint16_t pfn = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_PFN);
+
+        if (pfn != 0) {
+            return NULL;
+        }
+
+        const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
+        Buffer readDesc(MAX_QUEUE_SIZE);
+        struct vring* vring = new struct vring;
+        vring->num = numberOfDesc2;
+        // page align is required
+        const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
+        const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
+
+        ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+
+        // vring.desc is page aligned
+        vring->desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
+
+        // make linked ring
+        for (uintptr_t i = 0; i < vring->num; i++) {
+            vring->desc[i].next = i + 1;
+            vring->desc[i].flags |= VRING_DESC_F_WRITE;
+        }
+        vring->desc[vring->num - 1].next = 0;
+
+        // vring.avail is follow after the array of desc
+        vring->avail = (struct vring_avail *)&vring->desc[numberOfDesc2];
+
+        // vring.used is also page aligned
+        const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring->avail->ring[numberOfDesc2]), NULL);
+        const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
+        ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+        vring->used = (struct vring_used*)((uintptr_t)&(vring->avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
+
+        ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc, NULL) == 8192);
+        ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc, NULL)) % PAGE_SIZE) == 0);
+
+        frames_ = new Ether::Frame*[numberOfDescToCreate];
+        for (int i = 0; i < numberOfDescToCreate; i++) {
+            frames_[i] = (Ether::Frame*)makeReadDescSet(vring, i * 2);
+            vring->avail->ring[i] = i * 2;
+        }
+        vring->avail->idx = numberOfDescToCreate;
+
+        outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc, NULL) >> 12);
+
+        lastUsedIndex_ = vring->used->idx;
+        numberOfReadDesc_ = numberOfDescToCreate;
+        return vring;
     }
 
 public:
-    Receiver2(int irqLine, uintptr_t baseAddress) : irqLine_(irqLine), baseAddress_(baseAddress)
+    enum DeviceState {
+        DEVICE_FOUND,
+        DEVICE_NOT_FOUND,
+        DEVICE_ALREADY_CONFIGURED,
+
+    };
+
+    enum DeviceState probe()
     {
+        // Probe virtio-net device, fetch baseAdress and irqLine.
+        if (!probeDevice()) {
+            VIRT_LOG("device not found");
+            return DEVICE_NOT_FOUND;
+        }
 
-// here
-    // setup receive ring
-    // 4. Select the queue to use
-    outp16(baseAddress + VIRTIO_PCI_QUEUE_SEL, 0); // 0: read queue, 1: write queue
-    // 5. how many descriptors do the queue have?
-    const int numberOfDesc2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
+        // Set up for interrution
+        monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+        syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
 
-    printf("[ARP Request] Who has 192.168.50.2? Tell 192.168.50.3\n");
-
-#if 0
-
-    printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
-#endif
-    ASSERT(numberOfDesc2 == 256);
-
-    // 6. Check wheter the queue is already set vring (necessary?).
-    uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
-
-    if (pfn2 != 0) {
-        printf("[virtio] pfn2=%x\n", pfn2);
-        exit(-1);
+        const int numberOfDescToCreate = 5;
+        vring_ = createReadVring(numberOfDescToCreate);
+        if (NULL == vring_) {
+            return DEVICE_ALREADY_CONFIGURED;
+        }
+        return DEVICE_FOUND;
     }
 
-    // 7. setup vring
-    const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
-    Buffer readDesc(MAX_QUEUE_SIZE);
-    vring_ = new struct vring;
-    vring_->num = numberOfDesc2;
-    // page align is required
-    const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
-    const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
-
-    // vring.desc is page aligned
-    vring_->desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
-
-    // make linked ring
-    for (uintptr_t i = 0; i < vring_->num; i++) {
-        vring_->desc[i].next = i + 1;
-        vring_->desc[i].flags |= VRING_DESC_F_WRITE;
-    }
-    vring_->desc[vring_->num - 1].next = 0;
-
-
-    // vring.avail is follow after the array of desc
-    vring_->avail = (struct vring_avail *)&vring_->desc[numberOfDesc2];
-
-    // vring.used is also page aligned
-    const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring_->avail->ring[numberOfDesc2]), NULL);
-    const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
-    vring_->used = (struct vring_used*)((uintptr_t)&(vring_->avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
-
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring_->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring_->desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring_->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring_->desc, NULL)) % PAGE_SIZE) == 0);
-
-    // 9. set up pfn
-    outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring_->desc, NULL) >> 12);
-
-    lastUsedIndex_ = vring_->used->idx;
-
-        frames_[0] = (Ether::Frame*)makeReadDescSet(0);
-        frames_[1] = (Ether::Frame*)makeReadDescSet(2);
-        frames_[2] = (Ether::Frame*)makeReadDescSet(4);;
-        vring_->avail->ring[0] =0;
-        vring_->avail->ring[1] =2;
-        vring_->avail->ring[2] =4;
-        vring_->avail->idx = 3;
+    Receiver2()
+    {
     }
 
-    int receive(Ether::Frame* dst)
+    bool receive(Ether::Frame* dst)
     {
         MessageInfo msg;
         Message::receive(&msg);
@@ -457,144 +501,70 @@ public:
         {
         case MSG_INTERRUPTED:
         {
-            // clear ISR.
-            const uint8_t isr = inp8(baseAddress_ + VIRTIO_PCI_ISR);
+            // Read ISR and reset it.
+            inp8(baseAddress_ + VIRTIO_PCI_ISR);
             monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
             break;
         }
         default:
-            printf("[virtio] uknown message\n");
-            exit(-1);
-            break;
+            VIRT_LOG("[virtio] uknown message");
+            return false;
         }
 
         while (vring_->used->idx == lastUsedIndex_) {
-
-            printf("waiting in\n");
+            VIRT_LOG("waiting in");
         }
 
-       int next_used = vring_->used->idx;
+        int next_used = vring_->used->idx;
 
+        if (!(vring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
+            VIRT_LOG("NOTIFY");
+            outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+        }
 
-       if (!(vring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
-           printf("*** NOTIFY ****\n");
-           outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-       }
+        // avail->idx % numberOfReadDesc_ is current read buffer index
+        Ether::Frame* rframe = frames_[vring_->avail->idx % numberOfReadDesc_];
+        memcpy(dst, rframe, sizeof(Ether::Frame));
 
-       // どのバッファかは % で分かる。
-       Ether::Frame* rframe = frames_[vring_->avail->idx % 3];
-       memcpy(dst, rframe, sizeof(Ether::Frame));
-     // 使用済みのバッファは直ちに末尾にセットする
-    vring_->avail->ring[(vring_->avail->idx) % vring_->num] = ((vring_->avail->idx) % 3) * 2;
-    vring_->avail->idx = vring_->avail->idx + 1; // ここは剰余をとってはいけない。255を超えてもホスト側で面倒を見てくれてる？
+        // current used buffer is no more necessary, give it back to tail of avail->ring
+        vring_->avail->ring[(vring_->avail->idx) % vring_->num] = ((vring_->avail->idx) % numberOfReadDesc_) * 2;
 
-
-     lastUsedIndex_ = next_used;
-
+        // increment avail->idx, we should not take remainder of avail->idx ?
+        vring_->avail->idx++;
+        lastUsedIndex_ = next_used;
+        return true;
     }
-
 };
 
 int main(int argc, char* argv[])
 {
-    // 1. Device probe
-    PciInf pciInf;
-    Pci pci;
-    pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
-
-    if (!pciInf.isExist) {
-        printf("device not found\n");
+    Receiver2 receiver;
+    enum Receiver2::DeviceState state = receiver.probe();
+    if (state != Receiver2::DEVICE_FOUND) {
+        printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
+    while (true) {
+        Ether::Frame frame;
+        receiver.receive(&frame);
+        if (Util::swapShort(frame.type) == Ether::ARP) {
+            printf("[ARP ] from %d:%d:%d:%d:%d:%d\n",
+                   frame.srcmac[0],
+                   frame.srcmac[1],
+                   frame.srcmac[2],
+                   frame.srcmac[3],
+                   frame.srcmac[4],
+                   frame.srcmac[5]
+                );
+        } else if (Util::swapShort(frame.type) == Ether::IP) {
+            IP::Header* ipHeader = (IP::Header*)frame.data;
+            printf("[IP   ] type=%d\n", ipHeader->prot);
 
-#if 0
-    printf("device found\n");
-    printf("baseAdress=%x\n", pciInf.baseAdress);
-    printf("irqLine=%x\n", pciInf.irqLine);
-#endif
-
-    const uintptr_t baseAddress = pciInf.baseAdress & ~1;
-
-        struct virtio_net_config config;
-        for (uintptr_t i = 0; i < sizeof(config); i += 4) {
-            (((uint32_t*)&config)[i / 4]) = inp32(baseAddress + VIRTIO_PCI_CONFIG + i);
+        } else {
+            printf("Unknown packet\n");
         }
-
-#if 1
-        printf("config.mac= %x:%x:%x:%x:%x:%x\n", config.mac[0], config.mac[1], config.mac[2], config.mac[3], config.mac[4], config.mac[5]);
-#endif
-
-    // 2. reset the device
-    outp8(baseAddress + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
-#if 0
-    printf("[virtio] isr=%x\n", inp8(baseAddress + VIRTIO_PCI_ISR)); // clear ISR.
-#endif
-
-    // 3. IRQ receiver
-    monapi_set_irq(pciInf.irqLine, MONAPI_TRUE, MONAPI_TRUE);
-    syscall_set_irq_receiver(pciInf.irqLine, SYS_MASK_INTERRUPT);
-
-
-//     // 7. setup vring
-//     const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
-//     Buffer readDesc(MAX_QUEUE_SIZE);
-//     struct vring vring2;
-//     vring2.num = numberOfDesc2;
-//     // page align is required
-//     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
-//     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-
-//     ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
-
-//     // vring.desc is page aligned
-//     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
-
-//     // make linked ring
-//     for (uintptr_t i = 0; i < vring2.num; i++) {
-//         vring2.desc[i].next = i + 1;
-//         vring2.desc[i].flags |= VRING_DESC_F_WRITE;
-//     }
-//     vring2.desc[vring2.num - 1].next = 0;
-
-
-//     // vring.avail is follow after the array of desc
-//     vring2.avail = (struct vring_avail *)&vring2.desc[numberOfDesc2];
-
-//     // vring.used is also page aligned
-//     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
-//     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-//     ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
-//     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
-
-//     ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-//     ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
-
-//     // 9. set up pfn
-//     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
-
-
-    outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-
-
-    Receiver2 receiver(pciInf.irqLine, baseAddress);
-   while (true) {
-
-       Ether::Frame frame;
-
-       receiver.receive(&frame);
-
-    printf("[Ether1] %x from %d:%d:%d:%d:%d:%d\n",
-           Util::swapShort(frame.type),
-           frame.srcmac[0],
-           frame.srcmac[1],
-           frame.srcmac[2],
-           frame.srcmac[3],
-           frame.srcmac[4],
-           frame.srcmac[5]
-           );
-
-}
     }
+}
 #endif
 
 #if 0
