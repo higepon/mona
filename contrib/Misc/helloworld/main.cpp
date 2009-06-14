@@ -177,7 +177,7 @@ public:
         return a | buf[offset];
     }
 
-    inline static uint32_t ipAddressToDuint16_t(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+    inline static uint32_t ipAddressToUint32_t(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
     {
         return (d << 24) | (c << 16) | (b << 8) | a;
     }
@@ -346,12 +346,15 @@ uintptr_t Buffer::startAddress = 0x9E000000;
 class Receiver2
 {
 private:
-    vring* vring_;
+    vring* readVring_;
+    vring* writeVring_;
     int lastUsedIndex_;
     int irqLine_;
     uintptr_t baseAddress_;
-    Ether::Frame** frames_;
+    Ether::Frame** readFrames_;
+    Ether::Frame* writeFrame_;
     int numberOfReadDesc_;
+    uint8_t macAddress_[6];
 
     uint8_t* makeReadDescSet(struct vring* vring, int startIndex)
     {
@@ -393,15 +396,27 @@ private:
         baseAddress_ = pciInf.baseAdress & ~1;
         irqLine_     = pciInf.irqLine;
 
+        struct virtio_net_config config;
+        for (uintptr_t i = 0; i < sizeof(config); i += 4) {
+            (((uint32_t*)&config)[i / 4]) = inp32(baseAddress_ + VIRTIO_PCI_CONFIG + i);
+        }
+        memcpy(macAddress_, config.mac, 6);
+
         // reset the device
         outp8(baseAddress_ + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
         return true;
     }
 
-    struct vring* createReadVring(int numberOfDescToCreate)
+    enum VringType
+    {
+        VRING_TYPE_READ = 0,
+        VRING_TYPE_WRITE = 1
+    };
+
+    struct vring* createEmptyVring(enum VringType type)
     {
         // Select the queue to use. 0: read queue, 1: write queue
-        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_SEL, 0);
+        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_SEL, type);
 
         // How many descriptors do the queue have?
         const int numberOfDesc2 = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_NUM);
@@ -415,22 +430,25 @@ private:
         }
 
         const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
-        Buffer readDesc(MAX_QUEUE_SIZE);
+        Buffer* readDesc = new Buffer(MAX_QUEUE_SIZE);
         struct vring* vring = new struct vring;
         vring->num = numberOfDesc2;
         // page align is required
-        const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
+        const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc->data(), NULL);
         const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
         ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
         // vring.desc is page aligned
-        vring->desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
+        vring->desc = (struct vring_desc*)(readDesc->data() + alignedAddress2 - physicalAddress2);
 
         // make linked ring
         for (uintptr_t i = 0; i < vring->num; i++) {
             vring->desc[i].next = i + 1;
-            vring->desc[i].flags |= VRING_DESC_F_WRITE;
+            // page should be writable by host
+            if (type == VRING_TYPE_READ) {
+                vring->desc[i].flags |= VRING_DESC_F_WRITE;
+            }
         }
         vring->desc[vring->num - 1].next = 0;
 
@@ -445,10 +463,20 @@ private:
 
         ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc, NULL) == 8192);
         ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc, NULL)) % PAGE_SIZE) == 0);
+        return vring;
 
-        frames_ = new Ether::Frame*[numberOfDescToCreate];
+    }
+
+    struct vring* createReadVring(int numberOfDescToCreate)
+    {
+        struct vring* vring = createEmptyVring(VRING_TYPE_READ);
+        if (NULL == vring) {
+            return vring;
+        }
+
+        readFrames_ = new Ether::Frame*[numberOfDescToCreate];
         for (int i = 0; i < numberOfDescToCreate; i++) {
-            frames_[i] = (Ether::Frame*)makeReadDescSet(vring, i * 2);
+            readFrames_[i] = (Ether::Frame*)makeReadDescSet(vring, i * 2);
             vring->avail->ring[i] = i * 2;
         }
         vring->avail->idx = numberOfDescToCreate;
@@ -468,6 +496,11 @@ public:
 
     };
 
+    uint8_t* macAddress()
+    {
+        return macAddress_;
+    }
+
     enum DeviceState probe()
     {
         // Probe virtio-net device, fetch baseAdress and irqLine.
@@ -481,10 +514,44 @@ public:
         syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
 
         const int numberOfDescToCreate = 5;
-        vring_ = createReadVring(numberOfDescToCreate);
-        if (NULL == vring_) {
+        readVring_ = createReadVring(numberOfDescToCreate);
+        if (NULL == readVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
+
+        writeVring_ = createEmptyVring(VRING_TYPE_WRITE);
+        if (NULL == writeVring_) {
+            return DEVICE_ALREADY_CONFIGURED;
+        }
+        outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc, NULL) >> 12);
+
+        //10. prepare the data to write
+
+        Buffer* writeData1 = new Buffer(PAGE_SIZE * 2);
+        const uintptr_t phys1 = syscall_get_physical_address((uintptr_t)writeData1->data(), NULL);
+        const uintptr_t aphys1 = (phys1+ PAGE_MASK) & ~PAGE_MASK;
+        struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (writeData1->data() + aphys1 - phys1);
+        // virtio_net_hdr is *necessary*
+        hdr->flags = 0;
+        hdr->csum_offset = 0;
+        hdr->csum_start = 0;
+        hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
+        hdr->gso_size = 0;
+        hdr->hdr_len = 0;
+        writeVring_->desc[0].flags  |= VRING_DESC_F_NEXT; ; // no next
+        writeVring_->desc[0].addr = syscall_get_physical_address((uintptr_t)hdr, NULL);
+        writeVring_->desc[0].len = sizeof(struct virtio_net_hdr);
+
+        Buffer* writeData2 = new Buffer(PAGE_SIZE * 2);
+
+        const uintptr_t phys2 = syscall_get_physical_address((uintptr_t)writeData2->data(), NULL);
+        const uintptr_t aphys2 = (phys2+ PAGE_MASK) & ~PAGE_MASK;
+        writeFrame_ = (Ether::Frame*) (writeData2->data() + aphys2 - phys2);
+
+        writeVring_->desc[1].flags = 0; // no next
+        writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_, NULL);
+        writeVring_->desc[1].len = sizeof(Ether::Frame);
+
         return DEVICE_FOUND;
     }
 
@@ -492,6 +559,48 @@ public:
     {
     }
 
+    // 問題点
+    // send 完了と、receive の割り込み待ちの割り込みが区別付かない
+    // send は used index を監視すれば分かるが。どうしようか。isrで区別はできない
+    // used index で分かるので peek かなあ
+    // それか no notify にして spin lock かな。
+    // 送信時は割り込みをチェックしない。次回送信時に used->idx を見て前回送信分の完了を確認し終わっていなければ spin lock 。
+    bool send(Ether::Frame* src)
+    {
+        memcpy(writeFrame_, src, sizeof(Ether::Frame));
+        VIRT_LOG("before used->idx = %d\n", writeVring_->used->idx);
+//        writeVring_->avail->idx = 1;
+
+        writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
+        writeVring_->avail->idx++;
+
+        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+
+        MessageInfo msg;
+        Message::receive(&msg);
+
+        switch (msg.header)
+        {
+        case MSG_INTERRUPTED:
+        {
+            // Read ISR and reset it.
+            const uint8_t isr = inp8(baseAddress_ + VIRTIO_PCI_ISR);
+            printf("send isr=%x\n", isr);
+            monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+            break;
+        }
+        default:
+            VIRT_LOG("[virtio] uknown message");
+            return false;
+        }
+        VIRT_LOG("after used->idx = %d\n", writeVring_->used->idx);
+        return true;
+    }
+
+
+    // 前回の used index よりも進んでいたら
+    // すぐに値を返す
+    // そのときんは peek で割り込みメッセージを消す
     bool receive(Ether::Frame* dst)
     {
         MessageInfo msg;
@@ -502,7 +611,8 @@ public:
         case MSG_INTERRUPTED:
         {
             // Read ISR and reset it.
-            inp8(baseAddress_ + VIRTIO_PCI_ISR);
+            const uint8_t isr  = inp8(baseAddress_ + VIRTIO_PCI_ISR);
+            printf("receive isr=%x\n", isr);
             monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
             break;
         }
@@ -511,33 +621,58 @@ public:
             return false;
         }
 
-        while (vring_->used->idx == lastUsedIndex_) {
+        while (readVring_->used->idx == lastUsedIndex_) {
             VIRT_LOG("waiting in");
         }
 
-        int next_used = vring_->used->idx;
+        int next_used = readVring_->used->idx;
 
-        if (!(vring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
+        if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
             VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
 
         // avail->idx % numberOfReadDesc_ is current read buffer index
-        Ether::Frame* rframe = frames_[vring_->avail->idx % numberOfReadDesc_];
+        Ether::Frame* rframe = readFrames_[readVring_->avail->idx % numberOfReadDesc_];
         memcpy(dst, rframe, sizeof(Ether::Frame));
 
         // current used buffer is no more necessary, give it back to tail of avail->ring
-        vring_->avail->ring[(vring_->avail->idx) % vring_->num] = ((vring_->avail->idx) % numberOfReadDesc_) * 2;
+        readVring_->avail->ring[(readVring_->avail->idx) % readVring_->num] = ((readVring_->avail->idx) % numberOfReadDesc_) * 2;
 
         // increment avail->idx, we should not take remainder of avail->idx ?
-        vring_->avail->idx++;
+        readVring_->avail->idx++;
         lastUsedIndex_ = next_used;
         return true;
     }
 };
 
+void macAddressCopy(uint8_t* dest, const uint8_t* src)
+{
+    memcpy(dest, src, 6);
+}
+
+void makeArpReply(Ether::Frame* reply, Arp::Header* request, uint32_t myIpAddress, uint8_t* myMacAddress)
+{
+    macAddressCopy(reply->dstmac, request->srcMac);
+    macAddressCopy(reply->srcmac, myMacAddress);
+    reply->type = Util::swapShort(Ether::ARP);
+
+    Arp::Header* header = (Arp::Header*)reply->data;
+    header->hardType =Util::swapShort(Arp::HARD_TYPE_ETHER);
+    header->protType = Util::swapShort(Arp::PROTCOL_TYPE_IP);
+    header->hardAddrLen = 6;
+    header->protAddrLen = 4;
+    macAddressCopy(header->srcMac, myMacAddress);
+    header->opeCode = Util::swapShort(Arp::OPE_CODE_ARP_REP);
+    header->srcIp = myIpAddress;
+    header->dstIp = request->srcIp;
+    macAddressCopy(header->dstMac, request->srcMac);
+}
+
 int main(int argc, char* argv[])
 {
+    const uint32_t myIpAddress = Util::ipAddressToUint32_t(192, 168, 50, 3);
+
     Receiver2 receiver;
     enum Receiver2::DeviceState state = receiver.probe();
     if (state != Receiver2::DEVICE_FOUND) {
@@ -546,20 +681,43 @@ int main(int argc, char* argv[])
     }
     while (true) {
         Ether::Frame frame;
-        receiver.receive(&frame);
+        if (!receiver.receive(&frame)) {
+            printf("[virtio] receive failed\n");
+            exit(-1);
+        }
         if (Util::swapShort(frame.type) == Ether::ARP) {
-            printf("[ARP ] from %d:%d:%d:%d:%d:%d\n",
-                   frame.srcmac[0],
-                   frame.srcmac[1],
-                   frame.srcmac[2],
-                   frame.srcmac[3],
-                   frame.srcmac[4],
-                   frame.srcmac[5]
-                );
+            Arp::Header* arp = (Arp::Header*)frame.data;
+            if (arp->opeCode == Util::swapShort(Arp::OPE_CODE_ARP_REQ)
+                && myIpAddress == arp->dstIp) {
+                printf("[ARP REQ] came\n");
+                Ether::Frame reply;
+                makeArpReply(&reply, arp, myIpAddress, receiver.macAddress());
+                receiver.send(&reply);
+                uint8_t macAddress[6];
+                memset(macAddress, 0xee, 6);
+                makeArpReply(&reply, arp, myIpAddress, macAddress);
+                receiver.send(&reply); // send twice test
+                printf("[ARP REP] sent\n");
+            } else {
+                printf("[ARP Not for me] from %d:%d:%d:%d:%d:%d\n",
+                       frame.srcmac[0],
+                       frame.srcmac[1],
+                       frame.srcmac[2],
+                       frame.srcmac[3],
+                       frame.srcmac[4],
+                       frame.srcmac[5]
+                    );
+            }
         } else if (Util::swapShort(frame.type) == Ether::IP) {
             IP::Header* ipHeader = (IP::Header*)frame.data;
-            printf("[IP   ] type=%d\n", ipHeader->prot);
-
+            const int prot = ipHeader->prot;
+            if (prot == IP::UDP) {
+                printf("[IP/UDP]\n");
+            } else if (prot == IP::ICMP) {
+                printf("[IP/ICMP]\n");
+            } else {
+                printf("[IP/Other] type=%d \n", prot);
+            }
         } else {
             printf("Unknown packet\n");
         }
