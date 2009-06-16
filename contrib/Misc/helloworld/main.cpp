@@ -348,7 +348,8 @@ class Receiver2
 private:
     vring* readVring_;
     vring* writeVring_;
-    int lastUsedIndex_;
+    int lastUsedIndexRead_;
+    int lastUsedIndexWrite_;
     int irqLine_;
     uintptr_t baseAddress_;
     Ether::Frame** readFrames_;
@@ -483,7 +484,7 @@ private:
 
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc, NULL) >> 12);
 
-        lastUsedIndex_ = vring->used->idx;
+        lastUsedIndexRead_ = vring->used->idx;
         numberOfReadDesc_ = numberOfDescToCreate;
         return vring;
     }
@@ -538,7 +539,8 @@ public:
         hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
         hdr->gso_size = 0;
         hdr->hdr_len = 0;
-        writeVring_->desc[0].flags  |= VRING_DESC_F_NEXT; ; // no next
+        writeVring_->desc[0].flags  |= VRING_DESC_F_NEXT;
+        writeVring_->desc[0].flags  |= VRING_USED_F_NO_NOTIFY; // no next
         writeVring_->desc[0].addr = syscall_get_physical_address((uintptr_t)hdr, NULL);
         writeVring_->desc[0].len = sizeof(struct virtio_net_hdr);
 
@@ -549,9 +551,10 @@ public:
         writeFrame_ = (Ether::Frame*) (writeData2->data() + aphys2 - phys2);
 
         writeVring_->desc[1].flags = 0; // no next
+        writeVring_->desc[0].flags  |= VRING_USED_F_NO_NOTIFY; // we don't need send notify interruption
         writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_, NULL);
         writeVring_->desc[1].len = sizeof(Ether::Frame);
-
+        lastUsedIndexWrite_ = writeVring_->used->idx;
         return DEVICE_FOUND;
     }
 
@@ -559,41 +562,24 @@ public:
     {
     }
 
-    // 問題点
-    // send 完了と、receive の割り込み待ちの割り込みが区別付かない
-    // send は used index を監視すれば分かるが。どうしようか。isrで区別はできない
-    // used index で分かるので peek かなあ
-    // それか no notify にして spin lock かな。
-    // 送信時は割り込みをチェックしない。次回送信時に used->idx を見て前回送信分の完了を確認し終わっていなければ spin lock 。
+    // N.B.
+    // Since it is hard to distiguish sent and received interruption, we don't use interruption for notification of packet send.
+    // Instread before sending packet, we check whether last send is done.
     bool send(Ether::Frame* src)
     {
         memcpy(writeFrame_, src, sizeof(Ether::Frame));
-        VIRT_LOG("before used->idx = %d\n", writeVring_->used->idx);
-//        writeVring_->avail->idx = 1;
+        while (lastUsedIndexWrite_ != writeVring_->used->idx) {
+            // Wait for last send is done.
+            // In almost case, we expect last send is already done.
+            VIRT_LOG("Waiting previous packet is send");
+        }
 
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
         writeVring_->avail->idx++;
 
-        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 1);
-
-        MessageInfo msg;
-        Message::receive(&msg);
-
-        switch (msg.header)
-        {
-        case MSG_INTERRUPTED:
-        {
-            // Read ISR and reset it.
-            const uint8_t isr = inp8(baseAddress_ + VIRTIO_PCI_ISR);
-            printf("send isr=%x\n", isr);
-            monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
-            break;
-        }
-        default:
-            VIRT_LOG("[virtio] uknown message");
-            return false;
-        }
-        VIRT_LOG("after used->idx = %d\n", writeVring_->used->idx);
+        // Before notify, save the lastUsedIndexWrite_
+        lastUsedIndexWrite_ = writeVring_->used->idx + 1;
+        outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, VRING_TYPE_WRITE);
         return true;
     }
 
@@ -621,7 +607,7 @@ public:
             return false;
         }
 
-        while (readVring_->used->idx == lastUsedIndex_) {
+        while (readVring_->used->idx == lastUsedIndexRead_) {
             VIRT_LOG("waiting in");
         }
 
@@ -641,7 +627,7 @@ public:
 
         // increment avail->idx, we should not take remainder of avail->idx ?
         readVring_->avail->idx++;
-        lastUsedIndex_ = next_used;
+        lastUsedIndexRead_ = next_used;
         return true;
     }
 };
