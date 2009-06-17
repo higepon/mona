@@ -391,11 +391,13 @@ private:
         }
 
         VIRT_LOG("device found");
-        VIRT_LOG("baseAdress=%x irqLine=%d", pciInf.baseAdress, pciInf.irqLine);
+
 
         // set up device specific data
         baseAddress_ = pciInf.baseAdress & ~1;
         irqLine_     = pciInf.irqLine;
+
+        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
 
         struct virtio_net_config config;
         for (uintptr_t i = 0; i < sizeof(config); i += 4) {
@@ -484,6 +486,23 @@ private:
 
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc, NULL) >> 12);
 
+        MessageInfo msg;
+        Message::receive(&msg);
+        switch (msg.header)
+        {
+        case MSG_INTERRUPTED:
+        {
+            // Read ISR and reset it.
+            const uint8_t isr  = inp8(0xc020 + VIRTIO_PCI_ISR);
+            printf("introduction-txt[ZZZ]\n");
+            monapi_set_irq(11, MONAPI_TRUE, MONAPI_TRUE);
+            break;
+        }
+        default:
+            VIRT_LOG("[virtio] uknown message");
+        }
+
+
         lastUsedIndexRead_ = vring->used->idx;
         numberOfReadDesc_ = numberOfDescToCreate;
         return vring;
@@ -516,6 +535,7 @@ public:
 
         const int numberOfDescToCreate = 5;
         readVring_ = createReadVring(numberOfDescToCreate);
+
         if (NULL == readVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
@@ -567,18 +587,39 @@ public:
     // Instread before sending packet, we check whether last send is done.
     bool send(Ether::Frame* src)
     {
-        memcpy(writeFrame_, src, sizeof(Ether::Frame));
+
+//         MessageInfo msg;
+//         Message::receive(&msg);
+
+//         switch (msg.header)
+//         {
+//         case MSG_INTERRUPTED:
+//         {
+//             // Read ISR and reset it.
+//             const uint8_t isr  = inp8(baseAddress_ + VIRTIO_PCI_ISR);
+//             printf("receive isr=%x\n", isr);
+//             monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+//             break;
+//         }
+//         default:
+//             VIRT_LOG("[virtio] uknown message");
+//             return false;
+//         }
+
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
         }
+        memcpy(writeFrame_, src, sizeof(Ether::Frame));
 
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
         writeVring_->avail->idx++;
 
         // Before notify, save the lastUsedIndexWrite_
         lastUsedIndexWrite_ = writeVring_->used->idx + 1;
+
+
         outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, VRING_TYPE_WRITE);
         return true;
     }
@@ -608,7 +649,7 @@ public:
         }
 
         while (readVring_->used->idx == lastUsedIndexRead_) {
-            VIRT_LOG("waiting in");
+            VIRT_LOG("waiting in lastUsedIndexRead_=%d", lastUsedIndexRead_);
         }
 
         int next_used = readVring_->used->idx;
@@ -665,49 +706,80 @@ int main(int argc, char* argv[])
         printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
-    while (true) {
+
+
+
+        MessageInfo msg;
+
+        Message::receive(&msg);
+
+
+        switch (msg.header)
+        {
+        case MSG_INTERRUPTED:
+        {
+            // Read ISR and reset it.
+            const uint8_t isr  = inp8(0xc020 + VIRTIO_PCI_ISR);
+            printf("introduction-txt[%d]\n", 0);
+            monapi_set_irq(11, MONAPI_TRUE, MONAPI_TRUE);
+            break;
+        }
+        default:
+            VIRT_LOG("[virtio] uknown message");
+            return false;
+        }
+
+
         Ether::Frame frame;
-        if (!receiver.receive(&frame)) {
-            printf("[virtio] receive failed\n");
-            exit(-1);
-        }
-        if (Util::swapShort(frame.type) == Ether::ARP) {
-            Arp::Header* arp = (Arp::Header*)frame.data;
-            if (arp->opeCode == Util::swapShort(Arp::OPE_CODE_ARP_REQ)
-                && myIpAddress == arp->dstIp) {
-                printf("[ARP REQ] came\n");
-                Ether::Frame reply;
-                makeArpReply(&reply, arp, myIpAddress, receiver.macAddress());
-                receiver.send(&reply);
-                uint8_t macAddress[6];
-                memset(macAddress, 0xee, 6);
-                makeArpReply(&reply, arp, myIpAddress, macAddress);
-                receiver.send(&reply); // send twice test
-                printf("[ARP REP] sent\n");
-            } else {
-                printf("[ARP Not for me] from %d:%d:%d:%d:%d:%d\n",
-                       frame.srcmac[0],
-                       frame.srcmac[1],
-                       frame.srcmac[2],
-                       frame.srcmac[3],
-                       frame.srcmac[4],
-                       frame.srcmac[5]
-                    );
-            }
-        } else if (Util::swapShort(frame.type) == Ether::IP) {
-            IP::Header* ipHeader = (IP::Header*)frame.data;
-            const int prot = ipHeader->prot;
-            if (prot == IP::UDP) {
-                printf("[IP/UDP]\n");
-            } else if (prot == IP::ICMP) {
-                printf("[IP/ICMP]\n");
-            } else {
-                printf("[IP/Other] type=%d \n", prot);
-            }
-        } else {
-            printf("Unknown packet\n");
-        }
-    }
+        receiver.send(&frame);
+
+
+
+
+
+//     while (true) {
+//         Ether::Frame frame;
+//         if (!receiver.receive(&frame)) {
+//             printf("[virtio] receive failed\n");
+//             exit(-1);
+//         }
+//         if (Util::swapShort(frame.type) == Ether::ARP) {
+//             Arp::Header* arp = (Arp::Header*)frame.data;
+//             if (arp->opeCode == Util::swapShort(Arp::OPE_CODE_ARP_REQ)
+//                 && myIpAddress == arp->dstIp) {
+//                 printf("[ARP REQ] came\n");
+//                 Ether::Frame reply;
+//                 makeArpReply(&reply, arp, myIpAddress, receiver.macAddress());
+//                 receiver.send(&reply);
+//                 uint8_t macAddress[6];
+//                 memset(macAddress, 0xee, 6);
+//                 makeArpReply(&reply, arp, myIpAddress, macAddress);
+//                 receiver.send(&reply); // send twice test
+//                 printf("[ARP REP] sent\n");
+//             } else {
+//                 printf("[ARP Not for me] from %d:%d:%d:%d:%d:%d\n",
+//                        frame.srcmac[0],
+//                        frame.srcmac[1],
+//                        frame.srcmac[2],
+//                        frame.srcmac[3],
+//                        frame.srcmac[4],
+//                        frame.srcmac[5]
+//                     );
+//             }
+//         } else if (Util::swapShort(frame.type) == Ether::IP) {
+//             IP::Header* ipHeader = (IP::Header*)frame.data;
+//             const int prot = ipHeader->prot;
+//             if (prot == IP::UDP) {
+//                 printf("[IP/UDP]\n");
+//             } else if (prot == IP::ICMP) {
+//                 printf("[IP/ICMP]\n");
+//             } else {
+//                 printf("[IP/Other] type=%d \n", prot);
+//             }
+//         } else {
+//             printf("Unknown packet\n");
+//         }
+//     }
 }
 #endif
 
