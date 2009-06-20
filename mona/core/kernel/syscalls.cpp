@@ -172,9 +172,7 @@ void syscall_entrance()
     case SYSTEM_CALL_GET_PHYSICAL_ADDRESS:
     {
         PhysicalAddress ret = 0;
-//        g_console->printf("syscall %x\n", ret);
         g_page_manager->getPhysicalAddress((PageEntry*)g_currentThread->archinfo->cr3, (uint32_t)(SYSTEM_CALL_ARG_1), &ret);
-//        g_console->printf("syscall %x\n", ret);
         info->eax = ret;
         break;
     }

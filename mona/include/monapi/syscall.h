@@ -71,7 +71,7 @@ extern int syscall_set_ps_dump();
 extern int syscall_read_ps_dump(PsInfo* info);
 extern int syscall_load_process_image(LoadProcessInfo* info);
 extern int syscall_kill_thread(uint32_t tid);
-extern int syscall_get_physical_address(uint32_t linearAddress, uint32_t* physicalAddress);
+extern int syscall_get_physical_address(uint32_t linearAddress);
 
 extern uint32_t syscall_memory_map_create(uint32_t size);
 extern uint32_t syscall_memory_map_get_size(uint32_t id);

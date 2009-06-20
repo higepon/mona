@@ -785,10 +785,10 @@ int syscall_set_watch_point(void* address, int flag)
     return result;
 }
 
-int syscall_get_physical_address(uint32_t linearAddress, uint32_t* physicalAddress)
+int syscall_get_physical_address(uint32_t linearAddress)
 {
     int result;
-    SYSCALL_2(SYSTEM_CALL_GET_PHYSICAL_ADDRESS, result, linearAddress, physicalAddress);
+    SYSCALL_1(SYSTEM_CALL_GET_PHYSICAL_ADDRESS, result, linearAddress);
     return result;
 }
 
