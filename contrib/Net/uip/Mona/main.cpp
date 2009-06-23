@@ -34,7 +34,7 @@ void thread_client()
 
 void thread_init()
 {
-    uint32_t id = syscall_mthread_create((uint32_t)thread_client);
+    uint32_t id = 3;//syscall_mthread_create((uint32_t)thread_client);
 // comment out by higepon
 //    syscall_mthread_join(id);
 }
@@ -44,7 +44,7 @@ void thread_init()
 #endif /* NULL */
 int main(int argc, char* argv[])
 {
-    uint32_t id = syscall_mthread_create((uint32_t)NicListenLoop);
+    uint32_t id = 3;//(uint32_t)syscall_mthread_create((uint32_t)NicListenLoop);
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
         exit(-1);

@@ -8,7 +8,7 @@ all:
 ### servers
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/net_server_with_kernel && $(MAKE) && $(MAKE) install
-#	cd Net/uip && $(MAKE) && $(MAKE) install
+	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
