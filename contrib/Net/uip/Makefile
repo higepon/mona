@@ -36,7 +36,7 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT
-	cp -r Mona ${WORKDIR}
+	ln -s $(PWD)/Mona ${WORKDIR}/Mona
 	patch -p0 < patch-aa
 	touch $@
 

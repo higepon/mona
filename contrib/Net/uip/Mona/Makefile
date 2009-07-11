@@ -10,11 +10,11 @@ SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
 
-UIP_PATH = ../uip
+UIP_PATH = ../uip-0.9/uip
 SERVER_PATH  =  ../../../NetServer/net/
 INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
-OBJECTS +=uip.o uip_arp.o uip_arch.o TcpClient.o ServerMessageLoop.o httpd.o fs.o cgi.o
+OBJECTS +=uip.o uip_arp.o uip_arch.o  httpd.o fs.o cgi.o #  ServerMessageLoop.o TcpClient.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -59,24 +59,24 @@ ADDLINK += -lpci -lmonalibc
 
 CXXFLAGS += -DDEBUG
 
-uip.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CC) -o uip.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip/uip.c
+uip.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o uip.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c $(UIP_PATH)/uip.c
 
-httpd.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CC) -o httpd.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/httpd.c
+httpd.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o httpd.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip-0.9/apps/httpd/httpd.c
 
-fs.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CC) -o fs.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/fs.c
+fs.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o fs.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip-0.9/apps/httpd/fs.c
 
-cgi.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CC) -o cgi.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../apps/httpd/cgi.c
+cgi.o: $(UIP_PATH)/uip.c $(UIP_PATH)//uip.h uipopt.h # $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o cgi.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip-0.9/apps/httpd/cgi.c
 
 
-uip_arp.o: ../uip/uip_arp.c ../uip/uip_arp.h ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CC) -o uip_arp.o $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c ../uip/uip_arp.c
+uip_arp.o: $(UIP_PATH)/uip_arp.c $(UIP_PATH)/uip_arp.h $(UIP_PATH)/uip.h uipopt.h # $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o uip_arp.o $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c $(UIP_PATH)/uip_arp.c
 
-ServerMessageLoop.o: $(SERVER_PATH)/ServerMessageLoop.cpp ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
-	$(CXX) -o ServerMessageLoop.o $(CXXFLAGS) $(INCLUDE)  -nostdinc -c $(SERVER_PATH)/ServerMessageLoop.cpp
+# ServerMessageLoop.o: $(SERVER_PATH)/ServerMessageLoop.cpp ../uip/uip.h uipopt.h # $(SERVER_PATH)/ServerMessageLoop.h
+# 	$(CXX) -o ServerMessageLoop.o $(CXXFLAGS) $(INCLUDE)  -nostdinc -c $(SERVER_PATH)/ServerMessageLoop.cpp
 
 TcpClient.o: $(SERVER_PATH)/TcpClient.cpp $(SERVER_PATH)/TcpClient.h
 	$(CXX) -o TcpClient.o $(CXXFLAGS) $(INCLUDE)  -nostdinc -c $(SERVER_PATH)/TcpClient.cpp
