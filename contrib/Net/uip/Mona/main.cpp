@@ -859,6 +859,15 @@ monadev_read(VirtioNet* receiver)
     if (!receiver->receive(&frame)) {
         return 0;
     } else {
+        if (frame.type == Util::swapShort(Ether::IP)) {
+            IP::Header* ip = (IP::Header*)frame.data;
+            if (ip->prot == IP::ICMP) {
+                Icmp::Header* icmp = (Icmp::Header*)ip->data;
+                logprintf("RECV ICMP:%x\n", *((uint16_t*)icmp->data + 1));
+            }
+        }
+
+
         memcpy(uip_buf, &frame, UIP_BUFSIZE);
         return UIP_BUFSIZE;
     }
@@ -880,6 +889,15 @@ monadev_send(VirtioNet* receiver)
 
     Ether::Frame frame;
     memcpy(&frame, tmpbuf, UIP_BUFSIZE);
+
+    if (frame.type == Util::swapShort(Ether::IP)) {
+        IP::Header* ip = (IP::Header*)frame.data;
+        if (ip->prot == IP::ICMP) {
+            Icmp::Header* icmp = (Icmp::Header*)ip->data;
+           logprintf("SEND ICMP:%x\n", *((uint16_t*)icmp->data + 1));
+        }
+
+    }
     receiver->send(&frame);
 //     memset(&frame, 0, sizeof(frame));
 //     for (int i = 0; i < 100; i++) {
@@ -901,7 +919,9 @@ int main(int argc, char* argv[])
         printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
-    
+
+    _printf("sizeof(Icmp::Header)=%d\n", sizeof(Icmp::Header));
+
     logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
 {
     u8_t i, arptimer;

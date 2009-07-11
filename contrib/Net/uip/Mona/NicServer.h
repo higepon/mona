@@ -26,7 +26,7 @@ public :
     typedef struct{
         unsigned char  type;        /* ICMPタイプ。 */
         unsigned char  code;        /* ICMPコード。 */
-        unsigned short chksum;      /* チェックサム。 */
+        uint16_t chksum;      /* チェックサム。 */
         char           data[32];     /* データ。 */
     } Header;
 #pragma pack(0)
