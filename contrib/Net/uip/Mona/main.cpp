@@ -768,7 +768,7 @@ public:
     // N.B.
     // Since it is hard to distiguish sent and received interruption, we don't use interruption for notification of packet send.
     // Instread before sending packet, we check whether last send is done.
-    bool send(Ether::Frame* src)
+    bool send(Ether::Frame* src, int len)
     {
             logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
@@ -777,8 +777,8 @@ public:
             VIRT_LOG("Waiting previous packet is send");
         }
             logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
-        memcpy(writeFrame_, src, sizeof(Ether::Frame));
-
+        memcpy(writeFrame_, src, len);
+        writeVring_->desc[1].len = len; // todo
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
         writeVring_->avail->idx++;
 
@@ -887,8 +887,9 @@ monadev_send(VirtioNet* receiver)
         tmpbuf[i] = uip_appdata[i - 40 - UIP_LLH_LEN];
     }
 
+
     Ether::Frame frame;
-    memcpy(&frame, tmpbuf, UIP_BUFSIZE);
+    memcpy(&frame, tmpbuf, uip_len);
 
     if (frame.type == Util::swapShort(Ether::IP)) {
         IP::Header* ip = (IP::Header*)frame.data;
@@ -898,7 +899,7 @@ monadev_send(VirtioNet* receiver)
         }
 
     }
-    receiver->send(&frame);
+    receiver->send(&frame, uip_len);
 //     memset(&frame, 0, sizeof(frame));
 //     for (int i = 0; i < 100; i++) {
 //     receiver->send(&frame);
