@@ -776,7 +776,8 @@ public:
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
         }
-            logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+        logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+        memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);
         writeVring_->desc[1].len = len; // todo
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
@@ -790,41 +791,36 @@ public:
         return true;
     }
 
-    bool receive(Ether::Frame* dst)
+    bool receive(Ether::Frame* dst, unsigned int* len)
     {
+        // N.B.
+        //   readVring_->used->idx - lastUsedIndexRead_ can be more than 2.
+        //   Don't miss the packets.
         if (readVring_->used->idx == lastUsedIndexRead_) {
             return false;
         }
-            logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
-//         if  (readVring_->used->idx == lastUsedIndexRead_) {
-//             return false;
-//         }
-        waitInterrupt();
-    logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
-        while (readVring_->used->idx == lastUsedIndexRead_) {
-            VIRT_LOG("waiting in lastUsedIndexRead_=%d", lastUsedIndexRead_);
-//            _printf("[1]");791
-        }
-    logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
-        int next_used = readVring_->used->idx;
-    logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+
+//        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//        waitInterrupt();
+//        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
             VIRT_LOG("NOTIFY");
-            logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
-    logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
-        // avail->idx % numberOfReadDesc_ is current read buffer index
-        Ether::Frame* rframe = readFrames_[readVring_->avail->idx % numberOfReadDesc_];
-        memcpy(dst, rframe, sizeof(Ether::Frame));
-    logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+
+        const int index = lastUsedIndexRead_ % readVring_->num;
+        *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
+        uint32_t id = readVring_->used->ring[index].id;
+        Ether::Frame* rframe = readFrames_[id / 2];
+        memcpy(dst, rframe, *len);
 
         // current used buffer is no more necessary, give it back to tail of avail->ring
-        readVring_->avail->ring[(readVring_->avail->idx) % readVring_->num] = ((readVring_->avail->idx) % numberOfReadDesc_) * 2;
-        logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+        readVring_->avail->ring[id / 2] = id;
+
         // increment avail->idx, we should not take remainder of avail->idx ?
         readVring_->avail->idx++;
-        lastUsedIndexRead_ = next_used;
+        lastUsedIndexRead_++;
         return true;
     }
 };
@@ -856,7 +852,8 @@ unsigned int
 monadev_read(VirtioNet* receiver)
 {
     Ether::Frame frame;
-    if (!receiver->receive(&frame)) {
+    unsigned int len;
+    if (!receiver->receive(&frame, &len)) {
         return 0;
     } else {
         if (frame.type == Util::swapShort(Ether::IP)) {
@@ -868,8 +865,8 @@ monadev_read(VirtioNet* receiver)
         }
 
 
-        memcpy(uip_buf, &frame, UIP_BUFSIZE);
-        return UIP_BUFSIZE;
+        memcpy(uip_buf, &frame, len);
+        return len;
     }
 }
 
@@ -907,7 +904,6 @@ monadev_send(VirtioNet* receiver)
     return;
 }
 
-
 int main(int argc, char* argv[])
 {
 //    const uint32_t myIpAddress = Util::ipAddressToUint32_t(192, 168, 50, 3);
@@ -919,8 +915,6 @@ int main(int argc, char* argv[])
         printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
-
-    _printf("sizeof(Icmp::Header)=%d\n", sizeof(Icmp::Header));
 
     logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
 {

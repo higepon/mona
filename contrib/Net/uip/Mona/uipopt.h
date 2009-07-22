@@ -446,7 +446,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_LOGGING     0
+#define UIP_LOGGING     1
 
 /**
  * Print out a uIP log message.
