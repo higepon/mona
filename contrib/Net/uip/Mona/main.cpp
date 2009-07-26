@@ -565,6 +565,34 @@ private:
         }
     }
 
+//     bool waitInterruptTimeout(uint32_t msec)
+//     {
+//         MessageInfo msg;
+//         uint32_t timerId = set_timer(msec);
+//         for (int i = 0; ; i++) {
+//             int result = MonAPI::Message::peek(&msg, i);
+
+//             if (result != 0) {
+//                 i--;
+//                 syscall_mthread_yield_message();
+//             }
+//             else if (msg.header == MSG_TIMER) {
+//                 if (msg.arg1 != timerId) continue;
+//                 kill_timer(timerId);
+//                 Message::peek(&msg, i, PEEK_REMOVE);
+//                 return false;
+//             }
+//             else if (msg.header == MSG_INTERRUPTED)
+//             {
+//                 kill_timer(timerId);
+//                 MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+//                 return true;
+//             }
+//         }
+//     }
+
+
+
     uint8_t* allocateAlignedPage()
     {
         Buffer* data = new Buffer(PAGE_SIZE * 2);
@@ -800,24 +828,65 @@ public:
             return false;
         }
 
-//        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//        waitInterrupt();
-//        _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        // N.B.
+        //   We don't wait interruption for two reasons.
+        //   (1) Since uIP requires wait and sleep (means polling), we don't want be blocked.
+        //   (2) A bug that a packet comes, but we sometime have no interruption. This should be fixed.
+//         MessageInfo msg;
+//         int msec = 500;
+//         for (int i = 0; ; i++) {
+//             if (readVring_->used->idx != lastUsedIndexRead_) {
+//                 break;
+//             }
+//             if (msec < 0) return false;
+//             int result = MonAPI::Message::peek(&msg, i);
+//             if (result != 0) {
+//                 i--;
+//                 sleep(10);
+//                 msec -= 100;
+//                 continue;
+//             } else if (msg.header == MSG_INTERRUPTED) {
+//                 MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+//                 inp8(baseAddress_ + VIRTIO_PCI_ISR);
+//                 monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
 
+//                 if (readVring_->used->idx == lastUsedIndexRead_) {
+//                     sleep(10);
+//                     msec -= 100;
+//                     continue;
+//                 } else {
+//                     break;
+//                 }
+//             }
+//         }
+
+
+//         for (;;) {
+//             if (waitInterruptTimeout(500)) {
+//                 // we have packets.
+//                 break;
+//             } else {
+//                 // Timeout but, we have packets.
+//                 if (readVring_->used->idx != lastUsedIndexRead_) {
+//                     break;
+//                 } else {
+//                     // Timeout
+//                     return false;
+//                 }
+//             }
+//         }
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
             VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
-
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
+        logprintf("Ether frame size=%d\n", *len);
         uint32_t id = readVring_->used->ring[index].id;
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
-
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[id / 2] = id;
-
         // increment avail->idx, we should not take remainder of avail->idx ?
         readVring_->avail->idx++;
         lastUsedIndexRead_++;
@@ -1011,47 +1080,4 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-//     while (true) {
-//         Ether::Frame frame;
-//         if (!receiver.receive(&frame)) {
-//             printf("[virtio] receive failed\n");
-//             exit(-1);
-//         }
-//         if (Util::swapShort(frame.type) == Ether::ARP) {
-//             Arp::Header* arp = (Arp::Header*)frame.data;
-//             if (arp->opeCode == Util::swapShort(Arp::OPE_CODE_ARP_REQ)
-//                 && myIpAddress == arp->dstIp) {
-//                 printf("[ARP REQ] came\n");
-//                 Ether::Frame reply;
-//                 makeArpReply(&reply, arp, myIpAddress, receiver.macAddress());
-//                 receiver.send(&reply);
-//                 uint8_t macAddress[6];
-//                 memset(macAddress, 0xee, 6);
-//                 makeArpReply(&reply, arp, myIpAddress, macAddress);
-//                 receiver.send(&reply); // send twice test
-//                 printf("[ARP REP] sent\n");
-//             } else {
-//                 printf("[ARP Not for me] from %d:%d:%d:%d:%d:%d\n",
-//                        frame.srcmac[0],
-//                        frame.srcmac[1],
-//                        frame.srcmac[2],
-//                        frame.srcmac[3],
-//                        frame.srcmac[4],
-//                        frame.srcmac[5]
-//                     );
-//             }
-//         } else if (Util::swapShort(frame.type) == Ether::IP) {
-//             IP::Header* ipHeader = (IP::Header*)frame.data;
-//             const int prot = ipHeader->prot;
-//             if (prot == IP::UDP) {
-//                 printf("[IP/UDP]\n");
-//             } else if (prot == IP::ICMP) {
-//                 printf("[IP/ICMP]\n");
-//             } else {
-//                 printf("[IP/Other] type=%d \n", prot);
-//             }
-//         } else {
-//             printf("Unknown packet\n");
-//         }
-//     }
 }
