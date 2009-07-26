@@ -875,7 +875,10 @@ public:
 //                 }
 //             }
 //         }
+
+        // おしりに持ってくる
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
+            _printf("hige");
             VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
@@ -883,10 +886,11 @@ public:
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
         logprintf("Ether frame size=%d\n", *len);
         uint32_t id = readVring_->used->ring[index].id;
+        _printf("id=%d\n", id);
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
         // current used buffer is no more necessary, give it back to tail of avail->ring
-        readVring_->avail->ring[id / 2] = id;
+        readVring_->avail->ring[readVring_->avail->idx] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
         readVring_->avail->idx++;
         lastUsedIndexRead_++;
