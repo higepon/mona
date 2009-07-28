@@ -824,41 +824,41 @@ public:
         // N.B.
         //   readVring_->used->idx - lastUsedIndexRead_ can be more than 2.
         //   Don't miss the packets.
-        if (readVring_->used->idx == lastUsedIndexRead_) {
-            return false;
-        }
+//         if (readVring_->used->idx == lastUsedIndexRead_) {
+//             return false;
+//         }
 
         // N.B.
         //   We don't wait interruption for two reasons.
         //   (1) Since uIP requires wait and sleep (means polling), we don't want be blocked.
         //   (2) A bug that a packet comes, but we sometime have no interruption. This should be fixed.
-//         MessageInfo msg;
-//         int msec = 500;
-//         for (int i = 0; ; i++) {
-//             if (readVring_->used->idx != lastUsedIndexRead_) {
-//                 break;
-//             }
-//             if (msec < 0) return false;
-//             int result = MonAPI::Message::peek(&msg, i);
-//             if (result != 0) {
-//                 i--;
-//                 sleep(10);
-//                 msec -= 100;
-//                 continue;
-//             } else if (msg.header == MSG_INTERRUPTED) {
-//                 MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
-//                 inp8(baseAddress_ + VIRTIO_PCI_ISR);
-//                 monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+        MessageInfo msg;
+        int msec = 500;
+        for (int i = 0; ; i++) {
+            if (readVring_->used->idx != lastUsedIndexRead_) {
+                break;
+            }
+            if (msec < 0) return false;
+            int result = MonAPI::Message::peek(&msg, i);
+            if (result != 0) {
+                i--;
+                sleep(10);
+                msec -= 10;
+                continue;
+            } else if (msg.header == MSG_INTERRUPTED) {
+                MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+                inp8(baseAddress_ + VIRTIO_PCI_ISR);
+                monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
 
-//                 if (readVring_->used->idx == lastUsedIndexRead_) {
-//                     sleep(10);
-//                     msec -= 100;
-//                     continue;
-//                 } else {
-//                     break;
-//                 }
-//             }
-//         }
+                if (readVring_->used->idx == lastUsedIndexRead_) {
+                    sleep(10);
+                    msec -= 10;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
 
 
 //         for (;;) {

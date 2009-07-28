@@ -1,3 +1,7 @@
+2009-07-28  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/uip/uip-0.9/Mona/main.cpp (class VirtioNet): Added Wait timeout. Don't consume CPU when no request.
+
 2009-07-22  higepon  <higepon@users.sourceforge.jp>
 
         * Net/uip/Mona/main.cpp (class VirtioNet): Packet delay bug fixed. Ping replay takes a few msec.
