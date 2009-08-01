@@ -897,6 +897,7 @@ public:
         logprintf("Ether frame size=%d\n", *len);
         logprintf("[r1.3](\"%s\" %d index=%d)\n", __FILE__, __LINE__, index);
         uint32_t id = readVring_->used->ring[index].id;
+        ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         logprintf("[r1.4](\"%s\" %d id=%d 0id=%d)\n", __FILE__, __LINE__, id, readVring_->used->ring[0].id);
         logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
