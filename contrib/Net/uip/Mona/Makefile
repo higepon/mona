@@ -3,7 +3,7 @@ export MONADIR=$(shell cd $(PWD)/../../../../../mona; pwd)
 endif
 
 TARGET  = UIP
-SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp
+SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share

@@ -1,5 +1,7 @@
 2009-08-01  higepon  <higepon@users.sourceforge.jp>
 
+        * Net/uip/uip-0.9/Mona/main.cpp : Removed unused files.
+
         * Now virtio-net driver becomes stable.
 
         * Net/uip/uip-0.9/Mona/main.cpp (class VirtioNet): Fixed a bug as follows
