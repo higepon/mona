@@ -798,7 +798,7 @@ public:
     // Instread before sending packet, we check whether last send is done.
     bool send(Ether::Frame* src, int len)
     {
-            logprintf("(\"%s\" %d)\n", __FILE__, __LINE__);
+        logprintf("[s](\"%s\" %d)\n", __FILE__, __LINE__);
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
@@ -821,6 +821,9 @@ public:
 
     bool receive(Ether::Frame* dst, unsigned int* len)
     {
+        logprintf("[r](\"%s\" %d)\n", __FILE__, __LINE__);
+        static int count = 0;
+        _printf("%d|", count++);
         // N.B.
         //   readVring_->used->idx - lastUsedIndexRead_ can be more than 2.
         //   Don't miss the packets.
@@ -838,7 +841,10 @@ public:
             if (readVring_->used->idx != lastUsedIndexRead_) {
                 break;
             }
-            if (msec < 0) return false;
+            if (msec < 0) {
+                logprintf("[re](\"%s\" %d)\n", __FILE__, __LINE__);
+                return false;
+            }
             int result = MonAPI::Message::peek(&msg, i);
             if (result != 0) {
                 i--;
@@ -859,7 +865,7 @@ public:
                 }
             }
         }
-
+       logprintf("[r1](\"%s\" %d)\n", __FILE__, __LINE__);
 
 //         for (;;) {
 //             if (waitInterruptTimeout(500)) {
@@ -882,18 +888,35 @@ public:
             VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
+
+
         const int index = lastUsedIndexRead_ % readVring_->num;
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         logprintf("Ether frame size=%d\n", *len);
+        logprintf("[r1.3](\"%s\" %d index=%d)\n", __FILE__, __LINE__, index);
         uint32_t id = readVring_->used->ring[index].id;
-        _printf("id=%d\n", id);
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
+        logprintf("[r1.4](\"%s\" %d id=%d 0id=%d)\n", __FILE__, __LINE__, id, readVring_->used->ring[0].id);
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         Ether::Frame* rframe = readFrames_[id / 2];
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
+       logprintf("[r1.5](\"%s\" %d)\n", __FILE__, __LINE__);
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         memcpy(dst, rframe, *len);
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         // current used buffer is no more necessary, give it back to tail of avail->ring
-        readVring_->avail->ring[readVring_->avail->idx] = id;
+        logprintf("%s:%d index=%d 0id=%d, readVring_->avail->idx=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id, readVring_->avail->idx);
+        readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         // increment avail->idx, we should not take remainder of avail->idx ?
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         readVring_->avail->idx++;
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
         lastUsedIndexRead_++;
+        logprintf("%s:%d index=%d 0id=%d)\n", __FILE__, __LINE__, index, readVring_->used->ring[0].id);
+        logprintf("[re](\"%s\" %d)\n", __FILE__, __LINE__);
         return true;
     }
 };

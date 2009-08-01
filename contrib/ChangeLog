@@ -1,3 +1,11 @@
+2009-08-01  higepon  <higepon@users.sourceforge.jp>
+
+        * Now virtio-net driver becomes stable.
+
+        * Net/uip/uip-0.9/Mona/main.cpp (class VirtioNet): Fixed a bug as follows
+                                                            readVring_->avail->ring[readVring_->avail->idx] = id;
+                                                         => readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
+
 2009-07-28  higepon  <higepon@users.sourceforge.jp>
 
         * Net/uip/uip-0.9/Mona/main.cpp (class VirtioNet): Added Wait timeout. Don't consume CPU when no request.
