@@ -1,0 +1,20 @@
+(1) On uip/Mona/uipopt.h
+    #define USE_QEMU_TAP_NETWORK 1
+    
+(2) cd contrib && make
+
+(3) /etc/qemu-ifup
+#!/bin/sh
+sudo ifconfig $1 192.168.50.2 up
+
+(4) /etc/qemu-ifdown
+#!/bin/sh
+sudo ifconfig $1 down
+
+(5) sudo qemu -net nic,model=virtio -net tap,if_name=tap0 \
+    -cdrom /home/taro/mona/tool/mkimg/mona.iso \
+    -fda /home/taro/mona/tool/mkimg/mona.img -boot d
+
+(6) ping 192.168.50.3 (Mona is 192.168.50.3 and Gateway is 192.168.50.2)
+    Access 192.168.50.3
+

@@ -1,3 +1,9 @@
+2009-08-02  higepon  <higepon@users.sourceforge.jp>
+
+	* Net/uip/Mona/HowToTap.txt: Added.
+
+	* Net/uip: Refactoring uIP and virtio-net driver.
+
 2009-08-01  higepon  <higepon@users.sourceforge.jp>
 
         * Net/uip/uip-0.9/Mona/main.cpp : Removed unused files.

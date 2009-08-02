@@ -1,3 +1,6 @@
+#define USE_QEMU_TAP_NETWORK 1
+//#define USE_QEMU_USER_NETWORK 1
+
 /**
  * \defgroup uipopt Configuration options for uIP
  * @{
@@ -130,6 +133,8 @@ typedef unsigned short uip_stats_t;
  */
 #define UIP_PINGADDRCONF 0
 
+#ifdef USE_QEMU_TAP_NETWORK
+
 #define UIP_IPADDR0     192 /**< The first octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
@@ -168,6 +173,53 @@ typedef unsigned short uip_stats_t;
 #define UIP_DRIPADDR3   2   /**< The fourth octet of the IP address of
 			       the default router, if UIP_FIXEDADDR is
 			       1. \hideinitializer */
+
+#elif defined(USE_QEMU_USER_NETWORK)
+
+#define UIP_IPADDR0     192 /**< The first octet of the IP address of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_IPADDR1     168 /**< The second octet of the IP address of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_IPADDR2     50   /**< The third octet of the IP address of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_IPADDR3     3   /**< The fourth octet of the IP address of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+
+#define UIP_NETMASK0    10 /**< The first octet of the netmask of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_NETMASK1    0 /**< The second octet of the netmask of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_NETMASK2    2 /**< The third octet of the netmask of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_NETMASK3    15   /**< The fourth octet of the netmask of
+			       this uIP node, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+
+#define UIP_DRIPADDR0   10 /**< The first octet of the IP address of
+			       the default router, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_DRIPADDR1   0 /**< The second octet of the IP address of
+			       the default router, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_DRIPADDR2   2   /**< The third octet of the IP address of
+			       the default router, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+#define UIP_DRIPADDR3   2   /**< The fourth octet of the IP address of
+			       the default router, if UIP_FIXEDADDR is
+			       1. \hideinitializer */
+
+#else
+
+#error "Define USE_QEMU_USER_NETWORK or USE_QEMU_TAP_NETWORK"
+
+#endif // #ifdef USE_QEMU_TAP_NETWORK
 
 /**
  * Specifies if the uIP ARP module should be compiled with a fixed
