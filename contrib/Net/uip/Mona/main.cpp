@@ -158,15 +158,9 @@ private:
     VirtioNet* virtioNet_;
     dhcp_packet packet_;
     uint8_t srcmac_[6];
-public:
-    DHCPClient(VirtioNet* virtioNet, uint8_t* srcmac) : virtioNet_(virtioNet)
-    {
-        for (int i = 0; i < 6; i++) {
-            srcmac_[i] = srcmac[i];
-        }
-    }
+    int SIZE_OF_DHCP_PACKET;
 
-    bool request(uint32_t& hostAddress, uint32_t& gatewayAddress)
+    void sendDiscovery()
     {
         Ether::Frame frame;
         frame.type = Util::swapShort(Ether::IP);
@@ -175,8 +169,6 @@ public:
             frame.dstmac[i] = 0xff;
             frame.srcmac[i] = srcmac_[i];
         }
-        const int SIZE_OF_DHCP_PACKET = sizeof(dhcp_packet) - DHCP_OPTION_LEN;
-
         // IP
         IP::Header* ip = (IP::Header*)frame.data;
         ip->version = 4;
@@ -195,9 +187,9 @@ public:
         udp->srcport = Util::swapShort(0x44);
         udp->dstport = Util::swapShort(0x43);
         udp->len =  Util::swapShort(sizeof(UDP::Header) + SIZE_OF_DHCP_PACKET);
-        udp->chksum = 0x00; // 0 means none
-//        udp->chksum = Util::calcCheckSum((uint32_t*)udp, sizeof(UDP::Header));
+        udp->chksum = 0x00; // 0 means "don't check checksum
 
+        // DHCP
         dhcp_packet* dhcp = (dhcp_packet*)udp->data;
         dhcp->op = BOOTREQUEST;
         dhcp->htype = 0x01;
@@ -222,64 +214,58 @@ public:
         dhcp->options[4] = 53; //RFC2132_MSG_TYPE
         dhcp->options[5] = 1;  // len
         dhcp->options[6] = DHCPDISCOVER;
-        _printf("dhcp size=%d\n", 18 + sizeof(IP::Header) + sizeof(UDP::Header) + SIZE_OF_DHCP_PACKET);
         virtioNet_->send(&frame, 18 + sizeof(IP::Header) + sizeof(UDP::Header) + sizeof(dhcp_packet));
+    }
 
-        memset(&frame, 0, sizeof(Ether::Frame));
-        unsigned int len;
-        for (;;) {
+    bool receiveOffer(Ether::Frame* frame, uint32_t& hostAddress, uint32_t& gatewayAddress, int sec)
+    {
+        unsigned int len = 0;
+        for (int i = 0; i < sec; i++) {
+            if (virtioNet_->receive(frame, &len, 1000)) {
+                if (!frame->type == 0x08) {
+                    continue;
+                }
+                IP::Header* ip = (IP::Header*)frame->data;
 
-            if (virtioNet_->receive(&frame, &len, 1000)) {
-                if (frame.type == 0x08) {
-                    _printf("IP\n");
-                    IP::Header* ip = (IP::Header*)frame.data;   
-                    if (ip->prot == IP::UDP) {
-                        _printf("UDP\n");
-                        UDP::Header* udp = (UDP::Header*)ip->data;
-                        if (udp->srcport == Util::swapShort(0x43)) {
-                            dhcp_packet* dhcp = (dhcp_packet*)udp->data;
-                            if (dhcp->op == 0x02) {
-                                _printf("UDP DHCP Offer\n");
-                                _printf("addr=%sn", (const char*)Util::ipAddressToCString(dhcp->yiaddr));
-                                 uint16_t addr[2] ;
-                                 hostAddress = dhcp->yiaddr;
-//                                 uip_init();
-//                                 addr[0] = dhcp->yiaddr & 0xffff;
-//                                 addr[1] = dhcp->yiaddr >> 16;
+                if (ip->prot != IP::UDP) {
+                    continue;
+                }
+                UDP::Header* udp = (UDP::Header*)ip->data;
 
-//                                 // QEMU will offer 10.0.2.x (x >= 15).
-//                                 UIP_ASSERT(addr[0] == 0x000a);
-//                                 UIP_ASSERT((addr[1] & 0xff) == 2);
-//                                 UIP_ASSERT((addr[1] >> 8) >= 15);
+                if (udp->srcport != Util::swapShort(0x43)) {
+                    continue;
+                }
+                dhcp_packet* dhcp = (dhcp_packet*)udp->data;
+                if (dhcp->op != 0x02) {
+                    continue;
+                }
+                uint16_t addr[2] ;
+                hostAddress = dhcp->yiaddr;
+                gatewayAddress = dhcp->siaddr;
+                for (int i = 0; i < 6; i++) {
+                    frame->dstmac[i] = 0xff;
+                    frame->srcmac[i] = srcmac_[i];
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-                                 gatewayAddress = dhcp->siaddr;
-//                                 uip_sethostaddr(addr);
-//                                 addr[0] = dhcp->siaddr & 0xffff;
-//                                 addr[1] = dhcp->siaddr >> 16;
-//                                 uip_setdraddr(addr);
-//                                 addr[0] = 0x00ffffff & 0xffff;
-//                                 addr[1] = 0x00ffffff >> 16;
-//                                 uip_setnetmask(addr);
-//                                  uip_gethostaddr(addr);
-//                                  _printf("%x %x\n", addr[0], addr[1]);
-                                _printf("siaddr=%sn", (const char*)Util::ipAddressToCString(dhcp->siaddr));
-                                _printf("giaddr=%sn", (const char*)Util::ipAddressToCString(dhcp->giaddr));
-                                for (int i = 0; i < 6; i++) {
-                                    frame.dstmac[i] = 0xff;
-                                    frame.srcmac[i] = srcmac_[i];
-                                }
-                                IP::Header* ip = (IP::Header*)frame.data;
-                                ip->srcip = 0x00000000;
-                                ip->dstip = 0xffffffff;
-                                ip->chksum = 0;
-                                ip->chksum = Util::calcCheckSum((uint32_t*)ip, sizeof(IP::Header));
-                                UDP::Header* udp = (UDP::Header*)ip->data;
-                                udp->srcport = Util::swapShort(0x44);
-                                udp->dstport = Util::swapShort(0x43);
-                                udp->len =  Util::swapShort(sizeof(UDP::Header) + SIZE_OF_DHCP_PACKET);
-                                udp->chksum = 0;
-                                dhcp_packet* dhcp = (dhcp_packet*)udp->data;
-                                dhcp->op = BOOTREQUEST;
+    void sendRequest(Ether::Frame* frame)
+    {
+        IP::Header* ip = (IP::Header*)frame->data;
+        ip->srcip = 0x00000000;
+        ip->dstip = 0xffffffff;
+        ip->chksum = 0;
+        ip->chksum = Util::calcCheckSum((uint32_t*)ip, sizeof(IP::Header));
+        UDP::Header* udp = (UDP::Header*)ip->data;
+        udp->srcport = Util::swapShort(0x44);
+        udp->dstport = Util::swapShort(0x43);
+        udp->len =  Util::swapShort(sizeof(UDP::Header) + SIZE_OF_DHCP_PACKET);
+        udp->chksum = 0;
+        dhcp_packet* dhcp = (dhcp_packet*)udp->data;
+        dhcp->op = BOOTREQUEST;
         dhcp->options[0] = 99;
         dhcp->options[1] = 130;
         dhcp->options[2] = 83;
@@ -287,32 +273,28 @@ public:
         dhcp->options[4] = 53; //RFC2132_MSG_TYPE
         dhcp->options[5] = 1;  // len
         dhcp->options[6] = DHCPREQUEST;
-
-                                virtioNet_->send(&frame, 18 + sizeof(IP::Header) + sizeof(UDP::Header) + sizeof(dhcp_packet));
-                                break;
-                            } else {
-                                _printf("not dhcp offer\n");
-                            }
-                        } else {
-                            _printf("UDP NOT DHCP\n");
-                        }
-                    } else {
-                        _printf("NOT UDP%d\n", ip->prot);
-                    }
-                } else {
-                    _printf("NOT IP %x \n", frame.type);
-                }
-            } else {
-                _printf("timeout\n");
-                continue;
-            }
-
+        virtioNet_->send(frame, 18 + sizeof(IP::Header) + sizeof(UDP::Header) + sizeof(dhcp_packet));
+    }
+public:
+    DHCPClient(VirtioNet* virtioNet, uint8_t* srcmac) : virtioNet_(virtioNet), SIZE_OF_DHCP_PACKET(sizeof(dhcp_packet) - DHCP_OPTION_LEN + 7)
+    {
+        for (int i = 0; i < 6; i++) {
+            srcmac_[i] = srcmac[i];
         }
-
-        return true;
     }
 
+    bool request(uint32_t& hostAddress, uint32_t& gatewayAddress)
+    {
+        Ether::Frame frame;
+        sendDiscovery();
+        unsigned int len;
 
+        if (!receiveOffer(&frame, hostAddress, gatewayAddress, 2 /* sec */)) {
+            return false;
+        }
+        sendRequest(&frame);
+        return true;
+    }
 };
 
 
