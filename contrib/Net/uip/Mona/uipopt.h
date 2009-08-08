@@ -1,5 +1,5 @@
-#define USE_QEMU_TAP_NETWORK 1
-//#define USE_QEMU_USER_NETWORK 1
+//#define USE_QEMU_TAP_NETWORK 1
+#define USE_QEMU_USER_NETWORK 1
 
 /**
  * \defgroup uipopt Configuration options for uIP
@@ -108,16 +108,6 @@ typedef unsigned short uip_stats_t;
  * All of these should be changed to suit your project.
 */
 
-/**
- * Determines if uIP should use a fixed IP address or not.
- *
- * If uIP should use a fixed IP address, the settings are set in the
- * uipopt.h file. If not, the macros uip_sethostaddr(),
- * uip_setdraddr() and uip_setnetmask() should be used instead.
- *
- * \hideinitializer
- */
-#define UIP_FIXEDADDR    1
 
 /**
  * Ping IP address asignment.
@@ -134,6 +124,17 @@ typedef unsigned short uip_stats_t;
 #define UIP_PINGADDRCONF 0
 
 #ifdef USE_QEMU_TAP_NETWORK
+
+/**
+ * Determines if uIP should use a fixed IP address or not.
+ *
+ * If uIP should use a fixed IP address, the settings are set in the
+ * uipopt.h file. If not, the macros uip_sethostaddr(),
+ * uip_setdraddr() and uip_setnetmask() should be used instead.
+ *
+ * \hideinitializer
+ */
+#define UIP_FIXEDADDR    1
 
 #define UIP_IPADDR0     192 /**< The first octet of the IP address of
 			       this uIP node, if UIP_FIXEDADDR is
@@ -176,44 +177,56 @@ typedef unsigned short uip_stats_t;
 
 #elif defined(USE_QEMU_USER_NETWORK)
 
-#define UIP_IPADDR0     192 /**< The first octet of the IP address of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_IPADDR1     168 /**< The second octet of the IP address of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_IPADDR2     50   /**< The third octet of the IP address of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_IPADDR3     3   /**< The fourth octet of the IP address of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
+/**
+ * Determines if uIP should use a fixed IP address or not.
+ *
+ * If uIP should use a fixed IP address, the settings are set in the
+ * uipopt.h file. If not, the macros uip_sethostaddr(),
+ * uip_setdraddr() and uip_setnetmask() should be used instead.
+ *
+ * \hideinitializer
+ */
+#define UIP_FIXEDADDR    0
 
-#define UIP_NETMASK0    10 /**< The first octet of the netmask of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_NETMASK1    0 /**< The second octet of the netmask of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_NETMASK2    2 /**< The third octet of the netmask of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_NETMASK3    15   /**< The fourth octet of the netmask of
-			       this uIP node, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
 
-#define UIP_DRIPADDR0   10 /**< The first octet of the IP address of
-			       the default router, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_DRIPADDR1   0 /**< The second octet of the IP address of
-			       the default router, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_DRIPADDR2   2   /**< The third octet of the IP address of
-			       the default router, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
-#define UIP_DRIPADDR3   2   /**< The fourth octet of the IP address of
-			       the default router, if UIP_FIXEDADDR is
-			       1. \hideinitializer */
+// #define UIP_IPADDR0     10 /**< The first octet of the IP address of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_IPADDR1     0 /**< The second octet of the IP address of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_IPADDR2     2   /**< The third octet of the IP address of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_IPADDR3     15   /**< The fourth octet of the IP address of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+
+// #define UIP_NETMASK0    255 /**< The first octet of the netmask of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_NETMASK1    255 /**< The second octet of the netmask of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_NETMASK2    255 /**< The third octet of the netmask of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_NETMASK3    0   /**< The fourth octet of the netmask of
+// 			       this uIP node, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+
+// #define UIP_DRIPADDR0   10 /**< The first octet of the IP address of
+// 			       the default router, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_DRIPADDR1   0 /**< The second octet of the IP address of
+// 			       the default router, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_DRIPADDR2   2   /**< The third octet of the IP address of
+// 			       the default router, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
+// #define UIP_DRIPADDR3   2   /**< The fourth octet of the IP address of
+// 			       the default router, if UIP_FIXEDADDR is
+// 			       1. \hideinitializer */
 
 #else
 
