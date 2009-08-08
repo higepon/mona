@@ -80,6 +80,13 @@ public:
 class Util
 {
 public:
+    inline static uint16_t* ipAddressToU16Array(uint16_t* buf, uint32_t address)
+    {
+        buf[0] = address & 0xffff;
+        buf[1] = address >> 16;
+        return buf;
+    }
+
     inline static uint32_t swapLong(uint32_t value)
     {
         return (value>>24)+((value>>8)&0xff00)+((value<<8)&0xff0000)+(value<<24);
@@ -236,23 +243,23 @@ public:
                                 _printf("addr=%sn", (const char*)Util::ipAddressToCString(dhcp->yiaddr));
                                  uint16_t addr[2] ;
                                  hostAddress = dhcp->yiaddr;
-                                 uip_init();
-                                addr[0] = dhcp->yiaddr & 0xffff;
-                                addr[1] = dhcp->yiaddr >> 16;
+//                                 uip_init();
+//                                 addr[0] = dhcp->yiaddr & 0xffff;
+//                                 addr[1] = dhcp->yiaddr >> 16;
 
-                                // QEMU will offer 10.0.2.x (x >= 15).
-                                UIP_ASSERT(addr[0] == 0x000a);
-                                UIP_ASSERT((addr[1] & 0xff) == 2);
-                                UIP_ASSERT((addr[1] >> 8) >= 15);
+//                                 // QEMU will offer 10.0.2.x (x >= 15).
+//                                 UIP_ASSERT(addr[0] == 0x000a);
+//                                 UIP_ASSERT((addr[1] & 0xff) == 2);
+//                                 UIP_ASSERT((addr[1] >> 8) >= 15);
 
                                  gatewayAddress = dhcp->siaddr;
-                                uip_sethostaddr(addr);
-                                addr[0] = dhcp->siaddr & 0xffff;
-                                addr[1] = dhcp->siaddr >> 16;
-                                uip_setdraddr(addr);
-                                addr[0] = 0x00ffffff & 0xffff;
-                                addr[1] = 0x00ffffff >> 16;
-                                uip_setnetmask(addr);
+//                                 uip_sethostaddr(addr);
+//                                 addr[0] = dhcp->siaddr & 0xffff;
+//                                 addr[1] = dhcp->siaddr >> 16;
+//                                 uip_setdraddr(addr);
+//                                 addr[0] = 0x00ffffff & 0xffff;
+//                                 addr[1] = 0x00ffffff >> 16;
+//                                 uip_setnetmask(addr);
 //                                  uip_gethostaddr(addr);
 //                                  _printf("%x %x\n", addr[0], addr[1]);
                                 _printf("siaddr=%sn", (const char*)Util::ipAddressToCString(dhcp->siaddr));
@@ -360,6 +367,8 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
+// qemu -net user mode:
+//   we send DHCP request to QEMU and get an ip address.
 #ifdef USE_QEMU_USER_NETWORK
     DHCPClient dhcp(&virtioNet, virtioNet.macAddress());;
     uint32_t hostAddress = 0;
@@ -375,7 +384,21 @@ int main(int argc, char* argv[])
 
         /* Initialize the device driver. */
         /* Initialize the uIP TCP/IP stack. */
-//        uip_init(); // moved to dhcp temp
+        uip_init();
+
+#ifdef USE_QEMU_USER_NETWORK
+        uint16_t addr[2];
+        Util::ipAddressToU16Array(addr, hostAddress);
+
+        // QEMU will offer 10.0.2.x (x >= 15).
+        UIP_ASSERT(addr[0] == 0x000a);
+        UIP_ASSERT((addr[1] & 0xff) == 2);
+        UIP_ASSERT((addr[1] >> 8) >= 15);
+        uip_sethostaddr(addr);
+        uip_setdraddr(Util::ipAddressToU16Array(addr, gatewayAddress));
+        uip_setnetmask(Util::ipAddressToU16Array(addr, 0x00ffffff /* 255.255.255.0 */));
+#endif
+
         /* Initialize the HTTP server. */
         httpd_init();
 
