@@ -159,7 +159,7 @@ public:
         }
     }
 
-    void sendDiscovery()
+    bool request(uint32_t& hostAddress, uint32_t& gatewayAddress)
     {
         Ether::Frame frame;
         frame.type = Util::swapShort(Ether::IP);
@@ -235,6 +235,7 @@ public:
                                 _printf("UDP DHCP Offer\n");
                                 _printf("addr=%sn", (const char*)Util::ipAddressToCString(dhcp->yiaddr));
                                  uint16_t addr[2] ;
+                                 hostAddress = dhcp->yiaddr;
                                  uip_init();
                                 addr[0] = dhcp->yiaddr & 0xffff;
                                 addr[1] = dhcp->yiaddr >> 16;
@@ -243,6 +244,8 @@ public:
                                 UIP_ASSERT(addr[0] == 0x000a);
                                 UIP_ASSERT((addr[1] & 0xff) == 2);
                                 UIP_ASSERT((addr[1] >> 8) >= 15);
+
+                                 gatewayAddress = dhcp->siaddr;
                                 uip_sethostaddr(addr);
                                 addr[0] = dhcp->siaddr & 0xffff;
                                 addr[1] = dhcp->siaddr >> 16;
@@ -298,7 +301,10 @@ public:
             }
 
         }
+
+        return true;
     }
+
 
 };
 
@@ -354,8 +360,15 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
+#ifdef USE_QEMU_USER_NETWORK
     DHCPClient dhcp(&virtioNet, virtioNet.macAddress());;
-    dhcp.sendDiscovery();
+    uint32_t hostAddress = 0;
+    uint32_t gatewayAddress = 0;
+    if (!dhcp.request(hostAddress, gatewayAddress)) {
+        _printf("[uIP] DHCP server not found. exit server\n");
+        exit(-1);
+    }
+#endif
 
     {
         u8_t i, arptimer;
