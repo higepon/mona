@@ -89,6 +89,9 @@ int main(int argc, char* argv[])
         _printf("[uIP]: MONITOR server doesn't exist\n");
         exit(-1);
     }
+#ifdef USE_QEMU_USER_NETWORK
+    _printf("\n\n[uIP Web Server] Access: http://localhost:8080 from your HOST of qemu\n\n");
+#endif
     VirtioNet virtioNet;
     const int numberOfReadBufferes = 5;
     enum VirtioNet::DeviceState state = virtioNet.probe(numberOfReadBufferes);
@@ -106,6 +109,7 @@ int main(int argc, char* argv[])
         _printf("[uIP] DHCP server not found. exit server\n");
         exit(-1);
     }
+
 #endif
     {
         u8_t i, arptimer;
@@ -140,7 +144,6 @@ int main(int argc, char* argv[])
                received an IP packet that is to be processed by uIP. */
             uip_len = dev_read(&virtioNet);
             if(uip_len == 0) {
-                _printf("there");
                 for(i = 0; i < UIP_CONNS; i++) {
                     uip_periodic(i);
                     /* If the above function invocation resulted in data that
@@ -175,7 +178,6 @@ int main(int argc, char* argv[])
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
                 if(BUF->type == htons(UIP_ETHTYPE_IP)) {
                     uip_arp_ipin();
-                    _printf("[here]\n");
                     uip_input();
                     /* If the above function invocation resulted in data that
                        should be sent out on the network, the global variable
