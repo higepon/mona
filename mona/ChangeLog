@@ -1,3 +1,7 @@
+2009-08-11  higepon  <higepon@users.sourceforge.jp>
+
+	* tool/qemu/start.bat: Added.
+
 2009-05-17  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/PageManager.cpp (PageManager::allocateContiguous): Added for virtio.
