@@ -89,7 +89,6 @@ int main(int argc, char* argv[])
         _printf("[uIP]: MONITOR server doesn't exist\n");
         exit(-1);
     }
-
     VirtioNet virtioNet;
     const int numberOfReadBufferes = 5;
     enum VirtioNet::DeviceState state = virtioNet.probe(numberOfReadBufferes);
@@ -97,7 +96,6 @@ int main(int argc, char* argv[])
         _printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
-
 // qemu -net user mode:
 //   we send DHCP request to QEMU and get an ip address.
 #ifdef USE_QEMU_USER_NETWORK
@@ -109,7 +107,6 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 #endif
-
     {
         u8_t i, arptimer;
 

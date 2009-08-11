@@ -242,17 +242,15 @@ private:
         if (NULL == vring) {
             return NULL;
         }
-
         readFrames_ = new Ether::Frame*[numberOfDescToCreate];
         for (int i = 0; i < numberOfDescToCreate; i++) {
             readFrames_[i] = (Ether::Frame*)makeReadDescSet(vring, i * 2);
             vring->avail->ring[i] = i * 2;
         }
         vring->avail->idx = numberOfDescToCreate;
-
-        // Wait interruption after issued VIRTIO_PCI_QUEUE_PFN.
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc) >> 12);
-        waitInterrupt();
+// Not necessary
+//        waitInterrupt();
 
         lastUsedIndexRead_ = vring->used->idx;
         numberOfReadDesc_ = numberOfDescToCreate;
@@ -282,26 +280,21 @@ public:
             VIRT_LOG("device not found");
             return DEVICE_NOT_FOUND;
         }
-
         // Set up for interrution
         monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
         syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
-
         readVring_ = createReadVring(numberOfReadBufferes);
         if (NULL == readVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
-
         writeVring_ = createEmptyVring(VRING_TYPE_WRITE);
         if (NULL == writeVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
-
         // this flags should be set before VIRTIO_PCI_QUEUE_PFN.
         writeVring_->avail->flags |= VRING_AVAIL_F_NO_INTERRUPT;
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc) >> 12);
         waitInterrupt();
-
         // prepare the data to write
         // virtio_net_hdr is *necessary*
         struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (allocateAlignedPage());
