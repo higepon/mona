@@ -14,7 +14,7 @@ UIP_PATH = ../uip-0.9/uip
 SERVER_PATH  =  ../../../NetServer/net/
 INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
-OBJECTS +=uip.o uip_arp.o uip_arch.o  httpd.o fs.o cgi.o #  ServerMessageLoop.o TcpClient.o
+OBJECTS +=uip.o uip_arp.o uip_arch.o  httpd.o fs.o cgi.o uip_loop.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -58,6 +58,10 @@ endif
 ADDLINK += -lpci -lmonalibc
 
 CXXFLAGS += -DDEBUG
+
+# uip_loop is stub. An user of uIP who touches uip_xxx structs should be compiled with -fpack-struct option.
+uip_loop.o: uip_loop.c
+	$(CC) -o $@ $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c $<
 
 uip.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
 	$(CC) -o uip.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c $(UIP_PATH)/uip.c

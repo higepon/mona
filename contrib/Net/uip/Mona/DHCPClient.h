@@ -172,7 +172,7 @@ public:
         sendDiscovery();
         unsigned int len;
 
-        if (!receiveOffer(&frame, hostAddress, gatewayAddress, 2 /* sec */)) {
+        if (!receiveOffer(&frame, hostAddress, gatewayAddress, 10 /* sec */)) {
             return false;
         }
         sendRequest(&frame);

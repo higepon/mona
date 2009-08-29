@@ -375,8 +375,7 @@ typedef unsigned short uip_stats_t;
  * \hideinitializer
  */
 //#define UIP_CONNS       10
-#define UIP_CONNS       100
-
+#define UIP_CONNS       20
 /**
  * The maximum number of simultaneously listening TCP ports.
  *

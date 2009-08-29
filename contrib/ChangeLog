@@ -1,3 +1,7 @@
+2009-08-29  higepon  <higepon@users.sourceforge.jp>
+
+	* Net/uip/Mona/uip_loop.c (uip_loop): Fixed sizeof(httpd_state) bug. we made uip_loop for -fpack-struct.
+
 2009-08-02  higepon  <higepon@users.sourceforge.jp>
 
 	* Net/uip/Mona/HowToTap.txt: Added.

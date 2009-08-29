@@ -72,7 +72,7 @@ u16_t
 uip_chksum(u16_t *sdata, u16_t len)
 {
   u16_t acc;
-  
+  int i;
   for(acc = 0; len > 1; len -= 2) {
     acc += *sdata;
     if(acc < *sdata) {
@@ -82,7 +82,6 @@ uip_chksum(u16_t *sdata, u16_t len)
     }
     ++sdata;
   }
-
   /* add up any odd uint8_t */
   if(len == 1) {
     acc += htons(((u16_t)(*(u8_t *)sdata)) << 8);
@@ -104,11 +103,10 @@ u16_t
 uip_tcpchksum(void)
 {
   u16_t hsum, sum;
-
+  int i = 0;
   
   /* Compute the checksum of the TCP header. */
   hsum = uip_chksum((u16_t *)&uip_buf[20 + UIP_LLH_LEN], 20);
-
   /* Compute the checksum of the data in the TCP packet and add it to
      the TCP header checksum. */
   sum = uip_chksum((u16_t *)uip_appdata,
@@ -133,9 +131,7 @@ uip_tcpchksum(void)
   if((sum += (u16_t)htons((u16_t)IP_PROTO_TCP)) < (u16_t)htons((u16_t)IP_PROTO_TCP)) {
     ++sum;
   }
-
   hsum = (u16_t)htons((((u16_t)(BUF->len[0]) << 8) + BUF->len[1]) - 20);
-  
   if((sum += hsum) < hsum) {
     ++sum;
   }
