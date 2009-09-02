@@ -96,8 +96,8 @@ private:
 
     vring* readVring_;
     vring* writeVring_;
-    int lastUsedIndexRead_;
-    int lastUsedIndexWrite_;
+    uint16_t lastUsedIndexRead_;
+    uint16_t lastUsedIndexWrite_;
     int irqLine_;
     uintptr_t baseAddress_;
     Ether::Frame** readFrames_;
@@ -325,12 +325,16 @@ public:
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
+            _logprintf("Waiting previous packet is send\n");
         }
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);
         writeVring_->desc[1].len = len; // todo
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
+//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, writeVring_->avail->idx);
+
         writeVring_->avail->idx++;
+//    _logprintf("%s:%d\n", __FILE__, __LINE__);
 
         // Before notify, save the lastUsedIndexWrite_
         lastUsedIndexWrite_ = writeVring_->used->idx + 1;
@@ -372,6 +376,7 @@ public:
                 }
             }
         }
+//        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
 
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
@@ -384,7 +389,10 @@ public:
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
+//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, readVring_->avail->idx);
         readVring_->avail->idx++;
+//    readVring_->avail->idx = (readVring_->avail->idx + 1) % readVring_->num;
+//    _logprintf("%s:%d\n", __FILE__, __LINE__);
         lastUsedIndexRead_++;
 
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {

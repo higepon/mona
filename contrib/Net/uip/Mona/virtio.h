@@ -161,6 +161,6 @@ struct virtio_net_config
     uint16_t status;
 } __attribute__((packed));
 
-#define VIRT_LOG(...) printf("[%s:%d] ", __FILE__, __LINE__), printf(__VA_ARGS__), printf("\n")
+#define VIRT_LOG(...) //_logprintf("[%s:%d] ", __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n")
 
 #endif // VIRTIO_

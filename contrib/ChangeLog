@@ -1,3 +1,7 @@
+2009-09-02  higepon  <higepon@users.sourceforge.jp>
+
+	* Net/uip/uip-0.9/Mona/VirtioNet.h : Fixed the diffrent size of lastUsedIndexRead_. (which should be uint16_t)
+
 2009-08-29  higepon  <higepon@users.sourceforge.jp>
 
 	* Net/uip/Mona/uip_loop.c (uip_loop): Fixed sizeof(httpd_state) bug. we made uip_loop for -fpack-struct.
