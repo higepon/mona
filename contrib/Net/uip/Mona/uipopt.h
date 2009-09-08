@@ -375,7 +375,7 @@ typedef unsigned short uip_stats_t;
  * \hideinitializer
  */
 //#define UIP_CONNS       10
-#define UIP_CONNS       20
+#define UIP_CONNS       50
 /**
  * The maximum number of simultaneously listening TCP ports.
  *
@@ -444,7 +444,9 @@ typedef unsigned short uip_stats_t;
  * This configiration option has no real implication, and it should be
  * left untouched.
  */ 
-#define UIP_TIME_WAIT_TIMEOUT 120
+// On Mosh's uIP demo, we use http only. So very short timeout is acceptable.
+#define UIP_TIME_WAIT_TIMEOUT 10
+//#define UIP_TIME_WAIT_TIMEOUT 120
 
 
 /** @} */

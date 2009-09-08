@@ -1,5 +1,5 @@
 ifndef $(MONADIR)
-export MONADIR=$(shell cd $(PWD)/../../../../../mona; pwd)
+export MONADIR=$(shell cd $(PWD)/../../../../mona; pwd)
 endif
 
 TARGET  = UIP
@@ -59,6 +59,11 @@ ADDLINK += -lpci -lmonalibc
 
 CXXFLAGS += -DDEBUG
 
+../uip-0.9/apps/httpd/fsdata.c : ../uip-0.9/apps/httpd/fs/about.html ../uip-0.9/apps/httpd/fs/img/logo.jpg
+	cd ../uip-0.9/apps/httpd/ && ./makefsdata
+
+../uip-0.9/apps/httpd/fs.c : ../uip-0.9/apps/httpd/fsdata.c
+
 # uip_loop is stub. An user of uIP who touches uip_xxx structs should be compiled with -fpack-struct option.
 uip_loop.o: uip_loop.c
 	$(CC) -o $@ $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c $<
@@ -69,7 +74,7 @@ uip.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessag
 httpd.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
 	$(CC) -o httpd.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip-0.9/apps/httpd/httpd.c
 
-fs.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h #$(SERVER_PATH)/ServerMessageLoop.h
+fs.o: $(UIP_PATH)/uip.c $(UIP_PATH)/uip.h uipopt.h ../uip-0.9/apps/httpd/fsdata.c ../uip-0.9/apps/httpd/fs.h
 	$(CC) -o fs.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip-0.9/apps/httpd/fs.c
 
 cgi.o: $(UIP_PATH)/uip.c $(UIP_PATH)//uip.h uipopt.h # $(SERVER_PATH)/ServerMessageLoop.h

@@ -122,7 +122,6 @@ private:
                 if (dhcp->op != 0x02) {
                     continue;
                 }
-                uint16_t addr[2] ;
                 hostAddress = dhcp->yiaddr;
                 gatewayAddress = dhcp->siaddr;
                 for (int i = 0; i < 6; i++) {
@@ -170,7 +169,6 @@ public:
     {
         Ether::Frame frame;
         sendDiscovery();
-        unsigned int len;
 
         if (!receiveOffer(&frame, hostAddress, gatewayAddress, 10 /* sec */)) {
             return false;

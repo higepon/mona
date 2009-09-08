@@ -100,7 +100,6 @@ int main(int argc, char* argv[])
         _printf("[virtio] virtio-net device not found\n");
         exit(-1);
     }
-    _printf("here");
 // qemu -net user mode:
 //   we send DHCP request to QEMU and get an ip address.
 #ifdef USE_QEMU_USER_NETWORK
@@ -112,7 +111,8 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 #endif
-        /* Initialize the device driver. */
+
+
         /* Initialize the uIP TCP/IP stack. */
         uip_init();
 

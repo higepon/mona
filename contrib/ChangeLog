@@ -1,3 +1,7 @@
+2009-09-09  higepon  <higepon@users.sourceforge.jp>
+
+	* Net/uip: uIP and virio-net driver are now stable.
+
 2009-09-02  higepon  <higepon@users.sourceforge.jp>
 
 	* Net/uip/uip-0.9/Mona/VirtioNet.h : Fixed the diffrent size of lastUsedIndexRead_. (which should be uint16_t)

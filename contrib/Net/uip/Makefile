@@ -36,13 +36,15 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT
-	ln -s $(PWD)/Mona ${WORKDIR}/Mona
+	cp $(PWD)/Mona/html/about.html ${WORKDIR}/apps/httpd/fs/
+	mkdir -p ${WORKDIR}/apps/httpd/fs/img
+	cp $(PWD)/Mona/html/img/logo.jpg ${WORKDIR}/apps/httpd/fs/img/
 	patch -p0 < patch-aa
 	touch $@
 
 .MAKE: .PATCH
-	cd ${WORKDIR}/Mona && make
-	touch $@
+	cd ${PWD}/Mona && make
+#	touch $@
 
 .INSTALL: .MAKE
-	cd ${WORKDIR}/Mona && make install
+	cd ${PWD}/Mona && make install

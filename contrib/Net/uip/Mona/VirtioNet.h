@@ -281,23 +281,27 @@ public:
             return DEVICE_NOT_FOUND;
         }
         // Set up for interrution
-        monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
-        syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         readVring_ = createReadVring(numberOfReadBufferes);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (NULL == readVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writeVring_ = createEmptyVring(VRING_TYPE_WRITE);
         if (NULL == writeVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // this flags should be set before VIRTIO_PCI_QUEUE_PFN.
         writeVring_->avail->flags |= VRING_AVAIL_F_NO_INTERRUPT;
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc) >> 12);
-        waitInterrupt();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//        waitInterrupt();
         // prepare the data to write
         // virtio_net_hdr is *necessary*
         struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (allocateAlignedPage());
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         hdr->flags = 0;
         hdr->csum_offset = 0;
         hdr->csum_start = 0;
@@ -313,6 +317,10 @@ public:
         writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_);
         writeVring_->desc[1].len = sizeof(Ether::Frame);
         lastUsedIndexWrite_ = writeVring_->used->idx;
+
+        monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+        syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
+
         return DEVICE_FOUND;
     }
 
@@ -325,7 +333,7 @@ public:
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
-            _logprintf("Waiting previous packet is send\n");
+//            _logprintf("Waiting previous packet is send\n");
         }
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);

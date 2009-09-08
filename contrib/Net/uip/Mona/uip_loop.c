@@ -82,5 +82,5 @@ void uip_loop()
         }
 
     }
-    return 0;
+    return;
 }
