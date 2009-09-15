@@ -260,7 +260,10 @@ PROCEDURE(CallPipe, "|")
         if (size >= 3)
         {
             // bad!
-            if (buf[size - 5] = '^' && buf[size - 4] == 'E' && buf[size - 3] == 'O' && buf[size - 2] == 'P')
+            if ((buf[size - 5] == '^') &&
+                (buf[size - 4] == 'E') &&
+                (buf[size - 3] == 'O') &&
+                (buf[size - 2] == 'P'))
             {
                 break;
             }
@@ -355,7 +358,7 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
         if (size >= 3)
         {
             // bad!
-            if (buf[size - 5] = '^' && buf[size - 4] == 'E' && buf[size - 3] == 'O' && buf[size - 2] == 'P')
+            if (buf[size - 5] == '^' && buf[size - 4] == 'E' && buf[size - 3] == 'O' && buf[size - 2] == 'P')
             {
                 break;
             }

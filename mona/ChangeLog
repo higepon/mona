@@ -1,3 +1,8 @@
+2009-09-15  higepon  <higepon@users.sourceforge.jp>
+
+	* core/monapi/_alloca.asm: export directive should be placed after the section text
+                                   Otherwise nasm 2.07 will SEGV.
+
 2009-08-11  higepon  <higepon@users.sourceforge.jp>
 
 	* tool/qemu/start.bat: Added.

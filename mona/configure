@@ -99,6 +99,11 @@ CYGWIN)
   ;;
 esac
 
+case "$OSTYPE" in
+  *linux*)
+    BUILD_DEF=-DBUILD_ON_LINUX
+esac
+
 export MINGWPREFIX
 (cd tool/fat_write && ./configure MONADIR=$script_dir --prefix=$script_dir/local) || exit 1
 (cd tool/t5lzma && ./configure) || exit 1
@@ -114,8 +119,8 @@ PATH:=$(PATH):$(PREFIX)/bin
 export PATH
 CFLAGS=-nostdlib -nostdinc -UWIN32 -U_WIN32 -Wall -fno-builtin -O2 -DMONA -DDEBUG_BUILD $(HOSTDEF) -DMONASH_DONT_FREE_MEMORY $(ADDCFLAGS)
 CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti -fno-strict-aliasing
-NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32 -DMONA
-' >> $MAKEINC
+NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32 -DMONA \' >> $MAKEINC
+echo " $BUILD_DEF" >> $MAKEINC
 
 [ x$CSCFLAGS != x ] && echo "CSCFLAGS=$CSCFLAGS" >> $MAKEINC
 [ x$EXEEXT != x ] && echo "EXEEXT=$EXEEXT" >> $MAKEINC

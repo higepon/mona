@@ -1,7 +1,7 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002-2008 Higepon
+    Copyright (c) 2002-2009 Higepon
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
@@ -80,7 +80,7 @@
 #define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
 #endif
 
-const char* version = "Mona version.0.4.0Alpha1 $Date::                           $";
+const char* version = "Mona version.0.3.0RC1 $Date::                           $";
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
 

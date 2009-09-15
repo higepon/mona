@@ -1,4 +1,4 @@
-%ifdef BUILD_ON_LINUX
+%if 0
   %macro cglobal 1
             global %1
   %endmacro
@@ -22,8 +22,8 @@
   %endmacro
 
   %macro cexport 1
-            global _%1
-            export %1
+        global _%1
+        export %1
     %define %1 _%1
   %endmacro
 %endif
