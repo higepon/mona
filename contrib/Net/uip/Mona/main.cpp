@@ -83,6 +83,7 @@ extern "C" void dev_send()
 
 int main(int argc, char* argv[])
 {
+    _printf("************************\n");
     // OK, I've started up.
     if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
     {
@@ -103,10 +104,10 @@ int main(int argc, char* argv[])
 // qemu -net user mode:
 //   we send DHCP request to QEMU and get an ip address.
 #ifdef USE_QEMU_USER_NETWORK
-    DHCPClient dhcp(virtioNet, virtioNet->macAddress());;
+    DHCPClient* dhcp = new DHCPClient(virtioNet, virtioNet->macAddress());;
     uint32_t hostAddress = 0;
     uint32_t gatewayAddress = 0;
-    if (!dhcp.request(hostAddress, gatewayAddress)) {
+    if (!dhcp->request(hostAddress, gatewayAddress)) {
         _printf("[uIP] DHCP server not found. exit server\n");
         exit(-1);
     }
@@ -129,6 +130,6 @@ int main(int argc, char* argv[])
         uip_setnetmask(Util::ipAddressToU16Array(addr, 0x00ffffff /* 255.255.255.0 */));
 #endif
 
-    uip_loop();
+   uip_loop();
     return 0;
 }

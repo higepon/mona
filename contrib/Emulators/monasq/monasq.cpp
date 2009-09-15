@@ -158,8 +158,11 @@ void SqEnvironment::release() {
  *  Squirrel プログラムを実行
  */
 bool SqEnvironment::run(const SQChar* script, size_t len, bool bPrintExp) {
-    static MonAPI::Mutex s_mutex;
-    s_mutex.lock();
+    static MonAPI::Mutex* s_mutex = NULL;
+    if (NULL == s_mutex) {
+        s_mutex = new MonAPI::Mutex;
+    }
+    s_mutex->lock();
     { // synchronized
         if (!SquirrelVM::IsInitialized()) goto failure;
         if (isRunning()) goto failure;
@@ -175,10 +178,10 @@ bool SqEnvironment::run(const SQChar* script, size_t len, bool bPrintExp) {
         // スレッドを開始
         m_scriptThread->start();
     }
-    s_mutex.unlock();
+    s_mutex->unlock();
     return true;
 failure:
-    s_mutex.unlock();
+    s_mutex->unlock();
     return false;
 }
 
@@ -775,8 +778,11 @@ int monasq_snprintf(char *buf, unsigned int size, const char* fmt, ...) {
  *  NULL は返さない
  */
 SqEnvironment* getSqEnvironment() {
-    static SqEnvironment s_sqEnv;
-    return &s_sqEnv;
+    static SqEnvironment* s_sqEnv = NULL;
+    if (NULL == s_sqEnv) {
+        s_sqEnv = new SqEnvironment;
+    }
+    return s_sqEnv;
 }
 
 

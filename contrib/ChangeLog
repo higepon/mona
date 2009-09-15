@@ -1,3 +1,7 @@
+2009-09-15  higepon  <higepon@users.sourceforge.jp>
+
+	* Net/uip/Mona/main.cpp : GCC 4.0. Allocating DHCPClient on stack causes crash.
+
 2009-09-09  higepon  <higepon@users.sourceforge.jp>
 
 	* Net/uip: uIP and virio-net driver are now stable.

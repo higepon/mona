@@ -1,5 +1,5 @@
 /**
- *	monaSq ƒwƒbƒ_
+ *	monaSq ãƒ˜ãƒƒãƒ€
  */
 /*
  *	Copyright (c) 2006 okayu punch
@@ -50,7 +50,7 @@ using namespace std;
 #include "misc/TextArea.h"
 
 
-// ƒNƒ‰ƒX‘O•ûéŒ¾
+// ã‚¯ãƒ©ã‚¹å‰æ–¹å®£è¨€
 class SqRunner;
 class SqEnvironment;
 class MainFrame;
@@ -59,13 +59,13 @@ class ConsoleArea;
 
 
 //================================================================
-// ƒ}ƒNƒ
+// ãƒã‚¯ãƒ­
 //================================================================
 
-// ”z—ñ‚Ì—v‘f”
+// é…åˆ—ã®è¦ç´ æ•°
 #define ARRAY_LENGTH(x)		(sizeof(x) / sizeof(x[0]))
 
-// ‰Â•Ïˆø”ƒŠƒXƒg‚Ì“WŠJƒ}ƒNƒ
+// å¯å¤‰å¼•æ•°ãƒªã‚¹ãƒˆã®å±•é–‹ãƒã‚¯ãƒ­
 #define GET_VA_ARGS(buf, size, fmt) \
 	va_list vl; \
 	va_start(vl, fmt); \
@@ -74,43 +74,43 @@ class ConsoleArea;
 
 
 //================================================================
-// ƒOƒ[ƒoƒ‹ŠÖ”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«é–¢æ•°
 //================================================================
 
-// Squirrel ÀsŠÂ‹«
+// Squirrel å®Ÿè¡Œç’°å¢ƒ
 extern SqEnvironment* getSqEnvironment();
 
-//printf ƒtƒH[ƒ}ƒbƒg‚©‚ç string ƒIƒuƒWƒFƒNƒg¶¬
+//printf ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‹ã‚‰ string ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 extern string fmtString(const char* fmt, ...);
 
-//Squirrel ƒXƒNƒŠƒvƒg‚ğÀs
+//Squirrel ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
 extern void exec_sq_script(HSQUIRRELVM v, SQChar* buffer);
 
 
 
 //================================================================
-// ’è”
+// å®šæ•°
 //================================================================
 
-// ƒƒbƒZ[ƒW’è”
+// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å®šæ•°
 enum {
-	MONASQ_MSG_START = 0x00010000,	// ƒVƒXƒeƒ€ƒƒbƒZ[ƒW‚Æ‚©‚Ô‚ç‚È‚³‚»‚¤‚È“K“–‚È’l
+	MONASQ_MSG_START = 0x00010000,	// ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¨ã‹ã¶ã‚‰ãªã•ãã†ãªé©å½“ãªå€¤
 
-	// Squirrel ‚ÌÀsŠJn^I—¹’Ê’mƒƒbƒZ[ƒW
+	// Squirrel ã®å®Ÿè¡Œé–‹å§‹ï¼çµ‚äº†é€šçŸ¥ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	MONASQ_MSG_SQRUNNER_START = MONASQ_MSG_START,
 	MONASQ_MSG_SQRUNNER_END,
 
-	// ƒRƒ“ƒ\[ƒ‹—“‚Ì‘€ì
+	// ã‚³ãƒ³ã‚½ãƒ¼ãƒ«æ¬„ã®æ“ä½œ
 	MONASQ_MSG_CONSOLE_ADDTEXT,
 	MONASQ_MSG_CONSOLE_CLEAR,
 };
 
 
 //================================================================
-// ƒNƒ‰ƒX
+// ã‚¯ãƒ©ã‚¹
 //================================================================
 /**
- *	Squirrel ƒXƒŒƒbƒhÀs—pƒNƒ‰ƒX
+ *	Squirrel ã‚¹ãƒ¬ãƒƒãƒ‰å®Ÿè¡Œç”¨ã‚¯ãƒ©ã‚¹
  */
 class SqRunner : public Runnable {
 	string m_script;
@@ -138,14 +138,14 @@ public:
 
 
 /**
- *	Squirrel ÀsŠÂ‹«
+ *	Squirrel å®Ÿè¡Œç’°å¢ƒ
  *	<br>
- *	¦•¡”‚ÌÀsŠÂ‹«‚Ìì¬‚â•À—ñÀs‚Í‚Å‚«‚Ü‚¹‚ñ
+ *	â€»è¤‡æ•°ã®å®Ÿè¡Œç’°å¢ƒã®ä½œæˆã‚„ä¸¦åˆ—å®Ÿè¡Œã¯ã§ãã¾ã›ã‚“
  */
 class SqEnvironment {
 	Thread* m_scriptThread;
 	SqRunner m_runner;
-	list<Window*> m_scriptWndList;		// ƒXƒNƒŠƒvƒg‚ªŠÇ—‚µ‚Ä‚¢‚éƒEƒCƒ“ƒhƒEƒŠƒXƒg
+	list<Window*> m_scriptWndList;		// ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒç®¡ç†ã—ã¦ã„ã‚‹ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒªã‚¹ãƒˆ
 	
 public:
 	SqEnvironment() : m_scriptThread(NULL) {}
@@ -160,10 +160,10 @@ public:
 	virtual void stop();
 	virtual void stop_anyway();
 	
-	// Squirrel ƒXƒŒƒbƒhÀsƒIƒuƒWƒFƒNƒg‚ğ•Ô‚·
+	// Squirrel ã‚¹ãƒ¬ãƒƒãƒ‰å®Ÿè¡Œã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã™
 	SqRunner* getSqRunner() { return &m_runner; }
 
-	// ƒEƒCƒ“ƒhƒEŠÇ—
+	// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ç®¡ç†
 	virtual void addScriptWindow(Window* wnd) { m_scriptWndList.push_back(wnd); }
 	virtual void removeScriptWindow(Window* wnd) { m_scriptWndList.remove(wnd); }
 	virtual void stopAllScriptWindow();
@@ -171,11 +171,11 @@ public:
 
 
 /**
- *	ƒ{ƒ^ƒ“
+ *	ãƒœã‚¿ãƒ³
  */
 class MonasqButton : public Button {
 public:
-	// ƒ{ƒ^ƒ“ƒnƒ“ƒhƒ‰ŠÖ”‚Ìƒvƒƒgƒ^ƒCƒv
+	// ãƒœã‚¿ãƒ³ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ã®ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—
 	typedef void (*ButtonHandler)(class MonasqButton* sender, void* p);
 
 private:
@@ -188,16 +188,16 @@ public:
 	MonasqButton(const String& label) :
 		Button(label), mFunc(NULL), mpData(NULL) {}
 
-	//ƒNƒŠƒbƒN‚Ìƒnƒ“ƒhƒ‰‚ğİ’è‚·‚é
+	//ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ãƒãƒ³ãƒ‰ãƒ©ã‚’è¨­å®šã™ã‚‹
 	virtual void setHandler(ButtonHandler func, void* pData = NULL);
 
-	//ƒCƒxƒ“ƒgˆ—
+	//ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
 	void processEvent(Event *event);
 };
 
 
 /**
- *	ƒXƒNƒ[ƒ‹ƒo[
+ *	ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼
  */
 class MonasqScrollbar : public Scrollbar {
 	monasq::TextArea* mLinkedTextArea;
@@ -210,27 +210,27 @@ public:
 		mLinkedTextArea = linkedTextArea;
 	}
 
-	//’l‚ğİ’è‚·‚é
+	//å€¤ã‚’è¨­å®šã™ã‚‹
 	virtual void setValue(int value);
 };
 
 
 /**
- *	“ü—Í—“ƒeƒLƒXƒgƒGƒŠƒA
+ *	å…¥åŠ›æ¬„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢
  */
 class InputArea : public monasq::TextArea {
 
 	bool mbModified;
 
 protected:
-	//ƒCƒxƒ“ƒgˆ—
+	//ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
 	void processEvent(Event *event);
 
 public:
 	InputArea(int buffer_size, bool draw_line)
  		: monasq::TextArea(buffer_size, draw_line), mbModified(false) {}
 
-	// •ÏXƒtƒ‰ƒO
+	// å¤‰æ›´ãƒ•ãƒ©ã‚°
 	bool isModified() { return mbModified; }
 	void setModifyFlag() { mbModified = true; }
 	void resetModifyFlag() { mbModified = false; }
@@ -238,13 +238,13 @@ public:
 
 
 /**
- *	ƒRƒ“ƒ\[ƒ‹—“ƒGƒŠƒA
+ *	ã‚³ãƒ³ã‚½ãƒ¼ãƒ«æ¬„ã‚¨ãƒªã‚¢
  */
 class ConsoleArea : public monasq::TextArea {
 	MonAPI::Mutex m_mutex;
 
 protected:
-	//ƒCƒxƒ“ƒgˆ—
+	//ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
 	void processEvent(Event *event);
 
 public:
@@ -257,14 +257,14 @@ public:
 
 
 /**
- *	ƒƒCƒ“ƒEƒCƒ“ƒhƒE
+ *	ãƒ¡ã‚¤ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
  */
 class MainFrame : public Frame {
 
 	static MainFrame* s_inst;
 	static dword s_mainThreadId;
 
-	// ‚f‚t‚h•”•i
+	// ï¼§ï¼µï¼©éƒ¨å“
 	MonasqButton* mPrevHistoryButton;
 	MonasqButton* mNextHistoryButton;
 	MonasqButton* mRunStopButton;
@@ -277,17 +277,17 @@ class MainFrame : public Frame {
 	ConsoleArea* mConsoleArea;
 	
 	
-	// ƒvƒƒOƒ‰ƒ€ˆø”
+	// ãƒ—ãƒ­ã‚°ãƒ©ãƒ å¼•æ•°
 	List<char*>* m_pekoe;
 	
-	// —š—ğŠÇ—
+	// å±¥æ­´ç®¡ç†
 	vector<string> mHistory;
 	unsigned int mHistCursor;
 	
-	// ƒRƒ“ƒ\[ƒ‹‘€ì
-	list<char*> m_outputMsgQue;		// ƒeƒLƒXƒgo—ÍƒƒbƒZ[ƒW—pƒLƒ…[
+	// ã‚³ãƒ³ã‚½ãƒ¼ãƒ«æ“ä½œ
+	list<char*> m_outputMsgQue;		// ãƒ†ã‚­ã‚¹ãƒˆå‡ºåŠ›ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç”¨ã‚­ãƒ¥ãƒ¼
 	
-	// ‚»‚Ì‘¼ƒtƒ‰ƒO
+	// ãã®ä»–ãƒ•ãƒ©ã‚°
 	bool mbCreated;
 
 
@@ -299,65 +299,65 @@ protected:
 
 public:
 	/**
-	 *	ƒƒCƒ“ƒEƒCƒ“ƒhƒE‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	 *	ãƒ¡ã‚¤ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	 */
-	static MainFrame* MainFrame::getMainFrame() {
+	static MainFrame* getMainFrame() {
 		return s_inst;
 	}
 
 	/**
-	 *	ƒƒCƒ“ƒEƒCƒ“ƒhƒE‚ÉƒƒbƒZ[ƒW‘—M
+	 *	ãƒ¡ã‚¤ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡
 	 */
 	static int send(dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL) {
 		return MonAPI::Message::send(s_mainThreadId, header, arg1, arg2, arg3, str);
 	}
 
-	// ƒRƒ“ƒ\[ƒ‹—“‚ÖƒeƒLƒXƒg’Ç‰ÁƒƒbƒZ[ƒW‚ğ‘—‚é
+	// ã‚³ãƒ³ã‚½ãƒ¼ãƒ«æ¬„ã¸ãƒ†ã‚­ã‚¹ãƒˆè¿½åŠ ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ã‚‹
 	static bool sendConsoleAddText(char* text);
 
 
-	// “ü—Í—“‚É‘Å‚¿‚Ü‚ê‚½ƒXƒNƒŠƒvƒg‚ğÀs
+	// å…¥åŠ›æ¬„ã«æ‰“ã¡è¾¼ã¾ã‚ŒãŸã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
 	void runScript();
 
-	// ƒXƒNƒŠƒvƒg‚ÌÀs‚ğ’â~
+	// ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®å®Ÿè¡Œã‚’åœæ­¢
 	void stopScript();
 
-	// Œ»İs‚ÌƒXƒNƒŠƒvƒg‚ğÀs‚µ‚ÄŒ‹‰Ê‚ğo—Í
+	// ç¾åœ¨è¡Œã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œã—ã¦çµæœã‚’å‡ºåŠ›
 	void printLineScript();
 
-	// ƒJƒŒƒ“ƒg‚Ì—š—ğ“à•¶š—ñ‚ğ•Ô‚·
+	// ã‚«ãƒ¬ãƒ³ãƒˆã®å±¥æ­´å†…æ–‡å­—åˆ—ã‚’è¿”ã™
 	const string& getCurrentHistoryString() {
 		return mHistory[mHistCursor];
 	}
 
 
-	// ‘O‚Ì—š—ğ‚Ö
+	// å‰ã®å±¥æ­´ã¸
 	void prevHistory();
 
-	// Ÿ‚Ì—š—ğ‚Ö
+	// æ¬¡ã®å±¥æ­´ã¸
 	void nextHistory();
 
 
-	// “ü—Í—“‚ÖƒtƒH[ƒJƒX
+	// å…¥åŠ›æ¬„ã¸ãƒ•ã‚©ãƒ¼ã‚«ã‚¹
 	void focusInput(bool bFocused);
 
-	// ƒRƒ“ƒ\[ƒ‹—“‚ÖƒtƒH[ƒJƒX
+	// ã‚³ãƒ³ã‚½ãƒ¼ãƒ«æ¬„ã¸ãƒ•ã‚©ãƒ¼ã‚«ã‚¹
 	void focusConsole(bool bFocused);
 
 
-	// ƒvƒƒOƒ‰ƒ€ˆø”‚ğæ“¾
+	// ãƒ—ãƒ­ã‚°ãƒ©ãƒ å¼•æ•°ã‚’å–å¾—
 	List<char*>* getProgramArgs() {
 		return m_pekoe;
 	}
 
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^EƒfƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	MainFrame(List<char*>* pekoe);
 	virtual ~MainFrame();
 	
 	
 public:
-	// ƒ{ƒ^ƒ“ˆ—ƒnƒ“ƒhƒ‰
-	static void MainFrame::buttonHandler(MonasqButton* sender, void* pData);
+	// ãƒœã‚¿ãƒ³å‡¦ç†ãƒãƒ³ãƒ‰ãƒ©
+	static void buttonHandler(MonasqButton* sender, void* pData);
 };
 
 

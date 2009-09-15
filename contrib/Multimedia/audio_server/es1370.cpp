@@ -218,7 +218,7 @@ error_t es1370_set_stopped_callback(handle_t o, error_t (*callback)(void* ref), 
 
 error_t es1370_buffer_setter(struct es1370_driver *d)
 {
-    static count = 0;
+    static int count = 0;
     error_t result;
     size_t wrote;
     void *buf;
@@ -264,8 +264,8 @@ static error_t es1370_device_init(struct es1370_driver *d)
 //  puts("init pci");
     d->pci = new Pci;
     d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, &d->pciinfo);
-    if( d->pciinfo.Exist != 0 ) return NG;
-    d->baseIO = d->pciinfo.BaseAd & ~1;
+    if( d->pciinfo.isExist != 0 ) return NG;
+    d->baseIO = d->pciinfo.baseAdress & ~1;
 
     pclkdiv = PCLKDIV(44100);
 
@@ -413,8 +413,8 @@ static void es1370_interrupt_catcher(void* a)
 //    _printf("irq=%x\n", d->pciinfo.IrqLine);
 //    logprintf("%s tid=%x\n", __func__, syscall_get_tid());
     syscall_get_io();
-    syscall_set_irq_receiver(d->pciinfo.IrqLine, SYS_MASK_INTERRUPT);
-    monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(d->pciinfo.irqLine, SYS_MASK_INTERRUPT);
+    monapi_set_irq(d->pciinfo.irqLine, MONAPI_TRUE, MONAPI_TRUE);
 
     MessageInfo msg;
     uint32_t stat, result;
@@ -462,7 +462,7 @@ static void es1370_interrupt_catcher(void* a)
                     result = es1370_buffer_setter(d);
 //                  es1370_start_playback(d);
 
-                    monapi_set_irq(d->pciinfo.IrqLine, MONAPI_TRUE, MONAPI_TRUE);
+                    monapi_set_irq(d->pciinfo.irqLine, MONAPI_TRUE, MONAPI_TRUE);
 
                 }
             }

@@ -56,7 +56,7 @@ all:
 	cd Sysutils/gclock && $(MAKE) && $(MAKE) install
 	cd Sysutils/gtimer && $(MAKE) && $(MAKE) install
 	cd Sysutils/startx && $(MAKE) && $(MAKE) install
-	cd Devel/gcc && $(MAKE) && $(MAKE) install
+#	cd Devel/gcc && $(MAKE) && $(MAKE) install
 ### $(MAKE) disk images
 	cd $(MONADIR)/tool/mkimg && $(MAKE)
 

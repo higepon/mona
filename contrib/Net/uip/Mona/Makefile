@@ -14,7 +14,7 @@ UIP_PATH = ../uip-0.9/uip
 SERVER_PATH  =  ../../../NetServer/net/
 INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
-OBJECTS +=uip.o uip_arp.o uip_arch.o  httpd.o fs.o cgi.o uip_loop.o
+OBJECTS += uip.o uip_arp.o uip_arch.o uip_loop.o httpd.o fs.o cgi.o 
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -55,7 +55,8 @@ ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
 
-ADDLINK += -lpci -lmonalibc
+ADDLINK += -lpci -lmonalibc --enable-auto-import
+
 
 CXXFLAGS += -DDEBUG
 

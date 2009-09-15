@@ -28,7 +28,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 extern "C" int DrawFire();
 
-int typeDraw = 0, fireSeed = 0x1234;
+int typeDraw = 0;
+int fireSeed = 0x1234;
 unsigned char calc, *fireScreen, *pImage;
 
 /** クラス宣言 */
