@@ -1,5 +1,7 @@
 2009-09-15  higepon  <higepon@users.sourceforge.jp>
 
+	* core/monapi/monapi_impl.cpp (enterGuard): Now malloc/free family become thread safe.
+
 	* core/monapi/_alloca.asm: export directive should be placed after the section text
                                    Otherwise nasm 2.07 will SEGV.
 

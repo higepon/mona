@@ -189,30 +189,70 @@ void setupArguments(List<char*>* arg) {
 
 }
 
+#if 1
+static volatile int allocGuardCounter = 0;
+static inline void enterGuard() {
 
+    volatile int result = 1;
+    while (result != 0) {
+        asm __volatile__("lock; cmpxchg %1, %2\n"
+                         : "=a" (result)
+                         : "r" (1), "m" (allocGuardCounter), "0" (0)
+                         : "memory");
+    }
+}
+
+static inline void leaveGuard() {
+
+    allocGuardCounter = 0;
+}
+
+#else
+static volatile uint32_t guardMutex = 0;
+static inline void enterGuard() {
+    if (0 == guardMutex) {
+        guardMutex = syscall_mutex_create(0);
+    }
+    syscall_mutex_lock(guardMutex);
+}
+
+static inline void leaveGuard() {
+
+    syscall_mutex_unlock(guardMutex);
+}
+
+#endif
 /*----------------------------------------------------------------------
     malloc / free
 ----------------------------------------------------------------------*/
 void* malloc(unsigned long size) {
+    enterGuard();
     void* ret = mspace_malloc(g_msp,size);
+    leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
 void* calloc(unsigned long n, unsigned long s) {
+    enterGuard();
     void* ret =  mspace_calloc(g_msp,n,s);
+    leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
 void* realloc(void* address, unsigned long size) {
+    enterGuard();
     void* ret = mspace_realloc(g_msp, address, size);
+    leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
 void free(void * address) {
+    enterGuard();
     mspace_free(g_msp, address);
+    leaveGuard();
     return;
 }
 
@@ -223,14 +263,18 @@ void* operator new(size_t size) {
     if (size == 0) {
         size = 1;
     }
+    enterGuard();
     void* ret =  mspace_malloc(g_msp,size);
+    leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
 void operator delete(void* address) {
     if (address == NULL) return;
+    enterGuard();
     mspace_free(g_msp, address);
+    leaveGuard();
     return;
 }
 
@@ -238,14 +282,18 @@ void* operator new[](size_t size) {
     if (size == 0) {
         size = 1;
     }
+    enterGuard();
     void* ret = mspace_malloc(g_msp,size);
+    leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
 void operator delete[](void* address) {
     if (address == NULL) return;
+    enterGuard();
     mspace_free(g_msp, address);
+    leaveGuard();
     return;
 }
 
