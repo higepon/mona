@@ -3,8 +3,8 @@ bits 32
 
 section .text
 
-/* N.B. export directive should be placed after the section text
-        Otherwise nasm 2.07 will SEGV. */
+;;  N.B. export directive should be placed after the section text
+;;         Otherwise nasm 2.07 will SEGV.
 cexport _alloca
 
 _alloca:
