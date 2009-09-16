@@ -33,7 +33,7 @@ int noncheck(uint32_t x){ return 0; }
 
 int main(int argc, char *argv[])
 {
-	AudioServer server;
+	AudioServer* server = new AudioServer();;
 	MessageInfo msg;
 	uint32_t result;
 //	dputs("Audio server was started.\n");
@@ -44,31 +44,30 @@ int main(int argc, char *argv[])
 		{
 			continue;
 		}
-//		dprintf("msg.header = %d\n", msg.header);
 		switch(msg.header)
 		{
 			case MSG_AUDIO_CREATE_CHANNEL:
-				result = server.createChannel(msg.arg1);
+				result = server->createChannel(msg.arg1);
 				audio_message_reply(noncheck, &msg, result);
 				break;
 			case MSG_AUDIO_DESTROY_CHANNEL:
-				result = server.destroyChannel(msg.arg1);
+				result = server->destroyChannel(msg.arg1);
 				audio_message_reply(noncheck, &msg, result);
 				break;
 			case MSG_AUDIO_SET_FORMAT:
-				result = server.setFormat(msg.arg1, (struct audio_data_format*)&msg.str);
+				result = server->setFormat(msg.arg1, (struct audio_data_format*)&msg.str);
 				audio_message_reply(isnotzero, &msg, result);
 				break;
 			case MSG_AUDIO_GET_FORMAT:
-				result = server.getFormat(msg.arg1, (struct audio_data_format*)&msg.str);
+				result = server->getFormat(msg.arg1, (struct audio_data_format*)&msg.str);
 				audio_message_reply(isnotzero, &msg, result, 0, msg.str);
 				break;
 			case MSG_AUDIO_SET_STREAM:
-				result = server.setStream(msg.arg1, msg.arg2);
+				result = server->setStream(msg.arg1, msg.arg2);
 				audio_message_reply(isnotzero, &msg, result);
 				break;
 			case MSG_AUDIO_GET_STREAM:
-				//result = server.getStream(msg.arg1);
+				//result = server->getStream(msg.arg1);
 				audio_message_reply(unsupported, &msg, MONA_FAILURE);
 				//audio_message_reply(iszero, &msg, result);
 				break;
@@ -79,23 +78,23 @@ int main(int argc, char *argv[])
 				audio_message_reply(unsupported, &msg, MONA_FAILURE);
 				break;
 			case MSG_AUDIO_START:
-				result = server.start(msg.arg1);
+				result = server->start(msg.arg1);
 				audio_message_reply(isnotzero, &msg, result);
 				break;
 			case MSG_AUDIO_STOP:
-				result = server.stop(msg.arg1);
+				result = server->stop(msg.arg1);
 				audio_message_reply(isnotzero, &msg, result);
 				break;
 			case MSG_AUDIO_SET_VOLUME:
-				result = server.setVolume(msg.arg1, msg.arg2);
+				result = server->setVolume(msg.arg1, msg.arg2);
 				MonAPI::Message::reply(&msg, result);
 				break;
 			case MSG_AUDIO_GET_VOLUME:
-				result = server.getVolume(msg.arg1);
+				result = server->getVolume(msg.arg1);
 				MonAPI::Message::reply(&msg, result);
 				break;
 			case MSG_AUDIO_WAIT_PLAYING:
-				result = server.wait(msg.arg1);
+				result = server->wait(msg.arg1);
 				MonAPI::Message::reply(&msg, result);
 				break;
 			case MSG_AUDIO_GET_CHANNELS_LIST:

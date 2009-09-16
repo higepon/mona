@@ -38,7 +38,7 @@ $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lmonalibc-imp 
+ADDLINK    = -lmonalibc-imp  --enable-auto-import 
 ADDLINKDEP = 
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

@@ -96,14 +96,12 @@ handle_t es1370_new()
     d->dmabuf1 = monapi_allocate_dma_memory(d->bufsize);
     d->dmabuf2 = monapi_allocate_dma_memory(d->bufsize);
     d->usingBuffer = 0;
-
     d->cb = cb_init(cb_alloc(), d->bufsize, 100);
     if( d->cb == NULL )
     {
         free(d);
         return NULL;
     }
-
 //  puts("init thread");
     d->thread = new MonAPI::Thread(&es1370_interrupt_catcher, d, &es1370_notifier);
 //  puts("init device");
@@ -115,7 +113,6 @@ handle_t es1370_new()
     }
     d->state = PAUSE;
     instance = (handle_t)d;
-
     es1370_set_buffer(d, d->dmabuf1, d->bufsize>>2);
     es1370_set_sample_count(d, d->bufsize>>2);
 //  syscall_get_io();
@@ -264,7 +261,9 @@ static error_t es1370_device_init(struct es1370_driver *d)
 //  puts("init pci");
     d->pci = new Pci;
     d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, &d->pciinfo);
-    if( d->pciinfo.isExist != 0 ) return NG;
+
+    if(!d->pciinfo.isExist) return NG;
+
     d->baseIO = d->pciinfo.baseAdress & ~1;
 
     pclkdiv = PCLKDIV(44100);

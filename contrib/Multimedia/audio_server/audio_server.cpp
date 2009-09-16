@@ -26,6 +26,10 @@ AudioServer::AudioServer() : channel_(NULL)
 {
     driver_ = audio_driver_factory("es1370");
     device_ = driver_->driver_new();
+    if (device_ == NULL) {
+        _logprintf("fatal audio_server %s:%d\n", __FILE__, __LINE__);
+        exit(-1);
+    }
 //    dprintf("device_ = %x\n", device_);
 //    dprintf("this = %x\n", this);
     driver_->driver_set_format(device_, &default_format);

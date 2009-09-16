@@ -1,3 +1,7 @@
+2009-09-16  higepon  <higepon@users.sourceforge.jp>
+
+	* Multimedia/audio_server/es1370.cpp (es1370_device_init): Fixed how to use isExist.
+
 2009-09-15  higepon  <higepon@users.sourceforge.jp>
 
 	* Net/uip/Mona/main.cpp : GCC 4.0. Allocating DHCPClient on stack causes crash.
