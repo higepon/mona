@@ -56,12 +56,23 @@ struct es1370_driver
 
 int check_driver_desc(const struct es1370_driver *d)
 {
-    puts("check_driver_desc");
-    if( d->callback == NULL ) return puts("callback is null");
-    if( d->ref == NULL ) return puts("ref is null");
-    if( d->dmabuf1 == NULL ) return puts("dmabuf1 is null");
-    if( d->dmabuf2 == NULL ) return puts("dmabuf2 is null");
-    return 0;
+//     if( d->callback == NULL ) {
+//        _printf("callback is null");
+//        return -1;
+//     } else
+//         if ( d->ref == NULL ) {
+//         _printf("ref is null");
+//        return -1;
+//     } else
+            if (d->dmabuf1 == NULL) {
+        _printf("dmabuf1 is null");
+       return -1;
+    } else if (d->dmabuf2 == NULL) {
+        _printf("dmabuf2 is null");
+       return -1;
+    } else {
+        return 0;
+    }
 }
 
 static error_t es1370_device_init(struct es1370_driver *d);
@@ -83,7 +94,7 @@ struct audio_driver* es1370_get_driver_desc()
 
 handle_t es1370_new()
 {
-//  puts(__func__);
+//  _printf(__func__);
     struct es1370_driver *d;
     int result;
     if( instance != NULL ) return (handle_t)NULL;
@@ -102,21 +113,22 @@ handle_t es1370_new()
         free(d);
         return NULL;
     }
-//  puts("init thread");
+//  _printf("init thread");
     d->thread = new MonAPI::Thread(&es1370_interrupt_catcher, d, &es1370_notifier);
-//  puts("init device");
+//  _printf("init device");
     result = es1370_device_init(d);
     if( result != OK )
     {
-        puts("Couldn't init device");
+        _printf("Couldn't init device");
         free(d); return NULL;
     }
     d->state = PAUSE;
     instance = (handle_t)d;
     es1370_set_buffer(d, d->dmabuf1, d->bufsize>>2);
     es1370_set_sample_count(d, d->bufsize>>2);
+    check_driver_desc(d);
 //  syscall_get_io();
-//  puts(__func__);
+//  _printf(__func__);
     return (handle_t)d;
 }
 
@@ -174,7 +186,7 @@ size_t es1370_get_block_size(handle_t o)
 
 error_t es1370_start(handle_t o)
 {
-//  puts(__func__);
+//  _printf(__func__);
     struct es1370_driver *d = (struct es1370_driver*)o;
     if (cb_is_empty(d->cb)) {
         char* zerobuf = new char[d->bufsize];
@@ -256,19 +268,22 @@ error_t es1370_buffer_setter(struct es1370_driver *d)
 static error_t es1370_device_init(struct es1370_driver *d)
 {
     uint32_t ctrl, pclkdiv, fmt;
-//  puts(__func__);
+//  _printf(__func__);
 
-//  puts("init pci");
+//  _printf("init pci");
     d->pci = new Pci;
     d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, &d->pciinfo);
-
     if(!d->pciinfo.isExist) return NG;
-
     d->baseIO = d->pciinfo.baseAdress & ~1;
 
     pclkdiv = PCLKDIV(44100);
 
-    ctrl = inp32(d->baseIO+ES1370_REG_CONTROL);
+    // N.B.
+    // Don't include current ES1370_REG_CONTROL status to outp32(d->baseIO+ES1370_REG_CONTROL, ctrl).
+    // It may cause bad sound on QEMU.
+    // Since FreeBSD don't include it also, this may be correct.
+    ctrl = 0; /* inp32(d->baseIO+ES1370_REG_CONTROL); */
+
     ctrl |= ES1370_CDC_EN;
     ctrl &= ~ES1370_SERR_DISABLE;
     ctrl |= pclkdiv;
@@ -330,7 +345,7 @@ union frame_reg
 
 inline static void es1370_set_buffer(struct es1370_driver* d, void *p, size_t size)
 {
-//  puts(__func__);
+//  _printf(__func__);
 //  printf("p = %x\n", p);
 /*
   struct frame_reg fr;
@@ -409,9 +424,9 @@ void rdtsc(uint32_t* timeL, uint32_t* timeH) {
 static void es1370_interrupt_catcher(void* a)
 {
     struct es1370_driver* d = (struct es1370_driver*)a;
-//    _printf("irq=%x\n", d->pciinfo.IrqLine);
 //    logprintf("%s tid=%x\n", __func__, syscall_get_tid());
     syscall_get_io();
+//    _logprintf("audio irq=%d\n", d->pciinfo.irqLine);
     syscall_set_irq_receiver(d->pciinfo.irqLine, SYS_MASK_INTERRUPT);
     monapi_set_irq(d->pciinfo.irqLine, MONAPI_TRUE, MONAPI_TRUE);
 
@@ -434,7 +449,7 @@ static void es1370_interrupt_catcher(void* a)
 //                logprintf("MSG_INTERRUPTED 2\n");
                 //  if( d->state == RUNNING )
                 {
-                    //  puts("INTERRUPTED");
+                    //  _printf("INTERRUPTED");
 //                  es1370_stop_playback(d);
 
                     result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
@@ -444,7 +459,6 @@ static void es1370_interrupt_catcher(void* a)
                     outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2);
                     es1370_set_buffer(d, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2, d->bufsize);
 //                    result = es1370_buffer_setter(d);
-
                     //hige
                     result = OK;
                     if( result != OK )
@@ -453,14 +467,12 @@ static void es1370_interrupt_catcher(void* a)
                         continue;
                         //return;
                     }
-
                     result = inp32(d->baseIO+ES1370_REG_SERIAL_CONTROL);
                     result |= ES1370_P2_INTR_EN;
                     outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
 
                     result = es1370_buffer_setter(d);
 //                  es1370_start_playback(d);
-
                     monapi_set_irq(d->pciinfo.irqLine, MONAPI_TRUE, MONAPI_TRUE);
 
                 }
@@ -493,7 +505,6 @@ size_t es1370_write_block(handle_t o, void *p)
     if (total >= 2) {
         for (size_t i = 0; i < 4096; i++)
         {
-            if (i > 0 && i % 16 == 0) logprintf("\n");
             uint8_t tmp[32];
             sprintf(tmp, "%02x ", ((uint8_t*)p)[i]);
             logprintf(tmp);

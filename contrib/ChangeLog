@@ -1,3 +1,10 @@
+2009-09-26  higepon  <higepon@users.sourceforge.jp>
+
+	* Multimedia/audio_server/es1370.cpp : Improved bad sound on QEMU with virtio-net.
+	  Don't include current ES1370_REG_CONTROL status to outp32(d->baseIO+ES1370_REG_CONTROL, ctrl).
+          It may cause bad sound on QEMU.
+          Since FreeBSD don't include it also, this may be correct.
+	
 2009-09-16  higepon  <higepon@users.sourceforge.jp>
 
 	* Multimedia/audio_server/es1370.cpp (es1370_device_init): Fixed how to use isExist.

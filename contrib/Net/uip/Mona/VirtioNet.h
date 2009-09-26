@@ -317,7 +317,7 @@ public:
         writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_);
         writeVring_->desc[1].len = sizeof(Ether::Frame);
         lastUsedIndexWrite_ = writeVring_->used->idx;
-
+    _printf("net irq=%d\n", irqLine_);
         monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
         syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
 

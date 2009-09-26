@@ -6,9 +6,7 @@ using namespace std;
 // wrapperPlayLoop for thread
 static void __fastcall wrapperPlayLoop(void* p)
 {
-    _printf("hige");
     GUIPlayer* player = (GUIPlayer*)p;
-    _printf("hage");
     player->playLoop();
 }
 
