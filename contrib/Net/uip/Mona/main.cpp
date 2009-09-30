@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     }
 
 #ifdef USE_QEMU_USER_NETWORK
-    _printf("\n\n[uIP Web Server] Access: http://localhost:8080 from your HOST of qemu\n\n");
+    printf("\n\n[uIP Web Server] Access: http://localhost:8080/ from your HOST OS\n\n");
 #endif
     virtioNet = new VirtioNet();
     const int numberOfReadBufferes = 5;

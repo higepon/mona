@@ -15,10 +15,10 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 	@biref コンストラクタ
 */
 mine::mine(){
-	this->setTitle("マインスイーパ");
+	this->setTitle("Minesweeper");
 	int w = 144 + getInsets()->left + getInsets()->right;
 	int h = 144 + getInsets()->top + getInsets()->bottom;
-	this->setBounds(100, 100, w, h);
+	this->setBounds(90, 100, w, h);
 	tile_init();
 	tick = 0;
 	start = false;

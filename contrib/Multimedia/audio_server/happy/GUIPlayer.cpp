@@ -40,7 +40,7 @@ void GUIPlayer::initComponents()
 {
     forwardImage  = new Image((MUSIC_DIR + "/FWD.JPG").data());
     backwardImage = new Image((MUSIC_DIR + "/BACK.JPG").data());
-    setBounds(200, 20, 250, 375);
+    setBounds(300, 200, 250, 375);
     forwardButton  = new ImageSinkButton(forwardImage, forwardImage, forwardImage);
     backwardButton = new ImageSinkButton(backwardImage, backwardImage, backwardImage);
     backwardButton->setBounds(0, 0, 16, 16);

@@ -109,7 +109,7 @@ private:
     void InitializeComponent()
     {
         this->set_ClientSize(Size(Terminal::WIDTH * Terminal::FONT_WIDTH + 4, Terminal::HEIGHT * Terminal::FONT_HEIGHT + 4));
-        this->set_Text("GUI Shell");
+        this->set_Text("Terminal");
         this->set_Opacity(0.8);
         g_terminal = new Terminal();
         g_terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
