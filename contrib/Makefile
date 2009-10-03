@@ -7,39 +7,38 @@ all:
 ### basic libraries
 ### servers
 	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Net/net_server_with_kernel && $(MAKE) && $(MAKE) install
 	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
-#	cd Net/libnet && $(MAKE) && $(MAKE) install
+
 ### non-gui applications
-	cd Emulators/infones && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Emulators/infones && touch dependencies && $(MAKE)  && $(MAKE) install
 	cd Emulators/monamona && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Graphics/jpegview && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Graphics/Mesa-gears && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/jpegview && touch dependencies && $(MAKE) #&& $(MAKE) install
+	cd Graphics/Mesa-gears && touch dependencies && $(MAKE)  && $(MAKE) install
 	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/print && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/upper && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/reverse && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/helloworld && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Misc/print && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Misc/upper && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Misc/reverse && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Multimedia/audio_server && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server/api && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server/client && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server/happy && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/monappt && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/bplayer && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/monapeg && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Multimedia/monappt && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Multimedia/bplayer && touch dependencies && $(MAKE) # && $(MAKE) install
 ### MonaForms applications
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 ### BayGUI applications
-	cd Shells/gshell && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
 ### Network applications
 #	cd Net/libnet/sample/giko && $(MAKE) && $(MAKE) install
@@ -48,7 +47,8 @@ all:
 	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) install
 	cd Games/ghebtn && $(MAKE) && $(MAKE) install
 	cd Games/gnullpo && $(MAKE) && $(MAKE) install
-	cd Games/gtetris && $(MAKE) && $(MAKE) install
+# gtetris can't be exec, bug of file server?
+	cd Games/gtetris && $(MAKE) # &&  $(MAKE) install
 	cd Games/mblupin && $(MAKE) && $(MAKE) install
 	cd Games/mine && $(MAKE) && $(MAKE) install
 	cd Games/mtorz && $(MAKE) && $(MAKE) install
@@ -56,7 +56,8 @@ all:
 	cd Sysutils/gclock && $(MAKE) && $(MAKE) install
 	cd Sysutils/gtimer && $(MAKE) && $(MAKE) install
 	cd Sysutils/startx && $(MAKE) && $(MAKE) install
-#	cd Devel/gcc && $(MAKE) && $(MAKE) install
+# can't build on gcc 4.x
+#	cd Devel/gcc && $(MAKE) # && $(MAKE) install
 ### $(MAKE) disk images
 	cd $(MONADIR)/tool/mkimg && $(MAKE)
 

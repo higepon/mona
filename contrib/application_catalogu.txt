@@ -1,0 +1,73 @@
+(Category
+ (name author path description works-on-0.3.0? type))
+
+(Archivers)
+
+(Benchmarks
+ ("fire" "bayside" "contrib/Benchmarks/gfire/GFIRE.EX5" "Fire effect demo" #t GUI)
+ ("noiz2bg" ("Kenta Cho" "nikq") "contrib/Benchmarks/gnoiz2bg/GNOIZ2BG.EX5" "Megademo" #t GUI))
+
+(Devel
+ ("GCC" "" "contrib/Devel/gcc" "gcc (compilation fails on gcc 4.x)" #f CUI)
+ ("libjava" ("gcj" "bayside") "contrib/Devel/libjava" "" #f LIBRARY)
+ ("smsgc"  "" "contrib/Devel/smsgc" "" #f LIBRARY))
+
+(Emulators
+ ("infones" "bayside" "contrib/Emulators/infones/INFONES.EX5" "NES Emulator. Need *.nes file" #t GUI)
+ ("monasq" "okayu punch" "contrib/Emulators/monasq/MONASQ.EX5" "Squirrel Emulator" #t GUI)
+ ("monamona" "shadow" "contrib/Emulator/monamona" "MONAmona based BF" #t CUI))
+
+(Games
+ ("hebtn" "bayside" "contrib/Games/ghebtn/GHEBTN.APP" "Game" #t GUI)
+ ("nullpo" "bayside" "contrib/Games/gnullpo/GNULLPO.APP" "Game" #f GUI)
+ ("tetris" "sou" "contrib/Games/gtetris/GTETRIS.APP" "Tetris" #f GUI)
+ ("mblupin" "bayside" "contrib/Games/mblupin" "Game" #t GUI)
+ ("minsweeper" "mizyo" "contrib/Games/mine/" "Minesweeper game" #t GUI)
+ ("mtorz" "bayside" "contrib/Games/mtorz" "Game" #t GUI))
+
+(Graphics
+ ("Mesa" "" "contrib/Graphics/Mesa" "Mesa library" #t LIBRARY)
+ ("Mesa gears" "" "contrib/Graphics/Mesa-gears" "Gears" #t CUI)
+ ("Mesa Demos" "" "contrib/Graphics/MesaDemos" "Demos for Mesa library. Some doesn't work." #t GUI)
+ ("bitmap" "unknown" "contrib/Graphics/bitmap/" "Bitmap/Jpeg Viewer" #t GUI)
+ ("jpegview" ("nikq" "Higepon" "contrib/Graphics/jpegview" "Jpeg Viewer" #t CUI)))
+
+(Gui
+ ("glaunch" "bayside" "contrib/Gui/glaunch/" "Launcher" #t GUI)
+ ("libbaygui" "bayside" "contrib/Gui/libbaygui" "GUI library" #t LIBRARY)
+ ("libgui" "Tino" "contrib/Gui/libgui" "GUI library" #t LIBRARY)
+ ("MONAFILE.APP" "unknown" "contrib/Gui/monafile/" "Desktop Window" #t GUI))
+
+(Japanese)
+
+(Misc
+ ("gnote" "hetappi" "contrib/Misc/gnote/" "Simple editor" #t GUI)
+ ("jhello" "unknown" "contrib/Misc/jehello/" "Hello, World written in Java" undef CUI)
+ ("print" "Higepon" "contrib/Misc/print/" "print argv[1] to stdout" #t CUI)
+ ("reverse" "Higepon" "contrib/Misc/reverse/" "read from stdin and reverse and print them" #t CUI)
+ ("upper" "Higepon" "contrib/Misc/upper/" "read from stdin and uppercase and print them" #t CUI))
+
+(Multimedia
+ ("audio client" "Higepon" "contrib/Multimedia/audio_server/client/ACLI.EX5" "sample application of audio_server" #t CUI)
+ ("audio server" ("Shotaro Tsuji" "Higepon" ".mjt") "contrib/Multimedia/audio_server/AUDIO.EX5" "audio server" #t SERVER)
+ ("happy" "Higepon" "contrib/Multimedia/audio_server/happy" "Sound player" #t GUI)
+ ("bplayer" "Higepon" "contrib/Multimedia/bplayer/BPLAYER.APP" "Beep sound player" #t GUI)
+ ("XMONAPEG.EX5" "bayside" "contrib/Multimedia/xmonapeg/" "MPEG player" #f GUI)
+ ("MONAPEG.EX5" "Yui_Neko" "contrib/Multimedia/monapig" "MPEG player" #f CUI)
+ (monappt todo)
+ tremor
+)
+
+(Net
+("MONADAT.APP" "unknown" "contrib/Net/monadat/" "2ch viewer" #t GUI)
+("UIP.EX5" "Higpeon" "contrib/Net/uip" "Port of uIP" #t CUI))
+
+(Shell
+("GSHELL.EX5" ("bayside" "Higepon") "contrib/shells/gshell/" "Shell" todo GUI)
+("MSHELL.EX5" ("Tino" "Higepon") "contrib/Shells/mshell/" "Terminal application" #t GUI))
+
+(Sysutils
+ ("GCLOCK.EX5" "bayside" "contrib/Sysutils/gclock/" "Clock" #t GUI)
+("GTIMER.EX5" "rappa" "contrib/Sysutils/gtimer/" "Timer" #t GUI)
+(libPci todo)
+(startx todo))

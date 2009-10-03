@@ -76,18 +76,18 @@ public:
 		
 		_P<Icon> root = new Icon();
 		root->set_Location(Point(0, offsetX));
-		root->set_Text("/APPS");
+		root->set_Text("/APPS/BAYGUI");
 		root->set_Icon(Icons_Floppy);
 		root->Show();
 		offsetX += 64;
 		
-		_P<Icon> terminal = new Icon();
-		terminal->set_Location(Point(0, offsetX));
-		terminal->set_Text("Terminal");
-		terminal->set_Icon(Icons_Terminal);
-		terminal->set_Target("/APPS/MONAFRMS/MSHELL.EX5");
-		terminal->Show();
-		offsetX += 64;
+// 		_P<Icon> terminal = new Icon();
+// 		terminal->set_Location(Point(0, offsetX));
+// 		terminal->set_Text("Terminal");
+// 		terminal->set_Icon(Icons_Terminal);
+// 		terminal->set_Target("/APPS/MONAFRMS/MSHELL.EX5");
+// 		terminal->Show();
+// 		offsetX += 64;
 		
 		if (DirectoryExists("/APPS/MONAFRMS/MESA"))
 		{
@@ -110,16 +110,16 @@ public:
 			mesa->Show();
 			offsetX += 64;
 		}
-		if (DirectoryExists("/MUSIC"))
-		{
-			_P<Icon> mesa = new Icon();
-			mesa->set_Location(Point(0, offsetX));
-			mesa->set_Text("HAPPY");
-			mesa->set_Icon(Icons_Player);
-			mesa->set_Target("/MUSIC/HAPPY.EX5 -d /MUSIC");
-			mesa->Show();
-			offsetX += 64;
-		}
+// 		if (DirectoryExists("/MUSIC"))
+// 		{
+// 			_P<Icon> mesa = new Icon();
+// 			mesa->set_Location(Point(0, offsetX));
+// 			mesa->set_Text("HAPPY");
+// 			mesa->set_Icon(Icons_Player);
+// 			mesa->set_Target("/MUSIC/HAPPY.EX5 -d /MUSIC");
+// 			mesa->Show();
+// 			offsetX += 64;
+// 		}
 
 		
 		Application::Run();

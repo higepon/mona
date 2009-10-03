@@ -66,7 +66,6 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-    _printf("Hage");
 	GClock *clock = new GClock();
 	clock->run();
 	delete(clock);

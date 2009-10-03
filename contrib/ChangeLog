@@ -1,3 +1,7 @@
+2009-10-03  higepon  <higepon@users.sourceforge.jp>
+
+	* application_catalogu.txt: Added.
+
 2009-09-26  higepon  <higepon@users.sourceforge.jp>
 
 	* Multimedia/audio_server/es1370.cpp : Improved bad sound on QEMU with virtio-net.
