@@ -1,5 +1,5 @@
 (Category
- (name author path description works-on-0.3.0? type))
+ (name author path-or-url description works-on-0.3.0? type))
 
 (Archivers)
 
@@ -36,7 +36,7 @@
  ("glaunch" "bayside" "contrib/Gui/glaunch/" "Launcher" #t GUI)
  ("libbaygui" "bayside" "contrib/Gui/libbaygui" "GUI library" #t LIBRARY)
  ("libgui" "Tino" "contrib/Gui/libgui" "GUI library" #t LIBRARY)
- ("MONAFILE.APP" "unknown" "contrib/Gui/monafile/" "Desktop Window" #t GUI))
+ ("monafile" "unknown" "contrib/Gui/monafile/" "Desktop Window" #t GUI))
 
 (Japanese)
 
@@ -52,22 +52,20 @@
  ("audio server" ("Shotaro Tsuji" "Higepon" ".mjt") "contrib/Multimedia/audio_server/AUDIO.EX5" "audio server" #t SERVER)
  ("happy" "Higepon" "contrib/Multimedia/audio_server/happy" "Sound player" #t GUI)
  ("bplayer" "Higepon" "contrib/Multimedia/bplayer/BPLAYER.APP" "Beep sound player" #t GUI)
- ("XMONAPEG.EX5" "bayside" "contrib/Multimedia/xmonapeg/" "MPEG player" #f GUI)
- ("MONAPEG.EX5" "Yui_Neko" "contrib/Multimedia/monapig" "MPEG player" #f CUI)
- (monappt todo)
- tremor
-)
+ ("xmonapeg" "bayside" "contrib/Multimedia/xmonapeg/" "MPEG player" #f GUI)
+ ("monapeg" "Yui_Neko" "contrib/Multimedia/monapeg" "MPEG player" #f CUI)
+ ("monappt" "bayside" "contrib/Multimedia/monappt" "Presentation demo" #f GUI))
 
 (Net
-("MONADAT.APP" "unknown" "contrib/Net/monadat/" "2ch viewer" #t GUI)
-("UIP.EX5" "Higpeon" "contrib/Net/uip" "Port of uIP" #t CUI))
+ ("monadat" "unknown" "contrib/Net/monadat/" "2ch viewer" #t GUI)
+ ("uIP" "Higpeon" "contrib/Net/uip" "Ported of uIP developed by  by Adam Dunkels" #t SERVER))
 
 (Shell
-("GSHELL.EX5" ("bayside" "Higepon") "contrib/shells/gshell/" "Shell" todo GUI)
-("MSHELL.EX5" ("Tino" "Higepon") "contrib/Shells/mshell/" "Terminal application" #t GUI))
+ ("GSHELL.EX5" ("bayside" "Higepon") "contrib/shells/gshell/" "Shell" #f GUI)
+ ("MSHELL.EX5" ("Tino" "Higepon") "contrib/Shells/mshell/" "Terminal application" #t GUI))
 
 (Sysutils
- ("GCLOCK.EX5" "bayside" "contrib/Sysutils/gclock/" "Clock" #t GUI)
-("GTIMER.EX5" "rappa" "contrib/Sysutils/gtimer/" "Timer" #t GUI)
-(libPci todo)
-(startx todo))
+ ("clock" "bayside" "contrib/Sysutils/gclock/" "Clock" #t GUI)
+ ("timer" "rappa" "contrib/Sysutils/gtimer/" "Timer" #t GUI)
+ ("libpci" "Yamami" "contrib/Sysutils/libPci/" "PCI access library" #t LIBRARY)
+ ("startx" ("bayside" "Tino") "contrib/Sysutils/startx" "GUI Server selector" #f CUI))
