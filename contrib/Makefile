@@ -84,7 +84,6 @@ clean:
 	cd Multimedia/xmonapeg && $(MAKE) clean
 #	cd Net/libnet && $(MAKE) clean
 	cd Net/monadat && $(MAKE) clean
-	cd Net/net_server_with_kernel && $(MAKE) clean
 	cd Net/uip && $(MAKE) clean
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean
