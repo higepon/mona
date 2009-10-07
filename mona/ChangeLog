@@ -1,3 +1,7 @@
+2009-10-07  higepon  <higepon@users.sourceforge.jp>
+
+	* RELNOTE: Added.
+
 2009-09-15  higepon  <higepon@users.sourceforge.jp>
 
 	* core/monapi/monapi_impl.cpp (enterGuard): Now malloc/free family become thread safe.
