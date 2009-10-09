@@ -1,3 +1,58 @@
+* Mona 0.3.0 RELEASE NOTE
+** Overview
+This the first release of Mona for daily use.
+You can listen to music, run a web server and do some work with an interactive shell.
+
+** Major changes since 0.2.0.
+- Ported uIP httpd (Higepon).
+- Added KVM virtio-net driver (Higepon).
+- Added Scheme-based Shell (Higepon)
+- libc implementation (Shotaro Tsuji).
+- Ported a Squirrel programing language (okayu).
+- Added standard I/O and pipe (Higepon).
+- Improved thread APIs (Higepon).
+- Added sound player and driver (Shotaro Tsuji, .mjt and Higepon).
+- Improved CD-ROM access speed (junjunn).
+- Improved console drawing speed (junjunn).
+- Supported build on gcc 4.1.x (shadow).
+- Added VFS (Higepon).
+- Support build on Linux.
+- Added APM support (Shotaro Tsuji).
+- Ported Mesa (Nanashi and pol).
+- Added Stack auto expansion (Higepon).
+- Improved Memory management (Higepon).
+- Boot from CD-ROM (Higepon and Nananshi).
+
+** Applications
+See contrib/application_catalog.txt.
+
+** Roadmap and Directions
+by version 0.0.3 (done)
+- interactive Shell
+- Sounds
+- Stable NIC driver
+
+by version 0.0.4
+- Port BSD Socket
+
+by version 0.0.5
+- Port Mosh Scheme
+- Some network applications
+
+by version 0.0.6
+- Web browser
+- Rewrote some core components in Scheme
+
+** Acknowledgements
+Thanks to all the people who have shown interest in Mona and who have downloaded and tested it.
+
+Particular thanks to those people who have contributed in some way to Mona:
+Shotaro Tsuji, Tino, junjunn, bayside, Gaku, shadow, Yui_Neko, gcj, .mjt, Nanashi, nikq, akky, K-tan, Yamami and gamix.
+
+** Bug report
+https://sourceforge.net/tracker/?group_id=164970&atid=833826
+higepon@users.sourceforge.jp
+
 * Mona 0.3.0 RC1 RELEASE NOTE
 ** Overview
 This the first release of Mona for daily use.
