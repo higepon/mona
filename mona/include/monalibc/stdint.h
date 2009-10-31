@@ -81,9 +81,10 @@ typedef uint64_t	uint_fast64_t;
 /* 7.18.1.4 Integer types capable of hgolding object pointers */
 #ifndef __uintptr_t_defined
 typedef unsigned long int	uintptr_t;
+typedef long int		intptr_t;
 # define __uintptr_t_defined
 #endif
-typedef long int		intptr_t;
+
 
 
 /* 7.18.1.5 Greatest-width integer types */

@@ -25,13 +25,18 @@ enum
     FS_FILE_NOT_FOUND      = 0x06,
     FS_FILE_IS_NOT_OPEN    = 0x07,
     FS_FILE_EXIST          = 0x08,
-    FS_FILE_CREATE_ERROR   = 0x09
+    FS_FILE_CREATE_ERROR   = 0x09,
+    MUTEX_TIMEOUT          = -1,
 };
 
+// IDManager Errors
+//   Since id allcated by IDManager greater than zero,
+//   error numbers are defined as negative number.
 enum
 {
     IDM_OBJECT_NOT_FOUND = -1,
-    IDM_SECURITY_ERROR   = -2
+    IDM_SECURITY_ERROR   = -2,
+    IDM_INVALID_TYPE     = -3
 };
 
 

@@ -9,7 +9,7 @@
 #include "Segments.h"
 
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
-
+#define MULTIPLE_EVENT_MAX 2
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
@@ -19,10 +19,29 @@ public:
     Thread();
     virtual ~Thread();
 
-    inline int getType() const
+    int getType() const
     {
         return THREAD;
     }
+
+    int isWaiting(int event) const
+    {
+        for (int i = 0; i < MULTIPLE_EVENT_MAX; i++) {
+            if (eventsWaiting[i] == event) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void clearEventWaiting()
+    {
+        for (int i = 0; i < MULTIPLE_EVENT_MAX; i++) {
+            eventsWaiting[i] == MEvent::NONE;
+        }
+    }
+
+    void setReturnValue(intptr_t value);
 
 public:
     void Tick()
@@ -32,7 +51,7 @@ public:
     }
 
 public:
-    int waitEvent;
+    int eventsWaiting[MULTIPLE_EVENT_MAX];
     uint32_t priority;
     uint32_t basePriority;
     int index; // for debug only

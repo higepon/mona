@@ -1,0 +1,8 @@
+tstring.o: tstring.cpp /home/taro/mona/include/monalibc/string.h \
+  /home/taro/mona/include/monalibc/stddef.h \
+  /home/taro/mona/include/sys/types.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monalibc/stdio.h \
+  /home/taro/mona/include/monalibc/stdint.h \
+  /home/taro/mona/include/monalibc/stdarg.h \
+  /home/taro/mona/include/monalibc/stdlib.h

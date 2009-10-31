@@ -328,4 +328,5 @@
 ;; (print "...")
 ;; (tstd)
 ;; (print "done")
+(call-process "/APPS/TMUTEX.EX5")
 (gui)

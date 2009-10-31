@@ -8,7 +8,7 @@ using namespace MonAPI;
 ----------------------------------------------------------------------*/
 int sleep(uint32_t ms) {
 
-    uint32_t tick = ms / 10;
+    uint32_t tick = ms / KERNEL_TIMER_INTERVAL_MSEC;
 
     if (tick <= 0)
     {
@@ -20,7 +20,7 @@ int sleep(uint32_t ms) {
 
 int set_timer(uint32_t ms)
 {
-    uint32_t tick = ms / 10;
+    uint32_t tick = ms / KERNEL_TIMER_INTERVAL_MSEC;
 
     if (tick <= 0)
     {
@@ -414,28 +414,74 @@ int syscall_receive(MessageInfo* message)
     return result;
 }
 
-int syscall_mutex_create(uint32_t arg)
+/*
+   function: syscall_mutex_create
+
+   Create a mutex.
+
+   Returns: A positive mutexid.
+
+*/
+intptr_t syscall_mutex_create()
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, arg);
+    intptr_t result;
+    int type = MUTEX_CREATE_NEW;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, type);
     return result;
 }
 
-int syscall_mutex_trylock(int id)
+/*
+   function: syscall_mutex_fetch
+
+   Fetch a mutex by mutexid, the mutex may be created by other process.
+
+   Returns: A positive mutexid if exists. Returns IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
+
+*/
+intptr_t syscall_mutex_fetch(intptr_t id)
+{
+    ASSERT(id != MUTEX_CREATE_NEW);
+    intptr_t result;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, id);
+    return result;
+}
+
+int syscall_mutex_trylock(intptr_t id)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_TRYLOCK, result, id);
     return result;
 }
 
-int syscall_mutex_lock (int id )
+/*
+   function: syscall_mutex_lock_timeout
+
+   Block the callee thread until get a lock or timeout.
+
+   Returns: M_EVENT_MUTEX_UNLOCKED, when the thread gets a lock. M_EVENT_SLEEP, when timeout. IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
+
+*/
+int syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 {
+    intptr_t tick = timeoutMsec / KERNEL_TIMER_INTERVAL_MSEC;
+    if (tick <= 0) {
+        tick = 1;
+    }
+
     int result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_LOCK, result, id);
+    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, tick);
     return result;
 }
 
-int syscall_mutex_unlock(int id)
+int syscall_mutex_lock(intptr_t id)
+{
+    int result;
+    int noTimeout = 0;
+    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
+    return result;
+}
+
+int syscall_mutex_unlock(intptr_t id)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);

@@ -19,7 +19,7 @@ all:
 	cd Graphics/jpegview && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Graphics/Mesa-gears && touch dependencies && $(MAKE)  && $(MAKE) install
 	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Misc/helloworld && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/print && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Misc/upper && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Misc/reverse && touch dependencies && $(MAKE) #&& $(MAKE) install

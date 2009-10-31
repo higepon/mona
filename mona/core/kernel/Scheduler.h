@@ -64,8 +64,9 @@ public:
     void Dump();
     void SetDump();
     void Sleep(Thread* thread, uint32_t tick);
-    void WaitEvent(Thread* thread, int waitEvent);
-    int EventComes(Thread* thread, int waitEvent);
+    void WaitEvent(Thread* thread, int eventForWait);
+    void WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2);
+    int EventComes(Thread* thread, int eventForWait);
     int Kill(Thread* thread);
     uint32_t SetTimer(Thread* thread, uint32_t tick);
     uint32_t KillTimer(uint32_t id, Thread* thread);

@@ -18,6 +18,7 @@
 #include "RTC.h"
 #include "apm.h"
 #include "shutdown.h"
+#include "sys/error.h"
 
 extern const char* version;
 extern uint32_t version_number;
@@ -33,7 +34,8 @@ uint32_t systemcall_mutex_create()
 uint32_t systemcall_mutex_lock(uint32_t id)
 {
     uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_LOCK, result, id);
+    int noTimeout = 0;
+    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
     return result;
 }
 
@@ -47,18 +49,15 @@ uint32_t systemcall_mutex_unlock(uint32_t id)
 // don't call without systemcall
 // this has context change
 // use systemcall_mutex_lock()
-static uint32_t systemcall_mutex_lock2(uint32_t id)
+static uint32_t systemcall_mutex_lock2(uint32_t id, intptr_t timeoutTick)
 {
     KObject* object = g_id->get(id, g_currentThread->thread);
-    if (object == NULL)
-    {
+    if (object == NULL) {
         return g_id->getLastError();
-    }
-    else if (object->getType() != KObject::KMUTEX)
-    {
+    } else if (object->getType() != KObject::KMUTEX) {
         return (uint32_t)-10;
     }
-    return ((KMutex*)object)->lock(g_currentThread->thread);
+    return ((KMutex*)object)->lock(g_currentThread->thread, timeoutTick);
 }
 
 // don't call without systemcall
@@ -209,23 +208,21 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_MUTEX_CREATE:
-        if (SYSTEM_CALL_ARG_1 != 0) {
+        if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
+            intptr_t mutexid = systemcall_mutex_create();
+            ASSERT(mutexid > 0);
+            info->eax = systemcall_mutex_create();
+        } else {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
-            if (object == NULL)
-            {            info->eax = g_id->getLastError();
-            }
-            else if (object->getType() != KObject::KMUTEX)
-            {
-                info->eax = (uint32_t)-10;
-            }
-            else
-            {
+            if (object == NULL) {
+                info->eax = g_id->getLastError();
+            } else if (object->getType() != KObject::KMUTEX) {
+                info->eax = IDM_INVALID_TYPE;
+            } else {
                 KMutex* mutex = (KMutex*)object;
                 mutex->addRef();
                 info->eax = SYSTEM_CALL_ARG_1;
             }
-        } else {
-            info->eax = systemcall_mutex_create();
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
@@ -253,7 +250,7 @@ void syscall_entrance()
 
 
     case SYSTEM_CALL_MUTEX_LOCK:
-        info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1);
+        info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
         break;
 
     case SYSTEM_CALL_SEMAPHORE_DOWN:

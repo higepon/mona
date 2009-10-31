@@ -27,7 +27,7 @@ class KMutex : public KObject {
     virtual ~KMutex();
 
   public:
-    int lock(Thread* thread, bool adaptive = false);
+    int lock(Thread* thread, int timeout = 0);
     int tryLock(Thread* thread);
     int unlock();
     void addRef();
@@ -47,7 +47,6 @@ class KMutex : public KObject {
   private:
     int refcount_;
     List<Thread*>* waitList_;
-    Process* process_;
     Thread* owner_;
 };
 

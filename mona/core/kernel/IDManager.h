@@ -13,13 +13,13 @@ public:
 public:
     KObject* get(int objectID, Thread* who);
     void returnID(int id);
-    int allocateID(KObject* object);
+    intptr_t allocateID(KObject* object);
     int getLastError() const;
 
 private:
     BinaryTree<KObject*> tree;
     int lastError;
-    int id;
+    intptr_t id;
 };
 
 #endif

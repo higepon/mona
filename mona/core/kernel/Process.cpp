@@ -393,8 +393,11 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : waitEvent(MEvent::NONE), lastCpuUsedTick(0), age(0)
+Thread::Thread() : lastCpuUsedTick(0), age(0)
 {
+    for (int i = 0; i < MULTIPLE_EVENT_MAX; i++) {
+        eventsWaiting[i] = MEvent::NONE;
+    }
     /* thread information */
     tinfo = new ThreadInfo;
     ASSERT(tinfo);
@@ -414,6 +417,11 @@ Thread::~Thread()
     delete messageList;
     delete tinfo->archinfo;
     delete tinfo;
+}
+
+void Thread::setReturnValue(intptr_t value)
+{
+    tinfo->archinfo->eax = (uint32_t)value;
 }
 
 /*----------------------------------------------------------------------

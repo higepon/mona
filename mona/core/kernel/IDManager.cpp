@@ -31,7 +31,7 @@ int IDManager::getLastError() const
     return this->lastError;
 }
 
-int IDManager::allocateID(KObject* object)
+intptr_t IDManager::allocateID(KObject* object)
 {
     int id = this->id++;
 

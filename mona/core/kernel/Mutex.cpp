@@ -26,70 +26,48 @@ KMutex::KMutex() : refcount_(1), owner_(NULL)
 
 KMutex::~KMutex()
 {
-    if (waitList_->size() != 0)
-    {
+    if (waitList_->size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
     }
     delete waitList_;
 }
 
-int KMutex::lock(Thread* thread, bool adaptive /* = false */)
+int KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
 {
     enter_kernel_lock_mode();
     /* lock OK */
-    if (!isLocked())
-    {
+    if (!isLocked()) {
         owner_ = thread;
-
     /* lock NG, so wait */
-    }
-    else if (adaptive)
-    {
-        if (waitList_->size() > 1)
-        {
-            waitList_->add(thread);
-            g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
-            g_scheduler->SwitchToNext();
-
-            /* not reached */
-        }
-        else
-        {
-            while (isLocked());
-        }
-    }
-    else
-    {
+    } else {
         waitList_->add(thread);
-        g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
+        if (0 == timeoutTick) {
+            g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
+        } else {
+            g_scheduler->Sleep(thread, timeoutTick);
+            // todo
+            g_scheduler->WaitEvent2(thread, MEvent::SLEEP, MEvent::MUTEX_UNLOCKED);
+        }
         g_scheduler->SwitchToNext();
 
         /* not reached */
     }
     exit_kernel_lock_mode();
-    return MONA_SUCCESS;
+
+    // Returns the reason for return
+    return MEvent::MUTEX_UNLOCKED;
 }
 
 int KMutex::tryLock(Thread* thread)
 {
     int result;
-
-//     /* not locked */
-//     if (!isLocked())
-//     {
-//         return NORMAL;
-//     }
-
     enter_kernel_lock_mode();
 
     /* lock OK */
-    if (!isLocked())
-    {
+    if (!isLocked()) {
         owner_ = thread;
         result = MONA_SUCCESS;
-    }
-    else
-    {
+    } else {
         result = MONA_FAILURE;
     }
 
@@ -100,19 +78,16 @@ int KMutex::tryLock(Thread* thread)
 int KMutex::unlock()
 {
     /* not locked */
-    if (!isLocked())
-    {
+    if (!isLocked()) {
         return MONA_SUCCESS;
     }
 
     enter_kernel_lock_mode();
 
-    if (waitList_ ->size() == 0)
-    {
+    if (waitList_ ->size() == 0) {
         owner_ = NULL;
     }
-    else
-    {
+    else {
         owner_ = waitList_->removeAt(0);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         g_scheduler->SwitchToNext();

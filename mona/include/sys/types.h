@@ -20,9 +20,29 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
+#define KERNEL_TIMER_INTERVAL_MSEC 10
+
 enum {
     MONA_SUCCESS = 1, /* don't change */
     MONA_FAILURE = 0  /* don't change */
+};
+
+#ifndef __uintptr_t_defined
+typedef unsigned long int   uintptr_t;
+typedef long int        intptr_t;
+# define __uintptr_t_defined
+#endif
+
+enum {
+    M_EVENT_NONE             = 64,
+    M_EVENT_SLEEP            = 20,
+    M_EVENT_TIMER_MESSAGE    = 19,
+    M_EVENT_MESSAGE          = 22,
+    M_EVENT_MUTEX_UNLOCKED   = 27,
+    M_EVENT_SEMAPHORE_UPPED  = 28,
+    M_EVENT_INTERRUPT_HIGH   = 0,
+    M_EVENT_INTERRUPT_MIDDLE = 7,
+    M_EVENT_INTERRUPT_LOW    = 17
 };
 
 #ifndef __SIZE_TYPE__
@@ -45,7 +65,7 @@ typedef unsigned int            uint32_t;
 #endif
 
 #ifndef __uintptr_t_defined
-typedef unsigned long int	uintptr_t;
+typedef unsigned long int   uintptr_t;
 # define __uintptr_t_defined
 #endif
 
@@ -205,6 +225,11 @@ enum
 enum
 {
     ATTRIBUTE_DIRECTORY = 0x10
+};
+
+enum
+{
+    MUTEX_CREATE_NEW = 0
 };
 
 enum

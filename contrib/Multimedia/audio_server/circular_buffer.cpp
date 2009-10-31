@@ -31,7 +31,7 @@ CB *cb_init(CB *cb, int blocksize, int maxblocks)
     cb->ei = 0;
     cb->p = (char*)malloc(maxblocks*blocksize);
     if( cb->p == NULL ) return NULL;
-    cb->mutex = syscall_mutex_create(0);
+    cb->mutex = syscall_mutex_create();
     cb->semaphore = syscall_semaphore_create(maxblocks, 0);
     return cb;
 }

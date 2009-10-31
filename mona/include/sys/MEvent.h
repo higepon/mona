@@ -9,15 +9,15 @@ class MEvent
 public:
     enum
     {
-        NONE             = 64,
-        SLEEP            = 20,
-        TIMER_MESSAGE    = 19,
-        MESSAGE          = 22,
-        MUTEX_UNLOCKED   = 27,
-        SEMAPHORE_UPPED  = 28,
-        INTERRUPT_HIGH   = 0,
-        INTERRUPT_MIDDLE = 7,
-        INTERRUPT_LOW    = 17
+        NONE             = M_EVENT_NONE,
+        SLEEP            = M_EVENT_SLEEP,
+        TIMER_MESSAGE    = M_EVENT_TIMER_MESSAGE,
+        MESSAGE          = M_EVENT_MESSAGE,
+        MUTEX_UNLOCKED   = M_EVENT_MUTEX_UNLOCKED,
+        SEMAPHORE_UPPED  = M_EVENT_SEMAPHORE_UPPED,
+        INTERRUPT_HIGH   = M_EVENT_INTERRUPT_HIGH,
+        INTERRUPT_MIDDLE = M_EVENT_INTERRUPT_MIDDLE,
+        INTERRUPT_LOW    = M_EVENT_INTERRUPT_LOW
     };
 };
 

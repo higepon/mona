@@ -658,6 +658,9 @@ void makeArpReply(Ether::Frame* reply, Arp::Header* request, uint32_t myIpAddres
 
 int main(int argc, char* argv[])
 {
+    uint8_t* p = (uint8_t*)0;
+    *p = 0;
+    return 0; 
     const uint32_t myIpAddress = Util::ipAddressToUint32_t(192, 168, 50, 3);
 
     VirtioNet receiver;

@@ -153,15 +153,18 @@ void Scheduler::WakeupSleep()
 bool Scheduler::WakeupSleep(Thread* thread)
 {
     ASSERT(thread);
-
-    if (thread->waitEvent != MEvent::SLEEP) return false;
+    int eventIndex = thread->isWaiting(MEvent::SLEEP);
+    if (-1 == eventIndex) {
+        return false;
+    }
 
     if (thread->wakeupSleep > this->totalTick) return false;
 
     thread->priority = MEvent::SLEEP; // umm
     thread->lastCpuUsedTick = 0;
 
-    thread->waitEvent = MEvent::NONE;
+    thread->setReturnValue(MEvent::SLEEP);
+    thread->eventsWaiting[eventIndex] = MEvent::NONE;
     MoveToNewPosition(runq, thread);
 
     return true;
@@ -270,24 +273,36 @@ void Scheduler::Sleep(Thread* thread, uint32_t tick)
     WaitEvent(thread, MEvent::SLEEP);
 }
 
-void Scheduler::WaitEvent(Thread* thread, int waitEvent)
+void Scheduler::WaitEvent(Thread* thread, int eventForWait)
 {
-    ASSERT(thread);
-
-    thread->waitEvent = waitEvent;
-
-    thread->Remove();
-    waitq[GetTargetQeueue(waitEvent)]->AddToPrev(thread);
+    WaitEvent2(thread, eventForWait, MEvent::NONE);
 }
 
-int Scheduler::EventComes(Thread* thread, int waitEvent)
+void Scheduler::WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2)
 {
     ASSERT(thread);
 
-    if (thread->waitEvent != waitEvent) return 0;
+    thread->eventsWaiting[0] = eventForWait1;
+    thread->eventsWaiting[1] = eventForWait2;
 
-    thread->waitEvent = MEvent::NONE;
-    thread->priority = waitEvent; // umm
+    thread->Remove();
+    waitq[GetTargetQeueue(eventForWait1)]->AddToPrev(thread);
+}
+
+int Scheduler::EventComes(Thread* thread, int eventForWait)
+{
+    ASSERT(thread);
+
+    int eventIndex = thread->isWaiting(eventForWait);
+    if (eventIndex == -1) {
+        return 0;
+    }
+
+    // Tells the client what event comes.
+    thread->setReturnValue(thread->eventsWaiting[eventIndex]);
+    thread->clearEventWaiting();
+
+    thread->priority = eventForWait; // umm
     thread->lastCpuUsedTick = 0;
 
     MoveToNewPosition(runq, thread);

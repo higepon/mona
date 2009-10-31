@@ -8,26 +8,47 @@ namespace MonAPI {
 
 Mutex::Mutex() : destroyed_(false)
 {
-    mutexId_ = syscall_mutex_create(0);
+    mutexId_ = syscall_mutex_create();
 }
 
-Mutex::Mutex(uint32_t mutexId) : destroyed_(false)
+Mutex::Mutex(intptr_t mutexId) : destroyed_(false)
 {
-    syscall_mutex_create(mutexId);
-    mutexId_ = mutexId;
+    mutexId_ = syscall_mutex_fetch(mutexId);
 }
 
-Mutex::~Mutex() {
-
-    if (!destroyed_)
-    {
+Mutex::~Mutex()
+{
+    if (!destroyed_) {
         destroy();
     }
 }
 
 int Mutex::lock()
 {
-    return syscall_mutex_lock(mutexId_);
+    int result = syscall_mutex_lock(mutexId_);
+    return result;
+}
+
+/*
+   function: lock
+
+   Block the callee thread until get a lock or timeout.
+
+   Returns: 0, when the thread gets a lock. Mutex::TIMEOUT, when timeout.
+
+*/
+int Mutex::lock(intptr_t timeoutMsec)
+{
+    int result = syscall_mutex_lock_timeout(mutexId_, timeoutMsec);
+    switch(result) {
+    case M_EVENT_SLEEP:
+        return TIMEOUT;
+    case M_EVENT_MUTEX_UNLOCKED:
+        return 0;
+    default:
+        ASSERT(true);
+        return -1;
+    }
 }
 
 int Mutex::unlock()
@@ -42,7 +63,9 @@ int Mutex::tryLock()
 
 int Mutex::destroy()
 {
-    if (destroyed_) return MONA_SUCCESS;
+    if (destroyed_) {
+        return MONA_SUCCESS;
+    }
     destroyed_ = true;
     return syscall_mutex_destroy(mutexId_);
 }

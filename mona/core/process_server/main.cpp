@@ -91,8 +91,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
         if (tid != THREAD_UNKNOWN)
         {
             Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path);
-            if (msg.arg2 != 0)
-            {
+            if (msg.arg2 != 0) {
                 result = 0;
                 entryPoint = msg.arg3;
                 mi = monapi_cmemoryinfo_new();

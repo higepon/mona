@@ -44,6 +44,7 @@ endif
 tests: tools cores
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
+	cd test/monapi/mutex && $(MAKE) && $(MAKE) install
 
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
@@ -65,7 +66,11 @@ depend: clean
 	cd test/monalibc/string && $(MAKE) $@
 	cd test/monalibc/stdio && $(MAKE) $@
 
-.PHONY: clean
+.PHONY: clean doc
+
+doc:
+	perl ~/NaturalDocs-1.4/NaturalDocs -i . -o HTML doc/html -p doc/config -s pink
+
 clean:
 	$(MAKE) $@ -C core/firstboot
 ifdef CSC
