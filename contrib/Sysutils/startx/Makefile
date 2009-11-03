@@ -14,7 +14,7 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-ADDLINK    = -ljpegls
+ADDLINK    = -ljpegls --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libjpegls.a
 
 $(TARGET).EXE: $(INSTFILES)

@@ -5,7 +5,7 @@ TARGET  = KEYBDMNG
 SOURCES = main.cpp KeyboardManager.cpp
 INSTDIR = $(BINDIR)/SERVERS
 
-ADDLINK    = -lmonalibc-imp
+ADDLINK    = -lmonalibc-imp --enable-auto-import
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)

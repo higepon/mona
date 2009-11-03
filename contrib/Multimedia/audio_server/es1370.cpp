@@ -456,7 +456,7 @@ static void es1370_interrupt_catcher(void* a)
                     result &= ~ES1370_P2_INTR_EN;
                     outp32(d->baseIO+ES1370_REG_SERIAL_CONTROL, result);
 
-                    outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2);
+                    outp32(d->baseIO+ES1370_REG_DAC2_FRAMEADR, d->usingBuffer == 1 ? (uint32_t)d->dmabuf1 : (uint32_t)d->dmabuf2);
                     es1370_set_buffer(d, d->usingBuffer == 1 ? d->dmabuf1 : d->dmabuf2, d->bufsize);
 //                    result = es1370_buffer_setter(d);
                     //hige

@@ -288,7 +288,7 @@ void GraphicalConsole::putCharacter(char ch) {
     \author  HigePon
     \date    create:2002/07/22 update:
 */
-void GraphicalConsole::print(char* str) {
+void GraphicalConsole::print(const char* str) {
 
      for (; *str != '\0'; str++) {
          putCharacter(*str);

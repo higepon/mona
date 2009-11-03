@@ -398,7 +398,7 @@ private:
         bootstrap[1] = 0x89; // mov ebp
         bootstrap[2] = 0xE5; // ,esp
         PEDataList::size_type i;
-        char buf[128];
+        //char buf[128];
         const uint32_t CALL_CODE_SIZE = 13;
 
         // dllmain construct

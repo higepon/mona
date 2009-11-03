@@ -19,7 +19,7 @@
 
 #define MAX_2 (2 * MAX_1 + MAX_1 / 10)
 
-void eprintf (int line, char *result, char *expected, int size)
+void eprintf (int line, const char *result, const char *expected, int size)
 {
   if (size != 0)
     printf ("Failure at line %d, result is <%.*s>, should be <%s> of size %d\n",

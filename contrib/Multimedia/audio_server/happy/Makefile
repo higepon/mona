@@ -30,7 +30,7 @@ CLEANFILES = $(TREMOR_SOURCES:.c=.o)
 $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    = $(TREMOR_OBJECTS) -lmonalibc-imp -laudioapi-imp -lbaygui-imp
+ADDLINK    = $(TREMOR_OBJECTS) -lmonalibc-imp -laudioapi-imp -lbaygui-imp --enable-auto-import
 ADDLINKDEP = $(TREMOR_OBJECTS)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 

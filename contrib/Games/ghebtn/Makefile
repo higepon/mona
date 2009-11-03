@@ -7,7 +7,7 @@ CLEANFILES = $(INSTFILES)
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp
+ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

@@ -46,7 +46,7 @@ private:
     uint32_t getColor (char color);
     void nextCursor ();
     void newLine ();
-    void print(char* str);
+    void print(const char* str);
 //    void putInt(size_t n, int base);
     void putCharacter(char ch);
 

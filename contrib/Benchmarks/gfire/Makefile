@@ -5,7 +5,7 @@ NASMSRCS = fire.asm
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp
+ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

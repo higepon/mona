@@ -7,7 +7,7 @@ SOURCES = mutex.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    =  -lmonalibc-imp
+ADDLINK    =  -lmonalibc-imp --enable-auto-import
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

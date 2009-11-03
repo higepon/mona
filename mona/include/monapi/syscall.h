@@ -11,7 +11,7 @@ typedef int (FuncMain)(int argc, char* argv[]);
 
 typedef int (FuncMonaMain)(List<char*>*);
 
-extern void invokeFuncList(FuncVoid** list, char* file, int line);
+extern void invokeFuncList(FuncVoid** list, const char* file, int line);
 extern bool isInDLL(FuncVoid** ctors);
 extern int MonaMain(List<char*>* pekoe);
 extern void setupArguments(List<char*>* arg);

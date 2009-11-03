@@ -9,7 +9,7 @@ SOURCES = gclock.cpp
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    =  -lmonalibc-imp -lbaygui-imp
+ADDLINK    =  -lmonalibc-imp -lbaygui-imp --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

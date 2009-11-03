@@ -193,7 +193,7 @@ void LogConsole::putCharacter(char ch)
     \author  HigePon
     \date    create:2004/03/05 update:
 */
-void LogConsole::print(char* str)
+void LogConsole::print(const char* str)
 {
     while (*str)
     {

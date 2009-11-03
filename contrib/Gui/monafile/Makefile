@@ -6,7 +6,7 @@ CLEANFILES = $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lgui-imp
+ADDLINK    = -lgui-imp --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

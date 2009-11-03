@@ -108,7 +108,7 @@ void VesaConsole::putCharacter(char ch)
     nextCursor();
 }
 
-void VesaConsole::print(char* str)
+void VesaConsole::print(const char* str)
 {
     for (int i = 0; '\0' != str[i]; i++) {
         putCharacter(str[i]);

@@ -69,7 +69,7 @@ __attribute__((destructor)) void monapi_finalize()
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
 
-void invokeFuncList(FuncVoid** list, char* file, int line)
+void invokeFuncList(FuncVoid** list, const char* file, int line)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
 //    _logprintf("%s:[%s:%s:%d]address=%x\n", __func__, pi.name, file, line, list);
@@ -132,7 +132,7 @@ int user_start_impl(FuncMonaMain* monaMain)
 
 extern "C" int user_start_c_impl(FuncMain* main)
 {
-    bool dll = isInDLL(__CTOR_LIST__);
+//    bool dll = isInDLL(__CTOR_LIST__);
     int argc = syscall_get_arg_count();
     char** _argv = new char*[argc];
     for (int i = 0; i < argc; i++)

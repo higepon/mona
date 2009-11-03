@@ -98,6 +98,7 @@ void *memset(void* pTo,int iValue,size_t nCount)
     for(n=0;n<i4ByteCount;n++)  {*pdwTo++ = dwValue4;}
     uint8_t* pcTo=(uint8_t*)pdwTo;
     for(n=0;n<i1ByteCount;n++)  {*pcTo++ = byValue;}
+    return pTo;
 }
 #endif
 /*!

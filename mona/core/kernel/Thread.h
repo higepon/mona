@@ -37,7 +37,7 @@ public:
     void clearEventWaiting()
     {
         for (int i = 0; i < MULTIPLE_EVENT_MAX; i++) {
-            eventsWaiting[i] == MEvent::NONE;
+            eventsWaiting[i] = MEvent::NONE;
         }
     }
 

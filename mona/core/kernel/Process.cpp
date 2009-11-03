@@ -395,6 +395,7 @@ void ThreadOperation::sendKilledMessage()
 ----------------------------------------------------------------------*/
 Thread::Thread() : lastCpuUsedTick(0), age(0)
 {
+
     for (int i = 0; i < MULTIPLE_EVENT_MAX; i++) {
         eventsWaiting[i] = MEvent::NONE;
     }

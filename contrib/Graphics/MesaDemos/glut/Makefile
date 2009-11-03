@@ -39,7 +39,7 @@ CFLAGS += -nostdinc -DGLUT_IMPORT_LIB
 CXXFLAGS += -nostdinc -DGLUT_IMPORT_LIB -DDEBUG
 
 INCLUDE = -I$(INCDIR) -I$(INCDIR)/monalibc -I../include -I../../Mesa-6.2.1/include
-LINK    = -L$(MONADIR)/lib -L../../Mesa-6.2.1/lib -lGLU-imp -lOSMesa-imp -lgui-imp -lmonalibc-imp -lmonapi-imp
+LINK    = -L$(MONADIR)/lib -L../../Mesa-6.2.1/lib -lGLU-imp -lOSMesa-imp -lgui-imp -lmonalibc-imp -lmonapi-imp --enable-auto-import
 
 all: $(TARGET)
 

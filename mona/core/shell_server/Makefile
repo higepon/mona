@@ -5,7 +5,7 @@ TARGET  = SHELL
 SOURCES = main.cpp Shell.cpp InternalCommands.cpp
 INSTDIR = $(BINDIR)/SERVERS
 
-ADDLINK    = -lmonalibc
+ADDLINK    = -lmonalibc --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)

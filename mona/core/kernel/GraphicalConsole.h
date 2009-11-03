@@ -65,7 +65,7 @@ class GraphicalConsole : public VirtualConsole {
     void backwardCursor(int n);
     void newLine();
     void scrollUp();
-    void print(char* str);
+    void print(const char* str);
   private:
     char bgcolor_;
     char chcolor_;

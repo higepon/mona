@@ -15,7 +15,6 @@ int render(void* buffer, size_t size)
 {
 	short *p = (short*)buffer;
 	static float phase = 0.0;
-	static int counter = 0;
 	float samplingRate = 44100;
 	float sinewaveFrequency = 440;
 	float freq = sinewaveFrequency * 2 * M_PI / samplingRate;

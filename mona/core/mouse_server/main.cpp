@@ -243,18 +243,18 @@ private:
     char dx, dy;
     uint8_t button, prevButton;
     int w, h;
-    Screen* vscreen;
+//    Screen* vscreen;
     List<uint32_t>* destList;
     Cursor cursor;
 
 public:
-    MouseServer() : needPaint(false), disableCount(0)
+    MouseServer() : needPaint(false), disableCount(0), dx(0), dy(0)
     {
     }
 
     virtual ~MouseServer()
     {
-        delete this->vscreen;
+//        delete this->vscreen;
     }
 
 public:

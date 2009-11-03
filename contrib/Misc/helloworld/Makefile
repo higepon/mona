@@ -8,7 +8,7 @@ SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    =  -lonigurum-imp -lmonalibc-imp -lpci-imp
+ADDLINK    =  -lonigurum-imp -lmonalibc-imp -lpci-imp --enable-auto-import
 #ADDLINK    = -ldlltest-imp
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc

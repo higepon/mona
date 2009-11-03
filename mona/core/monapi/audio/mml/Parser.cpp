@@ -375,7 +375,7 @@ bool Parser::getNumber(double* number)
 
 char Parser::getChar()
 {
-    if (text_.size() <= postion_) return EOF;
+    if (text_.size() <= (size_t)postion_) return EOF;
     int c = text_[postion_];
     postion_++;
     return __toupper(c);

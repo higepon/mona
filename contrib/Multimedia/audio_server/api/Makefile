@@ -29,7 +29,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(LIBDIR) -lmonalibc -lmonapi-imp 
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(LIBDIR) -lmonalibc -lmonapi-imp --enable-auto-import
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
