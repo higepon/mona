@@ -56,7 +56,6 @@ File: System Calls  (no auto-title, core/monapi/syscall.cpp)
 Group: Index  {
 
    Index: Everything
-   File Index: Files
    Function Index: Functions
    }  # Group: Index
 
