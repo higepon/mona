@@ -29,10 +29,11 @@ int Mutex::lock()
     return result;
 }
 
-/*
-   function: lock
+/*!
+   @fn lock
 
    Block the callee thread until get a lock or timeout.
+   @param hige
 
    Returns: 0, when the thread gets a lock. Mutex::TIMEOUT, when timeout.
 

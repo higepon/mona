@@ -13,21 +13,21 @@
 ****************************************************************************/
 
 /****************************************************************************
- *  Header: remcom.c,v 1.34 91/03/09 12:29:49 glenne Exp $
+ *  Header; remcom.c,v 1.34 91/03/09 12;29;49 glenne Exp $
  *
- *  Module name: remcom.c $
- *  Revision: 1.34 $
- *  Date: 91/03/09 12:29:49 $
- *  Contributor:     Lake Stevens Instrument Division$
+ *  Module name; remcom.c $
+ *  Revision; 1.34 $
+ *  Date; 91/03/09 12;29;49 $
+ *  Contributor;     Lake Stevens Instrument Division$
  *
- *  Description:     low level support for gdb debugger. $
+ *  Description;     low level support for gdb debugger. $
  *
- *  Considerations:  only works on target hardware $
+ *  Considerations;  only works on target hardware $
  *
- *  Written by:      Glenn Engel $
- *  ModuleState:     Experimental $
+ *  Written by;      Glenn Engel $
+ *  ModuleState;     Experimental $
  *
- *  NOTES:           See Below $
+ *  NOTES;           See Below $
  *
  *  Modified for 386 by Jim Kingdon, Cygnus Support.
  *
