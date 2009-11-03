@@ -1,5 +1,7 @@
 2009-11-03  higepon  <higepon@users.sourceforge.jp>
 
+	* core/kernel/Process.cpp (Thread::Thread): Refactoring.
+
 	* Added --enable-auto-import flag.
 
 	* core/kernel/Thread.h (class Thread): Fixed a bug of clearEventWaiting().
