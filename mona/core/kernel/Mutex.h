@@ -27,13 +27,19 @@ class KMutex : public KObject {
     virtual ~KMutex();
 
   public:
-    int lock(Thread* thread, int timeout = 0);
-    int tryLock(Thread* thread);
-    int unlock();
+    intptr_t lock(Thread* thread, int timeout = 0);
+    intptr_t tryLock(Thread* thread);
+    intptr_t unlock();
+    bool removeFromWaitList(Thread* thread)
+    {
+        Thread* removedThread = waitList_->remove(thread);
+        return thread == removedThread;
+    }
     void addRef();
     void releaseRef();
 
-    inline bool isLocked() const {
+    inline bool isLocked() const
+    {
         return (owner_ != NULL);
     }
 

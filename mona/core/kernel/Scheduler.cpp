@@ -1,6 +1,7 @@
 #include "Scheduler.h"
 #include "Process.h"
 #include "global.h"
+#include "sys/error.h"
 
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
@@ -160,10 +161,19 @@ bool Scheduler::WakeupSleep(Thread* thread)
 
     if (thread->wakeupSleep > this->totalTick) return false;
 
+    // When the thread is waiting both MEvent::MUTEX_UNLOCKED and MEvent::SLEEP,
+    // we have to remove the thread from Mutex waitList.
+    int mutexIndex = thread->isWaiting(MEvent::MUTEX_UNLOCKED);
+    if (-1 != mutexIndex) {
+        KMutex* waitingMutex = thread->getWaitingMutex();
+        bool removed = waitingMutex->removeFromWaitList(thread);
+        ASSERT(removed);
+    }
+
     thread->priority = MEvent::SLEEP; // umm
     thread->lastCpuUsedTick = 0;
 
-    thread->setReturnValue(MEvent::SLEEP);
+    thread->setReturnValue(M_TIMED_OUT);
     thread->eventsWaiting[eventIndex] = MEvent::NONE;
     MoveToNewPosition(runq, thread);
 
@@ -248,7 +258,7 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 
 uint32_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 {
-    KObject* object = g_id->get(id, thread);
+    KObject* object = g_id->get(id, thread, KObject::KTIMER);
 
     if (object == NULL)
     {

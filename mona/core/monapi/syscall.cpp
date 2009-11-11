@@ -423,9 +423,11 @@ int syscall_receive(MessageInfo* message)
 /*
    function: syscall_mutex_create
 
-   Create a mutex.
+   Creates and returns a new mutex.
 
-   Returns: A positive mutexid.
+   Returns:
+
+     A positive mutexid.
 
 */
 intptr_t syscall_mutex_create()
@@ -441,20 +443,38 @@ intptr_t syscall_mutex_create()
 
    Fetch a mutex by mutexid, the mutex may be created by other process.
 
-   Returns: A positive mutexid if exists. Returns IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+
+   Returns:
+
+     A positive mutexid if exists. Returns IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
 
 */
-intptr_t syscall_mutex_fetch(intptr_t id)
+intptr_t syscall_mutex_fetch(intptr_t mutexid)
 {
-    ASSERT(id != MUTEX_CREATE_NEW);
+    ASSERT(mutexid != MUTEX_CREATE_NEW);
     intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, id);
+    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, mutexid);
     return result;
 }
 
-int syscall_mutex_trylock(intptr_t id)
+/*
+   function: syscall_mutex_try_lock
+
+   Try to lock the mutex. When the mutex is locked by other process, returns M_
+
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+
+   Returns: M_EVENT_MUTEX_UNLOCKED, when the thread gets a lock. IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
+
+*/
+intptr_t syscall_mutex_trylock(intptr_t id)
 {
-    int result;
+    intptr_t result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_TRYLOCK, result, id);
     return result;
 }
@@ -464,39 +484,79 @@ int syscall_mutex_trylock(intptr_t id)
 
    Block the callee thread until get a lock or timeout.
 
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+     timeoutMsec - timeout in msec.
+
    Returns: M_EVENT_MUTEX_UNLOCKED, when the thread gets a lock. M_EVENT_SLEEP, when timeout. IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
 
 */
-int syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
+intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 {
     intptr_t tick = timeoutMsec / KERNEL_TIMER_INTERVAL_MSEC;
     if (tick <= 0) {
         tick = 1;
     }
 
-    int result;
+    intptr_t result;
     SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, tick);
     return result;
 }
 
-int syscall_mutex_lock(intptr_t id)
+/*
+   function: syscall_mutex_lock
+
+   Block the callee thread until get a lock.
+
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+
+     Returns: Returns <<M_OK>> if the mutex is successfully locked, or <<M_BAD_MUTEX_ID> if mutexid is invalid.
+
+*/
+intptr_t syscall_mutex_lock(intptr_t id)
 {
-    int result;
-    int noTimeout = 0;
+    intptr_t result;
+    intptr_t noTimeout = 0;
     SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
     return result;
 }
 
-int syscall_mutex_unlock(intptr_t id)
+/*
+   function: syscall_mutex_unlock
+
+   unlock the mutex.
+
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+
+     Returns: Returns <<M_OK>> if the mutex is successfully unlocked, or <<M_BAD_MUTEX_ID> if mutexid is invalid.
+*/
+intptr_t syscall_mutex_unlock(intptr_t id)
 {
-    int result;
+    intptr_t result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
     return result;
 }
 
-int syscall_mutex_destroy(int id)
+/*
+   function: syscall_mutex_destroy
+
+   destroy the mutex.
+
+   Parameters:
+
+     id - mutexid returned by <syscall_mutex_create>.
+
+   Returns: Returnes M_OK. IDM_OBJECT_NOT_FOUND, IDM_SECURITY_ERROR or IDM_INVALID_TYPE on error.
+
+*/
+intptr_t syscall_mutex_destroy(intptr_t id)
 {
-    int result;
+    intptr_t result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_DESTROY, result, id);
     return result;
 }

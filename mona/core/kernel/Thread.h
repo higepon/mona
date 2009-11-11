@@ -7,12 +7,14 @@
 #include "sys/types.h"
 #include "sys/MEvent.h"
 #include "Segments.h"
+#include "Mutex.h"
 
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
 #define MULTIPLE_EVENT_MAX 2
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
+class KMutex;
 class Thread : public Node, public KObject
 {
 public:
@@ -43,6 +45,19 @@ public:
 
     void setReturnValue(intptr_t value);
 
+    void setWaitingMutex(KMutex* mutex) {
+        ASSERT((mutex != NULL && waitingMutex_ == NULL) || (mutex == NULL && waitingMutex_ != NULL));
+        waitingMutex_ = mutex;
+    }
+
+    KMutex* getWaitingMutex() const {
+        return waitingMutex_;
+    }
+
+    bool hasWaitingMutex() const {
+        return waitingMutex_ == NULL;
+    }
+
 public:
     void Tick()
     {
@@ -66,6 +81,11 @@ public:
     class StackSegment* stackSegment;
     //add by TAKA
     uint32_t kernelStackBottom;
+private:
+    // Waiting mutex.
+    // If you want to add another waiting lock primitive,
+    // Make this waitingMutex_ to a pointer to lockPrimitive struct.
+    KMutex* waitingMutex_; 
 };
 
 #endif

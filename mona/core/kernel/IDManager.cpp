@@ -10,7 +10,7 @@ IDManager::~IDManager()
 {
 }
 
-KObject* IDManager::get(int objectID, Thread* who)
+KObject* IDManager::get(int objectID, Thread* who, int type)
 {
     if (!tree.contains(objectID))
     {
@@ -21,6 +21,10 @@ KObject* IDManager::get(int objectID, Thread* who)
     if (object->checkSecurity(who) != 0)
     {
         this->lastError = IDM_SECURITY_ERROR;
+        return NULL;
+    }
+    if (object->getType() != type) {
+        this->lastError = IDM_INVALID_TYPE;
         return NULL;
     }
     return object;

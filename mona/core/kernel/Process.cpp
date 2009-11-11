@@ -393,7 +393,7 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : lastCpuUsedTick(0), age(0)
+Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL)
 {
     clearEventWaiting();
     /* thread information */

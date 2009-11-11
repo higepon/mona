@@ -49,13 +49,11 @@ uint32_t systemcall_mutex_unlock(uint32_t id)
 // don't call without systemcall
 // this has context change
 // use systemcall_mutex_lock()
-static uint32_t systemcall_mutex_lock2(uint32_t id, intptr_t timeoutTick)
+static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread);
-    if (object == NULL) {
-        return g_id->getLastError();
-    } else if (object->getType() != KObject::KMUTEX) {
-        return (uint32_t)-10;
+    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    if (NULL == object) {
+        return M_BAD_MUTEX_ID;
     }
     return ((KMutex*)object)->lock(g_currentThread->thread, timeoutTick);
 }
@@ -63,22 +61,14 @@ static uint32_t systemcall_mutex_lock2(uint32_t id, intptr_t timeoutTick)
 // don't call without systemcall
 // this has context change
 // use systemcall_mutex_unlock()
-static uint32_t systemcall_mutex_unlock2(uint32_t id)
+static intptr_t systemcall_mutex_unlock2(intptr_t id)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread);
-
-    if (object == NULL)
-    {
-        return g_id->getLastError();
+    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    if (object == NULL) {
+        return M_BAD_MUTEX_ID;
     }
-    else if (object->getType() != KObject::KMUTEX)
-    {
-        return (uint32_t)-10;
-    }
-
     return ((KMutex*)object)->unlock();
 }
-
 
 void syscall_entrance()
 {
@@ -188,15 +178,11 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MTHREAD_KILL:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::THREAD)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -213,11 +199,9 @@ void syscall_entrance()
             ASSERT(mutexid > 0);
             info->eax = systemcall_mutex_create();
         } else {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
             if (object == NULL) {
                 info->eax = g_id->getLastError();
-            } else if (object->getType() != KObject::KMUTEX) {
-                info->eax = IDM_INVALID_TYPE;
             } else {
                 KMutex* mutex = (KMutex*)object;
                 mutex->addRef();
@@ -227,14 +211,10 @@ void syscall_entrance()
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
         if (SYSTEM_CALL_ARG_1 == 0) {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread);
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread, KObject::USER_SEMAPHORE);
             if (object == NULL)
             {
                 info->eax = g_id->getLastError();
-            }
-            else if (object->getType() != KObject::USER_SEMAPHORE)
-            {
-                info->eax = (uint32_t)-10;
             }
             else
             {
@@ -255,29 +235,21 @@ void syscall_entrance()
 
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::USER_SEMAPHORE)
-        {
-            info->eax =  (uint32_t)-10;
         }
         info->eax = ((UserSemaphore*)object)->down(g_currentThread->thread);
         break;
     }
     case SYSTEM_CALL_MUTEX_TRYLOCK:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::KMUTEX)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -288,15 +260,11 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_TRYDOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::USER_SEMAPHORE)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -312,15 +280,11 @@ void syscall_entrance()
 
     case SYSTEM_CALL_SEMAPHORE_UP:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::USER_SEMAPHORE)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -332,15 +296,11 @@ void syscall_entrance()
     case SYSTEM_CALL_MUTEX_DESTROY:
 
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::KMUTEX)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {
@@ -354,15 +314,11 @@ void syscall_entrance()
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
 
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
         if (object == NULL)
         {
             info->eax = g_id->getLastError();
-        }
-        else if (object->getType() != KObject::USER_SEMAPHORE)
-        {
-            info->eax = (uint32_t)-10;
         }
         else
         {

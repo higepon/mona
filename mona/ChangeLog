@@ -1,3 +1,11 @@
+2009-11-12  higepon  <higepon@users.sourceforge.jp>
+
+	* test/monapi/mutex/mutex.cpp : Fixing bug on syscall_mutex_lock_timeout.
+
+2009-11-11  higepon  <higepon@users.sourceforge.jp>
+
+	* include/sys/error.h (enum): Added M_OK.
+
 2009-11-04  higepon  <higepon@users.sourceforge.jp>
 
 	* doc/config/Languages.txt : Added document tool support.

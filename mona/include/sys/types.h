@@ -22,10 +22,13 @@
 
 #define KERNEL_TIMER_INTERVAL_MSEC 10
 
+/* todo remove*/
+/* USE M_OK instead. see error.h */
 enum {
     MONA_SUCCESS = 1, /* don't change */
     MONA_FAILURE = 0  /* don't change */
 };
+
 
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;

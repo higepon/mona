@@ -12,6 +12,7 @@
 */
 
 #include <sys/HList.h>
+#include <sys/error.h>
 #include "Mutex.h"
 #include "io.h"
 #include "syscalls.h"
@@ -32,15 +33,20 @@ KMutex::~KMutex()
     delete waitList_;
 }
 
-int KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
+intptr_t KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
 {
     enter_kernel_lock_mode();
     /* lock OK */
     if (!isLocked()) {
         owner_ = thread;
     /* lock NG, so wait */
+    } else if (owner_ == thread) {
+        // do nothing. lock done.
     } else {
         waitList_->add(thread);
+
+        // If lock is timed out, the scheduler will remove this thread from waitList_.
+        thread->setWaitingMutex(this);
         if (0 == timeoutTick) {
             g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
         } else {
@@ -55,10 +61,10 @@ int KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
     exit_kernel_lock_mode();
 
     // Returns the reason for return
-    return MEvent::MUTEX_UNLOCKED;
+    return M_OK;
 }
 
-int KMutex::tryLock(Thread* thread)
+intptr_t KMutex::tryLock(Thread* thread)
 {
     int result;
     enter_kernel_lock_mode();
@@ -75,28 +81,27 @@ int KMutex::tryLock(Thread* thread)
     return result;
 }
 
-int KMutex::unlock()
+intptr_t KMutex::unlock()
 {
     /* not locked */
     if (!isLocked()) {
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     enter_kernel_lock_mode();
 
     if (waitList_ ->size() == 0) {
         owner_ = NULL;
-    }
-    else {
+    } else {
+        g_currentThread->thread->setWaitingMutex(NULL);
         owner_ = waitList_->removeAt(0);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         g_scheduler->SwitchToNext();
 
         /* not reached */
     }
-
     exit_kernel_lock_mode();
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int KMutex::checkSecurity(Thread* thread)
