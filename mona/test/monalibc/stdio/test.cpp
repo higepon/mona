@@ -1,6 +1,7 @@
 #include <monapi.h>
+#define MUNIT_GLOBAL_VALUE_DEFINED
+#include <monapi/MUnit.h>
 #include <stdio.h>
-#include "test.h"
 
 #define TEST_TXT "/APPS/TSTDIO.APP/TEST.TXT"
 
@@ -12,19 +13,16 @@ int test5();
 
 int main(int argc, char* argv[])
 {
-//    printf("test start\n");
-    if (argc > 1)
-    {
+    if (argc > 1) {
         printf(argv[1]);
         return -2;
-    }
-    else
-    {
+    } else {
         test1();
         test2();
         test3();
         test4();
         test5();
+        TEST_RESULTS(stdio);
         return 0;
     }
 }
@@ -32,83 +30,57 @@ int main(int argc, char* argv[])
 int test1()
 {
     FILE* f = fopen(TEST_TXT, "rb");
-    if (NULL == f)
-    {
-        TEST_ERROR("can't open file");
-    }
+    EXPECT_TRUE(NULL != f);
     char buf[32];
     uint32_t size = fread(buf, 1, 32, f);
-    TEST_ASSERT_EQUAL(buf[0], 'A');
-    TEST_ASSERT_EQUAL(buf[31], 'F');
-    TEST_ASSERT_EQUAL(size, 32);
+    EXPECT_EQ('A', buf[0]);
+    EXPECT_EQ(buf[31], 'F');
+    EXPECT_EQ(size, 32);
     fclose(f);
-    TEST_SUCCESS();
 }
 
 int test2()
 {
     FILE* f = fopen(TEST_TXT, "rb");
-    if (NULL == f)
-    {
-        TEST_ERROR("can't open file");
-    }
-    if (-1 == fseek(f, 0, SEEK_END))
-    {
-        TEST_ERROR("can't fseek");
-    }
+    ASSERT_TRUE(f != NULL);
+    ASSERT_TRUE(-1 != fseek(f, 0, SEEK_END));
     size_t size = ftell(f);
-    TEST_ASSERT_EQUAL(size, 44);
+    EXPECT_EQ(size, 44);
     fclose(f);
-    TEST_SUCCESS();
 }
 
 int test3()
 {
     FILE* f = fopen(TEST_TXT, "rb");
-    if (NULL == f)
-    {
-        TEST_ERROR("can't open file");
-    }
-    TEST_ASSERT_EQUAL(fgetc(f), 'A');
-    TEST_ASSERT_EQUAL(fgetc(f), '1');
-    TEST_ASSERT_EQUAL(fgetc(f), '2');
-    TEST_ASSERT_EQUAL(fgetc(f), '3');
-    TEST_ASSERT_EQUAL(fgetc(f), '4');
-    TEST_ASSERT_EQUAL(fgetc(f), '5');
+    ASSERT_TRUE(NULL != f);
+    EXPECT_EQ(fgetc(f), 'A');
+    EXPECT_EQ(fgetc(f), '1');
+    EXPECT_EQ(fgetc(f), '2');
+    EXPECT_EQ(fgetc(f), '3');
+    EXPECT_EQ(fgetc(f), '4');
+    EXPECT_EQ(fgetc(f), '5');
     fclose(f);
-    TEST_SUCCESS();
 }
 
 int test4()
 {
     FILE* f = fopen(TEST_TXT, "rb");
-    if (NULL == f)
-    {
-        TEST_ERROR("can't open file");
-    }
-    if (-1 == fseek(f, 0, SEEK_END))
-    {
-        TEST_ERROR("can't fseek");
-    }
+    ASSERT_TRUE(NULL != f);
+    ASSERT_TRUE(-1 != fseek(f, 0, SEEK_END));
     size_t size = ftell(f);
-    TEST_ASSERT_EQUAL(size, 44);
+    EXPECT_EQ(size, 44);
     char* buffer = new char[size + 1];
-    if (NULL == buffer)
-    {
-        TEST_ERROR("memory error");
-    }
+    ASSERT_TRUE(NULL != buffer);
     fseek(f, 0, SEEK_SET);
-    TEST_ASSERT_EQUAL(fread(buffer, 1, size, f), 44);
-    TEST_ASSERT_EQUAL(buffer[0], 'A');
-    TEST_ASSERT_EQUAL(buffer[31], 'F');
+    EXPECT_EQ(fread(buffer, 1, size, f), 44);
+    EXPECT_EQ(buffer[0], 'A');
+    EXPECT_EQ(buffer[31], 'F');
     delete[] buffer;
     fclose(f);
-    TEST_SUCCESS();
 }
 
 int test5()
 {
-    TEST_ASSERT_EQUAL(fileno(stdout), fileno(stdout));
-    TEST_ASSERT_EQUAL(fileno(stderr), fileno(stderr));
-    TEST_SUCCESS();
+    EXPECT_EQ(fileno(stdout), fileno(stdout));
+    EXPECT_EQ(fileno(stderr), fileno(stderr));
 }

@@ -6,12 +6,12 @@
 using namespace MonAPI;
 
 static Mutex* mutex;
-
-#define MSG_STARTUP 1234
-#define MSG_PLEASE_UNLOCK    1235
-#define MSG_UNLOCKED         1236
-
 static intptr_t mutexid;
+enum {
+    MSG_STARTUP       = 1234,
+    MSG_PLEASE_UNLOCK,
+    MSG_UNLOCKED
+};
 
 uintptr_t waitSubThread()
 {

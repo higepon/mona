@@ -1,5 +1,7 @@
 2009-11-14  higepon  <higepon@users.sourceforge.jp>
 
+	* test/monalibc/stdio/test.cpp : Modified to use MUnit.
+
 	* include/monapi/Mutex.h (MonAPI): Added document for Mutex class.
 
 	* test/monapi/mutex/mutex.cpp (testClassMutex): Added test of Mutex class.
