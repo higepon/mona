@@ -74,7 +74,7 @@ intptr_t KMutex::tryLock(Thread* thread)
         owner_ = thread;
         result = M_OK;
     } else {
-        result = M_RESOURCE_BUSY;
+        result = M_BUSY;
     }
 
     exit_kernel_lock_mode();

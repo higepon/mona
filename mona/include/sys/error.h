@@ -71,11 +71,11 @@ enum
     */
     M_TIMED_OUT,
     /*
-       constant: M_RESOURCE_BUSY
+       constant: M_BUSY
 
        Indicates the resource is busy state.
     */
-    M_RESOURCE_BUSY,
+    M_BUSY,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

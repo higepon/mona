@@ -98,7 +98,7 @@ void testSyscallMutex()
     EXPECT_EQ(M_TIMED_OUT, syscall_mutex_lock_timeout(mutexid, 10));
 
     // try lock fails
-    EXPECT_EQ(M_RESOURCE_BUSY, syscall_mutex_try_lock(mutexid));
+    EXPECT_EQ(M_BUSY, syscall_mutex_try_lock(mutexid));
 
     // try lock invalid mutexid
     EXPECT_EQ(M_BAD_MUTEX_ID, syscall_mutex_try_lock(1234));
@@ -153,7 +153,7 @@ void testClassMutex()
     EXPECT_EQ(M_TIMED_OUT, mutex->lock(10));
 
     // try lock fails
-    EXPECT_EQ(M_RESOURCE_BUSY, mutex->tryLock());
+    EXPECT_EQ(M_BUSY, mutex->tryLock());
 
     // make sub thread unlock the mutex
     MessageInfo msg;

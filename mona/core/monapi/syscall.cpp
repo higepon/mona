@@ -463,7 +463,7 @@ intptr_t syscall_mutex_fetch(intptr_t mutexid)
 /*
    function: syscall_mutex_try_lock
 
-   Try to lock the mutex. When the mutex is locked by other process, returns <M_RESOURCE_BUSY>.
+   Try to lock the mutex. When the mutex is locked by other process, returns <M_BUSY>.
 
    Parameters:
 
@@ -471,7 +471,7 @@ intptr_t syscall_mutex_fetch(intptr_t mutexid)
 
    Returns:
 
-     Returns <M_OK> if the mutex is successfully locked. <M_RESOURCE_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutexid is invalid.
+     Returns <M_OK> if the mutex is successfully locked. <M_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutexid is invalid.
 
 */
 intptr_t syscall_mutex_try_lock(intptr_t id)

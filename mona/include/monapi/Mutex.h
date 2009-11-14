@@ -88,10 +88,10 @@ public:
     /*
        function: tryLock
 
-       Try to lock the mutex. When the mutex is locked by other process, returns <M_RESOURCE_BUSY>.
+       Try to lock the mutex. When the mutex is locked by other process, returns <M_BUSY>.
 
        Returns:
-         Returns <M_OK> if the mutex is successfully locked. <M_RESOURCE_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutex is invalid.
+         Returns <M_OK> if the mutex is successfully locked. <M_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutex is invalid.
 
     */
     intptr_t tryLock();
