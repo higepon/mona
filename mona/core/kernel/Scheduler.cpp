@@ -166,6 +166,7 @@ bool Scheduler::WakeupSleep(Thread* thread)
     int mutexIndex = thread->isWaiting(MEvent::MUTEX_UNLOCKED);
     if (-1 != mutexIndex) {
         KMutex* waitingMutex = thread->getWaitingMutex();
+        thread->setWaitingMutex(NULL);
         bool removed = waitingMutex->removeFromWaitList(thread);
         ASSERT(removed);
     }

@@ -10,10 +10,19 @@
     \date   create:2004/03/10 update:$Date$
 */
 
+/*
+    Title: Errors
+
+    Pre-defined system errors.
+
+    <M_OK> indicates a successful return and is guaranteed to be zero.
+    Other errors are guaranteed to be negative value.
+*/
+
 #ifndef _MONA_ERROR_
 #define _MONA_ERROR_
 
-// 
+//
 
 // http://sena--web.hp.infoseek.co.jp/oldbeos/BeBookJ/The%20Support%20Kit/ErrorCodes.html
 
@@ -42,13 +51,34 @@ enum
 //   error numbers are defined as negative number.
 enum
 {                              // A normal value (which means no error) should be positive.
-    M_OK                 = 0,  // OK is always zero
+    /*
+       constant: M_OK
+
+       Indicates a successful return. M_OK is guaranteed to be zero.
+    */
+    M_OK                 = 0,
     M_XX = -5000,
+    /*
+       constant: M_BAD_MUTEX_ID
+
+       Indicates a bad mutexid is spcified.
+    */
     M_BAD_MUTEX_ID       ,
+    /*
+       constant: M_TIMED_OUT
+
+       Indicates the action has been timed out.
+    */
     M_TIMED_OUT,
+    /*
+       constant: M_RESOURCE_BUSY
+
+       Indicates the resource is busy state.
+    */
+    M_RESOURCE_BUSY,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
-    IDM_INVALID_TYPE     
+    IDM_INVALID_TYPE
 };
 
 

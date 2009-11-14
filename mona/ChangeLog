@@ -1,3 +1,13 @@
+2009-11-14  higepon  <higepon@users.sourceforge.jp>
+
+	* include/monapi/Mutex.h (MonAPI): Added document for Mutex class.
+
+	* test/monapi/mutex/mutex.cpp (testClassMutex): Added test of Mutex class.
+
+	* include/monapi/MUnit.h: Added simple unit test.
+
+	* include/sys/error.h : Added some document.
+
 2009-11-12  higepon  <higepon@users.sourceforge.jp>
 
 	* test/monapi/mutex/mutex.cpp : Fixing bug on syscall_mutex_lock_timeout.

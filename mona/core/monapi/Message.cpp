@@ -5,6 +5,7 @@
 #include <monapi/Message.h>
 #include <monapi/syscall.h>
 #include <monapi/string.h>
+#include <sys/error.h>
 
 namespace MonAPI {
 
@@ -24,7 +25,7 @@ int Message::send(uint32_t tid, uint32_t header, uint32_t arg1 /*= 0*/, uint32_t
 int Message::receive(MessageInfo* info)
 {
     int result = syscall_receive(info);
-    if (result != 0)
+    if (result != M_OK)
     {
          syscall_mthread_yield_message();
          result = syscall_receive(info);
@@ -38,7 +39,7 @@ int Message::sendReceiveA(MessageInfo* dst, uint32_t tid, MessageInfo* info)
 
     int result = Message::send(tid, info);
 
-    if (result != 0) return result;
+    if (result != M_OK) return result;
 
     src.from = tid;
     src.header = MSG_RESULT_OK;
@@ -51,7 +52,7 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
     MessageInfo src;
 
     int result = Message::send(tid, header, arg1, arg2, arg3, str);
-    if (result != 0) return result;
+    if (result != M_OK) return result;
     src.from = tid;
     src.header = MSG_RESULT_OK;
     src.arg1 = header;
@@ -77,7 +78,7 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
     {
         int result = Message::peek(&msg, i);
 
-        if (result != 0)
+        if (result != M_OK)
         {
             i--;
             syscall_mthread_yield_message();
@@ -90,7 +91,7 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
     }
 
     if (dst != NULL) *dst = msg;
-    return 0;
+    return M_OK;
 }
 
 int Message::peek(MessageInfo* info, int index, int flags)

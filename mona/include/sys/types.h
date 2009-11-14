@@ -273,7 +273,7 @@ enum
 #define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE     0x0009
 #define SYSTEM_CALL_MUTEX_CREATE              0x000A
 #define SYSTEM_CALL_MUTEX_LOCK                0x000B
-#define SYSTEM_CALL_MUTEX_TRYLOCK             0x000C
+#define SYSTEM_CALL_MUTEX_TRY_LOCK            0x000C
 #define SYSTEM_CALL_MUTEX_UNLOCK              0x000D
 #define SYSTEM_CALL_MUTEX_DESTROY             0x000E
 #define SYSTEM_CALL_LOOKUP                    0x000F

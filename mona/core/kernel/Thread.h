@@ -46,7 +46,9 @@ public:
     void setReturnValue(intptr_t value);
 
     void setWaitingMutex(KMutex* mutex) {
-        ASSERT((mutex != NULL && waitingMutex_ == NULL) || (mutex == NULL && waitingMutex_ != NULL));
+        ASSERT((mutex != NULL && waitingMutex_ == NULL) ||
+               (mutex == NULL && waitingMutex_ == NULL) ||
+               (mutex == NULL && waitingMutex_ != NULL));
         waitingMutex_ = mutex;
     }
 

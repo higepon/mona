@@ -72,9 +72,9 @@ intptr_t KMutex::tryLock(Thread* thread)
     /* lock OK */
     if (!isLocked()) {
         owner_ = thread;
-        result = MONA_SUCCESS;
+        result = M_OK;
     } else {
-        result = MONA_FAILURE;
+        result = M_RESOURCE_BUSY;
     }
 
     exit_kernel_lock_mode();
@@ -90,10 +90,11 @@ intptr_t KMutex::unlock()
 
     enter_kernel_lock_mode();
 
+    g_currentThread->thread->setWaitingMutex(NULL);
+
     if (waitList_ ->size() == 0) {
         owner_ = NULL;
     } else {
-        g_currentThread->thread->setWaitingMutex(NULL);
         owner_ = waitList_->removeAt(0);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         g_scheduler->SwitchToNext();

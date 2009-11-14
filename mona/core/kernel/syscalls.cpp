@@ -201,7 +201,7 @@ void syscall_entrance()
         } else {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
             if (object == NULL) {
-                info->eax = g_id->getLastError();
+                info->eax = M_BAD_MUTEX_ID;
             } else {
                 KMutex* mutex = (KMutex*)object;
                 mutex->addRef();
@@ -243,17 +243,12 @@ void syscall_entrance()
         info->eax = ((UserSemaphore*)object)->down(g_currentThread->thread);
         break;
     }
-    case SYSTEM_CALL_MUTEX_TRYLOCK:
+    case SYSTEM_CALL_MUTEX_TRY_LOCK:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
-
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
-
+        if (object == NULL) {
+            info->eax = M_BAD_MUTEX_ID;
+        } else {
             info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
         }
         break;
@@ -297,13 +292,9 @@ void syscall_entrance()
 
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
-
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
+        if (object == NULL) {
+            info->eax = M_BAD_MUTEX_ID;
+        } else {
             KMutex* mutex = (KMutex*)object;
             mutex->releaseRef();
             info->eax = 0;

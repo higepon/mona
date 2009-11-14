@@ -45,7 +45,7 @@ extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
 extern int syscall_mthread_kill(uint32_t id);
 extern intptr_t syscall_mutex_create();
 extern intptr_t syscall_mutex_fetch(intptr_t id);
-extern intptr_t syscall_mutex_trylock(intptr_t id);
+extern intptr_t syscall_mutex_try_lock(intptr_t id);
 extern intptr_t syscall_mutex_lock(intptr_t id);
 extern intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeout);
 extern intptr_t syscall_mutex_unlock(intptr_t id);
