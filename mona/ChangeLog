@@ -1,3 +1,7 @@
+2009-11-18  higepon  <higepon@users.sourceforge.jp>
+
+	* Migrated subversion to git thanks to id:mjt.
+
 2009-11-14  higepon  <higepon@users.sourceforge.jp>
 
 	* test/monalibc/stdio/test.cpp : Modified to use MUnit.
