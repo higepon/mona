@@ -1,5 +1,9 @@
 2009-11-18  higepon  <higepon@users.sourceforge.jp>
 
+	* copied fat_write to file_server, since it used to be linked via svn:external.
+
+	* Added .gitignore.
+
 	* Migrated subversion to git thanks to id:mjt.
 
 2009-11-14  higepon  <higepon@users.sourceforge.jp>
