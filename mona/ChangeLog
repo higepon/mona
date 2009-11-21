@@ -1,3 +1,7 @@
+2009-11-21  higepon  <higepon@users.sourceforge.jp>
+
+	* tool/qemu/check_tests.scm: Added convinient make check feature. It runs qemu as daemon with no vga. check_tests.scm checks a log and print the result.
+
 2009-11-18  higepon  <higepon@users.sourceforge.jp>
 
 	* copied fat_write to file_server, since it used to be linked via svn:external.
