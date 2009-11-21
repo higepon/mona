@@ -4,10 +4,10 @@
 
     class LogConsole
 
-    Copyright (c) 2004 HigePon
+    Copyright (c) 2004 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2004/03/06 update:$Date$
 */

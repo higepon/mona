@@ -6,7 +6,7 @@
   All rights reserved.
   License=MIT/X License
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2003/10/19 update:$Date$
 */
@@ -29,7 +29,7 @@ const uint8_t Segment::FAULT_UNKNOWN;
 
     \param  start LinearAddress of start
     \param  size  segment size
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 StackSegment::StackSegment(LinearAddress start, uint32_t size) {
@@ -41,7 +41,7 @@ StackSegment::StackSegment(LinearAddress start, uint32_t size) {
 /*!
     \brief destruct segment
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 StackSegment::~StackSegment() {
@@ -52,7 +52,7 @@ StackSegment::~StackSegment() {
 
     \param  address LinearAddress of fault point
     \param  error   fault type
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
@@ -86,7 +86,7 @@ bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     \param  start LinearAddress of start
     \param  size  segment size
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 HeapSegment::HeapSegment(LinearAddress start, uint32_t size) {
@@ -98,7 +98,7 @@ HeapSegment::HeapSegment(LinearAddress start, uint32_t size) {
 /*!
     \brief destruct segment
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 HeapSegment::~HeapSegment() {
@@ -109,7 +109,7 @@ HeapSegment::~HeapSegment() {
 
     \param  address LinearAddress of fault point
     \param  error   fault type
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
@@ -143,7 +143,7 @@ bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
     \param  start              LinearAddress of start
     \param  size               segment size
     \param  sharedMemoryObject pointer to sharedMemoryObject
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 SharedMemorySegment::SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable /* = true */)
@@ -157,7 +157,7 @@ SharedMemorySegment::SharedMemorySegment(LinearAddress start, uint32_t size, Sha
 /*!
     \brief construct segment
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/28 update:
 */
 SharedMemorySegment::SharedMemorySegment()
@@ -171,7 +171,7 @@ SharedMemorySegment::SharedMemorySegment()
 /*!
     \brief destruct segment
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 SharedMemorySegment::~SharedMemorySegment()
@@ -183,7 +183,7 @@ SharedMemorySegment::~SharedMemorySegment()
 
     \param  address LinearAddress of fault point
     \param  error   fault type
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
@@ -235,7 +235,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
     \brief find SharedMemorySegment that has the ID
 
     \param  id ID for SharedMemorySegment
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/29 update:2004/01/08
 */
 SharedMemorySegment* SharedMemorySegment::find(Process* process, uint32_t id)
@@ -265,7 +265,7 @@ SharedMemorySegment* SharedMemorySegment::find(Process* process, uint32_t id)
     \param id   shared memory object ID of identify
     \param size shared memory size
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2003/01/08
 */
 SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size)
@@ -324,7 +324,7 @@ void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 /*!
     \brief destruct SharedMemoryObject
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 SharedMemoryObject::~SharedMemoryObject()
@@ -341,7 +341,7 @@ SharedMemoryObject::~SharedMemoryObject()
 /*!
     \brief set up karnel for using sharedMemoryObject
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
 void SharedMemoryObject::setup()
@@ -357,7 +357,7 @@ void SharedMemoryObject::setup()
 
     \param id id for sharedMemoryObject
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
 SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
@@ -384,7 +384,7 @@ SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 
     \param id   id for sharedMemoryObject
     \param size size of sharedMemory
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
 bool SharedMemoryObject::open(uint32_t id, uint32_t size)
@@ -433,7 +433,7 @@ bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t
     \param process target process
     \param address attach point at process space
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
 bool SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address)
@@ -457,7 +457,7 @@ bool SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress add
     \param id      id for sharedMemoryObject
     \param process process
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
 bool SharedMemoryObject::detach(uint32_t id, Process* process)

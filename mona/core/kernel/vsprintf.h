@@ -2,7 +2,7 @@
     \file  vsprintf.h
     \brief vsprintf
 
-    Copyright (c) 2007 shadow, HigePon
+    Copyright (c) 2007 shadow, Higepon
     WITHOUT ANY WARRANTY
 
     \author  Higepon

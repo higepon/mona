@@ -4,10 +4,10 @@
 
     some checkers
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/12/02 update:$Date$
 */

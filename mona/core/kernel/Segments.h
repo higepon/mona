@@ -2,10 +2,10 @@
     \file  Segments.h
     \brief Segment memory management
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/10/19 update:$Date$
 */

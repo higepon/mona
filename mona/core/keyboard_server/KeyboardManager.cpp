@@ -8,7 +8,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/10/12 update:$Date$
 */
@@ -23,7 +23,7 @@ using namespace MonAPI;
 
     destructor
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/10/12 update:2003/12/24
 */
 KeyBoardManager::~KeyBoardManager() {
@@ -35,7 +35,7 @@ KeyBoardManager::~KeyBoardManager() {
 
     constructor
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/10/12 update:2003/12/24
 */
 KeyBoardManager::KeyBoardManager() {
@@ -60,7 +60,7 @@ void KeyBoardManager::init() {
 
     get key information
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/10/12 update:2003/12/24
 */
 KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
@@ -85,7 +85,7 @@ KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
 
     \param scancode original key scan code
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/10/12 update:2002/11/04
 */
 int KeyBoardManager::setKeyScanCode(uint8_t scancode) {

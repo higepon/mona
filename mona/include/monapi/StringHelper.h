@@ -2,10 +2,10 @@
     \file  StringHelper.h
     \brief StringHelper
 
-    Copyright (c) 2006 HigePon
+    Copyright (c) 2006 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2006/11/24 update:$Date$
 */

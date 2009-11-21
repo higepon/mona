@@ -7,7 +7,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/02/07 update:$Date$
 */
@@ -19,7 +19,7 @@ using namespace MonAPI;
 /*!
     \brief Constructer
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/03 update:2004/12/27
 */
 FDCDriver::FDCDriver() : motorCount(0), currentTrack(-1)
@@ -31,7 +31,7 @@ FDCDriver::FDCDriver() : motorCount(0), currentTrack(-1)
 /*!
     \brief Destructer
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/03 update:2004/12/27
 */
 FDCDriver::~FDCDriver()
@@ -44,7 +44,7 @@ FDCDriver::~FDCDriver()
 /*!
     \brief initilize controller
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/03 update:2004/12/27
 */
 void FDCDriver::initilize()
@@ -119,7 +119,7 @@ int FDCDriver::write(uint32_t lba, void* buf, int size)
 /*!
     \brief wait interrupt
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/10 update:2004/12/27
 */
 bool FDCDriver::waitInterrupt()
@@ -131,7 +131,7 @@ bool FDCDriver::waitInterrupt()
     \brief print status of FDC
 
     \param  on ON/OFF
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/10 update:2004/12/27
 */
 void FDCDriver::motor(bool on)
@@ -152,7 +152,7 @@ void FDCDriver::motor(bool on)
 /*!
     \brief print status of FDC
 
-    \author HigePon
+    \author Higepon
     \date   create:2004/02/10 update:2004/12/27
 */
 void FDCDriver::motorAutoOff()
@@ -169,7 +169,7 @@ void FDCDriver::motorAutoOff()
 
     \param  command array of command
     \param  length  length of command
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/16 update:2004/12/27
 */
 bool FDCDriver::sendCommand(const uint8_t* command, const uint8_t length)
@@ -190,7 +190,7 @@ bool FDCDriver::sendCommand(const uint8_t* command, const uint8_t length)
     \brief recalibrate
 
     \return true OK/false command fail
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/10 update:2004/12/27
 */
 bool FDCDriver::recalibrate()
@@ -218,7 +218,7 @@ bool FDCDriver::recalibrate()
     \brief wait for FDC status
 
     \param  expected wait until msr == expected
-    \author HigePon
+    \author Higepon
     \date   create:2003/09/19 update:2004/12/27
 */
 void FDCDriver::waitStatus(uint8_t expected)
@@ -237,7 +237,7 @@ void FDCDriver::waitStatus(uint8_t expected)
 
     \param  expected wait until (msr & mask) == expected
     \param  mask     wait until (msr & mask) == expected
-    \author HigePon
+    \author Higepon
     \date   create:2003/09/19 update:2004/12/27
 */
 void FDCDriver::waitStatus(uint8_t mask, uint8_t expected)
@@ -255,7 +255,7 @@ void FDCDriver::waitStatus(uint8_t mask, uint8_t expected)
     \brief get result of result phase
 
     \return result
-    \author HigePon
+    \author Higepon
     \date   create:2003/09/19 update:2004/12/27
 */
 uint8_t FDCDriver::getResult()
@@ -269,7 +269,7 @@ uint8_t FDCDriver::getResult()
 
     \param  track
     \return true OK/false time out
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/11 update:2004/12/27
 */
 bool FDCDriver::seek(uint8_t track)
@@ -302,7 +302,7 @@ bool FDCDriver::seek(uint8_t track)
 /*!
     \brief Sense Interrrupt Command
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/13 update:2004/12/27
 */
 bool FDCDriver::senseInterrupt()
@@ -326,7 +326,7 @@ bool FDCDriver::senseInterrupt()
 /*!
     \brief start dma
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 void FDCDriver::startDMA()
@@ -339,7 +339,7 @@ void FDCDriver::startDMA()
 /*!
     \brief stop dma
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 void FDCDriver::stopDMA()
@@ -352,7 +352,7 @@ void FDCDriver::stopDMA()
 /*!
     \brief setup dmac for read
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 void FDCDriver::setupDMARead(uint32_t size)
@@ -380,7 +380,7 @@ void FDCDriver::setupDMARead(uint32_t size)
 /*!
     \brief setup dmac for write
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 void FDCDriver::setupDMAWrite(uint32_t size)
@@ -412,7 +412,7 @@ void FDCDriver::setupDMAWrite(uint32_t size)
     \param head   head
     \param sector sector
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 bool FDCDriver::read(uint8_t track, uint8_t head, uint8_t sector)
@@ -461,7 +461,7 @@ bool FDCDriver::read(uint8_t track, uint8_t head, uint8_t sector)
     \param head   head
     \param sector sector
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 bool FDCDriver::write(uint8_t track, uint8_t head, uint8_t sector)
@@ -501,7 +501,7 @@ bool FDCDriver::write(uint8_t track, uint8_t head, uint8_t sector)
     \param lba    logical block address
     \param buf    read result buffer 512uint8_t
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 bool FDCDriver::read(uint32_t lba, uint8_t* buf)
@@ -529,7 +529,7 @@ bool FDCDriver::read(uint32_t lba, uint8_t* buf)
     \param lba    logical block address
     \param buf    write result buffer 512uint8_t
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 bool FDCDriver::write(uint32_t lba, uint8_t* buf)
@@ -557,7 +557,7 @@ bool FDCDriver::write(uint32_t lba, uint8_t* buf)
     \param head   head
     \param sector sector
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/15 update:2004/12/27
 */
 void FDCDriver::lbaToTHS(int lba, uint8_t& track, uint8_t& head, uint8_t& sector)

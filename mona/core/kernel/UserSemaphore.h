@@ -2,10 +2,10 @@
     \file  UserSemaphore.h
     \brief UserSemaphore
 
-    Copyright (c) 2007 HigePon
+    Copyright (c) 2007 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision: 3635 $
     \date   create:2007/09/27 update:$Date$
 */

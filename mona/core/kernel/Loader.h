@@ -2,10 +2,10 @@
     \file  Loader.h
     \brief Loader
 
-    Copyright (c) 200 HigePon
+    Copyright (c) 200 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2004/06/16 update:$Date$
 */

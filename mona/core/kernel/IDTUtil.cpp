@@ -6,7 +6,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/06/08 update:$Date$
 */
@@ -19,7 +19,7 @@
     \brief call lidt
 
     \param idtr idtr
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/08 update:
 */
 void IDTUtil::lidt(IDTR* idtr) {
@@ -35,7 +35,7 @@ void IDTUtil::lidt(IDTR* idtr) {
     \param selector selector
     \param handler handler
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/08 update:
 */
 void IDTUtil::setGateDesc(GateDesc* descZero, uint16_t selector, InterruptHandlers* handler) {
@@ -53,7 +53,7 @@ void IDTUtil::setGateDesc(GateDesc* descZero, uint16_t selector, InterruptHandle
 /*!
     \brief set up IDT
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/08 update:
 */
 void IDTUtil::setup() {

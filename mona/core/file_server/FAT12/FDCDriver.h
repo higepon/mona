@@ -2,10 +2,10 @@
     \file FDCDriver.h
     \brief Floppy Disk Controller driver for Multi Task
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author HigePon
+    \author Higepon
     \version $Revision$
     \date create:2003/02/07 update:$Date$
 */

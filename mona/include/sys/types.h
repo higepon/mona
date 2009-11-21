@@ -3,10 +3,10 @@
     \brief types defineition
 
     types defintion
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/09/08 update:$Date$
 */

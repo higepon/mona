@@ -367,7 +367,7 @@ double squareroot(double x)
 		fstp	dResult
 	}
 #else
-//@author HigePon
+//@author Higepon
     asm volatile ("fsqrt" : "=t"(dResult) : "0"(x));
 #endif
     return dResult;
@@ -389,7 +389,7 @@ double sin(double x)
 		fstp	dResult
 	}
 #else
-//@author HigePon
+//@author Higepon
     asm volatile ("fsin" : "=t"(dResult) : "0"(x));
 #endif
 
@@ -412,7 +412,7 @@ double cos(double x)
 		fstp	dResult
 	}
 #else
-//@author HigePon
+//@author Higepon
     asm volatile ("fcos" : "=t"(dResult) : "0"(x));
 #endif
 
@@ -459,7 +459,7 @@ double atan(double y,double x)
 		fstp	dResult
 	}
 #else
-//@author HigePon
+//@author Higepon
     asm volatile("fpatan" : "=t" (dResult) : "0" (x), "u" (y) : "st(1)");
 #endif
 

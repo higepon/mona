@@ -6,7 +6,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/03/30 update:$Date$
 */
@@ -18,7 +18,7 @@
     \brief initilize BitMap
 
     \param number number of bits
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 BitMap::BitMap(int number) {
@@ -36,7 +36,7 @@ BitMap::BitMap(int number) {
 /*!
     \brief destroy
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 BitMap::~BitMap() {
@@ -48,7 +48,7 @@ BitMap::~BitMap() {
 /*!
     \brief get number of bits
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/08/22 update:
 */
 int BitMap::getBitsNumber() const {
@@ -60,7 +60,7 @@ int BitMap::getBitsNumber() const {
     \brief mark bitmap
 inc
     \param index index to mark
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 void BitMap::mark(int index) {
@@ -73,7 +73,7 @@ void BitMap::mark(int index) {
     \brief clear bitmap
 
     \param index index to clear
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 void BitMap::clear(int index) {
@@ -86,7 +86,7 @@ void BitMap::clear(int index) {
     \brief find empty and marked
 
     \return index marked. BitMap::NOT_FOUND when not found
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:2003/10/26
 */
 int BitMap::find() {
@@ -128,7 +128,7 @@ int BitMap::find(int num) {
     \brief count clear bits
 
     \return clear count
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 int BitMap::countClear() {
@@ -148,7 +148,7 @@ int BitMap::countClear() {
 
     \param index index to test
     \return true if marked
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/30 update:
 */
 bool BitMap::marked(int index) {

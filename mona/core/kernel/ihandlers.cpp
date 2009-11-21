@@ -8,7 +8,7 @@
   All rights reserved.
   License=MIT/X License
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2002/07/25 update:$Date$
 */
@@ -100,7 +100,7 @@ IRQHANDLERSlave(15)
 
   \param irq irq number
 
-  \author HigePon
+  \author Higepon
   \date   create:2004/08/26 update:
 */
 void SendInterrupt(int irq)
@@ -130,7 +130,7 @@ void SendInterrupt(int irq)
 /*!
   \brief timer handler
 
-  \author HigePon
+  \author Higepon
   \date   create:2004/08/10 update:
 */
 void irqHandler_0()
@@ -164,7 +164,7 @@ void irqHandler_0()
 /*!
   \brief irq6 handler
 
-  \author HigePon
+  \author Higepon
   \date   create:2004/08/10 update:
 */
 void irqHandler_6()
@@ -182,7 +182,7 @@ void irqHandler_6()
 
   fault0d handler
 
-  \author HigePon
+  \author Higepon
   \date   create:2002/09/06 update:2003/01/26
 */
 void fault0dHandler(uint32_t error)
@@ -216,7 +216,7 @@ void fault0dHandler(uint32_t error)
 
   dummy handler
 
-  \author HigePon
+  \author Higepon
   \date   create:2002/07/25 update:2003/03/24
 */
 void dummyHandler()

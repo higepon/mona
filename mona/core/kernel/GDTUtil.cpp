@@ -6,7 +6,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/06/06 update:$Date$
 */
@@ -23,7 +23,7 @@
     \param  base  base address 32bit
     \param  limit limit        24bit include G, D/B, 0, AVL
     \param  type  segment type 8bit  include P, DPL, S, TYPE
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/06 update:
 */
 void GDTUtil::setSegDesc(SegDesc* desc, uint32_t base, uint32_t limit, uint8_t type) {
@@ -63,7 +63,7 @@ void GDTUtil::setSegDescExt(SegDesc* desc, uint32_t base, uint32_t limit, uint8_
     \brief call lgdt
 
     \param gdtr gdtr
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/07 update:2003/06/08
 */
 void GDTUtil::lgdt(GDTR* gdtr) {
@@ -79,7 +79,7 @@ void GDTUtil::lgdt(GDTR* gdtr) {
 
     \param selector selector value
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/02 update:
 */
 void GDTUtil::ltr(uint16_t selector) {
@@ -92,7 +92,7 @@ void GDTUtil::ltr(uint16_t selector) {
 /*!
     \brief set up GDT
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/06/07 update:2003/07/18
 */
 void GDTUtil::setup() {
@@ -157,7 +157,7 @@ void GDTUtil::setup() {
 /*!
     \brief set up TSS
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/07/17 update:2003/08/06
 */
 void GDTUtil::setupTSS(uint16_t selector) {

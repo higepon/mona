@@ -6,7 +6,7 @@
   All rights reserved.
   License=MIT/X License
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2004/02/08 update:$Date$
 */

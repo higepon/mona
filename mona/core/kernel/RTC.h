@@ -3,10 +3,10 @@
     \brief definition for rtc
 
     definition for tester
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/11/11 update:$Date$
 */

@@ -41,7 +41,7 @@ template <class T> class HList : public List<T> {
 
     constructor default size is 5
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/10/22 update:
 */
 template <class T> HList<T>::HList() {
@@ -56,7 +56,7 @@ template <class T> HList<T>::HList() {
 
     \param size size of initial size of list
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> HList<T>::HList(int size) {
@@ -73,7 +73,7 @@ template <class T> HList<T>::HList(int size) {
     \param size size of initial size of list
     \param increase when resize this value used
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> HList<T>::HList(int size, int increase) {
@@ -87,7 +87,7 @@ template <class T> HList<T>::HList(int size, int increase) {
 
     destructor
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> HList<T>::~HList() {
@@ -104,7 +104,7 @@ template <class T> HList<T>::~HList() {
 
     \return true/false empty/has elements
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> bool HList<T>::isEmpty() const {
@@ -117,7 +117,7 @@ template <class T> bool HList<T>::isEmpty() const {
 
     add element at the end of array
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> void HList<T>::add(T element) {
@@ -154,7 +154,7 @@ template <class T> void HList<T>::add(T element) {
 
     \param index index of element to get
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> T HList<T>::get(int index) const {
@@ -173,7 +173,7 @@ template <class T> T HList<T>::get(int index) const {
 
     \param index index of element to get
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> T HList<T>::operator[](int index) {
@@ -188,7 +188,7 @@ template <class T> T HList<T>::operator[](int index) {
 
     \return size of list
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> int HList<T>::size() const {
@@ -202,7 +202,7 @@ template <class T> int HList<T>::size() const {
 
     \param index that removed
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> T HList<T>::removeAt(int index) {
@@ -233,7 +233,7 @@ template <class T> T HList<T>::removeAt(int index) {
 
     \param element element to remove
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> T HList<T>::remove(T element) {
@@ -257,7 +257,7 @@ template <class T> T HList<T>::remove(T element) {
 
     set size of list & increase
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/07 update:
 */
 template <class T> void HList<T>::init(int size, int increase) {
@@ -277,7 +277,7 @@ template <class T> void HList<T>::init(int size, int increase) {
 /*!
     \brief check list has the element
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/12/21 update:
 */
 template <class T> bool HList<T>::hasElement(T element) const {

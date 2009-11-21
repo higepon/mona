@@ -2,10 +2,10 @@
   \file   main.cpp
   \brief  Mona OS. ELF relocation parser
 
-  Copyright (c) 2002- 2004 HigePon
+  Copyright (c) 2002- 2004 Higepon
   WITHOUT ANY WARRANTY
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2004/05/02 update:$Date$
 */

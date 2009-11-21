@@ -8,7 +8,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/12/02 update:$Date$
 */
@@ -23,7 +23,7 @@
 
     check size of uint8_t,uint16_t,uint32_t
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/02 update:2003/06/08
 */
 void checkTypeSize() {

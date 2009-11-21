@@ -7,7 +7,7 @@
   All rights reserved.
   License=MIT/X License
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2003/08/23 update:$Date$
 */
@@ -43,7 +43,7 @@ const int  PageManager::PAGE_TABLE_POOL_SIZE;
     \brief page management initlize
 
     \param totalMemorySize total system physical memory size
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 PageManager::PageManager(uint32_t totalMemorySize)
@@ -81,7 +81,7 @@ PageManager::PageManager(uint32_t totalMemorySize)
 
     \return allocated physical address
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* pageEntry
@@ -101,7 +101,7 @@ int PageManager::allocatePhysicalPage(PageEntry* pageEntry
 
     \return allocated physical address
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const
@@ -127,7 +127,7 @@ int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool w
 
     \return allocated physical address
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress
@@ -161,7 +161,7 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
 
     \return allocated physical address
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress
@@ -286,7 +286,7 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 /*!
     \brief initilize system pages
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 void PageManager::setup(PhysicalAddress vram)
@@ -416,7 +416,7 @@ PageEntry* PageManager::createKernelPageDirectory()
 /*!
     \brief create new page directory for new process
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 PageEntry* PageManager::createNewPageDirectory() {
@@ -616,7 +616,7 @@ void PageManager::returnPageTable(PageEntry* table)
     \brief change page directory
 
     \param  address physical address of page directory
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 void PageManager::setPageDirectory(PhysicalAddress address)
@@ -628,7 +628,7 @@ void PageManager::setPageDirectory(PhysicalAddress address)
 /*!
     \brief start paging
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 void PageManager::startPaging()
@@ -643,7 +643,7 @@ void PageManager::startPaging()
 /*!
     \brief stop paging
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 void PageManager::stopPaging()
@@ -658,7 +658,7 @@ void PageManager::stopPaging()
 /*!
     \brief flush page cache
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 void PageManager::flushPageCache() const
@@ -672,7 +672,7 @@ void PageManager::flushPageCache() const
 /*!
     \brief allocate page table
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 PageEntry* PageManager::allocatePageTable() const
@@ -703,7 +703,7 @@ PageEntry* PageManager::allocatePageTable() const
 
     \param  address linear address of page fault point
     \param  errror  fault type
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2004/01/08
 */
 bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
@@ -772,7 +772,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     \param  present  true:page present
     \param  writable true:writable
     \param  isUser   true:user access mode
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const
@@ -791,7 +791,7 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     \param  writable true:writable
     \param  isUser   true:user access mode
     \param  address  physical address
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const
@@ -810,7 +810,7 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     \param  present  true:page present
     \param  writable true:writable
     \param  isUser   true:user access mode
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
 bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const
@@ -838,7 +838,7 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     \param  start     start address
     \param  size      size of absent pages
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/27 update:
 */
 void PageManager::setAbsent(PageEntry* directory, LinearAddress start, uint32_t size) const
@@ -863,7 +863,7 @@ void PageManager::setAbsent(PageEntry* directory, LinearAddress start, uint32_t 
 
     \param  address physical address
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/27 update:
 */
 void PageManager::returnPhysicalPage(PhysicalAddress address)

@@ -2,7 +2,7 @@
     \file  TraditionalMacro.h
     \brief 
 
-    Copyright (c) 2006-2007 HigePon
+    Copyright (c) 2006-2007 Higepon
     WITHOUT ANY WARRANTY
 
     \author  Higepon

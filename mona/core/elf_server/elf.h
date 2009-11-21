@@ -2,10 +2,10 @@
     \file  elf.h
     \brief utilities for ELF file format
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/09/04 update:$Date$
 */

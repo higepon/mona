@@ -6,7 +6,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/03/01 update:$Date$
 */
@@ -50,7 +50,7 @@ void outp32(uint32_t port, uint32_t value) {
     \brief get eflags
 
     \return eflags
-    \author HigePon
+    \author Higepon
     \date   create:2002/03/21 update:
 */
 uint32_t get_eflags() {
@@ -68,7 +68,7 @@ uint32_t get_eflags() {
     \brief set eflags
 
     \param eflags eflags to set
-    \author HigePon
+    \author Higepon
     \date   create:2002/03/21 update:
 */
 void  set_eflags(uint32_t eflags) {

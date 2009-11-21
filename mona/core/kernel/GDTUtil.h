@@ -2,10 +2,10 @@
     \file  GDTUtil.h
     \brief some functions for GDT set up
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/06/06 update:$Date$
 */

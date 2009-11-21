@@ -2,10 +2,10 @@
     \file  FileSystem.h
     \brief FileSystem
 
-    Copyright (c) 2005 HigePon
+    Copyright (c) 2005 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision: 3123 $
     \date   create:2005/01/23 update:$Date: 2006-04-15 13:55:21 +0900 (土, 15  4月 2006) $
 */

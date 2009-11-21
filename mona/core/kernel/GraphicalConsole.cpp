@@ -8,7 +8,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/02/22 update:$Date$
 */
@@ -24,7 +24,7 @@ extern "C" char pos_y;
 /*!
     \brief initilize
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/22 update:
 */
 GraphicalConsole::GraphicalConsole() {
@@ -40,7 +40,7 @@ GraphicalConsole::GraphicalConsole() {
     \brief printf
 ]
     \param  color background color
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/01 update:
 */
 void GraphicalConsole::setBGColor(const char color) {
@@ -53,7 +53,7 @@ void GraphicalConsole::setBGColor(const char color) {
     \brief printf
 
     \param  color character color
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/01 update:
 */
 void GraphicalConsole::setCHColor(const char color) {
@@ -66,7 +66,7 @@ void GraphicalConsole::setCHColor(const char color) {
     \brief printf
 
     \param  format
-    \author HigePon
+    \author Higepon
     \date   create:2003/02/03 update: 2007/12/07
 */
 void GraphicalConsole::printf(const char *format, ...) {
@@ -85,7 +85,7 @@ void GraphicalConsole::printf(const char *format, ...) {
 /*!
     \brief clear screen
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::clearScreen() {
@@ -114,7 +114,7 @@ void GraphicalConsole::clearScreen() {
     \param x position x
     \param y position y
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::setCursor(int x, int y) {
@@ -138,7 +138,7 @@ void GraphicalConsole::getCursor(int* x, int* y) {
 
     forward cursor
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:2003/2/23
 */
 void GraphicalConsole::forwardCursor() {
@@ -167,7 +167,7 @@ void GraphicalConsole::forwardCursor() {
 
     \param n times backward
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::backwardCursor(int n) {
@@ -182,7 +182,7 @@ void GraphicalConsole::backwardCursor(int n) {
 
     backward cursor
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::backwardCursor() {
@@ -209,7 +209,7 @@ void GraphicalConsole::backwardCursor() {
 
     go to the next line
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::newLine() {
@@ -230,7 +230,7 @@ void GraphicalConsole::newLine() {
 
     scroll up
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:2003/03/01
 */
 void GraphicalConsole::scrollUp() {
@@ -246,7 +246,7 @@ void GraphicalConsole::scrollUp() {
 
     \param ch charcter to put
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2003/02/22 update:
 */
 void GraphicalConsole::putCharacter(char ch) {
@@ -285,7 +285,7 @@ void GraphicalConsole::putCharacter(char ch) {
 
     \param str string
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2002/07/22 update:
 */
 void GraphicalConsole::print(const char* str) {

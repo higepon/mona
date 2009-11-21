@@ -6,7 +6,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/03/08 update:$Date$
 */
@@ -17,7 +17,7 @@
     \brief PIC initilaize
 
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/08 update:
 */
 #define PIT_MODE   0x43
@@ -65,7 +65,7 @@ void pic_init() {
 
     \param ms interval ms
 
-    \author HigePon
+    \author Higepon
     \date   create:2004/01/11 update:
 */
 void setTimerInterval(uint32_t ms) {
@@ -81,7 +81,7 @@ void setTimerInterval(uint32_t ms) {
     disable timer interrupt
     mask IMR bit 0
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/01/12 update:
 */
 void disableTimer() {
@@ -94,7 +94,7 @@ void disableTimer() {
 
     enable timer interrupt
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/01/12 update:
 */
 void enableTimer() {
@@ -105,7 +105,7 @@ void enableTimer() {
 /*!
     \brief disable keyboard interrupt
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/08 update:
 */
 void disableKeyboard() {
@@ -116,7 +116,7 @@ void disableKeyboard() {
 /*!
     \brief enable keyboard interrupt
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/03/08 update:
 */
 void enableKeyboard() {
@@ -127,7 +127,7 @@ void enableKeyboard() {
 /*!
     \brief enable FDC interrupt
 
-    \author HigePon
+    \author Higepon
     \date   create:2004/02/08 update:
 */
 void enableFDC() {

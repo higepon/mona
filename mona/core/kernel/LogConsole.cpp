@@ -10,7 +10,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2004/03/05 update:$Date$
     \date   2007-12-14 Changed to use Uart driver.
@@ -22,7 +22,7 @@
 /*!
     \brief initialize
 
-    \author HigePon
+    \author Higepon
     \date   create:2004/03/05 update:
 */
 LogConsole::LogConsole()
@@ -34,7 +34,7 @@ LogConsole::LogConsole()
     \brief printf
 
     \param  color background color
-    \author HigePon
+    \author Higepon
     \date   create:2004/03/05 update:
 */
 void LogConsole::setBGColor(const char color)
@@ -45,7 +45,7 @@ void LogConsole::setBGColor(const char color)
     \brief printf
 
     \param  color character color
-    \author HigePon
+    \author Higepon
     \date   create:2004/03/05 update:
 */
 void LogConsole::setCHColor(const char color)
@@ -56,7 +56,7 @@ void LogConsole::setCHColor(const char color)
     \brief printf
 
     \param  format
-    \author HigePon
+    \author Higepon
     \date   create:2004/03/05 update:
 */
 void LogConsole::printf(const char *format, ...)
@@ -76,7 +76,7 @@ void LogConsole::printf(const char *format, ...)
 /*!
     \brief clear screen
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::clearScreen()
@@ -91,7 +91,7 @@ void LogConsole::clearScreen()
     \param x position x
     \param y position y
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::setCursor(int x, int y)
@@ -107,7 +107,7 @@ void LogConsole::getCursor(int* x, int* y)
 
     forward cursor
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::forwardCursor()
@@ -121,7 +121,7 @@ void LogConsole::forwardCursor()
 
     \param n times backward
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::backwardCursor(int n)
@@ -133,7 +133,7 @@ void LogConsole::backwardCursor(int n)
 
     backward cursor
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::backwardCursor()
@@ -146,7 +146,7 @@ void LogConsole::backwardCursor()
 
     go to the next line
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::newLine()
@@ -158,7 +158,7 @@ void LogConsole::newLine()
 
     scroll up
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::scrollUp()
@@ -172,7 +172,7 @@ void LogConsole::scrollUp()
 
     \param ch charcter to put
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::putCharacter(char ch)
@@ -190,7 +190,7 @@ void LogConsole::putCharacter(char ch)
 
     \param str string
 
-    \author  HigePon
+    \author  Higepon
     \date    create:2004/03/05 update:
 */
 void LogConsole::print(const char* str)

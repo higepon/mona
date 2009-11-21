@@ -2,10 +2,10 @@
     \file  BitMap.h
     \brief class BitMap
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/03/30 update:$Date$
 */

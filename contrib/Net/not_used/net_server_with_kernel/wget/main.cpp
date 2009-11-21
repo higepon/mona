@@ -38,7 +38,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision: 4427 $
     \date   create:2007/07/08 update:$Date $
 */

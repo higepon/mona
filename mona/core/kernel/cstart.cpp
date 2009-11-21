@@ -9,7 +9,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/07/21 update:$Date$
 */
@@ -21,7 +21,7 @@ extern void startKernel();
 
     mona kernel start at this point.
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/07/21 update:
 */
 extern "C" void cstart()

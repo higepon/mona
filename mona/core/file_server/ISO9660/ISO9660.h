@@ -2,10 +2,10 @@
     \file  ISO9660.h
     \brief ISO9660
 
-    Copyright (c) 2006 HigePon
+    Copyright (c) 2006 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision: 3123 $
     \date   create:2004/11/06 update:$Date: 2006-04-15 13:55:21 +0900 (土, 15  4月 2006) $
 */

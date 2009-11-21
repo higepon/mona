@@ -4,10 +4,10 @@
 
     define operator new & delete
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/08/08 update:$Date$
 */

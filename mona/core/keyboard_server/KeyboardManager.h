@@ -4,10 +4,10 @@
 
     class KeyBoardManager
 
-    Copyright (c) 2002, 2003, 2004 HigePon
+    Copyright (c) 2002, 2003, 2004 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/10/12 update:$Date$
 */

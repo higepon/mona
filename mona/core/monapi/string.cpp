@@ -8,7 +8,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/12/15 update:$Date$
 */
@@ -63,7 +63,7 @@ int memcmp(const void* s1, const void* s2, size_t size)
     \param value value to set
     \param size  size
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/15 update:
 */
 void *memset(void* buf, int value, size_t size) {
@@ -86,7 +86,7 @@ void *memset(void* buf, int value, size_t size) {
     \param  str target string
     \return length of str
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/15 update:
 */
 size_t strlen(const char* str) {
@@ -105,7 +105,7 @@ size_t strlen(const char* str) {
     \param  from source string
     \return copy of from
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/15 update:
 */
 char* strcpy(char* to, const char* from) {
@@ -129,7 +129,7 @@ char* strcpy(char* to, const char* from) {
     \param  str2 string to compare
     \return index of charcter
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/15 update:
 */
 int strcmp(const char* str1, const char* str2) {

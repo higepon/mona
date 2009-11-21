@@ -5,10 +5,10 @@
   fat operation is based on fat.cpp by Gaku
   Licence : see http://gaku.s12.xrea.com/wiki/main.cgi?c=g&p=Gaku%2FLicence
 
-  Copyright (c) 2002- 2004 HigePon
+  Copyright (c) 2002- 2004 Higepon
   WITHOUT ANY WARRANTY
 
-  \author  HigePon
+  \author  Higepon
   \version $Revision$
   \date   create:2004/03/08 update:$Date$
 */

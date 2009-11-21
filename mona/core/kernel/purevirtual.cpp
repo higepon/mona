@@ -9,7 +9,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
@@ -28,7 +28,7 @@ extern "C" void* __dso_handle;
 
     dummy
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/08/04 update:2002/02/25
 */
 void __cxa_pure_virtual() {
@@ -41,7 +41,7 @@ void __cxa_pure_virtual() {
 
     dummy
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/09/07 update: 2003/02/25
 */
 void _pure_virtual() {
@@ -59,7 +59,7 @@ void __pure_virtual() {
 
     dummy
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/08/08 update:2002/02/25
 */
 int atexit( void (*func)(void)) {return -1;}
@@ -69,7 +69,7 @@ int atexit( void (*func)(void)) {return -1;}
 
     dummy
 
-    \author HigePon
+    \author Higepon
     \date   create:2003/10/13 update:
 */
 int __cxa_atexit() {return -1;}

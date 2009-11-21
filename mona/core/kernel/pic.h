@@ -2,10 +2,10 @@
     \file  pic.h
     \brief pic functions
 
-    Copyright (c) 2003 HigePon
+    Copyright (c) 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/03/08 update:$Date$
 */

@@ -8,7 +8,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2003/01/30 update:$Date$
 */
@@ -22,7 +22,7 @@
     \brief up
 
     \param  sem target semaphore
-    \author HigePon
+    \author Higepon
     \date   create:2003/01/31 update:2003/02/01
 */
 void Semaphore::up(semaphore* sem) {
@@ -35,7 +35,7 @@ void Semaphore::up(semaphore* sem) {
     \brief down
 
     \param  sem target semaphore
-    \author HigePon
+    \author Higepon
     \date   create:2003/01/31 update:2003/03/21
 */
 int Semaphore::down(semaphore* sem) {

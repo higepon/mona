@@ -4,10 +4,10 @@
 
     standard library
 
-    Copyright (c) 2002, 2003 HigePon
+    Copyright (c) 2002, 2003 Higepon
     WITHOUT ANY WARRANTY
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/12/15 update:$Date$
 */

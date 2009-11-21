@@ -44,7 +44,7 @@
     All rights reserved.
     License=MIT/X License
 
-    \author  HigePon
+    \author  Higepon
     \version $Revision$
     \date   create:2002/07/21 update:$Date$
 */
@@ -96,7 +96,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
     cstart call this function.
     actually, kernel starts at this point
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/07/21 update:$Date$
 */
 void startKernel()
@@ -294,7 +294,7 @@ void startKernel()
 
     kernel panic
 
-    \author HigePon
+    \author Higepon
     \date   create:2002/12/02 update:2003/03/01
 */
 void panic(const char* msg)
@@ -316,7 +316,7 @@ void checkMemoryAllocate(void* p, const char* msg)
     print "msg             [OK]"
 
     \param msg message
-    \author HigePon
+    \author Higepon
     \date   create:2003/01/26 update:2003/01/25
 */
 inline void printOK(const char* msg)
