@@ -45,6 +45,7 @@ tests: tools cores
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
 	cd test/monapi/mutex && $(MAKE) && $(MAKE) install
+	cd test/monapi/condition && $(MAKE) && $(MAKE) install
 
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
