@@ -25,6 +25,7 @@
 #define ASSERT_TRUE(condition) {\
     if (!(condition)) {\
         _printf("MUnit:ASSERT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
+        logprintf("MUnit:ASSERT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
         exit(-1);\
     } else {\
         munit_number_of_passed++;\
@@ -35,6 +36,7 @@
 #define EXPECT_TRUE(condition) {\
     if (!(condition)) {\
         _printf("MUnit:EXPECT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
+        logprintf("MUnit:EXPECT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
         munit_number_of_failed++;\
     } else {\
         munit_number_of_passed++;\
@@ -53,8 +55,9 @@ inline void munit_show_test_results(const char* msg)
 {
     if (munit_number_of_failed == 0) {
         _printf("%s test passed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed);
+        logprintf("%s test passed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed);
     } else {
-        _printf("%s test failed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed + munit_number_of_failed);
+        logprintf("%s test failed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed + munit_number_of_failed);
     }
 }
 

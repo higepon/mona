@@ -161,7 +161,7 @@ void testClassMutex()
     ASSERT_EQ(M_OK, ret);
 
     // Lock ok
-    EXPECT_EQ(M_OK, mutex->tryLock());
+    EXPECT_EQ(M_BUSY, mutex->tryLock());
 
     // unlock
     EXPECT_EQ(M_OK, mutex->unlock());

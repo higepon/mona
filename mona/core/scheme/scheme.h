@@ -165,10 +165,12 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
     if (g_batch_mode)                                                   \
     {                                                                   \
         printf(__VA_ARGS__);                                            \
+        logprintf(__VA_ARGS__);                                         \
     }                                                                   \
     else                                                                \
     {                                                                   \
         g_terminal->formatWrite(__VA_ARGS__);                           \
+        logprintf(__VA_ARGS__);                                         \
     }                                                                   \
     int __file = fileno(stream);                                        \
     int __out  = fileno(stdout);                                        \
@@ -176,6 +178,7 @@ GLOBAL ::monash::MonaTerminal* g_terminal;
     if (g_transcript != NULL && (__file == __out || __file == __err))   \
     {                                                                   \
         fprintf(g_transcript, __VA_ARGS__);                             \
+        logprintf(__VA_ARGS__);                                         \
         fflush(g_transcript);                                           \
     }                                                                   \
 }

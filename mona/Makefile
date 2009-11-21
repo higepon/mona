@@ -71,6 +71,14 @@ depend: clean
 doc:
 	perl ~/NaturalDocs-1.4/NaturalDocs -i . -o HTML doc/html -p doc/config -s pink
 
+# 1. run qemu as daemon.
+# 2. wait for test results are written in /tmp/mona_serial.log.
+# 3. check test results.
+# 4. kill qemu by pid.
+check:
+	@tool/qemu/as_daemon.sh
+	@mosh tool/qemu/check_tests.scm
+
 clean:
 	$(MAKE) $@ -C core/firstboot
 ifdef CSC
