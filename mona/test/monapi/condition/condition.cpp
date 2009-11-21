@@ -5,6 +5,8 @@
 
 using namespace MonAPI;
 
+Condition condition;
+
 void testCondition()
 {
     ASSERT_TRUE(true);

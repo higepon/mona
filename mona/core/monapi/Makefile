@@ -21,6 +21,7 @@ SOURCES = monapi_impl.cpp \
           Message.cpp \
           MonaApplication.cpp \
           Mutex.cpp \
+          Condition.cpp \
           Observable.cpp \
           Random.cpp \
           Screen.cpp \
