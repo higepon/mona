@@ -1,3 +1,7 @@
+2009-11-21  higepon  <higepon@users.sourceforge.jp>
+
+	* Emulators/monasq/monasq_monapi.cpp (monasq_init_monapi_lib): syscall_mutex_trylock -> syscall_mutex_try_lock.
+
 2009-10-06  higepon  <higepon@users.sourceforge.jp>
 
 	* application_catalog.txt : Listed all aplications under contrib directory.

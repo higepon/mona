@@ -636,9 +636,9 @@ void monasq_init_monapi_lib(HSQUIRRELVM v)
     Register(v, hNamespace, syscall_exist_message, _T("syscall_exist_message"));
 
     Register(v, hNamespace, syscall_mutex_create, _T("syscall_mutex_create"));
-    Register(v, hNamespace, syscall_mutex_trylock, _T("syscall_mutex_trylock"));
+    Register(v, hNamespace, syscall_mutex_try_lock, _T("syscall_mutex_try_lock"));
     Register(v, hNamespace, syscall_mutex_lock, _T("syscall_mutex_lock"));
-    Register(v, hNamespace, syscall_mutex_trylock, _T("syscall_mutex_trylock"));
+    Register(v, hNamespace, syscall_mutex_try_lock, _T("syscall_mutex_try_lock"));
     Register(v, hNamespace, syscall_mutex_unlock, _T("syscall_mutex_unlock"));
 
     Register(v, hNamespace, wrapper_syscall_get_vram_info, _T("syscall_get_vram_info"));
