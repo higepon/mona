@@ -107,7 +107,7 @@ intptr_t KMutex::unlock()
 
 int KMutex::checkSecurity(Thread* thread)
 {
-    return 0;
+    return M_OK;
 }
 
 void KMutex::addRef()

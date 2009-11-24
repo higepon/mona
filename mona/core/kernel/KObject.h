@@ -32,7 +32,8 @@ public:
         THREAD,
         KMUTEX,
         USER_SEMAPHORE,
-        KTIMER
+        KTIMER,
+        CONDITION
     };
 };
 

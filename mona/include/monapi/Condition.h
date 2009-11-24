@@ -30,6 +30,17 @@ public:
        Destroy the condition.
     */
     ~Condition();
+
+    intptr_t waitWithTimeout(Mutex* mutex, intptr_t timeoutMsec);
+    intptr_t wait(Mutex* mutex);
+    intptr_t notifyAll();
+    intptr_t getId() const
+    {
+        return conditionId_;
+    }
+
+private:
+    intptr_t conditionId_;
 };
 
 };

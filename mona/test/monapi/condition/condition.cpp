@@ -5,11 +5,14 @@
 
 using namespace MonAPI;
 
-Condition condition;
 
 void testCondition()
 {
-    ASSERT_TRUE(true);
+    intptr_t condition = syscall_condition_create();
+    ASSERT_TRUE(condition > 0);
+
+    ASSERT_EQ(M_OK, syscall_condition_destroy(condition));
+    EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(3));
 }
 
 int main(int argc, char *argv[])

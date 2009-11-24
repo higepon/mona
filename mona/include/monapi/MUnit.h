@@ -32,6 +32,17 @@
     }\
 }
 
+#define ASSERT_EQ(expected, actual) {                  \
+    if (expected != actual) {\
+        _printf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+        logprintf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+        exit(-1);\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+
 // EXPECT family never stop on error.
 #define EXPECT_TRUE(condition) {\
     if (!(condition)) {\
@@ -44,7 +55,7 @@
 }
 
 #define ASSERT_GT(a, b) ASSERT_TRUE((a) > (b))
-#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))
+//#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))
 #define EXPECT_GT(a, b) EXPECT_TRUE((a) > (b))
 #define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b))
 

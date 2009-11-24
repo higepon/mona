@@ -84,3 +84,9 @@ mona/external/onig/.FETCH
 mona/external/onig/.MAKE
 mona/external/onig/.PATCH
 mona/tool/fat_write/.deps/
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+*.back
+*.bak

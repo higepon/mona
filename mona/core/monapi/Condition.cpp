@@ -20,6 +20,21 @@ Condition::Condition()
 
 Condition::~Condition()
 {
+
+}
+
+intptr_t Condition::waitWithTimeout(Mutex* mutex, intptr_t timeoutMsec)
+{
+}
+
+intptr_t Condition::wait(Mutex* mutex)
+{
+
+
+}
+
+intptr_t Condition::notifyAll()
+{
 }
 
 }

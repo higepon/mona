@@ -421,6 +421,43 @@ int syscall_receive(MessageInfo* message)
 }
 
 /*
+   function: syscall_condition_create
+
+   Creates and returns a new condition variable.
+
+   Returns:
+
+     A positive conditionid.
+
+*/
+intptr_t syscall_condition_create()
+{
+    intptr_t result;
+    SYSCALL_0(SYSTEM_CALL_CONDITION_CREATE, result);
+    return result;
+}
+
+/*
+   function: syscall_condition_destroy
+
+   Destroy the condition.
+
+   Parameters:
+
+     id - conditionid returned by <syscall_condition_create>.
+
+   Returns:
+     Returns <M_OK> if the condition is successfully destoryed, or <M_BAD_CONDITION_ID> if conditionid is invalid.
+
+*/
+intptr_t syscall_condition_destroy(intptr_t id)
+{
+    intptr_t result;
+    SYSCALL_1(SYSTEM_CALL_CONDITION_DESTROY, result, id);
+    return result;
+}
+
+/*
    function: syscall_mutex_create
 
    Creates and returns a new mutex.
