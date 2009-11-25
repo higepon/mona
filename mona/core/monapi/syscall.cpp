@@ -427,7 +427,7 @@ int syscall_receive(MessageInfo* message)
 
    Returns:
 
-     A positive conditionid.
+     A positive condition_id.
 
 */
 intptr_t syscall_condition_create()
@@ -437,6 +437,47 @@ intptr_t syscall_condition_create()
     return result;
 }
 
+
+/*
+   function: syscall_condition_notify_all
+
+   Unblocks all the threads waiting on the condition.
+
+   Parameters:
+
+     id - condition_id returned by <syscall_condition_create>.
+
+   Returns:
+     Returns <M_OK> if all the theads are successfully unblocked, or <M_BAD_CONDITION_ID> if condition_id is invalid.
+
+*/
+intptr_t syscall_condition_notify_all(intptr_t id)
+{
+    intptr_t result;
+    SYSCALL_1(SYSTEM_CALL_CONDITION_NOTIFY_ALL, result, id);
+    return result;
+}
+
+/*
+   function: syscall_condition_wait
+
+   Waits on the condition.
+
+   Parameters:
+
+     condition_id - condition_id returned by <syscall_condition_create>.
+     mutex_id - mutex_id returned by <syscall_mutex_create>.
+
+   Returns:
+     Returns <M_OK> if the waiting thread is successfully unblocked, <M_BAD_CONDITION_ID> if condition_id is invalid or <M_BAD_MUTEX_ID> if mutex_id is invalid.
+
+*/
+intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id)
+{
+    return M_OK;
+}
+
+
 /*
    function: syscall_condition_destroy
 
@@ -444,10 +485,10 @@ intptr_t syscall_condition_create()
 
    Parameters:
 
-     id - conditionid returned by <syscall_condition_create>.
+     id - condition_id returned by <syscall_condition_create>.
 
    Returns:
-     Returns <M_OK> if the condition is successfully destoryed, or <M_BAD_CONDITION_ID> if conditionid is invalid.
+     Returns <M_OK> if the condition is successfully destoryed, or <M_BAD_CONDITION_ID> if condition_id is invalid.
 
 */
 intptr_t syscall_condition_destroy(intptr_t id)
@@ -457,6 +498,8 @@ intptr_t syscall_condition_destroy(intptr_t id)
     return result;
 }
 
+
+
 /*
    function: syscall_mutex_create
 
@@ -464,7 +507,7 @@ intptr_t syscall_condition_destroy(intptr_t id)
 
    Returns:
 
-     A positive mutexid.
+     A positive mutex_id.
 
 */
 intptr_t syscall_mutex_create()
@@ -478,22 +521,22 @@ intptr_t syscall_mutex_create()
 /*
    function: syscall_mutex_fetch
 
-   Fetch a mutex by mutexid, the mutex may be created by other process.
+   Fetch a mutex by mutex_id, the mutex may be created by other process.
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
 
    Returns:
 
-     A positive mutexid if exists. Returns <M_BAD_MUTEX_ID> if mutexid is invalid.
+     A positive mutex_id if exists. Returns <M_BAD_MUTEX_ID> if mutex_id is invalid.
 
 */
-intptr_t syscall_mutex_fetch(intptr_t mutexid)
+intptr_t syscall_mutex_fetch(intptr_t mutex_id)
 {
-    ASSERT(mutexid != MUTEX_CREATE_NEW);
+    ASSERT(mutex_id != MUTEX_CREATE_NEW);
     intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, mutexid);
+    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, mutex_id);
     return result;
 }
 
@@ -504,11 +547,11 @@ intptr_t syscall_mutex_fetch(intptr_t mutexid)
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
 
    Returns:
 
-     Returns <M_OK> if the mutex is successfully locked. <M_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutexid is invalid.
+     Returns <M_OK> if the mutex is successfully locked. <M_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutex_id is invalid.
 
 */
 intptr_t syscall_mutex_try_lock(intptr_t id)
@@ -525,12 +568,12 @@ intptr_t syscall_mutex_try_lock(intptr_t id)
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
      timeoutMsec - timeout in msec.
 
    Returns:
 
-     <M_OK>, when the thread gets a lock. <M_TIMED_OUT>, when timeout. <M_BAD_MUTEX_ID> if mutexid is invalid.
+     <M_OK>, when the thread gets a lock. <M_TIMED_OUT>, when timeout. <M_BAD_MUTEX_ID> if mutex_id is invalid.
 
 */
 intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
@@ -552,11 +595,11 @@ intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
 
    Returns:
 
-     Returns <M_OK> if the mutex is successfully locked, or <M_BAD_MUTEX_ID> if mutexid is invalid.
+     Returns <M_OK> if the mutex is successfully locked, or <M_BAD_MUTEX_ID> if mutex_id is invalid.
 
 */
 intptr_t syscall_mutex_lock(intptr_t id)
@@ -574,10 +617,10 @@ intptr_t syscall_mutex_lock(intptr_t id)
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
 
    Returns:
-     Returns <M_OK> if the mutex is successfully unlocked, or <M_BAD_MUTEX_ID> if mutexid is invalid.
+     Returns <M_OK> if the mutex is successfully unlocked, or <M_BAD_MUTEX_ID> if mutex_id is invalid.
 */
 intptr_t syscall_mutex_unlock(intptr_t id)
 {
@@ -593,10 +636,10 @@ intptr_t syscall_mutex_unlock(intptr_t id)
 
    Parameters:
 
-     id - mutexid returned by <syscall_mutex_create>.
+     id - mutex_id returned by <syscall_mutex_create>.
 
    Returns:
-     Returns <M_OK> if the mutex is successfully destoryed, or <M_BAD_MUTEX_ID> if mutexid is invalid.
+     Returns <M_OK> if the mutex is successfully destoryed, or <M_BAD_MUTEX_ID> if mutex_id is invalid.
 
 */
 intptr_t syscall_mutex_destroy(intptr_t id)

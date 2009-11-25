@@ -218,7 +218,18 @@ void syscall_entrance()
         }
         break;
     }
-
+    case SYSTEM_CALL_CONDITION_NOTIFY_ALL:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else {
+            Condition* condition = (Condition*)object;
+            setReturnValue(info, M_OK);
+        }
+        break;
+    }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
             intptr_t mutexid = systemcall_mutex_create();

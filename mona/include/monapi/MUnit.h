@@ -54,10 +54,21 @@
     }\
 }
 
+#define EXPECT_EQ(expected, actual) {                  \
+    if (expected != actual) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+
 #define ASSERT_GT(a, b) ASSERT_TRUE((a) > (b))
 //#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))
 #define EXPECT_GT(a, b) EXPECT_TRUE((a) > (b))
-#define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b))
+//#define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b))
 
 MUNIT_GLOBAL int munit_number_of_failed MUNIT_GLOBAL_VAL(0);
 MUNIT_GLOBAL int munit_number_of_passed MUNIT_GLOBAL_VAL(0);
