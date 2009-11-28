@@ -33,9 +33,10 @@
 }
 
 #define ASSERT_EQ(expected, actual) {                  \
-    if (expected != actual) {\
-        _printf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
-        logprintf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+    intptr_t ac = (actual); \
+    if (expected != ac) {\
+        _printf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
         exit(-1);\
     } else {\
         munit_number_of_passed++;\
@@ -55,9 +56,10 @@
 }
 
 #define EXPECT_EQ(expected, actual) {                  \
-    if (expected != actual) {\
-        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, actual, __FILE__, __LINE__); \
+    intptr_t ac = (actual); \
+    if (expected != ac) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
         munit_number_of_failed++;\
     } else {\
         munit_number_of_passed++;\

@@ -474,7 +474,14 @@ intptr_t syscall_condition_notify_all(intptr_t id)
 */
 intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id)
 {
-    return M_OK;
+    intptr_t result;
+    SYSCALL_2(SYSTEM_CALL_CONDITION_WAIT, result, condition_id, mutex_id);
+    syscall_mutex_lock(mutex_id);
+    if (result == M_EVENT_CONDITION_NOTIFY) {
+        return M_OK;
+    } else {
+        return result;
+    }
 }
 
 

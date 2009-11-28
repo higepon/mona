@@ -12,20 +12,20 @@ public:
     virtual ~KObject();
 
 public:
-    virtual int checkSecurity(Thread* thread);
-    virtual int getReferanceCount() const;
-    virtual int getType() const;
+    virtual intptr_t checkSecurity(Thread* thread) = 0;
+    virtual intptr_t getReferanceCount() const;
+    virtual intptr_t getType() const = 0;
     virtual void setReferance();
     virtual void cancelReferance();
 
-    uint32_t getId() const {return id;}
-    void setId(uint32_t id) {this->id = id;}
+    virtual intptr_t getId() const {return id;}
+    virtual void setId(uint32_t id) {this->id = id;}
 
 private:
     int referanceCount;
 
 public:
-    uint32_t id;
+    intptr_t id;
     enum
     {
         KOBJECT,

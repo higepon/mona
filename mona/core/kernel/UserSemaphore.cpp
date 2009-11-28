@@ -102,7 +102,7 @@ int UserSemaphore::up()
     return MONA_SUCCESS;
 }
 
-int UserSemaphore::checkSecurity(Thread* thread)
+intptr_t UserSemaphore::checkSecurity(Thread* thread)
 {
     return 0;
 }

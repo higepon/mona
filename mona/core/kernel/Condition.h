@@ -16,19 +16,46 @@
 #include "KObject.h"
 
 class Condition : public KObject {
-  public:
-    Condition() {}
+public:
+    Condition() : waitList_(new HList<Thread*>) {}
     virtual ~Condition() {}
 
-    int checkSecurity(Thread* thread)
+    intptr_t checkSecurity(Thread* thread)
     {
         return M_OK;
     }
 
-    int getType() const
+    intptr_t getType() const
     {
         return CONDITION;
     }
+
+    intptr_t wait(Thread* thread)
+    {
+        enter_kernel_lock_mode();
+        waitList_->add(thread);
+        g_scheduler->WaitEvent(thread, MEvent::CONDITION_NOTIFY);
+        g_scheduler->SwitchToNext();
+
+        /* not reached */
+        return M_OK;
+    }
+
+    intptr_t notifyAll()
+    {
+        enter_kernel_lock_mode();
+        while (!waitList_->isEmpty()) {
+            Thread* thread = waitList_->removeAt(0);
+            g_scheduler->EventComes(thread, MEvent::CONDITION_NOTIFY);
+        }
+        g_scheduler->SwitchToNext();
+
+        /* not reached */
+        return M_OK;
+    }
+
+private:
+    List<Thread*>* waitList_;
 
 
 };

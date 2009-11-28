@@ -226,7 +226,31 @@ void syscall_entrance()
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
             Condition* condition = (Condition*)object;
-            setReturnValue(info, M_OK);
+            intptr_t ret = condition->notifyAll();
+            setReturnValue(info, ret);
+        }
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_WAIT:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+
+        const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
+        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+
+        if (condObject == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else if (mutexObject == NULL) {
+            setReturnValue(info, M_BAD_MUTEX_ID);
+        } else {
+            Condition* condition = (Condition*)condObject;
+            KMutex* mutex = (KMutex*)mutexObject;
+
+            // unlock and wait should be atomic.
+            mutex->unlockNoSwitchNext();
+            intptr_t ret = condition->wait(g_currentThread->thread);
+            setReturnValue(info, ret);
         }
         break;
     }

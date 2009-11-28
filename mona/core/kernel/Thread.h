@@ -6,6 +6,7 @@
 #include "sys/List.h"
 #include "sys/types.h"
 #include "sys/MEvent.h"
+#include "sys/error.h"
 #include "Segments.h"
 #include "Mutex.h"
 
@@ -21,7 +22,7 @@ public:
     Thread();
     virtual ~Thread();
 
-    int getType() const
+    intptr_t getType() const
     {
         return THREAD;
     }
@@ -60,6 +61,11 @@ public:
         return waitingMutex_ == NULL;
     }
 
+    intptr_t checkSecurity(Thread*)
+    {
+        return M_OK;
+    }
+
 public:
     void Tick()
     {
@@ -87,7 +93,7 @@ private:
     // Waiting mutex.
     // If you want to add another waiting lock primitive,
     // Make this waitingMutex_ to a pointer to lockPrimitive struct.
-    KMutex* waitingMutex_; 
+    KMutex* waitingMutex_;
 };
 
 #endif

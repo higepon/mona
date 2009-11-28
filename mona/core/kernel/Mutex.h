@@ -30,6 +30,7 @@ class KMutex : public KObject {
     intptr_t lock(Thread* thread, int timeout = 0);
     intptr_t tryLock(Thread* thread);
     intptr_t unlock();
+    intptr_t unlockNoSwitchNext();
     bool removeFromWaitList(Thread* thread)
     {
         Thread* removedThread = waitList_->remove(thread);
@@ -43,15 +44,15 @@ class KMutex : public KObject {
         return (owner_ != NULL);
     }
 
-    inline int getType() const
+    inline intptr_t getType() const
     {
         return KMUTEX;
     }
 
-    int checkSecurity(Thread* thread);
+    intptr_t checkSecurity(Thread* thread);
 
   private:
-    int refcount_;
+    intptr_t refcount_;
     List<Thread*>* waitList_;
     Thread* owner_;
 };

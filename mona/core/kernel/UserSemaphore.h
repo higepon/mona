@@ -37,12 +37,12 @@ class UserSemaphore : public KObject {
         return sem_ > 0;
     }
 
-    inline int getType() const
+    inline intptr_t getType() const
     {
         return USER_SEMAPHORE;
     }
 
-    int checkSecurity(Thread* thread);
+    intptr_t checkSecurity(Thread* thread);
 
   private:
     int refcount_;

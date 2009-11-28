@@ -81,6 +81,27 @@ intptr_t KMutex::tryLock(Thread* thread)
     return result;
 }
 
+intptr_t KMutex::unlockNoSwitchNext()
+{
+    /* not locked */
+    if (!isLocked()) {
+        return M_OK;
+    }
+
+    enter_kernel_lock_mode();
+
+    g_currentThread->thread->setWaitingMutex(NULL);
+
+    if (waitList_ ->size() == 0) {
+        owner_ = NULL;
+    } else {
+        owner_ = waitList_->removeAt(0);
+        g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
+    }
+    exit_kernel_lock_mode();
+    return M_OK;
+}
+
 intptr_t KMutex::unlock()
 {
     /* not locked */
@@ -105,7 +126,7 @@ intptr_t KMutex::unlock()
     return M_OK;
 }
 
-int KMutex::checkSecurity(Thread* thread)
+intptr_t KMutex::checkSecurity(Thread* thread)
 {
     return M_OK;
 }

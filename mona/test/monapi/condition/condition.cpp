@@ -41,7 +41,7 @@ static void __fastcall conditionSubThread(void* mainThread)
 
     EXPECT_EQ(M_OK, syscall_mutex_unlock(mutex));
 
-
+    Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
     // wait forever
     for (;;) {
         if (Message::receive(&msg) != M_OK) {
@@ -73,6 +73,8 @@ void testCondition()
     EXPECT_EQ(M_OK, syscall_condition_notify_all(condition));
 
     EXPECT_EQ(M_OK, syscall_mutex_unlock(mutex));
+
+    waitSubThread();
 
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_notify_all(3));
 
