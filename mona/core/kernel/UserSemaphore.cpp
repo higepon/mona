@@ -33,7 +33,7 @@ UserSemaphore::~UserSemaphore()
     delete waitList_;
 }
 
-int UserSemaphore::down(Thread* thread)
+intptr_t UserSemaphore::down(Thread* thread)
 {
     enter_kernel_lock_mode();
     /* lock OK */
@@ -46,18 +46,16 @@ int UserSemaphore::down(Thread* thread)
     {
         waitList_->add(thread);
         g_scheduler->WaitEvent(thread, MEvent::SEMAPHORE_UPPED);
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
+        return Scheduler::YIELD;
     }
     exit_kernel_lock_mode();
 
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
-int UserSemaphore::tryDown(Thread* thread)
+intptr_t UserSemaphore::tryDown(Thread* thread)
 {
-    int result;
+    intptr_t result;
 
     enter_kernel_lock_mode();
 
@@ -65,41 +63,36 @@ int UserSemaphore::tryDown(Thread* thread)
     if (canDown())
     {
         sem_--;
-        result = MONA_SUCCESS;
+        result = M_OK;
     }
     else
     {
-        result = MONA_FAILURE;
+        result = M_BUSY;
     }
 
     exit_kernel_lock_mode();
     return result;
 }
 
-int UserSemaphore::up()
+intptr_t UserSemaphore::up()
 {
-    if (sem_ == maxSem_)
-    {
-        return MONA_SUCCESS;
+    if (sem_ == maxSem_) {
+        return M_OK;
     }
 
     enter_kernel_lock_mode();
 
-    if (waitList_ ->size() == 0)
-    {
+    if (waitList_ ->size() == 0) {
         sem_++;
-    }
-    else
-    {
+    } else {
         // We first sem_++ because of up(), and next sem_-- because next thread will down().
         // So we don't modify sem_
         g_scheduler->EventComes(waitList_->removeAt(0), MEvent::SEMAPHORE_UPPED);
-        g_scheduler->SwitchToNext();
-        /* not reached */
+        return Scheduler::YIELD;
     }
 
     exit_kernel_lock_mode();
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 intptr_t UserSemaphore::checkSecurity(Thread* thread)

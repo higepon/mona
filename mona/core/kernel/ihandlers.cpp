@@ -173,7 +173,6 @@ void irqHandler_6()
     outp8(0x20, 0x66);
 
     SendInterrupt(6);
-
     /* not reached */
 }
 

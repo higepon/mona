@@ -27,9 +27,9 @@ class UserSemaphore : public KObject {
     virtual ~UserSemaphore();
 
   public:
-    int down(Thread* thread);
-    int tryDown(Thread* thread);
-    int up();
+    intptr_t down(Thread* thread);
+    intptr_t tryDown(Thread* thread);
+    intptr_t up();
     void addRef();
     void releaseRef();
 

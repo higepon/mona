@@ -26,6 +26,37 @@ extern uint32_t version_number;
 extern mones::FrameNode* g_frames;
 extern mones::Nic* g_nic;
 
+inline intptr_t syscall1(intptr_t syscall_number, intptr_t arg1)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1)
+                 :"ebx", "esi"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall2(intptr_t syscall_number, intptr_t arg1, intptr_t arg2)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2)
+                 :"ebx", "esi", "ecx"
+                 );
+    return ret;
+}
+
+
+
 inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
 {
     info->eax = value;
@@ -41,15 +72,12 @@ uint32_t systemcall_mutex_lock(uint32_t id)
 {
     uint32_t result;
     int noTimeout = 0;
-    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
-    return result;
+    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
 }
 
 uint32_t systemcall_mutex_unlock(uint32_t id)
 {
-   int result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_UNLOCK, id);
 }
 
 // don't call without systemcall
@@ -286,12 +314,9 @@ void syscall_entrance()
     case SYSTEM_CALL_SEMAPHORE_CREATE:
         if (SYSTEM_CALL_ARG_1 == 0) {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread, KObject::USER_SEMAPHORE);
-            if (object == NULL)
-            {
-                setReturnValue(info, g_id->getLastError());
-            }
-            else
-            {
+            if (object == NULL) {
+                setReturnValue(info, M_BAD_SEMAPHORE_ID);
+            } else {
                 UserSemaphore* semaphore = (UserSemaphore*)object;
                 semaphore->addRef();
                 setReturnValue(info, SYSTEM_CALL_ARG_2);
@@ -301,7 +326,6 @@ void syscall_entrance()
             setReturnValue(info, g_id->allocateID(semaphore));
         }
         break;
-
 
     case SYSTEM_CALL_MUTEX_LOCK:
     {
@@ -316,11 +340,17 @@ void syscall_entrance()
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
-        if (object == NULL)
-        {
-            setReturnValue(info, g_id->getLastError());
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            intptr_t ret = semaphore->down(g_currentThread->thread);
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
-        setReturnValue(info, ((UserSemaphore*)object)->down(g_currentThread->thread));
         break;
     }
     case SYSTEM_CALL_MUTEX_TRY_LOCK:
@@ -337,12 +367,9 @@ void syscall_entrance()
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            setReturnValue(info, g_id->getLastError());
-        }
-        else
-        {
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
             setReturnValue(info, ((UserSemaphore*)object)->tryDown(g_currentThread->thread));
         }
         break;
@@ -362,13 +389,16 @@ void syscall_entrance()
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            setReturnValue(info, g_id->getLastError());
-        }
-        else
-        {
-            setReturnValue(info, ((UserSemaphore*)object)->up());
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            intptr_t ret = semaphore->up();
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
         break;
     }
@@ -388,24 +418,18 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
-
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            setReturnValue(info, g_id->getLastError());
-        }
-        else
-        {
-            UserSemaphore* mutex = (UserSemaphore*)object;
-            mutex->releaseRef();
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            semaphore->releaseRef();
             setReturnValue(info, 0);
         }
         break;
     }
-
-
     case SYSTEM_CALL_LOOKUP:
         setReturnValue(info, g_scheduler->Lookup((char*)(SYSTEM_CALL_ARG_1)));
         break;

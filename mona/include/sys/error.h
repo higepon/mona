@@ -88,6 +88,13 @@ enum
        Indicates a bad thread_id is spcified.
     */
     M_BAD_THREAD_ID       ,
+    /*
+       constant: M_BAD_SEMAPHORE_ID
+
+       Indicates a bad semaphore_id is spcified.
+    */
+    M_BAD_SEMAPHORE_ID       ,
+
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

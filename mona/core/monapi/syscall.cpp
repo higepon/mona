@@ -9,6 +9,82 @@
 
 using namespace MonAPI;
 
+inline intptr_t syscall0(intptr_t syscall_number)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number)
+                 :"ebx"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall1(intptr_t syscall_number, intptr_t arg1)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1)
+                 :"ebx", "esi"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall2(intptr_t syscall_number, intptr_t arg1, intptr_t arg2)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2)
+                 :"ebx", "esi", "ecx"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall3(intptr_t syscall_number, intptr_t arg1, intptr_t arg2, intptr_t arg3)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3)
+                 :"ebx", "esi", "ecx", "edi"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall4(intptr_t syscall_number, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
+                 "movl %5  , %%edx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3), "m"(arg4)
+                 :"ebx", "esi", "ecx", "edi", "edx"
+                 );
+    return ret;
+}
+
+
 /*----------------------------------------------------------------------
     system call wrappers
 ----------------------------------------------------------------------*/
@@ -364,43 +440,32 @@ void _logprintf(const char* format, ...)
 ----------------------------------------------------------------------*/
 int syscall_mthread_create(void (*f)(void))
 {
-    int result, arg2 = 0;
-    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, (uint32_t)f, arg2);
-    return result;
+    return syscall2(SYSTEM_CALL_MTHREAD_CREATE, (uint32_t)f, 0);
 }
 
 int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, f, p);
-    return result;
+    return syscall2(SYSTEM_CALL_MTHREAD_CREATE, (intptr_t)f, (intptr_t)p);
 }
 
 int syscall_mthread_kill(uint32_t id)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_MTHREAD_KILL, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MTHREAD_KILL, id);
 }
 
 int syscall_sleep(uint32_t tick)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_MTHREAD_SLEEP, result, tick);
-    return result;
+    return syscall1(SYSTEM_CALL_MTHREAD_SLEEP, tick);
 }
 
 int syscall_print(const char* msg)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_PRINT, result, msg);
-    return result;
+    return syscall1(SYSTEM_CALL_PRINT, (intptr_t)msg);
 }
 
 int syscall_kill()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_KILL, result);
+    intptr_t result = syscall0(SYSTEM_CALL_KILL);
 
     /* not reached */
     return result;
@@ -408,16 +473,12 @@ int syscall_kill()
 
 int syscall_send(uint32_t pid, MessageInfo* message)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_SEND, result, pid, message);
-    return result;
+    return syscall2(SYSTEM_CALL_SEND, pid, (intptr_t)message);
 }
 
 int syscall_receive(MessageInfo* message)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_RECEIVE, result, message);
-    return result;
+    return syscall1(SYSTEM_CALL_RECEIVE, (intptr_t)message);
 }
 
 /*
@@ -432,9 +493,7 @@ int syscall_receive(MessageInfo* message)
 */
 intptr_t syscall_condition_create()
 {
-    intptr_t result;
-    SYSCALL_0(SYSTEM_CALL_CONDITION_CREATE, result);
-    return result;
+    return syscall0(SYSTEM_CALL_CONDITION_CREATE);
 }
 
 
@@ -453,10 +512,9 @@ intptr_t syscall_condition_create()
 */
 intptr_t syscall_condition_notify_all(intptr_t id)
 {
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_CONDITION_NOTIFY_ALL, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_CONDITION_NOTIFY_ALL, id);
 }
+
 
 /*
    function: syscall_condition_wait
@@ -474,13 +532,12 @@ intptr_t syscall_condition_notify_all(intptr_t id)
 */
 intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id)
 {
-    intptr_t result;
-    SYSCALL_2(SYSTEM_CALL_CONDITION_WAIT, result, condition_id, mutex_id);
+    intptr_t ret = syscall2(SYSTEM_CALL_CONDITION_WAIT, condition_id, mutex_id);
     syscall_mutex_lock(mutex_id);
-    if (result == M_EVENT_CONDITION_NOTIFY) {
+    if (ret == M_EVENT_CONDITION_NOTIFY) {
         return M_OK;
     } else {
-        return result;
+        return ret;
     }
 }
 
@@ -500,11 +557,8 @@ intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id)
 */
 intptr_t syscall_condition_destroy(intptr_t id)
 {
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_CONDITION_DESTROY, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_CONDITION_DESTROY, id);
 }
-
 
 
 /*
@@ -519,10 +573,8 @@ intptr_t syscall_condition_destroy(intptr_t id)
 */
 intptr_t syscall_mutex_create()
 {
-    intptr_t result;
     int type = MUTEX_CREATE_NEW;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, type);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_CREATE, type);
 }
 
 /*
@@ -542,10 +594,9 @@ intptr_t syscall_mutex_create()
 intptr_t syscall_mutex_fetch(intptr_t mutex_id)
 {
     ASSERT(mutex_id != MUTEX_CREATE_NEW);
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, mutex_id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_CREATE, mutex_id);
 }
+
 
 /*
    function: syscall_mutex_try_lock
@@ -563,10 +614,9 @@ intptr_t syscall_mutex_fetch(intptr_t mutex_id)
 */
 intptr_t syscall_mutex_try_lock(intptr_t id)
 {
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_TRY_LOCK, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_TRY_LOCK, id);
 }
+
 
 /*
    function: syscall_mutex_lock_timeout
@@ -590,9 +640,7 @@ intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
         tick = 1;
     }
 
-    intptr_t result;
-    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, tick);
-    return result;
+    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, tick);
 }
 
 /*
@@ -611,10 +659,8 @@ intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 */
 intptr_t syscall_mutex_lock(intptr_t id)
 {
-    intptr_t result;
     intptr_t noTimeout = 0;
-    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
-    return result;
+    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
 }
 
 /*
@@ -631,9 +677,7 @@ intptr_t syscall_mutex_lock(intptr_t id)
 */
 intptr_t syscall_mutex_unlock(intptr_t id)
 {
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_UNLOCK, id);
 }
 
 /*
@@ -651,371 +695,267 @@ intptr_t syscall_mutex_unlock(intptr_t id)
 */
 intptr_t syscall_mutex_destroy(intptr_t id)
 {
-    intptr_t result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_DESTROY, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_DESTROY, id);
 }
 
-int syscall_semaphore_create(uint32_t n, uint32_t handle)
+intptr_t syscall_semaphore_create(uint32_t n, uint32_t handle)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_SEMAPHORE_CREATE, result, n, handle);
-    return result;
+    return syscall2(SYSTEM_CALL_SEMAPHORE_CREATE, n, handle);
 }
 
-int syscall_semaphore_trydown(int id)
+intptr_t syscall_semaphore_trydown(intptr_t id)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_TRYDOWN, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_SEMAPHORE_TRYDOWN, id);
 }
 
-int syscall_semaphore_down (int id )
+intptr_t syscall_semaphore_down (intptr_t id )
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_DOWN, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_SEMAPHORE_DOWN, id);
 }
 
-int syscall_semaphore_up(int id)
+intptr_t syscall_semaphore_up(intptr_t id)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_UP, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_SEMAPHORE_UP, id);
 }
 
-int syscall_semaphore_destroy(int id)
+intptr_t syscall_semaphore_destroy(intptr_t id)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_SEMAPHORE_DESTROY, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_SEMAPHORE_DESTROY, id);
 }
 
 uint32_t syscall_lookup(const char* name)
 {
-    uint32_t pid;
-    SYSCALL_1(SYSTEM_CALL_LOOKUP, pid, name);
-    return pid;
+    return syscall1(SYSTEM_CALL_LOOKUP, (intptr_t)name);
 }
 
 int syscall_lookup_main_thread(const char* name)
 {
-    int tid;
-    SYSCALL_1(SYSTEM_CALL_LOOKUP_MAIN_THREAD, tid, name);
-    return tid;
+    return syscall1(SYSTEM_CALL_LOOKUP_MAIN_THREAD, (intptr_t)name);
 }
 
 int syscall_get_vram_info(volatile ScreenInfo* info)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_GET_VRAM_INFO, result, info);
-    return result;
+    return syscall1(SYSTEM_CALL_GET_VRAM_INFO, (intptr_t)info);
 }
 
 int syscall_get_cursor(int* x, int* y)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_GET_CURSOR, result, x, y);
-    return result;
+    return syscall2(SYSTEM_CALL_GET_CURSOR, (intptr_t)x, (intptr_t)y);
 }
 
 int syscall_set_cursor(int x, int y)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_SET_CURSOR, result, x, y);
-    return result;
+    return syscall2(SYSTEM_CALL_SET_CURSOR, x, y);
 }
 
 uint32_t syscall_get_pid()
 {
-    uint32_t result;
-    SYSCALL_0(SYSTEM_CALL_GET_PID, result);
-    return result;
+    return syscall0(SYSTEM_CALL_GET_PID);
 }
 
 uint32_t syscall_get_tid()
 {
-    uint32_t result;
-    SYSCALL_0(SYSTEM_CALL_GET_TID, result);
-    return result;
+    return syscall0(SYSTEM_CALL_GET_TID);
 }
 
 int syscall_get_arg_count()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_ARGUMENTS_NUM, result);
-    return result;
+    return syscall0(SYSTEM_CALL_ARGUMENTS_NUM);
 }
 
 int syscall_get_arg(char* buf, int n)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_GET_ARGUMENTS, result, buf, n);
-    return result;
+    return syscall2(SYSTEM_CALL_GET_ARGUMENTS, (intptr_t)buf, n);
 }
 
 int syscall_mthread_yield_message()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE, result);
-    return result;
+    syscall0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE);
 }
 
 int syscall_get_date(KDate* date)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_DATE, result, date);
-    return result;
+    return syscall1(SYSTEM_CALL_DATE, (intptr_t)date);
 }
 
 int syscall_get_io()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_GET_IO, result);
-    return result;
+    return syscall0(SYSTEM_CALL_GET_IO);
 }
 
 int syscall_exist_message()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_EXIST_MESSAGE, result);
-    return result;
+    return syscall0(SYSTEM_CALL_EXIST_MESSAGE);
 }
 
 uint32_t syscall_memory_map_create(uint32_t size)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_CREATE, result, size);
-    return result;
+    return syscall1(SYSTEM_CALL_MEMORY_MAP_CREATE, size);
 }
 
 uint32_t syscall_memory_map_get_size(uint32_t id)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_GET_SIZE, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MEMORY_MAP_GET_SIZE, id);
 }
 
 int syscall_memory_map_map(uint32_t id, uint32_t address)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_MEMORY_MAP_MAP, result, id, address);
-    return result;
+    return syscall2(SYSTEM_CALL_MEMORY_MAP_MAP, id, address);
 }
 
 int syscall_memory_map_unmap(uint32_t id)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_UNMAP, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MEMORY_MAP_UNMAP, id);
 }
 
 int syscall_set_ps_dump()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_PS_DUMP_SET, result);
-    return result;
+    return syscall0(SYSTEM_CALL_PS_DUMP_SET);
 }
 
 int syscall_read_ps_dump(PsInfo* info)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_PS_DUMP_READ, result, info);
-    return result;
+    return syscall1(SYSTEM_CALL_PS_DUMP_READ, (intptr_t)info);
 }
 
 uint32_t syscall_get_tick()
 {
-    uint32_t result;
-    SYSCALL_0(SYSTEM_CALL_GET_TICK, result);
-    return result;
+    return syscall0(SYSTEM_CALL_GET_TICK);
 }
 
 int syscall_get_kernel_version(char* buf, uint32_t size)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_GET_KERNEL_VERSION, result, buf, size);
-    return result;
+    return syscall2(SYSTEM_CALL_GET_KERNEL_VERSION, (intptr_t)buf, size);
 }
 
 int syscall_load_process_image(LoadProcessInfo* info)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_LOAD_PROCESS_IMAGE, result, info);
-    return result;
+    return syscall1(SYSTEM_CALL_LOAD_PROCESS_IMAGE, (intptr_t)info);
 }
 
 int syscall_kill_thread(uint32_t tid)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_KILL_THREAD, result, tid);
-    return result;
+    return syscall1(SYSTEM_CALL_KILL_THREAD, tid);
 }
 
 int syscall_clear_screen()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_CLEAR_SCREEN, result);
-    return result;
+    return syscall0(SYSTEM_CALL_CLEAR_SCREEN);
 }
 
 int syscall_peek(MessageInfo* message, int index, int flags)
 {
-    int result;
-    SYSCALL_3(SYSTEM_CALL_PEEK, result, message, index, flags);
-    return result;
+    return syscall3(SYSTEM_CALL_PEEK, (intptr_t)message, index, flags);
 }
 
 int syscall_test(uint32_t laddress)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_TEST, result, laddress);
-    return result;
+    return syscall1(SYSTEM_CALL_TEST, laddress);
 }
 
 int syscall_set_irq_receiver(int irq, int maskInterrupt)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq, maskInterrupt == SYS_MASK_INTERRUPT ? 1 : 0);
-    return result;
+    return syscall2(SYSTEM_CALL_SET_IRQ_RECEIVER, irq, maskInterrupt == SYS_MASK_INTERRUPT ? 1 : 0);
 }
 
 int syscall_has_irq_receiver(int irq)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_HAS_IRQ_RECEIVER, result, irq);
-    return result;
+    return syscall1(SYSTEM_CALL_HAS_IRQ_RECEIVER, irq);
 }
 
 int syscall_remove_irq_receiver(int irq)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_REMOVE_IRQ_RECEIVER, result, irq);
-    return result;
+    return syscall1(SYSTEM_CALL_REMOVE_IRQ_RECEIVER, irq);
 }
 
 int syscall_free_pages(uint32_t address, uint32_t size)
 {
     uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_FREE_PAGES, result, address, size);
+    return syscall2(SYSTEM_CALL_FREE_PAGES, address, size);
     return result;
 }
 
 int syscall_get_memory_info(MemoryInfo* info)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_GET_MEMORY_INFO, result, info);
-    return result;
+    return syscall1(SYSTEM_CALL_GET_MEMORY_INFO, (intptr_t)info);
 }
 
 uint8_t* syscall_allocate_dma_memory(int size)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_ALLOCATE_DMA_MEMORY, result, size);
-    return (uint8_t*)result;
+    return (uint8_t*)syscall1(SYSTEM_CALL_ALLOCATE_DMA_MEMORY, size);
 }
 
 uint32_t syscall_deallocate_dma_memory(void* address, int size)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, result, address, size);
-    return result;
+    return syscall2(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, (intptr_t)address, size);
 }
 
 int syscall_set_timer(uint32_t tick)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_SET_TIMER, result, tick);
-    return result;
+    return syscall1(SYSTEM_CALL_SET_TIMER, tick);
 }
 
 int syscall_kill_timer(uint32_t id)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_KILL_TIMER, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_KILL_TIMER, id);
 }
 
 int syscall_change_base_priority(uint32_t priority)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_CHANGE_BASE_PRIORITY, result, priority);
-    return result;
+    return syscall1(SYSTEM_CALL_CHANGE_BASE_PRIORITY, priority);
 }
 
 int syscall_set_dll_segment_writable()
 {
-    uint32_t result;
-    SYSCALL_0(SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE, result);
-    return result;
+    return syscall0(SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE);
 }
 
 int syscall_set_dll_segment_notshared(int index)
 {
-    uint32_t result;
-    SYSCALL_1(SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED, result, index);
-    return result;
+    return syscall1(SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED, index);
 }
 
 int syscall_shutdown(int op, int device)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_SHUTDOWN, result, op, device);
-    return result;
+    return syscall2(SYSTEM_CALL_SHUTDOWN, op, device);
 }
 
 int syscall_log_print(const char* msg)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_LOG_PRINT, result, msg);
-    return result;
+    return syscall1(SYSTEM_CALL_LOG_PRINT, (intptr_t)msg);
 }
 
 int syscall_receive_packet(uint8_t* frame)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_RECEIVE_PACKET, result, frame);
-    return result;
+    return syscall1(SYSTEM_CALL_RECEIVE_PACKET, (intptr_t)frame);
 }
 
 int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid)
 {
-    int result;
-    SYSCALL_4(SYSTEM_CALL_SEND_PACKET, result, pkt, mac, size, pid);
-    return result;
+    return syscall4(SYSTEM_CALL_SEND_PACKET, (intptr_t)pkt, (intptr_t)mac, size, pid);
 }
 
 int syscall_set_watch_point(void* address, int flag)
 {
-    int result;
-    SYSCALL_2(SYSTEM_CALL_SET_WATCH_POINT, result, address, flag);
-    return result;
+    return syscall2(SYSTEM_CALL_SET_WATCH_POINT, (intptr_t)address, flag);
 }
 
 int syscall_get_physical_address(uint32_t linearAddress)
 {
-    int result;
-    SYSCALL_1(SYSTEM_CALL_GET_PHYSICAL_ADDRESS, result, linearAddress);
-    return result;
+    return syscall1(SYSTEM_CALL_GET_PHYSICAL_ADDRESS, linearAddress);
 }
 
 int syscall_remove_watch_point()
 {
-    int result;
-    SYSCALL_0(SYSTEM_CALL_REMOVE_WATCH_POINT, result);
-    return result;
+    return syscall0(SYSTEM_CALL_REMOVE_WATCH_POINT);
 }
 
 int syscall_allocate_contiguous(uint32_t laddress, int pageNum)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_ALLOCATE_CONTIGUOUS, result, laddress, pageNum);
-    return result;
+    return syscall2(SYSTEM_CALL_ALLOCATE_CONTIGUOUS, laddress, pageNum);
 }
 
 void syscall_deallocate_contiguous(uint32_t laddress, int pageNum)
 {
-    uint32_t result;
-    SYSCALL_2(SYSTEM_CALL_DEALLOCATE_CONTIGUOUS, result, laddress, pageNum);
-    return;
+    syscall2(SYSTEM_CALL_DEALLOCATE_CONTIGUOUS, laddress, pageNum);
 }

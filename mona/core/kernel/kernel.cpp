@@ -410,6 +410,19 @@ int execSysConf()
     return 0;
 }
 
+inline intptr_t syscall0(intptr_t syscall_number)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number)
+                 :"ebx"
+                 );
+    return ret;
+}
+
 void mainProcess()
 {
     if (execSysConf() != 0)
@@ -425,9 +438,7 @@ void mainProcess()
 #endif
 
     /* end */
-    int result;
-
-    SYSCALL_0(SYSTEM_CALL_KILL, result);
+    syscall0(SYSTEM_CALL_KILL);
 
     for (;;);
 }
