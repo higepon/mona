@@ -61,7 +61,8 @@ static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
     if (NULL == object) {
         return M_BAD_MUTEX_ID;
     }
-    return ((KMutex*)object)->lock(g_currentThread->thread, timeoutTick);
+    KMutex* mutex = (KMutex*)object;
+    return mutex->lock(g_currentThread->thread, timeoutTick);
 }
 
 // don't call without systemcall
@@ -73,7 +74,8 @@ static intptr_t systemcall_mutex_unlock2(intptr_t id)
     if (object == NULL) {
         return M_BAD_MUTEX_ID;
     }
-    return ((KMutex*)object)->unlock();
+    KMutex* mutex = (KMutex*)object;
+    return mutex->unlock();
 }
 
 void syscall_entrance()
@@ -133,14 +135,19 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_KILL:
-
         ThreadOperation::kill();
+        g_scheduler->SwitchToNext();
         break;
 
     case SYSTEM_CALL_KILL_THREAD:
     {
         uint32_t tid = SYSTEM_CALL_ARG_1;
-        setReturnValue(info, ThreadOperation::kill(tid));
+        intptr_t ret = ThreadOperation::kill(tid);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
     }
 
@@ -186,16 +193,17 @@ void syscall_entrance()
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
 
-        if (object == NULL)
-        {
-            setReturnValue(info, g_id->getLastError());
-        }
-        else
-        {
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_THREAD_ID);
+        } else {
             Thread* t = (Thread*)object;
-            setReturnValue(info, ThreadOperation::kill(t->id));
+            intptr_t ret = ThreadOperation::kill(t->id);
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
-
         break;
     }
     case SYSTEM_CALL_CONDITION_CREATE:
@@ -227,7 +235,10 @@ void syscall_entrance()
         } else {
             Condition* condition = (Condition*)object;
             intptr_t ret = condition->notifyAll();
-            setReturnValue(info, ret);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
+
+            /* Not reached */
         }
         break;
     }
@@ -248,8 +259,10 @@ void syscall_entrance()
             KMutex* mutex = (KMutex*)mutexObject;
 
             // unlock and wait should be atomic.
-            mutex->unlockNoSwitchNext();
+            mutex->unlock();
             intptr_t ret = condition->wait(g_currentThread->thread);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
             setReturnValue(info, ret);
         }
         break;
@@ -291,9 +304,15 @@ void syscall_entrance()
 
 
     case SYSTEM_CALL_MUTEX_LOCK:
-        setReturnValue(info, systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2));
+    {
+        intptr_t ret = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
-
+    }
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
@@ -330,10 +349,15 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
-
-        setReturnValue(info, systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1));
+    {
+        intptr_t ret = systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
-
+    }
     case SYSTEM_CALL_SEMAPHORE_UP:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);

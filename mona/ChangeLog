@@ -1,3 +1,7 @@
+2009-11-29  higepon  <higepon@users.sourceforge.jp>
+
+	* Not to use Scheduler::SwitchToNext on any where, use only reasonable place.
+
 2009-11-21  higepon  <higepon@users.sourceforge.jp>
 
 	* core/scheme/lib/conf.scm.in : Added execution of stdio test.

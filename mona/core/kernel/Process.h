@@ -122,8 +122,8 @@ class ThreadOperation
   public:
     static Thread* create(Process* process, uint32_t programCounter);
     static int switchThread(bool isProcessChanged, int i);
-    static int kill();
-    static int kill(uint32_t tid);
+    static intptr_t kill();
+    static intptr_t kill(uint32_t tid);
 
   private:
     static void sendKilledMessage();

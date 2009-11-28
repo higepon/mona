@@ -30,7 +30,6 @@ class KMutex : public KObject {
     intptr_t lock(Thread* thread, int timeout = 0);
     intptr_t tryLock(Thread* thread);
     intptr_t unlock();
-    intptr_t unlockNoSwitchNext();
     bool removeFromWaitList(Thread* thread)
     {
         Thread* removedThread = waitList_->remove(thread);

@@ -282,16 +282,12 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
     return NORMAL;
 }
 
-int ThreadOperation::kill()
+intptr_t ThreadOperation::kill()
 {
     Thread* thread   = g_currentThread->thread;
     Process* process = thread->tinfo->process;
 
-//    logprintf("kill:%s", process->getName());
-
     g_scheduler->Kill(thread);
-
-//    logprintf("%s:%d\n", __FILE__, __LINE__);
 
 #if 0
 
@@ -299,11 +295,7 @@ int ThreadOperation::kill()
     sendKilledMessage();
 #endif
 
-//    logprintf("%s:%d\n", __FILE__, __LINE__);
-
     (process->threadNum)--;
-
-//    logprintf("%s:%d\n", __FILE__, __LINE__);
 
     //modified by TAKA
     //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
@@ -316,33 +308,24 @@ int ThreadOperation::kill()
         g_page_manager->returnPhysicalPages(directory);
     }
 
-//    logprintf("%s:%d\n", __FILE__, __LINE__);
-
     delete thread;
-
-//    logprintf("%s:%d\n", __FILE__, __LINE__);
-
-    g_scheduler->SwitchToNext();
-
-    /* not reached */
-
-    return NORMAL;
+    return M_OK;
 }
 
-int ThreadOperation::kill(uint32_t tid)
+intptr_t ThreadOperation::kill(uint32_t tid)
 {
     Thread* thread   = g_scheduler->Find(tid);
-    if (thread == NULL) return -1;
-    if (thread->id == FIRST_THREAD_ID) return -2;
-
+    if (thread == NULL) {
+        return M_BAD_THREAD_ID;
+    }
+    if (thread->id == FIRST_THREAD_ID) {
+        return M_BAD_THREAD_ID;
+    }
 
     Process* process = thread->tinfo->process;
 
     g_scheduler->Kill(thread);
 
-//    sendKilledMessage();
-
-    //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
     ProcessOperation::freeKernelStack(thread->kernelStackBottom);
 
     (process->threadNum)--;
@@ -356,11 +339,7 @@ int ThreadOperation::kill(uint32_t tid)
 
     delete thread;
 
-    g_scheduler->SwitchToNext();
-
-    /* not reached */
-
-    return NORMAL;
+    return Scheduler::YIELD;
 }
 
 void ThreadOperation::sendKilledMessage()

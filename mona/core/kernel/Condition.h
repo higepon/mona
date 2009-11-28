@@ -35,10 +35,7 @@ public:
         enter_kernel_lock_mode();
         waitList_->add(thread);
         g_scheduler->WaitEvent(thread, MEvent::CONDITION_NOTIFY);
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
-        return M_OK;
+        return Scheduler::YIELD;
     }
 
     intptr_t notifyAll()
@@ -48,10 +45,7 @@ public:
             Thread* thread = waitList_->removeAt(0);
             g_scheduler->EventComes(thread, MEvent::CONDITION_NOTIFY);
         }
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
-        return M_OK;
+        return Scheduler::YIELD;
     }
 
 private:
