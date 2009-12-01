@@ -14,7 +14,6 @@ enum {
     forbidden_comma
 };
 
-
 static uintptr_t waitSubThread()
 {
     MessageInfo dst, src;
@@ -25,7 +24,19 @@ static uintptr_t waitSubThread()
     return tid;
 }
 
-
+// Test case (1)
+//
+// =====================================
+//      main        |    sub thread
+//   cond create    |
+//   mutex create   |
+//                  |    mutex lock
+//   mutex lock     |    cond wait loop
+//   cond = true    |
+//   cond notify    |
+//   mutex unlock   |
+//                  |    cond loop ext
+// =====================================
 static void __fastcall conditionSubThread(void* mainThread)
 {
     // waiting thread should get lock
@@ -49,7 +60,6 @@ static void __fastcall conditionSubThread(void* mainThread)
         }
     }
 }
-
 
 void testCondition()
 {
@@ -82,9 +92,56 @@ void testCondition()
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(3));
 }
 
+// Test case (2)
+//
+// =========================================================
+//      main        |    sub thread     |    sub thread 2
+//   cond create    |                   |
+//   mutex create   |                   |
+//                  |    mutex lock     |    mutex lock
+//   mutex lock     |    cond wait loop |    cond wait loop
+//   cond = true    |                   |
+//   cond notify    |                   |
+//   mutex unlock   |                   |
+//                  |    cond loop ext  |    cond loop ext
+// =========================================================
+
+void testCondition2()
+{
+    condition = syscall_condition_create();
+    ASSERT_TRUE(condition > 0);
+
+    mutex = syscall_mutex_create();
+    ASSERT_TRUE(mutex > 0);
+
+    uintptr_t mainThread = System::getThreadID();
+    syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
+    syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
+
+
+    // wait sub thread starting up
+    waitSubThread();
+
+    EXPECT_EQ(M_OK, syscall_mutex_lock(mutex));
+
+    conditionOK = true;
+    EXPECT_EQ(M_OK, syscall_condition_notify_all(condition));
+
+    EXPECT_EQ(M_OK, syscall_mutex_unlock(mutex));
+
+    waitSubThread();
+    waitSubThread();
+
+    ASSERT_EQ(M_OK, syscall_condition_destroy(condition));
+    EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(3));
+}
+
+
+
 int main(int argc, char *argv[])
 {
     testCondition();
+    testCondition2();
 
     TEST_RESULTS(condition);
     return 0;
