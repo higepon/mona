@@ -571,7 +571,7 @@ inline static intptr_t msec_to_tick(intptr_t msec)
 intptr_t syscall_condition_wait_timeout(intptr_t condition_id, intptr_t mutex_id, intptr_t timeoutMsec)
 {
     intptr_t tick = msec_to_tick(timeoutMsec);
-    intptr_t ret = syscall3(SYSTEM_CALL_COND_WAIT_TIMEOUT, condition_id, mutex_id, tick);
+    intptr_t ret = syscall3(SYSTEM_CALL_CONDITION_WAIT_TIMEOUT, condition_id, mutex_id, tick);
     if (ret == M_EVENT_CONDITION_NOTIFY) {
         return M_OK;
     } else {

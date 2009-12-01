@@ -295,6 +295,33 @@ void syscall_entrance()
         }
         break;
     }
+    case SYSTEM_CALL_CONDITION_WAIT_TIMEOUT:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+
+        const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
+        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+
+        const intptr_t timeoutTick = SYSTEM_CALL_ARG_3;
+
+        if (condObject == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else if (mutexObject == NULL) {
+            setReturnValue(info, M_BAD_MUTEX_ID);
+        } else {
+            Condition* condition = (Condition*)condObject;
+            KMutex* mutex = (KMutex*)mutexObject;
+
+            // unlock and wait should be atomic.
+            mutex->unlock();
+            intptr_t ret = condition->waitTimeout(g_currentThread->thread, timeoutTick);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
+            setReturnValue(info, ret);
+        }
+        break;
+    }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
             intptr_t mutexid = systemcall_mutex_create();

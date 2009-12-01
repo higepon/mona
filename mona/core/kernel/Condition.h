@@ -38,6 +38,17 @@ public:
         return Scheduler::YIELD;
     }
 
+    intptr_t waitTimeout(Thread* thread, intptr_t timeoutTick)
+    {
+        enter_kernel_lock_mode();
+        waitList_->add(thread);
+
+        g_scheduler->Sleep(thread, timeoutTick);
+        // todo
+        g_scheduler->WaitEvent2(thread, MEvent::SLEEP, MEvent::CONDITION_NOTIFY);
+        return Scheduler::YIELD;
+    }
+
     intptr_t notifyAll()
     {
         enter_kernel_lock_mode();
