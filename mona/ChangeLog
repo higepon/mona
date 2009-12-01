@@ -1,3 +1,7 @@
+2009-12-02  higepon  <higepon@users.sourceforge.jp>
+
+	* test/monapi/condition/condition.cpp : Added tests for syscall_condtion_wait_timeout. It fails now(Red).
+
 2009-12-01  higepon  <higepon@users.sourceforge.jp>
 
 	* core/monapi/syscall.cpp (syscall_mutex_lock): Fixed return value of mutex_lock.

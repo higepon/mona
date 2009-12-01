@@ -542,6 +542,44 @@ intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id)
 }
 
 
+inline static intptr_t msec_to_tick(intptr_t msec)
+{
+    intptr_t tick = msec / KERNEL_TIMER_INTERVAL_MSEC;
+    if (tick <= 0) {
+        tick = 1;
+    }
+    return tick;
+}
+
+
+/*
+   function: syscall_condition_wait_timeout
+
+   Waits on the condition until get a notify or timeout.
+
+   Parameters:
+
+     condition_id - condition_id returned by <syscall_condition_create>.
+     mutex_id - mutex_id returned by <syscall_mutex_create>.
+     timeoutMsec - timeout in msec.
+
+   Returns:
+
+     <M_OK>, when the thread gets a lock. <M_TIMED_OUT>, when timeout. <M_BAD_CONDITION_ID> if condition_id is invalid.
+
+*/
+intptr_t syscall_condition_wait_timeout(intptr_t condition_id, intptr_t mutex_id, intptr_t timeoutMsec)
+{
+    intptr_t tick = msec_to_tick(timeoutMsec);
+    intptr_t ret = syscall3(SYSTEM_CALL_COND_WAIT_TIMEOUT, condition_id, mutex_id, tick);
+    if (ret == M_EVENT_CONDITION_NOTIFY) {
+        return M_OK;
+    } else {
+        return ret;
+    }
+}
+
+
 /*
    function: syscall_condition_destroy
 
@@ -635,10 +673,7 @@ intptr_t syscall_mutex_try_lock(intptr_t id)
 */
 intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 {
-    intptr_t tick = timeoutMsec / KERNEL_TIMER_INTERVAL_MSEC;
-    if (tick <= 0) {
-        tick = 1;
-    }
+    intptr_t tick = msec_to_tick(timeoutMsec);
     intptr_t ret = syscall2(SYSTEM_CALL_MUTEX_LOCK, id, tick);
     if (ret == M_EVENT_MUTEX_UNLOCKED) {
         return M_OK;

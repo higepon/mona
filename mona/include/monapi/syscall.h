@@ -47,6 +47,7 @@ extern intptr_t syscall_condition_create();
 extern intptr_t syscall_condition_destroy(intptr_t condition_id);
 extern intptr_t syscall_condition_notify_all(intptr_t condition_id);
 extern intptr_t syscall_condition_wait(intptr_t condition_id, intptr_t mutex_id);
+extern intptr_t syscall_condition_wait_timeout(intptr_t condition_id, intptr_t mutex_id, intptr_t timeoutMsec);
 extern intptr_t syscall_mutex_create();
 extern intptr_t syscall_mutex_fetch(intptr_t id);
 extern intptr_t syscall_mutex_try_lock(intptr_t id);
