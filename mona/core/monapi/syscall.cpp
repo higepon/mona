@@ -639,8 +639,12 @@ intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
     if (tick <= 0) {
         tick = 1;
     }
-
-    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, tick);
+    intptr_t ret = syscall2(SYSTEM_CALL_MUTEX_LOCK, id, tick);
+    if (ret == M_EVENT_MUTEX_UNLOCKED) {
+        return M_OK;
+    } else {
+        return ret;
+    }
 }
 
 /*
@@ -660,7 +664,12 @@ intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeoutMsec)
 intptr_t syscall_mutex_lock(intptr_t id)
 {
     intptr_t noTimeout = 0;
-    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
+    intptr_t ret = syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
+    if (ret == M_EVENT_MUTEX_UNLOCKED) {
+        return M_OK;
+    } else {
+        return ret;
+    }
 }
 
 /*

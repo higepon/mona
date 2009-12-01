@@ -1,3 +1,7 @@
+2009-12-01  higepon  <higepon@users.sourceforge.jp>
+
+	* core/monapi/syscall.cpp (syscall_mutex_lock): Fixed return value of mutex_lock.
+
 2009-11-29  higepon  <higepon@users.sourceforge.jp>
 
 	* Not to use Scheduler::SwitchToNext on any where, use only reasonable place.
