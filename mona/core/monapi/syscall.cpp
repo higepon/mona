@@ -555,7 +555,7 @@ inline static intptr_t msec_to_tick(intptr_t msec)
 /*
    function: syscall_condition_wait_timeout
 
-   Waits on the condition until get a notify or timeout.
+   Waits on the condition until ublocked by a notify or timed out.
 
    Parameters:
 
@@ -565,7 +565,7 @@ inline static intptr_t msec_to_tick(intptr_t msec)
 
    Returns:
 
-     <M_OK>, when the thread gets a lock. <M_TIMED_OUT>, when timeout. <M_BAD_CONDITION_ID> if condition_id is invalid.
+     Returns <M_OK> if the waiting thread is successfully unblocked. <M_TIMED_OUT>, when timeout. <M_BAD_CONDITION_ID> if condition_id is invalid.
 
 */
 intptr_t syscall_condition_wait_timeout(intptr_t condition_id, intptr_t mutex_id, intptr_t timeoutMsec)

@@ -1,5 +1,7 @@
 2009-12-02  higepon  <higepon@users.sourceforge.jp>
 
+	* core/monapi/syscall.cpp: Fixed documents for conditions.
+
 	* core/kernel/Scheduler.cpp : Passed tests for syscall_condtion_wait_timeout.(Green).
 
 	* test/monapi/condition/condition.cpp : Added tests for syscall_condtion_wait_timeout. It fails now(Red).
