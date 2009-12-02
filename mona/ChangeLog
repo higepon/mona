@@ -1,5 +1,7 @@
 2009-12-02  higepon  <higepon@users.sourceforge.jp>
 
+	* core/kernel/Scheduler.cpp : Passed tests for syscall_condtion_wait_timeout.(Green).
+
 	* test/monapi/condition/condition.cpp : Added tests for syscall_condtion_wait_timeout. It fails now(Red).
 
 2009-12-01  higepon  <higepon@users.sourceforge.jp>
