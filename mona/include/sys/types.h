@@ -37,12 +37,13 @@ typedef long int        intptr_t;
 #endif
 
 enum {
+    // Each value should be unique, it is used for identifing events on Scheduler.
     M_EVENT_NONE             = 64,
     M_EVENT_SLEEP            = 20,
     M_EVENT_TIMER_MESSAGE    = 19,
     M_EVENT_MESSAGE          = 22,
     M_EVENT_MUTEX_UNLOCKED   = 27,
-    M_EVENT_CONDITION_NOTIFY   = 27,
+    M_EVENT_CONDITION_NOTIFY = 29,
     M_EVENT_SEMAPHORE_UPPED  = 28,
     M_EVENT_INTERRUPT_HIGH   = 0,
     M_EVENT_INTERRUPT_MIDDLE = 7,

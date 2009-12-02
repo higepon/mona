@@ -2,6 +2,8 @@
 #include "Process.h"
 #include "global.h"
 #include "sys/error.h"
+#include "syscalls.h"
+#include "Condition.h"
 
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
@@ -166,10 +168,21 @@ bool Scheduler::WakeupSleep(Thread* thread)
     int mutexIndex = thread->isWaiting(MEvent::MUTEX_UNLOCKED);
     if (-1 != mutexIndex) {
         KMutex* waitingMutex = thread->getWaitingMutex();
+        ASSERT(waitingMutex != NULL);
         thread->setWaitingMutex(NULL);
         bool removed = waitingMutex->removeFromWaitList(thread);
         ASSERT(removed);
     }
+
+    int conditionIndex = thread->isWaiting(MEvent::CONDITION_NOTIFY);
+    if (-1 != conditionIndex) {
+        Condition* waitingCondition = thread->getWaitingCondition();
+        ASSERT(waitingCondition != NULL);
+        thread->setWaitingCondition(NULL);
+        bool removed = waitingCondition->removeFromWaitList(thread);
+        ASSERT(removed);
+    }
+
 
     thread->priority = MEvent::SLEEP; // umm
     thread->lastCpuUsedTick = 0;

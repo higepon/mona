@@ -372,34 +372,6 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL)
-{
-    clearEventWaiting();
-    /* thread information */
-    tinfo = new ThreadInfo;
-    ASSERT(tinfo);
-    tinfo->thread = this;
-
-    /* thread information arch dependent */
-    tinfo->archinfo = new ArchThreadInfo;
-    ASSERT(tinfo->archinfo);
-
-    messageList = new HList<MessageInfo*>();
-    ASSERT(messageList);
-}
-
-Thread::~Thread()
-{
-    /* free memory */
-    delete messageList;
-    delete tinfo->archinfo;
-    delete tinfo;
-}
-
-void Thread::setReturnValue(intptr_t value)
-{
-    tinfo->archinfo->eax = (uint32_t)value;
-}
 
 /*----------------------------------------------------------------------
     Process

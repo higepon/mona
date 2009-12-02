@@ -37,6 +37,7 @@ SOURCES      = cstart.cpp            \
                LogConsole.cpp        \
                IDManager.cpp         \
                KObject.cpp           \
+               Thread.cpp            \
                Loader.cpp            \
                Scheduler.cpp         \
                RTC.cpp               \
@@ -49,7 +50,7 @@ SOURCES      = cstart.cpp            \
                gdb-adapter.cpp       \
                Uart.cpp              \
                NE2000.cpp            \
-	       addressmap.cpp
+               addressmap.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o
 

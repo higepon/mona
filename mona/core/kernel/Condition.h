@@ -34,15 +34,22 @@ public:
     {
         enter_kernel_lock_mode();
         waitList_->add(thread);
+        thread->setWaitingCondition(this);
         g_scheduler->WaitEvent(thread, MEvent::CONDITION_NOTIFY);
         return Scheduler::YIELD;
+    }
+
+    bool removeFromWaitList(Thread* thread)
+    {
+        Thread* removedThread = waitList_->remove(thread);
+        return thread == removedThread;
     }
 
     intptr_t waitTimeout(Thread* thread, intptr_t timeoutTick)
     {
         enter_kernel_lock_mode();
         waitList_->add(thread);
-
+        thread->setWaitingCondition(this);
         g_scheduler->Sleep(thread, timeoutTick);
         // todo
         g_scheduler->WaitEvent2(thread, MEvent::SLEEP, MEvent::CONDITION_NOTIFY);
@@ -54,6 +61,7 @@ public:
         enter_kernel_lock_mode();
         while (!waitList_->isEmpty()) {
             Thread* thread = waitList_->removeAt(0);
+            thread->setWaitingCondition(NULL);
             g_scheduler->EventComes(thread, MEvent::CONDITION_NOTIFY);
         }
         return Scheduler::YIELD;
