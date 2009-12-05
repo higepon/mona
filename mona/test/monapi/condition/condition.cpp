@@ -1,10 +1,13 @@
 #include <monapi.h>
+#include <monapi/Condition.h>
 
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 
 using namespace MonAPI;
 
+static Condition* cond;
+static Mutex* mut;
 static intptr_t condition;
 static intptr_t mutex;
 static bool conditionOK;
@@ -273,12 +276,81 @@ void testCondition4()
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(3));
 }
 
+// Test case (5)
+//
+// =====================================
+//      main        |    sub thread
+//   cond create    |
+//   mutex create   |
+//                  |    mutex lock
+//   mutex lock     |    cond wait loop
+//   cond = true    |
+//   cond notify    |
+//   mutex unlock   |
+//                  |    cond loop exit
+// =====================================
+static void __fastcall conditionSubThread5(void* mainThread)
+{
+    // waiting thread should get lock
+    EXPECT_EQ(M_OK, mut->lock());
+
+    MessageInfo msg;
+    intptr_t ret = Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
+    ASSERT_EQ(M_OK, ret);
+
+    while (!conditionOK) {
+        EXPECT_EQ(M_OK, cond->wait(mut));
+    }
+
+    EXPECT_EQ(M_OK, mut->unlock());
+
+    Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
+    // wait forever
+    for (;;) {
+        if (Message::receive(&msg) != M_OK) {
+            continue;
+        }
+    }
+}
+
+void testCondition5()
+{
+    cond = new Condition();
+    ASSERT_TRUE(condition != NULL);
+    ASSERT_TRUE(cond->getId() > 0);
+
+    mut = new Mutex();
+    ASSERT_TRUE(mut != NULL);
+    ASSERT_TRUE(mut->getId() > 0);
+
+    uintptr_t mainThread = System::getThreadID();
+    syscall_mthread_create_with_arg(conditionSubThread5, (void*)mainThread);
+
+    sleep(20);
+
+    // wait sub thread starting up
+    uintptr_t tid = waitSubThread();
+
+    EXPECT_EQ(M_OK, mut->lock());
+
+    conditionOK = true;
+    EXPECT_EQ(M_OK, cond->notifyAll());
+
+    EXPECT_EQ(M_OK, mut->unlock());
+
+    waitSubThread();
+
+    delete cond;
+    delete mut;
+}
+
 int main(int argc, char *argv[])
 {
     testCondition();
     testCondition2();
     testCondition3();
     testCondition4();
+    testCondition5();
 
     TEST_RESULTS(condition);
     return 0;

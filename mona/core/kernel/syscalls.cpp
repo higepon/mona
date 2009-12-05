@@ -263,6 +263,7 @@ void syscall_entrance()
         } else {
             Condition* condition = (Condition*)object;
             intptr_t ret = condition->notifyAll();
+            setReturnValue(info, M_OK);
             ASSERT(ret == Scheduler::YIELD);
             g_scheduler->SwitchToNext();
 

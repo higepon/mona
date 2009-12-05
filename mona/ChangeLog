@@ -1,3 +1,9 @@
+2009-12-05  higepon  <higepon@users.sourceforge.jp>
+
+	* include/monapi/Condition.h (MonAPI): Added Condition class implementation.
+
+	* test/monapi/condition/condition.cpp (testCondition5): Added tests for Condition Class.
+
 2009-12-02  higepon  <higepon@users.sourceforge.jp>
 
 	* core/monapi/syscall.cpp: Fixed documents for conditions.
