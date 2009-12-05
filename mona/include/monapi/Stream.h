@@ -6,6 +6,7 @@
 #define _MONAPI_STREAM_
 
 #include <sys/types.h>
+#include <sys/error.h>
 #include <monapi/Mutex.h>
 
 namespace MonAPI {

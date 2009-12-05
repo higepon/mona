@@ -1,3 +1,5 @@
+#include <sys/types.h>
+#include "./../error.h"
 #include "FAT12FileSystem.h"
 
 using namespace std;

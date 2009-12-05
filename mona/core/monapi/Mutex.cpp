@@ -14,44 +14,7 @@
 
 namespace MonAPI {
 
-Mutex::Mutex() : destroyed_(false)
-{
-    mutexId_ = syscall_mutex_create();
-}
-
-Mutex::Mutex(intptr_t mutexId) : destroyed_(false)
-{
-    mutexId_ = syscall_mutex_fetch(mutexId);
-}
-
-Mutex::~Mutex()
-{
-    if (!destroyed_) {
-        destroy();
-    }
-}
-
-intptr_t Mutex::lock()
-{
-    intptr_t result = syscall_mutex_lock(mutexId_);
-    return result;
-}
-
-intptr_t Mutex::lock(intptr_t timeoutMsec)
-{
-    return syscall_mutex_lock_timeout(mutexId_, timeoutMsec);
-}
-
-intptr_t Mutex::unlock()
-{
-    return syscall_mutex_unlock(mutexId_);
-}
-
-intptr_t Mutex::tryLock()
-{
-    return syscall_mutex_try_lock(mutexId_);
-}
-
+// Placed on cpp file for breaking the build dependencies.
 intptr_t Mutex::destroy()
 {
     if (destroyed_) {

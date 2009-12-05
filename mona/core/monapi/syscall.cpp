@@ -814,7 +814,7 @@ int syscall_get_arg(char* buf, int n)
 
 int syscall_mthread_yield_message()
 {
-    syscall0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE);
+    return syscall0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE);
 }
 
 int syscall_get_date(KDate* date)

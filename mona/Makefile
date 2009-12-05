@@ -104,3 +104,5 @@ endif
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
 	cd test/monalibc/string && make clean
 	cd test/monalibc/stdio && make clean
+	cd test/monapi/mutex && make clean
+	cd test/monapi/conditoin && make clean

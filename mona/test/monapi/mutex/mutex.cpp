@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/Mutex.h>
 
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>

@@ -1,6 +1,7 @@
 #ifndef __FILESERVER_H__
 #define __FILESERVER_H__
 
+#include <sys/error.h>
 #include "monalibc.h"
 #include "servers/file.h"
 #include "servers/servers.h"
