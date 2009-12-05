@@ -90,3 +90,10 @@ GSYMS
 GTAGS
 *.back
 *.bak
+doc/config/Data/
+doc/html/files/
+doc/html/index.html
+doc/html/index/
+doc/html/javascript/
+doc/html/search/
+doc/html/styles/
