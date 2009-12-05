@@ -78,11 +78,10 @@
 #include "lwip/debug.h"
 
 #include <string.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <monapi/syscall.h>
 
 #include "lwip/sys.h"
 #include "lwip/opt.h"
@@ -91,7 +90,7 @@
 #define UMAX(a, b)      ((a) > (b) ? (a) : (b))
 
 static struct sys_thread *threads = NULL;
-static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
+static intptr_t threads_mutex = -1;
 
 struct sys_mbox_msg {
   struct sys_mbox_msg *next;
@@ -110,44 +109,52 @@ struct sys_mbox {
 
 struct sys_sem {
   unsigned int c;
-  pthread_cond_t cond;
-  pthread_mutex_t mutex;
+  intptr_t cond;
+  intptr_t mutex;
 };
 
 struct sys_thread {
   struct sys_thread *next;
   struct sys_timeouts timeouts;
-  pthread_t pthread;
+  intptr_t pthread;
 };
 
 
 static struct timeval starttime;
 
-static pthread_mutex_t lwprot_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_t lwprot_thread = (pthread_t) 0xDEAD;
+static intptr_t lwprot_mutex = -1;
+static intptr_t lwprot_thread = (intptr_t) 0xDEAD;
 static int lwprot_count = 0;
 
 static struct sys_sem *sys_sem_new_(u8_t count);
 static void sys_sem_free_(struct sys_sem *sem);
 
-static u32_t cond_wait(pthread_cond_t * cond, pthread_mutex_t * mutex,
+static u32_t cond_wait(intptr_t * cond, intptr_t * mutex,
                        u32_t timeout);
+
+// This should be called at first
+void setup_sys_arch()
+{
+  threads_mutex = syscall_mutex_create();
+  lwprot_mutex = syscall_mutex_create();
+}
+
 
 /*-----------------------------------------------------------------------------------*/
 static struct sys_thread *
-introduce_thread(pthread_t id)
+introduce_thread(intptr_t id)
 {
   struct sys_thread *thread;
 
   thread = malloc(sizeof(struct sys_thread));
 
   if (thread != NULL) {
-    pthread_mutex_lock(&threads_mutex);
+    syscall_mutex_lock(threads_mutex);
     thread->next = threads;
     thread->timeouts.next = NULL;
     thread->pthread = id;
     threads = thread;
-    pthread_mutex_unlock(&threads_mutex);
+    syscall_mutex_unlock(threads_mutex);
   }
 
   return thread;
@@ -157,7 +164,7 @@ static struct sys_thread *
 current_thread(void)
 {
   struct sys_thread *st;
-  pthread_t pt;
+  intptr_t pt;
   pt = pthread_self();
   pthread_mutex_lock(&threads_mutex);
 
@@ -185,7 +192,7 @@ sys_thread_t
 sys_thread_new(char *name, void (* function)(void *arg), void *arg, int stacksize, int prio)
 {
   int code;
-  pthread_t tmp;
+  intptr_t tmp;
   struct sys_thread *st = NULL;
 
   code = pthread_create(&tmp,
@@ -415,7 +422,7 @@ sys_sem_new_(u8_t count)
 
 /*-----------------------------------------------------------------------------------*/
 static u32_t
-cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, u32_t timeout)
+cond_wait(intptr_t *cond, intptr_t *mutex, u32_t timeout)
 {
   int tdiff;
   unsigned long sec, usec;
@@ -596,7 +603,7 @@ sys_arch_unprotect(sys_prot_t pval)
     {
         if (--lwprot_count == 0)
         {
-            lwprot_thread = (pthread_t) 0xDEAD;
+            lwprot_thread = (intptr_t) 0xDEAD;
             pthread_mutex_unlock(&lwprot_mutex);
         }
     }

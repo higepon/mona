@@ -1,5 +1,7 @@
 2009-12-05  higepon  <higepon@users.sourceforge.jp>
 
+	* Added net_server skelton and lwip.
+
 	* Removed Condition.cpp which isn't necessary no more.
 
 	* include/monapi/Condition.h (MonAPI): Added Condition class implementation.

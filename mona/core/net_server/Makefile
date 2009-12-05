@@ -6,7 +6,7 @@ SOURCES    = main.cpp
 CSOURCES   = sys_arch.c
 INSTDIR    = $(BINDIR)/SERVERS
 ADDLINK    = -lmonalibc-imp --enable-auto-import
-ADDINCLUDE = -I lwip-1.3.1/src/include
+ADDINCLUDE = -I lwip-1.3.1/src/include -I .
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
