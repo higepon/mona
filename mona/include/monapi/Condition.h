@@ -23,7 +23,8 @@ public:
 
          A condition variable.
     */
-    Condition() : conditionId_(syscall_condition_create())
+    Condition()
+        : conditionId_(syscall_condition_create())
     {
     }
 
