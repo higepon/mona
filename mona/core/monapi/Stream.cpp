@@ -254,9 +254,8 @@ uint32_t Stream::capacity() const
 ----------------------------------------------------------------------*/
 bool Stream::initialize(uint32_t size)
 {
-//    _logprintf("%s:%d", __func__, __LINE__);
     access_ = new Mutex();
-    readAccess_ = new Mutex();
+    readAccess_  = new Mutex();
     writeAccess_ = new Mutex();
     memoryHandle_ = MemoryMap::create(size + sizeof(StreamHeader));
     if (0 == memoryHandle_)
@@ -273,9 +272,9 @@ bool Stream::initialize(uint32_t size)
     header_ = (StreamHeader*)address;
     header_->size = 0;
     header_->capacity = size;
-    header_->accessMutexHandle = access_->getId();
-    header_->readMutexHandle = readAccess_->getId();
-    header_->writeMutexHandle = writeAccess_->getId();
+    header_->accessMutexHandle = access_->getMutex_t();
+    header_->readMutexHandle = readAccess_->getMutex_t();
+    header_->writeMutexHandle = writeAccess_->getMutex_t();
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
@@ -304,9 +303,9 @@ bool Stream::initializeFromHandle(uint32_t handle)
     }
     header_ = (StreamHeader*)address;
 //    _logprintf("this = %x, header_=%x\n", this, header_);
-    access_ = new Mutex(header_->accessMutexHandle);
-    readAccess_ = new Mutex(header_->readMutexHandle);
-    writeAccess_ = new Mutex(header_->writeMutexHandle);
+    access_ = new Mutex(&(header_->accessMutexHandle));
+    readAccess_ = new Mutex(&(header_->readMutexHandle));
+    writeAccess_ = new Mutex(&(header_->writeMutexHandle));
     memoryAddress_ = (void*)((uint32_t)address + sizeof(StreamHeader));
 //    _logprintf("memoryAddress_=%x\n", memoryAddress_);
 //    _logprintf("memorySize = %x\n", header_->size);

@@ -323,7 +323,6 @@
 (define (tstd)
   (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5"))
 
-;; (display "libc test start")
 ;; (tstr)
 ;; (print "...")
 ;; (tstd)

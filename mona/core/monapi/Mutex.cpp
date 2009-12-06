@@ -21,7 +21,7 @@ intptr_t Mutex::destroy()
         return M_OK;
     }
     destroyed_ = true;
-    return syscall_mutex_destroy(mutexId_);
+    return syscall_mutex_destroy(&mutex_);
 }
 
 }

@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <sys/error.h>
 #include "./../error.h"
 #include "FAT12FileSystem.h"
 

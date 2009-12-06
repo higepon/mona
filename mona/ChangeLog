@@ -1,3 +1,7 @@
+2009-12-07  higepon  <higepon@users.sourceforge.jp>
+
+	* include/monapi/Condition.h : Refactoring mutex and condition.	
+
 2009-12-05  higepon  <higepon@users.sourceforge.jp>
 
 	* Added net_server skelton and lwip.

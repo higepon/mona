@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/error.h>
 #include <monapi/syscall.h>
+#include <monapi/Assert.h>
 
 namespace MonAPI {
 
@@ -24,8 +25,9 @@ public:
          A condition variable.
     */
     Condition()
-        : conditionId_(syscall_condition_create())
     {
+        intptr_t ret = syscall_condition_create(&condition_);
+        ASSERT(M_OK == ret);
     }
 
 
@@ -36,9 +38,8 @@ public:
     */
     ~Condition()
     {
-        if (conditionId_ > 0) {
-            syscall_condition_destroy(conditionId_);
-        }
+        intptr_t ret = syscall_condition_destroy(&condition_);
+        ASSERT(M_OK == ret);
     }
 
 
@@ -59,7 +60,8 @@ public:
     */
     intptr_t waitWithTimeout(Mutex* mutex, intptr_t timeoutMsec)
     {
-        return syscall_condition_wait_timeout(conditionId_, mutex->getId(), timeoutMsec);
+        mutex_t m = mutex->getMutex_t();
+        return syscall_condition_wait_timeout(&condition_, &m, timeoutMsec);
     }
 
 
@@ -78,7 +80,8 @@ public:
     */
     intptr_t wait(Mutex* mutex)
     {
-        return syscall_condition_wait(conditionId_, mutex->getId());
+        mutex_t m = mutex->getMutex_t();
+        return syscall_condition_wait(&condition_, &m);
     }
 
 
@@ -94,23 +97,23 @@ public:
     */
     intptr_t notifyAll()
     {
-        return syscall_condition_notify_all(conditionId_);
+        return syscall_condition_notify_all(&condition_);
     }
 
 
     /*
-       function: getId
+       function: getCond_t
 
        Returns:
-         conditionid, which can be used with syscall_condition functions.
+         cond_t, which can be used with syscall_condition functions.
     */
-    intptr_t getId() const
+    cond_t* getCond_t()
     {
-        return conditionId_;
+        return &condition_;
     }
 
 private:
-    intptr_t conditionId_;
+    cond_t condition_;
 };
 
 };

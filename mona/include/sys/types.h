@@ -36,6 +36,9 @@ typedef long int        intptr_t;
 # define __uintptr_t_defined
 #endif
 
+typedef intptr_t mutex_t;
+typedef intptr_t cond_t;
+
 enum {
     // Each value should be unique, it is used for identifing events on Scheduler.
     M_EVENT_NONE             = 64,

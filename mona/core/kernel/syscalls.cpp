@@ -432,7 +432,6 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_MUTEX_DESTROY:
-
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
         if (object == NULL) {

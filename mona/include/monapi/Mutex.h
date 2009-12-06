@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/error.h>
 #include <monapi/syscall.h>
+#include <monapi/Assert.h>
 
 namespace MonAPI {
 
@@ -23,8 +24,10 @@ public:
 
          A mutex.
     */
-    Mutex() : destroyed_(false), mutexId_(syscall_mutex_create())
+    Mutex() : destroyed_(false)
     {
+        intptr_t ret = syscall_mutex_create(&mutex_);
+        ASSERT(M_OK == ret);
     }
 
 
@@ -36,14 +39,16 @@ public:
 
        Parameters:
 
-         id - mutexid returned by getId().
+         mutex - mutex_t returned by getMutex_t().
 
        Returns:
 
          A mutex.
     */
-    Mutex(intptr_t id) : destroyed_(false), mutexId_(syscall_mutex_fetch(id))
+    Mutex(mutex_t* src) : destroyed_(false)
     {
+        intptr_t ret = syscall_mutex_fetch(&mutex_, src);
+        ASSERT(M_OK == ret);
     }
 
 
@@ -70,7 +75,7 @@ public:
     */
     intptr_t lock()
     {
-        return syscall_mutex_lock(mutexId_);
+        return syscall_mutex_lock(&mutex_);
     }
 
 
@@ -89,7 +94,7 @@ public:
     */
     intptr_t lock(intptr_t timeoutMsec)
     {
-        return syscall_mutex_lock_timeout(mutexId_, timeoutMsec);
+        return syscall_mutex_lock_timeout(&mutex_, timeoutMsec);
     }
 
 
@@ -105,7 +110,7 @@ public:
     */
     intptr_t unlock()
     {
-        return syscall_mutex_unlock(mutexId_);
+        return syscall_mutex_unlock(&mutex_);
     }
 
 
@@ -120,7 +125,7 @@ public:
     */
     intptr_t tryLock()
     {
-        return syscall_mutex_try_lock(mutexId_);
+        return syscall_mutex_try_lock(&mutex_);
     }
 
 
@@ -136,19 +141,19 @@ public:
 
 
     /*
-       function: getId
+       function: getMutex_t
 
        Returns:
-         mutexid, which can be used with syscall_mutex functions.
+         mutex_t, which can be used with syscall_mutex functions.
     */
-    inline intptr_t getId() const
+    inline mutex_t getMutex_t()
     {
-        return mutexId_;
+        return mutex_;
     }
 
 private:
     bool destroyed_;
-    intptr_t mutexId_;
+    mutex_t mutex_;
 };
 
 };

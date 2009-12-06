@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
 {
     // if continuation failed, see cont_initialize function and fix cont_stack_bottom!
     scheme_init();
-
     if (argc == 1)
     {
         scheme_interactive();

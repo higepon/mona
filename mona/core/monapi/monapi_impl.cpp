@@ -208,17 +208,19 @@ static inline void leaveGuard() {
 }
 
 #else
-static volatile uint32_t guardMutex = 0;
+static volatile mutex_t guardMutex = -1;
 static inline void enterGuard() {
-    if (0 == guardMutex) {
-        guardMutex = syscall_mutex_create(0);
+    if (-1 == guardMutex) {
+        intptr_t ret = syscall_mutex_create(&guardMutex);
+        ASSERT(M_OK == ret);
     }
-    syscall_mutex_lock(guardMutex);
+    _printf("%s:%d\n", __FILE__, __LINE__);
+    syscall_mutex_lock(&guardMutex);
 }
 
 static inline void leaveGuard() {
-
-    syscall_mutex_unlock(guardMutex);
+    _printf("%s:%d\n", __FILE__, __LINE__);
+    syscall_mutex_unlock(&guardMutex);
 }
 
 #endif
