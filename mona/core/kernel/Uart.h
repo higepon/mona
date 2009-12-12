@@ -30,7 +30,7 @@ public:
     virtual ~Uart();
 
     void writeChar(char c);
-    char readChar();
+    int readChar();
 
 protected:
     enum {

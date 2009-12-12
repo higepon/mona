@@ -668,6 +668,7 @@ computeSignal (int exceptionVector)
       break;			/* divide by zero */
     case 1:
       sigval = 5;
+      gdb_printf("here we are\n");
       break;			/* debug exception */
     case 3:
       sigval = 5;
@@ -749,6 +750,7 @@ hexToInt (char **ptr, int *intValue)
 void
 handle_exception (int exceptionVector)
 {
+  gdb_printf("handle_exception\n");
   int sigval, stepping;
   int addr, length;
   char *ptr;
@@ -796,6 +798,8 @@ handle_exception (int exceptionVector)
     {
       remcomOutBuffer[0] = 0;
       ptr = getpacket ();
+
+      gdb_printf("handle_exception<%c>\n", *ptr);
 
       switch (*ptr++)
 	{
@@ -941,7 +945,7 @@ set_debug_traps (void)
   exceptionHandler (13, _catchException13);
   exceptionHandler (14, _catchException14);
   exceptionHandler (16, _catchException16);
-
+  remote_debug = 1;
   initialized = 1;
 }
 

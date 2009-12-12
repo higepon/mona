@@ -14,6 +14,6 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-CFLAGS += -DDEBUG -I . -I $(INCDIR)/monalibc -mno-stack-arg-probe
+CFLAGS += -DDEBUG -I . -I $(INCDIR)/monalibc -mno-stack-arg-probe -g
 
 -include dependencies

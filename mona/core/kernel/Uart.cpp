@@ -56,7 +56,6 @@ void Uart::writeChar(char c)
     for (;;) {
         wait();
         if (in8(LINE_STATUS_REGISTER) & TRANSMIT_DATA_REGISTER_IS_EMPTY) break;
-        panic("hige");
     }
     out8(TRANSMIT_DATA_REGISTER, c);
     wait();
@@ -69,7 +68,7 @@ void Uart::writeChar(char c)
     \author  Higepon
     \date    create:2008/12/13 update:
 */
-char Uart::readChar()
+int Uart::readChar()
 {
     for (;;) {
         wait();

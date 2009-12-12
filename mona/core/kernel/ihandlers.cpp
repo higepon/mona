@@ -18,6 +18,7 @@
 #include "ihandlers.h"
 #include "Process.h"
 #include "Scheduler.h"
+#include "Uart.h"
 
 #define IRQHANDLERMaster(x) void irqHandler_##x()                             \
 {                                                                             \
@@ -184,8 +185,13 @@ void irqHandler_6()
   \author HigePon
   \date   create:2002/09/06 update:2003/01/26
 */
+extern "C" void _catchException14();
 void fault0dHandler(uint32_t error)
 {
+    g_console->printf("falut 0d");
+    g_console->printf("<%c>", g_com2->readChar());
+    
+    _catchException14();
     dokodemoView();
     g_console->printf("%s, error=%x\n fault=%d\n", g_currentThread->process->getName(), error);
 
@@ -221,7 +227,6 @@ void fault0dHandler(uint32_t error)
 void dummyHandler()
 {
     g_console->printf("dummy Handler\n");
-
     /* EOI is below for IRQ 8-15 */
     //    outp8(0xA0, 0x20);
     //    outp8(0x20, 0x20);
@@ -229,6 +234,7 @@ void dummyHandler()
 
 void cpufaultHandler_0(void)
 {
+    g_console->printf("falut 0");
     dokodemoView();
     panic("unhandled:fault00 - devied by 0");
 }
@@ -269,6 +275,7 @@ void cpufaultHandler_1(void)
 
 void cpufaultHandler_5(void)
 {
+    g_console->printf("falut 5");
     dokodemoView();
     panic("unhandled:fault05 - BOUND");
 
@@ -276,6 +283,7 @@ void cpufaultHandler_5(void)
 
 void cpufaultHandler_6(void)
 {
+    g_console->printf("falut 6");
     dokodemoView();
 
     uint32_t realcr3;
@@ -303,30 +311,35 @@ void cpufaultHandler_6(void)
 
 void cpufaultHandler_7(void)
 {
+    g_console->printf("falut 7");
     dokodemoView();
     panic("unhandled:fault07 no co-processor presents");
 }
 
 void cpufaultHandler_8(void)
 {
+    g_console->printf("falut 8");
     dokodemoView();
     panic("unhandled:abort08 - double fault");
 }
 
 void cpufaultHandler_a(void)
 {
+    g_console->printf("falut a");
     dokodemoView();
     panic("unhandled:fault0A - invalid TSS");
 }
 
 void cpufaultHandler_b(void)
 {
+    g_console->printf("falut b");
     dokodemoView();
     panic("unhandled:fault0B - segment not presents");
 }
 
 void cpufaultHandler_c(uint32_t error)
 {
+    g_console->printf("falut c");
     dokodemoView();
     panic("unhandled:fault0C - stack fault");
 }
@@ -360,17 +373,19 @@ void cpufaultHandler_e(uint32_t address, uint32_t error)
 
 void cpufaultHandler_10(void)
 {
+    g_console->printf("falut 10");
     dokodemoView();
     panic("unhandled:fault10 - co-processor error");
 }
 
 void cpufaultHandler_11(void){
+    g_console->printf("falut 10");
     dokodemoView();
     panic("unhandled:fault11 - arign check");
 }
 
 void dokodemoView() {
-
+    g_console->printf("dokodemo");
     DokodemoView* i = &g_dokodemo_view;
     StackView*    j = &g_stack_view;
 
