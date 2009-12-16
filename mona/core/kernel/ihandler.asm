@@ -14,7 +14,8 @@
 BITS 32
 
 %include "macro.asm"
-
+cglobal arch_exception13_general_protection
+cglobal arch_breakpoint_handler
 cglobal arch_fault0dhandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
@@ -26,11 +27,13 @@ cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern fault0dHandler
+cextern generalProtectionException
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
 cextern arch_save_thread_registers2
 cextern arch_set_dokodemo_view
+
 
 %define KERNEL_DS 0x10
 
@@ -94,6 +97,22 @@ arch_dummyhandler:
         call dummyHandler
         popAll
         iretd
+
+arch_breakpoint_handler:
+        jmp arch_breakpoint_handler
+
+arch_exception13_general_protection:
+        call arch_set_dokodemo_view
+        pushAll
+        changeData
+        call arch_save_thread_registers
+        push dword[esp + 40]
+        call arch_set_stack_view
+        call generalProtectionException
+        add  esp, 0x04          ; remove error_cd
+        popAll
+        iretd
+
 
 ;;; fault0dHandler
 arch_fault0dhandler:

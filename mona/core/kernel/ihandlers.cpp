@@ -177,6 +177,37 @@ void irqHandler_6()
     /* not reached */
 }
 
+
+void generalProtectionException(uint32_t error)
+{
+    const int IDT_ERROR = 2;
+    g_console->printf(__func__);
+    const char* processName = g_currentThread->process->getName();
+    g_console->printf("\n%s:", processName);
+
+    // See Intel's manual "Interruption and exception".
+    if (error & IDT_ERROR) {
+        g_console->printf(" error on IDT. index %d of IDT table.\n", (error >> 3) & 0xff);
+    } else {
+        g_console->printf(" error code =%x\n", error);
+    }
+
+    uint32_t realcr3;
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#if 1
+    logprintf("name=%s\n", g_currentThread->process->getName());
+    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#endif
+    panic(__func__);
+}
+
 /*!
   \brief fault0d handler
 
@@ -188,7 +219,7 @@ void irqHandler_6()
 extern "C" void _catchException14();
 void fault0dHandler(uint32_t error)
 {
-    g_console->printf("falut 0d");
+    g_console->printf("falut 0d error=%x, eip=%x", error, g_currentThread->archinfo->eip);
     g_console->printf("<%c>", g_com2->readChar());
     
     _catchException14();
@@ -227,6 +258,7 @@ void fault0dHandler(uint32_t error)
 void dummyHandler()
 {
     g_console->printf("dummy Handler\n");
+    panic("dummy handler");
     /* EOI is below for IRQ 8-15 */
     //    outp8(0xA0, 0x20);
     //    outp8(0x20, 0x20);
@@ -413,7 +445,7 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     {0x00, &arch_cpufaulthandler_0}
     , {0x01, &arch_cpufaulthandler_1}
     , {0x02, &arch_dummyhandler}
-    , {0x03, &arch_dummyhandler}
+    , {0x03, &arch_breakpoint_handler}
     , {0x04, &arch_dummyhandler}
     , {0x05, &arch_cpufaulthandler_5}
     , {0x06, &arch_cpufaulthandler_6}
@@ -423,7 +455,7 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     , {0x0A, &arch_cpufaulthandler_a}
     , {0x0B, &arch_cpufaulthandler_b}
     , {0x0C, &arch_cpufaulthandler_c}
-    , {0x0D, &arch_fault0dhandler}
+    , {0x0D, &arch_exception13_general_protection}
     , {0x0E, &arch_cpufaulthandler_e}
     , {0x0F, &arch_dummyhandler}
     , {0x10, &arch_cpufaulthandler_10}

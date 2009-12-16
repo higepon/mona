@@ -15,7 +15,9 @@
 
 
 extern "C" void arch_dummyhandler(void);
+extern "C" void arch_exception13_general_protection();
 extern "C" void arch_switch_process(void);
+extern "C" void arch_breakpoint_handler(void);
 extern "C" void arch_switch_process_to_user_mode(void);
 extern "C" void arch_switch_process_to_v86_mode(void);
 extern "C" void arch_fault0dhandler(void);
@@ -23,6 +25,7 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(uint32_t error);
+extern "C" void generalProtectionException(uint32_t error);
 extern "C" void SendInterrupt(int irq);
 
 /* IRQ Handler */

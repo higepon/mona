@@ -945,6 +945,8 @@ set_debug_traps (void)
   exceptionHandler (13, _catchException13);
   exceptionHandler (14, _catchException14);
   exceptionHandler (16, _catchException16);
+
+  //  putDebugChar('+');
   remote_debug = 1;
   initialized = 1;
 }

@@ -20,7 +20,7 @@ $(TARGET).EX5: $(TARGET).EXE
 
 $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
-	$(STRIP) $@
+#	$(STRIP) $@
 
 install: all
 	mkdir -p $(INSTDIR)
