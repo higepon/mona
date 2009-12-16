@@ -177,6 +177,10 @@ void irqHandler_6()
     /* not reached */
 }
 
+void breakpointException()
+{
+    g_console->printf(__func__);
+}
 
 void generalProtectionException(uint32_t error)
 {
@@ -187,6 +191,7 @@ void generalProtectionException(uint32_t error)
 
     // See Intel's manual "Interruption and exception".
     if (error & IDT_ERROR) {
+        // Indicates that the index portion of the error code refers to a gate descriptor in the IDT
         g_console->printf(" error on IDT. index %d of IDT table.\n", (error >> 3) & 0xff);
     } else {
         g_console->printf(" error code =%x\n", error);
@@ -445,7 +450,7 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     {0x00, &arch_cpufaulthandler_0}
     , {0x01, &arch_cpufaulthandler_1}
     , {0x02, &arch_dummyhandler}
-    , {0x03, &arch_breakpoint_handler}
+    , {0x03, &arch_exception3_breakpoint}
     , {0x04, &arch_dummyhandler}
     , {0x05, &arch_cpufaulthandler_5}
     , {0x06, &arch_cpufaulthandler_6}

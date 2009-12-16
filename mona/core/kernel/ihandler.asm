@@ -15,7 +15,7 @@ BITS 32
 
 %include "macro.asm"
 cglobal arch_exception13_general_protection
-cglobal arch_breakpoint_handler
+cglobal arch_exception3_breakpoint
 cglobal arch_fault0dhandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
@@ -28,6 +28,7 @@ cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern fault0dHandler
 cextern generalProtectionException
+cextern breakpointException
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
@@ -98,8 +99,15 @@ arch_dummyhandler:
         popAll
         iretd
 
-arch_breakpoint_handler:
-        jmp arch_breakpoint_handler
+arch_exception3_breakpoint:
+        call arch_set_dokodemo_view
+        pushAll
+        changeData
+        call arch_save_thread_registers
+        call arch_set_stack_view
+        call breakpointException
+        popAll
+        iretd
 
 arch_exception13_general_protection:
         call arch_set_dokodemo_view
