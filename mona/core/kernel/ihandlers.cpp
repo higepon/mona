@@ -177,9 +177,15 @@ void irqHandler_6()
     /* not reached */
 }
 
+extern "C" void _catchException3(uint32_t eip, uint32_t cs, uint32_t eflags);
 void breakpointException()
 {
+    g_console->printf("<%c>", g_com2->readChar());
+    g_console->printf("eip=%x", g_currentThread->archinfo->eip);
     g_console->printf(__func__);
+    _catchException3(g_currentThread->archinfo->eip,
+                     g_currentThread->archinfo->cs,
+                     g_currentThread->archinfo->eflags);
 }
 
 void generalProtectionException(uint32_t error)
