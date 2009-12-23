@@ -98,4 +98,8 @@ depend dependencies:
 clean:
 	rm -f $(TARGET) *.o *.lst *.map dependencies
 
+# for flymake
+check-syntax:
+	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
+
 -include dependencies

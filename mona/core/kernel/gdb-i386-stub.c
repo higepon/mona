@@ -668,7 +668,6 @@ computeSignal (int exceptionVector)
       break;			/* divide by zero */
     case 1:
       sigval = 5;
-      gdb_printf("here we are\n");
       break;			/* debug exception */
     case 3:
       sigval = 5;
@@ -755,8 +754,12 @@ handle_exception (int exceptionVector)
   int addr, length;
   char *ptr;
   int newPC;
-
+  int i;
   gdb_i386vector = exceptionVector;
+
+  for (i = 0; ; i++) {
+    gdb_printf("<%c">, getDebugChar());
+  }
 
   if (remote_debug)
     {
