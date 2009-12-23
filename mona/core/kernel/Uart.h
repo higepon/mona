@@ -31,6 +31,7 @@ public:
 
     void writeChar(char c);
     int readChar();
+    bool isDataReady();
 
 protected:
     enum {

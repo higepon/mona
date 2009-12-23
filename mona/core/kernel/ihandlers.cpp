@@ -231,7 +231,7 @@ extern "C" void _catchException14();
 void fault0dHandler(uint32_t error)
 {
     g_console->printf("falut 0d error=%x, eip=%x", error, g_currentThread->archinfo->eip);
-    g_console->printf("<%c>", g_com2->readChar());
+//    g_console->printf("<%c>", g_com2->readChar());
     
     _catchException14();
     dokodemoView();

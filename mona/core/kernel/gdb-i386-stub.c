@@ -769,6 +769,8 @@ handle_exception (int exceptionVector)
 
   ptr = remcomOutBuffer;
 
+
+
   *ptr++ = 'T';			/* notify gdb with signo, PC, FP and SP */
   *ptr++ = hexchars[sigval >> 4];
   *ptr++ = hexchars[sigval & 0xf];

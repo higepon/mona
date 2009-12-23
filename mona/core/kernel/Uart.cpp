@@ -77,6 +77,13 @@ int Uart::readChar()
     return in8(RECEIVE_DATA_REGISTER);
 }
 
+bool Uart::isDataReady()
+{
+    wait();
+    return (in8(LINE_STATUS_REGISTER) & RECEIVED_DATA);
+}
+
+
 /*!
     \brief output 1byte value to Uart.
 

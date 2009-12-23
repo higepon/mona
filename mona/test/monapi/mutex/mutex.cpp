@@ -128,6 +128,10 @@ void testClassMutex()
     mutex = new Mutex();
     ASSERT_TRUE(mutex != NULL);
 
+    uintptr_t* p = (uintptr_t*)0;
+    *p = 1;
+
+
     // Lock
     EXPECT_EQ(M_OK, mutex->lock());
 
@@ -190,7 +194,7 @@ void __fastcall consumer(void* mainThread)
 
 int main(int argc, char *argv[])
 {
-    asm("int $3;"); testSyscallMutex();
+//    asm("int $3;"); testSyscallMutex();
     testClassMutex();
 
     TEST_RESULTS(syscal_mutex);
