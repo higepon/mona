@@ -35,6 +35,6 @@ set charset ASCII
 
 # C++
 set print demangle on
-set debug remote 1
+#set debug remote 1
 #~/tmp/bin/i586-mingw32msvc-gdb test/monapi/mutex/TMUTEX.EXE
 #target remote localhost:43770
