@@ -92,6 +92,7 @@
 #ifdef MONA
 //#define NULL (0)
 #include <string.h>
+#include "global.h"
 #include "gdb-adapter.h"
 #else
 #include <stdio.h>
@@ -182,6 +183,27 @@ int gdb_i386errcode;
    number through the usual means, and that's not very specific).  */
 int gdb_i386vector = -1;
 
+void save_registers1()
+{
+    registers[EAX] = g_currentThread->archinfo->eax;
+    registers[ECX] = g_currentThread->archinfo->ecx;
+    registers[EDX] = g_currentThread->archinfo->edx;
+    registers[EBX] = g_currentThread->archinfo->ebx;
+    registers[ESP] = g_currentThread->archinfo->esp;
+    registers[EBP] = g_currentThread->archinfo->ebp;
+    registers[ESI] = g_currentThread->archinfo->esi;
+    registers[EDI] = g_currentThread->archinfo->edi;
+    registers[PC] = g_currentThread->archinfo->eip;
+    registers[PS] = g_currentThread->archinfo->eflags;
+    registers[CS] = g_currentThread->archinfo->cs;
+    registers[SS] = g_currentThread->archinfo->ss;
+    registers[DS] = g_currentThread->archinfo->ds;
+    registers[ES] = g_currentThread->archinfo->es;
+    registers[FS] = g_currentThread->archinfo->fs;
+    registers[GS] = g_currentThread->archinfo->gs;
+}
+
+
 /* GDB stores segment registers in 32-bit words (that's just the way
    m-i386v.h is written).  So zero the appropriate areas in registers.  */
 #define SAVE_REGISTERS1() \
@@ -253,6 +275,18 @@ asm ("     movl %eax, _mem_fault_routine");
 asm ("iret");
 
 #define CALL_HOOK() asm("call _remcomHandler");
+
+void gdbCatchException3()
+{
+    save_registers1();
+    asm("movl %esp, %eax");
+    asm("movl _stackPtr, %esp"); /* move to remcom stack area  */
+    asm("pushl %eax");
+    asm("pushl $3");
+    asm("call  _handle_exception");
+    asm("addl $4, %esp");
+    asm("popl %esp");
+}
 
 /* This function is called when a i386 exception occurs.  It saves
  * all the cpu regs in the _registers array, munges the stack a bit,
@@ -736,24 +770,24 @@ hexToInt (char **ptr, int *intValue)
 extern "C" void
 handle_exception (int exceptionVector)
 {
-  gdb_printf("handle_exception\n");
-  int sigval, stepping;
-  int addr, length;
-  char *ptr;
-  int newPC;
+    gdb_printf("handle_exception\n");
+    int sigval, stepping;
+    int addr, length;
+    char *ptr;
+    int newPC;
 
-  gdb_i386vector = exceptionVector;
+    gdb_i386vector = exceptionVector;
 
 
 
-  if (remote_debug)
+    if (remote_debug)
     {
-      printf ("vector=%d, sr=0x%x, pc=0x%x\n",
-          exceptionVector, registers[PS], registers[PC]);
+        printf ("vector=%d, sr=0x%x, pc=0x%x\n",
+                exceptionVector, registers[PS], registers[PC]);
     }
 
-  /* reply to host that an exception has occurred */
-  sigval = computeSignal (exceptionVector);
+    /* reply to host that an exception has occurred */
+    sigval = computeSignal (exceptionVector);
 
 /* Commented out for Mona */
 /*   ptr = remcomOutBuffer; */
@@ -780,135 +814,139 @@ handle_exception (int exceptionVector)
 
 /*   putpacket (remcomOutBuffer); */
 
-  stepping = 0;
+    stepping = 0;
 
-  while (1 == 1)
+    while (1 == 1)
     {
-      remcomOutBuffer[0] = 0;
-      ptr = (char*)getpacket ();
+        remcomOutBuffer[0] = 0;
+        ptr = (char*)getpacket ();
 
-      gdb_printf("handle_exception<%c>\n", *ptr);
+        gdb_printf("handle_exception<%c>\n", *ptr);
 
-      switch (*ptr++)
-    {
-    case '?':
-      remcomOutBuffer[0] = 'S';
-      remcomOutBuffer[1] = hexchars[sigval >> 4];
-      remcomOutBuffer[2] = hexchars[sigval % 16];
-      remcomOutBuffer[3] = 0;
-      break;
-    case 'd':
-      remote_debug = !(remote_debug);   /* toggle debug flag */
-      break;
-    case 'g':       /* return the value of the CPU registers */
-      mem2hex ((char *) registers, remcomOutBuffer, NUMREGBYTES, 0);
-      break;
-    case 'G':       /* set the value of the CPU registers - return OK */
-      hex2mem (ptr, (char *) registers, NUMREGBYTES, 0);
-      strcpy (remcomOutBuffer, "OK");
-      break;
-    case 'P':       /* set the value of a single CPU register - return OK */
-      {
-        int regno;
-
-        if (hexToInt (&ptr, &regno) && *ptr++ == '=')
-          if (regno >= 0 && regno < NUMREGS)
+        switch (*ptr++)
         {
-          hex2mem (ptr, (char *) &registers[regno], 4, 0);
-          strcpy (remcomOutBuffer, "OK");
-          break;
-        }
-
-        strcpy (remcomOutBuffer, "E01");
-        break;
-      }
-
-      /* mAA..AA,LLLL  Read LLLL bytes at address AA..AA */
-    case 'm':
-      /* TRY TO READ %x,%x.  IF SUCCEED, SET PTR = 0 */
-      if (hexToInt (&ptr, &addr))
-        if (*(ptr++) == ',')
-          if (hexToInt (&ptr, &length))
-        {
-          ptr = 0;
-          mem_err = 0;
-          mem2hex ((char *) addr, remcomOutBuffer, length, 1);
-          if (mem_err)
-            {
-              strcpy (remcomOutBuffer, "E03");
-              debug_error ("memory fault");
-            }
-        }
-
-      if (ptr)
-        {
-          strcpy (remcomOutBuffer, "E01");
-        }
-      break;
-
-      /* MAA..AA,LLLL: Write LLLL bytes at address AA.AA return OK */
-    case 'M':
-      /* TRY TO READ '%x,%x:'.  IF SUCCEED, SET PTR = 0 */
-      if (hexToInt (&ptr, &addr))
-        if (*(ptr++) == ',')
-          if (hexToInt (&ptr, &length))
-        if (*(ptr++) == ':')
-          {
-            mem_err = 0;
-            hex2mem (ptr, (char *) addr, length, 1);
-
-            if (mem_err)
-              {
-            strcpy (remcomOutBuffer, "E03");
-            debug_error ("memory fault");
-              }
-            else
-              {
+        case '?':
+            remcomOutBuffer[0] = 'S';
+            remcomOutBuffer[1] = hexchars[sigval >> 4];
+            remcomOutBuffer[2] = hexchars[sigval % 16];
+            remcomOutBuffer[3] = 0;
+            break;
+        case 'd':
+            remote_debug = !(remote_debug);   /* toggle debug flag */
+            break;
+        case 'g':       /* return the value of the CPU registers */
+            mem2hex ((char *) registers, remcomOutBuffer, NUMREGBYTES, 0);
+            break;
+        case 'G':       /* set the value of the CPU registers - return OK */
+            hex2mem (ptr, (char *) registers, NUMREGBYTES, 0);
             strcpy (remcomOutBuffer, "OK");
-              }
-
-            ptr = 0;
-          }
-      if (ptr)
+            break;
+        case 'P':       /* set the value of a single CPU register - return OK */
         {
-          strcpy (remcomOutBuffer, "E02");
+            int regno;
+
+            if (hexToInt (&ptr, &regno) && *ptr++ == '=')
+                if (regno >= 0 && regno < NUMREGS)
+                {
+                    hex2mem (ptr, (char *) &registers[regno], 4, 0);
+                    strcpy (remcomOutBuffer, "OK");
+                    break;
+                }
+
+            strcpy (remcomOutBuffer, "E01");
+            break;
         }
-      break;
 
-      /* cAA..AA    Continue at address AA..AA(optional) */
-      /* sAA..AA   Step one instruction from AA..AA(optional) */
-    case 's':
-      stepping = 1;
-    case 'c':
-      /* try to read optional parameter, pc unchanged if no parm */
-      if (hexToInt (&ptr, &addr))
-        registers[PC] = addr;
+        /* mAA..AA,LLLL  Read LLLL bytes at address AA..AA */
+        case 'm':
+            /* TRY TO READ %x,%x.  IF SUCCEED, SET PTR = 0 */
+            if (hexToInt (&ptr, &addr))
+                if (*(ptr++) == ',')
+                    if (hexToInt (&ptr, &length))
+                    {
+                        ptr = 0;
+                        mem_err = 0;
+                        mem2hex ((char *) addr, remcomOutBuffer, length, 1);
+                        if (mem_err)
+                        {
+                            strcpy (remcomOutBuffer, "E03");
+                            debug_error ("memory fault");
+                        }
+                    }
 
-      newPC = registers[PC];
+            if (ptr)
+            {
+                strcpy (remcomOutBuffer, "E01");
+            }
+            break;
 
-      /* clear the trace bit */
-      registers[PS] &= 0xfffffeff;
+            /* MAA..AA,LLLL: Write LLLL bytes at address AA.AA return OK */
+        case 'M':
+            /* TRY TO READ '%x,%x:'.  IF SUCCEED, SET PTR = 0 */
+            if (hexToInt (&ptr, &addr))
+                if (*(ptr++) == ',')
+                    if (hexToInt (&ptr, &length))
+                        if (*(ptr++) == ':')
+                        {
+                            mem_err = 0;
+                            hex2mem (ptr, (char *) addr, length, 1);
 
-      /* set the trace bit if we're stepping */
-      if (stepping)
-        registers[PS] |= 0x100;
+                            if (mem_err)
+                            {
+                                strcpy (remcomOutBuffer, "E03");
+                                debug_error ("memory fault");
+                            }
+                            else
+                            {
+                                strcpy (remcomOutBuffer, "OK");
+                            }
 
-      _returnFromException ();  /* this is a jump */
-      break;
+                            ptr = 0;
+                        }
+            if (ptr)
+            {
+                strcpy (remcomOutBuffer, "E02");
+            }
+            break;
 
-      /* kill the program */
-    case 'k':       /* do nothing */
+            /* cAA..AA    Continue at address AA..AA(optional) */
+            /* sAA..AA   Step one instruction from AA..AA(optional) */
+        case 's':
+            stepping = 1;
+        case 'c':
+            /* try to read optional parameter, pc unchanged if no parm */
+            if (hexToInt (&ptr, &addr))
+                registers[PC] = addr;
+
+            newPC = registers[PC];
+
+            /* clear the trace bit */
+            registers[PS] &= 0xfffffeff;
+
+            /* set the trace bit if we're stepping */
+            if (stepping) {
+                registers[PS] |= 0x100;
+            }
+
+//      _returnFromException ();  /* this is a jump */
+            goto DONE;
+            break;
+
+            /* kill the program */
+        case 'k':       /* do nothing */
 #if 0
-      /* Huh? This doesn't look like "nothing".
-         m68k-stub.c and sparc-stub.c don't have it.  */
-      BREAKPOINT ();
+            /* Huh? This doesn't look like "nothing".
+               m68k-stub.c and sparc-stub.c don't have it.  */
+            BREAKPOINT ();
 #endif
-      break;
-    }           /* switch */
+            break;
+        }           /* switch */
 
-      /* reply to the request */
-      putpacket ((unsigned char*)remcomOutBuffer);
+        /* reply to the request */
+        putpacket ((unsigned char*)remcomOutBuffer);
     }
+DONE:
+    return;
 }
 
 /* this function is used to set up exception handlers for tracing and
