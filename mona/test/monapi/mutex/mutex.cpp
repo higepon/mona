@@ -194,7 +194,8 @@ void __fastcall consumer(void* mainThread)
 
 int main(int argc, char *argv[])
 {
-//    asm("int $3;"); testSyscallMutex();
+    asm("int $3;");
+    testSyscallMutex();
     testClassMutex();
 
     TEST_RESULTS(syscal_mutex);

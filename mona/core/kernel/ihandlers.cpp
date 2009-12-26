@@ -177,15 +177,27 @@ void irqHandler_6()
     /* not reached */
 }
 
-extern "C" void _catchException3(uint32_t eip, uint32_t cs, uint32_t eflags);
+extern "C" void _catchException3();
 void breakpointException()
 {
-    g_console->printf("<%c>", g_com2->readChar());
-    g_console->printf("eip=%x", g_currentThread->archinfo->eip);
+//    g_console->printf("<%c>", g_com2->readChar());
+    g_console->printf("eip=%x cs=%x f=%x", g_currentThread->archinfo->eip, g_currentThread->archinfo->cs, g_currentThread->archinfo->eflags);
     g_console->printf(__func__);
-    _catchException3(g_currentThread->archinfo->eip,
-                     g_currentThread->archinfo->cs,
-                     g_currentThread->archinfo->eflags);
+    asm volatile("mov %0, %%eax;"
+                 "push %%eax;"
+                 "mov %1, %%eax;"
+                 "push %%eax;"
+                 "mov %2, %%eax;"
+                 "push %%eax;"
+                 "jmp __catchException3;"
+                 : /* no output */
+                 : "m"(g_currentThread->archinfo->eflags),
+                   "m"(g_currentThread->archinfo->cs),
+                 "m"(g_currentThread->archinfo->eip)
+                 : "eax");
+
+    // N.B.
+    //   Not reached here, since _catchException3 will issue iretd.
 }
 
 void generalProtectionException(uint32_t error)

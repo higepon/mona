@@ -50,9 +50,10 @@ SOURCES      = cstart.cpp            \
                gdb-adapter.cpp       \
                Uart.cpp              \
                NE2000.cpp            \
+               gdb-i386-stub.cpp     \
                addressmap.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o
+OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(TARGET)
 

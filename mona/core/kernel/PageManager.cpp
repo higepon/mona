@@ -741,6 +741,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     }
 
 
+    g_console->printf("page fault");
+
     _catchException14(g_currentThread->archinfo->eip, g_currentThread->archinfo->cs, g_currentThread->archinfo->eflags);
 
 #if 1
@@ -755,6 +757,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
         bool stackOver = address < stackButtom && stackButtom - 4096 < address;
+
 
         if (stackOver)
         {

@@ -90,8 +90,8 @@
  ****************************************************************************/
 
 #ifdef MONA
-#define NULL (0)
-void exceptionHandler() {}
+//#define NULL (0)
+#include <string.h>
 #include "gdb-adapter.h"
 #else
 #include <stdio.h>
@@ -142,7 +142,7 @@ static int* stackPtr = &remcomStack[STACKSIZE/sizeof(int) - 1];
 /***************************  ASSEMBLY CODE MACROS *************************/
 /*                                     */
 
-extern void
+extern "C" void
 return_to_prog ();
 
 /* Restore the program's registers (including the stack pointer, which
@@ -441,9 +441,7 @@ _returnFromException ()
   return_to_prog ();
 }
 
-int
-hex (ch)
-     char ch;
+int hex (char ch)
 {
   if ((ch >= 'a') && (ch <= 'f'))
     return (ch - 'a' + 10);
@@ -462,7 +460,7 @@ static char remcomOutBuffer[BUFMAX];
 unsigned char *
 getpacket (void)
 {
-  unsigned char *buffer = &remcomInBuffer[0];
+    unsigned char *buffer = (unsigned char*) &remcomInBuffer[0];
   unsigned char checksum;
   unsigned char xmitcsum;
   int count;
@@ -545,7 +543,7 @@ putpacket (unsigned char *buffer)
       checksum = 0;
       count = 0;
 
-      while (ch = buffer[count])
+      while ((ch = buffer[count]))
     {
       putDebugChar (ch);
       checksum += ch;
@@ -560,13 +558,11 @@ putpacket (unsigned char *buffer)
   while (getDebugChar () != '+');
 }
 
-void
-debug_error (format, parm)
-     char *format;
-     char *parm;
+void debug_error (const char* format)
 {
-  if (remote_debug)
-    fprintf (stderr, format, parm);
+    if (remote_debug) {
+        fprintf (stderr, format);
+    }
 }
 
 /* Address of a routine to RTE to if we get a memory fault.  */
@@ -603,11 +599,7 @@ set_char (char *addr, int val)
 /* If MAY_FAULT is non-zero, then we should set mem_err in response to
    a fault; if zero treat a fault like any other fault in the stub.  */
 char *
-mem2hex (mem, buf, count, may_fault)
-     char *mem;
-     char *buf;
-     int count;
-     int may_fault;
+mem2hex (char* mem, char* buf, int count, int may_fault)
 {
   int i;
   unsigned char ch;
@@ -630,12 +622,7 @@ mem2hex (mem, buf, count, may_fault)
 
 /* convert the hex array pointed to by buf into binary to be placed in mem */
 /* return a pointer to the character AFTER the last byte written */
-char *
-hex2mem (buf, mem, count, may_fault)
-     char *buf;
-     char *mem;
-     int count;
-     int may_fault;
+char * hex2mem (char* buf, char* mem, int count, int may_fault)
 {
   int i;
   unsigned char ch;
@@ -746,7 +733,7 @@ hexToInt (char **ptr, int *intValue)
 /*
  * This function does all command procesing for interfacing to gdb.
  */
-void
+extern "C" void
 handle_exception (int exceptionVector)
 {
   gdb_printf("handle_exception\n");
@@ -798,7 +785,7 @@ handle_exception (int exceptionVector)
   while (1 == 1)
     {
       remcomOutBuffer[0] = 0;
-      ptr = getpacket ();
+      ptr = (char*)getpacket ();
 
       gdb_printf("handle_exception<%c>\n", *ptr);
 
@@ -920,35 +907,34 @@ handle_exception (int exceptionVector)
     }           /* switch */
 
       /* reply to the request */
-      putpacket (remcomOutBuffer);
+      putpacket ((unsigned char*)remcomOutBuffer);
     }
 }
 
 /* this function is used to set up exception handlers for tracing and
    breakpoints */
-void
+extern "C" void
 set_debug_traps (void)
 {
-  int c, i;
   const char* qSupportedResponse = "PacketSize=400";
 
   stackPtr = &remcomStack[STACKSIZE / sizeof (int) - 1];
 
-  exceptionHandler (0, _catchException0);
-  exceptionHandler (1, _catchException1);
-  exceptionHandler (3, _catchException3);
-  exceptionHandler (4, _catchException4);
-  exceptionHandler (5, _catchException5);
-  exceptionHandler (6, _catchException6);
-  exceptionHandler (7, _catchException7);
-  exceptionHandler (8, _catchException8);
-  exceptionHandler (9, _catchException9);
-  exceptionHandler (10, _catchException10);
-  exceptionHandler (11, _catchException11);
-  exceptionHandler (12, _catchException12);
-  exceptionHandler (13, _catchException13);
-  exceptionHandler (14, _catchException14);
-  exceptionHandler (16, _catchException16);
+//   exceptionHandler (0, _catchException0);
+//   exceptionHandler (1, _catchException1);
+//   exceptionHandler (3, _catchException3);
+//   exceptionHandler (4, _catchException4);
+//   exceptionHandler (5, _catchException5);
+//   exceptionHandler (6, _catchException6);
+//   exceptionHandler (7, _catchException7);
+//   exceptionHandler (8, _catchException8);
+//   exceptionHandler (9, _catchException9);
+//   exceptionHandler (10, _catchException10);
+//   exceptionHandler (11, _catchException11);
+//   exceptionHandler (12, _catchException12);
+//   exceptionHandler (13, _catchException13);
+//   exceptionHandler (14, _catchException14);
+//   exceptionHandler (16, _catchException16);
 
   // On connection start, remote GDB using QEMU -serial tcp::43770,server option" sends following packets.
   // Stub should reply for them.
@@ -960,7 +946,7 @@ set_debug_traps (void)
   for (;;) {
     int c = getDebugChar();
     if (c == 'q') {
-        putpacket(qSupportedResponse);
+        putpacket((unsigned char*)qSupportedResponse);
     } else if (c == '-') {
       break;
     }
