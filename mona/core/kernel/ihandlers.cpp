@@ -177,13 +177,13 @@ void irqHandler_6()
     /* not reached */
 }
 
-extern void gdbCatchException3();
+
 void breakpointException()
 {
 //    g_console->printf("<%c>", g_com2->readChar());
      g_console->printf("eip=%x cs=%x f=%x", g_currentThread->archinfo->eip, g_currentThread->archinfo->cs, g_currentThread->archinfo->eflags);
      g_console->printf(__func__);
-     gdbCatchException3();
+     gdbCatchException(VECTOR_BREAKPOINT_EXCEPTION);
 }
 
 void generalProtectionException(uint32_t error)

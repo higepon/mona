@@ -996,30 +996,21 @@ breakpoint (void)
     BREAKPOINT ();
 }
 
-void gdbCatchException3()
+void gdbCatchException(int exceptionVector)
 {
     save_registers1();
+    if (mem_fault_routine) {
+        gdb_printf("Memory fault %d occured on GDB stub!", exceptionVector);
+        panic("GDB stub");
+    }
+
     asm("movl %esp, %eax");      // save current stack pointer
     asm("movl _stackPtr, %esp"); // change stack pointer
     asm("pushl %eax");           // save current stack pointer to new stack
-    asm("pushl $3");
+    asm("movl %0, %%eax" : : "m"(exceptionVector));
+    asm("pushl %eax");
     asm("call  _handle_exception");
     asm("addl $4, %esp");
     asm("popl %esp");
 }
 
-void gdbCatchException14()
-{
-    save_registers1();
-    if (mem_fault_routine) {
-        gdb_printf("fatal\n\n");
-    }
-    // we don't care about error code.
-    asm("movl %esp, %eax");      // save current stack pointer
-    asm("movl _stackPtr, %esp"); // change stack pointer
-    asm("pushl %eax");           // save current stack pointer to new stack
-    asm("pushl $14");
-    asm("call  _handle_exception");
-    asm("addl $4, %esp");
-    asm("popl %esp");
-}

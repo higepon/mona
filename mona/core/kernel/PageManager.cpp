@@ -18,6 +18,7 @@
 #include "operator.h"
 #include "Segments.h"
 #include "Uart.h"
+#include "ihandlers.h"
 #include "global.h"
 
 /* independent from architecture */
@@ -707,7 +708,6 @@ PageEntry* PageManager::allocatePageTable() const
     \author HigePon
     \date   create:2003/10/15 update:2004/01/08
 */
-extern void gdbCatchException14();
 bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
 {
     Process* current = g_currentThread->process;
@@ -741,9 +741,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     }
 
 
-    g_console->printf("page fault");
-
-    gdbCatchException14();
+    gdbCatchException(VECTOR_PAGE_FAULT_EXCEPTION);
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
