@@ -276,17 +276,7 @@ asm ("iret");
 
 #define CALL_HOOK() asm("call _remcomHandler");
 
-void gdbCatchException3()
-{
-    save_registers1();
-    asm("movl %esp, %eax");
-    asm("movl _stackPtr, %esp"); /* move to remcom stack area  */
-    asm("pushl %eax");
-    asm("pushl $3");
-    asm("call  _handle_exception");
-    asm("addl $4, %esp");
-    asm("popl %esp");
-}
+
 
 /* This function is called when a i386 exception occurs.  It saves
  * all the cpu regs in the _registers array, munges the stack a bit,
@@ -790,29 +780,29 @@ handle_exception (int exceptionVector)
     sigval = computeSignal (exceptionVector);
 
 /* Commented out for Mona */
-/*   ptr = remcomOutBuffer; */
-/*   *ptr++ = 'T';          /\* notify gdb with signo, PC, FP and SP *\/ */
-/*   *ptr++ = hexchars[sigval >> 4]; */
-/*   *ptr++ = hexchars[sigval & 0xf]; */
+  ptr = remcomOutBuffer; 
+   *ptr++ = 'T';          /* notify gdb with signo, PC, FP and SP */
+   *ptr++ = hexchars[sigval >> 4]; 
+   *ptr++ = hexchars[sigval & 0xf]; 
 
-/*   *ptr++ = hexchars[ESP];  */
-/*   *ptr++ = ':'; */
-/*   ptr = mem2hex((char *)&registers[ESP], ptr, 4, 0); /\* SP *\/ */
-/*   *ptr++ = ';'; */
+   *ptr++ = hexchars[ESP];  
+   *ptr++ = ':'; 
+   ptr = mem2hex((char *)&registers[ESP], ptr, 4, 0); /* SP */ 
+   *ptr++ = ';'; 
 
-/*   *ptr++ = hexchars[EBP];  */
-/*   *ptr++ = ':'; */
-/*   ptr = mem2hex((char *)&registers[EBP], ptr, 4, 0);     /\* FP *\/ */
-/*   *ptr++ = ';'; */
+   *ptr++ = hexchars[EBP];  
+   *ptr++ = ':'; 
+   ptr = mem2hex((char *)&registers[EBP], ptr, 4, 0);     /* FP */ 
+   *ptr++ = ';'; 
 
-/*   *ptr++ = hexchars[PC];  */
-/*   *ptr++ = ':'; */
-/*   ptr = mem2hex((char *)&registers[PC], ptr, 4, 0);  /\* PC *\/ */
-/*   *ptr++ = ';'; */
+   *ptr++ = hexchars[PC];  
+   *ptr++ = ':'; 
+   ptr = mem2hex((char *)&registers[PC], ptr, 4, 0);  /* PC */ 
+   *ptr++ = ';'; 
 
-/*   *ptr = '\0'; */
+   *ptr = '\0';
 
-/*   putpacket (remcomOutBuffer); */
+   putpacket ((unsigned char*)remcomOutBuffer); 
 
     stepping = 0;
 
@@ -1004,4 +994,32 @@ breakpoint (void)
 {
   if (initialized)
     BREAKPOINT ();
+}
+
+void gdbCatchException3()
+{
+    save_registers1();
+    asm("movl %esp, %eax");      // save current stack pointer
+    asm("movl _stackPtr, %esp"); // change stack pointer
+    asm("pushl %eax");           // save current stack pointer to new stack
+    asm("pushl $3");
+    asm("call  _handle_exception");
+    asm("addl $4, %esp");
+    asm("popl %esp");
+}
+
+void gdbCatchException14()
+{
+    save_registers1();
+    if (mem_fault_routine) {
+        gdb_printf("fatal\n\n");
+    }
+    // we don't care about error code.
+    asm("movl %esp, %eax");      // save current stack pointer
+    asm("movl _stackPtr, %esp"); // change stack pointer
+    asm("pushl %eax");           // save current stack pointer to new stack
+    asm("pushl $14");
+    asm("call  _handle_exception");
+    asm("addl $4, %esp");
+    asm("popl %esp");
 }

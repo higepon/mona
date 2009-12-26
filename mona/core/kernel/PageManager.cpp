@@ -707,7 +707,7 @@ PageEntry* PageManager::allocatePageTable() const
     \author HigePon
     \date   create:2003/10/15 update:2004/01/08
 */
-extern "C" void _catchException14(uint32_t eip, uint32_t cs, uint32_t eflags);
+extern void gdbCatchException14();
 bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
 {
     Process* current = g_currentThread->process;
@@ -743,8 +743,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
 
     g_console->printf("page fault");
 
-    _catchException14(g_currentThread->archinfo->eip, g_currentThread->archinfo->cs, g_currentThread->archinfo->eflags);
-
+    gdbCatchException14();
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
