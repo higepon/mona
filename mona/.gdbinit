@@ -28,7 +28,7 @@
 # http://0xcc.net/blog/archives/000126.html
 set history save on
 set history size 10000
-set history filename ~/.gdb_history
+set history filename ~/.gdb_mona_history
 set print pretty on
 set print static-members off
 set charset ASCII
