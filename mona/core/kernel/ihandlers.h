@@ -29,10 +29,10 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(uint32_t error);
-extern "C" void divideErrorException();
-extern "C" void breakpointException();
+extern "C" void divideErrorExceptionHandler();
+extern "C" void breakpointExceptionHandler();
 
-extern "C" void generalProtectionException(uint32_t error);
+extern "C" void generalProtectionExceptionHandler(uint32_t error);
 extern "C" void SendInterrupt(int irq);
 
 /* IRQ Handler */

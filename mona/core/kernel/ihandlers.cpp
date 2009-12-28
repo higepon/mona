@@ -177,33 +177,32 @@ void irqHandler_6()
     /* not reached */
 }
 
-
-void divideErrorException()
+static void terminateCurrentThread(const char* reason)
 {
-    g_console->printf(__func__);
-    if (g_isRemoteDebug) {
-        gdbCatchException(VECTOR_DIVIDE_ERROR_EXCEPTION);
-    }
-
-
     Process* current = g_currentThread->process;
 
-    g_console->printf("divide by zero Process killed %s eip=%x\n", current->getName(),  g_currentThread->archinfo->eip);
-    logprintf("divide by zero Process killed %s eip=%x\n", current->getName(),  g_currentThread->archinfo->eip);
+    g_console->printf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
+    logprintf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
 
     ThreadOperation::kill();
 }
 
+void divideErrorExceptionHandler()
+{
+    if (g_isRemoteDebug) {
+        gdbCatchException(VECTOR_DIVIDE_ERROR_EXCEPTION);
+    }
+    terminateCurrentThread("divide by zero");
+}
 
-
-void breakpointException()
+void breakpointExceptionHandler()
 {
     // Enable remote debug handlers, on first breakpoint exception.
     g_isRemoteDebug = true;
     gdbCatchException(VECTOR_BREAKPOINT_EXCEPTION);
 }
 
-void generalProtectionException(uint32_t error)
+void generalProtectionExceptionHandler(uint32_t error)
 {
     const int IDT_ERROR = 2;
     g_console->printf(__func__);

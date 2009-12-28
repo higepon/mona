@@ -28,9 +28,9 @@ cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern fault0dHandler
-cextern divideErrorException
-cextern generalProtectionException
-cextern breakpointException
+cextern divideErrorExceptionHandler
+cextern generalProtectionExceptionHandler
+cextern breakpointExceptionHandler
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
@@ -107,7 +107,7 @@ arch_exception0_divide_error:
         changeData
         call arch_save_thread_registers
         call arch_set_stack_view
-        call divideErrorException
+        call divideErrorExceptionHandler
         popAll
         iretd
 
@@ -118,11 +118,9 @@ arch_exception3_breakpoint:
         changeData
         call arch_save_thread_registers
         call arch_set_stack_view
-        call breakpointException
+        call breakpointExceptionHandler
         popAll
         iretd
-
-
 
 arch_exception13_general_protection:
         call arch_set_dokodemo_view
@@ -131,7 +129,7 @@ arch_exception13_general_protection:
         call arch_save_thread_registers
         push dword[esp + 40]
         call arch_set_stack_view
-        call generalProtectionException
+        call generalProtectionExceptionHandler
         add  esp, 0x04          ; remove error_cd
         popAll
         iretd
