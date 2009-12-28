@@ -23,6 +23,7 @@
 #include <monapi/Keys.h>
 #include <monapi/Stream.h>
 #include <monapi/Assert.h>
+#include <monapi/DebuggerService.h>
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 

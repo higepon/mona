@@ -52,6 +52,7 @@ Don't Index: Classes
 
 
 File: Condition  (include/monapi/Condition.h)
+File: DebuggerService  (include/monapi/DebuggerService.h)
 File: Errors  (include/sys/error.h)
 File: include/servers/audio.h  (include/servers/audio.h)
 File: Mutex  (include/monapi/Mutex.h)
