@@ -1,0 +1,10 @@
+* How to debug Mona application using remote GDB.
+
+  1. On your main() function, call DebuggerService::breakpoint() function. This enables GDB remote debug handlers.
+  2. Compile you program with -g flag (Default behaviour)
+  3. Start your QEMU with -serial file:/tmp/mona.log -serial tcp::43770,server . The second -serial option is used by GDB.
+  4. Run gdb as follows.
+     gdb YOUR.EXE
+  5. GDB will break on your first DebuggerService::breakpointI().
+
+
