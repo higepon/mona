@@ -740,8 +740,9 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         return stack->faultHandler(address, FAULT_NOT_EXIST);
     }
 
-
-    gdbCatchException(VECTOR_PAGE_FAULT_EXCEPTION);
+    if (g_isRemoteDebug) {
+        gdbCatchException(VECTOR_PAGE_FAULT_EXCEPTION);
+    }
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
