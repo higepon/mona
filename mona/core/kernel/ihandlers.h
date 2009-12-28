@@ -17,6 +17,7 @@ extern void gdbCatchException(int exceptionVector);
 
 
 extern "C" void arch_dummyhandler(void);
+extern "C" void arch_exception0_divide_error();
 extern "C" void arch_exception3_breakpoint();
 extern "C" void arch_exception13_general_protection();
 extern "C" void arch_switch_process(void);
@@ -28,7 +29,9 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(uint32_t error);
+extern "C" void divideErrorException();
 extern "C" void breakpointException();
+
 extern "C" void generalProtectionException(uint32_t error);
 extern "C" void SendInterrupt(int irq);
 
@@ -65,6 +68,7 @@ FAULTHANDLERHEADER(b);
 FAULTHANDLERHEADER(10);
 FAULTHANDLERHEADER(11);
 
+#define VECTOR_DIVIDE_ERROR_EXCEPTION 0
 #define VECTOR_DEBUG_EXCEPTION 1
 #define VECTOR_NMI_INTTERUPT 2
 #define VECTOR_BREAKPOINT_EXCEPTION 3

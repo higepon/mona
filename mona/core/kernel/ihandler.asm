@@ -16,6 +16,7 @@ BITS 32
 %include "macro.asm"
 cglobal arch_exception13_general_protection
 cglobal arch_exception3_breakpoint
+cglobal arch_exception0_divide_error
 cglobal arch_fault0dhandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
@@ -27,6 +28,7 @@ cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern fault0dHandler
+cextern divideErrorException
 cextern generalProtectionException
 cextern breakpointException
 cextern syscall_entrance
@@ -99,6 +101,17 @@ arch_dummyhandler:
         popAll
         iretd
 
+arch_exception0_divide_error:
+        call arch_set_dokodemo_view
+        pushAll
+        changeData
+        call arch_save_thread_registers
+        call arch_set_stack_view
+        call divideErrorException
+        popAll
+        iretd
+
+
 arch_exception3_breakpoint:
         call arch_set_dokodemo_view
         pushAll
@@ -108,6 +121,8 @@ arch_exception3_breakpoint:
         call breakpointException
         popAll
         iretd
+
+
 
 arch_exception13_general_protection:
         call arch_set_dokodemo_view
@@ -149,7 +164,7 @@ arch_cpufaulthandler_%1:
         iretd
 %endmacro
 
-        cpufaulthandler 0
+;;         cpufaulthandler 0       
         cpufaulthandler 1
         cpufaulthandler 5
         cpufaulthandler 6

@@ -178,6 +178,24 @@ void irqHandler_6()
 }
 
 
+void divideErrorException()
+{
+    g_console->printf(__func__);
+    if (g_isRemoteDebug) {
+        gdbCatchException(VECTOR_DIVIDE_ERROR_EXCEPTION);
+    }
+
+
+    Process* current = g_currentThread->process;
+
+    g_console->printf("divide by zero Process killed %s eip=%x\n", current->getName(),  g_currentThread->archinfo->eip);
+    logprintf("divide by zero Process killed %s eip=%x\n", current->getName(),  g_currentThread->archinfo->eip);
+
+    ThreadOperation::kill();
+}
+
+
+
 void breakpointException()
 {
     // Enable remote debug handlers, on first breakpoint exception.
@@ -229,7 +247,7 @@ void fault0dHandler(uint32_t error)
 {
     g_console->printf("falut 0d error=%x, eip=%x", error, g_currentThread->archinfo->eip);
 //    g_console->printf("<%c>", g_com2->readChar());
-    
+
     _catchException14();
     dokodemoView();
     g_console->printf("%s, error=%x\n fault=%d\n", g_currentThread->process->getName(), error);
@@ -270,13 +288,6 @@ void dummyHandler()
     /* EOI is below for IRQ 8-15 */
     //    outp8(0xA0, 0x20);
     //    outp8(0x20, 0x20);
-}
-
-void cpufaultHandler_0(void)
-{
-    g_console->printf("falut 0");
-    dokodemoView();
-    panic("unhandled:fault00 - devied by 0");
 }
 
 
@@ -450,7 +461,7 @@ void dokodemoView() {
 
 /*! \def global handler list */
 InterruptHandlers handlers[IHANDLER_NUM] = {
-    {0x00, &arch_cpufaulthandler_0}
+    {0x00, &arch_exception0_divide_error}
     , {0x01, &arch_cpufaulthandler_1}
     , {0x02, &arch_dummyhandler}
     , {0x03, &arch_exception3_breakpoint}

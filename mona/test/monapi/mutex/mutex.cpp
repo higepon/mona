@@ -195,6 +195,8 @@ void __fastcall consumer(void* mainThread)
 int main(int argc, char *argv[])
 {
     DebuggerService::breakpoint();
+
+    printf("%d", 1/0);
     testSyscallMutex();
     testClassMutex();
 
