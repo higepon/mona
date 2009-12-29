@@ -20,6 +20,8 @@
 #include "Scheduler.h"
 #include "Uart.h"
 
+
+
 #define IRQHANDLERMaster(x) void irqHandler_##x()                             \
 {                                                                             \
     outp8(0x20, 0x20);                                                        \
@@ -187,7 +189,10 @@ static void terminateCurrentThread(const char* reason)
     ThreadOperation::kill();
 }
 
-void divideErrorExceptionHandler()
+/*----------------------------------------------------------------------
+    Exception handlers
+----------------------------------------------------------------------*/
+extern "C" void divideErrorHandler()
 {
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_DIVIDE_ERROR_EXCEPTION);
@@ -195,11 +200,83 @@ void divideErrorExceptionHandler()
     terminateCurrentThread("divide by zero");
 }
 
-void breakpointExceptionHandler()
+extern "C" void debugHandler()
+{
+}
+
+extern "C" void nmiInterruptHandler()
+{
+}
+
+extern "C" void breakpointHandler()
 {
     // Enable remote debug handlers, on first breakpoint exception.
     g_isRemoteDebug = true;
     gdbCatchException(VECTOR_BREAKPOINT_EXCEPTION);
+}
+
+extern "C" void overflowHandler()
+{
+}
+
+extern "C" void boundRangeExceededHandler()
+{
+}
+
+extern "C" void invalidOpCodeHandler()
+{
+}
+
+extern "C" void deviceNotAvailableHandler()
+{
+}
+
+extern "C" void doubleFaultHandler()
+{
+}
+
+extern "C" void coprocessorSegmentOverrunHandler()
+{
+}
+
+extern "C" void invalidTssHandler()
+{
+}
+
+extern "C" void segmentNotProcessHandler()
+{
+}
+
+extern "C" void stackFaultHandler()
+{
+}
+
+extern "C" void generalProtetionHandler()
+{
+}
+
+extern "C" void pageFaultHandler()
+{
+}
+
+extern "C" void x87FloatingPointErrorHandler()
+{
+}
+
+extern "C" void alignmentCheckHandler()
+{
+}
+
+extern "C" void machineCheckHandler()
+{
+}
+
+extern "C" void simdFloatingPointHandler()
+{
+}
+
+void breakpointExceptionHandler()
+{
 }
 
 void generalProtectionExceptionHandler(uint32_t error)
@@ -458,12 +535,31 @@ void dokodemoView() {
 #endif
 }
 
-/*! \def global handler list */
+extern "C" void arch_divideErrorHandler();
+extern "C" void arch_debugHandler();
+extern "C" void arch_nmiInterruptHandler();
+extern "C" void arch_breakpointHandler();
+extern "C" void arch_overflowHandler();
+extern "C" void arch_boundRangeExceededHandler();
+extern "C" void arch_invalidOpCodeHandler();
+extern "C" void arch_deviceNotAvailableHandler();
+extern "C" void arch_doubleFaultHandler();
+extern "C" void arch_coprocessorSegmentOverrunHandler();
+extern "C" void arch_invalidTssHandler();
+extern "C" void arch_segmentNotProcessHandler();
+extern "C" void arch_stackFaultHandler();
+extern "C" void arch_generalProtetionHandler();
+extern "C" void arch_pageFaultHandler();
+extern "C" void arch_x87FloatingPointErrorHandler();
+extern "C" void arch_alignmentCheckHandler();
+extern "C" void arch_machineCheckHandler();
+extern "C" void arch_simdFloatingPointHandler();
+
 InterruptHandlers handlers[IHANDLER_NUM] = {
-    {0x00, &arch_exception0_divide_error}
+    {0x00, &arch_divideErrorHandler}
     , {0x01, &arch_cpufaulthandler_1}
     , {0x02, &arch_dummyhandler}
-    , {0x03, &arch_exception3_breakpoint}
+    , {0x03, &arch_breakpointHandler}
     , {0x04, &arch_dummyhandler}
     , {0x05, &arch_cpufaulthandler_5}
     , {0x06, &arch_cpufaulthandler_6}

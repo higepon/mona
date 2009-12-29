@@ -29,8 +29,6 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(uint32_t error);
-extern "C" void divideErrorExceptionHandler();
-extern "C" void breakpointExceptionHandler();
 
 extern "C" void generalProtectionExceptionHandler(uint32_t error);
 extern "C" void SendInterrupt(int irq);
@@ -73,7 +71,7 @@ FAULTHANDLERHEADER(11);
 #define VECTOR_NMI_INTTERUPT 2
 #define VECTOR_BREAKPOINT_EXCEPTION 3
 #define VECTOR_OVERFLOW_EXCEPTION 4
-#define VECTOR_BOUND_RANGE_EXCEEDE_EXCEPTION 5
+#define VECTOR_BOUND_RANGE_EXCEEDED_EXCEPTION 5
 #define VECTOR_INVALID_OP_CODE_EXCEPTION 6
 #define VECTOR_DEVICE_NOT_AVAILABLE__EXCEPTION 7
 #define VECTOR_DOUBLE_FAULT_EXCEPTION 8

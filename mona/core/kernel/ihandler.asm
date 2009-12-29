@@ -93,26 +93,42 @@ irqhandler 13
 irqhandler 14
 irqhandler 15
 
-%macro MAKE_FAULT_HANLER 3
-cextern %3
-cglobal arch_exception%1_%2
-arch_exception%1_%2:
-        call arch_set_dokodemo_view
+%macro MAKE_FAULT_HANLER 2
+cextern %2Handler
+cglobal arch_%2Handler
+arch_%2Handler:
         pushAll
         changeData
         call arch_save_thread_registers
-        call arch_set_stack_view
-        call %3
+        call %2Handler
         popAll
-        iretd
         iretd
 %endmacro
 
-MAKE_FAULT_HANLER 0, divide_error, divideErrorExceptionHandler
+MAKE_FAULT_HANLER 0,  divideError
+MAKE_FAULT_HANLER 1,  debug
+MAKE_FAULT_HANLER 2,  nmiInterrupt
+MAKE_FAULT_HANLER 3,  breakpoint
+MAKE_FAULT_HANLER 4,  overflow
+MAKE_FAULT_HANLER 5,  boundRangeExceeded
+MAKE_FAULT_HANLER 6,  invalidOpCode
+MAKE_FAULT_HANLER 7,  deviceNotAvailable
+MAKE_FAULT_HANLER 8,  doubleFault
+MAKE_FAULT_HANLER 9,  coprocessorSegmentOverrun
+MAKE_FAULT_HANLER 10, invalidTss
+MAKE_FAULT_HANLER 11, segmentNotProcess
+MAKE_FAULT_HANLER 12, stackFault
+MAKE_FAULT_HANLER 13, generalProtetion
+MAKE_FAULT_HANLER 14, pageFault
+MAKE_FAULT_HANLER 16, x87FloatingPointError
+MAKE_FAULT_HANLER 17, alignmentCheck
+MAKE_FAULT_HANLER 18, machineCheck
+MAKE_FAULT_HANLER 19, simdFloatingPoint
+
 
 ;; cextern divideErrorExceptionHandler
 ;; cglobal arch_exception0_divide_error
-;; arch_exception_0_divide_error:  
+;; arch_exception_0_divide_error:
 ;;         call arch_set_dokodemo_view
 ;;         pushAll
 ;;         changeData
@@ -143,15 +159,15 @@ arch_dummyhandler:
 ;;         iretd
 
 
-arch_exception3_breakpoint:
-        call arch_set_dokodemo_view
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call arch_set_stack_view
-        call breakpointExceptionHandler
-        popAll
-        iretd
+;; arch_exception3_breakpoint:
+;;         call arch_set_dokodemo_view
+;;         pushAll
+;;         changeData
+;;         call arch_save_thread_registers
+;;         call arch_set_stack_view
+;;         call breakpointExceptionHandler
+;;         popAll
+;;         iretd
 
 arch_exception13_general_protection:
         call arch_set_dokodemo_view
