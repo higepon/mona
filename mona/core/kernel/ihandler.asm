@@ -16,7 +16,7 @@ BITS 32
 %include "macro.asm"
 cglobal arch_exception13_general_protection
 cglobal arch_exception3_breakpoint
-cglobal arch_exception0_divide_error
+;; cglobal arch_exception0_divide_error
 cglobal arch_fault0dhandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
@@ -28,7 +28,7 @@ cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern fault0dHandler
-cextern divideErrorExceptionHandler
+;; cextern divideErrorExceptionHandler
 cextern generalProtectionExceptionHandler
 cextern breakpointExceptionHandler
 cextern syscall_entrance
@@ -93,6 +93,37 @@ irqhandler 13
 irqhandler 14
 irqhandler 15
 
+%macro MAKE_FAULT_HANLER 3
+cextern %3
+cglobal arch_exception%1_%2
+arch_exception%1_%2:
+        call arch_set_dokodemo_view
+        pushAll
+        changeData
+        call arch_save_thread_registers
+        call arch_set_stack_view
+        call %3
+        popAll
+        iretd
+        iretd
+%endmacro
+
+MAKE_FAULT_HANLER 0, divide_error, divideErrorExceptionHandler
+
+;; cextern divideErrorExceptionHandler
+;; cglobal arch_exception0_divide_error
+;; arch_exception_0_divide_error:  
+;;         call arch_set_dokodemo_view
+;;         pushAll
+;;         changeData
+;;         call arch_save_thread_registers
+;;         call arch_set_stack_view
+;;         call divideErrorExceptionHandler
+;;         popAll
+;;         iretd
+;;         iretd
+
+
 ;;; dummy handler
 arch_dummyhandler:
         pushAll
@@ -101,15 +132,15 @@ arch_dummyhandler:
         popAll
         iretd
 
-arch_exception0_divide_error:
-        call arch_set_dokodemo_view
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call arch_set_stack_view
-        call divideErrorExceptionHandler
-        popAll
-        iretd
+;; arch_exception0_divide_error:
+;;         call arch_set_dokodemo_view
+;;         pushAll
+;;         changeData
+;;         call arch_save_thread_registers
+;;         call arch_set_stack_view
+;;         call divideErrorExceptionHandler
+;;         popAll
+;;         iretd
 
 
 arch_exception3_breakpoint:
@@ -162,7 +193,7 @@ arch_cpufaulthandler_%1:
         iretd
 %endmacro
 
-;;         cpufaulthandler 0       
+;;         cpufaulthandler 0
         cpufaulthandler 1
         cpufaulthandler 5
         cpufaulthandler 6

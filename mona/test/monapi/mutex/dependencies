@@ -27,4 +27,5 @@ mutex.o: mutex.cpp /home/taro/mona/include/monapi.h \
   /home/taro/mona/include/monapi/Color.h \
   /home/taro/mona/include/monapi/Random.h \
   /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/DebuggerService.h \
   /home/taro/mona/include/monapi/MUnit.h
