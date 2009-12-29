@@ -14,29 +14,28 @@
 BITS 32
 
 %include "macro.asm"
-cglobal arch_exception13_general_protection
-cglobal arch_exception3_breakpoint
-;; cglobal arch_exception0_divide_error
-cglobal arch_fault0dhandler
+;; cglobal arch_exception13_general_protection
+;; cglobal arch_exception3_breakpoint
+;; ;; cglobal arch_exception0_divide_error
+;; cglobal arch_fault0dhandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
-cglobal arch_cpufaulthandler_e
-cglobal arch_cpufaulthandler_c
+;; cglobal arch_cpufaulthandler_e
+;; cglobal arch_cpufaulthandler_c
 cextern g_currentThread
 cextern arch_switch_process
-cextern cpufaultHandler_c
-cextern cpufaultHandler_e
+;; cextern cpufaultHandler_c
+;; cextern cpufaultHandler_e
 cextern arch_set_stack_view
-cextern fault0dHandler
+;; cextern fault0dHandler
 ;; cextern divideErrorExceptionHandler
-cextern generalProtectionExceptionHandler
-cextern breakpointExceptionHandler
+;; cextern generalProtectionExceptionHandler ;
+;; cextern breakpointExceptionHandler
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
 cextern arch_save_thread_registers2
 cextern arch_set_dokodemo_view
-
 
 %define KERNEL_DS 0x10
 
@@ -117,122 +116,17 @@ MAKE_FAULT_HANLER 8,  doubleFault
 MAKE_FAULT_HANLER 9,  coprocessorSegmentOverrun
 MAKE_FAULT_HANLER 10, invalidTss
 MAKE_FAULT_HANLER 11, segmentNotProcess
-MAKE_FAULT_HANLER 12, stackFault
-MAKE_FAULT_HANLER 13, generalProtetion
-MAKE_FAULT_HANLER 14, pageFault
+;; MAKE_FAULT_HANLER 12, stackFault
+;; MAKE_FAULT_HANLER 13, generalProtetion
+;; MAKE_FAULT_HANLER 14, pageFault
 MAKE_FAULT_HANLER 16, x87FloatingPointError
 MAKE_FAULT_HANLER 17, alignmentCheck
 MAKE_FAULT_HANLER 18, machineCheck
 MAKE_FAULT_HANLER 19, simdFloatingPoint
 
-
-;; cextern divideErrorExceptionHandler
-;; cglobal arch_exception0_divide_error
-;; arch_exception_0_divide_error:
-;;         call arch_set_dokodemo_view
-;;         pushAll
-;;         changeData
-;;         call arch_save_thread_registers
-;;         call arch_set_stack_view
-;;         call divideErrorExceptionHandler
-;;         popAll
-;;         iretd
-;;         iretd
-
-
-;;; dummy handler
-arch_dummyhandler:
-        pushAll
-        changeData
-        call dummyHandler
-        popAll
-        iretd
-
-;; arch_exception0_divide_error:
-;;         call arch_set_dokodemo_view
-;;         pushAll
-;;         changeData
-;;         call arch_save_thread_registers
-;;         call arch_set_stack_view
-;;         call divideErrorExceptionHandler
-;;         popAll
-;;         iretd
-
-
-;; arch_exception3_breakpoint:
-;;         call arch_set_dokodemo_view
-;;         pushAll
-;;         changeData
-;;         call arch_save_thread_registers
-;;         call arch_set_stack_view
-;;         call breakpointExceptionHandler
-;;         popAll
-;;         iretd
-
-arch_exception13_general_protection:
-        call arch_set_dokodemo_view
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        push dword[esp + 40]
-        call arch_set_stack_view
-        call generalProtectionExceptionHandler
-        add  esp, 0x04          ; remove error_cd
-        popAll
-        iretd
-
-
-;;; fault0dHandler
-arch_fault0dhandler:
-        call arch_set_dokodemo_view
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        push dword[esp + 40]
-        call arch_set_stack_view
-        call fault0dHandler
-        add  esp, 0x04          ; remove error_cd
-        popAll
-        iretd
-
-%macro cpufaulthandler 1
-cglobal arch_cpufaulthandler_%1
-cextern cpufaultHandler_%1
-arch_cpufaulthandler_%1:
-        call arch_set_dokodemo_view
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call arch_set_stack_view
-        call cpufaultHandler_%1
-        popAll
-        iretd
-%endmacro
-
-;;         cpufaulthandler 0
-        cpufaulthandler 1
-        cpufaulthandler 5
-        cpufaulthandler 6
-        cpufaulthandler 7
-        cpufaulthandler 8
-        cpufaulthandler a
-        cpufaulthandler b
-;          cpufaulthandler c;;;; removed by higepon
-;          cpufaulthandler e;;;; removed by higepon
-        cpufaulthandler 10
-        cpufaulthandler 11
-
-arch_cpufaulthandler_c:
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        push dword[esp + 40]
-        call cpufaultHandler_c
-        add  esp, 0x04          ; remove error_cd
-        popAll
-        iretd
-
-arch_cpufaulthandler_e:
+cextern pageFaultHandler
+cglobal arch_pageFaultHandler
+arch_pageFaultHandler:
         pushAll
         changeData
         call arch_save_thread_registers2
@@ -243,10 +137,45 @@ arch_cpufaulthandler_e:
         mov  dword[esp + 4], eax
         mov  eax, cr2             ; page fault address
         mov  dword[esp + 0], eax
-        call cpufaultHandler_e
+        call pageFaultHandler
         leave
         popAll
         add esp, 0x04             ; remove error_cd
+        iretd
+
+cextern stackFaultHandler
+cglobal arch_stackFaultHandler
+arch_stackFaultHandler:
+        pushAll
+        changeData
+        call arch_save_thread_registers
+        push dword[esp + 40]
+        call stackFaultHandler
+        add  esp, 0x04          ; remove error_cd
+        popAll
+        iretd
+
+cextern generalProtectionHandler
+cglobal arch_generalProtectionHandler
+
+arch_generalProtectionHandler
+        call arch_set_dokodemo_view
+        pushAll
+        changeData
+        call generalProtectionHandler
+        push dword[esp + 40]
+        call arch_set_stack_view
+        call generalProtectionHandler
+        add  esp, 0x04          ; remove error_cd
+        popAll
+        iretd
+
+;;; dummy handler
+arch_dummyhandler:
+        pushAll
+        changeData
+        call dummyHandler
+        popAll
         iretd
 
 ;;; entrance of syscall

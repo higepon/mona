@@ -197,7 +197,6 @@ int main(int argc, char *argv[])
     int k = 3;
     DebuggerService::breakpoint();
 
-    printf("%d, %d", 1/0, k);
     testSyscallMutex();
     testClassMutex();
 

@@ -14,23 +14,9 @@
 #define _MONA_IHANDLER_
 
 extern void gdbCatchException(int exceptionVector);
-
-
 extern "C" void arch_dummyhandler(void);
-extern "C" void arch_exception0_divide_error();
-extern "C" void arch_exception3_breakpoint();
-extern "C" void arch_exception13_general_protection();
-extern "C" void arch_switch_process(void);
-extern "C" void arch_breakpoint_handler(void);
-extern "C" void arch_switch_process_to_user_mode(void);
-extern "C" void arch_switch_process_to_v86_mode(void);
-extern "C" void arch_fault0dhandler(void);
 extern "C" void arch_syscall_handler(void);
-
 extern "C" void dummyHandler(void);
-extern "C" void fault0dHandler(uint32_t error);
-
-extern "C" void generalProtectionExceptionHandler(uint32_t error);
 extern "C" void SendInterrupt(int irq);
 
 /* IRQ Handler */
@@ -85,14 +71,6 @@ FAULTHANDLERHEADER(11);
 #define VECTOR_ALIGNMENT_CHECK_EXCEPTION 17
 #define VECTOR_MACHINE_CHECK_EXCEPTION 18
 #define VECTOR_SIMD_FLOATING_POINT_EXCEPTION 19
-
-
-
-
-extern "C" void cpufaultHandler_e(uint32_t address, uint32_t error);
-extern "C" void cpufaultHandler_c(uint32_t error);
-extern "C" void arch_cpufaulthandler_c();
-extern "C" void arch_cpufaulthandler_e();
 
 void dokodemoView();
 
