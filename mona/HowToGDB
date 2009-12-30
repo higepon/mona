@@ -13,6 +13,7 @@
   2. On your main() function, call DebuggerService::breakpoint() function. This enables GDB remote debug handlers.
   2. Compile you program with -g flag (Default behaviour)
   3. Start your QEMU with -serial file:/tmp/mona.log -serial tcp::43770,server . The second -serial option is used by GDB.
+     Sample shell script is found on tool/qemu/remote_debug_gdb.sh
   4. Run gdb as follows.
      gdb YOUR.EXE
      (gdb) target remote localhost:43770
