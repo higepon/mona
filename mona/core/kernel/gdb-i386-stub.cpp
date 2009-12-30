@@ -760,7 +760,6 @@ hexToInt (char **ptr, int *intValue)
 extern "C" void
 handle_exception (int exceptionVector)
 {
-    gdb_printf("handle_exception\n");
     int sigval, stepping;
     int addr, length;
     char *ptr;
@@ -770,11 +769,11 @@ handle_exception (int exceptionVector)
 
 
 
-    if (remote_debug)
-    {
-        printf ("vector=%d, sr=0x%x, pc=0x%x\n",
-                exceptionVector, registers[PS], registers[PC]);
-    }
+//     if (remote_debug)
+//     {
+//         printf ("vector=%d, sr=0x%x, pc=0x%x\n",
+//                 exceptionVector, registers[PS], registers[PC]);
+//     }
 
     /* reply to host that an exception has occurred */
     sigval = computeSignal (exceptionVector);
@@ -810,8 +809,6 @@ handle_exception (int exceptionVector)
     {
         remcomOutBuffer[0] = 0;
         ptr = (char*)getpacket ();
-
-        gdb_printf("handle_exception<%c>\n", *ptr);
 
         switch (*ptr++)
         {
