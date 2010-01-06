@@ -12,7 +12,7 @@
 #ifndef _MONA_GDTUTIL_
 #define _MONA_GDTUTIL_
 
-#define GDT_ENTRY_NUM 8192
+#define GDT_ENTRY_NUM 8
 #define GDT_SIZE      (GDT_ENTRY_NUM * 8)
 
 #define SEGMENT_ABSENT  0x00
