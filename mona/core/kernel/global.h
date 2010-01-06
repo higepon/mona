@@ -29,6 +29,7 @@
 
 class Uart;
 
+GLOBAL uint64_t g_epoch_nanosec;
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
