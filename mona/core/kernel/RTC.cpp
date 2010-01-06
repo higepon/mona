@@ -59,6 +59,37 @@ int RTC::readDateOnce(KDate* date) {
     return date->min;
 }
 
+uint64_t RTC::epochNanoSeconds()
+{
+    static int DAYS_IN_MONTH[]= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31};
+    KDate date;
+    readDateOnce(&date);
+    ASSERT(date.year >= 1970);
+
+    uint64_t days = 0;
+    for (int i = 1970; i < date.year; i++) {
+        days += 365;
+        if (isLeapYear(date.year)) {
+            days++;
+        }
+    }
+
+    for (int i = 0; i < date.month - 1; i++) {
+        int daysInMonth= DAYS_IN_MONTH[i];
+        if (i == 1 && isLeapYear(date.year)) {
+            daysInMonth++;
+        }
+        days += daysInMonth;
+    }
+    days += date.day;
+
+    uint64_t ret = days * 24 * 60 * 60 * 1000000000;
+    ret += date.hour * 60 * 60 * 1000000000;
+    ret += date.min * 60 * 1000000000;
+    ret += date.sec * 1000000000;
+    return ret;
+}
+
 void RTC::getDate(KDate* date) {
 
     for (;;) {

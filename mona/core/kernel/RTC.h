@@ -29,8 +29,14 @@ class RTC {
     static uint8_t read(uint8_t reg);
     static void write(uint8_t reg, uint8_t value);
     static int readDateOnce(KDate* date);
-    inline static int convert(uint8_t value) {
+    static uint64_t epochNanoSeconds();
+    inline static int convert(uint8_t value)
+    {
         return (value & 0x0f) + ( (value >> 4) * 10);
+    }
+    inline static bool isLeapYear(int year)
+    {
+        return (year % 4 == 0 && year % 100 != 0 || year % 400 == 0);
     }
 
   public:

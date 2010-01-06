@@ -29,10 +29,10 @@
 
 class Uart;
 
-GLOBAL uint64_t g_epoch_nanosec;
-GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
-GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
-GLOBAL StackView g_stack_view;                       /*< struct for stack view */
+GLOBAL uint64_t g_epoch_nanosec GLOBAL_VAL(0);  // nanoseconds from 1970/1/1 00:00:00(GMT)
+GLOBAL VirtualConsole* g_console GLOBAL_VAL(0); // console
+GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0); // logger using serial port
+GLOBAL StackView g_stack_view;                  // for debug
 GLOBAL DokodemoView g_dokodemo_view;
 
 /* semaphore */
