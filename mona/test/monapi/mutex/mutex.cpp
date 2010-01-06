@@ -128,8 +128,8 @@ void testClassMutex()
     mutex = new Mutex();
     ASSERT_TRUE(mutex != NULL);
 
-    uintptr_t* p = (uintptr_t*)0;
-    *p = 1;
+//     uintptr_t* p = (uintptr_t*)0;
+//     *p = 1;
 
 
     // Lock
@@ -194,8 +194,7 @@ void __fastcall consumer(void* mainThread)
 
 int main(int argc, char *argv[])
 {
-    int k = 3;
-    DebuggerService::breakpoint();
+//    DebuggerService::breakpoint();
 
     testSyscallMutex();
     testClassMutex();

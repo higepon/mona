@@ -186,10 +186,14 @@ extern "C" void nmiInterruptHandler()
     terminateCurrentThread(__func__);
 }
 
+extern "C" void set_debug_traps();
 extern "C" void breakpointHandler()
 {
     // Enable remote debug handlers, on first breakpoint exception.
-    g_isRemoteDebug = true;
+    if (!g_isRemoteDebug) {
+        set_debug_traps();
+        g_isRemoteDebug = true;
+    }
     gdbCatchException(VECTOR_BREAKPOINT_EXCEPTION);
 }
 

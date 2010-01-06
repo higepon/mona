@@ -83,7 +83,6 @@
 const char* version = "Mona version.0.3.0 $Date::                           $";
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
-extern "C" void set_debug_traps();
 
 mones::Nic* g_nic;
 mones::FrameNode* g_frames;
@@ -208,8 +207,6 @@ void startKernel()
 
     checkTypeSize();
     printOK("Checking type size ");
-
-    set_debug_traps();
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
