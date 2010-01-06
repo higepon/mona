@@ -33,6 +33,7 @@ enum {
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
 typedef long int        intptr_t;
+typedef long long unsigned int uint64_t;
 # define __uintptr_t_defined
 #endif
 
