@@ -136,7 +136,7 @@ void sys_mbox_free(sys_mbox_t mbox);
 void sys_mbox_fetch(sys_mbox_t mbox, void **msg);
 
 /* Thread functions. */
-sys_thread_t sys_thread_new(char *name, void (* thread)(void *arg), void *arg, int stacksize, int prio);
+sys_thread_t sys_thread_new(char *name, void __fastcall(* thread)(void *arg), void *arg, int stacksize, int prio);
 
 #endif /* NO_SYS */
 

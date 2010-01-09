@@ -79,6 +79,7 @@
 
 #include <string.h>
 #include <sys/types.h>
+#include <sys/error.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <monapi/syscall.h>
@@ -90,7 +91,7 @@
 #define UMAX(a, b)      ((a) > (b) ? (a) : (b))
 
 static struct sys_thread *threads = NULL;
-static intptr_t threads_mutex = -1;
+static mutex_t threads_mutex;
 
 struct sys_mbox_msg {
   struct sys_mbox_msg *next;
@@ -120,9 +121,9 @@ struct sys_thread {
 };
 
 
-static struct timeval starttime;
+static uint64_t starttime;
 
-static intptr_t lwprot_mutex = -1;
+static mutex_t lwprot_mutex = -1;
 static intptr_t lwprot_thread = (intptr_t) 0xDEAD;
 static int lwprot_count = 0;
 
@@ -135,8 +136,14 @@ static u32_t cond_wait(intptr_t * cond, intptr_t * mutex,
 // This should be called at first
 void setup_sys_arch()
 {
-  threads_mutex = syscall_mutex_create();
-  lwprot_mutex = syscall_mutex_create();
+  if (M_OK != syscall_mutex_create(&threads_mutex)) {
+    fprintf(stderr, "%s:%d %s faild\n", __FILE__, __LINE__, __func__);
+    exit(-1);
+  }
+  if (M_OK != syscall_mutex_create(&lwprot_mutex)) {
+    fprintf(stderr, "%s:%d %s faild\n", __FILE__, __LINE__, __func__);
+    exit(-1);
+  }
 }
 
 
@@ -149,12 +156,12 @@ introduce_thread(intptr_t id)
   thread = malloc(sizeof(struct sys_thread));
 
   if (thread != NULL) {
-    syscall_mutex_lock(threads_mutex);
+    syscall_mutex_lock(&threads_mutex);
     thread->next = threads;
     thread->timeouts.next = NULL;
     thread->pthread = id;
     threads = thread;
-    syscall_mutex_unlock(threads_mutex);
+    syscall_mutex_unlock(&threads_mutex);
   }
 
   return thread;
@@ -164,19 +171,19 @@ static struct sys_thread *
 current_thread(void)
 {
   struct sys_thread *st;
-  intptr_t pt;
-  pt = pthread_self();
-  pthread_mutex_lock(&threads_mutex);
+  uintptr_t pt;
+  pt = syscall_mthread_self();
+  syscall_mutex_lock(&threads_mutex);
 
   for(st = threads; st != NULL; st = st->next) {
-    if (pthread_equal(st->pthread, pt)) {
-      pthread_mutex_unlock(&threads_mutex);
+    if (st->pthread == pt) {
+      syscall_mutex_unlock(&threads_mutex);
 
       return st;
     }
   }
 
-  pthread_mutex_unlock(&threads_mutex);
+  syscall_mutex_unlock(&threads_mutex);
 
   st = introduce_thread(pt);
 
@@ -189,21 +196,14 @@ current_thread(void)
 }
 /*-----------------------------------------------------------------------------------*/
 sys_thread_t
-sys_thread_new(char *name, void (* function)(void *arg), void *arg, int stacksize, int prio)
+sys_thread_new(char *name, void __fastcall (* function)(void *arg), void *arg, int stacksize, int prio)
 {
-  int code;
-  intptr_t tmp;
+  uintptr_t tmp;
   struct sys_thread *st = NULL;
 
-  code = pthread_create(&tmp,
-                        NULL,
-                        (void *(*)(void *))
-                        function,
-                        arg);
+  tmp = syscall_mthread_create_with_arg(function, arg);
 
-  if (0 == code) {
-    st = introduce_thread(tmp);
-  }
+  st = introduce_thread(tmp);
 
   if (NULL == st) {
     LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%x",
@@ -414,43 +414,52 @@ sys_sem_new_(u8_t count)
   sem = malloc(sizeof(struct sys_sem));
   if (sem != NULL) {
     sem->c = count;
-    pthread_cond_init(&(sem->cond), NULL);
-    pthread_mutex_init(&(sem->mutex), NULL);
+    if (M_OK != syscall_condition_create(&sem->cond)) {
+      fprintf(stderr, "%s:%d %s faild\n", __FILE__, __LINE__, __func__);
+      exit(-1);
+    }
+    if (M_OK != syscall_mutex_create(&(sem->mutex))) {
+      fprintf(stderr, "%s:%d %s faild\n", __FILE__, __LINE__, __func__);
+      exit(-1);
+    }
   }
   return sem;
 }
 
 /*-----------------------------------------------------------------------------------*/
 static u32_t
-cond_wait(intptr_t *cond, intptr_t *mutex, u32_t timeout)
+cond_wait(cond_t *cond, mutex_t *mutex, u32_t timeout)
 {
   int tdiff;
-  unsigned long sec, usec;
-  struct timeval rtime1, rtime2;
-  struct timespec ts;
-  struct timezone tz;
-  int retval;
+/*   unsigned long sec, usec; */
+/*   struct timeval rtime1, rtime2; */
+/*   struct timespec ts; */
+/*   struct timezone tz; */
+  intptr_t retval;
+  uint64_t start, end;
 
   if (timeout > 0) {
     /* Get a timestamp and add the timeout value. */
-    gettimeofday(&rtime1, &tz);
-    sec = rtime1.tv_sec;
-    usec = rtime1.tv_usec;
-    usec += timeout % 1000 * 1000;
-    sec += (int)(timeout / 1000) + (int)(usec / 1000000);
-    usec = usec % 1000000;
-    ts.tv_nsec = usec * 1000;
-    ts.tv_sec = sec;
+/*     gettimeofday(&rtime1, &tz); */
+/*     sec = rtime1.tv_sec; */
+/*     usec = rtime1.tv_usec; */
+/*     usec += timeout % 1000 * 1000; */
+/*     sec += (int)(timeout / 1000) + (int)(usec / 1000000); */
+/*     usec = usec % 1000000; */
+/*     ts.tv_nsec = usec * 1000; */
+/*     ts.tv_sec = sec; */
+    start = syscall_now_in_nanosec();
+    retval = syscall_condition_wait_timeout(cond, mutex, timeout);
 
-    retval = pthread_cond_timedwait(cond, mutex, &ts);
-
-    if (retval == ETIMEDOUT) {
+    if (retval == M_TIMED_OUT) {
       return SYS_ARCH_TIMEOUT;
     } else {
       /* Calculate for how long we waited for the cond. */
-      gettimeofday(&rtime2, &tz);
-      tdiff = (rtime2.tv_sec - rtime1.tv_sec) * 1000 +
-        (rtime2.tv_usec - rtime1.tv_usec) / 1000;
+      end = syscall_now_in_nanosec();
+/*       gettimeofday(&rtime2, &tz); */
+/*       tdiff = (rtime2.tv_sec - rtime1.tv_sec) * 1000 + */
+/*         (rtime2.tv_usec - rtime1.tv_usec) / 1000; */
+      tdiff = (end - start) / 1000 / 1000;
 
       if (tdiff <= 0) {
         return 0;
@@ -459,7 +468,7 @@ cond_wait(intptr_t *cond, intptr_t *mutex, u32_t timeout)
       return tdiff;
     }
   } else {
-    pthread_cond_wait(cond, mutex);
+    syscall_condition_wait(cond, mutex);
     return SYS_ARCH_TIMEOUT;
   }
 }
@@ -469,13 +478,13 @@ sys_arch_sem_wait(struct sys_sem *sem, u32_t timeout)
 {
   u32_t time = 0;
 
-  pthread_mutex_lock(&(sem->mutex));
+  syscall_mutex_lock(&(sem->mutex));
   while (sem->c <= 0) {
     if (timeout > 0) {
       time = cond_wait(&(sem->cond), &(sem->mutex), timeout);
 
       if (time == SYS_ARCH_TIMEOUT) {
-        pthread_mutex_unlock(&(sem->mutex));
+        syscall_mutex_unlock(&(sem->mutex));
         return SYS_ARCH_TIMEOUT;
       }
       /*      pthread_mutex_unlock(&(sem->mutex));
@@ -485,22 +494,22 @@ sys_arch_sem_wait(struct sys_sem *sem, u32_t timeout)
     }
   }
   sem->c--;
-  pthread_mutex_unlock(&(sem->mutex));
+  syscall_mutex_unlock(&(sem->mutex));
   return time;
 }
 /*-----------------------------------------------------------------------------------*/
 void
 sys_sem_signal(struct sys_sem *sem)
 {
-  pthread_mutex_lock(&(sem->mutex));
+  syscall_mutex_lock(&(sem->mutex));
   sem->c++;
 
   if (sem->c > 1) {
     sem->c = 1;
   }
 
-  pthread_cond_broadcast(&(sem->cond));
-  pthread_mutex_unlock(&(sem->mutex));
+  syscall_condition_notify_all(&(sem->cond));
+  syscall_mutex_unlock(&(sem->mutex));
 }
 /*-----------------------------------------------------------------------------------*/
 void
@@ -518,32 +527,34 @@ sys_sem_free(struct sys_sem *sem)
 static void
 sys_sem_free_(struct sys_sem *sem)
 {
-  pthread_cond_destroy(&(sem->cond));
-  pthread_mutex_destroy(&(sem->mutex));
+  syscall_condition_destroy(&(sem->cond));
+  syscall_mutex_destroy(&(sem->mutex));
   free(sem);
 }
 /*-----------------------------------------------------------------------------------*/
 unsigned long
 sys_unix_now()
 {
-  struct timeval tv;
-  struct timezone tz;
-  long sec, usec;
-  unsigned long msec;
-  gettimeofday(&tv, &tz);
+/*   struct timeval tv; */
+/*   struct timezone tz; */
+/*   long sec, usec; */
+/*   unsigned long msec; */
+/*   gettimeofday(&tv, &tz); */
 
-  sec = tv.tv_sec - starttime.tv_sec;
-  usec = tv.tv_usec - starttime.tv_usec;
-  msec = sec * 1000 + usec / 1000;
+/*   sec = tv.tv_sec - starttime.tv_sec; */
+/*   usec = tv.tv_usec - starttime.tv_usec; */
+/*   msec = sec * 1000 + usec / 1000; */
+  uint64_t msec = syscall_now_in_nanosec() / 1000 / 1000;
 
-  return msec;
+  return msec - starttime;
 }
 /*-----------------------------------------------------------------------------------*/
 void
 sys_init()
 {
-  struct timezone tz;
-  gettimeofday(&starttime, &tz);
+/*   struct timezone tz; */
+/*   gettimeofday(&starttime, &tz); */
+  starttime = syscall_now_in_nanosec() / 1000 / 1000;
 }
 /*-----------------------------------------------------------------------------------*/
 struct sys_timeouts *
@@ -575,12 +586,12 @@ sys_arch_protect(void)
     /* Note that for the UNIX port, we are using a lightweight mutex, and our
      * own counter (which is locked by the mutex). The return code is not actually
      * used. */
-    if (lwprot_thread != pthread_self())
+    if (lwprot_thread != syscall_mthread_self())
     {
         /* We are locking the mutex where it has not been locked before *
         * or is being locked by another thread */
-        pthread_mutex_lock(&lwprot_mutex);
-        lwprot_thread = pthread_self();
+        syscall_mutex_lock(&lwprot_mutex);
+        lwprot_thread = syscall_mthread_self();
         lwprot_count = 1;
     }
     else
@@ -599,12 +610,12 @@ an operating system.
 void
 sys_arch_unprotect(sys_prot_t pval)
 {
-    if (lwprot_thread == pthread_self())
+    if (lwprot_thread == syscall_mthread_self())
     {
         if (--lwprot_count == 0)
         {
             lwprot_thread = (intptr_t) 0xDEAD;
-            pthread_mutex_unlock(&lwprot_mutex);
+            syscall_mutex_unlock(&lwprot_mutex);
         }
     }
 }
@@ -622,17 +633,19 @@ sys_arch_unprotect(sys_prot_t pval)
 unsigned long
 sys_jiffies(void)
 {
-    struct timeval tv;
-    unsigned long sec = tv.tv_sec;
-    long usec = tv.tv_usec;
+/*     struct timeval tv; */
+/*     unsigned long sec = tv.tv_sec; */
+/*     long usec = tv.tv_usec; */
 
-    gettimeofday(&tv,NULL);
+/*     gettimeofday(&tv,NULL); */
 
-    if (sec >= (MAX_JIFFY_OFFSET / HZ))
-    return MAX_JIFFY_OFFSET;
-    usec += 1000000L / HZ - 1;
-    usec /= 1000000L / HZ;
-    return HZ * sec + usec;
+/*     if (sec >= (MAX_JIFFY_OFFSET / HZ)) */
+/*     return MAX_JIFFY_OFFSET; */
+/*     usec += 1000000L / HZ - 1; */
+/*     usec /= 1000000L / HZ; */
+/*     return HZ * sec + usec; */
+  fprintf(stderr, "err ppp uses this?");
+  return 0;
 }
 
 #if PPP_DEBUG
