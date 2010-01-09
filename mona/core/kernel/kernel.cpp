@@ -136,7 +136,7 @@ void startKernel()
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  %s\n", version);
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
-    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2007 higepon\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2010 higepon\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
 
@@ -285,6 +285,8 @@ void startKernel()
     g_prevThread->archinfo->cr3    = 1;
     g_currentThread->archinfo->cr3 = 2;
 
+    // Just before enable timer, sync epochNanosec.
+    RTC::syncEpochNanosec();
     enableTimer();
 
 #ifdef HIGE

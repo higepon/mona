@@ -1035,3 +1035,16 @@ void syscall_deallocate_contiguous(uint32_t laddress, int pageNum)
 {
     syscall2(SYSTEM_CALL_DEALLOCATE_CONTIGUOUS, laddress, pageNum);
 }
+
+uint64_t syscall_now_in_nanosec()
+{
+    union {
+        struct {
+            uint32_t l;
+            uint32_t h;
+        } u32;
+        uint64_t u64;
+    } n;
+    syscall2(SYSTEM_CALL_NOW_IN_NANOSEC, (intptr_t)(&(n.u32.l)), (intptr_t)(&(n.u32.h)));
+    return n.u64;
+}

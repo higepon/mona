@@ -18,6 +18,7 @@
 /*----------------------------------------------------------------------
     RTC
 ----------------------------------------------------------------------*/
+uint64_t RTC::epochNanosec_;
 void RTC::init() {
 
     /* 24h */
@@ -59,7 +60,7 @@ int RTC::readDateOnce(KDate* date) {
     return date->min;
 }
 
-uint64_t RTC::epochNanoSeconds()
+uint64_t RTC::readEpochNanoSeconds()
 {
     static int DAYS_IN_MONTH[]= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31};
     KDate date;

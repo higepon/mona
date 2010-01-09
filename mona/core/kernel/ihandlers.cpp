@@ -19,6 +19,7 @@
 #include "Process.h"
 #include "Scheduler.h"
 #include "Uart.h"
+#include "RTC.h"
 
 #define IRQHANDLERMaster(x) void irqHandler_##x()                             \
 {                                                                             \
@@ -111,6 +112,8 @@ void irqHandler_0()
 
     static uint32_t i = 0;
     bool isProcessChange;
+
+    RTC::increaseEpochNanoSec(KERNEL_TIMER_INTERVAL_MSEC * 1000 * 1000);
 
     /* EOI */
     outp8(0x20, 0x20);

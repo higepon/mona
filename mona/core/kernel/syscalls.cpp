@@ -905,6 +905,20 @@ void syscall_entrance()
                      : : "m"(flag): "eax");
         break;
     }
+    case SYSTEM_CALL_NOW_IN_NANOSEC:
+    {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+        n.u64 = RTC::epochNanoseconds();
+        *((uint32_t*)SYSTEM_CALL_ARG_1) = n.u32.l;
+        *((uint32_t*)SYSTEM_CALL_ARG_2) = n.u32.h;
+        break;
+    }
 
     default:
         g_console->printf("syscall:default");

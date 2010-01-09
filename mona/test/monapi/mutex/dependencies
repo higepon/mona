@@ -3,12 +3,12 @@ mutex.o: mutex.cpp /home/taro/mona/include/monapi.h \
   /home/taro/mona/include/monapi/Observer.h \
   /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
   /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/syscall.h \
   /home/taro/mona/include/monapi/Screen.h \
   /home/taro/mona/include/monapi/Server.h \
   /home/taro/mona/include/monapi/System.h \
   /home/taro/mona/include/monapi/Stream.h \
   /home/taro/mona/include/monapi/Mutex.h \
-  /home/taro/mona/include/monapi/syscall.h \
   /home/taro/mona/include/monapi/Assert.h \
   /home/taro/mona/include/monapi/Message.h \
   /home/taro/mona/include/monapi/messages.h \

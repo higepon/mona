@@ -327,8 +327,10 @@
 ;; (print "...")
 ;; (tstd)
 ;; (print "done")
+(call-process "/APPS/TMISC.EX5")
 (call-process "/APPS/TMUTEX.EX5")
 (call-process "/APPS/TCOND.EX5")
 (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5")
+
 (print "all tests done") ;; this is required by check_tests.scm
 ;(gui)

@@ -61,6 +61,7 @@ extern intptr_t syscall_semaphore_trydown(intptr_t id);
 extern intptr_t syscall_semaphore_down (intptr_t id );
 extern intptr_t syscall_semaphore_up(intptr_t id);
 extern intptr_t syscall_semaphore_destroy(intptr_t id);
+extern uint64_t syscall_now_in_nanosec();
 extern int syscall_get_vram_info(volatile ScreenInfo* info);
 extern int syscall_get_cursor(int* x, int* y);
 extern int syscall_set_cursor(int x, int y);
