@@ -29,11 +29,20 @@ enum {
     MONA_FAILURE = 0  /* don't change */
 };
 
+#ifndef __uint64_t_defined
+typedef unsigned long long	uint64_t;
+# define __uint64_t_defined
+#endif
+#ifndef __int64_t_defined
+typedef long long	int64_t;
+# define __int64_t_defined
+#endif
+
+
 
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
 typedef long int        intptr_t;
-typedef long long unsigned int uint64_t;
 # define __uintptr_t_defined
 #endif
 

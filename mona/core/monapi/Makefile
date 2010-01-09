@@ -45,11 +45,13 @@ SOURCES = monapi_impl.cpp \
           terminal/CommandCreator.cpp \
           terminal/CommandParser.cpp \
           terminal/Util.cpp \
-          text/Line.cpp 
+          text/Line.cpp
+CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c
+
 
 NASMSRCS = _alloca.asm
 
-OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)
+OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o) $(CSOURCES:.c=.o)
 #INCLUDE = -I$(INCDIR) -I. -I..
 INCLUDE = -I. -I.. -I$(INCDIR) -I$(INCDIR)/stlport/
 all : $(TARGET)
@@ -76,6 +78,10 @@ endif
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c -o $(<:.c=.o) $(CXXFLAGS) $(INCLUDE) $<
 
 
 
