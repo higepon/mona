@@ -69,14 +69,14 @@ uint64_t RTC::epochNanoSeconds()
     uint64_t days = 0;
     for (int i = 1970; i < date.year; i++) {
         days += 365;
-        if (isLeapYear(date.year)) {
+        if (isLeapYear(i)) {
             days++;
         }
     }
 
     for (int i = 0; i < date.month - 1; i++) {
         int daysInMonth= DAYS_IN_MONTH[i];
-        if (i == 1 && isLeapYear(date.year)) {
+        if (i == 1 && isLeapYear(i)) {
             daysInMonth++;
         }
         days += daysInMonth;
