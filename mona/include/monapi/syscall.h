@@ -44,6 +44,7 @@ extern int syscall_exist_message();
 extern int syscall_mthread_create(void (*f)(void));
 extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
 extern int syscall_mthread_kill(uint32_t id);
+extern uintptr_t syscall_mthread_self();
 extern intptr_t syscall_condition_create(cond_t* cond);
 extern intptr_t syscall_condition_destroy(cond_t* cond);
 extern intptr_t syscall_condition_notify_all(cond_t* cond);

@@ -161,7 +161,11 @@ void syscall_entrance()
         g_scheduler->Sleep(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         g_scheduler->SwitchToNext();
         break;
-
+    case SYSTEM_CALL_MTHREAD_SELF:
+    {
+        setReturnValue(info, g_currentThread->thread->id);
+        break;
+    }
     case SYSTEM_CALL_KILL:
         ThreadOperation::kill();
         g_scheduler->SwitchToNext();
@@ -214,7 +218,7 @@ void syscall_entrance()
         Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
         thread->tinfo->archinfo->ecx = arg;
         g_scheduler->Join(thread);
-        setReturnValue(info, g_id->allocateID(thread));
+        setReturnValue(info, thread->id);
         break;
     }
     case SYSTEM_CALL_MTHREAD_KILL:

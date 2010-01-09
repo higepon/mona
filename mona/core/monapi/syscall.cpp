@@ -168,15 +168,18 @@ int exit(int error)
     return syscall_kill();
 }
 
-int mthread_create(void (*f)(void)) {
+int mthread_create(void (*f)(void))
+{
     return syscall_mthread_create(f);
 }
 
-int mthread_create_with_arg(void __fastcall(*f)(void*), void* p) {
+int mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
+{
     return syscall_mthread_create_with_arg(f, p);
 }
 
-int mthread_kill(uint32_t id) {
+int mthread_kill(uint32_t id)
+{
     return syscall_mthread_kill(id);
 }
 
@@ -451,6 +454,11 @@ int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
 int syscall_mthread_kill(uint32_t id)
 {
     return syscall1(SYSTEM_CALL_MTHREAD_KILL, id);
+}
+
+uintptr_t syscall_mthread_self()
+{
+    return syscall0(SYSTEM_CALL_MTHREAD_SELF);
 }
 
 int syscall_sleep(uint32_t tick)

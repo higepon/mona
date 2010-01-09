@@ -14,9 +14,16 @@ void testDate()
     EXPECT_TRUE(diff < 130);
 }
 
+void testThreadSelf()
+{
+    uintptr_t self = syscall_mthread_self();
+    EXPECT_EQ(self, System::getThreadID());
+}
+
 int main(int argc, char *argv[])
 {
     testDate();
+    testThreadSelf();
 
     TEST_RESULTS(monapi_misc);
     return 0;
