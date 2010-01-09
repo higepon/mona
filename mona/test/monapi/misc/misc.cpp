@@ -4,7 +4,7 @@
 
 using namespace MonAPI;
 
-int main(int argc, char *argv[])
+void testDate()
 {
     uint64_t msec1 = Date::nowInMsec();
     sleep(100);
@@ -12,6 +12,11 @@ int main(int argc, char *argv[])
     uint64_t diff = msec2 - msec1;
     EXPECT_TRUE(diff > 70);
     EXPECT_TRUE(diff < 130);
+}
+
+int main(int argc, char *argv[])
+{
+    testDate();
 
     TEST_RESULTS(monapi_misc);
     return 0;
