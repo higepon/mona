@@ -2,9 +2,10 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET     = NET
-SOURCES    = main.cpp
+SOURCES    = main.cpp timer.cpp etherif.cpp
 CSOURCES   = \
 sys_arch.c \
+echo.c \
 lwip-1.3.1/src/core/stats.c \
 lwip-1.3.1/src/core/dhcp.c \
 lwip-1.3.1/src/core/dns.c \
