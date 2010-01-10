@@ -32,6 +32,8 @@
 
 using namespace MonAPI;
 
+unsigned char debug_flags;
+
 int main(int argc, char* argv[])
 {
     return 0;

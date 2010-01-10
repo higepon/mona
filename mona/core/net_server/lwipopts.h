@@ -32,8 +32,10 @@
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
 
+#define LWIP_PROVIDE_ERRNO 1
+
 /* <sys/time.h> is included in cc.h! */
-#define LWIP_TIMEVAL_PRIVATE 0
+#define LWIP_TIMEVAL_PRIVATE 1
 
 #define LWIP_DBG_MIN_LEVEL 0
 #define LWIP_COMPAT_SOCKETS 1

@@ -229,7 +229,7 @@ dns_timer(void *arg)
  *
  * @param arg unused argument
  */
-static void
+static __fastcall void
 tcpip_thread(void *arg)
 {
   struct tcpip_msg *msg;

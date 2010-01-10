@@ -207,7 +207,7 @@ sys_thread_new(char *name, void __fastcall (* function)(void *arg), void *arg, i
 
   if (NULL == st) {
     LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%x",
-                       code, (int)st));
+                       tmp, (int)st));
     abort();
   }
   return st;
