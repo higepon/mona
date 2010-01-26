@@ -53,6 +53,6 @@ include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
 check-syntax:
-	LANG=C $(CC) -o nul $(CFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
+	LANG=C $(CXX) -o nul $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
 
 -include dependencies

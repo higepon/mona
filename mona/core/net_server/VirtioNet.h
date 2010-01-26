@@ -427,6 +427,67 @@ public:
         }
         return true;
     }
+
+    bool receive(char* dst, unsigned int* len, int timeout_msec = 20)
+    {
+        // Wait a packet coming timeout_msec.
+        MessageInfo msg;
+        for (int i = 0; ; i++) {
+            //  We my lose some interruptions for a packet comming.
+            //  So check here.
+            if (readVring_->used->idx != lastUsedIndexRead_) {
+                break;
+            }
+            if (timeout_msec < 0) {
+                // timeout
+                return false;
+            }
+            int result = MonAPI::Message::peek(&msg, i);
+            if (result != 0) {
+                i--;
+                sleep(10);
+                timeout_msec -= 10;
+                continue;
+            } else if (msg.header == MSG_INTERRUPTED) {
+                MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+                inp8(baseAddress_ + VIRTIO_PCI_ISR);
+                monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+
+                if (readVring_->used->idx == lastUsedIndexRead_) {
+                    sleep(10);
+                    timeout_msec -= 10;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+//        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
+
+        const int index = lastUsedIndexRead_ % readVring_->num;
+        *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
+        uint32_t id = readVring_->used->ring[index].id;
+
+        // assume ring size = 5
+        ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
+        Ether::Frame* rframe = readFrames_[id / 2];
+        memcpy(dst, rframe, *len);
+        // current used buffer is no more necessary, give it back to tail of avail->ring
+        readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
+        // increment avail->idx, we should not take remainder of avail->idx ?
+//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, readVring_->avail->idx);
+        readVring_->avail->idx++;
+//    readVring_->avail->idx = (readVring_->avail->idx + 1) % readVring_->num;
+//    _logprintf("%s:%d\n", __FILE__, __LINE__);
+        lastUsedIndexRead_++;
+
+        if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
+            VIRT_LOG("NOTIFY");
+            outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+        }
+        return true;
+    }
+
 };
 
 
