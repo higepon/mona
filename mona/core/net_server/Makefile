@@ -41,7 +41,7 @@ lwip-1.3.1/src/core/ipv4/ip_frag.c
 
 
 INSTDIR    = $(BINDIR)/SERVERS
-ADDLINK    = -lmonalibc-imp --enable-auto-import
+ADDLINK    =  -lpci -lmonalibc-imp --enable-auto-import
 ADDCFLAGS  = -fpack-struct -DLWIP_DEBUG
 ADDINCLUDE = -I . -I lwip-1.3.1/src/include -I lwip-1.3.1/src/include/ipv4/
 

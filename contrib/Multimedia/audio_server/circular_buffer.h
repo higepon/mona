@@ -14,7 +14,7 @@ typedef struct _circular_buffer
 	int fi;
 	int ei;
 	char *p;
-	int mutex;
+	mutex_t mutex;
     int semaphore;
 } CB;
 

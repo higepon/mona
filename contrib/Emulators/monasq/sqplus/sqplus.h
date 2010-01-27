@@ -1943,6 +1943,7 @@ inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,int idx)         { int type 
 inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_STRING; }
 inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int idx)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
 inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
+inline bool	Match(TypeWrapper<intptr_t*>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
 inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx) { return true; } // See sq_getstackobj(): always returns true.
 
 inline void           Get(TypeWrapper<void>,HSQUIRRELVM v,int)                {}
@@ -1960,6 +1961,7 @@ inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,int idx)          { 
 inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
 inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,int idx)    { (void)v, (void)idx; return SquirrelNull();  }
 inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,int idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
+inline intptr_t *         Get(TypeWrapper<intptr_t*>,HSQUIRRELVM v,int idx)    { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return (intptr_t*)p; }
 inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
 inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
 
