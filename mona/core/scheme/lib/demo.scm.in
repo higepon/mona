@@ -1,7 +1,7 @@
 (define (on-gui-start)
   (as)
   (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
-  (start-process "/APPS/UIP.EX5")
+;  (start-process "/APPS/NET.EX5")
   (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
   (start-process "/APPS/BAYGUI/MINE.EX5")
   (start-process "/APPS/BAYGUI/GNOTE.EX5")

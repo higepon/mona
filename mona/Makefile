@@ -31,6 +31,7 @@ endif
 	cd core/monalibc && $(MAKE) && $(MAKE) install
 	cd core/monitor_server && $(MAKE) && $(MAKE) install
 	cd core/screen_server && $(MAKE) && $(MAKE) install
+	cd core/net_server && $(MAKE) && $(MAKE) install
 	cd core/keyboard_server && $(MAKE) && $(MAKE) install
 	cd core/mouse_server && $(MAKE) && $(MAKE) install
 	cd core/file_server && $(MAKE) && $(MAKE) install

@@ -111,6 +111,8 @@ main(int argc, char **argv)
 //  int ch;
   char ip_str[16] = {0}, nm_str[16] = {0}, gw_str[16] = {0};
 
+  syscall_get_io();
+
   /* startup defaults (may be overridden by one or more opts) */
   IP4_ADDR(&gw, 192,168,0,1);
   IP4_ADDR(&ipaddr, 192,168,0,2);
