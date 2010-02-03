@@ -34,18 +34,19 @@
 #include "ContigousPhysicalMemory.h"
 #include "Ether.h"
 #include "VirtioNet.h"
+#include "Util.h"
+#include "DHCPClient.h"
 
 #define IFNAME0 'e'
 #define IFNAME1 't'
 
 uintptr_t ContigousPhysicalMemory::startAddress = 0x9E000000;
-
+#define USE_QEMU_USER_NETWORK 1
 struct etherif {
     etherif()
     {
         lasttime = 0;
         virtioNet = new VirtioNet();
-
         const int numberOfReadBufferes = 5;
         enum VirtioNet::DeviceState state = virtioNet->probe(numberOfReadBufferes);
         if (state != VirtioNet::DEVICE_FOUND) {
@@ -150,27 +151,23 @@ err_t etherif_init(struct netif* netif)
 static struct pbuf* low_level_input(struct netif* netif)
 {
     struct pbuf *p, *q;
-    char buf[1514];
+//    char buf[1514];
+    char buf[1600]; // is this safe? Mona
     char *bufptr;
     struct etherif* etherif;
-
     etherif = (struct etherif*)netif->state;
-
     /* Obtain the size of the packet and put it into the "len"
        variable. */
     ASSERT(sizeof(buf) > sizeof(Ether::Frame));
     unsigned int readSzie = 0;
-
     // todo timeout
     if (!etherif->virtioNet->receive(buf, &readSzie)) {
-        printf("virtio receive timeout");
         return NULL;
     }
 //    snmp_add_ifinoctets(netif, readSzie);
 
     /* We allocate a pbuf chain of pbufs from the pool. */
     p = pbuf_alloc(PBUF_LINK, readSzie, PBUF_POOL);
-
     if (p != NULL) {
         /* We iterate over the pbuf chain until we have read the entire
            packet into the pbuf. */
@@ -209,11 +206,8 @@ static bool etherif_input(struct netif *netif)
     struct etherif* etherif = (struct etherif*)netif->state;
     struct eth_hdr *ethhdr;
     struct pbuf *p;
-
     p = low_level_input(netif);
-
     if (p != NULL) {
-
 #if LINK_STATS
         lwip_stats.link.recv++;
 #endif /* LINK_STATS */

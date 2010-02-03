@@ -281,27 +281,21 @@ public:
             return DEVICE_NOT_FOUND;
         }
         // Set up for interrution
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         readVring_ = createReadVring(numberOfReadBufferes);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (NULL == readVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         writeVring_ = createEmptyVring(VRING_TYPE_WRITE);
         if (NULL == writeVring_) {
             return DEVICE_ALREADY_CONFIGURED;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // this flags should be set before VIRTIO_PCI_QUEUE_PFN.
         writeVring_->avail->flags |= VRING_AVAIL_F_NO_INTERRUPT;
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc) >> 12);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //        waitInterrupt();
         // prepare the data to write
         // virtio_net_hdr is *necessary*
         struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (allocateAlignedPage());
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         hdr->flags = 0;
         hdr->csum_offset = 0;
         hdr->csum_start = 0;
@@ -311,7 +305,6 @@ public:
         writeVring_->desc[0].flags  |= VRING_DESC_F_NEXT;
         writeVring_->desc[0].addr = syscall_get_physical_address((uintptr_t)hdr);
         writeVring_->desc[0].len = sizeof(struct virtio_net_hdr);
-
         writeFrame_ = (Ether::Frame*)(allocateAlignedPage());
         writeVring_->desc[1].flags = 0; // no next
         writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_);
@@ -319,7 +312,6 @@ public:
         lastUsedIndexWrite_ = writeVring_->used->idx;
         monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
         syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
-
         return DEVICE_FOUND;
     }
 
@@ -351,16 +343,13 @@ public:
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
-//            _logprintf("Waiting previous packet is send\n");
         }
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);
         writeVring_->desc[1].len = len; // todo
         writeVring_->avail->ring[writeVring_->avail->idx % writeVring_->num] = 0; // desc[0] -> desc[1] is used for buffer
-//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, writeVring_->avail->idx);
 
         writeVring_->avail->idx++;
-//    _logprintf("%s:%d\n", __FILE__, __LINE__);
 
         // Before notify, save the lastUsedIndexWrite_
         lastUsedIndexWrite_ = writeVring_->used->idx + 1;
@@ -402,7 +391,6 @@ public:
                 }
             }
         }
-//        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
 
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
@@ -415,10 +403,8 @@ public:
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
-//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, readVring_->avail->idx);
         readVring_->avail->idx++;
 //    readVring_->avail->idx = (readVring_->avail->idx + 1) % readVring_->num;
-//    _logprintf("%s:%d\n", __FILE__, __LINE__);
         lastUsedIndexRead_++;
 
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
@@ -460,6 +446,7 @@ public:
                 } else {
                     break;
                 }
+
             }
         }
 //        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
@@ -467,7 +454,6 @@ public:
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
         uint32_t id = readVring_->used->ring[index].id;
-
         // assume ring size = 5
         ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         Ether::Frame* rframe = readFrames_[id / 2];
@@ -480,7 +466,6 @@ public:
 //    readVring_->avail->idx = (readVring_->avail->idx + 1) % readVring_->num;
 //    _logprintf("%s:%d\n", __FILE__, __LINE__);
         lastUsedIndexRead_++;
-
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
             VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);

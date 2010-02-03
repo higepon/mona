@@ -569,14 +569,16 @@ tcp_slowtmr(void)
   err = ERR_OK;
 
   ++tcp_ticks;
-
+  _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* Steps through all of the active PCBs. */
   prev = NULL;
   pcb = tcp_active_pcbs;
   if (pcb == NULL) {
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: no active pcbs\n"));
   }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   while (pcb != NULL) {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: processing active pcb\n"));
     LWIP_ASSERT("tcp_slowtmr: active pcb->state != CLOSED\n", pcb->state != CLOSED);
     LWIP_ASSERT("tcp_slowtmr: active pcb->state != LISTEN\n", pcb->state != LISTEN);
@@ -640,6 +642,7 @@ tcp_slowtmr(void)
         }
       }
     }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* Check if this PCB has stayed too long in FIN-WAIT-2 */
     if (pcb->state == FIN_WAIT_2) {
       if ((u32_t)(tcp_ticks - pcb->tmr) >
@@ -648,7 +651,7 @@ tcp_slowtmr(void)
         LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: removing pcb stuck in FIN-WAIT-2\n"));
       }
     }
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* Check if KEEPALIVE should be sent */
     if((pcb->so_options & SOF_KEEPALIVE) && 
        ((pcb->state == ESTABLISHED) || 
@@ -711,7 +714,7 @@ tcp_slowtmr(void)
         LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: removing pcb stuck in LAST-ACK\n"));
       }
     }
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* If the PCB should be removed, do it. */
     if (pcb_remove) {
       tcp_pcb_purge(pcb);      
@@ -729,9 +732,10 @@ tcp_slowtmr(void)
 
       pcb2 = pcb->next;
       memp_free(MEMP_TCP_PCB, pcb);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       pcb = pcb2;
     } else {
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /* We check if we should poll the connection. */
       ++pcb->polltmr;
       if (pcb->polltmr >= pcb->pollinterval) {

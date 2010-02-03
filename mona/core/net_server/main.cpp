@@ -110,7 +110,7 @@ main(int argc, char **argv)
   struct in_addr inaddr;
 //  int ch;
   char ip_str[16] = {0}, nm_str[16] = {0}, gw_str[16] = {0};
-
+//  DebuggerService::breakpoint();
   syscall_get_io();
 
   /* startup defaults (may be overridden by one or more opts) */
@@ -233,7 +233,6 @@ main(int argc, char **argv)
         /* ... end critical section */
 //          sigprocmask(SIG_SETMASK, &oldmask, NULL);
       }
-
       if(timer_testclr_evt(TIMER_EVT_TCPFASTTMR))
       {
         tcp_fasttmr();

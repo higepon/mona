@@ -157,7 +157,6 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_MTHREAD_SLEEP:
-
         g_scheduler->Sleep(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         g_scheduler->SwitchToNext();
         break;

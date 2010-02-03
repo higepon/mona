@@ -52,26 +52,28 @@ static struct itmr timers[TIMER_NUM];
 
 static void __fastcall timerThread(void* arg)
 {
+//    _printf("timer started");
     int intervalMsec = (int)arg;
-    sleep(intervalMsec);
+    while(true) {
+        sleep(intervalMsec);
 
 //    snmp_inc_sysuptime();
 
-    struct itmr* tp = &timers[TIMER_NUM - 1];
-    for(unsigned char i = TIMER_NUM; i > 0; i--) {
-        if (tp->interval != 0) {
-            /* timer is running */
-            if (tp->cnt == 0) {
-                /* timer expired */
-                tp->event |= 1;
-            } else {
-                /* timer ticking */
-                tp->cnt--;
+        struct itmr* tp = &timers[TIMER_NUM - 1];
+        for(unsigned char i = TIMER_NUM; i > 0; i--) {
+            if (tp->interval != 0) {
+                /* timer is running */
+                if (tp->cnt == 0) {
+                    /* timer expired */
+                    tp->event |= 1;
+                } else {
+                    /* timer ticking */
+                    tp->cnt--;
+                }
             }
+            tp--;
         }
-        tp--;
     }
-
 }
 
 
