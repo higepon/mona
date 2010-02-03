@@ -173,9 +173,10 @@ int mthread_create(void (*f)(void))
     return syscall_mthread_create(f);
 }
 
-int mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
+
+int mthread_create_with_arg(void __fastcall(*f)(void*), void* arg)
 {
-    return syscall_mthread_create_with_arg(f, p);
+    return syscall_mthread_create_with_arg(f, arg);
 }
 
 int mthread_kill(uint32_t id)
@@ -446,9 +447,28 @@ int syscall_mthread_create(void (*f)(void))
     return syscall2(SYSTEM_CALL_MTHREAD_CREATE, (uint32_t)f, 0);
 }
 
-int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
+typedef struct st_thread_entry
 {
-    return syscall2(SYSTEM_CALL_MTHREAD_CREATE, (intptr_t)f, (intptr_t)p);
+    void __fastcall(*func)(void*);
+    void* arg;
+};
+
+
+static void __fastcall thread_entry(void* arg)
+{
+    st_thread_entry* entry = (st_thread_entry*)arg;
+    (*(entry->func))(entry->arg);
+    _printf("\n\n************************************ thread exited"); // for debug.
+    delete entry;
+    exit(0);
+}
+
+int syscall_mthread_create_with_arg(void __fastcall(*func)(void*), void* arg)
+{
+    st_thread_entry* entry = new st_thread_entry;
+    entry->func = func;
+    entry->arg = arg;
+    return syscall2(SYSTEM_CALL_MTHREAD_CREATE, (intptr_t)thread_entry, (intptr_t)entry);
 }
 
 int syscall_mthread_kill(uint32_t id)
