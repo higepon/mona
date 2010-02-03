@@ -52,12 +52,12 @@ typedef signed     long    s32_t;
 typedef u32_t mem_ptr_t;
 
 /* Define (sn)printf formatters for these lwIP types */
-#define U16_F "hu"
-#define S16_F "hd"
-#define X16_F "hx"
-#define U32_F "lu"
-#define S32_F "ld"
-#define X32_F "lx"
+#define U16_F "d"
+#define S16_F "d"
+#define X16_F "x"
+#define U32_F "x"
+#define S32_F "x"
+#define X32_F "x"
 
 /* Compiler hints for packing structures */
 #define PACK_STRUCT_FIELD(x) x
