@@ -114,8 +114,11 @@ main(int argc, char **argv)
   syscall_get_io();
 
   /* startup defaults (may be overridden by one or more opts) */
-  IP4_ADDR(&gw, 192,168,0,1);
-  IP4_ADDR(&ipaddr, 192,168,0,2);
+//   IP4_ADDR(&gw, 192,168,0,1);
+//   IP4_ADDR(&ipaddr, 192,168,0,2);
+//   IP4_ADDR(&netmask, 255,255,255,0);
+  ipaddr.addr = 0x0F02000A;
+  gw.addr = 0x0202000A;
   IP4_ADDR(&netmask, 255,255,255,0);
 
   trap_flag = 0;

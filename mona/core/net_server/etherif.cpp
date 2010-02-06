@@ -63,6 +63,7 @@ struct etherif {
         _printf("[uIP] DHCP server not found. exit server\n");
         exit(-1);
     }
+    _printf("host=%x gw=%x\n", hostAddress, gatewayAddress);
 #endif
     }
 
