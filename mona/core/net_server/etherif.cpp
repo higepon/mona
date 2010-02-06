@@ -40,31 +40,10 @@
 #define IFNAME0 'e'
 #define IFNAME1 't'
 
-uintptr_t ContigousPhysicalMemory::startAddress = 0x9E000000;
-#define USE_QEMU_USER_NETWORK 1
+extern VirtioNet* g_virtioNet;
 struct etherif {
-    etherif()
+    etherif() : lasttime(0), virtioNet(g_virtioNet)
     {
-        lasttime = 0;
-        virtioNet = new VirtioNet();
-        const int numberOfReadBufferes = 5;
-        enum VirtioNet::DeviceState state = virtioNet->probe(numberOfReadBufferes);
-        if (state != VirtioNet::DEVICE_FOUND) {
-            _printf("[virtio] virtio-net device not found\n");
-            exit(-1);
-        }
-// qemu -net user mode:
-//   we send DHCP request to QEMU and get an ip address.
-#ifdef USE_QEMU_USER_NETWORK
-    DHCPClient dhcp(virtioNet, virtioNet->macAddress());;
-    uint32_t hostAddress = 0;
-    uint32_t gatewayAddress = 0;
-    if (!dhcp.request(hostAddress, gatewayAddress)) {
-        _printf("[uIP] DHCP server not found. exit server\n");
-        exit(-1);
-    }
-    _printf("host=%x gw=%x\n", hostAddress, gatewayAddress);
-#endif
     }
 
     ~etherif()

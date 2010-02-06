@@ -52,6 +52,12 @@ using namespace MonAPI;
 
 #include "timer.h"
 //#include <signal.h>
+#include <monapi.h>
+#include "ContigousPhysicalMemory.h"
+#include "Ether.h"
+#include "VirtioNet.h"
+#include "Util.h"
+#include "DHCPClient.h"
 
 #include "echo.h"
 //#include "private_mib.h"
@@ -103,28 +109,52 @@ u8_t snmpauthentraps_set = 2;
 //   }
 // }
 
-int
-main(int argc, char **argv)
+uintptr_t ContigousPhysicalMemory::startAddress = 0x9E000000;
+#define USE_QEMU_USER_NETWORK 1
+
+VirtioNet* g_virtioNet = NULL;
+void init_virtio(uint32_t& hostAddress, uint32_t& gatewayAddress)
+{
+  syscall_get_io();
+
+  g_virtioNet = new VirtioNet();
+  const int numberOfReadBufferes = 5;
+  enum VirtioNet::DeviceState state = g_virtioNet->probe(numberOfReadBufferes);
+  if (state != VirtioNet::DEVICE_FOUND) {
+      _printf("[virtio] virtio-net device not found\n");
+      exit(-1);
+  }
+// qemu -net user mode:
+//   we send DHCP request to QEMU and get an ip address.
+#ifdef USE_QEMU_USER_NETWORK
+    DHCPClient dhcp(g_virtioNet, g_virtioNet->macAddress());;
+    if (!dhcp.request(hostAddress, gatewayAddress)) {
+        _printf("[uIP] DHCP server not found. exit server\n");
+        exit(-1);
+    }
+#endif
+}
+
+int main(int argc, char **argv)
 {
   struct netif netif;
   struct in_addr inaddr;
 //  int ch;
   char ip_str[16] = {0}, nm_str[16] = {0}, gw_str[16] = {0};
 //  DebuggerService::breakpoint();
-  syscall_get_io();
 
-  /* startup defaults (may be overridden by one or more opts) */
-//   IP4_ADDR(&gw, 192,168,0,1);
-//   IP4_ADDR(&ipaddr, 192,168,0,2);
-//   IP4_ADDR(&netmask, 255,255,255,0);
-  ipaddr.addr = 0x0F02000A;
-  gw.addr = 0x0202000A;
+  uint32_t hostAddress = 0;
+  uint32_t gatewayAddress = 0;
+  init_virtio(hostAddress, gatewayAddress);
+
+  ipaddr.addr = hostAddress;
+  gw.addr = gatewayAddress;
   IP4_ADDR(&netmask, 255,255,255,0);
 
   trap_flag = 0;
   /* use debug flags defined by debug.h */
-//  debug_flags = LWIP_DBG_OFF;
-  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
+  debug_flags = LWIP_DBG_OFF;
+//  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
 
 //   while ((ch = getopt_long(argc, argv, "dhg:i:m:t:", longopts, NULL)) != -1) {
 //     switch (ch) {
