@@ -169,46 +169,6 @@ int main(int argc, char **argv)
   debug_flags |= (LWIP_DBG_ON|SOCKETS_DEBUG);
 //  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
 
-//   while ((ch = getopt_long(argc, argv, "dhg:i:m:t:", longopts, NULL)) != -1) {
-//     switch (ch) {
-//       case 'd':
-//         debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
-//         break;
-//       case 'h':
-//         usage();
-//         exit(0);
-//         break;
-//       case 'g':
-//         inet_aton(optarg, &inaddr);
-//         gw.addr = inaddr.s_addr;
-//         break;
-//       case 'i':
-//         inet_aton(optarg, &inaddr);
-//         ipaddr.addr = inaddr.s_addr;
-//         break;
-//       case 'm':
-//         inet_aton(optarg, &inaddr);
-//         netmask.addr = inaddr.s_addr;
-//         break;
-//       case 't':
-//         trap_flag = !0;
-//         /* @todo: remove this authentraps tweak
-//           when we have proper SET & non-volatile mem */
-//         snmpauthentraps_set = 1;
-//         inet_aton(optarg, &inaddr);
-//         /* lwip inet.h oddity workaround */
-//         trap_addr.addr = inaddr.s_addr;
-//         strncpy(ip_str,inet_ntoa(inaddr),sizeof(ip_str));
-//         printf("SNMP trap destination %s\n", ip_str);
-//         break;
-//       default:
-//         usage();
-//         break;
-//     }
-//   }
-//   argc -= optind;
-//   argv += optind;
-
   inaddr.s_addr = ipaddr.addr;
   strncpy(ip_str,inet_ntoa(inaddr),sizeof(ip_str));
   inaddr.s_addr = netmask.addr;
@@ -223,12 +183,13 @@ int main(int argc, char **argv)
 #endif /* PERF */
 
 
+  // for multi thread
   sys_sem_t sem = sys_sem_new(0);
   tcpip_init(tcpip_init_done, &sem);
   sys_sem_wait(sem);
   sys_sem_free(sem);
 
-
+  // for single thread
   //lwip_init();
 
   printf("TCP/IP initialized.\n");

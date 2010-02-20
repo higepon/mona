@@ -232,9 +232,9 @@ dns_timer(void *arg)
 static __fastcall void
 tcpip_thread(void *arg)
 {
+    syscall_get_io();
   struct tcpip_msg *msg;
   LWIP_UNUSED_ARG(arg);
-
 #if IP_REASSEMBLY
   sys_timeout(IP_TMR_INTERVAL, ip_reass_timer, NULL);
 #endif /* IP_REASSEMBLY */
@@ -258,7 +258,6 @@ tcpip_thread(void *arg)
   if (tcpip_init_done != NULL) {
     tcpip_init_done(tcpip_init_done_arg);
   }
-
   LOCK_TCPIP_CORE();
   while (1) {                          /* MAIN Loop */
     sys_mbox_fetch(mbox, (void *)&msg);

@@ -218,8 +218,8 @@ sockex_testrecv(void *arg)
   logprintf("higehigehige");
   while((read_size = recv(sock, buf, 127, 0)) > 0){
     logprintf("<1>");
-    for (i = 0; i < 10; i++) {
-      logprintf("<%c>", buf[i]);
+    for (i = 0; i < read_size; i++) {
+      logprintf("%c", buf[i]);
     }
   }
   logprintf("hige=%d\n", read_size);
