@@ -19,6 +19,10 @@
      (gdb) target remote localhost:43770
   5. GDB will break on your first DebuggerService::breakpointI().
 
+* DLL
+  If you want to debug DLL. use "dll-symbols ~/mona/core/monapi/MONAPI.DLL".
+    
+
 * Emacs
   M-x gdb then type wine ~/.wine/drive_c/MinGW/bin/gdb.exe --annotate=3 /path_to/YOUR.EXE
   
