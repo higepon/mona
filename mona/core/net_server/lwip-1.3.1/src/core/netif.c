@@ -590,6 +590,7 @@ netif_loop_output(struct netif *netif, struct pbuf *p,
 void
 netif_poll(struct netif *netif)
 {
+  _printf("<%s>", __func__);
   struct pbuf *in;
   SYS_ARCH_DECL_PROTECT(lev);
 

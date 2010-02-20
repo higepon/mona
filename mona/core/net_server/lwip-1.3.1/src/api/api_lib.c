@@ -298,6 +298,7 @@ netconn_recv(struct netconn *conn)
   u16_t len;
 
   LWIP_ERROR("netconn_recv: invalid conn",  (conn != NULL), return NULL;);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
   if (conn->recvmbox == SYS_MBOX_NULL) {
     /* @todo: should calling netconn_recv on a TCP listen conn be fatal (ERR_CONN)?? */
@@ -305,10 +306,12 @@ netconn_recv(struct netconn *conn)
     conn->err = ERR_CONN;
     return NULL;
   }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
   if (ERR_IS_FATAL(conn->err)) {
     return NULL;
   }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
   if (conn->type == NETCONN_TCP) {
 #if LWIP_TCP
@@ -317,6 +320,7 @@ netconn_recv(struct netconn *conn)
       conn->err = ERR_CONN;
       return NULL;
     }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     buf = memp_malloc(MEMP_NETBUF);
 
@@ -324,13 +328,18 @@ netconn_recv(struct netconn *conn)
       conn->err = ERR_MEM;
       return NULL;
     }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 #if LWIP_SO_RCVTIMEO
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     if (sys_arch_mbox_fetch(conn->recvmbox, (void *)&p, conn->recv_timeout)==SYS_ARCH_TIMEOUT) {
       conn->err = ERR_TIMEOUT;
       p = NULL;
     }
 #else
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     sys_arch_mbox_fetch(conn->recvmbox, (void *)&p, 0);
 #endif /* LWIP_SO_RCVTIMEO*/
 
@@ -340,9 +349,11 @@ netconn_recv(struct netconn *conn)
     } else {
       len = 0;
     }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     /* Register event with callback */
     API_EVENT(conn, NETCONN_EVT_RCVMINUS, len);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     /* If we are closed, we indicate that we no longer wish to use the socket */
     if (p == NULL) {
@@ -353,11 +364,13 @@ netconn_recv(struct netconn *conn)
       }
       return NULL;
     }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     buf->p = p;
     buf->ptr = p;
     buf->port = 0;
     buf->addr = NULL;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     /* Let the stack know that we have taken the data. */
     msg.function = do_recv;

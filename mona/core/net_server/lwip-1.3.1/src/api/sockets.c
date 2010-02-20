@@ -505,7 +505,7 @@ lwip_recvfrom(int s, void *mem, size_t len, int flags,
         sock_set_errno(sock, EWOULDBLOCK);
         return -1;
       }
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /* No data was left from the previous operation, so we try to get
       some from the network. */
       sock->lastdata = buf = netconn_recv(sock->conn);

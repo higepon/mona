@@ -33,6 +33,8 @@
 using namespace MonAPI;
 
 #include "lwip/init.h"
+#include "lwip/tcpip.h"
+
 
 #include "lwip/debug.h"
 
@@ -60,6 +62,9 @@ using namespace MonAPI;
 #include "DHCPClient.h"
 
 #include "echo.h"
+extern "C" {
+#include "shell.h"
+};
 //#include "private_mib.h"
 
 /* (manual) host IP configuration */
@@ -135,6 +140,13 @@ void init_virtio(uint32_t& hostAddress, uint32_t& gatewayAddress)
 #endif
 }
 
+static void tcpip_init_done(void* arg)
+{
+    sys_sem_t *sem = (sys_sem_t*)arg;
+    sys_sem_signal(*sem);
+}
+
+
 int main(int argc, char **argv)
 {
   struct netif netif;
@@ -153,7 +165,8 @@ int main(int argc, char **argv)
 
   trap_flag = 0;
   /* use debug flags defined by debug.h */
-  debug_flags = LWIP_DBG_OFF;
+//  debug_flags = LWIP_DBG_OFF;
+  debug_flags |= (LWIP_DBG_ON|SOCKETS_DEBUG);
 //  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
 
 //   while ((ch = getopt_long(argc, argv, "dhg:i:m:t:", longopts, NULL)) != -1) {
@@ -209,7 +222,14 @@ int main(int argc, char **argv)
   perf_init("/tmp/minimal.perf");
 #endif /* PERF */
 
-  lwip_init();
+
+  sys_sem_t sem = sys_sem_new(0);
+  tcpip_init(tcpip_init_done, &sem);
+  sys_sem_wait(sem);
+  sys_sem_free(sem);
+
+
+  //lwip_init();
 
   printf("TCP/IP initialized.\n");
 
@@ -230,6 +250,7 @@ int main(int argc, char **argv)
 //   snmp_init();
 
   echo_init();
+  socket_examples_init();
 
   timer_init();
   timer_set_interval(TIMER_EVT_ETHARPTMR,2000);

@@ -33,6 +33,7 @@
 #define MONA_VIRTIO_NET_
 
 #include "virtio.h"
+#include "IP.h"
 #include <monapi/io.h>
 #include <pci/Pci.h>
 
@@ -323,6 +324,9 @@ public:
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
         }
+        IP::Header* ipHeader = (IP::Header*)(buf);
+        logprintf("send:ip packet %d %x\n", ipHeader->tos, ipHeader->dstip);
+
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, buf, len);
         writeVring_->desc[1].len = len; // todo
@@ -458,6 +462,9 @@ public:
         ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
+
+        IP::Header* ipHeader = (IP::Header*)(rframe->data);
+        logprintf("ip packet %d %x\n", ipHeader->tos, ipHeader->srcip);
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
