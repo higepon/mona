@@ -147,6 +147,18 @@ class Process
 
     uint32_t getStackBottom(Thread* thread);
 
+    inline int getThreadIndex(Thread* thread)
+    {
+        for (int i = 0; i < threadList_->size(); i++)
+        {
+            if (threadList_->get(i) == thread) {
+                return i;
+            }
+        }
+        ASSERT(false);
+        return -1;
+    }
+
     inline virtual const char* getName() const
     {
         return name_;

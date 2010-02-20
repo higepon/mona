@@ -153,7 +153,7 @@ int main(int argc, char **argv)
   struct in_addr inaddr;
 //  int ch;
   char ip_str[16] = {0}, nm_str[16] = {0}, gw_str[16] = {0};
-  DebuggerService::breakpoint();
+//  DebuggerService::breakpoint();
 
   uint32_t hostAddress = 0;
   uint32_t gatewayAddress = 0;

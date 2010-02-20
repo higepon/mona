@@ -156,7 +156,8 @@ static void terminateCurrentThread(const char* reason)
 {
     Process* current = g_currentThread->process;
 
-    g_console->printf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
+    g_console->printf("%s : Process killed %s thread-index=%d eip=%x\n", reason, current->getName(),
+                      g_currentThread->process->getThreadIndex(g_currentThread->thread), g_currentThread->archinfo->eip);
     logprintf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
 
     ThreadOperation::kill();
@@ -277,7 +278,7 @@ extern "C" void generalProtectionHandler(uintptr_t error)
     const int IDT_ERROR = 2;
     g_console->printf(__func__);
     const char* processName = g_currentThread->process->getName();
-    g_console->printf("\n%s:", processName);
+    g_console->printf("\n%s thread-index=%d:", processName, g_currentThread->process->getThreadIndex(g_currentThread->thread));
 
     // See Intel's manual "Interruption and exception".
     if (error & IDT_ERROR) {
