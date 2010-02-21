@@ -194,7 +194,8 @@ int main(int argc, char **argv)
 
   printf("TCP/IP initialized.\n");
 
-  netif_add(&netif, &ipaddr, &netmask, &gw, NULL, etherif_init, ip_input);
+//  netif_add(&netif, &ipaddr, &netmask, &gw, NULL, etherif_init, ip_input);
+  netif_add(&netif, &ipaddr, &netmask, &gw, NULL, etherif_init, tcpip_input);
   netif_set_default(&netif);
   netif_set_up(&netif);
 

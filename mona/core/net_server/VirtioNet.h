@@ -464,7 +464,7 @@ public:
         memcpy(dst, rframe, *len);
 
         IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("ip packet %d %x\n", ipHeader->tos, ipHeader->srcip);
+        logprintf("receive:ip packet %d %x\n", ipHeader->tos, ipHeader->srcip);
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?

@@ -203,8 +203,8 @@ sockex_testrecv(void *arg)
   
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = inet_addr("192.168.1.12");
-  addr.sin_port = htons(4649);
+  addr.sin_addr.s_addr = inet_addr("192.168.1.13");
+  addr.sin_port = htons(80);
   
   if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
     logprintf("could not connect to remote host¥n");
@@ -216,12 +216,13 @@ sockex_testrecv(void *arg)
     exit(EXIT_FAILURE);
   }
   logprintf("higehigehige");
-  while((read_size = recv(sock, buf, 127, 0)) > 0){
-    logprintf("<1>");
+  int readSize = recv(sock, buf, 127, 0);
+  do {
+    logprintf("readSize=%d\n");
     for (i = 0; i < read_size; i++) {
       logprintf("%c", buf[i]);
     }
-  }
+  } while ((readSize = recv(sock, buf, 127, 0)) > 0);
   logprintf("hige=%d\n", read_size);
 
   
