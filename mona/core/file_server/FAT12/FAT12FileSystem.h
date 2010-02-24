@@ -18,7 +18,7 @@ public:
     virtual int initialize();
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type);
     virtual int open(Vnode* file, int mode);
-    virtual int create(Vnode* file, const std::string& file);
+    virtual int create(Vnode* dir, const std::string& file);
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
     virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
