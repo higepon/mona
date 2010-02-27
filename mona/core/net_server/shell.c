@@ -184,6 +184,7 @@ sockex_nonblocking_connect(void *arg)
 
 /** This is an example function that tests
     the recv function (timeout etc.). */
+#include "lwip/netdb.h"
 
 #define BUF_SIZE 256
 static void
@@ -191,26 +192,53 @@ sockex_testrecv(void *arg)
 {
   int sock;
   struct sockaddr_in addr;
-  char *request = "GET / HTTP/1.0\r\n\r\n";
+  char *request = "GET / HTTP/1.1\r\nHost: www.monaos.org\r\n\r\n";
   char buf[BUF_SIZE];
   int read_size;
   int i;
-  
-  if((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
-    fprintf(stderr, "could not create socket¥n");
-    exit(EXIT_FAILURE);
+  struct addrinfo hints;
+  struct addrinfo *res;
+  struct addrinfo *rp;
+  int err;
+
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_family = AF_INET;
+
+  if ((err = getaddrinfo("www.monaos.org", "80", &hints, &res)) != 0) {
+    logprintf("error %d\n", err);
+    return;
   }
-  
-  memset(&addr, 0, sizeof(addr));
-  addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = inet_addr("72.14.203.104");
-  addr.sin_port = htons(80);
-  
-  if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
-    logprintf("could not connect to remote host¥n");
-    exit(EXIT_FAILURE);
-  }
-  
+
+  for (rp = res; rp != NULL; rp = rp->ai_next) {
+    sock = socket(rp->ai_family, rp->ai_socktype,
+                     rp->ai_protocol);
+
+    if (sock == -1) {
+      logprintf("socket error");
+      exit(-1);
+    }
+
+    if (connect(sock, rp->ai_addr, rp->ai_addrlen) != 0) {
+      logprintf("connect error");
+      exit(-1);
+
+    }
+
+
+/*   memset(&addr, 0, sizeof(addr)); */
+/*   addr.sin_family = AF_INET; */
+/*   //  addr.sin_addr.s_addr = inet_addr("72.14.203.104"); */
+/*   addr.sin_addr.s_addr = ((struct sockaddr_in *)(res->ai_addr))->sin_addr; */
+
+/*   addr.sin_port = htons(80); */
+
+/*   if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){ */
+/*     logprintf("could not connect to remote host¥n"); */
+/*     exit(EXIT_FAILURE); */
+/*   } */
+
   if(send(sock, request, strlen(request), 0) < 0){
     logprintf("could not send message : %s¥n", request);
     exit(EXIT_FAILURE);
@@ -225,9 +253,9 @@ sockex_testrecv(void *arg)
   } while ((readSize = recv(sock, buf, 127, 0)) > 0);
   logprintf("hige=%d\n", read_size);
 
-  
+
   close(sock);
-  
+  }
   exit(EXIT_SUCCESS);
 }
 

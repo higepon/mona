@@ -35,6 +35,8 @@
 #define LWIP_PROVIDE_ERRNO 1
 
 /* <sys/time.h> is included in cc.h! */
+#define LWIP_DNS                        1
+
 #define LWIP_TIMEVAL_PRIVATE 1
 
 #define LWIP_DBG_MIN_LEVEL 0
@@ -112,7 +114,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define MEMP_NUM_TCP_SEG        16
 /* MEMP_NUM_SYS_TIMEOUT: the number of simulateously active
    timeouts. */
-#define MEMP_NUM_SYS_TIMEOUT    3
+#define MEMP_NUM_SYS_TIMEOUT    8
 
 /* The following four are used only with the sequential API and can be
    set to 0 if the application only will use the raw API. */
