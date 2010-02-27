@@ -259,10 +259,67 @@ sockex_testrecv(void *arg)
   exit(EXIT_SUCCESS);
 }
 
+static void post_twitter()
+{
+    int sock;
+    char buf[1034];
+    int i;
+    struct addrinfo hints;
+    struct addrinfo *res;
+    struct addrinfo *rp;
+    int err;
+    char reqbuf[1024];
+
+    const char* message = "status=Yay! Hello, World!. Tweet from Mona OS 0.4.0";
+    const char* base64 = "";
+    sprintf(reqbuf, "POST /1/statuses/update.xml HTTP/1.1\r\nHost: api.twitter.com\r\nAuthorization: Basic %s\r\nContent-Length: %d\r\n\r\n%s\r\n",
+            base64, strlen(message), message);
+
+    printf(reqbuf);
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_INET;
+
+    if ((err = getaddrinfo("api.twitter.com", "80", &hints, &res)) != 0) {
+        printf("error %d\n", err);
+        return -1;
+    }
+
+    for (rp = res; rp != NULL; rp = rp->ai_next) {
+        sock = socket(rp->ai_family, rp->ai_socktype,
+                      rp->ai_protocol);
+
+        if (sock == -1) {
+            printf("socket error");
+            exit(-1);
+        }
+
+        if (connect(sock, rp->ai_addr, rp->ai_addrlen) != 0) {
+            printf("connect error");
+            exit(-1);
+
+        }
+
+        if(send(sock, reqbuf, strlen(reqbuf), 0) < 0){
+            printf("could not send message : %s¥n", reqbuf);
+            exit(EXIT_FAILURE);
+        }
+        int readSize = recv(sock, buf, 127, 0);
+        do {
+            for (i = 0; i < readSize; i++) {
+                printf("%c", buf[i]);
+            }
+        } while ((readSize = recv(sock, buf, 127, 0)) > 0);
+
+    }
+    exit(EXIT_SUCCESS);
+}
+
 void socket_examples_init(void)
 {
   //  sys_thread_new("sockex_nonblocking_connect", sockex_nonblocking_connect, NULL, 0, 0);
-  sys_thread_new("sockex_testrecv", sockex_testrecv, NULL, 0, 0);
+  sys_thread_new("sockex_testrecv", post_twitter, NULL, 0, 0);
 }
 
 #endif /* LWIP_SOCKETS */
