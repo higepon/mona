@@ -270,7 +270,6 @@ tcpip_thread(void *arg)
 #endif /* LWIP_NETCONN */
 
     case TCPIP_MSG_INPKT:
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: PACKET %p\n", (void *)msg));
 #if LWIP_ARP
       if (msg->msg.inp.netif->flags & NETIF_FLAG_ETHARP) {
@@ -323,26 +322,22 @@ err_t
 tcpip_input(struct pbuf *p, struct netif *inp)
 {
   struct tcpip_msg *msg;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
   if (mbox != SYS_MBOX_NULL) {
     msg = memp_malloc(MEMP_TCPIP_MSG_INPKT);
     if (msg == NULL) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       return ERR_MEM;
     }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     msg->type = TCPIP_MSG_INPKT;
     msg->msg.inp.p = p;
     msg->msg.inp.netif = inp;
     if (sys_mbox_trypost(mbox, msg) != ERR_OK) {
       memp_free(MEMP_TCPIP_MSG_INPKT, msg);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       return ERR_MEM;
     }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return ERR_OK;
   }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   return ERR_VAL;
 }
 

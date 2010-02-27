@@ -467,9 +467,9 @@ public:
 
         IP::Header* ipHeader = (IP::Header*)(rframe->data);
         logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
-        for (int i = 0; i < *len; i++) {
-            logprintf("[%c]", dst[i]);
-        }
+//         for (int i = 0; i < *len; i++) {
+//             _printf("[%c]", dst[i]);
+//         }
 
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;

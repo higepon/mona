@@ -165,8 +165,8 @@ int main(int argc, char **argv)
 
   trap_flag = 0;
   /* use debug flags defined by debug.h */
-//  debug_flags = LWIP_DBG_OFF;
-  debug_flags |= (LWIP_DBG_ON|SOCKETS_DEBUG|API_MSG_DEBUG);
+  debug_flags = LWIP_DBG_OFF;
+//  debug_flags |= (LWIP_DBG_ON|SOCKETS_DEBUG|API_MSG_DEBUG);
 //  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
 
   inaddr.s_addr = ipaddr.addr;

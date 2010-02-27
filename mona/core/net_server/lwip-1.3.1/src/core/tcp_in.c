@@ -172,13 +172,10 @@ tcp_input(struct pbuf *p, struct netif *inp)
   flags = TCPH_FLAGS(tcphdr);
   tcplen = p->tot_len + ((flags & (TCP_FIN | TCP_SYN)) ? 1 : 0);
 
-  logprintf("tcplen=%d\n", tcplen);
-
   /* Demultiplex an incoming segment. First, we check if it is destined
      for an active connection. */
   prev = NULL;
 
-  
   for(pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
     LWIP_ASSERT("tcp_input: active pcb->state != CLOSED", pcb->state != CLOSED);
     LWIP_ASSERT("tcp_input: active pcb->state != TIME-WAIT", pcb->state != TIME_WAIT);
@@ -255,9 +252,7 @@ tcp_input(struct pbuf *p, struct netif *inp)
   LWIP_DEBUGF(TCP_INPUT_DEBUG, ("-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n"));
 #endif /* TCP_INPUT_DEBUG */
 
-    logprintf("%s:%d\n", __func__, __LINE__);
   if (pcb != NULL) {
-    logprintf("%s:%d\n", __func__, __LINE__);
     /* The incoming segment belongs to a connection. */
 #if TCP_INPUT_DEBUG
 #if TCP_DEBUG
@@ -283,7 +278,6 @@ tcp_input(struct pbuf *p, struct netif *inp)
       if (err == ERR_OK) {
         pcb->refused_data = NULL;
       } else {
-    logprintf("%s:%d\n", __func__, __LINE__);
         /* drop incoming packets, because pcb is "full" */
         LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: drop incoming packets, because pcb is \"full\"\n"));
         TCP_STATS_INC(tcp.drop);
@@ -292,16 +286,13 @@ tcp_input(struct pbuf *p, struct netif *inp)
         return;
       }
     }
-    logprintf("%s:%d\n", __func__, __LINE__);
     tcp_input_pcb = pcb;
     err = tcp_process(pcb);
     tcp_input_pcb = NULL;
     /* A return value of ERR_ABRT means that tcp_abort() was called
        and that the pcb has been freed. If so, we don't do anything. */
     if (err != ERR_ABRT) {
-    logprintf("%s:%d\n", __func__, __LINE__);
       if (recv_flags & TF_RESET) {
-    logprintf("%s:%d\n", __func__, __LINE__);
         /* TF_RESET means that the connection was reset by the other
            end. We then call the error callback to inform the
            application that the connection is dead before we
@@ -310,35 +301,26 @@ tcp_input(struct pbuf *p, struct netif *inp)
         tcp_pcb_remove(&tcp_active_pcbs, pcb);
         memp_free(MEMP_TCP_PCB, pcb);
       } else if (recv_flags & TF_CLOSED) {
-    logprintf("%s:%d\n", __func__, __LINE__);
         /* The connection has been closed and we will deallocate the
            PCB. */
         tcp_pcb_remove(&tcp_active_pcbs, pcb);
         memp_free(MEMP_TCP_PCB, pcb);
       } else {
-    logprintf("%s:%d\n", __func__, __LINE__);
         err = ERR_OK;
         /* If the application has registered a "sent" function to be
            called when new send buffer space is available, we call it
            now. */
         if (pcb->acked > 0) {
-    logprintf("%s:%d\n", __func__, __LINE__);
           TCP_EVENT_SENT(pcb, pcb->acked, err);
         }
-    logprintf("%s:%d\n", __func__, __LINE__);      
         if (recv_data != NULL) {
-    logprintf("%s:%d\n", __func__, __LINE__);
           if(flags & TCP_PSH) {
-    logprintf("%s:%d\n", __func__, __LINE__);
             recv_data->flags |= PBUF_FLAG_PUSH;
           }
-    logprintf("%s:%d\n", __func__, __LINE__);
           /* Notify application that data has been received. */
           TCP_EVENT_RECV(pcb, recv_data, ERR_OK, err);
-    logprintf("%s:%d\n", __func__, __LINE__);
           /* If the upper layer can't receive this data, store it */
           if (err != ERR_OK) {
-    logprintf("%s:%d\n", __func__, __LINE__);
             pcb->refused_data = recv_data;
             LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: keep incoming packet, because pcb is \"full\"\n"));
           }
