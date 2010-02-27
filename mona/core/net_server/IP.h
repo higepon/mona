@@ -39,10 +39,9 @@ public:
         UDP = 0x11,
     };
     typedef struct{
-        uint32_t  hl:4,              /* header length */
-            version:4;               /* version */
-        uint8_t  tos;               /* type of service */
-        uint16_t len;               /* total length */
+        uint8_t  hl:4, version:4;              /* header length */
+        uint8_t tos;
+        uint16_t len;               /* version */
         uint16_t id;                /* identification */
         uint16_t off;               /* fragment offset field */
         uint8_t  ttl;               /* time to live */

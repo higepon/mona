@@ -194,6 +194,8 @@ recv_tcp(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
   struct netconn *conn;
   u16_t len;
 
+  logprintf("recv_tcp *********************************************************\n");
+
   LWIP_UNUSED_ARG(pcb);
   LWIP_ASSERT("recv_tcp must have a pcb argument", pcb != NULL);
   LWIP_ASSERT("recv_tcp must have an argument", arg != NULL);
@@ -778,6 +780,7 @@ do_connected(void *arg, struct tcp_pcb *pcb, err_t err)
 void
 do_connect(struct api_msg_msg *msg)
 {
+  logprintf("*********** do_connect");
   if (msg->conn->pcb.tcp == NULL) {
     sys_sem_signal(msg->conn->op_completed);
     return;
@@ -798,6 +801,7 @@ do_connect(struct api_msg_msg *msg)
 #endif /* LWIP_UDP */
 #if LWIP_TCP
   case NETCONN_TCP:
+  logprintf("*********** do_connect 2");
     msg->conn->state = NETCONN_CONNECT;
     setup_tcp(msg->conn);
     msg->conn->err = tcp_connect(msg->conn->pcb.tcp, msg->msg.bc.ipaddr, msg->msg.bc.port,

@@ -81,7 +81,7 @@ raw_input(struct pbuf *p, struct netif *inp)
   struct ip_hdr *iphdr;
   s16_t proto;
   u8_t eaten = 0;
-
+  logprintf("raw_input ************ %x", raw_pcbs);
   LWIP_UNUSED_ARG(inp);
 
   iphdr = p->payload;
@@ -92,20 +92,26 @@ raw_input(struct pbuf *p, struct netif *inp)
   /* loop through all raw pcbs until the packet is eaten by one */
   /* this allows multiple pcbs to match against the packet by design */
   while ((eaten == 0) && (pcb != NULL)) {
+  logprintf("raw_input ************1");
     if (pcb->protocol == proto) {
+  logprintf("raw_input ************2");
 #if IP_SOF_BROADCAST_RECV
       /* broadcast filter? */
       if ((pcb->so_options & SOF_BROADCAST) || !ip_addr_isbroadcast(&(iphdr->dest), inp))
 #endif /* IP_SOF_BROADCAST_RECV */
       {
+  logprintf("raw_input ************3");
         /* receive callback function available? */
         if (pcb->recv != NULL) {
+  logprintf("raw_input ************4");
           /* the receive callback function did not eat the packet? */
           if (pcb->recv(pcb->recv_arg, pcb, p, &(iphdr->src)) != 0) {
+  logprintf("raw_input ************5");
             /* receive function ate the packet */
             p = NULL;
             eaten = 1;
             if (prev != NULL) {
+  logprintf("raw_input ************6");
             /* move the pcb to the front of raw_pcbs so that is
                found faster next time */
               prev->next = pcb->next;
@@ -121,6 +127,7 @@ raw_input(struct pbuf *p, struct netif *inp)
     prev = pcb;
     pcb = pcb->next;
   }
+  logprintf("raw_input ************7");
   return eaten;
 }
 

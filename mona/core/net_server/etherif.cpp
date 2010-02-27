@@ -142,6 +142,7 @@ static struct pbuf* low_level_input(struct netif* netif)
     unsigned int readSzie = 0;
     // todo timeout
     if (!etherif->virtioNet->receive(buf, &readSzie)) {
+        logprintf("virtio receive timeout\n");
         return NULL;
     }
 //    snmp_add_ifinoctets(netif, readSzie);

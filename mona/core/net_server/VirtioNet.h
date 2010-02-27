@@ -324,8 +324,9 @@ public:
             // In almost case, we expect last send is already done.
             VIRT_LOG("Waiting previous packet is send");
         }
-        IP::Header* ipHeader = (IP::Header*)(buf);
-        logprintf("send:ip packet %d %x\n", ipHeader->tos, ipHeader->dstip);
+        Ether::Frame* rframe = (Ether::Frame*)buf;
+        IP::Header* ipHeader = (IP::Header*)(rframe->data);
+        logprintf("send:ip packet %d %x\n", ipHeader->len, ipHeader->dstip);
 
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, buf, len);
@@ -404,6 +405,7 @@ public:
         ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
+
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
@@ -464,7 +466,11 @@ public:
         memcpy(dst, rframe, *len);
 
         IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("receive:ip packet %d %x\n", ipHeader->tos, ipHeader->srcip);
+        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
+        for (int i = 0; i < *len; i++) {
+            logprintf("[%c]", dst[i]);
+        }
+
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?

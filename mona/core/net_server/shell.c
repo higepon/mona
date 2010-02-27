@@ -191,7 +191,7 @@ sockex_testrecv(void *arg)
 {
   int sock;
   struct sockaddr_in addr;
-  char *request = "GET / HTTP/1.0¥r¥n¥r¥n";
+  char *request = "GET / HTTP/1.0\r\n\r\n";
   char buf[BUF_SIZE];
   int read_size;
   int i;
@@ -203,7 +203,7 @@ sockex_testrecv(void *arg)
   
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = inet_addr("192.168.1.13");
+  addr.sin_addr.s_addr = inet_addr("72.14.203.104");
   addr.sin_port = htons(80);
   
   if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
