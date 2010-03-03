@@ -9,6 +9,7 @@ typedef int (FuncMain)(int argc, char* argv[]);
 #ifdef __cplusplus
 #include <sys/List.h>
 
+
 typedef int (FuncMonaMain)(List<char*>*);
 
 extern void invokeFuncList(FuncVoid** list, const char* file, int line);
@@ -43,18 +44,25 @@ extern int syscall_exist_message();
 extern int syscall_mthread_create(void (*f)(void));
 extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
 extern int syscall_mthread_kill(uint32_t id);
-extern intptr_t syscall_mutex_create();
-extern intptr_t syscall_mutex_fetch(intptr_t id);
-extern intptr_t syscall_mutex_try_lock(intptr_t id);
-extern intptr_t syscall_mutex_lock(intptr_t id);
-extern intptr_t syscall_mutex_lock_timeout(intptr_t id, intptr_t timeout);
-extern intptr_t syscall_mutex_unlock(intptr_t id);
-extern intptr_t syscall_mutex_destroy(intptr_t id);
-extern int syscall_semaphore_create(uint32_t n, uint32_t handle);
-extern int syscall_semaphore_trydown(int id);
-extern int syscall_semaphore_down (int id );
-extern int syscall_semaphore_up(int id);
-extern int syscall_semaphore_destroy(int id);
+extern uintptr_t syscall_mthread_self();
+extern intptr_t syscall_condition_create(cond_t* cond);
+extern intptr_t syscall_condition_destroy(cond_t* cond);
+extern intptr_t syscall_condition_notify_all(cond_t* cond);
+extern intptr_t syscall_condition_wait(cond_t* cond, mutex_t* mutex);
+extern intptr_t syscall_condition_wait_timeout(cond_t* cond, mutex_t* mutex, intptr_t timeoutMsec);
+extern intptr_t syscall_mutex_create(mutex_t* mutex);
+extern intptr_t syscall_mutex_fetch(mutex_t* dest, mutex_t* mutex);
+extern intptr_t syscall_mutex_try_lock(mutex_t* mutex);
+extern intptr_t syscall_mutex_lock(mutex_t*);
+extern intptr_t syscall_mutex_lock_timeout(mutex_t* id, intptr_t timeout);
+extern intptr_t syscall_mutex_unlock(mutex_t* id);
+extern intptr_t syscall_mutex_destroy(mutex_t* id);
+extern intptr_t syscall_semaphore_create(uint32_t n, uint32_t handle);
+extern intptr_t syscall_semaphore_trydown(intptr_t id);
+extern intptr_t syscall_semaphore_down (intptr_t id );
+extern intptr_t syscall_semaphore_up(intptr_t id);
+extern intptr_t syscall_semaphore_destroy(intptr_t id);
+extern uint64_t syscall_now_in_nanosec();
 extern int syscall_get_vram_info(volatile ScreenInfo* info);
 extern int syscall_get_cursor(int* x, int* y);
 extern int syscall_set_cursor(int x, int y);

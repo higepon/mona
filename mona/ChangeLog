@@ -1,3 +1,33 @@
+2009-12-07  higepon  <higepon@users.sourceforge.jp>
+
+	* include/monapi/Condition.h : Refactoring mutex and condition.	
+
+2009-12-05  higepon  <higepon@users.sourceforge.jp>
+
+	* Added net_server skelton and lwip.
+
+	* Removed Condition.cpp which isn't necessary no more.
+
+	* include/monapi/Condition.h (MonAPI): Added Condition class implementation.
+
+	* test/monapi/condition/condition.cpp (testCondition5): Added tests for Condition Class.
+
+2009-12-02  higepon  <higepon@users.sourceforge.jp>
+
+	* core/monapi/syscall.cpp: Fixed documents for conditions.
+
+	* core/kernel/Scheduler.cpp : Passed tests for syscall_condtion_wait_timeout.(Green).
+
+	* test/monapi/condition/condition.cpp : Added tests for syscall_condtion_wait_timeout. It fails now(Red).
+
+2009-12-01  higepon  <higepon@users.sourceforge.jp>
+
+	* core/monapi/syscall.cpp (syscall_mutex_lock): Fixed return value of mutex_lock.
+
+2009-11-29  higepon  <higepon@users.sourceforge.jp>
+
+	* Not to use Scheduler::SwitchToNext on any where, use only reasonable place.
+
 2009-11-21  higepon  <higepon@users.sourceforge.jp>
 
 	* core/scheme/lib/conf.scm.in : Added execution of stdio test.

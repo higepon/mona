@@ -40,3 +40,4 @@ endif
 ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
+

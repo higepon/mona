@@ -45,7 +45,14 @@ void IDTUtil::setGateDesc(GateDesc* descZero, uint16_t selector, InterruptHandle
     desc->offsetL  = (uint32_t)(handler->handler) & 0x0000FFFF;
     desc->offsetH  = ((uint32_t)(handler->handler) & 0xFFFF0000) >> 16;
     desc->selector = selector;
-    desc->type     = handler->number == 0x80 ? 0xEE : 0x8E; /* System call use 0x80 */
+    if (handler->number == 0x80 || /* system call     */
+        handler->number == 0x3) {  /* debug exception */
+        // DPL = 3
+        desc->type = 0xEE;
+    } else {
+        // DPL = 0
+        desc->type = 0x8E;
+    }
     desc->unused   = 0x00;
     return;
 }

@@ -19,11 +19,48 @@
 #include "apm.h"
 #include "shutdown.h"
 #include "sys/error.h"
+#include "Condition.h"
 
 extern const char* version;
 extern uint32_t version_number;
 extern mones::FrameNode* g_frames;
 extern mones::Nic* g_nic;
+
+inline intptr_t syscall1(intptr_t syscall_number, intptr_t arg1)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1)
+                 :"ebx", "esi"
+                 );
+    return ret;
+}
+
+inline intptr_t syscall2(intptr_t syscall_number, intptr_t arg1, intptr_t arg2)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2)
+                 :"ebx", "esi", "ecx"
+                 );
+    return ret;
+}
+
+
+
+inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
+{
+    info->eax = value;
+}
 
 uint32_t systemcall_mutex_create()
 {
@@ -35,15 +72,12 @@ uint32_t systemcall_mutex_lock(uint32_t id)
 {
     uint32_t result;
     int noTimeout = 0;
-    SYSCALL_2(SYSTEM_CALL_MUTEX_LOCK, result, id, noTimeout);
-    return result;
+    return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
 }
 
 uint32_t systemcall_mutex_unlock(uint32_t id)
 {
-   int result;
-    SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
-    return result;
+    return syscall1(SYSTEM_CALL_MUTEX_UNLOCK, id);
 }
 
 // don't call without systemcall
@@ -55,7 +89,8 @@ static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
     if (NULL == object) {
         return M_BAD_MUTEX_ID;
     }
-    return ((KMutex*)object)->lock(g_currentThread->thread, timeoutTick);
+    KMutex* mutex = (KMutex*)object;
+    return mutex->lock(g_currentThread->thread, timeoutTick);
 }
 
 // don't call without systemcall
@@ -67,7 +102,8 @@ static intptr_t systemcall_mutex_unlock2(intptr_t id)
     if (object == NULL) {
         return M_BAD_MUTEX_ID;
     }
-    return ((KMutex*)object)->unlock();
+    KMutex* mutex = (KMutex*)object;
+    return mutex->unlock();
 }
 
 void syscall_entrance()
@@ -76,7 +112,7 @@ void syscall_entrance()
     ArchThreadInfo* info = g_currentThread->archinfo;
 
     /* result normal */
-    info->eax = 0;
+    setReturnValue(info, M_OK);
 
 #define SYSTEM_CALL_ARG_1 (info->esi)
 #define SYSTEM_CALL_ARG_2 (info->ecx)
@@ -96,9 +132,9 @@ void syscall_entrance()
 
         LinearAddress laddress = SYSTEM_CALL_ARG_1;
         int pageNum = SYSTEM_CALL_ARG_2;
-        info->eax = g_page_manager->allocateContiguous(g_currentThread->process->getPageDirectory(),
+        setReturnValue(info, g_page_manager->allocateContiguous(g_currentThread->process->getPageDirectory(),
                                                        laddress,
-                                                       pageNum);
+                                                       pageNum));
         break;
     }
     case SYSTEM_CALL_DEALLOCATE_CONTIGUOUS:
@@ -112,35 +148,43 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SET_TIMER:
 
-        info->eax = g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1);
+        setReturnValue(info, g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1));
         break;
 
     case SYSTEM_CALL_KILL_TIMER:
 
-        info->eax = g_scheduler->KillTimer(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+        setReturnValue(info, g_scheduler->KillTimer(SYSTEM_CALL_ARG_1, g_currentThread->thread));
         break;
 
     case SYSTEM_CALL_MTHREAD_SLEEP:
-
         g_scheduler->Sleep(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         g_scheduler->SwitchToNext();
         break;
-
+    case SYSTEM_CALL_MTHREAD_SELF:
+    {
+        setReturnValue(info, g_currentThread->thread->id);
+        break;
+    }
     case SYSTEM_CALL_KILL:
-
         ThreadOperation::kill();
+        g_scheduler->SwitchToNext();
         break;
 
     case SYSTEM_CALL_KILL_THREAD:
     {
         uint32_t tid = SYSTEM_CALL_ARG_1;
-        info->eax = ThreadOperation::kill(tid);
+        intptr_t ret = ThreadOperation::kill(tid);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
     }
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = g_messenger->send((uint32_t)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2));
+        setReturnValue(info, g_messenger->send((uint32_t)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2)));
         g_scheduler->SwitchToNext();
 
         /* not reached */
@@ -149,20 +193,20 @@ void syscall_entrance()
 
     case SYSTEM_CALL_RECEIVE:
 
-        info->eax = g_messenger->receive(g_currentThread->thread, (MessageInfo*)(SYSTEM_CALL_ARG_1));
+        setReturnValue(info, g_messenger->receive(g_currentThread->thread, (MessageInfo*)(SYSTEM_CALL_ARG_1)));
         break;
 
     case SYSTEM_CALL_EXIST_MESSAGE:
     {
         bool existMessage = !(g_currentThread->thread->messageList->isEmpty());
-        info->eax = existMessage ? 1 : 0;
+        setReturnValue(info, existMessage ? 1 : 0);
         break;
     }
     case SYSTEM_CALL_GET_PHYSICAL_ADDRESS:
     {
         PhysicalAddress ret = 0;
         g_page_manager->getPhysicalAddress((PageEntry*)g_currentThread->archinfo->cr3, (uint32_t)(SYSTEM_CALL_ARG_1), &ret);
-        info->eax = ret;
+        setReturnValue(info, ret);
         break;
     }
 
@@ -173,83 +217,180 @@ void syscall_entrance()
         Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
         thread->tinfo->archinfo->ecx = arg;
         g_scheduler->Join(thread);
-        info->eax = g_id->allocateID(thread);
+        setReturnValue(info, thread->id);
         break;
     }
     case SYSTEM_CALL_MTHREAD_KILL:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
 
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_THREAD_ID);
+        } else {
             Thread* t = (Thread*)object;
-            info->eax = ThreadOperation::kill(t->id);
+            intptr_t ret = ThreadOperation::kill(t->id);
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
-
         break;
     }
+    case SYSTEM_CALL_CONDITION_CREATE:
+    {
+        Condition* condition = new Condition;
+        ASSERT(condition != NULL);
+        setReturnValue(info, g_id->allocateID(condition));
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_DESTROY:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else {
+            Condition* condition = (Condition*)object;
+            delete condition;
+            setReturnValue(info, M_OK);
+        }
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_NOTIFY_ALL:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else {
+            Condition* condition = (Condition*)object;
+            intptr_t ret = condition->notifyAll();
+            setReturnValue(info, M_OK);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
 
+            /* Not reached */
+        }
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_WAIT:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+
+        const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
+        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+
+        if (condObject == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else if (mutexObject == NULL) {
+            setReturnValue(info, M_BAD_MUTEX_ID);
+        } else {
+            Condition* condition = (Condition*)condObject;
+            KMutex* mutex = (KMutex*)mutexObject;
+
+            // unlock and wait should be atomic.
+            mutex->unlock();
+            intptr_t ret = condition->wait(g_currentThread->thread);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
+            setReturnValue(info, ret);
+        }
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_WAIT_TIMEOUT:
+    {
+        const intptr_t condition_id = SYSTEM_CALL_ARG_1;
+        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+
+        const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
+        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+
+        const intptr_t timeoutTick = SYSTEM_CALL_ARG_3;
+
+        if (condObject == NULL) {
+            setReturnValue(info, M_BAD_CONDITION_ID);
+        } else if (mutexObject == NULL) {
+            setReturnValue(info, M_BAD_MUTEX_ID);
+        } else {
+            Condition* condition = (Condition*)condObject;
+            KMutex* mutex = (KMutex*)mutexObject;
+
+            // unlock and wait should be atomic.
+            mutex->unlock();
+            intptr_t ret = condition->waitTimeout(g_currentThread->thread, timeoutTick);
+            ASSERT(ret == Scheduler::YIELD);
+            g_scheduler->SwitchToNext();
+            setReturnValue(info, ret);
+        }
+        break;
+    }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
             intptr_t mutexid = systemcall_mutex_create();
             ASSERT(mutexid > 0);
-            info->eax = systemcall_mutex_create();
+            setReturnValue(info, systemcall_mutex_create());
         } else {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
             if (object == NULL) {
-                info->eax = M_BAD_MUTEX_ID;
+                setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
                 mutex->addRef();
-                info->eax = SYSTEM_CALL_ARG_1;
+                setReturnValue(info, SYSTEM_CALL_ARG_1);
             }
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
         if (SYSTEM_CALL_ARG_1 == 0) {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread, KObject::USER_SEMAPHORE);
-            if (object == NULL)
-            {
-                info->eax = g_id->getLastError();
-            }
-            else
-            {
+            if (object == NULL) {
+                setReturnValue(info, M_BAD_SEMAPHORE_ID);
+            } else {
                 UserSemaphore* semaphore = (UserSemaphore*)object;
                 semaphore->addRef();
-                info->eax = SYSTEM_CALL_ARG_2;
+                setReturnValue(info, SYSTEM_CALL_ARG_2);
             }
         } else {
             UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
-            info->eax = g_id->allocateID(semaphore);
+            setReturnValue(info, g_id->allocateID(semaphore));
         }
         break;
 
-
     case SYSTEM_CALL_MUTEX_LOCK:
-        info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
+    {
+        intptr_t ret = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
-
+    }
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            intptr_t ret = semaphore->down(g_currentThread->thread);
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
-        info->eax = ((UserSemaphore*)object)->down(g_currentThread->thread);
         break;
     }
     case SYSTEM_CALL_MUTEX_TRY_LOCK:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
         if (object == NULL) {
-            info->eax = M_BAD_MUTEX_ID;
+            setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
-            info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
+            setReturnValue(info, ((KMutex*)object)->tryLock(g_currentThread->thread));
         }
         break;
     }
@@ -257,72 +398,70 @@ void syscall_entrance()
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
-            info->eax = ((UserSemaphore*)object)->tryDown(g_currentThread->thread);
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            setReturnValue(info, ((UserSemaphore*)object)->tryDown(g_currentThread->thread));
         }
         break;
     }
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
-
-        info->eax = systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1);
+    {
+        intptr_t ret = systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1);
+        if (ret == Scheduler::YIELD) {
+            g_scheduler->SwitchToNext();
+        } else {
+            setReturnValue(info, ret);
+        }
         break;
-
+    }
     case SYSTEM_CALL_SEMAPHORE_UP:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
-            info->eax = ((UserSemaphore*)object)->up();
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            intptr_t ret = semaphore->up();
+            if (ret == Scheduler::YIELD) {
+                g_scheduler->SwitchToNext();
+            } else {
+                setReturnValue(info, ret);
+            }
         }
         break;
     }
 
     case SYSTEM_CALL_MUTEX_DESTROY:
-
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
         if (object == NULL) {
-            info->eax = M_BAD_MUTEX_ID;
+            setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
             KMutex* mutex = (KMutex*)object;
             mutex->releaseRef();
-            info->eax = 0;
+            setReturnValue(info, M_OK);
         }
         break;
     }
 
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
-
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
 
-        if (object == NULL)
-        {
-            info->eax = g_id->getLastError();
-        }
-        else
-        {
-            UserSemaphore* mutex = (UserSemaphore*)object;
-            mutex->releaseRef();
-            info->eax = 0;
+        if (object == NULL) {
+            setReturnValue(info, M_BAD_SEMAPHORE_ID);
+        } else {
+            UserSemaphore* semaphore = (UserSemaphore*)object;
+            semaphore->releaseRef();
+            setReturnValue(info, 0);
         }
         break;
     }
-
-
     case SYSTEM_CALL_LOOKUP:
-        info->eax = g_scheduler->Lookup((char*)(SYSTEM_CALL_ARG_1));
+        setReturnValue(info, g_scheduler->Lookup((char*)(SYSTEM_CALL_ARG_1)));
         break;
 
     case SYSTEM_CALL_GET_VRAM_INFO:
@@ -388,17 +527,17 @@ void syscall_entrance()
 
     case SYSTEM_CALL_GET_PID:
 
-        info->eax = g_currentThread->process->getPid();
+        setReturnValue(info, g_currentThread->process->getPid());
         break;
 
     case SYSTEM_CALL_GET_TID:
 
-        info->eax = g_currentThread->thread->id;
+        setReturnValue(info, g_currentThread->thread->id);
         break;
 
     case SYSTEM_CALL_ARGUMENTS_NUM:
 
-        info->eax = g_currentThread->process->getArguments()->size();
+        setReturnValue(info, g_currentThread->process->getArguments()->size());
         break;
 
     case SYSTEM_CALL_GET_ARGUMENTS:
@@ -409,12 +548,12 @@ void syscall_entrance()
 
         if (index - 1 > list->size())
         {
-            info->eax = 1;
+            setReturnValue(info, 1);
             break;
         }
 
         strncpy(buf, list->get(index), MAX_PROCESS_ARGUMENT_LENGTH);
-        info->eax = 0;
+        setReturnValue(info, 0);
         break;
     }
 
@@ -436,7 +575,7 @@ void syscall_entrance()
     {
         KDate* date = (KDate*)(SYSTEM_CALL_ARG_1);
         RTC::getDate(date);
-        info->eax = 0;
+        setReturnValue(info, 0);
         break;
     }
 
@@ -444,7 +583,7 @@ void syscall_entrance()
     case SYSTEM_CALL_GET_IO:
 
         info->eflags = info->eflags |  0x3000;
-        info->eax = 0;
+        setReturnValue(info, 0);
         {
             bool isProcessChange = g_scheduler->SetNextThread();
             ThreadOperation::switchThread(isProcessChange, 17);
@@ -459,11 +598,11 @@ void syscall_entrance()
 
     if (SYSTEM_CALL_ARG_1 == NULL)
     {
-        info->eax = g_scheduler->LookupMainThread(g_currentThread->process);
+        setReturnValue(info, g_scheduler->LookupMainThread(g_currentThread->process));
     }
     else
     {
-        info->eax = g_scheduler->LookupMainThread((char*)(SYSTEM_CALL_ARG_1));
+        setReturnValue(info, g_scheduler->LookupMainThread((char*)(SYSTEM_CALL_ARG_1)));
     }
         break;
 
@@ -480,10 +619,10 @@ void syscall_entrance()
         if (!isOpen)
         {
             logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
-            info->eax = 0;
+            setReturnValue(info, 0);
             break;
         }
-        info->eax = sharedId;
+        setReturnValue(info, sharedId);
         break;
      }
 
@@ -498,7 +637,7 @@ void syscall_entrance()
             break;
         }
 
-        info->eax = object->getSize();
+        setReturnValue(info, object->getSize());
         break;
     }
 
@@ -514,7 +653,7 @@ void syscall_entrance()
         Semaphore::up(&g_semaphore_shared);
         if (!isAttached)
         {
-            info->eax = 1;
+            setReturnValue(info, 1);
             break;
         }
         break;
@@ -528,7 +667,7 @@ void syscall_entrance()
         while (Semaphore::down(&g_semaphore_shared));
         bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
         Semaphore::up(&g_semaphore_shared);
-        info->eax = isDetached ? 0 : 1;
+        setReturnValue(info, isDetached ? 0 : 1);
         break;
     }
 
@@ -560,19 +699,19 @@ void syscall_entrance()
 
         if (q == NULL)
         {
-            info->eax = 1;
+            setReturnValue(info, 1);
             break;
         }
 
         *p = *q;
         delete q;
-        info->eax = 0;
+        setReturnValue(info, 0);
         break;
     }
 
     case SYSTEM_CALL_GET_TICK:
 
-        info->eax = g_scheduler->GetTick();
+        setReturnValue(info, g_scheduler->GetTick());
         break;
 
     case SYSTEM_CALL_FILE_POSITION:
@@ -588,29 +727,29 @@ void syscall_entrance()
     case SYSTEM_CALL_GET_KERNEL_VERSION:
 
         strncpy((char*)SYSTEM_CALL_ARG_1, version, SYSTEM_CALL_ARG_2);
-        info->eax = version_number;
+        setReturnValue(info, version_number);
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(SYSTEM_CALL_ARG_1);
-        info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
+        setReturnValue(info, Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list));
         break;
     }
 
     case SYSTEM_CALL_CLEAR_SCREEN:
 
         g_console->clearScreen();
-        info->eax = 0;
+        setReturnValue(info, 0);
         break;
 
     case SYSTEM_CALL_PEEK:
 
-        info->eax = g_messenger->peek(g_currentThread->thread
+        setReturnValue(info, g_messenger->peek(g_currentThread->thread
                                       , (MessageInfo*)(SYSTEM_CALL_ARG_1)
                                       , (int)(SYSTEM_CALL_ARG_2)
                                       , (int)(SYSTEM_CALL_ARG_3)
-                                      );
+                                      ));
 
         break;
 
@@ -621,7 +760,7 @@ void syscall_entrance()
         /* out of range */
         if (irq > 15 || irq < 0)
         {
-            info->eax = 1;
+            setReturnValue(info, 1);
             break;
         }
 
@@ -657,7 +796,7 @@ void syscall_entrance()
         {
             break;
         }
-        info->eax = g_irqInfo[irq].hasReceiver ? 1 : 0;
+        setReturnValue(info, g_irqInfo[irq].hasReceiver ? 1 : 0);
         break;
     }
 
@@ -688,7 +827,7 @@ void syscall_entrance()
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
     {
         uint32_t size = SYSTEM_CALL_ARG_1;
-        info->eax = (uint32_t)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true);
+        setReturnValue(info, (uint32_t)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true));
         break;
     }
     case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
@@ -708,22 +847,22 @@ void syscall_entrance()
     break;
 
     case SYSTEM_CALL_APM_BIOS:
-        info->eax = (uint32_t)apm_bios((uint16_t)SYSTEM_CALL_ARG_1, (apm_bios_regs*)SYSTEM_CALL_ARG_2);
+        setReturnValue(info, (uint32_t)apm_bios((uint16_t)SYSTEM_CALL_ARG_1, (apm_bios_regs*)SYSTEM_CALL_ARG_2));
     break;
 
     case SYSTEM_CALL_SHUTDOWN:
-        info->eax = shutdown(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
+        setReturnValue(info, shutdown(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2));
     break;
     case SYSTEM_CALL_RECEIVE_PACKET:
         if (g_frames->IsEmpty())
         {
-            info->eax = 1;
+            setReturnValue(info, 1);
         }
         else
         {
             mones::FrameNode* node = (mones::FrameNode*)(g_frames->RemoveNext());
             memcpy((uint8_t*)SYSTEM_CALL_ARG_1, node->frame, sizeof(mones::Ether::Frame));
-            info->eax = 0;
+            setReturnValue(info, 0);
         }
         break;
 
@@ -767,6 +906,20 @@ void syscall_entrance()
         asm volatile("movl %0, %%eax    \n"
                      "movl %%eax, %%dr0 \n"
                      : : "m"(flag): "eax");
+        break;
+    }
+    case SYSTEM_CALL_NOW_IN_NANOSEC:
+    {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+        n.u64 = RTC::epochNanoseconds();
+        *((uint32_t*)SYSTEM_CALL_ARG_1) = n.u32.l;
+        *((uint32_t*)SYSTEM_CALL_ARG_2) = n.u32.h;
         break;
     }
 

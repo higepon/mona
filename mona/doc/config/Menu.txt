@@ -51,14 +51,23 @@ Don't Index: Classes
 # --------------------------------------------------------------------------
 
 
-File: Errors  (include/sys/error.h)
-File: Mutex  (include/monapi/Mutex.h)
 File: System Calls  (no auto-title, core/monapi/syscall.cpp)
+
+Group: Include  {
+
+   File: Condition  (include/monapi/Condition.h)
+   File: Date  (include/monapi/Date.h)
+   File: DebuggerService  (include/monapi/DebuggerService.h)
+   File: Errors  (include/sys/error.h)
+   File: Mutex  (include/monapi/Mutex.h)
+   File: servers/audio.h  (include/servers/audio.h)
+   }  # Group: Include
 
 Group: Index  {
 
    Index: Everything
    Constant Index: Constants
    Function Index: Functions
+   File Index: Files
    }  # Group: Index
 

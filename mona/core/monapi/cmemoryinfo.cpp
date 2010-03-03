@@ -1,3 +1,4 @@
+#include <sys/error.h>
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
 #include <monapi/cmemoryinfo.h>

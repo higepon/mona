@@ -2,6 +2,8 @@
 #include "Process.h"
 #include "global.h"
 #include "sys/error.h"
+#include "syscalls.h"
+#include "Condition.h"
 
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
@@ -159,17 +161,30 @@ bool Scheduler::WakeupSleep(Thread* thread)
         return false;
     }
 
-    if (thread->wakeupSleep > this->totalTick) return false;
+    if (thread->wakeupSleep > this->totalTick) {
+        return false;
+    }
 
     // When the thread is waiting both MEvent::MUTEX_UNLOCKED and MEvent::SLEEP,
     // we have to remove the thread from Mutex waitList.
     int mutexIndex = thread->isWaiting(MEvent::MUTEX_UNLOCKED);
     if (-1 != mutexIndex) {
         KMutex* waitingMutex = thread->getWaitingMutex();
+        ASSERT(waitingMutex != NULL);
         thread->setWaitingMutex(NULL);
         bool removed = waitingMutex->removeFromWaitList(thread);
         ASSERT(removed);
     }
+
+    int conditionIndex = thread->isWaiting(MEvent::CONDITION_NOTIFY);
+    if (-1 != conditionIndex) {
+        Condition* waitingCondition = thread->getWaitingCondition();
+        ASSERT(waitingCondition != NULL);
+        thread->setWaitingCondition(NULL);
+        bool removed = waitingCondition->removeFromWaitList(thread);
+        ASSERT(removed);
+    }
+
 
     thread->priority = MEvent::SLEEP; // umm
     thread->lastCpuUsedTick = 0;
@@ -177,7 +192,6 @@ bool Scheduler::WakeupSleep(Thread* thread)
     thread->setReturnValue(M_TIMED_OUT);
     thread->eventsWaiting[eventIndex] = MEvent::NONE;
     MoveToNewPosition(runq, thread);
-
     return true;
 }
 

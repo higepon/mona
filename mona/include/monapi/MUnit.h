@@ -32,6 +32,18 @@
     }\
 }
 
+#define ASSERT_EQ(expected, actual) {                  \
+    intptr_t ac = (actual); \
+    if (expected != ac) {\
+        _printf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        exit(-1);\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+
 // EXPECT family never stop on error.
 #define EXPECT_TRUE(condition) {\
     if (!(condition)) {\
@@ -43,10 +55,22 @@
     }\
 }
 
+#define EXPECT_EQ(expected, actual) {                  \
+    intptr_t ac = (actual); \
+    if (expected != ac) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+
 #define ASSERT_GT(a, b) ASSERT_TRUE((a) > (b))
-#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))
+//#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))
 #define EXPECT_GT(a, b) EXPECT_TRUE((a) > (b))
-#define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b))
+//#define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b))
 
 MUNIT_GLOBAL int munit_number_of_failed MUNIT_GLOBAL_VAL(0);
 MUNIT_GLOBAL int munit_number_of_passed MUNIT_GLOBAL_VAL(0);

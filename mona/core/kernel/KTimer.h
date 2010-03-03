@@ -17,12 +17,12 @@ class KTimer : public KObject {
 
   public:
 
-    int getType() const
+    intptr_t getType() const
     {
         return KTIMER;
     }
 
-    int checkSecurity(Thread* thread)
+    intptr_t checkSecurity(Thread* thread)
     {
         return 0;
     }

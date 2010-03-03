@@ -9,13 +9,7 @@ KObject::~KObject()
 {
 }
 
-int KObject::checkSecurity(Thread* thread)
-{
-    /* default inplementation */
-    return 0;
-}
-
-int KObject::getReferanceCount() const
+intptr_t KObject::getReferanceCount() const
 {
     return this->referanceCount;
 }
@@ -30,7 +24,3 @@ void KObject::cancelReferance()
     this->referanceCount--;
 }
 
-int KObject::getType() const
-{
-    return KOBJECT;
-}

@@ -31,6 +31,7 @@ endif
 	cd core/monalibc && $(MAKE) && $(MAKE) install
 	cd core/monitor_server && $(MAKE) && $(MAKE) install
 	cd core/screen_server && $(MAKE) && $(MAKE) install
+	cd core/net_server && $(MAKE) && $(MAKE) install
 	cd core/keyboard_server && $(MAKE) && $(MAKE) install
 	cd core/mouse_server && $(MAKE) && $(MAKE) install
 	cd core/file_server && $(MAKE) && $(MAKE) install
@@ -45,6 +46,8 @@ tests: tools cores
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
 	cd test/monapi/mutex && $(MAKE) && $(MAKE) install
+	cd test/monapi/condition && $(MAKE) && $(MAKE) install
+	cd test/monapi/misc && $(MAKE) && $(MAKE) install
 
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
@@ -103,3 +106,5 @@ endif
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
 	cd test/monalibc/string && make clean
 	cd test/monalibc/stdio && make clean
+	cd test/monapi/mutex && make clean
+	cd test/monapi/condition && make clean

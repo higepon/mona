@@ -14,6 +14,7 @@
 #include <monapi/MemoryMap.h>
 #include <monapi/Thread.h>
 #include <monapi/Mutex.h>
+#include <monapi/Condition.h>
 #include <monapi/string.h>
 #include <monapi/MemoryManager.h>
 #include <monapi/Color.h>
@@ -22,6 +23,7 @@
 #include <monapi/Keys.h>
 #include <monapi/Stream.h>
 #include <monapi/Assert.h>
+#include <monapi/DebuggerService.h>
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 

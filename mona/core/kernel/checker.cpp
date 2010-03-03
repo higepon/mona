@@ -31,6 +31,7 @@ void checkTypeSize() {
     bool isByte     = sizeof(uint8_t)     == 1;
     bool isWord     = sizeof(uint16_t)     == 2;
     bool isDuint16_t    = sizeof(uint32_t)    == 4;
+    bool isDuint64_t    = sizeof(uint64_t)    == 8;
     bool isTSS      = sizeof(TSS)      == 104;
     bool isGDTR     = sizeof(GDTR)     == 6;
     bool isSegDesc  = sizeof(SegDesc)  == 8;

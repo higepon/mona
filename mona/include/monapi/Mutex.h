@@ -3,6 +3,8 @@
 
 #include <sys/types.h>
 #include <sys/error.h>
+#include <monapi/syscall.h>
+#include <monapi/Assert.h>
 
 namespace MonAPI {
 
@@ -22,7 +24,12 @@ public:
 
          A mutex.
     */
-    Mutex();
+    Mutex() : destroyed_(false)
+    {
+        intptr_t ret = syscall_mutex_create(&mutex_);
+        ASSERT(M_OK == ret);
+    }
+
 
     /*
        function: Mutex
@@ -32,20 +39,31 @@ public:
 
        Parameters:
 
-         id - mutexid returned by getId().
+         mutex - mutex_t returned by getMutex_t().
 
        Returns:
 
          A mutex.
     */
-    Mutex(intptr_t id);
+    Mutex(mutex_t* src) : destroyed_(false)
+    {
+        intptr_t ret = syscall_mutex_fetch(&mutex_, src);
+        ASSERT(M_OK == ret);
+    }
+
 
     /*
        function: ~Mutex
 
        Destroy the mutex.
     */
-    ~Mutex();
+    ~Mutex()
+    {
+        if (!destroyed_) {
+            destroy();
+        }
+    }
+
 
     /*
        function: lock
@@ -55,7 +73,11 @@ public:
        Returns:
          Returns <M_OK> if the mutex is successfully locked, or <M_BAD_MUTEX_ID> if mutex is invalid.
     */
-    intptr_t lock();
+    intptr_t lock()
+    {
+        return syscall_mutex_lock(&mutex_);
+    }
+
 
     /*
        function: lock
@@ -70,7 +92,11 @@ public:
          <M_OK>, when the thread gets a lock. <M_TIMED_OUT>, when timeout. <M_BAD_MUTEX_ID> if mutex is invalid.
 
     */
-    intptr_t lock(intptr_t timeoutMsec);
+    intptr_t lock(intptr_t timeoutMsec)
+    {
+        return syscall_mutex_lock_timeout(&mutex_, timeoutMsec);
+    }
+
 
     /*
        function: unlock
@@ -82,7 +108,10 @@ public:
        Returns:
          Returns <M_OK> if the mutex is successfully unlocked, or <M_BAD_MUTEX_ID> if mutex is invalid.
     */
-    intptr_t unlock();
+    intptr_t unlock()
+    {
+        return syscall_mutex_unlock(&mutex_);
+    }
 
 
     /*
@@ -94,7 +123,11 @@ public:
          Returns <M_OK> if the mutex is successfully locked. <M_BUSY> if the mutex is locked by other process. <M_BAD_MUTEX_ID> if mutex is invalid.
 
     */
-    intptr_t tryLock();
+    intptr_t tryLock()
+    {
+        return syscall_mutex_try_lock(&mutex_);
+    }
+
 
     /*
        function: destroy
@@ -106,20 +139,21 @@ public:
     */
     intptr_t destroy();
 
+
     /*
-       function: getId
+       function: getMutex_t
 
        Returns:
-         mutexid, which can be used with syscall_mutex functions.
+         mutex_t, which can be used with syscall_mutex functions.
     */
-    inline intptr_t getId() const
+    inline mutex_t getMutex_t()
     {
-        return mutexId_;
+        return mutex_;
     }
 
 private:
-    intptr_t mutexId_;
     bool destroyed_;
+    mutex_t mutex_;
 };
 
 };

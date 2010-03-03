@@ -37,6 +37,7 @@ SOURCES      = cstart.cpp            \
                LogConsole.cpp        \
                IDManager.cpp         \
                KObject.cpp           \
+               Thread.cpp            \
                Loader.cpp            \
                Scheduler.cpp         \
                RTC.cpp               \
@@ -49,9 +50,10 @@ SOURCES      = cstart.cpp            \
                gdb-adapter.cpp       \
                Uart.cpp              \
                NE2000.cpp            \
-	       addressmap.cpp
+               gdb-i386-stub.cpp     \
+               addressmap.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o) gdb-i386-stub.o
+OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(TARGET)
 
@@ -96,5 +98,9 @@ depend dependencies:
 
 clean:
 	rm -f $(TARGET) *.o *.lst *.map dependencies
+
+# for flymake
+check-syntax:
+	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
 
 -include dependencies

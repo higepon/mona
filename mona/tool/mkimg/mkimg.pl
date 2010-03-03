@@ -28,7 +28,7 @@ sub call {
     (my $arg) = @_;
     print $arg, "\n";
     if (system $arg) {
-        my $image = $g_dir/bin/$g_out;
+        my $image = "$g_dir/bin/$g_out";
         unlink("$g_dir/bin/$g_out") if -d $image;
         die;
     }

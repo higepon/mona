@@ -43,15 +43,15 @@ class KMutex : public KObject {
         return (owner_ != NULL);
     }
 
-    inline int getType() const
+    inline intptr_t getType() const
     {
         return KMUTEX;
     }
 
-    int checkSecurity(Thread* thread);
+    intptr_t checkSecurity(Thread* thread);
 
   private:
-    int refcount_;
+    intptr_t refcount_;
     List<Thread*>* waitList_;
     Thread* owner_;
 };

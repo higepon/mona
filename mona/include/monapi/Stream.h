@@ -6,6 +6,7 @@
 #define _MONAPI_STREAM_
 
 #include <sys/types.h>
+#include <sys/error.h>
 #include <monapi/Mutex.h>
 
 namespace MonAPI {
@@ -43,9 +44,9 @@ protected:
     {
         uint32_t size;
         uint32_t capacity;
-        uint32_t accessMutexHandle;
-        uint32_t readMutexHandle;
-        uint32_t writeMutexHandle;
+        mutex_t accessMutexHandle;
+        mutex_t readMutexHandle;
+        mutex_t writeMutexHandle;
         uint32_t waitForReadThreads[MAX_WAIT_THREADS_NUM];
         uint32_t waitForWriteThreads[MAX_WAIT_THREADS_NUM];
     } StreamHeader;

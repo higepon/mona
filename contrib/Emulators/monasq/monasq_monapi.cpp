@@ -26,6 +26,7 @@
 #include "monasq.h"
 #include "sqplus.h"
 #include <monapi/io.h>
+#include <monapi/syscall.h>
 
 using namespace SqPlus;
 

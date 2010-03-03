@@ -60,7 +60,6 @@ public:
 		setTitle("mblupin");
 		
 		// ランダムのシード値を与える。
-		date.refresh();
 		rnd.setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
 		this->titleCharcode = 0;
 	}

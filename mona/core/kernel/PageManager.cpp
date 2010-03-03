@@ -17,6 +17,8 @@
 #include "string.h"
 #include "operator.h"
 #include "Segments.h"
+#include "Uart.h"
+#include "ihandlers.h"
 #include "global.h"
 
 /* independent from architecture */
@@ -735,13 +737,16 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     StackSegment* stack = g_currentThread->thread->stackSegment;
     if (stack->inRange(address))
     {
-    return stack->faultHandler(address, FAULT_NOT_EXIST);
+        return stack->faultHandler(address, FAULT_NOT_EXIST);
     }
 
+    if (g_isRemoteDebug) {
+        gdbCatchException(VECTOR_PAGE_FAULT_EXCEPTION);
+    }
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
-	logprintf("tid =%d\n", g_currentThread->thread->id);
+        logprintf("tid =%d\n", g_currentThread->thread->id);
         logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
         logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
         logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
@@ -750,6 +755,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
         bool stackOver = address < stackButtom && stackButtom - 4096 < address;
+
 
         if (stackOver)
         {

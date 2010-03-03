@@ -61,7 +61,7 @@ enum
     /*
        constant: M_BAD_MUTEX_ID
 
-       Indicates a bad mutexid is spcified.
+       Indicates a bad mutex_id is spcified.
     */
     M_BAD_MUTEX_ID       ,
     /*
@@ -76,6 +76,25 @@ enum
        Indicates the resource is busy state.
     */
     M_BUSY,
+    /*
+       constant: M_BAD_CONDITION_ID
+
+       Indicates a bad condition_id is spcified.
+    */
+    M_BAD_CONDITION_ID       ,
+    /*
+       constant: M_BAD_THREAD_ID
+
+       Indicates a bad thread_id is spcified.
+    */
+    M_BAD_THREAD_ID       ,
+    /*
+       constant: M_BAD_SEMAPHORE_ID
+
+       Indicates a bad semaphore_id is spcified.
+    */
+    M_BAD_SEMAPHORE_ID       ,
+
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

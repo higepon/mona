@@ -1,0 +1,30 @@
+* How to debug Mona application using remote GDB.
+
+  1. Get Mingw GDB 6.3 from http://sourceforge.net/projects/mingw/files/.
+       [GNU Source-Level Debugger] - [Release Candidate_ gdb-6.3] - [gdb-6.3-2.exe]
+
+     Install gdb 6.3-2 using wine.
+       % wine gdb-6.3-2.exe
+
+     N.B.
+       Gdb 6.6 and 7.0 doesn't work using wine.
+       Cross compilation for Mingw may succeed, but doesn't source file line number.
+
+  2. On your main() function, call DebuggerService::breakpoint() function. This enables GDB remote debug handlers.
+  2. Compile you program with -g flag (Default behaviour)
+  3. Start your QEMU with -serial file:/tmp/mona.log -serial tcp::43770,server . The second -serial option is used by GDB.
+     Sample shell script is found on tool/qemu/remote_debug_gdb.sh
+  4. Run gdb as follows.
+     gdb YOUR.EXE
+     (gdb) target remote localhost:43770
+  5. GDB will break on your first DebuggerService::breakpointI().
+
+* DLL
+  If you want to debug DLL. use "dll-symbols ~/mona/core/monapi/MONAPI.DLL".
+    
+
+* Emacs
+  M-x gdb then type wine ~/.wine/drive_c/MinGW/bin/gdb.exe --annotate=3 /path_to/YOUR.EXE
+  
+
+

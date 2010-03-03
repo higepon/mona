@@ -17,6 +17,11 @@ public:
     Scheduler();
     virtual ~Scheduler();
 
+    enum {
+        YIELD = 1, // should be positive.
+        forbidden_comma
+    };
+
 public:
     bool Schedule1();
     bool Schedule2();

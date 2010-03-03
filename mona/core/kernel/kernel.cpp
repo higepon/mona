@@ -136,7 +136,7 @@ void startKernel()
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  %s\n", version);
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
-    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2007 higepon\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2010 higepon\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
 
@@ -193,6 +193,11 @@ void startKernel()
     g_log = new LogConsole();
     // use COM2 serial port
     g_com2 = new Uart(Uart::COM2);
+
+//    g_console->printf("read from COM2<%c>:", g_com2->readChar());
+
+
+
     pic_init();
     RTC::init();
     printOK("Setting PIC        ");
@@ -280,6 +285,8 @@ void startKernel()
     g_prevThread->archinfo->cr3    = 1;
     g_currentThread->archinfo->cr3 = 2;
 
+    // Just before enable timer, sync epochNanosec.
+    RTC::syncEpochNanosec();
     enableTimer();
 
 #ifdef HIGE
@@ -410,6 +417,19 @@ int execSysConf()
     return 0;
 }
 
+inline intptr_t syscall0(intptr_t syscall_number)
+{
+    intptr_t ret = 0;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(ret)
+                 :"g"(syscall_number)
+                 :"ebx"
+                 );
+    return ret;
+}
+
 void mainProcess()
 {
     if (execSysConf() != 0)
@@ -425,10 +445,7 @@ void mainProcess()
 #endif
 
     /* end */
-    int result;
-
-    SYSCALL_0(SYSTEM_CALL_KILL, result);
+    syscall0(SYSTEM_CALL_KILL);
 
     for (;;);
 }
-

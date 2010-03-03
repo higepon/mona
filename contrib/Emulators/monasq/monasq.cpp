@@ -686,7 +686,7 @@ static SQRegFunction monasq_funcs[]={
  */
 void register_sq_func(HSQUIRRELVM v, const SQChar* name, SQFUNCTION func,
         SQInteger nparamscheck, const SQChar *typemask)
-{    _logprintf("%s %s:%d main=%x\n", __func__, __FILE__, __LINE__);
+{
     sq_pushroottable(v);
     sq_pushstring(v, name, -1);
     sq_newclosure(v, func, 0);

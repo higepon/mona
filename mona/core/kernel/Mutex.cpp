@@ -54,9 +54,7 @@ intptr_t KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
             // todo
             g_scheduler->WaitEvent2(thread, MEvent::SLEEP, MEvent::MUTEX_UNLOCKED);
         }
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
+        return Scheduler::YIELD;
     }
     exit_kernel_lock_mode();
 
@@ -97,17 +95,15 @@ intptr_t KMutex::unlock()
     } else {
         owner_ = waitList_->removeAt(0);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
+        return Scheduler::YIELD;
     }
     exit_kernel_lock_mode();
     return M_OK;
 }
 
-int KMutex::checkSecurity(Thread* thread)
+intptr_t KMutex::checkSecurity(Thread* thread)
 {
-    return 0;
+    return M_OK;
 }
 
 void KMutex::addRef()

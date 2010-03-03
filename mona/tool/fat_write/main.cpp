@@ -33,7 +33,7 @@ struct WriteInf
     \author Higepon
     \date   create:2003/03/08 update:
 */
-bool initialize(const char*! filename)
+bool initialize(const char* filename)
 {
     inf.fp = fopen(filename, "rb+");
     if (inf.fp == NULL)

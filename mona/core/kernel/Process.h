@@ -122,8 +122,8 @@ class ThreadOperation
   public:
     static Thread* create(Process* process, uint32_t programCounter);
     static int switchThread(bool isProcessChanged, int i);
-    static int kill();
-    static int kill(uint32_t tid);
+    static intptr_t kill();
+    static intptr_t kill(uint32_t tid);
 
   private:
     static void sendKilledMessage();
@@ -146,6 +146,18 @@ class Process
   public:
 
     uint32_t getStackBottom(Thread* thread);
+
+    inline int getThreadIndex(Thread* thread)
+    {
+        for (int i = 0; i < threadList_->size(); i++)
+        {
+            if (threadList_->get(i) == thread) {
+                return i;
+            }
+        }
+        ASSERT(false);
+        return -1;
+    }
 
     inline virtual const char* getName() const
     {

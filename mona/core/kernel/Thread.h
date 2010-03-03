@@ -6,6 +6,7 @@
 #include "sys/List.h"
 #include "sys/types.h"
 #include "sys/MEvent.h"
+#include "sys/error.h"
 #include "Segments.h"
 #include "Mutex.h"
 
@@ -15,13 +16,14 @@
     Thread
 ----------------------------------------------------------------------*/
 class KMutex;
+class Condition;
 class Thread : public Node, public KObject
 {
 public:
     Thread();
     virtual ~Thread();
 
-    int getType() const
+    intptr_t getType() const
     {
         return THREAD;
     }
@@ -52,12 +54,26 @@ public:
         waitingMutex_ = mutex;
     }
 
-    KMutex* getWaitingMutex() const {
+    void setWaitingCondition(Condition* condition) {
+        ASSERT((condition != NULL && waitingCondition_ == NULL) ||
+               (condition == NULL && waitingCondition_ == NULL) ||
+               (condition == NULL && waitingCondition_ != NULL));
+        waitingCondition_ = condition;
+    }
+
+    KMutex* getWaitingMutex() const
+    {
         return waitingMutex_;
     }
 
-    bool hasWaitingMutex() const {
-        return waitingMutex_ == NULL;
+    Condition* getWaitingCondition() const
+    {
+        return waitingCondition_;
+    }
+
+    intptr_t checkSecurity(Thread*)
+    {
+        return M_OK;
     }
 
 public:
@@ -87,7 +103,8 @@ private:
     // Waiting mutex.
     // If you want to add another waiting lock primitive,
     // Make this waitingMutex_ to a pointer to lockPrimitive struct.
-    KMutex* waitingMutex_; 
+    KMutex* waitingMutex_;
+    Condition* waitingCondition_;
 };
 
 #endif

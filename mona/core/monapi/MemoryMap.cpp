@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------*/
 
 #include <monapi.h>
+#include <monapi/Mutex.h>
 
 namespace MonAPI {
 

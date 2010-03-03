@@ -405,8 +405,6 @@ private:
 			const char* ampm[] = { "午前", "午後" };
 		#ifdef MONA
 			MonAPI::Date date;
-			date.refresh();
-
 			memset(temp, 0, sizeof(temp));
 			sprintf(temp, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d\n",
 				date.year(), date.month(), date.day(), day[date.dayofweek() % 7],

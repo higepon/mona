@@ -29,6 +29,16 @@ enum {
     MONA_FAILURE = 0  /* don't change */
 };
 
+#ifndef __uint64_t_defined
+typedef unsigned long long	uint64_t;
+# define __uint64_t_defined
+#endif
+#ifndef __int64_t_defined
+typedef long long	int64_t;
+# define __int64_t_defined
+#endif
+
+
 
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
@@ -36,12 +46,17 @@ typedef long int        intptr_t;
 # define __uintptr_t_defined
 #endif
 
+typedef intptr_t mutex_t;
+typedef intptr_t cond_t;
+
 enum {
+    // Each value should be unique, it is used for identifing events on Scheduler.
     M_EVENT_NONE             = 64,
     M_EVENT_SLEEP            = 20,
     M_EVENT_TIMER_MESSAGE    = 19,
     M_EVENT_MESSAGE          = 22,
     M_EVENT_MUTEX_UNLOCKED   = 27,
+    M_EVENT_CONDITION_NOTIFY = 29,
     M_EVENT_SEMAPHORE_UPPED  = 28,
     M_EVENT_INTERRUPT_HIGH   = 0,
     M_EVENT_INTERRUPT_MIDDLE = 7,
@@ -346,7 +361,13 @@ enum
 #define SYSTEM_CALL_GET_PHYSICAL_ADDRESS      0x0058
 #define SYSTEM_CALL_ALLOCATE_CONTIGUOUS       0x0059
 #define SYSTEM_CALL_DEALLOCATE_CONTIGUOUS     0x0060
-
+#define SYSTEM_CALL_CONDITION_CREATE          0x0061
+#define SYSTEM_CALL_CONDITION_DESTROY         0x0062
+#define SYSTEM_CALL_CONDITION_NOTIFY_ALL      0x0063
+#define SYSTEM_CALL_CONDITION_WAIT            0x0064
+#define SYSTEM_CALL_CONDITION_WAIT_TIMEOUT    0x0065
+#define SYSTEM_CALL_NOW_IN_NANOSEC            0x0066
+#define SYSTEM_CALL_MTHREAD_SELF              0x0067
 enum
 {
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,
@@ -354,60 +375,5 @@ enum
     DEBUG_BREAK_ONLY_ON_IO         = 2,
     DEBUG_BREAK_ONLY_ON_READ_WRITE = 3,
 };
-
-#define SYSCALL_0(syscall_number, result)                                         \
-    asm volatile("movl $%c1, %%ebx \n"                                            \
-                 "int  $0x80       \n"                                            \
-                 "movl %%eax, %0   \n"                                            \
-                 :"=m"(result)                                                    \
-                 :"g"(syscall_number)                                             \
-                 :"ebx"                                                           \
-                 );                                                               \
-
-#define SYSCALL_1(syscall_number, result, arg1)                                   \
-    asm volatile("movl $%c1, %%ebx \n"                                            \
-                 "movl %2  , %%esi \n"                                            \
-                 "int  $0x80       \n"                                            \
-                 "movl %%eax, %0   \n"                                            \
-                 :"=m"(result)                                                    \
-                 :"g"(syscall_number), "m"(arg1)                                  \
-                 :"ebx", "esi"                                                    \
-                 );                                                               \
-
-#define SYSCALL_2(syscall_number, result, arg1, arg2)                             \
-    asm volatile("movl $%c1, %%ebx \n"                                            \
-                 "movl %2  , %%esi \n"                                            \
-                 "movl %3  , %%ecx \n"                                            \
-                 "int  $0x80       \n"                                            \
-                 "movl %%eax, %0   \n"                                            \
-                 :"=m"(result)                                                    \
-                 :"g"(syscall_number), "m"(arg1), "m"(arg2)                       \
-                 :"ebx", "esi", "ecx"                                             \
-                 );                                                               \
-
-#define SYSCALL_3(syscall_number, result, arg1, arg2, arg3)                       \
-    asm volatile("movl $%c1, %%ebx \n"                                            \
-                 "movl %2  , %%esi \n"                                            \
-                 "movl %3  , %%ecx \n"                                            \
-                 "movl %4  , %%edi \n"                                            \
-                 "int  $0x80       \n"                                            \
-                 "movl %%eax, %0   \n"                                            \
-                 :"=m"(result)                                                    \
-                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3)            \
-                 :"ebx", "esi", "ecx", "edi"                                      \
-                 );                                                               \
-
-#define SYSCALL_4(syscall_number, result, arg1, arg2, arg3, arg4)                 \
-    asm volatile("movl $%c1, %%ebx \n"                                            \
-                 "movl %2  , %%esi \n"                                            \
-                 "movl %3  , %%ecx \n"                                            \
-                 "movl %4  , %%edi \n"                                            \
-                 "movl %5  , %%edx \n"                                            \
-                 "int  $0x80       \n"                                            \
-                 "movl %%eax, %0   \n"                                            \
-                 :"=m"(result)                                                    \
-                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3), "m"(arg4) \
-                 :"ebx", "esi", "ecx", "edi", "edx"                               \
-                 );                                                               \
 
 #endif
