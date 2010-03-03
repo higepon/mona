@@ -48,7 +48,7 @@ public:
 
 public:
     Object* translate(Object* sexp);
-    void translateBody(Object* body, Objects* body, const ::util::String& syntax);
+    void translateBody(Object* bodyCons, Objects* body, const ::util::String& syntax);
 private:
     Object* translateList(Cons* cons);
     Object* translateIf(Cons* cons);
