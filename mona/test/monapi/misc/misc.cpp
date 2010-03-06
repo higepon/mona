@@ -26,7 +26,6 @@ void testNet()
     EXPECT_EQ(0x3412, htons(0x1234));
 }
 
-
 int main(int argc, char *argv[])
 {
     testDate();

@@ -48,6 +48,7 @@ tests: tools cores
 	cd test/monapi/mutex && $(MAKE) && $(MAKE) install
 	cd test/monapi/condition && $(MAKE) && $(MAKE) install
 	cd test/monapi/misc && $(MAKE) && $(MAKE) install
+	cd test/monapi/message && $(MAKE) && $(MAKE) install
 
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
