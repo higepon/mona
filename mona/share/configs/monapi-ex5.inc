@@ -41,3 +41,5 @@ ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
 
+check-syntax:
+	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
