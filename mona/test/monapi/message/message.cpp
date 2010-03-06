@@ -15,6 +15,32 @@ enum {
 
 static intptr_t sendBuffer(uintptr_t dest, const uint8_t* buffer, uintptr_t bufferSize)
 {
+    if (bufferSize == 0) {
+        return M_OK;
+    }
+
+    MessageInfo msg;
+    msg.header = MSG_SEND_BUFFER_START;
+    msg.arg1 = bufferSize;
+    uintptr_t sizeToSend = bufferSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : bufferSize;
+    memcpy(msg.str, buffer, sizeToSend);
+    if (Message::send(dest, &msg) != M_OK) {
+        return M_BUSY;
+    }
+    uintptr_t sentSize = sizeToSend;
+    for (;;) {
+        if (sentSize == bufferSize) {
+            break;
+        }
+        msg.header = MSG_SEND_BUFFER_PACKET;
+        uintptr_t restSize = bufferSize - sentSize;
+        uintptr_t sizeToSend = restSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : restSize;
+        memcpy(msg.str, buffer + sentSize, sizeToSend);
+        sentSize += sizeToSend;
+        if (Message::send(dest, &msg) != M_OK) {
+            return M_BUSY;
+        }
+    }
     return M_OK;
 }
 
@@ -52,6 +78,9 @@ void testSendBuffer()
             uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > restSize ? restSize : MESSAGE_INFO_MAX_STR_LENGTH;
             memcpy(received + receivedSize, msg.str, sizeToReceive);
             receivedSize += sizeToReceive;
+        }
+        if (receivedSize == bufferSize) {
+            break;
         }
     }
     EXPECT_EQ(receivedSize, BUFFER_SIZE);
