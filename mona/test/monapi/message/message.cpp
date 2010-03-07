@@ -5,8 +5,8 @@
 
 using namespace MonAPI;
 
-static const uintptr_t BUFFER_SIZE = 1000;
-static uint8_t buffer[BUFFER_SIZE];
+// static const uintptr_t BUFFER_SIZE = 1000;
+// static uint8_t buffer[BUFFER_SIZE];
 
 enum {
     MSG_SEND_BUFFER_START,
@@ -44,19 +44,36 @@ static intptr_t sendBuffer(uintptr_t dest, const uint8_t* buffer, uintptr_t buff
     return M_OK;
 }
 
-static void __fastcall sendThread(void* mainThread)
+struct TestInfo
 {
-    memset(buffer, BUFFER_SIZE, 0xc1);
+    TestInfo(uintptr_t mainThread, uintptr_t size) : mainThread(mainThread), size(size)
+    {
+        buffer = new uint8_t[size];
+    }
+    ~TestInfo()
+    {
+        delete[] buffer;
+    }
+    uintptr_t mainThread;
+    uintptr_t size;
+    uint8_t* buffer;
+};
+
+static void __fastcall sendThread(void* arg)
+{
+    TestInfo* testInfo = (TestInfo*)arg;
+    memset(testInfo->buffer, testInfo->size, 0xc1);
 //    intptr_t ret = Message::sendBuffer((uintptr_t)mainThread, buffer, BUFFER_SIZE);
-    intptr_t ret =sendBuffer((uintptr_t)mainThread, buffer, BUFFER_SIZE);
+    intptr_t ret =sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
     EXPECT_EQ(M_OK, ret);
     exit(0);
 }
 
-void testSendBuffer()
+void testSendReceive(uintptr_t size)
 {
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(sendThread, (void*)mainThread);
+    TestInfo testInfo(mainThread, size);
+    syscall_mthread_create_with_arg(sendThread, (void*)&testInfo);
     uint8_t* received = NULL;
     uintptr_t receivedSize = 0;
     uintptr_t bufferSize = 0;
@@ -83,9 +100,19 @@ void testSendBuffer()
             break;
         }
     }
-    EXPECT_EQ(receivedSize, BUFFER_SIZE);
-    EXPECT_EQ(0, memcmp(received, buffer, BUFFER_SIZE));
+    EXPECT_EQ(receivedSize, testInfo.size);
+    EXPECT_EQ(0, memcmp(received, testInfo.buffer, testInfo.size));
+    delete[] received;
+}
+
+
+void testSendBuffer()
+{
+//    testSendReceive(0);
+    testSendReceive(1000);
     // todo check pid
+    // todo zero size
+    // todo 128
 
 }
 
