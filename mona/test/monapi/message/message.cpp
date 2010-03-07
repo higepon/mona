@@ -1,12 +1,10 @@
 #include <monapi.h>
+#include <map>
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 #include <monapi/net.h>
 
 using namespace MonAPI;
-
-// static const uintptr_t BUFFER_SIZE = 1000;
-// static uint8_t buffer[BUFFER_SIZE];
 
 enum {
     MSG_SEND_BUFFER_START,
@@ -65,40 +63,74 @@ static void __fastcall sendThread(void* arg)
     exit(0);
 }
 
+
+
+struct BufferReceiveState
+{
+    BufferReceiveState(uintptr_t bufferSize) : buffer(new uint8_t[bufferSize]),
+                                               bufferSize(bufferSize),
+                                               receivedSize(0)
+    {
+    }
+    ~BufferReceiveState()
+    {
+        delete[] buffer;
+    }
+    uint8_t* buffer;
+    uintptr_t bufferSize;
+    uintptr_t receivedSize;
+};
+
+typedef std::map<uintptr_t, BufferReceiveState*> Buffers;
+
 void testSendReceive(uintptr_t size)
 {
     uintptr_t mainThread = System::getThreadID();
     TestInfo testInfo(mainThread, size);
     syscall_mthread_create_with_arg(sendThread, (void*)&testInfo);
-    uint8_t* received = NULL;
-    uintptr_t receivedSize = 0;
-    uintptr_t bufferSize = 0;
+    BufferReceiveState* state;
+//     uint8_t* received = NULL;
+//     uintptr_t receivedSize = 0;
+//     uintptr_t bufferSize = 0;
+
+    Buffers buffers;
+
     for (;;) {
         MessageInfo msg;
         if (Message::receive(&msg) != M_OK) {
             continue;
         }
         if (msg.header == MSG_SEND_BUFFER_START) {
-            bufferSize = msg.arg1;
-            received = new uint8_t[bufferSize];
-            ASSERT_TRUE(received != NULL);
+            uintptr_t bufferSize = msg.arg1;
+            state = new BufferReceiveState(bufferSize);
+            buffers[msg.from] = state;
             uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > bufferSize ? bufferSize : MESSAGE_INFO_MAX_STR_LENGTH;
-            memcpy(received + receivedSize, msg.str, sizeToReceive);
-            receivedSize += sizeToReceive;
+            memcpy(state->buffer, msg.str, sizeToReceive);
+            state->receivedSize += sizeToReceive;
+            if (state->receivedSize == state->bufferSize) {
+                EXPECT_EQ(state->receivedSize, testInfo.size);
+                EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
+                delete state;
+                break;
+            }
+
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
-            uintptr_t restSize = bufferSize - receivedSize;
+            BufferReceiveState* s = buffers[msg.from];
+            ASSERT_TRUE(s != NULL);
+            uintptr_t restSize = s->bufferSize - s->receivedSize;
             ASSERT_TRUE(restSize != 0);
             uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > restSize ? restSize : MESSAGE_INFO_MAX_STR_LENGTH;
-            memcpy(received + receivedSize, msg.str, sizeToReceive);
-            receivedSize += sizeToReceive;
-        }
-        if (receivedSize == bufferSize) {
-            break;
+            memcpy(s->buffer + s->receivedSize, msg.str, sizeToReceive);
+            s->receivedSize += sizeToReceive;
+            if (s->receivedSize == s->bufferSize) {
+                EXPECT_EQ(s->receivedSize, testInfo.size);
+                EXPECT_EQ(0, memcmp(s->buffer, testInfo.buffer, testInfo.size));
+                delete s;
+                break;
+            }
+
         }
     }
-    EXPECT_EQ(receivedSize, testInfo.size);
-    EXPECT_EQ(0, memcmp(received, testInfo.buffer, testInfo.size));
-    delete[] received;
 }
 
 
