@@ -58,7 +58,7 @@ struct TestInfo
 static void __fastcall sendThread(void* arg)
 {
     TestInfo* testInfo = (TestInfo*)arg;
-    memset(testInfo->buffer, testInfo->size, 0xc1);
+    memset(testInfo->buffer, 0xc1, testInfo->size);
 //    intptr_t ret = Message::sendBuffer((uintptr_t)mainThread, buffer, BUFFER_SIZE);
     intptr_t ret =sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
     EXPECT_EQ(M_OK, ret);
@@ -104,16 +104,18 @@ void testSendReceive(uintptr_t size)
 
 void testSendBuffer()
 {
-    testSendReceive(0);
-    testSendReceive(1000);
+    const uintptr_t MAX_TEST_BUFFER_SIZE = MAX_TEST_BUFFER_SIZE * 2 + 1;
+    for (uintptr_t testBufferSize = 1; testBufferSize < MAX_TEST_BUFFER_SIZE; testBufferSize++) {
+        testSendReceive(testBufferSize);
+    }
     // todo check pid
     // todo zero size
-    // todo 128
-
 }
 
 int main(int argc, char *argv[])
 {
+//    DebuggerService::breakpoint();
+
     testSendBuffer();
     TEST_RESULTS(monapi_message);
     return 0;
