@@ -15,10 +15,6 @@ enum {
 
 static intptr_t sendBuffer(uintptr_t dest, const uint8_t* buffer, uintptr_t bufferSize)
 {
-    if (bufferSize == 0) {
-        return M_OK;
-    }
-
     MessageInfo msg;
     msg.header = MSG_SEND_BUFFER_START;
     msg.arg1 = bufferSize;
@@ -108,7 +104,7 @@ void testSendReceive(uintptr_t size)
 
 void testSendBuffer()
 {
-//    testSendReceive(0);
+    testSendReceive(0);
     testSendReceive(1000);
     // todo check pid
     // todo zero size
