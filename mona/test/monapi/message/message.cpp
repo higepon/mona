@@ -136,7 +136,7 @@ void testSendReceive(uintptr_t size)
 
 void testSendBuffer()
 {
-    const uintptr_t MAX_TEST_BUFFER_SIZE = MAX_TEST_BUFFER_SIZE * 2 + 1;
+    const uintptr_t MAX_TEST_BUFFER_SIZE = MESSAGE_INFO_MAX_STR_LENGTH * 2 + 1;
     for (uintptr_t testBufferSize = 1; testBufferSize < MAX_TEST_BUFFER_SIZE; testBufferSize++) {
         testSendReceive(testBufferSize);
     }
