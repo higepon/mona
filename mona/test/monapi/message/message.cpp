@@ -76,6 +76,12 @@ struct BufferReceiveState
     {
         delete[] buffer;
     }
+
+    bool isDone() const
+    {
+        return bufferSize == receivedSize;
+    }
+
     uint8_t* buffer;
     uintptr_t bufferSize;
     uintptr_t receivedSize;
@@ -114,7 +120,7 @@ void testSendReceive(uintptr_t size)
             state = new BufferReceiveState(bufferSize);
             buffers[msg.from] = state;
             receivePartialBuffer(state, msg.str);
-            if (state->receivedSize == state->bufferSize) {
+            if (state->isDone()) {
                 EXPECT_EQ(state->receivedSize, testInfo.size);
                 EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
                 delete state;
@@ -124,7 +130,7 @@ void testSendReceive(uintptr_t size)
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
             state = buffers[msg.from];
             ASSERT_TRUE(state != NULL);
-            if (state->receivedSize == state->bufferSize) {
+            if (state->isDone()) {
                 EXPECT_EQ(state->receivedSize, testInfo.size);
                 EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
                 delete state;
