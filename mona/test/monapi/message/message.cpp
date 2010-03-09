@@ -113,19 +113,16 @@ private:
     uintptr_t receivedSize_;
 };
 
-typedef std::map<uintptr_t, BufferReceiver*> Buffers;
+typedef std::map<uintptr_t, BufferReceiver*> Receivers;
 
 void testSendReceive(uintptr_t size)
 {
     uintptr_t mainThread = System::getThreadID();
     TestInfo testInfo(mainThread, size);
     syscall_mthread_create_with_arg(sendThread, (void*)&testInfo);
-    BufferReceiver* state;
-//     uint8_t* received = NULL;
-//     uintptr_t receivedSize = 0;
-//     uintptr_t bufferSize = 0;
+    BufferReceiver* receiver;
 
-    Buffers buffers;
+    Receivers receivers;
 
     for (;;) {
         MessageInfo msg;
@@ -134,24 +131,24 @@ void testSendReceive(uintptr_t size)
         }
         if (msg.header == MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
-            state = new BufferReceiver(bufferSize);
-            buffers[msg.from] = state;
-            state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
-            if (state->isDone()) {
-                EXPECT_EQ(state->bufferSize(), testInfo.size);
-                EXPECT_EQ(0, memcmp(state->buffer(), testInfo.buffer, testInfo.size));
-                delete state;
+            receiver = new BufferReceiver(bufferSize);
+            receivers[msg.from] = receiver;
+            receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
+            if (receiver->isDone()) {
+                EXPECT_EQ(receiver->bufferSize(), testInfo.size);
+                EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
+                delete receiver;
                 break;
             }
 
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
-            state = buffers[msg.from];
-            ASSERT_TRUE(state != NULL);
-            state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
-            if (state->isDone()) {
-                EXPECT_EQ(state->bufferSize(), testInfo.size);
-                EXPECT_EQ(0, memcmp(state->buffer(), testInfo.buffer, testInfo.size));
-                delete state;
+            receiver = receivers[msg.from];
+            ASSERT_TRUE(receiver != NULL);
+            receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
+            if (receiver->isDone()) {
+                EXPECT_EQ(receiver->bufferSize(), testInfo.size);
+                EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
+                delete receiver;
                 break;
             }
 
