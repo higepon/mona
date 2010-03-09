@@ -65,50 +65,62 @@ static void __fastcall sendThread(void* arg)
 
 
 
-struct BufferReceiveState
+class BufferReceiver
 {
-    BufferReceiveState(uintptr_t bufferSize) : buffer(new uint8_t[bufferSize]),
-                                               bufferSize(bufferSize),
-                                               receivedSize(0)
+public:
+    BufferReceiver(uintptr_t bufferSize) : buffer_(new uint8_t[bufferSize]),
+                                           bufferSize_(bufferSize),
+                                           receivedSize_(0)
     {
     }
-    ~BufferReceiveState()
+    ~BufferReceiver()
     {
-        delete[] buffer;
+        delete[] buffer_;
+    }
+
+    uintptr_t bufferSize() const
+    {
+        return bufferSize_;
     }
 
     bool isDone() const
     {
-        return bufferSize == receivedSize;
+        return bufferSize_ == receivedSize_;
+    }
+
+    uint8_t* buffer() const
+    {
+        return buffer_;
     }
 
     uintptr_t restSizeToReceive() const
     {
-        return bufferSize - receivedSize;
+        return bufferSize_ - receivedSize_;
     }
 
     bool receive(const void* source, uintptr_t maxSourceSize)
     {
         ASSERT_TRUE(!isDone());
         uintptr_t sizeToReceive = maxSourceSize > restSizeToReceive() ? restSizeToReceive() : maxSourceSize;
-        memcpy(buffer + receivedSize, source, sizeToReceive);
-        receivedSize += sizeToReceive;
+        memcpy(buffer_ + receivedSize_, source, sizeToReceive);
+        receivedSize_ += sizeToReceive;
 
     }
 
-    uint8_t* buffer;
-    uintptr_t bufferSize;
-    uintptr_t receivedSize;
+private:
+    uint8_t* buffer_;
+    uintptr_t bufferSize_;
+    uintptr_t receivedSize_;
 };
 
-typedef std::map<uintptr_t, BufferReceiveState*> Buffers;
+typedef std::map<uintptr_t, BufferReceiver*> Buffers;
 
 void testSendReceive(uintptr_t size)
 {
     uintptr_t mainThread = System::getThreadID();
     TestInfo testInfo(mainThread, size);
     syscall_mthread_create_with_arg(sendThread, (void*)&testInfo);
-    BufferReceiveState* state;
+    BufferReceiver* state;
 //     uint8_t* received = NULL;
 //     uintptr_t receivedSize = 0;
 //     uintptr_t bufferSize = 0;
@@ -122,12 +134,12 @@ void testSendReceive(uintptr_t size)
         }
         if (msg.header == MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
-            state = new BufferReceiveState(bufferSize);
+            state = new BufferReceiver(bufferSize);
             buffers[msg.from] = state;
             state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
             if (state->isDone()) {
-                EXPECT_EQ(state->receivedSize, testInfo.size);
-                EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
+                EXPECT_EQ(state->bufferSize(), testInfo.size);
+                EXPECT_EQ(0, memcmp(state->buffer(), testInfo.buffer, testInfo.size));
                 delete state;
                 break;
             }
@@ -137,8 +149,8 @@ void testSendReceive(uintptr_t size)
             ASSERT_TRUE(state != NULL);
             state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
             if (state->isDone()) {
-                EXPECT_EQ(state->receivedSize, testInfo.size);
-                EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
+                EXPECT_EQ(state->bufferSize(), testInfo.size);
+                EXPECT_EQ(0, memcmp(state->buffer(), testInfo.buffer, testInfo.size));
                 delete state;
                 break;
             }
