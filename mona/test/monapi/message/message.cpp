@@ -82,6 +82,11 @@ struct BufferReceiveState
         return bufferSize == receivedSize;
     }
 
+    uintptr_t restSizeToReceive() const
+    {
+        return bufferSize - receivedSize;
+    }
+
     uint8_t* buffer;
     uintptr_t bufferSize;
     uintptr_t receivedSize;
@@ -91,9 +96,8 @@ typedef std::map<uintptr_t, BufferReceiveState*> Buffers;
 
 void receivePartialBuffer(BufferReceiveState* state, void* buffer)
 {
-    uintptr_t restSize = state->bufferSize - state->receivedSize;
-    ASSERT_TRUE(restSize != 0);
-    uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > restSize ? restSize : MESSAGE_INFO_MAX_STR_LENGTH;
+    ASSERT_TRUE(!state->isDone());
+    uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > state->restSizeToReceive() ? state->restSizeToReceive() : MESSAGE_INFO_MAX_STR_LENGTH;
     memcpy(state->buffer + state->receivedSize, buffer, sizeToReceive);
     state->receivedSize += sizeToReceive;
 }
