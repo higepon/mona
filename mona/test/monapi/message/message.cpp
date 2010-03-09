@@ -87,20 +87,21 @@ struct BufferReceiveState
         return bufferSize - receivedSize;
     }
 
+    bool receive(const void* source, uintptr_t maxSourceSize)
+    {
+        ASSERT_TRUE(!isDone());
+        uintptr_t sizeToReceive = maxSourceSize > restSizeToReceive() ? restSizeToReceive() : maxSourceSize;
+        memcpy(buffer + receivedSize, source, sizeToReceive);
+        receivedSize += sizeToReceive;
+
+    }
+
     uint8_t* buffer;
     uintptr_t bufferSize;
     uintptr_t receivedSize;
 };
 
 typedef std::map<uintptr_t, BufferReceiveState*> Buffers;
-
-void receivePartialBuffer(BufferReceiveState* state, void* buffer)
-{
-    ASSERT_TRUE(!state->isDone());
-    uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > state->restSizeToReceive() ? state->restSizeToReceive() : MESSAGE_INFO_MAX_STR_LENGTH;
-    memcpy(state->buffer + state->receivedSize, buffer, sizeToReceive);
-    state->receivedSize += sizeToReceive;
-}
 
 void testSendReceive(uintptr_t size)
 {
@@ -123,7 +124,7 @@ void testSendReceive(uintptr_t size)
             uintptr_t bufferSize = msg.arg1;
             state = new BufferReceiveState(bufferSize);
             buffers[msg.from] = state;
-            receivePartialBuffer(state, msg.str);
+            state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
             if (state->isDone()) {
                 EXPECT_EQ(state->receivedSize, testInfo.size);
                 EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
@@ -134,6 +135,7 @@ void testSendReceive(uintptr_t size)
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
             state = buffers[msg.from];
             ASSERT_TRUE(state != NULL);
+            state->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
             if (state->isDone()) {
                 EXPECT_EQ(state->receivedSize, testInfo.size);
                 EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
