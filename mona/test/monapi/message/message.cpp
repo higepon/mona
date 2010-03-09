@@ -134,24 +134,16 @@ void testSendReceive(uintptr_t size)
             receiver = new BufferReceiver(bufferSize);
             receivers[msg.from] = receiver;
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
-            if (receiver->isDone()) {
-                EXPECT_EQ(receiver->bufferSize(), testInfo.size);
-                EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
-                delete receiver;
-                break;
-            }
-
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
             receiver = receivers[msg.from];
             ASSERT_TRUE(receiver != NULL);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
-            if (receiver->isDone()) {
-                EXPECT_EQ(receiver->bufferSize(), testInfo.size);
-                EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
-                delete receiver;
-                break;
-            }
-
+        }
+        if (receiver->isDone()) {
+            EXPECT_EQ(receiver->bufferSize(), testInfo.size);
+            EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
+            delete receiver;
+            break;
         }
     }
 }
