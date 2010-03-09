@@ -83,6 +83,15 @@ struct BufferReceiveState
 
 typedef std::map<uintptr_t, BufferReceiveState*> Buffers;
 
+void receivePartialBuffer(BufferReceiveState* state, void* buffer)
+{
+    uintptr_t restSize = state->bufferSize - state->receivedSize;
+    ASSERT_TRUE(restSize != 0);
+    uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > restSize ? restSize : MESSAGE_INFO_MAX_STR_LENGTH;
+    memcpy(state->buffer + state->receivedSize, buffer, sizeToReceive);
+    state->receivedSize += sizeToReceive;
+}
+
 void testSendReceive(uintptr_t size)
 {
     uintptr_t mainThread = System::getThreadID();
@@ -104,9 +113,7 @@ void testSendReceive(uintptr_t size)
             uintptr_t bufferSize = msg.arg1;
             state = new BufferReceiveState(bufferSize);
             buffers[msg.from] = state;
-            uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > bufferSize ? bufferSize : MESSAGE_INFO_MAX_STR_LENGTH;
-            memcpy(state->buffer, msg.str, sizeToReceive);
-            state->receivedSize += sizeToReceive;
+            receivePartialBuffer(state, msg.str);
             if (state->receivedSize == state->bufferSize) {
                 EXPECT_EQ(state->receivedSize, testInfo.size);
                 EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
@@ -115,17 +122,12 @@ void testSendReceive(uintptr_t size)
             }
 
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
-            BufferReceiveState* s = buffers[msg.from];
-            ASSERT_TRUE(s != NULL);
-            uintptr_t restSize = s->bufferSize - s->receivedSize;
-            ASSERT_TRUE(restSize != 0);
-            uintptr_t sizeToReceive = MESSAGE_INFO_MAX_STR_LENGTH > restSize ? restSize : MESSAGE_INFO_MAX_STR_LENGTH;
-            memcpy(s->buffer + s->receivedSize, msg.str, sizeToReceive);
-            s->receivedSize += sizeToReceive;
-            if (s->receivedSize == s->bufferSize) {
-                EXPECT_EQ(s->receivedSize, testInfo.size);
-                EXPECT_EQ(0, memcmp(s->buffer, testInfo.buffer, testInfo.size));
-                delete s;
+            state = buffers[msg.from];
+            ASSERT_TRUE(state != NULL);
+            if (state->receivedSize == state->bufferSize) {
+                EXPECT_EQ(state->receivedSize, testInfo.size);
+                EXPECT_EQ(0, memcmp(state->buffer, testInfo.buffer, testInfo.size));
+                delete state;
                 break;
             }
 
