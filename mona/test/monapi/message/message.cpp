@@ -110,7 +110,6 @@ public:
 
     bool receive(const void* source, uintptr_t maxSourceSize)
     {
-        ASSERT_TRUE(!isDone());
         uintptr_t sizeToReceive = maxSourceSize > restSizeToReceive() ? restSizeToReceive() : maxSourceSize;
         memcpy(buffer_ + receivedSize_, source, sizeToReceive);
         receivedSize_ += sizeToReceive;
