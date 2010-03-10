@@ -12,31 +12,32 @@ enum {
     MSG_SEND_TEST
 };
 
-static intptr_t sendBuffer(uintptr_t dest, const uint8_t* buffer, uintptr_t bufferSize)
+
+static intptr_t sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize)
 {
     MessageInfo msg;
     msg.header = MSG_SEND_BUFFER_START;
     msg.arg1 = bufferSize;
-    uintptr_t sizeToSend = bufferSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : bufferSize;
-    memcpy(msg.str, buffer, sizeToSend);
-    if (Message::send(dest, &msg) != M_OK) {
-        return M_BUSY;
-    }
-    uintptr_t sentSize = sizeToSend;
+    uintptr_t sentSize = 0;
+    bool isFirst = true;
     for (;;) {
-        if (sentSize == bufferSize) {
-            break;
+        if (isFirst) {
+            msg.header = MSG_SEND_BUFFER_START;
+            isFirst = false;
+        } else {
+            msg.header = MSG_SEND_BUFFER_PACKET;
         }
-        msg.header = MSG_SEND_BUFFER_PACKET;
         uintptr_t restSize = bufferSize - sentSize;
         uintptr_t sizeToSend = restSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : restSize;
-        memcpy(msg.str, buffer + sentSize, sizeToSend);
+        memcpy(msg.str, (uint8_t*)buffer + sentSize, sizeToSend);
         sentSize += sizeToSend;
         if (Message::send(dest, &msg) != M_OK) {
             return M_BUSY;
         }
+        if (sentSize == bufferSize) {
+            return M_OK;
+        }
     }
-    return M_OK;
 }
 
 struct TestInfo
