@@ -113,7 +113,6 @@ public:
         uintptr_t sizeToReceive = maxSourceSize > restSizeToReceive() ? restSizeToReceive() : maxSourceSize;
         memcpy(buffer_ + receivedSize_, source, sizeToReceive);
         receivedSize_ += sizeToReceive;
-
     }
 
 private:
@@ -161,20 +160,12 @@ void testSendBuffer()
 {
     const uintptr_t MAX_TEST_BUFFER_SIZE = MESSAGE_INFO_MAX_STR_LENGTH * 2 + 1;
     uintptr_t mainThread = System::getThreadID();
-//     TestInfo testInfo1(mainThread, 1);
      uintptr_t tid = syscall_mthread_create_with_arg(sendThread, NULL);
 
-//     testSendReceive(tid, &testInfo1);
-
-//     TestInfo testInfo2(mainThread, 1);
-//     testSendReceive(tid, &testInfo2);
-    for (uintptr_t testBufferSize = 0; testBufferSize < MAX_TEST_BUFFER_SIZE
-             ; testBufferSize++) {
+    for (uintptr_t testBufferSize = 0; testBufferSize < MAX_TEST_BUFFER_SIZE; testBufferSize++) {
         TestInfo testInfo(mainThread, testBufferSize);
         testSendReceive(tid, &testInfo);
     }
-    // todo check pid
-    // todo zero size
 }
 
 int main(int argc, char *argv[])
