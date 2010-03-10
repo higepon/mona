@@ -124,6 +124,20 @@ private:
 
 typedef std::map<uintptr_t, BufferReceiver*> Receivers;
 
+static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
+{
+    if (msg1->header == MSG_SEND_BUFFER_PACKET ||
+        msg1->header == MSG_SEND_BUFFER_START) {
+        if (msg1->from == msg2->from) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 void testSendReceive(uintptr_t tid, TestInfo* testInfo)
 {
     Receivers receivers;
@@ -131,8 +145,10 @@ void testSendReceive(uintptr_t tid, TestInfo* testInfo)
     Message::send(tid, MSG_SEND_TEST, (uintptr_t)testInfo);
 
     for (;;) {
+        MessageInfo expectedMsg;
+        expectedMsg.from = tid;
         MessageInfo msg;
-        if (Message::receive(&msg) != M_OK) {
+        if (Message::receive(&msg, &expectedMsg, isSendBufferPacket) != M_OK) {
             continue;
         }
 
