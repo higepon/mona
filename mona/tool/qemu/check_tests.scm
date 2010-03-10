@@ -48,7 +48,7 @@
            #'(dynamic-wind
                  (lambda () (display color))
                  (lambda () expr more ...)
-                 (lambda () (display "\x1b;[m")))]))))
+                 (lambda () (display "\x1b;[m"))))])))
 
 (define-syntax with-color-green
   (lambda (x)
