@@ -138,12 +138,9 @@ static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
     }
 }
 
-void testSendReceive(uintptr_t tid, TestInfo* testInfo)
+static BufferReceiver* receiveBufferFrom(uintptr_t tid)
 {
     Receivers receivers;
-
-    Message::send(tid, MSG_SEND_TEST, (uintptr_t)testInfo);
-
     for (;;) {
         MessageInfo expectedMsg;
         expectedMsg.from = tid;
@@ -164,12 +161,18 @@ void testSendReceive(uintptr_t tid, TestInfo* testInfo)
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         }
         if (receiver->isDone()) {
-            EXPECT_EQ(receiver->bufferSize(), testInfo->size);
-            EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo->buffer, testInfo->size));
-            delete receiver;
-            break;
+            return receiver;
         }
     }
+}
+
+void testSendReceive(uintptr_t tid, TestInfo* testInfo)
+{
+    Message::send(tid, MSG_SEND_TEST, (uintptr_t)testInfo);
+    BufferReceiver* receiver = receiveBufferFrom(tid);
+    EXPECT_EQ(receiver->bufferSize(), testInfo->size);
+    EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo->buffer, testInfo->size));
+    delete receiver;
 }
 
 
