@@ -159,7 +159,7 @@ void testSendReceive(uintptr_t tid, TestInfo* testInfo)
 
 void testSendBuffer()
 {
-    const uintptr_t MAX_TEST_BUFFER_SIZE = MAX_TEST_BUFFER_SIZE * 2 + 1;
+    const uintptr_t MAX_TEST_BUFFER_SIZE = MESSAGE_INFO_MAX_STR_LENGTH * 2 + 1;
     uintptr_t mainThread = System::getThreadID();
 //     TestInfo testInfo1(mainThread, 1);
      uintptr_t tid = syscall_mthread_create_with_arg(sendThread, NULL);
@@ -168,7 +168,7 @@ void testSendBuffer()
 
 //     TestInfo testInfo2(mainThread, 1);
 //     testSendReceive(tid, &testInfo2);
-    for (uintptr_t testBufferSize = 0; testBufferSize < 1// MAX_TEST_BUFFER_SIZE
+    for (uintptr_t testBufferSize = 0; testBufferSize < MAX_TEST_BUFFER_SIZE
              ; testBufferSize++) {
         TestInfo testInfo(mainThread, testBufferSize);
         testSendReceive(tid, &testInfo);
