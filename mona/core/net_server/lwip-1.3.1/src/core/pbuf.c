@@ -151,42 +151,34 @@ retry:
 struct pbuf *
 pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
 {
-  _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   struct pbuf *p, *q, *r;
   u16_t offset;
   s32_t rem_len; /* remaining length */
   LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE | 3, ("pbuf_alloc(length=%"U16_F")\n", length));
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* determine header offset */
   offset = 0;
   switch (layer) {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   case PBUF_TRANSPORT:
     /* add room for transport (often TCP) layer header */
     offset += PBUF_TRANSPORT_HLEN;
     /* FALLTHROUGH */
   case PBUF_IP:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* add room for IP layer header */
     offset += PBUF_IP_HLEN;
     /* FALLTHROUGH */
   case PBUF_LINK:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* add room for link layer header */
     offset += PBUF_LINK_HLEN;
     break;
   case PBUF_RAW:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     break;
   default:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     LWIP_ASSERT("pbuf_alloc: bad pbuf layer", 0);
     return NULL;
   }
 
   switch (type) {
   case PBUF_POOL:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* allocate head of pbuf chain into p */
     ALLOC_POOL_PBUF(p);
     LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE | 3, ("pbuf_alloc: allocated pbuf %p\n", (void *)p));
@@ -195,7 +187,6 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     }
     p->type = type;
     p->next = NULL;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* make the payload pointer point 'offset' bytes into pbuf data memory */
     p->payload = LWIP_MEM_ALIGN((void *)((u8_t *)p + (SIZEOF_STRUCT_PBUF + offset)));
     LWIP_ASSERT("pbuf_alloc: pbuf p->payload properly aligned",
@@ -251,10 +242,8 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     }
     /* end of chain */
     /*r->next = NULL;*/
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     break;
   case PBUF_RAM:
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* If pbuf is to be allocated in RAM, allocate memory for it. */
     p = (struct pbuf*)mem_malloc(LWIP_MEM_ALIGN_SIZE(SIZEOF_STRUCT_PBUF + offset) + LWIP_MEM_ALIGN_SIZE(length));
     if (p == NULL) {
@@ -290,7 +279,6 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     LWIP_ASSERT("pbuf_alloc: erroneous type", 0);
     return NULL;
   }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* set reference count */
   p->ref = 1;
   /* set flags */
