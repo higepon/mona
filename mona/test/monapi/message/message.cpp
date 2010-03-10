@@ -122,8 +122,6 @@ private:
     uintptr_t receivedSize_;
 };
 
-typedef std::map<uintptr_t, BufferReceiver*> Receivers;
-
 static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
 {
     if (msg1->header == MSG_SEND_BUFFER_PACKET ||
@@ -138,9 +136,9 @@ static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
     }
 }
 
+// caller should delete BufferReceiver.
 static BufferReceiver* receiveBufferFrom(uintptr_t tid)
 {
-    Receivers receivers;
     for (;;) {
         MessageInfo expectedMsg;
         expectedMsg.from = tid;
@@ -153,10 +151,8 @@ static BufferReceiver* receiveBufferFrom(uintptr_t tid)
         if (msg.header == MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
             receiver = new BufferReceiver(bufferSize);
-            receivers[msg.from] = receiver;
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
-            receiver = receivers[msg.from];
             ASSERT_TRUE(receiver != NULL);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         }
