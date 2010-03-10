@@ -8,7 +8,8 @@ using namespace MonAPI;
 
 enum {
     MSG_SEND_BUFFER_START,
-    MSG_SEND_BUFFER_PACKET
+    MSG_SEND_BUFFER_PACKET,
+    MSG_SEND_TEST
 };
 
 static intptr_t sendBuffer(uintptr_t dest, const uint8_t* buffer, uintptr_t bufferSize)
@@ -55,11 +56,20 @@ struct TestInfo
 
 static void __fastcall sendThread(void* arg)
 {
-    TestInfo* testInfo = (TestInfo*)arg;
-    memset(testInfo->buffer, 0xc1, testInfo->size);
+    for (;;) {
+        MessageInfo msg;
+        if (Message::receive(&msg) != M_OK) {
+            continue;
+        }
+
+        if (msg.header == MSG_SEND_TEST) {
+            TestInfo* testInfo = (TestInfo*)msg.arg1;
+            memset(testInfo->buffer, 0xc1, testInfo->size);
 //    intptr_t ret = Message::sendBuffer((uintptr_t)mainThread, buffer, BUFFER_SIZE);
-    intptr_t ret =sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
-    EXPECT_EQ(M_OK, ret);
+            intptr_t ret =sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
+            EXPECT_EQ(M_OK, ret);
+        }
+    }
     exit(0);
 }
 
@@ -115,20 +125,19 @@ private:
 
 typedef std::map<uintptr_t, BufferReceiver*> Receivers;
 
-void testSendReceive(uintptr_t size)
+void testSendReceive(uintptr_t tid, TestInfo* testInfo)
 {
-    uintptr_t mainThread = System::getThreadID();
-    TestInfo testInfo(mainThread, size);
-    syscall_mthread_create_with_arg(sendThread, (void*)&testInfo);
-    BufferReceiver* receiver;
-
     Receivers receivers;
+
+    Message::send(tid, MSG_SEND_TEST, (uintptr_t)testInfo);
 
     for (;;) {
         MessageInfo msg;
         if (Message::receive(&msg) != M_OK) {
             continue;
         }
+
+        BufferReceiver* receiver;
         if (msg.header == MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
             receiver = new BufferReceiver(bufferSize);
@@ -140,8 +149,8 @@ void testSendReceive(uintptr_t size)
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         }
         if (receiver->isDone()) {
-            EXPECT_EQ(receiver->bufferSize(), testInfo.size);
-            EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo.buffer, testInfo.size));
+            EXPECT_EQ(receiver->bufferSize(), testInfo->size);
+            EXPECT_EQ(0, memcmp(receiver->buffer(), testInfo->buffer, testInfo->size));
             delete receiver;
             break;
         }
@@ -152,10 +161,19 @@ void testSendReceive(uintptr_t size)
 void testSendBuffer()
 {
     const uintptr_t MAX_TEST_BUFFER_SIZE = MAX_TEST_BUFFER_SIZE * 2 + 1;
-    testSendReceive(1);
-//     for (uintptr_t testBufferSize = 1; testBufferSize < MAX_TEST_BUFFER_SIZE; testBufferSize++) {
-//         testSendReceive(testBufferSize);
-//     }
+    uintptr_t mainThread = System::getThreadID();
+//     TestInfo testInfo1(mainThread, 1);
+     uintptr_t tid = syscall_mthread_create_with_arg(sendThread, NULL);
+
+//     testSendReceive(tid, &testInfo1);
+
+//     TestInfo testInfo2(mainThread, 1);
+//     testSendReceive(tid, &testInfo2);
+    for (uintptr_t testBufferSize = 0; testBufferSize < 1// MAX_TEST_BUFFER_SIZE
+             ; testBufferSize++) {
+        TestInfo testInfo(mainThread, testBufferSize);
+        testSendReceive(tid, &testInfo);
+    }
     // todo check pid
     // todo zero size
 }
