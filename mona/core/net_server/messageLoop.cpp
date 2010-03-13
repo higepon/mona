@@ -33,6 +33,7 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include "messageLoop.h"
+#include <servers/net.h>
 
 using namespace MonAPI;
 
@@ -48,7 +49,12 @@ static void __fastcall messageLoop(void* arg)
         if (Message::receive(&msg) != M_OK) {
             continue;
         }
-        _printf("message = %d", msg.header);
+        switch (msg.header) {
+        case MSG_NET_SOCKET_RECV:
+            _printf("recv %d %d %d", msg.arg1, msg.arg2, msg.arg3);
+
+            break;
+        }
     }
 }
 

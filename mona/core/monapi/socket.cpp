@@ -31,13 +31,14 @@
 #include <sys/socket.h>
 #include <monapi.h>
 #include <monapi/messages.h>
+#include <servers/net.h>
 
 using namespace MonAPI;
 
-int recv(int s, void *mem, size_t len, int flags)
+int recv(int sockfd, void *mem, size_t len, int flags)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
-    if (Message::send(id, 3) != M_OK) {
+    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
         return EBADF;
     }
     // find net_server
