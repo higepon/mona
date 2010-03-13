@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------*/
 
 #include <monapi/Message.h>
+#include <monapi/BufferReceiver.h>
 #include <monapi/syscall.h>
 #include <monapi/string.h>
 #include <monapi/Assert.h>

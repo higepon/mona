@@ -9,6 +9,7 @@
 #include <monapi/Server.h>
 #include <monapi/System.h>
 #include <monapi/Message.h>
+#include <monapi/BufferReceiver.h>
 #include <monapi/messages.h>
 #include <monapi/MonaApplication.h>
 #include <monapi/MemoryMap.h>
