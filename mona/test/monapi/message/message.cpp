@@ -10,8 +10,6 @@ enum {
     MSG_SEND_TEST
 };
 
-
-
 struct TestInfo
 {
     TestInfo(uintptr_t mainThread, uintptr_t size) : mainThread(mainThread), size(size)
@@ -56,7 +54,6 @@ void testSendReceive(uintptr_t tid, TestInfo* testInfo)
     delete receiver;
 }
 
-
 void testSendBuffer()
 {
     const uintptr_t MAX_TEST_BUFFER_SIZE = MESSAGE_INFO_MAX_STR_LENGTH * 2 + 1;
@@ -71,8 +68,6 @@ void testSendBuffer()
 
 int main(int argc, char *argv[])
 {
-//    DebuggerService::breakpoint();
-
     testSendBuffer();
     TEST_RESULTS(monapi_message);
     return 0;
