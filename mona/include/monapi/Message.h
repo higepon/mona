@@ -5,6 +5,48 @@
 
 namespace MonAPI {
 
+    class BufferReceiver
+    {
+    public:
+        BufferReceiver(uintptr_t bufferSize) : buffer_(new uint8_t[bufferSize]),
+                                               bufferSize_(bufferSize),
+                                               receivedSize_(0)
+            {
+            }
+        ~BufferReceiver()
+            {
+                delete[] buffer_;
+            }
+
+        uintptr_t bufferSize() const
+            {
+                return bufferSize_;
+            }
+
+        bool isDone() const
+            {
+                return bufferSize_ == receivedSize_;
+            }
+
+        uint8_t* buffer() const
+            {
+                return buffer_;
+            }
+
+        uintptr_t restSizeToReceive() const
+            {
+                return bufferSize_ - receivedSize_;
+            }
+
+        bool receive(const void* source, uintptr_t maxSourceSize);
+
+    private:
+        uint8_t* buffer_;
+        uintptr_t bufferSize_;
+        uintptr_t receivedSize_;
+    };
+
+
 /*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
@@ -19,6 +61,7 @@ public:
     static int send(uint32_t tid, uint32_t header, uint32_t arg1 = 0, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static intptr_t sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize);
     static int receive(MessageInfo* info);
+    static BufferReceiver* receiveBuffer(uintptr_t tid);
     static int reply(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static int replyError(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static int peek(MessageInfo* info, int index, int flags = 0);

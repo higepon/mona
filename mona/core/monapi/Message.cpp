@@ -5,9 +5,18 @@
 #include <monapi/Message.h>
 #include <monapi/syscall.h>
 #include <monapi/string.h>
+#include <monapi/Assert.h>
 #include <sys/error.h>
 
 namespace MonAPI {
+
+    bool BufferReceiver::receive(const void* source, uintptr_t maxSourceSize)
+    {
+        uintptr_t sizeToReceive = maxSourceSize > restSizeToReceive() ? restSizeToReceive() : maxSourceSize;
+        memcpy(buffer_ + receivedSize_, source, sizeToReceive);
+        receivedSize_ += sizeToReceive;
+    }
+
 
 int Message::send(uint32_t tid, MessageInfo* info)
 {
@@ -157,6 +166,46 @@ intptr_t Message::sendBuffer(uintptr_t dest, const void* buffer, uintptr_t buffe
         }
         if (sentSize == bufferSize) {
             return M_OK;
+        }
+    }
+}
+
+static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
+{
+    if (msg1->header == Message::MSG_SEND_BUFFER_PACKET ||
+        msg1->header == Message::MSG_SEND_BUFFER_START) {
+        if (msg1->from == msg2->from) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+// caller should delete BufferReceiver.
+BufferReceiver* Message::receiveBuffer(uintptr_t tid)
+{
+    for (;;) {
+        MessageInfo expectedMsg;
+        expectedMsg.from = tid;
+        MessageInfo msg;
+        if (Message::receive(&msg, &expectedMsg, isSendBufferPacket) != M_OK) {
+            continue;
+        }
+
+        BufferReceiver* receiver;
+        if (msg.header == Message::MSG_SEND_BUFFER_START) {
+            uintptr_t bufferSize = msg.arg1;
+            receiver = new BufferReceiver(bufferSize);
+            receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
+        } else if (msg.header == Message::MSG_SEND_BUFFER_PACKET) {
+            ASSERT(receiver != NULL);
+            receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
+        }
+        if (receiver->isDone()) {
+            return receiver;
         }
     }
 }
