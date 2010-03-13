@@ -38,11 +38,17 @@ using namespace MonAPI;
 
 static void __fastcall messageLoop(void* arg)
 {
+    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN")) {
+        _printf("net server can't notify to MONITOR");
+        exit(-1);
+    }
+
     for (;;) {
         MessageInfo msg;
         if (Message::receive(&msg) != M_OK) {
             continue;
         }
+        _printf("message = %d", msg.header);
     }
 }
 

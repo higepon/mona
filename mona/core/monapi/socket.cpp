@@ -29,9 +29,17 @@
  */
 
 #include <sys/socket.h>
+#include <monapi.h>
+#include <monapi/messages.h>
+
+using namespace MonAPI;
 
 int recv(int s, void *mem, size_t len, int flags)
 {
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    if (Message::send(id, 3) != M_OK) {
+        return EBADF;
+    }
     // find net_server
     // send recv_msg
     // send buffer

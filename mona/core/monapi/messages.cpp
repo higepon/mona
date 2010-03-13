@@ -40,7 +40,7 @@ uint32_t monapi_get_server_thread_id(int id)
 
         // quick hack.
         if (id == ID_NET_SERVER) {
-            server_ids[id] = server_ids[id] + 1;
+            server_ids[id] = server_ids[id] + 2;
         }
     }
     return server_ids[id];
