@@ -32,5 +32,5 @@
 
 int recv(int s, void *mem, size_t len, int flags)
 {
-    return 0;
+    return EINVAL;
 }

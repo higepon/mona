@@ -2,12 +2,14 @@
 #include <map>
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
-#include <monapi/net.h>
+#include <sys/socket.h>
 
 using namespace MonAPI;
 
 int main(int argc, char *argv[])
 {
+    EXPECT_EQ(EINVAL, recv(-1, NULL, 0, 0));
+
     TEST_RESULTS(monapi_socket);
     return 0;
 }
