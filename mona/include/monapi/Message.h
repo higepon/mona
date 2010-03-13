@@ -9,8 +9,12 @@ namespace MonAPI {
     Message
 ----------------------------------------------------------------------*/
 class Message {
-
 public:
+    enum
+    {
+        MSG_SEND_BUFFER_START = 0xd0b29ce, /* BUF:STT */
+        MSG_SEND_BUFFER_PACKET = 0xd0af54e /* BUF:PKT */
+    };
     static int send(uint32_t tid, MessageInfo* info);
     static int send(uint32_t tid, uint32_t header, uint32_t arg1 = 0, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static int receive(MessageInfo* info);

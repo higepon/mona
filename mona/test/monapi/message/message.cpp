@@ -7,8 +7,6 @@
 using namespace MonAPI;
 
 enum {
-    MSG_SEND_BUFFER_START,
-    MSG_SEND_BUFFER_PACKET,
     MSG_SEND_TEST
 };
 
@@ -16,16 +14,16 @@ enum {
 static intptr_t sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize)
 {
     MessageInfo msg;
-    msg.header = MSG_SEND_BUFFER_START;
+    msg.header = Message::MSG_SEND_BUFFER_START;
     msg.arg1 = bufferSize;
     uintptr_t sentSize = 0;
     bool isFirst = true;
     for (;;) {
         if (isFirst) {
-            msg.header = MSG_SEND_BUFFER_START;
+            msg.header = Message::MSG_SEND_BUFFER_START;
             isFirst = false;
         } else {
-            msg.header = MSG_SEND_BUFFER_PACKET;
+            msg.header = Message::MSG_SEND_BUFFER_PACKET;
         }
         uintptr_t restSize = bufferSize - sentSize;
         uintptr_t sizeToSend = restSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : restSize;
@@ -124,8 +122,8 @@ private:
 
 static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
 {
-    if (msg1->header == MSG_SEND_BUFFER_PACKET ||
-        msg1->header == MSG_SEND_BUFFER_START) {
+    if (msg1->header == Message::MSG_SEND_BUFFER_PACKET ||
+        msg1->header == Message::MSG_SEND_BUFFER_START) {
         if (msg1->from == msg2->from) {
             return true;
         } else {
@@ -148,11 +146,11 @@ static BufferReceiver* receiveBufferFrom(uintptr_t tid)
         }
 
         BufferReceiver* receiver;
-        if (msg.header == MSG_SEND_BUFFER_START) {
+        if (msg.header == Message::MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
             receiver = new BufferReceiver(bufferSize);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
-        } else if (msg.header == MSG_SEND_BUFFER_PACKET) {
+        } else if (msg.header == Message::MSG_SEND_BUFFER_PACKET) {
             ASSERT_TRUE(receiver != NULL);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         }
