@@ -134,4 +134,31 @@ uint32_t Message::lookupMainThread()
     return syscall_lookup_main_thread(NULL);
 }
 
+intptr_t Message::sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize)
+{
+    MessageInfo msg;
+    msg.header = Message::MSG_SEND_BUFFER_START;
+    msg.arg1 = bufferSize;
+    uintptr_t sentSize = 0;
+    bool isFirst = true;
+    for (;;) {
+        if (isFirst) {
+            msg.header = Message::MSG_SEND_BUFFER_START;
+            isFirst = false;
+        } else {
+            msg.header = Message::MSG_SEND_BUFFER_PACKET;
+        }
+        uintptr_t restSize = bufferSize - sentSize;
+        uintptr_t sizeToSend = restSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : restSize;
+        memcpy(msg.str, (uint8_t*)buffer + sentSize, sizeToSend);
+        sentSize += sizeToSend;
+        if (Message::send(dest, &msg) != M_OK) {
+            return M_BUSY;
+        }
+        if (sentSize == bufferSize) {
+            return M_OK;
+        }
+    }
+}
+
 }

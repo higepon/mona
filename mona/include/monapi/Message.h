@@ -17,6 +17,7 @@ public:
     };
     static int send(uint32_t tid, MessageInfo* info);
     static int send(uint32_t tid, uint32_t header, uint32_t arg1 = 0, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
+    static intptr_t sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize);
     static int receive(MessageInfo* info);
     static int reply(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static int replyError(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);

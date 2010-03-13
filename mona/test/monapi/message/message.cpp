@@ -11,32 +11,6 @@ enum {
 };
 
 
-static intptr_t sendBuffer(uintptr_t dest, const void* buffer, uintptr_t bufferSize)
-{
-    MessageInfo msg;
-    msg.header = Message::MSG_SEND_BUFFER_START;
-    msg.arg1 = bufferSize;
-    uintptr_t sentSize = 0;
-    bool isFirst = true;
-    for (;;) {
-        if (isFirst) {
-            msg.header = Message::MSG_SEND_BUFFER_START;
-            isFirst = false;
-        } else {
-            msg.header = Message::MSG_SEND_BUFFER_PACKET;
-        }
-        uintptr_t restSize = bufferSize - sentSize;
-        uintptr_t sizeToSend = restSize > MESSAGE_INFO_MAX_STR_LENGTH ? MESSAGE_INFO_MAX_STR_LENGTH : restSize;
-        memcpy(msg.str, (uint8_t*)buffer + sentSize, sizeToSend);
-        sentSize += sizeToSend;
-        if (Message::send(dest, &msg) != M_OK) {
-            return M_BUSY;
-        }
-        if (sentSize == bufferSize) {
-            return M_OK;
-        }
-    }
-}
 
 struct TestInfo
 {
@@ -64,8 +38,7 @@ static void __fastcall sendThread(void* arg)
         if (msg.header == MSG_SEND_TEST) {
             TestInfo* testInfo = (TestInfo*)msg.arg1;
             memset(testInfo->buffer, 0xc1, testInfo->size);
-//    intptr_t ret = Message::sendBuffer((uintptr_t)mainThread, buffer, BUFFER_SIZE);
-            intptr_t ret =sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
+            intptr_t ret = Message::sendBuffer(testInfo->mainThread, testInfo->buffer, testInfo->size);
             EXPECT_EQ(M_OK, ret);
         }
     }
