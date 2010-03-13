@@ -65,6 +65,8 @@ using namespace MonAPI;
 extern "C" {
 #include "shell.h"
 };
+
+#include "messageLoop.h"
 //#include "private_mib.h"
 
 /* (manual) host IP configuration */
@@ -199,6 +201,10 @@ int main(int argc, char **argv)
   netif_set_default(&netif);
   netif_set_up(&netif);
 
+  // N.B.
+  //  This thread should be the first.
+  //  thread id of the thread should be "main_thread_id + 1"
+  message_loop_init();
 
 #if SNMP_PRIVATE_MIB != 0
   /* initialize our private example MIB */
@@ -210,6 +216,7 @@ int main(int argc, char **argv)
 //   snmp_set_syslocation(syslocation_str,&syslocation_len);
 //   snmp_set_snmpenableauthentraps(&snmpauthentraps_set);
 //   snmp_init();
+
 
   echo_init();
   socket_examples_init();

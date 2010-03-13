@@ -2,7 +2,7 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET     = NET
-SOURCES    = main.cpp timer.cpp etherif.cpp
+SOURCES    = main.cpp timer.cpp etherif.cpp messageLoop.cpp
 CSOURCES   = \
 sys_arch.c \
 echo.c \
