@@ -8,7 +8,7 @@ using namespace MonAPI;
 
 int main(int argc, char *argv[])
 {
-    EXPECT_EQ(EINVAL, recv(-1, NULL, 0, 0));
+    EXPECT_EQ(EINVAL, send(-1, NULL, 0, 0));
 
     TEST_RESULTS(monapi_socket);
     return 0;

@@ -50,9 +50,12 @@ static void __fastcall messageLoop(void* arg)
             continue;
         }
         switch (msg.header) {
-        case MSG_NET_SOCKET_RECV:
-            _printf("recv %d %d %d", msg.arg1, msg.arg2, msg.arg3);
-
+        case MSG_NET_SOCKET_SEND:
+            int sockfd = msg.arg1;
+            size_t len = msg.arg2;
+            int flags = msg.arg3;
+            BufferReceiver* receiver = Message::receiveBuffer(msg.from);
+            send(sockfd, receiver->buffer(), len, flags);
             break;
         }
     }

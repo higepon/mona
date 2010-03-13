@@ -35,10 +35,14 @@
 
 using namespace MonAPI;
 
-int recv(int sockfd, void *mem, size_t len, int flags)
+int send(int sockfd, void* buf, size_t len, int flags)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
-    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
+    if (Message::send(id, MSG_NET_SOCKET_SEND, sockfd, len, flags) != M_OK) {
+        return EBADF;
+    }
+
+    if (Message::sendBuffer(id, buf, len) != M_OK) {
         return EBADF;
     }
     // find net_server

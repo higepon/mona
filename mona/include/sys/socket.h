@@ -37,7 +37,8 @@
 extern "C" {
 #endif
 
-int recv(int s, void *mem, size_t len, int flags);
+int recv(int sockfd, void* buf, size_t len, int flags);
+int send(int sockfd, void* buf, size_t len, int flags);
 
 /* copied from lwip/err.h */
 #define  EPERM     1  /* Operation not permitted */
