@@ -32,5 +32,9 @@
 
 int recv(int s, void *mem, size_t len, int flags)
 {
+    // find net_server
+    // send recv_msg
+    // send buffer
+    // receve return value
     return EINVAL;
 }
