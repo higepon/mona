@@ -37,6 +37,11 @@ uint32_t monapi_get_server_thread_id(int id)
         {
            MONAPI_WARN("ERROR: can not connect to %s", server_names[id]);
         }
+
+        // quick hack.
+        if (id == ID_NET_SERVER) {
+            server_ids[id] = server_ids[id] + 1;
+        }
     }
     return server_ids[id];
 }
