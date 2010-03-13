@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1)) exit(1);
 
     /* Server start ok */
-    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
     {
         MONAPI_WARN("MONITOR not found");
         exit(-1);

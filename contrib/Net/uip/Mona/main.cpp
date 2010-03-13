@@ -84,7 +84,7 @@ extern "C" void dev_send()
 int main(int argc, char* argv[])
 {
     // OK, I've started up.
-    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
     {
         _printf("[uIP]: MONITOR server doesn't exist\n");
         exit(-1);

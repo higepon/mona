@@ -413,21 +413,21 @@ uint32_t monapi_process_wait_terminated(uint32_t tid)
     return MONA_FAILURE;
 }
 
-MONAPI_BOOL monapi_notify_server_start(const char* name)
+intptr_t monapi_notify_server_start(const char* name)
 {
     uint32_t targetID = Message::lookupMainThread(name);
 
     if (targetID == THREAD_UNKNOWN)
     {
         MONAPI_WARN("%s:INIT not found", name);
-        return MONAPI_FALSE;
+        return M_NAME_NOT_FOUND;
     }
 
     /* send */
     if(Message::send(targetID, MSG_SERVER_START_OK))
     {
         MONAPI_WARN("%s:INIT error", name);
-        return MONAPI_FALSE;
+        return M_NAME_NOT_FOUND;
     }
-    return MONAPI_TRUE;
+    return M_OK;
 }

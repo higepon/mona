@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
 
     monitor.Initialize();
 
-    if (MONAPI_FALSE == monapi_notify_server_start("INIT"))
+    if (monapi_notify_server_start("INIT") != M_OK)
     {
         exit(-1);
     }

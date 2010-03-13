@@ -172,7 +172,7 @@ static void outLoop()
 int main(int argc, char* argv[])
 {
     parser = new CommandParser(new ScreenWriter());
-    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
     {
         exit(-1);
     }

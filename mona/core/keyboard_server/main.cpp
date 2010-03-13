@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     List<uint32_t>* destList = new HList<uint32_t>();
     MessageInfo info;
 
-    if (MONAPI_FALSE == monapi_notify_server_start("MONITOR.BIN"))
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
     {
         exit(-1);
     }

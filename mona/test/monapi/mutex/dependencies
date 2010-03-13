@@ -13,6 +13,7 @@ mutex.o: mutex.cpp /home/taro/mona.git/mona/include/monapi.h \
   /home/taro/mona.git/mona/include/monapi/Mutex.h \
   /home/taro/mona.git/mona/include/monapi/Assert.h \
   /home/taro/mona.git/mona/include/monapi/Message.h \
+  /home/taro/mona.git/mona/include/monapi/BufferReceiver.h \
   /home/taro/mona.git/mona/include/monapi/messages.h \
   /home/taro/mona.git/mona/include/monapi/cmemoryinfo.h \
   /home/taro/mona.git/mona/include/servers/keyboard.h \
