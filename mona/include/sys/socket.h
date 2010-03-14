@@ -38,6 +38,23 @@ extern "C" {
 #endif
 
 int recv(int sockfd, void* buf, size_t len, int flags);
+
+/*
+   function: send
+
+   Waits on the condition.
+
+   Parameters:
+
+     sockfd - sockeet
+     buf - buffer
+     len - buffer size
+     flags - flags
+
+   Returns:
+     Returns 0 if successfully sent. otherwise returns -1 and errno is set.
+
+*/
 int send(int sockfd, void* buf, size_t len, int flags);
 
 /* copied from lwip/err.h */
