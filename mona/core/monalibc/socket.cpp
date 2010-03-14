@@ -36,6 +36,11 @@
 
 using namespace MonAPI;
 
+int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
+{
+
+}
+
 int send(int sockfd, void* buf, size_t len, int flags)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);

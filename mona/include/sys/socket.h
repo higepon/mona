@@ -37,6 +37,28 @@
 extern "C" {
 #endif
 
+typedef uint8_t u8_t;
+
+struct sockaddr {
+  u8_t sa_len;
+  u8_t sa_family;
+  char sa_data[14];
+};
+
+struct addrinfo {
+    int               ai_flags;      /* Input flags. */
+    int               ai_family;     /* Address family of socket. */
+    int               ai_socktype;   /* Socket type. */
+    int               ai_protocol;   /* Protocol of socket. */
+    socklen_t         ai_addrlen;    /* Length of socket address. */
+    struct sockaddr  *ai_addr;       /* Socket address of socket. */
+    char             *ai_canonname;  /* Canonical name of service location. */
+    struct addrinfo  *ai_next;       /* Pointer to next in list. */
+};
+
+
+int connect(int sockfd, const struct sockaddr* name, socklen_t namelen);
+
 int recv(int sockfd, void* buf, size_t len, int flags);
 
 /*
