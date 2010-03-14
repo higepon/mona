@@ -33,6 +33,7 @@
 #define __LWIPOPTS_H__
 
 #define LWIP_PROVIDE_ERRNO 1
+#define ERRNO 1
 
 /* <sys/time.h> is included in cc.h! */
 #define LWIP_DNS                        1

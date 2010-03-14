@@ -46,7 +46,6 @@ SOURCES = monapi_impl.cpp \
           terminal/CommandParser.cpp \
           terminal/Util.cpp \
           net.cpp \
-          socket.cpp \
           BufferReceiver.cpp \
           text/Line.cpp
 CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c

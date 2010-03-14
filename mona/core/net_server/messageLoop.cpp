@@ -55,7 +55,10 @@ static void __fastcall messageLoop(void* arg)
             size_t len = msg.arg2;
             int flags = msg.arg3;
             BufferReceiver* receiver = Message::receiveBuffer(msg.from);
-            send(sockfd, receiver->buffer(), len, flags);
+            int ret = send(sockfd, receiver->buffer(), len, flags);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
             break;
         }
     }

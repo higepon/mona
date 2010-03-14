@@ -35,3 +35,4 @@ extern "C" void stream_opener()
     stdout->_stream = outStream;
     stderr->_stream = outStream;
 }
+

@@ -32,6 +32,7 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <servers/net.h>
+#include <monalibc/errno.h>
 
 using namespace MonAPI;
 
@@ -45,9 +46,15 @@ int send(int sockfd, void* buf, size_t len, int flags)
     if (Message::sendBuffer(id, buf, len) != M_OK) {
         return EBADF;
     }
-    // find net_server
-    // send recv_msg
-    // send buffer
-    // receve return value
-    return EINVAL;
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_SOCKET_SEND;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
 }

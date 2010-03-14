@@ -14,7 +14,7 @@ endif
 
 include src.inc
 
-OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o stdio/boshi/filelist.o
+OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o stdio/boshi/filelist.o socket.o
 INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc -DMONA
 
 LINK = -L$(SRCTOP)/lib -lmonapi-imp
@@ -56,6 +56,10 @@ crt/dllmain.o: crt/dllmain.cpp
 
 stdio/stream.o: stdio/stream.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
+
+socket.o: socket.cpp
+	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
+
 stdio/boshi/filelist.o: stdio/boshi/filelist.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) $(CXXFLAGS) -fno-builtin
 
