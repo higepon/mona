@@ -3,6 +3,7 @@
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 #include <sys/socket.h>
+#include <netdb.h>
 #include <errno.h>
 
 using namespace MonAPI;

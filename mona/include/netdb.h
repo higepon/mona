@@ -1,7 +1,7 @@
 /*
- * socket.cpp - BSD socket
+ * netdb.h
  *
- *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
+ *   Copyright (c) 2010 Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -28,51 +28,25 @@
  *
  */
 
-#include <sys/socket.h>
-#include <netdb.h>
-#include <monapi.h>
-#include <monapi/messages.h>
-#include <servers/net.h>
-#include <monalibc/errno.h>
+#ifndef NET_DB_
+#define NET_DB_
 
-using namespace MonAPI;
+#include <sys/types.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints,
-                struct addrinfo **res)
-{
-    return 0;
+                struct addrinfo **res);
+
+void freeaddrinfo(struct addrinfo *res);
+
+
+#ifdef __cplusplus
 }
+#endif
 
-void freeaddrinfo(struct addrinfo *res)
-{
+#endif /* NET_DB_ */
 
-}
-
-int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
-{
-
-}
-
-int send(int sockfd, void* buf, size_t len, int flags)
-{
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
-    if (Message::send(id, MSG_NET_SOCKET_SEND, sockfd, len, flags) != M_OK) {
-        return EBADF;
-    }
-
-    if (Message::sendBuffer(id, buf, len) != M_OK) {
-        return EBADF;
-    }
-
-    MessageInfo src;
-    MessageInfo dst;
-    src.from = id;
-    src.header = MSG_RESULT_OK;
-    src.arg1 = MSG_NET_SOCKET_SEND;
-    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
-        return EBADF;
-    }
-    errno = dst.arg3;
-    return dst.arg2;
-}

@@ -38,12 +38,26 @@ extern "C" {
 #endif
 
 typedef uint8_t u8_t;
+typedef uint32_t u32_t;
+#ifndef socklen_t
+#  define socklen_t u32_t
+#endif
 
 struct sockaddr {
   u8_t sa_len;
   u8_t sa_family;
   char sa_data[14];
 };
+
+/* Socket protocol types (TCP/UDP/RAW) */
+#define SOCK_STREAM     1
+#define SOCK_DGRAM      2
+#define SOCK_RAW        3
+
+#define AF_UNSPEC       0
+#define AF_INET         2
+#define PF_INET         AF_INET
+#define PF_UNSPEC       AF_UNSPEC
 
 struct addrinfo {
     int               ai_flags;      /* Input flags. */
@@ -55,11 +69,6 @@ struct addrinfo {
     char             *ai_canonname;  /* Canonical name of service location. */
     struct addrinfo  *ai_next;       /* Pointer to next in list. */
 };
-
-
-int connect(int sockfd, const struct sockaddr* name, socklen_t namelen);
-
-int recv(int sockfd, void* buf, size_t len, int flags);
 
 /*
    function: send
