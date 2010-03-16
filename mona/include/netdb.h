@@ -43,7 +43,6 @@ int getaddrinfo(const char *node, const char *service,
 
 void freeaddrinfo(struct addrinfo *res);
 
-
 #ifdef __cplusplus
 }
 #endif

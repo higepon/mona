@@ -25,6 +25,8 @@ static void testGetAddrInfo()
     hints.ai_family = AF_INET;
 
     EXPECT_EQ(0, getaddrinfo("www.monaos.org", "80", &hints, &res));
+    EXPECT_EQ(SOCK_STREAM, res->ai_socktype);
+    EXPECT_EQ(AF_INET, res->ai_family);
     freeaddrinfo(res);
 }
 

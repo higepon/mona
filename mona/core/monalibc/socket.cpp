@@ -37,16 +37,54 @@
 
 using namespace MonAPI;
 
+typedef struct GetaddrinfoPacket {
+    uintptr_t nodeLen;
+    struct addrinfo hints;
+    char data[0];
+} GetaddrinfoPacket;
+
 int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints,
                 struct addrinfo **res)
 {
-    return 0;
+    // construct addrinfo to struct
+    uintptr_t nodeLen = strlen(node) + 1;
+    uintptr_t serviceLen = strlen(service) + 1;
+    uintptr_t structSize = sizeof(GetaddrinfoPacket) + nodeLen + serviceLen;
+    uint8_t* p = new uint8_t[structSize];
+    GetaddrinfoPacket* pack = (GetaddrinfoPacket*)p;
+    pack->nodeLen = nodeLen;
+    pack->hints = *hints;
+    strcpy(pack->data, node);
+    strcpy(pack->data + nodeLen, service);
+
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    if (Message::send(id, MSG_NET_GET_ADDR_INFO) != M_OK) {
+        return EBADF;
+    }
+    if (Message::sendBuffer(id, p, structSize) != M_OK) {
+        return EBADF;
+    }
+    BufferReceiver* receiver = Message::receiveBuffer(id);
+    ASSERT(receiver->bufferSize() == sizeof(addrinfo) || receiver->bufferSize() == 0);
+    if (receiver->bufferSize() != 0) {
+        *res = new struct addrinfo;
+        **res = *((struct addrinfo*)receiver->buffer());
+    }
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_GET_ADDR_INFO;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    return dst.arg2;
 }
 
 void freeaddrinfo(struct addrinfo *res)
 {
-
+    delete res;
 }
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)

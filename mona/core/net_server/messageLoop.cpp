@@ -31,11 +31,20 @@
 #include "monapi.h"
 #include "lwip/opt.h"
 #include "lwip/sockets.h"
+extern "C" {
+#include "lwip/netdb.h"
+}
 #include "lwip/sys.h"
 #include "messageLoop.h"
 #include <servers/net.h>
 
 using namespace MonAPI;
+
+typedef struct GetaddrinfoPacket {
+    uintptr_t nodeLen;
+    struct addrinfo hints;
+    char data[0];
+} GetaddrinfoPacket;
 
 static void __fastcall messageLoop(void* arg)
 {
@@ -51,15 +60,45 @@ static void __fastcall messageLoop(void* arg)
         }
         switch (msg.header) {
         case MSG_NET_SOCKET_SEND:
+        {
             int sockfd = msg.arg1;
             size_t len = msg.arg2;
             int flags = msg.arg3;
             BufferReceiver* receiver = Message::receiveBuffer(msg.from);
             int ret = send(sockfd, receiver->buffer(), len, flags);
+            delete receiver;
             if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             break;
+        }
+        case MSG_NET_GET_ADDR_INFO:
+        {
+            BufferReceiver* receiver = Message::receiveBuffer(msg.from);
+            if (receiver->bufferSize() <= sizeof(GetaddrinfoPacket)) {
+                MONAPI_WARN("getaddrinfoPacket is too small");
+                break;
+            }
+            GetaddrinfoPacket* packet = (GetaddrinfoPacket*)receiver->buffer();
+            struct addrinfo *res;
+            int ret = getaddrinfo(packet->data, packet->data + packet->nodeLen, &packet->hints, &res);
+            delete receiver;
+
+            if (ret == 0) {
+                if (Message::sendBuffer(msg.from, res, sizeof(addrinfo)) != M_OK) {
+                    MONAPI_WARN("failed to send buffer %s:%d", __func__, __LINE__);
+                }
+            } else {
+                if (Message::sendBuffer(msg.from, NULL, 0) != M_OK) {
+                    MONAPI_WARN("failed to send buffer %s:%d", __func__, __LINE__);
+                }
+            }
+            freeaddrinfo(res);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s:%d", __func__, __LINE__);
+            }
+            break;
+        }
         }
     }
 }
