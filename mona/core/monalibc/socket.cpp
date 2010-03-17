@@ -94,7 +94,12 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 
 int socket(int domain, int type, int protocol)
 {
-    return -1;
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    MessageInfo ret;
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SOCK, domain, type, protocol) != M_OK) {
+        return EINVAL;
+    }
+    return ret.arg2;
 }
 
 int send(int sockfd, void* buf, size_t len, int flags)

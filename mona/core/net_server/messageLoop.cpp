@@ -59,6 +59,17 @@ static void __fastcall messageLoop(void* arg)
             continue;
         }
         switch (msg.header) {
+        case MSG_NET_SOCKET_SOCK:
+        {
+            int domain = msg.arg1;
+            int type = msg.arg2;
+            int protocol = msg.arg3;
+            int ret = socket(domain, type, protocol);
+            if (Message::reply(&msg, ret) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_SEND:
         {
             int sockfd = msg.arg1;
