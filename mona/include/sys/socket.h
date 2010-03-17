@@ -105,6 +105,23 @@ int send(int sockfd, void* buf, size_t len, int flags);
 */
 int socket(int domain, int type, int protocol);
 
+/*
+   function: connect
+
+   connect
+
+   Parameters:
+
+     sockfd - socket
+     addr - address
+     addrlen - length of address
+
+   Returns:
+     Returns 0 if successfully sent. otherwise returns -1 and errno is set.
+
+*/
+int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
 /* copied from lwip/err.h */
 #define  EPERM     1  /* Operation not permitted */
 #define  ENOENT     2  /* No such file or directory */
@@ -261,4 +278,3 @@ int socket(int domain, int type, int protocol);
 #endif
 
 #endif /* SYS_SOCKET_*/
-

@@ -89,7 +89,7 @@ void freeaddrinfo(struct addrinfo *res)
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 {
-
+    return -1;
 }
 
 int socket(int domain, int type, int protocol)
