@@ -66,11 +66,15 @@ int getaddrinfo(const char *node, const char *service,
         return EBADF;
     }
     BufferReceiver* receiver = Message::receiveBuffer(id);
-    ASSERT(receiver->bufferSize() == sizeof(addrinfo) || receiver->bufferSize() == 0);
     if (receiver->bufferSize() != 0) {
-        *res = new struct addrinfo;
-        **res = *((struct addrinfo*)receiver->buffer());
+        struct addrinfo* ainfo = new struct addrinfo;
+        memcpy(ainfo, receiver->buffer(), sizeof(struct addrinfo));
+        ainfo->ai_addr = (struct sockaddr*)(new uint8_t[ainfo->ai_addrlen]);
+        memcpy(ainfo->ai_addr, receiver->buffer() + sizeof(struct addrinfo), ainfo->ai_addrlen);
+        ASSERT(receiver->bufferSize() == (sizeof(struct addrinfo) + ainfo->ai_addrlen));
+        *res = ainfo;
     }
+    delete receiver;
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
@@ -89,7 +93,25 @@ void freeaddrinfo(struct addrinfo *res)
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 {
-    return -1;
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    if (Message::send(id, MSG_NET_SOCKET_CONN, sockfd, namelen) != M_OK) {
+        return EBADF;
+    }
+
+    if (Message::sendBuffer(id, name, namelen) != M_OK) {
+        return EBADF;
+    }
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_SOCKET_CONN;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
 }
 
 int socket(int domain, int type, int protocol)

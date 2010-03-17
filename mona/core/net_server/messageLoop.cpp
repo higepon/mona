@@ -59,6 +59,19 @@ static void __fastcall messageLoop(void* arg)
             continue;
         }
         switch (msg.header) {
+        case MSG_NET_SOCKET_CONN:
+        {
+            int sockfd = msg.arg1;
+            socklen_t namelen = msg.arg2;
+            BufferReceiver* receiver = Message::receiveBuffer(msg.from);
+            int ret = connect(sockfd, (struct sockaddr*)receiver->buffer(), namelen);
+            delete receiver;
+
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_SOCK:
         {
             int domain = msg.arg1;
@@ -96,9 +109,14 @@ static void __fastcall messageLoop(void* arg)
             delete receiver;
 
             if (ret == 0) {
-                if (Message::sendBuffer(msg.from, res, sizeof(addrinfo)) != M_OK) {
+                int packetLength = res->ai_addrlen + sizeof(struct addrinfo);
+                uint8_t* packet = new uint8_t[packetLength];
+                memcpy(packet, res, sizeof(struct addrinfo));
+                memcpy(packet + sizeof(struct addrinfo), res->ai_addr, res->ai_addrlen);
+                if (Message::sendBuffer(msg.from, packet, packetLength) != M_OK) {
                     MONAPI_WARN("failed to send buffer %s:%d", __func__, __LINE__);
                 }
+                delete[] packet;
             } else {
                 if (Message::sendBuffer(msg.from, NULL, 0) != M_OK) {
                     MONAPI_WARN("failed to send buffer %s:%d", __func__, __LINE__);
