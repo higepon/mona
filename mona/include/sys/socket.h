@@ -77,7 +77,7 @@ struct addrinfo {
 
    Parameters:
 
-     sockfd - sockeet
+     sockfd - socket
      buf - buffer
      len - buffer size
      flags - flags
@@ -87,6 +87,23 @@ struct addrinfo {
 
 */
 int send(int sockfd, void* buf, size_t len, int flags);
+
+/*
+   function: socket
+
+   Creates socket
+
+   Parameters:
+
+     domain - domain
+     type - type
+     protocol - protocol
+
+   Returns:
+     Returns socket if successfully created. otherwise returns -1 and errno is set.
+
+*/
+int socket(int domain, int type, int protocol);
 
 /* copied from lwip/err.h */
 #define  EPERM     1  /* Operation not permitted */

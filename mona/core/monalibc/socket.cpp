@@ -92,6 +92,11 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 
 }
 
+int socket(int domain, int type, int protocol)
+{
+    return -1;
+}
+
 int send(int sockfd, void* buf, size_t len, int flags)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);

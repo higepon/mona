@@ -30,11 +30,30 @@ static void testGetAddrInfo()
     freeaddrinfo(res);
 }
 
+static void testSocket()
+{
+    struct addrinfo hints;
+    struct addrinfo* res;
+    struct addrinfo* rp;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_INET;
+
+    EXPECT_EQ(0, getaddrinfo("api.twitter.com", "80", &hints, &res));
+
+    for (rp = res; rp != NULL; rp = rp->ai_next) {
+        int sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        EXPECT_TRUE(sock != -1);
+    }
+    freeaddrinfo(res);
+}
+
 int main(int argc, char *argv[])
 {
     testSendInvalidFd();
     testGetAddrInfo();
-
+    testSocket();
 
     TEST_RESULTS(monapi_socket);
     return 0;
