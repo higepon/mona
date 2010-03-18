@@ -96,6 +96,37 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_RECV:
+        {
+            static uint8_t* buffer = NULL;
+            static uintptr_t bufferSize = 127;
+            if (NULL == buffer) {
+                buffer = new uint8_t[bufferSize];
+            }
+
+            int sockfd = msg.arg1;
+            size_t len = msg.arg2;
+            int flags = msg.arg3;
+
+            if (len > bufferSize) {
+                if (buffer != NULL) {
+                    delete[] buffer;
+                }
+                bufferSize = len;
+                buffer = new uint8_t[bufferSize];
+            }
+
+            int ret = recv(sockfd, buffer, len, flags);
+
+            if (Message::sendBuffer(msg.from, buffer, ret > 0 ? ret : 0) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_GET_ADDR_INFO:
         {
             BufferReceiver* receiver = Message::receiveBuffer(msg.from);

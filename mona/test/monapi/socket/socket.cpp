@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <errno.h>
+#include <monapi.h>
+#include <stdio.h>
 
 using namespace MonAPI;
 
@@ -69,8 +71,46 @@ static void testConnect()
         EXPECT_EQ(0, ret);
     }
     freeaddrinfo(res);
-
 }
+
+static void testReceive()
+{
+    struct addrinfo hints;
+    struct addrinfo* res;
+    struct addrinfo* rp;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_INET;
+
+    EXPECT_EQ(0, getaddrinfo("api.twitter.com", "80", &hints, &res));
+
+    for (rp = res; rp != NULL; rp = rp->ai_next) {
+        int sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        EXPECT_TRUE(sock != -1);
+
+        int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
+        EXPECT_EQ(0, ret);
+
+        const char* message = "status=Yay! Hello, World!. Tweet from Mona OS 0.4.0";
+        const char* base64 = "";
+        char reqbuf[1024];
+        sprintf(reqbuf, "POST /1/statuses/update.xml HTTP/1.1\r\nHost: api.twitter.com\r\nAuthorization: Basic %s\r\nContent-Length: %d\r\n\r\n%s\r\n",
+                base64, strlen(message), message);
+
+        EXPECT_TRUE(send(sock, reqbuf, strlen(reqbuf), 0) > 0);
+        char buf[127];
+        int readSize = recv(sock, buf, 127, 0);
+        do {
+            for (int i = 0; i < readSize; i++) {
+                printf("%c", buf[i]);
+            }
+        } while ((readSize = recv(sock, buf, 127, 0)) > 0);
+
+    }
+    freeaddrinfo(res);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -78,6 +118,9 @@ int main(int argc, char *argv[])
     testGetAddrInfo();
     testSocket();
     testConnect();
+    testReceive();
+
+    // todo close
 
     TEST_RESULTS(monapi_socket);
     return 0;

@@ -73,7 +73,7 @@ struct addrinfo {
 /*
    function: send
 
-   Waits on the condition.
+   Send
 
    Parameters:
 
@@ -83,10 +83,29 @@ struct addrinfo {
      flags - flags
 
    Returns:
-     Returns 0 if successfully sent. otherwise returns -1 and errno is set.
+     Returns positive integer, sent size if successfully sent. otherwise returns -1 and errno is set.
 
 */
 int send(int sockfd, void* buf, size_t len, int flags);
+
+/*
+   function: recv
+
+   Receive
+
+   Parameters:
+
+     sockfd - socket
+     buf - buffer
+     len - buffer size
+     flags - flags
+
+   Returns:
+     Returns positive integer if successfully received. otherwise returns -1 and errno is set.
+
+*/
+int recv(int sockfd, void* buf, size_t len, int flags);
+
 
 /*
    function: socket

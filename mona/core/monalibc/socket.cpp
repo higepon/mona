@@ -146,3 +146,27 @@ int send(int sockfd, void* buf, size_t len, int flags)
     errno = dst.arg3;
     return dst.arg2;
 }
+
+int recv(int sockfd, void* buf, size_t len, int flags)
+{
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
+        return EBADF;
+    }
+
+    BufferReceiver* receiver = Message::receiveBuffer(id);
+    if (receiver->bufferSize() > 0) {
+        memcpy(buf, receiver->buffer(), receiver->bufferSize());
+    }
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_SOCKET_RECV;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
+}
