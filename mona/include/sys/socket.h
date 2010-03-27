@@ -71,6 +71,10 @@ struct addrinfo {
 };
 
 /*
+    Title: Socket
+    #include <sys/socket.h>
+*/
+/*
    function: send
 
    Send

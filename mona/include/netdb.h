@@ -37,10 +37,32 @@
 extern "C" {
 #endif
 
+/*
+    Title: Net DB
+    #include <netdb.h>
+*/
+
+/*
+   function: getaddrinfo
+
+   Given  node and service, which identify an Internet host and a service, getaddrinfo() returns one or more addrinfo
+   structures.
+
+*/
 int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints,
                 struct addrinfo **res);
 
+/*
+   function: freeaddrinfo
+
+   Frees the addrinfo.
+
+   Parameters:
+
+     res - addrinfo
+
+*/
 void freeaddrinfo(struct addrinfo *res);
 
 #ifdef __cplusplus

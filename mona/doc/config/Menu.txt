@@ -51,8 +51,6 @@ Don't Index: Classes
 # --------------------------------------------------------------------------
 
 
-File: System Calls  (no auto-title, core/monapi/syscall.cpp)
-
 Group: Include  {
 
    File: Errors  (include/sys/error.h)
@@ -65,9 +63,12 @@ Group: Include  {
       File: Mutex  (include/monapi/Mutex.h)
       }  # Group: Monapi
 
-   File: send  (include/sys/socket.h)
    File: servers/audio.h  (include/servers/audio.h)
+   File: Socket  (include/sys/socket.h)
    }  # Group: Include
+
+File: Net DB  (include/netdb.h)
+File: System Calls  (no auto-title, core/monapi/syscall.cpp)
 
 Group: Index  {
 
