@@ -107,6 +107,7 @@ static void testReceive()
             }
         } while ((readSize = recv(sock, buf, 127, 0)) > 0);
 
+        EXPECT_EQ(0, close(sock));
     }
     freeaddrinfo(res);
 }

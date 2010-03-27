@@ -83,6 +83,15 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_CLOSE:
+        {
+            int sockfd = msg.arg1;
+            int ret = close(sockfd);
+            if (Message::reply(&msg, ret) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_SEND:
         {
             int sockfd = msg.arg1;

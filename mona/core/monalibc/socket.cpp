@@ -124,6 +124,16 @@ int socket(int domain, int type, int protocol)
     return ret.arg2;
 }
 
+int close(int sockfd)
+{
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    MessageInfo ret;
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_CLOSE, sockfd) != M_OK) {
+        return EINVAL;
+    }
+    return ret.arg2;
+}
+
 int send(int sockfd, void* buf, size_t len, int flags)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
