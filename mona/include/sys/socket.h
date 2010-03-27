@@ -70,6 +70,24 @@ struct addrinfo {
     struct addrinfo  *ai_next;       /* Pointer to next in list. */
 };
 
+// -accept
+// -bind
+// -shutdown
+// -closesocket
+// -connect
+// -getsockname
+// -getpeername
+// -setsockopt
+// -getsockopt
+// -listen
+// -recv
+// -recvfrom
+// -send
+// -sendto
+// -socket
+// -select
+// -ioctlsocket
+
 /*
     Title: Socket
     #include <sys/socket.h>
