@@ -164,7 +164,7 @@ int socket(int domain, int type, int protocol);
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 /*
-   function: close
+   function: closesocket
 
    Close socket
 
@@ -176,7 +176,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
      Returns 0 if successfully sent. otherwise returns -1 and errno is set.
 
 */
-int close(int sockfd);
+int closesocket(int sockfd);
 
 /* copied from lwip/err.h */
 #define  EPERM     1  /* Operation not permitted */

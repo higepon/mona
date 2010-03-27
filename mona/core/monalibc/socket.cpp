@@ -124,7 +124,7 @@ int socket(int domain, int type, int protocol)
     return ret.arg2;
 }
 
-int close(int sockfd)
+int closesocket(int sockfd)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
     MessageInfo ret;
