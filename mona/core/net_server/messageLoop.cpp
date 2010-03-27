@@ -105,6 +105,21 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_SET_OPTION:
+        {
+            int sockfd = msg.arg1;
+            int level = msg.arg2;
+            int optname = msg.arg3;
+            BufferReceiver* receiver = Message::receiveBuffer(msg.from);
+            void* optval = (void*)receiver->buffer();
+            int optlen = receiver->bufferSize();
+            int ret = setsockopt(sockfd, level, optname, optval, optlen);
+            delete receiver;
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_RECV:
         {
             static uint8_t* buffer = NULL;
