@@ -73,18 +73,18 @@ struct addrinfo {
 // -accept
 // -bind
 // -shutdown
-// -closesocket
-// -connect
+// -[done]closesocket
+// -[done]connect
 // -getsockname
 // -getpeername
 // -setsockopt
 // -getsockopt
 // -listen
-// -recv
+// -[done]recv
 // -recvfrom
-// -send
+// -[done]send
 // -sendto
-// -socket
+// -[done]socket
 // -select
 // -ioctlsocket
 

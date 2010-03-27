@@ -112,6 +112,31 @@ static void testReceive()
     freeaddrinfo(res);
 }
 
+static void testSocketOption()
+{
+    struct addrinfo hints;
+    struct addrinfo* res;
+    struct addrinfo* rp;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_INET;
+
+    EXPECT_EQ(0, getaddrinfo("api.twitter.com", "80", &hints, &res));
+
+    for (rp = res; rp != NULL; rp = rp->ai_next) {
+        int sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        EXPECT_TRUE(sock != -1);
+
+        int n = 1;
+        EXPECT_EQ(0, setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n)));
+
+        int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
+        EXPECT_EQ(0, ret);
+    }
+    freeaddrinfo(res);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -120,6 +145,7 @@ int main(int argc, char *argv[])
     testSocket();
     testConnect();
     testReceive();
+    testSocketOption();
 
     // todo close
 
