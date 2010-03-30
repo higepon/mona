@@ -136,6 +136,8 @@ static void testSocketOption()
 
         int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
         EXPECT_EQ(0, ret);
+
+        EXPECT_EQ(0, shutdown(sock, SHUT_RD));
     }
     freeaddrinfo(res);
 }

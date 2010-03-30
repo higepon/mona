@@ -229,3 +229,14 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
     errno = dst.arg3;
     return dst.arg2;
 }
+
+int shutdown(int sockfd, int how)
+{
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    MessageInfo ret;
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SHUTDOWN, sockfd, how) != M_OK) {
+        return EINVAL;
+    }
+    errno = ret.arg3;
+    return ret.arg2;
+}

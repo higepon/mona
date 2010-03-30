@@ -77,8 +77,8 @@ struct addrinfo {
 // -[done]connect
 // -getsockname
 // -getpeername
-// -setsockopt
-// -getsockopt
+// -[done]setsockopt
+// -[done]getsockopt
 // -listen
 // -[done]recv
 // -recvfrom
@@ -188,7 +188,7 @@ int closesocket(int sockfd);
      sockfd - socket
 
    Returns:
-     Returns 0 if successfully sent. otherwise returns -1 and errno is set.
+     Returns 0 if successfully closed. otherwise returns -1 and errno is set.
 
 */
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
@@ -207,6 +207,26 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
 */
 int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen);
+
+/*
+   function: shutdown
+
+   shutdown the socket
+
+   Parameters:
+
+     sockfd - socket
+     how - <<SHUT_RD>>, <<SHUT_WR>> or SHUT_RDWR.
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
+int shutdown(int sockfd, int how);
+
+#define SHUT_RD 0
+#define  SHUT_WR 1
+#define SHUT_RDWR 2
 
 /* copied from lwip/sockets.h */
 /*
