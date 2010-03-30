@@ -193,6 +193,21 @@ int closesocket(int sockfd);
 */
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
 
+/*
+   function: getsockopt
+
+   Get socket option
+
+   Parameters:
+
+     sockfd - socket
+
+   Returns:
+     Returns 0 if successfully sent. otherwise returns -1 and errno is set.
+
+*/
+int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen);
+
 /* copied from lwip/sockets.h */
 /*
  * Level number for (get/set)sockopt() to apply to socket itself.

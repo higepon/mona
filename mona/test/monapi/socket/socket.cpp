@@ -128,8 +128,11 @@ static void testSocketOption()
         int sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
         EXPECT_TRUE(sock != -1);
 
-        int n = 1;
+        socklen_t n = 1;
         EXPECT_EQ(-1, setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n)));
+
+        uint8_t buf;
+        EXPECT_EQ(0, getsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &buf, &n));
 
         int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
         EXPECT_EQ(0, ret);
