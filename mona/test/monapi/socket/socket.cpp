@@ -132,7 +132,7 @@ static void testSocketOption()
         EXPECT_EQ(-1, setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n)));
 
         uint8_t buf;
-        EXPECT_EQ(0, getsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &buf, &n));
+        EXPECT_EQ(-1, getsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &buf, &n));
 
         int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
         EXPECT_EQ(0, ret);

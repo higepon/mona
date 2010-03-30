@@ -203,3 +203,29 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
     errno = dst.arg3;
     return dst.arg2;
 }
+
+int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen)
+{
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    char buf[sizeof(socklen_t)];
+    memcpy(buf, optlen, sizeof(socklen_t));
+    if (Message::send(id, MSG_NET_SOCKET_GET_OPTION, sockfd, level, optname, buf) != M_OK) {
+        return EBADF;
+    }
+
+    BufferReceiver* receiver = Message::receiveBuffer(id);
+    *optlen = receiver->bufferSize();
+    memcpy(optval, receiver->buffer(), *optlen);
+    delete receiver;
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_SOCKET_GET_OPTION;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
+}

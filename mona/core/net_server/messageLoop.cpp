@@ -120,6 +120,24 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_GET_OPTION:
+        {
+            int sockfd = msg.arg1;
+            int level = msg.arg2;
+            int optname = msg.arg3;
+            socklen_t optlen = *((socklen_t*)&msg.str);
+            uint8_t* buf = new uint8_t[optlen];
+            int ret = getsockopt(sockfd, level, optname, buf, &optlen);
+            if (Message::sendBuffer(msg.from, buf, optlen) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            delete[] buf;
+            _printf("errno = <<%d>>\n", errno);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_RECV:
         {
             static uint8_t* buffer = NULL;
