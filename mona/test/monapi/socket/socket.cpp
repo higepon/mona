@@ -142,6 +142,28 @@ static void testSocketOption()
     freeaddrinfo(res);
 }
 
+#define PORT    8823
+#define MAXDATA 1024
+static void testEcho()
+{
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT_TRUE(sock != -1);
+
+    struct sockaddr_in addr;
+    memset(&addr, sizeof(addr), 0);
+    addr.sin_family = PF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_port = htons(8000);
+
+    ASSERT_EQ(0, bind(sock, (struct sockaddr *)&addr, sizeof(addr)));
+    ASSERT_EQ(0, listen(sock, 5));
+
+    struct sockaddr_in waddr;
+    socklen_t writer_len;
+    int s = accept(sock, (struct sockaddr*)&waddr, &writer_len);
+
+    ASSERT_TRUE(s != -1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -151,6 +173,7 @@ int main(int argc, char *argv[])
     testConnect();
     testReceive();
     testSocketOption();
+    testEcho();
 
     // todo close
 

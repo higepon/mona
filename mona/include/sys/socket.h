@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 typedef uint8_t u8_t;
+typedef uint16_t u16_t;
 typedef uint32_t u32_t;
 #ifndef socklen_t
 #  define socklen_t u32_t
@@ -59,6 +60,25 @@ struct sockaddr {
 #define PF_INET         AF_INET
 #define PF_UNSPEC       AF_UNSPEC
 
+#define INADDR_NONE         ((u32_t)0xffffffffUL)  /* 255.255.255.255 */
+#define INADDR_LOOPBACK     ((u32_t)0x7f000001UL)  /* 127.0.0.1 */
+#define INADDR_ANY          ((u32_t)0x00000000UL)  /* 0.0.0.0 */
+#define INADDR_BROADCAST    ((u32_t)0xffffffffUL)  /* 255.255.255.255 */
+
+/* For compatibility with BSD code */
+struct in_addr {
+  u32_t s_addr;
+};
+
+/* members are in network byte order */
+struct sockaddr_in {
+  u8_t sin_len;
+  u8_t sin_family;
+  u16_t sin_port;
+  struct in_addr sin_addr;
+  char sin_zero[8];
+};
+
 struct addrinfo {
     int               ai_flags;      /* Input flags. */
     int               ai_family;     /* Address family of socket. */
@@ -70,9 +90,15 @@ struct addrinfo {
     struct addrinfo  *ai_next;       /* Pointer to next in list. */
 };
 
+uint16_t htons(uint16_t n);
+uint16_t ntohs(uint16_t n);
+uint32_t htonl(uint32_t n);
+uint32_t ntohl(uint32_t n);
+
+
 // -accept
 // -bind
-// -shutdown
+// -[done]shutdown
 // -[done]closesocket
 // -[done]connect
 // -getsockname
@@ -223,6 +249,11 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
 
 */
 int shutdown(int sockfd, int how);
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+int listen(int sockfd, int backlog);
+int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
+
 
 #define SHUT_RD 0
 #define  SHUT_WR 1
