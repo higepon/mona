@@ -240,3 +240,19 @@ int shutdown(int sockfd, int how)
     errno = ret.arg3;
     return ret.arg2;
 }
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
+{
+    return 0;
+}
+
+int listen(int sockfd, int backlog)
+{
+    return 0;
+}
+
+int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
+{
+    return 0;
+}
+
