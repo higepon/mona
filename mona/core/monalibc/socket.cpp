@@ -121,6 +121,7 @@ int socket(int domain, int type, int protocol)
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SOCK, domain, type, protocol) != M_OK) {
         return EINVAL;
     }
+    errno = ret.arg3;
     return ret.arg2;
 }
 
@@ -248,7 +249,13 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 
 int listen(int sockfd, int backlog)
 {
-    return 0;
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    MessageInfo ret;
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_LISTEN, sockfd, backlog) != M_OK) {
+        return EINVAL;
+    }
+    errno = ret.arg3;
+    return ret.arg2;
 }
 
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)

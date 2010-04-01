@@ -78,7 +78,17 @@ static void __fastcall messageLoop(void* arg)
             int type = msg.arg2;
             int protocol = msg.arg3;
             int ret = socket(domain, type, protocol);
-            if (Message::reply(&msg, ret) != M_OK) {
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
+        case MSG_NET_SOCKET_LISTEN:
+        {
+            int sockfd = msg.arg1;
+            int backlog = msg.arg2;
+            int ret = listen(sockfd, backlog);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             break;

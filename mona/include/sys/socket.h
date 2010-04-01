@@ -250,8 +250,24 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
 */
 int shutdown(int sockfd, int how);
 
-int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+/*
+   function: listen
+
+   Listen on the socket
+
+   Parameters:
+
+     sockfd - socket
+     backlog - backlog
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
 int listen(int sockfd, int backlog);
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
 
 
