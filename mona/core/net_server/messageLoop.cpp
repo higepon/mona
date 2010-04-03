@@ -72,6 +72,19 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_BIND:
+        {
+            int sockfd = msg.arg1;
+            socklen_t addrlen = msg.arg2;
+            BufferReceiver* receiver = Message::receiveBuffer(msg.from);
+            int ret = bind(sockfd, (struct sockaddr*)receiver->buffer(), addrlen);
+            delete receiver;
+            _printf("\nbind errno = %d\n", errno);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_SOCK:
         {
             int domain = msg.arg1;

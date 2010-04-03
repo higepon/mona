@@ -244,7 +244,25 @@ int shutdown(int sockfd, int how)
 
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    return 0;
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    if (Message::send(id, MSG_NET_SOCKET_BIND, sockfd, addrlen) != M_OK) {
+        return EBADF;
+    }
+
+    if (Message::sendBuffer(id, addr, addrlen) != M_OK) {
+        return EBADF;
+    }
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = MSG_NET_SOCKET_BIND;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
 }
 
 int listen(int sockfd, int backlog)

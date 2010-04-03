@@ -151,9 +151,9 @@ static void testEcho()
 
     struct sockaddr_in addr;
     memset(&addr, sizeof(addr), 0);
-    addr.sin_family = PF_INET;
+    addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(8000);
+    addr.sin_port = htons(80);
 
     ASSERT_EQ(0, bind(sock, (struct sockaddr *)&addr, sizeof(addr)));
     ASSERT_EQ(0, listen(sock, 5));
