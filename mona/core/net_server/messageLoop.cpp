@@ -79,7 +79,6 @@ static void __fastcall messageLoop(void* arg)
             BufferReceiver* receiver = Message::receiveBuffer(msg.from);
             int ret = bind(sockfd, (struct sockaddr*)receiver->buffer(), addrlen);
             delete receiver;
-            _printf("\nbind errno = %d\n", errno);
             if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
@@ -153,6 +152,20 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_ACCEPT:
+        {
+            int sockfd = msg.arg1;
+            struct sockaddr_in waddr;
+            socklen_t writer_len;
+            int s = accept(sockfd, (struct sockaddr*)&waddr, &writer_len);
+            if (Message::sendBuffer(msg.from, &waddr, writer_len) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            if (Message::reply(&msg, s, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_GET_OPTION:
         {
             int sockfd = msg.arg1;
@@ -165,7 +178,6 @@ static void __fastcall messageLoop(void* arg)
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             delete[] buf;
-            _printf("errno = <<%d>>\n", errno);
             if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }

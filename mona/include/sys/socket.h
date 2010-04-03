@@ -96,8 +96,8 @@ uint32_t htonl(uint32_t n);
 uint32_t ntohl(uint32_t n);
 
 
-// -accept
-// -bind
+// -[done]accept
+// -[done]bind
 // -[done]shutdown
 // -[done]closesocket
 // -[done]connect

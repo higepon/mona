@@ -158,11 +158,25 @@ static void testEcho()
     ASSERT_EQ(0, bind(sock, (struct sockaddr *)&addr, sizeof(addr)));
     ASSERT_EQ(0, listen(sock, 5));
 
+// needs access from clinet
+#if 0
     struct sockaddr_in waddr;
     socklen_t writer_len;
+
     int s = accept(sock, (struct sockaddr*)&waddr, &writer_len);
 
     ASSERT_TRUE(s != -1);
+
+    uint8_t buf[127];
+    int readSize = recv(s, buf, 127, 0);
+    do {
+        for (int i = 0; i < readSize; i++) {
+            printf("%c", buf[i]);
+        }
+    } while ((readSize = recv(sock, buf, 127, 0)) > 0);
+    const char* res = "HTTP/1.1 200\r\n\r\n\r\nHello";
+    send(s, (void*)res, strlen(res), 0);
+#endif
 }
 
 int main(int argc, char *argv[])
