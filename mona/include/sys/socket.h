@@ -95,6 +95,22 @@ uint16_t ntohs(uint16_t n);
 uint32_t htonl(uint32_t n);
 uint32_t ntohl(uint32_t n);
 
+/* MEMP_NUM_NETCONN: the number of struct netconns. */
+#define MEMP_NUM_NETCONN        10
+#define FD_SETSIZE    MEMP_NUM_NETCONN
+#define FD_SET(n, p)  ((p)->fd_bits[(n)/8] |=  (1 << ((n) & 7)))
+#define FD_CLR(n, p)  ((p)->fd_bits[(n)/8] &= ~(1 << ((n) & 7)))
+#define FD_ISSET(n,p) ((p)->fd_bits[(n)/8] &   (1 << ((n) & 7)))
+#define FD_ZERO(p)    memset((void*)(p),0,sizeof(*(p)))
+typedef struct fd_set {
+    unsigned char fd_bits [(FD_SETSIZE+7)/8];
+} fd_set;
+
+struct timeval {
+  long    tv_sec;         /* seconds */
+  long    tv_usec;        /* and microseconds */
+};
+
 
 // -[done]accept
 // -[done]bind
@@ -270,6 +286,8 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
 
+int select(int nfds, fd_set *readfds, fd_set *writefds,
+           fd_set *exceptfds, struct timeval *timeout);
 
 #define SHUT_RD 0
 #define  SHUT_WR 1

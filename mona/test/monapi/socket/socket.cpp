@@ -162,12 +162,12 @@ static void testEcho()
     struct timeval tv;
 
     FD_ZERO(&rfds);
-    FD_SET(s, &rfds);
+    FD_SET(sock, &rfds);
 
     tv.tv_sec = 1;
     tv.tv_usec = 0;
 
-    int retval = select(1, &rfds, NULL, NULL, &tv);
+    int retval = select(sock + 1, &rfds, NULL, NULL, &tv);
 
     // timeout
     ASSERT_TRUE(retval == 0);
