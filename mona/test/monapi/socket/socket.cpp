@@ -158,6 +158,20 @@ static void testEcho()
     ASSERT_EQ(0, bind(sock, (struct sockaddr *)&addr, sizeof(addr)));
     ASSERT_EQ(0, listen(sock, 5));
 
+    fd_set rfds;
+    struct timeval tv;
+
+    FD_ZERO(&rfds);
+    FD_SET(s, &rfds);
+
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+
+    int retval = select(1, &rfds, NULL, NULL, &tv);
+
+    // timeout
+    ASSERT_TRUE(retval == 0);
+
 // needs access from clinet
 #if 0
     struct sockaddr_in waddr;
