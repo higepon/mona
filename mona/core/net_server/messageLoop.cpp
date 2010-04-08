@@ -246,6 +246,36 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SELECT:
+        {
+            int nfds = msg.arg1;
+            bool haveReadFds = msg.str[0];
+            bool haveWriteFds = msg.str[1];
+            bool haveExceptFds = msg.str[2];
+            bool haveTimeout = msg.str[3];
+            fd_set* readfds = haveReadFds ? (fd_set*)&msg.str[4] : NULL;
+            fd_set* writefds = haveWriteFds ? (fd_set*)&msg.str[4 + sizeof(fd_set)] : NULL;
+            fd_set* exceptfds = haveExceptFds ? (fd_set*)&msg.str[4 + sizeof(fd_set) * 2] : NULL;
+            struct timeval* timeout = haveTimeout ? (struct timeval*)&msg.str[4 + sizeof(fd_set) * 3] : NULL;
+
+            int ret = select(nfds, readfds, writefds, exceptfds, timeout);
+            if (haveReadFds) {
+                *((fd_set*)msg.str) = *readfds;
+            }
+            if (haveWriteFds) {
+                *((fd_set*)(&msg.str[sizeof(fd_set)])) = *writefds;
+            }
+            if (haveExceptFds) {
+                *((fd_set*)(&msg.str[sizeof(fd_set) * 2])) = *exceptfds;
+            }
+            if (haveTimeout) {
+                *((struct timeval*)(&msg.str[sizeof(fd_set) * 3])) = *timeout;
+            }
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         }
     }
 }

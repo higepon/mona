@@ -305,22 +305,44 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout)
 {
-    ASSERT((sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
+    ASSERT((4 + sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
     uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
-    memcpy(buf, readfds, sizeof(fd_set));
-    memcpy(buf + sizeof(fd_set), writefds, sizeof(fd_set));
-    memcpy(buf + sizeof(fd_set) * 2, exceptfds, sizeof(fd_set));
-    memcpy(buf + sizeof(fd_set) * 3, timeout, sizeof(struct timeval));
+
+    buf[0] = readfds != NULL;
+    buf[1] = writefds != NULL;
+    buf[2] = exceptfds != NULL;
+    buf[3] = timeout != NULL;
+
+    if (readfds != NULL) {
+        memcpy(buf + 4, readfds, sizeof(fd_set));
+    }
+    if (writefds != NULL) {
+        memcpy(buf + 4 + sizeof(fd_set), writefds, sizeof(fd_set));
+    }
+    if (exceptfds != NULL) {
+        memcpy(buf + 4 + sizeof(fd_set) * 2, exceptfds, sizeof(fd_set));
+    }
+    if (timeout != NULL) {
+        memcpy(buf + 4 + sizeof(fd_set) * 3, timeout, sizeof(struct timeval));
+    }
 
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
     MessageInfo ret;
-    if (Message::sendReceive(&ret, id, MSG_NET_SELECT, nfds, 0, 0, buf) != M_OK) {
+    if (Message::sendReceive(&ret, id, MSG_NET_SELECT, nfds, 0, 0, (char*)buf) != M_OK) {
         return EINVAL;
     }
-    memcpy(readfds, ret.str, sizeof(fd_set));
-    memcpy(writefds, ret.str + sizeof(fd_set), sizeof(fd_set));
-    memcpy(exceptfds, ret.str + sizeof(fd_set) * 2, sizeof(fd_set));
-    memcpy(timeout, ret.str + sizeof(fd_set) * 3, sizeof(struct timeval));
+    if (readfds != NULL) {
+        memcpy(readfds, ret.str, sizeof(fd_set));
+    }
+    if (writefds != NULL) {
+        memcpy(writefds, ret.str + sizeof(fd_set), sizeof(fd_set));
+    }
+    if (exceptfds != NULL) {
+        memcpy(exceptfds, ret.str + sizeof(fd_set) * 2, sizeof(fd_set));
+    }
+    if (timeout != NULL) {
+        memcpy(timeout, ret.str + sizeof(fd_set) * 3, sizeof(struct timeval));
+    }
     errno = ret.arg3;
     return ret.arg2;
 }
