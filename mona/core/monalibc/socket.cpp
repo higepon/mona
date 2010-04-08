@@ -308,21 +308,26 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
     ASSERT((4 + sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
     uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
 
-    buf[0] = readfds != NULL;
-    buf[1] = writefds != NULL;
-    buf[2] = exceptfds != NULL;
-    buf[3] = timeout != NULL;
+    bool haveReadFds = readfds != NULL;
+    bool haveWritefds =  writefds != NULL;
+    bool haveExceptFds =  exceptfds != NULL;
+    bool haveTimeout =  timeout != NULL;
 
-    if (readfds != NULL) {
+    buf[0] = haveReadFds;
+    buf[1] = haveWritefds;
+    buf[2] = haveExceptFds;
+    buf[3] = haveTimeout;
+
+    if (haveReadFds) {
         memcpy(buf + 4, readfds, sizeof(fd_set));
     }
-    if (writefds != NULL) {
+    if (haveWritefds) {
         memcpy(buf + 4 + sizeof(fd_set), writefds, sizeof(fd_set));
     }
-    if (exceptfds != NULL) {
+    if (haveExceptFds) {
         memcpy(buf + 4 + sizeof(fd_set) * 2, exceptfds, sizeof(fd_set));
     }
-    if (timeout != NULL) {
+    if (haveTimeout) {
         memcpy(buf + 4 + sizeof(fd_set) * 3, timeout, sizeof(struct timeval));
     }
 
@@ -331,16 +336,16 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
     if (Message::sendReceive(&ret, id, MSG_NET_SELECT, nfds, 0, 0, (char*)buf) != M_OK) {
         return EINVAL;
     }
-    if (readfds != NULL) {
+    if (haveReadFds) {
         memcpy(readfds, ret.str, sizeof(fd_set));
     }
-    if (writefds != NULL) {
+    if (haveWritefds) {
         memcpy(writefds, ret.str + sizeof(fd_set), sizeof(fd_set));
     }
-    if (exceptfds != NULL) {
+    if (haveExceptFds) {
         memcpy(exceptfds, ret.str + sizeof(fd_set) * 2, sizeof(fd_set));
     }
-    if (timeout != NULL) {
+    if (haveTimeout) {
         memcpy(timeout, ret.str + sizeof(fd_set) * 3, sizeof(struct timeval));
     }
     errno = ret.arg3;
