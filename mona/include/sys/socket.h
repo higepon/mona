@@ -121,13 +121,13 @@ struct timeval {
 // -getpeername
 // -[done]setsockopt
 // -[done]getsockopt
-// -listen
+// -[done]listen
 // -[done]recv
 // -recvfrom
 // -[done]send
 // -sendto
 // -[done]socket
-// -select
+// -[done]select
 // -ioctlsocket
 
 /*
@@ -282,10 +282,37 @@ int shutdown(int sockfd, int how);
 */
 int listen(int sockfd, int backlog);
 
+/*
+   function: bind
+
+   bind
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
+/*
+   function: accept
+
+   accept on socket
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
 
+/*
+   function: select
+
+   exceptfds parameter is not supported.
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout);
 
