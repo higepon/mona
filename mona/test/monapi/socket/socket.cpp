@@ -137,6 +137,9 @@ static void testSocketOption()
         int ret = connect(sock, rp->ai_addr, rp->ai_addrlen);
         EXPECT_EQ(0, ret);
 
+        int val = 1;
+        EXPECT_EQ(0, ioctlsocket(sock, FIONBIO, &val));
+
         EXPECT_EQ(0, shutdown(sock, SHUT_RD));
     }
     freeaddrinfo(res);
