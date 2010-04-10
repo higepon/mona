@@ -65,6 +65,38 @@ struct sockaddr {
 #define INADDR_ANY          ((u32_t)0x00000000UL)  /* 0.0.0.0 */
 #define INADDR_BROADCAST    ((u32_t)0xffffffffUL)  /* 255.255.255.255 */
 
+/*
+ * Commands for ioctlsocket(),  taken from the BSD file fcntl.h.
+ * lwip_ioctl only supports FIONREAD and FIONBIO, for now
+ *
+ * Ioctl's have the command encoded in the lower word,
+ * and the size of any in or out parameters in the upper
+ * word.  The high 2 bits of the upper word are used
+ * to encode the in/out status of the parameter; for now
+ * we restrict parameters to at most 128 bytes.
+ */
+#if !defined(FIONREAD) || !defined(FIONBIO)
+#define IOCPARM_MASK    0x7fU           /* parameters must be < 128 bytes */
+#define IOC_VOID        0x20000000UL    /* no parameters */
+#define IOC_OUT         0x40000000UL    /* copy out parameters */
+#define IOC_IN          0x80000000UL    /* copy in parameters */
+#define IOC_INOUT       (IOC_IN|IOC_OUT)
+                                        /* 0x20000000 distinguishes new &
+                                           old ioctl's */
+#define _IO(x,y)        (IOC_VOID|((x)<<8)|(y))
+
+#define _IOR(x,y,t)     (IOC_OUT|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
+
+#define _IOW(x,y,t)     (IOC_IN|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
+#endif /* !defined(FIONREAD) || !defined(FIONBIO) */
+
+#ifndef FIONREAD
+#define FIONREAD    _IOR('f', 127, unsigned long) /* get # bytes to read */
+#endif
+#ifndef FIONBIO
+#define FIONBIO     _IOW('f', 126, unsigned long) /* set/clear non-blocking i/o */
+#endif
+
 /* For compatibility with BSD code */
 struct in_addr {
   u32_t s_addr;
@@ -315,6 +347,24 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
 */
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout);
+
+/*
+   function: ioctlsocket
+
+   ioctl for socket
+
+   Parameters:
+
+     sockfd - socket
+     cmd - <<FIONREAD>> or <<FIONBIO>>.
+     argp - argument
+
+   Returns:
+     Returns 0 if successfully shutdowned. otherwise returns -1 and errno is set.
+
+*/
+int ioctlsocket(int sockfd, long cmd, void *argp);
+
 
 #define SHUT_RD 0
 #define  SHUT_WR 1

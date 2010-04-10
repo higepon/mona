@@ -139,7 +139,6 @@ static void testSocketOption()
 
         int val = 1;
         EXPECT_EQ(0, ioctlsocket(sock, FIONBIO, &val));
-
         EXPECT_EQ(0, shutdown(sock, SHUT_RD));
     }
     freeaddrinfo(res);

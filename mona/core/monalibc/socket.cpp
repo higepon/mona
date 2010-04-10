@@ -351,3 +351,23 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
     errno = ret.arg3;
     return ret.arg2;
 }
+
+int ioctlsocket(int sockfd, long cmd, void *argp)
+{
+    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    MessageInfo ret;
+    uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
+    if (argp != NULL) {
+        *((uint32_t*)buf) = *((uint32_t*)argp); // for lwip uint32_t is enough
+    }
+
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_CONTROL, sockfd, cmd, argp != NULL, (char*)buf) != M_OK) {
+        return EINVAL;
+    }
+
+    if (argp != NULL) {
+        *((uint32_t*)argp) = *((uint32_t*)buf);
+    }
+    errno = ret.arg3;
+    return ret.arg2;
+}

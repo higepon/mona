@@ -276,6 +276,24 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_SOCKET_CONTROL:
+        {
+            int sockfd = msg.arg1;
+            long cmd = msg.arg2;
+            bool haveArgp = msg.arg3;
+            uint32_t* argp = NULL;
+
+            if (haveArgp) {
+                argp = (uint32_t*)msg.str;
+            }
+
+            int ret = ioctlsocket(sockfd, cmd, argp);
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
+
         }
     }
 }
