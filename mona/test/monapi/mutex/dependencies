@@ -1,34 +1,32 @@
-mutex.o: mutex.cpp /home/taro/mona.git/mona/include/monapi.h \
-  /home/taro/mona.git/mona/include/sys/types.h \
-  /home/taro/mona.git/mona/include/sys/error.h \
-  /home/taro/mona.git/mona/include/monapi/Observer.h \
-  /home/taro/mona.git/mona/include/sys/HList.h \
-  /home/taro/mona.git/mona/include/sys/List.h \
-  /home/taro/mona.git/mona/include/monapi/Date.h \
-  /home/taro/mona.git/mona/include/monapi/syscall.h \
-  /home/taro/mona.git/mona/include/monapi/Screen.h \
-  /home/taro/mona.git/mona/include/monapi/Server.h \
-  /home/taro/mona.git/mona/include/monapi/System.h \
-  /home/taro/mona.git/mona/include/monapi/Stream.h \
-  /home/taro/mona.git/mona/include/monapi/Mutex.h \
-  /home/taro/mona.git/mona/include/monapi/Assert.h \
-  /home/taro/mona.git/mona/include/monapi/Message.h \
-  /home/taro/mona.git/mona/include/monapi/BufferReceiver.h \
-  /home/taro/mona.git/mona/include/monapi/messages.h \
-  /home/taro/mona.git/mona/include/monapi/cmemoryinfo.h \
-  /home/taro/mona.git/mona/include/servers/keyboard.h \
-  /home/taro/mona.git/mona/include/servers/mouse.h \
-  /home/taro/mona.git/mona/include/servers/process.h \
-  /home/taro/mona.git/mona/include/servers/file.h \
-  /home/taro/mona.git/mona/include/servers/servers.h \
-  /home/taro/mona.git/mona/include/monapi/MonaApplication.h \
-  /home/taro/mona.git/mona/include/monapi/MemoryMap.h \
-  /home/taro/mona.git/mona/include/monapi/Thread.h \
-  /home/taro/mona.git/mona/include/monapi/Condition.h \
-  /home/taro/mona.git/mona/include/monapi/string.h \
-  /home/taro/mona.git/mona/include/monapi/MemoryManager.h \
-  /home/taro/mona.git/mona/include/monapi/Color.h \
-  /home/taro/mona.git/mona/include/monapi/Random.h \
-  /home/taro/mona.git/mona/include/monapi/Keys.h \
-  /home/taro/mona.git/mona/include/monapi/DebuggerService.h \
-  /home/taro/mona.git/mona/include/monapi/MUnit.h
+mutex.o: mutex.cpp /home/taro/mona/include/monapi.h \
+  /home/taro/mona/include/sys/types.h /home/taro/mona/include/sys/error.h \
+  /home/taro/mona/include/monapi/Observer.h \
+  /home/taro/mona/include/sys/HList.h /home/taro/mona/include/sys/List.h \
+  /home/taro/mona/include/monapi/Date.h \
+  /home/taro/mona/include/monapi/syscall.h \
+  /home/taro/mona/include/monapi/Screen.h \
+  /home/taro/mona/include/monapi/Server.h \
+  /home/taro/mona/include/monapi/System.h \
+  /home/taro/mona/include/monapi/Stream.h \
+  /home/taro/mona/include/monapi/Mutex.h \
+  /home/taro/mona/include/monapi/Assert.h \
+  /home/taro/mona/include/monapi/Message.h \
+  /home/taro/mona/include/monapi/BufferReceiver.h \
+  /home/taro/mona/include/monapi/messages.h \
+  /home/taro/mona/include/monapi/cmemoryinfo.h \
+  /home/taro/mona/include/servers/keyboard.h \
+  /home/taro/mona/include/servers/mouse.h \
+  /home/taro/mona/include/servers/process.h \
+  /home/taro/mona/include/servers/file.h \
+  /home/taro/mona/include/servers/servers.h \
+  /home/taro/mona/include/monapi/MonaApplication.h \
+  /home/taro/mona/include/monapi/MemoryMap.h \
+  /home/taro/mona/include/monapi/Thread.h \
+  /home/taro/mona/include/monapi/Condition.h \
+  /home/taro/mona/include/monapi/string.h \
+  /home/taro/mona/include/monapi/MemoryManager.h \
+  /home/taro/mona/include/monapi/Color.h \
+  /home/taro/mona/include/monapi/Random.h \
+  /home/taro/mona/include/monapi/Keys.h \
+  /home/taro/mona/include/monapi/DebuggerService.h \
+  /home/taro/mona/include/monapi/MUnit.h

@@ -160,11 +160,13 @@ struct timeval {
 // -sendto
 // -[done]socket
 // -[done]select
-// -ioctlsocket
+// -[done]ioctlsocket
 
 /*
     Title: Socket
     #include <sys/socket.h>
+
+    Though lwip supports getsockname, getpeername, recvfrom and sendto, currently they are not supported on Mona.
 */
 /*
    function: send
