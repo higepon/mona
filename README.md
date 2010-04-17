@@ -8,8 +8,6 @@ See detailed information on http://www.monaos.org.
 - Mingw
 - QEMU
 
-Get a release of Mona from [github](http://github.com/higepon/mona).
-
     % git clone git://github.com/higepon/mona.git
     % cd mona/mona
     % ./configure --mingw-prefix=/usr/bin/i586-mingw32msvc-
