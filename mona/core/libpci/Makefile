@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 LIB_STATIC   = libpci.a
 TARGET       = $(LIB_STATIC)
 

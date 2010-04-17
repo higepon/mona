@@ -31,6 +31,7 @@ endif
 	cd core/monalibc && $(MAKE) && $(MAKE) install
 	cd core/monitor_server && $(MAKE) && $(MAKE) install
 	cd core/screen_server && $(MAKE) && $(MAKE) install
+	cd core/libpci && $(MAKE) && $(MAKE) install
 	cd core/net_server && $(MAKE) && $(MAKE) install
 	cd core/keyboard_server && $(MAKE) && $(MAKE) install
 	cd core/mouse_server && $(MAKE) && $(MAKE) install
@@ -57,6 +58,7 @@ mkimg: cores externals tools tests
 depend: clean
 	cd core/kernel && $(MAKE) $@
 	cd core/monapi && $(MAKE) $@
+	cd core/libpci && $(MAKE) $@
 	cd core/monalibc && $(MAKE) $@
 	cd core/monitor_server && $(MAKE) $@
 	cd core/screen_server && $(MAKE) $@
@@ -94,6 +96,7 @@ endif
 	$(MAKE) $@ -C core/secondboot
 	$(MAKE) $@ -C core/kernel
 	$(MAKE) $@ -C core/monapi
+	$(MAKE) $@ -C core/libpci
 	$(MAKE) $@ -C core/monitor_server
 	$(MAKE) $@ -C core/screen_server
 	$(MAKE) $@ -C core/keyboard_server

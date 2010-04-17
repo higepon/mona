@@ -6,7 +6,6 @@ endif
 all:
 ### basic libraries
 ### servers
-	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
@@ -87,7 +86,6 @@ clean:
 	cd Net/uip && $(MAKE) clean
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean
-	cd Sysutils/libPci && $(MAKE) clean
 	cd Gui/glaunch && $(MAKE) clean
 	cd Gui/monafile && $(MAKE) clean
 	cd Benchmarks/gfire && $(MAKE) clean
