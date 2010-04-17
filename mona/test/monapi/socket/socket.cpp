@@ -102,9 +102,9 @@ static void testReceive()
         char buf[127];
         int readSize = recv(sock, buf, 127, 0);
         do {
-            for (int i = 0; i < readSize; i++) {
-                printf("%c", buf[i]);
-            }
+//             for (int i = 0; i < readSize; i++) {
+//                 printf("%c", buf[i]);
+//             }
         } while ((readSize = recv(sock, buf, 127, 0)) > 0);
 
         EXPECT_EQ(0, closesocket(sock));

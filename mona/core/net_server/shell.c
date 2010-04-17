@@ -319,7 +319,7 @@ static void post_twitter()
 void socket_examples_init(void)
 {
   //  sys_thread_new("sockex_nonblocking_connect", sockex_nonblocking_connect, NULL, 0, 0);
-  sys_thread_new("sockex_testrecv", post_twitter, NULL, 0, 0);
+  //  sys_thread_new("sockex_testrecv", post_twitter, NULL, 0, 0);
 }
 
 #endif /* LWIP_SOCKETS */
