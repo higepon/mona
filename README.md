@@ -8,7 +8,7 @@ See detailed information on http://www.monaos.org.
 - Mingw
 - QEMU
 
-
+## Building and Running
     % git clone git://github.com/higepon/mona.git
     % cd mona/mona
     % ./configure --mingw-prefix=/usr/bin/i586-mingw32msvc-
