@@ -6,6 +6,8 @@ See detailed information on http://www.monaos.org.
 ## Requirements
 - git
 - Mingw
+- nasm
+- mkisofs
 - QEMU
 
 ## Building and Running
