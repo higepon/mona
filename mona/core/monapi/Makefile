@@ -70,6 +70,7 @@ ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
 	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -Map monapi.map
+	echo $(STRIP)
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)

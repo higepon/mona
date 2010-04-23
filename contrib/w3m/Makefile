@@ -357,6 +357,9 @@ uninstall:
 alclean:
 	rm $(ALIBOBJS)
 
+cppclean:
+	rm $(CPPOBJS)
+
 distclean: clean
 	for subdir in po scripts w3mimg libwc; \
 	do \

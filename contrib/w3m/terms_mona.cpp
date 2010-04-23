@@ -1,11 +1,16 @@
-/* implement later */
+extern "C" {
+#include "fm.h"
+}
+
+#undef init
+#include "mona_w3m.h"
+
+extern W3MFrame *g_frame;
+
 
 extern "C" {
 
-#include "fm.h"
-
 int LINES, COLS;
-typedef unsigned short l_prop;
 
 #define S_SCREENPROP    0x0f
 #define S_NORMAL        0x00
@@ -20,18 +25,6 @@ typedef unsigned short l_prop;
 #define L_NEED_CE       0x04
 #define L_CLRTOEOL      0x08
 
-
-
-typedef struct scline {
-#ifdef USE_M17N
-    char **lineimage;
-#else
-    char *lineimage;
-#endif
-    l_prop *lineprop;
-    short isdirty;
-    short eol;
-} Screen;
 
 static Screen *ScreenElem = NULL, **ScreenImage = NULL;
 
@@ -122,7 +115,8 @@ wrap(void)
 void
 refresh(void)
 {
-    
+    g_frame->ScreenImage = ScreenImage;
+    g_frame->repaint();
 }
 
 void
@@ -263,9 +257,6 @@ bell(void)
 
 /* extern "C" */ }
 
-#undef init
-#include "mona_w3m.h"
 
-extern W3MFrame *g_frame;
 
 

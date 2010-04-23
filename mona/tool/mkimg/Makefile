@@ -1,9 +1,11 @@
 SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
+#mumurik	MONADIR=$(MONADIR) perl mkimg.pl
+
 all:
 	make clean
-	MONADIR=$(MONADIR) perl mkimg.pl
+	MONADIR=$(MONADIR) C:\\Python25\\python.exe mkimg.py
 	make iso
 
 clean:

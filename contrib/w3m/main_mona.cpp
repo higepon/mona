@@ -1268,33 +1268,16 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
 
 /* extern "C" */ }
 
-#include <baygui.h>
+#include "mona_w3m.h"
 
 
 
-class W3MFrame: public Frame {
-public:
-  W3MFrame() {
-     setBounds((800 - 212) / 2, (600 - 50) / 2, 212, 50);
-     setTitle("w3m");
-     m_label = new Label(m_time, Label::CENTER);
-     m_label->setBounds(0, 4, 200, 16);
-     add(m_label);
-  }
-
-  ~W3MFrame(){
-      delete(m_label);
-  }
-
-private: 
-    char m_time[128];
-    Label *m_label;
-};
+W3MFrame *g_frame;
 
 int main(int argc, char* argv[]) {
-    W3MFrame *frame = new W3MFrame();
-    frame->run();
-    delete(frame);
+    g_frame = new W3MFrame();
+    g_frame->run();
+    delete(g_frame);
     return 0;
 }
 
