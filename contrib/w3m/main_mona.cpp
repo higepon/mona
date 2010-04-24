@@ -1279,13 +1279,29 @@ int main(int argc, char* argv[]) {
     CurrentPid = 111; // tekito-
     tmp_dir = "/APPS/W3M/W3M.APP";
     fileToDelete = newTextList();
-    COLS = 50;
-    LINES = 50;
+    COLS = 80;
+    LINES = 80;
+
+    LoadHist = newHist();
+    SaveHist = newHist();
+    ShellHist = newHist();
+    TextHist = newHist();
+    URLHist = newHist();
+
+    setupscreen();
+    // sync_with_option();
+
+    SearchHeader = FALSE;
+    DefaultType = NULL;
+    CurrentTab = NULL;
+
     fmInit();
+
     move(0, 0);
 
     g_frame = new W3MFrame();
-    g_frame->initW3M();
+  MONA_TRACE(argv[1]);
+    g_frame->initW3M(argv[1]);
     g_frame->run();
     delete(g_frame);
     return 0;

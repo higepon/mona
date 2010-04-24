@@ -68,8 +68,10 @@
 /* #undef USE_SSL_VERIFY */
 /* #define USE_HELP_CGI 1 */
 #undef USE_HELP_CGI
-#define USE_EXTERNAL_URI_LOADER 1
-#define USE_W3MMAILER 1
+/* #define USE_EXTERNAL_URI_LOADER 1 */
+#undef USE_EXTERNAL_URI_LOADER
+/* #define USE_W3MMAILER 1 */
+#undef USE_W3MMAILER
 /* #define USE_NNTP 1 */
 #undef USE_NNTP
 /* #undef USE_GOPHER */

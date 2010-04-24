@@ -23,7 +23,7 @@ public:
      setBounds((800 - 212) / 2, (600 - 50) / 2, 640, 480);
      setTitle("w3m");
      m_label = new Label(m_time, Label::CENTER);
-     m_label->setBounds(0, 4, 200, 16);
+     m_label->setBounds(0, 4, 600, 400);
      add(m_label);
   }
 
@@ -49,9 +49,9 @@ public:
     {
   MONA_TRACE("repaint2\n");
 //      for(int line = 0; line <= LINES; line++) {
-      for(int line = 0; line <= 20; line++) {
+      for(int line = 0; line <= 40; line++) {
         char* pc = ScreenImage[line]->lineimage;
-        for(int col = 0; col < COLS; col++) {
+        for(int col = 0; col < 40; col++) {
           String s(&pc[col], 1);
           __g->drawString(s, col*fw+_xoffset, line*fw+_yoffset);
         }
@@ -60,12 +60,11 @@ public:
     Container::repaint();
   }
 
-  void initW3M() {
+  void initW3M(char* url) {
        Buffer *newbuf = NULL;
-       newbuf = loadGeneralFile("http://www.nattou.org", NULL, NO_REFERER, 0, NULL);
+       newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
        // Currentbuf = newbuf;
   MONA_TRACE("initW3M:begin display buffer\n");
-// OK
        displayBuffer(newbuf, B_FORCE_REDRAW);
   MONA_TRACE("initW3M:end display buffer\n");
   }

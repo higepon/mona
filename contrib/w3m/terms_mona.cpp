@@ -73,7 +73,10 @@ void
 move(int line, int column)
 {
     if (line >= 0 && line < LINES)
+      {
+        MONA_TRACE_FMT((stderr, "line updated: %d", line));
 	CurLine = line;
+      }
     if (column >= 0 && column < COLS)
 	CurColumn = column;
 }
@@ -85,6 +88,8 @@ clrtoeolx(void)
 void
 addstr(char *s)
 {
+    while (*s != '\0')
+	addch(*(s++));
 }
 
 void
@@ -95,7 +100,13 @@ standout(void)
 void
 addch(char c)
 {
-MONA_TRACE_FMT((stderr, "addch, %c\n", c));
+
+static int count = 0;
+  if(count > 30) {
+    MONA_TRACE(" )\naddch(");
+    count = 0;
+  }
+MONA_TRACE_FMT((stderr, " %c ", c)); count++;
   int i;
   char *p;
 
@@ -103,7 +114,7 @@ MONA_TRACE_FMT((stderr, "addch, %c\n", c));
   p = ScreenImage[CurLine]->lineimage;
   i = CurColumn;
 
-  if(c == '\n') {
+  if(c == '\n' || c == '\r') {
 MONA_TRACE("wrap!\n");
     wrap();
   } else {
@@ -151,6 +162,9 @@ void
 addnstr(char *s, int n)
 {
 MONA_TRACE_FMT((stderr, "addnstr\n"));
+    int i;
+    for (i = 0; i < n && *s != '\0'; i++)
+	addch(*(s++));
 }
 
 void
