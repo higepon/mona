@@ -360,6 +360,10 @@ alclean:
 cppclean:
 	rm $(CPPOBJS)
 
+
+rebuild:
+	$(MAKE) cppclean && $(MAKE) all && $(MAKE) install
+
 distclean: clean
 	for subdir in po scripts w3mimg libwc; \
 	do \

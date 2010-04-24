@@ -1272,10 +1272,20 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
 
 
 
-W3MFrame *g_frame;
+W3MFrame *g_frame = NULL;
 
 int main(int argc, char* argv[]) {
+    CurrentDir = "/APPS/W3M/W3M.APP";
+    CurrentPid = 111; // tekito-
+    tmp_dir = "/APPS/W3M/W3M.APP";
+    fileToDelete = newTextList();
+    COLS = 50;
+    LINES = 50;
+    fmInit();
+    move(0, 0);
+
     g_frame = new W3MFrame();
+    g_frame->initW3M();
     g_frame->run();
     delete(g_frame);
     return 0;

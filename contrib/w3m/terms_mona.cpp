@@ -35,14 +35,17 @@ static int max_LINES = 0, max_COLS = 0;
 void
 setupscreen(void)
 {
+MONA_TRACE("setup screen\n");
     int i;
     if (LINES + 1 > max_LINES) {
+MONA_TRACE("setup screen2\n");
 	max_LINES = LINES + 1;
 	max_COLS = 0;
 	ScreenElem = New_N(Screen, max_LINES);
 	ScreenImage = New_N(Screen *, max_LINES);
     }
     if (COLS + 1 > max_COLS) {
+MONA_TRACE("setup screen3\n");
 	max_COLS = COLS + 1;
 	for (i = 0; i < max_LINES; i++) {
 #ifdef USE_M17N
@@ -54,6 +57,7 @@ setupscreen(void)
 	    ScreenElem[i].lineprop = New_N(l_prop, max_COLS);
 	}
     }
+MONA_TRACE("setup screen4\n");
     for (i = 0; i < LINES; i++) {
 	ScreenImage[i] = &ScreenElem[i];
 	ScreenImage[i]->lineprop[0] = S_EOL;
@@ -91,16 +95,24 @@ standout(void)
 void
 addch(char c)
 {
+MONA_TRACE_FMT((stderr, "addch, %c\n", c));
   int i;
   char *p;
+
   
   p = ScreenImage[CurLine]->lineimage;
   i = CurColumn;
 
   if(c == '\n') {
+MONA_TRACE("wrap!\n");
     wrap();
   } else {
+    if(CurColumn >= max_COLS) {
+      wrap();
+      return; // do nothing
+    }
     p[i] = c;
+    CurColumn++;
   }
 }
 
@@ -115,8 +127,13 @@ wrap(void)
 void
 refresh(void)
 {
-    g_frame->ScreenImage = ScreenImage;
-    g_frame->repaint();
+MONA_TRACE("refresh1\n");
+    if(g_frame)
+    {
+MONA_TRACE("refresh2\n");
+      g_frame->ScreenImage = ScreenImage;
+      g_frame->repaint();
+    }
 }
 
 void
@@ -133,6 +150,7 @@ term_cbreak(void)
 void
 addnstr(char *s, int n)
 {
+MONA_TRACE_FMT((stderr, "addnstr\n"));
 }
 
 void
@@ -184,6 +202,8 @@ mouse_end()
 int
 initscr(void)
 {
+MONA_TRACE("initscr\n");
+    setupscreen();
     return 0; /* 0 seems success */
 }
 

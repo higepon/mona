@@ -1712,6 +1712,16 @@ static unsigned int tmpf_seq[MAX_TMPF_TYPE];
 Str
 tmpfname(int type, char *ext)
 {
+#ifdef MONA
+  static int first_time = 1;
+  int i;
+  if(first_time) {
+    first_time = 0;
+    for(i = 0; i < MAX_TMPF_TYPE; i++) {
+      tmpf_seq[i] = 0;
+    }
+  }
+#endif
     Str tmpf;
     tmpf = Sprintf("%s/w3m%s%d-%d%s",
 		   tmp_dir,

@@ -985,12 +985,16 @@ preFormUpdateBuffer(Buffer *buf)
     FormSelectOptionItem *opt;
     int j;
 #endif
+MONA_TRACE("preForm1\n");
 
     if (!buf || !buf->formitem || !PreForm)
 	return;
 
+MONA_TRACE("preForm2\n");
     for (pf = PreForm; pf; pf = pf->next) {
+// OK
 	if (pf->re_url) {
+MONA_TRACE("preForm3\n");
 	    Str url = parsedURL2Str(&buf->currentURL);
 	    if (!RegexMatch(pf->re_url, url->ptr, url->length, 1))
 		continue;
@@ -1001,7 +1005,9 @@ preFormUpdateBuffer(Buffer *buf)
 	}
 	else
 	    continue;
+MONA_TRACE("preForm4\n");
 	for (i = 0; i < buf->formitem->nanchor; i++) {
+MONA_TRACE("preForm5\n");
 	    a = &buf->formitem->anchors[i];
 	    fi = (FormItemList *)a->url;
 	    fl = fi->parent;

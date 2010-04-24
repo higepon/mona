@@ -183,15 +183,21 @@ fmTerm(void)
 void
 fmInit(void)
 {
+MONA_TRACE("fm init1\n");
     if (!fmInitialized) {
+MONA_TRACE("fm init2\n");
 	initscr();
+MONA_TRACE("fm init3\n");
 	term_raw();
+MONA_TRACE("fm init4\n");
 	term_noecho();
+MONA_TRACE("fm init5\n");
 #ifdef USE_IMAGE
 	if (displayImage)
 	    initImage();
 #endif
     }
+MONA_TRACE("fm init6\n");
     fmInitialized = TRUE;
 }
 
@@ -369,12 +375,13 @@ displayBuffer(Buffer *buf, int mode)
     Str msg;
     int ny = 0;
 
+  MONA_TRACE("display buffer\n");
+
     if (!buf)
 	return;
     if (buf->topLine == NULL && readBufferCache(buf) == 0) {	/* clear_buffer */
 	mode = B_FORCE_REDRAW;
     }
-
     if (buf->width == 0)
 	buf->width = INIT_BUFFER_WIDTH;
     if (buf->height == 0)
@@ -382,9 +389,11 @@ displayBuffer(Buffer *buf, int mode)
     if ((buf->width != INIT_BUFFER_WIDTH &&
 	 ((buf->type && !strcmp(buf->type, "text/html")) || FoldLine))
 	|| buf->need_reshape) {
+MONA_TRACE("disp 1\n");
 	buf->need_reshape = TRUE;
 	reshapeBuffer(buf);
     }
+MONA_TRACE("disp 2\n");
     if (showLineNum) {
 	if (buf->lastLine && buf->lastLine->real_linenumber > 0)
 	    buf->rootX = (int)(log(buf->lastLine->real_linenumber + 0.1)
@@ -397,17 +406,20 @@ displayBuffer(Buffer *buf, int mode)
     else
 	buf->rootX = 0;
     buf->COLS = COLS - buf->rootX;
+MONA_TRACE("disp 3\n");
     if (nTab > 1
 #ifdef USE_MOUSE
 	|| mouse_action.menu_str
 #endif
 	) {
+MONA_TRACE("disp 4\n");
 	if (mode == B_FORCE_REDRAW || mode == B_REDRAW_IMAGE)
 	    calcTabPos();
 	ny = LastTab->y + 2;
 	if (ny > LASTLINE)
 	    ny = LASTLINE;
     }
+MONA_TRACE("disp 5\n");
     if (buf->rootY != ny || buf->LINES != LASTLINE - ny) {
 	buf->rootY = ny;
 	buf->LINES = LASTLINE - ny;
@@ -459,6 +471,7 @@ displayBuffer(Buffer *buf, int mode)
 	cline = buf->topLine;
 	ccolumn = buf->currentColumn;
     }
+  MONA_TRACE("disp 7\n");
     if (buf->topLine == NULL)
 	buf->topLine = buf->firstLine;
 
@@ -481,9 +494,11 @@ displayBuffer(Buffer *buf, int mode)
 	delayed_msg = NULL;
 	refresh();
     }
+  MONA_TRACE("disp 8\n");
     standout();
     message(msg->ptr, buf->cursorX + buf->rootX, buf->cursorY + buf->rootY);
     standend();
+  MONA_TRACE("disp 9\n");
     term_title(conv_to_system(buf->buffername));
     refresh();
 #ifdef USE_IMAGE
@@ -497,6 +512,7 @@ displayBuffer(Buffer *buf, int mode)
 	save_current_buf = buf;
     }
 #endif
+  MONA_TRACE("end display buffer\n");
 }
 
 static void

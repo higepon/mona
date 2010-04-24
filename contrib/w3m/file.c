@@ -226,7 +226,6 @@ loadSomething(URLFile *f,
 
     if ((buf = loadproc(f, defaultbuf)) == NULL)
 	return NULL;
-
     buf->filename = path;
     if (buf->buffername == NULL || buf->buffername[0] == '\0') {
 	buf->buffername = checkHeader(buf, "Subject:");
@@ -1779,7 +1778,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
     tpath = path;
     prevtrap = NULL;
     add_auth_cookie_flag = 0;
-
     checkRedirection(NULL);
   load_doc:
     TRAP_OFF;
@@ -1878,6 +1876,7 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	searchHeader = TRUE;
 	searchHeader_through = FALSE;
     }
+
     if (header_string)
 	header_string = NULL;
     TRAP_ON;
@@ -1891,7 +1890,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 #endif				/* USE_GOPHER */
 	     (pu.scheme == SCM_FTP && non_null(FTP_proxy))
 	 ) && !Do_not_use_proxy && !check_no_proxy(pu.host))) {
-
 	if (fmInitialized) {
 	    term_cbreak();
 	    /* FIXME: gettextize? */
@@ -2295,11 +2293,16 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
     if (t_buf)
 	t_buf->ssl_certificate = f.ssl_certificate;
 #endif
+
+
     frame_source = flag & RG_FRAME_SRC;
     b = loadSomething(&f, pu.real_file ? pu.real_file : pu.file, proc, t_buf);
     UFclose(&f);
     frame_source = 0;
+MONA_TRACE("deb1\n");
+
     if (b) {
+MONA_TRACE("deb2\n");
 	b->real_scheme = f.scheme;
 	b->real_type = real_type;
 	if (b->currentURL.host == NULL && b->currentURL.file == NULL)
@@ -2338,14 +2341,21 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	    }
 	}
     }
+MONA_TRACE("deb3\n");
     if (header_string)
 	header_string = NULL;
 #ifdef USE_NNTP
     if (f.scheme == SCM_NNTP || f.scheme == SCM_NEWS)
 	reAnchorNewsheader(b);
 #endif
+MONA_TRACE("deb3.5\n");
     preFormUpdateBuffer(b);
     TRAP_OFF;
+MONA_TRACE("deb4\n");
+if(b == NULL)
+{
+MONA_TRACE("deb5\n");
+}
     return b;
 }
 

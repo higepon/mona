@@ -519,6 +519,7 @@ openSocket(char *const hostname,
 #endif				/* not INET6 and MONA */
     MySignalHandler(*volatile prevtrap) (SIGNAL_ARG) = NULL;
 
+
     if (fmInitialized) {
 	/* FIXME: gettextize? */
 	message(Sprintf("Opening socket...")->ptr, 0, 0);
@@ -1573,6 +1574,7 @@ openURL(char *url, ParsedURL *pu, ParsedURL *current,
 	    return uf;
 	}
     }
+// OK
 
     uf.scheme = pu->scheme;
     uf.url = parsedURL2Str(pu)->ptr;
@@ -1674,6 +1676,8 @@ openURL(char *url, ParsedURL *pu, ParsedURL *current,
 	    hr->command = HR_COMMAND_POST;
 	if (request && request->method == FORM_METHOD_HEAD)
 	    hr->command = HR_COMMAND_HEAD;
+// OK
+MONA_TRACE("debughere1.1\n");
 	if ((
 #ifdef USE_SSL
 		(pu->scheme == SCM_HTTPS) ? non_null(HTTPS_proxy) :
@@ -1705,6 +1709,8 @@ openURL(char *url, ParsedURL *pu, ParsedURL *current,
 		sslh = NULL;
 	    }
 #endif				/* USE_SSL */
+// NG
+MONA_TRACE("debhere2\n");
 	    if (sock < 0) {
 #ifdef SOCK_DEBUG
 		sock_log("Can't open socket\n");
