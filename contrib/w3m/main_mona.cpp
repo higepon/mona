@@ -1567,7 +1567,6 @@ int main(int argc, char* argv[]) {
     }
 
     g_frame = new W3MFrame();
-  MONA_TRACE(argv[1]);
     g_frame->initW3M(argv[1]);
     g_frame->run();
     delete(g_frame);
