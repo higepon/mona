@@ -13,26 +13,32 @@ Hist *URLHist;
 Hist *ShellHist;
 Hist *TextHist;
 
-typedef struct _Event {
+typedef struct _W3MEvent {
     int cmd;
     void *data;
-    struct _Event *next;
-} Event;
-static Event *CurrentEvent = NULL;
-static Event *LastEvent = NULL;
+    struct _W3MEvent *next;
+} W3MEvent;
+static W3MEvent *CurrentEvent = NULL;
+static W3MEvent *LastEvent = NULL;
 int on_target = 1;
 static int display_ok = FALSE;
 int prec_num = 0;
 
 /* yyy */
 
+static int
+searchKeyNum(void)
+{
+  return 1;
+}
+
 
 void
 pushEvent(int cmd, void *data)
 {
-    Event *event;
+    W3MEvent *event;
 
-    event = New(Event);
+    event = New(W3MEvent);
     event->cmd = cmd;
     event->data = data;
     event->next = NULL;
@@ -419,6 +425,234 @@ w3m_exit(int i)
 }
 
 
+static void
+nscroll(int n, int mode)
+{
+    Buffer *buf = Currentbuf;
+    Line *top = buf->topLine, *cur = buf->currentLine;
+    int lnum, tlnum, llnum, diff_n;
+
+    if (buf->firstLine == NULL)
+	return;
+    lnum = cur->linenumber;
+    buf->topLine = lineSkip(buf, top, n, FALSE);
+    if (buf->topLine == top) {
+	lnum += n;
+	if (lnum < buf->topLine->linenumber)
+	    lnum = buf->topLine->linenumber;
+	else if (lnum > buf->lastLine->linenumber)
+	    lnum = buf->lastLine->linenumber;
+    }
+    else {
+	tlnum = buf->topLine->linenumber;
+	llnum = buf->topLine->linenumber + buf->LINES - 1;
+	if (nextpage_topline)
+	    diff_n = 0;
+	else
+	    diff_n = n - (tlnum - top->linenumber);
+	if (lnum < tlnum)
+	    lnum = tlnum + diff_n;
+	if (lnum > llnum)
+	    lnum = llnum + diff_n;
+    }
+    gotoLine(buf, lnum);
+    arrangeLine(buf);
+    if (n > 0) {
+	if (buf->currentLine->bpos &&
+	    buf->currentLine->bwidth >= buf->currentColumn + buf->visualpos)
+	    cursorDown(buf, 1);
+	else {
+	    while (buf->currentLine->next && buf->currentLine->next->bpos &&
+		   buf->currentLine->bwidth + buf->currentLine->width <
+		   buf->currentColumn + buf->visualpos)
+		cursorDown0(buf, 1);
+	}
+    }
+    else {
+	if (buf->currentLine->bwidth + buf->currentLine->width <
+	    buf->currentColumn + buf->visualpos)
+	    cursorUp(buf, 1);
+	else {
+	    while (buf->currentLine->prev && buf->currentLine->bpos &&
+		   buf->currentLine->bwidth >=
+		   buf->currentColumn + buf->visualpos)
+		cursorUp0(buf, 1);
+	}
+    }
+    displayBuffer(buf, mode);
+}
+
+/* go to the next [visited] anchor */
+static void
+_nextA(int visited)
+{
+    HmarkerList *hl = Currentbuf->hmarklist;
+    BufferPoint *po;
+    Anchor *an, *pan;
+    int i, x, y, n = searchKeyNum();
+    ParsedURL url;
+
+    if (Currentbuf->firstLine == NULL)
+	return;
+    if (!hl || hl->nmark == 0)
+	return;
+
+    an = retrieveCurrentAnchor(Currentbuf);
+    if (visited != TRUE && an == NULL)
+	an = retrieveCurrentForm(Currentbuf);
+
+    y = Currentbuf->currentLine->linenumber;
+    x = Currentbuf->pos;
+
+    if (visited == TRUE) {
+	n = hl->nmark;
+    }
+
+    for (i = 0; i < n; i++) {
+	pan = an;
+	if (an && an->hseq >= 0) {
+	    int hseq = an->hseq + 1;
+	    do {
+		if (hseq >= hl->nmark) {
+		    if (visited == TRUE)
+			return;
+		    an = pan;
+		    goto _end;
+		}
+		po = &hl->marks[hseq];
+		an = retrieveAnchor(Currentbuf->href, po->line, po->pos);
+		if (visited != TRUE && an == NULL)
+		    an = retrieveAnchor(Currentbuf->formitem, po->line,
+					po->pos);
+		hseq++;
+		if (visited == TRUE && an) {
+		    parseURL2(an->url, &url, baseURL(Currentbuf));
+		    if (getHashHist(URLHist, parsedURL2Str(&url)->ptr)) {
+			goto _end;
+		    }
+		}
+	    } while (an == NULL || an == pan);
+	}
+	else {
+	    an = closest_next_anchor(Currentbuf->href, NULL, x, y);
+	    if (visited != TRUE)
+		an = closest_next_anchor(Currentbuf->formitem, an, x, y);
+	    if (an == NULL) {
+		if (visited == TRUE)
+		    return;
+		an = pan;
+		break;
+	    }
+	    x = an->start.pos;
+	    y = an->start.line;
+	    if (visited == TRUE) {
+		parseURL2(an->url, &url, baseURL(Currentbuf));
+		if (getHashHist(URLHist, parsedURL2Str(&url)->ptr)) {
+		    goto _end;
+		}
+	    }
+	}
+    }
+    if (visited == TRUE)
+	return;
+
+  _end:
+    if (an == NULL || an->hseq < 0)
+	return;
+    po = &hl->marks[an->hseq];
+    gotoLine(Currentbuf, po->line);
+    Currentbuf->pos = po->pos;
+    arrangeCursor(Currentbuf);
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
+/* go to the previous anchor */
+static void
+_prevA(int visited)
+{
+    HmarkerList *hl = Currentbuf->hmarklist;
+    BufferPoint *po;
+    Anchor *an, *pan;
+    int i, x, y, n = searchKeyNum();
+    ParsedURL url;
+
+    if (Currentbuf->firstLine == NULL)
+	return;
+    if (!hl || hl->nmark == 0)
+	return;
+
+    an = retrieveCurrentAnchor(Currentbuf);
+    if (visited != TRUE && an == NULL)
+	an = retrieveCurrentForm(Currentbuf);
+
+    y = Currentbuf->currentLine->linenumber;
+    x = Currentbuf->pos;
+
+    if (visited == TRUE) {
+	n = hl->nmark;
+    }
+
+    for (i = 0; i < n; i++) {
+	pan = an;
+	if (an && an->hseq >= 0) {
+	    int hseq = an->hseq - 1;
+	    do {
+		if (hseq < 0) {
+		    if (visited == TRUE)
+			return;
+		    an = pan;
+		    goto _end;
+		}
+		po = hl->marks + hseq;
+		an = retrieveAnchor(Currentbuf->href, po->line, po->pos);
+		if (visited != TRUE && an == NULL)
+		    an = retrieveAnchor(Currentbuf->formitem, po->line,
+					po->pos);
+		hseq--;
+		if (visited == TRUE && an) {
+		    parseURL2(an->url, &url, baseURL(Currentbuf));
+		    if (getHashHist(URLHist, parsedURL2Str(&url)->ptr)) {
+			goto _end;
+		    }
+		}
+	    } while (an == NULL || an == pan);
+	}
+	else {
+	    an = closest_prev_anchor(Currentbuf->href, NULL, x, y);
+	    if (visited != TRUE)
+		an = closest_prev_anchor(Currentbuf->formitem, an, x, y);
+	    if (an == NULL) {
+		if (visited == TRUE)
+		    return;
+		an = pan;
+		break;
+	    }
+	    x = an->start.pos;
+	    y = an->start.line;
+	    if (visited == TRUE && an) {
+		parseURL2(an->url, &url, baseURL(Currentbuf));
+		if (getHashHist(URLHist, parsedURL2Str(&url)->ptr)) {
+		    goto _end;
+		}
+	    }
+	}
+    }
+    if (visited == TRUE)
+	return;
+
+  _end:
+    if (an == NULL || an->hseq < 0)
+	return;
+    po = hl->marks + an->hseq;
+    gotoLine(Currentbuf, po->line);
+    Currentbuf->pos = po->pos;
+    arrangeCursor(Currentbuf);
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
+
+
+
 /* zzz */
 #ifdef USE_MARK
 
@@ -567,7 +801,8 @@ DEFUN(movLW, PREV_WORD, "Move to previous word")
 
 DEFUN(prevVA, PREV_VISITED, "Move to previous visited link")
 {
-    MONA_TRACE("Move to previous visited link, NYI\n");
+  _prevA(TRUE);
+    MONA_TRACE("Move to previous visited link\n");
 }
 
 DEFUN(prevT, PREV_TAB, "Move to previous tab")
@@ -578,7 +813,7 @@ DEFUN(prevT, PREV_TAB, "Move to previous tab")
 
 DEFUN(pgBack, PREV_PAGE, "Move to previous page")
 {
-    MONA_TRACE("Move to previous page, NYI\n");
+  nscroll(-searchKeyNum()*(Currentbuf->LINES - 1), B_NORMAL);
 }
 
 DEFUN(prevMk, PREV_MARK, "Move to previous mark")
@@ -588,7 +823,8 @@ DEFUN(prevMk, PREV_MARK, "Move to previous mark")
 
 DEFUN(prevA, PREV_LINK, "Move to previous link")
 {
-    MONA_TRACE("Move to previous link, NYI\n");
+    MONA_TRACE("Move to previous link\n");
+  _prevA(FALSE);
 }
 
 DEFUN(prevBf, PREV, "Move to previous buffer")
@@ -633,7 +869,8 @@ DEFUN(movRW, NEXT_WORD, "Move to next word")
 
 DEFUN(nextVA, NEXT_VISITED, "Move to next visited link")
 {
-    MONA_TRACE("Move to next visited link, NYI\n");
+  MONA_TRACE("Move to next visited link\n");
+    _nextA(TRUE);
 }
 
 DEFUN(nextU, NEXT_UP, "Move to next upward link")
@@ -658,7 +895,7 @@ DEFUN(nextR, NEXT_RIGHT, "Move to next right link")
 
 DEFUN(pgFore, NEXT_PAGE, "Move to next page")
 {
-    MONA_TRACE("Move to next page, NYI\n");
+  nscroll(searchKeyNum() * (Currentbuf->LINES - 1), B_NORMAL);
 }
 
 DEFUN(nextMk, NEXT_MARK, "Move to next word")
@@ -668,7 +905,8 @@ DEFUN(nextMk, NEXT_MARK, "Move to next word")
 
 DEFUN(nextA, NEXT_LINK, "Move to next link")
 {
-    MONA_TRACE("Move to next link, NYI\n");
+    _nextA(FALSE);
+    MONA_TRACE("Move to next link\n");
 }
 
 DEFUN(nextLU, NEXT_LEFT_UP, "Move to next left (or upward) link")
@@ -1271,6 +1509,37 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
 #include "mona_w3m.h"
 #include <monapi.h>
 
+inline bool insideKeymap(int keycode) {
+  return keycode >= 0 && keycode < 128/* sizeof(GlobalKeymap) */ ;
+}
+
+inline int translateKeyCode(int keycode) {
+  if(keycode == KeyEvent::VKEY_TAB)
+    return '\t';
+  if(keycode == KeyEvent::VKEY_ENTER)
+    return '\n';
+  return keycode;
+}
+
+void W3MPane::processEvent(Event* event)
+{
+  if (event->getType() == KeyEvent::KEY_PRESSED) {
+    int keycode = ((KeyEvent *)event)->getKeycode();
+    keycode = translateKeyCode(keycode);
+    MONA_TRACE_FMT((stderr, "kecode=%x, %x\n", keycode, '\n'));
+    if(insideKeymap(keycode) && GlobalKeymap[keycode] != FUNCNAME_nulcmd)
+    {
+      CurrentKey = keycode;
+      w3mFuncList[(int)GlobalKeymap[keycode]].func();
+      MONA_TRACE_FMT((stderr, "kecode=%x\n", keycode));
+    }
+    return;
+  }
+  Component::processEvent(event);
+}
+
+
+
 
 W3MFrame *g_frame = NULL;
 
@@ -1290,11 +1559,11 @@ int main(int argc, char* argv[]) {
     DefaultType = NULL;
     CurrentTab = NULL;
 
+  char *initUrl = "file:///APPS/W3M/W3M.APP/MANUAL.HTM";
 
-  if(argc == 1)
+  if(argc >= 2)
     {
-      fprintf(stderr, "usage: W3M.EX5 [url]\n");
-      return 1;
+      initUrl = argv[1];
     }
 
     g_frame = new W3MFrame();

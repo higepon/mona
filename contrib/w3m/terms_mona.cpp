@@ -79,7 +79,13 @@ move(int line, int column)
 void
 clrtoeolx(void)
 {
+  int i;
+  char *p;
+  p = ScreenImage[CurLine]->lineimage;
+  for (i = CurColumn; i < COLS; i++)
+    p[i] = ' ';
 }
+
 void
 addstr(char *s)
 {
@@ -139,7 +145,7 @@ MONA_TRACE("refresh1\n");
     {
 MONA_TRACE("refresh2\n");
       g_frame->setScreenImage(ScreenImage);
-      g_frame->updatePane();
+      g_frame->repaint();
     }
 }
 

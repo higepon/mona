@@ -22,6 +22,7 @@ public:
 
   W3MPane() {
     ScreenImage = NULL;
+    setFontStyle(Font::FIXED);
   }
 
   inline int colWidth() {
@@ -31,6 +32,21 @@ public:
   inline int colHeight() {
     return getFontMetrics()->getHeight("W"); // tekito-
   }
+
+  TabBuffer *
+    newTab(void)
+      {
+        TabBuffer *n;
+        
+        n = New(TabBuffer);
+        if (n == NULL)
+          return NULL;
+        n->nextTab = NULL;
+        n->currentBuffer = NULL;
+        n->firstBuffer = NULL;
+        return n;
+      }
+
 
   void initW3M() {
     int w = getWidth();
@@ -46,7 +62,10 @@ public:
     // sync_with_option();
 
     fmInit();
+
+    FirstTab = LastTab = CurrentTab = newTab();
   }
+  virtual void processEvent(Event* event);
 
   virtual void paint(Graphics* g) {
 
@@ -56,7 +75,6 @@ public:
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
 
-    int fw = colWidth();
     int fh = colHeight();
     g->setColor(getForeground());
 
@@ -65,10 +83,9 @@ public:
         MONA_TRACE("repaint2\n");
         for(int line = 0; line < LINES; line++) {
           char* pc = ScreenImage[line]->lineimage;
-          for(int col = 0; col < COLS; col++) {
-            String s(&pc[col], 1);
-            g->drawString(s, col*fw+_xoffset, line*fh+_yoffset);
-          }
+
+          String s(&pc[0], COLS);
+          g->drawString(s, _xoffset, line*fh+_yoffset);
         }
       }
   }
@@ -109,14 +126,16 @@ public:
   void initW3M(char* url) {
     m_pane->initW3M();
 
-       Buffer *newbuf = NULL;
-       newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
-       // Currentbuf = newbuf;
+    Buffer *newbuf = NULL;
+    newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
+    Firstbuf = Currentbuf = newbuf;
+
     if(newbuf == NULL)
       MONA_TRACE("newbuf == null\n");
-  MONA_TRACE("initW3M:begin display buffer\n");
-       displayBuffer(newbuf, B_FORCE_REDRAW);
-  MONA_TRACE("initW3M:end display buffer\n");
+
+    MONA_TRACE("initW3M:begin display buffer\n");
+    displayBuffer(newbuf, B_FORCE_REDRAW);
+    MONA_TRACE("initW3M:end display buffer\n");
   }
 
 
