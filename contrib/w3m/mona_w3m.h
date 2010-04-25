@@ -24,6 +24,30 @@ public:
     ScreenImage = NULL;
   }
 
+  inline int colWidth() {
+    return getFontMetrics()->getWidth("W"); // tekito-
+  }
+
+  inline int colHeight() {
+    return getFontMetrics()->getHeight("W"); // tekito-
+  }
+
+  void initW3M() {
+    int w = getWidth();
+    int h = getHeight();
+
+    int fw = colWidth();
+    int fh = colHeight();
+
+    COLS = (w-_xoffset*2)/fw;
+    LINES = (h-_yoffset*2)/fh;
+
+    setupscreen();
+    // sync_with_option();
+
+    fmInit();
+  }
+
   virtual void paint(Graphics* g) {
 
     int w = getWidth();
@@ -32,19 +56,18 @@ public:
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
 
-    int fw = getFontMetrics()->getWidth("W"); // tekito-
-    int fh = getFontMetrics()->getHeight("W"); // tekito-
+    int fw = colWidth();
+    int fh = colHeight();
     g->setColor(getForeground());
 
     if(ScreenImage != NULL)
       {
         MONA_TRACE("repaint2\n");
-//      for(int line = 0; line <= LINES; line++) {
-        for(int line = 0; line <= 40; line++) {
+        for(int line = 0; line < LINES; line++) {
           char* pc = ScreenImage[line]->lineimage;
-          for(int col = 0; col < 40; col++) {
+          for(int col = 0; col < COLS; col++) {
             String s(&pc[col], 1);
-            g->drawString(s, col*fw+_xoffset, 20+line*fh+_yoffset);
+            g->drawString(s, col*fw+_xoffset, line*fh+_yoffset);
           }
         }
       }
@@ -84,6 +107,8 @@ public:
 
 
   void initW3M(char* url) {
+    m_pane->initW3M();
+
        Buffer *newbuf = NULL;
        newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
        // Currentbuf = newbuf;

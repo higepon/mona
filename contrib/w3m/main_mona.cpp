@@ -1279,8 +1279,6 @@ int main(int argc, char* argv[]) {
     CurrentPid = 111; // tekito-
     tmp_dir = "/APPS/W3M/W3M.APP";
     fileToDelete = newTextList();
-    COLS = 80;
-    LINES = 80;
 
     LoadHist = newHist();
     SaveHist = newHist();
@@ -1288,16 +1286,11 @@ int main(int argc, char* argv[]) {
     TextHist = newHist();
     URLHist = newHist();
 
-    setupscreen();
-    // sync_with_option();
-
     SearchHeader = FALSE;
     DefaultType = NULL;
     CurrentTab = NULL;
 
-    fmInit();
 
-    move(0, 0);
   if(argc == 1)
     {
       fprintf(stderr, "usage: W3M.EX5 [url]\n");
