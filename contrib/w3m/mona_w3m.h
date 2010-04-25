@@ -32,8 +32,8 @@ public:
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
 
-    int fw = getFontMetrics()->getWidth("A"); // tekito-
-    int fh = getFontMetrics()->getHeight("A"); // tekito-
+    int fw = getFontMetrics()->getWidth("W"); // tekito-
+    int fh = getFontMetrics()->getHeight("W"); // tekito-
     g->setColor(getForeground());
 
     if(ScreenImage != NULL)

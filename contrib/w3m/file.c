@@ -1786,7 +1786,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
     url_option.flag = flag;
     f = openURL(tpath, &pu, current, &url_option, request, extra_header, of,
 		&hr, &status);
-// OK
     of = NULL;
 #ifdef USE_M17N
     content_charset = 0;
@@ -1855,7 +1854,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	    goto page_loaded;
 	return NULL;
     }
-// OK
 
     if (status == HTST_MISSING) {
 	TRAP_OFF;
@@ -2127,7 +2125,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	if (f.guess_type)
 	    t = f.guess_type;
     }
-// OK
 
   page_loaded:
     if (page) {
@@ -2241,7 +2238,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	return b;
     }
 #endif
-// OK
 
     if (!strcasecmp(t, "text/html"))
 	proc = loadHTMLBuffer;
@@ -2288,7 +2284,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
     }
     else if (w3m_dump & DUMP_FRAME)
 	return NULL;
-// OK
     if (flag & RG_FRAME) {
 	if (t_buf == NULL)
 	    t_buf = newBuffer(INIT_BUFFER_WIDTH);
@@ -4372,7 +4367,6 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
     }
 
 
-// OK
 
     switch (cmd) {
     case HTML_B:
@@ -4900,7 +4894,6 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
 	}
 	return 0;
     case HTML_TABLE:
-// exit OK
 	close_anchor(h_env, obuf);
 	obuf->table_level++;
 	if (obuf->table_level >= MAX_TABLE)
@@ -4952,7 +4945,6 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
 	tables[obuf->table_level]->real_width = width;
 	tables[obuf->table_level]->total_width = 0;
 #endif
-// exit OK
 	return 1;
     case HTML_N_TABLE:
 	/* should be processed in HTMLlineproc() */
@@ -6142,8 +6134,6 @@ table_width(struct html_feed_environ *h_env, int table_level)
     return h_env->limit - h_env->envs[h_env->envc].indent;
 }
 
-int g_debug_flag = 0;
-
 /* HTML processing first pass */
 void
 HTMLlineproc0(char *line, struct html_feed_environ *h_env, int internal)
@@ -6306,9 +6296,7 @@ HTMLlineproc0(char *line, struct html_feed_environ *h_env, int internal)
 		    do_blankline(h_env, obuf, indent, 0, h_env->limit);
 		}
 		save_fonteffect(h_env, obuf);
-// flag exit OK
 		renderTable(tbl, tbl_width, h_env);
-// flag exit NG
 		restore_fonteffect(h_env, obuf);
 		obuf->flag &= ~RB_IGNORE_P;
 		if (tbl->vspace > 0) {
@@ -7049,11 +7037,7 @@ loadHTMLstream(URLFile *f, Buffer *newBuf, FILE * src, int internal)
 #endif
     if (IStype(f->stream) != IST_ENCODED)
 	f->stream = newEncodedStream(f->stream, f->encoding);
-int whilenum = 0;
-g_debug_flag = 0;
     while ((lineBuf2 = StrmyUFgets(f))->length) {
-whilenum++;
-      if(whilenum == 8) g_debug_flag = 1;
 #ifdef USE_NNTP
 	if (f->scheme == SCM_NEWS && lineBuf2->ptr[0] == '.') {
 	    Strshrinkfirst(lineBuf2, 1);
@@ -7091,11 +7075,7 @@ whilenum++;
 #if defined(USE_M17N) && defined(USE_IMAGE)
 	cur_document_charset = charset;
 #endif
-// 8OK      if(whilenum == 8) exit(0);
 	HTMLlineproc0(lineBuf2->ptr, &htmlenv1, internal);
-// 7OK, 8NG
-// if(whilenum == 8) exit(0);
-// exit OK
     }
     if (obuf.status != R_ST_NORMAL) {
 	obuf.status = R_ST_EOL;

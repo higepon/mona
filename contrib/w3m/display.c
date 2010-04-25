@@ -369,8 +369,6 @@ displayBuffer(Buffer *buf, int mode)
     Str msg;
     int ny = 0;
 
-  MONA_TRACE("display buffer\n");
-
     if (!buf)
 	return;
     if (buf->topLine == NULL && readBufferCache(buf) == 0) {	/* clear_buffer */
@@ -383,11 +381,9 @@ displayBuffer(Buffer *buf, int mode)
     if ((buf->width != INIT_BUFFER_WIDTH &&
 	 ((buf->type && !strcmp(buf->type, "text/html")) || FoldLine))
 	|| buf->need_reshape) {
-MONA_TRACE("disp 1\n");
 	buf->need_reshape = TRUE;
 	reshapeBuffer(buf);
     }
-MONA_TRACE("disp 2\n");
     if (showLineNum) {
 	if (buf->lastLine && buf->lastLine->real_linenumber > 0)
 	    buf->rootX = (int)(log(buf->lastLine->real_linenumber + 0.1)
@@ -400,20 +396,17 @@ MONA_TRACE("disp 2\n");
     else
 	buf->rootX = 0;
     buf->COLS = COLS - buf->rootX;
-MONA_TRACE("disp 3\n");
     if (nTab > 1
 #ifdef USE_MOUSE
 	|| mouse_action.menu_str
 #endif
 	) {
-MONA_TRACE("disp 4\n");
 	if (mode == B_FORCE_REDRAW || mode == B_REDRAW_IMAGE)
 	    calcTabPos();
 	ny = LastTab->y + 2;
 	if (ny > LASTLINE)
 	    ny = LASTLINE;
     }
-MONA_TRACE("disp 5\n");
     if (buf->rootY != ny || buf->LINES != LASTLINE - ny) {
 	buf->rootY = ny;
 	buf->LINES = LASTLINE - ny;
@@ -465,7 +458,6 @@ MONA_TRACE("disp 5\n");
 	cline = buf->topLine;
 	ccolumn = buf->currentColumn;
     }
-  MONA_TRACE("disp 7\n");
     if (buf->topLine == NULL)
 	buf->topLine = buf->firstLine;
 
@@ -488,11 +480,9 @@ MONA_TRACE("disp 5\n");
 	delayed_msg = NULL;
 	refresh();
     }
-  MONA_TRACE("disp 8\n");
     standout();
     message(msg->ptr, buf->cursorX + buf->rootX, buf->cursorY + buf->rootY);
     standend();
-  MONA_TRACE("disp 9\n");
     term_title(conv_to_system(buf->buffername));
     refresh();
 #ifdef USE_IMAGE
@@ -506,7 +496,6 @@ MONA_TRACE("disp 5\n");
 	save_current_buf = buf;
     }
 #endif
-  MONA_TRACE("end display buffer\n");
 }
 
 static void

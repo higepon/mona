@@ -760,7 +760,6 @@ parseURL(char *url, ParsedURL *p_url, ParsedURL *current)
 #endif				/* SUPPORT_DOS_DRIVE_PREFIX */
     /* search for scheme */
     p_url->scheme = getURLScheme(&p);
-MONA_TRACE_FMT((stderr, "parseURL, scheme %x\n", p_url->scheme));
     if (p_url->scheme == SCM_MISSING) {
 	/* scheme part is not found in the url. This means either
 	 * (a) the url is relative to the current or (b) the url
@@ -770,12 +769,10 @@ MONA_TRACE_FMT((stderr, "parseURL, scheme %x\n", p_url->scheme));
 	    switch (current->scheme) {
 	    case SCM_LOCAL:
 	    case SCM_LOCAL_CGI:
-MONA_TRACE("local\n");
 		p_url->scheme = SCM_LOCAL;
 		break;
 	    case SCM_FTP:
 	    case SCM_FTPDIR:
-MONA_TRACE("ftp\n");
 		p_url->scheme = SCM_FTP;
 		break;
 #ifdef USE_NNTP
@@ -789,13 +786,11 @@ MONA_TRACE("ftp\n");
 		break;
 #endif
 	    default:
-MONA_TRACE("default\n");
 		p_url->scheme = current->scheme;
 		break;
 	    }
 	}
         else{
-MONA_TRACE("local\n");
 	    p_url->scheme = SCM_LOCAL;
         }
 	p = url;
@@ -824,7 +819,6 @@ MONA_TRACE("local\n");
     }
     /* after here, p begins with // */
     if (p_url->scheme == SCM_LOCAL) {	/* file://foo           */
-MONA_TRACE("parseURL, local\n");
 #ifdef __EMX__
 	p += 2;
 	goto analyze_file;
@@ -990,7 +984,6 @@ MONA_TRACE("parseURL, local\n");
 		p++;
 	    }
 	}
-MONA_TRACE("parseURL, deb1\n");
 	if (p_url->scheme == SCM_LOCAL || p_url->scheme == SCM_MISSING)
 	    p_url->file = copyPath(q, p - q, COPYPATH_SPC_ALLOW);
 	else
@@ -1042,7 +1035,6 @@ parseURL2(char *url, ParsedURL *pu, ParsedURL *current)
     int relative_uri = FALSE;
 
     parseURL(url, pu, current);
-MONA_TRACE_FMT((stderr, "parseURL2, scheme %x\n", pu->scheme));
 #ifndef USE_W3MMAILER
     if (pu->scheme == SCM_MAILTO)
 	return;
@@ -1214,10 +1206,8 @@ MONA_TRACE_FMT((stderr, "parseURL2, scheme %x\n", pu->scheme));
 	    else
 #endif
 		pu->real_file = cleanupName(file_unquote(pu->file));
-MONA_TRACE_FMT((stderr, "cleanup name %s, org=%s, unquote=%s\n", pu->real_file, pu->file, file_unquote(pu->file)));
 	}
     }
-MONA_TRACE_FMT((stderr, "parseURL2 %s\n", pu->real_file));
 }
 
 static Str
@@ -1333,7 +1323,6 @@ getURLScheme(char **url)
 	for (i = 0; (q = schemetable[i].cmdname) != NULL; i++) {
 	    int len = strlen(q);
 	    if (!strncasecmp(q, *url, len) && (*url)[len] == ':') {
-MONA_TRACE_FMT((stderr, "match, %s, %x\n", q, schemetable[i].cmd));
 		scheme = schemetable[i].cmd;
 		*url = p + 1;
 		break;
@@ -1567,13 +1556,10 @@ openURL(char *url, ParsedURL *pu, ParsedURL *current,
 	u = file_to_url(url);	/* force to local file */
     else
 	u = url;
-MONA_TRACE_FMT((stderr, "scheme=%x, %x\n", scheme, SCM_LOCAL));
   retry:
     parseURL2(u, pu, current);
     if (pu->scheme == SCM_LOCAL && pu->file == NULL) {
-MONA_TRACE("scheme1\n");
 	if (pu->label != NULL) {
-MONA_TRACE("scheme2\n");
 	    /* #hogege is not a label but a filename */
 	    Str tmp2 = Strnew_charp("#");
 	    Strcat_charp(tmp2, pu->label);
@@ -1583,14 +1569,12 @@ MONA_TRACE("scheme2\n");
 	}
 	else {
 	    /* given URL must be null string */
-MONA_TRACE("scheme2.1\n");
 #ifdef SOCK_DEBUG
 	    sock_log("given URL must be null string\n");
 #endif
 	    return uf;
 	}
     }
-// OK
 
     uf.scheme = pu->scheme;
     uf.url = parsedURL2Str(pu)->ptr;
@@ -1601,12 +1585,10 @@ MONA_TRACE("scheme2.1\n");
     hr->flag = 0;
     hr->referer = option->referer;
     hr->request = request;
-MONA_TRACE_FMT((stderr, "scheme3,%x\n", pu->scheme));
 
     switch (pu->scheme) {
     case SCM_LOCAL:
     case SCM_LOCAL_CGI:
-MONA_TRACE("local or cgi\n");
 	if (request && request->body)
 	    /* local CGI: POST */
 	    uf.stream = newFileStream(localcgi_post(pu->real_file, pu->query,
@@ -1622,7 +1604,6 @@ MONA_TRACE("local or cgi\n");
 	    uf.scheme = pu->scheme = SCM_LOCAL_CGI;
 	    return uf;
 	}
-// OK
 	examineFile(pu->real_file, &uf);
 	if (uf.stream == NULL) {
 	    if (dir_exist(pu->real_file)) {
@@ -1689,15 +1670,12 @@ MONA_TRACE("local or cgi\n");
 #ifdef USE_SSL
     case SCM_HTTPS:
 #endif				/* USE_SSL */
-MONA_TRACE("scheme4\n");
 	if (pu->file == NULL)
 	    pu->file = allocStr("/", -1);
 	if (request && request->method == FORM_METHOD_POST && request->body)
 	    hr->command = HR_COMMAND_POST;
 	if (request && request->method == FORM_METHOD_HEAD)
 	    hr->command = HR_COMMAND_HEAD;
-// OK
-MONA_TRACE("debughere1.1\n");
 	if ((
 #ifdef USE_SSL
 		(pu->scheme == SCM_HTTPS) ? non_null(HTTPS_proxy) :
@@ -1729,8 +1707,6 @@ MONA_TRACE("debughere1.1\n");
 		sslh = NULL;
 	    }
 #endif				/* USE_SSL */
-// NG
-MONA_TRACE("debhere2\n");
 	    if (sock < 0) {
 #ifdef SOCK_DEBUG
 		sock_log("Can't open socket\n");
@@ -1876,7 +1852,6 @@ MONA_TRACE("debhere2\n");
 	return uf;
     case SCM_UNKNOWN:
     default:
-MONA_TRACE("scheme6, unknow?\n");
 	return uf;
     }
     uf.stream = newInputStream(sock);
