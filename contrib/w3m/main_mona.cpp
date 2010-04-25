@@ -1269,7 +1269,7 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
 /* extern "C" */ }
 
 #include "mona_w3m.h"
-
+#include <monapi.h>
 
 
 W3MFrame *g_frame = NULL;
@@ -1281,6 +1281,39 @@ int main(int argc, char* argv[]) {
     fileToDelete = newTextList();
     COLS = 80;
     LINES = 80;
+
+#if 0
+ //  FILE* fp = fopen("/APPS/W3M/W3M.APP/MANUAL.HTM", "rw");
+  FILE* fp = fopen("/APPS/TEST.RAW", "r");
+  MONA_TRACE_FMT((stderr, "fp=%x\n", fp));
+  char buf[8192];
+//   int ret = fread(buf, 1, 8192, fp);
+  int ret = fread(buf, 1, 20, fp);
+  MONA_TRACE_FMT((stderr, "ret=%d\n", ret));
+/*
+if(ret > 0)
+  MONA_TRACE_FMT((stderr, "buf=%s\n",  Strnew_charp_n(buf, ret)));
+*/
+return 1;
+#endif
+/*
+  String bundlePath = MonAPI::System::getBundlePath();
+  MONA_TRACE_FMT((stderr, "bundle %s\n", bundlePath));
+*/
+/*
+  MONA_TRACE_FMT((stderr, "open1 %x\n", fopen("/APPS/W3M/W3M.APP/MANUAL.HTM", "rb"))); // OK
+  MONA_TRACE_FMT((stderr, "open2 %x\n", fopen("MANUAL.HTM", "rb")));
+  MONA_TRACE_FMT((stderr, "open3 %x\n", fopen("/MANUAL.HTM", "rb")));
+  MONA_TRACE_FMT((stderr, "open4 %x\n", fopen("W3M.APP/MANUAL.HTM", "rb")));
+  MONA_TRACE_FMT((stderr, "open5 %x\n", fopen("W3M/W3M.APP/MANUAL.HTM", "rb")));
+char path[34];
+  sprintf(path, "%s/MANUAL.html", MonAPI::System::getBundlePath());
+  MONA_TRACE(path);
+  MONA_TRACE("\n");
+  MONA_TRACE_FMT((stderr, "open6 %x\n", fopen(path, "rb")));
+  MONA_TRACE_FMT((stderr, "open7 %x\n", fopen("/APPS/TEST.RAW", "r"))); // OK
+return -1;
+*/
 
     LoadHist = newHist();
     SaveHist = newHist();
@@ -1298,6 +1331,11 @@ int main(int argc, char* argv[]) {
     fmInit();
 
     move(0, 0);
+  if(argc == 1)
+    {
+      fprintf(stderr, "usage: W3M.EX5 [url]\n");
+      return 1;
+    }
 
     g_frame = new W3MFrame();
   MONA_TRACE(argv[1]);

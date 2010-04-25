@@ -15,6 +15,8 @@
 int symbol_width = 0;
 int symbol_width0 = 0;
 
+extern int g_debug_flag;
+
 #define RULE_WIDTH symbol_width
 #define RULE(mode,n) (((mode) == BORDER_THICK) ? ((n) + 16) : (n))
 #define TK_VERTICALBAR(mode) RULE(mode,5)
@@ -1726,6 +1728,7 @@ renderTable(struct table *t, int max_width, struct html_feed_environ *h_env)
 
     check_maximum_width(t);
 
+
 #ifdef MATRIX
     if (t->maxcol == 0) {
 	if (t->tabwidth[0] > max_width)
@@ -1738,7 +1741,9 @@ renderTable(struct table *t, int max_width, struct html_feed_environ *h_env)
 	    t->tabwidth[0] = t->minimum_width[0];
     }
     else {
+// flag exit OK
 	set_table_matrix(t, max_width);
+// flag exit NG
 
 	itr = 0;
 	mat = m_get(t->maxcol + 1, t->maxcol + 1);
@@ -1766,6 +1771,7 @@ renderTable(struct table *t, int max_width, struct html_feed_environ *h_env)
 	    fprintf(stderr, "\n");
 #endif				/* TABLE_DEBUG */
 	    itr++;
+
 
 	} while (check_table_width(t, newwidth->ve, minv, itr));
 	set_integered_width(t, newwidth->ve, new_tabwidth);
@@ -2130,6 +2136,7 @@ setwidth0(struct table *t, struct table_mode *mode)
 static void
 setwidth(struct table *t, struct table_mode *mode)
 {
+MONA_TRACE("set width, ret\n");
     int width = setwidth0(t, mode);
     if (width < 0)
 	return;
@@ -2191,6 +2198,7 @@ begin_cell(struct table *t, struct table_mode *mode)
 void
 check_rowcol(struct table *tbl, struct table_mode *mode)
 {
+//flag exit, NG
     int row = tbl->row, col = tbl->col;
 
     if (!(tbl->flag & TBL_IN_ROW)) {
@@ -2205,7 +2213,9 @@ check_rowcol(struct table *tbl, struct table_mode *mode)
     if (tbl->col == -1)
 	tbl->col = 0;
 
+  MONA_TRACE_FMT((stderr, "row=%x\n", tbl->row));
     for (;; tbl->row++) {
+    MONA_TRACE("check rowcol3, return\n");
 	check_row(tbl, tbl->row);
 	for (; tbl->col < MAXCOL &&
 	     tbl->tabattr[tbl->row][tbl->col] & (HTT_X | HTT_Y); tbl->col++) ;
@@ -2213,13 +2223,15 @@ check_rowcol(struct table *tbl, struct table_mode *mode)
 	    break;
 	tbl->col = 0;
     }
+    MONA_TRACE("check rowcol3, return\n");
     if (tbl->row > tbl->maxrow)
 	tbl->maxrow = tbl->row;
     if (tbl->col > tbl->maxcol)
 	tbl->maxcol = tbl->col;
 
-    if (tbl->row != row || tbl->col != col)
+  if (tbl->row != row || tbl->col != col){
 	begin_cell(tbl, mode);
+  }
     tbl->flag |= TBL_IN_COL;
 }
 
@@ -2408,6 +2420,7 @@ table_close_anchor0(struct table *tbl, struct table_mode *mode)
 	case HTML_N_COLGROUP:\
 	case HTML_COL
 
+
 static int
 feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	       int width, struct parsed_tag *tag)
@@ -2499,14 +2512,17 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	    return TAG_ACTION_NONE;
 	}
     }
+// flag exit OK
 
     switch (cmd) {
     case HTML_TABLE:
 	check_rowcol(tbl, mode);
 	return TAG_ACTION_TABLE;
     case HTML_N_TABLE:
+// flag exit OK
 	if (tbl->suspended_data)
 	    check_rowcol(tbl, mode);
+// flag exit OK
 	return TAG_ACTION_N_TABLE;
     case HTML_TR:
 	if (tbl->col >= 0 && tbl->tabcontentssize > 0)
@@ -2551,15 +2567,18 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	break;
     case HTML_TH:
     case HTML_TD:
+// now OK
 	prev_col = tbl->col;
 	if (tbl->col >= 0 && tbl->tabcontentssize > 0)
 	    setwidth(tbl, mode);
+// OK
 	if (tbl->row == -1) {
 	    /* for broken HTML... */
 	    tbl->row = -1;
 	    tbl->col = -1;
 	    tbl->maxrow = tbl->row;
 	}
+// OK, NG now, exit OK
 	if (tbl->col == -1) {
 	    if (!(tbl->flag & TBL_IN_ROW)) {
 		tbl->row++;
@@ -2568,11 +2587,15 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	    if (tbl->row > tbl->maxrow)
 		tbl->maxrow = tbl->row;
 	}
+// now OK
 	tbl->col++;
+// now NG
 	check_row(tbl, tbl->row);
+// NG
 	while (tbl->tabattr[tbl->row][tbl->col]) {
 	    tbl->col++;
 	}
+// NG
 	if (tbl->col > MAXCOL - 1) {
 	    tbl->col = prev_col;
 	    return TAG_ACTION_NONE;
@@ -2592,9 +2615,11 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	else
 	    valign = HTT_MIDDLE;
 	if (parsedtag_get_value(tag, ATTR_ROWSPAN, &rowspan)) {
+MONA_TRACE("deb4, return\n");
 	    if ((tbl->row + rowspan) >= tbl->max_rowsize)
 		check_row(tbl, tbl->row + rowspan);
 	}
+MONA_TRACE("deb4.5, return\n");
 	if (parsedtag_get_value(tag, ATTR_COLSPAN, &colspan)) {
 	    if ((tbl->col + colspan) >= MAXCOL) {
 		/* Can't expand column */
@@ -2627,6 +2652,7 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 		break;
 	    }
 	}
+// exit OK now, break NG
 #ifdef NOWRAP
 	if (parsedtag_exists(tag, ATTR_NOWRAP))
 	    tbl->tabattr[tbl->row][tbl->col] |= HTT_NOWRAP;
@@ -2720,6 +2746,7 @@ feed_table_tag(struct table *tbl, char *line, struct table_mode *mode,
 	    }
 	}
 	begin_cell(tbl, mode);
+// now exit OK
 	break;
     case HTML_N_TR:
 	setwidth(tbl, mode);
@@ -3100,6 +3127,7 @@ feed_table(struct table *tbl, char *line, struct table_mode *mode,
 	p = line;
 	tag = parse_tag(&p, internal);
 	if (tag) {
+// flag exit OK
 	    switch (feed_table_tag(tbl, line, mode, width, tag)) {
 	    case TAG_ACTION_NONE:
 		return -1;
@@ -3125,6 +3153,7 @@ feed_table(struct table *tbl, char *line, struct table_mode *mode,
 	if (mode->pre_mode & (TBLM_DEL | TBLM_S))
 	    return -1;
     }
+// flag exit NG
     if (mode->caption) {
 	Strcat_charp(tbl->caption, line);
 	return -1;
@@ -3401,9 +3430,11 @@ set_table_matrix0(struct table *t, int maxwidth)
     int i, j, k, bcol, ecol;
     int width;
     double w0, w1, w, s, b;
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(MONA)
+// flag exit OK
     double we[size];
     char expand[size];
+// flag exit NG
 #else				/* not __GNUC__ */
     double we[MAXCOL];
     char expand[MAXCOL];
@@ -3445,6 +3476,7 @@ set_table_matrix0(struct table *t, int maxwidth)
 		we[i] = w;
 	}
     }
+
 
     w0 = 0.;
     w1 = 0.;
@@ -3610,7 +3642,11 @@ set_table_matrix(struct table *t, int width)
 	}
     }
 
+// flag exit OK
+
     set_table_matrix0(t, width);
+// flag exit NG
+
 
     if (t->total_width > 0) {
 	b = sigma_table(width);

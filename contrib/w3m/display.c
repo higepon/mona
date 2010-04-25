@@ -183,21 +183,15 @@ fmTerm(void)
 void
 fmInit(void)
 {
-MONA_TRACE("fm init1\n");
     if (!fmInitialized) {
-MONA_TRACE("fm init2\n");
 	initscr();
-MONA_TRACE("fm init3\n");
 	term_raw();
-MONA_TRACE("fm init4\n");
 	term_noecho();
-MONA_TRACE("fm init5\n");
 #ifdef USE_IMAGE
 	if (displayImage)
 	    initImage();
 #endif
     }
-MONA_TRACE("fm init6\n");
     fmInitialized = TRUE;
 }
 

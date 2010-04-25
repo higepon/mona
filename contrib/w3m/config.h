@@ -115,7 +115,8 @@
 /* for USE_MIGEMO */
 #define DEF_MIGEMO_COMMAND "migemo -t egrep /usr/local/share/migemo/migemo-dict"
 
-#define USE_BINMODE_STREAM 1
+/* #define USE_BINMODE_STREAM 1 */
+#undef USE_BINMODE_STREAM
 /* #undef HAVE_TERMIOS_H */
 /* #undef HAVE_TERMIO_H */
 /* #undef HAVE_SGTTY_H */

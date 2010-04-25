@@ -41,9 +41,16 @@ static void ens_close(struct ens_handle *handle);
 static void
 do_update(BaseStream base)
 {
+MONA_TRACE_FMT((stderr, "doupdate, size=%d\n", base->stream.size));
     int len;
     base->stream.cur = base->stream.next = 0;
     len = base->read(base->handle, base->stream.buf, base->stream.size);
+
+if(len > 0)
+MONA_TRACE_FMT((stderr, "doupdate, len=%d, %s\n", len, Strnew_charp_n(base->stream.buf, len)));
+else
+MONA_TRACE("len < 0!\n");
+
     if (len <= 0)
 	base->iseos = TRUE;
     else
@@ -96,6 +103,7 @@ init_str_stream(BaseStream base, Str s)
 static int
 basic_fread(int *handle, char *buf, int len)
 {
+MONA_TRACE("basic fread\n");
   FILE* fp = (FILE*)handle;
   return fread(buf, 1, len, fp); 
 }
@@ -116,8 +124,12 @@ newInputStreamFopen(const char* path, const char *mode)
     stream = New(union input_stream);
     init_base_stream(&stream->base, STREAM_BUF_SIZE);
     stream->base.type = IST_BASIC;
+#if 0
     stream->base.handle = New(int);
     *(int *)stream->base.handle = (int)fp;
+#else
+    stream->base.handle = (int*)fp;
+#endif
     stream->base.read = (int (*)())basic_fread;
     stream->base.close = (void (*)())basic_fclose;
     return stream;
@@ -217,6 +229,8 @@ newEncodedStream(InputStream is, char encoding)
 int
 ISclose(InputStream stream)
 {
+MONA_TRACE("IClose\n");
+// OK
     MySignalHandler(*prevtrap) ();
     if (stream == NULL || stream->base.close == NULL ||
 	stream->base.type & IST_UNCLOSE)
@@ -669,6 +683,7 @@ basic_close(int *handle)
 static int
 basic_read(int *handle, char *buf, int len)
 {
+MONA_TRACE("basic_read....\n");
 #if defined(__MINGW32_VERSION) || defined(MONA)
     return recv(*(int *)handle, buf, len, 0);
 #else

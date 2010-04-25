@@ -1580,7 +1580,7 @@ expandName(char *name)
 char *
 expandName(char *name)
 {
-    return "/";
+    return name;
 }
 #else /* not MONA */
 char *
