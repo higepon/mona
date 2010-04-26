@@ -1218,7 +1218,7 @@ check_table_width(struct table *t, double *newwidth, MAT * minv, int itr)
     int i, j, k, m, bcol, ecol;
     int corr = 0;
     struct table_cell *cell = &t->cell;
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(MONA)
     short orgwidth[t->maxcol + 1], corwidth[t->maxcol + 1];
     short cwidth[cell->maxcell + 1];
     double swidth[cell->maxcell + 1];
@@ -1571,7 +1571,7 @@ check_table_height(struct table *t)
 int
 get_table_width(struct table *t, short *orgwidth, short *cellwidth, int flag)
 {
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(MONA)
     short newwidth[t->maxcol + 1];
 #else				/* not __GNUC__ */
     short newwidth[MAXCOL];
@@ -1585,7 +1585,7 @@ get_table_width(struct table *t, short *orgwidth, short *cellwidth, int flag)
 	newwidth[i] = max(orgwidth[i], 0);
 
     if (flag & CHECK_FIXED) {
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(MONA)
 	short ccellwidth[cell->maxcell + 1];
 #else				/* not __GNUC__ */
 	short ccellwidth[MAXCELL];
