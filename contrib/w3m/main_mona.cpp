@@ -1508,6 +1508,7 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
 
 #include "mona_w3m.h"
 #include <monapi.h>
+#include <assert.h>
 
 inline bool insideKeymap(int keycode) {
   return keycode >= 0 && keycode < 128/* sizeof(GlobalKeymap) */ ;
@@ -1537,6 +1538,19 @@ void W3MPane::processEvent(Event* event)
   }
   Component::processEvent(event);
 }
+
+int
+sameAttrLen(l_prop *pr, int len)
+{
+  assert(len != 0);
+  l_prop attr = pr[0];
+  int i = 0; 
+  for(i = 0;i < len && pr[i] == attr; i++);
+  return i;
+}
+
+
+
 
 
 

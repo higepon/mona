@@ -12,18 +12,15 @@ extern "C" {
 
 int LINES, COLS;
 
-#define S_SCREENPROP    0x0f
-#define S_NORMAL        0x00
-#define S_STANDOUT      0x01
-#define S_UNDERLINE     0x02
-#define S_BOLD          0x04
-#define S_EOL           0x08
-
 /* Line status */
 #define L_DIRTY         0x01
 #define L_UNUSED        0x02
 #define L_NEED_CE       0x04
 #define L_CLRTOEOL      0x08
+
+
+
+static l_prop CurrentMode = 0;
 
 
 static Screen *ScreenElem = NULL, **ScreenImage = NULL;
@@ -112,9 +109,12 @@ MONA_TRACE_FMT((stderr, " %c ", c)); count++;
 
   int i;
   char *p;
+  l_prop *pr;
 
   
   p = ScreenImage[CurLine]->lineimage;
+  pr = ScreenImage[CurLine]->lineprop;
+  
   i = CurColumn;
 
   if(c == '\n' || c == '\r') {
@@ -125,6 +125,7 @@ MONA_TRACE_FMT((stderr, " %c ", c)); count++;
       return; // do nothing
     }
     p[i] = c;
+    pr[i] = CurrentMode;
     CurColumn++;
   }
 }
@@ -169,18 +170,42 @@ addnstr(char *s, int n)
 }
 
 void
+clrtobot_eol(void (*clrtoeol) ())
+{
+    int l, c;
+
+    l = CurLine;
+    c = CurColumn;
+    (*clrtoeol) ();
+    CurColumn = 0;
+    CurLine++;
+    for (; CurLine < LINES; CurLine++)
+	(*clrtoeol) ();
+    CurLine = l;
+    CurColumn = c;
+}
+
+
+void
 clrtobotx(void)
 {
+    clrtobot_eol(clrtoeolx);
 }
 
 void
 setfcolor(int color)
 {
+    CurrentMode &= ~COL_FCOLOR;
+    if ((color & 0xf) <= 7)
+	CurrentMode |= (((color & 7) | 8) << 8);
 }
 
 void
 setbcolor(int color)
 {
+    CurrentMode &= ~COL_BCOLOR;
+    if ((color & 0xf) <= 7)
+	CurrentMode |= (((color & 7) | 8) << 12);
 }
 
 void
@@ -191,6 +216,7 @@ standend(void)
 void
 addnstr_sup(char *s, int n)
 {
+  MONA_TRACE("addnstr_sup NYI\n");
 }
 
 void
@@ -201,6 +227,7 @@ toggle_stand(void)
 char
 getch(void)
 {
+MONA_TRACE("getch, dummy imp\n");
    return 'a';
 }
 
@@ -217,7 +244,6 @@ mouse_end()
 int
 initscr(void)
 {
-MONA_TRACE("initscr\n");
     setupscreen();
     return 0; /* 0 seems success */
 }
@@ -247,21 +273,25 @@ graphend(void)
 void
 underline(void)
 {
+  CurrentMode |= S_UNDERLINE;
 }
 
 void
 underlineend(void)
 {
+    CurrentMode &= ~S_UNDERLINE;
 }
 
 void
 bold(void)
 {
+    CurrentMode |= S_BOLD;
 }
 
 void
 boldend(void)
 {
+    CurrentMode &= ~S_BOLD;
 }
 
 void

@@ -3,6 +3,7 @@
 #include <baygui.h>
 
 extern "C" {
+#include <assert.h>
 
 typedef unsigned short l_prop;
 typedef struct scline {
@@ -14,13 +15,55 @@ typedef struct scline {
 
 }
 
+#define S_SCREENPROP    0x0f
+#define S_NORMAL        0x00
+#define S_STANDOUT      0x01
+#define S_UNDERLINE     0x02
+#define S_BOLD          0x04
+#define S_EOL           0x08
+
+
+
+#define COL_FCOLOR      0xf00
+#define COL_FBLACK      0x800
+#define COL_FRED        0x900
+#define COL_FGREEN      0xa00
+#define COL_FYELLOW     0xb00
+#define COL_FBLUE       0xc00
+#define COL_FMAGENTA    0xd00
+#define COL_FCYAN       0xe00
+#define COL_FWHITE      0xf00
+#define COL_FTERM       0x000
+
+#define COL_BCOLOR      0xf000
+#define COL_BBLACK      0x8000
+#define COL_BRED        0x9000
+#define COL_BGREEN      0xa000
+#define COL_BYELLOW     0xb000
+#define COL_BBLUE       0xc000
+#define COL_BMAGENTA    0xd000
+#define COL_BCYAN       0xe000
+#define COL_BWHITE      0xf000
+#define COL_BTERM       0x0000
+
+
 class W3MPane: public Component {
 public:
   Screen **ScreenImage;
   static const int _xoffset = 10;
   static const int _yoffset = 10;
 
+  int _defaultFG;
+  int _defaultBG;
+  bool _underLine;
+
   W3MPane() {
+    _defaultFG = Color::black;
+    _defaultBG = Color::white;
+    setForeground(_defaultFG);
+    setBackground(_defaultBG);
+    _underLine = false;
+
     ScreenImage = NULL;
     setFontStyle(Font::FIXED);
   }
@@ -47,6 +90,55 @@ public:
         return n;
       }
 
+  inline int charColorToColor(int charColor) {
+    switch(charColor) {
+    case COL_FBLACK:
+      return Color::black;
+    case COL_FRED:
+      return Color::red;
+    case COL_FGREEN:
+      return Color::green;
+    case COL_FYELLOW:
+      return Color::yellow;
+    case COL_FBLUE:
+      return Color::blue;
+    case COL_FMAGENTA:
+      return Color::magenta;
+    case COL_FCYAN:
+      return Color::cyan;
+    case COL_FWHITE:
+      return Color::white;
+    default:
+      MONA_TRACE("unknow color\n");
+      return 0; // transparent
+    }
+  }
+
+
+  void setAttribute(Graphics *g, l_prop attr)
+    {
+      if(attr & COL_BCOLOR) {
+        setBackground(charColorToColor((attr&COL_BCOLOR) >> 8));
+      } else {
+        setBackground(_defaultBG);
+      }
+      if(attr & COL_FCOLOR) {
+        setForeground(charColorToColor(attr&COL_FCOLOR));
+      } else {
+        setForeground(_defaultFG);
+      }
+
+      if(attr & S_BOLD) {
+        g->setFontStyle(Font::FIXED & Font::BOLD);
+      } else {
+        g->setFontStyle(Font::FIXED);
+      }
+
+      _underLine = attr & S_UNDERLINE;
+    }
+
+  
+
 
   void initW3M() {
     int w = getWidth();
@@ -67,25 +159,78 @@ public:
   }
   virtual void processEvent(Event* event);
 
-  virtual void paint(Graphics* g) {
+  int sameAttrLen(l_prop *pr, int len)
+      {
+        assert(len != 0);
+        l_prop attr = pr[0];
+        int i = 0; 
+        for(i = 0;i < len && pr[i] == attr; i++);
+        return i;
+      }
 
+  // return drawn width
+  int drawStringWithAttr(Graphics *g, String s, l_prop attr, int x, int y)
+    {
+      int fh = colHeight();
+      setAttribute(g, attr);
+      int drawnWidth =  getFontMetrics()->getWidth(s);
+      
+      g->setColor(getBackground());
+      g->fillRect(x, y, drawnWidth, fh);
+      
+      g->setColor(getForeground());
+      g->drawString(s, x, y);
+      if(_underLine) 
+        g->drawLine(x, y+fh-2, x+drawnWidth, y+fh-2);
+      return drawnWidth;
+      
+    }
+
+  void drawString(Graphics *g, Screen* line, int x_org, int y) {
+    char* pc = line->lineimage;
+    l_prop *pr = line->lineprop;
+    int same_attr_len = 0;
+    int remain_len = COLS;
+    int cur=0;
+    int x = x_org;
+    
+    while(remain_len > 0) {
+      l_prop attr = pr[cur];
+      same_attr_len = sameAttrLen(&pr[cur], remain_len);
+      String s(&pc[cur], same_attr_len);
+
+      int drawnWidth = drawStringWithAttr(g, s, attr, x, y);
+      x += drawnWidth;
+      
+      remain_len -= same_attr_len;
+      cur += same_attr_len;
+    }
+  }
+
+  void clear(Graphics *g) {
     int w = getWidth();
     int h = getHeight();
-
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
+  }
+
+  virtual void paint(Graphics* g) {
+    static bool first_time = true;
+    if(first_time) {
+      clear(g);
+      first_time = false;
+    }
 
     int fh = colHeight();
+
+
     g->setColor(getForeground());
 
     if(ScreenImage != NULL)
       {
         MONA_TRACE("repaint2\n");
         for(int line = 0; line < LINES; line++) {
-          char* pc = ScreenImage[line]->lineimage;
-
-          String s(&pc[0], COLS);
-          g->drawString(s, _xoffset, line*fh+_yoffset);
+          drawString(g, ScreenImage[line],  _xoffset, line*fh+_yoffset);
         }
       }
   }
@@ -99,8 +244,6 @@ public:
      setTitle("w3m");
     m_pane = new W3MPane();
     m_pane->setBounds(0, 0, 640, 480);
-    m_pane->setForeground(Color::navy);
-    m_pane->setBackground(Color::white);
     add(m_pane);
 /*
      m_label = new Label(m_time, Label::CENTER);
