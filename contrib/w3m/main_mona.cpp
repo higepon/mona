@@ -710,10 +710,59 @@ cmd_loadURL(char *url, ParsedURL *current, char *referer, FormList *request)
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
+int
+checkDownloadList(void)
+{
+    DownloadList *d;
+#ifndef MONA
+    struct stat st;
+#endif
+
+    if (!FirstDL)
+	return FALSE;
+    for (d = FirstDL; d != NULL; d = d->next) {
+#ifdef MONA
+	if (!d->ok && !file_exist(d->lock))
+#else
+	if (!d->ok && !lstat(d->lock, &st))
+#endif
+	    return TRUE;
+    }
+    return FALSE;
+}
+
+
 static void
 _quitfm(int confirm)
 {
-    MONA_TRACE("quit NYI\n");
+    char *ans = "y";
+
+    if (checkDownloadList())
+	/* FIXME: gettextize? */
+	ans = inputChar("Download process retains. "
+			"Do you want to exit w3m? (y/n)");
+    else if (confirm)
+	/* FIXME: gettextize? */
+	ans = inputChar("Do you want to exit w3m? (y/n)");
+    if (!(ans && TOLOWER(*ans) == 'y')) {
+	displayBuffer(Currentbuf, B_NORMAL);
+	return;
+    }
+
+    term_title("");		/* XXX */
+#ifdef USE_IMAGE
+    if (activeImage)
+	termImage();
+#endif
+    fmTerm();
+#ifdef USE_COOKIE
+    save_cookies();
+#endif				/* USE_COOKIE */
+#ifdef USE_HISTORY
+    if (UseHistory && SaveURLHist)
+	saveHistory(URLHist, URLHistSize);
+#endif				/* USE_HISTORY */
+    w3m_exit(0);
 }
 
 static void
@@ -763,12 +812,6 @@ _goLine(char *l)
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-
-void
-w3m_exit(int i)
-{
-    MONA_TRACE("w3m_exit, do nothing now\n");
-}
 
 
 static void
@@ -1964,12 +2007,10 @@ void W3MPane::processEvent(Event* event)
   if (event->getType() == KeyEvent::KEY_PRESSED) {
     int keycode = ((KeyEvent *)event)->getKeycode();
     keycode = translateKeyCode(keycode);
-    MONA_TRACE_FMT((stderr, "kecode=%x, %x\n", keycode, '\n'));
     if(insideKeymap(keycode) && GlobalKeymap[keycode] != FUNCNAME_nulcmd)
     {
       CurrentKey = keycode;
       w3mFuncList[(int)GlobalKeymap[keycode]].func();
-      MONA_TRACE_FMT((stderr, "kecode=%x\n", keycode));
     }
     return;
   }
@@ -1986,6 +2027,14 @@ int file_size(char *path)
 
   return size;
 }
+
+void
+w3m_exit(int i)
+{
+  if(g_frame)
+    g_frame->stop();
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -2004,11 +2053,10 @@ int main(int argc, char* argv[]) {
     DefaultType = NULL;
     CurrentTab = NULL;
 
-  char *initUrl = "file:///APPS/W3M/W3M.APP/MANUAL.HTM";
-//   fprintf(stderr, "filesize:%d\n", file_size("/APPS/W3M/W3M.APP/MANUAL.HTM"));
+    char *initUrl = "file:///APPS/W3M/W3M.APP/MANUAL.HTM";
 
   
-  if(argc >= 2)
+    if(argc >= 2)
     {
       initUrl = argv[1];
     }

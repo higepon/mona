@@ -240,16 +240,11 @@ public:
 class W3MFrame: public Frame {
 public:
   W3MFrame() {
-     setBounds((800 - 212) / 2, (600 - 50) / 2, 640, 480);
-     setTitle("w3m");
+    setBounds((800 - 640) / 2, (600 - 480) / 2, 640, 480);
+    setTitle("w3m");
     m_pane = new W3MPane();
     m_pane->setBounds(0, 0, 640, 480);
     add(m_pane);
-/*
-     m_label = new Label(m_time, Label::CENTER);
-     m_label->setBounds(0, 4, 600, 400);
-     add(m_label);
-*/
   }
 
   ~W3MFrame(){
@@ -276,9 +271,7 @@ public:
     if(newbuf == NULL)
       MONA_TRACE("newbuf == null\n");
 
-    MONA_TRACE("initW3M:begin display buffer\n");
     displayBuffer(newbuf, B_FORCE_REDRAW);
-    MONA_TRACE("initW3M:end display buffer\n");
   }
 
 
