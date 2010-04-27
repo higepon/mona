@@ -308,12 +308,32 @@ bell(void)
 {
 }
 
+// only support often-used char for a while
 inline char
-keyToChar(int keycode, int modcode, int charcode)
+keyToChar(int keycode, int modifiers, int charcode)
 {
+  if(modifiers & KEY_MODIFIER_CTRL) {
+    int basecode = keycode-'A'+1;
+    if(basecode >= 0 && basecode <= 32)
+      return basecode;
+    return -1;
+  }
   if(charcode)
     return charcode;
-  return keycode;
+  switch(keycode) {
+  case MonAPI::Keys::Enter:
+    return 0x0d;
+  case MonAPI::Keys::Right: 
+    return 6;
+  case MonAPI::Keys::Left: 
+    return 2;
+  // case MonAPI::Keys::Tab: 
+  case MonAPI::Keys::Back: 
+    return MonAPI::Keys::Back;
+  case MonAPI::Keys::Delete: 
+    return  127;
+  }
+  return -1;
 }
 
 char
@@ -325,9 +345,12 @@ getch(void)
       int keycode  = info.arg1;
       int modcode  = info.arg2;
       int charcode = info.arg3;
-      // MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
-      if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) 
-        return keyToChar(keycode, modcode, charcode);
+      MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
+      if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+        int converted =  keyToChar(keycode, modcode, charcode);
+        if(converted >= 0)
+          return converted;
+      }
     }
     // TODO: dispatch here.
   }
