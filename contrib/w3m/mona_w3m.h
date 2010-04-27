@@ -233,6 +233,27 @@ public:
     paint(getGraphics());
   }
 
+  virtual void update(int x_org, int y_org, int w, int h)
+    {
+      Frame* c = (Frame *)getMainWindow();
+      Graphics *g = c->getGraphics();
+      int paneLeft = getX();
+      int paneTop = getY();
+      Image *buffer = getBuffer();
+
+      int subOrgX = paneLeft+x_org;
+      int subOrgY = paneTop + y_org;
+
+      for(int j = 0; j < h; j++)
+        {
+          for(int i =0; i < w; i++)
+            {
+              g->drawPixel(subOrgX+i, subOrgY+j, buffer->getPixel(x_org+i, y_org+j));
+            }
+        }
+      c->update(c->getX() + c->getInsets()->left + x_org, c->getY() + c->getInsets()->top + y_org, w, h);
+    }
+
   virtual void paint(Graphics* g) {
     static bool first_time = true;
     if(first_time) {
