@@ -46,6 +46,14 @@ typedef struct scline {
 #define COL_BWHITE      0xf000
 #define COL_BTERM       0x0000
 
+/* Line status */
+#define L_DIRTY         0x01
+#define L_UNUSED        0x02
+#define L_NEED_CE       0x04
+#define L_CLRTOEOL      0x08
+
+
+
 
 class W3MPane: public Component {
 public:
@@ -187,6 +195,10 @@ public:
     }
 
   void drawString(Graphics *g, Screen* line, int x_org, int y) {
+    if(!(line->isdirty & L_DIRTY))
+      return;
+    line->isdirty &= ~L_DIRTY;
+
     char* pc = line->lineimage;
     l_prop *pr = line->lineprop;
     int same_attr_len = 0;
@@ -205,6 +217,9 @@ public:
       remain_len -= same_attr_len;
       cur += same_attr_len;
     }
+
+    MONA_TRACE_FMT((stderr, "update, x=%d, y=%d, w=%d, h=%d\n", x_org, y, x-x_org, colHeight()));
+    update(x_org, y, x-x_org, colHeight());
   }
 
   void clear(Graphics *g) {
@@ -212,6 +227,10 @@ public:
     int h = getHeight();
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
+  }
+
+  void updatePane() {
+    paint(getGraphics());
   }
 
   virtual void paint(Graphics* g) {
@@ -253,7 +272,7 @@ public:
 
   void updatePane() {
     if(this->__g != NULL)
-      m_pane->update();
+      m_pane->updatePane(); // TODO: should track inval rect, now call update directry inside paint.
   }
 
   void setScreenImage(Screen** si) {

@@ -12,13 +12,6 @@ extern "C" {
 
 int LINES, COLS;
 
-/* Line status */
-#define L_DIRTY         0x01
-#define L_UNUSED        0x02
-#define L_NEED_CE       0x04
-#define L_CLRTOEOL      0x08
-
-
 
 static l_prop CurrentMode = 0;
 
@@ -126,6 +119,7 @@ MONA_TRACE_FMT((stderr, " %c ", c)); count++;
     }
     p[i] = c;
     pr[i] = CurrentMode;
+    ScreenImage[CurLine]->isdirty |= L_DIRTY;
     CurColumn++;
   }
 }
@@ -146,7 +140,8 @@ MONA_TRACE("refresh1\n");
     {
 MONA_TRACE("refresh2\n");
       g_frame->setScreenImage(ScreenImage);
-      g_frame->repaint();
+      // g_frame->repaint();
+      g_frame->updatePane();
     }
 }
 

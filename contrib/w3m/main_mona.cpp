@@ -1656,6 +1656,7 @@ goURL0(char *prompt, int relative)
 
 DEFUN(goURL, GOTO, "Go to URL")
 {
+MONA_TRACE("go url\n");
     goURL0("Goto URL: ", FALSE);
 }
 
