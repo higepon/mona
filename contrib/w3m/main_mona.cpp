@@ -1575,20 +1575,95 @@ DEFUN(pginfo, INFO, "View info of current document")
     MONA_TRACE("View info of current document, NYI\n");
 }
 
-DEFUN(gorURL, GOTO_RELATIVE, "Go to relative URL")
-{
-    MONA_TRACE("Go to relative URL, NYI\n");
-}
-
 DEFUN(goLine, GOTO_LINE, "Go to specified line")
 {
     MONA_TRACE("Go to specified line, NYI\n");
 }
 
+/* go to specified URL */
+static void
+goURL0(char *prompt, int relative)
+{
+    char *url, *referer;
+    ParsedURL p_url, *current;
+    Buffer *cur_buf = Currentbuf;
+
+    url = searchKeyData();
+    if (url == NULL) {
+	Hist *hist = copyHist(URLHist);
+	Anchor *a;
+
+	current = baseURL(Currentbuf);
+	if (current) {
+	    char *c_url = parsedURL2Str(current)->ptr;
+	    if (DefaultURLString == DEFAULT_URL_CURRENT) {
+		url = c_url;
+		if (DecodeURL)
+		    url = url_unquote_conv(url, 0);
+	    }
+	    else
+		pushHist(hist, c_url);
+	}
+	a = retrieveCurrentAnchor(Currentbuf);
+	if (a) {
+	    char *a_url;
+	    parseURL2(a->url, &p_url, current);
+	    a_url = parsedURL2Str(&p_url)->ptr;
+	    if (DefaultURLString == DEFAULT_URL_LINK) {
+		url = a_url;
+		if (DecodeURL)
+		    url = url_unquote_conv(url, Currentbuf->document_charset);
+	    }
+	    else
+		pushHist(hist, a_url);
+	}
+	url = inputLineHist(prompt, url, IN_URL, hist);
+	if (url != NULL)
+	    SKIP_BLANKS(url);
+    }
+#ifdef USE_M17N
+    if (url != NULL) {
+	if ((relative || *url == '#') && Currentbuf->document_charset)
+	    url = wc_conv_strict(url, InnerCharset,
+				 Currentbuf->document_charset)->ptr;
+	else
+	    url = conv_to_system(url);
+    }
+#endif
+    if (url == NULL || *url == '\0') {
+	displayBuffer(Currentbuf, B_FORCE_REDRAW);
+	return;
+    }
+    if (*url == '#') {
+	gotoLabel(url + 1);
+	return;
+    }
+    if (relative) {
+	current = baseURL(Currentbuf);
+	referer = parsedURL2Str(&Currentbuf->currentURL)->ptr;
+    }
+    else {
+	current = NULL;
+	referer = NULL;
+    }
+    parseURL2(url, &p_url, current);
+    pushHashHist(URLHist, parsedURL2Str(&p_url)->ptr);
+    cmd_loadURL(url, current, referer, NULL);
+    if (Currentbuf != cur_buf)	/* success */
+	pushHashHist(URLHist, parsedURL2Str(&Currentbuf->currentURL)->ptr);
+}
+
+
 DEFUN(goURL, GOTO, "Go to URL")
 {
-    MONA_TRACE("Go to URL, NYI\n");
+    goURL0("Goto URL: ", FALSE);
 }
+
+DEFUN(gorURL, GOTO_RELATIVE, "Go to relative URL")
+{
+    goURL0("Goto relative URL: ", TRUE);
+}
+
 
 DEFUN(linkbrz, EXTERN_LINK, "View current link using external browser")
 {
@@ -1828,6 +1903,7 @@ DEFUN(rFrame, FRAME, "Render frame")
 
 DEFUN(backBf, BACK, "Back to previous buffer")
 {
+  MONA_TRACE("back, NYI\n");
 }
 
 DEFUN(susp, INTERRUPT SUSPEND, "Stop loading document")
