@@ -8,6 +8,10 @@ extern "C" {
 
 #define DSTR_LEN	256
 
+int prec_num = 0;
+#define PREC_NUM (prec_num ? prec_num : 1)
+#define PREC_LIMIT 10000
+
 Hist *LoadHist;
 Hist *SaveHist;
 Hist *URLHist;
@@ -23,7 +27,9 @@ static W3MEvent *CurrentEvent = NULL;
 static W3MEvent *LastEvent = NULL;
 int on_target = 1;
 static int display_ok = FALSE;
-int prec_num = 0;
+
+static char *SearchString = NULL;
+int (*searchRoutine) (Buffer *, char *);
 
 /* yyy */
 
@@ -1089,14 +1095,104 @@ DEFUN(srchnxt, SEARCH_NEXT, "Search next regexp")
     MONA_TRACE("Search next regexp, NYI\n");
 }
 
+static void
+clear_mark(Line *l)
+{
+    int pos;
+    if (!l)
+	return;
+    for (pos = 0; pos < l->size; pos++)
+	l->propBuf[pos] &= ~PE_MARK;
+}
+
+static void
+disp_srchresult(int result, char *prompt, char *str)
+{
+    if (str == NULL)
+	str = "";
+    if (result & SR_NOTFOUND)
+	disp_message(Sprintf("Not found: %s", str)->ptr, TRUE);
+    else if (result & SR_WRAPPED)
+	disp_message(Sprintf("Search wrapped: %s", str)->ptr, TRUE);
+    else if (show_srch_str)
+	disp_message(Sprintf("%s%s", prompt, str)->ptr, TRUE);
+}
+
+
+/* search by regular expression */
+static int
+srchcore(char *volatile str, int (*func) (Buffer *, char *))
+{
+    MySignalHandler(*prevtrap) ();
+    volatile int i, result = SR_NOTFOUND;
+
+    if (str != NULL && str != SearchString)
+	SearchString = str;
+    if (SearchString == NULL || *SearchString == '\0')
+	return SR_NOTFOUND;
+
+    str = conv_search_string(SearchString, DisplayCharset);
+#ifndef MONA
+    prevtrap = mySignal(SIGINT, intTrap);
+    crmode();
+    if (SETJMP(IntReturn) == 0) {
+#endif
+	for (i = 0; i < PREC_NUM; i++) {
+	    result = func(Currentbuf, str);
+	    if (i < PREC_NUM - 1 && result & SR_FOUND)
+		clear_mark(Currentbuf->currentLine);
+	}
+#ifndef MONA
+    }
+    mySignal(SIGINT, prevtrap);
+    term_raw();
+#endif
+    return result;
+}
+
+
+void
+srch(int (*func) (Buffer *, char *), char *prompt)
+{
+    char *str;
+    int result;
+    int disp = FALSE;
+    int pos;
+
+    str = searchKeyData();
+    if (str == NULL || *str == '\0') {
+	str = inputStrHist(prompt, NULL, TextHist);
+	if (str != NULL && *str == '\0')
+	    str = SearchString;
+	if (str == NULL) {
+	    displayBuffer(Currentbuf, B_NORMAL);
+	    return;
+	}
+	disp = TRUE;
+    }
+    pos = Currentbuf->pos;
+    if (func == forwardSearch)
+	Currentbuf->pos += 1;
+    result = srchcore(str, func);
+    if (result & SR_FOUND)
+	clear_mark(Currentbuf->currentLine);
+    else
+	Currentbuf->pos = pos;
+    displayBuffer(Currentbuf, B_NORMAL);
+    if (disp)
+	disp_srchresult(result, prompt, str);
+    searchRoutine = func;
+}
+
+
 DEFUN(srchbak, SEARCH_BACK, "Search backward")
 {
-    MONA_TRACE("Search backward, NYI\n");
+    srch(backwardSearch, "Backward: ");
 }
 
 DEFUN(srchfor, SEARCH SEARCH_FORE WHEREIS, "Search forward")
 {
-    MONA_TRACE("Search forward, NYI\n");
+    srch(forwardSearch, "Forward: ");
 }
 
 DEFUN(col1R, RIGHT, "Shift screen one column right")
