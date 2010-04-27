@@ -224,13 +224,6 @@ toggle_stand(void)
 {
 }
 
-char
-getch(void)
-{
-MONA_TRACE("getch, dummy imp\n");
-   return 'a';
-}
-
 void
 reset_tty(void)
 {
@@ -319,6 +312,33 @@ void
 bell(void)
 {
 }
+
+inline char
+keyToChar(int keycode, int modcode, int charcode)
+{
+  if(charcode)
+    return charcode;
+  return keycode;
+}
+
+char
+getch(void)
+{
+  MessageInfo info;
+  while (0 == MonAPI::Message::receive(&info)) {
+    if(info.header == MSG_KEY_VIRTUAL_CODE) {
+      int keycode  = info.arg1;
+      int modcode  = info.arg2;
+      int charcode = info.arg3;
+      // MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
+      if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) 
+        return keyToChar(keycode, modcode, charcode);
+    }
+    // TODO: dispatch here.
+  }
+  return '\n';
+}
+
 
 /* extern "C" */ }
 

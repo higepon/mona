@@ -824,10 +824,12 @@ global char TrapSignal init(TRUE);
 
 /* return 1 even if path is dir*/
 extern int file_exist(char *path);
+extern int file_size(char *path);
 
 extern void unlink(char *path);
 extern int is_dir(char *path);
 extern struct tm* localtime(const time_t *timer);
+
 
 #else
 #define TRAP_ON if (TrapSignal) { \
