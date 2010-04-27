@@ -195,10 +195,6 @@ public:
     }
 
   void drawString(Graphics *g, Screen* line, int x_org, int y) {
-    if(!(line->isdirty & L_DIRTY))
-      return;
-    line->isdirty &= ~L_DIRTY;
-
     char* pc = line->lineimage;
     l_prop *pr = line->lineprop;
     int same_attr_len = 0;
@@ -217,9 +213,6 @@ public:
       remain_len -= same_attr_len;
       cur += same_attr_len;
     }
-
-    MONA_TRACE_FMT((stderr, "update, x=%d, y=%d, w=%d, h=%d\n", x_org, y, x-x_org, colHeight()));
-    update(x_org, y, x-x_org, colHeight());
   }
 
   void clear(Graphics *g) {
@@ -228,31 +221,6 @@ public:
     g->setColor(getBackground());
     g->fillRect(0, 0, w, h);
   }
-
-  void updatePane() {
-    paint(getGraphics());
-  }
-
-  virtual void update(int x_org, int y_org, int w, int h)
-    {
-      Frame* c = (Frame *)getMainWindow();
-      Graphics *g = c->getGraphics();
-      int paneLeft = getX();
-      int paneTop = getY();
-      Image *buffer = getBuffer();
-
-      int subOrgX = paneLeft+x_org;
-      int subOrgY = paneTop + y_org;
-
-      for(int j = 0; j < h; j++)
-        {
-          for(int i =0; i < w; i++)
-            {
-              g->drawPixel(subOrgX+i, subOrgY+j, buffer->getPixel(x_org+i, y_org+j));
-            }
-        }
-      c->update(c->getX() + c->getInsets()->left + x_org, c->getY() + c->getInsets()->top + y_org, w, h);
-    }
 
   virtual void paint(Graphics* g) {
     static bool first_time = true;
@@ -293,7 +261,7 @@ public:
 
   void updatePane() {
     if(this->__g != NULL)
-      m_pane->updatePane(); // TODO: should track inval rect, now call update directry inside paint.
+      repaint(); // very slow.
   }
 
   void setScreenImage(Screen** si) {
