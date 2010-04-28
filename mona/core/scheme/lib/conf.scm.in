@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 ;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
 ;; (define (mona-gui-get-window-title w) w)

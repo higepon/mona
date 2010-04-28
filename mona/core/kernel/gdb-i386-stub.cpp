@@ -138,7 +138,7 @@ int registers[NUMREGS];
 
 #define STACKSIZE 10000
 int remcomStack[STACKSIZE/sizeof(int)];
-static int* stackPtr = &remcomStack[STACKSIZE/sizeof(int) - 1];
+int* stackPtr = &remcomStack[STACKSIZE/sizeof(int) - 1];
 
 /***************************  ASSEMBLY CODE MACROS *************************/
 /*                                     */
@@ -590,7 +590,7 @@ void debug_error (const char* format)
 }
 
 /* Address of a routine to RTE to if we get a memory fault.  */
-static void (*volatile mem_fault_routine) () = NULL;
+void (*volatile mem_fault_routine) () = NULL;
 
 /* Indicate to caller of mem2hex or hex2mem that there has been an
    error.  */

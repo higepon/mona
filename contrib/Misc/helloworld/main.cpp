@@ -7,130 +7,13 @@
 #include <monapi.h>
 
 #if 1
-#include <sys/socket.h>
-#include <netdb.h>
-
-class Buffer
-{
-public:
-    Buffer(int size) : size_(size)
-    {
-        head_ = new uint8_t[size_];
-        pointer_ = 0;
-    }
-
-    void append(const uint8_t* src, int sizeToAppend)
-    {
-        if (size_ - pointer_ < sizeToAppend) {
-            expand(sizeToAppend);
-        }
-        memcpy(&head_[pointer_], src, sizeToAppend);
-    }
-
-    int forwardPointer(int offset)
-    {
-        if (pointer_ + offset < size_) {
-        } else {
-            return -1;
-        }
-    }
-
-
-private:
-
-    void expand(int requredExtraSize)
-    {
-        int newSize = size_ + requredExtraSize * 2;
-        uint8_t* newHead = new uint8_t[newSize];
-        memcpy(newHead, head_, size_);
-        head_ = newHead;
-        size_ = newSize;
-    }
-    uint8_t* head_;
-    int pointer_;
-    int size_;
-};
-
-uint8_t* http_get(const char* host, const char* path, int* size)
-{
-    int sock;
-    char buf[1034];
-    int i;
-    struct addrinfo *rp;
-    char reqbuf[1024];
-
-    sprintf(reqbuf, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", path, host);
-
-    int err;
-    struct addrinfo hints;
-    struct addrinfo *res;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_family = AF_INET;
-
-    if ((err = getaddrinfo("10.252.41.96", "80", &hints, &res)) != 0) {
-        _printf("error %d\n", err);
-        *size = 0;
-        return NULL;
-    }
-
-    uint8_t* result = new uint8_t[4096];
-
-    for (rp = res; rp != NULL; rp = rp->ai_next) {
-        sock = socket(rp->ai_family, rp->ai_socktype,
-                      rp->ai_protocol);
-
-        if (sock == -1) {
-            _printf("socket error");
-            exit(-1);
-        }
-
-        if (connect(sock, rp->ai_addr, rp->ai_addrlen) != 0) {
-            _printf("connect error");
-            exit(-1);
-
-        }
-
-        if(send(sock, reqbuf, strlen(reqbuf), 0) < 0){
-            printf("could not send message : %s¥n", reqbuf);
-            exit(EXIT_FAILURE);
-        }
-        int readSizeTotal = 0;
-        int readSize = recv(sock, buf, 127, 0);
-        do {
-            memcpy(&result[readSizeTotal], buf, readSize);
-            readSizeTotal += readSize;
-        } while ((readSize = recv(sock, buf, 127, 0)) > 0);
-
-        _printf("size=%d", readSizeTotal);
-        for (i = 0; i < readSizeTotal; i++) {
-//            _printf("<%c>", result[i]);
-            if (i + 4 < readSizeTotal &&
-                result[i + 0] == '\r' &&
-                result[i + 1] == '\n' &&
-                result[i + 2] == '\r' &&
-                result[i + 3] == '\n') {
-                for (int j = i + 4; j < readSizeTotal; j++) {
-                    _printf("%c", result[j]);
-                }
-                *size = readSizeTotal - i - 4;
-                return &result[i + 4];
-            }
-        }
-    }
-    return 0;
-}
 
 int main(int argc, char* argv[])
 {
-    int size = 0;
-    uint8_t* buf = http_get("10.252.41.96", "/", &size);
-    for (int i = 0; i < size; i++) {
-        _printf("%c", buf[i]);
-    }
-    // delete buf
+    printf("Hello, World");
     return 0;
 }
+
 
 #endif
 
