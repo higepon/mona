@@ -2,7 +2,7 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../; pwd)
 endif
 
-TARGET  = RAMDISK
+TARGET  = TRAMDISK
 SOURCES = ram_disk.cpp
 INSTDIR = $(BINDIR)/APPS
 

@@ -53,26 +53,35 @@ size_t __nida_nonebuf_fwrite(const void *ptr, size_t size, FILE *stream)
 	return writesize;
 }
 
+static int target_inside_buffer(int bufoff, int bufsize, int targetoff, int targetsize)
+{
+	return ( bufoff <= targetoff &&
+		bufoff+bufsize >= targetoff+targetsize);
+}
+
 size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
 {
 	size_t writesize;
 	int offdiff;
 
-	if( stream->_bf._offset <= stream->_extra->offset &&
-	stream->_bf._offset+stream->_bf._range >= stream->_extra->offset+size);
+	struct __sbuf *bf = &stream->_bf;
+	struct __sFILEX *extra = stream->_extra;
+	if(!target_inside_buffer(bf->_offset, bf->_size, extra->offset, size))
 	{
-		offdiff = stream->_extra->offset-stream->_bf._offset;
-		writesize = size;
-		if( stream->_bf._size < size )
+		fflush(stream);
+		if(!target_inside_buffer(bf->_offset, bf->_size, extra->offset, size))
 		{
-			writesize = stream->_bf._size;
+			return stream->_write(stream, (void*)ptr, size);
 		}
-		memcpy(stream->_bf._base+offdiff, ptr, writesize);
+		/* fall through */
 	}
+	offdiff = extra->offset-bf->_offset;
+	memcpy(bf->_base+offdiff, ptr, size);
+	extra->offset += size;
+	if(bf->_range < offdiff+size)
+		bf->_range = offdiff+size;
+	return size;
 
-	stream->_write(stream, (void*)ptr, size);
-
-	return writesize;
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)

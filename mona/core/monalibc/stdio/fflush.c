@@ -41,9 +41,18 @@ int fflush(FILE *stream)
 	}
 	else if( stream->_flags & __SFBF )
 	{
-		stream->_seek(stream, stream->_extra->offset, SEEK_SET);
 		if( stream->_flags & __SWR )
-			stream->_write(stream, stream->_bf._base, stream->_bf._size);
+		{
+			if(stream->_bf._range > 0)
+			{
+				stream->_seek(stream, stream->_bf._offset, SEEK_SET);
+				stream->_write(stream, stream->_bf._base, stream->_bf._range);
+			}
+			stream->_bf._offset = stream->_extra->offset;
+			stream->_bf._range = 0;
+		}
+		stream->_seek(stream, stream->_extra->offset, SEEK_SET);
+		return 0;
 	}
 	else if( stream->_flags & __SLBF )
 	{
