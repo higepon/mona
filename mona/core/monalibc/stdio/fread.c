@@ -71,30 +71,30 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
     size_t retsize = 0;
     if( stream->_bf._range == 0 )
     {
-        readsize = stream->_read(stream, stream->_bf._base,
+	if(size > stream->_bf._size)
+	{
+		/* do not cache this case for simplicity. */
+        	return stream->_read(stream, buf,
+                            size);
+	}
+
+        retsize = stream->_read(stream, stream->_bf._base,
                             stream->_bf._size);
-        if( readsize == -1 )
+        if( retsize == -1 )
         {
             stream->_flags |= __SERR;
             return 0;
         }
-        if( readsize < size )
+        if( retsize < size )
         {
             stream->_flags |= __SEOF;
         }
-        //        memcpy(buf, stream->_bf._base, readsize);
-        memcpy(buf, stream->_bf._base, size);
+
+	readsize = retsize > size ? size : retsize; 
+
+	memcpy(buf, stream->_bf._base, readsize);
         stream->_bf._offset = stream->_extra->offset;
-        stream->_bf._range = readsize;
-        if( size > stream->_bf._size )
-        {
-            retsize = stream->_read(stream, buf+readsize, size-readsize);
-            readsize += retsize;
-        }
-        else
-        {
-            readsize = size;
-        }
+        stream->_bf._range = retsize;
     }
     else
     {
