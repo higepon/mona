@@ -10,7 +10,10 @@ int test2();
 int test3();
 int test4();
 int test5();
-void testFWriteSmall(); 
+void test_fwrite_small(); 
+void test_fwrite_manytimes();
+void test_fread_biggerthanfile();
+void test_fread_small_many();
 
 int main(int argc, char* argv[])
 {
@@ -23,7 +26,10 @@ int main(int argc, char* argv[])
         test3();
         test4();
         test5();
-        testFWriteSmall();
+        test_fread_biggerthanfile();
+        test_fread_small_many();
+        test_fwrite_small();
+        test_fwrite_manytimes();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -87,6 +93,29 @@ int test5()
     EXPECT_EQ(fileno(stderr), fileno(stderr));
 }
 
+void test_fread_biggerthanfile()
+{
+    char buf[1024];
+    FILE* f = fopen(TEST_TXT, "rb");
+    EXPECT_EQ(44, fread(buf, 1, 1024, f));
+    EXPECT_EQ('A', buf[0]);
+    EXPECT_EQ('F', buf[31]);
+    fclose(f);
+}
+
+void test_fread_small_many()
+{
+    char buf[1024];
+    FILE* f = fopen(TEST_TXT, "rb");
+    EXPECT_EQ(1, fread(buf, 1, 1, f));
+    EXPECT_EQ('A', buf[0]);
+    EXPECT_EQ(1, fread(buf, 1, 1, f));
+    EXPECT_EQ('1', buf[0]);
+    EXPECT_EQ(1, fread(buf, 1, 1, f));
+    EXPECT_EQ('2', buf[0]);
+    fclose(f);
+}
+
 static int fileSize(const char* path)
 {
     uint32_t id = monapi_file_open(path, false);
@@ -95,15 +124,49 @@ static int fileSize(const char* path)
     return actual;
 }
 
-void testFWriteSmall() 
+void test_fwrite_small() 
 {
-    const char* path;
-    FILE* fp = fopen("/MEM/TEST.DAT", "w");
+    const char* path = "/MEM/TEST.DAT";
+    FILE* fp = fopen(path, "w");
     EXPECT_TRUE(fp != NULL);
     const char buf[] = "test";
     fwrite(buf, sizeof(char), sizeof(buf), fp);
     fclose(fp);
 
-    EXPECT_EQ(sizeof(buf), fileSize("/MEM/TEST.DAT"));
-    monapi_file_delete("/MEM/TEST.DAT");
+    EXPECT_EQ(sizeof(buf), fileSize(path));
+    monapi_file_delete(path);
+}
+
+
+void test_fwrite_manytimes() 
+{
+    const char expected[] = "hello";
+
+    const char* path = "/MEM/TEST.DAT";
+    FILE* fp = fopen(path, "w");
+    EXPECT_TRUE(fp != NULL);
+    fwrite("h", sizeof(char), 1, fp);
+    fwrite("e", sizeof(char), 1, fp);
+    fwrite("l", sizeof(char), 1, fp);
+    fwrite("l", sizeof(char), 1, fp);
+    fwrite("o", sizeof(char), 1, fp);
+    fclose(fp);
+
+
+    char actual[256];
+    fp = fopen(path, "r");
+    EXPECT_TRUE(fp != NULL);
+    uint32_t size = fread(actual, 1, 256, fp);
+    EXPECT_EQ(size, sizeof(expected)-1);
+
+    int i;
+/*
+    for(i = 0; i < size; i++)
+    {
+        EXPECT_EQ(expected[i], actual[i]);
+    }
+*/
+
+    fclose(fp);
+    monapi_file_delete(path);
 }
