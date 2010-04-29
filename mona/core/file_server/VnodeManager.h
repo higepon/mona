@@ -21,6 +21,7 @@ public:
     int seek(uint32_t fileID, uint32_t offset, uint32_t origin);
     int stat(uint32_t fileID, Stat* st);
     int close(uint32_t fileID);
+    int delete_file(const std::string& name);
     int readdir(const std::string& name, monapi_cmemoryinfo** mem);
     uint32_t fileID(Vnode* file , uint32_t tid) {return (uint32_t)file | tid;} // temporary
     Vnode* alloc();

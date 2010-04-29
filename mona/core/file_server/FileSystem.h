@@ -43,6 +43,7 @@ public:
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   = 0;
     virtual int seek(Vnode* file, uint32_t offset, uint32_t origin)                       = 0;
     virtual int close(Vnode* file)                                                        = 0;
+    virtual int delete_file(Vnode* file)                                                  = 0;
     virtual int stat(Vnode* file, Stat* st)                                               = 0;
     virtual Vnode* getRoot() const                                                        = 0;
     virtual void destroyVnode(Vnode* vnode)                                               = 0;

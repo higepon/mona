@@ -278,6 +278,12 @@ void FileServer::messageLoop()
             }
             break;
         }
+        case MSG_FILE_DELETE:
+        {
+            int ret = vmanager_->delete_file(upperCase(msg.str).c_str());
+            Message::reply(&msg, ret);
+            break;
+        }
         case MSG_FILE_DECOMPRESS_ST5:
         {
             monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();

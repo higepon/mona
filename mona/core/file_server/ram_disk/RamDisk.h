@@ -265,6 +265,14 @@ namespace RamDisk {
                 return MONA_SUCCESS;
             }
           virtual int close(Vnode* file) { return MONA_SUCCESS; }
+          virtual int delete_file(Vnode* file)
+            {
+                if(file == root_)
+                  return MONA_FAILURE; // root is undeletable
+
+                destroyVnode(file);
+                return MONA_SUCCESS;
+            }
           virtual int stat(Vnode* file, Stat* st)
             {
                 FileInfo* f = (FileInfo*)file->fnode;
@@ -286,7 +294,11 @@ namespace RamDisk {
                       return;
                   }
                 FileInfo* finfo = (FileInfo*)vnode->fnode;
-                delete finfo;
+                std::string name = finfo->name;
+                vmanager_->cacher()->remove(root_, name);
+                FileMap::iterator it = files_.find(name);
+                ASSERT(it != files_.end()); // is this thread safe?
+                files_.erase(it);
                 delete vnode;
             }
 
