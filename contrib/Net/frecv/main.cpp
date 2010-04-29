@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <monapi.h>
 #include <stdio.h>
+#include <assert.h>
 
 using namespace MonAPI;
 
@@ -31,6 +32,7 @@ void copyToPath(int sd, const char *name)
 
     assert(strlen(name) <= 8+1+3);
     sprintf(path, "/MEM/%s", name);
+    fprintf(stderr, "path: %s\n", path);
 
     uint32_t id = monapi_file_open(path, true);
     assert(id);
@@ -40,18 +42,61 @@ void copyToPath(int sd, const char *name)
 
     
     uint8_t buf[MAXDATA];
-    int readSize = recv(s, buf, MAXDATA, 0);
+    int readSize = recv(sd, buf, MAXDATA, 0);
     do {
         memcpy(buffer->Data, buf, readSize);
         monapi_file_write(id, buffer, readSize);
-    } while ((readSize = recv(sock, buf, MAXDATA, 0)) > 0);
+        monapi_file_seek(id, readSize, SEEK_CUR);
+    } while ((readSize = recv(sd, buf, MAXDATA, 0)) > 0);
+
+    monapi_file_close(id);
     free_buffer(buffer);
 }
 
+
 #define PORT    80
+
+static void outputFileContent(char *path)
+{
+    char buf[2048+1];
+    fprintf(stderr, "path=%s\n", path);
+    uint32_t id = monapi_file_open(path, false);
+    fprintf(stderr, "id=%x\n", id);
+
+    monapi_cmemoryinfo* mi = monapi_file_read(id, 2048);
+// OK
+    memcpy(buf, mi->Data, mi->Size);
+    buf[mi->Size] = '\0';
+    fprintf(stderr, "contents:%s\n", buf);
+/*
+    int column = 0;
+    int size = mi->Size > 200 ? 200: mi->Size;
+    for(int i = 0; i < size; i++)
+      {
+          fprintf(stderr, "%2x ", mi->Data[i]);
+          column++;
+          if(column > 80) {
+              column = 0;
+              fprintf(stderr, "\n");
+          }
+      }
+*/
+    monapi_file_close(id);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+}
 
 int main(int argc, char *argv[])
 {
+    // temp
+    if(argc == 3)
+      {
+          // usage: frecv.ex5 [path] deb
+          outputFileContent(argv[1]);
+          return 0;
+      }
+
+    
     if(argc != 2)
       {
           fprintf(stderr, "usage: frecv [filename]\n");
@@ -65,6 +110,7 @@ int main(int argc, char *argv[])
       }
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
+    fprintf(stderr, "sock=%x\n", sock);
 
     struct sockaddr_in addr;
     memset(&addr, sizeof(addr), 0);
@@ -72,22 +118,25 @@ int main(int argc, char *argv[])
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(PORT);
 
-    bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    listen(sock, 5);
+    int ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
+    fprintf(stderr, "bind: ret=%x\n", ret);
+    ret = listen(sock, 5);
+    fprintf(stderr, "listen: ret=%x\n", ret);
 
     fd_set rfds;
-    struct timeval tv;
 
     FD_ZERO(&rfds);
     FD_SET(sock, &rfds);
 
-    tv.tv_sec = 10; // should be longer?
+    // struct timeval tv;
+    // tv.tv_sec = 10000; // should be longer?
 
-    int retval = select(sock + 1, &rfds, NULL, NULL, &tv);
+    int retval = select(sock + 1, &rfds, NULL, NULL,  NULL /* &tv */);
     if(retval == 0) {
         fprintf(stderr, "timeout!\n");
         return -1;
     }
+    fprintf(stderr, "select return!\n");
 
 
 
@@ -98,6 +147,7 @@ int main(int argc, char *argv[])
 
     copyToPath(s, argv[1]);
     closesocket(s);
+    closesocket(sock);
 
     return 0;
 }
