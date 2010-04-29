@@ -56,47 +56,8 @@ void copyToPath(int sd, const char *name)
 
 #define PORT    80
 
-static void outputFileContent(char *path)
-{
-    char buf[2048+1];
-    fprintf(stderr, "path=%s\n", path);
-    uint32_t id = monapi_file_open(path, false);
-    fprintf(stderr, "id=%x\n", id);
-
-    monapi_cmemoryinfo* mi = monapi_file_read(id, 2048);
-// OK
-    memcpy(buf, mi->Data, mi->Size);
-    buf[mi->Size] = '\0';
-    fprintf(stderr, "contents:%s\n", buf);
-/*
-    int column = 0;
-    int size = mi->Size > 200 ? 200: mi->Size;
-    for(int i = 0; i < size; i++)
-      {
-          fprintf(stderr, "%2x ", mi->Data[i]);
-          column++;
-          if(column > 80) {
-              column = 0;
-              fprintf(stderr, "\n");
-          }
-      }
-*/
-    monapi_file_close(id);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-}
-
 int main(int argc, char *argv[])
 {
-    // temp
-    if(argc == 3)
-      {
-          // usage: frecv.ex5 [path] deb
-          outputFileContent(argv[1]);
-          return 0;
-      }
-
-    
     if(argc != 2)
       {
           fprintf(stderr, "usage: frecv [filename]\n");
