@@ -1704,14 +1704,22 @@ url_unquote_conv0(char *url)
     return tmp->ptr;
 }
 
+#ifdef MONA
+/* MONA have 8.3 restriction */
+static char *tmpf_base[MAX_TMPF_TYPE] = {
+    "t", "s", "f", "c", "o",
+};
+#else
 static char *tmpf_base[MAX_TMPF_TYPE] = {
     "tmp", "src", "frame", "cache", "cookie",
 };
+#endif
 static unsigned int tmpf_seq[MAX_TMPF_TYPE];
 
 Str
 tmpfname(int type, char *ext)
 {
+    Str tmpf;
 #ifdef MONA
   static int first_time = 1;
   int i;
@@ -1721,12 +1729,17 @@ tmpfname(int type, char *ext)
       tmpf_seq[i] = 0;
     }
   }
-#endif
-    Str tmpf;
+  // we have 8.3 restrection.
+    tmpf = Sprintf("%s/%s%d_%d%s",
+		   tmp_dir,
+		   tmpf_base[type],
+		   CurrentPid, tmpf_seq[type]++, (ext) ? ext : "");
+#else
     tmpf = Sprintf("%s/w3m%s%d-%d%s",
 		   tmp_dir,
 		   tmpf_base[type],
 		   CurrentPid, tmpf_seq[type]++, (ext) ? ext : "");
+#endif
     pushText(fileToDelete, tmpf->ptr);
     return tmpf;
 }

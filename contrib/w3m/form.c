@@ -9,6 +9,11 @@
 #include "local.h"
 #include "regex.h"
 
+#ifdef MONA
+#include <monapi/messages.h>
+#endif
+
+
 extern Str *textarea_str;
 #ifdef MENU_SELECT
 extern FormSelectOption *select_option;
@@ -565,10 +570,6 @@ form_fputs_decode(Str s, FILE * f)
 void
 input_textarea(FormItemList *fi)
 {
-#ifdef MONA
-    MONA_TRACE("input not yet supported\n");
-    return;
-#else
     char *tmpf = tmpfname(TMPF_DFL, NULL)->ptr;
     Str tmp;
     FILE *f;
@@ -587,9 +588,16 @@ input_textarea(FormItemList *fi)
 	form_fputs_decode(fi->value, f);
     fclose(f);
 
+#ifdef MONA 
+
+    uint32_t tid;
+    monapi_call_process_execute_file_get_tid(myEditor(Editor, tmpf, 1)->ptr, MONAPI_TRUE, &tid, NULL, NULL);
+    monapi_process_wait_terminated(tid);
+#else
     fmTerm();
     system(myEditor(Editor, tmpf, 1)->ptr);
     fmInit();
+#endif
 
     if (fi->readonly)
 	goto input_end;
@@ -623,7 +631,6 @@ input_textarea(FormItemList *fi)
     fclose(f);
   input_end:
     unlink(tmpf);
-#endif /* not MONA */
 }
 
 void

@@ -244,7 +244,7 @@ loadSomething(URLFile *f,
 void
 unlink(char *path)
 {
-    fprintf(stderr, "del file %s not yet supported", path);
+    monapi_file_delete(path);
 }
 int
 file_exist(char *path)

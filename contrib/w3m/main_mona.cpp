@@ -4,7 +4,7 @@
 extern "C" {
 #include "fm.h"
 #undef init
-#include <monapi/message.h>
+#include <monapi/Message.h>
 
 #define DSTR_LEN	256
 
@@ -2113,12 +2113,13 @@ w3m_exit(int i)
 }
 
 
-
 int main(int argc, char* argv[]) {
     CurrentDir = "/APPS/W3M/W3M.APP";
+    //  CurrentPid = syscall_get_tid();  this code make baygui setup fail. (fail to connect to GUI server)
     CurrentPid = 111; // tekito-
-    tmp_dir = "/APPS/W3M/W3M.APP";
+    tmp_dir = "/MEM";
     fileToDelete = newTextList();
+
 
     LoadHist = newHist();
     SaveHist = newHist();
@@ -2138,10 +2139,18 @@ int main(int argc, char* argv[]) {
       initUrl = argv[1];
     }
 
+    if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
+    {
+        fprintf(stderr, "register to process server failed\n");
+        return -1;
+    }
+
+
     g_frame = new W3MFrame();
-    g_frame->initW3M(argv[1]);
+    g_frame->initW3M(initUrl);
     g_frame->run();
     delete(g_frame);
+    monapi_register_to_server(ID_PROCESS_SERVER, 0);
     return 0;
 }
 

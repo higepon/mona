@@ -339,22 +339,21 @@ keyToChar(int keycode, int modifiers, int charcode)
 char
 getch(void)
 {
-  MessageInfo info;
-  while (0 == MonAPI::Message::receive(&info)) {
-    if(info.header == MSG_KEY_VIRTUAL_CODE) {
-      int keycode  = info.arg1;
-      int modcode  = info.arg2;
-      int charcode = info.arg3;
-      MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
-      if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
-        int converted =  keyToChar(keycode, modcode, charcode);
-        if(converted >= 0)
-          return converted;
-      }
+    MessageInfo info;
+    while( 0 == MonAPI::Message::receive(&info)) {
+        if(info.header == MSG_KEY_VIRTUAL_CODE) {
+            int keycode  = info.arg1;
+            int modcode  = info.arg2;
+            int charcode = info.arg3;
+            MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
+            if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+                int converted =  keyToChar(keycode, modcode, charcode);
+                if(converted >= 0)
+                  return converted;
+            }
+        }
     }
-    // TODO: dispatch here.
-  }
-  return '\n';
+    return '\n';
 }
 
 
