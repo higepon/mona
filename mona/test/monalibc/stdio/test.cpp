@@ -14,6 +14,7 @@ void test_fwrite_small();
 void test_fwrite_manytimes();
 void test_fread_biggerthanfile();
 void test_fread_small_many();
+void test_bsearch();
 
 int main(int argc, char* argv[])
 {
@@ -30,6 +31,7 @@ int main(int argc, char* argv[])
         test_fread_small_many();
         test_fwrite_small();
         test_fwrite_manytimes();
+        test_bsearch();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -160,13 +162,49 @@ void test_fwrite_manytimes()
     EXPECT_EQ(size, sizeof(expected)-1);
 
     int i;
-/*
     for(i = 0; i < size; i++)
     {
         EXPECT_EQ(expected[i], actual[i]);
     }
-*/
 
     fclose(fp);
     monapi_file_delete(path);
+}
+
+static int cmp_int(const void* key, const void*target)
+{
+    int keyi = ((int)key);
+    int targeti = *((int *)target);
+    return keyi-targeti;
+}
+
+#include <stdlib.h>
+
+void test_bsearch()
+{
+    int arrays[] = {
+        1, 3, 5, 7
+    };
+
+    void* actual = bsearch((void*)2, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == NULL);
+
+    actual = bsearch((void*)3, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == &arrays[1]);
+
+    actual = bsearch((void*)5, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == &arrays[2]);
+
+    actual = bsearch((void*)7, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == &arrays[3]);
+
+    actual = bsearch((void*)8, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == NULL);
+
+    actual = bsearch((void*)1, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == &arrays[0]);
+
+    // once crashed this case.
+    actual = bsearch((void*)0, (void*)arrays, 4, sizeof(int), cmp_int);
+    EXPECT_TRUE(actual == NULL);
 }

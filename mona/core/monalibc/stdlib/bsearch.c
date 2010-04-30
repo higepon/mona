@@ -14,6 +14,8 @@ void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fn
 			while((result > (char*)base) && !fnc(key, result - size)) result -= size; /* search lower result */
 			return result;
 		} else if(cmp < 0){ /* key < result */
+			if(mid == 0)
+				break; /* hi becomes -1, but it's unsigned, so while condition is not enough */
 			hi = mid - 1;
 		} else {	/* cmp > 0 : key > result */
 			lo = mid + 1;
