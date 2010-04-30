@@ -22,6 +22,8 @@ static int CurLine, CurColumn;
 
 static int max_LINES = 0, max_COLS = 0;
 
+
+
 void
 setupscreen(void)
 {
@@ -66,21 +68,30 @@ move(int line, int column)
 	CurColumn = column;
 }
 
+#define SETCH(var,ch,len)	((var) = New_Reuse(char, (var), (len) + 1), \
+				strncpy((var), (ch), (len)), (var)[len] = '\0')
+
 void
 clrtoeolx(void)
 {
-  int i;
-  char *p;
-  p = ScreenImage[CurLine]->lineimage;
-  for (i = CurColumn; i < COLS; i++)
-    p[i] = ' ';
+    int i;
+    char **p;
+    p = ScreenImage[CurLine]->lineimage;
+    for (i = CurColumn; i < COLS; i++){
+        SETCH(p[i], " ", 1);
+    }
 }
 
 void
 addstr(char *s)
 {
-    while (*s != '\0')
-	addch(*(s++));
+    int len;
+
+    while (*s != '\0') {
+	len = wtf_len((wc_uchar *) s);
+	addmch(s, len);
+	s += len;
+    }
 }
 
 void
@@ -91,6 +102,13 @@ standout(void)
 void
 addch(char c)
 {
+    addmch(&c, 1);
+}
+
+
+void
+addmch(char *pc, size_t len)
+{
 /*
 static int count = 0;
   if(count > 30) {
@@ -100,28 +118,29 @@ static int count = 0;
 MONA_TRACE_FMT((stderr, " %c ", c)); count++;
 */
 
-  int i;
-  char *p;
-  l_prop *pr;
-
-  
-  p = ScreenImage[CurLine]->lineimage;
-  pr = ScreenImage[CurLine]->lineprop;
-  
-  i = CurColumn;
-
-  if(c == '\n' || c == '\r') {
-    wrap();
-  } else {
-    if(CurColumn >= max_COLS) {
-      wrap();
-      return; // do nothing
+    int i;
+    char **p;
+    l_prop *pr;
+    char c = *pc;
+    
+    
+    p = ScreenImage[CurLine]->lineimage;
+    pr = ScreenImage[CurLine]->lineprop;
+    
+    i = CurColumn;
+    
+    if(c == '\n' || c == '\r') {
+        wrap();
+    } else {
+        if(CurColumn >= max_COLS) {
+            wrap();
+            return; // do nothing
+        }
+        SETCH(p[i], pc, len);
+        pr[i] = CurrentMode;
+        ScreenImage[CurLine]->isdirty |= L_DIRTY;
+        CurColumn++;
     }
-    p[i] = c;
-    pr[i] = CurrentMode;
-    ScreenImage[CurLine]->isdirty |= L_DIRTY;
-    CurColumn++;
-  }
 }
 
 void
@@ -160,8 +179,17 @@ void
 addnstr(char *s, int n)
 {
     int i;
-    for (i = 0; i < n && *s != '\0'; i++)
-	addch(*(s++));
+    int len, width;
+
+    for (i = 0; *s != '\0';) {
+	width = wtf_width((wc_uchar *) s);
+	if (i + width > n)
+	    break;
+	len = wtf_len((wc_uchar *) s);
+	addmch(s, len);
+	s += len;
+	i += width;
+    }
 }
 
 void

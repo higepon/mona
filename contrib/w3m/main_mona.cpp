@@ -2058,6 +2058,74 @@ DEFUN(followA, GOTO_LINK, "Go to current link")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
+static void
+_docCSet(wc_ces charset)
+{
+    if (Currentbuf->bufferprop & BP_INTERNAL)
+	return;
+    if (Currentbuf->sourcefile == NULL) {
+	disp_message("Can't reload...", FALSE);
+	return;
+    }
+    Currentbuf->document_charset = charset;
+    Currentbuf->need_reshape = TRUE;
+    displayBuffer(Currentbuf, B_FORCE_REDRAW);
+}
+
+void
+change_charset(struct parsed_tagarg *arg)
+{
+    Buffer *buf = Currentbuf->linkBuffer[LB_N_INFO];
+    wc_ces charset;
+
+    if (buf == NULL)
+	return;
+    delBuffer(Currentbuf);
+    Currentbuf = buf;
+    if (Currentbuf->bufferprop & BP_INTERNAL)
+	return;
+    charset = Currentbuf->document_charset;
+    for (; arg; arg = arg->next) {
+	if (!strcmp(arg->arg, "charset"))
+	    charset = atoi(arg->value);
+    }
+    _docCSet(charset);
+}
+
+DEFUN(docCSet, CHARSET, "Change the current document charset")
+{
+    char *cs;
+    wc_ces charset;
+
+    cs = searchKeyData();
+    if (cs == NULL || *cs == '\0')
+	/* FIXME: gettextize? */
+	cs = inputStr("Document charset: ",
+		      wc_ces_to_charset(Currentbuf->document_charset));
+    charset = wc_guess_charset_short(cs, 0);
+    if (charset == 0) {
+	displayBuffer(Currentbuf, B_NORMAL);
+	return;
+    }
+    _docCSet(charset);
+}
+
+DEFUN(defCSet, DEFAULT_CHARSET, "Change the default document charset")
+{
+    char *cs;
+    wc_ces charset;
+
+    cs = searchKeyData();
+    if (cs == NULL || *cs == '\0')
+	/* FIXME: gettextize? */
+	cs = inputStr("Default document charset: ",
+		      wc_ces_to_charset(DocumentCharset));
+    charset = wc_guess_charset_short(cs, 0);
+    if (charset != 0)
+	DocumentCharset = charset;
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
 
 
 /* extern "C" */ }
@@ -2110,6 +2178,89 @@ w3m_exit(int i)
 {
   if(g_frame)
     g_frame->stop();
+}
+
+#include "wc.h"
+#include "wtf.h"
+
+class WtfToUTF8
+{
+    wc_status putc_st;
+    Str putc_str;
+  public :
+    Str result;
+
+
+    WtfToUTF8()
+      {
+          wc_output_init(DisplayCharset, &putc_st);
+          putc_str = Strnew_size(8);
+      }
+
+    void init()
+      {
+          Strclear(putc_str);
+      }
+
+#define C_WHICHCHAR     0xc0
+#define CHMODE(c)       ((c)&C_WHICHCHAR)
+#define C_WCHAR1        0x40
+#define C_WCHAR2        0x80
+
+    Str convert(char **pc, int len)
+      {
+          result = Strnew();
+          init();
+          for(int i = 0; i < len; i++)
+          {
+              putc(pc[i]);
+          }
+          end();
+          return result;
+      }
+
+    
+    void putc(char *c)
+      {
+          typedef void (*pushtoutf8functp)(Str, wc_wchar_t, wc_status*);
+          wc_uchar *p;
+          p = (wc_uchar *)c;
+
+          Strclear(putc_str);
+          while (*p)
+            (*((pushtoutf8functp)(putc_st.ces_info->push_to)))(putc_str, wtf_parse(&p), &putc_st);
+          Strcat(result, putc_str);
+      }
+
+    void end()
+      {
+          Strclear(putc_str);
+          wc_push_end(putc_str, &putc_st);
+          if (putc_str->length)
+            Strcat(result, putc_str);
+      }
+
+    void clearStatus(void)
+        {
+            if (putc_st.ces_info->id & WC_CES_T_ISO_2022) {
+                putc_st.gl = 0;
+                putc_st.gr = 0;
+                putc_st.ss = 0;
+                putc_st.design[0] = 0;
+                putc_st.design[1] = 0;
+                putc_st.design[2] = 0;
+                putc_st.design[3] = 0;
+            }
+        }
+};
+
+WtfToUTF8 conv;
+
+Str wtf_to_utf8(char **pc, int len)
+{
+    Str tmp = conv.convert(pc, len);
+    fprintf(stderr, "tmp=%s\n", tmp->ptr);
+    return tmp;
 }
 
 

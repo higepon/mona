@@ -7,7 +7,11 @@ extern "C" {
 
 typedef unsigned short l_prop;
 typedef struct scline {
+#ifdef USE_M17N
+    char **lineimage;
+#else
     char *lineimage;
+#endif
     l_prop *lineprop;
     short isdirty;
     short eol;
@@ -52,7 +56,7 @@ typedef struct scline {
 #define L_NEED_CE       0x04
 #define L_CLRTOEOL      0x08
 
-
+extern Str wtf_to_utf8(char **pc, int len);
 
 
 class W3MPane: public Component {
@@ -158,6 +162,8 @@ public:
     COLS = (w-_xoffset*2)/fw;
     LINES = (h-_yoffset*2 - ((int)(fh/2.0)))/fh-1;
 
+    wtf_init(DocumentCharset, DisplayCharset);
+
     setupscreen();
     // sync_with_option();
 
@@ -194,8 +200,9 @@ public:
       
     }
 
+
   void drawString(Graphics *g, Screen* line, int x_org, int y) {
-    char* pc = line->lineimage;
+    char** pc = line->lineimage;
     l_prop *pr = line->lineprop;
     int same_attr_len = 0;
     int remain_len = COLS;
@@ -203,18 +210,20 @@ public:
     int x = x_org;
     
     while(remain_len > 0) {
-      l_prop attr = pr[cur];
-      same_attr_len = sameAttrLen(&pr[cur], remain_len);
-      String s(&pc[cur], same_attr_len);
+        l_prop attr = pr[cur];
+        same_attr_len = sameAttrLen(&pr[cur], remain_len);
+        Str utf8str = wtf_to_utf8(&pc[cur], same_attr_len);
+        String s(utf8str->ptr, utf8str->length);
+        // String s(&pc[cur], same_attr_len);
 
-      int drawnWidth = drawStringWithAttr(g, s, attr, x, y);
-      x += drawnWidth;
-      
-      remain_len -= same_attr_len;
-      cur += same_attr_len;
+        int drawnWidth = drawStringWithAttr(g, s, attr, x, y);
+        x += drawnWidth;
+        
+        remain_len -= same_attr_len;
+        cur += same_attr_len;
     }
   }
-
+    
   void clear(Graphics *g) {
     int w = getWidth();
     int h = getHeight();

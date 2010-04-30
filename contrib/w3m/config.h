@@ -36,17 +36,17 @@
 #define DEF_SAVE_FILE "index.html"
 
 /* User Configuration */
+/* mumurik
 #define DISPLAY_CHARSET WC_CES_US_ASCII
 #define SYSTEM_CHARSET WC_CES_US_ASCII
 #define DOCUMENT_CHARSET WC_CES_US_ASCII
-/* mumurik
+*/
 #define DISPLAY_CHARSET WC_CES_UTF_8
 #define SYSTEM_CHARSET WC_CES_UTF_8
 #define DOCUMENT_CHARSET WC_CES_UTF_8
-*/
-// mumurik #define USE_M17N 1
-// mumurik #define USE_UNICODE 1
-#define W3M_LANG EN
+#define USE_M17N 1
+#define USE_UNICODE 1
+#define W3M_LANG JA
 #define LANG W3M_LANG
 
 /* Define to 1 if translation of program messages to the user's

@@ -34,7 +34,8 @@ DEFS = -DHAVE_CONFIG_H -DAUXBIN_DIR=\"$(AUXBIN_DIR)\" \
 	-DCGIBIN_DIR=\"$(CGIBIN_DIR)\" -DHELP_DIR=\"$(HELP_DIR)\" \
 	-DETC_DIR=\"$(ETC_DIR)\" -DCONF_DIR=\"$(CONF_DIR)\" \
 	-DRC_DIR=\"$(RC_DIR)\" \
-        -DLOCALEDIR=\"$(LOCALE_DIR)\"
+        -DLOCALEDIR=\"$(LOCALE_DIR)\" \
+	-DUSE_UNICODE=1
 LIBS = 
 W3M_LIBS = 
 WCTARGET = 
@@ -49,12 +50,38 @@ KEYBIND_OBJ = keybind.o
 VERSION=0.5.2+cvs-1.1001
 MODEL=-EN
 
+M17NOBJS = libwc/big5.o \
+		libwc/ces.o \
+		libwc/char_conv.o \
+		libwc/charset.o \
+		libwc/combining.o \
+		libwc/conv.o \
+		libwc/detect.o \
+		libwc/gb18030.o \
+		libwc/gbk.o \
+		libwc/hkscs.o \
+		libwc/hz.o \
+		libwc/iso2022.o \
+		libwc/jis.o \
+		libwc/johab.o \
+		libwc/priv.o \
+		libwc/putc.o \
+		libwc/search.o \
+		libwc/sjis.o \
+		libwc/status.o \
+		libwc/ucs.o \
+		libwc/uhc.o \
+		libwc/utf7.o \
+		libwc/utf8.o \
+		libwc/viet.o \
+		libwc/wtf.o
+
 
 CPPOBJS=main_mona.o terms_mona.o
 OBJS=file.o buffer.o display.o etc.o search.o linein.o table.o local.o\
 	form.o map.o frame.o rc.o menu.o mailcap.o image.o \
 	symbol.o entity.o url.o ftp.o mimehead.o regex.o news.o \
-	func.o cookie.o history.o backend.o $(KEYBIND_OBJ)
+	func.o cookie.o history.o backend.o $(M17NOBJS) $(KEYBIND_OBJ)
 LSRCS=anchor.c parsetagx.c tagtable.c istream.c
 LOBJS=anchor.o parsetagx.o tagtable.o istream.o
 LLOBJS=version.o
@@ -80,7 +107,7 @@ include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
 CXXFLAGS += $(GC_CFLAGS) -g -idirafter -mno-stack-arg-probe -DMONA
-CFLAGS   += $(DEFS) $(GC_CFLAGS) -g -idirafter -mno-stack-arg-probe -DMONA -I./
+CFLAGS   += $(DEFS) $(GC_CFLAGS) -g -idirafter -mno-stack-arg-probe -DMONA -I./ -I./libwc/
 
 
 
