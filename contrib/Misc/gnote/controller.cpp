@@ -80,6 +80,8 @@ namespace gnote {
 			}
 		} else if (command.equals(String("FILE_QUIT"))) {
 			Exit();
+		} else if (command.equals(String("FILE_SAVE"))) {
+			WriteFile(file, document);
 		}
 		//
 		// Edit
@@ -563,9 +565,28 @@ namespace gnote {
 		cursol.left = cursol.top = cursol.wx = cursol.wy = 1;
 		return true;
 	}
-	// :-)
+	//
 	bool Controller::WriteFile(const String& f, const Document& d) {
-		return false;
+		// getBytes() is utf8, anway currently only ascii support for input.
+		// so this is enough for other application.
+		FILE *fp = fopen(f.getBytes(), "w");
+		if(fp == NULL)
+		{
+			// how to show message?
+			fprintf(stderr, "file: %s can't opened\n", f.getBytes());
+			return false;
+		}
+		int max = d.GetMaxLineNumber();
+		int i;
+		for(i = 1; i <= max; i++)
+		{
+			String* line = d.GetLine(i);
+			fwrite(line->getBytes(), 1, line->length(), fp); 
+			if(i != max)
+				fprintf(fp, "\n");
+		}
+		fclose(fp);
+		return true;
 	}
 	//
 	bool Controller::ReadFile(const String& f, Document& d) {
