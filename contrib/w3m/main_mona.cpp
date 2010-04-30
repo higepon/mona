@@ -2199,17 +2199,12 @@ class WtfToUTF8
 
     void init()
       {
+          result = Strnew();
           Strclear(putc_str);
       }
 
-#define C_WHICHCHAR     0xc0
-#define CHMODE(c)       ((c)&C_WHICHCHAR)
-#define C_WCHAR1        0x40
-#define C_WCHAR2        0x80
-
     Str convert(char **pc, int len)
       {
-          result = Strnew();
           init();
           for(int i = 0; i < len; i++)
           {
@@ -2256,11 +2251,16 @@ class WtfToUTF8
 
 WtfToUTF8 conv;
 
-Str wtf_to_utf8(char **pc, int len)
+Str wtf_to_utf8(char **pc, l_prop *pr, int len)
 {
-    Str tmp = conv.convert(pc, len);
-    fprintf(stderr, "tmp=%s\n", tmp->ptr);
-    return tmp;
+    conv.init();
+    for(int i = 0; i < len; i++)
+    {
+        if(CHMODE(pr[i]) != C_WCHAR2)
+          conv.putc(pc[i]);
+    }
+    conv.end();
+    return conv.result;
 }
 
 

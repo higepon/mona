@@ -56,7 +56,20 @@ typedef struct scline {
 #define L_NEED_CE       0x04
 #define L_CLRTOEOL      0x08
 
-extern Str wtf_to_utf8(char **pc, int len);
+
+#define C_WHICHCHAR     0xc0
+#define C_ASCII         0x00
+#define CHMODE(c)       ((c)&C_WHICHCHAR)
+#define C_WCHAR1        0x40
+#define C_WCHAR2        0x80
+
+#define SPACE " "
+
+#define S_DIRTY         0x20
+
+
+
+extern Str wtf_to_utf8(char **pc, l_prop *pr, int len);
 
 
 class W3MPane: public Component {
@@ -176,9 +189,10 @@ public:
   int sameAttrLen(l_prop *pr, int len)
       {
         assert(len != 0);
-        l_prop attr = pr[0];
+        l_prop attr = pr[0] & ~C_WHICHCHAR; // donot care C_WCHAR* flag
         int i = 0; 
-        for(i = 0;i < len && pr[i] == attr; i++);
+        for(i = 0;i < len && (pr[i] & ~C_WHICHCHAR  )== attr; i++);
+        // for(i = 0;i < len && pr[i] == attr; i++);
         return i;
       }
 
@@ -212,15 +226,19 @@ public:
     while(remain_len > 0) {
         l_prop attr = pr[cur];
         same_attr_len = sameAttrLen(&pr[cur], remain_len);
-        Str utf8str = wtf_to_utf8(&pc[cur], same_attr_len);
+        Str utf8str = wtf_to_utf8(&pc[cur], &pr[cur], same_attr_len);
         String s(utf8str->ptr, utf8str->length);
-        // String s(&pc[cur], same_attr_len);
 
         int drawnWidth = drawStringWithAttr(g, s, attr, x, y);
         x += drawnWidth;
         
         remain_len -= same_attr_len;
         cur += same_attr_len;
+
+        while(CHMODE(pr[cur]) == C_WCHAR2) {
+            cur++;
+            remain_len--;
+        }
     }
   }
     

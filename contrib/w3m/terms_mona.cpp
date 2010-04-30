@@ -71,14 +71,21 @@ move(int line, int column)
 #define SETCH(var,ch,len)	((var) = New_Reuse(char, (var), (len) + 1), \
 				strncpy((var), (ch), (len)), (var)[len] = '\0')
 
+#define SETPROP(var,prop) (var = (((var)&S_DIRTY) | prop))
+
 void
 clrtoeolx(void)
 {
     int i;
     char **p;
+    l_prop *pr;
+    
     p = ScreenImage[CurLine]->lineimage;
+    pr = ScreenImage[CurLine]->lineprop;
+    
     for (i = CurColumn; i < COLS; i++){
         SETCH(p[i], " ", 1);
+        SETPROP(pr[i], 0);
     }
 }
 
@@ -136,10 +143,23 @@ MONA_TRACE_FMT((stderr, " %c ", c)); count++;
             wrap();
             return; // do nothing
         }
+
+        int width = wtf_width((wc_uchar *) pc);
+
         SETCH(p[i], pc, len);
         pr[i] = CurrentMode;
+        // SETCHMODE(CurrentMode, C_WCHAR2);
         ScreenImage[CurLine]->isdirty |= L_DIRTY;
-        CurColumn++;
+        int i;
+        for(i = CurColumn+1; i < CurColumn + width; i++) {
+            SETCH(p[i], SPACE, 1);
+            SETPROP(pr[i], (pr[CurColumn] & ~C_WHICHCHAR) | C_WCHAR2);
+        }
+        for (; i < COLS && CHMODE(pr[i]) == C_WCHAR2; i++) {
+            SETCH(p[i], SPACE, 1);
+            SETPROP(pr[i], (pr[i] & ~C_WHICHCHAR) | C_ASCII);
+        }
+	CurColumn += width;
     }
 }
 
