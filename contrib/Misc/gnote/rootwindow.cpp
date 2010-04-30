@@ -54,7 +54,7 @@ namespace gnote {
 		menu->add(item = new TMenuItem("Open..."));
 		item->setEnabled(false);
 		menu->add(item = new TMenuItem("Save"));
-		item->setEnabled(false);
+		item->setActionCommand("FILE_SAVE");
 		menu->add(item = new TMenuItem("Save As..."));
 		item->setEnabled(false);
 		menu->add(item = new TMenuItem(TMenuItem::TYPE_SEPARATOR));

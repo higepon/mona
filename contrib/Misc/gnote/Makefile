@@ -1,3 +1,8 @@
+ifndef $(MONADIR)
+export MONADIR=$(PWD)/../../../mona
+endif
+
+
 TARGET  = GNOTE
 SOURCES = \
 trash/tmenuitem.cpp \
