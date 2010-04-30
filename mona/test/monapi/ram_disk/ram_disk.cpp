@@ -133,6 +133,56 @@ static void testWriteFile_Content()
     monapi_file_delete(path);
 }
 
+static void testReadDirectory_Empty()
+{
+    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
+    EXPECT_TRUE(ci != NULL);
+
+    int size = *(int*)ci->Data;
+
+    EXPECT_EQ(0, size);
+
+    monapi_cmemoryinfo_dispose(ci);
+    monapi_cmemoryinfo_delete(ci);
+}
+
+static void testReadDirectory_OneFile()
+{
+    createFile("/MEM/TEST1.TXT");
+    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
+
+    int size = *(int*)ci->Data;
+
+    EXPECT_EQ(1, size);
+
+    monapi_cmemoryinfo_dispose(ci);
+    monapi_cmemoryinfo_delete(ci);
+
+    monapi_file_delete("/MEM/TEST1.TXT");
+}
+
+#include <monapi/CString.h>
+
+static void testReadDirectory_TwoFile()
+{
+    createFile("/MEM/TEST1.TXT");
+    createFile("/MEM/TEST2.TXT");
+    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
+
+    int size = *(int*)ci->Data;
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ci->Data[sizeof(int)];
+
+    EXPECT_EQ(2, size);
+    EXPECT_TRUE(CString(p[0].name) ==  "TEST1.TXT");
+    EXPECT_TRUE(CString(p[1].name) ==  "TEST2.TXT");
+
+    monapi_cmemoryinfo_dispose(ci);
+    monapi_cmemoryinfo_delete(ci);
+
+    monapi_file_delete("/MEM/TEST2.TXT");
+    monapi_file_delete("/MEM/TEST1.TXT");
+}
+
 
 
 
@@ -144,6 +194,10 @@ int main(int argc, char *argv[])
     testDeleteFile();
     testWriteFile_Size();
     testWriteFile_Content();
+
+    testReadDirectory_Empty();
+    testReadDirectory_OneFile();
+    testReadDirectory_TwoFile();
 
     TEST_RESULTS(ram_disk);
     return 0;
