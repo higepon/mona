@@ -79,9 +79,9 @@ static void testDeleteFile()
     EXPECT_TRUE(!fileExist(path));
 }
 
-static void writeContentToPath(const char* path, const char* contents)
+static void writeContentToPath(const char* path, const char* contents, bool create=true)
 {
-    uint32_t id = monapi_file_open(path, true);
+    uint32_t id = monapi_file_open(path, create);
 
     monapi_cmemoryinfo* buffer = alloc_buffer(contents);
     int res = monapi_file_write(id, buffer, strlen(contents)+1);
@@ -126,6 +126,35 @@ static void testWriteFile_Content()
 
     EXPECT_EQ(len, actual->Size);
     EXPECT_TRUE( 0 == memcmp(actual->Data, data, len));
+
+    monapi_cmemoryinfo_dispose(actual);
+    monapi_cmemoryinfo_delete(actual);
+
+    monapi_file_delete(path);
+}
+
+monapi_cmemoryinfo* readContentFromPath(const char *path)
+{
+    uint32_t id = monapi_file_open(path, false);
+    monapi_cmemoryinfo *cmi = monapi_file_read(id, 256);
+    monapi_file_close(id);
+    return cmi;
+}
+
+
+static void testWriteTwice()
+{
+    const char* expect = "second";
+    int expect_len = strlen(expect)+1;
+    
+    const char* path = "/MEM/TESTFILE";
+    writeContentToPath(path, "first");
+    writeContentToPath(path, expect, false);
+
+    monapi_cmemoryinfo *actual = readContentFromPath(path);
+
+    EXPECT_EQ(expect_len, actual->Size);
+    EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
 
     monapi_cmemoryinfo_dispose(actual);
     monapi_cmemoryinfo_delete(actual);
@@ -194,6 +223,7 @@ int main(int argc, char *argv[])
     testDeleteFile();
     testWriteFile_Size();
     testWriteFile_Content();
+    testWriteTwice();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();

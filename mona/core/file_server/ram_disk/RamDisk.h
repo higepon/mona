@@ -162,22 +162,22 @@ namespace RamDisk {
           
           virtual int open(Vnode* file, int mode)
             {
-                //NG exit(1);
                 return MONA_SUCCESS;
             }
           virtual int create(Vnode* dir, const std::string& file)
             {
-                // OK exit(1);
                 FileMap::iterator it = files_.find(file);
                 if(it != files_.end())
                 {
-                    // delete it.
+                    // overwrite case. remove previous file.
+                    FileInfo fi  = (*it).second;
+                    vmanager_->cacher()->remove(root_, fi.name);
+                    files_.erase(it);
                 }
                 FileInfo finfo;
                 finfo.name = file;
                 finfo.size = 0;
                 files_.insert(std::pair<std::string, FileInfo>(file, finfo));
-                // OK exit(1);
                 return MONA_SUCCESS;
             }
 
@@ -221,7 +221,7 @@ namespace RamDisk {
                 uint32_t offset = context->offset;
                 uint32_t writeSize = context->size;
                 f->writeChunks(offset, writeSize, memory->Data);
-                f->size += writeSize;
+                f->size = f->size > offset+writeSize ? f->size : offset+writeSize;
                 return MONA_SUCCESS;
             }
           virtual int seek(Vnode* file, uint32_t offset, uint32_t origin) { return MONA_SUCCESS; }
