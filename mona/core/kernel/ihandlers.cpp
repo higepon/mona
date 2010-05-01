@@ -194,6 +194,7 @@ extern "C" void breakpointHandler()
 {
     // Enable remote debug handlers, on first breakpoint exception.
     if (!g_isRemoteDebug) {
+        g_console->printf("INFO: GDB remote debug is enabled\n");
         set_debug_traps();
         g_isRemoteDebug = true;
     }
