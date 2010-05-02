@@ -162,6 +162,26 @@ static void testWriteTwice()
     monapi_file_delete(path);
 }
 
+static void testWriteTwice_CreateTrue()
+{
+    const char* expect = "second";
+    int expect_len = strlen(expect)+1;
+    
+    const char* path = "/MEM/TESTFILE";
+    writeContentToPath(path, "first");
+    writeContentToPath(path, expect, true);
+
+    monapi_cmemoryinfo *actual = readContentFromPath(path);
+
+    EXPECT_EQ(expect_len, actual->Size);
+    EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
+
+    monapi_cmemoryinfo_dispose(actual);
+    monapi_cmemoryinfo_delete(actual);
+
+    monapi_file_delete(path);
+}
+
 static void testReadDirectory_Empty()
 {
     monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
@@ -224,6 +244,7 @@ int main(int argc, char *argv[])
     testWriteFile_Size();
     testWriteFile_Content();
     testWriteTwice();
+    testWriteTwice_CreateTrue();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();

@@ -13,7 +13,7 @@ namespace RamDisk {
 
     typedef std::vector<char*> Chunks;
     struct FileInfo;
-    typedef std::map<std::string, FileInfo> FileMap;
+    typedef std::map<std::string, FileInfo*> FileMap;
     enum
       {
           CHUNK_SIZE = 4096,
@@ -22,7 +22,7 @@ namespace RamDisk {
 
     struct FileInfo {
         std::string name;
-        int size;
+        uint32_t size;
         // int pos;
         Chunks chunks;
         ~FileInfo()
@@ -32,6 +32,7 @@ namespace RamDisk {
                     char* ptr = *it;
                     delete(ptr);
                 }
+              chunks.clear();
           }
 
         inline Chunks::iterator findChunk(int offset)
@@ -124,9 +125,10 @@ namespace RamDisk {
               root_->type = Vnode::DIRECTORY;
           }
           virtual ~RamDiskFileSystem() {
-              // delete root_: commented out at FAT12FileSystem.cpp, why?
-
-              // TODO: free all files here.
+              // should already removed at VnodeCacher's destructor
+              // We had better also destruct correctly here, but now I just confirm my understanding by assert.
+              ASSERT(root_ == NULL);
+              ASSERT(files_.size() == 0);
           }
 
           
@@ -151,7 +153,7 @@ namespace RamDisk {
 
 
                 Vnode* newVnode = vmanager_->alloc(); //never return NULL?
-                newVnode->fnode = &(*it).second;
+                newVnode->fnode = (*it).second;
                 newVnode->type = type;
                 newVnode->fs = this;
                 vmanager_->cacher()->add(diretory, file, newVnode);
@@ -170,14 +172,15 @@ namespace RamDisk {
                 if(it != files_.end())
                 {
                     // overwrite case. remove previous file.
-                    FileInfo fi  = (*it).second;
-                    vmanager_->cacher()->remove(root_, fi.name);
+                    FileInfo* fi  = (*it).second;
+                    vmanager_->cacher()->remove(root_, fi->name);
+                    delete fi;
                     files_.erase(it);
                 }
-                FileInfo finfo;
-                finfo.name = file;
-                finfo.size = 0;
-                files_.insert(std::pair<std::string, FileInfo>(file, finfo));
+                FileInfo* finfo = new FileInfo();
+                finfo->name = file;
+                finfo->size = 0;
+                files_.insert(std::pair<std::string, FileInfo*>(file, finfo));
                 return MONA_SUCCESS;
             }
 
@@ -297,7 +300,8 @@ namespace RamDisk {
                 std::string name = finfo->name;
                 vmanager_->cacher()->remove(root_, name);
                 FileMap::iterator it = files_.find(name);
-                ASSERT(it != files_.end()); // is this thread safe?
+                ASSERT(it != files_.end());
+                delete finfo;
                 files_.erase(it);
                 delete vnode;
             }
@@ -313,7 +317,7 @@ namespace RamDisk {
 
                 
                 memcpy(name, (*currentIt_).first.c_str(), (*currentIt_).first.size());
-                *size = (*currentIt_).second.size;
+                *size = (*currentIt_).second->size;
                 
                 currentIt_++;
                 return MONA_SUCCESS;
