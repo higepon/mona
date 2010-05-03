@@ -1475,13 +1475,24 @@ myExec(char *command)
 #endif
 }
 
+#ifdef MONA
+#include <monapi/messages.h>
+#endif
+
+
 void
 mySystem(char *command, int background)
 {
 #ifdef MONA
-     MONA_TRACE("not support system call (");
-     MONA_TRACE(command);
-     MONA_TRACE(")\n");
+    uint32_t tid;
+    int result = monapi_call_process_execute_file_get_tid(command,  MONAPI_TRUE, &tid, NULL, NULL);
+    if( result != 0)
+    {
+        fprintf(stderr, "system can't execute %s", command);
+        return;
+    }
+    if(!background)
+      monapi_process_wait_terminated(tid);
 #else /* not MONA */
 #ifndef __MINGW32_VERSION
     if (background) {
@@ -1734,6 +1745,7 @@ tmpfname(int type, char *ext)
 		   tmp_dir,
 		   tmpf_base[type],
 		   CurrentPid, tmpf_seq[type]++, (ext) ? ext : "");
+    Strupper(tmpf);
 #else
     tmpf = Sprintf("%s/w3m%s%d-%d%s",
 		   tmp_dir,

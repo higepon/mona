@@ -174,10 +174,8 @@ wrap(void)
 void
 refresh(void)
 {
-MONA_TRACE("refresh1\n");
     if(g_frame)
     {
-MONA_TRACE("refresh2\n");
       g_frame->setScreenImage(ScreenImage);
       // g_frame->repaint();
       g_frame->updatePane();
@@ -402,6 +400,11 @@ getch(void)
         }
     }
     return '\n';
+}
+
+void
+flush_tty()
+{
 }
 
 

@@ -156,8 +156,13 @@ EFFECT_VISITED_END
 #endif				/* not USE_COLOR */
 /* *INDENT-ON* */
 
+
 void
+#ifdef MONA
+fmTerm2(void)
+#else
 fmTerm(void)
+#endif
 {
     if (fmInitialized) {
 	move(LASTLINE, 0);
@@ -176,12 +181,25 @@ fmTerm(void)
     }
 }
 
+#ifdef MONA
+void fmInit(void)
+{
+    /* dummy */
+}
+void fmTerm(void)
+{
+}
+#endif
 
 /* 
  * Initialize routine.
  */
 void
+#ifdef MONA
+fmInit2(void)
+#else
 fmInit(void)
+#endif
 {
     if (!fmInitialized) {
 	initscr();

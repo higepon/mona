@@ -1423,29 +1423,58 @@ DEFUN(msgs, MSGS, "Display error messages")
     MONA_TRACE("Display error messages, NYI\n");
 }
 
+/* move cursor upward */
+static void
+_movU(int n)
+{
+    int i, m = searchKeyNum();
+    if (Currentbuf->firstLine == NULL)
+	return;
+    for (i = 0; i < m; i++)
+	cursorUp(Currentbuf, n);
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
+
 DEFUN(movU1, MOVE_UP1, "Move cursor up (1 line scrol at the top of screen)")
 {
-    MONA_TRACE("Move cursor up (1 line scrol at the top of screen), NYI\n");
+    MONA_TRACE("Move cursor up (1 line scrol at the top of screen)\n");
+    _movU(1);
 }
 
 
 DEFUN(movU, MOVE_UP,
       "Move cursor up (a half screen scroll at the top of screen)")
 {
-  MONA_TRACE("Move cursor up (a half screen scroll at the top of screen), NYI\n");
+  MONA_TRACE("Move cursor up (a half screen scroll at the top of screen)\n");
+    _movU((Currentbuf->LINES + 1) / 2);
+}
+
+/* Move cursor right */
+static void
+_movR(int n)
+{
+    int i, m = searchKeyNum();
+    if (Currentbuf->firstLine == NULL)
+	return;
+    for (i = 0; i < m; i++)
+	cursorRight(Currentbuf, n);
+    displayBuffer(Currentbuf, B_NORMAL);
 }
 
 DEFUN(movR1, MOVE_RIGHT1,
       "Move cursor right (1 columns shift at the right edge)")
 {
-  MONA_TRACE("Move cursor right (1 columns shift at the right edge), NYI\n");
+  MONA_TRACE("Move cursor right (1 columns shift at the right edge)\n");
+    _movR(1);
 }
 
 
 DEFUN(movR, MOVE_RIGHT,
       "Move cursor right (a half screen shift at the right edge)")
 {
-  MONA_TRACE("Move cursor right (a half screen shift at the right edge), NYI\n");
+  MONA_TRACE("Move cursor right (a half screen shift at the right edge)\n");
+    _movR(Currentbuf->COLS / 2);
 }
 DEFUN(movMs, MOVE_MOUSE, "Move cursor to mouse cursor (for mouse action)")
 {
@@ -1458,28 +1487,59 @@ DEFUN(movlistMn, MOVE_LIST_MENU,
 {
   MONA_TRACE("Popup link list menu and move cursor to selected link, NYI\n");
 }
+
+/* Move cursor left */
+static void
+_movL(int n)
+{
+    int i, m = searchKeyNum();
+    if (Currentbuf->firstLine == NULL)
+	return;
+    for (i = 0; i < m; i++)
+	cursorLeft(Currentbuf, n);
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
+
 DEFUN(movL1, MOVE_LEFT1, "Move cursor left (1 columns shift at the left edge)")
 {
-    MONA_TRACE("Move cursor left (1 columns shift at the left edge), NYI\n");
+    MONA_TRACE("Move cursor left (1 columns shift at the left edge)\n");
+    _movL(1);
 }
 
 
 DEFUN(movL, MOVE_LEFT,
       "Move cursor left (a half screen shift at the left edge)")
 {
-  MONA_TRACE("Move cursor left (a half screen shift at the left edge), NYI\n");
+  MONA_TRACE("Move cursor left (a half screen shift at the left edge)\n");
+    _movL(Currentbuf->COLS / 2);
 }
+
+/* Move cursor downward */
+static void
+_movD(int n)
+{
+    int i, m = searchKeyNum();
+    if (Currentbuf->firstLine == NULL)
+	return;
+    for (i = 0; i < m; i++)
+	cursorDown(Currentbuf, n);
+    displayBuffer(Currentbuf, B_NORMAL);
+}
+
 
 DEFUN(movD1, MOVE_DOWN1,
       "Move cursor down (1 line scroll at the end of screen)")
 {
-  MONA_TRACE("Move cursor down (1 line scroll at the end of screen), NYI\n");
+  MONA_TRACE("Move cursor down (1 line scroll at the end of screen)\n");
+    _movD(1);
 }
 
 DEFUN(movD, MOVE_DOWN,
       "Move cursor down (a half screen scroll at the end of screen)")
 {
-  MONA_TRACE("Move cursor down (a half screen scroll at the end of screen), NYI\n");
+  MONA_TRACE("Move cursor down (a half screen scroll at the end of screen)\n");
+    _movD((Currentbuf->LINES + 1) / 2);
 }
 
 DEFUN(msToggle, MOUSE_TOGGLE, "Toggle activity of mouse")
@@ -1841,7 +1901,33 @@ DEFUN(svA, SAVE_LINK, "Save link to file")
 /* view inline image */
 DEFUN(followI, VIEW_IMAGE, "View image")
 {
-    MONA_TRACE("View inline image, NYI\n");
+    Line *l;
+    Anchor *a;
+    Buffer *buf;
+    MONA_TRACE("view image\n");
+
+    if (Currentbuf->firstLine == NULL)
+	return;
+    l = Currentbuf->currentLine;
+
+    a = retrieveCurrentImg(Currentbuf);
+    if (a == NULL)
+	return;
+    /* FIXME: gettextize? */
+    MONA_TRACE("view image2\n");
+    message(Sprintf("loading %s", a->url)->ptr, 0, 0);
+    refresh();
+    buf = loadGeneralFile(a->url, baseURL(Currentbuf), NULL, 0, NULL);
+    if (buf == NULL) {
+	/* FIXME: gettextize? */
+	char *emsg = Sprintf("Can't load %s", a->url)->ptr;
+	disp_err_message(emsg, FALSE);
+    }
+    else if (buf != NO_BUFFER) {
+	pushBuffer(buf);
+    }
+    MONA_TRACE("view image3\n");
+    displayBuffer(Currentbuf, B_NORMAL);
 }
 /* download IMG link */
 DEFUN(svI, SAVE_IMAGE, "Save image to file")
@@ -2140,11 +2226,19 @@ inline bool insideKeymap(int keycode) {
 }
 
 inline int translateKeyCode(int keycode) {
-  if(keycode == KeyEvent::VKEY_TAB)
-    return '\t';
-  if(keycode == KeyEvent::VKEY_ENTER)
-    return '\n';
-  return keycode;
+    if(keycode == KeyEvent::VKEY_TAB)
+      return '\t';
+    if(keycode == KeyEvent::VKEY_ENTER)
+      return '\n';
+    if(keycode == KeyEvent::VKEY_LEFT)
+      return 0x02; // C-b
+    if(keycode == KeyEvent::VKEY_RIGHT)
+      return 0x06; // C-f
+    if(keycode == KeyEvent::VKEY_UP)
+      return 16; // C-p
+    if(keycode == KeyEvent::VKEY_DOWN)
+      return 14; // C-n
+    return keycode;
 }
 
 void W3MPane::processEvent(Event* event)
@@ -2179,6 +2273,34 @@ w3m_exit(int i)
   if(g_frame)
     g_frame->stop();
 }
+
+static int add_download_list = FALSE;
+
+void
+addDownloadList(pid_t pid, char *url, char *save, char *lock, clen_t size)
+{
+    DownloadList *d;
+
+    d = New(DownloadList);
+    d->pid = pid;
+    d->url = url;
+    if (save[0] != '/' && save[0] != '~')
+	save = Strnew_m_charp(CurrentDir, "/", save, NULL)->ptr;
+    d->save = expandPath(save);
+    d->lock = lock;
+    d->size = size;
+    d->time = time(0);
+    d->ok = FALSE;
+    d->next = NULL;
+    d->prev = LastDL;
+    if (LastDL)
+	LastDL->next = d;
+    else
+	FirstDL = d;
+    LastDL = d;
+    add_download_list = TRUE;
+}
+
 
 #include "wc.h"
 #include "wtf.h"

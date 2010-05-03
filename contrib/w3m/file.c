@@ -179,7 +179,8 @@ static struct compression_decoder {
 };
 /* *INDENT-ON* */
 
-#define SAVE_BUF_SIZE 1536
+// #define SAVE_BUF_SIZE 1536
+#define SAVE_BUF_SIZE 1024
 
 static MySignalHandler
 KeyAbort(SIGNAL_ARG)
@@ -410,7 +411,6 @@ examineFile(char *path, URLFile *uf)
 	stat(path, &stbuf) == -1 || NOT_REGULAR(stbuf.st_mode)
 #endif
         ) {
-MONA_TRACE_FMT((stderr, "exam file, NULL %s\n", path));
 	uf->stream = NULL;
 	return;
     }
@@ -8010,7 +8010,7 @@ _MoveFile(char *path1, char *path2)
 int
 _doFileCopy(char *tmpf, char *defstr, int download)
 {
-#if !defined(__MINGW32_VERSION) && !defined(MONA)
+#ifndef __MINGW32_VERSION
     Str msg;
     Str filen;
     char *p, *q = NULL;
@@ -8019,7 +8019,10 @@ _doFileCopy(char *tmpf, char *defstr, int download)
 #if !(defined(HAVE_SYMLINK) && defined(HAVE_LSTAT))
     FILE *f;
 #endif
+#ifndef MONA
     struct stat st;
+#endif
+MONA_TRACE_FMT((stderr, "do file copy, %s, %s\n", tmpf, defstr));
     clen_t size = 0;
     int is_pipe = FALSE;
 
@@ -8068,6 +8071,11 @@ _doFileCopy(char *tmpf, char *defstr, int download)
 	    fclose(f);
 #endif
 	flush_tty();
+#ifdef MONA
+        // do not use fork, but just do these operation blocking maner.
+        _MoveFile(tmpf, p);
+        unlink(lock);
+#else
 	pid = fork();
 	if (!pid) {
 	    setup_child(FALSE, 0, -1);
@@ -8079,6 +8087,7 @@ _doFileCopy(char *tmpf, char *defstr, int download)
 	}
 	if (!stat(tmpf, &st))
 	    size = st.st_size;
+#endif
 	addDownloadList(pid, conv_from_system(tmpf), p, lock, size);
     }
     else {
@@ -8114,10 +8123,13 @@ _doFileCopy(char *tmpf, char *defstr, int download)
 	    printf("Can't save to %s\n", p);
 	    return -1;
 	}
+#ifndef MONA
 	if (PreserveTimestamp && !is_pipe && !stat(tmpf, &st))
 	    setModtime(p, st.st_mtime);
+#endif
     }
-#endif /* __MINGW32_VERSION && MONA */
+MONA_TRACE_FMT((stderr, "do file copy success, %s, %s\n", tmpf, defstr));
+#endif /* __MINGW32_VERSION */
     return 0;
 }
 
@@ -8313,6 +8325,7 @@ inputAnswer(char *prompt)
 static void
 uncompress_stream(URLFile *uf, char **src)
 {
+MONA_TRACE("uncompress_stream, NYI\n");
 #if !defined(__MINGW32_VERSION) && !defined(MONA)
     pid_t pid1;
     FILE *f1;

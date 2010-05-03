@@ -9,10 +9,6 @@
 #include "local.h"
 #include "regex.h"
 
-#ifdef MONA
-#include <monapi/messages.h>
-#endif
-
 
 extern Str *textarea_str;
 #ifdef MENU_SELECT
@@ -588,16 +584,13 @@ input_textarea(FormItemList *fi)
 	form_fputs_decode(fi->value, f);
     fclose(f);
 
-#ifdef MONA 
-
-    uint32_t tid;
-    monapi_call_process_execute_file_get_tid(myEditor(Editor, tmpf, 1)->ptr, MONAPI_TRUE, &tid, NULL, NULL);
-    monapi_process_wait_terminated(tid);
-#else
     fmTerm();
+#ifdef MONA 
+    mySystem(myEditor(Editor, tmpf, 1)->ptr, 0);
+#else
     system(myEditor(Editor, tmpf, 1)->ptr);
-    fmInit();
 #endif
+    fmInit();
 
     if (fi->readonly)
 	goto input_end;

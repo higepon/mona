@@ -78,16 +78,16 @@ public:
   static const int _xoffset = 10;
   static const int _yoffset = 10;
 
-  int _defaultFG;
-  int _defaultBG;
-  bool _underLine;
+    int _defaultFG;
+    int _defaultBG;
+    bool _underLine;
 
   W3MPane() {
-    _defaultFG = Color::black;
-    _defaultBG = Color::white;
-    setForeground(_defaultFG);
-    setBackground(_defaultBG);
-    _underLine = false;
+      _defaultFG = Color::black;
+      _defaultBG = Color::white;
+      setForeground(_defaultFG);
+      setBackground(_defaultBG);
+      _underLine = false;
 
     ScreenImage = NULL;
     setFontStyle(Font::FIXED);
@@ -159,7 +159,7 @@ public:
         g->setFontStyle(Font::FIXED);
       }
 
-      _underLine = attr & S_UNDERLINE;
+        _underLine = attr & S_UNDERLINE;
     }
 
   
@@ -180,7 +180,7 @@ public:
     setupscreen();
     // sync_with_option();
 
-    fmInit();
+    fmInit2();
 
     FirstTab = LastTab = CurrentTab = newTab();
   }
@@ -202,8 +202,9 @@ public:
       int fh = colHeight();
       setAttribute(g, attr);
       int drawnWidth =  getFontMetrics()->getWidth(s);
-      
-      g->setColor(getBackground());
+
+        g->setColor(getBackground());
+          
       g->fillRect(x, y, drawnWidth, fh);
       
       g->setColor(getForeground());
@@ -263,7 +264,6 @@ public:
 
     if(ScreenImage != NULL)
       {
-        MONA_TRACE("repaint2\n");
         for(int line = 0; line < LINES; line++) {
           drawString(g, ScreenImage[line],  _xoffset, line*fh+_yoffset);
         }

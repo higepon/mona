@@ -105,7 +105,7 @@
 #define DEF_EXT_BROWSER "/usr/bin/mozilla"
 
 /* fallback viewer. mailcap override these configuration */
-#define DEF_IMAGE_VIEWER	"display"
+#define DEF_IMAGE_VIEWER	"/APPS/MONAFRMS/BITMAP.EX5"
 #define DEF_AUDIO_PLAYER	"showaudio"
 
 /* for USE_MIGEMO */

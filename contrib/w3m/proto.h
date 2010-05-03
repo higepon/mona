@@ -287,6 +287,9 @@ extern int writeBufferCache(Buffer *buf);
 extern int readBufferCache(Buffer *buf);
 extern void fmTerm(void);
 extern void fmInit(void);
+#ifdef MONA
+extern void fmInit2(void);
+#endif
 extern void displayBuffer(Buffer *buf, int mode);
 extern void addChar(char c, Lineprop mode);
 #ifdef USE_M17N
