@@ -155,7 +155,6 @@ class Process
                 return i;
             }
         }
-        ASSERT(false);
         return -1;
     }
 

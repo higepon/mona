@@ -307,7 +307,8 @@ extern "C" void generalProtectionHandler(uintptr_t error)
 extern "C" void pageFaultHandler(uintptr_t address, uintptr_t error)
 {
     if (!g_page_manager->pageFaultHandler(address, error, g_currentThread->archinfo->eip)) {
-        panic("unhandled:fault0E - page fault");
+        bool isProcessChange = g_scheduler->Schedule2();
+        ThreadOperation::switchThread(isProcessChange, 1);
     }
 }
 
