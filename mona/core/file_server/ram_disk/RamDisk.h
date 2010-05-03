@@ -65,16 +65,30 @@ namespace RamDisk {
               return it;
           }
 
+        inline void extendToOffset(int offset)
+          {
+              int chunkNum = offset/CHUNK_SIZE+1;
+              int addNum = chunkNum- chunks.size();
+              if(addNum <=0)
+                return;
+              for(int i = 0; i < addNum; i++)
+                {
+                    extendOneChunk();
+                }
+          }
+
         inline void writeChunks(int offset, int len, uint8_t *src)
           {
               int rest = len;
               int chunkOffset = offset%CHUNK_SIZE;
+
+              extendToOffset(offset);
               Chunks::iterator it = findChunk(offset);
-              if(it == chunks.end())
-                    it = extendOneChunk();
+              ASSERT(it != chunks.end());
 
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
+                  ASSERT(copySize > 0);
                   
                   char *ptr = *it;
                   memcpy(ptr + chunkOffset, src, copySize);
@@ -96,6 +110,7 @@ namespace RamDisk {
               Chunks::iterator it = findChunk(offset);
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
+                  ASSERT(copySize > 0);
                   
                   char *ptr = *it;
                   memcpy(dest, ptr+chunkOffset, copySize);

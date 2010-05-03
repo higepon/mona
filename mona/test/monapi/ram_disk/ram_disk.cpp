@@ -19,12 +19,23 @@ static bool fileExist(const char* path)
     return true;
 }
 
-static monapi_cmemoryinfo* alloc_buffer(const char* message)
+static void cm_destroy_delete(monapi_cmemoryinfo *cm)
+{
+    monapi_cmemoryinfo_dispose(cm);
+    monapi_cmemoryinfo_delete(cm);
+}
+
+static monapi_cmemoryinfo* alloc_buffer_size(const char* message, int size)
 {
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, strlen(message) + 1, 0);
+    monapi_cmemoryinfo_create(buffer, size, 0);
     memcpy(buffer->Data, message, buffer->Size);
     return buffer;
+}
+
+static monapi_cmemoryinfo* alloc_buffer(const char* message)
+{
+    return alloc_buffer_size(message, strlen(message) + 1);
 }
 
 static void testOpenNonExistingFile()
@@ -79,14 +90,36 @@ static void testDeleteFile()
     EXPECT_TRUE(!fileExist(path));
 }
 
-static void writeContentToPath(const char* path, const char* contents, bool create=true)
+static void writeContentToPathWithSize(const char* path, const char* contents, int size, bool create=true)
 {
     uint32_t id = monapi_file_open(path, create);
 
-    monapi_cmemoryinfo* buffer = alloc_buffer(contents);
-    int res = monapi_file_write(id, buffer, strlen(contents)+1);
+#define MAXDATA 20
+    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    monapi_cmemoryinfo_create(buffer, MAXDATA, 0);
+    int res;
+    while(size > 0) {
+        int copySize = size > MAXDATA ? MAXDATA : size;
+        memcpy(buffer->Data, contents, copySize);
+        res = monapi_file_write(id, buffer, copySize);
+        EXPECT_EQ(res, MONA_SUCCESS);
+        monapi_file_seek(id, copySize, SEEK_CUR);
+        size -= copySize;
+        contents += copySize;
+    }
+    cm_destroy_delete(buffer);
+
+#if 0
+    monapi_cmemoryinfo* buffer = alloc_buffer_size(contents, size);
+    int res = monapi_file_write(id, buffer, size);
+#endif
     EXPECT_EQ(res, MONA_SUCCESS);
     monapi_file_close(id);
+}
+
+static void writeContentToPath(const char* path, const char* contents, bool create=true)
+{
+    writeContentToPathWithSize(path, contents, strlen(contents)+1, create);
 }
 
 int fileSize(const char* path)
@@ -156,9 +189,7 @@ static void testWriteTwice()
     EXPECT_EQ(expect_len, actual->Size);
     EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
 
-    monapi_cmemoryinfo_dispose(actual);
-    monapi_cmemoryinfo_delete(actual);
-
+    cm_destroy_delete(actual);
     monapi_file_delete(path);
 }
 
@@ -176,8 +207,89 @@ static void testWriteTwice_CreateTrue()
     EXPECT_EQ(expect_len, actual->Size);
     EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
 
-    monapi_cmemoryinfo_dispose(actual);
-    monapi_cmemoryinfo_delete(actual);
+    cm_destroy_delete(actual);
+
+    monapi_file_delete(path);
+}
+
+static void testWriteTwice_Size()
+{
+    const char* message = "test data";
+    int expectedLen = strlen(message)+1;
+
+    const char* path = "/MEM/TESTFILE";
+    writeContentToPath(path, "1");
+    writeContentToPath(path, message);
+
+    int actual = fileSize(path);
+
+    EXPECT_EQ(expectedLen, actual);
+    monapi_file_delete(path);
+}
+
+static void copyFile(const char *from, const char* to)
+{
+    monapi_cmemoryinfo *cmi = monapi_file_read_all(from);
+    writeContentToPathWithSize(to, (char*)cmi->Data, cmi->Size);
+}
+
+// use stdio because I already have one.
+static void expectFileEqual(const char* org, const char* to)
+{
+    char buf[256];
+    char buf2[256];
+    FILE* fp_org = fopen(org, "r");
+    FILE* fp = fopen(to, "r");
+    if(fp == NULL || fp_org == NULL)
+      {
+          fprintf(stderr, "fp=%x, fp_org=%x\n", fp, fp_org);
+      }
+
+// for analyze    int debpos = 0;
+    int readSize = fread(buf, 1, 256, fp_org);
+    while(readSize > 0)
+    {
+        int readSize2 = fread(buf2, 1, readSize, fp);
+        EXPECT_EQ(readSize, readSize2);
+        EXPECT_TRUE(0 == memcmp(buf, buf2, readSize2));
+/*
+        if(0 != memcmp(buf, buf2, readSize2))
+        {
+            for(int i = 0; i < readSize2; i++)
+              {
+                  if(buf[i] != buf2[i])
+                  {
+                      static int count = 0;
+                      fprintf(stderr, "debpos=%x, i=%x, buf[i]=%x, buf2[i]=%x\n", debpos, i, buf[i], buf2[i]);
+                      break;
+                      if(count++ > 20)
+                        break;
+                  }
+              }
+            fclose(fp);
+            fclose(fp_org);
+            return;
+        }
+        debpos+=readSize;
+*/
+
+        readSize = fread(buf, 1, 256, fp_org);
+    }
+    fclose(fp);
+    fclose(fp_org);
+
+}
+
+
+
+static void testWriteLargeFile()
+{
+    // depend on other test file...
+    const char* org = "/APPS/TSTDIO.APP/TEST.JPG";
+    const char* path = "/MEM/TESTFILE";
+
+    copyFile(org, path);
+    expectFileEqual(org, path);
 
     monapi_file_delete(path);
 }
@@ -191,8 +303,7 @@ static void testReadDirectory_Empty()
 
     EXPECT_EQ(0, size);
 
-    monapi_cmemoryinfo_dispose(ci);
-    monapi_cmemoryinfo_delete(ci);
+    cm_destroy_delete(ci);
 }
 
 static void testReadDirectory_OneFile()
@@ -204,8 +315,7 @@ static void testReadDirectory_OneFile()
 
     EXPECT_EQ(1, size);
 
-    monapi_cmemoryinfo_dispose(ci);
-    monapi_cmemoryinfo_delete(ci);
+    cm_destroy_delete(ci);
 
     monapi_file_delete("/MEM/TEST1.TXT");
 }
@@ -225,8 +335,7 @@ static void testReadDirectory_TwoFile()
     EXPECT_TRUE(CString(p[0].name) ==  "TEST1.TXT");
     EXPECT_TRUE(CString(p[1].name) ==  "TEST2.TXT");
 
-    monapi_cmemoryinfo_dispose(ci);
-    monapi_cmemoryinfo_delete(ci);
+    cm_destroy_delete(ci);
 
     monapi_file_delete("/MEM/TEST2.TXT");
     monapi_file_delete("/MEM/TEST1.TXT");
@@ -245,6 +354,8 @@ int main(int argc, char *argv[])
     testWriteFile_Content();
     testWriteTwice();
     testWriteTwice_CreateTrue();
+    testWriteTwice_Size();
+    //TODO: fix to pass test. testWriteLargeFile();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();
