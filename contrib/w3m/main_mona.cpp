@@ -1986,11 +1986,81 @@ DEFUN(rFrame, FRAME, "Render frame")
 	displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
+static int
+checkBackBuffer(Buffer *buf)
+{
+    Buffer *fbuf = buf->linkBuffer[LB_N_FRAME];
+
+    if (fbuf) {
+	if (fbuf->frameQ)
+	    return TRUE;	/* Currentbuf has stacked frames */
+	/* when no frames stacked and next is frame source, try next's
+	 * nextBuffer */
+	if (RenderFrame && fbuf == buf->nextBuffer) {
+	    if (fbuf->nextBuffer != NULL)
+		return TRUE;
+	    else
+		return FALSE;
+	}
+    }
+
+    if (buf->nextBuffer)
+	return TRUE;
+
+    return FALSE;
+}
 
 
+
+/* delete current buffer and back to the previous buffer */
 DEFUN(backBf, BACK, "Back to previous buffer")
 {
-  MONA_TRACE("back, NYI\n");
+    MONA_TRACE("back\n");
+    Buffer *buf = Currentbuf->linkBuffer[LB_N_FRAME];
+
+    if (!checkBackBuffer(Currentbuf)) {
+	if (close_tab_back && nTab >= 1) {
+	    deleteTab(CurrentTab);
+	    displayBuffer(Currentbuf, B_FORCE_REDRAW);
+	}
+	else
+	    /* FIXME: gettextize? */
+	    disp_message("Can't back...", TRUE);
+	return;
+    }
+
+    delBuffer(Currentbuf);
+
+    if (buf) {
+	if (buf->frameQ) {
+	    struct frameset *fs;
+	    long linenumber = buf->frameQ->linenumber;
+	    long top = buf->frameQ->top_linenumber;
+	    int pos = buf->frameQ->pos;
+	    int currentColumn = buf->frameQ->currentColumn;
+	    AnchorList *formitem = buf->frameQ->formitem;
+
+	    fs = popFrameTree(&(buf->frameQ));
+	    deleteFrameSet(buf->frameset);
+	    buf->frameset = fs;
+
+	    if (buf == Currentbuf) {
+		rFrame();
+		Currentbuf->topLine = lineSkip(Currentbuf,
+					       Currentbuf->firstLine, top - 1,
+					       FALSE);
+		gotoLine(Currentbuf, linenumber);
+		Currentbuf->pos = pos;
+		Currentbuf->currentColumn = currentColumn;
+		arrangeCursor(Currentbuf);
+		formResetBuffer(Currentbuf, formitem);
+	    }
+	}
+	else if (RenderFrame && buf == Currentbuf) {
+	    delBuffer(Currentbuf);
+	}
+    }
+    displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
 DEFUN(susp, INTERRUPT SUSPEND, "Stop loading document")
