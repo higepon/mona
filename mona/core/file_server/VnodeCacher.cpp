@@ -40,6 +40,18 @@ VnodeCacher::~VnodeCacher()
     delete directories_;
 }
 
+void VnodeCacher::enumCaches(Vnode* directory, std::vector<std::string>& caches)
+{
+    DirectoriesMap::iterator it = directories_->find(directory);
+    if (it == directories_->end()) {
+        return;
+    }
+    EntriesMap* entries = it->second;
+    for (EntriesMap::const_iterator eit = entries->begin(); eit != entries->end(); ++eit) {
+        caches.push_back(eit->first);
+    }
+}
+
 Vnode* VnodeCacher::lookup(Vnode* directory, const string& name)
 {
     if (directory->type != Vnode::DIRECTORY) return NULL;

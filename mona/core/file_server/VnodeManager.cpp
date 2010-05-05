@@ -65,7 +65,50 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
     }
-    if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) return MONA_FAILURE;
+    if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) {
+        return MONA_FAILURE;
+    }
+
+    // check mounted directories on caches.
+    typedef std::vector<std::string> strings;
+    strings caches;
+    cacher_->enumCaches(dir, caches);
+    if (!caches.empty()) {
+        std::map<std::string, bool> seen;
+        for (size_t i = sizeof(int); i < (*mem)->Size; i += sizeof(monapi_directoryinfo)) {
+            monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->Data[i]));
+            seen.insert(std::pair<std::string, bool>(p->name, true));
+        }
+
+        strings diff;
+        for (strings::const_iterator it = caches.begin(); it != caches.end(); ++it) {
+            if (seen.find(*it) == seen.end()) {
+                diff.push_back(*it);
+            }
+        }
+
+        if (!diff.empty()) {
+            monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+            int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
+            if (!monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE)) {
+                monapi_cmemoryinfo_delete(ret);
+                return MONA_FAILURE;
+            }
+            memcpy(ret->Data, (*mem)->Data, (*mem)->Size);
+            int entriesNum = *((int*)(*mem)->Data) + diff.size();
+            memcpy(ret->Data, &entriesNum, sizeof(int));
+            for (size_t i = 0; i < diff.size(); i++) {
+                monapi_directoryinfo di;
+                di.size = 0;
+                strcpy(di.name, diff[i].c_str());
+                di.attr = ATTRIBUTE_DIRECTORY;
+                memcpy(&(ret->Data[(*mem)->Size + i * sizeof(monapi_directoryinfo)]), &di, sizeof(monapi_directoryinfo));
+            }
+            monapi_cmemoryinfo_dispose(*mem);
+            monapi_cmemoryinfo_delete(*mem);
+            *mem = ret;
+        }
+    }
     return MONA_SUCCESS;
 }
 
@@ -233,9 +276,9 @@ int VnodeManager::seek(uint32_t fileID, uint32_t offset, uint32_t origin)
     switch (origin)
     {
         case SEEK_SET: fileInfo->context.offset = offset; break;
-	case SEEK_CUR: fileInfo->context.offset +=offset; break;
-	case SEEK_END: fileInfo->context.offset = st.size-offset; break;
-	default: break;
+    case SEEK_CUR: fileInfo->context.offset +=offset; break;
+    case SEEK_END: fileInfo->context.offset = st.size-offset; break;
+    default: break;
     }
 //    fileInfo->context.offset = offset;
     fileInfo->context.origin = origin;
@@ -254,7 +297,10 @@ void VnodeManager::split(string str, char ch, vector<string>& v)
     uint32_t next = 0;
     while ((index = str.find_first_of(ch, next)) != string::npos)
     {
-        v.push_back(string(str.begin() + next, str.begin() + index));
+        string t = string(str.begin() + next, str.begin() + index);
+        if (!t.empty()) {
+            v.push_back(t);
+        }
         next = index + 1;
     }
     v.push_back(string(str.begin() + next, str.end()));

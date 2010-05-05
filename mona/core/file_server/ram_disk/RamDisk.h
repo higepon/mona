@@ -331,7 +331,7 @@ namespace RamDisk {
                   return MONA_FAILURE;
 
                 
-                memcpy(name, (*currentIt_).first.c_str(), (*currentIt_).first.size());
+                strcpy(name, (*currentIt_).first.c_str());
                 *size = (*currentIt_).second->size;
                 
                 currentIt_++;

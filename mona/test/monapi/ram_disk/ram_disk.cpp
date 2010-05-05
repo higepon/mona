@@ -148,7 +148,7 @@ static void testWriteFile_Content()
 {
     const char* data = "test data";
     int len = strlen(data)+1;
-    
+
     const char* path = "/MEM/TESTFILE";
     writeContentToPath(path, data);
 
@@ -179,7 +179,7 @@ static void testWriteTwice()
 {
     const char* expect = "second";
     int expect_len = strlen(expect)+1;
-    
+
     const char* path = "/MEM/TESTFILE";
     writeContentToPath(path, "first");
     writeContentToPath(path, expect, false);
@@ -341,8 +341,26 @@ static void testReadDirectory_TwoFile()
     monapi_file_delete("/MEM/TEST1.TXT");
 }
 
+static void testReadDirectory_Root()
+{
+    monapi_cmemoryinfo* ci = monapi_file_read_directory("/");
+    EXPECT_TRUE(ci != NULL);
 
+    int size = *(int*)ci->Data;
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ci->Data[sizeof(int)];
 
+    bool ramdiskFound = false;
+    for (int i = 0; i < size; i++) {
+        if (CString(p[i].name) == "MEM") {
+            ramdiskFound = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(ramdiskFound);
+
+    monapi_cmemoryinfo_dispose(ci);
+    monapi_cmemoryinfo_delete(ci);
+}
 
 int main(int argc, char *argv[])
 {
@@ -360,6 +378,7 @@ int main(int argc, char *argv[])
     testReadDirectory_Empty();
     testReadDirectory_OneFile();
     testReadDirectory_TwoFile();
+    testReadDirectory_Root();
 
     TEST_RESULTS(ram_disk);
     return 0;
