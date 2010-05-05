@@ -9,7 +9,7 @@
 int ramdisk_debug_times = 0;
 
 namespace RamDisk {
-    
+
 
     typedef std::vector<char*> Chunks;
     struct FileInfo;
@@ -18,7 +18,7 @@ namespace RamDisk {
       {
           CHUNK_SIZE = 4096,
       };
-          
+
 
     struct FileInfo {
         std::string name;
@@ -38,7 +38,7 @@ namespace RamDisk {
         inline Chunks::iterator findChunk(int offset)
           {
               int chunkNum = offset/CHUNK_SIZE;
-              
+
               Chunks::iterator it = chunks.begin();
               for(int i = 0; i < chunkNum; i++)
                 {
@@ -89,10 +89,10 @@ namespace RamDisk {
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
                   ASSERT(copySize > 0);
-                  
+
                   char *ptr = *it;
                   memcpy(ptr + chunkOffset, src, copySize);
-                  
+
                   src += copySize;
                   chunkOffset = 0; // only none-zero at first chunk.
                   rest -= copySize;
@@ -106,15 +106,15 @@ namespace RamDisk {
           {
               int rest = len;
               int chunkOffset = offset%CHUNK_SIZE;
-              
+
               Chunks::iterator it = findChunk(offset);
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
                   ASSERT(copySize > 0);
-                  
+
                   char *ptr = *it;
                   memcpy(dest, ptr+chunkOffset, copySize);
-                  
+
                   dest += copySize;
                   chunkOffset = 0; // only none-zero at first chunk.
                   rest -= copySize;
@@ -122,8 +122,8 @@ namespace RamDisk {
                   ASSERT(it != chunks.end());
               }
           }
-        
-        
+
+
     };
 
     // do not support subfolder.
@@ -146,7 +146,7 @@ namespace RamDisk {
               ASSERT(files_.size() == 0);
           }
 
-          
+
         public:
           virtual int initialize(){ return MONA_SUCCESS; }
           virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
@@ -176,7 +176,7 @@ namespace RamDisk {
 
                 return MONA_SUCCESS;
             }
-          
+
           virtual int open(Vnode* file, int mode)
             {
                 return MONA_SUCCESS;
@@ -207,7 +207,7 @@ namespace RamDisk {
                 uint32_t offset = context->offset;
                 uint32_t readSize = context->size;
                 uint32_t rest = f->size - offset;
-                
+
                 if (rest < readSize)
                   {
                       readSize = rest;
@@ -216,7 +216,7 @@ namespace RamDisk {
                 context->memory = monapi_cmemoryinfo_new();
                 if(readSize == 0)
                   return MONA_SUCCESS;
-                
+
                 if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
                   {
                       monapi_cmemoryinfo_delete(context->memory);
@@ -225,17 +225,17 @@ namespace RamDisk {
                 f->readChunks(offset, readSize, context->memory->Data);
 
                 return MONA_SUCCESS;
-                
+
             }
 
 
-          
+
           virtual int write(Vnode* file, struct io::Context* context)
             {
                 if (file->type != Vnode::REGULAR) return MONA_FAILURE;
                 FileInfo* f = (FileInfo*)file->fnode;
                 monapi_cmemoryinfo* memory = context->memory;
-                
+
                 uint32_t offset = context->offset;
                 uint32_t writeSize = context->size;
                 f->writeChunks(offset, writeSize, memory->Data);
@@ -251,14 +251,14 @@ namespace RamDisk {
                 monapi_directoryinfo di;
                 currentIt_ = files_.begin();
 
-                
+
                 while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
                   {
                       files.push_back(new monapi_directoryinfo(di));
                   }
 
                 monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-                
+
                 int size = files.size();
                 if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
                   {
@@ -269,10 +269,10 @@ namespace RamDisk {
                         }
                       return MONA_ERROR_MEMORY_NOT_ENOUGH;
                   }
-                
+
                 memcpy(ret->Data, &size, sizeof(int));
                 monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
-                
+
                 for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
                   {
                       memcpy(p, (*it), sizeof(monapi_directoryinfo));
@@ -330,20 +330,19 @@ namespace RamDisk {
                 if(currentIt_ == files_.end())
                   return MONA_FAILURE;
 
-                
                 strcpy(name, (*currentIt_).first.c_str());
                 *size = (*currentIt_).second->size;
-                
+
                 currentIt_++;
                 return MONA_SUCCESS;
             }
-          
+
           VnodeManager* vmanager_;
           Vnode* root_;
-          FileMap files_; 
+          FileMap files_;
           FileMap::iterator currentIt_;
       };
-    
+
 
 }
 

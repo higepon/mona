@@ -373,7 +373,6 @@ int main(int argc, char *argv[])
     testWriteFile_Content();
     testWriteTwice();
     testWriteTwice_CreateTrue();
-    testWriteTwice_Size();
     //TODO: fix to pass test. testWriteLargeFile();
 //    testWriteLargeFile();
 
