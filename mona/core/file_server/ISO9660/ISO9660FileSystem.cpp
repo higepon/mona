@@ -111,7 +111,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     }
 
     context->memory = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
     {

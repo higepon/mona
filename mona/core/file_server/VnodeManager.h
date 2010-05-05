@@ -18,6 +18,7 @@ public:
     int open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID);
     int read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem);
     int write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem);
+    int delete_file(const std::string& name);
     int seek(uint32_t fileID, uint32_t offset, uint32_t origin);
     int stat(uint32_t fileID, Stat* st);
     int close(uint32_t fileID);

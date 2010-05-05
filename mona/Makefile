@@ -52,6 +52,7 @@ tests: tools cores
 	cd test/monapi/message && $(MAKE) && $(MAKE) install
 	cd test/monapi/socket && $(MAKE) && $(MAKE) install
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
+	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)

@@ -1,5 +1,6 @@
 
 #include "FileServer.h"
+#include "ram_disk/RamDisk.h"
 
 using namespace MonAPI;
 using namespace std;
@@ -50,6 +51,17 @@ int FileServer::initializeFileSystems()
 
 int FileServer::initializeMountedFileSystems()
 {
+    // RamDiskFileSystem
+    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(vmanager_);
+    if (rdf->initialize() != MONA_SUCCESS)
+    {
+        _printf("Warning RamDisk file system initialize failed \n");
+        delete rdf;
+        return MONA_SUCCESS;
+    }
+    vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
+    mountedFSs_.push_back(rdf);
+
     // ProcessFileSystem
 #if 0
     FileSystem* pfs = new ProcessFileSystem(vmanager_);
@@ -164,6 +176,7 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
     return mi;
 }
 
+
 void FileServer::messageLoop()
 {
     for (MessageInfo msg;;)
@@ -263,6 +276,12 @@ void FileServer::messageLoop()
                 monapi_cmemoryinfo_delete(memory);
                 Message::reply(&msg, handle, size);
             }
+            break;
+        }
+        case MSG_FILE_DELETE:
+        {
+            int ret = vmanager_->delete_file(upperCase(msg.str).c_str());
+            Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_DECOMPRESS_ST5:
