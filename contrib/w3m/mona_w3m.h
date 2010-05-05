@@ -178,7 +178,7 @@ public:
     wtf_init(DocumentCharset, DisplayCharset);
 
     setupscreen();
-    // sync_with_option();
+    sync_with_option();
 
     fmInit2();
 
