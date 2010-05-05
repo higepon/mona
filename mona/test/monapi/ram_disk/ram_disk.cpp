@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
     testWriteTwice();
     testWriteTwice_CreateTrue();
     //TODO: fix to pass test. testWriteLargeFile();
-//    testWriteLargeFile();
+    testWriteLargeFile();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();
