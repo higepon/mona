@@ -205,6 +205,7 @@ extern "C" void breakpointHandler()
 //    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     // Enable remote debug handlers, on first breakpoint exception.
     if (!g_isRemoteDebug) {
+        g_console->printf("INFO: GDB remote debug is enabled\n");
         set_debug_traps();
         g_isRemoteDebug = true;
     }
@@ -328,7 +329,8 @@ extern "C" void pageFaultHandler(uintptr_t address, uintptr_t error)
 {
 //     g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (!g_page_manager->pageFaultHandler(address, error, g_currentThread->archinfo->eip)) {
-        panic("unhandled:fault0E - page fault");
+        bool isProcessChange = g_scheduler->Schedule2();
+        ThreadOperation::switchThread(isProcessChange, 1);
     }
 }
 

@@ -354,7 +354,7 @@ public:
 
             default:
                 /* ignore */
-                _printf("mouse:header=%x", receive.header);
+//                _printf("mouse:header=%x", receive.header);
                 break;
             }
         }

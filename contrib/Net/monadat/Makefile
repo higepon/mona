@@ -2,7 +2,8 @@ TARGET  = MONADAT
 SOURCES = \
 	./Form1.cpp \
 	./CodeConv.cpp \
-	./SheetTab.cpp
+	./SheetTab.cpp \
+	./http.cpp
 INSTDIR = $(BINDIR)/APPS/MONAFRMS/$(TARGET).APP
 INSTFILES  = dat/MONALOGO.BM5 dat/02.DT5 dat/03.DT5 dat/04.DT5 dat/05.DT5 dat/06.DT5 dat/07.DT5 dat/08.DT5 dat/09.DT5 dat/10.DT5 dat/11.DT5
 CLEANFILES = $(INSTFILES)

@@ -13,6 +13,7 @@
 
 #include <sys/List.h>
 #include <sys/HList.h>
+#include <servers/process.h>
 #include "global.h"
 #include "Process.h"
 #include "PageManager.h"
@@ -286,14 +287,10 @@ intptr_t ThreadOperation::kill()
 {
     Thread* thread   = g_currentThread->thread;
     Process* process = thread->tinfo->process;
-
     g_scheduler->Kill(thread);
 
-#if 0
-
-    /* if do this, FileOutputStream hang up@hello.cpp*/
+    /* if did this, FileOutputStream hanged up@hello.cpp */
     sendKilledMessage();
-#endif
 
     (process->threadNum)--;
 
@@ -351,8 +348,9 @@ void ThreadOperation::sendKilledMessage()
     list = g_scheduler->GetAllThreadID(&threadNum);
 
     /* set message */
-    msg.header = MSG_THREAD_KILLED;
+    msg.header = MSG_PROCESS_TERMINATED;
     msg.arg1   = g_currentThread->thread->id;
+    msg.arg2   = -1;
 
     if (list == NULL) return;
 

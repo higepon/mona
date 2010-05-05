@@ -769,7 +769,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         }
 
         ThreadOperation::kill();
-        return true;
+        return false;
 }
 
 /*! set page attribute
