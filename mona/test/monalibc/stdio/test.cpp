@@ -10,6 +10,7 @@ int test2();
 int test3();
 int test4();
 int test5();
+void testFWriteSmall(); 
 
 int main(int argc, char* argv[])
 {
@@ -22,6 +23,7 @@ int main(int argc, char* argv[])
         test3();
         test4();
         test5();
+        testFWriteSmall();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -83,4 +85,25 @@ int test5()
 {
     EXPECT_EQ(fileno(stdout), fileno(stdout));
     EXPECT_EQ(fileno(stderr), fileno(stderr));
+}
+
+static int fileSize(const char* path)
+{
+    uint32_t id = monapi_file_open(path, false);
+    int actual = monapi_file_get_file_size(id);
+    monapi_file_close(id);
+    return actual;
+}
+
+void testFWriteSmall() 
+{
+    const char* path;
+    FILE* fp = fopen("/MEM/TEST.DAT", "w");
+    EXPECT_TRUE(fp != NULL);
+    const char buf[] = "test";
+    fwrite(buf, sizeof(char), sizeof(buf), fp);
+    fclose(fp);
+
+    EXPECT_EQ(sizeof(buf), fileSize("/MEM/TEST.DAT"));
+    monapi_file_delete("/MEM/TEST.DAT");
 }

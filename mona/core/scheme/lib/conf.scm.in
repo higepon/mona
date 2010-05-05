@@ -335,6 +335,8 @@
 (call-process "/APPS/TSOCK.EX5")
 (call-process "/APPS/TDIE.EX5")
 (call-process "/APPS/HELLO.EX5")
+(call-process "/APPS/TRAMDISK.EX5")
+;(call-process "/APPS/HELLO.EX5")
 ;(start-process "/APPS/NET.EX5")
 
 (print "all tests done") ;; this is required by check_tests.scm
