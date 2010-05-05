@@ -18,6 +18,7 @@ public:
     virtual ~VnodeCacher();
 
 public:
+    void enumCaches(Vnode* directory, std::vector<std::string>& caches);
     Vnode* lookup(Vnode* directory, const std::string& name);
     void add(Vnode* directory, const std::string& name, Vnode* entry);
     void remove(Vnode* directory, const std::string& name);
