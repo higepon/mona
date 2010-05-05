@@ -237,13 +237,28 @@ static void copyFile(const char *from, const char* to)
 // use stdio because I already have one.
 static void expectFileEqual(const char* org, const char* to)
 {
+    /* check with monapi_file_read_all */
+    monapi_cmemoryinfo* m1 = monapi_file_read_all(org);
+    monapi_cmemoryinfo* m2 = monapi_file_read_all(to);
+
+    ASSERT_TRUE(m1 != NULL);
+    ASSERT_TRUE(m2 != NULL);
+    ASSERT_EQ(m1->Size, m2->Size);
+    EXPECT_TRUE(0 == memcmp(m1->Data, m2->Data, m1->Size));
+
+    monapi_cmemoryinfo_dispose(m1);
+    monapi_cmemoryinfo_delete(m1);
+    monapi_cmemoryinfo_dispose(m2);
+    monapi_cmemoryinfo_delete(m2);
+
+    /* check with fread */
     char buf[256];
     char buf2[256];
     FILE* fp_org = fopen(org, "r");
     FILE* fp = fopen(to, "r");
     if(fp == NULL || fp_org == NULL)
       {
-          fprintf(stderr, "fp=%x, fp_org=%x\n", fp, fp_org);
+          _printf("fp=%x, fp_org=%x\n", fp, fp_org);
       }
 
 // for analyze    int debpos = 0;
@@ -252,7 +267,19 @@ static void expectFileEqual(const char* org, const char* to)
     {
         int readSize2 = fread(buf2, 1, readSize, fp);
         EXPECT_EQ(readSize, readSize2);
-        EXPECT_TRUE(0 == memcmp(buf, buf2, readSize2));
+        if (0 != memcmp(buf, buf2, readSize2)) {
+            logprintf("buf=\n");
+            for (int i = 0; i < readSize2; i++) {
+                logprintf("[%x]", buf[i]);
+            }
+            logprintf("\n");
+            logprintf("buf2=\n");
+            for (int i = 0; i < readSize2; i++) {
+                logprintf("[%x]", buf2[i]);
+            }
+
+        }
+        ASSERT_TRUE(0 == memcmp(buf, buf2, readSize2));
 /*
         if(0 != memcmp(buf, buf2, readSize2))
         {
