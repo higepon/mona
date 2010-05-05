@@ -230,6 +230,7 @@ static void testWriteTwice_Size()
 static void copyFile(const char *from, const char* to)
 {
     monapi_cmemoryinfo *cmi = monapi_file_read_all(from);
+    ASSERT_TRUE(cmi != NULL);
     writeContentToPathWithSize(to, (char*)cmi->Data, cmi->Size);
 }
 
@@ -374,6 +375,7 @@ int main(int argc, char *argv[])
     testWriteTwice_CreateTrue();
     testWriteTwice_Size();
     //TODO: fix to pass test. testWriteLargeFile();
+//    testWriteLargeFile();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();
