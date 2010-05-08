@@ -57,17 +57,7 @@ uint8_t* MemoryMap::map(uint32_t id)
 {
     /* to be first fit */
     MEMORY_MAP_TRACE("try to map() id = %x", id);
-    uint32_t size = syscall_memory_map_get_size(id);
-
-#if 0
-    uint32_t tid = syscall_get_tid();
-    if (78 == tid) {
-        syscall_set_watch_point(&nextAddress, DEBUG_BREAK_ONLY_ON_READ_WRITE);
-        nextAddress += 2;
-        nextAddress -= 1;
-        nextAddress -= 1;
-    }
-#endif
+    uintptr_t size = syscall_memory_map_get_size(id);
 
     if (size == 0)
     {

@@ -631,16 +631,14 @@ void syscall_entrance()
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
         SharedMemoryObject* object = SharedMemoryObject::find(id);
-        if (object == NULL)
-        {
-            logprintf("error get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
-            break;
+        if (object == NULL) {
+            logprintf("error map_get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
+            setReturnValue(info, 0);
+        } else {
+            setReturnValue(info, object->getSize());
         }
-
-        setReturnValue(info, object->getSize());
         break;
     }
-
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
     {

@@ -85,7 +85,7 @@ extern int syscall_kill_thread(uint32_t tid);
 extern int syscall_get_physical_address(uint32_t linearAddress);
 
 extern uint32_t syscall_memory_map_create(uint32_t size);
-extern uint32_t syscall_memory_map_get_size(uint32_t id);
+extern uintptr_t syscall_memory_map_get_size(uintptr_t id);
 extern int syscall_memory_map_map(uint32_t id, uint32_t address);
 extern int syscall_memory_map_unmap(uint32_t id);
 
