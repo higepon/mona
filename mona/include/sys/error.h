@@ -94,13 +94,19 @@ enum
        Indicates a bad semaphore_id is spcified.
     */
     M_BAD_SEMAPHORE_ID       ,
-
     /*
        constant: M_NAME_NOT_FOUND
 
        There's no match for the specified name.
     */
     M_NAME_NOT_FOUND,
+    /*
+       constant: M_BAD_MEMORY_MAP_ID
+
+       Indicates a bad memory_map_id is spcified.
+    */
+    M_BAD_MEMORY_MAP_ID       ,
+
 
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,

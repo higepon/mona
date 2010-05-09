@@ -69,3 +69,12 @@ void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
     }
     self->Handle = 0;
 }
+
+intptr_t monapi_cmemoryinfo_dispose_no_notify(monapi_cmemoryinfo* self)
+{
+    if (monapi_cmemorymap_unmap(self->Handle) != 1) {
+        return M_BAD_MEMORY_MAP_ID;
+    }
+    self->Handle = 0;
+    return M_OK;
+}

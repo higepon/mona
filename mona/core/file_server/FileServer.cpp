@@ -235,15 +235,23 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_WRITE:
         {
+            logprintf("FileServer: MSG_FILE_WRITE uid=%x", msg.uid);
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
             memory = monapi_cmemoryinfo_new();
             memory->Handle = msg.arg3;
             memory->Owner  = msg.from;
             memory->Size   = msg.arg2;
+            logprintf("try to map file_write %d\n", __LINE__);
             monapi_cmemoryinfo_map(memory);
+            logprintf("memory=%x\n", memory);
+            logprintf("fileID=%x Handle=%x Owner=%x Size=%d, Data=%x\n", fileID, memory->Handle, memory->Owner, memory->Size, memory->Data);
             int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
-//            monapi_cmemoryinfo_dispose(memory);
+
+            // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
+            if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
+                logprintf("[Warning] FileServer: MSG_FILE_WRITE. monapi_cmemoryinfo_dispose_no_notify error memory->Handle=%x\n", memory->Handle);
+            }
             monapi_cmemoryinfo_delete(memory);
             Message::reply(&msg, ret);
             break;
