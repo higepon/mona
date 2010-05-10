@@ -4,55 +4,30 @@
 /*----------------------------------------------------------------------
     Messenger
 ----------------------------------------------------------------------*/
-Messenger::Messenger(int size) : size_(size), allocated_(0) {
-
-    info_ = new MessageInfo[size];
+Messenger::Messenger()
+{
 }
 
-Messenger::~Messenger() {
+Messenger::~Messenger()
+{
 }
 
-MessageInfo* Messenger::allocateMessageInfo() {
 
-    MessageInfo* result = &(info_[allocated_]);
-    allocated_++;
-    if (allocated_ > size_ - 1) {
-
-#if 0  // DEBUG for message
-        g_console->printf("***** msg buf index set to zero again ****");
-#endif
-        allocated_ = 0;
-    }
-    return result;
-}
-
-int Messenger::send(uint32_t id, MessageInfo* message)
+intptr_t Messenger::send(uint32_t id, MessageInfo* message)
 {
     Thread* thread;
-    MessageInfo* info;
+    ASSERT(message != NULL);
 
-    if (message == (MessageInfo*)NULL)
-    {
+    // todo this shoulbe outside
+    if ((thread = g_scheduler->Find(id)) == (Thread*)NULL) {
         return -1;
     }
 
-    if ((thread = g_scheduler->Find(id)) == (Thread*)NULL)
-    {
-        return -1;
+    if (thread->messageList->size() == MAX_MESSAGES) {
+        return M_MESSAGE_OVERFLOW;
     }
 
-    info = allocateMessageInfo();
-
-#if 0
-    logprintf("send:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
-              , id
-              , message->header
-              , message->arg1
-              , message->arg2
-              , message->arg3
-              , message->from
-        );
-#endif
+    MessageInfo* info = new MessageInfo;
 
     *info = *message;
     info->from = g_currentThread->thread->id;
@@ -62,44 +37,27 @@ int Messenger::send(uint32_t id, MessageInfo* message)
 
     g_scheduler->EventComes(thread, MEvent::MESSAGE);
 
-    return 0;
+    return M_OK;
 }
 
 int Messenger::receive(Thread* thread, MessageInfo* message)
 {
     MessageInfo* from = thread->messageList->removeAt(0);
-
-    if (from == (MessageInfo*)NULL)
-    {
+    if (from == NULL) {
         return -1;
     }
 
-#if 0
-    logprintf("recv:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
-              , thread->id
-              , message->header
-              , message->arg1
-              , message->arg2
-              , message->arg3
-              , message->from
-        );
-#endif
-
     thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
-//     if (message->arg2 > 0x9050)
-//     {
-//         logprintf("message->arg2 = %x\n", message->arg2);
-//     }
-    return 0;
+    delete from;
+    return M_OK;
 }
 
 int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
 {
     List<MessageInfo*>* list = thread->messageList;
 
-    if (index > list->size())
-    {
+    if (index > list->size()) {
         return 1;
     }
 
@@ -112,5 +70,8 @@ int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
 
     thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
-    return 0;
+    if (flags & PEEK_REMOVE) {
+        delete from;
+    }
+    return M_OK;
 }

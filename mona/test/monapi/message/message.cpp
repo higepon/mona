@@ -76,8 +76,8 @@ void testMessageOverflow()
 {
     uintptr_t tid = syscall_mthread_create_with_arg(receiverThread, NULL);
     int i;
-    for (i = 0; i < MAX_MESSAGES; i++) {
-        if (i == MAX_MESSAGES - 1) {
+    for (i = 0; i < MAX_MESSAGES + 1; i++) {
+        if (i == MAX_MESSAGES) {
             EXPECT_EQ(M_MESSAGE_OVERFLOW, Message::send(tid, MSG_SEND_TEST));
         } else {
             EXPECT_EQ(M_OK, Message::send(tid, MSG_SEND_TEST));
