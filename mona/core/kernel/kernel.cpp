@@ -228,7 +228,7 @@ void startKernel()
     SharedMemoryObject::setup();
 
     /* messenger */
-    g_messenger = new Messenger(512);
+    g_messenger = new Messenger();
 
     /* IDManager */
     g_id = new IDManager();

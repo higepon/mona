@@ -83,7 +83,7 @@ public:
     uint32_t LookupMainThread(Process* process);
     uint32_t Lookup(const char* name);
     PsInfo* ReadDump();
-    uint32_t* GetAllThreadID(uint32_t* threadNum);
+    Thread** GetAllThread(uint32_t* threadNum);
 
 protected:
     void WakeupTimer();
