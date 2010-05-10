@@ -13,15 +13,9 @@ Messenger::~Messenger()
 }
 
 
-intptr_t Messenger::send(uint32_t id, MessageInfo* message)
+intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 {
-    Thread* thread;
     ASSERT(message != NULL);
-
-    // todo this shoulbe outside
-    if ((thread = g_scheduler->Find(id)) == (Thread*)NULL) {
-        return -1;
-    }
 
     if (thread->messageList->size() == MAX_MESSAGES) {
         return M_MESSAGE_OVERFLOW;
@@ -34,8 +28,6 @@ intptr_t Messenger::send(uint32_t id, MessageInfo* message)
 
     thread->flags |= MEvent::MESSAGE;
     thread->messageList->add(info);
-
-    g_scheduler->EventComes(thread, MEvent::MESSAGE);
 
     return M_OK;
 }

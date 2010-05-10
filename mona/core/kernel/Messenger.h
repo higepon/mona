@@ -14,7 +14,7 @@ class Messenger {
     virtual ~Messenger();
 
   public:
-    intptr_t send(uint32_t tid, MessageInfo* message);
+    intptr_t send(Thread* thread, MessageInfo* message);
     int receive(Thread* thread, MessageInfo* message);
     int peek(Thread* thread, MessageInfo* message, int index, int flags);
 };

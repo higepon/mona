@@ -90,14 +90,14 @@ void SendInterrupt(int irq)
     msg.header = MSG_INTERRUPTED;
     msg.arg1   = irq;
 
-    if (g_messenger->send(g_irqInfo[irq].thread->thread->id, &msg))
-    {
-        g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
+    intptr_t ret = g_messenger->send(g_irqInfo[irq].thread->thread, &msg);
+    if (ret == M_OK) {
+        g_scheduler->EventComes(g_irqInfo[irq].thread->thread, MEvent::MESSAGE);
+    } else {
+        g_console->printf("Send failed reason %d %s:%d\n", ret, __FILE__, __LINE__);
         g_irqInfo[irq].hasReceiver = false;
     }
-
     g_scheduler->SwitchToNext();
-
     /* not reached */
 }
 
