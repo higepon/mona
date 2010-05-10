@@ -13,6 +13,21 @@ VnodeManager::~VnodeManager()
     delete cacher_;
 }
 
+int VnodeManager::delete_file(const std::string& name)
+{
+    // now fullpath only. fix me
+    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+
+    // remove first '/'. fix me
+    string filename = name.substr(1, name.size() - 1);
+    Vnode* file;
+    if (lookup(root_, filename, &file) != MONA_SUCCESS)
+    {
+        return MONA_ERROR_ENTRY_NOT_FOUND;
+    }
+    return file->fs->delete_file(file);
+}
+
 int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, int type)
 {
     vector<string> directories;

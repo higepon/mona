@@ -162,7 +162,7 @@ void test_fwrite_manytimes()
     char actual[256];
     fp = fopen(path, "r");
     EXPECT_TRUE(fp != NULL);
-    int size = fread(actual, 1, 256, fp);
+    uint32_t size = fread(actual, 1, 256, fp);
     EXPECT_EQ(size, sizeof(expected)-1);
 
     int i;
