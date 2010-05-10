@@ -108,63 +108,63 @@ c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o) (__head_BAYGUI_DLL)
 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o) (_BAYGUI_DLL_iname)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
                               (__imp__monapi_memory_initialized)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
-                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_monapi_initialize_memory)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
-                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_setConstructorList)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_user_start_c_impl)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_setConstructorList)
 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (invokeFuncList(void (**)(), char const*, int))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_monapi_initialize_memory)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_exit)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
                               bplayer.o (___main)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
                               bplayer.o (__alloca)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
                               bplayer.o (MonAPI::Thread::start())
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
                               bplayer.o (MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*)))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
                               bplayer.o (MonAPI::Thread::stop())
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
                               bplayer.o (_sleep)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
                               bplayer.o (MonAPI::audio::Beep::rest(unsigned int))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
                               bplayer.o (MonAPI::audio::Beep::play(char const*))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
                               bplayer.o (MonAPI::audio::Beep::title(char const*))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
                               bplayer.o (_monapi_file_read_all)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
                               bplayer.o (_syscall_get_io)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
                               bplayer.o (_monapi_cmemoryinfo_delete)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
                               bplayer.o (_monapi_cmemoryinfo_dispose)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
                               bplayer.o (_monapi_file_read_directory)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
                               bplayer.o (MonAPI::audio::Beep::~Beep())
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
                               bplayer.o (MonAPI::audio::Beep::Beep())
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
                               bplayer.o (_printf)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
                               bplayer.o (_strlen)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
                               bplayer.o (_memmove)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
                               bplayer.o (operator delete(void*))
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
                               bplayer.o (operator new(unsigned int))
 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
-                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o) (__head_MONAPI_DLL)
-c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000547.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o) (__head_MONAPI_DLL)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
                               c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o) (_MONAPI_DLL_iname)
 
 Discarded input sections
@@ -210,285 +210,285 @@ LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
 .text           0xa0001000     0x3410
  *(.init)
  *(.text)
- .text          0xa0001000       0x80 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+ .text          0xa0001000       0x90 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
                 0xa0001009                __fu0__monapi_memory_initialized
                 0xa0001000                _user_start
- .text          0xa0001080      0xbf0 bplayer.o
-                0xa0001650                _main
- .text          0xa0001c70      0x500 PlayFrame.o
-                0xa0001dd0                baygui::PlayFrame::~PlayFrame()
-                0xa0001d20                baygui::PlayFrame::PlayFrame(char const*)
-                0xa0001c70                baygui::PlayFrame::PlayFrame(char const*)
-                0xa0001e50                baygui::PlayFrame::~PlayFrame()
-                0xa0001e10                baygui::PlayFrame::~PlayFrame()
-                0xa0001ea0                baygui::PlayFrame::repaint()
- .text          0xa0002170        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
-                0xa0002170                baygui::Component::setLocation(int, int)
- .text          0xa0002178        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
-                0xa0002178                baygui::Component::setVisible(bool)
- .text          0xa0002180        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
-                0xa0002180                baygui::Component::update(int, int, int, int)
- .text          0xa0002188        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
-                0xa0002188                baygui::Component::update()
- .text          0xa0002190        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
-                0xa0002190                baygui::Component::dispatchEvent(baygui::Event*)
- .text          0xa0002198        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
-                0xa0002198                baygui::Component::removeNotify()
- .text          0xa00021a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
-                0xa00021a0                baygui::Component::addNotify()
- .text          0xa00021a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
-                0xa00021a8                baygui::Window::setTimer(int)
- .text          0xa00021b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
-                0xa00021b0                baygui::Container::remove(baygui::Component*)
- .text          0xa00021b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
-                0xa00021b8                baygui::Container::getComponentAt(int, int)
- .text          0xa00021c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
-                0xa00021c0                baygui::Container::getComponent()
- .text          0xa00021c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
-                0xa00021c8                baygui::Component::setFontStyle(int)
- .text          0xa00021d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
-                0xa00021d0                baygui::Component::setParent(baygui::Container*)
- .text          0xa00021d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
-                0xa00021d8                baygui::Window::setLocation(int, int)
- .text          0xa00021e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
-                0xa00021e0                baygui::Window::setVisible(bool)
- .text          0xa00021e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
-                0xa00021e8                baygui::Component::setFocused(bool)
- .text          0xa00021f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
-                0xa00021f0                baygui::Component::setEnabled(bool)
- .text          0xa00021f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
-                0xa00021f8                baygui::Component::getMainWindow()
- .text          0xa0002200        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
-                0xa0002200                baygui::Window::getBuffer()
- .text          0xa0002208        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
-                0xa0002208                baygui::Window::getGraphics()
- .text          0xa0002210        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
-                0xa0002210                baygui::Window::update(int, int, int, int)
- .text          0xa0002218        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
-                0xa0002218                baygui::Window::update()
- .text          0xa0002220        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
-                0xa0002220                baygui::Window::dispatchEvent(baygui::Event*)
- .text          0xa0002228        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
-                0xa0002228                baygui::Window::removeNotify()
- .text          0xa0002230        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
-                0xa0002230                baygui::Window::addNotify()
- .text          0xa0002238        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
-                0xa0002238                baygui::Object::equals(baygui::Object*)
- .text          0xa0002240        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
-                0xa0002240                baygui::Window::run()
- .text          0xa0002248        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
-                0xa0002248                baygui::Container::add(baygui::Component*)
- .text          0xa0002250        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
-                0xa0002250                baygui::Component::setForeground(unsigned int)
- .text          0xa0002258        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
-                0xa0002258                baygui::Label::Label(baygui::String const&)
- .text          0xa0002260        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
-                0xa0002260                baygui::Component::setBackground(unsigned int)
- .text          0xa0002268        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
-                0xa0002268                baygui::Window::stop()
- .text          0xa0002270        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
-                0xa0002270                baygui::Graphics::drawRect(int, int, int, int)
- .text          0xa0002278        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
-                0xa0002278                baygui::Graphics::setColor(unsigned int)
- .text          0xa0002280        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
-                0xa0002280                baygui::Component::repaint()
- .text          0xa0002288        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
-                0xa0002288                baygui::Graphics::drawImage(baygui::Image*, int, int)
- .text          0xa0002290        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
-                0xa0002290                baygui::Graphics::fillRect(int, int, int, int)
- .text          0xa0002298        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
-                0xa0002298                baygui::Component::setBounds(int, int, int, int)
- .text          0xa00022a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
-                0xa00022a0                baygui::Image::Image(baygui::String const&)
- .text          0xa00022a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
-                0xa00022a8                baygui::String::~String()
- .text          0xa00022b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
-                0xa00022b0                baygui::String::String(char const*, int)
- .text          0xa00022b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
-                0xa00022b8                baygui::Component::~Component()
- .text          0xa00022c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
-                0xa00022c0                baygui::Component::Component()
- .text          0xa00022c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
-                0xa00022c8                baygui::Window::getInsets()
- .text          0xa00022d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
-                0xa00022d0                baygui::Component::paint(baygui::Graphics*)
- .text          0xa00022d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
-                0xa00022d8                baygui::Component::processEvent(baygui::Event*)
- .text          0xa00022e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
-                0xa00022e0                baygui::Container::repaint()
- .text          0xa00022e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
-                0xa00022e8                baygui::Graphics::drawLine(int, int, int, int)
- .text          0xa00022f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
-                0xa00022f0                baygui::Graphics::drawPixel(int, int, unsigned int)
- .text          0xa00022f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
-                0xa00022f8                baygui::Graphics::setColor(unsigned char, unsigned char, unsigned char)
- .text          0xa0002300        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
-                0xa0002300                baygui::Window::~Window()
- .text          0xa0002308        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
-                0xa0002308                baygui::Window::Window()
- .text          0xa0002310        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
- .text          0xa0002310        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
-                0xa0002310                _monapi_initialize_memory
- .text          0xa0002318        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
-                0xa0002318                _setConstructorList
- .text          0xa0002320        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
+ .text          0xa0001090      0xbf0 bplayer.o
+                0xa0001660                _main
+ .text          0xa0001c80      0x500 PlayFrame.o
+                0xa0001de0                baygui::PlayFrame::~PlayFrame()
+                0xa0001d30                baygui::PlayFrame::PlayFrame(char const*)
+                0xa0001c80                baygui::PlayFrame::PlayFrame(char const*)
+                0xa0001e60                baygui::PlayFrame::~PlayFrame()
+                0xa0001e20                baygui::PlayFrame::~PlayFrame()
+                0xa0001eb0                baygui::PlayFrame::repaint()
+ .text          0xa0002180        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+                0xa0002180                baygui::Component::setLocation(int, int)
+ .text          0xa0002188        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+                0xa0002188                baygui::Component::setVisible(bool)
+ .text          0xa0002190        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+                0xa0002190                baygui::Component::update(int, int, int, int)
+ .text          0xa0002198        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+                0xa0002198                baygui::Component::update()
+ .text          0xa00021a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+                0xa00021a0                baygui::Component::dispatchEvent(baygui::Event*)
+ .text          0xa00021a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+                0xa00021a8                baygui::Component::removeNotify()
+ .text          0xa00021b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+                0xa00021b0                baygui::Component::addNotify()
+ .text          0xa00021b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+                0xa00021b8                baygui::Window::setTimer(int)
+ .text          0xa00021c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+                0xa00021c0                baygui::Container::remove(baygui::Component*)
+ .text          0xa00021c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+                0xa00021c8                baygui::Container::getComponentAt(int, int)
+ .text          0xa00021d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+                0xa00021d0                baygui::Container::getComponent()
+ .text          0xa00021d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+                0xa00021d8                baygui::Component::setFontStyle(int)
+ .text          0xa00021e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+                0xa00021e0                baygui::Component::setParent(baygui::Container*)
+ .text          0xa00021e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+                0xa00021e8                baygui::Window::setLocation(int, int)
+ .text          0xa00021f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+                0xa00021f0                baygui::Window::setVisible(bool)
+ .text          0xa00021f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+                0xa00021f8                baygui::Component::setFocused(bool)
+ .text          0xa0002200        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+                0xa0002200                baygui::Component::setEnabled(bool)
+ .text          0xa0002208        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+                0xa0002208                baygui::Component::getMainWindow()
+ .text          0xa0002210        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+                0xa0002210                baygui::Window::getBuffer()
+ .text          0xa0002218        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+                0xa0002218                baygui::Window::getGraphics()
+ .text          0xa0002220        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+                0xa0002220                baygui::Window::update(int, int, int, int)
+ .text          0xa0002228        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+                0xa0002228                baygui::Window::update()
+ .text          0xa0002230        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+                0xa0002230                baygui::Window::dispatchEvent(baygui::Event*)
+ .text          0xa0002238        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+                0xa0002238                baygui::Window::removeNotify()
+ .text          0xa0002240        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+                0xa0002240                baygui::Window::addNotify()
+ .text          0xa0002248        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+                0xa0002248                baygui::Object::equals(baygui::Object*)
+ .text          0xa0002250        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+                0xa0002250                baygui::Window::run()
+ .text          0xa0002258        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+                0xa0002258                baygui::Container::add(baygui::Component*)
+ .text          0xa0002260        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+                0xa0002260                baygui::Component::setForeground(unsigned int)
+ .text          0xa0002268        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+                0xa0002268                baygui::Label::Label(baygui::String const&)
+ .text          0xa0002270        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+                0xa0002270                baygui::Component::setBackground(unsigned int)
+ .text          0xa0002278        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+                0xa0002278                baygui::Window::stop()
+ .text          0xa0002280        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+                0xa0002280                baygui::Graphics::drawRect(int, int, int, int)
+ .text          0xa0002288        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+                0xa0002288                baygui::Graphics::setColor(unsigned int)
+ .text          0xa0002290        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+                0xa0002290                baygui::Component::repaint()
+ .text          0xa0002298        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+                0xa0002298                baygui::Graphics::drawImage(baygui::Image*, int, int)
+ .text          0xa00022a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+                0xa00022a0                baygui::Graphics::fillRect(int, int, int, int)
+ .text          0xa00022a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+                0xa00022a8                baygui::Component::setBounds(int, int, int, int)
+ .text          0xa00022b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+                0xa00022b0                baygui::Image::Image(baygui::String const&)
+ .text          0xa00022b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+                0xa00022b8                baygui::String::~String()
+ .text          0xa00022c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+                0xa00022c0                baygui::String::String(char const*, int)
+ .text          0xa00022c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+                0xa00022c8                baygui::Component::~Component()
+ .text          0xa00022d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+                0xa00022d0                baygui::Component::Component()
+ .text          0xa00022d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+                0xa00022d8                baygui::Window::getInsets()
+ .text          0xa00022e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+                0xa00022e0                baygui::Component::paint(baygui::Graphics*)
+ .text          0xa00022e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+                0xa00022e8                baygui::Component::processEvent(baygui::Event*)
+ .text          0xa00022f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+                0xa00022f0                baygui::Container::repaint()
+ .text          0xa00022f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+                0xa00022f8                baygui::Graphics::drawLine(int, int, int, int)
+ .text          0xa0002300        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+                0xa0002300                baygui::Graphics::drawPixel(int, int, unsigned int)
+ .text          0xa0002308        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+                0xa0002308                baygui::Graphics::setColor(unsigned char, unsigned char, unsigned char)
+ .text          0xa0002310        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+                0xa0002310                baygui::Window::~Window()
+ .text          0xa0002318        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+                0xa0002318                baygui::Window::Window()
+ .text          0xa0002320        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .text          0xa0002320        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
                 0xa0002320                _user_start_c_impl
- .text          0xa0002328        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
-                0xa0002328                invokeFuncList(void (**)(), char const*, int)
- .text          0xa0002330        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
-                0xa0002330                _exit
- .text          0xa0002338        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
-                0xa0002338                ___main
- .text          0xa0002340        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
-                0xa0002340                __alloca
- .text          0xa0002348        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
-                0xa0002348                MonAPI::Thread::start()
- .text          0xa0002350        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
-                0xa0002350                MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*))
- .text          0xa0002358        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
-                0xa0002358                MonAPI::Thread::stop()
- .text          0xa0002360        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
-                0xa0002360                _sleep
- .text          0xa0002368        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
-                0xa0002368                MonAPI::audio::Beep::rest(unsigned int)
- .text          0xa0002370        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
-                0xa0002370                MonAPI::audio::Beep::play(char const*)
- .text          0xa0002378        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
-                0xa0002378                MonAPI::audio::Beep::title(char const*)
- .text          0xa0002380        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
-                0xa0002380                _monapi_file_read_all
- .text          0xa0002388        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
-                0xa0002388                _syscall_get_io
- .text          0xa0002390        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
-                0xa0002390                _monapi_cmemoryinfo_delete
- .text          0xa0002398        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
-                0xa0002398                _monapi_cmemoryinfo_dispose
- .text          0xa00023a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
-                0xa00023a0                _monapi_file_read_directory
- .text          0xa00023a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
-                0xa00023a8                MonAPI::audio::Beep::~Beep()
- .text          0xa00023b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
-                0xa00023b0                MonAPI::audio::Beep::Beep()
- .text          0xa00023b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
-                0xa00023b8                _printf
- .text          0xa00023c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
-                0xa00023c0                _strlen
- .text          0xa00023c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
-                0xa00023c8                _memmove
- .text          0xa00023d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
-                0xa00023d0                operator delete(void*)
- .text          0xa00023d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
-                0xa00023d8                operator new(unsigned int)
+ .text          0xa0002328        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+                0xa0002328                _setConstructorList
+ .text          0xa0002330        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                0xa0002330                invokeFuncList(void (**)(), char const*, int)
+ .text          0xa0002338        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+                0xa0002338                _monapi_initialize_memory
+ .text          0xa0002340        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                0xa0002340                _exit
+ .text          0xa0002348        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                0xa0002348                ___main
+ .text          0xa0002350        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                0xa0002350                __alloca
+ .text          0xa0002358        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+                0xa0002358                MonAPI::Thread::start()
+ .text          0xa0002360        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+                0xa0002360                MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*))
+ .text          0xa0002368        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+                0xa0002368                MonAPI::Thread::stop()
+ .text          0xa0002370        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+                0xa0002370                _sleep
+ .text          0xa0002378        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+                0xa0002378                MonAPI::audio::Beep::rest(unsigned int)
+ .text          0xa0002380        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+                0xa0002380                MonAPI::audio::Beep::play(char const*)
+ .text          0xa0002388        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+                0xa0002388                MonAPI::audio::Beep::title(char const*)
+ .text          0xa0002390        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+                0xa0002390                _monapi_file_read_all
+ .text          0xa0002398        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+                0xa0002398                _syscall_get_io
+ .text          0xa00023a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+                0xa00023a0                _monapi_cmemoryinfo_delete
+ .text          0xa00023a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+                0xa00023a8                _monapi_cmemoryinfo_dispose
+ .text          0xa00023b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+                0xa00023b0                _monapi_file_read_directory
+ .text          0xa00023b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+                0xa00023b8                MonAPI::audio::Beep::~Beep()
+ .text          0xa00023c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+                0xa00023c0                MonAPI::audio::Beep::Beep()
+ .text          0xa00023c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+                0xa00023c8                _printf
+ .text          0xa00023d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+                0xa00023d0                _strlen
+ .text          0xa00023d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+                0xa00023d8                _memmove
+ .text          0xa00023e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+                0xa00023e0                operator delete(void*)
+ .text          0xa00023e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+                0xa00023e8                operator new(unsigned int)
  *(SORT(.text$*))
  .text$_ZN11ImageButton12processEventEPN6baygui5EventE
-                0xa00023e0       0x80 bplayer.o
-                0xa00023e0                ImageButton::processEvent(baygui::Event*)
+                0xa00023f0       0x80 bplayer.o
+                0xa00023f0                ImageButton::processEvent(baygui::Event*)
  .text$_ZN11ImageButton5paintEPN6baygui8GraphicsE
-                0xa0002460       0x30 bplayer.o
-                0xa0002460                ImageButton::paint(baygui::Graphics*)
+                0xa0002470       0x30 bplayer.o
+                0xa0002470                ImageButton::paint(baygui::Graphics*)
  .text$_ZN11ImageButtonD0Ev
-                0xa0002490       0x30 bplayer.o
-                0xa0002490                ImageButton::~ImageButton()
+                0xa00024a0       0x30 bplayer.o
+                0xa00024a0                ImageButton::~ImageButton()
  .text$_ZN11ImageButtonD1Ev
-                0xa00024c0       0x20 bplayer.o
-                0xa00024c0                ImageButton::~ImageButton()
+                0xa00024d0       0x20 bplayer.o
+                0xa00024d0                ImageButton::~ImageButton()
  .text$_ZN12ProgressIcon12processEventEPN6baygui5EventE
-                0xa00024e0       0x10 bplayer.o
-                0xa00024e0                ProgressIcon::processEvent(baygui::Event*)
+                0xa00024f0       0x10 bplayer.o
+                0xa00024f0                ProgressIcon::processEvent(baygui::Event*)
  .text$_ZN12ProgressIcon5paintEPN6baygui8GraphicsE
-                0xa00024f0       0x40 bplayer.o
-                0xa00024f0                ProgressIcon::paint(baygui::Graphics*)
+                0xa0002500       0x40 bplayer.o
+                0xa0002500                ProgressIcon::paint(baygui::Graphics*)
  .text$_ZN12ProgressIconD0Ev
-                0xa0002530       0xa0 bplayer.o
-                0xa0002530                ProgressIcon::~ProgressIcon()
+                0xa0002540       0xa0 bplayer.o
+                0xa0002540                ProgressIcon::~ProgressIcon()
  .text$_ZN12ProgressIconD1Ev
-                0xa00025d0       0x90 bplayer.o
-                0xa00025d0                ProgressIcon::~ProgressIcon()
+                0xa00025e0       0x90 bplayer.o
+                0xa00025e0                ProgressIcon::~ProgressIcon()
  .text$_ZN15ImageSinkButton12processEventEPN6baygui5EventE
-                0xa0002660       0xd0 bplayer.o
-                0xa0002660                ImageSinkButton::processEvent(baygui::Event*)
+                0xa0002670       0xd0 bplayer.o
+                0xa0002670                ImageSinkButton::processEvent(baygui::Event*)
  .text$_ZN15ImageSinkButton5paintEPN6baygui8GraphicsE
-                0xa0002730       0x30 bplayer.o
-                0xa0002730                ImageSinkButton::paint(baygui::Graphics*)
+                0xa0002740       0x30 bplayer.o
+                0xa0002740                ImageSinkButton::paint(baygui::Graphics*)
  .text$_ZN15ImageSinkButtonD0Ev
-                0xa0002760       0x30 bplayer.o
-                0xa0002760                ImageSinkButton::~ImageSinkButton()
+                0xa0002770       0x30 bplayer.o
+                0xa0002770                ImageSinkButton::~ImageSinkButton()
  .text$_ZN15ImageSinkButtonD1Ev
-                0xa0002790       0x20 bplayer.o
-                0xa0002790                ImageSinkButton::~ImageSinkButton()
+                0xa00027a0       0x20 bplayer.o
+                0xa00027a0                ImageSinkButton::~ImageSinkButton()
  .text$_ZN4_STL10__find_endIPKcS2_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S7_S7_T0_S8_RKNS_26bidirectional_iterator_tagESB_T1_
-                0xa00027b0       0x90 bplayer.o
-                0xa00027b0                char const* _STL::__find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::bidirectional_iterator_tag const&, _STL::bidirectional_iterator_tag const&, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa00027c0       0x90 bplayer.o
+                0xa00027c0                char const* _STL::__find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::bidirectional_iterator_tag const&, _STL::bidirectional_iterator_tag const&, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN4_STL12_String_baseIcNS_9allocatorIcEEE17_M_allocate_blockEj
-                0xa0002840       0x50 bplayer.o
-                0xa0002840                _STL::_String_base<char, _STL::allocator<char> >::_M_allocate_block(unsigned int)
+                0xa0002850       0x50 bplayer.o
+                0xa0002850                _STL::_String_base<char, _STL::allocator<char> >::_M_allocate_block(unsigned int)
  .text$_ZN4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1EPKcRKS4_
-                0xa0002890       0x80 bplayer.o
-                0xa0002890                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(char const*, _STL::allocator<char> const&)
+                0xa00028a0       0x80 bplayer.o
+                0xa00028a0                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(char const*, _STL::allocator<char> const&)
  .text$_ZN4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1ERKS5_
-                0xa0002910       0x80 bplayer.o
-                0xa0002910                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(_STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> > const&)
+                0xa0002920       0x80 bplayer.o
+                0xa0002920                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(_STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> > const&)
  .text$_ZN4_STL6searchINS_16reverse_iteratorIPKcEES4_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S9_S9_T0_SA_T1_
-                0xa0002990      0x130 bplayer.o
-                0xa0002990                _STL::reverse_iterator<char const*> _STL::search<_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> > >(_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa00029a0      0x130 bplayer.o
+                0xa00029a0                _STL::reverse_iterator<char const*> _STL::search<_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> > >(_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN4_STL8find_endIPKcS2_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S7_S7_T0_S8_T1_
-                0xa0002ac0       0x40 bplayer.o
-                0xa0002ac0                char const* _STL::find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa0002ad0       0x40 bplayer.o
+                0xa0002ad0                char const* _STL::find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN6baygui9Component11getGraphicsEv
-                0xa0002b00       0x10 bplayer.o
-                0xa0002b00                baygui::Component::getGraphics()
- .text$_ZN6baygui9Component9getBufferEv
                 0xa0002b10       0x10 bplayer.o
-                0xa0002b10                baygui::Component::getBuffer()
+                0xa0002b10                baygui::Component::getGraphics()
+ .text$_ZN6baygui9Component9getBufferEv
+                0xa0002b20       0x10 bplayer.o
+                0xa0002b20                baygui::Component::getBuffer()
  .text$_ZN6baygui9PlayFrame18getTitlebarClickedEii
-                0xa0002b20       0x50 bplayer.o
-                0xa0002b20                baygui::PlayFrame::getTitlebarClicked(int, int)
+                0xa0002b30       0x50 bplayer.o
+                0xa0002b30                baygui::PlayFrame::getTitlebarClicked(int, int)
  .text$_ZN6baygui9PlayFrame21getCloseButtonClickedEii
-                0xa0002b70       0x50 bplayer.o
-                0xa0002b70                baygui::PlayFrame::getCloseButtonClicked(int, int)
+                0xa0002b80       0x50 bplayer.o
+                0xa0002b80                baygui::PlayFrame::getCloseButtonClicked(int, int)
  .text$_ZN7BPlayer12processEventEPN6baygui5EventE
-                0xa0002bc0      0x2a0 bplayer.o
-                0xa0002bc0                BPlayer::processEvent(baygui::Event*)
+                0xa0002bd0      0x2a0 bplayer.o
+                0xa0002bd0                BPlayer::processEvent(baygui::Event*)
  .text$_ZN7BPlayer14initComponentsEv
-                0xa0002e60      0xdb0 bplayer.o
-                0xa0002e60                BPlayer::initComponents()
+                0xa0002e70      0xdb0 bplayer.o
+                0xa0002e70                BPlayer::initComponents()
  .text$_ZN7BPlayer4stopEv
-                0xa0003c10       0x70 bplayer.o
-                0xa0003c10                BPlayer::stop()
+                0xa0003c20       0x70 bplayer.o
+                0xa0003c20                BPlayer::stop()
  .text$_ZN7BPlayer5paintEPN6baygui8GraphicsE
-                0xa0003c80       0xc0 bplayer.o
-                0xa0003c80                BPlayer::paint(baygui::Graphics*)
+                0xa0003c90       0xc0 bplayer.o
+                0xa0003c90                BPlayer::paint(baygui::Graphics*)
  .text$_ZN7BPlayerD0Ev
-                0xa0003d40      0x210 bplayer.o
-                0xa0003d40                BPlayer::~BPlayer()
+                0xa0003d50      0x210 bplayer.o
+                0xa0003d50                BPlayer::~BPlayer()
  .text$_ZN7BPlayerD1Ev
-                0xa0003f50      0x200 bplayer.o
-                0xa0003f50                BPlayer::~BPlayer()
+                0xa0003f60      0x200 bplayer.o
+                0xa0003f60                BPlayer::~BPlayer()
  .text$_ZNK4_STL12_String_baseIcNS_9allocatorIcEEE21_M_throw_length_errorEv
-                0xa0004150       0x20 bplayer.o
-                0xa0004150                _STL::_String_base<char, _STL::allocator<char> >::_M_throw_length_error() const
+                0xa0004160       0x20 bplayer.o
+                0xa0004160                _STL::_String_base<char, _STL::allocator<char> >::_M_throw_length_error() const
  .text$_ZNK4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE5rfindEPKcjj
-                0xa0004170       0xa0 bplayer.o
-                0xa0004170                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::rfind(char const*, unsigned int, unsigned int) const
+                0xa0004180       0xa0 bplayer.o
+                0xa0004180                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::rfind(char const*, unsigned int, unsigned int) const
  *(.glue_7t)
  *(.glue_7)
-                0xa0004210                ___CTOR_LIST__ = .
-                0xa0004210                __CTOR_LIST__ = .
-                0xa0004210        0x4 LONG 0xffffffff
+                0xa0004220                ___CTOR_LIST__ = .
+                0xa0004220                __CTOR_LIST__ = .
+                0xa0004220        0x4 LONG 0xffffffff
  *(.ctors)
  *(.ctor)
  *(SORT(.ctors.*))
-                0xa0004214        0x4 LONG 0x0
-                0xa0004218                ___DTOR_LIST__ = .
-                0xa0004218                __DTOR_LIST__ = .
-                0xa0004218        0x4 LONG 0xffffffff
+                0xa0004224        0x4 LONG 0x0
+                0xa0004228                ___DTOR_LIST__ = .
+                0xa0004228                __DTOR_LIST__ = .
+                0xa0004228        0x4 LONG 0xffffffff
  *(.dtors)
  *(.dtor)
  *(SORT(.dtors.*))
-                0xa000421c        0x4 LONG 0x0
+                0xa000422c        0x4 LONG 0x0
  *(.fini)
  *(.gcc_exc)
-                0xa0004220                PROVIDE (etext, .)
+                0xa0004230                PROVIDE (etext, .)
  *(.gcc_except_table)
 
 .data           0xa0005000        0x0
@@ -621,33 +621,33 @@ LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
  .idata$4       0xa0006124        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
  .idata$4       0xa0006128        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
  .idata$4       0xa000612c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
- .idata$4       0xa0006130        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
- .idata$4       0xa0006134        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
- .idata$4       0xa0006138        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
- .idata$4       0xa000613c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
- .idata$4       0xa0006140        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
- .idata$4       0xa0006144        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
- .idata$4       0xa0006148        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
- .idata$4       0xa000614c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
- .idata$4       0xa0006150        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
- .idata$4       0xa0006154        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
- .idata$4       0xa0006158        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
- .idata$4       0xa000615c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
- .idata$4       0xa0006160        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
- .idata$4       0xa0006164        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
- .idata$4       0xa0006168        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
- .idata$4       0xa000616c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
- .idata$4       0xa0006170        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
- .idata$4       0xa0006174        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
- .idata$4       0xa0006178        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
- .idata$4       0xa000617c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
- .idata$4       0xa0006180        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
- .idata$4       0xa0006184        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
- .idata$4       0xa0006188        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
- .idata$4       0xa000618c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
- .idata$4       0xa0006190        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
- .idata$4       0xa0006194        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
- .idata$4       0xa0006198        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000547.o)
+ .idata$4       0xa0006130        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$4       0xa0006134        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$4       0xa0006138        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$4       0xa000613c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$4       0xa0006140        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$4       0xa0006144        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$4       0xa0006148        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$4       0xa000614c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$4       0xa0006150        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$4       0xa0006154        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$4       0xa0006158        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$4       0xa000615c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$4       0xa0006160        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$4       0xa0006164        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$4       0xa0006168        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$4       0xa000616c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$4       0xa0006170        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$4       0xa0006174        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$4       0xa0006178        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$4       0xa000617c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$4       0xa0006180        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$4       0xa0006184        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$4       0xa0006188        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$4       0xa000618c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$4       0xa0006190        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$4       0xa0006194        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+ .idata$4       0xa0006198        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
  .idata$4       0xa000619c        0x8 nmth000000.o
                 0xa000619c                __nm_thnk__monapi_memory_initialized
  SORT(*)(.idata$5)
@@ -760,60 +760,60 @@ LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
  .idata$5       0xa000627c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
  .idata$5       0xa0006280        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
                 0xa0006280                __imp___Z14invokeFuncListPPFvvEPKci
- .idata$5       0xa0006284        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
+ .idata$5       0xa0006284        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
                 0xa0006284                __imp___ZN6MonAPI5audio4Beep4playEPKc
- .idata$5       0xa0006288        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
+ .idata$5       0xa0006288        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
                 0xa0006288                __imp___ZN6MonAPI5audio4Beep4restEj
- .idata$5       0xa000628c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
+ .idata$5       0xa000628c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
                 0xa000628c                __imp___ZN6MonAPI5audio4Beep5titleEPKc
- .idata$5       0xa0006290        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
+ .idata$5       0xa0006290        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
                 0xa0006290                __imp___ZN6MonAPI5audio4BeepC1Ev
- .idata$5       0xa0006294        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
+ .idata$5       0xa0006294        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
                 0xa0006294                __imp___ZN6MonAPI5audio4BeepD1Ev
- .idata$5       0xa0006298        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
+ .idata$5       0xa0006298        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
                 0xa0006298                __imp___ZN6MonAPI6Thread4stopEv
- .idata$5       0xa000629c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
+ .idata$5       0xa000629c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
                 0xa000629c                __imp___ZN6MonAPI6Thread5startEv
- .idata$5       0xa00062a0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
+ .idata$5       0xa00062a0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
                 0xa00062a0                __imp___ZN6MonAPI6ThreadC1EPFvPvES1_S3_
- .idata$5       0xa00062a4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
+ .idata$5       0xa00062a4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
                 0xa00062a4                __imp___ZdlPv
- .idata$5       0xa00062a8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
+ .idata$5       0xa00062a8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
                 0xa00062a8                __imp___Znwj
- .idata$5       0xa00062ac        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
+ .idata$5       0xa00062ac        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
                 0xa00062ac                __imp____main
- .idata$5       0xa00062b0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
+ .idata$5       0xa00062b0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
                 0xa00062b0                __imp___alloca
- .idata$5       0xa00062b4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
+ .idata$5       0xa00062b4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
                 0xa00062b4                __imp__exit
- .idata$5       0xa00062b8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
+ .idata$5       0xa00062b8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
                 0xa00062b8                __imp__memmove
- .idata$5       0xa00062bc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
+ .idata$5       0xa00062bc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
                 0xa00062bc                __imp__monapi_cmemoryinfo_delete
- .idata$5       0xa00062c0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
+ .idata$5       0xa00062c0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
                 0xa00062c0                __imp__monapi_cmemoryinfo_dispose
- .idata$5       0xa00062c4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
+ .idata$5       0xa00062c4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
                 0xa00062c4                __imp__monapi_file_read_all
- .idata$5       0xa00062c8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
+ .idata$5       0xa00062c8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
                 0xa00062c8                __imp__monapi_file_read_directory
- .idata$5       0xa00062cc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$5       0xa00062cc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
                 0xa00062cc                __imp__monapi_initialize_memory
- .idata$5       0xa00062d0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$5       0xa00062d0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
                 0xa00062d0                __imp__monapi_memory_initialized
                 0xa00062d0                __imp__monapi_memory_initialized
- .idata$5       0xa00062d4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
+ .idata$5       0xa00062d4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
                 0xa00062d4                __imp__printf
- .idata$5       0xa00062d8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
+ .idata$5       0xa00062d8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
                 0xa00062d8                __imp__setConstructorList
- .idata$5       0xa00062dc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$5       0xa00062dc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
                 0xa00062dc                __imp__sleep
- .idata$5       0xa00062e0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
+ .idata$5       0xa00062e0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
                 0xa00062e0                __imp__strlen
- .idata$5       0xa00062e4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
+ .idata$5       0xa00062e4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
                 0xa00062e4                __imp__syscall_get_io
- .idata$5       0xa00062e8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
+ .idata$5       0xa00062e8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
                 0xa00062e8                __imp__user_start_c_impl
- .idata$5       0xa00062ec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000547.o)
+ .idata$5       0xa00062ec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
  SORT(*)(.idata$6)
  .idata$6       0xa00062f0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
  .idata$6       0xa0006314       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
@@ -868,33 +868,33 @@ LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
  .idata$6       0xa0006a18       0x30 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
  .idata$6       0xa0006a48       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
  .idata$6       0xa0006a6c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
- .idata$6       0xa0006a8c       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
- .idata$6       0xa0006ab0       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
- .idata$6       0xa0006ad0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
- .idata$6       0xa0006af4       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
- .idata$6       0xa0006b10       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
- .idata$6       0xa0006b2c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
- .idata$6       0xa0006b48       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
- .idata$6       0xa0006b64       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
- .idata$6       0xa0006b88        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
- .idata$6       0xa0006b94        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
- .idata$6       0xa0006b9c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
- .idata$6       0xa0006ba8        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
- .idata$6       0xa0006bb4        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
- .idata$6       0xa0006bbc        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
- .idata$6       0xa0006bc8       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
- .idata$6       0xa0006be4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
- .idata$6       0xa0006c04       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
- .idata$6       0xa0006c1c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
- .idata$6       0xa0006c3c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
- .idata$6       0xa0006c58       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$6       0xa0006a8c       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$6       0xa0006ab0       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$6       0xa0006ad0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$6       0xa0006af4       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$6       0xa0006b10       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$6       0xa0006b2c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$6       0xa0006b48       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$6       0xa0006b64       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$6       0xa0006b88        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$6       0xa0006b94        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$6       0xa0006b9c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$6       0xa0006ba8        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$6       0xa0006bb4        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$6       0xa0006bbc        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$6       0xa0006bc8       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$6       0xa0006be4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$6       0xa0006c04       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$6       0xa0006c1c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$6       0xa0006c3c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$6       0xa0006c58       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
                 0xa0006c58                __nm__monapi_memory_initialized
- .idata$6       0xa0006c74        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
- .idata$6       0xa0006c80       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
- .idata$6       0xa0006c98        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
- .idata$6       0xa0006ca0        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
- .idata$6       0xa0006cac       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
- .idata$6       0xa0006cc0       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
+ .idata$6       0xa0006c74        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$6       0xa0006c80       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$6       0xa0006c98        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$6       0xa0006ca0        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$6       0xa0006cac       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$6       0xa0006cc0       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
  SORT(*)(.idata$7)
  .idata$7       0xa0006cd4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
  .idata$7       0xa0006cd8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
@@ -951,33 +951,33 @@ LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
  .idata$7       0xa0006da4        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
                 0xa0006da4                _BAYGUI_DLL_iname
  .idata$7       0xa0006db0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
- .idata$7       0xa0006db4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000126.o)
- .idata$7       0xa0006db8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000127.o)
- .idata$7       0xa0006dbc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000128.o)
- .idata$7       0xa0006dc0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000129.o)
- .idata$7       0xa0006dc4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000132.o)
- .idata$7       0xa0006dc8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000187.o)
- .idata$7       0xa0006dcc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000188.o)
- .idata$7       0xa0006dd0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000189.o)
- .idata$7       0xa0006dd4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000350.o)
- .idata$7       0xa0006dd8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000354.o)
- .idata$7       0xa0006ddc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000358.o)
- .idata$7       0xa0006de0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000362.o)
- .idata$7       0xa0006de4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000373.o)
- .idata$7       0xa0006de8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000388.o)
- .idata$7       0xa0006dec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000400.o)
- .idata$7       0xa0006df0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000401.o)
- .idata$7       0xa0006df4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000412.o)
- .idata$7       0xa0006df8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000413.o)
- .idata$7       0xa0006dfc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
- .idata$7       0xa0006e00        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
- .idata$7       0xa0006e04        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000453.o)
- .idata$7       0xa0006e08        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000459.o)
- .idata$7       0xa0006e0c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
- .idata$7       0xa0006e10        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000466.o)
- .idata$7       0xa0006e14        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000489.o)
- .idata$7       0xa0006e18        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000546.o)
- .idata$7       0xa0006e1c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000547.o)
+ .idata$7       0xa0006db4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$7       0xa0006db8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$7       0xa0006dbc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$7       0xa0006dc0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$7       0xa0006dc4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$7       0xa0006dc8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$7       0xa0006dcc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$7       0xa0006dd0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$7       0xa0006dd4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$7       0xa0006dd8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$7       0xa0006ddc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$7       0xa0006de0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$7       0xa0006de4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$7       0xa0006de8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$7       0xa0006dec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$7       0xa0006df0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$7       0xa0006df4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$7       0xa0006df8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$7       0xa0006dfc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$7       0xa0006e00        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$7       0xa0006e04        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$7       0xa0006e08        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$7       0xa0006e0c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$7       0xa0006e10        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$7       0xa0006e14        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$7       0xa0006e18        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+ .idata$7       0xa0006e1c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
                 0xa0006e1c                _MONAPI_DLL_iname
 
 .CRT            0xa0007000        0x0
