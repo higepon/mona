@@ -193,7 +193,6 @@ void syscall_entrance()
             intptr_t ret = g_messenger->send(thread, (MessageInfo*)(SYSTEM_CALL_ARG_2));
             setReturnValue(info, ret);
             if (ret == M_OK) {
-                g_scheduler->EventComes(thread, MEvent::MESSAGE);
                 g_scheduler->SwitchToNext();
                 /* not reached */
             } else {

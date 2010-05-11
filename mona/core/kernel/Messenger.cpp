@@ -1,10 +1,11 @@
+#include "Scheduler.h"
 #include "Messenger.h"
 #include "global.h"
 
 /*----------------------------------------------------------------------
     Messenger
 ----------------------------------------------------------------------*/
-Messenger::Messenger()
+Messenger::Messenger(Scheduler* scheduler) : scheduler_(scheduler)
 {
 }
 
@@ -28,7 +29,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 
     thread->flags |= MEvent::MESSAGE;
     thread->messageList->add(info);
-
+    scheduler_->EventComes(thread, MEvent::MESSAGE);
     return M_OK;
 }
 
