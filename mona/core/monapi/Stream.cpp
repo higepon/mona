@@ -100,7 +100,10 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
     {
         uint32_t thread = threads[i];
         if (THREAD_UNKNOWN == thread) continue;
-        Message::send(thread, MSG_READ_MEMORY_READY);
+        if (Message::send(thread, MSG_READ_MEMORY_READY) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
     }
     delete[] threads;
     return writeSize;
@@ -166,7 +169,10 @@ uint32_t Stream::read(uint8_t* buffer, uint32_t size)
     {
         uint32_t thread = threads[i];
         if (THREAD_UNKNOWN == thread) continue;
-        Message::send(thread, MSG_WRITE_MEMORY_READY);
+        if (Message::send(thread, MSG_WRITE_MEMORY_READY) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
     }
     LOG("");
     delete[] threads;

@@ -9,7 +9,10 @@ using namespace MonAPI;
 static uint32_t parent_tid = 0;
 static void __fastcall runThread(void* arg)
 {
-    MonAPI::Message::send(parent_tid, MSG_SERVER_START_OK);
+    if (MonAPI::Message::send(parent_tid, MSG_SERVER_START_OK) != M_OK) {
+        printf("Error %s:%d\n", __FILE__, __LINE__);
+        exit(-1);
+    }
     for (MessageInfo info;;) {
         if (MonAPI::Message::receive(&info) != 0) continue;
         if (info.header == MSG_SERVER_START_OK) {
@@ -43,7 +46,10 @@ void Thread::start()
     src.header = MSG_SERVER_START_OK;
     MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
     uint32_t child = msg.from;
-    MonAPI::Message::send(child, MSG_SERVER_START_OK, (uint32_t)run_, (uint32_t)notify_, (uint32_t)arg_);
+    if (MonAPI::Message::send(child, MSG_SERVER_START_OK, (uint32_t)run_, (uint32_t)notify_, (uint32_t)arg_) != M_OK) {
+        printf("Error %s:%d\n", __FILE__, __LINE__);
+        exit(-1);
+    }
 }
 
 void Thread::stop()

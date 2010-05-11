@@ -140,7 +140,7 @@ void notifyProcessCreated(uint32_t tid, uint32_t parent, const CString& path)
     int i = 0;
     while (i < receivers.size())
     {
-        if (Message::send(receivers[i], MSG_PROCESS_CREATED, tid, parent, 0, path) == 0)
+        if (Message::send(receivers[i], MSG_PROCESS_CREATED, tid, parent, 0, path) == M_OK)
         {
             i++;
         }
@@ -158,7 +158,7 @@ void notifyProcessTerminated(uint32_t tid, int status)
     int i = 0;
     while (i < receivers.size())
     {
-        if (Message::send(receivers[i], MSG_PROCESS_TERMINATED, tid, status) == 0)
+        if (Message::send(receivers[i], MSG_PROCESS_TERMINATED, tid, status) == M_OK)
         {
             i++;
         }

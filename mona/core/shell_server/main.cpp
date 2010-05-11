@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     }
     MessageInfo msg;
     uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
-    if (targetID == THREAD_UNKNOWN || Message::sendReceive(&msg, targetID, MSG_SCREEN_GET_STREAM_HANDLE)) {
+    if (targetID == THREAD_UNKNOWN || (Message::sendReceive(&msg, targetID, MSG_SCREEN_GET_STREAM_HANDLE) != M_OK)) {
         MONAPI_WARN("SCREEN.EX5 not found");
         exit(-1);
     }

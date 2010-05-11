@@ -163,8 +163,10 @@ int kill() {
 
 int exit(int error)
 {
-    MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
-                          MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error);
+    if (MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
+                              MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error) != M_OK) {
+        printf("Error %s:%d\n", __FILE__, __LINE__);
+    }
     return syscall_kill();
 }
 
