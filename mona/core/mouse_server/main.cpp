@@ -261,7 +261,7 @@ public:
     bool Initialize()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
         {
             syscall_print("Mouse Server: can not get common parameters\n");
             return false;
@@ -389,7 +389,7 @@ protected:
 
         for (int i = this->destList->size() - 1; i >= 0; i--)
         {
-            if (Message::send(this->destList->get(i), &info))
+            if (Message::send(this->destList->get(i), &info) != M_OK)
             {
                 _printf("Mouse Server: send error to thread id = %x", this->destList->get(i));
                 this->destList->removeAt(i);

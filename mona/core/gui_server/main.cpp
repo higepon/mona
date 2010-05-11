@@ -373,7 +373,7 @@ int main(int argc, char* argv[])
     CheckGUIServer();
     if (!InitScreen()) exit(1);
     MessageInfo msg_cp;
-    if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+    if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
     {
         printf("%s: can not get common parameters!\n", GUI_SERVER_NAME);
         exit(1);
@@ -395,7 +395,11 @@ int main(int argc, char* argv[])
     }
 
     // MONITORサーバへの正常起動通知
-    Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
+    if (Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK) != M_OK) {
+        printf("GUI Server: can't find MONITOR.BIN\n");
+        exit(1);
+
+    }
 
     // メッセージループ
     MessageLoop();

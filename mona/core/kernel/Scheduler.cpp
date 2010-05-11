@@ -130,8 +130,7 @@ void Scheduler::WakeupTimer()
 
         timer->setNextTimer(this->totalTick);
 
-        if (g_messenger->send(thread->id, &msg))
-        {
+        if (g_messenger->send(thread, &msg)) {
             timers.removeAt(i);
             g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
         }
@@ -504,9 +503,9 @@ PsInfo* Scheduler::ReadDump()
     return info;
 }
 
-uint32_t* Scheduler::GetAllThreadID(uint32_t* threadNum)
+Thread** Scheduler::GetAllThread(uint32_t* threadNum)
 {
-    uint32_t* result;
+    Thread** result;
     uint32_t i     = 0;
     uint32_t count = 0;
 
@@ -528,14 +527,14 @@ uint32_t* Scheduler::GetAllThreadID(uint32_t* threadNum)
     }
     END_FOREACH
 
-    result = new uint32_t[count];
+    result = new Thread*[count];
     if (result == NULL) return NULL;
 
     FOREACH(Thread*, queue, runq)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            result[i] = thread->id;
+            result[i] = thread;
             i++;
         }
     }
@@ -545,7 +544,7 @@ uint32_t* Scheduler::GetAllThreadID(uint32_t* threadNum)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            result[i] = thread->id;
+            result[i] = thread;
             i++;
         }
     }

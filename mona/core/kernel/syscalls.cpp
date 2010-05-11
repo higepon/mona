@@ -183,14 +183,23 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_SEND:
-
-        setReturnValue(info, g_messenger->send((uint32_t)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2)));
-        g_scheduler->SwitchToNext();
-
-        /* not reached */
-
-        break;
-
+    {
+        uintptr_t id = (uintptr_t)(SYSTEM_CALL_ARG_1);
+        Thread* thread = g_scheduler->Find(id);
+        if (NULL == thread) {
+            setReturnValue(info, -1);
+            break;
+        } else {
+            intptr_t ret = g_messenger->send(thread, (MessageInfo*)(SYSTEM_CALL_ARG_2));
+            setReturnValue(info, ret);
+            if (ret == M_OK) {
+                g_scheduler->SwitchToNext();
+                /* not reached */
+            } else {
+                break;
+            }
+        }
+    }
     case SYSTEM_CALL_RECEIVE:
 
         setReturnValue(info, g_messenger->receive(g_currentThread->thread, (MessageInfo*)(SYSTEM_CALL_ARG_1)));

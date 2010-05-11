@@ -148,7 +148,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--)
     {
-        if (Message::send(destList->get(i), &message))
+        if (Message::send(destList->get(i), &message) != M_OK)
         {
             _printf("send error to pid = %x", destList->get(i));
             destList->removeAt(i);

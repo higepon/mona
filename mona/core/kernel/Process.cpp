@@ -342,10 +342,10 @@ intptr_t ThreadOperation::kill(uint32_t tid)
 void ThreadOperation::sendKilledMessage()
 {
     uint32_t threadNum;
-    uint32_t* list;
+    Thread** list;
     MessageInfo msg;
 
-    list = g_scheduler->GetAllThreadID(&threadNum);
+    list = g_scheduler->GetAllThread(&threadNum);
 
     /* set message */
     msg.header = MSG_PROCESS_TERMINATED;
@@ -357,11 +357,13 @@ void ThreadOperation::sendKilledMessage()
     for (uint32_t i = 0; i < threadNum; i++)
     {
 
-        uint32_t id = list[i];
-        if (id == msg.arg1) continue;
-
-        g_messenger->send(id, &msg);
-
+        Thread* thread = list[i];
+        if (thread == g_currentThread->thread) {
+            continue;
+        }
+        if (g_messenger->send(thread, &msg) != M_OK) {
+            logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
+        }
     }
 
     delete[] list;

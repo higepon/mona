@@ -65,7 +65,10 @@ void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
     monapi_cmemorymap_unmap(self->Handle);
     if (self->Owner != syscall_get_tid())
     {
-        Message::send(self->Owner, MSG_DISPOSE_HANDLE, self->Handle);
+        if (Message::send(self->Owner, MSG_DISPOSE_HANDLE, self->Handle) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
     }
     self->Handle = 0;
 }

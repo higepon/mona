@@ -106,8 +106,12 @@ enum
        Indicates a bad memory_map_id is spcified.
     */
     M_BAD_MEMORY_MAP_ID       ,
+    /*
+       constant: M_MESSAGE_OVERFLOW
 
-
+       Indicates message queue overflowed.
+    */
+    M_MESSAGE_OVERFLOW,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

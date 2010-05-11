@@ -4,7 +4,7 @@
 #include "io.h"
 #include "shutdown.h"
 
-#if 1
+#if 0
 void kill_all_proc()
 {
 	uint32_t *id_list;
@@ -65,7 +65,7 @@ uint32_t shutdown_by_apm(uint32_t op, uint32_t device)
 		default: pstate = 0; break;
 	}
 
-	if( kill_threads ) kill_all_proc();
+//	if( kill_threads ) kill_all_proc();
 
 	logprintf("shutdown by apm: Device = %d, OP = %d\n",device, op);
 
@@ -78,7 +78,7 @@ uint32_t shutdown_by_apm(uint32_t op, uint32_t device)
 
 uint32_t shutdown_by_reboot()
 {
-	kill_all_proc();
+//	kill_all_proc();
 	asm volatile("cli");
 
 	for (;;) {

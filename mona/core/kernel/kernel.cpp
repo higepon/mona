@@ -226,9 +226,6 @@ void startKernel()
     /* shared memory object */
     SharedMemoryObject::setup();
 
-    /* messenger */
-    g_messenger = new Messenger(512);
-
     /* IDManager */
     g_id = new IDManager();
 
@@ -248,6 +245,9 @@ void startKernel()
     /* this should be called, before timer enabled */
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
+
+    /* messenger */
+    g_messenger = new Messenger(g_scheduler);
 
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
