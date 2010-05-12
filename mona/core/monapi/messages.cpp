@@ -109,8 +109,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
@@ -129,8 +133,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
@@ -148,8 +156,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
@@ -168,8 +180,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 #if 0
@@ -188,8 +204,12 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 #endif
 
@@ -238,8 +258,12 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
@@ -273,8 +297,12 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 uint32_t monapi_file_seek(uint32_t fileID, uint32_t offset, uint32_t origin)
@@ -314,8 +342,12 @@ monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    if (monapi_cmemoryinfo_map(ret) != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    } else {
+        return ret;
+    }
 }
 
 uint32_t monapi_file_get_file_size(uint32_t id)

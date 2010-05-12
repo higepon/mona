@@ -91,7 +91,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
         if (tid != THREAD_UNKNOWN)
         {
             if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path) != M_OK) {
-                printf("Error %s:%d\n", __FILE__, __LINE__);
+                _printf("Error %s:%d\n", __FILE__, __LINE__);
                 exit(-1);
             }
             if (msg.arg2 != 0) {
@@ -101,7 +101,10 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                 mi->Handle = msg.arg2;
                 mi->Owner  = tid;
                 mi->Size   = atoi(msg.str);
-                monapi_cmemoryinfo_map(mi);
+                if (monapi_cmemoryinfo_map(mi) != M_OK) {
+                    _printf("Error %s:%d\n", __FILE__, __LINE__);
+                    exit(-1);
+                }
             }
             else
             {

@@ -241,15 +241,21 @@ void FileServer::messageLoop()
             memory->Handle = msg.arg3;
             memory->Owner  = msg.from;
             memory->Size   = msg.arg2;
-            monapi_cmemoryinfo_map(memory);
-            int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
+            intptr_t result = monapi_cmemoryinfo_map(memory);
+            if (result != M_OK) {
+                logprintf("MSG_FILE_WRITE\n");
+                monapi_cmemoryinfo_delete(memory);
+                Message::replyError(&msg, result);
+            } else {
+                int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
 
-            // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
-            if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
-                logprintf("[Warning] FileServer: MSG_FILE_WRITE. monapi_cmemoryinfo_dispose_no_notify error memory->Handle=%x\n", memory->Handle);
+                // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
+                if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
+                    logprintf("[Warning] FileServer: MSG_FILE_WRITE. monapi_cmemoryinfo_dispose_no_notify error memory->Handle=%x\n", memory->Handle);
+                }
+                monapi_cmemoryinfo_delete(memory);
+                Message::reply(&msg, ret);
             }
-            monapi_cmemoryinfo_delete(memory);
-            Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_CLOSE:
@@ -294,7 +300,7 @@ void FileServer::messageLoop()
             mi1->Handle = msg.arg1;
             mi1->Size   = msg.arg2;
             monapi_cmemoryinfo* mi2 = NULL;
-            if (monapi_cmemoryinfo_map(mi1))
+            if (monapi_cmemoryinfo_map(mi1) != M_OK)
             {
                 mi2 = ST5Decompress(mi1);
                 monapi_cmemoryinfo_dispose(mi1);

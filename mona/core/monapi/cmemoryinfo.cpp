@@ -35,7 +35,7 @@ int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int promp
         _printf("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         return 0;
     }
-    if (!monapi_cmemoryinfo_map(self))
+    if (monapi_cmemoryinfo_map(self) != M_OK)
     {
         if (prompt) printf("ERROR\n");
         _printf("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
@@ -47,17 +47,19 @@ int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int promp
     return 1;
 }
 
-int monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
+intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
 {
     self->Data = monapi_cmemorymap_map(self->Handle);
-    if (self->Data != NULL) return 1;
+    if (self->Data != NULL) {
+        return M_OK;
+    }
 
     _printf("%s:%d: map error\n", __FILE__, __LINE__);
     _logprintf("map error self->Handle=%x, %s:%d:(%s)\n", self->Handle, __FILE__, __LINE__, __func__);
     monapi_cmemorymap_unmap(self->Handle);
     self->Handle = 0;
     self->Size   = 0;
-    return 0;
+    return M_MEMORY_MAP_ERROR;
 }
 
 void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)

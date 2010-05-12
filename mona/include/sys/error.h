@@ -112,6 +112,12 @@ enum
        Indicates message queue overflowed.
     */
     M_MESSAGE_OVERFLOW,
+    /*
+       constant: M_MEMORY_MAP_ERROR
+
+       Indicates Memory Map failed.
+    */
+    M_MEMORY_MAP_ERROR,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE
