@@ -98,7 +98,7 @@ bool MemoryMap::unmap(uint32_t id)
 {
     if (syscall_memory_map_unmap(id))
     {
-        lastError = 6;
+        lastError = M_MEMORY_MAP_ERROR;
         return false;
     }
 
@@ -148,6 +148,6 @@ uint8_t* monapi_cmemorymap_map(uint32_t id)
 
 int monapi_cmemorymap_unmap(uint32_t id)
 {
-    return MonAPI::MemoryMap::unmap(id) ? 1 : 0;
+    return MonAPI::MemoryMap::unmap(id) ? M_OK : M_MEMORY_MAP_ERROR;
 }
 

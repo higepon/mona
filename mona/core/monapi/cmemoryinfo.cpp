@@ -56,7 +56,9 @@ intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
 
     _printf("%s:%d: map error\n", __FILE__, __LINE__);
     _logprintf("map error self->Handle=%x, %s:%d:(%s)\n", self->Handle, __FILE__, __LINE__, __func__);
-    monapi_cmemorymap_unmap(self->Handle);
+    if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
+        _logprintf("unmap failed on monapi_cmemoryinfo_map\n");
+    }
     self->Handle = 0;
     self->Size   = 0;
     return M_MEMORY_MAP_ERROR;
@@ -64,7 +66,9 @@ intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
 
 void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
 {
-    monapi_cmemorymap_unmap(self->Handle);
+    if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
+        _logprintf("unmap failed on monapi_cmemoryinfo_dispose\n");
+    }
     if (self->Owner != syscall_get_tid())
     {
         if (Message::send(self->Owner, MSG_DISPOSE_HANDLE, self->Handle) != M_OK) {
@@ -77,7 +81,7 @@ void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
 
 intptr_t monapi_cmemoryinfo_dispose_no_notify(monapi_cmemoryinfo* self)
 {
-    if (monapi_cmemorymap_unmap(self->Handle) != 1) {
+    if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
         return M_BAD_MEMORY_MAP_ID;
     }
     self->Handle = 0;
