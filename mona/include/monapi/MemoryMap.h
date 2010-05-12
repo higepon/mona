@@ -45,7 +45,7 @@ extern "C"
 #endif
 extern uint32_t monapi_cmemorymap_create(uint32_t size);
 extern uint8_t* monapi_cmemorymap_map(uint32_t id);
-extern int monapi_cmemorymap_unmap(uint32_t id);
+extern intptr_t monapi_cmemorymap_unmap(uint32_t id);
 #ifdef __cplusplus
 }
 #endif

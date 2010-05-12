@@ -369,7 +369,7 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
     if ((size >> 32) > 0) return NULL;
 
     monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
-    if (!monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0))
+    if (monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);
         return NULL;

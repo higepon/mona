@@ -146,7 +146,7 @@ uint8_t* monapi_cmemorymap_map(uint32_t id)
     return MonAPI::MemoryMap::map(id);
 }
 
-int monapi_cmemorymap_unmap(uint32_t id)
+intptr_t monapi_cmemorymap_unmap(uint32_t id)
 {
     return MonAPI::MemoryMap::unmap(id) ? M_OK : M_MEMORY_MAP_ERROR;
 }

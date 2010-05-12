@@ -16,7 +16,9 @@ static HList<uint32_t> receivers;
 void initCommonParameters()
 {
     commonParams = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1)) exit(1);
+    if (monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1) != M_OK) {
+        exit(1);
+    }
 }
 
 ProcessInfo getProcessInfo(uint32_t tid)

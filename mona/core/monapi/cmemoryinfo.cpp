@@ -26,25 +26,25 @@ void monapi_cmemoryinfo_delete(monapi_cmemoryinfo* self)
     free(self);
 }
 
-int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int prompt)
+intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int prompt)
 {
     self->Handle = monapi_cmemorymap_create(size);
     if (self->Handle == 0)
     {
         if (prompt) printf("ERROR\n");
         _printf("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
-        return 0;
+        return M_MEMORY_MAP_ERROR;
     }
     if (monapi_cmemoryinfo_map(self) != M_OK)
     {
         if (prompt) printf("ERROR\n");
         _printf("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
-        return 0;
+        return M_MEMORY_MAP_ERROR;
     }
 
     self->Size  = size;
     self->Owner = syscall_get_tid();
-    return 1;
+    return M_OK;
 }
 
 intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)

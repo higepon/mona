@@ -217,7 +217,7 @@ namespace RamDisk {
                 if(readSize == 0)
                   return MONA_SUCCESS;
 
-                if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
+                if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE) != M_OK)
                   {
                       monapi_cmemoryinfo_delete(context->memory);
                       return MONA_ERROR_MEMORY_NOT_ENOUGH;
@@ -260,7 +260,7 @@ namespace RamDisk {
                 monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
 
                 int size = files.size();
-                if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
+                if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE) != M_OK)
                   {
                       monapi_cmemoryinfo_delete(ret);
                       for (Files::const_iterator it = files.begin(); it != files.end(); ++it)

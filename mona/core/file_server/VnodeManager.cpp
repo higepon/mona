@@ -1,4 +1,5 @@
 #include "VnodeManager.h"
+#include "sys/error.h"
 
 using namespace std;
 using namespace io;
@@ -105,7 +106,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         if (!diff.empty()) {
             monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
             int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
-            if (!monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE)) {
+            if (monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE) != M_OK) {
                 monapi_cmemoryinfo_delete(ret);
                 return MONA_FAILURE;
             }

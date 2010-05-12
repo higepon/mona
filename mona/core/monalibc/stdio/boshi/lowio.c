@@ -9,6 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 #include <monapi/messages.h>
+#include <sys/error.h>
 #include "file.h"
 
 int __mlibc_mona_file_is_valid(void *f, int fid)
@@ -69,7 +70,7 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
     f = (FILE*)self;
 
     cmi = monapi_cmemoryinfo_new();
-    if( !monapi_cmemoryinfo_create(cmi, size, 0) )
+    if( monapi_cmemoryinfo_create(cmi, size, 0) != M_OK )
     {
         monapi_cmemoryinfo_delete(cmi);
         return -1;
