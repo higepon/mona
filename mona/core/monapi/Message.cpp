@@ -87,7 +87,9 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
         }
         else if ((*equals)(&msg, src))
         {
-            Message::peek(&msg, i, PEEK_REMOVE);
+            if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
             break;
         }
     }

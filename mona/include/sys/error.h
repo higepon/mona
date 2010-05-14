@@ -118,6 +118,18 @@ enum
        Indicates Memory Map failed.
     */
     M_MEMORY_MAP_ERROR,
+    /*
+       constant: M_BAD_INDEX
+
+       Indicates bad index given.
+    */
+    M_BAD_INDEX,
+    /*
+       constant: M_MESSAGE_NOT_FOUND
+
+       Indicates message not found.
+    */
+    M_MESSAGE_NOT_FOUND,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

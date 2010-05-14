@@ -85,8 +85,16 @@ void testMessageOverflow()
     }
 }
 
+void testPeek()
+{
+    MessageInfo msg;
+    // Expect we have no message.
+    EXPECT_EQ(M_BAD_INDEX, Message::peek(&msg, 0));
+}
+
 int main(int argc, char *argv[])
 {
+    testPeek();
     testMessageOverflow();
     testSendBuffer();
     TEST_RESULTS(monapi_message);

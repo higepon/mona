@@ -195,14 +195,16 @@ void Stream::waitForWrite()
     {
         int result = MonAPI::Message::peek(&msg, i);
 
-        if (result != 0)
+        if (result != M_OK)
         {
             i--;
             syscall_mthread_yield_message();
         }
         else if (msg.header == MSG_WRITE_MEMORY_READY)
         {
-            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+            if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
             return;
         }
     }
@@ -225,14 +227,16 @@ void Stream::waitForRead()
     for (int i = 0; ; i++)
     {
         int result = MonAPI::Message::peek(&msg, i);
-        if (result != 0)
+        if (result != M_OK)
         {
             i--;
             syscall_mthread_yield_message();
         }
         else if (msg.header == MSG_READ_MEMORY_READY)
         {
-            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+            if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
             return;
         }
     }

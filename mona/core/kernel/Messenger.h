@@ -14,8 +14,8 @@ public:
     virtual ~Messenger();
 
     intptr_t send(Thread* thread, MessageInfo* message);
-    int receive(Thread* thread, MessageInfo* message);
-    int peek(Thread* thread, MessageInfo* message, int index, int flags);
+    intptr_t receive(Thread* thread, MessageInfo* message);
+    intptr_t peek(Thread* thread, MessageInfo* message, int index, int flags);
 
 private:
     Scheduler* scheduler_;
