@@ -841,10 +841,9 @@ void syscall_entrance()
 
         g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
         break;
-
     case SYSTEM_CALL_CHANGE_BASE_PRIORITY:
         g_scheduler->ChangeBasePriority(g_currentThread->thread, SYSTEM_CALL_ARG_1);
-
+        break;
     case SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE:
         g_currentThread->process->getDllSegment()->setWritable(true);
     break;
