@@ -362,9 +362,8 @@ void ThreadOperation::sendKilledMessage()
             continue;
         }
         if (g_messenger->send(thread, &msg) != M_OK) {
-            logprintf("Warn %s %s:%d: send failed MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
+            logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
         }
-        g_scheduler->EventComes(thread, MEvent::MESSAGE);
     }
 
     delete[] list;

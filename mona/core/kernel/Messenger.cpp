@@ -1,10 +1,11 @@
+#include "Scheduler.h"
 #include "Messenger.h"
 #include "global.h"
 
 /*----------------------------------------------------------------------
     Messenger
 ----------------------------------------------------------------------*/
-Messenger::Messenger()
+Messenger::Messenger(Scheduler* scheduler) : scheduler_(scheduler)
 {
 }
 
@@ -28,15 +29,15 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 
     thread->flags |= MEvent::MESSAGE;
     thread->messageList->add(info);
-
+    scheduler_->EventComes(thread, MEvent::MESSAGE);
     return M_OK;
 }
 
-int Messenger::receive(Thread* thread, MessageInfo* message)
+intptr_t Messenger::receive(Thread* thread, MessageInfo* message)
 {
     MessageInfo* from = thread->messageList->removeAt(0);
     if (from == NULL) {
-        return -1;
+        return M_MESSAGE_NOT_FOUND;
     }
 
     thread->flags &= ~MEvent::MESSAGE;
@@ -45,20 +46,16 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
     return M_OK;
 }
 
-int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
+intptr_t Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
 {
     List<MessageInfo*>* list = thread->messageList;
 
-    if (index > list->size()) {
-        return 1;
+    if (index >= list->size()) {
+        return M_BAD_INDEX;
     }
 
     MessageInfo* from = flags & PEEK_REMOVE ? list->removeAt(index) : list->get(index);
-
-    if (from == (MessageInfo*)NULL)
-    {
-        return -1;
-    }
+    ASSERT(from != NULL);
 
     thread->flags &= ~MEvent::MESSAGE;
     *message = *from;

@@ -57,17 +57,7 @@ uint8_t* MemoryMap::map(uint32_t id)
 {
     /* to be first fit */
     MEMORY_MAP_TRACE("try to map() id = %x", id);
-    uint32_t size = syscall_memory_map_get_size(id);
-
-#if 0
-    uint32_t tid = syscall_get_tid();
-    if (78 == tid) {
-        syscall_set_watch_point(&nextAddress, DEBUG_BREAK_ONLY_ON_READ_WRITE);
-        nextAddress += 2;
-        nextAddress -= 1;
-        nextAddress -= 1;
-    }
-#endif
+    uintptr_t size = syscall_memory_map_get_size(id);
 
     if (size == 0)
     {
@@ -108,7 +98,7 @@ bool MemoryMap::unmap(uint32_t id)
 {
     if (syscall_memory_map_unmap(id))
     {
-        lastError = 6;
+        lastError = M_MEMORY_MAP_ERROR;
         return false;
     }
 
@@ -156,8 +146,8 @@ uint8_t* monapi_cmemorymap_map(uint32_t id)
     return MonAPI::MemoryMap::map(id);
 }
 
-int monapi_cmemorymap_unmap(uint32_t id)
+intptr_t monapi_cmemorymap_unmap(uint32_t id)
 {
-    return MonAPI::MemoryMap::unmap(id) ? 1 : 0;
+    return MonAPI::MemoryMap::unmap(id) ? M_OK : M_MEMORY_MAP_ERROR;
 }
 

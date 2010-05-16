@@ -222,7 +222,7 @@ public:
         dispose();
         mi = monapi_cmemoryinfo_new();
         if (!mi) return false;
-        if (!monapi_cmemoryinfo_create(mi, size, prompt)) {
+        if (monapi_cmemoryinfo_create(mi, size, prompt) != M_OK) {
             monapi_cmemoryinfo_delete(mi);
             return false;
         }

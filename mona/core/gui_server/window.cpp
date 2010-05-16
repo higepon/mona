@@ -104,8 +104,18 @@ static guiserver_window* GetFrontWindow()
 
 static void ActivateWindow(guiserver_window* w)
 {
-    if (activeWindow != NULL) Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle);
-    if (w != NULL) Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle);
+    if (activeWindow != NULL) {
+        if (Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
+    }
+    if (w != NULL) {
+        if (Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
+    }
     activeWindow = w;
     if (w == NULL) return;
 
@@ -179,7 +189,10 @@ void DisposeAllWindow()
     for (int i = 0; i < windows.size(); i++)
     {
         guiserver_window* w = windows[i];
-        Message::sendReceive(NULL, w->ThreadID, MSG_GUISERVER_DISPOSEWINDOW);
+        if (Message::sendReceive(NULL, w->ThreadID, MSG_GUISERVER_DISPOSEWINDOW) != M_OK) {
+            printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
         syscall_kill_thread(w->ThreadID);
     }
 }
@@ -330,8 +343,18 @@ static void ProcessMouseInfo(MessageInfo* msg)
     }
     if (prevWindow != target)
     {
-        if (prevWindow != NULL) Message::send(prevWindow->ThreadID, MSG_GUISERVER_MOUSELEAVE, prevWindow->Handle);
-        if (target != NULL) Message::send(target->ThreadID, MSG_GUISERVER_MOUSEENTER, target->Handle);
+        if (prevWindow != NULL) {
+            if (Message::send(prevWindow->ThreadID, MSG_GUISERVER_MOUSELEAVE, prevWindow->Handle) != M_OK) {
+                printf("Error %s:%d\n", __FILE__, __LINE__);
+                exit(-1);
+            }
+        }
+        if (target != NULL) {
+            if (Message::send(target->ThreadID, MSG_GUISERVER_MOUSEENTER, target->Handle) != M_OK) {
+                printf("Error %s:%d\n", __FILE__, __LINE__);
+                exit(-1);
+            }
+        }
         prevWindow = target;
     }
     if (prevButton < msg->arg3 && activeWindow != top) ActivateWindow(top);
@@ -359,7 +382,7 @@ static void ProcessMouseInfo(MessageInfo* msg)
             break;
     }
     prevButton = msg->arg3;
-    if (target != NULL && Message::send(target->ThreadID, &m) != 0)
+    if (target != NULL && Message::send(target->ThreadID, &m) != M_OK)
     {
         DisposeWindowFromThreadID(target->ThreadID);
     }
@@ -379,7 +402,7 @@ static void ProcessKeyInfo(MessageInfo* msg)
             m.arg3 = msg->arg2;
             break;
     }
-    if (Message::send(activeWindow->ThreadID, &m) != 0)
+    if (Message::send(activeWindow->ThreadID, &m) != M_OK)
     {
         DisposeWindowFromThreadID(activeWindow->ThreadID);
     }
@@ -462,11 +485,11 @@ bool WindowHandler(MessageInfo* msg)
         }
         // タイトル情報
         case MSG_GUISERVER_GETTITLE:
-	{
+    {
             guiserver_window* w = GetWindowPointer(msg->arg1);
             Message::reply(msg, NULL, NULL, w->name);
             break;
-	}
+    }
         // マウス情報
         case MSG_MOUSE_INFO:
             ProcessMouseInfo(msg);

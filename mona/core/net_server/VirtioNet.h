@@ -364,6 +364,7 @@ public:
 
     bool receive(Ether::Frame* dst, unsigned int* len, int timeout_msec = 20)
     {
+        logprintf("hige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -376,24 +377,32 @@ public:
                 // timeout
                 return false;
             }
-            int result = MonAPI::Message::peek(&msg, i);
-            if (result != 0) {
+            intptr_t result = MonAPI::Message::peek(&msg, i);
+            // Message not found
+            if (result == M_BAD_INDEX) {
                 i--;
                 sleep(10);
                 timeout_msec -= 10;
                 continue;
-            } else if (msg.header == MSG_INTERRUPTED) {
-                MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
-                inp8(baseAddress_ + VIRTIO_PCI_ISR);
-                monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+            } else if (result == M_OK) {
+                if (msg.header == MSG_INTERRUPTED) {
+                    MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+                    inp8(baseAddress_ + VIRTIO_PCI_ISR);
+                    monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
 
-                if (readVring_->used->idx == lastUsedIndexRead_) {
-                    sleep(10);
-                    timeout_msec -= 10;
-                    continue;
+                    if (readVring_->used->idx == lastUsedIndexRead_) {
+                        sleep(10);
+                        timeout_msec -= 10;
+                        continue;
+                    } else {
+                        break;
+                    }
                 } else {
-                    break;
+                    continue;
                 }
+            } else {
+                _printf("oooooooooooooooooooooo");
+                ASSERT(false);
             }
         }
 
@@ -422,6 +431,7 @@ public:
 
     bool receive(char* dst, unsigned int* len, int timeout_msec = 20)
     {
+        logprintf("mige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -435,24 +445,31 @@ public:
                 return false;
             }
             int result = MonAPI::Message::peek(&msg, i);
-            if (result != 0) {
+            // Message not found
+            if (result == M_BAD_INDEX) {
                 i--;
                 sleep(10);
                 timeout_msec -= 10;
                 continue;
-            } else if (msg.header == MSG_INTERRUPTED) {
-                MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
-                inp8(baseAddress_ + VIRTIO_PCI_ISR);
-                monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
+            } else if (result == M_OK) {
+                if (msg.header == MSG_INTERRUPTED) {
+                    MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+                    inp8(baseAddress_ + VIRTIO_PCI_ISR);
+                    monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
 
-                if (readVring_->used->idx == lastUsedIndexRead_) {
-                    sleep(10);
-                    timeout_msec -= 10;
-                    continue;
+                    if (readVring_->used->idx == lastUsedIndexRead_) {
+                        sleep(10);
+                        timeout_msec -= 10;
+                        continue;
+                    } else {
+                        break;
+                    }
                 } else {
-                    break;
+                    continue;
                 }
-
+            } else {
+                _printf("peek error");
+                ASSERT(false);
             }
         }
 //        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);

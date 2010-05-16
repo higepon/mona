@@ -150,7 +150,7 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
     context->memory = monapi_cmemoryinfo_new();
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
-    if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
+    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE) != M_OK)
     {
         monapi_cmemoryinfo_delete(context->memory);
         return MONA_ERROR_MEMORY_NOT_ENOUGH;
@@ -217,7 +217,7 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     int size = files.size();
-    if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
+    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);
         for (Files::const_iterator it = files.begin(); it != files.end(); ++it)

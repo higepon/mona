@@ -193,7 +193,6 @@ void syscall_entrance()
             intptr_t ret = g_messenger->send(thread, (MessageInfo*)(SYSTEM_CALL_ARG_2));
             setReturnValue(info, ret);
             if (ret == M_OK) {
-                g_scheduler->EventComes(thread, MEvent::MESSAGE);
                 g_scheduler->SwitchToNext();
                 /* not reached */
             } else {
@@ -641,16 +640,14 @@ void syscall_entrance()
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
         SharedMemoryObject* object = SharedMemoryObject::find(id);
-        if (object == NULL)
-        {
-            logprintf("error get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
-            break;
+        if (object == NULL) {
+            logprintf("error map_get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
+            setReturnValue(info, 0);
+        } else {
+            setReturnValue(info, object->getSize());
         }
-
-        setReturnValue(info, object->getSize());
         break;
     }
-
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
     {
@@ -844,10 +841,9 @@ void syscall_entrance()
 
         g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
         break;
-
     case SYSTEM_CALL_CHANGE_BASE_PRIORITY:
         g_scheduler->ChangeBasePriority(g_currentThread->thread, SYSTEM_CALL_ARG_1);
-
+        break;
     case SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE:
         g_currentThread->process->getDllSegment()->setWritable(true);
     break;

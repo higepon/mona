@@ -36,9 +36,9 @@ bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int li
 
     for (int i = 0; ; i++)
     {
-        int result = Message::peek(&msg, i);
+        intptr_t result = Message::peek(&msg, i);
 
-        if (result != 0)
+        if (result != M_OK)
         {
             i--;
             syscall_mthread_yield_message();
@@ -48,7 +48,9 @@ bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int li
             if (msg.arg1 != timerId) continue;
             kill_timer(timerId);
 
-            Message::peek(&msg, i, PEEK_REMOVE);
+            if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
 
             _printf("interrupt timeout %s:%d\n", file, line);
             return false;
@@ -58,7 +60,10 @@ bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int li
             if (msg.arg1 != irq) continue;
             kill_timer(timerId);
 
-            Message::peek(&msg, i, PEEK_REMOVE);
+            if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
+
             return true;
         }
     }
@@ -148,7 +153,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--)
     {
-        if (Message::send(destList->get(i), &message))
+        if (Message::send(destList->get(i), &message) != M_OK)
         {
             _printf("send error to pid = %x", destList->get(i));
             destList->removeAt(i);

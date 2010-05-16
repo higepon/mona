@@ -8,6 +8,7 @@
 #include <monapi/io.h>
 #include <monapi/syscall.h>
 #include <monapi/Message.h>
+#include <sys/error.h>
 
 /*!
     control irq interrupt.
@@ -55,7 +56,7 @@ MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, in
     {
         int result = MonAPI::Message::peek(&msg, i);
 
-        if (result != 0)
+        if (result != M_OK)
         {
             i--;
             syscall_mthread_yield_message();
@@ -65,7 +66,9 @@ MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, in
             if (msg.arg1 != timerId) continue;
             kill_timer(timerId);
 
-            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
 
             _printf("interrupt timeout %s:%d\n", file, line);
             return MONAPI_FALSE;
@@ -75,7 +78,10 @@ MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, in
             if (msg.arg1 != irq) continue;
             kill_timer(timerId);
 
-            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
+            }
+
             return MONAPI_TRUE;
         }
     }

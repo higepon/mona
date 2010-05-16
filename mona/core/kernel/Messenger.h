@@ -7,16 +7,18 @@
 /*----------------------------------------------------------------------
     Messenger
 ----------------------------------------------------------------------*/
-class Messenger {
-
-  public:
-    Messenger();
+class Messenger
+{
+public:
+    Messenger(Scheduler* scheduler);
     virtual ~Messenger();
 
-  public:
     intptr_t send(Thread* thread, MessageInfo* message);
-    int receive(Thread* thread, MessageInfo* message);
-    int peek(Thread* thread, MessageInfo* message, int index, int flags);
+    intptr_t receive(Thread* thread, MessageInfo* message);
+    intptr_t peek(Thread* thread, MessageInfo* message, int index, int flags);
+
+private:
+    Scheduler* scheduler_;
 };
 
 #endif

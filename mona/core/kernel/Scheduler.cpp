@@ -134,7 +134,6 @@ void Scheduler::WakeupTimer()
             timers.removeAt(i);
             g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
         }
-        g_scheduler->EventComes(thread, MEvent::MESSAGE);
     }
 }
 

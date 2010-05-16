@@ -161,6 +161,7 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[3] = 'P';
     eop[4] = '\0';
 
+    MonAPI::System::getStdoutStream();
     // ここに Wiki へのリンクを
     outStream->write((uint8_t*)eop, 5);
     for (int i = 1; i < argc; i++) delete [] argv[i];

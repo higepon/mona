@@ -163,8 +163,10 @@ int kill() {
 
 int exit(int error)
 {
-    MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
-                          MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error);
+    if (MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
+                              MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error) != M_OK) {
+        printf("Error %s:%d\n", __FILE__, __LINE__);
+    }
     return syscall_kill();
 }
 
@@ -897,7 +899,21 @@ uint32_t syscall_memory_map_create(uint32_t size)
     return syscall1(SYSTEM_CALL_MEMORY_MAP_CREATE, size);
 }
 
-uint32_t syscall_memory_map_get_size(uint32_t id)
+/*
+   function: syscall_memory_map_get_size
+
+   Returns size of memory map
+
+   Parameters:
+
+     id - memory map id
+
+   Returns:
+
+     Size or 0 on error.
+
+*/
+uintptr_t syscall_memory_map_get_size(uintptr_t id)
 {
     return syscall1(SYSTEM_CALL_MEMORY_MAP_GET_SIZE, id);
 }

@@ -401,7 +401,6 @@ int main(int argc, char *argv[])
     testWriteTwice();
     testWriteTwice_CreateTrue();
     testWriteTwice_Size();
-    //TODO: fix to pass test. testWriteLargeFile();
     testWriteLargeFile();
 
     testReadDirectory_Empty();

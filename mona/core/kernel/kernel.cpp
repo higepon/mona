@@ -227,9 +227,6 @@ void startKernel()
     /* shared memory object */
     SharedMemoryObject::setup();
 
-    /* messenger */
-    g_messenger = new Messenger();
-
     /* IDManager */
     g_id = new IDManager();
 
@@ -250,7 +247,10 @@ void startKernel()
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
 
-    g_console->printf("%s:%d", __FILE__, __LINE__);
+    /* messenger */
+    g_messenger = new Messenger(g_scheduler);
+
+    /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle);
     g_scheduler->Join(g_idleThread, ThreadPriority::Min);

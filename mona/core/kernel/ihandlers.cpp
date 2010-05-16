@@ -95,9 +95,7 @@ void SendInterrupt(int irq)
     msg.arg1   = irq;
 
     intptr_t ret = g_messenger->send(g_irqInfo[irq].thread->thread, &msg);
-    if (ret == M_OK) {
-        g_scheduler->EventComes(g_irqInfo[irq].thread->thread, MEvent::MESSAGE);
-    } else {
+    if (ret != M_OK) {
         g_console->printf("Send failed reason %d %s:%d\n", ret, __FILE__, __LINE__);
         g_irqInfo[irq].hasReceiver = false;
     }

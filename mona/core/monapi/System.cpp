@@ -24,7 +24,7 @@ namespace MonAPI
     uint32_t System::getParentThreadID()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != M_OK)
         {
             return NULL;
         }
@@ -34,7 +34,7 @@ namespace MonAPI
     const char* System::getProcessPath()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != M_OK)
         {
             return NULL;
         }
@@ -45,7 +45,7 @@ namespace MonAPI
     uint32_t System::getProcessStdoutID()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != M_OK)
         {
             return NULL;
         }
@@ -54,7 +54,7 @@ namespace MonAPI
     uint32_t System::getProcessStdinID()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_STDIO) != M_OK)
         {
             return NULL;
         }
