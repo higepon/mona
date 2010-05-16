@@ -6,6 +6,22 @@ PATH:=$(PATH):$(PREFIX)/bin
 export PATH
 export MINGWPREFIX
 
+#temp support for win32
+AR=ar r 
+INSTALL=install.exe
+EXEEXT=.exe
+RANLIB=ranlib
+NASM=nasm.exe
+STRIP=strip.exe
+export INSTALL
+export EXEEXT
+export AR
+export RANLIB
+export NASM
+export STRIP
+
+
+
 COREDIR = core/monalibc core/firstboot
 
 all: mkimg
@@ -51,6 +67,7 @@ tests: tools cores
 	cd test/monapi/misc && $(MAKE) && $(MAKE) install
 	cd test/monapi/message && $(MAKE) && $(MAKE) install
 	cd test/monapi/socket && $(MAKE) && $(MAKE) install
+	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 

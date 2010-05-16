@@ -19,10 +19,12 @@ $(TARGET).EX5: $(TARGET).EXE
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP)
+	#echo  "test" $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP)
 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	#$(LD) --Map $(TARGET).map $(LFLAGS)  -L$(LIBDIR) $(LINK) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS)
 #	$(STRIP) $@
 
-%nstall: force
+install: force
 	mkdir -p $(INSTDIR)
 	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 force: $(TARGET).EX5 ;
@@ -35,7 +37,8 @@ ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif
 ifneq ($(CSOURCES),)
-	$(CC) -MM $(INCLUDE) $(CFLAGS) $(SOURCES) >> dependencies
+	#$(CC) -MM $(INCLUDE) $(CFLAGS) $(SOURCES) >> dependencies
+	$(CC) -MM $(INCLUDE) $(CFLAGS) $(CSOURCES) >> dependencies
 endif
 ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done

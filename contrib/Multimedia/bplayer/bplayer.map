@@ -1,171 +1,171 @@
 Archive member included because of file (symbol)
 
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
                               bplayer.o (baygui::Component::setLocation(int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
                               bplayer.o (baygui::Component::setVisible(bool))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
                               bplayer.o (baygui::Component::update(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
                               bplayer.o (baygui::Component::update())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
                               bplayer.o (baygui::Component::dispatchEvent(baygui::Event*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
                               bplayer.o (baygui::Component::removeNotify())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
                               bplayer.o (baygui::Component::addNotify())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
                               bplayer.o (baygui::Window::setTimer(int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
                               bplayer.o (baygui::Container::remove(baygui::Component*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
                               bplayer.o (baygui::Container::getComponentAt(int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
                               bplayer.o (baygui::Container::getComponent())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
                               bplayer.o (baygui::Component::setFontStyle(int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
                               bplayer.o (baygui::Component::setParent(baygui::Container*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
                               bplayer.o (baygui::Window::setLocation(int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
                               bplayer.o (baygui::Window::setVisible(bool))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
                               bplayer.o (baygui::Component::setFocused(bool))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
                               bplayer.o (baygui::Component::setEnabled(bool))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
                               bplayer.o (baygui::Component::getMainWindow())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
                               bplayer.o (baygui::Window::getBuffer())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
                               bplayer.o (baygui::Window::getGraphics())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
                               bplayer.o (baygui::Window::update(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
                               bplayer.o (baygui::Window::update())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
                               bplayer.o (baygui::Window::dispatchEvent(baygui::Event*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
                               bplayer.o (baygui::Window::removeNotify())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
                               bplayer.o (baygui::Window::addNotify())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
                               bplayer.o (baygui::Object::equals(baygui::Object*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
                               bplayer.o (baygui::Window::run())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
                               bplayer.o (baygui::Container::add(baygui::Component*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
                               bplayer.o (baygui::Component::setForeground(unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
                               bplayer.o (baygui::Label::Label(baygui::String const&))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
                               bplayer.o (baygui::Component::setBackground(unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
                               bplayer.o (baygui::Window::stop())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
                               bplayer.o (baygui::Graphics::drawRect(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
                               bplayer.o (baygui::Graphics::setColor(unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
                               bplayer.o (baygui::Component::repaint())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
                               bplayer.o (baygui::Graphics::drawImage(baygui::Image*, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
                               bplayer.o (baygui::Graphics::fillRect(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
                               bplayer.o (baygui::Component::setBounds(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
                               bplayer.o (baygui::Image::Image(baygui::String const&))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
                               bplayer.o (baygui::String::~String())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
                               bplayer.o (baygui::String::String(char const*, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
                               bplayer.o (baygui::Component::~Component())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
                               bplayer.o (baygui::Component::Component())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
                               bplayer.o (baygui::Window::getInsets())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
                               PlayFrame.o (baygui::Component::paint(baygui::Graphics*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
                               PlayFrame.o (baygui::Component::processEvent(baygui::Event*))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
                               PlayFrame.o (baygui::Container::repaint())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
                               PlayFrame.o (baygui::Graphics::drawLine(int, int, int, int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
                               PlayFrame.o (baygui::Graphics::drawPixel(int, int, unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
                               PlayFrame.o (baygui::Graphics::setColor(unsigned char, unsigned char, unsigned char))
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
                               PlayFrame.o (baygui::Window::~Window())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
                               PlayFrame.o (baygui::Window::Window())
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000000.o)
-                              /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o) (_head_BAYGUI_DLL)
-/Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000281.o)
-                              /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000000.o) (BAYGUI_DLL_iname)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o) (__head_BAYGUI_DLL)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o) (_BAYGUI_DLL_iname)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
                               (__imp__monapi_memory_initialized)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
-                              /Users/Yume/mona/trunk/mona/lib/monapi_crt.o (exit)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
-                              /Users/Yume/mona/trunk/mona/lib/monapi_crt.o (user_start_c_impl)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
-                              /Users/Yume/mona/trunk/mona/lib/monapi_crt.o (setConstructorList)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
-                              /Users/Yume/mona/trunk/mona/lib/monapi_crt.o (invokeFuncList(void (**)(), char*, int))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
-                              /Users/Yume/mona/trunk/mona/lib/monapi_crt.o (monapi_initialize_memory)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
-                              bplayer.o (__main)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
-                              bplayer.o (_alloca)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_user_start_c_impl)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_setConstructorList)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (invokeFuncList(void (**)(), char const*, int))
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_monapi_initialize_memory)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_exit)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                              bplayer.o (___main)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                              bplayer.o (__alloca)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
                               bplayer.o (MonAPI::Thread::start())
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
                               bplayer.o (MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*)))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
                               bplayer.o (MonAPI::Thread::stop())
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
-                              bplayer.o (sleep)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+                              bplayer.o (_sleep)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
                               bplayer.o (MonAPI::audio::Beep::rest(unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
                               bplayer.o (MonAPI::audio::Beep::play(char const*))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
                               bplayer.o (MonAPI::audio::Beep::title(char const*))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
-                              bplayer.o (monapi_file_read_all)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
-                              bplayer.o (syscall_get_io)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
-                              bplayer.o (monapi_cmemoryinfo_delete)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
-                              bplayer.o (monapi_cmemoryinfo_dispose)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
-                              bplayer.o (monapi_file_read_directory)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+                              bplayer.o (_monapi_file_read_all)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+                              bplayer.o (_syscall_get_io)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+                              bplayer.o (_monapi_cmemoryinfo_delete)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+                              bplayer.o (_monapi_cmemoryinfo_dispose)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+                              bplayer.o (_monapi_file_read_directory)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
                               bplayer.o (MonAPI::audio::Beep::~Beep())
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
                               bplayer.o (MonAPI::audio::Beep::Beep())
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
-                              bplayer.o (printf)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
-                              bplayer.o (strlen)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
-                              bplayer.o (memmove)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+                              bplayer.o (_printf)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+                              bplayer.o (_strlen)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+                              bplayer.o (_memmove)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
                               bplayer.o (operator delete(void*))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
                               bplayer.o (operator new(unsigned int))
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000000.o)
-                              /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o) (_head_MONAPI_DLL)
-/Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000527.o)
-                              /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000000.o) (MONAPI_DLL_iname)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o) (__head_MONAPI_DLL)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o) (_MONAPI_DLL_iname)
 
 Discarded input sections
 
@@ -183,6 +183,7 @@ Linker script and memory map
 
                 0xa0000000                __image_base__ = 0xa0000000
                 0x00000000                __dll__ = 0x0
+                0xa0000000                ___ImageBase = 0xa0000000
                 0x00001000                __section_alignment__ = 0x1000
                 0x00000200                __file_alignment__ = 0x200
                 0x00000004                __major_os_version__ = 0x4
@@ -197,383 +198,303 @@ Linker script and memory map
                 0x00100000                __size_of_heap_reserve__ = 0x100000
                 0x00001000                __size_of_heap_commit__ = 0x1000
                 0x00000000                __loader_flags__ = 0x0
-LOAD /Users/Yume/mona/trunk/mona/lib/monapi_crt.o
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
 LOAD bplayer.o
 LOAD PlayFrame.o
-LOAD /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a
-LOAD /Users/Yume/mona/trunk/mona/lib/libmonalibc-imp.a
-LOAD /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonalibc-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
                 0x000001f0                . = SIZEOF_HEADERS
                 0x00001000                . = ALIGN (__section_alignment__)
 
-.text           0xa0001000     0x3200
+.text           0xa0001000     0x3410
  *(.init)
  *(.text)
- .text          0xa0001000       0x80 /Users/Yume/mona/trunk/mona/lib/monapi_crt.o
-                0xa0001007                _fu0__monapi_memory_initialized
-                0xa0001000                user_start
- .text          0xa0001080      0x6b0 bplayer.o
-                0xa0001150                main
- .text          0xa0001730      0x3c0 PlayFrame.o
-                0xa0001848                baygui::PlayFrame::~PlayFrame()
-                0xa00017bc                baygui::PlayFrame::PlayFrame(char const*)
-                0xa0001730                baygui::PlayFrame::PlayFrame(char const*)
-                0xa00018e0                baygui::PlayFrame::~PlayFrame()
-                0xa0001894                baygui::PlayFrame::~PlayFrame()
-                0xa0001934                baygui::PlayFrame::repaint()
- .text          0xa0001af0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
-                0xa0001af0                baygui::Component::setLocation(int, int)
- *fill*         0xa0001af8        0x8 00
- .text          0xa0001b00        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
-                0xa0001b00                baygui::Component::setVisible(bool)
- *fill*         0xa0001b08        0x8 00
- .text          0xa0001b10        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
-                0xa0001b10                baygui::Component::update(int, int, int, int)
- *fill*         0xa0001b18        0x8 00
- .text          0xa0001b20        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
-                0xa0001b20                baygui::Component::update()
- *fill*         0xa0001b28        0x8 00
- .text          0xa0001b30        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
-                0xa0001b30                baygui::Component::dispatchEvent(baygui::Event*)
- *fill*         0xa0001b38        0x8 00
- .text          0xa0001b40        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
-                0xa0001b40                baygui::Component::removeNotify()
- *fill*         0xa0001b48        0x8 00
- .text          0xa0001b50        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
-                0xa0001b50                baygui::Component::addNotify()
- *fill*         0xa0001b58        0x8 00
- .text          0xa0001b60        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
-                0xa0001b60                baygui::Window::setTimer(int)
- *fill*         0xa0001b68        0x8 00
- .text          0xa0001b70        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
-                0xa0001b70                baygui::Container::remove(baygui::Component*)
- *fill*         0xa0001b78        0x8 00
- .text          0xa0001b80        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
-                0xa0001b80                baygui::Container::getComponentAt(int, int)
- *fill*         0xa0001b88        0x8 00
- .text          0xa0001b90        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
-                0xa0001b90                baygui::Container::getComponent()
- *fill*         0xa0001b98        0x8 00
- .text          0xa0001ba0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
-                0xa0001ba0                baygui::Component::setFontStyle(int)
- *fill*         0xa0001ba8        0x8 00
- .text          0xa0001bb0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
-                0xa0001bb0                baygui::Component::setParent(baygui::Container*)
- *fill*         0xa0001bb8        0x8 00
- .text          0xa0001bc0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
-                0xa0001bc0                baygui::Window::setLocation(int, int)
- *fill*         0xa0001bc8        0x8 00
- .text          0xa0001bd0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
-                0xa0001bd0                baygui::Window::setVisible(bool)
- *fill*         0xa0001bd8        0x8 00
- .text          0xa0001be0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
-                0xa0001be0                baygui::Component::setFocused(bool)
- *fill*         0xa0001be8        0x8 00
- .text          0xa0001bf0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
-                0xa0001bf0                baygui::Component::setEnabled(bool)
- *fill*         0xa0001bf8        0x8 00
- .text          0xa0001c00        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
-                0xa0001c00                baygui::Component::getMainWindow()
- *fill*         0xa0001c08        0x8 00
- .text          0xa0001c10        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
-                0xa0001c10                baygui::Window::getBuffer()
- *fill*         0xa0001c18        0x8 00
- .text          0xa0001c20        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
-                0xa0001c20                baygui::Window::getGraphics()
- *fill*         0xa0001c28        0x8 00
- .text          0xa0001c30        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
-                0xa0001c30                baygui::Window::update(int, int, int, int)
- *fill*         0xa0001c38        0x8 00
- .text          0xa0001c40        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
-                0xa0001c40                baygui::Window::update()
- *fill*         0xa0001c48        0x8 00
- .text          0xa0001c50        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
-                0xa0001c50                baygui::Window::dispatchEvent(baygui::Event*)
- *fill*         0xa0001c58        0x8 00
- .text          0xa0001c60        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
-                0xa0001c60                baygui::Window::removeNotify()
- *fill*         0xa0001c68        0x8 00
- .text          0xa0001c70        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
-                0xa0001c70                baygui::Window::addNotify()
- *fill*         0xa0001c78        0x8 00
- .text          0xa0001c80        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
-                0xa0001c80                baygui::Object::equals(baygui::Object*)
- *fill*         0xa0001c88        0x8 00
- .text          0xa0001c90        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
-                0xa0001c90                baygui::Window::run()
- *fill*         0xa0001c98        0x8 00
- .text          0xa0001ca0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
-                0xa0001ca0                baygui::Container::add(baygui::Component*)
- *fill*         0xa0001ca8        0x8 00
- .text          0xa0001cb0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
-                0xa0001cb0                baygui::Component::setForeground(unsigned int)
- *fill*         0xa0001cb8        0x8 00
- .text          0xa0001cc0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
-                0xa0001cc0                baygui::Label::Label(baygui::String const&)
- *fill*         0xa0001cc8        0x8 00
- .text          0xa0001cd0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
-                0xa0001cd0                baygui::Component::setBackground(unsigned int)
- *fill*         0xa0001cd8        0x8 00
- .text          0xa0001ce0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
-                0xa0001ce0                baygui::Window::stop()
- *fill*         0xa0001ce8        0x8 00
- .text          0xa0001cf0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
-                0xa0001cf0                baygui::Graphics::drawRect(int, int, int, int)
- *fill*         0xa0001cf8        0x8 00
- .text          0xa0001d00        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
-                0xa0001d00                baygui::Graphics::setColor(unsigned int)
- *fill*         0xa0001d08        0x8 00
- .text          0xa0001d10        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
-                0xa0001d10                baygui::Component::repaint()
- *fill*         0xa0001d18        0x8 00
- .text          0xa0001d20        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
-                0xa0001d20                baygui::Graphics::drawImage(baygui::Image*, int, int)
- *fill*         0xa0001d28        0x8 00
- .text          0xa0001d30        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
-                0xa0001d30                baygui::Graphics::fillRect(int, int, int, int)
- *fill*         0xa0001d38        0x8 00
- .text          0xa0001d40        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
-                0xa0001d40                baygui::Component::setBounds(int, int, int, int)
- *fill*         0xa0001d48        0x8 00
- .text          0xa0001d50        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
-                0xa0001d50                baygui::Image::Image(baygui::String const&)
- *fill*         0xa0001d58        0x8 00
- .text          0xa0001d60        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
-                0xa0001d60                baygui::String::~String()
- *fill*         0xa0001d68        0x8 00
- .text          0xa0001d70        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
-                0xa0001d70                baygui::String::String(char const*, int)
- *fill*         0xa0001d78        0x8 00
- .text          0xa0001d80        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
-                0xa0001d80                baygui::Component::~Component()
- *fill*         0xa0001d88        0x8 00
- .text          0xa0001d90        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
-                0xa0001d90                baygui::Component::Component()
- *fill*         0xa0001d98        0x8 00
- .text          0xa0001da0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
-                0xa0001da0                baygui::Window::getInsets()
- *fill*         0xa0001da8        0x8 00
- .text          0xa0001db0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
-                0xa0001db0                baygui::Component::paint(baygui::Graphics*)
- *fill*         0xa0001db8        0x8 00
- .text          0xa0001dc0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
-                0xa0001dc0                baygui::Component::processEvent(baygui::Event*)
- *fill*         0xa0001dc8        0x8 00
- .text          0xa0001dd0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
-                0xa0001dd0                baygui::Container::repaint()
- *fill*         0xa0001dd8        0x8 00
- .text          0xa0001de0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
-                0xa0001de0                baygui::Graphics::drawLine(int, int, int, int)
- *fill*         0xa0001de8        0x8 00
- .text          0xa0001df0        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
-                0xa0001df0                baygui::Graphics::drawPixel(int, int, unsigned int)
- *fill*         0xa0001df8        0x8 00
- .text          0xa0001e00        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
-                0xa0001e00                baygui::Graphics::setColor(unsigned char, unsigned char, unsigned char)
- *fill*         0xa0001e08        0x8 00
- .text          0xa0001e10        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
-                0xa0001e10                baygui::Window::~Window()
- *fill*         0xa0001e18        0x8 00
- .text          0xa0001e20        0x8 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
-                0xa0001e20                baygui::Window::Window()
- *fill*         0xa0001e28        0x8 00
- .text          0xa0001e30        0x0 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
- .text          0xa0001e30        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
-                0xa0001e30                exit
- *fill*         0xa0001e38        0x8 00
- .text          0xa0001e40        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
-                0xa0001e40                user_start_c_impl
- *fill*         0xa0001e48        0x8 00
- .text          0xa0001e50        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
-                0xa0001e50                setConstructorList
- *fill*         0xa0001e58        0x8 00
- .text          0xa0001e60        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
-                0xa0001e60                invokeFuncList(void (**)(), char*, int)
- *fill*         0xa0001e68        0x8 00
- .text          0xa0001e70        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
-                0xa0001e70                monapi_initialize_memory
- *fill*         0xa0001e78        0x8 00
- .text          0xa0001e80        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
-                0xa0001e80                __main
- *fill*         0xa0001e88        0x8 00
- .text          0xa0001e90        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
-                0xa0001e90                _alloca
- *fill*         0xa0001e98        0x8 00
- .text          0xa0001ea0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
-                0xa0001ea0                MonAPI::Thread::start()
- *fill*         0xa0001ea8        0x8 00
- .text          0xa0001eb0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
-                0xa0001eb0                MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*))
- *fill*         0xa0001eb8        0x8 00
- .text          0xa0001ec0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
-                0xa0001ec0                MonAPI::Thread::stop()
- *fill*         0xa0001ec8        0x8 00
- .text          0xa0001ed0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
-                0xa0001ed0                sleep
- *fill*         0xa0001ed8        0x8 00
- .text          0xa0001ee0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
-                0xa0001ee0                MonAPI::audio::Beep::rest(unsigned int)
- *fill*         0xa0001ee8        0x8 00
- .text          0xa0001ef0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
-                0xa0001ef0                MonAPI::audio::Beep::play(char const*)
- *fill*         0xa0001ef8        0x8 00
- .text          0xa0001f00        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
-                0xa0001f00                MonAPI::audio::Beep::title(char const*)
- *fill*         0xa0001f08        0x8 00
- .text          0xa0001f10        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
-                0xa0001f10                monapi_file_read_all
- *fill*         0xa0001f18        0x8 00
- .text          0xa0001f20        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
-                0xa0001f20                syscall_get_io
- *fill*         0xa0001f28        0x8 00
- .text          0xa0001f30        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
-                0xa0001f30                monapi_cmemoryinfo_delete
- *fill*         0xa0001f38        0x8 00
- .text          0xa0001f40        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
-                0xa0001f40                monapi_cmemoryinfo_dispose
- *fill*         0xa0001f48        0x8 00
- .text          0xa0001f50        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
-                0xa0001f50                monapi_file_read_directory
- *fill*         0xa0001f58        0x8 00
- .text          0xa0001f60        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
-                0xa0001f60                MonAPI::audio::Beep::~Beep()
- *fill*         0xa0001f68        0x8 00
- .text          0xa0001f70        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
-                0xa0001f70                MonAPI::audio::Beep::Beep()
- *fill*         0xa0001f78        0x8 00
- .text          0xa0001f80        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
-                0xa0001f80                printf
- *fill*         0xa0001f88        0x8 00
- .text          0xa0001f90        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
-                0xa0001f90                strlen
- *fill*         0xa0001f98        0x8 00
- .text          0xa0001fa0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
-                0xa0001fa0                memmove
- *fill*         0xa0001fa8        0x8 00
- .text          0xa0001fb0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
-                0xa0001fb0                operator delete(void*)
- *fill*         0xa0001fb8        0x8 00
- .text          0xa0001fc0        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
-                0xa0001fc0                operator new(unsigned int)
+ .text          0xa0001000       0x90 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+                0xa0001009                __fu0__monapi_memory_initialized
+                0xa0001000                _user_start
+ .text          0xa0001090      0xbf0 bplayer.o
+                0xa0001660                _main
+ .text          0xa0001c80      0x500 PlayFrame.o
+                0xa0001de0                baygui::PlayFrame::~PlayFrame()
+                0xa0001d30                baygui::PlayFrame::PlayFrame(char const*)
+                0xa0001c80                baygui::PlayFrame::PlayFrame(char const*)
+                0xa0001e60                baygui::PlayFrame::~PlayFrame()
+                0xa0001e20                baygui::PlayFrame::~PlayFrame()
+                0xa0001eb0                baygui::PlayFrame::repaint()
+ .text          0xa0002180        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+                0xa0002180                baygui::Component::setLocation(int, int)
+ .text          0xa0002188        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+                0xa0002188                baygui::Component::setVisible(bool)
+ .text          0xa0002190        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+                0xa0002190                baygui::Component::update(int, int, int, int)
+ .text          0xa0002198        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+                0xa0002198                baygui::Component::update()
+ .text          0xa00021a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+                0xa00021a0                baygui::Component::dispatchEvent(baygui::Event*)
+ .text          0xa00021a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+                0xa00021a8                baygui::Component::removeNotify()
+ .text          0xa00021b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+                0xa00021b0                baygui::Component::addNotify()
+ .text          0xa00021b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+                0xa00021b8                baygui::Window::setTimer(int)
+ .text          0xa00021c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+                0xa00021c0                baygui::Container::remove(baygui::Component*)
+ .text          0xa00021c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+                0xa00021c8                baygui::Container::getComponentAt(int, int)
+ .text          0xa00021d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+                0xa00021d0                baygui::Container::getComponent()
+ .text          0xa00021d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+                0xa00021d8                baygui::Component::setFontStyle(int)
+ .text          0xa00021e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+                0xa00021e0                baygui::Component::setParent(baygui::Container*)
+ .text          0xa00021e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+                0xa00021e8                baygui::Window::setLocation(int, int)
+ .text          0xa00021f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+                0xa00021f0                baygui::Window::setVisible(bool)
+ .text          0xa00021f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+                0xa00021f8                baygui::Component::setFocused(bool)
+ .text          0xa0002200        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+                0xa0002200                baygui::Component::setEnabled(bool)
+ .text          0xa0002208        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+                0xa0002208                baygui::Component::getMainWindow()
+ .text          0xa0002210        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+                0xa0002210                baygui::Window::getBuffer()
+ .text          0xa0002218        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+                0xa0002218                baygui::Window::getGraphics()
+ .text          0xa0002220        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+                0xa0002220                baygui::Window::update(int, int, int, int)
+ .text          0xa0002228        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+                0xa0002228                baygui::Window::update()
+ .text          0xa0002230        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+                0xa0002230                baygui::Window::dispatchEvent(baygui::Event*)
+ .text          0xa0002238        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+                0xa0002238                baygui::Window::removeNotify()
+ .text          0xa0002240        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+                0xa0002240                baygui::Window::addNotify()
+ .text          0xa0002248        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+                0xa0002248                baygui::Object::equals(baygui::Object*)
+ .text          0xa0002250        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+                0xa0002250                baygui::Window::run()
+ .text          0xa0002258        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+                0xa0002258                baygui::Container::add(baygui::Component*)
+ .text          0xa0002260        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+                0xa0002260                baygui::Component::setForeground(unsigned int)
+ .text          0xa0002268        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+                0xa0002268                baygui::Label::Label(baygui::String const&)
+ .text          0xa0002270        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+                0xa0002270                baygui::Component::setBackground(unsigned int)
+ .text          0xa0002278        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+                0xa0002278                baygui::Window::stop()
+ .text          0xa0002280        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+                0xa0002280                baygui::Graphics::drawRect(int, int, int, int)
+ .text          0xa0002288        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+                0xa0002288                baygui::Graphics::setColor(unsigned int)
+ .text          0xa0002290        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+                0xa0002290                baygui::Component::repaint()
+ .text          0xa0002298        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+                0xa0002298                baygui::Graphics::drawImage(baygui::Image*, int, int)
+ .text          0xa00022a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+                0xa00022a0                baygui::Graphics::fillRect(int, int, int, int)
+ .text          0xa00022a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+                0xa00022a8                baygui::Component::setBounds(int, int, int, int)
+ .text          0xa00022b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+                0xa00022b0                baygui::Image::Image(baygui::String const&)
+ .text          0xa00022b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+                0xa00022b8                baygui::String::~String()
+ .text          0xa00022c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+                0xa00022c0                baygui::String::String(char const*, int)
+ .text          0xa00022c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+                0xa00022c8                baygui::Component::~Component()
+ .text          0xa00022d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+                0xa00022d0                baygui::Component::Component()
+ .text          0xa00022d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+                0xa00022d8                baygui::Window::getInsets()
+ .text          0xa00022e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+                0xa00022e0                baygui::Component::paint(baygui::Graphics*)
+ .text          0xa00022e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+                0xa00022e8                baygui::Component::processEvent(baygui::Event*)
+ .text          0xa00022f0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+                0xa00022f0                baygui::Container::repaint()
+ .text          0xa00022f8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+                0xa00022f8                baygui::Graphics::drawLine(int, int, int, int)
+ .text          0xa0002300        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+                0xa0002300                baygui::Graphics::drawPixel(int, int, unsigned int)
+ .text          0xa0002308        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+                0xa0002308                baygui::Graphics::setColor(unsigned char, unsigned char, unsigned char)
+ .text          0xa0002310        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+                0xa0002310                baygui::Window::~Window()
+ .text          0xa0002318        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+                0xa0002318                baygui::Window::Window()
+ .text          0xa0002320        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .text          0xa0002320        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+                0xa0002320                _user_start_c_impl
+ .text          0xa0002328        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+                0xa0002328                _setConstructorList
+ .text          0xa0002330        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                0xa0002330                invokeFuncList(void (**)(), char const*, int)
+ .text          0xa0002338        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+                0xa0002338                _monapi_initialize_memory
+ .text          0xa0002340        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                0xa0002340                _exit
+ .text          0xa0002348        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                0xa0002348                ___main
+ .text          0xa0002350        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                0xa0002350                __alloca
+ .text          0xa0002358        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+                0xa0002358                MonAPI::Thread::start()
+ .text          0xa0002360        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+                0xa0002360                MonAPI::Thread::Thread(void (*)(void*), void*, void (*)(void*))
+ .text          0xa0002368        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+                0xa0002368                MonAPI::Thread::stop()
+ .text          0xa0002370        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+                0xa0002370                _sleep
+ .text          0xa0002378        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+                0xa0002378                MonAPI::audio::Beep::rest(unsigned int)
+ .text          0xa0002380        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+                0xa0002380                MonAPI::audio::Beep::play(char const*)
+ .text          0xa0002388        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+                0xa0002388                MonAPI::audio::Beep::title(char const*)
+ .text          0xa0002390        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+                0xa0002390                _monapi_file_read_all
+ .text          0xa0002398        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+                0xa0002398                _syscall_get_io
+ .text          0xa00023a0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+                0xa00023a0                _monapi_cmemoryinfo_delete
+ .text          0xa00023a8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+                0xa00023a8                _monapi_cmemoryinfo_dispose
+ .text          0xa00023b0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+                0xa00023b0                _monapi_file_read_directory
+ .text          0xa00023b8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+                0xa00023b8                MonAPI::audio::Beep::~Beep()
+ .text          0xa00023c0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+                0xa00023c0                MonAPI::audio::Beep::Beep()
+ .text          0xa00023c8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+                0xa00023c8                _printf
+ .text          0xa00023d0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+                0xa00023d0                _strlen
+ .text          0xa00023d8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+                0xa00023d8                _memmove
+ .text          0xa00023e0        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+                0xa00023e0                operator delete(void*)
+ .text          0xa00023e8        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+                0xa00023e8                operator new(unsigned int)
  *(SORT(.text$*))
  .text$_ZN11ImageButton12processEventEPN6baygui5EventE
-                0xa0001fc8       0x6c bplayer.o
-                0xa0001fc8                ImageButton::processEvent(baygui::Event*)
+                0xa00023f0       0x80 bplayer.o
+                0xa00023f0                ImageButton::processEvent(baygui::Event*)
  .text$_ZN11ImageButton5paintEPN6baygui8GraphicsE
-                0xa0002034       0x20 bplayer.o
-                0xa0002034                ImageButton::paint(baygui::Graphics*)
+                0xa0002470       0x30 bplayer.o
+                0xa0002470                ImageButton::paint(baygui::Graphics*)
  .text$_ZN11ImageButtonD0Ev
-                0xa0002054       0x28 bplayer.o
-                0xa0002054                ImageButton::~ImageButton()
+                0xa00024a0       0x30 bplayer.o
+                0xa00024a0                ImageButton::~ImageButton()
  .text$_ZN11ImageButtonD1Ev
-                0xa000207c       0x1c bplayer.o
-                0xa000207c                ImageButton::~ImageButton()
+                0xa00024d0       0x20 bplayer.o
+                0xa00024d0                ImageButton::~ImageButton()
  .text$_ZN12ProgressIcon12processEventEPN6baygui5EventE
-                0xa0002098        0x8 bplayer.o
-                0xa0002098                ProgressIcon::processEvent(baygui::Event*)
+                0xa00024f0       0x10 bplayer.o
+                0xa00024f0                ProgressIcon::processEvent(baygui::Event*)
  .text$_ZN12ProgressIcon5paintEPN6baygui8GraphicsE
-                0xa00020a0       0x28 bplayer.o
-                0xa00020a0                ProgressIcon::paint(baygui::Graphics*)
+                0xa0002500       0x40 bplayer.o
+                0xa0002500                ProgressIcon::paint(baygui::Graphics*)
  .text$_ZN12ProgressIconD0Ev
-                0xa00020c8       0x9c bplayer.o
-                0xa00020c8                ProgressIcon::~ProgressIcon()
+                0xa0002540       0xa0 bplayer.o
+                0xa0002540                ProgressIcon::~ProgressIcon()
  .text$_ZN12ProgressIconD1Ev
-                0xa0002164       0x8c bplayer.o
-                0xa0002164                ProgressIcon::~ProgressIcon()
+                0xa00025e0       0x90 bplayer.o
+                0xa00025e0                ProgressIcon::~ProgressIcon()
  .text$_ZN15ImageSinkButton12processEventEPN6baygui5EventE
-                0xa00021f0       0xbc bplayer.o
-                0xa00021f0                ImageSinkButton::processEvent(baygui::Event*)
+                0xa0002670       0xd0 bplayer.o
+                0xa0002670                ImageSinkButton::processEvent(baygui::Event*)
  .text$_ZN15ImageSinkButton5paintEPN6baygui8GraphicsE
-                0xa00022ac       0x20 bplayer.o
-                0xa00022ac                ImageSinkButton::paint(baygui::Graphics*)
+                0xa0002740       0x30 bplayer.o
+                0xa0002740                ImageSinkButton::paint(baygui::Graphics*)
  .text$_ZN15ImageSinkButtonD0Ev
-                0xa00022cc       0x28 bplayer.o
-                0xa00022cc                ImageSinkButton::~ImageSinkButton()
+                0xa0002770       0x30 bplayer.o
+                0xa0002770                ImageSinkButton::~ImageSinkButton()
  .text$_ZN15ImageSinkButtonD1Ev
-                0xa00022f4       0x1c bplayer.o
-                0xa00022f4                ImageSinkButton::~ImageSinkButton()
+                0xa00027a0       0x20 bplayer.o
+                0xa00027a0                ImageSinkButton::~ImageSinkButton()
  .text$_ZN4_STL10__find_endIPKcS2_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S7_S7_T0_S8_RKNS_26bidirectional_iterator_tagESB_T1_
-                0xa0002310       0x68 bplayer.o
-                0xa0002310                char const* _STL::__find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::bidirectional_iterator_tag const&, _STL::bidirectional_iterator_tag const&, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa00027c0       0x90 bplayer.o
+                0xa00027c0                char const* _STL::__find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::bidirectional_iterator_tag const&, _STL::bidirectional_iterator_tag const&, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN4_STL12_String_baseIcNS_9allocatorIcEEE17_M_allocate_blockEj
-                0xa0002378       0x40 bplayer.o
-                0xa0002378                _STL::_String_base<char, _STL::allocator<char> >::_M_allocate_block(unsigned int)
+                0xa0002850       0x50 bplayer.o
+                0xa0002850                _STL::_String_base<char, _STL::allocator<char> >::_M_allocate_block(unsigned int)
  .text$_ZN4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1EPKcRKS4_
-                0xa00023b8       0x70 bplayer.o
-                0xa00023b8                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(char const*, _STL::allocator<char> const&)
+                0xa00028a0       0x80 bplayer.o
+                0xa00028a0                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(char const*, _STL::allocator<char> const&)
  .text$_ZN4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1ERKS5_
-                0xa0002428       0x6c bplayer.o
-                0xa0002428                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(_STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> > const&)
+                0xa0002920       0x80 bplayer.o
+                0xa0002920                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::basic_string(_STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> > const&)
  .text$_ZN4_STL6searchINS_16reverse_iteratorIPKcEES4_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S9_S9_T0_SA_T1_
-                0xa0002494      0x118 bplayer.o
-                0xa0002494                _STL::reverse_iterator<char const*> _STL::search<_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> > >(_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa00029a0      0x130 bplayer.o
+                0xa00029a0                _STL::reverse_iterator<char const*> _STL::search<_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> > >(_STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::reverse_iterator<char const*>, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN4_STL8find_endIPKcS2_NS_10_Eq_traitsINS_11char_traitsIcEEEEEET_S7_S7_T0_S8_T1_
-                0xa00025ac       0x24 bplayer.o
-                0xa00025ac                char const* _STL::find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> >)
+                0xa0002ad0       0x40 bplayer.o
+                0xa0002ad0                char const* _STL::find_end<char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> > >(char const*, char const*, char const*, char const*, _STL::_Eq_traits<_STL::char_traits<char> >)
  .text$_ZN6baygui9Component11getGraphicsEv
-                0xa00025d0        0xc bplayer.o
-                0xa00025d0                baygui::Component::getGraphics()
+                0xa0002b10       0x10 bplayer.o
+                0xa0002b10                baygui::Component::getGraphics()
  .text$_ZN6baygui9Component9getBufferEv
-                0xa00025dc        0xc bplayer.o
-                0xa00025dc                baygui::Component::getBuffer()
+                0xa0002b20       0x10 bplayer.o
+                0xa0002b20                baygui::Component::getBuffer()
  .text$_ZN6baygui9PlayFrame18getTitlebarClickedEii
-                0xa00025e8       0x44 bplayer.o
-                0xa00025e8                baygui::PlayFrame::getTitlebarClicked(int, int)
+                0xa0002b30       0x50 bplayer.o
+                0xa0002b30                baygui::PlayFrame::getTitlebarClicked(int, int)
  .text$_ZN6baygui9PlayFrame21getCloseButtonClickedEii
-                0xa000262c       0x38 bplayer.o
-                0xa000262c                baygui::PlayFrame::getCloseButtonClicked(int, int)
+                0xa0002b80       0x50 bplayer.o
+                0xa0002b80                baygui::PlayFrame::getCloseButtonClicked(int, int)
  .text$_ZN7BPlayer12processEventEPN6baygui5EventE
-                0xa0002664      0x2a4 bplayer.o
-                0xa0002664                BPlayer::processEvent(baygui::Event*)
+                0xa0002bd0      0x2a0 bplayer.o
+                0xa0002bd0                BPlayer::processEvent(baygui::Event*)
  .text$_ZN7BPlayer14initComponentsEv
-                0xa0002908      0xd9c bplayer.o
-                0xa0002908                BPlayer::initComponents()
- .text$_ZN7BPlayer4playEv
-                0xa00036a4      0x4f0 bplayer.o
-                0xa00036a4                BPlayer::play()
+                0xa0002e70      0xdb0 bplayer.o
+                0xa0002e70                BPlayer::initComponents()
  .text$_ZN7BPlayer4stopEv
-                0xa0003b94       0x58 bplayer.o
-                0xa0003b94                BPlayer::stop()
+                0xa0003c20       0x70 bplayer.o
+                0xa0003c20                BPlayer::stop()
  .text$_ZN7BPlayer5paintEPN6baygui8GraphicsE
-                0xa0003bec       0x80 bplayer.o
-                0xa0003bec                BPlayer::paint(baygui::Graphics*)
+                0xa0003c90       0xc0 bplayer.o
+                0xa0003c90                BPlayer::paint(baygui::Graphics*)
  .text$_ZN7BPlayerD0Ev
-                0xa0003c6c      0x250 bplayer.o
-                0xa0003c6c                BPlayer::~BPlayer()
+                0xa0003d50      0x210 bplayer.o
+                0xa0003d50                BPlayer::~BPlayer()
  .text$_ZN7BPlayerD1Ev
-                0xa0003ebc      0x23c bplayer.o
-                0xa0003ebc                BPlayer::~BPlayer()
+                0xa0003f60      0x200 bplayer.o
+                0xa0003f60                BPlayer::~BPlayer()
  .text$_ZNK4_STL12_String_baseIcNS_9allocatorIcEEE21_M_throw_length_errorEv
-                0xa00040f8       0x20 bplayer.o
-                0xa00040f8                _STL::_String_base<char, _STL::allocator<char> >::_M_throw_length_error() const
+                0xa0004160       0x20 bplayer.o
+                0xa0004160                _STL::_String_base<char, _STL::allocator<char> >::_M_throw_length_error() const
  .text$_ZNK4_STL12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE5rfindEPKcjj
-                0xa0004118       0x84 bplayer.o
-                0xa0004118                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::rfind(char const*, unsigned int, unsigned int) const
+                0xa0004180       0xa0 bplayer.o
+                0xa0004180                _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> >::rfind(char const*, unsigned int, unsigned int) const
  *(.glue_7t)
  *(.glue_7)
-                0xa000419c                ___CTOR_LIST__ = .
-                0xa000419c                __CTOR_LIST__ = .
-                0xa000419c        0x4 LONG 0xffffffff
+                0xa0004220                ___CTOR_LIST__ = .
+                0xa0004220                __CTOR_LIST__ = .
+                0xa0004220        0x4 LONG 0xffffffff
  *(.ctors)
  *(.ctor)
  *(SORT(.ctors.*))
-                0xa00041a0        0x4 LONG 0x0
-                0xa00041a4                ___DTOR_LIST__ = .
-                0xa00041a4                __DTOR_LIST__ = .
-                0xa00041a4        0x4 LONG 0xffffffff
+                0xa0004224        0x4 LONG 0x0
+                0xa0004228                ___DTOR_LIST__ = .
+                0xa0004228                __DTOR_LIST__ = .
+                0xa0004228        0x4 LONG 0xffffffff
  *(.dtors)
  *(.dtor)
  *(SORT(.dtors.*))
-                0xa00041a8        0x4 LONG 0x0
+                0xa000422c        0x4 LONG 0x0
  *(.fini)
  *(.gcc_exc)
-                0xa00041ac                PROVIDE (etext, .)
+                0xa0004230                PROVIDE (etext, .)
  *(.gcc_except_table)
 
 .data           0xa0005000        0x0
                 0xa0005000                __data_start__ = .
  *(.data)
- .data          0xa0005000        0x0 /Users/Yume/mona/trunk/mona/lib/monapi_crt.o
+ .data          0xa0005000        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
  .data          0xa0005000        0x0 bplayer.o
  .data          0xa0005000        0x0 PlayFrame.o
  *(.data2)
@@ -584,30 +505,30 @@ LOAD /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a
 
 .rdata          0xa0005000      0x600
  *(.rdata)
- .rdata         0xa0005000       0x10 /Users/Yume/mona/trunk/mona/lib/monapi_crt.o
- .rdata         0xa0005010      0x260 bplayer.o
+ .rdata         0xa0005000       0x10 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+ .rdata         0xa0005010      0x250 bplayer.o
  *(SORT(.rdata$*))
  .rdata$_ZTV11ImageButton
-                0xa0005270       0x80 bplayer.o
-                0xa0005270                vtable for ImageButton
+                0xa0005260       0x80 bplayer.o
+                0xa0005260                vtable for ImageButton
  .rdata$_ZTV12ProgressIcon
-                0xa00052f0       0x80 bplayer.o
-                0xa00052f0                vtable for ProgressIcon
+                0xa00052e0       0x80 bplayer.o
+                0xa00052e0                vtable for ProgressIcon
  .rdata$_ZTV15ImageSinkButton
-                0xa0005370       0x80 bplayer.o
-                0xa0005370                vtable for ImageSinkButton
+                0xa0005360       0x80 bplayer.o
+                0xa0005360                vtable for ImageSinkButton
  .rdata$_ZTV7BPlayer
-                0xa00053f0       0xa0 bplayer.o
-                0xa00053f0                vtable for BPlayer
+                0xa00053e0       0xa0 bplayer.o
+                0xa00053e0                vtable for BPlayer
  .rdata$_ZTVN6baygui9PlayFrameE
-                0xa0005490       0xa0 PlayFrame.o
-                0xa0005490                vtable for baygui::PlayFrame
+                0xa0005480       0xa0 PlayFrame.o
+                0xa0005480                vtable for baygui::PlayFrame
  *(.eh_frame)
-                0xa0005530                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
-                0xa0005530                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0xa0005520                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0xa0005520                __RUNTIME_PSEUDO_RELOC_LIST__ = .
  *(.rdata_runtime_pseudo_reloc)
-                0xa0005530                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
-                0xa0005530                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0xa0005520                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0xa0005520                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
 
 .pdata
  *(.pdata)
@@ -615,7 +536,7 @@ LOAD /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a
 .bss            0xa0006000        0x0
                 0xa0006000                __bss_start__ = .
  *(.bss)
- .bss           0xa0006000        0x0 /Users/Yume/mona/trunk/mona/lib/monapi_crt.o
+ .bss           0xa0006000        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
  .bss           0xa0006000        0x0 bplayer.o
  .bss           0xa0006000        0x0 PlayFrame.o
  *(COMMON)
@@ -632,432 +553,432 @@ LOAD /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a
 
 .idata          0xa0006000     0x1000
  SORT(*)(.idata$2)
- .idata$2       0xa0006000       0x14 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000000.o)
-                0xa0006000                _head_BAYGUI_DLL
- .idata$2       0xa0006014       0x14 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000000.o)
-                0xa0006014                _head_MONAPI_DLL
+ .idata$2       0xa0006000       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o)
+                0xa0006000                __head_BAYGUI_DLL
+ .idata$2       0xa0006014       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+                0xa0006014                __head_MONAPI_DLL
+ .idata$2       0xa0006028       0x14 fu000001.o
  SORT(*)(.idata$3)
- .idata$3       0xa0006028       0x14 fu000001.o
                 0xa000603c        0x4 LONG 0x0
                 0xa0006040        0x4 LONG 0x0
                 0xa0006044        0x4 LONG 0x0
                 0xa0006048        0x4 LONG 0x0
                 0xa000604c        0x4 LONG 0x0
  SORT(*)(.idata$4)
- .idata$4       0xa0006050        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000000.o)
- .idata$4       0xa0006054        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
- .idata$4       0xa0006058        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
- .idata$4       0xa000605c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
- .idata$4       0xa0006060        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
- .idata$4       0xa0006064        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
- .idata$4       0xa0006068        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
- .idata$4       0xa000606c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
- .idata$4       0xa0006070        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
- .idata$4       0xa0006074        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
- .idata$4       0xa0006078        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
- .idata$4       0xa000607c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
- .idata$4       0xa0006080        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
- .idata$4       0xa0006084        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
- .idata$4       0xa0006088        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
- .idata$4       0xa000608c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
- .idata$4       0xa0006090        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
- .idata$4       0xa0006094        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
- .idata$4       0xa0006098        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
- .idata$4       0xa000609c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
- .idata$4       0xa00060a0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
- .idata$4       0xa00060a4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
- .idata$4       0xa00060a8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
- .idata$4       0xa00060ac        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
- .idata$4       0xa00060b0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
- .idata$4       0xa00060b4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
- .idata$4       0xa00060b8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
- .idata$4       0xa00060bc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
- .idata$4       0xa00060c0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
- .idata$4       0xa00060c4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
- .idata$4       0xa00060c8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
- .idata$4       0xa00060cc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
- .idata$4       0xa00060d0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
- .idata$4       0xa00060d4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
- .idata$4       0xa00060d8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
- .idata$4       0xa00060dc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
- .idata$4       0xa00060e0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
- .idata$4       0xa00060e4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
- .idata$4       0xa00060e8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
- .idata$4       0xa00060ec        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
- .idata$4       0xa00060f0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
- .idata$4       0xa00060f4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
- .idata$4       0xa00060f8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
- .idata$4       0xa00060fc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
- .idata$4       0xa0006100        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
- .idata$4       0xa0006104        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
- .idata$4       0xa0006108        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
- .idata$4       0xa000610c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
- .idata$4       0xa0006110        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
- .idata$4       0xa0006114        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
- .idata$4       0xa0006118        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
- .idata$4       0xa000611c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
- .idata$4       0xa0006120        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
- .idata$4       0xa0006124        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000281.o)
- .idata$4       0xa0006128        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000000.o)
- .idata$4       0xa000612c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
- .idata$4       0xa0006130        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
- .idata$4       0xa0006134        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
- .idata$4       0xa0006138        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
- .idata$4       0xa000613c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
- .idata$4       0xa0006140        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
- .idata$4       0xa0006144        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
- .idata$4       0xa0006148        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
- .idata$4       0xa000614c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
- .idata$4       0xa0006150        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
- .idata$4       0xa0006154        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
- .idata$4       0xa0006158        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
- .idata$4       0xa000615c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
- .idata$4       0xa0006160        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
- .idata$4       0xa0006164        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
- .idata$4       0xa0006168        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
- .idata$4       0xa000616c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
- .idata$4       0xa0006170        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
- .idata$4       0xa0006174        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
- .idata$4       0xa0006178        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
- .idata$4       0xa000617c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
- .idata$4       0xa0006180        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
- .idata$4       0xa0006184        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
- .idata$4       0xa0006188        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
- .idata$4       0xa000618c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
- .idata$4       0xa0006190        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
- .idata$4       0xa0006194        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
- .idata$4       0xa0006198        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000527.o)
+ .idata$4       0xa0006050        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o)
+ .idata$4       0xa0006054        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+ .idata$4       0xa0006058        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+ .idata$4       0xa000605c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+ .idata$4       0xa0006060        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+ .idata$4       0xa0006064        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+ .idata$4       0xa0006068        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+ .idata$4       0xa000606c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+ .idata$4       0xa0006070        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+ .idata$4       0xa0006074        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+ .idata$4       0xa0006078        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+ .idata$4       0xa000607c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+ .idata$4       0xa0006080        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+ .idata$4       0xa0006084        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+ .idata$4       0xa0006088        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+ .idata$4       0xa000608c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+ .idata$4       0xa0006090        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+ .idata$4       0xa0006094        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+ .idata$4       0xa0006098        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+ .idata$4       0xa000609c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+ .idata$4       0xa00060a0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+ .idata$4       0xa00060a4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+ .idata$4       0xa00060a8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+ .idata$4       0xa00060ac        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+ .idata$4       0xa00060b0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+ .idata$4       0xa00060b4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+ .idata$4       0xa00060b8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+ .idata$4       0xa00060bc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+ .idata$4       0xa00060c0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+ .idata$4       0xa00060c4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+ .idata$4       0xa00060c8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+ .idata$4       0xa00060cc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+ .idata$4       0xa00060d0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+ .idata$4       0xa00060d4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+ .idata$4       0xa00060d8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+ .idata$4       0xa00060dc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+ .idata$4       0xa00060e0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+ .idata$4       0xa00060e4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+ .idata$4       0xa00060e8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+ .idata$4       0xa00060ec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+ .idata$4       0xa00060f0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+ .idata$4       0xa00060f4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+ .idata$4       0xa00060f8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+ .idata$4       0xa00060fc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+ .idata$4       0xa0006100        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+ .idata$4       0xa0006104        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+ .idata$4       0xa0006108        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+ .idata$4       0xa000610c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+ .idata$4       0xa0006110        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+ .idata$4       0xa0006114        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+ .idata$4       0xa0006118        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+ .idata$4       0xa000611c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+ .idata$4       0xa0006120        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+ .idata$4       0xa0006124        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
+ .idata$4       0xa0006128        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+ .idata$4       0xa000612c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$4       0xa0006130        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$4       0xa0006134        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$4       0xa0006138        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$4       0xa000613c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$4       0xa0006140        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$4       0xa0006144        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$4       0xa0006148        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$4       0xa000614c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$4       0xa0006150        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$4       0xa0006154        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$4       0xa0006158        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$4       0xa000615c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$4       0xa0006160        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$4       0xa0006164        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$4       0xa0006168        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$4       0xa000616c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$4       0xa0006170        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$4       0xa0006174        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$4       0xa0006178        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$4       0xa000617c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$4       0xa0006180        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$4       0xa0006184        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$4       0xa0006188        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$4       0xa000618c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$4       0xa0006190        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$4       0xa0006194        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+ .idata$4       0xa0006198        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
  .idata$4       0xa000619c        0x8 nmth000000.o
-                0xa000619c                _nm_thnk__monapi_memory_initialized
+                0xa000619c                __nm_thnk__monapi_memory_initialized
  SORT(*)(.idata$5)
- .idata$5       0xa00061a4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000000.o)
- .idata$5       0xa00061a8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
-                0xa00061a8                _imp___ZN6baygui5ImageC1ERKNS_6StringE
- .idata$5       0xa00061ac        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
-                0xa00061ac                _imp___ZN6baygui5LabelC1ERKNS_6StringE
- .idata$5       0xa00061b0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
-                0xa00061b0                _imp___ZN6baygui6Object6equalsEPS0_
- .idata$5       0xa00061b4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
-                0xa00061b4                _imp___ZN6baygui6StringC1EPKci
- .idata$5       0xa00061b8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
-                0xa00061b8                _imp___ZN6baygui6StringD1Ev
- .idata$5       0xa00061bc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
-                0xa00061bc                _imp___ZN6baygui6Window10setVisibleEb
- .idata$5       0xa00061c0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
-                0xa00061c0                _imp___ZN6baygui6Window11getGraphicsEv
- .idata$5       0xa00061c4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
-                0xa00061c4                _imp___ZN6baygui6Window11setLocationEii
- .idata$5       0xa00061c8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
-                0xa00061c8                _imp___ZN6baygui6Window12removeNotifyEv
- .idata$5       0xa00061cc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
-                0xa00061cc                _imp___ZN6baygui6Window13dispatchEventEPNS_5EventE
- .idata$5       0xa00061d0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
-                0xa00061d0                _imp___ZN6baygui6Window3runEv
- .idata$5       0xa00061d4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
-                0xa00061d4                _imp___ZN6baygui6Window4stopEv
- .idata$5       0xa00061d8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
-                0xa00061d8                _imp___ZN6baygui6Window6updateEiiii
- .idata$5       0xa00061dc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
-                0xa00061dc                _imp___ZN6baygui6Window6updateEv
- .idata$5       0xa00061e0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
-                0xa00061e0                _imp___ZN6baygui6Window8setTimerEi
- .idata$5       0xa00061e4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
-                0xa00061e4                _imp___ZN6baygui6Window9addNotifyEv
- .idata$5       0xa00061e8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
-                0xa00061e8                _imp___ZN6baygui6Window9getBufferEv
- .idata$5       0xa00061ec        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
-                0xa00061ec                _imp___ZN6baygui6Window9getInsetsEv
- .idata$5       0xa00061f0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
-                0xa00061f0                _imp___ZN6baygui6WindowC2Ev
- .idata$5       0xa00061f4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
-                0xa00061f4                _imp___ZN6baygui6WindowD2Ev
- .idata$5       0xa00061f8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
-                0xa00061f8                _imp___ZN6baygui8Graphics8drawLineEiiii
- .idata$5       0xa00061fc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
-                0xa00061fc                _imp___ZN6baygui8Graphics8drawRectEiiii
- .idata$5       0xa0006200        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
-                0xa0006200                _imp___ZN6baygui8Graphics8fillRectEiiii
- .idata$5       0xa0006204        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
-                0xa0006204                _imp___ZN6baygui8Graphics8setColorEhhh
- .idata$5       0xa0006208        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
-                0xa0006208                _imp___ZN6baygui8Graphics8setColorEj
- .idata$5       0xa000620c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
-                0xa000620c                _imp___ZN6baygui8Graphics9drawImageEPNS_5ImageEii
- .idata$5       0xa0006210        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
-                0xa0006210                _imp___ZN6baygui8Graphics9drawPixelEiij
- .idata$5       0xa0006214        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
-                0xa0006214                _imp___ZN6baygui9Component10setEnabledEb
- .idata$5       0xa0006218        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
-                0xa0006218                _imp___ZN6baygui9Component10setFocusedEb
- .idata$5       0xa000621c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
-                0xa000621c                _imp___ZN6baygui9Component10setVisibleEb
- .idata$5       0xa0006220        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
-                0xa0006220                _imp___ZN6baygui9Component11setLocationEii
- .idata$5       0xa0006224        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
-                0xa0006224                _imp___ZN6baygui9Component12processEventEPNS_5EventE
- .idata$5       0xa0006228        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
-                0xa0006228                _imp___ZN6baygui9Component12removeNotifyEv
- .idata$5       0xa000622c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
-                0xa000622c                _imp___ZN6baygui9Component12setFontStyleEi
- .idata$5       0xa0006230        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
-                0xa0006230                _imp___ZN6baygui9Component13dispatchEventEPNS_5EventE
- .idata$5       0xa0006234        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
-                0xa0006234                _imp___ZN6baygui9Component13getMainWindowEv
- .idata$5       0xa0006238        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
-                0xa0006238                _imp___ZN6baygui9Component13setBackgroundEj
- .idata$5       0xa000623c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
-                0xa000623c                _imp___ZN6baygui9Component13setForegroundEj
- .idata$5       0xa0006240        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
-                0xa0006240                _imp___ZN6baygui9Component5paintEPNS_8GraphicsE
- .idata$5       0xa0006244        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
-                0xa0006244                _imp___ZN6baygui9Component6updateEiiii
- .idata$5       0xa0006248        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
-                0xa0006248                _imp___ZN6baygui9Component6updateEv
- .idata$5       0xa000624c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
-                0xa000624c                _imp___ZN6baygui9Component7repaintEv
- .idata$5       0xa0006250        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
-                0xa0006250                _imp___ZN6baygui9Component9addNotifyEv
- .idata$5       0xa0006254        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
-                0xa0006254                _imp___ZN6baygui9Component9setBoundsEiiii
- .idata$5       0xa0006258        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
-                0xa0006258                _imp___ZN6baygui9Component9setParentEPNS_9ContainerE
- .idata$5       0xa000625c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
-                0xa000625c                _imp___ZN6baygui9ComponentC2Ev
- .idata$5       0xa0006260        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
-                0xa0006260                _imp___ZN6baygui9ComponentD2Ev
- .idata$5       0xa0006264        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
-                0xa0006264                _imp___ZN6baygui9Container12getComponentEv
- .idata$5       0xa0006268        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
-                0xa0006268                _imp___ZN6baygui9Container14getComponentAtEii
- .idata$5       0xa000626c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
-                0xa000626c                _imp___ZN6baygui9Container3addEPNS_9ComponentE
- .idata$5       0xa0006270        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
-                0xa0006270                _imp___ZN6baygui9Container6removeEPNS_9ComponentE
- .idata$5       0xa0006274        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
-                0xa0006274                _imp___ZN6baygui9Container7repaintEv
- .idata$5       0xa0006278        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000281.o)
- .idata$5       0xa000627c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000000.o)
- .idata$5       0xa0006280        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
-                0xa0006280                _imp___Z14invokeFuncListPPFvvEPci
- .idata$5       0xa0006284        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
-                0xa0006284                _imp___ZN6MonAPI5audio4Beep4playEPKc
- .idata$5       0xa0006288        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
-                0xa0006288                _imp___ZN6MonAPI5audio4Beep4restEj
- .idata$5       0xa000628c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
-                0xa000628c                _imp___ZN6MonAPI5audio4Beep5titleEPKc
- .idata$5       0xa0006290        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
-                0xa0006290                _imp___ZN6MonAPI5audio4BeepC1Ev
- .idata$5       0xa0006294        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
-                0xa0006294                _imp___ZN6MonAPI5audio4BeepD1Ev
- .idata$5       0xa0006298        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
-                0xa0006298                _imp___ZN6MonAPI6Thread4stopEv
- .idata$5       0xa000629c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
-                0xa000629c                _imp___ZN6MonAPI6Thread5startEv
- .idata$5       0xa00062a0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
-                0xa00062a0                _imp___ZN6MonAPI6ThreadC1EPFvPvES1_S3_
- .idata$5       0xa00062a4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
-                0xa00062a4                _imp___ZdlPv
- .idata$5       0xa00062a8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
-                0xa00062a8                _imp___Znwj
- .idata$5       0xa00062ac        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
-                0xa00062ac                _imp____main
- .idata$5       0xa00062b0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
-                0xa00062b0                _imp___alloca
- .idata$5       0xa00062b4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
-                0xa00062b4                _imp__exit
- .idata$5       0xa00062b8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
-                0xa00062b8                _imp__memmove
- .idata$5       0xa00062bc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
-                0xa00062bc                _imp__monapi_cmemoryinfo_delete
- .idata$5       0xa00062c0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
-                0xa00062c0                _imp__monapi_cmemoryinfo_dispose
- .idata$5       0xa00062c4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
-                0xa00062c4                _imp__monapi_file_read_all
- .idata$5       0xa00062c8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
-                0xa00062c8                _imp__monapi_file_read_directory
- .idata$5       0xa00062cc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
-                0xa00062cc                _imp__monapi_initialize_memory
- .idata$5       0xa00062d0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
-                0xa00062d0                _imp__monapi_memory_initialized
-                0xa00062d0                _imp__monapi_memory_initialized
- .idata$5       0xa00062d4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
-                0xa00062d4                _imp__printf
- .idata$5       0xa00062d8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
-                0xa00062d8                _imp__setConstructorList
- .idata$5       0xa00062dc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
-                0xa00062dc                _imp__sleep
- .idata$5       0xa00062e0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
-                0xa00062e0                _imp__strlen
- .idata$5       0xa00062e4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
-                0xa00062e4                _imp__syscall_get_io
- .idata$5       0xa00062e8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
-                0xa00062e8                _imp__user_start_c_impl
- .idata$5       0xa00062ec        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000527.o)
+ .idata$5       0xa00061a4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000000.o)
+ .idata$5       0xa00061a8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+                0xa00061a8                __imp___ZN6baygui5ImageC1ERKNS_6StringE
+ .idata$5       0xa00061ac        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+                0xa00061ac                __imp___ZN6baygui5LabelC1ERKNS_6StringE
+ .idata$5       0xa00061b0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+                0xa00061b0                __imp___ZN6baygui6Object6equalsEPS0_
+ .idata$5       0xa00061b4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+                0xa00061b4                __imp___ZN6baygui6StringC1EPKci
+ .idata$5       0xa00061b8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+                0xa00061b8                __imp___ZN6baygui6StringD1Ev
+ .idata$5       0xa00061bc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+                0xa00061bc                __imp___ZN6baygui6Window10setVisibleEb
+ .idata$5       0xa00061c0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+                0xa00061c0                __imp___ZN6baygui6Window11getGraphicsEv
+ .idata$5       0xa00061c4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+                0xa00061c4                __imp___ZN6baygui6Window11setLocationEii
+ .idata$5       0xa00061c8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+                0xa00061c8                __imp___ZN6baygui6Window12removeNotifyEv
+ .idata$5       0xa00061cc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+                0xa00061cc                __imp___ZN6baygui6Window13dispatchEventEPNS_5EventE
+ .idata$5       0xa00061d0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+                0xa00061d0                __imp___ZN6baygui6Window3runEv
+ .idata$5       0xa00061d4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+                0xa00061d4                __imp___ZN6baygui6Window4stopEv
+ .idata$5       0xa00061d8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+                0xa00061d8                __imp___ZN6baygui6Window6updateEiiii
+ .idata$5       0xa00061dc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+                0xa00061dc                __imp___ZN6baygui6Window6updateEv
+ .idata$5       0xa00061e0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+                0xa00061e0                __imp___ZN6baygui6Window8setTimerEi
+ .idata$5       0xa00061e4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+                0xa00061e4                __imp___ZN6baygui6Window9addNotifyEv
+ .idata$5       0xa00061e8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+                0xa00061e8                __imp___ZN6baygui6Window9getBufferEv
+ .idata$5       0xa00061ec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+                0xa00061ec                __imp___ZN6baygui6Window9getInsetsEv
+ .idata$5       0xa00061f0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+                0xa00061f0                __imp___ZN6baygui6WindowC2Ev
+ .idata$5       0xa00061f4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+                0xa00061f4                __imp___ZN6baygui6WindowD2Ev
+ .idata$5       0xa00061f8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+                0xa00061f8                __imp___ZN6baygui8Graphics8drawLineEiiii
+ .idata$5       0xa00061fc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+                0xa00061fc                __imp___ZN6baygui8Graphics8drawRectEiiii
+ .idata$5       0xa0006200        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+                0xa0006200                __imp___ZN6baygui8Graphics8fillRectEiiii
+ .idata$5       0xa0006204        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+                0xa0006204                __imp___ZN6baygui8Graphics8setColorEhhh
+ .idata$5       0xa0006208        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+                0xa0006208                __imp___ZN6baygui8Graphics8setColorEj
+ .idata$5       0xa000620c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+                0xa000620c                __imp___ZN6baygui8Graphics9drawImageEPNS_5ImageEii
+ .idata$5       0xa0006210        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+                0xa0006210                __imp___ZN6baygui8Graphics9drawPixelEiij
+ .idata$5       0xa0006214        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+                0xa0006214                __imp___ZN6baygui9Component10setEnabledEb
+ .idata$5       0xa0006218        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+                0xa0006218                __imp___ZN6baygui9Component10setFocusedEb
+ .idata$5       0xa000621c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+                0xa000621c                __imp___ZN6baygui9Component10setVisibleEb
+ .idata$5       0xa0006220        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+                0xa0006220                __imp___ZN6baygui9Component11setLocationEii
+ .idata$5       0xa0006224        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+                0xa0006224                __imp___ZN6baygui9Component12processEventEPNS_5EventE
+ .idata$5       0xa0006228        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+                0xa0006228                __imp___ZN6baygui9Component12removeNotifyEv
+ .idata$5       0xa000622c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+                0xa000622c                __imp___ZN6baygui9Component12setFontStyleEi
+ .idata$5       0xa0006230        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+                0xa0006230                __imp___ZN6baygui9Component13dispatchEventEPNS_5EventE
+ .idata$5       0xa0006234        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+                0xa0006234                __imp___ZN6baygui9Component13getMainWindowEv
+ .idata$5       0xa0006238        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+                0xa0006238                __imp___ZN6baygui9Component13setBackgroundEj
+ .idata$5       0xa000623c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+                0xa000623c                __imp___ZN6baygui9Component13setForegroundEj
+ .idata$5       0xa0006240        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+                0xa0006240                __imp___ZN6baygui9Component5paintEPNS_8GraphicsE
+ .idata$5       0xa0006244        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+                0xa0006244                __imp___ZN6baygui9Component6updateEiiii
+ .idata$5       0xa0006248        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+                0xa0006248                __imp___ZN6baygui9Component6updateEv
+ .idata$5       0xa000624c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+                0xa000624c                __imp___ZN6baygui9Component7repaintEv
+ .idata$5       0xa0006250        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+                0xa0006250                __imp___ZN6baygui9Component9addNotifyEv
+ .idata$5       0xa0006254        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+                0xa0006254                __imp___ZN6baygui9Component9setBoundsEiiii
+ .idata$5       0xa0006258        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+                0xa0006258                __imp___ZN6baygui9Component9setParentEPNS_9ContainerE
+ .idata$5       0xa000625c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+                0xa000625c                __imp___ZN6baygui9ComponentC2Ev
+ .idata$5       0xa0006260        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+                0xa0006260                __imp___ZN6baygui9ComponentD2Ev
+ .idata$5       0xa0006264        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+                0xa0006264                __imp___ZN6baygui9Container12getComponentEv
+ .idata$5       0xa0006268        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+                0xa0006268                __imp___ZN6baygui9Container14getComponentAtEii
+ .idata$5       0xa000626c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+                0xa000626c                __imp___ZN6baygui9Container3addEPNS_9ComponentE
+ .idata$5       0xa0006270        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+                0xa0006270                __imp___ZN6baygui9Container6removeEPNS_9ComponentE
+ .idata$5       0xa0006274        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+                0xa0006274                __imp___ZN6baygui9Container7repaintEv
+ .idata$5       0xa0006278        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
+ .idata$5       0xa000627c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+ .idata$5       0xa0006280        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                0xa0006280                __imp___Z14invokeFuncListPPFvvEPKci
+ .idata$5       0xa0006284        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+                0xa0006284                __imp___ZN6MonAPI5audio4Beep4playEPKc
+ .idata$5       0xa0006288        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+                0xa0006288                __imp___ZN6MonAPI5audio4Beep4restEj
+ .idata$5       0xa000628c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+                0xa000628c                __imp___ZN6MonAPI5audio4Beep5titleEPKc
+ .idata$5       0xa0006290        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+                0xa0006290                __imp___ZN6MonAPI5audio4BeepC1Ev
+ .idata$5       0xa0006294        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+                0xa0006294                __imp___ZN6MonAPI5audio4BeepD1Ev
+ .idata$5       0xa0006298        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+                0xa0006298                __imp___ZN6MonAPI6Thread4stopEv
+ .idata$5       0xa000629c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+                0xa000629c                __imp___ZN6MonAPI6Thread5startEv
+ .idata$5       0xa00062a0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+                0xa00062a0                __imp___ZN6MonAPI6ThreadC1EPFvPvES1_S3_
+ .idata$5       0xa00062a4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+                0xa00062a4                __imp___ZdlPv
+ .idata$5       0xa00062a8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+                0xa00062a8                __imp___Znwj
+ .idata$5       0xa00062ac        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                0xa00062ac                __imp____main
+ .idata$5       0xa00062b0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                0xa00062b0                __imp___alloca
+ .idata$5       0xa00062b4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                0xa00062b4                __imp__exit
+ .idata$5       0xa00062b8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+                0xa00062b8                __imp__memmove
+ .idata$5       0xa00062bc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+                0xa00062bc                __imp__monapi_cmemoryinfo_delete
+ .idata$5       0xa00062c0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+                0xa00062c0                __imp__monapi_cmemoryinfo_dispose
+ .idata$5       0xa00062c4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+                0xa00062c4                __imp__monapi_file_read_all
+ .idata$5       0xa00062c8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+                0xa00062c8                __imp__monapi_file_read_directory
+ .idata$5       0xa00062cc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+                0xa00062cc                __imp__monapi_initialize_memory
+ .idata$5       0xa00062d0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+                0xa00062d0                __imp__monapi_memory_initialized
+                0xa00062d0                __imp__monapi_memory_initialized
+ .idata$5       0xa00062d4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+                0xa00062d4                __imp__printf
+ .idata$5       0xa00062d8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+                0xa00062d8                __imp__setConstructorList
+ .idata$5       0xa00062dc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+                0xa00062dc                __imp__sleep
+ .idata$5       0xa00062e0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+                0xa00062e0                __imp__strlen
+ .idata$5       0xa00062e4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+                0xa00062e4                __imp__syscall_get_io
+ .idata$5       0xa00062e8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+                0xa00062e8                __imp__user_start_c_impl
+ .idata$5       0xa00062ec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
  SORT(*)(.idata$6)
- .idata$6       0xa00062f0       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
- .idata$6       0xa0006314       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
- .idata$6       0xa0006338       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
- .idata$6       0xa0006358       0x1c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
- .idata$6       0xa0006374       0x18 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
- .idata$6       0xa000638c       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
- .idata$6       0xa00063b0       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
- .idata$6       0xa00063d4       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
- .idata$6       0xa00063f8       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
- .idata$6       0xa000641c       0x30 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
- .idata$6       0xa000644c       0x1c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
- .idata$6       0xa0006468       0x1c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
- .idata$6       0xa0006484       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
- .idata$6       0xa00064a4       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
- .idata$6       0xa00064c4       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
- .idata$6       0xa00064e4       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
- .idata$6       0xa0006504       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
- .idata$6       0xa0006524       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
- .idata$6       0xa0006544       0x18 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
- .idata$6       0xa000655c       0x18 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
- .idata$6       0xa0006574       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
- .idata$6       0xa0006598       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
- .idata$6       0xa00065bc       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
- .idata$6       0xa00065e0       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
- .idata$6       0xa0006604       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
- .idata$6       0xa0006628       0x30 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
- .idata$6       0xa0006658       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
- .idata$6       0xa000667c       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
- .idata$6       0xa00066a4       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
- .idata$6       0xa00066cc       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
- .idata$6       0xa00066f4       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
- .idata$6       0xa000671c       0x34 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
- .idata$6       0xa0006750       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
- .idata$6       0xa0006778       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
- .idata$6       0xa00067a0       0x34 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
- .idata$6       0xa00067d4       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
- .idata$6       0xa00067fc       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
- .idata$6       0xa0006824       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
- .idata$6       0xa000684c       0x2c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
- .idata$6       0xa0006878       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
- .idata$6       0xa000689c       0x20 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
- .idata$6       0xa00068bc       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
- .idata$6       0xa00068e0       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
- .idata$6       0xa0006904       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
- .idata$6       0xa000692c       0x34 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
- .idata$6       0xa0006960       0x1c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
- .idata$6       0xa000697c       0x1c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
- .idata$6       0xa0006998       0x28 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
- .idata$6       0xa00069c0       0x2c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
- .idata$6       0xa00069ec       0x2c /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
- .idata$6       0xa0006a18       0x30 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
- .idata$6       0xa0006a48       0x24 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
- .idata$6       0xa0006a6c       0x20 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
- .idata$6       0xa0006a8c       0x24 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
- .idata$6       0xa0006ab0       0x20 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
- .idata$6       0xa0006ad0       0x24 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
- .idata$6       0xa0006af4       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
- .idata$6       0xa0006b10       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
- .idata$6       0xa0006b2c       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
- .idata$6       0xa0006b48       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
- .idata$6       0xa0006b64       0x24 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
- .idata$6       0xa0006b88        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
- .idata$6       0xa0006b94        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
- .idata$6       0xa0006b9c        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
- .idata$6       0xa0006ba8        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
- .idata$6       0xa0006bb4        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
- .idata$6       0xa0006bbc        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
- .idata$6       0xa0006bc8       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
- .idata$6       0xa0006be4       0x20 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
- .idata$6       0xa0006c04       0x18 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
- .idata$6       0xa0006c1c       0x20 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
- .idata$6       0xa0006c3c       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
- .idata$6       0xa0006c58       0x1c /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
-                0xa0006c58                _nm__monapi_memory_initialized
- .idata$6       0xa0006c74        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
- .idata$6       0xa0006c80       0x18 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
- .idata$6       0xa0006c98        0x8 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
- .idata$6       0xa0006ca0        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
- .idata$6       0xa0006cac       0x14 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
- .idata$6       0xa0006cc0       0x14 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
+ .idata$6       0xa00062f0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+ .idata$6       0xa0006314       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+ .idata$6       0xa0006338       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+ .idata$6       0xa0006358       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+ .idata$6       0xa0006374       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+ .idata$6       0xa000638c       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+ .idata$6       0xa00063b0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+ .idata$6       0xa00063d4       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+ .idata$6       0xa00063f8       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+ .idata$6       0xa000641c       0x30 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+ .idata$6       0xa000644c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+ .idata$6       0xa0006468       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+ .idata$6       0xa0006484       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+ .idata$6       0xa00064a4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+ .idata$6       0xa00064c4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+ .idata$6       0xa00064e4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+ .idata$6       0xa0006504       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+ .idata$6       0xa0006524       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+ .idata$6       0xa0006544       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+ .idata$6       0xa000655c       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+ .idata$6       0xa0006574       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+ .idata$6       0xa0006598       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+ .idata$6       0xa00065bc       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+ .idata$6       0xa00065e0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+ .idata$6       0xa0006604       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+ .idata$6       0xa0006628       0x30 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+ .idata$6       0xa0006658       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+ .idata$6       0xa000667c       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+ .idata$6       0xa00066a4       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+ .idata$6       0xa00066cc       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+ .idata$6       0xa00066f4       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+ .idata$6       0xa000671c       0x34 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+ .idata$6       0xa0006750       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+ .idata$6       0xa0006778       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+ .idata$6       0xa00067a0       0x34 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+ .idata$6       0xa00067d4       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+ .idata$6       0xa00067fc       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+ .idata$6       0xa0006824       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+ .idata$6       0xa000684c       0x2c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+ .idata$6       0xa0006878       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+ .idata$6       0xa000689c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+ .idata$6       0xa00068bc       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+ .idata$6       0xa00068e0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+ .idata$6       0xa0006904       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+ .idata$6       0xa000692c       0x34 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+ .idata$6       0xa0006960       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+ .idata$6       0xa000697c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+ .idata$6       0xa0006998       0x28 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+ .idata$6       0xa00069c0       0x2c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+ .idata$6       0xa00069ec       0x2c c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+ .idata$6       0xa0006a18       0x30 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+ .idata$6       0xa0006a48       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+ .idata$6       0xa0006a6c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$6       0xa0006a8c       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$6       0xa0006ab0       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$6       0xa0006ad0       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$6       0xa0006af4       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$6       0xa0006b10       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$6       0xa0006b2c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$6       0xa0006b48       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$6       0xa0006b64       0x24 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$6       0xa0006b88        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$6       0xa0006b94        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$6       0xa0006b9c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$6       0xa0006ba8        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$6       0xa0006bb4        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$6       0xa0006bbc        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$6       0xa0006bc8       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$6       0xa0006be4       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$6       0xa0006c04       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$6       0xa0006c1c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$6       0xa0006c3c       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$6       0xa0006c58       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+                0xa0006c58                __nm__monapi_memory_initialized
+ .idata$6       0xa0006c74        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$6       0xa0006c80       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$6       0xa0006c98        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$6       0xa0006ca0        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$6       0xa0006cac       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$6       0xa0006cc0       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
  SORT(*)(.idata$7)
- .idata$7       0xa0006cd4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000040.o)
- .idata$7       0xa0006cd8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000049.o)
- .idata$7       0xa0006cdc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000070.o)
- .idata$7       0xa0006ce0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000076.o)
- .idata$7       0xa0006ce4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000083.o)
- .idata$7       0xa0006ce8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000106.o)
- .idata$7       0xa0006cec        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000107.o)
- .idata$7       0xa0006cf0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000108.o)
- .idata$7       0xa0006cf4        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000109.o)
- .idata$7       0xa0006cf8        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000110.o)
- .idata$7       0xa0006cfc        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000113.o)
- .idata$7       0xa0006d00        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000114.o)
- .idata$7       0xa0006d04        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000115.o)
- .idata$7       0xa0006d08        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000116.o)
- .idata$7       0xa0006d0c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000118.o)
- .idata$7       0xa0006d10        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000119.o)
- .idata$7       0xa0006d14        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000120.o)
- .idata$7       0xa0006d18        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000121.o)
- .idata$7       0xa0006d1c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000123.o)
- .idata$7       0xa0006d20        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000126.o)
- .idata$7       0xa0006d24        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000153.o)
- .idata$7       0xa0006d28        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000154.o)
- .idata$7       0xa0006d2c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000155.o)
- .idata$7       0xa0006d30        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000156.o)
- .idata$7       0xa0006d34        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000157.o)
- .idata$7       0xa0006d38        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000158.o)
- .idata$7       0xa0006d3c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000159.o)
- .idata$7       0xa0006d40        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000170.o)
- .idata$7       0xa0006d44        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000171.o)
- .idata$7       0xa0006d48        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000172.o)
- .idata$7       0xa0006d4c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000174.o)
- .idata$7       0xa0006d50        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000175.o)
- .idata$7       0xa0006d54        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000176.o)
- .idata$7       0xa0006d58        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000177.o)
- .idata$7       0xa0006d5c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000178.o)
- .idata$7       0xa0006d60        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000179.o)
- .idata$7       0xa0006d64        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000180.o)
- .idata$7       0xa0006d68        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000181.o)
- .idata$7       0xa0006d6c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000182.o)
- .idata$7       0xa0006d70        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000183.o)
- .idata$7       0xa0006d74        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000184.o)
- .idata$7       0xa0006d78        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000185.o)
- .idata$7       0xa0006d7c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000186.o)
- .idata$7       0xa0006d80        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000188.o)
- .idata$7       0xa0006d84        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000189.o)
- .idata$7       0xa0006d88        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000191.o)
- .idata$7       0xa0006d8c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000194.o)
- .idata$7       0xa0006d90        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000195.o)
- .idata$7       0xa0006d94        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000197.o)
- .idata$7       0xa0006d98        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000198.o)
- .idata$7       0xa0006d9c        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000199.o)
- .idata$7       0xa0006da0        0x4 /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000200.o)
- .idata$7       0xa0006da4        0xc /Users/Yume/mona/trunk/mona/lib/libbaygui-imp.a(d000281.o)
-                0xa0006da4                BAYGUI_DLL_iname
- .idata$7       0xa0006db0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000009.o)
- .idata$7       0xa0006db4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000141.o)
- .idata$7       0xa0006db8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000142.o)
- .idata$7       0xa0006dbc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000143.o)
- .idata$7       0xa0006dc0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000144.o)
- .idata$7       0xa0006dc4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000147.o)
- .idata$7       0xa0006dc8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000202.o)
- .idata$7       0xa0006dcc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000203.o)
- .idata$7       0xa0006dd0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000204.o)
- .idata$7       0xa0006dd4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000359.o)
- .idata$7       0xa0006dd8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000363.o)
- .idata$7       0xa0006ddc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000367.o)
- .idata$7       0xa0006de0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000369.o)
- .idata$7       0xa0006de4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000380.o)
- .idata$7       0xa0006de8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000393.o)
- .idata$7       0xa0006dec        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000405.o)
- .idata$7       0xa0006df0        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000406.o)
- .idata$7       0xa0006df4        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000417.o)
- .idata$7       0xa0006df8        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000418.o)
- .idata$7       0xa0006dfc        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000425.o)
- .idata$7       0xa0006e00        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000426.o)
- .idata$7       0xa0006e04        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000456.o)
- .idata$7       0xa0006e08        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000460.o)
- .idata$7       0xa0006e0c        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000462.o)
- .idata$7       0xa0006e10        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000467.o)
- .idata$7       0xa0006e14        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000483.o)
- .idata$7       0xa0006e18        0x4 /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000526.o)
- .idata$7       0xa0006e1c        0xc /Users/Yume/mona/trunk/mona/lib/libmonapi-imp.a(d000527.o)
-                0xa0006e1c                MONAPI_DLL_iname
+ .idata$7       0xa0006cd4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000040.o)
+ .idata$7       0xa0006cd8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000049.o)
+ .idata$7       0xa0006cdc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000070.o)
+ .idata$7       0xa0006ce0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000076.o)
+ .idata$7       0xa0006ce4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000083.o)
+ .idata$7       0xa0006ce8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000106.o)
+ .idata$7       0xa0006cec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000107.o)
+ .idata$7       0xa0006cf0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000108.o)
+ .idata$7       0xa0006cf4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000109.o)
+ .idata$7       0xa0006cf8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000110.o)
+ .idata$7       0xa0006cfc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000113.o)
+ .idata$7       0xa0006d00        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000114.o)
+ .idata$7       0xa0006d04        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000115.o)
+ .idata$7       0xa0006d08        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000116.o)
+ .idata$7       0xa0006d0c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000118.o)
+ .idata$7       0xa0006d10        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000119.o)
+ .idata$7       0xa0006d14        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000120.o)
+ .idata$7       0xa0006d18        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000121.o)
+ .idata$7       0xa0006d1c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000123.o)
+ .idata$7       0xa0006d20        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000126.o)
+ .idata$7       0xa0006d24        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000153.o)
+ .idata$7       0xa0006d28        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000154.o)
+ .idata$7       0xa0006d2c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000155.o)
+ .idata$7       0xa0006d30        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000156.o)
+ .idata$7       0xa0006d34        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000157.o)
+ .idata$7       0xa0006d38        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000158.o)
+ .idata$7       0xa0006d3c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000159.o)
+ .idata$7       0xa0006d40        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000170.o)
+ .idata$7       0xa0006d44        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000171.o)
+ .idata$7       0xa0006d48        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000172.o)
+ .idata$7       0xa0006d4c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000174.o)
+ .idata$7       0xa0006d50        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000175.o)
+ .idata$7       0xa0006d54        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000176.o)
+ .idata$7       0xa0006d58        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000177.o)
+ .idata$7       0xa0006d5c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000178.o)
+ .idata$7       0xa0006d60        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000179.o)
+ .idata$7       0xa0006d64        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000180.o)
+ .idata$7       0xa0006d68        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000181.o)
+ .idata$7       0xa0006d6c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000182.o)
+ .idata$7       0xa0006d70        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000183.o)
+ .idata$7       0xa0006d74        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000184.o)
+ .idata$7       0xa0006d78        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000185.o)
+ .idata$7       0xa0006d7c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000186.o)
+ .idata$7       0xa0006d80        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000188.o)
+ .idata$7       0xa0006d84        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000189.o)
+ .idata$7       0xa0006d88        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000191.o)
+ .idata$7       0xa0006d8c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000194.o)
+ .idata$7       0xa0006d90        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000195.o)
+ .idata$7       0xa0006d94        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000197.o)
+ .idata$7       0xa0006d98        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000198.o)
+ .idata$7       0xa0006d9c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000199.o)
+ .idata$7       0xa0006da0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000200.o)
+ .idata$7       0xa0006da4        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libbaygui-imp.a(d000281.o)
+                0xa0006da4                _BAYGUI_DLL_iname
+ .idata$7       0xa0006db0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$7       0xa0006db4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000133.o)
+ .idata$7       0xa0006db8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000134.o)
+ .idata$7       0xa0006dbc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000135.o)
+ .idata$7       0xa0006dc0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000136.o)
+ .idata$7       0xa0006dc4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000139.o)
+ .idata$7       0xa0006dc8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000194.o)
+ .idata$7       0xa0006dcc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000195.o)
+ .idata$7       0xa0006dd0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000196.o)
+ .idata$7       0xa0006dd4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000357.o)
+ .idata$7       0xa0006dd8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000361.o)
+ .idata$7       0xa0006ddc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$7       0xa0006de0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$7       0xa0006de4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$7       0xa0006de8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000395.o)
+ .idata$7       0xa0006dec        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000407.o)
+ .idata$7       0xa0006df0        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000408.o)
+ .idata$7       0xa0006df4        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000420.o)
+ .idata$7       0xa0006df8        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000421.o)
+ .idata$7       0xa0006dfc        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000428.o)
+ .idata$7       0xa0006e00        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$7       0xa0006e04        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000461.o)
+ .idata$7       0xa0006e08        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000467.o)
+ .idata$7       0xa0006e0c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000469.o)
+ .idata$7       0xa0006e10        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000474.o)
+ .idata$7       0xa0006e14        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000497.o)
+ .idata$7       0xa0006e18        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000554.o)
+ .idata$7       0xa0006e1c        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+                0xa0006e1c                _MONAPI_DLL_iname
 
 .CRT            0xa0007000        0x0
                 0xa0007000                ___crt_xc_start__ = .

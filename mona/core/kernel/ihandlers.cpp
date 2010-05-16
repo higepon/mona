@@ -38,6 +38,9 @@
 
 void irqHandler_9()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__);
+//    for (;;);
+
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
     if (g_irqInfo[9].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (9 - 8)));
@@ -46,6 +49,7 @@ void irqHandler_9()
 
 void irqHandler_11()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
@@ -107,6 +111,7 @@ void SendInterrupt(int irq)
 */
 void irqHandler_0()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__);     for (;;);
 
     static uint32_t i = 0;
     bool isProcessChange;
@@ -143,6 +148,7 @@ void irqHandler_0()
 */
 void irqHandler_6()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     /* thx! K-tan */
     outp8(0x20, 0x66);
 
@@ -152,6 +158,7 @@ void irqHandler_6()
 
 static void terminateCurrentThread(const char* reason)
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     Process* current = g_currentThread->process;
 
     g_console->printf("%s : Process killed %s thread-index=%d eip=%x\n", reason, current->getName(),
@@ -165,6 +172,7 @@ static void terminateCurrentThread(const char* reason)
 ----------------------------------------------------------------------*/
 extern "C" void divideErrorHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_DIVIDE_ERROR_EXCEPTION);
     }
@@ -173,6 +181,7 @@ extern "C" void divideErrorHandler()
 
 extern "C" void debugHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_DEBUG_EXCEPTION);
     }
@@ -181,6 +190,7 @@ extern "C" void debugHandler()
 
 extern "C" void nmiInterruptHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_NMI_INTTERUPT);
     }
@@ -190,6 +200,7 @@ extern "C" void nmiInterruptHandler()
 extern "C" void set_debug_traps();
 extern "C" void breakpointHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     // Enable remote debug handlers, on first breakpoint exception.
     if (!g_isRemoteDebug) {
         g_console->printf("INFO: GDB remote debug is enabled\n");
@@ -201,6 +212,7 @@ extern "C" void breakpointHandler()
 
 extern "C" void overflowHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_OVERFLOW_EXCEPTION);
     }
@@ -209,6 +221,7 @@ extern "C" void overflowHandler()
 
 extern "C" void boundRangeExceededHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_BOUND_RANGE_EXCEEDED_EXCEPTION);
     }
@@ -217,6 +230,7 @@ extern "C" void boundRangeExceededHandler()
 
 extern "C" void invalidOpCodeHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_INVALID_OP_CODE_EXCEPTION);
     }
@@ -225,6 +239,7 @@ extern "C" void invalidOpCodeHandler()
 
 extern "C" void deviceNotAvailableHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_DEVICE_NOT_AVAILABLE__EXCEPTION);
     }
@@ -233,6 +248,7 @@ extern "C" void deviceNotAvailableHandler()
 
 extern "C" void doubleFaultHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_DOUBLE_FAULT_EXCEPTION);
     }
@@ -241,6 +257,7 @@ extern "C" void doubleFaultHandler()
 
 extern "C" void coprocessorSegmentOverrunHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_COPROCESSOR_SEGMENT_OVERRUN);
     }
@@ -249,6 +266,7 @@ extern "C" void coprocessorSegmentOverrunHandler()
 
 extern "C" void invalidTssHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_INVALID_TSS_EXCEPTION);
     }
@@ -257,6 +275,7 @@ extern "C" void invalidTssHandler()
 
 extern "C" void segmentNotProcessHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_SEGMENT_NOT_PRESENT);
     }
@@ -265,6 +284,7 @@ extern "C" void segmentNotProcessHandler()
 
 extern "C" void stackFaultHandler(uintptr_t error)
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_STACK_FAULT_EXCEPTION);
     }
@@ -273,6 +293,7 @@ extern "C" void stackFaultHandler(uintptr_t error)
 
 extern "C" void generalProtectionHandler(uintptr_t error)
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     const int IDT_ERROR = 2;
     g_console->printf(__func__);
     const char* processName = g_currentThread->process->getName();
@@ -304,6 +325,7 @@ extern "C" void generalProtectionHandler(uintptr_t error)
 
 extern "C" void pageFaultHandler(uintptr_t address, uintptr_t error)
 {
+//     g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (!g_page_manager->pageFaultHandler(address, error, g_currentThread->archinfo->eip)) {
         bool isProcessChange = g_scheduler->Schedule2();
         ThreadOperation::switchThread(isProcessChange, 1);
@@ -312,6 +334,7 @@ extern "C" void pageFaultHandler(uintptr_t address, uintptr_t error)
 
 extern "C" void x87FloatingPointErrorHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_X87_FLOATING_POINT_ERROR);
     }
@@ -320,6 +343,7 @@ extern "C" void x87FloatingPointErrorHandler()
 
 extern "C" void alignmentCheckHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_ALIGNMENT_CHECK_EXCEPTION);
     }
@@ -328,6 +352,7 @@ extern "C" void alignmentCheckHandler()
 
 extern "C" void machineCheckHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_MACHINE_CHECK_EXCEPTION);
     }
@@ -336,6 +361,7 @@ extern "C" void machineCheckHandler()
 
 extern "C" void simdFloatingPointHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_SIMD_FLOATING_POINT_EXCEPTION);
     }
@@ -344,11 +370,13 @@ extern "C" void simdFloatingPointHandler()
 
 void dummyHandler()
 {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     g_console->printf("dummy Handler\n");
     panic("dummy handler");
 }
 
 void dokodemoView() {
+//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     g_console->printf("dokodemo");
     DokodemoView* i = &g_dokodemo_view;
     StackView*    j = &g_stack_view;

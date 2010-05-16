@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #define TEST_TXT "/APPS/TSTDIO.APP/TEST.TXT"
+#define TEST_IMG "/APPS/TSTDIO.APP/TEST.JPG"
 
 int test1();
 int test2();
@@ -12,6 +13,7 @@ int test4();
 int test5();
 void test_fwrite_small(); 
 void test_fwrite_manytimes();
+void test_fwrite_large();
 void test_fread_biggerthanfile();
 void test_fread_small_many();
 void test_bsearch();
@@ -31,6 +33,8 @@ int main(int argc, char* argv[])
         test_fread_small_many();
         test_fwrite_small();
         test_fwrite_manytimes();
+        // slow test. but better than nothing...
+        test_fwrite_large();
         test_bsearch();
         TEST_RESULTS(stdio);
         return 0;
@@ -171,14 +175,93 @@ void test_fwrite_manytimes()
     monapi_file_delete(path);
 }
 
+static void copyFile(const char *from, const char* to)
+{
+    FILE* fp_from = fopen(from, "r");
+    FILE* fp = fopen(to, "w");
+
+    char buf[256];
+    int readSize;
+    readSize = fread(buf, 1, 256, fp_from);
+    while(readSize > 0)
+    {
+        fwrite(buf, 1, readSize, fp);
+        readSize = fread(buf, 1, 256, fp_from);
+    }
+    fclose(fp);
+    fclose(fp_from);
+
+}
+
+static void expectFileEqual(const char* org, const char* to)
+{
+    char buf[256];
+    char buf2[256];
+    FILE* fp_org = fopen(org, "r");
+    FILE* fp = fopen(to, "r");
+ //for analyze   int debpos = 0;
+    if(fp == NULL || fp_org == NULL)
+      {
+          fprintf(stderr, "fp=%x, fp_org=%x\n", fp, fp_org);
+      }
+
+    int readSize = fread(buf, 1, 256, fp_org);
+    while(readSize > 0)
+    {
+        int readSize2 = fread(buf2, 1, readSize, fp);
+        EXPECT_EQ(readSize, readSize2);
+        EXPECT_TRUE(0 == memcmp(buf, buf2, readSize2));
+/*
+        if(0 != memcmp(buf, buf2, readSize2))
+        {
+            for(int i = 0; i < readSize2; i++)
+              {
+                  if(buf[i] != buf2[i])
+                  {
+                      static int count = 0;
+                      fprintf(stderr, "debpos=%x, i=%d, buf[i]=%x, buf2[i]=%x\n", debpos, i, buf[i], buf2[i]);
+                      if(count++ > 20)
+                        break;
+                  }
+              }
+            fclose(fp);
+            fclose(fp_org);
+            return;
+        }
+        debpos+=readSize;
+*/
+
+        readSize = fread(buf, 1, 256, fp_org);
+
+    }
+    fclose(fp);
+    fclose(fp_org);
+
+}
+
+void test_fwrite_large() 
+{
+    const char* path = "/MEM/TEST.JPG";
+
+    copyFile(TEST_IMG, path);
+    expectFileEqual(TEST_IMG, path);
+
+//    copyFile("/APPS/W3M/W3M.APP/EUCMAN.JPG", path);
+//    expectFileEqual("/MEM/T1110.JPG", "/APPS/W3M/W3M.APP/EUCMAN.JPG");
+
+    monapi_file_delete(path);
+}
+
+
+// bsearch
+#include <stdlib.h>
+
 static int cmp_int(const void* key, const void*target)
 {
     int keyi = ((int)key);
     int targeti = *((int *)target);
     return keyi-targeti;
 }
-
-#include <stdlib.h>
 
 void test_bsearch()
 {

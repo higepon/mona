@@ -174,6 +174,8 @@ static void testEcho()
     // timeout
     ASSERT_TRUE(retval == 0);
 
+    closesocket(sock);
+
 // needs access from clinet
 #if 0
     struct sockaddr_in waddr;

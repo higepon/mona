@@ -223,6 +223,7 @@ void startKernel()
     }
     dumpAddressMap();
 
+
     /* shared memory object */
     SharedMemoryObject::setup();
 
@@ -279,6 +280,7 @@ void startKernel()
     disableKeyboard();
     enableInterrupt();
 
+
     /* dummy thread struct */
     g_prevThread    = dummy1->tinfo;
     g_currentThread = dummy2->tinfo;
@@ -287,7 +289,13 @@ void startKernel()
 
     // Just before enable timer, sync epochNanosec.
     RTC::syncEpochNanosec();
+
+  /*
+    g_console->printf("inb8:%x\n", inp8(0x21));
+    g_console->printf("%s:%d\n", __FILE__, __LINE__);
+*/
     enableTimer();
+    g_console->printf("%s:%d", __FILE__, __LINE__);
 
 #ifdef HIGE
 
