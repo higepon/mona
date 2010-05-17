@@ -1,0 +1,310 @@
+Archive member included because of file (symbol)
+
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+                              (__imp__monapi_memory_initialized)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_user_start_c_impl)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_setConstructorList)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (invokeFuncList(void (**)(), char const*, int))
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_monapi_initialize_memory)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o (_exit)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                              main.o (___main)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                              main.o (__alloca)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+                              main.o (_printf)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o) (__head_MONAPI_DLL)
+c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000556.o)
+                              c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o) (_MONAPI_DLL_iname)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0xa0000000                __image_base__ = 0xa0000000
+                0x00000000                __dll__ = 0x0
+                0xa0000000                ___ImageBase = 0xa0000000
+                0x00001000                __section_alignment__ = 0x1000
+                0x00000200                __file_alignment__ = 0x200
+                0x00000004                __major_os_version__ = 0x4
+                0x00000000                __minor_os_version__ = 0x0
+                0x00000001                __major_image_version__ = 0x1
+                0x00000000                __minor_image_version__ = 0x0
+                0x00000004                __major_subsystem_version__ = 0x4
+                0x00000000                __minor_subsystem_version__ = 0x0
+                0x00000003                __subsystem__ = 0x3
+                0x00200000                __size_of_stack_reserve__ = 0x200000
+                0x00001000                __size_of_stack_commit__ = 0x1000
+                0x00100000                __size_of_heap_reserve__ = 0x100000
+                0x00001000                __size_of_heap_commit__ = 0x1000
+                0x00000000                __loader_flags__ = 0x0
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+LOAD main.o
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libonigurum-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonalibc-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libpci-imp.a
+LOAD c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a
+                0x00000240                . = SIZEOF_HEADERS
+                0x00001000                . = ALIGN (__section_alignment__)
+
+.text           0xa0001000      0x400
+ *(.init)
+ *(.text)
+ .text          0xa0001000       0x90 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+                0xa0001009                __fu0__monapi_memory_initialized
+                0xa0001000                _user_start
+ .text          0xa0001090      0x190 main.o
+                0xa0001090                third()
+                0xa00010f0                second(char)
+                0xa0001170                first(int, int)
+                0xa00011e0                _main
+ .text          0xa0001220        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+ .text          0xa0001220        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+                0xa0001220                _user_start_c_impl
+ .text          0xa0001228        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+                0xa0001228                _setConstructorList
+ .text          0xa0001230        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                0xa0001230                invokeFuncList(void (**)(), char const*, int)
+ .text          0xa0001238        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+                0xa0001238                _monapi_initialize_memory
+ .text          0xa0001240        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                0xa0001240                _exit
+ .text          0xa0001248        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                0xa0001248                ___main
+ .text          0xa0001250        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                0xa0001250                __alloca
+ .text          0xa0001258        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+                0xa0001258                _printf
+ *(SORT(.text$*))
+ *(.glue_7t)
+ *(.glue_7)
+                0xa0001260                ___CTOR_LIST__ = .
+                0xa0001260                __CTOR_LIST__ = .
+                0xa0001260        0x4 LONG 0xffffffff
+ *(.ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+                0xa0001264        0x4 LONG 0x0
+                0xa0001268                ___DTOR_LIST__ = .
+                0xa0001268                __DTOR_LIST__ = .
+                0xa0001268        0x4 LONG 0xffffffff
+ *(.dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+                0xa000126c        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0xa0001270                PROVIDE (etext, .)
+ *(.gcc_except_table)
+
+.data           0xa0002000        0x0
+                0xa0002000                __data_start__ = .
+ *(.data)
+ .data          0xa0002000        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+ .data          0xa0002000        0x0 main.o
+ *(.data2)
+ *(SORT(.data$*))
+ *(.jcr)
+                0xa0002000                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0xa0002000      0x200
+ *(.rdata)
+ .rdata         0xa0002000       0x10 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+ .rdata         0xa0002010       0xfc main.o
+ *(SORT(.rdata$*))
+ *(.eh_frame)
+                0xa000210c                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0xa000210c                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0xa000210c                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0xa000210c                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.pdata
+ *(.pdata)
+
+.bss            0xa0003000        0x0
+                0xa0003000                __bss_start__ = .
+ *(.bss)
+ .bss           0xa0003000        0x0 c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o
+ .bss           0xa0003000        0x0 main.o
+ *(COMMON)
+                0xa0003000                __bss_end__ = .
+
+.edata
+ *(.edata)
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+
+.idata          0xa0003000      0x200
+ SORT(*)(.idata$2)
+ .idata$2       0xa0003000       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+                0xa0003000                __head_MONAPI_DLL
+ .idata$2       0xa0003014       0x14 fu000001.o
+ SORT(*)(.idata$3)
+                0xa0003028        0x4 LONG 0x0
+                0xa000302c        0x4 LONG 0x0
+                0xa0003030        0x4 LONG 0x0
+                0xa0003034        0x4 LONG 0x0
+                0xa0003038        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0xa000303c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+ .idata$4       0xa0003040        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$4       0xa0003044        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$4       0xa0003048        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$4       0xa000304c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$4       0xa0003050        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$4       0xa0003054        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+ .idata$4       0xa0003058        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+ .idata$4       0xa000305c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+ .idata$4       0xa0003060        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+ .idata$4       0xa0003064        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000556.o)
+ .idata$4       0xa0003068        0x8 nmth000000.o
+                0xa0003068                __nm_thnk__monapi_memory_initialized
+ SORT(*)(.idata$5)
+ .idata$5       0xa0003070        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000000.o)
+ .idata$5       0xa0003074        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+                0xa0003074                __imp___Z14invokeFuncListPPFvvEPKci
+ .idata$5       0xa0003078        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+                0xa0003078                __imp____main
+ .idata$5       0xa000307c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+                0xa000307c                __imp___alloca
+ .idata$5       0xa0003080        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+                0xa0003080                __imp__exit
+ .idata$5       0xa0003084        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+                0xa0003084                __imp__monapi_initialize_memory
+ .idata$5       0xa0003088        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+                0xa0003088                __imp__monapi_memory_initialized
+                0xa0003088                __imp__monapi_memory_initialized
+ .idata$5       0xa000308c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+                0xa000308c                __imp__printf
+ .idata$5       0xa0003090        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+                0xa0003090                __imp__setConstructorList
+ .idata$5       0xa0003094        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+                0xa0003094                __imp__user_start_c_impl
+ .idata$5       0xa0003098        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000556.o)
+ SORT(*)(.idata$6)
+ .idata$6       0xa000309c       0x20 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$6       0xa00030bc        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$6       0xa00030c8        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$6       0xa00030d4        0x8 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$6       0xa00030dc       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$6       0xa00030f8       0x1c c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+                0xa00030f8                __nm__monapi_memory_initialized
+ .idata$6       0xa0003114        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+ .idata$6       0xa0003120       0x18 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+ .idata$6       0xa0003138       0x14 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+ SORT(*)(.idata$7)
+ .idata$7       0xa000314c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000009.o)
+ .idata$7       0xa0003150        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000365.o)
+ .idata$7       0xa0003154        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000369.o)
+ .idata$7       0xa0003158        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000380.o)
+ .idata$7       0xa000315c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000429.o)
+ .idata$7       0xa0003160        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000430.o)
+ .idata$7       0xa0003164        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000462.o)
+ .idata$7       0xa0003168        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000468.o)
+ .idata$7       0xa000316c        0x4 c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000555.o)
+ .idata$7       0xa0003170        0xc c:/Users/mumurik/program/monaos/mona/mona/lib\libmonapi-imp.a(d000556.o)
+                0xa0003170                _MONAPI_DLL_iname
+
+.CRT            0xa0004000        0x0
+                0xa0004000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0xa0004000                ___crt_xc_end__ = .
+                0xa0004000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0xa0004000                ___crt_xi_end__ = .
+                0xa0004000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0xa0004000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0xa0004000                ___crt_xp_end__ = .
+                0xa0004000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0xa0004000                ___crt_xt_end__ = .
+
+.tls            0xa0004000        0x0
+                0xa0004000                ___tls_start__ = .
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+                0xa0004000                ___tls_end__ = .
+
+.endjunk        0xa0004000        0x0
+                0xa0004000                PROVIDE (end, .)
+                0xa0004000                PROVIDE (_end, .)
+                0xa0004000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc
+ *(.reloc)
+
+.stab           0xa0004000      0xc00
+ *(.stab)
+ .stab          0xa0004000      0xbac main.o
+
+.stabstr        0xa0005000     0x7c00
+ *(.stabstr)
+ .stabstr       0xa0005000     0x7aef main.o
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(HELLO.EXE pei-i386)
+LOAD nmth000000.o
+LOAD fu000001.o
