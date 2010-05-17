@@ -12,7 +12,7 @@ using namespace MonAPI;
 
 static bool fileExist(const char* path)
 {
-    uint32_t id = monapi_file_open("/MEM/TESTFILE", false);
+    uint32_t id = monapi_file_open(path, false);
     if(id == 0)
       return false;
     monapi_file_close(id);
