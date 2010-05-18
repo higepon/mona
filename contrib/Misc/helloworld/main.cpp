@@ -7,6 +7,42 @@
 #include <monapi.h>
 
 #if 1
+int third()
+{
+    int *bp, *fp; 
+    int g;
+    printf("third=%x, &g=%x\n", third, &g);
+    printf("th, *&(g+1)=sec bp=%x,*(&g+2)=%x\n", *(&g+1), *(&g+2));
+    bp = (int*)*(&g+1);
+    fp = (int*)*bp;
+    printf("th, sec fp=%x, *(sec fp)=%x\n", fp, *fp);
+    // *((int*)0) = 1;
+    return 1;
+}
+int second(char e)
+{
+    char f;
+    printf("second=%x, &e=%x, &f=%x\n", second, &e, &f);
+    printf("sec, &e-1=%x, *(&e-1)=%x, *(&e-2)=%x\n", &e-1, *((int*)(&e-1)), *((int*)(&e-2)));
+    printf("sec, &f+1=%x, *(&f+1)=%x, *(&f+2)=%x\n", &f+1, *((int*)(&f+1)), *((int*)(&f+2)));
+    third();
+    return 1;
+}
+
+int first(int a, int b)
+{
+    int c;
+    char d;
+    printf("first=%x, &a=%x,&b=%x, &c=%x, &d=%x\n", first, &a, &b, &c, &d);
+    printf("fi, (&d+1)=%x, *(&d+1)=%x\n", (&d+1), *((int*)(&d+1)));
+    second('a');
+    return 1;
+}
+
+int main(){
+    first(1, 2);
+}
+#else
 
 int main(int argc, char* argv[])
 {
