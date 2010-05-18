@@ -336,6 +336,10 @@ struct SymbolInfoEntry
 {
     SymbolInfoEntry(const std::string& funcName,
                     const std::string& address) : FunctionName(funcName), Address(address){}
+    SymbolInfoEntry(const std::string& fileName,
+                    const std::string& funcName,
+                    const std::string& address) : FileName(fileName), FunctionName(funcName), Address(address){}
+    std::string FileName;
     std::string FunctionName;
     std::string Address;
 };
@@ -348,40 +352,41 @@ typedef std::map<std::string, SymbolInfoEntries> FileEntriesMap;
 class SymbolInfoCollection
 {
 public:
-    SymbolInfoCollection() : current_(NULL) {}
-
     void addFileEntry(const std::string& fileName){
-        SymbolInfoEntries ent;
-        Files[fileName] = ent;
-        current_ = &Files[fileName];
+        currentFileName_ = fileName;
     }
     void addFunctionEntry(const std::string& address, const std::string& functionName) {
-        if(current_ == NULL) {
+        if(currentFileName_.size() == 0) {
             printf("function entry before file entry. unknown map file format\n");
             return;
         }
 
-        SymbolInfoEntry ent(functionName, address);
-        current_->push_back(ent);
+        SymbolInfoEntry ent(currentFileName_, functionName, address);
+        Symbols.push_back(ent);
     }
-    FileEntriesMap Files;
+    SymbolInfoEntries Symbols;
 
 
     void DebugDump()
     {
-        for(FileEntriesMap::iterator it = Files.begin(); it != Files.end(); it++)
+        for(SymbolInfoEntries::iterator entIt = Symbols.begin(); entIt != Symbols.end(); entIt++)
         {
-            _printf("file=%s\n", it->first.c_str());
-            SymbolInfoEntries ents = it->second;
-            for(SymbolInfoEntries::iterator entIt = ents.begin(); entIt != ents.end(); entIt++)
-            {
-                _printf("  func=%s, address=%s\n", entIt->FunctionName.c_str(), entIt->Address.c_str());
-            }
+            _printf("file=%s,  func=%s, address=%s\n", entIt->FileName.c_str(), entIt->FunctionName.c_str(), entIt->Address.c_str());
         }
     }
 private:
-    SymbolInfoEntries* current_;
+    std::string currentFileName_;
 };
+
+static void expectEntryLine(const char* fileName, const char* address, const char *funcName, SymbolInfoEntry& ent, int line)
+{
+    EXPECT_STR_EQ_LINE(fileName, ent.FileName.c_str(), line);
+    EXPECT_STR_EQ_LINE(funcName, ent.FunctionName.c_str(), line);
+    EXPECT_STR_EQ_LINE(address, ent.Address.c_str(), line);
+}
+
+#define EXPECT_ENTRY(f, a, fn, e) expectEntryLine((f), (a), (fn), (e), __LINE__)
+
 
 void testSymbolInfoCollection() {
     SymbolInfoCollection col;
@@ -392,19 +397,12 @@ void testSymbolInfoCollection() {
     col.addFileEntry("test2.c");
     col.addFunctionEntry("0xccccc", "hogeFunc");
 
-    EXPECT_EQ(2, col.Files.size());
+    SymbolInfoEntries& ents = col.Symbols;
+    EXPECT_EQ(3, ents.size());
 
-    SymbolInfoEntries ents = col.Files["test.c"];
-    EXPECT_EQ(2, ents.size());
-    EXPECT_STR_EQ("0xaaaaa", ents[0].Address.c_str());
-    EXPECT_STR_EQ("myFunc", ents[0].FunctionName.c_str());
-    EXPECT_STR_EQ("0xbbbbb", ents[1].Address.c_str());
-    EXPECT_STR_EQ("myFunc2", ents[1].FunctionName.c_str());
-
-    ents = col.Files["test2.c"];
-    EXPECT_EQ(1, ents.size());
-    EXPECT_STR_EQ("0xccccc", ents[0].Address.c_str());
-    EXPECT_STR_EQ("hogeFunc", ents[0].FunctionName.c_str());
+    EXPECT_ENTRY("test.c", "0xaaaaa", "myFunc", ents[0]);
+    EXPECT_ENTRY("test.c", "0xbbbbb", "myFunc2", ents[1]);
+    EXPECT_ENTRY("test2.c", "0xccccc", "hogeFunc", ents[2]);
 }
 
 
@@ -607,29 +605,18 @@ static void setupRealContents(StringReaderForTest &reader)
 
 }
 
-static void expectEntryLine(const char* address, const char *funcName, SymbolInfoEntry& ent, int line)
-{
-    EXPECT_STR_EQ_LINE(address, ent.Address.c_str(), line);
-    EXPECT_STR_EQ_LINE(address, ent.Address.c_str(), line);
-}
-
-#define EXPECT_ENTRY(a, f, e) expectEntryLine((a), (f), (e), __LINE__)
-
 static void EXPECT_REAL_CONTENT_COL(SymbolInfoCollection& col)
 {
-    EXPECT_EQ(3, col.Files.size());
+    SymbolInfoEntries ents = col.Symbols;
+    EXPECT_EQ(3, ents.size());
 
-    SymbolInfoEntries ents = col.Files["c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o"];
-    EXPECT_EQ(2, ents.size());
-    EXPECT_ENTRY("0xa0001009", "__fu0__monapi_memory_initialized", ents[0] );
-    EXPECT_ENTRY("0xa0001000", "_user_start", ents[1] );
 
-    ents = col.Files["c:/Users/mumurik/program/monaos/mona/mona/lib\\libmonapi-imp.a(d000430.o)"];
-    EXPECT_EQ(0, ents.size());
+    char *fname = "c:/Users/mumurik/program/monaos/mona/mona/lib/monapi_crt.o";
+    EXPECT_ENTRY(fname, "0xa0001009", "__fu0__monapi_memory_initialized", ents[0] );
+    EXPECT_ENTRY(fname, "0xa0001000", "_user_start", ents[1] );
 
-    ents = col.Files["c:/Users/mumurik/program/monaos/mona/mona/lib\\libmonapi-imp.a(d000555.o)"];
-    EXPECT_EQ(1, ents.size());
-    EXPECT_ENTRY("0xa0001220", "_user_start_c_impl", ents[0] );
+    fname = "c:/Users/mumurik/program/monaos/mona/mona/lib\\libmonapi-imp.a(d000555.o)";
+    EXPECT_ENTRY(fname, "0xa0001220", "_user_start_c_impl", ents[2] );
 }
 
 static void testMapFileParser_parse_real()
@@ -716,8 +703,9 @@ static void testMapFileParser_parse_testMap()
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
 
     parser.parseAll();
+    EXPECT_EQ(19, parser.symbolInfos_.Symbols.size());
 
-    parser.symbolInfos_.DebugDump();
+    // parser.symbolInfos_.DebugDump();
 }
 
 
@@ -728,7 +716,6 @@ int main(int argc, char *argv[])
     testFileReader_getLine_twice();
 
     testStringReaderForTest();
-
     testSymbolInfoCollection();
 
     testMapFileScanner_lineType();
