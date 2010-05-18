@@ -8,6 +8,8 @@
 #include <vector>
 #include <map>
 #include <assert.h>
+#include <stdlib.h> // algorithm require rand()
+#include <algorithm>
 
 using namespace MonAPI;
 
@@ -334,8 +336,6 @@ void testMapFileScanner_functionName()
 
 struct SymbolInfoEntry
 {
-    SymbolInfoEntry(const std::string& funcName,
-                    const std::string& address) : FunctionName(funcName), Address(address){}
     SymbolInfoEntry(const std::string& fileName,
                     const std::string& funcName,
                     const std::string& address) : FileName(fileName), FunctionName(funcName), Address(address){}
@@ -345,8 +345,74 @@ struct SymbolInfoEntry
 };
 
 typedef std::vector<SymbolInfoEntry> SymbolInfoEntries;
-typedef std::map<std::string, SymbolInfoEntries> FileEntriesMap;
 
+class SymbolInfoEntrySerializer
+{
+public:
+    int writeString(uint8_t* data, const std::string& str)
+    {
+        uint16_t size = (uint16_t)str.size();
+
+        uint16_t *ptr16 = (uint16_t*)data;
+        *ptr16 = size;
+        data+= 2;
+        for(unsigned int i = 0; i < str.size(); i++)
+        {
+            data[i] = str[i];
+        }
+        return 2+str.size();
+    }
+
+    uint32_t addressToInt(const std::string& address)
+    {
+        uint32_t res = 0;
+
+        assert(address.size() == 10);
+
+        // begin with 0x
+        for(int i = 2; i < 10; i++)
+        {
+            if('a' <= address[i] && 'f' >= address[i])
+            {
+                res |= (address[i] - 'a' + 10) << (9 - i)*4;
+            }
+            else
+            {
+                assert('0' <= address[i] && '9' >= address[i]);
+                res |= (address[i] - '0') << (9 - i)*4;
+            }
+        }
+        return res;
+    }
+
+    void serialize(const SymbolInfoEntry &ent, uint8_t* data, int size)
+    {
+        assert(calcSize(ent) <= size);
+
+        uint32_t address = addressToInt(ent.Address);
+        uint32_t* ptr32 = (uint32_t*)data;
+        *ptr32 = address;
+
+        data += 4;
+
+        data += writeString(data, ent.FileName);
+        data += writeString(data, ent.FunctionName);
+    }
+
+    /*
+      caracter is ascii.
+       10byte: address
+       2byte: length
+       length byte: funcName
+       2byte: length
+       length byte: fileName
+      */
+    int calcSize(const SymbolInfoEntry &ent)
+    {
+        assert(ent.Address.size() == 10);
+        return 4+2+ent.FunctionName.size()+2+ent.FileName.size();
+    }
+};
 
 
 class SymbolInfoCollection
@@ -366,6 +432,79 @@ public:
     }
     SymbolInfoEntries Symbols;
 
+    class SymbolSorterByAddress {
+    public:
+        SymbolSorterByAddress() {}
+        //operator  < 
+        bool operator ()(const SymbolInfoEntry *left, const SymbolInfoEntry *right )
+        {	return operator()(*left, *right);	}
+        bool operator ()(const SymbolInfoEntry & left, const SymbolInfoEntry & right )
+        {
+            return left.Address < right.Address;
+        }
+    };
+
+
+    // by address
+    void sort()
+    {
+        std::sort(Symbols.begin(), Symbols.end(), SymbolSorterByAddress());
+    }
+
+    class SizeCounter
+    {
+    public:
+        SizeCounter(SymbolInfoEntrySerializer &s, int& sum) : Sum(sum), serializer_(s) {}
+
+        void operator()( const SymbolInfoEntry *ent) {
+            return operator()(*ent);
+        }
+        void operator()( const SymbolInfoEntry &ent) {
+            Sum += serializer_.calcSize(ent);
+        }
+        int& Sum;
+        SymbolInfoEntrySerializer& serializer_;
+    };
+
+    class Serializer
+    {
+    public:
+        Serializer(SymbolInfoEntrySerializer& s, uint8_t *buf, int size) : serializer_(s), size_(size), pos_(0), buf_(buf) {}
+
+        void operator()( const SymbolInfoEntry *ent) {
+            return operator()(*ent);
+        }
+        void operator()( const SymbolInfoEntry &ent) {
+            serializer_.serialize(ent, buf_+pos_, size_-pos_);
+            pos_ += serializer_.calcSize(ent);
+        }
+        SymbolInfoEntrySerializer& serializer_;
+        int size_;
+        int pos_;
+        uint8_t *buf_;
+    };
+
+    monapi_cmemoryinfo* serialize()
+    {
+        SymbolInfoEntrySerializer serializer;
+        int size = 0;
+        SizeCounter counter(serializer, size);
+
+        std::for_each(Symbols.begin(), Symbols.end(), counter);
+
+        monapi_cmemoryinfo *buf = new monapi_cmemoryinfo();
+        if(!buf)
+            return NULL;
+        if(M_OK != monapi_cmemoryinfo_create(buf, size, 0))
+        {
+            monapi_cmemoryinfo_delete(buf);
+            return NULL;
+        }
+
+        Serializer s(serializer, buf->Data, size);
+        std::for_each(Symbols.begin(), Symbols.end(), s);
+        return buf;
+    }
 
     void DebugDump()
     {
@@ -405,6 +544,108 @@ void testSymbolInfoCollection() {
     EXPECT_ENTRY("test2.c", "0xccccc", "hogeFunc", ents[2]);
 }
 
+void testSymbolInfoCollection_sort() {
+    SymbolInfoCollection col;
+    col.addFileEntry("test.c");
+    col.addFunctionEntry("0xa0001", "lastFunc");
+    col.addFunctionEntry("0x10001", "secondFunc");
+
+    col.addFileEntry("test2.c");
+    col.addFunctionEntry("0x12345", "thirdFunc");
+    col.addFunctionEntry("0x10000", "firstFunc");
+
+    col.sort();
+
+    SymbolInfoEntries& ents = col.Symbols;
+    EXPECT_EQ(4, ents.size());
+
+    EXPECT_STR_EQ("firstFunc", ents[0].FunctionName.c_str());
+    EXPECT_STR_EQ("secondFunc", ents[1].FunctionName.c_str());
+    EXPECT_STR_EQ("thirdFunc", ents[2].FunctionName.c_str());
+    EXPECT_STR_EQ("lastFunc", ents[3].FunctionName.c_str());
+}
+
+void testSymbolInfoCollection_serialize() {
+    SymbolInfoCollection col;
+    col.addFileEntry("test.c");
+    col.addFunctionEntry("0xa0001000", "lastFunc");
+    col.addFunctionEntry("0x10001000", "secondFunc");
+
+    col.addFileEntry("test2.c");
+    col.addFunctionEntry("0x12345000", "thirdFunc");
+    col.addFunctionEntry("0x10000000", "firstFunc");
+
+    col.sort();
+    monapi_cmemoryinfo* cm =  col.serialize();
+
+    EXPECT_TRUE(NULL !=cm);
+
+    monapi_cmemoryinfo_dispose(cm);
+    monapi_cmemoryinfo_delete(cm);
+}
+
+
+void EXPECT_CALCSIZE(const char* msg, int expect, const char* fileName, const char* funcName, const char* address)
+{
+    SymbolInfoEntrySerializer serializer;
+    SymbolInfoEntry ent(fileName, funcName, address);
+
+    int actual = serializer.calcSize(ent);
+    EXPECT_EQ_MSG(expect, actual, msg); 
+}
+
+void testSymbolInfoEntrySerializer_calcSize() {
+    EXPECT_CALCSIZE("empty case", 2+2+4, "", "",  "0xa0001000");
+    EXPECT_CALCSIZE("fname=aa, func=bbb", 2+2+4+2+3, "aa", "bbb",  "0xa0001000");
+}
+
+void testSymbolInfoEntrySerializer_serialize_empty() {
+    uint8_t buf[9];
+    buf[8] = 0xff;
+
+    SymbolInfoEntrySerializer serializer;
+    SymbolInfoEntry ent("", "", "0xa1234567");
+
+    serializer.serialize(ent, buf, 8);
+
+    EXPECT_EQ(0x67, buf[0]);
+    EXPECT_EQ(0x45, buf[1]);
+    EXPECT_EQ(0x23, buf[2]);
+    EXPECT_EQ(0xa1, buf[3]);
+    EXPECT_EQ(0, buf[4]);
+    EXPECT_EQ(0, buf[5]);
+    EXPECT_EQ(0, buf[6]);
+    EXPECT_EQ(0, buf[7]);
+    EXPECT_EQ(0xff, buf[8]);
+}
+
+void testSymbolInfoEntrySerializer_serialize_ab() {
+    uint8_t buf[11];
+    buf[10] = 0xff;
+
+    SymbolInfoEntrySerializer serializer;
+    SymbolInfoEntry ent("a", "b", "0xa1234567");
+
+    serializer.serialize(ent, buf, 10);
+
+    EXPECT_EQ(0x67, buf[0]);
+    EXPECT_EQ(0x45, buf[1]);
+    EXPECT_EQ(0x23, buf[2]);
+    EXPECT_EQ(0xa1, buf[3]);
+    EXPECT_EQ(1, buf[4]);
+    EXPECT_EQ(0, buf[5]);
+    EXPECT_EQ('a', buf[6]);
+    EXPECT_EQ(1, buf[7]);
+    EXPECT_EQ(0, buf[8]);
+    EXPECT_EQ('b', buf[9]);
+    EXPECT_EQ(0xff, buf[10]);
+}
+
+void testSymbolInfoEntrySerializer_addressToInt() {
+    SymbolInfoEntrySerializer serializer;
+    uint32_t actual = serializer.addressToInt("0xabcd1234");
+    EXPECT_EQ(((signed)0xabcd1234), actual);
+}
 
 enum MapFileParseState
 {
@@ -708,6 +949,151 @@ static void testMapFileParser_parse_testMap()
     // parser.symbolInfos_.DebugDump();
 }
 
+// kernel side test.
+#include <sys/BinaryTree.h>
+
+void testBinaryTree_get_lower_nearest()
+{
+    BinaryTree<int> tree;
+    tree.add(3, 3);
+    tree.add(5, 5);
+    tree.add(1, 1);
+    tree.add(9, 9);
+    tree.add(7, 7);
+
+    EXPECT_EQ(0, tree.get_lower_nearest(-1));
+    EXPECT_EQ(1, tree.get_lower_nearest(1));
+    EXPECT_EQ(1, tree.get_lower_nearest(2));
+    EXPECT_EQ(3, tree.get_lower_nearest(3));
+    EXPECT_EQ(3, tree.get_lower_nearest(4));
+    EXPECT_EQ(5, tree.get_lower_nearest(5));
+    EXPECT_EQ(5, tree.get_lower_nearest(6));
+    EXPECT_EQ(7, tree.get_lower_nearest(7));
+    EXPECT_EQ(7, tree.get_lower_nearest(8));
+    EXPECT_EQ(9, tree.get_lower_nearest(9));
+    EXPECT_EQ(9, tree.get_lower_nearest(10));
+}
+
+class SymbolEntry {
+public:
+    SymbolEntry(char* fname, int fnlen, char *funcName, int funcLen, uint32_t address)
+    {
+        FileName = allocCString(fname, fnlen);
+        FunctionName = allocCString(funcName, funcLen);
+        Address = address;
+    }
+    SymbolEntry(const SymbolEntry& ent)
+    {
+        Address = ent.Address;
+        FileName = allocCString(ent.FileName, strlen(ent.FileName));
+        FunctionName = allocCString(ent.FunctionName, strlen(ent.FunctionName));
+    }
+    ~SymbolEntry()
+    {
+        delete FileName;
+        delete FunctionName;
+    }
+    char* FileName;
+    char* FunctionName;
+    uint32_t Address;
+
+private:
+    char* allocCString(char* str, int strlen)
+    {
+        char* ret = new char[strlen+1];
+        memcpy(ret, str, strlen);
+        ret[strlen] = '\0';
+        return ret;
+    }
+    
+};
+
+template <class T> class SymbolsDeserializer
+{
+public:
+    T& builder_;
+    SymbolsDeserializer(T& builder) : builder_(builder) {}
+
+    void deserialize(uint8_t* data, int size)
+    {
+        int pos = 0;
+        while(pos < size)
+        {
+            uint32_t* ptr32 = (uint32_t*)&data[pos];
+            uint32_t address = *ptr32;
+            pos+=4;
+
+            uint16_t* ptr16 = (uint16_t*)&data[pos];
+            int fnlen = (int)*ptr16;
+            pos+=2;
+            char* fname = (char*)&data[pos];
+            pos+=fnlen;
+
+            ptr16 = (uint16_t*)&data[pos];
+            int funcLen = (int)*ptr16;
+            pos+=2;
+            char* funcName = (char*)&data[pos];
+            pos+=funcLen;
+
+            builder_.add(fname, fnlen, funcName, funcLen, address);
+        }
+    }
+
+};
+
+class SymbolDictionary
+{
+public:
+    ~SymbolDictionary()
+    {
+        for(int i = 0; i < list_.size(); i++)
+        {
+            SymbolEntry * ent = list_[i];
+            delete ent;
+        }
+    }
+    SymbolEntry* lookup(uint32_t address) const {
+        return tree_.get_lower_nearest(address);
+    }
+    void add(char* fname, int fnlen, char*funcName, int funcLen, uint32_t address)
+    {
+        SymbolEntry* ent = new SymbolEntry(fname, fnlen, funcName, funcLen, address);
+        list_.add(ent);
+        tree_.add(address, ent);
+    }
+    void deserialize(uint8_t* data, int size)
+    {
+        SymbolsDeserializer<SymbolDictionary> des(*this);
+        des.deserialize(data, size);
+    }
+
+    BinaryTree<SymbolEntry*> tree_;
+    HList<SymbolEntry*> list_;
+};
+
+void testSymbolDictionary_Integrate()
+{
+    FileReader reader;
+    reader.open(TEST_MAP);
+    MapFileScanner<FileReader> scanner(reader);
+    MapFileParser<MapFileScanner<FileReader> > parser(scanner);
+
+    parser.parseAll();
+    monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
+    EXPECT_TRUE(NULL !=cm);
+
+    SymbolDictionary dict;
+    dict.deserialize(cm->Data, cm->Size);
+
+    SymbolEntry* ent = dict.lookup(0xa00010a0);
+    EXPECT_STR_EQ("main.o", ent->FileName);
+    EXPECT_STR_EQ("third()", ent->FunctionName);
+
+    monapi_cmemoryinfo_dispose(cm);
+    monapi_cmemoryinfo_delete(cm);
+}
+
+
 
 int main(int argc, char *argv[])
 {
@@ -717,6 +1103,13 @@ int main(int argc, char *argv[])
 
     testStringReaderForTest();
     testSymbolInfoCollection();
+    testSymbolInfoCollection_sort();
+    testSymbolInfoCollection_serialize();
+
+    testSymbolInfoEntrySerializer_calcSize();
+    testSymbolInfoEntrySerializer_serialize_empty();
+    testSymbolInfoEntrySerializer_serialize_ab();
+    testSymbolInfoEntrySerializer_addressToInt();
 
     testMapFileScanner_lineType();
     testMapFileScanner_next();
@@ -733,6 +1126,10 @@ int main(int argc, char *argv[])
     testMapFileParser_parseAll();
 
     testMapFileParser_parse_testMap();
+
+    // kernel side test.
+    testBinaryTree_get_lower_nearest();
+    testSymbolDictionary_Integrate();
     
     TEST_RESULTS(stack_trace);
     return 0;
