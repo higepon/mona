@@ -21,6 +21,7 @@
 #include "ihandlers.h"
 #include "global.h"
 
+
 /* independent from architecture */
 const uint8_t PageManager::FAULT_NOT_EXIST;
 const uint8_t PageManager::FAULT_NOT_WRITABLE;
@@ -751,6 +752,25 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
         logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+// stack walk here. 
+    uint32_t pid = g_currentThread->process->getPid();
+    SymbolDictionary::SymbolDictionary *dict = symbolDictionaryMap_.get(pid);
+    if(dict != NULL)
+    {
+        g_console->printf("print stack trace:\n");
+        void**bp = (void**)i->ebp;
+        while(bp && ((uint32_t)bp) < g_currentThread->thread->stackSegment->getStart())
+        {
+            // caller = bp[1];
+            SymbolDictionary::SymbolEntry* ent = dict->lookup((uint32_t)bp[1]);
+            if(ent != NULL)
+                g_console->printf("  %s: %s\n", ent->FunctionName, ent->FileName);
+            else
+                g_console->printf("(unknown)  %x\n", (uint32_t)bp[1]);
+            bp = (void**)(*bp);
+        }
+        symbolDictionaryMap_.remove(pid);
+    }
 #endif
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);

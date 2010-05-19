@@ -12,7 +12,12 @@
 #ifndef _MONA_PAGE_MANAGER_
 #define _MONA_PAGE_MANAGER_
 
+// for debug
+#include "VirtualConsole.h"
+extern "C" VirtualConsole* g_console;
+
 #include "BitMap.h"
+#include <sys/SymbolDictionary.h>
 
 typedef uint32_t PageEntry;
 typedef uint32_t LinearAddress;
@@ -63,6 +68,21 @@ class PageManager {
         return (*entry) & ARCH_PAGE_PRESENT;
     }
 
+    bool enableStackTrace(uint32_t pid, uint8_t *data, uint32_t size) {
+        SymbolDictionary::SymbolDictionary* dict = new SymbolDictionary::SymbolDictionary();
+        if(!dict->deserialize(data, size)) // deserialize use many memory, so I check error only here.
+        {
+            g_console->printf("deserialize fail!\n");
+            delete dict;
+            return false;
+        }
+        symbolDictionaryMap_.add(pid, dict);
+        return true;
+    }
+    void disableStackTrace(uint32_t pid) {
+        symbolDictionaryMap_.remove(pid);
+    }
+
   public:
     inline static int getDirectoryIndex(LinearAddress address) {
 
@@ -84,6 +104,7 @@ class PageManager {
     PhysicalAddress vram_;
     PageEntry* kernelDirectory_;
     BitMap* reservedDMAMap_;
+    SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_; 
 
   public:
     static const uint8_t FAULT_NOT_EXIST          = 0x01;
