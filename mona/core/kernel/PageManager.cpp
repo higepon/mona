@@ -722,21 +722,27 @@ class StackTracer
 {
 public:
     StackTracer(SymbolDictionary::SymbolDictionaryMap& dictMap) : dictMap_(dictMap) {}
-    template <class T> void dump(uint32_t pid, uint32_t ebp, uint32_t stackStart)
+    template <class T> void dumpAddress(uint32_t address, SymbolDictionary::SymbolDictionary* dict)
+    {
+        SymbolDictionary::SymbolEntry* ent = dict->lookup(address);
+        if(ent != NULL)
+            T::printf("  %s: %s (%x)\n", ent->FunctionName, ent->FileName, address);
+        else
+            T::printf("(unknown)  %x\n", address);
+    }
+    template <class T> void dump(uint32_t pid, uint32_t ebp, uint32_t eip, uint32_t stackStart)
     {
         SymbolDictionary::SymbolDictionary *dict = dictMap_.get(pid);
         if(dict != NULL)
         {
             T::printf("nullpo! stack trace:\n");
+            dumpAddress<T>(eip, dict);
+
             void**bp = (void**)ebp;
             while(bp && ((uint32_t)bp) < stackStart)
             {
                 // caller = bp[1];
-                SymbolDictionary::SymbolEntry* ent = dict->lookup((uint32_t)bp[1]);
-                if(ent != NULL)
-                    T::printf("  %s: %s (%x)\n", ent->FunctionName, ent->FileName, (uint32_t)bp[1]);
-                else
-                    T::printf("(unknown)  %x\n", (uint32_t)bp[1]);
+                dumpAddress<T>((uint32_t)bp[1], dict);
                 bp = (void**)(*bp);
             }
             dictMap_.remove(pid);
@@ -810,7 +816,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 
     StackTracer tracer(symbolDictionaryMap_); 
-    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, g_currentThread->thread->stackSegment->getStart());
+    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
 #endif
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
