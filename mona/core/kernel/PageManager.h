@@ -12,9 +12,6 @@
 #ifndef _MONA_PAGE_MANAGER_
 #define _MONA_PAGE_MANAGER_
 
-// for debug
-#include "VirtualConsole.h"
-extern "C" VirtualConsole* g_console;
 
 #include "BitMap.h"
 #include <sys/SymbolDictionary.h>
@@ -72,7 +69,6 @@ class PageManager {
         SymbolDictionary::SymbolDictionary* dict = new SymbolDictionary::SymbolDictionary();
         if(!dict->deserialize(data, size)) // deserialize use many memory, so I check error only here.
         {
-            g_console->printf("deserialize fail!\n");
             delete dict;
             return false;
         }

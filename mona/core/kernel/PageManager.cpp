@@ -691,6 +691,62 @@ PageEntry* PageManager::allocatePageTable() const
     return (PageEntry*)(address);
 }
 
+#include "stdarg.h"
+#include "vsprintf.h"
+
+class NormalLogger
+{
+public:
+    static void printf(const char*fmt, ... )
+    {
+#define BUFFER_SIZE 512
+        char buf[BUFFER_SIZE];
+        va_list ap;
+        va_start(ap, fmt);
+
+        int ret = vsprintf(buf, fmt, ap);
+        va_end(ap);
+        if (ret >= BUFFER_SIZE) {
+            print("bufer over at StackTrace::printf");
+        }
+        print(buf);
+    }
+    static void print(const char* str)
+    {
+        g_console->printf(str);
+        logprintf(str);
+    }
+};
+
+class StackTracer
+{
+public:
+    StackTracer(SymbolDictionary::SymbolDictionaryMap& dictMap) : dictMap_(dictMap) {}
+    template <class T> void dump(uint32_t pid, uint32_t ebp, uint32_t stackStart)
+    {
+        SymbolDictionary::SymbolDictionary *dict = dictMap_.get(pid);
+        if(dict != NULL)
+        {
+            T::printf("nullpo! stack trace:\n");
+            void**bp = (void**)ebp;
+            while(bp && ((uint32_t)bp) < stackStart)
+            {
+                // caller = bp[1];
+                SymbolDictionary::SymbolEntry* ent = dict->lookup((uint32_t)bp[1]);
+                if(ent != NULL)
+                    T::printf("  %s: %s (%x)\n", ent->FunctionName, ent->FileName, (uint32_t)bp[1]);
+                else
+                    T::printf("(unknown)  %x\n", (uint32_t)bp[1]);
+                bp = (void**)(*bp);
+            }
+            dictMap_.remove(pid);
+        }
+    }
+    
+private:
+    SymbolDictionary::SymbolDictionaryMap& dictMap_;
+};
+
 // PageEntry* PageManager::allocatePageTable() const
 // {
 //     uint8_t* table;
@@ -752,25 +808,9 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
         logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
-// stack walk here. 
-    uint32_t pid = g_currentThread->process->getPid();
-    SymbolDictionary::SymbolDictionary *dict = symbolDictionaryMap_.get(pid);
-    if(dict != NULL)
-    {
-        g_console->printf("print stack trace:\n");
-        void**bp = (void**)i->ebp;
-        while(bp && ((uint32_t)bp) < g_currentThread->thread->stackSegment->getStart())
-        {
-            // caller = bp[1];
-            SymbolDictionary::SymbolEntry* ent = dict->lookup((uint32_t)bp[1]);
-            if(ent != NULL)
-                g_console->printf("  %s: %s\n", ent->FunctionName, ent->FileName);
-            else
-                g_console->printf("(unknown)  %x\n", (uint32_t)bp[1]);
-            bp = (void**)(*bp);
-        }
-        symbolDictionaryMap_.remove(pid);
-    }
+
+    StackTracer tracer(symbolDictionaryMap_); 
+    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, g_currentThread->thread->stackSegment->getStart());
 #endif
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
