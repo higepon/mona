@@ -242,6 +242,9 @@ loadSomething(URLFile *f,
 }
 
 #ifdef MONA
+extern uint32_t monapi_file_delete(const char* file);
+extern void _logprintf(const char* format, ...);
+
 void
 unlink(char *path)
 {
@@ -1745,6 +1748,8 @@ checkRedirection(ParsedURL *pu)
     return TRUE;
 }
 
+extern int isAutoPilot();
+
 /* 
  * loadGeneralFile: load file to buffer
  */
@@ -1927,6 +1932,10 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	    t_buf = newBuffer(INIT_BUFFER_WIDTH);
 	    t_buf->bufferprop |= BP_REDIRECTED;
 	    status = HTST_NORMAL;
+            if(isAutoPilot()) {
+                fprintf(stderr, "redirect url: %s\n", tpath);
+                _logprintf("redirect url: %s\n", tpath);
+            }
 	    goto load_doc;
 	}
 	t = checkContentType(t_buf);

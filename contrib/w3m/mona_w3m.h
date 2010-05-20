@@ -279,7 +279,7 @@ public:
 
 class W3MFrame: public Frame {
 public:
-  W3MFrame() {
+  W3MFrame() : m_isAuto(false) {
     setBounds((800 - 640) / 2, (600 - 480) / 2, 640, 480);
     setTitle("w3m");
     m_pane = new W3MPane();
@@ -300,6 +300,12 @@ public:
      m_pane->ScreenImage = si;
   }
 
+  // just copy pointer. be careful!
+  void autoPilot(char *url) {
+     m_isAuto = true;
+     m_autoUrl = url;
+  }
+
 
   void initW3M(char* url) {
     m_pane->initW3M();
@@ -312,11 +318,17 @@ public:
       MONA_TRACE("newbuf == null\n");
 
     displayBuffer(newbuf, B_FORCE_REDRAW);
+    if(m_isAuto)
+      setTimer(100);
   }
+
+  virtual void processEvent(Event* event) ;
 
 
 private: 
     W3MPane *m_pane;
+    char *m_autoUrl;
+    bool m_isAuto;
 };
 
 
