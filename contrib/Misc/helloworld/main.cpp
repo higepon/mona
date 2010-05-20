@@ -7,6 +7,48 @@
 #include <monapi.h>
 
 #if 1
+int third(int h)
+{
+    int *bp, *fp; 
+    int g;
+    _printf("third=%x, &g=%x, &h=%x, &h-2=%x\n", third, &g, &h, ((void**)&h)-2);
+    _printf("th, *&(g+1)=(sec bp)=%x,*(&g+2)=%x\n", *(&g+1), *(&g+2));
+    bp = (int*)*(&g+1);
+    fp = (int*)*bp;
+    _printf("th, sec fp=%x, *(sec fp)=%x\n", fp, *fp);
+    *((int*)0) = 1;
+    return 1;
+}
+int second(char e)
+{
+    char f;
+    _printf("second=%x, &e=%x, &f=%x\n", second, &e, &f);
+    _printf("sec, &e-1=%x, *(&e-1)=%x, *(&e-2)=%x\n", &e-1, *((int*)(&e-1)), *((int*)(&e-2)));
+    _printf("sec, &f+1=%x, *(&f+1)=%x, *(&f+2)=%x\n", &f+1, *((int*)(&f+1)), *((int*)(&f+2)));
+    third(0);
+    return 1;
+}
+
+int first(int a, int b)
+{
+    int c;
+    char d;
+    _printf("first=%x, &a=%x,&b=%x, &c=%x, &d=%x\n", first, &a, &b, &c, &d);
+    _printf("fi, (&d+1)=%x, *(&d+1)=%x\n", (&d+1), *((int*)(&d+1)));
+    second('a');
+    return 1;
+}
+
+int main(){
+    if(!syscall_stack_trace_enable(syscall_get_pid(), "/MEM/TEST.MAP")){
+        printf("can't find map?\n");
+        // return 1;
+    }
+    first(1, 2);
+    syscall_stack_trace_disable(syscall_get_pid());
+    return 0;
+}
+#else
 
 int main(int argc, char* argv[])
 {

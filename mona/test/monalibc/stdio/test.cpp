@@ -17,6 +17,7 @@ void test_fwrite_large();
 void test_fread_biggerthanfile();
 void test_fread_small_many();
 void test_bsearch();
+void test_sprintf();
 
 int main(int argc, char* argv[])
 {
@@ -36,6 +37,7 @@ int main(int argc, char* argv[])
         // slow test. but better than nothing...
         test_fwrite_large();
         test_bsearch();
+        test_sprintf();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -291,3 +293,14 @@ void test_bsearch()
     actual = bsearch((void*)0, (void*)arrays, 4, sizeof(int), cmp_int);
     EXPECT_TRUE(actual == NULL);
 }
+
+void test_sprintf()
+{
+    char buf[256];
+    sprintf(buf, "%.3g", 0.1); // not crash
+    sprintf(buf, "%.3g/%.3g", 0.1, 0.1); // not crash
+
+    // crash this case!
+    // sprintf(buf, "%.3g/%.3g%s", 0.1, 0.1, "hoge");
+}
+

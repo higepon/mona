@@ -12,7 +12,7 @@ using namespace MonAPI;
 
 static bool fileExist(const char* path)
 {
-    uint32_t id = monapi_file_open("/MEM/TESTFILE", false);
+    uint32_t id = monapi_file_open(path, false);
     if(id == 0)
       return false;
     monapi_file_close(id);
@@ -97,7 +97,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
 #define MAXDATA 20
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
     monapi_cmemoryinfo_create(buffer, MAXDATA, 0);
-    int res;
+    int res = MONA_FAILURE;
     while(size > 0) {
         int copySize = size > MAXDATA ? MAXDATA : size;
         memcpy(buffer->Data, contents, copySize);

@@ -268,7 +268,12 @@ public:
           drawString(g, ScreenImage[line],  _xoffset, line*fh+_yoffset);
         }
       }
+      drawCursor(g, Currentbuf->cursorX, Currentbuf->cursorY);
   }
+    void drawCursor(Graphics *g, int col, int row)
+    {
+        g->invartRect(_xoffset+col*colWidth(), _yoffset+colHeight()*row, colWidth(), colHeight());
+    }
 };
 
 

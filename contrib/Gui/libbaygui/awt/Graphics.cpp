@@ -235,6 +235,28 @@ namespace baygui {
 		}
 	}
 
+	void Graphics::invartRect(int x, int y, int width, int height)
+	{
+		if (width < 0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0) {
+			y += height;
+			height = -height;
+		}
+		
+		int xw = x + width, yh = y + height;
+		
+		for (int yy = y; yy < yh; yy++) {
+			for (int xx = x; xx < xw; xx++) {
+				dword c = this->image->getPixel(xx, yy);
+				c = (0xff000000) | (~c);
+				this->drawPixel(xx, yy, c);
+			}
+		}
+	}
+
 	void Graphics::translate(int x, int y)
 	{
 		tx = x;

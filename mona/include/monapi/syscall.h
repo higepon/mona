@@ -10,6 +10,8 @@ typedef int (FuncMain)(int argc, char* argv[]);
 #include <sys/List.h>
 
 
+
+
 typedef int (FuncMonaMain)(List<char*>*);
 
 extern void invokeFuncList(FuncVoid** list, const char* file, int line);
@@ -113,6 +115,10 @@ extern int syscall_receive_packet(uint8_t* frame);
 extern int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid);
 extern int syscall_set_watch_point(void* address, int flag);
 extern int syscall_remove_watch_point();
+
+extern bool syscall_stack_trace_enable(uint32_t pid, const char* map_file_path);
+extern void syscall_stack_trace_disable(uint32_t pid);
+
 
 
 extern int syscall_allocate_contiguous(uint32_t laddress, int pageNum);

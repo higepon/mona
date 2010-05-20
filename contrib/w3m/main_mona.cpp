@@ -2455,6 +2455,10 @@ Str wtf_to_utf8(char **pc, l_prop *pr, int len)
     return conv.result;
 }
 
+bool g_debugMode = false;
+bool g_autoPilot = false;
+
+#define MAP_FILE_PATH "/APPS/W3M/W3M.APP/W3M.MAP"
 
 int main(int argc, char* argv[]) {
     CurrentDir = "/APPS/W3M/W3M.APP";
@@ -2476,11 +2480,33 @@ int main(int argc, char* argv[]) {
 
     char *initUrl = "file:///APPS/W3M/W3M.APP/MANUAL.HTM";
 
-  
-    if(argc >= 2)
+    for(int i = 1; i < argc; i++)
     {
-      initUrl = argv[1];
+        if(argv[i][0] == '-') {
+            switch(argv[i][1])
+            {
+            case 'h':
+                printf("W3M.EX5 [-hda] [url]\n");
+                printf("command line option:\n");
+                printf("  -h: show this help and exit. \n");
+                printf("  -d: debug mode. \n");
+                printf("  -a: auto pilot mode. \n");
+                return 0;
+                break;
+            case 'd':
+                g_debugMode = true;
+                break;
+            case 'a':
+                g_autoPilot = true;
+                break;
+            }
+        }
+        else {
+            initUrl = argv[i];
+        }
     }
+
+  
 
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
     {
@@ -2488,11 +2514,20 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    uint32_t pid = syscall_get_pid();
+
+    if(g_debugMode)
+        syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+
 
     g_frame = new W3MFrame();
     g_frame->initW3M(initUrl);
     g_frame->run();
     delete(g_frame);
+
+    if(g_debugMode)
+        syscall_stack_trace_disable(pid);
+
     monapi_register_to_server(ID_PROCESS_SERVER, 0);
     return 0;
 }

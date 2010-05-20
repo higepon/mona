@@ -1092,3 +1092,34 @@ uint64_t syscall_now_in_nanosec()
     syscall2(SYSTEM_CALL_NOW_IN_NANOSEC, (intptr_t)(&(n.u32.l)), (intptr_t)(&(n.u32.h)));
     return n.u64;
 }
+
+#include <monapi/MapFileParser.h>
+
+bool syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
+{
+    FileReader reader;
+    if(!reader.open(map_file_path))
+        return false;
+
+    MapFileScanner<FileReader> scanner(reader);
+    MapFileParser<MapFileScanner<FileReader> > parser(scanner);
+
+    parser.parseAll();
+    monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
+    if(cm == NULL) 
+        return false;
+
+    int res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->Data, cm->Size);
+    
+    monapi_cmemoryinfo_dispose(cm);
+    monapi_cmemoryinfo_delete(cm);
+
+    return res == 0;
+}
+void syscall_stack_trace_disable(uint32_t pid)
+{
+     syscall1(SYSTEM_CALL_STACKTRACE_DISABLE, pid);
+}
+
+
+

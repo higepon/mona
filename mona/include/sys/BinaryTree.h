@@ -16,6 +16,7 @@ template <class T> class BinaryTree {
   public:
     int  size() const;
     T get(const int key) const;
+    T get_lower_nearest(const int key) const; 
     bool contains(const int key) const;
     T add(const int key, const T element);
     T remove(const int key);
@@ -37,6 +38,8 @@ template <class T> class BinaryTree {
     void clear();
     void clear(Node*& tree);
     T get(const Node* tree, const int key) const;
+    T get_lower_nearest(const Node* tree, const int key) const;
+    
 };
 
 template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements_(0) {
@@ -52,6 +55,10 @@ template <class T> int BinaryTree<T>::size() const {
 
 template <class T> T BinaryTree<T>::get(const int key) const {
     return get(root_, key);
+}
+
+template <class T> T BinaryTree<T>::get_lower_nearest(const int key) const {
+    return get_lower_nearest(root_, key);
 }
 
 template <class T> void BinaryTree<T>::clear() {
@@ -79,6 +86,24 @@ template <class T> T BinaryTree<T>::get(const Node* tree, const int key) const {
         return get(tree->left, key);
     } else {
         return get(tree->right, key);
+    }
+}
+
+template <class T> T BinaryTree<T>::get_lower_nearest(const Node* tree, const int key) const {
+
+    if (tree == NO_DATA) {
+        return (T)0;
+    }
+
+    if (key == tree->key) {
+        return tree->element;
+    } else if (key < tree->key) {
+        return get_lower_nearest(tree->left, key);
+    } else {
+        T ret = get_lower_nearest(tree->right, key);
+        if(ret == (T)0)
+            return tree->element;
+        return ret;
     }
 }
 

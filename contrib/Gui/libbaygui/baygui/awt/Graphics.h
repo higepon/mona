@@ -136,6 +136,8 @@ namespace baygui {
 		 @param height ‚‚³
 		 */
 		void fillRect(int x, int y, int width, int height);
+
+		void invartRect(int x, int y, int width, int height);
 		
 		/**
 		 À•Wİ’è

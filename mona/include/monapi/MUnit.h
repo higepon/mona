@@ -66,6 +66,39 @@
     }\
 }
 
+#define EXPECT_STR_EQ(expected, actual) {                  \
+    const char* ac = (actual); \
+    if (0 != strcmp(expected, ac)) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+#define EXPECT_STR_EQ_MSG(expected, actual, msg) {                  \
+    const char* ac = (actual); \
+    if (0 != strcmp(expected, ac)) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: msg: %s\n", #expected, ac, __FILE__, __LINE__, (msg)); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: msg: %s\n", #expected, ac, __FILE__, __LINE__, (msg)); \
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
+#define EXPECT_EQ_MSG(expected, actual, msg) {                  \
+    intptr_t ac = (actual); \
+    if (expected != ac) {\
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: msg: %s\n", #expected, ac, __FILE__, __LINE__, (msg)); \
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: msg: %s \n", #expected, ac, __FILE__, __LINE__, (msg)); \
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
+
 
 #define ASSERT_GT(a, b) ASSERT_TRUE((a) > (b))
 //#define ASSERT_EQ(a, b) ASSERT_TRUE((a) == (b))

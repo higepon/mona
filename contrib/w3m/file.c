@@ -6664,6 +6664,10 @@ convert_size2(clen_t size1, clen_t size2, int usefloat)
     char **sizes = _size_unit;
     float csize, factor = 1;
     int sizepos = 0;
+#ifdef MONA
+    /* sprintf have bug. */
+    usefloat = 0;
+#endif
 
     csize = (float)((size1 > size2) ? size1 : size2);
     while (csize / factor >= 999.495 && sizes[sizepos + 1]) {
