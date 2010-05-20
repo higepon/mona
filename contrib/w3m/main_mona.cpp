@@ -1,5 +1,8 @@
 // This file's encoding is UTF-8.
 
+bool g_debugMode = false;
+bool g_autoPilot = false;
+
 #define MAINPROGRAM
 extern "C" {
 #include "fm.h"
@@ -2282,6 +2285,10 @@ DEFUN(defCSet, DEFAULT_CHARSET, "Change the default document charset")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
+int isAutoPilot()
+{
+    return g_autoPilot; 
+}
 
 
 /* extern "C" */ }
@@ -2330,7 +2337,7 @@ void W3MFrame::processEvent(Event* event)
 {
   if(m_isAuto && event->getType() == Event::TIMER) {
     cmd_loadURL(m_autoUrl, NULL, NULL, NULL);
-    setTimer(10);
+    setTimer(100);
     return;
   }
   Frame::processEvent(event);
@@ -2465,8 +2472,6 @@ Str wtf_to_utf8(char **pc, l_prop *pr, int len)
     return conv.result;
 }
 
-bool g_debugMode = false;
-bool g_autoPilot = false;
 
 #define MAP_FILE_PATH "/APPS/W3M/W3M.APP/W3M.MAP"
 #define AUTOPILOT_URL "http://www.randomwebsite.com/cgi-bin/random.pl"

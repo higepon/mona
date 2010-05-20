@@ -319,7 +319,7 @@ public:
 
     displayBuffer(newbuf, B_FORCE_REDRAW);
     if(m_isAuto)
-      setTimer(10);
+      setTimer(100);
   }
 
   virtual void processEvent(Event* event) ;
