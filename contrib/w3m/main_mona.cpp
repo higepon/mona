@@ -2326,6 +2326,16 @@ void W3MPane::processEvent(Event* event)
   Component::processEvent(event);
 }
 
+void W3MFrame::processEvent(Event* event)
+{
+  if(m_isAuto && event->getType() == Event::TIMER) {
+    cmd_loadURL(m_autoUrl, NULL, NULL, NULL);
+    setTimer(10);
+    return;
+  }
+  Frame::processEvent(event);
+}
+
 
 int file_size(char *path)
 {
@@ -2459,6 +2469,7 @@ bool g_debugMode = false;
 bool g_autoPilot = false;
 
 #define MAP_FILE_PATH "/APPS/W3M/W3M.APP/W3M.MAP"
+#define AUTOPILOT_URL "http://www.randomwebsite.com/cgi-bin/random.pl"
 
 int main(int argc, char* argv[]) {
     CurrentDir = "/APPS/W3M/W3M.APP";
@@ -2521,6 +2532,8 @@ int main(int argc, char* argv[]) {
 
 
     g_frame = new W3MFrame();
+    if(g_autoPilot)
+        g_frame->autoPilot(AUTOPILOT_URL);
     g_frame->initW3M(initUrl);
     g_frame->run();
     delete(g_frame);
