@@ -920,7 +920,6 @@ void syscall_entrance()
         uint8_t* data = (uint8_t*)SYSTEM_CALL_ARG_2;
         uint32_t size = SYSTEM_CALL_ARG_3;
         bool res = g_page_manager->enableStackTrace(pid, data, size);
-        g_console->printf("res=%x\n", res);
         setReturnValue(info, res? 0 : 1);
         break;
     }
