@@ -2532,8 +2532,10 @@ int main(int argc, char* argv[]) {
 
     uint32_t pid = syscall_get_pid();
 
-    if(g_debugMode)
+    if(g_debugMode) {
         syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+        fprintf(stderr, "tid=%x\n", syscall_get_tid());
+    }
 
 
     g_frame = new W3MFrame();
