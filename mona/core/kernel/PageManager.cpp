@@ -745,7 +745,6 @@ public:
                 dumpAddress<T>((uint32_t)bp[1], dict);
                 bp = (void**)(*bp);
             }
-            dictMap_.remove(pid);
         }
     }
     
@@ -762,6 +761,13 @@ private:
 //     g_console->printf("address%x", table);
 //     return (PageEntry*)table;
 // }
+
+void PageManager::showCurrentStackTrace()
+{
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    StackTracer tracer(symbolDictionaryMap_); 
+    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
+}
 
 /*!
     \brief page fault handler
@@ -815,8 +821,10 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 
-    StackTracer tracer(symbolDictionaryMap_); 
-    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
+    showCurrentStackTrace();
+
+    // remove: if dict of this pid does not exist, just ignore.
+    symbolDictionaryMap_.remove(g_currentThread->process->getPid());
 #endif
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);

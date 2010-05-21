@@ -931,6 +931,13 @@ void syscall_entrance()
         setReturnValue(info, 0);
         break;
     }
+    case SYSTEM_CALL_STACKTRACE_DUMP:
+    {
+        uint32_t pid = SYSTEM_CALL_ARG_1;
+        g_scheduler->ReserveStackDump(pid);
+        setReturnValue(info, 0);
+        break;
+    }
     case SYSTEM_CALL_NOW_IN_NANOSEC:
     {
         union {

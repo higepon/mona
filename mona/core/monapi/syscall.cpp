@@ -1121,5 +1121,10 @@ void syscall_stack_trace_disable(uint32_t pid)
      syscall1(SYSTEM_CALL_STACKTRACE_DISABLE, pid);
 }
 
+void syscall_stack_trace_dump(uint32_t pid)
+{
+     syscall1(SYSTEM_CALL_STACKTRACE_DUMP, pid);
+}
+
 
 

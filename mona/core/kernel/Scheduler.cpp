@@ -8,7 +8,7 @@
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
-Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0)
+Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0), reservedTid_(0)
 {
     for (int i = 0; i < runq.GetLength(); i++)
     {
@@ -196,6 +196,12 @@ bool Scheduler::WakeupSleep(Thread* thread)
 
 bool Scheduler::SetNextThread()
 {
+    if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+        g_page_manager->showCurrentStackTrace();
+        reservedTid_ = 0;
+    }
+        
+
     Thread* root = NULL;
 
     FOREACH(Thread*, queue, runq)

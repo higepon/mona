@@ -104,3 +104,4 @@ env->defineVariable(new Variable("mona-reboot"), new MonaReboot());
 env->defineVariable(new Variable("mona-kill"), new MonaKill());
 env->defineVariable(new Variable("mona-sleep"), new MonaSleep());
 env->defineVariable(new Variable("mona-ps"), new MonaPs());
+env->defineVariable(new Variable("mona-stack-dump"), new MonaStackDump());

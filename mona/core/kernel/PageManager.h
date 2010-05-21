@@ -79,6 +79,8 @@ class PageManager {
         symbolDictionaryMap_.remove(pid);
     }
 
+    void showCurrentStackTrace();
+
   public:
     inline static int getDirectoryIndex(LinearAddress address) {
 
