@@ -713,7 +713,6 @@ public:
     }
     static void print(const char* str)
     {
-        g_console->printf(str);
         logprintf(str);
     }
 };

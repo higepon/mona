@@ -194,11 +194,17 @@ bool Scheduler::WakeupSleep(Thread* thread)
     return true;
 }
 
+
 bool Scheduler::SetNextThread()
 {
     if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
-        g_page_manager->showCurrentStackTrace();
-        reservedTid_ = 0;
+        static uint32_t mutex = systemcall_mutex_create();
+        systemcall_mutex_lock(mutex);
+        if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+            reservedTid_ = 0;
+            g_page_manager->showCurrentStackTrace();
+        }
+        systemcall_mutex_unlock(mutex);
     }
         
 
