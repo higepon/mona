@@ -2534,7 +2534,7 @@ int main(int argc, char* argv[]) {
 
     if(g_debugMode) {
         syscall_stack_trace_enable(pid, MAP_FILE_PATH);
-        fprintf(stderr, "tid=%x\n", syscall_get_tid());
+        fprintf(stderr, "tid=%d\n", syscall_get_tid());
     }
 
 
