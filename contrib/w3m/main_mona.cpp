@@ -2534,7 +2534,8 @@ int main(int argc, char* argv[]) {
 
     if(g_debugMode) {
         syscall_stack_trace_enable(pid, MAP_FILE_PATH);
-        fprintf(stderr, "tid=%d\n", syscall_get_tid());
+        fprintf(stderr, "w3m: tid=%d\n", syscall_get_tid());
+        _logprintf("w3m: tid=%d\n", syscall_get_tid());
     }
 
 
