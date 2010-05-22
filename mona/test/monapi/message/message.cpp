@@ -95,7 +95,7 @@ void testPeek()
 int main(int argc, char *argv[])
 {
     testPeek();
-    testMessageOverflow();
+//    testMessageOverflow();
     testSendBuffer();
     TEST_RESULTS(monapi_message);
     return 0;

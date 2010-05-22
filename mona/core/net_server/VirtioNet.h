@@ -326,7 +326,7 @@ public:
         }
         Ether::Frame* rframe = (Ether::Frame*)buf;
         IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("send:ip packet %d %x\n", ipHeader->len, ipHeader->dstip);
+//        logprintf("send:ip packet %d %x\n", ipHeader->len, ipHeader->dstip);
 
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, buf, len);
@@ -364,7 +364,6 @@ public:
 
     bool receive(Ether::Frame* dst, unsigned int* len, int timeout_msec = 20)
     {
-        logprintf("hige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -431,7 +430,6 @@ public:
 
     bool receive(char* dst, unsigned int* len, int timeout_msec = 20)
     {
-        logprintf("mige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -482,8 +480,8 @@ public:
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
 
-        IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
+//        IP::Header* ipHeader = (IP::Header*)(rframe->data);
+//        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
 //         for (int i = 0; i < *len; i++) {
 //             _printf("[%c]", dst[i]);
 //         }

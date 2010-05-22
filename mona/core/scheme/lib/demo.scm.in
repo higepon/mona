@@ -5,7 +5,7 @@
 ;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
 ;  (start-process "/APPS/BAYGUI/MINE.EX5")
 ;  (start-process "/APPS/BAYGUI/GNOTE.EX5")
-  (start-process "/APPS/W3M/W3M.APP/W3m.EX5")
+  (start-process "/APPS/W3M/W3M.APP/W3m.EX5 -d -a")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
 ;  (display "uIP httpd started:\n  Try access http://localhost:8080/ from HOST OS")
 )

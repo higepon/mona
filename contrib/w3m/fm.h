@@ -23,8 +23,8 @@
 
 #ifdef MONA
 
-#define MONA_TRACE(s) fprintf(stderr, s)
-#define MONA_TRACE_FMT(s) fprintf s
+#define MONA_TRACE(s) //fprintf(stderr, s)
+#define MONA_TRACE_FMT(s) //fprintf s
 
 #include <time.h>
 typedef uint32_t pid_t;
