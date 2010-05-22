@@ -8,7 +8,7 @@
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
-Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0)
+Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0), reservedTid_(0)
 {
     for (int i = 0; i < runq.GetLength(); i++)
     {
@@ -194,8 +194,20 @@ bool Scheduler::WakeupSleep(Thread* thread)
     return true;
 }
 
+
 bool Scheduler::SetNextThread()
 {
+    if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+        static uint32_t mutex = systemcall_mutex_create();
+        systemcall_mutex_lock(mutex);
+        if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+            reservedTid_ = 0;
+            g_page_manager->showCurrentStackTrace();
+        }
+        systemcall_mutex_unlock(mutex);
+    }
+
+
     Thread* root = NULL;
 
     FOREACH(Thread*, queue, runq)

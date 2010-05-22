@@ -37,7 +37,7 @@ namespace baygui {
 	#if defined(MONA)
 		// GUIサーバーを探す
 		dword guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-		if (this->guisvrID == THREAD_UNKNOWN) {
+		if (guisvrID == THREAD_UNKNOWN) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			exit(1);
 		}

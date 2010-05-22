@@ -85,6 +85,8 @@ public:
     PsInfo* ReadDump();
     Thread** GetAllThread(uint32_t* threadNum);
 
+    void ReserveStackDump(uint32_t tid) { reservedTid_ = tid; }
+
 protected:
     void WakeupTimer();
     void WakeupSleep();
@@ -112,6 +114,8 @@ protected:
     HList<KTimer*> timers;
     uint32_t maxPriority;
     uint32_t totalTick;
+private:
+    uint32_t reservedTid_;
 };
 
 #endif

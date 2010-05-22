@@ -371,6 +371,7 @@ enum
 #define SYSTEM_CALL_MTHREAD_SELF              0x0067
 #define SYSTEM_CALL_STACKTRACE_ENABLE              0x0068
 #define SYSTEM_CALL_STACKTRACE_DISABLE              0x0069
+#define SYSTEM_CALL_STACKTRACE_DUMP              0x0070
 enum
 {
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,

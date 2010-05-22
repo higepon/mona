@@ -1804,5 +1804,22 @@ public:
     virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);
 };
 
+class MonaStackDump : public PrimitiveProcedure
+{
+private:
+    ::util::String procedureName_;
+public:
+    MonaStackDump()  : procedureName_("mona-stack-dump") {}
+    virtual ~MonaStackDump() {}
+
+    virtual ::util::String toString() {    return "#<subr ""mona-stack-dump"">";}
+    virtual ::util::String typeString() const { return "mona-stack-dump"; }
+    virtual Object* eval(Environment* env)
+    {
+        return this;
+    }
+    virtual Object* apply(Objects* arguments, Environment* env, bool evalArguments = true);
+};
+
 };
 #endif

@@ -496,3 +496,15 @@ PROCEDURE(MonaPs, "mona-ps")
 #endif
     RETURN_BOOLEAN(false);
 }
+
+
+PROCEDURE(MonaStackDump, "mona-stack-dump")
+{
+    ARGC_SHOULD_BE(1);
+#ifdef MONA
+    CAST(ARGV(0), Number, n);
+    syscall_stack_trace_dump(n->value());
+    RETURN_BOOLEAN(true);
+#endif
+    RETURN_BOOLEAN(false);
+}

@@ -43,7 +43,6 @@ namespace baygui {
 		/** フォントスタイル */
 		int fontStyle;
 		/** GUIサーバーID */
-		dword guisvrID;
 
 	public:
 		/** コンストラクタ */
