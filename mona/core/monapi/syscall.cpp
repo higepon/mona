@@ -1095,7 +1095,7 @@ uint64_t syscall_now_in_nanosec()
 
 #include <monapi/MapFileParser.h>
 
-bool syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
+int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
 {
     FileReader reader;
     if(!reader.open(map_file_path))
