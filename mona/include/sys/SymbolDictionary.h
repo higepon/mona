@@ -138,13 +138,17 @@ public:
     }
     SymbolDictionary* get(uint32_t pid)
     {
-        return tree_.get(pid);
+        SymbolDictionary *ret = tree_.get(pid);
+        if(ret == NULL)
+            return &nullDict_;
+        return ret;
     }
     void remove(uint32_t pid)
     {
         if(tree_.contains(pid))
         {
             SymbolDictionary* ent = tree_.get(pid);
+            // assert(ent != &nullDict_);
             list_.remove(ent);
             tree_.remove(pid);
             delete ent;
@@ -152,6 +156,7 @@ public:
     }
     BinaryTree<SymbolDictionary*> tree_;
     HList<SymbolDictionary*> list_;
+    SymbolDictionary nullDict_;
 };
 
 
