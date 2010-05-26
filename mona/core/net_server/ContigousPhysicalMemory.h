@@ -41,6 +41,7 @@ public:
     ContigousPhysicalMemory(uintptr_t size) : size_(size + 1), pageNum_((size_ + PAGE_SIZE - 1) / PAGE_SIZE)
     {
         uintptr_t address = startAddress;
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         bool ret = syscall_allocate_contiguous(address, pageNum_);
         if (!ret) {
             printf("panic virtio buffer error\n");
