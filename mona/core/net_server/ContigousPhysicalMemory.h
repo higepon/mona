@@ -43,6 +43,7 @@ public:
         uintptr_t address = startAddress;
         _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         bool ret = syscall_allocate_contiguous(address, pageNum_);
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         if (!ret) {
             printf("panic virtio buffer error\n");
             exit(-1);

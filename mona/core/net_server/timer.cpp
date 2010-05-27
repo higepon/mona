@@ -91,7 +91,9 @@ void timer_init(void)
     }
 
     const int INTERVAL_MSEC = 10;
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
     syscall_mthread_create_with_arg(timerThread, (void*)INTERVAL_MSEC);
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
 }
 
 
