@@ -55,7 +55,9 @@ static void __fastcall timerThread(void* arg)
 //    _printf("timer started");
     int intervalMsec = (int)arg;
     while(true) {
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         sleep(intervalMsec);
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
 
 //    snmp_inc_sysuptime();
 
