@@ -175,6 +175,8 @@ public:
     COLS = (w-_xoffset*2)/fw;
     LINES = (h-_yoffset*2 - ((int)(fh/2.0)))/fh-1;
 
+    init_rc();
+
     wtf_init(DocumentCharset, DisplayCharset);
 
     setupscreen();
