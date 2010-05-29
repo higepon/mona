@@ -273,7 +273,9 @@ add_cookie(ParsedURL *pu, Str name, Str value,
 #ifdef DEBUG
     fprintf(stderr, "host: [%s, %s] %d\n", pu->host, pu->file, flag);
     fprintf(stderr, "cookie: [%s=%s]\n", name->ptr, value->ptr);
+#ifndef MONA
     fprintf(stderr, "expires: [%s]\n", asctime(gmtime(&expires)));
+#endif
     if (domain)
 	fprintf(stderr, "domain: [%s]\n", domain->ptr);
     if (path)

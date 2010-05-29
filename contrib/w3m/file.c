@@ -1572,12 +1572,6 @@ getAuthCookie(struct http_auth *hauth, char *auth_header,
 	      FormList *request,
 	      volatile Str *uname, volatile Str *pwd)
 {
-#ifdef MONA
-    MONA_TRACE("getAuthCookie, we should implement GUI version of this function.");
-    *uname = NULL;
-    *pwd = NULL;
-    return ;
-#else /* not MONA */
     Str ss = NULL;
     Str tmp;
     TextListItem *i;
@@ -1670,7 +1664,7 @@ getAuthCookie(struct http_auth *hauth, char *auth_header,
 				getpassphrase(proxy ? "Proxy Password: " :
 					      "Password: "));
 #else
-#ifndef __MINGW32_VERSION
+#if !defined(__MINGW32_VERSION) && !defined(MONA)
 	    *pwd = Strnew_charp((char *)
 				getpass(proxy ? "Proxy Password: " :
 					"Password: "));
@@ -1695,7 +1689,6 @@ getAuthCookie(struct http_auth *hauth, char *auth_header,
 	*pwd = NULL;
     }
     return;
-#endif /* not MONA */
 }
 
 static int

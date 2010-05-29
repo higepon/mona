@@ -176,6 +176,8 @@ public:
     LINES = (h-_yoffset*2 - ((int)(fh/2.0)))/fh-1;
 
     init_rc();
+    accept_cookie = true;
+    use_cookie = true;
 
     wtf_init(DocumentCharset, DisplayCharset);
 
