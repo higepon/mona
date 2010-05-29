@@ -1275,10 +1275,12 @@ init_rc(void)
 
   rc_dir_err:
     no_rc_dir = TRUE;
+#ifndef MONA
     if (((tmp_dir = getenv("TMPDIR")) == NULL || *tmp_dir == '\0') &&
 	((tmp_dir = getenv("TMP")) == NULL || *tmp_dir == '\0') &&
 	((tmp_dir = getenv("TEMP")) == NULL || *tmp_dir == '\0'))
 	tmp_dir = "/tmp";
+#endif
 }
 
 
