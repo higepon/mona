@@ -25,7 +25,7 @@ $(TARGET).EXE: $(INSTFILES)
 
 .SUFFIXES: .dat .DT5
 .dat.DT5:
-	PATH="$(PATH):$(MONADIR)/tool/t5lzma" bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 #mumurik	PATH="$(PATH):$(MONADIR)/tool/t5lzma" bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
