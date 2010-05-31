@@ -24,7 +24,7 @@ distclean: clean
 
 .FETCH: ${SRCS}
 	@if [ ! -f $@ ]; then touch $@; fi
-DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget.exe
+DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget
 ${SOURCE1}:
 	@if [ ! -f ${DSTDIR}/$@ ]; then \
 	  (${DOWNLOAD} ${MASTERSITE}/$@) && \
