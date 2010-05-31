@@ -609,14 +609,18 @@ namespace gnote {
 	}
 	//
 	void Controller::Run() {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		//
 		if (file.length()) {
 			window.setTitle(file + " - " + window.getTitle());
 			ReadFile(file, document);
 		}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		//
 		window.SetEventListener(this);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		window.SetDocument(&document);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		window.GetCanvas()->SetCursol(&cursol);
 		// 12? 28? :-)
 		window.setBounds(10, 10, window.GetCanvas()->getWidth() + 12, window.GetCanvas()->getHeight() + 20 + 28);
