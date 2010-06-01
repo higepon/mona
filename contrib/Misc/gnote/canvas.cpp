@@ -36,15 +36,12 @@ namespace gnote {
 		= String("0---------1---------2---------3---------4---------5---------6---------7---------8---------9---------0---------1---------2---------3---------4---------5---------6---------7---------8---------9---------");
 	//
 	Canvas::Canvas() : listener(0), document(0), cursol(0) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		FontMetrics* fm = getFontMetrics();
 		gridWidth = fm->getWidth("0") + 2;
 		gridHeight = fm->getHeight("0") + 2;
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 	}
 	//
 	void Canvas::processEvent(Event* event) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		Container* c = getParent();
 		if (c) {
 //			c->processEvent(event);
@@ -52,12 +49,10 @@ namespace gnote {
 	}
 	// :-)
 	void Canvas::repaintAt(int cy, int l) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		repaint();
 	}
 	//
 	void Canvas::paint(Graphics* g) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		//
 		g->setColor(Color::white);
 		g->fillRect(0, 0, getWidth(), getHeight());
@@ -66,15 +61,11 @@ namespace gnote {
 		g->drawLine(gridWidth * 4 + 4, gridHeight - 1, getWidth(), gridHeight - 1);
 		//
 		if (cursol && document) {
-            logprintf("g=%x cursol=%x %d\n", g, cursol, __LINE__);
 			DrawRuler(g, *document, *cursol);
-            logprintf("g=%x cursol=%x %d\n", g, cursol, __LINE__);
 			if (cursol->range) {
 				DrawRange(g, *document, *cursol);
 			}
-            logprintf("g=%x cursol=%x %d\n", g, cursol, __LINE__);
 			DrawDocument(g, *document, *cursol);
-            logprintf("g=%x cursol=%x %d\n", g, cursol, __LINE__);
 			DrawCaretLine(g, *cursol);
 			if (getMainWindow()->getFocused() && cursol->visible) {
 				DrawCaret(g, *cursol);
@@ -83,7 +74,6 @@ namespace gnote {
 	}
 	//
 	void Canvas::DrawRuler(Graphics* g, const Document& d, const Cursol& c) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		//
 		g->setColor(Color::lightGray);
 		g->fillRect((ToCanvasX(d, c.wy, c.wx, c.left) + 4) * gridWidth, 0, gridWidth, gridHeight - 1);
@@ -94,7 +84,6 @@ namespace gnote {
 	}
 	//
 	void Canvas::DrawBr(Graphics* g, int cy, int cx) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		for (int xx = 0; xx < BMPH_BR_BMP_WIDTH; xx++) {
 			for (int yy = 0; yy < BMPH_BR_BMP_HEIGHT; yy++) {
 				if (bmph_pixel_data_br_bmp[yy][xx]) {
@@ -108,13 +97,9 @@ namespace gnote {
 	}
 	//
 	void Canvas::DrawDocument(Graphics* g, const Document& d, const Cursol& c) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		g->setFontStyle(Font::FIXED);
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		for (int ii = 1; ii <= Canvas::MAX_CANVASY && c.top + ii - 1 <= d.GetMaxLineNumber(); ii++) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 			String* s = d.GetLine(c.top + ii - 1);
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 			if (s && s->length() > 0) {
 				//
 				const int BUFFER_SIZE = 5;
@@ -135,11 +120,9 @@ namespace gnote {
 				}
 			}
 		}
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 	}
 	//
 	void Canvas::DrawRange(Graphics* g, const Document& d, const Cursol& c) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		g->setColor(Color::lightGray);
 		if (c.rx != c.wx || c.ry != c.wy) {
 			if (c.ry == c.wy) {
@@ -186,16 +169,12 @@ namespace gnote {
 	}
 	//
 	void Canvas::DrawCaretLine(Graphics* g, const Cursol& c) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
-        logprintf("g=%x cursol=%x %d\n", g, cursol, __LINE__);
 		int cy = ToCanvasY(c.wy, c.top);
-        logprintf("g=%x %d\n", g, __LINE__);
 		g->setColor(Color::gray);
 		g->drawLine(0, (cy + 1) * gridHeight, getWidth(), (cy + 1) * gridHeight);
 	}
 	//
 	void Canvas::DrawCaret(Graphics* g, const Cursol& c) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		g->setColor(Color::gray);
 		g->fillRect(
 			(ToCanvasX(cursol->wy, c.wx, cursol->left) + 4) * gridWidth,
@@ -204,7 +183,6 @@ namespace gnote {
 	}
 	// :-)
 	String Canvas::ToCanvasString(const String& s) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		String r("");
 		const char* p = s.getBytes();
 		int len = 0;
@@ -220,12 +198,10 @@ namespace gnote {
 			}
 			p++;
 		}
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		return r;
 	}
 	// :-)
 	int Canvas::ToCanvasX(const String& s, int wx, int l) {
-        logprintf("cursol=%x %d\n", cursol, __LINE__);
 		int clen = 1;
 		const char* p = s.getBytes();
 		for (int ii = 1; p && *p && *p != '\n' && ii < wx; ii++, p++) {

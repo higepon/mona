@@ -58,9 +58,7 @@ namespace gnote {
 		virtual void paint(Graphics* g);
 		virtual void repaintAt(int cy = 1, int l = 20);
 		inline void SetDocument(Document* d) { document = d; }
-		inline void SetCursol(Cursol* c) { 
-            logprintf("cursol set = %x\n", c);
-            cursol = c; }
+		inline void SetCursol(Cursol* c) { cursol = c; }
 		inline String ToCanvasString(int wy) { return ToCanvasString(*document, wy); }
 		inline int GetGridWidth() { return gridWidth; }
 		inline int GetGridHeight() { return gridHeight; }
