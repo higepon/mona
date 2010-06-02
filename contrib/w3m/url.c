@@ -198,6 +198,9 @@ sock_log(char *message, ...)
     fclose(f);
 }
 
+#else
+#define sock_log logprintf
+
 #endif
 
 static TextList *mimetypes_list;

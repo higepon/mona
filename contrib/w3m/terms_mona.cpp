@@ -391,7 +391,7 @@ getch(void)
             int keycode  = info.arg1;
             int modcode  = info.arg2;
             int charcode = info.arg3;
-            MONA_TRACE_FMT((stderr, "charcode=%x, %x, %x\n", charcode, keycode, modcode));
+            MONA_TRACE("charcode=%x, %x, %x\n", charcode, keycode, modcode);
             if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
                 int converted =  keyToChar(keycode, modcode, charcode);
                 if(converted >= 0)

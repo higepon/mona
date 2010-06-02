@@ -2,7 +2,7 @@
 
 bool g_debugMode = false;
 bool g_autoPilot = false;
-
+#include <monapi.h>
 #define MAINPROGRAM
 extern "C" {
 #include "fm.h"

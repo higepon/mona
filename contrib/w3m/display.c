@@ -1229,6 +1229,7 @@ message(char *s, int return_x, int return_y)
 {
     if (!fmInitialized)
 	return;
+    logprintf("W3M: %s\n", s);
     move(LASTLINE, 0);
     addnstr(s, COLS - 1);
     clrtoeolx();
@@ -1251,6 +1252,7 @@ disp_message_nsec(char *s, int redraw_current, int sec, int purge, int mouse)
 	fprintf(stderr, "%s\n", conv_to_system(s));
 	return;
     }
+    logprintf("W3M:%s\n", conv_to_system(s));
     if (CurrentTab != NULL && Currentbuf != NULL)
 	message(s, Currentbuf->cursorX + Currentbuf->rootX,
 		Currentbuf->cursorY + Currentbuf->rootY);

@@ -8028,7 +8028,7 @@ _doFileCopy(char *tmpf, char *defstr, int download)
 #ifndef MONA
     struct stat st;
 #endif
-MONA_TRACE_FMT((stderr, "do file copy, %s, %s\n", tmpf, defstr));
+    MONA_TRACE("do file copy, %s, %s\n", tmpf, defstr);
     clen_t size = 0;
     int is_pipe = FALSE;
 
@@ -8134,7 +8134,7 @@ MONA_TRACE_FMT((stderr, "do file copy, %s, %s\n", tmpf, defstr));
 	    setModtime(p, st.st_mtime);
 #endif
     }
-MONA_TRACE_FMT((stderr, "do file copy success, %s, %s\n", tmpf, defstr));
+MONA_TRACE("do file copy success, %s, %s\n", tmpf, defstr);
 #endif /* __MINGW32_VERSION */
     return 0;
 }
