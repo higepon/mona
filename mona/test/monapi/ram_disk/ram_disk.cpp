@@ -390,6 +390,23 @@ static void testReadDirectory_Root()
     monapi_cmemoryinfo_delete(ci);
 }
 
+static void testFprintf()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    fwrite("H", 1, 1, fp);
+    fprintf(fp, "ello, %s", "World!");
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ("Hello, World!", (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+}
+
 int main(int argc, char *argv[])
 {
     testOpenNonExistingFile();
@@ -407,6 +424,9 @@ int main(int argc, char *argv[])
     testReadDirectory_OneFile();
     testReadDirectory_TwoFile();
     testReadDirectory_Root();
+
+    // We use ram_disk for testing fprintf
+    testFprintf();
 
     TEST_RESULTS(ram_disk);
     return 0;
