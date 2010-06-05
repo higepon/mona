@@ -494,7 +494,7 @@ static void testFwrite_Overwrite2()
     monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
     ASSERT_TRUE(cmi != NULL);
 
-    EXPECT_TRUE(memcmp("Hello\n\0    \n\0World     \n\0\0", cmi->Data, cmi->Size) == 0);
+    EXPECT_TRUE(memcmp("Hello\n    \nWorld     \n", cmi->Data, cmi->Size) == 0);
 
     monapi_cmemoryinfo_dispose(cmi);
     monapi_cmemoryinfo_delete(cmi);
