@@ -395,12 +395,14 @@ static void testFprintf()
     const char* tmpFile = "/MEM/TEST1.TXT";
     FILE* fp = fopen(tmpFile, "w");
     ASSERT_TRUE(fp != NULL);
-    fwrite("H", 1, 1, fp);
-    fprintf(fp, "ello, %s", "World!");
+    fprintf(fp, "Hello, %s", "World!");
     fclose(fp);
     monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
     ASSERT_TRUE(cmi != NULL);
-    EXPECT_STR_EQ("Hello, World!", (char*)cmi->Data);
+    const char* expected = "Hello, World!";
+    // Be sure, \0 is not written
+    EXPECT_EQ((int)strlen(expected), cmi->Size);
+    EXPECT_EQ(0, memcmp(expected, cmi->Data, cmi->Size));
 
     monapi_cmemoryinfo_dispose(cmi);
     monapi_cmemoryinfo_delete(cmi);
