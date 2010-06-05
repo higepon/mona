@@ -393,8 +393,7 @@ int vfprintf(FILE *stream, const char *format, va_list ap)
 			result++;
 		}
 	}
-	while(*fp++);
-
+	while(*++fp);
 	__nc_vfprintf_format(NULL, NULL, ap);
 
 	return result;
