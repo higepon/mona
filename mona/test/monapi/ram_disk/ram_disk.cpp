@@ -407,6 +407,99 @@ static void testFprintf()
     monapi_file_delete(tmpFile);
 }
 
+static void testFwrite()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Hello,\nWorld";
+    const int len = strlen(data) + 1;
+    for (int i = 0; i < len; i++) {
+        fwrite(data + i, 1, 1, fp);
+    }
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+}
+
+static void testFwrite2()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Hello,\nWorld";
+    const int len = strlen(data) + 1;
+    fwrite(data, 1, len, fp);
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+}
+
+static void testFwrite_Overwrite()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Tokyo, Japan";
+    const int len = strlen(data) + 1;
+    for (int i = 0; i < len; i++) {
+        fwrite(data + i, 1, 1, fp);
+    }
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+    monapi_file_delete(tmpFile);
+}
+
+static void testFwrite_Overwrite2()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    {
+        FILE* fp = fopen(tmpFile, "w");
+        ASSERT_TRUE(fp != NULL);
+        const char* data = "Hello\n    \n    \n    ";
+        const int len = strlen(data) + 1;
+        fwrite(data, 1, len, fp);
+        fclose(fp);
+    }
+
+    {
+        FILE* fp = fopen(tmpFile, "w");
+        ASSERT_TRUE(fp != NULL);
+        fwrite("Hello", 1, 5, fp);
+        fprintf(fp, "\n");
+        fwrite("    ", 1, 4, fp);
+        fprintf(fp, "\n");
+        fwrite("World     ", 1, 10, fp);
+        fprintf(fp, "\n");
+        fwrite("", 1, 1, fp); // NULL terminate
+        fclose(fp);
+    }
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+
+    EXPECT_TRUE(memcmp("Hello\n\0    \n\0World     \n\0\0", cmi->Data, cmi->Size) == 0);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+    monapi_file_delete(tmpFile);
+}
+
 int main(int argc, char *argv[])
 {
     testOpenNonExistingFile();
@@ -427,6 +520,10 @@ int main(int argc, char *argv[])
 
     // We use ram_disk for testing fprintf
     testFprintf();
+    testFwrite();
+    testFwrite_Overwrite();
+    testFwrite2();
+    testFwrite_Overwrite2();
 
     TEST_RESULTS(ram_disk);
     return 0;
