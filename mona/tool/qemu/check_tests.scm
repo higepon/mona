@@ -36,6 +36,7 @@
         (mosh)
         (mosh control)
         (only (mosh concurrent) sleep)
+        (srfi :98)
         (mosh process)
         (mosh file))
 
@@ -62,7 +63,7 @@
       [(_ expr more ...)
        #'(with-color "\x1b;[0;31m" expr more ...)])))
 
-(define test-results-file "/tmp/mona_serial.log")
+(define test-results-file (string-append (get-environment-variable "HOME") "mona_serial.log"))
 (define pid-file "/tmp/mona.pid")
 
 (let loop ()
