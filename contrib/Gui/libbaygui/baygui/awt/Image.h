@@ -96,10 +96,40 @@ namespace baygui {
 
         static void copy(Image* dest, Image* src, int destX, int destY)
         {
+            logprintf("[[<<<1HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE77");
+// this works
+//             for (int i = 0; i < src->getHeight(); i++) {
+//                 for (int j = 0; j < src->getWidth(); j++) {
+//                     dest->setPixel(j + destX, i + destY, src->getPixel(j, i));
+//                 }
+//             }
+
+// works
+//             for (int i = 0; i < src->getHeight(); i++) {
+//                 for (int j = 0; j < src->getWidth(); j++) {
+//                     int x = j + destX;
+//                     int y = i + destY;
+//                     if (0 <= x && x < dest->width && 0 <= y && y < dest->height) {
+//                         dest->bitmap->Data[x + y * dest->width] = src->getPixel(j, i);
+//                     }
+//                 }
+//             }
+
+// works
+//             for (int i = 0; i < src->getHeight(); i++) {
+//                 for (int j = 0; j < src->getWidth(); j++) {
+//                     int x = j + destX;
+//                     int y = i + destY;
+//                     if (0 <= x && x < dest->width && 0 <= y && y < dest->height) {
+//                         dest->bitmap->Data[x + y * dest->width] = src->bitmap->Data[j + src->width * i];
+//                     }
+//                 }
+//             }
             for (int i = 0; i < src->getHeight(); i++) {
-                for (int j = 0; j < src->getWidth(); j++) {
-                    dest->setPixel(destX + j, destY + i, src->getPixel(j, i));
+                if ((destX + (i + destY) * dest->width + sizeof(dword) * src->getWidth()) > dest->width * dest->height) {
+                    break;
                 }
+                memcpy(&(dest->bitmap->Data[destX + (i + destY) * dest->width]), &(src->bitmap->Data[src->width * i]), sizeof(dword) * src->getWidth());
             }
         }
 	};
