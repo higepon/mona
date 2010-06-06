@@ -72,7 +72,14 @@ namespace baygui {
 		inline dword* getSource() { return this->bitmap->Data; }
 		
 		/** 指定された点の色を得る */
-		dword getPixel(int x, int y);
+		dword getPixel(int x, int y)
+        {
+            if (x < 0 || this->width <= x || y < 0 || this->height <= y) {
+                return 0;
+            } else {
+                return this->bitmap->Data[x + this->width * y];
+            }
+        }
 		
 		/**
 		 点を打つ
@@ -80,7 +87,12 @@ namespace baygui {
 		 @param y Y座標
 		 @param color 色
 		*/
-		void setPixel(int x, int y, dword color);
+		void setPixel(int x, int y, dword color)
+        {
+            if (0 <= x && x < this->width && 0 <= y && y < this->height) {
+                this->bitmap->Data[x + this->width * y] = color;
+            }
+        }
 	};
 }
 

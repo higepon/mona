@@ -105,20 +105,4 @@ namespace baygui {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		}
 	}
-
-	dword Image::getPixel(int x, int y)
-	{
-		if (x < 0 || this->width <= x || y < 0 || this->height <= y) {
-			return 0;
-		} else {
-			return this->bitmap->Data[x + this->width * y];
-		}
-	}
-
-	void Image::setPixel(int x, int y, dword color)
-	{
-		if (0 <= x && x < this->width && 0 <= y && y < this->height) {
-			this->bitmap->Data[x + this->width * y] = color;
-		}
-	}
 }

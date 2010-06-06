@@ -46,11 +46,6 @@ namespace baygui {
 	{
 	}
 
-	void Graphics::drawPixel(int x, int y, dword color)
-	{
-		this->image->setPixel(tx + x, ty + y, color);
-	}
-
 	void Graphics::drawImage(Image* image, int x, int y)
 	{
 		for (int i = 0; i < image->getHeight(); i++) {

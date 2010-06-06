@@ -68,7 +68,10 @@ namespace baygui {
 		 @param y Y座標
 		 @param color 描画する色
 		 */
-		void drawPixel(int x, int y, dword color);
+		void drawPixel(int x, int y, dword color)
+        {
+            this->image->setPixel(tx + x, ty + y, color);
+        }
 		
 		/**
 		 イメージ描画
