@@ -243,11 +243,18 @@ namespace baygui {
 
 	void Window::update(int x, int y, int w, int h)
 	{
+     uint64_t start = MonAPI::Date::nowInMsec();
+
 		if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
 			__g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
 		}
-		
+      uint64_t end0 = MonAPI::Date::nowInMsec();
+      logprintf("WIn :end0 - start = %d\n", end0 -start);
+
+      logprintf("DRAW CALLED\n");
 		MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
+        uint64_t end1 = MonAPI::Date::nowInMsec();
+      logprintf("WIn :end1 - end0 = %d\n", end1 -end0);
 		
 	#ifdef SDL
 		{

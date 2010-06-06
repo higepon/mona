@@ -94,9 +94,19 @@ namespace baygui {
 
 	void Component::update(int x, int y, int w, int h)
 	{
+      uint64_t start = MonAPI::Date::nowInMsec();
 		Frame* c = (Frame *)getMainWindow();
+      uint64_t end0 = MonAPI::Date::nowInMsec();
+      logprintf("GUI :end0 - start = %d\n", end0 -start);
+
 		c->getGraphics()->drawImage(this->_buffer, getX(), getY());
+      uint64_t end1 = MonAPI::Date::nowInMsec();
+      logprintf("GUI :end1 - end0 = %d\n", end1 -end0);
+
 		c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
+      uint64_t end2 = MonAPI::Date::nowInMsec();
+      logprintf("GUI :end2 - end1 = %d\n", end2 -end1);
+
 	}
 
 	Component* Component::getMainWindow()

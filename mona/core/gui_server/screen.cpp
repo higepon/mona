@@ -53,6 +53,8 @@ void DisposeScreen()
 
 void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 {
+    uint64_t end0 = MonAPI::Date::nowInMsec();
+
 	uint8_t* vram = screen.getVRAM();
 	int bpp = screen.getBpp(), sw = screen.getWidth(), sh = screen.getHeight();
 	int bypp = bpp >> 3;
@@ -68,6 +70,8 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 	_R r2(commonParams->mouse.x - 8, commonParams->mouse.y - 8, 32, 32);
 	bool mouse = r1.IntersectsWith(r2);
 	if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
+      uint64_t end1 = MonAPI::Date::nowInMsec();
+      logprintf("GGG :end1 - end0 = %d\n", end1 -end0);
 	
 	for (int yy = y1; yy < y2; yy++)
 	{
@@ -101,5 +105,8 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 		}
 	}
 	
+      uint64_t end2 = MonAPI::Date::nowInMsec();
+      logprintf("GGG :end2 - end1 = %d\n", end2 -end1);
+
 	if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
