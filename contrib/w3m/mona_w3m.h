@@ -297,7 +297,8 @@ public:
 
   void updatePane() {
     if(this->__g != NULL)
-      repaint(); // very slow.
+        m_pane->repaint(); // very slow.
+//      repaint(); // very slow.
   }
 
   void setScreenImage(Screen** si) {
