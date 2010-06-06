@@ -93,6 +93,15 @@ namespace baygui {
                 this->bitmap->Data[x + this->width * y] = color;
             }
         }
+
+        static void copy(Image* dest, Image* src, int destX, int destY)
+        {
+            for (int i = 0; i < src->getHeight(); i++) {
+                for (int j = 0; j < src->getWidth(); j++) {
+                    dest->setPixel(destX + j, destY + i, src->getPixel(j, i));
+                }
+            }
+        }
 	};
 }
 

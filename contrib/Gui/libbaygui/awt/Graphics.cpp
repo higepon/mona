@@ -48,11 +48,12 @@ namespace baygui {
 
 	void Graphics::drawImage(Image* image, int x, int y)
 	{
-		for (int i = 0; i < image->getHeight(); i++) {
-			for (int j = 0; j < image->getWidth(); j++) {
-				drawPixel(j + x, i + y, image->getPixel(j, i));
-			}
-		}
+// 		for (int i = 0; i < image->getHeight(); i++) {
+// 			for (int j = 0; j < image->getWidth(); j++) {
+// 				drawPixel(j + x, i + y, image->getPixel(j, i));
+// 			}
+// 		}
+        Image::copy(this->image, image, tx+x, ty+y);
 	}
 
 	void Graphics::drawLine(int x1, int y1, int x2, int y2)
