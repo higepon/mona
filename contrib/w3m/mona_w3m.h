@@ -221,12 +221,6 @@ public:
 
 
   void drawString(Graphics *g, Screen* line, int x_org, int y) {
-      if (!line->isdirty) {
-          logprintf("omit drawing\n");
-          return;
-      } else {
-          logprintf("dirty!!!\n");
-      }
     char** pc = line->lineimage;
     l_prop *pr = line->lineprop;
     int same_attr_len = 0;
@@ -251,7 +245,6 @@ public:
             remain_len--;
         }
     }
-    line->isdirty = 0;
   }
     
   void clear(Graphics *g) {
@@ -262,7 +255,6 @@ public:
   }
 
   virtual void paint(Graphics* g) {
-      uint64_t start = MonAPI::Date::nowInMsec();
     static bool first_time = true;
     if(first_time) {
       clear(g);
@@ -281,8 +273,6 @@ public:
         }
       }
       drawCursor(g, Currentbuf->cursorX, Currentbuf->cursorY);
-      uint64_t end = MonAPI::Date::nowInMsec();
-      logprintf("end - start = %d\n", end -start);
   }
     void drawCursor(Graphics *g, int col, int row)
     {
@@ -307,7 +297,7 @@ public:
 
   void updatePane() {
     if(this->__g != NULL)
-      m_pane->repaint(); // very slow.
+      repaint(); // very slow.
   }
 
   void setScreenImage(Screen** si) {

@@ -217,22 +217,11 @@ void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_s
 {
     if (w == NULL || w->FormBufferHandle == 0) return;
 
-      uint64_t end0 = MonAPI::Date::nowInMsec();
-
-
     if (!w->__internal2) CreationEffect(w);
-
-      uint64_t end1 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end1 - end0 = %d\n", end1 -end0);
-
 
     DrawImage(screen_buffer, wallpaper, wx, wy, wx, wy, ww, wh);
     _R r(wx, wy, ww, wh);
     int size_w = windows.size();
-
-      uint64_t end2 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end2 - end1 = %d\n", end2 -end1);
-
     for (int i = 0; i < size_w; i++)
     {
         guiserver_window* w = windows[i];
@@ -240,9 +229,6 @@ void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_s
 
         DrawWindowInternal(w, r);
     }
-      uint64_t end3= MonAPI::Date::nowInMsec();
-      logprintf("XXX :end3 - end2 = %d\n", end3 -end2);
-
     for (int i = 0; i < size_w; i++)
     {
         guiserver_window* w = windows[i];
@@ -250,11 +236,6 @@ void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_s
 
         DrawWindowInternal(w, r);
     }
-
-      uint64_t end4 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end4 - end3 = %d\n", end4 -end3);
-
-
     for (int i = 0; i < size_w; i++)
     {
         guiserver_window* w = windows[i];
@@ -262,25 +243,14 @@ void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_s
 
         DrawWindowInternal(w, r);
     }
-
-      uint64_t end5 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end5 - end4 = %d\n", end5 -end4);
-
-
     int size_ov = overlaps.size();
     for (int i = 0; i < size_ov; i++)
     {
         overlaps[i]->Draw(wx, wy, ww, wh);
     }
-      uint64_t end6 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end6 - end5 = %d\n", end6 -end5);
-
     if (!draw_screen) return;
 
     DrawScreen(wx, wy, ww, wh);
-      uint64_t end7 = MonAPI::Date::nowInMsec();
-      logprintf("XXX :end7 - end6 = %d\n", end7 -end6);
-
 }
 
 void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
