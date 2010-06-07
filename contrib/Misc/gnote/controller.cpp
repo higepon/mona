@@ -582,8 +582,6 @@ namespace gnote {
 		{
 			String* line = d.GetLine(i);
 			fwrite(line->getBytes(), 1, line->length(), fp); 
-			if(i != max)
-				fwrite("\n", 1, 1, fp);
 		}
 		fclose(fp);
 		return true;
