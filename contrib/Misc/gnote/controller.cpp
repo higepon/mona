@@ -195,6 +195,8 @@ namespace gnote {
             counter = 0;
         }
     }
+
+#define EMACS_KEY_BIND
     //
     void Controller::ProcessKeyPressedEvent(KeyEvent* event) {
         int code = event->getKeycode();
@@ -208,6 +210,27 @@ namespace gnote {
                 break;
             case KeyEvent::VKEY_CTRL:
                 switch(code) {
+#ifdef EMACS_KEY_BIND
+                    case 'e':
+                        if (GoEnd(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'a':
+                        if (GoHome(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+
+                        }
+                        break;
+                    case 'h':
+                        if (BackSpace(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+#else
                     case 'a':
                         cursol.range = true;
                         cursol.rx = cursol.ry = 1;
@@ -216,6 +239,7 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+#endif
                     case 'n':
                         if (New(cursol, document)) {
                             cursol.visible = true;
