@@ -221,11 +221,34 @@ namespace gnote {
                         if (GoHome(cursol, document)) {
                             cursol.visible = true;
                             window.GetCanvas()->repaint();
-
                         }
                         break;
                     case 'h':
                         if (BackSpace(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'f':
+                        if (GoRight(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'b':
+                        if (GoLeft(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'n':
+                        if (GoDown(cursol, document)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'p':
+                        if (GoUp(cursol, document)) {
                             cursol.visible = true;
                             window.GetCanvas()->repaint();
                         }
@@ -239,13 +262,13 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
-#endif
                     case 'n':
                         if (New(cursol, document)) {
                             cursol.visible = true;
                             window.GetCanvas()->repaint();
                         }
                         break;
+#endif
                     case 'v':
                         if (Paste(cursol, document, clip)) {
                             cursol.visible = true;
