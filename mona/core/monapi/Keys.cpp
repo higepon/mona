@@ -46,6 +46,7 @@ const int Keys::mapUS102E0[128] = {
     0    , 0       , 0     , LWin  , RWin     , Apps       , 0, 0
 };
 
+// 2010 LControlKey and CapsLock are swapped by higepon
 const int Keys::mapJP109[128] = {
     0           , Escape    , D1       , D2              , D3       , D4         , D5       , D6      ,
     D7          , D8        , D9       , D0              , OemMinus , OemQuotes  , Back     , Tab     ,
@@ -54,7 +55,7 @@ const int Keys::mapJP109[128] = {
     D           , F         , G        , H               , J        , K          , L        , Oemplus ,
     OemSemicolon, KanjiMode , LShiftKey, OemCloseBrackets, Z        , X          , C        , V       ,
     B           , N         , M        , Oemcomma        , OemPeriod, OemQuestion, RShiftKey, Multiply,
-    LMenu       , Space     , CapsLock , F1              , F2       , F3         , F4       , F5      ,
+    LMenu       , Space     , LControlKey, F1              , F2       , F3         , F4       , F5      ,
     F6          , F7        , F8       , F9              , F10      , NumLock    , Scroll   , NumPad7 ,
     NumPad8     , NumPad9   , Subtract , NumPad4         , NumPad5  , NumPad6    , Add      , NumPad1 ,
     NumPad2     , NumPad3   , NumPad0  , Decimal         , 0        , 0          , 0        , F11     ,
