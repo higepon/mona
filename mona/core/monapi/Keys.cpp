@@ -47,6 +47,9 @@ const int Keys::mapUS102E0[128] = {
 };
 
 // 2010 LControlKey and CapsLock are swapped by higepon
+//  On default QEMU, Caps key can't be use as ctrl. up event comes immediatly after the down event.
+//  See SDL.c on QEMU.
+//  This behaviour can be avoided by usin -k ja option.
 const int Keys::mapJP109[128] = {
     0           , Escape    , D1       , D2              , D3       , D4         , D5       , D6      ,
     D7          , D8        , D9       , D0              , OemMinus , OemQuotes  , Back     , Tab     ,

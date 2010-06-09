@@ -171,7 +171,6 @@ int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
       kinfo->charcode = 0;
     }
 
-    //printf("{%2x:%2x} ", kinfo->keycode, kinfo->modifiers);
     keyInfoList_->add(kinfo);
 
     return 1;
