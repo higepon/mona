@@ -217,6 +217,18 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'w':
+                        if (Cut(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'y':
+                        if (Paste(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
                     case 's':
                         if (isPrefixCtrlX()) {
                             WriteFile(file, document);
