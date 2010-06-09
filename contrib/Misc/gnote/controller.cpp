@@ -265,12 +265,7 @@ namespace gnote {
                         break;
 #else
                     case 'a':
-                        cursol.range = true;
-                        cursol.rx = cursol.ry = 1;
-                        if (GoTail(cursol, document)) {
-                            cursol.visible = true;
-                            window.GetCanvas()->repaint();
-                        }
+                        SelectAll();
                         break;
                     case 'n':
                         if (New(cursol, document)) {
@@ -366,12 +361,7 @@ namespace gnote {
 #ifdef EMACS_KEY_BIND
                 case 'h': // fall through
                     if (isPrefixCtrlX()) {
-                        cursol.range = true;
-                        cursol.rx = cursol.ry = 1;
-                        if (GoTail(cursol, document)) {
-                            cursol.visible = true;
-                            window.GetCanvas()->repaint();
-                        }
+                        SelectAll();
                         break;
                     }
 #endif
@@ -696,6 +686,16 @@ namespace gnote {
     bool Controller::isPrefixCtrlX()
     {
         return prevKeyEvent.getKeycode() == 'x' && prevKeyEvent.getModifiers() == KeyEvent::VKEY_CTRL;
+    }
+
+    void Controller::SelectAll()
+    {
+        cursol.range = true;
+        cursol.rx = cursol.ry = 1;
+        if (GoTail(cursol, document)) {
+            cursol.visible = true;
+            window.GetCanvas()->repaint();
+        }
     }
 }
 

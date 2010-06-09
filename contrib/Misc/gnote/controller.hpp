@@ -95,6 +95,7 @@ namespace gnote {
 		bool Paste(Cursol& c, Document& d, const Document& cl);
 		bool New(Cursol& c, Document& d);
 		bool isPrefixCtrlX();
+		void SelectAll();
 	};
 
 }
