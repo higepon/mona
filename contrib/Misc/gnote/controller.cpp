@@ -217,6 +217,13 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'v':
+                        SetCursolRange(cursol, keyModifiers);
+                        if (GoDown(cursol, document, 5)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
                     case 'w':
                         if (Cut(cursol, document, clip)) {
                             cursol.visible = true;
@@ -291,13 +298,13 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
-#endif
                     case 'v':
                         if (Paste(cursol, document, clip)) {
                             cursol.visible = true;
                             window.GetCanvas()->repaint();
                         }
                         break;
+#endif
                     case 'x':
                         if (Cut(cursol, document, clip)) {
                             cursol.visible = true;
