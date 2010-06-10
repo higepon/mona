@@ -63,7 +63,7 @@
       [(_ expr more ...)
        #'(with-color "\x1b;[0;31m" expr more ...)])))
 
-(define test-results-file (string-append (get-environment-variable "HOME") "mona_serial.log"))
+(define test-results-file (string-append (get-environment-variable "HOME") "/mona-qemu.log"))
 (define pid-file "/tmp/mona.pid")
 
 (let loop ()
