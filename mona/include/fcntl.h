@@ -1,0 +1,3 @@
+/*
+ * fcntl.h - stub
+ */
