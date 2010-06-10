@@ -261,6 +261,7 @@ void syscall_entrance()
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
             Condition* condition = (Condition*)object;
+            g_id->returnID(condition_id);
             delete condition;
             setReturnValue(info, M_OK);
         }
