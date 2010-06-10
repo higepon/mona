@@ -70,7 +70,11 @@ void __fastcall mutexClassSubThread(void* mainThread)
 
 void testSyscallMutex()
 {
+    int beforeCount = syscall_mutex_count();
+
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutexid));
+
+    ASSERT_EQ(beforeCount + 1, syscall_mutex_count());
 
     // Lock
     EXPECT_EQ(M_OK, syscall_mutex_lock(&mutexid));
@@ -119,7 +123,12 @@ void testSyscallMutex()
     EXPECT_EQ(M_OK, syscall_mutex_unlock(&mutexid));
 
     // destroy
-    EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutexid));
+    //  Check reference counting.
+    EXPECT_EQ(M_RELEASED, syscall_mutex_destroy(&mutexid));
+    EXPECT_EQ(M_OK, syscall_mutex_destroy(&dest));
+
+    // should be removed from IDManager
+    ASSERT_EQ(beforeCount, syscall_mutex_count());
 
     // destroy invalid mutex
     EXPECT_EQ(M_BAD_MUTEX_ID, syscall_mutex_destroy(&invalidMutex));
@@ -127,8 +136,11 @@ void testSyscallMutex()
 
 void testClassMutex()
 {
+    int beforeCount = syscall_mutex_count();
+
     mutex = new Mutex();
     ASSERT_TRUE(mutex != NULL);
+    ASSERT_EQ(beforeCount + 1, syscall_mutex_count());
 
 //     uintptr_t* p = (uintptr_t*)0;
 //     *p = 1;
@@ -143,6 +155,8 @@ void testClassMutex()
     // fetch
     mutex_t m = mutex->getMutex_t();
     Mutex* fetched = new Mutex(&m);
+
+    ASSERT_EQ(beforeCount + 2, syscall_mutex_count());
 
     // Unlock
     EXPECT_EQ(M_OK, mutex->unlock());
@@ -171,7 +185,10 @@ void testClassMutex()
     EXPECT_EQ(M_OK, mutex->unlock());
 
     // destroy
-    EXPECT_EQ(M_OK, mutex->destroy());
+    EXPECT_EQ(M_RELEASED, mutex->destroy());
+    EXPECT_EQ(M_OK, fetched->destroy());
+
+    ASSERT_EQ(beforeCount, syscall_mutex_count());
 
     // destroy
     delete mutex;
