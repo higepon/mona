@@ -795,13 +795,29 @@ intptr_t syscall_mutex_unlock(mutex_t* mutex)
      mutex - mutex_t created by <syscall_mutex_create>.
 
    Returns:
-     Returns <M_OK> if the mutex is successfully destoryed, or <M_BAD_MUTEX_ID> if mutex is invalid.
+     Returns <M_OK> if the mutex is successfully destoryed, <M_RELEASED> if mutex is released, but someone has referance to the mutex, or <M_BAD_MUTEX_ID> if mutex is invalid.
 
 */
 intptr_t syscall_mutex_destroy(mutex_t* mutex)
 {
     intptr_t mutex_id = *mutex;
     return syscall1(SYSTEM_CALL_MUTEX_DESTROY, mutex_id);
+}
+
+/*
+   function: syscall_mutex_count
+
+   Returns number of mutexes on the system. Used for test.
+
+
+   Returns:
+
+     Number of mutexes.
+*/
+intptr_t syscall_mutex_count()
+{
+    int type = MUTEX_CREATE_NEW;
+    return syscall0(SYSTEM_CALL_MUTEX_COUNT);
 }
 
 intptr_t syscall_semaphore_create(uint32_t n, uint32_t handle)

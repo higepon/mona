@@ -14,13 +14,14 @@ intptr_t KObject::getReferanceCount() const
     return this->referanceCount;
 }
 
-void KObject::setReferance()
+void KObject::addRef()
 {
     this->referanceCount++;
 }
 
-void KObject::cancelReferance()
+bool KObject::releaseRef()
 {
     this->referanceCount--;
+    return this->referanceCount == 0;
 }
 

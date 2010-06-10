@@ -15,8 +15,8 @@ public:
     virtual intptr_t checkSecurity(Thread* thread) = 0;
     virtual intptr_t getReferanceCount() const;
     virtual intptr_t getType() const = 0;
-    virtual void setReferance();
-    virtual void cancelReferance();
+    virtual void addRef();
+    virtual bool releaseRef();
 
     virtual intptr_t getId() const {return id;}
     virtual void setId(uint32_t id) {this->id = id;}

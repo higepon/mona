@@ -340,15 +340,15 @@ void syscall_entrance()
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
             intptr_t mutexid = systemcall_mutex_create();
             ASSERT(mutexid > 0);
-            setReturnValue(info, systemcall_mutex_create());
+            setReturnValue(info, mutexid);
         } else {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
             if (object == NULL) {
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
-                mutex->addRef();
-                setReturnValue(info, SYSTEM_CALL_ARG_1);
+                intptr_t id = g_id->allocateID(mutex);
+                setReturnValue(info, id);
             }
         }
         break;
@@ -451,12 +451,22 @@ void syscall_entrance()
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
             KMutex* mutex = (KMutex*)object;
-            mutex->releaseRef();
-            setReturnValue(info, M_OK);
+            if (g_id->returnID(SYSTEM_CALL_ARG_1)) {
+                // mutex is not no more referenced, so delete it.
+                delete mutex;
+                setReturnValue(info, M_OK);
+            } else {
+                // mutex is referenced by other.
+                setReturnValue(info, M_RELEASED);
+            }
         }
         break;
     }
-
+    case SYSTEM_CALL_MUTEX_COUNT:
+    {
+        setReturnValue(info, g_id->getCount(KObject::KMUTEX));
+        break;
+    }
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);

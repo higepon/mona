@@ -27,6 +27,7 @@ KMutex::KMutex() : refcount_(1), owner_(NULL)
 
 KMutex::~KMutex()
 {
+    logprintf("deleted");
     if (waitList_->size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
     }
@@ -106,16 +107,19 @@ intptr_t KMutex::checkSecurity(Thread* thread)
     return M_OK;
 }
 
-void KMutex::addRef()
-{
-    refcount_++;
-}
+// void KMutex::addRef()
+// {
+//     refcount_++;
+// }
 
-void KMutex::releaseRef()
-{
-    refcount_--;
-    if (refcount_ == 0)
-    {
-        delete this;
-    }
-}
+// bool KMutex::releaseRef()
+// {
+//     refcount_--;
+//     if (refcount_ == 0)
+//     {
+//         delete this;
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }

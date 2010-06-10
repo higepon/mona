@@ -10,6 +10,22 @@ IDManager::~IDManager()
 {
 }
 
+static int mutexCount = 0;
+
+static void accumMutexCount(int id, KObject* obj)
+{
+    if (obj->getType() == KObject::KMUTEX) {
+        mutexCount++;
+    }
+}
+
+intptr_t IDManager::getCount(int type)
+{
+    mutexCount = 0;
+    tree.traverse(&accumMutexCount);
+    return mutexCount;
+}
+
 KObject* IDManager::get(int objectID, Thread* who, int type)
 {
     if (!tree.contains(objectID))
@@ -38,16 +54,14 @@ int IDManager::getLastError() const
 intptr_t IDManager::allocateID(KObject* object)
 {
     int id = this->id++;
-
     tree.add(id, object);
-    object->setReferance();
+    object->addRef();
     object->setId(id);
     return id;
 }
 
-void IDManager::returnID(int id)
+bool IDManager::returnID(int id)
 {
     KObject* object = tree.remove(id);
-    object->cancelReferance();
-    return;
+    return object->releaseRef();
 }

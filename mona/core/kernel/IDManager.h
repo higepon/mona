@@ -12,9 +12,11 @@ public:
 
 public:
     KObject* get(int objectID, Thread* who, int type);
-    void returnID(int id);
+    bool returnID(int id);
     intptr_t allocateID(KObject* object);
     int getLastError() const;
+
+    intptr_t getCount(int type);
 
 private:
     BinaryTree<KObject*> tree;

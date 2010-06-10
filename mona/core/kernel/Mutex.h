@@ -35,8 +35,6 @@ class KMutex : public KObject {
         Thread* removedThread = waitList_->remove(thread);
         return thread == removedThread;
     }
-    void addRef();
-    void releaseRef();
 
     inline bool isLocked() const
     {

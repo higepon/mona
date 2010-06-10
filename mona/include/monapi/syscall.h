@@ -53,6 +53,7 @@ extern intptr_t syscall_condition_notify_all(cond_t* cond);
 extern intptr_t syscall_condition_wait(cond_t* cond, mutex_t* mutex);
 extern intptr_t syscall_condition_wait_timeout(cond_t* cond, mutex_t* mutex, intptr_t timeoutMsec);
 extern intptr_t syscall_mutex_create(mutex_t* mutex);
+extern intptr_t syscall_mutex_count();
 extern intptr_t syscall_mutex_fetch(mutex_t* dest, mutex_t* mutex);
 extern intptr_t syscall_mutex_try_lock(mutex_t* mutex);
 extern intptr_t syscall_mutex_lock(mutex_t*);
