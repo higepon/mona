@@ -48,7 +48,6 @@ void __fastcall mutexSubThread(void* mainThread)
 
 void __fastcall mutexClassSubThread(void* mainThread)
 {
-    _printf("mutexSubThread");
     ASSERT_EQ(M_OK, mutex->lock(10));
     MessageInfo msg;
     int ret = Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());

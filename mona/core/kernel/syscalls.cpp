@@ -70,7 +70,6 @@ uint32_t systemcall_mutex_create()
 
 uint32_t systemcall_mutex_lock(uint32_t id)
 {
-    uint32_t result;
     int noTimeout = 0;
     return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
 }
@@ -443,7 +442,6 @@ void syscall_entrance()
         }
         break;
     }
-
     case SYSTEM_CALL_MUTEX_DESTROY:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
@@ -638,7 +636,6 @@ void syscall_entrance()
 
         if (!isOpen)
         {
-            logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
             setReturnValue(info, 0);
             break;
         }
