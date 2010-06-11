@@ -65,7 +65,8 @@ inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
 uint32_t systemcall_mutex_create()
 {
     KMutex* mutex = new KMutex();
-    return g_id->allocateID(mutex);
+    Thread* owner = g_currentThread->thread;
+    return g_id->allocateID(owner, mutex);
 }
 
 uint32_t systemcall_mutex_lock(uint32_t id)

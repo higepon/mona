@@ -831,7 +831,6 @@ intptr_t syscall_mutex_destroy(mutex_t* mutex)
 */
 intptr_t syscall_mutex_count()
 {
-    int type = MUTEX_CREATE_NEW;
     return syscall0(SYSTEM_CALL_MUTEX_COUNT);
 }
 
@@ -1137,11 +1136,11 @@ int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
 
     parser.parseAll();
     monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
-    if(cm == NULL) 
+    if(cm == NULL)
         return false;
 
     int res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->Data, cm->Size);
-    
+
     monapi_cmemoryinfo_dispose(cm);
     monapi_cmemoryinfo_delete(cm);
 
@@ -1156,6 +1155,3 @@ void syscall_stack_trace_dump(uint32_t pid)
 {
      syscall1(SYSTEM_CALL_STACKTRACE_DUMP, pid);
 }
-
-
-
