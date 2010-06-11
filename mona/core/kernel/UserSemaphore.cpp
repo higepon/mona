@@ -95,21 +95,3 @@ intptr_t UserSemaphore::up()
     return M_OK;
 }
 
-intptr_t UserSemaphore::checkSecurity(Thread* thread)
-{
-    return 0;
-}
-
-// void UserSemaphore::addRef()
-// {
-//     refcount_++;
-// }
-
-// void UserSemaphore::releaseRef()
-// {
-//     refcount_--;
-//     if (refcount_ == 0)
-//     {
-//         delete this;
-//     }
-// }

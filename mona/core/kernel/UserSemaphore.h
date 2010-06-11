@@ -42,8 +42,6 @@ class UserSemaphore : public KObject {
         return USER_SEMAPHORE;
     }
 
-    intptr_t checkSecurity(Thread* thread);
-
   private:
     int refcount_;
     int sem_;

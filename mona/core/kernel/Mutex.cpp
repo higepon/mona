@@ -102,24 +102,3 @@ intptr_t KMutex::unlock()
     return M_OK;
 }
 
-intptr_t KMutex::checkSecurity(Thread* thread)
-{
-    return M_OK;
-}
-
-// void KMutex::addRef()
-// {
-//     refcount_++;
-// }
-
-// bool KMutex::releaseRef()
-// {
-//     refcount_--;
-//     if (refcount_ == 0)
-//     {
-//         delete this;
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }

@@ -20,11 +20,6 @@ public:
     Condition() : waitList_(new HList<Thread*>) {}
     virtual ~Condition() {}
 
-    intptr_t checkSecurity(Thread* thread)
-    {
-        return M_OK;
-    }
-
     intptr_t getType() const
     {
         return CONDITION;

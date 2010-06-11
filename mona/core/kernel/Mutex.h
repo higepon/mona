@@ -46,8 +46,6 @@ class KMutex : public KObject {
         return KMUTEX;
     }
 
-    intptr_t checkSecurity(Thread* thread);
-
   private:
     intptr_t refcount_;
     List<Thread*>* waitList_;

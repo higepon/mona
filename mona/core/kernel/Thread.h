@@ -71,11 +71,6 @@ public:
         return waitingCondition_;
     }
 
-    intptr_t checkSecurity(Thread*)
-    {
-        return M_OK;
-    }
-
 public:
     void Tick()
     {

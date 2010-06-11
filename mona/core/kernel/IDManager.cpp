@@ -34,11 +34,6 @@ KObject* IDManager::get(int objectID, Thread* who, int type)
         return NULL;
     }
     KObject* object = tree.get(objectID);
-    if (object->checkSecurity(who) != 0)
-    {
-        this->lastError = IDM_SECURITY_ERROR;
-        return NULL;
-    }
     if (object->getType() != type) {
         this->lastError = IDM_INVALID_TYPE;
         return NULL;
