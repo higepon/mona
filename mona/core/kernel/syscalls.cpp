@@ -348,27 +348,19 @@ void syscall_entrance()
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
-                intptr_t id = g_id->allocateID(mutex);
+                Thread* owner = g_currentThread->thread;
+                intptr_t id = g_id->allocateID(owner, mutex);
                 setReturnValue(info, id);
             }
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
-        if (SYSTEM_CALL_ARG_1 == 0) {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread, KObject::USER_SEMAPHORE);
-            if (object == NULL) {
-                setReturnValue(info, M_BAD_SEMAPHORE_ID);
-            } else {
-                UserSemaphore* semaphore = (UserSemaphore*)object;
-                semaphore->addRef();
-                setReturnValue(info, SYSTEM_CALL_ARG_2);
-            }
-        } else {
-            UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
-            setReturnValue(info, g_id->allocateID(semaphore));
-        }
+    {
+        UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
+        Thread* owner = g_currentThread->thread;
+        setReturnValue(info, g_id->allocateID(owner, semaphore));
         break;
-
+    }
     case SYSTEM_CALL_MUTEX_LOCK:
     {
         intptr_t ret = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
@@ -467,6 +459,11 @@ void syscall_entrance()
         setReturnValue(info, g_id->getCount(KObject::KMUTEX));
         break;
     }
+    case SYSTEM_CALL_CONDITION_COUNT:
+    {
+        setReturnValue(info, g_id->getCount(KObject::CONDITION));
+        break;
+    }
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
     {
         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
@@ -475,8 +472,9 @@ void syscall_entrance()
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
             UserSemaphore* semaphore = (UserSemaphore*)object;
-            semaphore->releaseRef();
-            setReturnValue(info, 0);
+            g_id->returnID(SYSTEM_CALL_ARG_1);
+            delete semaphore;
+            setReturnValue(info, M_OK);
         }
         break;
     }
