@@ -273,8 +273,8 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
     uint32_t id;
 
-    KTimer* timer = new KTimer(thread, tick);
-    id = g_id->allocateID(timer);
+    KTimer* timer = new KTimer(tick);
+    id = g_id->allocateID(thread, timer);
 
     timers.add(timer);
     timer->setNextTimer(this->totalTick);
@@ -282,20 +282,19 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
     return id;
 }
 
-uint32_t Scheduler::KillTimer(uint32_t id, Thread* thread)
+intptr_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 {
     KObject* object = g_id->get(id, thread, KObject::KTIMER);
 
-    if (object == NULL)
-    {
-        return 1;
+    if (object == NULL) {
+        return M_BAD_TIMER_ID;
     }
 
     KTimer* timer = (KTimer*)object;
     g_id->returnID(id);
     timers.remove(timer);
     delete timer;
-    return 0;
+    return M_OK;
 }
 
 void Scheduler::Sleep(Thread* thread, uint32_t tick)

@@ -74,7 +74,7 @@ public:
     int EventComes(Thread* thread, int eventForWait);
     int Kill(Thread* thread);
     uint32_t SetTimer(Thread* thread, uint32_t tick);
-    uint32_t KillTimer(uint32_t id, Thread* thread);
+    intptr_t KillTimer(uint32_t id, Thread* thread);
     bool SetNextThread();
     Process* FindProcess(uint32_t pid);
     Process* FindProcess(const char* name);
