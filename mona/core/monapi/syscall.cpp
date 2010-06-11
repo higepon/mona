@@ -640,6 +640,21 @@ intptr_t syscall_condition_destroy(cond_t* cond)
     return syscall1(SYSTEM_CALL_CONDITION_DESTROY, cond_id);
 }
 
+/*
+   function: syscall_condition_count
+
+   Returns number of conditions on the system. Used for test.
+
+
+   Returns:
+
+     Number of conditions.
+*/
+intptr_t syscall_condition_count()
+{
+    return syscall0(SYSTEM_CALL_CONDITION_COUNT);
+}
+
 
 /*
    function: syscall_mutex_create

@@ -230,26 +230,27 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MTHREAD_KILL:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
+//         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
 
-        if (object == NULL) {
-            setReturnValue(info, M_BAD_THREAD_ID);
-        } else {
-            Thread* t = (Thread*)object;
-            intptr_t ret = ThreadOperation::kill(t->id);
-            if (ret == Scheduler::YIELD) {
-                g_scheduler->SwitchToNext();
-            } else {
-                setReturnValue(info, ret);
-            }
-        }
+//         if (object == NULL) {
+//             setReturnValue(info, M_BAD_THREAD_ID);
+//         } else {
+//             Thread* t = (Thread*)object;
+//             intptr_t ret = ThreadOperation::kill(t->id);
+//             if (ret == Scheduler::YIELD) {
+//                 g_scheduler->SwitchToNext();
+//             } else {
+//                 setReturnValue(info, ret);
+//             }
+//         }
         break;
     }
     case SYSTEM_CALL_CONDITION_CREATE:
     {
         Condition* condition = new Condition;
         ASSERT(condition != NULL);
-        setReturnValue(info, g_id->allocateID(condition));
+        Thread* owner = g_currentThread->thread;
+        setReturnValue(info, g_id->allocateID(owner, condition));
         break;
     }
     case SYSTEM_CALL_CONDITION_DESTROY:

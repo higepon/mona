@@ -1,8 +1,9 @@
 #include "KObject.h"
+#include "kernel.h"
+#include "global.h"
 
-KObject::KObject()
+KObject::KObject() : referanceCount_(0)
 {
-    this->referanceCount = 0;
 }
 
 KObject::~KObject()
@@ -11,17 +12,27 @@ KObject::~KObject()
 
 intptr_t KObject::getReferanceCount() const
 {
-    return this->referanceCount;
+    return referanceCount_;
 }
 
 void KObject::addRef()
 {
-    this->referanceCount++;
+    referanceCount_++;
 }
 
 bool KObject::releaseRef()
 {
-    this->referanceCount--;
-    return this->referanceCount == 0;
+    referanceCount_--;
+    ASSERT(referanceCount_ >= 0);
+    return referanceCount_ == 0;
 }
 
+void KObject::setThread(Thread* thread)
+{
+    thread_ = thread;
+}
+
+Thread* KObject::getThread() const
+{
+    return thread_;
+}

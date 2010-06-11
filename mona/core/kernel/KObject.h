@@ -12,24 +12,24 @@ public:
     virtual ~KObject();
 
 public:
-    virtual intptr_t checkSecurity(Thread* thread) = 0;
     virtual intptr_t getReferanceCount() const;
     virtual intptr_t getType() const = 0;
     virtual void addRef();
     virtual bool releaseRef();
 
-    virtual intptr_t getId() const {return id;}
-    virtual void setId(uint32_t id) {this->id = id;}
+    virtual intptr_t getId() const {return id_;}
+    virtual void setId(uint32_t id) { id_ = id;}
+    void setThread(Thread* thread);
+    Thread* getThread() const;
 
 private:
-    int referanceCount;
-
+    int referanceCount_;
+    intptr_t id_;
+    Thread* thread_;
 public:
-    intptr_t id;
     enum
     {
         KOBJECT,
-        THREAD,
         KMUTEX,
         USER_SEMAPHORE,
         KTIMER,

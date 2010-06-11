@@ -10,20 +10,23 @@ IDManager::~IDManager()
 {
 }
 
-static int mutexCount = 0;
+static int foundCount = 0;
+static int typeToFind = 0;
 
-static void accumMutexCount(int id, KObject* obj)
+static void accumCount(int id, KObject* obj)
 {
-    if (obj->getType() == KObject::KMUTEX) {
-        mutexCount++;
+//    logprintf("type=%d name=%x\n", obj->getType(), obj->getThread());
+    if (obj->getType() == typeToFind) {
+        foundCount++;
     }
 }
 
 intptr_t IDManager::getCount(int type)
 {
-    mutexCount = 0;
-    tree.traverse(&accumMutexCount);
-    return mutexCount;
+    foundCount = 0;
+    typeToFind = type;
+    tree.traverse(&accumCount);
+    return foundCount;
 }
 
 KObject* IDManager::get(int objectID, Thread* who, int type)
@@ -46,12 +49,14 @@ int IDManager::getLastError() const
     return this->lastError;
 }
 
-intptr_t IDManager::allocateID(KObject* object)
+intptr_t IDManager::allocateID(Thread* owner, KObject* object)
 {
     int id = this->id++;
+    ASSERT(!tree.contains(id));
     tree.add(id, object);
     object->addRef();
     object->setId(id);
+    object->setThread(owner);
     return id;
 }
 

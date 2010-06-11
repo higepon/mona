@@ -373,6 +373,7 @@ enum
 #define SYSTEM_CALL_STACKTRACE_DISABLE        0x0069
 #define SYSTEM_CALL_STACKTRACE_DUMP           0x0070
 #define SYSTEM_CALL_MUTEX_COUNT               0x0071 /* for testablity */
+#define SYSTEM_CALL_CONDITION_COUNT           0x0072 /* for testablity */
 enum
 {
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,

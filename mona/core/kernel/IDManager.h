@@ -13,7 +13,7 @@ public:
 public:
     KObject* get(int objectID, Thread* who, int type);
     bool returnID(int id);
-    intptr_t allocateID(KObject* object);
+    intptr_t allocateID(Thread* owner, KObject* object);
     int getLastError() const;
 
     intptr_t getCount(int type);

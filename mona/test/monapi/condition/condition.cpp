@@ -66,7 +66,10 @@ static void __fastcall conditionSubThread(void* mainThread)
 
 void testCondition()
 {
+    int beforeCount = syscall_condition_count();
     ASSERT_EQ(M_OK, syscall_condition_create(&condition));
+    logprintf("before count=%d", beforeCount);
+    EXPECT_EQ(beforeCount + 1, syscall_condition_count());
 
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
@@ -91,6 +94,7 @@ void testCondition()
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_notify_all(&invalidCond));
 
     ASSERT_EQ(M_OK, syscall_condition_destroy(&condition));
+    EXPECT_EQ(beforeCount, syscall_condition_count());
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
 }
 
@@ -311,7 +315,9 @@ static void __fastcall conditionSubThread5(void* mainThread)
 
 void testCondition5()
 {
+    int beforeCount = syscall_condition_count();
     cond = new Condition();
+    EXPECT_EQ(beforeCount + 1, syscall_condition_count());
     ASSERT_TRUE(condition != NULL);
 
     mut = new Mutex();
@@ -336,6 +342,7 @@ void testCondition5()
 
     delete cond;
     delete mut;
+    EXPECT_EQ(beforeCount, syscall_condition_count());
 }
 
 int main(int argc, char *argv[])
