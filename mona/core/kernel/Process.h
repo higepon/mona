@@ -138,8 +138,9 @@ class ThreadOperation
 ----------------------------------------------------------------------*/
 class Process
 {
-  public:
+private:
     Process() {}
+  public:
     Process(const char* name, PageEntry* directory);
     virtual ~Process();
 
@@ -246,8 +247,9 @@ class Process
 ----------------------------------------------------------------------*/
 class UserProcess : public Process
 {
-  public:
+private:
     UserProcess();
+public:
     UserProcess(const char* name, PageEntry* directory);
     virtual ~UserProcess();
 };
@@ -257,8 +259,9 @@ class UserProcess : public Process
 ----------------------------------------------------------------------*/
 class KernelProcess : public Process
 {
-  public:
+private:
     KernelProcess();
+public:
     KernelProcess(const char* name, PageEntry* directory);
     virtual ~KernelProcess();
 };

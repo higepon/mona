@@ -26,7 +26,6 @@ uintptr_t waitSubThread()
 
 void __fastcall mutexSubThread(void* mainThread)
 {
-    _printf("mutexSubThread");
     ASSERT_EQ(M_OK, syscall_mutex_lock_timeout(&mutexid, 10));
     MessageInfo msg;
     int ret = Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
