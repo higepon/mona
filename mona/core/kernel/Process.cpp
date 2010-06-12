@@ -19,6 +19,7 @@
 #include "PageManager.h"
 #include "string.h"
 #include "BitMap.h"
+#include "KObjectService.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -304,6 +305,8 @@ intptr_t ThreadOperation::kill()
         delete process;
         g_page_manager->returnPhysicalPages(directory);
     }
+
+    KObjectService::cleanupKObjects(thread);
 
     delete thread;
     return M_OK;
