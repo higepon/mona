@@ -28,9 +28,27 @@
  */
 
 #include "KObjectService.h"
+#include "global.h"
+#include "KObject.h"
+#include "Mutex.h"
+
+static Thread* targetThread = NULL;
+
+static void cleanupKObject(int id, KObject* obj)
+{
+    if (obj->getThread() != targetThread) {
+        return;
+    }
+
+    if (obj->getType() == KObject::KMUTEX) {
+        if (g_id->returnID(id)) {
+//            delete ((KMutex*)obj);
+        }
+    }
+}
 
 void KObjectService::cleanupKObjects(Thread* owner)
 {
-
-
+    targetThread = owner;
+    g_id->foreachKObject(&cleanupKObject);
 }

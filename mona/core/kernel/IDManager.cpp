@@ -24,6 +24,11 @@ static void accumCount(int id, KObject* obj)
     }
 }
 
+void IDManager::foreachKObject(void (*func)(int id, KObject* object))
+{
+    tree.traverse(func);
+}
+
 intptr_t IDManager::getCount(int type)
 {
     foundCount = 0;

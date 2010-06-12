@@ -15,8 +15,8 @@ public:
     bool returnID(int id);
     intptr_t allocateID(Thread* owner, KObject* object);
     int getLastError() const;
-
     intptr_t getCount(int type);
+    void foreachKObject(void (*func)(int id, KObject* object));
 
 private:
     BinaryTree<KObject*> tree;
