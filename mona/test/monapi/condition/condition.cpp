@@ -96,6 +96,8 @@ void testCondition()
     ASSERT_EQ(M_OK, syscall_condition_destroy(&condition));
     EXPECT_EQ(beforeCount, syscall_condition_count());
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
+
+    EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutex));
 }
 
 // Test case (2)
@@ -139,6 +141,7 @@ void testCondition2()
     ASSERT_EQ(M_OK, syscall_condition_destroy(&condition));
     cond_t invalidCond = 3;
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
+    EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutex));
 }
 
 // Test case (3)
@@ -206,6 +209,7 @@ void testCondition3()
 
     ASSERT_EQ(M_OK, syscall_condition_destroy(&condition));
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
+    EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutex));
 }
 
 // Test case (4)
@@ -273,6 +277,7 @@ void testCondition4()
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_notify_all(&invalidCond));
 
     ASSERT_EQ(M_OK, syscall_condition_destroy(&condition));
+    EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutex));
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
 }
 
