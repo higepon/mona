@@ -24,7 +24,7 @@ public:
 
          A mutex.
     */
-    Mutex() : destroyed_(false)
+    Mutex() : destroyed_(false), lastError_(M_OK)
     {
         intptr_t ret = syscall_mutex_create(&mutex_);
         ASSERT(M_OK == ret);
@@ -45,12 +45,23 @@ public:
 
          A mutex.
     */
-    Mutex(mutex_t* src) : destroyed_(false)
+    Mutex(mutex_t* src) : destroyed_(false), lastError_(M_OK)
     {
-        intptr_t ret = syscall_mutex_fetch(&mutex_, src);
-        ASSERT(M_OK == ret);
+        lastError_ = syscall_mutex_fetch(&mutex_, src);
     }
 
+    /*
+       function: getLastError
+
+       Returns last error.
+       Returns:
+
+         Error code or M_OK
+    */
+    intptr_t getLastError() const
+    {
+        return lastError_;
+    }
 
     /*
        function: ~Mutex
@@ -154,6 +165,7 @@ public:
 private:
     bool destroyed_;
     mutex_t mutex_;
+    intptr_t lastError_;
 };
 
 };
