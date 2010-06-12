@@ -266,15 +266,4 @@ public:
     virtual ~KernelProcess();
 };
 
-/*----------------------------------------------------------------------
-    V86Process
-----------------------------------------------------------------------*/
-class V86Process : public Process
-{
-  public:
-    V86Process();
-    V86Process(const char* name, PageEntry* directory);
-    virtual ~V86Process();
-};
-
 #endif

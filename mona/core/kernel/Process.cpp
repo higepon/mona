@@ -476,19 +476,6 @@ KernelProcess::~KernelProcess()
 }
 
 /*----------------------------------------------------------------------
-    V86Process
-----------------------------------------------------------------------*/
-V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, directory)
-{
-    /* kernel mode */
-    isUserMode_ = true;
-}
-
-V86Process::~V86Process()
-{
-}
-
-/*----------------------------------------------------------------------
     Idle function
 ----------------------------------------------------------------------*/
 void monaIdle()
