@@ -15,7 +15,7 @@ static int typeToFind = 0;
 
 static void accumCount(int id, KObject* obj)
 {
-//    logprintf("type=%d name=%x\n", obj->getType(), obj->getThread());
+//    logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getThread() == NULL ? "KERNEL" : obj->getThread()->tinfo->process->getName());
     if (obj->getType() == typeToFind) {
         foundCount++;
     }

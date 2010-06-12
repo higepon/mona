@@ -57,7 +57,7 @@ GLOBAL MemoryManager km; /* Kernel Memory Management */
 
 GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 
-GLOBAL ThreadInfo* g_currentThread;
+GLOBAL ThreadInfo* g_currentThread GLOBAL_VAL(NULL);
 GLOBAL ThreadInfo* g_prevThread;
 GLOBAL Scheduler* g_scheduler;
 GLOBAL VesaInfo* g_vesaInfo;

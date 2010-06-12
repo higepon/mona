@@ -198,7 +198,7 @@ bool Scheduler::WakeupSleep(Thread* thread)
 bool Scheduler::SetNextThread()
 {
     if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
-        static uint32_t mutex = systemcall_mutex_create();
+        static intptr_t mutex = create_mutex(g_currentThread->thread);
         systemcall_mutex_lock(mutex);
         if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
             reservedTid_ = 0;

@@ -230,8 +230,8 @@ void startKernel()
     /* IDManager */
     g_id = new IDManager();
 
-    /* Mutex */
-    g_mutexShared = systemcall_mutex_create();
+    /* This mutex has no owner, so will never deleted */
+    g_mutexShared = create_mutex_null_owner();
 
     /* Paging start */
     g_page_manager = new PageManager(g_total_system_memory);

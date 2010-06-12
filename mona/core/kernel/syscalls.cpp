@@ -57,17 +57,24 @@ inline intptr_t syscall2(intptr_t syscall_number, intptr_t arg1, intptr_t arg2)
 
 
 
-inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
+static inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
 {
     info->eax = value;
 }
 
-uint32_t systemcall_mutex_create()
+intptr_t create_mutex(Thread* owner)
 {
     KMutex* mutex = new KMutex();
-    Thread* owner = g_currentThread->thread;
+    logprintf("allocate mutex=%x %x\n",mutex, owner);
     return g_id->allocateID(owner, mutex);
 }
+
+// A mutex which has null owner will never deleted.
+intptr_t create_mutex_null_owner()
+{
+    return create_mutex(NULL);
+}
+
 
 uint32_t systemcall_mutex_lock(uint32_t id)
 {
@@ -339,7 +346,8 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
-            intptr_t mutexid = systemcall_mutex_create();
+            Thread* owner = g_currentThread->thread;
+            intptr_t mutexid = create_mutex(owner);
             ASSERT(mutexid > 0);
             setReturnValue(info, mutexid);
         } else {
