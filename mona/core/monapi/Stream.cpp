@@ -10,21 +10,26 @@ using namespace MonAPI;
 #define LOG(...) /* */
 #endif
 
-Stream::Stream()
+Stream::Stream() : lastError_(M_OK)
 {
     // default stream size is 64KB.
-    initialize(64 * 1024);
+    if (!initialize(64 * 1024)) {
+        lastError_ = M_BAD_STREAM;
+    }
 }
 
-Stream::Stream(uint32_t size, uint32_t handle /* = 0 */)
+Stream::Stream(uint32_t size, uint32_t handle /* = 0 */) : lastError_(M_OK)
 {
-    if (handle != 0)
-    {
-        initializeFromHandle(handle);
+    if (handle != 0) {
+        if (!initializeFromHandle(handle)) {
+            lastError_ = M_BAD_STREAM;
+        }
     }
     else
     {
-        initialize(size);
+        if (!initialize(size)) {
+            lastError_ = M_BAD_STREAM;
+        }
     }
 }
 

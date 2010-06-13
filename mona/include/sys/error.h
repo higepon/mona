@@ -142,6 +142,12 @@ enum
        Indicates a bad timer_id is spcified.
     */
     M_BAD_TIMER_ID       ,
+    /*
+       constant: M_BAD_STREAM
+
+       Indicates a bad stream.
+    */
+    M_BAD_STREAM       ,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE
