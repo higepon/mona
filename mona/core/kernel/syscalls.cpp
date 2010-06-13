@@ -256,9 +256,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
-            Condition* condition = (Condition*)object;
-            g_id->returnID(condition_id);
-            delete condition;
+            KObjectService::destroy(condition_id, object);
             setReturnValue(info, M_OK);
         }
         break;
@@ -441,8 +439,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
-            KMutex* mutex = (KMutex*)object;
-            if (KObjectService::destroyMutex(id, mutex)) {
+            if (KObjectService::destroy(id, object)) {
                 // mutex is not no more referenced, so deleted.
                 setReturnValue(info, M_OK);
             } else {
@@ -466,14 +463,12 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
-
+        intptr_t id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(id, KObject::USER_SEMAPHORE);
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
-            UserSemaphore* semaphore = (UserSemaphore*)object;
-            g_id->returnID(SYSTEM_CALL_ARG_1);
-            delete semaphore;
+            KObjectService::destroy(id, object);
             setReturnValue(info, M_OK);
         }
         break;

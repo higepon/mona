@@ -44,16 +44,15 @@ static void cleanupKObject(int id, KObject* obj)
 
     if (obj->getType() == KObject::KMUTEX) {
         logprintf("Mutex destroyed");
-        KObjectService::destroyMutex(id, (KMutex*)obj);
+        KObjectService::destroy(id, obj);
     }
 }
 
-
-bool KObjectService::destroyMutex(intptr_t id, KMutex* mutex)
+bool KObjectService::destroy(intptr_t id, KObject* obj)
 {
     // Use reference counting.
     if (g_id->returnID(id)) {
-        delete mutex;
+        delete obj;
         return true;
     } else {
         return false;

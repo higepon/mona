@@ -59,7 +59,7 @@ public:
         return create<T>(NULL);
     }
 
-    static bool destroyMutex(intptr_t id, KMutex* mutex);
+    static bool destroy(intptr_t id, KObject* obj);
 };
 
 #endif // _KOBJECT_SERVICE_
