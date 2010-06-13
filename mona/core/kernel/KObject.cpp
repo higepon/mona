@@ -29,10 +29,20 @@ bool KObject::releaseRef()
 
 void KObject::setOwner(Thread* owner)
 {
-    owner_ = owner;
+    owner2_ = owner;
 }
 
 Thread* KObject::getOwner() const
+{
+    return owner2_;
+}
+
+void KObject::setOwnerProcess(Process* owner)
+{
+    owner_ = owner;
+}
+
+Process* KObject::getOwnerProcess() const
 {
     return owner_;
 }

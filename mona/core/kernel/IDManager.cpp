@@ -77,6 +77,7 @@ intptr_t IDManager::allocateID(Thread* owner, KObject* object)
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     object->setId(id);
     object->setOwner(owner);
+    object->setOwnerProcess(owner->tinfo->process);
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return id;
 }

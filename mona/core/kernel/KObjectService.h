@@ -32,6 +32,7 @@
 
 class Thread;
 class KMutex;
+class Process;
 
 class KObjectService
 {
@@ -40,6 +41,7 @@ private:
     ~KObjectService() {}
 public:
     static void cleanupKObjects(Thread* owner);
+    static void cleanupKObjects(Process* owner);
     static intptr_t createMutex(Thread* owner);
     static bool destroyMutex(intptr_t id, KMutex* mutex);
     static intptr_t createMutexNullOwner();

@@ -303,12 +303,11 @@ intptr_t ThreadOperation::kill()
 
     if (process->threadNum < 1)
     {
+        KObjectService::cleanupKObjects(process);
         PageEntry* directory = process->getPageDirectory();
         delete process;
         g_page_manager->returnPhysicalPages(directory);
     }
-
-    KObjectService::cleanupKObjects(thread);
 
     delete thread;
     return M_OK;
