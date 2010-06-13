@@ -31,6 +31,7 @@
 #include "sys/types.h"
 
 class Thread;
+class KMutex;
 
 class KObjectService
 {
@@ -40,6 +41,7 @@ private:
 public:
     static void cleanupKObjects(Thread* owner);
     static intptr_t createMutex(Thread* owner);
+    static bool destroyMutex(intptr_t id, KMutex* mutex);
     static intptr_t createMutexNullOwner();
 };
 

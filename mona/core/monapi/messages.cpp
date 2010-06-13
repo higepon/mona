@@ -415,7 +415,7 @@ uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     }
     System::getStdoutStream();
         _logprintf("invalid stream? %d", outStream ? outStream->getLastError() : -1);
-    if (NULL == outStream || outStream->getLastError() != M_OK)
+    if (NULL == outStream || outStream->isInvalid())
     {
         monapi_warn("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
         return 0;

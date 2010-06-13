@@ -438,14 +438,14 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_DESTROY:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+        intptr_t id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
             KMutex* mutex = (KMutex*)object;
-            if (g_id->returnID(SYSTEM_CALL_ARG_1)) {
-                // mutex is not no more referenced, so delete it.
-                delete mutex;
+            if (KObjectService::destroyMutex(id, mutex)) {
+                // mutex is not no more referenced, so deleted.
                 setReturnValue(info, M_OK);
             } else {
                 // mutex is referenced by other.

@@ -18,6 +18,7 @@ public:
     Stream(uint32_t size, uint32_t handle = 0);
     virtual ~Stream();
 
+    bool isInvalid() const { return M_OK != lastError_; }
     intptr_t getLastError() const { return lastError_; }
 
 public:
