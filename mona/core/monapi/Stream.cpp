@@ -312,15 +312,18 @@ bool Stream::initializeFromHandle(uint32_t handle)
     header_ = (StreamHeader*)address;
     access_ = new Mutex(&(header_->accessMutexHandle));
     if (access_->getLastError() != M_OK) {
-        monapi_fatal("mutex access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        monapi_warn("mutex access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
     }
     readAccess_ = new Mutex(&(header_->readMutexHandle));
     if (readAccess_->getLastError() != M_OK) {
-        monapi_fatal("mutex read access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        monapi_warn("mutex read access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
     }
     writeAccess_ = new Mutex(&(header_->writeMutexHandle));
     if (writeAccess_->getLastError() != M_OK) {
-        monapi_fatal("mutex write access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        monapi_warn("mutex write access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
     }
     memoryAddress_ = (void*)((uint32_t)address + sizeof(StreamHeader));
     return true;
