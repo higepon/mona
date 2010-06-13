@@ -353,10 +353,10 @@ void syscall_entrance()
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
     {
-        UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
+        int num = SYSTEM_CALL_ARG_1;
         Process* owner = g_currentThread->thread->tinfo->process;
-    logprintf("create semaphore =%x\n",semaphore);
-        setReturnValue(info, g_id->allocateID(owner, semaphore));
+        intptr_t id = KObjectService::createUserSemaphore(owner, num);
+        setReturnValue(info, id);
         break;
     }
     case SYSTEM_CALL_MUTEX_LOCK:

@@ -41,6 +41,12 @@ private:
 public:
     static void cleanupKObjects(Process* owner);
 
+    static intptr_t createUserSemaphore(Process* owner, int num)
+    {
+        UserSemaphore* obj = new UserSemaphore(num);
+        return g_id->allocateID(owner, obj);
+    }
+
     template <typename T> static intptr_t create(Process* owner)
     {
         T* obj = new T();
