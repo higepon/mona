@@ -22,7 +22,7 @@ static void accumCount(int id, KObject* obj)
 //     logprintf("%s %s:%d thread2=%x\n", __func__, __FILE__, __LINE__, obj->getThread() == NULL ? 0x11111111 : (int)obj->getThread()->tinfo->thread);
 // To check resource leak.
 #if 1
-    logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getThread() == NULL ? "KERNEL" : obj->getThread()->tinfo->process->getName());
+    logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getOwner() == NULL ? "KERNEL" : obj->getOwner()->tinfo->process->getName());
 #endif
     if (obj->getType() == typeToFind) {
         foundCount++;
@@ -76,7 +76,7 @@ intptr_t IDManager::allocateID(Thread* owner, KObject* object)
     object->addRef();
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     object->setId(id);
-    object->setThread(owner);
+    object->setOwner(owner);
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return id;
 }

@@ -27,12 +27,12 @@ bool KObject::releaseRef()
     return referanceCount_ == 0;
 }
 
-void KObject::setThread(Thread* thread)
+void KObject::setOwner(Thread* owner)
 {
-    thread_ = thread;
+    owner_ = owner;
 }
 
-Thread* KObject::getThread() const
+Thread* KObject::getOwner() const
 {
-    return thread_;
+    return owner_;
 }

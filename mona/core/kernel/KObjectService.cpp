@@ -36,7 +36,7 @@ static Thread* targetThread = NULL;
 
 static void cleanupKObject(int id, KObject* obj)
 {
-    if (obj->getThread() != targetThread) {
+    if (obj->getOwner() != targetThread) {
         return;
     }
 

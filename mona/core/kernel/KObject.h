@@ -19,13 +19,13 @@ public:
 
     virtual intptr_t getId() const {return id_;}
     virtual void setId(uint32_t id) { id_ = id;}
-    void setThread(Thread* thread);
-    Thread* getThread() const;
+    void setOwner(Thread* owner);
+    Thread* getOwner() const;
 
 private:
     int referanceCount_;
     intptr_t id_;
-    Thread* thread_;
+    Thread* owner_;
 public:
     enum
     {

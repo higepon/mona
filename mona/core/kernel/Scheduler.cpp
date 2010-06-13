@@ -122,7 +122,7 @@ void Scheduler::WakeupTimer()
 
         if (!timer->timer(this->totalTick)) continue;
 
-        Thread* thread = timer->getThread();
+        Thread* thread = timer->getOwner();
 
         MessageInfo msg;
         memset(&msg, 0, sizeof(MessageInfo));
