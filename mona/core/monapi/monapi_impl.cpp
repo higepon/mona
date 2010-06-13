@@ -161,10 +161,18 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[3] = 'P';
     eop[4] = '\0';
 
-    MonAPI::System::getStdoutStream();
-    // ここに Wiki へのリンクを
-    outStream->write((uint8_t*)eop, 5);
-    for (int i = 1; i < argc; i++) delete [] argv[i];
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
+    outStream = MonAPI::System::getStdoutStream();
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
+    if (outStream) {
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
+        outStream->write((uint8_t*)eop, 5);
+    }
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
+    for (int i = 1; i < argc; i++) {
+        delete [] argv[i];
+    }
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 //    exit(result);

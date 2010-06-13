@@ -42,7 +42,7 @@ static void cleanupKObject(int id, KObject* obj)
 
     if (obj->getType() == KObject::KMUTEX) {
         if (g_id->returnID(id)) {
-//            delete ((KMutex*)obj);
+            delete ((KMutex*)obj);
         }
     }
 }
@@ -51,4 +51,17 @@ void KObjectService::cleanupKObjects(Thread* owner)
 {
     targetThread = owner;
     g_id->foreachKObject(&cleanupKObject);
+}
+
+intptr_t KObjectService::createMutex(Thread* owner)
+{
+    KMutex* mutex = new KMutex();
+    logprintf("allocate mutex=%x %x\n",mutex, owner);
+    return g_id->allocateID(owner, mutex);
+}
+
+// A mutex which has null owner will never deleted.
+intptr_t KObjectService::createMutexNullOwner()
+{
+    return createMutex(NULL);
 }

@@ -3,7 +3,7 @@
 
 using namespace MonAPI;
 
-ProcessInfo::ProcessInfo(uint32_t tid) : tid(THREAD_UNKNOWN), parent(THREAD_UNKNOWN), stdout_id(THREAD_UNKNOWN)
+ProcessInfo::ProcessInfo(uint32_t tid) : tid(THREAD_UNKNOWN), parent(THREAD_UNKNOWN), stdout_id(THREAD_UNKNOWN), name("unknown")
 {
 //     PsInfo psInfo;
 //     syscall_set_ps_dump();

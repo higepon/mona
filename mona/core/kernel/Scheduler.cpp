@@ -4,6 +4,7 @@
 #include "sys/error.h"
 #include "syscalls.h"
 #include "Condition.h"
+#include "KObjectService.h"
 
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
@@ -198,7 +199,7 @@ bool Scheduler::WakeupSleep(Thread* thread)
 bool Scheduler::SetNextThread()
 {
     if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
-        static intptr_t mutex = create_mutex(g_currentThread->thread);
+        static intptr_t mutex = KObjectService::createMutex(g_currentThread->thread);
         systemcall_mutex_lock(mutex);
         if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
             reservedTid_ = 0;

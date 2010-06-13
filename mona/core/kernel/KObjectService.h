@@ -28,6 +28,8 @@
 #ifndef _KOBJECT_SERVICE_
 #define _KOBJECT_SERVICE_
 
+#include "sys/types.h"
+
 class Thread;
 
 class KObjectService
@@ -37,6 +39,8 @@ private:
     ~KObjectService() {}
 public:
     static void cleanupKObjects(Thread* owner);
+    static intptr_t createMutex(Thread* owner);
+    static intptr_t createMutexNullOwner();
 };
 
 #endif // _KOBJECT_SERVICE_

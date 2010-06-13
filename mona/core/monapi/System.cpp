@@ -75,21 +75,31 @@ namespace MonAPI
     {
         if (NULL != inStream) return inStream;
         uint32_t handle = System::getProcessStdinID();
+        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
         inStream = Stream::FromHandle(handle);
         return inStream;
     }
     Stream* System::getStdoutStream()
     {
-        if (NULL != outStream) return outStream;
-        uint32_t handle = System::getProcessStdoutID();
-        if (handle == THREAD_UNKNOWN)
-        {
-            outStream = NULL;
+        if (outStream == NULL) {
+            uint32_t handle = System::getProcessStdoutID();
+            if (handle == THREAD_UNKNOWN) {
+                outStream = NULL;
+            } else {
+                outStream = Stream::FromHandle(handle);
+            }
         }
-        else
-        {
-            outStream = Stream::FromHandle(handle);
+
+        if (outStream == NULL) {
+            _logprintf("%s:%d\n", __FILE__, __LINE__);
+
+            return NULL;
+        } else if (outStream->getLastError() == M_OK) {
+            _logprintf("%s:%d\n", __FILE__, __LINE__);
+            return outStream;
+        } else {
+            _logprintf("%s:%d\n", __FILE__, __LINE__);
+            return NULL;
         }
-        return outStream;
     }
 }

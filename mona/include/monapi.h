@@ -26,8 +26,8 @@
 #include <monapi/Assert.h>
 #include <monapi/DebuggerService.h>
 
-#define monapi_fatal(...) _logprintf("Fatal: "), _logprintf(__VA_ARGS__), _printf("Fatal: "), _printf(__VA_ARGS__), exit(-1)
-#define monapi_warn(...) _logprintf("Warning: "), _logprintf(__VA_ARGS__), _printf("Warning: "), _printf(__VA_ARGS__)
+#define monapi_fatal(...) _logprintf("Fatal (%s) : ", System::getProcessInfo()->name), _logprintf(__VA_ARGS__), _printf("Fatal (%s) :", System::getProcessInfo()->name), _printf(__VA_ARGS__), exit(-1)
+#define monapi_warn(...) _logprintf("Warning (%s) : ", System::getProcessInfo()->name), _logprintf(__VA_ARGS__)
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 

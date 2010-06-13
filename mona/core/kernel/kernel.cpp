@@ -74,6 +74,7 @@
 #include "apm.h"
 #include "addressmap.h"
 #include "Uart.h"
+#include "KObjectService.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -231,7 +232,7 @@ void startKernel()
     g_id = new IDManager();
 
     /* This mutex has no owner, so will never deleted */
-    g_mutexShared = create_mutex_null_owner();
+    g_mutexShared = KObjectService::createMutexNullOwner();
 
     /* Paging start */
     g_page_manager = new PageManager(g_total_system_memory);
