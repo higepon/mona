@@ -410,17 +410,9 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
 uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
     System::getStdoutStream();
-<<<<<<< HEAD
-        _logprintf("invalid stream? %d", outStream ? outStream->getLastError() : -1);
     if (NULL == outStream || outStream->isInvalid())
     {
         monapi_warn("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
-=======
-    if (NULL == outStream)
-    {
-       MONAPI_WARN("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
-        _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
->>>>>>> 7df5f80... Debug messages to be removed.
         return 0;
     }
     return outStream->write(buffer, size);

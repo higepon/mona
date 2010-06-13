@@ -274,19 +274,11 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
     uint32_t id;
 
-<<<<<<< HEAD
     KTimer* timer = new KTimer(thread, tick);
-    logprintf("create timer =%x\n", timer);
     Process* owner = thread->tinfo->process;
     id = g_id->allocateID(owner, timer);
-=======
-    KTimer* timer = new KTimer(tick);
-    id = g_id->allocateID(thread, timer);
->>>>>>> 7df5f80... Debug messages to be removed.
-
     timers.add(timer);
     timer->setNextTimer(this->totalTick);
-
     return id;
 }
 

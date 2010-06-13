@@ -15,14 +15,6 @@ static int typeToFind = 0;
 
 static void accumCount(int id, KObject* obj)
 {
-<<<<<<< HEAD
-//     logprintf("%s %s:%d obj=%x\n", __func__, __FILE__, __LINE__, obj);
-//     logprintf("%s %s:%d thread=%x\n", __func__, __FILE__, __LINE__, obj->getThread());
-//     logprintf("%s %s:%d tinfo=%x\n", __func__, __FILE__, __LINE__, obj->getThread()->tinfo);
-//     logprintf("%s %s:%d process=%x\n", __func__, __FILE__, __LINE__, obj->getThread() == NULL ? 0x11111111 : (int)obj->getThread()->tinfo->process);
-//     logprintf("%s %s:%d thread2=%x\n", __func__, __FILE__, __LINE__, obj->getThread() == NULL ? 0x11111111 : (int)obj->getThread()->tinfo->thread);
-=======
->>>>>>> 7df5f80... Debug messages to be removed.
 // To check resource leak.
 #if 1
     logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getOwner() == NULL ? "KERNEL" : obj->getOwner()->getName());
@@ -72,12 +64,7 @@ intptr_t IDManager::allocateID(Process* owner, KObject* object)
     tree.add(id, object);
     object->addRef();
     object->setId(id);
-<<<<<<< HEAD
     object->setOwner(owner);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-=======
-    object->setThread(owner);
->>>>>>> 7df5f80... Debug messages to be removed.
     return id;
 }
 
