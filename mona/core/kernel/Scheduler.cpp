@@ -286,7 +286,7 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 
 intptr_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 {
-    KObject* object = g_id->get(id, thread, KObject::KTIMER);
+    KObject* object = g_id->get(id, KObject::KTIMER);
 
     if (object == NULL) {
         return M_BAD_TIMER_ID;

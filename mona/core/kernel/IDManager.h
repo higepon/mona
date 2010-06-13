@@ -11,7 +11,7 @@ public:
     virtual ~IDManager();
 
 public:
-    KObject* get(int objectID, Thread* who, int type);
+    KObject* get(int objectID, int type);
     bool returnID(int id);
     intptr_t allocateID(Thread* owner, KObject* object);
     int getLastError() const;

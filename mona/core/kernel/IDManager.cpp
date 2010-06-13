@@ -44,7 +44,7 @@ intptr_t IDManager::getCount(int type)
     return foundCount;
 }
 
-KObject* IDManager::get(int objectID, Thread* who, int type)
+KObject* IDManager::get(int objectID, int type)
 {
     if (!tree.contains(objectID))
     {

@@ -81,7 +81,7 @@ uint32_t systemcall_mutex_unlock(uint32_t id)
 // use systemcall_mutex_lock()
 static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    KObject* object = g_id->get(id, KObject::KMUTEX);
     if (NULL == object) {
         return M_BAD_MUTEX_ID;
     }
@@ -94,7 +94,7 @@ static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
 // use systemcall_mutex_unlock()
 static intptr_t systemcall_mutex_unlock2(intptr_t id)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    KObject* object = g_id->get(id, KObject::KMUTEX);
     if (object == NULL) {
         return M_BAD_MUTEX_ID;
     }
@@ -254,7 +254,7 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_DESTROY:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* object = g_id->get(condition_id, KObject::CONDITION);
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
@@ -268,7 +268,7 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_NOTIFY_ALL:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* object = g_id->get(condition_id, KObject::CONDITION);
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
@@ -285,10 +285,10 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_WAIT:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* condObject = g_id->get(condition_id, KObject::CONDITION);
 
         const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
-        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+        KObject* mutexObject = g_id->get(mutex_id, KObject::KMUTEX);
 
         if (condObject == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
@@ -310,10 +310,10 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_WAIT_TIMEOUT:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* condObject = g_id->get(condition_id, KObject::CONDITION);
 
         const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
-        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+        KObject* mutexObject = g_id->get(mutex_id, KObject::KMUTEX);
 
         const intptr_t timeoutTick = SYSTEM_CALL_ARG_3;
 
@@ -341,7 +341,7 @@ void syscall_entrance()
             ASSERT(mutexid > 0);
             setReturnValue(info, mutexid);
         } else {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
             if (object == NULL) {
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
@@ -373,7 +373,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
@@ -389,7 +389,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_TRY_LOCK:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
@@ -399,7 +399,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_TRYDOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
 
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
@@ -421,7 +421,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_UP:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
 
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
@@ -439,7 +439,7 @@ void syscall_entrance()
     case SYSTEM_CALL_MUTEX_DESTROY:
     {
         intptr_t id = SYSTEM_CALL_ARG_1;
-        KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+        KObject* object = g_id->get(id, KObject::KMUTEX);
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
@@ -468,7 +468,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
 
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
