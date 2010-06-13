@@ -4,6 +4,7 @@
 #include <monapi/Stream.h>
 #include <monapi/System.h>
 #include <monapi/string.h>
+#include <monapi.h>
 
 using namespace MonAPI;
 
@@ -413,12 +414,10 @@ uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
         _logprintf("<%c>", buffer[i]);
     }
     System::getStdoutStream();
-        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
-    if (NULL == outStream)
+        _logprintf("invalid stream? %d", outStream ? outStream->getLastError() : -1);
+    if (NULL == outStream || outStream->getLastError() != M_OK)
     {
-        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
-       MONAPI_WARN("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
-        _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
+        monapi_warn("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
         return 0;
     }
     return outStream->write(buffer, size);
