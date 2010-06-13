@@ -244,11 +244,9 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_CONDITION_CREATE:
     {
-        Condition* condition = new Condition;
-        ASSERT(condition != NULL);
-        Thread* owner = g_currentThread->thread;
-    logprintf("allocate condition=%x\n",condition);
-        setReturnValue(info, g_id->allocateID(owner, condition));
+        Process* owner = g_currentThread->thread->tinfo->process;
+        intptr_t condition_id = KObjectService::create<Condition>(owner);
+        setReturnValue(info, condition_id);
         break;
     }
     case SYSTEM_CALL_CONDITION_DESTROY:
@@ -336,8 +334,8 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
-            Thread* owner = g_currentThread->thread;
-            intptr_t mutexid = KObjectService::createMutex(owner);
+            Process* owner = g_currentThread->thread->tinfo->process;
+            intptr_t mutexid = KObjectService::create<KMutex>(owner);
             ASSERT(mutexid > 0);
             setReturnValue(info, mutexid);
         } else {
@@ -346,7 +344,7 @@ void syscall_entrance()
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
-                Thread* owner = g_currentThread->thread;
+                Process* owner = g_currentThread->thread->tinfo->process;
     logprintf("fetch mutex =%x\n",mutex);
                 intptr_t id = g_id->allocateID(owner, mutex);
                 setReturnValue(info, id);
@@ -356,7 +354,7 @@ void syscall_entrance()
     case SYSTEM_CALL_SEMAPHORE_CREATE:
     {
         UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
-        Thread* owner = g_currentThread->thread;
+        Process* owner = g_currentThread->thread->tinfo->process;
     logprintf("create semaphore =%x\n",semaphore);
         setReturnValue(info, g_id->allocateID(owner, semaphore));
         break;

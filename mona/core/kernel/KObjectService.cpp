@@ -27,33 +27,23 @@
  *  $Id: KObjectService.cpp 183 2008-07-04 06:19:28Z higepon $
  */
 
-#include "KObjectService.h"
 #include "global.h"
+#include "KObjectService.h"
 #include "KObject.h"
 #include "Mutex.h"
+#include "syscalls.h"
+#include "Condition.h"
 
-static Thread* targetThread = NULL;
 static Process* targetProcess = NULL;
-
-
-static void cleanupKObject2(int id, KObject* obj)
-{
-    if (obj->getOwner() != targetThread) {
-        return;
-    }
-
-    if (obj->getType() == KObject::KMUTEX) {
-        KObjectService::destroyMutex(id, (KMutex*)obj);
-    }
-}
 
 static void cleanupKObject(int id, KObject* obj)
 {
-    if (obj->getOwnerProcess() != targetProcess) {
+    if (obj->getOwner() != targetProcess) {
         return;
     }
 
     if (obj->getType() == KObject::KMUTEX) {
+        logprintf("Mutex destroyed");
         KObjectService::destroyMutex(id, (KMutex*)obj);
     }
 }
@@ -70,29 +60,8 @@ bool KObjectService::destroyMutex(intptr_t id, KMutex* mutex)
     }
 }
 
-void KObjectService::cleanupKObjects(Thread* owner)
-{
-    targetThread = owner;
-    g_id->foreachKObject(&cleanupKObject2);
-}
-
 void KObjectService::cleanupKObjects(Process* owner)
 {
-    logprintf("higehige");
     targetProcess = owner;
     g_id->foreachKObject(&cleanupKObject);
-}
-
-
-intptr_t KObjectService::createMutex(Thread* owner)
-{
-    KMutex* mutex = new KMutex();
-    logprintf("allocate mutex=%x %x\n",mutex, owner);
-    return g_id->allocateID(owner, mutex);
-}
-
-// A mutex which has null owner will never deleted.
-intptr_t KObjectService::createMutexNullOwner()
-{
-    return createMutex(NULL);
 }

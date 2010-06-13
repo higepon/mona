@@ -122,7 +122,7 @@ void Scheduler::WakeupTimer()
 
         if (!timer->timer(this->totalTick)) continue;
 
-        Thread* thread = timer->getOwner();
+        Thread* thread = timer->getOwnerThread();
 
         MessageInfo msg;
         memset(&msg, 0, sizeof(MessageInfo));
@@ -199,7 +199,7 @@ bool Scheduler::WakeupSleep(Thread* thread)
 bool Scheduler::SetNextThread()
 {
     if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
-        static intptr_t mutex = KObjectService::createMutex(g_currentThread->thread);
+        static intptr_t mutex = KObjectService::create<KMutex>(g_currentThread->thread->tinfo->process);
         systemcall_mutex_lock(mutex);
         if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
             reservedTid_ = 0;
@@ -274,9 +274,10 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
     uint32_t id;
 
-    KTimer* timer = new KTimer(tick);
+    KTimer* timer = new KTimer(thread, tick);
     logprintf("create timer =%x\n", timer);
-    id = g_id->allocateID(thread, timer);
+    Process* owner = thread->tinfo->process;
+    id = g_id->allocateID(owner, timer);
 
     timers.add(timer);
     timer->setNextTimer(this->totalTick);

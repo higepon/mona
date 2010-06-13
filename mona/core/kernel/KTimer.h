@@ -4,10 +4,8 @@
 class KTimer : public KObject {
 
   public:
-    KTimer(uint32_t interval)
+    KTimer(Thread* thread, uint32_t interval) : thread_(thread), interval_(interval), waitTick_(0)
     {
-        this->interval  = interval;
-        this->waitTick  = 0;
     }
 
     virtual ~KTimer()
@@ -24,17 +22,23 @@ class KTimer : public KObject {
     bool timer(uint32_t now)
     {
 
-        return now >= waitTick;
+        return now >= waitTick_;
     }
 
     void setNextTimer(uint32_t systemTick)
     {
-        this->waitTick = this->interval + systemTick;
+        waitTick_ = interval_ + systemTick;
+    }
+
+    Thread* getOwnerThread() const
+    {
+        return thread_;
     }
 
   private:
-    uint32_t interval;
-    uint32_t waitTick;
+    Thread* thread_;
+    uint32_t interval_;
+    uint32_t waitTick_;
 };
 
 #endif

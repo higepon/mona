@@ -232,7 +232,7 @@ void startKernel()
     g_id = new IDManager();
 
     /* This mutex has no owner, so will never deleted */
-    g_mutexShared = KObjectService::createMutexNullOwner();
+    g_mutexShared = KObjectService::createNullOwner<KMutex>();
 
     /* Paging start */
     g_page_manager = new PageManager(g_total_system_memory);

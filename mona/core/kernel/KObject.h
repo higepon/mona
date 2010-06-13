@@ -3,7 +3,6 @@
 
 #include <sys/types.h>
 
-class Thread; // todo remve
 class Process;
 
 class KObject
@@ -20,15 +19,12 @@ public:
 
     virtual intptr_t getId() const {return id_;}
     virtual void setId(uint32_t id) { id_ = id;}
-    void setOwner(Thread* owner);
-    Thread* getOwner() const;
-    void setOwnerProcess(Process* owner);
-    Process* getOwnerProcess() const;
+    void setOwner(Process* owner);
+    Process* getOwner() const;
 
 private:
     int referanceCount_;
     intptr_t id_;
-    Thread* owner2_;
     Process* owner_;
 public:
     enum

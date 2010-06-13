@@ -30,7 +30,6 @@
 
 #include "sys/types.h"
 
-class Thread;
 class KMutex;
 class Process;
 
@@ -40,11 +39,21 @@ private:
     KObjectService() {}
     ~KObjectService() {}
 public:
-    static void cleanupKObjects(Thread* owner);
     static void cleanupKObjects(Process* owner);
-    static intptr_t createMutex(Thread* owner);
+
+    template <typename T> static intptr_t create(Process* owner)
+    {
+        T* obj = new T();
+        return g_id->allocateID(owner, obj);
+    }
+
+    // A mutex which has null owner will never deleted.
+    template <typename T> static intptr_t createNullOwner()
+    {
+        return create<T>(NULL);
+    }
+
     static bool destroyMutex(intptr_t id, KMutex* mutex);
-    static intptr_t createMutexNullOwner();
 };
 
 #endif // _KOBJECT_SERVICE_
