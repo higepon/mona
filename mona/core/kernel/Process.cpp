@@ -111,9 +111,11 @@ Process* ProcessOperation::create(int type, const char* name)
     {
       case USER_PROCESS:
           result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          logprintf("user process = %x\n", result);
           break;
       case KERNEL_PROCESS:
           result = new KernelProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          logprintf("kernel process = %x\n", result);
           break;
       default:
           result = (Process*)NULL;
@@ -129,7 +131,7 @@ uint32_t ThreadOperation::id = FIRST_THREAD_ID;
 Thread* ThreadOperation::create(Process* process, uint32_t programCounter)
 {
     Thread* thread = new Thread();
-
+    logprintf("thread create %x %s\n", thread, process->getName());
     (process->threadNum)++;
     PageEntry* directory = process->getPageDirectory();
 

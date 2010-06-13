@@ -408,9 +408,15 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
 
 uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
+    _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
+    for (int i = 0; i < size; i++) {
+        _logprintf("<%c>", buffer[i]);
+    }
     System::getStdoutStream();
+        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     if (NULL == outStream)
     {
+        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
        MONAPI_WARN("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
         _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
         return 0;

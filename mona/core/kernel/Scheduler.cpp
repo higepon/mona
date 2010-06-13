@@ -275,6 +275,7 @@ uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
     uint32_t id;
 
     KTimer* timer = new KTimer(tick);
+    logprintf("create timer =%x\n", timer);
     id = g_id->allocateID(thread, timer);
 
     timers.add(timer);

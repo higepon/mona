@@ -269,16 +269,21 @@ uint32_t Stream::capacity() const
 ----------------------------------------------------------------------*/
 bool Stream::initialize(uint32_t size)
 {
+    _logprintf("Stream::initialize %s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     access_ = new Mutex();
     readAccess_  = new Mutex();
     writeAccess_ = new Mutex();
+    _logprintf("Stream::initialize %s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     memoryHandle_ = MemoryMap::create(size + sizeof(StreamHeader));
+    _logprintf("Stream::initialize %s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     if (0 == memoryHandle_)
     {
         _printf("Stream: MemoryMap initialize error %s at %s \n", MemoryMap::getLastErrorString(), System::getProcessInfo()->name);
         return false;
     }
+    _logprintf("Stream::initialize %s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     void* address = MemoryMap::map(memoryHandle_);
+    _logprintf("Stream::initialize %s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
     if (NULL == address)
     {
         _printf("Stream: MemoryMap map() error %s at %s\n", MemoryMap::getLastErrorString(), System::getProcessInfo()->name);

@@ -38,6 +38,7 @@ int dllmain(uint32_t reason)
         invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
         monapi_memory_initialized = true;
         // see user_start_c_impl
+        _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
         MonAPI::System::getStdoutStream();
         break;
     case 1: // DLL_PROCESS_DETACH
@@ -115,11 +116,16 @@ extern "C" void monapi_initialize_memory(int memorySize)
 ----------------------------------------------------------------------*/
 int user_start_impl(FuncMonaMain* monaMain)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     bool dll = isInDLL(__CTOR_LIST__);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (dll) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     List<char*>* arg = new HList<char*>();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     setupArguments(arg);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int result = (*monaMain)(arg);
     delete arg;
 

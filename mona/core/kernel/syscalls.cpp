@@ -247,6 +247,7 @@ void syscall_entrance()
         Condition* condition = new Condition;
         ASSERT(condition != NULL);
         Thread* owner = g_currentThread->thread;
+    logprintf("allocate condition=%x\n",condition);
         setReturnValue(info, g_id->allocateID(owner, condition));
         break;
     }
@@ -346,6 +347,7 @@ void syscall_entrance()
             } else {
                 KMutex* mutex = (KMutex*)object;
                 Thread* owner = g_currentThread->thread;
+    logprintf("fetch mutex =%x\n",mutex);
                 intptr_t id = g_id->allocateID(owner, mutex);
                 setReturnValue(info, id);
             }
@@ -355,6 +357,7 @@ void syscall_entrance()
     {
         UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
         Thread* owner = g_currentThread->thread;
+    logprintf("create semaphore =%x\n",semaphore);
         setReturnValue(info, g_id->allocateID(owner, semaphore));
         break;
     }
@@ -453,7 +456,9 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_COUNT:
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         setReturnValue(info, g_id->getCount(KObject::KMUTEX));
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         break;
     }
     case SYSTEM_CALL_CONDITION_COUNT:

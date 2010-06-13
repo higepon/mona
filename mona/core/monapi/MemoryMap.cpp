@@ -67,6 +67,7 @@ uint8_t* MemoryMap::map(uint32_t id)
     }
 
     mutex.lock();
+    _logprintf("nextAddress=%x size=%x START_ADDRESS + MAX_SIZE=%x %s\n", nextAddress, size, START_ADDRESS + MAX_SIZE, System::getProcessInfo()->name);
     if (nextAddress + size > START_ADDRESS + MAX_SIZE)
     {
         MEMORY_MAP_TRACE("");
