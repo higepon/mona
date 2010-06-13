@@ -244,9 +244,16 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_CONDITION_CREATE:
     {
+<<<<<<< HEAD
         Process* owner = g_currentThread->thread->tinfo->process;
         intptr_t condition_id = KObjectService::create<Condition>(owner);
         setReturnValue(info, condition_id);
+=======
+        Condition* condition = new Condition;
+        ASSERT(condition != NULL);
+        Thread* owner = g_currentThread->thread;
+        setReturnValue(info, g_id->allocateID(owner, condition));
+>>>>>>> 7df5f80... Debug messages to be removed.
         break;
     }
     case SYSTEM_CALL_CONDITION_DESTROY:
@@ -342,8 +349,12 @@ void syscall_entrance()
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
+<<<<<<< HEAD
                 Process* owner = g_currentThread->thread->tinfo->process;
     logprintf("fetch mutex =%x\n",mutex);
+=======
+                Thread* owner = g_currentThread->thread;
+>>>>>>> 7df5f80... Debug messages to be removed.
                 intptr_t id = g_id->allocateID(owner, mutex);
                 setReturnValue(info, id);
             }
@@ -351,10 +362,16 @@ void syscall_entrance()
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
     {
+<<<<<<< HEAD
         int num = SYSTEM_CALL_ARG_1;
         Process* owner = g_currentThread->thread->tinfo->process;
         intptr_t id = KObjectService::createUserSemaphore(owner, num);
         setReturnValue(info, id);
+=======
+        UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
+        Thread* owner = g_currentThread->thread;
+        setReturnValue(info, g_id->allocateID(owner, semaphore));
+>>>>>>> 7df5f80... Debug messages to be removed.
         break;
     }
     case SYSTEM_CALL_MUTEX_LOCK:
@@ -451,9 +468,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_COUNT:
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         setReturnValue(info, g_id->getCount(KObject::KMUTEX));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         break;
     }
     case SYSTEM_CALL_CONDITION_COUNT:

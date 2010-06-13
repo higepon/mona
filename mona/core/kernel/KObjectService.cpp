@@ -41,11 +41,7 @@ static void cleanupKObject(int id, KObject* obj)
     if (obj->getOwner() != targetProcess) {
         return;
     }
-
-    if (obj->getType() == KObject::KMUTEX) {
-        logprintf("Mutex destroyed");
-        KObjectService::destroy(id, obj);
-    }
+    KObjectService::destroy(id, obj);
 }
 
 bool KObjectService::destroy(intptr_t id, KObject* obj)
