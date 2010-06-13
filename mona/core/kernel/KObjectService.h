@@ -47,6 +47,13 @@ public:
         return g_id->allocateID(owner, obj);
     }
 
+    static intptr_t createTimer(KTimer** timer, Process* owner, Thread* thread, int tick)
+    {
+        KTimer* obj = new KTimer(thread, tick);
+        *timer = obj;
+        return g_id->allocateID(owner, obj);;
+    }
+
     template <typename T> static intptr_t create(Process* owner)
     {
         T* obj = new T();

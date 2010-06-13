@@ -270,13 +270,11 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
+intptr_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
-    uint32_t id;
-
-    KTimer* timer = new KTimer(thread, tick);
     Process* owner = thread->tinfo->process;
-    id = g_id->allocateID(owner, timer);
+    KTimer* timer = NULL;
+    intptr_t id = KObjectService::createTimer(&timer, owner, thread, tick);
     timers.add(timer);
     timer->setNextTimer(this->totalTick);
     return id;

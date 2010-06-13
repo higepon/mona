@@ -73,7 +73,7 @@ public:
     void WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2);
     int EventComes(Thread* thread, int eventForWait);
     int Kill(Thread* thread);
-    uint32_t SetTimer(Thread* thread, uint32_t tick);
+    intptr_t SetTimer(Thread* thread, uint32_t tick);
     intptr_t KillTimer(uint32_t id, Thread* thread);
     bool SetNextThread();
     Process* FindProcess(uint32_t pid);
