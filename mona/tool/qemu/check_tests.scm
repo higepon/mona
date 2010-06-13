@@ -72,7 +72,7 @@
       (let* ([results (string-split text #\newline)]
              [passed (filter #/test passed/ results)]
              [each-errors (filter #/MUnit:/ results)]
-             [failed (filter #/failed/ results)])
+             [failed (filter #/test failed/ results)])
         (cond
          [(and (null? each-errors) (null? failed))
           (with-color-green
