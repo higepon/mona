@@ -47,6 +47,11 @@ public:
         return g_id->allocateID(owner, obj);
     }
 
+    static intptr_t markAsShared(Process* owner, KObject* obj)
+    {
+       return g_id->allocateID(owner, obj);
+    }
+
     static intptr_t createTimer(KTimer** timer, Process* owner, Thread* thread, int tick)
     {
         KTimer* obj = new KTimer(thread, tick);

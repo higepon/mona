@@ -343,7 +343,7 @@ void syscall_entrance()
             } else {
                 KMutex* mutex = (KMutex*)object;
                 Process* owner = g_currentThread->thread->tinfo->process;
-                intptr_t id = g_id->allocateID(owner, mutex);
+                intptr_t id = KObjectService::markAsShared(owner, mutex);
                 setReturnValue(info, id);
             }
         }
