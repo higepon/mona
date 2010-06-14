@@ -350,8 +350,8 @@ enum
 #define SYSTEM_CALL_SHUTDOWN                  0x0046
 #define SYSTEM_CALL_APM_BIOS                  0x0047
 #define SYSTEM_CALL_MTHREAD_KILL              0x0048
-#define SYSTEM_CALL_RECEIVE_PACKET            0x0049
-#define SYSTEM_CALL_SEND_PACKET               0x0050
+#define SYSTEM_CALL_RECEIVE_PACKET            0x0049 /* not used */
+#define SYSTEM_CALL_SEND_PACKET               0x0050 /* not used */
 #define SYSTEM_CALL_SEMAPHORE_CREATE          0x0051
 #define SYSTEM_CALL_SEMAPHORE_DOWN            0x0052
 #define SYSTEM_CALL_SEMAPHORE_TRYDOWN         0x0053

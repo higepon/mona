@@ -1,11 +1,11 @@
+#include "io.h"
 #include "Scheduler.h"
 #include "Process.h"
-#include "global.h"
 #include "sys/error.h"
 #include "syscalls.h"
 #include "Condition.h"
 #include "KObjectService.h"
-
+#include "global.h"
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/

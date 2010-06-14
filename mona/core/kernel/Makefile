@@ -45,11 +45,9 @@ SOURCES      = cstart.cpp            \
                MemoryAllocator.cpp   \
                apm.cpp               \
                shutdown.cpp          \
-               NicFactory.cpp        \
                vsprintf.cpp          \
                gdb-adapter.cpp       \
                Uart.cpp              \
-               NE2000.cpp            \
                gdb-i386-stub.cpp     \
                KObjectService.cpp    \
                addressmap.cpp

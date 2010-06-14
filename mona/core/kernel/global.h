@@ -25,7 +25,6 @@
 #include "Scheduler.h"
 #include "Messenger.h"
 #include "apm.h"
-#include "NicFactory.h"
 
 class Uart;
 

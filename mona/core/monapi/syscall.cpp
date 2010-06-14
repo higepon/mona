@@ -1075,16 +1075,6 @@ int syscall_log_print(const char* msg)
     return syscall1(SYSTEM_CALL_LOG_PRINT, (intptr_t)msg);
 }
 
-int syscall_receive_packet(uint8_t* frame)
-{
-    return syscall1(SYSTEM_CALL_RECEIVE_PACKET, (intptr_t)frame);
-}
-
-int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid)
-{
-    return syscall4(SYSTEM_CALL_SEND_PACKET, (intptr_t)pkt, (intptr_t)mac, size, pid);
-}
-
 int syscall_set_watch_point(void* address, int flag)
 {
     return syscall2(SYSTEM_CALL_SET_WATCH_POINT, (intptr_t)address, flag);

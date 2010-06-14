@@ -32,6 +32,7 @@
 #include "KObject.h"
 #include "Mutex.h"
 #include "syscalls.h"
+#include "io.h"
 #include "Condition.h"
 
 static Process* targetProcess = NULL;

@@ -1,7 +1,7 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002-2009 Higepon
+    Copyright (c) 2002-2010 Higepon
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
@@ -84,10 +84,6 @@
 const char* version = "Mona version.0.3.0 $Date::                           $";
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
-
-mones::Nic* g_nic;
-mones::FrameNode* g_frames;
-mones::FrameNode* g_free_frames;
 
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
@@ -260,22 +256,6 @@ void startKernel()
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
     g_scheduler->Join(initThread);
-
-    g_nic = mones::NicFactory::create();
-    g_frames = new mones::FrameNode;
-    g_free_frames = new mones::FrameNode;
-    g_frames->Initialize();
-    g_free_frames->Initialize();
-    for (int i = 0; i < 48; i++)
-    {
-        g_free_frames->AddToNext(new mones::FrameNode);
-    }
-
-    if (g_nic)
-    {
-        g_nic->enableNetwork();
-    }
-
 
     disableTimer();
     disableKeyboard();
