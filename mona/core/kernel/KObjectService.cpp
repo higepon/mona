@@ -47,6 +47,7 @@ static void cleanupKObject(int id, KObject* obj)
 
 bool KObjectService::destroy(intptr_t id, KObject* obj)
 {
+    logprintf("destroyed id=%x %s %s:%d\n", id, __func__, __FILE__, __LINE__);
     // Use reference counting.
     if (g_id->returnID(id)) {
         delete obj;
@@ -59,5 +60,6 @@ bool KObjectService::destroy(intptr_t id, KObject* obj)
 void KObjectService::cleanupKObjects(Process* owner)
 {
     targetProcess = owner;
+    logprintf("cleaup start %s", owner->getName());
     g_id->foreachKObject(&cleanupKObject);
 }

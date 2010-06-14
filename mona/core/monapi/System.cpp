@@ -49,6 +49,7 @@ namespace MonAPI
         {
             return NULL;
         }
+        _logprintf("received stdouid=%x", msg.arg3);
         return msg.arg3;
     }
     uint32_t System::getProcessStdinID()
@@ -98,7 +99,7 @@ namespace MonAPI
             _logprintf("%s:%d\n", __FILE__, __LINE__);
             return outStream;
         } else {
-            _logprintf("%s:%d\n", __FILE__, __LINE__);
+            _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
             return NULL;
         }
     }

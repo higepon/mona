@@ -290,6 +290,8 @@ bool Stream::initialize(uint32_t size)
     header_->accessMutexHandle = access_->getMutex_t();
     header_->readMutexHandle = readAccess_->getMutex_t();
     header_->writeMutexHandle = writeAccess_->getMutex_t();
+
+    _logprintf("initalize accessMutexHandle=%x", header_->accessMutexHandle);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
@@ -315,6 +317,8 @@ bool Stream::initializeFromHandle(uint32_t handle)
         return false;
     }
     header_ = (StreamHeader*)address;
+    _logprintf("received mutex handle=%x", (header_->accessMutexHandle));
+    _logprintf("initalizeFromHandle accessMutexHandle=%x", header_->accessMutexHandle);
     access_ = new Mutex(&(header_->accessMutexHandle));
     if (access_->getLastError() != M_OK) {
         monapi_warn("mutex access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
