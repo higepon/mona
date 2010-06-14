@@ -1,3 +1,3 @@
 /*
- * stat.h - stub
+ * stub
  */
