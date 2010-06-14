@@ -29,7 +29,6 @@ private:
 public:
     enum
     {
-        KOBJECT,
         KMUTEX,
         USER_SEMAPHORE,
         KTIMER,
