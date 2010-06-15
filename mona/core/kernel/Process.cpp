@@ -434,6 +434,7 @@ Process::~Process()
         delete[](arguments_->get(i));
     }
 
+    ASSERT(kobjects_.size() == 0);
     delete messageList_;
     delete arguments_;
     delete threadList_;

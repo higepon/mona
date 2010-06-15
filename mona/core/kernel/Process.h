@@ -25,6 +25,7 @@
 #include "KObject.h"
 #include "Thread.h"
 #include "MemoryAllocator.h"
+#include "Pair.h"
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -221,6 +222,16 @@ private:
         return this->lallocator->Allocate(size);
     }
 
+    inline void addKObject(intptr_t id, KObject* obj)
+    {
+        kobjects_.add(Pair<intptr_t, KObject*>(id, obj));
+    }
+
+    inline void removeKObject(intptr_t id, KObject* obj)
+    {
+        kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
+    }
+
     static const LinearAddress STACK_START = 0xF0000000;
     static const uint32_t STACK_SIZE          = 0x400000;
 
@@ -236,6 +247,7 @@ private:
     class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
+    HList< Pair<intptr_t, KObject*> > kobjects_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];
