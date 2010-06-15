@@ -72,8 +72,6 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 void invokeFuncList(FuncVoid** list, const char* file, int line)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
-//    _logprintf("%s:[%s:%s:%d]address=%x\n", __func__, pi.name, file, line, list);
-//    _logprintf("%s:outStream=%x, &outStream=%x, inStream=%x &inStream=%x\n", __func__, outStream, &outStream, inStream, &inStream);
     int count = (int)*list++;
     list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
     if (count == -1)
@@ -161,18 +159,13 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[3] = 'P';
     eop[4] = '\0';
 
-    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
     outStream = MonAPI::System::getStdoutStream();
-    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
     if (outStream) {
-    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
         outStream->write((uint8_t*)eop, 5);
     }
-    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
     for (int i = 1; i < argc; i++) {
         delete [] argv[i];
     }
-    _logprintf("%s:%d %s\n", __FILE__, __LINE__, MonAPI::System::getProcessInfo()->name);
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 //    exit(result);

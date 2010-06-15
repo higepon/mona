@@ -335,13 +335,10 @@ void syscall_entrance()
             ASSERT(mutexid > 0);
             setReturnValue(info, mutexid);
         } else {
-            logprintf("syscall fetch %x", SYSTEM_CALL_ARG_1);
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
             if (object == NULL) {
-            logprintf("syscall fetch %x NG", SYSTEM_CALL_ARG_1);
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
-            logprintf("syscall fetch %x OK", SYSTEM_CALL_ARG_1);
                 KMutex* mutex = (KMutex*)object;
                 Process* owner = g_currentThread->thread->tinfo->process;
                 intptr_t id = KObjectService::markAsShared(owner, mutex);

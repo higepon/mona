@@ -287,7 +287,6 @@ PROCEDURE(CallProcess, "call-process")
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
-    logprintf("scheme handle=%x", g_terminal->getScreenHandle());
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, g_terminal->getScreenHandle(), g_terminal->getScreenHandle());
     if (result != 0)
     {

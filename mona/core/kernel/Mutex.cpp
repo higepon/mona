@@ -28,9 +28,9 @@ KMutex::KMutex() : refcount_(1), owner_(NULL)
 
 KMutex::~KMutex()
 {
-    logprintf("deleted");
     if (waitList_->size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
+        ASSERT(false);
     }
     delete waitList_;
 }

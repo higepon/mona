@@ -49,7 +49,6 @@ namespace MonAPI
         {
             return NULL;
         }
-        _logprintf("received stdouid=%x", msg.arg3);
         return msg.arg3;
     }
     uint32_t System::getProcessStdinID()
@@ -76,7 +75,6 @@ namespace MonAPI
     {
         if (NULL != inStream) return inStream;
         uint32_t handle = System::getProcessStdinID();
-        _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
         inStream = Stream::FromHandle(handle);
         return inStream;
     }
@@ -92,14 +90,10 @@ namespace MonAPI
         }
 
         if (outStream == NULL) {
-            _logprintf("%s:%d\n", __FILE__, __LINE__);
-
             return NULL;
         } else if (outStream->getLastError() == M_OK) {
-            _logprintf("%s:%d\n", __FILE__, __LINE__);
             return outStream;
         } else {
-            _logprintf("%s:%d %s\n", __FILE__, __LINE__, System::getProcessInfo()->name);
             return NULL;
         }
     }

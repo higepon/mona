@@ -68,7 +68,6 @@ void testCondition()
 {
     int beforeCount = syscall_condition_count();
     ASSERT_EQ(M_OK, syscall_condition_create(&condition));
-    logprintf("before count=%d", beforeCount);
     EXPECT_EQ(beforeCount + 1, syscall_condition_count());
 
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
