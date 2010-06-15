@@ -35,23 +35,17 @@
 #include "io.h"
 #include "Condition.h"
 
-static Process* targetProcess = NULL;
-
-static void cleanupKObject(int id, KObject* obj)
-{
-    if (obj->getOwner() != targetProcess) {
-        return;
-    }
-    KObjectService::destroy(id, obj);
-}
-
 bool KObjectService::destroy(intptr_t id, KObject* obj)
 {
     if (obj->getOwner() != NULL) {
         obj->getOwner()->removeKObject(id, obj);
     }
-//    logprintf("destroyed id=%x %s %s:%d\n", id, __func__, __FILE__, __LINE__);
-    // Use reference counting.
+    // try delete by reference counting.
+    return tryDelete(id, obj);
+}
+
+bool KObjectService::tryDelete(intptr_t id, KObject* obj)
+{
     if (g_id->returnID(id)) {
         delete obj;
         return true;
@@ -62,7 +56,12 @@ bool KObjectService::destroy(intptr_t id, KObject* obj)
 
 void KObjectService::cleanupKObjects(Process* owner)
 {
-    targetProcess = owner;
-    logprintf("cleaup start %s", owner->getName());
-    g_id->foreachKObject(&cleanupKObject);
+    HList< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
+    int size = kobjects->size();
+    for (int i = 0; i < size; i++) {
+        Pair<intptr_t, KObject*> p;
+        bool isDeleted = kobjects->removeAt(0, &p);
+        ASSERT(isDeleted);
+        KObjectService::tryDelete(p.car, p.cdr);
+    }
 }

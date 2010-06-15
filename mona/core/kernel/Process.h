@@ -26,7 +26,6 @@
 #include "Thread.h"
 #include "MemoryAllocator.h"
 #include "Pair.h"
-
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
@@ -230,6 +229,11 @@ private:
     inline void removeKObject(intptr_t id, KObject* obj)
     {
         kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
+    }
+
+    inline HList< Pair<intptr_t, KObject*> >* getKObjects()
+    {
+        return &kobjects_;
     }
 
     static const LinearAddress STACK_START = 0xF0000000;
