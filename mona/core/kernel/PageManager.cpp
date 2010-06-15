@@ -13,13 +13,13 @@
 */
 
 #include <sys/types.h>
+#include "global.h"
 #include "PageManager.h"
 #include "string.h"
 #include "operator.h"
 #include "Segments.h"
 #include "Uart.h"
 #include "ihandlers.h"
-#include "global.h"
 
 
 /* independent from architecture */

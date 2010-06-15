@@ -11,8 +11,8 @@
   \date   create:2003/10/19 update:$Date$
 */
 
-#include <sys/HList.h>
 #include "global.h"
+#include <sys/HList.h>
 #include "Segments.h"
 
 /* Segment Faults */

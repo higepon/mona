@@ -24,45 +24,26 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: KObjectService.cpp 183 2008-07-04 06:19:28Z higepon $
  */
 
-#include "global.h"
-#include "KObjectService.h"
-#include "KObject.h"
-#include "Mutex.h"
-#include "syscalls.h"
-#include "io.h"
-#include "Condition.h"
+#ifndef MONA_PAIR_
+#define MONA_PAIR_
 
-static Process* targetProcess = NULL;
-
-static void cleanupKObject(int id, KObject* obj)
+template <class Car, class Cdr>
+class Pair
 {
-    if (obj->getOwner() != targetProcess) {
-        return;
-    }
-    KObjectService::destroy(id, obj);
+public:
+    Pair() {}
+    Pair(Car car, Cdr cdr) : car(car), cdr(cdr) {}
+
+    Car car;
+    Cdr cdr;
+};
+
+template <class Car, class Cdr>
+bool operator==(const Pair<Car, Cdr>& x, const Pair<Car, Cdr>& y)
+{
+    return x.car == y.car && x.cdr == y.cdr;
 }
 
-bool KObjectService::destroy(intptr_t id, KObject* obj)
-{
-    if (obj->getOwner() != NULL) {
-        obj->getOwner()->removeKObject(id, obj);
-    }
-//    logprintf("destroyed id=%x %s %s:%d\n", id, __func__, __FILE__, __LINE__);
-    // Use reference counting.
-    if (g_id->returnID(id)) {
-        delete obj;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-void KObjectService::cleanupKObjects(Process* owner)
-{
-    targetProcess = owner;
-    logprintf("cleaup start %s", owner->getName());
-    g_id->foreachKObject(&cleanupKObject);
-}
+#endif // MONA_PAIR_

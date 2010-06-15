@@ -44,25 +44,35 @@ public:
     static intptr_t createUserSemaphore(Process* owner, int num)
     {
         UserSemaphore* obj = new UserSemaphore(num);
-        return g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(owner, obj);
+        owner->addKObject(id, obj);
+        return id;
     }
 
     static intptr_t markAsShared(Process* owner, KObject* obj)
     {
-       return g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(owner, obj);
+        owner->addKObject(id, obj);
+        return id;
     }
 
     static intptr_t createTimer(KTimer** timer, Process* owner, Thread* thread, int tick)
     {
         KTimer* obj = new KTimer(thread, tick);
         *timer = obj;
-        return g_id->allocateID(owner, obj);;
+        intptr_t id = g_id->allocateID(owner, obj);
+        owner->addKObject(id, obj);
+        return id;
     }
 
     template <typename T> static intptr_t create(Process* owner)
     {
         T* obj = new T();
-        return g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(owner, obj);
+        if (owner != NULL) {
+            owner->addKObject(id, obj);
+        }
+        return id;
     }
 
     // A mutex which has null owner will never deleted.

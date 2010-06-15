@@ -11,6 +11,7 @@
     \date   create:2007/09/27 update:$Date
 */
 
+#include "global.h"
 #include <sys/HList.h>
 #include "UserSemaphore.h"
 #include "io.h"
@@ -87,7 +88,10 @@ intptr_t UserSemaphore::up()
     } else {
         // We first sem_++ because of up(), and next sem_-- because next thread will down().
         // So we don't modify sem_
-        g_scheduler->EventComes(waitList_->removeAt(0), MEvent::SEMAPHORE_UPPED);
+        Thread* thread = NULL;
+        bool isRemoved = waitList_->removeAt(0, &thread);
+        ASSERT(isRemoved);
+        g_scheduler->EventComes(thread, MEvent::SEMAPHORE_UPPED);
         return Scheduler::YIELD;
     }
 

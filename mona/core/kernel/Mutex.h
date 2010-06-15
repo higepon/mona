@@ -32,8 +32,7 @@ class KMutex : public KObject {
     intptr_t unlock();
     bool removeFromWaitList(Thread* thread)
     {
-        Thread* removedThread = waitList_->remove(thread);
-        return thread == removedThread;
+        return waitList_->remove(thread);
     }
 
     inline bool isLocked() const

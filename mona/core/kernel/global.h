@@ -15,17 +15,16 @@
 #include "Semaphore.h"
 #include "GDTUtil.h"
 #include "IDTUtil.h"
-#include "Process.h"
 #include "string.h"
-#include "PageManager.h"
 #include "MemoryManager.h"
-#include "Segments.h"
 #include "vbe.h"
 #include "IDManager.h"
 #include "Scheduler.h"
 #include "Messenger.h"
 #include "apm.h"
-
+#include "Process.h"
+#include "PageManager.h"
+#include "Segments.h"
 class Uart;
 
 GLOBAL uint64_t g_epoch_nanosec GLOBAL_VAL(0);  // nanoseconds from 1970/1/1 00:00:00(GMT)
@@ -54,7 +53,6 @@ GLOBAL PageManager* g_page_manager;
 
 GLOBAL MemoryManager km; /* Kernel Memory Management */
 
-GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 
 GLOBAL ThreadInfo* g_currentThread GLOBAL_VAL(NULL);
 GLOBAL ThreadInfo* g_prevThread;
@@ -82,7 +80,7 @@ GLOBAL APMInfo *g_apmInfo;
 GLOBAL Uart* g_com2;
 
 GLOBAL bool g_isRemoteDebug   GLOBAL_VAL(false);
-
+GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 #ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;
 #endif

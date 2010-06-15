@@ -11,6 +11,7 @@
     \date   create:2004/01/12 update:$Date$
 */
 
+#include "global.h"
 #include <sys/HList.h>
 #include <sys/error.h>
 #include "Mutex.h"
@@ -94,7 +95,8 @@ intptr_t KMutex::unlock()
     if (waitList_ ->size() == 0) {
         owner_ = NULL;
     } else {
-        owner_ = waitList_->removeAt(0);
+        bool isRemoved = waitList_->removeAt(0, &owner_);
+        ASSERT(isRemoved);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         return Scheduler::YIELD;
     }

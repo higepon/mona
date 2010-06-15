@@ -11,10 +11,10 @@
     \date   create:2003/06/27 update:$Date$
 */
 
+#include "global.h"
 #include <sys/List.h>
 #include <sys/HList.h>
 #include <servers/process.h>
-#include "global.h"
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"

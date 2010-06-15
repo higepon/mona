@@ -132,7 +132,8 @@ void Scheduler::WakeupTimer()
         timer->setNextTimer(this->totalTick);
 
         if (g_messenger->send(thread, &msg)) {
-            timers.removeAt(i);
+            KTimer* timer;
+            timers.removeAt(i, &timer);
             g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
         }
     }

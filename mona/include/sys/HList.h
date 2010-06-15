@@ -19,8 +19,8 @@ template <class T> class HList : public List<T> {
     void add(T element);
     T get(int index) const;
     T operator[](int index);
-    T removeAt(int index);
-    T remove(T element);
+    bool removeAt(int index, T* found = NULL);
+    bool remove(T element);
     int size() const;
     virtual bool isEmpty() const;
     bool hasElement(T element) const;
@@ -160,9 +160,7 @@ template <class T> void HList<T>::add(T element) {
 template <class T> T HList<T>::get(int index) const {
 
     /* check range */
-    if (index < 0 || index >=numElements_) {
-        return (T)NULL;
-    }
+    ASSERT(0 <= index  && index < numElements_);
     return data_[index];
 }
 
@@ -205,13 +203,13 @@ template <class T> int HList<T>::size() const {
     \author Higepon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::removeAt(int index) {
+template <class T> bool HList<T>::removeAt(int index, T* found) {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
 
         /* do nothing */
-        return (T)NULL;
+        return false;
     }
 
     /* save element to remove */
@@ -223,7 +221,10 @@ template <class T> T HList<T>::removeAt(int index) {
         data_[i] = data_[i + 1];
     }
     numElements_--;
-    return toRemove;
+    if (found != NULL) {
+        *found = toRemove;
+    }
+    return true;
 }
 
 /*!
@@ -236,7 +237,7 @@ template <class T> T HList<T>::removeAt(int index) {
     \author Higepon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::remove(T element) {
+template <class T> bool HList<T>::remove(T element) {
 
     /* optimize */
     int size = this->size();
@@ -245,11 +246,12 @@ template <class T> T HList<T>::remove(T element) {
 
         /* element to remove found */
         if (data_[i] == element) {
-            return (removeAt(i));
+            removeAt(i);
+            return true;
         }
     }
 
-    return (T)NULL;
+    return false;
 }
 
 /*!

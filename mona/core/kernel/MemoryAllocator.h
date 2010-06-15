@@ -1,3 +1,6 @@
+#ifndef _MONA_MEMORY_ALLOCATOR_
+#define _MONA_MEMORY_ALLOCATOR_
+
 #include <sys/types.h>
 #include "PageManager.h"
 
@@ -23,3 +26,5 @@ public:
 protected:
     mspace base;
 };
+
+#endif
