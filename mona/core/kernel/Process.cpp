@@ -51,7 +51,7 @@ bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
 
     address = process->AllocateLinearAddress(size);
     if (address == NULL) {
-	return false;
+        return false;
     }
     id++;
     bool isOpen = SharedMemoryObject::open(id, size);

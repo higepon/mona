@@ -218,40 +218,33 @@ void startKernel()
     {
         apm_init();
     }
-    dumpAddressMap();
 
+    dumpAddressMap();
 
     /* shared memory object */
     SharedMemoryObject::setup();
-
     /* IDManager */
     g_id = new IDManager();
-
     /* This mutex has no owner, so will never deleted */
     g_mutexShared = KObjectService::createNullOwner<KMutex>();
-
     /* Paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
-
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
     Thread* dummy2 = new Thread();
     g_prevThread    = dummy1->tinfo;
     g_currentThread = dummy2->tinfo;
-
     /* this should be called, before timer enabled */
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
 
     /* messenger */
     g_messenger = new Messenger(g_scheduler);
-
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle);
     g_scheduler->Join(g_idleThread, ThreadPriority::Min);
-
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
@@ -276,8 +269,6 @@ void startKernel()
     g_console->printf("%s:%d\n", __FILE__, __LINE__);
 */
     enableTimer();
-    g_console->printf("%s:%d", __FILE__, __LINE__);
-
 #ifdef HIGE
 
 #endif
