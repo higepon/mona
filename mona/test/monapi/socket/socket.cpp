@@ -199,7 +199,7 @@ static void testEcho()
 
 static void testOpenManyTimes()
 {
-    for(int i = 0; i < 200; i++)
+    for(int i = 0; i < 100; i++)
     {
         struct addrinfo hints;
         struct addrinfo* res;
@@ -209,7 +209,7 @@ static void testOpenManyTimes()
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_family = AF_INET;
 
-        EXPECT_EQ(0, getaddrinfo("api.twitter.com", "80", &hints, &res));
+        EXPECT_EQ(0, getaddrinfo("yahoo.co.jp", "80", &hints, &res));
 
         for (rp = res; rp != NULL; rp = rp->ai_next) {
             int sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
