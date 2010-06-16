@@ -15,7 +15,7 @@ BOEHM_GC_CFLAGS = -DPACKAGE_NAME=\"gc\"    \
 -UMSWIN32                                  
 
 #BOEHM_GC_DIR  = ./BoehmGC/gc-7.0
-BOEHM_GC_DIR  = ../../mona/core/scheme/BoehmGC/gc-7.0
+BOEHM_GC_DIR  = ../../../mona/core/scheme/BoehmGC/gc-7.0
 GC_CFLAGS     = $(BOEHM_GC_CFLAGS) -DMONASH_DONT_FREE_MEMORY -I $(BOEHM_GC_DIR)/include -DUSE_BOEHM_GC -DGC_OPERATOR_NEW_ARRAY -DGC_NOT_DLL #-DMONA_GC_DEBUG
 
 
