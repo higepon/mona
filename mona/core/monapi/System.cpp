@@ -14,9 +14,13 @@ namespace MonAPI
     {
         uint32_t tid = getThreadID();
         syscall_set_ps_dump();
-        while (syscall_read_ps_dump(&psInfo) == 0)
+        PsInfo buf;
+        while (syscall_read_ps_dump(&buf) == M_OK)
         {
-            if (psInfo.tid == tid) break;
+            if (buf.tid == tid) {
+                // Don't break here, which causes kernel memory leak.
+                psInfo = buf;
+            }
         }
         return &psInfo;
     }
