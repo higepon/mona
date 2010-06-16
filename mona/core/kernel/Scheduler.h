@@ -73,8 +73,8 @@ public:
     void WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2);
     int EventComes(Thread* thread, int eventForWait);
     int Kill(Thread* thread);
-    uint32_t SetTimer(Thread* thread, uint32_t tick);
-    uint32_t KillTimer(uint32_t id, Thread* thread);
+    intptr_t SetTimer(Thread* thread, uint32_t tick);
+    intptr_t KillTimer(uint32_t id, Thread* thread);
     bool SetNextThread();
     Process* FindProcess(uint32_t pid);
     Process* FindProcess(const char* name);
@@ -84,6 +84,8 @@ public:
     uint32_t Lookup(const char* name);
     PsInfo* ReadDump();
     Thread** GetAllThread(uint32_t* threadNum);
+
+    void ReserveStackDump(uint32_t tid) { reservedTid_ = tid; }
 
 protected:
     void WakeupTimer();
@@ -112,6 +114,8 @@ protected:
     HList<KTimer*> timers;
     uint32_t maxPriority;
     uint32_t totalTick;
+private:
+    uint32_t reservedTid_;
 };
 
 #endif

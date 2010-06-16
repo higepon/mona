@@ -1,8 +1,21 @@
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 ;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
 ;; (define (mona-gui-get-window-title w) w)
 ;; (define (mona-gui-move-window w x y) w)
+
+(define (on-gui-start)
+;  (as)
+;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
+;  (start-process "/APPS/NET.EX5")
+;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
+;  (start-process "/APPS/BAYGUI/MINE.EX5")
+;  (start-process "/APPS/BAYGUI/GNOTE.EX5")
+;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
+;(start-process "/APPS/W3M/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
+  (start-process "/APPS/W3M/W3M.APP/W3M.EX5 -a -d")
+;  (display "uIP httpd started:\n  Try access http://localhost:8080/ from HOST OS")
+)
 
 ;; prompt string
 (define (mona-prompt-string)
@@ -266,6 +279,22 @@
           (else #f))
     (loop (+ 1 i))))
 
+(define (recv name)
+  (call-process (string-append "/APPS/FRECV.EX5 " name)))
+
+(define (recvrun name)
+  (call-process (string-append "/APPS/FRECV.EX5 " name))
+  (call-process (string-append "/MEM/" name)))
+
+(define (tlisten)
+  (recvrun "TEST.EX5")
+  (tlisten))
+
+(define (testmap)
+  (recv "TEST.MAP")
+  (recvrun "TEST.EX5"))
+
+
 (define (asA)
   (start-process "/APPS/AUDIO.EX5"))
 
@@ -333,10 +362,9 @@
 (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5")
 (call-process "/APPS/TMSG.EX5")
 (call-process "/APPS/TSOCK.EX5")
+(call-process "/APPS/TRAMDISK.EX5")
 (call-process "/APPS/TDIE.EX5")
 (call-process "/APPS/HELLO.EX5")
-(call-process "/APPS/TRAMDISK.EX5")
-;(call-process "/APPS/HELLO.EX5")
 ;(start-process "/APPS/NET.EX5")
 
 (print "all tests done") ;; this is required by check_tests.scm

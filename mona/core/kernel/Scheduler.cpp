@@ -1,14 +1,15 @@
+#include "io.h"
 #include "Scheduler.h"
 #include "Process.h"
-#include "global.h"
 #include "sys/error.h"
 #include "syscalls.h"
 #include "Condition.h"
-
+#include "KObjectService.h"
+#include "global.h"
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
-Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0)
+Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0), reservedTid_(0)
 {
     for (int i = 0; i < runq.GetLength(); i++)
     {
@@ -121,7 +122,7 @@ void Scheduler::WakeupTimer()
 
         if (!timer->timer(this->totalTick)) continue;
 
-        Thread* thread = timer->getThread();
+        Thread* thread = timer->getOwnerThread();
 
         MessageInfo msg;
         memset(&msg, 0, sizeof(MessageInfo));
@@ -131,7 +132,8 @@ void Scheduler::WakeupTimer()
         timer->setNextTimer(this->totalTick);
 
         if (g_messenger->send(thread, &msg)) {
-            timers.removeAt(i);
+            KTimer* timer;
+            timers.removeAt(i, &timer);
             g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
         }
     }
@@ -194,8 +196,20 @@ bool Scheduler::WakeupSleep(Thread* thread)
     return true;
 }
 
+
 bool Scheduler::SetNextThread()
 {
+    if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+        static intptr_t mutex = KObjectService::create<KMutex>(g_currentThread->thread->tinfo->process);
+        systemcall_mutex_lock(mutex);
+        if(reservedTid_ != 0 && reservedTid_ == g_currentThread->thread->id) {
+            reservedTid_ = 0;
+            g_page_manager->showCurrentStackTrace();
+        }
+        systemcall_mutex_unlock(mutex);
+    }
+
+
     Thread* root = NULL;
 
     FOREACH(Thread*, queue, runq)
@@ -257,33 +271,28 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-uint32_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
+intptr_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
-    uint32_t id;
-
-    KTimer* timer = new KTimer(thread, tick);
-    id = g_id->allocateID(timer);
-
+    Process* owner = thread->tinfo->process;
+    KTimer* timer = NULL;
+    intptr_t id = KObjectService::createTimer(&timer, owner, thread, tick);
     timers.add(timer);
     timer->setNextTimer(this->totalTick);
-
     return id;
 }
 
-uint32_t Scheduler::KillTimer(uint32_t id, Thread* thread)
+intptr_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 {
-    KObject* object = g_id->get(id, thread, KObject::KTIMER);
+    KObject* object = g_id->get(id, KObject::KTIMER);
 
-    if (object == NULL)
-    {
-        return 1;
+    if (object == NULL) {
+        return M_BAD_TIMER_ID;
     }
 
     KTimer* timer = (KTimer*)object;
-    g_id->returnID(id);
     timers.remove(timer);
-    delete timer;
-    return 0;
+    KObjectService::destroy(id, object);
+    return M_OK;
 }
 
 void Scheduler::Sleep(Thread* thread, uint32_t tick)

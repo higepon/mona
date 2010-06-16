@@ -12,7 +12,7 @@ using namespace MonAPI;
 
 static bool fileExist(const char* path)
 {
-    uint32_t id = monapi_file_open("/MEM/TESTFILE", false);
+    uint32_t id = monapi_file_open(path, false);
     if(id == 0)
       return false;
     monapi_file_close(id);
@@ -97,7 +97,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
 #define MAXDATA 20
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
     monapi_cmemoryinfo_create(buffer, MAXDATA, 0);
-    int res;
+    int res = MONA_FAILURE;
     while(size > 0) {
         int copySize = size > MAXDATA ? MAXDATA : size;
         memcpy(buffer->Data, contents, copySize);
@@ -390,6 +390,118 @@ static void testReadDirectory_Root()
     monapi_cmemoryinfo_delete(ci);
 }
 
+static void testFprintf()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    fprintf(fp, "Hello, %s", "World!");
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    const char* expected = "Hello, World!";
+    // Be sure, \0 is not written
+    EXPECT_EQ((int)strlen(expected), cmi->Size);
+    EXPECT_EQ(0, memcmp(expected, cmi->Data, cmi->Size));
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+}
+
+static void testFwrite()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Hello,\nWorld";
+    const int len = strlen(data) + 1;
+    for (int i = 0; i < len; i++) {
+        fwrite(data + i, 1, 1, fp);
+    }
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+}
+
+static void testFwrite2()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Hello,\nWorld";
+    const int len = strlen(data) + 1;
+    fwrite(data, 1, len, fp);
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+}
+
+static void testFwrite_Overwrite()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    FILE* fp = fopen(tmpFile, "w");
+    ASSERT_TRUE(fp != NULL);
+    const char* data = "Tokyo, Japan";
+    const int len = strlen(data) + 1;
+    for (int i = 0; i < len; i++) {
+        fwrite(data + i, 1, 1, fp);
+    }
+    fclose(fp);
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+    monapi_file_delete(tmpFile);
+}
+
+static void testFwrite_Overwrite2()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    {
+        FILE* fp = fopen(tmpFile, "w");
+        ASSERT_TRUE(fp != NULL);
+        const char* data = "Hello\n    \n    \n    ";
+        const int len = strlen(data) + 1;
+        fwrite(data, 1, len, fp);
+        fclose(fp);
+    }
+
+    {
+        FILE* fp = fopen(tmpFile, "w");
+        ASSERT_TRUE(fp != NULL);
+        fwrite("Hello", 1, 5, fp);
+        fprintf(fp, "\n");
+        fwrite("    ", 1, 4, fp);
+        fprintf(fp, "\n");
+        fwrite("World     ", 1, 10, fp);
+        fprintf(fp, "\n");
+        fwrite("", 1, 1, fp); // NULL terminate
+        fclose(fp);
+    }
+    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
+    ASSERT_TRUE(cmi != NULL);
+
+    EXPECT_TRUE(memcmp("Hello\n    \nWorld     \n", cmi->Data, cmi->Size) == 0);
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+    monapi_file_delete(tmpFile);
+}
+
 int main(int argc, char *argv[])
 {
     testOpenNonExistingFile();
@@ -400,12 +512,20 @@ int main(int argc, char *argv[])
     testWriteFile_Content();
     testWriteTwice();
     testWriteTwice_CreateTrue();
+    testWriteTwice_Size();
     testWriteLargeFile();
 
     testReadDirectory_Empty();
     testReadDirectory_OneFile();
     testReadDirectory_TwoFile();
     testReadDirectory_Root();
+
+    // We use ram_disk for testing fprintf
+    testFprintf();
+    testFwrite();
+    testFwrite_Overwrite();
+    testFwrite2();
+    testFwrite_Overwrite2();
 
     TEST_RESULTS(ram_disk);
     return 0;

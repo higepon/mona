@@ -6,7 +6,7 @@ endif
 all:
 ### basic libraries
 ### servers
-	cd Net/uip && $(MAKE) && $(MAKE) install
+#mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install

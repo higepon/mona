@@ -11,14 +11,15 @@
     \date   create:2003/06/27 update:$Date$
 */
 
+#include "global.h"
 #include <sys/List.h>
 #include <sys/HList.h>
 #include <servers/process.h>
-#include "global.h"
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"
 #include "BitMap.h"
+#include "KObjectService.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -50,7 +51,7 @@ bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
 
     address = process->AllocateLinearAddress(size);
     if (address == NULL) {
-	return false;
+        return false;
     }
     id++;
     bool isOpen = SharedMemoryObject::open(id, size);
@@ -300,6 +301,7 @@ intptr_t ThreadOperation::kill()
 
     if (process->threadNum < 1)
     {
+        KObjectService::cleanupKObjects(process);
         PageEntry* directory = process->getPageDirectory();
         delete process;
         g_page_manager->returnPhysicalPages(directory);
@@ -432,6 +434,7 @@ Process::~Process()
         delete[](arguments_->get(i));
     }
 
+    ASSERT(kobjects_.size() == 0);
     delete messageList_;
     delete arguments_;
     delete threadList_;
@@ -472,19 +475,6 @@ KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(n
 }
 
 KernelProcess::~KernelProcess()
-{
-}
-
-/*----------------------------------------------------------------------
-    V86Process
-----------------------------------------------------------------------*/
-V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, directory)
-{
-    /* kernel mode */
-    isUserMode_ = true;
-}
-
-V86Process::~V86Process()
 {
 }
 

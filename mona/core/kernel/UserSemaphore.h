@@ -30,8 +30,8 @@ class UserSemaphore : public KObject {
     intptr_t down(Thread* thread);
     intptr_t tryDown(Thread* thread);
     intptr_t up();
-    void addRef();
-    void releaseRef();
+//     void addRef();
+//     void releaseRef();
 
     inline bool canDown() const {
         return sem_ > 0;
@@ -41,8 +41,6 @@ class UserSemaphore : public KObject {
     {
         return USER_SEMAPHORE;
     }
-
-    intptr_t checkSecurity(Thread* thread);
 
   private:
     int refcount_;

@@ -8,7 +8,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
 	  math/sinh.c math/round.c math/nearbyint.c \
 	  math/sqrt.c math/tan.c math/tanh.c stdio/fclose.c stdio/fileno.c \
-	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c \
+	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c stdio/fprintf.c \
 	  stdio/fseek.c stdio/rewind.c stdio/feof.c stdio/ferror.c \
 	  stdio/fflush.c stdio/clearerr.c stdio/sprintf.c \
 	  stdio/fgetc.c stdio/fgets.c stdio/fscanf.c  stdio/fputc.c \

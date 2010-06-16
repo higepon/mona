@@ -146,7 +146,7 @@ void	 setbuf(FILE *, char *);
 int	 setvbuf(FILE *, char *, int, size_t);
 
 /* ISO/IEC 9899:1999 7.19.6 Formatted input/output functions*/
-/*int	 fprintf(FILE *, const char *, ...); //stub */
+int	 fprintf(FILE *, const char *, ...);
 int fscanf(FILE *fp, const char *format, ...);
 int	 printf(const char *, ...); //stub
 /*int	 scanf(const char *, ...); //stub */
@@ -200,9 +200,7 @@ void	 perror(const char *);
 /* Not ANSI */
 int	 fileno(FILE *);
 
-
 /* #define perror(err) printf(err) */
-#define fprintf(n, ...) printf(__VA_ARGS__)
 
 #ifdef __cplusplus
 }

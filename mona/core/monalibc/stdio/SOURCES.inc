@@ -11,3 +11,4 @@ feof.c \
 ferror.c \
 fflush.c \
 clearerr.c \
+fprintf.c \

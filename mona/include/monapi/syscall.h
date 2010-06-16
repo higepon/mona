@@ -10,6 +10,8 @@ typedef int (FuncMain)(int argc, char* argv[]);
 #include <sys/List.h>
 
 
+
+
 typedef int (FuncMonaMain)(List<char*>*);
 
 extern void invokeFuncList(FuncVoid** list, const char* file, int line);
@@ -45,12 +47,14 @@ extern int syscall_mthread_create(void (*f)(void));
 extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
 extern int syscall_mthread_kill(uint32_t id);
 extern uintptr_t syscall_mthread_self();
+extern intptr_t syscall_condition_count();
 extern intptr_t syscall_condition_create(cond_t* cond);
 extern intptr_t syscall_condition_destroy(cond_t* cond);
 extern intptr_t syscall_condition_notify_all(cond_t* cond);
 extern intptr_t syscall_condition_wait(cond_t* cond, mutex_t* mutex);
 extern intptr_t syscall_condition_wait_timeout(cond_t* cond, mutex_t* mutex, intptr_t timeoutMsec);
 extern intptr_t syscall_mutex_create(mutex_t* mutex);
+extern intptr_t syscall_mutex_count();
 extern intptr_t syscall_mutex_fetch(mutex_t* dest, mutex_t* mutex);
 extern intptr_t syscall_mutex_try_lock(mutex_t* mutex);
 extern intptr_t syscall_mutex_lock(mutex_t*);
@@ -109,10 +113,13 @@ extern int syscall_set_dll_segment_writable();
 extern int syscall_set_dll_segment_notshared(int index);
 
 extern int syscall_shutdown(int op, int device);
-extern int syscall_receive_packet(uint8_t* frame);
-extern int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid);
 extern int syscall_set_watch_point(void* address, int flag);
 extern int syscall_remove_watch_point();
+
+extern int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path);
+extern void syscall_stack_trace_disable(uint32_t pid);
+extern void syscall_stack_trace_dump(uint32_t tid);
+
 
 
 extern int syscall_allocate_contiguous(uint32_t laddress, int pageNum);

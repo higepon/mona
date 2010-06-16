@@ -11,10 +11,12 @@ public:
     virtual ~IDManager();
 
 public:
-    KObject* get(int objectID, Thread* who, int type);
-    void returnID(int id);
-    intptr_t allocateID(KObject* object);
+    KObject* get(int objectID, int type);
+    bool returnID(int id);
+    intptr_t allocateID(Process* owner, KObject* object);
     int getLastError() const;
+    intptr_t getCount(int type);
+    void foreachKObject(void (*func)(int id, KObject* object));
 
 private:
     BinaryTree<KObject*> tree;

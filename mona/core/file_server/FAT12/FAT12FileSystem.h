@@ -24,6 +24,7 @@ public:
     virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
     virtual int close(Vnode* file);
+    virtual int delete_file(Vnode* file) { return MONA_FAILURE; }
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);

@@ -25,7 +25,7 @@
 #include "KObject.h"
 #include "Thread.h"
 #include "MemoryAllocator.h"
-
+#include "Pair.h"
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
@@ -138,8 +138,9 @@ class ThreadOperation
 ----------------------------------------------------------------------*/
 class Process
 {
-  public:
+private:
     Process() {}
+  public:
     Process(const char* name, PageEntry* directory);
     virtual ~Process();
 
@@ -220,6 +221,21 @@ class Process
         return this->lallocator->Allocate(size);
     }
 
+    inline void addKObject(intptr_t id, KObject* obj)
+    {
+        kobjects_.add(Pair<intptr_t, KObject*>(id, obj));
+    }
+
+    inline void removeKObject(intptr_t id, KObject* obj)
+    {
+        kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
+    }
+
+    inline HList< Pair<intptr_t, KObject*> >* getKObjects()
+    {
+        return &kobjects_;
+    }
+
     static const LinearAddress STACK_START = 0xF0000000;
     static const uint32_t STACK_SIZE          = 0x400000;
 
@@ -235,6 +251,7 @@ class Process
     class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
+    HList< Pair<intptr_t, KObject*> > kobjects_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];
@@ -246,8 +263,9 @@ class Process
 ----------------------------------------------------------------------*/
 class UserProcess : public Process
 {
-  public:
+private:
     UserProcess();
+public:
     UserProcess(const char* name, PageEntry* directory);
     virtual ~UserProcess();
 };
@@ -257,21 +275,11 @@ class UserProcess : public Process
 ----------------------------------------------------------------------*/
 class KernelProcess : public Process
 {
-  public:
+private:
     KernelProcess();
+public:
     KernelProcess(const char* name, PageEntry* directory);
     virtual ~KernelProcess();
-};
-
-/*----------------------------------------------------------------------
-    V86Process
-----------------------------------------------------------------------*/
-class V86Process : public Process
-{
-  public:
-    V86Process();
-    V86Process(const char* name, PageEntry* directory);
-    virtual ~V86Process();
 };
 
 #endif

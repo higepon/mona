@@ -11,8 +11,8 @@
   \date   create:2003/10/19 update:$Date$
 */
 
-#include <sys/HList.h>
 #include "global.h"
+#include <sys/HList.h>
 #include "Segments.h"
 
 /* Segment Faults */
@@ -347,7 +347,6 @@ SharedMemoryObject::~SharedMemoryObject()
 void SharedMemoryObject::setup()
 {
     g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
-
     SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
     g_dllSharedObject = SharedMemoryObject::find(0x7000);
 ;}
@@ -363,7 +362,6 @@ void SharedMemoryObject::setup()
 SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 {
     SharedMemoryObject* current;
-
     for (int i = 0; i < g_sharedMemoryObjectList->size(); i++)
     {
         current = g_sharedMemoryObjectList->get(i);
@@ -390,9 +388,7 @@ SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 bool SharedMemoryObject::open(uint32_t id, uint32_t size)
 {
     SharedMemoryObject* target = find(id);
-
     if (0 == size) return false;
-
     /* new SharedMemory */
     if (target == NULL)
     {

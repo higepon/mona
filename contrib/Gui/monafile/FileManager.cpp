@@ -63,7 +63,7 @@ public:
 		
 		gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		String bundlePath = MonAPI::System::getBundlePath();
-		icons = new Bitmap(bundlePath + "/ICONS.BM5");
+		icons = new Bitmap(bundlePath + "/ICONS.BMP");
 		int len = icons->get_Width() * icons->get_Height();
 		Color* ptr = icons->get();
 		Color trans = TRANSPARENT_COLOR, ept = Color::get_Empty();

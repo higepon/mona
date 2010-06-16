@@ -4,6 +4,7 @@
 #include <monapi/Stream.h>
 #include <monapi/System.h>
 #include <monapi/string.h>
+#include <monapi.h>
 
 using namespace MonAPI;
 
@@ -362,6 +363,18 @@ uint32_t monapi_file_get_file_size(uint32_t id)
     return msg.arg3;
 }
 
+uint32_t monapi_file_delete(const char* file)
+{
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file) != 0)
+    {
+        return MONA_FAILURE;
+    }
+    return msg.arg2;
+}
+
+
 int monapi_file_stop_server()
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -397,10 +410,10 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
 uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
     System::getStdoutStream();
-    if (NULL == outStream)
+    if (NULL == outStream || outStream->isInvalid())
     {
-       MONAPI_WARN("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
-        _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
+        monapi_warn("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
+        monapi_warn("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
         return 0;
     }
     return outStream->write(buffer, size);
@@ -464,13 +477,3 @@ intptr_t monapi_notify_server_start(const char* name)
     return M_OK;
 }
 
-uint32_t monapi_file_delete(const char* file)
-{
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file) != M_OK)
-    {
-        return MONA_FAILURE;
-    }
-    return msg.arg2;
-}

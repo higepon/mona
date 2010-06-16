@@ -95,7 +95,6 @@ void MemoryManager::free(void* address)
     bool inBetween = false;
     Header* tail = NULL;
     Header* prev;
-
     if (bp->magic != MM_MAGIC) {
         g_console->printf("kernel memory leaked?");
     }

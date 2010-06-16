@@ -1,4 +1,5 @@
-#include<sys/types.h>
+#include <sys/types.h>
+#include "global.h"
 #include "MemoryAllocator.h"
 #include "string.h"
 

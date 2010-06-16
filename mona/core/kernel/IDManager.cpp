@@ -10,7 +10,34 @@ IDManager::~IDManager()
 {
 }
 
-KObject* IDManager::get(int objectID, Thread* who, int type)
+static int foundCount = 0;
+static int typeToFind = 0;
+
+static void accumCount(int id, KObject* obj)
+{
+// To check resource leak.
+#if 0
+    logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getOwner() == NULL ? "KERNEL" : obj->getOwner()->getName());
+#endif
+    if (obj->getType() == typeToFind) {
+        foundCount++;
+    }
+}
+
+void IDManager::foreachKObject(void (*func)(int id, KObject* object))
+{
+    tree.traverse(func);
+}
+
+intptr_t IDManager::getCount(int type)
+{
+    foundCount = 0;
+    typeToFind = type;
+    tree.traverse(&accumCount);
+    return foundCount;
+}
+
+KObject* IDManager::get(int objectID, int type)
 {
     if (!tree.contains(objectID))
     {
@@ -18,11 +45,6 @@ KObject* IDManager::get(int objectID, Thread* who, int type)
         return NULL;
     }
     KObject* object = tree.get(objectID);
-    if (object->checkSecurity(who) != 0)
-    {
-        this->lastError = IDM_SECURITY_ERROR;
-        return NULL;
-    }
     if (object->getType() != type) {
         this->lastError = IDM_INVALID_TYPE;
         return NULL;
@@ -35,19 +57,19 @@ int IDManager::getLastError() const
     return this->lastError;
 }
 
-intptr_t IDManager::allocateID(KObject* object)
+intptr_t IDManager::allocateID(Process* owner, KObject* object)
 {
     int id = this->id++;
-
+    ASSERT(!tree.contains(id));
     tree.add(id, object);
-    object->setReferance();
+    object->addRef();
     object->setId(id);
+    object->setOwner(owner);
     return id;
 }
 
-void IDManager::returnID(int id)
+bool IDManager::returnID(int id)
 {
     KObject* object = tree.remove(id);
-    object->cancelReferance();
-    return;
+    return object->releaseRef();
 }

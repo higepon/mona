@@ -29,8 +29,10 @@
  *  $Id: Thread.cpp 183 2008-07-04 06:19:28Z higepon $
  */
 
-#include "Thread.h"
+#include "global.h"
 #include "sys/HList.h"
+#include "Thread.h"
+
 
 Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondition_(NULL)
 {

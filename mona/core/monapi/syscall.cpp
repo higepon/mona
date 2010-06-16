@@ -640,6 +640,21 @@ intptr_t syscall_condition_destroy(cond_t* cond)
     return syscall1(SYSTEM_CALL_CONDITION_DESTROY, cond_id);
 }
 
+/*
+   function: syscall_condition_count
+
+   Returns number of conditions on the system. Used for test.
+
+
+   Returns:
+
+     Number of conditions.
+*/
+intptr_t syscall_condition_count()
+{
+    return syscall0(SYSTEM_CALL_CONDITION_COUNT);
+}
+
 
 /*
    function: syscall_mutex_create
@@ -795,13 +810,28 @@ intptr_t syscall_mutex_unlock(mutex_t* mutex)
      mutex - mutex_t created by <syscall_mutex_create>.
 
    Returns:
-     Returns <M_OK> if the mutex is successfully destoryed, or <M_BAD_MUTEX_ID> if mutex is invalid.
+     Returns <M_OK> if the mutex is successfully destoryed, <M_RELEASED> if mutex is released, but someone has referance to the mutex, or <M_BAD_MUTEX_ID> if mutex is invalid.
 
 */
 intptr_t syscall_mutex_destroy(mutex_t* mutex)
 {
     intptr_t mutex_id = *mutex;
     return syscall1(SYSTEM_CALL_MUTEX_DESTROY, mutex_id);
+}
+
+/*
+   function: syscall_mutex_count
+
+   Returns number of mutexes on the system. Used for test.
+
+
+   Returns:
+
+     Number of mutexes.
+*/
+intptr_t syscall_mutex_count()
+{
+    return syscall0(SYSTEM_CALL_MUTEX_COUNT);
 }
 
 intptr_t syscall_semaphore_create(uint32_t n, uint32_t handle)
@@ -1045,16 +1075,6 @@ int syscall_log_print(const char* msg)
     return syscall1(SYSTEM_CALL_LOG_PRINT, (intptr_t)msg);
 }
 
-int syscall_receive_packet(uint8_t* frame)
-{
-    return syscall1(SYSTEM_CALL_RECEIVE_PACKET, (intptr_t)frame);
-}
-
-int syscall_send_packet(uint8_t* pkt, uint8_t* mac, uint32_t size, uint16_t pid)
-{
-    return syscall4(SYSTEM_CALL_SEND_PACKET, (intptr_t)pkt, (intptr_t)mac, size, pid);
-}
-
 int syscall_set_watch_point(void* address, int flag)
 {
     return syscall2(SYSTEM_CALL_SET_WATCH_POINT, (intptr_t)address, flag);
@@ -1091,4 +1111,37 @@ uint64_t syscall_now_in_nanosec()
     } n;
     syscall2(SYSTEM_CALL_NOW_IN_NANOSEC, (intptr_t)(&(n.u32.l)), (intptr_t)(&(n.u32.h)));
     return n.u64;
+}
+
+#include <monapi/MapFileParser.h>
+
+int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
+{
+    FileReader reader;
+    if(!reader.open(map_file_path))
+        return false;
+
+    MapFileScanner<FileReader> scanner(reader);
+    MapFileParser<MapFileScanner<FileReader> > parser(scanner);
+
+    parser.parseAll();
+    monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
+    if(cm == NULL)
+        return false;
+
+    int res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->Data, cm->Size);
+
+    monapi_cmemoryinfo_dispose(cm);
+    monapi_cmemoryinfo_delete(cm);
+
+    return res == 0;
+}
+void syscall_stack_trace_disable(uint32_t pid)
+{
+     syscall1(SYSTEM_CALL_STACKTRACE_DISABLE, pid);
+}
+
+void syscall_stack_trace_dump(uint32_t pid)
+{
+     syscall1(SYSTEM_CALL_STACKTRACE_DUMP, pid);
 }

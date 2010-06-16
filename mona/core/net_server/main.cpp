@@ -122,7 +122,9 @@ uintptr_t ContigousPhysicalMemory::startAddress = 0x9E000000;
 VirtioNet* g_virtioNet = NULL;
 void init_virtio(uint32_t& hostAddress, uint32_t& gatewayAddress)
 {
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
   syscall_get_io();
+        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
 
   g_virtioNet = new VirtioNet();
   const int numberOfReadBufferes = 5;

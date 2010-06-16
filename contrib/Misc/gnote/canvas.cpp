@@ -102,8 +102,12 @@ namespace gnote {
 			String* s = d.GetLine(c.top + ii - 1);
 			if (s && s->length() > 0) {
 				//
-				char szNo[4];
-				sprintf(szNo, "%4d", (c.top + ii - 1) % 10000);
+				const int BUFFER_SIZE = 5;
+				char szNo[BUFFER_SIZE];
+				int writtenSize = snprintf(szNo, BUFFER_SIZE, "%4d", (c.top + ii - 1) % 10000);
+				// For now, snprint is just an alias for sprintf
+				// So we check the size.
+				ASSERT(writtenSize + 1 <= BUFFER_SIZE);
 				g->setColor(Color::blue);
 				g->drawString(szNo, 0, ii * gridHeight + 1);
 				//

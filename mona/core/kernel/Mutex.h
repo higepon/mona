@@ -32,11 +32,8 @@ class KMutex : public KObject {
     intptr_t unlock();
     bool removeFromWaitList(Thread* thread)
     {
-        Thread* removedThread = waitList_->remove(thread);
-        return thread == removedThread;
+        return waitList_->remove(thread);
     }
-    void addRef();
-    void releaseRef();
 
     inline bool isLocked() const
     {
@@ -47,8 +44,6 @@ class KMutex : public KObject {
     {
         return KMUTEX;
     }
-
-    intptr_t checkSecurity(Thread* thread);
 
   private:
     intptr_t refcount_;

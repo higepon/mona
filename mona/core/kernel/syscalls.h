@@ -15,7 +15,8 @@
 #include "global.h"
 
 extern "C" void syscall_entrance(void);
-extern "C" uint32_t systemcall_mutex_create();
+extern "C" intptr_t create_mutex_null_owner();
+extern "C" intptr_t create_mutex(Thread* thread);
 extern "C" uint32_t systemcall_mutex_lock(uint32_t id);
 extern "C" uint32_t systemcall_mutex_unlock(uint32_t id);
 

@@ -80,16 +80,21 @@ namespace MonAPI
     }
     Stream* System::getStdoutStream()
     {
-        if (NULL != outStream) return outStream;
-        uint32_t handle = System::getProcessStdoutID();
-        if (handle == THREAD_UNKNOWN)
-        {
-            outStream = NULL;
+        if (outStream == NULL) {
+            uint32_t handle = System::getProcessStdoutID();
+            if (handle == THREAD_UNKNOWN) {
+                outStream = NULL;
+            } else {
+                outStream = Stream::FromHandle(handle);
+            }
         }
-        else
-        {
-            outStream = Stream::FromHandle(handle);
+
+        if (outStream == NULL) {
+            return NULL;
+        } else if (outStream->getLastError() == M_OK) {
+            return outStream;
+        } else {
+            return NULL;
         }
-        return outStream;
     }
 }

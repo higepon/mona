@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-//#define NO_CACHE
+#define NO_CACHE
 //#define SEARCH_CURRENT
 
 #include "PEServer.h"

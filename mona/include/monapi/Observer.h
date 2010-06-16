@@ -1,6 +1,8 @@
 #ifndef _MONAPI_OBSERVER_
 #define _MONAPI_OBSERVER_
 
+#include <monapi/Assert.h>
+#include <monapi/syscall.h>
 #include <sys/types.h>
 #include <sys/HList.h>
 

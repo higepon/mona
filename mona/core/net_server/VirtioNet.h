@@ -322,12 +322,9 @@ public:
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
-            VIRT_LOG("Waiting previous packet is send");
+            VIRT_LOG("Waiting previous packet is sent");
         }
         Ether::Frame* rframe = (Ether::Frame*)buf;
-        IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("send:ip packet %d %x\n", ipHeader->len, ipHeader->dstip);
-
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, buf, len);
         writeVring_->desc[1].len = len; // todo
@@ -347,7 +344,7 @@ public:
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
-            VIRT_LOG("Waiting previous packet is send");
+            VIRT_LOG("Waiting previous packet is sent");
         }
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);
@@ -364,7 +361,6 @@ public:
 
     bool receive(Ether::Frame* dst, unsigned int* len, int timeout_msec = 20)
     {
-        logprintf("hige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -431,7 +427,6 @@ public:
 
     bool receive(char* dst, unsigned int* len, int timeout_msec = 20)
     {
-        logprintf("mige");
         // Wait a packet coming timeout_msec.
         MessageInfo msg;
         for (int i = 0; ; i++) {
@@ -472,7 +467,6 @@ public:
                 ASSERT(false);
             }
         }
-//        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
 
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
@@ -482,8 +476,8 @@ public:
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
 
-        IP::Header* ipHeader = (IP::Header*)(rframe->data);
-        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
+//        IP::Header* ipHeader = (IP::Header*)(rframe->data);
+//        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
 //         for (int i = 0; i < *len; i++) {
 //             _printf("[%c]", dst[i]);
 //         }

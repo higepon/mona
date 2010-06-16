@@ -1,0 +1,3 @@
+/*
+ * resource.h - stub
+ */

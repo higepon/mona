@@ -1,4 +1,5 @@
-//#include <monapi/syscall.h>
+#include <monapi/syscall.h>
+#include <monapi/Assert.h>
 #include <monapi/string.h>
 #include "PEParser.h"
 

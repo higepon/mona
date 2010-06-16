@@ -13,13 +13,14 @@
 */
 
 #include <sys/types.h>
+#include "global.h"
 #include "PageManager.h"
 #include "string.h"
 #include "operator.h"
 #include "Segments.h"
 #include "Uart.h"
 #include "ihandlers.h"
-#include "global.h"
+
 
 /* independent from architecture */
 const uint8_t PageManager::FAULT_NOT_EXIST;
@@ -690,6 +691,66 @@ PageEntry* PageManager::allocatePageTable() const
     return (PageEntry*)(address);
 }
 
+#include "stdarg.h"
+#include "vsprintf.h"
+
+class NormalLogger
+{
+public:
+    static void printf(const char*fmt, ... )
+    {
+#define BUFFER_SIZE 512
+        char buf[BUFFER_SIZE];
+        va_list ap;
+        va_start(ap, fmt);
+
+        int ret = vsprintf(buf, fmt, ap);
+        va_end(ap);
+        if (ret >= BUFFER_SIZE) {
+            print("bufer over at StackTrace::printf");
+        }
+        print(buf);
+    }
+    static void print(const char* str)
+    {
+        logprintf(str);
+    }
+};
+
+class StackTracer
+{
+public:
+    StackTracer(SymbolDictionary::SymbolDictionaryMap& dictMap) : dictMap_(dictMap) {}
+    template <class T> void dumpAddress(uint32_t address, SymbolDictionary::SymbolDictionary* dict)
+    {
+        SymbolDictionary::SymbolEntry* ent = dict->lookup(address);
+        if(ent != NULL)
+            T::printf("  %s: %s (%x)\n", ent->FunctionName, ent->FileName, address);
+        else
+            T::printf("(unknown)  %x\n", address);
+    }
+    template <class T> void dump(uint32_t pid, uint32_t ebp, uint32_t eip, uint32_t stackStart)
+    {
+        SymbolDictionary::SymbolDictionary *dict = dictMap_.get(pid);
+        if(dict != NULL)
+        {
+            T::printf("nullpo! stack trace:\n");
+            dumpAddress<T>(eip, dict);
+
+            void**bp = (void**)ebp;
+            while(bp && ((uint32_t)bp) < stackStart)
+            {
+                // caller = bp[1];
+                dumpAddress<T>((uint32_t)bp[1], dict);
+                bp = (void**)(*bp);
+            }
+        }
+    }
+    
+private:
+    SymbolDictionary::SymbolDictionaryMap& dictMap_;
+};
+
 // PageEntry* PageManager::allocatePageTable() const
 // {
 //     uint8_t* table;
@@ -699,6 +760,13 @@ PageEntry* PageManager::allocatePageTable() const
 //     g_console->printf("address%x", table);
 //     return (PageEntry*)table;
 // }
+
+void PageManager::showCurrentStackTrace()
+{
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    StackTracer tracer(symbolDictionaryMap_); 
+    tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
+}
 
 /*!
     \brief page fault handler
@@ -751,6 +819,11 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
         logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+
+    showCurrentStackTrace();
+
+    // remove: if dict of this pid does not exist, just ignore.
+    symbolDictionaryMap_.remove(g_currentThread->process->getPid());
 #endif
 
         uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);

@@ -46,18 +46,9 @@ namespace baygui {
 	{
 	}
 
-	void Graphics::drawPixel(int x, int y, dword color)
-	{
-		this->image->setPixel(tx + x, ty + y, color);
-	}
-
 	void Graphics::drawImage(Image* image, int x, int y)
 	{
-		for (int i = 0; i < image->getHeight(); i++) {
-			for (int j = 0; j < image->getWidth(); j++) {
-				drawPixel(j + x, i + y, image->getPixel(j, i));
-			}
-		}
+        this->image->copy(image, tx+x, ty+y);
 	}
 
 	void Graphics::drawLine(int x1, int y1, int x2, int y2)
@@ -231,6 +222,28 @@ namespace baygui {
 		for (int yy = y; yy < yh; yy++) {
 			for (int xx = x; xx < xw; xx++) {
 				this->drawPixel(xx, yy, this->rgb24);
+			}
+		}
+	}
+
+	void Graphics::invartRect(int x, int y, int width, int height)
+	{
+		if (width < 0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0) {
+			y += height;
+			height = -height;
+		}
+		
+		int xw = x + width, yh = y + height;
+		
+		for (int yy = y; yy < yh; yy++) {
+			for (int xx = x; xx < xw; xx++) {
+				dword c = this->image->getPixel(xx, yy);
+				c = (0xff000000) | (~c);
+				this->drawPixel(xx, yy, c);
 			}
 		}
 	}
