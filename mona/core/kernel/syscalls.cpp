@@ -112,6 +112,13 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_2 (info->ecx)
 #define SYSTEM_CALL_ARG_3 (info->edi)
 #define SYSTEM_CALL_ARG_4 (info->edx)
+    static int prevSyscall = 0;
+    static int prevSize = 0;
+    if (prevSize != (int)km.getUsedMemorySize()) {
+        logprintf("syscall%x, %d %d\n", prevSyscall, km.getUsedMemorySize() - prevSize, km.getUsedMemorySize());
+    }
+    prevSize = (int)km.getUsedMemorySize();
+    prevSyscall = info->ebx;
 
     switch(info->ebx)
     {
