@@ -23,10 +23,10 @@ typedef uint32_t PhysicalAddress;
 class PageManager {
 
   public:
-    PageManager(uint32_t totalMemorySize);
+    PageManager(uint32_t totalMemorySize, PhysicalAddress vramAddress, int vramSizeByte);
+    PageEntry* makeFirstPageDirectory();
 
   public:
-    void setup(PhysicalAddress vram);
     void flushPageCache() const;
     void getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_t* pageSize);
 
@@ -54,11 +54,10 @@ class PageManager {
 
     void setAbsent(PageEntry* directory, LinearAddress start, uint32_t size) const;
 
-    void setPageDirectory(PhysicalAddress address);
-    void startPaging();
+
+    void startPaging(PhysicalAddress address);
     void stopPaging();
     PageEntry* createNewPageDirectory();
-    PageEntry* createKernelPageDirectory();
     bool pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip);
     inline static bool isPresent(PageEntry* entry) {
 
@@ -95,14 +94,35 @@ class PageManager {
   private:
     PageEntry* allocatePageTable() const;
 
+    void initializePagePool(int totalMemorySize);
+    void initializePageTablePool(int numTables);
+
+    PhysicalAddress align4Kb(PhysicalAddress address)
+    {
+        return ((address + 4095) & 0xFFFFF000);
+    }
+
+    uintptr_t bytesToPageNumber(uintptr_t sizeInBytes)
+    {
+        return (sizeInBytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    }
+
   private:
     BitMap* memoryMap_;
     BitMap* pageTablePool_;
     PhysicalAddress pageTablePoolAddress_;
-    PhysicalAddress vram_;
+    PhysicalAddress vramAddress_;
+    int vramSizeByte_;
     PageEntry* kernelDirectory_;
     BitMap* reservedDMAMap_;
     SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_; 
+    void setPageDirectory(PhysicalAddress address);
+    enum {
+        KERNEL_RESERVED_REGION_END = 0xC00000,
+        DMA_RESERVED_REGION_START  = KERNEL_RESERVED_REGION_END,
+        DMA_REGION_SIZE_IN_BYTES   = 1 * 1024 * 1024,
+        forbidden_comma
+    };
 
   public:
     static const uint8_t FAULT_NOT_EXIST          = 0x01;
@@ -121,7 +141,7 @@ class PageManager {
     static const uint8_t ARCH_PAGE_KERNEL         = 0x00;
     static const int  ARCH_PAGE_SIZE           = 4096;
     static const int  ARCH_PAGE_TABLE_NUM      = 1024;
-    static const int  PAGE_TABLE_POOL_SIZE     = 1 * 1024 * 1024; // 1MB
+    static const int  PAGE_TABLE_POOL_SIZE     = 2 * 1024 * 1024; // 2MB
 };
 
 #endif

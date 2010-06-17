@@ -303,6 +303,7 @@ intptr_t ThreadOperation::kill()
     {
         KObjectService::cleanupKObjects(process);
         PageEntry* directory = process->getPageDirectory();
+        logprintf("delete process %s", process->getName());
         delete process;
         g_page_manager->returnPhysicalPages(directory);
     }

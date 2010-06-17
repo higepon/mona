@@ -42,35 +42,76 @@ const int  PageManager::ARCH_PAGE_SIZE;
 const int  PageManager::ARCH_PAGE_TABLE_NUM;
 const int  PageManager::PAGE_TABLE_POOL_SIZE;
 
-/*!
-    \brief page management initlize
-
-    \param totalMemorySize total system physical memory size
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-PageManager::PageManager(uint32_t totalMemorySize)
+PageManager::PageManager(uint32_t totalMemorySize, PhysicalAddress vramAddress, int vramSizeByte)
+  : vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
-    uint32_t pageNumber = (totalMemorySize + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    initializePageTablePool(PAGE_TABLE_POOL_SIZE);
+    initializePagePool(totalMemorySize);
+}
 
-    memoryMap_ = new BitMap(pageNumber);
-    checkMemoryAllocate(memoryMap_, "PageManager memoryMap");
+void PageManager::initializePagePool(int totalMemorySize)
+{
+    uintptr_t numPages = bytesToPageNumber(totalMemorySize);
+    memoryMap_ = new BitMap(numPages);
+    ASSERT(memoryMap_);
 
-    /*
-     * page table pool
-     *
-     * page table should be at 0-8MB. so use kernel memory allocation.
-     */
-    uint8_t* temp = (uint8_t*)malloc(PAGE_TABLE_POOL_SIZE);
-    checkMemoryAllocate(temp, "PageManager page table pool");
+    // After the kernel_reserved_region, region for DMA.
+    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_REGION_SIZE_IN_BYTES));
+    for (int i = 0; i < reservedDMAMap_->getBitsNumber(); i++) {
+        int index = bytesToPageNumber(DMA_RESERVED_REGION_START + i * ARCH_PAGE_SIZE);
+        memoryMap_->mark(index);
+    }
+}
 
-    /* 4KB align */
-    pageTablePoolAddress_ = (PhysicalAddress)(((int)temp + 4095) & 0xFFFFF000);
+PageEntry* PageManager::makeFirstPageDirectory()
+{
+    PageEntry* directory = allocatePageTable();
 
-    /* page table pool bitmap */
-    int poolNum = ((int)temp + PAGE_TABLE_POOL_SIZE - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
-    pageTablePool_ = new BitMap(poolNum);
-    checkMemoryAllocate(pageTablePool_, "PageManger page table pool bitmap");
+    // For now, 0 - 12MB is reserved
+    int maxDirctoryIndex = KERNEL_RESERVED_REGION_END / ARCH_PAGE_SIZE / ARCH_PAGE_TABLE_NUM;
+    for (int directoryIndex = 0; directoryIndex < maxDirctoryIndex; directoryIndex++) {
+        PageEntry* table = allocatePageTable();
+        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
+            // N.B. tell the memoryMap, this is reserved.
+            memoryMap_->mark(j + directoryIndex * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(table[j]), true, true, true, ARCH_PAGE_SIZE * (directoryIndex * ARCH_PAGE_TABLE_NUM + j));
+        }
+        setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+    }
+
+    PhysicalAddress vram = align4Kb(vramAddress_);
+
+    // max vram size. 1600 * 1200 * 32bpp = 7.3MB
+    int vramMaxIndex = bytesToPageNumber(vramSizeByte_);
+
+    // Map VRAM
+    for (int i = 0; i < vramMaxIndex; i++, vram += ARCH_PAGE_SIZE) {
+        PageEntry* table;
+        uint32_t directoryIndex = getDirectoryIndex(vram);
+        uint32_t tableIndex     = getTableIndex(vram);
+
+        if (isPresent(&(directory[directoryIndex]))) {
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else {
+            table = allocatePageTable();
+            logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
+            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, true, vram);
+    }
+    return directory;
+}
+
+void PageManager::initializePageTablePool(int numTables)
+{
+    uint8_t* pool = (uint8_t*)malloc(numTables);
+    ASSERT(pool);
+
+    pageTablePoolAddress_ = align4Kb((PhysicalAddress)pool);
+
+    int actualNumTables = ((int)pool + PAGE_TABLE_POOL_SIZE - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
+    pageTablePool_ = new BitMap(actualNumTables);
+    ASSERT(pageTablePool_);
 }
 
 /*!
@@ -147,7 +188,8 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     else
     {
         table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
+
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
@@ -181,7 +223,7 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     } else
     {
         table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
 
@@ -216,7 +258,7 @@ bool PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddres
         } else
         {
             table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
             setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
         setAttribute(&(table[tableIndex]), true, true, true, paddress);
@@ -241,7 +283,7 @@ uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isU
     for (int i = foundMemory; i < foundMemory + pageNum; i++)
     {
         PageEntry* table;
-        PhysicalAddress address = i * ARCH_PAGE_SIZE + 0x800000;
+        PhysicalAddress address = i * ARCH_PAGE_SIZE + 0xC00000;
         uint32_t directoryIndex = getDirectoryIndex(address);
         uint32_t tableIndex     = getTableIndex(address);
 
@@ -251,13 +293,13 @@ uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isU
         } else
         {
             table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
             setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
         setAttribute(&(table[tableIndex]), true, true, true, address);
     }
 
-    return (uint8_t*)(foundMemory * ARCH_PAGE_SIZE + 0x800000);
+    return (uint8_t*)(foundMemory * ARCH_PAGE_SIZE + 0xC00000);
 }
 
 void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size)
@@ -271,7 +313,7 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
     {
         reservedDMAMap_->clear(i);
 
-        uint32_t target         = i * ARCH_PAGE_SIZE + 0x800000;
+        uint32_t target         = i * ARCH_PAGE_SIZE + 0xC00000;
         uint32_t directoryIndex = getDirectoryIndex(target);
         uint32_t tableIndex     = getTableIndex(target);
         if (!isPresent(&directory[directoryIndex])) return;
@@ -287,136 +329,6 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 }
 
 /*!
-    \brief initilize system pages
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-void PageManager::setup(PhysicalAddress vram)
-{
-    PageEntry* table1 = allocatePageTable();
-    PageEntry* table2 = allocatePageTable();
-    g_page_directory  = allocatePageTable();
-
-    /* allocate page to physical address 0-4MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
-    {
-        memoryMap_->mark(i);
-        setAttribute(&(table1[i]), true, true, true, 4096 * i);
-    }
-
-    /* allocate page to physical address 4-8MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
-    {
-        memoryMap_->mark(i + 1024);
-        setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
-    }
-
-    /* 8MB + 500KB is reserved for DMA */
-    reservedDMAMap_ = new BitMap(125);
-    for (int i = 0; i < 125; i++)
-    {
-        int index = (8 * 1024 * 1024 + i * ARCH_PAGE_SIZE) / ARCH_PAGE_SIZE;
-        memoryMap_->mark(index);
-    }
-
-    /* Map 0-8MB */
-    memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(&(g_page_directory[0]), true, true, true, (PhysicalAddress)table1);
-    setAttribute(&(g_page_directory[1]), true, true, true, (PhysicalAddress)table2);
-
-    /* VRAM */
-    vram_ = vram;
-
-    /* find 4KB align */
-    vram = ((int)vram) & 0xFFFFF000;
-
-    /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
-    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
-    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
-
-    /* Map VRAM */
-    for (int i = 0; i < vramMaxIndex; i++, vram += 4096)
-    {
-        PageEntry* table;
-        uint32_t directoryIndex = getDirectoryIndex(vram);
-        uint32_t tableIndex     = getTableIndex(vram);
-
-        if (isPresent(&(g_page_directory[directoryIndex])))
-        {
-            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-        } else
-        {
-            table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-        }
-        setAttribute(&(table[tableIndex]), true, true, true, vram);
-    }
-
-    setPageDirectory((PhysicalAddress)g_page_directory);
-
-    /*
-     * create kernel page directory
-     * paddress == laddress
-     */
-    kernelDirectory_ = createKernelPageDirectory();
-
-    startPaging();
-}
-
-
-PageEntry* PageManager::createKernelPageDirectory()
-{
-    PageEntry* directory = allocatePageTable();
-    PageEntry* table;
-
-    /* fill zero */
-    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-
-    /* 0 to 64MB */
-    for (int i = 0; i < 64 / 4; i++)
-    {
-        table = allocatePageTable();
-
-        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
-        {
-            setAttribute(&(table[j]), true, true, false, i * 4 * 1024 * 1024 + 4096 * j);
-        }
-
-        setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
-    }
-
-    /* find 4KB align for VRAM */
-    uint32_t vram = vram_;
-    vram = ((int)vram) & 0xFFFFF000;
-
-    /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
-    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
-    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
-
-    /* Map VRAM */
-    for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
-
-        uint32_t directoryIndex = getDirectoryIndex(vram);
-        uint32_t tableIndex     = getTableIndex(vram);
-
-        if (isPresent(&(directory[directoryIndex]))) {
-
-            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-        } else {
-
-            table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-        }
-        setAttribute(&(table[tableIndex]), true, true, true, vram);
-    }
-
-    return directory;
-}
-
-/*!
     \brief create new page directory for new process
 
     \author Higepon
@@ -425,15 +337,14 @@ PageEntry* PageManager::createKernelPageDirectory()
 PageEntry* PageManager::createNewPageDirectory() {
 
     PageEntry* directory = allocatePageTable();
+    logprintf("%d allocated %s:%d\n", ((uint32_t)directory - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
     PageEntry* table;
 
-    /* fill zero */
-    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-
-    /* 0 to 8MB */
-    for (int i = 0; i < 8 / 4; i++)
+    /* 0 to 12B */
+    for (int i = 0; i < 12 / 4; i++)
     {
         table = allocatePageTable();
+        logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
 
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
         {
@@ -444,12 +355,11 @@ PageEntry* PageManager::createNewPageDirectory() {
     }
 
     /* find 4KB align for VRAM */
-    uint32_t vram = vram_;
+    uint32_t vram = vramAddress_;
     vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
-    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
-    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
+    int vramMaxIndex = ((vramSizeByte_ + 4096 - 1) & 0xFFFFF000) / 4096;
 
     /* Map VRAM */
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
@@ -463,7 +373,7 @@ PageEntry* PageManager::createNewPageDirectory() {
         } else {
 
             table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
             setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
         setAttribute(&(table[tableIndex]), true, true, true, vram);
@@ -474,25 +384,27 @@ PageEntry* PageManager::createNewPageDirectory() {
 
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
-    uint32_t vram = vram_;
+    uint32_t vram = vramAddress_;
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
     int vramIndex = getDirectoryIndex(vram);
 
     returnPageTable((PageEntry*)(directory[0] & 0xfffff000));
     returnPageTable((PageEntry*)(directory[1] & 0xfffff000));
 
-    /* 0-8MB don't return */
-    for (int i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
+    /* 0-12MB don't return */
+    for (int i = 3; i < ARCH_PAGE_TABLE_NUM; i++)
     {
-        /* not allocated */
-        if (i == vramIndex || i == vramIndex + 1)
+        // VRAM is not attached to INIT Process.
+        // So we check this first.
+        if (!isPresent(&(directory[i])))
         {
-            returnPageTable((PageEntry*)(directory[i] & 0xfffff000));
             continue;
         }
 
-        if (!isPresent(&(directory[i])))
+        // VRAM is shared, so we just returns page tables only.
+        if (i == vramIndex || i == vramIndex + 1)
         {
+            returnPageTable((PageEntry*)(directory[i] & 0xfffff000));
             continue;
         }
 
@@ -567,7 +479,6 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, uint3
     /* out of user malloc region */
     if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
 
-    logprintf("****** [%s]address = %x size = %d\n", g_currentThread->process->getName(), address, size);
 
     uint32_t orgAddress = address;
 
@@ -612,6 +523,8 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, uint3
 void PageManager::returnPageTable(PageEntry* table)
 {
     PhysicalAddress address = (PhysicalAddress)table;
+    logprintf("to return %d\n", (address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
+    ASSERT(pageTablePool_->marked((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE));
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
@@ -634,8 +547,9 @@ void PageManager::setPageDirectory(PhysicalAddress address)
     \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::startPaging()
+void PageManager::startPaging(PhysicalAddress address)
 {
+    setPageDirectory(address);
     asm volatile("mov %%cr0      , %%eax \n"
                  "or  $0x80000000, %%eax \n"
                  "mov %%eax      , %%cr0 \n"
@@ -688,6 +602,7 @@ PageEntry* PageManager::allocatePageTable() const
     }
 
     uint8_t* address = (uint8_t*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
+    bzero(address, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     return (PageEntry*)(address);
 }
 
@@ -746,7 +661,7 @@ public:
             }
         }
     }
-    
+
 private:
     SymbolDictionary::SymbolDictionaryMap& dictMap_;
 };
@@ -764,7 +679,7 @@ private:
 void PageManager::showCurrentStackTrace()
 {
     ArchThreadInfo* i = g_currentThread->archinfo;
-    StackTracer tracer(symbolDictionaryMap_); 
+    StackTracer tracer(symbolDictionaryMap_);
     tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
 }
 
@@ -904,7 +819,7 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     } else
     {
         table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        logprintf("%d allocated %s:%d\n", ((uint32_t)table - (uint32_t)pageTablePoolAddress_) / ARCH_PAGE_SIZE, __FILE__, __LINE__);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
      return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);

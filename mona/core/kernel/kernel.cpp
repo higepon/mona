@@ -99,7 +99,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 void startKernel()
 {
     /* kernel memory range */
-    km.initialize(0x200000, 0x7fffff);
+    km.initialize(0x200000, 0xBfffff);
 
     /* APM */
     g_apmInfo = new APMInfo;
@@ -228,8 +228,12 @@ void startKernel()
     /* This mutex has no owner, so will never deleted */
     g_mutexShared = KObjectService::createNullOwner<KMutex>();
     /* Paging start */
-    g_page_manager = new PageManager(g_total_system_memory);
-    g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
+    PhysicalAddress vramAddress = g_vesaDetail->physBasePtr;
+    int vramSizeBytes = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
+    g_page_manager = new PageManager(g_total_system_memory, vramAddress, vramSizeBytes);
+    g_page_directory = g_page_manager->makeFirstPageDirectory();
+    g_page_manager->startPaging((PhysicalAddress)g_page_directory);
+
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
     Thread* dummy2 = new Thread();

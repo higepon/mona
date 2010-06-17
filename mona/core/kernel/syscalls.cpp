@@ -112,6 +112,9 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_2 (info->ecx)
 #define SYSTEM_CALL_ARG_3 (info->edi)
 #define SYSTEM_CALL_ARG_4 (info->edx)
+
+// To check resource leak on each syscall.
+#if 0
     static int prevSyscall = 0;
     static int prevSize = 0;
     if (prevSize != (int)km.getUsedMemorySize()) {
@@ -119,7 +122,7 @@ void syscall_entrance()
     }
     prevSize = (int)km.getUsedMemorySize();
     prevSyscall = info->ebx;
-
+#endif
     switch(info->ebx)
     {
     case SYSTEM_CALL_PRINT:
