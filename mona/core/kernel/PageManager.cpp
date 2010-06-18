@@ -17,7 +17,7 @@
 #include "string.h"
 #include "Segments.h"
 #include "ihandlers.h"
-
+ 
 PageManager::PageManager(uint32_t totalMemorySize, PhysicalAddress vramAddress, int vramSizeByte)
   : vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
