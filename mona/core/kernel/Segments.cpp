@@ -73,7 +73,6 @@ bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
     Process* current = g_currentThread->process;
     g_page_manager->mapOnePage(current->getPageDirectory(),
                                address,
-                               PageManager::PAGE_PRESENT,
                                PageManager::PAGE_WRITABLE,
                                current->isUserMode());
 
@@ -134,7 +133,6 @@ bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
     Process* current = g_currentThread->process;
     g_page_manager->mapOnePage(current->getPageDirectory(),
                                address,
-                               PageManager::PAGE_PRESENT,
                                PageManager::PAGE_WRITABLE,
                                current->isUserMode());
 
@@ -227,13 +225,12 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
     if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
         mapResult = g_page_manager->mapOnePage(current->getPageDirectory(),
                                                address,
-                                               PageManager::PAGE_PRESENT,
                                                PageManager::PAGE_WRITABLE,
                                                PageManager::PAGE_USER);
     }
     else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
     {
-        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, true, writable_, true);
+        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else
     {

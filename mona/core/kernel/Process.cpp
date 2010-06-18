@@ -156,7 +156,10 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
     /* stack size from 4KB to 4MB */
-    ProcessOperation::pageManager->mapOnePage(pageDirectory, stack - 4096, true, true, true);
+    ProcessOperation::pageManager->mapOnePage(pageDirectory,
+                                              stack - 4096,
+                                              PageManager::PAGE_WRITABLE,
+                                              PageManager::PAGE_USER);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;

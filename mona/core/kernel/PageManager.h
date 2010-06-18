@@ -43,7 +43,7 @@ class PageManager {
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser);
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address);
     int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable);
-    int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isPresent, bool isWritable, bool isUser);
+    int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser);
 
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address);
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser);

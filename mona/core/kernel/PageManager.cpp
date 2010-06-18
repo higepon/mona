@@ -111,13 +111,11 @@ int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress
     return allocatePhysicalPage(&(table[tableIndex]), PAGE_PRESENT, isWritable, PAGE_USER, paddress);
 }
 
-int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress,
-                            bool present, bool writable, bool isUser)
-
+int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
 {
-    PageEntry* table = getOrAllocateTable(directory, laddress, writable, isUser);
+    PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
     uint32_t tableIndex  = getTableIndex(laddress);
-    return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
+    return allocatePhysicalPage(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser);
 }
 
 // allocate physically contigous memory.
