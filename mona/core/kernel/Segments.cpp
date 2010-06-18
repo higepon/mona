@@ -237,7 +237,12 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else
     {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, writable_, true);
+        mapResult = g_page_manager->mapOnePageByPhysicalAddress(current->getPageDirectory(),
+                                                                address,
+                                                                mappedAddress,
+                                                                PageManager::PAGE_PRESENT,
+                                                                writable_,
+                                                                PageManager::PAGE_USER);
     }
     return (mapResult != -1);
 }
