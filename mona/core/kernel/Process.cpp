@@ -110,10 +110,10 @@ Process* ProcessOperation::create(int type, const char* name)
     switch (type)
     {
       case USER_PROCESS:
-          result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new UserProcess(name, ProcessOperation::pageManager->createPageDirectory());
           break;
       case KERNEL_PROCESS:
-          result = new KernelProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new KernelProcess(name, ProcessOperation::pageManager->createPageDirectory());
           break;
       default:
           result = (Process*)NULL;
@@ -156,7 +156,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
     /* stack size from 4KB to 4MB */
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - 4096, true, true, true);
+    ProcessOperation::pageManager->mapOnePage(pageDirectory, stack - 4096, true, true, true);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;

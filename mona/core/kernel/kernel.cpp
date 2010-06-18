@@ -231,7 +231,7 @@ void startKernel()
     PhysicalAddress vramAddress = g_vesaDetail->physBasePtr;
     int vramSizeBytes = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
     g_page_manager = new PageManager(g_total_system_memory, vramAddress, vramSizeBytes);
-    g_page_directory = g_page_manager->makeFirstPageDirectory();
+    g_page_directory = g_page_manager->createPageDirectory();
     g_page_manager->startPaging((PhysicalAddress)g_page_directory);
 
     /* dummy thread struct */

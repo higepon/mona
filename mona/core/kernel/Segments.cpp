@@ -71,7 +71,11 @@ bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     /* page allocation */
     Process* current = g_currentThread->process;
-    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
+    g_page_manager->mapOnePage(current->getPageDirectory(),
+                               address,
+                               PageManager::PAGE_PRESENT,
+                               PageManager::PAGE_WRITABLE,
+                               current->isUserMode());
 
     return true;
 }
@@ -128,7 +132,11 @@ bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     /* page allocation */
     Process* current = g_currentThread->process;
-    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
+    g_page_manager->mapOnePage(current->getPageDirectory(),
+                               address,
+                               PageManager::PAGE_PRESENT,
+                               PageManager::PAGE_WRITABLE,
+                               current->isUserMode());
 
     return true;
 }
@@ -216,13 +224,16 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
     uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
     Process* current = g_currentThread->process;
 
-    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED)
-    {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
+    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
+        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(),
+                                               address,
+                                               PageManager::PAGE_PRESENT,
+                                               PageManager::PAGE_WRITABLE,
+                                               PageManager::PAGE_USER);
     }
     else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
     {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, writable_, true);
+        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, true, writable_, true);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else
     {
@@ -292,7 +303,7 @@ SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid,
         uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
         uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
 
-        if (PageManager::isPresent(&(directory[directoryIndex])))
+        if (PageManager::isPresent(directory[directoryIndex]))
         {
             table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
         } else
@@ -330,7 +341,6 @@ void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 SharedMemoryObject::~SharedMemoryObject()
 {
     for (int i = 0; i < physicalPageCount_; i++) {
-
         g_page_manager->returnPhysicalPage(physicalPages_[i]);
     }
 
