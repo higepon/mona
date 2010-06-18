@@ -40,9 +40,7 @@ class PageManager {
     void deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 
-    int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser);
-    int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address);
-    int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable);
+    int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser);
     int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser);
 
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address);

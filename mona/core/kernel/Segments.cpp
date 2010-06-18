@@ -237,7 +237,8 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
         mapResult = g_page_manager->mapOnePageByPhysicalAddress(current->getPageDirectory(),
                                                                 address,
                                                                 mappedAddress,
-                                                                writable_);
+                                                                writable_,
+                                                                PageManager::PAGE_USER);
     }
     return (mapResult != -1);
 }

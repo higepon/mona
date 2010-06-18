@@ -73,49 +73,22 @@ void PageManager::initializePageTablePool(int numTables)
     ASSERT(pageTablePool_);
 }
 
-int PageManager::allocatePhysicalPage(PageEntry* pageEntry
-                                      , bool present, bool writable, bool isUser, PhysicalAddress address)
+int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
 {
-    setAttribute(pageEntry, present, writable, isUser, address);
-    return address;
-}
-
-/*!
-    \brief allocate physical page
-
-    \param pageEntry page entry
-    \param present   page present
-    \param writable  page writable
-    \param isUser    page access mode user
-
-    \return allocated physical address
-
-    \author Higepon
-    \date   create:2003/10/25 update:
-*/
-int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser)
-{
-    int foundMemory = memoryMap_->find();
-    if (foundMemory == BitMap::NOT_FOUND) return -1;
-
-    PhysicalAddress address = foundMemory * ARCH_PAGE_SIZE;
-    setAttribute(pageEntry, present, writable, isUser, address);
-
-    return address;
-}
-
-int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable)
-{
-    PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, PAGE_USER);
+    PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
     uint32_t tableIndex = getTableIndex(laddress);
-    return allocatePhysicalPage(&(table[tableIndex]), PAGE_PRESENT, isWritable, PAGE_USER, paddress);
+    setAttribute(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser, paddress);
+    return paddress;
 }
 
 int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
 {
-    PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
-    uint32_t tableIndex  = getTableIndex(laddress);
-    return allocatePhysicalPage(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser);
+    int foundMemory = memoryMap_->find();
+    if (foundMemory == BitMap::NOT_FOUND) {
+        return -1;
+    }
+    PhysicalAddress paddress = foundMemory * ARCH_PAGE_SIZE;
+    return mapOnePageByPhysicalAddress(directory, laddress, paddress, isWritable, isUser);
 }
 
 // allocate physically contigous memory.
