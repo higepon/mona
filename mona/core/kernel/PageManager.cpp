@@ -21,6 +21,7 @@
 PageManager::PageManager(uintptr_t systemMemorySizeByte, PhysicalAddress vramAddress, uintptr_t vramSizeByte)
   : vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
+    ASSERT((vramAddress_ % ARCH_PAGE_SIZE) == 0);
     initializePageTablePool(PAGE_TABLE_POOL_SIZE_BYTE);
     initializePagePool(systemMemorySizeByte);
 }
@@ -49,14 +50,10 @@ PageEntry* PageManager::createPageDirectory()
         mapAsLinearEqPhysical(directory, address, PAGE_READ_ONLY, PAGE_KERNEL);
     }
 
-    uint32_t vram = align4Kb(vramAddress_);
-    // max vram size. 1600 * 1200 * 32bpp = 7.3MB
-    int vramMaxIndex = bytesToPageNumber(vramSizeByte_);
-
     // map VRAM
-    for (int i = 0; i < vramMaxIndex; i++, vram += ARCH_PAGE_SIZE) {
-        memoryMap_->mark(vram / ARCH_PAGE_SIZE); // this range is always marked as reserved.
-        mapAsLinearEqPhysical(directory, vram, PAGE_WRITABLE, PAGE_USER);
+    for (LinearAddress address = vramAddress_; address  < vramAddress_ + vramSizeByte_; address += ARCH_PAGE_SIZE) {
+        memoryMap_->mark(address / ARCH_PAGE_SIZE); // this range is always marked as reserved.
+        mapAsLinearEqPhysical(directory, address, PAGE_WRITABLE, PAGE_USER);
     }
     return directory;
 }
@@ -164,9 +161,7 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
-    uint32_t vram = align4Kb(vramAddress_);
-
-    int vramIndex = getDirectoryIndex(vram);
+    int vramIndex = getDirectoryIndex(vramAddress_);
     int vramMaxIndex = bytesToPageNumber(vramSizeByte_);
     for (int i = KERNEL_RESERVED_REGION_END / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < ARCH_PAGE_TABLE_NUM; i++) {
         if (!isPresent(directory[i])) {
