@@ -191,96 +191,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 
 void PageManager::returnPages(PageEntry* directory, LinearAddress address, uint32_t size)
 {
-#if 0
-    if (address < 0xC0000000 || (0xC0000000 + 24 * 1024 * 1024) < address) return;
-
-    LinearAddress start = address % ARCH_PAGE_SIZE ? ((address + 4095) & 0xFFFFF000) : address;
-
-        logprintf("start=%x size=%x\n", start, size);
-
-    for (LinearAddress target = start; target + 4095 <= address + size; target += ARCH_PAGE_SIZE)
-    {
-        logprintf("target=%x\n", target);
-        uint32_t directoryIndex = getDirectoryIndex(target);
-        uint32_t tableIndex     = getTableIndex(target);
-
-        if (!isPresent(&directory[directoryIndex])) continue;
-
-        PageEntry* table = getTableAt(directory, directoryIndex)
-
-        if (isPresent(&table[tableIndex]))
-        {
-            PhysicalAddress paddress = ((uint32_t)(table[tableIndex])) & 0xfffff00;
-            returnPhysicalPage(paddress);
-            table[tableIndex] = 0;
-
-//             /* the end of table */
-//             if ((target + ARCH_PAGE_SIZE) % (4 * 1024 * 1024)) continue;
-
-//             int counter = 0;
-//             for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
-//             {
-//                 if (!isPresent(&table[j])) continue;
-//                 counter++;
-//             }
-
-//             if (counter == 0)
-//             {
-//                 returnPageTable(table);
-//                 directory[directoryIndex] = 0;
-//             }
-        }
-
-    }
-
-
-#endif
-
-#if 0
-    ASSERT(directory);
-
-    /* out of user malloc region */
-    if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
-
-
-    uint32_t orgAddress = address;
-
-    address = ((address + ARCH_PAGE_SIZE - 1) & 0xFFFFF000);
-
-    for (int i = 0; (address + i * ARCH_PAGE_SIZE + ARCH_PAGE_SIZE) < (orgAddress + size); i++)
-    {
-        uint32_t targetAddress  = address + i * ARCH_PAGE_SIZE;
-        uint32_t directoryIndex = getDirectoryIndex(targetAddress);
-        uint32_t tableIndex     = getTableIndex(targetAddress);
-        PageEntry* table     = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-
-        logprintf("targetAddress = %x \n", targetAddress);
-
-        if (isPresent(&table[tableIndex]))
-        {
-
-            PhysicalAddress paddress = ((uint32_t)(table[tableIndex])) & 0xfffff000;
-            returnPhysicalPage(paddress);
-            table[tableIndex] = 0;
-
-            /* the end of table */
-            if ((targetAddress + ARCH_PAGE_SIZE) % (4 * 1024 * 1024)) continue;
-
-            int counter = 0;
-            for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
-            {
-                if (!isPresent(&table[j])) continue;
-                counter++;
-            }
-
-            if (counter == 0)
-            {
-                returnPageTable(table);
-                directory[directoryIndex] = 0;
-            }
-        }
-    }
-#endif
+    ASSERT(false); // TODO
 }
 
 void PageManager::returnPageTable(PageEntry* table)
@@ -291,25 +202,12 @@ void PageManager::returnPageTable(PageEntry* table)
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
-/*!
-    \brief change page directory
-
-    \param  address physical address of page directory
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
 void PageManager::setPageDirectory(PhysicalAddress address)
 {
     asm volatile("movl %0   , %%eax \n"
                  "movl %%eax, %%cr3 \n" : /* no output */ : "m"(address) : "eax");
 }
 
-/*!
-    \brief start paging
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
 void PageManager::startPaging(PhysicalAddress address)
 {
     setPageDirectory(address);
@@ -320,12 +218,6 @@ void PageManager::startPaging(PhysicalAddress address)
                  : /* no input  */ : "eax");
 }
 
-/*!
-    \brief stop paging
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
 void PageManager::stopPaging()
 {
     asm volatile("mov %%cr0       , %%eax \n"
@@ -335,12 +227,6 @@ void PageManager::stopPaging()
                  : /* no input  */ : "ax");
 }
 
-/*!
-    \brief flush page cache
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
 void PageManager::flushPageCache() const
 {
     asm volatile("mov %%cr3, %%eax\n"
@@ -349,12 +235,6 @@ void PageManager::flushPageCache() const
                  : /* no input  */ : "ax");
 }
 
-/*!
-    \brief allocate page table
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
 PageEntry* PageManager::allocatePageTable() const
 {
     int foundMemory = pageTablePool_->find();
