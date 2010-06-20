@@ -93,7 +93,7 @@ int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool i
 bool PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
 {
     // contigous memory address should be mapped to this Range
-    // http://wiki.monaos.org/edit.php?Mona%2F%A5%E1%A5%E2%A5%EA%A5%DE%A5%C3%A5%D4%A5%F3%A5%B0
+    // http://wiki.monaos429429.org/edit.php?Mona%2F%A5%E1%A5%E2%A5%EA%A5%DE%A5%C3%A5%D4%A5%F3%A5%B0
     ASSERT(laddress >= 0x90000000 && laddress <= 0x9FFFFFFF);
 
     // should be aligned
@@ -119,6 +119,7 @@ void PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddr
 
 uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
+    ASSERT(false);
     size = (size + 4095) & 0xFFFFF000;
     int pageNum = size / ARCH_PAGE_SIZE;
     int foundMemory = reservedDMAMap_->find(pageNum);
@@ -163,24 +164,32 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 {
     int vramIndex = getDirectoryIndex(vramAddress_);
     int vramMaxIndex = bytesToPageNumber(vramSizeByte_);
+
+    logprintf("vram address=%x size=%x\n", vramAddress_, vramSizeByte_);
     for (int i = KERNEL_RESERVED_REGION_END / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < ARCH_PAGE_TABLE_NUM; i++) {
         if (!isPresent(directory[i])) {
             continue;
         }
 
-        // VRAM is shared, so we just returns page tables only.
-        if (vramIndex <= i && i < vramMaxIndex) {
-            returnPageTable(getTableAt(directory, i));
-            continue;
-        }
+//         // VRAM is shared, so we just returns page tables only.
+//         if (vramIndex <= i && i < vramMaxIndex) {
+//             returnPageTable(getTableAt(directory, i));
+//             continue;
+//         }
 
         PageEntry* table = getTableAt(directory, i);
 
+        LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
             if (!isPresent(table[j])) {
                 continue;
             }
+            LinearAddress linearAddress = baseLinerAddress + ARCH_PAGE_SIZE * j;
+            if (linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_) {
+                continue;
+            }
             PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
+            logprintf("[0]linearAddress = %x address=%x\n", linearAddress, address);
             returnPhysicalPage(address);
         }
         returnPageTable(table);
@@ -425,6 +434,9 @@ void PageManager::setAbsent(PageEntry* directory, LinearAddress start, uint32_t 
 
 void PageManager::returnPhysicalPage(PhysicalAddress address)
 {
+    if (!memoryMap_->marked(address / ARCH_PAGE_SIZE)) {
+        logprintf("[1]address=%x\n", address);
+    }
     ASSERT(memoryMap_->marked(address / ARCH_PAGE_SIZE));
     memoryMap_->clear(address / ARCH_PAGE_SIZE);
 }

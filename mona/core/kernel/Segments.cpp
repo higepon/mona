@@ -342,7 +342,9 @@ void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 SharedMemoryObject::~SharedMemoryObject()
 {
     for (int i = 0; i < physicalPageCount_; i++) {
-        g_page_manager->returnPhysicalPage(physicalPages_[i]);
+        if (physicalPages_[i] != UN_MAPPED) {
+            g_page_manager->returnPhysicalPage(physicalPages_[i]);
+        }
     }
 
     delete[] physicalPages_;
