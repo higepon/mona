@@ -23,7 +23,7 @@ typedef uint32_t PhysicalAddress;
 class PageManager {
 
   public:
-    PageManager(uint32_t totalMemorySize, PhysicalAddress vramAddress, int vramSizeByte);
+    PageManager(uintptr_t systemMemorySizeByte, PhysicalAddress vramAddress, uintptr_t vramSizeByte);
 
   public:
     void flushPageCache() const;
@@ -92,8 +92,8 @@ class PageManager {
   private:
     PageEntry* allocatePageTable() const;
 
-    void initializePagePool(int totalMemorySize);
-    void initializePageTablePool(int numTables);
+    void initializePagePool(uintptr_t systemMemorySizeByte);
+    void initializePageTablePool(uintptr_t poolSizeByte);
 
     PhysicalAddress align4Kb(PhysicalAddress address)
     {
@@ -142,16 +142,16 @@ class PageManager {
     BitMap* pageTablePool_;
     PhysicalAddress pageTablePoolAddress_;
     PhysicalAddress vramAddress_;
-    int vramSizeByte_;
+    uintptr_t vramSizeByte_;
     PageEntry* kernelDirectory_;
     BitMap* reservedDMAMap_;
     SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_; 
     void setPageDirectory(PhysicalAddress address);
     enum {
-        PAGE_TABLE_POOL_SIZE       = 2 * 1024 * 1024,
+        PAGE_TABLE_POOL_SIZE_BYTE   = 2 * 1024 * 1024,
         KERNEL_RESERVED_REGION_END = 0xC00000,
         DMA_RESERVED_REGION_START  = KERNEL_RESERVED_REGION_END,
-        DMA_REGION_SIZE_IN_BYTES   = 1 * 1024 * 1024,
+        DMA_REGION_SIZE_BYTE       = 1 * 1024 * 1024,
     };
 
   public:

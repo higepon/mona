@@ -18,21 +18,21 @@
 #include "Segments.h"
 #include "ihandlers.h"
 
-PageManager::PageManager(uint32_t totalMemorySize, PhysicalAddress vramAddress, int vramSizeByte)
+PageManager::PageManager(uintptr_t systemMemorySizeByte, PhysicalAddress vramAddress, uintptr_t vramSizeByte)
   : vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
-    initializePageTablePool(PAGE_TABLE_POOL_SIZE);
-    initializePagePool(totalMemorySize);
+    initializePageTablePool(PAGE_TABLE_POOL_SIZE_BYTE);
+    initializePagePool(systemMemorySizeByte);
 }
 
-void PageManager::initializePagePool(int totalMemorySize)
+void PageManager::initializePagePool(uintptr_t systemMemorySizeByte)
 {
-    uintptr_t numPages = bytesToPageNumber(totalMemorySize);
+    uintptr_t numPages = bytesToPageNumber(systemMemorySizeByte);
     memoryMap_ = new BitMap(numPages);
     ASSERT(memoryMap_);
 
     // After the kernel_reserved_region, region for DMA.
-    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_REGION_SIZE_IN_BYTES));
+    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_REGION_SIZE_BYTE));
     for (int i = 0; i < reservedDMAMap_->getBitsNumber(); i++) {
         int index = bytesToPageNumber(DMA_RESERVED_REGION_START + i * ARCH_PAGE_SIZE);
         memoryMap_->mark(index);
@@ -61,14 +61,14 @@ PageEntry* PageManager::createPageDirectory()
     return directory;
 }
 
-void PageManager::initializePageTablePool(int numTables)
+void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
 {
-    uint8_t* pool = (uint8_t*)malloc(numTables);
+    uintptr_t pool = (uintptr_t)malloc(poolSizeByte);
     ASSERT(pool);
 
     pageTablePoolAddress_ = align4Kb((PhysicalAddress)pool);
 
-    int actualNumTables = ((int)pool + PAGE_TABLE_POOL_SIZE - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
+    uintptr_t actualNumTables = (pool + poolSizeByte - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
     pageTablePool_ = new BitMap(actualNumTables);
     ASSERT(pageTablePool_);
 }
@@ -165,9 +165,6 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
     uint32_t vram = align4Kb(vramAddress_);
-    for (int i = 0; i < KERNEL_RESERVED_REGION_END / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i++) {
-        returnPageTable(getTableAt(directory, i));
-    }
 
     int vramIndex = getDirectoryIndex(vram);
     int vramMaxIndex = bytesToPageNumber(vramSizeByte_);
