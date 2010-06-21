@@ -38,7 +38,7 @@ void checkTypeSize() {
     bool isGateDesc = sizeof(GateDesc) == 8;
 
     /* check size of some types */
-    if (isByte && isWord && isDuint16_t && isTSS && isGDTR && isSegDesc && isGateDesc) {
+    if (isByte && isWord && isDuint16_t && isDuint64_t && isTSS && isGDTR && isSegDesc && isGateDesc) {
         return;
     } else {
         panic("checkTypeSize()");
