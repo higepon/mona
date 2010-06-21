@@ -129,6 +129,9 @@ private:
     uint8_t* allocateAlignedPage()
     {
         ContigousPhysicalMemory* data = new ContigousPhysicalMemory(PAGE_SIZE * 2);
+        if (data->getLastError() != M_OK) {
+            monapi_fatal("memory allocation error %d", data->getLastError());
+        }
         const uintptr_t phys = syscall_get_physical_address((uintptr_t)data->data());
         const uintptr_t aphys = (phys+ PAGE_MASK) & ~PAGE_MASK;
         uint8_t* page = (uint8_t *) (data->data() + aphys - phys);
@@ -202,6 +205,9 @@ private:
 
         const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
         ContigousPhysicalMemory* readDesc = new ContigousPhysicalMemory(MAX_QUEUE_SIZE);
+        if (readDesc->getLastError() != M_OK) {
+            monapi_fatal("memory allocation error %d", readDesc->getLastError());
+        }
         struct vring* vring = new struct vring;
         vring->num = numberOfDesc;
         // page aligned

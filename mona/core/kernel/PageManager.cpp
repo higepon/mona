@@ -33,7 +33,7 @@ void PageManager::initializePagePool(uintptr_t systemMemorySizeByte)
     ASSERT(memoryMap_);
 
     // After the kernel_reserved_region, region for DMA.
-    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_REGION_SIZE_BYTE));
+    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_RESERVED_REGION_SIZE_BYTE));
     for (int i = 0; i < reservedDMAMap_->getBitsNumber(); i++) {
         int index = bytesToPageNumber(DMA_RESERVED_REGION_START + i * ARCH_PAGE_SIZE);
         memoryMap_->mark(index);
@@ -65,8 +65,8 @@ void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
 
     pageTablePoolAddress_ = align4Kb((PhysicalAddress)pool);
 
-    uintptr_t actualNumTables = (pool + poolSizeByte - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
-    pageTablePool_ = new BitMap(actualNumTables);
+    uintptr_t numTables = (pool + poolSizeByte - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
+    pageTablePool_ = new BitMap(numTables);
     ASSERT(pageTablePool_);
 }
 
@@ -90,25 +90,27 @@ int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool i
 
 // allocate physically contigous memory.
 // virtio requires this.
-bool PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
+intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, int numPages)
 {
-    // contigous memory address should be mapped to this Range
-    // http://wiki.monaos429429.org/edit.php?Mona%2F%A5%E1%A5%E2%A5%EA%A5%DE%A5%C3%A5%D4%A5%F3%A5%B0
-    ASSERT(laddress >= 0x90000000 && laddress <= 0x9FFFFFFF);
+    if (laddress < SHARED_MEMORY_REGION_START || laddress > SHARED_MEMORY_REGION_END) {
+        return M_BAD_ADDRESS;
+    }
 
-    // should be aligned
-    ASSERT((laddress % ARCH_PAGE_SIZE) == 0);
+    if ((laddress % ARCH_PAGE_SIZE) != 0) {
+        return M_BAD_ADDRESS;
+    }
 
-    int foundMemory = memoryMap_->find(pageNum);
-    if (foundMemory == BitMap::NOT_FOUND) return false;
+    int foundMemory = memoryMap_->find(numPages);
+    if (foundMemory == BitMap::NOT_FOUND) {
+        return M_NO_MEMORY;
+    }
 
-    for (int i = foundMemory; i < foundMemory + pageNum; i++)
-    {
+    for (int i = foundMemory; i < foundMemory + numPages; i++) {
         PhysicalAddress paddress = i * ARCH_PAGE_SIZE;
         LinearAddress laddressCurrent = laddress + (i - foundMemory) * ARCH_PAGE_SIZE;
         map(directory, laddressCurrent, paddress, PAGE_WRITABLE, PAGE_USER);
     }
-    return true;
+    return M_OK;
 }
 
 void PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)

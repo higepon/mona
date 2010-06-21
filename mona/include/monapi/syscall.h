@@ -122,7 +122,7 @@ extern void syscall_stack_trace_dump(uint32_t tid);
 
 
 
-extern int syscall_allocate_contiguous(uint32_t laddress, int pageNum);
+extern intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum);
 extern void syscall_deallocate_contiguous(uint32_t laddress, int pageNum);
 
 extern void* malloc(unsigned long size);

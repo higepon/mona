@@ -36,7 +36,7 @@ class PageManager {
     uint8_t* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
     void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
-    bool allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum);
+    intptr_t allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum);
     void deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 
@@ -151,7 +151,9 @@ class PageManager {
         PAGE_TABLE_POOL_SIZE_BYTE   = 2 * 1024 * 1024,
         KERNEL_RESERVED_REGION_END = 0xC00000,
         DMA_RESERVED_REGION_START  = KERNEL_RESERVED_REGION_END,
-        DMA_REGION_SIZE_BYTE       = 1 * 1024 * 1024,
+        DMA_RESERVED_REGION_SIZE_BYTE = 1 * 1024 * 1024,
+        SHARED_MEMORY_REGION_START = 0x90000000,
+        SHARED_MEMORY_REGION_END   = 0x9FFFFFFF
     };
 
   public:

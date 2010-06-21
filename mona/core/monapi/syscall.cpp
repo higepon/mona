@@ -1090,7 +1090,7 @@ int syscall_remove_watch_point()
     return syscall0(SYSTEM_CALL_REMOVE_WATCH_POINT);
 }
 
-int syscall_allocate_contiguous(uint32_t laddress, int pageNum)
+intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum)
 {
     return syscall2(SYSTEM_CALL_ALLOCATE_CONTIGUOUS, laddress, pageNum);
 }

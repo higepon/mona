@@ -38,13 +38,15 @@
 
 class ContigousPhysicalMemory {
 public:
-    ContigousPhysicalMemory(uintptr_t size) : size_(size + 1), pageNum_((size_ + PAGE_SIZE - 1) / PAGE_SIZE)
+    ContigousPhysicalMemory(uintptr_t size) :
+        size_(size + 1),
+        pageNum_((size_ + PAGE_SIZE - 1) / PAGE_SIZE),
+        lastError_(M_OK)
     {
         uintptr_t address = startAddress;
-        bool ret = syscall_allocate_contiguous(address, pageNum_);
-        if (!ret) {
-            printf("panic virtio buffer error\n");
-            exit(-1);
+        lastError_ = syscall_allocate_contiguous(address, pageNum_);
+        if (lastError_ != M_OK) {
+            return;
         }
         startAddress += pageNum_ * PAGE_SIZE;
         data_ = (uint8_t*)address;
@@ -64,11 +66,13 @@ public:
 
     uint8_t* data() const { return data_; }
     uintptr_t size() const { return size_; }
+    intptr_t getLastError() const { return lastError_; }
 
 private:
     uintptr_t size_;
     int pageNum_;
     uint8_t* data_;
+    intptr_t lastError_;
     static uintptr_t startAddress;
 };
 
