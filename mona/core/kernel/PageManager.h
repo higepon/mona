@@ -36,7 +36,7 @@ class PageManager {
     uint8_t* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
     void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
-    intptr_t allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum);
+    intptr_t allocateContiguous(PageEntry* directory, LinearAddress laddress, uintptr_t size);
     void deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 

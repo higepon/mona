@@ -90,8 +90,9 @@ int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool i
 
 // allocate physically contigous memory.
 // virtio requires this.
-intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, int numPages)
+intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress laddress, uintptr_t size)
 {
+    logprintf("laddress=%x sizeByte=%x\n", laddress, size);
     if (laddress < SHARED_MEMORY_REGION_START || laddress > SHARED_MEMORY_REGION_END) {
         return M_BAD_ADDRESS;
     }
@@ -100,6 +101,7 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
         return M_BAD_ADDRESS;
     }
 
+    int numPages = bytesToPageNumber(size);
     int foundMemory = memoryMap_->find(numPages);
     if (foundMemory == BitMap::NOT_FOUND) {
         return M_NO_MEMORY;
@@ -110,12 +112,13 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
         LinearAddress laddressCurrent = laddress + (i - foundMemory) * ARCH_PAGE_SIZE;
         map(directory, laddressCurrent, paddress, PAGE_WRITABLE, PAGE_USER);
     }
-    return M_OK;
+    return numPages * ARCH_PAGE_SIZE;
 }
 
 void PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
 {
-    returnPages(directory, laddress, pageNum * ARCH_PAGE_SIZE);
+    // TODO
+//    returnPages(directory, laddress, pageNum * ARCH_PAGE_SIZE);
 }
 
 
@@ -164,27 +167,38 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     for (int i = KERNEL_RESERVED_REGION_END / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < ARCH_PAGE_TABLE_NUM; i++) {
         if (!isPresent(directory[i])) {
             continue;
         }
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         PageEntry* table = getTableAt(directory, i);
         LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
             if (!isPresent(table[j])) {
                 continue;
             }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             LinearAddress linearAddress = baseLinerAddress + ARCH_PAGE_SIZE * j;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_) {
                 continue;
             }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             returnPhysicalPage(address);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         returnPageTable(table);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     returnPageTable(directory);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return;
 }
 

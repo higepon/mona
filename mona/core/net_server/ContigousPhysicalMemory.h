@@ -32,6 +32,7 @@
 #ifndef MONA_CONTIGOUS_PHYSICAL_MEMORY_
 #define MONA_CONTIGOUS_PHYSICAL_MEMORY_
 
+#include <monapi.h>
 #include "virtio.h"
 
 #define CHECK_BUFFER(buf) buf.check(__FILE__, __LINE__)
@@ -40,15 +41,15 @@ class ContigousPhysicalMemory {
 public:
     ContigousPhysicalMemory(uintptr_t size) :
         size_(size + 1),
-        pageNum_((size_ + PAGE_SIZE - 1) / PAGE_SIZE),
         lastError_(M_OK)
     {
         uintptr_t address = startAddress;
-        lastError_ = syscall_allocate_contiguous(address, pageNum_);
-        if (lastError_ != M_OK) {
+        intptr_t ret = syscall_allocate_contiguous(address, size_);
+        if (ret < 0) {
+            lastError_ = ret;
             return;
         }
-        startAddress += pageNum_ * PAGE_SIZE;
+        startAddress += ret;
         data_ = (uint8_t*)address;
         memset(data_, 0, size_);
         data_[size_ - 1] = 0xcc;
@@ -70,7 +71,6 @@ public:
 
 private:
     uintptr_t size_;
-    int pageNum_;
     uint8_t* data_;
     intptr_t lastError_;
     static uintptr_t startAddress;
