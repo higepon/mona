@@ -63,11 +63,8 @@ void outCharacter(char c)
 static CommandParser* parser;
 void output(char* text, uint32_t length)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (length == 0) return;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     parser->parse((uint8_t*)text, length);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 #else
 void output(char* text, uint32_t length)
@@ -154,13 +151,9 @@ static void outLoop()
     const uint32_t BUFFER_SIZE = 1024;
     for (;;)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         char buffer[BUFFER_SIZE];
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         in.waitForRead();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint32_t size = in.read((uint8_t*)buffer, BUFFER_SIZE);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         buffer[size == BUFFER_SIZE ? BUFFER_SIZE - 1 : size] = '\0';
 //         for (int i = 0; i < size; i++) {
 //             _logprintf("<%c>", buffer[i]);
@@ -168,30 +161,24 @@ static void outLoop()
 
         // don't display ^EOP
         char* found = strstr_n(buffer, "^EOP", size);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (NULL != found)
         {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             memset(found, '\0', 4);
         }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         output(buffer, size);
     }
 }
 
 int main(int argc, char* argv[])
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     parser = new CommandParser(new ScreenWriter());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         exit(-1);
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     syscall_mthread_create(outLoop);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;
@@ -199,7 +186,6 @@ int main(int argc, char* argv[])
         switch (msg.header)
         {
         case MSG_SCREEN_GET_STREAM_HANDLE:
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, in.handle());
             break;
         default:

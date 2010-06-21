@@ -135,19 +135,19 @@ void syscall_entrance()
     {
 
         LinearAddress laddress = SYSTEM_CALL_ARG_1;
-        uintptr_t size = SYSTEM_CALL_ARG_2;
+        int pageNum = SYSTEM_CALL_ARG_2;
         setReturnValue(info, g_page_manager->allocateContiguous(g_currentThread->process->getPageDirectory(),
                                                        laddress,
-                                                       size));
+                                                       pageNum));
         break;
     }
     case SYSTEM_CALL_DEALLOCATE_CONTIGUOUS:
     {
         LinearAddress laddress = SYSTEM_CALL_ARG_1;
-        uintptr_t size = SYSTEM_CALL_ARG_2;
+        int pageNum = SYSTEM_CALL_ARG_2;
         g_page_manager->deallocateContiguous(g_currentThread->process->getPageDirectory(),
                                              laddress,
-                                             size);
+                                             pageNum);
         break;
     }
     case SYSTEM_CALL_SET_TIMER:

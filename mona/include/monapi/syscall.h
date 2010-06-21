@@ -119,8 +119,11 @@ extern int syscall_remove_watch_point();
 extern int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path);
 extern void syscall_stack_trace_disable(uint32_t pid);
 extern void syscall_stack_trace_dump(uint32_t tid);
-extern intptr_t syscall_allocate_contiguous(uintptr_t laddress, uintptr_t size);
-extern void syscall_deallocate_contiguous(uintptr_t laddress, uintptr_t size);
+
+
+
+extern intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum);
+extern void syscall_deallocate_contiguous(uint32_t laddress, int pageNum);
 
 extern void* malloc(unsigned long size);
 extern void* calloc(unsigned long n, unsigned long s);

@@ -22,53 +22,44 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     static uint32_t sharedId = 0x2000;
     sharedId++;
 
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
     bool   isOpen;
     bool   isAttaced;
 
     /* attach Shared to this process */
     systemcall_mutex_lock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     systemcall_mutex_unlock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     if (!isOpen || !isAttaced) return 4;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     /* create process */
     enter_kernel_lock_mode();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     /* attach binary image to process */
     systemcall_mutex_lock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
     isAttaced = SharedMemoryObject::attach(sharedId, process, Loader::ORG);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     systemcall_mutex_unlock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     if (!isOpen || !isAttaced) return 5;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     memcpy((uint8_t*)0x80000000, image, size);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     /* detach from this process */
     systemcall_mutex_lock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     SharedMemoryObject::detach(sharedId, g_currentThread->process);
     systemcall_mutex_unlock(g_mutexShared);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
     /* set arguments */
     if (list != NULL)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         char* p;
         CommandOption* option;
         List<char*>* target = process->getArguments();
@@ -93,12 +84,9 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
             target->add(p);
         }
     }
-    logprintf("%s %s:%d entrypoint=%x\n", __func__, __FILE__, __LINE__, entrypoint);
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_scheduler->Join(thread);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     exit_kernel_lock_mode();
 
     return 0;

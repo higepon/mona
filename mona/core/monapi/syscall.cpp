@@ -1090,14 +1090,14 @@ int syscall_remove_watch_point()
     return syscall0(SYSTEM_CALL_REMOVE_WATCH_POINT);
 }
 
-intptr_t syscall_allocate_contiguous(uintptr_t laddress, uintptr_t size)
+intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum)
 {
-    return syscall2(SYSTEM_CALL_ALLOCATE_CONTIGUOUS, laddress, size);
+    return syscall2(SYSTEM_CALL_ALLOCATE_CONTIGUOUS, laddress, pageNum);
 }
 
-void syscall_deallocate_contiguous(uintptr_t laddress, uintptr_t size)
+void syscall_deallocate_contiguous(uint32_t laddress, int pageNum)
 {
-    syscall2(SYSTEM_CALL_DEALLOCATE_CONTIGUOUS, laddress, size);
+    syscall2(SYSTEM_CALL_DEALLOCATE_CONTIGUOUS, laddress, pageNum);
 }
 
 uint64_t syscall_now_in_nanosec()
