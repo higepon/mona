@@ -242,7 +242,7 @@ PageEntry* PageManager::allocatePageTable() const
         g_console->printf("not enough memory %s %d", __FILE__, __LINE__);
         return NULL;
     }
-
+    logprintf("allocate page table = %d\n", foundMemory);
     uint8_t* address = (uint8_t*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
     bzero(address, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     return (PageEntry*)(address);

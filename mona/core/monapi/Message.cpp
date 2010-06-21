@@ -182,6 +182,7 @@ static bool isSendBufferPacket(MessageInfo* msg1, MessageInfo* msg2)
 // caller should delete BufferReceiver.
 BufferReceiver* Message::receiveBuffer(uintptr_t tid)
 {
+    BufferReceiver* receiver;
     for (;;) {
         MessageInfo expectedMsg;
         expectedMsg.from = tid;
@@ -190,7 +191,6 @@ BufferReceiver* Message::receiveBuffer(uintptr_t tid)
             continue;
         }
 
-        BufferReceiver* receiver;
         if (msg.header == Message::MSG_SEND_BUFFER_START) {
             uintptr_t bufferSize = msg.arg1;
             receiver = new BufferReceiver(bufferSize);
