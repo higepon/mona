@@ -16,7 +16,8 @@ static int typeToFind = 0;
 static void accumCount(int id, KObject* obj)
 {
 // To check resource leak.
-#if 0
+#if 1
+    logprintf("obj=%x\n", obj);
     logprintf("obj=%x type=%d name=%s\n", obj, obj->getType(), obj->getOwner() == NULL ? "KERNEL" : obj->getOwner()->getName());
 #endif
     if (obj->getType() == typeToFind) {
