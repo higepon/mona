@@ -19,16 +19,16 @@
 #include "ihandlers.h"
 
 PageManager::PageManager(uintptr_t systemMemorySizeByte, PhysicalAddress vramAddress, uintptr_t vramSizeByte)
-  : vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
+    : systemMemorySizeByte_(systemMemorySizeByte), vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
     ASSERT((vramAddress_ % ARCH_PAGE_SIZE) == 0);
     initializePageTablePool(PAGE_TABLE_POOL_SIZE_BYTE);
-    initializePagePool(systemMemorySizeByte);
+    initializePagePool();
 }
 
-void PageManager::initializePagePool(uintptr_t systemMemorySizeByte)
+void PageManager::initializePagePool()
 {
-    uintptr_t numPages = bytesToPageNumber(systemMemorySizeByte);
+    uintptr_t numPages = bytesToPageNumber(systemMemorySizeByte_);
     memoryMap_ = new BitMap(numPages);
     ASSERT(memoryMap_);
 
@@ -52,7 +52,9 @@ PageEntry* PageManager::createPageDirectory()
 
     // map VRAM
     for (LinearAddress address = vramAddress_; address  < vramAddress_ + vramSizeByte_; address += ARCH_PAGE_SIZE) {
-        memoryMap_->mark(address / ARCH_PAGE_SIZE); // this range is always marked as reserved.
+        if (address <= systemMemorySizeByte_) {
+            memoryMap_->mark(address / ARCH_PAGE_SIZE); // this range is always marked as reserved.
+        }
         mapAsLinearEqPhysical(directory, address, PAGE_WRITABLE, PAGE_USER);
     }
     return directory;

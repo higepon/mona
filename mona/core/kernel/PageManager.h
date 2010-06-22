@@ -92,7 +92,7 @@ class PageManager {
   private:
     PageEntry* allocatePageTable() const;
 
-    void initializePagePool(uintptr_t systemMemorySizeByte);
+    void initializePagePool();
     void initializePageTablePool(uintptr_t poolSizeByte);
 
     PhysicalAddress align4Kb(PhysicalAddress address)
@@ -138,6 +138,7 @@ class PageManager {
     }
 
   private:
+    uintptr_t systemMemorySizeByte_;
     BitMap* memoryMap_;
     BitMap* pageTablePool_;
     PhysicalAddress pageTablePoolAddress_;
