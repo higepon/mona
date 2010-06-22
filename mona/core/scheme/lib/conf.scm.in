@@ -361,10 +361,10 @@
 (call-process "/APPS/TCOND.EX5")
 (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5")
 (call-process "/APPS/TMSG.EX5")
-(call-process "/APPS/TSOCK.EX5")
+(call-process "/APPS/TSYSCALL.EX5")
 (call-process "/APPS/TRAMDISK.EX5")
 (call-process "/APPS/TDIE.EX5")
-(call-process "/APPS/TSYSCALL.EX5")
+(call-process "/APPS/TSOCK.EX5")
 (call-process "/APPS/HELLO.EX5")
 ;(start-process "/APPS/NET.EX5")
 

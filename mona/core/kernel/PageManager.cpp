@@ -167,10 +167,10 @@ void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress addr
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
     for (int i = KERNEL_RESERVED_REGION_END / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < ARCH_PAGE_TABLE_NUM; i++) {
+
         if (!isPresent(directory[i])) {
             continue;
         }
-
         PageEntry* table = getTableAt(directory, i);
         LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
@@ -187,6 +187,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
         returnPageTable(table);
     }
     returnPageTable(directory);
+
     return;
 }
 
