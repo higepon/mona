@@ -31,5 +31,7 @@
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 
+void malloc_stats(); // for malloc debug
+
 #endif
 

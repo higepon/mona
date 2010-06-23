@@ -11,6 +11,7 @@ extern "C"
     void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
     void* mspace_realloc(mspace msp, void* mem, size_t newsize);
     void mspace_free(mspace msp, void* mem);
+    void mspace_malloc_stats(mspace msp);
 }
 
 mspace g_msp;
@@ -229,6 +230,10 @@ static inline void leaveGuard() {
 /*----------------------------------------------------------------------
     malloc / free
 ----------------------------------------------------------------------*/
+void malloc_stats()
+{
+    mspace_malloc_stats(g_msp);
+}
 void* malloc(unsigned long size) {
     enterGuard();
     void* ret = mspace_malloc(g_msp,size);
@@ -3103,7 +3108,7 @@ static struct mallinfo internal_mallinfo(mstate m) {
 #endif
 
 static void internal_malloc_stats(mstate m) {
-/*
+
   if (!PREACTION(m)) {
     size_t maxfp = 0;
     size_t fp = 0;
@@ -3127,13 +3132,13 @@ static void internal_malloc_stats(mstate m) {
       }
     }
 
-    fprintf(stderr, "max system uint8_ts = %10lu\n", (unsigned long)(maxfp));
-    fprintf(stderr, "system uint8_ts     = %10lu\n", (unsigned long)(fp));
-    fprintf(stderr, "in use uint8_ts     = %10lu\n", (unsigned long)(used));
+    _logprintf("max system uint8_ts = %x\n", (unsigned long)(maxfp));
+    _logprintf("system uint8_ts     = %x\n", (unsigned long)(fp));
+    _logprintf("in use uint8_ts     = %x\n", (unsigned long)(used));
 
     POSTACTION(m);
   }
-*/
+
 }
 
 

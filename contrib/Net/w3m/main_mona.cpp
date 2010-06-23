@@ -2495,6 +2495,7 @@ int main(int argc, char* argv[]) {
     CurrentTab = NULL;
 
     char *initUrl = "file:///APPS/W3M.APP/MANUAL.HTM";
+    malloc_stats();
 
     for(int i = 1; i < argc; i++)
     {
