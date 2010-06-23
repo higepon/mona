@@ -320,7 +320,7 @@ public:
     Firstbuf = Currentbuf = newbuf;
 
     if(newbuf == NULL)
-        MONA_TRACE("newbuf == null %s\n", url);
+      MONA_TRACE("newbuf == null\n");
 
     displayBuffer(newbuf, B_FORCE_REDRAW);
     if(m_isAuto)
