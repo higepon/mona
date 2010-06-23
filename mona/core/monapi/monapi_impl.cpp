@@ -234,6 +234,7 @@ void* malloc(unsigned long size) {
     void* ret = mspace_malloc(g_msp,size);
     leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    _logprintf("address=%x malloc size=%d %s\n", ret, size, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return ret;
 }
 
@@ -242,6 +243,7 @@ void* calloc(unsigned long n, unsigned long s) {
     void* ret =  mspace_calloc(g_msp,n,s);
     leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    _logprintf("address=%x calloc size=%d %s\n", ret, s, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return ret;
 }
 
@@ -250,10 +252,12 @@ void* realloc(void* address, unsigned long size) {
     void* ret = mspace_realloc(g_msp, address, size);
     leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    _logprintf("address=%x realloc size=%d %s\n", ret, size, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return ret;
 }
 
 void free(void * address) {
+    _logprintf("address=%x free %s\n", address, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     enterGuard();
     mspace_free(g_msp, address);
     leaveGuard();
@@ -271,10 +275,12 @@ void* operator new(size_t size) {
     void* ret =  mspace_malloc(g_msp,size);
     leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    _logprintf("address=%x new size=%d %s\n", ret, size, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return ret;
 }
 
 void operator delete(void* address) {
+    _logprintf("address=%x delete %s\n", address, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     if (address == NULL) return;
     enterGuard();
     mspace_free(g_msp, address);
@@ -290,6 +296,7 @@ void* operator new[](size_t size) {
     void* ret = mspace_malloc(g_msp,size);
     leaveGuard();
     if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    _logprintf("address=%x new[] size=%d %s\n", ret, size, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return ret;
 }
 
@@ -298,6 +305,7 @@ void operator delete[](void* address) {
     enterGuard();
     mspace_free(g_msp, address);
     leaveGuard();
+    _logprintf("address=%x delete[] %s\n", address, MonAPI::System::getProcessInfo() == NULL ? "NONE" : MonAPI::System::getProcessInfo()->name);
     return;
 }
 
