@@ -11,7 +11,7 @@ extern "C"
     void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
     void* mspace_realloc(mspace msp, void* mem, size_t newsize);
     void mspace_free(mspace msp, void* mem);
-    void mspace_malloc_stats(mspace msp);
+    void mspace_malloc_stats_store(mspace msp, struct malloc_stat* st);
 }
 
 mspace g_msp;
@@ -230,10 +230,11 @@ static inline void leaveGuard() {
 /*----------------------------------------------------------------------
     malloc / free
 ----------------------------------------------------------------------*/
-void malloc_stats()
+void malloc_stats(struct malloc_stat* st)
 {
-    mspace_malloc_stats(g_msp);
+    mspace_malloc_stats_store(g_msp, st);
 }
+
 void* malloc(unsigned long size) {
     enterGuard();
     void* ret = mspace_malloc(g_msp,size);
@@ -3099,6 +3100,39 @@ static struct mallinfo internal_mallinfo(mstate m) {
 }
 #endif
 
+// for Mona
+static void internal_malloc_stats_store(mstate m, struct malloc_stat* st)
+{
+  if (!PREACTION(m)) {
+    size_t maxfp = 0;
+    size_t fp = 0;
+    size_t used = 0;
+    check_malloc_state(m);
+    if (is_initialized(m)) {
+      msegmentptr s = &m->seg;
+      maxfp = m->max_footprint;
+      fp = m->footprint;
+      used = fp - (m->topsize + TOP_FOOT_SIZE);
+
+      while (s != 0) {
+        mchunkptr q = align_as_chunk(s->base);
+        while (segment_holds(s, q) &&
+               q != m->top && q->head != FENCEPOST_HEAD) {
+          if (!cinuse(q))
+            used -= chunksize(q);
+          q = next_chunk(q);
+        }
+        s = s->next;
+      }
+    }
+
+    st->max_system = maxfp;
+    st->system = fp;
+    st->used = used;
+    POSTACTION(m);
+  }
+}
+
 static void internal_malloc_stats(mstate m) {
 
   if (!PREACTION(m)) {
@@ -5016,6 +5050,17 @@ void mspace_malloc_stats(mspace msp) {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
+
+void mspace_malloc_stats_store(mspace msp, struct malloc_stat* st) {
+  mstate ms = (mstate)msp;
+  if (ok_magic(ms)) {
+    internal_malloc_stats_store(ms, st);
+  }
+  else {
+    USAGE_ERROR_ACTION(ms,ms);
+  }
+}
+
 
 size_t mspace_footprint(mspace msp) {
   size_t result;

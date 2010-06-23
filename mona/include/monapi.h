@@ -31,7 +31,14 @@
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 
-void malloc_stats(); // for malloc debug
+typedef struct malloc_stat
+{
+    uintptr_t max_system;
+    uintptr_t system;
+    uintptr_t used;
+};
+
+void malloc_stats(struct malloc_stat* st); // for malloc debug
 
 #endif
 
