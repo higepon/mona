@@ -33,6 +33,8 @@
 
 #include <sys/types.h>
 
+# define EAI_AGAIN   -3    /* Temporary failure in name resolution.  */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
