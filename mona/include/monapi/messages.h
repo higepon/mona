@@ -77,6 +77,17 @@ extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);
 extern uint32_t monapi_process_wait_terminated(uint32_t tid);
 
+typedef struct malloc_stat
+{
+    uintptr_t max_system;
+    uintptr_t system;
+    uintptr_t used;
+};
+
+void malloc_stats(struct malloc_stat* st); // for malloc debug
+
+#define MALLOC_STATS() { struct malloc_stat st; malloc_stats(&st); logprintf("used %x %s:%d\n", st.used, __FILE__, __LINE__); }
+
 #ifdef __cplusplus
 }
 #endif
