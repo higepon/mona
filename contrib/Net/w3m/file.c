@@ -1777,7 +1777,7 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 #endif
     HRequest hr;
     ParsedURL *volatile auth_pu;
-
+    MALLOC_STATS();
     tpath = path;
     prevtrap = NULL;
     add_auth_cookie_flag = 0;
