@@ -242,6 +242,7 @@ loadSomething(URLFile *f,
 }
 
 #ifdef MONA
+#include <monapi/messages.h>
 extern uint32_t monapi_file_delete(const char* file);
 extern void _logprintf(const char* format, ...);
 
@@ -416,8 +417,11 @@ examineFile(char *path, URLFile *uf)
         ) {
 	uf->stream = NULL;
 	return;
+
     }
+    MALLOC_STATS();
     uf->stream = openIS(path);
+    MALLOC_STATS();
     if (!do_download) {
 	if (use_lessopen && getenv("LESSOPEN") != NULL) {
 #ifdef MONA

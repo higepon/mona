@@ -18,6 +18,8 @@
 
 #ifndef MONA
 #include <sys/stat.h>
+#else
+#include <monapi/messages.h>
 #endif /* not MONA */
 #ifdef __EMX__
 #include <io.h>			/* ?? */

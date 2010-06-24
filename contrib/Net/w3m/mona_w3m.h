@@ -1,6 +1,7 @@
 #pragma once
 
 #include <baygui.h>
+#include <monapi/messages.h>
 
 extern "C" {
 #include <assert.h>
