@@ -31,7 +31,7 @@ public:
     {
         ORG            = 0xA0000000,
         //       MAX_IMAGE_SIZE = (4096 * 150)
-       MAX_IMAGE_SIZE = (4 * 1024 * 1024)
+       MAX_IMAGE_SIZE = (6 * 1024 * 1024)
     };
 
 };

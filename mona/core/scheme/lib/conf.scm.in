@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
 
 ;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
 ;; (define (mona-gui-get-window-title w) w)
@@ -356,6 +356,7 @@
 ;; (print "...")
 ;; (tstd)
 ;; (print "done")
+(call-process "/APPS/MOSH.EX5")
 (call-process "/APPS/TMISC.EX5")
 (call-process "/APPS/TMUTEX.EX5")
 (call-process "/APPS/TCOND.EX5")

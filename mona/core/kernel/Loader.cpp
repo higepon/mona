@@ -25,6 +25,7 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     bool   isOpen;
     bool   isAttaced;
 
+    ASSERT(size < MAX_IMAGE_SIZE);
     /* attach Shared to this process */
     systemcall_mutex_lock(g_mutexShared);
 
