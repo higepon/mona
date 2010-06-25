@@ -47,6 +47,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  setjmp/setjmp_c.c \
 	  dirent/opendir.c dirent/closedir.c dirent/dirutil.c dirent/readdir.c\
 	  dirent/rewinddir.c dirent/telldir.c dirent/seekdir.c \
+      unistd/environ.c  \
 #	  inttypes/imaxdiv.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \
