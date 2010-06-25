@@ -20,6 +20,7 @@ template <class T> class BinaryTree {
     bool contains(const int key) const;
     T add(const int key, const T element);
     T remove(const int key);
+    void traverse(void (*func)(int key, T element));
 
   private:
     struct Node {
@@ -34,12 +35,12 @@ template <class T> class BinaryTree {
 
   private:
     T add(Node*& tree, const int key, const T element);
+    void traverse(Node* node, void (*func)(int key, T element));
     bool contains(const Node* tree, const int key) const;
     void clear();
     void clear(Node*& tree);
     T get(const Node* tree, const int key) const;
     T get_lower_nearest(const Node* tree, const int key) const;
-    
 };
 
 template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements_(0) {
@@ -163,6 +164,21 @@ template <class T> bool BinaryTree<T>::contains(const Node* tree, const int key)
     } else {
         return contains(tree->right, key);
     }
+}
+
+template <class T> void BinaryTree<T>::traverse(void (*func)(int key, T element))
+{
+    traverse(root_, func);
+}
+
+template <class T> void BinaryTree<T>::traverse(Node* n, void (*func)(int key, T element))
+{
+    if (NULL == n) {
+        return;
+    }
+    traverse(n->left, func);
+    (*func)(n->key, n->element);
+    traverse(n->right, func);
 }
 
 template <class T> T BinaryTree<T>::remove(const int key) {

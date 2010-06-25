@@ -17,12 +17,10 @@
 
 class Condition : public KObject {
 public:
-    Condition() : waitList_(new HList<Thread*>) {}
-    virtual ~Condition() {}
-
-    intptr_t checkSecurity(Thread* thread)
+    Condition() {}
+    virtual ~Condition()
     {
-        return M_OK;
+        ASSERT(waitList_.size() == 0);
     }
 
     intptr_t getType() const
@@ -33,7 +31,7 @@ public:
     intptr_t wait(Thread* thread)
     {
         enter_kernel_lock_mode();
-        waitList_->add(thread);
+        waitList_.add(thread);
         thread->setWaitingCondition(this);
         g_scheduler->WaitEvent(thread, MEvent::CONDITION_NOTIFY);
         return Scheduler::YIELD;
@@ -41,14 +39,13 @@ public:
 
     bool removeFromWaitList(Thread* thread)
     {
-        Thread* removedThread = waitList_->remove(thread);
-        return thread == removedThread;
+        return waitList_.remove(thread);
     }
 
     intptr_t waitTimeout(Thread* thread, intptr_t timeoutTick)
     {
         enter_kernel_lock_mode();
-        waitList_->add(thread);
+        waitList_.add(thread);
         thread->setWaitingCondition(this);
         g_scheduler->Sleep(thread, timeoutTick);
         // todo
@@ -59,8 +56,10 @@ public:
     intptr_t notifyAll()
     {
         enter_kernel_lock_mode();
-        while (!waitList_->isEmpty()) {
-            Thread* thread = waitList_->removeAt(0);
+        while (!waitList_.isEmpty()) {
+            Thread* thread = NULL;
+            bool isRemoved = waitList_.removeAt(0, &thread);
+            ASSERT(isRemoved);
             thread->setWaitingCondition(NULL);
             g_scheduler->EventComes(thread, MEvent::CONDITION_NOTIFY);
         }
@@ -68,9 +67,7 @@ public:
     }
 
 private:
-    List<Thread*>* waitList_;
-
-
+    HList<Thread*> waitList_;
 };
 
 #endif

@@ -12,13 +12,13 @@ public:
     virtual ~List() {}
 
 public:
-    virtual void add(T element)              = 0;
-    virtual T removeAt(int index)            = 0;
-    virtual T remove(T element)              = 0;
-    virtual T get(int index) const           = 0;
-    virtual bool isEmpty() const             = 0;
-    virtual int size() const                 = 0;
-    virtual bool hasElement(T element) const = 0;
+    virtual void add(T element)                 = 0;
+    virtual bool removeAt(int index, T* found = NULL) = 0;
+    virtual bool remove(T element)              = 0;
+    virtual T get(int index) const              = 0;
+    virtual bool isEmpty() const                = 0;
+    virtual int size() const                    = 0;
+    virtual bool hasElement(T element) const    = 0;
 };
 
 #endif

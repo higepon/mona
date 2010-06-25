@@ -3,11 +3,11 @@
 #
 
 TARGET  = W3M
-INSTDIR = $(BINDIR)/APPS/W3M/$(TARGET).APP
+INSTDIR = $(BINDIR)/APPS/$(TARGET).APP
 DOCDIR=doc-jp
 INSTFILES  = $(DOCDIR)/MANUAL.html $(DOCDIR)/FAQ.html  $(DOCDIR)/STORY.html  $(DOCDIR)/README  $(DOCDIR)/README.cygwin  $(DOCDIR)/README.dict  $(DOCDIR)/README.func  $(DOCDIR)/README.img  $(DOCDIR)/README.m17n  $(DOCDIR)/README.mouse  $(DOCDIR)/README.pre_form  $(DOCDIR)/README.tab  $(DOCDIR)/keymap.default  $(DOCDIR)/keymap.lynx  $(DOCDIR)/menu.default  $(DOCDIR)/menu.submenu W3M.map
 CLEANFILES = funcname.c funcname1.h funcname2.h
-MONADIR=../../mona
+MONADIR=../../../mona
 SHAREDIR   = $(MONADIR)/share
 include Makefile.boehm_gc.inc
 AWK=awk

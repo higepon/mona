@@ -11,6 +11,7 @@ extern "C"
     void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
     void* mspace_realloc(mspace msp, void* mem, size_t newsize);
     void mspace_free(mspace msp, void* mem);
+    void mspace_malloc_stats_store(mspace msp, struct malloc_stat* st);
 }
 
 mspace g_msp;
@@ -72,8 +73,6 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 void invokeFuncList(FuncVoid** list, const char* file, int line)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
-//    _logprintf("%s:[%s:%s:%d]address=%x\n", __func__, pi.name, file, line, list);
-//    _logprintf("%s:outStream=%x, &outStream=%x, inStream=%x &inStream=%x\n", __func__, outStream, &outStream, inStream, &inStream);
     int count = (int)*list++;
     list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
     if (count == -1)
@@ -161,10 +160,13 @@ extern "C" int user_start_c_impl(FuncMain* main)
     eop[3] = 'P';
     eop[4] = '\0';
 
-    MonAPI::System::getStdoutStream();
-    // ここに Wiki へのリンクを
-    outStream->write((uint8_t*)eop, 5);
-    for (int i = 1; i < argc; i++) delete [] argv[i];
+    outStream = MonAPI::System::getStdoutStream();
+    if (outStream) {
+        outStream->write((uint8_t*)eop, 5);
+    }
+    for (int i = 1; i < argc; i++) {
+        delete [] argv[i];
+    }
     delete [] argv;
 //    if (dll) invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
 //    exit(result);
@@ -228,6 +230,11 @@ static inline void leaveGuard() {
 /*----------------------------------------------------------------------
     malloc / free
 ----------------------------------------------------------------------*/
+void malloc_stats(struct malloc_stat* st)
+{
+    mspace_malloc_stats_store(g_msp, st);
+}
+
 void* malloc(unsigned long size) {
     enterGuard();
     void* ret = mspace_malloc(g_msp,size);
@@ -3093,8 +3100,9 @@ static struct mallinfo internal_mallinfo(mstate m) {
 }
 #endif
 
-static void internal_malloc_stats(mstate m) {
-/*
+// for Mona
+static void internal_malloc_stats_store(mstate m, struct malloc_stat* st)
+{
   if (!PREACTION(m)) {
     size_t maxfp = 0;
     size_t fp = 0;
@@ -3118,13 +3126,45 @@ static void internal_malloc_stats(mstate m) {
       }
     }
 
-    fprintf(stderr, "max system uint8_ts = %10lu\n", (unsigned long)(maxfp));
-    fprintf(stderr, "system uint8_ts     = %10lu\n", (unsigned long)(fp));
-    fprintf(stderr, "in use uint8_ts     = %10lu\n", (unsigned long)(used));
+    st->max_system = maxfp;
+    st->system = fp;
+    st->used = used;
+    POSTACTION(m);
+  }
+}
+
+static void internal_malloc_stats(mstate m) {
+
+  if (!PREACTION(m)) {
+    size_t maxfp = 0;
+    size_t fp = 0;
+    size_t used = 0;
+    check_malloc_state(m);
+    if (is_initialized(m)) {
+      msegmentptr s = &m->seg;
+      maxfp = m->max_footprint;
+      fp = m->footprint;
+      used = fp - (m->topsize + TOP_FOOT_SIZE);
+
+      while (s != 0) {
+        mchunkptr q = align_as_chunk(s->base);
+        while (segment_holds(s, q) &&
+               q != m->top && q->head != FENCEPOST_HEAD) {
+          if (!cinuse(q))
+            used -= chunksize(q);
+          q = next_chunk(q);
+        }
+        s = s->next;
+      }
+    }
+
+    _logprintf("max system uint8_ts = %x\n", (unsigned long)(maxfp));
+    _logprintf("system uint8_ts     = %x\n", (unsigned long)(fp));
+    _logprintf("in use uint8_ts     = %x\n", (unsigned long)(used));
 
     POSTACTION(m);
   }
-*/
+
 }
 
 
@@ -5010,6 +5050,17 @@ void mspace_malloc_stats(mspace msp) {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
+
+void mspace_malloc_stats_store(mspace msp, struct malloc_stat* st) {
+  mstate ms = (mstate)msp;
+  if (ok_magic(ms)) {
+    internal_malloc_stats_store(ms, st);
+  }
+  else {
+    USAGE_ERROR_ACTION(ms,ms);
+  }
+}
+
 
 size_t mspace_footprint(mspace msp) {
   size_t result;

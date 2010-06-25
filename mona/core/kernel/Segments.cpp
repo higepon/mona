@@ -11,8 +11,8 @@
   \date   create:2003/10/19 update:$Date$
 */
 
-#include <sys/HList.h>
 #include "global.h"
+#include <sys/HList.h>
 #include "Segments.h"
 
 /* Segment Faults */
@@ -71,7 +71,10 @@ bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     /* page allocation */
     Process* current = g_currentThread->process;
-    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
+    g_page_manager->mapOnePage(current->getPageDirectory(),
+                               address,
+                               PageManager::PAGE_WRITABLE,
+                               current->isUserMode());
 
     return true;
 }
@@ -128,7 +131,10 @@ bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
 
     /* page allocation */
     Process* current = g_currentThread->process;
-    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
+    g_page_manager->mapOnePage(current->getPageDirectory(),
+                               address,
+                               PageManager::PAGE_WRITABLE,
+                               current->isUserMode());
 
     return true;
 }
@@ -216,17 +222,23 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
     uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
     Process* current = g_currentThread->process;
 
-    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED)
-    {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
+    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
+        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(),
+                                               address,
+                                               PageManager::PAGE_WRITABLE,
+                                               PageManager::PAGE_USER);
     }
     else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
     {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, writable_, true);
+        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else
     {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, writable_, true);
+        mapResult = g_page_manager->mapOnePageByPhysicalAddress(current->getPageDirectory(),
+                                                                address,
+                                                                mappedAddress,
+                                                                writable_,
+                                                                PageManager::PAGE_USER);
     }
     return (mapResult != -1);
 }
@@ -292,7 +304,7 @@ SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid,
         uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
         uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
 
-        if (PageManager::isPresent(&(directory[directoryIndex])))
+        if (PageManager::isPresent(directory[directoryIndex]))
         {
             table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
         } else
@@ -330,8 +342,9 @@ void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 SharedMemoryObject::~SharedMemoryObject()
 {
     for (int i = 0; i < physicalPageCount_; i++) {
-
-        g_page_manager->returnPhysicalPage(physicalPages_[i]);
+        if (physicalPages_[i] != UN_MAPPED) {
+            g_page_manager->returnPhysicalPage(physicalPages_[i]);
+        }
     }
 
     delete[] physicalPages_;
@@ -347,7 +360,6 @@ SharedMemoryObject::~SharedMemoryObject()
 void SharedMemoryObject::setup()
 {
     g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
-
     SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
     g_dllSharedObject = SharedMemoryObject::find(0x7000);
 ;}
@@ -363,7 +375,6 @@ void SharedMemoryObject::setup()
 SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 {
     SharedMemoryObject* current;
-
     for (int i = 0; i < g_sharedMemoryObjectList->size(); i++)
     {
         current = g_sharedMemoryObjectList->get(i);
@@ -390,9 +401,7 @@ SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 bool SharedMemoryObject::open(uint32_t id, uint32_t size)
 {
     SharedMemoryObject* target = find(id);
-
     if (0 == size) return false;
-
     /* new SharedMemory */
     if (target == NULL)
     {

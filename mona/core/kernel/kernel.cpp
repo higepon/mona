@@ -1,7 +1,7 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002-2009 Higepon
+    Copyright (c) 2002-2010 Higepon
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
@@ -74,6 +74,7 @@
 #include "apm.h"
 #include "addressmap.h"
 #include "Uart.h"
+#include "KObjectService.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -83,10 +84,6 @@
 const char* version = "Mona version.0.3.0 $Date::                           $";
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
-
-mones::Nic* g_nic;
-mones::FrameNode* g_frames;
-mones::FrameNode* g_free_frames;
 
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
@@ -102,7 +99,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 void startKernel()
 {
     /* kernel memory range */
-    km.initialize(0x200000, 0x7fffff);
+    km.initialize(0x200000, 0xBfffff);
 
     /* APM */
     g_apmInfo = new APMInfo;
@@ -221,60 +218,41 @@ void startKernel()
     {
         apm_init();
     }
-    dumpAddressMap();
 
+    dumpAddressMap();
 
     /* shared memory object */
     SharedMemoryObject::setup();
-
     /* IDManager */
     g_id = new IDManager();
-
-    /* Mutex */
-    g_mutexShared = systemcall_mutex_create();
-
+    /* This mutex has no owner, so will never deleted */
+    g_mutexShared = KObjectService::createNullOwner<KMutex>();
     /* Paging start */
-    g_page_manager = new PageManager(g_total_system_memory);
-    g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
+    PhysicalAddress vramAddress = g_vesaDetail->physBasePtr;
+    int vramSizeBytes = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
+    g_page_manager = new PageManager(g_total_system_memory, vramAddress, vramSizeBytes);
+    g_page_directory = g_page_manager->createPageDirectory();
+    g_page_manager->startPaging((PhysicalAddress)g_page_directory);
 
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
     Thread* dummy2 = new Thread();
     g_prevThread    = dummy1->tinfo;
     g_currentThread = dummy2->tinfo;
-
     /* this should be called, before timer enabled */
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
 
     /* messenger */
     g_messenger = new Messenger(g_scheduler);
-
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle);
     g_scheduler->Join(g_idleThread, ThreadPriority::Min);
-
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
     g_scheduler->Join(initThread);
-
-    g_nic = mones::NicFactory::create();
-    g_frames = new mones::FrameNode;
-    g_free_frames = new mones::FrameNode;
-    g_frames->Initialize();
-    g_free_frames->Initialize();
-    for (int i = 0; i < 48; i++)
-    {
-        g_free_frames->AddToNext(new mones::FrameNode);
-    }
-
-    if (g_nic)
-    {
-        g_nic->enableNetwork();
-    }
-
 
     disableTimer();
     disableKeyboard();
@@ -295,8 +273,6 @@ void startKernel()
     g_console->printf("%s:%d\n", __FILE__, __LINE__);
 */
     enableTimer();
-    g_console->printf("%s:%d", __FILE__, __LINE__);
-
 #ifdef HIGE
 
 #endif

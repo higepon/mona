@@ -1,7 +1,5 @@
 /*
- * Thread.cpp - 
- *
- *   Copyright (c) 2009  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
+ *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -26,40 +24,44 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: Thread.cpp 183 2008-07-04 06:19:28Z higepon $
+ *  $Id: KObjectService.cpp 183 2008-07-04 06:19:28Z higepon $
  */
 
 #include "global.h"
-#include "sys/HList.h"
-#include "Thread.h"
+#include "KObjectService.h"
+#include "KObject.h"
+#include "Mutex.h"
+#include "syscalls.h"
+#include "io.h"
+#include "Condition.h"
 
-
-Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondition_(NULL)
+bool KObjectService::destroy(intptr_t id, KObject* obj)
 {
-    clearEventWaiting();
-    /* thread information */
-    tinfo = new ThreadInfo;
-    ASSERT(tinfo);
-    tinfo->thread = this;
-
-    /* thread information arch dependent */
-    tinfo->archinfo = new ArchThreadInfo;
-    ASSERT(tinfo->archinfo);
-
-    messageList = new HList<MessageInfo*>();
-    ASSERT(messageList);
+    if (obj->getOwner() != NULL) {
+        obj->getOwner()->removeKObject(id, obj);
+    }
+    // try delete by reference counting.
+    return tryDelete(id, obj);
 }
 
-Thread::~Thread()
+bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 {
-    /* free memory */
-    delete messageList;
-    delete tinfo->archinfo;
-    delete tinfo;
+    if (g_id->returnID(id)) {
+        delete obj;
+        return true;
+    } else {
+        return false;
+    }
 }
 
-void Thread::setReturnValue(intptr_t value)
+void KObjectService::cleanupKObjects(Process* owner)
 {
-    tinfo->archinfo->eax = (uint32_t)value;
+    HList< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
+    int size = kobjects->size();
+    for (int i = 0; i < size; i++) {
+        Pair<intptr_t, KObject*> p;
+        bool isDeleted = kobjects->removeAt(0, &p);
+        ASSERT(isDeleted);
+        KObjectService::tryDelete(p.car, p.cdr);
+    }
 }
-

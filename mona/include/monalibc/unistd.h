@@ -34,8 +34,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 extern char **environ;
+#define environ (*__environ())
+
 
 #ifdef __cplusplus
 }

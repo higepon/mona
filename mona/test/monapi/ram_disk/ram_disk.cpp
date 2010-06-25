@@ -197,7 +197,7 @@ static void testWriteTwice_CreateTrue()
 {
     const char* expect = "second";
     int expect_len = strlen(expect)+1;
-    
+
     const char* path = "/MEM/TESTFILE";
     writeContentToPath(path, "first");
     writeContentToPath(path, expect, true);
@@ -502,6 +502,28 @@ static void testFwrite_Overwrite2()
     monapi_file_delete(tmpFile);
 }
 
+static void testFopen_No_Leak()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+
+    malloc_stat st1;
+    malloc_stats(&st1);
+
+    FILE* fp = fopen(tmpFile, "w");
+    fwrite("Hello", 1, 5, fp);
+    fprintf(fp, "\n");
+    char buf[256];
+    fread(buf, 1, 256, fp);
+    fclose(fp);
+
+    malloc_stat st2;
+    malloc_stats(&st2);
+    EXPECT_EQ(st1.used, st2.used);
+
+    monapi_file_delete(tmpFile);
+
+}
+
 int main(int argc, char *argv[])
 {
     testOpenNonExistingFile();
@@ -526,6 +548,8 @@ int main(int argc, char *argv[])
     testFwrite_Overwrite();
     testFwrite2();
     testFwrite_Overwrite2();
+
+    testFopen_No_Leak();
 
     TEST_RESULTS(ram_disk);
     return 0;

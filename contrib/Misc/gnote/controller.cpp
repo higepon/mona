@@ -217,6 +217,35 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'v':
+                        SetCursolRange(cursol, keyModifiers);
+                        if (GoDown(cursol, document, 5)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'w':
+                        if (Cut(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 'y':
+                        if (Paste(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+                    case 's':
+                        if (isPrefixCtrlX()) {
+                            WriteFile(file, document);
+                        }
+                        break;
+                    case 'c':
+                        if (isPrefixCtrlX()) {
+                            Exit();
+                        }
+                        break;
                     case 'a':
                         if (GoHome(cursol, document)) {
                             cursol.visible = true;
@@ -255,28 +284,10 @@ namespace gnote {
                         break;
 #else
                     case 'a':
-                        cursol.range = true;
-                        cursol.rx = cursol.ry = 1;
-                        if (GoTail(cursol, document)) {
-                            cursol.visible = true;
-                            window.GetCanvas()->repaint();
-                        }
+                        SelectAll();
                         break;
                     case 'n':
                         if (New(cursol, document)) {
-                            cursol.visible = true;
-                            window.GetCanvas()->repaint();
-                        }
-                        break;
-#endif
-                    case 'v':
-                        if (Paste(cursol, document, clip)) {
-                            cursol.visible = true;
-                            window.GetCanvas()->repaint();
-                        }
-                        break;
-                    case 'x':
-                        if (Cut(cursol, document, clip)) {
                             cursol.visible = true;
                             window.GetCanvas()->repaint();
                         }
@@ -287,6 +298,20 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'v':
+                        if (Paste(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+#endif
+                    case 'x':
+                        if (Cut(cursol, document, clip)) {
+                            cursol.visible = true;
+                            window.GetCanvas()->repaint();
+                        }
+                        break;
+
                     case KeyEvent::VKEY_HOME:
                         SetCursolRange(cursol, keyModifiers);
                         if (GoHead(cursol, document)) {
@@ -352,6 +377,13 @@ namespace gnote {
                         window.GetCanvas()->repaint();
                     }
                     break;
+#ifdef EMACS_KEY_BIND
+                case 'h': // fall through
+                    if (isPrefixCtrlX()) {
+                        SelectAll();
+                        break;
+                    }
+#endif
                 default:
                     if (code >= 0x20 && code <= 0x7f) {
                         if (document.Insert(code, cursol.wy, cursol.wx)) {
@@ -363,6 +395,7 @@ namespace gnote {
                     break;
             }
         }
+        prevKeyEvent = *event;
     }
     //
     bool Controller::GoHome(Cursol& c, const Document& d) {
@@ -668,4 +701,20 @@ namespace gnote {
         window.setTimer(TIMER_INTERVAL);
         window.run();
     }
+
+    bool Controller::isPrefixCtrlX()
+    {
+        return prevKeyEvent.getKeycode() == 'x' && prevKeyEvent.getModifiers() == KeyEvent::VKEY_CTRL;
+    }
+
+    void Controller::SelectAll()
+    {
+        cursol.range = true;
+        cursol.rx = cursol.ry = 1;
+        if (GoTail(cursol, document)) {
+            cursol.visible = true;
+            window.GetCanvas()->repaint();
+        }
+    }
 }
+

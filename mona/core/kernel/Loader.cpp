@@ -84,7 +84,6 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
             target->add(p);
         }
     }
-
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint);
     g_scheduler->Join(thread);

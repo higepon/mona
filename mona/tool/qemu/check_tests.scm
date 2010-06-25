@@ -63,7 +63,7 @@
       [(_ expr more ...)
        #'(with-color "\x1b;[0;31m" expr more ...)])))
 
-(define test-results-file (string-append (get-environment-variable "HOME") "mona_serial.log"))
+(define test-results-file (string-append (get-environment-variable "HOME") "/mona-qemu.log"))
 (define pid-file "/tmp/mona.pid")
 
 (let loop ()
@@ -72,7 +72,7 @@
       (let* ([results (string-split text #\newline)]
              [passed (filter #/test passed/ results)]
              [each-errors (filter #/MUnit:/ results)]
-             [failed (filter #/failed/ results)])
+             [failed (filter #/test failed/ results)])
         (cond
          [(and (null? each-errors) (null? failed))
           (with-color-green

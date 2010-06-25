@@ -14,9 +14,13 @@ namespace MonAPI
     {
         uint32_t tid = getThreadID();
         syscall_set_ps_dump();
-        while (syscall_read_ps_dump(&psInfo) == 0)
+        PsInfo buf;
+        while (syscall_read_ps_dump(&buf) == M_OK)
         {
-            if (psInfo.tid == tid) break;
+            if (buf.tid == tid) {
+                // Don't break here, which causes kernel memory leak.
+                psInfo = buf;
+            }
         }
         return &psInfo;
     }
@@ -80,16 +84,21 @@ namespace MonAPI
     }
     Stream* System::getStdoutStream()
     {
-        if (NULL != outStream) return outStream;
-        uint32_t handle = System::getProcessStdoutID();
-        if (handle == THREAD_UNKNOWN)
-        {
-            outStream = NULL;
+        if (outStream == NULL) {
+            uint32_t handle = System::getProcessStdoutID();
+            if (handle == THREAD_UNKNOWN) {
+                outStream = NULL;
+            } else {
+                outStream = Stream::FromHandle(handle);
+            }
         }
-        else
-        {
-            outStream = Stream::FromHandle(handle);
+
+        if (outStream == NULL) {
+            return NULL;
+        } else if (outStream->getLastError() == M_OK) {
+            return outStream;
+        } else {
+            return NULL;
         }
-        return outStream;
     }
 }

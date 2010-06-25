@@ -10,21 +10,26 @@ using namespace MonAPI;
 #define LOG(...) /* */
 #endif
 
-Stream::Stream()
+Stream::Stream() : lastError_(M_OK)
 {
     // default stream size is 64KB.
-    initialize(64 * 1024);
+    if (!initialize(64 * 1024)) {
+        lastError_ = M_BAD_STREAM;
+    }
 }
 
-Stream::Stream(uint32_t size, uint32_t handle /* = 0 */)
+Stream::Stream(uint32_t size, uint32_t handle /* = 0 */) : lastError_(M_OK)
 {
-    if (handle != 0)
-    {
-        initializeFromHandle(handle);
+    if (handle != 0) {
+        if (!initializeFromHandle(handle)) {
+            lastError_ = M_BAD_STREAM;
+        }
     }
     else
     {
-        initialize(size);
+        if (!initialize(size)) {
+            lastError_ = M_BAD_STREAM;
+        }
     }
 }
 
@@ -285,6 +290,7 @@ bool Stream::initialize(uint32_t size)
     header_->accessMutexHandle = access_->getMutex_t();
     header_->readMutexHandle = readAccess_->getMutex_t();
     header_->writeMutexHandle = writeAccess_->getMutex_t();
+
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
@@ -302,24 +308,30 @@ bool Stream::initialize(uint32_t size)
 bool Stream::initializeFromHandle(uint32_t handle)
 {
     PsInfo pi = *MonAPI::System::getProcessInfo();
-//    _logprintf("initializeFromHandle %s:%d[%s]\n", __func__, __LINE__, pi.name);
-
     memoryHandle_ = handle;
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        _printf("Stream: MemoryMap error handle=%x %s at %s \n", handle, MemoryMap::getLastErrorString(),  System::getProcessInfo()->name);
+        monapi_warn("Stream: MemoryMap error handle=%x %s at %s \n", handle, MemoryMap::getLastErrorString(),  System::getProcessInfo()->name);
         return false;
     }
     header_ = (StreamHeader*)address;
-//    _logprintf("this = %x, header_=%x\n", this, header_);
     access_ = new Mutex(&(header_->accessMutexHandle));
+    if (access_->getLastError() != M_OK) {
+        monapi_warn("mutex access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
+    }
     readAccess_ = new Mutex(&(header_->readMutexHandle));
+    if (readAccess_->getLastError() != M_OK) {
+        monapi_warn("mutex read access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
+    }
     writeAccess_ = new Mutex(&(header_->writeMutexHandle));
+    if (writeAccess_->getLastError() != M_OK) {
+        monapi_warn("mutex write access initalize failed %s:%d error code=%d\n", __FILE__, __LINE__, access_->getLastError());
+        return false;
+    }
     memoryAddress_ = (void*)((uint32_t)address + sizeof(StreamHeader));
-//    _logprintf("memoryAddress_=%x\n", memoryAddress_);
-//    _logprintf("memorySize = %x\n", header_->size);
-
     return true;
 }
 

@@ -376,6 +376,8 @@ namespace baygui {
 					int modcode  = info.arg2;
 					int charcode = info.arg3;
 					
+					/* 修飾キーの判別 */
+					if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
 						if ((modcode & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
 							this->modifiers = KeyEvent::VKEY_LSHIFT;
 						} else if ((modcode & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
@@ -383,6 +385,9 @@ namespace baygui {
 						} else if ((modcode & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
 							this->modifiers = KeyEvent::VKEY_CTRL;
 						}
+					} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
+						this->modifiers = 0;
+					}
 					
 					/* 一般キーの判定（qemu/実機） */
 					if (keycode == MonAPI::Keys::PageUp || keycode == 105) {

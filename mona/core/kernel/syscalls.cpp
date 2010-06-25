@@ -20,11 +20,10 @@
 #include "shutdown.h"
 #include "sys/error.h"
 #include "Condition.h"
+#include "KObjectService.h"
 
 extern const char* version;
 extern uint32_t version_number;
-extern mones::FrameNode* g_frames;
-extern mones::Nic* g_nic;
 
 inline intptr_t syscall1(intptr_t syscall_number, intptr_t arg1)
 {
@@ -57,20 +56,15 @@ inline intptr_t syscall2(intptr_t syscall_number, intptr_t arg1, intptr_t arg2)
 
 
 
-inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
+static inline void setReturnValue(ArchThreadInfo* info, intptr_t value)
 {
     info->eax = value;
 }
 
-uint32_t systemcall_mutex_create()
-{
-    KMutex* mutex = new KMutex();
-    return g_id->allocateID(mutex);
-}
+
 
 uint32_t systemcall_mutex_lock(uint32_t id)
 {
-    uint32_t result;
     int noTimeout = 0;
     return syscall2(SYSTEM_CALL_MUTEX_LOCK, id, noTimeout);
 }
@@ -85,7 +79,7 @@ uint32_t systemcall_mutex_unlock(uint32_t id)
 // use systemcall_mutex_lock()
 static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    KObject* object = g_id->get(id, KObject::KMUTEX);
     if (NULL == object) {
         return M_BAD_MUTEX_ID;
     }
@@ -98,7 +92,7 @@ static intptr_t systemcall_mutex_lock2(intptr_t id, intptr_t timeoutTick)
 // use systemcall_mutex_unlock()
 static intptr_t systemcall_mutex_unlock2(intptr_t id)
 {
-    KObject* object = g_id->get(id, g_currentThread->thread, KObject::KMUTEX);
+    KObject* object = g_id->get(id, KObject::KMUTEX);
     if (object == NULL) {
         return M_BAD_MUTEX_ID;
     }
@@ -119,6 +113,16 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_3 (info->edi)
 #define SYSTEM_CALL_ARG_4 (info->edx)
 
+// To check resource leak on each syscall.
+#if 0
+    static int prevSyscall = 0;
+    static int prevSize = 0;
+    if (prevSize != (int)km.getUsedMemorySize()) {
+        logprintf("syscall%x, %d %d\n", prevSyscall, km.getUsedMemorySize() - prevSize, km.getUsedMemorySize());
+    }
+    prevSize = (int)km.getUsedMemorySize();
+    prevSyscall = info->ebx;
+#endif
     switch(info->ebx)
     {
     case SYSTEM_CALL_PRINT:
@@ -231,37 +235,36 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MTHREAD_KILL:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
+//         KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::THREAD);
 
-        if (object == NULL) {
-            setReturnValue(info, M_BAD_THREAD_ID);
-        } else {
-            Thread* t = (Thread*)object;
-            intptr_t ret = ThreadOperation::kill(t->id);
-            if (ret == Scheduler::YIELD) {
-                g_scheduler->SwitchToNext();
-            } else {
-                setReturnValue(info, ret);
-            }
-        }
+//         if (object == NULL) {
+//             setReturnValue(info, M_BAD_THREAD_ID);
+//         } else {
+//             Thread* t = (Thread*)object;
+//             intptr_t ret = ThreadOperation::kill(t->id);
+//             if (ret == Scheduler::YIELD) {
+//                 g_scheduler->SwitchToNext();
+//             } else {
+//                 setReturnValue(info, ret);
+//             }
+//         }
         break;
     }
     case SYSTEM_CALL_CONDITION_CREATE:
     {
-        Condition* condition = new Condition;
-        ASSERT(condition != NULL);
-        setReturnValue(info, g_id->allocateID(condition));
+        Process* owner = g_currentThread->thread->tinfo->process;
+        intptr_t condition_id = KObjectService::create<Condition>(owner);
+        setReturnValue(info, condition_id);
         break;
     }
     case SYSTEM_CALL_CONDITION_DESTROY:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* object = g_id->get(condition_id, KObject::CONDITION);
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
-            Condition* condition = (Condition*)object;
-            delete condition;
+            KObjectService::destroy(condition_id, object);
             setReturnValue(info, M_OK);
         }
         break;
@@ -269,7 +272,7 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_NOTIFY_ALL:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* object = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* object = g_id->get(condition_id, KObject::CONDITION);
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
@@ -286,10 +289,10 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_WAIT:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* condObject = g_id->get(condition_id, KObject::CONDITION);
 
         const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
-        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+        KObject* mutexObject = g_id->get(mutex_id, KObject::KMUTEX);
 
         if (condObject == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
@@ -311,10 +314,10 @@ void syscall_entrance()
     case SYSTEM_CALL_CONDITION_WAIT_TIMEOUT:
     {
         const intptr_t condition_id = SYSTEM_CALL_ARG_1;
-        KObject* condObject = g_id->get(condition_id, g_currentThread->thread, KObject::CONDITION);
+        KObject* condObject = g_id->get(condition_id, KObject::CONDITION);
 
         const intptr_t mutex_id = SYSTEM_CALL_ARG_2;
-        KObject* mutexObject = g_id->get(mutex_id, g_currentThread->thread, KObject::KMUTEX);
+        KObject* mutexObject = g_id->get(mutex_id, KObject::KMUTEX);
 
         const intptr_t timeoutTick = SYSTEM_CALL_ARG_3;
 
@@ -337,36 +340,30 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_CREATE:
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
-            intptr_t mutexid = systemcall_mutex_create();
+            Process* owner = g_currentThread->thread->tinfo->process;
+            intptr_t mutexid = KObjectService::create<KMutex>(owner);
             ASSERT(mutexid > 0);
-            setReturnValue(info, systemcall_mutex_create());
+            setReturnValue(info, mutexid);
         } else {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
             if (object == NULL) {
                 setReturnValue(info, M_BAD_MUTEX_ID);
             } else {
                 KMutex* mutex = (KMutex*)object;
-                mutex->addRef();
-                setReturnValue(info, SYSTEM_CALL_ARG_1);
+                Process* owner = g_currentThread->thread->tinfo->process;
+                intptr_t id = KObjectService::markAsShared(owner, mutex);
+                setReturnValue(info, id);
             }
         }
         break;
     case SYSTEM_CALL_SEMAPHORE_CREATE:
-        if (SYSTEM_CALL_ARG_1 == 0) {
-            KObject* object = g_id->get(SYSTEM_CALL_ARG_2, g_currentThread->thread, KObject::USER_SEMAPHORE);
-            if (object == NULL) {
-                setReturnValue(info, M_BAD_SEMAPHORE_ID);
-            } else {
-                UserSemaphore* semaphore = (UserSemaphore*)object;
-                semaphore->addRef();
-                setReturnValue(info, SYSTEM_CALL_ARG_2);
-            }
-        } else {
-            UserSemaphore* semaphore = new UserSemaphore(SYSTEM_CALL_ARG_1);
-            setReturnValue(info, g_id->allocateID(semaphore));
-        }
+    {
+        int num = SYSTEM_CALL_ARG_1;
+        Process* owner = g_currentThread->thread->tinfo->process;
+        intptr_t id = KObjectService::createUserSemaphore(owner, num);
+        setReturnValue(info, id);
         break;
-
+    }
     case SYSTEM_CALL_MUTEX_LOCK:
     {
         intptr_t ret = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
@@ -379,7 +376,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_DOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
@@ -395,7 +392,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_MUTEX_TRY_LOCK:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
@@ -405,7 +402,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_TRYDOWN:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
 
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
@@ -427,7 +424,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_SEMAPHORE_UP:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::USER_SEMAPHORE);
 
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
@@ -442,30 +439,42 @@ void syscall_entrance()
         }
         break;
     }
-
     case SYSTEM_CALL_MUTEX_DESTROY:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::KMUTEX);
+        intptr_t id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(id, KObject::KMUTEX);
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
-            KMutex* mutex = (KMutex*)object;
-            mutex->releaseRef();
-            setReturnValue(info, M_OK);
+            if (KObjectService::destroy(id, object)) {
+                // mutex is not no more referenced, so deleted.
+                setReturnValue(info, M_OK);
+            } else {
+                // mutex is referenced by other.
+                setReturnValue(info, M_RELEASED);
+            }
         }
         break;
     }
-
+    case SYSTEM_CALL_MUTEX_COUNT:
+    {
+        setReturnValue(info, g_id->getCount(KObject::KMUTEX));
+        break;
+    }
+    case SYSTEM_CALL_CONDITION_COUNT:
+    {
+        setReturnValue(info, g_id->getCount(KObject::CONDITION));
+        break;
+    }
     case SYSTEM_CALL_SEMAPHORE_DESTROY:
     {
-        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread, KObject::USER_SEMAPHORE);
-
+        intptr_t id = SYSTEM_CALL_ARG_1;
+        KObject* object = g_id->get(id, KObject::USER_SEMAPHORE);
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
-            UserSemaphore* semaphore = (UserSemaphore*)object;
-            semaphore->releaseRef();
-            setReturnValue(info, 0);
+            KObjectService::destroy(id, object);
+            setReturnValue(info, M_OK);
         }
         break;
     }
@@ -627,7 +636,6 @@ void syscall_entrance()
 
         if (!isOpen)
         {
-            logprintf("%s(%s):%d\n", __FILE__, __func__, __LINE__);
             setReturnValue(info, 0);
             break;
         }
@@ -859,22 +867,6 @@ void syscall_entrance()
     case SYSTEM_CALL_SHUTDOWN:
         setReturnValue(info, shutdown(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2));
     break;
-    case SYSTEM_CALL_RECEIVE_PACKET:
-        if (g_frames->IsEmpty())
-        {
-            setReturnValue(info, 1);
-        }
-        else
-        {
-            mones::FrameNode* node = (mones::FrameNode*)(g_frames->RemoveNext());
-            memcpy((uint8_t*)SYSTEM_CALL_ARG_1, node->frame, sizeof(mones::Ether::Frame));
-            setReturnValue(info, 0);
-        }
-        break;
-
-    case SYSTEM_CALL_SEND_PACKET:
-        g_nic->outputFrame((uint8_t*)SYSTEM_CALL_ARG_1, (uint8_t*)SYSTEM_CALL_ARG_2, SYSTEM_CALL_ARG_3, SYSTEM_CALL_ARG_4);
-        break;
     case SYSTEM_CALL_SET_WATCH_POINT:
     {
 #define B4(a,b,c,d) ((a)*8+(b)*4+(c)*2+(d))

@@ -11,14 +11,15 @@
     \date   create:2003/06/27 update:$Date$
 */
 
+#include "global.h"
 #include <sys/List.h>
 #include <sys/HList.h>
 #include <servers/process.h>
-#include "global.h"
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"
 #include "BitMap.h"
+#include "KObjectService.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -50,7 +51,7 @@ bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
 
     address = process->AllocateLinearAddress(size);
     if (address == NULL) {
-	return false;
+        return false;
     }
     id++;
     bool isOpen = SharedMemoryObject::open(id, size);
@@ -109,10 +110,10 @@ Process* ProcessOperation::create(int type, const char* name)
     switch (type)
     {
       case USER_PROCESS:
-          result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new UserProcess(name, ProcessOperation::pageManager->createPageDirectory());
           break;
       case KERNEL_PROCESS:
-          result = new KernelProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new KernelProcess(name, ProcessOperation::pageManager->createPageDirectory());
           break;
       default:
           result = (Process*)NULL;
@@ -155,7 +156,10 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
     /* stack size from 4KB to 4MB */
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - 4096, true, true, true);
+    ProcessOperation::pageManager->mapOnePage(pageDirectory,
+                                              stack - 4096,
+                                              PageManager::PAGE_WRITABLE,
+                                              PageManager::PAGE_USER);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
@@ -300,7 +304,9 @@ intptr_t ThreadOperation::kill()
 
     if (process->threadNum < 1)
     {
+        KObjectService::cleanupKObjects(process);
         PageEntry* directory = process->getPageDirectory();
+        logprintf("delete process %s", process->getName());
         delete process;
         g_page_manager->returnPhysicalPages(directory);
     }
@@ -432,6 +438,7 @@ Process::~Process()
         delete[](arguments_->get(i));
     }
 
+    ASSERT(kobjects_.size() == 0);
     delete messageList_;
     delete arguments_;
     delete threadList_;
@@ -472,19 +479,6 @@ KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(n
 }
 
 KernelProcess::~KernelProcess()
-{
-}
-
-/*----------------------------------------------------------------------
-    V86Process
-----------------------------------------------------------------------*/
-V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, directory)
-{
-    /* kernel mode */
-    isUserMode_ = true;
-}
-
-V86Process::~V86Process()
 {
 }
 

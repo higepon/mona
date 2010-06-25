@@ -65,9 +65,8 @@ void KeyBoardManager::init() {
 */
 KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
 
-    KeyInfo* temp = keyInfoList_->removeAt(keyInfoList_->size() - 1);
-
-    if (temp == NULL) {
+    KeyInfo* temp = NULL;
+    if (!keyInfoList_->removeAt(keyInfoList_->size() - 1, &temp)) {
         return (KeyInfo*)NULL;
     }
 
@@ -171,7 +170,6 @@ int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
       kinfo->charcode = 0;
     }
 
-    //printf("{%2x:%2x} ", kinfo->keycode, kinfo->modifiers);
     keyInfoList_->add(kinfo);
 
     return 1;

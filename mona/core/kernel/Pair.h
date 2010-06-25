@@ -1,7 +1,5 @@
 /*
- * Thread.cpp - 
- *
- *   Copyright (c) 2009  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
+ *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -26,40 +24,26 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: Thread.cpp 183 2008-07-04 06:19:28Z higepon $
  */
 
-#include "global.h"
-#include "sys/HList.h"
-#include "Thread.h"
+#ifndef MONA_PAIR_
+#define MONA_PAIR_
 
-
-Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondition_(NULL)
+template <class Car, class Cdr>
+class Pair
 {
-    clearEventWaiting();
-    /* thread information */
-    tinfo = new ThreadInfo;
-    ASSERT(tinfo);
-    tinfo->thread = this;
+public:
+    Pair() {}
+    Pair(Car car, Cdr cdr) : car(car), cdr(cdr) {}
 
-    /* thread information arch dependent */
-    tinfo->archinfo = new ArchThreadInfo;
-    ASSERT(tinfo->archinfo);
+    Car car;
+    Cdr cdr;
+};
 
-    messageList = new HList<MessageInfo*>();
-    ASSERT(messageList);
+template <class Car, class Cdr>
+bool operator==(const Pair<Car, Cdr>& x, const Pair<Car, Cdr>& y)
+{
+    return x.car == y.car && x.cdr == y.cdr;
 }
 
-Thread::~Thread()
-{
-    /* free memory */
-    delete messageList;
-    delete tinfo->archinfo;
-    delete tinfo;
-}
-
-void Thread::setReturnValue(intptr_t value)
-{
-    tinfo->archinfo->eax = (uint32_t)value;
-}
-
+#endif // MONA_PAIR_

@@ -17,16 +17,11 @@
 ----------------------------------------------------------------------*/
 class KMutex;
 class Condition;
-class Thread : public Node, public KObject
+class Thread : public Node
 {
 public:
     Thread();
     virtual ~Thread();
-
-    intptr_t getType() const
-    {
-        return THREAD;
-    }
 
     int isWaiting(int event) const
     {
@@ -69,11 +64,6 @@ public:
     Condition* getWaitingCondition() const
     {
         return waitingCondition_;
-    }
-
-    intptr_t checkSecurity(Thread*)
-    {
-        return M_OK;
     }
 
 public:

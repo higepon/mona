@@ -11,6 +11,8 @@
     \date   create:2003/03/30 update:$Date$
 */
 
+#include "kernel.h"
+#include "global.h"
 #include "BitMap.h"
 #include "string.h"
 
@@ -22,10 +24,8 @@
     \date   create:2003/03/30 update:
 */
 BitMap::BitMap(int number) {
-
     bitsNumber_ = number;
     uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
-
     map_ = new int[uint32_tNumber_];
     memset(map_, 0, sizeof(int) * uint32_tNumber_);
 
@@ -64,7 +64,7 @@ inc
     \date   create:2003/03/30 update:
 */
 void BitMap::mark(int index) {
-
+    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
     map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
     return;
 }
@@ -77,7 +77,7 @@ void BitMap::mark(int index) {
     \date   create:2003/03/30 update:
 */
 void BitMap::clear(int index) {
-
+    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
     map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
     return;
 }
@@ -152,6 +152,6 @@ int BitMap::countClear() {
     \date   create:2003/03/30 update:
 */
 bool BitMap::marked(int index) {
-
+    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
     return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
 }

@@ -350,8 +350,8 @@ enum
 #define SYSTEM_CALL_SHUTDOWN                  0x0046
 #define SYSTEM_CALL_APM_BIOS                  0x0047
 #define SYSTEM_CALL_MTHREAD_KILL              0x0048
-#define SYSTEM_CALL_RECEIVE_PACKET            0x0049
-#define SYSTEM_CALL_SEND_PACKET               0x0050
+#define SYSTEM_CALL_RECEIVE_PACKET            0x0049 /* not used */
+#define SYSTEM_CALL_SEND_PACKET               0x0050 /* not used */
 #define SYSTEM_CALL_SEMAPHORE_CREATE          0x0051
 #define SYSTEM_CALL_SEMAPHORE_DOWN            0x0052
 #define SYSTEM_CALL_SEMAPHORE_TRYDOWN         0x0053
@@ -369,9 +369,11 @@ enum
 #define SYSTEM_CALL_CONDITION_WAIT_TIMEOUT    0x0065
 #define SYSTEM_CALL_NOW_IN_NANOSEC            0x0066
 #define SYSTEM_CALL_MTHREAD_SELF              0x0067
-#define SYSTEM_CALL_STACKTRACE_ENABLE              0x0068
-#define SYSTEM_CALL_STACKTRACE_DISABLE              0x0069
-#define SYSTEM_CALL_STACKTRACE_DUMP              0x0070
+#define SYSTEM_CALL_STACKTRACE_ENABLE         0x0068
+#define SYSTEM_CALL_STACKTRACE_DISABLE        0x0069
+#define SYSTEM_CALL_STACKTRACE_DUMP           0x0070
+#define SYSTEM_CALL_MUTEX_COUNT               0x0071 /* for testablity */
+#define SYSTEM_CALL_CONDITION_COUNT           0x0072 /* for testablity */
 enum
 {
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,

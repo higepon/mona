@@ -16,8 +16,9 @@ void Observable::addObserver(Observer* o) {
 
 void Observable::deleteObservers() {
 
+    Observer* toDelete;
     for (int i = this->observers.size() - 1; i >=0; i--) {
-        this->observers.removeAt(i);
+        this->observers.removeAt(i, &toDelete);
     }
 }
 

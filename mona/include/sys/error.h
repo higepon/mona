@@ -130,6 +130,36 @@ enum
        Indicates message not found.
     */
     M_MESSAGE_NOT_FOUND,
+    /*
+       constant: M_RELEASED
+
+       Indicates the object is released, but still some one has referance to the object.
+    */
+    M_RELEASED,
+    /*
+       constant: M_BAD_TIMER_ID
+
+       Indicates a bad timer_id is spcified.
+    */
+    M_BAD_TIMER_ID       ,
+    /*
+       constant: M_BAD_STREAM
+
+       Indicates a bad stream.
+    */
+    M_BAD_STREAM       ,
+    /*
+       constant: M_BAD_ADDRESS
+
+       Indicates a bad address.
+    */
+    M_BAD_ADDRESS,
+    /*
+       constant: M_NO_MEMORY
+
+       Indicates there is not enough memory.
+    */
+    M_NO_MEMORY,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

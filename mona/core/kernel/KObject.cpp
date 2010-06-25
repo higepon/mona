@@ -1,8 +1,9 @@
 #include "KObject.h"
+#include "kernel.h"
+#include "global.h"
 
-KObject::KObject()
+KObject::KObject() : referanceCount_(0)
 {
-    this->referanceCount = 0;
 }
 
 KObject::~KObject()
@@ -11,16 +12,27 @@ KObject::~KObject()
 
 intptr_t KObject::getReferanceCount() const
 {
-    return this->referanceCount;
+    return referanceCount_;
 }
 
-void KObject::setReferance()
+void KObject::addRef()
 {
-    this->referanceCount++;
+    referanceCount_++;
 }
 
-void KObject::cancelReferance()
+bool KObject::releaseRef()
 {
-    this->referanceCount--;
+    referanceCount_--;
+    ASSERT(referanceCount_ >= 0);
+    return referanceCount_ == 0;
 }
 
+void KObject::setOwner(Process* owner)
+{
+    owner_ = owner;
+}
+
+Process* KObject::getOwner() const
+{
+    return owner_;
+}

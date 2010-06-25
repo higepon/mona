@@ -129,9 +129,10 @@ private:
     uint8_t* allocateAlignedPage()
     {
         ContigousPhysicalMemory* data = new ContigousPhysicalMemory(PAGE_SIZE * 2);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
+        if (data->getLastError() != M_OK) {
+            monapi_fatal("memory allocation error %d", data->getLastError());
+        }
         const uintptr_t phys = syscall_get_physical_address((uintptr_t)data->data());
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         const uintptr_t aphys = (phys+ PAGE_MASK) & ~PAGE_MASK;
         uint8_t* page = (uint8_t *) (data->data() + aphys - phys);
         return page;
@@ -143,16 +144,12 @@ private:
     {
         uint8_t* headerPage = allocateAlignedPage();
         vring->desc[startIndex].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         vring->desc[startIndex].addr = syscall_get_physical_address((uintptr_t)headerPage);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         vring->desc[startIndex].len = sizeof(struct virtio_net_hdr);
 
         uint8_t* dataPage = allocateAlignedPage();
         vring->desc[startIndex + 1].flags =  VRING_DESC_F_WRITE; // no next
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         vring->desc[startIndex + 1].addr = syscall_get_physical_address((uintptr_t)dataPage);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         vring->desc[startIndex + 1].len = PAGE_SIZE;
         return dataPage;
     }
@@ -208,12 +205,13 @@ private:
 
         const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
         ContigousPhysicalMemory* readDesc = new ContigousPhysicalMemory(MAX_QUEUE_SIZE);
+        if (readDesc->getLastError() != M_OK) {
+            monapi_fatal("memory allocation error %d", readDesc->getLastError());
+        }
         struct vring* vring = new struct vring;
         vring->num = numberOfDesc;
         // page aligned
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)readDesc->data());
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
 
         ASSERT((alignedAddress % PAGE_SIZE) == 0);
@@ -235,18 +233,13 @@ private:
         vring->avail = (struct vring_avail *)&vring->desc[numberOfDesc];
 
         // vring.used is also page aligned
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring->avail->ring[numberOfDesc]));
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
         ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
         vring->used = (struct vring_used*)((uintptr_t)&(vring->avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc) == 8192);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc)) % PAGE_SIZE) == 0);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         return vring;
     }
 
@@ -262,9 +255,7 @@ private:
             vring->avail->ring[i] = i * 2;
         }
         vring->avail->idx = numberOfDescToCreate;
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc) >> 12);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
 // Not necessary
 //        waitInterrupt();
 
@@ -307,9 +298,7 @@ public:
         }
         // this flags should be set before VIRTIO_PCI_QUEUE_PFN.
         writeVring_->avail->flags |= VRING_AVAIL_F_NO_INTERRUPT;
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc) >> 12);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
 //        waitInterrupt();
         // prepare the data to write
         // virtio_net_hdr is *necessary*
@@ -321,21 +310,15 @@ public:
         hdr->gso_size = 0;
         hdr->hdr_len = 0;
         writeVring_->desc[0].flags  |= VRING_DESC_F_NEXT;
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         writeVring_->desc[0].addr = syscall_get_physical_address((uintptr_t)hdr);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         writeVring_->desc[0].len = sizeof(struct virtio_net_hdr);
         writeFrame_ = (Ether::Frame*)(allocateAlignedPage());
         writeVring_->desc[1].flags = 0; // no next
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         writeVring_->desc[1].addr = syscall_get_physical_address((uintptr_t)writeFrame_);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         writeVring_->desc[1].len = sizeof(Ether::Frame);
         lastUsedIndexWrite_ = writeVring_->used->idx;
         monapi_set_irq(irqLine_, MONAPI_TRUE, MONAPI_TRUE);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         syscall_set_irq_receiver(irqLine_, SYS_MASK_INTERRUPT);
-        _logprintf("net: %s:%d\n", __FILE__, __LINE__);
         return DEVICE_FOUND;
     }
 
@@ -345,12 +328,9 @@ public:
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
-            VIRT_LOG("Waiting previous packet is send");
+            VIRT_LOG("Waiting previous packet is sent");
         }
         Ether::Frame* rframe = (Ether::Frame*)buf;
-        IP::Header* ipHeader = (IP::Header*)(rframe->data);
-//        logprintf("send:ip packet %d %x\n", ipHeader->len, ipHeader->dstip);
-
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, buf, len);
         writeVring_->desc[1].len = len; // todo
@@ -370,7 +350,7 @@ public:
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
             // Wait for last send is done.
             // In almost case, we expect last send is already done.
-            VIRT_LOG("Waiting previous packet is send");
+            VIRT_LOG("Waiting previous packet is sent");
         }
         memset(writeFrame_, 0, sizeof(Ether::Frame));
         memcpy(writeFrame_, src, len);
@@ -493,7 +473,6 @@ public:
                 ASSERT(false);
             }
         }
-//        _logprintf("[[%d, %d]]\n", readVring_->used->idx, lastUsedIndexRead_);
 
         const int index = lastUsedIndexRead_ % readVring_->num;
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);

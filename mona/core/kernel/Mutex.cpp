@@ -11,6 +11,7 @@
     \date   create:2004/01/12 update:$Date$
 */
 
+#include "global.h"
 #include <sys/HList.h>
 #include <sys/error.h>
 #include "Mutex.h"
@@ -20,17 +21,16 @@
 /*----------------------------------------------------------------------
     KMutex  *** don't allocate this object at stack! ***
 ----------------------------------------------------------------------*/
-KMutex::KMutex() : refcount_(1), owner_(NULL)
+KMutex::KMutex() : owner_(NULL)
 {
-    waitList_ = new HList<Thread*>();
 }
 
 KMutex::~KMutex()
 {
-    if (waitList_->size() != 0) {
+    if (waitList_.size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
+        ASSERT(false);
     }
-    delete waitList_;
 }
 
 intptr_t KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
@@ -43,7 +43,7 @@ intptr_t KMutex::lock(Thread* thread, int timeoutTick /* = 0 */)
     } else if (owner_ == thread) {
         // do nothing. lock done.
     } else {
-        waitList_->add(thread);
+        waitList_.add(thread);
 
         // If lock is timed out, the scheduler will remove this thread from waitList_.
         thread->setWaitingMutex(this);
@@ -90,10 +90,11 @@ intptr_t KMutex::unlock()
 
     g_currentThread->thread->setWaitingMutex(NULL);
 
-    if (waitList_ ->size() == 0) {
+    if (waitList_.size() == 0) {
         owner_ = NULL;
     } else {
-        owner_ = waitList_->removeAt(0);
+        bool isRemoved = waitList_.removeAt(0, &owner_);
+        ASSERT(isRemoved);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         return Scheduler::YIELD;
     }
@@ -101,21 +102,3 @@ intptr_t KMutex::unlock()
     return M_OK;
 }
 
-intptr_t KMutex::checkSecurity(Thread* thread)
-{
-    return M_OK;
-}
-
-void KMutex::addRef()
-{
-    refcount_++;
-}
-
-void KMutex::releaseRef()
-{
-    refcount_--;
-    if (refcount_ == 0)
-    {
-        delete this;
-    }
-}

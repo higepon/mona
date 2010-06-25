@@ -56,6 +56,7 @@ namespace gnote {
 		int keyModifiers;
 		int counter;
 		String file;
+		KeyEvent prevKeyEvent;
 	public:
 		Controller();
 		virtual ~Controller() {}
@@ -93,6 +94,8 @@ namespace gnote {
 		bool Cut(Cursol& c, Document& d, Document& cl);
 		bool Paste(Cursol& c, Document& d, const Document& cl);
 		bool New(Cursol& c, Document& d);
+		bool isPrefixCtrlX();
+		void SelectAll();
 	};
 
 }
