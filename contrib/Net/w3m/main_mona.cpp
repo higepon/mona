@@ -2473,7 +2473,7 @@ Str wtf_to_utf8(char **pc, l_prop *pr, int len)
 }
 
 
-#define MAP_FILE_PATH "/APPS/W3M/W3M.APP/W3M.MAP"
+#define MAP_FILE_PATH "/APPS/W3M.APP/W3M.MAP"
 #define AUTOPILOT_URL "http://www.randomwebsite.com/cgi-bin/random.pl"
 
 int main(int argc, char* argv[]) {
