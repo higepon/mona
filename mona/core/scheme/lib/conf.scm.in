@@ -356,7 +356,7 @@
 ;; (print "...")
 ;; (tstd)
 ;; (print "done")
-(call-process "/APPS/MOSH.EX5")
+(call-process "/APPS/MOSH.EX5 -5")
 (call-process "/APPS/TMISC.EX5")
 (call-process "/APPS/TMUTEX.EX5")
 (call-process "/APPS/TCOND.EX5")

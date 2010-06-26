@@ -1118,8 +1118,9 @@ uint64_t syscall_now_in_nanosec()
 int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
 {
     FileReader reader;
-    if(!reader.open(map_file_path))
+    if(!reader.open(map_file_path)) {
         return false;
+    }
 
     MapFileScanner<FileReader> scanner(reader);
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
