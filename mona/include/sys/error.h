@@ -83,7 +83,7 @@ enum
     */
     M_BAD_CONDITION_ID       ,
     /*
-       constant: M_BAD_THREAD_ID
+       constant:ppp M_BAD_THREAD_ID
 
        Indicates a bad thread_id is spcified.
     */
@@ -160,6 +160,18 @@ enum
        Indicates there is not enough memory.
     */
     M_NO_MEMORY,
+    /*
+       constant: M_FILE_NOT_FOUND
+
+       There's no match file for the specified file.
+    */
+    M_FILE_NOT_FOUND,
+    /*
+       constant: M_UNKNOWN
+
+       Indicates unknown error.
+    */
+    M_UNKNOWN,
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE

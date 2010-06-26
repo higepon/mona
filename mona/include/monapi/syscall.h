@@ -116,7 +116,7 @@ extern int syscall_shutdown(int op, int device);
 extern int syscall_set_watch_point(void* address, int flag);
 extern int syscall_remove_watch_point();
 
-extern int syscall_stack_trace_enable(uint32_t pid, const char* map_file_path);
+extern intptr_t syscall_stack_trace_enable(uint32_t pid, const char* map_file_path);
 extern void syscall_stack_trace_disable(uint32_t pid);
 extern void syscall_stack_trace_dump(uint32_t tid);
 

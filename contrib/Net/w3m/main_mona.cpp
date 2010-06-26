@@ -2533,7 +2533,10 @@ int main(int argc, char* argv[]) {
     uint32_t pid = syscall_get_pid();
 
     if(g_debugMode) {
-        syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+        intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+        if (ret != M_OK) {
+            fprintf(stderr, "w3m: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
+        }
         fprintf(stderr, "w3m: tid=%d\n", syscall_get_tid());
         _logprintf("w3m: tid=%d\n", syscall_get_tid());
     }
