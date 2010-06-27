@@ -116,7 +116,12 @@ template <class T> class MapFileScanner
 
     std::string address() {
         MAP_FILE_ASSERT(lineType() == MAP_FILE_LINE_TYPE_FILE || lineType() == MAP_FILE_LINE_TYPE_FUNCTION);
-        return currentLine_.substr(16, 10);
+        if (notSpaceAt(26)) {
+            // 64bit Linux: 0xffffffffa0004300
+            return std::string("0x") + currentLine_.substr(26, 8);
+        } else {
+            return currentLine_.substr(16, 10);
+        }
     }
 
     std::string functionName() {
