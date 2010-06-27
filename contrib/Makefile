@@ -33,6 +33,7 @@ all:
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
 ### BayGUI applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install

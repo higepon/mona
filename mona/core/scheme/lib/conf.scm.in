@@ -352,6 +352,14 @@
 (define (tstd)
   (call-process "/APPS/TSTDIO.APP/TSTDIO.EX5"))
 
+(define (recvrun name)
+  (call-process (string-append "/APPS/FRECV.EX5 " name))
+  (call-process (string-append "/MEM/" name)))
+
+(define (mosh)
+  (recvrun "MOSH.EX5")
+  (mosh))
+
 ;; (tstr)
 ;; (print "...")
 ;; (tstd)
