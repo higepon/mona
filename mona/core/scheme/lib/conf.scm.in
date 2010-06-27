@@ -357,8 +357,8 @@
   (call-process (string-append "/MEM/" name)))
 
 (define (mosh)
-  (call-process "/APPS/FRECV.EX5 MOSH.EX5")
-  (call-process "/MEM/MOSH.EX5")
+  (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+  (call-process "/MEM/MOSH.EXE -5")
   (mosh))
 
 ;; (tstr)
@@ -367,7 +367,6 @@
 ;; (print "done")
 (call-process "/APPS/TSTACK.APP/TSTACK.EX5")
 (call-process "/APPS/HELLO.EX5")
-(call-process "/APPS/MOSH.EX5 -5")
 (call-process "/APPS/TMISC.EX5")
 (call-process "/APPS/TMUTEX.EX5")
 (call-process "/APPS/TCOND.EX5")
