@@ -6,6 +6,7 @@ endif
 TARGET  = HELLO
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
+INSTFILES = HELLO.map
 
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    =  -lonigurum-imp -lmonalibc-imp -lpci-imp --enable-auto-import
