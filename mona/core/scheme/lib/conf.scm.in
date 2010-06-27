@@ -357,7 +357,8 @@
   (call-process (string-append "/MEM/" name)))
 
 (define (mosh)
-  (recvrun "MOSH.EX5")
+  (call-process "/APPS/FRECV.EX5 MOSH.EX5")
+  (call-process "/MEM/MOSH.EX5")
   (mosh))
 
 ;; (tstr)
