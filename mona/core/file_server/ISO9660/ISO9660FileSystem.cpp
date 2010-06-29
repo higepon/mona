@@ -157,6 +157,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         delete[] temp;
     }
     context->resultSize = readSize;
+    context->offset += readSize;
     return MONA_SUCCESS;
 #endif
 }

@@ -50,12 +50,29 @@ void testNet()
     EXPECT_EQ(0x3412, htons(0x1234));
 }
 
+static void testISO9600_file_read()
+{
+    intptr_t handle = monapi_file_open("/LIBS/SCHEME/fib.scm", MONAPI_FALSE);
+    monapi_cmemoryinfo* cmi = monapi_file_read(handle, 4096);
+    ASSERT_TRUE(cmi != NULL);
+    EXPECT_TRUE(cmi->Size > 0);
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+
+    // reached EOF
+    monapi_cmemoryinfo* cmi2 = monapi_file_read(handle, 4096);
+    EXPECT_TRUE(NULL == cmi2);
+    monapi_file_close(handle);
+}
+
 int main(int argc, char *argv[])
 {
     testDate();
     testThreadSelf();
     testNet();
     testThreadKill();
+    testISO9600_file_read();
+
     TEST_RESULTS(monapi_misc);
     return 0;
 }

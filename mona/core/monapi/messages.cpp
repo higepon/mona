@@ -407,14 +407,14 @@ uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size)
     return inStream->read(buffer, size);
 }
 
-uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
+intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
 {
     System::getStdoutStream();
     if (NULL == outStream || outStream->isInvalid())
     {
         monapi_warn("%s You can't use printf, use _printf instead.", System::getProcessInfo()->name);
         monapi_warn("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
-        return 0;
+        return -1;
     }
     return outStream->write(buffer, size);
 }
