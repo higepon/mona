@@ -52,6 +52,10 @@ Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondi
 
 Thread::~Thread()
 {
+    for (int i = 0; i < messageList->size(); i++) {
+        delete messageList->get(i);
+    }
+
     /* free memory */
     delete messageList;
     delete tinfo->archinfo;
