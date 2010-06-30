@@ -8,10 +8,11 @@
 #define GLOBAL extern "C"
 #define GLOBAL_VAL(v) /* */
 #endif
-
+#define assert(x) if (!x) {panic(x);}
 #include <sys/types.h>
 #include "kernel.h"
 #include "VirtualConsole.h"
+#include "FirstFitAllocator.h"
 #include "Semaphore.h"
 #include "GDTUtil.h"
 #include "IDTUtil.h"
@@ -51,7 +52,7 @@ GLOBAL volatile TSS* g_tss;
 GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;
 
-GLOBAL MemoryManager km; /* Kernel Memory Management */
+GLOBAL FirstFitAllocator km; /* Kernel Memory Management */
 
 
 GLOBAL ThreadInfo* g_currentThread GLOBAL_VAL(NULL);

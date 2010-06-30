@@ -99,7 +99,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 void startKernel()
 {
     /* kernel memory range */
-    km.initialize(0x200000, 0xBfffff);
+    km = FirstFitAllocator(0x200000, 0xBfffff);
 
     /* APM */
     g_apmInfo = new APMInfo;
