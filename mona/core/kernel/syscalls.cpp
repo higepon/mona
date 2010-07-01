@@ -114,14 +114,16 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_4 (info->edx)
 
 // To check resource leak on each syscall.
-#if 0
+#if 1
     static int prevSyscall = 0;
-    static int prevSize = 0;
-    if (prevSize != (int)km.getUsedMemorySize()) {
-        logprintf("syscall%x, %d %d\n", prevSyscall, km.getUsedMemorySize() - prevSize, km.getUsedMemorySize());
+    static uintptr_t prevSize = 0;
+    static const char* prevName = "";
+    if (prevSize != km.getFreeSize()) {
+        logprintf("syscall[%x], %s %d %d %s\n", prevSyscall, km.getFreeSize() > prevSize ? "free-ed" : "alloc-ed", km.getFreeSize() - prevSize, km.getFreeSize(), prevName);
     }
-    prevSize = (int)km.getUsedMemorySize();
+    prevSize = km.getFreeSize();
     prevSyscall = info->ebx;
+    prevName =  g_currentThread->process->getName();
 #endif
     switch(info->ebx)
     {

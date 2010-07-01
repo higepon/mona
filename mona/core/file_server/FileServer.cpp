@@ -341,13 +341,14 @@ void FileServer::messageLoop()
             Message::reply(&msg);
             break;
         default:
-            PsInfo psInfo;
-            syscall_set_ps_dump();
-            while (syscall_read_ps_dump(&psInfo) == 0)
-            {
-                if (psInfo.tid == msg.from) break;
-            }
-//            _printf("%s %s:%d %d %x %s %x\n", __func__, __FILE__, __LINE__, msg.header, msg.from, psInfo.name, msg.arg1);
+//             PsInfo psInfo;
+//             syscall_set_ps_dump();
+//             while (syscall_read_ps_dump(&psInfo) == 0)
+//             {
+//                 if (psInfo.tid == msg.from) {
+//                     monapi_warn("unknown message %x comes from %s arg1=%x %s:%d %s\n", msg.header, psInfo.name, msg.arg1, __FILE__, __LINE__,  __func__);
+//                 }
+//             }
             break;
         }
     }

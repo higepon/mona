@@ -2335,15 +2335,19 @@ void W3MPane::processEvent(Event* event)
 
 void W3MFrame::processEvent(Event* event)
 {
-  if(m_isAuto && event->getType() == Event::TIMER) {
-    cmd_loadURL(m_autoUrl, NULL, NULL, NULL);
-    setTimer(100);
-    return;
-  }
-  Frame::processEvent(event);
+   Buffer* buf = Currentbuf;
+ if(m_isAuto && event->getType() == Event::TIMER) {
+   cmd_loadURL(m_autoUrl, NULL, NULL, NULL);
+       // Auto pilot mode had buffer memory leak bug.
+       // I'm not sure this is correct.
+       if (buf != Currentbuf) {
+           delBuffer(buf);
+       }
+   setTimer(100);
+   return;
+ }
+ Frame::processEvent(event);
 }
-
-
 int file_size(char *path)
 {
   FILE* fp = fopen(path, "r");
