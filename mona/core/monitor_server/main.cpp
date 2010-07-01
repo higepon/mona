@@ -126,7 +126,7 @@ void Monitor::CheckServers()
             if (servers.get(i) == name)
             {
                 alive[i] = true;
-                break;
+                continue;
             }
         }
     }
