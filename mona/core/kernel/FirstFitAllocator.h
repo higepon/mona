@@ -29,10 +29,6 @@
 #ifndef FIRSTFIT_ALLOCATOR_
 #define FIRSTFIT_ALLOCATOR_
 
-#include <VesaConsole.h>
-
-extern "C" VirtualConsole* g_log;
-
 class FirstFitAllocator {
 private:
     struct Header {
@@ -78,8 +74,6 @@ public:
         freeList_->magic = MAGIC;
     }
 
-    virtual ~FirstFitAllocator() {}
-
     // for testability
     uintptr_t getSize(void* p) const
     {
@@ -120,17 +114,21 @@ public:
     bool free(void* p)
     {
         bool ret = free_no_compact(p);
-        compact();
+        if (ret) {
+            compact();
+        }
         return ret;
     }
 
     bool free_no_compact(void* p)
     {
         if (NULL == p) {
+            allocator_warn("try to free NULL");
             return false;
         }
         Header* h = getHeaderFromPointer(p);
         if (h->magic != MAGIC) {
+            allocator_warn("magic is overwritten");
             return false;
         }
         if (freeList_ == NULL) {
@@ -154,7 +152,7 @@ public:
                 }
             }
         }
-        assert(false);
+        allocator_warn("doulbe free-ed?");
         return false;
     }
 
@@ -167,35 +165,20 @@ public:
         return ret;
     }
 
-    void dump(const char* text)
-    {
-        if (g_log) {
-            g_log->printf("%s start\n", text);
-
-            for (Header* p = freeList_; p != NULL; p = p->next) {
-                g_log->printf("size=%d\n");
-            }
-        }
-    }
-
     void* allocate(uintptr_t size)
     {
         if (0 == size) {
             return NULL;
         }
         size = align16(size);
-        if (g_log) g_log->printf("alloc=%d\n", size);
-        dump("alloc start");
         uintptr_t wholeSizeToAlloc = size + HEADER_SIZE;
         for (Header *p = freeList_, *prev = NULL; p != NULL; prev = p, p = p->next) {
-            if (g_log) g_log->printf("size=%d\n", p->sizeByte);
-            if (size == p->sizeByte) {
+            if (size == p->sizeByte || wholeSizeToAlloc == p->sizeByte) {
                 if (NULL == prev) {
-                    freeList_ = NULL;
+                    freeList_ = p->next;
                 } else {
                     prev->next = p->next;
                 }
-        dump("alloc end1");
                 return getBody(p);
             } else {
                 if (wholeSizeToAlloc <= p->sizeByte) {
@@ -211,7 +194,6 @@ public:
                     } else {
                         prev->next = rest;
                     }
-                    dump("alloc end2");
                     return getBody(p);
                 }
             }
