@@ -267,7 +267,7 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     }
 }
 
-uint32_t monapi_file_open(const char* file, MONAPI_BOOL create)
+intptr_t monapi_file_open(const char* file, MONAPI_BOOL create)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;

@@ -23,7 +23,8 @@ public:
     int close(uint32_t fileID);
     int delete_file(const std::string& name);
     int readdir(const std::string& name, monapi_cmemoryinfo** mem);
-    uint32_t fileID(Vnode* file , uint32_t tid) {return (uint32_t)file | tid;} // temporary
+    // N.B fileID should be posive, since negative values indicates error.
+    intptr_t fileID(Vnode* file , uint32_t tid) {return abs((intptr_t)file | tid);} // temporary
     Vnode* alloc();
     VnodeCacher* cacher() {return cacher_;}
     void split(std::string str, char ch, std::vector<std::string>& v);

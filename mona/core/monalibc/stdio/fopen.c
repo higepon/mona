@@ -36,11 +36,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <monapi/messages.h>
+#include <sys/error.h>
 
 FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
-	uint32_t fileno;
+	int32_t fileno;
 	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )
 	{
@@ -75,10 +76,10 @@ FILE *fopen(const char *path, const char *mode)
 	}
 
 	fileno = monapi_file_open(path, MONAPI_FALSE);
-	if( fileno == MONA_FAILURE )
+	if( fileno < 0 )
 	{
 		fileno = monapi_file_open(path, MONAPI_TRUE);
-		if( fileno == MONA_FAILURE )
+		if( fileno < 0 )
 		{
 			free(fp);
 			errno = EUNKNOWN;
