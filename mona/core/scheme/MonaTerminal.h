@@ -32,8 +32,10 @@ public:
     void setKeySuppresed() { isKeySuppressed_ = true; }
     void outputChar(char c);
     void addHistory(::util::String line);
+    const char* storeKeyAndGetLine(MessageInfo* msg);
 protected:
     bool initialize();
+    ::util::String getAccumLine();
     bool onKeyDown(int keycode, int modifiers);
     void outputKey(int keycode, int modifiers);
     void backSpace();

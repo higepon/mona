@@ -114,7 +114,7 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_4 (info->edx)
 
 // To check resource leak on each syscall.
-#if 1
+#if 0
     static int prevSyscall = 0;
     static uintptr_t prevSize = 0;
     static const char* prevName = "";
