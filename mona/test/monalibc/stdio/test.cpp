@@ -18,6 +18,7 @@ void test_fread_biggerthanfile();
 void test_fread_small_many();
 void test_bsearch();
 void test_sprintf();
+void test_fread_offset();
 
 int main(int argc, char* argv[])
 {
@@ -38,6 +39,8 @@ int main(int argc, char* argv[])
         test_fwrite_large();
         test_bsearch();
         test_sprintf();
+
+        test_fread_offset();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -254,6 +257,42 @@ void test_fwrite_large()
     monapi_file_delete(path);
 }
 
+static void test_fread_offset_flag(const char* flag)
+{
+    const char* path = "/MEM/TEST.DAT";
+    FILE* fp = fopen(path, "w");
+    ASSERT_TRUE(fp != NULL);
+    fwrite("h", sizeof(char), 1, fp);
+    fwrite("e", sizeof(char), 1, fp);
+    fwrite("l", sizeof(char), 1, fp);
+    fwrite("l", sizeof(char), 1, fp);
+    fwrite("o", sizeof(char), 1, fp);
+    fclose(fp);
+
+    FILE* fp2 = fopen(path, flag);
+    char buf[2];
+    EXPECT_EQ(2, fread(buf, 1, 2, fp2));
+    EXPECT_EQ('h', buf[0]);
+    EXPECT_EQ('e', buf[1]);
+
+    EXPECT_EQ(2, fread(buf, 1, 2, fp2));
+    EXPECT_EQ('l', buf[0]);
+    EXPECT_EQ('l', buf[1]);
+
+    EXPECT_EQ(1, fread(buf, 1, 2, fp2));
+    EXPECT_EQ('o', buf[0]);
+
+    fclose(fp2);
+    monapi_file_delete(path);
+}
+
+void test_fread_offset()
+{
+    test_fread_offset_flag("r");
+    test_fread_offset_flag("rb");
+    test_fread_offset_flag("r+");
+    test_fread_offset_flag("rb+");
+}
 
 // bsearch
 #include <stdlib.h>
