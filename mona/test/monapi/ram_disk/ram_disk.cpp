@@ -103,7 +103,6 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
         memcpy(buffer->Data, contents, copySize);
         res = monapi_file_write(id, buffer, copySize);
         EXPECT_EQ(res, MONA_SUCCESS);
-        monapi_file_seek(id, copySize, SEEK_CUR);
         size -= copySize;
         contents += copySize;
     }
@@ -577,9 +576,8 @@ int main(int argc, char *argv[])
     testFwrite_Overwrite();
     testFwrite2();
     testFwrite_Overwrite2();
-    testMonAPIwrite();
     testFopen_No_Leak();
-
+    testMonAPIwrite();
     TEST_RESULTS(ram_disk);
     return 0;
 }

@@ -242,6 +242,7 @@ namespace RamDisk {
                 uint32_t writeSize = context->size;
                 f->writeChunks(offset, writeSize, memory->Data);
                 f->size = f->size > offset+writeSize ? f->size : offset+writeSize;
+                context->offset += writeSize;
                 return MONA_SUCCESS;
             }
           virtual int seek(Vnode* file, uint32_t offset, uint32_t origin) { return MONA_SUCCESS; }
