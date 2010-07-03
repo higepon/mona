@@ -32,8 +32,9 @@
 
 int main(int argc, char* argv[]) {
     uint32_t pid = syscall_get_pid();
-    if (!syscall_stack_trace_enable(pid, MAP_FILE_PATH)) {
-        _printf("syscall_stack_trace_enable failed\n");
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        _printf("syscall_stack_trace_enable failed%d\n", ret);
     }
 	gnote::Controller c;
 	if (argc > 1) {

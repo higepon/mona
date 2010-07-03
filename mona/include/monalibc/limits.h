@@ -25,6 +25,9 @@ extern "C" {
 #define CHAR_MIN M_SCHAR_MIN
 #define CHAR_MAX M_UCHAR_MAX
 
+#define SHRT_MAX 32767
+#define SHRT_MIN (-32767-1)
+
 #define INT_MIN -2147483647
 #define INT_MAX 2147483647
 #define UINT_MAX 4294967295U

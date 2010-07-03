@@ -114,7 +114,7 @@ void syscall_entrance()
 #define SYSTEM_CALL_ARG_4 (info->edx)
 
 // To check resource leak on each syscall.
-#if 1
+#if 0
     static int prevSyscall = 0;
     static uintptr_t prevSize = 0;
     static const char* prevName = "";
@@ -914,7 +914,7 @@ void syscall_entrance()
         uint8_t* data = (uint8_t*)SYSTEM_CALL_ARG_2;
         uint32_t size = SYSTEM_CALL_ARG_3;
         bool res = g_page_manager->enableStackTrace(pid, data, size);
-        setReturnValue(info, res? 0 : 1);
+        setReturnValue(info, res? M_OK : M_UNKNOWN);
         break;
     }
     case SYSTEM_CALL_STACKTRACE_DISABLE:

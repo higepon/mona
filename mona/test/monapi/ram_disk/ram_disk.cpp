@@ -170,6 +170,9 @@ monapi_cmemoryinfo* readContentFromPath(const char *path)
 {
     uint32_t id = monapi_file_open(path, false);
     monapi_cmemoryinfo *cmi = monapi_file_read(id, 256);
+
+    // check EOF
+    EXPECT_TRUE(NULL == monapi_file_read(id, 256));
     monapi_file_close(id);
     return cmi;
 }

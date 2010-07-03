@@ -186,6 +186,10 @@ void testMapFileScanner_address()
     EXPECT_ADDRESS(" .text          0xa005be20      0x190 .\\libindep.a(obj_map.o)", "0xa005be20");
     EXPECT_ADDRESS(" .text          0xa003e700        0x0 libwc/ces.o", "0xa003e700");
     EXPECT_ADDRESS("                0xa005db60      0x550 main_mona.o", "0xa005db60");
+
+    // 64bit Linux
+    EXPECT_ADDRESS("                0xffffffffa0004300                testSymbolInfoCollection_serialize()", "0xa0004300");
+    EXPECT_ADDRESS(" .text          0xffffffffa0001070     0x7500 stack_trace.o", "0xa0001070");
 }
 
 

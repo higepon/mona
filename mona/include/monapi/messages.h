@@ -71,7 +71,7 @@ extern uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size);
 extern uint32_t monapi_stdin_lock_for_read();
 extern uint32_t monapi_stdin_unlock_for_read();
 extern uint32_t monapi_stdin_try_lock_for_read();
-extern uint32_t monapi_stdout_write(uint8_t* buffer, uint32_t size);
+extern intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size);
 extern uint8_t* monapi_allocate_dma_memory(int size);
 extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);

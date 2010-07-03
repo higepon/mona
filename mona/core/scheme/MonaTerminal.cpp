@@ -33,6 +33,32 @@ MonaTerminal::~MonaTerminal()
     monapi_register_to_server(ID_PROCESS_SERVER, 0);
 }
 
+::util::String MonaTerminal::getAccumLine()
+{
+    String ret = line_;
+    line_ = "";
+    cursorPosition_ = 0;
+    return ret;
+}
+
+const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
+{
+    bool hasLine;
+    if ((msg->arg2 & KEY_MODIFIER_DOWN) != 0)
+    {
+        hasLine = onKeyDown(msg->arg1, msg->arg2);
+    }
+    else if (msg->arg1 == 0)
+    {
+        hasLine = onKeyDown(msg->arg2, msg->arg3);
+    }
+    if (hasLine) {
+        return getAccumLine().data();
+    } else {
+        return NULL;
+    }
+}
+
 ::util::String MonaTerminal::getLine()
 {
     bool hasLine = false;
@@ -42,7 +68,6 @@ MonaTerminal::~MonaTerminal()
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
-
                 if (!isKeySuppressed_ && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
                     hasLine = onKeyDown(msg.arg1, msg.arg2);
@@ -53,10 +78,7 @@ MonaTerminal::~MonaTerminal()
                 }
                 if (hasLine)
                 {
-                    String ret = line_;
-                    line_ = "";
-                    cursorPosition_ = 0;
-                    return ret;
+                    return getAccumLine();
                 }
                 break;
             case MSG_CHANGE_OUT_STREAM_BY_HANDLE:

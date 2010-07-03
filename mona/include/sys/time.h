@@ -1,3 +1,3 @@
 /*
- * time.h - stub
+ * stub
  */

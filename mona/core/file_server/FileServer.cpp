@@ -190,7 +190,7 @@ void FileServer::messageLoop()
             uint32_t fildID;
             bool create = msg.arg1 == MONAPI_TRUE;
             int ret = vmanager_->open(upperCase(msg.str).c_str(), 0, create, tid, &fildID);
-            Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
+            Message::reply(&msg, ret == MONA_SUCCESS ? fildID : M_FILE_NOT_FOUND);
             break;
         }
         case MSG_FILE_READ_ALL:

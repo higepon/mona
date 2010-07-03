@@ -224,6 +224,8 @@ namespace RamDisk {
                   }
                 f->readChunks(offset, readSize, context->memory->Data);
 
+                context->resultSize = readSize;
+                context->offset += readSize;
                 return MONA_SUCCESS;
 
             }

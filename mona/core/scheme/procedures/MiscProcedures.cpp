@@ -278,6 +278,39 @@ PROCEDURE(CallPipe, "|")
     RETURN_BOOLEAN(false);
 }
 
+// This function does three things.
+//   (1) Waits tid process terminated and returns status value.
+//   (2) Sends key information to terminal
+//   (3) When terminal has a line, writes it to the stream, which is stdin of tid.
+intptr_t waitAndRedirect(uintptr_t tid, MonAPI::Stream* stream)
+{
+   for (MessageInfo msg;;)
+    {
+        if (MonAPI::Message::receive(&msg) != 0) continue;
+        switch (msg.header)
+        {
+        case MSG_PROCESS_TERMINATED:
+            if (tid == msg.arg1)
+            {
+                // exit status code
+                return msg.arg2;
+            }
+            break;
+        case MSG_KEY_VIRTUAL_CODE:
+        {
+
+            const char* line = g_terminal->storeKeyAndGetLine(&msg);
+            if (line != NULL) {
+                stream->write((uint8_t*)line, strlen(line));
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
 PROCEDURE(CallProcess, "call-process")
 {
 #ifdef MONA
@@ -287,12 +320,14 @@ PROCEDURE(CallProcess, "call-process")
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, g_terminal->getScreenHandle(), g_terminal->getScreenHandle());
+    MonAPI::Stream hisStdin;
+    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
     }
-    Number* status = new Number(monapi_process_wait_terminated(tid), lineno());
+
+    Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
     env->setVaribale(new Variable("status", lineno()), status);
     return status;
 #endif

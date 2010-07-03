@@ -1,3 +1,3 @@
 /*
- * wait.h - stub
+ * stub
  */

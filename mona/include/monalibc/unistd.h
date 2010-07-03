@@ -1,5 +1,5 @@
 /*
- * netdb.h
+ * socket.h - BSD Socket
  *
  *   Copyright (c) 2010 Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
@@ -28,48 +28,18 @@
  *
  */
 
-#ifndef NET_DB_
-#define NET_DB_
-
-#include <sys/types.h>
-
-# define EAI_AGAIN   -3    /* Temporary failure in name resolution.  */
+#ifndef _UNISTD_H_
+#define _UNISTD_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+extern char **environ;
+#define environ (*__environ())
 
-/*
-    Title: Net DB
-    #include <netdb.h>
-*/
-
-/*
-   function: getaddrinfo
-
-   Given  node and service, which identify an Internet host and a service, getaddrinfo() returns one or more addrinfo
-   structures.
-
-*/
-int getaddrinfo(const char *node, const char *service,
-                const struct addrinfo *hints,
-                struct addrinfo **res);
-
-/*
-   function: freeaddrinfo
-
-   Frees the addrinfo.
-
-   Parameters:
-
-     res - addrinfo
-
-*/
-void freeaddrinfo(struct addrinfo *res);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* NET_DB_ */
-
+#endif
