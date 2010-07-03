@@ -431,6 +431,32 @@ static void testFwrite()
     monapi_cmemoryinfo_delete(cmi);
 }
 
+static void testMonAPIwrite()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    intptr_t id = monapi_file_open(tmpFile, MONAPI_TRUE);
+    ASSERT_TRUE(id > 0);
+    const char* data = "Hello,\nWorld";
+    const int len = strlen(data) + 1;
+
+    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    monapi_cmemoryinfo_create(buffer, 1, 0);
+
+    for (int i = 0; i < len; i++) {
+        buffer->Data[0] = data[i];
+        monapi_file_write(id, buffer, 1);
+    }
+    monapi_file_close(id);
+    monapi_cmemoryinfo* cmi = readContentFromPath(tmpFile);
+    EXPECT_STR_EQ(data, (char*)cmi->Data);
+
+    monapi_cmemoryinfo_dispose(buffer);
+    monapi_cmemoryinfo_delete(buffer);
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    monapi_file_delete(tmpFile);
+}
+
 static void testFwrite2()
 {
     const char* tmpFile = "/MEM/TEST1.TXT";
@@ -551,7 +577,7 @@ int main(int argc, char *argv[])
     testFwrite_Overwrite();
     testFwrite2();
     testFwrite_Overwrite2();
-
+    testMonAPIwrite();
     testFopen_No_Leak();
 
     TEST_RESULTS(ram_disk);
