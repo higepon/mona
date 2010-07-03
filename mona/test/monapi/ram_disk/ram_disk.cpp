@@ -12,8 +12,8 @@ using namespace MonAPI;
 
 static bool fileExist(const char* path)
 {
-    uint32_t id = monapi_file_open(path, false);
-    if(id == 0)
+    intptr_t id = monapi_file_open(path, false);
+    if(id < 0)
       return false;
     monapi_file_close(id);
     return true;
@@ -40,14 +40,14 @@ static monapi_cmemoryinfo* alloc_buffer(const char* message)
 
 static void testOpenNonExistingFile()
 {
-    uint32_t id = monapi_file_open("/MEM/UNEXIST", false);
-    EXPECT_EQ(0, id);
+    intptr_t id = monapi_file_open("/MEM/UNEXIST", false);
+    EXPECT_TRUE(id < 0);
 }
 
 static void testOpenNonExistingFileWithCreate()
 {
-    uint32_t id = monapi_file_open("/MEM/UNEXIST2", true);
-    EXPECT_TRUE(id != 0);
+    intptr_t id = monapi_file_open("/MEM/UNEXIST2", true);
+    EXPECT_TRUE(id > 0);
     monapi_file_close(id);
     monapi_file_delete("/MEM/UNEXIST2");
 }
@@ -56,7 +56,7 @@ static void testOpenNonExistingFileWithCreate()
 static void createFile(const char* path)
 {
     EXPECT_TRUE(!fileExist(path));
-    uint32_t id = monapi_file_open(path, true);
+    intptr_t id = monapi_file_open(path, true);
 
     const char* message = "Hello World\n";
     monapi_cmemoryinfo* buffer = alloc_buffer(message);
@@ -73,8 +73,8 @@ static void testOpenExistingFile()
 {
     createFile("/MEM/TESTFILE");
 
-    uint32_t id = monapi_file_open("/MEM/TESTFILE", false);
-    EXPECT_TRUE(0 != id);
+    intptr_t id = monapi_file_open("/MEM/TESTFILE", false);
+    EXPECT_TRUE(id > 0);
     monapi_file_close(id);
 
     monapi_file_delete("/MEM/TESTFILE");
@@ -92,7 +92,7 @@ static void testDeleteFile()
 
 static void writeContentToPathWithSize(const char* path, const char* contents, int size, bool create=true)
 {
-    uint32_t id = monapi_file_open(path, create);
+    intptr_t id = monapi_file_open(path, create);
 
 #define MAXDATA 20
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
@@ -124,7 +124,7 @@ static void writeContentToPath(const char* path, const char* contents, bool crea
 
 int fileSize(const char* path)
 {
-    uint32_t id = monapi_file_open(path, false);
+    intptr_t id = monapi_file_open(path, false);
     int actual = monapi_file_get_file_size(id);
     monapi_file_close(id);
     return actual;
@@ -152,7 +152,7 @@ static void testWriteFile_Content()
     const char* path = "/MEM/TESTFILE";
     writeContentToPath(path, data);
 
-    uint32_t id = monapi_file_open(path, false);
+    intptr_t id = monapi_file_open(path, false);
     monapi_cmemoryinfo *actual = NULL;
     actual = monapi_file_read(id, 256);
     monapi_file_close(id);
@@ -168,7 +168,7 @@ static void testWriteFile_Content()
 
 monapi_cmemoryinfo* readContentFromPath(const char *path)
 {
-    uint32_t id = monapi_file_open(path, false);
+    intptr_t id = monapi_file_open(path, false);
     monapi_cmemoryinfo *cmi = monapi_file_read(id, 256);
 
     // check EOF
