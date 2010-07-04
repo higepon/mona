@@ -43,14 +43,13 @@ MonaTerminal::~MonaTerminal()
 
 const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
 {
-    bool hasLine;
-    if ((msg->arg2 & KEY_MODIFIER_DOWN) != 0)
-    {
+    bool hasLine = false;
+    if ((msg->arg2 & KEY_MODIFIER_DOWN) != 0) {
         hasLine = onKeyDown(msg->arg1, msg->arg2);
-    }
-    else if (msg->arg1 == 0)
-    {
+    } else if (msg->arg1 == 0) {
         hasLine = onKeyDown(msg->arg2, msg->arg3);
+    } else {
+        hasLine = false;
     }
     if (hasLine) {
         return getAccumLine().data();
