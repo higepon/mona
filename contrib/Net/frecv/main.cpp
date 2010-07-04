@@ -34,19 +34,16 @@ void copyToPath(int sd, const char *name)
     sprintf(path, "/MEM/%s", name);
     fprintf(stderr, "path: %s\n", path);
 
-    uint32_t id = monapi_file_open(path, true);
-    assert(id);
+    intptr_t id = monapi_file_open(path, true);
+    assert(id > 0);
 
     monapi_cmemoryinfo* buffer = alloc_buffer(MAXDATA);
-    
 
-    
     uint8_t buf[MAXDATA];
     int readSize = recv(sd, buf, MAXDATA, 0);
     do {
         memcpy(buffer->Data, buf, readSize);
         monapi_file_write(id, buffer, readSize);
-        monapi_file_seek(id, readSize, SEEK_CUR);
     } while ((readSize = recv(sd, buf, MAXDATA, 0)) > 0);
 
     monapi_file_close(id);
