@@ -93,24 +93,27 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         access_->unlock();
         return writeSize;
     }
-    uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
-    LOG("write:memcpy(%x, %x, %d)", threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
-    memcpy(threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
-    for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
-    {
-        header_->waitForReadThreads[i] = THREAD_UNKNOWN;
-    }
-    access_->unlock();
-    for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
-    {
-        uint32_t thread = threads[i];
-        if (THREAD_UNKNOWN == thread) continue;
-        if (Message::send(thread, MSG_READ_MEMORY_READY) != M_OK) {
-            printf("Error %s:%d\n", __FILE__, __LINE__);
-            exit(-1);
+
+    if (writeSize > 0) {
+        uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
+        LOG("write:memcpy(%x, %x, %d)", threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
+        memcpy(threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
+        for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
+        {
+            header_->waitForReadThreads[i] = THREAD_UNKNOWN;
         }
+        access_->unlock();
+        for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
+        {
+            uint32_t thread = threads[i];
+            if (THREAD_UNKNOWN == thread) continue;
+            if (Message::send(thread, MSG_READ_MEMORY_READY) != M_OK) {
+                printf("Error %s:%d\n", __FILE__, __LINE__);
+                exit(-1);
+            }
+        }
+        delete[] threads;
     }
-    delete[] threads;
     return writeSize;
 }
 
