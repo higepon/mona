@@ -19,7 +19,7 @@ $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 #	$(STRIP) $@
 
-install: all
+install: all $(INSTFILES)
 	mkdir -p $(INSTDIR)
 	$(INSTALL) $(TARGET).EXE $(INSTFILES) $(INSTDIR)
 
