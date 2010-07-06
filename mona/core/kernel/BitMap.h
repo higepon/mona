@@ -24,8 +24,8 @@ class BitMap {
     {
         bitsNumber_ = number;
         uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
-        map_ = new int[uint32_tNumber_];
-        memset(map_, 0, sizeof(int) * uint32_tNumber_);
+        map_ = new uintptr_t[uint32_tNumber_];
+        memset(map_, 0, sizeof(uint32_tNumber_) * uint32_tNumber_);
 
         for (int i = 0; i < bitsNumber_; i++) clear(i);
         return;
@@ -114,7 +114,7 @@ class BitMap {
     };
 
   private:
-    int* map_;
+    uintptr_t* map_;
     int bitsNumber_;
     int uint32_tNumber_;
 };
