@@ -24,7 +24,6 @@ SOURCES      = cstart.cpp            \
                pic.cpp               \
                io.cpp                \
                syscalls.cpp          \
-               BitMap.cpp            \
                Process.cpp           \
                GDTUtil.cpp           \
                IDTUtil.cpp           \
