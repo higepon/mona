@@ -24,15 +24,18 @@ class BitMap {
     {
         pointerNum_ = (bitsNumber_ + POINTER_SIZE_BITS - 1) / POINTER_SIZE_BITS;
         map_ = new uintptr_t[pointerNum_];
-        memset(map_, 0, sizeof(uintptr_t) * pointerNum_);
-
-        for (int i = 0; i < bitsNumber_; i++) clear(i);
-        return;
+        clearAll();
     }
 
     ~BitMap()
     {
         delete[] map_;
+    }
+
+private:
+    void clearAll()
+    {
+        memset(map_, 0, sizeof(uintptr_t) * pointerNum_);
     }
 
  public:

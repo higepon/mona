@@ -83,7 +83,7 @@ int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress
 int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
 {
     int foundMemory = memoryMap_->find();
-    if (foundMemory == BitMap::NOT_FOUND) {
+    if (foundMemory == -1) {
         return -1;
     }
     PhysicalAddress paddress = foundMemory * ARCH_PAGE_SIZE;
@@ -103,7 +103,7 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
     }
 
     int foundMemory = memoryMap_->find(numPages);
-    if (foundMemory == BitMap::NOT_FOUND) {
+    if (foundMemory == -1) {
         return M_NO_MEMORY;
     }
 
@@ -127,7 +127,7 @@ uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isU
     size = (size + 4095) & 0xFFFFF000;
     int pageNum = size / ARCH_PAGE_SIZE;
     int foundMemory = reservedDMAMap_->find(pageNum);
-    if (foundMemory == BitMap::NOT_FOUND) return NULL;
+    if (foundMemory == -1) return NULL;
 
     /* Map DMA */
     for (int i = foundMemory; i < foundMemory + pageNum; i++)
@@ -239,7 +239,7 @@ void PageManager::flushPageCache() const
 PageEntry* PageManager::allocatePageTable() const
 {
     int foundMemory = pageTablePool_->find();
-    if (foundMemory == BitMap::NOT_FOUND)
+    if (foundMemory == -1)
     {
         g_console->printf("not enough memory %s %d", __FILE__, __LINE__);
         return NULL;
