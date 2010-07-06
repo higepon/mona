@@ -20,12 +20,11 @@
 class BitMap {
 
  public:
-    BitMap(int number)
+    BitMap(int number) : bitsNumber_(number)
     {
-        bitsNumber_ = number;
-        uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
+        uint32_tNumber_ = (bitsNumber_ + POINTER_SIZE_BITS - 1) / POINTER_SIZE_BITS;
         map_ = new uintptr_t[uint32_tNumber_];
-        memset(map_, 0, sizeof(uint32_tNumber_) * uint32_tNumber_);
+        memset(map_, 0, sizeof(uintptr_t) * uint32_tNumber_);
 
         for (int i = 0; i < bitsNumber_; i++) clear(i);
         return;
@@ -39,15 +38,15 @@ class BitMap {
  public:
     void mark(int index)
     {
-        ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-        map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
+        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        map_[index / POINTER_SIZE_BITS] |= 1 << (index % POINTER_SIZE_BITS);
         return;
     }
 
     void clear(int index)
     {
-        ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-        map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
+        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        map_[index / POINTER_SIZE_BITS] &= ~(1 << (index % POINTER_SIZE_BITS));
         return;
     }
 
@@ -97,8 +96,8 @@ class BitMap {
     }
     bool marked(int index)
     {
-        ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-        return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
+        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        return(map_[index / POINTER_SIZE_BITS] & (1 << (index % POINTER_SIZE_BITS)));
     }
     int getBitsNumber() const
     {
@@ -110,7 +109,7 @@ class BitMap {
     enum
     {
         NOT_FOUND  = -1,
-        DWORD_BITS = sizeof(uint32_t) * 8
+        POINTER_SIZE_BITS = sizeof(uintptr_t) * 8
     };
 
   private:
