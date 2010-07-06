@@ -16,7 +16,7 @@
 extern "C" VirtualConsole* g_log;
 #define allocator_warn(x) if (g_log) g_log->printf("allocator warn:%s", x)
 
-#include "FirstFitAllocator.h"
+#include <sys/FirstFitAllocator.h>
 #include "Semaphore.h"
 #include "GDTUtil.h"
 #include "IDTUtil.h"
