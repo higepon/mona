@@ -29,6 +29,7 @@ all:
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Multimedia/monappt && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Multimedia/bplayer && touch dependencies && $(MAKE) # && $(MAKE) install
+	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
 ### MonaForms applications
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
