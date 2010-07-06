@@ -19,7 +19,7 @@
 */
 class BitMap {
 
- public:
+public:
     BitMap(int number) : bitsNumber_(number)
     {
         pointerNum_ = (bitsNumber_ + POINTER_SIZE_BITS - 1) / POINTER_SIZE_BITS;
@@ -32,13 +32,6 @@ class BitMap {
         delete[] map_;
     }
 
-private:
-    void clearAll()
-    {
-        memset(map_, 0, sizeof(uintptr_t) * pointerNum_);
-    }
-
- public:
     void mark(int index)
     {
         ASSERT((index / POINTER_SIZE_BITS) < pointerNum_);
@@ -56,7 +49,6 @@ private:
     int find()
     {
         for (int i = 0; i < bitsNumber_; i++) {
-
             if (!marked(i)) {
                 mark(i);
                 return i;
@@ -64,10 +56,10 @@ private:
         }
         return -1;
     }
+
     int find(int num)
     {
         for (int i = 0; i < bitsNumber_; i++) {
-
             if (!marked(i)) {
                 int size = 0;
                 for (int j  = i; j < bitsNumber_; j++) {
@@ -86,35 +78,39 @@ private:
         }
         return -1;
     }
+
     int countClear()
     {
         int count = 0;
-
         for (int i = 0; i < bitsNumber_; i++) {
-
             if (!marked(i)) count++;
         }
 
         return count;
     }
+
     bool marked(int index)
     {
         ASSERT((index / POINTER_SIZE_BITS) < pointerNum_);
         return(map_[index / POINTER_SIZE_BITS] & (1 << (index % POINTER_SIZE_BITS)));
     }
+
     int getBitsNumber() const
     {
         return bitsNumber_;
     }
 
-
-  public:
+private:
     enum
     {
         POINTER_SIZE_BITS = sizeof(uintptr_t) * 8
     };
 
-  private:
+    void clearAll()
+    {
+        memset(map_, 0, sizeof(uintptr_t) * pointerNum_);
+    }
+
     uintptr_t* map_;
     int bitsNumber_;
     int pointerNum_;
