@@ -284,7 +284,7 @@ public:
 
 class W3MFrame: public Frame {
 public:
-  W3MFrame() : m_isAuto(false) {
+  W3MFrame() : m_isAuto(false), m_autoCount(0) {
     setBounds((800 - 640) / 2, (600 - 480) / 2, 640, 480);
     setTitle("w3m");
     m_pane = new W3MPane();
@@ -307,8 +307,9 @@ public:
   }
 
   // just copy pointer. be careful!
-  void autoPilot(char *url) {
+  void autoPilot(char *url, int autoCount) {
      m_isAuto = true;
+     m_autoCount = autoCount;
      m_autoUrl = url;
   }
 
@@ -333,8 +334,10 @@ public:
 
 private: 
     W3MPane *m_pane;
-    char *m_autoUrl;
+
     bool m_isAuto;
+    int m_autoCount;
+    char *m_autoUrl;
 };
 
 

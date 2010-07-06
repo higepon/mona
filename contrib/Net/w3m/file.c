@@ -1746,6 +1746,7 @@ checkRedirection(ParsedURL *pu)
 }
 
 extern int isAutoPilot();
+extern int autoPilotCount();
 
 /* 
  * loadGeneralFile: load file to buffer
@@ -1930,8 +1931,13 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	    t_buf->bufferprop |= BP_REDIRECTED;
 	    status = HTST_NORMAL;
             if(isAutoPilot()) {
+                static int count = 0;
+                if (count++ == autoPilotCount()) {
+                    logprintf("auto pilot done\n");
+                    w3m_exit(0);
+                }
                 fprintf(stderr, "redirect url: %s\n", tpath);
-                _logprintf("redirect url: %s\n", tpath);
+                logprintf("redirect url: %s\n", tpath);
             }
 	    goto load_doc;
 	}

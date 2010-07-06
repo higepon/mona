@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 ;; (define (mona-gui-enum-windows) (list "GUI Shell" "/APPS"))
 ;; (define (mona-gui-get-window-title w) w)
@@ -13,9 +13,14 @@
 ;  (start-process "/APPS/BAYGUI/GNOTE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
 ;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
-  (start-process "/APPS/W3M.APP/W3M.EX5 -a -d")
+;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 3 -d")
+  (w3m-auto-pilot)
 ;  (display "uIP httpd started:\n  Try access http://localhost:8080/ from HOST OS")
 )
+
+(define (w3m-auto-pilot)
+  (call-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
+  (w3m-auto-pilot))
 
 ;; prompt string
 (define (mona-prompt-string)

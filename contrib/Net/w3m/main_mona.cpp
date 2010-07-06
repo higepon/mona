@@ -2,6 +2,7 @@
 
 bool g_debugMode = false;
 bool g_autoPilot = false;
+long g_autoPilotCount = 0;
 #include <monapi.h>
 #define MAINPROGRAM
 extern "C" {
@@ -2290,6 +2291,11 @@ int isAutoPilot()
     return g_autoPilot; 
 }
 
+int autoPilotCount()
+{
+    return g_autoPilotCount;
+}
+
 
 /* extern "C" */ }
 
@@ -2518,6 +2524,12 @@ int main(int argc, char* argv[]) {
                 break;
             case 'a':
                 g_autoPilot = true;
+                if (i + 1 < argc) {
+                    g_autoPilotCount = strtol(argv[i + 1], (char **) NULL, 10);
+                    if (0 != g_autoPilotCount) {
+                        i++;
+                    }
+                }
                 break;
             }
         }
@@ -2542,13 +2554,13 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "w3m: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
         }
         fprintf(stderr, "w3m: tid=%d\n", syscall_get_tid());
-        _logprintf("w3m: tid=%d\n", syscall_get_tid());
+        logprintf("w3m: tid=%d\n", syscall_get_tid());
     }
 
 
     g_frame = new W3MFrame();
     if(g_autoPilot)
-        g_frame->autoPilot(AUTOPILOT_URL);
+        g_frame->autoPilot(AUTOPILOT_URL, g_autoPilotCount);
     g_frame->initW3M(initUrl);
     g_frame->run();
     delete(g_frame);
