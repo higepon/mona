@@ -82,7 +82,7 @@ LinearAddress ProcessOperation::allocateKernelStack()
 {
     int stackIndex = kernelStackMap->find();
 
-    if (stackIndex == BitMap::NOT_FOUND)
+    if (stackIndex == -1)
     {
         panic("sorry no kernel stack\n");
         for (;;);

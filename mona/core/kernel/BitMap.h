@@ -22,9 +22,9 @@ class BitMap {
  public:
     BitMap(int number) : bitsNumber_(number)
     {
-        uint32_tNumber_ = (bitsNumber_ + POINTER_SIZE_BITS - 1) / POINTER_SIZE_BITS;
-        map_ = new uintptr_t[uint32_tNumber_];
-        memset(map_, 0, sizeof(uintptr_t) * uint32_tNumber_);
+        pointerNum_ = (bitsNumber_ + POINTER_SIZE_BITS - 1) / POINTER_SIZE_BITS;
+        map_ = new uintptr_t[pointerNum_];
+        memset(map_, 0, sizeof(uintptr_t) * pointerNum_);
 
         for (int i = 0; i < bitsNumber_; i++) clear(i);
         return;
@@ -38,14 +38,14 @@ class BitMap {
  public:
     void mark(int index)
     {
-        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        ASSERT((index / POINTER_SIZE_BITS) < pointerNum_);
         map_[index / POINTER_SIZE_BITS] |= 1 << (index % POINTER_SIZE_BITS);
         return;
     }
 
     void clear(int index)
     {
-        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        ASSERT((index / POINTER_SIZE_BITS) < pointerNum_);
         map_[index / POINTER_SIZE_BITS] &= ~(1 << (index % POINTER_SIZE_BITS));
         return;
     }
@@ -96,7 +96,7 @@ class BitMap {
     }
     bool marked(int index)
     {
-        ASSERT((index / POINTER_SIZE_BITS) < uint32_tNumber_);
+        ASSERT((index / POINTER_SIZE_BITS) < pointerNum_);
         return(map_[index / POINTER_SIZE_BITS] & (1 << (index % POINTER_SIZE_BITS)));
     }
     int getBitsNumber() const
@@ -114,7 +114,7 @@ class BitMap {
   private:
     uintptr_t* map_;
     int bitsNumber_;
-    int uint32_tNumber_;
+    int pointerNum_;
 };
 
 #endif
