@@ -9,11 +9,8 @@
 #include <monapi/Mutex.h>
 
 #ifdef __cplusplus
-#include <sys/BinaryTree.h>
-class FirstFitAllocator;
 namespace MonAPI
 {
-
     class MemoryMap
     {
     public:
@@ -36,9 +33,8 @@ namespace MonAPI
     private:
         static const uint32_t START_ADDRESS;
         static const uint32_t MAX_SIZE;
-        static FirstFitAllocator allocator;
-        static BinaryTree<void*> addressMap;
         static uint32_t lastError;
+        static uint32_t nextAddress;
         static Mutex mutex;
     };
 

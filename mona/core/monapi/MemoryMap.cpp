@@ -5,17 +5,12 @@
 #include <monapi.h>
 #include <monapi/Mutex.h>
 
-#define allocator_warn(x) monapi_warn("allocator : %s", x)
-
-#include <sys/FirstFitAllocator.h>
-
 namespace MonAPI {
 
 const uint32_t MemoryMap::START_ADDRESS = 0x90000000;
 const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
+uint32_t MemoryMap::nextAddress;
 uint32_t MemoryMap::lastError;
-FirstFitAllocator MemoryMap::allocator;
-BinaryTree<void*> MemoryMap::addressMap;
 Mutex MemoryMap::mutex;
 
 //#define TRACE_MEMORY_MAP
@@ -28,7 +23,7 @@ Mutex MemoryMap::mutex;
 
 void MemoryMap::initialize()
 {
-    allocator = FirstFitAllocator(START_ADDRESS, START_ADDRESS + MAX_SIZE);
+    nextAddress = START_ADDRESS;
     lastError = 0;
 }
 
@@ -72,8 +67,7 @@ uint8_t* MemoryMap::map(uint32_t id)
     }
 
     mutex.lock();
-    void* address = allocator.allocate(size);
-    if (address == NULL)
+    if (nextAddress + size > START_ADDRESS + MAX_SIZE)
     {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_ENOUGH_ADDRESS_SPACE;
@@ -81,32 +75,33 @@ uint8_t* MemoryMap::map(uint32_t id)
         return NULL;
     }
 
-    addressMap.add(id, address);
-
-    if (syscall_memory_map_map(id, (uintptr_t)address))
+    if (syscall_memory_map_map(id, nextAddress))
     {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_MAP_ATATCH_ERROR;
         mutex.unlock();
         return NULL;
     }
+     uint8_t* result = (uint8_t*)(nextAddress);
+
+#if 0
+    if (78 == tid) {
+        syscall_remove_watch_point();
+    }
+#endif
+    nextAddress += size;
     mutex.unlock();
-    return (uint8_t*)address;
+    return result;
 }
 
 bool MemoryMap::unmap(uint32_t id)
 {
-    void* address = addressMap.get(id);
-    if (NULL == address) {
-        monapi_warn("bad map id");
-    }
-
     if (syscall_memory_map_unmap(id))
     {
         lastError = M_MEMORY_MAP_ERROR;
         return false;
     }
-    allocator.free(address);
+
     return true;
 }
 
