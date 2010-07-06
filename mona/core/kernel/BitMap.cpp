@@ -16,22 +16,22 @@
 #include "BitMap.h"
 #include "string.h"
 
-/*!
-    \brief initilize BitMap
+// /*!
+//     \brief initilize BitMap
 
-    \param number number of bits
-    \author Higepon
-    \date   create:2003/03/30 update:
-*/
-BitMap::BitMap(int number) {
-    bitsNumber_ = number;
-    uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
-    map_ = new int[uint32_tNumber_];
-    memset(map_, 0, sizeof(int) * uint32_tNumber_);
+//     \param number number of bits
+//     \author Higepon
+//     \date   create:2003/03/30 update:
+// */
+// BitMap::BitMap(int number) {
+//     bitsNumber_ = number;
+//     uint32_tNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
+//     map_ = new int[uint32_tNumber_];
+//     memset(map_, 0, sizeof(int) * uint32_tNumber_);
 
-    for (int i = 0; i < bitsNumber_; i++) clear(i);
-    return;
-}
+//     for (int i = 0; i < bitsNumber_; i++) clear(i);
+//     return;
+// }
 
 /*!
     \brief destroy
@@ -39,11 +39,11 @@ BitMap::BitMap(int number) {
     \author Higepon
     \date   create:2003/03/30 update:
 */
-BitMap::~BitMap() {
+// BitMap::~BitMap() {
 
-    delete[] map_;
-    return;
-}
+//     delete[] map_;
+//     return;
+// }
 
 /*!
     \brief get number of bits
@@ -51,10 +51,10 @@ BitMap::~BitMap() {
     \author Higepon
     \date   create:2003/08/22 update:
 */
-int BitMap::getBitsNumber() const {
+// int BitMap::getBitsNumber() const {
 
-    return bitsNumber_;
-}
+//     return bitsNumber_;
+// }
 
 /*!
     \brief mark bitmap
@@ -63,11 +63,11 @@ inc
     \author Higepon
     \date   create:2003/03/30 update:
 */
-void BitMap::mark(int index) {
-    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-    map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
-    return;
-}
+// void BitMap::mark(int index) {
+//     ASSERT((index / DWORD_BITS) < uint32_tNumber_);
+//     map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
+//     return;
+// }
 
 /*!
     \brief clear bitmap
@@ -76,11 +76,11 @@ void BitMap::mark(int index) {
     \author Higepon
     \date   create:2003/03/30 update:
 */
-void BitMap::clear(int index) {
-    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-    map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
-    return;
-}
+// void BitMap::clear(int index) {
+//     ASSERT((index / DWORD_BITS) < uint32_tNumber_);
+//     map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
+//     return;
+// }
 
 /*!
     \brief find empty and marked
@@ -89,40 +89,40 @@ void BitMap::clear(int index) {
     \author Higepon
     \date   create:2003/03/30 update:2003/10/26
 */
-int BitMap::find() {
+// int BitMap::find() {
 
-    for (int i = 0; i < bitsNumber_; i++) {
+//     for (int i = 0; i < bitsNumber_; i++) {
 
-        if (!marked(i)) {
-            mark(i);
-            return i;
-        }
-    }
-    return NOT_FOUND;
-}
+//         if (!marked(i)) {
+//             mark(i);
+//             return i;
+//         }
+//     }
+//     return NOT_FOUND;
+// }
 
-int BitMap::find(int num) {
+// int BitMap::find(int num) {
 
-    for (int i = 0; i < bitsNumber_; i++) {
+//     for (int i = 0; i < bitsNumber_; i++) {
 
-        if (!marked(i)) {
-            int size = 0;
-            for (int j  = i; j < bitsNumber_; j++) {
-                if (marked(j)) {
-                    break;
-                }
-                size++;
-                if (size == num) {
-                    for (int k = i; k <= j; k++) {
-                        mark(k);
-                    }
-                    return i;
-                }
-            }
-        }
-    }
-    return NOT_FOUND;
-}
+//         if (!marked(i)) {
+//             int size = 0;
+//             for (int j  = i; j < bitsNumber_; j++) {
+//                 if (marked(j)) {
+//                     break;
+//                 }
+//                 size++;
+//                 if (size == num) {
+//                     for (int k = i; k <= j; k++) {
+//                         mark(k);
+//                     }
+//                     return i;
+//                 }
+//             }
+//         }
+//     }
+//     return NOT_FOUND;
+// }
 
 /*!
     \brief count clear bits
@@ -131,17 +131,17 @@ int BitMap::find(int num) {
     \author Higepon
     \date   create:2003/03/30 update:
 */
-int BitMap::countClear() {
+// int BitMap::countClear() {
 
-    int count = 0;
+//     int count = 0;
 
-    for (int i = 0; i < bitsNumber_; i++) {
+//     for (int i = 0; i < bitsNumber_; i++) {
 
-        if (!marked(i)) count++;
-    }
+//         if (!marked(i)) count++;
+//     }
 
-    return count;
-}
+//     return count;
+// }
 
 /*!
     \brief test if marked
@@ -151,7 +151,7 @@ int BitMap::countClear() {
     \author Higepon
     \date   create:2003/03/30 update:
 */
-bool BitMap::marked(int index) {
-    ASSERT((index / DWORD_BITS) < uint32_tNumber_);
-    return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
-}
+// bool BitMap::marked(int index) {
+//     ASSERT((index / DWORD_BITS) < uint32_tNumber_);
+//     return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
+// }
