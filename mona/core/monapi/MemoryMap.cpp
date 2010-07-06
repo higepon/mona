@@ -98,7 +98,7 @@ bool MemoryMap::unmap(uint32_t id)
     }
     int startIndex = addresses.get(id);
     for (int i = 0; i < pageNum; i++) {
-        bitmap.clear(startIndex + 0);
+        bitmap.clear(startIndex + i);
     }
     addresses.remove(id);
     return true;
