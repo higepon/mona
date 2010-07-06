@@ -59,7 +59,7 @@ class BitMap {
                 return i;
             }
         }
-        return NOT_FOUND;
+        return -1;
     }
     int find(int num)
     {
@@ -81,7 +81,7 @@ class BitMap {
                 }
             }
         }
-        return NOT_FOUND;
+        return -1;
     }
     int countClear()
     {
@@ -108,7 +108,6 @@ class BitMap {
   public:
     enum
     {
-        NOT_FOUND  = -1,
         POINTER_SIZE_BITS = sizeof(uintptr_t) * 8
     };
 
