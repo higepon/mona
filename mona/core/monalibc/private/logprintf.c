@@ -12,7 +12,7 @@
 
 void logprintf(const char* format, ...) {
 
-    char str[512];
+    char str[4096];
     str[0] = '\0';
     va_list args;
     int result;

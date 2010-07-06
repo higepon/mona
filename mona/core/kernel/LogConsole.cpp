@@ -61,7 +61,7 @@ void LogConsole::setCHColor(const char color)
 */
 void LogConsole::printf(const char *format, ...)
 {
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024
     char buf[BUFFER_SIZE];
     va_list ap;
     va_start(ap, format);

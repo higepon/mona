@@ -244,7 +244,7 @@ loadSomething(URLFile *f,
 #ifdef MONA
 #include <monapi/messages.h>
 extern uint32_t monapi_file_delete(const char* file);
-extern void _logprintf(const char* format, ...);
+extern void logprintf(const char* format, ...);
 
 void
 unlink(char *path)
