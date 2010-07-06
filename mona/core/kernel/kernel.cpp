@@ -59,7 +59,7 @@
 #include "GraphicalConsole.h"
 #include "ihandlers.h"
 #include "pic.h"
-#include "BitMap.h"
+#include <sys/BitMap.h>
 #include "string.h"
 #include "syscalls.h"
 #include "PageManager.h"
