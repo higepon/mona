@@ -6,6 +6,10 @@
 #define _MONAPI_MEMORY_MAP_
 
 #include <sys/types.h>
+#include <monapi/string.h>
+#include <monapi/Assert.h>
+#include <sys/BitMap.h>
+#include <sys/BinaryTree.h>
 #include <monapi/Mutex.h>
 
 #ifdef __cplusplus
@@ -34,8 +38,9 @@ namespace MonAPI
         static const uint32_t START_ADDRESS;
         static const uint32_t MAX_SIZE;
         static uint32_t lastError;
-        static uint32_t nextAddress;
         static Mutex mutex;
+        static BitMap bitmap;
+        static BinaryTree<int> addresses;
     };
 
 }

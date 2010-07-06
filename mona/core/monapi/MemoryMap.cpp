@@ -9,8 +9,9 @@ namespace MonAPI {
 
 const uint32_t MemoryMap::START_ADDRESS = 0x90000000;
 const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
-uint32_t MemoryMap::nextAddress;
 uint32_t MemoryMap::lastError;
+BitMap MemoryMap::bitmap(MAX_SIZE / MAP_PAGE_SIZE);
+BinaryTree<int> MemoryMap::addresses;
 Mutex MemoryMap::mutex;
 
 //#define TRACE_MEMORY_MAP
@@ -23,7 +24,6 @@ Mutex MemoryMap::mutex;
 
 void MemoryMap::initialize()
 {
-    nextAddress = START_ADDRESS;
     lastError = 0;
 }
 
@@ -59,49 +59,48 @@ uint8_t* MemoryMap::map(uint32_t id)
     MEMORY_MAP_TRACE("try to map() id = %x", id);
     uintptr_t size = syscall_memory_map_get_size(id);
 
-    if (size == 0)
-    {
+    if (size == 0) {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_MEMORY_MAP_NOT_FOUND;
         return NULL;
     }
 
     mutex.lock();
-    if (nextAddress + size > START_ADDRESS + MAX_SIZE)
-    {
-        MEMORY_MAP_TRACE("");
+    int pageNum = (size + MAP_PAGE_SIZE) / MAP_PAGE_SIZE;
+    int found = bitmap.find(pageNum);
+    if (found == -1) {
         lastError = ERROR_NOT_ENOUGH_ADDRESS_SPACE;
         mutex.unlock();
         return NULL;
     }
 
-    if (syscall_memory_map_map(id, nextAddress))
-    {
+    uint8_t* address = (uint8_t*)(START_ADDRESS + (found * MAP_PAGE_SIZE));
+
+    if (syscall_memory_map_map(id, (uintptr_t)address)) {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_NOT_MAP_ATATCH_ERROR;
         mutex.unlock();
         return NULL;
     }
-     uint8_t* result = (uint8_t*)(nextAddress);
-
-#if 0
-    if (78 == tid) {
-        syscall_remove_watch_point();
-    }
-#endif
-    nextAddress += size;
+    addresses.add(id, found);
     mutex.unlock();
-    return result;
+    return address;
 }
 
 bool MemoryMap::unmap(uint32_t id)
 {
+    uintptr_t size = syscall_memory_map_get_size(id);
+    int pageNum = (size + MAP_PAGE_SIZE) / MAP_PAGE_SIZE;
     if (syscall_memory_map_unmap(id))
     {
         lastError = M_MEMORY_MAP_ERROR;
         return false;
     }
-
+    int startIndex = addresses.get(id);
+    for (int i = 0; i < pageNum; i++) {
+        bitmap.clear(startIndex + 0);
+    }
+    addresses.remove(id);
     return true;
 }
 
@@ -150,4 +149,3 @@ intptr_t monapi_cmemorymap_unmap(uint32_t id)
 {
     return MonAPI::MemoryMap::unmap(id) ? M_OK : M_MEMORY_MAP_ERROR;
 }
-
