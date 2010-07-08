@@ -236,8 +236,10 @@ void ImeManager::paint(Graphics* g)
 /** イベント処理 */
 void ImeManager::processEvent(Event *event)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	// キー押下
 	if (event->getType() == Event::KEY_PRESSED) {
+        logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, imesvrID);
 		int keycode = ((KeyEvent *)event)->getKeycode();
 		int modifiers = ((KeyEvent *)event)->getModifiers();
 		
@@ -245,6 +247,7 @@ void ImeManager::processEvent(Event *event)
 		if (imesvrID != THREAD_UNKNOWN && 
 			((modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') ||
 			(modifiers == KeyEvent::VKEY_LSHIFT && keycode == ' '))) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			#if 0
 			clearBuffer();
 			clearKanjiList();
@@ -257,6 +260,7 @@ void ImeManager::processEvent(Event *event)
 			#endif
 		// バックスペース
 		} else if (keycode == KeyEvent::VKEY_BACKSPACE) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			int len = 0;
 			
 			if (0 <= kanjiListPtr && kanjiListPtr < kanjiList.size() - 1) {

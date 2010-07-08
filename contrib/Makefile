@@ -8,6 +8,7 @@ all:
 ### servers
 #mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
+	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
@@ -29,7 +30,6 @@ all:
 	cd Multimedia/monapeg && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Multimedia/monappt && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Multimedia/bplayer && touch dependencies && $(MAKE) # && $(MAKE) install
-	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
 ### MonaForms applications
 	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
