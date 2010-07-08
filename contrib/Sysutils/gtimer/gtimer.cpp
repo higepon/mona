@@ -35,22 +35,27 @@ private:
 
 public:
   GTimer(){
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     time = 0;
 
     setBounds(200,200,120,80);
     setTitle("TIMER");
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     char timeText[128];
     sprintf(timeText,"%d",time);
 
     start = new Button("START");
     start->setBounds(5,5,100,20);
     add(start);
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     text = new TextField();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     text->setBounds(5,30,100,20);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     text->setText(timeText);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     add(text);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   }
   
   ~GTimer(){
@@ -59,6 +64,7 @@ public:
   }
 
   void processEvent(Event *event){
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if(event->getType() == MouseEvent::MOUSE_RELEASED){
       if(event->getSource() == start){
 	time = atoi(text->getText());
@@ -66,25 +72,38 @@ public:
 	setTimer(1000);
       }
     }else if(event->getType() == Event::TIMER){
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       time--;
       confirmTime();
       if(time > 0){ setTimer(1000); }
       else{ finish(); }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   }
 
   void confirmTime(){
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     char timeText[128];
     sprintf(timeText,"%d",time);
     text->setText(timeText);
   }
 
   void finish(){
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     text->setText("sage");
   }
 };
 
 int main(int argc, char* argv[]){
+
+#define MAP_FILE_PATH "/APPS/BAYGUI/GTIMER.MAP"
+    uint32_t pid = syscall_get_pid();
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        fprintf(stderr, "w3m: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
+    }
+
   GTimer *timer = new GTimer();
   timer->run();
   delete(timer);

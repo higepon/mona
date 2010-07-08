@@ -2,6 +2,7 @@ TARGET  = GTIMER
 SOURCES = gtimer.cpp
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI
+INSTFILES= GTIMER.map
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
