@@ -98,8 +98,8 @@ typedef unsigned int wchar;
 #include "baygui/awt/Label.h"
 #include "baygui/awt/ListBox.h"
 #include "baygui/awt/Scrollbar.h"
-#include "baygui/awt/TextField.h"
 #include "baygui/awt/Container.h"
+#include "baygui/awt/TextField.h"
 #include "baygui/awt/Window.h"
 #include "baygui/awt/Frame.h"
 

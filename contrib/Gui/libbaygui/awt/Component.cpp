@@ -81,7 +81,9 @@ namespace baygui {
 
 	void Component::repaint()
 	{
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (this->_buffer == NULL) return;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		setFontStyle(this->fontStyle);
 		paint(this->_g);
 		update();

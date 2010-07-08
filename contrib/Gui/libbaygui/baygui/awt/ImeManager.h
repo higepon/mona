@@ -50,7 +50,7 @@ private:
     /** IMEイベント */
     Event *_imeEvent;
     /** 親部品 */
-    Container *parent;
+    Component *parent;
 
     virtual void clearKanjiList();
     virtual void clearBuffer();
@@ -64,9 +64,9 @@ public:
     virtual void insertCharacter(char *buffer, char c);
     virtual void insertString(char *buffer, const char *str);
     virtual int  deleteCharacter(char *buffer);
-    virtual void setParent(Container *parent);
-    virtual void repaint();
-    virtual void postEvent(Event *event);
+    virtual void setParent(Component *parent);
+    virtual void paint(Graphics* g);
+    virtual void processEvent(Event *event);
 };
 
 #endif // _IMEMANAGER_H_INCLUDED_

@@ -32,6 +32,7 @@ SOURCES = \
 	awt/Scrollbar.cpp \
 	awt/TextField.cpp \
 	awt/Window.cpp \
+	awt/ImeManager.cpp \
 	lang/Object.cpp \
 	lang/String.cpp \
 	lang/Thread.cpp \

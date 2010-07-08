@@ -1,82 +1,85 @@
 /*
 Copyright (c) 2005 bayside
 
-Permission is hereby granted, free of charge, to any person 
-obtaining a copy of this software and associated documentation files 
-(the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, 
-publish, distribute, sublicense, and/or sell copies of the Software, 
-and to permit persons to whom the Software is furnished to do so, 
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so,
 subject to the following conditions:
 
-The above copyright notice and this permission notice shall be 
+The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #if !defined(_TEXTFIELD_H_INCLUDED_)
 #define _TEXTFIELD_H_INCLUDED_
 
-/** ƒeƒLƒXƒgƒtƒB[ƒ‹ƒh•¶š—ñÅ‘å’· */
+/** ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æ–‡å­—åˆ—æœ€å¤§é•· */
 #define MAX_TEXT_LEN 128
 
-namespace baygui {
-	/**
-	 ƒeƒLƒXƒgƒ{ƒbƒNƒXƒNƒ‰ƒX
-	*/
-	class TextField : public Component {
-	private:
-		/** ƒJ[ƒ\ƒ‹‚ÌˆÊ’u */
-		int textPtr;
-		/** •¶š—ñ‚Ì’·‚³ */
-		int textLen;
-		/** ƒIƒtƒZƒbƒgX */
-		int offx;
-		/** ƒIƒtƒZƒbƒgY */
-		int offy;
-		/** “à•”•¶š—ñ */
-		char text[MAX_TEXT_LEN];
-		
-	protected:
-		/** ƒeƒLƒXƒgƒCƒxƒ“ƒg */
-		Event textEvent;
-		
-	private:
-		/** 1•¶š‘}“ü‚·‚é */
-		virtual void insertCharacter(char c);
-		
-		/** ˆê•¶šíœ‚·‚é */
-		virtual void deleteCharacter();
+class ImeManager;
 
-	public:
-		/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
-		TextField();
-		
-		/** ƒfƒXƒgƒ‰ƒNƒ^ */
-		virtual ~TextField();
-		
-		/**
-		 ƒeƒLƒXƒg‚ğİ’è‚·‚é
-		 @param text
-		 */
-		virtual void setText(const String& text);
-		
-		/** ƒeƒLƒXƒg‚ğ“¾‚é */
-		inline char* getText() { return this->text; }
-		
-		/** •`‰æƒnƒ“ƒhƒ‰ */
-		virtual void paint(Graphics* g);
-		
-		/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
-		virtual void processEvent(Event* event);
-	};
+namespace baygui {
+    /**
+     ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã‚¯ãƒ©ã‚¹
+    */
+    class TextField : public Container {
+    private:
+        /** ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½® */
+        int textPtr;
+        /** æ–‡å­—åˆ—ã®é•·ã• */
+        int textLen;
+        /** ã‚ªãƒ•ã‚»ãƒƒãƒˆX */
+        int offx;
+        /** ã‚ªãƒ•ã‚»ãƒƒãƒˆY */
+        int offy;
+        /** å†…éƒ¨æ–‡å­—åˆ— */
+        char text[MAX_TEXT_LEN];
+
+    protected:
+        /** ãƒ†ã‚­ã‚¹ãƒˆã‚¤ãƒ™ãƒ³ãƒˆ */
+        Event textEvent;
+        ImeManager* _imeManager;
+
+    private:
+        /** 1æ–‡å­—æŒ¿å…¥ã™ã‚‹ */
+        virtual void insertCharacter(char c);
+
+        /** ä¸€æ–‡å­—å‰Šé™¤ã™ã‚‹ */
+        virtual void deleteCharacter();
+
+    public:
+        /** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
+        TextField();
+
+        /** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
+        virtual ~TextField();
+
+        /**
+         ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®šã™ã‚‹
+         @param text
+         */
+        virtual void setText(const String& text);
+
+        /** ãƒ†ã‚­ã‚¹ãƒˆã‚’å¾—ã‚‹ */
+        inline char* getText() { return this->text; }
+
+        /** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+        virtual void paint(Graphics* g);
+
+        /** ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ© */
+        virtual void processEvent(Event* event);
+    };
 }
 
 #endif // _TEXTFIELD_H_INCLUDED_
