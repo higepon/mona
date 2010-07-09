@@ -67,6 +67,11 @@ along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.  */
 void
 __gmp_invalid_operation (void)
 {
+#ifdef MONA
+  _printf("__gmp_invalid_operation");
+  exit(-1);
+#else
   raise (SIGFPE);
   abort ();
+#endif
 }
