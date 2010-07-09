@@ -1,0 +1,174 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
+LIB_STATIC   = libgmp.a
+TARGET       = $(LIB_STATIC)
+
+LIB_IMPORT   = libgmp-imp.a
+LIB_DYNAMIC  = GMP.DLL
+LIB_DYNAMIC5 = GMP.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+TOP_CSOURCES=\
+  assert.c compat.c errno.c extract-dbl.c memory.c		\
+  mp_bpl.c mp_clz_tab.c mp_dv_tab.c mp_minv_tab.c mp_get_fns.c mp_set_fns.c \
+  rand.c randclr.c randdef.c randiset.c randlc2s.c randlc2x.c randmt.c	\
+  randmts.c rands.c randsd.c randsdui.c randbui.c randmui.c version.c
+
+
+MPN_CSOURCES= \
+  add.c add_1.c add_n.c							    \
+  bdivmod.c						    \
+  cmp.c  						    \
+  dc_divrem_n.c dive_1.c diveby3.c divis.c divrem.c divrem_1.c divrem_2.c   \
+  dump.c fib2_ui.c gcd.c						    \
+  gcd_1.c gcdext.c get_d.c get_str.c					    \
+  hgcd2.c hgcd.c 				    \
+  jacbase.c lshift.c \
+  matrix22_mul.c mod_1.c mod_34lsub1.c mode1o.c	    \
+  mod_1_1.c mod_1_2.c mod_1_3.c mod_1_4.c				    \
+  mul.c mul_1.c mul_fft.c mul_n.c mul_basecase.c    \
+  mullow_n.c mullow_basecase.c neg_n.c     \
+   pre_divrem_1.c pre_mod_1.c pow_1.c random.c random2.c rshift.c \
+  rootrem.c sb_divrem_mn.c scan0.c scan1.c set_str.c			    \
+  sqr_basecase.c 						    \
+  sqrtrem.c sub.c sub_1.c sub_n.c submul_1.c				    \
+  tdiv_qr.c 
+
+
+MPZ_CSOURCES= \
+  add.c add_ui.c abs.c aorsmul.c aorsmul_i.c and.c array_init.c \
+  bin_ui.c bin_uiui.c cdiv_q.c \
+  cdiv_q_ui.c cdiv_qr.c cdiv_qr_ui.c cdiv_r.c cdiv_r_ui.c cdiv_ui.c \
+  cfdiv_q_2exp.c cfdiv_r_2exp.c \
+  clear.c clrbit.c \
+  cmp.c cmp_d.c cmp_si.c cmp_ui.c cmpabs.c cmpabs_d.c cmpabs_ui.c \
+  com.c combit.c \
+  cong.c cong_2exp.c cong_ui.c \
+  divexact.c divegcd.c dive_ui.c divis.c divis_ui.c divis_2exp.c \
+  dump.c export.c fac_ui.c fdiv_q.c fdiv_q_ui.c \
+  fdiv_qr.c fdiv_qr_ui.c fdiv_r.c fdiv_r_ui.c fdiv_ui.c \
+  fib_ui.c fib2_ui.c \
+  fits_sint.c fits_slong.c fits_sshort.c \
+  fits_uint.c fits_ulong.c fits_ushort.c \
+  gcd.c gcd_ui.c gcdext.c get_d.c get_d_2exp.c get_si.c \
+  get_str.c get_ui.c getlimbn.c hamdist.c \
+  import.c init.c init2.c inp_raw.c inp_str.c \
+  invert.c ior.c iset.c iset_d.c iset_si.c iset_str.c iset_ui.c \
+  jacobi.c kronsz.c kronuz.c kronzs.c kronzu.c \
+  lcm.c lcm_ui.c lucnum_ui.c lucnum2_ui.c millerrabin.c \
+  mod.c mul.c mul_2exp.c mul_si.c mul_ui.c n_pow_ui.c neg.c nextprime.c \
+  out_raw.c out_str.c perfpow.c perfsqr.c popcount.c pow_ui.c powm.c \
+  powm_ui.c pprime_p.c random.c random2.c \
+  realloc.c realloc2.c remove.c root.c rootrem.c rrandomb.c \
+  scan0.c scan1.c set.c set_d.c set_f.c set_q.c set_si.c set_str.c \
+  set_ui.c setbit.c size.c sizeinbase.c sqrt.c sqrtrem.c sub.c sub_ui.c \
+  swap.c tdiv_ui.c tdiv_q.c tdiv_q_2exp.c tdiv_q_ui.c tdiv_qr.c \
+  tdiv_qr_ui.c tdiv_r.c tdiv_r_2exp.c tdiv_r_ui.c tstbit.c ui_pow_ui.c \
+  ui_sub.c urandomb.c urandomm.c xor.c
+# MPQ_CSOURCES=   abs.c aors.c canonicalize.c clear.c \
+#   cmp.c cmp_si.c cmp_ui.c div.c equal.c \
+#   get_d.c get_den.c get_num.c get_str.c \
+#   init.c inp_str.c inv.c md_2exp.c mul.c neg.c out_str.c \
+#   set.c set_den.c set_num.c set_si.c set_str.c set_ui.c set_z.c set_d.c \
+#   set_f.c swap.c
+
+## For Mona, we choose mpn/generic function not to use x86 asms.
+CSOURCES = $(TOP_CSOURCES) $(patsubst %.c, mpz/%.c, $(MPZ_CSOURCES)) $(patsubst %.c, mpn/generic/%.c, $(MPN_CSOURCES))  #$(patsubst %.c, mpq/%.c, $(MPQ_CSOURCES))
+SOURCES =
+CFLAGS+=-std=gnu99 -DHAVE_CONFIG_H -I. -D__GMP_WITHIN_GMP -m32 -O2 -pedantic -fomit-frame-pointer -mtune=pentium -march=pentium
+
+OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
+INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
+
+all : $(TARGET)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+ifneq ($(BUILD_TARGET),ELF)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+#	bzip2 -c $(LIB_DYNAMIC) > $@
+	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+endif
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c -o $(<:.c=.o) $(CFLAGS) $(INCLUDE) $<
+
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+# 	mkdir -p $(LIBDIR)
+# 	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
+# ifneq ($(BUILD_TARGET),ELF)
+# 	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+# 	mkdir -p $(BINDIR)/LIBS
+# 	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+# endif
+# 	mkdir -p $(INCDIR)/gui
+# 	mkdir -p $(INCDIR)/gui/System
+# 	mkdir -p $(INCDIR)/gui/System/Collections
+# 	mkdir -p $(INCDIR)/gui/System/Drawing
+# 	mkdir -p $(INCDIR)/gui/System/Mona
+# 	mkdir -p $(INCDIR)/gui/System/Mona/Forms
+# 	mkdir -p $(INCDIR)/gui/System/Text
+# 	mkdir -p $(BINDIR)/APPS/
+# 	$(INSTALL) -p -m 0644 ./gui/System/*.h $(INCDIR)/gui/System
+# 	$(INSTALL) -p -m 0644 ./gui/System/Collections/*.h $(INCDIR)/gui/System/Collections
+# 	$(INSTALL) -p -m 0644 ./gui/System/Drawing/*.h $(INCDIR)/gui/System/Drawing
+# 	$(INSTALL) -p -m 0644 ./gui/System/Mona/Forms/*.h $(INCDIR)/gui/System/Mona/Forms
+# 	$(INSTALL) -p -m 0644 ./gui/System/Mona/*.h $(INCDIR)/gui/System/Mona
+# 	$(INSTALL) -p -m 0644 ./gui/System/Text/*.h $(INCDIR)/gui/System/Text
+# 	$(INSTALL) -p MONAFRMS.MSH $(BINDIR)/APPS
+# 	$(INSTALL) -p MONAFRMS.INI $(BINDIR)/APPS
+# 	$(INSTALL) -p MONAFUN.JPG $(BINDIR)/APPS
+# 	$(INSTALL) -p MONAFUN.BMP $(BINDIR)/APPS
+
+# uninstall:
+# 	rm -f $(LIBDIR)/$(LIB_STATIC)
+# ifneq ($(BUILD_TARGET),ELF)
+# 	rm -f $(LIBDIR)/$(LIB_IMPORT)
+# 	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
+# endif
+# 	rm -f $(INCDIR)/gui/System/*.h
+# 	rm -f $(INCDIR)/gui/System/Collections/*.h
+# 	rm -f $(INCDIR)/gui/System/Drawing/*.h
+# 	rm -f $(INCDIR)/gui/System/Mona/Forms/*.h
+# 	rm -f $(INCDIR)/gui/System/Text/*.h
+# 	rm -r $(INCDIR)/gui/System/Text
+# 	rm -r $(INCDIR)/gui/System/Mona/Forms
+# 	rm -r $(INCDIR)/gui/System/Mona
+# 	rm -r $(INCDIR)/gui/System/Drawing
+# 	rm -r $(INCDIR)/gui/System/Collections
+# 	rm -r $(INCDIR)/gui/System
+# 	rm -r $(INCDIR)/gui
+# 	rm -f $(BINDIR)/APPS/MONAFRMS.INI
+# 	rm -f $(BINDIR)/APPS/MONAFRMS.MSH
+# 	rm -f $(BINDIR)/APPS/MONAFUN.JPG
+
+-include dependencies
