@@ -1,0 +1,7 @@
+MPN_OBJECTS = $(MPN_ASMSOURCES:.asm=.o)
+
+all: $(MPN_OBJECTS)
+
+.SUFFIXES: .asm .o
+.asm.o:
+	./m4-ccas --m4=m4 $(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
