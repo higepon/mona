@@ -199,8 +199,12 @@ void ImeManager::paint(Graphics* g)
 	int fh  = getFontMetrics()->getHeight(" ");
 	
 	// 塗りつぶし
-	g->setColor(~getForeground());
-	//g->setColor(255,255,128);
+	g->setColor(getBackground());
+    if (imemode) {
+        g->setColor(0, 0, 255);
+    } else {
+        g->setColor(255, 0, 0);
+    }
 	g->fillRect(0, 0, getWidth() + 1, getHeight() + 1);
 
 	// 確定文字列
