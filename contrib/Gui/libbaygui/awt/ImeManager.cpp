@@ -248,7 +248,6 @@ void ImeManager::processEvent(Event *event)
 			((modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') ||
 			(modifiers == KeyEvent::VKEY_LSHIFT && keycode == ' '))) {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-			#if 0
 			clearBuffer();
 			clearKanjiList();
 			if (imemode == true) {
@@ -257,7 +256,6 @@ void ImeManager::processEvent(Event *event)
 				imemode = true;
 			}
 			repaint();
-			#endif
 		// バックスペース
 		} else if (keycode == KeyEvent::VKEY_BACKSPACE) {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);

@@ -13,7 +13,7 @@
 ;  (start-process "/APPS/BAYGUI/GNOTE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
 ;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
-;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 3 -d")
+;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
   (start-process "/APPS/BAYGUI/GTIMER.EX5")
 ;  (w3m-auto-pilot)
 ;  (display "uIP httpd started:\n  Try access http://localhost:8080/ from HOST OS")
