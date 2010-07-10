@@ -517,10 +517,13 @@ Sprintf(char *fmt, ...)
     va_end(ap);
     s = Strnew_size(len * 2);
     va_start(ap, fmt);
-    vsprintf(s->ptr, fmt, ap);
+    // Mona
+    vsnprintf(s->ptr, s->area_size, fmt, ap);
+    //    vsprintf(s->ptr, fmt, ap);
     va_end(ap);
     s->length = strlen(s->ptr);
     if (s->length > len * 2) {
+
 	fprintf(stderr, "Sprintf: string too long\n");
 	exit(1);
     }

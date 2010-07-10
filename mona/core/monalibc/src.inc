@@ -16,7 +16,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
 	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \
 	  stdio/fputs.c stdio/puts.c stdio/getc.c stdio/getchar.c \
-	  stdio/vsprintf.c stdio/vsscanf.c stdio/vfprintf.c \
+	  stdio/vsprintf.c stdio/vsnprintf.c stdio/vsscanf.c stdio/vfprintf.c \
 	  stdio/boshi/faccess.c stdio/boshi/dio.c stdio/boshi/cache.c \
 	  stdio/boshi/fposition.c stdio/boshi/lowio.c stdio/boshi/errhandle.c \
 	  stdio/boshi/cio.c \
