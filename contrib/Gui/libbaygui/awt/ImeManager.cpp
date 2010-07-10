@@ -49,6 +49,7 @@ ImeManager::ImeManager()
 	_imeEvent = new Event(Event::Event::IME_SETCONTEXT, this);
 	imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
 	kanjiListPtr = -1;
+	setBounds(0, 0, 70, 10);
 }
 
 /** デストラクタ */
