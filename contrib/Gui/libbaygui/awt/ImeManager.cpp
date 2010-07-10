@@ -49,7 +49,8 @@ ImeManager::ImeManager()
 	_imeEvent = new Event(Event::Event::IME_SETCONTEXT, this);
 	imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
 	kanjiListPtr = -1;
-	setBounds(0, 0, 70, 10);
+    // TODO:To resized with setBounds by parent, we need enoug w x h for graphic buffer.
+	setBounds(0, 0, 100, 100);
 }
 
 /** デストラクタ */
@@ -199,6 +200,8 @@ void ImeManager::paint(Graphics* g)
 	int fw1 = 0, fw2 = 0;
 	int fh  = getFontMetrics()->getHeight(" ");
 	
+    g->setColor(255, 255, 255);
+	g->fillRect(0, 0, getWidth(), getHeight());
 	// 塗りつぶし
 	g->setColor(getBackground());
     if (imemode) {
@@ -206,7 +209,8 @@ void ImeManager::paint(Graphics* g)
     } else {
         g->setColor(255, 0, 0);
     }
-	g->fillRect(0, 0, getWidth() + 1, getHeight() + 1);
+    logprintf("paint ime w=%d\n", getWidth());
+	g->drawRect(0, 0, getWidth(), getHeight());
 
 	// 確定文字列
 	//if (strlen(decideBuffer) > 0) {

@@ -121,8 +121,10 @@ namespace baygui {
         }
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
+        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
     logprintf("text w=%d h =%d", w, h);
-        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth(), getHeight());
+    logprintf("textfield adjust ime width=%d\n", getWidth());
+//        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth(), getHeight());
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         _imeManager->setForeground(getForeground());
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
