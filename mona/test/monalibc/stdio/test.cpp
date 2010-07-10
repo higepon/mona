@@ -19,6 +19,7 @@ void test_fread_small_many();
 void test_bsearch();
 void test_sprintf();
 void test_fread_offset();
+void test_vsnprintf();
 
 int main(int argc, char* argv[])
 {
@@ -41,6 +42,7 @@ int main(int argc, char* argv[])
         test_sprintf();
 
         test_fread_offset();
+        test_vsnprintf();
         TEST_RESULTS(stdio);
         return 0;
     }
@@ -343,3 +345,28 @@ void test_sprintf()
     // sprintf(buf, "%.3g/%.3g%s", 0.1, 0.1, "hoge");
 }
 
+int my_snprintf(char* buf, int len, const char *format, ...)
+{
+  int result;
+  va_list args;
+
+  va_start(args, format);
+  result = vsnprintf(buf, len, format, args);
+  va_end(args);
+  return result;
+}
+
+
+void test_vsnprintf()
+{
+    char buf[4];
+    EXPECT_EQ(3, my_snprintf(buf, sizeof(buf), "%d", 100));
+    EXPECT_STR_EQ("100", buf);
+
+    EXPECT_EQ(4, my_snprintf(buf, sizeof(buf), "%d", 9000));
+    EXPECT_STR_EQ("900", buf);
+
+    char buf2[5];
+    EXPECT_EQ(15, my_snprintf(buf2, sizeof(buf2), "%d:%s", 10, "Hello, World"));
+    EXPECT_STR_EQ("10:H", buf2);
+}
