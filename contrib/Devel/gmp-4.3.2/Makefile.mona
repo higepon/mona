@@ -176,13 +176,22 @@ MPZ_CSOURCES= \
 
 MPZ_OBJECTS= $(patsubst %.c, mpz/%.o, $(MPZ_CSOURCES))
 
+MPQ_CSOURCES=   abs.c aors.c canonicalize.c clear.c					\
+  cmp.c cmp_si.c cmp_ui.c div.c equal.c					\
+  get_d.c get_den.c get_num.c get_str.c					\
+  init.c inp_str.c inv.c md_2exp.c mul.c neg.c out_str.c		\
+  set.c set_den.c set_num.c set_si.c set_str.c set_ui.c set_z.c set_d.c	\
+  set_f.c swap.c
+
+MPQ_OBJECTS= $(patsubst %.c, mpq/%.o, $(MPQ_CSOURCES))
+
 ## For Mona, we choose mpn/generic function not to use x86 asms.
 CSOURCES = $(TOP_CSOURCES)
 export CFLAGS+=-std=gnu99 -DHAVE_CONFIG_H -I. -D__GMP_WITHIN_GMP -m32 -O2 -pedantic -fomit-frame-pointer -mtune=pentium -march=pentium
 export CC
 export INCLUDE
 
-OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(MPN_OBJECTS) $(MPZ_OBJECTS)
+OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(MPN_OBJECTS) $(MPZ_OBJECTS) $(MPQ_OBJECTS)
 export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
 
 all : mpn $(TARGET)
