@@ -5,3 +5,42 @@ all: $(MPN_OBJECTS)
 .SUFFIXES: .asm .o
 .asm.o:
 	./m4-ccas --m4=m4 $(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
+
+add_n.o: add_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo add_n | sed 's/_$$//'` $(INCLUDE) $<
+
+addmul_1.o: addmul_1.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo addmul_1 | sed 's/_$$//'` $(INCLUDE) $<
+
+submul_1.o: submul_1.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo submul_1 | sed 's/_$$//'` $(INCLUDE) $<
+
+com_n.o: com_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo com_n | sed 's/_$$//'` $(INCLUDE) $<
+
+andn_n.o: andn_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo andn_n | sed 's/_$$//'` $(INCLUDE) $<
+
+and_n.o: and_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo and_n | sed 's/_$$//'` $(INCLUDE) $<
+
+nand_n.o: nand_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo nand_n | sed 's/_$$//'` $(INCLUDE) $<
+
+iorn_n.o: iorn_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo iorn_n | sed 's/_$$//'` $(INCLUDE) $<
+
+sub_n.o: sub_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo sub_n | sed 's/_$$//'` $(INCLUDE) $<
+
+ior_n.o: ior_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo ior_n | sed 's/_$$//'` $(INCLUDE) $<
+
+xor_n.o: xor_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo xor_n | sed 's/_$$//'` $(INCLUDE) $<
+
+xnor_n.o: xnor_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo xnor_n | sed 's/_$$//'` $(INCLUDE) $<
+
+nior_n.o: nior_n.asm
+	./m4-ccas --m4="m4"  $(CC) -c -o $@ $(CFLAGS)  -DOPERATION_`echo nior_n | sed 's/_$$//'` $(INCLUDE) $<
