@@ -358,7 +358,7 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-  (call-process "/MEM/MOSH.EXE")
+  (call-process "/MEM/MOSH.EXE -5 /APPS/all-tests.scm")
   (ls "/MEM")
   (mosh))
 
