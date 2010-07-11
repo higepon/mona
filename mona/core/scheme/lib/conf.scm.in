@@ -366,6 +366,7 @@
 ;; (print "...")
 ;; (tstd)
 ;; (print "done")
+(call-process "/APPS/TGMP.EX5")
 (call-process "/APPS/TSTACK.APP/TSTACK.EX5")
 (call-process "/APPS/HELLO.EX5")
 (call-process "/APPS/TMISC.EX5")

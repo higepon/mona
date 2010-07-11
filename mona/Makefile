@@ -57,7 +57,7 @@ tests: tools cores
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
-
+	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
