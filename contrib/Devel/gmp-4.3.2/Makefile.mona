@@ -19,6 +19,94 @@ TOP_CSOURCES=\
   rand.c randclr.c randdef.c randiset.c randlc2s.c randlc2x.c randmt.c	\
   randmts.c rands.c randsd.c randsdui.c randbui.c randmui.c version.c
 
+export MPN_CSOURCES= \
+add.c \
+add_1.c \
+addsub_n.c \
+bdivmod.c \
+binvert.c \
+cmp.c \
+dc_bdiv_q.c \
+dc_bdiv_qr.c \
+dc_div_q.c \
+dc_div_qr.c \
+dc_divappr_q.c \
+dc_divrem_n.c \
+diveby3.c \
+divexact.c \
+divis.c \
+divrem.c \
+dump.c \
+fib2_ui.c \
+fib_table.c \
+gcd.c \
+gcd_1.c \
+gcd_lehmer.c \
+gcd_subdiv_step.c \
+gcdext.c \
+gcdext_1.c \
+gcdext_lehmer.c \
+gcdext_subdiv_step.c \
+get_d.c \
+get_str.c \
+hgcd.c \
+hgcd2.c \
+invert.c \
+jacbase.c \
+matrix22_mul.c \
+mod_1_1.c \
+mod_1_2.c \
+mod_1_3.c \
+mod_1_4.c \
+mp_bases.c \
+mu_bdiv_q.c \
+mu_bdiv_qr.c \
+mu_div_q.c \
+mu_div_qr.c \
+mu_divappr_q.c \
+mul.c \
+mul_fft.c \
+mul_n.c \
+mullow_basecase.c \
+mullow_n.c \
+neg_n.c \
+perfsqr.c \
+pow_1.c \
+powlo.c \
+powm.c \
+powm_sec.c \
+pre_divrem_1.c \
+random.c \
+random2.c \
+redc_1.c \
+redc_2.c \
+rootrem.c \
+sb_bdiv_q.c \
+sb_bdiv_qr.c \
+sb_div_q.c \
+sb_div_qr.c \
+sb_divappr_q.c \
+sb_divrem_mn.c \
+scan0.c \
+scan1.c \
+set_str.c \
+sqrtrem.c \
+sub.c \
+sub_1.c \
+subcnd_n.c \
+tdiv_qr.c \
+toom22_mul.c \
+toom2_sqr.c \
+toom32_mul.c \
+toom33_mul.c \
+toom3_sqr.c \
+toom42_mul.c \
+toom44_mul.c \
+toom4_sqr.c \
+toom53_mul.c \
+toom62_mul.c \
+toom_interpolate_5pts.c \
+toom_interpolate_7pts.c
 
 export MPN_ASMSOURCES= add_n.asm \
 addmul_1.asm \
@@ -51,9 +139,13 @@ submul_1.asm \
 udiv.asm \
 umul.asm \
 xnor_n.asm \
-xor_n.asm
-#divrem_1.asm bdiv_dbm1c.asm copyi.asm rshift.asm lshift.asm
-MPN_OBJECTS= $(patsubst %.asm, mpn/%.o, $(MPN_ASMSOURCES))
+xor_n.asm \
+divrem_1.asm \
+bdiv_dbm1c.asm \
+copyi.asm \
+rshift.asm \
+lshift.asm
+MPN_OBJECTS= $(patsubst %.asm, mpn/%.o, $(MPN_ASMSOURCES)) $(patsubst %.c, mpn/%.o, $(MPN_CSOURCES))
 
 ## For Mona, we choose mpn/generic function not to use x86 asms.
 CSOURCES = $(TOP_CSOURCES)
@@ -62,7 +154,7 @@ export CC
 export INCLUDE
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(MPN_OBJECTS)
-INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
+export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
 
 all : mpn $(TARGET)
 	
