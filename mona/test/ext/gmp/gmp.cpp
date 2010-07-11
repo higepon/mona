@@ -3,16 +3,9 @@
 #include <monapi/MUnit.h>
 #include <stdio.h>
 
-#ifdef __cplusplus
-  #undef __cplusplus
-  #define MOSH_CPP
-#endif
 extern "C" {
 #include <gmp.h>
 }
-#ifdef MOSH_CPP
-  #define __cplusplus
-#endif
 
 static void test_mpz()
 {
