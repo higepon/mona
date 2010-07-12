@@ -36,11 +36,31 @@ static void test_mpq()
     mpq_clear(b);
 }
 
+static void test_mpq_div()
+{
+    mpz_t a, b;
+    ASSERT_EQ(0, mpz_init_set_str(a, "13900000000000000000000", 10));
+    ASSERT_EQ(0, mpz_init_set_str(b, "3500000000000000000000", 10));
+
+    mpq_t ret, x, y;
+    mpq_init(ret);
+    mpq_init(x);
+    mpq_init(y);
+    mpq_set_z(x, a);
+    mpq_set_z(y, b);
+    mpq_div(ret, x, y);
+    EXPECT_STR_EQ("139/35", mpq_get_str(NULL, 10, ret));
+    mpz_clear(a);
+    mpz_clear(b);
+    mpq_clear(ret);
+}
+
 
 int main(int argc, char *argv[])
 {
     test_mpz();
     test_mpq();
+    test_mpq_div();
     TEST_RESULTS(gmp);
     return 0;
 }
