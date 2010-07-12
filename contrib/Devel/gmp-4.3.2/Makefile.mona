@@ -13,6 +13,8 @@ TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 include $(MONADIR)/share/configs/Makefile.inc
 include $(MONADIR)/share/configs/dirnames.inc
 
+SOURCES= dll_main.cpp
+
 TOP_CSOURCES=\
   assert.c compat.c errno.c extract-dbl.c invalid.c memory.c tal-reent.c \
   mp_bpl.c mp_clz_tab.c mp_dv_tab.c mp_minv_tab.c mp_get_fns.c mp_set_fns.c \
@@ -187,7 +189,7 @@ MPQ_OBJECTS= $(patsubst %.c, mpq/%.o, $(MPQ_CSOURCES))
 
 ## For Mona, we choose mpn/generic function not to use x86 asms.
 CSOURCES = $(TOP_CSOURCES)
-export CFLAGS+=-std=gnu99 -DHAVE_CONFIG_H -I. -D__GMP_WITHIN_GMP -m32 -O2 -pedantic -fomit-frame-pointer -mtune=pentium -march=pentium
+export CFLAGS+=-DHAVE_CONFIG_H -I. -D__GMP_WITHIN_GMP -m32 -O2 -fomit-frame-pointer -mtune=pentium -march=pentium
 export CC
 export INCLUDE
 
@@ -195,7 +197,7 @@ OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(MPN_OBJECTS) $(MPZ_OBJECTS) $(M
 export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
 
 all : mpn $(TARGET)
-	
+
 mpn:
 	cd mpn && $(MAKE) -f Makefile.mona
 
@@ -223,7 +225,7 @@ endif
 
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) -c -o $(<:.c=.o) $(CFLAGS) $(INCLUDE) $<
+	$(CC) -c -o $(<:.c=.o) $(CFLAGS) -pedantic -std=gnu99 $(INCLUDE) $<
 
 
 depend:
