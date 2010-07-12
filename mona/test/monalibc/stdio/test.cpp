@@ -338,6 +338,8 @@ void test_sprintf()
     char buf[256];
     sprintf(buf, "%.3g", 0.1); // not crash
     sprintf(buf, "%.3g/%.3g", 0.1, 0.1); // not crash
+    sprintf(buf, "%f", 13.9);
+    EXPECT_STR_EQ("13.9", buf);
 
     // crash this case!
     // sprintf(buf, "%.3g/%.3g%s", 0.1, 0.1, "hoge");
