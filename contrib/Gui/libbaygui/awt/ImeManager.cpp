@@ -325,6 +325,7 @@ void ImeManager::processEvent(Event *event)
 			} else {
 				// １文字送信
 				for (int i = 0; i < (int)strlen(translateBuffer); i++) {
+                    logprintf("char send[%x] \n", translateBuffer[i]);
 					_imeEvent->setType(Event::IME_CHAR | (translateBuffer[i] << 16));
 					parent->dispatchEvent(_imeEvent);
 				}
@@ -367,4 +368,9 @@ void ImeManager::processEvent(Event *event)
 			}
 		}
 	}
+}
+
+const char* ImeManager::getFixedString() const
+{
+    return inputBuffer;
 }

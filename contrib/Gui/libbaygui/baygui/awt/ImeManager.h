@@ -60,6 +60,7 @@ private:
 public:
     ImeManager();
     virtual ~ImeManager();
+    virtual const char* getFixedString() const;
     virtual void clearBuffer(char *buffer);
     virtual void insertCharacter(char *buffer, char c);
     virtual void insertString(char *buffer, const char *str);

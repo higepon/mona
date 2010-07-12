@@ -160,12 +160,23 @@ namespace baygui {
                 repaint();
                 // １文字挿入
             } else {
-                //text[strlen(text)] = (char)(keycode & 0xFF);
-                _imeManager->insertCharacter(text, (char)(keycode & 0xFF));
+                int len = strlen(text);
+                logprintf("char receive[%x] len=%d\n", keycode&0xff, len);
+                text[len] = (char)(keycode & 0xFF);
+                text[len + 1] = '\0';
+                textLen++;
+                textPtr++;
+                repaint();
+//                _imeManager->insertCharacter(text, (char)(keycode & 0xFF));
             }
             // 確定イベント
         } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            const char* s = _imeManager->getFixedString();
+            int len = strlen(s);
+            logprintf("fixed len=%d %s %s:%d\n", len, __func__, __FILE__, __LINE__);
+            for (int i = 0; i < len; i++) {
+                logprintf("[%x]", s[i]);
+            }
             repaint();
             // キー押下
         } else if (event->getType() == Event::KEY_PRESSED) {
