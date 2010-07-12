@@ -57,6 +57,7 @@ all:
 	cd Sysutils/gclock && $(MAKE) && $(MAKE) install
 	cd Sysutils/gtimer && $(MAKE) && $(MAKE) install
 	cd Sysutils/startx && $(MAKE) && $(MAKE) install
+	cd Devel/gmp && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 # can't build on gcc 4.x
 #	cd Devel/gcc && $(MAKE) # && $(MAKE) install
 ### $(MAKE) disk images
