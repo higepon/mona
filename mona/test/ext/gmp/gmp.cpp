@@ -42,12 +42,18 @@ static void test_mpq_div()
     ASSERT_EQ(0, mpz_init_set_str(a, "13900000000000000000000", 10));
     ASSERT_EQ(0, mpz_init_set_str(b, "3500000000000000000000", 10));
 
+    EXPECT_STR_EQ("13900000000000000000000", mpz_get_str(NULL, 10, a));
+    EXPECT_STR_EQ("3500000000000000000000", mpz_get_str(NULL, 10, b));
+
     mpq_t ret, x, y;
     mpq_init(ret);
     mpq_init(x);
     mpq_init(y);
     mpq_set_z(x, a);
     mpq_set_z(y, b);
+    EXPECT_STR_EQ("13900000000000000000000", mpq_get_str(NULL, 10, x));
+    EXPECT_STR_EQ("3500000000000000000000", mpq_get_str(NULL, 10, y));
+
     mpq_div(ret, x, y);
     EXPECT_STR_EQ("139/35", mpq_get_str(NULL, 10, ret));
     mpz_clear(a);
