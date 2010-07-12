@@ -17,15 +17,15 @@
 #include <monapi/string.h>
 #include <monapi/syscall.h>
 
-/*!
+/* /\*! */
   
- */
-int vsnprintf(char *str, size_t size, const char* format, va_list ap)
-{
-	int len;
-	len = vsprintf(str, format, ap);
-	assert(len <= (int)size);
+/*  *\/ */
+/* int vsnprintf(char *str, size_t size, const char* format, va_list ap) */
+/* { */
+/* 	int len; */
+/* 	len = vsprintf(str, format, ap); */
+/* 	assert(len <= (int)size); */
 
-	return len;
-}
+/* 	return len; */
+/* } */
 

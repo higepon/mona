@@ -6,7 +6,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
 	  math/floor.c math/fmod.c math/frexp.c math/ldexp.c math/log.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
-	  math/sinh.c math/round.c math/nearbyint.c \
+	  math/sinh.c math/round.c math/nearbyint.c math/w_log.c math/e_log.c \
 	  math/sqrt.c math/tan.c math/tanh.c stdio/fclose.c stdio/fileno.c \
 	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c stdio/fprintf.c \
 	  stdio/fseek.c stdio/rewind.c stdio/feof.c stdio/ferror.c \
@@ -16,7 +16,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
 	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \
 	  stdio/fputs.c stdio/puts.c stdio/getc.c stdio/getchar.c \
-	  stdio/vsprintf.c stdio/vsscanf.c stdio/vfprintf.c \
+	  stdio/vsprintf.c stdio/vsnprintf.c stdio/vsscanf.c stdio/vfprintf.c \
 	  stdio/boshi/faccess.c stdio/boshi/dio.c stdio/boshi/cache.c \
 	  stdio/boshi/fposition.c stdio/boshi/lowio.c stdio/boshi/errhandle.c \
 	  stdio/boshi/cio.c \
