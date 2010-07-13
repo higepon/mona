@@ -240,8 +240,12 @@ namespace baygui {
                 // toggle
                 isImeOn_ = !isImeOn_;
             } else if (keycode < 128) {
-                // 1文字挿入
-                insertCharacter(keycode);
+                if (isImeOn_) {
+                    _imeManager->processEvent(event);
+                } else {
+                    // 1文字挿入
+                    insertCharacter(keycode);
+                }
                 repaint();
             }
         // フォーカス状態変更

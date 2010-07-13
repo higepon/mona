@@ -136,6 +136,16 @@ static void test_TextField_ime_on()
     EXPECT_EQ(false, t.isImeOn());
     keyPressWithControl(t, '\\');
     EXPECT_TRUE(t.isImeOn());
+
+    keyPress(t, 'a');
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
+
+    keyPress(t, 'i');
+    keyPress(t, 'u');
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
+
 }
 
 int main(int argc, char* argv[])
