@@ -12,6 +12,7 @@ all:
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/test_baygui && touch dependencies && $(MAKE) && $(MAKE) install
 
 ### non-gui applications
 	cd Emulators/infones && touch dependencies && $(MAKE)  && $(MAKE) install

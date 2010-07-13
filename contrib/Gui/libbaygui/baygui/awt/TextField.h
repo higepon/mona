@@ -35,16 +35,12 @@ namespace baygui {
     */
     class TextField : public Container {
     private:
-        /** カーソルの位置 */
-        int textPtr;
-        /** 文字列の長さ */
-        int textLen;
+        String text_;
+        int cursor_;
         /** オフセットX */
         int offx;
         /** オフセットY */
         int offy;
-        /** 内部文字列 */
-        char text[MAX_TEXT_LEN];
 
     protected:
         /** テキストイベント */
@@ -52,11 +48,19 @@ namespace baygui {
         ImeManager* _imeManager;
 
     private:
+
+        virtual void initialize();
+
+    public: /* public for testability */
         /** 1文字挿入する */
         virtual void insertCharacter(char c);
 
         /** 一文字削除する */
         virtual void deleteCharacter();
+
+        virtual bool cursorLeft();
+
+        virtual bool cursorRight();
 
     public:
         /** コンストラクタ */
@@ -72,7 +76,7 @@ namespace baygui {
         virtual void setText(const String& text);
 
         /** テキストを得る */
-        inline char* getText() { return this->text; }
+        inline const char* getText() { return (const char*)text_; }
 
         /** 描画ハンドラ */
         virtual void paint(Graphics* g);
