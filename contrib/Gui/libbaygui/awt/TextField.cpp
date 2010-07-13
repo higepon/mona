@@ -28,6 +28,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
     TextField::TextField() : text_(String("")),
                              cursor_(0),
+                             isImeOn_(false),
                              _imeManager(new ImeManager)
     {
         initialize();
@@ -156,7 +157,7 @@ namespace baygui {
 
     bool TextField::isImeOn() const
     {
-        return false;
+        return isImeOn_;
     }
 
     void TextField::processEvent(Event* event)

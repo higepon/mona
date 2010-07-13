@@ -37,6 +37,8 @@ namespace baygui {
     private:
         String text_;
         int cursor_;
+        bool isImeOn_;
+
         /** オフセットX */
         int offx;
         /** オフセットY */
