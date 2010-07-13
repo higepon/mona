@@ -158,88 +158,86 @@ namespace baygui {
     {
         // 非活性の時はイベントを受け付けない
         if (getEnabled() == false) return;
-        // １文字イベント
-        if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
-            int keycode = (event->getType() >> 16) & 0xFFFF;
-            // 確定イベント
-            if (keycode == KeyEvent::VKEY_ENTER) {
-                getParent()->processEvent(&this->textEvent);
-                //Component::dispatchEvent(&textEvent);
-                // １文字削除
-            } else if (keycode == KeyEvent::VKEY_BACKSPACE) {
-                //text[strlen(text) - 1] = 0;
-//                _imeManager->deleteCharacter(text);
-                repaint();
-                // １文字挿入
-            } else {
-                insertCharacter((char)(keycode & 0xFF));
-                repaint();
-//                _imeManager->insertCharacter(text, (char)(keycode & 0xFF));
-            }
-            // 確定イベント
-        } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
-            const char* s = _imeManager->getFixedString();
-            int len = strlen(s);
-            logprintf("fixed len=%d %s %s:%d\n", len, __func__, __FILE__, __LINE__);
-            for (int i = 0; i < len; i++) {
-                logprintf("[%x]", s[i]);
-            }
-            repaint();
-            // キー押下
-        } else if (event->getType() == Event::KEY_PRESSED) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            // IMEマネージャに丸投げ
-            _imeManager->processEvent(event);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//            Component::dispatchEvent(event);
-    if (getParent()) {
-            getParent()->processEvent(&this->textEvent);
-    }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            // フォーカス状態変更
-        } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//            if (firstpaint == true) {
-                repaint();
-                getParent()->processEvent(&this->focusEvent);
-//            }
-        }
-
-
-//         // キー押下
-//         if (event->getType() == KeyEvent::KEY_PRESSED) {
-//             int keycode = ((KeyEvent *)event)->getKeycode();
-//             if (keycode == KeyEvent::VKEY_BACKSPACE) {
-//                 if (textPtr >= 0) {
-//                     // バックスペース
-//                     deleteCharacter();
-//                     repaint();
-//                 }
-//             } else if (keycode == KeyEvent::VKEY_LEFT) {
-//                 // ←移動
-//                 if (textPtr >= 0) {
-//                     textPtr--;
-//                     repaint();
-//                 }
-//             } else if (keycode == KeyEvent::VKEY_RIGHT) {
-//                 // →移動
-//                 if (textPtr < textLen - 1) {
-//                     textPtr++;
-//                     repaint();
-//                 }
-//             } else if (keycode == KeyEvent::VKEY_ENTER) {
-//                 // 確定
+//         // １文字イベント
+//         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
+//             int keycode = (event->getType() >> 16) & 0xFFFF;
+//             // 確定イベント
+//             if (keycode == KeyEvent::VKEY_ENTER) {
 //                 getParent()->processEvent(&this->textEvent);
-//                 return;
-//             } else if (keycode < 128) {
-//                 // 1文字挿入
-//                 insertCharacter(keycode);
+//                 //Component::dispatchEvent(&textEvent);
+//                 // １文字削除
+//             } else if (keycode == KeyEvent::VKEY_BACKSPACE) {
+//                 //text[strlen(text) - 1] = 0;
+// //                _imeManager->deleteCharacter(text);
 //                 repaint();
+//                 // １文字挿入
+//             } else {
+//                 insertCharacter((char)(keycode & 0xFF));
+//                 repaint();
+// //                _imeManager->insertCharacter(text, (char)(keycode & 0xFF));
 //             }
-//         // フォーカス状態変更
-//         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
+//             // 確定イベント
+//         } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
+//             const char* s = _imeManager->getFixedString();
+//             int len = strlen(s);
+//             logprintf("fixed len=%d %s %s:%d\n", len, __func__, __FILE__, __LINE__);
+//             for (int i = 0; i < len; i++) {
+//                 logprintf("[%x]", s[i]);
+//             }
 //             repaint();
-//             getParent()->processEvent(&this->focusEvent);
+//             // キー押下
+//         } else if (event->getType() == Event::KEY_PRESSED) {
+//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//             // IMEマネージャに丸投げ
+//             _imeManager->processEvent(event);
+//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+// //            Component::dispatchEvent(event);
+//     if (getParent()) {
+//             getParent()->processEvent(&this->textEvent);
+//     }
+//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//             // フォーカス状態変更
+//         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
+//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+// //            if (firstpaint == true) {
+//                 repaint();
+//                 getParent()->processEvent(&this->focusEvent);
+// //            }
 //         }
+
+
+        // キー押下
+        if (event->getType() == KeyEvent::KEY_PRESSED) {
+            int keycode = ((KeyEvent *)event)->getKeycode();
+            if (keycode == KeyEvent::VKEY_BACKSPACE) {
+                if (cursor_ > 0) {
+                    // バックスペース
+                    deleteCharacter();
+                    repaint();
+                }
+            } else if (keycode == KeyEvent::VKEY_LEFT) {
+                // ←移動
+                if (cursorLeft()) {
+                    repaint();
+                }
+            } else if (keycode == KeyEvent::VKEY_RIGHT) {
+                // →移動
+                if (cursorRight()) {
+                    repaint();
+                }
+            } else if (keycode == KeyEvent::VKEY_ENTER) {
+                // 確定
+                getParent()->processEvent(&this->textEvent);
+                return;
+            } else if (keycode < 128) {
+                // 1文字挿入
+                insertCharacter(keycode);
+                repaint();
+            }
+        // フォーカス状態変更
+        } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
+            repaint();
+            getParent()->processEvent(&this->focusEvent);
+        }
     }
 }
