@@ -101,13 +101,28 @@ static void test_TextField_ime_off()
     TextField t;
     keyPress(t, 'a');
     EXPECT_STR_EQ("a", t.getText());
+
     keyPress(t, 'i');
     EXPECT_STR_EQ("ai", t.getText());
     EXPECT_EQ(2, t.getCursor());
+
     keyPress(t, KeyEvent::VKEY_BACKSPACE);
     EXPECT_STR_EQ("a", t.getText());
     EXPECT_EQ(1, t.getCursor());
 
+    keyPress(t, KeyEvent::VKEY_LEFT);
+    EXPECT_STR_EQ("a", t.getText());
+    EXPECT_EQ(0, t.getCursor());
+
+    keyPress(t, 'c');
+    EXPECT_STR_EQ("ca", t.getText());
+    EXPECT_EQ(1, t.getCursor());
+
+    keyPress(t, KeyEvent::VKEY_RIGHT);
+    EXPECT_EQ(2, t.getCursor());
+    keyPress(t, 'b');
+    EXPECT_STR_EQ("cab", t.getText());
+    EXPECT_EQ(3, t.getCursor());
 }
 
 int main(int argc, char* argv[])
