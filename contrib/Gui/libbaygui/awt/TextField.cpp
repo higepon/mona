@@ -154,6 +154,11 @@ namespace baygui {
         //g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
     }
 
+    bool TextField::isImeOn() const
+    {
+        return false;
+    }
+
     void TextField::processEvent(Event* event)
     {
         // 非活性の時はイベントを受け付けない

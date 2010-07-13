@@ -71,6 +71,8 @@ namespace baygui {
         /** デストラクタ */
         virtual ~TextField();
 
+        virtual bool isImeOn() const;
+
         /**
          テキストを設定する
          @param text
