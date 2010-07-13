@@ -62,6 +62,8 @@ namespace baygui {
 
         virtual bool cursorRight();
 
+        virtual int getCursor() const { return cursor_; }
+
     public:
         /** コンストラクタ */
         TextField();

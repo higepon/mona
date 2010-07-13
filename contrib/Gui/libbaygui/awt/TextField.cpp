@@ -27,6 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace baygui {
     TextField::TextField() : text_(String("")),
+                             cursor_(0),
                              _imeManager(new ImeManager)
     {
         initialize();
@@ -67,10 +68,15 @@ namespace baygui {
         ASSERT(cursor_ > 0);
         // cursor is at tail.
         if (text_.length() == cursor_) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             text_ = text_.substring(0, text_.length() - 1);
+            logprintf("<%s>", (const char*)text_);
         } else {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             String head = text_.substring(0, cursor_ - 1);
             String rest = text_.substring(cursor_, text_.length() - cursor_);
+            logprintf("<%s>", (const char*)head);
+            logprintf("<%s>", (const char*)rest);
             text_ = head;
             text_ += rest;
         }
@@ -186,7 +192,9 @@ namespace baygui {
             _imeManager->processEvent(event);
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //            Component::dispatchEvent(event);
+    if (getParent()) {
             getParent()->processEvent(&this->textEvent);
+    }
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             // フォーカス状態変更
         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {

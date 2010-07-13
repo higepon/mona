@@ -35,16 +35,20 @@ static void test_TextField()
 {
     TextField t;
     EXPECT_STR_EQ("", t.getText());
+    EXPECT_EQ(0, t.getCursor());
 
     t.insertCharacter('A');
     EXPECT_STR_EQ("A", t.getText());
+    EXPECT_EQ(1, t.getCursor());
 
     t.insertCharacter('B');
     t.insertCharacter('C');
     t.insertCharacter('D');
+    EXPECT_EQ(4, t.getCursor());
     EXPECT_STR_EQ("ABCD", t.getText());
 
     t.deleteCharacter();
+    EXPECT_EQ(3, t.getCursor());
     EXPECT_STR_EQ("ABC", t.getText());
 
     EXPECT_TRUE(t.cursorLeft());
@@ -86,10 +90,19 @@ static void test_TextField_cursor()
     EXPECT_STR_EQ("HelloZ", t.getText());
 }
 
+static void test_TextField_ime_off()
+{
+    TextField t;
+    KeyEvent e(Event::KEY_PRESSED, NULL, 'a', 0);
+    t.processEvent(&e);
+    EXPECT_STR_EQ("a", t.getText());
+}
+
 int main(int argc, char* argv[])
 {
     test_TextField();
     test_TextField_cursor();
+    test_TextField_ime_off();
 
     TEST_RESULTS(baygui);
     return 0;
