@@ -90,12 +90,24 @@ static void test_TextField_cursor()
     EXPECT_STR_EQ("HelloZ", t.getText());
 }
 
+static void keyPress(TextField& t, int key)
+{
+    KeyEvent e(Event::KEY_PRESSED, NULL, key, 0);
+    t.processEvent(&e);
+}
+
 static void test_TextField_ime_off()
 {
     TextField t;
-    KeyEvent e(Event::KEY_PRESSED, NULL, 'a', 0);
-    t.processEvent(&e);
+    keyPress(t, 'a');
     EXPECT_STR_EQ("a", t.getText());
+    keyPress(t, 'i');
+    EXPECT_STR_EQ("ai", t.getText());
+    EXPECT_EQ(2, t.getCursor());
+    keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_STR_EQ("a", t.getText());
+    EXPECT_EQ(1, t.getCursor());
+
 }
 
 int main(int argc, char* argv[])
