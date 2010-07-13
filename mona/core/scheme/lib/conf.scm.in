@@ -27,10 +27,10 @@
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
 ;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
 ;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
+  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
-  (start-process "/APPS/BAYGUI/GTIMER.EX5")
-;  (w3m-auto-pilot)
+  (w3m-auto-pilot)
 )
 
 (define (w3m-auto-pilot)

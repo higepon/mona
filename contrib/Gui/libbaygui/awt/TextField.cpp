@@ -79,7 +79,7 @@ namespace baygui {
 
     bool TextField::cursorLeft()
     {
-        if (cursor_ >= 0) {
+        if (cursor_ > 0) {
             cursor_--;
             return true;
         } else {
@@ -101,7 +101,7 @@ namespace baygui {
     void TextField::setText(const String& text)
     {
         text_ = text;
-        cursor_ = text_.length() - 1;
+        cursor_ = text_.length();
         repaint();
     }
 

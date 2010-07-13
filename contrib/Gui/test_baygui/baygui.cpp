@@ -34,7 +34,6 @@ using namespace MonAPI;
 static void test_TextField()
 {
     TextField t;
-    _printf("%x", t.getText());
     EXPECT_STR_EQ("", t.getText());
 
     t.insertCharacter('A');
@@ -68,12 +67,17 @@ static void test_TextField_cursor()
     TextField t;
     t.setText(text);
 
+    t.deleteCharacter();
+    EXPECT_STR_EQ("Hell", t.getText());
+    t.insertCharacter('o');
+    EXPECT_STR_EQ("Hello", t.getText());
+
     for (int i = 0; i < strlen(text); i++) {
         EXPECT_TRUE(t.cursorLeft());
     }
     EXPECT_EQ(false, t.cursorLeft());
 
-    for (int i = 0; i <= strlen(text); i++) {
+    for (int i = 0; i < strlen(text); i++) {
         EXPECT_TRUE(t.cursorRight());
     }
     EXPECT_EQ(false, t.cursorRight());
