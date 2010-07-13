@@ -90,10 +90,15 @@ static void test_TextField_cursor()
     EXPECT_STR_EQ("HelloZ", t.getText());
 }
 
-static void keyPress(TextField& t, int key)
+static void keyPress(TextField& t, int key, int modifier = 0)
 {
-    KeyEvent e(Event::KEY_PRESSED, NULL, key, 0);
+    KeyEvent e(Event::KEY_PRESSED, NULL, key, modifier);
     t.processEvent(&e);
+}
+
+static void keyPressWithControl(TextField& t, int key)
+{
+    keyPress(t, key, KeyEvent::VKEY_CTRL);
 }
 
 static void test_TextField_ime_off()
@@ -129,7 +134,8 @@ static void test_TextField_ime_on()
 {
     TextField t;
     EXPECT_EQ(false, t.isImeOn());
-
+    keyPress(t, '\\');
+    EXPECT_TRUE(t.isImeOn());
 }
 
 int main(int argc, char* argv[])
