@@ -134,7 +134,7 @@ static void test_TextField_ime_on()
 {
     TextField t;
     EXPECT_EQ(false, t.isImeOn());
-    keyPress(t, '\\');
+    keyPressWithControl(t, '\\');
     EXPECT_TRUE(t.isImeOn());
 }
 

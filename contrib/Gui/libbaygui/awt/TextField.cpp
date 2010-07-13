@@ -215,6 +215,7 @@ namespace baygui {
         // キー押下
         if (event->getType() == KeyEvent::KEY_PRESSED) {
             int keycode = ((KeyEvent *)event)->getKeycode();
+            int modifiers = ((KeyEvent *)event)->getModifiers();
             if (keycode == KeyEvent::VKEY_BACKSPACE) {
                 if (cursor_ > 0) {
                     // バックスペース
@@ -235,6 +236,9 @@ namespace baygui {
                 // 確定
                 getParent()->processEvent(&this->textEvent);
                 return;
+            } else if (modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') {
+                // toggle
+                isImeOn_ = !isImeOn_;
             } else if (keycode < 128) {
                 // 1文字挿入
                 insertCharacter(keycode);
