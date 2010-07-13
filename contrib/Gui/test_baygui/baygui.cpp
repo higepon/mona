@@ -125,11 +125,19 @@ static void test_TextField_ime_off()
     EXPECT_EQ(3, t.getCursor());
 }
 
+static void test_TextField_ime_on()
+{
+    TextField t;
+    EXPECT_EQ(false, t.isImeOn());
+
+}
+
 int main(int argc, char* argv[])
 {
     test_TextField();
     test_TextField_cursor();
     test_TextField_ime_off();
+    test_TextField_ime_on();
 
     TEST_RESULTS(baygui);
     return 0;
