@@ -171,12 +171,12 @@ static void test_TextField_ime_on()
 
     keyPress(t, 'a');
     keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042", t->getText()); // japanese hiragana A
+    EXPECT_STR_EQ("あ", t->getText()); // japanese hiragana A
 
     keyPress(t, 'i');
     keyPress(t, 'u');
     keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042\u3043\u3044", t->getText()); // japanese hiragana A I U
+    EXPECT_STR_EQ("あいう", t->getText()); // japanese hiragana A I U
     destroyTextField(t);
 }
 
@@ -192,7 +192,7 @@ static void test_TextField_backspace_ime_on()
     EXPECT_STR_EQ("", t->getText());
 
     keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_EQ_TEXT_FIELD("\u3042", 1, t);
+    EXPECT_EQ_TEXT_FIELD("あ", 1, t);
     destroyTextField(t);
 }
 
@@ -205,7 +205,7 @@ static void test_TextField_ime_convert()
 
     keyPress(t, ' ');
     keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_EQ_TEXT_FIELD("\u611b", 1, t);
+    EXPECT_EQ_TEXT_FIELD("藍", 1, t);
     destroyTextField(t);
 }
 int main(int argc, char* argv[])
