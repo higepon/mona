@@ -1,3 +1,7 @@
+/* -*- coding: utf-8 -*- */
+
+/* this file should be read and written in utf8. */
+
 /*
  *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
