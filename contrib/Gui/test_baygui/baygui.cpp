@@ -140,59 +140,66 @@ static void toggleIme(TextField& t)
    keyPressWithControl(t, '\\');
 }
 
+static TextField* createTextField()
+{
+    Frame* frame = new Frame;
+    frame->addNotify();
+    TextField* ret = new TestingTextField;
+    frame->add(ret);
+    return ret;
+}
+
+static void destroyTextField(TextField* t)
+{
+    delete t->getParent();
+    delete t;
+}
+
 static void test_TextField_ime_on()
 {
-     Frame f;
-    f.addNotify();
-    TestingTextField t;
-    f.add(&t);
-//    t.addNotify(); // workaround which enable getGraphics() access.
-    EXPECT_EQ(false, t.isImeOn());
-    toggleIme(t);
-    EXPECT_TRUE(t.isImeOn());
+    TextField* t = createTextField();
+    EXPECT_EQ(false, t->isImeOn());
+    toggleIme(*t);
+    EXPECT_TRUE(t->isImeOn());
 
-    keyPress(t, 'a');
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
+    keyPress(*t, 'a');
+    keyPress(*t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042", t->getText()); // japanese hiragana A
 
-    keyPress(t, 'i');
-    keyPress(t, 'u');
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
+    keyPress(*t, 'i');
+    keyPress(*t, 'u');
+    keyPress(*t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042\u3043\u3044", t->getText()); // japanese hiragana A I U
+    destroyTextField(t);
 }
 
 static void test_TextField_backspace_ime_on()
 {
-     Frame f;
-    f.addNotify();
-    TestingTextField t;
-    f.add(&t);
-    toggleIme(t);
-    keyPress(t, 'a');
-    keyPress(t, 'i');
+    TextField* t = createTextField();
+    toggleIme(*t);
+    keyPress(*t, 'a');
+    keyPress(*t, 'i');
 
-    keyPress(t, KeyEvent::VKEY_BACKSPACE);
-    EXPECT_EQ(0, t.getCursor());
-    EXPECT_STR_EQ("", t.getText());
+    keyPress(*t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_EQ(0, t->getCursor());
+    EXPECT_STR_EQ("", t->getText());
 
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_EQ_TEXT_FIELD("\u3042", 1, t);
+    keyPress(*t, KeyEvent::VKEY_ENTER);
+    EXPECT_EQ_TEXT_FIELD("\u3042", 1, (*t));
+    destroyTextField(t);
 }
 
 static void test_TextField_ime_convert()
 {
-     Frame f;
-    f.addNotify();
-    TestingTextField t;
-    f.add(&t);
+    TextField* t = createTextField();
+    toggleIme(*t);
+    keyPress(*t, 'a');
+    keyPress(*t, 'i');
 
-    toggleIme(t);
-    keyPress(t, 'a');
-    keyPress(t, 'i');
-
-    keyPress(t, ' ');
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_EQ_TEXT_FIELD("\u611b", 1, t);
+    keyPress(*t, ' ');
+    keyPress(*t, KeyEvent::VKEY_ENTER);
+    EXPECT_EQ_TEXT_FIELD("\u611b", 1, (*t));
+    destroyTextField(t);
 }
 int main(int argc, char* argv[])
 {
