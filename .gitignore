@@ -6,7 +6,6 @@
 *.DL5
 *.a
 dependencies
-*.BMP
 *.BM5
 *.map
 *.lst
