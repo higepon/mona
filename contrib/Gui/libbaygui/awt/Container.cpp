@@ -154,18 +154,20 @@ namespace baygui {
 
 	void Container::repaint()
 	{
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (getBuffer() == NULL) return;
-		
+		                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		paint(getGraphics());
-
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		// 自分の領域を更新する
 		update();
-
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		// 子部品を再描画する
 		int I = this->componentList.size();
 		for(int i = 0; i < I; i++) {
 			Component* component = (Component *)this->componentList.get(i);
 			component->repaint();
 		}
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	}
 }

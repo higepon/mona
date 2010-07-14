@@ -103,8 +103,9 @@ namespace baygui {
 
 	void Window::addNotify()
 	{
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (this->_buffer != NULL) return;
-
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		/* 描画バッファー、描画オブジェクトの生成 */
 		this->_buffer = new Image
 			(getWidth() - getInsets()->left - getInsets()->right, getHeight() - getInsets()->top - getInsets()->bottom);
@@ -246,11 +247,13 @@ namespace baygui {
 
 	void Window::update(int x, int y, int w, int h)
 	{
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
 			__g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
-		}
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);		}
 		
 		MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		
 	#ifdef SDL
 		{

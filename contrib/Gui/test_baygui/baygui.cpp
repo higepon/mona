@@ -35,6 +35,16 @@ using namespace MonAPI;
     munit_expect_eq(expectedText, t.getText(), #expectedText, __FILE__, __LINE__); \
     munit_expect_eq(expectedCursor, t.getCursor(), #expectedCursor, __FILE__, __LINE__);
 
+class TestingTextField : public TextField
+{
+public:
+    void update(int x, int y, int w, int h)
+    {
+
+    }
+};
+
+
 static void test_TextField()
 {
     TextField t;
@@ -132,9 +142,9 @@ static void toggleIme(TextField& t)
 
 static void test_TextField_ime_on()
 {
-    Frame f;
+     Frame f;
     f.addNotify();
-    TextField t;
+    TestingTextField t;
     f.add(&t);
 //    t.addNotify(); // workaround which enable getGraphics() access.
     EXPECT_EQ(false, t.isImeOn());

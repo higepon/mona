@@ -161,6 +161,7 @@ namespace baygui {
 
     void TextField::processEvent(Event* event)
     {
+        logprintf("TextField::processEvent this=%x parent=%x\n", this, getParent());
         // 非活性の時はイベントを受け付けない
         if (getEnabled() == false) return;
 
@@ -257,13 +258,17 @@ namespace baygui {
                 _imeManager->processEvent(event);
                 logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             } else if (keycode < 128) {
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (isImeOn()) {
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     _imeManager->processEvent(event);
                 } else {
                     // 1文字挿入
                     insertCharacter(keycode);
                 }
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 repaint();
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             }
         // フォーカス状態変更
         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
