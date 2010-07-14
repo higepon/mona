@@ -152,18 +152,21 @@ static void test_TextField_ime_on()
     EXPECT_TRUE(t.isImeOn());
 
     keyPress(t, 'a');
-//     keyPress(t, KeyEvent::VKEY_ENTER);
-//     EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
 
-//     keyPress(t, 'i');
-//     keyPress(t, 'u');
-//     keyPress(t, KeyEvent::VKEY_ENTER);
-//     EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
+    keyPress(t, 'i');
+    keyPress(t, 'u');
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
 }
 
 static void test_TextField_backspace_ime_on()
 {
-    TextField t;
+     Frame f;
+    f.addNotify();
+    TestingTextField t;
+    f.add(&t);
     toggleIme(t);
     keyPress(t, 'a');
     keyPress(t, 'i');
@@ -178,7 +181,11 @@ static void test_TextField_backspace_ime_on()
 
 static void test_TextField_ime_convert()
 {
-    TextField t;
+     Frame f;
+    f.addNotify();
+    TestingTextField t;
+    f.add(&t);
+
     toggleIme(t);
     keyPress(t, 'a');
     keyPress(t, 'i');
@@ -193,8 +200,8 @@ int main(int argc, char* argv[])
     test_TextField_cursor();
     test_TextField_ime_off();
     test_TextField_ime_on();
-//    test_TextField_backspace_ime_on();
-//    test_TextField_ime_convert();
+    test_TextField_backspace_ime_on();
+    test_TextField_ime_convert();
 
 //    check cursor on enter
 //    test_TextField_convert();
