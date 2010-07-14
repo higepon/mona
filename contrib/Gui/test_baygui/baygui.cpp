@@ -31,38 +31,38 @@
 
 using namespace MonAPI;
 
+#define EXPECT_EQ_TEXT_FIELD(expectedText, expectedCursor, t) \
+    munit_expect_eq(expectedText, t.getText(), #expectedText, __FILE__, __LINE__); \
+    munit_expect_eq(expectedCursor, t.getCursor(), #expectedCursor, __FILE__, __LINE__);
+
 static void test_TextField()
 {
     TextField t;
-    EXPECT_STR_EQ("", t.getText());
-    EXPECT_EQ(0, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("", 0, t);
 
     t.insertCharacter('A');
-    EXPECT_STR_EQ("A", t.getText());
-    EXPECT_EQ(1, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("A", 1, t);
 
     t.insertCharacter('B');
     t.insertCharacter('C');
     t.insertCharacter('D');
-    EXPECT_EQ(4, t.getCursor());
-    EXPECT_STR_EQ("ABCD", t.getText());
+    EXPECT_EQ_TEXT_FIELD("ABCD", 4, t);
 
     t.deleteCharacter();
-    EXPECT_EQ(3, t.getCursor());
-    EXPECT_STR_EQ("ABC", t.getText());
+    EXPECT_EQ_TEXT_FIELD("ABC", 3, t);
 
     EXPECT_TRUE(t.cursorLeft());
     t.insertCharacter('E');
-    EXPECT_STR_EQ("ABEC", t.getText());
+    EXPECT_EQ_TEXT_FIELD("ABEC", 3, t);
 
     EXPECT_TRUE(t.cursorLeft());
     t.deleteCharacter();
-    EXPECT_STR_EQ("AEC", t.getText());
+    EXPECT_EQ_TEXT_FIELD("AEC", 1, t);
 
     EXPECT_TRUE(t.cursorRight());
     EXPECT_TRUE(t.cursorRight());
     t.insertCharacter('Z');
-    EXPECT_STR_EQ("AECZ", t.getText());
+    EXPECT_EQ_TEXT_FIELD("AECZ", 4, t);
 }
 
 static void test_TextField_cursor()
@@ -76,12 +76,12 @@ static void test_TextField_cursor()
     t.insertCharacter('o');
     EXPECT_STR_EQ("Hello", t.getText());
 
-    for (int i = 0; i < strlen(text); i++) {
+    for (size_t i = 0; i < strlen(text); i++) {
         EXPECT_TRUE(t.cursorLeft());
     }
     EXPECT_EQ(false, t.cursorLeft());
 
-    for (int i = 0; i < strlen(text); i++) {
+    for (size_t i = 0; i < strlen(text); i++) {
         EXPECT_TRUE(t.cursorRight());
     }
     EXPECT_EQ(false, t.cursorRight());
@@ -108,54 +108,88 @@ static void test_TextField_ime_off()
     EXPECT_STR_EQ("a", t.getText());
 
     keyPress(t, 'i');
-    EXPECT_STR_EQ("ai", t.getText());
-    EXPECT_EQ(2, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("ai", 2, t);
 
     keyPress(t, KeyEvent::VKEY_BACKSPACE);
-    EXPECT_STR_EQ("a", t.getText());
-    EXPECT_EQ(1, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("a", 1, t);
 
     keyPress(t, KeyEvent::VKEY_LEFT);
-    EXPECT_STR_EQ("a", t.getText());
-    EXPECT_EQ(0, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("a", 0, t);
 
     keyPress(t, 'c');
-    EXPECT_STR_EQ("ca", t.getText());
-    EXPECT_EQ(1, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("ca", 1, t);
 
     keyPress(t, KeyEvent::VKEY_RIGHT);
     EXPECT_EQ(2, t.getCursor());
     keyPress(t, 'b');
-    EXPECT_STR_EQ("cab", t.getText());
-    EXPECT_EQ(3, t.getCursor());
+    EXPECT_EQ_TEXT_FIELD("cab", 3, t);
+}
+
+static void toggleIme(TextField& t)
+{
+   keyPressWithControl(t, '\\');
 }
 
 static void test_TextField_ime_on()
 {
+    Frame f;
+    f.addNotify();
     TextField t;
+    f.add(&t);
+//    t.addNotify(); // workaround which enable getGraphics() access.
     EXPECT_EQ(false, t.isImeOn());
-    keyPressWithControl(t, '\\');
+    toggleIme(t);
     EXPECT_TRUE(t.isImeOn());
 
     keyPress(t, 'a');
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
+//     keyPress(t, KeyEvent::VKEY_ENTER);
+//     EXPECT_STR_EQ("\u3042", t.getText()); // japanese hiragana A
 
-    keyPress(t, 'i');
-    keyPress(t, 'u');
-    keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
-
+//     keyPress(t, 'i');
+//     keyPress(t, 'u');
+//     keyPress(t, KeyEvent::VKEY_ENTER);
+//     EXPECT_STR_EQ("\u3042\u3043\u3044", t.getText()); // japanese hiragana A I U
 }
 
+static void test_TextField_backspace_ime_on()
+{
+    TextField t;
+    toggleIme(t);
+    keyPress(t, 'a');
+    keyPress(t, 'i');
+
+    keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_EQ(0, t.getCursor());
+    EXPECT_STR_EQ("", t.getText());
+
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_EQ_TEXT_FIELD("\u3042", 1, t);
+}
+
+static void test_TextField_ime_convert()
+{
+    TextField t;
+    toggleIme(t);
+    keyPress(t, 'a');
+    keyPress(t, 'i');
+
+    keyPress(t, ' ');
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_EQ_TEXT_FIELD("\u611b", 1, t);
+}
 int main(int argc, char* argv[])
 {
     test_TextField();
     test_TextField_cursor();
     test_TextField_ime_off();
     test_TextField_ime_on();
+//    test_TextField_backspace_ime_on();
+//    test_TextField_ime_convert();
+
+//    check cursor on enter
+//    test_TextField_convert();
+//    test_TextField_convert_second_candidate();
 
     TEST_RESULTS(baygui);
     return 0;
 }
-

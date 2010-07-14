@@ -72,13 +72,15 @@
       (let* ([results (string-split text #\newline)]
              [passed (filter #/test passed/ results)]
              [each-errors (filter #/MUnit:/ results)]
-             [failed (filter #/test failed/ results)])
+             [failed (filter #/test failed/ results)]
+             [died (filter #/access denied.*T[^D].*EX5/ results)]) ;; quck hack except for TDIE.EX5
         (cond
          [(and (null? each-errors) (null? failed))
           (with-color-green
            (for-each print passed))]
          [else
           (with-color-red
+           (for-each print died)
            (for-each print each-errors)
            (for-each print failed))]))
       (spawn "kill" (list (number->string (read (open-input-file pid-file)))))

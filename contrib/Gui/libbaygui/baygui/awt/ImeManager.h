@@ -46,7 +46,7 @@ private:
     /** 変換対象文字列バッファー */
     char translateBuffer[MAX_TEXT_LEN];
     /** IMEモード（オンなら日本語入力中）*/
-    bool imemode;
+    bool isOn_;
     /** IMEイベント */
     Event *_imeEvent;
     /** 親部品 */
@@ -61,6 +61,7 @@ public:
     ImeManager();
     virtual ~ImeManager();
     virtual const char* getFixedString() const;
+    virtual bool isOn() const { return isOn_; }
     virtual void clearBuffer(char *buffer);
     virtual void insertCharacter(char *buffer, char c);
     virtual void insertString(char *buffer, const char *str);

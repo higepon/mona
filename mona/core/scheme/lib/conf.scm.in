@@ -13,7 +13,7 @@
                          "/APPS/TSOCK.EX5"
                          "/APPS/HELLO.EX5"))
 
-(define *tests-on-gui* '("/APPS/BAYGUI/TEST.EX5"))
+(define *tests-on-gui* '("/APPS/BAYGUI/TBAYGUI.EX5"))
 
 (define (test-end) (print "all tests done"))
 

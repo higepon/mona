@@ -28,7 +28,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
     TextField::TextField() : text_(String("")),
                              cursor_(0),
-                             isImeOn_(false),
                              _imeManager(new ImeManager)
     {
         initialize();
@@ -157,13 +156,22 @@ namespace baygui {
 
     bool TextField::isImeOn() const
     {
-        return isImeOn_;
+        return _imeManager->isOn();
     }
 
     void TextField::processEvent(Event* event)
     {
         // 非活性の時はイベントを受け付けない
         if (getEnabled() == false) return;
+
+        if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
+            int keycode = (event->getType() >> 16) & 0xFFFF;
+            insertCharacter((char)(keycode & 0xFF));
+            // Possible enhancement: repaint once.
+            repaint();
+            return;
+        }
+
 //         // １文字イベント
 //         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
 //             int keycode = (event->getType() >> 16) & 0xFFFF;
@@ -219,6 +227,7 @@ namespace baygui {
             if (keycode == KeyEvent::VKEY_BACKSPACE) {
                 if (cursor_ > 0) {
                     // バックスペース
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     deleteCharacter();
                     repaint();
                 }
@@ -233,14 +242,22 @@ namespace baygui {
                     repaint();
                 }
             } else if (keycode == KeyEvent::VKEY_ENTER) {
-                // 確定
-                getParent()->processEvent(&this->textEvent);
+                if (isImeOn()) {
+                    _imeManager->processEvent(event);
+                } else {
+                    // 確定
+                    if (getParent()) {
+                        getParent()->processEvent(&this->textEvent);
+                    }
+                }
                 return;
             } else if (modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') {
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 // toggle
-                isImeOn_ = !isImeOn_;
+                _imeManager->processEvent(event);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             } else if (keycode < 128) {
-                if (isImeOn_) {
+                if (isImeOn()) {
                     _imeManager->processEvent(event);
                 } else {
                     // 1文字挿入

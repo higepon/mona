@@ -1,4 +1,8 @@
-TARGET  = TEST
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
+TARGET  = TBAYGUI
 SOURCES = baygui.cpp
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI

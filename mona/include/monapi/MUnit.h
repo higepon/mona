@@ -55,27 +55,8 @@
     }\
 }
 
-#define EXPECT_EQ(expected, actual) {                  \
-    intptr_t ac = (actual); \
-    if (expected != ac) {\
-        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
-        munit_number_of_failed++;\
-    } else {\
-        munit_number_of_passed++;\
-    }\
-}
-
-#define EXPECT_STR_EQ(expected, actual) {                  \
-    const char* ac = (actual); \
-    if (0 != strcmp(expected, ac)) {\
-        _printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
-        munit_number_of_failed++;\
-    } else {\
-        munit_number_of_passed++;\
-    }\
-}
+#define EXPECT_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __FILE__, __LINE__)
+#define EXPECT_STR_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __FILE__, __LINE__)
 
 #define EXPECT_STR_EQ_MSG(expected, actual, msg) {                  \
     const char* ac = (actual); \
@@ -117,6 +98,67 @@ inline void munit_show_test_results(const char* msg)
         logprintf("%s test failed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed + munit_number_of_failed);
     }
 }
+
+template <typename X, typename Y>
+void munit_expect_eq(X expected, Y actual, const char* expectedStr, const char* file, int line)
+{
+    if (expected != (X)actual) {
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        munit_number_of_failed++;
+    } else {
+        munit_number_of_passed++;
+    }
+}
+
+template <>
+void munit_expect_eq(MonaErrorType expected, intptr_t actual, const char* expectedStr, const char* file, int line)
+{
+    if (expected != actual) {
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        munit_number_of_failed++;
+    } else {
+        munit_number_of_passed++;
+    }
+}
+
+template <>
+void munit_expect_eq(MonaOldErrorType expected, intptr_t actual, const char* expectedStr, const char* file, int line)
+{
+    if (expected != actual) {
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        munit_number_of_failed++;
+    } else {
+        munit_number_of_passed++;
+    }
+}
+
+template <>
+void munit_expect_eq(const char* expected, char* actual, const char* expectedStr, const char* file, int line)
+{
+    if (0 != strcmp(expected, actual)) {
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        munit_number_of_failed++;
+    } else {
+        munit_number_of_passed++;
+    }
+}
+
+template <>
+void munit_expect_eq(const char* expected, const char* actual, const char* expectedStr, const char* file, int line)
+{
+    if (0 != strcmp(expected, actual)) {
+        _printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        munit_number_of_failed++;
+    } else {
+        munit_number_of_passed++;
+    }
+}
+
 
 #define TEST_RESULTS(x) munit_show_test_results(#x)
 

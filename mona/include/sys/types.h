@@ -26,10 +26,10 @@
 
 /* todo remove*/
 /* USE M_OK instead. see error.h */
-enum {
+typedef enum {
     MONA_SUCCESS = 1, /* don't change */
     MONA_FAILURE = 0  /* don't change */
-};
+} MonaOldErrorType;
 
 #ifndef __uint64_t_defined
 typedef unsigned long long	uint64_t;

@@ -178,9 +178,12 @@ namespace baygui {
 
 	Graphics *Window::getGraphics()
 	{
+        logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, this->_window);
 		if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) == WINDOWFLAGS_NOBORDER) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return this->__g;
 		} else {
+            logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, this->_g);
 			return this->_g;
 		}
 	}

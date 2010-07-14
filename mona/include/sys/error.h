@@ -49,7 +49,7 @@ enum
 // IDManager Errors
 //   Since id allcated by IDManager greater than zero,
 //   error numbers are defined as negative number.
-enum
+typedef enum
 {                              // A normal value (which means no error) should be positive.
     /*
        constant: M_OK
@@ -175,7 +175,7 @@ enum
     IDM_OBJECT_NOT_FOUND , // Error should be negative
     IDM_SECURITY_ERROR   ,
     IDM_INVALID_TYPE
-};
+} MonaErrorType;
 
 
 #endif
