@@ -37,6 +37,7 @@ namespace baygui {
     private:
         String text_;
         int cursor_;
+        String accumUtf8_;
 
         /** オフセットX */
         int offx;
@@ -51,10 +52,26 @@ namespace baygui {
     private:
 
         virtual void initialize();
+        virtual void accumulateUtf8(char c)
+        {
+            accumUtf8_ += c;
+        }
+
+        virtual String& getAccumulateUtf8()
+        {
+            return accumUtf8_;
+        }
+
+        virtual void clearAccumulateUtf8()
+        {
+            accumUtf8_ = "";
+        }
+
 
     public: /* public for testability */
         /** 1文字挿入する */
         virtual void insertCharacter(char c);
+        virtual void insertStringTail(const String& c);
 
         /** 一文字削除する */
         virtual void deleteCharacter();

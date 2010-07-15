@@ -47,6 +47,15 @@ public:
         // override
         // Don't draw anything.
     }
+
+    void update()
+    {
+    }
+
+    void repaint()
+    {
+    }
+
 };
 
 static TextField* createTextField()

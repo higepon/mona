@@ -798,7 +798,7 @@ public:
 
 	// TextField クラスメソッド
 	void setText(const char* text) { SUPER::setText(text); }
-	char* getText() { return SUPER::getText(); }
+	const char* getText() { return SUPER::getText(); }
 
 
 	//-------------------------------------------------------------

@@ -48,6 +48,11 @@ namespace baygui {
     {
     }
 
+    void TextField::insertStringTail(const String& s)
+    {
+        text_ += s;
+    }
+
     void TextField::insertCharacter(char c)
     {
         // cursor is at tail.
@@ -60,6 +65,7 @@ namespace baygui {
             text_ += c;
             text_ += rest;
         }
+        logprintf("insertCharacter %d result = %s", c, (const char*)text_);
         cursor_++;
     }
 
@@ -167,8 +173,15 @@ namespace baygui {
 
         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
             int keycode = (event->getType() >> 16) & 0xFFFF;
-            insertCharacter((char)(keycode & 0xFF));
-            // Possible enhancement: repaint once.
+//            insertCharacter((char)(keycode & 0xFF));
+            logprintf("accum = <%d>", (keycode & 0xFF));
+            accumulateUtf8(((char)(keycode & 0xFF)));
+            return;
+        } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
+            String& stringFromIme = getAccumulateUtf8();
+            cursor_ += stringFromIme.length();
+            insertStringTail(stringFromIme);
+            clearAccumulateUtf8();
             repaint();
             return;
         }
@@ -226,11 +239,15 @@ namespace baygui {
             int keycode = ((KeyEvent *)event)->getKeycode();
             int modifiers = ((KeyEvent *)event)->getModifiers();
             if (keycode == KeyEvent::VKEY_BACKSPACE) {
-                if (cursor_ > 0) {
-                    // バックスペース
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                    deleteCharacter();
-                    repaint();
+                if (isImeOn()) {
+                    _imeManager->processEvent(event);
+                } else {
+                    if (cursor_ > 0) {
+                        // バックスペース
+                        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                        deleteCharacter();
+                        repaint();
+                    }
                 }
             } else if (keycode == KeyEvent::VKEY_LEFT) {
                 // ←移動
