@@ -56,7 +56,7 @@ namespace baygui {
 		virtual ~String();
 		
 		/** 'const char*'‰‰ŽZŽq */
-		operator const char*() const { return this->buffer; }
+		operator const char*() const { return (buffer == NULL ? "" : buffer); }
 		
 		/** '='‰‰ŽZŽq */
 		String& operator =(const char* text);
@@ -155,6 +155,9 @@ namespace baygui {
 		
 		/** ‚·‚×‚Ä‚Ì•¶Žš‚ð‘å•¶Žš‚É•ÏŠ·‚·‚é */
 		String toUpperCase() const;
+
+    private:
+        int ucs4ToUtf8(unsigned int u, uint8_t* buf) const;
 	};
 }
 

@@ -76,6 +76,7 @@ namespace baygui {
         if (text_.length() == cursor_) {
             logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             text_ = text_.substring(0, text_.length() - 1);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             logprintf("<%s>", (const char*)text_);
         } else {
             logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -152,11 +153,11 @@ namespace baygui {
 //        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
         _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
 //        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth(), getHeight());
-        _imeManager->setForeground(getForeground());
-        _imeManager->setBackground(getBackground());
-        _imeManager->setFocused(getFocused());
-        _imeManager->setFontStyle(getFontStyle());
-        _imeManager->repaint();
+        // _imeManager->setForeground(getForeground());
+        // _imeManager->setBackground(getBackground());
+        // _imeManager->setFocused(getFocused());
+        // _imeManager->setFontStyle(getFontStyle());
+        // _imeManager->repaint();
         //g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
     }
 
@@ -236,61 +237,57 @@ namespace baygui {
 
         // キー押下
         if (event->getType() == KeyEvent::KEY_PRESSED) {
-            int keycode = ((KeyEvent *)event)->getKeycode();
-            int modifiers = ((KeyEvent *)event)->getModifiers();
-            if (keycode == KeyEvent::VKEY_BACKSPACE) {
-                if (isImeOn()) {
-                    _imeManager->processEvent(event);
-                } else {
-                    if (cursor_ > 0) {
-                        // バックスペース
-                        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                        deleteCharacter();
-                        repaint();
-                    }
-                }
-            } else if (keycode == KeyEvent::VKEY_LEFT) {
-                // ←移動
-                if (cursorLeft()) {
-                    repaint();
-                }
-            } else if (keycode == KeyEvent::VKEY_RIGHT) {
-                // →移動
-                if (cursorRight()) {
-                    repaint();
-                }
-            } else if (keycode == KeyEvent::VKEY_ENTER) {
-                if (isImeOn()) {
-                    _imeManager->processEvent(event);
-                } else {
-                    // 確定
-                    if (getParent()) {
-                        getParent()->processEvent(&this->textEvent);
-                    }
-                }
-                return;
-            } else if (modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') {
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                // toggle
-                _imeManager->processEvent(event);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            } else if (keycode < 128) {
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                if (isImeOn()) {
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                    _imeManager->processEvent(event);
-                } else {
-                    // 1文字挿入
-                    insertCharacter(keycode);
-                }
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                repaint();
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            }
+            processKeyEvent((KeyEvent*)event);
         // フォーカス状態変更
         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
             repaint();
             getParent()->processEvent(&this->focusEvent);
         }
+    }
+}
+
+void TextField::processKeyEvent(KeyEvent* event)
+{
+    int keycode = event->getKeycode();
+    int modifiers = event->getModifiers();
+
+    // Toggle IME ON/OFF
+    if (keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) {
+        _imeManager->processEvent(event);
+        return;
+    }
+
+    if (isImeOn()) {
+        _imeManager->processEvent(event);
+        return;
+    }
+
+    switch(keycode) {
+    case  KeyEvent::VKEY_BACKSPACE:
+        if (cursor_ > 0) {
+            deleteCharacter();
+            repaint();
+        }
+        break;
+    case KeyEvent::VKEY_LEFT:
+        if (cursorLeft()) {
+            repaint();
+        }
+        break;
+    case KeyEvent::VKEY_RIGHT:
+        if (cursorRight()) {
+            repaint();
+        }
+        break;
+    // case KeyEvent::VKEY_ENTER:
+    //     if (getParent()) {
+    //         getParent()->processEvent(&this->textEvent);
+    //     }
+    //     break;
+    default:
+        ASSERT(keycode < 128);
+        insertCharacter(keycode);
+        repaint();
+        break;
     }
 }

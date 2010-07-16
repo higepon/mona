@@ -217,6 +217,29 @@ static void test_TextField_ime_convert()
     EXPECT_EQ_TEXT_FIELD("藍", 1, t);
     destroyTextField(t);
 }
+
+static void test_TextField_remove_multi_byte_backspace()
+{
+    TextField* t = createTextField();
+    toggleIme(t);
+    keyPress(t, 'a');
+    keyPress(t, 'i');
+
+    keyPress(t, KeyEvent::VKEY_ENTER);
+    EXPECT_EQ_TEXT_FIELD("あい", 2, t);
+
+    toggleIme(t);
+    logprintf("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+    keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_EQ(1, t->getCursor());
+    EXPECT_STR_EQ("あ", t->getText());
+
+    // keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    // EXPECT_EQ(0, t->getCursor());
+    // EXPECT_STR_EQ("", t->getText());
+
+    destroyTextField(t);
+}
 int main(int argc, char* argv[])
 {
     test_TextField();
@@ -225,6 +248,7 @@ int main(int argc, char* argv[])
     test_TextField_ime_on();
     test_TextField_backspace_ime_on();
     test_TextField_ime_convert();
+    test_TextField_remove_multi_byte_backspace();
 
 //    check cursor on enter
 //    test_TextField_convert();
@@ -233,3 +257,4 @@ int main(int argc, char* argv[])
     TEST_RESULTS(baygui);
     return 0;
 }
+

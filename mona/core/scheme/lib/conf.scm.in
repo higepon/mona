@@ -30,7 +30,7 @@
   (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
-  (w3m-auto-pilot)
+;  (w3m-auto-pilot)
 )
 
 (define (w3m-auto-pilot)

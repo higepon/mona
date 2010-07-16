@@ -52,6 +52,9 @@ namespace baygui {
     private:
 
         virtual void initialize();
+
+        virtual void processKeyEvent(KeyEvent* event);
+
         virtual void accumulateUtf8(char c)
         {
             accumUtf8_ += c;
