@@ -33,17 +33,20 @@ mpq_div (mpq_ptr quot, mpq_srcptr op1, mpq_srcptr op2)
   mp_size_t op2_den_size;
   mp_size_t alloc;
   TMP_DECL;
-
+  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   op1_num_size = ABS (op1->_mp_num._mp_size);
   op1_den_size =      op1->_mp_den._mp_size;
   op2_num_size = ABS (op2->_mp_num._mp_size);
   op2_den_size =      op2->_mp_den._mp_size;
 
-  if (op2_num_size == 0)
+  if (op2_num_size == 0) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     DIVIDE_BY_ZERO;
+  }
 
   if (op1_num_size == 0)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /* We special case this to simplify allocation logic; gcd(0,x) = x
 	 is a singular case for the allocations.  */
       quot->_mp_num._mp_size = 0;
@@ -60,8 +63,10 @@ mpq_div (mpq_ptr quot, mpq_srcptr op1, mpq_srcptr op2)
   alloc = MIN (op1_den_size, op2_den_size);
   MPZ_TMP_INIT (gcd2, alloc);
 
+  logprintf("alloc=%d : %d\n", op1_num_size, op2_num_size);
   alloc = MAX (op1_num_size, op2_num_size);
   MPZ_TMP_INIT (tmp1, alloc);
+  logprintf("tmp1= %s, s:%d\n",  mpz_get_str(0, 10, tmp1), __FILE__, __LINE__);
 
   alloc = MAX (op1_den_size, op2_den_size);
   MPZ_TMP_INIT (tmp2, alloc);
@@ -77,14 +82,18 @@ mpq_div (mpq_ptr quot, mpq_srcptr op1, mpq_srcptr op2)
   mpz_gcd (gcd1, &(op1->_mp_num), &(op2->_mp_num));
   mpz_gcd (gcd2, &(op2->_mp_den), &(op1->_mp_den));
 
+  logprintf("tmp1= %s, &(op1->_mp_num)=%s, gcd1=%s %s:%d\n",  mpz_get_str(0, 10, tmp1), mpz_get_str(0, 10, &(op1->_mp_num)),  mpz_get_str(0, 10, gcd1), __FILE__, __LINE__);
   mpz_divexact_gcd (tmp1, &(op1->_mp_num), gcd1);
+  logprintf("tmp1= %s, &(op1->_mp_num)=%s, gcd1=%s %s:%d\n",  mpz_get_str(0, 10, tmp1), mpz_get_str(0, 10, &(op1->_mp_num)),  mpz_get_str(0, 10, gcd1), __FILE__, __LINE__);
   mpz_divexact_gcd (tmp2, &(op2->_mp_den), gcd2);
 
   mpz_mul (numtmp, tmp1, tmp2);
 
   mpz_divexact_gcd (tmp1, &(op2->_mp_num), gcd1);
-  mpz_divexact_gcd (tmp2, &(op1->_mp_den), gcd2);
+  logprintf("&(op2->_mp_num)=%s, gcd1=%s\n",  mpz_get_str(0, 10, &(quot->_mp_den)),  mpz_get_str(0, 10, gcd1));
 
+  mpz_divexact_gcd (tmp2, &(op1->_mp_den), gcd2);
+  logprintf("&(quot->_mp_den)=%s tmp1=%s tmp2=%s\n",  mpz_get_str(0, 10, &(quot->_mp_den)),  mpz_get_str(0, 10, tmp1),  mpz_get_str(0, 10, tmp2));
   mpz_mul (&(quot->_mp_den), tmp1, tmp2);
 
   /* We needed to go via NUMTMP to take care of QUOT being the same as OP2.
@@ -94,6 +103,7 @@ mpq_div (mpq_ptr quot, mpq_srcptr op1, mpq_srcptr op2)
   /* Keep the denominator positive.  */
   if (quot->_mp_den._mp_size < 0)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       quot->_mp_den._mp_size = -quot->_mp_den._mp_size;
       quot->_mp_num._mp_size = -quot->_mp_num._mp_size;
     }

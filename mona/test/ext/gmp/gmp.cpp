@@ -64,6 +64,18 @@ static void test_mpq_div()
 
 int main(int argc, char *argv[])
 {
+    mpz_t a, b;
+    mpz_init_set_str(a, "13900000000000000000000", 10);
+    mpz_init_set_str(b, "3500000000000000000000", 10);
+
+    mpq_t ret, x, y;
+    mpq_init(ret);
+    mpq_init(x);
+    mpq_init(y);
+    mpq_set_z(x, a);
+    mpq_set_z(y, b);
+    mpq_div(ret, x, y);
+    logprintf("the answer is %s %s:%d <%s>\n", __func__, __FILE__, __LINE__, mpq_get_str(NULL, 10, ret));
     test_mpz();
     test_mpq();
     test_mpq_div();

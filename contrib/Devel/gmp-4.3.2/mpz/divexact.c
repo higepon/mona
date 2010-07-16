@@ -56,8 +56,10 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
   dsize = ABS (den->_mp_size);
 
   qsize = nsize - dsize + 1;
-  if (quot->_mp_alloc < qsize)
+  if (quot->_mp_alloc < qsize) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     _mpz_realloc (quot, qsize);
+  }
 
   np = num->_mp_d;
   dp = den->_mp_d;
@@ -65,6 +67,7 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
 
   if (nsize < dsize)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /* This special case avoids segfaults below when the function is
 	 incorrectly called with |N| < |D|, N != 0.  It also handles the
 	 well-defined case N = 0.  */
@@ -74,14 +77,16 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
 
   if (dsize <= 1)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       if (dsize == 1)
 	{
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	  MPN_DIVREM_OR_DIVEXACT_1 (qp, np, nsize, dp[0]);
 	  qsize -= qp[qsize - 1] == 0;
 	  quot->_mp_size = (num->_mp_size ^ den->_mp_size) >= 0 ? qsize : -qsize;
 	  return;
 	}
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /*  Generate divide-by-zero error since dsize == 0.  */
       DIVIDE_BY_ZERO;
     }
@@ -89,6 +94,7 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
   /* Avoid quadratic behaviour, but do it conservatively.  */
   if (qsize > 1500)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       mpz_tdiv_q (quot, num, den);
       return;
     }
@@ -101,8 +107,10 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
   tsize = MIN (qsize, dsize);
   if ((dp[0] & 1) != 0)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       if (quot == den)		/*  QUOT and DEN overlap.  */
 	{
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	  tp = (mp_ptr) TMP_ALLOC (tsize * BYTES_PER_MP_LIMB);
 	  MPN_COPY (tp, dp, tsize);
 	}
@@ -113,6 +121,7 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
     }
   else
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       unsigned int r;
       tp = (mp_ptr) TMP_ALLOC (tsize * BYTES_PER_MP_LIMB);
       count_trailing_zeros (r, dp[0]);
@@ -123,12 +132,12 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
       if (nsize > qsize)
 	qp[qsize - 1] |= (np[qsize] << (GMP_NUMB_BITS - r)) & GMP_NUMB_MASK;
     }
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /*  Now QUOT <-- QUOT/T.  */
   mpn_bdivmod (qp, qp, qsize, tp, tsize, qsize * GMP_NUMB_BITS);
+
   MPN_NORMALIZE (qp, qsize);
-
   quot->_mp_size = (num->_mp_size ^ den->_mp_size) >= 0 ? qsize : -qsize;
-
+  //  logprintf("qp= %s %s:%d\n",  mpz_get_str(0, 10, qp), __FILE__, __LINE__);
   TMP_FREE;
 }

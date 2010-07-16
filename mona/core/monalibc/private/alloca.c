@@ -193,7 +193,6 @@ alloca (size)			/* returns pointer to storage */
     last_alloca_header = (header *)new;
 
     /* User storage begins just after header. */
-
     return (pointer)((char *)new + sizeof(header));
   }
 }

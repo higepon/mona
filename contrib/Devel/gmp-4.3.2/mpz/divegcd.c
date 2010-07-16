@@ -80,31 +80,38 @@ mpz_divexact_gcd (mpz_ptr q, mpz_srcptr a, mpz_srcptr d)
 
       if (dl == 1)
         {
-          if (q != a)
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+          if (q != a) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             mpz_set (q, a);
+          }
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
           return;
         }
       if (dl == 3)
         {
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
           mpz_divexact_by3 (q, a);
           return;
         }
 
       count_trailing_zeros (twos, dl);
       dl >>= twos;
-
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       if (dl == 1)
         {
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
           mpz_tdiv_q_2exp (q, a, twos);
           return;
         }
       if (dl == 3)
         {
+          logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
           mpz_tdiv_q_2exp (q, a, twos);
           mpz_divexact_by3 (q, q);
           return;
         }
     }
-
+  logprintf("q=%s a=%s d=%s\n",  mpz_get_str(0, 10, q),  mpz_get_str(0, 10, a), mpz_get_str(0, 10, d));
   mpz_divexact (q, a, d);
 }
