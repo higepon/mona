@@ -39,7 +39,6 @@ mpz_get_str (char *res_str, int base, mpz_srcptr x)
   char *num_to_text;
   int i;
   TMP_DECL;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   if (base >= 0)
     {
       num_to_text = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -57,27 +56,21 @@ mpz_get_str (char *res_str, int base, mpz_srcptr x)
       base = -base;
       num_to_text = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* allocate string for the user if necessary */
   if (res_str == NULL)
     {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       /* digits, null terminator, possible minus sign */
       MPN_SIZEINBASE (alloc_size, PTR(x), ABS(x_size), base);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       alloc_size += 1 + (x_size<0);
       res_str = (char *) (*__gmp_allocate_func) (alloc_size);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     }
   return_str = res_str;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   if (x_size < 0)
     {
       *res_str++ = '-';
       x_size = -x_size;
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* mpn_get_str clobbers its input on non power-of-2 bases */
   TMP_MARK;
   xp = x->_mp_d;
@@ -88,18 +81,14 @@ mpz_get_str (char *res_str, int base, mpz_srcptr x)
     }
 
   str_size = mpn_get_str ((unsigned char *) res_str, base, xp, x_size);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (alloc_size == 0 || str_size <= alloc_size - (SIZ(x) < 0));
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* might have a leading zero, skip it */
   str = res_str;
   if (*res_str == 0 && str_size != 1)
     {
       str_size--;
       str++;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       ASSERT (*str != 0);  /* at most one leading zero */
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
   /* Convert result to printable chars, and move down if there was a leading
@@ -114,12 +103,9 @@ mpz_get_str (char *res_str, int base, mpz_srcptr x)
   if (alloc_size != 0)
     {
       size_t  actual_size = str_size + 1 + (res_str - return_str);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       ASSERT (actual_size == strlen (return_str) + 1);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       __GMP_REALLOCATE_FUNC_MAYBE_TYPE (return_str, alloc_size, actual_size,
                                         char);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
   return return_str;
 }

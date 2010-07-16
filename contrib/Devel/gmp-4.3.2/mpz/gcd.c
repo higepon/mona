@@ -42,7 +42,6 @@ gcd (mpz_srcptr u, mpz_srcptr v, mpz_ptr g)
   mp_size_t vsize = ABS (v->_mp_size);
   mp_size_t gsize;
   TMP_DECL;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* GCD(0, V) == V.  */
   if (usize == 0)
     {
@@ -58,7 +57,6 @@ gcd (mpz_srcptr u, mpz_srcptr v, mpz_ptr g)
   /* GCD(U, 0) == U.  */
   if (vsize == 0)
     {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       g->_mp_size = usize;
       if (g == u)
 	return;
@@ -67,18 +65,14 @@ gcd (mpz_srcptr u, mpz_srcptr v, mpz_ptr g)
       MPN_COPY (g->_mp_d, up, usize);
       return;
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   if (usize == 1)
     {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       g->_mp_size = 1;
       g->_mp_d[0] = mpn_gcd_1 (vp, vsize, up[0]);
       return;
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   if (vsize == 1)
     {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       g->_mp_size = 1;
       g->_mp_d[0] = mpn_gcd_1 (up, usize, vp[0]);
       return;
@@ -160,7 +154,6 @@ gcd (mpz_srcptr u, mpz_srcptr v, mpz_ptr g)
       MPN_ZERO (g->_mp_d, g_zero_limbs);
       MPN_COPY (g->_mp_d + g_zero_limbs, vp, vsize);
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   g->_mp_size = gsize;
   TMP_FREE;
 }

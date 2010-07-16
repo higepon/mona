@@ -113,7 +113,6 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
     }
   else
     {
-      //    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       unsigned int r;
       tp = (mp_ptr) TMP_ALLOC (tsize * BYTES_PER_MP_LIMB);
       //      memset(0, tp, tsize * BYTES_PER_MP_LIMB);
@@ -130,6 +129,5 @@ mpz_divexact (mpz_ptr quot, mpz_srcptr num, mpz_srcptr den)
 
   MPN_NORMALIZE (qp, qsize);
   quot->_mp_size = (num->_mp_size ^ den->_mp_size) >= 0 ? qsize : -qsize;
-  //  logprintf("qp= %s %s:%d\n",  mpz_get_str(0, 10, qp), __FILE__, __LINE__);
   TMP_FREE;
 }
