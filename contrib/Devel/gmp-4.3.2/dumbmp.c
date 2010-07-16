@@ -68,7 +68,7 @@ typedef struct {
   do {                                                  \
     if (! (cond))                                       \
       {                                                 \
-        printf (stderr, "Assertion failure\n");        \
+        fprintf (stderr, "Assertion failure\n");        \
         abort ();                                       \
       }                                                 \
   } while (0)

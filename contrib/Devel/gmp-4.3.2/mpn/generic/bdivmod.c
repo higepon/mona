@@ -56,27 +56,17 @@ mpn_bdivmod (mp_ptr qp, mp_ptr up, mp_size_t usize,
 	     mp_srcptr vp, mp_size_t vsize, unsigned long int d)
 {
   mp_limb_t v_inv;
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (usize >= 1);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (vsize >= 1);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (usize * GMP_NUMB_BITS >= d);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (! MPN_OVERLAP_P (up, usize, vp, vsize));
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (! MPN_OVERLAP_P (qp, d/GMP_NUMB_BITS, vp, vsize));
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT (MPN_SAME_OR_INCR2_P (qp, d/GMP_NUMB_BITS, up, usize));
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT_MPN (up, usize);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   ASSERT_MPN (vp, vsize);
 
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* 1/V mod 2^GMP_NUMB_BITS. */
   binvert_limb (v_inv, vp[0]);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   /* Fast code for two cases previously used by the accel part of mpn_gcd.
      (Could probably remove this now it's inlined there.) */
   if (usize == 2 && vsize == 2 &&
@@ -108,7 +98,6 @@ mpn_bdivmod (mp_ptr qp, mp_ptr up, mp_size_t usize,
       up += 1, usize -= 1;
       *qp++ = q;
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   if (d)
     {
       mp_limb_t b;
@@ -126,9 +115,7 @@ mpn_bdivmod (mp_ptr qp, mp_ptr up, mp_size_t usize,
       if (usize > vsize)
 	mpn_sub_1 (up + vsize, up + vsize, usize - vsize, b);
 
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
       return q;
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   return 0;
 }
