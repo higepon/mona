@@ -103,7 +103,6 @@ namespace baygui {
         }
     }
 
-
     void TextField::setText(const String& text)
     {
         text_ = text;
@@ -143,15 +142,7 @@ namespace baygui {
         if (getFocused() == true && getEnabled() == true) {
             g->drawLine(offx + fw, offy, offx + fw, offy + 12);
         }
-//        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
         _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
-//        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth(), getHeight());
-        // _imeManager->setForeground(getForeground());
-        // _imeManager->setBackground(getBackground());
-        // _imeManager->setFocused(getFocused());
-        // _imeManager->setFontStyle(getFontStyle());
-        // _imeManager->repaint();
-        //g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
     }
 
     bool TextField::isImeOn() const
@@ -164,12 +155,13 @@ namespace baygui {
         if (!getEnabled()) {
             return;
         }
+
         switch (event->getType() & 0xFFFF) {
         case Event::IME_CHAR:
         {
             int keycode = (event->getType() >> 16) & 0xFFFF;
             accumulateUtf8(((char)(keycode & 0xFF)));
-            return;
+            break;
         }
         case Event::IME_ENDCOMPOSITION:
         {
@@ -178,120 +170,76 @@ namespace baygui {
             insertStringTail(stringFromIme);
             clearAccumulateUtf8();
             repaint();
-            return;
+            break;
         }
         case Event::IME_BACKSPACE:
         {
             backspace();
-            return;
+            break;
         }
-        }
-//         // １文字イベント
-//         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
-//             int keycode = (event->getType() >> 16) & 0xFFFF;
-//             // 確定イベント
-//             if (keycode == KeyEvent::VKEY_ENTER) {
-//                 getParent()->processEvent(&this->textEvent);
-//                 //Component::dispatchEvent(&textEvent);
-//                 // １文字削除
-//             } else if (keycode == KeyEvent::VKEY_BACKSPACE) {
-//                 //text[strlen(text) - 1] = 0;
-// //                _imeManager->deleteCharacter(text);
-//                 repaint();
-//                 // １文字挿入
-//             } else {
-//                 insertCharacter((char)(keycode & 0xFF));
-//                 repaint();
-// //                _imeManager->insertCharacter(text, (char)(keycode & 0xFF));
-//             }
-//             // 確定イベント
-//         } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
-//             const char* s = _imeManager->getFixedString();
-//             int len = strlen(s);
-//             logprintf("fixed len=%d %s %s:%d\n", len, __func__, __FILE__, __LINE__);
-//             for (int i = 0; i < len; i++) {
-//                 logprintf("[%x]", s[i]);
-//             }
-//             repaint();
-//             // キー押下
-//         } else if (event->getType() == Event::KEY_PRESSED) {
-//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//             // IMEマネージャに丸投げ
-//             _imeManager->processEvent(event);
-//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-// //            Component::dispatchEvent(event);
-//     if (getParent()) {
-//             getParent()->processEvent(&this->textEvent);
-//     }
-//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//             // フォーカス状態変更
-//         } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
-//     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-// //            if (firstpaint == true) {
-//                 repaint();
-//                 getParent()->processEvent(&this->focusEvent);
-// //            }
-//         }
-
-
-        // キー押下
-        if (event->getType() == KeyEvent::KEY_PRESSED) {
+        case KeyEvent::KEY_PRESSED:
+        {
             processKeyEvent((KeyEvent*)event);
-        // フォーカス状態変更
-        } else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
+            break;
+        }
+        case Event::FOCUS_IN:
+        case Event::FOCUS_OUT:
+        {
             repaint();
             getParent()->processEvent(&this->focusEvent);
+            break;
+        }
         }
     }
-}
 
-void TextField::backspace()
-{
-    if(cursor_ > 0){
-        deleteCharacter();
-        repaint();
-    }
-}
-
-void TextField::processKeyEvent(KeyEvent* event)
-{
-    int keycode = event->getKeycode();
-    int modifiers = event->getModifiers();
-
-    // Toggle IME ON/OFF
-    if (keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) {
-        _imeManager->processEvent(event);
-        return;
-    }
-
-    if (isImeOn()) {
-        _imeManager->processEvent(event);
-        return;
-    }
-
-    switch(keycode) {
-    case  KeyEvent::VKEY_BACKSPACE:
-    backspace();
-    break;
-    case KeyEvent::VKEY_LEFT:
-        if (cursorLeft()) {
+    void TextField::backspace()
+    {
+        if(cursor_ > 0){
+            deleteCharacter();
             repaint();
         }
-        break;
-    case KeyEvent::VKEY_RIGHT:
-        if (cursorRight()) {
-            repaint();
+    }
+
+    void TextField::processKeyEvent(KeyEvent* event)
+    {
+        int keycode = event->getKeycode();
+        int modifiers = event->getModifiers();
+
+        // Toggle IME ON/OFF
+        if (keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) {
+            _imeManager->processEvent(event);
+            return;
         }
-        break;
-    // case KeyEvent::VKEY_ENTER:
-    //     if (getParent()) {
-    //         getParent()->processEvent(&this->textEvent);
-    //     }
-    //     break;
-    default:
-        ASSERT(keycode < 128);
-        insertCharacter(keycode);
-        repaint();
-        break;
+
+        if (isImeOn()) {
+            _imeManager->processEvent(event);
+            return;
+        }
+
+        switch(keycode) {
+        case  KeyEvent::VKEY_BACKSPACE:
+            backspace();
+            break;
+        case KeyEvent::VKEY_LEFT:
+            if (cursorLeft()) {
+                repaint();
+            }
+            break;
+        case KeyEvent::VKEY_RIGHT:
+            if (cursorRight()) {
+                repaint();
+            }
+            break;
+            // case KeyEvent::VKEY_ENTER:
+            //     if (getParent()) {
+            //         getParent()->processEvent(&this->textEvent);
+            //     }
+            //     break;
+        default:
+            ASSERT(keycode < 128);
+            insertCharacter(keycode);
+            repaint();
+            break;
+        }
     }
 }
