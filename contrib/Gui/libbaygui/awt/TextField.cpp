@@ -65,7 +65,6 @@ namespace baygui {
             text_ += c;
             text_ += rest;
         }
-        logprintf("insertCharacter %d result = %s", c, (const char*)text_);
         cursor_++;
     }
 
@@ -74,16 +73,10 @@ namespace baygui {
         ASSERT(cursor_ > 0);
         // cursor is at tail.
         if (text_.length() == cursor_) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             text_ = text_.substring(0, text_.length() - 1);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            logprintf("<%s>", (const char*)text_);
         } else {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             String head = text_.substring(0, cursor_ - 1);
             String rest = text_.substring(cursor_, text_.length() - cursor_);
-            logprintf("<%s>", (const char*)head);
-            logprintf("<%s>", (const char*)rest);
             text_ = head;
             text_ += rest;
         }
@@ -168,14 +161,12 @@ namespace baygui {
 
     void TextField::processEvent(Event* event)
     {
-        logprintf("TextField::processEvent this=%x parent=%x\n", this, getParent());
         // 非活性の時はイベントを受け付けない
         if (getEnabled() == false) return;
 
         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
             int keycode = (event->getType() >> 16) & 0xFFFF;
 //            insertCharacter((char)(keycode & 0xFF));
-            logprintf("accum = <%d>", (keycode & 0xFF));
             accumulateUtf8(((char)(keycode & 0xFF)));
             return;
         } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
