@@ -161,25 +161,31 @@ namespace baygui {
 
     void TextField::processEvent(Event* event)
     {
-        // 非活性の時はイベントを受け付けない
-        if (getEnabled() == false) return;
-
-        if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
+        if (!getEnabled()) {
+            return;
+        }
+        switch (event->getType() & 0xFFFF) {
+        case Event::IME_CHAR:
+        {
             int keycode = (event->getType() >> 16) & 0xFFFF;
-//            insertCharacter((char)(keycode & 0xFF));
             accumulateUtf8(((char)(keycode & 0xFF)));
             return;
-        } else if (event->getType() == Event::IME_ENDCOMPOSITION) {
+        }
+        case Event::IME_ENDCOMPOSITION:
+        {
             String& stringFromIme = getAccumulateUtf8();
             cursor_ += stringFromIme.length();
             insertStringTail(stringFromIme);
             clearAccumulateUtf8();
             repaint();
             return;
-        } else if (event->getType() == Event::IME_BACKSPACE) {
-    backspace();
-}
-
+        }
+        case Event::IME_BACKSPACE:
+        {
+            backspace();
+            return;
+        }
+        }
 //         // １文字イベント
 //         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
 //             int keycode = (event->getType() >> 16) & 0xFFFF;
