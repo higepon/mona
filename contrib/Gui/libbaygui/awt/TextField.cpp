@@ -186,13 +186,8 @@ namespace baygui {
             repaint();
             return;
         } else if (event->getType() == Event::IME_BACKSPACE) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            if (cursor_ > 0) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                deleteCharacter();
-                repaint();
-            }
-        }
+    backspace();
+}
 
 //         // １文字イベント
 //         if ((event->getType() & 0xFFFF) == Event::IME_CHAR) {
@@ -253,6 +248,14 @@ namespace baygui {
     }
 }
 
+void TextField::backspace()
+{
+    if(cursor_ > 0){
+        deleteCharacter();
+        repaint();
+    }
+}
+
 void TextField::processKeyEvent(KeyEvent* event)
 {
     int keycode = event->getKeycode();
@@ -271,11 +274,8 @@ void TextField::processKeyEvent(KeyEvent* event)
 
     switch(keycode) {
     case  KeyEvent::VKEY_BACKSPACE:
-        if (cursor_ > 0) {
-            deleteCharacter();
-            repaint();
-        }
-        break;
+    backspace();
+    break;
     case KeyEvent::VKEY_LEFT:
         if (cursorLeft()) {
             repaint();

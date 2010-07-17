@@ -55,12 +55,13 @@ namespace baygui {
 
         virtual void processKeyEvent(KeyEvent* event);
 
+        void backspace();
         virtual void accumulateUtf8(char c)
         {
             accumUtf8_ += c;
         }
 
-        virtual String& getAccumulateUtf8()
+        virtual String & getAccumulateUtf8()
         {
             return accumUtf8_;
         }
@@ -70,38 +71,34 @@ namespace baygui {
             accumUtf8_ = "";
         }
 
-
     public: /* public for testability */
         /** 1文字挿入する */
         virtual void insertCharacter(char c);
-        virtual void insertStringTail(const String& c);
-
+        virtual void insertStringTail(const String & c);
         /** 一文字削除する */
         virtual void deleteCharacter();
-
         virtual bool cursorLeft();
-
         virtual bool cursorRight();
-
-        virtual int getCursor() const { return cursor_; }
+        virtual int getCursor() const
+        {
+            return cursor_;
+        }
 
     public:
         /** コンストラクタ */
         TextField();
-
         /** デストラクタ */
         virtual ~TextField();
-
         virtual bool isImeOn() const;
-
         /**
          テキストを設定する
          @param text
          */
-        virtual void setText(const String& text);
-
+        virtual void setText(const String & text);
         /** テキストを得る */
-        inline const char* getText() { return (const char*)text_; }
+        inline const char *getText()
+        {
+            return (const char*)(text_); }
 
         /** 描画ハンドラ */
         virtual void paint(Graphics* g);
