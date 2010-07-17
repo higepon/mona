@@ -185,6 +185,13 @@ namespace baygui {
             clearAccumulateUtf8();
             repaint();
             return;
+        } else if (event->getType() == Event::IME_BACKSPACE) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            if (cursor_ > 0) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                deleteCharacter();
+                repaint();
+            }
         }
 
 //         // １文字イベント

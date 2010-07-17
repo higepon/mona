@@ -286,9 +286,9 @@ void ImeManager::processEvent(Event *event)
                     repaint();
                 // 親部品の確定文字列を削除
                 } else {
-//                     // バックスペース送信
-//                     _imeEvent->setType(Event::IME_CHAR | (KeyEvent::VKEY_BACKSPACE << 16));
-//                     parent->dispatchEvent(_imeEvent);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                    _imeEvent->setType(Event::IME_BACKSPACE);
+                    parent->dispatchEvent(_imeEvent);
                 }
             }
         // 変換

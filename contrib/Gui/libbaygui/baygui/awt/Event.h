@@ -80,6 +80,7 @@ namespace baygui {
         static const int IME_CHAR         = 402;
         /** 文字を確定した */
         static const int IME_ENDCOMPOSITION = 403;
+        static const int IME_BACKSPACE = 404;
 
     private:
         /** イベントタイプ */

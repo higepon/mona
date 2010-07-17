@@ -205,6 +205,25 @@ static void test_TextField_backspace_ime_on()
     destroyTextField(t);
 }
 
+static void test_TextField_backspace_empty_ime_on()
+{
+    TextField* t = createTextField();
+    keyPress(t, 'a');
+    keyPress(t, 'b');
+    toggleIme(t);
+    keyPress(t, 'a');
+
+    keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_EQ(2, t->getCursor());
+    EXPECT_STR_EQ("ab", t->getText());
+
+    // When ime buffer is empty, backspace goes to Textfield
+    keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    EXPECT_EQ(1, t->getCursor());
+    EXPECT_STR_EQ("a", t->getText());
+    destroyTextField(t);
+}
+
 static void test_TextField_ime_convert()
 {
     TextField* t = createTextField();
@@ -247,6 +266,8 @@ int main(int argc, char* argv[])
     test_TextField_ime_off();
     test_TextField_ime_on();
     test_TextField_backspace_ime_on();
+    test_TextField_backspace_empty_ime_on();
+
     test_TextField_ime_convert();
     test_TextField_remove_multi_byte_backspace();
 
