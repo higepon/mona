@@ -229,17 +229,13 @@ namespace gnote {
             if (c == '\n') {
                 break;
             }
-            if (i + 1 < wx) {
+            if (i + 1 >= wx) {
                 break;
             }
             if (c == '\t') {
                 clen += (4 - (clen - 1) % 4);
             } else {
-                if (c < 128 || 0xff60 < c) {
-                    clen++;
-                } else {
-                    clen+=2;
-                }
+                clen++;
             }
 
         }
