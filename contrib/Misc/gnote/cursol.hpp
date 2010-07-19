@@ -30,14 +30,14 @@
 #define __GNOTE_CURSOL_HPP__
 
 namespace gnote {
-	class Cursol {
-	public:
-		int top, left, wx, wy;
-		int rx, ry;
-		bool visible;
-		bool range;
-		Cursol() : top(1), left(1), wx(1), wy(1), rx(1), ry(1), visible(true), range(false){}
-	};
+    class Cursol {
+    public:
+        int top, left, wx, wy;
+        int rx, ry;
+        bool visible;
+        bool range;
+        Cursol() : top(1), left(1), wx(1), wy(1), rx(1), ry(1), visible(true), range(false){}
+    };
 }
 
 #endif

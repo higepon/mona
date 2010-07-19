@@ -32,36 +32,36 @@
 #include "baygui.h"
 
 namespace gnote {
-	class Document {
-	protected:
-		// Vector‚æ‚èList‚Ì•û‚ª‚¢‚¢‚æ‚Ëc
-		Vector* line;
-	public:
-		Document();
-		~Document();
-		Document(const Document& d);
-		Document& operator=(const Document& d);
-		String* GetLine(int y) const;
-		String GetSubLine(int y, int x, int l = 0) const;
-		Document GetSubDocument(int by, int bx, int ey, int ex) const;
-		int GetMaxLineNumber() const;
-		int GetLength() const;
-		bool Delete(int y);
-		bool Delete(int y, int x);
-		bool Delete(int y, int x, int l);
-		bool Delete(int by, int bx, int ey, int ex);
-		bool Insert(char c, int y, int x);
-		bool Insert(const String& s, int y, int x);
-		bool Insert(const Document& d, int y, int x);
-		bool Append(char c);
-		bool Append(const String& s);
-		void inline Clear() const { line->removeAll(); };
-	protected:
-		bool InsertEmptyLine(int y);
-		bool DeleteChar(String& s, int x, int l = 1);
-		bool InsertChar(String& s, char c, int x);
-		bool InsertString(String& s, const String& t, int x);
-	};
+    class Document {
+    protected:
+        // Vector‚æ‚èList‚Ì•û‚ª‚¢‚¢‚æ‚Ëc
+        Vector* line;
+    public:
+        Document();
+        ~Document();
+        Document(const Document& d);
+        Document& operator=(const Document& d);
+        String* GetLine(int y) const;
+        String GetSubLine(int y, int x, int l = 0) const;
+        Document GetSubDocument(int by, int bx, int ey, int ex) const;
+        int GetMaxLineNumber() const;
+        int GetLength() const;
+        bool Delete(int y);
+        bool Delete(int y, int x);
+        bool Delete(int y, int x, int l);
+        bool Delete(int by, int bx, int ey, int ex);
+        bool Insert(char c, int y, int x);
+        bool Insert(const String& s, int y, int x);
+        bool Insert(const Document& d, int y, int x);
+        bool Append(char c);
+        bool Append(const String& s);
+        void inline Clear() const { line->removeAll(); };
+    protected:
+        bool InsertEmptyLine(int y);
+        bool DeleteChar(String& s, int x, int l = 1);
+        bool InsertChar(String& s, char c, int x);
+        bool InsertString(String& s, const String& t, int x);
+    };
 }
 
 #endif

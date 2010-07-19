@@ -41,22 +41,22 @@
 using namespace trash;
 
 namespace gnote {
-	class Controller : public TEventListener {
-	public:
-		enum {
-			TIMER_INTERVAL = 10,
-			BLINK_TIMER_INTERVAL = 500
-		};
-	protected:
-		RootWindow window;
-		Document document;
-		Cursol cursol;
-		Document clip;
-		int keyCode;
-		int keyModifiers;
-		int counter;
-		String file;
-		KeyEvent prevKeyEvent;
+    class Controller : public TEventListener {
+    public:
+        enum {
+            TIMER_INTERVAL = 10,
+            BLINK_TIMER_INTERVAL = 500
+        };
+    protected:
+        RootWindow window;
+        Document document;
+        Cursol cursol;
+        Document clip;
+        int keyCode;
+        int keyModifiers;
+        int counter;
+        String file;
+        KeyEvent prevKeyEvent;
         String accumUtf8_;
         virtual void accumulateUtf8(char c)
         {
@@ -73,46 +73,46 @@ namespace gnote {
             accumUtf8_ = "";
         }
 
-	public:
-		Controller();
-		virtual ~Controller() {}
-		inline void SetFile(const String& file) { this->file = file; }
-		void Run();
-		void Exit();
-		String ToCanvasString(const String& s);
-		String ToCanvasString(const Document& d, int wy);
-		virtual void ProcessEvent(Event* event);
-		virtual void ProcessActionEvent(TActionEvent* event);
-		virtual void ProcessTimerEvent(TimerEvent* event);
-		virtual void ProcessKeyPressedEvent(KeyEvent* event);
-		virtual void processEvent(Event* event) { ProcessEvent(event); }
-	protected:
-		bool ReadFile(const String& f, Document& d);
-		bool WriteFile(const String& f, const Document& d);
-		int ToCanvasY(int wy, int t = 1);
-		int ToCanvasX(int wy, int wx, int l = 1);
-		int ToWorldX(int wy, int cx, int l = 1);
-		void SetCursolRange(Cursol& c, int modifiers);
-		bool Go(Cursol& c, const Document& d, int y, int x);
-		bool GoRight(Cursol& c, const Document& d, int l = 1);
-		bool GoLeft(Cursol& c, const Document& d, int l = 1);
-		bool GoUp(Cursol& c, const Document& d, int l = 1);
-		bool GoDown(Cursol& c, const Document& d, int l = 1);
-		bool GoHome(Cursol& c, const Document& d);
-		bool GoEnd(Cursol& c, const Document& d);
-		bool GoHead(Cursol& c, const Document& d);
-		bool GoTail(Cursol& c, const Document& d);
-		bool PageDown(Cursol& c, const Document& d);
-		bool PageUp(Cursol& c, const Document& d);
-		bool Delete(Cursol& c, Document& d);
-		bool BackSpace(Cursol& c, Document& d);
-		bool Copy(Cursol& c, const Document& d, Document& cl);
-		bool Cut(Cursol& c, Document& d, Document& cl);
-		bool Paste(Cursol& c, Document& d, const Document& cl);
-		bool New(Cursol& c, Document& d);
-		bool isPrefixCtrlX();
-		void SelectAll();
-	};
+    public:
+        Controller();
+        virtual ~Controller() {}
+        inline void SetFile(const String& file) { this->file = file; }
+        void Run();
+        void Exit();
+        String ToCanvasString(const String& s);
+        String ToCanvasString(const Document& d, int wy);
+        virtual void ProcessEvent(Event* event);
+        virtual void ProcessActionEvent(TActionEvent* event);
+        virtual void ProcessTimerEvent(TimerEvent* event);
+        virtual void ProcessKeyPressedEvent(KeyEvent* event);
+        virtual void processEvent(Event* event) { ProcessEvent(event); }
+    protected:
+        bool ReadFile(const String& f, Document& d);
+        bool WriteFile(const String& f, const Document& d);
+        int ToCanvasY(int wy, int t = 1);
+        int ToCanvasX(int wy, int wx, int l = 1);
+        int ToWorldX(int wy, int cx, int l = 1);
+        void SetCursolRange(Cursol& c, int modifiers);
+        bool Go(Cursol& c, const Document& d, int y, int x);
+        bool GoRight(Cursol& c, const Document& d, int l = 1);
+        bool GoLeft(Cursol& c, const Document& d, int l = 1);
+        bool GoUp(Cursol& c, const Document& d, int l = 1);
+        bool GoDown(Cursol& c, const Document& d, int l = 1);
+        bool GoHome(Cursol& c, const Document& d);
+        bool GoEnd(Cursol& c, const Document& d);
+        bool GoHead(Cursol& c, const Document& d);
+        bool GoTail(Cursol& c, const Document& d);
+        bool PageDown(Cursol& c, const Document& d);
+        bool PageUp(Cursol& c, const Document& d);
+        bool Delete(Cursol& c, Document& d);
+        bool BackSpace(Cursol& c, Document& d);
+        bool Copy(Cursol& c, const Document& d, Document& cl);
+        bool Cut(Cursol& c, Document& d, Document& cl);
+        bool Paste(Cursol& c, Document& d, const Document& cl);
+        bool New(Cursol& c, Document& d);
+        bool isPrefixCtrlX();
+        void SelectAll();
+    };
 
 }
 

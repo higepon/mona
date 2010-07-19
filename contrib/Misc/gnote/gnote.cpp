@@ -36,10 +36,10 @@ int main(int argc, char* argv[]) {
     if (ret != M_OK) {
         _printf("syscall_stack_trace_enable failed%d\n", ret);
     }
-	gnote::Controller c;
-	if (argc > 1) {
-		c.SetFile(String(argv[1]));
-	}
-	c.Run();
-	return 0;
+    gnote::Controller c;
+    if (argc > 1) {
+        c.SetFile(String(argv[1]));
+    }
+    c.Run();
+    return 0;
 }

@@ -40,23 +40,23 @@
 using namespace trash;
 
 namespace gnote {
-	class RootWindow : public Frame {
-	protected:
-		TEventListener* listener;
-		Canvas* canvas;
-		TMenuBar* menuBar;
-		TPopupMenu* popupMenu;
-	public:
-		RootWindow();
-		virtual ~RootWindow();
-		void SetEventListener(TEventListener* l);
-		inline void SetDocument(Document* d) { canvas->SetDocument(d); }
-		inline Canvas* GetCanvas() { return canvas; }
-		void ShowPopupMenu(TPopupMenu* menu);
-		void HidePopupMenu();
-		inline bool IsPopuped() { return popupMenu != 0; }
-		void processEvent(Event* event);
-	};
+    class RootWindow : public Frame {
+    protected:
+        TEventListener* listener;
+        Canvas* canvas;
+        TMenuBar* menuBar;
+        TPopupMenu* popupMenu;
+    public:
+        RootWindow();
+        virtual ~RootWindow();
+        void SetEventListener(TEventListener* l);
+        inline void SetDocument(Document* d) { canvas->SetDocument(d); }
+        inline Canvas* GetCanvas() { return canvas; }
+        void ShowPopupMenu(TPopupMenu* menu);
+        void HidePopupMenu();
+        inline bool IsPopuped() { return popupMenu != 0; }
+        void processEvent(Event* event);
+    };
 }
 
 #endif
