@@ -69,6 +69,7 @@ namespace baygui {
 
 	void Container::add(Component* component)
 	{
+        logprintf("container add %x to list=%x\n", component, &componentList);
 		component->setParent(this);
 		component->addNotify();
 		this->componentList.add(component);
@@ -154,19 +155,43 @@ namespace baygui {
 
 	void Container::repaint()
 	{
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
                 logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (getBuffer() == NULL) return;
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		paint(getGraphics());
+
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
                 logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		// 自分の領域を更新する
 		update();
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
                 logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		// 子部品を再描画する
 		int I = this->componentList.size();
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		for(int i = 0; i < I; i++) {
-			Component* component = (Component *)this->componentList.get(i);
+            logprintf("i=%d I=%d %s %s:%d\n", i, I, __func__, __FILE__, __LINE__);
+			Component* component = (Component *)(componentList.get(i));
+            logprintf("%s %s:%d component=%x from %x\n", __func__, __FILE__, __LINE__, component, &componentList);
 			component->repaint();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		}
                 logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	}

@@ -35,16 +35,33 @@ namespace gnote {
 		int ch;
 		//
 		canvas = new Canvas();
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
 		canvas->setBounds(
 			0, 20,
 			cw = canvas->GetGridWidth() * (Canvas::MAX_CANVASX + 5),
 			ch = canvas->GetGridHeight() * (Canvas::MAX_CANVASY + 1));
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
 		add(canvas);
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
+
 
 		//
 		menuBar = new TMenuBar();
 		menuBar->setBounds(0, 0, cw, 20);
 		add(menuBar);
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
 
 		//ファイルメニュー
 		TMenuItem* item;
@@ -61,6 +78,10 @@ namespace gnote {
 		menu->add(item = new TMenuItem("Quit"));
 		item->setActionCommand("FILE_QUIT");
 		menuBar->add(menu);
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
 
 		//編集メニュー
 		menuBar->add(menu = new TMenu("Edit"));
@@ -107,15 +128,30 @@ namespace gnote {
 	//
 	void RootWindow::SetEventListener(TEventListener* l) {
 		listener = l;
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
+
 		if (canvas) {
 			canvas->SetEventListener(l);
 		}
 		if (menuBar) {
 			menuBar->setEventListener(l);
 		}
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
+
 	}
 	//
 	void RootWindow::processEvent(Event* event) {
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
+
 		if (IsPopuped()) {
 			switch (event->getType()) {
 				case MouseEvent::MOUSE_PRESSED:
@@ -133,6 +169,11 @@ namespace gnote {
 		if (listener) {
 			listener->processEvent(event);
 		}
+    if (canvas->componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", canvas->componentList.get(0), &canvas->componentList, __func__, __FILE__, __LINE__);
+    }
+
+
 	}
 	//
 	void RootWindow::HidePopupMenu() {

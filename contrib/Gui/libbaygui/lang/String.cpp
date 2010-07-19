@@ -362,14 +362,22 @@ namespace baygui
 	{
         logprintf("substring start=%d length=%d length=<%d>", start, length, this->length());
 		if (start < 0 || this->_len <= start || length < 1) return NULL;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         String ret;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (int i = 0; i < length; i++) {
+
             uint8_t buf[4];
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             int len = ucs4ToUtf8(charAt(i + start), buf);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             for (int j = 0; j < len; j++) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 ret += buf[j];
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             }
         }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
 		// int len = this->_len - start;
 		// if (length > len) length = len;

@@ -29,7 +29,7 @@ namespace baygui {
 	 コンテナークラス
 	*/
 	class Container : public Component {
-	private:
+	public:
 		/** 部品一覧 */
 		Vector componentList;
 

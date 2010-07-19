@@ -127,35 +127,55 @@ namespace gnote {
 	// too bad :-)
 	bool Document::Insert(char c, int y, int x) {
 		if (y < 1 || y > line->size() + 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return false;
 		}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		String* s = 0;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (y == line->size() + 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if (x != 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return false;
 			}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if (y == 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				line->add(s = new String(""));
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			} else {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				String* t = GetLine(y - 1);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				if (t->charAt(t->length() - 1) != '\n') {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					return false;
 				}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				line->add(s = new String(""));
 			}
 		} else {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			s = GetLine(y);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		}
 		if (c == '\n' && s->length() >= x) {
 			if (InsertEmptyLine(y + 1)) {
 				return false;
 			}
 			String* tmp = GetLine(y + 1);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			*tmp = s->substring(x - 1, s->length() - x + 1);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			*s = s->substring(0, x - 1);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			*s += '\n';
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		} else {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if (!InsertChar(*s, c, x)) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return false;
 			}
 		}
@@ -175,13 +195,19 @@ namespace gnote {
 	}
 	// too bad :-)
 	bool Document::Insert(const Document& d, int y, int x) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (y < 1 || y > line->size() + 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return false;
 		}
 		for (int ii = d.GetMaxLineNumber(); ii > 0; ii--) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			String* s = d.GetLine(ii);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			for (int jj = s->length(); jj > 0; jj--) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				if (!Insert(s->charAt(jj - 1), y, x)) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					return false;
 				}
 			}
@@ -193,22 +219,34 @@ namespace gnote {
 		if (y < 1 || y > line->size() + 1) {
 			return false;
 		}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		String* t = 0;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (y == line->size() + 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			if (x != 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return false;
 			}
 			if (y == 1) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				line->add(t = new String(""));
 			} else {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				String* u = GetLine(y - 1);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				if (u->charAt(u->length() - 1) != '\n') {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					return false;
 				}
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				line->add(t = new String(""));
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			}
 		} else {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			t = GetLine(y);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		}
 		return InsertString(*t, s, x);
 	}

@@ -33,11 +33,14 @@
 #include "trash/teventlistener.hpp"
 #include "document.hpp"
 #include "cursol.hpp"
+#include <monapi/CString.h>
+#include "baygui/awt/ImeManager.h"
+
 
 using namespace trash;
 
 namespace gnote {
-	class Canvas : public Component {
+	class Canvas : public Container {
 	public:
 		enum {
 			MAX_CANVASX = 50,
@@ -50,6 +53,8 @@ namespace gnote {
 		Cursol* cursol;
 		int gridWidth;
 		int gridHeight;
+    public:
+        ImeManager* _imeManager;
 	public:
 		Canvas();
 		virtual ~Canvas() {};

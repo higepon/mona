@@ -48,7 +48,37 @@ namespace gnote {
     }
     //
     void Controller::ProcessEvent(Event* event) {
-        switch(event->getType()) {
+        switch(event->getType() & 0xffff) {
+        case Event::IME_CHAR:
+        {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            int keycode = (event->getType() >> 16) & 0xFFFF;
+            accumulateUtf8(((char)(keycode & 0xFF)));
+            break;
+        }
+        case Event::IME_ENDCOMPOSITION:
+        {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            String& stringFromIme = getAccumulateUtf8();
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            if (document.Insert(stringFromIme, cursol.wy, cursol.wx)) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            GoRight(cursol, document, stringFromIme.length());
+                cursol.visible = true;
+                window.GetCanvas()->repaint();
+            }
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            clearAccumulateUtf8();
+            break;
+        }
+        case Event::IME_BACKSPACE:
+        {
+            if (BackSpace(cursol, document)) {
+                cursol.visible = true;
+                window.GetCanvas()->repaint();
+            }
+            break;
+        }
             case Event::TIMER:
                 ProcessTimerEvent(reinterpret_cast<TimerEvent*>(event));
                 break;
@@ -201,6 +231,20 @@ namespace gnote {
     void Controller::ProcessKeyPressedEvent(KeyEvent* event) {
         int code = event->getKeycode();
         bool done = false;
+
+                // Toggle IME ON/OFF
+        if (code == '\\' && event->getModifiers() == KeyEvent::VKEY_CTRL) {
+            window.GetCanvas()->_imeManager->processEvent(event);
+            return;
+        }
+
+        if (window.GetCanvas()->_imeManager->isOn()) {
+            window.GetCanvas()->_imeManager->processEvent(event);
+            return;
+        }
+
+
+
         switch(event->getModifiers()) {
             case KeyEvent::VKEY_LSHIFT:
             case KeyEvent::VKEY_RSHIFT:
@@ -694,11 +738,27 @@ namespace gnote {
         }
         //
         window.SetEventListener(this);
+
         window.SetDocument(&document);
+        // if (window.GetCanvas()->componentList.size() > 0) {
+        //     logprintf("[XXX] component = %x list=%x %s %s:%d\n", window.GetCanvas()->componentList.get(0), &window.GetCanvas()->componentList, __func__, __FILE__, __LINE__);
+        // }
+
         window.GetCanvas()->SetCursol(&cursol);
+        // if (window.GetCanvas()->componentList.size() > 0) {
+        //     logprintf("[XXX] component = %x list=%x %s %s:%d\n", window.GetCanvas()->componentList.get(0), &window.GetCanvas()->componentList, __func__, __FILE__, __LINE__);
+        // }
+
         // 12? 28? :-)
         window.setBounds(10, 10, window.GetCanvas()->getWidth() + 12, window.GetCanvas()->getHeight() + 20 + 28);
+        // if (window.GetCanvas()->componentList.size() > 0) {
+        //     logprintf("[XXX] component = %x list=%x %s %s:%d\n", window.GetCanvas()->componentList.get(0), &window.GetCanvas()->componentList, __func__, __FILE__, __LINE__);
+        // }
         window.setTimer(TIMER_INTERVAL);
+        // if (window.GetCanvas()->componentList.size() > 0) {
+        //     logprintf("[XXX] component = %x list=%x %s %s:%d\n", window.GetCanvas()->componentList.get(0), &window.GetCanvas()->componentList, __func__, __FILE__, __LINE__);
+        // }
+
         window.run();
     }
 

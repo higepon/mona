@@ -57,6 +57,22 @@ namespace gnote {
 		int counter;
 		String file;
 		KeyEvent prevKeyEvent;
+        String accumUtf8_;
+        virtual void accumulateUtf8(char c)
+        {
+            accumUtf8_ += c;
+        }
+
+        virtual String & getAccumulateUtf8()
+        {
+            return accumUtf8_;
+        }
+
+        virtual void clearAccumulateUtf8()
+        {
+            accumUtf8_ = "";
+        }
+
 	public:
 		Controller();
 		virtual ~Controller() {}

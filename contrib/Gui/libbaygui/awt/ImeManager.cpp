@@ -43,6 +43,7 @@ static void xstrncpy(char *dst, char *src, int len)
 /** コンストラクタ */
 ImeManager::ImeManager() : isOn_(false)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     clearBuffer(inputBuffer);
     clearBuffer(translateBuffer);
     _imeEvent = new Event(Event::Event::IME_SETCONTEXT, this);
@@ -50,6 +51,7 @@ ImeManager::ImeManager() : isOn_(false)
     kanjiListPtr = -1;
     // TODO:To resized with setBounds by parent, we need enoug w x h for graphic buffer.
     setBounds(0, 0, 100, 100);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 /** デストラクタ */
@@ -61,12 +63,14 @@ ImeManager::~ImeManager()
 /** 指定したバッファーをクリアする */
 void ImeManager::clearBuffer(char *buffer)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     memset(buffer, 0, MAX_TEXT_LEN);
 }
 
 /** 指定したバッファーに文字を追加する */
 void ImeManager::insertCharacter(char *buffer, char c)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (strlen(buffer) >= MAX_TEXT_LEN - 1) return;
     buffer[strlen(buffer)] = c;
 }
@@ -74,6 +78,7 @@ void ImeManager::insertCharacter(char *buffer, char c)
 /** 指定したバッファーに文字列を追加する */
 void ImeManager::insertString(char *buffer, const char *str)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int len = strlen(buffer);
     for(int i = len; i < len + (int)strlen(str); i++) {
         if (i >= MAX_TEXT_LEN - 1) return;
@@ -87,6 +92,7 @@ void ImeManager::insertString(char *buffer, const char *str)
  */
 int ImeManager::deleteCharacter(char *buffer)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int len = strlen(buffer);
 
     // NULLチェック
@@ -113,12 +119,14 @@ int ImeManager::deleteCharacter(char *buffer)
 /** かな→漢字変換 */
 bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // NULLチェック
     if (imesvrID == THREAD_UNKNOWN) return false;
 
     MessageInfo info;
     //printf("ImeManager: connected %s\n", IMESERVER_NAME);
     MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANJI, 0, 0, 0, str);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (info.arg2 > 0) {
         bool flag = true;
         while (flag) {
@@ -130,7 +138,9 @@ bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
                     break;
                 case MSG_IMESERVER_KANJI:
                     //printf("%d: %s\n", info.arg2, info.str);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     MonAPI::Message::reply(&info);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     result->add(info.str);
                     break;
                 case MSG_IMESERVER_ENDKANJI:
@@ -155,6 +165,7 @@ bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
  */
 bool ImeManager::getKana(char *str, char *result)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // NULLチェック
     if (imesvrID == THREAD_UNKNOWN) return false;
 
@@ -172,12 +183,14 @@ bool ImeManager::getKana(char *str, char *result)
 
 /** 親部品登録 */
 void ImeManager::setParent(Component *parent) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     this->parent = parent;
 }
 
 /** 漢字リストをクリアする */
 void ImeManager::clearKanjiList()
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 漢字リスト初期化
     kanjiListPtr = -1;
     int I = kanjiList.size();
@@ -189,6 +202,7 @@ void ImeManager::clearKanjiList()
 /** すべての内部バッファーをクリアする */
 void ImeManager::clearBuffer()
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     clearBuffer(inputBuffer);
     clearBuffer(translateBuffer);
 }
@@ -196,9 +210,10 @@ void ImeManager::clearBuffer()
 /** 再描画 */
 void ImeManager::paint(Graphics* g)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int fw1 = 0, fw2 = 0;
     int fh  = getFontMetrics()->getHeight(" ");
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g->setColor(255, 255, 255);
     g->fillRect(0, 0, getWidth(), getHeight());
     // 塗りつぶし

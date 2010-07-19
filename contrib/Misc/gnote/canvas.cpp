@@ -35,24 +35,63 @@ namespace gnote {
 	const String Canvas::ruler
 		= String("0---------1---------2---------3---------4---------5---------6---------7---------8---------9---------0---------1---------2---------3---------4---------5---------6---------7---------8---------9---------");
 	//
-	Canvas::Canvas() : listener(0), document(0), cursol(0) {
+	Canvas::Canvas() : listener(0), document(0), cursol(0), _imeManager(new ImeManager) {
 		FontMetrics* fm = getFontMetrics();
 		gridWidth = fm->getWidth("0") + 2;
 		gridHeight = fm->getHeight("0") + 2;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        _imeManager->setParent(this);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        add(_imeManager);
+        _imeManager->setBounds(100, 100, 100, 100);
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	}
 	//
 	void Canvas::processEvent(Event* event) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		Container* c = getParent();
 		if (c) {
-//			c->processEvent(event);
+            switch (event->getType() & 0xffff) {
+            case Event::IME_CHAR:
+            case Event::IME_ENDCOMPOSITION:
+            case Event::IME_BACKSPACE:
+                c->processEvent(event);
+                break;
+            default:
+                break;
+            }
 		}
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 	}
 	// :-)
 	void Canvas::repaintAt(int cy, int l) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		repaint();
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 	}
 	//
 	void Canvas::paint(Graphics* g) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		//
 		g->setColor(Color::white);
 		g->fillRect(0, 0, getWidth(), getHeight());
@@ -71,9 +110,17 @@ namespace gnote {
 				DrawCaret(g, *cursol);
 			}
 		}
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 	}
 	//
 	void Canvas::DrawRuler(Graphics* g, const Document& d, const Cursol& c) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		//
 		g->setColor(Color::lightGray);
 		g->fillRect((ToCanvasX(d, c.wy, c.wx, c.left) + 4) * gridWidth, 0, gridWidth, gridHeight - 1);
@@ -81,6 +128,10 @@ namespace gnote {
 		g->setColor(Color::blue);
 		g->setFontStyle(Font::FIXED);
 		g->drawString(ruler.substring((c.left - 1) % 100, Canvas::MAX_CANVASX), 5 * gridWidth, 0);
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 	}
 	//
 	void Canvas::DrawBr(Graphics* g, int cy, int cx) {
@@ -97,6 +148,10 @@ namespace gnote {
 	}
 	//
 	void Canvas::DrawDocument(Graphics* g, const Document& d, const Cursol& c) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		g->setFontStyle(Font::FIXED);
 		for (int ii = 1; ii <= Canvas::MAX_CANVASY && c.top + ii - 1 <= d.GetMaxLineNumber(); ii++) {
 			String* s = d.GetLine(c.top + ii - 1);
@@ -120,9 +175,17 @@ namespace gnote {
 				}
 			}
 		}
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 	}
 	//
 	void Canvas::DrawRange(Graphics* g, const Document& d, const Cursol& c) {
+    if (componentList.size() > 0) {
+        logprintf("[XXX] component = %x list=%x %s %s:%d\n", componentList.get(0), &componentList, __func__, __FILE__, __LINE__);
+    }
+
 		g->setColor(Color::lightGray);
 		if (c.rx != c.wx || c.ry != c.wy) {
 			if (c.ry == c.wy) {
