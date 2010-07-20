@@ -66,6 +66,7 @@ namespace baygui {
 		 @param str •¶š—ñi•¡”s‘Î‰j
 		 */
 		int getWidth(const String& str);
+        int getWidthChar(unsigned int ch);
 		
 		/**
 		 •¶š—ñ‚Ì‚‚³‚ğ“¾‚é

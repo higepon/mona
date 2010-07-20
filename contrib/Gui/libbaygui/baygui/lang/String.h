@@ -156,8 +156,7 @@ namespace baygui {
 		/** ‚·‚×‚Ä‚Ì•¶Žš‚ð‘å•¶Žš‚É•ÏŠ·‚·‚é */
 		String toUpperCase() const;
 
-    private:
-        int ucs4ToUtf8(unsigned int u, uint8_t* buf) const;
+        static int ucs4ToUtf8(unsigned int u, uint8_t* buf);
 	};
 }
 

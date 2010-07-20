@@ -393,7 +393,7 @@ namespace baygui
 		return ret;
 	}
 
-    int String::ucs4ToUtf8(unsigned int u, uint8_t* buf) const
+    int String::ucs4ToUtf8(unsigned int u, uint8_t* buf)
     {
         // UTF8-1
         if (u < 0x80) {

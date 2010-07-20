@@ -142,21 +142,28 @@ namespace baygui {
 			if (c == '\n') {
 				break;
 			}
-			if (c <= 0xFFFF) {
-				if ((this->fontStyle & 0x100) == Font::FIXED) {
-					if (c < 128 || 0xff60 < c) {
-						w += 8;
-					} else {
-						w += 12;
-					}
-				} else {
-					w += defaultFontData[offsetList[c] + 4];
-				}
-			}
+            w += getWidthChar(c);
 		}
 		
 		return w;
 	}
+
+    int FontMetrics::getWidthChar(unsigned int c)
+    {
+        if (c <= 0xFFFF) {
+            if ((this->fontStyle & 0x100) == Font::FIXED) {
+                if (c < 128 || 0xff60 < c) {
+                    return 8;
+                } else {
+                    return 12;
+                }
+            } else {
+                return defaultFontData[offsetList[c] + 4];
+            }
+        } else {
+            return 0;
+        }
+    }
 
 	int FontMetrics::getHeight(const String& str)
 	{
