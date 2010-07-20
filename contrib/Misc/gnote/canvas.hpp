@@ -84,6 +84,7 @@ namespace gnote {
         void DrawCaret(Graphics* g, const Cursol& c);
         void DrawDocument(Graphics* g, const Document& d, const Cursol& c);
         void DrawRange(Graphics* g, const Document& d, const Cursol& c);
+    private:
     };
 }
 

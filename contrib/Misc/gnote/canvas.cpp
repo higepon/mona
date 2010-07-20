@@ -213,17 +213,14 @@ namespace gnote {
         }
         return r;
     }
+
     // :-)
     int Canvas::ToCanvasX(const String& s, int wx, int l) {
-        int clen = 1;
-        // const char* p = s.getBytes();
-        // for (int ii = 1; p && *p && *p != '\n' && ii < wx; ii++, p++) {
-        //  if (*p == '\t') {
-        //      clen += (4 - (clen - 1) % 4);
-        //  } else {
-        //      clen++;
-        //  }
-        // }
+//        FontMetrics* fm = getFontMetrics();
+//        const double ASCII_CHAR_WIDTH = fm->getWidth("0");
+//        const double NON_ASCII_CHAR_WIDTH = fm->getWidth("あ");
+
+        double clen = 1.0;
         for (int i = 0; i < s.length(); i++) {
             unsigned int c = s.charAt(i);
             if (c == '\n') {
@@ -233,23 +230,24 @@ namespace gnote {
                 break;
             }
             if (c == '\t') {
-                clen += (4 - (clen - 1) % 4);
+                clen += (4 - ((int)clen - 1) % 4);
             } else {
-                clen++;
+                if ((c < 128 || 0xff60 < c)) {
+                    clen += 1.0;
+                } else {
+                    // N.B.
+                    // Width of non ascii char is one-and-a-half.
+                    clen += 1.5;
+//                    clen += NON_ASCII_CHAR_WIDTH / ASCII_CHAR_WIDTH;
+                }
             }
 
         }
-        // for (int ii = 1; p && *p && *p != '\n' && ii < wx; ii++, p++) {
-        //  if (*p == '\t') {
-        //      clen += (4 - (clen - 1) % 4);
-        //  } else {
-        //      clen++;
-        //  }
-        // }
 
         int result = clen - l + 1;
         return (result < 1) ? 1 : (result > Canvas::MAX_CANVASX) ? Canvas::MAX_CANVASX : result;
     }
+
     // :-)
     int Canvas::ToWorldX(const String& s, int cx, int l) {
         //
