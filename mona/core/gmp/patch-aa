@@ -1,0 +1,79 @@
+diff -ur -x config.log -x config.status -x Makefile -x configure -x '*.o' -x '*.a' -x '*.lo' -x '*.la' -x .libs -x dll_main.cpp -x Makefile.mona -x config.h gmp-4.3.2.orig/gmp.h /home/taro/contrib/Devel/gmp-4.3.2/gmp.h
+--- gmp-4.3.2.orig/gmp.h	2010-07-20 20:34:12.000000000 +0900
++++ ./gmp-4.3.2/gmp.h	2010-07-20 22:33:28.000000000 +0900
+@@ -21,9 +21,11 @@
+ #ifndef __GMP_H__
+ 
+ #if defined (__cplusplus)
++#ifndef MONA
+ #include <iosfwd>   /* for std::istream, std::ostream, std::string */
+ #include <cstdio>
+ #endif
++#endif
+ 
+ 
+ /* Instantiated by configure. */
+@@ -48,7 +50,9 @@
+ 
+ #define __need_size_t  /* tell gcc stddef.h we only want size_t */
+ #if defined (__cplusplus)
++#ifndef MONA
+ #include <cstddef>     /* for size_t */
++#endif
+ #else
+ #include <stddef.h>    /* for size_t */
+ #endif
+@@ -534,9 +538,11 @@
+ 
+ 
+ #if defined (__cplusplus)
++#ifndef MONA
+ extern "C" {
+ using std::FILE;
+ #endif
++#endif
+ 
+ #define mp_set_memory_functions __gmp_set_memory_functions
+ __GMP_DECLSPEC void mp_set_memory_functions __GMP_PROTO ((void *(*) (size_t),
+@@ -2133,8 +2139,10 @@
+ #endif
+ 
+ #if defined (__cplusplus)
++#ifndef MONA
+ }
+ #endif
++#endif
+ 
+ 
+ /* Allow faster testing for negative, zero, and positive.  */
+@@ -2177,6 +2185,7 @@
+ /**************** C++ routines ****************/
+ 
+ #ifdef __cplusplus
++#ifndef MONA
+ __GMP_DECLSPEC_XX std::ostream& operator<< (std::ostream &, mpz_srcptr);
+ __GMP_DECLSPEC_XX std::ostream& operator<< (std::ostream &, mpq_srcptr);
+ __GMP_DECLSPEC_XX std::ostream& operator<< (std::ostream &, mpf_srcptr);
+@@ -2184,6 +2193,7 @@
+ __GMP_DECLSPEC_XX std::istream& operator>> (std::istream &, mpq_ptr);
+ __GMP_DECLSPEC_XX std::istream& operator>> (std::istream &, mpf_ptr);
+ #endif
++#endif
+ 
+ 
+ /* Source-level compatibility with GMP 2 and earlier. */
+diff -ur -x config.log -x config.status -x Makefile -x configure -x '*.o' -x '*.a' -x '*.lo' -x '*.la' -x .libs -x dll_main.cpp -x Makefile.mona -x config.h gmp-4.3.2.orig/invalid.c /home/taro/contrib/Devel/gmp-4.3.2/invalid.c
+--- gmp-4.3.2.orig/invalid.c	2010-01-08 05:09:02.000000000 +0900
++++ ./gmp-4.3.2/invalid.c	2010-07-20 20:33:54.000000000 +0900
+@@ -67,6 +67,11 @@
+ void
+ __gmp_invalid_operation (void)
+ {
++#ifdef MONA
++  _printf("__gmp_invalid_operation");
++  exit(-1);
++#else
+   raise (SIGFPE);
+   abort ();
++#endif
+ }

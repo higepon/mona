@@ -42,7 +42,8 @@ endif
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/gui_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
-#	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
+	cd core/gmp && $(MAKE) && $(MAKE) install
+	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 tests: tools cores
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
@@ -57,7 +58,7 @@ tests: tools cores
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
-
+	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 

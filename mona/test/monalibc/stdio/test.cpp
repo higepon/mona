@@ -2,6 +2,7 @@
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 #include <stdio.h>
+#include <math.h>
 
 #define TEST_TXT "/APPS/TSTDIO.APP/TEST.TXT"
 #define TEST_IMG "/APPS/TSTDIO.APP/TEST.JPG"
@@ -20,6 +21,7 @@ void test_bsearch();
 void test_sprintf();
 void test_fread_offset();
 void test_vsnprintf();
+void test_floor_inf();
 
 int main(int argc, char* argv[])
 {
@@ -43,9 +45,22 @@ int main(int argc, char* argv[])
 
         test_fread_offset();
         test_vsnprintf();
+        test_floor_inf();
         TEST_RESULTS(stdio);
         return 0;
     }
+}
+
+double flonum_zero()
+{
+    return 0.0;
+}
+
+void test_floor_inf()
+{
+    const double inf = 1.0 / flonum_zero();
+    EXPECT_EQ(1, isinf(inf));
+    EXPECT_TRUE(inf == floor(inf));
 }
 
 int test1()
@@ -340,6 +355,8 @@ void test_sprintf()
     char buf[256];
     sprintf(buf, "%.3g", 0.1); // not crash
     sprintf(buf, "%.3g/%.3g", 0.1, 0.1); // not crash
+    sprintf(buf, "%f", 13.9);
+    EXPECT_STR_EQ("13.9", buf);
 
     // crash this case!
     // sprintf(buf, "%.3g/%.3g%s", 0.1, 0.1, "hoge");

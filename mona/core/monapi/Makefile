@@ -48,7 +48,7 @@ SOURCES = monapi_impl.cpp \
           net.cpp \
           BufferReceiver.cpp \
           text/Line.cpp
-CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c
+CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c FreeBSD/divdi3.c
 
 
 NASMSRCS = _alloca.asm
