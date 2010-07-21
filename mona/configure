@@ -111,7 +111,7 @@ export MINGWPREFIX
 echo "HOSTDEF=-DHOST_$HOST" > $MAKEINC
 echo "USER_START_FUNCTION=_user_start" >> $MAKEINC
 echo "SYMPREFIX=_" >> $MAKEINC
-echo "MONADIR=$script_dir" >> $MAKEINC
+echo "export MONADIR=$script_dir" >> $MAKEINC
 echo "PREFIX=$script_dir/local" >> $MAKEINC
 echo '
 SHAREDIR=$(MONADIR)/share
