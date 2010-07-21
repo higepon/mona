@@ -15,7 +15,7 @@ include $(SHAREDIR)/configs/monapi.inc
 
 all: $(TARGET).EXE
 
-$(TARGET).EXE: $(OBJECTS) $(LINKDEP)
+$(TARGET).EXE: $(FIRSTDEP) $(OBJECTS) $(LINKDEP)
 	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi_crt.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 #	$(STRIP) $@
 
