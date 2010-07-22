@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
 
 (define *tests-on-cui* '("/APPS/TSTACK.APP/TSTACK.EX5"
                          "/APPS/TGMP.EX5"
@@ -53,8 +53,8 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-  (call-process "/MEM/MOSH.EXE /APPS/MOSH.APP/misc.scm")
-;  (call-process "/MEM/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
+;  (call-process "/MEM/MOSH.EXE /APPS/MOSH.APP/misc.scm")
+  (call-process "/MEM/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
   (ls "/MEM")
   (mosh))
 
