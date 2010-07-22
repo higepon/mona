@@ -304,6 +304,15 @@ int ISO9660FileSystem::readVolumeDescriptor()
             pdescriptor_ = *p;
             primaryVolumeDescriptorFound = true;
         }
+       // read primary descriptor
+        else if (descriptor->type == ISO_SUPPLEMENTARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
+        {
+            PrimaryVolumeDescriptor* p = (PrimaryVolumeDescriptor*)(descriptor);
+
+            // keep primary descriptor
+            sdescriptor_ = *p;
+        }
+
 
         // end
         if (descriptor->type == ISO_END_VOLUME_DESCRIPTOR)
@@ -324,7 +333,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
 
 uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
 {
-    uint32_t readSize = ((uint32_t)((pdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint32_t readSize = ((uint32_t)((sdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
@@ -332,7 +341,7 @@ uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
         return NULL;
     }
 
-    bool readResult = drive_->read(pdescriptor_.type_l_path_table, buffer, readSize) == 0;
+    bool readResult = drive_->read(sdescriptor_.type_l_path_table, buffer, readSize) == 0;
 
     return readResult ? buffer : NULL;
 }
@@ -398,6 +407,10 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         }
         else
         {
+            logprintf("\n");
+            for (int i = 0; i < pathEntry->length; i++) {
+                logprintf("%c", ((const char*)pathEntry->name)[i]);
+            }
             entry->name = upperCase(string((const char*)pathEntry->name, pathEntry->length));
         }
         list->push_back(entry);
@@ -412,6 +425,7 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
     FileDate* createDate = &(to->createDate);
 
     string tmp((const char*)from->name, from->name_len);
+    logprintf("<%s>\n", tmp.c_str());
     to->name = getProperName(tmp);
 
     to->attribute.extent= from->extent_l;

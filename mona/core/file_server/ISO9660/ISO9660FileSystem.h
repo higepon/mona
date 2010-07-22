@@ -53,6 +53,7 @@ private:
     enum
     {
         ISO_PRIMARY_VOLUME_DESCRIPTOR = 1,
+        ISO_SUPPLEMENTARY_VOLUME_DESCRIPTOR = 2,
         ISO_END_VOLUME_DESCRIPTOR     = 255
     };
 
@@ -60,6 +61,7 @@ protected:
     IStorageDevice* drive_;
     VnodeManager* vmanager_;
     iso9660::PrimaryVolumeDescriptor pdescriptor_;
+    iso9660::PrimaryVolumeDescriptor sdescriptor_;
     iso9660::Entry* rootDirectory_;
     Vnode* root_;
 };
