@@ -2,15 +2,14 @@
 
 int feupdateenv(const fenv_t *f)
 {
-	unsigned short sw;
-	fenv_t *ft;
-	fexcept_t fe;
-	
-	fegetexceptflag(&fe, FE_ALL_EXCEPT);    
-	fesetenv(f);
-	fe |= f->__status_uint16_t;
-	fesetexceptflag(&fe, FE_ALL_EXCEPT);
-	
-	return 0;
-}
+    unsigned short sw;
+    fenv_t *ft;
+    fexcept_t fe;
 
+    fegetexceptflag(&fe, FE_ALL_EXCEPT);
+    fesetenv(f);
+    fe |= f->__status;
+    fesetexceptflag(&fe, FE_ALL_EXCEPT);
+
+    return 0;
+}
