@@ -438,37 +438,6 @@ string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
     return upperCase(ret);
 }
 
-int ISO9660FileSystem::ucs2ToUtf8(unsigned int u, uint8_t* buf)
-{
-    // UTF8-1
-    if (u < 0x80) {
-        buf[0] = (uint8_t)u;
-        return 1;
-        // UTF8-2
-    } else if (u < 0x7ff) {
-        buf[0] = 0xc0 | ((u >> 6) & 0x1f);
-        buf[1] = 0x80 | (u & 0x3f);
-        return 2;
-        // UTF8-3
-    } else if (u < 0xffff) {
-        buf[0] = 0xe0 | ((u >> 12) & 0xf);
-        buf[1] = 0x80 | ((u >> 6) & 0x3f);
-        buf[2] = 0x80 | (u & 0x3f);
-        return 3;
-        // UTF8-4
-    } else if (u <= 0x10ffff) {
-        buf[0] = 0xf0 | ((u >> 18) & 0x7);
-        buf[1] = 0x80 | ((u >> 12) & 0x3f);
-        buf[2] = 0x80 | ((u >> 6) & 0x3f);
-        buf[3] = 0x80 | (u & 0x3f);
-        return 4;
-    } else {
-        buf[0] = 0xff;
-        buf[1] = 0xfd;
-        return 2;
-    }
-}
-
 string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
 {
     if (isJoliet_) {
@@ -477,7 +446,7 @@ string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
         for (int i = 0; i < nameSizeByte; i += 2) {
             uint16_t ch =  (name[i] << 8) | (name[i + 1]);
             uint8_t buf[4];
-            int len = ucs2ToUtf8(ch, buf);
+            int len = MonAPI::Encoding::ucs4ToUtf8(ch, buf);
             for (int j = 0; j < len; j++) {
                 ret += buf[j];
             }

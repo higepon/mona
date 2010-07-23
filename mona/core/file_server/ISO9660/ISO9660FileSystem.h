@@ -28,7 +28,6 @@ public:
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
-    virtual int ucs2ToUtf8(unsigned int, uint8_t* buf);
     virtual std::string nameToUtf8(const char* name, int nameLen);
 
     enum
