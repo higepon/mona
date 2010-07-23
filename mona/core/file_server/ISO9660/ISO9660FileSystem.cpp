@@ -1,4 +1,5 @@
 #include "ISO9660FileSystem.h"
+#include <monapi.h>
 #include "sys/error.h"
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace iso9660;
 
 extern string upperCase(const string& s);
 
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), isJoliet_(false)
 {
 }
 
@@ -254,6 +255,25 @@ uint8_t* ISO9660FileSystem::readdirToBuffer(Entry* directory, uint32_t readSize)
     return buffer;
 }
 
+bool ISO9660FileSystem::isJolietDescriptor(SupplementaryVolumeDescriptor* desc) const
+{
+    const char* UCS2_LEVEL1 = "%/@";
+    const char* UCS2_LEVEL2 = "%/C";
+    const char* UCS2_LEVEL3 = "%/E";
+
+    if (strncmp(UCS2_LEVEL1, desc->escape_sequences, 3) == 0 ||
+        strncmp(UCS2_LEVEL2, desc->escape_sequences, 3) == 0 ||
+        strncmp(UCS2_LEVEL3, desc->escape_sequences, 3) == 0) {
+        if ((desc->volume_flags[0] & 0x01) == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 // you should delete return value
 Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
 {
@@ -269,7 +289,7 @@ Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
     }
     else
     {
-        entry->name = getProperName(string((const char*)from->name, from->name_len));
+        entry->name = getProperName(nameToUtf8(from->name, from->name_len));
     }
     return entry;
 }
@@ -292,7 +312,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
         if (!readResult)
         {
             delete descriptor;
-            _printf("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
+            monapi_fatal("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
             return MONA_FAILURE;
         }
         // read primary descriptor
@@ -304,19 +324,15 @@ int ISO9660FileSystem::readVolumeDescriptor()
             pdescriptor_ = *p;
             primaryVolumeDescriptorFound = true;
         }
-       // read primary descriptor
         else if (descriptor->type == ISO_SUPPLEMENTARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
         {
-            PrimaryVolumeDescriptor* p = (PrimaryVolumeDescriptor*)(descriptor);
-
-            // keep primary descriptor
-            sdescriptor_ = *p;
-        }
-
-
-        // end
-        if (descriptor->type == ISO_END_VOLUME_DESCRIPTOR)
-        {
+            SupplementaryVolumeDescriptor* s = (SupplementaryVolumeDescriptor*)(descriptor);
+            if (isJolietDescriptor(s)) {
+                isJoliet_ = true;
+                pdescriptor_ = *(PrimaryVolumeDescriptor*)s;
+                break;
+            }
+        } else if (descriptor->type == ISO_END_VOLUME_DESCRIPTOR) {
             break;
         }
     }
@@ -333,7 +349,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
 
 uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
 {
-    uint32_t readSize = ((uint32_t)((sdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    uint32_t readSize = ((uint32_t)((pdescriptor_.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = new uint8_t[readSize];
 
     if (buffer == NULL)
@@ -341,7 +357,7 @@ uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
         return NULL;
     }
 
-    bool readResult = drive_->read(sdescriptor_.type_l_path_table, buffer, readSize) == 0;
+    bool readResult = drive_->read(pdescriptor_.type_l_path_table, buffer, readSize) == 0;
 
     return readResult ? buffer : NULL;
 }
@@ -407,16 +423,75 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         }
         else
         {
-            logprintf("\n");
-            for (int i = 0; i < pathEntry->length; i++) {
-                logprintf("%c", ((const char*)pathEntry->name)[i]);
-            }
-            entry->name = upperCase(string((const char*)pathEntry->name, pathEntry->length));
+            // logprintf("\n");
+            // string s;
+            // // On Joliet, name are UCS2
+            // for (int i = 0; i < pathEntry->length; i += 2) {
+            //     uint16_t ch =  (pathEntry->name[i] << 8) | (pathEntry->name[i + 1]);
+            //     uint8_t buf[4];
+            //     int len = ucs2ToUtf8(ch, buf);
+            //     for (int j = 0; j < len; j++) {
+            //         s += buf[j];
+            //     }
+            // }
+            // logprintf("<%s>\n", s.c_str());
+            entry->name = upperCase(nameToUtf8(pathEntry->name, pathEntry->length));
         }
         list->push_back(entry);
 
         /* next path table entry */
         position += pathEntry->length + sizeof(PathTableEntry) + (pathEntry->length % 2 ? 1 : 0);
+    }
+    logprintf("END");
+}
+
+int ISO9660FileSystem::ucs2ToUtf8(unsigned int u, uint8_t* buf)
+{
+    // UTF8-1
+    if (u < 0x80) {
+        buf[0] = (uint8_t)u;
+        return 1;
+        // UTF8-2
+    } else if (u < 0x7ff) {
+        buf[0] = 0xc0 | ((u >> 6) & 0x1f);
+        buf[1] = 0x80 | (u & 0x3f);
+        return 2;
+        // UTF8-3
+    } else if (u < 0xffff) {
+        buf[0] = 0xe0 | ((u >> 12) & 0xf);
+        buf[1] = 0x80 | ((u >> 6) & 0x3f);
+        buf[2] = 0x80 | (u & 0x3f);
+        return 3;
+        // UTF8-4
+    } else if (u <= 0x10ffff) {
+        buf[0] = 0xf0 | ((u >> 18) & 0x7);
+        buf[1] = 0x80 | ((u >> 12) & 0x3f);
+        buf[2] = 0x80 | ((u >> 6) & 0x3f);
+        buf[3] = 0x80 | (u & 0x3f);
+        return 4;
+    } else {
+        buf[0] = 0xff;
+        buf[1] = 0xfd;
+        return 2;
+    }
+}
+
+string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
+{
+    if (isJoliet_) {
+        string ret;
+        // On Joliet, name are UCS2.
+        for (int i = 0; i < nameSizeByte; i += 2) {
+            uint16_t ch =  (name[i] << 8) | (name[i + 1]);
+            uint8_t buf[4];
+            int len = ucs2ToUtf8(ch, buf);
+            for (int j = 0; j < len; j++) {
+                ret += buf[j];
+            }
+        }
+        return ret;
+    } else {
+        return string(name, nameSizeByte);
     }
 }
 
@@ -424,7 +499,7 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 {
     FileDate* createDate = &(to->createDate);
 
-    string tmp((const char*)from->name, from->name_len);
+    string tmp = nameToUtf8(from->name, from->name_len);
     logprintf("<%s>\n", tmp.c_str());
     to->name = getProperName(tmp);
 
@@ -570,8 +645,15 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
             continue;
         }
-
-        string name = getProperName(string(iEntry->name, iEntry->name_len));
+        for (int i = 0; i < iEntry->name_len; i++) {
+            logprintf("[%d]", ((const char*)iEntry->name)[i]);
+        }
+        logprintf("\n");
+        for (int i = 0; i < iEntry->name_len; i++) {
+            logprintf("%c", ((const char*)iEntry->name)[i]);
+        }
+        logprintf("\n");
+        string name = getProperName(nameToUtf8(iEntry->name, iEntry->name_len));
         if (iEntry->directory == 0 && fileName == upperCase(name))
         {
             Entry* foundFile = new Entry;
@@ -619,7 +701,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
     for (uint32_t position = 0; position < readSize;)
     {
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
-        string name = string(iEntry->name, iEntry->name_len);
+        string name = nameToUtf8(iEntry->name, iEntry->name_len);
 
         if (iEntry->length == 0)
         {

@@ -28,6 +28,8 @@ public:
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
+    virtual int ucs2ToUtf8(unsigned int, uint8_t* buf);
+    virtual std::string nameToUtf8(const char* name, int nameLen);
 
     enum
     {
@@ -36,6 +38,7 @@ public:
 
 
 private:
+    bool isJolietDescriptor(iso9660::SupplementaryVolumeDescriptor* desc) const;
     int readVolumeDescriptor();
     uint8_t* readPathTableIntoBuffer();
     int setDirectoryCache();
@@ -61,9 +64,9 @@ protected:
     IStorageDevice* drive_;
     VnodeManager* vmanager_;
     iso9660::PrimaryVolumeDescriptor pdescriptor_;
-    iso9660::PrimaryVolumeDescriptor sdescriptor_;
     iso9660::Entry* rootDirectory_;
     Vnode* root_;
+    bool isJoliet_;
 };
 
 #endif // __ISO9660FILESYSTEM_H__
