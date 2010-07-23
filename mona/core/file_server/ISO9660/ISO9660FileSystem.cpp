@@ -279,18 +279,7 @@ Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
 {
     Entry* entry = new Entry;
     entry->isDirectory = from->directory == 1;
-    if (from->length == 1 && from->name[0] == 0x00)
-    {
-        entry->name = ".";
-    }
-    else if (from->length == 1 && from->name[0] == 0x01)
-    {
-        entry->name = "..";
-    }
-    else
-    {
-        entry->name = getProperName(nameToUtf8(from->name, from->name_len));
-    }
+    entry->name = canonicalizeName(from->name, from->name_len);
     return entry;
 }
 
@@ -413,36 +402,40 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         entry->attribute.extent   = pathEntry->extent;
         entry->attribute.parentID = pathEntry->parentDirectory;
 
-        if (pathEntry->length == 1 && pathEntry->name[0] == 0x00)
-        {
-            entry->name = ".";
-        }
-        else if (pathEntry->length == 1 && pathEntry->name[0] == 0x01)
-        {
-            entry->name = "..";
-        }
-        else
-        {
-            // logprintf("\n");
-            // string s;
-            // // On Joliet, name are UCS2
-            // for (int i = 0; i < pathEntry->length; i += 2) {
-            //     uint16_t ch =  (pathEntry->name[i] << 8) | (pathEntry->name[i + 1]);
-            //     uint8_t buf[4];
-            //     int len = ucs2ToUtf8(ch, buf);
-            //     for (int j = 0; j < len; j++) {
-            //         s += buf[j];
-            //     }
-            // }
-            // logprintf("<%s>\n", s.c_str());
-            entry->name = upperCase(nameToUtf8(pathEntry->name, pathEntry->length));
-        }
+        entry->name = canonicalizeName(pathEntry->name, pathEntry->length);
         list->push_back(entry);
 
         /* next path table entry */
         position += pathEntry->length + sizeof(PathTableEntry) + (pathEntry->length % 2 ? 1 : 0);
     }
     logprintf("END");
+}
+
+string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
+{
+    if (nameLen == 1 && name[0] == 0x00) {
+        return ".";
+    } else if (nameLen == 1 && name[0] == 0x01) {
+        return "..";
+    }
+
+    string ret;
+    if (isJoliet_) {
+        ret = nameToUtf8(name, nameLen);
+    } else {
+        ret = string(name, nameLen);
+        // ISO 9660 Level1
+        string::size_type index;
+        if ((index = ret.find(';')) != string::npos) {
+            ret = ret.substr(0, index);
+        }
+
+        // necessary?
+        if (ret[ret.size() - 1] == '.') {
+            ret = ret.substr(0, ret.size() - 1);
+        }
+    }
+    return upperCase(ret);
 }
 
 int ISO9660FileSystem::ucs2ToUtf8(unsigned int u, uint8_t* buf)
@@ -499,10 +492,7 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 {
     FileDate* createDate = &(to->createDate);
 
-    string tmp = nameToUtf8(from->name, from->name_len);
-    logprintf("<%s>\n", tmp.c_str());
-    to->name = getProperName(tmp);
-
+    to->name = canonicalizeName(from->name, from->name_len);
     to->attribute.extent= from->extent_l;
     to->attribute.size  = from->size_l;
     createDate->setYear(from->date[0] + 1900);
@@ -512,31 +502,6 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
     createDate->setMinute(from->date[4]);
     createDate->setSecond(from->date[5]);
     to->hasDetail = true;
-}
-
-string ISO9660FileSystem::getProperName(const string& name)
-{
-    string result = name;
-
-    if (result[0] == 0x00)
-    {
-        result = ".";
-    }
-    else if (result[0] == 0x01)
-    {
-        result = "..";
-    }
-
-    if (name.find(';') != string::npos)
-    {
-        result = result.substr(0, result.find(";"));
-    }
-
-    if (result[result.size() - 1] == '.' && result != "." && result != "..")
-    {
-        result = result.substr(0, result.size() - 1);
-    }
-    return upperCase(result);
 }
 
 void ISO9660FileSystem::setDirectoryRelation(EntryList* list, Entry* directory)
@@ -653,8 +618,8 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
             logprintf("%c", ((const char*)iEntry->name)[i]);
         }
         logprintf("\n");
-        string name = getProperName(nameToUtf8(iEntry->name, iEntry->name_len));
-        if (iEntry->directory == 0 && fileName == upperCase(name))
+        string name = canonicalizeName(iEntry->name, iEntry->name_len);
+        if (iEntry->directory == 0 && fileName == name)
         {
             Entry* foundFile = new Entry;
 

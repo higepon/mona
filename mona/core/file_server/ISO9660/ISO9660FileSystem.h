@@ -38,6 +38,7 @@ public:
 
 
 private:
+    std::string canonicalizeName(const char* name, int nameLen);
     bool isJolietDescriptor(iso9660::SupplementaryVolumeDescriptor* desc) const;
     int readVolumeDescriptor();
     uint8_t* readPathTableIntoBuffer();
@@ -45,7 +46,6 @@ private:
     void createDirectoryListFromPathTable(iso9660::EntryList* list, uint8_t* buffer);
     void setDetailInformation(iso9660::Entry* to, iso9660::DirectoryEntry* from);
     bool setDetailInformation(iso9660::Entry* entry);
-    std::string getProperName(const std::string& name);
     void setDirectoryRelation(iso9660::EntryList* list, iso9660::Entry* directory);
     void deleteEntry(iso9660::Entry* entry);
     void split(std::string str, char ch, std::vector<std::string>& v);
