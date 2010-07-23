@@ -32,6 +32,8 @@ extern "C" {
 #define DBL_DIG  15
 #define LDBL_DIG 15
 
+#define DECIMAL_DIG 17
+
 /* distinction limit: min e : 1+e != 1 */
 #define FLT_EPSILON  1.192092896e-07F
 #define DBL_EPSILON  2.2204460492503131e-016

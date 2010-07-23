@@ -68,7 +68,7 @@ extern "C" {
 #define FP_NORMAL      4
 
 #define fpclassify(x)   (sizeof(x) == sizeof(double) ? fpclassify_d(x) : \
-			 sizeof(x) == sizeof(double) ? fpclassify_f(x) : \
+			 sizeof(x) == sizeof(float) ? fpclassify_f(x) : \
 			 FP_NAN)
 
 #define isfinite(x) ((fpclassify(x) != FP_NAN && fpclassify(x) != FP_INFINITE)?1:0)
@@ -76,8 +76,15 @@ extern "C" {
 #define isnan(x)    ((fpclassify(x) == FP_NAN) ? 1 : 0)
 #define isinf(x)    ((fpclassify(x) == FP_INFINITE) ? 1 : 0)
 
+#define  signbit(x) (sizeof(x) == sizeof(double) ? signbit_d(x) : signbit_f(x))
+
 extern int fpclassify_d(double x);
 extern int fpclassify_f(float x);
+extern int signbit_d(double x);
+extern int signbit_f(float x);
+extern double __nand();
+
+#define NAN ((double)__nand())
 
 double acos(double x);
 double asin(double x);

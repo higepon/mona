@@ -1,27 +1,5 @@
 #include <math.h>
-
-union __nc_ieee_754_double
-{
-	double value;
-	struct
-	{
-		unsigned int frac1:32;
-		unsigned int frac0:20;
-		unsigned int exp:11;
-		unsigned int sign:1;
-	} n;
-};
-
-union __nc_ieee_754_single
-{
-	double value;
-	struct
-	{
-		unsigned int frac:23;
-		unsigned int exp:8;
-		unsigned int sign:1;
-	} n;
-};
+#include "ieee_754.h"
 
 int fpclassify_d(double x)
 {
@@ -30,6 +8,7 @@ int fpclassify_d(double x)
 	if( u.n.exp == 0 && u.n.frac1 == 0 && u.n.frac0 == 0 ) return FP_ZERO;
 	if( u.n.exp == 2047 && u.n.frac1 == 0 && u.n.frac0 == 0 ) return FP_INFINITE;
 	if( u.n.exp == 2047/* && u.n.frac1 != 0 && u.n.frac0 != 0*/ ) return FP_NAN;
+	if( u.n.sign == 0 && !(u.n.frac1 == 0 && u.n.frac0 == 0) ) return FP_SUBNORMAL;
 	return FP_NORMAL;
 }
 
@@ -40,6 +19,7 @@ int fpclassify_f(float x)
 	if( u.n.exp == 0 && u.n.frac == 0 ) return FP_ZERO;
 	if( u.n.exp == 255 && u.n.frac == 0 ) return FP_INFINITE;
 	if( u.n.exp == 255 && u.n.frac != 0 ) return FP_NAN;
+	if( u.n.sign == 0 && u.n.frac != 0 ) return FP_SUBNORMAL;
 	return FP_NORMAL;
 }
 

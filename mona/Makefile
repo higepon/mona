@@ -42,12 +42,14 @@ endif
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/gui_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
-	cd core/gmp && $(MAKE) && $(MAKE) install
-	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
+#	cd core/gmp && $(MAKE) && $(MAKE) install
+#	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 tests: tools cores
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
+	cd test/monalibc/stdlib && $(MAKE) && $(MAKE) install
+	cd test/monalibc/math && $(MAKE) && $(MAKE) install
 	cd test/monapi/mutex && $(MAKE) && $(MAKE) install
 	cd test/monapi/stack_trace && $(MAKE) && $(MAKE) install
 	cd test/monapi/condition && $(MAKE) && $(MAKE) install
@@ -58,7 +60,7 @@ tests: tools cores
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
-	cd test/ext/gmp && $(MAKE) && $(MAKE) install
+#	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
@@ -79,6 +81,8 @@ depend: clean
 	cd core/gui_server && $(MAKE) $@
 	cd test/monalibc/string && $(MAKE) $@
 	cd test/monalibc/stdio && $(MAKE) $@
+	cd test/monalibc/stdlib && $(MAKE) $@
+	cd test/monalibc/math && $(MAKE) $@
 
 .PHONY: clean doc
 
@@ -118,5 +122,7 @@ endif
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
 	cd test/monalibc/string && make clean
 	cd test/monalibc/stdio && make clean
+	cd test/monalibc/stdlib && make clean
+	cd test/monalibc/math && make clean
 	cd test/monapi/mutex && make clean
 	cd test/monapi/condition && make clean

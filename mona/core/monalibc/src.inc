@@ -6,7 +6,8 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
 	  math/floor.c math/fmod.c math/frexp.c math/ldexp.c math/log.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
-	  math/sinh.c math/round.c math/nearbyint.c math/w_log.c math/e_log.c \
+	  math/sinh.c math/round.c math/nearbyint.c math/nan.c \
+	  math/signbit.c \
 	  math/sqrt.c math/tan.c math/tanh.c stdio/fclose.c stdio/fileno.c \
 	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c stdio/fprintf.c \
 	  stdio/fseek.c stdio/rewind.c stdio/feof.c stdio/ferror.c \
@@ -31,6 +32,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  string/strcoll.c string/strerror.c string/strlcat.c \
 	  string/strlcpy.c string/strncat.c string/strpbrk.c string/strrchr.c \
 	  string/strtok.c string/strtok_r.c string/strxfrm.c string/strdup.c \
+	  string/strncasecmp.c \
 	  time/clock.c time/time.c time/time_util.c time/gmtime_r.c \
 	  time/gmtime.c time/mktime.c time/difftime.c time/strftime.c \
 	  inttypes/imaxabs.c \

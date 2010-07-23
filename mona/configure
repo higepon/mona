@@ -80,6 +80,9 @@ if [ "x$HOST" = x ]; then
     cygwin)
       HOST=CYGWIN
       ;;
+    darwin)
+      HOST=MINGW
+      ;;
     *)
       echo 'Unknown OS type.'
       exit 1
