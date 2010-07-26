@@ -18,9 +18,18 @@ static void test_syscall_allocate_contiguous()
     EXPECT_EQ(4096, physAddress2 - physAddress1);
 }
 
+static void test_syscall_map_map_should_check_overlap()
+{
+    uintptr_t id1  = syscall_memory_map_create(4096);
+    uintptr_t id2  = syscall_memory_map_create(4096);
+    EXPECT_EQ(M_OK, syscall_memory_map_map(id1, 0x90010000));
+    EXPECT_EQ(M_BAD_ADDRESS, syscall_memory_map_map(id2, 0x90010500));
+}
+
 int main(int argc, char *argv[])
 {
     test_syscall_allocate_contiguous();
+    test_syscall_map_map_should_check_overlap();
 
     TEST_RESULTS(syscall);
     return 0;

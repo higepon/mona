@@ -56,7 +56,7 @@ bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
     id++;
     bool isOpen = SharedMemoryObject::open(id, size);
     if (!isOpen) return false;
-    bool isAttaced = SharedMemoryObject::attach(id, process, (uint32_t)address);
+    bool isAttaced = M_OK == SharedMemoryObject::attach(id, process, (uint32_t)address);
     if (!isAttaced) return false;
     return true;
 }
@@ -454,6 +454,21 @@ uint32_t Process::getStackBottom(Thread* thread)
         return STACK_START - (STACK_SIZE + STACK_SIZE) * i - STACK_SIZE;
     }
     return 0;
+}
+
+bool Process::hasSharedOverlap(uintptr_t start, uintptr_t end)
+{
+    for (int i = 0; i < shared_->size(); i++) {
+        SharedMemorySegment* sh = shared_->get(i);
+        uintptr_t shStart = sh->getStart();
+        uintptr_t shEnd = shStart + sh->getSize();
+        if (start <= shStart && shStart <= end) {
+            return true;
+        } else if (shStart <= start && start <= shEnd) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /*----------------------------------------------------------------------

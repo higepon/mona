@@ -445,19 +445,28 @@ bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t
     \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address)
+intptr_t SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address)
 {
     SharedMemorySegment* segment;
     SharedMemoryObject* target = find(id);
-    if (target == NULL)
-    {
-        return false;
+    if (target == NULL) {
+        return M_BAD_MEMORY_MAP_ID;
     }
-    segment = new SharedMemorySegment(address, target->getSize(), target);
-    if (segment == NULL) return false;
-    process->getSharedList()->add(segment);
-    target->setAttachedCount(target->getAttachedCount() + 1);
-    return true;
+
+    uintptr_t start = address;
+    uintptr_t end = target->getSize();
+
+    if (process->hasSharedOverlap(start, end)) {
+        return M_BAD_ADDRESS;
+    } else {
+        segment = new SharedMemorySegment(address, target->getSize(), target);
+        if (segment == NULL) {
+            return M_NO_MEMORY;
+        }
+        process->getSharedList()->add(segment);
+        target->setAttachedCount(target->getAttachedCount() + 1);
+        return M_OK;
+    }
 }
 
 /*!

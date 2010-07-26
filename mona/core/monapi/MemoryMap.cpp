@@ -76,9 +76,10 @@ uint8_t* MemoryMap::map(uint32_t id)
 
     uint8_t* address = (uint8_t*)(START_ADDRESS + (found * MAP_PAGE_SIZE));
 
-    if (syscall_memory_map_map(id, (uintptr_t)address)) {
+    intptr_t ret = syscall_memory_map_map(id, (uintptr_t)address);
+    if (ret != M_OK) {
         MEMORY_MAP_TRACE("");
-        lastError = ERROR_NOT_MAP_ATATCH_ERROR;
+        lastError = ret;
         mutex.unlock();
         return NULL;
     }
@@ -114,24 +115,24 @@ uint32_t MemoryMap::getSize(uint32_t id)
     return syscall_memory_map_get_size(id);
 }
 
-const char* MemoryMap::getLastErrorString()
-{
-    switch (MemoryMap::getLastError())
-    {
-    case MemoryMap::ERROR_SIZE_ZERO:
-        return "invalid size zero for memory map";
-    case MemoryMap::ERROR_NOT_ENOUGH_KERNEL_MEMORY:
-        return "not enough memory in kernel";
-    case MemoryMap::ERROR_MEMORY_MAP_NOT_FOUND:
-        return "memory map id not exist in kernel";
-    case MemoryMap::ERROR_NOT_ENOUGH_ADDRESS_SPACE:
-        return "process has not enough address space";
-    case MemoryMap::ERROR_NOT_MAP_ATATCH_ERROR:
-        return "attach memory map fail in kernel";
-    default:
-        return "unknown error";
-    }
-}
+// const char* MemoryMap::getLastErrorString()
+// {
+//     switch (MemoryMap::getLastError())
+//     {
+//     case MemoryMap::ERROR_SIZE_ZERO:
+//         return "invalid size zero for memory map";
+//     case MemoryMap::ERROR_NOT_ENOUGH_KERNEL_MEMORY:
+//         return "not enough memory in kernel";
+//     case MemoryMap::ERROR_MEMORY_MAP_NOT_FOUND:
+//         return "memory map id not exist in kernel";
+//     case MemoryMap::ERROR_NOT_ENOUGH_ADDRESS_SPACE:
+//         return "process has not enough address space";
+//     case MemoryMap::ERROR_NOT_MAP_ATATCH_ERROR:
+//         return "attach memory map fail in kernel";
+//     default:
+//         return "unknown error";
+//     }
+// }
 
 }
 

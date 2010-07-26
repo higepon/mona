@@ -665,14 +665,10 @@ void syscall_entrance()
         uint32_t address = SYSTEM_CALL_ARG_2;
 
         while (Semaphore::down(&g_semaphore_shared));
-        bool isAttached = SharedMemoryObject::attach(id, g_currentThread->process, address);
+        intptr_t ret = SharedMemoryObject::attach(id, g_currentThread->process, address);
         Semaphore::up(&g_semaphore_shared);
         Semaphore::up(&g_semaphore_shared);
-        if (!isAttached)
-        {
-            setReturnValue(info, 1);
-            break;
-        }
+        setReturnValue(info, ret);
         break;
     }
 

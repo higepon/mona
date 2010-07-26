@@ -145,6 +145,7 @@ private:
     virtual ~Process();
 
   public:
+    bool hasSharedOverlap(uintptr_t start, uintptr_t end);
 
     uint32_t getStackBottom(Thread* thread);
 

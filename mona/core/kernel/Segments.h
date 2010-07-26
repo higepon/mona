@@ -73,7 +73,7 @@ class SharedMemoryObject {
     static void setup();
     static bool open(uint32_t id, uint32_t size);
     static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
-    static bool attach(uint32_t id, struct Process* process, LinearAddress address);
+    static intptr_t attach(uint32_t id, struct Process* process, LinearAddress address);
     static bool detach(uint32_t id, struct Process* process);
     static SharedMemoryObject* find(uint32_t id);
     enum

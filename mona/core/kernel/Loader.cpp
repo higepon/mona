@@ -30,7 +30,7 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     systemcall_mutex_lock(g_mutexShared);
 
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
+    isAttaced = M_OK == SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
 
     systemcall_mutex_unlock(g_mutexShared);
 
@@ -44,7 +44,7 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     systemcall_mutex_lock(g_mutexShared);
 
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    isAttaced = SharedMemoryObject::attach(sharedId, process, Loader::ORG);
+    isAttaced = M_OK == SharedMemoryObject::attach(sharedId, process, Loader::ORG);
 
     systemcall_mutex_unlock(g_mutexShared);
 
