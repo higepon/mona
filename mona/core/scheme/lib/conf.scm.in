@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define *tests-on-cui* '("/APPS/TFILE.APP/TFILE.EX5"
                          "/APPS/TSTACK.APP/TSTACK.EX5"
