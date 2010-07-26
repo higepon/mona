@@ -58,5 +58,5 @@
 
 ; (call-process "/APPS/MOSH.APP/MOSH.EXE /APPS/MOSH.APP/misc.scm")
 
-(call-process "/APPS/MOSH.APP/MOSH.EXE")
+(call-process "/APPS/MOSH.APP/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
 (mosh)
