@@ -28,6 +28,7 @@ public:
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
+    virtual std::string nameToUtf8(const char* name, int nameLen);
 
     enum
     {
@@ -36,13 +37,14 @@ public:
 
 
 private:
+    std::string canonicalizeName(const char* name, int nameLen);
+    bool isJolietDescriptor(iso9660::SupplementaryVolumeDescriptor* desc) const;
     int readVolumeDescriptor();
     uint8_t* readPathTableIntoBuffer();
     int setDirectoryCache();
     void createDirectoryListFromPathTable(iso9660::EntryList* list, uint8_t* buffer);
     void setDetailInformation(iso9660::Entry* to, iso9660::DirectoryEntry* from);
     bool setDetailInformation(iso9660::Entry* entry);
-    std::string getProperName(const std::string& name);
     void setDirectoryRelation(iso9660::EntryList* list, iso9660::Entry* directory);
     void deleteEntry(iso9660::Entry* entry);
     void split(std::string str, char ch, std::vector<std::string>& v);
@@ -53,6 +55,7 @@ private:
     enum
     {
         ISO_PRIMARY_VOLUME_DESCRIPTOR = 1,
+        ISO_SUPPLEMENTARY_VOLUME_DESCRIPTOR = 2,
         ISO_END_VOLUME_DESCRIPTOR     = 255
     };
 
@@ -62,6 +65,7 @@ protected:
     iso9660::PrimaryVolumeDescriptor pdescriptor_;
     iso9660::Entry* rootDirectory_;
     Vnode* root_;
+    bool isJoliet_;
 };
 
 #endif // __ISO9660FILESYSTEM_H__

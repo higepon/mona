@@ -1,6 +1,7 @@
 (define mona-gui-auto-start #f)
 
-(define *tests-on-cui* '("/APPS/TSTACK.APP/TSTACK.EX5"
+(define *tests-on-cui* '("/APPS/TFILE.APP/TFILE.EX5"
+                         "/APPS/TSTACK.APP/TSTACK.EX5"
                          "/APPS/TGMP.EX5"
                          "/APPS/HELLO.EX5"
                          "/APPS/TMISC.EX5"
@@ -58,5 +59,6 @@
   (ls "/MEM")
   (mosh))
 
-(print "all tests done") ;; this is required by check_tests.scm
-;(gui)
+(for-each call-process *tests-on-cui*)
+(if (not mona-gui-auto-start)
+    (test-end))

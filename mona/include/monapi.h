@@ -25,6 +25,7 @@
 #include <monapi/Stream.h>
 #include <monapi/Assert.h>
 #include <monapi/DebuggerService.h>
+#include <monapi/Encoding.h>
 
 #define monapi_fatal(...) _logprintf("Fatal (%s:%s:%d) : ", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _printf("Fatal (%s:%s:%d) :", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _printf(__VA_ARGS__), exit(-1)
 #define monapi_warn(...) _logprintf("Warning (%s:%s:%d) : ", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _logprintf(__VA_ARGS__)

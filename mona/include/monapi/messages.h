@@ -30,7 +30,7 @@ enum
 
 typedef struct
 {
-    char name[16];
+    char name[128]; // Joliet long name
     int size, attr;
 } monapi_directoryinfo;
 

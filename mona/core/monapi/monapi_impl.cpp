@@ -35,11 +35,14 @@ int dllmain(uint32_t reason)
     switch (reason)
     {
     case 0: // DLL_PROCESS_ATTACH
-        monapi_initialize_memory(64 * 1024 * 1024);
-        invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
-        monapi_memory_initialized = true;
-        // see user_start_c_impl
-        MonAPI::System::getStdoutStream();
+        // Prevent static class initialize invoked twice. (ex) BitMap on MemoryMap.
+        if (!monapi_initialized) {
+            monapi_initialize_memory(64 * 1024 * 1024);
+            invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+            monapi_memory_initialized = true;
+            // see user_start_c_impl
+            MonAPI::System::getStdoutStream();
+        }
         break;
     case 1: // DLL_PROCESS_DETACH
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);

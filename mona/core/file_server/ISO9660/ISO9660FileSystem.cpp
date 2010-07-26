@@ -1,4 +1,5 @@
 #include "ISO9660FileSystem.h"
+#include <monapi.h>
 #include "sys/error.h"
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace iso9660;
 
 extern string upperCase(const string& s);
 
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), isJoliet_(false)
 {
 }
 
@@ -254,23 +255,31 @@ uint8_t* ISO9660FileSystem::readdirToBuffer(Entry* directory, uint32_t readSize)
     return buffer;
 }
 
+bool ISO9660FileSystem::isJolietDescriptor(SupplementaryVolumeDescriptor* desc) const
+{
+    const char* UCS2_LEVEL1 = "%/@";
+    const char* UCS2_LEVEL2 = "%/C";
+    const char* UCS2_LEVEL3 = "%/E";
+
+    if (strncmp(UCS2_LEVEL1, desc->escape_sequences, 3) == 0 ||
+        strncmp(UCS2_LEVEL2, desc->escape_sequences, 3) == 0 ||
+        strncmp(UCS2_LEVEL3, desc->escape_sequences, 3) == 0) {
+        if ((desc->volume_flags[0] & 0x01) == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 // you should delete return value
 Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
 {
     Entry* entry = new Entry;
     entry->isDirectory = from->directory == 1;
-    if (from->length == 1 && from->name[0] == 0x00)
-    {
-        entry->name = ".";
-    }
-    else if (from->length == 1 && from->name[0] == 0x01)
-    {
-        entry->name = "..";
-    }
-    else
-    {
-        entry->name = getProperName(string((const char*)from->name, from->name_len));
-    }
+    entry->name = canonicalizeName(from->name, from->name_len);
     return entry;
 }
 
@@ -292,7 +301,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
         if (!readResult)
         {
             delete descriptor;
-            _printf("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
+            monapi_fatal("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
             return MONA_FAILURE;
         }
         // read primary descriptor
@@ -304,10 +313,15 @@ int ISO9660FileSystem::readVolumeDescriptor()
             pdescriptor_ = *p;
             primaryVolumeDescriptorFound = true;
         }
-
-        // end
-        if (descriptor->type == ISO_END_VOLUME_DESCRIPTOR)
+        else if (descriptor->type == ISO_SUPPLEMENTARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
         {
+            SupplementaryVolumeDescriptor* s = (SupplementaryVolumeDescriptor*)(descriptor);
+            if (isJolietDescriptor(s)) {
+                isJoliet_ = true;
+                pdescriptor_ = *(PrimaryVolumeDescriptor*)s;
+                break;
+            }
+        } else if (descriptor->type == ISO_END_VOLUME_DESCRIPTOR) {
             break;
         }
     }
@@ -388,22 +402,58 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         entry->attribute.extent   = pathEntry->extent;
         entry->attribute.parentID = pathEntry->parentDirectory;
 
-        if (pathEntry->length == 1 && pathEntry->name[0] == 0x00)
-        {
-            entry->name = ".";
-        }
-        else if (pathEntry->length == 1 && pathEntry->name[0] == 0x01)
-        {
-            entry->name = "..";
-        }
-        else
-        {
-            entry->name = upperCase(string((const char*)pathEntry->name, pathEntry->length));
-        }
+        entry->name = canonicalizeName(pathEntry->name, pathEntry->length);
         list->push_back(entry);
 
         /* next path table entry */
         position += pathEntry->length + sizeof(PathTableEntry) + (pathEntry->length % 2 ? 1 : 0);
+    }
+    logprintf("END");
+}
+
+string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
+{
+    if (nameLen == 1 && name[0] == 0x00) {
+        return ".";
+    } else if (nameLen == 1 && name[0] == 0x01) {
+        return "..";
+    }
+
+    string ret;
+    if (isJoliet_) {
+        ret = nameToUtf8(name, nameLen);
+    } else {
+        ret = string(name, nameLen);
+        // ISO 9660 Level1
+        string::size_type index;
+        if ((index = ret.find(';')) != string::npos) {
+            ret = ret.substr(0, index);
+        }
+
+        // necessary?
+        if (ret[ret.size() - 1] == '.') {
+            ret = ret.substr(0, ret.size() - 1);
+        }
+    }
+    return upperCase(ret);
+}
+
+string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
+{
+    if (isJoliet_) {
+        string ret;
+        // On Joliet, name are UCS2.
+        for (int i = 0; i < nameSizeByte; i += 2) {
+            uint16_t ch =  (name[i] << 8) | (name[i + 1]);
+            uint8_t buf[4];
+            int len = MonAPI::Encoding::ucs4ToUtf8(ch, buf);
+            for (int j = 0; j < len; j++) {
+                ret += buf[j];
+            }
+        }
+        return ret;
+    } else {
+        return string(name, nameSizeByte);
     }
 }
 
@@ -411,9 +461,7 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 {
     FileDate* createDate = &(to->createDate);
 
-    string tmp((const char*)from->name, from->name_len);
-    to->name = getProperName(tmp);
-
+    to->name = canonicalizeName(from->name, from->name_len);
     to->attribute.extent= from->extent_l;
     to->attribute.size  = from->size_l;
     createDate->setYear(from->date[0] + 1900);
@@ -423,31 +471,6 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
     createDate->setMinute(from->date[4]);
     createDate->setSecond(from->date[5]);
     to->hasDetail = true;
-}
-
-string ISO9660FileSystem::getProperName(const string& name)
-{
-    string result = name;
-
-    if (result[0] == 0x00)
-    {
-        result = ".";
-    }
-    else if (result[0] == 0x01)
-    {
-        result = "..";
-    }
-
-    if (name.find(';') != string::npos)
-    {
-        result = result.substr(0, result.find(";"));
-    }
-
-    if (result[result.size() - 1] == '.' && result != "." && result != "..")
-    {
-        result = result.substr(0, result.size() - 1);
-    }
-    return upperCase(result);
 }
 
 void ISO9660FileSystem::setDirectoryRelation(EntryList* list, Entry* directory)
@@ -556,9 +579,16 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
             continue;
         }
-
-        string name = getProperName(string(iEntry->name, iEntry->name_len));
-        if (iEntry->directory == 0 && fileName == upperCase(name))
+        for (int i = 0; i < iEntry->name_len; i++) {
+            logprintf("[%d]", ((const char*)iEntry->name)[i]);
+        }
+        logprintf("\n");
+        for (int i = 0; i < iEntry->name_len; i++) {
+            logprintf("%c", ((const char*)iEntry->name)[i]);
+        }
+        logprintf("\n");
+        string name = canonicalizeName(iEntry->name, iEntry->name_len);
+        if (iEntry->directory == 0 && fileName == name)
         {
             Entry* foundFile = new Entry;
 
@@ -605,7 +635,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
     for (uint32_t position = 0; position < readSize;)
     {
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
-        string name = string(iEntry->name, iEntry->name_len);
+        string name = nameToUtf8(iEntry->name, iEntry->name_len);
 
         if (iEntry->length == 0)
         {
