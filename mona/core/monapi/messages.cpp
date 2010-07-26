@@ -477,3 +477,20 @@ intptr_t monapi_notify_server_start(const char* name)
     return M_OK;
 }
 
+MONAPI_BOOL monapi_file_exists(const char* path)
+{
+    intptr_t desc = monapi_file_open(path, 0);
+    if (desc > 0) {
+        monapi_file_close(desc);
+        return MONAPI_TRUE;
+    } else {
+        monapi_cmemoryinfo* cmi = monapi_file_read_directory(path);
+        if (cmi == NULL) {
+            return MONAPI_FALSE;
+        } else {
+            monapi_cmemoryinfo_dispose(cmi);
+            monapi_cmemoryinfo_delete(cmi);
+            return MONAPI_TRUE;
+        }
+    }
+}

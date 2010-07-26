@@ -5,6 +5,8 @@
 #include <monapi/MUnit.h>
 #include <monapi.h>
 #include <stdio.h>
+#include <limits.h>
+#include <string>
 
 using namespace MonAPI;
 
@@ -56,12 +58,44 @@ static void testFileRead_UTF8FileName()
     monapi_cmemoryinfo_delete(cmi);
 }
 
+static bool fileExistInDirectory(monapi_directoryinfo* entry, int num, const std::string& file)
+{
+    logprintf("dump start\n");
+    for (int i = 0; i < num; i++) {
+        logprintf("<%s>\n", entry[i].name);
+        if (std::string(entry[i].name) == file) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool testDirectoryHasFile(const std::string& dir, const std::string& file)
+{
+    monapi_cmemoryinfo* cmi = monapi_file_read_directory(dir.c_str());
+    ASSERT_TRUE(cmi != NULL);
+
+    int size = *(int*)cmi->Data;
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->Data[sizeof(int)];
+
+    bool ret = fileExistInDirectory(p, size, file.c_str());
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+    return ret;
+}
+
 int main(int argc, char *argv[])
 {
     testFileExist_LongFileName();
     testFileExist_UTF8FileName();
     testFileRead_LongFileName();
     testFileRead_UTF8FileName();
+
+    EXPECT_TRUE(testDirectoryHasFile("/", "LIBS"));
+    EXPECT_TRUE(testDirectoryHasFile("/LIBS", "MOSH"));
+    EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB", "SRFI"));
+    EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB/SRFI", "%3A8.SLS"));
     TEST_RESULTS(file);
     return 0;
 }
