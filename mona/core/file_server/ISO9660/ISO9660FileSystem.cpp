@@ -419,11 +419,11 @@ string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
         return "..";
     }
 
-    string ret;
+
     if (isJoliet_) {
-        ret = nameToUtf8(name, nameLen);
+        return upperCase(nameToUtf8(name, nameLen));
     } else {
-        ret = string(name, nameLen);
+        string ret = string(name, nameLen);
         // ISO 9660 Level1
         string::size_type index;
         if ((index = ret.find(';')) != string::npos) {
@@ -434,8 +434,8 @@ string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
         if (ret[ret.size() - 1] == '.') {
             ret = ret.substr(0, ret.size() - 1);
         }
+        return upperCase(ret);
     }
-    return upperCase(ret);
 }
 
 string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
@@ -635,7 +635,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
     for (uint32_t position = 0; position < readSize;)
     {
         DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
-        string name = nameToUtf8(iEntry->name, iEntry->name_len);
+        string name =canonicalizeName(iEntry->name, iEntry->name_len);
 
         if (iEntry->length == 0)
         {
@@ -645,7 +645,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
         for (EntryList::iterator i = children->begin(); i != children->end(); ++i)
         {
             Entry* child = *i;
-            if (upperCase(name) != child->name) continue;
+            if (name != child->name) continue;
 
             setDetailInformation(child, iEntry);
         }
