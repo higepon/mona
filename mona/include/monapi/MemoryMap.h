@@ -24,7 +24,7 @@ namespace MonAPI
         static bool unmap(uint32_t id);
         static uint32_t getLastError();
         static uint32_t getSize(uint32_t id);
-        static const char* getLastErrorString();
+//        static const char* getLastErrorString();
         enum
         {
             ERROR_SIZE_ZERO,

@@ -54,9 +54,8 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-;  (call-process "/MEM/MOSH.EXE /APPS/MOSH.APP/misc.scm")
-  (call-process "/MEM/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
-  (ls "/MEM")
+;  (call-process "/MEM/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
+;  (ls "/MEM")
   (mosh))
 
 (for-each call-process *tests-on-cui*)
