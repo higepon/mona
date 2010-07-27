@@ -700,7 +700,7 @@ namespace gnote {
         for(i = 1; i <= max; i++)
         {
             String* line = d.GetLine(i);
-            fwrite(line->getBytes(), 1, line->length(), fp);
+            fwrite(line->getBytes(), 1, line->lengthBytes(), fp);
         }
         fclose(fp);
         return true;
