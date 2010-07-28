@@ -26,10 +26,10 @@
 
 #include <pci/Pci.h>
 
-extern "C" int dllmain();
-int dllmain()
-{
-}
+// extern "C" int dllmain();
+// int dllmain()
+// {
+// }
 
 
 //PCIINFOファイル
