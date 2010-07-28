@@ -95,6 +95,7 @@ inline void munit_show_test_results(const char* msg)
         printf("%s test passed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed);
         logprintf("%s test passed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed);
     } else {
+        printf("%s test failed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed + munit_number_of_failed);
         logprintf("%s test failed %d/%d\n", msg, munit_number_of_passed, munit_number_of_passed + munit_number_of_failed);
     }
 }
