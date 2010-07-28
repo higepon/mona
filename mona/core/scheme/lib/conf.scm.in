@@ -19,6 +19,11 @@
 
 (define (test-end) (print "all tests done"))
 
+(define (gnote)
+  (call-process "/APPS/FRECV.EX5 GNOTE.EX5")
+  (call-process "/MEM/GNOTE.EX5")
+  (gnote))
+
 (define (on-gui-start)
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
@@ -31,6 +36,7 @@
 ;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
+(gnote)
 ;  (w3m-auto-pilot)
 )
 
