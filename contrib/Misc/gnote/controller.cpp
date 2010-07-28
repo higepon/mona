@@ -227,8 +227,9 @@ namespace gnote {
         int code = event->getKeycode();
         bool done = false;
 
-                // Toggle IME ON/OFF
-        if (code == '\\' && event->getModifiers() == KeyEvent::VKEY_CTRL) {
+        // Toggle IME ON/OFF
+        if ((code == '\\' || code == 'o') && event->getModifiers() == KeyEvent::VKEY_CTRL) {
+            event->setKeycode('\\');
             window.GetCanvas()->_imeManager->processEvent(event);
             return;
         }
