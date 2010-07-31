@@ -127,7 +127,7 @@ class Pci
     Pci();
     ~Pci();
 
-    void CheckPciExist(uint16_t , uint16_t ,PciInf*);
+    void CheckPciExist(uint16_t , uint16_t , uint16_t nth, PciInf*);
     uint32_t ReadConfig(uint8_t , uint8_t , uint8_t , uint8_t , uint8_t );
     void WriteConfig(uint8_t ,uint8_t ,uint8_t ,uint8_t ,uint8_t ,uint32_t );
   private:

@@ -7,7 +7,7 @@ SOURCES = virtio.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    = -lmonalibc-imp --enable-auto-import
+ADDLINK    = -lpci -lmonalibc-imp --enable-auto-import
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

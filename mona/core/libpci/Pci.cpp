@@ -10,7 +10,7 @@
     \author  Yamami
     \version $Revision$
     \date   create:2004/10/15 update:$Date$
-	$Id$
+    $Id$
 */
 
 /*! \class Pci
@@ -60,7 +60,7 @@ Pci::Pci()
     \author Yamami
     \date   create:2004/10/15 update:$Date$
 */
-Pci::~Pci() 
+Pci::~Pci()
 {
     //ここで、I/Oを解除したいが・・・
 
@@ -78,9 +78,9 @@ Pci::~Pci()
     \return PciInf構造体へのポインタ
     \date   create:2004/10/15 update:$Date$
 */
-void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciInf) 
+void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice , uint16_t nth, PciInf* RetPciInf)
 {
-    
+
     uint8_t DeviceNo;
     uint32_t Vendor_Dev;
 
@@ -89,6 +89,7 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
 
     uint32_t BaseAd;
     uint32_t  IrqLine;
+    uint16_t numFoundDevices = 0;
 
     RetPciInf->isExist = false;
 
@@ -105,36 +106,41 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
     for(DeviceNo = 0; DeviceNo < 32 ; DeviceNo++ ){
         //ReadConfig を用いてVendorの取得
         Vendor = ReadConfig(0, DeviceNo, 0, PCI_VENDOR_ID, 2);
-        
+
         if (Vendor != 0xFFFF){
             Device = ReadConfig(0, DeviceNo, 0, PCI_DEVICE_ID, 2);
             if (Device != 0xFFFF && ChkVendor == Vendor && ChkDevice == Device){
-                //デバイスが存在する。
-                //デバイスとベンダーを結合 getPciInfName にインターフェースをあわせる。
-                Vendor_Dev = Vendor + (uint32_t)(Device << 16);
-                
-                //Baseアドレスの取得
-                BaseAd = ReadConfig(0, DeviceNo, 0, PCI_BASE_ADDRESS1, 4);
-                //IRQラインの取得  google PCI IRQ取得で検索
-                IrqLine = ReadConfig(0, DeviceNo, 0, PCI_IRQ_LINE, 1);
-                //ベンダー名称/デバイス名称の取得
-                CString VendorName;
-                CString DeviceName;
 
-                //            CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
-                
-                //返却値生成
-                RetPciInf->isExist = true;
-                RetPciInf->deviceNo = DeviceNo;
-                RetPciInf->vendor = Vendor;
-                RetPciInf->device = Device;
-                RetPciInf->vendorName = VendorName;
-                RetPciInf->deviceName = DeviceName;
-                RetPciInf->baseAdress = BaseAd;
-                RetPciInf->irqLine = IrqLine;
-                
-                //見つかった場合は、即ループを抜ける
-                break;
+                if (numFoundDevices == nth) {
+                    //デバイスが存在する。
+                    //デバイスとベンダーを結合 getPciInfName にインターフェースをあわせる。
+                    Vendor_Dev = Vendor + (uint32_t)(Device << 16);
+
+                    //Baseアドレスの取得
+                    BaseAd = ReadConfig(0, DeviceNo, 0, PCI_BASE_ADDRESS1, 4);
+                    //IRQラインの取得  google PCI IRQ取得で検索
+                    IrqLine = ReadConfig(0, DeviceNo, 0, PCI_IRQ_LINE, 1);
+                    //ベンダー名称/デバイス名称の取得
+                    CString VendorName;
+                    CString DeviceName;
+
+                    //            CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
+
+                    //返却値生成
+                    RetPciInf->isExist = true;
+                    RetPciInf->deviceNo = DeviceNo;
+                    RetPciInf->vendor = Vendor;
+                    RetPciInf->device = Device;
+                    RetPciInf->vendorName = VendorName;
+                    RetPciInf->deviceName = DeviceName;
+                    RetPciInf->baseAdress = BaseAd;
+                    RetPciInf->irqLine = IrqLine;
+
+                    //見つかった場合は、即ループを抜ける
+                    break;
+                } else {
+                    numFoundDevices++;
+                }
             }
         }
     }
@@ -145,7 +151,7 @@ void Pci::CheckPciExist(uint16_t ChkVendor , uint16_t ChkDevice ,PciInf* RetPciI
 
     //Return
     //return &RetPciInf;
-    
+
 }
 
 void Pci::WriteConfig(uint8_t bus,uint8_t device,uint8_t function,uint8_t reg,uint8_t readSize,uint32_t val)
@@ -161,7 +167,7 @@ void Pci::WriteConfig(uint8_t bus,uint8_t device,uint8_t function,uint8_t reg,ui
 
    outp32(REG_CONFIG_ADDRESS,packet.command);
    for(int i =0;i<readSize;i++){
-	  outp8(REG_CONFIG_DATA+ ((reg+i) & 0x0003), (uint8_t)((val>>(i*8)) & 0xFF ));
+      outp8(REG_CONFIG_DATA+ ((reg+i) & 0x0003), (uint8_t)((val>>(i*8)) & 0xFF ));
    }
    packet.p.enabled=0;
    outp32(REG_CONFIG_ADDRESS,packet.command);

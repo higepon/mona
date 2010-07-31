@@ -167,7 +167,7 @@ private:
     {
         PciInf pciInf;
         Pci pci;
-        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, &pciInf);
+        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_NET, 0, &pciInf);
 
         if (!pciInf.isExist) {
             return false;

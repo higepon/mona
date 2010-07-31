@@ -59,7 +59,7 @@ public:
     {
         PciInf pciInf;
         Pci pci;
-        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_BLOCK, &pciInf);
+        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_DEVICE_ID_VIRTIO_BLOCK, 0, &pciInf);
 
         _printf("block is exist %d", pciInf.isExist);
         _printf("baseAdress=%x irqLine=%d", pciInf.baseAdress & ~1, pciInf.irqLine);

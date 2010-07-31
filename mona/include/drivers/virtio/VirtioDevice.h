@@ -29,6 +29,7 @@
 #ifndef _VIRTIODEVICE_
 #define _VIRTIODEVICE_
 
+#include <pci/Pci.h>
 #include <drivers/virtio.h>
 
 class VirtioDevice
@@ -39,6 +40,13 @@ public:
 
     static VirtioDevice* probe(int type, unsigned int nth = 0)
     {
+        PciInf pciInf;
+        Pci pci;
+        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, type, &pciInf);
+
+        if (!pciInf.isExist) {
+            return NULL;
+        }
         return new VirtioDevice();
     }
 
