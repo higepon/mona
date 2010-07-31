@@ -37,7 +37,7 @@ public:
     VirtioDevice() {}
     virtual ~VirtioDevice() {}
 
-    static VirtioDevice* probe(int type, unsigned int nth)
+    static VirtioDevice* probe(int type, unsigned int nth = 0)
     {
         return new VirtioDevice();
     }
