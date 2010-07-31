@@ -2,9 +2,11 @@
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 
+#include <drivers/virtio/VirtioDevice.h>
+
 static void test_probe()
 {
-    VirtioDevice* vdev = virtio_probe(PCI_DEVICE_ID_VIRTIO_NET);
+    VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET);
     ASSERT_TRUE(vdev != NULL);
 }
 
