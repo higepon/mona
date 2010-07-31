@@ -42,12 +42,13 @@ public:
     {
         PciInf pciInf;
         Pci pci;
-        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, type, &pciInf);
+        pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, type, nth, &pciInf);
 
         if (!pciInf.isExist) {
             return NULL;
+        } else {
+            return new VirtioDevice();
         }
-        return new VirtioDevice();
     }
 
 };
