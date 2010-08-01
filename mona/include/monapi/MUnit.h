@@ -22,6 +22,9 @@
 #define MUNIT_GLOBAL_VAL(v) /* */
 #endif
 
+#define SKIP(condition) printf("MUnit:Skipped %s %s:%d\n", #condition, __FILE__, __LINE__);\
+                        logprintf("MUnit:Skipped %s %s:%d\n", #condition, __FILE__, __LINE__);
+
 #define ASSERT_TRUE(condition) {\
     if (!(condition)) {\
         printf("MUnit:ASSERT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\

@@ -71,12 +71,14 @@
     (when (#/all tests done/ text)
       (let* ([results (string-split text #\newline)]
              [passed (filter #/test passed/ results)]
-             [each-errors (filter #/MUnit:/ results)]
+             [each-errors (filter #/MUnit:[^S]/ results)]
+             [skipped (filter #/MUnit:S/ results)]
              [failed (filter #/test failed/ results)]
              [died (filter #/access denied.*T[^D].*EX5/ results)]) ;; quck hack except for TDIE.EX5
         (cond
          [(and (null? each-errors) (null? failed))
           (with-color-green
+           (for-each print skipped)
            (for-each print passed))]
          [else
           (with-color-red
