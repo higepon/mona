@@ -34,12 +34,19 @@ static void test_get_basereg()
     delete vdev;
 }
 
+static void test_get_features()
+{
+    VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK);
+    EXPECT_FALSE(vdev->hasFeature(VIRTIO_BLK_F_RO);
+}
+
 int main(int argc, char *argv[])
 {
     test_probe();
     test_probe_not_found();
     test_get_irq();
     test_get_basereg();
+    test_get_features();
 
     TEST_RESULTS(virtio);
     return 0;
