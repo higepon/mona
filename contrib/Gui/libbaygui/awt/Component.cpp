@@ -81,15 +81,10 @@ namespace baygui {
 
 	void Component::repaint()
 	{
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (this->_buffer == NULL) return;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		setFontStyle(this->fontStyle);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		paint(this->_g);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		update();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	}
 
 	void Component::update()
@@ -99,17 +94,9 @@ namespace baygui {
 
 	void Component::update(int x, int y, int w, int h)
 	{
-        logprintf("update this=%x %s %s:%d\n", this, __func__, __FILE__, __LINE__);
 		Frame* c = (Frame *)getMainWindow();
-        logprintf("my c=%x myself=%d", c, c == this);
-        logprintf("c=%x", c->getGraphics());
-        logprintf("this->buffer=%x", this->_buffer);
 		c->getGraphics()->drawImage(this->_buffer, getX(), getY());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        logprintf("%s %s:%d c==this?=%d \n", __func__, __FILE__, __LINE__, c== this);
-        logprintf("getInsets=%x", c->getInsets());
 		c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
-        logprintf("end update this=%x %s %s:%d\n", this, __func__, __FILE__, __LINE__);
 	}
 
 	Component* Component::getMainWindow()
