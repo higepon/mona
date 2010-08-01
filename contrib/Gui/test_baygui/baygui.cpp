@@ -233,7 +233,7 @@ static void test_TextField_ime_convert()
 
     keyPress(t, ' ');
     keyPress(t, KeyEvent::VKEY_ENTER);
-    EXPECT_EQ_TEXT_FIELD("藍", 1, t);
+    EXPECT_EQ_TEXT_FIELD("逢い", 1, t);
     destroyTextField(t);
 }
 
