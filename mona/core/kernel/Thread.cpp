@@ -42,8 +42,6 @@ Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondi
     ASSERT(tinfo);
     tinfo->thread = this;
 
-    logprintf("free=%d\n", km.getFreeSize());
-
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
     ASSERT(tinfo->archinfo);
