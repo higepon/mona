@@ -35,7 +35,7 @@
 class VirtioDevice
 {
 public:
-    VirtioDevice(int irq) : irq_(irq)
+    VirtioDevice(int irq, int basereg) : irq_(irq), basereg_(basereg)
     {
     }
     virtual ~VirtioDevice() {}
@@ -43,6 +43,11 @@ public:
     int getIRQ() const
     {
         return irq_;
+    }
+
+    int getBaseReg() const
+    {
+        return basereg_;
     }
 
     static VirtioDevice* probe(int type, unsigned int nth = 0)
@@ -54,13 +59,13 @@ public:
         if (!pciInf.isExist) {
             return NULL;
         } else {
-            return new VirtioDevice(pciInf.irqLine);
+            return new VirtioDevice(pciInf.irqLine, pciInf.baseAdress);
         }
     }
 
 private:
     const int irq_;
-
+    const int basereg_;
 };
 
 
