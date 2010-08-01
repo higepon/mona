@@ -385,7 +385,3 @@ void ImeManager::processEvent(Event *event)
     }
 }
 
-const char* ImeManager::getFixedString() const
-{
-    return inputBuffer;
-}

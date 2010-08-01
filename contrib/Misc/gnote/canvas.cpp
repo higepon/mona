@@ -70,6 +70,7 @@ namespace gnote {
         g->setColor(Color::blue);
         g->drawLine(gridWidth * 4 + 4, gridHeight - 1, gridWidth * 4 + 4, getHeight());
         g->drawLine(gridWidth * 4 + 4, gridHeight - 1, getWidth(), gridHeight - 1);
+
         //
         if (cursol && document) {
             DrawRuler(g, *document, *cursol);
@@ -79,7 +80,10 @@ namespace gnote {
             DrawDocument(g, *document, *cursol);
             DrawCaretLine(g, *cursol);
             if (getMainWindow()->getFocused() && cursol->visible) {
-                _imeManager->setBounds((ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth, (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight, 100, 100);
+                int cursorX = (ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth;
+                int cursolY = (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight;
+                int width = _imeManager->getStringWidth();
+                _imeManager->setBounds(cursorX, cursolY, width, gridHeight);
                 DrawCaret(g, *cursol);
             }
         }
