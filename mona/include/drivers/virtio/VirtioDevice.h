@@ -54,7 +54,7 @@ public:
         if (!pciInf.isExist) {
             return NULL;
         } else {
-            return new VirtioDevice(0);
+            return new VirtioDevice(pciInf.irqLine);
         }
     }
 
