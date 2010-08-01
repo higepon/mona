@@ -63,8 +63,6 @@
 ;  (ls "/MEM")
   (mosh))
 
-
-
 (for-each call-process *tests-on-cui*)
 (if (not mona-gui-auto-start)
     (test-end))

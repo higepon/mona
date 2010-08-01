@@ -60,6 +60,7 @@ private:
 public:
     ImeManager();
     virtual ~ImeManager();
+    virtual const char* getFixedString() const;
     virtual bool isOn() const { return isOn_; }
     virtual void clearBuffer(char *buffer);
     virtual void insertCharacter(char *buffer, char c);
@@ -68,15 +69,6 @@ public:
     virtual void setParent(Component *parent);
     virtual void paint(Graphics* g);
     virtual void processEvent(Event *event);
-    virtual int getStringWidth() const
-    {
-        // if (translateBuffer == NULL) {
-        //     return 1;
-        // } else {
-        //     return strlen(translateBuffer);
-        // }
-        return 10;
-    }
 };
 
 #endif // _IMEMANAGER_H_INCLUDED_

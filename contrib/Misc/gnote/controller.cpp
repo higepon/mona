@@ -224,9 +224,6 @@ namespace gnote {
 #define EMACS_KEY_BIND
     //
     void Controller::ProcessKeyPressedEvent(KeyEvent* event) {
-
-       logprintf("ime is %d\n", window.GetCanvas()->_imeManager->isOn());
-
         int code = event->getKeycode();
         bool done = false;
 
