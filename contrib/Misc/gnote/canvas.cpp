@@ -81,7 +81,7 @@ namespace gnote {
             if (getMainWindow()->getFocused() && cursol->visible) {
                 int cursorX = (ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth;
                 int cursolY = (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight;
-                int width = 100;
+                int width = _imeManager->isOn() ? 100 : 0;
                 _imeManager->setBounds(cursorX, cursolY, width, gridHeight);
                 DrawCaret(g, *cursol);
             }
