@@ -95,19 +95,15 @@ namespace baygui {
 
 	void Frame::repaint()
 	{
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (this->__g == NULL) return;
-		                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		/* 矩形ウィンドウ */
 		int w = getWidth();
 		int h = getHeight();
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);		
 		/* 外枠 */
 		__g->setColor(Color::lightGray);
 		__g->fillRect(0, 0, w, h);
 		__g->setColor(Color::black);
 		__g->drawRect(0, 0, w, h);
-		                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		/* 内枠 */
 		__g->setColor(Color::black);
 		__g->drawRect(5, 21, w - 10, h - 26);
@@ -152,7 +148,6 @@ namespace baygui {
 			__g->setColor(Color::gray);
 		}
 		__g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
-		                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		Container::repaint();
 	}
 }

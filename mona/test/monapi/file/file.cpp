@@ -60,9 +60,7 @@ static void testFileRead_UTF8FileName()
 
 static bool fileExistInDirectory(monapi_directoryinfo* entry, int num, const std::string& file)
 {
-    logprintf("dump start\n");
     for (int i = 0; i < num; i++) {
-        logprintf("<%s>\n", entry[i].name);
         if (std::string(entry[i].name) == file) {
             return true;
         }

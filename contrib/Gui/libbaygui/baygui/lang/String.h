@@ -84,6 +84,7 @@ namespace baygui {
 		
 		/** ワイド文字列の長さを得る */
 		int length() const;
+		 int lengthBytes() const { return _len; }
 		
 		/** 指定された順番のワイド文字を得る */
 		unsigned int charAt(int index) const;

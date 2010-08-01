@@ -211,6 +211,10 @@ namespace gnote {
         //
         window.setTimer(TIMER_INTERVAL);
         counter += TIMER_INTERVAL;
+
+        // // disable blinking cursor when IME is enabled.
+        // if (!window.GetCanvas()->_imeManager->isOn()) {
+
         if (counter > BLINK_TIMER_INTERVAL) {
             cursol.visible = !cursol.visible;
             // hum
@@ -227,8 +231,9 @@ namespace gnote {
         int code = event->getKeycode();
         bool done = false;
 
-                // Toggle IME ON/OFF
-        if (code == '\\' && event->getModifiers() == KeyEvent::VKEY_CTRL) {
+        // Toggle IME ON/OFF
+        if ((code == '\\' || code == 'o') && event->getModifiers() == KeyEvent::VKEY_CTRL) {
+            event->setKeycode('\\');
             window.GetCanvas()->_imeManager->processEvent(event);
             return;
         }
@@ -700,7 +705,7 @@ namespace gnote {
         for(i = 1; i <= max; i++)
         {
             String* line = d.GetLine(i);
-            fwrite(line->getBytes(), 1, line->length(), fp);
+            fwrite(line->getBytes(), 1, line->lengthBytes(), fp);
         }
         fclose(fp);
         return true;

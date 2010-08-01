@@ -408,7 +408,6 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_
         /* next path table entry */
         position += pathEntry->length + sizeof(PathTableEntry) + (pathEntry->length % 2 ? 1 : 0);
     }
-    logprintf("END");
 }
 
 string ISO9660FileSystem::canonicalizeName(const char* name, int nameLen)
@@ -579,14 +578,6 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
             continue;
         }
-        for (int i = 0; i < iEntry->name_len; i++) {
-            logprintf("[%d]", ((const char*)iEntry->name)[i]);
-        }
-        logprintf("\n");
-        for (int i = 0; i < iEntry->name_len; i++) {
-            logprintf("%c", ((const char*)iEntry->name)[i]);
-        }
-        logprintf("\n");
         string name = canonicalizeName(iEntry->name, iEntry->name_len);
         if (iEntry->directory == 0 && fileName == name)
         {

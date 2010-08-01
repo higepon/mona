@@ -43,7 +43,6 @@ static void xstrncpy(char *dst, char *src, int len)
 /** コンストラクタ */
 ImeManager::ImeManager() : isOn_(false)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     clearBuffer(inputBuffer);
     clearBuffer(translateBuffer);
     _imeEvent = new Event(Event::Event::IME_SETCONTEXT, this);
@@ -51,7 +50,6 @@ ImeManager::ImeManager() : isOn_(false)
     kanjiListPtr = -1;
     // TODO:To resized with setBounds by parent, we need enoug w x h for graphic buffer.
     setBounds(0, 0, 100, 100);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 /** デストラクタ */
@@ -63,14 +61,12 @@ ImeManager::~ImeManager()
 /** 指定したバッファーをクリアする */
 void ImeManager::clearBuffer(char *buffer)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     memset(buffer, 0, MAX_TEXT_LEN);
 }
 
 /** 指定したバッファーに文字を追加する */
 void ImeManager::insertCharacter(char *buffer, char c)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (strlen(buffer) >= MAX_TEXT_LEN - 1) return;
     buffer[strlen(buffer)] = c;
 }
@@ -78,7 +74,6 @@ void ImeManager::insertCharacter(char *buffer, char c)
 /** 指定したバッファーに文字列を追加する */
 void ImeManager::insertString(char *buffer, const char *str)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int len = strlen(buffer);
     for(int i = len; i < len + (int)strlen(str); i++) {
         if (i >= MAX_TEXT_LEN - 1) return;
@@ -92,7 +87,6 @@ void ImeManager::insertString(char *buffer, const char *str)
  */
 int ImeManager::deleteCharacter(char *buffer)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int len = strlen(buffer);
 
     // NULLチェック
@@ -119,14 +113,12 @@ int ImeManager::deleteCharacter(char *buffer)
 /** かな→漢字変換 */
 bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // NULLチェック
     if (imesvrID == THREAD_UNKNOWN) return false;
 
     MessageInfo info;
     //printf("ImeManager: connected %s\n", IMESERVER_NAME);
     MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANJI, 0, 0, 0, str);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (info.arg2 > 0) {
         bool flag = true;
         while (flag) {
@@ -138,9 +130,7 @@ bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
                     break;
                 case MSG_IMESERVER_KANJI:
                     //printf("%d: %s\n", info.arg2, info.str);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     MonAPI::Message::reply(&info);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     result->add(info.str);
                     break;
                 case MSG_IMESERVER_ENDKANJI:
@@ -165,7 +155,6 @@ bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
  */
 bool ImeManager::getKana(char *str, char *result)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // NULLチェック
     if (imesvrID == THREAD_UNKNOWN) return false;
 
@@ -183,14 +172,12 @@ bool ImeManager::getKana(char *str, char *result)
 
 /** 親部品登録 */
 void ImeManager::setParent(Component *parent) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     this->parent = parent;
 }
 
 /** 漢字リストをクリアする */
 void ImeManager::clearKanjiList()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 漢字リスト初期化
     kanjiListPtr = -1;
     int I = kanjiList.size();
@@ -202,7 +189,6 @@ void ImeManager::clearKanjiList()
 /** すべての内部バッファーをクリアする */
 void ImeManager::clearBuffer()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     clearBuffer(inputBuffer);
     clearBuffer(translateBuffer);
 }
@@ -210,21 +196,19 @@ void ImeManager::clearBuffer()
 /** 再描画 */
 void ImeManager::paint(Graphics* g)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int fw1 = 0, fw2 = 0;
     int fh  = getFontMetrics()->getHeight(" ");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g->setColor(255, 255, 255);
     g->fillRect(0, 0, getWidth(), getHeight());
     // 塗りつぶし
     g->setColor(getBackground());
-    if (isOn_) {
-        g->setColor(0, 0, 255);
-    } else {
-        g->setColor(255, 0, 0);
-    }
-    logprintf("paint ime w=%d\n", getWidth());
-    g->drawRect(0, 0, getWidth(), getHeight());
+    // if (isOn_) {
+    //     g->setColor(0, 0, 255);
+    // } else {
+    //     g->setColor(255, 0, 0);
+    // }
+    g->setColor(255, 255, 255);
+    g->fillRect(0, 0, getWidth(), getHeight());
 
     // 確定文字列
     //if (strlen(decideBuffer) > 0) {
@@ -259,10 +243,8 @@ void ImeManager::paint(Graphics* g)
 /** イベント処理 */
 void ImeManager::processEvent(Event *event)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // キー押下
     if (event->getType() == Event::KEY_PRESSED) {
-        logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, imesvrID);
         int keycode = ((KeyEvent *)event)->getKeycode();
         int modifiers = ((KeyEvent *)event)->getModifiers();
 
@@ -270,18 +252,12 @@ void ImeManager::processEvent(Event *event)
         if (imesvrID != THREAD_UNKNOWN &&
             ((modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') ||
             (modifiers == KeyEvent::VKEY_LSHIFT && keycode == ' '))) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             clearBuffer();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             clearKanjiList();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             isOn_ = !isOn_;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             repaint();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // バックスペース
         } else if (keycode == KeyEvent::VKEY_BACKSPACE) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             int len = 0;
 
             if (0 <= kanjiListPtr && kanjiListPtr < kanjiList.size() - 1) {
@@ -301,13 +277,12 @@ void ImeManager::processEvent(Event *event)
                     repaint();
                 // 親部品の確定文字列を削除
                 } else {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     _imeEvent->setType(Event::IME_BACKSPACE);
                     parent->dispatchEvent(_imeEvent);
                 }
             }
         // 変換
-        } else if (keycode == ' ' && strlen(translateBuffer) > 0) {
+        } else if ((keycode == ' ' || keycode == 'n' && modifiers == KeyEvent::VKEY_CTRL) && strlen(translateBuffer) > 0) {
             if (kanjiListPtr == -1) {
                 // 変換成功
                 if (getKanji(translateBuffer, &kanjiList) == true) {
@@ -327,9 +302,21 @@ void ImeManager::processEvent(Event *event)
                 insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
             }
             repaint();
+        } else if (keycode == 'p' && modifiers == KeyEvent::VKEY_CTRL) {
+            if (kanjiListPtr != -1) {
+                if (kanjiListPtr == kanjiList.size() - 1) {
+                    kanjiListPtr = -1;
+                }
+                clearBuffer();
+                kanjiListPtr--;
+                if (kanjiListPtr < 0) {
+                    kanjiListPtr = kanjiList.size() - 1;
+                }
+                insertString(translateBuffer, (const char *)kanjiList.get(kanjiListPtr));
+                repaint();
+            }
         // 確定
         } else if (keycode == KeyEvent::VKEY_ENTER) {
-            logprintf("ENTER! %s %s:%d\n", __func__, __FILE__, __LINE__);
             if (strlen(translateBuffer) == 0) {
                 clearBuffer();
                 clearKanjiList();
@@ -340,7 +327,6 @@ void ImeManager::processEvent(Event *event)
             } else {
                 // １文字送信
                 for (int i = 0; i < (int)strlen(translateBuffer); i++) {
-                    logprintf("char send[%x] \n", translateBuffer[i]);
                     _imeEvent->setType(Event::IME_CHAR | (translateBuffer[i] << 16));
                     parent->dispatchEvent(_imeEvent);
                 }

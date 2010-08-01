@@ -1,4 +1,4 @@
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
@@ -20,19 +20,24 @@
 
 (define (test-end) (print "all tests done"))
 
+(define (gnote)
+  (call-process "/APPS/FRECV.EX5 GNOTE.EX5")
+  (call-process "/MEM/GNOTE.EX5")
+  (gnote))
+
 (define (on-gui-start)
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
 ;  (start-process "/APPS/NET.EX5")
 ;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
 ;  (start-process "/APPS/BAYGUI/MINE.EX5")
-  (start-process "/APPS/BAYGUI/GNOTE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
-;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
+(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
 ;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
 ;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
+;; (gnote)
 ;  (w3m-auto-pilot)
 )
 

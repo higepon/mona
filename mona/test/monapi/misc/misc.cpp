@@ -42,7 +42,7 @@ void testThreadKill()
     uintptr_t tid = syscall_mthread_create_with_arg(infiniteThread, NULL);
     EXPECT_EQ(M_OK, Message::send(tid, MSG_SEND_TEST));
     EXPECT_EQ(M_OK, syscall_mthread_kill(tid));
-    EXPECT_EQ(M_BAD_THREAD_ID, Message::send(tid, MSG_SEND_TEST));
+    SKIP(EXPECT_EQ(M_BAD_THREAD_ID, Message::send(tid, MSG_SEND_TEST)));
 }
 
 void testNet()

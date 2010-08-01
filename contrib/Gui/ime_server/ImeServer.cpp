@@ -25,7 +25,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 #include <servers/ime.h>
-
+#include <baygui/lang/String.h>
 #include "ImeServer.h"
 #include "rule_roma.h"
 
@@ -75,6 +75,8 @@ int ImeServer::getKanji(char *yomi, HList<MonAPI::CString>* result)
     srcPtr = dstPtr = 0;
     memset(src, 0, MAX_TEXT_LEN);
     memset(dst, 0, MAX_TEXT_LEN);
+
+    result->add(toKatakana(yomi).getBytes());
     for (i = 0; i < basicDicSize; i++) {
         if (basicDic[i] != '\t' && srcRead == false) {
             src[srcPtr++] = basicDic[i];
@@ -102,6 +104,23 @@ int ImeServer::getKanji(char *yomi, HList<MonAPI::CString>* result)
     result->add(yomi);
     return result->size();
 }
+
+baygui::String ImeServer::toKatakana(const char* kana)
+{
+    baygui::String src(kana);
+    baygui::String ret;
+    for (int i = 0; i < src.length(); i++) {
+        unsigned int ch = src.charAt(i);
+        ch += 0x60; // Kana -> Katakana
+        uint8_t buf[4];
+        int len = MonAPI::Encoding::ucs4ToUtf8(ch, buf);
+        for (int j = 0; j < len; j++) {
+            ret += buf[j];
+        }
+    }
+    return ret;
+}
+
 
 /**
  漢字→よみ逆変換

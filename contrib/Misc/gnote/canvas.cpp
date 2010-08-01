@@ -29,6 +29,9 @@
 #include "bmp.h"
 #include "canvas.hpp"
 
+// ugly
+bool gImeIsOn = false;
+
 namespace gnote {
 
     // :-)
@@ -79,6 +82,10 @@ namespace gnote {
             DrawDocument(g, *document, *cursol);
             DrawCaretLine(g, *cursol);
             if (getMainWindow()->getFocused() && cursol->visible) {
+                int cursorX = (ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth;
+                int cursolY = (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight;
+                int width = _imeManager->isOn() ? 100 : 0;
+                _imeManager->setBounds(cursorX, cursolY, width, gridHeight);
                 DrawCaret(g, *cursol);
             }
         }
