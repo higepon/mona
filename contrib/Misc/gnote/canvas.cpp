@@ -79,7 +79,10 @@ namespace gnote {
             DrawDocument(g, *document, *cursol);
             DrawCaretLine(g, *cursol);
             if (getMainWindow()->getFocused() && cursol->visible) {
-                _imeManager->setBounds((ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth, (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight, 100, 100);
+                int cursorX = (ToCanvasX(cursol->wy, cursol->wx, cursol->left) + 4) * gridWidth;
+                int cursolY = (ToCanvasY(cursol->wy, cursol->top) + 1) * gridHeight;
+                int width = 100;
+                _imeManager->setBounds(cursorX, cursolY, width, gridHeight);
                 DrawCaret(g, *cursol);
             }
         }
