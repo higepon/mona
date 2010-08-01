@@ -4,6 +4,7 @@
 #include <monapi/cmemoryinfo.h>
 #include <monapi/Message.h>
 #include <monapi/MemoryMap.h>
+#include <monapi.h>
 
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 
@@ -32,13 +33,13 @@ intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int 
     if (self->Handle == 0)
     {
         if (prompt) printf("ERROR\n");
-        _printf("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
+        monapi_warn("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         return M_MEMORY_MAP_ERROR;
     }
     if (monapi_cmemoryinfo_map(self) != M_OK)
     {
         if (prompt) printf("ERROR\n");
-        _printf("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
+        monapi_warn("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
         return M_MEMORY_MAP_ERROR;
     }
 
@@ -54,10 +55,9 @@ intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
         return M_OK;
     }
 
-    _printf("%s:%d: map error\n", __FILE__, __LINE__);
-    _logprintf("map error self->Handle=%x, %s:%d:(%s)\n", self->Handle, __FILE__, __LINE__, __func__);
+    monapi_warn("map error self->Handle=%x, %s:%d:(%s)\n", self->Handle, __FILE__, __LINE__, __func__);
     if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
-        _logprintf("unmap failed on monapi_cmemoryinfo_map\n");
+        monapi_warn("unmap failed on monapi_cmemoryinfo_map\n");
     }
     self->Handle = 0;
     self->Size   = 0;
@@ -67,7 +67,7 @@ intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
 void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
 {
     if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
-        _logprintf("unmap failed on monapi_cmemoryinfo_dispose\n");
+        monapi_warn("unmap failed on monapi_cmemoryinfo_dispose\n");
     }
     if (self->Owner != syscall_get_tid())
     {

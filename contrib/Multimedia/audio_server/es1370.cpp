@@ -272,7 +272,7 @@ static error_t es1370_device_init(struct es1370_driver *d)
 
 //  _printf("init pci");
     d->pci = new Pci;
-    d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, &d->pciinfo);
+    d->pci->CheckPciExist(ES1370_VENDOR_ID, ES1370_DEVICE_ID, 0, &d->pciinfo);
     if(!d->pciinfo.isExist) return NG;
     d->baseIO = d->pciinfo.baseAdress & ~1;
 
