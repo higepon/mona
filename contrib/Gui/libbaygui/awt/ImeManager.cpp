@@ -218,13 +218,14 @@ void ImeManager::paint(Graphics* g)
     g->fillRect(0, 0, getWidth(), getHeight());
     // 塗りつぶし
     g->setColor(getBackground());
-    if (isOn_) {
-        g->setColor(0, 0, 255);
-    } else {
-        g->setColor(255, 0, 0);
-    }
+    // if (isOn_) {
+    //     g->setColor(0, 0, 255);
+    // } else {
+    //     g->setColor(255, 0, 0);
+    // }
+    g->setColor(255, 255, 255);
     logprintf("paint ime w=%d\n", getWidth());
-    g->drawRect(0, 0, getWidth(), getHeight());
+    g->fillRect(0, 0, getWidth(), getHeight());
 
     // 確定文字列
     //if (strlen(decideBuffer) > 0) {

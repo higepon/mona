@@ -211,6 +211,10 @@ namespace gnote {
         //
         window.setTimer(TIMER_INTERVAL);
         counter += TIMER_INTERVAL;
+
+        // // disable blinking cursor when IME is enabled.
+        // if (!window.GetCanvas()->_imeManager->isOn()) {
+
         if (counter > BLINK_TIMER_INTERVAL) {
             cursol.visible = !cursol.visible;
             // hum

@@ -29,6 +29,9 @@
 #include "bmp.h"
 #include "canvas.hpp"
 
+// ugly
+bool gImeIsOn = false;
+
 namespace gnote {
 
     // :-)
