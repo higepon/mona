@@ -282,7 +282,7 @@ void ImeManager::processEvent(Event *event)
                 }
             }
         // 変換
-        } else if (keycode == ' ' && strlen(translateBuffer) > 0) {
+        } else if ((keycode == ' ' || keycode == 'n' && modifiers == KeyEvent::VKEY_CTRL) && strlen(translateBuffer) > 0) {
             if (kanjiListPtr == -1) {
                 // 変換成功
                 if (getKanji(translateBuffer, &kanjiList) == true) {
@@ -302,6 +302,19 @@ void ImeManager::processEvent(Event *event)
                 insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
             }
             repaint();
+        } else if (keycode == 'p' && modifiers == KeyEvent::VKEY_CTRL) {
+            if (kanjiListPtr != -1) {
+                if (kanjiListPtr == kanjiList.size() - 1) {
+                    kanjiListPtr = -1;
+                }
+                clearBuffer();
+                kanjiListPtr--;
+                if (kanjiListPtr < 0) {
+                    kanjiListPtr = kanjiList.size() - 1;
+                }
+                insertString(translateBuffer, (const char *)kanjiList.get(kanjiListPtr));
+                repaint();
+            }
         // 確定
         } else if (keycode == KeyEvent::VKEY_ENTER) {
             if (strlen(translateBuffer) == 0) {

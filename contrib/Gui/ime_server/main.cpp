@@ -25,6 +25,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 #include <stdio.h>
+#include <baygui/lang/String.h>
 #include "ImeServer.h"
 
 int main(int argc, char* argv[])

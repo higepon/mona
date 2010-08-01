@@ -41,6 +41,7 @@ protected:
     virtual bool getYomi(char *kanji, char *result);
     virtual bool getKana(char *inputString, char *result);
     virtual bool getRoman(char *kana, char *result);
+    virtual baygui::String toKatakana(const char* kana);
 
 public:
     ImeServer();
