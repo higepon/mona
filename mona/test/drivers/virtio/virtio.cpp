@@ -18,10 +18,19 @@ static void test_probe_not_found()
     ASSERT_TRUE(vdev == NULL);
 }
 
+static void test_get_irq()
+{
+    VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET);
+    int irq = vdev->getIRQ();
+    EXPECT_TRUE(irq >= 0 && irq <= 15);
+    delete vdev;
+}
+
 int main(int argc, char *argv[])
 {
     test_probe();
     test_probe_not_found();
+    test_get_irq();
 
     TEST_RESULTS(virtio);
     return 0;
