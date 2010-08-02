@@ -14,8 +14,8 @@ static void test_probe()
 
 static void test_probe_not_found()
 {
-    // There is only one virtio net device.
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET, 1));
+    // There is only two virtio net devices.
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET, 2));
     ASSERT_TRUE(vdev.get() == NULL);
 }
 
@@ -42,8 +42,12 @@ static void test_get_features()
 
 static void test_get_config()
 {
-   boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
-   vdev->getConfig(dest, offset, length);
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    struct virtio_blk_config config;
+    vdev->getConfig(&config, 0, sizeof(struct virtio_blk_config));
+    const int SECTOR_SIZE = 512;
+    const int FLOPPY_CAPACITY = 1440 * 1024;
+    EXPECT_EQ(FLOPPY_CAPACITY / SECTOR_SIZE, config.capacity);
 }
 
 int main(int argc, char *argv[])
@@ -54,7 +58,7 @@ int main(int argc, char *argv[])
     test_get_irq();
     test_get_basereg();
     test_get_features();
-
+    test_get_config();
     TEST_RESULTS(virtio);
     return 0;
 }

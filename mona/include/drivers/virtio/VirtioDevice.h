@@ -55,6 +55,14 @@ public:
         return basereg_;
     }
 
+    void getConfig(void* dest, int offset, int sizeByte)
+    {
+        uint8_t* p = (uint8_t*)dest;
+        for (int i = 0; i < sizeByte; i++) {
+            p[i] = inp8(basereg_ + VIRTIO_PCI_CONFIG + i + offset);
+        }
+    }
+
     bool hasFeature(int feature) const
     {
         return getFeatures() & (1 << feature);
