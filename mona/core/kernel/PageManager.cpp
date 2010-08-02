@@ -373,12 +373,12 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
         if (stackOver)
         {
             g_console->printf("\nstack overflow \n\n access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, current->getName(), g_currentThread->process->getThreadIndex(g_currentThread->thread), eip);
-            logprintf("\ntack overflow \n\n access denied.address = %x Process %s killed  eip=%x", address, current->getName(), eip);
+            logprintf("\ntack overflow \n\n access denied.address = %x Process %s killed  eip=%x\n", address, current->getName(), eip);
         }
         else
         {
             g_console->printf("access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, current->getName(), g_currentThread->process->getThreadIndex(g_currentThread->thread), eip);
-            logprintf("access denied.address = %x Process %s killed  eip=%x", address, current->getName(), eip);
+            logprintf("access denied.address = %x Process %s killed  eip=%x\n", address, current->getName(), eip);
         }
 
         ThreadOperation::kill();

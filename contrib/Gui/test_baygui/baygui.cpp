@@ -248,7 +248,6 @@ static void test_TextField_remove_multi_byte_backspace()
     EXPECT_EQ_TEXT_FIELD("あい", 2, t);
 
     toggleIme(t);
-    logprintf("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
     keyPress(t, KeyEvent::VKEY_BACKSPACE);
     EXPECT_EQ(1, t->getCursor());
     EXPECT_STR_EQ("あ", t->getText());
