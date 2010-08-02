@@ -4,9 +4,6 @@
 
 #include <drivers/virtio/VirtioDevice.h>
 #include <drivers/virtio/virtio_blk.h>
-
-#include <limits.h>
-#define BOOST_STRICT_CONFIG
 #include <boost/scoped_ptr.hpp>
 
 static void test_probe()
