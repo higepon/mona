@@ -40,6 +40,12 @@ static void test_get_features()
     EXPECT_EQ(false, vdev->hasFeature(VIRTIO_BLK_F_RO));
 }
 
+static void test_get_config()
+{
+   boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
+   vdev->getConfig(dest, offset, length);
+}
+
 int main(int argc, char *argv[])
 {
     syscall_get_io();
