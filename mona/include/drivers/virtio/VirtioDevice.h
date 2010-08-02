@@ -30,15 +30,20 @@
 #define _VIRTIODEVICE_
 
 #include <pci/Pci.h>
-#include <drivers/virtio.h>
+#include <monapi/io.h>
+#include <drivers/virtio/virtio.h>
 
 class VirtioDevice
 {
 public:
-    VirtioDevice(int irq, int basereg) : irq_(irq), basereg_(basereg)
+    VirtioDevice(int irq, int basereg) :
+        irq_(irq),
+        basereg_(basereg)
     {
     }
-    virtual ~VirtioDevice() {}
+    virtual ~VirtioDevice()
+    {
+    }
 
     int getIRQ() const
     {
@@ -50,20 +55,30 @@ public:
         return basereg_;
     }
 
+    bool hasFeature(int feature) const
+    {
+        return getFeatures() & (1 << feature);
+    }
+
     static VirtioDevice* probe(int type, unsigned int nth = 0)
     {
         PciInf pciInf;
         Pci pci;
         pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, type, nth, &pciInf);
 
-        if (!pciInf.isExist) {
-            return NULL;
+        if (pciInf.isExist) {
+            return new VirtioDevice(pciInf.irqLine, pciInf.baseAdress & ~1);
         } else {
-            return new VirtioDevice(pciInf.irqLine, pciInf.baseAdress);
+            return NULL;
         }
     }
 
 private:
+    uint32_t getFeatures() const
+    {
+        return inp32(basereg_ + VIRTIO_PCI_HOST_FEATURES);
+    }
+
     const int irq_;
     const int basereg_;
 };

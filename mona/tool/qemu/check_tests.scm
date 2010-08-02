@@ -76,7 +76,7 @@
              [failed (filter #/test failed/ results)]
              [died (filter #/access denied.*T[^D].*EX5/ results)]) ;; quck hack except for TDIE.EX5
         (cond
-         [(and (null? each-errors) (null? failed))
+         [(and (null? each-errors) (null? failed) (null? died))
           (with-color-green
            (for-each print skipped)
            (for-each print passed))]
