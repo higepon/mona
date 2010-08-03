@@ -78,7 +78,7 @@ public:
         return getFeatures() & (1 << feature);
     }
 
-    bool tryActivateQueue(int queueIndex)
+    intptr_t tryActivateQueue(int queueIndex)
     {
         // Select the queue to use.
         outp16(basereg_ + VIRTIO_PCI_QUEUE_SEL, queueIndex);
