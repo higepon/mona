@@ -54,7 +54,7 @@ static void test_get_config()
 static void test_get_status()
 {
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    uint8_t status = 0xff; //
+    uint8_t status = 0xff;
     status = vdev->getStatus();
     EXPECT_TRUE(status != 0xff);
 }
@@ -77,8 +77,9 @@ static void test_find_vq()
 
 static void test_contigous_memory()
 {
-    ContigousMemory* m = ContigousMemory::allocate(5000);
+    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
     ASSERT_TRUE(m != NULL);
+    ASSERT_TRUE(m->get() != NULL);
     uintptr_t paddr1 = syscall_get_physical_address((uintptr_t)m->get());
     uintptr_t paddr2 = syscall_get_physical_address((uintptr_t)m->get() + PAGE_SIZE);
     EXPECT_EQ(0, paddr1 % PAGE_SIZE);
@@ -97,6 +98,7 @@ int main(int argc, char *argv[])
     test_reset();
     test_find_vq();
     test_contigous_memory();
+
     TEST_RESULTS(virtio);
     return 0;
 }

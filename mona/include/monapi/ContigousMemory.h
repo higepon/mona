@@ -44,14 +44,6 @@ private:
     {
     }
 
-    virtual ~ContigousMemoryImpl()
-    {
-        // syscall_deallocate_contigous(laddress_, pageNum_);
-        // for (int i = 0; i < pageNum_; i++) {
-        //     pagesMap.clear(pageStart_ + i);
-        // }
-    }
-
     uintptr_t laddress_;
     int pageStart_;
     int pageNum_;
@@ -60,6 +52,15 @@ private:
     static BitMap pagesMap;
 
 public:
+
+    virtual ~ContigousMemoryImpl()
+    {
+        syscall_deallocate_contiguous(laddress_, pageNum_);
+        for (int i = 0; i < pageNum_; i++) {
+            pagesMap.clear(pageStart_ + i);
+        }
+    }
+
     static ContigousMemoryImpl* allocate(int size)
     {
         int pageNum = (size + MAP_PAGE_SIZE - 1) / MAP_PAGE_SIZE;
@@ -76,12 +77,11 @@ public:
         }
 
         return new ContigousMemoryImpl(laddress, found, pageNum);
-        return NULL;
     }
 
     void* get() const
     {
-        return NULL;
+        return (void*)laddress_;
     }
 };
 

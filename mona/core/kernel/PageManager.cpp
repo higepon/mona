@@ -115,9 +115,36 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
     return M_OK;
 }
 
-void PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
+intptr_t PageManager::deallocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum)
 {
-    returnPages(directory, laddress, pageNum * ARCH_PAGE_SIZE);
+    if (laddress < SHARED_MEMORY_REGION_START || laddress > SHARED_MEMORY_REGION_END) {
+        return M_BAD_ADDRESS;
+    }
+
+    if ((laddress % ARCH_PAGE_SIZE) != 0) {
+        return M_BAD_ADDRESS;
+    }
+    for (int i = laddress / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < pageNum; i++) {
+
+        if (!isPresent(directory[i])) {
+            continue;
+        }
+        PageEntry* table = getTableAt(directory, i);
+        LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
+        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
+            if (!isPresent(table[j])) {
+                continue;
+            }
+            LinearAddress linearAddress = baseLinerAddress + ARCH_PAGE_SIZE * j;
+            if (linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_) {
+                continue;
+            }
+            PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
+            returnPhysicalPage(address);
+        }
+        returnPageTable(table);
+    }
+    return M_OK;
 }
 
 
@@ -189,11 +216,6 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
     returnPageTable(directory);
 
     return;
-}
-
-void PageManager::returnPages(PageEntry* directory, LinearAddress address, uint32_t size)
-{
-    ASSERT(false); // TODO
 }
 
 void PageManager::returnPageTable(PageEntry* table)

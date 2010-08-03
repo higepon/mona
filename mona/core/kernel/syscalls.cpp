@@ -813,14 +813,14 @@ void syscall_entrance()
         break;
     }
 
-    case SYSTEM_CALL_FREE_PAGES:
-    {
-        uint32_t address = SYSTEM_CALL_ARG_1;
-        uint32_t size    = SYSTEM_CALL_ARG_2;
+    // case SYSTEM_CALL_FREE_PAGES:
+    // {
+    //     uint32_t address = SYSTEM_CALL_ARG_1;
+    //     uint32_t size    = SYSTEM_CALL_ARG_2;
 
-        g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
-        break;
-    }
+    //     g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
+    //     break;
+    // }
 
     case SYSTEM_CALL_GET_MEMORY_INFO:
     {

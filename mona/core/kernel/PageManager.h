@@ -32,12 +32,11 @@ class PageManager {
     void returnPhysicalPage(PhysicalAddress address);
     void returnPhysicalPages(PageEntry* directory);
     void returnPageTable(PageEntry* table);
-    void returnPages(PageEntry* directory, LinearAddress address, uint32_t size);
     uint8_t* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
     void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
     intptr_t allocateContiguous(PageEntry* directory, LinearAddress laddress, int pageNum);
-    void deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
+    intptr_t deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 
     int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser);
