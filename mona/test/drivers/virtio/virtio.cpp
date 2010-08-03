@@ -86,6 +86,18 @@ static void test_contigous_memory()
     EXPECT_EQ(paddr1 + PAGE_SIZE, paddr2);
 }
 
+static void test_contigous_memory_laddress_should_be_reused()
+{
+    ContigousMemory* m1 = ContigousMemory::allocate(5000);
+    uintptr_t paddr1 = syscall_get_physical_address((uintptr_t)m1);
+    delete m1;
+
+    ContigousMemory* m2 = ContigousMemory::allocate(5000);
+    uintptr_t paddr2 = syscall_get_physical_address((uintptr_t)m2);
+    delete m2;
+    EXPECT_EQ(paddr2, paddr1);
+}
+
 int main(int argc, char *argv[])
 {
     test_probe();
@@ -98,6 +110,7 @@ int main(int argc, char *argv[])
     test_reset();
     test_find_vq();
     test_contigous_memory();
+    test_contigous_memory_laddress_should_be_reused();
 
     TEST_RESULTS(virtio);
     return 0;
