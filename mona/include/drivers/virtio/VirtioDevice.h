@@ -63,6 +63,11 @@ public:
         }
     }
 
+    uint8_t getStatus() const
+    {
+        return inp8(basereg_ + VIRTIO_PCI_STATUS);
+    }
+
     bool hasFeature(int feature) const
     {
         return getFeatures() & (1 << feature);

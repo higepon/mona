@@ -50,15 +50,24 @@ static void test_get_config()
     EXPECT_EQ(FLOPPY_CAPACITY / SECTOR_SIZE, config.capacity);
 }
 
+static void test_get_status()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    uint8_t status = 0xff; //
+    status = vdev->getStatus();
+    logprintf("status=%d\n", status);
+    EXPECT_TRUE(status != 0xff);
+}
+
 int main(int argc, char *argv[])
 {
-    syscall_get_io();
     test_probe();
     test_probe_not_found();
     test_get_irq();
     test_get_basereg();
     test_get_features();
     test_get_config();
+    test_get_status();
     TEST_RESULTS(virtio);
     return 0;
 }
