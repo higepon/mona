@@ -31,7 +31,7 @@
 
 #include "etherif.h"
 #include <monapi.h>
-#include "ContigousPhysicalMemory.h"
+#include <monapi/ContigousMemory.h>
 #include "Ether.h"
 #include "VirtioNet.h"
 #include "Util.h"

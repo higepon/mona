@@ -128,13 +128,13 @@ private:
 
     uint8_t* allocateAlignedPage()
     {
-        ContigousPhysicalMemory* data = new ContigousPhysicalMemory(PAGE_SIZE * 2);
-        if (data->getLastError() != M_OK) {
-            monapi_fatal("memory allocation error %d", data->getLastError());
+        ContigousMemory* data = ContigousMemory::allocate(PAGE_SIZE * 2);
+        if (NULL == data) {
+            monapi_fatal("memory allocation error");
         }
-        const uintptr_t phys = syscall_get_physical_address((uintptr_t)data->data());
+        const uintptr_t phys = syscall_get_physical_address((uintptr_t)data->get());
         const uintptr_t aphys = (phys+ PAGE_MASK) & ~PAGE_MASK;
-        uint8_t* page = (uint8_t *) (data->data() + aphys - phys);
+        uint8_t* page = (uint8_t *) ((uintptr_t)data->get() + aphys - phys);
         return page;
     }
 
@@ -204,20 +204,20 @@ private:
         }
 
         const int MAX_QUEUE_SIZE = PAGE_MASK + vring_size(MAX_QUEUE_NUM);
-        ContigousPhysicalMemory* readDesc = new ContigousPhysicalMemory(MAX_QUEUE_SIZE);
-        if (readDesc->getLastError() != M_OK) {
-            monapi_fatal("memory allocation error %d", readDesc->getLastError());
+        ContigousMemory* readDesc = ContigousMemory::allocate(MAX_QUEUE_SIZE);
+        if (readDesc == NULL) {
+            monapi_fatal("memory allocation error");
         }
         struct vring* vring = new struct vring;
         vring->num = numberOfDesc;
         // page aligned
-        const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)readDesc->data());
+        const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)readDesc->get());
         const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
 
         ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
         // vring.desc is page aligned
-        vring->desc = (struct vring_desc*)(readDesc->data() + alignedAddress - physicalAddress);
+        vring->desc = (struct vring_desc*)((uintptr_t)readDesc->get() + alignedAddress - physicalAddress);
 
         // make linked ring
         for (uintptr_t i = 0; i < vring->num; i++) {

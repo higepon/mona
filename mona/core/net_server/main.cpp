@@ -55,7 +55,7 @@ using namespace MonAPI;
 #include "timer.h"
 //#include <signal.h>
 #include <monapi.h>
-#include "ContigousPhysicalMemory.h"
+#include <monapi/ContigousMemory.h>
 #include "Ether.h"
 #include "VirtioNet.h"
 #include "Util.h"
@@ -116,7 +116,6 @@ u8_t snmpauthentraps_set = 2;
 //   }
 // }
 
-uintptr_t ContigousPhysicalMemory::startAddress = 0x9E000000;
 #define USE_QEMU_USER_NETWORK 1
 
 VirtioNet* g_virtioNet = NULL;

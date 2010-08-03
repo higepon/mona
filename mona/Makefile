@@ -81,10 +81,12 @@ depend: clean
 	cd core/elf_server && $(MAKE) $@&
 	cd core/pe_server && $(MAKE) $@
 	cd core/gui_server && $(MAKE) $@
+	cd core/net_server && $(MAKE) $@
 	cd test/monalibc/string && $(MAKE) $@
 	cd test/monalibc/stdio && $(MAKE) $@
 	cd test/monalibc/stdlib && $(MAKE) $@
 	cd test/monalibc/math && $(MAKE) $@
+	cd test/drivers/virtio && $(MAKE) $@
 
 .PHONY: clean doc
 
