@@ -8,7 +8,7 @@
 namespace MonAPI {
 
 const uint32_t MemoryMap::START_ADDRESS = 0x90000000;
-const uint32_t MemoryMap::MAX_SIZE      = 0x10000000;
+const uint32_t MemoryMap::MAX_SIZE      = 0xfc00000; // rest 4MB is used for contiguous memory.
 uint32_t MemoryMap::lastError;
 BitMap MemoryMap::bitmap(MAX_SIZE / MAP_PAGE_SIZE);
 BinaryTree<int> MemoryMap::addresses;

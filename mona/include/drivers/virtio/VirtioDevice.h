@@ -78,6 +78,28 @@ public:
         return getFeatures() & (1 << feature);
     }
 
+    bool tryActivateQueue(int queueIndex)
+    {
+        // Select the queue to use.
+        outp16(basereg_ + VIRTIO_PCI_QUEUE_SEL, queueIndex);
+
+        // How many descriptors do the queue have?
+        const int numberOfDesc = inp16(basereg_ + VIRTIO_PCI_QUEUE_NUM);
+        if (numberOfDesc == 0) {
+            return M_BAD_INDEX;
+        }
+
+        logprintf("numberOfDesc=%d", vring_size(numberOfDesc));
+
+        // already activated?
+        if (inp32(basereg_ + VIRTIO_PCI_QUEUE_PFN)) {
+            return M_BAD_INDEX;
+        }
+
+
+        return M_OK;
+    }
+
     static VirtioDevice* probe(int type, unsigned int nth = 0)
     {
         PciInf pciInf;
