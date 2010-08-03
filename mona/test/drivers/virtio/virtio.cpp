@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     test_get_config();
     test_get_status();
     test_reset();
+    test_find_vq();
     TEST_RESULTS(virtio);
     return 0;
 }
