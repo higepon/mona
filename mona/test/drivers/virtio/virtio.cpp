@@ -59,6 +59,13 @@ static void test_get_status()
     EXPECT_TRUE(status != 0xff);
 }
 
+static void test_reset()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    vdev->reset();
+    EXPECT_EQ(VIRTIO_BLK_S_OK, vdev->getStatus());
+}
+
 int main(int argc, char *argv[])
 {
     test_probe();
@@ -68,6 +75,7 @@ int main(int argc, char *argv[])
     test_get_features();
     test_get_config();
     test_get_status();
+    test_reset();
     TEST_RESULTS(virtio);
     return 0;
 }

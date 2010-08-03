@@ -68,6 +68,11 @@ public:
         return inp8(basereg_ + VIRTIO_PCI_STATUS);
     }
 
+    void reset()
+    {
+        outp8(basereg_ + VIRTIO_PCI_STATUS, 0);
+    }
+
     bool hasFeature(int feature) const
     {
         return getFeatures() & (1 << feature);
