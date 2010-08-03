@@ -83,6 +83,11 @@ public:
     {
         return (void*)laddress_;
     }
+
+    uintptr_t getPhysicalAddress() const
+    {
+        return syscall_get_physical_address(laddress_);
+    }
 };
 
 template <typename T> BitMap ContigousMemoryImpl<T>::pagesMap = BitMap(MAX_PAGES);

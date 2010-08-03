@@ -89,13 +89,18 @@ public:
             return M_BAD_INDEX;
         }
 
-        logprintf("numberOfDesc=%d", vring_size(numberOfDesc));
-
         // already activated?
         if (inp32(basereg_ + VIRTIO_PCI_QUEUE_PFN)) {
             return M_BAD_INDEX;
         }
 
+        ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc));
+        if (mem == NULL) {
+            return M_NO_MEMORY;
+        }
+
+        // activate
+        outp32(basereg_ + VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> PAGE_SHIFT);
 
         return M_OK;
     }
