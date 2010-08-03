@@ -75,7 +75,7 @@ public:
             }
             return NULL;
         }
-
+        memset((uint8_t*)laddress, 0, pageNum * MAP_PAGE_SIZE);
         return new ContigousMemoryImpl(laddress, found, pageNum);
     }
 
