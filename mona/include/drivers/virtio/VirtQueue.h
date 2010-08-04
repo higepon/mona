@@ -53,6 +53,7 @@ public:
 
     intptr_t addBuf(const std::vector<VirtBuffer>& in, const std::vector<VirtBuffer>& out, void* cookie)
     {
+        freeNum_ -= in.size() + out.size();
         return M_OK;
     }
 

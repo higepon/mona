@@ -106,7 +106,7 @@ public:
 
         ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc, MAP_PAGE_SIZE));
         if (mem == NULL) {
-            return NULL;;
+            return NULL;
         }
 
         // activate
