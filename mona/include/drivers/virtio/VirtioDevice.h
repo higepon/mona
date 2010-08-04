@@ -31,7 +31,10 @@
 
 #include <pci/Pci.h>
 #include <monapi/io.h>
-#include <drivers/virtio/virtio.h>
+#include <drivers/virtio/virtio_pci.h>
+#include <drivers/virtio/virtio_ring.h>
+#include <drivers/virtio/virtio_ids.h>
+#include <drivers/virtio/VirtQueue.h>
 
 class VirtioDevice
 {
@@ -78,7 +81,7 @@ public:
         return getFeatures() & (1 << feature);
     }
 
-    intptr_t tryActivateQueue(int queueIndex)
+    VirtQueue* tryActivateQueue(int queueIndex)
     {
         // Select the queue to use.
         outp16(basereg_ + VIRTIO_PCI_QUEUE_SEL, queueIndex);
@@ -86,29 +89,30 @@ public:
         // How many descriptors do the queue have?
         const int numberOfDesc = inp16(basereg_ + VIRTIO_PCI_QUEUE_NUM);
         if (numberOfDesc == 0) {
-            return M_BAD_INDEX;
+            return NULL;
         }
 
         // already activated?
         if (inp32(basereg_ + VIRTIO_PCI_QUEUE_PFN)) {
-            return M_BAD_INDEX;
+            return NULL;
         }
 
-        ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc));
+        ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc, MAP_PAGE_SIZE));
         if (mem == NULL) {
-            return M_NO_MEMORY;
+            return NULL;;
         }
 
         // activate
-        outp32(basereg_ + VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> PAGE_SHIFT);
+        outp32(basereg_ + VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
 
-        return M_OK;
+        return new VirtQueue(mem, numberOfDesc);
     }
 
     static VirtioDevice* probe(int type, unsigned int nth = 0)
     {
         PciInf pciInf;
         Pci pci;
+        const int PCI_VENDOR_ID_REDHAT_QUMRANET = 0x1af4;
         pci.CheckPciExist(PCI_VENDOR_ID_REDHAT_QUMRANET, type, nth, &pciInf);
 
         if (pciInf.isExist) {

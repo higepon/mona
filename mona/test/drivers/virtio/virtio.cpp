@@ -4,6 +4,7 @@
 #include <monapi/ContigousMemory.h>
 
 #include <drivers/virtio/VirtioDevice.h>
+#include <drivers/virtio/virtio_ids.h>
 #include <drivers/virtio/virtio_blk.h>
 #include <boost/scoped_ptr.hpp>
 
@@ -69,10 +70,12 @@ static void test_reset()
 static void test_find_vq()
 {
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    EXPECT_EQ(M_OK, vdev->tryActivateQueue(0));
+    boost::scoped_ptr<VirtQueue> vq(vdev->tryActivateQueue(0));
+    EXPECT_TRUE(vq.get() != NULL);
 
+    boost::scoped_ptr<VirtQueue> vq2(vdev->tryActivateQueue(1));
     // virtio block has only one queue
-    EXPECT_TRUE(vdev->tryActivateQueue(1) < 0);
+    EXPECT_EQ(NULL, vq2.get());
 }
 
 static void test_contigous_memory()
@@ -81,9 +84,9 @@ static void test_contigous_memory()
     ASSERT_TRUE(m != NULL);
     ASSERT_TRUE(m->get() != NULL);
     uintptr_t paddr1 = syscall_get_physical_address((uintptr_t)m->get());
-    uintptr_t paddr2 = syscall_get_physical_address((uintptr_t)m->get() + PAGE_SIZE);
-    EXPECT_EQ(0, paddr1 % PAGE_SIZE);
-    EXPECT_EQ(paddr1 + PAGE_SIZE, paddr2);
+    uintptr_t paddr2 = syscall_get_physical_address((uintptr_t)m->get() + MAP_PAGE_SIZE);
+    EXPECT_EQ(0, paddr1 % MAP_PAGE_SIZE);
+    EXPECT_EQ(paddr1 + MAP_PAGE_SIZE, paddr2);
 }
 
 static void test_contigous_memory_laddress_should_be_reused()
