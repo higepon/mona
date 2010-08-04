@@ -31,6 +31,8 @@
 
 #include <pci/Pci.h>
 #include <monapi/io.h>
+#include <monapi/ContigousMemory.h>
+#include <drivers/virtio/VirtBuffer.h>
 #include <drivers/virtio/virtio_pci.h>
 #include <drivers/virtio/virtio_ring.h>
 #include <drivers/virtio/virtio_ids.h>
@@ -64,6 +66,11 @@ public:
         for (int i = 0; i < sizeByte; i++) {
             p[i] = inp8(basereg_ + VIRTIO_PCI_CONFIG + i + offset);
         }
+    }
+
+    void outp32(uintptr_t addr, uint32_t value)
+    {
+        ::outp32(basereg_ + addr, value);
     }
 
     uint8_t getStatus() const
@@ -103,9 +110,9 @@ public:
         }
 
         // activate
-        outp32(basereg_ + VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
+        outp32(VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
 
-        return new VirtQueue(mem, numberOfDesc);
+        return new VirtQueue(mem, numberOfDesc, *this);
     }
 
     static VirtioDevice* probe(int type, unsigned int nth = 0)

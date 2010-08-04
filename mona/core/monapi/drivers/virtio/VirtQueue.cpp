@@ -26,42 +26,10 @@
  *
  */
 
-#ifndef _VIRTQUEUE_
-#define _VIRTQUEUE_
+#include <drivers/virtio/VirtioDevice.h>
+#include <drivers/virtio/VirtQueue.h>
 
-#include <drivers/virtio/VirtBuffer.h>
-#include <vector>
-
-class VirtioDevice;
-class VirtQueue
+void VirtQueue::deactivate()
 {
-public:
-    VirtQueue(ContigousMemory* mem, int numberOfDesc, VirtioDevice& dev) : freeNum_(numberOfDesc), dev_(dev)
-    {
-        vring_init(&vring_, numberOfDesc, mem->get(), MAP_PAGE_SIZE);
-    }
-
-    virtual ~VirtQueue()
-    {
-        deactivate();
-    }
-
-    int getFreeNum() const
-    {
-        return freeNum_;
-    }
-
-    intptr_t addBuf(const std::vector<VirtBuffer>& in, const std::vector<VirtBuffer>& out, void* cookie)
-    {
-        return M_OK;
-    }
-
-private:
-    void deactivate();
-
-    struct vring vring_;
-    int freeNum_;
-    VirtioDevice& dev_;
-};
-
-#endif // _VIRTQUEUE_
+    dev_.outp32(VIRTIO_PCI_QUEUE_PFN, NULL);
+}

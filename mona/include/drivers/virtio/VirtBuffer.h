@@ -24,44 +24,17 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *  $Id: VirtBuffer.h 261 2008-07-25 06:16:44Z higepon $
  */
 
-#ifndef _VIRTQUEUE_
-#define _VIRTQUEUE_
+#ifndef _VIRTBUFFER_
+#define _VIRTBUFFER_
 
-#include <drivers/virtio/VirtBuffer.h>
-#include <vector>
-
-class VirtioDevice;
-class VirtQueue
+struct VirtBuffer
 {
-public:
-    VirtQueue(ContigousMemory* mem, int numberOfDesc, VirtioDevice& dev) : freeNum_(numberOfDesc), dev_(dev)
-    {
-        vring_init(&vring_, numberOfDesc, mem->get(), MAP_PAGE_SIZE);
-    }
-
-    virtual ~VirtQueue()
-    {
-        deactivate();
-    }
-
-    int getFreeNum() const
-    {
-        return freeNum_;
-    }
-
-    intptr_t addBuf(const std::vector<VirtBuffer>& in, const std::vector<VirtBuffer>& out, void* cookie)
-    {
-        return M_OK;
-    }
-
-private:
-    void deactivate();
-
-    struct vring vring_;
-    int freeNum_;
-    VirtioDevice& dev_;
+    VirtBuffer(void* addr, int len) : address(addr), length(len) {}
+    void* address;
+    uintptr_t length;
 };
 
-#endif // _VIRTQUEUE_
+#endif // _VIRTBUFFER_

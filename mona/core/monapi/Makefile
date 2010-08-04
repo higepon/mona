@@ -47,7 +47,8 @@ SOURCES = monapi_impl.cpp \
           terminal/Util.cpp \
           net.cpp \
           BufferReceiver.cpp \
-          text/Line.cpp
+          text/Line.cpp \
+          drivers/virtio/VirtQueue.cpp
 CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c FreeBSD/divdi3.c
 
 

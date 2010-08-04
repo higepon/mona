@@ -1,8 +1,9 @@
 #include <monapi.h>
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
-#include <monapi/ContigousMemory.h>
 
+
+#include <vector>
 #include <drivers/virtio/VirtioDevice.h>
 #include <drivers/virtio/virtio_ids.h>
 #include <drivers/virtio/virtio_blk.h>
@@ -78,6 +79,21 @@ static void test_find_vq()
     EXPECT_EQ(NULL, vq2.get());
 }
 
+static void test_virtqueue_add_buf()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+
+    int freeNum = vq->getFreeNum();
+    std::vector<VirtBuffer> in;
+    std::vector<VirtBuffer> out;
+    in.push_back(VirtBuffer((void*)0x1000, 0x2000));
+    out.push_back(VirtBuffer((void*)0x3000, 0x4000));
+
+    EXPECT_EQ(M_OK, vq->addBuf(in, out, NULL));
+    EXPECT_EQ(freeNum - 2, vq->getFreeNum());
+}
+
 static void test_contigous_memory()
 {
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
@@ -112,6 +128,7 @@ int main(int argc, char *argv[])
     test_get_status();
     test_reset();
     test_find_vq();
+    test_virtqueue_add_buf();
     test_contigous_memory();
     test_contigous_memory_laddress_should_be_reused();
 
