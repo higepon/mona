@@ -68,6 +68,21 @@ public:
         }
     }
 
+    uint16_t inp16(uintptr_t addr) const
+    {
+        return ::inp16(basereg_ + addr);
+    }
+
+    void outp16(uintptr_t addr, uint16_t value)
+    {
+        ::outp16(basereg_ + addr, value);
+    }
+
+    uint32_t inp32(uintptr_t addr) const
+    {
+        return ::inp32(basereg_ + addr);
+    }
+
     void outp32(uintptr_t addr, uint32_t value)
     {
         ::outp32(basereg_ + addr, value);
@@ -90,29 +105,7 @@ public:
 
     VirtQueue* findVirtQueue(int queueIndex)
     {
-        // Select the queue to use.
-        outp16(basereg_ + VIRTIO_PCI_QUEUE_SEL, queueIndex);
-
-        // How many descriptors do the queue have?
-        const int numberOfDesc = inp16(basereg_ + VIRTIO_PCI_QUEUE_NUM);
-        if (numberOfDesc == 0) {
-            return NULL;
-        }
-
-        // already activated?
-        if (inp32(basereg_ + VIRTIO_PCI_QUEUE_PFN)) {
-            return NULL;
-        }
-
-        ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc, MAP_PAGE_SIZE));
-        if (mem == NULL) {
-            return NULL;
-        }
-
-        // activate
-        outp32(VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
-
-        return new VirtQueue(mem, numberOfDesc, *this);
+        return VirtQueue::findVirtQueue(queueIndex, *this);
     }
 
     static VirtioDevice* probe(int type, unsigned int nth = 0)
@@ -129,10 +122,11 @@ public:
         }
     }
 
+
 private:
     uint32_t getFeatures() const
     {
-        return inp32(basereg_ + VIRTIO_PCI_HOST_FEATURES);
+        return ::inp32(basereg_ + VIRTIO_PCI_HOST_FEATURES);
     }
 
     const int irq_;

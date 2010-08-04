@@ -35,12 +35,12 @@
 class VirtioDevice;
 class VirtQueue
 {
-public:
+private:
     VirtQueue(ContigousMemory* mem, int numberOfDesc, VirtioDevice& dev) : freeNum_(numberOfDesc), dev_(dev)
     {
         vring_init(&vring_, numberOfDesc, mem->get(), MAP_PAGE_SIZE);
     }
-
+public:
     virtual ~VirtQueue()
     {
         deactivate();
@@ -56,6 +56,8 @@ public:
         freeNum_ -= in.size() + out.size();
         return M_OK;
     }
+
+    static VirtQueue* findVirtQueue(int queueIndex, VirtioDevice& dev);
 
 private:
     void deactivate();

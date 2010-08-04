@@ -33,3 +33,30 @@ void VirtQueue::deactivate()
 {
     dev_.outp32(VIRTIO_PCI_QUEUE_PFN, NULL);
 }
+
+VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
+{
+    // Select the queue to use.
+    dev.outp16(VIRTIO_PCI_QUEUE_SEL, queueIndex);
+
+    // How many descriptors do the queue have?
+    const int numberOfDesc = dev.inp16(VIRTIO_PCI_QUEUE_NUM);
+    if (numberOfDesc == 0) {
+        return NULL;
+    }
+
+    // already activated?
+    if (dev.inp32(VIRTIO_PCI_QUEUE_PFN)) {
+        return NULL;
+    }
+
+    ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc, MAP_PAGE_SIZE));
+    if (mem == NULL) {
+        return NULL;
+    }
+
+    // activate
+    dev.outp32(VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
+
+    return new VirtQueue(mem, numberOfDesc, dev);
+}
