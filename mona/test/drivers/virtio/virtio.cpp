@@ -70,10 +70,10 @@ static void test_reset()
 static void test_find_vq()
 {
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->tryActivateQueue(0));
+    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
     EXPECT_TRUE(vq.get() != NULL);
 
-    boost::scoped_ptr<VirtQueue> vq2(vdev->tryActivateQueue(1));
+    boost::scoped_ptr<VirtQueue> vq2(vdev->findVirtQueue(1));
     // virtio block has only one queue
     EXPECT_EQ(NULL, vq2.get());
 }

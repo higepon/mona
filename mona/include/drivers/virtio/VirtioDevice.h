@@ -81,7 +81,7 @@ public:
         return getFeatures() & (1 << feature);
     }
 
-    VirtQueue* tryActivateQueue(int queueIndex)
+    VirtQueue* findVirtQueue(int queueIndex)
     {
         // Select the queue to use.
         outp16(basereg_ + VIRTIO_PCI_QUEUE_SEL, queueIndex);
