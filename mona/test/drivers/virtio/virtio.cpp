@@ -110,6 +110,42 @@ static void test_virtqueue_kick()
     vq->kick();
 }
 
+static void test_virtio_blk_read()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+
+    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)m->get();
+    std::vector<VirtBuffer> out;
+    hdr->type = VIRTIO_BLK_T_IN ;
+    hdr->ioprio = 0;
+    hdr->sector = 0;
+
+    std::vector<VirtBuffer> in;
+
+    out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
+
+    uint8_t* status = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr));
+    in.push_back(VirtBuffer(status, 1));
+
+    char* buf = (char*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
+
+    memset(buf, 0, 512);
+    in.push_back(VirtBuffer(buf, 512));
+
+
+
+
+    EXPECT_EQ(M_OK, vq->addBuf(out, in, NULL));
+    vq->kick();
+    struct vring& vring = vq->getVring();
+    while (!vq->isUsedBufExist()) {
+        printf("<%d>", vring.used->idx);
+    }
+    EXPECT_EQ(0xeb, buf[0]);
+}
+
 static void test_contigous_memory()
 {
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
@@ -146,6 +182,7 @@ int main(int argc, char *argv[])
     test_find_vq();
     test_virtqueue_add_buf();
     test_virtqueue_kick();
+    test_virtio_blk_read();
     test_contigous_memory();
     test_contigous_memory_laddress_should_be_reused();
 

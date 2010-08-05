@@ -70,6 +70,7 @@ public:
         freeHeadIndex_ = i;
 
         // Just set desc to avail ring, don't change vring_.avail->idx
+        _logprintf("added to ring[%d]\n", (vring_.avail->idx + addedBufCount_) % vring_.num);
         vring_.avail->ring[(vring_.avail->idx + addedBufCount_) % vring_.num] = descToAddIndex;
         addedBufCount_++;
         return M_OK;
@@ -95,6 +96,11 @@ public:
         return addedBufCount_;
     }
 
+    bool isUsedBufExist() const
+    {
+        return vring_.used->idx != lastUsedIndex_;
+    }
+
 private:
     void deactivate();
     void activate(uintptr_t paddr);
@@ -103,6 +109,7 @@ private:
     struct vring vring_;
     uintptr_t freeDescCount_;
     uintptr_t freeHeadIndex_;
+    uintptr_t lastUsedIndex_;
     uintptr_t addedBufCount_;
     VirtioDevice& dev_;
     ContigousMemory* mem_;

@@ -45,6 +45,8 @@ public:
         irq_(irq),
         basereg_(basereg)
     {
+        // todo
+        outp8(basereg_ + VIRTIO_PCI_STATUS,  VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK); // 0: reset
     }
     virtual ~VirtioDevice()
     {

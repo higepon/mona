@@ -33,6 +33,7 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     queueIndex_(queueIndex),
     freeDescCount_(dev.inp16(VIRTIO_PCI_QUEUE_NUM)),
     freeHeadIndex_(0),
+    lastUsedIndex_(0),
     addedBufCount_(0),
     dev_(dev)
 {
@@ -79,11 +80,14 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
 void VirtQueue::kick()
 {
     vring_.avail->idx += addedBufCount_;
+    _logprintf("vring_.avail->idx=%d\n", vring_.avail->idx);
     addedBufCount_ = 0;
 
     if (vring_.used->flags & VRING_USED_F_NO_NOTIFY) {
+        _logprintf("no notify %s %s:%d\n", __func__, __FILE__, __LINE__);
         return;
     } else {
+        _logprintf("notify %s %s:%d\n", __func__, __FILE__, __LINE__);
         dev_.outp16(VIRTIO_PCI_QUEUE_NOTIFY, queueIndex_);
     }
 }
