@@ -29,6 +29,23 @@
 #include <drivers/virtio/VirtioDevice.h>
 #include <drivers/virtio/VirtQueue.h>
 
+VirtQueue::VirtQueue(VirtioDevice& dev) :
+    freeNum_(dev.inp16(VIRTIO_PCI_QUEUE_NUM)),
+    dev_(dev)
+{
+    ASSERT(freeNum_ > 0);
+    mem_ = ContigousMemory::allocate(vring_size(freeNum_, MAP_PAGE_SIZE));
+    ASSERT(mem_);
+
+    activate(mem_->getPhysicalAddress());
+    vring_init(&vring_, freeNum_, mem_->get(), MAP_PAGE_SIZE);
+}
+
+void VirtQueue::activate(uintptr_t paddr)
+{
+    dev_.outp32(VIRTIO_PCI_QUEUE_PFN, paddr >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
+}
+
 void VirtQueue::deactivate()
 {
     dev_.outp32(VIRTIO_PCI_QUEUE_PFN, NULL);
@@ -49,14 +66,5 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
     if (dev.inp32(VIRTIO_PCI_QUEUE_PFN)) {
         return NULL;
     }
-
-    ContigousMemory* mem = ContigousMemory::allocate(vring_size(numberOfDesc, MAP_PAGE_SIZE));
-    if (mem == NULL) {
-        return NULL;
-    }
-
-    // activate
-    dev.outp32(VIRTIO_PCI_QUEUE_PFN, mem->getPhysicalAddress() >> VIRTIO_PCI_QUEUE_ADDR_SHIFT);
-
-    return new VirtQueue(mem, numberOfDesc, dev);
+    return new VirtQueue(dev);
 }

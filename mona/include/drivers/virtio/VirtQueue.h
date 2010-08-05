@@ -36,14 +36,13 @@ class VirtioDevice;
 class VirtQueue
 {
 private:
-    VirtQueue(ContigousMemory* mem, int numberOfDesc, VirtioDevice& dev) : freeNum_(numberOfDesc), dev_(dev)
-    {
-        vring_init(&vring_, numberOfDesc, mem->get(), MAP_PAGE_SIZE);
-    }
+    VirtQueue(VirtioDevice& dev);
+
 public:
     virtual ~VirtQueue()
     {
         deactivate();
+        delete mem_;
     }
 
     int getFreeNum() const
@@ -61,10 +60,12 @@ public:
 
 private:
     void deactivate();
+    void activate(uintptr_t paddr);
 
     struct vring vring_;
     int freeNum_;
     VirtioDevice& dev_;
+    ContigousMemory* mem_;
 };
 
 #endif // _VIRTQUEUE_
