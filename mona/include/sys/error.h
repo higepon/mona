@@ -167,6 +167,12 @@ typedef enum
     */
     M_FILE_NOT_FOUND,
     /*
+       constant: M_NO_SPACE
+
+       There's no space.
+    */
+    M_NO_SPACE,
+    /*
        constant: M_UNKNOWN
 
        Indicates unknown error.

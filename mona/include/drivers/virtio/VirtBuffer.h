@@ -35,6 +35,10 @@ struct VirtBuffer
     VirtBuffer(void* addr, int len) : address(addr), length(len) {}
     void* address;
     uintptr_t length;
+    uintptr_t getPhysicalAddress() const
+    {
+        return syscall_get_physical_address((uintptr_t)address);
+    }
 };
 
 #endif // _VIRTBUFFER_

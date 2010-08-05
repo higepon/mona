@@ -84,14 +84,30 @@ static void test_virtqueue_add_buf()
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
 
-    int freeNum = vq->getFreeNum();
-    std::vector<VirtBuffer> in;
+    int freeNum = vq->getFreeDescCount();
     std::vector<VirtBuffer> out;
-    in.push_back(VirtBuffer((void*)0x1000, 0x2000));
+    std::vector<VirtBuffer> in;
     out.push_back(VirtBuffer((void*)0x3000, 0x4000));
+    in.push_back(VirtBuffer((void*)0x1000, 0x2000));
 
-    EXPECT_EQ(M_OK, vq->addBuf(in, out, NULL));
-    EXPECT_EQ(freeNum - 2, vq->getFreeNum());
+
+    EXPECT_EQ(M_OK, vq->addBuf(out, in, NULL));
+    EXPECT_EQ(freeNum - 2, vq->getFreeDescCount());
+    EXPECT_EQ(1, vq->getAddedBufCount());
+
+    struct vring& vring = vq->getVring();
+    EXPECT_EQ(0x4000, vring.desc[0].len);
+    EXPECT_EQ(1, vring.desc[0].next);
+    EXPECT_EQ(0x2000, vring.desc[1].len);
+    EXPECT_EQ(0, vring.avail->idx);
+    EXPECT_EQ(0, vring.avail->ring[0]);
+}
+
+static void test_virtqueue_kick()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    vq->kick();
 }
 
 static void test_contigous_memory()
@@ -129,6 +145,7 @@ int main(int argc, char *argv[])
     test_reset();
     test_find_vq();
     test_virtqueue_add_buf();
+    test_virtqueue_kick();
     test_contigous_memory();
     test_contigous_memory_laddress_should_be_reused();
 

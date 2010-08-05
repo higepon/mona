@@ -29,16 +29,23 @@
 #include <drivers/virtio/VirtioDevice.h>
 #include <drivers/virtio/VirtQueue.h>
 
-VirtQueue::VirtQueue(VirtioDevice& dev) :
-    freeNum_(dev.inp16(VIRTIO_PCI_QUEUE_NUM)),
+VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
+    queueIndex_(queueIndex),
+    freeDescCount_(dev.inp16(VIRTIO_PCI_QUEUE_NUM)),
+    freeHeadIndex_(0),
+    addedBufCount_(0),
     dev_(dev)
 {
-    ASSERT(freeNum_ > 0);
-    mem_ = ContigousMemory::allocate(vring_size(freeNum_, MAP_PAGE_SIZE));
+    ASSERT(freeDescCount_ > 0);
+    mem_ = ContigousMemory::allocate(vring_size(freeDescCount_, MAP_PAGE_SIZE));
     ASSERT(mem_);
 
     activate(mem_->getPhysicalAddress());
-    vring_init(&vring_, freeNum_, mem_->get(), MAP_PAGE_SIZE);
+    vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
+
+    for (uintptr_t i = 0; i < freeDescCount_ - 1; i++) {
+        vring_.desc[i].next = i + 1;
+    }
 }
 
 void VirtQueue::activate(uintptr_t paddr)
@@ -66,5 +73,17 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
     if (dev.inp32(VIRTIO_PCI_QUEUE_PFN)) {
         return NULL;
     }
-    return new VirtQueue(dev);
+    return new VirtQueue(queueIndex, dev);
+}
+
+void VirtQueue::kick()
+{
+    vring_.avail->idx += addedBufCount_;
+    addedBufCount_ = 0;
+
+    if (vring_.used->flags & VRING_USED_F_NO_NOTIFY) {
+        return;
+    } else {
+        dev_.outp16(VIRTIO_PCI_QUEUE_NOTIFY, queueIndex_);
+    }
 }

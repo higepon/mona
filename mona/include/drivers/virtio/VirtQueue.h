@@ -36,7 +36,7 @@ class VirtioDevice;
 class VirtQueue
 {
 private:
-    VirtQueue(VirtioDevice& dev);
+    VirtQueue(uint16_t queueIndex, VirtioDevice& dev);
 
 public:
     virtual ~VirtQueue()
@@ -45,25 +45,65 @@ public:
         delete mem_;
     }
 
-    int getFreeNum() const
+    intptr_t addBuf(const std::vector<VirtBuffer>& out, const std::vector<VirtBuffer>& in, void* cookie)
     {
-        return freeNum_;
-    }
+        uintptr_t bufCount = in.size() + out.size();
+        if (bufCount == 0 || freeDescCount_ < bufCount) {
+            return M_NO_SPACE;
+        }
 
-    intptr_t addBuf(const std::vector<VirtBuffer>& in, const std::vector<VirtBuffer>& out, void* cookie)
-    {
-        freeNum_ -= in.size() + out.size();
+        freeDescCount_ -= bufCount;
+
+        const int descToAddIndex = freeHeadIndex_;
+        int i = freeHeadIndex_;
+        for (std::vector<VirtBuffer>::const_iterator it = out.begin(); it != out.end(); ++it, ++i) {
+            vring_.desc[i].addr = (*it).getPhysicalAddress();
+            vring_.desc[i].len = (*it).length;
+            vring_.desc[i].flags = VRING_DESC_F_NEXT;
+        }
+        for (std::vector<VirtBuffer>::const_iterator it = in.begin(); it != in.end(); ++it, ++i) {
+            vring_.desc[i].addr = (*it).getPhysicalAddress();
+            vring_.desc[i].len = (*it).length;
+            vring_.desc[i].flags = VRING_DESC_F_NEXT;
+        }
+        vring_.desc[i - 1].flags &= ~VRING_DESC_F_NEXT;
+        freeHeadIndex_ = i;
+
+        // Just set desc to avail ring, don't change vring_.avail->idx
+        vring_.avail->ring[(vring_.avail->idx + addedBufCount_) % vring_.num] = descToAddIndex;
+        addedBufCount_++;
         return M_OK;
     }
 
+    void kick();
     static VirtQueue* findVirtQueue(int queueIndex, VirtioDevice& dev);
+
+// public for testability
+public:
+    struct vring& getVring()
+    {
+        return vring_;
+    }
+
+    uintptr_t getFreeDescCount() const
+    {
+        return freeDescCount_;
+    }
+
+    uintptr_t getAddedBufCount() const
+    {
+        return addedBufCount_;
+    }
 
 private:
     void deactivate();
     void activate(uintptr_t paddr);
 
+    uint16_t queueIndex_;
     struct vring vring_;
-    int freeNum_;
+    uintptr_t freeDescCount_;
+    uintptr_t freeHeadIndex_;
+    uintptr_t addedBufCount_;
     VirtioDevice& dev_;
     ContigousMemory* mem_;
 };
