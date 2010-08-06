@@ -47,6 +47,7 @@ public:
 
     intptr_t addBuf(const std::vector<VirtBuffer>& out, const std::vector<VirtBuffer>& in, void* cookie)
     {
+        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
         uintptr_t bufCount = in.size() + out.size();
         if (bufCount == 0 || freeDescCount_ < bufCount) {
             return M_NO_SPACE;
@@ -64,8 +65,9 @@ public:
         for (std::vector<VirtBuffer>::const_iterator it = in.begin(); it != in.end(); ++it, ++i) {
             vring_.desc[i].addr = (*it).getPhysicalAddress();
             vring_.desc[i].len = (*it).length;
-            vring_.desc[i].flags = VRING_DESC_F_NEXT;
+            vring_.desc[i].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
         }
+        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
         vring_.desc[i - 1].flags &= ~VRING_DESC_F_NEXT;
         freeHeadIndex_ = i;
 

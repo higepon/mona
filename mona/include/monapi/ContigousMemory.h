@@ -36,11 +36,10 @@
 
 namespace MonAPI {
 
-template <typename T>
-class ContigousMemoryImpl
+class ContigousMemory
 {
 private:
-    ContigousMemoryImpl(uintptr_t laddress, int pageStart, int pageNum) :
+    ContigousMemory(uintptr_t laddress, int pageStart, int pageNum) :
         laddress_(laddress),
         pageStart_(pageStart),
         pageNum_(pageNum)
@@ -52,34 +51,44 @@ private:
     int pageNum_;
     static const uintptr_t START_ADDRESS = 0x9fc00000;
     static const uintptr_t MAX_PAGES = (4 * 1024 * 1024) / MAP_PAGE_SIZE; // 4MB
-    static BitMap pagesMap;
+    static BitMap* pagesMap;
 
 public:
 
-    virtual ~ContigousMemoryImpl()
+    static BitMap* getPagesMap()
+    {
+        if (NULL == pagesMap) {
+            pagesMap = new BitMap(MAX_PAGES);
+        }
+        return pagesMap;
+    }
+
+    virtual ~ContigousMemory()
     {
         syscall_deallocate_contiguous(laddress_, pageNum_);
         for (int i = 0; i < pageNum_; i++) {
-            pagesMap.clear(pageStart_ + i);
+            getPagesMap()->clear(pageStart_ + i);
         }
     }
 
-    static ContigousMemoryImpl* allocate(int size)
+    static ContigousMemory* allocate(int size)
     {
         int pageNum = (size + MAP_PAGE_SIZE - 1) / MAP_PAGE_SIZE;
-        int found = pagesMap.find(pageNum);
+        int found = getPagesMap()->find(pageNum);
         if (found == -1) {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         }
         uintptr_t laddress = START_ADDRESS + (found * MAP_PAGE_SIZE);
         if (M_OK != syscall_allocate_contiguous(laddress, pageNum)) {
             for (int i = 0; i < pageNum; i++) {
-                pagesMap.clear(i + found);
+                getPagesMap()->clear(i + found);
             }
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         }
         memset((uint8_t*)laddress, 0, pageNum * MAP_PAGE_SIZE);
-        return new ContigousMemoryImpl(laddress, found, pageNum);
+        return new ContigousMemory(laddress, found, pageNum);
     }
 
     void* get() const
@@ -92,10 +101,6 @@ public:
         return syscall_get_physical_address(laddress_);
     }
 };
-
-template <typename T> BitMap ContigousMemoryImpl<T>::pagesMap = BitMap(MAX_PAGES);
-
-typedef ContigousMemoryImpl<bool> ContigousMemory;
 
 } // namespace MonaAPI
 

@@ -41,8 +41,8 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     mem_ = ContigousMemory::allocate(vring_size(freeDescCount_, MAP_PAGE_SIZE));
     ASSERT(mem_);
 
-    activate(mem_->getPhysicalAddress());
     vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
+    activate(mem_->getPhysicalAddress());
 
     for (uintptr_t i = 0; i < freeDescCount_ - 1; i++) {
         vring_.desc[i].next = i + 1;
@@ -79,8 +79,9 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
 
 void VirtQueue::kick()
 {
+    _logprintf("vring_.avail->idx=%d %d\n", vring_.avail->idx, addedBufCount_);
     vring_.avail->idx += addedBufCount_;
-    _logprintf("vring_.avail->idx=%d\n", vring_.avail->idx);
+    _logprintf("vring_.avail->idx=%d %d\n", vring_.avail->idx, addedBufCount_);
     addedBufCount_ = 0;
 
     if (vring_.used->flags & VRING_USED_F_NO_NOTIFY) {
