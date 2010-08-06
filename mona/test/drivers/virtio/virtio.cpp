@@ -114,42 +114,32 @@ static void test_virtio_blk_read()
 {
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
-    struct vring& vring = vq->getVring();
-    _logprintf("vring_.avail->idx=%d %d \n", vring.avail->idx, __LINE__);
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
-    _logprintf("vring_.avail->idx=%d %d m->getPhysicalAddress()=%x \n", vring.avail->idx, __LINE__, m->getPhysicalAddress());
+
     struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)m->get();
     std::vector<VirtBuffer> out;
     hdr->type = VIRTIO_BLK_T_IN ;
     hdr->ioprio = 0;
     hdr->sector = 0;
-    std::vector<VirtBuffer> in;
-
     out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
 
+    std::vector<VirtBuffer> in;
     uint8_t* status = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr));
     uint8_t* buf = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
+    const int SIZE_TO_READ = 1024;
+    memset(buf, 0, SIZE_TO_READ);
+    in.push_back(VirtBuffer(buf, SIZE_TO_READ));
 
-    // 512 byte じゃなくてよい！
-    memset(buf, 0, 1024);
-    in.push_back(VirtBuffer(buf, 1024));
     in.push_back(VirtBuffer(status, 1));
 
-
-
     EXPECT_EQ(M_OK, vq->addBuf(out, in, NULL));
-//    struct vring& vring = vq->getVring();
     vq->kick();
 
     while (!vq->isUsedBufExist()) {
-        printf("<%d>", vring.used->idx);
     }
-    // for (int i = 0; i < 512; i++) {
-    //     printf("<%x>", buf[i]);
-    // }
 
     EXPECT_EQ(0xeb, buf[0]);
-    EXPECT_TRUE(buf[1023] != 0);
+    EXPECT_TRUE(buf[SIZE_TO_READ - 1] != 0);
 }
 
 static void test_contigous_memory()
