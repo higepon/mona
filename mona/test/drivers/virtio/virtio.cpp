@@ -125,6 +125,8 @@ static void test_virtio_blk_read()
 
     std::vector<VirtBuffer> in;
     uint8_t* status = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr));
+    *status = 0xff;
+
     uint8_t* buf = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
     const int SIZE_TO_READ = 1024;
     memset(buf, 0, SIZE_TO_READ);
@@ -138,6 +140,7 @@ static void test_virtio_blk_read()
     while (!vq->isUsedBufExist()) {
     }
 
+    EXPECT_EQ(VIRTIO_BLK_S_OK, *status);
     EXPECT_EQ(0xeb, buf[0]);
     EXPECT_TRUE(buf[SIZE_TO_READ - 1] != 0);
 }
