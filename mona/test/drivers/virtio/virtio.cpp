@@ -128,11 +128,11 @@ static void test_virtio_blk_read()
     out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
 
     uint8_t* status = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr));
-    char* buf = (char*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
+    uint8_t* buf = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
 
     // 512 byte じゃなくてよい！
-    memset(buf, 0, 512);
-    in.push_back(VirtBuffer(buf, 512));
+    memset(buf, 0, 1024);
+    in.push_back(VirtBuffer(buf, 1024));
     in.push_back(VirtBuffer(status, 1));
 
 
@@ -144,7 +144,12 @@ static void test_virtio_blk_read()
     while (!vq->isUsedBufExist()) {
         printf("<%d>", vring.used->idx);
     }
+    // for (int i = 0; i < 512; i++) {
+    //     printf("<%x>", buf[i]);
+    // }
+
     EXPECT_EQ(0xeb, buf[0]);
+    EXPECT_TRUE(buf[1023] != 0);
 }
 
 static void test_contigous_memory()
