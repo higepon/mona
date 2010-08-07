@@ -139,9 +139,9 @@ static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead)
     }
 
     int sizeRead = 0;
-    void* ret = vq->getbuf(sizeRead);
-
-    EXPECT_EQ(sizeRead, sizeToRead);
+    void* ret = vq->getBuf(sizeRead);
+    EXPECT_EQ(0x1234, (uintptr_t)ret);
+    EXPECT_EQ(sizeToRead, sizeRead - sizeof(*status));
 
     EXPECT_EQ(VIRTIO_BLK_S_OK, *status);
     return buf;

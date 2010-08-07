@@ -44,8 +44,10 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
     activate(mem_->getPhysicalAddress());
 
+    requestCookies = new void*[freeDescCount_];
     for (uintptr_t i = 0; i < freeDescCount_ - 1; i++) {
         vring_.desc[i].next = i + 1;
+        requestCookies[i] = NULL;
     }
 }
 

@@ -45,6 +45,31 @@ public:
         delete mem_;
     }
 
+    void* getBuf(int& size)
+    {
+        if (!isUsedBufExist()) {
+            return NULL;
+        }
+
+        int headBufIndex = vring_.used->ring[lastUsedIndex_ % vring_.num].id;
+        size = vring_.used->ring[lastUsedIndex_ % vring_.num].len;
+        ASSERT(headBufIndex < (uintptr_t)vring_.num);
+        lastUsedIndex_++;
+        void* ret = (void*)requestCookies[headBufIndex];
+        requestCookies[headBufIndex] = NULL;
+
+        int i = headBufIndex;
+        while (vring_.desc[i].flags & VRING_DESC_F_NEXT) {
+            freeDescCount_++;
+            i = vring_.desc[i].next;
+        }
+
+        vring_.desc[i].next = freeHeadIndex_;
+        freeHeadIndex_ = headBufIndex;
+        freeDescCount_++;
+        return ret;
+    }
+
     intptr_t addBuf(const std::vector<VirtBuffer>& out, const std::vector<VirtBuffer>& in, void* cookie)
     {
         _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
@@ -74,6 +99,7 @@ public:
         // Just set desc to avail ring, don't change vring_.avail->idx
         _logprintf("added to ring[%d]\n", (vring_.avail->idx + addedBufCount_) % vring_.num);
         vring_.avail->ring[(vring_.avail->idx + addedBufCount_) % vring_.num] = descToAddIndex;
+        requestCookies[descToAddIndex] = cookie;
         addedBufCount_++;
         return M_OK;
     }
@@ -115,6 +141,7 @@ private:
     uintptr_t addedBufCount_;
     VirtioDevice& dev_;
     ContigousMemory* mem_;
+    void** requestCookies;
 };
 
 #endif // _VIRTQUEUE_
