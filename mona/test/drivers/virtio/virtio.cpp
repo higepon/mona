@@ -150,6 +150,13 @@ static void test_virtio_blk_read()
     EXPECT_TRUE(buf[1024] == 0);
 }
 
+static void test_virtio_blk_read_out_of_range()
+{
+    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    uint8_t* buf = virtio_blk_read(m.get(), 9999999, 1024);
+    EXPECT_EQ(0xeb, buf[0]);
+}
+
 static void test_contigous_memory()
 {
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
@@ -187,6 +194,9 @@ int main(int argc, char *argv[])
     test_virtqueue_add_buf();
     test_virtqueue_kick();
     test_virtio_blk_read();
+
+    // Access to invalid sector causes hang up.
+    // test_virtio_blk_read_out_of_range();
     test_contigous_memory();
     test_contigous_memory_laddress_should_be_reused();
 
