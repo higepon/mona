@@ -132,11 +132,16 @@ static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead)
 
     in.push_back(VirtBuffer(status, 1));
 
-    EXPECT_EQ(M_OK, vq->addBuf(out, in, NULL));
+    EXPECT_EQ(M_OK, vq->addBuf(out, in, (void*)0x1234));
     vq->kick();
 
     while (!vq->isUsedBufExist()) {
     }
+
+    int sizeRead = 0;
+    void* ret = vq->getbuf(sizeRead);
+
+    EXPECT_EQ(sizeRead, sizeToRead);
 
     EXPECT_EQ(VIRTIO_BLK_S_OK, *status);
     return buf;
@@ -150,12 +155,14 @@ static void test_virtio_blk_read()
     EXPECT_TRUE(buf[1024] == 0);
 }
 
+#if 0
 static void test_virtio_blk_read_out_of_range()
 {
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
     uint8_t* buf = virtio_blk_read(m.get(), 9999999, 1024);
     EXPECT_EQ(0xeb, buf[0]);
 }
+#endif
 
 static void test_contigous_memory()
 {
