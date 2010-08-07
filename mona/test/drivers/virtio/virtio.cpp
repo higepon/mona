@@ -110,17 +110,16 @@ static void test_virtqueue_kick()
     vq->kick();
 }
 
-static void test_virtio_blk_read()
+static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead)
 {
     boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
-    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
 
     struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)m->get();
     std::vector<VirtBuffer> out;
     hdr->type = VIRTIO_BLK_T_IN ;
     hdr->ioprio = 0;
-    hdr->sector = 0;
+    hdr->sector = sector;
     out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
 
     std::vector<VirtBuffer> in;
@@ -128,9 +127,8 @@ static void test_virtio_blk_read()
     *status = 0xff;
 
     uint8_t* buf = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
-    const int SIZE_TO_READ = 1024;
-    memset(buf, 0, SIZE_TO_READ);
-    in.push_back(VirtBuffer(buf, SIZE_TO_READ));
+    memset(buf, 0, sizeToRead);
+    in.push_back(VirtBuffer(buf, sizeToRead));
 
     in.push_back(VirtBuffer(status, 1));
 
@@ -141,8 +139,15 @@ static void test_virtio_blk_read()
     }
 
     EXPECT_EQ(VIRTIO_BLK_S_OK, *status);
+    return buf;
+}
+
+static void test_virtio_blk_read()
+{
+    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    uint8_t* buf = virtio_blk_read(m.get(), 0, 1023);
     EXPECT_EQ(0xeb, buf[0]);
-    EXPECT_TRUE(buf[SIZE_TO_READ - 1] != 0);
+    EXPECT_TRUE(buf[1024] == 0);
 }
 
 static void test_contigous_memory()
