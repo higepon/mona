@@ -40,6 +40,7 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     ASSERT(freeDescCount_ > 0);
     mem_ = ContigousMemory::allocate(vring_size(freeDescCount_, MAP_PAGE_SIZE));
     ASSERT(mem_);
+//    _logprintf("mem=%x\n", mem_->getPhysicalAddress());
 
     vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
     activate(mem_->getPhysicalAddress());
@@ -81,16 +82,16 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
 
 void VirtQueue::kick()
 {
-    _logprintf("vring_.avail->idx=%d %d\n", vring_.avail->idx, addedBufCount_);
+//    _logprintf("vring_.avail->idx=%d %d:%d\n", vring_.avail->idx, addedBufCount_, __LINE__);
     vring_.avail->idx += addedBufCount_;
-    _logprintf("vring_.avail->idx=%d %d\n", vring_.avail->idx, addedBufCount_);
+//    _logprintf("vring_.avail->idx=%d %d:%d\n", vring_.avail->idx, addedBufCount_, __LINE__);
     addedBufCount_ = 0;
 
     if (vring_.used->flags & VRING_USED_F_NO_NOTIFY) {
-        _logprintf("no notify %s %s:%d\n", __func__, __FILE__, __LINE__);
+//        _logprintf("no notify %s %s:%d\n", __func__, __FILE__, __LINE__);
         return;
     } else {
-        _logprintf("notify %s %s:%d\n", __func__, __FILE__, __LINE__);
+//        _logprintf("notify %s %s:%d\n", __func__, __FILE__, __LINE__);
         dev_.outp16(VIRTIO_PCI_QUEUE_NOTIFY, queueIndex_);
     }
 }

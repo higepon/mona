@@ -150,9 +150,70 @@ static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead)
 static void test_virtio_blk_read()
 {
     boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    logprintf("m=%x\n", m->getPhysicalAddress());
     uint8_t* buf = virtio_blk_read(m.get(), 0, 1023);
     EXPECT_EQ(0xeb, buf[0]);
     EXPECT_TRUE(buf[1024] == 0);
+}
+
+static uint8_t* issue_block_read_request(VirtQueue* vq, ContigousMemory* m, int sector, int sizeToRead, int cookie)
+{
+    struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)m->get();
+
+    std::vector<VirtBuffer> out;
+    hdr->type = VIRTIO_BLK_T_IN ;
+    hdr->ioprio = 0;
+    hdr->sector = sector;
+    out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
+
+    std::vector<VirtBuffer> in;
+    uint8_t* status = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr));
+    *status = 0xff;
+
+    uint8_t* buf = (uint8_t*)((uintptr_t)m->get() + sizeof(struct virtio_blk_outhdr) + 1);
+    memset(buf, 0, sizeToRead);
+    in.push_back(VirtBuffer(buf, sizeToRead));
+
+    in.push_back(VirtBuffer(status, 1));
+
+    EXPECT_EQ(M_OK, vq->addBuf(out, in, (void*)cookie));
+    return status;
+}
+
+static void test_virtio_blk_read_get_buf_shoud_return_desc()
+{
+    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    boost::scoped_ptr<ContigousMemory> req1(ContigousMemory::allocate(4096));
+    boost::scoped_ptr<ContigousMemory> req2(ContigousMemory::allocate(4096));
+    logprintf("req1=%x\n", req1->getPhysicalAddress());
+    logprintf("req2=%x\n", req2->getPhysicalAddress());
+
+
+    const int sizeToRead = 512;
+    uint8_t* status1 = issue_block_read_request(vq.get(), req1.get(), 0, sizeToRead, 0x1000);
+    uint8_t* status2 = issue_block_read_request(vq.get(), req1.get(), 1, sizeToRead, 0x1001);
+
+    vq->kick();
+
+    while (!vq->isUsedBufExist()) {
+    }
+
+    int sizeRead = 0;
+    void* ret = vq->getBuf(sizeRead);
+    EXPECT_EQ(0x1235, (uintptr_t)ret);
+    EXPECT_EQ(sizeToRead, sizeRead - sizeof(uint8_t));
+    EXPECT_EQ(VIRTIO_BLK_S_OK, *status1);
+    EXPECT_EQ(127, vq->getFreeDescCount());
+
+    while (!vq->isUsedBufExist()) {
+    }
+    EXPECT_TRUE(vq->isUsedBufExist());
+    void* ret2 = vq->getBuf(sizeRead);
+    EXPECT_EQ(0x1236, (uintptr_t)ret2);
+    EXPECT_EQ(sizeToRead, sizeRead - sizeof(uint8_t));
+    EXPECT_EQ(VIRTIO_BLK_S_OK, *status2);
+    EXPECT_EQ(128, vq->getFreeDescCount());
 }
 
 #if 0
@@ -201,6 +262,7 @@ int main(int argc, char *argv[])
     test_virtqueue_add_buf();
     test_virtqueue_kick();
     test_virtio_blk_read();
+    test_virtio_blk_read_get_buf_shoud_return_desc();
 
     // Access to invalid sector causes hang up.
     // test_virtio_blk_read_out_of_range();
