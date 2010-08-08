@@ -40,16 +40,27 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     ASSERT(freeDescCount_ > 0);
     mem_ = ContigousMemory::allocate(vring_size(freeDescCount_, MAP_PAGE_SIZE));
     ASSERT(mem_);
-//    _logprintf("mem=%x\n", mem_->getPhysicalAddress());
+    _logprintf("mem=%x\n", mem_->getPhysicalAddress());
 
     vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
     activate(mem_->getPhysicalAddress());
 
     requestCookies = new void*[freeDescCount_];
+
+// for debug
+#if 1
+    for (uintptr_t i = 0; i < freeDescCount_ - 2; i++) {
+        vring_.desc[i].next = i + 1;
+        requestCookies[i] = NULL;
+    }
+    vring_.desc[vring_.num - 2].next = 0xff;
+
+#else
     for (uintptr_t i = 0; i < freeDescCount_ - 1; i++) {
         vring_.desc[i].next = i + 1;
         requestCookies[i] = NULL;
     }
+#endif
 }
 
 void VirtQueue::activate(uintptr_t paddr)

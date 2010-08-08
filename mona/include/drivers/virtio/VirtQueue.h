@@ -72,15 +72,14 @@ public:
 
     intptr_t addBuf(const std::vector<VirtBuffer>& out, const std::vector<VirtBuffer>& in, void* cookie)
     {
-        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
+//        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
         uintptr_t bufCount = in.size() + out.size();
         if (bufCount == 0 || freeDescCount_ < bufCount) {
             return M_NO_SPACE;
         }
-
         freeDescCount_ -= bufCount;
-
         const int descToAddIndex = freeHeadIndex_;
+
         int i = freeHeadIndex_;
         for (std::vector<VirtBuffer>::const_iterator it = out.begin(); it != out.end(); ++it, ++i) {
             vring_.desc[i].addr = (*it).getPhysicalAddress();
@@ -92,12 +91,11 @@ public:
             vring_.desc[i].len = (*it).length;
             vring_.desc[i].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
         }
-        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
+//        _logprintf("vring_.avail->idx=%d %d %d\n", vring_.avail->idx, addedBufCount_, __LINE__);
         vring_.desc[i - 1].flags &= ~VRING_DESC_F_NEXT;
         freeHeadIndex_ = i;
-
         // Just set desc to avail ring, don't change vring_.avail->idx
-        _logprintf("added to ring[%d]\n", (vring_.avail->idx + addedBufCount_) % vring_.num);
+//        _logprintf("added to ring[%d]\n", (vring_.avail->idx + addedBufCount_) % vring_.num);
         vring_.avail->ring[(vring_.avail->idx + addedBufCount_) % vring_.num] = descToAddIndex;
         requestCookies[descToAddIndex] = cookie;
         addedBufCount_++;
