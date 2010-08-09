@@ -80,6 +80,7 @@ int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress
     return paddress;
 }
 
+
 int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
 {
     int foundMemory = memoryMap_->find();
@@ -107,10 +108,8 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
         return M_NO_MEMORY;
     }
 
-    logprintf("contigous memory allocation start\n");
     for (int i = foundMemory; i < foundMemory + numPages; i++) {
         PhysicalAddress paddress = i * ARCH_PAGE_SIZE;
-        logprintf("paddress=%x\n", paddress);
         LinearAddress laddressCurrent = laddress + (i - foundMemory) * ARCH_PAGE_SIZE;
         map(directory, laddressCurrent, paddress, PAGE_WRITABLE, PAGE_USER);
     }
@@ -127,27 +126,8 @@ intptr_t PageManager::deallocateContiguous(PageEntry* directory, LinearAddress l
         return M_BAD_ADDRESS;
     }
 
-    logprintf("contigous memory de-allocation start\n");
-    for (int i = laddress / ARCH_PAGE_TABLE_NUM / ARCH_PAGE_SIZE; i < pageNum; i++) {
-
-        if (!isPresent(directory[i])) {
-            continue;
-        }
-        PageEntry* table = getTableAt(directory, i);
-        LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
-        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
-            if (!isPresent(table[j])) {
-                continue;
-            }
-            LinearAddress linearAddress = baseLinerAddress + ARCH_PAGE_SIZE * j;
-            if (linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_) {
-                continue;
-            }
-            PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
-            logprintf("address=%x\n", address);
-            returnPhysicalPage(address);
-        }
-        returnPageTable(table);
+    for (int i = 0; i < pageNum; i++) {
+        unmapOnePage(directory, laddress + i * ARCH_PAGE_SIZE);
     }
     return M_OK;
 }
@@ -434,20 +414,35 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
 }
 
-void PageManager::setAbsent(PageEntry* directory, LinearAddress start, uint32_t size)
+
+void PageManager::unmapOnePage(PageEntry* directory, LinearAddress laddress, bool returnPage /* = true */)
 {
-    LinearAddress address;
-    uint32_t directoryIndex;
-    PageEntry* table;
+    unmapPages(directory, laddress, 1, returnPage);
+}
 
-    for (address = start; address < start + size; address += ARCH_PAGE_SIZE) {
-        directoryIndex= getDirectoryIndex(address);
-        table = getTableAt(directory, directoryIndex);
-        setAttribute(&(table[getTableIndex(address)]), PAGE_ABSENT, PAGE_WRITABLE, PAGE_USER);
+void PageManager::unmapPages(PageEntry* directory, LinearAddress start, int pageNum, bool returnPages /* = true */)
+{
+    LinearAddress end = start + pageNum * ARCH_PAGE_SIZE;
+    for (LinearAddress laddr = start; laddr < end; laddr += ARCH_PAGE_SIZE) {
+        PageEntry* table = getTable(directory, laddr);
+        if (table == NULL) {
+            continue;
+        }
+
+        uint32_t tableIndex = getTableIndex(laddr);
+        PageEntry* entry = &table[tableIndex];
+        if (returnPages) {
+            PhysicalAddress paddr = *entry & 0xfffff000;
+            memoryMap_->clear(paddr / ARCH_PAGE_SIZE);
+        }
+        setAttribute(&(table[tableIndex]), PAGE_ABSENT, PAGE_WRITABLE, PAGE_USER);
     }
-
     flushPageCache();
-    return;
+}
+
+void PageManager::unmapRange(PageEntry* directory, LinearAddress start, LinearAddress end, bool returnPages /* = true */)
+{
+    unmapPages(directory, start, (end - start) / ARCH_PAGE_SIZE, returnPages);
 }
 
 void PageManager::returnPhysicalPage(PhysicalAddress address)

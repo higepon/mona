@@ -173,6 +173,12 @@ typedef enum
     */
     M_NO_SPACE,
     /*
+       constant: M_READ_ERROR
+
+       Read error.
+    */
+    M_READ_ERROR,
+    /*
        constant: M_UNKNOWN
 
        Indicates unknown error.

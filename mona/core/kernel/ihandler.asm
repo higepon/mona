@@ -158,7 +158,7 @@ arch_stackFaultHandler:
 cextern generalProtectionHandler
 cglobal arch_generalProtectionHandler
 
-arch_generalProtectionHandler
+arch_generalProtectionHandler:
         call arch_set_dokodemo_view
         pushAll
         changeData

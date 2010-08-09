@@ -41,6 +41,9 @@ class PageManager {
 
     int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser);
     int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser);
+    void unmapOnePage(PageEntry* directory, LinearAddress laddress, bool returnPages = true);
+    void unmapPages(PageEntry* directory, LinearAddress start, int pageNum, bool returnPages = true);
+    void unmapRange(PageEntry* directory, LinearAddress start, LinearAddress end, bool returnPages = true);
 
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address);
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser);
@@ -48,7 +51,7 @@ class PageManager {
 
     bool getPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress* paddress);
 
-    void setAbsent(PageEntry* directory, LinearAddress start, uint32_t size);
+
 
 
     void startPaging(PhysicalAddress address);
@@ -107,6 +110,16 @@ class PageManager {
     PageEntry* getTableAt(PageEntry* directory, int directoryIndex) const
     {
         return (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    }
+
+    PageEntry* getTable(PageEntry* directory, LinearAddress laddress)
+    {
+        uint32_t directoryIndex = getDirectoryIndex(laddress);
+        if (isPresent(directory[directoryIndex])) {
+            return getTableAt(directory, directoryIndex);
+        } else {
+            return NULL;
+        }
     }
 
     PageEntry* getOrAllocateTable(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)

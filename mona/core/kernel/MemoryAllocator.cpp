@@ -1169,6 +1169,7 @@ int mspace_mallopt(int, int);
 #include <assert.h>
 #endif
 #else
+#undef assert
 #define assert(x)
 #endif
 #ifndef LACKS_STRING_H

@@ -307,17 +307,16 @@ extern "C" void generalProtectionHandler(uintptr_t error)
         g_console->printf(" error code =%x\n", error);
     }
 
-    uint32_t realcr3;
     ArchThreadInfo* i = g_currentThread->archinfo;
     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #if 1
     logprintf("name=%s\n", g_currentThread->process->getName());
     logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
     logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
     panic(__func__);

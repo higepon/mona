@@ -487,7 +487,7 @@ bool SharedMemoryObject::detach(uint32_t id, Process* process)
     if (segment == NULL) return false;
 
     /* destroy */
-    g_page_manager->setAbsent(process->getPageDirectory(), segment->getStart(), segment->getSize());
+    g_page_manager->unmapRange(process->getPageDirectory(), segment->getStart(), segment->getStart() + segment->getSize(), false);
     process->getSharedList()->remove(segment);
     delete(segment);
 
