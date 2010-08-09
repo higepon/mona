@@ -122,10 +122,15 @@ public:
 
     bool isUsedBufExist() const
     {
+        writeMemoryBarrier();
         return vring_.used->idx != lastUsedIndex_;
     }
 
 private:
+    void writeMemoryBarrier() const
+    {
+        __asm__ __volatile__("" : : : "memory");
+    }
     void deactivate();
     void activate(uintptr_t paddr);
 

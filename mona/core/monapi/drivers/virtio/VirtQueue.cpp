@@ -57,7 +57,7 @@ void VirtQueue::activate(uintptr_t paddr)
 
 void VirtQueue::deactivate()
 {
-    dev_.outp32(VIRTIO_PCI_QUEUE_PFN, NULL);
+    dev_.outp32(VIRTIO_PCI_QUEUE_PFN, 0);
 }
 
 VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)

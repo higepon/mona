@@ -36,7 +36,7 @@
 class VirtioBlock
 {
 
-// Posible enhancement
+// Possible enhancement
 //   We can issue multiple requests, and wait first response to come.
 //   But for now, since file_server requests are serialized, device requsts are also serialized.
 private:
@@ -84,13 +84,13 @@ public:
         if (addBufRet != M_OK) {
             return addBufRet;
         }
-
         vq_->kick();
         while (!vq_->isUsedBufExist()) {
         }
-
         int sizeRead = 0;
         void* cookie = vq_->getBuf(sizeRead);
+
+        sizeRead -= sizeof(*status); 
         if (*status != VIRTIO_BLK_S_OK) {
             return M_READ_ERROR;
         }
