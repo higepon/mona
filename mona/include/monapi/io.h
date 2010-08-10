@@ -9,6 +9,7 @@ extern "C"
 {
 #endif
 
+extern void delayMicrosec();
 extern uint8_t inp8(uint32_t port);
 extern void outp8(uint32_t port, uint8_t value);
 extern uint16_t inp16(uint32_t port);

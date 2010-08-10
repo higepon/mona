@@ -15,7 +15,7 @@
 #include "dtk5s.h"
 #include "Message.h"
 #include <algorithm>
-
+#include "BlockDeviceDriver.h"
 #define SVR "File Server"
 
 std::string upperCase(const std::string& s);
@@ -39,6 +39,7 @@ protected:
     typedef std::vector<FileSystem*> FileSystems;
     VnodeManager* vmanager_;
     IDEDriver* cd_;
+    BlockDeviceDriver* bd_;
     FDCDriver* fd_;
     FileSystem* rootFS_;
     FileSystems mountedFSs_;

@@ -26,11 +26,12 @@
  *
  */
 
-#ifndef _VIRTIOBLOCK_
-#define _VIRTIOBLOCK_
+#ifndef _VIRTIO_BLOCK_
+#define _VIRTIO_BLOCK_
 
-#include <monapi/ContigousMemory.h>
+#include <drivers/virtio/virtio_blk.h>
 #include <drivers/virtio/VirtQueue.h>
+#include <drivers/virtio/VirtioDevice.h>
 #include <vector>
 
 class VirtioBlock
@@ -42,23 +43,27 @@ class VirtioBlock
 private:
     VirtioBlock(VirtioDevice* vdev) : vdev_(vdev)
     {
-        ASSERT(vdev_ != NULL);
-        vq_ = vdev_->findVirtQueue(0);
-        ASSERT(vq_ != NULL);
+        ASSERT(vdev_.get() != NULL);
+        vq_.reset(vdev_->findVirtQueue(0));
+        ASSERT(vq_.get() != NULL);
+        vdev_->enableInterrupt();
     }
 
 public:
     virtual ~VirtioBlock()
     {
-        ASSERT(vq_);
-        delete vq_;
-        ASSERT(vdev_ != NULL);
-        delete vdev_;
     }
 
-    int64_t read(uint8_t* readBuf, int64_t sector, int64_t sizeToRead)
+    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-        ContigousMemory* mem = ContigousMemory::allocate(4096);
+        // Possible enhancement
+        //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
+        //   readBuf can be used directory using scatter gather system.
+
+        // seems to less than 512 byte can't be read.
+        int64_t adjSizeToRead = ((sizeToRead + getSectorSize() - 1) / getSectorSize()) * getSectorSize();
+
+        ContigousMemory* mem = ContigousMemory::allocate(adjSizeToRead + sizeof(virtio_blk_outhdr) + 1);
         if (mem == NULL) {
             return M_NO_MEMORY;
         }
@@ -75,8 +80,8 @@ public:
         *status = 0xff;
 
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
-        memset(buf, 0, sizeToRead);
-        in.push_back(VirtBuffer(buf, sizeToRead));
+        memset(buf, 0, adjSizeToRead);
+        in.push_back(VirtBuffer(buf, adjSizeToRead));
 
         in.push_back(VirtBuffer(status, 1));
 
@@ -85,20 +90,32 @@ public:
             return addBufRet;
         }
         vq_->kick();
-        while (!vq_->isUsedBufExist()) {
+
+        // wait busy loop 2 msec
+        for (int i = 0; i < 2000; i++) {
+            delayMicrosec();
+            if (vq_->isUsedBufExist()) {
+                break;
+            }
         }
+
+        // gave up busy loop, use expensive waitInterrupt.
+        while (!vq_->isUsedBufExist()) {
+            vdev_->waitInterrupt();
+        }
+
         int sizeRead = 0;
         void* cookie = vq_->getBuf(sizeRead);
 
-        sizeRead -= sizeof(*status); 
+        sizeRead -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
             return M_READ_ERROR;
         }
         ASSERT(0xdeadbeaf == (uintptr_t)cookie);
-        ASSERT(sizeRead <= sizeToRead);
-        memcpy(readBuf, buf, sizeRead);
+        ASSERT(sizeRead <= adjSizeToRead);
+        memcpy(readBuf, buf, sizeToRead);
         delete mem;
-        return sizeRead;
+        return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
     uint64_t getSectorSize() const
@@ -124,8 +141,8 @@ public:
     }
 
 private:
-    VirtioDevice* vdev_;
-    VirtQueue* vq_;
+    MonAPI::scoped_ptr<VirtioDevice> vdev_;
+    MonAPI::scoped_ptr<VirtQueue> vq_;
 };
 
 #endif // _VIRTIOBLOCK_

@@ -98,6 +98,8 @@ int FileServer::initializeRootFileSystem()
     // user mode I/O
     syscall_get_io();
 
+
+#if 0
     // IDE Driver
     cd_ = new IDEDriver(IRQ_PRIMARY, IRQ_SECONDARY);
 
@@ -112,7 +114,6 @@ int FileServer::initializeRootFileSystem()
 
     // set irq number
     uint8_t irq = controller == IDEDriver::PRIMARY ? IRQ_PRIMARY : IRQ_SECONDARY;
-
     // enable interrupts
     monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
     syscall_set_irq_receiver(irq, MONAPI_FALSE);
@@ -124,8 +125,12 @@ int FileServer::initializeRootFileSystem()
         delete cd_;
         return MONA_FAILURE;
     }
-
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
+#else
+    bd_ = new BlockDeviceDriver(0);
+    rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
+#endif
+
     if (rootFS_->initialize() != MONA_SUCCESS)
     {
         _printf("CD Boot Initialize Error\n");

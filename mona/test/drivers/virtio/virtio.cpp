@@ -8,45 +8,44 @@
 #include <drivers/virtio/virtio_ids.h>
 #include <drivers/virtio/virtio_blk.h>
 #include <drivers/virtio/VirtioBlock.h>
-#include <boost/scoped_ptr.hpp>
 
 static void test_probe()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
     ASSERT_TRUE(vdev.get() != NULL);
 }
 
 static void test_probe_not_found()
 {
     // There is only two virtio net devices.
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET, 2));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET, 2));
     ASSERT_TRUE(vdev.get() == NULL);
 }
 
 static void test_get_irq()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
     int irq = vdev->getIRQ();
     EXPECT_TRUE(irq >= 0 && irq <= 15);
 }
 
 static void test_get_basereg()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_NET));
     int basereg = vdev->getBaseReg();
     EXPECT_TRUE(basereg > 0);
 }
 
 static void test_get_features()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK));
     ASSERT_TRUE(vdev.get() != NULL);
     EXPECT_EQ(false, vdev->hasFeature(VIRTIO_BLK_F_RO));
 }
 
 static void test_get_config()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     struct virtio_blk_config config;
     vdev->getConfig(&config, 0, sizeof(struct virtio_blk_config));
     const int SECTOR_SIZE = 512;
@@ -56,7 +55,7 @@ static void test_get_config()
 
 static void test_get_status()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     uint8_t status = 0xff;
     status = vdev->getStatus();
     EXPECT_TRUE(status != 0xff);
@@ -64,26 +63,26 @@ static void test_get_status()
 
 static void test_reset()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
     vdev->reset();
     EXPECT_EQ(VIRTIO_BLK_S_OK, vdev->getStatus());
 }
 
 static void test_find_vq()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
     EXPECT_TRUE(vq.get() != NULL);
 
-    boost::scoped_ptr<VirtQueue> vq2(vdev->findVirtQueue(1));
+    scoped_ptr<VirtQueue> vq2(vdev->findVirtQueue(1));
     // virtio block has only one queue
     EXPECT_EQ(NULL, vq2.get());
 }
 
 static void test_virtqueue_add_buf()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
 
     int freeNum = vq->getFreeDescCount();
     std::vector<VirtBuffer> out;
@@ -106,15 +105,15 @@ static void test_virtqueue_add_buf()
 
 static void test_virtqueue_kick()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
     vq->kick();
 }
 
 static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead, int& readStatus)
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
     struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)m->get();
     std::vector<VirtBuffer> out;
     hdr->type = VIRTIO_BLK_T_IN ;
@@ -145,7 +144,7 @@ static uint8_t* virtio_blk_read(ContigousMemory* m, int sector, int sizeToRead, 
 
 static void test_virtio_blk_read()
 {
-    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
     int status;
     uint8_t* buf = virtio_blk_read(m.get(), 0, 1023, status);
     EXPECT_EQ(0xeb, buf[0]);
@@ -179,10 +178,10 @@ static uint8_t* issue_block_read_request(VirtQueue* vq, ContigousMemory* m, int 
 
 static void test_virtio_blk_read_get_buf_shoud_return_desc()
 {
-    boost::scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
-    boost::scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
-    boost::scoped_ptr<ContigousMemory> req1(ContigousMemory::allocate(4096));
-    boost::scoped_ptr<ContigousMemory> req2(ContigousMemory::allocate(4096));
+    scoped_ptr<VirtioDevice> vdev(VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, 1));
+    scoped_ptr<VirtQueue> vq(vdev->findVirtQueue(0));
+    scoped_ptr<ContigousMemory> req1(ContigousMemory::allocate(4096));
+    scoped_ptr<ContigousMemory> req2(ContigousMemory::allocate(4096));
 
     const int sizeToRead1 = 512;
     const int sizeToRead2 = 513;
@@ -212,7 +211,7 @@ static void test_virtio_blk_read_get_buf_shoud_return_desc()
 
 static void test_virtio_blk_read_out_of_range()
 {
-    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
     int status;
     virtio_blk_read(m.get(), 9999999, 1024, status);
     EXPECT_EQ(VIRTIO_BLK_S_IOERR, status);
@@ -220,7 +219,7 @@ static void test_virtio_blk_read_out_of_range()
 
 static void test_contigous_memory()
 {
-    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
+    scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(5000));
     ASSERT_TRUE(m != NULL);
     ASSERT_TRUE(m->get() != NULL);
     uintptr_t paddr1 = syscall_get_physical_address((uintptr_t)m->get());
@@ -243,7 +242,7 @@ static void test_contigous_memory_laddress_should_be_reused()
 
 static void test_virtio_block_class_probe()
 {
-    boost::scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
+    scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
     ASSERT_TRUE(vb.get() != NULL);
     EXPECT_EQ(512, vb->getSectorSize());
 
@@ -253,18 +252,44 @@ static void test_virtio_block_class_probe()
 
 static void test_virtio_block_class_read()
 {
-    boost::scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
+    scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
     ASSERT_TRUE(vb.get() != NULL);
     uint8_t buf[512];
     EXPECT_EQ(512, vb->read(buf, 0, 512));
     EXPECT_EQ(0xeb, buf[0]);
 }
 
+static void test_virtio_block_class_read_many_times()
+{
+    scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
+    ASSERT_TRUE(vb.get() != NULL);
+    uint64_t s = MonAPI::Date::nowInMsec();
+    for (int i = 0; i < 1000; i++) {
+        uint8_t buf[512];
+        EXPECT_EQ(512, vb->read(buf, i, 512));
+    }
+    uint64_t e = MonAPI::Date::nowInMsec();
+    EXPECT_TRUE(e - s < 300);
+}
+
+static void test_virtio_block_class_read_large()
+{
+    scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
+    ASSERT_TRUE(vb.get() != NULL);
+    uint64_t s = MonAPI::Date::nowInMsec();
+    const int oneMegaByte = 1024 * 1024;
+    uint8_t* buf = new uint8_t[oneMegaByte];
+    EXPECT_EQ(oneMegaByte, vb->read(buf, 0, oneMegaByte));
+    uint64_t e = MonAPI::Date::nowInMsec();
+    EXPECT_TRUE(e - s < 100);
+    EXPECT_EQ(0xeb, buf[0]);
+    delete[] buf;
+}
 
 #if 0
 static void test_contigous_memory_overflow_should_die()
 {
-    boost::scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
+    scoped_ptr<ContigousMemory> m(ContigousMemory::allocate(4096));
     memset(m->get(), 0, 5000);
 }
 #endif
@@ -289,12 +314,14 @@ int main(int argc, char *argv[])
     test_contigous_memory_laddress_should_be_reused();
 
     test_virtio_block_class_probe();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_virtio_block_class_read();
+    test_virtio_block_class_read_many_times();
+    test_virtio_block_class_read_large();
 
     // todo
     //   with interrupt
     //   contigous size over
+    // read many
     //   memory pool
 
 

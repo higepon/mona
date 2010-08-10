@@ -40,6 +40,7 @@ public:
     int getLastError() const;
     void getLastErrorDetail(uint8_t* buffer);
 
+    bool wait_interrupt(uint32_t ms, uint8_t irq);
 public:
     enum
     {

@@ -561,7 +561,6 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
     }
 
     bool readResult = drive_->read(directory->attribute.extent, buffer, readSize) == 0;
-
     if (!readResult)
     {
         delete buffer;
