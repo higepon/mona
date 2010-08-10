@@ -286,6 +286,23 @@ static void test_virtio_block_class_read_large()
     delete[] buf;
 }
 
+static void test_virtio_block_class_write()
+{
+    scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(2));
+    ASSERT_TRUE(vb.get() != NULL);
+    uint8_t buf[512];
+    memset(buf, 0, 512);
+    for (int i = 0; i < 512; i+=2) {
+        buf[i] = i / 2;
+    }
+    EXPECT_EQ(512, vb->write(buf, 0, 512));
+
+    uint8_t buf2[512];
+    EXPECT_EQ(512, vb->read(buf2, 0, 512));
+    EXPECT_TRUE(memcmp(buf, buf2, 512) == 0);
+}
+
+
 #if 0
 static void test_contigous_memory_overflow_should_die()
 {
@@ -318,12 +335,7 @@ int main(int argc, char *argv[])
     test_virtio_block_class_read_many_times();
     test_virtio_block_class_read_large();
 
-    // todo
-    //   with interrupt
-    //   contigous size over
-    // read many
-    //   memory pool
-
+    test_virtio_block_class_write();
 
 // Will die!
 //    test_contigous_memory_overflow_should_die();

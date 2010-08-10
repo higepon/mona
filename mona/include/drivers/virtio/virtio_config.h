@@ -31,7 +31,6 @@
 #ifdef __KERNEL__
 #include <linux/err.h>
 #include <linux/virtio.h>
-
 /**
  * virtio_config_ops - operations for configuring a virtio device
  * @get: read the value of a configuration field

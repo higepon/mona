@@ -29,7 +29,6 @@
 #ifndef _VIRTQUEUE_
 #define _VIRTQUEUE_
 
-#include <drivers/virtio/virtio.h>
 #include <drivers/virtio/types.h>
 #include <drivers/virtio/virtio_ring.h>
 #include <drivers/virtio/VirtBuffer.h>

@@ -54,6 +54,66 @@ public:
     {
     }
 
+    int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
+    {
+        // Possible enhancement
+        //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
+        //   writeBuf can be used directory using scatter gather system.
+
+        ContigousMemory* mem = ContigousMemory::allocate(sizeToWrite + sizeof(virtio_blk_outhdr) + 1);
+        if (mem == NULL) {
+            return M_NO_MEMORY;
+        }
+        struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)mem->get();
+
+        std::vector<VirtBuffer> out;
+        hdr->type = VIRTIO_BLK_T_OUT;
+        hdr->ioprio = 0;
+        hdr->sector = sector;
+        out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
+
+        std::vector<VirtBuffer> in;
+        uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
+        *status = 0xff;
+
+        uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
+        memcpy(buf, writeBuf, sizeToWrite);
+        out.push_back(VirtBuffer(buf, sizeToWrite));
+
+        in.push_back(VirtBuffer(status, 1));
+
+        intptr_t addBufRet = vq_->addBuf(out, in, (void*)0xdeadcafe);
+        if (addBufRet != M_OK) {
+            return addBufRet;
+        }
+        vq_->kick();
+
+        // wait busy loop 2 msec
+        for (int i = 0; i < 2000; i++) {
+            delayMicrosec();
+            if (vq_->isUsedBufExist()) {
+                break;
+            }
+        }
+
+        // gave up busy loop, use expensive waitInterrupt.
+        while (!vq_->isUsedBufExist()) {
+            vdev_->waitInterrupt();
+        }
+
+        int sizeWritten = 0;
+        void* cookie = vq_->getBuf(sizeWritten);
+
+        sizeWritten -= sizeof(*status);
+        if (*status != VIRTIO_BLK_S_OK) {
+            return M_READ_ERROR;
+        }
+        ASSERT(0xdeadcafe == (uintptr_t)cookie);
+        ASSERT(sizeWritten <= sizeToWrite);
+        delete mem;
+        return sizeWritten;
+    }
+
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
         // Possible enhancement
