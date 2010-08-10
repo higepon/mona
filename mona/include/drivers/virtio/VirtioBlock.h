@@ -60,8 +60,8 @@ public:
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
 
-        ContigousMemory* mem = ContigousMemory::allocate(sizeToWrite + sizeof(virtio_blk_outhdr) + 1);
-        if (mem == NULL) {
+        scoped_ptr<ContigousMemory> mem(ContigousMemory::allocate(sizeToWrite + sizeof(virtio_blk_outhdr) + 1));
+        if (mem.get() == NULL) {
             return M_NO_MEMORY;
         }
         struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)mem->get();
@@ -110,7 +110,6 @@ public:
         }
         ASSERT(0xdeadcafe == (uintptr_t)cookie);
         ASSERT(sizeWritten <= sizeToWrite);
-        delete mem;
         return sizeWritten;
     }
 
@@ -123,8 +122,8 @@ public:
         // seems to less than 512 byte can't be read.
         int64_t adjSizeToRead = ((sizeToRead + getSectorSize() - 1) / getSectorSize()) * getSectorSize();
 
-        ContigousMemory* mem = ContigousMemory::allocate(adjSizeToRead + sizeof(virtio_blk_outhdr) + 1);
-        if (mem == NULL) {
+        scoped_ptr<ContigousMemory> mem(ContigousMemory::allocate(adjSizeToRead + sizeof(virtio_blk_outhdr) + 1));
+        if (mem.get() == NULL) {
             return M_NO_MEMORY;
         }
         struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)mem->get();
@@ -174,7 +173,6 @@ public:
         ASSERT(0xdeadbeaf == (uintptr_t)cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
-        delete mem;
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
