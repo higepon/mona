@@ -5,6 +5,7 @@ all:
 	make clean
 	MONADIR=$(MONADIR) perl mkimg.pl
 	make iso
+	cp mona.img test.img
 
 clean:
 	rm -f mona.img
