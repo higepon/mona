@@ -289,7 +289,6 @@ int main(int argc, char *argv[])
     test_contigous_memory_laddress_should_be_reused();
 
     test_virtio_block_class_probe();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_virtio_block_class_read();
 
     // todo
