@@ -179,6 +179,13 @@ typedef enum
     */
     M_READ_ERROR,
     /*
+       constant: M_WRITE_ERROR
+
+       Write error.
+    */
+    M_WRITE_ERROR,
+
+    /*
        constant: M_NOT_SUPPORTED
 
        not supported.

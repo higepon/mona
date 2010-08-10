@@ -100,7 +100,7 @@ public:
 
         sizeWritten -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
-            return M_READ_ERROR;
+            return M_WRITE_ERROR;
         }
         ASSERT(0xdeadcafe == (uintptr_t)cookie);
         ASSERT(sizeWritten <= sizeToWrite);
