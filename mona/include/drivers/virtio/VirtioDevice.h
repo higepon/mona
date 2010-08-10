@@ -52,7 +52,7 @@ public:
     {
     }
 
-    int getIRQ() const
+    uint8_t getIRQ() const
     {
         return irq_;
     }
@@ -60,6 +60,54 @@ public:
     int getBaseReg() const
     {
         return basereg_;
+    }
+
+    void enableInterrupt()
+    {
+        monapi_set_irq(getIRQ(), MONAPI_TRUE, MONAPI_TRUE);
+        syscall_set_irq_receiver(getIRQ(), SYS_MASK_INTERRUPT);
+    }
+
+    // this waitInterrupt is expensive, so before use this, call delayMicrosec.
+    bool waitInterrupt()
+    {
+        MessageInfo msg;
+        uint32_t timerId = set_timer(50);
+
+        for (int i = 0; ; i++)
+        {
+            int result = MonAPI::Message::peek(&msg, i);
+
+            if (result != M_OK)
+            {
+                i--;
+                syscall_mthread_yield_message();
+            }
+            else if (msg.header == MSG_TIMER)
+            {
+                if (msg.arg1 != timerId) continue;
+                kill_timer(timerId);
+
+                if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                    monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+                }
+
+                monapi_warn("interrupt timeout");
+                return false;
+            }
+            else if (msg.header == MSG_INTERRUPTED)
+            {
+                if (msg.arg1 != getIRQ()) continue;
+                kill_timer(timerId);
+
+                if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                    monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+                }
+
+                return true;
+            }
+        }
+        return false;
     }
 
     void getConfig(void* dest, int offset, int sizeByte)

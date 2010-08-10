@@ -557,11 +557,52 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
     return true;
 }
 
+bool IDEDriver::wait_interrupt(uint32_t ms, uint8_t irq)
+{
+    MessageInfo msg;
+
+    uint32_t timerId = set_timer(ms);
+
+    for (int i = 0; ; i++)
+    {
+        int result = MonAPI::Message::peek(&msg, i);
+
+        if (result != M_OK)
+        {
+            i--;
+            syscall_mthread_yield_message();
+        }
+        else if (msg.header == MSG_TIMER)
+        {
+            if (msg.arg1 != timerId) continue;
+            kill_timer(timerId);
+
+            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+            }
+
+            return false;
+        }
+        else if (msg.header == MSG_INTERRUPTED)
+        {
+            if (msg.arg1 != irq) continue;
+            kill_timer(timerId);
+
+            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+            }
+
+            return true;
+        }
+    }
+    return false;
+}
+
 void IDEDriver::protocolInterrupt()
 {
     for (;;)
     {
-        if (!MONAPI_WAIT_INTERRUPT(1000, whichController->irq))
+        if (!wait_interrupt(1000, whichController->irq))
         {
             /* time out ! */
             return;

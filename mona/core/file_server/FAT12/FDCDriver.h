@@ -43,6 +43,7 @@ public:
     bool isInserted(int drive);
 
 private:
+    bool waitInterrupt(uint32_t ms, uint8_t irq);
     void initilize();
     bool seek(uint8_t track);
     bool waitInterrupt();

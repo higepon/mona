@@ -29,7 +29,11 @@
 #ifndef _VIRTQUEUE_
 #define _VIRTQUEUE_
 
+#include <drivers/virtio/virtio.h>
+#include <drivers/virtio/types.h>
+#include <drivers/virtio/virtio_ring.h>
 #include <drivers/virtio/VirtBuffer.h>
+#include <monapi/ContigousMemory.h>
 #include <vector>
 
 class VirtioDevice;
@@ -42,8 +46,6 @@ public:
     virtual ~VirtQueue()
     {
         deactivate();
-        delete mem_;
-        delete [] requestCookies_;
     }
 
     void* getBuf(int& size)
@@ -54,10 +56,10 @@ public:
 
         int headBufIndex = vring_.used->ring[lastUsedIndex_ % vring_.num].id;
         size = vring_.used->ring[lastUsedIndex_ % vring_.num].len;
-        ASSERT(headBufIndex < (uintptr_t)vring_.num);
+        ASSERT((uintptr_t)headBufIndex < vring_.num);
         lastUsedIndex_++;
-        void* ret = (void*)requestCookies_[headBufIndex];
-        requestCookies_[headBufIndex] = NULL;
+        void* ret = (requestCookies_.get())[headBufIndex];
+        requestCookies_.get()[headBufIndex] = NULL;
 
         int i = headBufIndex;
         while (vring_.desc[i].flags & VRING_DESC_F_NEXT) {
@@ -95,7 +97,7 @@ public:
         freeHeadIndex_ = i;
         // Just set desc to avail ring, don't change vring_.avail->idx
         vring_.avail->ring[(vring_.avail->idx + addedBufCount_) % vring_.num] = descToAddIndex;
-        requestCookies_[descToAddIndex] = cookie;
+        requestCookies_.get()[descToAddIndex] = cookie;
         addedBufCount_++;
         return M_OK;
     }
@@ -141,8 +143,8 @@ private:
     uintptr_t lastUsedIndex_;
     uintptr_t addedBufCount_;
     VirtioDevice& dev_;
-    ContigousMemory* mem_;
-    void** requestCookies_;
+    MonAPI::scoped_ptr<MonAPI::ContigousMemory> mem_;
+    MonAPI::scoped_ptr<void*> requestCookies_;
 };
 
 #endif // _VIRTQUEUE_

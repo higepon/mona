@@ -5,6 +5,7 @@
     \date   create:2004/10/30 update:$Date$
     $Revision$
 */
+#include <monapi.h>
 #include <monapi/io.h>
 #include <monapi/syscall.h>
 #include <monapi/Message.h>
@@ -37,57 +38,63 @@ void monapi_set_irq(int irq, MONAPI_BOOL enabled, MONAPI_BOOL auto_ir2)
     }
 }
 
-/*!
-    wait interrupt.
+// no more used!!
+// /*!
+//     wait interrupt.
 
-    \param ms     [in] timeout ms
-    \param irq    [in] irq number
-    \param file   [in] file name for time out info.
-    \param line   [in] line number for time out info.
-    \return MONAPI_TRUE/MONAPI_FALSE OK/NG
-*/
-MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, int line)
+//     \param ms     [in] timeout ms
+//     \param irq    [in] irq number
+//     \param file   [in] file name for time out info.
+//     \param line   [in] line number for time out info.
+//     \return MONAPI_TRUE/MONAPI_FALSE OK/NG
+// */
+// MONAPI_BOOL monapi_wait_interrupt(uint32_t ms, uint8_t irq, const char* file, int line)
+// {
+//     MessageInfo msg;
+
+//     uint32_t timerId = set_timer(ms);
+
+//     for (int i = 0; ; i++)
+//     {
+//         int result = MonAPI::Message::peek(&msg, i);
+
+//         if (result != M_OK)
+//         {
+//             i--;
+//             syscall_mthread_yield_message();
+//         }
+//         else if (msg.header == MSG_TIMER)
+//         {
+//             if (msg.arg1 != timerId) continue;
+//             kill_timer(timerId);
+
+//             if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+//                 monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+//             }
+
+//             monapi_warn("interrupt timeout %s:%d\n", file, line);
+//             return MONAPI_FALSE;
+//         }
+//         else if (msg.header == MSG_INTERRUPTED)
+//         {
+//             if (msg.arg1 != irq) continue;
+//             kill_timer(timerId);
+
+//             if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+//                 monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+//             }
+
+//             return MONAPI_TRUE;
+//         }
+//     }
+//     return MONAPI_FALSE;
+// }
+
+void delayMicrosec()
 {
-    MessageInfo msg;
-
-    uint32_t timerId = set_timer(ms);
-
-    for (int i = 0; ; i++)
-    {
-        int result = MonAPI::Message::peek(&msg, i);
-
-        if (result != M_OK)
-        {
-            i--;
-            syscall_mthread_yield_message();
-        }
-        else if (msg.header == MSG_TIMER)
-        {
-            if (msg.arg1 != timerId) continue;
-            kill_timer(timerId);
-
-            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
-                _printf("peek error %s:%d\n", __FILE__, __LINE__);
-            }
-
-            _printf("interrupt timeout %s:%d\n", file, line);
-            return MONAPI_FALSE;
-        }
-        else if (msg.header == MSG_INTERRUPTED)
-        {
-            if (msg.arg1 != irq) continue;
-            kill_timer(timerId);
-
-            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
-                _printf("peek error %s:%d\n", __FILE__, __LINE__);
-            }
-
-            return MONAPI_TRUE;
-        }
-    }
-    return MONAPI_FALSE;
+    // inp from any port 0-0x3ff takes almost exactly 1 micro second.
+    inp8(0x80);
 }
-
 
 uint8_t inp8(uint32_t port) {
 

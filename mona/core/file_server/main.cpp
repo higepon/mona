@@ -1,13 +1,9 @@
 #include "FileServer.h"
-#include "VirtioBlock.h"
 
 using namespace MonAPI;
 
 int main(int argc, char* argv[])
 {
-    VirtioBlock v;
-    v.test();
-
     if (monapi_notify_server_start("INIT") != M_OK)
     {
         exit(-1);

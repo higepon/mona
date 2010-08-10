@@ -83,7 +83,7 @@ typedef struct malloc_stat
     uintptr_t max_system;
     uintptr_t system;
     uintptr_t used;
-};
+} malloc_stat;
 
 void malloc_stats(struct malloc_stat* st); // for malloc debug
 

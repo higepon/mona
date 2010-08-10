@@ -179,6 +179,12 @@ typedef enum
     */
     M_READ_ERROR,
     /*
+       constant: M_NOT_SUPPORTED
+
+       not supported.
+    */
+    M_NOT_SUPPORTED,
+    /*
        constant: M_UNKNOWN
 
        Indicates unknown error.
