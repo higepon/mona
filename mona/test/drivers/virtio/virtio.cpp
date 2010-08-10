@@ -269,7 +269,7 @@ static void test_virtio_block_class_read_many_times()
         EXPECT_EQ(512, vb->read(buf, i, 512));
     }
     uint64_t e = MonAPI::Date::nowInMsec();
-    EXPECT_TRUE(e - s < 300);
+    EXPECT_TRUE(e - s < 500);
 }
 
 static void test_virtio_block_class_read_large()
@@ -281,7 +281,7 @@ static void test_virtio_block_class_read_large()
     uint8_t* buf = new uint8_t[oneMegaByte];
     EXPECT_EQ(oneMegaByte, vb->read(buf, 0, oneMegaByte));
     uint64_t e = MonAPI::Date::nowInMsec();
-    EXPECT_TRUE(e - s < 100);
+    EXPECT_TRUE(e - s < 300);
     EXPECT_EQ(0xeb, buf[0]);
     delete[] buf;
 }
