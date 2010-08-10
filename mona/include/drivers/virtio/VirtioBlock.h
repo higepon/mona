@@ -88,13 +88,7 @@ public:
         }
         vq_->kick();
 
-        // wait busy loop 2 msec
-        for (int i = 0; i < 2000; i++) {
-            delayMicrosec();
-            if (vq_->isUsedBufExist()) {
-                break;
-            }
-        }
+        waitWithBusyLoop(2000);
 
         // gave up busy loop, use expensive waitInterrupt.
         while (!vq_->isUsedBufExist()) {
@@ -150,13 +144,7 @@ public:
         }
         vq_->kick();
 
-        // wait busy loop 2 msec
-        for (int i = 0; i < 2000; i++) {
-            delayMicrosec();
-            if (vq_->isUsedBufExist()) {
-                break;
-            }
-        }
+        waitWithBusyLoop(2000);
 
         // gave up busy loop, use expensive waitInterrupt.
         while (!vq_->isUsedBufExist()) {
@@ -195,6 +183,16 @@ public:
             return NULL;
         } else {
             return new VirtioBlock(vdev);
+        }
+    }
+
+    void waitWithBusyLoop(uintptr_t usec)
+    {
+        for (int i = 0; i < usec; i++) {
+            delayMicrosec();
+            if (vq_->isUsedBufExist()) {
+                break;
+            }
         }
     }
 
