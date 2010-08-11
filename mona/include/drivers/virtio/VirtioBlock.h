@@ -68,6 +68,7 @@ public:
 
         std::vector<VirtBuffer> out;
         hdr->type = VIRTIO_BLK_T_OUT;
+        hdr->type |= VIRTIO_BLK_T_BARRIER;
         hdr->ioprio = 0;
         hdr->sector = sector;
         out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
@@ -188,7 +189,7 @@ public:
 
     void waitWithBusyLoop(uintptr_t usec)
     {
-        for (int i = 0; i < usec; i++) {
+        for (uintptr_t i = 0; i < usec; i++) {
             delayMicrosec();
             if (vq_->isUsedBufExist()) {
                 break;
