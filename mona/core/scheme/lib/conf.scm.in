@@ -62,7 +62,7 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-;  (call-process "/MEM/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/io-error.scm")
 ;  (ls "/MEM")
   (mosh))
 
