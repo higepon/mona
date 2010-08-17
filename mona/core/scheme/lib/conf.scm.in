@@ -1,4 +1,6 @@
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
+
+(define skip-unit-test? #t)
 
 (define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
@@ -64,6 +66,8 @@
 ;  (ls "/MEM")
   (mosh))
 
-(for-each call-process *tests-on-cui*)
-(if (not mona-gui-auto-start)
-    (test-end))
+(if (not skip-unit-test?)
+    (begin
+      (for-each call-process *tests-on-cui*)
+      (if (not mona-gui-auto-start)
+          (test-end))))
