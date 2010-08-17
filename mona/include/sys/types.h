@@ -84,6 +84,11 @@ typedef unsigned int            uint32_t;
 # define __uint32_t_defined
 #endif
 
+#ifndef __int32_t_defined
+typedef signed int            int32_t;
+# define __int32_t_defined
+#endif
+
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
 # define __uintptr_t_defined

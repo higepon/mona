@@ -184,7 +184,12 @@ typedef enum
        Write error.
     */
     M_WRITE_ERROR,
+    /*
+       constant: M_BAD_OFFSET
 
+       Indicates bad offset
+    */
+    M_BAD_OFFSET,
     /*
        constant: M_NOT_SUPPORTED
 

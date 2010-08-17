@@ -60,7 +60,7 @@ extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
 extern intptr_t monapi_file_open(const char* file, MONAPI_BOOL create);
 extern uint32_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size);
 extern monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size);
-extern uint32_t monapi_file_seek(uint32_t fileID, uint32_t offset, uint32_t origin);
+extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin);
 extern uint32_t monapi_file_close(uint32_t id);
 extern uint32_t monapi_file_get_file_size(uint32_t id);
 extern uint32_t monapi_file_delete(const char* file);

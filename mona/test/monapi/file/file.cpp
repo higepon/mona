@@ -83,6 +83,14 @@ static bool testDirectoryHasFile(const std::string& dir, const std::string& file
     return ret;
 }
 
+static void test_seek_minus_offset_should_raise_error()
+{
+    intptr_t id = monapi_file_open("/APPS/HELLO.EX5", false);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(M_BAD_OFFSET, monapi_file_seek(id, -1, SEEK_CUR));
+    monapi_file_close(id);
+}
+
 int main(int argc, char *argv[])
 {
     testFileExist_LongFileName();
@@ -94,6 +102,8 @@ int main(int argc, char *argv[])
     EXPECT_TRUE(testDirectoryHasFile("/LIBS", "MOSH"));
     EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB", "SRFI"));
     EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB/SRFI", "%3A8.SLS"));
+
+    test_seek_minus_offset_should_raise_error();
     TEST_RESULTS(file);
     return 0;
 }

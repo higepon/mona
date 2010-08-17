@@ -252,18 +252,19 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
     return file->fs->stat(file, st);
 }
 
-int VnodeManager::seek(uint32_t fileID, uint32_t offset, uint32_t origin)
+int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;
+    io::Context* context = &(fileInfo->context);
     Vnode* file = fileInfo->vnode;
-    int ret = file->fs->seek(file, offset, origin);
-    if (MONA_SUCCESS != ret)
+    int ret = file->fs->seek(file, context, offset, origin);
+    if (M_OK != ret)
     {
         return ret;
     }
@@ -276,14 +277,14 @@ int VnodeManager::seek(uint32_t fileID, uint32_t offset, uint32_t origin)
     }
     switch (origin)
     {
-        case SEEK_SET: fileInfo->context.offset = offset; break;
+    case SEEK_SET: fileInfo->context.offset = offset; break;
     case SEEK_CUR: fileInfo->context.offset +=offset; break;
     case SEEK_END: fileInfo->context.offset = st.size-offset; break;
     default: break;
     }
 //    fileInfo->context.offset = offset;
     fileInfo->context.origin = origin;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int VnodeManager::mount(Vnode* a, const std::string& path, Vnode* b)

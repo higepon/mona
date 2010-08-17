@@ -306,13 +306,13 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
     }
 }
 
-uint32_t monapi_file_seek(uint32_t fileID, uint32_t offset, uint32_t origin)
+intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_SEEK, fileID, offset, origin) != M_OK)
     {
-        return MONA_FAILURE;
+        return M_UNKNOWN;
     }
     return msg.arg2;
 }

@@ -217,7 +217,7 @@ void FileServer::messageLoop()
         case MSG_FILE_SEEK:
         {
             int ret = vmanager_->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
-            Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
+            Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_READ:

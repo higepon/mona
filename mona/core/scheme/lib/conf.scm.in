@@ -1,6 +1,12 @@
+;; prompt string
+(define (mona-prompt-string)
+  (string-append "mona:"
+                 (fs-path (fs-current-directory))
+                 ">"))
+
 (define mona-gui-auto-start #f)
 
-(define skip-unit-test? #t)
+(define skip-unit-test? #f)
 
 (define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
@@ -47,11 +53,6 @@
   (call-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
   (w3m-auto-pilot))
 
-;; prompt string
-(define (mona-prompt-string)
-  (string-append "mona:"
-                 (fs-path (fs-current-directory))
-                 ">"))
 
 (define (recv name)
   (call-process (string-append "/APPS/FRECV.EX5 " name)))
@@ -63,7 +64,6 @@
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/io-error.scm")
-;  (ls "/MEM")
   (mosh))
 
 (if (not skip-unit-test?)

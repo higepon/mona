@@ -176,7 +176,7 @@ int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
 
 int FAT12FileSystem::seek(Vnode* file, uint32_t offset, uint32_t origin)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::close(Vnode* file)

@@ -549,8 +549,27 @@ static void testFopen_No_Leak()
     EXPECT_EQ(st1.used, st2.used);
 
     monapi_file_delete(tmpFile);
-
 }
+
+static void testSeek_MinusOffsetShouldBeError()
+{
+    const char* tmpFile = "/MEM/TEST1.TXT";
+    {
+        FILE* fp = fopen(tmpFile, "w");
+        ASSERT_TRUE(fp != NULL);
+        const char* data = "Hello\n    \n    \n    ";
+        const int len = strlen(data) + 1;
+        fwrite(data, 1, len, fp);
+        fclose(fp);
+    }
+
+    intptr_t id = monapi_file_open(tmpFile, false);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(M_BAD_OFFSET, monapi_file_seek(id, -1, SEEK_CUR));
+    monapi_file_close(id);
+    monapi_file_delete(tmpFile);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -578,6 +597,7 @@ int main(int argc, char *argv[])
     testFwrite_Overwrite2();
     testFopen_No_Leak();
     testMonAPIwrite();
+    testSeek_MinusOffsetShouldBeError();
     TEST_RESULTS(ram_disk);
     return 0;
 }

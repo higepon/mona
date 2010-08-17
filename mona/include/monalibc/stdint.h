@@ -41,7 +41,9 @@
 /* 7.18.1.1 Exact-width integer types */
 typedef signed char		int8_t;
 typedef signed short		int16_t;
+#ifndef __int32_t_defined
 typedef signed int		int32_t;
+#endif
 #ifndef __uint8_t_defined
 typedef unsigned char       uint8_t;
 # define __uint8_t_defined
