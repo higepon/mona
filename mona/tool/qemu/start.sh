@@ -1,5 +1,5 @@
 #!/bin/sh
-QEMU=/usr/bin/qemu
+QEMU=qemu
 #QEMU=~/Desktop/qemu-0.12.5/i386-softmmu/qemu
 # -k ja option is required by "Caps Lock and Ctrl swap".
 # the last virtio disk is used for tests.
