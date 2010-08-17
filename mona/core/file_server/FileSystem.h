@@ -41,7 +41,6 @@ public:
     virtual int write(Vnode* file, struct io::Context* context)                           = 0;
     virtual int create(Vnode* dir, const std::string& file)                               = 0;
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   = 0;
-    virtual int seek(Vnode* file, struct io::Context* context, int32_t offset, uint32_t origin) = 0;
     virtual int close(Vnode* file)                                                        = 0;
     virtual int delete_file(Vnode* file)                                                  = 0;
     virtual int stat(Vnode* file, Stat* st)                                               = 0;

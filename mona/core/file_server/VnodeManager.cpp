@@ -255,36 +255,45 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
 int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-    if (it == fileInfoMap_.end())
-    {
+    if (it == fileInfoMap_.end()) {
         return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;
-    io::Context* context = &(fileInfo->context);
     Vnode* file = fileInfo->vnode;
-    int ret = file->fs->seek(file, context, offset, origin);
-    if (M_OK != ret)
-    {
-        return ret;
-    }
-    // by shotaro_tsuji
-    Stat st;
-    ret = file->fs->stat(file, &st);
-    if (MONA_SUCCESS != ret)
-    {
-        return ret;
-    }
+    int32_t newOffset = 0;
     switch (origin)
     {
-    case SEEK_SET: fileInfo->context.offset = offset; break;
-    case SEEK_CUR: fileInfo->context.offset +=offset; break;
-    case SEEK_END: fileInfo->context.offset = st.size-offset; break;
-    default: break;
+    case SEEK_SET:
+    {
+        newOffset = offset;
+        break;
     }
-//    fileInfo->context.offset = offset;
-    fileInfo->context.origin = origin;
-    return M_OK;
+    case SEEK_CUR:
+    {
+        newOffset = fileInfo->context.offset + offset;
+        break;
+    }
+    case SEEK_END:
+    {
+        Stat st;
+        intptr_t ret = file->fs->stat(file, &st);
+        if (MONA_SUCCESS != ret) {
+            return M_UNKNOWN;
+        }
+        newOffset = st.size-offset;
+        break;
+    }
+    default:
+        return M_UNKNOWN;
+    }
+    if (newOffset < 0) {
+        return M_BAD_OFFSET;
+    } else {
+        fileInfo->context.offset = newOffset;
+        fileInfo->context.origin = origin;
+        return M_OK;
+    }
 }
 
 int VnodeManager::mount(Vnode* a, const std::string& path, Vnode* b)

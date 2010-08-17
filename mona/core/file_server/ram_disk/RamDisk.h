@@ -245,37 +245,6 @@ namespace RamDisk {
                 context->offset += writeSize;
                 return MONA_SUCCESS;
             }
-          virtual int seek(Vnode* file, struct io::Context* context, int32_t offset, uint32_t origin)
-          {
-              int32_t newOffset = 0;
-              switch (origin)
-              {
-              case SEEK_SET:
-              {
-                  newOffset = offset;
-                  break;
-
-              }
-              case SEEK_CUR:
-              {
-                  newOffset = context->offset + offset;
-                  break;
-              }
-              case SEEK_END:
-              {
-                  FileInfo* f = (FileInfo*)file->fnode;
-                  newOffset = f->size - offset;
-                  break;
-              }
-              default:
-                  return M_UNKNOWN;
-              }
-
-              if (newOffset < 0) {
-                  return M_BAD_OFFSET;
-              }
-              return M_OK;
-          }
           virtual int readdir(Vnode* dir, monapi_cmemoryinfo** entries)
             {
                 typedef std::vector<monapi_directoryinfo*> Files;

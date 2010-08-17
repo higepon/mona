@@ -163,37 +163,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 #endif
 }
 
-int ISO9660FileSystem::seek(Vnode* file, struct io::Context* context, int32_t offset, uint32_t origin)
-{
-    int32_t newOffset = 0;
-    switch (origin)
-    {
-    case SEEK_SET:
-    {
-        newOffset = offset;
-        break;
-
-    }
-    case SEEK_CUR:
-    {
-        newOffset = context->offset + offset;
-        break;
-    }
-    case SEEK_END:
-    {
-        Entry* entry = (Entry*)file->fnode;
-        newOffset = entry->attribute.size - offset;
-        break;
-    }
-    default:
-        return M_UNKNOWN;
-    }
-    if (newOffset < 0) {
-        return M_BAD_OFFSET;
-    }
-    return M_OK;
-}
-
 int ISO9660FileSystem::close(Vnode* file)
 {
     return MONA_SUCCESS;
