@@ -6,7 +6,7 @@
 
 (define mona-gui-auto-start #f)
 
-(define skip-unit-test? #f)
+(define skip-unit-test? #t)
 
 (define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
@@ -64,6 +64,7 @@
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/io-error.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/clos.scm")
   (mosh))
 
 (if (not skip-unit-test?)
