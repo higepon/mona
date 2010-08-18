@@ -63,8 +63,15 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+;  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/test/r6rs-test-suite /APPS/MOSH.APP/test/r6rs-test-suite/tests/r6rs/run-via-eval.sps")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/test/mylib /APPS/MOSH.APP/test/record.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/unicode.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/match.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/lists.scm")
   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/io-error.scm")
   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/clos.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/shorten.scm")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/rbtree-test.scm")
   (mosh))
 
 (if (not skip-unit-test?)
