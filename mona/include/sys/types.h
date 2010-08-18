@@ -103,7 +103,7 @@ typedef unsigned long int   uintptr_t;
 #endif
 
 // should be less than MessageInfo.str
-#define MAX_PROCESS_ARGUMENT_LENGTH 64
+#define MAX_PROCESS_ARGUMENT_LENGTH 128
 
 typedef uint32_t linear_addr;  /* 32bit */
 typedef uint32_t virtual_addr; /* 32bit */
