@@ -9,7 +9,8 @@ cosh.c \
 exp.c \
 fabs.c \
 floor.c \
-fmod.c \
+e_fmod.c \
+w_fmod.c \
 frexp.c \
 ldexp.c \
 log.c \

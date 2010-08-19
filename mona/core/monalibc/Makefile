@@ -15,7 +15,7 @@ endif
 include src.inc
 
 OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o stdio/boshi/filelist.o socket.o
-INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc -DMONA
+INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc -I ./newlib -DMONA
 
 LINK = -L$(SRCTOP)/lib -lmonapi-imp
 

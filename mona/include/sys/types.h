@@ -81,11 +81,13 @@ typedef unsigned short      uint16_t;
 #endif
 #ifndef __uint32_t_defined
 typedef unsigned int            uint32_t;
+typedef unsigned int __uint32_t;
 # define __uint32_t_defined
 #endif
 
 #ifndef __int32_t_defined
 typedef signed int            int32_t;
+typedef signed int __int32_t;
 # define __int32_t_defined
 #endif
 
@@ -103,7 +105,7 @@ typedef unsigned long int   uintptr_t;
 #endif
 
 // should be less than MessageInfo.str
-#define MAX_PROCESS_ARGUMENT_LENGTH 128
+#define MAX_PROCESS_ARGUMENT_LENGTH 256
 
 typedef uint32_t linear_addr;  /* 32bit */
 typedef uint32_t virtual_addr; /* 32bit */
