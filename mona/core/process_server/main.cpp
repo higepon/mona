@@ -55,6 +55,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     CommandOption* option = NULL;
     CString path;
     _A<CString> args = commandLine.split(' ');
+    logprintf("commandLine=%s", (const char*)commandLine);
     FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;

@@ -160,7 +160,7 @@ typedef struct {
     CommandOption* list;
 } LoadProcessInfo;
 
-#define MESSAGE_INFO_MAX_STR_LENGTH 128
+#define MESSAGE_INFO_MAX_STR_LENGTH 256
 #define MAX_MESSAGES 1024
 
 typedef struct {

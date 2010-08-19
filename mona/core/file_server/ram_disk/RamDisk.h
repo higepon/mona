@@ -29,7 +29,9 @@ namespace RamDisk {
           {
               for(Chunks::iterator it = chunks.begin(); it != chunks.end(); it++)
                 {
+                    static int counter = 0;
                     char* ptr = *it;
+                    logprintf("delete=<%d>", counter++);
                     delete(ptr);
                 }
               chunks.clear();
@@ -57,7 +59,9 @@ namespace RamDisk {
 
         inline Chunks::iterator extendOneChunk()
           {
+              static int counter = 0;
               char* ptr = new char[CHUNK_SIZE];
+              logprintf("new=<%d>", counter++);
               ASSERT(ptr);
               chunks.push_back(ptr);
               Chunks::iterator it = chunks.end();
