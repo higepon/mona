@@ -65,8 +65,8 @@ VesaConsole::VesaConsole (VesaInfoDetail *info)
 
 void VesaConsole::printf(const char *format, ...)
 {
-#define BUFFER_SIZE 512
-    char buf[BUFFER_SIZE];
+#define BUFFER_SIZE 1024
+    static char buf[BUFFER_SIZE];
     va_list ap;
     va_start(ap, format);
     int ret = vsprintf(buf, format, ap);
