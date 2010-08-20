@@ -93,7 +93,7 @@ int __mlibc_mona_file_seek(void *self, int pos, int whence)
     FILE *f = (FILE*)self;
 
     result = monapi_file_seek((uint32_t)f->file, (uint32_t)pos, (uint32_t)whence);
-    if( result != M_OK )
+    if( result < 0 )
     {
         return -1;
     }

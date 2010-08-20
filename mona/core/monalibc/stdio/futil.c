@@ -99,7 +99,7 @@ int _seek(void *self, fpos_t pos, int whence)
     FILE *f = (FILE*)self;
 
     result = monapi_file_seek((uint32_t)f->_file, (uint32_t)pos, (uint32_t)whence);
-    if( result != M_OK )
+    if( result < 0 )
     {
         return -1;
     }

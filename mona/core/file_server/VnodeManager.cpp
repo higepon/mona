@@ -1,5 +1,6 @@
 #include "VnodeManager.h"
 #include "sys/error.h"
+#include <monapi.h>
 
 using namespace std;
 using namespace io;
@@ -130,6 +131,12 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
 
 int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID)
 {
+    // Joliet spec restriction.
+    if (name.size() > 64) {
+        monapi_warn("too long filename <%s>", name.c_str());
+    }
+//    ASSERT(name.size() <= 64);
+
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
     if (create)
@@ -292,7 +299,7 @@ int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
     } else {
         fileInfo->context.offset = newOffset;
         fileInfo->context.origin = origin;
-        return M_OK;
+        return newOffset;
     }
 }
 
