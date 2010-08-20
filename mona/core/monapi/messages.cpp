@@ -387,7 +387,7 @@ int monapi_file_stop_server()
     return msg.arg2;
 }
 
-uint32_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size)
+intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);

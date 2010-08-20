@@ -214,9 +214,8 @@ int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
 int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-    if (it == fileInfoMap_.end())
-    {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (it == fileInfoMap_.end()) {
+        return M_BAD_FILE_ID;
     }
     io::FileInfo* fileInfo = (*it).second;
     io::Context* context = &(fileInfo->context);

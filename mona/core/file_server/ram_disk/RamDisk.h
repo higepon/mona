@@ -237,8 +237,10 @@ namespace RamDisk {
 
 
           virtual int write(Vnode* file, struct io::Context* context)
-            {
-                if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+          {
+                if (file->type != Vnode::REGULAR) {
+                    return M_WRITE_ERROR;
+                }
                 FileInfo* f = (FileInfo*)file->fnode;
                 monapi_cmemoryinfo* memory = context->memory;
 
@@ -247,8 +249,8 @@ namespace RamDisk {
                 f->writeChunks(offset, writeSize, memory->Data);
                 f->size = f->size > offset+writeSize ? f->size : offset+writeSize;
                 context->offset += writeSize;
-                return MONA_SUCCESS;
-            }
+                return writeSize;
+          }
           virtual int readdir(Vnode* dir, monapi_cmemoryinfo** entries)
             {
                 typedef std::vector<monapi_directoryinfo*> Files;

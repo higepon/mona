@@ -102,7 +102,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
         int copySize = size > MAXDATA ? MAXDATA : size;
         memcpy(buffer->Data, contents, copySize);
         res = monapi_file_write(id, buffer, copySize);
-        EXPECT_EQ(MONA_SUCCESS, res);
+        EXPECT_EQ(copySize, res);
         size -= copySize;
         contents += copySize;
     }
@@ -112,7 +112,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
     monapi_cmemoryinfo* buffer = alloc_buffer_size(contents, size);
     int res = monapi_file_write(id, buffer, size);
 #endif
-    EXPECT_EQ(MONA_SUCCESS, res);
+    EXPECT_TRUE(res >= 0);
     monapi_file_close(id);
 }
 

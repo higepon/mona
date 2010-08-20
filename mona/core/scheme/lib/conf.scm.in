@@ -6,7 +6,7 @@
 
 (define mona-gui-auto-start #f)
 
-(define skip-unit-test? #t)
+(define skip-unit-test? #f)
 
 (define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"

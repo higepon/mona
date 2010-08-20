@@ -191,6 +191,12 @@ typedef enum
     */
     M_BAD_OFFSET,
     /*
+       constant:ppp M_BAD_FILE_ID
+
+       Indicates a bad file_id is spcified.
+    */
+    M_BAD_FILE_ID       ,
+    /*
        constant: M_NOT_SUPPORTED
 
        not supported.
