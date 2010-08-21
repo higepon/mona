@@ -563,13 +563,90 @@ static void testSeek_MinusOffsetShouldBeError()
         fclose(fp);
     }
 
-    intptr_t id = monapi_file_open(tmpFile, false);
+    intptr_t id = monapi_file_open(tmpFile, 0);
     ASSERT_TRUE(id > 0);
     EXPECT_EQ(M_BAD_OFFSET, monapi_file_seek(id, -1, SEEK_CUR));
     monapi_file_close(id);
     monapi_file_delete(tmpFile);
 }
 
+static void testOpen_create_truncate_file_not_exist()
+{
+    const char* filename = "/MEM/NOT_EXIST";
+    intptr_t id = monapi_file_open(filename, FILE_CREATE | FILE_TRUNCATE);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(0, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
+
+static void testOpen_create_truncate_file_exists()
+{
+    const char* filename = "/MEM/HOGE.TXT";
+    createFile(filename);
+    intptr_t id = monapi_file_open(filename, FILE_CREATE | FILE_TRUNCATE);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(0, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
+
+static void testOpen_create_noTruncate_file_not_exist()
+{
+    const char* filename = "/MEM/NOT_EXIST";
+    intptr_t id = monapi_file_open(filename, FILE_CREATE);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(0, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
+
+static void testOpen_create_noTruncate_file_exists()
+{
+    const char* filename = "/MEM/HOGE.TXT";
+    createFile(filename);
+    intptr_t id = monapi_file_open(filename, FILE_CREATE);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(13, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
+
+static void testOpen_noCreate_truncate_file_not_exist()
+{
+    const char* filename = "/MEM/NOT_EXIST";
+    intptr_t id = monapi_file_open(filename, FILE_TRUNCATE);
+    ASSERT_EQ(M_FILE_NOT_FOUND, id);
+}
+
+static void testOpen_noCreate_truncate_file_exists()
+{
+    const char* filename = "/MEM/HOGE.TXT";
+    createFile(filename);
+    intptr_t id = monapi_file_open(filename, FILE_CREATE);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(0, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
+
+static void testOpen_noCreate_noTruncate_file_not_exist()
+{
+    const char* filename = "/MEM/NOT_EXIST";
+    intptr_t id = monapi_file_open(filename, 0);
+    ASSERT_EQ(M_FILE_NOT_FOUND, id);
+}
+
+static void testOpen_noCreate_noTruncate_file_exists()
+{
+    const char* filename = "/MEM/HOGE.TXT";
+    createFile(filename);
+    intptr_t id = monapi_file_open(filename, 0);
+    ASSERT_TRUE(id > 0);
+    EXPECT_EQ(13, monapi_file_get_file_size(id));
+    monapi_file_close(id);
+    monapi_file_delete(filename);
+}
 
 int main(int argc, char *argv[])
 {
@@ -598,6 +675,16 @@ int main(int argc, char *argv[])
     testFopen_No_Leak();
     testMonAPIwrite();
     testSeek_MinusOffsetShouldBeError();
+
+    // open crete and truncate flags
+    testOpen_create_truncate_file_not_exist();
+    testOpen_create_truncate_file_exists();
+    testOpen_create_noTruncate_file_not_exist();
+    testOpen_create_noTruncate_file_exists();
+    testOpen_noCreate_truncate_file_not_exist();
+    testOpen_noCreate_truncate_file_exists();
+    testOpen_noCreate_noTruncate_file_not_exist();
+    testOpen_noCreate_noTruncate_file_exists();
     TEST_RESULTS(ram_disk);
     return 0;
 }
