@@ -173,6 +173,14 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
         } else {
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
+    } else {
+        // found case
+        if (mode & FILE_TRUNCATE) {
+            int ret = file->fs->truncate(file);
+            if (ret != MONA_SUCCESS) {
+                return ret;
+            }
+        }
     }
 
     int ret = file->fs->open(file, mode);

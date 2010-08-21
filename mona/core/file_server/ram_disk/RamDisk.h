@@ -185,6 +185,12 @@ namespace RamDisk {
             {
                 return MONA_SUCCESS;
             }
+
+          virtual int truncate(Vnode* file)
+          {
+              return MONA_SUCCESS;
+          }
+
           virtual int create(Vnode* dir, const std::string& file)
             {
                 FileMap::iterator it = files_.find(file);

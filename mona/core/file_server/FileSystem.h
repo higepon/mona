@@ -40,6 +40,7 @@ public:
     virtual int read(Vnode* file, struct io::Context* context)                            = 0;
     virtual int write(Vnode* file, struct io::Context* context)                           = 0;
     virtual int create(Vnode* dir, const std::string& file)                               = 0;
+    virtual int truncate(Vnode* file)                                                     = 0;
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   = 0;
     virtual int close(Vnode* file)                                                        = 0;
     virtual int delete_file(Vnode* file)                                                  = 0;
