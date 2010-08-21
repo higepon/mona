@@ -21,6 +21,7 @@ public:
     int seek(uint32_t fileID, int32_t offset, uint32_t origin);
     int stat(uint32_t fileID, Stat* st);
     int close(uint32_t fileID);
+    int create(const std::string& name);
     int delete_file(const std::string& name);
     int readdir(const std::string& name, monapi_cmemoryinfo** mem);
     // N.B fileID should be posive, since negative values indicates error.

@@ -129,6 +129,23 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     return MONA_SUCCESS;
 }
 
+int VnodeManager::create(const std::string& name)
+{
+    Vnode* targetDirectory = NULL;
+    uint32_t foundIndex = name.find_last_of('/');
+    string filename = name;
+    if (foundIndex == name.npos) {
+        targetDirectory = root_;
+    } else {
+        string dirPath = name.substr(1, foundIndex - 1);
+        if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
+            return MONA_ERROR_ENTRY_NOT_FOUND;
+        }
+        filename = name.substr(foundIndex + 1, name.size() - foundIndex);
+    }
+    return targetDirectory->fs->create(targetDirectory, filename);
+}
+
 int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)
 {
     // Joliet spec restriction.
@@ -139,22 +156,9 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) {
         return MONA_ERROR_INVALID_ARGUMENTS;
-
     }
     if (mode & FILE_CREATE) {
-        Vnode* targetDirectory = NULL;
-        uint32_t foundIndex = name.find_last_of('/');
-        string filename = name;
-        if (foundIndex == name.npos) {
-            targetDirectory = root_;
-        } else {
-            string dirPath = name.substr(1, foundIndex - 1);
-            if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
-                return MONA_ERROR_ENTRY_NOT_FOUND;
-            }
-            filename = name.substr(foundIndex + 1, name.size() - foundIndex);
-        }
-        int ret = targetDirectory->fs->create(targetDirectory, filename);
+        int ret = create(name);
         if (MONA_SUCCESS != ret) {
             return ret;
         }
