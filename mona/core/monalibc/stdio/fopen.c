@@ -75,10 +75,10 @@ FILE *fopen(const char *path, const char *mode)
 		fp->_flags = __SAP|__SRD;
 	}
 
-	fileno = monapi_file_open(path, MONAPI_FALSE);
+	fileno = monapi_file_open(path, 0);
 	if( fileno < 0 )
 	{
-		fileno = monapi_file_open(path, MONAPI_TRUE);
+		fileno = monapi_file_open(path, FILE_CREATE);
 		if( fileno < 0 )
 		{
 			free(fp);

@@ -267,13 +267,11 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     }
 }
 
-intptr_t monapi_file_open(const char* file, MONAPI_BOOL create)
+intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
-    ASSERT(create == MONAPI_TRUE || create == MONAPI_FALSE);
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, create, 0, 0, file) != M_OK)
-    {
+    if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file) != M_OK) {
         return MONA_FAILURE;
     }
     return msg.arg2;

@@ -28,6 +28,12 @@ enum
     ID_NUMBER_OF_SERVERS
 };
 
+enum FileOpenMode {
+    FILE_CREATE   = 0x00000010,
+    FILE_TRUNCATE = 0x00000020,
+    FORBIT_EXTRA_COMMA
+};
+
 typedef struct
 {
     char name[128]; // Joliet long name
@@ -57,7 +63,7 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file
 extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
 extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
-extern intptr_t monapi_file_open(const char* file, MONAPI_BOOL create);
+extern intptr_t monapi_file_open(const char* file, intptr_t mode);
 extern intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size);
 extern monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size);
 extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin);

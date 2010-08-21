@@ -15,7 +15,7 @@ using namespace MonAPI;
 
 static bool fileExist(const char* path)
 {
-    intptr_t id = monapi_file_open(path, false);
+    intptr_t id = monapi_file_open(path, 0);
     if(id < 0)
       return false;
     monapi_file_close(id);

@@ -52,7 +52,7 @@ void testNet()
 
 static void testISO9600_file_read()
 {
-    intptr_t handle = monapi_file_open("/LIBS/SCHEME/fib.scm", MONAPI_FALSE);
+    intptr_t handle = monapi_file_open("/LIBS/SCHEME/fib.scm", 0);
     monapi_cmemoryinfo* cmi = monapi_file_read(handle, 4096);
     ASSERT_TRUE(cmi != NULL);
     EXPECT_TRUE(cmi->Size > 0);

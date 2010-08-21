@@ -195,7 +195,7 @@ double strtod(const char *nptr, char **endptr)
   {
     return ___strtod_hex(p, endptr, nptr);
   }
-  if( isdigit(*p) || *p == '+' || *p == '-' )
+  if( isdigit(*p) || *p == '+' || *p == '-' || *p == '.')
   {
     return ___strtod_dec(p, endptr, nptr);
   }

@@ -36,7 +36,7 @@ public:
 public:
     virtual int initialize()                                                              = 0;
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type) = 0;
-    virtual int open(Vnode* file, int mode)                                               = 0;
+    virtual int open(Vnode* file, intptr_t mode)                                          = 0;
     virtual int read(Vnode* file, struct io::Context* context)                            = 0;
     virtual int write(Vnode* file, struct io::Context* context)                           = 0;
     virtual int create(Vnode* dir, const std::string& file)                               = 0;

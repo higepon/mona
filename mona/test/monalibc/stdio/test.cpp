@@ -146,7 +146,7 @@ void test_fread_small_many()
 
 static int fileSize(const char* path)
 {
-    uint32_t id = monapi_file_open(path, false);
+    uint32_t id = monapi_file_open(path, 0);
     int actual = monapi_file_get_file_size(id);
     monapi_file_close(id);
     return actual;

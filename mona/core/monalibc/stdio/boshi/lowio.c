@@ -23,9 +23,9 @@ int __mlibc_mona_file_open(void *f, const char *file, int flags)
 {
     uint32_t fid = 0;
 
-    fid = monapi_file_open(file, MONAPI_FALSE);
+    fid = monapi_file_open(file, 0);
     if( fid == MONA_FAILURE && flags & F_CREATE )
-        fid = monapi_file_open(file, MONAPI_TRUE);
+        fid = monapi_file_open(file, FILE_CREATE);
     _logprintf("fid = %x\n", fid);
     return (int)fid;
 }

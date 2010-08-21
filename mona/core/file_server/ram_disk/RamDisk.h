@@ -181,7 +181,7 @@ namespace RamDisk {
                 return MONA_SUCCESS;
             }
 
-          virtual int open(Vnode* file, int mode)
+          virtual int open(Vnode* file, intptr_t mode)
             {
                 return MONA_SUCCESS;
             }

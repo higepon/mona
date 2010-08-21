@@ -129,7 +129,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     return MONA_SUCCESS;
 }
 
-int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID)
+int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)
 {
     // Joliet spec restriction.
     if (name.size() > 64) {
@@ -139,7 +139,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, uint32_t 
 
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
-    if (create)
+    if (mode & FILE_CREATE)
     {
         Vnode* targetDirectory = NULL;
         uint32_t foundIndex = name.find_last_of('/');

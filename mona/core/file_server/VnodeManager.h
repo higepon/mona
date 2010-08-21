@@ -15,7 +15,7 @@ public:
     void setRoot(Vnode* root) {root_ = root;}
     int mount(Vnode* a, const std::string& path, Vnode* b);
     int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type = Vnode::REGULAR);
-    int open(const std::string& name, int mode, bool create, uint32_t tid, uint32_t* fileID);
+    int open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID);
     int read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem);
     int write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem);
     int seek(uint32_t fileID, int32_t offset, uint32_t origin);
