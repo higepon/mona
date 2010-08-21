@@ -26,16 +26,20 @@ namespace RamDisk {
         // int pos;
         Chunks chunks;
         ~FileInfo()
-          {
-              for(Chunks::iterator it = chunks.begin(); it != chunks.end(); it++)
-                {
-                    static int counter = 0;
-                    char* ptr = *it;
-                    logprintf("delete=<%d>", counter++);
-                    delete(ptr);
-                }
-              chunks.clear();
-          }
+        {
+            truncate();
+        }
+
+        inline void truncate()
+        {
+            for(Chunks::iterator it = chunks.begin(); it != chunks.end(); it++) {
+                static int counter = 0;
+                char* ptr = *it;
+                delete(ptr);
+            }
+            chunks.clear();
+            size = 0;
+        }
 
         inline Chunks::iterator findChunk(int offset)
           {
@@ -188,6 +192,8 @@ namespace RamDisk {
 
           virtual int truncate(Vnode* file)
           {
+              FileInfo* f = (FileInfo*)file->fnode;
+              f->truncate();
               return MONA_SUCCESS;
           }
 
