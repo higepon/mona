@@ -135,31 +135,27 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     if (name.size() > 64) {
         monapi_warn("too long filename <%s>", name.c_str());
     }
-//    ASSERT(name.size() <= 64);
 
     // now fullpath only. fix me
-    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
-    if (mode & FILE_CREATE)
-    {
+    if (name.compare(0, 1, "/") != 0) {
+        return MONA_ERROR_INVALID_ARGUMENTS;
+
+    }
+    if (mode & FILE_CREATE) {
         Vnode* targetDirectory = NULL;
         uint32_t foundIndex = name.find_last_of('/');
         string filename = name;
-        if (foundIndex == name.npos)
-        {
+        if (foundIndex == name.npos) {
             targetDirectory = root_;
-        }
-        else
-        {
+        } else {
             string dirPath = name.substr(1, foundIndex - 1);
-            if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS)
-            {
+            if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
                 return MONA_ERROR_ENTRY_NOT_FOUND;
             }
             filename = name.substr(foundIndex + 1, name.size() - foundIndex);
         }
         int ret = targetDirectory->fs->create(targetDirectory, filename);
-        if (MONA_SUCCESS != ret)
-        {
+        if (MONA_SUCCESS != ret) {
             return ret;
         }
     }
@@ -167,21 +163,14 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_SUCCESS)
-    {
+    if (lookup(root_, filename, &file) != MONA_SUCCESS) {
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
     int ret = file->fs->open(file, mode);
-    if (MONA_SUCCESS != ret)
-    {
+    if (MONA_SUCCESS != ret) {
         return ret;
     }
     *fileID = this->fileID(file, tid);
-//     if (fileInfoMap_.find(*fileID) != fileInfoMap_.end())
-//     {
-//         _printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
-//         exit(-1);
-//     }
     FileInfo* fileInfo = new FileInfo;
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
