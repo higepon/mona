@@ -71,6 +71,7 @@ clean:
 	cd Graphics/jpegview && $(MAKE) clean
 	cd Gui/libbaygui && $(MAKE) clean
 	cd Gui/libgui && $(MAKE) clean
+	cd Gui/ime_server && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
 	cd Graphics/MesaDemos && $(MAKE) clean

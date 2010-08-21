@@ -3,6 +3,7 @@
 #include "Icon.h"
 #include <gui/System/Mona/Forms/Application.h>
 #include <monapi.h>
+#include <stdio.h>
 #include <monapi/messages.h>
 #include <monapi/CString.h>
 
@@ -60,7 +61,13 @@ public:
 	static void Main(_A<String> args)
 	{
 		if (ExistsProcess("MONAFILE.EX5")) return;
-		
+        const char* MAP_FILE_PATH = "/APPS/MONAFILE.MAP";
+        uint32_t pid = syscall_get_pid();
+        intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+        if (ret != M_OK) {
+            monapi_warn("syscall_stack_trace_enable error %d\n", ret);
+            exit(-1);
+        }
 		gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		String bundlePath = MonAPI::System::getBundlePath();
 		icons = new Bitmap(bundlePath + "/ICONS.BMP");
