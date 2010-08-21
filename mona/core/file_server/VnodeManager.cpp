@@ -157,19 +157,24 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     if (name.compare(0, 1, "/") != 0) {
         return MONA_ERROR_INVALID_ARGUMENTS;
     }
-    if (mode & FILE_CREATE) {
-        int ret = create(name);
-        if (MONA_SUCCESS != ret) {
-            return ret;
-        }
-    }
 
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
     if (lookup(root_, filename, &file) != MONA_SUCCESS) {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        if (mode & FILE_CREATE) {
+            int ret = create(name);
+            if (MONA_SUCCESS != ret) {
+                return ret;
+            }
+            if (lookup(root_, filename, &file) != MONA_SUCCESS) {
+                return MONA_ERROR_ENTRY_NOT_FOUND;
+            }
+        } else {
+            return MONA_ERROR_ENTRY_NOT_FOUND;
+        }
     }
+
     int ret = file->fs->open(file, mode);
     if (MONA_SUCCESS != ret) {
         return ret;
