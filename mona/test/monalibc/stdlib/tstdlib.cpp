@@ -122,6 +122,10 @@ int test_strtod()
   EXPECT_TRUE(r == 0.124);
   EXPECT_STR_EQ(" is positive", p);
 
+  r = strtod(".124", &p);
+  EXPECT_TRUE(r == 0.124);
+  EXPECT_STR_EQ("", p);
+
   r = strtod("-10.092 is negative", &p);
   EXPECT_TRUE(r == -10.092);
   EXPECT_STR_EQ(" is negative", p);
