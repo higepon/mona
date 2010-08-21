@@ -623,7 +623,7 @@ static void testOpen_noCreate_truncate_file_exists()
 {
     const char* filename = "/MEM/HOGE.TXT";
     createFile(filename);
-    intptr_t id = monapi_file_open(filename, FILE_CREATE);
+    intptr_t id = monapi_file_open(filename, FILE_TRUNCATE);
     ASSERT_TRUE(id > 0);
     EXPECT_EQ(0, monapi_file_get_file_size(id));
     monapi_file_close(id);

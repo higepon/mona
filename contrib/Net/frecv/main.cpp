@@ -34,7 +34,7 @@ void copyToPath(int sd, const char *name)
     sprintf(path, "/MEM/%s", name);
     fprintf(stderr, "path: %s\n", path);
 
-    intptr_t id = monapi_file_open(path, true);
+    intptr_t id = monapi_file_open(path, FILE_CREATE);
     assert(id > 0);
 
     monapi_cmemoryinfo* buffer = alloc_buffer(MAXDATA);
