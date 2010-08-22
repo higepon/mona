@@ -9,7 +9,7 @@ INSTDIR = $(BINDIR)/APPS
 INSTFILES = HELLO.map
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    =  -lonigurum-imp -lmonalibc-imp -lpci-imp --enable-auto-import
+ADDLINK    =  -lonigurum-imp -lmonalibc-imp --enable-auto-import
 #ADDLINK    = -ldlltest-imp
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc

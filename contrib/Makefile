@@ -8,10 +8,10 @@ all:
 ### servers
 #mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
-	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/test_baygui && touch dependencies && $(MAKE) && $(MAKE) install
 
 ### non-gui applications

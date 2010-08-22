@@ -2,7 +2,7 @@
 #include "circular_buffer.h"
 #include <stdlib.h>
 #include <string.h>
-#include <pci/Pci.h>
+#include <monapi/Pci.h>
 #include <monapi/io.h>
 #include <monapi/Thread.h>
 #include <monalibc/stdio.h>

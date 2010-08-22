@@ -40,7 +40,7 @@ SOURCES = \
 	util/Vector.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE =  -I. -I.. -I$(INCDIR)
+INCLUDE =  -I. -I.. -I$(INCDIR) -I ../ime_server
 
 all : $(TARGET)
 

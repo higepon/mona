@@ -47,7 +47,7 @@ ADDLINKDEP =
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-ADDLINK += -lpci-imp
+ADDLINK +=
 
 # overwrite install
 install: all

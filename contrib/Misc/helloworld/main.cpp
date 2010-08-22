@@ -1,7 +1,6 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monalibc.h>
-#include <pci/Pci.h>
 #include <monapi/io.h>
 
 #include <monapi.h>
