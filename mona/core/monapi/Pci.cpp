@@ -24,7 +24,7 @@
 #include <monapi/CString.h>
 #include <monalibc/stdio.h>
 
-#include <pci/Pci.h>
+#include <monapi/Pci.h>
 
 // extern "C" int dllmain();
 // int dllmain()
@@ -33,7 +33,7 @@
 
 
 //PCIINFOファイル
-#define PCIINFO_FILE "libPci.a"
+//#define PCIINFO_FILE "libPci.a"
 
 using namespace MonAPI;
 
