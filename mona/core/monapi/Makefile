@@ -47,6 +47,7 @@ SOURCES = monapi_impl.cpp \
           terminal/Util.cpp \
           net.cpp \
           BufferReceiver.cpp \
+          Pci.cpp \
           text/Line.cpp \
           ContigousMemory.cpp\
           drivers/virtio/VirtQueue.cpp

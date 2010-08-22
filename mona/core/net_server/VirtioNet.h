@@ -35,7 +35,7 @@
 #include "virtio.h"
 #include "IP.h"
 #include <monapi/io.h>
-#include <pci/Pci.h>
+#include <monapi/Pci.h>
 
 /*
   How to debug the virtio-net driver.

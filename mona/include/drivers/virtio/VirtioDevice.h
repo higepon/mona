@@ -29,7 +29,7 @@
 #ifndef _VIRTIODEVICE_
 #define _VIRTIODEVICE_
 
-#include <pci/Pci.h>
+#include <monapi/Pci.h>
 #include <monapi/io.h>
 #include <monapi/ContigousMemory.h>
 #include <drivers/virtio/VirtBuffer.h>
