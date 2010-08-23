@@ -481,17 +481,14 @@ MONAPI_BOOL monapi_file_exists(const char* path)
     intptr_t desc = monapi_file_open(path, 0);
     if (desc > 0) {
         monapi_file_close(desc);
-        _logprintf("monapi_file_exists %s = %s\n", path, "true");
         return MONAPI_TRUE;
     } else {
         monapi_cmemoryinfo* cmi = monapi_file_read_directory(path);
         if (cmi == NULL) {
-        _logprintf("monapi_file_exists %s = %s\n", path, "fales");
             return MONAPI_FALSE;
         } else {
             monapi_cmemoryinfo_dispose(cmi);
             monapi_cmemoryinfo_delete(cmi);
-        _logprintf("monapi_file_exists %s = %s\n", path, "true2");
             return MONAPI_TRUE;
         }
     }

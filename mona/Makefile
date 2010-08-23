@@ -42,7 +42,7 @@ endif
 	cd core/gui_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 	cd core/gmp && $(MAKE) && $(MAKE) install
-#	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
+	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 tests: tools cores
 	cd test/monapi/file && $(MAKE) && $(MAKE) install
