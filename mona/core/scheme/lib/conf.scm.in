@@ -69,7 +69,40 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-  (for-each run-test '("clos.scm" "condition.scm" "shorten.scm" "exception.scm" "record.scm"))
+  (for-each run-test
+            '("clos.scm"
+              "condition.scm"
+              "shorten.scm"
+              "exception.scm"
+              "misc.scm"
+              "testing.scm"
+              "mosh-test.scm"
+              "io-error.scm"
+              "input-output-port.scm"
+              "condition.scm"
+              "rbtree-test.scm"
+              "exception.scm"
+              "unicode.scm"
+              "srfi8.scm"
+              "srfi19.scm"
+              "mysql.scm"
+              "clos.scm"
+              "dbi.scm"
+              "srfi-misc.scm"
+              "lists.scm"
+              "socket.scm"
+              "match.scm"
+              "print.scm"
+              "concurrent.scm"
+              "concurrent-crash.scm"
+              "number.scm"
+              "cgi.scm"
+              "memcached.scm"
+              "record.scm"
+
+              ))
+
+
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/condition.scm")
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/clos.scm")
 ;;   (ls "/MEM")
