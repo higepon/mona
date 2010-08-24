@@ -148,9 +148,11 @@ int VnodeManager::create(const std::string& name)
 
 int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)
 {
+    static bool tooLongWarnShown = false;
     // Joliet spec restriction.
-    if (name.size() > 64) {
-        monapi_warn("too long filename <%s>", name.c_str());
+    if (name.size() > 64 && !tooLongWarnShown) {
+        monapi_warn("too long filename <%s>\n", name.c_str());
+        tooLongWarnShown = true;
     }
 
     // now fullpath only. fix me

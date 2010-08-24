@@ -9,6 +9,8 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
+    // On file server, we can't read map file.
+
     FileServer server;
     if (server.initializeFileSystems() != MONA_SUCCESS)
     {

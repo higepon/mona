@@ -320,6 +320,9 @@ PROCEDURE(CallProcess, "call-process")
 // don't use outStream directory! auto-import trap!
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
+
+    uint64_t start = MonAPI::Date::nowInMsec();
+
     MonAPI::Stream hisStdin;
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     if (result != 0)
@@ -329,6 +332,8 @@ PROCEDURE(CallProcess, "call-process")
 
     Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
     env->setVaribale(new Variable("status", lineno()), status);
+    uint64_t end = MonAPI::Date::nowInMsec();
+    logprintf("call-process execution time %d msec %s\n", end - start, s->value().data());
     return status;
 #endif
     RETURN_BOOLEAN(false);

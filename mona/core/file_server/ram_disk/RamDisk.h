@@ -65,7 +65,6 @@ namespace RamDisk {
           {
               static int counter = 0;
               char* ptr = new char[CHUNK_SIZE];
-              logprintf("new=<%d>", counter++);
               ASSERT(ptr);
               chunks.push_back(ptr);
               Chunks::iterator it = chunks.end();
