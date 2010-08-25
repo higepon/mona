@@ -60,6 +60,11 @@ struct sockaddr {
 #define PF_INET         AF_INET
 #define PF_UNSPEC       AF_UNSPEC
 
+#define IPPROTO_IP      0
+#define IPPROTO_TCP     6
+#define IPPROTO_UDP     17
+#define IPPROTO_UDPLITE 136
+
 #define INADDR_NONE         ((u32_t)0xffffffffUL)  /* 255.255.255.255 */
 #define INADDR_LOOPBACK     ((u32_t)0x7f000001UL)  /* 127.0.0.1 */
 #define INADDR_ANY          ((u32_t)0x00000000UL)  /* 0.0.0.0 */

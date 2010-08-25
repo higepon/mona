@@ -223,7 +223,9 @@ static void __fastcall messageLoop(void* arg)
             }
             GetaddrinfoPacket* packet = (GetaddrinfoPacket*)receiver->buffer();
             struct addrinfo *res;
-            int ret = getaddrinfo(packet->data, packet->data + packet->nodeLen, &packet->hints, &res);
+            const char* node = packet->nodeLen == 0 ? NULL : packet->data;
+            const char* sevice = (receiver->bufferSize() == sizeof(packet) + packet->nodeLen) ? NULL : packet->data + packet->nodeLen;
+            int ret = getaddrinfo(node, sevice, &packet->hints, &res);
             delete receiver;
 
             if (ret == 0) {

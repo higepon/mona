@@ -71,7 +71,7 @@
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
   (for-each run-test
             '(
-              ;; "clos.scm"
+;;              "mosh-test.scm"
               ;; "condition.scm"
               ;; "shorten.scm"
               ;; "exception.scm"
@@ -89,7 +89,7 @@
 ;              "dbi.scm" ; skip
               ;; "srfi-misc.scm"
               ;; "lists.scm"
-;              "socket.scm"
+              "socket.scm"
 ;              "match.scm"
 ;              "print.scm"
               ;; "concurrent.scm"

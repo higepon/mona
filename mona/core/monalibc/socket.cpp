@@ -48,15 +48,19 @@ int getaddrinfo(const char *node, const char *service,
                 struct addrinfo **res)
 {
     // construct addrinfo to struct
-    uintptr_t nodeLen = strlen(node) + 1;
-    uintptr_t serviceLen = strlen(service) + 1;
+    uintptr_t nodeLen = node == NULL ? 0 : strlen(node) + 1;
+    uintptr_t serviceLen = service == NULL ? 0 : strlen(service) + 1;
     uintptr_t structSize = sizeof(GetaddrinfoPacket) + nodeLen + serviceLen;
     uint8_t* p = new uint8_t[structSize];
     GetaddrinfoPacket* pack = (GetaddrinfoPacket*)p;
     pack->nodeLen = nodeLen;
     pack->hints = *hints;
-    strcpy(pack->data, node);
-    strcpy(pack->data + nodeLen, service);
+    if (node != NULL) {
+        strcpy(pack->data, node);
+    }
+    if (service != NULL) {
+        strcpy(pack->data + nodeLen, service);
+    }
 
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
     if (Message::send(id, MSG_NET_GET_ADDR_INFO) != M_OK) {

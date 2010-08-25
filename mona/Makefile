@@ -119,6 +119,7 @@ endif
 	$(MAKE) $@ -C core/file_server
 	$(MAKE) $@ -C core/process_server
 	$(MAKE) $@ -C core/shell_server
+	$(MAKE) $@ -C core/net_server
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
 	$(MAKE) $@ -C core/gui_server
