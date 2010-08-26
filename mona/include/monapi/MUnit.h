@@ -128,30 +128,6 @@ void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr
 }
 
 template <>
-void munit_expect_eq(MonaErrorType expected, intptr_t actual, const char* expectedStr, const char* file, int line)
-{
-    if (expected != actual) {
-        printf("MUnit:EXPECT_EQ failure expected %s(%d), but got %d %s:%d: \n", expectedStr, expected, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s(%d), but got %d %s:%d: \n", expectedStr, expected, actual, file, line);
-        munit_number_of_failed++;
-    } else {
-        munit_number_of_passed++;
-    }
-}
-
-template <>
-void munit_expect_eq(MonaOldErrorType expected, intptr_t actual, const char* expectedStr, const char* file, int line)
-{
-    if (expected != actual) {
-        printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
-        munit_number_of_failed++;
-    } else {
-        munit_number_of_passed++;
-    }
-}
-
-template <>
 void munit_expect_eq(const char* expected, char* actual, const char* expectedStr, const char* file, int line)
 {
     if (0 != strcmp(expected, actual)) {

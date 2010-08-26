@@ -1,14 +1,6 @@
-/*!
-    \file  error.h
-    \brief error defineition
-
-    Copyright (c) 2004 Higepon
-    WITHOUT ANY WARRANTY
-
-    \author  Higepon
-    \version $Revision$
-    \date   create:2004/03/10 update:$Date$
-*/
+//
+//   Gerated by script. Don't edit this file
+//
 
 /*
     Title: Errors
@@ -22,196 +14,188 @@
 #ifndef _MONA_ERROR_
 #define _MONA_ERROR_
 
-//
+#include "sys/deprecated.h"
 
-// http://sena--web.hp.infoseek.co.jp/oldbeos/BeBookJ/The%20Support%20Kit/ErrorCodes.html
+/*
+    constant: M_OK
 
+    Indicates ok
+*/
+#define M_OK 0
 
+/*
+    constant: M_BAD_MUTEX_ID
 
-// deprecated start
+    Indicates bad mutex id
+*/
+#define M_BAD_MUTEX_ID -5000
 
-enum
-{
-    FS_NO_ERROR            = 0x00,
-    FS_INIT_ERROR          = 0x01,
-    FS_GET_ROOT_ERROR      = 0x02,
-    FS_GET_DIR_ERROR       = 0x03,
-    FS_DIR_NOT_EXIST_ERROR = 0x04,
-    FS_ALREADY_OPEN_ERROR  = 0x05,
-    FS_FILE_OPEN_ERROR     = 0x06,
-    FS_FILE_NOT_FOUND      = 0x06,
-    FS_FILE_IS_NOT_OPEN    = 0x07,
-    FS_FILE_EXIST          = 0x08,
-    FS_FILE_CREATE_ERROR   = 0x09,
-    MUTEX_TIMEOUT          = -1,
-};
+/*
+    constant: M_TIMED_OUT
 
-// IDManager Errors
-//   Since id allcated by IDManager greater than zero,
-//   error numbers are defined as negative number.
-typedef enum
-{                              // A normal value (which means no error) should be positive.
-    /*
-       constant: M_OK
+    Indicates timed out
+*/
+#define M_TIMED_OUT -5001
 
-       Indicates a successful return. M_OK is guaranteed to be zero.
-    */
-    M_OK                 = 0,
-    M_XX = -5000,
-    /*
-       constant: M_BAD_MUTEX_ID
+/*
+    constant: M_BUSY
 
-       Indicates a bad mutex_id is spcified.
-    */
-    M_BAD_MUTEX_ID       ,
-    /*
-       constant: M_TIMED_OUT
+    Indicates resource busy
+*/
+#define M_BUSY -5002
 
-       Indicates the action has been timed out.
-    */
-    M_TIMED_OUT,
-    /*
-       constant: M_BUSY
+/*
+    constant: M_BAD_CONDITION_ID
 
-       Indicates the resource is busy state.
-    */
-    M_BUSY,
-    /*
-       constant: M_BAD_CONDITION_ID
+    Indicates bad condition id
+*/
+#define M_BAD_CONDITION_ID -5003
 
-       Indicates a bad condition_id is spcified.
-    */
-    M_BAD_CONDITION_ID       ,
-    /*
-       constant:ppp M_BAD_THREAD_ID
+/*
+    constant: M_BAD_THREAD_ID
 
-       Indicates a bad thread_id is spcified.
-    */
-    M_BAD_THREAD_ID       ,
-    /*
-       constant: M_BAD_SEMAPHORE_ID
+    Indicates bad thread id
+*/
+#define M_BAD_THREAD_ID -5004
 
-       Indicates a bad semaphore_id is spcified.
-    */
-    M_BAD_SEMAPHORE_ID       ,
-    /*
-       constant: M_NAME_NOT_FOUND
+/*
+    constant: M_BAD_SEMAPHORE_ID
 
-       There's no match for the specified name.
-    */
-    M_NAME_NOT_FOUND,
-    /*
-       constant: M_BAD_MEMORY_MAP_ID
+    Indicates bad semaphore id
+*/
+#define M_BAD_SEMAPHORE_ID -5005
 
-       Indicates a bad memory_map_id is spcified.
-    */
-    M_BAD_MEMORY_MAP_ID       ,
-    /*
-       constant: M_MESSAGE_OVERFLOW
+/*
+    constant: M_NAME_NOT_FOUND
 
-       Indicates message queue overflowed.
-    */
-    M_MESSAGE_OVERFLOW,
-    /*
-       constant: M_MEMORY_MAP_ERROR
+    Indicates name not found
+*/
+#define M_NAME_NOT_FOUND -5006
 
-       Indicates Memory Map failed.
-    */
-    M_MEMORY_MAP_ERROR,
-    /*
-       constant: M_BAD_INDEX
+/*
+    constant: M_BAD_MEMORY_MAP_ID
 
-       Indicates bad index given.
-    */
-    M_BAD_INDEX,
-    /*
-       constant: M_MESSAGE_NOT_FOUND
+    Indicates bad memory map id
+*/
+#define M_BAD_MEMORY_MAP_ID -5007
 
-       Indicates message not found.
-    */
-    M_MESSAGE_NOT_FOUND,
-    /*
-       constant: M_RELEASED
+/*
+    constant: M_MESSAGE_OVERFLOW
 
-       Indicates the object is released, but still some one has referance to the object.
-    */
-    M_RELEASED,
-    /*
-       constant: M_BAD_TIMER_ID
+    Indicates message queue overflow
+*/
+#define M_MESSAGE_OVERFLOW -5008
 
-       Indicates a bad timer_id is spcified.
-    */
-    M_BAD_TIMER_ID       ,
-    /*
-       constant: M_BAD_STREAM
+/*
+    constant: M_MEMORY_MAP_ERROR
 
-       Indicates a bad stream.
-    */
-    M_BAD_STREAM       ,
-    /*
-       constant: M_BAD_ADDRESS
+    Indicates memory map failed
+*/
+#define M_MEMORY_MAP_ERROR -5009
 
-       Indicates a bad address.
-    */
-    M_BAD_ADDRESS,
-    /*
-       constant: M_NO_MEMORY
+/*
+    constant: M_BAD_INDEX
 
-       Indicates there is not enough memory.
-    */
-    M_NO_MEMORY,
-    /*
-       constant: M_FILE_NOT_FOUND
+    Indicates bad index
+*/
+#define M_BAD_INDEX -5010
 
-       There's no match file for the specified file.
-    */
-    M_FILE_NOT_FOUND,
-    /*
-       constant: M_NO_SPACE
+/*
+    constant: M_MESSAGE_NOT_FOUND
 
-       There's no space.
-    */
-    M_NO_SPACE,
-    /*
-       constant: M_READ_ERROR
+    Indicates message is not found
+*/
+#define M_MESSAGE_NOT_FOUND -5011
 
-       Read error.
-    */
-    M_READ_ERROR,
-    /*
-       constant: M_WRITE_ERROR
+/*
+    constant: M_RELEASED
 
-       Write error.
-    */
-    M_WRITE_ERROR,
-    /*
-       constant: M_BAD_OFFSET
+    Indicates object reference is released, but accessed
+*/
+#define M_RELEASED -5012
 
-       Indicates bad offset
-    */
-    M_BAD_OFFSET,
-    /*
-       constant:ppp M_BAD_FILE_ID
+/*
+    constant: M_BAD_TIMER_ID
 
-       Indicates a bad file_id is spcified.
-    */
-    M_BAD_FILE_ID       ,
-    /*
-       constant: M_NOT_SUPPORTED
+    Indicates bad timer id
+*/
+#define M_BAD_TIMER_ID -5013
 
-       not supported.
-    */
-    M_NOT_SUPPORTED,
-    /*
-       constant: M_UNKNOWN
+/*
+    constant: M_BAD_STREAM
 
-       Indicates unknown error.
-    */
-    M_UNKNOWN,
-    IDM_OBJECT_NOT_FOUND , // Error should be negative
-    IDM_SECURITY_ERROR   ,
-    IDM_INVALID_TYPE
-} MonaErrorType;
+    Indicates bad stream
+*/
+#define M_BAD_STREAM -5014
 
+/*
+    constant: M_BAD_ADDRESS
+
+    Indicates bad access
+*/
+#define M_BAD_ADDRESS -5015
+
+/*
+    constant: M_NO_MEMORY
+
+    Indicates no memory
+*/
+#define M_NO_MEMORY -5016
+
+/*
+    constant: M_FILE_NOT_FOUND
+
+    Indicates file not found
+*/
+#define M_FILE_NOT_FOUND -5017
+
+/*
+    constant: M_NO_SPACE
+
+    Indicates no space
+*/
+#define M_NO_SPACE -5018
+
+/*
+    constant: M_READ_ERROR
+
+    Indicates read error
+*/
+#define M_READ_ERROR -5019
+
+/*
+    constant: M_WRITE_ERROR
+
+    Indicates write error
+*/
+#define M_WRITE_ERROR -5020
+
+/*
+    constant: M_BAD_OFFSET
+
+    Indicates bad offset
+*/
+#define M_BAD_OFFSET -5021
+
+/*
+    constant: M_BAD_FILE_ID
+
+    Indicates bad file id
+*/
+#define M_BAD_FILE_ID -5022
+
+/*
+    constant: M_NOT_SUPPORTED
+
+    Indicates not supported
+*/
+#define M_NOT_SUPPORTED -5023
+
+/*
+    constant: M_UNKNOWN
+
+    Indicates unknown error
+*/
+#define M_UNKNOWN -5024
 
 #endif

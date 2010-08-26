@@ -9,7 +9,11 @@ export MINGWPREFIX
 COREDIR = core/monalibc core/firstboot
 
 all: mkimg
-tools:
+
+include/sys/error.h: include/sys/error.txt
+	mosh tool/gen-error-h.scm $< > $@
+
+tools: include/sys/error.h
 	cd tool/stlport && $(MAKE) && $(MAKE) install
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
