@@ -549,7 +549,6 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
     setDetailInformation(directory);
     uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = new uint8_t[readSize];
-
     if (buffer == NULL)
     {
         return NULL;

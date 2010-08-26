@@ -90,7 +90,7 @@
 ;              "dbi.scm" ; skip
               ;; "srfi-misc.scm"
               ;; "lists.scm"
-              "socket.scm"
+ ;             "socket.scm"
 ;              "match.scm"
 ;              "print.scm"
               ;; "concurrent.scm"
@@ -99,7 +99,7 @@
  ;             "cgi.scm"
  ;             "memcached.scm"
 ;              "record.scm"
-
+              "output-port.scm"
               ))
 
 
@@ -109,7 +109,7 @@
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/clos.scm")
 ;;   (ls "/MEM")
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/clos.scm")
-;; ;  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/r6rs-test-suite /APPS/MOSH.APP/r6rs-test-suite/tests/r6rs/run-via-eval.sps")
+;  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/r6rs-test-suite /APPS/MOSH.APP/r6rs-test-suite/tests/r6rs/run-via-eval.sps")
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/test/mylib /APPS/MOSH.APP/test/record.scm")
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/unicode.scm")
 ;;   (ls "/MEM")
