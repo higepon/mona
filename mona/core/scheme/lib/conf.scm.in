@@ -69,6 +69,7 @@
 
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+(call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/APPS/MOSH.APP/r6rs-test-suite /APPS/MOSH.APP/r6rs-test-suite/tests/r6rs/run-via-eval.sps")
   (for-each run-test
             '(
 ;;              "mosh-test.scm"
