@@ -40,6 +40,7 @@ typedef long long	int64_t;
 # define __int64_t_defined
 #endif
 
+#define PROCESS_HEAP_SIZE 512 * 1024 * 1024
 
 
 #ifndef __uintptr_t_defined

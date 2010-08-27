@@ -37,7 +37,7 @@ int dllmain(uint32_t reason)
     case 0: // DLL_PROCESS_ATTACH
         // Prevent static class initialize invoked twice. (ex) BitMap on MemoryMap.
         if (!monapi_initialized) {
-            monapi_initialize_memory(64 * 1024 * 1024);
+            monapi_initialize_memory(PROCESS_HEAP_SIZE);
             invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
             monapi_memory_initialized = true;
             // see user_start_c_impl

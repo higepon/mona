@@ -4,6 +4,7 @@ include $(SRCTOP)/Makefile.inc
 TARGET  = KEYBDMNG
 SOURCES = main.cpp KeyboardManager.cpp
 INSTDIR = $(BINDIR)/SERVERS
+INSTFILES = KEYBDMNG.map
 
 ADDLINK    = -lmonalibc-imp --enable-auto-import
 

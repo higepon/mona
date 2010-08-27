@@ -75,6 +75,15 @@ int main(int argc, char* argv[])
     /* user mode I/O */
     syscall_get_io();
 
+    const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
+    uint32_t pid = syscall_get_pid();
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        monapi_warn("syscall_stack_trace_enable error %d\n", ret);
+        exit(-1);
+    }
+
+
     /* initilize KeyBoardManager */
     KeyBoardManager* manager = new KeyBoardManager();
     manager->init();
