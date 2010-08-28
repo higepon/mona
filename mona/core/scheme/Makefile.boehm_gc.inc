@@ -12,6 +12,7 @@ BOEHM_GC_CFLAGS = -DPACKAGE_NAME=\"gc\"    \
 -DATOMIC_UNCOLLECTABLE=1                   \
 -DNO_CLOCK                                 \
 -DGC_PRINT_STATS                           \
+-DLARGE_CONFIG=1 \
 -UMSWIN32                                  
 
 BOEHM_GC_DIR  = ./BoehmGC/gc-7.0
