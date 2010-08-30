@@ -158,11 +158,14 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 {
     uint32_t fileID;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint64_t s1 = MonAPI::Date::nowInMsec();
     int ret = vmanager_->open(file, 0, tid, &fileID);
+    uint64_t s2 = MonAPI::Date::nowInMsec();
     if (ret != MONA_SUCCESS) return NULL;
 
     Stat st;
     ret = vmanager_->stat(fileID, &st);
+    uint64_t s3 = MonAPI::Date::nowInMsec();
     if (ret != MONA_SUCCESS)
     {
         ret = vmanager_->close(fileID);
@@ -171,6 +174,8 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 
     monapi_cmemoryinfo* mi;
     ret = vmanager_->read(fileID, st.size, &mi);
+    uint64_t s4 = MonAPI::Date::nowInMsec();
+    logprintf("%d %d %d \n", s4 - s3, s3 - s2, s2 - s1);
     if (ret != MONA_SUCCESS)
     {
         ret = vmanager_->close(fileID);
@@ -200,7 +205,10 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_READ_ALL:
         {
+            uint64_t start = MonAPI::Date::nowInMsec();
             monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str());
+            uint64_t end = MonAPI::Date::nowInMsec();
+            logprintf("file server read all %d\n", end - start);
             if (NULL == mi)
             {
                 Message::reply(&msg, MONA_FAILURE);

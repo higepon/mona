@@ -325,20 +325,22 @@ void PageManager::showCurrentStackTrace()
 
 bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
 {
+    gKStat.startIncrementByTSC(PAGE_FAULT1);
     Process* current = g_currentThread->process;
+    gKStat.stopIncrementByTSC(PAGE_FAULT1);
 
     /* search shared memory segment */
     if ((error & 0x01) == ARCH_FAULT_NOT_EXIST)
     {
-    List<SharedMemorySegment*>* list = current->getSharedList();
-    for (int i = 0; i < list->size(); i++)
-    {
-        SharedMemorySegment* segment = list->get(i);
-        if (segment->inRange(address))
+        List<SharedMemorySegment*>* list = current->getSharedList();
+        for (int i = 0; i < list->size(); i++)
         {
-        return segment->faultHandler(address, FAULT_NOT_EXIST);
+            SharedMemorySegment* segment = list->get(i);
+            if (segment->inRange(address))
+            {
+                return segment->faultHandler(address, FAULT_NOT_EXIST);
+            }
         }
-    }
     }
 
     /* heap */

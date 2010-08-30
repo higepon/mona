@@ -16,7 +16,7 @@ namespace RamDisk {
     typedef std::map<std::string, FileInfo*> FileMap;
     enum
       {
-          CHUNK_SIZE = 4096,
+          CHUNK_SIZE = 409600,
       };
 
 
@@ -113,20 +113,24 @@ namespace RamDisk {
           {
               int rest = len;
               int chunkOffset = offset%CHUNK_SIZE;
-
               Chunks::iterator it = findChunk(offset);
+    int i = 0;
               while(rest > 0) {
+    uint64_t s1 = MonAPI::Date::nowInMsec();
                   int copySize = chunkRemainLen(chunkOffset, rest);
                   ASSERT(copySize > 0);
-
+              uint64_t s2 = MonAPI::Date::nowInMsec();
                   char *ptr = *it;
                   memcpy(dest, ptr+chunkOffset, copySize);
-
+              uint64_t s3 = MonAPI::Date::nowInMsec();
                   dest += copySize;
                   chunkOffset = 0; // only none-zero at first chunk.
                   rest -= copySize;
                   it++;
                   ASSERT(it != chunks.end());
+                  i++;
+                  logprintf("ch %d\n", s3 - s2);
+                  logprintf("ch2 %d\n", s2 - s1);
               }
           }
 
@@ -217,6 +221,7 @@ namespace RamDisk {
 
           virtual int read(Vnode* file, struct io::Context* context)
             {
+                uint64_t s1 = MonAPI::Date::nowInMsec();
                 if (file->type != Vnode::REGULAR) return MONA_FAILURE;
                 FileInfo* f = (FileInfo*)file->fnode;
                 uint32_t offset = context->offset;
@@ -227,8 +232,8 @@ namespace RamDisk {
                   {
                       readSize = rest;
                   }
-
                 context->memory = monapi_cmemoryinfo_new();
+                uint64_t s2 = MonAPI::Date::nowInMsec();
                 if(readSize == 0)
                   return MONA_SUCCESS;
 
@@ -237,10 +242,14 @@ namespace RamDisk {
                       monapi_cmemoryinfo_delete(context->memory);
                       return MONA_ERROR_MEMORY_NOT_ENOUGH;
                   }
+                uint64_t s3 = MonAPI::Date::nowInMsec();
                 f->readChunks(offset, readSize, context->memory->Data);
 
                 context->resultSize = readSize;
                 context->offset += readSize;
+                uint64_t s4 = MonAPI::Date::nowInMsec();
+                logprintf("ram_read:%d %d %d \n", s4 - s3, s3 - s2, s2 - s1);
+
                 return MONA_SUCCESS;
 
             }

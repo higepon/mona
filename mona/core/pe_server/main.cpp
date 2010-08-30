@@ -72,7 +72,11 @@ static PEData* OpenPE(const CString& path, bool prompt)
     }
     else
     {
+    uint64_t start = MonAPI::Date::nowInMsec();
         ret->Data = monapi_file_read_all(path);
+    uint64_t end = MonAPI::Date::nowInMsec();
+    logprintf("read all %s\n", (const char*)path);
+    logprintf("read all %s %d\n", (const char*)path, end - start);
     }
     if (ret->Data == NULL)
     {
