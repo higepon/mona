@@ -14,9 +14,9 @@ using namespace System::Mona::Forms;
 class Form1 : public Form
 {
 public:
-    _P<Bitmap> bitmap;
+    _P<System::Drawing::Bitmap> bitmap;
 
-    Form1(String fn, _P<Bitmap> bmp, int x, int y)
+    Form1(String fn, _P<System::Drawing::Bitmap> bmp, int x, int y)
     {
         this->set_Text(fn);
         this->set_Location(Point(x, y));
@@ -54,7 +54,7 @@ public:
             return;
         }
 
-        _P<Bitmap> bmp = new Bitmap(args[0]);
+        _P<System::Drawing::Bitmap> bmp = new System::Drawing::Bitmap(args[0]);
         if (bmp->get() == NULL)
         {
             Console::WriteLine("Can not open file!");
