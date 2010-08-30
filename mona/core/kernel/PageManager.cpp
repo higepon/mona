@@ -68,7 +68,7 @@ void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
     pageTablePoolAddress_ = align4Kb((PhysicalAddress)pool);
 
     uintptr_t numTables = (pool + poolSizeByte - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
-    pageTablePool_ = new BitMap(numTables);
+    pageTablePool_ = new Bitmap(numTables, true);
     ASSERT(pageTablePool_);
 }
 
