@@ -33,7 +33,7 @@ void PageManager::initializePagePool()
     ASSERT(memoryMap_);
 
     // After the kernel_reserved_region, region for DMA.
-    reservedDMAMap_ = new BitMap(bytesToPageNumber(DMA_RESERVED_REGION_SIZE_BYTE));
+    reservedDMAMap_ = new Bitmap(bytesToPageNumber(DMA_RESERVED_REGION_SIZE_BYTE), true);
     for (int i = 0; i < reservedDMAMap_->getBitsNumber(); i++) {
         int index = bytesToPageNumber(DMA_RESERVED_REGION_START + i * ARCH_PAGE_SIZE);
         memoryMap_->mark(index);

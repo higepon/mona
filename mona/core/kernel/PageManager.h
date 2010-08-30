@@ -157,7 +157,7 @@ class PageManager {
     PhysicalAddress vramAddress_;
     uintptr_t vramSizeByte_;
     PageEntry* kernelDirectory_;
-    BitMap* reservedDMAMap_;
+    Bitmap* reservedDMAMap_;
     SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_; 
     void setPageDirectory(PhysicalAddress address);
     enum {
