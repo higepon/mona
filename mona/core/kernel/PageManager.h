@@ -13,7 +13,7 @@
 #define _MONA_PAGE_MANAGER_
 
 
-#include <sys/BitMap.h>
+#include <sys/Bitmap.h>
 #include <sys/SymbolDictionary.h>
 
 typedef uint32_t PageEntry;

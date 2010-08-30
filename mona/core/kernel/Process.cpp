@@ -18,7 +18,7 @@
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"
-#include <sys/BitMap.h>
+#include <sys/Bitmap.h>
 #include "KObjectService.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)

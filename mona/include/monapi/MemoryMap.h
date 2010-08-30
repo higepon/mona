@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <monapi/string.h>
 #include <monapi/Assert.h>
-#include <sys/BitMap.h>
+#include <sys/Bitmap.h>
 #include <sys/BinaryTree.h>
 #include <monapi/Mutex.h>
 

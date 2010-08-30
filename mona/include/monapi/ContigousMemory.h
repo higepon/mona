@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #include <monapi.h>
 #include <monapi/Assert.h>
-#include <sys/BitMap.h>
+#include <sys/Bitmap.h>
 
 namespace MonAPI {
 

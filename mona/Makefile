@@ -93,6 +93,11 @@ depend: clean
 	cd test/monalibc/stdlib && $(MAKE) $@
 	cd test/monalibc/math && $(MAKE) $@
 	cd test/drivers/virtio && $(MAKE) $@
+	cd test/monapi/file && make $@
+	cd test/monapi/stack_trace && make $@
+	cd test/monapi/misc && make $@
+	cd test/monapi/message && make $@
+
 
 .PHONY: clean doc
 
@@ -136,4 +141,6 @@ endif
 	cd test/monalibc/stdlib && make clean
 	cd test/monalibc/math && make clean
 	cd test/monapi/mutex && make clean
+	cd test/monapi/file && make clean
+	cd test/monapi/stack_trace && make clean
 	cd test/monapi/condition && make clean
