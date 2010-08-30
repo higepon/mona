@@ -28,11 +28,19 @@
 #ifndef _KSTATS_
 #define _KSTATS_
 
-#define MAX_KSTATS 10
+#define MAX_KSTATS 20
 
 enum
 {
     PAGE_FAULT1,
+    PAGE_FAULT2,
+    PAGE_FAULT3,
+    PAGE_FAULT4,
+    PAGE_FAULT5,
+    PAGE_FAULT6,
+    PAGE_FAULT7,
+    PAGE_FAULT8,
+    PAGE_FAULT9,
     forbidden_comma
 };
 
@@ -40,9 +48,9 @@ struct KStat
 {
     KStat()
     {
-        memset(stats, 0, MAX_KSTATS);
-        memset(statsCount, 0, MAX_KSTATS);
-        memset(statsTemp, 0, MAX_KSTATS);
+        // memset(stats, 0, MAX_KSTATS);
+        // memset(statsCount, 0, MAX_KSTATS);
+        // memset(statsTemp, 0, MAX_KSTATS);
     }
     uint64_t stats[MAX_KSTATS];
     uint64_t statsCount[MAX_KSTATS];

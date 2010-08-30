@@ -166,6 +166,12 @@ void syscall_entrance()
         g_scheduler->Sleep(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         g_scheduler->SwitchToNext();
         break;
+    case SYSTEM_CALL_GET_KSTAT:
+    {
+        KStat* dest = (KStat*)(SYSTEM_CALL_ARG_1);
+        *dest = gKStat;
+        break;
+    }
     case SYSTEM_CALL_MTHREAD_SELF:
     {
         setReturnValue(info, g_currentThread->thread->id);

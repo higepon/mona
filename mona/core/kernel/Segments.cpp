@@ -206,7 +206,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
         errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
-
+    gKStat.startIncrementByTSC(PAGE_FAULT3);
     /* page fault point */
     uint32_t tableIndex1     = PageManager::getTableIndex(address);
     uint32_t directoryIndex1 = PageManager::getDirectoryIndex(address);
@@ -221,25 +221,33 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
     uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
     Process* current = g_currentThread->process;
-
+    gKStat.stopIncrementByTSC(PAGE_FAULT3);
+    gKStat.startIncrementByTSC(PAGE_FAULT4);
     if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
+        gKStat.startIncrementByTSC(PAGE_FAULT5);
         mapResult = g_page_manager->mapOnePage(current->getPageDirectory(),
                                                address,
                                                PageManager::PAGE_WRITABLE,
                                                PageManager::PAGE_USER);
+        gKStat.stopIncrementByTSC(PAGE_FAULT5);
     }
     else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
     {
+        gKStat.startIncrementByTSC(PAGE_FAULT6);
         mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
+        gKStat.stopIncrementByTSC(PAGE_FAULT6);
     } else
     {
+        gKStat.startIncrementByTSC(PAGE_FAULT7);
         mapResult = g_page_manager->mapOnePageByPhysicalAddress(current->getPageDirectory(),
                                                                 address,
                                                                 mappedAddress,
                                                                 writable_,
                                                                 PageManager::PAGE_USER);
+        gKStat.stopIncrementByTSC(PAGE_FAULT7);
     }
+    gKStat.stopIncrementByTSC(PAGE_FAULT4);
     return (mapResult != -1);
 }
 

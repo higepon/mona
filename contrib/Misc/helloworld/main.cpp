@@ -2,11 +2,35 @@
 #include <monapi/CString.h>
 #include <monalibc.h>
 #include <monapi/io.h>
-
 #include <monapi.h>
+#include <sys/KStat.h>
 
 int main(int argc, char* argv[])
 {
+    KStat stat;
+    syscall_get_kstat(&stat);
+    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT1]);
+    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT1]);
+    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT2]);
+    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT2]);
+    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT3]);
+    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT3]);
+    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT4]);
+    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT4]);
+
+    logprintf("page5 fault = %d\n", stat.stats[PAGE_FAULT5]);
+    logprintf("page5 fault count = %d\n", stat.statsCount[PAGE_FAULT5]);
+    logprintf("page6 fault = %d\n", stat.stats[PAGE_FAULT6]);
+    logprintf("page6 fault count = %d\n", stat.statsCount[PAGE_FAULT6]);
+    logprintf("page7 fault = %d\n", stat.stats[PAGE_FAULT7]);
+    logprintf("page7 fault count = %d\n", stat.statsCount[PAGE_FAULT7]);
+
+    logprintf("page8 fault = %d\n", stat.stats[PAGE_FAULT8]);
+    logprintf("page8 fault count = %d\n", stat.statsCount[PAGE_FAULT8]);
+    logprintf("page9 fault = %d\n", stat.stats[PAGE_FAULT9]);
+    logprintf("page9 fault count = %d\n", stat.statsCount[PAGE_FAULT9]);
+
+
     printf("Hello, World");
     return 0;
 }

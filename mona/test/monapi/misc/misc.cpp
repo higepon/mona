@@ -79,6 +79,8 @@ static void test_Page_fault_handler_should_be_fast()
     memset(mi->Data, 0, SIZE);
     uint64_t e2 = MonAPI::Date::nowInMsec();
     EXPECT_EQ(0, e2 - s2);
+
+    logprintf("%d %s", (int)(e1 - s1), __func__);
     monapi_cmemoryinfo_delete(mi);
     monapi_cmemoryinfo_dispose(mi);
 }

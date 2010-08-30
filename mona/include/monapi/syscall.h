@@ -120,8 +120,8 @@ extern intptr_t syscall_stack_trace_enable(uint32_t pid, const char* map_file_pa
 extern void syscall_stack_trace_disable(uint32_t pid);
 extern void syscall_stack_trace_dump(uint32_t tid);
 
-
-
+struct KStat;
+extern void syscall_get_kstat(struct KStat* dest);
 extern intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum);
 extern void syscall_deallocate_contiguous(uint32_t laddress, int pageNum);
 

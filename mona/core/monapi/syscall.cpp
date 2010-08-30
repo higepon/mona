@@ -6,6 +6,7 @@
 
 #include <monapi.h>
 #include <monapi/messages.h>
+#include <sys/KStat.h>
 
 using namespace MonAPI;
 
@@ -1145,4 +1146,9 @@ void syscall_stack_trace_disable(uint32_t pid)
 void syscall_stack_trace_dump(uint32_t pid)
 {
      syscall1(SYSTEM_CALL_STACKTRACE_DUMP, pid);
+}
+
+void syscall_get_kstat(KStat* dest)
+{
+    syscall1(SYSTEM_CALL_GET_KSTAT, (intptr_t)dest);
 }

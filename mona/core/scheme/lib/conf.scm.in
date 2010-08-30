@@ -14,6 +14,7 @@
                          "/APPS/TGMP.EX5"
                          "/APPS/HELLO.EX5"
                          "/APPS/TMISC.EX5"
+                         "/APPS/HELLO.EX5"
                          "/APPS/TMUTEX.EX5"
                          "/APPS/TCOND.EX5"
                          "/APPS/TSTDIO.APP/TSTDIO.EX5"

@@ -151,7 +151,7 @@ class PageManager {
 
   private:
     uintptr_t systemMemorySizeByte_;
-    BitMap* memoryMap_;
+    Bitmap* memoryMap_;
     BitMap* pageTablePool_;
     PhysicalAddress pageTablePoolAddress_;
     PhysicalAddress vramAddress_;
