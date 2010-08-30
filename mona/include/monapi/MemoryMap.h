@@ -39,7 +39,7 @@ namespace MonAPI
         static const uint32_t MAX_SIZE;
         static uint32_t lastError;
         static Mutex mutex;
-        static BitMap bitmap;
+        static Bitmap bitmap;
         static BinaryTree<int> addresses;
     };
 

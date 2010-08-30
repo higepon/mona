@@ -2,6 +2,6 @@
 
 namespace MonAPI {
 
-BitMap* ContigousMemory::pagesMap = NULL;
+Bitmap* ContigousMemory::pagesMap = NULL;
 
 }

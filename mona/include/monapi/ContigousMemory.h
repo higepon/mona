@@ -51,14 +51,14 @@ private:
     int pageNum_;
     static const uintptr_t START_ADDRESS = 0x9fc00000;
     static const uintptr_t MAX_PAGES = (4 * 1024 * 1024) / MAP_PAGE_SIZE; // 4MB
-    static BitMap* pagesMap;
+    static Bitmap* pagesMap;
 
 public:
 
-    static BitMap* getPagesMap()
+    static Bitmap* getPagesMap()
     {
         if (NULL == pagesMap) {
-            pagesMap = new BitMap(MAX_PAGES);
+            pagesMap = new Bitmap(MAX_PAGES, true);
         }
         return pagesMap;
     }
