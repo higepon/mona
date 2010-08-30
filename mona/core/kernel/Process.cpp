@@ -69,13 +69,13 @@ PageManager* ProcessOperation::pageManager;
 const int ProcessOperation::USER_PROCESS;
 const int ProcessOperation::KERNEL_PROCESS;
 
-static BitMap* kernelStackMap;
+static Bitmap* kernelStackMap;
 
 void ProcessOperation::initialize(PageManager* manager)
 {
     ProcessOperation::pageManager = manager;
 
-    kernelStackMap = new BitMap(KERNEL_STACK_SIZE / KERNEL_STACK_UNIT_SIZE);
+    kernelStackMap = new Bitmap(KERNEL_STACK_SIZE / KERNEL_STACK_UNIT_SIZE, true);
 }
 
 LinearAddress ProcessOperation::allocateKernelStack()
