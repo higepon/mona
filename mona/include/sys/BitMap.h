@@ -11,7 +11,7 @@
 // This class provides support for simple maps of bits.
 class Bitmap {
 public:
-    Bitmap() : map_(NULL), num_bits_(0), array_size_(0), alloc_(false) {}
+    Bitmap() : map_(NULL), num_bits_(0), array_size_(0), alloc_(false), last_index_(0) {}
 
     // This constructor will allocate on a uint32_t boundary. If |clear_bits| is
     // false, the bitmap bits will not be initialized.
@@ -56,11 +56,18 @@ public:
 
     int find()
     {
-        int index = 0;
+        int index = last_index_;
         if (FindNextBit(&index, num_bits_, false)) {
             Set(index, true);
+            last_index_ = index + 1;
             return index;
         } else {
+            index = 0;
+            if (FindNextBit(&index, num_bits_, false)) {
+                Set(index, true);
+                last_index_ = index + 1;
+                return index;
+            }
             return -1;
         }
     }
@@ -302,6 +309,7 @@ private:
     int num_bits_;          // The upper bound of the bitmap.
     int array_size_;        // The physical size (in uint32_ts) of the bitmap.
     bool alloc_;            // Whether or not we allocated the memory.
+    int last_index_;
 };
 
 
