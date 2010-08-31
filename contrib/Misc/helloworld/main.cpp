@@ -9,14 +9,14 @@ int main(int argc, char* argv[])
 {
     KStat stat;
     syscall_get_kstat(&stat);
-    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT1]);
-    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT1]);
-    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT2]);
-    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT2]);
-    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT3]);
-    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT3]);
-    logprintf("page fault = %d\n", stat.stats[PAGE_FAULT4]);
-    logprintf("page fault count = %d\n", stat.statsCount[PAGE_FAULT4]);
+    logprintf("page1 fault = %d\n", stat.stats[PAGE_FAULT1]);
+    logprintf("page1 fault count = %d\n", stat.statsCount[PAGE_FAULT1]);
+    logprintf("page2 fault = %d\n", stat.stats[PAGE_FAULT2]);
+    logprintf("page2 fault count = %d\n", stat.statsCount[PAGE_FAULT2]);
+    logprintf("page3 fault = %d\n", stat.stats[PAGE_FAULT3]);
+    logprintf("page3 fault count = %d\n", stat.statsCount[PAGE_FAULT3]);
+    logprintf("page4 fault = %d\n", stat.stats[PAGE_FAULT4]);
+    logprintf("page4 fault count = %d\n", stat.statsCount[PAGE_FAULT4]);
 
     logprintf("page5 fault = %d\n", stat.stats[PAGE_FAULT5]);
     logprintf("page5 fault count = %d\n", stat.statsCount[PAGE_FAULT5]);
@@ -29,7 +29,20 @@ int main(int argc, char* argv[])
     logprintf("page8 fault count = %d\n", stat.statsCount[PAGE_FAULT8]);
     logprintf("page9 fault = %d\n", stat.stats[PAGE_FAULT9]);
     logprintf("page9 fault count = %d\n", stat.statsCount[PAGE_FAULT9]);
+    logprintf("page10 fault = %d\n", stat.stats[PAGE_FAULT10]);
+    logprintf("page10 fault count = %d\n", stat.statsCount[PAGE_FAULT10]);
 
+    logprintf("page11 fault = %d\n", stat.stats[PAGE_FAULT11]);
+    logprintf("page11 fault count = %d\n", stat.statsCount[PAGE_FAULT11]);
+    logprintf("page12 fault = %d\n", stat.stats[PAGE_FAULT12]);
+    logprintf("page12 fault count = %d\n", stat.statsCount[PAGE_FAULT12]);
+
+    logprintf("page13 fault = %d\n", stat.stats[PAGE_FAULT13]);
+    logprintf("page13 fault count = %d\n", stat.statsCount[PAGE_FAULT13]);
+    logprintf("page14 fault = %d\n", stat.stats[PAGE_FAULT14]);
+    logprintf("page14 fault count = %d\n", stat.statsCount[PAGE_FAULT14]);
+    logprintf("page15 fault = %d\n", stat.stats[PAGE_FAULT15]);
+    logprintf("page15 fault count = %d\n", stat.statsCount[PAGE_FAULT15]);
 
     printf("Hello, World");
     return 0;

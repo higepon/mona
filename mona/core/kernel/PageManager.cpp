@@ -72,14 +72,6 @@ void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
     ASSERT(pageTablePool_);
 }
 
-int PageManager::mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
-{
-    PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
-    uint32_t tableIndex = getTableIndex(laddress);
-    setAttribute(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser, paddress);
-    return paddress;
-}
-
 
 int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
 {
@@ -332,7 +324,7 @@ void PageManager::showCurrentStackTrace()
 bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
 {
     Process* current = g_currentThread->process;
-
+    flag_ = false;
     /* search shared memory segment */
     if ((error & 0x01) == ARCH_FAULT_NOT_EXIST)
     {
@@ -411,13 +403,6 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     return true;
 }
 
-bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address)
-{
-    (*entry) = (address & 0xfffff000) | (present ? ARCH_PAGE_PRESENT : 0x00)
-             | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
-
-    return true;
-}
 
 bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser)
 {

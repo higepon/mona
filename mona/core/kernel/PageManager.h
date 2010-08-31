@@ -15,6 +15,8 @@
 
 #include <sys/Bitmap.h>
 #include <sys/SymbolDictionary.h>
+#include <sys/KStat.h>
+extern "C" KStat gKStat;
 
 typedef uint32_t PageEntry;
 typedef uint32_t LinearAddress;
@@ -39,13 +41,37 @@ class PageManager {
     intptr_t deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 
-    int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser);
+    int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
+    {
+        gKStat.startIncrementByTSC(PAGE_FAULT10);
+        PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
+        gKStat.stopIncrementByTSC(PAGE_FAULT10);
+        gKStat.startIncrementByTSC(PAGE_FAULT11);
+        uint32_t tableIndex = getTableIndex(laddress);
+        gKStat.stopIncrementByTSC(PAGE_FAULT11);
+        gKStat.startIncrementByTSC(PAGE_FAULT12);
+        setAttribute(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser, paddress);
+        gKStat.stopIncrementByTSC(PAGE_FAULT12);
+        return paddress;
+    }
+
     int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser);
     void unmapOnePage(PageEntry* directory, LinearAddress laddress, bool returnPages = true);
     void unmapPages(PageEntry* directory, LinearAddress start, int pageNum, bool returnPages = true);
     void unmapRange(PageEntry* directory, LinearAddress start, LinearAddress end, bool returnPages = true);
 
-    bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address);
+    bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address)
+    {
+        gKStat.startIncrementByTSC(PAGE_FAULT13);
+        PageEntry value =  (address & 0xfffff000) | (present ? ARCH_PAGE_PRESENT : 0x00)
+            | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
+        gKStat.stopIncrementByTSC(PAGE_FAULT13);
+        gKStat.startIncrementByTSC(PAGE_FAULT14);
+        (*entry) = value;
+        gKStat.stopIncrementByTSC(PAGE_FAULT14);
+        return true;
+    }
+
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser);
     bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser);
 
@@ -170,7 +196,7 @@ class PageManager {
     };
 
   public:
-
+    bool flag_;
     enum {
         PAGE_WRITABLE  = true,
         PAGE_READ_ONLY = false,

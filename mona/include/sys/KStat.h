@@ -41,6 +41,12 @@ enum
     PAGE_FAULT7,
     PAGE_FAULT8,
     PAGE_FAULT9,
+    PAGE_FAULT10,
+    PAGE_FAULT11,
+    PAGE_FAULT12,
+    PAGE_FAULT13,
+    PAGE_FAULT14,
+    PAGE_FAULT15,
     forbidden_comma
 };
 

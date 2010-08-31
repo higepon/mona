@@ -206,7 +206,6 @@ Vnode* VnodeManager::alloc()
 
 int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
 {
-    uint64_t s1 = MonAPI::Date::nowInMsec();
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
@@ -215,10 +214,7 @@ int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
     io::FileInfo* fileInfo = (*it).second;
     io::Context* context = &(fileInfo->context);
     context->size = size;
-    uint64_t s2 = MonAPI::Date::nowInMsec();
     int result = fileInfo->vnode->fs->read(fileInfo->vnode, context);
-    uint64_t s3 = MonAPI::Date::nowInMsec();
-    logprintf("READ:%d %d \n", s3 - s2, s2 - s1);
     *mem = context->memory;
     return result;
 }
