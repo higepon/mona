@@ -127,7 +127,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 #else
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
     context->memory = monapi_cmemoryinfo_new();
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE) != M_OK)
+    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(context->memory);
         return MONA_ERROR_MEMORY_NOT_ENOUGH;
@@ -205,7 +205,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     delete[] buffer;
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     int size = entryList.size();
-    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE) != M_OK)
+    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);
         return MONA_ERROR_MEMORY_NOT_ENOUGH;

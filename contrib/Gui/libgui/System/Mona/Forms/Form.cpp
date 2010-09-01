@@ -19,7 +19,7 @@ extern uint32_t __gui_server;
 using namespace System;
 using namespace System::Drawing;
 
-static void EraseRectangle(_P<Bitmap> bmp, int x, int y, int w, int h)
+static void EraseRectangle(_P<System::Drawing::Bitmap> bmp, int x, int y, int w, int h)
 {
 	int x1 = x, y1 = y, x2 = x + w, y2 = y + h;
 	int bw = bmp->get_Width(), bh = bmp->get_Height();
@@ -74,7 +74,7 @@ namespace System { namespace Mona { namespace Forms
 		Application::AddForm(this);
 		this->isCloseButtonPushed = false;
 		this->ncState = NCState_None;
-		this->formBuffer = new Bitmap(this->get_Width(), this->get_Height());
+		this->formBuffer = new System::Drawing::Bitmap(this->get_Width(), this->get_Height());
 		this->_object->FormBufferHandle = this->formBuffer->get_Handle();
 		this->_object->Opacity = (int)(this->opacity * 255.0);
 	}
@@ -104,7 +104,7 @@ namespace System { namespace Mona { namespace Forms
 		this->_object->Visible = this->get_Visible();
 #else
 		Size sz = this->get_Size();
-		_P<Bitmap> bmp = new Bitmap(sz.Width, sz.Height);
+		_P<System::Drawing::Bitmap> bmp = new System::Drawing::Bitmap(sz.Width, sz.Height);
 		int len = sz.Width * sz.Height;
 		Color white = Color::get_White();
 		Color empty = Color::get_Empty();

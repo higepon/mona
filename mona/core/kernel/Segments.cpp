@@ -55,7 +55,7 @@ StackSegment::~StackSegment() {
     \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
+bool StackSegment::faultHandler(Process* process, LinearAddress address, uint32_t error) {
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -70,11 +70,10 @@ bool StackSegment::faultHandler(LinearAddress address, uint32_t error) {
     }
 
     /* page allocation */
-    Process* current = g_currentThread->process;
-    g_page_manager->mapOnePage(current->getPageDirectory(),
+    g_page_manager->mapOnePage(process->getPageDirectory(),
                                address,
                                PageManager::PAGE_WRITABLE,
-                               current->isUserMode());
+                               process->isUserMode());
 
     return true;
 }
@@ -115,7 +114,7 @@ HeapSegment::~HeapSegment() {
     \author Higepon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
+bool HeapSegment::faultHandler(Process* process, LinearAddress address, uint32_t error) {
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -130,11 +129,10 @@ bool HeapSegment::faultHandler(LinearAddress address, uint32_t error) {
     }
 
     /* page allocation */
-    Process* current = g_currentThread->process;
-    g_page_manager->mapOnePage(current->getPageDirectory(),
+    g_page_manager->mapOnePage(process->getPageDirectory(),
                                address,
                                PageManager::PAGE_WRITABLE,
-                               current->isUserMode());
+                               process->isUserMode());
 
     return true;
 }
@@ -192,7 +190,7 @@ SharedMemorySegment::~SharedMemorySegment()
     \author Higepon
     \date   create:2003/10/25 update:
 */
-bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
+bool SharedMemorySegment::faultHandler(Process* process, LinearAddress address, uint32_t error)
 {
     int mapResult;
     if (error != PageManager::FAULT_NOT_EXIST)
@@ -220,7 +218,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, uint32_t error)
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
     uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
-    Process* current = g_currentThread->process;
+    Process* current = process;//g_currentThread->process;
     gKStat.stopIncrementByTSC(PAGE_FAULT3);
     gKStat.startIncrementByTSC(PAGE_FAULT4);
     if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
@@ -453,7 +451,7 @@ bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t
     \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
-intptr_t SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address)
+intptr_t SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address, bool isImmediateMap)
 {
     SharedMemorySegment* segment;
     SharedMemoryObject* target = find(id);
@@ -473,6 +471,14 @@ intptr_t SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress
         }
         process->getSharedList()->add(segment);
         target->setAttachedCount(target->getAttachedCount() + 1);
+
+        //  If we know all memory region will be accessed,
+        //  we avoid using demand paging which causes poor performance.
+        if (isImmediateMap) {
+            for (LinearAddress start = address; start < address + target->getSize(); start += 4096) {
+                ASSERT(segment->faultHandler(process, start, PageManager::FAULT_NOT_EXIST));
+            }
+        }
         return M_OK;
     }
 }

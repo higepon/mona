@@ -222,7 +222,7 @@ public:
         dispose();
         mi = monapi_cmemoryinfo_new();
         if (!mi) return false;
-        if (monapi_cmemoryinfo_create(mi, size, prompt) != M_OK) {
+        if (monapi_cmemoryinfo_create(mi, size, prompt, 1) != M_OK) {
             monapi_cmemoryinfo_delete(mi);
             return false;
         }
@@ -234,7 +234,7 @@ public:
         if (!mi) return false;
         mi->Handle = handle;
         mi->Size = size;
-        if (!monapi_cmemoryinfo_map(mi)) {
+        if (!monapi_cmemoryinfo_map(mi, 1)) {
             monapi_cmemoryinfo_delete(mi);
             return false;
         }

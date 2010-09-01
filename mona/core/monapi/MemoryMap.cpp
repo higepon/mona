@@ -53,7 +53,7 @@ uint32_t MemoryMap::create(uint32_t size)
     return result;
 }
 
-uint8_t* MemoryMap::map(uint32_t id)
+uint8_t* MemoryMap::map(uint32_t id, bool isImmediateMap /* = false */)
 {
     /* to be first fit */
     MEMORY_MAP_TRACE("try to map() id = %x", id);
@@ -76,7 +76,7 @@ uint8_t* MemoryMap::map(uint32_t id)
 
     uint8_t* address = (uint8_t*)(START_ADDRESS + (found * MAP_PAGE_SIZE));
 
-    intptr_t ret = syscall_memory_map_map(id, (uintptr_t)address);
+    intptr_t ret = syscall_memory_map_map(id, (uintptr_t)address, isImmediateMap);
     if (ret != M_OK) {
         MEMORY_MAP_TRACE("");
         lastError = ret;
@@ -141,9 +141,9 @@ uint32_t monapi_cmemorymap_create(uint32_t size)
     return MonAPI::MemoryMap::create(size);
 }
 
-uint8_t* monapi_cmemorymap_map(uint32_t id)
+uint8_t* monapi_cmemorymap_map(uint32_t id, bool isImmediateMap)
 {
-    return MonAPI::MemoryMap::map(id);
+    return MonAPI::MemoryMap::map(id, isImmediateMap);
 }
 
 intptr_t monapi_cmemorymap_unmap(uint32_t id)

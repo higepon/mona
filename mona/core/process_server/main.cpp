@@ -101,7 +101,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                 mi->Handle = msg.arg2;
                 mi->Owner  = tid;
                 mi->Size   = atoi(msg.str);
-                if (monapi_cmemoryinfo_map(mi) != M_OK) {
+                if (monapi_cmemoryinfo_map(mi, true) != M_OK) {
                     _printf("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }

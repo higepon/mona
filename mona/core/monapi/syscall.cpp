@@ -949,9 +949,9 @@ uintptr_t syscall_memory_map_get_size(uintptr_t id)
     return syscall1(SYSTEM_CALL_MEMORY_MAP_GET_SIZE, id);
 }
 
-int syscall_memory_map_map(uint32_t id, uint32_t address)
+int syscall_memory_map_map(uint32_t id, uint32_t address, int isImmediateMap)
 {
-    return syscall2(SYSTEM_CALL_MEMORY_MAP_MAP, id, address);
+    return syscall3(SYSTEM_CALL_MEMORY_MAP_MAP, id, address, isImmediateMap ? 1 : 0);
 }
 
 int syscall_memory_map_unmap(uint32_t id)

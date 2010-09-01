@@ -12,7 +12,7 @@ using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
 uint32_t gui_server;
-extern _P<Bitmap> icons;
+extern _P<System::Drawing::Bitmap> icons;
 
 static bool ExistsProcess(const MonAPI::CString& self)
 {
@@ -70,7 +70,7 @@ public:
         }
 		gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		String bundlePath = MonAPI::System::getBundlePath();
-		icons = new Bitmap(bundlePath + "/ICONS.BMP");
+		icons = new System::Drawing::Bitmap(bundlePath + "/ICONS.BMP");
 		int len = icons->get_Width() * icons->get_Height();
 		Color* ptr = icons->get();
 		Color trans = TRANSPARENT_COLOR, ept = Color::get_Empty();

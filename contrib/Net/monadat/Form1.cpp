@@ -138,10 +138,10 @@ public:
 class RichTextBitmap : public RichTextObject
 {
 private:
-    _P<Bitmap> bmp;
+    _P<System::Drawing::Bitmap> bmp;
 
 public:
-    RichTextBitmap(_P<Bitmap> bmp)
+    RichTextBitmap(_P<System::Drawing::Bitmap> bmp)
     {
         this->bmp = bmp;
         this->size = Size(bmp->get_Width(), bmp->get_Height());
@@ -212,7 +212,7 @@ public:
     }
 };
 
-static _P<Bitmap> MonaLogo, Hearts;
+static _P<System::Drawing::Bitmap> MonaLogo, Hearts;
 
 class DatThread : public Object
 {
@@ -230,11 +230,11 @@ public:
         {
 #ifdef MONA
             String bundlePath = MonAPI::System::getBundlePath();
-            MonaLogo = new Bitmap(bundlePath + "/MONALOGO.BM5");
+            MonaLogo = new System::Drawing::Bitmap(bundlePath + "/MONALOGO.BM5");
 #else
-            MonaLogo = new Bitmap("dat\\MonaLogo.bmp");
+            MonaLogo = new System::Drawing::Bitmap("dat\\MonaLogo.bmp");
 #endif
-            Hearts = new Bitmap(8, 12);
+            Hearts = new System::Drawing::Bitmap(8, 12);
             _P<Graphics> g = Graphics::FromImage(Hearts);
             Color red = Color::get_Red();
             g->FillRectangle(red, 0, 1, 3, 4);

@@ -669,9 +669,10 @@ void syscall_entrance()
     {
         uint32_t id      = SYSTEM_CALL_ARG_1;
         uint32_t address = SYSTEM_CALL_ARG_2;
+        bool isImmediateMap = SYSTEM_CALL_ARG_3 == 1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        intptr_t ret = SharedMemoryObject::attach(id, g_currentThread->process, address);
+        intptr_t ret = SharedMemoryObject::attach(id, g_currentThread->process, address, isImmediateMap);
         Semaphore::up(&g_semaphore_shared);
         Semaphore::up(&g_semaphore_shared);
         setReturnValue(info, ret);

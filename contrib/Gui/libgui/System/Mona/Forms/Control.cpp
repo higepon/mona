@@ -53,7 +53,7 @@ static Rectangle GetScreenRectangle()
 }
 
 
-void DrawImage(_P<Bitmap> dst, _P<Bitmap> src, int x, int y, int sx, int sy, int sw, int sh, bool srccopy)
+void DrawImage(_P<System::Drawing::Bitmap> dst, _P<System::Drawing::Bitmap> src, int x, int y, int sx, int sy, int sw, int sh, bool srccopy)
 {
     int dw = dst->get_Width(), dh = dst->get_Height();
     int x1 = x, y1 = y, x2 = x + sw, y2 = y + sh;
@@ -139,7 +139,7 @@ namespace System { namespace Mona { namespace Forms
     {
         if (this->buffer != NULL) return;
 
-        this->buffer = new Bitmap(this->get_Width(), this->get_Height());
+        this->buffer = new System::Drawing::Bitmap(this->get_Width(), this->get_Height());
 #ifdef MONA
         MessageInfo msg;
         if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEWINDOW) != 0)

@@ -248,7 +248,8 @@ void FileServer::messageLoop()
             memory->Handle = msg.arg3;
             memory->Owner  = msg.from;
             memory->Size   = msg.arg2;
-            intptr_t result = monapi_cmemoryinfo_map(memory);
+            // Use immediate map
+            intptr_t result = monapi_cmemoryinfo_map(memory, true);
             if (result != M_OK) {
                 logprintf("MSG_FILE_WRITE\n");
                 monapi_cmemoryinfo_delete(memory);
@@ -307,7 +308,7 @@ void FileServer::messageLoop()
             mi1->Handle = msg.arg1;
             mi1->Size   = msg.arg2;
             monapi_cmemoryinfo* mi2 = NULL;
-            if (monapi_cmemoryinfo_map(mi1) != M_OK)
+            if (monapi_cmemoryinfo_map(mi1, true) != M_OK)
             {
                 mi2 = ST5Decompress(mi1);
                 monapi_cmemoryinfo_dispose(mi1);
@@ -377,7 +378,7 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
     if ((size >> 32) > 0) return NULL;
 
     monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
-    if (monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0) != M_OK)
+    if (monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0, true) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);
         return NULL;

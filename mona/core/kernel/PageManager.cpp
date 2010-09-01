@@ -336,7 +336,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
             if (segment->inRange(address))
             {
                 gKStat.startIncrementByTSC(PAGE_FAULT2);
-                bool ret =  segment->faultHandler(address, FAULT_NOT_EXIST);
+                bool ret =  segment->faultHandler(g_currentThread->process, address, FAULT_NOT_EXIST);
                 gKStat.stopIncrementByTSC(PAGE_FAULT2);
                 return ret;
             }
@@ -348,14 +348,14 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     HeapSegment* heap = current->getHeapSegment();
     if (heap->inRange(address))
     {
-        return heap->faultHandler(address, FAULT_NOT_EXIST);
+        return heap->faultHandler(g_currentThread->process, address, FAULT_NOT_EXIST);
     }
 
     /* stack */
     StackSegment* stack = g_currentThread->thread->stackSegment;
     if (stack->inRange(address))
     {
-        return stack->faultHandler(address, FAULT_NOT_EXIST);
+        return stack->faultHandler(g_currentThread->process, address, FAULT_NOT_EXIST);
     }
 
     if (g_isRemoteDebug) {

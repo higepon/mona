@@ -73,7 +73,7 @@ class SharedMemoryObject {
     static void setup();
     static bool open(uint32_t id, uint32_t size);
     static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
-    static intptr_t attach(uint32_t id, struct Process* process, LinearAddress address);
+    static intptr_t attach(uint32_t id, struct Process* process, LinearAddress address, bool isImmediateMap);
     static bool detach(uint32_t id, struct Process* process);
     static SharedMemoryObject* find(uint32_t id);
     enum
@@ -96,7 +96,7 @@ class Segment {
   public:
     Segment() {}
     virtual ~Segment() {}
-    virtual bool faultHandler(LinearAddress address, uint32_t error) = 0;
+    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error) = 0;
 
     inline virtual int getErrorNumber() {
         return errorNumber_;
@@ -136,7 +136,7 @@ class StackSegment : public Segment {
     }
 
   public:
-    virtual bool faultHandler(LinearAddress address, uint32_t error);
+    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
 };
 
 class HeapSegment : public Segment {
@@ -146,7 +146,7 @@ class HeapSegment : public Segment {
     virtual ~HeapSegment();
 
   public:
-    virtual bool faultHandler(LinearAddress address, uint32_t error);
+    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
 };
 
 class SharedMemorySegment : public Segment {
@@ -157,7 +157,7 @@ class SharedMemorySegment : public Segment {
     virtual ~SharedMemorySegment();
 
   public:
-    virtual bool faultHandler(LinearAddress address, uint32_t error);
+    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
     inline virtual uint32_t getId() const {
         return sharedMemoryObject_->getId();
     }
