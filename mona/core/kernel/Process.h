@@ -185,9 +185,9 @@ private:
         return shared_;
     }
 
-    inline virtual class HeapSegment* getHeapSegment() const
+    inline virtual class HeapSegment* getHeapSegment()
     {
-        return heap_;
+        return &heap_;
     }
 
     inline virtual List<MessageInfo*>* getMessageList() const
@@ -248,7 +248,7 @@ private:
     MemoryAllocator* lallocator;
     List<Thread*>* threadList_;
     List<char*>* arguments_;
-    class HeapSegment* heap_;
+    class HeapSegment heap_;
     class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;

@@ -382,16 +382,13 @@ void ThreadOperation::sendKilledMessage()
     Process
 ----------------------------------------------------------------------*/
 uint32_t Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0)
+Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(HeapSegment(0xC0000000, PROCESS_HEAP_SIZE))
 {
     /* name */
     strncpy(name_, name, sizeof(name_));
 
     /* address space */
     pageDirectory_ = directory;
-
-    /* allocate heap */
-    heap_ = new HeapSegment(0xC0000000, PROCESS_HEAP_SIZE);
 
     /* shared list */
     shared_ = new HList<SharedMemorySegment*>();
@@ -420,9 +417,6 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
 
 Process::~Process()
 {
-    /* heap */
-    delete heap_;
-
     /* shared MemorySegment */
     for (int i = 0; i < shared_->size(); i++)
     {

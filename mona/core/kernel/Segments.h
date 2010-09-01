@@ -16,7 +16,6 @@
 #include "operator.h"
 #include "kernel.h"
 #include "string.h"
-#include "Process.h"
 
 class SharedMemoryObject {
 
@@ -143,6 +142,7 @@ class HeapSegment : public Segment {
 
   public:
     HeapSegment(LinearAddress start, uint32_t size);
+    HeapSegment() {}
     virtual ~HeapSegment();
 
   public:
