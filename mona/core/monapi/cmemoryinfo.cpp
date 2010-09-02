@@ -27,7 +27,7 @@ void monapi_cmemoryinfo_delete(monapi_cmemoryinfo* self)
     free(self);
 }
 
-intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int prompt)
+intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int prompt, int isImmediateMap)
 {
     self->Handle = monapi_cmemorymap_create(size);
     if (self->Handle == 0)
@@ -36,7 +36,7 @@ intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int 
         monapi_warn("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         return M_MEMORY_MAP_ERROR;
     }
-    if (monapi_cmemoryinfo_map(self) != M_OK)
+    if (monapi_cmemoryinfo_map(self, isImmediateMap) != M_OK)
     {
         if (prompt) printf("ERROR\n");
         monapi_warn("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
@@ -48,9 +48,9 @@ intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int 
     return M_OK;
 }
 
-intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self)
+intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self, int isImmediateMap)
 {
-    self->Data = monapi_cmemorymap_map(self->Handle);
+    self->Data = monapi_cmemorymap_map(self->Handle, isImmediateMap);
     if (self->Data != NULL) {
         return M_OK;
     }

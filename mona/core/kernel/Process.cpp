@@ -1,5 +1,5 @@
 /*!
-    \file  Process.cpp
+    \filen  Process.cpp
     \brief class Process
 
     Copyright (c) 2002,2003 Higepon and the individuals listed on the ChangeLog entries.
@@ -194,7 +194,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
     /* add by TAKA */
     thread->kernelStackBottom = ainfo->esp0;
 
-    thread->stackSegment = new StackSegment(stack, 4 * 1024 * 1024);
+    thread->stackSegment = new Segment(stack - 4 * 1024 * 1024, 4 * 1024 * 1024);
 }
 
 void ThreadOperation::archCreateThread(Thread* thread, uint32_t programCounter
@@ -382,7 +382,7 @@ void ThreadOperation::sendKilledMessage()
     Process
 ----------------------------------------------------------------------*/
 uint32_t Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(HeapSegment(0xC0000000, PROCESS_HEAP_SIZE))
+Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE))
 {
     /* name */
     strncpy(name_, name, sizeof(name_));
@@ -393,12 +393,9 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(H
     /* shared list */
     shared_ = new HList<SharedMemorySegment*>();
 
-    /* dll shared segment */
-/*    SharedMemorySegment* segment;*/
-    /* read only segment */
     dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
     this->getSharedList()->add(dllsegment_);
-    g_dllSharedObject->setAttachedCount(g_dllSharedObject->getAttachedCount() + 1);
+    g_dllSharedObject->addRef();
 
     /* message list */
     messageList_ = new HList<MessageInfo*>();
@@ -420,7 +417,9 @@ Process::~Process()
     /* shared MemorySegment */
     for (int i = 0; i < shared_->size(); i++)
     {
-        SharedMemoryObject::detach(shared_->get(i)->getId(), this);
+        SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
+        shm->detach(g_page_manager, this);
+        g_page_manager->destroySharedMemoryObject(shm);
     }
 
     delete(shared_);
@@ -437,6 +436,18 @@ Process::~Process()
     delete threadList_;
     if (this->lallocator != NULL) delete this->lallocator;
 }
+
+SharedMemorySegment* Process::findSharedSegment(uint32_t id) const
+{
+    for (int i = 0; i < shared_->size(); i++) {
+        SharedMemorySegment* segment = shared_->get(i);
+        if (id == segment->getId()) {
+            return segment;
+        }
+    }
+    return NULL;
+}
+
 
 uint32_t Process::getStackBottom(Thread* thread)
 {

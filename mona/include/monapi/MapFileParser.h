@@ -311,7 +311,7 @@ public:
         monapi_cmemoryinfo *buf = new monapi_cmemoryinfo();
         if(!buf)
             return NULL;
-        if(M_OK != monapi_cmemoryinfo_create(buf, size, 0))
+        if(M_OK != monapi_cmemoryinfo_create(buf, size, 0, true))
         {
             monapi_cmemoryinfo_delete(buf);
             return NULL;

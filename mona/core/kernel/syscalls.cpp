@@ -667,26 +667,38 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
     {
-        uint32_t id      = SYSTEM_CALL_ARG_1;
+        uint32_t id = SYSTEM_CALL_ARG_1;
         uint32_t address = SYSTEM_CALL_ARG_2;
+        bool isImmediateMap = SYSTEM_CALL_ARG_3 == 1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        intptr_t ret = SharedMemoryObject::attach(id, g_currentThread->process, address);
-        Semaphore::up(&g_semaphore_shared);
-        Semaphore::up(&g_semaphore_shared);
-        setReturnValue(info, ret);
+        SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(id);
+        if (shm == NULL) {
+            Semaphore::up(&g_semaphore_shared);
+            Semaphore::up(&g_semaphore_shared);
+            setReturnValue(info, M_BAD_MEMORY_MAP_ID);
+        } else {
+            intptr_t ret = shm->attach(g_page_manager, g_currentThread->process, address, isImmediateMap);
+            Semaphore::up(&g_semaphore_shared);
+            Semaphore::up(&g_semaphore_shared);
+            setReturnValue(info, ret);
+        }
         break;
     }
-
-
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
+        SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(id);
+        if (shm == NULL) {
+            setReturnValue(info, M_BAD_MEMORY_MAP_ID);
+        } else {
+            intptr_t ret = shm->detach(g_page_manager, g_currentThread->process);
+            g_page_manager->destroySharedMemoryObject(shm);
+            setReturnValue(info, ret);
+        }
         Semaphore::up(&g_semaphore_shared);
-        setReturnValue(info, isDetached ? 0 : 1);
         break;
     }
 
@@ -857,11 +869,11 @@ void syscall_entrance()
         g_scheduler->ChangeBasePriority(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         break;
     case SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE:
-        g_currentThread->process->getDllSegment()->setWritable(true);
+        panic(__func__);
     break;
 
     case SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED:
-        g_dllSharedObject->setPageFlag(SYSTEM_CALL_ARG_1, SharedMemoryObject::FLAG_NOT_SHARED);
+        panic(__func__);
     break;
 
     case SYSTEM_CALL_APM_BIOS:

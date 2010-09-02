@@ -30,7 +30,9 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     systemcall_mutex_lock(g_mutexShared);
 
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    isAttaced = M_OK == SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
+    SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(sharedId);
+    ASSERT(shm);
+    isAttaced = M_OK == shm->attach(g_page_manager, g_currentThread->process, 0x80000000, false);
 
     systemcall_mutex_unlock(g_mutexShared);
 
@@ -44,7 +46,7 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     systemcall_mutex_lock(g_mutexShared);
 
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    isAttaced = M_OK == SharedMemoryObject::attach(sharedId, process, Loader::ORG);
+    isAttaced = M_OK == shm->attach(g_page_manager, process, Loader::ORG, false);
 
     systemcall_mutex_unlock(g_mutexShared);
 
@@ -55,7 +57,8 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     /* detach from this process */
     systemcall_mutex_lock(g_mutexShared);
 
-    SharedMemoryObject::detach(sharedId, g_currentThread->process);
+    shm->detach(g_page_manager, g_currentThread->process);
+    g_page_manager->destroySharedMemoryObject(shm);
     systemcall_mutex_unlock(g_mutexShared);
 
     /* set arguments */

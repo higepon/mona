@@ -11,7 +11,7 @@ using namespace System::Mona::Forms;
 extern uint32_t gui_server;
 extern int ProcessStart(const String& file);
 
-_P<Bitmap> icons;
+_P<System::Drawing::Bitmap> icons;
 _P<ArrayList<_P<FileWindow> > > windows;
 
 Icon::Icon()

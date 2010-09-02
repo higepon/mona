@@ -87,7 +87,7 @@ GLOBAL APMInfo *g_apmInfo;
 GLOBAL Uart* g_com2;
 
 GLOBAL bool g_isRemoteDebug   GLOBAL_VAL(false);
-GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
+//GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 #ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;
 #endif

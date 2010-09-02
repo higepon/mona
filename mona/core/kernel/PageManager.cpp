@@ -336,7 +336,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
             if (segment->inRange(address))
             {
                 gKStat.startIncrementByTSC(PAGE_FAULT2);
-                bool ret =  segment->faultHandler(address, FAULT_NOT_EXIST);
+                bool ret =  segment->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
                 gKStat.stopIncrementByTSC(PAGE_FAULT2);
                 return ret;
             }
@@ -345,17 +345,17 @@ bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32
     }
 
     /* heap */
-    HeapSegment* heap = current->getHeapSegment();
+    Segment* heap = current->getHeapSegment();
     if (heap->inRange(address))
     {
-        return heap->faultHandler(address, FAULT_NOT_EXIST);
+        return heap->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
     }
 
     /* stack */
-    StackSegment* stack = g_currentThread->thread->stackSegment;
+    Segment* stack = g_currentThread->thread->stackSegment;
     if (stack->inRange(address))
     {
-        return stack->faultHandler(address, FAULT_NOT_EXIST);
+        return stack->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
     }
 
     if (g_isRemoteDebug) {
@@ -468,4 +468,40 @@ void PageManager::getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_
     *freeNum  = memoryMap_->countClear();
     *totalNum = memoryMap_->getBitsNumber();
     *pageSize = ARCH_PAGE_SIZE;
+}
+
+SharedMemoryObject* PageManager::findSharedMemoryObject(uint32_t id)
+{
+    for (int i = 0; i < sharedList_.size(); i++) {
+         SharedMemoryObject* shm = sharedList_.get(i);
+         if (id == shm->getId()) {
+             return shm;
+         }
+    }
+    return NULL;
+}
+
+SharedMemoryObject* PageManager::findOrCreateSharedMemoryObject(uint32_t id, uint32_t size)
+{
+    if (size == 0) {
+        return NULL;
+    }
+
+    SharedMemoryObject* shm = findSharedMemoryObject(id);
+    if (shm == NULL) {
+        shm = new SharedMemoryObject(id, size);
+        ASSERT(shm);
+        sharedList_.add(shm);
+        return shm;
+    } else {
+        return shm;
+    }
+}
+
+void PageManager::destroySharedMemoryObject(SharedMemoryObject* shm)
+{
+    if (shm->releaseRef()) {
+        sharedList_.remove(shm);
+        delete shm;
+    }
 }

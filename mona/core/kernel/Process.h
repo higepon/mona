@@ -185,7 +185,7 @@ private:
         return shared_;
     }
 
-    inline virtual class HeapSegment* getHeapSegment()
+    inline virtual class Segment* getHeapSegment()
     {
         return &heap_;
     }
@@ -210,10 +210,6 @@ private:
         return threadList_;
     }
 
-    inline SharedMemorySegment* getDllSegment() const {
-        return dllsegment_;
-    }
-
     inline void* AllocateLinearAddress(uint32_t size) {
         if (this->lallocator == NULL)
         {
@@ -232,6 +228,8 @@ private:
         kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
     }
 
+    SharedMemorySegment* findSharedSegment(uint32_t id) const;
+
     inline HList< Pair<intptr_t, KObject*> >* getKObjects()
     {
         return &kobjects_;
@@ -248,7 +246,7 @@ private:
     MemoryAllocator* lallocator;
     List<Thread*>* threadList_;
     List<char*>* arguments_;
-    class HeapSegment heap_;
+    class Segment heap_;
     class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;

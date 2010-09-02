@@ -20,7 +20,7 @@ guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 	uint32_t handle = MemoryMap::create(sizeof(guiserver_bitmap) + width * height * 4);
 	if (handle == 0) return NULL;
 	
-	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle);
+	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle, false);
 	if (ret == NULL) return NULL;
 	
 	ret->Handle = handle;

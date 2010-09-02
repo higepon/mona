@@ -20,7 +20,7 @@ namespace MonAPI
     public:
         static void initialize();
         static uint32_t create(uint32_t size);
-        static uint8_t* map(uint32_t id);
+        static uint8_t* map(uint32_t id, bool isImmediateMap = false);
         static bool unmap(uint32_t id);
         static uint32_t getLastError();
         static uint32_t getSize(uint32_t id);
@@ -39,7 +39,7 @@ namespace MonAPI
         static const uint32_t MAX_SIZE;
         static uint32_t lastError;
         static Mutex mutex;
-        static Bitmap bitmap;
+        static ::Bitmap bitmap;
         static BinaryTree<int> addresses;
     };
 
@@ -49,7 +49,7 @@ extern "C"
 {
 #endif
 extern uint32_t monapi_cmemorymap_create(uint32_t size);
-extern uint8_t* monapi_cmemorymap_map(uint32_t id);
+extern uint8_t* monapi_cmemorymap_map(uint32_t id, bool isImmediateMap);
 extern intptr_t monapi_cmemorymap_unmap(uint32_t id);
 #ifdef __cplusplus
 }

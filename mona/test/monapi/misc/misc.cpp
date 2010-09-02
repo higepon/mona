@@ -69,7 +69,7 @@ static void test_Page_fault_handler_should_be_fast()
 {
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
     const int SIZE = 3 * 1024 * 1024;
-    ASSERT_EQ(M_OK, monapi_cmemoryinfo_create(mi, SIZE, MONAPI_FALSE));
+    ASSERT_EQ(M_OK, monapi_cmemoryinfo_create(mi, SIZE, MONAPI_FALSE, 1));
     uint64_t s1 = MonAPI::Date::nowInMsec();
     memset(mi->Data, 0, SIZE);
     uint64_t e1 = MonAPI::Date::nowInMsec();
@@ -80,7 +80,7 @@ static void test_Page_fault_handler_should_be_fast()
     uint64_t e2 = MonAPI::Date::nowInMsec();
     EXPECT_EQ(0, e2 - s2);
 
-    logprintf("%d %s", (int)(e1 - s1), __func__);
+//    logprintf("%d %s", (int)(e1 - s1), __func__);
     monapi_cmemoryinfo_delete(mi);
     monapi_cmemoryinfo_dispose(mi);
 }

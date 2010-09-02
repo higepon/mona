@@ -39,7 +39,7 @@ guiserver_window* CreateWindow()
     uint32_t handle = MemoryMap::create(sizeof(guiserver_window));
     if (handle == 0) return NULL;
 
-    guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle);
+    guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle, false);
     if (ret == NULL) return NULL;
 
     memset(ret, 0, sizeof(guiserver_window));

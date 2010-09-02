@@ -335,7 +335,7 @@ private:
         imageSize += bootstrapSize;
 
         monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-        if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt) != M_OK)
+        if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt, true) != M_OK)
         {
             monapi_cmemoryinfo_delete(dst);
             this->Result = 3;
