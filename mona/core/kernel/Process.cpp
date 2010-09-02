@@ -23,45 +23,6 @@
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
-#if 0
-
-//     *   ページサイズを返す
-//     * タスクのアドレス空間に任意のリニアアドレス・サイズのメモリを割り当てる。
-//     * 特定タスクのaddress,sizeにread/write/executeの属性をつける
-//     * 特定のタスクのvmを特定のタスクから読む。自分のアドレスに強制的に読み込んだり。カーネルに割り当てを任せることも出来る。
-// AllocateMemory後、プロセスにそのsharedmemory objectがむすびついているかしらべる。⇒attach
-// 使えるリニアアドレス範囲を調べる
-
-class MemoryManager2
-n{
-public:
-    static uint32_t GetSystemPageSize();
-    static bool AllocateMemory(Process* process, uint32_t size);
-
-};
-uint32_t MemoryManager2::GetSystemPageSize()
-{
-    return 4096;
-}
-
-bool MemoryManager2::AllocateMemory(Process* process, uint32_t size)
-{
-    void* address = NULL;
-    static uint32_t id = 0x5000;
-
-    address = process->AllocateLinearAddress(size);
-    if (address == NULL) {
-        return false;
-    }
-    id++;
-    bool isOpen = SharedMemoryObject::open(id, size);
-    if (!isOpen) return false;
-    bool isAttaced = M_OK == SharedMemoryObject::attach(id, process, (uint32_t)address);
-    if (!isAttaced) return false;
-    return true;
-}
-
-#endif
 /*----------------------------------------------------------------------
     ProcessOperation
 ----------------------------------------------------------------------*/

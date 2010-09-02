@@ -20,6 +20,7 @@
 class SharedMemoryObject {
 
   public:
+    static SharedMemoryObject* create(uint32_t size);
     SharedMemoryObject();
     SharedMemoryObject(uint32_t id, uint32_t size);
 //    SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);

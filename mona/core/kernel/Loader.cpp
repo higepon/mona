@@ -18,25 +18,20 @@
 ----------------------------------------------------------------------*/
 int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list)
 {
-    /* shared ID */
-    static uint32_t sharedId = 0x2000;
-    sharedId++;
-
-    bool   isOpen;
-    bool   isAttaced;
-
     ASSERT(size < MAX_IMAGE_SIZE);
     /* attach Shared to this process */
     systemcall_mutex_lock(g_mutexShared);
 
-    isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(sharedId);
-    ASSERT(shm);
-    isAttaced = M_OK == shm->attach(g_page_manager, g_currentThread->process, 0x80000000, false);
+    SharedMemoryObject* shm = SharedMemoryObject::create(Loader::MAX_IMAGE_SIZE);
+    if (shm == NULL) {
+        systemcall_mutex_unlock(g_mutexShared);
+        return 4;
+    }
 
-    systemcall_mutex_unlock(g_mutexShared);
-
-    if (!isOpen || !isAttaced) return 4;
+    if (shm->attach(g_page_manager, g_currentThread->process, 0x80000000, false) != M_OK) {
+        systemcall_mutex_unlock(g_mutexShared);
+        return 4;
+    }
 
     /* create process */
     enter_kernel_lock_mode();
@@ -45,12 +40,12 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     /* attach binary image to process */
     systemcall_mutex_lock(g_mutexShared);
 
-    isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
-    isAttaced = M_OK == shm->attach(g_page_manager, process, Loader::ORG, false);
+    if (shm->attach(g_page_manager, process, Loader::ORG, false) != M_OK) {
+        systemcall_mutex_unlock(g_mutexShared);
+        return 5;
+    }
 
     systemcall_mutex_unlock(g_mutexShared);
-
-    if (!isOpen || !isAttaced) return 5;
 
     memcpy((uint8_t*)0x80000000, image, size);
 
@@ -95,4 +90,3 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
 
     return 0;
 }
-

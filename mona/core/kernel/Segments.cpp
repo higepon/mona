@@ -192,6 +192,12 @@ SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
     // return (SharedMemoryObject*)NULL;
 }
 
+SharedMemoryObject* SharedMemoryObject::create(uint32_t size)
+{
+    static uint32_t id = 1;
+    return g_page_manager->findOrCreateSharedMemoryObject(id++, size);
+}
+
 /*!
     \brief open sharedMemoryObject
 

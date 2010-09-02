@@ -634,20 +634,20 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:
     {
-        static uint32_t sharedId = 0x9000;
-        sharedId++;
+        // static uint32_t sharedId = 0x9000;
+        // sharedId++;
         uint32_t size = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        bool isOpen = SharedMemoryObject::open(sharedId, size);
+        SharedMemoryObject* shm = SharedMemoryObject::create(size);
         Semaphore::up(&g_semaphore_shared);
 
-        if (!isOpen)
-        {
+        if (shm == NULL) {
             setReturnValue(info, 0);
             break;
+        } else {
+            setReturnValue(info, shm->getId());
         }
-        setReturnValue(info, sharedId);
         break;
      }
 
