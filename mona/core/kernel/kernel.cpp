@@ -221,8 +221,6 @@ void startKernel()
 
     dumpAddressMap();
 
-    /* shared memory object */
-    SharedMemoryObject::setup();
     /* IDManager */
     g_id = new IDManager();
     /* This mutex has no owner, so will never deleted */
@@ -233,6 +231,8 @@ void startKernel()
     g_page_manager = new PageManager(g_total_system_memory, vramAddress, vramSizeBytes);
     g_page_directory = g_page_manager->createPageDirectory();
     g_page_manager->startPaging((PhysicalAddress)g_page_directory);
+    /* shared memory object */
+    SharedMemoryObject::setup();
 
     /* dummy thread struct */
     Thread* dummy1 = new Thread();

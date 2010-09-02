@@ -23,17 +23,20 @@ class SharedMemoryObject {
   public:
     SharedMemoryObject();
     SharedMemoryObject(uint32_t id, uint32_t size);
-    SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
+//    SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
     void initilize(uint32_t id, uint32_t size);
     virtual ~SharedMemoryObject();
 
-    inline virtual int getAttachedCount() const {
-        return attachedCount_;
+    void addRef() {
+        refCount_++;
     }
 
-    inline virtual void setAttachedCount(int count) {
-        attachedCount_ = count;
+    bool releaseRef() {
+        refCount_--;
+        ASSERT(refCount_ >= 0);
+        return refCount_ == 0;
     }
+
 
     inline virtual uint32_t getId() const {
         return id_;
@@ -72,9 +75,9 @@ class SharedMemoryObject {
   public:
     static void setup();
     static bool open(uint32_t id, uint32_t size);
-    static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
-    static intptr_t attach(uint32_t id, struct Process* process, LinearAddress address, bool isImmediateMap);
-    static bool detach(uint32_t id, struct Process* process);
+//    static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
+    intptr_t attach(PageManager* pageManager, Process* process, LinearAddress address, bool isImmediateMap);
+    intptr_t detach(PageManager* pageManager, Process* process);
     static SharedMemoryObject* find(uint32_t id);
     enum
     {
@@ -85,91 +88,127 @@ class SharedMemoryObject {
   private:
     uint32_t id_;
     uint32_t size_;
-    int attachedCount_;
+    int refCount_;
     int physicalPageCount_;
     int* physicalPages_;
     uint32_t* flags_;
 };
 
-class Segment {
-
-  public:
-    Segment() {}
-    virtual ~Segment() {}
-    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error) = 0;
-
-    inline virtual int getErrorNumber() {
-        return errorNumber_;
+class Segment
+{
+public:
+    Segment(LinearAddress start, uint32_t size) : start_(start), size_(size)
+    {
     }
 
-    inline virtual LinearAddress getStart() {
-        return start_;
+    virtual ~Segment()
+    {
     }
 
-    inline virtual uint32_t getSize() {
-        return size_;
-    }
-
-    inline virtual bool inRange(LinearAddress address) {
-
+    virtual bool inRange(LinearAddress address)
+    {
         return (address >= start_ && address < start_ + size_);
     }
 
-  protected:
-    LinearAddress start_;
-    uint32_t         size_;
-    uint8_t errorNumber_;
-
-  public:
-    static const uint8_t FAULT_STACK_OVERFLOW = 0x01;
-    static const uint8_t FAULT_OUT_OF_RANGE   = 0x02;
-    static const uint8_t FAULT_UNKNOWN        = 0x03;
-};
-
-class StackSegment : public Segment {
-
-  public:
-    StackSegment(LinearAddress start, uint32_t size);
-    virtual ~StackSegment();
-    virtual bool inRange(LinearAddress address) {
-        return (start_ - size_ <= address && address <= start_);
+    LinearAddress getStart() const
+    {
+        return start_;
     }
 
-  public:
-    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
+    uint32_t getSize()
+    {
+        return size_;
+    }
+
+    virtual bool faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
+    {
+        ASSERT(inRange(address));
+
+        if (error != PageManager::FAULT_NOT_EXIST) {
+            return false;
+        }
+
+        pageManager->mapOnePage(process->getPageDirectory(),
+                                address,
+                                PageManager::PAGE_WRITABLE,
+                                process->isUserMode());
+        return true;
+    }
+
+private:
+    LinearAddress start_;
+    uint32_t size_;
 };
 
-class HeapSegment : public Segment {
-
+class SharedMemorySegment : public Segment
+{
   public:
-    HeapSegment(LinearAddress start, uint32_t size);
-    virtual ~HeapSegment();
+    SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable = true) :
+        Segment(start, size),
+        sharedMemoryObject_(sharedMemoryObject),
+        writable_(writable)
+    {
+    }
 
-  public:
-    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
-};
+    virtual ~SharedMemorySegment()
+    {
+    }
 
-class SharedMemorySegment : public Segment {
+    virtual bool faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
+    {
+        ASSERT(inRange(address));
 
-  public:
-    SharedMemorySegment();
-    SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable = true);
-    virtual ~SharedMemorySegment();
+        if (error != PageManager::FAULT_NOT_EXIST) {
+            return false;
+        }
 
-  public:
-    virtual bool faultHandler(Process* process, LinearAddress address, uint32_t error);
-    inline virtual uint32_t getId() const {
+        uint32_t faultTableIndex = PageManager::getTableIndex(address);
+        uint32_t faultDirectoryIndex = PageManager::getDirectoryIndex(address);
+
+        uint32_t startTableIndex = PageManager::getTableIndex(getStart());
+        uint32_t startDirectoryIndex = PageManager::getDirectoryIndex(getStart());
+
+        uint32_t physicalIndex = faultTableIndex + faultDirectoryIndex * 1024 - startTableIndex - startDirectoryIndex * 1024;
+
+        int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
+        uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
+
+        int mapResult;
+        if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
+            mapResult = pageManager->mapOnePage(process->getPageDirectory(),
+                                                address,
+                                                PageManager::PAGE_WRITABLE,
+                                                PageManager::PAGE_USER);
+        } else if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
+            mapResult = pageManager->mapOnePage(process->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
+            sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
+        } else {
+            mapResult = pageManager->mapOnePageByPhysicalAddress(process->getPageDirectory(),
+                                                                 address,
+                                                                 mappedAddress,
+                                                                 writable_,
+                                                                 PageManager::PAGE_USER);
+        }
+        return (mapResult != -1);
+    }
+
+    uint32_t getId() const
+    {
         return sharedMemoryObject_->getId();
     }
 
-    inline virtual void setWritable(bool writable) {
+    void setWritable(bool writable)
+    {
         writable_ = writable;
     }
 
-  public:
-    static SharedMemorySegment* find(Process* process, uint32_t id);
+    SharedMemoryObject* getSharedMemoryObject() const
+    {
+        return sharedMemoryObject_;
+    }
 
-  protected:
+
+private:
     SharedMemoryObject* sharedMemoryObject_;
     bool writable_;
 };

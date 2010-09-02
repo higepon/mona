@@ -15,264 +15,6 @@
 #include <sys/HList.h>
 #include "Segments.h"
 
-/* Segment Faults */
-const uint8_t Segment::FAULT_STACK_OVERFLOW;
-const uint8_t Segment::FAULT_OUT_OF_RANGE;
-const uint8_t Segment::FAULT_UNKNOWN;
-
-/*----------------------------------------------------------------------
-    StackSegment
-----------------------------------------------------------------------*/
-
-/*!
-    \brief initilize heap segment
-
-    \param  start LinearAddress of start
-    \param  size  segment size
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-StackSegment::StackSegment(LinearAddress start, uint32_t size) {
-
-    start_ = start;
-    size_  = size;
-}
-
-/*!
-    \brief destruct segment
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-StackSegment::~StackSegment() {
-}
-
-/*!
-    \brief fault handler
-
-    \param  address LinearAddress of fault point
-    \param  error   fault type
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-bool StackSegment::faultHandler(Process* process, LinearAddress address, uint32_t error) {
-
-    if (error != PageManager::FAULT_NOT_EXIST) {
-
-        errorNumber_ = FAULT_UNKNOWN;
-        return false;
-    }
-
-    if (start_ - size_ > address || start_ < address) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
-    /* page allocation */
-    g_page_manager->mapOnePage(process->getPageDirectory(),
-                               address,
-                               PageManager::PAGE_WRITABLE,
-                               process->isUserMode());
-
-    return true;
-}
-
-
-/*----------------------------------------------------------------------
-    HeapSegment
-----------------------------------------------------------------------*/
-
-/*!
-    \brief initilize heap segment
-
-    \param  start LinearAddress of start
-    \param  size  segment size
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-HeapSegment::HeapSegment(LinearAddress start, uint32_t size) {
-
-    start_ = start;
-    size_  = size;
-}
-
-/*!
-    \brief destruct segment
-
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-HeapSegment::~HeapSegment() {
-}
-
-/*!
-    \brief fault handler
-
-    \param  address LinearAddress of fault point
-    \param  error   fault type
-    \author Higepon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-bool HeapSegment::faultHandler(Process* process, LinearAddress address, uint32_t error) {
-
-    if (error != PageManager::FAULT_NOT_EXIST) {
-
-        errorNumber_ = FAULT_UNKNOWN;
-        return false;
-    }
-
-    if (address < start_ || address > start_ + size_) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
-    /* page allocation */
-    g_page_manager->mapOnePage(process->getPageDirectory(),
-                               address,
-                               PageManager::PAGE_WRITABLE,
-                               process->isUserMode());
-
-    return true;
-}
-
-/*----------------------------------------------------------------------
-    SharedMemorySegment
-----------------------------------------------------------------------*/
-
-/*!
-    \brief initilize SharedMemorySegment
-
-    \param  start              LinearAddress of start
-    \param  size               segment size
-    \param  sharedMemoryObject pointer to sharedMemoryObject
-    \author Higepon
-    \date   create:2003/10/25 update:
-*/
-SharedMemorySegment::SharedMemorySegment(LinearAddress start, uint32_t size, SharedMemoryObject* sharedMemoryObject, bool writable /* = true */)
-{
-    start_ = start;
-    size_  = size;
-    writable_ = writable;
-    sharedMemoryObject_ = sharedMemoryObject;
-}
-
-/*!
-    \brief construct segment
-
-    \author Higepon
-    \date   create:2003/10/28 update:
-*/
-SharedMemorySegment::SharedMemorySegment()
-{
-    /* dummy */
-    start_ = 0;
-    size_  = 0;
-    sharedMemoryObject_ = 0;
-}
-
-/*!
-    \brief destruct segment
-
-    \author Higepon
-    \date   create:2003/10/25 update:
-*/
-SharedMemorySegment::~SharedMemorySegment()
-{
-}
-
-/*!
-    \brief fault handler
-
-    \param  address LinearAddress of fault point
-    \param  error   fault type
-    \author Higepon
-    \date   create:2003/10/25 update:
-*/
-bool SharedMemorySegment::faultHandler(Process* process, LinearAddress address, uint32_t error)
-{
-    int mapResult;
-    if (error != PageManager::FAULT_NOT_EXIST)
-    {
-        errorNumber_ = FAULT_UNKNOWN;
-        return false;
-    }
-
-    if (address < start_ || address > start_ + size_)
-    {
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-    gKStat.startIncrementByTSC(PAGE_FAULT3);
-    /* page fault point */
-    uint32_t tableIndex1     = PageManager::getTableIndex(address);
-    uint32_t directoryIndex1 = PageManager::getDirectoryIndex(address);
-
-    /* segment start point */
-    uint32_t tableIndex2     = PageManager::getTableIndex(start_);
-    uint32_t directoryIndex2 = PageManager::getDirectoryIndex(start_);
-
-    /* check already allocated physical page? */
-    uint32_t physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
-
-    int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
-    uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
-    Process* current = process;//g_currentThread->process;
-    gKStat.stopIncrementByTSC(PAGE_FAULT3);
-    gKStat.startIncrementByTSC(PAGE_FAULT4);
-    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
-        gKStat.startIncrementByTSC(PAGE_FAULT5);
-        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(),
-                                               address,
-                                               PageManager::PAGE_WRITABLE,
-                                               PageManager::PAGE_USER);
-        gKStat.stopIncrementByTSC(PAGE_FAULT5);
-    }
-    else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
-    {
-        gKStat.startIncrementByTSC(PAGE_FAULT6);
-        mapResult = g_page_manager->mapOnePage(current->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
-        sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
-        gKStat.stopIncrementByTSC(PAGE_FAULT6);
-    } else
-    {
-        gKStat.startIncrementByTSC(PAGE_FAULT7);
-        mapResult = g_page_manager->mapOnePageByPhysicalAddress(current->getPageDirectory(),
-                                                                address,
-                                                                mappedAddress,
-                                                                writable_,
-                                                                PageManager::PAGE_USER);
-        gKStat.stopIncrementByTSC(PAGE_FAULT7);
-    }
-    gKStat.stopIncrementByTSC(PAGE_FAULT4);
-    return (mapResult != -1);
-}
-
-/*!
-    \brief find SharedMemorySegment that has the ID
-
-    \param  id ID for SharedMemorySegment
-    \author Higepon
-    \date   create:2003/10/29 update:2004/01/08
-*/
-SharedMemorySegment* SharedMemorySegment::find(Process* process, uint32_t id)
-{
-    List<SharedMemorySegment*>* list = process->getSharedList();
-
-    for (int i = 0; i < list->size(); i++)
-    {
-        SharedMemorySegment* segment = list->get(i);
-
-        /* found */
-        if (id == segment->getId())
-        {
-            return segment;
-        }
-    }
-    return (SharedMemorySegment*)NULL;
-}
-
 /*----------------------------------------------------------------------
     SharedMemoryObject
 ----------------------------------------------------------------------*/
@@ -292,34 +34,34 @@ SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size)
     return;
 }
 
-SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
-{
-    initilize(id, size);
+// SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
+// {
+//     initilize(id, size);
 
-    Process* process = g_scheduler->FindProcess(pid);
-    if (process == NULL)
-    {
-        return;
-    }
+//     Process* process = g_scheduler->FindProcess(pid);
+//     if (process == NULL)
+//     {
+//         return;
+//     }
 
-    PageEntry* table;
-    PageEntry* directory = process->getPageDirectory();
+//     PageEntry* table;
+//     PageEntry* directory = process->getPageDirectory();
 
-    for (int i = 0; i < physicalPageCount_; i++, linearAddress += 4096)
-    {
-        uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
-        uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
+//     for (int i = 0; i < physicalPageCount_; i++, linearAddress += 4096)
+//     {
+//         uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
+//         uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
 
-        if (PageManager::isPresent(directory[directoryIndex]))
-        {
-            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-        } else
-        {
-            break;
-        }
-        physicalPages_[i] = table[tableIndex] & 0xFFFFF000;
-    }
-}
+//         if (PageManager::isPresent(directory[directoryIndex]))
+//         {
+//             table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+//         } else
+//         {
+//             break;
+//         }
+//         physicalPages_[i] = table[tableIndex] & 0xFFFFF000;
+//     }
+// }
 
 void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
 {
@@ -365,10 +107,10 @@ SharedMemoryObject::~SharedMemoryObject()
 */
 void SharedMemoryObject::setup()
 {
-    g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
-    SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
+//    g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
+      SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
     g_dllSharedObject = SharedMemoryObject::find(0x7000);
-;}
+}
 
 /*!
     \brief find sharedMemoryObject that has the ID
@@ -380,18 +122,19 @@ void SharedMemoryObject::setup()
 */
 SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 {
-    SharedMemoryObject* current;
-    for (int i = 0; i < g_sharedMemoryObjectList->size(); i++)
-    {
-        current = g_sharedMemoryObjectList->get(i);
+    return g_page_manager->findSharedMemoryObject(id);
+    // SharedMemoryObject* current;
+    // for (int i = 0; i < g_sharedMemoryObjectList->size(); i++)
+    // {
+    //     current = g_sharedMemoryObjectList->get(i);
 
-        /* found */
-        if (id == current->getId())
-        {
-            return current;
-        }
-    }
-    return (SharedMemoryObject*)NULL;
+    //     /* found */
+    //     if (id == current->getId())
+    //     {
+    //         return current;
+    //     }
+    // }
+    // return (SharedMemoryObject*)NULL;
 }
 
 /*!
@@ -406,40 +149,42 @@ SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 */
 bool SharedMemoryObject::open(uint32_t id, uint32_t size)
 {
-    SharedMemoryObject* target = find(id);
-    if (0 == size) return false;
-    /* new SharedMemory */
-    if (target == NULL)
-    {
-        target = new SharedMemoryObject(id, size);
-        checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
-        g_sharedMemoryObjectList->add(target);
+    // SharedMemoryObject* target = find(id);
+    // if (0 == size) return false;
+    // /* new SharedMemory */
+    // if (target == NULL)
+    // {
+    //     target = new SharedMemoryObject(id, size);
+    //     checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
+    //     g_sharedMemoryObjectList->add(target);
 
-    } else
-    {
-        if (target->getSize() != size) return false;
-    }
+    // } else
+    // {
+    //     if (target->getSize() != size) return false;
+    // }
 
-    return true;
+    // return true;
+    return g_page_manager->findOrCreateSharedMemoryObject(id, size) != NULL;
 }
 
-bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
-{
-    SharedMemoryObject* target = find(id);
+// bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
+// {
+//     panic("hige");
+//     SharedMemoryObject* target = find(id);
 
-    /* new SharedMemory */
-    if (target == NULL)
-    {
-        target = new SharedMemoryObject(id, size, pid, linearAddress);
-        checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
-        g_sharedMemoryObjectList->add(target);
-    } else
-    {
-        if (target->getSize() != size) return false;
-    }
+//     /* new SharedMemory */
+//     if (target == NULL)
+//     {
+//         target = new SharedMemoryObject(id, size, pid, linearAddress);
+//         checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
+//         g_sharedMemoryObjectList->add(target);
+//     } else
+//     {
+//         if (target->getSize() != size) return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 /*!
     \brief attach sharedMemory to process space
@@ -451,69 +196,42 @@ bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t
     \author Higepon
     \date   create:2003/10/25 update:2004/01/08
 */
-intptr_t SharedMemoryObject::attach(uint32_t id, Process* process, LinearAddress address, bool isImmediateMap)
+intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, LinearAddress address, bool isImmediateMap)
 {
-    SharedMemorySegment* segment;
-    SharedMemoryObject* target = find(id);
-    if (target == NULL) {
-        return M_BAD_MEMORY_MAP_ID;
-    }
-
     uintptr_t start = address;
-    uintptr_t end = target->getSize();
+    uintptr_t end = start + getSize();
 
     if (process->hasSharedOverlap(start, end)) {
         return M_BAD_ADDRESS;
     } else {
-        segment = new SharedMemorySegment(address, target->getSize(), target);
+        SharedMemorySegment* segment = new SharedMemorySegment(address, getSize(), this);
         if (segment == NULL) {
             return M_NO_MEMORY;
         }
         process->getSharedList()->add(segment);
-        target->setAttachedCount(target->getAttachedCount() + 1);
+        addRef();
 
         //  If we know all memory region will be accessed,
         //  we avoid using demand paging which causes poor performance.
         if (isImmediateMap) {
-            for (LinearAddress start = address; start < address + target->getSize(); start += 4096) {
-                ASSERT(segment->faultHandler(process, start, PageManager::FAULT_NOT_EXIST));
+            for (LinearAddress start = address; start < end; start += PageManager::ARCH_PAGE_SIZE) {
+                bool isSucceed = segment->faultHandler(pageManager, process, start, PageManager::FAULT_NOT_EXIST);
+                ASSERT(isSucceed);
             }
         }
         return M_OK;
     }
 }
 
-/*!
-    \brief detach sharedMemoryObject from process
-
-    \param id      id for sharedMemoryObject
-    \param process process
-
-    \author Higepon
-    \date   create:2003/10/25 update:2004/01/08
-*/
-bool SharedMemoryObject::detach(uint32_t id, Process* process)
+intptr_t SharedMemoryObject::detach(PageManager* pageManager, Process* process)
 {
-    SharedMemoryObject* target = find(id);
-    if (target == NULL) return false;
-
-    SharedMemorySegment* segment = SharedMemorySegment::find(process, id);
-    if (segment == NULL) return false;
-
-    /* destroy */
-    g_page_manager->unmapRange(process->getPageDirectory(), segment->getStart(), segment->getStart() + segment->getSize(), false);
-    process->getSharedList()->remove(segment);
-    delete(segment);
-
-    target->setAttachedCount(target->getAttachedCount() - 1);
-
-    /* should be removed */
-    if (target->getAttachedCount() == 0)
-    {
-//        logprintf("segment id = %x removed %s(%s):%d\n", id,__FILE__, __func__, __LINE__);
-//        logprintf("map removed id=%x %s:%d:(%s)\n", id, __FILE__, __LINE__, __func__);
-        g_sharedMemoryObjectList->remove(target);
-        delete(target);
+    SharedMemorySegment* segment = process->findSharedSegment(getId());
+    if (segment == NULL) {
+        return M_BAD_MEMORY_MAP_ID;
     }
-    return true;
+
+    pageManager->unmapRange(process->getPageDirectory(), segment->getStart(), segment->getStart() + segment->getSize(), false);
+    process->getSharedList()->remove(segment);
+    delete segment;
+    return M_OK;
 }

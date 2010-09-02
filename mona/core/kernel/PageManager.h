@@ -21,6 +21,7 @@ extern "C" KStat gKStat;
 typedef uint32_t PageEntry;
 typedef uint32_t LinearAddress;
 typedef uint32_t PhysicalAddress;
+class SharedMemoryObject;
 
 class PageManager {
 
@@ -117,6 +118,10 @@ class PageManager {
         return ((address >> 12) & 0x3FF);
     }
 
+    SharedMemoryObject* findSharedMemoryObject(uint32_t id);
+    SharedMemoryObject* findOrCreateSharedMemoryObject(uint32_t id, uint32_t size);
+    void destroySharedMemoryObject(SharedMemoryObject* shm);
+
   private:
     PageEntry* allocatePageTable() const;
 
@@ -175,6 +180,7 @@ class PageManager {
         setAttribute(&(table[tableIndex]), true, isWritable, isUser, paddress);
     }
 
+
   private:
     uintptr_t systemMemorySizeByte_;
     Bitmap* memoryMap_;
@@ -184,7 +190,8 @@ class PageManager {
     uintptr_t vramSizeByte_;
     PageEntry* kernelDirectory_;
     Bitmap* reservedDMAMap_;
-    SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_; 
+    SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_;
+    HList<SharedMemoryObject*> sharedList_;
     void setPageDirectory(PhysicalAddress address);
     enum {
         PAGE_TABLE_POOL_SIZE_BYTE   = 2 * 1024 * 1024,

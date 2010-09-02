@@ -86,7 +86,7 @@ public:
     uint32_t schedulerTotalTick;
     uint32_t flags;
     uint32_t wakeupSleep;
-    class StackSegment* stackSegment;
+    class Segment* stackSegment;
     //add by TAKA
     uint32_t kernelStackBottom;
 private:
