@@ -83,7 +83,7 @@ bool SharedMemorySegment::faultHandler(PageManager* pageManager, Process* proces
     \author Higepon
     \date   create:2003/10/25 update:2003/01/08
 */
-SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size)
+SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size) : refCount_(0)
 {
     initilize(id, size);
     return;
