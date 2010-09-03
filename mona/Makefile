@@ -136,6 +136,7 @@ endif
 	$(MAKE) $@ -C core/pe_server
 	$(MAKE) $@ -C core/gui_server
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
+	$(MAKE) $@ -C core/mosh -f Makefile.mona
 	cd test/monalibc/string && make clean
 	cd test/monalibc/stdio && make clean
 	cd test/monalibc/stdlib && make clean
@@ -143,4 +144,11 @@ endif
 	cd test/monapi/mutex && make clean
 	cd test/monapi/file && make clean
 	cd test/monapi/stack_trace && make clean
+	cd test/monapi/die && make clean
+	cd test/monapi/misc && make clean
+	cd test/monapi/ram_disk && make clean
+	cd test/monapi/syscall && make clean
+	cd test/monapi/socket && make clean
+	cd test/monapi/message && make clean
 	cd test/monapi/condition && make clean
+	cd core/gmp && make clean

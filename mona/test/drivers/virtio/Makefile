@@ -15,5 +15,4 @@ include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
 CFLAGS += -DDEBUG -I . -I $(INCDIR)/monalibc
-
 -include dependencies

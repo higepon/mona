@@ -42,7 +42,7 @@ class PageManager {
     intptr_t deallocateContiguous(PageEntry* directory, LinearAddress address, int PageNum);
 
 
-    int mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
+    void mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
     {
         gKStat.startIncrementByTSC(PAGE_FAULT10);
         PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
@@ -53,10 +53,9 @@ class PageManager {
         gKStat.startIncrementByTSC(PAGE_FAULT12);
         setAttribute(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser, paddress);
         gKStat.stopIncrementByTSC(PAGE_FAULT12);
-        return paddress;
     }
 
-    int mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser);
+    int mapOnePage(PageEntry* directory, PhysicalAddress& mappedAddres, LinearAddress laddress, bool isWritable, bool isUser);
     void unmapOnePage(PageEntry* directory, LinearAddress laddress, bool returnPages = true);
     void unmapPages(PageEntry* directory, LinearAddress start, int pageNum, bool returnPages = true);
     void unmapRange(PageEntry* directory, LinearAddress start, LinearAddress end, bool returnPages = true);
@@ -84,7 +83,7 @@ class PageManager {
     void startPaging(PhysicalAddress address);
     void stopPaging();
     PageEntry* createPageDirectory();
-    bool pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip);
+    bool pageFaultHandler(ThreadInfo* thread, LinearAddress address, uint32_t error);
     inline static bool isPresent(PageEntry entry)
     {
 
@@ -117,10 +116,6 @@ class PageManager {
 
         return ((address >> 12) & 0x3FF);
     }
-
-    SharedMemoryObject* findSharedMemoryObject(uint32_t id);
-    SharedMemoryObject* findOrCreateSharedMemoryObject(uint32_t id, uint32_t size);
-    void destroySharedMemoryObject(SharedMemoryObject* shm);
 
   private:
     PageEntry* allocatePageTable() const;
@@ -180,6 +175,7 @@ class PageManager {
         setAttribute(&(table[tableIndex]), true, isWritable, isUser, paddress);
     }
 
+    void showPageFault(ThreadInfo* threadInfo, uint32_t address);
 
   private:
     uintptr_t systemMemorySizeByte_;
@@ -191,7 +187,6 @@ class PageManager {
     PageEntry* kernelDirectory_;
     Bitmap* reservedDMAMap_;
     SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_;
-    HList<SharedMemoryObject*> sharedList_;
     void setPageDirectory(PhysicalAddress address);
     enum {
         PAGE_TABLE_POOL_SIZE_BYTE   = 2 * 1024 * 1024,
@@ -203,7 +198,6 @@ class PageManager {
     };
 
   public:
-    bool flag_;
     enum {
         PAGE_WRITABLE  = true,
         PAGE_READ_ONLY = false,

@@ -122,7 +122,7 @@ class ThreadOperation
   public:
     static Thread* create(Process* process, uint32_t programCounter);
     static int switchThread(bool isProcessChanged, int i);
-    static intptr_t kill();
+    static intptr_t kill(Process* process, Thread* thread);
     static intptr_t kill(uint32_t tid);
 
   private:
@@ -247,7 +247,7 @@ private:
     List<Thread*>* threadList_;
     List<char*>* arguments_;
     class Segment heap_;
-    class SharedMemorySegment* dllsegment_;
+//    class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
     HList< Pair<intptr_t, KObject*> > kobjects_;

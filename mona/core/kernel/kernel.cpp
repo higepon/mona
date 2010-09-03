@@ -85,6 +85,27 @@ const char* version = "Mona version.0.3.0 $Date::                           $";
 uint32_t version_number  = 0x00000300;
 void  mainProcess();
 
+typedef void (FuncVoid)();
+extern "C" FuncVoid* __CTOR_LIST__[];
+
+void invokeFuncList(FuncVoid** list, const char* file, int line)
+{
+    int count = (int)*list++;
+    list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
+    if (count == -1)
+    {
+        for (; *list != NULL; list++) (**list)();
+    }
+    else
+    {
+        for (int i = 0; i < count; i++, list++)
+        {
+            (**list)();
+        }
+    }
+}
+
+
 static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
 /*!
@@ -219,7 +240,7 @@ void startKernel()
         apm_init();
     }
 
-    dumpAddressMap();
+//    dumpAddressMap();
 
     /* IDManager */
     g_id = new IDManager();
@@ -231,8 +252,9 @@ void startKernel()
     g_page_manager = new PageManager(g_total_system_memory, vramAddress, vramSizeBytes);
     g_page_directory = g_page_manager->createPageDirectory();
     g_page_manager->startPaging((PhysicalAddress)g_page_directory);
-    /* shared memory object */
-    SharedMemoryObject::setup();
+
+    // Just after the paging is on, we call static initializer.
+    invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 
     /* dummy thread struct */
     Thread* dummy1 = new Thread();

@@ -22,7 +22,7 @@
 #define MUNIT_GLOBAL_VAL(v) /* */
 #endif
 
-#define SKIP(condition) printf("MUnit:Skipped %s %s:%d\n", #condition, __FILE__, __LINE__);\
+#define SKIP(condition) printf("MUnit:Skipped %s %s:%d %s\n", #condition, __FILE__, __LINE__,  __PRETTY_FUNCTION__); \
                         logprintf("MUnit:Skipped %s %s:%d\n", #condition, __FILE__, __LINE__);
 
 #define ASSERT_TRUE(condition) {\
@@ -144,7 +144,7 @@ void munit_expect_eq(const char* expected, const char* actual, const char* expec
 {
     if (0 != strcmp(expected, actual)) {
         printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d:%s: \n", expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
         munit_number_of_passed++;

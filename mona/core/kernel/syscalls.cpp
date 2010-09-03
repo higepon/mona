@@ -178,10 +178,11 @@ void syscall_entrance()
         break;
     }
     case SYSTEM_CALL_KILL:
-        ThreadOperation::kill();
+    {
+        ThreadOperation::kill(g_currentThread->process, g_currentThread->thread);
         g_scheduler->SwitchToNext();
         break;
-
+    }
     case SYSTEM_CALL_KILL_THREAD:
     {
         uint32_t tid = SYSTEM_CALL_ARG_1;
@@ -672,7 +673,7 @@ void syscall_entrance()
         bool isImmediateMap = SYSTEM_CALL_ARG_3 == 1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(id);
+        SharedMemoryObject* shm = SharedMemoryObject::find(id);
         if (shm == NULL) {
             Semaphore::up(&g_semaphore_shared);
             Semaphore::up(&g_semaphore_shared);
@@ -690,12 +691,12 @@ void syscall_entrance()
         uint32_t id = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
-        SharedMemoryObject* shm = g_page_manager->findSharedMemoryObject(id);
+        SharedMemoryObject* shm = SharedMemoryObject::find(id);
         if (shm == NULL) {
             setReturnValue(info, M_BAD_MEMORY_MAP_ID);
         } else {
             intptr_t ret = shm->detach(g_page_manager, g_currentThread->process);
-            g_page_manager->destroySharedMemoryObject(shm);
+            SharedMemoryObject::destroy(shm);
             setReturnValue(info, ret);
         }
         Semaphore::up(&g_semaphore_shared);

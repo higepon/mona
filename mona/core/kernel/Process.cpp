@@ -117,10 +117,13 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
     /* stack size from 4KB to 4MB */
-    ProcessOperation::pageManager->mapOnePage(pageDirectory,
-                                              stack - 4096,
-                                              PageManager::PAGE_WRITABLE,
-                                              PageManager::PAGE_USER);
+    PhysicalAddress mappedAddres;
+    intptr_t ret = ProcessOperation::pageManager->mapOnePage(pageDirectory,
+                                                             mappedAddres,
+                                                             stack - 4096,
+                                                             PageManager::PAGE_WRITABLE,
+                                                             PageManager::PAGE_USER);
+    ASSERT(ret == M_OK);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
@@ -248,10 +251,8 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
     return NORMAL;
 }
 
-intptr_t ThreadOperation::kill()
+intptr_t ThreadOperation::kill(Process* process, Thread* thread)
 {
-    Thread* thread   = g_currentThread->thread;
-    Process* process = thread->tinfo->process;
     g_scheduler->Kill(thread);
 
     /* if did this, FileOutputStream hanged up@hello.cpp */
@@ -354,9 +355,9 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(S
     /* shared list */
     shared_ = new HList<SharedMemorySegment*>();
 
-    dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
-    this->getSharedList()->add(dllsegment_);
-    g_dllSharedObject->addRef();
+//    dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
+//    this->getSharedList()->add(dllsegment_);
+    //  g_dllSharedObject->addRef();
 
     /* message list */
     messageList_ = new HList<MessageInfo*>();
@@ -380,7 +381,7 @@ Process::~Process()
     {
         SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
         shm->detach(g_page_manager, this);
-        g_page_manager->destroySharedMemoryObject(shm);
+        SharedMemoryObject::destroy(shm);
     }
 
     delete(shared_);

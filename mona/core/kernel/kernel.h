@@ -118,11 +118,13 @@ inline void printBanner();
 void rdtscsub(uint32_t* timeL, uint32_t* timeH);
 void rdtsc(uint32_t* timeL, uint32_t* timeH);
 
+#define mona_warn(...) logprintf(__VA_ARGS__), g_console->printf(__VA_ARGS__)
+
 #define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 #define onAssertError() panic("assert");
-#define ASSERT(condition) {if (!(condition)) {g_console->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);onAssertError();}}
+#define ASSERT(condition) {if (!(condition)) {g_console->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition); g_log->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);onAssertError();}}
 #else
 #define ASSERT(condition) {}
 #endif

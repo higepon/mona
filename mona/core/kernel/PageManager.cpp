@@ -73,20 +73,16 @@ void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
 }
 
 
-int PageManager::mapOnePage(PageEntry* directory, LinearAddress laddress, bool isWritable, bool isUser)
+int PageManager::mapOnePage(PageEntry* directory, PhysicalAddress& mappedAddres, LinearAddress laddress, bool isWritable, bool isUser)
 {
-    gKStat.startIncrementByTSC(PAGE_FAULT8);
     int foundMemory = memoryMap_->find();
     if (foundMemory == -1) {
-        gKStat.stopIncrementByTSC(PAGE_FAULT8);
-        return -1;
+        return M_NO_MEMORY;
     }
-    gKStat.stopIncrementByTSC(PAGE_FAULT8);
-    gKStat.startIncrementByTSC(PAGE_FAULT9);
     PhysicalAddress paddress = foundMemory * ARCH_PAGE_SIZE;
-    int ret = mapOnePageByPhysicalAddress(directory, laddress, paddress, isWritable, isUser);
-    gKStat.stopIncrementByTSC(PAGE_FAULT9);
-    return ret;
+    mapOnePageByPhysicalAddress(directory, laddress, paddress, isWritable, isUser);
+    mappedAddres = paddress;
+    return M_OK;
 }
 
 // allocate physically contigous memory.
@@ -183,6 +179,11 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
         }
         PageEntry* table = getTableAt(directory, i);
         LinearAddress baseLinerAddress = i * ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE;
+
+        // Shared memroy region will be returned by SharedMemoryObject::~SharedMemoryObject()
+        if (baseLinerAddress >= 0x90000000 && baseLinerAddress < 0xA0000000) {
+            continue;
+        }
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
             if (!isPresent(table[j])) {
                 continue;
@@ -197,7 +198,6 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
         returnPageTable(table);
     }
     returnPageTable(directory);
-
     return;
 }
 
@@ -321,78 +321,71 @@ void PageManager::showCurrentStackTrace()
     tracer.dump<NormalLogger>(g_currentThread->process->getPid(), i->ebp, i->eip, g_currentThread->thread->stackSegment->getStart());
 }
 
-bool PageManager::pageFaultHandler(LinearAddress address, uint32_t error, uint32_t eip)
+bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address, uint32_t error)
 {
-    Process* current = g_currentThread->process;
-    flag_ = false;
-    /* search shared memory segment */
-    if ((error & 0x01) == ARCH_FAULT_NOT_EXIST)
-    {
-        gKStat.startIncrementByTSC(PAGE_FAULT1);
-        List<SharedMemorySegment*>* list = current->getSharedList();
-        for (int i = 0; i < list->size(); i++)
-        {
+    Process* process = threadInfo->process;
+    Thread* thread = threadInfo->thread;
+
+    if ((error & 0x01) == ARCH_FAULT_NOT_EXIST) {
+        // SharedMemorySegment
+        List<SharedMemorySegment*>* list = process->getSharedList();
+        for (int i = 0; i < list->size(); i++) {
             SharedMemorySegment* segment = list->get(i);
-            if (segment->inRange(address))
-            {
-                gKStat.startIncrementByTSC(PAGE_FAULT2);
-                bool ret =  segment->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
-                gKStat.stopIncrementByTSC(PAGE_FAULT2);
+            if (segment->inRange(address)) {
+                bool ret =  segment->faultHandler(this, process, address, FAULT_NOT_EXIST);
                 return ret;
             }
         }
-        gKStat.stopIncrementByTSC(PAGE_FAULT1);
-    }
 
-    /* heap */
-    Segment* heap = current->getHeapSegment();
-    if (heap->inRange(address))
-    {
-        return heap->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
-    }
+        // Heap
+        Segment* heap = process->getHeapSegment();
+        if (heap->inRange(address)) {
+            return heap->faultHandler(this, process, address, FAULT_NOT_EXIST);
+        }
 
-    /* stack */
-    Segment* stack = g_currentThread->thread->stackSegment;
-    if (stack->inRange(address))
-    {
-        return stack->faultHandler(this, g_currentThread->process, address, FAULT_NOT_EXIST);
+        // Stack
+        Segment* stack = thread->stackSegment;
+        if (stack->inRange(address)) {
+            return stack->faultHandler(this, process, address, FAULT_NOT_EXIST);
+        }
     }
 
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_PAGE_FAULT_EXCEPTION);
     }
-#if 1
-        ArchThreadInfo* i = g_currentThread->archinfo;
-        logprintf("name=%s\n", g_currentThread->process->getName());
-        logprintf("tid =%d\n", g_currentThread->thread->id);
-        logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
-        logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-        logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
-        logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+
+    showPageFault(threadInfo, address);
+
+    ThreadOperation::kill(process, thread);
+    return false;
+}
+
+void PageManager::showPageFault(ThreadInfo* threadInfo, uint32_t address)
+{
+    Process* process = threadInfo->process;
+    Thread* thread = threadInfo->thread;
+    ArchThreadInfo* i = threadInfo->archinfo;
+    mona_warn("name=%s\n", process->getName());
+    mona_warn("tid =%d\n", thread->id);
+    mona_warn("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    mona_warn("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    mona_warn("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    mona_warn("eflags=%x eip=%x\n", i->eflags, i->eip);
 
     showCurrentStackTrace();
 
     // remove: if dict of this pid does not exist, just ignore.
-    symbolDictionaryMap_.remove(g_currentThread->process->getPid());
-#endif
+    symbolDictionaryMap_.remove(process->getPid());
 
-        uint32_t stackButtom = current->getStackBottom(g_currentThread->thread);
-        bool stackOver = address < stackButtom && stackButtom - ARCH_PAGE_SIZE < address;
+    uint32_t stackButtom = process->getStackBottom(thread);
+    bool stackOver = address < stackButtom && stackButtom - ARCH_PAGE_SIZE < address;
 
-
-        if (stackOver)
-        {
-            g_console->printf("\nstack overflow \n\n access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, current->getName(), g_currentThread->process->getThreadIndex(g_currentThread->thread), eip);
-            logprintf("\ntack overflow \n\n access denied.address = %x Process %s killed  eip=%x\n", address, current->getName(), eip);
-        }
-        else
-        {
-            g_console->printf("access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, current->getName(), g_currentThread->process->getThreadIndex(g_currentThread->thread), eip);
-            logprintf("access denied.address = %x Process %s killed  eip=%x\n", address, current->getName(), eip);
-        }
-
-        ThreadOperation::kill();
-        return false;
+    uint32_t eip = i->eip;
+    if (stackOver) {
+        mona_warn("\nstack overflow \n\n access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, process->getName(), process->getThreadIndex(thread), eip);
+    } else {
+        mona_warn("access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, process->getName(), process->getThreadIndex(thread), eip);
+    }
 }
 
 bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser)
@@ -443,6 +436,9 @@ void PageManager::unmapRange(PageEntry* directory, LinearAddress start, LinearAd
 
 void PageManager::returnPhysicalPage(PhysicalAddress address)
 {
+    if (!memoryMap_->marked(address / ARCH_PAGE_SIZE)) {
+        logprintf("not marked %d\n", address / ARCH_PAGE_SIZE);
+    }
     ASSERT(memoryMap_->marked(address / ARCH_PAGE_SIZE));
     memoryMap_->clear(address / ARCH_PAGE_SIZE);
 }
@@ -468,40 +464,4 @@ void PageManager::getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_
     *freeNum  = memoryMap_->countClear();
     *totalNum = memoryMap_->getBitsNumber();
     *pageSize = ARCH_PAGE_SIZE;
-}
-
-SharedMemoryObject* PageManager::findSharedMemoryObject(uint32_t id)
-{
-    for (int i = 0; i < sharedList_.size(); i++) {
-         SharedMemoryObject* shm = sharedList_.get(i);
-         if (id == shm->getId()) {
-             return shm;
-         }
-    }
-    return NULL;
-}
-
-SharedMemoryObject* PageManager::findOrCreateSharedMemoryObject(uint32_t id, uint32_t size)
-{
-    if (size == 0) {
-        return NULL;
-    }
-
-    SharedMemoryObject* shm = findSharedMemoryObject(id);
-    if (shm == NULL) {
-        shm = new SharedMemoryObject(id, size);
-        ASSERT(shm);
-        sharedList_.add(shm);
-        return shm;
-    } else {
-        return shm;
-    }
-}
-
-void PageManager::destroySharedMemoryObject(SharedMemoryObject* shm)
-{
-    if (shm->releaseRef()) {
-        sharedList_.remove(shm);
-        delete shm;
-    }
 }

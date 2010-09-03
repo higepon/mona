@@ -18,71 +18,55 @@
 #include "string.h"
 
 class SharedMemoryObject {
-
-  public:
-    static SharedMemoryObject* create(uint32_t size);
-    SharedMemoryObject();
+private:
     SharedMemoryObject(uint32_t id, uint32_t size);
-//    SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
-    void initilize(uint32_t id, uint32_t size);
+
+public:
+    static SharedMemoryObject* create(uint32_t size);
+    static SharedMemoryObject* find(uint32_t id);
+    static void destroy(SharedMemoryObject* shm);
+
     virtual ~SharedMemoryObject();
 
-    void addRef() {
+    void addRef()
+    {
         refCount_++;
     }
 
-    bool releaseRef() {
+    bool releaseRef()
+    {
         refCount_--;
         ASSERT(refCount_ >= 0);
         return refCount_ == 0;
     }
 
-
-    inline virtual uint32_t getId() const {
+    uint32_t getId() const
+    {
         return id_;
     }
 
-    inline virtual uint32_t getSize() const {
+    uint32_t getSize() const
+    {
         return size_;
     }
 
-    inline virtual int isMapped(int physicalIndex) const {
-
-        if (physicalIndex >= physicalPageCount_) return UN_MAPPED;
+    uint32_t getMappedPhysicalAddress(int physicalIndex) const
+    {
+        ASSERT(physicalIndex < physicalPageCount_);
         return physicalPages_[physicalIndex];
     }
 
-    inline virtual void map(int physicalIndex, PhysicalAddress address) {
-
+    void map(int physicalIndex, PhysicalAddress address)
+    {
         if (physicalIndex >= physicalPageCount_) return;
-
         physicalPages_[physicalIndex] = address;
     }
 
-    inline virtual uint32_t getPageFlag(int physicalIndex) const {
-
-        if (physicalIndex >= physicalPageCount_) return 0;
-        return flags_[physicalIndex];
-    }
-
-    inline virtual void setPageFlag(int physicalIndex, uint32_t flag) {
-
-        if (physicalIndex >= physicalPageCount_) return;
-
-        flags_[physicalIndex] = flag;
-    }
-
-  public:
-    static void setup();
-    static bool open(uint32_t id, uint32_t size);
-//    static bool open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress);
     intptr_t attach(PageManager* pageManager, Process* process, LinearAddress address, bool isImmediateMap);
     intptr_t detach(PageManager* pageManager, Process* process);
-    static SharedMemoryObject* find(uint32_t id);
     enum
     {
-        UN_MAPPED = -1,
-        FLAG_NOT_SHARED = 0x01,
+        UN_MAPPED = 0x00,
     };
 
   private:
@@ -90,8 +74,9 @@ class SharedMemoryObject {
     uint32_t size_;
     int refCount_;
     int physicalPageCount_;
-    int* physicalPages_;
-    uint32_t* flags_;
+    uint32_t* physicalPages_;
+
+    static HList<SharedMemoryObject*> sharedList_;
 };
 
 class Segment
@@ -145,11 +130,6 @@ class SharedMemorySegment : public Segment
         return sharedMemoryObject_->getId();
     }
 
-    void setWritable(bool writable)
-    {
-        writable_ = writable;
-    }
-
     SharedMemoryObject* getSharedMemoryObject() const
     {
         return sharedMemoryObject_;
@@ -158,7 +138,7 @@ class SharedMemorySegment : public Segment
 
 private:
     SharedMemoryObject* sharedMemoryObject_;
-    bool writable_;
+    const bool writable_;
 };
 
 #endif

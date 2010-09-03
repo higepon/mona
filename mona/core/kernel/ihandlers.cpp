@@ -164,7 +164,7 @@ static void terminateCurrentThread(const char* reason)
     g_console->printf("%s : Process killed %s thread-index=%d eip=%x\n", reason, current->getName(),
                       g_currentThread->process->getThreadIndex(g_currentThread->thread), g_currentThread->archinfo->eip);
     logprintf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
-    ThreadOperation::kill();
+    ThreadOperation::kill(current, g_currentThread->thread);
 }
 
 /*----------------------------------------------------------------------
@@ -324,8 +324,7 @@ extern "C" void generalProtectionHandler(uintptr_t error)
 
 extern "C" void pageFaultHandler(uintptr_t address, uintptr_t error)
 {
-//     g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
-    if (!g_page_manager->pageFaultHandler(address, error, g_currentThread->archinfo->eip)) {
+    if (!g_page_manager->pageFaultHandler(g_currentThread, address, error)) {
         bool isProcessChange = g_scheduler->Schedule2();
         ThreadOperation::switchThread(isProcessChange, 1);
     }

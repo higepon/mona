@@ -53,7 +53,7 @@ int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char*
     systemcall_mutex_lock(g_mutexShared);
 
     shm->detach(g_page_manager, g_currentThread->process);
-    g_page_manager->destroySharedMemoryObject(shm);
+    SharedMemoryObject::destroy(shm);
     systemcall_mutex_unlock(g_mutexShared);
 
     /* set arguments */

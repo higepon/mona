@@ -14,30 +14,29 @@
 #include "global.h"
 #include <sys/HList.h>
 #include "Segments.h"
+#include "PageManager.h"
 
+HList<SharedMemoryObject*> SharedMemoryObject::sharedList_;
 
 bool Segment::faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
 {
     ASSERT(inRange(address));
+    ASSERT(error == PageManager::FAULT_NOT_EXIST);
 
-    if (error != PageManager::FAULT_NOT_EXIST) {
-        return false;
-    }
-
-    pageManager->mapOnePage(process->getPageDirectory(),
-                            address,
-                            PageManager::PAGE_WRITABLE,
-                            process->isUserMode());
+    PhysicalAddress mappedResultAddress;
+    intptr_t ret = pageManager->mapOnePage(process->getPageDirectory(),
+                                           mappedResultAddress,
+                                           address,
+                                           PageManager::PAGE_WRITABLE,
+                                           process->isUserMode());
+    ASSERT(ret == M_OK);
     return true;
 }
 
 bool SharedMemorySegment::faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
 {
     ASSERT(inRange(address));
-
-    if (error != PageManager::FAULT_NOT_EXIST) {
-        return false;
-    }
+    ASSERT(error == PageManager::FAULT_NOT_EXIST);
 
     uint32_t faultTableIndex = PageManager::getTableIndex(address);
     uint32_t faultDirectoryIndex = PageManager::getDirectoryIndex(address);
@@ -47,216 +46,84 @@ bool SharedMemorySegment::faultHandler(PageManager* pageManager, Process* proces
 
     uint32_t physicalIndex = faultTableIndex + faultDirectoryIndex * 1024 - startTableIndex - startDirectoryIndex * 1024;
 
-    int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
-    uint32_t pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
+    uint32_t mappedAddress = sharedMemoryObject_->getMappedPhysicalAddress(physicalIndex);
 
-    int mapResult;
-    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED) {
-        mapResult = pageManager->mapOnePage(process->getPageDirectory(),
-                                            address,
-                                            PageManager::PAGE_WRITABLE,
-                                            PageManager::PAGE_USER);
-    } else if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
-        mapResult = pageManager->mapOnePage(process->getPageDirectory(), address, writable_, PageManager::PAGE_USER);
-        sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
+    if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
+        PhysicalAddress mappedResultAddress;
+        intptr_t ret = pageManager->mapOnePage(process->getPageDirectory(), mappedResultAddress, address, writable_, PageManager::PAGE_USER);
+        sharedMemoryObject_->map(physicalIndex, ret == M_OK ? mappedResultAddress : SharedMemoryObject::UN_MAPPED);
     } else {
-        mapResult = pageManager->mapOnePageByPhysicalAddress(process->getPageDirectory(),
-                                                             address,
-                                                             mappedAddress,
-                                                             writable_,
-                                                             PageManager::PAGE_USER);
+        pageManager->mapOnePageByPhysicalAddress(process->getPageDirectory(),
+                                                 address,
+                                                 mappedAddress,
+                                                 writable_,
+                                                 PageManager::PAGE_USER);
     }
-    return (mapResult != -1);
+    return true;
 }
 
 
 /*----------------------------------------------------------------------
     SharedMemoryObject
 ----------------------------------------------------------------------*/
-
-/*!
-    \brief initilize SharedMemoryObject
-
-    \param id   shared memory object ID of identify
-    \param size shared memory size
-
-    \author Higepon
-    \date   create:2003/10/25 update:2003/01/08
-*/
-SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size) : refCount_(0)
+SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size) :
+    id_(id),
+    size_(size),
+    refCount_(0),
+    physicalPageCount_(size / PageManager::ARCH_PAGE_SIZE)
 {
-    initilize(id, size);
-    return;
+    ASSERT(size != 0);
+
+    physicalPages_ = new uint32_t[physicalPageCount_];
+    ASSERT(physicalPages_);
+    memset(physicalPages_, UN_MAPPED, sizeof(uint32_t) * physicalPageCount_);
 }
 
-// SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
-// {
-//     initilize(id, size);
-
-//     Process* process = g_scheduler->FindProcess(pid);
-//     if (process == NULL)
-//     {
-//         return;
-//     }
-
-//     PageEntry* table;
-//     PageEntry* directory = process->getPageDirectory();
-
-//     for (int i = 0; i < physicalPageCount_; i++, linearAddress += 4096)
-//     {
-//         uint32_t tableIndex     = PageManager::getTableIndex(linearAddress);
-//         uint32_t directoryIndex = PageManager::getDirectoryIndex(linearAddress);
-
-//         if (PageManager::isPresent(directory[directoryIndex]))
-//         {
-//             table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-//         } else
-//         {
-//             break;
-//         }
-//         physicalPages_[i] = table[tableIndex] & 0xFFFFF000;
-//     }
-// }
-
-void SharedMemoryObject::initilize(uint32_t id, uint32_t size)
-{
-    if (size <= 0) return;
-
-    physicalPageCount_ = size / 4096;
-    physicalPages_     = new int[physicalPageCount_];
-    checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allocate physicalPages");
-    memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
-
-    flags_ = new uint32_t[physicalPageCount_];
-    checkMemoryAllocate(flags_, "SharedMemoryObject memory allocate flags");
-    memset(flags_, 0, sizeof(uint32_t) * physicalPageCount_);
-
-    size_ = size;
-    id_   = id;
-    return;
-}
-
-/*!
-    \brief destruct SharedMemoryObject
-
-    \author Higepon
-    \date   create:2003/10/25 update:
-*/
 SharedMemoryObject::~SharedMemoryObject()
 {
     for (int i = 0; i < physicalPageCount_; i++) {
-        if (physicalPages_[i] != UN_MAPPED) {
+        if (physicalPages_[i] != (uint32_t)UN_MAPPED) {
             g_page_manager->returnPhysicalPage(physicalPages_[i]);
         }
     }
-
     delete[] physicalPages_;
     return;
 }
 
-/*!
-    \brief set up karnel for using sharedMemoryObject
-
-    \author Higepon
-    \date   create:2003/10/25 update:2004/01/08
-*/
-void SharedMemoryObject::setup()
+void SharedMemoryObject::destroy(SharedMemoryObject* shm)
 {
-//    g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
-      SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
-    g_dllSharedObject = SharedMemoryObject::find(0x7000);
+    if (shm->releaseRef()) {
+        sharedList_.remove(shm);
+        delete shm;
+    }
+
 }
 
-/*!
-    \brief find sharedMemoryObject that has the ID
-
-    \param id id for sharedMemoryObject
-
-    \author Higepon
-    \date   create:2003/10/25 update:2004/01/08
-*/
 SharedMemoryObject* SharedMemoryObject::find(uint32_t id)
 {
-    return g_page_manager->findSharedMemoryObject(id);
-    // SharedMemoryObject* current;
-    // for (int i = 0; i < g_sharedMemoryObjectList->size(); i++)
-    // {
-    //     current = g_sharedMemoryObjectList->get(i);
-
-    //     /* found */
-    //     if (id == current->getId())
-    //     {
-    //         return current;
-    //     }
-    // }
-    // return (SharedMemoryObject*)NULL;
+    for (int i = 0; i < sharedList_.size(); i++) {
+        SharedMemoryObject* shm = sharedList_.get(i);
+         if (id == shm->getId()) {
+             return shm;
+         }
+    }
+    return NULL;
 }
 
 SharedMemoryObject* SharedMemoryObject::create(uint32_t size)
 {
     static uint32_t id = 1;
-    return g_page_manager->findOrCreateSharedMemoryObject(id++, size);
+    if (size == 0) {
+        return NULL;
+    }
+
+    SharedMemoryObject* shm = new SharedMemoryObject(id++, size);
+    ASSERT(shm);
+    sharedList_.add(shm);
+    return shm;
 }
 
-/*!
-    \brief open sharedMemoryObject
 
-    if sharedMemoryObject id not present. create one.
-
-    \param id   id for sharedMemoryObject
-    \param size size of sharedMemory
-    \author Higepon
-    \date   create:2003/10/25 update:2004/01/08
-*/
-bool SharedMemoryObject::open(uint32_t id, uint32_t size)
-{
-    // SharedMemoryObject* target = find(id);
-    // if (0 == size) return false;
-    // /* new SharedMemory */
-    // if (target == NULL)
-    // {
-    //     target = new SharedMemoryObject(id, size);
-    //     checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
-    //     g_sharedMemoryObjectList->add(target);
-
-    // } else
-    // {
-    //     if (target->getSize() != size) return false;
-    // }
-
-    // return true;
-    return g_page_manager->findOrCreateSharedMemoryObject(id, size) != NULL;
-}
-
-// bool SharedMemoryObject::open(uint32_t id, uint32_t size, uint32_t pid, uint32_t linearAddress)
-// {
-//     panic("hige");
-//     SharedMemoryObject* target = find(id);
-
-//     /* new SharedMemory */
-//     if (target == NULL)
-//     {
-//         target = new SharedMemoryObject(id, size, pid, linearAddress);
-//         checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
-//         g_sharedMemoryObjectList->add(target);
-//     } else
-//     {
-//         if (target->getSize() != size) return false;
-//     }
-
-//     return true;
-// }
-
-/*!
-    \brief attach sharedMemory to process space
-
-    \param id      id for sharedMemoryObject
-    \param process target process
-    \param address attach point at process space
-
-    \author Higepon
-    \date   create:2003/10/25 update:2004/01/08
-*/
 intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, LinearAddress address, bool isImmediateMap)
 {
     uintptr_t start = address;
@@ -296,3 +163,4 @@ intptr_t SharedMemoryObject::detach(PageManager* pageManager, Process* process)
     delete segment;
     return M_OK;
 }
+
