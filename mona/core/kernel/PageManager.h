@@ -16,7 +16,6 @@
 #include <sys/Bitmap.h>
 #include <sys/SymbolDictionary.h>
 #include <sys/KStat.h>
-extern "C" KStat gKStat;
 
 typedef uint32_t PageEntry;
 typedef uint32_t LinearAddress;
@@ -44,15 +43,9 @@ class PageManager {
 
     void mapOnePageByPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
     {
-        gKStat.startIncrementByTSC(PAGE_FAULT10);
         PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
-        gKStat.stopIncrementByTSC(PAGE_FAULT10);
-        gKStat.startIncrementByTSC(PAGE_FAULT11);
         uint32_t tableIndex = getTableIndex(laddress);
-        gKStat.stopIncrementByTSC(PAGE_FAULT11);
-        gKStat.startIncrementByTSC(PAGE_FAULT12);
         setAttribute(&(table[tableIndex]), PAGE_PRESENT, isWritable, isUser, paddress);
-        gKStat.stopIncrementByTSC(PAGE_FAULT12);
     }
 
     int mapOnePage(PageEntry* directory, PhysicalAddress& mappedAddres, LinearAddress laddress, bool isWritable, bool isUser);
@@ -62,13 +55,9 @@ class PageManager {
 
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address)
     {
-        gKStat.startIncrementByTSC(PAGE_FAULT13);
         PageEntry value =  (address & 0xfffff000) | (present ? ARCH_PAGE_PRESENT : 0x00)
             | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
-        gKStat.stopIncrementByTSC(PAGE_FAULT13);
-        gKStat.startIncrementByTSC(PAGE_FAULT14);
         (*entry) = value;
-        gKStat.stopIncrementByTSC(PAGE_FAULT14);
         return true;
     }
 

@@ -16,7 +16,7 @@ namespace RamDisk {
     typedef std::map<std::string, FileInfo*> FileMap;
     enum
       {
-          CHUNK_SIZE = 409600,
+          CHUNK_SIZE = 4096,
       };
 
 
