@@ -20,6 +20,7 @@
 #include "string.h"
 #include <sys/Bitmap.h>
 #include "KObjectService.h"
+#include "RTC.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -253,7 +254,18 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 
 intptr_t ThreadOperation::kill(Process* process, Thread* thread)
 {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+        n.u64 = RTC::epochNanoseconds();
+        logprintf("exit killing %x:%x\n", n.u32.h, n.u32.l);;
+
     g_scheduler->Kill(thread);
+
 
     /* if did this, FileOutputStream hanged up@hello.cpp */
     sendKilledMessage();

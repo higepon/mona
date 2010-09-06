@@ -164,10 +164,24 @@ int kill() {
 
 int exit(int error)
 {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+        n.u64 = syscall_now_in_nanosec();
+        _logprintf("exit entry %x:%x\n", n.u32.h, n.u32.l);;
+
     if (MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
                               MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error) != M_OK) {
         printf("Error %s:%d\n", __FILE__, __LINE__);
     }
+
+        n.u64 = syscall_now_in_nanosec();
+       _logprintf("exit entry2 %x:%x\n", n.u32.h, n.u32.l);;
+
     return syscall_kill();
 }
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-#define NO_CACHE
+//#define NO_CACHE
 //#define SEARCH_CURRENT
 
 #include "PEServer.h"
@@ -216,15 +216,21 @@ public:
     PELinker(const CString& path, bool prompt)
         : dllmgr(path, prompt), prompt(prompt), EntryPoint(0), Binary(NULL), Result(0)
     {
+        uint64_t s1 = MonAPI::Date::nowInMsec();
         if (!this->Open(path)) return;
+        uint64_t s2 = MonAPI::Date::nowInMsec();
         dlls = list;
         dlls.erase(dlls.begin());
+        uint64_t s3 = MonAPI::Date::nowInMsec();
         reverse(dlls.begin(), dlls.end());
 
 //        PEData* exe = this->list[0];
 //        this->EntryPoint = exe->Parser.get_EntryPoint();
+        uint64_t s4 = MonAPI::Date::nowInMsec();
         this->Load();
+        uint64_t s5 = MonAPI::Date::nowInMsec();
         this->EntryPoint = bootstrapEntryPoint;
+        logprintf("PELinker %d %d %d %d\n", (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
     }
 
     ~PELinker()
@@ -270,6 +276,7 @@ private:
 
     bool Open(const CString& path)
     {
+        uint64_t s1 = MonAPI::Date::nowInMsec();
         if (path == NULL)
         {
             this->Result = 1;
@@ -279,10 +286,15 @@ private:
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
-            if (this->list[i]->Path == path) return true;
+            if (this->list[i]->Path == path) {
+                uint64_t s2 = MonAPI::Date::nowInMsec();
+                logprintf("PELinker::Open immediate return %d\n", (int)(s2 - s1));
+                return true;
+            }
         }
-
+        uint64_t s2 = MonAPI::Date::nowInMsec();
         PEData* pe = OpenPE(path, this->prompt);
+        uint64_t s3 = MonAPI::Date::nowInMsec();
         if (pe == NULL)
         {
             this->Result = 1;
@@ -296,7 +308,7 @@ private:
             this->Result = 3;
             return false;
         }
-
+        uint64_t s4 = MonAPI::Date::nowInMsec();
         this->list.push_back(pe);
 
         HList<CString> dlls;
@@ -319,6 +331,8 @@ private:
                 return false;
             }
         }
+        uint64_t s5 = MonAPI::Date::nowInMsec();
+        logprintf("PELinker::Open %s %d %d %d %d\n", (const char*)path, (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
         return true;
     }
 
@@ -460,7 +474,10 @@ static void MessageLoop()
                 break;
             case MSG_PROCESS_CREATE_IMAGE:
             {
+                uint64_t s1 = MonAPI::Date::nowInMsec();
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
+                uint64_t s2 = MonAPI::Date::nowInMsec();
+                logprintf("CreateImage %d\n", (int)(s2 - s1));
                 if (pe.Result == 0)
                 {
                     char buf[16];

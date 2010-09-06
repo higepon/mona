@@ -19,9 +19,11 @@ static int ExecuteProcess(uint32_t parent, monapi_cmemoryinfo* mi, uint32_t entr
     info.list = option;
 
     addProcessInfo(name);
+    uint64_t s1 = MonAPI::Date::nowInMsec();
     int ret = syscall_load_process_image(&info);
+    uint64_t s2 = MonAPI::Date::nowInMsec();
     *tid = addProcessInfo(parent, name, path, stdin_id, stdout_id);
-
+    logprintf("ExecuteProcess syscall %d\n", (int)(s2 - s1));
     if (prompt)
     {
         switch(ret)
@@ -49,6 +51,7 @@ static CString GetFileName(const CString& path)
 
 static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
 {
+    uint64_t s1 = MonAPI::Date::nowInMsec();
     /* list initilize */
     CommandOption list;
     list.next = NULL;
@@ -70,11 +73,11 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
         list.next = option;
     }
     END_FOREACH
-
+    uint64_t s2 = MonAPI::Date::nowInMsec();
     monapi_cmemoryinfo* mi = NULL;
     uint32_t entryPoint = 0xa0000000;
     int result = 1, svr_id = -1;
-
+    uint64_t s3, s4;
     if (path.endsWith(".ELF") || path.endsWith(".EL2") || path.endsWith(".EL5"))
     {
         svr_id = ID_ELF_SERVER;
@@ -90,10 +93,12 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
 
         if (tid != THREAD_UNKNOWN)
         {
+            s3 = MonAPI::Date::nowInMsec();
             if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path) != M_OK) {
                 _printf("Error %s:%d\n", __FILE__, __LINE__);
                 exit(-1);
             }
+            s4 = MonAPI::Date::nowInMsec();
             if (msg.arg2 != 0) {
                 result = 0;
                 entryPoint = msg.arg3;
@@ -141,6 +146,8 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
         next = option->next;
         delete option;
     }
+    uint64_t s5 = MonAPI::Date::nowInMsec();
+    logprintf("ExecuteFile %d %d %d %d\n", (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
     return result;
 }
 
@@ -155,7 +162,10 @@ static void MessageLoop()
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
+                uint64_t s1 = MonAPI::Date::nowInMsec();
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid);
+                uint64_t s2 = MonAPI::Date::nowInMsec();
+                logprintf("ExecuteProcess %d\n", (int)(s2 - s1));
                 Message::reply(&msg, result, tid);
                 break;
             }

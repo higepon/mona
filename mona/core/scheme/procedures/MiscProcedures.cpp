@@ -322,8 +322,17 @@ PROCEDURE(CallProcess, "call-process")
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
 
     uint64_t start = MonAPI::Date::nowInMsec();
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
 
     MonAPI::Stream hisStdin;
+        n.u64 = syscall_now_in_nanosec();
+        _logprintf("process execute start %x:%x\n", n.u32.h, n.u32.l);;
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     if (result != 0)
     {
@@ -331,6 +340,9 @@ PROCEDURE(CallProcess, "call-process")
     }
 
     Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
+        n.u64 = syscall_now_in_nanosec();
+        _logprintf("awter wait redirect %x:%x\n", n.u32.h, n.u32.l);;
+
     env->setVaribale(new Variable("status", lineno()), status);
     uint64_t end = MonAPI::Date::nowInMsec();
     logprintf("call-process execution time %d msec %s\n", end - start, s->value().data());
