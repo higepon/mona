@@ -34,6 +34,11 @@ static PEData* GetPEData(const CString& path)
     return NULL;
 }
 
+static bool isDLL(PEData* peData)
+{
+    return peData->Name.endsWith("DLL");
+}
+
 static PEData* OpenPE(const CString& path, bool prompt)
 {
     PEData* ret = GetPEData(path);
@@ -87,15 +92,18 @@ static PEData* OpenPE(const CString& path, bool prompt)
     if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
-#ifdef NO_CACHE
+//#ifdef NO_CACHE
         monapi_cmemoryinfo_dispose(ret->Data);
         monapi_cmemoryinfo_delete(ret->Data);
-#endif
+//#endif
         ret->Data = NULL;
     }
 
 #ifndef NO_CACHE
-    cache.add(ret);
+    // For now, we assume DLL is not replaced online.
+    if (isDLL(ret)) {
+        cache.add(ret);
+    }
 #endif
     return ret;
 }
@@ -236,16 +244,19 @@ public:
     ~PELinker()
     {
         if (this->Binary != NULL) monapi_cmemoryinfo_delete(this->Binary);
-#ifdef NO_CACHE
+//#ifdef NO_CACHE
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
             PEData* data = this->list[i];
+            if (isDLL(data)) {
+                continue;
+            }
             monapi_cmemoryinfo_dispose(data->Data);
             monapi_cmemoryinfo_delete(data->Data);
             delete data;
         }
-#endif
+//#endif
     }
 
 private:
