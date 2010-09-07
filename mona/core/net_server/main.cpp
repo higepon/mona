@@ -157,6 +157,7 @@ int main(int argc, char **argv)
 
   uint32_t hostAddress = 0;
   uint32_t gatewayAddress = 0;
+
   init_virtio(hostAddress, gatewayAddress);
 
   ipaddr.addr = hostAddress;

@@ -56,8 +56,9 @@ CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c FreeBSD/divdi3.c
 
 
 NASMSRCS = _alloca.asm
+ASSRCS = #memset.S
 
-OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o) $(CSOURCES:.c=.o)
+OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o) $(CSOURCES:.c=.o) $(ASSRCS:.S=.o)
 #INCLUDE = -I$(INCDIR) -I. -I..
 INCLUDE = -I. -I.. -I$(INCDIR) -I$(INCDIR)/stlport/
 all : $(TARGET)
@@ -95,6 +96,10 @@ endif
 .SUFFIXES: .asm .o
 .asm.o:
 	$(NASM) $(NFLAGS) -o $@ $<
+
+.SUFFIXES: .S .o
+.S.o:
+	$(CC) $(CXXFLAGS) $(INCLUDE) -c $<
 
 depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi_crt.cpp $(SOURCES) > dependencies

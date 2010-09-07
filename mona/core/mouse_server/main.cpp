@@ -68,6 +68,8 @@ public:
         this->sw = screen.getWidth();
         this->sh = screen.getHeight();
         this->bypp = screen.getBpp() / 8;
+
+        _logprintf("w=%d h=%d bp=%d", sw, sh, bypp);
     }
 
     virtual ~Cursor()
@@ -120,16 +122,22 @@ public:
                     switch (data[x])
                     {
                         case '1':
+                            _logprintf("%s %s:%d vram=%x p2=%x %d (%d, %d)\n", __func__, __FILE__, __LINE__, screen.getVRAM(), p2, this->bypp, this->bx, this->by);
                             memset(p2, 0xff, this->bypp);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                             break;
                         case '2':
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                             memset(p2, 0, this->bypp);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                             break;
                     }
                 }
                 else
                 {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     memset(p1, 0, this->bypp);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 }
                 p1 += this->bypp;
                 p2 += this->bypp;

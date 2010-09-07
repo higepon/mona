@@ -349,8 +349,10 @@ private:
 
     bool Load()
     {
+        static int c1, c2, c22, c3, c4, c5;
         uint32_t imageSize = 0;
         uint32_t bootstrapSize = getBootstrapSize();
+        uint64_t s1 = MonAPI::Date::nowInMsec();
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -366,9 +368,12 @@ private:
             this->Result = 3;
             return false;
         }
+        uint64_t s2 = MonAPI::Date::nowInMsec();
+        c1 += (int)(s2 - s1);
         uint32_t addr = 0;
         for (PEDataList::size_type i = 0; i < len; i++)
         {
+            uint64_t s3 = MonAPI::Date::nowInMsec();
             PEData* data = this->list[i];
             uint8_t* ptr = &dst->Data[addr];
             if (!data->Parser.Load(ptr))
@@ -381,6 +386,7 @@ private:
                 this->Result = 3;
                 return false;
             }
+            uint64_t s33 = MonAPI::Date::nowInMsec();
             if (i > 0 && !data->Parser.Relocate(ptr, ORG + addr))
             {
                 if (this->prompt) _printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
@@ -391,6 +397,9 @@ private:
                 this->Result = 3;
                 return false;
             }
+            uint64_t s4 = MonAPI::Date::nowInMsec();
+            c2 += (int)(s33 - s3);
+            c22 += (int)(s4 - s33);
             addr += data->Parser.get_ImageSize();
         }
         addr = 0;
@@ -400,9 +409,10 @@ private:
             int its = data->Parser.get_ImportTableCount();
             for (int j = 0; j < its; j++)
             {
+                uint64_t s5 = MonAPI::Date::nowInMsec();
                 CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
                 PEData* target = this->Find(dll);
-
+                uint64_t s6 = MonAPI::Date::nowInMsec();
                 if (target == NULL || !data->Parser.Link(&dst->Data[addr], j, &target->Parser))
                 {
                     if (this->prompt)
@@ -417,9 +427,13 @@ private:
                     this->Result = 3;
                     return false;
                 }
+                uint64_t s7 = MonAPI::Date::nowInMsec();
+                c3 += (int)(s6 - s5);
+                c4 += (int)(s7 - s6);
             }
             addr += data->Parser.get_ImageSize();
         }
+        uint64_t s8 = MonAPI::Date::nowInMsec();
         // make bootstrap code
         uint8_t* bootstrap = &dst->Data[dst->Size - bootstrapSize];
         uint8_t* start = &bootstrap[3];
@@ -466,6 +480,9 @@ private:
 
         bootstrapEntryPoint = dst->Size - bootstrapSize + ORG;
         // make bootstrap end
+        uint64_t s9 = MonAPI::Date::nowInMsec();
+        c5 += (int)(s9 - s8);
+        logprintf("c1=%d %d %d %d %d %d", c1, c2, c22, c3, c4, c5);
         this->Binary = dst;
         return true;
     }
