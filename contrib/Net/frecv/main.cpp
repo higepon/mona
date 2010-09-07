@@ -14,7 +14,7 @@ using namespace MonAPI;
 static monapi_cmemoryinfo* alloc_buffer(int size)
 {
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, size, 0);
+    monapi_cmemoryinfo_create(buffer, size, 0, true);
     return buffer;
 }
 
