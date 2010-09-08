@@ -321,10 +321,10 @@ PROCEDURE(CallProcess, "call-process")
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
 
-    uint64_t start = MonAPI::Date::nowInMsec();
-
     MonAPI::Stream hisStdin;
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
+    uint64_t start = MonAPI::Date::nowInMsec();
+
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
