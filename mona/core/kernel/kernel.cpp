@@ -365,7 +365,7 @@ void loadServer(const char* server, const char* name)
             return;
         }
 
-        g_console->printf("%s\n", Loader::Load(image, size, Loader::ORG, name, true, NULL) ? "NG" : "OK");
+        g_console->printf("%s\n", Loader::Load(image, size, Loader::ORG, name, true, NULL) == M_OK ? "OK" : "NG");
     }
     else
     {

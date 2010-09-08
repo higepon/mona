@@ -765,7 +765,7 @@ void syscall_entrance()
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(SYSTEM_CALL_ARG_1);
-        setReturnValue(info, Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list));
+        setReturnValue(info, Loader::LoadFromMemoryMap(p->handle, p->entrypoint, p->name, p->list));
         break;
     }
 

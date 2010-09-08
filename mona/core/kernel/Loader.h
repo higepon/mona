@@ -24,14 +24,15 @@
 class Loader
 {
 public:
-    static int Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list);
-
+    static intptr_t LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list);
+    static intptr_t Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list);
+private:
+    static void setupArguments(Process* process, CommandOption* list);
 public:
     enum
     {
         ORG            = 0xA0000000,
-        //       MAX_IMAGE_SIZE = (4096 * 150)
-       MAX_IMAGE_SIZE = (6 * 1024 * 1024)
+        MAX_IMAGE_SIZE = (6 * 1024 * 1024)
     };
 
 };

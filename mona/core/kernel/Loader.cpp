@@ -16,77 +16,93 @@
 /*----------------------------------------------------------------------
     Loader
 ----------------------------------------------------------------------*/
-int Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list)
+intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list)
 {
     ASSERT(size < MAX_IMAGE_SIZE);
-    /* attach Shared to this process */
-    systemcall_mutex_lock(g_mutexShared);
 
-    SharedMemoryObject* shm = SharedMemoryObject::create(Loader::MAX_IMAGE_SIZE);
+    int memSize = ((size + PageManager::ARCH_PAGE_SIZE - 1) / PageManager::ARCH_PAGE_SIZE) * PageManager::ARCH_PAGE_SIZE; 
+
+    SharedMemoryObject* shm = SharedMemoryObject::create(memSize);
     if (shm == NULL) {
-        systemcall_mutex_unlock(g_mutexShared);
-        return 4;
+        return M_BAD_MEMORY_MAP_ID;
     }
 
-    if (shm->attach(g_page_manager, g_currentThread->process, 0x80000000, false) != M_OK) {
-        systemcall_mutex_unlock(g_mutexShared);
-        return 4;
+    intptr_t ret = shm->attach(g_page_manager, g_currentThread->process, 0x80000000, true);
+    if (ret != M_OK) {
+        return ret;
     }
 
     /* create process */
     enter_kernel_lock_mode();
     Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
 
-    /* attach binary image to process */
-    systemcall_mutex_lock(g_mutexShared);
-
-    if (shm->attach(g_page_manager, process, Loader::ORG, false) != M_OK) {
-        systemcall_mutex_unlock(g_mutexShared);
-        return 5;
+    ret = shm->attach(g_page_manager, process, Loader::ORG, true);
+    if (ret != M_OK) {
+        return ret;
     }
-
-    systemcall_mutex_unlock(g_mutexShared);
-
     memcpy((uint8_t*)0x80000000, image, size);
-
     /* detach from this process */
-    systemcall_mutex_lock(g_mutexShared);
-
     shm->detach(g_page_manager, g_currentThread->process);
     SharedMemoryObject::destroy(shm);
-    systemcall_mutex_unlock(g_mutexShared);
 
-    /* set arguments */
-    if (list != NULL)
-    {
-        char* p;
-        CommandOption* option;
-        List<char*>* target = process->getArguments();
+    setupArguments(process, list);
 
-        for (option = list->next; option; option = option->next)
-        {
-            p = new char[MAX_PROCESS_ARGUMENT_LENGTH];
-            strncpy(p, option->str, MAX_PROCESS_ARGUMENT_LENGTH);
-            bool terminated = false;
-            for (int i = 0; i < MAX_PROCESS_ARGUMENT_LENGTH; i++)
-            {
-                if (option->str[i] == '\0')
-                {
-                    terminated = true;
-                    break;
-                }
-            }
-            if (!terminated)
-            {
-                p[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
-            }
-            target->add(p);
-        }
+    Thread*  thread = ThreadOperation::create(process, entrypoint);
+    g_scheduler->Join(thread);
+    exit_kernel_lock_mode();
+    return M_OK;
+}
+
+intptr_t Loader::LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list)
+{
+    SharedMemoryObject* shm = SharedMemoryObject::find(handle);
+    if (shm == NULL) {
+        return M_BAD_MEMORY_MAP_ID;
     }
+
+    enter_kernel_lock_mode();
+    Process* process = ProcessOperation::create(ProcessOperation::USER_PROCESS, name);
+
+    intptr_t ret = shm->attach(g_page_manager, process, Loader::ORG, true);
+    if (ret != M_OK) {
+        return ret;
+    }
+
+    setupArguments(process, list);
+
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint);
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
+    return M_OK;
+}
 
-    return 0;
+void Loader::setupArguments(Process* process, CommandOption* list)
+{
+    if (list == NULL) {
+        return ;
+    }
+    char* p;
+    CommandOption* option;
+    List<char*>* target = process->getArguments();
+
+    for (option = list->next; option; option = option->next)
+    {
+        p = new char[MAX_PROCESS_ARGUMENT_LENGTH];
+        strncpy(p, option->str, MAX_PROCESS_ARGUMENT_LENGTH);
+        bool terminated = false;
+        for (int i = 0; i < MAX_PROCESS_ARGUMENT_LENGTH; i++)
+        {
+            if (option->str[i] == '\0')
+            {
+                terminated = true;
+                break;
+            }
+        }
+        if (!terminated)
+        {
+            p[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
+        }
+        target->add(p);
+    }
 }

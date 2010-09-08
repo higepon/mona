@@ -32,21 +32,21 @@
 
 enum
 {
-    PAGE_FAULT1,
-    PAGE_FAULT2,
-    PAGE_FAULT3,
-    PAGE_FAULT4,
-    PAGE_FAULT5,
-    PAGE_FAULT6,
-    PAGE_FAULT7,
-    PAGE_FAULT8,
-    PAGE_FAULT9,
-    PAGE_FAULT10,
-    PAGE_FAULT11,
-    PAGE_FAULT12,
-    PAGE_FAULT13,
-    PAGE_FAULT14,
-    PAGE_FAULT15,
+    LOAD1,
+    LOAD2,
+    LOAD3,
+    LOAD4,
+    LOAD5,
+    LOAD6,
+    LOAD7,
+    LOAD8,
+    LOAD9,
+    LOAD10,
+    LOAD11,
+    LOAD12,
+    LOAD13,
+    LOAD14,
+    LOAD15,
     forbidden_comma
 };
 

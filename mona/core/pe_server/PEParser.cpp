@@ -221,14 +221,10 @@ int PEParser::GetExportOrdinal(const char* name)
 
 bool PEParser::Load(uint8_t* image)
 {
-    uint64_t s1 = MonAPI::Date::nowInMsec();
     if (this->data == NULL) return false;
 
     this->address = 0;
     memset(image, 0, this->imageSize);
-    uint64_t s11 = MonAPI::Date::nowInMsec();
-    static int g0 = 0;
-    g0 += (int)(s11 - s1);
     for (int i = 0; i < this->file->NumberOfSections; i++)
     {
         SectionHeaders* shdr = &this->sections[i];
@@ -236,10 +232,6 @@ bool PEParser::Load(uint8_t* image)
 
         memcpy(&image[shdr->VirtualAddress], &this->data[shdr->PointerToRawData], shdr->VirtualSize);
     }
-    uint64_t s2 = MonAPI::Date::nowInMsec();
-    static int g1 = 0;
-    g1 += (int)(s2 - s1);
-    logprintf("g0=%d g1=%d ", g0, g1);
     return true;
 }
 

@@ -153,10 +153,8 @@ struct CommandOption {
 typedef struct CommandOption CommandOption;
 
 typedef struct {
-    uint8_t* image;
-    uint32_t size;
+    uint32_t handle;
     uint32_t entrypoint;
-    const char* path;
     const char* name;
     CommandOption* list;
 } LoadProcessInfo;

@@ -9,7 +9,7 @@ REL_KERNEL_ADDR  = 0x0200
 KERNEL_START_ADDR= 0x1200 # REL_KERNEL_ADDR + KERNEL_BASE_ADDR
 MONA_CFG_ADDR    = 0x90000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
-CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR)
+CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR) -momit-leaf-frame-pointer -fomit-frame-pointer -march=i686
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
 INCLUDE      = -I. -I$(INCDIR)
 SOURCES      = cstart.cpp            \
@@ -51,7 +51,8 @@ SOURCES      = cstart.cpp            \
                KObjectService.cpp    \
                addressmap.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o)
+ASSRCS = memset.S memcpy.S memcmp.S memmove.S strlen.S
+OBJECTS = $(SOURCES:.cpp=.o) $(ASSRCS:.S=.o)
 
 all: $(TARGET)
 
@@ -68,6 +69,10 @@ $(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
 .SUFFIXES: .c .o
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+
+.SUFFIXES: .S .o
+.S.o:
+	$(CC) $(CXXFLAGS) $(INCLUDE) -c $<
 
 mode12h.o: mode12h.asm
 	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l mode12h.lst
