@@ -27,6 +27,7 @@ externals: cores
 	cd external/onig && $(MAKE) && $(MAKE) install
 
 cores: tools
+	mkdir -p $(BINDIR)/USER
 	cd core/firstboot && $(MAKE) && $(MAKE) install
 ifdef CSC
 	cd core/PEAnalyzerLib && $(MAKE) && $(MAKE) install
