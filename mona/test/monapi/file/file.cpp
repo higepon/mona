@@ -8,6 +8,9 @@
 #include <limits.h>
 #include <string>
 
+#include <FAT32/Fat.h>
+#include <BlockDeviceDriver.h>
+
 using namespace MonAPI;
 
 #define TEST_LONG_FILE_NAME "/APPS/TFILE.APP/this.is.my_long_file_name.file.txt"
@@ -91,6 +94,24 @@ static void test_seek_minus_offset_should_raise_error()
     monapi_file_close(id);
 }
 
+static void test_fatfs_parameters()
+{
+    const int deviceIndex = 3;
+    BlockDeviceDriver dev(deviceIndex);
+    FatFileSystem fat(dev);
+
+    EXPECT_EQ(512, fat.getBytesPerSector());
+}
+
+static void test_fatfs_readdir_root()
+{
+    const int deviceIndex = 3;
+    BlockDeviceDriver dev(deviceIndex);
+    FatFileSystem fat(dev);
+
+    EXPECT_TRUE(fat.getRoot() != NULL);
+}
+
 int main(int argc, char *argv[])
 {
     testFileExist_LongFileName();
@@ -104,6 +125,8 @@ int main(int argc, char *argv[])
     EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB/SRFI", "%3A8.SLS"));
 
     test_seek_minus_offset_should_raise_error();
+    test_fatfs_parameters();
+    test_fatfs_readdir_root();
     TEST_RESULTS(file);
     return 0;
 }

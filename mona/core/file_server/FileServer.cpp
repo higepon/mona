@@ -127,7 +127,7 @@ int FileServer::initializeRootFileSystem()
     }
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
 #else
-    bd_ = new BlockDeviceDriver(0);
+    bd_ = new BlockDeviceDriver(0, 2048);
     rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
 #endif
 

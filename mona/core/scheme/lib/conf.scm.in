@@ -8,8 +8,8 @@
 
 (define skip-unit-test? #f)
 
-(define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
-                         "/APPS/TFILE.APP/TFILE.EX5"
+(define *tests-on-cui* '("/APPS/TFILE.APP/TFILE.EX5"
+                         "/APPS/TVIRTIO.EX5"
                          "/APPS/TSTACK.APP/TSTACK.EX5"
                          "/APPS/TGMP.EX5"
                          "/APPS/HELLO.EX5"
