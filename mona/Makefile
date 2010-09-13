@@ -72,7 +72,7 @@ tests: tools cores
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
-depend: clean
+depend:
 	cd core/kernel && $(MAKE) $@
 	cd core/monapi && $(MAKE) $@
 	cd core/libpci && $(MAKE) $@

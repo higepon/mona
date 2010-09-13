@@ -51,11 +51,12 @@ public:
         logprintf("root entries=%d", little2host16(bsbpb_->rde));
 
         char buf[SECTOR_SIZE];
-        if (dev.read(getSectorsPerCluster() * getRootDirectoryCluster(), buf, SECTOR_SIZE) != M_OK) {
+        uintptr_t rootDirCluster = (getReservedSectors() + getNumberOfFats() * getSectorsPerFat()) / getSectorsPerCluster();
+        if (dev.read(rootDirCluster, buf, SECTOR_SIZE) != M_OK) {
             monapi_fatal("can' read root directory entry");
         }
         for (int i = 0; i < SECTOR_SIZE; i++) {
-            logprintf("%c", buf[i]);
+            logprintf("[%c]", buf[i]);
         }
     }
 
@@ -90,6 +91,16 @@ private:
     uint16_t getRootDirectoryCluster() const
     {
         return little2host32(bsxbpb_->rdcl);
+    }
+
+    uint16_t getReservedSectors() const
+    {
+        return little2host16(bsbpb_->res);
+    }
+
+    uint16_t getSectorsPerFat() const
+    {
+        return little2host16(bsbpb_->spf);
     }
 
     uint16_t little2host16(uint8_t* p) const
