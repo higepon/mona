@@ -120,15 +120,19 @@ private:
         if (dev_.read(rootDirSector, buf, SECTOR_SIZE) != M_OK) {
             return false;
         }
-        for (int i = 0; i < SECTOR_SIZE; i++) {
-            logprintf("[%d%x]", i, buf[i]);
+        Entries childlen;
+        for (struct de* entry = (struct de*)buf; ; entry++) {
+            if (entry->name[0] == 0x00) {
+                break;
+            }
+            std::string filename = std::string((char*)entry->name, 8);
+            filename += '.';
+            filename += std::string((char*)entry->ext, 3);
+            childlen.push_back(new Entry(filename));
         }
-
+        root_->fnode = new Directory("", childlen);
 //        root_->fs = this;
         root_->type = Vnode::DIRECTORY;
-        Entries childlen;
-        childlen.push_back(new Entry("hige"));
-        root_->fnode = new Directory("", childlen);
         return true;
     }
 
@@ -209,6 +213,17 @@ private:
         uint8_t infs[2];           /* file system info sector */
         uint8_t bkbs[2];           /* backup boot sector */
         uint8_t rsvd[12];          /* reserved */
+    };
+
+    struct de {
+        uint8_t name[8];           /* name */
+        uint8_t ext[3];            /* extension */
+        uint8_t attr;              /* attributes */
+        uint8_t rsvd[10];          /* reserved */
+        uint8_t time[2];           /* creation time */
+        uint8_t date[2];           /* creation date */
+        uint8_t clus[2];           /* starting cluster */
+        uint8_t size[4];           /* size */
     };
 
     uint8_t bootParameters_[SECTOR_SIZE];
