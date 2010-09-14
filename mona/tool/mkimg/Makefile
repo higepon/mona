@@ -18,7 +18,7 @@ fat32:
 	mkfs.vfat -C -F32 hdd.img 100000 # 48MB
 	mkdir -p ./tmp
 	sudo mount ./hdd.img tmp/ -t vfat -o loop
-	sudo cp MONA.CFG tmp/
+	for i in `seq 1 18`; do echo "Hello" > test$$i.txt; sudo mv -f test$$i.txt tmp; done
 	sudo umount -l tmp/
 
 iso:

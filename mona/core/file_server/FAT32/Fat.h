@@ -134,9 +134,20 @@ private:
             if (entry->name[0] == 0x00) {
                 break;
             }
-            std::string filename = std::string((char*)entry->name, 8);
+            // Long file name
+            if (entry->attr == 0x0f) {
+                continue;
+            }
+            std::string filename;
+            for (int i = 0; i < 8; i++) {
+                if (entry->name[i] == ' ') {
+                    break;
+                }
+                filename += entry->name[i];
+            }
             filename += '.';
             filename += std::string((char*)entry->ext, 3);
+            logprintf("<%s>%d\n", filename.c_str(), entry->attr);
             childlen.push_back(new Entry(filename));
         }
         root_->fnode = new Directory("", childlen);
