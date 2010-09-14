@@ -88,6 +88,8 @@ public:
         {
         }
 
+        virtual ~Entry() {}
+
     private:
         const std::string name_;
     };
@@ -101,6 +103,13 @@ public:
         {
             childlen_.resize(childlen.size());
             std::copy(childlen.begin(), childlen.end(), childlen_.begin());
+        }
+
+        virtual ~Directory()
+        {
+            for (Entries::const_iterator it = childlen_.begin(); it != childlen_.end(); ++it) {
+                delete *it;
+            }
         }
 
         Entries& getChildlen()
