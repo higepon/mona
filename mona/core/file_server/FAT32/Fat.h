@@ -122,17 +122,16 @@ public:
 
 private:
 
-    bool readAndSetupRootDirectory()
+    bool readDirectory(uint32_t sector, Entries& childlen)
     {
         uint8_t buf[SECTOR_SIZE];
-        uintptr_t rootDirSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
-        if (dev_.read(rootDirSector, buf, SECTOR_SIZE) != M_OK) {
+        if (dev_.read(sector, buf, SECTOR_SIZE) != M_OK) {
             return false;
         }
-        Entries childlen;
-        for (struct de* entry = (struct de*)buf; ; entry++) {
+
+        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[SECTOR_SIZE]); entry++) {
             if (entry->name[0] == 0x00) {
-                break;
+                return false;
             }
             // Long file name
             if (entry->attr == 0x0f) {
@@ -149,6 +148,19 @@ private:
             filename += std::string((char*)entry->ext, 3);
             logprintf("<%s>%d\n", filename.c_str(), entry->attr);
             childlen.push_back(new Entry(filename));
+        }
+        return true;
+    }
+
+    bool readAndSetupRootDirectory()
+    {
+        uint8_t buf[SECTOR_SIZE];
+        uintptr_t rootDirStartSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
+        Entries childlen;
+        for (uint32_t sector = rootDirStartSector; ; sector++) {
+            if (!readDirectory(sector, childlen)) {
+                break;
+            }
         }
         root_->fnode = new Directory("", childlen);
 //        root_->fs = this;
