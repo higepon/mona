@@ -39,15 +39,11 @@ class FatFileSystem
 public:
     FatFileSystem(VnodeManager* vnodeManager, IStorageDevice& dev) :
         vnodeManager_(vnodeManager),
+        dev_(dev),
         root_(vnodeManager->alloc())
     {
         ASSERT(root_.get());
         // todo inherit file system
-//        root_->fs = this;
-        root_->type = Vnode::DIRECTORY;
-        Entries childlen;
-        childlen.push_back(new Entry("hige"));
-        root_->fnode = new Directory("", childlen);
 
         if (dev.read(0, bootParameters_, SECTOR_SIZE) != M_OK) {
             monapi_fatal("can' read boot parameter block");
@@ -66,14 +62,10 @@ public:
         logprintf("getNumberOfFats()=%d", getNumberOfFats());
         logprintf("getSectorsPerFat()=%d", getSectorsPerFat());
 
-        uint8_t buf[SECTOR_SIZE];
-        uintptr_t rootDirCluster = (getReservedSectors() + getNumberOfFats() * getSectorsPerFat());// / getSectorsPerCluster();
-        if (dev.read(rootDirCluster, buf, SECTOR_SIZE) != M_OK) {
-            monapi_fatal("can' read root directory entry");
+        if (!readAndSetupRootDirectory()) {
+            monapi_fatal("can't read root directory");
         }
-        for (int i = 0; i < SECTOR_SIZE; i++) {
-            logprintf("[%d%x]", i, buf[i]);
-        }
+
     }
 
     Vnode* getRoot() const
@@ -120,6 +112,25 @@ public:
     };
 
 private:
+
+    bool readAndSetupRootDirectory()
+    {
+        uint8_t buf[SECTOR_SIZE];
+        uintptr_t rootDirSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
+        if (dev_.read(rootDirSector, buf, SECTOR_SIZE) != M_OK) {
+            return false;
+        }
+        for (int i = 0; i < SECTOR_SIZE; i++) {
+            logprintf("[%d%x]", i, buf[i]);
+        }
+
+//        root_->fs = this;
+        root_->type = Vnode::DIRECTORY;
+        Entries childlen;
+        childlen.push_back(new Entry("hige"));
+        root_->fnode = new Directory("", childlen);
+        return true;
+    }
 
     uint8_t getSectorsPerCluster() const
     {
@@ -204,6 +215,7 @@ private:
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;
     VnodeManager* vnodeManager_;
+    IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
 };
 
