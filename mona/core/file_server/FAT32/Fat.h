@@ -37,10 +37,10 @@
 class FatFileSystem
 {
 public:
-    FatFileSystem(VnodeManager* vnodeManager, IStorageDevice& dev) :
+    FatFileSystem(VnodeManager& vnodeManager, IStorageDevice& dev) :
         vnodeManager_(vnodeManager),
         dev_(dev),
-        root_(vnodeManager->alloc())
+        root_(vnodeManager.alloc())
     {
         ASSERT(root_.get());
         // todo inherit file system
@@ -214,7 +214,7 @@ private:
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;
-    VnodeManager* vnodeManager_;
+    VnodeManager& vnodeManager_;
     IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
 };

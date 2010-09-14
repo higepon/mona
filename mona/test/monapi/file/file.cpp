@@ -99,7 +99,7 @@ static void test_fatfs_parameters()
     const int deviceIndex = 3;
     BlockDeviceDriver dev(deviceIndex);
     VnodeManager vm;
-    FatFileSystem fat(&vm, dev);
+    FatFileSystem fat(vm, dev);
 
     EXPECT_EQ(512, fat.getBytesPerSector());
 }
@@ -109,7 +109,7 @@ static void test_fatfs_readdir_root()
     const int deviceIndex = 3;
     BlockDeviceDriver dev(deviceIndex);
     VnodeManager vm;
-    FatFileSystem fat(&vm, dev);
+    FatFileSystem fat(vm, dev);
 
     Vnode* root = fat.getRoot();
     ASSERT_TRUE(root != NULL);
