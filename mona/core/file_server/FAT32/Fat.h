@@ -28,6 +28,8 @@
 #ifndef __FAT_H__
 #define __FAT_H__
 
+#include <stdlib.h>
+#include <algorithm>
 #include "IStorageDevice.h"
 #include "vnode.h"
 #include "VnodeManager.h"
@@ -43,7 +45,9 @@ public:
         // todo inherit file system
 //        root_->fs = this;
         root_->type = Vnode::DIRECTORY;
-        root_->fnode = new Directory("");
+        Entries childlen;
+        childlen.push_back(new Entry("hige"));
+        root_->fnode = new Directory("", childlen);
 
         if (dev.read(0, bootParameters_, SECTOR_SIZE) != M_OK) {
             monapi_fatal("can' read boot parameter block");
@@ -96,17 +100,23 @@ public:
         const std::string name_;
     };
 
+    typedef std::vector<Entry*> Entries;
+
     class Directory : public Entry
     {
     public:
-        Directory(const std::string& name) : Entry(name)
+        Directory(const std::string& name, const Entries& childlen) : Entry(name)
         {
+            childlen_.resize(childlen.size());
+            std::copy(childlen.begin(), childlen.end(), childlen_.begin());
         }
 
-        void getChild(std::vector<Entry*>& directories)
+        Entries& getChildlen()
         {
-            directories.push_back(new Entry("dummy"));
+            return childlen_;
         }
+    private:
+        Entries childlen_;
     };
 
 private:

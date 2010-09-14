@@ -117,10 +117,10 @@ static void test_fatfs_readdir_root()
     EXPECT_EQ(&fat, root->fs);
     EXPECT_TRUE(root->fnode != NULL);
 
-    std::vector<FatFileSystem::Entry*> directories;
+
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
-    rootDir->getChild(directories);
-    EXPECT_EQ(1, directories.size());
+    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    EXPECT_EQ(1, entries.size());
 }
 
 int main(int argc, char *argv[])
