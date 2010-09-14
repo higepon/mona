@@ -14,7 +14,8 @@ clean:
 	rm -f hdd.img
 
 fat32:
-	mkfs.vfat -C -F32 hdd.img 48000 # 48MB
+	rm -rf ./tmp
+	mkfs.vfat -C -F32 hdd.img 100000 # 48MB
 	mkdir -p ./tmp
 	sudo mount ./hdd.img tmp/ -t vfat -o loop
 	sudo cp MONA.CFG tmp/

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string>
-
+#include <monapi/scoped_ptr.h>
 #include <FAT32/Fat.h>
 #include <BlockDeviceDriver.h>
 
@@ -98,7 +98,8 @@ static void test_fatfs_parameters()
 {
     const int deviceIndex = 3;
     BlockDeviceDriver dev(deviceIndex);
-    FatFileSystem fat(dev);
+    VnodeManager vm;
+    FatFileSystem fat(&vm, dev);
 
     EXPECT_EQ(512, fat.getBytesPerSector());
 }
@@ -107,9 +108,19 @@ static void test_fatfs_readdir_root()
 {
     const int deviceIndex = 3;
     BlockDeviceDriver dev(deviceIndex);
-    FatFileSystem fat(dev);
+    VnodeManager vm;
+    FatFileSystem fat(&vm, dev);
 
-    EXPECT_TRUE(fat.getRoot() != NULL);
+    Vnode* root = fat.getRoot();
+    ASSERT_TRUE(root != NULL);
+    EXPECT_EQ((int)Vnode::DIRECTORY, root->type);
+    EXPECT_EQ(&fat, root->fs);
+    EXPECT_TRUE(root->fnode != NULL);
+
+    std::vector<FatFileSystem::Entry*> directories;
+    FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
+    rootDir->getChild(directories);
+    EXPECT_EQ(1, directories.size());
 }
 
 int main(int argc, char *argv[])

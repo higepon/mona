@@ -30,17 +30,26 @@
 
 #include "IStorageDevice.h"
 #include "vnode.h"
+#include "VnodeManager.h"
 
 class FatFileSystem
 {
 public:
-    FatFileSystem(IStorageDevice& dev)
+    FatFileSystem(VnodeManager* vnodeManager, IStorageDevice& dev) :
+        vnodeManager_(vnodeManager),
+        root_(vnodeManager->alloc())
     {
-        if (dev.read(0, bootParameters__, SECTOR_SIZE) != M_OK) {
+        ASSERT(root_.get());
+        // todo inherit file system
+//        root_->fs = this;
+        root_->type = Vnode::DIRECTORY;
+        root_->fnode = new Directory("");
+
+        if (dev.read(0, bootParameters_, SECTOR_SIZE) != M_OK) {
             monapi_fatal("can' read boot parameter block");
         }
-        bsbpb_ = (struct bsbpb*)(bootParameters__ + sizeof(struct bs));
-        bsxbpb_ = (struct bsxbpb*)(bootParameters__ + sizeof(struct bs) + sizeof(struct bsbpb));
+        bsbpb_ = (struct bsbpb*)(bootParameters_ + sizeof(struct bs));
+        bsxbpb_ = (struct bsxbpb*)(bootParameters_ + sizeof(struct bs) + sizeof(struct bsbpb));
 
         ASSERT(getBytesPerSector() == 512);
         ASSERT(getSectorsPerCluster() <= 64); // Max 32KB
@@ -49,20 +58,23 @@ public:
         logprintf("getSectorsPerCluster=%d", getSectorsPerCluster());
         logprintf("getRootDirectoryCluster=%d", getRootDirectoryCluster());
         logprintf("root entries=%d", little2host16(bsbpb_->rde));
+        logprintf("getReservedSectors()=%d", getReservedSectors());
+        logprintf("getNumberOfFats()=%d", getNumberOfFats());
+        logprintf("getSectorsPerFat()=%d", getSectorsPerFat());
 
-        char buf[SECTOR_SIZE];
-        uintptr_t rootDirCluster = (getReservedSectors() + getNumberOfFats() * getSectorsPerFat()) / getSectorsPerCluster();
+        uint8_t buf[SECTOR_SIZE];
+        uintptr_t rootDirCluster = (getReservedSectors() + getNumberOfFats() * getSectorsPerFat());// / getSectorsPerCluster();
         if (dev.read(rootDirCluster, buf, SECTOR_SIZE) != M_OK) {
             monapi_fatal("can' read root directory entry");
         }
         for (int i = 0; i < SECTOR_SIZE; i++) {
-            logprintf("[%c]", buf[i]);
+            logprintf("[%d%x]", i, buf[i]);
         }
     }
 
     Vnode* getRoot() const
     {
-        return NULL;
+        return root_.get();
     }
 
     // Public for testability
@@ -70,6 +82,32 @@ public:
     {
         return little2host16(bsbpb_->bps);
     }
+
+
+    // Public for testability
+    class Entry
+    {
+    public:
+        Entry(const std::string& name) : name_(name)
+        {
+        }
+
+    private:
+        const std::string name_;
+    };
+
+    class Directory : public Entry
+    {
+    public:
+        Directory(const std::string& name) : Entry(name)
+        {
+        }
+
+        void getChild(std::vector<Entry*>& directories)
+        {
+            directories.push_back(new Entry("dummy"));
+        }
+    };
 
 private:
 
@@ -98,9 +136,11 @@ private:
         return little2host16(bsbpb_->res);
     }
 
-    uint16_t getSectorsPerFat() const
+    uint32_t getSectorsPerFat() const
     {
-        return little2host16(bsbpb_->spf);
+        // For Fat32, small spf should be zero.
+        ASSERT(little2host16(bsbpb_->spf) == 0);
+        return little2host32(bsxbpb_->bspf);
     }
 
     uint16_t little2host16(uint8_t* p) const
@@ -150,9 +190,11 @@ private:
         uint8_t rsvd[12];          /* reserved */
     };
 
-    uint8_t bootParameters__[SECTOR_SIZE];
+    uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;
+    VnodeManager* vnodeManager_;
+    MonAPI::scoped_ptr<Vnode> root_;
 };
 
 #endif // __FAT_H__
