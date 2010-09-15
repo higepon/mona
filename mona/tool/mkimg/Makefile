@@ -19,6 +19,7 @@ fat32:
 	mkdir -p ./tmp
 	sudo mount ./hdd.img tmp/ -t vfat -o loop
 	for i in `seq 1 18`; do echo "Hello" > test$$i.txt; sudo mv -f test$$i.txt tmp; done
+	seq 1 1000 > hige.txt; sudo mv -f hige.txt tmp
 	sudo umount -l tmp/
 
 iso:

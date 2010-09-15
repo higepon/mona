@@ -94,33 +94,122 @@ static void test_seek_minus_offset_should_raise_error()
     monapi_file_close(id);
 }
 
+class TestFatFS
+{
+public:
+    TestFatFS() : dev(new BlockDeviceDriver(3)),
+                  vm(new VnodeManager),
+                  fat(new FatFileSystem(*vm, *dev))
+    {
+    }
+
+    FatFileSystem* get() const
+    {
+        return fat.get();
+    }
+
+private:
+    scoped_ptr<BlockDeviceDriver> dev;
+    scoped_ptr<VnodeManager> vm;
+    scoped_ptr<FatFileSystem> fat;
+};
+
 static void test_fatfs_parameters()
 {
-    const int deviceIndex = 3;
-    BlockDeviceDriver dev(deviceIndex);
-    VnodeManager vm;
-    FatFileSystem fat(vm, dev);
-
-    EXPECT_EQ(512, fat.getBytesPerSector());
+    TestFatFS fs;
+    EXPECT_EQ(512, fs.get()->getBytesPerSector());
 }
 
 static void test_fatfs_readdir_root()
 {
-    const int deviceIndex = 3;
-    BlockDeviceDriver dev(deviceIndex);
-    VnodeManager vm;
-    FatFileSystem fat(vm, dev);
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
 
-    Vnode* root = fat.getRoot();
+    Vnode* root = fat->getRoot();
     ASSERT_TRUE(root != NULL);
     EXPECT_EQ((int)Vnode::DIRECTORY, root->type);
-    EXPECT_EQ(&fat, root->fs);
+    EXPECT_EQ(fat, root->fs);
     EXPECT_TRUE(root->fnode != NULL);
 
 
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
     FatFileSystem::Entries& entries = rootDir->getChildlen();
-    EXPECT_EQ(1, entries.size());
+    EXPECT_EQ(19, entries.size());
+}
+
+static void test_fatfs_lookup()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    EXPECT_STR_EQ("TEST2.TXT", file->getName().c_str());
+    EXPECT_EQ(6, file->getSize());
+}
+
+static void test_fatfs_read_file()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    io::Context c;
+    c.offset = 0;
+    c.size   = 256;
+    const char* expected = "Hello\n";
+    const int len = strlen(expected);
+    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    ASSERT_EQ(len, c.offset);
+    ASSERT_EQ(len, c.resultSize);
+    ASSERT_TRUE(c.memory != NULL);
+    ASSERT_EQ(len, c.memory->Size);
+    EXPECT_TRUE(memcmp(expected, c.memory->Data, len) == 0);
+}
+
+static void test_fatfs_read_file_with_offset()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    io::Context c;
+    c.offset = 2;
+    c.size   = 256;
+    const char* expected = "llo\n";
+    const int len = strlen(expected);
+    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    ASSERT_EQ(6, c.offset);
+    ASSERT_EQ(len, c.resultSize);
+    ASSERT_TRUE(c.memory != NULL);
+    ASSERT_EQ(len, c.memory->Size);
+    EXPECT_TRUE(memcmp(expected, c.memory->Data, len) == 0);
+}
+
+static void test_fatfs_read_file_multiple_clusters()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "HIGE.TXT", &found, Vnode::REGULAR));
+    io::Context c;
+    c.offset = 514;
+    c.size   = 1000;
+    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    ASSERT_EQ(1000, c.resultSize);
+    ASSERT_TRUE(c.memory != NULL);
+    EXPECT_EQ(0x36, c.memory->Data[0]);
+    EXPECT_EQ(0x35, c.memory->Data[c.memory->Size - 4]);
+    EXPECT_EQ(0x0A, c.memory->Data[c.memory->Size - 3]);
+    EXPECT_EQ(0x34, c.memory->Data[c.memory->Size - 2]);
+    EXPECT_EQ(0x30, c.memory->Data[c.memory->Size - 1]);
 }
 
 int main(int argc, char *argv[])
@@ -138,6 +227,10 @@ int main(int argc, char *argv[])
     test_seek_minus_offset_should_raise_error();
     test_fatfs_parameters();
     test_fatfs_readdir_root();
+    test_fatfs_lookup();
+    test_fatfs_read_file();
+    test_fatfs_read_file_with_offset();
+    test_fatfs_read_file_multiple_clusters();
     TEST_RESULTS(file);
     return 0;
 }

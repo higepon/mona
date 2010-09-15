@@ -19,6 +19,7 @@ VnodeCacher::~VnodeCacher()
     for (DirectoriesMap::const_iterator it = directories_->begin(); it != directories_->end(); ++it)
     {
         vnodes.push_back((*it).first);
+
         EntriesMap* entries = (*it).second;
         for (EntriesMap::iterator i = entries->begin(); i != entries->end(); i++)
         {
@@ -26,16 +27,15 @@ VnodeCacher::~VnodeCacher()
         }
         delete entries;
     }
-
     // enumrate unique Vnodes
     sort(vnodes.begin(), vnodes.end());
     Vnodes::iterator v = unique(vnodes.begin(), vnodes.end());
     vnodes.erase(v ,vnodes.end());
-
     for (Vnodes::const_iterator it = vnodes.begin(); it != vnodes.end(); ++it)
     {
         Vnode* v = (*it);
-        v->fs->destroyVnode(v);
+        // todo. v->fs will be destroyed before coming this line.
+//        v->fs->destroyVnode(v);
     }
     delete directories_;
 }
