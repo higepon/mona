@@ -39,6 +39,10 @@
 //  long file name
 // get
 
+// create file when cluster is full.
+// host2 little
+// create date
+// create duplicate check
 
 class FatFileSystem : public FileSystem
 {
@@ -125,7 +129,76 @@ public:
         return MONA_SUCCESS;
     }
     virtual int write(Vnode* file, struct io::Context* context)                           {}
-    virtual int create(Vnode* dir, const std::string& file)                               {}
+
+    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
+    {
+        Directory* d = (Directory*)dir->fnode;
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(cluster, buf)) {
+            return M_READ_ERROR;
+        }
+
+        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++) {
+            if (entry->name[0] == 0x00) {
+                d->addChild(new Entry(file, 0, 0));
+                setupNewEntry(entry, file);
+                if (writeCluster(cluster, buf)) {
+                    return M_OK;
+                } else {
+                    return M_WRITE_ERROR;
+                }
+            }
+        }
+        return M_NO_SPACE;
+    }
+
+    int flushFat(uint32_t cluster)
+    {
+        uint32_t fatStartSector = getReservedSectors();
+        uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
+        uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
+
+        if (dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE) != M_OK) {
+            monapi_warn("failed to update FAT");
+            return MONA_FAILURE;
+        } else {
+            MONA_SUCCESS;
+        }
+    }
+
+    virtual int create(Vnode* dir, const std::string& file)
+    {
+        ASSERT(dir->type == Vnode::DIRECTORY);
+        ASSERT(file.size() <= 11);
+        Directory* d = (Directory*)dir->fnode;
+        uint32_t cluster = getLastCluster(d);
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
+        if (ret == M_OK) {
+            return MONA_SUCCESS;
+        } else if (ret == M_NO_SPACE) {
+            uint32_t newCluster = findEmptyCluster();
+            logprintf("cluster%d, newCluster=%d", cluster, newCluster);
+            if (newCluster == END_OF_CLUSTER) {
+                return MONA_FAILURE;
+            }
+
+            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+                return MONA_FAILURE;
+            }
+
+            fat_[cluster] = newCluster;
+            fat_[newCluster] = END_OF_CLUSTER;
+
+            if (flushFat(cluster) != MONA_SUCCESS) {
+                return MONA_FAILURE;
+            }
+
+            if (flushFat(newCluster) != MONA_SUCCESS) {
+                return MONA_FAILURE;
+            }
+            return MONA_SUCCESS;
+        }
+    }
     virtual int truncate(Vnode* file)                                                     {}
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   {}
     virtual int close(Vnode* file)                                                        {}
@@ -139,7 +212,8 @@ public:
     FatFileSystem(VnodeManager& vnodeManager, IStorageDevice& dev) :
         vnodeManager_(vnodeManager),
         dev_(dev),
-        root_(vnodeManager.alloc())
+        root_(vnodeManager.alloc()),
+        fat_(NULL)
     {
         ASSERT(root_.get());
 
@@ -155,6 +229,13 @@ public:
             monapi_fatal("can't read root directory");
         }
 
+    }
+
+    ~FatFileSystem()
+    {
+        if (fat_ != NULL) {
+            delete[] fat_;
+        }
     }
 
     Vnode* getRoot() const
@@ -218,6 +299,11 @@ public:
             }
         }
 
+        void addChild(Entry* entry)
+        {
+            childlen_.push_back(entry);
+        }
+
         Entries& getChildlen()
         {
             return childlen_;
@@ -228,6 +314,17 @@ public:
 
 private:
 
+    uint32_t findEmptyCluster()
+    {
+        // 0th, 1st fat entry is reserved.
+        for (int i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
+            if (fat_[i] == 0) {
+                return i;
+            }
+        }
+        return END_OF_CLUSTER;
+    }
+
     uint32_t traceClusterChain(uint32_t startCluster, uint32_t count)
     {
         uint32_t cluster = startCluster;
@@ -235,6 +332,15 @@ private:
             ASSERT(cluster < END_OF_CLUSTER);
         }
         return cluster;
+    }
+
+    uint32_t getLastCluster(Entry* entry)
+    {
+        for (uint32_t cluster = entry->getStartCluster(); ; cluster = fat_[cluster]) {
+            if (fat_[cluster] >= END_OF_CLUSTER) {
+                return cluster;
+            }
+        }
     }
 
     bool readBootParameters()
@@ -255,13 +361,10 @@ private:
     {
         uint32_t fatStartSector = getReservedSectors();
         uint32_t fatSizeByte = getSectorsPerFat() * SECTOR_SIZE;
-        MonAPI::scoped_ptr<uint32_t> buf(new uint32_t[fatSizeByte / sizeof(uint32_t)]);
+        fat_ = new uint32_t[fatSizeByte / sizeof(uint32_t)];
 
-        if (dev_.read(fatStartSector, buf.get(), fatSizeByte) != M_OK) {
+        if (dev_.read(fatStartSector, fat_, fatSizeByte) != M_OK) {
             return false;
-        }
-        for (int i = 0; i < fatSizeByte / sizeof(uint32_t); i++) {
-            fat_.push_back(buf.get()[i]);
         }
         return true;
     }
@@ -271,6 +374,16 @@ private:
         uint32_t firstDataSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
         uint32_t absoluteCluster = firstDataSector / getSectorsPerCluster() + cluster - 2;
         if (dev_.read(absoluteCluster * getSectorsPerCluster(), buf, SECTOR_SIZE * getSectorsPerCluster()) != M_OK) {
+            return false;
+        }
+        return true;
+    }
+
+    bool writeCluster(uint32_t cluster, const uint8_t* buf)
+    {
+        uint32_t firstDataSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
+        uint32_t absoluteCluster = firstDataSector / getSectorsPerCluster() + cluster - 2;
+        if (dev_.write(absoluteCluster * getSectorsPerCluster(), buf, SECTOR_SIZE * getSectorsPerCluster()) != M_OK) {
             return false;
         }
         return true;
@@ -301,6 +414,9 @@ private:
                 }
                 filename += '.';
                 filename += std::string((char*)entry->ext, 3);
+                logprintf("%s:", filename.c_str());
+                logprintf("<%d>", little2host16(entry->clus));
+                logprintf("<%x>\n", fat_[little2host16(entry->clus)]);
                 childlen.push_back(new Entry(filename, little2host32(entry->size), little2host16(entry->clus)));
             }
         }
@@ -366,6 +482,27 @@ private:
         return ((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0]);
     }
 
+    std::vector<std::string> split(std::string str, char delimiter)
+    {
+        std::vector<std::string> ret;
+        std::string::size_type index;
+
+        while (true) {
+            index = str.find(delimiter);
+            if (index == std::string::npos) {
+                ret.push_back(str);
+                break;
+            }
+            else {
+                ret.push_back(str.substr(0, index));
+                str = str.substr(++index);
+            }
+        }
+
+        return ret;
+    }
+
+
     enum
     {
         SECTOR_SIZE = 512
@@ -419,13 +556,27 @@ private:
         forbiddend_comma
     };
 
+    void setupNewEntry(struct de* entry, const std::string filename)
+    {
+        std::vector<std::string> nameAndExt = split(filename, '.');
+        ASSERT(nameAndExt.size() == 2);
+        memset(entry->name, ' ', 8);
+        ASSERT(nameAndExt[0].size() <= 8);
+        memcpy(entry->name, nameAndExt[0].c_str(), nameAndExt[0].size());
+        memset(entry->ext, ' ', 3);
+        ASSERT(nameAndExt[1].size() <= 3);
+        memcpy(entry->ext, nameAndExt[1].c_str(), nameAndExt[1].size());
+        *((uint32_t*)entry->size) = 0;
+        *((uint16_t*)entry->clus) = 0;
+    }
+
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;
     VnodeManager& vnodeManager_;
     IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
-    std::vector<uint32_t> fat_;
+    uint32_t* fat_;
 };
 
 #endif // __FAT_H__

@@ -134,7 +134,7 @@ static void test_fatfs_readdir_root()
 
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
     FatFileSystem::Entries& entries = rootDir->getChildlen();
-    EXPECT_EQ(19, entries.size());
+    EXPECT_EQ(20, entries.size());
 }
 
 static void test_fatfs_lookup()
@@ -212,6 +212,44 @@ static void test_fatfs_read_file_multiple_clusters()
     EXPECT_EQ(0x30, c.memory->Data[c.memory->Size - 1]);
 }
 
+
+static void createEmptyfile(FatFileSystem* fat, Vnode* dir, const std::string& filename)
+{
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->create(dir, filename));
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
+    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    EXPECT_STR_EQ(filename, file->getName().c_str());
+    EXPECT_EQ(0, file->getSize());
+}
+
+static void test_fatfs_create_empty_file()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    const char* filename = "MY.TXT";
+    createEmptyfile(fat, root, filename);
+}
+
+static void test_fatfs_create_empty_file_need_new_cluster()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    for (int i = 0; i < 16; i++) {
+        char filename[13];
+        sprintf(filename, "MY%d.TXT", i);
+        createEmptyfile(fat, root, filename);
+    }
+    FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
+    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    EXPECT_EQ(37, entries.size());
+}
+
+
 int main(int argc, char *argv[])
 {
     testFileExist_LongFileName();
@@ -231,6 +269,8 @@ int main(int argc, char *argv[])
     test_fatfs_read_file();
     test_fatfs_read_file_with_offset();
     test_fatfs_read_file_multiple_clusters();
+    test_fatfs_create_empty_file();
+    test_fatfs_create_empty_file_need_new_cluster();
     TEST_RESULTS(file);
     return 0;
 }

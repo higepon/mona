@@ -72,9 +72,13 @@ public:
         }
     }
 
-    int write(uint32_t lba, void* buf, int size)
+    int write(uint32_t lba, const void* buf, int size)
     {
-        return M_NOT_SUPPORTED;
+        if (size == vb_->write(buf, lba * (sectorSize_ / 512), size)) {
+            return M_OK;
+        } else {
+            return -1;
+        }
     }
 
     int ioctl(void* p)

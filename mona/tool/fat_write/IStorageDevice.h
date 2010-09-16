@@ -22,7 +22,7 @@ class IStorageDevice
     virtual int open()  = 0;
     virtual int close() = 0;
     virtual int read(uint32_t lba, void* buf, int size)  = 0;
-    virtual int write(uint32_t lba, void* buf, int size) = 0;
+    virtual int write(uint32_t lba, const void* buf, int size) = 0;
     virtual int ioctl(void* p) = 0;
 };
 

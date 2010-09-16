@@ -20,7 +20,7 @@ public:
     int open();
     int close();
     int read(uint32_t lba, void* buf, int size);
-    int write(uint32_t lba, void* buf, int size);
+    int write(uint32_t lba, const void* buf, int size);
     int ioctl(void* p);
 
 private:
