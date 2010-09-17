@@ -249,9 +249,59 @@ static void test_fatfs_create_empty_file_need_new_cluster()
     EXPECT_EQ(37, entries.size());
 }
 
+static monapi_cmemoryinfo* readAll(FatFileSystem* fat, Vnode* dir, const std::string& filename)
+{
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
+    io::Context c;
+    c.offset = 0;
+    c.size   = ((FatFileSystem::Entry*)(found->fnode))->getSize();
+    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    return c.memory;
+}
+
+static void test_fatfs_write_file()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    const char* FILENAME = "MY1.TXT";
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+
+    const int BUFFER_SIZE = 514;
+
+    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
+    memset(buffer->Data, 0, BUFFER_SIZE);
+    buffer->Data[0] = 0xde;
+    buffer->Data[BUFFER_SIZE - 1] = 0xad;
+
+    io::Context c;
+    c.offset = 0;
+    c.size   = BUFFER_SIZE;
+    c.memory = buffer;
+
+    ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
+
+    monapi_cmemoryinfo* cmi = readAll(fat, root, FILENAME);
+    ASSERT_TRUE(cmi != NULL);
+    ASSERT_TRUE(cmi->Data != NULL);
+    ASSERT_EQ(BUFFER_SIZE, cmi->Size);
+    EXPECT_TRUE(memcmp(buffer->Data, cmi->Data, BUFFER_SIZE) == 0);
+}
+
+#define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
 int main(int argc, char *argv[])
 {
+    uint32_t pid = syscall_get_pid();
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
+    }
+
     testFileExist_LongFileName();
     testFileExist_UTF8FileName();
     testFileRead_LongFileName();
@@ -271,6 +321,7 @@ int main(int argc, char *argv[])
     test_fatfs_read_file_multiple_clusters();
     test_fatfs_create_empty_file();
     test_fatfs_create_empty_file_need_new_cluster();
+    test_fatfs_write_file();
     TEST_RESULTS(file);
     return 0;
 }

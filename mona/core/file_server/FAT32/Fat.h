@@ -128,7 +128,50 @@ public:
         context->offset += sizeToRead;
         return MONA_SUCCESS;
     }
-    virtual int write(Vnode* file, struct io::Context* context)                           {}
+    virtual int write(Vnode* file, struct io::Context* context)
+    {
+        if (file->type != Vnode::REGULAR) {
+            return MONA_FAILURE;
+        }
+        Entry* entry = (Entry*)file->fnode;
+        if (entry->getSize() == 0) {
+            uint32_t newCluster = findEmptyCluster();
+            if (newCluster == END_OF_CLUSTER) {
+                return MONA_FAILURE;
+            }
+            ASSERT(context->memory);
+           if (writeCluster(newCluster, context->memory->Data)) {
+                entry->setStartCluster(newCluster);
+                entry->setSize(context->size);
+                uint32_t clusterInParent = entry->getClusterInParent();
+                uint32_t indexInParentCluster = entry->getIndexInParentCluster();
+                uint8_t buf[getClusterSizeByte()];
+                if (!readCluster(clusterInParent, buf)) {
+                    return MONA_FAILURE;
+                }
+
+                struct de* theEntry = ((struct de*)buf) + indexInParentCluster;
+                *((uint32_t*)theEntry->size) = entry->getSize();
+                *((uint16_t*)theEntry->clus) = newCluster;
+                if (!writeCluster(clusterInParent, buf)) {
+                    return MONA_FAILURE;
+                }
+
+                updateFatNoFlush(newCluster, END_OF_CLUSTER);
+
+                if (flushDirtyFat() != MONA_SUCCESS) {
+                    return MONA_FAILURE;
+                }
+
+//                return context->size;
+                return 512;
+            } else {
+                return -1;
+            }
+        } else {
+            ASSERT(false);
+        }
+    }
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
     {
@@ -138,9 +181,12 @@ public:
             return M_READ_ERROR;
         }
 
-        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++) {
+        uint32_t index = 0;
+        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
             if (entry->name[0] == 0x00) {
-                d->addChild(new Entry(file, 0, 0));
+                Entry* fileEntry = new Entry(file, 0, 0, cluster, index);
+                d->addChild(fileEntry);
+                fileEntry->setParent(d);
                 setupNewEntry(entry, file);
                 if (writeCluster(cluster, buf)) {
                     return M_OK;
@@ -158,12 +204,33 @@ public:
         uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
         uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
 
+        logprintf("dirty fat sector = %d", dirtyFatSector);
+
         if (dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE) != M_OK) {
             monapi_warn("failed to update FAT");
             return MONA_FAILURE;
         } else {
-            MONA_SUCCESS;
+            return MONA_SUCCESS;
         }
+    }
+
+    int flushDirtyFat()
+    {
+        for (std::map<uint32_t, uint32_t>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
+
+            if (flushFat(it->first) != MONA_SUCCESS) {
+                dirtyFat_.clear();
+                return MONA_FAILURE;
+            }
+        }
+        dirtyFat_.clear();
+        return MONA_SUCCESS;
+    }
+
+    void updateFatNoFlush(uint32_t index, uint32_t cluster)
+    {
+        fat_[index] = cluster;
+        dirtyFat_.insert(std::pair<uint32_t, uint32_t>(index, index));
     }
 
     virtual int create(Vnode* dir, const std::string& file)
@@ -177,7 +244,6 @@ public:
             return MONA_SUCCESS;
         } else if (ret == M_NO_SPACE) {
             uint32_t newCluster = findEmptyCluster();
-            logprintf("cluster%d, newCluster=%d", cluster, newCluster);
             if (newCluster == END_OF_CLUSTER) {
                 return MONA_FAILURE;
             }
@@ -186,14 +252,10 @@ public:
                 return MONA_FAILURE;
             }
 
-            fat_[cluster] = newCluster;
-            fat_[newCluster] = END_OF_CLUSTER;
+            updateFatNoFlush(cluster, newCluster);
+            updateFatNoFlush(newCluster, END_OF_CLUSTER);
 
-            if (flushFat(cluster) != MONA_SUCCESS) {
-                return MONA_FAILURE;
-            }
-
-            if (flushFat(newCluster) != MONA_SUCCESS) {
+            if (flushDirtyFat() != MONA_SUCCESS) {
                 return MONA_FAILURE;
             }
             return MONA_SUCCESS;
@@ -254,7 +316,13 @@ public:
     class Entry
     {
     public:
-        Entry(const std::string& name, uintptr_t size, uintptr_t startCluster) : name_(name), size_(size), startCluster_(startCluster)
+        Entry(const std::string& name, uintptr_t size, uint32_t startCluster, uint32_t clusterInParent, uint32_t indexInParentCluster) :
+            name_(name),
+            size_(size),
+            startCluster_(startCluster),
+            parent_(NULL),
+            clusterInParent_(clusterInParent),
+            indexInParentCluster_(indexInParentCluster)
         {
         }
 
@@ -270,15 +338,48 @@ public:
             return size_;
         }
 
+        void setSize(uintptr_t size)
+        {
+            size_ = size;
+        }
+
+        void setStartCluster(uintptr_t cluster)
+        {
+            startCluster_ = cluster;
+        }
+
         uintptr_t getStartCluster() const
         {
             return startCluster_;
+        }
+
+        Entry* getParent() const
+        {
+            return parent_;
+        }
+
+        void setParent(Entry* parent)
+        {
+            parent_ = parent;
+        }
+
+        uint32_t getClusterInParent() const
+        {
+            return clusterInParent_;
+        }
+
+        uint32_t getIndexInParentCluster() const
+        {
+            return indexInParentCluster_;
         }
 
     private:
         const std::string name_;
         uintptr_t size_;
         uintptr_t startCluster_;
+        Entry* parent_;
+        uint32_t clusterInParent_;
+        uint32_t indexInParentCluster_;
     };
 
     typedef std::vector<Entry*> Entries;
@@ -286,7 +387,7 @@ public:
     class Directory : public Entry
     {
     public:
-        Directory(const std::string& name, uintptr_t startCluster, const Entries& childlen) : Entry(name, 0, startCluster)
+        Directory(const std::string& name, uintptr_t startCluster, const Entries& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) : Entry(name, 0, startCluster, clusterInParent, indexInParentCluster)
         {
             childlen_.resize(childlen.size());
             std::copy(childlen.begin(), childlen.end(), childlen_.begin());
@@ -397,7 +498,8 @@ private:
                 return false;
             }
 
-            for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++) {
+            uint32_t index = 0;
+            for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
                 if (entry->name[0] == 0x00) {
                     return true;
                 }
@@ -417,7 +519,7 @@ private:
                 logprintf("%s:", filename.c_str());
                 logprintf("<%d>", little2host16(entry->clus));
                 logprintf("<%x>\n", fat_[little2host16(entry->clus)]);
-                childlen.push_back(new Entry(filename, little2host32(entry->size), little2host16(entry->clus)));
+                childlen.push_back(new Entry(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index));
             }
         }
         return true;
@@ -426,12 +528,19 @@ private:
     bool readAndSetupRootDirectory()
     {
         Entries childlen;
+
         if (!readDirectory(getRootDirectoryCluster(), childlen)) {
             return false;
         }
-        root_->fnode = new Directory("", getRootDirectoryCluster(), childlen);
+
+        root_->fnode = new Directory("", getRootDirectoryCluster(), childlen, 0, 0);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
+
+        for (Entries::iterator it = childlen.begin(); it != childlen.end(); ++it) {
+            (*it)->setParent((Directory*)root_->fnode);
+        }
+
         return true;
     }
 
@@ -577,6 +686,7 @@ private:
     IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
     uint32_t* fat_;
+    std::map<uint32_t, uint32_t> dirtyFat_;
 };
 
 #endif // __FAT_H__
