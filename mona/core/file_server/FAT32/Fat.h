@@ -155,7 +155,6 @@ public:
 
             entry->setStartCluster(clusters[0]);
             entry->setSize(context->size);
-
             if (updateParentCluster(entry) != M_OK) {
                 return -1;
             }
@@ -179,7 +178,6 @@ public:
             if (flushDirtyFat() != MONA_SUCCESS) {
                 return -1;
             }
-
             return context->size;
         } else {
             ASSERT(false);
