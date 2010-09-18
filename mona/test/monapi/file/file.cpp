@@ -269,7 +269,7 @@ static void test_fatfs_write_file()
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
-    const int BUFFER_SIZE = 514;
+    const int BUFFER_SIZE = 1029;
 
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
     monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);

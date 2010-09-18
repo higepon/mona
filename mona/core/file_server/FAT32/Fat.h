@@ -147,49 +147,38 @@ public:
             uint32_t numClusters = (context->size + getClusterSizeByte() - 1) / getClusterSizeByte();
             Clusters clusters;
             if (!findEmptyClusters(clusters, numClusters)) {
-                return MONA_FAILURE;
+                return -1;
             }
             uint32_t newCluster = clusters[0];
             ASSERT(context->memory);
-            uint32_t sizeToWritten = context->size;
-                entry->setStartCluster(newCluster);
-                entry->setSize(context->size);
+            entry->setStartCluster(newCluster);
+            entry->setSize(context->size);
 
-                if (updateParentCluster(entry) != M_OK) {
-                    return MONA_FAILURE;
-                }
-
-           if (writeCluster(newCluster, context->memory->Data)) {
-
-                if (sizeToWritten < getClusterSizeByte()) {
-                    updateFatNoFlush(newCluster, END_OF_CLUSTER);
-                    if (flushDirtyFat() != MONA_SUCCESS) {
-                        return MONA_FAILURE;
-                    }
-
-                    return context->size;
-                } else {
-                    uint8_t buf[getClusterSizeByte()];
-                    sizeToWritten -= getClusterSizeByte();
-                    uint32_t newCluster2 = clusters[1];
-                    memcpy(buf, context->memory->Data + getClusterSizeByte(), sizeToWritten);
-                    if (!writeCluster(newCluster2, buf)) {
-                        return MONA_FAILURE;
-                    }
-                    logprintf("write cluster %x %x\n", newCluster, newCluster2);
-                    updateFatNoFlush(newCluster, newCluster2);
-                    updateFatNoFlush(newCluster2, END_OF_CLUSTER);
-
-                    if (flushDirtyFat() != MONA_SUCCESS) {
-                        return MONA_FAILURE;
-                    }
-
-                    return context->size;
-                }
-
-            } else {
+            if (updateParentCluster(entry) != M_OK) {
                 return -1;
             }
+
+            uint8_t buf[getClusterSizeByte()];
+            uint32_t sizeToWritten = context->size;
+            for (uint32_t i = 0; i < clusters.size(); i++) {
+                uint32_t cluster = clusters[i];
+                memcpy(buf, context->memory->Data + getClusterSizeByte() * i, sizeToWritten > getClusterSizeByte() ? getClusterSizeByte() : sizeToWritten);
+                if (!writeCluster(cluster, buf)) {
+                    return -1;
+                }
+                if (clusters.size() - 1 == i) {
+                    updateFatNoFlush(cluster, END_OF_CLUSTER);
+                } else {
+                    updateFatNoFlush(cluster, clusters[i + 1]);
+                }
+                sizeToWritten -= getClusterSizeByte();
+            }
+
+            if (flushDirtyFat() != MONA_SUCCESS) {
+                return -1;
+            }
+
+            return context->size;
         } else {
             ASSERT(false);
         }
