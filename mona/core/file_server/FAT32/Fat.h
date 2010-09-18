@@ -47,6 +47,7 @@
 // write
 //   reserve all cluster
 //   direct read is dangerous when < SECTOR_SIZE
+//   overwrite with offset.
 
 
 class FatFileSystem : public FileSystem
