@@ -181,7 +181,21 @@ public:
             }
             return context->size;
         } else {
-            ASSERT(false);
+            uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
+            uint32_t cluster = traceClusterChain(entry->getStartCluster(), clusterNum);
+            logprintf("clusterNum=%d cluster=%d\n", clusterNum, cluster);
+            uint8_t buf[getClusterSizeByte()];
+
+            if (!readCluster(cluster, buf)) {
+                return -1;
+            }
+
+            memcpy(buf + (context->offset % getClusterSizeByte()), context->memory->Data, context->memory->Size);
+
+            if (!writeCluster(cluster, buf)) {
+                return -1;
+            }
+            return context->memory->Size;
         }
     }
 
