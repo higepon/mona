@@ -143,7 +143,7 @@ public:
         if (entry->getSize() == 0) {
 
             uint32_t numClusters = (context->size + getClusterSizeByte() - 1) / getClusterSizeByte();
-            std::vector<uint32_t> clusters;
+            Clusters clusters;
             if (!findEmptyClusters(clusters, numClusters)) {
                 return MONA_FAILURE;
             }
@@ -441,7 +441,9 @@ public:
 
 private:
 
-    bool findEmptyClusters(std::vector<uint32_t>& clusters, uint32_t numClusters)
+    typedef std::vector<uint32_t> Clusters;
+
+    bool findEmptyClusters(Clusters& clusters, uint32_t numClusters)
     {
         for (uint32_t i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
             if (numClusters == 0) {
@@ -453,7 +455,7 @@ private:
                 numClusters--;
             }
         }
-        for (std::vector<uint32_t>::iterator it = clusters.begin(); it != clusters.end(); ++it) {
+        for (Clusters::iterator it = clusters.begin(); it != clusters.end(); ++it) {
             fat_[*it] = 0;
         }
         clusters.clear();
