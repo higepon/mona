@@ -134,6 +134,8 @@ public:
         context->offset += sizeToRead;
         return MONA_SUCCESS;
     }
+
+
     virtual int write(Vnode* file, struct io::Context* context)
     {
         if (file->type != Vnode::REGULAR) {
@@ -153,19 +155,11 @@ public:
            if (writeCluster(newCluster, context->memory->Data)) {
                 entry->setStartCluster(newCluster);
                 entry->setSize(context->size);
-                uint32_t clusterInParent = entry->getClusterInParent();
-                uint32_t indexInParentCluster = entry->getIndexInParentCluster();
-                uint8_t buf[getClusterSizeByte()];
-                if (!readCluster(clusterInParent, buf)) {
+
+                if (updateParentCluster(entry) != M_OK) {
                     return MONA_FAILURE;
                 }
 
-                struct de* theEntry = ((struct de*)buf) + indexInParentCluster;
-                *((uint32_t*)theEntry->size) = entry->getSize();
-                *((uint16_t*)theEntry->clus) = newCluster;
-                if (!writeCluster(clusterInParent, buf)) {
-                    return MONA_FAILURE;
-                }
                 if (sizeToWritten < getClusterSizeByte()) {
                     updateFatNoFlush(newCluster, END_OF_CLUSTER);
                     if (flushDirtyFat() != MONA_SUCCESS) {
@@ -174,6 +168,7 @@ public:
 
                     return context->size;
                 } else {
+                    uint8_t buf[getClusterSizeByte()];
                     sizeToWritten -= getClusterSizeByte();
                     uint32_t newCluster2 = clusters[1];
                     memcpy(buf, context->memory->Data + getClusterSizeByte(), sizeToWritten);
@@ -727,6 +722,23 @@ private:
         *((uint32_t*)entry->size) = 0;
         *((uint16_t*)entry->clus) = 0;
     }
+
+    intptr_t updateParentCluster(Entry* entry)
+    {
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(entry->getClusterInParent(), buf)) {
+            return M_READ_ERROR;
+        }
+
+        struct de* theEntry = ((struct de*)buf) + entry->getIndexInParentCluster();
+        *((uint32_t*)theEntry->size) = entry->getSize();
+        *((uint16_t*)theEntry->clus) = entry->getStartCluster();
+        if (!writeCluster(entry->getClusterInParent(), buf)) {
+            return M_WRITE_ERROR;
+        }
+        return M_OK;
+    }
+
 
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
