@@ -329,6 +329,42 @@ static void test_fatfs_write_file_overwrite()
     }
 }
 
+static void test_fatfs_write_file_overwrite_expand()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    const char* FILENAME = "MY1.TXT";
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+
+    const int BUFFER_SIZE = 1540;
+
+    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
+    memset(buffer->Data, 0xce, BUFFER_SIZE);
+    buffer->Data[0] = 0xca;
+    buffer->Data[buffer->Size - 1] = 0xfe;
+
+    io::Context c;
+    c.offset = 513;
+    c.size   = BUFFER_SIZE;
+    c.memory = buffer;
+
+    ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
+
+    io::Context readContext;
+    monapi_cmemoryinfo* cmi = readAll(fat, readContext, root, FILENAME);
+    ASSERT_TRUE(cmi != NULL);
+    ASSERT_TRUE(cmi->Data != NULL);
+    ASSERT_EQ(2053, cmi->Size);
+    EXPECT_EQ(0xde, cmi->Data[0]);
+    EXPECT_EQ(0xca, cmi->Data[513]);
+    EXPECT_EQ(0xfe, cmi->Data[513 + BUFFER_SIZE - 1]);
+}
+
+
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
 int main(int argc, char *argv[])
@@ -359,7 +395,8 @@ int main(int argc, char *argv[])
     test_fatfs_create_empty_file();
     test_fatfs_create_empty_file_need_new_cluster();
     test_fatfs_write_file();
-    test_fatfs_write_file_overwrite(); // depends on test_fatfs_write_file()
+    test_fatfs_write_file_overwrite();        // depends on test_fatfs_write_file()
+    test_fatfs_write_file_overwrite_expand(); // depends on test_fatfs_write_file_overwrite()
     TEST_RESULTS(file);
     return 0;
 }
