@@ -44,6 +44,11 @@
 // create date
 // create duplicate check
 
+// write
+//   reserve all cluster
+//   direct read is dangerous when < SECTOR_SIZE
+
+
 class FatFileSystem : public FileSystem
 {
 public:
@@ -97,7 +102,7 @@ public:
         }
 
         context->memory = monapi_cmemoryinfo_new();
-
+        logprintf("read sizeToRead=%d\n", sizeToRead);
         // Use immediate map for performance reason.
         if (monapi_cmemoryinfo_create(context->memory, sizeToRead, MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(context->memory);
@@ -123,6 +128,7 @@ public:
             if (sizeRead == sizeToRead) {
                 break;
             }
+            logprintf("cluster %x => %x\n", cluster, fat_[cluster]);
         }
         context->resultSize = sizeToRead;
         context->offset += sizeToRead;
@@ -140,6 +146,7 @@ public:
                 return MONA_FAILURE;
             }
             ASSERT(context->memory);
+            uint32_t sizeToWritten = context->size;
            if (writeCluster(newCluster, context->memory->Data)) {
                 entry->setStartCluster(newCluster);
                 entry->setSize(context->size);
@@ -156,15 +163,34 @@ public:
                 if (!writeCluster(clusterInParent, buf)) {
                     return MONA_FAILURE;
                 }
+                if (sizeToWritten < getClusterSizeByte()) {
+                    updateFatNoFlush(newCluster, END_OF_CLUSTER);
+                    if (flushDirtyFat() != MONA_SUCCESS) {
+                        return MONA_FAILURE;
+                    }
 
-                updateFatNoFlush(newCluster, END_OF_CLUSTER);
+                    return context->size;
+                } else {
+                    sizeToWritten -= getClusterSizeByte();
+                    uint32_t newCluster2 = findEmptyCluster();
+                    if (newCluster2 == END_OF_CLUSTER) {
+                        return MONA_FAILURE;
+                    }
+                    memcpy(buf, context->memory->Data + getClusterSizeByte(), sizeToWritten);
+                    if (!writeCluster(newCluster2, buf)) {
+                        return MONA_FAILURE;
+                    }
+                    logprintf("write cluster %x %x\n", newCluster, newCluster2);
+                    updateFatNoFlush(newCluster, newCluster2);
+                    updateFatNoFlush(newCluster2, END_OF_CLUSTER);
 
-                if (flushDirtyFat() != MONA_SUCCESS) {
-                    return MONA_FAILURE;
+                    if (flushDirtyFat() != MONA_SUCCESS) {
+                        return MONA_FAILURE;
+                    }
+
+                    return context->size;
                 }
 
-//                return context->size;
-                return 512;
             } else {
                 return -1;
             }
@@ -420,6 +446,7 @@ private:
         // 0th, 1st fat entry is reserved.
         for (int i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
             if (fat_[i] == 0) {
+                fat_[i] = END_OF_CLUSTER;
                 return i;
             }
         }

@@ -249,11 +249,10 @@ static void test_fatfs_create_empty_file_need_new_cluster()
     EXPECT_EQ(37, entries.size());
 }
 
-static monapi_cmemoryinfo* readAll(FatFileSystem* fat, Vnode* dir, const std::string& filename)
+static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* dir, const std::string& filename)
 {
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
-    io::Context c;
     c.offset = 0;
     c.size   = ((FatFileSystem::Entry*)(found->fnode))->getSize();
     EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
@@ -285,10 +284,16 @@ static void test_fatfs_write_file()
 
     ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
 
-    monapi_cmemoryinfo* cmi = readAll(fat, root, FILENAME);
+    io::Context readContext;
+    monapi_cmemoryinfo* cmi = readAll(fat, readContext, root, FILENAME);
     ASSERT_TRUE(cmi != NULL);
     ASSERT_TRUE(cmi->Data != NULL);
     ASSERT_EQ(BUFFER_SIZE, cmi->Size);
+    logprintf("buffer->Data=%x buffer->Size %d\n", buffer->Data, buffer->Size);
+    logprintf("cim->Data=%x size=%d\n", cmi->Data, cmi->Size);
+    logprintf("buffer->Data[513]=%x\n",buffer->Data[513]);
+    logprintf("cmi->Data[513]=%x\n",cmi->Data[513]);
+
     EXPECT_TRUE(memcmp(buffer->Data, cmi->Data, BUFFER_SIZE) == 0);
 }
 
