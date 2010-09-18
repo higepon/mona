@@ -147,10 +147,7 @@ public:
             if (!findEmptyClusters(clusters, numClusters)) {
                 return MONA_FAILURE;
             }
-            uint32_t newCluster = findEmptyCluster();
-            if (newCluster == END_OF_CLUSTER) {
-                return MONA_FAILURE;
-            }
+            uint32_t newCluster = clusters[0];
             ASSERT(context->memory);
             uint32_t sizeToWritten = context->size;
            if (writeCluster(newCluster, context->memory->Data)) {
@@ -178,10 +175,7 @@ public:
                     return context->size;
                 } else {
                     sizeToWritten -= getClusterSizeByte();
-                    uint32_t newCluster2 = findEmptyCluster();
-                    if (newCluster2 == END_OF_CLUSTER) {
-                        return MONA_FAILURE;
-                    }
+                    uint32_t newCluster2 = clusters[1];
                     memcpy(buf, context->memory->Data + getClusterSizeByte(), sizeToWritten);
                     if (!writeCluster(newCluster2, buf)) {
                         return MONA_FAILURE;
