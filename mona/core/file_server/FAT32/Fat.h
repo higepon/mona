@@ -152,13 +152,14 @@ public:
             uint32_t newCluster = clusters[0];
             ASSERT(context->memory);
             uint32_t sizeToWritten = context->size;
-           if (writeCluster(newCluster, context->memory->Data)) {
                 entry->setStartCluster(newCluster);
                 entry->setSize(context->size);
 
                 if (updateParentCluster(entry) != M_OK) {
                     return MONA_FAILURE;
                 }
+
+           if (writeCluster(newCluster, context->memory->Data)) {
 
                 if (sizeToWritten < getClusterSizeByte()) {
                     updateFatNoFlush(newCluster, END_OF_CLUSTER);
