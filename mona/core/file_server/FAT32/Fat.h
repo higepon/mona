@@ -135,23 +135,25 @@ public:
         return MONA_SUCCESS;
     }
 
+    uint32_t sizeToNumClusters(uint32_t sizeByte) const
+    {
+        return (sizeByte + getClusterSizeByte() - 1) / getClusterSizeByte();
+    }
 
     virtual int write(Vnode* file, struct io::Context* context)
     {
         if (file->type != Vnode::REGULAR) {
             return MONA_FAILURE;
         }
+        ASSERT(context->memory);
         Entry* entry = (Entry*)file->fnode;
         if (entry->getSize() == 0) {
-
-            uint32_t numClusters = (context->size + getClusterSizeByte() - 1) / getClusterSizeByte();
             Clusters clusters;
-            if (!findEmptyClusters(clusters, numClusters)) {
+            if (!findEmptyClusters(clusters, sizeToNumClusters(context->size))) {
                 return -1;
             }
-            uint32_t newCluster = clusters[0];
-            ASSERT(context->memory);
-            entry->setStartCluster(newCluster);
+
+            entry->setStartCluster(clusters[0]);
             entry->setSize(context->size);
 
             if (updateParentCluster(entry) != M_OK) {
