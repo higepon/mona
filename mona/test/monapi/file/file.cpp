@@ -289,11 +289,6 @@ static void test_fatfs_write_file()
     ASSERT_TRUE(cmi != NULL);
     ASSERT_TRUE(cmi->Data != NULL);
     ASSERT_EQ(BUFFER_SIZE, cmi->Size);
-    logprintf("buffer->Data=%x buffer->Size %d\n", buffer->Data, buffer->Size);
-    logprintf("cim->Data=%x size=%d\n", cmi->Data, cmi->Size);
-    logprintf("buffer->Data[513]=%x\n",buffer->Data[513]);
-    logprintf("cmi->Data[513]=%x\n",cmi->Data[513]);
-
     EXPECT_TRUE(memcmp(buffer->Data, cmi->Data, BUFFER_SIZE) == 0);
 }
 

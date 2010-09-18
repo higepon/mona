@@ -141,6 +141,12 @@ public:
         }
         Entry* entry = (Entry*)file->fnode;
         if (entry->getSize() == 0) {
+
+            uint32_t numClusters = (context->size + getClusterSizeByte() - 1) / getClusterSizeByte();
+            std::vector<uint32_t> clusters;
+            if (!findEmptyClusters(clusters, numClusters)) {
+                return MONA_FAILURE;
+            }
             uint32_t newCluster = findEmptyCluster();
             if (newCluster == END_OF_CLUSTER) {
                 return MONA_FAILURE;
@@ -441,10 +447,30 @@ public:
 
 private:
 
+    bool findEmptyClusters(std::vector<uint32_t>& clusters, uint32_t numClusters)
+    {
+        for (uint32_t i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
+            if (numClusters == 0) {
+                return true;
+            }
+            if (fat_[i] == 0) {
+                fat_[i] = END_OF_CLUSTER;
+                clusters.push_back(i);
+                numClusters--;
+            }
+        }
+        for (std::vector<uint32_t>::iterator it = clusters.begin(); it != clusters.end(); ++it) {
+            fat_[*it] = 0;
+        }
+        clusters.clear();
+        return false;
+    }
+
+
     uint32_t findEmptyCluster()
     {
         // 0th, 1st fat entry is reserved.
-        for (int i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
+        for (uint32_t i = 2; i < getSectorsPerFat() * SECTOR_SIZE / sizeof(uint32_t); i++) {
             if (fat_[i] == 0) {
                 fat_[i] = END_OF_CLUSTER;
                 return i;
