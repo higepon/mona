@@ -220,6 +220,9 @@ public:
                 offsetInCluster = 0;
                 sizeWritten += copySize;
                 if (sizeWritten == sizeToWrite) {
+                    if (!isClusterAreadyExist) {
+                        updateFatNoFlush(cluster, END_OF_CLUSTER);
+                    }
                     break;
                 }
 
