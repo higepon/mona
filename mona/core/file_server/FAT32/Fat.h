@@ -47,6 +47,8 @@
 //   reserve all cluster
 //   isendofclsuter
 
+// fat class
+// share the buffer
 class FatFileSystem : public FileSystem
 {
 public:
@@ -719,14 +721,12 @@ private:
             if (!writeCluster(cluster, buf)) {
                 return -1;
             }
-            if (clusters.size() - 1 == i) {
-                updateFatNoFlush(cluster, END_OF_CLUSTER);
-            } else {
-                updateFatNoFlush(cluster, clusters[i + 1]);
-            }
             sizeToWritten -= getClusterSizeByte();
         }
 
+        for (uint32_t i = 0; i < clusters.size(); i++) {
+            updateFatNoFlush(clusters[i], (i == clusters.size() - 1) ? END_OF_CLUSTER : clusters[i + 1]);
+        }
         if (flushDirtyFat() != MONA_SUCCESS) {
             return -1;
         }
@@ -745,8 +745,8 @@ private:
             }
         }
         logprintf("clusters.size=%d\n", clusters.size());
-        uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
-        uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterNum);
+        uint32_t clusterOffset = sizeToNumClusters(context->offset) - 1;
+        uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
         ASSERT(startCluster != END_OF_CLUSTER);
         uint8_t buf[getClusterSizeByte()];
 
