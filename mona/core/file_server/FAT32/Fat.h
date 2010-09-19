@@ -48,7 +48,8 @@
 //   reserve all cluster
 //   direct read is dangerous when < SECTOR_SIZE
 //   overwrite with offset.
-
+//   isendofclsuter
+//   no need to read when no overwrite.
 
 class FatFileSystem : public FileSystem
 {
@@ -182,20 +183,54 @@ public:
             return context->size;
         } else {
             uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
-            uint32_t cluster = traceClusterChain(entry->getStartCluster(), clusterNum);
-            logprintf("clusterNum=%d cluster=%d\n", clusterNum, cluster);
+            uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterNum);
+            ASSERT(startCluster != END_OF_CLUSTER);
             uint8_t buf[getClusterSizeByte()];
 
-            if (!readCluster(cluster, buf)) {
-                return -1;
+            uint32_t offsetInCluster = context->offset % getClusterSizeByte();
+            uint32_t sizeToWrite = context->size;
+            uint32_t sizeWritten = 0;
+            logprintf("START\n");
+            for (uint32_t cluster = startCluster; ;) {
+                logprintf("writing\n");
+                uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
+                if (!readCluster(cluster, buf)) {
+                    return -1;
+                }
+
+                uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
+                memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+                restSizeToWrite -= copySize;
+
+                if (!writeCluster(cluster, buf)) {
+                    return -1;
+                }
+                offsetInCluster = 0;
+                sizeWritten += copySize;
+                if (sizeWritten == sizeToWrite) {
+                    break;
+                }
+
+                // ToDo:fat END_OF_CLUSTER when over.
+
+                if (fat_[cluster] == END_OF_CLUSTER) {
+                    uint32_t newCluster = findEmptyCluster();
+                    updateFatNoFlush(cluster, newCluster);
+                    cluster = newCluster;
+                } else {
+                    cluster = fat_[cluster];
+                }
             }
 
-            memcpy(buf + (context->offset % getClusterSizeByte()), context->memory->Data, getClusterSizeByte() - (context->offset % getClusterSizeByte()));
-
-            if (!writeCluster(cluster, buf)) {
-                return -1;
+            uint32_t newFileSize = (context->offset + context->size )  > entry->getSize() ? (context->offset + context->size ) : entry->getSize();
+            if (newFileSize > entry->getSize()) {
+                entry->setSize(newFileSize);
+                if (updateParentCluster(entry) != M_OK) {
+                    return -1;
+                }
             }
-            return context->memory->Size;
+            flushDirtyFat();
+            return context->size;
         }
     }
 
