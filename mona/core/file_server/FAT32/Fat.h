@@ -190,7 +190,7 @@ public:
                 return -1;
             }
 
-            memcpy(buf + (context->offset % getClusterSizeByte()), context->memory->Data, context->memory->Size);
+            memcpy(buf + (context->offset % getClusterSizeByte()), context->memory->Data, getClusterSizeByte() - (context->offset % getClusterSizeByte()));
 
             if (!writeCluster(cluster, buf)) {
                 return -1;
