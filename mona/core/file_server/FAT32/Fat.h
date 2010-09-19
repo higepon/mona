@@ -39,17 +39,13 @@
 //  long file name
 // get
 
-// create file when cluster is full.
 // host2 little
 // create date
 // create duplicate check
 
 // write
 //   reserve all cluster
-//   direct read is dangerous when < SECTOR_SIZE
-//   overwrite with offset.
 //   isendofclsuter
-//   no need to read when no overwrite.
 
 class FatFileSystem : public FileSystem
 {
@@ -182,6 +178,16 @@ public:
             }
             return context->size;
         } else {
+            uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
+            uint32_t newNumClusters = context->offset + context->size > entry->getSize() ? sizeToNumClusters(context->offset + context->size) : currentNumClusters;
+            logprintf("newNumClusters = %d currentNumClusters=%d\n", newNumClusters, currentNumClusters);
+            Clusters clusters;
+            if (newNumClusters > currentNumClusters) {
+                if (!findEmptyClusters(clusters, newNumClusters - currentNumClusters)) {
+                    return -1;
+                }
+            }
+            logprintf("clusters.size=%d\n", clusters.size());
             uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
             uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterNum);
             ASSERT(startCluster != END_OF_CLUSTER);
@@ -192,21 +198,23 @@ public:
             uint32_t sizeWritten = 0;
             logprintf("START\n");
             bool isClusterAreadyExist = true;
+            int newClusterIndex = 0;
             for (uint32_t cluster = startCluster; ;) {
                 logprintf("writing\n");
                 uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
 
                 if (isClusterAreadyExist) {
                     if (!readCluster(cluster, buf)) {
+                        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                         return -1;
                     }
                 }
 
                 uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
                 memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
-                restSizeToWrite -= copySize;
 
                 if (!writeCluster(cluster, buf)) {
+                    monapi_warn("write cluster failed cluster=%x\n", cluster);
                     return -1;
                 }
                 offsetInCluster = 0;
@@ -219,7 +227,9 @@ public:
 
                 if (fat_[cluster] == END_OF_CLUSTER) {
                     isClusterAreadyExist = false;
-                    uint32_t newCluster = findEmptyCluster();
+                    logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
+                    ASSERT(newClusterIndex < clusters.size());
+                    uint32_t newCluster = clusters[newClusterIndex++];
                     updateFatNoFlush(cluster, newCluster);
                     cluster = newCluster;
                 } else {
