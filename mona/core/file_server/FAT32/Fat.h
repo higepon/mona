@@ -191,11 +191,15 @@ public:
             uint32_t sizeToWrite = context->size;
             uint32_t sizeWritten = 0;
             logprintf("START\n");
+            bool isClusterAreadyExist = true;
             for (uint32_t cluster = startCluster; ;) {
                 logprintf("writing\n");
                 uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
-                if (!readCluster(cluster, buf)) {
-                    return -1;
+
+                if (isClusterAreadyExist) {
+                    if (!readCluster(cluster, buf)) {
+                        return -1;
+                    }
                 }
 
                 uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
@@ -214,6 +218,7 @@ public:
                 // ToDo:fat END_OF_CLUSTER when over.
 
                 if (fat_[cluster] == END_OF_CLUSTER) {
+                    isClusterAreadyExist = false;
                     uint32_t newCluster = findEmptyCluster();
                     updateFatNoFlush(cluster, newCluster);
                     cluster = newCluster;
