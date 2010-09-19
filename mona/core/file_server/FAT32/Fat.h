@@ -146,109 +146,9 @@ public:
         ASSERT(context->memory);
         Entry* entry = (Entry*)file->fnode;
         if (entry->getSize() == 0) {
-            Clusters clusters;
-            if (!findEmptyClusters(clusters, sizeToNumClusters(context->size))) {
-                return -1;
-            }
-
-            entry->setStartCluster(clusters[0]);
-            entry->setSize(context->size);
-            if (updateParentCluster(entry) != M_OK) {
-                return -1;
-            }
-
-            uint8_t buf[getClusterSizeByte()];
-            uint32_t sizeToWritten = context->size;
-            for (uint32_t i = 0; i < clusters.size(); i++) {
-                uint32_t cluster = clusters[i];
-                memcpy(buf, context->memory->Data + getClusterSizeByte() * i, sizeToWritten > getClusterSizeByte() ? getClusterSizeByte() : sizeToWritten);
-                if (!writeCluster(cluster, buf)) {
-                    return -1;
-                }
-                if (clusters.size() - 1 == i) {
-                    updateFatNoFlush(cluster, END_OF_CLUSTER);
-                } else {
-                    updateFatNoFlush(cluster, clusters[i + 1]);
-                }
-                sizeToWritten -= getClusterSizeByte();
-            }
-
-            if (flushDirtyFat() != MONA_SUCCESS) {
-                return -1;
-            }
-            return context->size;
+            return writeToEmptyFile(entry, context);
         } else {
-            uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
-            uint32_t newNumClusters = context->offset + context->size > entry->getSize() ? sizeToNumClusters(context->offset + context->size) : currentNumClusters;
-            logprintf("newNumClusters = %d currentNumClusters=%d\n", newNumClusters, currentNumClusters);
-            Clusters clusters;
-            if (newNumClusters > currentNumClusters) {
-                if (!findEmptyClusters(clusters, newNumClusters - currentNumClusters)) {
-                    return -1;
-                }
-            }
-            logprintf("clusters.size=%d\n", clusters.size());
-            uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
-            uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterNum);
-            ASSERT(startCluster != END_OF_CLUSTER);
-            uint8_t buf[getClusterSizeByte()];
-
-            uint32_t offsetInCluster = context->offset % getClusterSizeByte();
-            uint32_t sizeToWrite = context->size;
-            uint32_t sizeWritten = 0;
-            logprintf("START\n");
-            bool isClusterAreadyExist = true;
-            int newClusterIndex = 0;
-            for (uint32_t cluster = startCluster; ;) {
-                logprintf("writing\n");
-                uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
-
-                if (isClusterAreadyExist) {
-                    if (!readCluster(cluster, buf)) {
-                        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                        return -1;
-                    }
-                }
-
-                uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
-                memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
-
-                if (!writeCluster(cluster, buf)) {
-                    monapi_warn("write cluster failed cluster=%x\n", cluster);
-                    return -1;
-                }
-                offsetInCluster = 0;
-                sizeWritten += copySize;
-                if (sizeWritten == sizeToWrite) {
-                    if (!isClusterAreadyExist) {
-                        updateFatNoFlush(cluster, END_OF_CLUSTER);
-                    }
-                    break;
-                }
-
-                // ToDo:fat END_OF_CLUSTER when over.
-
-                if (fat_[cluster] == END_OF_CLUSTER) {
-                    isClusterAreadyExist = false;
-                    logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
-                    ASSERT(newClusterIndex < clusters.size());
-                    uint32_t newCluster = clusters[newClusterIndex++];
-                    updateFatNoFlush(cluster, newCluster);
-                    cluster = newCluster;
-                } else {
-                    cluster = fat_[cluster];
-                }
-            }
-
-            uint32_t newFileSize = (context->offset + context->size )  > entry->getSize() ? (context->offset + context->size ) : entry->getSize();
-            if (newFileSize > entry->getSize()) {
-                entry->setSize(newFileSize);
-                if (updateParentCluster(entry) != M_OK) {
-                    return -1;
-                }
-            }
-            flushDirtyFat();
-            return context->size;
+            return writeToNonEmptyFile(entry, context);
         }
     }
 
@@ -797,6 +697,116 @@ private:
         return M_OK;
     }
 
+    int writeToEmptyFile(Entry* entry, struct io::Context* context)
+    {
+        ASSERT(entry->getSize() == 0);
+        Clusters clusters;
+        if (!findEmptyClusters(clusters, sizeToNumClusters(context->size))) {
+            return -1;
+        }
+
+        entry->setStartCluster(clusters[0]);
+        entry->setSize(context->size);
+        if (updateParentCluster(entry) != M_OK) {
+            return -1;
+        }
+
+        uint8_t buf[getClusterSizeByte()];
+        uint32_t sizeToWritten = context->size;
+        for (uint32_t i = 0; i < clusters.size(); i++) {
+            uint32_t cluster = clusters[i];
+            memcpy(buf, context->memory->Data + getClusterSizeByte() * i, sizeToWritten > getClusterSizeByte() ? getClusterSizeByte() : sizeToWritten);
+            if (!writeCluster(cluster, buf)) {
+                return -1;
+            }
+            if (clusters.size() - 1 == i) {
+                updateFatNoFlush(cluster, END_OF_CLUSTER);
+            } else {
+                updateFatNoFlush(cluster, clusters[i + 1]);
+            }
+            sizeToWritten -= getClusterSizeByte();
+        }
+
+        if (flushDirtyFat() != MONA_SUCCESS) {
+            return -1;
+        }
+        return context->size;
+    }
+
+    int writeToNonEmptyFile(Entry* entry, struct io::Context* context)
+    {
+        uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
+        uint32_t newNumClusters = context->offset + context->size > entry->getSize() ? sizeToNumClusters(context->offset + context->size) : currentNumClusters;
+        logprintf("newNumClusters = %d currentNumClusters=%d\n", newNumClusters, currentNumClusters);
+        Clusters clusters;
+        if (newNumClusters > currentNumClusters) {
+            if (!findEmptyClusters(clusters, newNumClusters - currentNumClusters)) {
+                return -1;
+            }
+        }
+        logprintf("clusters.size=%d\n", clusters.size());
+        uint32_t clusterNum = sizeToNumClusters(context->offset) - 1;
+        uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterNum);
+        ASSERT(startCluster != END_OF_CLUSTER);
+        uint8_t buf[getClusterSizeByte()];
+
+        uint32_t offsetInCluster = context->offset % getClusterSizeByte();
+        uint32_t sizeToWrite = context->size;
+        uint32_t sizeWritten = 0;
+        logprintf("START\n");
+        bool isClusterAreadyExist = true;
+        int newClusterIndex = 0;
+        for (uint32_t cluster = startCluster; ;) {
+            logprintf("writing\n");
+            uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
+
+            if (isClusterAreadyExist) {
+                if (!readCluster(cluster, buf)) {
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                    return -1;
+                }
+            }
+
+            uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
+            memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+
+            if (!writeCluster(cluster, buf)) {
+                monapi_warn("write cluster failed cluster=%x\n", cluster);
+                return -1;
+            }
+            offsetInCluster = 0;
+            sizeWritten += copySize;
+            if (sizeWritten == sizeToWrite) {
+                if (!isClusterAreadyExist) {
+                    updateFatNoFlush(cluster, END_OF_CLUSTER);
+                }
+                break;
+            }
+
+            // ToDo:fat END_OF_CLUSTER when over.
+
+            if (fat_[cluster] == END_OF_CLUSTER) {
+                isClusterAreadyExist = false;
+                logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
+                ASSERT(newClusterIndex < clusters.size());
+                uint32_t newCluster = clusters[newClusterIndex++];
+                updateFatNoFlush(cluster, newCluster);
+                cluster = newCluster;
+            } else {
+                cluster = fat_[cluster];
+            }
+        }
+
+        uint32_t newFileSize = (context->offset + context->size )  > entry->getSize() ? (context->offset + context->size ) : entry->getSize();
+        if (newFileSize > entry->getSize()) {
+            entry->setSize(newFileSize);
+            if (updateParentCluster(entry) != M_OK) {
+                return -1;
+            }
+        }
+        flushDirtyFat();
+        return context->size;
+    }
 
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
