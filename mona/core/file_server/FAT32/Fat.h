@@ -714,9 +714,9 @@ private:
 
         uint8_t buf[getClusterSizeByte()];
         uint32_t sizeToWrite = context->size;
-        for (uint32_t cluster = entry->getStartCluster(), i = 0; cluster != END_OF_CLUSTER; cluster = fat_[cluster], i++) {
+        for (uint32_t cluster = entry->getStartCluster(), clusterIndex = 0; cluster != END_OF_CLUSTER; cluster = fat_[cluster], clusterIndex++) {
             uint32_t copySize = sizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : sizeToWrite;
-            memcpy(buf, context->memory->Data + getClusterSizeByte() * i, copySize);
+            memcpy(buf, context->memory->Data + getClusterSizeByte() * clusterIndex, copySize);
             if (!writeCluster(cluster, buf)) {
                 return -1;
             }
