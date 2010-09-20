@@ -503,14 +503,13 @@ private:
 
     bool readDirectory(uint32_t startCluster, Entries& childlen)
     {
-        uint8_t buf[getClusterSizeByte()];
         for (uint32_t cluster = startCluster; cluster < END_OF_CLUSTER; cluster = fat_[cluster]) {
-            if (!readCluster(cluster, buf) != M_OK) {
+            if (!readCluster(cluster, buf_) != M_OK) {
                 return false;
             }
 
             uint32_t index = 0;
-            for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
+            for (struct de* entry = (struct de*)buf_; (uint8_t*)entry < (uint8_t*)(&buf_[getClusterSizeByte()]); entry++, index++) {
                 if (entry->name[0] == 0x00) {
                     return true;
                 }
@@ -692,15 +691,14 @@ private:
 
     intptr_t updateParentCluster(Entry* entry)
     {
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(entry->getClusterInParent(), buf)) {
+        if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
 
-        struct de* theEntry = ((struct de*)buf) + entry->getIndexInParentCluster();
+        struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         *((uint32_t*)theEntry->size) = entry->getSize();
         *((uint16_t*)theEntry->clus) = entry->getStartCluster();
-        if (!writeCluster(entry->getClusterInParent(), buf)) {
+        if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
         return M_OK;
@@ -719,12 +717,11 @@ private:
             return -1;
         }
 
-        uint8_t buf[getClusterSizeByte()];
         uint32_t sizeToWrite = context->size;
         for (uint32_t cluster = entry->getStartCluster(), clusterIndex = 0; cluster != END_OF_CLUSTER; cluster = fat_[cluster], clusterIndex++) {
             uint32_t copySize = sizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : sizeToWrite;
-            memcpy(buf, context->memory->Data + getClusterSizeByte() * clusterIndex, copySize);
-            if (!writeCluster(cluster, buf)) {
+            memcpy(buf_, context->memory->Data + getClusterSizeByte() * clusterIndex, copySize);
+            if (!writeCluster(cluster, buf_)) {
                 return -1;
             }
             sizeToWrite -= copySize;
@@ -771,8 +768,6 @@ private:
             }
         }
         ASSERT(startCluster != END_OF_CLUSTER);
-        uint8_t buf[getClusterSizeByte()];
-
         uint32_t sizeToWrite = context->size;
         uint32_t sizeWritten = 0;
         for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; cluster != END_OF_CLUSTER; clusterIndex++, cluster = fat_[cluster]) {
@@ -780,7 +775,7 @@ private:
 
             bool inNewCluster = clusterIndex >= currentNumClusters;
             if (!inNewCluster) {
-                if (!readCluster(cluster, buf)) {
+                if (!readCluster(cluster, buf_)) {
                     return -1;
                 }
             }
@@ -788,15 +783,15 @@ private:
             if (cluster == startCluster && context->offset != 0) {
                 uint32_t offsetInCluster = context->offset % getClusterSizeByte();
                 uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
-                memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+                memcpy(buf_ + offsetInCluster, context->memory->Data + sizeWritten, copySize);
                 sizeWritten += copySize;
             } else {
                 uint32_t copySize = restSizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : restSizeToWrite;
-                memcpy(buf, context->memory->Data + sizeWritten, copySize);
+                memcpy(buf_, context->memory->Data + sizeWritten, copySize);
                 sizeWritten += copySize;
             }
 
-            if (!writeCluster(cluster, buf)) {
+            if (!writeCluster(cluster, buf_)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return -1;
             }
