@@ -757,13 +757,13 @@ private:
         uint32_t sizeToWrite = context->size;
         uint32_t sizeWritten = 0;
         logprintf("START\n");
-        bool isClusterAreadyExist = true;
         int newClusterIndex = 0;
-        for (uint32_t cluster = startCluster; ;) {
+        for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; ; clusterIndex++) {
             logprintf("writing\n");
             uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
 
-            if (isClusterAreadyExist) {
+            bool inNewCluster = clusterIndex >= currentNumClusters;
+            if (!inNewCluster) {
                 if (!readCluster(cluster, buf)) {
                     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     return -1;
@@ -780,7 +780,7 @@ private:
             offsetInCluster = 0;
             sizeWritten += copySize;
             if (sizeWritten == sizeToWrite) {
-                if (!isClusterAreadyExist) {
+                if (inNewCluster) {
                     updateFatNoFlush(cluster, END_OF_CLUSTER);
                 }
                 break;
@@ -789,7 +789,6 @@ private:
             // ToDo:fat END_OF_CLUSTER when over.
 
             if (fat_[cluster] == END_OF_CLUSTER) {
-                isClusterAreadyExist = false;
                 logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
                 ASSERT(newClusterIndex < clusters.size());
                 uint32_t newCluster = clusters[newClusterIndex++];
