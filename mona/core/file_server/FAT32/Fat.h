@@ -735,7 +735,7 @@ private:
         return context->size;
     }
 
-    int expandClusters(uint32_t startCluster, uint32_t numClustersToAdd)
+    int expandClusters(uint32_t lastCluster, uint32_t numClustersToAdd)
     {
         Clusters clusters;
         if (!findEmptyClusters(clusters, numClustersToAdd)) {
@@ -743,13 +743,6 @@ private:
         }
         ASSERT(clusters.size() > 0);
 
-        // todo entry->getLastCluster
-        uint32_t lastCluster = startCluster;
-        for (;; lastCluster = fat_[lastCluster]) {
-            if (fat_[lastCluster] == END_OF_CLUSTER) {
-                break;
-            }
-        }
         updateFatNoFlush(lastCluster, clusters[0]);
         for (uint32_t i = 0; i < clusters.size() - 1; i++) {
             updateFatNoFlush(clusters[i], clusters[i + 1]);
@@ -768,7 +761,7 @@ private:
         uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
 
         if (newNumClusters > currentNumClusters) {
-            if (expandClusters(startCluster, newNumClusters - currentNumClusters) != M_OK) {
+            if (expandClusters(getLastCluster(entry), newNumClusters - currentNumClusters) != M_OK) {
                 return -1;
             }
         }
