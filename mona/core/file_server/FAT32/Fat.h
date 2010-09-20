@@ -703,12 +703,10 @@ private:
     {
         ASSERT(entry->getSize() == 0);
         ASSERT(context->offset == 0);
-        Clusters clusters;
-        if (!findEmptyClusters(clusters, sizeToNumClusters(context->size))) {
+
+        if (expandClusters(entry, sizeToNumClusters(context->size)) != M_OK) {
             return -1;
         }
-
-        entry->setStartCluster(clusters[0]);
         entry->setSize(context->size);
         if (updateParentCluster(entry) != M_OK) {
             return -1;
@@ -716,8 +714,7 @@ private:
 
         uint8_t buf[getClusterSizeByte()];
         uint32_t sizeToWrite = context->size;
-        for (uint32_t i = 0; i < clusters.size(); i++) {
-            uint32_t cluster = clusters[i];
+        for (uint32_t cluster = entry->getStartCluster(), i = 0; cluster != END_OF_CLUSTER; cluster = fat_[cluster], i++) {
             uint32_t copySize = sizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : sizeToWrite;
             memcpy(buf, context->memory->Data + getClusterSizeByte() * i, copySize);
             if (!writeCluster(cluster, buf)) {
@@ -726,16 +723,13 @@ private:
             sizeToWrite -= copySize;
         }
 
-        for (uint32_t i = 0; i < clusters.size(); i++) {
-            updateFatNoFlush(clusters[i], (i == clusters.size() - 1) ? END_OF_CLUSTER : clusters[i + 1]);
-        }
         if (flushDirtyFat() != MONA_SUCCESS) {
             return -1;
         }
         return context->size;
     }
 
-    int expandClusters(uint32_t lastCluster, uint32_t numClustersToAdd)
+    int expandClusters(Entry* entry, uint32_t numClustersToAdd)
     {
         Clusters clusters;
         if (!findEmptyClusters(clusters, numClustersToAdd)) {
@@ -743,7 +737,12 @@ private:
         }
         ASSERT(clusters.size() > 0);
 
-        updateFatNoFlush(lastCluster, clusters[0]);
+        if (entry->getSize() == 0) {
+            entry->setStartCluster(clusters[0]);
+        } else {
+            uint32_t lastCluster = getLastCluster(entry);
+            updateFatNoFlush(lastCluster, clusters[0]);
+        }
         for (uint32_t i = 0; i < clusters.size() - 1; i++) {
             updateFatNoFlush(clusters[i], clusters[i + 1]);
         }
@@ -761,7 +760,7 @@ private:
         uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
 
         if (newNumClusters > currentNumClusters) {
-            if (expandClusters(getLastCluster(entry), newNumClusters - currentNumClusters) != M_OK) {
+            if (expandClusters(entry, newNumClusters - currentNumClusters) != M_OK) {
                 return -1;
             }
         }
@@ -808,15 +807,7 @@ private:
                 break;
             }
 
-//             if (fat_[cluster] == END_OF_CLUSTER) {
-//                 logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
-//                 ASSERT(newClusterIndex < clusters.size());
-//                 uint32_t newCluster = clusters[newClusterIndex++];
-// //                updateFatNoFlush(cluster, newCluster);
-//                 cluster = newCluster;
-//             } else {
-                cluster = fat_[cluster];
-//            }
+            cluster = fat_[cluster];
         }
 
         if (endOfWrite > entry->getSize()) {
