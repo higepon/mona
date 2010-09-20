@@ -741,24 +741,39 @@ private:
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         uint32_t newNumClusters = endOfWrite > entry->getSize() ? sizeToNumClusters(endOfWrite) : currentNumClusters;
         logprintf("newNumClusters = %d currentNumClusters=%d\n", newNumClusters, currentNumClusters);
+        uint32_t clusterOffset = sizeToNumClusters(context->offset) - 1;
+        uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
+
         Clusters clusters;
         if (newNumClusters > currentNumClusters) {
             if (!findEmptyClusters(clusters, newNumClusters - currentNumClusters)) {
                 return -1;
             }
+            ASSERT(clusters.size() > 0);
+            uint32_t lastCluster = startCluster;
+            for (;; lastCluster = fat_[lastCluster]) {
+                if (fat_[lastCluster] == END_OF_CLUSTER) {
+                    break;
+                }
+            }
+            updateFatNoFlush(lastCluster, clusters[0]);
+            logprintf("write %d =>%d\n", startCluster, clusters[0]);
+            for (uint32_t i = 0; i < clusters.size() - 1; i++) {
+                logprintf("write %d =>%d\n", clusters[i], clusters[i + 1]);
+                updateFatNoFlush(clusters[i], clusters[i + 1]);
+            }
+                logprintf("write %d =>%d\n", clusters[clusters.size() - 1], END_OF_CLUSTER);
+            updateFatNoFlush(clusters[clusters.size() - 1], END_OF_CLUSTER);
         }
-        logprintf("clusters.size=%d\n", clusters.size());
-        uint32_t clusterOffset = sizeToNumClusters(context->offset) - 1;
-        uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
         ASSERT(startCluster != END_OF_CLUSTER);
         uint8_t buf[getClusterSizeByte()];
 
-        uint32_t offsetInCluster = context->offset % getClusterSizeByte();
         uint32_t sizeToWrite = context->size;
         uint32_t sizeWritten = 0;
         logprintf("START\n");
-        int newClusterIndex = 0;
+//        int newClusterIndex = 0;
         for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; ; clusterIndex++) {
+            logprintf("cluster = [%d]\n", cluster);
             logprintf("writing\n");
             uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
 
@@ -770,15 +785,22 @@ private:
                 }
             }
 
-            uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
-            memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+            if (cluster == startCluster && context->offset != 0) {
+                uint32_t offsetInCluster = context->offset % getClusterSizeByte();
+                uint32_t copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
+                memcpy(buf + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+                sizeWritten += copySize;
+            } else {
+                uint32_t copySize = restSizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : restSizeToWrite;
+                memcpy(buf, context->memory->Data + sizeWritten, copySize);
+                sizeWritten += copySize;
+            }
 
             if (!writeCluster(cluster, buf)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return -1;
             }
-            offsetInCluster = 0;
-            sizeWritten += copySize;
+
             if (sizeWritten == sizeToWrite) {
                 if (inNewCluster) {
                     updateFatNoFlush(cluster, END_OF_CLUSTER);
@@ -786,17 +808,15 @@ private:
                 break;
             }
 
-            // ToDo:fat END_OF_CLUSTER when over.
-
-            if (fat_[cluster] == END_OF_CLUSTER) {
-                logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
-                ASSERT(newClusterIndex < clusters.size());
-                uint32_t newCluster = clusters[newClusterIndex++];
-                updateFatNoFlush(cluster, newCluster);
-                cluster = newCluster;
-            } else {
+//             if (fat_[cluster] == END_OF_CLUSTER) {
+//                 logprintf("newClusterIndex=%d cluster.size=%d\n", newClusterIndex, clusters.size());
+//                 ASSERT(newClusterIndex < clusters.size());
+//                 uint32_t newCluster = clusters[newClusterIndex++];
+// //                updateFatNoFlush(cluster, newCluster);
+//                 cluster = newCluster;
+//             } else {
                 cluster = fat_[cluster];
-            }
+//            }
         }
 
         if (endOfWrite > entry->getSize()) {
