@@ -702,6 +702,7 @@ private:
     int writeToEmptyFile(Entry* entry, struct io::Context* context)
     {
         ASSERT(entry->getSize() == 0);
+        ASSERT(context->offset == 0);
         Clusters clusters;
         if (!findEmptyClusters(clusters, sizeToNumClusters(context->size))) {
             return -1;
@@ -714,14 +715,15 @@ private:
         }
 
         uint8_t buf[getClusterSizeByte()];
-        uint32_t sizeToWritten = context->size;
+        uint32_t sizeToWrite = context->size;
         for (uint32_t i = 0; i < clusters.size(); i++) {
             uint32_t cluster = clusters[i];
-            memcpy(buf, context->memory->Data + getClusterSizeByte() * i, sizeToWritten > getClusterSizeByte() ? getClusterSizeByte() : sizeToWritten);
+            uint32_t copySize = sizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : sizeToWrite;
+            memcpy(buf, context->memory->Data + getClusterSizeByte() * i, copySize);
             if (!writeCluster(cluster, buf)) {
                 return -1;
             }
-            sizeToWritten -= getClusterSizeByte();
+            sizeToWrite -= copySize;
         }
 
         for (uint32_t i = 0; i < clusters.size(); i++) {
