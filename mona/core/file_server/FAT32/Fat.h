@@ -770,7 +770,7 @@ private:
         uint32_t sizeWritten = 0;
         logprintf("START\n");
 //        int newClusterIndex = 0;
-        for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; ; clusterIndex++) {
+        for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; cluster != END_OF_CLUSTER; clusterIndex++) {
             logprintf("cluster = [%d]\n", cluster);
             logprintf("writing\n");
             uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
@@ -799,9 +799,9 @@ private:
                 return -1;
             }
 
-            if (sizeWritten == sizeToWrite) {
-                break;
-            }
+            // if (sizeWritten == sizeToWrite) {
+            //     break;
+            // }
 
             cluster = fat_[cluster];
         }
