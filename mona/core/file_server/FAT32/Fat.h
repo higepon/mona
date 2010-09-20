@@ -704,7 +704,7 @@ private:
         ASSERT(entry->getSize() == 0);
         ASSERT(context->offset == 0);
 
-        if (expandClusters(entry, sizeToNumClusters(context->size)) != M_OK) {
+        if (allocateAndChain(entry, sizeToNumClusters(context->size)) != M_OK) {
             return -1;
         }
         entry->setSize(context->size);
@@ -729,7 +729,7 @@ private:
         return context->size;
     }
 
-    int expandClusters(Entry* entry, uint32_t numClustersToAdd)
+    int allocateAndChain(Entry* entry, uint32_t numClustersToAdd)
     {
         Clusters clusters;
         if (!findEmptyClusters(clusters, numClustersToAdd)) {
@@ -759,7 +759,7 @@ private:
         uint32_t startCluster = traceClusterChain(entry->getStartCluster(), clusterOffset);
 
         if (newNumClusters > currentNumClusters) {
-            if (expandClusters(entry, newNumClusters - currentNumClusters) != M_OK) {
+            if (allocateAndChain(entry, newNumClusters - currentNumClusters) != M_OK) {
                 return -1;
             }
         }
