@@ -740,8 +740,7 @@ private:
         if (entry->getSize() == 0) {
             entry->setStartCluster(clusters[0]);
         } else {
-            uint32_t lastCluster = getLastCluster(entry);
-            updateFatNoFlush(lastCluster, clusters[0]);
+            updateFatNoFlush(getLastCluster(entry), clusters[0]);
         }
         for (uint32_t i = 0; i < clusters.size() - 1; i++) {
             updateFatNoFlush(clusters[i], clusters[i + 1]);
