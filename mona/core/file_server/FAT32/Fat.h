@@ -768,17 +768,12 @@ private:
 
         uint32_t sizeToWrite = context->size;
         uint32_t sizeWritten = 0;
-        logprintf("START\n");
-//        int newClusterIndex = 0;
-        for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; cluster != END_OF_CLUSTER; clusterIndex++) {
-            logprintf("cluster = [%d]\n", cluster);
-            logprintf("writing\n");
+        for (uint32_t cluster = startCluster, clusterIndex = clusterOffset; cluster != END_OF_CLUSTER; clusterIndex++, cluster = fat_[cluster]) {
             uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
 
             bool inNewCluster = clusterIndex >= currentNumClusters;
             if (!inNewCluster) {
                 if (!readCluster(cluster, buf)) {
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     return -1;
                 }
             }
@@ -798,12 +793,6 @@ private:
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return -1;
             }
-
-            // if (sizeWritten == sizeToWrite) {
-            //     break;
-            // }
-
-            cluster = fat_[cluster];
         }
 
         if (endOfWrite > entry->getSize()) {
