@@ -735,8 +735,9 @@ private:
 
     int writeToNonEmptyFile(Entry* entry, struct io::Context* context)
     {
+        uint32_t endOfWrite = context->offset + context->size;
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
-        uint32_t newNumClusters = context->offset + context->size > entry->getSize() ? sizeToNumClusters(context->offset + context->size) : currentNumClusters;
+        uint32_t newNumClusters = endOfWrite > entry->getSize() ? sizeToNumClusters(endOfWrite) : currentNumClusters;
         logprintf("newNumClusters = %d currentNumClusters=%d\n", newNumClusters, currentNumClusters);
         Clusters clusters;
         if (newNumClusters > currentNumClusters) {
@@ -797,9 +798,8 @@ private:
             }
         }
 
-        uint32_t newFileSize = (context->offset + context->size )  > entry->getSize() ? (context->offset + context->size ) : entry->getSize();
-        if (newFileSize > entry->getSize()) {
-            entry->setSize(newFileSize);
+        if (endOfWrite > entry->getSize()) {
+            entry->setSize(endOfWrite);
             if (updateParentCluster(entry) != M_OK) {
                 return -1;
             }
