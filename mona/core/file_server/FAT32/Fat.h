@@ -800,9 +800,6 @@ private:
             }
 
             if (sizeWritten == sizeToWrite) {
-                if (inNewCluster) {
-                    updateFatNoFlush(cluster, END_OF_CLUSTER);
-                }
                 break;
             }
 
