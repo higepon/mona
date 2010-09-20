@@ -256,13 +256,17 @@ public:
         vnodeManager_(vnodeManager),
         dev_(dev),
         root_(vnodeManager.alloc()),
-        fat_(NULL)
+        fat_(NULL),
+        buf_(NULL)
     {
         ASSERT(root_.get());
 
         if (!readBootParameters()) {
             monapi_fatal("can't read boot parameter block");
         }
+
+        buf_ = new uint8_t[getClusterSizeByte()];
+        ASSERT(buf_);
 
         if (!readFat()) {
             monapi_fatal("can't read file allocation table");
@@ -276,6 +280,9 @@ public:
 
     ~FatFileSystem()
     {
+        if (buf_ != NULL) {
+            delete[] buf_;
+        }
         if (fat_ != NULL) {
             delete[] fat_;
         }
@@ -813,6 +820,7 @@ private:
     MonAPI::scoped_ptr<Vnode> root_;
     uint32_t* fat_;
     std::map<uint32_t, uint32_t> dirtyFat_;
+    uint8_t* buf_;
 };
 
 #endif // __FAT_H__
