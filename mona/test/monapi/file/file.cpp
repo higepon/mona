@@ -437,6 +437,30 @@ static void test_fatfs_lookup_subdir()
     EXPECT_EQ(1, dir->getChildlen().size());
 }
 
+static void test_fatfs_read_file_subdir()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    Vnode* subdir;
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, "SUBDIR.TXT", &found, Vnode::REGULAR));
+    io::Context c;
+    c.offset = 0;
+    c.size   = 256;
+    const char* expected = "Hello\n";
+    const int len = strlen(expected);
+    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    ASSERT_EQ(len, c.offset);
+    ASSERT_EQ(len, c.resultSize);
+    ASSERT_TRUE(c.memory != NULL);
+    ASSERT_EQ(len, c.memory->Size);
+    EXPECT_TRUE(memcmp(expected, c.memory->Data, len) == 0);
+}
+
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
 int main(int argc, char *argv[])
@@ -473,6 +497,7 @@ int main(int argc, char *argv[])
     test_fatfs_truncate();
     test_fatfs_readdir();
     test_fatfs_lookup_subdir();
+    test_fatfs_read_file_subdir();
     TEST_RESULTS(file);
     return 0;
 }
