@@ -134,7 +134,7 @@ static void test_fatfs_readdir_root()
 
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
     FatFileSystem::Entries& entries = rootDir->getChildlen();
-    EXPECT_EQ(20, entries.size());
+    EXPECT_EQ(21, entries.size());
 }
 
 static void test_fatfs_lookup()
@@ -246,7 +246,7 @@ static void test_fatfs_create_empty_file_need_new_cluster()
     }
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
     FatFileSystem::Entries& entries = rootDir->getChildlen();
-    EXPECT_EQ(37, entries.size());
+    EXPECT_EQ(38, entries.size());
 }
 
 static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* dir, const std::string& filename)
@@ -364,6 +364,78 @@ static void test_fatfs_write_file_overwrite_expand()
     EXPECT_EQ(0xfe, cmi->Data[513 + BUFFER_SIZE - 1]);
 }
 
+static void test_fatfs_delete_file()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
+    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    const char* FILENAME = "HIGE.TXT";
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    EXPECT_EQ(3893, file->getSize());
+
+    uint32_t prevFreeSize = fat->getFreeSize();
+    uint32_t prevNumEntries = entries.size();
+    ASSERT_EQ(MONA_SUCCESS, fat->delete_file(found));
+    EXPECT_EQ(512 * 8, fat->getFreeSize() - prevFreeSize);
+    EXPECT_EQ(1, prevNumEntries - entries.size());
+}
+
+static void test_fatfs_truncate()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    const char* FILENAME = "TEST1.TXT";
+
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    EXPECT_EQ(6, file->getSize());
+
+    uint32_t prevFreeSize = fat->getFreeSize();
+    ASSERT_EQ(MONA_SUCCESS, fat->truncate(found));
+    EXPECT_EQ(512, fat->getFreeSize() - prevFreeSize);
+    EXPECT_EQ(0, file->getSize());
+}
+
+static void test_fatfs_readdir()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+
+    monapi_cmemoryinfo* cmi;
+    ASSERT_EQ(MONA_SUCCESS, fat->readdir(root, &cmi));
+    ASSERT_TRUE(cmi != NULL);
+
+    int size = *(int*)cmi->Data;
+
+    EXPECT_EQ(38, size);
+
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->Data[sizeof(int)];
+
+    EXPECT_STR_EQ("TEST1.TXT", (const char*)CString(p[0].name));
+
+    monapi_cmemoryinfo_dispose(cmi);
+    monapi_cmemoryinfo_delete(cmi);
+}
+
+static void test_fatfs_lookup_subdir()
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    Vnode* found;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &found, Vnode::DIRECTORY));
+    FatFileSystem::Directory* dir = (FatFileSystem::Directory*)(found->fnode);
+    EXPECT_STR_EQ("SUBDIR", dir->getName().c_str());
+    EXPECT_EQ(1, dir->getChildlen().size());
+}
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -397,6 +469,10 @@ int main(int argc, char *argv[])
     test_fatfs_write_file();
     test_fatfs_write_file_overwrite();        // depends on test_fatfs_write_file()
     test_fatfs_write_file_overwrite_expand(); // depends on test_fatfs_write_file_overwrite()
+    test_fatfs_delete_file();
+    test_fatfs_truncate();
+    test_fatfs_readdir();
+    test_fatfs_lookup_subdir();
     TEST_RESULTS(file);
     return 0;
 }
