@@ -47,6 +47,7 @@
 // write
 // delete_file delete from cacher
 // hige.txt is seen on root?
+// check all warnings
 
 // fat class
 class FatFileSystem : public FileSystem
@@ -82,8 +83,8 @@ public:
         }
 
         Directory* dir = (Directory*)diretory->fnode;
-        Entries& childlen = dir->getChildlen();
-        for (Entries::const_iterator it = childlen.begin(); it != childlen.end(); ++it) {
+        Files& childlen = dir->getChildlen();
+        for (Files::const_iterator it = childlen.begin(); it != childlen.end(); ++it) {
             logprintf("getName=%s file = %s\n", (*it)->getName().c_str(), file.c_str());
             if ((*it)->getName() == file) {
                 Vnode* newVnode = vnodeManager_.alloc();
@@ -108,7 +109,7 @@ public:
         if (vnode->type != Vnode::REGULAR) {
             return MONA_FAILURE;
         }
-        Entry* e = (Entry*)vnode->fnode;
+        File* e = (File*)vnode->fnode;
         uint32_t offset = context->offset;
         uint32_t sizeToRead = context->size;
         uint32_t rest = e->getSize() - offset;
@@ -166,7 +167,7 @@ public:
     {
         ASSERT(vnode->type == Vnode::REGULAR);
         ASSERT(context->memory);
-        Entry* entry = (Entry*)vnode->fnode;
+        File* entry = (File*)vnode->fnode;
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         if (expandFileAsNecessary(entry, context) != M_OK) {
             return -1;
@@ -216,7 +217,7 @@ public:
         uint32_t index = 0;
         for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
             if (entry->name[0] == 0x00 || entry->name[0] == FREE_ENTRY) {
-                Entry* fileEntry = new Entry(file, 0, 0, cluster, index);
+                File* fileEntry = new File(file, 0, 0, cluster, index);
                 d->addChild(fileEntry);
                 fileEntry->setParent(d);
                 setupNewEntry(entry, file);
@@ -292,21 +293,21 @@ public:
     }
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)
     {
-        typedef std::vector<monapi_directoryinfo> Files;
-        Files files;
+        typedef std::vector<monapi_directoryinfo> DirInfos;
+        DirInfos dirInfos;
         ASSERT(directory->type == Vnode::DIRECTORY);
         Directory* dir = (Directory*)directory->fnode;
 
-        for (Entries::const_iterator it = dir->getChildlen().begin(); it != dir->getChildlen().end(); ++it) {
+        for (Files::const_iterator it = dir->getChildlen().begin(); it != dir->getChildlen().end(); ++it) {
             monapi_directoryinfo di;
             strcpy(di.name, (*it)->getName().c_str());
             di.size = (*it)->getSize();
-            files.push_back(di);
+            dirInfos.push_back(di);
         }
 
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
 
-        int size = files.size();
+        int size = dirInfos.size();
         if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(ret);
             return MONA_ERROR_MEMORY_NOT_ENOUGH;
@@ -315,7 +316,7 @@ public:
         memcpy(ret->Data, &size, sizeof(int));
         monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
         *entries = ret;
-        for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
+        for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it)
         {
             memcpy(p, &(*it), sizeof(monapi_directoryinfo));
             p++;
@@ -332,7 +333,7 @@ public:
     virtual int truncate(Vnode* vnode)
     {
         ASSERT(vnode->type == Vnode::REGULAR);
-        Entry* entry = (Entry*)vnode->fnode;
+        File* entry = (File*)vnode->fnode;
         if (entry->getSize() == 0) {
             return MONA_SUCCESS;
         }
@@ -358,7 +359,7 @@ public:
         if(vnode == root_) {
             return MONA_FAILURE; // root is undeletable
         }
-        Entry* entry = (Entry*)vnode->fnode;
+        File* entry = (File*)vnode->fnode;
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return MONA_FAILURE;
         }
@@ -376,14 +377,14 @@ public:
     }
     virtual int stat(Vnode* vnode, Stat* st)
     {
-        Entry* entry = (Entry*)vnode->fnode;
+        File* entry = (File*)vnode->fnode;
         st->size = entry->getSize();
         return MONA_SUCCESS;
     }
 
     virtual void destroyVnode(Vnode* vnode)
     {
-        Entry* entry = (Entry*)vnode->fnode;
+        File* entry = (File*)vnode->fnode;
         delete entry;
         delete vnode;
     }
@@ -437,10 +438,10 @@ public:
 
 
     // Public for testability
-    class Entry
+    class File
     {
     public:
-        Entry(const std::string& name, uintptr_t size, uint32_t startCluster, uint32_t clusterInParent, uint32_t indexInParentCluster) :
+        File(const std::string& name, uintptr_t size, uint32_t startCluster, uint32_t clusterInParent, uint32_t indexInParentCluster) :
             name_(name),
             size_(size),
             startCluster_(startCluster),
@@ -450,7 +451,7 @@ public:
         {
         }
 
-        virtual ~Entry() {}
+        virtual ~File() {}
 
         const std::string& getName() const
         {
@@ -477,12 +478,12 @@ public:
             return startCluster_;
         }
 
-        Entry* getParent() const
+        File* getParent() const
         {
             return parent_;
         }
 
-        void setParent(Entry* parent)
+        void setParent(File* parent)
         {
             parent_ = parent;
         }
@@ -501,17 +502,17 @@ public:
         const std::string name_;
         uintptr_t size_;
         uintptr_t startCluster_;
-        Entry* parent_;
+        File* parent_;
         uint32_t clusterInParent_;
         uint32_t indexInParentCluster_;
     };
 
-    typedef std::vector<Entry*> Entries;
+    typedef std::vector<File*> Files;
 
-    class Directory : public Entry
+    class Directory : public File
     {
     public:
-        Directory(const std::string& name, uintptr_t startCluster, const Entries& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) : Entry(name, 0, startCluster, clusterInParent, indexInParentCluster)
+        Directory(const std::string& name, uintptr_t startCluster, const Files& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) : File(name, 0, startCluster, clusterInParent, indexInParentCluster)
         {
             childlen_.resize(childlen.size());
             std::copy(childlen.begin(), childlen.end(), childlen_.begin());
@@ -519,27 +520,27 @@ public:
 
         virtual ~Directory()
         {
-            for (Entries::const_iterator it = childlen_.begin(); it != childlen_.end(); ++it) {
+            for (Files::const_iterator it = childlen_.begin(); it != childlen_.end(); ++it) {
                 delete *it;
             }
         }
 
-        void addChild(Entry* entry)
+        void addChild(File* entry)
         {
             childlen_.push_back(entry);
         }
 
-        Entries& getChildlen()
+        Files& getChildlen()
         {
             return childlen_;
         }
 
-        void removeChild(Entry* entry)
+        void removeChild(File* entry)
         {
             childlen_.erase(std::remove(childlen_.begin(), childlen_.end(), entry), childlen_.end());
         }
     private:
-        Entries childlen_;
+        Files childlen_;
     };
 
 private:
@@ -582,7 +583,7 @@ private:
         return END_OF_CLUSTER;
     }
 
-    uint32_t getClusterAt(Entry* entry, uint32_t index)
+    uint32_t getClusterAt(File* entry, uint32_t index)
     {
         uint32_t cluster = entry->getStartCluster();
         for (int i = 0; i < index; i++, cluster = fat_[cluster]) {
@@ -591,7 +592,7 @@ private:
         return cluster;
     }
 
-    uint32_t getLastCluster(Entry* entry)
+    uint32_t getLastCluster(File* entry)
     {
         for (uint32_t cluster = entry->getStartCluster(); ; cluster = fat_[cluster]) {
             if (isEndOfCluster(fat_[cluster])) {
@@ -646,7 +647,7 @@ private:
         return true;
     }
 
-    bool readDirectory(uint32_t startCluster, Entries& childlen)
+    bool readDirectory(uint32_t startCluster, Files& childlen)
     {
         uint8_t buf[getClusterSizeByte()];
         for (uint32_t cluster = startCluster; !isEndOfCluster(cluster); cluster = fat_[cluster]) {
@@ -682,9 +683,9 @@ private:
                 logprintf("%s:", filename.c_str());
                 logprintf("<%d>", little2host16(entry->clus));
                 logprintf("<%x>\n", fat_[little2host16(entry->clus)]);
-                Entry* target = NULL;
+                File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
-                    Entries childlen;
+                    Files childlen;
                     // For now, we read all directories recursively.
                     // This may cause slower initialization.
                     if (!readDirectory(little2host16(entry->clus), childlen)) {
@@ -692,7 +693,7 @@ private:
                     }
                     target = new Directory(filename, little2host16(entry->clus), childlen, cluster, index);
                 } else {
-                    target = new Entry(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
+                    target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
                 childlen.push_back(target);
             }
@@ -702,7 +703,7 @@ private:
 
     bool readAndSetupRootDirectory()
     {
-        Entries childlen;
+        Files childlen;
 
         if (!readDirectory(getRootDirectoryCluster(), childlen)) {
             return false;
@@ -712,7 +713,7 @@ private:
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
 
-        for (Entries::iterator it = childlen.begin(); it != childlen.end(); ++it) {
+        for (Files::iterator it = childlen.begin(); it != childlen.end(); ++it) {
             (*it)->setParent((Directory*)root_->fnode);
         }
 
@@ -875,7 +876,7 @@ private:
         setEntry(entry, 0, 0);
     }
 
-    intptr_t updateParentCluster(Entry* entry)
+    intptr_t updateParentCluster(File* entry)
     {
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
@@ -889,7 +890,7 @@ private:
         return M_OK;
     }
 
-    int expandFileAsNecessary(Entry* entry, io::Context* context)
+    int expandFileAsNecessary(File* entry, io::Context* context)
     {
         uint32_t tailOffset = context->offset + context->size;
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
@@ -929,7 +930,7 @@ private:
         return M_OK;
     }
 
-    int freeClusters(Entry* entry)
+    int freeClusters(File* entry)
     {
         for (uint32_t cluster = entry->getStartCluster(); !isEndOfCluster(cluster);) {
             uint32_t nextCluster = fat_[cluster];

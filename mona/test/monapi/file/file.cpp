@@ -133,7 +133,7 @@ static void test_fatfs_readdir_root()
 
 
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
-    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    FatFileSystem::Files& entries = rootDir->getChildlen();
     EXPECT_EQ(21, entries.size());
 }
 
@@ -144,7 +144,7 @@ static void test_fatfs_lookup()
     Vnode* root = fat->getRoot();
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
-    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ("TEST2.TXT", file->getName().c_str());
     EXPECT_EQ(6, file->getSize());
 }
@@ -218,7 +218,7 @@ static void createEmptyfile(FatFileSystem* fat, Vnode* dir, const std::string& f
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->create(dir, filename));
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
-    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ(filename, file->getName().c_str());
     EXPECT_EQ(0, file->getSize());
 }
@@ -245,7 +245,7 @@ static void test_fatfs_create_empty_file_need_new_cluster()
         createEmptyfile(fat, root, filename);
     }
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
-    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    FatFileSystem::Files& entries = rootDir->getChildlen();
     EXPECT_EQ(38, entries.size());
 }
 
@@ -254,7 +254,7 @@ static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* di
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
     c.offset = 0;
-    c.size   = ((FatFileSystem::Entry*)(found->fnode))->getSize();
+    c.size   = ((FatFileSystem::File*)(found->fnode))->getSize();
     EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
     return c.memory;
 }
@@ -370,19 +370,19 @@ static void test_fatfs_delete_file()
     FatFileSystem* fat = fs.get();
     Vnode* root = fat->getRoot();
     FatFileSystem::Directory* rootDir = (FatFileSystem::Directory*)root->fnode;
-    FatFileSystem::Entries& entries = rootDir->getChildlen();
+    FatFileSystem::Files& entries = rootDir->getChildlen();
     const char* FILENAME = "HIGE.TXT";
 
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
-    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_EQ(3893, file->getSize());
 
     uint32_t prevFreeSize = fat->getFreeSize();
-    uint32_t prevNumEntries = entries.size();
+    uint32_t prevNumFiles = entries.size();
     ASSERT_EQ(MONA_SUCCESS, fat->delete_file(found));
     EXPECT_EQ(512 * 8, fat->getFreeSize() - prevFreeSize);
-    EXPECT_EQ(1, prevNumEntries - entries.size());
+    EXPECT_EQ(1, prevNumFiles - entries.size());
 }
 
 static void test_fatfs_truncate()
@@ -394,7 +394,7 @@ static void test_fatfs_truncate()
 
     Vnode* found;
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
-    FatFileSystem::Entry* file = (FatFileSystem::Entry*)(found->fnode);
+    FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_EQ(6, file->getSize());
 
     uint32_t prevFreeSize = fat->getFreeSize();
