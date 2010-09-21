@@ -43,6 +43,7 @@
 // create duplicate check
 
 // merge directory and entry.
+// java api isDirectory.
 
 // write
 // delete_file delete from cacher
