@@ -40,6 +40,7 @@ protected:
     VnodeManager* vmanager_;
     IDEDriver* cd_;
     BlockDeviceDriver* bd_;
+    BlockDeviceDriver* bd3_;
     FDCDriver* fd_;
     FileSystem* rootFS_;
     FileSystems mountedFSs_;

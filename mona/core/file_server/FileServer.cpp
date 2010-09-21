@@ -1,6 +1,7 @@
 
 #include "FileServer.h"
 #include "ram_disk/RamDisk.h"
+#include "FAT32/Fat.h"
 
 using namespace MonAPI;
 using namespace std;
@@ -61,6 +62,17 @@ int FileServer::initializeMountedFileSystems()
     }
     vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
+
+    // bd3_ = new BlockDeviceDriver(3);
+    // FatFileSystem* fatfs = new FatFileSystem(*vmanager_, *bd3_);
+    // if (fatfs->initialize() != MONA_SUCCESS)
+    // {
+    //     monapi_warn("FAT12 file system initialize failed \n");
+    //     delete fatfs;
+    //     return MONA_SUCCESS;
+    // }
+    // vmanager_->mount(rootFS_->getRoot(), "F", fatfs->getRoot());
+    // mountedFSs_.push_back(fatfs);
 
     // ProcessFileSystem
 #if 0
@@ -130,6 +142,7 @@ int FileServer::initializeRootFileSystem()
     bd_ = new BlockDeviceDriver(0, 2048);
     rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
 #endif
+
 
     if (rootFS_->initialize() != MONA_SUCCESS)
     {
