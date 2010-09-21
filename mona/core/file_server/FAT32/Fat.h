@@ -42,8 +42,11 @@
 // host2 little
 // create duplicate check
 
+// merge directory and entry.
+
 // write
 // delete_file delete from cacher
+// hige.txt is seen on root?
 
 // fat class
 class FatFileSystem : public FileSystem
@@ -81,6 +84,7 @@ public:
         Directory* dir = (Directory*)diretory->fnode;
         Entries& childlen = dir->getChildlen();
         for (Entries::const_iterator it = childlen.begin(); it != childlen.end(); ++it) {
+            logprintf("getName=%s file = %s\n", (*it)->getName().c_str(), file.c_str());
             if ((*it)->getName() == file) {
                 Vnode* newVnode = vnodeManager_.alloc();
                 ASSERT(newVnode);
@@ -659,7 +663,7 @@ private:
                 if (entry->attr == 0x0f) {
                     continue;
                 }
-                if (entry->name[0] == 0x2e) {
+                if (entry->name[0] == 0x2e || entry->name[0] == FREE_ENTRY) {
                     continue;
                 }
                 std::string filename;
@@ -669,8 +673,12 @@ private:
                     }
                     filename += entry->name[i];
                 }
-                filename += '.';
-                filename += std::string((char*)entry->ext, 3);
+                std::string ext = std::string((char*)entry->ext, 3);
+                if (ext != "   ") {
+                    filename += '.';
+                    filename += ext;
+                }
+
                 logprintf("%s:", filename.c_str());
                 logprintf("<%d>", little2host16(entry->clus));
                 logprintf("<%x>\n", fat_[little2host16(entry->clus)]);

@@ -415,7 +415,7 @@ static void test_fatfs_readdir()
 
     int size = *(int*)cmi->Data;
 
-    EXPECT_EQ(38, size);
+    EXPECT_EQ(37, size);
 
     monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->Data[sizeof(int)];
 
