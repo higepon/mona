@@ -99,16 +99,16 @@ public:
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
 
-    virtual int open(Vnode* file, intptr_t mode)
+    virtual int open(Vnode* vnode, intptr_t mode)
     {
         return MONA_SUCCESS;
     }
-    virtual int read(Vnode* file, struct io::Context* context)
+    virtual int read(Vnode* vnode, struct io::Context* context)
     {
-        if (file->type != Vnode::REGULAR) {
+        if (vnode->type != Vnode::REGULAR) {
             return MONA_FAILURE;
         }
-        Entry* e = (Entry*)file->fnode;
+        Entry* e = (Entry*)vnode->fnode;
         uint32_t offset = context->offset;
         uint32_t sizeToRead = context->size;
         uint32_t rest = e->getSize() - offset;
@@ -162,11 +162,11 @@ public:
         }
     }
 
-    virtual int write(Vnode* file, struct io::Context* context)
+    virtual int write(Vnode* vnode, struct io::Context* context)
     {
-        ASSERT(file->type == Vnode::REGULAR);
+        ASSERT(vnode->type == Vnode::REGULAR);
         ASSERT(context->memory);
-        Entry* entry = (Entry*)file->fnode;
+        Entry* entry = (Entry*)vnode->fnode;
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         if (expandFileAsNecessary(entry, context) != M_OK) {
             return -1;
@@ -324,15 +324,15 @@ public:
         return MONA_SUCCESS;
     }
 
-    virtual int close(Vnode* file)
+    virtual int close(Vnode* vnode)
     {
         return MONA_SUCCESS;
     }
 
-    virtual int truncate(Vnode* file)
+    virtual int truncate(Vnode* vnode)
     {
-        ASSERT(file->type == Vnode::REGULAR);
-        Entry* entry = (Entry*)file->fnode;
+        ASSERT(vnode->type == Vnode::REGULAR);
+        Entry* entry = (Entry*)vnode->fnode;
         if (entry->getSize() == 0) {
             return MONA_SUCCESS;
         }
@@ -353,12 +353,12 @@ public:
         entry->setSize(0);
         return MONA_SUCCESS;
     }
-    virtual int delete_file(Vnode* file)
+    virtual int delete_file(Vnode* vnode)
     {
-        if(file == root_) {
+        if(vnode == root_) {
             return MONA_FAILURE; // root is undeletable
         }
-        Entry* entry = (Entry*)file->fnode;
+        Entry* entry = (Entry*)vnode->fnode;
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return MONA_FAILURE;
         }
@@ -371,12 +371,12 @@ public:
             return MONA_FAILURE;
         }
         ((Directory*)(entry->getParent()))->removeChild(entry);
-        destroyVnode(file);
+        destroyVnode(vnode);
         return MONA_SUCCESS;
     }
-    virtual int stat(Vnode* file, Stat* st)
+    virtual int stat(Vnode* vnode, Stat* st)
     {
-        Entry* entry = (Entry*)file->fnode;
+        Entry* entry = (Entry*)vnode->fnode;
         st->size = entry->getSize();
         return MONA_SUCCESS;
     }
