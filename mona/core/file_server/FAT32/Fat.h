@@ -685,6 +685,8 @@ private:
                 Entry* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
                     Entries childlen;
+                    // For now, we read all directories recursively.
+                    // This may cause slower initialization.
                     if (!readDirectory(little2host16(entry->clus), childlen)) {
                         return false;
                     }
