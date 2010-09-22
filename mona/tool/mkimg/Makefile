@@ -22,6 +22,7 @@ fat32:
 	touch empty.txt; sudo mv -f empty.txt tmp
 	mkdir subdir
 	echo "Hello" > subdir.txt; sudo mv -f subdir.txt subdir; done
+	echo "Hello World" > this_is_very_long_file_name.txt; sudo mv -f this_is_very_long_file_name.txt subdir; done
 	sudo mv subdir tmp
 #	touch empty2.txt; sudo mv -f empty2.txt tmp
 #	(cd tmp && echo h | sudo tee empty.txt)

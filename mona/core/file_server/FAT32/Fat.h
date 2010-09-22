@@ -35,22 +35,125 @@
 #include "VnodeManager.h"
 
 // todo
-//  trim
 //  long file name
+// create long file name limit.
+// create charactor set check.
+// create entries on two cluster.
 // get
 
 // host2 little
 // create duplicate check
 
-// merge directory and entry.
-// java api isDirectory.
 
 // write
 // delete_file delete from cacher
 // hige.txt is seen on root?
 // check all warnings
 
-// fat class
+class StringUtil
+{
+public:
+    static std::string reverseConcat(const std::vector<std::string>& strings)
+    {
+        std::string ret;
+        for (std::vector<std::string>::const_reverse_iterator it = strings.rbegin(); it != strings.rend(); ++it) {
+            ret += *it;
+        }
+        return ret;
+    }
+
+    static void rtrim(std::string& str)
+    {
+        std::string::size_type e = str.find_last_not_of(" \t\r\n");
+        if(e == std::string::npos) {
+            str.clear();
+        } else {
+            str.erase(e + 1);
+        }
+    }
+};
+
+// Long file name decoder
+class LFNDecoder
+{
+private:
+    typedef std::vector<uint8_t> Bytes;
+    Bytes bytes_;
+    Bytes::const_iterator it_;
+
+    int getByte()
+    {
+        if (it_ == bytes_.end()) {
+            return EOF;
+        } else {
+            int ret = (*it_);
+            it_++;
+            return ret;
+        }
+    }
+
+    uint32_t utf16BytesToUTF32()
+    {
+        const int a = getByte();
+        if (EOF == a) {
+            return EOF;
+        }
+        const int b = getByte();
+        if (EOF == b) {
+            return '?';
+        }
+
+        if (a == 0 && b == 0) {
+            return EOF;
+        }
+        const uint16_t val1 = ((b << 8) | a);
+        if (val1 < 0xD800 || val1 > 0xDFFF) {
+            return val1;
+        }
+
+        const int c = getByte();
+        if (EOF == c) {
+            return '?';
+        }
+        const int d = getByte();
+        if (EOF == d) {
+            return '?';
+        }
+        const uint16_t val2 = ((d << 8) | c);
+        uint16_t hi = val1;
+        uint16_t lo = val2;
+        uint32_t X = (hi & ((1 << 6) -1)) << 10 | (lo & ((1 << 10) -1));
+        uint32_t W = (hi >> 6) & ((1 << 5) - 1);
+        uint32_t U = W + 1;
+        uint32_t C = U << 16 | X;
+        return C;
+    }
+
+public:
+    LFNDecoder() {}
+    ~LFNDecoder() {}
+
+    void pushBytes(uint8_t* bytes, uint32_t length)
+    {
+        for (uint32_t i = 0; i < length; i++) {
+            bytes_.push_back(bytes[i]);
+        }
+    }
+
+    // For now supports only ascii
+    std::string decode()
+    {
+        it_ = bytes_.begin();
+        std::string ret;
+        for (int c = utf16BytesToUTF32(); c != EOF; c = utf16BytesToUTF32()) {
+            // ascii
+            ret += (uint8_t)c;
+        }
+        bytes_.clear();
+        return ret;
+    }
+};
+
 class FatFileSystem : public FileSystem
 {
 public:
@@ -63,7 +166,6 @@ public:
                 numFreeClusters++;
             }
         }
-        logprintf("numFreeClusters=%d", numFreeClusters);
         return getClusterSizeByte() * numFreeClusters;
     }
 
@@ -83,10 +185,9 @@ public:
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
 
-        Directory* dir = (Directory*)diretory->fnode;
-        Files& childlen = dir->getChildlen();
-        for (Files::const_iterator it = childlen.begin(); it != childlen.end(); ++it) {
-            logprintf("getName=%s file = %s\n", (*it)->getName().c_str(), file.c_str());
+        File* dir = (File*)diretory->fnode;
+        Files* childlen = dir->getChildlen();
+        for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
             if ((*it)->getName() == file) {
                 Vnode* newVnode = vnodeManager_.alloc();
                 ASSERT(newVnode);
@@ -207,9 +308,63 @@ public:
         return context->size;
     }
 
+    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
+    {
+        File* d = (File*)dir->fnode;
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(cluster, buf)) {
+            return M_READ_ERROR;
+        }
+
+        std::vector<uint32_t> entryIndexes;
+        uint32_t index = 0;
+        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
+            if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == FREE_ENTRY) {
+                entryIndexes.push_back(index);
+            }
+        }
+        if (entryIndexes.size() < numEntries) {
+            return M_NO_SPACE;
+        } else {
+            uint8_t utf16Buf[file.size() * 2];
+            int index = 0;
+            for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
+                utf16Buf[index++] = 0;
+                utf16Buf[index++] = *it;
+            }
+
+            int seq = numEntries;
+            for (std::vector<uint32_t>::reverse_iterator it = entryIndexes.rbegin() + 1; it != entryIndexes.rend(); ++it) {
+                struct lfn* p = (struct lfn*)buf;
+                p += *it;
+                p->attr = ATTR_LFN;
+                memset(p, 0, sizeof(struct lfn));
+                memcpy(p->name1, utf16Buf, sizeof(p->name1));
+                memcpy(p->name2, utf16Buf + sizeof(p->name1), sizeof(p->name2));
+                memcpy(p->name3, utf16Buf + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                p->seq = seq--;
+                if (seq == 0) {
+                    break;
+                }
+            }
+
+            File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
+            d->addChild(fileEntry);
+            fileEntry->setParent(d);
+            struct de* entry = (struct de*)buf;
+            entry += entryIndexes[entryIndexes.size() - 1];
+            setupNewEntry(entry, "SHORT.TXT");
+            if (writeCluster(cluster, buf)) {
+                return M_OK;
+            } else {
+                return M_WRITE_ERROR;
+            }
+        }
+    }
+
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
     {
-        Directory* d = (Directory*)dir->fnode;
+        File* d = (File*)dir->fnode;
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
@@ -217,7 +372,7 @@ public:
 
         uint32_t index = 0;
         for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
-            if (entry->name[0] == 0x00 || entry->name[0] == FREE_ENTRY) {
+            if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == FREE_ENTRY) {
                 File* fileEntry = new File(file, 0, 0, cluster, index);
                 d->addChild(fileEntry);
                 fileEntry->setParent(d);
@@ -264,32 +419,45 @@ public:
         dirtyFat_.insert(std::pair<uint32_t, uint32_t>(index, index));
     }
 
+    bool isLongName(const std::string name) const
+    {
+        return name.size() > 11;
+    }
+
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
-        ASSERT(file.size() <= 11);
-        Directory* d = (Directory*)dir->fnode;
+        File* d = (File*)dir->fnode;
         uint32_t cluster = getLastCluster(d);
-        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
-        if (ret == M_OK) {
-            return MONA_SUCCESS;
-        } else if (ret == M_NO_SPACE) {
-            uint32_t newCluster = allocateCluster();
-            if (isEndOfCluster(newCluster)) {
+        if (isLongName(file)) {
+            uint32_t requiredNumEntries = (file.size() + 12) / 13 + 1;
+            int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
+            // todo
+            ASSERT(ret == M_OK);
+        } else {
+            int ret = tryCreateNewEntryInCluster(dir, file, cluster);
+            if (ret == M_OK) {
+                return MONA_SUCCESS;
+            } else if (ret == M_NO_SPACE) {
+                uint32_t newCluster = allocateCluster();
+                if (isEndOfCluster(newCluster)) {
+                    return MONA_FAILURE;
+                }
+
+                if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+                    return MONA_FAILURE;
+                }
+
+                updateFatNoFlush(cluster, newCluster);
+                updateFatNoFlush(newCluster, END_OF_CLUSTER);
+
+                if (flushDirtyFat() != MONA_SUCCESS) {
+                    return MONA_FAILURE;
+                }
+                return MONA_SUCCESS;
+            } else {
                 return MONA_FAILURE;
             }
-
-            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
-                return MONA_FAILURE;
-            }
-
-            updateFatNoFlush(cluster, newCluster);
-            updateFatNoFlush(newCluster, END_OF_CLUSTER);
-
-            if (flushDirtyFat() != MONA_SUCCESS) {
-                return MONA_FAILURE;
-            }
-            return MONA_SUCCESS;
         }
     }
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)
@@ -297,12 +465,13 @@ public:
         typedef std::vector<monapi_directoryinfo> DirInfos;
         DirInfos dirInfos;
         ASSERT(directory->type == Vnode::DIRECTORY);
-        Directory* dir = (Directory*)directory->fnode;
+        File* dir = (File*)directory->fnode;
 
-        for (Files::const_iterator it = dir->getChildlen().begin(); it != dir->getChildlen().end(); ++it) {
+        for (Files::const_iterator it = dir->getChildlen()->begin(); it != dir->getChildlen()->end(); ++it) {
             monapi_directoryinfo di;
             strcpy(di.name, (*it)->getName().c_str());
             di.size = (*it)->getSize();
+            di.attr = (*it)->isDirectory() ? ATTRIBUTE_DIRECTORY : 0;
             dirInfos.push_back(di);
         }
 
@@ -372,7 +541,7 @@ public:
         if (freeClusters(entry) != MONA_SUCCESS) {
             return MONA_FAILURE;
         }
-        ((Directory*)(entry->getParent()))->removeChild(entry);
+        ((File*)(entry->getParent()))->removeChild(entry);
         destroyVnode(vnode);
         return MONA_SUCCESS;
     }
@@ -437,6 +606,8 @@ public:
         return little2host16(bsbpb_->bps);
     }
 
+    class File;
+    typedef std::vector<File*> Files;
 
     // Public for testability
     class File
@@ -448,11 +619,38 @@ public:
             startCluster_(startCluster),
             parent_(NULL),
             clusterInParent_(clusterInParent),
-            indexInParentCluster_(indexInParentCluster)
+            indexInParentCluster_(indexInParentCluster),
+            childlen_(NULL),
+            isDirectory_(false)
         {
         }
 
-        virtual ~File() {}
+        File(const std::string& name, uintptr_t startCluster, const Files& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) :
+            name_(name),
+            startCluster_(startCluster),
+            parent_(NULL),
+            clusterInParent_(clusterInParent),
+            indexInParentCluster_(indexInParentCluster),
+            childlen_(new Files()),
+            isDirectory_(true)
+        {
+            childlen_->resize(childlen.size());
+            std::copy(childlen.begin(), childlen.end(), childlen_->begin());
+        }
+
+        virtual ~File()
+        {
+            if (isDirectory()) {
+                for (Files::const_iterator it = childlen_->begin(); it != childlen_->end(); ++it) {
+                    delete *it;
+                }
+            }
+        }
+
+        bool isDirectory() const
+        {
+            return isDirectory_;
+        }
 
         const std::string& getName() const
         {
@@ -498,6 +696,22 @@ public:
         {
             return indexInParentCluster_;
         }
+        void addChild(File* entry)
+        {
+            ASSERT(isDirectory());
+            childlen_->push_back(entry);
+        }
+
+        Files* getChildlen()
+        {
+            return childlen_.get();
+        }
+
+        void removeChild(File* entry)
+        {
+            ASSERT(isDirectory());
+            childlen_->erase(std::remove(childlen_->begin(), childlen_->end(), entry), childlen_->end());
+        }
 
     private:
         const std::string name_;
@@ -506,42 +720,8 @@ public:
         File* parent_;
         uint32_t clusterInParent_;
         uint32_t indexInParentCluster_;
-    };
-
-    typedef std::vector<File*> Files;
-
-    class Directory : public File
-    {
-    public:
-        Directory(const std::string& name, uintptr_t startCluster, const Files& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) : File(name, 0, startCluster, clusterInParent, indexInParentCluster)
-        {
-            childlen_.resize(childlen.size());
-            std::copy(childlen.begin(), childlen.end(), childlen_.begin());
-        }
-
-        virtual ~Directory()
-        {
-            for (Files::const_iterator it = childlen_.begin(); it != childlen_.end(); ++it) {
-                delete *it;
-            }
-        }
-
-        void addChild(File* entry)
-        {
-            childlen_.push_back(entry);
-        }
-
-        Files& getChildlen()
-        {
-            return childlen_;
-        }
-
-        void removeChild(File* entry)
-        {
-            childlen_.erase(std::remove(childlen_.begin(), childlen_.end(), entry), childlen_.end());
-        }
-    private:
-        Files childlen_;
+        MonAPI::scoped_ptr<Files> childlen_;
+        bool isDirectory_;
     };
 
 private:
@@ -587,7 +767,7 @@ private:
     uint32_t getClusterAt(File* entry, uint32_t index)
     {
         uint32_t cluster = entry->getStartCluster();
-        for (int i = 0; i < index; i++, cluster = fat_[cluster]) {
+        for (uint32_t i = 0; i < index; i++, cluster = fat_[cluster]) {
             ASSERT(!isEndOfCluster(cluster));
         }
         return cluster;
@@ -651,39 +831,48 @@ private:
     bool readDirectory(uint32_t startCluster, Files& childlen)
     {
         uint8_t buf[getClusterSizeByte()];
+        LFNDecoder decoder;
         for (uint32_t cluster = startCluster; !isEndOfCluster(cluster); cluster = fat_[cluster]) {
             if (!readCluster(cluster, buf) != M_OK) {
                 return false;
             }
 
+            bool hasLongName = false;
+            std::vector<std::string> partialLongNames;
             uint32_t index = 0;
             for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
-                if (entry->name[0] == 0x00) {
+                if (entry->name[0] == AVAILABLE_ENTRY) {
                     return true;
                 }
+                if (entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
+                    continue;
+                }
                 // Long file name
-                if (entry->attr == 0x0f) {
-                    continue;
-                }
-                if (entry->name[0] == 0x2e || entry->name[0] == FREE_ENTRY) {
-                    continue;
-                }
-                std::string filename;
-                for (int i = 0; i < 8; i++) {
-                    if (entry->name[i] == ' ') {
-                        break;
+                if (entry->attr == ATTR_LFN) {
+                    struct lfn* lfn = (struct lfn*)entry;
+                    decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
+                    decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
+                    decoder.pushBytes(lfn->name3, sizeof(lfn->name3));
+                    partialLongNames.push_back(decoder.decode());
+                    if (lfn->seq == 1) {
+                        hasLongName = true;
                     }
-                    filename += entry->name[i];
-                }
-                std::string ext = std::string((char*)entry->ext, 3);
-                if (ext != "   ") {
-                    filename += '.';
-                    filename += ext;
+                    continue;
                 }
 
-                logprintf("%s:", filename.c_str());
-                logprintf("<%d>", little2host16(entry->clus));
-                logprintf("<%x>\n", fat_[little2host16(entry->clus)]);
+                std::string filename;
+                if (hasLongName) {
+                    filename = StringUtil::reverseConcat(partialLongNames);
+                } else {
+                    filename = std::string((char*)entry->name, 8);
+                    StringUtil::rtrim(filename);
+                    std::string ext = std::string((char*)entry->ext, 3);
+                    StringUtil::rtrim(ext);
+                    if (!ext.empty()) {
+                        filename += '.';
+                        filename += ext;
+                    }
+                }
                 File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
                     Files childlen;
@@ -692,11 +881,12 @@ private:
                     if (!readDirectory(little2host16(entry->clus), childlen)) {
                         return false;
                     }
-                    target = new Directory(filename, little2host16(entry->clus), childlen, cluster, index);
+                    target = new File(filename, little2host16(entry->clus), childlen, cluster, index);
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
                 childlen.push_back(target);
+                partialLongNames.clear();
             }
         }
         return true;
@@ -710,12 +900,12 @@ private:
             return false;
         }
 
-        root_->fnode = new Directory("", getRootDirectoryCluster(), childlen, 0, 0);
+        root_->fnode = new File("", getRootDirectoryCluster(), childlen, 0, 0);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
 
         for (Files::iterator it = childlen.begin(); it != childlen.end(); ++it) {
-            (*it)->setParent((Directory*)root_->fnode);
+            (*it)->setParent((File*)root_->fnode);
         }
 
         return true;
@@ -791,9 +981,12 @@ private:
 
     enum
     {
+        AVAILABLE_ENTRY = 0x00,
+        DOT_ENTRY = 0x2e,
         FREE_ENTRY = 0xe5,
         SECTOR_SIZE = 512,
         ATTR_SUBDIR = 0x10,
+        ATTR_LFN = 0x0f,
         forbiddend_comma
     };
 
@@ -838,6 +1031,17 @@ private:
         uint8_t date[2];           /* creation date */
         uint8_t clus[2];           /* starting cluster */
         uint8_t size[4];           /* size */
+    };
+
+    struct lfn {
+        uint8_t seq;               /* seq */
+        uint8_t name1[10];         /* name1 */
+        uint8_t attr;              /* attributes */
+        uint8_t rsvd;              /* reserved */
+        uint8_t chksum;            /* check sum */
+        uint8_t name2[12];         /* name2 */
+        uint8_t clus[2];           /* starting cluster */
+        uint8_t name3[4];           /* name3 */
     };
 
     enum {
