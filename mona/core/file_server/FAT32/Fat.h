@@ -73,11 +73,34 @@ public:
     }
 };
 
+typedef std::vector<uint8_t> Bytes;
+
+// Long file name encoder
+class LFNEncoder
+{
+public:
+    LFNEncoder() {}
+    ~LFNEncoder() {}
+
+    // N.B.
+    // For ascii only
+    uint8_t* encode(std::string longName, uint32_t& size)
+    {
+        size = longName.size() * 2;
+        uint8_t* buf = new uint8_t[size];
+        int index = 0;
+        for (std::string::const_iterator it = longName.begin(); it != longName.end(); ++it) {
+            buf[index++] = *it;
+            buf[index++] = 0;
+        }
+        return buf;
+    }
+};
+
 // Long file name decoder
 class LFNDecoder
 {
 private:
-    typedef std::vector<uint8_t> Bytes;
     Bytes bytes_;
     Bytes::const_iterator it_;
 
@@ -334,31 +357,26 @@ public:
         if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, numEntries) != M_OK) {
             return ret;
         }
-        uint8_t utf16Buf[file.size() * 2];
-        int index = 0;
-        for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
-            utf16Buf[index++] = *it;
-            utf16Buf[index++] = 0;
-        }
 
+        LFNEncoder encoder;
+        uint32_t encodedLen;
+        MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = numEntries - 1;
         for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end(); ++it) {
-            struct lfn* p = (struct lfn*)buf;
+            struct lfn* p = (struct lfn*)(buf);
             p += *it;
             memset(p, 0, sizeof(struct lfn));
 
             p->attr = ATTR_LFN;
             p->chksum = checksum("SHORT   TXT");
 
-            memcpy(p->name1, utf16Buf + (seq - 1) *26, sizeof(p->name1));
-            memcpy(p->name2, utf16Buf + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
-            memcpy(p->name3, utf16Buf + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+            memcpy(p->name1, encodedName.get() + (seq - 1) *26, sizeof(p->name1));
+            memcpy(p->name2, encodedName.get() + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
+            memcpy(p->name3, encodedName.get() + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
             p->seq = seq--;
             if (it == entryIndexes.begin()) {
                 p->seq |= 0x40;
             }
-
-            logprintf("p->seq=%d\n", p->seq);
             if (seq == 0) {
                 break;
             }
