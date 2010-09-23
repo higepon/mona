@@ -308,15 +308,17 @@ public:
         return context->size;
     }
 
-    unsigned char lfn_checksum(const unsigned char *pFcbName)
-        {
-            int i;
-            unsigned char sum=0;
+    uint8_t checksum(const char *pFcbName)
+    {
+        int i;
+        unsigned char sum=0;
 
-            for (i=11; i; i--)
-                sum = ((sum & 1) << 7) + (sum >> 1) + *pFcbName++;
-            return sum;
+        for (i=11; i; i--) {
+            sum = ((sum & 1) << 7) + (sum >> 1) + *pFcbName++;
         }
+        return sum;
+    }
+
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
         File* d = (File*)dir->fnode;
@@ -351,7 +353,7 @@ public:
                 memset(p, 0, sizeof(struct lfn));
                 p += *it;
                 p->attr = ATTR_LFN;
-                p->chksum = lfn_checksum((const unsigned char*)"SHORT   TXT");
+                p->chksum = checksum("SHORT   TXT");
 
                 memcpy(p->name1, utf16Buf + (seq - 1) *26, sizeof(p->name1));
                 memcpy(p->name2, utf16Buf + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
