@@ -482,26 +482,14 @@ static void test_fatfs_lookup_file_long_name()
 static void test_fatfs_create_long_file_name()
 {
     const char* filename = "hi_i_am_higepon_writing_fat_fs.mosh.sls";
-    {
-        TestFatFS fs;
-        FatFileSystem* fat = fs.get();
-        Vnode* root = fat->getRoot();
 
-        Vnode* subdir;
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
-        createEmptyfile(fat, subdir, filename);
-    }
-    {
-        TestFatFS fs;
-        FatFileSystem* fat = fs.get();
-        Vnode* root = fat->getRoot();
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
 
-        Vnode* subdir;
-        Vnode* found;
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
-
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
-    }
+    Vnode* subdir;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+    createEmptyfile(fat, subdir, filename);
 }
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
@@ -544,6 +532,19 @@ int main(int argc, char *argv[])
     test_fatfs_lookup_file_long_name();
     test_fatfs_read_file_subdir("this_is_very_long_file_name.txt", "Hello World\n");
     test_fatfs_create_long_file_name();
+    {
+        const char* filename = "hi_i_am_higepon_writing_fat_fs.mosh.sls";
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        Vnode* root = fat->getRoot();
+
+        Vnode* subdir;
+        Vnode* found;
+        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+
+        ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
+    }
+
     TEST_RESULTS(file);
     return 0;
 }

@@ -187,7 +187,9 @@ public:
 
         File* dir = (File*)diretory->fnode;
         Files* childlen = dir->getChildlen();
+        logprintf("LOOKup <%s>\n", file.c_str());
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
+            logprintf("    <%s>:<%s>\n", (*it)->getName().c_str(), file.c_str());
             if ((*it)->getName() == file) {
                 Vnode* newVnode = vnodeManager_.alloc();
                 ASSERT(newVnode);
@@ -350,8 +352,9 @@ public:
             int seq = numEntries - 1;
             for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end(); ++it) {
                 struct lfn* p = (struct lfn*)buf;
-                memset(p, 0, sizeof(struct lfn));
                 p += *it;
+                memset(p, 0, sizeof(struct lfn));
+
                 p->attr = ATTR_LFN;
                 p->chksum = checksum("SHORT   TXT");
 
@@ -368,13 +371,13 @@ public:
                     break;
                 }
             }
-
             File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
             d->addChild(fileEntry);
             fileEntry->setParent(d);
             struct de* entry = (struct de*)buf;
             entry += entryIndexes[entryIndexes.size() - 1];
             setupNewEntry(entry, "SHORT.TXT");
+            logprintf("write long name cluster = %d\n", cluster);
             if (writeCluster(cluster, buf)) {
                 return M_OK;
             } else {
@@ -864,9 +867,11 @@ private:
             uint32_t index = 0;
             for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
                 if (entry->name[0] == AVAILABLE_ENTRY) {
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     return true;
                 }
                 if (entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     continue;
                 }
                 // Long file name
@@ -897,16 +902,19 @@ private:
                 }
                 File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
-                    Files childlen;
+                    Files subChildlen;
+                    logprintf("Read subdir start %s:cluster=%d\n", filename.c_str(), little2host16(entry->clus));
                     // For now, we read all directories recursively.
                     // This may cause slower initialization.
-                    if (!readDirectory(little2host16(entry->clus), childlen)) {
+                    if (!readDirectory(little2host16(entry->clus), subChildlen)) {
+                        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                         return false;
                     }
-                    target = new File(filename, little2host16(entry->clus), childlen, cluster, index);
+                    target = new File(filename, little2host16(entry->clus), subChildlen, cluster, index);
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
+                logprintf("startCluster=%d cluster=%d %s %s %s:%d\n", startCluster, cluster, target->getName().c_str(), __func__, __FILE__, __LINE__);
                 childlen.push_back(target);
                 partialLongNames.clear();
             }
