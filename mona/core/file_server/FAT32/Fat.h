@@ -308,6 +308,15 @@ public:
         return context->size;
     }
 
+    unsigned char lfn_checksum(const unsigned char *pFcbName)
+        {
+            int i;
+            unsigned char sum=0;
+
+            for (i=11; i; i--)
+                sum = ((sum & 1) << 7) + (sum >> 1) + *pFcbName++;
+            return sum;
+        }
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
         File* d = (File*)dir->fnode;
@@ -321,6 +330,9 @@ public:
         for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
             if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == FREE_ENTRY) {
                 entryIndexes.push_back(index);
+                if (entryIndexes.size() == numEntries) {
+                    break;
+                }
             }
         }
         if (entryIndexes.size() < numEntries) {
@@ -329,20 +341,27 @@ public:
             uint8_t utf16Buf[file.size() * 2];
             int index = 0;
             for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
-                utf16Buf[index++] = 0;
                 utf16Buf[index++] = *it;
+                utf16Buf[index++] = 0;
             }
 
-            int seq = numEntries;
-            for (std::vector<uint32_t>::reverse_iterator it = entryIndexes.rbegin() + 1; it != entryIndexes.rend(); ++it) {
+            int seq = numEntries - 1;
+            for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end(); ++it) {
                 struct lfn* p = (struct lfn*)buf;
+                memset(p, 0, sizeof(struct lfn));
                 p += *it;
                 p->attr = ATTR_LFN;
-                memset(p, 0, sizeof(struct lfn));
-                memcpy(p->name1, utf16Buf, sizeof(p->name1));
-                memcpy(p->name2, utf16Buf + sizeof(p->name1), sizeof(p->name2));
-                memcpy(p->name3, utf16Buf + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                p->chksum = lfn_checksum((const unsigned char*)"SHORT   TXT");
+
+                memcpy(p->name1, utf16Buf + (seq - 1) *26, sizeof(p->name1));
+                memcpy(p->name2, utf16Buf + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
+                memcpy(p->name3, utf16Buf + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
                 p->seq = seq--;
+                if (it == entryIndexes.begin()) {
+                    p->seq |= 0x40;
+                }
+
+                logprintf("p->seq=%d\n", p->seq);
                 if (seq == 0) {
                     break;
                 }
@@ -434,6 +453,7 @@ public:
             int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
             // todo
             ASSERT(ret == M_OK);
+            return MONA_SUCCESS;
         } else {
             int ret = tryCreateNewEntryInCluster(dir, file, cluster);
             if (ret == M_OK) {

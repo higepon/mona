@@ -485,8 +485,11 @@ static void test_fatfs_create_long_file_name()
     FatFileSystem* fat = fs.get();
     Vnode* root = fat->getRoot();
 
+    Vnode* subdir;
+    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+
     const char* filename = "hi_i_am_higepon_writing_fat_fs.mosh.sls";
-    createEmptyfile(fat, root, filename);
+    createEmptyfile(fat, subdir, filename);
 }
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
