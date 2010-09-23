@@ -321,6 +321,7 @@ public:
         return sum;
     }
 
+
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
         File* d = (File*)dir->fnode;
@@ -330,59 +331,49 @@ public:
         }
 
         std::vector<uint32_t> entryIndexes;
-        uint32_t index = 0;
-        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
-            if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == FREE_ENTRY) {
-                entryIndexes.push_back(index);
-                if (entryIndexes.size() == numEntries) {
-                    break;
-                }
+        if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, numEntries) != M_OK) {
+            return ret;
+        }
+        uint8_t utf16Buf[file.size() * 2];
+        int index = 0;
+        for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
+            utf16Buf[index++] = *it;
+            utf16Buf[index++] = 0;
+        }
+
+        int seq = numEntries - 1;
+        for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end(); ++it) {
+            struct lfn* p = (struct lfn*)buf;
+            p += *it;
+            memset(p, 0, sizeof(struct lfn));
+
+            p->attr = ATTR_LFN;
+            p->chksum = checksum("SHORT   TXT");
+
+            memcpy(p->name1, utf16Buf + (seq - 1) *26, sizeof(p->name1));
+            memcpy(p->name2, utf16Buf + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
+            memcpy(p->name3, utf16Buf + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+            p->seq = seq--;
+            if (it == entryIndexes.begin()) {
+                p->seq |= 0x40;
+            }
+
+            logprintf("p->seq=%d\n", p->seq);
+            if (seq == 0) {
+                break;
             }
         }
-        if (entryIndexes.size() < numEntries) {
-            return M_NO_SPACE;
+        File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
+        d->addChild(fileEntry);
+        fileEntry->setParent(d);
+        struct de* entry = (struct de*)buf;
+        entry += entryIndexes[entryIndexes.size() - 1];
+        setupNewEntry(entry, "SHORT.TXT");
+        logprintf("write long name cluster = %d\n", cluster);
+        if (writeCluster(cluster, buf)) {
+            return M_OK;
         } else {
-            uint8_t utf16Buf[file.size() * 2];
-            int index = 0;
-            for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
-                utf16Buf[index++] = *it;
-                utf16Buf[index++] = 0;
-            }
-
-            int seq = numEntries - 1;
-            for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end(); ++it) {
-                struct lfn* p = (struct lfn*)buf;
-                p += *it;
-                memset(p, 0, sizeof(struct lfn));
-
-                p->attr = ATTR_LFN;
-                p->chksum = checksum("SHORT   TXT");
-
-                memcpy(p->name1, utf16Buf + (seq - 1) *26, sizeof(p->name1));
-                memcpy(p->name2, utf16Buf + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
-                memcpy(p->name3, utf16Buf + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-                p->seq = seq--;
-                if (it == entryIndexes.begin()) {
-                    p->seq |= 0x40;
-                }
-
-                logprintf("p->seq=%d\n", p->seq);
-                if (seq == 0) {
-                    break;
-                }
-            }
-            File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
-            d->addChild(fileEntry);
-            fileEntry->setParent(d);
-            struct de* entry = (struct de*)buf;
-            entry += entryIndexes[entryIndexes.size() - 1];
-            setupNewEntry(entry, "SHORT.TXT");
-            logprintf("write long name cluster = %d\n", cluster);
-            if (writeCluster(cluster, buf)) {
-                return M_OK;
-            } else {
-                return M_WRITE_ERROR;
-            }
+            return M_WRITE_ERROR;
         }
     }
 
@@ -1178,6 +1169,21 @@ private:
         return MONA_SUCCESS;
     }
 
+    int allocateContigousEntries(struct de* entries, std::vector<uint32_t>& foundEntryIndexes, uint32_t numEntries)
+    {
+        for (uint32_t i = 0; i < getClusterSizeByte() / sizeof(struct de); i++) {
+            if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
+                if (!foundEntryIndexes.empty() && foundEntryIndexes[foundEntryIndexes.size() - 1] != i - 1) {
+                    foundEntryIndexes.clear();
+                }
+                foundEntryIndexes.push_back(i);
+                if (foundEntryIndexes.size() == numEntries) {
+                    return M_OK;
+                }
+            }
+        }
+        return M_NO_SPACE;
+    }
 
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
