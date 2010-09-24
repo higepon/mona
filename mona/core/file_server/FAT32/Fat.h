@@ -453,16 +453,19 @@ public:
         const char* DUMMY_SHORT_EXT = "TXT";
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = requiredNumEntries - 1;
-        startIndex = isEndOfCluster(extraCluster) ? startIndex : 0;
-        if (!isEndOfCluster(extraCluster)) {
+
+        bool inExtraCluster = !isEndOfCluster(extraCluster);
+        if (inExtraCluster) {
             memset(buf, 0, getClusterSizeByte());
         }
+        uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
+        startIndex = inExtraCluster ? 0 :startIndex;
         for (uint32_t i = startIndex; ; i++) {
             ASSERT(i < ENTRIES_PER_CLUSTER);
             if (i == startIndex + requiredNumEntries - 1) {
                 struct de* entry = (struct de*)buf + i;
                 initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                createAndAddFile(dir, file, lastCluster, entryIndexes[entryIndexes.size() - 1].second);
+                createAndAddFile(dir, file, targetCluster, entryIndexes[entryIndexes.size() - 1].second);
                 break;
             } else {
                 struct lfn* p = (struct lfn*)(buf) + i;
@@ -480,14 +483,8 @@ public:
                 }
             }
         }
-        if (isEndOfCluster(extraCluster)) {
-            if (!writeCluster(lastCluster, buf)) {
+        if (!writeCluster(targetCluster, buf)) {
                 return M_WRITE_ERROR;
-            }
-        } else {
-            if (!writeCluster(extraCluster, buf)) {
-                return M_WRITE_ERROR;
-            }
         }
         return M_OK;
     }
