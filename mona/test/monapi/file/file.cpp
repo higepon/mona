@@ -491,15 +491,15 @@ static void test_fatfs_create_long_file_name(const char* filename)
         createEmptyfile(fat, subdir, filename);
     }
     {
-        // TestFatFS fs;
-        // FatFileSystem* fat = fs.get();
-        // Vnode* root = fat->getRoot();
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        Vnode* root = fat->getRoot();
 
-        // Vnode* subdir;
-        // Vnode* found;
-        // ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+        Vnode* subdir;
+        Vnode* found;
+        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
 
-        // ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
+        ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
     }
 
 }
