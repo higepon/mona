@@ -363,6 +363,7 @@ public:
             return createShortNameFile(dir, file);
         }
     }
+
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)
     {
         typedef std::vector<monapi_directoryinfo> DirInfos;
@@ -427,6 +428,7 @@ public:
         entry->setSize(0);
         return MONA_SUCCESS;
     }
+
     virtual int delete_file(Vnode* vnode)
     {
         if(vnode == root_) {
@@ -448,6 +450,7 @@ public:
         destroyVnode(vnode);
         return MONA_SUCCESS;
     }
+
     virtual int stat(Vnode* vnode, Stat* st)
     {
         File* entry = getFileByVnode(vnode);
@@ -462,8 +465,6 @@ public:
         delete entry;
         delete vnode;
     }
-
-
 
     Vnode* getRoot() const
     {
@@ -595,7 +596,6 @@ public:
     };
 
 private:
-
     typedef std::vector<uint32_t> Clusters;
 
     bool isEndOfCluster(uint32_t cluster) const
