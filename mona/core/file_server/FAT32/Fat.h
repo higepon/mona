@@ -34,19 +34,12 @@
 #include "vnode.h"
 #include "VnodeManager.h"
 
-// todo
-// create charactor set check.
-// create entries on two cluster.
-// get
-
-// host2 little
-// create duplicate check
-
+// ToDo.
+//   Check allowed charactor set on file creation.
+//   Check duplicated name on same directory.
 
 // write
 // delete_file delete from cacher
-// hige.txt is seen on root?
-// check all warnings
 
 class StringUtil
 {
@@ -628,6 +621,7 @@ public:
     virtual void destroyVnode(Vnode* vnode)
     {
         File* entry = getFileByVnode(vnode);
+        vnodeManager_.cacher()->remove(root_.get(), entry->getName());
         delete entry;
         delete vnode;
     }
