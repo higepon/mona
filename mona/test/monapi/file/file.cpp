@@ -504,6 +504,25 @@ static void test_fatfs_create_long_file_name(const char* filename)
 
 }
 
+static void test_fatfs_create_long_file_name_need_new_cluster()
+{
+    int MAX_ENTRY_PER_CLUSTER;
+    {
+        // this test is depend on cluster size
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        ASSERT_EQ(512, fat->getClusterSizeByte());
+        const int ENTRY_SIZE = 32;
+        MAX_ENTRY_PER_CLUSTER = fat->getClusterSizeByte() / ENTRY_SIZE;
+    }
+    // we force long filname clustered into tow clusters.
+    for (int i = 0; i < MAX_ENTRY_PER_CLUSTER; i++) {
+        char buf[64];
+        sprintf(buf, "hi_i_am_higepon_writing_fat_fs.mosh.sls%d", i);
+        test_fatfs_create_long_file_name(buf);
+    }
+}
+
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
 int main(int argc, char *argv[])
@@ -544,6 +563,7 @@ int main(int argc, char *argv[])
     test_fatfs_lookup_file_long_name();
     test_fatfs_read_file_subdir("this_is_very_long_file_name.txt", "Hello World\n");
     test_fatfs_create_long_file_name("hi_i_am_higepon_writing_fat_fs.mosh.sls");
+    test_fatfs_create_long_file_name_need_new_cluster();
 
     TEST_RESULTS(file);
     return 0;

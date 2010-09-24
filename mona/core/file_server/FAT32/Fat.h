@@ -179,6 +179,11 @@ class FatFileSystem : public FileSystem
 {
 public:
 
+    uint32_t getClusterSizeByte() const
+    {
+        return getSectorsPerCluster() * SECTOR_SIZE;
+    }
+
     uint32_t getFreeSize()
     {
         uint32_t numFreeClusters = 0;
@@ -954,11 +959,6 @@ private:
         }
 
         return true;
-    }
-
-    uint32_t getClusterSizeByte() const
-    {
-        return getSectorsPerCluster() * SECTOR_SIZE;
     }
 
     uint8_t getSectorsPerCluster() const
