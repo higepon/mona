@@ -208,11 +208,9 @@ public:
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
 
-        File* dir = (File*)diretory->fnode;
+        File* dir = getFileByVnode(diretory);
         Files* childlen = dir->getChildlen();
-        logprintf("LOOKup <%s>\n", file.c_str());
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
-            logprintf("    <%s>:<%s>\n", (*it)->getName().c_str(), file.c_str());
             if ((*it)->getName() == file) {
                 Vnode* newVnode = vnodeManager_.alloc();
                 ASSERT(newVnode);
@@ -236,7 +234,7 @@ public:
         if (vnode->type != Vnode::REGULAR) {
             return MONA_FAILURE;
         }
-        File* e = (File*)vnode->fnode;
+        File* e = getFileByVnode(vnode);
         uint32_t offset = context->offset;
         uint32_t sizeToRead = context->size;
         uint32_t rest = e->getSize() - offset;
@@ -294,7 +292,7 @@ public:
     {
         ASSERT(vnode->type == Vnode::REGULAR);
         ASSERT(context->memory);
-        File* entry = (File*)vnode->fnode;
+        File* entry = getFileByVnode(vnode);
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         if (expandFileAsNecessary(entry, context) != M_OK) {
             return -1;
@@ -347,7 +345,7 @@ public:
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
-        File* d = (File*)dir->fnode;
+        File* d = getFileByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
@@ -384,7 +382,6 @@ public:
         struct de* entry = (struct de*)buf;
         entry += entryIndexes[entryIndexes.size() - 1];
         setupNewEntry(entry, "SHORT.TXT");
-        logprintf("write long name cluster = %d\n", cluster);
         if (writeCluster(cluster, buf)) {
             return M_OK;
         } else {
@@ -394,7 +391,7 @@ public:
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
     {
-        File* d = (File*)dir->fnode;
+        File* d = getFileByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
@@ -457,7 +454,7 @@ public:
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
-        File* d = (File*)dir->fnode;
+        File* d = getFileByVnode(dir);
         uint32_t cluster = getLastCluster(d);
         if (isLongName(file)) {
             uint32_t requiredNumEntries = (file.size() + 12) / 13 + 1;
@@ -496,7 +493,7 @@ public:
         typedef std::vector<monapi_directoryinfo> DirInfos;
         DirInfos dirInfos;
         ASSERT(directory->type == Vnode::DIRECTORY);
-        File* dir = (File*)directory->fnode;
+        File* dir = getFileByVnode(directory);
 
         for (Files::const_iterator it = dir->getChildlen()->begin(); it != dir->getChildlen()->end(); ++it) {
             monapi_directoryinfo di;
@@ -534,7 +531,7 @@ public:
     virtual int truncate(Vnode* vnode)
     {
         ASSERT(vnode->type == Vnode::REGULAR);
-        File* entry = (File*)vnode->fnode;
+        File* entry = getFileByVnode(vnode);
         if (entry->getSize() == 0) {
             return MONA_SUCCESS;
         }
@@ -560,7 +557,7 @@ public:
         if(vnode == root_) {
             return MONA_FAILURE; // root is undeletable
         }
-        File* entry = (File*)vnode->fnode;
+        File* entry = getFileByVnode(vnode);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return MONA_FAILURE;
         }
@@ -572,20 +569,20 @@ public:
         if (freeClusters(entry) != MONA_SUCCESS) {
             return MONA_FAILURE;
         }
-        ((File*)(entry->getParent()))->removeChild(entry);
+        entry->getParent()->removeChild(entry);
         destroyVnode(vnode);
         return MONA_SUCCESS;
     }
     virtual int stat(Vnode* vnode, Stat* st)
     {
-        File* entry = (File*)vnode->fnode;
+        File* entry = getFileByVnode(vnode);
         st->size = entry->getSize();
         return MONA_SUCCESS;
     }
 
     virtual void destroyVnode(Vnode* vnode)
     {
-        File* entry = (File*)vnode->fnode;
+        File* entry = getFileByVnode(vnode);
         delete entry;
         delete vnode;
     }
@@ -873,11 +870,9 @@ private:
             uint32_t index = 0;
             for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
                 if (entry->name[0] == AVAILABLE_ENTRY) {
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     return true;
                 }
                 if (entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     continue;
                 }
                 // Long file name
@@ -909,18 +904,15 @@ private:
                 File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
                     Files subChildlen;
-                    logprintf("Read subdir start %s:cluster=%d\n", filename.c_str(), little2host16(entry->clus));
                     // For now, we read all directories recursively.
                     // This may cause slower initialization.
                     if (!readDirectory(little2host16(entry->clus), subChildlen)) {
-                        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                         return false;
                     }
                     target = new File(filename, little2host16(entry->clus), subChildlen, cluster, index);
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
-                logprintf("startCluster=%d cluster=%d %s %s %s:%d\n", startCluster, cluster, target->getName().c_str(), __func__, __FILE__, __LINE__);
                 childlen.push_back(target);
                 partialLongNames.clear();
             }
@@ -941,7 +933,7 @@ private:
         root_->type = Vnode::DIRECTORY;
 
         for (Files::iterator it = childlen.begin(); it != childlen.end(); ++it) {
-            (*it)->setParent((File*)root_->fnode);
+            (*it)->setParent(getFileByVnode(root_.get()));
         }
 
         return true;
@@ -1198,6 +1190,11 @@ private:
             }
         }
         return M_NO_SPACE;
+    }
+
+    File* getFileByVnode(Vnode* vnode)
+    {
+        return (File*)(vnode->fnode);
     }
 
     uint8_t bootParameters_[SECTOR_SIZE];
