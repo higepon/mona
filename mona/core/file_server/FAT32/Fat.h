@@ -455,7 +455,18 @@ public:
         return name.size() > 11;
     }
 
-    virtual int createShortNameFile(Vnode* dir, const std::string& file)
+    int createLongNameFile(Vnode* dir, const std::string& file)
+    {
+        File* d = getFileByVnode(dir);
+        uint32_t cluster = getLastCluster(d);
+        uint32_t requiredNumEntries = (file.size() + 12) / 13 + 1;
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
+        // todo
+        ASSERT(ret == M_OK);
+        return MONA_SUCCESS;
+    }
+
+    int createShortNameFile(Vnode* dir, const std::string& file)
     {
         File* d = getFileByVnode(dir);
         uint32_t cluster = getLastCluster(d);
@@ -486,14 +497,8 @@ public:
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
-        File* d = getFileByVnode(dir);
-        uint32_t cluster = getLastCluster(d);
         if (isLongName(file)) {
-            uint32_t requiredNumEntries = (file.size() + 12) / 13 + 1;
-            int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
-            // todo
-            ASSERT(ret == M_OK);
-            return MONA_SUCCESS;
+            return createLongNameFile(dir, file);
         } else {
             return createShortNameFile(dir, file);
         }
