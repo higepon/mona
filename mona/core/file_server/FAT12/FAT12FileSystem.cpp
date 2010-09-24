@@ -119,7 +119,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
 
 int FAT12FileSystem::open(Vnode* file, int mode)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::create(Vnode* dir, const string& file)

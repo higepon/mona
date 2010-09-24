@@ -255,7 +255,7 @@ public:
 
     virtual int open(Vnode* vnode, intptr_t mode)
     {
-        return MONA_SUCCESS;
+        return M_OK;
     }
     virtual int read(Vnode* vnode, struct io::Context* context)
     {

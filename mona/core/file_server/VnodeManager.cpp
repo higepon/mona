@@ -158,7 +158,7 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
 
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) {
-        return MONA_ERROR_INVALID_ARGUMENTS;
+        return M_UNKNOWN;
     }
 
     // remove first '/'. fix me
@@ -168,25 +168,25 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
         if (mode & FILE_CREATE) {
             int ret = create(name);
             if (MONA_SUCCESS != ret) {
-                return ret;
+                return M_UNKNOWN;
             }
             if (lookup(root_, filename, &file) != MONA_SUCCESS) {
-                return MONA_ERROR_ENTRY_NOT_FOUND;
+                return M_FILE_NOT_FOUND;
             }
         } else {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
     } else {
         // found case
         if (mode & FILE_TRUNCATE) {
             int ret = file->fs->truncate(file);
             if (ret != MONA_SUCCESS) {
-                return ret;
+                return M_UNKNOWN;
             }
         }
     }
     int ret = file->fs->open(file, mode);
-    if (MONA_SUCCESS != ret) {
+    if (M_OK != ret) {
         return ret;
     }
     *fileID = this->fileID(file, tid);
@@ -194,7 +194,7 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
     fileInfoMap_.insert(pair< uint32_t, FileInfo* >(*fileID, fileInfo));
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 Vnode* VnodeManager::alloc()

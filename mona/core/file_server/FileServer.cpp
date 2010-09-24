@@ -172,7 +172,7 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
     uint32_t fileID;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     int ret = vmanager_->open(file, 0, tid, &fileID);
-    if (ret != MONA_SUCCESS) return NULL;
+    if (ret != M_OK) return NULL;
 
     Stat st;
     ret = vmanager_->stat(fileID, &st);
@@ -208,7 +208,7 @@ void FileServer::messageLoop()
             uint32_t fildID;
             intptr_t mode = msg.arg1;
             int ret = vmanager_->open(upperCase(msg.str).c_str(), mode, tid, &fildID);
-            Message::reply(&msg, ret == MONA_SUCCESS ? fildID : M_FILE_NOT_FOUND);
+            Message::reply(&msg, ret == M_OK ? fildID : M_FILE_NOT_FOUND);
             break;
         }
         case MSG_FILE_READ_ALL:

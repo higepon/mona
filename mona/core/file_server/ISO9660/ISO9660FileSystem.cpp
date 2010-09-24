@@ -71,7 +71,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
 
 int ISO9660FileSystem::open(Vnode* file, intptr_t mode)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::create(Vnode* dir, const string& file)

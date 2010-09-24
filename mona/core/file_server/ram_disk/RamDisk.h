@@ -181,7 +181,7 @@ namespace RamDisk {
 
           virtual int open(Vnode* file, intptr_t mode)
             {
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
           virtual int truncate(Vnode* file)
