@@ -417,125 +417,106 @@ public:
 
     int createLongNameFile(Vnode* dir, const std::string& file)
     {
+        logprintf("long = %s\n", file.c_str());
         if (file.size() > MAX_LONG_NAME) {
             return M_NO_SPACE;
         }
-        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+        uint32_t cluster = getLastClusterByVnode(dir);
         uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) / LFN_NAME_LEN_PER_ENTRY + 1;
-
-        // It seems that vfat on Linux doesn't allow lfn entries clusterred into multiple clusters.
-        if (requiredNumEntries > ENTRIES_PER_CLUSTER) {
-            return M_NO_SPACE;
-        }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        uint32_t lastCluster = getLastClusterByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(lastCluster, buf)) {
+        if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
 
-        uint32_t extraCluster = END_OF_CLUSTER;
-        if (allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) == M_NO_SPACE) {
+        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
+        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+        Clusters newClusters;
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            extraCluster = allocateCluster();
-            if (isEndOfCluster(extraCluster)) {
+        if (allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) == M_NO_SPACE) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            int requiredRest = requiredNumEntries - entryIndexes.size();
+            int requiredNumClusters = (requiredRest + ENTRIES_PER_CLUSTER - 1) / ENTRIES_PER_CLUSTER;
+            ASSERT(requiredNumClusters <= 2);
+            if (!allocateClusters(newClusters, requiredNumClusters)) {
                 return M_NO_SPACE;
             }
+        }
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            updateFatNoFlush(lastCluster, extraCluster);
-            updateFatNoFlush(extraCluster, END_OF_CLUSTER);
+        if (!newClusters.empty()) {
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            updateFatNoFlush(cluster, newClusters[0]);
+            for (uint32_t i = 0; i < newClusters.size() - 1; i++) {
+                updateFatNoFlush(newClusters[i], newClusters[i + 1]);
+            }
+            updateFatNoFlush(newClusters[newClusters.size() - 1], END_OF_CLUSTER);
             if (flushDirtyFat() != MONA_SUCCESS) {
                 return M_WRITE_ERROR;
             }
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
         LFNEncoder encoder;
         uint32_t encodedLen;
-        static int c = 12345678;
-        
-//        const char* DUMMY_SHORT_NAME = "SHORT   ";
-        char DUMMY_SHORT_NAME[64];
-        sprintf(DUMMY_SHORT_NAME, "%d", c++);
-        logprintf("short name=%s longname = %s\n", DUMMY_SHORT_NAME, file.c_str());
+        const char* DUMMY_SHORT_NAME = "SHORT   ";
         const char* DUMMY_SHORT_EXT = "TXT";
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
-        logprintf("%s %s:%d size=%d\n", __func__, __FILE__, __LINE__, entryIndexes.size());
         int seq = requiredNumEntries - 1;
-        logprintf("org seq=%d\n", seq);
-        if (isEndOfCluster(extraCluster)) {
-        for (uint32_t i = 0; entryIndexes.size() > 0 && i < entryIndexes.size() - 1; i++) {
+        for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
             struct lfn* p = (struct lfn*)(buf) + entryIndexes[i].second;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             memset(p, 0, sizeof(struct lfn));
             p->attr = ATTR_LFN;
             p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
             memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
             memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
             memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             p->seq = seq--;
             if (i == 0) {
                 // The last LFN entry comes first in the cluster
                 p->seq |= LAST_LFN_ENTRY;
             }
         }
-        }
-        if (!isEndOfCluster(extraCluster)) {
-            for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
-                    struct de* p = (struct de*)(buf) + index;
-                if (p->name[0] == AVAILABLE_ENTRY) {
-                    p->name[0] = FREE_ENTRY;
-                }
-            }
-        }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        if (isEndOfCluster(extraCluster)) {
+        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1].second);
+        if (newClusters.empty()) {
             logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
             initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-            createAndAddFile(dir, file, lastCluster, entryIndexes[entryIndexes.size() - 1].second);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        if (!writeCluster(lastCluster, buf)) {
+        if (!writeCluster(cluster, buf)) {
             return M_WRITE_ERROR;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        if (!isEndOfCluster(extraCluster)) {
-            memset(buf, 0, getClusterSizeByte());
-            for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
-                struct lfn* p = (struct lfn*)(buf) + index;
-                if (seq == 0) {
-                    logprintf("extra <%s> index=%d\n", file.c_str(), index);
-                    struct de* entry = (struct de*)buf + index;
-                    initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                    createAndAddFile(dir, file, extraCluster, index);
-                    break;
-                } else {
-                    p->attr = ATTR_LFN;
-                    p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                    const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                    memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-                    memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-                    memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-                    p->seq = seq--;
-                    if (p->seq == requiredNumEntries - 1) {
-                        logprintf("should come here %d\n", index);
-                        // The last LFN entry comes first in the cluster
-                        p->seq |= LAST_LFN_ENTRY;
+        if (!newClusters.empty()) {
+            for (Clusters::const_iterator it = newClusters.begin(); it != newClusters.end(); ++it) {
+                memset(buf, 0, getClusterSizeByte());
+                for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
+                    struct lfn* p = (struct lfn*)(buf) + index;
+                    memset(p, 0, sizeof(struct lfn));
+                    if (seq == 0) {
+                        struct de* entry = (struct de*)buf + index;
+                        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                        break;
+                    } else {
+                        if (seq == requiredNumEntries - 1) {
+                            // The last LFN entry comes first in the cluster
+                            p->seq |= LAST_LFN_ENTRY;
+                        }
+
+                        p->attr = ATTR_LFN;
+                        p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                        const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+                        memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                        memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+                        memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                        p->seq = seq--;
                     }
                 }
-            }
-            if (!writeCluster(extraCluster, buf)) {
-                return M_WRITE_ERROR;
+                if (!writeCluster(*it, buf)) {
+                    return M_WRITE_ERROR;
+                }
+                if (seq == 1) {
+                    break;
+                }
             }
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_OK;
     }
 
