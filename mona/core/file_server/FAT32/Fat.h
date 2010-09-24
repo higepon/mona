@@ -483,14 +483,6 @@ public:
                 }
             }
         }
-        // if (!isEndOfCluster(extraCluster)) {
-        //     for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
-        //             struct de* p = (struct de*)(buf) + index;
-        //         if (p->name[0] == AVAILABLE_ENTRY) {
-        //             p->name[0] = FREE_ENTRY;
-        //         }
-        //     }
-        // }
         if (!writeCluster(lastCluster, buf)) {
             return M_WRITE_ERROR;
         }
