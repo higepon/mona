@@ -367,10 +367,10 @@ public:
             memset(p, 0, sizeof(struct lfn));
             p->attr = ATTR_LFN;
             p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-            const int NAME_LEN_PER_ENTRY = 26;
-            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY, sizeof(p->name1));
-            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+            const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
             p->seq = seq--;
             if (i == 0) {
                 // The last LFN entry comes first in the cluster
@@ -457,9 +457,8 @@ public:
 
     int createLongNameFile(Vnode* dir, const std::string& file)
     {
-        File* d = getFileByVnode(dir);
-        uint32_t cluster = getLastCluster(d);
-        uint32_t requiredNumEntries = (file.size() + 12) / 13 + 1;
+        uint32_t cluster = getLastClusterByVnode(dir);
+        uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) /LFN_NAME_LEN_PER_ENTRY + 1;
         int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
         // todo
         ASSERT(ret == M_OK);
@@ -468,8 +467,7 @@ public:
 
     int createShortNameFile(Vnode* dir, const std::string& file)
     {
-        File* d = getFileByVnode(dir);
-        uint32_t cluster = getLastCluster(d);
+        uint32_t cluster = getLastClusterByVnode(dir);
         int ret = tryCreateNewEntryInCluster(dir, file, cluster);
         if (ret == M_OK) {
             return MONA_SUCCESS;
@@ -816,6 +814,11 @@ private:
         return cluster;
     }
 
+    uint32_t getLastClusterByVnode(Vnode* vnode)
+    {
+        return getLastCluster(getFileByVnode(vnode));
+    }
+
     uint32_t getLastCluster(File* entry)
     {
         for (uint32_t cluster = entry->getStartCluster(); ; cluster = fat_[cluster]) {
@@ -1032,6 +1035,7 @@ private:
         ATTR_LFN = 0x0f,
         LAST_LFN_ENTRY = 0x40,
         END_OF_CLUSTER = 0x0FFFFFF8,
+        LFN_NAME_LEN_PER_ENTRY = 13,
         forbiddend_comma
     };
 
