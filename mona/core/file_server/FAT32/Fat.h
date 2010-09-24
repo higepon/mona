@@ -460,7 +460,7 @@ public:
         uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
         startIndex = inExtraCluster ? 0 :startIndex;
         for (uint32_t i = startIndex; ; i++) {
-            ASSERT(i < ENTRIES_PER_CLUSTER);
+            ASSERT(i < (uint32_t)ENTRIES_PER_CLUSTER);
             if (i == startIndex + requiredNumEntries - 1) {
                 struct de* entry = (struct de*)buf + i;
                 initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
