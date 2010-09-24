@@ -424,34 +424,27 @@ public:
         uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) / LFN_NAME_LEN_PER_ENTRY + 1;
 
         // It seems that vfat on Linux doesn't allow lfn entries clusterred into multiple clusters.
+        // But I'm not sure :D.
         if (requiredNumEntries > ENTRIES_PER_CLUSTER) {
             return M_NO_SPACE;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint32_t lastCluster = getLastClusterByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(lastCluster, buf)) {
             return M_READ_ERROR;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
 
+        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
         uint32_t extraCluster = END_OF_CLUSTER;
         if (allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) == M_NO_SPACE) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             extraCluster = allocateCluster();
             if (isEndOfCluster(extraCluster)) {
                 return M_NO_SPACE;
             }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            updateFatNoFlush(lastCluster, extraCluster);
-            updateFatNoFlush(extraCluster, END_OF_CLUSTER);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            if (flushDirtyFat() != MONA_SUCCESS) {
-                return M_WRITE_ERROR;
+            if (int ret = expandFile(lastCluster, extraCluster) != M_OK) {
+                return ret;
             }
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         LFNEncoder encoder;
         uint32_t encodedLen;
         static int c = 12345678;
@@ -965,10 +958,7 @@ private:
             std::vector<std::string> partialLongNames;
             uint32_t index = 0;
             for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
-                if (entry->name[0] == AVAILABLE_ENTRY) {
-                    return true;
-                }
-                if (entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
+                if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
                     continue;
                 }
                 // Long file name
@@ -1214,6 +1204,16 @@ private:
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, entry->getStartCluster(), entry->getSize());
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
+            return M_WRITE_ERROR;
+        }
+        return M_OK;
+    }
+
+    int expandFile(uint32_t lastCluster, uint32_t newCluster)
+    {
+        updateFatNoFlush(lastCluster, newCluster);
+        updateFatNoFlush(newCluster, END_OF_CLUSTER);
+        if (flushDirtyFat() != MONA_SUCCESS) {
             return M_WRITE_ERROR;
         }
         return M_OK;
