@@ -362,21 +362,20 @@ public:
         for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
             struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
             memset(p, 0, sizeof(struct lfn));
-
             p->attr = ATTR_LFN;
             p->chksum = checksum("SHORT   TXT");
-
-            memcpy(p->name1, encodedName.get() + (seq - 1) *26, sizeof(p->name1));
-            memcpy(p->name2, encodedName.get() + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
-            memcpy(p->name3, encodedName.get() + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+            const int NAME_LEN_PER_ENTRY = 26;
+            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY, sizeof(p->name1));
+            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
             p->seq = seq--;
             if (i == 0) {
-                p->seq |= 0x40;
+                // The last LFN entry comes first in cluster
+                p->seq |= LAST_LFN_ENTRY;
             }
         }
         createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
-        struct de* entry = (struct de*)buf;
-        entry += entryIndexes[entryIndexes.size() - 1];
+        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1];
         initializeEntry(entry, "SHORT.TXT");
         if (writeCluster(cluster, buf)) {
             return M_OK;
@@ -1017,6 +1016,8 @@ private:
         SECTOR_SIZE = 512,
         ATTR_SUBDIR = 0x10,
         ATTR_LFN = 0x0f,
+        LAST_LFN_ENTRY = 0x40,
+        END_OF_CLUSTER = 0x0FFFFFF8,
         forbiddend_comma
     };
 
@@ -1072,10 +1073,6 @@ private:
         uint8_t name2[12];         /* name2 */
         uint8_t clus[2];           /* starting cluster */
         uint8_t name3[4];           /* name3 */
-    };
-
-    enum {
-        END_OF_CLUSTER = 0x0FFFFFF8
     };
 
     uint16_t packDate(uint16_t year, uint8_t month, uint8_t day)
