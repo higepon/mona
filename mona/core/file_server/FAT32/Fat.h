@@ -359,9 +359,8 @@ public:
         uint32_t encodedLen;
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = numEntries - 1;
-        for (std::vector<uint32_t>::iterator it = entryIndexes.begin(); it != entryIndexes.end() && seq > 0; ++it) {
-            struct lfn* p = (struct lfn*)(buf);
-            p += *it;
+        for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
+            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
             memset(p, 0, sizeof(struct lfn));
 
             p->attr = ATTR_LFN;
@@ -371,7 +370,7 @@ public:
             memcpy(p->name2, encodedName.get() + (seq - 1)*26 + sizeof(p->name1), sizeof(p->name2));
             memcpy(p->name3, encodedName.get() + (seq - 1)*26 +  sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
             p->seq = seq--;
-            if (it == entryIndexes.begin()) {
+            if (i == 0) {
                 p->seq |= 0x40;
             }
         }
