@@ -398,7 +398,7 @@ static void test_fatfs_truncate()
     EXPECT_EQ(6, file->getSize());
 
     uint32_t prevFreeSize = fat->getFreeSize();
-    ASSERT_EQ(MONA_SUCCESS, fat->truncate(found));
+    ASSERT_EQ(M_OK, fat->truncate(found));
     EXPECT_EQ(512, fat->getFreeSize() - prevFreeSize);
     EXPECT_EQ(0, file->getSize());
 }

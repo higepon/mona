@@ -184,7 +184,7 @@ namespace RamDisk {
           {
               FileInfo* f = (FileInfo*)file->fnode;
               f->truncate();
-              return MONA_SUCCESS;
+              return M_OK;
           }
 
           virtual int create(Vnode* dir, const std::string& file)

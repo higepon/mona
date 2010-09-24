@@ -180,8 +180,8 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
         // found case
         if (mode & FILE_TRUNCATE) {
             int ret = file->fs->truncate(file);
-            if (ret != MONA_SUCCESS) {
-                return M_UNKNOWN;
+            if (ret != M_OK) {
+                return ret;
             }
         }
     }

@@ -409,10 +409,10 @@ public:
         ASSERT(vnode->type == Vnode::REGULAR);
         File* entry = getFileByVnode(vnode);
         if (entry->getSize() == 0) {
-            return MONA_SUCCESS;
+            return M_OK;
         }
         if (!readCluster(entry->getClusterInParent(), buf_)) {
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, 0, 0);
@@ -422,11 +422,11 @@ public:
         }
 
         if (freeClusters(entry) != MONA_SUCCESS) {
-            return MONA_FAILURE;
+            return M_WRITE_ERROR;
         }
         entry->setStartCluster(0);
         entry->setSize(0);
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int delete_file(Vnode* vnode)
