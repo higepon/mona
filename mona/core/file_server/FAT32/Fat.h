@@ -455,6 +455,34 @@ public:
         return name.size() > 11;
     }
 
+    virtual int createShortNameFile(Vnode* dir, const std::string& file)
+    {
+        File* d = getFileByVnode(dir);
+        uint32_t cluster = getLastCluster(d);
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
+        if (ret == M_OK) {
+            return MONA_SUCCESS;
+        } else if (ret == M_NO_SPACE) {
+            uint32_t newCluster = allocateCluster();
+            if (isEndOfCluster(newCluster)) {
+                return MONA_FAILURE;
+            }
+
+            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+                return MONA_FAILURE;
+            }
+
+            updateFatNoFlush(cluster, newCluster);
+            updateFatNoFlush(newCluster, END_OF_CLUSTER);
+
+            if (flushDirtyFat() != MONA_SUCCESS) {
+                return MONA_FAILURE;
+            }
+            return MONA_SUCCESS;
+        } else {
+            return MONA_FAILURE;
+        }
+    }
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
@@ -467,29 +495,7 @@ public:
             ASSERT(ret == M_OK);
             return MONA_SUCCESS;
         } else {
-            int ret = tryCreateNewEntryInCluster(dir, file, cluster);
-            if (ret == M_OK) {
-                return MONA_SUCCESS;
-            } else if (ret == M_NO_SPACE) {
-                uint32_t newCluster = allocateCluster();
-                if (isEndOfCluster(newCluster)) {
-                    return MONA_FAILURE;
-                }
-
-                if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
-                    return MONA_FAILURE;
-                }
-
-                updateFatNoFlush(cluster, newCluster);
-                updateFatNoFlush(newCluster, END_OF_CLUSTER);
-
-                if (flushDirtyFat() != MONA_SUCCESS) {
-                    return MONA_FAILURE;
-                }
-                return MONA_SUCCESS;
-            } else {
-                return MONA_FAILURE;
-            }
+            return createShortNameFile(dir, file);
         }
     }
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)
