@@ -375,10 +375,7 @@ public:
                 p->seq |= 0x40;
             }
         }
-        File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
-        File* d = getFileByVnode(dir);
-        d->addChild(fileEntry);
-        fileEntry->setParent(d);
+        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
         struct de* entry = (struct de*)buf;
         entry += entryIndexes[entryIndexes.size() - 1];
         setupNewEntry(entry, "SHORT.TXT");
@@ -387,6 +384,14 @@ public:
         } else {
             return M_WRITE_ERROR;
         }
+    }
+
+    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
+    {
+        File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
+        File* d = getFileByVnode(dir);
+        d->addChild(file);
+        file->setParent(d);
     }
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
@@ -400,10 +405,7 @@ public:
         struct de* entries = (struct de*)buf;
         for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                File* fileEntry = new File(file, 0, 0, cluster, i);
-                File* d = getFileByVnode(dir);
-                d->addChild(fileEntry);
-                fileEntry->setParent(d);
+                createAndAddFile(dir, file, cluster, i);
                 setupNewEntry(&entries[i], file);
                 if (writeCluster(cluster, buf)) {
                     return M_OK;
