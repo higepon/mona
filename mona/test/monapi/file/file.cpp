@@ -482,13 +482,13 @@ static void test_fatfs_lookup_file_long_name()
 static void test_fatfs_create_long_file_name(const char* filename)
 {
     {
-    TestFatFS fs;
-    FatFileSystem* fat = fs.get();
-    Vnode* root = fat->getRoot();
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        Vnode* root = fat->getRoot();
 
-    Vnode* subdir;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
-    createEmptyfile(fat, subdir, filename);
+        Vnode* subdir;
+        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+        createEmptyfile(fat, subdir, filename);
     }
     {
         TestFatFS fs;

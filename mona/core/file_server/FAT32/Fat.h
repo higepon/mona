@@ -341,8 +341,8 @@ public:
         ASSERT(ext.size() == 3);
         std::string file = name + ext;
         unsigned char sum = 0;
-        for (int i = 11; i; i--) {
-            sum = ((sum & 1) << 7) + (sum >> 1) + file[i];
+        for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
+            sum = ((sum & 1) << 7) + (sum >> 1) + *it;
         }
         return sum;
     }
@@ -417,29 +417,33 @@ public:
 
     int createLongNameFile(Vnode* dir, const std::string& file)
     {
+        logprintf("long = %s\n", file.c_str());
         if (file.size() > MAX_LONG_NAME) {
             return M_NO_SPACE;
         }
         uint32_t cluster = getLastClusterByVnode(dir);
-        uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) /LFN_NAME_LEN_PER_ENTRY + 1;
+        uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) / LFN_NAME_LEN_PER_ENTRY + 1;
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
         }
 
         std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
+        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
         Clusters newClusters;
-        if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) != M_OK) {
-            ASSERT(ret == M_NO_SPACE);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) == M_NO_SPACE) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             int requiredRest = requiredNumEntries - entryIndexes.size();
-            const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
             int requiredNumClusters = (requiredRest + ENTRIES_PER_CLUSTER - 1) / ENTRIES_PER_CLUSTER;
             ASSERT(requiredNumClusters <= 2);
             if (!allocateClusters(newClusters, requiredNumClusters)) {
                 return M_NO_SPACE;
             }
         }
-        if (newClusters.size()) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (!newClusters.empty()) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             updateFatNoFlush(cluster, newClusters[0]);
             for (uint32_t i = 0; i < newClusters.size() - 1; i++) {
                 updateFatNoFlush(newClusters[i], newClusters[i + 1]);
@@ -472,13 +476,34 @@ public:
             }
         }
         createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1].second);
-        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
-        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-        if (writeCluster(cluster, buf)) {
-            return M_OK;
-        } else {
+        if (newClusters.empty()) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
+            initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+        }
+        if (!writeCluster(cluster, buf)) {
             return M_WRITE_ERROR;
         }
+        if (!newClusters.empty()) {
+            for (Clusters::const_iterator it = newClusters.begin(); it != newClusters.end(); ++it) {
+                memset(buf, 0, getClusterSizeByte());
+                for (int i = 0; i < ENTRIES_PER_CLUSTER && seq > 0; i++) {
+                    struct lfn* p = (struct lfn*)(buf) + i;
+                    memset(p, 0, sizeof(struct lfn));
+                    p->attr = ATTR_LFN;
+                    p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                    const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+                    memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                    memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+                    memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                    p->seq = seq--;
+                }
+                if (!writeCluster(*it, buf)) {
+                    return M_WRITE_ERROR;
+                }
+            }
+        }
+        return M_OK;
     }
 
     int createShortNameFile(Vnode* dir, const std::string& file)
