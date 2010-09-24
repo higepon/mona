@@ -487,19 +487,33 @@ public:
         if (!newClusters.empty()) {
             for (Clusters::const_iterator it = newClusters.begin(); it != newClusters.end(); ++it) {
                 memset(buf, 0, getClusterSizeByte());
-                for (int i = 0; i < ENTRIES_PER_CLUSTER && seq > 0; i++) {
-                    struct lfn* p = (struct lfn*)(buf) + i;
+                for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
+                    struct lfn* p = (struct lfn*)(buf) + index;
                     memset(p, 0, sizeof(struct lfn));
-                    p->attr = ATTR_LFN;
-                    p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                    const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                    memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-                    memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-                    memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-                    p->seq = seq--;
+                    if (seq == 0) {
+                        struct de* entry = (struct de*)buf + index;
+                        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                        break;
+                    } else {
+                        if (seq == requiredNumEntries - 1) {
+                            // The last LFN entry comes first in the cluster
+                            p->seq |= LAST_LFN_ENTRY;
+                        }
+
+                        p->attr = ATTR_LFN;
+                        p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                        const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+                        memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                        memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+                        memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                        p->seq = seq--;
+                    }
                 }
                 if (!writeCluster(*it, buf)) {
                     return M_WRITE_ERROR;
+                }
+                if (seq == 1) {
+                    break;
                 }
             }
         }
