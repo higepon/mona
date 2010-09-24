@@ -345,7 +345,6 @@ public:
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
-        File* d = getFileByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
@@ -377,6 +376,7 @@ public:
             }
         }
         File* fileEntry = new File(file, 0, 0, cluster, entryIndexes[entryIndexes.size() - 1]);
+        File* d = getFileByVnode(dir);
         d->addChild(fileEntry);
         fileEntry->setParent(d);
         struct de* entry = (struct de*)buf;
@@ -391,19 +391,20 @@ public:
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
     {
-        File* d = getFileByVnode(dir);
         uint8_t buf[getClusterSizeByte()];
         if (!readCluster(cluster, buf)) {
             return M_READ_ERROR;
         }
 
-        uint32_t index = 0;
-        for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
-            if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == FREE_ENTRY) {
-                File* fileEntry = new File(file, 0, 0, cluster, index);
+        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+        struct de* entries = (struct de*)buf;
+        for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
+            if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
+                File* fileEntry = new File(file, 0, 0, cluster, i);
+                File* d = getFileByVnode(dir);
                 d->addChild(fileEntry);
                 fileEntry->setParent(d);
-                setupNewEntry(entry, file);
+                setupNewEntry(&entries[i], file);
                 if (writeCluster(cluster, buf)) {
                     return M_OK;
                 } else {
