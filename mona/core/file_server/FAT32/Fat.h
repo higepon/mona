@@ -449,10 +449,7 @@ public:
         }
         LFNEncoder encoder;
         uint32_t encodedLen;
-        static int c = 12345678;
-
-        char DUMMY_SHORT_NAME[64];
-        sprintf(DUMMY_SHORT_NAME, "%d", c++);
+        const char* DUMMY_SHORT_NAME = "SHORT   ";
         const char* DUMMY_SHORT_EXT = "TXT";
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = requiredNumEntries - 1;
