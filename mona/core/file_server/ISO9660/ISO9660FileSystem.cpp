@@ -46,7 +46,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     if (v != NULL && v->type == type)
     {
         *found = v;
-        return MONA_SUCCESS;
+        return M_OK;
     }
     Entry* directoryEntry = (Entry*)diretory->fnode;
     Entry* target = NULL;
@@ -59,14 +59,14 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     {
         target = lookupDirectory(directoryEntry, file);
     }
-    if (target == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (target == NULL) return M_FILE_NOT_FOUND;
     Vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = target;
     newVnode->type = type;
     newVnode->fs = this;
     vmanager_->cacher()->add(diretory, file, newVnode);
     *found = newVnode;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::open(Vnode* file, intptr_t mode)
@@ -76,7 +76,7 @@ int ISO9660FileSystem::open(Vnode* file, intptr_t mode)
 
 int ISO9660FileSystem::create(Vnode* dir, const string& file)
 {
-    return MONA_FAILURE;
+    return M_WRITE_ERROR;
 }
 
 int ISO9660FileSystem::write(Vnode* file, struct io::Context* context)

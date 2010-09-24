@@ -67,10 +67,10 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
     if (v != NULL && v->type == type)
     {
         *found = v;
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
-    if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return M_FILE_NOT_FOUND;
 
     int entry;
     int cursor;
@@ -80,7 +80,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
 
     if (d == NULL)
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     if (type == Vnode::REGULAR)
@@ -89,7 +89,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         if (f == NULL)
         {
             freeDirectory(d);
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
         Vnode* newVnode = vmanager_->alloc();
         newVnode->fnode  = f;
@@ -97,7 +97,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         newVnode->fs = this;
         vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
-        return MONA_SUCCESS;
+        return M_OK;
     }
     else // Vnode::DIRECTORY
     {
@@ -105,7 +105,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         if (dir == NULL)
         {
             freeDirectory(d);
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
         Vnode* newVnode = vmanager_->alloc();
         newVnode->fnode  = dir;
@@ -113,7 +113,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         newVnode->fs = this;
         vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
-        return MONA_SUCCESS;
+        return M_OK;
     }
 }
 

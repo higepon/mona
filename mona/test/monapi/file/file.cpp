@@ -143,7 +143,7 @@ static void test_fatfs_lookup()
     FatFileSystem* fat = fs.get();
     Vnode* root = fat->getRoot();
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
     FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ("TEST2.TXT", file->getName().c_str());
     EXPECT_EQ(6, file->getSize());
@@ -156,7 +156,7 @@ static void test_fatfs_read_file()
     Vnode* root = fat->getRoot();
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
     io::Context c;
     c.offset = 0;
     c.size   = 256;
@@ -177,7 +177,7 @@ static void test_fatfs_read_file_with_offset()
     Vnode* root = fat->getRoot();
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, "TEST2.TXT", &found, Vnode::REGULAR));
     io::Context c;
     c.offset = 2;
     c.size   = 256;
@@ -198,7 +198,7 @@ static void test_fatfs_read_file_multiple_clusters()
     Vnode* root = fat->getRoot();
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "HIGE.TXT", &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, "HIGE.TXT", &found, Vnode::REGULAR));
     io::Context c;
     c.offset = 514;
     c.size   = 1000;
@@ -217,7 +217,7 @@ static void createEmptyfile(FatFileSystem* fat, Vnode* dir, const std::string& f
 {
     Vnode* found;
     ASSERT_EQ(M_OK, fat->create(dir, filename));
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(dir, filename, &found, Vnode::REGULAR));
     FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ(filename, file->getName().c_str());
     EXPECT_EQ(0, file->getSize());
@@ -252,7 +252,7 @@ static void test_fatfs_create_empty_file_need_new_cluster()
 static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* dir, const std::string& filename)
 {
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(dir, filename, &found, Vnode::REGULAR));
     c.offset = 0;
     c.size   = ((FatFileSystem::File*)(found->fnode))->getSize();
     EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
@@ -267,7 +267,7 @@ static void test_fatfs_write_file()
     const char* FILENAME = "MY1.TXT";
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
     const int BUFFER_SIZE = 1029;
 
@@ -300,7 +300,7 @@ static void test_fatfs_write_file_overwrite()
     const char* FILENAME = "MY1.TXT";
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
     const int BUFFER_SIZE = 10;
 
@@ -337,7 +337,7 @@ static void test_fatfs_write_file_overwrite_expand()
     const char* FILENAME = "MY1.TXT";
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
     const int BUFFER_SIZE = 1540;
 
@@ -374,7 +374,7 @@ static void test_fatfs_delete_file()
     const char* FILENAME = "HIGE.TXT";
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
     FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_EQ(3893, file->getSize());
 
@@ -393,7 +393,7 @@ static void test_fatfs_truncate()
     const char* FILENAME = "TEST1.TXT";
 
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
     FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_EQ(6, file->getSize());
 
@@ -437,7 +437,7 @@ static void test_fatfs_lookup_subdir()
     FatFileSystem* fat = fs.get();
     Vnode* root = fat->getRoot();
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &found, Vnode::DIRECTORY));
+    ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &found, Vnode::DIRECTORY));
     FatFileSystem::File* dir = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ("SUBDIR", dir->getName().c_str());
     EXPECT_EQ(2, dir->getChildlen()->size());
@@ -451,9 +451,9 @@ static void test_fatfs_read_file_subdir(const char* fileName, const char* expect
 
     Vnode* subdir;
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+    ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
 
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, fileName, &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(subdir, fileName, &found, Vnode::REGULAR));
     io::Context c;
     c.offset = 0;
     c.size   = 256;
@@ -474,9 +474,9 @@ static void test_fatfs_lookup_file_long_name()
 
     Vnode* subdir;
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+    ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
 
-    ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, "this_is_very_long_file_name.txt", &found, Vnode::REGULAR));
+    ASSERT_EQ(M_OK, fat->lookup(subdir, "this_is_very_long_file_name.txt", &found, Vnode::REGULAR));
 }
 
 static void test_fatfs_create_long_file_name(const char* filename)
@@ -487,7 +487,7 @@ static void test_fatfs_create_long_file_name(const char* filename)
         Vnode* root = fat->getRoot();
 
         Vnode* subdir;
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+        ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
         createEmptyfile(fat, subdir, filename);
     }
     {
@@ -497,9 +497,9 @@ static void test_fatfs_create_long_file_name(const char* filename)
 
         Vnode* subdir;
         Vnode* found;
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
+        ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
 
-        ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
+        ASSERT_EQ(M_OK, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
     }
 
 }

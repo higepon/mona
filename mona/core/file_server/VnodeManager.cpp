@@ -23,9 +23,9 @@ int VnodeManager::delete_file(const std::string& name)
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_SUCCESS)
+    if (int ret = lookup(root_, filename, &file) != M_OK)
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return ret;
     }
     return file->fs->delete_file(file);
 }
@@ -34,14 +34,14 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
 {
     vector<string> directories;
     split(file, '/', directories);
-    int ret = MONA_FAILURE;
+    int ret = M_FILE_NOT_FOUND;
     Vnode* root = directory;
     for (uint32_t i = 0; i < directories.size(); i++)
     {
         string name = directories[i];
         int vtype = (i == directories.size() - 1) ? type : Vnode::DIRECTORY;
         ret = root->fs->lookup(root, name, found, vtype);
-        if (ret != MONA_SUCCESS) return ret;
+        if (ret != M_OK) return ret;
         // link
         if ((*found)->mountedVnode != NULL)
         {
@@ -77,9 +77,9 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     }
     else
     {
-        if (lookup(root_, filename, &dir, Vnode::DIRECTORY) != MONA_SUCCESS)
+        if (int ret = lookup(root_, filename, &dir, Vnode::DIRECTORY) != M_OK)
         {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return MONA_FAILURE;
         }
     }
     if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) {
@@ -138,8 +138,8 @@ int VnodeManager::create(const std::string& name)
         targetDirectory = root_;
     } else {
         string dirPath = name.substr(1, foundIndex - 1);
-        if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
-            return M_FILE_NOT_FOUND;
+        if (int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != M_OK) {
+            return ret;
         }
         filename = name.substr(foundIndex + 1, name.size() - foundIndex);
     }
@@ -164,13 +164,13 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_SUCCESS) {
+    if (lookup(root_, filename, &file) != M_OK) {
         if (mode & FILE_CREATE) {
             int ret = create(name);
             if (M_OK != ret) {
                 return ret;
             }
-            if (lookup(root_, filename, &file) != MONA_SUCCESS) {
+            if (lookup(root_, filename, &file) != M_OK) {
                 return M_FILE_NOT_FOUND;
             }
         } else {

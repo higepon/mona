@@ -229,11 +229,11 @@ public:
         Vnode* v = vnodeManager_.cacher()->lookup(diretory, file);
         if (v != NULL && v->type == type) {
             *found = v;
-            return MONA_SUCCESS;
+            return M_OK;
         }
 
         if (diretory->type != Vnode::DIRECTORY) {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
 
         File* dir = getFileByVnode(diretory);
@@ -247,10 +247,10 @@ public:
                 newVnode->fs = this;
                 vnodeManager_.cacher()->add(diretory, file, newVnode);
                 *found = newVnode;
-                return MONA_SUCCESS;
+                return M_OK;
             }
         }
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     virtual int open(Vnode* vnode, intptr_t mode)

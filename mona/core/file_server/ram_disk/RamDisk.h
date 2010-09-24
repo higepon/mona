@@ -159,15 +159,12 @@ namespace RamDisk {
                 if (v != NULL && v->type == type)
                   {
                       *found = v;
-                      return MONA_SUCCESS;
+                      return M_OK;
                   }
-
 
                 FileMap::iterator it = files_.find(file);
                 if(it == files_.end())
-                  return MONA_ERROR_ENTRY_NOT_FOUND;
-
-
+                  return M_FILE_NOT_FOUND;
 
                 Vnode* newVnode = vmanager_->alloc(); //never return NULL?
                 newVnode->fnode = (*it).second;
@@ -175,8 +172,7 @@ namespace RamDisk {
                 newVnode->fs = this;
                 vmanager_->cacher()->add(diretory, file, newVnode);
                 *found = newVnode;
-
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
           virtual int open(Vnode* file, intptr_t mode)
