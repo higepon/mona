@@ -427,11 +427,27 @@ public:
             return M_READ_ERROR;
         }
 
-        std::vector<uint32_t> entryIndexes;
+        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
+        Clusters newClusters;
         if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) != M_OK) {
-            // todo
-            ASSERT(false);
-            return ret;
+            ASSERT(ret == M_NO_SPACE);
+            int requiredRest = requiredNumEntries - entryIndexes.size();
+            const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+            int requiredNumClusters = (requiredRest + ENTRIES_PER_CLUSTER - 1) / ENTRIES_PER_CLUSTER;
+            ASSERT(requiredNumClusters <= 2);
+            if (!allocateClusters(newClusters, requiredNumClusters)) {
+                return M_NO_SPACE;
+            }
+        }
+        if (newClusters.size()) {
+            updateFatNoFlush(cluster, newClusters[0]);
+            for (uint32_t i = 0; i < newClusters.size() - 1; i++) {
+                updateFatNoFlush(newClusters[i], newClusters[i + 1]);
+            }
+            updateFatNoFlush(newClusters[newClusters.size() - 1], END_OF_CLUSTER);
+            if (flushDirtyFat() != MONA_SUCCESS) {
+                return M_WRITE_ERROR;
+            }
         }
 
         LFNEncoder encoder;
@@ -441,7 +457,7 @@ public:
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = requiredNumEntries - 1;
         for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
-            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
+            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i].second;
             memset(p, 0, sizeof(struct lfn));
             p->attr = ATTR_LFN;
             p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
@@ -455,8 +471,8 @@ public:
                 p->seq |= LAST_LFN_ENTRY;
             }
         }
-        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
-        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1];
+        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1].second);
+        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
         initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
         if (writeCluster(cluster, buf)) {
             return M_OK;
@@ -1198,14 +1214,14 @@ private:
         return MONA_SUCCESS;
     }
 
-    int allocateContigousEntries(struct de* entries, std::vector<uint32_t>& foundEntryIndexes, uint32_t numEntries)
+    int allocateContigousEntries(struct de* entries, std::vector< std::pair<struct de*, uint32_t> >& foundEntryIndexes, uint32_t numEntries)
     {
         for (uint32_t i = 0; i < getClusterSizeByte() / sizeof(struct de); i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                if (!foundEntryIndexes.empty() && foundEntryIndexes[foundEntryIndexes.size() - 1] != i - 1) {
+                if (!foundEntryIndexes.empty() && foundEntryIndexes[foundEntryIndexes.size() - 1].second != i - 1) {
                     foundEntryIndexes.clear();
                 }
-                foundEntryIndexes.push_back(i);
+                foundEntryIndexes.push_back(std::pair<struct de*, uint32_t>(entries, i));
                 if (foundEntryIndexes.size() == numEntries) {
                     return M_OK;
                 }

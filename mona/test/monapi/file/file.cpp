@@ -515,7 +515,7 @@ static void test_fatfs_create_long_file_name_need_new_cluster()
         const int ENTRY_SIZE = 32;
         MAX_ENTRY_PER_CLUSTER = fat->getClusterSizeByte() / ENTRY_SIZE;
     }
-    // we force long filname clustered into tow clusters.
+    // we force long filname clustered into two clusters.
     for (int i = 0; i < MAX_ENTRY_PER_CLUSTER; i++) {
         char buf[64];
         sprintf(buf, "hi_i_am_higepon_writing_fat_fs.mosh.sls%d", i);
