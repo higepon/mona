@@ -165,7 +165,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 
 int ISO9660FileSystem::close(Vnode* file)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::stat(Vnode* file, Stat* st)

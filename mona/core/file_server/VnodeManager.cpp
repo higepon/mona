@@ -237,20 +237,20 @@ int VnodeManager::close(uint32_t fileID)
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;
     fileInfo->context.memory = NULL;
     Vnode* file = fileInfo->vnode;
     int ret = file->fs->close(file);
-    if (MONA_SUCCESS != ret)
+    if (M_OK != ret)
     {
         return ret;
     }
     fileInfoMap_.erase(fileID);
     delete fileInfo;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int VnodeManager::stat(uint32_t fileID, Stat* st)

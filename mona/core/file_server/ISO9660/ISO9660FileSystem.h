@@ -6,6 +6,7 @@
 #include "IStorageDevice.h"
 #include "VnodeManager.h"
 #include "ISO9660.h"
+#include <sys/error.h>
 #include <vector>
 
 class ISO9660FileSystem : public FileSystem

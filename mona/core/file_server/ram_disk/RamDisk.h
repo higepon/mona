@@ -291,7 +291,7 @@ namespace RamDisk {
                 *entries = ret;
                 return MONA_SUCCESS;
             }
-          virtual int close(Vnode* file) { return MONA_SUCCESS; }
+          virtual int close(Vnode* file) { return M_OK; }
           virtual int delete_file(Vnode* file)
             {
                 if(file == root_)

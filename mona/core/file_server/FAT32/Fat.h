@@ -401,7 +401,7 @@ public:
 
     virtual int close(Vnode* vnode)
     {
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int truncate(Vnode* vnode)
