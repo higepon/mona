@@ -378,7 +378,7 @@ public:
         createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
         struct de* entry = (struct de*)buf;
         entry += entryIndexes[entryIndexes.size() - 1];
-        setupNewEntry(entry, "SHORT.TXT");
+        initializeEntry(entry, "SHORT.TXT");
         if (writeCluster(cluster, buf)) {
             return M_OK;
         } else {
@@ -406,7 +406,7 @@ public:
         for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
                 createAndAddFile(dir, file, cluster, i);
-                setupNewEntry(&entries[i], file);
+                initializeEntry(&entries[i], file);
                 if (writeCluster(cluster, buf)) {
                     return M_OK;
                 } else {
@@ -1099,7 +1099,7 @@ private:
         *((uint16_t*)entry->time) = packTime(date.hour(), date.min(), date.sec());
     }
 
-    void setupNewEntry(struct de* entry, const std::string filename)
+    void initializeEntry(struct de* entry, const std::string filename)
     {
         std::vector<std::string> nameAndExt = split(filename, '.');
         ASSERT(nameAndExt.size() == 2);
