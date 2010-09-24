@@ -34,13 +34,10 @@
 #include "vnode.h"
 #include "VnodeManager.h"
 
-// ToDo.
-//   Check allowed charactor set on file creation.
-//   Check duplicated name on same directory.
-
-// write
-// delete_file delete from cacher
-
+//  ToDo.
+//      Check allowed charactor set on file creation.
+//      Check duplicated name on same directory.
+//
 class StringUtil
 {
 public:
@@ -171,6 +168,40 @@ public:
 class FatFileSystem : public FileSystem
 {
 public:
+    FatFileSystem(VnodeManager& vnodeManager, IStorageDevice& dev) :
+        vnodeManager_(vnodeManager),
+        dev_(dev),
+        root_(vnodeManager.alloc()),
+        fat_(NULL),
+        buf_(NULL)
+    {
+        ASSERT(root_.get());
+
+        if (!readBootParameters()) {
+            monapi_fatal("can't read boot parameter block");
+        }
+
+        buf_ = new uint8_t[getClusterSizeByte()];
+        ASSERT(buf_);
+
+        if (!readFat()) {
+            monapi_fatal("can't read file allocation table");
+        }
+
+        if (!readAndSetupRootDirectory()) {
+            monapi_fatal("can't read root directory");
+        }
+    }
+
+    ~FatFileSystem()
+    {
+        if (buf_ != NULL) {
+            delete[] buf_;
+        }
+        if (fat_ != NULL) {
+            delete[] fat_;
+        }
+    }
 
     uint32_t getClusterSizeByte() const
     {
@@ -192,6 +223,7 @@ public:
     {
         return MONA_SUCCESS;
     }
+
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
     {
         Vnode* v = vnodeManager_.cacher()->lookup(diretory, file);
@@ -275,15 +307,6 @@ public:
         return MONA_SUCCESS;
     }
 
-    uint32_t sizeToNumClusters(uint32_t sizeByte) const
-    {
-        if (sizeByte == 0) {
-            return 1;
-        } else {
-            return (sizeByte + getClusterSizeByte() - 1) / getClusterSizeByte();
-        }
-    }
-
     virtual int write(Vnode* vnode, struct io::Context* context)
     {
         ASSERT(vnode->type == Vnode::REGULAR);
@@ -327,192 +350,6 @@ public:
         return context->size;
     }
 
-    uint8_t checksum(const std::string& name, const std::string& ext)
-    {
-        // name and ext should be rpad with space.
-        ASSERT(name.size() == 8);
-        ASSERT(ext.size() == 3);
-        std::string file = name + ext;
-        unsigned char sum = 0;
-        for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
-            sum = ((sum & 1) << 7) + (sum >> 1) + *it;
-        }
-        return sum;
-    }
-
-    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
-    {
-        File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
-        File* d = getFileByVnode(dir);
-        d->addChild(file);
-        file->setParent(d);
-    }
-
-    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
-    {
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(cluster, buf)) {
-            return M_READ_ERROR;
-        }
-
-        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
-        struct de* entries = (struct de*)buf;
-        for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
-            if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                createAndAddFile(dir, file, cluster, i);
-                initializeEntry(&entries[i], file);
-                if (writeCluster(cluster, buf)) {
-                    return M_OK;
-                } else {
-                    return M_WRITE_ERROR;
-                }
-            }
-        }
-        return M_NO_SPACE;
-    }
-
-    int flushFat(uint32_t cluster)
-    {
-        uint32_t fatStartSector = getReservedSectors();
-        uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
-        uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
-        if (dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE) != M_OK) {
-            monapi_warn("failed to update FAT");
-            return MONA_FAILURE;
-        } else {
-            return MONA_SUCCESS;
-        }
-    }
-
-    int flushDirtyFat()
-    {
-        for (std::map<uint32_t, uint32_t>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
-
-            if (flushFat(it->first) != MONA_SUCCESS) {
-                dirtyFat_.clear();
-                return MONA_FAILURE;
-            }
-        }
-        dirtyFat_.clear();
-        return MONA_SUCCESS;
-    }
-
-    void updateFatNoFlush(uint32_t index, uint32_t cluster)
-    {
-        fat_[index] = cluster;
-        dirtyFat_.insert(std::pair<uint32_t, uint32_t>(index, index));
-    }
-
-    bool isLongName(const std::string name) const
-    {
-        return name.size() > 11;
-    }
-
-    int createLongNameEntryInCluster(Vnode* dir, uint8_t* buf, uint32_t targetCluster, const std::string& file, uint32_t startIndex, uint32_t numEntries)
-    {
-        LFNEncoder encoder;
-        uint32_t encodedLen;
-        const char* DUMMY_SHORT_NAME = "SHORT   ";
-        const char* DUMMY_SHORT_EXT = "TXT";
-        MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
-
-        for (uint32_t i = startIndex, seq = numEntries - 1; ; i++) {
-            if (seq == 0) {
-                struct de* entry = (struct de*)buf + i;
-                initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                createAndAddFile(dir, file, targetCluster, i);
-                break;
-            } else {
-                struct lfn* p = (struct lfn*)(buf) + i;
-                memset(p, 0, sizeof(struct lfn));
-                p->attr = ATTR_LFN;
-                p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-                memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-                memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-                p->seq = seq--;
-                if (i == startIndex) {
-                    // The last LFN entry comes first in the cluster
-                    p->seq |= LAST_LFN_ENTRY;
-                }
-            }
-        }
-
-        if (!writeCluster(targetCluster, buf)) {
-                return M_WRITE_ERROR;
-        }
-        return M_OK;
-    }
-
-    int createLongNameFile(Vnode* dir, const std::string& file)
-    {
-        if (file.size() > MAX_LONG_NAME) {
-            return M_NO_SPACE;
-        }
-        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
-        uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) / LFN_NAME_LEN_PER_ENTRY + 1;
-
-        // It seems that vfat on Linux doesn't allow lfn entries clusterred into multiple clusters.
-        // But I'm not sure :D.
-        if (requiredNumEntries > (uint32_t)ENTRIES_PER_CLUSTER) {
-            return M_NO_SPACE;
-        }
-        uint32_t lastCluster = getLastClusterByVnode(dir);
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(lastCluster, buf)) {
-            return M_READ_ERROR;
-        }
-
-        uint32_t extraCluster = END_OF_CLUSTER;
-        int startIndex = 0;
-        if ((startIndex = allocateContigousEntries((struct de*)buf, requiredNumEntries)) < 0) {
-            ASSERT(startIndex == M_NO_SPACE);
-            extraCluster = allocateCluster();
-            if (isEndOfCluster(extraCluster)) {
-                return M_NO_SPACE;
-            }
-            if (int ret = expandFile(lastCluster, extraCluster) != M_OK) {
-                return ret;
-            }
-        }
-
-        bool inExtraCluster = !isEndOfCluster(extraCluster);
-        if (inExtraCluster) {
-            memset(buf, 0, getClusterSizeByte());
-        }
-        uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
-        startIndex = inExtraCluster ? 0 :startIndex;
-        return createLongNameEntryInCluster(dir, buf, targetCluster, file, startIndex, requiredNumEntries);
-    }
-
-    int createShortNameFile(Vnode* dir, const std::string& file)
-    {
-        uint32_t cluster = getLastClusterByVnode(dir);
-        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
-        if (ret == M_OK) {
-            return MONA_SUCCESS;
-        } else if (ret == M_NO_SPACE) {
-            uint32_t newCluster = allocateCluster();
-            if (isEndOfCluster(newCluster)) {
-                return MONA_FAILURE;
-            }
-
-            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
-                return MONA_FAILURE;
-            }
-
-            updateFatNoFlush(cluster, newCluster);
-            updateFatNoFlush(newCluster, END_OF_CLUSTER);
-
-            if (flushDirtyFat() != MONA_SUCCESS) {
-                return MONA_FAILURE;
-            }
-            return MONA_SUCCESS;
-        } else {
-            return MONA_FAILURE;
-        }
-    }
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
@@ -627,40 +464,6 @@ public:
     }
 
 
-    FatFileSystem(VnodeManager& vnodeManager, IStorageDevice& dev) :
-        vnodeManager_(vnodeManager),
-        dev_(dev),
-        root_(vnodeManager.alloc()),
-        fat_(NULL),
-        buf_(NULL)
-    {
-        ASSERT(root_.get());
-
-        if (!readBootParameters()) {
-            monapi_fatal("can't read boot parameter block");
-        }
-
-        buf_ = new uint8_t[getClusterSizeByte()];
-        ASSERT(buf_);
-
-        if (!readFat()) {
-            monapi_fatal("can't read file allocation table");
-        }
-
-        if (!readAndSetupRootDirectory()) {
-            monapi_fatal("can't read root directory");
-        }
-    }
-
-    ~FatFileSystem()
-    {
-        if (buf_ != NULL) {
-            delete[] buf_;
-        }
-        if (fat_ != NULL) {
-            delete[] fat_;
-        }
-    }
 
     Vnode* getRoot() const
     {
@@ -1247,6 +1050,201 @@ private:
     File* getFileByVnode(Vnode* vnode)
     {
         return (File*)(vnode->fnode);
+    }
+
+    uint32_t sizeToNumClusters(uint32_t sizeByte) const
+    {
+        if (sizeByte == 0) {
+            return 1;
+        } else {
+            return (sizeByte + getClusterSizeByte() - 1) / getClusterSizeByte();
+        }
+    }
+    uint8_t checksum(const std::string& name, const std::string& ext)
+    {
+        // name and ext should be rpad with space.
+        ASSERT(name.size() == 8);
+        ASSERT(ext.size() == 3);
+        std::string file = name + ext;
+        unsigned char sum = 0;
+        for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
+            sum = ((sum & 1) << 7) + (sum >> 1) + *it;
+        }
+        return sum;
+    }
+
+    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
+    {
+        File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
+        File* d = getFileByVnode(dir);
+        d->addChild(file);
+        file->setParent(d);
+    }
+
+    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
+    {
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(cluster, buf)) {
+            return M_READ_ERROR;
+        }
+
+        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+        struct de* entries = (struct de*)buf;
+        for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
+            if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
+                createAndAddFile(dir, file, cluster, i);
+                initializeEntry(&entries[i], file);
+                if (writeCluster(cluster, buf)) {
+                    return M_OK;
+                } else {
+                    return M_WRITE_ERROR;
+                }
+            }
+        }
+        return M_NO_SPACE;
+    }
+
+    int flushFat(uint32_t cluster)
+    {
+        uint32_t fatStartSector = getReservedSectors();
+        uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
+        uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
+        if (dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE) != M_OK) {
+            monapi_warn("failed to update FAT");
+            return MONA_FAILURE;
+        } else {
+            return MONA_SUCCESS;
+        }
+    }
+
+    int flushDirtyFat()
+    {
+        for (std::map<uint32_t, uint32_t>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
+
+            if (flushFat(it->first) != MONA_SUCCESS) {
+                dirtyFat_.clear();
+                return MONA_FAILURE;
+            }
+        }
+        dirtyFat_.clear();
+        return MONA_SUCCESS;
+    }
+
+    void updateFatNoFlush(uint32_t index, uint32_t cluster)
+    {
+        fat_[index] = cluster;
+        dirtyFat_.insert(std::pair<uint32_t, uint32_t>(index, index));
+    }
+
+    bool isLongName(const std::string name) const
+    {
+        return name.size() > 11;
+    }
+
+    int createLongNameEntryInCluster(Vnode* dir, uint8_t* buf, uint32_t targetCluster, const std::string& file, uint32_t startIndex, uint32_t numEntries)
+    {
+        LFNEncoder encoder;
+        uint32_t encodedLen;
+        const char* DUMMY_SHORT_NAME = "SHORT   ";
+        const char* DUMMY_SHORT_EXT = "TXT";
+        MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
+
+        for (uint32_t i = startIndex, seq = numEntries - 1; ; i++) {
+            if (seq == 0) {
+                struct de* entry = (struct de*)buf + i;
+                initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                createAndAddFile(dir, file, targetCluster, i);
+                break;
+            } else {
+                struct lfn* p = (struct lfn*)(buf) + i;
+                memset(p, 0, sizeof(struct lfn));
+                p->attr = ATTR_LFN;
+                p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+                memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                p->seq = seq--;
+                if (i == startIndex) {
+                    // The last LFN entry comes first in the cluster
+                    p->seq |= LAST_LFN_ENTRY;
+                }
+            }
+        }
+
+        if (!writeCluster(targetCluster, buf)) {
+                return M_WRITE_ERROR;
+        }
+        return M_OK;
+    }
+
+    int createLongNameFile(Vnode* dir, const std::string& file)
+    {
+        if (file.size() > MAX_LONG_NAME) {
+            return M_NO_SPACE;
+        }
+        const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
+        uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) / LFN_NAME_LEN_PER_ENTRY + 1;
+
+        // It seems that vfat on Linux doesn't allow lfn entries clusterred into multiple clusters.
+        // But I'm not sure :D.
+        if (requiredNumEntries > (uint32_t)ENTRIES_PER_CLUSTER) {
+            return M_NO_SPACE;
+        }
+        uint32_t lastCluster = getLastClusterByVnode(dir);
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(lastCluster, buf)) {
+            return M_READ_ERROR;
+        }
+
+        uint32_t extraCluster = END_OF_CLUSTER;
+        int startIndex = 0;
+        if ((startIndex = allocateContigousEntries((struct de*)buf, requiredNumEntries)) < 0) {
+            ASSERT(startIndex == M_NO_SPACE);
+            extraCluster = allocateCluster();
+            if (isEndOfCluster(extraCluster)) {
+                return M_NO_SPACE;
+            }
+            if (int ret = expandFile(lastCluster, extraCluster) != M_OK) {
+                return ret;
+            }
+        }
+
+        bool inExtraCluster = !isEndOfCluster(extraCluster);
+        if (inExtraCluster) {
+            memset(buf, 0, getClusterSizeByte());
+        }
+        uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
+        startIndex = inExtraCluster ? 0 :startIndex;
+        return createLongNameEntryInCluster(dir, buf, targetCluster, file, startIndex, requiredNumEntries);
+    }
+
+    int createShortNameFile(Vnode* dir, const std::string& file)
+    {
+        uint32_t cluster = getLastClusterByVnode(dir);
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
+        if (ret == M_OK) {
+            return MONA_SUCCESS;
+        } else if (ret == M_NO_SPACE) {
+            uint32_t newCluster = allocateCluster();
+            if (isEndOfCluster(newCluster)) {
+                return MONA_FAILURE;
+            }
+
+            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+                return MONA_FAILURE;
+            }
+
+            updateFatNoFlush(cluster, newCluster);
+            updateFatNoFlush(newCluster, END_OF_CLUSTER);
+
+            if (flushDirtyFat() != MONA_SUCCESS) {
+                return MONA_FAILURE;
+            }
+            return MONA_SUCCESS;
+        } else {
+            return MONA_FAILURE;
+        }
     }
 
     uint8_t bootParameters_[SECTOR_SIZE];
