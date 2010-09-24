@@ -331,17 +331,18 @@ public:
         return context->size;
     }
 
-    uint8_t checksum(const char *pFcbName)
+    uint8_t checksum(const std::string& name, const std::string& ext)
     {
-        int i;
-        unsigned char sum=0;
-
-        for (i=11; i; i--) {
-            sum = ((sum & 1) << 7) + (sum >> 1) + *pFcbName++;
+        // name and ext should be rpad with space.
+        ASSERT(name.size() == 8);
+        ASSERT(ext.size() == 3);
+        std::string file = name + ext;
+        unsigned char sum = 0;
+        for (int i = 11; i; i--) {
+            sum = ((sum & 1) << 7) + (sum >> 1) + file[i];
         }
         return sum;
     }
-
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
     {
@@ -357,26 +358,28 @@ public:
 
         LFNEncoder encoder;
         uint32_t encodedLen;
+        const char* DUMMY_SHORT_NAME = "SHORT   ";
+        const char* DUMMY_SHORT_EXT = "TXT";
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = numEntries - 1;
         for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
             struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
             memset(p, 0, sizeof(struct lfn));
             p->attr = ATTR_LFN;
-            p->chksum = checksum("SHORT   TXT");
+            p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
             const int NAME_LEN_PER_ENTRY = 26;
             memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY, sizeof(p->name1));
             memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
             memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_LEN_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
             p->seq = seq--;
             if (i == 0) {
-                // The last LFN entry comes first in cluster
+                // The last LFN entry comes first in the cluster
                 p->seq |= LAST_LFN_ENTRY;
             }
         }
         createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
         struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1];
-        initializeEntry(entry, "SHORT.TXT");
+        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
         if (writeCluster(cluster, buf)) {
             return M_OK;
         } else {
@@ -1095,17 +1098,22 @@ private:
         *((uint16_t*)entry->time) = packTime(date.hour(), date.min(), date.sec());
     }
 
-    void initializeEntry(struct de* entry, const std::string filename)
+    void initializeEntry(struct de* entry, const std::string& name, const std::string& ext)
+    {
+        ASSERT(name.size() <= 8);
+        ASSERT(ext.size() <= 3);
+        memset(entry->name, ' ', 8);
+        memcpy(entry->name, name.c_str(), name.size());
+        memset(entry->ext, ' ', 3);
+        memcpy(entry->ext, ext.c_str(), ext.size());
+        setEntry(entry, 0, 0);
+    }
+
+    void initializeEntry(struct de* entry, const std::string& filename)
     {
         std::vector<std::string> nameAndExt = split(filename, '.');
         ASSERT(nameAndExt.size() == 2);
-        memset(entry->name, ' ', 8);
-        ASSERT(nameAndExt[0].size() <= 8);
-        memcpy(entry->name, nameAndExt[0].c_str(), nameAndExt[0].size());
-        memset(entry->ext, ' ', 3);
-        ASSERT(nameAndExt[1].size() <= 3);
-        memcpy(entry->ext, nameAndExt[1].c_str(), nameAndExt[1].size());
-        setEntry(entry, 0, 0);
+        initializeEntry(entry, nameAndExt[0], nameAndExt[1]);
     }
 
     intptr_t updateParentCluster(File* entry)
