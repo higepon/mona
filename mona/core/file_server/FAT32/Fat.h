@@ -35,8 +35,6 @@
 #include "VnodeManager.h"
 
 // todo
-//  long file name
-// create long file name limit.
 // create charactor set check.
 // create entries on two cluster.
 // get
@@ -414,6 +412,9 @@ public:
 
     int createLongNameFile(Vnode* dir, const std::string& file)
     {
+        if (file.size() > MAX_LONG_NAME) {
+            return M_NO_SPACE;
+        }
         uint32_t cluster = getLastClusterByVnode(dir);
         uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) /LFN_NAME_LEN_PER_ENTRY + 1;
         uint8_t buf[getClusterSizeByte()];
@@ -1034,6 +1035,7 @@ private:
         LAST_LFN_ENTRY = 0x40,
         END_OF_CLUSTER = 0x0FFFFFF8,
         LFN_NAME_LEN_PER_ENTRY = 13,
+        MAX_LONG_NAME = 255,
         forbiddend_comma
     };
 
