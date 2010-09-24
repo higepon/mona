@@ -472,6 +472,9 @@ public:
                     p->seq |= LAST_LFN_ENTRY;
                 }
             }
+            struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
+            initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+            createAndAddFile(dir, file, lastCluster, entryIndexes[entryIndexes.size() - 1].second);
         }
         // if (!isEndOfCluster(extraCluster)) {
         //     for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
@@ -481,11 +484,6 @@ public:
         //         }
         //     }
         // }
-        if (isEndOfCluster(extraCluster)) {
-            struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
-            initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-            createAndAddFile(dir, file, lastCluster, entryIndexes[entryIndexes.size() - 1].second);
-        }
         if (!writeCluster(lastCluster, buf)) {
             return M_WRITE_ERROR;
         }
