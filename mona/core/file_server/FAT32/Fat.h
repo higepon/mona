@@ -457,8 +457,13 @@ public:
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = requiredNumEntries - 1;
         logprintf("KKKKKKKKKKKK\n");
-        if (isEndOfCluster(extraCluster)) {
-            for (uint32_t i = startIndex; ; i++) {
+//        if (isEndOfCluster(extraCluster)) {
+        
+        startIndex = isEndOfCluster(extraCluster) ? startIndex : 0;
+        if (!isEndOfCluster(extraCluster)) {
+            memset(buf, 0, getClusterSizeByte());
+        }
+        for (uint32_t i = startIndex; ; i++) {
                 logprintf("i = %d %d %d %d\n", i, startIndex, requiredNumEntries, startIndex + requiredNumEntries);
                 ASSERT(i < ENTRIES_PER_CLUSTER);
                 if (i == startIndex + requiredNumEntries - 1) {
@@ -482,37 +487,43 @@ public:
                     }
                 }
             }
-        }
-        if (!writeCluster(lastCluster, buf)) {
-            return M_WRITE_ERROR;
-        }
-        if (!isEndOfCluster(extraCluster)) {
-            memset(buf, 0, getClusterSizeByte());
-            for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
-                struct lfn* p = (struct lfn*)(buf) + index;
-                if (seq == 0) {
-                    struct de* entry = (struct de*)buf + index;
-                    initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                    createAndAddFile(dir, file, extraCluster, index);
-                    break;
-                } else {
-                    p->attr = ATTR_LFN;
-                    p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                    const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                    memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-                    memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-                    memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-                    p->seq = seq--;
-                    if (p->seq == requiredNumEntries - 1) {
-                        // The last LFN entry comes first in the cluster
-                        p->seq |= LAST_LFN_ENTRY;
-                    }
-                }
+//        }
+        if (isEndOfCluster(extraCluster)) {
+            if (!writeCluster(lastCluster, buf)) {
+                return M_WRITE_ERROR;
             }
+        } else {
             if (!writeCluster(extraCluster, buf)) {
                 return M_WRITE_ERROR;
             }
         }
+        // if (!isEndOfCluster(extraCluster)) {
+        //     memset(buf, 0, getClusterSizeByte());
+        //     for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
+        //         struct lfn* p = (struct lfn*)(buf) + index;
+        //         if (seq == 0) {
+        //             struct de* entry = (struct de*)buf + index;
+        //             initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+        //             createAndAddFile(dir, file, extraCluster, index);
+        //             break;
+        //         } else {
+        //             p->attr = ATTR_LFN;
+        //             p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+        //             const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+        //             memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+        //             memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+        //             memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+        //             p->seq = seq--;
+        //             if (p->seq == requiredNumEntries - 1) {
+        //                 // The last LFN entry comes first in the cluster
+        //                 p->seq |= LAST_LFN_ENTRY;
+        //             }
+        //         }
+        //     }
+        //     if (!writeCluster(extraCluster, buf)) {
+        //         return M_WRITE_ERROR;
+        //     }
+        // }
         return M_OK;
     }
 
