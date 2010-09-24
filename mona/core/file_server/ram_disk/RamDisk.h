@@ -206,7 +206,7 @@ namespace RamDisk {
                 finfo->name = file;
                 finfo->size = 0;
                 files_.insert(std::pair<std::string, FileInfo*>(file, finfo));
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
 

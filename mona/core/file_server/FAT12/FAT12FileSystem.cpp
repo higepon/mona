@@ -128,9 +128,9 @@ int FAT12FileSystem::create(Vnode* dir, const string& file)
     int entry = p->newFile((uint8_t*)file.c_str(), 0);
     if (-1 == entry)
     {
-        return MONA_FAILURE;
+        return M_NO_SPACE;
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::read(Vnode* file, struct io::Context* context)

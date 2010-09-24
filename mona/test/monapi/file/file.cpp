@@ -216,7 +216,7 @@ static void test_fatfs_read_file_multiple_clusters()
 static void createEmptyfile(FatFileSystem* fat, Vnode* dir, const std::string& filename)
 {
     Vnode* found;
-    ASSERT_EQ(MONA_SUCCESS, fat->create(dir, filename));
+    ASSERT_EQ(M_OK, fat->create(dir, filename));
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(dir, filename, &found, Vnode::REGULAR));
     FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ(filename, file->getName().c_str());

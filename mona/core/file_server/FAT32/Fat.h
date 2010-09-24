@@ -355,9 +355,9 @@ public:
         ASSERT(dir->type == Vnode::DIRECTORY);
         if (isLongName(file)) {
             if (createLongNameFile(dir, file) != M_OK) {
-                return MONA_FAILURE;
+                return M_OK;
             } else {
-                return MONA_SUCCESS;
+                return M_OK;
             }
         } else {
             return createShortNameFile(dir, file);
@@ -1224,26 +1224,26 @@ private:
         uint32_t cluster = getLastClusterByVnode(dir);
         int ret = tryCreateNewEntryInCluster(dir, file, cluster);
         if (ret == M_OK) {
-            return MONA_SUCCESS;
+            return M_OK;
         } else if (ret == M_NO_SPACE) {
             uint32_t newCluster = allocateCluster();
             if (isEndOfCluster(newCluster)) {
-                return MONA_FAILURE;
+                return M_NO_SPACE;
             }
 
-            if (tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
-                return MONA_FAILURE;
+            if (int ret = tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+                return ret;
             }
 
             updateFatNoFlush(cluster, newCluster);
             updateFatNoFlush(newCluster, END_OF_CLUSTER);
 
             if (flushDirtyFat() != MONA_SUCCESS) {
-                return MONA_FAILURE;
+                return M_WRITE_ERROR;
             }
-            return MONA_SUCCESS;
+            return M_OK;
         } else {
-            return MONA_FAILURE;
+            return ret;
         }
     }
 

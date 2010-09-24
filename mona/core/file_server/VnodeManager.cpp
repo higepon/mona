@@ -139,7 +139,7 @@ int VnodeManager::create(const std::string& name)
     } else {
         string dirPath = name.substr(1, foundIndex - 1);
         if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
         filename = name.substr(foundIndex + 1, name.size() - foundIndex);
     }
@@ -167,8 +167,8 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     if (lookup(root_, filename, &file) != MONA_SUCCESS) {
         if (mode & FILE_CREATE) {
             int ret = create(name);
-            if (MONA_SUCCESS != ret) {
-                return M_UNKNOWN;
+            if (M_OK != ret) {
+                return ret;
             }
             if (lookup(root_, filename, &file) != MONA_SUCCESS) {
                 return M_FILE_NOT_FOUND;
