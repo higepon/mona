@@ -479,9 +479,8 @@ static void test_fatfs_lookup_file_long_name()
     ASSERT_EQ(MONA_SUCCESS, fat->lookup(subdir, "this_is_very_long_file_name.txt", &found, Vnode::REGULAR));
 }
 
-static void test_fatfs_create_long_file_name()
+static void test_fatfs_create_long_file_name(const char* filename)
 {
-    const char* filename = "hi_i_am_higepon_writing_fat_fs.mosh.sls";
     {
     TestFatFS fs;
     FatFileSystem* fat = fs.get();
@@ -544,7 +543,7 @@ int main(int argc, char *argv[])
     test_fatfs_read_file_subdir("SUBDIR.TXT", "Hello\n");
     test_fatfs_lookup_file_long_name();
     test_fatfs_read_file_subdir("this_is_very_long_file_name.txt", "Hello World\n");
-    test_fatfs_create_long_file_name();
+    test_fatfs_create_long_file_name("hi_i_am_higepon_writing_fat_fs.mosh.sls");
 
     TEST_RESULTS(file);
     return 0;
