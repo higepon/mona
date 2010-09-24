@@ -425,7 +425,7 @@ public:
 
         // It seems that vfat on Linux doesn't allow lfn entries clusterred into multiple clusters.
         // But I'm not sure :D.
-        if (requiredNumEntries > ENTRIES_PER_CLUSTER) {
+        if (requiredNumEntries > (uint32_t)ENTRIES_PER_CLUSTER) {
             return M_NO_SPACE;
         }
         uint32_t lastCluster = getLastClusterByVnode(dir);
@@ -434,10 +434,9 @@ public:
             return M_READ_ERROR;
         }
 
-        std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
         uint32_t extraCluster = END_OF_CLUSTER;
         int startIndex = 0;
-        if ((startIndex = allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries)) < 0) {
+        if ((startIndex = allocateContigousEntries((struct de*)buf, requiredNumEntries)) < 0) {
             ASSERT(startIndex == M_NO_SPACE);
             extraCluster = allocateCluster();
             if (isEndOfCluster(extraCluster)) {
@@ -465,7 +464,7 @@ public:
             if (i == startIndex + requiredNumEntries - 1) {
                 struct de* entry = (struct de*)buf + i;
                 initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                createAndAddFile(dir, file, targetCluster, entryIndexes[entryIndexes.size() - 1].second);
+                createAndAddFile(dir, file, targetCluster, i);
                 break;
             } else {
                 struct lfn* p = (struct lfn*)(buf) + i;
@@ -1229,16 +1228,17 @@ private:
         return MONA_SUCCESS;
     }
 
-    int allocateContigousEntries(struct de* entries, std::vector< std::pair<struct de*, uint32_t> >& foundEntryIndexes, uint32_t numEntries)
+    int allocateContigousEntries(struct de* entries, uint32_t numEntries)
     {
+        std::vector<uint32_t> foundEntryIndexes;
         for (uint32_t i = 0; i < getClusterSizeByte() / sizeof(struct de); i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                if (!foundEntryIndexes.empty() && foundEntryIndexes[foundEntryIndexes.size() - 1].second != i - 1) {
+                if (!foundEntryIndexes.empty() && foundEntryIndexes[foundEntryIndexes.size() - 1] != i - 1) {
                     foundEntryIndexes.clear();
                 }
-                foundEntryIndexes.push_back(std::pair<struct de*, uint32_t>(entries, i));
+                foundEntryIndexes.push_back(i);
                 if (foundEntryIndexes.size() == numEntries) {
-                    return foundEntryIndexes[0].second;
+                    return foundEntryIndexes[0];
                 }
             }
         }
