@@ -344,49 +344,6 @@ public:
         return sum;
     }
 
-    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, uint32_t numEntries)
-    {
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(cluster, buf)) {
-            return M_READ_ERROR;
-        }
-
-        std::vector<uint32_t> entryIndexes;
-        if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, numEntries) != M_OK) {
-            return ret;
-        }
-
-        LFNEncoder encoder;
-        uint32_t encodedLen;
-        const char* DUMMY_SHORT_NAME = "SHORT   ";
-        const char* DUMMY_SHORT_EXT = "TXT";
-        MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
-        int seq = numEntries - 1;
-        for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
-            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
-            memset(p, 0, sizeof(struct lfn));
-            p->attr = ATTR_LFN;
-            p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-            const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-            p->seq = seq--;
-            if (i == 0) {
-                // The last LFN entry comes first in the cluster
-                p->seq |= LAST_LFN_ENTRY;
-            }
-        }
-        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
-        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1];
-        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-        if (writeCluster(cluster, buf)) {
-            return M_OK;
-        } else {
-            return M_WRITE_ERROR;
-        }
-    }
-
     void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
     {
         File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
@@ -459,10 +416,47 @@ public:
     {
         uint32_t cluster = getLastClusterByVnode(dir);
         uint32_t requiredNumEntries = (file.size() + LFN_NAME_LEN_PER_ENTRY - 1) /LFN_NAME_LEN_PER_ENTRY + 1;
-        int ret = tryCreateNewEntryInCluster(dir, file, cluster, requiredNumEntries);
-        // todo
-        ASSERT(ret == M_OK);
-        return MONA_SUCCESS;
+        uint8_t buf[getClusterSizeByte()];
+        if (!readCluster(cluster, buf)) {
+            return M_READ_ERROR;
+        }
+
+        std::vector<uint32_t> entryIndexes;
+        if (int ret = allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) != M_OK) {
+            // todo
+            ASSERT(false);
+            return ret;
+        }
+
+        LFNEncoder encoder;
+        uint32_t encodedLen;
+        const char* DUMMY_SHORT_NAME = "SHORT   ";
+        const char* DUMMY_SHORT_EXT = "TXT";
+        MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
+        int seq = requiredNumEntries - 1;
+        for (uint32_t i = 0; i < entryIndexes.size() - 1; i++) {
+            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i];
+            memset(p, 0, sizeof(struct lfn));
+            p->attr = ATTR_LFN;
+            p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+            const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+            p->seq = seq--;
+            if (i == 0) {
+                // The last LFN entry comes first in the cluster
+                p->seq |= LAST_LFN_ENTRY;
+            }
+        }
+        createAndAddFile(dir, file, cluster, entryIndexes[entryIndexes.size() - 1]);
+        struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1];
+        initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+        if (writeCluster(cluster, buf)) {
+            return M_OK;
+        } else {
+            return M_WRITE_ERROR;
+        }
     }
 
     int createShortNameFile(Vnode* dir, const std::string& file)
@@ -496,7 +490,11 @@ public:
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
         if (isLongName(file)) {
-            return createLongNameFile(dir, file);
+            if (createLongNameFile(dir, file) != M_OK) {
+                return MONA_FAILURE;
+            } else {
+                return MONA_SUCCESS;
+            }
         } else {
             return createShortNameFile(dir, file);
         }
