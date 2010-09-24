@@ -436,7 +436,9 @@ public:
 
         std::vector< std::pair<struct de*, uint32_t> > entryIndexes;
         uint32_t extraCluster = END_OF_CLUSTER;
-        if (allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries) == M_NO_SPACE) {
+        int startIndex = 0;
+        if ((startIndex = allocateContigousEntries((struct de*)buf, entryIndexes, requiredNumEntries)) < 0) {
+            ASSERT(startIndex == M_NO_SPACE);
             extraCluster = allocateCluster();
             if (isEndOfCluster(extraCluster)) {
                 return M_NO_SPACE;
@@ -455,30 +457,30 @@ public:
         MonAPI::scoped_ptr<uint8_t> encodedName(encoder.encode(file, encodedLen));
         int seq = requiredNumEntries - 1;
         if (isEndOfCluster(extraCluster)) {
-        for (uint32_t i = 0; entryIndexes.size() > 0 && i < entryIndexes.size() - 1; i++) {
-            struct lfn* p = (struct lfn*)(buf) + entryIndexes[i].second;
-            memset(p, 0, sizeof(struct lfn));
-            p->attr = ATTR_LFN;
-            p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-            const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-            memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
-            memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-            memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
-            p->seq = seq--;
-            if (i == 0) {
-                // The last LFN entry comes first in the cluster
-                p->seq |= LAST_LFN_ENTRY;
-            }
-        }
-        }
-        if (!isEndOfCluster(extraCluster)) {
-            for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
-                    struct de* p = (struct de*)(buf) + index;
-                if (p->name[0] == AVAILABLE_ENTRY) {
-                    p->name[0] = FREE_ENTRY;
+            for (uint32_t i = 0; entryIndexes.size() > 0 && i < entryIndexes.size() - 1; i++) {
+                struct lfn* p = (struct lfn*)(buf) + entryIndexes[i].second;
+                memset(p, 0, sizeof(struct lfn));
+                p->attr = ATTR_LFN;
+                p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
+                const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
+                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
+                memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                p->seq = seq--;
+                if (i == 0) {
+                    // The last LFN entry comes first in the cluster
+                    p->seq |= LAST_LFN_ENTRY;
                 }
             }
         }
+        // if (!isEndOfCluster(extraCluster)) {
+        //     for (int index = 0; index < ENTRIES_PER_CLUSTER; index++) {
+        //             struct de* p = (struct de*)(buf) + index;
+        //         if (p->name[0] == AVAILABLE_ENTRY) {
+        //             p->name[0] = FREE_ENTRY;
+        //         }
+        //     }
+        // }
         if (isEndOfCluster(extraCluster)) {
             struct de* entry = (struct de*)buf + entryIndexes[entryIndexes.size() - 1].second;
             initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
@@ -1266,7 +1268,7 @@ private:
                 }
                 foundEntryIndexes.push_back(std::pair<struct de*, uint32_t>(entries, i));
                 if (foundEntryIndexes.size() == numEntries) {
-                    return M_OK;
+                    return foundEntryIndexes[0].second;
                 }
             }
         }
