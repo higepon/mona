@@ -423,8 +423,9 @@ public:
             return M_WRITE_ERROR;
         }
 
-        if (freeClusters(entry) != MONA_SUCCESS) {
-            return M_WRITE_ERROR;
+        int ret = freeClusters(entry);
+        if (ret != M_OK) {
+            return ret;
         }
         entry->setStartCluster(0);
         entry->setSize(0);
@@ -445,8 +446,9 @@ public:
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
-        if (freeClusters(entry) != MONA_SUCCESS) {
-            return MONA_FAILURE;
+        int ret = freeClusters(entry);
+        if (ret != M_OK) {
+            return ret;
         }
         entry->getParent()->removeChild(entry);
         destroyVnode(vnode);
@@ -1029,9 +1031,9 @@ private:
         }
         int ret = flushDirtyFat();
         if (ret != M_OK) {
-            return MONA_FAILURE;
+            return ret;
         }
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     int allocateContigousEntries(struct de* entries, uint32_t numEntries)
