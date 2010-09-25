@@ -351,14 +351,15 @@ monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
     }
 }
 
-uint32_t monapi_file_get_file_size(uint32_t id)
+intptr_t monapi_file_get_file_size(uint32_t id)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id) != M_OK)
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id);
+    if (ret != M_OK)
     {
-        return MONA_FAILURE;
+        return ret;
     }
     return msg.arg3;
 }
