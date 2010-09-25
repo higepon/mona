@@ -390,9 +390,9 @@ intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t si
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    if (Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem->Handle) != M_OK)
-    {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem->Handle);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
