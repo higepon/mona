@@ -276,7 +276,7 @@ namespace RamDisk {
                         {
                             delete (*it);
                         }
-                      return MONA_ERROR_MEMORY_NOT_ENOUGH;
+                      return M_NO_MEMORY;
                   }
 
                 memcpy(ret->Data, &size, sizeof(int));
@@ -289,7 +289,7 @@ namespace RamDisk {
                       p++;
                   }
                 *entries = ret;
-                return MONA_SUCCESS;
+                return M_OK;
             }
           virtual int close(Vnode* file) { return M_OK; }
           virtual int delete_file(Vnode* file)

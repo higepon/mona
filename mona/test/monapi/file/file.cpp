@@ -410,7 +410,7 @@ static void test_fatfs_readdir()
     Vnode* root = fat->getRoot();
 
     monapi_cmemoryinfo* cmi;
-    ASSERT_EQ(MONA_SUCCESS, fat->readdir(root, &cmi));
+    ASSERT_EQ(M_OK, fat->readdir(root, &cmi));
     ASSERT_TRUE(cmi != NULL);
 
     int size = *(int*)cmi->Data;

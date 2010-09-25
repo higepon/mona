@@ -58,7 +58,7 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
 int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
 {
     // now fullpath only. fix me
-    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (name.compare(0, 1, "/") != 0) return M_FILE_NOT_FOUND;
 
     // remove first '/'. fix me
     string filename;
@@ -79,11 +79,11 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     {
         if (int ret = lookup(root_, filename, &dir, Vnode::DIRECTORY) != M_OK)
         {
-            return MONA_FAILURE;
+            return ret;
         }
     }
-    if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) {
-        return MONA_FAILURE;
+    if (int ret = dir->fs->readdir(dir, mem) != M_OK) {
+        return ret;
     }
 
     // check mounted directories on caches.
@@ -109,7 +109,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
             int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
             if (monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE, true) != M_OK) {
                 monapi_cmemoryinfo_delete(ret);
-                return MONA_FAILURE;
+                return M_NO_MEMORY;
             }
             memcpy(ret->Data, (*mem)->Data, (*mem)->Size);
             int entriesNum = *((int*)(*mem)->Data) + diff.size();
@@ -126,7 +126,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
             *mem = ret;
         }
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int VnodeManager::create(const std::string& name)

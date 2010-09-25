@@ -384,7 +384,7 @@ public:
         int size = dirInfos.size();
         if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(ret);
-            return MONA_ERROR_MEMORY_NOT_ENOUGH;
+            return M_NO_MEMORY;
         }
 
         memcpy(ret->Data, &size, sizeof(int));
@@ -396,7 +396,7 @@ public:
             p++;
         }
 
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int close(Vnode* vnode)

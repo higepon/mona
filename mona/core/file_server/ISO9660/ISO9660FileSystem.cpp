@@ -161,7 +161,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     setDetailInformation(directory);
     uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = readdirToBuffer(directory, readSize);
-    if (buffer == NULL) return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    if (buffer == NULL) return M_NO_MEMORY;
     EntryList entryList;
     for (uint32_t position = 0 ; position < readSize;)
     {
@@ -183,7 +183,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+        return M_NO_MEMORY;
     }
     memcpy(ret->Data, &size, sizeof(int));
     monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
@@ -200,7 +200,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     }
     *entries = ret;
 
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 /*----------------------------------------------------------------------

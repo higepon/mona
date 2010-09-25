@@ -296,7 +296,7 @@ void FileServer::messageLoop()
         {
             monapi_cmemoryinfo* memory;
             int ret = vmanager_->readdir(upperCase(msg.str).c_str(), &memory);
-            if (ret != MONA_SUCCESS)
+            if (ret != M_OK)
             {
                 Message::reply(&msg, MONA_FAILURE);
             }
