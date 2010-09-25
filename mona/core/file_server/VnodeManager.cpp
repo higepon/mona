@@ -18,14 +18,13 @@ VnodeManager::~VnodeManager()
 int VnodeManager::delete_file(const std::string& name)
 {
     // now fullpath only. fix me
-    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (name.compare(0, 1, "/") != 0) return M_BAD_ARG;
 
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
     int ret = lookup(root_, filename, &file);
-    if (ret != M_OK)
-    {
+    if (ret != M_OK) {
         return ret;
     }
     return file->fs->delete_file(file);

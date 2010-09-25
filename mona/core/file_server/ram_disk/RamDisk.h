@@ -295,10 +295,10 @@ namespace RamDisk {
           virtual int delete_file(Vnode* file)
             {
                 if(file == root_)
-                  return MONA_FAILURE; // root is undeletable
+                  return M_BAD_ARG; // root is undeletable
 
                 destroyVnode(file);
-                return MONA_SUCCESS;
+                return M_OK;
             }
           virtual int stat(Vnode* file, Stat* st)
             {

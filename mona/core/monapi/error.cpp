@@ -62,6 +62,8 @@ const char* monapi_error_string(int error)
         return "not supported";
     case M_UNKNOWN:
         return "unknown error";
+    case M_BAD_ARG:
+        return "bad arguments";
     default:
         return "BUG: unknown error";
     }

@@ -198,4 +198,11 @@
 */
 #define M_UNKNOWN -5024
 
+/*
+    constant: M_BAD_ARG
+
+    Indicates bad arguments
+*/
+#define M_BAD_ARG -5025
+
 #endif

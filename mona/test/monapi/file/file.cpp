@@ -380,7 +380,7 @@ static void test_fatfs_delete_file()
 
     uint32_t prevFreeSize = fat->getFreeSize();
     uint32_t prevNumFiles = entries->size();
-    ASSERT_EQ(MONA_SUCCESS, fat->delete_file(found));
+    ASSERT_EQ(M_OK, fat->delete_file(found));
     EXPECT_EQ(512 * 8, fat->getFreeSize() - prevFreeSize);
     EXPECT_EQ(1, prevNumFiles - entries->size());
 }

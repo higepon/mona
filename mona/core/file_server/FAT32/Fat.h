@@ -435,11 +435,11 @@ public:
     virtual int delete_file(Vnode* vnode)
     {
         if(vnode == root_) {
-            return MONA_FAILURE; // root is undeletable
+            return M_BAD_ARG; // root is undeletable
         }
         File* entry = getFileByVnode(vnode);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         theEntry->name[0] = FREE_ENTRY;
@@ -452,7 +452,7 @@ public:
         }
         entry->getParent()->removeChild(entry);
         destroyVnode(vnode);
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int stat(Vnode* vnode, Stat* st)
