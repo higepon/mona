@@ -261,7 +261,7 @@ namespace RamDisk {
                 currentIt_ = files_.begin();
 
 
-                while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
+                while (readdirInternal(di.name, &di.size, &di.attr) == M_OK)
                   {
                       files.push_back(new monapi_directoryinfo(di));
                   }
@@ -331,19 +331,19 @@ namespace RamDisk {
             }
 
         protected:
-          virtual int deviceOn(){ return MONA_SUCCESS; }
-          virtual int deviceOff(){ return MONA_SUCCESS; }
+          virtual int deviceOn(){ return M_OK; }
+          virtual int deviceOff(){ return M_OK; }
           virtual int readdirInternal(char* name, int* size, int* attribute)
             {
                 *attribute = 0;
                 if(currentIt_ == files_.end())
-                  return MONA_FAILURE;
+                  return M_FILE_NOT_FOUND;
 
                 strcpy(name, (*currentIt_).first.c_str());
                 *size = (*currentIt_).second->size;
 
                 currentIt_++;
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
           VnodeManager* vmanager_;

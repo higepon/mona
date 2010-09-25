@@ -295,8 +295,8 @@ int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
     {
         Stat st;
         intptr_t ret = file->fs->stat(file, &st);
-        if (MONA_SUCCESS != ret) {
-            return M_UNKNOWN;
+        if (M_OK != ret) {
+            return ret;
         }
         newOffset = st.size-offset;
         break;
@@ -316,7 +316,7 @@ int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
 int VnodeManager::mount(Vnode* a, const std::string& path, Vnode* b)
 {
     cacher_->add(a, path, b);
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 void VnodeManager::split(string str, char ch, vector<string>& v)
