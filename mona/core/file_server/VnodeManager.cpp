@@ -258,7 +258,7 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;

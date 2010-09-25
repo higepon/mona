@@ -304,7 +304,7 @@ namespace RamDisk {
             {
                 FileInfo* f = (FileInfo*)file->fnode;
                 st->size = f->size;
-                return MONA_SUCCESS;
+                return M_OK;
             }
           virtual Vnode* getRoot() const
             {

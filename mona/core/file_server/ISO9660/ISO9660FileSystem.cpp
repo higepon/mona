@@ -147,7 +147,7 @@ int ISO9660FileSystem::stat(Vnode* file, Stat* st)
 {
     Entry* entry = (Entry*)file->fnode;
     st->size = entry->attribute.size;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 Vnode* ISO9660FileSystem::getRoot() const

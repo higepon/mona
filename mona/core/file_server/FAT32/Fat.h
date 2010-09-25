@@ -455,7 +455,7 @@ public:
     {
         File* entry = getFileByVnode(vnode);
         st->size = entry->getSize();
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual void destroyVnode(Vnode* vnode)

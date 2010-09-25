@@ -176,7 +176,7 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 
     Stat st;
     ret = vmanager_->stat(fileID, &st);
-    if (ret != MONA_SUCCESS)
+    if (ret != M_OK)
     {
         ret = vmanager_->close(fileID);
         return NULL;
@@ -289,7 +289,7 @@ void FileServer::messageLoop()
         {
             Stat st;
             int ret = vmanager_->stat(msg.arg1, &st);
-            Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE, st.size);
+            Message::reply(&msg, ret == M_OK ? MONA_SUCCESS : MONA_FAILURE, st.size);
             break;
         }
         case MSG_FILE_READ_DIRECTORY:
