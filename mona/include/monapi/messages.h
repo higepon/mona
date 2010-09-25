@@ -69,7 +69,7 @@ extern monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size);
 extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin);
 extern intptr_t monapi_file_close(uint32_t id);
 extern uint32_t monapi_file_get_file_size(uint32_t id);
-extern uint32_t monapi_file_delete(const char* file);
+extern intptr_t monapi_file_delete(const char* file);
 extern MONAPI_BOOL monapi_file_exists(const char* path);
 extern int monapi_file_stop_server();
 extern monapi_cmemoryinfo* monapi_file_read_all(const char* file);

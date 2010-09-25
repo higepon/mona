@@ -363,13 +363,13 @@ uint32_t monapi_file_get_file_size(uint32_t id)
     return msg.arg3;
 }
 
-uint32_t monapi_file_delete(const char* file)
+intptr_t monapi_file_delete(const char* file)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file) != 0)
-    {
-        return MONA_FAILURE;
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
