@@ -150,7 +150,7 @@ namespace RamDisk {
 
 
         public:
-          virtual int initialize(){ return MONA_SUCCESS; }
+          virtual int initialize(){ return M_OK; }
           virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
             {
                 ramdisk_debug_times++;

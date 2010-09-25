@@ -221,7 +221,7 @@ public:
 
     virtual int initialize()
     {
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
@@ -313,7 +313,8 @@ public:
         ASSERT(context->memory);
         File* entry = getFileByVnode(vnode);
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
-        if (int ret = expandFileAsNecessary(entry, context) != M_OK) {
+        int ret = expandFileAsNecessary(entry, context);
+        if (ret != M_OK) {
             return ret;
         }
         uint32_t startClusterIndex = sizeToNumClusters(context->offset) - 1;
@@ -344,8 +345,9 @@ public:
             }
         }
 
-        if (flushDirtyFat() != MONA_SUCCESS) {
-            return M_WRITE_ERROR;
+        ret = flushDirtyFat();
+        if (ret != M_OK) {
+            return ret;
         }
         return context->size;
     }
@@ -971,8 +973,9 @@ private:
     {
         updateFatNoFlush(lastCluster, newCluster);
         updateFatNoFlush(newCluster, END_OF_CLUSTER);
-        if (flushDirtyFat() != MONA_SUCCESS) {
-            return M_WRITE_ERROR;
+        int ret = flushDirtyFat();
+        if (ret != M_OK) {
+            return ret;
         }
         return M_OK;
     }
@@ -1024,7 +1027,8 @@ private:
             updateFatNoFlush(cluster, 0);
             cluster = nextCluster;
         }
-        if (flushDirtyFat() != MONA_SUCCESS) {
+        int ret = flushDirtyFat();
+        if (ret != M_OK) {
             return MONA_FAILURE;
         }
         return MONA_SUCCESS;
@@ -1109,11 +1113,12 @@ private:
         uint32_t fatStartSector = getReservedSectors();
         uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
         uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
-        if (dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE) != M_OK) {
+        int ret = dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE);
+        if (ret != M_OK) {
             monapi_warn("failed to update FAT");
-            return MONA_FAILURE;
+            return ret;
         } else {
-            return MONA_SUCCESS;
+            return M_OK;
         }
     }
 
@@ -1121,13 +1126,14 @@ private:
     {
         for (std::map<uint32_t, uint32_t>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
 
-            if (flushFat(it->first) != MONA_SUCCESS) {
+            int ret = flushFat(it->first);
+            if (ret != M_OK) {
                 dirtyFat_.clear();
-                return MONA_FAILURE;
+                return ret;
             }
         }
         dirtyFat_.clear();
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     void updateFatNoFlush(uint32_t index, uint32_t cluster)
@@ -1205,7 +1211,8 @@ private:
             if (isEndOfCluster(extraCluster)) {
                 return M_NO_SPACE;
             }
-            if (int ret = expandFile(lastCluster, extraCluster) != M_OK) {
+            int ret = expandFile(lastCluster, extraCluster);
+            if (ret != M_OK) {
                 return ret;
             }
         }
@@ -1231,15 +1238,16 @@ private:
                 return M_NO_SPACE;
             }
 
-            if (int ret = tryCreateNewEntryInCluster(dir, file, newCluster) != M_OK) {
+            int ret = tryCreateNewEntryInCluster(dir, file, newCluster);
+            if (ret != M_OK) {
                 return ret;
             }
 
             updateFatNoFlush(cluster, newCluster);
             updateFatNoFlush(newCluster, END_OF_CLUSTER);
-
-            if (flushDirtyFat() != MONA_SUCCESS) {
-                return M_WRITE_ERROR;
+            ret = flushDirtyFat();
+            if (ret != M_OK) {
+                return ret;
             }
             return M_OK;
         } else {

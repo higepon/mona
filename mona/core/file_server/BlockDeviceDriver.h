@@ -68,7 +68,7 @@ public:
         if (size == vb_->read(buf, lba * (sectorSize_ / 512), size)) {
             return M_OK;
         } else {
-            return -1;
+            return M_READ_ERROR;
         }
     }
 
@@ -77,7 +77,7 @@ public:
         if (size == vb_->write(buf, lba * (sectorSize_ / 512), size)) {
             return M_OK;
         } else {
-            return -1;
+            return M_WRITE_ERROR;
         }
     }
 

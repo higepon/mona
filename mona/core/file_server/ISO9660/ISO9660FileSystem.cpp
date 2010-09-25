@@ -23,7 +23,7 @@ int ISO9660FileSystem::initialize()
 {
     if (readVolumeDescriptor() != MONA_SUCCESS)
     {
-        _printf("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        monapi_warn("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
         return MONA_FAILURE;
     }
 
@@ -36,7 +36,7 @@ int ISO9660FileSystem::initialize()
     root_->fnode  = rootDirectory_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)

@@ -54,7 +54,7 @@ int FileServer::initializeMountedFileSystems()
 {
     // RamDiskFileSystem
     RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(vmanager_);
-    if (rdf->initialize() != MONA_SUCCESS)
+    if (rdf->initialize() != M_OK)
     {
         _printf("Warning RamDisk file system initialize failed \n");
         delete rdf;
@@ -144,7 +144,7 @@ int FileServer::initializeRootFileSystem()
 #endif
 
 
-    if (rootFS_->initialize() != MONA_SUCCESS)
+    if (rootFS_->initialize() != M_OK)
     {
         _printf("CD Boot Initialize Error\n");
         delete rootFS_;

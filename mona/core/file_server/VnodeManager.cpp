@@ -23,7 +23,8 @@ int VnodeManager::delete_file(const std::string& name)
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (int ret = lookup(root_, filename, &file) != M_OK)
+    int ret = lookup(root_, filename, &file);
+    if (ret != M_OK)
     {
         return ret;
     }
@@ -77,12 +78,14 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     }
     else
     {
-        if (int ret = lookup(root_, filename, &dir, Vnode::DIRECTORY) != M_OK)
+        int ret = lookup(root_, filename, &dir, Vnode::DIRECTORY);
+        if (ret != M_OK)
         {
             return ret;
         }
     }
-    if (int ret = dir->fs->readdir(dir, mem) != M_OK) {
+    int ret = dir->fs->readdir(dir, mem);
+    if (ret != M_OK) {
         return ret;
     }
 
@@ -138,7 +141,8 @@ int VnodeManager::create(const std::string& name)
         targetDirectory = root_;
     } else {
         string dirPath = name.substr(1, foundIndex - 1);
-        if (int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != M_OK) {
+        int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY);
+        if (ret != M_OK) {
             return ret;
         }
         filename = name.substr(foundIndex + 1, name.size() - foundIndex);
