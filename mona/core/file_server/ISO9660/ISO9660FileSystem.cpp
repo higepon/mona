@@ -21,15 +21,15 @@ ISO9660FileSystem::~ISO9660FileSystem()
 ----------------------------------------------------------------------*/
 int ISO9660FileSystem::initialize()
 {
-    if (readVolumeDescriptor() != MONA_SUCCESS)
-    {
+    int ret = readVolumeDescriptor();
+    if (ret != M_OK) {
         monapi_warn("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+        return ret;
     }
 
-    if (setDirectoryCache() != MONA_SUCCESS)
-    {
-        return MONA_FAILURE;
+    ret = setDirectoryCache();
+    if (ret != M_OK) {
+        return ret;
     }
 
     root_ = vmanager_->alloc();
@@ -41,7 +41,7 @@ int ISO9660FileSystem::initialize()
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (diretory->type != Vnode::DIRECTORY) return M_BAD_ARG;
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
     if (v != NULL && v->type == type)
     {
@@ -122,7 +122,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     else
     {
         uint8_t* temp = new uint8_t[sectorSize];
-        if (temp == NULL) return MONA_FAILURE;
+        if (temp == NULL) return M_NO_MEMORY;
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
         if (!readResult)
         {
@@ -261,8 +261,8 @@ int ISO9660FileSystem::readVolumeDescriptor()
     BaseVolumeDescriptor* descriptor = new BaseVolumeDescriptor;
     if (descriptor == NULL)
     {
-        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+        monapi_fatal("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_NO_MEMORY;
     }
     for (i = 16; i < 100; i++)
     {
@@ -272,7 +272,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
         {
             delete descriptor;
             monapi_fatal("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
         // read primary descriptor
         if (descriptor->type == ISO_PRIMARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
@@ -298,12 +298,12 @@ int ISO9660FileSystem::readVolumeDescriptor()
     // invalid
     if (i == 100 || !primaryVolumeDescriptorFound)
     {
-        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+        monapi_fatal("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_READ_ERROR;
     }
 
     delete descriptor;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
@@ -328,7 +328,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // read path table
     if ((buffer = readPathTableIntoBuffer()) == NULL)
     {
-        return MONA_FAILURE;
+        return M_NO_MEMORY;
     }
 
     // create DirectoryEntries from path table
@@ -340,7 +340,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // directory not found
     if (directoryList.size() == 0)
     {
-        return MONA_FAILURE;
+        return M_FILE_NOT_FOUND;
     }
 
     // set up root direcotyr
@@ -358,7 +358,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // parent of root is root
     directoryList[0]->parent = directoryList[0];
 
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_t* buffer)
