@@ -209,7 +209,7 @@ int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
     io::FileInfo* fileInfo = (*it).second;
     io::Context* context = &(fileInfo->context);

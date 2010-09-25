@@ -162,7 +162,7 @@ static void test_fatfs_read_file()
     c.size   = 256;
     const char* expected = "Hello\n";
     const int len = strlen(expected);
-    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    EXPECT_EQ(M_OK, fat->read(found, &c));
     ASSERT_EQ(len, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
@@ -183,7 +183,7 @@ static void test_fatfs_read_file_with_offset()
     c.size   = 256;
     const char* expected = "llo\n";
     const int len = strlen(expected);
-    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    EXPECT_EQ(M_OK, fat->read(found, &c));
     ASSERT_EQ(6, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
@@ -202,7 +202,7 @@ static void test_fatfs_read_file_multiple_clusters()
     io::Context c;
     c.offset = 514;
     c.size   = 1000;
-    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    EXPECT_EQ(M_OK, fat->read(found, &c));
     ASSERT_EQ(1000, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
     EXPECT_EQ(0x36, c.memory->Data[0]);
@@ -255,7 +255,7 @@ static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* di
     ASSERT_EQ(M_OK, fat->lookup(dir, filename, &found, Vnode::REGULAR));
     c.offset = 0;
     c.size   = ((FatFileSystem::File*)(found->fnode))->getSize();
-    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    EXPECT_EQ(M_OK, fat->read(found, &c));
     return c.memory;
 }
 
@@ -458,7 +458,7 @@ static void test_fatfs_read_file_subdir(const char* fileName, const char* expect
     c.offset = 0;
     c.size   = 256;
     const int len = strlen(expectedContent);
-    EXPECT_EQ(MONA_SUCCESS, fat->read(found, &c));
+    EXPECT_EQ(M_OK, fat->read(found, &c));
     ASSERT_EQ(len, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);

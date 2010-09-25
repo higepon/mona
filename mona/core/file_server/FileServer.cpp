@@ -184,7 +184,7 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 
     monapi_cmemoryinfo* mi;
     ret = vmanager_->read(fileID, st.size, &mi);
-    if (ret != MONA_SUCCESS)
+    if (ret != M_OK)
     {
         ret = vmanager_->close(fileID);
         return NULL;
@@ -240,7 +240,7 @@ void FileServer::messageLoop()
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
             int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
-            if (ret != MONA_SUCCESS)
+            if (ret != M_OK)
             {
                 Message::reply(&msg, MONA_FAILURE);
             }

@@ -260,7 +260,7 @@ public:
     virtual int read(Vnode* vnode, struct io::Context* context)
     {
         if (vnode->type != Vnode::REGULAR) {
-            return MONA_FAILURE;
+            return M_FILE_NOT_FOUND;
         }
         File* e = getFileByVnode(vnode);
         uint32_t offset = context->offset;
@@ -272,14 +272,14 @@ public:
         }
 
         if (sizeToRead == 0) {
-            return MONA_SUCCESS;
+            return M_OK;
         }
 
         context->memory = monapi_cmemoryinfo_new();
         // Use immediate map for performance reason.
         if (monapi_cmemoryinfo_create(context->memory, sizeToRead, MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(context->memory);
-            return MONA_ERROR_MEMORY_NOT_ENOUGH;
+            return M_NO_SPACE;
         }
 
         uint32_t skipClusterCount = offset / getClusterSizeByte();
@@ -291,7 +291,7 @@ public:
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
             ASSERT(!isEndOfCluster(cluster));
             if (!readCluster(cluster, buf)) {
-                return MONA_FAILURE;
+                return M_READ_ERROR;
             }
             uint32_t restSizeToRead = sizeToRead - sizeRead;
             uint32_t copySize = restSizeToRead > getClusterSizeByte() - offsetInBuf ? getClusterSizeByte() - offsetInBuf: restSizeToRead;
@@ -304,7 +304,7 @@ public:
         }
         context->resultSize = sizeToRead;
         context->offset += sizeToRead;
-        return MONA_SUCCESS;
+        return M_OK;
     }
 
     virtual int write(Vnode* vnode, struct io::Context* context)

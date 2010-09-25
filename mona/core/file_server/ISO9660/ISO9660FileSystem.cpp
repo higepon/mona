@@ -90,7 +90,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t offset = context->offset;
     uint32_t readSize = context->size;
     uint32_t rest = fileEntry->attribute.size - offset;
-    if (rest == 0) return MONA_FAILURE;
+    if (rest == 0) return M_READ_ERROR;
 
     if (rest < readSize)
     {
@@ -101,36 +101,12 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     int sectorCount = (offset + readSize + SECTOR_SIZE - 1) / SECTOR_SIZE - offset / SECTOR_SIZE;
     uint32_t sectorSize = sectorCount * SECTOR_SIZE;
 
-#if 0
-    byte* temp = new byte[sectorSize];
-    if (temp == NULL) return MONA_FAILURE;
-
-    bool readResult = drive_->read(lba, temp, sectorSize) == 0;
-    if (!readResult)
-    {
-        delete[] temp;
-        return MONA_FAILURE;
-    }
-
-    context->memory = monapi_cmemoryinfo_new();
-
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(context->memory);
-        delete[] temp;
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
-    }
-    memcpy(context->memory->Data, temp + offset -(lba - fileEntry->attribute.extent) * SECTOR_SIZE, readSize);
-    delete[] temp;
-    context->resultSize = readSize;
-    return MONA_SUCCESS;
-#else
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
     context->memory = monapi_cmemoryinfo_new();
     if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(context->memory);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+        return M_NO_MEMORY;
     }
     // by junjunn
     if (0 == dataOffset)
@@ -140,7 +116,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
         if (!readResult)
         {
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
     }
     else
@@ -151,7 +127,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         if (!readResult)
         {
             delete temp;
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
 
         memcpy(context->memory->Data, temp + dataOffset, readSize);
@@ -159,8 +135,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     }
     context->resultSize = readSize;
     context->offset += readSize;
-    return MONA_SUCCESS;
-#endif
+    return M_OK;
 }
 
 int ISO9660FileSystem::close(Vnode* file)

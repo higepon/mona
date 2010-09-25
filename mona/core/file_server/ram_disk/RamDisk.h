@@ -208,7 +208,7 @@ namespace RamDisk {
 
           virtual int read(Vnode* file, struct io::Context* context)
             {
-                if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+                if (file->type != Vnode::REGULAR) return M_FILE_NOT_FOUND;
                 FileInfo* f = (FileInfo*)file->fnode;
                 uint32_t offset = context->offset;
                 uint32_t readSize = context->size;
@@ -220,19 +220,19 @@ namespace RamDisk {
                   }
                 context->memory = monapi_cmemoryinfo_new();
                 if(readSize == 0)
-                  return MONA_SUCCESS;
+                  return M_OK;
 
                 // Use immediate map for performance reason.
                 if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, true) != M_OK)
                   {
                       monapi_cmemoryinfo_delete(context->memory);
-                      return MONA_ERROR_MEMORY_NOT_ENOUGH;
+                      return M_NO_MEMORY;
                   }
                 f->readChunks(offset, readSize, context->memory->Data);
 
                 context->resultSize = readSize;
                 context->offset += readSize;
-                return MONA_SUCCESS;
+                return M_OK;
 
             }
 
