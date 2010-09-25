@@ -316,13 +316,14 @@ intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
     return msg.arg2;
 }
 
-uint32_t monapi_file_close(uint32_t fileID)
+intptr_t monapi_file_close(uint32_t fileID)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID) != M_OK)
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID);
+    if (ret != M_OK)
     {
-        return MONA_FAILURE;
+        return ret;
     }
     return msg.arg2;
 }

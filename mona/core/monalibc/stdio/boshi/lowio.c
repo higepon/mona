@@ -32,7 +32,7 @@ int __mlibc_mona_file_open(void *f, const char *file, int flags)
 
 int __mlibc_mona_file_close(void *f, int fid)
 {
-	return monapi_file_close(fid) == MONA_FAILURE ? 0 : 1;
+	return monapi_file_close(fid) != M_OK ? 0 : 1;
 }
 
 int __mlibc_mona_file_read(void *self, void *buf, size_t size)

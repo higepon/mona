@@ -37,9 +37,8 @@
 
 int fclose(FILE *fp)
 {
-	MONAPI_BOOL result;
 	fflush(fp);
-	result = monapi_file_close(fp->_file);
+	monapi_file_close(fp->_file);
 	if( fp->_flags & __SALD )
 	{
 		free(fp->_bf._base);

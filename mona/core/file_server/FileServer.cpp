@@ -63,44 +63,6 @@ int FileServer::initializeMountedFileSystems()
     vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
 
-    // bd3_ = new BlockDeviceDriver(3);
-    // FatFileSystem* fatfs = new FatFileSystem(*vmanager_, *bd3_);
-    // if (fatfs->initialize() != MONA_SUCCESS)
-    // {
-    //     monapi_warn("FAT12 file system initialize failed \n");
-    //     delete fatfs;
-    //     return MONA_SUCCESS;
-    // }
-    // vmanager_->mount(rootFS_->getRoot(), "F", fatfs->getRoot());
-    // mountedFSs_.push_back(fatfs);
-
-    // ProcessFileSystem
-#if 0
-    FileSystem* pfs = new ProcessFileSystem(vmanager_);
-    if (pfs->initialize() != MONA_SUCCESS)
-    {
-        _printf("ProcessFileSystem initialize Error\n");
-        delete pfs;
-        return MONA_FAILURE;
-    }
-    vmanager_->mount(rootFS_->getRoot(), "process", pfs->getRoot());
-    mountedFSs_.push_back(pfs);
-#endif
-
-#if 0
-    // FAT12FileSystem
-    fd_ = new FDCDriver();
-    FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
-    if (ffs->initialize() != MONA_SUCCESS)
-    {
-        _printf("Warning FAT12FileSystem initialize failed \n");
-        delete fd_;
-        delete ffs;
-        return MONA_SUCCESS;
-    }
-    vmanager_->mount(rootFS_->getRoot(), "FD", ffs->getRoot());
-    mountedFSs_.push_back(ffs);
-#endif
     return M_OK;
 }
 
@@ -135,7 +97,7 @@ int FileServer::initializeRootFileSystem()
     {
         _printf("select device NG error code = %d\n", cd_->getLastError());
         delete cd_;
-        return MONA_FAILURE;
+        return M_BAD_ARG;
     }
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
 #else
@@ -151,19 +113,6 @@ int FileServer::initializeRootFileSystem()
         delete cd_;
         return ret;
     }
-// #endif
-// #if 0
-//     // FAT12FileSystem
-//     fd_ = new FDCDriver();
-//     rootFS_ = new FAT12FileSystem(fd_, vmanager_);
-//     if (rootFS_->initialize() != MONA_SUCCESS)
-//     {
-//         _printf("FD Boot initialize failed \n");
-//         delete fd_;
-//         delete rootFS_;
-//         return MONA_FAILURE;
-//     }
-// #endif
     return M_OK;
 }
 
