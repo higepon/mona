@@ -36,18 +36,18 @@ FileServer::~FileServer()
 
 int FileServer::initializeFileSystems()
 {
-    if (initializeRootFileSystem() != MONA_SUCCESS)
-    {
-        _printf("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+    int ret = initializeRootFileSystem();
+    if (ret != M_OK) {
+        monapi_fatal("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
-    if (initializeMountedFileSystems() != MONA_SUCCESS)
-    {
-        _printf("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+    ret = initializeMountedFileSystems();
+    if (ret != M_OK) {
+        monapi_fatal("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
     vmanager_->setRoot(rootFS_->getRoot());
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FileServer::initializeMountedFileSystems()
@@ -58,7 +58,7 @@ int FileServer::initializeMountedFileSystems()
     {
         _printf("Warning RamDisk file system initialize failed \n");
         delete rdf;
-        return MONA_SUCCESS;
+        return M_OK;
     }
     vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
@@ -101,7 +101,7 @@ int FileServer::initializeMountedFileSystems()
     vmanager_->mount(rootFS_->getRoot(), "FD", ffs->getRoot());
     mountedFSs_.push_back(ffs);
 #endif
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FileServer::initializeRootFileSystem()
@@ -119,9 +119,9 @@ int FileServer::initializeRootFileSystem()
     int controller, deviceNo;
     if (!cd_->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
-        _printf("CD-ROM Not Found\n");
+        monapi_warn("CD-ROM Not Found\n");
         delete cd_;
-        return MONA_FAILURE;
+        return M_OK;
     }
 
     // set irq number
@@ -143,13 +143,13 @@ int FileServer::initializeRootFileSystem()
     rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
 #endif
 
-
-    if (rootFS_->initialize() != M_OK)
+    int ret = rootFS_->initialize();
+    if (ret != M_OK)
     {
-        _printf("CD Boot Initialize Error\n");
+        monapi_warn("CD Boot Initialize Error\n");
         delete rootFS_;
         delete cd_;
-        return MONA_FAILURE;
+        return ret;
     }
 // #endif
 // #if 0
@@ -164,7 +164,7 @@ int FileServer::initializeRootFileSystem()
 //         return MONA_FAILURE;
 //     }
 // #endif
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
