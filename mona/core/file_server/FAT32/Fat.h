@@ -313,8 +313,8 @@ public:
         ASSERT(context->memory);
         File* entry = getFileByVnode(vnode);
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
-        if (expandFileAsNecessary(entry, context) != M_OK) {
-            return -1;
+        if (int ret = expandFileAsNecessary(entry, context) != M_OK) {
+            return ret;
         }
         uint32_t startClusterIndex = sizeToNumClusters(context->offset) - 1;
         uint32_t startCluster = getClusterAt(entry, startClusterIndex);
@@ -325,7 +325,7 @@ public:
             uint32_t restSizeToWrite = sizeToWrite - sizeWritten;
             bool inNewCluster = clusterIndex >= currentNumClusters;
             if (!inNewCluster && !readCluster(cluster, buf_)) {
-                    return -1;
+                    return M_READ_ERROR;
             }
 
             uint32_t copySize;
@@ -340,12 +340,12 @@ public:
             sizeWritten += copySize;
             if (!writeCluster(cluster, buf_)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
-                return -1;
+                return M_WRITE_ERROR;
             }
         }
 
         if (flushDirtyFat() != MONA_SUCCESS) {
-            return -1;
+            return M_WRITE_ERROR;
         }
         return context->size;
     }
