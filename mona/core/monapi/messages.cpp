@@ -330,11 +330,10 @@ monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
     monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, 0, 0, 0, path) != M_OK)
-    {
+    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, 0, 0, 0, path) != M_OK) {
         return NULL;
     }
-    if (msg.arg2 == 0) return NULL;
+    if ((intptr_t)msg.arg2 < M_OK) return NULL;
 
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;

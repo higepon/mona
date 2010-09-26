@@ -243,12 +243,9 @@ void FileServer::messageLoop()
         {
             monapi_cmemoryinfo* memory;
             int ret = vmanager_->readdir(upperCase(msg.str).c_str(), &memory);
-            if (ret != M_OK)
-            {
-                Message::reply(&msg, MONA_FAILURE);
-            }
-            else
-            {
+            if (ret != M_OK) {
+                Message::reply(&msg, ret);
+            } else {
                 uint32_t handle = memory->Handle;
                 uint32_t size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
