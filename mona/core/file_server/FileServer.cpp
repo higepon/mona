@@ -167,7 +167,7 @@ void FileServer::messageLoop()
             uint64_t end = MonAPI::Date::nowInMsec();
             if (NULL == mi)
             {
-                Message::reply(&msg, MONA_FAILURE);
+                Message::reply(&msg, M_READ_ERROR);
             }
             else
             {
