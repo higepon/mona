@@ -162,9 +162,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_READ_ALL:
         {
-            uint64_t start = MonAPI::Date::nowInMsec();
             monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str());
-            uint64_t end = MonAPI::Date::nowInMsec();
             if (NULL == mi)
             {
                 Message::reply(&msg, M_READ_ERROR);
@@ -238,7 +236,7 @@ void FileServer::messageLoop()
         {
             Stat st;
             int ret = vmanager_->stat(msg.arg1, &st);
-            Message::reply(&msg, ret == M_OK ? MONA_SUCCESS : MONA_FAILURE, st.size);
+            Message::reply(&msg, ret, st.size);
             break;
         }
         case MSG_FILE_READ_DIRECTORY:
