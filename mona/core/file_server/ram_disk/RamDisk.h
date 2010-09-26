@@ -331,8 +331,6 @@ namespace RamDisk {
             }
 
         protected:
-          virtual int deviceOn(){ return M_OK; }
-          virtual int deviceOff(){ return M_OK; }
           virtual int readdirInternal(char* name, int* size, int* attribute)
             {
                 *attribute = 0;
