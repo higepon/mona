@@ -376,9 +376,9 @@ int monapi_file_stop_server()
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_STOP_SERVER) != M_OK)
-    {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_STOP_SERVER);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }

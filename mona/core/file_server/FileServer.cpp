@@ -298,7 +298,7 @@ void FileServer::messageLoop()
         }
         case MSG_STOP_SERVER:
             // end
-            Message::reply(&msg, MONA_SUCCESS);
+            Message::reply(&msg, M_OK);
             return;
             break;
         case MSG_DISPOSE_HANDLE:
