@@ -231,7 +231,7 @@ void FileServer::messageLoop()
         case MSG_FILE_CLOSE:
         {
             int ret = vmanager_->close(msg.arg1);
-            Message::reply(&msg, ret == M_OK ? MONA_SUCCESS : MONA_FAILURE);
+            Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_GET_SIZE:
