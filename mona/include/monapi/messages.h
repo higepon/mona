@@ -60,9 +60,8 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* m
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
-extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
-extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
-extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
+extern intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
+extern intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
 extern intptr_t monapi_file_open(const char* file, intptr_t mode);
 extern intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size);
 extern monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size);
@@ -71,7 +70,7 @@ extern intptr_t monapi_file_close(uint32_t id);
 extern intptr_t monapi_file_get_file_size(uint32_t id);
 extern intptr_t monapi_file_delete(const char* file);
 extern MONAPI_BOOL monapi_file_exists(const char* path);
-extern int monapi_file_stop_server();
+extern intptr_t monapi_file_stop_server();
 extern monapi_cmemoryinfo* monapi_file_read_all(const char* file);
 extern monapi_cmemoryinfo* monapi_file_read_directory(const char* path);
 extern uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size);
@@ -82,7 +81,7 @@ extern intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size);
 extern uint8_t* monapi_allocate_dma_memory(int size);
 extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);
-extern uint32_t monapi_process_wait_terminated(uint32_t tid);
+extern intptr_t monapi_process_wait_terminated(uint32_t tid);
 extern const char* monapi_error_string(int error);
 
 typedef struct malloc_stat

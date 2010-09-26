@@ -214,12 +214,12 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
 }
 #endif
 
-int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
+intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
     return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);
 }
 
-int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
+intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
     uint32_t svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
     MessageInfo msg;
@@ -270,8 +270,9 @@ intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file) != M_OK) {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
@@ -372,7 +373,7 @@ intptr_t monapi_file_delete(const char* file)
 }
 
 
-int monapi_file_stop_server()
+intptr_t monapi_file_stop_server()
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
@@ -434,7 +435,7 @@ uint32_t monapi_stdin_unlock_for_read()
     return inStream->unlockForRead();
 }
 
-uint32_t monapi_process_wait_terminated(uint32_t tid)
+intptr_t monapi_process_wait_terminated(uint32_t tid)
 {
     for (MessageInfo msg;;)
     {
@@ -452,7 +453,7 @@ uint32_t monapi_process_wait_terminated(uint32_t tid)
             break;
         }
     }
-    return MONA_FAILURE;
+    return M_UNKNOWN;
 }
 
 intptr_t monapi_notify_server_start(const char* name)

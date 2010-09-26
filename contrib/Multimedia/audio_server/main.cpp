@@ -68,14 +68,14 @@ int main(int argc, char *argv[])
 				break;
 			case MSG_AUDIO_GET_STREAM:
 				//result = server->getStream(msg.arg1);
-				audio_message_reply(unsupported, &msg, MONA_FAILURE);
+				audio_message_reply(unsupported, &msg, M_NOT_SUPPORTED);
 				//audio_message_reply(iszero, &msg, result);
 				break;
 			case MSG_AUDIO_SET_BLOCKSIZE:
-				audio_message_reply(unsupported, &msg, MONA_FAILURE);
+				audio_message_reply(unsupported, &msg, M_NOT_SUPPORTED);
 				break;
 			case MSG_AUDIO_GET_BLOCKSIZE:
-				audio_message_reply(unsupported, &msg, MONA_FAILURE);
+				audio_message_reply(unsupported, &msg, M_NOT_SUPPORTED);
 				break;
 			case MSG_AUDIO_START:
 				result = server->start(msg.arg1);

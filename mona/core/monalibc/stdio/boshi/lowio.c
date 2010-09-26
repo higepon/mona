@@ -16,7 +16,7 @@ int __mlibc_mona_file_is_valid(void *f, int fid)
 {
 	//puts(__func__);
 	_printf("valid? = %d\n", fid != MONA_FAILURE ? 1 : 0);
-	return fid != MONA_FAILURE ? 1 : 0;
+	return fid < M_OK ? 0 : 1;
 }
 
 int __mlibc_mona_file_open(void *f, const char *file, int flags)
@@ -24,9 +24,8 @@ int __mlibc_mona_file_open(void *f, const char *file, int flags)
     uint32_t fid = 0;
 
     fid = monapi_file_open(file, 0);
-    if( fid == MONA_FAILURE && flags & F_CREATE )
+    if( fid < M_OK && flags & F_CREATE )
         fid = monapi_file_open(file, FILE_CREATE);
-    _logprintf("fid = %x\n", fid);
     return (int)fid;
 }
 

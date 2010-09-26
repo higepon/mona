@@ -104,9 +104,6 @@ struct MonapiConstantData {
     { VK_TEN_PLUS,      "VK_TEN_PLUS" },
     { VK_TEN_PERIOD,    "VK_TEN_PERIOD" },
 
-    { MONA_SUCCESS,         "MONA_SUCCESS" },
-    { MONA_FAILURE,         "MONA_FAILURE" },
-
     { SEEK_SET,             "SEEK_SET" },
     { SEEK_CUR,             "SEEK_CUR" },
     { SEEK_END,             "SEEK_END" },

@@ -97,7 +97,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
 #define MAXDATA 20
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
     monapi_cmemoryinfo_create(buffer, MAXDATA, 0, 0);
-    int res = MONA_FAILURE;
+    int res = 0;
     while(size > 0) {
         int copySize = size > MAXDATA ? MAXDATA : size;
         memcpy(buffer->Data, contents, copySize);

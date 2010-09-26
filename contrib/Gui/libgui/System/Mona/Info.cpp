@@ -12,11 +12,11 @@ int gui_move_window(uint32_t handle, int x, int y)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
-    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle, x, y) != 0)
-    {
-        return MONA_FAILURE;
+    int ret = MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle, x, y);
+    if (ret != M_OK) {
+        return ret;
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 
@@ -51,13 +51,13 @@ int gui_get_window_title(uint32_t handle, char* buffer)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
-    if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_GETTITLE, handle) != 0)
-    {
-        return MONA_FAILURE;
+    int ret = MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_GETTITLE, handle);
+    if (M_OK != ret) {
+        return ret;
     }
 
     memcpy(buffer, msg.str, WINDOW_TITLE_MAX_LENGTH);
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 }}
