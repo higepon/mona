@@ -191,7 +191,7 @@ void FileServer::messageLoop()
             int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
             if (ret != M_OK)
             {
-                Message::reply(&msg, MONA_FAILURE);
+                Message::reply(&msg, ret);
             }
             else
             {
