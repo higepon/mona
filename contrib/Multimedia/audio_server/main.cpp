@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 				MonAPI::Message::reply(&msg, result);
 				break;
 			case MSG_AUDIO_GET_CHANNELS_LIST:
-				MonAPI::Message::reply(&msg, MONA_FAILURE);
+				MonAPI::Message::reply(&msg, M_NOT_SUPPORTED);
 				break;
 			default: break;
 		}

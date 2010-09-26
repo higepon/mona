@@ -15,7 +15,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 int __mlibc_mona_file_is_valid(void *f, int fid)
 {
 	//puts(__func__);
-	_printf("valid? = %d\n", fid != MONA_FAILURE ? 1 : 0);
 	return fid < M_OK ? 0 : 1;
 }
 
