@@ -50,16 +50,6 @@ int FileServer::initializeFileSystems()
 
 int FileServer::initializeMountedFileSystems()
 {
-    bd4_ = new BlockDeviceDriver(4);
-    FatFileSystem* fatfs = new FatFileSystem(vmanager_, *bd4_);
-    if (fatfs->initialize() != M_OK) {
-        monapi_warn("Fat fs mound error");
-        delete fatfs;
-        return M_OK;
-    }
-    vmanager_.mount(rootFS_->getRoot(), "USER", fatfs->getRoot());
-    mountedFSs_.push_back(fatfs);
-
     // RamDiskFileSystem
     RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(&vmanager_);
     if (rdf->initialize() != M_OK) {
@@ -70,16 +60,15 @@ int FileServer::initializeMountedFileSystems()
     vmanager_.mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
 
-    FatFileSystem* fatfs = new FatFileSystem(vmanager_);
-    if (rdf->initialize() != M_OK)
-    {
-        _printf("Warning RamDisk file system initialize failed \n");
-        delete rdf;
+    bd4_ = new BlockDeviceDriver(4);
+    FatFileSystem* fatfs = new FatFileSystem(vmanager_, *bd4_);
+    if (fatfs->initialize() != M_OK) {
+        monapi_warn("Fat fs mound error");
+        delete fatfs;
         return M_OK;
     }
-    vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
-    mountedFSs_.push_back(rdf);
-
+    vmanager_.mount(rootFS_->getRoot(), "USER", fatfs->getRoot());
+    mountedFSs_.push_back(fatfs);
 
     return M_OK;
 }

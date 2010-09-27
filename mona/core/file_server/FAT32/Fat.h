@@ -233,10 +233,6 @@ public:
             return M_OK;
         }
 
-        if (diretory->type != Vnode::DIRECTORY) {
-            return M_FILE_NOT_FOUND;
-        }
-
         File* dir = getFileByVnode(diretory);
         Files* childlen = dir->getChildlen();
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {

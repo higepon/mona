@@ -62,7 +62,6 @@ int FAT12FileSystem::initialize()
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    if (diretory->type != Vnode::DIRECTORY) return M_BAD_ARG;
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
     if (v != NULL && v->type == type)
     {

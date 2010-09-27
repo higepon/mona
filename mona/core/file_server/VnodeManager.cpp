@@ -32,6 +32,10 @@ int VnodeManager::delete_file(const std::string& name)
 
 int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, int type)
 {
+    if (directory->type != Vnode::DIRECTORY) {
+        return M_BAD_ARG;
+    }
+
     vector<string> directories;
     split(file, '/', directories);
     int ret = M_FILE_NOT_FOUND;
