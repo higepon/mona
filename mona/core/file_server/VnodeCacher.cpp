@@ -55,7 +55,6 @@ void VnodeCacher::enumCaches(Vnode* directory, std::vector<std::string>& caches)
 Vnode* VnodeCacher::lookup(Vnode* directory, const string& name)
 {
     if (directory->type != Vnode::DIRECTORY) return NULL;
-
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
     if (it == directories_->end())
@@ -66,7 +65,6 @@ Vnode* VnodeCacher::lookup(Vnode* directory, const string& name)
     {
         entries = (*it).second;
     }
-
     EntriesMap::iterator eit = entries->find(name);
     return eit == entries->end() ? NULL : (*eit).second;
 }

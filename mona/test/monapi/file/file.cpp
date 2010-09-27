@@ -497,6 +497,7 @@ static void test_fatfs_create_long_file_name(const char* filename)
 
         Vnode* subdir;
         Vnode* found;
+        logprintf("name = %s", filename);
         ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
 
         ASSERT_EQ(M_OK, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
@@ -522,6 +523,16 @@ static void test_fatfs_create_long_file_name_need_new_cluster()
         test_fatfs_create_long_file_name(buf);
     }
 }
+
+static void testReadDirectory_OneFile()
+{
+    monapi_cmemoryinfo* ci = monapi_file_read_directory("/USER");
+
+    int size = *(int*)ci->Data;
+
+    EXPECT_EQ(21, size);
+}
+
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -564,7 +575,7 @@ int main(int argc, char *argv[])
     test_fatfs_read_file_subdir("this_is_very_long_file_name.txt", "Hello World\n");
     test_fatfs_create_long_file_name("hi_i_am_higepon_writing_fat_fs.mosh.sls");
     test_fatfs_create_long_file_name_need_new_cluster();
-
+    testReadDirectory_OneFile();
     TEST_RESULTS(file);
     return 0;
 }

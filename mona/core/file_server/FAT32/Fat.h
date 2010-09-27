@@ -227,6 +227,7 @@ public:
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
     {
         Vnode* v = vnodeManager_.cacher()->lookup(diretory, file);
+
         if (v != NULL && v->type == type) {
             *found = v;
             return M_OK;
@@ -285,17 +286,19 @@ public:
         uint32_t skipClusterCount = offset / getClusterSizeByte();
         uint32_t startCluster = getClusterAt(e, skipClusterCount);
 
-        uint8_t buf[getClusterSizeByte()];
+////        uint8_t buf[getClusterSizeByte()];
         uint32_t sizeRead = 0;
         uint32_t offsetInBuf = context->offset - getClusterSizeByte() * skipClusterCount;
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
             ASSERT(!isEndOfCluster(cluster));
-            if (!readCluster(cluster, buf)) {
+            if (!readCluster(cluster, buf_)) {
                 return M_READ_ERROR;
             }
             uint32_t restSizeToRead = sizeToRead - sizeRead;
             uint32_t copySize = restSizeToRead > getClusterSizeByte() - offsetInBuf ? getClusterSizeByte() - offsetInBuf: restSizeToRead;
-            memcpy(context->memory->Data + sizeRead, buf + offsetInBuf , copySize);
+            ASSERT(context->memory->Data + sizeRead + copySize <= context->memory->Data + context->memory->Size);
+            ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
+            memcpy(context->memory->Data + sizeRead, buf_ + offsetInBuf , copySize);
             sizeRead += copySize;
             offsetInBuf = 0;
             if (sizeRead == sizeToRead) {
@@ -356,8 +359,9 @@ public:
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
         if (isLongName(file)) {
-            if (createLongNameFile(dir, file) != M_OK) {
-                return M_OK;
+            intptr_t ret = createLongNameFile(dir, file);
+            if (ret != M_OK) {
+                return ret;
             } else {
                 return M_OK;
             }
@@ -372,7 +376,6 @@ public:
         DirInfos dirInfos;
         ASSERT(directory->type == Vnode::DIRECTORY);
         File* dir = getFileByVnode(directory);
-
         for (Files::const_iterator it = dir->getChildlen()->begin(); it != dir->getChildlen()->end(); ++it) {
             monapi_directoryinfo di;
             strcpy(di.name, (*it)->getName().c_str());
@@ -380,7 +383,6 @@ public:
             di.attr = (*it)->isDirectory() ? ATTRIBUTE_DIRECTORY : 0;
             dirInfos.push_back(di);
         }
-
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
 
         int size = dirInfos.size();
@@ -680,6 +682,7 @@ private:
         uint32_t fatStartSector = getReservedSectors();
         uint32_t fatSizeByte = getSectorsPerFat() * SECTOR_SIZE;
         fat_ = new uint32_t[fatSizeByte / sizeof(uint32_t)];
+        ASSERT(fat_);
 
         if (dev_.read(fatStartSector, fat_, fatSizeByte) != M_OK) {
             return false;
@@ -709,17 +712,16 @@ private:
 
     bool readDirectory(uint32_t startCluster, Files& childlen)
     {
-        uint8_t buf[getClusterSizeByte()];
+        MonAPI::scoped_ptr<uint8_t> buf(new uint8_t[getClusterSizeByte()]);
         LFNDecoder decoder;
         for (uint32_t cluster = startCluster; !isEndOfCluster(cluster); cluster = fat_[cluster]) {
-            if (!readCluster(cluster, buf) != M_OK) {
+            if (!readCluster(cluster, buf.get()) != M_OK) {
                 return false;
             }
-
             bool hasLongName = false;
             std::vector<std::string> partialLongNames;
             uint32_t index = 0;
-            for (struct de* entry = (struct de*)buf; (uint8_t*)entry < (uint8_t*)(&buf[getClusterSizeByte()]); entry++, index++) {
+            for (struct de* entry = (struct de*)(buf.get()); (uint8_t*)entry < (uint8_t*)(&((buf.get()))[getClusterSizeByte()]); entry++, index++) {
                 if (entry->name[0] == AVAILABLE_ENTRY || entry->name[0] == DOT_ENTRY || entry->name[0] == FREE_ENTRY) {
                     continue;
                 }
@@ -735,7 +737,6 @@ private:
                     }
                     continue;
                 }
-
                 std::string filename;
                 if (hasLongName) {
                     filename = StringUtil::reverseConcat(partialLongNames);
@@ -771,7 +772,6 @@ private:
     bool readAndSetupRootDirectory()
     {
         Files childlen;
-
         if (!readDirectory(getRootDirectoryCluster(), childlen)) {
             return false;
         }
@@ -1089,18 +1089,17 @@ private:
 
     int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
     {
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(cluster, buf)) {
+        if (!readCluster(cluster, buf_)) {
             return M_READ_ERROR;
         }
 
         const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
-        struct de* entries = (struct de*)buf;
+        struct de* entries = (struct de*)buf_;
         for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
                 createAndAddFile(dir, file, cluster, i);
                 initializeEntry(&entries[i], file);
-                if (writeCluster(cluster, buf)) {
+                if (writeCluster(cluster, buf_)) {
                     return M_OK;
                 } else {
                     return M_WRITE_ERROR;
@@ -1169,7 +1168,15 @@ private:
                 p->attr = ATTR_LFN;
                 p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
                 const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, sizeof(p->name1));
+                int copySize = 0;
+
+                // Ugly todo
+                if ((seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) > encodedLen) {
+                    copySize = sizeof(p->name1) - ((seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) - encodedLen);
+                } else {
+                    copySize = sizeof(p->name1);
+                }
+                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, copySize);
                 memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
                 memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
                 p->seq = seq--;
@@ -1200,14 +1207,13 @@ private:
             return M_NO_SPACE;
         }
         uint32_t lastCluster = getLastClusterByVnode(dir);
-        uint8_t buf[getClusterSizeByte()];
-        if (!readCluster(lastCluster, buf)) {
+        if (!readCluster(lastCluster, buf_)) {
             return M_READ_ERROR;
         }
 
         uint32_t extraCluster = END_OF_CLUSTER;
         int startIndex = 0;
-        if ((startIndex = allocateContigousEntries((struct de*)buf, requiredNumEntries)) < 0) {
+        if ((startIndex = allocateContigousEntries((struct de*)buf_, requiredNumEntries)) < 0) {
             ASSERT(startIndex == M_NO_SPACE);
             extraCluster = allocateCluster();
             if (isEndOfCluster(extraCluster)) {
@@ -1221,11 +1227,11 @@ private:
 
         bool inExtraCluster = !isEndOfCluster(extraCluster);
         if (inExtraCluster) {
-            memset(buf, 0, getClusterSizeByte());
+            memset(buf_, 0, getClusterSizeByte());
         }
         uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
         startIndex = inExtraCluster ? 0 :startIndex;
-        return createLongNameEntryInCluster(dir, buf, targetCluster, file, startIndex, requiredNumEntries);
+        return createLongNameEntryInCluster(dir, buf_, targetCluster, file, startIndex, requiredNumEntries);
     }
 
     int createShortNameFile(Vnode* dir, const std::string& file)

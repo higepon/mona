@@ -37,10 +37,10 @@ public:
 
 protected:
     typedef std::vector<FileSystem*> FileSystems;
-    VnodeManager* vmanager_;
+    VnodeManager vmanager_;
     IDEDriver* cd_;
     BlockDeviceDriver* bd_;
-    BlockDeviceDriver* bd3_;
+    BlockDeviceDriver* bd4_;
     FDCDriver* fd_;
     FileSystem* rootFS_;
     FileSystems mountedFSs_;

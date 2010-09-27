@@ -43,6 +43,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
 {
     if (diretory->type != Vnode::DIRECTORY) return M_BAD_ARG;
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
+    logprintf("cacher dir=%x file=%s v=%x", diretory, file.c_str(), v);
     if (v != NULL && v->type == type)
     {
         *found = v;

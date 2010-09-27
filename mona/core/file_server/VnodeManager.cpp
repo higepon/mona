@@ -84,6 +84,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         }
     }
     int ret = dir->fs->readdir(dir, mem);
+
     if (ret != M_OK) {
         return ret;
     }

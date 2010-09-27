@@ -18,12 +18,10 @@ string upperCase(const string& s)
 
 FileServer::FileServer()
 {
-    vmanager_ = new VnodeManager();
 }
 
 FileServer::~FileServer()
 {
-    delete vmanager_;
     delete rootFS_;
     for (FileSystems::const_iterator it = mountedFSs_.begin(); it != mountedFSs_.end(); ++it)
     {
@@ -46,21 +44,30 @@ int FileServer::initializeFileSystems()
         monapi_fatal("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
     }
-    vmanager_->setRoot(rootFS_->getRoot());
+    vmanager_.setRoot(rootFS_->getRoot());
     return M_OK;
 }
 
 int FileServer::initializeMountedFileSystems()
 {
+    bd4_ = new BlockDeviceDriver(4);
+    FatFileSystem* fatfs = new FatFileSystem(vmanager_, *bd4_);
+    if (fatfs->initialize() != M_OK) {
+        monapi_warn("Fat fs mound error");
+        delete fatfs;
+        return M_OK;
+    }
+    vmanager_.mount(rootFS_->getRoot(), "USER", fatfs->getRoot());
+    mountedFSs_.push_back(fatfs);
+
     // RamDiskFileSystem
-    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(vmanager_);
-    if (rdf->initialize() != M_OK)
-    {
-        _printf("Warning RamDisk file system initialize failed \n");
+    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(&vmanager_);
+    if (rdf->initialize() != M_OK) {
+        monapi_warn("Warning RamDisk file system initialize failed \n");
         delete rdf;
         return M_OK;
     }
-    vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
+    vmanager_.mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
 
     return M_OK;
@@ -102,7 +109,7 @@ int FileServer::initializeRootFileSystem()
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
 #else
     bd_ = new BlockDeviceDriver(0, 2048);
-    rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
+    rootFS_ = new ISO9660FileSystem(bd_, &vmanager_);
 #endif
 
     int ret = rootFS_->initialize();
@@ -120,26 +127,26 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 {
     uint32_t fileID;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    int ret = vmanager_->open(file, 0, tid, &fileID);
+    int ret = vmanager_.open(file, 0, tid, &fileID);
     if (ret != M_OK) return NULL;
 
     Stat st;
-    ret = vmanager_->stat(fileID, &st);
+    ret = vmanager_.stat(fileID, &st);
     if (ret != M_OK)
     {
-        ret = vmanager_->close(fileID);
+        ret = vmanager_.close(fileID);
         return NULL;
     }
 
     monapi_cmemoryinfo* mi;
-    ret = vmanager_->read(fileID, st.size, &mi);
+    ret = vmanager_.read(fileID, st.size, &mi);
     if (ret != M_OK)
     {
-        ret = vmanager_->close(fileID);
+        ret = vmanager_.close(fileID);
         return NULL;
     }
 
-    ret = vmanager_->close(fileID);
+    ret = vmanager_.close(fileID);
     return mi;
 }
 
@@ -156,7 +163,7 @@ void FileServer::messageLoop()
             uint32_t tid = msg.from; // temporary
             uint32_t fildID;
             intptr_t mode = msg.arg1;
-            int ret = vmanager_->open(upperCase(msg.str).c_str(), mode, tid, &fildID);
+            int ret = vmanager_.open(upperCase(msg.str).c_str(), mode, tid, &fildID);
             Message::reply(&msg, ret == M_OK ? fildID : M_FILE_NOT_FOUND);
             break;
         }
@@ -178,7 +185,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_SEEK:
         {
-            int ret = vmanager_->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
+            int ret = vmanager_.seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
             Message::reply(&msg, ret);
             break;
         }
@@ -186,7 +193,7 @@ void FileServer::messageLoop()
         {
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
-            int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
+            int ret = vmanager_.read(fileID, msg.arg2 /* size */, &memory);
             if (ret != M_OK)
             {
                 Message::reply(&msg, ret);
@@ -211,11 +218,10 @@ void FileServer::messageLoop()
             // Use immediate map
             intptr_t result = monapi_cmemoryinfo_map(memory, true);
             if (result != M_OK) {
-                logprintf("MSG_FILE_WRITE\n");
                 monapi_cmemoryinfo_delete(memory);
                 Message::replyError(&msg, result);
             } else {
-                int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
+                int ret = vmanager_.write(fileID, msg.arg2 /* size */, memory);
 
                 // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
                 if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
@@ -228,21 +234,21 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_CLOSE:
         {
-            int ret = vmanager_->close(msg.arg1);
+            int ret = vmanager_.close(msg.arg1);
             Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_GET_SIZE:
         {
             Stat st;
-            int ret = vmanager_->stat(msg.arg1, &st);
+            int ret = vmanager_.stat(msg.arg1, &st);
             Message::reply(&msg, ret, st.size);
             break;
         }
         case MSG_FILE_READ_DIRECTORY:
         {
             monapi_cmemoryinfo* memory;
-            int ret = vmanager_->readdir(upperCase(msg.str).c_str(), &memory);
+            int ret = vmanager_.readdir(upperCase(msg.str).c_str(), &memory);
             if (ret != M_OK) {
                 Message::reply(&msg, ret);
             } else {
@@ -255,7 +261,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_DELETE:
         {
-            int ret = vmanager_->delete_file(upperCase(msg.str).c_str());
+            int ret = vmanager_.delete_file(upperCase(msg.str).c_str());
             Message::reply(&msg, ret);
             break;
         }

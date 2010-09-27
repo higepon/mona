@@ -28,6 +28,7 @@ fat32:
 #	(cd tmp && echo h | sudo tee empty.txt)
 	seq 1 1000 > hige.txt; sudo mv -f hige.txt tmp
 	sudo umount -l tmp/
+	cp hdd.img hdd2.img
 
 iso:
 	$(INSTALL) -p mona.img $(MONADIR)/bin
