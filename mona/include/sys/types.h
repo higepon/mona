@@ -35,7 +35,6 @@ typedef long long	int64_t;
 
 #define PROCESS_HEAP_SIZE 512 * 1024 * 1024
 
-
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
 typedef long int        intptr_t;
