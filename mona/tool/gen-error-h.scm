@@ -28,8 +28,6 @@
 #ifndef _MONA_ERROR_
 #define _MONA_ERROR_
 
-#include \"sys/deprecated.h\"
-
 ")
 
 (define footer "#endif\n")

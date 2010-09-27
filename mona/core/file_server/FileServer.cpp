@@ -70,6 +70,17 @@ int FileServer::initializeMountedFileSystems()
     vmanager_.mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
 
+    FatFileSystem* fatfs = new FatFileSystem(vmanager_);
+    if (rdf->initialize() != M_OK)
+    {
+        _printf("Warning RamDisk file system initialize failed \n");
+        delete rdf;
+        return M_OK;
+    }
+    vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
+    mountedFSs_.push_back(rdf);
+
+
     return M_OK;
 }
 

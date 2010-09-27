@@ -14,8 +14,6 @@
 #ifndef _MONA_ERROR_
 #define _MONA_ERROR_
 
-#include "sys/deprecated.h"
-
 /*
     constant: M_OK
 
@@ -204,5 +202,12 @@
     Indicates bad arguments
 */
 #define M_BAD_ARG -5025
+
+/*
+    constant: M_OBJECT_NOT_FOUND
+
+    Indicates object not found
+*/
+#define M_OBJECT_NOT_FOUND -5026
 
 #endif

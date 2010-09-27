@@ -42,18 +42,18 @@ KObject* IDManager::get(int objectID, int type)
 {
     if (!tree.contains(objectID))
     {
-        this->lastError = IDM_OBJECT_NOT_FOUND;
+        this->lastError = M_OBJECT_NOT_FOUND;
         return NULL;
     }
     KObject* object = tree.get(objectID);
     if (object->getType() != type) {
-        this->lastError = IDM_INVALID_TYPE;
+        this->lastError = M_BAD_ARG;
         return NULL;
     }
     return object;
 }
 
-int IDManager::getLastError() const
+intptr_t IDManager::getLastError() const
 {
     return this->lastError;
 }
