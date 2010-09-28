@@ -7,7 +7,7 @@ using namespace iso9660;
 
 extern string upperCase(const string& s);
 
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), isJoliet_(false)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive) : drive_(drive), isJoliet_(false)
 {
 }
 
@@ -32,7 +32,7 @@ int ISO9660FileSystem::initialize()
         return ret;
     }
 
-    root_ = vmanager_->alloc();
+    root_ = new Vnode;
     root_->fnode  = rootDirectory_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
@@ -41,30 +41,19 @@ int ISO9660FileSystem::initialize()
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-    logprintf("cacher dir=%x file=%s v=%x", diretory, file.c_str(), v);
-    if (v != NULL && v->type == type)
-    {
-        *found = v;
-        return M_OK;
-    }
     Entry* directoryEntry = (Entry*)diretory->fnode;
     Entry* target = NULL;
 
-    if (type == Vnode::REGULAR)
-    {
+    if (type == Vnode::REGULAR) {
         target = lookupFile(directoryEntry, file);
-    }
-    else
-    {
+    } else {
         target = lookupDirectory(directoryEntry, file);
     }
     if (target == NULL) return M_FILE_NOT_FOUND;
-    Vnode* newVnode = vmanager_->alloc();
+    Vnode* newVnode = new Vnode;
     newVnode->fnode  = target;
     newVnode->type = type;
     newVnode->fs = this;
-    vmanager_->cacher()->add(diretory, file, newVnode);
     *found = newVnode;
     return M_OK;
 }
@@ -90,10 +79,12 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t offset = context->offset;
     uint32_t readSize = context->size;
     uint32_t rest = fileEntry->attribute.size - offset;
-    if (rest == 0) return M_READ_ERROR;
+    if (rest == 0) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_READ_ERROR;
+    }
 
-    if (rest < readSize)
-    {
+    if (rest < readSize) {
         readSize = rest;
     }
 
@@ -114,8 +105,8 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 // by higepon
 //        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
         bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
-        if (!readResult)
-        {
+        if (!readResult) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_READ_ERROR;
         }
     }
@@ -126,6 +117,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
         if (!readResult)
         {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             delete temp;
             return M_READ_ERROR;
         }

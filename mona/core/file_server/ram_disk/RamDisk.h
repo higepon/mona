@@ -3,7 +3,6 @@
 
 #include <monalibc.h>
 #include "FileSystem.h"
-#include "VnodeManager.h"
 #include <map>
 
 int ramdisk_debug_times = 0;
@@ -133,10 +132,8 @@ namespace RamDisk {
       {
         public:
 
-          RamDiskFileSystem(VnodeManager* vmanager) {
-              vmanager_ = vmanager;
-
-              root_ = vmanager_->alloc();
+          RamDiskFileSystem() {
+              root_ = new Vnode;
               // root_->fnode  = rootDir;
               root_->fs     = this;
               root_->type = Vnode::DIRECTORY;
@@ -154,23 +151,15 @@ namespace RamDisk {
           virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
             {
                 ramdisk_debug_times++;
-
-                Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-                if (v != NULL && v->type == type)
-                  {
-                      *found = v;
-                      return M_OK;
-                  }
-
                 FileMap::iterator it = files_.find(file);
                 if(it == files_.end())
                   return M_FILE_NOT_FOUND;
 
-                Vnode* newVnode = vmanager_->alloc(); //never return NULL?
+                Vnode* newVnode = new Vnode;
+                ASSERT(newVnode);
                 newVnode->fnode = (*it).second;
                 newVnode->type = type;
                 newVnode->fs = this;
-                vmanager_->cacher()->add(diretory, file, newVnode);
                 *found = newVnode;
                 return M_OK;
             }
@@ -194,7 +183,6 @@ namespace RamDisk {
                 {
                     // overwrite case. remove previous file.
                     FileInfo* fi  = (*it).second;
-                    vmanager_->cacher()->remove(root_, fi->name);
                     delete fi;
                     files_.erase(it);
                 }
@@ -322,7 +310,6 @@ namespace RamDisk {
                   }
                 FileInfo* finfo = (FileInfo*)vnode->fnode;
                 std::string name = finfo->name;
-                vmanager_->cacher()->remove(root_, name);
                 FileMap::iterator it = files_.find(name);
                 ASSERT(it != files_.end());
                 delete finfo;
@@ -344,7 +331,6 @@ namespace RamDisk {
                 return M_OK;
             }
 
-          VnodeManager* vmanager_;
           Vnode* root_;
           FileMap files_;
           FileMap::iterator currentIt_;

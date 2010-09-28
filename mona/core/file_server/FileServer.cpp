@@ -1,4 +1,5 @@
 
+#include <monapi.h>
 #include "FileServer.h"
 #include "ram_disk/RamDisk.h"
 #include "FAT32/Fat.h"
@@ -50,8 +51,7 @@ int FileServer::initializeFileSystems()
 
 int FileServer::initializeMountedFileSystems()
 {
-    // RamDiskFileSystem
-    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(&vmanager_);
+    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem();
     if (rdf->initialize() != M_OK) {
         monapi_warn("Warning RamDisk file system initialize failed \n");
         delete rdf;
@@ -61,7 +61,7 @@ int FileServer::initializeMountedFileSystems()
     mountedFSs_.push_back(rdf);
 
     bd4_ = new BlockDeviceDriver(4);
-    FatFileSystem* fatfs = new FatFileSystem(vmanager_, *bd4_);
+    FatFileSystem* fatfs = new FatFileSystem(*bd4_);
     if (fatfs->initialize() != M_OK) {
         monapi_warn("Fat fs mound error");
         delete fatfs;
@@ -109,7 +109,7 @@ int FileServer::initializeRootFileSystem()
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
 #else
     bd_ = new BlockDeviceDriver(0, 2048);
-    rootFS_ = new ISO9660FileSystem(bd_, &vmanager_);
+    rootFS_ = new ISO9660FileSystem(bd_);
 #endif
 
     int ret = rootFS_->initialize();
@@ -123,33 +123,49 @@ int FileServer::initializeRootFileSystem()
     return M_OK;
 }
 
-monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
+monapi_cmemoryinfo* FileServer::readFileAll(const string& file, intptr_t& lastError)
 {
     uint32_t fileID;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     int ret = vmanager_.open(file, 0, tid, &fileID);
-    if (ret != M_OK) return NULL;
+    if (ret != M_OK) {
+        lastError = ret;
+        return NULL;
+    }
 
     Stat st;
     ret = vmanager_.stat(fileID, &st);
-    if (ret != M_OK)
-    {
-        ret = vmanager_.close(fileID);
+    if (ret != M_OK) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        lastError = ret;
+        vmanager_.close(fileID);
         return NULL;
     }
 
     monapi_cmemoryinfo* mi;
     ret = vmanager_.read(fileID, st.size, &mi);
-    if (ret != M_OK)
-    {
-        ret = vmanager_.close(fileID);
+    if (ret != M_OK) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        lastError = ret;
+        vmanager_.close(fileID);
         return NULL;
     }
 
-    ret = vmanager_.close(fileID);
+    lastError = vmanager_.close(fileID);
     return mi;
 }
 
+static void enableStackTrace()
+{
+
+    const char* MAP_FILE_PATH = "/FILE.MAP";
+    uint32_t pid = syscall_get_pid();
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        monapi_fatal("syscall_stack_trace_enable error %d\n", ret);
+    }
+    exit(0);
+}
 
 void FileServer::messageLoop()
 {
@@ -169,13 +185,18 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_READ_ALL:
         {
-            monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str());
-            if (NULL == mi)
-            {
-                Message::reply(&msg, M_READ_ERROR);
+            // Dirty quick hack to enable stack trace.
+            static bool stackTraceEnabled = false;
+            if (!stackTraceEnabled) {
+                syscall_mthread_create(enableStackTrace);
+                stackTraceEnabled = true;
             }
-            else
-            {
+
+            intptr_t lastError;
+            monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str(), lastError);
+            if (NULL == mi) {
+                Message::reply(&msg, lastError);
+            } else {
                 uint32_t handle = mi->Handle;
                 uint32_t size = mi->Size;
                 monapi_cmemoryinfo_delete(mi);
@@ -215,6 +236,7 @@ void FileServer::messageLoop()
             memory->Handle = msg.arg3;
             memory->Owner  = msg.from;
             memory->Size   = msg.arg2;
+            ASSERT(memory->Handle != 0);
             // Use immediate map
             intptr_t result = monapi_cmemoryinfo_map(memory, true);
             if (result != M_OK) {
@@ -361,7 +383,8 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
 
 monapi_cmemoryinfo* FileServer::ST5DecompressFile(const char* file)
 {
-    monapi_cmemoryinfo* mi = readFileAll(file);
+    intptr_t lastError;
+    monapi_cmemoryinfo* mi = readFileAll(file, lastError);
     monapi_cmemoryinfo* ret = NULL;
     if (mi == NULL) return ret;
 

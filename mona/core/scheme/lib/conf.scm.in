@@ -179,3 +179,5 @@
       (for-each call-process *tests-on-cui*)
       (if (not mona-gui-auto-start)
           (test-end))))
+
+(call-process "/APPS/MOSH.APP/MOSH.EXE"); --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")

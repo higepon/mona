@@ -98,8 +98,7 @@ class TestFatFS
 {
 public:
     TestFatFS() : dev(new BlockDeviceDriver(3)),
-                  vm(new VnodeManager),
-                  fat(new FatFileSystem(*vm, *dev))
+                  fat(new FatFileSystem(*dev))
     {
     }
 
@@ -110,7 +109,6 @@ public:
 
 private:
     scoped_ptr<BlockDeviceDriver> dev;
-    scoped_ptr<VnodeManager> vm;
     scoped_ptr<FatFileSystem> fat;
 };
 
@@ -533,6 +531,13 @@ static void testReadDirectory_OneFile()
     EXPECT_EQ(21, size);
 }
 
+static void test_fatfs_monapi_open()
+{
+    intptr_t file = monapi_file_open("/USER/SUBDIR/SHOW-WORDS.SCM", 0);
+    ASSERT_TRUE(file > 0);
+    monapi_file_close(file);
+}
+
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -575,7 +580,9 @@ int main(int argc, char *argv[])
     test_fatfs_read_file_subdir("this_is_very_long_file_name.txt", "Hello World\n");
     test_fatfs_create_long_file_name("hi_i_am_higepon_writing_fat_fs.mosh.sls");
     test_fatfs_create_long_file_name_need_new_cluster();
+    test_fatfs_monapi_open();
     testReadDirectory_OneFile();
+
     TEST_RESULTS(file);
     return 0;
 }

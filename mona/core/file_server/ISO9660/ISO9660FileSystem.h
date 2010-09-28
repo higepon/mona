@@ -12,7 +12,7 @@
 class ISO9660FileSystem : public FileSystem
 {
 public:
-    ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager);
+    ISO9660FileSystem(IStorageDevice* drive);
     virtual ~ISO9660FileSystem();
 
 public:
@@ -62,7 +62,6 @@ private:
 
 protected:
     IStorageDevice* drive_;
-    VnodeManager* vmanager_;
     iso9660::PrimaryVolumeDescriptor pdescriptor_;
     iso9660::Entry* rootDirectory_;
     Vnode* root_;

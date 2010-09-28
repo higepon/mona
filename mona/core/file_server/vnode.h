@@ -73,6 +73,7 @@ typedef struct
 class Vnode
 {
 public:
+    Vnode() : fs(NULL), fnode(NULL), mountedVnode(NULL) {}
     int type;
     FileSystem* fs;
     void* fnode;

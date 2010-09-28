@@ -6,7 +6,7 @@
 using namespace std;
 using namespace FatFS;
 
-FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), fat_(NULL)
+FAT12FileSystem::FAT12FileSystem(FDCDriver* drive) : drive_(drive), fat_(NULL)
 {
     fd_ = drive;
 }
@@ -53,7 +53,7 @@ int FAT12FileSystem::initialize()
         fat_ = NULL;
         return M_BUSY;
     }
-    root_ = vmanager_->alloc();
+    root_ = new Vnode;
     root_->fnode  = fatroot_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
@@ -62,13 +62,6 @@ int FAT12FileSystem::initialize()
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-    if (v != NULL && v->type == type)
-    {
-        *found = v;
-        return M_OK;
-    }
-
     if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return M_FILE_NOT_FOUND;
 
     int entry;
@@ -90,11 +83,10 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
             freeDirectory(d);
             return M_FILE_NOT_FOUND;
         }
-        Vnode* newVnode = vmanager_->alloc();
+        Vnode* newVnode = new Vnode;
         newVnode->fnode  = f;
         newVnode->type = type;
         newVnode->fs = this;
-        vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
         return M_OK;
     }
@@ -106,11 +98,10 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
             freeDirectory(d);
             return M_FILE_NOT_FOUND;
         }
-        Vnode* newVnode = vmanager_->alloc();
+        Vnode* newVnode = new Vnode;
         newVnode->fnode  = dir;
         newVnode->type = type;
         newVnode->fs = this;
-        vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
         return M_OK;
     }

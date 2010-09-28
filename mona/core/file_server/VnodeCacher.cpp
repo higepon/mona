@@ -1,5 +1,5 @@
 #include "VnodeCacher.h"
-
+#include <monapi.h>
 using namespace std;
 
 typedef pair<Vnode*, EntriesMap*> vpair;
@@ -98,19 +98,23 @@ void VnodeCacher::add(Vnode* directory, const string& name, Vnode* entry)
 
 void VnodeCacher::remove(Vnode* directory, const string& name)
 {
-    if (directory->type != Vnode::DIRECTORY) return;
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ASSERT(directory->type == Vnode::DIRECTORY);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     DirectoriesMap::iterator it = directories_->find(directory);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EntriesMap* entries;
-    if (it == directories_->end())
-    {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (it == directories_->end()) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return;
-    }
-    else
-    {
+    } else {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         entries = (*it).second;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     entries->erase(name);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return;
 }

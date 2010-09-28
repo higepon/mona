@@ -252,6 +252,7 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != M_OK) {
         return NULL;
     }
+    _logprintf("monapi_file_read_all = %d", (intptr_t)msg.arg2);
     if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
 
     ret = monapi_cmemoryinfo_new();

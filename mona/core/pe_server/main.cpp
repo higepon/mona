@@ -77,18 +77,19 @@ static PEData* OpenPE(const CString& path, bool prompt)
     }
     else
     {
-    uint64_t start = MonAPI::Date::nowInMsec();
+        uint64_t start = MonAPI::Date::nowInMsec();
         ret->Data = monapi_file_read_all(path);
-    uint64_t end = MonAPI::Date::nowInMsec();
-    logprintf("read all %s\n", (const char*)path);
-    logprintf("read all %s %d\n", (const char*)path, end - start);
+        uint64_t end = MonAPI::Date::nowInMsec();
+        logprintf("read all %s\n", (const char*)path);
+        logprintf("read all %s %d\n", (const char*)path, end - start);
     }
     if (ret->Data == NULL)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete ret;
         return NULL;
     }
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
@@ -290,6 +291,7 @@ private:
         uint64_t s1 = MonAPI::Date::nowInMsec();
         if (path == NULL)
         {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             this->Result = 1;
             return false;
         }
@@ -308,6 +310,7 @@ private:
         uint64_t s3 = MonAPI::Date::nowInMsec();
         if (pe == NULL)
         {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             this->Result = 1;
             return false;
         }
@@ -330,6 +333,7 @@ private:
             if (!name.endsWith(".DLL"))
             {
                 if (this->prompt) _printf("%s: specified dll is not valid: %s\n", SVR, (const char*)name);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 this->Result = 1;
                 return false;
             }

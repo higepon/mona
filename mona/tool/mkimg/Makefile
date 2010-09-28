@@ -20,8 +20,10 @@ fat32:
 	sudo mount ./hdd.img tmp/ -t vfat -o loop
 	for i in `seq 1 18`; do echo "Hello" > test$$i.txt; sudo mv -f test$$i.txt tmp; done
 	touch empty.txt; sudo mv -f empty.txt tmp
-	mkdir subdir
+	mkdir -p subdir
 	echo "Hello" > subdir.txt; sudo mv -f subdir.txt subdir; done
+	sudo cp -f show-words.scm subdir/
+	sudo cp -f words.scm subdir/
 	echo "Hello World" > this_is_very_long_file_name.txt; sudo mv -f this_is_very_long_file_name.txt subdir; done
 	sudo mv subdir tmp
 #	touch empty2.txt; sudo mv -f empty2.txt tmp

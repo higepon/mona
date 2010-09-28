@@ -32,7 +32,8 @@
 #include <algorithm>
 #include "IStorageDevice.h"
 #include "vnode.h"
-#include "VnodeManager.h"
+#include <string>
+#include <vector>
 
 //  ToDo.
 //      Check allowed charactor set on file creation.
@@ -168,10 +169,9 @@ public:
 class FatFileSystem : public FileSystem
 {
 public:
-    FatFileSystem(VnodeManager& vnodeManager, IStorageDevice& dev) :
-        vnodeManager_(vnodeManager),
+    FatFileSystem(IStorageDevice& dev) :
         dev_(dev),
-        root_(vnodeManager.alloc()),
+        root_(new Vnode),
         fat_(NULL),
         buf_(NULL)
     {
@@ -224,26 +224,23 @@ public:
         return M_OK;
     }
 
-    virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
+    virtual int lookup(Vnode* directory, const std::string& file, Vnode** found, int type)
     {
-        Vnode* v = vnodeManager_.cacher()->lookup(diretory, file);
-
-        if (v != NULL && v->type == type) {
-            *found = v;
-            return M_OK;
-        }
-
-        File* dir = getFileByVnode(diretory);
+        File* dir = getFileByVnode(directory);
         Files* childlen = dir->getChildlen();
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
-            if ((*it)->getName() == file) {
-                Vnode* newVnode = vnodeManager_.alloc();
-                ASSERT(newVnode);
-                newVnode->fnode = *it;
-                newVnode->type = type;
-                newVnode->fs = this;
-                vnodeManager_.cacher()->add(diretory, file, newVnode);
-                *found = newVnode;
+            if (upperCase((*it)->getName()) == upperCase(file)) {
+                if ((*it)->getVnode() == NULL) {
+                    Vnode* newVnode = new Vnode;
+                    ASSERT(newVnode);
+                    newVnode->fnode = *it;
+                    newVnode->type = type;
+                    newVnode->fs = this;
+                    (*it)->setVnode(newVnode);
+                    *found = newVnode;
+                } else {
+                    *found = (*it)->getVnode();
+                }
                 return M_OK;
             }
         }
@@ -282,7 +279,6 @@ public:
         uint32_t skipClusterCount = offset / getClusterSizeByte();
         uint32_t startCluster = getClusterAt(e, skipClusterCount);
 
-////        uint8_t buf[getClusterSizeByte()];
         uint32_t sizeRead = 0;
         uint32_t offsetInBuf = context->offset - getClusterSizeByte() * skipClusterCount;
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
@@ -463,7 +459,6 @@ public:
     virtual void destroyVnode(Vnode* vnode)
     {
         File* entry = getFileByVnode(vnode);
-        vnodeManager_.cacher()->remove(root_.get(), entry->getName());
         delete entry;
         delete vnode;
     }
@@ -494,7 +489,8 @@ public:
             clusterInParent_(clusterInParent),
             indexInParentCluster_(indexInParentCluster),
             childlen_(NULL),
-            isDirectory_(false)
+            isDirectory_(false),
+            vnode_(NULL)
         {
         }
 
@@ -505,7 +501,8 @@ public:
             clusterInParent_(clusterInParent),
             indexInParentCluster_(indexInParentCluster),
             childlen_(new Files()),
-            isDirectory_(true)
+            isDirectory_(true),
+            vnode_(NULL)
         {
             childlen_->resize(childlen.size());
             std::copy(childlen.begin(), childlen.end(), childlen_->begin());
@@ -523,6 +520,16 @@ public:
         bool isDirectory() const
         {
             return isDirectory_;
+        }
+
+        void setVnode(Vnode* vnode)
+        {
+            vnode_ = vnode;
+        }
+
+        Vnode* getVnode() const
+        {
+            return vnode_;
         }
 
         const std::string& getName() const
@@ -595,6 +602,7 @@ public:
         uint32_t indexInParentCluster_;
         MonAPI::scoped_ptr<Files> childlen_;
         bool isDirectory_;
+        Vnode* vnode_;
     };
 
 private:
@@ -1144,6 +1152,15 @@ private:
         return name.size() > 11;
     }
 
+    void copy(uint8_t* dest, uint8_t* source, int size, int sourceOffset, int sourceLen)
+    {
+        int restSize = sourceLen - sourceOffset;
+        int copySize = restSize < size ? restSize : size;
+        if (copySize > 0) {
+            memcpy(dest, source + sourceOffset, copySize);
+        }
+    }
+
     int createLongNameEntryInCluster(Vnode* dir, uint8_t* buf, uint32_t targetCluster, const std::string& file, uint32_t startIndex, uint32_t numEntries)
     {
         LFNEncoder encoder;
@@ -1164,17 +1181,11 @@ private:
                 p->attr = ATTR_LFN;
                 p->chksum = checksum(DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
                 const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
-                int copySize = 0;
 
-                // Ugly todo
-                if ((seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) > encodedLen) {
-                    copySize = sizeof(p->name1) - ((seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) - encodedLen);
-                } else {
-                    copySize = sizeof(p->name1);
-                }
-                memcpy(p->name1, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY, copySize);
-                memcpy(p->name2, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1), sizeof(p->name2));
-                memcpy(p->name3, encodedName.get() + (seq - 1) * NAME_BYTES_PER_ENTRY + sizeof(p->name1) + sizeof(p->name2), sizeof(p->name3));
+                int sourceOffset = (seq - 1) * NAME_BYTES_PER_ENTRY;
+                copy(p->name1, encodedName.get(), sizeof(p->name1), sourceOffset, encodedLen);
+                copy(p->name2, encodedName.get(), sizeof(p->name2), sourceOffset+ sizeof(p->name1), encodedLen);
+                copy(p->name3, encodedName.get(), sizeof(p->name3), sourceOffset+ sizeof(p->name1) + sizeof(p->name2), encodedLen);
                 p->seq = seq--;
                 if (i == startIndex) {
                     // The last LFN entry comes first in the cluster
@@ -1259,10 +1270,17 @@ private:
         }
     }
 
+    std::string upperCase(const std::string& s)
+    {
+        std::string result = s;
+        std::transform(result.begin(), result.end(), result.begin(), toupper);
+        return result;
+    }
+
+
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;
-    VnodeManager& vnodeManager_;
     IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
     uint32_t* fat_;

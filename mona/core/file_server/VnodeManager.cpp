@@ -27,7 +27,29 @@ int VnodeManager::delete_file(const std::string& name)
     if (ret != M_OK) {
         return ret;
     }
-    return file->fs->delete_file(file);
+    Vnode* root = file->fs->getRoot();
+    ret = file->fs->delete_file(file);
+    if (ret == M_OK) {
+        vector<string> directories;
+        split(name, '/', directories);
+
+        cacher_->remove(root, directories[directories.size() - 1]);
+    }
+    return ret;
+}
+
+int VnodeManager::lookupOne(Vnode* directory, const string& file, Vnode** found, int type)
+{
+    Vnode* v = cacher_->lookup(directory, file);
+    if (v != NULL && v->type == type) {
+        *found = v;
+        return M_OK;
+    }
+    intptr_t ret =  directory->fs->lookup(directory, file, found, type);
+    if (ret == M_OK) {
+        cacher_->add(directory, file, *found);
+    }
+    return ret;
 }
 
 int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, int type)
@@ -40,19 +62,18 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
     split(file, '/', directories);
     int ret = M_FILE_NOT_FOUND;
     Vnode* root = directory;
-    for (uint32_t i = 0; i < directories.size(); i++)
-    {
+    for (uint32_t i = 0; i < directories.size(); i++) {
         string name = directories[i];
         int vtype = (i == directories.size() - 1) ? type : Vnode::DIRECTORY;
-        ret = root->fs->lookup(root, name, found, vtype);
-        if (ret != M_OK) return ret;
+        ret = lookupOne(root, name, found, vtype);
+        if (ret != M_OK) {
+            return ret;
+        }
         // link
-        if ((*found)->mountedVnode != NULL)
-        {
+        if ((*found)->mountedVnode != NULL) {
             *found = (*found)->mountedVnode;
         }
-        if (i != directories.size() -1)
-        {
+        if (i != directories.size() -1) {
             root = *found;
         }
     }
@@ -215,8 +236,7 @@ Vnode* VnodeManager::alloc()
 int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-    if (it == fileInfoMap_.end())
-    {
+    if (it == fileInfoMap_.end()) {
         return M_FILE_NOT_FOUND;
     }
     io::FileInfo* fileInfo = (*it).second;

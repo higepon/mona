@@ -11,7 +11,7 @@
 class FAT12FileSystem : public FileSystem
 {
 public:
-    FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager);
+    FAT12FileSystem(FDCDriver* drive);
     virtual ~FAT12FileSystem();
 
 public:
@@ -53,7 +53,6 @@ protected:
     FatFS::Directory* current_;
     IStorageDevice* drive_;
     FDCDriver* fd_;
-    VnodeManager* vmanager_;
     Vnode* root_;
     LsInfo lsinfo_;
 };
