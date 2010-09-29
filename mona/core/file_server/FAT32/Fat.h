@@ -34,6 +34,7 @@
 #include "vnode.h"
 #include <string>
 #include <vector>
+#include <monapi/Buffer.h>
 
 //  ToDo.
 //      Check allowed charactor set on file creation.
@@ -281,6 +282,10 @@ public:
 
         uint32_t sizeRead = 0;
         uint32_t offsetInBuf = context->offset - getClusterSizeByte() * skipClusterCount;
+
+        MonAPI::Buffer readBuf(context->memory->Data, context->memory->Size);
+        MonAPI::Buffer buf(buf_, getClusterSizeByte());
+
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
             ASSERT(!isEndOfCluster(cluster));
             if (!readCluster(cluster, buf_)) {
@@ -290,7 +295,9 @@ public:
             uint32_t copySize = restSizeToRead > getClusterSizeByte() - offsetInBuf ? getClusterSizeByte() - offsetInBuf: restSizeToRead;
             ASSERT(context->memory->Data + sizeRead + copySize <= context->memory->Data + context->memory->Size);
             ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
-            memcpy(context->memory->Data + sizeRead, buf_ + offsetInBuf , copySize);
+            bool isOk = MonAPI::Buffer::copy(readBuf, sizeRead, buf, offsetInBuf, copySize);
+            ASSERT(isOk);
+//            memcpy(context->memory->Data + sizeRead, buf_ + offsetInBuf , copySize);
             sizeRead += copySize;
             offsetInBuf = 0;
             if (sizeRead == sizeToRead) {
@@ -388,8 +395,10 @@ public:
         *entries = ret;
         for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it)
         {
-            memcpy(p, &(*it), sizeof(monapi_directoryinfo));
+            *p = *it;
+            //memcpy(p, &(*it), sizeof(monapi_directoryinfo));
             p++;
+            ASSERT((uintptr_t)p < (uintptr_t)(ret->Data + ret->Size));
         }
 
         return M_OK;
