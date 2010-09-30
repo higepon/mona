@@ -78,6 +78,7 @@ public:
     {
         size = longName.size() * 2;
         uint8_t* buf = new uint8_t[size];
+        ASSERT(buf);
         int index = 0;
         for (std::string::const_iterator it = longName.begin(); it != longName.end(); ++it) {
             buf[index++] = *it;
@@ -297,7 +298,6 @@ public:
             ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
             bool isOk = MonAPI::Buffer::copy(readBuf, sizeRead, buf, offsetInBuf, copySize);
             ASSERT(isOk);
-//            memcpy(context->memory->Data + sizeRead, buf_ + offsetInBuf , copySize);
             sizeRead += copySize;
             offsetInBuf = 0;
             if (sizeRead == sizeToRead) {
@@ -331,14 +331,19 @@ public:
                     return M_READ_ERROR;
             }
 
+            MonAPI::Buffer writeBuf(context->memory->Data, context->memory->Size);
+            MonAPI::Buffer buf(buf_, getClusterSizeByte());
+
             uint32_t copySize;
             if (cluster == startCluster && context->offset != 0) {
                 uint32_t offsetInCluster = context->offset % getClusterSizeByte();
                 copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
-                memcpy(buf_ + offsetInCluster, context->memory->Data + sizeWritten, copySize);
+                bool isOk = MonAPI::Buffer::copy(buf, offsetInCluster, writeBuf, sizeWritten, copySize);
+                ASSERT(isOk);
             } else {
                 copySize = restSizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : restSizeToWrite;
-                memcpy(buf_, context->memory->Data + sizeWritten, copySize);
+                bool isOK = MonAPI::Buffer::copy(buf, 0, writeBuf, sizeWritten, copySize);
+                ASSERT(isOK);
             }
             sizeWritten += copySize;
             if (!writeCluster(cluster, buf_)) {
@@ -390,17 +395,17 @@ public:
             return M_NO_MEMORY;
         }
 
-        memcpy(ret->Data, &size, sizeof(int));
+        MonAPI::Buffer dest(ret->Data, ret->Size);
+        MonAPI::Buffer src(&size, sizeof(int));
+        bool isOK = MonAPI::Buffer::copy(dest, src, sizeof(int));
+        ASSERT(isOK);
         monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
         *entries = ret;
-        for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it)
-        {
-            *p = *it;
-            //memcpy(p, &(*it), sizeof(monapi_directoryinfo));
-            p++;
+        for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it) {
             ASSERT((uintptr_t)p < (uintptr_t)(ret->Data + ret->Size));
+            *p = *it;
+            p++;
         }
-
         return M_OK;
     }
 
@@ -726,6 +731,7 @@ private:
     bool readDirectory(uint32_t startCluster, Files& childlen)
     {
         MonAPI::scoped_ptr<uint8_t> buf(new uint8_t[getClusterSizeByte()]);
+        ASSERT(buf.get());
         LFNDecoder decoder;
         for (uint32_t cluster = startCluster; !isEndOfCluster(cluster); cluster = fat_[cluster]) {
             if (!readCluster(cluster, buf.get()) != M_OK) {
@@ -775,6 +781,7 @@ private:
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
+                ASSERT(target);
                 childlen.push_back(target);
                 partialLongNames.clear();
             }
@@ -790,6 +797,7 @@ private:
         }
 
         root_->fnode = new File("", getRootDirectoryCluster(), childlen, 0, 0);
+        ASSERT(root_->fnode);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
 
@@ -1095,6 +1103,7 @@ private:
     void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
     {
         File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
+        ASSERT(file);
         File* d = getFileByVnode(dir);
         d->addChild(file);
         file->setParent(d);
@@ -1161,12 +1170,15 @@ private:
         return name.size() > 11;
     }
 
-    void copy(uint8_t* dest, uint8_t* source, int size, int sourceOffset, int sourceLen)
+    void copy(uint8_t* dest, int destLen, uint8_t* source, int size, int sourceOffset, int sourceLen)
     {
         int restSize = sourceLen - sourceOffset;
         int copySize = restSize < size ? restSize : size;
         if (copySize > 0) {
-            memcpy(dest, source + sourceOffset, copySize);
+            MonAPI::Buffer d(dest, destLen);
+            MonAPI::Buffer s(source, sourceLen);
+            bool isOK = MonAPI::Buffer::copy(d, 0, s, sourceOffset, copySize);
+            ASSERT(isOK);
         }
     }
 
@@ -1192,9 +1204,9 @@ private:
                 const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
 
                 int sourceOffset = (seq - 1) * NAME_BYTES_PER_ENTRY;
-                copy(p->name1, encodedName.get(), sizeof(p->name1), sourceOffset, encodedLen);
-                copy(p->name2, encodedName.get(), sizeof(p->name2), sourceOffset+ sizeof(p->name1), encodedLen);
-                copy(p->name3, encodedName.get(), sizeof(p->name3), sourceOffset+ sizeof(p->name1) + sizeof(p->name2), encodedLen);
+                copy(p->name1, sizeof(p->name1), encodedName.get(), sizeof(p->name1), sourceOffset, encodedLen);
+                copy(p->name2, sizeof(p->name2), encodedName.get(), sizeof(p->name2), sourceOffset+ sizeof(p->name1), encodedLen);
+                copy(p->name3, sizeof(p->name3), encodedName.get(), sizeof(p->name3), sourceOffset+ sizeof(p->name1) + sizeof(p->name2), encodedLen);
                 p->seq = seq--;
                 if (i == startIndex) {
                     // The last LFN entry comes first in the cluster

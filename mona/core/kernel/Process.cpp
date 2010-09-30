@@ -393,7 +393,9 @@ Process::~Process()
     {
         SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
         shm->detach(g_page_manager, this);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         SharedMemoryObject::destroy(shm);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     delete(shared_);
@@ -441,8 +443,10 @@ bool Process::hasSharedOverlap(uintptr_t start, uintptr_t end)
         uintptr_t shStart = sh->getStart();
         uintptr_t shEnd = shStart + sh->getSize();
         if (start <= shStart && shStart <= end) {
+            logprintf("(%x %x) (%x %x)", start, end, shStart, shEnd);
             return true;
         } else if (shStart <= start && start <= shEnd) {
+            logprintf("(%x %x) (%x %x)", start, end, shStart, shEnd);
             return true;
         }
     }

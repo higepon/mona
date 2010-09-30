@@ -148,6 +148,9 @@
 ;;  ;             "output-port.scm"
 ;;               )
 )
+(define (mosh)
+  (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM"))
 
 
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/condition.scm")
@@ -180,4 +183,6 @@
       (if (not mona-gui-auto-start)
           (test-end))))
 
-(call-process "/APPS/MOSH.APP/MOSH.EXE"); --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+
+(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+;(mosh)

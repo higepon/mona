@@ -1,6 +1,7 @@
 #include "ISO9660FileSystem.h"
 #include <monapi.h>
 #include "sys/error.h"
+#include <monapi/Buffer.h>
 
 using namespace std;
 using namespace iso9660;
@@ -100,8 +101,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         return M_NO_MEMORY;
     }
     // by junjunn
-    if (0 == dataOffset)
-    {
+    if (0 == dataOffset) {
 // by higepon
 //        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
         bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
@@ -109,20 +109,19 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_READ_ERROR;
         }
-    }
-    else
-    {
+    } else {
         uint8_t* temp = new uint8_t[sectorSize];
         if (temp == NULL) return M_NO_MEMORY;
+        MonAPI::Buffer tempBuf(temp, sectorSize);
+        MonAPI::Buffer dest(context->memory->Data, context->memory->Size);
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
-        if (!readResult)
-        {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (!readResult) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             delete temp;
             return M_READ_ERROR;
         }
-
-        memcpy(context->memory->Data, temp + dataOffset, readSize);
+        bool isOK = MonAPI::Buffer::copy(dest, 0, tempBuf, dataOffset, readSize);
+        ASSERT(isOK);
         delete[] temp;
     }
     context->resultSize = readSize;

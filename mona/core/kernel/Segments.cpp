@@ -130,6 +130,7 @@ intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, 
     uintptr_t end = start + getSize();
 
     if (process->hasSharedOverlap(start, end)) {
+        ASSERT(true); // Bug!
         return M_BAD_ADDRESS;
     } else {
         SharedMemorySegment* segment = new SharedMemorySegment(address, getSize(), this);

@@ -172,15 +172,20 @@ void FileServer::messageLoop()
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg)) continue;
+        logprintf("msg.header=%x", msg.header);
         switch (msg.header)
         {
         case MSG_FILE_OPEN:
         {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             uint32_t tid = msg.from; // temporary
             uint32_t fildID;
             intptr_t mode = msg.arg1;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             int ret = vmanager_.open(upperCase(msg.str).c_str(), mode, tid, &fildID);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, ret == M_OK ? fildID : M_FILE_NOT_FOUND);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             break;
         }
         case MSG_FILE_READ_ALL:
@@ -238,7 +243,9 @@ void FileServer::messageLoop()
             memory->Size   = msg.arg2;
             ASSERT(memory->Handle != 0);
             // Use immediate map
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             intptr_t result = monapi_cmemoryinfo_map(memory, true);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (result != M_OK) {
                 monapi_cmemoryinfo_delete(memory);
                 Message::replyError(&msg, result);
@@ -256,7 +263,9 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_CLOSE:
         {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             int ret = vmanager_.close(msg.arg1);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, ret);
             break;
         }
@@ -293,11 +302,14 @@ void FileServer::messageLoop()
             mi1->Handle = msg.arg1;
             mi1->Size   = msg.arg2;
             monapi_cmemoryinfo* mi2 = NULL;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (monapi_cmemoryinfo_map(mi1, true) != M_OK)
             {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 mi2 = ST5Decompress(mi1);
                 monapi_cmemoryinfo_dispose(mi1);
             }
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (mi2 != NULL)
             {
                 Message::reply(&msg, mi2->Handle, mi2->Size);
@@ -344,6 +356,7 @@ void FileServer::messageLoop()
 //             }
             break;
         }
+        _logprintf("msg.header=%x done", msg.header);
     }
 }
 

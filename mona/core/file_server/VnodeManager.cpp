@@ -1,6 +1,7 @@
 #include "VnodeManager.h"
 #include "sys/error.h"
 #include <monapi.h>
+#include <monapi/Buffer.h>
 
 using namespace std;
 using namespace io;
@@ -139,15 +140,22 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
                 monapi_cmemoryinfo_delete(ret);
                 return M_NO_MEMORY;
             }
-            memcpy(ret->Data, (*mem)->Data, (*mem)->Size);
+            MonAPI::Buffer dest(ret->Data, ret->Size);
+            MonAPI::Buffer src((*mem)->Data, (*mem)->Size);
+            bool isOK = MonAPI::Buffer::copy(dest, src, (*mem)->Size);
+            ASSERT(isOK);
             int entriesNum = *((int*)(*mem)->Data) + diff.size();
-            memcpy(ret->Data, &entriesNum, sizeof(int));
+            MonAPI::Buffer src2(&entriesNum, sizeof(int));
+            isOK = MonAPI::Buffer::copy(dest, src2, sizeof(int));
+            ASSERT(isOK);
             for (size_t i = 0; i < diff.size(); i++) {
                 monapi_directoryinfo di;
                 di.size = 0;
                 strcpy(di.name, diff[i].c_str());
                 di.attr = ATTRIBUTE_DIRECTORY;
-                memcpy(&(ret->Data[(*mem)->Size + i * sizeof(monapi_directoryinfo)]), &di, sizeof(monapi_directoryinfo));
+                MonAPI::Buffer dirBuf(&di, sizeof(monapi_directoryinfo));
+                bool isOK = MonAPI::Buffer::copy(dest, (*mem)->Size + i * sizeof(monapi_directoryinfo), dirBuf, 0, sizeof(monapi_directoryinfo));
+                ASSERT(isOK);
             }
             monapi_cmemoryinfo_dispose(*mem);
             monapi_cmemoryinfo_delete(*mem);
@@ -262,22 +270,33 @@ int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
 
 int VnodeManager::close(uint32_t fileID)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (it == fileInfoMap_.end())
     {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_FILE_NOT_FOUND;
     }
-
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FileInfo* fileInfo = (*it).second;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     fileInfo->context.memory = NULL;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* file = fileInfo->vnode;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int ret = file->fs->close(file);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (M_OK != ret)
     {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
     }
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     fileInfoMap_.erase(fileID);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     delete fileInfo;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return M_OK;
 }
 

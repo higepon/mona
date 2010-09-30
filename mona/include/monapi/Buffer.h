@@ -55,6 +55,11 @@ public:
         memcpy(dest.data_ + destOffset, source.data_ + sourceOffset, size);
         return true;
     }
+
+    static bool copy(Buffer& dest, const Buffer& source, intptr_t size)
+    {
+        return copy(dest, 0, source, 0, size);
+    }
 private:
     uint8_t* data_;
     uintptr_t size_;
