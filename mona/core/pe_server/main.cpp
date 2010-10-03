@@ -366,6 +366,7 @@ private:
         imageSize += bootstrapSize;
 
         monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt, true) != M_OK)
         {
             monapi_cmemoryinfo_delete(dst);

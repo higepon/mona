@@ -270,6 +270,7 @@ static void test_fatfs_write_file()
     const int BUFFER_SIZE = 1029;
 
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
     memset(buffer->Data, 0, BUFFER_SIZE);
     buffer->Data[0] = 0xde;
@@ -303,6 +304,7 @@ static void test_fatfs_write_file_overwrite()
     const int BUFFER_SIZE = 10;
 
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
     memset(buffer->Data, 0, BUFFER_SIZE);
     for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -340,6 +342,7 @@ static void test_fatfs_write_file_overwrite_expand()
     const int BUFFER_SIZE = 1540;
 
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
     memset(buffer->Data, 0xce, BUFFER_SIZE);
     buffer->Data[0] = 0xca;

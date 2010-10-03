@@ -36,6 +36,7 @@ intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int 
         monapi_warn("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         return M_MEMORY_MAP_ERROR;
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_map(self, isImmediateMap) != M_OK)
     {
         if (prompt) printf("ERROR\n");

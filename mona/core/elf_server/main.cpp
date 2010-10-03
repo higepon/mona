@@ -31,12 +31,13 @@ static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_c
     }
 
     monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_create(dst, parser.getImageSize(), prompt ? MONAPI_TRUE : MONAPI_FALSE, true) != M_OK)
     {
         monapi_cmemoryinfo_delete(dst);
         return 3;
     }
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!parser.load(dst->Data))
     {
         if (prompt) _printf("%s: load failed!\n", SVR);

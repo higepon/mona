@@ -28,6 +28,7 @@ static void cm_destroy_delete(monapi_cmemoryinfo *cm)
 static monapi_cmemoryinfo* alloc_buffer_size(const char* message, int size)
 {
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, size, 0, 0);
     memcpy(buffer->Data, message, buffer->Size);
     return buffer;
@@ -96,6 +97,7 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
 
 #define MAXDATA 20
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, MAXDATA, 0, 0);
     int res = 0;
     while(size > 0) {
@@ -439,6 +441,7 @@ static void testMonAPIwrite()
     const int len = strlen(data) + 1;
 
     monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monapi_cmemoryinfo_create(buffer, 1, 0, 0);
 
     for (int i = 0; i < len; i++) {

@@ -16,6 +16,7 @@ static HList<uint32_t> receivers;
 void initCommonParameters()
 {
     commonParams = monapi_cmemoryinfo_new();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1, false) != M_OK) {
         exit(1);
     }

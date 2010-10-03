@@ -12,8 +12,15 @@ using namespace std;
 
 string upperCase(const string& s)
 {
-    string result = s;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    _logprintf("%s %s:%d s.size=%d\n", __func__, __FILE__, __LINE__, s.size());
+    _logprintf("%s %s:%d s.c_str=%s\n", __func__, __FILE__, __LINE__, s.c_str());
+    string result;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    result = s;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     transform(result.begin(), result.end(), result.begin(), toupper);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return result;
 }
 
@@ -181,7 +188,8 @@ void FileServer::messageLoop()
             uint32_t tid = msg.from; // temporary
             uint32_t fildID;
             intptr_t mode = msg.arg1;
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            logprintf("<%s>%s %s:%d\n", msg.str, __func__, __FILE__, __LINE__);
+            logprintf("<%s>%s %s:%d\n", upperCase(msg.str).c_str(), __func__, __FILE__, __LINE__);
             int ret = vmanager_.open(upperCase(msg.str).c_str(), mode, tid, &fildID);
             logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, ret == M_OK ? fildID : M_FILE_NOT_FOUND);
@@ -193,7 +201,8 @@ void FileServer::messageLoop()
             // Dirty quick hack to enable stack trace.
             static bool stackTraceEnabled = false;
             if (!stackTraceEnabled) {
-                syscall_mthread_create(enableStackTrace);
+// it seems that read_file_all from file server crash.
+//                syscall_mthread_create(enableStackTrace);
                 stackTraceEnabled = true;
             }
 
@@ -376,6 +385,7 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
     if ((size >> 32) > 0) return NULL;
 
     monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0, true) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);

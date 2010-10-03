@@ -106,10 +106,12 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                 mi->Handle = msg.arg2;
                 mi->Owner  = tid;
                 mi->Size   = atoi(msg.str);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (monapi_cmemoryinfo_map(mi, true) != M_OK) {
                     _printf("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             }
             else
             {

@@ -211,6 +211,7 @@ namespace RamDisk {
                   return M_OK;
 
                 // Use immediate map for performance reason.
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, true) != M_OK)
                   {
                       monapi_cmemoryinfo_delete(context->memory);
@@ -257,6 +258,7 @@ namespace RamDisk {
                 monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
 
                 int size = files.size();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK)
                   {
                       monapi_cmemoryinfo_delete(ret);

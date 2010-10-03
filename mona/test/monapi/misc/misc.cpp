@@ -70,6 +70,7 @@ static void test_Page_fault_handler_should_be_fast()
 {
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
     const int SIZE = 3 * 1024 * 1024;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT_EQ(M_OK, monapi_cmemoryinfo_create(mi, SIZE, MONAPI_FALSE, 1));
     uint64_t s1 = MonAPI::Date::nowInMsec();
     memset(mi->Data, 0, SIZE);
