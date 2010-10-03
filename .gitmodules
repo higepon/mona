@@ -1,3 +1,0 @@
-[submodule "mona/core/mosh"]
-	path = mona/core/mosh
-	url = git@github.com:higepon/mosh.git
