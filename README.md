@@ -9,6 +9,7 @@ See detailed information on http://www.monaos.org.
 - nasm
 - mkisofs
 - QEMU
+- mosh
 
 ## Building and Running
     % git clone git://github.com/higepon/mona.git
