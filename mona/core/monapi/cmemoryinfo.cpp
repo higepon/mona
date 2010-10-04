@@ -36,7 +36,6 @@ intptr_t monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, uint32_t size, int 
         monapi_warn("%s:%d: MemoryMap create error\n", __FILE__, __LINE__);
         return M_MEMORY_MAP_ERROR;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_map(self, isImmediateMap) != M_OK)
     {
         if (prompt) printf("ERROR\n");
@@ -56,10 +55,6 @@ intptr_t monapi_cmemoryinfo_map(monapi_cmemoryinfo* self, int isImmediateMap)
         return M_OK;
     }
 
-    monapi_warn("map error self->Handle=%x, %s:%d:(%s)\n", self->Handle, __FILE__, __LINE__, __func__);
-    if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
-        monapi_warn("unmap failed on monapi_cmemoryinfo_map\n");
-    }
     self->Handle = 0;
     self->Size   = 0;
     return M_MEMORY_MAP_ERROR;
@@ -70,8 +65,7 @@ void monapi_cmemoryinfo_dispose(monapi_cmemoryinfo* self)
     if (monapi_cmemorymap_unmap(self->Handle) != M_OK) {
         monapi_warn("unmap failed on monapi_cmemoryinfo_dispose\n");
     }
-    if (self->Owner != syscall_get_tid())
-    {
+    if (self->Owner != syscall_get_tid()) {
         if (Message::send(self->Owner, MSG_DISPOSE_HANDLE, self->Handle) != M_OK) {
             printf("Error %s:%d\n", __FILE__, __LINE__);
             exit(-1);

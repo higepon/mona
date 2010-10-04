@@ -76,7 +76,6 @@ int _write(void *self, void *buf, size_t size)
     f = (FILE*)self;
 
     cmi = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if( monapi_cmemoryinfo_create(cmi, size, 0, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(cmi);

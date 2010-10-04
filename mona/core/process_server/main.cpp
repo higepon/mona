@@ -23,16 +23,15 @@ static int ExecuteProcess(uint32_t parent, monapi_cmemoryinfo* mi, uint32_t entr
     int ret = syscall_load_process_image(&info);
     uint64_t s2 = MonAPI::Date::nowInMsec();
     *tid = addProcessInfo(parent, name, path, stdin_id, stdout_id);
-    logprintf("ExecuteProcess syscall %d\n", (int)(s2 - s1));
     if (prompt)
     {
         switch(ret)
         {
             case 4:
-                  _printf("%s: Shared Memory error1", SVR);
+                  monapi_warn("%s: Shared Memory error1", SVR);
                   break;
             case 5:
-                  _printf("%s: Shared Memory error2", SVR);
+                  monapi_warn("%s: Shared Memory error2", SVR);
                   break;
         }
     }
@@ -106,12 +105,10 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                 mi->Handle = msg.arg2;
                 mi->Owner  = tid;
                 mi->Size   = atoi(msg.str);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (monapi_cmemoryinfo_map(mi, true) != M_OK) {
-                    _printf("Error %s:%d\n", __FILE__, __LINE__);
+                    monapi_fatal("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             }
             else
             {
@@ -148,8 +145,6 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
         next = option->next;
         delete option;
     }
-    uint64_t s5 = MonAPI::Date::nowInMsec();
-    logprintf("ExecuteFile %d %d %d %d\n", (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
     return result;
 }
 
@@ -164,10 +159,7 @@ static void MessageLoop()
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
-                uint64_t s1 = MonAPI::Date::nowInMsec();
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid);
-                uint64_t s2 = MonAPI::Date::nowInMsec();
-                logprintf("ExecuteProcess %d\n", (int)(s2 - s1));
                 Message::reply(&msg, result, tid);
                 break;
             }

@@ -110,13 +110,10 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
         monapi_cmemoryinfo_delete(ret);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     } else {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
     }
 }
@@ -255,7 +252,6 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != M_OK) {
         return NULL;
     }
-    _logprintf("monapi_file_read_all = %d", (intptr_t)msg.arg2);
     if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
 
     ret = monapi_cmemoryinfo_new();

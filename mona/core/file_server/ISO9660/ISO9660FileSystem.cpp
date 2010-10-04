@@ -81,7 +81,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t readSize = context->size;
     uint32_t rest = fileEntry->attribute.size - offset;
     if (rest == 0) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_READ_ERROR;
     }
 
@@ -95,7 +94,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
     context->memory = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(context->memory);
@@ -107,7 +105,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 //        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
         bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
         if (!readResult) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_READ_ERROR;
         }
     } else {
@@ -117,7 +114,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         MonAPI::Buffer dest(context->memory->Data, context->memory->Size);
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
         if (!readResult) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             delete temp;
             return M_READ_ERROR;
         }
@@ -172,7 +168,6 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     delete[] buffer;
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     int size = entryList.size();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
     {
         monapi_cmemoryinfo_delete(ret);

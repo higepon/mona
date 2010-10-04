@@ -254,16 +254,6 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 
 intptr_t ThreadOperation::kill(Process* process, Thread* thread)
 {
-        union {
-            struct {
-                uint32_t l;
-                uint32_t h;
-            } u32;
-            uint64_t u64;
-        } n;
-        n.u64 = RTC::epochNanoseconds();
-        logprintf("exit killing %x:%x\n", n.u32.h, n.u32.l);;
-
     g_scheduler->Kill(thread);
 
 
@@ -389,13 +379,10 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(S
 Process::~Process()
 {
     /* shared MemorySegment */
-    for (int i = 0; i < shared_->size(); i++)
-    {
+    for (int i = 0; i < shared_->size(); i++) {
         SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
         shm->detach(g_page_manager, this);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         SharedMemoryObject::destroy(shm);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     delete(shared_);
@@ -443,10 +430,8 @@ bool Process::hasSharedOverlap(uintptr_t start, uintptr_t end)
         uintptr_t shStart = sh->getStart();
         uintptr_t shEnd = shStart + sh->getSize();
         if (start <= shStart && shStart <= end) {
-            logprintf("(%x %x) (%x %x)", start, end, shStart, shEnd);
             return true;
         } else if (shStart <= start && start <= shEnd) {
-            logprintf("(%x %x) (%x %x)", start, end, shStart, shEnd);
             return true;
         }
     }

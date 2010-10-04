@@ -658,7 +658,6 @@ void syscall_entrance()
         uint32_t id = SYSTEM_CALL_ARG_1;
         SharedMemoryObject* object = SharedMemoryObject::find(id);
         if (object == NULL) {
-            logprintf("error map_get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
             setReturnValue(info, 0);
         } else {
             setReturnValue(info, object->getSize());
@@ -677,13 +676,11 @@ void syscall_entrance()
         if (shm == NULL) {
             Semaphore::up(&g_semaphore_shared);
             Semaphore::up(&g_semaphore_shared);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             setReturnValue(info, M_BAD_MEMORY_MAP_ID);
         } else {
             intptr_t ret = shm->attach(g_page_manager, g_currentThread->process, address, isImmediateMap);
             Semaphore::up(&g_semaphore_shared);
             Semaphore::up(&g_semaphore_shared);
-            logprintf("address=%x %s %s:%d ret= %d\n", address, __func__, __FILE__, __LINE__, ret);
             setReturnValue(info, ret);
         }
         break;
@@ -698,9 +695,7 @@ void syscall_entrance()
             setReturnValue(info, M_BAD_MEMORY_MAP_ID);
         } else {
             intptr_t ret = shm->detach(g_page_manager, g_currentThread->process);
-            logprintf("id=%x %s %s:%d<%s>\n", id, __func__, __FILE__, __LINE__, g_currentThread->process->getName());
             SharedMemoryObject::destroy(shm);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             setReturnValue(info, ret);
         }
         Semaphore::up(&g_semaphore_shared);

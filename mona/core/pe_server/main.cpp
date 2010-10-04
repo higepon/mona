@@ -77,19 +77,13 @@ static PEData* OpenPE(const CString& path, bool prompt)
     }
     else
     {
-        uint64_t start = MonAPI::Date::nowInMsec();
         ret->Data = monapi_file_read_all(path);
-        uint64_t end = MonAPI::Date::nowInMsec();
-        logprintf("read all %s\n", (const char*)path);
-        logprintf("read all %s %d\n", (const char*)path, end - start);
     }
     if (ret->Data == NULL)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete ret;
         return NULL;
     }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
@@ -225,21 +219,15 @@ public:
     PELinker(const CString& path, bool prompt)
         : dllmgr(path, prompt), prompt(prompt), EntryPoint(0), Binary(NULL), Result(0)
     {
-        uint64_t s1 = MonAPI::Date::nowInMsec();
         if (!this->Open(path)) return;
-        uint64_t s2 = MonAPI::Date::nowInMsec();
         dlls = list;
         dlls.erase(dlls.begin());
-        uint64_t s3 = MonAPI::Date::nowInMsec();
         reverse(dlls.begin(), dlls.end());
 
 //        PEData* exe = this->list[0];
 //        this->EntryPoint = exe->Parser.get_EntryPoint();
-        uint64_t s4 = MonAPI::Date::nowInMsec();
         this->Load();
-        uint64_t s5 = MonAPI::Date::nowInMsec();
         this->EntryPoint = bootstrapEntryPoint;
-        logprintf("PELinker %d %d %d %d\n", (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
     }
 
     ~PELinker()
@@ -288,52 +276,37 @@ private:
 
     bool Open(const CString& path)
     {
-        uint64_t s1 = MonAPI::Date::nowInMsec();
-        if (path == NULL)
-        {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (path == NULL) {
             this->Result = 1;
             return false;
         }
 
         PEDataList::size_type len = this->list.size();
-        for (PEDataList::size_type i = 0; i < len; i++)
-        {
+        for (PEDataList::size_type i = 0; i < len; i++) {
             if (this->list[i]->Path == path) {
-                uint64_t s2 = MonAPI::Date::nowInMsec();
-                logprintf("PELinker::Open immediate return %d\n", (int)(s2 - s1));
                 return true;
             }
         }
-        uint64_t s2 = MonAPI::Date::nowInMsec();
         PEData* pe = OpenPE(path, this->prompt);
-        uint64_t s3 = MonAPI::Date::nowInMsec();
-        if (pe == NULL)
-        {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (pe == NULL) {
             this->Result = 1;
             return false;
-        }
-        else if (pe->Data == NULL)
-        {
+        } else if (pe->Data == NULL) {
 #ifdef NO_CACHE
             delete pe;
 #endif
             this->Result = 3;
             return false;
         }
-        uint64_t s4 = MonAPI::Date::nowInMsec();
         this->list.push_back(pe);
 
         HList<CString> dlls;
         int its = pe->Parser.get_ImportTableCount();
-        for (int i = 0; i < its; i++)
-        {
+        for (int i = 0; i < its; i++) {
             CString name = CString(pe->Parser.GetImportTableName(i)).toUpper();
             if (!name.endsWith(".DLL"))
             {
                 if (this->prompt) _printf("%s: specified dll is not valid: %s\n", SVR, (const char*)name);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 this->Result = 1;
                 return false;
             }
@@ -346,17 +319,13 @@ private:
                 return false;
             }
         }
-        uint64_t s5 = MonAPI::Date::nowInMsec();
-        logprintf("PELinker::Open %s %d %d %d %d\n", (const char*)path, (int)(s2 - s1), (int)(s3 - s2), (int)(s4 - s3), (int)(s5 - s4));
         return true;
     }
 
     bool Load()
     {
-        static int c1, c2, c22, c3, c4, c5;
         uint32_t imageSize = 0;
         uint32_t bootstrapSize = getBootstrapSize();
-        uint64_t s1 = MonAPI::Date::nowInMsec();
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -366,19 +335,15 @@ private:
         imageSize += bootstrapSize;
 
         monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt, true) != M_OK)
         {
             monapi_cmemoryinfo_delete(dst);
             this->Result = 3;
             return false;
         }
-        uint64_t s2 = MonAPI::Date::nowInMsec();
-        c1 += (int)(s2 - s1);
         uint32_t addr = 0;
         for (PEDataList::size_type i = 0; i < len; i++)
         {
-            uint64_t s3 = MonAPI::Date::nowInMsec();
             PEData* data = this->list[i];
             uint8_t* ptr = &dst->Data[addr];
             if (!data->Parser.Load(ptr))
@@ -391,7 +356,6 @@ private:
                 this->Result = 3;
                 return false;
             }
-            uint64_t s33 = MonAPI::Date::nowInMsec();
             if (i > 0 && !data->Parser.Relocate(ptr, ORG + addr))
             {
                 if (this->prompt) _printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
@@ -402,9 +366,6 @@ private:
                 this->Result = 3;
                 return false;
             }
-            uint64_t s4 = MonAPI::Date::nowInMsec();
-            c2 += (int)(s33 - s3);
-            c22 += (int)(s4 - s33);
             addr += data->Parser.get_ImageSize();
         }
         addr = 0;
@@ -414,10 +375,8 @@ private:
             int its = data->Parser.get_ImportTableCount();
             for (int j = 0; j < its; j++)
             {
-                uint64_t s5 = MonAPI::Date::nowInMsec();
                 CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
                 PEData* target = this->Find(dll);
-                uint64_t s6 = MonAPI::Date::nowInMsec();
                 if (target == NULL || !data->Parser.Link(&dst->Data[addr], j, &target->Parser))
                 {
                     if (this->prompt)
@@ -432,13 +391,9 @@ private:
                     this->Result = 3;
                     return false;
                 }
-                uint64_t s7 = MonAPI::Date::nowInMsec();
-                c3 += (int)(s6 - s5);
-                c4 += (int)(s7 - s6);
             }
             addr += data->Parser.get_ImageSize();
         }
-        uint64_t s8 = MonAPI::Date::nowInMsec();
         // make bootstrap code
         uint8_t* bootstrap = &dst->Data[dst->Size - bootstrapSize];
         uint8_t* start = &bootstrap[3];
@@ -485,9 +440,6 @@ private:
 
         bootstrapEntryPoint = dst->Size - bootstrapSize + ORG;
         // make bootstrap end
-        uint64_t s9 = MonAPI::Date::nowInMsec();
-        c5 += (int)(s9 - s8);
-        logprintf("c1=%d %d %d %d %d %d", c1, c2, c22, c3, c4, c5);
         this->Binary = dst;
         return true;
     }
@@ -507,10 +459,7 @@ static void MessageLoop()
                 break;
             case MSG_PROCESS_CREATE_IMAGE:
             {
-                uint64_t s1 = MonAPI::Date::nowInMsec();
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
-                uint64_t s2 = MonAPI::Date::nowInMsec();
-                logprintf("CreateImage %d\n", (int)(s2 - s1));
                 if (pe.Result == 0)
                 {
                     char buf[16];

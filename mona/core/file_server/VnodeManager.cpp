@@ -136,7 +136,6 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         if (!diff.empty()) {
             monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
             int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE, true) != M_OK) {
                 monapi_cmemoryinfo_delete(ret);
                 return M_NO_MEMORY;
@@ -186,23 +185,19 @@ int VnodeManager::create(const std::string& name)
 
 int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     static bool tooLongWarnShown = false;
     // Joliet spec restriction.
     if (name.size() > 64 && !tooLongWarnShown) {
         monapi_warn("too long filename <%s>\n", name.c_str());
         tooLongWarnShown = true;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) {
         return M_UNKNOWN;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (lookup(root_, filename, &file) != M_OK) {
         if (mode & FILE_CREATE) {
             int ret = create(name);
@@ -224,7 +219,6 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
             }
         }
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int ret = file->fs->open(file, mode);
     if (M_OK != ret) {
         return ret;
@@ -255,6 +249,7 @@ int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
     context->size = size;
     int result = fileInfo->vnode->fs->read(fileInfo->vnode, context);
     *mem = context->memory;
+    context->memory = NULL;
     return result;
 }
 
@@ -273,33 +268,19 @@ int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
 
 int VnodeManager::close(uint32_t fileID)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if (it == fileInfoMap_.end())
-    {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (it == fileInfoMap_.end()) {
         return M_FILE_NOT_FOUND;
     }
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FileInfo* fileInfo = (*it).second;
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     fileInfo->context.memory = NULL;
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* file = fileInfo->vnode;
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     int ret = file->fs->close(file);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if (M_OK != ret)
-    {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (M_OK != ret) {
         return ret;
     }
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     fileInfoMap_.erase(fileID);
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     delete fileInfo;
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return M_OK;
 }
 

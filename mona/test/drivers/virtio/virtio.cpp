@@ -295,11 +295,7 @@ static void test_virtio_block_class_write()
     for (int i = 0; i < 512; i+=2) {
         buf[i] = i / 2;
     }
-    uint64_t s = MonAPI::Date::nowInMsec();
     EXPECT_EQ(512, vb->write(buf, 0, 512));
-    uint64_t e = MonAPI::Date::nowInMsec();
-    // this takes 4000 msec! why?
-    logprintf("e -s = %d", e-s);
     uint8_t buf2[512];
     EXPECT_EQ(512, vb->read(buf2, 0, 512));
     EXPECT_TRUE(memcmp(buf, buf2, 512) == 0);

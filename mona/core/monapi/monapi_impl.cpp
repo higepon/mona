@@ -126,7 +126,6 @@ int user_start_impl(FuncMonaMain* monaMain)
         } n;
 
         n.u64 = syscall_now_in_nanosec();
-        _logprintf("user start %x:%x\n", n.u32.h, n.u32.l);;
 
     bool dll = isInDLL(__CTOR_LIST__);
     if (dll) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
@@ -155,7 +154,6 @@ extern "C" int user_start_c_impl(FuncMain* main)
         } n;
 
         n.u64 = syscall_now_in_nanosec();
-        _logprintf("user start %x:%x\n", n.u32.h, n.u32.l);;
 
 
 

@@ -62,7 +62,6 @@ uint8_t* MemoryMap::map(uint32_t id, bool isImmediateMap /* = false */)
     if (size == 0) {
         MEMORY_MAP_TRACE("");
         lastError = ERROR_MEMORY_MAP_NOT_FOUND;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
 
@@ -72,19 +71,16 @@ uint8_t* MemoryMap::map(uint32_t id, bool isImmediateMap /* = false */)
     if (found == -1) {
         lastError = ERROR_NOT_ENOUGH_ADDRESS_SPACE;
         mutex.unlock();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
 
     uint8_t* address = (uint8_t*)(START_ADDRESS + (found * MAP_PAGE_SIZE));
-    _logprintf("address=%x <%s> %x", address, MonAPI::System::getProcessInfo()->name, syscall_get_tid());
 
     intptr_t ret = syscall_memory_map_map(id, (uintptr_t)address, isImmediateMap);
     if (ret != M_OK) {
         MEMORY_MAP_TRACE("");
         lastError = ret;
         mutex.unlock();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return NULL;
     }
     addresses.add(id, found);

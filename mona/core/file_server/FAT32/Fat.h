@@ -267,13 +267,14 @@ public:
             sizeToRead = rest;
         }
 
+        // Even for the case when sizeToRead == 0, we need context->memory.
+        context->memory = monapi_cmemoryinfo_new();
+
         if (sizeToRead == 0) {
             return M_OK;
         }
 
-        context->memory = monapi_cmemoryinfo_new();
         // Use immediate map for performance reason.
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (monapi_cmemoryinfo_create(context->memory, sizeToRead, MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(context->memory);
             return M_NO_SPACE;
@@ -391,7 +392,6 @@ public:
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
 
         int size = dirInfos.size();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK) {
             monapi_cmemoryinfo_delete(ret);
             return M_NO_MEMORY;

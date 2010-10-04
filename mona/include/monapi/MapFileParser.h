@@ -311,7 +311,6 @@ public:
         monapi_cmemoryinfo *buf = new monapi_cmemoryinfo();
         if(!buf)
             return NULL;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if(M_OK != monapi_cmemoryinfo_create(buf, size, 0, true))
         {
             monapi_cmemoryinfo_delete(buf);

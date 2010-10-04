@@ -98,23 +98,14 @@ void VnodeCacher::add(Vnode* directory, const string& name, Vnode* entry)
 
 void VnodeCacher::remove(Vnode* directory, const string& name)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT(directory->type == Vnode::DIRECTORY);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     DirectoriesMap::iterator it = directories_->find(directory);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EntriesMap* entries;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (it == directories_->end()) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return;
     } else {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         entries = (*it).second;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     entries->erase(name);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return;
 }
