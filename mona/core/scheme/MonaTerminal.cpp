@@ -260,7 +260,8 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
     case (Keys::D):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
-            del();
+//            del();
+            return true;
             break;
         }
         else

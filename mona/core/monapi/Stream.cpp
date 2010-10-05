@@ -94,7 +94,8 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         return writeSize;
     }
 
-    if (writeSize > 0) {
+    // for writeSize == 0, we just notify. It means EOF(ctrl-D).
+    if (writeSize >= 0) {
         uint32_t* threads = new uint32_t[MAX_WAIT_THREADS_NUM];
         LOG("write:memcpy(%x, %x, %d)", threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
         memcpy(threads, header_->waitForReadThreads, sizeof(uint32_t) * MAX_WAIT_THREADS_NUM);
