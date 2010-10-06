@@ -298,7 +298,6 @@ intptr_t waitAndRedirect(uintptr_t tid, MonAPI::Stream* stream)
             break;
         case MSG_KEY_VIRTUAL_CODE:
         {
-
             const char* line = g_terminal->storeKeyAndGetLine(&msg);
             if (line != NULL) {
                 stream->write((uint8_t*)line, strlen(line));

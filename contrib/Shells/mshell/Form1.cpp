@@ -101,8 +101,7 @@ protected:
     {
         Form::OnKeyDown(e);
         if (this->shell == THREAD_UNKNOWN) return;
-
-        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, e->KeyCode, e->Modifiers);
+        MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, KEY_MODIFIER_DOWN, e->KeyCode, e->Modifiers);
     }
 
 private:

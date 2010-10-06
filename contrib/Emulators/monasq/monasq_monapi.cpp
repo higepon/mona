@@ -155,9 +155,6 @@ struct MonapiConstantData {
     // { FS_FILE_EXIST,            "FS_FILE_EXIST" },
     // { FS_FILE_CREATE_ERROR,     "FS_FILE_CREATE_ERROR" },
 
-    { IDM_OBJECT_NOT_FOUND,     "IDM_OBJECT_NOT_FOUND" },
-    { IDM_SECURITY_ERROR,       "IDM_SECURITY_ERROR" },
-
     { ID_MOUSE_SERVER,      "ID_MOUSE_SERVER" },
     { ID_KEYBOARD_SERVER,   "ID_KEYBOARD_SERVER" },
     { ID_FILE_SERVER,       "ID_FILE_SERVER" },
