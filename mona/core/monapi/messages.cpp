@@ -253,13 +253,17 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
         return NULL;
     }
     if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
-
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
+    if (ret->Size == 0) {
+        return ret;
+    }
+    intptr_t mapResult = monapi_cmemoryinfo_map(ret, true);
+    if (mapResult != M_OK) {
         monapi_cmemoryinfo_delete(ret);
+        monapi_warn("read_file_all(%s) map error = %d\n", msg.str, mapResult);
         return NULL;
     } else {
         return ret;

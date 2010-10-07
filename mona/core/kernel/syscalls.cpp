@@ -660,6 +660,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, 0);
         } else {
+            ASSERT(object->getSize() != 0);
             setReturnValue(info, object->getSize());
         }
         break;

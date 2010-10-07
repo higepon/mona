@@ -537,6 +537,37 @@ static void test_fatfs_monapi_open()
     monapi_file_close(file);
 }
 
+static void test_fatfs_truncate_and_write()
+{
+    {
+        intptr_t file = monapi_file_open("/USER/SUBDIR/TMP.TXT", FILE_CREATE);
+        ASSERT_TRUE(file > 0);
+        monapi_file_close(file);
+    }
+    {
+        intptr_t file = monapi_file_open("/USER/SUBDIR/TMP.TXT", FILE_TRUNCATE);
+        ASSERT_TRUE(file > 0);
+        monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+        monapi_cmemoryinfo_create(buffer, 1, 0, 0);
+        for (int i = 0; i <= 0xff; i++) {
+            buffer->Data[0] = i;
+            EXPECT_EQ(1, monapi_file_write(file, buffer, 1));
+        }
+        monapi_file_close(file);
+    }
+    {
+        monapi_cmemoryinfo* cmi = monapi_file_read_all("/USER/SUBDIR/TMP.TXT");
+        ASSERT_TRUE(cmi != NULL);
+        ASSERT_EQ(256, cmi->Size);
+        EXPECT_EQ(0xff, cmi->Data[0xff]);
+        EXPECT_EQ(0x00, cmi->Data[0x00]);
+        monapi_cmemoryinfo_dispose(cmi);
+        monapi_cmemoryinfo_delete(cmi);
+        monapi_file_delete("/USER/SUBDIR/TMP.TXT");
+    }
+            // todo over cluster
+}
+
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -580,7 +611,9 @@ int main(int argc, char *argv[])
     test_fatfs_create_long_file_name("hi_i_am_higepon_writing_fat_fs.mosh.sls");
     test_fatfs_create_long_file_name_need_new_cluster();
     test_fatfs_monapi_open();
+    test_fatfs_truncate_and_write();
     testReadDirectory_OneFile();
+
 
     TEST_RESULTS(file);
     return 0;

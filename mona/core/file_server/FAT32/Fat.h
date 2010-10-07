@@ -269,7 +269,6 @@ public:
 
         // Even for the case when sizeToRead == 0, we need context->memory.
         context->memory = monapi_cmemoryinfo_new();
-
         if (sizeToRead == 0) {
             return M_OK;
         }
@@ -279,7 +278,6 @@ public:
             monapi_cmemoryinfo_delete(context->memory);
             return M_NO_SPACE;
         }
-
         uint32_t skipClusterCount = offset / getClusterSizeByte();
         uint32_t startCluster = getClusterAt(e, skipClusterCount);
 
@@ -321,7 +319,7 @@ public:
         if (ret != M_OK) {
             return ret;
         }
-        uint32_t startClusterIndex = sizeToNumClusters(context->offset) - 1;
+        uint32_t startClusterIndex = context->offset == 0 ? 0 : sizeToNumClusters(context->offset) - 1;
         uint32_t startCluster = getClusterAt(entry, startClusterIndex);
         ASSERT(!isEndOfCluster(startCluster));
         uint32_t sizeToWrite = context->size;
@@ -358,6 +356,7 @@ public:
         if (ret != M_OK) {
             return ret;
         }
+        context->offset += context->size;
         return context->size;
     }
 
@@ -1010,23 +1009,29 @@ private:
         uint32_t tailOffset = context->offset + context->size;
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         uint32_t newNumClusters = tailOffset > entry->getSize() ? sizeToNumClusters(tailOffset) : currentNumClusters;
+
         if (newNumClusters == currentNumClusters) {
+            if (tailOffset > entry->getSize()) {
+                entry->setSize(tailOffset);
+            }
+            if (updateParentCluster(entry) != M_OK) {
+                return M_WRITE_ERROR;
+            }
             return M_OK;
         }
-
         Clusters clusters;
         if (!allocateClusters(clusters, newNumClusters - currentNumClusters)) {
             return M_NO_SPACE;
         }
         ASSERT(clusters.size() > 0);
+        uint32_t orgSize = entry->getSize();
 
         bool isParentClusterDirty = false;
         if (tailOffset > entry->getSize()) {
             entry->setSize(tailOffset);
             isParentClusterDirty = true;
         }
-
-        if (entry->getSize() == 0) {
+        if (orgSize == 0) {
             entry->setStartCluster(clusters[0]);
             isParentClusterDirty = true;
         } else {
@@ -1084,7 +1089,7 @@ private:
     uint32_t sizeToNumClusters(uint32_t sizeByte) const
     {
         if (sizeByte == 0) {
-            return 1;
+            return 0;
         } else {
             return (sizeByte + getClusterSizeByte() - 1) / getClusterSizeByte();
         }

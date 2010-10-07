@@ -141,7 +141,6 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file, intptr_t& lastEr
         vmanager_.close(fileID);
         return NULL;
     }
-
     monapi_cmemoryinfo* mi;
     ret = vmanager_.read(fileID, st.size, &mi);
     if (ret != M_OK) {
@@ -149,7 +148,6 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file, intptr_t& lastEr
         vmanager_.close(fileID);
         return NULL;
     }
-
     lastError = vmanager_.close(fileID);
     return mi;
 }
@@ -195,6 +193,7 @@ void FileServer::messageLoop()
             intptr_t lastError;
             monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str(), lastError);
             if (NULL == mi) {
+                monapi_warn("readFileAll(%s) error=%d", msg.str, lastError);
                 Message::reply(&msg, lastError);
             } else {
                 uint32_t handle = mi->Handle;
