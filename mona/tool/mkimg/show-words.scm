@@ -126,7 +126,6 @@
                     (lambda (p)
                       (for-each (lambda (x)
                                   (write x p)
-                                  (write x)
                                   (newline p)) result*)))))
 
 (main (command-line))
