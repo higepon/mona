@@ -194,16 +194,19 @@ int atexit( void (*func)(void)) {
     return -1;
 }
 
-void __cxa_pure_virtual() {
-    print("__cxa_pure_virtual called\n", 1);
+void __cxa_pure_virtual()
+{
+    monapi_fatal("Pure virtual fuction called!. May be called by destructor?\n");
 }
 
-void _pure_virtual() {
-    print("_pure_virtual called\n", 1);
+void _pure_virtual()
+{
+    monapi_fatal("Pure virtual fuction called!. May be called by destructor?\n");
 }
 
-void __pure_virtual() {
-    print("_pure_virtual called\n", 1);
+void __pure_virtual()
+{
+    monapi_fatal("Pure virtual fuction called!. May be called by destructor?\n");
 }
 
 /*----------------------------------------------------------------------
