@@ -27,6 +27,7 @@ KMutex::KMutex() : owner_(NULL)
 
 KMutex::~KMutex()
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (waitList_.size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
         ASSERT(false);

@@ -125,6 +125,9 @@ void syscall_entrance()
     prevSyscall = info->ebx;
     prevName =  g_currentThread->process->getName();
 #endif
+    if (strcmp("SCHEME.EX5", g_currentThread->process->getName()) == 0) {
+        logprintf("syscall %d\n", info->ebx);
+    }
     switch(info->ebx)
     {
     case SYSTEM_CALL_PRINT:
@@ -455,10 +458,13 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (KObjectService::destroy(id, object)) {
                 // mutex is not no more referenced, so deleted.
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 setReturnValue(info, M_OK);
             } else {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 // mutex is referenced by other.
                 setReturnValue(info, M_RELEASED);
             }

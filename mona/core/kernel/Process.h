@@ -34,6 +34,303 @@ class Process;
 class MemoryAllocator;
 extern "C" VirtualConsole* g_console;
 
+template <class T> class HList2 : public List<T> {
+
+  public:
+    HList2();
+    HList2(int size);
+    HList2(int size, int increase);
+    virtual ~HList2();
+
+  public:
+    void add(T element);
+    T get(int index) const;
+    T operator[](int index);
+    bool removeAt(int index, T* found = NULL);
+    bool remove(T element);
+    int size() const;
+    virtual bool isEmpty() const;
+    bool hasElement(T element) const;
+
+  private:
+    T* data_;         /*! internal array     */
+    int size_;        /*! size of liset      */
+    int numElements_; /*! number of elements */
+    int increase_;    /*! increase           */
+
+    /* initilize */
+    void init(int size, int increase);
+
+};
+
+/*!
+    \brief constructor
+
+    constructor default size is 5
+
+    \author Higepon
+    \date   create:2002/10/22 update:
+*/
+template <class T> HList2<T>::HList2() {
+    init(5, 5);
+    return;
+}
+
+/*!
+    \brief constructor
+
+    constructor
+
+    \param size size of initial size of list
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> HList2<T>::HList2(int size) {
+
+    init(size, 5);
+    return;
+}
+
+/*!
+    \brief constructor
+
+    constructor
+
+    \param size size of initial size of list
+    \param increase when resize this value used
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> HList2<T>::HList2(int size, int increase) {
+
+    init(size, increase);
+    return;
+}
+
+/*!
+    \brief destructor
+
+    destructor
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> HList2<T>::~HList2() {
+
+    /* release memory */
+    delete[] data_;
+    return;
+}
+
+/*!
+    \brief isEmpty
+
+    return is Empty or not
+
+    \return true/false empty/has elements
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> bool HList2<T>::isEmpty() const {
+
+    return numElements_ == 0;
+}
+
+/*!
+    \brief add element
+
+    add element at the end of array
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> void HList2<T>::add(T element) {
+
+    /* if array is full */
+    if (size_ == numElements_) {
+
+        /* resize array */
+        size_ += increase_;
+        T* temp = new T[size_];
+
+        /* optimize ? */
+        int numElements = numElements_;
+
+        /* copy original to new array */
+        for (int i = 0; i < numElements; i++) {
+            temp[i] = data_[i];
+        }
+
+        delete[] data_;
+        data_ = temp;
+    }
+
+    /* add element */
+    data_[numElements_] = element;
+    numElements_++;
+    return;
+}
+
+/*!
+    \brief get
+
+    get element at index
+
+    \param index index of element to get
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> T HList2<T>::get(int index) const {
+
+    /* check range */
+    ASSERT(0 <= index  && index < numElements_);
+    return data_[index];
+}
+
+/*!
+    \brief operator[]
+
+    get element at index
+
+    \param index index of element to get
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> T HList2<T>::operator[](int index) {
+
+    return (this->get(index));
+}
+
+/*!
+    \brief size
+
+    return size of list
+
+    \return size of list
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> int HList2<T>::size() const {
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    return numElements_;
+}
+
+/*!
+    \brief remove element
+
+    remove element at index
+
+    \param index that removed
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> bool HList2<T>::removeAt(int index, T* found) {
+
+    /* check range */
+    if (index < 0 || index >=numElements_) {
+
+        /* do nothing */
+        return false;
+    }
+
+    /* save element to remove */
+    T toRemove = data_[index];
+
+    /* fix hole */
+    int numElements = numElements_;
+    for (int i = index; i < numElements - 1; i++) {
+        data_[i] = data_[i + 1];
+    }
+    numElements_--;
+    if (found != NULL) {
+        *found = toRemove;
+    }
+    return true;
+}
+
+/*!
+    \brief remove element
+
+    remove element
+
+    \param element element to remove
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> bool HList2<T>::remove(T element) {
+
+    /* optimize */
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    int size = this->size();
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    for (int i = 0; i < size; i++) {
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        /* element to remove found */
+        if (data_[i] == element) {
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            removeAt(i);
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*!
+    \brief initilize
+
+    set size of list & increase
+
+    \author Higepon
+    \date   create:2003/12/07 update:
+*/
+template <class T> void HList2<T>::init(int size, int increase) {
+
+    /* number of elements */
+    numElements_ = 0;
+
+    /* set size and increase */
+    size_     = size     > 0 ? size : 5;
+    increase_ = increase > 0 ? increase : 5;
+
+    /* create internal array */
+    data_ = new T[size_];
+    return;
+}
+
+/*!
+    \brief check list has the element
+
+    \author Higepon
+    \date   create:2003/12/21 update:
+*/
+template <class T> bool HList2<T>::hasElement(T element) const {
+
+    /* optimize? */
+    int size = this->size();
+
+    /* find element */
+    for (int i = 0; i < size; i++) {
+
+        if (data_[i] == element) {
+            return true;
+        }
+    }
+
+    /* not found */
+    return false;
+}
+
+
 /*----------------------------------------------------------------------
     Idle function
 ----------------------------------------------------------------------*/
@@ -225,12 +522,16 @@ private:
 
     inline void removeKObject(intptr_t id, KObject* obj)
     {
-        kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        Pair<intptr_t, KObject*> p(id, obj);
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        kobjects_.remove(p);
+    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     SharedMemorySegment* findSharedSegment(uint32_t id) const;
 
-    inline HList< Pair<intptr_t, KObject*> >* getKObjects()
+    inline HList2< Pair<intptr_t, KObject*> >* getKObjects()
     {
         return &kobjects_;
     }
@@ -250,7 +551,7 @@ private:
 //    class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
-    HList< Pair<intptr_t, KObject*> > kobjects_;
+    HList2< Pair<intptr_t, KObject*> > kobjects_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];
