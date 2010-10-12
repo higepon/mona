@@ -4,27 +4,28 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define mona-gui-auto-start #t)
+(define mona-gui-auto-start #f)
 
 (define skip-unit-test? #f)
 
 (define *tests-on-cui* '(
-                         "/APPS/TFILE.APP/TFILE.EX5"
-                         "/APPS/TVIRTIO.EX5"
-                         "/APPS/TSTACK.APP/TSTACK.EX5"
-                         "/APPS/TGMP.EX5"
-                         "/APPS/HELLO.EX5"
-                         "/APPS/TMISC.EX5"
-                         "/APPS/HELLO.EX5"
-                         "/APPS/TMUTEX.EX5"
-                         "/APPS/TCOND.EX5"
-                         "/APPS/TSTDIO.APP/TSTDIO.EX5"
-                         "/APPS/TMSG.EX5"
-                         "/APPS/TSYSCALL.EX5"
-                         "/APPS/TRAMDISK.EX5"
-                         "/APPS/TDIE.EX5"
-                         "/APPS/TSOCK.EX5"
-                         "/APPS/HELLO.EX5"))
+                         ;; "/APPS/TFILE.APP/TFILE.EX5"
+                         ;; "/APPS/TVIRTIO.EX5"
+                         ;; "/APPS/TSTACK.APP/TSTACK.EX5"
+                         ;; "/APPS/TGMP.EX5"
+                         ;; "/APPS/HELLO.EX5"
+                         ;; "/APPS/TMISC.EX5"
+                         ;; "/APPS/HELLO.EX5"
+                         ;; "/APPS/TMUTEX.EX5"
+                         ;; "/APPS/TCOND.EX5"
+                         ;; "/APPS/TSTDIO.APP/TSTDIO.EX5"
+                         ;; "/APPS/TMSG.EX5"
+                         ;; "/APPS/TSYSCALL.EX5"
+                         ;; "/APPS/TRAMDISK.EX5"
+                         ;; "/APPS/TDIE.EX5"
+                         ;; "/APPS/TSOCK.EX5"
+                         ;; "/APPS/HELLO.EX5"
+                         ))
 
 (define *tests-on-gui* '("/APPS/BAYGUI/TBAYGUI.EX5"))
 
@@ -187,6 +188,6 @@
           (test-end))))
 
 
-;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
 ;(mosh)
 ;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
