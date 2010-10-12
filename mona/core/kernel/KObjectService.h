@@ -81,7 +81,7 @@ public:
         return create<T>(NULL);
     }
 
-    static bool destroy(intptr_t id, KObject* obj);
+    static bool destroy(Process* who, intptr_t id, KObject* obj);
     static bool tryDelete(intptr_t id, KObject* obj);
 };
 

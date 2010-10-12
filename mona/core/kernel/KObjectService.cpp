@@ -35,10 +35,10 @@
 #include "io.h"
 #include "Condition.h"
 
-bool KObjectService::destroy(intptr_t id, KObject* obj)
+bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 {
     if (obj->getOwner() != NULL) {
-        bool isRemoved = obj->getOwner()->removeKObject(id, obj);
+        bool isRemoved = who->removeKObject(id, obj);
         ASSERT(isRemoved);
     }
     // try delete by reference counting.

@@ -273,7 +273,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
-            KObjectService::destroy(condition_id, object);
+            KObjectService::destroy(g_currentThread->process, condition_id, object);
             setReturnValue(info, M_OK);
         }
         break;
@@ -455,7 +455,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
-            if (KObjectService::destroy(id, object)) {
+            if (KObjectService::destroy(g_currentThread->process, id, object)) {
                 // mutex is not no more referenced, so deleted.
                 setReturnValue(info, M_OK);
             } else {
@@ -482,7 +482,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
-            KObjectService::destroy(id, object);
+            KObjectService::destroy(g_currentThread->process, id, object);
             setReturnValue(info, M_OK);
         }
         break;
