@@ -39,7 +39,6 @@ bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 {
     bool isRemoved = who->removeKObject(id, obj);
     ASSERT(isRemoved);
-
     // try delete by reference counting.
     return tryDelete(id, obj);
 }
@@ -47,7 +46,9 @@ bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 {
     if (g_id->returnID(id)) {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete obj;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return true;
     } else {
         return false;
@@ -56,7 +57,7 @@ bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 
 void KObjectService::cleanupKObjects(Process* owner)
 {
-    HList< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
+    HList2< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
     int size = kobjects->size();
     for (int i = 0; i < size; i++) {
         Pair<intptr_t, KObject*> p;

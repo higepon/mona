@@ -33,7 +33,8 @@ extern "C" void* __dso_handle;
 */
 void __cxa_pure_virtual()
 {
-    g_console->printf("Pure virtual fuction called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    g_console->printf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    logprintf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
 }
 
 /*!
@@ -46,12 +47,14 @@ void __cxa_pure_virtual()
 */
 void _pure_virtual()
 {
-    g_console->printf("Pure virtual fuction called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    g_console->printf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    logprintf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
 }
 
 void __pure_virtual()
 {
-    g_console->printf("Pure virtual fuction called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    g_console->printf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
+    logprintf("Pure virtual function called!. May be called by destructor<%s>?\n", g_currentThread->process->getName());
 }
 
 /*!

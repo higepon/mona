@@ -130,6 +130,9 @@ void syscall_entrance()
     prevSyscall = info->ebx;
     prevName =  getCurrentProcess()->getName();
 #endif
+    if (strcmp("SCHEME.EX5", g_currentThread->process->getName()) == 0) {
+        logprintf("syscall %d\n", info->ebx);
+    }
     switch(info->ebx)
     {
     case SYSTEM_CALL_PRINT:

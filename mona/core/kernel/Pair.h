@@ -35,6 +35,9 @@ class Pair
 public:
     Pair() {}
     Pair(Car car, Cdr cdr) : car(car), cdr(cdr) {}
+  virtual ~Pair() {
+        g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+  }
 
     Car car;
     Cdr cdr;
