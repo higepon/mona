@@ -7,7 +7,7 @@ $QEMU -m 512 -enable-kvm -k ja -serial file:$HOME/mona-qemu.log -cdrom ../mkimg/
 -drive file=../mkimg/mona.iso,media=cdrom,if=virtio \
 -drive file=../mkimg/mona.img,media=disk,if=virtio \
 -drive file=../mkimg/test.img,media=disk,if=virtio \
--drive file=../mkimg/hdd.img,media=disk,if=virtio \
--drive file=../mkimg/hdd2.img,media=disk,if=virtio
+-drive file=../mkimg/fat32_test.img,media=disk,if=virtio \
+-drive file=../mkimg/fat32_user.img,media=disk,if=virtio
 
 \

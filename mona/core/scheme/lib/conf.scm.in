@@ -37,8 +37,8 @@
   (gnote))
 
 (define (on-gui-start)
-(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
-(call-process "/APPS/BAYGUI/GNOTE.EX5 /USER/SUBDIR/WORDS.SCM")
+(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
+(call-process "/APPS/BAYGUI/GNOTE.EX5 /USER/WORDS.SCM")
 
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
@@ -154,7 +154,7 @@
 )
 (define (mosh)
   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM"))
+  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM"))
 
 
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/condition.scm")

@@ -11,13 +11,25 @@ all:
 clean:
 	rm -f mona.img
 	rm -f $(MONADIR)/bin/mona.img
-	rm -f hdd.img
+	rm -f fat32_test.img
 
-fat32:
-	rm -rf ./tmp
-	mkfs.vfat -C -F32 hdd.img 100000 # 48MB
-	mkdir -p ./tmp
-	sudo mount ./hdd.img tmp/ -t vfat -o loop
+create_user_image_once:
+	rm -rf tmp
+	mkdir tmp
+	mkfs.vfat -C -F32 fat32_user.img 100000
+	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
+	mkdir -p bin
+	cp -f show-words.scm bin/
+	sudo mv bin tmp
+	sudo cp -f words.scm tmp
+	sudo umount -l tmp/
+	@if [ ! -f $@ ]; then touch $@; fi
+
+create_test_image_always:
+	rm -rf tmp
+	mkdir tmp
+	mkfs.vfat -C -F32 fat32_test.img 100000
+	sudo mount ./fat32_test.img tmp/ -t vfat -o loop
 	for i in `seq 1 18`; do echo "Hello" > test$$i.txt; sudo mv -f test$$i.txt tmp; done
 	touch empty.txt; sudo mv -f empty.txt tmp
 	mkdir -p subdir
@@ -26,11 +38,10 @@ fat32:
 	sudo cp -f words.scm subdir/
 	echo "Hello World" > this_is_very_long_file_name.txt; sudo mv -f this_is_very_long_file_name.txt subdir; done
 	sudo mv subdir tmp
-#	touch empty2.txt; sudo mv -f empty2.txt tmp
-#	(cd tmp && echo h | sudo tee empty.txt)
 	seq 1 1000 > hige.txt; sudo mv -f hige.txt tmp
 	sudo umount -l tmp/
-	cp hdd.img hdd2.img
+
+fat32: create_test_image_always create_user_image_once
 
 iso:
 	$(INSTALL) -p mona.img $(MONADIR)/bin

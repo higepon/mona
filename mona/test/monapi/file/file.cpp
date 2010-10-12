@@ -527,12 +527,12 @@ static void testReadDirectory_OneFile()
 
     int size = *(int*)ci->Data;
 
-    EXPECT_EQ(21, size);
+    EXPECT_EQ(2, size);
 }
 
 static void test_fatfs_monapi_open()
 {
-    intptr_t file = monapi_file_open("/USER/SUBDIR/SHOW-WORDS.SCM", 0);
+    intptr_t file = monapi_file_open("/USER/BIN/SHOW-WORDS.SCM", 0);
     ASSERT_TRUE(file > 0);
     monapi_file_close(file);
 }
@@ -540,12 +540,12 @@ static void test_fatfs_monapi_open()
 static void test_fatfs_truncate_and_write()
 {
     {
-        intptr_t file = monapi_file_open("/USER/SUBDIR/TMP.TXT", FILE_CREATE);
+        intptr_t file = monapi_file_open("/USER/BIN/TMP.TXT", FILE_CREATE);
         ASSERT_TRUE(file > 0);
         monapi_file_close(file);
     }
     {
-        intptr_t file = monapi_file_open("/USER/SUBDIR/TMP.TXT", FILE_TRUNCATE);
+        intptr_t file = monapi_file_open("/USER/BIN/TMP.TXT", FILE_TRUNCATE);
         ASSERT_TRUE(file > 0);
         monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
         monapi_cmemoryinfo_create(buffer, 1, 0, 0);
@@ -556,14 +556,14 @@ static void test_fatfs_truncate_and_write()
         monapi_file_close(file);
     }
     {
-        monapi_cmemoryinfo* cmi = monapi_file_read_all("/USER/SUBDIR/TMP.TXT");
+        monapi_cmemoryinfo* cmi = monapi_file_read_all("/USER/BIN/TMP.TXT");
         ASSERT_TRUE(cmi != NULL);
         ASSERT_EQ(256, cmi->Size);
         EXPECT_EQ(0xff, cmi->Data[0xff]);
         EXPECT_EQ(0x00, cmi->Data[0x00]);
         monapi_cmemoryinfo_dispose(cmi);
         monapi_cmemoryinfo_delete(cmi);
-        monapi_file_delete("/USER/SUBDIR/TMP.TXT");
+        monapi_file_delete("/USER/BIN/TMP.TXT");
     }
             // todo over cluster
 }
