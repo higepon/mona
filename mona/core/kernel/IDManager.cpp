@@ -58,14 +58,13 @@ intptr_t IDManager::getLastError() const
     return this->lastError;
 }
 
-intptr_t IDManager::allocateID(Process* owner, KObject* object)
+intptr_t IDManager::allocateID(KObject* object)
 {
     int id = this->id++;
     ASSERT(!tree.contains(id));
     tree.add(id, object);
     object->addRef();
     object->setId(id);
-    object->setOwner(owner);
     return id;
 }
 

@@ -44,14 +44,14 @@ public:
     static intptr_t createUserSemaphore(Process* owner, int num)
     {
         UserSemaphore* obj = new UserSemaphore(num);
-        intptr_t id = g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(obj);
         owner->addKObject(id, obj);
         return id;
     }
 
     static intptr_t markAsShared(Process* owner, KObject* obj)
     {
-        intptr_t id = g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(obj);
         owner->addKObject(id, obj);
         return id;
     }
@@ -60,7 +60,7 @@ public:
     {
         KTimer* obj = new KTimer(thread, tick);
         *timer = obj;
-        intptr_t id = g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(obj);
         owner->addKObject(id, obj);
         return id;
     }
@@ -68,7 +68,7 @@ public:
     template <typename T> static intptr_t create(Process* owner)
     {
         T* obj = new T();
-        intptr_t id = g_id->allocateID(owner, obj);
+        intptr_t id = g_id->allocateID(obj);
         if (owner != NULL) {
             owner->addKObject(id, obj);
         }
