@@ -223,9 +223,9 @@ private:
         kobjects_.add(Pair<intptr_t, KObject*>(id, obj));
     }
 
-    inline void removeKObject(intptr_t id, KObject* obj)
+    inline bool removeKObject(intptr_t id, KObject* obj)
     {
-        kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
+        return kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
     }
 
     SharedMemorySegment* findSharedSegment(uint32_t id) const;

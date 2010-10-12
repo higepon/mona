@@ -38,7 +38,8 @@
 bool KObjectService::destroy(intptr_t id, KObject* obj)
 {
     if (obj->getOwner() != NULL) {
-        obj->getOwner()->removeKObject(id, obj);
+        bool isRemoved = obj->getOwner()->removeKObject(id, obj);
+        ASSERT(isRemoved);
     }
     // try delete by reference counting.
     return tryDelete(id, obj);
