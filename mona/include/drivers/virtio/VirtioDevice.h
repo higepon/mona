@@ -92,7 +92,7 @@ public:
                     monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
                 }
 
-                monapi_warn("interrupt timeout\n");
+//                monapi_warn("interrupt timeout\n");
                 return false;
             }
             else if (msg.header == MSG_INTERRUPTED)

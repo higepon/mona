@@ -4,7 +4,7 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define skip-unit-test? #f)
 
@@ -188,6 +188,6 @@
           (test-end))))
 
 
-(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
 ;(mosh)
 ;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")

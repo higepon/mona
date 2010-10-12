@@ -122,10 +122,10 @@
                 [else
                  (format #t "bug=<~a>" c)]))]))))
     ;; 正答と誤答を記録
-    (call-with-port (open-file-output-port (second args) (make-file-options '(no-fail)) 'block (native-transcoder))
+    (time (call-with-port (open-file-output-port (second args) (make-file-options '(no-fail)) 'block (native-transcoder))
                     (lambda (p)
                       (for-each (lambda (x)
                                   (write x p)
-                                  (newline p)) result*)))))
+                                  (newline p)) result*))))))
 
 (main (command-line))
