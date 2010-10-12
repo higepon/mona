@@ -438,7 +438,7 @@ static void test_fatfs_lookup_subdir()
     ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &found, Vnode::DIRECTORY));
     FatFileSystem::File* dir = (FatFileSystem::File*)(found->fnode);
     EXPECT_STR_EQ("SUBDIR", dir->getName().c_str());
-    EXPECT_EQ(2, dir->getChildlen()->size());
+    EXPECT_EQ(4, dir->getChildlen()->size());
 }
 
 static void test_fatfs_read_file_subdir(const char* fileName, const char* expectedContent)
