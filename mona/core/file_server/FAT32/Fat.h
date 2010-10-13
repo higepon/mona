@@ -346,6 +346,7 @@ public:
                 ASSERT(isOK);
             }
             sizeWritten += copySize;
+            logprintf("%s %s:%d copySize=%d\n", __func__, __FILE__, __LINE__, copySize);
             if (!writeCluster(cluster, buf_)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return M_WRITE_ERROR;
@@ -428,6 +429,7 @@ public:
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, 0, 0);
 
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -452,6 +454,7 @@ public:
         }
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         theEntry->name[0] = FREE_ENTRY;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -723,6 +726,7 @@ private:
     {
         uint32_t firstDataSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
         uint32_t absoluteCluster = firstDataSector / getSectorsPerCluster() + cluster - 2;
+        logprintf("write cluster %d\n", cluster);
         if (dev_.write(absoluteCluster * getSectorsPerCluster(), buf, SECTOR_SIZE * getSectorsPerCluster()) != M_OK) {
             return false;
         }
@@ -987,6 +991,7 @@ private:
 
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, entry->getStartCluster(), entry->getSize());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -1128,6 +1133,7 @@ private:
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
                 createAndAddFile(dir, file, cluster, i);
                 initializeEntry(&entries[i], file);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (writeCluster(cluster, buf_)) {
                     return M_OK;
                 } else {
@@ -1143,6 +1149,7 @@ private:
         uint32_t fatStartSector = getReservedSectors();
         uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
         uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
+        logprintf("flushFat %d\n", dirtyFatSector);
         int ret = dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE);
         if (ret != M_OK) {
             monapi_warn("failed to update FAT");
@@ -1221,9 +1228,9 @@ private:
                 }
             }
         }
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(targetCluster, buf)) {
-                return M_WRITE_ERROR;
+            return M_WRITE_ERROR;
         }
         return M_OK;
     }

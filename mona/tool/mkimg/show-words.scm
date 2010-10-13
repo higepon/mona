@@ -94,6 +94,14 @@
         word-spec*)))
 
 (define (main args)
+  (let1 result* (file->sexp-list (second args))
+    (call-with-port (open-file-output-port (second args) (make-file-options '(no-fail)) 'block (native-transcoder))
+                    (lambda (p)
+                      (for-each (lambda (x)
+                                  (write x p)
+                                  (newline p)) result*)))))
+
+#;(define (main args)
   (let1 result*
       (call/cc
        (lambda (break)
