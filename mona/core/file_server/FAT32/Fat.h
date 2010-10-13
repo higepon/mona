@@ -346,7 +346,7 @@ public:
                 ASSERT(isOK);
             }
             sizeWritten += copySize;
-            logprintf("%s %s:%d copySize=%d\n", __func__, __FILE__, __LINE__, copySize);
+            logprintf("context->offset=%d %s %s:%d copySize=%d\n", context->offset, __func__, __FILE__, __LINE__, copySize);
             if (!writeCluster(cluster, buf_)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return M_WRITE_ERROR;
@@ -1144,11 +1144,11 @@ private:
         return M_NO_SPACE;
     }
 
-    int flushFat(uint32_t cluster)
+    int flushFat(uint32_t dirtyFatSector, uint8_t* dirtyFat)
     {
-        uint32_t fatStartSector = getReservedSectors();
-        uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
-        uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
+//        uint32_t fatStartSector = getReservedSectors();
+        // uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
+        // uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
         logprintf("flushFat %d\n", dirtyFatSector);
         int ret = dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE);
         if (ret != M_OK) {
@@ -1161,14 +1161,16 @@ private:
 
     int flushDirtyFat()
     {
-        for (std::map<uint32_t, uint32_t>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
-
-            int ret = flushFat(it->first);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        for (std::map<uint32_t, uint8_t*>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
+            logprintf("<%d>%s %s:%d\n", it->first, __func__, __FILE__, __LINE__);
+            int ret = flushFat(it->first, it->second);
             if (ret != M_OK) {
                 dirtyFat_.clear();
                 return ret;
             }
         }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         dirtyFat_.clear();
         return M_OK;
     }
@@ -1176,7 +1178,10 @@ private:
     void updateFatNoFlush(uint32_t index, uint32_t cluster)
     {
         fat_[index] = cluster;
-        dirtyFat_.insert(std::pair<uint32_t, uint32_t>(index, index));
+        uint32_t fatStartSector = getReservedSectors();
+        uint32_t dirtyFatSector = (index * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
+        uint8_t* dirtyFat = (uint8_t*)fat_ + ((index * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
+        dirtyFat_.insert(std::pair<uint32_t, uint8_t*>(dirtyFatSector, dirtyFat));
     }
 
     bool isLongName(const std::string name) const
@@ -1319,7 +1324,7 @@ private:
     IStorageDevice& dev_;
     MonAPI::scoped_ptr<Vnode> root_;
     uint32_t* fat_;
-    std::map<uint32_t, uint32_t> dirtyFat_;
+    std::map<uint32_t, uint8_t*> dirtyFat_;
     uint8_t* buf_;
 };
 
