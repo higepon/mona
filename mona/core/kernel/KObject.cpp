@@ -8,7 +8,6 @@ KObject::KObject() : referanceCount_(0)
 
 KObject::~KObject()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 intptr_t KObject::getReferanceCount() const

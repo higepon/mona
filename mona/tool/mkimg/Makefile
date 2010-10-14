@@ -14,13 +14,16 @@ clean:
 	rm -f fat32_test.img
 
 create_user_image_once:
+	rm -f fat32_user.img
 	rm -rf tmp
 	mkdir tmp
 	mkfs.vfat -C -F32 fat32_user.img 100000
 	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
 	mkdir -p bin
+	mkdir -p temp
 	cp -f show-words.scm bin/
 	sudo mv bin tmp
+	sudo mv temp tmp
 	sudo cp -f words.scm tmp
 	sudo umount -l tmp/
 	@if [ ! -f $@ ]; then touch $@; fi

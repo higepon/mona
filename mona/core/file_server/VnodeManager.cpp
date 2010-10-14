@@ -48,6 +48,7 @@ int VnodeManager::lookupOne(Vnode* directory, const string& file, Vnode** found,
     }
     intptr_t ret =  directory->fs->lookup(directory, file, found, type);
     if (ret == M_OK) {
+        logprintf("add! directory=%x file=<%s> found=%x type=%d", directory, file.c_str(), *found, type);
         cacher_->add(directory, file, *found);
     }
     return ret;

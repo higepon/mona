@@ -79,11 +79,6 @@ public:
 
     int write(uint32_t lba, const void* buf, int size)
     {
-        logprintf("\nblock:write(%d)\n", lba * (sectorSize_ / 512));
-        for (int i = 0; i < size; i++) {
-            logprintf("[%x]", ((uint8_t*)buf)[i]);
-        }
-
         if (size == vb_->write(buf, lba * (sectorSize_ / 512), size)) {
             return M_OK;
         } else {

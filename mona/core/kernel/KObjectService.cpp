@@ -46,9 +46,7 @@ bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 {
     if (g_id->returnID(id)) {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         delete obj;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return true;
     } else {
         return false;

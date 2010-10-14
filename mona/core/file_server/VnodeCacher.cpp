@@ -88,8 +88,7 @@ void VnodeCacher::add(Vnode* directory, const string& name, Vnode* entry)
     EntriesMap::iterator eit = entries->find(name);
     if (eit != entries->end())
     {
-        _printf("%s:%d already exists vnode\n", __FILE__, __LINE__);
-        exit(-1);
+        monapi_fatal("already exists vnode <%s>\n", name.c_str());
     }
 
     entries->insert(spair(name, entry));

@@ -524,10 +524,8 @@ static void test_fatfs_create_long_file_name_need_new_cluster()
 static void testReadDirectory_OneFile()
 {
     monapi_cmemoryinfo* ci = monapi_file_read_directory("/USER");
-
     int size = *(int*)ci->Data;
-
-    EXPECT_EQ(2, size);
+    EXPECT_EQ(3, size);
 }
 
 static void test_fatfs_monapi_open()

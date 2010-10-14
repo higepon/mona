@@ -231,7 +231,8 @@ public:
         File* dir = getFileByVnode(directory);
         Files* childlen = dir->getChildlen();
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
-            if (upperCase((*it)->getName()) == upperCase(file)) {
+            if (upperCase((*it)->getName()) == upperCase(file) && ((type == Vnode::REGULAR && !(*it)->isDirectory()) ||
+                                                                   (type == Vnode::DIRECTORY && (*it)->isDirectory()))) {
                 if ((*it)->getVnode() == NULL) {
                     Vnode* newVnode = new Vnode;
                     ASSERT(newVnode);
@@ -309,6 +310,12 @@ public:
         return M_OK;
     }
 
+    // todo move
+    int offsetToClusterIndex(int offset)
+    {
+        return offset / getClusterSizeByte();
+    }
+
     virtual int write(Vnode* vnode, struct io::Context* context)
     {
         ASSERT(vnode->type == Vnode::REGULAR);
@@ -319,7 +326,7 @@ public:
         if (ret != M_OK) {
             return ret;
         }
-        uint32_t startClusterIndex = context->offset == 0 ? 0 : sizeToNumClusters(context->offset) - 1;
+        uint32_t startClusterIndex = offsetToClusterIndex(context->offset);
         uint32_t startCluster = getClusterAt(entry, startClusterIndex);
         ASSERT(!isEndOfCluster(startCluster));
         uint32_t sizeToWrite = context->size;
@@ -346,7 +353,6 @@ public:
                 ASSERT(isOK);
             }
             sizeWritten += copySize;
-            logprintf("context->offset=%d %s %s:%d copySize=%d\n", context->offset, __func__, __FILE__, __LINE__, copySize);
             if (!writeCluster(cluster, buf_)) {
                 monapi_warn("write cluster failed cluster=%x\n", cluster);
                 return M_WRITE_ERROR;
@@ -429,7 +435,6 @@ public:
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, 0, 0);
 
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -454,7 +459,6 @@ public:
         }
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         theEntry->name[0] = FREE_ENTRY;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -726,7 +730,6 @@ private:
     {
         uint32_t firstDataSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
         uint32_t absoluteCluster = firstDataSector / getSectorsPerCluster() + cluster - 2;
-        logprintf("write cluster %d\n", cluster);
         if (dev_.write(absoluteCluster * getSectorsPerCluster(), buf, SECTOR_SIZE * getSectorsPerCluster()) != M_OK) {
             return false;
         }
@@ -991,7 +994,6 @@ private:
 
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
         setEntry(theEntry, entry->getStartCluster(), entry->getSize());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
@@ -1133,7 +1135,6 @@ private:
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
                 createAndAddFile(dir, file, cluster, i);
                 initializeEntry(&entries[i], file);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (writeCluster(cluster, buf_)) {
                     return M_OK;
                 } else {
@@ -1149,7 +1150,6 @@ private:
 //        uint32_t fatStartSector = getReservedSectors();
         // uint32_t dirtyFatSector = (cluster * sizeof(uint32_t)) / SECTOR_SIZE + fatStartSector;
         // uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
-        logprintf("flushFat %d\n", dirtyFatSector);
         int ret = dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE);
         if (ret != M_OK) {
             monapi_warn("failed to update FAT");
@@ -1161,16 +1161,13 @@ private:
 
     int flushDirtyFat()
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (std::map<uint32_t, uint8_t*>::const_iterator it = dirtyFat_.begin(); it != dirtyFat_.end(); ++it) {
-            logprintf("<%d>%s %s:%d\n", it->first, __func__, __FILE__, __LINE__);
             int ret = flushFat(it->first, it->second);
             if (ret != M_OK) {
                 dirtyFat_.clear();
                 return ret;
             }
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         dirtyFat_.clear();
         return M_OK;
     }
@@ -1233,7 +1230,6 @@ private:
                 }
             }
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(targetCluster, buf)) {
             return M_WRITE_ERROR;
         }

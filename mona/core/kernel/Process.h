@@ -217,7 +217,6 @@ template <class T> T HList2<T>::operator[](int index) {
     \date   create:2003/12/07 update:
 */
 template <class T> int HList2<T>::size() const {
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return numElements_;
 }
 
@@ -267,17 +266,10 @@ template <class T> bool HList2<T>::removeAt(int index, T* found) {
 */
 template <class T> bool HList2<T>::remove(T element) {
 
-    /* optimize */
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    int size = this->size();
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    for (int i = 0; i < size; i++) {
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    for (int i = 0; i < this->size(); i++) {
         /* element to remove found */
         if (data_[i] == element) {
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             removeAt(i);
-    g_log->printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return true;
         }
     }
