@@ -39,7 +39,7 @@
 (define (on-gui-start)
 ;  (ls "/USER/TEMP")
   (call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
-  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/WORDS.SCM")
+;  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/WORDS.SCM")
 
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")

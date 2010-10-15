@@ -44,7 +44,7 @@ MonaTerminal::~MonaTerminal()
 const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
 {
     bool hasLine = false;
-    if ((msg->arg2 & KEY_MODIFIER_DOWN) != 0) {
+    if ((!isKeySuppressed_ && (msg->arg2 & KEY_MODIFIER_DOWN) != 0)) {
         hasLine = onKeyDown(msg->arg1, msg->arg2);
     } else if (msg->arg1 == 0) {
         hasLine = onKeyDown(msg->arg2, msg->arg3);
@@ -67,12 +67,15 @@ const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
+                logprintf("%s %s:%d %d %d %d\n", __func__, __FILE__, __LINE__, isKeySuppressed_, (msg.arg2 & KEY_MODIFIER_DOWN), msg.arg1);
                 if (!isKeySuppressed_ && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     hasLine = onKeyDown(msg.arg1, msg.arg2);
                 }
                 else if (msg.arg1 == 0)
                 {
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     hasLine = onKeyDown(msg.arg2, msg.arg3);
                 }
                 if (hasLine)
@@ -110,6 +113,7 @@ int MonaTerminal::formatWrite(const char* format, ...)
     va_start(args, format);
     result = vsprintf(formatBuffer_, format, args);
     va_end(args);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     terminal_->write((const uint8_t*)formatBuffer_, result);
     return terminal_->flush();
 }

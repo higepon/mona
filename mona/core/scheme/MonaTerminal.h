@@ -29,7 +29,14 @@ public:
     ::util::String getLine();
     int formatWrite(const char* format, ...);
     uint32_t getScreenHandle() const { return screenHandle_; }
-    void setKeySuppresed() { isKeySuppressed_ = true; }
+    void setKeySuppresed() {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        isKeySuppressed_ = true;
+    }
+    bool isKeySuppressed() const
+    {
+        return isKeySuppressed_;
+    }
     void outputChar(char c);
     void addHistory(::util::String line);
     const char* storeKeyAndGetLine(MessageInfo* msg);
