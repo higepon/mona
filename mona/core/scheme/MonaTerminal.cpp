@@ -12,9 +12,10 @@
 */
 #ifdef MONA
 
-#include "MonaTerminal.h"
+#include <sys/types.h>
 #include <monapi.h>
 #include <monapi/messages.h>
+#include "MonaTerminal.h"
 #include <servers/screen.h>
 
 using namespace util;
@@ -67,15 +68,12 @@ const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
-                logprintf("%s %s:%d %d %d %d\n", __func__, __FILE__, __LINE__, isKeySuppressed_, (msg.arg2 & KEY_MODIFIER_DOWN), msg.arg1);
                 if (!isKeySuppressed_ && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
                 {
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     hasLine = onKeyDown(msg.arg1, msg.arg2);
                 }
                 else if (msg.arg1 == 0)
                 {
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     hasLine = onKeyDown(msg.arg2, msg.arg3);
                 }
                 if (hasLine)
@@ -113,7 +111,6 @@ int MonaTerminal::formatWrite(const char* format, ...)
     va_start(args, format);
     result = vsprintf(formatBuffer_, format, args);
     va_end(args);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     terminal_->write((const uint8_t*)formatBuffer_, result);
     return terminal_->flush();
 }
@@ -439,7 +436,27 @@ void MonaTerminal::outputChar(char c)
 
 void MonaTerminal::addHistory(String line)
 {
-    histories_.add(line);
+    bool isAdded = histories_.add(line);
+    const char* USER_DIR = "/USER";
+    if (isAdded && monapi_file_exists(USER_DIR)) {
+        int id = monapi_file_open(HISTORY_FILE, FILE_CREATE);
+        if (id < M_OK) {
+            monapi_warn("history file open failure");
+        }
+        intptr_t size = monapi_file_get_file_size(id);
+        monapi_file_seek(id, size, SEEK_SET);
+        monapi_cmemoryinfo* buffer = monapi_cmemoryinfo_new();
+        monapi_cmemoryinfo_create(buffer, line.size(), 0, 0);
+        memcpy(buffer->Data, line.data(), line.size());
+        int sizeWritten = monapi_file_write(id, buffer, buffer->Size);
+        if (sizeWritten != buffer->Size) {
+            monapi_warn("history file write failure");
+        }
+        monapi_cmemoryinfo_dispose(buffer);
+        monapi_cmemoryinfo_delete(buffer);
+        monapi_file_close(id);
+    }
+
 }
 
 #endif // MONA

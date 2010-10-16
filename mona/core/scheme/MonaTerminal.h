@@ -18,6 +18,8 @@
 #include "CommandHistory.h"
 #include <monapi/terminal/Util.h>
 
+#define HISTORY_FILE "/USER/HISTORY.TXT"
+
 namespace monash {
 
 class MonaTerminal
