@@ -1313,7 +1313,6 @@ private:
         return result;
     }
 
-
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
     struct bsxbpb* bsxbpb_;

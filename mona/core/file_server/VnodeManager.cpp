@@ -6,6 +6,8 @@
 using namespace std;
 using namespace io;
 
+extern string upperCase(const string& s);
+
 VnodeManager::VnodeManager()
 {
     cacher_ = new VnodeCacher;
@@ -124,7 +126,7 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         std::map<std::string, bool> seen;
         for (size_t i = sizeof(int); i < (*mem)->Size; i += sizeof(monapi_directoryinfo)) {
             monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->Data[i]));
-            seen.insert(std::pair<std::string, bool>(p->name, true));
+            seen.insert(std::pair<std::string, bool>(upperCase(p->name), true));
         }
 
         strings diff;
