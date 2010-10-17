@@ -20,6 +20,7 @@ create_user_image_once:
 	mkfs.vfat -C -F32 fat32_user.img 100000
 	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
 	mkdir -p bin
+	cp CAT.SCM bin/
 	mkdir -p temp
 	cp -f show-words.scm bin/
 	sudo mv bin tmp
