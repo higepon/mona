@@ -192,4 +192,7 @@
 ;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
 ;(mosh)
 ;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
-(ls "/USER/BIN")
+;(ls "/USER/BIN")
+
+(if (file-exists? "/USER/ONSTART.SCM")
+    (load "/USER/ONSTART.SCM"))

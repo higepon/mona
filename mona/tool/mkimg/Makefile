@@ -5,6 +5,7 @@ all:
 	make clean
 	MONADIR=$(MONADIR) perl mkimg.pl
 	make iso
+	make backup_user
 	make fat32
 	cp mona.img test.img
 
@@ -27,6 +28,9 @@ create_user_image_once:
 	sudo cp -f words.scm tmp
 	sudo umount -l tmp/
 	@if [ ! -f $@ ]; then touch $@; fi
+
+backup_user:
+	(test -d ~/Dropbox/mona_images/ && gzip -c fat32_user.img > ~/Dropbox/mona_images/fat32_user.img.`date '+%Y_%m_%d_%H%_M_%S'`.gz) || true
 
 create_test_image_always:
 	rm -rf tmp
