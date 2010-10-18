@@ -4,7 +4,7 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define skip-unit-test? #f)
 
@@ -153,9 +153,9 @@
 ;;  ;             "output-port.scm"
 ;;               )
 )
-(define (mosh)
-  (call-process "/APPS/FRECV.EX5 MOSH.EXE")
-  (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM"))
+;; (define (mosh)
+;;   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM"))
 
 
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/condition.scm")
@@ -193,6 +193,14 @@
 ;(mosh)
 ;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
 ;(ls "/USER/BIN")
+(define (cat file)
+  (call-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/CAT.SCM " file)))
+
+(define (c command arg)
+  (call-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/" command ".SCM " arg)))
+
+(define (rm file)
+  (c "RM" file))
 
 (if (file-exists? "/USER/ONSTART.SCM")
     (load "/USER/ONSTART.SCM"))

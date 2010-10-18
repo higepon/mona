@@ -106,9 +106,10 @@
       (call/cc
        (lambda (break)
          (let loop ([word-spec* (sort-word-spec* (file->sexp-list (second args)))]
-                    [result-spec* '()])
+                    [result-spec* '()]
+                    [miss '()])
            (match word-spec*
-             [() result-spec*]
+             [() (cons result-spec* miss)]
              [((word meaning ok-count ng-count) . more)
               ;; 問題出題
               (format #t "\n~s: " word)
@@ -120,20 +121,21 @@
               (case c
                 ;; Y だったら
                 [(#\y #\Y)
-                 (loop more (cons (list word meaning (+ ok-count 1) ng-count) result-spec* ))]
+                 (loop more (cons (list word meaning (+ ok-count 1) ng-count) result-spec* ) miss)]
                 ;; N だったら
                 [(#\N #\n)
-                 (loop more (cons (list word meaning ok-count (+ ng-count 1)) result-spec*))]
+                 (loop more (cons (list word meaning ok-count (+ ng-count 1)) result-spec*) (cons word miss))]
                 ;; Q だったら途中でやめるので成績を記録
                 [(#\q #\Q)
-                 (break (append (reverse result-spec*) word-spec*))]
+                 (break (cons (append (reverse result-spec*) word-spec*) miss))]
                 [else
-                 (format #t "bug=<~a>" c)]))]))))
+                 (format #t "bug=<~a>" c) (exit -1)]))]))))
     ;; 正答と誤答を記録
+    (display (cdr result*))
     (time (call-with-port (open-file-output-port (second args) (make-file-options '(no-fail)) 'block (native-transcoder))
                     (lambda (p)
                       (for-each (lambda (x)
                                   (write x p)
-                                  (newline p)) result*))))))
+                                  (newline p)) (car result*)))))))
 
 (main (command-line))
