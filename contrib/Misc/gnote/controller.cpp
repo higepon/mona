@@ -27,6 +27,7 @@
  copyright holder.
 */
 #include "controller.hpp"
+#include <monapi.h>
 
 namespace gnote {
     Controller::Controller() : keyCode(0), keyModifiers(0), counter(0) {

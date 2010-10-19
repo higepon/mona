@@ -37,8 +37,8 @@ public:
     {
         FONT_WIDTH  = 6,
         FONT_HEIGHT = 12,
-        WIDTH       = 120,
-        HEIGHT      = 60
+        WIDTH       = 100,
+        HEIGHT      = 50
     };
 
 private:

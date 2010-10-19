@@ -74,11 +74,14 @@ FILE *fopen(const char *path, const char *mode)
 	{
 		fp->_flags = __SAP|__SRD;
 	}
-
-	fileno = monapi_file_open(path, 0);
+    if (fp->_flags & __SWR) {
+      fileno = monapi_file_open(path, FILE_TRUNCATE);
+    } else {
+      fileno = monapi_file_open(path, 0);
+    }
 	if( fileno < 0 )
 	{
-		fileno = monapi_file_open(path, FILE_CREATE);
+      fileno = monapi_file_open(path, FILE_CREATE);
 		if( fileno < 0 )
 		{
 			free(fp);
