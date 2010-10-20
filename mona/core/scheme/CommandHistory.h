@@ -53,6 +53,16 @@ public:
         return get();
     }
 
+    ::util::String* findFirstMatch(::util::String text)
+    {
+        for (int i = 0; i < histories_.size(); i++) {
+            if (strstr(histories_[i]->data(), text.data()) != NULL) {
+                return histories_[i];
+            }
+        }
+        return NULL;
+    }
+
 private:
 
     ::util::String* get()

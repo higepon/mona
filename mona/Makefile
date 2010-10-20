@@ -47,6 +47,7 @@ endif
 	cd core/elf_server && $(MAKE) && $(MAKE) install
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/gui_server && $(MAKE) && $(MAKE) install
+	cd core/clipboard_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 	cd core/gmp && $(MAKE) && $(MAKE) install
 	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
@@ -67,6 +68,7 @@ tests: tools cores
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
+	cd test/monapi/clipboard && $(MAKE) && $(MAKE) install
 	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 	cd test/drivers/virtio && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
@@ -88,6 +90,7 @@ depend:
 	cd core/pe_server && $(MAKE) $@
 	cd core/gui_server && $(MAKE) $@
 	cd core/net_server && $(MAKE) $@
+	cd core/clipboard_server && $(MAKE) $@
 	cd test/monalibc/string && $(MAKE) $@
 	cd test/monalibc/stdio && $(MAKE) $@
 	cd test/monalibc/stdlib && $(MAKE) $@
@@ -97,7 +100,7 @@ depend:
 	cd test/monapi/stack_trace && make $@
 	cd test/monapi/misc && make $@
 	cd test/monapi/message && make $@
-
+	cd test/monapi/clipboard && make $@
 
 .PHONY: clean doc
 
@@ -135,6 +138,7 @@ endif
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
 	$(MAKE) $@ -C core/gui_server
+	$(MAKE) $@ -C core/clipboard_server
 	$(MAKE) $@ -C core/scheme -f Makefile.mona
 	$(MAKE) $@ -C core/mosh -f Makefile.mona
 	cd test/monalibc/string && make clean

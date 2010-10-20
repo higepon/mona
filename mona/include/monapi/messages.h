@@ -7,6 +7,7 @@
 #include <servers/process.h>
 #include <servers/file.h>
 #include <servers/servers.h>
+#include <servers/clipboard.h>
 
 #define MONAPI_BOOL int
 #define MONAPI_TRUE   1
@@ -25,6 +26,7 @@ enum
     ID_SCHEME_SERVER,
 //    ID_SCREEN_SERVER,
     ID_NET_SERVER,
+    ID_CLIPBOARD_SERVER,
     ID_NUMBER_OF_SERVERS
 };
 
@@ -83,6 +85,8 @@ extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);
 extern intptr_t monapi_process_wait_terminated(uint32_t tid);
 extern const char* monapi_error_string(int error);
+extern intptr_t monapi_clipboard_push(monapi_cmemoryinfo* cmi);
+extern monapi_cmemoryinfo* monapi_clipboard_pop();
 
 typedef struct malloc_stat
 {

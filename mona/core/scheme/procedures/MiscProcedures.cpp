@@ -313,7 +313,6 @@ intptr_t waitAndRedirect(uintptr_t tid, MonAPI::Stream* stream)
 PROCEDURE(CallProcess, "call-process")
 {
 #ifdef MONA
-    logprintf("isKeySuppressed_=%d %s %s:%d\n", g_terminal->isKeySuppressed(), __func__, __FILE__, __LINE__);
     ARGC_SHOULD_BE(1);
     CAST(ARGV(0), SString, s);
     uint32_t tid;

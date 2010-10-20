@@ -19,12 +19,13 @@ static uint32_t server_ids[] =
     THREAD_UNKNOWN,  // ID_PE_SERVER
     THREAD_UNKNOWN,  // ID_MONITOR_SERVER
     THREAD_UNKNOWN,  // ID_SCHEME_SERVER
-    THREAD_UNKNOWN   // ID_NET_SERVER
+    THREAD_UNKNOWN,  // ID_NET_SERVER
+    THREAD_UNKNOWN   // ID_CLIPBOARD_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIP.EX5"
 };
 
 uint32_t monapi_get_server_thread_id(int id)
@@ -494,5 +495,42 @@ MONAPI_BOOL monapi_file_exists(const char* path)
             monapi_cmemoryinfo_delete(cmi);
             return MONAPI_TRUE;
         }
+    }
+}
+
+intptr_t monapi_clipboard_push(monapi_cmemoryinfo* cmi)
+{
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
+    int ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_PUSH, cmi->Handle, cmi->Size);
+    if (ret != M_OK) {
+        return ret;
+    }
+    return M_OK;
+}
+
+monapi_cmemoryinfo* monapi_clipboard_pop()
+{
+    monapi_cmemoryinfo* ret;
+    uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_CLIPBOARD_POP) != M_OK) {
+        return NULL;
+    }
+    if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = tid;
+    ret->Size   = msg.arg3;
+    if (ret->Size == 0) {
+        return ret;
+    }
+    intptr_t mapResult = monapi_cmemoryinfo_map(ret, true);
+    if (mapResult != M_OK) {
+        monapi_cmemoryinfo_delete(ret);
+        monapi_warn("%s(%s) map error = %d\n", __func__, msg.str, mapResult);
+        return NULL;
+    } else {
+        return ret;
     }
 }

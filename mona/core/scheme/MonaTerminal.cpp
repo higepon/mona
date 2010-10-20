@@ -157,6 +157,25 @@ bool MonaTerminal::initialize()
 bool MonaTerminal::onKeyDown(int keycode, int modifiers)
 {
     switch(keycode) {
+    case (Keys::R):
+        if (modifiers & KEY_MODIFIER_CTRL)
+        {
+            backSpace();
+            ::util::String searchKey = getLine();
+            searchKey.chop();
+            ::util::String* foundHistory = histories_.findFirstMatch(searchKey);
+            if (foundHistory != NULL) {
+                outputLine(foundHistory->data());
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            }
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            break;
+        }
+        else
+        {
+            outputKey(keycode, modifiers);
+            break;
+        }
     case (Keys::H):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
@@ -261,7 +280,7 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
     case (Keys::D):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
-//            del();
+           del();
             return true;
             break;
         }
@@ -285,7 +304,7 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
     case(Keys::G):
     case(Keys::I):case(Keys::J):case(Keys::L):
     case(Keys::M):case(Keys::O):
-    case(Keys::Q):case(Keys::R):case(Keys::S):case(Keys::T):
+    case(Keys::Q):case(Keys::S):case(Keys::T):
     case(Keys::U):case(Keys::V):case(Keys::W):case(Keys::X):
     case(Keys::Y):case(Keys::Z):case(Keys::Decimal):case(Keys::D0):
     case(Keys::D1):case(Keys::D2):case(Keys::D3):case(Keys::D4):
