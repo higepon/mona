@@ -694,7 +694,6 @@ void syscall_entrance()
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
-
         while (Semaphore::down(&g_semaphore_shared));
         SharedMemoryObject* shm = SharedMemoryObject::find(id);
         if (shm == NULL) {

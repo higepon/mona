@@ -3,8 +3,9 @@
 
 enum
 {
-    MSG_CLIPBOARD_PUSH = 0x12def91e, // CLP:PSH
-    MSG_CLIPBOARD_POP  = 0x12def73e  // CLP:POP
+    MSG_CLIPBOARD_SET   = 0x12def91e, // CLP:SET
+    MSG_CLIPBOARD_GET   = 0x12def73e, // CLP:GET
+    MSG_CLIPBOARD_CLEAR = 0x12de25c6  // CLP:CLR
 };
 
 #endif

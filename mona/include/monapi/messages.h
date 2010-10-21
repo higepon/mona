@@ -85,8 +85,9 @@ extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);
 extern intptr_t monapi_process_wait_terminated(uint32_t tid);
 extern const char* monapi_error_string(int error);
-extern intptr_t monapi_clipboard_push(monapi_cmemoryinfo* cmi);
-extern monapi_cmemoryinfo* monapi_clipboard_pop();
+extern intptr_t monapi_clipboard_set(monapi_cmemoryinfo* cmi);
+extern intptr_t monapi_clipboard_clear();
+extern monapi_cmemoryinfo* monapi_clipboard_get();
 
 typedef struct malloc_stat
 {

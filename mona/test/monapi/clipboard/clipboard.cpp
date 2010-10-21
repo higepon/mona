@@ -18,32 +18,34 @@ static monapi_cmemoryinfo* alloc_buffer(const char* message)
     return alloc_buffer_size(message, strlen(message) + 1);
 }
 
-static void testPushPop()
+static void testSetGet()
 {
     const char* greeting = "Hello, World";
     monapi_cmemoryinfo* data = alloc_buffer(greeting);
-    EXPECT_EQ(M_OK, monapi_clipboard_push(data));
-    monapi_cmemoryinfo* cmi = monapi_clipboard_pop();
+    EXPECT_EQ(M_OK, monapi_clipboard_set(data));
+    monapi_cmemoryinfo_dispose(data);
+    monapi_cmemoryinfo_delete(data);
+
+    monapi_cmemoryinfo* cmi = monapi_clipboard_get();
     ASSERT_TRUE(cmi != NULL);
-    EXPECT_EQ(data->Size, cmi->Size);
-    EXPECT_STR_EQ(greeting, cmi->Data);
+    EXPECT_EQ(strlen(greeting) + 1, cmi->Size);
+    EXPECT_STR_EQ(greeting, (const char*)cmi->Data);
 
     monapi_cmemoryinfo_dispose(cmi);
     monapi_cmemoryinfo_delete(cmi);
-    monapi_cmemoryinfo_dispose(data);
-    monapi_cmemoryinfo_delete(data);
+    EXPECT_EQ(M_OK, monapi_clipboard_clear());
 }
 
-static void testEmptyPop()
+static void testEmptyGet()
 {
-    monapi_cmemoryinfo* cmi = monapi_clipboard_pop();
+    monapi_cmemoryinfo* cmi = monapi_clipboard_get();
     ASSERT_TRUE(cmi == NULL);
 }
 
 int main(int argc, char *argv[])
 {
-    testPushPop();
-    testEmptyPop();
+    testSetGet();
+    testEmptyGet();
     TEST_RESULTS(clipboard);
     return 0;
 }

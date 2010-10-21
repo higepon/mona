@@ -340,7 +340,6 @@ PROCEDURE(CallProcess, "call-process")
     Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
     n.u64 = syscall_now_in_nanosec();
     env->setVaribale(new Variable("status", lineno()), status);
-    logprintf("after isKeySuppressed_=%d %s %s:%d\n", g_terminal->isKeySuppressed(), __func__, __FILE__, __LINE__);
     uint64_t end = MonAPI::Date::nowInMsec();
     logprintf("call-process execution time %d msec %s\n", end - start, s->value().data());
     return status;
