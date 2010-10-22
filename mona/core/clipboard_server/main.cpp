@@ -61,10 +61,6 @@ static void __fastcall listenThread(void* arg)
             monapi_fatal("map error");
         }
         copy(clip_data.begin(), clip_data.end(), clip.Data);
-        logprintf("clipboard");
-        for (int i = 0; i < (int)clip.Size; i++) {
-            logprintf("%c", clip.Data[i]);
-        }
         mutex.unlock();
     }
     closesocket(sock);

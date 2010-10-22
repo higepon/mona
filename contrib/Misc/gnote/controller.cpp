@@ -552,6 +552,7 @@ namespace gnote {
         bool r = false;
         if (c.range) {
             cl = d.GetSubDocument(c.ry, c.rx, c.wy, c.wx);
+            setClipBoard(cl);
             c.range = false;
             r = true;
         }
@@ -562,13 +563,36 @@ namespace gnote {
         bool r = false;
         if (c.range) {
             cl = d.GetSubDocument(c.ry, c.rx, c.wy, c.wx);
+            setClipBoard(cl);
             Delete(c, d);
         }
         return r;
     }
     //
+    void Controller::setClipBoard(Document& d)
+    {
+        String* s = d.toString();
+        if (s->length() > 0) {
+            monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
+            monapi_cmemoryinfo_create(buffer, s->lengthBytes(), 0, 0);
+            memcpy(buffer->Data, s->getBytes(), buffer->Size);
+            monapi_clipboard_set(buffer);
+            monapi_cmemoryinfo_dispose(buffer);
+            monapi_cmemoryinfo_delete(buffer);
+            delete s;
+        }
+    }
+    //
     bool Controller::Paste(Cursol& c, Document& d, const Document& cl) {
-        return cl.GetMaxLineNumber() > 0 && d.Insert(cl, c.wy, c.wx) && GoRight(c, d, cl.GetLength());
+        Document clipped;
+        monapi_cmemoryinfo* cmi = monapi_clipboard_get();
+        if (cmi != NULL) {
+            String text((const char*)cmi->Data, cmi->Size);
+            clipped.Append(text);
+            monapi_cmemoryinfo_dispose(cmi);
+            monapi_cmemoryinfo_delete(cmi);
+        }
+        return clipped.GetMaxLineNumber() > 0 && d.Insert(clipped, c.wy, c.wx) && GoRight(c, d, clipped.GetLength());
     }
     //
     bool Controller::Delete(Cursol& c, Document& d) {
@@ -766,4 +790,3 @@ namespace gnote {
         }
     }
 }
-
