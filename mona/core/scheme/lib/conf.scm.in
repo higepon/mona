@@ -24,7 +24,7 @@
                          "/APPS/TSYSCALL.EX5"
                          "/APPS/TRAMDISK.EX5"
                          "/APPS/TDIE.EX5"
-;                         "/APPS/TSOCK.EX5"
+                         "/APPS/TSOCK.EX5"
                          "/APPS/HELLO.EX5"
                          ))
 

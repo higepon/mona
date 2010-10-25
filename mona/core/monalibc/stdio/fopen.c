@@ -42,6 +42,7 @@ FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
 	int32_t fileno;
+    int truncate;
 	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )
 	{
@@ -49,7 +50,11 @@ FILE *fopen(const char *path, const char *mode)
 		return fp;
 	}
 	memset(fp, 0, sizeof(FILE));
-
+    if (!strcmp(mode, "w") || !strcmp(mode, "w+")) {
+      truncate = 1;
+    } else {
+      truncate = 0;
+    }
 	if( !strcmp(mode, "r") || !strcmp(mode, "rb") )
 	{
 		fp->_flags = __SRD;
@@ -74,7 +79,7 @@ FILE *fopen(const char *path, const char *mode)
 	{
 		fp->_flags = __SAP|__SRD;
 	}
-    if (fp->_flags & __SWR) {
+    if (truncate) {
       fileno = monapi_file_open(path, FILE_TRUNCATE);
     } else {
       fileno = monapi_file_open(path, 0);
