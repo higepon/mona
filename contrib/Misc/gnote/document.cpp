@@ -408,7 +408,7 @@ namespace gnote {
     String* Document::toString() const
     {
         String* ret = new String("");
-        for (int i = 0; i < line->size(); i++) {
+        for (int i = 1; i <= line->size(); i++) {
             String* tmp = GetLine(i);
             if (tmp) {
                 *ret += *tmp;
