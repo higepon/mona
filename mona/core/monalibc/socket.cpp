@@ -283,11 +283,14 @@ int listen(int sockfd, int backlog)
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
 {
     uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
-    if (Message::send(id, MSG_NET_SOCKET_ACCEPT, sockfd) != M_OK) {
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, id, MSG_NET_SOCKET_ACCEPT, sockfd) != M_OK) {
         return EBADF;
     }
 
-    BufferReceiver* receiver = Message::receiveBuffer(id);
+    uintptr_t waitId = msg.arg2;
+
+    BufferReceiver* receiver = Message::receiveBuffer(waitId);
     *addrlen = receiver->bufferSize();
     if (receiver->bufferSize() != 0) {
         memcpy(addr, receiver->buffer(), (*addrlen) > sizeof(sockaddr) ? sizeof(sockaddr) : *addrlen);
@@ -295,7 +298,7 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
     delete receiver;
     MessageInfo src;
     MessageInfo dst;
-    src.from = id;
+    src.from = waitId;
     src.header = MSG_RESULT_OK;
     src.arg1 = MSG_NET_SOCKET_ACCEPT;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
