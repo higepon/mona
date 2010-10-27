@@ -566,6 +566,17 @@ static void test_fatfs_truncate_and_write()
             // todo over cluster
 }
 
+static void test_delete_create_should_remove_vnode_cache()
+{
+    const char* filename = "/USER/TEMP/HELLO.TXT";
+    intptr_t file = monapi_file_open(filename, FILE_CREATE);
+    EXPECT_TRUE(file > M_OK);
+    monapi_file_close(file);
+    monapi_file_delete(filename);
+    file = monapi_file_open(filename, FILE_CREATE);
+    EXPECT_TRUE(file > M_OK);
+    monapi_file_close(file);
+}
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -611,7 +622,7 @@ int main(int argc, char *argv[])
     test_fatfs_monapi_open();
     test_fatfs_truncate_and_write();
     testReadDirectory_OneFile();
-
+    test_delete_create_should_remove_vnode_cache();
 
     TEST_RESULTS(file);
     return 0;

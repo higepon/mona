@@ -450,35 +450,24 @@ public:
 
     virtual int delete_file(Vnode* vnode)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if(vnode == root_) {
             return M_BAD_ARG; // root is undeletable
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         File* entry = getFileByVnode(vnode);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         theEntry->name[0] = FREE_ENTRY;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int ret = freeClusters(entry);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (ret != M_OK) {
             return ret;
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         entry->getParent()->removeChild(entry);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         destroyVnode(vnode);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_OK;
     }
 
@@ -798,6 +787,9 @@ private:
                         return false;
                     }
                     target = new File(filename, little2host16(entry->clus), subChildlen, cluster, index);
+                    for (Files::iterator it = subChildlen.begin(); it != subChildlen.end(); ++it) {
+                        (*it)->setParent(target);
+                    }
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }

@@ -30,13 +30,22 @@ int VnodeManager::delete_file(const std::string& name)
     if (ret != M_OK) {
         return ret;
     }
-    Vnode* root = file->fs->getRoot();
     ret = file->fs->delete_file(file);
     if (ret == M_OK) {
-        vector<string> directories;
-        split(name, '/', directories);
-
-        cacher_->remove(root, directories[directories.size() - 1]);
+        Vnode* targetDirectory = NULL;
+        uint32_t foundIndex = name.find_last_of('/');
+        string filename = name;
+        if (foundIndex == name.npos) {
+            targetDirectory = root_;
+        } else {
+            string dirPath = name.substr(1, foundIndex - 1);
+            int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY);
+            if (ret != M_OK) {
+                return ret;
+            }
+            filename = name.substr(foundIndex + 1, name.size() - foundIndex);
+        }
+        cacher_->remove(targetDirectory, filename);
     }
     return ret;
 }
