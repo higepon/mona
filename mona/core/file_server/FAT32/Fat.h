@@ -759,8 +759,21 @@ private:
                     decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
                     decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
                     decoder.pushBytes(lfn->name3, sizeof(lfn->name3));
+                    logprintf("\n\n\n%d 1\n",lfn->seq & 0x3f);
+                    for (int i = 0; i < sizeof(lfn->name1); i++) {
+                        logprintf("%c", lfn->name1[i]);
+                    }
+                    logprintf("\n%d 2\n",lfn->seq & 0x3f);
+                    for (int i = 0; i < sizeof(lfn->name2); i++) {
+                        logprintf("%c", lfn->name2[i]);
+                    }
+                    logprintf("\n%d 3\n",lfn->seq & 0x3f);
+                    for (int i = 0; i < sizeof(lfn->name3); i++) {
+                        logprintf("%c", lfn->name3[i]);
+                    }
+
                     partialLongNames.push_back(decoder.decode());
-                    if (lfn->seq == 1) {
+                    if ((lfn->seq & 0x3f) == 1) {
                         hasLongName = true;
                     }
                     continue;
@@ -1063,6 +1076,10 @@ private:
 
     int freeClusters(File* entry)
     {
+        // empty file doesn't have any clusters.
+        if (entry->getStartCluster() == 0) {
+            return M_OK;
+        }
         for (uint32_t cluster = entry->getStartCluster(); !isEndOfCluster(cluster);) {
             uint32_t nextCluster = fat_[cluster];
             updateFatNoFlush(cluster, 0);
@@ -1224,6 +1241,9 @@ private:
                 const int NAME_BYTES_PER_ENTRY = LFN_NAME_LEN_PER_ENTRY * 2;
 
                 int sourceOffset = (seq - 1) * NAME_BYTES_PER_ENTRY;
+                memset(p->name1, 0xff, sizeof(p->name1));
+                memset(p->name2, 0xff, sizeof(p->name2));
+                memset(p->name3, 0xff, sizeof(p->name3));
                 copy(p->name1, sizeof(p->name1), encodedName.get(), sizeof(p->name1), sourceOffset, encodedLen);
                 copy(p->name2, sizeof(p->name2), encodedName.get(), sizeof(p->name2), sourceOffset+ sizeof(p->name1), encodedLen);
                 copy(p->name3, sizeof(p->name3), encodedName.get(), sizeof(p->name3), sourceOffset+ sizeof(p->name1) + sizeof(p->name2), encodedLen);

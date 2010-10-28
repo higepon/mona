@@ -622,8 +622,9 @@ int main(int argc, char *argv[])
     test_fatfs_monapi_open();
     test_fatfs_truncate_and_write();
     testReadDirectory_OneFile();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_delete_create_should_remove_vnode_cache();
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS(file);
     return 0;
 }
