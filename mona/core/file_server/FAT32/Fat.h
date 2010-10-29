@@ -120,6 +120,9 @@ private:
         if (a == 0 && b == 0) {
             return EOF;
         }
+        if (a == 0xff && b == 0xff) {
+            return EOF;
+        }
         const uint16_t val1 = ((b << 8) | a);
         if (val1 < 0xD800 || val1 > 0xDFFF) {
             return val1;
@@ -759,28 +762,18 @@ private:
                     decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
                     decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
                     decoder.pushBytes(lfn->name3, sizeof(lfn->name3));
-                    logprintf("\n\n\n%d 1\n",lfn->seq & 0x3f);
-                    for (int i = 0; i < sizeof(lfn->name1); i++) {
-                        logprintf("%c", lfn->name1[i]);
-                    }
-                    logprintf("\n%d 2\n",lfn->seq & 0x3f);
-                    for (int i = 0; i < sizeof(lfn->name2); i++) {
-                        logprintf("%c", lfn->name2[i]);
-                    }
-                    logprintf("\n%d 3\n",lfn->seq & 0x3f);
-                    for (int i = 0; i < sizeof(lfn->name3); i++) {
-                        logprintf("%c", lfn->name3[i]);
-                    }
-
                     partialLongNames.push_back(decoder.decode());
                     if ((lfn->seq & 0x3f) == 1) {
                         hasLongName = true;
                     }
+                    // last LFN entry -> short name entry
+                    //               or
+                    // LFN entry
                     continue;
                 }
                 std::string filename;
                 if (hasLongName) {
-                    filename = StringUtil::reverseConcat(partialLongNames);
+                    filename = upperCase(StringUtil::reverseConcat(partialLongNames));
                 } else {
                     filename = std::string((char*)entry->name, 8);
                     StringUtil::rtrim(filename);
@@ -809,6 +802,9 @@ private:
                 ASSERT(target);
                 childlen.push_back(target);
                 partialLongNames.clear();
+                if (hasLongName) {
+                    hasLongName = false;
+                }
             }
         }
         return true;
@@ -989,6 +985,7 @@ private:
     {
         ASSERT(name.size() <= 8);
         ASSERT(ext.size() <= 3);
+        entry->attr = 0;
         memset(entry->name, ' ', 8);
         memcpy(entry->name, name.c_str(), name.size());
         memset(entry->ext, ' ', 3);

@@ -264,6 +264,8 @@ static void test_fatfs_write_file()
     Vnode* root = fat->getRoot();
     const char* FILENAME = "MY1.TXT";
 
+    FatFileSystem::File* rootDir = (FatFileSystem::File*)root->fnode;
+    FatFileSystem::Files* entries = rootDir->getChildlen();
     Vnode* found;
     ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
@@ -496,7 +498,6 @@ static void test_fatfs_create_long_file_name(const char* filename)
         Vnode* subdir;
         Vnode* found;
         ASSERT_EQ(M_OK, fat->lookup(root, "SUBDIR", &subdir, Vnode::DIRECTORY));
-
         ASSERT_EQ(M_OK, fat->lookup(subdir, filename, &found, Vnode::REGULAR));
     }
 
@@ -525,7 +526,7 @@ static void testReadDirectory_OneFile()
 {
     monapi_cmemoryinfo* ci = monapi_file_read_directory("/USER");
     int size = *(int*)ci->Data;
-    EXPECT_EQ(3, size);
+    EXPECT_EQ(10, size);
 }
 
 static void test_fatfs_monapi_open()
@@ -622,9 +623,7 @@ int main(int argc, char *argv[])
     test_fatfs_monapi_open();
     test_fatfs_truncate_and_write();
     testReadDirectory_OneFile();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_delete_create_should_remove_vnode_cache();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS(file);
     return 0;
 }

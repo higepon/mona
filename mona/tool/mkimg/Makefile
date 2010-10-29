@@ -31,7 +31,17 @@ create_user_image_once:
 	@if [ ! -f $@ ]; then touch $@; fi
 
 backup_user:
-	(test -d ~/Dropbox/mona_images/ && gzip -c fat32_user.img > ~/Dropbox/mona_images/fat32_user.img.`date '+%Y_%m_%d_%H%_M_%S'`.gz) || true
+	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
+	(test -d ~/Dropbox/mona_images/ && sudo tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H%_M_%S'`.tar.gz tmp --exclude temp)
+	sudo umount -l tmp/
+#	(test -d ~/Dropbox/mona_images/ && gzip -c fat32_user.img > ~/Dropbox/mona_images/fat32_user.img.`date '+%Y_%m_%d_%H%_M_%S'`.gz) || true
+
+restore_backup_user:
+	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
+	mkdir work
+	(cd work && tar zvxf $(BACKUP) && sudo cp -r tmp/* ../tmp)
+	rm -r work
+	sudo umount -l tmp/
 
 create_test_image_always:
 	rm -rf tmp
