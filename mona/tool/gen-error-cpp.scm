@@ -26,7 +26,7 @@ const char* monapi_error_string(int error)
     switch(error) {
 ")
 
-(define footer "    default:\n        return \"BUG: unknown error\";\n    }\n}")
+(define footer "    default:\n     _logprintf(\"unknown error %d\\n\", error);      return \"unknown error see log\";\n    }\n}")
 
 
 (define (main args)
