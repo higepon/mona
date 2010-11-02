@@ -327,6 +327,24 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'k':
+                    {
+                        cursol.range = true;
+                        bool isOnHome = cursol.wx == 1;
+                        cursol.rx = cursol.wx;
+                        cursol.ry = cursol.wy;
+                        if (GoEnd(cursol, document)) {
+                            // special case, when cursor is on line head remove linefeed also.
+                            if (isOnHome) {
+                                GoRight(cursol, document);
+                            }
+                            if (Cut(cursol, document, clip)) {
+                                cursol.visible = true;
+                                window.GetCanvas()->repaint();
+                            }
+                        }
+                        break;
+                    }
 #else
                     case 'a':
                         SelectAll();
