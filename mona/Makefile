@@ -54,6 +54,7 @@ endif
 
 tests: tools cores
 	cd test/monapi/file && $(MAKE) && $(MAKE) install
+	cd test/monapi/file_load && $(MAKE) && $(MAKE) install
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdlib && $(MAKE) && $(MAKE) install
@@ -97,6 +98,7 @@ depend:
 	cd test/monalibc/math && $(MAKE) $@
 	cd test/drivers/virtio && $(MAKE) $@
 	cd test/monapi/file && make $@
+	cd test/monapi/file_load && make $@
 	cd test/monapi/stack_trace && make $@
 	cd test/monapi/misc && make $@
 	cd test/monapi/message && make $@
@@ -147,6 +149,7 @@ endif
 	cd test/monalibc/math && make clean
 	cd test/monapi/mutex && make clean
 	cd test/monapi/file && make clean
+	cd test/monapi/file_load && make clean
 	cd test/monapi/stack_trace && make clean
 	cd test/monapi/die && make clean
 	cd test/monapi/misc && make clean
