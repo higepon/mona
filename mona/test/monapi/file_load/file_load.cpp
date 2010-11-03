@@ -22,6 +22,21 @@ static void open_close_many_times(const char* path)
     }
 }
 
+static void read_head_byte_many_times(const char* path, uint8_t expected)
+{
+    const int N = 1000;
+    for (int i = 0; i < N; i++) {
+        intptr_t file = monapi_file_open(path, 0);
+        ASSERT_TRUE(file > 0);
+        monapi_cmemoryinfo* actual = monapi_file_read(file, 1);
+        EXPECT_EQ(1, actual->Size);
+        EXPECT_EQ(expected, actual->Data[0]);
+        monapi_cmemoryinfo_dispose(actual);
+        monapi_cmemoryinfo_delete(actual);
+        monapi_file_close(file);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     uint32_t pid = syscall_get_pid();
@@ -30,8 +45,12 @@ int main(int argc, char *argv[])
         monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
     }
 
-    open_close_many_times("/USER/BIN/SHOW-WORDS.SCM"); // FAT32
-    open_close_many_times("/APPS/IME.EX5");            // ISO9660
+    const char* FAT32_FILE = "/USER/BIN/SHOW-WORDS.SCM";
+    const char* ISO9660_FILE = "/APPS/IME.EX5";
+
+    open_close_many_times(FAT32_FILE);
+    open_close_many_times(ISO9660_FILE);
+    read_head_byte_many_times(FAT32_FILE, 0x3b);
     TEST_RESULTS(file_load);
     return 0;
 }
