@@ -76,7 +76,7 @@ public:
     // For ascii only
     uint8_t* encode(std::string longName, uint32_t& size)
     {
-        size = longName.size() * 2;
+        size = longName.size() * 2 + 2;
         uint8_t* buf = new uint8_t[size];
         ASSERT(buf);
         int index = 0;
@@ -84,6 +84,8 @@ public:
             buf[index++] = *it;
             buf[index++] = 0;
         }
+        buf[index++] = '\0';
+        buf[index] = '\0';
         return buf;
     }
 };

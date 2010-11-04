@@ -624,6 +624,7 @@ int main(int argc, char *argv[])
     test_fatfs_truncate_and_write();
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();
+
     TEST_RESULTS(file);
     return 0;
 }
