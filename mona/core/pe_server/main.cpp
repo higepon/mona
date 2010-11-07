@@ -454,17 +454,23 @@ static void MessageLoop()
         switch (msg.header)
         {
             case MSG_DISPOSE_HANDLE:
-                MemoryMap::unmap(msg.arg1);
+            {
+                bool disposeResult = MemoryMap::unmap(msg.arg1);
+                _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
                 Message::reply(&msg);
                 break;
+            }
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
-                if (pe.Result == 0)
-                {
+                if (pe.Result == 0) {
                     char buf[16];
                     sprintf(buf, "%d", pe.Binary->Size);
-                    Message::reply(&msg, pe.Binary->Handle, pe.EntryPoint, buf);
+
+                    // To prevent miss freeing of shared map, waits the client notification.
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->Handle, pe.EntryPoint, buf);
+                    // we can safely unmap it.
+                    MemoryMap::unmap(pe.Binary->Handle);
                 }
                 else
                 {

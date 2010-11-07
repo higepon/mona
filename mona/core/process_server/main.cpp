@@ -109,6 +109,12 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
                     monapi_fatal("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
+                // notify map is done.
+                int status = Message::reply(&msg);
+                if (status != M_OK) {
+                    monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+                }
+
             }
             else
             {

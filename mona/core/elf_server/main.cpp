@@ -86,9 +86,12 @@ static void MessageLoop()
         switch (msg.header)
         {
             case MSG_DISPOSE_HANDLE:
-                MemoryMap::unmap(msg.arg1);
+            {
+                bool disposeResult = MemoryMap::unmap(msg.arg1);
+                _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
                 Message::reply(&msg);
                 break;
+            }
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 monapi_cmemoryinfo* mi = NULL;
@@ -98,7 +101,11 @@ static void MessageLoop()
                 {
                     char buf[16];
                     sprintf(buf, "%d", mi->Size);
-                    Message::reply(&msg, mi->Handle, entryPoint, buf);
+
+                    // To prevent miss freeing of shared map, waits the client notification.
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, mi->Handle, entryPoint, buf);
+                    // we can safely unmap it.
+                    MemoryMap::unmap(mi->Handle);
                     monapi_cmemoryinfo_delete(mi);
                 }
                 else
