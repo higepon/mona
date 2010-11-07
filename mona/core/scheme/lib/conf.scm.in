@@ -9,7 +9,7 @@
 (define skip-unit-test? #f)
 
 (define *tests-on-cui* '(
-                         "/APPS/TFLOAD.APP/TFLOAD.EX5"
+;                         "/APPS/TFLOAD.APP/TFLOAD.EX5"
                          "/APPS/TCLIP.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
                          "/APPS/TVIRTIO.EX5"

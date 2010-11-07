@@ -214,17 +214,17 @@ void FileServer::messageLoop()
             uint32_t fileID = msg.arg1;
             monapi_cmemoryinfo* memory = NULL;
             int ret = vmanager_.read(fileID, msg.arg2 /* size */, &memory);
-            if (ret != M_OK)
-            {
+            if (ret != M_OK) {
                 Message::reply(&msg, ret);
-            }
-            else
-            {
+            } else {
                 ASSERT(memory);
                 uint32_t handle = memory->Handle;
                 uint32_t size = memory->Size;
+                // To prevent miss freeing of shared map, waits the client notification.
+                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
                 monapi_cmemoryinfo_delete(memory);
-                Message::reply(&msg, handle, size);
+                // we can safely unmap it.
+                MemoryMap::unmap(handle);
             }
             break;
         }

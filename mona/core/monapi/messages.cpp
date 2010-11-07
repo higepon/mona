@@ -284,16 +284,17 @@ intptr_t monapi_file_open(const char* file, intptr_t mode)
 
 monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
 {
-    static int count = 0;
-    count++;
     monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != M_OK) {
         return NULL;
     }
     if ((intptr_t)msg.arg2 < M_OK) {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     }
     ret = monapi_cmemoryinfo_new();
@@ -302,8 +303,16 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
     ret->Size   = msg.arg3;
     if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
         monapi_cmemoryinfo_delete(ret);
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     } else {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return ret;
     }
 }
