@@ -340,7 +340,9 @@ void FileServer::messageLoop()
         case MSG_DISPOSE_HANDLE:
         {
             bool disposeResult = MemoryMap::unmap(msg.arg1);
-            _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
+            if (disposeResult) {
+                _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
+            }
             Message::reply(&msg);
             break;
         }
