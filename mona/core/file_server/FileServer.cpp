@@ -152,16 +152,14 @@ monapi_cmemoryinfo* FileServer::readFileAll(const string& file, intptr_t& lastEr
     return mi;
 }
 
-static void enableStackTrace()
+void FileServer::send_and_release_cmemoryinfo(monapi_cmemoryinfo* mi, MessageInfo* msg)
 {
-
-    const char* MAP_FILE_PATH = "/FILE.MAP";
-    uint32_t pid = syscall_get_pid();
-    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
-    if (ret != M_OK) {
-        monapi_fatal("syscall_stack_trace_enable error %d\n", ret);
+    // To prevent miss freeing of shared map, waits the client notification.
+    int ret = Message::sendReceive(msg, msg->from, MSG_RESULT_OK, msg->header, mi->Handle, mi->Size);
+    if (!MemoryMap::unmap(mi->Handle)) {
+        monapi_warn("unmap error\n");
     }
-    exit(0);
+    monapi_cmemoryinfo_delete(mi);
 }
 
 void FileServer::messageLoop()
@@ -182,27 +180,13 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_READ_ALL:
         {
-            // Dirty quick hack to enable stack trace.
-            static bool stackTraceEnabled = false;
-            if (!stackTraceEnabled) {
-// it seems that read_file_all from file server crash.
-//                syscall_mthread_create(enableStackTrace);
-                stackTraceEnabled = true;
-            }
-
             intptr_t lastError;
             monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str(), lastError);
             if (NULL == mi) {
                 monapi_warn("readFileAll(%s) error=%d", msg.str, lastError);
                 Message::reply(&msg, lastError);
             } else {
-                uint32_t handle = mi->Handle;
-                uint32_t size = mi->Size;
-                // To prevent miss freeing of shared map, waits the client notification.
-                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
-                monapi_cmemoryinfo_delete(mi);
-                // we can safely unmap it.
-                MemoryMap::unmap(handle);
+                send_and_release_cmemoryinfo(mi, &msg);
             }
             break;
         }
@@ -221,13 +205,7 @@ void FileServer::messageLoop()
                 Message::reply(&msg, ret);
             } else {
                 ASSERT(memory);
-                uint32_t handle = memory->Handle;
-                uint32_t size = memory->Size;
-                // To prevent miss freeing of shared map, waits the client notification.
-                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
-                monapi_cmemoryinfo_delete(memory);
-                // we can safely unmap it.
-                MemoryMap::unmap(handle);
+                send_and_release_cmemoryinfo(memory, &msg);
             }
             break;
         }
@@ -280,13 +258,7 @@ void FileServer::messageLoop()
             if (ret != M_OK) {
                 Message::reply(&msg, ret);
             } else {
-                uint32_t handle = memory->Handle;
-                uint32_t size = memory->Size;
-                // To prevent miss freeing of shared map, waits the client notification.
-                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
-                monapi_cmemoryinfo_delete(memory);
-                // we can safely unmap it.
-                MemoryMap::unmap(handle);
+                send_and_release_cmemoryinfo(memory, &msg);
             }
             break;
         }

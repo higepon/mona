@@ -35,6 +35,9 @@ public:
     int64_t GetST5DecompressedSize(monapi_cmemoryinfo* mi);
     monapi_cmemoryinfo* ST5Decompress(monapi_cmemoryinfo* mi);
 
+private:
+    void send_and_release_cmemoryinfo(monapi_cmemoryinfo* mi, MessageInfo* msg);
+
 protected:
     typedef std::vector<FileSystem*> FileSystems;
     VnodeManager vmanager_;
