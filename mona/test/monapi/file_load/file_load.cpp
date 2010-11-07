@@ -36,22 +36,14 @@ static void read_head_byte_many_times(const char* path, uint8_t expected)
             logprintf("\n1000\n");
         }
 
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         intptr_t file = monapi_file_open(path, 0);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         ASSERT_TRUE(file > 0);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_cmemoryinfo* actual = monapi_file_read(file, 1);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         EXPECT_EQ(1, actual->Size);
         EXPECT_EQ(expected, actual->Data[0]);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        monapi_cmemoryinfo_dispose(actual);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        monapi_cmemoryinfo_dispose_no_notify(actual);
         monapi_cmemoryinfo_delete(actual);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_file_close(file);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 }
 

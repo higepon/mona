@@ -283,6 +283,7 @@ int VnodeManager::close(uint32_t fileID)
     if (it == fileInfoMap_.end()) {
         return M_FILE_NOT_FOUND;
     }
+
     FileInfo* fileInfo = (*it).second;
     fileInfo->context.memory = NULL;
     Vnode* file = fileInfo->vnode;
