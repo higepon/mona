@@ -257,7 +257,10 @@ void FileServer::messageLoop()
         case MSG_FILE_CLOSE:
         {
             int ret = vmanager_.close(msg.arg1);
-            Message::reply(&msg, ret);
+            int status = Message::reply(&msg, ret);
+            if (status != M_OK) {
+                monapi_warn("monapi_file_close never return: error [%s]\n", monapi_error_string(status));
+            }
             break;
         }
         case MSG_FILE_GET_SIZE:
