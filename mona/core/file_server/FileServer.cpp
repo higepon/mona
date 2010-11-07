@@ -198,8 +198,11 @@ void FileServer::messageLoop()
             } else {
                 uint32_t handle = mi->Handle;
                 uint32_t size = mi->Size;
+                // To prevent miss freeing of shared map, waits the client notification.
+                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
                 monapi_cmemoryinfo_delete(mi);
-                Message::reply(&msg, handle, size);
+                // we can safely unmap it.
+                MemoryMap::unmap(handle);
             }
             break;
         }
@@ -331,9 +334,12 @@ void FileServer::messageLoop()
             return;
             break;
         case MSG_DISPOSE_HANDLE:
-            MemoryMap::unmap(msg.arg1);
+        {
+            bool disposeResult = MemoryMap::unmap(msg.arg1);
+            _logprintf("MSG_DISPOSE_HANDLE=%s\n", disposeResult ? "true" : "false");
             Message::reply(&msg);
             break;
+        }
         default:
 //             PsInfo psInfo;
 //             syscall_set_ps_dump();

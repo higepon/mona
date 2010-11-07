@@ -253,7 +253,13 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != M_OK) {
         return NULL;
     }
-    if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
+    if ((intptr_t)msg.arg2 < M_OK) {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
+        return NULL;
+    }
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
@@ -265,8 +271,16 @@ monapi_cmemoryinfo* monapi_file_read_all(const char* file)
     if (mapResult != M_OK) {
         monapi_cmemoryinfo_delete(ret);
         monapi_warn("read_file_all(%s) map error = %d\n", msg.str, mapResult);
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     } else {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return ret;
     }
 }
