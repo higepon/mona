@@ -156,6 +156,9 @@ void FileServer::send_and_release_cmemoryinfo(monapi_cmemoryinfo* mi, MessageInf
 {
     // To prevent miss freeing of shared map, waits the client notification.
     int ret = Message::sendReceive(msg, msg->from, MSG_RESULT_OK, msg->header, mi->Handle, mi->Size);
+    if (ret != M_OK) {
+        monapi_warn("send failed\n", ret);
+    }
     if (!MemoryMap::unmap(mi->Handle)) {
         monapi_warn("unmap error\n");
     }
@@ -296,6 +299,9 @@ void FileServer::messageLoop()
             monapi_cmemoryinfo* mi = ST5DecompressFile(upperCase(msg.str).c_str());
             if (mi != NULL) {
                 int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, mi->Handle, mi->Size);
+                if (ret != M_OK) {
+                    monapi_warn("send failed");
+                }
                 MemoryMap::unmap(mi->Handle);
                 monapi_cmemoryinfo_delete(mi);
                 // we can safely unmap it.
@@ -311,6 +317,7 @@ void FileServer::messageLoop()
             break;
         case MSG_DISPOSE_HANDLE:
         {
+            monapi_fatal("");
             bool disposeResult = MemoryMap::unmap(msg.arg1);
             if (disposeResult) {
                 _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
