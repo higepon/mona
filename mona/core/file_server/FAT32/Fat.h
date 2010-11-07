@@ -1203,7 +1203,7 @@ private:
 
     bool isLongName(const std::string name) const
     {
-        return name.size() > 11;
+        return name.size() > 12;
     }
 
     void copy(uint8_t* dest, int destLen, uint8_t* source, int size, int sourceOffset, int sourceLen)
