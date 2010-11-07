@@ -259,45 +259,6 @@ void monapi_deallocate_dma_memory(void* address, int size)
     syscall_deallocate_dma_memory(address, size);
 }
 
-monapi_cmemoryinfo* monapi_file_read_all(const char* file)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != M_OK) {
-        return NULL;
-    }
-    if ((intptr_t)msg.arg2 < M_OK) {
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return NULL;
-    }
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (ret->Size == 0) {
-        return ret;
-    }
-    intptr_t mapResult = monapi_cmemoryinfo_map(ret, true);
-    if (mapResult != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        monapi_warn("read_file_all(%s) map error = %d\n", msg.str, mapResult);
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return NULL;
-    } else {
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return ret;
-    }
-}
 
 intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
@@ -310,12 +271,12 @@ intptr_t monapi_file_open(const char* file, intptr_t mode)
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
+static monapi_cmemoryinfo* file_receive_cmemory(int header, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3, const char* str)
 {
     monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != M_OK) {
+    if (Message::sendReceive(&msg, tid, header, arg1, arg2, arg3, str) != M_OK) {
         return NULL;
     }
     if ((intptr_t)msg.arg2 < M_OK) {
@@ -343,6 +304,21 @@ monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
         }
         return ret;
     }
+}
+
+monapi_cmemoryinfo* monapi_file_read_all(const char* file)
+{
+    return file_receive_cmemory(MSG_FILE_READ_ALL, 0, 0, 0, file);
+}
+
+monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
+{
+    return file_receive_cmemory(MSG_FILE_READ, fileID, size, 0, NULL);
+}
+
+monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
+{
+    return file_receive_cmemory(MSG_FILE_READ_DIRECTORY, 0, 0, 0, path);
 }
 
 intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
@@ -366,42 +342,6 @@ intptr_t monapi_file_close(uint32_t fileID)
         return ret;
     }
     return msg.arg2;
-}
-
-monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, 0, 0, 0, path) != M_OK) {
-        return NULL;
-    }
-    if ((intptr_t)msg.arg2 < M_OK) {
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return NULL;
-    }
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return NULL;
-    } else {
-        int status = Message::reply(&msg);
-        if (status != M_OK) {
-            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-        }
-        return ret;
-    }
 }
 
 intptr_t monapi_file_get_file_size(uint32_t id)
