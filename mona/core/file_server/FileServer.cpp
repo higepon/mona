@@ -282,8 +282,11 @@ void FileServer::messageLoop()
             } else {
                 uint32_t handle = memory->Handle;
                 uint32_t size = memory->Size;
+                // To prevent miss freeing of shared map, waits the client notification.
+                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, handle, size);
                 monapi_cmemoryinfo_delete(memory);
-                Message::reply(&msg, handle, size);
+                // we can safely unmap it.
+                MemoryMap::unmap(handle);
             }
             break;
         }
@@ -295,6 +298,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_DECOMPRESS_ST5:
         {
+            monapi_fatal("hige");
             monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
             mi1->Handle = msg.arg1;
             mi1->Size   = msg.arg2;
@@ -303,6 +307,7 @@ void FileServer::messageLoop()
                 mi2 = ST5Decompress(mi1);
                 monapi_cmemoryinfo_dispose(mi1);
             }
+            logprintf("MSG_FILE_DECOMPRESS_ST5 %d\n", mi2->Handle);
             if (mi2 != NULL) {
                 Message::reply(&msg, mi2->Handle, mi2->Size);
                 monapi_cmemoryinfo_delete(mi2);
@@ -317,13 +322,12 @@ void FileServer::messageLoop()
         case MSG_FILE_DECOMPRESS_ST5_FILE:
         {
             monapi_cmemoryinfo* mi = ST5DecompressFile(upperCase(msg.str).c_str());
-            if (mi != NULL)
-            {
-                Message::reply(&msg, mi->Handle, mi->Size);
-                delete mi;
-            }
-            else
-            {
+            if (mi != NULL) {
+                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, mi->Handle, mi->Size);
+                MemoryMap::unmap(mi->Handle);
+                monapi_cmemoryinfo_delete(mi);
+                // we can safely unmap it.
+            } else {
                 Message::reply(&msg);
             }
             break;
@@ -336,7 +340,7 @@ void FileServer::messageLoop()
         case MSG_DISPOSE_HANDLE:
         {
             bool disposeResult = MemoryMap::unmap(msg.arg1);
-            _logprintf("MSG_DISPOSE_HANDLE=%s\n", disposeResult ? "true" : "false");
+            _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
             Message::reply(&msg);
             break;
         }
