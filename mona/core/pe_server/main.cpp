@@ -453,14 +453,6 @@ static void MessageLoop()
 
         switch (msg.header)
         {
-            case MSG_DISPOSE_HANDLE:
-            {
-            monapi_fatal("");
-                bool disposeResult = MemoryMap::unmap(msg.arg1);
-                _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
-                Message::reply(&msg);
-                break;
-            }
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);

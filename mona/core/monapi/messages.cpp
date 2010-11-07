@@ -48,16 +48,6 @@ uint32_t monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-MONAPI_BOOL monapi_call_dispose_handle(int id, uint32_t handle)
-{
-    uint32_t tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
-    if (Message::send(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != M_OK)
-    {
-        return MONAPI_FALSE;
-    }
-    return MONAPI_TRUE;
-}
-
 MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 {
     uint32_t tid = monapi_get_server_thread_id(id), header = MSG_NONE;

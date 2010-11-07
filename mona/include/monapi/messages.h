@@ -55,7 +55,6 @@ extern "C"
 {
 #endif
 extern uint32_t monapi_get_server_thread_id(int id);
-extern MONAPI_BOOL monapi_call_dispose_handle(int id, uint32_t handle);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);

@@ -229,7 +229,6 @@ void FileServer::messageLoop()
             } else {
                 int ret = vmanager_.write(fileID, msg.arg2 /* size */, memory);
 
-                // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
                 if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
                     monapi_warn("FileServer: MSG_FILE_WRITE. monapi_cmemoryinfo_dispose_no_notify error memory->Handle=%x\n", memory->Handle);
                 }
@@ -315,16 +314,6 @@ void FileServer::messageLoop()
             Message::reply(&msg, M_OK);
             return;
             break;
-        case MSG_DISPOSE_HANDLE:
-        {
-            monapi_fatal("");
-            bool disposeResult = MemoryMap::unmap(msg.arg1);
-            if (disposeResult) {
-                _logprintf("MSG_DISPOSE_HANDLE= %d : %s\n", msg.arg1, disposeResult ? "true" : "false");
-            }
-            Message::reply(&msg);
-            break;
-        }
         default:
 //             PsInfo psInfo;
 //             syscall_set_ps_dump();
