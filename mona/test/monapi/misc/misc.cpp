@@ -133,6 +133,28 @@ static void testBufferOverCopyShouldFail()
 }
 
 
+static void testSharedMemory()
+{
+    const int SIZE = 3;
+    SharedMemory shm(SIZE);
+    EXPECT_EQ(false, shm.isMapped());
+    EXPECT_EQ(0, shm.handle());
+    EXPECT_EQ(NULL, shm.data());
+
+    EXPECT_EQ(M_OK, shm.map());
+    shm.data()[0] = 0xfe;
+    EXPECT_EQ(0xfe, shm.data()[0]);
+    EXPECT_EQ(true, shm.isMapped());
+    EXPECT_EQ(M_BUSY, shm.map());
+    EXPECT_TRUE(shm.data() != NULL);
+    EXPECT_TRUE(shm.handle() > 0);
+    EXPECT_EQ(SIZE, shm.size());
+    EXPECT_EQ(M_OK, shm.unmap());
+    EXPECT_EQ(0, shm.handle());
+    EXPECT_EQ(NULL, shm.data());
+    EXPECT_EQ(false, shm.isMapped());
+}
+
 int main(int argc, char *argv[])
 {
     testDate();
@@ -143,6 +165,7 @@ int main(int argc, char *argv[])
     test_Page_fault_handler_should_be_fast();
     testBuffer();
     testBufferOverCopyShouldFail();
+    testSharedMemory();
     TEST_RESULTS(monapi_misc);
     return 0;
 }

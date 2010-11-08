@@ -1,5 +1,6 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
+#include <monapi/SharedMemory.h>
 #include <monapi/Message.h>
 #include <monapi/Stream.h>
 #include <monapi/System.h>
@@ -370,11 +371,11 @@ intptr_t monapi_file_stop_server()
     return msg.arg2;
 }
 
-intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size)
+intptr_t monapi_file_write(uint32_t fileID, const SharedMemory& mem, uint32_t size)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem->Handle);
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem.handle());
     if (ret != M_OK) {
         return ret;
     }

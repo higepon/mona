@@ -9,6 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 #include <monapi/messages.h>
+#include <monapi.h>
 #include <sys/error.h>
 #include "file.h"
 
@@ -38,7 +39,7 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
     monapi_cmemoryinfo *cmi = NULL;
     FILE *f = NULL;
     uint32_t fid = 0;
-    unsigned char *p = buf;
+    unsigned char *p = (unsigned char*)buf;
     int readsize = 0;
     int i = 0;
     f = (FILE*)self;
@@ -63,24 +64,20 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 {
     uint32_t result = 0;
     FILE *f = NULL;
-    monapi_cmemoryinfo* cmi = NULL;
 
     f = (FILE*)self;
 
-    cmi = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if( monapi_cmemoryinfo_create(cmi, size, 0, 1) != M_OK )
-    {
-        monapi_cmemoryinfo_delete(cmi);
+    MonAPI::SharedMemory shm(size);
+    if (shm.map(true) != M_OK) {
         return -1;
     }
-    memcpy(cmi->Data, buf, cmi->Size);
+    memcpy(shm.data(), buf, shm.size());
 
-    result = monapi_file_write((uint32_t)f->file, cmi, cmi->Size);
+    result = monapi_file_write((uint32_t)f->file, shm, shm.size());
 
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
-
+    if (shm.unmap() != M_OK) {
+        monapi_warn("SharedMemory::unmap failed");
+    }
     monapi_file_seek((uint32_t)f->file, (uint32_t)size+f->offset, SEEK_SET);
 
     return (int)result;

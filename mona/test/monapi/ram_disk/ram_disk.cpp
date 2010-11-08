@@ -25,15 +25,15 @@ static void cm_destroy_delete(monapi_cmemoryinfo *cm)
     monapi_cmemoryinfo_delete(cm);
 }
 
-static monapi_cmemoryinfo* alloc_buffer_size(const char* message, int size)
+static SharedMemory alloc_buffer_size(const char* message, int size)
 {
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, size, 0, 0);
-    memcpy(buffer->Data, message, buffer->Size);
-    return buffer;
+    SharedMemory shm(size);
+    ASSERT_EQ(M_OK, shm.map());
+    memcpy(shm.data(), message, shm.size());
+    return shm;
 }
 
-static monapi_cmemoryinfo* alloc_buffer(const char* message)
+static SharedMemory alloc_buffer(const char* message)
 {
     return alloc_buffer_size(message, strlen(message) + 1);
 }
@@ -59,13 +59,11 @@ static void createFile(const char* path)
     intptr_t id = monapi_file_open(path, FILE_CREATE);
 
     const char* message = "Hello World\n";
-    monapi_cmemoryinfo* buffer = alloc_buffer(message);
+    SharedMemory shm = alloc_buffer(message);
 
-    monapi_file_write(id, buffer, buffer->Size);
+    monapi_file_write(id, shm, shm.size());
 
-    monapi_cmemoryinfo_dispose(buffer);
-    monapi_cmemoryinfo_delete(buffer);
-
+    EXPECT_EQ(M_OK, shm.unmap());
     monapi_file_close(id);
 }
 
@@ -95,18 +93,18 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
     intptr_t id = monapi_file_open(path, create ? FILE_CREATE : 0);
 
 #define MAXDATA 20
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, MAXDATA, 0, 0);
+    SharedMemory shm(MAXDATA);
+    ASSERT_EQ(M_OK, shm.map());
     int res = 0;
     while(size > 0) {
         int copySize = size > MAXDATA ? MAXDATA : size;
-        memcpy(buffer->Data, contents, copySize);
-        res = monapi_file_write(id, buffer, copySize);
+        memcpy(shm.data(), contents, copySize);
+        res = monapi_file_write(id, shm, copySize);
         EXPECT_EQ(copySize, res);
         size -= copySize;
         contents += copySize;
     }
-    cm_destroy_delete(buffer);
+    EXPECT_EQ(M_OK, shm.unmap());
 
 #if 0
     monapi_cmemoryinfo* buffer = alloc_buffer_size(contents, size);
@@ -438,19 +436,18 @@ static void testMonAPIwrite()
     const char* data = "Hello,\nWorld";
     const int len = strlen(data) + 1;
 
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, 1, 0, 0);
+    SharedMemory shm(1);
+    ASSERT_EQ(M_OK, shm.map());
 
     for (int i = 0; i < len; i++) {
-        buffer->Data[0] = data[i];
-        monapi_file_write(id, buffer, 1);
+        shm.data()[0] = data[i];
+        monapi_file_write(id, shm, 1);
     }
     monapi_file_close(id);
     monapi_cmemoryinfo* cmi = readContentFromPath(tmpFile);
     EXPECT_STR_EQ(data, (char*)cmi->Data);
 
-    monapi_cmemoryinfo_dispose(buffer);
-    monapi_cmemoryinfo_delete(buffer);
+    ASSERT_EQ(M_OK, shm.unmap());
     monapi_cmemoryinfo_dispose(cmi);
     monapi_cmemoryinfo_delete(cmi);
     monapi_file_delete(tmpFile);

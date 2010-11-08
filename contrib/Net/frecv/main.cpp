@@ -11,21 +11,6 @@ using namespace MonAPI;
 
 #define MAXDATA 1024
 
-static monapi_cmemoryinfo* alloc_buffer(int size)
-{
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, size, 0, true);
-    return buffer;
-}
-
-static void free_buffer(monapi_cmemoryinfo* buffer)
-{
-    monapi_cmemoryinfo_dispose(buffer);
-    monapi_cmemoryinfo_delete(buffer);
-}
-
-
-
 void copyToPath(int sd, const char *name)
 {
     char path[5+8+1+3+1]; // "/MEM/[name]"
@@ -37,17 +22,20 @@ void copyToPath(int sd, const char *name)
     intptr_t id = monapi_file_open(path, FILE_CREATE);
     assert(id > 0);
 
-    monapi_cmemoryinfo* buffer = alloc_buffer(MAXDATA);
+    SharedMemory shm(MAXDATA);
+    if (M_OK != shm.map()) {
+        return;
+    }
 
     uint8_t buf[MAXDATA];
     int readSize = recv(sd, buf, MAXDATA, 0);
     do {
-        memcpy(buffer->Data, buf, readSize);
-        monapi_file_write(id, buffer, readSize);
+        memcpy(shm.data(), buf, readSize);
+        monapi_file_write(id, shm, readSize);
     } while ((readSize = recv(sd, buf, MAXDATA, 0)) > 0);
 
     monapi_file_close(id);
-    free_buffer(buffer);
+    shm.unmap();
 }
 
 

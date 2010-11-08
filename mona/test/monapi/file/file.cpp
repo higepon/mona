@@ -546,11 +546,11 @@ static void test_fatfs_truncate_and_write()
     {
         intptr_t file = monapi_file_open("/USER/BIN/TMP.TXT", FILE_TRUNCATE);
         ASSERT_TRUE(file > 0);
-        monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-        monapi_cmemoryinfo_create(buffer, 1, 0, 0);
+        SharedMemory shm(1);
+        ASSERT_EQ(M_OK, shm.map());
         for (int i = 0; i <= 0xff; i++) {
-            buffer->Data[0] = i;
-            EXPECT_EQ(1, monapi_file_write(file, buffer, 1));
+            shm.data()[0] = i;
+            EXPECT_EQ(1, monapi_file_write(file, shm, 1));
         }
         monapi_file_close(file);
     }

@@ -3,7 +3,7 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
- * in the Software withoution, including without limitation the rights
+ * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
  *
@@ -31,44 +31,39 @@
 	negi4d41@yahoo.co.jp
 */
 
-#include "stdio_p.h"
 #include <stdlib.h>
 #include <errno.h>
-
 #include <monapi/messages.h>
+#include "dirent_p.h"
 
-int setvbuf(FILE * stream, char *buf, int mode, size_t size)
+int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
+
+struct dirent *readdir(DIR *dir)
 {
-	fflush(stream);
-
-	if( buf == NULL && mode != __SNBF )
+	static struct dirent ent;
+	struct dirent **result;
+	if( readdir_r(dir, &ent, result) != 0 )
 	{
-		buf = malloc(size);
-		if( buf == NULL )
-		{
-			errno = ENOMEM;
-			return -1;
-		}
-		syscall_print("buf alloced by setvbuf.\n");
+		return NULL;
 	}
+	return &ent;
+}
 
-	if( stream->_flags & __SALD )
+int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result)
+{
+	monapi_directoryinfo *di;
+	if( entry == NULL || dirp == NULL )
 	{
-		free(stream->_bf._base);
+		result = NULL;
+		return -1;
 	}
-
-	stream->_bf._base = buf;
-	stream->_bf._size = size;
-
-	stream->_flags &= ~(__SLBF|__SNBF|__SFBF);
-	stream->_flags |= __SALD;
-	switch(mode)
+	di = getDirInfo(dirp->cmi, dirp->index++);
+	if( di == NULL )
 	{
-		case _IOFBF: stream->_flags |= __SFBF; break;
-		case _IONBF: stream->_flags |= __SNBF; break;
-		case _IOLBF: stream->_flags |= __SLBF; break;
-		default: break;
+		result = NULL;
+		return -1;
 	}
-
+	convertFromDirInfo(di, entry);
+	result = &entry;
 	return 0;
 }

@@ -32,13 +32,13 @@
 */
 
 #include <monapi/messages.h>
+#include <monapi.h>
 #include <sys/error.h>
 #include <stdlib.h>
 #include <string.h>
 #include "stdio_p.h"
 
-//asm(".section .drectve");
-//asm(".ascii \"-export:__sF\"");
+extern "C" void stream_opener();
 
 FILE __sF[3];
 
@@ -47,7 +47,7 @@ int _read(void *self, void *buf, size_t size)
     monapi_cmemoryinfo *cmi = NULL;
     FILE *f;
     uint32_t fid;
-    unsigned char *p = buf;
+    unsigned char *p = (unsigned char*)buf;
     int readsize;
     int i;
     f = (FILE*)self;
@@ -71,25 +71,20 @@ int _write(void *self, void *buf, size_t size)
 {
     uint32_t result;
     FILE *f;
-    monapi_cmemoryinfo* cmi;
 
     f = (FILE*)self;
 
-    cmi = monapi_cmemoryinfo_new();
-    if( monapi_cmemoryinfo_create(cmi, size, 0, 1) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(cmi);
+    MonAPI::SharedMemory shm(size);
+    if(shm.map() != M_OK) {
         return -1;
     }
-    memcpy(cmi->Data, buf, cmi->Size);
+    memcpy(shm.data(), buf, shm.size());
 
-    result = monapi_file_write((uint32_t)f->_file, cmi, cmi->Size);
+    result = monapi_file_write((uint32_t)f->_file, shm, shm.size());
 
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
-
-    //    monapi_file_seek((uint32_t)f->_file, (uint32_t)size+f->_extra->offset, SEEK_SET);
-
+    if(shm.unmap() != M_OK) {
+        monapi_warn("SharedMemory::unmap failed");
+    }
     return (int)result;
 }
 
@@ -112,7 +107,7 @@ void _open_stdin(FILE *fp)
     memset(fp, 0, sizeof(FILE));
     fp->_flags = 0;
     fp->_flags = __SRD|__SLBF;
-    fp->_extra = malloc(sizeof(struct __sFILEX));
+    fp->_extra = (struct __sFILEX*)malloc(sizeof(struct __sFILEX));
     fp->_extra->stds = __STDIN;
 }
 
@@ -122,7 +117,7 @@ void _open_stdout(FILE *fp)
 
     fp->_flags = 0;
     fp->_flags = __SWR|__SLBF;
-    fp->_extra = malloc(sizeof(struct __sFILEX));
+    fp->_extra = (struct __sFILEX*)malloc(sizeof(struct __sFILEX));
     fp->_extra->stds = __STDOUT;
 }
 
@@ -132,11 +127,11 @@ void _open_stderr(FILE *fp)
 
     fp->_flags = 0;
     fp->_flags = __SWR|__SNBF;
-    fp->_extra = malloc(sizeof(struct __sFILEX));
+    fp->_extra = (struct __sFILEX*)malloc(sizeof(struct __sFILEX));
     fp->_extra->stds = __STDERR;
 }
 
-void init_stdio(void)
+extern "C" void init_stdio(void)
 {
     _open_stdin(&(__sF[0]));
     _open_stdout(&(__sF[1]));

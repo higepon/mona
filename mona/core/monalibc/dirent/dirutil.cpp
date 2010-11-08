@@ -2,6 +2,8 @@
 #include <monapi/cmemoryinfo.h>
 #include "dirent_p.h"
 
+extern "C" size_t strlcpy(char *dst, const char *src, size_t siz);
+
 struct dirent* convertFromDirInfo(monapi_directoryinfo* di, struct dirent* ent)
 {
 	if( ent == NULL || di == NULL ) return NULL;

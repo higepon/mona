@@ -464,15 +464,18 @@ void MonaTerminal::addHistory(String line)
         }
         intptr_t size = monapi_file_get_file_size(id);
         monapi_file_seek(id, size, SEEK_SET);
-        monapi_cmemoryinfo* buffer = monapi_cmemoryinfo_new();
-        monapi_cmemoryinfo_create(buffer, line.size(), 0, 0);
-        memcpy(buffer->Data, line.data(), line.size());
-        int sizeWritten = monapi_file_write(id, buffer, buffer->Size);
-        if (sizeWritten != buffer->Size) {
+        SharedMemory shm(line.size());
+        if (shm.map() != M_OK) {
+            monapi_warn("shm map error on addHistory");
+        }
+        memcpy(shm.data(), line.data(), line.size());
+        int sizeWritten = monapi_file_write(id, shm, shm.size());
+        if (sizeWritten != shm.size()) {
             monapi_warn("history file write failure");
         }
-        monapi_cmemoryinfo_dispose(buffer);
-        monapi_cmemoryinfo_delete(buffer);
+        if (shm.unmap() != M_OK) {
+            monapi_warn("shm unmap error on addHistory");
+        }
         monapi_file_close(id);
     }
 

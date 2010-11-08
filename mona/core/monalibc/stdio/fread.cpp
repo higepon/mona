@@ -146,7 +146,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
                 stream->_bf._range = readsize;
                 if( size > stream->_bf._size )
                 {
-                    retsize = stream->_read(stream, buf+readsize, size-readsize);
+                    retsize = stream->_read(stream, (uint8_t*)buf+readsize, size-readsize);
                     readsize += retsize;
                 }
                 else
@@ -201,7 +201,7 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
     else if( stream->_ungetcbuf != EOF )
     {
         {
-            unsigned char *p = buf;
+            unsigned char *p = (unsigned char*)buf;
             p[0] = (unsigned char)stream->_ungetcbuf;
             stream->_ungetcbuf = EOF;
             return (size_t)1;
