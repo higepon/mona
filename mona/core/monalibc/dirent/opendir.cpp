@@ -36,6 +36,8 @@
 #include <monapi/messages.h>
 #include "dirent_p.h"
 
+using namespace MonAPI;
+
 DIR *opendir(const char *path)
 {
 	DIR *ret;
@@ -47,8 +49,8 @@ DIR *opendir(const char *path)
 	}
 
 	ret->path = path;
-	ret->cmi = monapi_file_read_directory(path);
-	if( ret->cmi == NULL )
+	ret->shm = monapi_file_read_directory(path);
+	if( ret->shm == NULL )
 	{
 		free(ret);
 		errno = ENOENT;

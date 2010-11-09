@@ -19,12 +19,6 @@ static bool fileExist(const char* path)
     return true;
 }
 
-static void cm_destroy_delete(monapi_cmemoryinfo *cm)
-{
-    monapi_cmemoryinfo_dispose(cm);
-    monapi_cmemoryinfo_delete(cm);
-}
-
 static SharedMemory alloc_buffer_size(const char* message, int size)
 {
     SharedMemory shm(size);
@@ -150,28 +144,23 @@ static void testWriteFile_Content()
     writeContentToPath(path, data);
 
     intptr_t id = monapi_file_open(path, 0);
-    monapi_cmemoryinfo *actual = NULL;
-    actual = monapi_file_read(id, 256);
+    scoped_ptr<SharedMemory> actual(monapi_file_read(id, 256));
     monapi_file_close(id);
 
-    EXPECT_EQ(len, actual->Size);
-    EXPECT_TRUE( 0 == memcmp(actual->Data, data, len));
-
-    monapi_cmemoryinfo_dispose(actual);
-    monapi_cmemoryinfo_delete(actual);
-
+    EXPECT_EQ(len, actual->size());
+    EXPECT_TRUE( 0 == memcmp(actual->data(), data, len));
+    actual->unmap();
     monapi_file_delete(path);
 }
 
-monapi_cmemoryinfo* readContentFromPath(const char *path)
+SharedMemory* readContentFromPath(const char *path)
 {
     intptr_t id = monapi_file_open(path, 0);
-    monapi_cmemoryinfo *cmi = monapi_file_read(id, 256);
-
+    SharedMemory* shm = monapi_file_read(id, 256);
     // check EOF
     EXPECT_TRUE(NULL == monapi_file_read(id, 256));
     monapi_file_close(id);
-    return cmi;
+    return shm;
 }
 
 
@@ -184,12 +173,12 @@ static void testWriteTwice()
     writeContentToPath(path, "first");
     writeContentToPath(path, expect, false);
 
-    monapi_cmemoryinfo *actual = readContentFromPath(path);
+    scoped_ptr<SharedMemory> actual(readContentFromPath(path));
 
-    EXPECT_EQ(expect_len, actual->Size);
-    EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
+    EXPECT_EQ(expect_len, actual->size());
+    EXPECT_TRUE( 0 == memcmp(actual->data(), expect, expect_len));
 
-    cm_destroy_delete(actual);
+    actual->unmap();
     monapi_file_delete(path);
 }
 
@@ -202,12 +191,12 @@ static void testWriteTwice_CreateTrue()
     writeContentToPath(path, "first");
     writeContentToPath(path, expect, true);
 
-    monapi_cmemoryinfo *actual = readContentFromPath(path);
+    scoped_ptr<SharedMemory> actual(readContentFromPath(path));
 
-    EXPECT_EQ(expect_len, actual->Size);
-    EXPECT_TRUE( 0 == memcmp(actual->Data, expect, expect_len));
+    EXPECT_EQ(expect_len, actual->size());
+    EXPECT_TRUE( 0 == memcmp(actual->data(), expect, expect_len));
 
-    cm_destroy_delete(actual);
+    actual->unmap();
 
     monapi_file_delete(path);
 }
@@ -229,27 +218,26 @@ static void testWriteTwice_Size()
 
 static void copyFile(const char *from, const char* to)
 {
-    monapi_cmemoryinfo *cmi = monapi_file_read_all(from);
-    ASSERT_TRUE(cmi != NULL);
-    writeContentToPathWithSize(to, (char*)cmi->Data, cmi->Size);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(from));
+    ASSERT_TRUE(shm != NULL);
+    writeContentToPathWithSize(to, (char*)shm->data(), shm->size());
+    shm->unmap();
 }
 
 // use stdio because I already have one.
 static void expectFileEqual(const char* org, const char* to)
 {
     /* check with monapi_file_read_all */
-    monapi_cmemoryinfo* m1 = monapi_file_read_all(org);
-    monapi_cmemoryinfo* m2 = monapi_file_read_all(to);
+    scoped_ptr<SharedMemory> m1(monapi_file_read_all(org));
+    scoped_ptr<SharedMemory> m2(monapi_file_read_all(to));
 
-    ASSERT_TRUE(m1 != NULL);
-    ASSERT_TRUE(m2 != NULL);
-    ASSERT_EQ(m1->Size, m2->Size);
-    EXPECT_TRUE(0 == memcmp(m1->Data, m2->Data, m1->Size));
+    ASSERT_TRUE(m1.get() != NULL);
+    ASSERT_TRUE(m2.get() != NULL);
+    ASSERT_EQ(m1->size(), m2->size());
+    EXPECT_TRUE(0 == memcmp(m1->data(), m2->data(), m1->size()));
 
-    monapi_cmemoryinfo_dispose(m1);
-    monapi_cmemoryinfo_delete(m1);
-    monapi_cmemoryinfo_dispose(m2);
-    monapi_cmemoryinfo_delete(m2);
+    EXPECT_EQ(M_OK, m1->unmap());
+    EXPECT_EQ(M_OK, m2->unmap());
 
     /* check with fread */
     char buf[256];
@@ -324,27 +312,25 @@ static void testWriteLargeFile()
 
 static void testReadDirectory_Empty()
 {
-    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
-    EXPECT_TRUE(ci != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory("/MEM"));
+    EXPECT_TRUE(shm.get() != NULL);
 
-    int size = *(int*)ci->Data;
+    int size = *(int*)shm->data();
 
     EXPECT_EQ(0, size);
-
-    cm_destroy_delete(ci);
+    shm->unmap();
 }
 
 static void testReadDirectory_OneFile()
 {
     createFile("/MEM/TEST1.TXT");
-    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory("/MEM"));
 
-    int size = *(int*)ci->Data;
+    int size = *(int*)shm->data();
 
     EXPECT_EQ(1, size);
 
-    cm_destroy_delete(ci);
-
+    shm->unmap();
     monapi_file_delete("/MEM/TEST1.TXT");
 }
 
@@ -354,16 +340,16 @@ static void testReadDirectory_TwoFile()
 {
     createFile("/MEM/TEST1.TXT");
     createFile("/MEM/TEST2.TXT");
-    monapi_cmemoryinfo* ci = monapi_file_read_directory("/MEM");
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory("/MEM"));
 
-    int size = *(int*)ci->Data;
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ci->Data[sizeof(int)];
+    int size = *(int*)shm->data();
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 
     EXPECT_EQ(2, size);
     EXPECT_TRUE(CString(p[0].name) ==  "TEST1.TXT");
     EXPECT_TRUE(CString(p[1].name) ==  "TEST2.TXT");
 
-    cm_destroy_delete(ci);
+    shm->unmap();
 
     monapi_file_delete("/MEM/TEST2.TXT");
     monapi_file_delete("/MEM/TEST1.TXT");
@@ -371,11 +357,11 @@ static void testReadDirectory_TwoFile()
 
 static void testReadDirectory_Root()
 {
-    monapi_cmemoryinfo* ci = monapi_file_read_directory("/");
-    EXPECT_TRUE(ci != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory("/"));
+    EXPECT_TRUE(shm.get() != NULL);
 
-    int size = *(int*)ci->Data;
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ci->Data[sizeof(int)];
+    int size = *(int*)shm->data();
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 
     bool ramdiskFound = false;
     for (int i = 0; i < size; i++) {
@@ -385,9 +371,7 @@ static void testReadDirectory_Root()
         }
     }
     EXPECT_TRUE(ramdiskFound);
-
-    monapi_cmemoryinfo_dispose(ci);
-    monapi_cmemoryinfo_delete(ci);
+    shm->unmap();
 }
 
 static void testFprintf()
@@ -397,15 +381,13 @@ static void testFprintf()
     ASSERT_TRUE(fp != NULL);
     fprintf(fp, "Hello, %s", "World!");
     fclose(fp);
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
-    ASSERT_TRUE(cmi != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
+    ASSERT_TRUE(shm.get() != NULL);
     const char* expected = "Hello, World!";
     // Be sure, \0 is not written
-    EXPECT_EQ((int)strlen(expected), cmi->Size);
-    EXPECT_EQ(0, memcmp(expected, cmi->Data, cmi->Size));
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    EXPECT_EQ((int)strlen(expected), shm->size());
+    EXPECT_EQ(0, memcmp(expected, shm->data(), shm->size()));
+    shm->unmap();
     monapi_file_delete(tmpFile);
 }
 
@@ -420,12 +402,10 @@ static void testFwrite()
         fwrite(data + i, 1, 1, fp);
     }
     fclose(fp);
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
-    ASSERT_TRUE(cmi != NULL);
-    EXPECT_STR_EQ(data, (char*)cmi->Data);
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
+    ASSERT_TRUE(shm.get() != NULL);
+    EXPECT_STR_EQ(data, (char*)shm->data());
+    shm->unmap();
 }
 
 static void testMonAPIwrite()
@@ -444,12 +424,11 @@ static void testMonAPIwrite()
         monapi_file_write(id, shm, 1);
     }
     monapi_file_close(id);
-    monapi_cmemoryinfo* cmi = readContentFromPath(tmpFile);
-    EXPECT_STR_EQ(data, (char*)cmi->Data);
+    scoped_ptr<SharedMemory> shm2(readContentFromPath(tmpFile));
+    EXPECT_STR_EQ(data, (char*)shm2->data());
 
     ASSERT_EQ(M_OK, shm.unmap());
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    ASSERT_EQ(M_OK, shm2->unmap());
     monapi_file_delete(tmpFile);
 }
 
@@ -462,12 +441,10 @@ static void testFwrite2()
     const int len = strlen(data) + 1;
     fwrite(data, 1, len, fp);
     fclose(fp);
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
-    ASSERT_TRUE(cmi != NULL);
-    EXPECT_STR_EQ(data, (char*)cmi->Data);
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
+    ASSERT_TRUE(shm.get() != NULL);
+    EXPECT_STR_EQ(data, (char*)shm->data());
+    shm->unmap();
     monapi_file_delete(tmpFile);
 }
 
@@ -482,12 +459,10 @@ static void testFwrite_Overwrite()
         fwrite(data + i, 1, 1, fp);
     }
     fclose(fp);
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
-    ASSERT_TRUE(cmi != NULL);
-    EXPECT_STR_EQ(data, (char*)cmi->Data);
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
+    ASSERT_TRUE(shm.get() != NULL);
+    EXPECT_STR_EQ(data, (char*)shm->data());
+    shm->unmap();
     monapi_file_delete(tmpFile);
     monapi_file_delete(tmpFile);
 }
@@ -516,13 +491,11 @@ static void testFwrite_Overwrite2()
         fwrite("", 1, 1, fp); // NULL terminate
         fclose(fp);
     }
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(tmpFile);
-    ASSERT_TRUE(cmi != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
+    ASSERT_TRUE(shm.get() != NULL);
 
-    EXPECT_TRUE(memcmp("Hello\n    \nWorld     \n", cmi->Data, cmi->Size) == 0);
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    EXPECT_TRUE(memcmp("Hello\n    \nWorld     \n", shm->data(), shm->size()) == 0);
+    shm->unmap();
     monapi_file_delete(tmpFile);
     monapi_file_delete(tmpFile);
 }

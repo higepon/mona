@@ -4,6 +4,8 @@
 
 extern "C" size_t strlcpy(char *dst, const char *src, size_t siz);
 
+using namespace MonAPI;
+
 struct dirent* convertFromDirInfo(monapi_directoryinfo* di, struct dirent* ent)
 {
 	if( ent == NULL || di == NULL ) return NULL;
@@ -15,17 +17,17 @@ struct dirent* convertFromDirInfo(monapi_directoryinfo* di, struct dirent* ent)
 	return ent;
 }
 
-monapi_directoryinfo *getDirInfo(monapi_cmemoryinfo* cmi, int index)
+monapi_directoryinfo *getDirInfo(SharedMemory& shm, int index)
 {
 	int num;
 	int sc;
-	num = *cmi->Data;
+	num = *(shm.data());
 	if( index >= num ) return NULL;
 	sc = sizeof(monapi_directoryinfo)*index+sizeof(int);
-	return (monapi_directoryinfo*)&cmi->Data[sc];
+	return (monapi_directoryinfo*)&shm.data()[sc];
 }
 
-int getDirInfoNum(monapi_cmemoryinfo* cmi)
+int getDirInfoNum(SharedMemory& shm)
 {
-	return *cmi->Data;
+	return *shm.data();
 }

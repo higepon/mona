@@ -57,7 +57,7 @@ int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result)
 		result = NULL;
 		return -1;
 	}
-	di = getDirInfo(dirp->cmi, dirp->index++);
+	di = getDirInfo(*(dirp->shm), dirp->index++);
 	if( di == NULL )
 	{
 		result = NULL;

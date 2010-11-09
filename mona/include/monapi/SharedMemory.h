@@ -16,6 +16,14 @@ public:
     {
     }
 
+    SharedMemory(uintptr_t handle, uintptr_t size) :
+        size_(size),
+        isMapped_(false),
+        handle_(handle),
+        data_(NULL)
+    {
+    }
+
     virtual ~SharedMemory()
     {
     }
@@ -45,9 +53,11 @@ public:
         if (isMapped_) {
             return M_BUSY;
         }
-        handle_ = MonAPI::MemoryMap::create(size_);
-        if (0 == handle_) {
-            return M_MEMORY_MAP_ERROR;
+        if (handle_ != 0) {
+            handle_ = MonAPI::MemoryMap::create(size_);
+            if (0 == handle_) {
+                return M_MEMORY_MAP_ERROR;
+            }
         }
         data_ = MonAPI::MemoryMap::map(handle_, isImmediateMap);
         if (NULL == data_) {

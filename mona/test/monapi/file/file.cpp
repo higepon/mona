@@ -37,28 +37,24 @@ static void testFileExist_UTF8FileName()
 
 static void testFileRead_LongFileName()
 {
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(TEST_LONG_FILE_NAME);
-    ASSERT_TRUE(cmi != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(TEST_LONG_FILE_NAME));
+    ASSERT_TRUE(shm.get() != NULL);
     const char* expected = "Hello\n";
     // Be sure, \0 is not written
-    EXPECT_EQ((int)strlen(expected), cmi->Size);
-    EXPECT_EQ(0, memcmp(expected, cmi->Data, cmi->Size));
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    EXPECT_EQ((int)strlen(expected), shm->size());
+    EXPECT_EQ(0, memcmp(expected, shm->data(), shm->size()));
+    shm->unmap();
 }
 
 static void testFileRead_UTF8FileName()
 {
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(TEST_UTF8_FILE_NAME);
-    ASSERT_TRUE(cmi != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(TEST_UTF8_FILE_NAME));
+    ASSERT_TRUE(shm.get() != NULL);
     const char* expected = "World\n";
     // Be sure, \0 is not written
-    EXPECT_EQ((int)strlen(expected), cmi->Size);
-    EXPECT_EQ(0, memcmp(expected, cmi->Data, cmi->Size));
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    EXPECT_EQ((int)strlen(expected), shm->size());
+    EXPECT_EQ(0, memcmp(expected, shm->data(), shm->size()));
+    EXPECT_EQ(M_OK, shm->unmap());
 }
 
 static bool fileExistInDirectory(monapi_directoryinfo* entry, int num, const std::string& file)
@@ -73,16 +69,15 @@ static bool fileExistInDirectory(monapi_directoryinfo* entry, int num, const std
 
 static bool testDirectoryHasFile(const std::string& dir, const std::string& file)
 {
-    monapi_cmemoryinfo* cmi = monapi_file_read_directory(dir.c_str());
-    ASSERT_TRUE(cmi != NULL);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory(dir.c_str()));
+    ASSERT_TRUE(shm.get() != NULL);
 
-    int size = *(int*)cmi->Data;
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->Data[sizeof(int)];
+    int size = *(int*)shm->data();
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 
     bool ret = fileExistInDirectory(p, size, file.c_str());
 
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    EXPECT_EQ(M_OK, shm->unmap());
     return ret;
 }
 
@@ -524,9 +519,10 @@ static void test_fatfs_create_long_file_name_need_new_cluster()
 
 static void testReadDirectory_OneFile()
 {
-    monapi_cmemoryinfo* ci = monapi_file_read_directory("/USER");
-    int size = *(int*)ci->Data;
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory("/USER"));
+    int size = *(int*)shm->data();
     EXPECT_TRUE(size >= 2);
+    EXPECT_EQ(M_OK, shm->unmap());
 }
 
 static void test_fatfs_monapi_open()
@@ -555,13 +551,12 @@ static void test_fatfs_truncate_and_write()
         monapi_file_close(file);
     }
     {
-        monapi_cmemoryinfo* cmi = monapi_file_read_all("/USER/BIN/TMP.TXT");
-        ASSERT_TRUE(cmi != NULL);
-        ASSERT_EQ(256, cmi->Size);
-        EXPECT_EQ(0xff, cmi->Data[0xff]);
-        EXPECT_EQ(0x00, cmi->Data[0x00]);
-        monapi_cmemoryinfo_dispose(cmi);
-        monapi_cmemoryinfo_delete(cmi);
+        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/BIN/TMP.TXT"));
+        ASSERT_TRUE(shm.get() != NULL);
+        ASSERT_EQ(256, shm->size());
+        EXPECT_EQ(0xff, shm->data()[0xff]);
+        EXPECT_EQ(0x00, shm->data()[0x00]);
+        EXPECT_EQ(M_OK, shm->unmap());
         monapi_file_delete("/USER/BIN/TMP.TXT");
     }
             // todo over cluster

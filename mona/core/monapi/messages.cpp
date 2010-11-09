@@ -110,9 +110,8 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     }
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
+SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
@@ -122,44 +121,36 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     }
 
     if (msg.arg2 == 0) return NULL;
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory* shm = new SharedMemory(msg.arg2, msg.arg3);
+    if (shm->map(true) != M_OK) {
+        delete shm;
         return NULL;
     } else {
-        return ret;
+        return shm;
     }
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
+SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, mi->Handle, mi->Size) != M_OK)
+    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, shm.handle(), shm.size()) != M_OK)
     {
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
 
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->map(true) != M_OK) {
+        delete ret;
         return NULL;
     } else {
         return ret;
     }
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
+SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
@@ -175,12 +166,9 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
         }
         return NULL;
     }
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory* shm = new SharedMemory(msg.arg2, msg.arg3);
+    if (shm->map(true) != M_OK) {
+        delete shm;
         int status = Message::reply(&msg);
         if (status != M_OK) {
             monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
@@ -191,7 +179,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
         if (status != M_OK) {
             monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
         }
-        return ret;
+        return shm;
     }
 }
 
@@ -262,9 +250,8 @@ intptr_t monapi_file_open(const char* file, intptr_t mode)
     return msg.arg2;
 }
 
-static monapi_cmemoryinfo* file_receive_cmemory(int header, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3, const char* str)
+static SharedMemory* file_receive_shm(int header, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3, const char* str)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, header, arg1, arg2, arg3, str) != M_OK) {
@@ -277,13 +264,12 @@ static monapi_cmemoryinfo* file_receive_cmemory(int header, uintptr_t arg1, uint
         }
         return NULL;
     }
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    uintptr_t handle = msg.arg2;
+    uintptr_t size = msg.arg3;
+    SharedMemory* shm = new SharedMemory(handle, size);
+    if (shm->map(true) != M_OK) {
         int status = Message::reply(&msg);
+        delete shm;
         if (status != M_OK) {
             monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
         }
@@ -293,23 +279,23 @@ static monapi_cmemoryinfo* file_receive_cmemory(int header, uintptr_t arg1, uint
         if (status != M_OK) {
             monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
         }
-        return ret;
+        return shm;
     }
 }
 
-monapi_cmemoryinfo* monapi_file_read_all(const char* file)
+SharedMemory* monapi_file_read_all(const char* file)
 {
-    return file_receive_cmemory(MSG_FILE_READ_ALL, 0, 0, 0, file);
+    return file_receive_shm(MSG_FILE_READ_ALL, 0, 0, 0, file);
 }
 
-monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
+SharedMemory* monapi_file_read(uint32_t fileID, uint32_t size)
 {
-    return file_receive_cmemory(MSG_FILE_READ, fileID, size, 0, NULL);
+    return file_receive_shm(MSG_FILE_READ, fileID, size, 0, NULL);
 }
 
-monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
+SharedMemory* monapi_file_read_directory(const char* path)
 {
-    return file_receive_cmemory(MSG_FILE_READ_DIRECTORY, 0, 0, 0, path);
+    return file_receive_shm(MSG_FILE_READ_DIRECTORY, 0, 0, 0, path);
 }
 
 intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
@@ -469,12 +455,11 @@ MONAPI_BOOL monapi_file_exists(const char* path)
         monapi_file_close(desc);
         return MONAPI_TRUE;
     } else {
-        monapi_cmemoryinfo* cmi = monapi_file_read_directory(path);
-        if (cmi == NULL) {
+        scoped_ptr<SharedMemory> shm(monapi_file_read_directory(path));
+        if (shm.get() == NULL) {
             return MONAPI_FALSE;
         } else {
-            monapi_cmemoryinfo_dispose(cmi);
-            monapi_cmemoryinfo_delete(cmi);
+            shm->unmap();
             return MONAPI_TRUE;
         }
     }

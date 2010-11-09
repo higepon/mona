@@ -38,11 +38,10 @@ static void read_head_byte_many_times(const char* path, uint8_t expected)
 
         intptr_t file = monapi_file_open(path, 0);
         ASSERT_TRUE(file > 0);
-        monapi_cmemoryinfo* actual = monapi_file_read(file, 1);
-        EXPECT_EQ(1, actual->Size);
-        EXPECT_EQ(expected, actual->Data[0]);
-        monapi_cmemoryinfo_dispose_no_notify(actual);
-        monapi_cmemoryinfo_delete(actual);
+        scoped_ptr<SharedMemory> shm(monapi_file_read(file, 1));
+        EXPECT_EQ(1, shm->size());
+        EXPECT_EQ(expected, shm->data()[0]);
+        EXPECT_EQ(M_OK, shm->unmap());
         monapi_file_close(file);
     }
 }

@@ -111,3 +111,4 @@ depend:
 	cd Multimedia/audio_server/happy && $(MAKE) depend
 	cd Shells/mshell/ && $(MAKE) depend
 	cd Misc/gnote/ && $(MAKE) depend
+	cd Gui/ime_server && $(MAKE) depend

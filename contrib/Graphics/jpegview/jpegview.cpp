@@ -29,21 +29,19 @@ int main(int argc, char* argv[])
 
     CJPEGLS jpeg;
 
-    monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_file_read_all(argv[1]);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(argv[1]));
 
-    if (mi == NULL)
+    if (shm.get() == NULL)
     {
         printf("file %s not found", argv[1]);
         return -1;
     }
 
     /* jpeg operation */
-    if (jpeg.Open(mi->Data, mi->Size) != 0)
+    if (jpeg.Open(shm->data(), shm->size()) != 0)
     {
         printf("not supported image\n");
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
         return -1;
     }
 
@@ -80,8 +78,6 @@ int main(int argc, char* argv[])
     }
 
     delete [] picture;
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-
+    shm->unmap();
     return 0;
 }

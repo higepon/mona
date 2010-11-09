@@ -58,20 +58,20 @@ bool DisposeBitmap(uint32_t handle)
 	return false;
 }
 
-guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
+guiserver_bitmap* ReadBitmap(SharedMemory& shm)
 {
-	if (mi->Size < 6) return NULL;
+	if (shm.size() < 6) return NULL;
 	
-	if (mi->Data[0] != 'B' || mi->Data[1] != 'M') return NULL;
-	if (mi->Size != (uint32_t)BYTE2INT(mi->Data, 2)) return NULL;
-	if (BYTE2INT(mi->Data, 6) != 0) return NULL;
-	if (BYTE2INT(mi->Data, 14) != 40) return NULL;
-	if (mi->Data[28] + (mi->Data[29] << 8) != 24) return NULL; // 24bpp only
-	if (BYTE2INT(mi->Data, 30) != 0) return NULL;
+	if (shm.data()[0] != 'B' || shm.data()[1] != 'M') return NULL;
+	if (shm.size() != (uint32_t)BYTE2INT(shm.data(), 2)) return NULL;
+	if (BYTE2INT(shm.data(), 6) != 0) return NULL;
+	if (BYTE2INT(shm.data(), 14) != 40) return NULL;
+	if (shm.data()[28] + (shm.data()[29] << 8) != 24) return NULL; // 24bpp only
+	if (BYTE2INT(shm.data(), 30) != 0) return NULL;
 	
-	int bfOffBits = BYTE2INT(mi->Data, 10);
-	int w = BYTE2INT(mi->Data, 18);
-	int h = BYTE2INT(mi->Data, 22);
+	int bfOffBits = BYTE2INT(shm.data(), 10);
+	int w = BYTE2INT(shm.data(), 18);
+	int h = BYTE2INT(shm.data(), 22);
 
 	uint32_t handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
 	if (handle == 0) return NULL;
@@ -90,9 +90,9 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 		for (int x = 0; x < w; x++)
 		{
 			uint8_t* ptr = (uint8_t*)&ret->Data[p1++];
-			ptr[0] = mi->Data[p2++];
-			ptr[1] = mi->Data[p2++];
-			ptr[2] = mi->Data[p2++];
+			ptr[0] = shm.data()[p2++];
+			ptr[1] = shm.data()[p2++];
+			ptr[2] = shm.data()[p2++];
 			ptr[3] = 0xff;
 		}
 	}
@@ -100,10 +100,10 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 }
 
 #ifdef USE_JPEG
-guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
+guiserver_bitmap* ReadJPEG(SharedMemory& shm)
 {
 	CJPEGLS jpeg;
-	if (jpeg.Open(mi->Data, mi->Size) != 0) return NULL;
+	if (jpeg.Open(shm.data(), shm.size()) != 0) return NULL;
 	
 	int w, h;
 	jpeg.GetInfo(&w, &h);
@@ -133,21 +133,21 @@ guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 {
 	CString fn = file.toUpper();
-	monapi_cmemoryinfo* mi = monapi_file_read_all(fn);
+	scoped_ptr<SharedMemory> shm(monapi_file_read_all(fn));
 	guiserver_bitmap* ret = NULL;
-	if (mi == NULL) return ret;
+	if (shm.get() == NULL) return ret;
 	
 	if (fn.endsWith(".BMP"))
 	{
 		if (prompt) printf("%s: Decoding %s....", GUI_SERVER_NAME, (const char*)fn);
-		ret = ReadBitmap(mi);
+		ret = ReadBitmap(*shm);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
 #ifdef USE_JPEG
 	else if (fn.endsWith(".JPG"))
 	{
 		if (prompt) printf("%s: Decoding %s....", GUI_SERVER_NAME, (const char*)fn);
-		ret = ReadJPEG(mi);
+		ret = ReadJPEG(*shm);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
 #endif
@@ -171,21 +171,18 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 	else if (fn.endsWith(".BM5"))
 	{
 		if (prompt) printf("%s: Decompressing %s....", GUI_SERVER_NAME, (const char*)fn);
-		monapi_cmemoryinfo* mi2 = monapi_call_file_decompress_st5(mi);
-		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
+		scoped_ptr<SharedMemory> shm2(monapi_call_file_decompress_st5(*(shm.get())));
+		if (prompt) printf(shm2.get() != NULL ? "OK\n" : "ERROR\n");
 		
-		if (mi2 != NULL)
+		if (shm2.get() != NULL)
 		{
 			if (prompt) printf("%s: Decoding %s....", GUI_SERVER_NAME, (const char*)fn);
-			ret = ReadBitmap(mi2);
+			ret = ReadBitmap(*shm2);
 			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-			monapi_cmemoryinfo_dispose(mi2);
-			monapi_cmemoryinfo_delete(mi2);
+            shm2->unmap();
 		}
 	}
-
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
+    shm->unmap();
 	return ret;
 }
 

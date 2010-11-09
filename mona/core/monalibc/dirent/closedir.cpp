@@ -43,6 +43,7 @@ int closedir(DIR *dir)
 		errno = EBADF;
 		return -1;
 	}
-	monapi_cmemoryinfo_delete(dir->cmi);
+//    dir->shm->unmap();
+    delete dir->shm;
 	return 0;
 }

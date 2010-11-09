@@ -22,17 +22,17 @@ using namespace monash;
 
 void MonaTerminal::initHistories()
 {
-    monapi_cmemoryinfo* cmi = monapi_file_read_all(HISTORY_FILE);
-    if (cmi == NULL) {
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(HISTORY_FILE));
+    if (shm.get() == NULL) {
         return;
     }
     std::string history;
-    for (int i = 0; i < cmi->Size; i++) {
-        if (cmi->Data[i] == '\n') {
+    for (int i = 0; i < shm->size(); i++) {
+        if (shm->data()[i] == '\n') {
             histories_.add(history.c_str());
             history.clear();
         } else {
-            history += cmi->Data[i];
+            history += shm->data()[i];
         }
     }
 }

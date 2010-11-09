@@ -38,13 +38,14 @@
 #include <string.h>
 #include "stdio_p.h"
 
+using namespace MonAPI;
+
 extern "C" void stream_opener();
 
 FILE __sF[3];
 
 int _read(void *self, void *buf, size_t size)
 {
-    monapi_cmemoryinfo *cmi = NULL;
     FILE *f;
     uint32_t fid;
     unsigned char *p = (unsigned char*)buf;
@@ -52,18 +53,14 @@ int _read(void *self, void *buf, size_t size)
     int i;
     f = (FILE*)self;
     fid = f->_file;
-    cmi = monapi_file_read(fid, (uint32_t)size);
-    if( cmi == NULL )
+    scoped_ptr<SharedMemory> shm(monapi_file_read(fid, (uint32_t)size));
+    if( shm.get() == NULL )
     {
         return -1;
     }
-    readsize = (int)cmi->Size;
-    memcpy(p, cmi->Data, readsize);
-//  monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
-
-//  monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
-//    monapi_file_seek(fid, readsize, SEEK_CUR);
+    readsize = (int)shm->size();
+    memcpy(p, shm->data(), readsize);
+//    shm->unmap();
     return readsize;
 }
 

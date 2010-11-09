@@ -8,11 +8,11 @@
 
 using namespace MonAPI;
 
-static int ExecuteProcess(uint32_t parent, monapi_cmemoryinfo* mi, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
+static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
 {
     LoadProcessInfo info;
-    info.image = mi->Data;
-    info.size  = mi->Size;
+    info.image = shm.data();
+    info.size  = shm.size();
     info.entrypoint = entryPoint;
     info.path = path;
     info.name = name;
@@ -73,7 +73,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     }
     END_FOREACH
     uint64_t s2 = MonAPI::Date::nowInMsec();
-    monapi_cmemoryinfo* mi = NULL;
+    SharedMemory* shm = NULL;
     uint32_t entryPoint = 0xa0000000;
     int result = 1, svr_id = -1;
     uint64_t s3, s4;
@@ -101,11 +101,8 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
             if (msg.arg2 != 0) {
                 result = 0;
                 entryPoint = msg.arg3;
-                mi = monapi_cmemoryinfo_new();
-                mi->Handle = msg.arg2;
-                mi->Owner  = tid;
-                mi->Size   = atoi(msg.str);
-                if (monapi_cmemoryinfo_map(mi, true) != M_OK) {
+                shm = new SharedMemory(msg.arg2, atoi(msg.str));
+                if (shm->map(true) != M_OK) {
                     monapi_fatal("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
@@ -124,26 +121,26 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     }
     else if (path.endsWith(".BN2"))
     {
-        mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        shm = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
     else if (path.endsWith(".BN5"))
     {
-        mi = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        shm = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
     else
     {
-        mi = monapi_file_read_all(path);
+        shm = monapi_file_read_all(path);
     }
 
-    if (mi == NULL)
+    if (shm == NULL)
     {
         return result;
     }
     else
     {
-        result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid);
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
+        result = ExecuteProcess(parent, *shm, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid);
+        shm->unmap();
+        delete shm;
     }
     CommandOption* next;
     for (option = list.next; option; option = next)

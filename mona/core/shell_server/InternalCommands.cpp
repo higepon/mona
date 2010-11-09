@@ -143,16 +143,16 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 break;
             }
 
-            monapi_cmemoryinfo* mi = monapi_file_read_all(args[1]);
-            if (mi == NULL) break;
+            scoped_ptr<SharedMemory> shm(monapi_file_read_all(args[1]));
+            if (shm.get() == NULL) break;
 
-            if (mi->Size > 0)
+            if (shm->size() > 0)
             {
-                uint8_t* p = mi->Data;
+                uint8_t* p = shm->data();
                 bool cr = false;
-                for (uint32_t i = 0; i < mi->Size; i++)
+                for (uint32_t i = 0; i < shm->size(); i++)
                 {
-                    uint8_t b = mi->Data[i];
+                    uint8_t b = shm->data()[i];
                     switch (b)
                     {
                         case '\r':
@@ -170,10 +170,9 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                     }
                 }
                 *p = 0;
-                formatWrite((const char*)mi->Data);
+                formatWrite((const char*)shm->data());
             }
-            monapi_cmemoryinfo_dispose(mi);
-            monapi_cmemoryinfo_delete(mi);
+            shm->unmap();
             break;
         }
 

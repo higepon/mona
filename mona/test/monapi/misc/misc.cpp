@@ -54,15 +54,14 @@ void testNet()
 static void testISO9600_file_read()
 {
     intptr_t handle = monapi_file_open("/LIBS/SCHEME/fib.scm", 0);
-    monapi_cmemoryinfo* cmi = monapi_file_read(handle, 4096);
-    ASSERT_TRUE(cmi != NULL);
-    EXPECT_TRUE(cmi->Size > 0);
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    scoped_ptr<SharedMemory> shm(monapi_file_read(handle, 4096));
+    ASSERT_TRUE(shm.get() != NULL);
+    EXPECT_TRUE(shm->size() > 0);
+    shm->unmap();
 
     // reached EOF
-    monapi_cmemoryinfo* cmi2 = monapi_file_read(handle, 4096);
-    EXPECT_TRUE(NULL == cmi2);
+    scoped_ptr<SharedMemory> shm2(monapi_file_read(handle, 4096));
+    EXPECT_TRUE(NULL == shm2.get());
     monapi_file_close(handle);
 }
 

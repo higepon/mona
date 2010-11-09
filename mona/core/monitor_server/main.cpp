@@ -64,17 +64,14 @@ void Monitor::Service()
 
 bool Monitor::Initialize()
 {
-    monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_file_read_all("/MONITOR.CFG");
-    if (mi == NULL)
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all("/MONITOR.CFG"));
+    if (shm.get() == NULL)
     {
        MONAPI_WARN("Config file read error");
         return false;
     }
-    ParseConfig((char*)(mi->Data));
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-
+    ParseConfig((char*)(shm->data()));
+    shm->unmap();
     return true;
 }
 

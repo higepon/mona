@@ -17,7 +17,7 @@ using namespace std;
 typedef struct
 {
     CString Name, Path;
-    monapi_cmemoryinfo* Data;
+    SharedMemory* Data;
     PEParser Parser;
 } PEData;
 
@@ -84,13 +84,11 @@ static PEData* OpenPE(const CString& path, bool prompt)
         delete ret;
         return NULL;
     }
-    if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
+    if (!ret->Parser.Parse(ret->Data->data(), ret->Data->size()))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
-//#ifdef NO_CACHE
-        monapi_cmemoryinfo_dispose(ret->Data);
-        monapi_cmemoryinfo_delete(ret->Data);
-//#endif
+        ret->Data->unmap();
+        delete ret->Data;
         ret->Data = NULL;
     }
 
@@ -107,8 +105,8 @@ class DLLManager
 {
 private:
     bool initialized;
-    monapi_cmemoryinfo* files1;
-    monapi_cmemoryinfo* files2;
+    SharedMemory* files1;
+    SharedMemory* files2;
     CString path;
     bool prompt;
 
@@ -130,13 +128,13 @@ public:
     {
         if (this->files1 != NULL)
         {
-            monapi_cmemoryinfo_dispose(this->files1);
-            monapi_cmemoryinfo_delete(this->files1);
+            files1->unmap();
+            delete files1;
         }
         if (this->files2 != NULL)
         {
-            monapi_cmemoryinfo_dispose(this->files2);
-            monapi_cmemoryinfo_delete(this->files2);
+            files2->unmap();
+            delete files2;
         }
     }
 
@@ -157,12 +155,12 @@ private:
         return this->IsReady();
     }
 
-    CString Find(monapi_cmemoryinfo* files, const CString& path, const CString& dll)
+    CString Find(SharedMemory* files, const CString& path, const CString& dll)
     {
         if (files == NULL) return NULL;
 
-        int size = *(int*)files->Data;
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&files->Data[sizeof(int)];
+        int size = *(int*)files->data();
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&files->data()[sizeof(int)];
         for (int i = 0; i < size; i++, p++)
         {
             CString n = CString(p->name).toUpper();
@@ -189,10 +187,10 @@ public:
 
         if (dll.endsWith(".DLL")) dll = dll.substring(0, dll.getLength() - 4);
 
-        CString ret = this->Find(this->files1, this->path, dll);
+        CString ret = this->Find(files1, this->path, dll);
         if (ret != NULL) return ret;
 
-        ret = this->Find(this->files2, DLLPATH, dll);
+        ret = this->Find(files2, DLLPATH, dll);
         if (ret == NULL)
         {
             if (this->prompt) _printf("%s: can not find: %s.DLL\n", SVR, (const char*)dll);
@@ -233,7 +231,6 @@ public:
     ~PELinker()
     {
         if (this->Binary != NULL) monapi_cmemoryinfo_delete(this->Binary);
-//#ifdef NO_CACHE
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -241,11 +238,10 @@ public:
             if (isDLL(data)) {
                 continue;
             }
-            monapi_cmemoryinfo_dispose(data->Data);
-            monapi_cmemoryinfo_delete(data->Data);
+            data->Data->unmap();
+            delete data->Data;
             delete data;
         }
-//#endif
     }
 
 private:

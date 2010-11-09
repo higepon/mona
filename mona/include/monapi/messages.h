@@ -54,7 +54,12 @@ typedef struct
 
 class MonAPI::SharedMemory;
 extern intptr_t monapi_file_write(uint32_t fileID, const MonAPI::SharedMemory& mem, uint32_t size);
-
+extern MonAPI::SharedMemory* monapi_file_read(uint32_t fileID, uint32_t size);
+extern MonAPI::SharedMemory* monapi_file_read_all(const char* file);
+extern MonAPI::SharedMemory* monapi_file_read_directory(const char* path);
+extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
+extern MonAPI::SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
+extern MonAPI::SharedMemory* monapi_call_file_decompress_st5(const MonAPI::SharedMemory& shm);
 #ifdef __cplusplus
 extern "C"
 {
@@ -63,21 +68,18 @@ extern uint32_t monapi_get_server_thread_id(int id);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
-extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
-extern monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi);
-extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
+
+
+
 extern intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
 extern intptr_t monapi_file_open(const char* file, intptr_t mode);
-extern monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size);
 extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin);
 extern intptr_t monapi_file_close(uint32_t id);
 extern intptr_t monapi_file_get_file_size(uint32_t id);
 extern intptr_t monapi_file_delete(const char* file);
 extern MONAPI_BOOL monapi_file_exists(const char* path);
 extern intptr_t monapi_file_stop_server();
-extern monapi_cmemoryinfo* monapi_file_read_all(const char* file);
-extern monapi_cmemoryinfo* monapi_file_read_directory(const char* path);
 extern uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size);
 extern uint32_t monapi_stdin_lock_for_read();
 extern uint32_t monapi_stdin_unlock_for_read();

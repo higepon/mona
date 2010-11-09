@@ -13,6 +13,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <sys/error.h>
 #include "file.h"
 
+using namespace MonAPI;
+
 int __mlibc_mona_file_is_valid(void *f, int fid)
 {
 	//puts(__func__);
@@ -36,7 +38,6 @@ int __mlibc_mona_file_close(void *f, int fid)
 
 int __mlibc_mona_file_read(void *self, void *buf, size_t size)
 {
-    monapi_cmemoryinfo *cmi = NULL;
     FILE *f = NULL;
     uint32_t fid = 0;
     unsigned char *p = (unsigned char*)buf;
@@ -44,18 +45,14 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
     int i = 0;
     f = (FILE*)self;
     fid = f->file;
-//    _logprintf("fid = %x, buf = %x, size = %d\n", fid, buf, size);
-    cmi = monapi_file_read(fid, (uint32_t)size);
-    if( cmi == NULL )
+    scoped_ptr<SharedMemory> shm(monapi_file_read(fid, (uint32_t)size));
+    if( shm.get() == NULL )
     {
         return -1;
     }
-    readsize = (int)cmi->Size;
-    memcpy(p, cmi->Data, readsize);
-//  monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
-
-//  monapi_file_seek((uint32_t)id, (uint32_t)readsize+f->_extra->offset, SEEK_SET);
+    readsize = (int)shm->size();
+    memcpy(p, shm->data(), readsize);
+    // shm->unmap();
     monapi_file_seek(fid, readsize, SEEK_CUR);
     return readsize;
 }
