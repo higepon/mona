@@ -9,14 +9,14 @@
 using namespace MonAPI;
 using namespace std;
 
-static monapi_cmemoryinfo* commonParams = NULL;
+static SharedMemory* commonParams = NULL;
 static vector<ProcessInfo> infos;
 static HList<uint32_t> receivers;
 
 void initCommonParameters()
 {
-    commonParams = monapi_cmemoryinfo_new();
-    if (monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1, false) != M_OK) {
+    commonParams = new SharedMemory(sizeof(CommonParameters));
+    if (commonParams->map(false) != M_OK) {
         exit(1);
     }
 }
@@ -205,7 +205,7 @@ bool processHandler(MessageInfo* msg)
             removeProcessInfo(msg->arg1, msg->arg2);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:
-            Message::reply(msg, commonParams->Handle);
+            Message::reply(msg, commonParams->handle());
             break;
         default:
             return false;

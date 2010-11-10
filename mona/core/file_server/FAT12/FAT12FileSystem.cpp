@@ -137,13 +137,13 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
     }
 
     f->seek(offset, SEEK_SET);
-    context->memory = monapi_cmemoryinfo_new();
+    context->memory = new MonAPI::SharedMemory(readSize);
 
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK) {
-        monapi_cmemoryinfo_delete(context->memory);
+    if (context->memory->map(true) != M_OK) {
+        delete context->memory;
         return M_NO_MEMORY;
     }
-    f->read(context->memory->Data, readSize);
+    f->read(context->memory->data(), readSize);
     return M_OK;
 }
 
@@ -151,12 +151,12 @@ int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
 {
     if (file->type != Vnode::REGULAR) return M_BAD_ARG;
     File* f = (File*)file->fnode;
-    monapi_cmemoryinfo* memory = context->memory;
+    MonAPI::SharedMemory* memory = context->memory;
 
     uint32_t offset = context->offset;
     uint32_t writeSize = context->size;
     f->seek(offset, SEEK_SET);
-    f->write(memory->Data, writeSize);
+    f->write(memory->data(), writeSize);
     f->flush();
     return M_OK;
 }
@@ -183,7 +183,7 @@ Vnode* FAT12FileSystem::getRoot() const
     return root_;
 }
 
-int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+int FAT12FileSystem::readdir(Vnode* dir, MonAPI::SharedMemory** entries)
 {
     deviceOn();
     Directory* target = (Directory*)dir->fnode;
@@ -200,18 +200,17 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     }
     deviceOff();
 
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-
     int size = files.size();
-    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    MonAPI::SharedMemory* ret = new MonAPI::SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+    if (ret->map(true) != M_OK) {
+        delete ret;
         for (Files::const_iterator it = files.begin(); it != files.end(); ++it) {
             delete (*it);
         }
         return M_NO_MEMORY;
     }
-    memcpy(ret->Data, &size, sizeof(int));
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+    memcpy(ret->data(), &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
 
     for (Files::const_iterator it = files.begin(); it != files.end(); ++it) {
         memcpy(p, (*it), sizeof(monapi_directoryinfo));

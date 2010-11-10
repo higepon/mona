@@ -155,7 +155,7 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 	else if (fn.endsWith(".BM2"))
 	{
 		if (prompt) printf("%s: Decompressing %s....", GUI_SERVER_NAME, (const char*)fn);
-		monapi_cmemoryinfo* mi2 = monapi_call_file_decompress_bz2(mi);
+		scoped_ptr<SharedMemory> mi2(monapi_call_file_decompress_bz2(mi));
 		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
 		
 		if (mi2 != NULL)
@@ -163,8 +163,6 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 			if (prompt) printf("%s: Decoding %s....", GUI_SERVER_NAME, (const char*)fn);
 			ret = ReadBitmap(mi2);
 			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-			monapi_cmemoryinfo_dispose(mi2);
-			monapi_cmemoryinfo_delete(mi2);
 		}
 	}
 #endif
