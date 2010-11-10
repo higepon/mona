@@ -8,7 +8,7 @@ class FileBrowser : public System::Mona::Forms::Control
 {
 private:
 	System::String path;
-	monapi_cmemoryinfo* files;
+    MonAPI::SharedMemory* files;
 	int target, clickTarget;
 	int skip;
 	

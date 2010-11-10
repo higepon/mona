@@ -177,9 +177,9 @@ struct MonapiConstantData {
  *  monapi_cmemoryinfo のラッパークラス
  */
 class SqSharedMemory {
-    monapi_cmemoryinfo* mi;     // monapi_cmemoryinfo の実体または NULL を指すポインタ
+    MonAPI::SharedMemory* mi;     // monapi_cmemoryinfo の実体または NULL を指すポインタ
 
-    static monapi_cmemoryinfo* s_creating_mi;
+    static MonAPI::SharedMemory* s_creating_mi;
 
 public:
     /**

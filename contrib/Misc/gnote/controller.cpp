@@ -755,16 +755,16 @@ namespace gnote {
     }
     //
     bool Controller::ReadFile(const String& f, Document& d) {
-        monapi_cmemoryinfo* mi = monapi_file_read_all(f.getBytes());
-        if (!mi || mi->Size <= 0) {
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(f.getBytes()));
+        if (!shm.get() || shm->size() <= 0) {
             return false;
         }
-        for (unsigned int ii = 0; ii < mi->Size; ii++) {
-            if (mi->Data[ii] == '\r') {
+        for (unsigned int ii = 0; ii < shm->size(); ii++) {
+            if (shm->data()[ii] == '\r') {
                 continue;
             }
             // tooo bad :-)
-            d.Append(mi->Data[ii]);
+            d.Append(shm->data()[ii]);
         }
         return true;
     }

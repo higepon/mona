@@ -47,12 +47,12 @@ Glaunch::Glaunch()
 //		return;
 //	}
 
-	monapi_cmemoryinfo* mi = monapi_file_read_directory("/APPS/BAYGUI");
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory("/APPS/BAYGUI"));
 
-	int dsize = *(int*)mi->Data;
-	if (mi == NULL || dsize == 0) return;
+	int dsize = *(int*)shm->data();
+	if (shm.get() == NULL || dsize == 0) return;
 
-	monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+	monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 
 	// ディレクトリ内のファイル検索
 	for (int i = 0; i < dsize; i++, p++) {
@@ -75,9 +75,7 @@ Glaunch::Glaunch()
 			}
 		 }
 	}
-
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
+    shm->unmap();
 #else
 	list->add("TEST1.EXE");
 	list->add("TEST2.EXE");

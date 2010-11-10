@@ -70,20 +70,20 @@ private:
 	inline void ls(char *pathname) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_file_read_directory(pathname);
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory(pathname));
         this->addLine(pathname);
-		if (mi == NULL) {
+		if (shm.get() == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return;
 		}
-		int size = *(int*)mi->Data;
+		int size = *(int*)shm->data();
 		if (size == 0) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return;
 		}
 
 		// ディレクトリを検索
-		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+		monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 		char temp[128];
 		memset(temp, 0, sizeof(temp));
 		for (int i = 0; i < size; i++, p++) {
@@ -129,8 +129,7 @@ private:
 			this->addLine(temp);
 			memset(temp, 0, sizeof(temp));
 		}
-		monapi_cmemoryinfo_dispose(mi);
-		monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
 	#endif
 	}
 
@@ -166,37 +165,37 @@ private:
 	inline void cat(char *pathname) {
 	#ifdef MONA
 		// 圧縮されたファイルも表示する
-		monapi_cmemoryinfo* mi = NULL;
+        MonAPI::SharedMemory* shm = NULL;
 		if (pathname[strlen(pathname) - 1] == '2') {
-			mi = monapi_call_file_decompress_bz2_file(pathname, MONAPI_FALSE);
+            shm = monapi_call_file_decompress_bz2_file(pathname, MONAPI_FALSE);
 		} else if (pathname[strlen(pathname) - 1] == '5') {
-			mi = monapi_call_file_decompress_st5_file(pathname, MONAPI_FALSE);
+			shm = monapi_call_file_decompress_st5_file(pathname, MONAPI_FALSE);
 		} else {
-			mi = monapi_file_read_all(pathname);
+			shm = monapi_file_read_all(pathname);
 		}
 
 		// NULLチェック
-		if (mi == NULL) return;
-		if (mi->Size < 0) return;
+		if (shm == NULL) return;
+		if (shm->size() < 0) return;
 		
-		for (uint32_t i = 0; i < mi->Size; i++) {
+		for (uint32_t i = 0; i < shm->size(); i++) {
 			// '\r' は無視する
-			if (mi->Data[i] == '\r') {
+			if (shm->data()[i] == '\r') {
 				// NOP
 			// 1行の最大文字数に達するか改行に達した時
-			} else if (strlen(lineBuffer) == (GSHELL_WIDTH / HALF_WIDTH) - 1 || mi->Data[i] == '\n') {
-				lineBuffer[strlen(lineBuffer)] = mi->Data[i];
+			} else if (strlen(lineBuffer) == (GSHELL_WIDTH / HALF_WIDTH) - 1 || shm->data()[i] == '\n') {
+				lineBuffer[strlen(lineBuffer)] = shm->data()[i];
 				this->addLine(lineBuffer);
 				memset(lineBuffer, 0, sizeof(lineBuffer));
 			// 1行バッファーに1バイト追加する
 			} else {
-				lineBuffer[strlen(lineBuffer)] = mi->Data[i];
+				lineBuffer[strlen(lineBuffer)] = shm->data()[i];
 			}
 		}
-
 		// ファイルを閉じる
-		monapi_cmemoryinfo_dispose(mi);
-		monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
+        delete shm;
+
 	#endif
 	}
 
@@ -244,13 +243,13 @@ private:
 			strcat(temp, "/");
 
 			// ディレクトリを開く
-			monapi_cmemoryinfo* mi = monapi_file_read_directory(temp);
-			if (mi == NULL) return;
-			int size = *(int*)mi->Data;
+            MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory(temp));
+			if (shm.get() == NULL) return;
+			int size = *(int*)shm->data();
 			if (size == 0) return;
 			
 			// ディレクトリを検索
-			monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+			monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 			for (int i = 0; i < size; i++, p++) {
 				// *.E?? は実行形式だと認識する
 				// *.ELF/*.EL2/*.EL5/*.EXE/*.EX2/*.EX5
@@ -262,6 +261,7 @@ private:
 					break;
 				}
 			}
+            shm->unmap();
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
 		}
 	#endif
@@ -282,19 +282,19 @@ private:
 	inline bool existsFile(const char *filename) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_file_read_directory(this->currentPath);
-		if (mi == NULL) {
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory(this->currentPath));
+		if (shm.get() == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return false;
 		}
-		int size = *(int*)mi->Data;
+		int size = *(int*)shm->data();
 		if (size == 0) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return false;
 		}
 		
 		// ディレクトリを検索
-		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+		monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
 		for (int i = 0; i < size; i++, p++) {
 			// 大文字を小文字に変換する
 			for (int i = 0; i < (int)strlen(p->name); i++) {
@@ -303,16 +303,13 @@ private:
 				}
 			}
 			if (strcmp(filename, p->name) == 0) {
-			    monapi_cmemoryinfo_dispose(mi);
-			    monapi_cmemoryinfo_delete(mi);
+                shm->unmap();
 			    return true;
 			}
 		}
 
 		this->addLine("ファイルまたはディレクトリが見つかりません。\n");
-		monapi_cmemoryinfo_dispose(mi);
-		monapi_cmemoryinfo_delete(mi);
-
+        shm->unmap();
 		return false;
 	#else
 		this->addLine("ファイルまたはディレクトリが見つかりません。\n");

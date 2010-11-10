@@ -16,10 +16,9 @@ int OpenJpeg(const char* filename)
         return -1;
     }
 
-    monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_file_read_all(filename);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(filename));
 
-    if (mi == NULL)
+    if (shm.get() == NULL)
     {
         printf("file %s not found", filename);
         return -1;
@@ -28,11 +27,10 @@ int OpenJpeg(const char* filename)
     CJPEGLS* jpeg = new CJPEGLS();
 
     // JPEGファイルを開く
-    if (jpeg->Open(mi->Data, mi->Size) != 0)
+    if (jpeg->Open(shm->data(), shm->size()) != 0)
     {
         printf("not supported image\n");
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
         return -1;
     }
 
@@ -70,9 +68,7 @@ int OpenJpeg(const char* filename)
 
     delete [] picture;
     delete jpeg;
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-
+    shm->unmap();
     return 0;
 }
 
@@ -114,24 +110,22 @@ int main(int argc, char* argv[])
 
     // ファイル読み込み
     printf("loading %s ...\n", filepath);
-    monapi_cmemoryinfo* mi = monapi_file_read_all(filepath);
-    if (mi == NULL || mi->Size == 0)
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(filepath));
+    if (shm.get() == NULL || shm->size() == 0)
     {
         printf("file read error\n");
         return(-1);
     }
-    uint32_t filesize = mi->Size;
-    uint8_t* filebuff = (uint8_t*)malloc(mi->Size);
+    uint32_t filesize = shm->size();
+    uint8_t* filebuff = (uint8_t*)malloc(shm->size());
     if (filebuff == NULL)
     {
         printf("memory allocate error\n");
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
         return(-1);
     }
-    memcpy(filebuff, mi->Data, mi->Size);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+    memcpy(filebuff, shm->data(), shm->size());
+    shm->unmap();
 
     // ファイル解析
     HList<CString> list;

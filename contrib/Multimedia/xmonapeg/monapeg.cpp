@@ -165,25 +165,22 @@ static void DrawLoop()
 	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
 
 	printf("loading %s...\n", filename);
-	monapi_cmemoryinfo* mi = monapi_file_read_all(filename);
-	if (mi == NULL || mi->Size == 0)
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(filename));
+	if (shm.get() == NULL || shm->size() == 0)
 	{
 		printf("file read error\n");
 		return;
 	}
-	filesize = mi->Size;
-	filebuf = (BYTE *)malloc(mi->Size);
+	filesize = shm->size();
+	filebuf = (BYTE *)malloc(shm->size());
 	if (filebuf == NULL)
 	{
 		printf("memory allocate error\n");
-		monapi_cmemoryinfo_dispose(mi);
-		monapi_cmemoryinfo_delete(mi);
+        shm->unmap();
 		return;
 	}
-	memcpy(filebuf, mi->Data, mi->Size);
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
-
+	memcpy(filebuf, shm->data(), shm->size());
+    shm->unmap();
 	mv.data.mem = filebuf;
 	mv.data.pos = 0;
 	mv.data.size = filesize;
@@ -197,7 +194,7 @@ static void DrawLoop()
 	func.read = mpegread;
 
 	mpegdec_init();
-	mv.ctrl.draw = FALSE;
+	mv.ctrl.draw = false;
 	mv.data.pos = 0;
 	r = mpegdec(&mv, &func);
 	mpegdec_term();
@@ -210,7 +207,7 @@ static void DrawLoop()
 // ---- めいん
 int main(int argc, char* argv[])
 {
-	// Check Arguments
+	// check arguments
 	if (argc < 2)
 	{
 		printf("usage: XMONAPEG.EX5 [filename.mpg]\n");
@@ -221,12 +218,13 @@ int main(int argc, char* argv[])
 		filename = argv[1];
 
 		// Check File Exists
-		monapi_cmemoryinfo* mi = monapi_file_read_all(filename);
-		if (mi == NULL || mi->Size == 0)
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(filename));
+		if (shm.get() == NULL || shm->size() == 0)
 		{
 			printf("file read error\n");
 		    return(-1);
 		}
+        shm->unmap();
 	}
 
 	// Create thread

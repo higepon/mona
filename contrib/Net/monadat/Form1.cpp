@@ -588,12 +588,11 @@ public:
 
         _P<DatThread> dat;
 #ifdef MONA
-        monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(path, MONAPI_FALSE);
-        if (mi != NULL)
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_call_file_decompress_st5_file(path, MONAPI_FALSE));
+        if (shm.get() != NULL)
         {
-            dat = new DatThread(_A<char>((char*)mi->Data, mi->Size, false));
-            monapi_cmemoryinfo_dispose(mi);
-            monapi_cmemoryinfo_delete(mi);
+            dat = new DatThread(_A<char>((char*)shm->data(), shm->size(), false));
+            shm->unmap();
         }
 #else
         FILE* f = fopen(path, "rb");
