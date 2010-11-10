@@ -100,10 +100,6 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
     }
     EXPECT_EQ(M_OK, shm.unmap());
 
-#if 0
-    monapi_cmemoryinfo* buffer = alloc_buffer_size(contents, size);
-    int res = monapi_file_write(id, buffer, size);
-#endif
     EXPECT_TRUE(res >= 0);
     monapi_file_close(id);
 }

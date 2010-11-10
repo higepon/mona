@@ -60,7 +60,7 @@ int _read(void *self, void *buf, size_t size)
     }
     readsize = (int)shm->size();
     memcpy(p, shm->data(), readsize);
-//    shm->unmap();
+    shm->unmap();
     return readsize;
 }
 

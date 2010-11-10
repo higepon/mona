@@ -186,7 +186,7 @@ public:
      *  C++ から SqSharedMemory オブジェクトを作成してスタックに積む
      *  @param mi   割り当てる monapi_cmemoryinfo ポインタ
      */
-    static int push_memoryMap(monapi_cmemoryinfo* _mi) {
+    static int push_memoryMap(MonAPI::SharedMemory* _mi) {
         HSQUIRRELVM v =  SquirrelVM::GetVMPtr();
         s_creating_mi = _mi;
         if (!CreateConstructNativeClassInstance(v, "SharedMemory")) {
@@ -214,133 +214,128 @@ public:
 
     bool create(dword size, int prompt) {
         dispose();
-        mi = monapi_cmemoryinfo_new();
+        mi = new MonAPI::SharedMemory(size);
         if (!mi) return false;
-        if (monapi_cmemoryinfo_create(mi, size, prompt, 1) != M_OK) {
-            monapi_cmemoryinfo_delete(mi);
+        if (mi->map(true) != M_OK) {
+            delete mi;
             return false;
         }
         return true;
     }
     bool map(dword handle, dword size) {
         dispose();
-        mi = monapi_cmemoryinfo_new();
+        mi = new MonAPI::SharedMemory(handle, size);
         if (!mi) return false;
-        mi->Handle = handle;
-        mi->Size = size;
-        if (!monapi_cmemoryinfo_map(mi, 1)) {
-            monapi_cmemoryinfo_delete(mi);
+        if (mi->map(true) != M_OK) {
+            delete mi;
             return false;
         }
         return true;
     }
     void dispose() {
         if (mi) {
-            monapi_cmemoryinfo_dispose(mi);
-            monapi_cmemoryinfo_delete(mi);
+            mi->unmap();
+            delete mi;
             mi = NULL;
         }
     }
 
     dword getHandle() {
-        return mi ? mi->Handle : 0;
-    }
-    dword getOwner() {
-        return mi ? mi->Owner : 0;
+        return mi ? mi->handle() : 0;
     }
     dword getSize() {
-        return mi ? mi->Size : 0;
+        return mi ? mi->size() : 0;
     }
 
     SquirrelObject getString(dword pos, dword size) {
         if (!mi) return SquirrelObject();
-        pos = max(0U, min(pos, mi->Size));
-        size = max(0U, min(size, mi->Size - pos));
+        pos = max(0U, min(pos, (dword)mi->size()));
+        size = max(0U, min(size, (dword)mi->size() - pos));
 
         HSQUIRRELVM v =  SquirrelVM::GetVMPtr();
         SquirrelObject so;
-        sq_pushstring(v, (char*)(mi->Data + pos), size);
+        sq_pushstring(v, (char*)(mi->data() + pos), size);
         so.AttachToStackObject(-1);
         sq_pop(v, 1);
         return so;
     }
 
     INT8 getInt8(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 1) return 0;
-        return *(INT8*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 1) return 0;
+        return *(INT8*)(mi->data() + pos);
     }
     INT16 getInt16(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 2) return 0;
-        return *(INT16*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 2) return 0;
+        return *(INT16*)(mi->data() + pos);
     }
     INT32 getInt32(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return 0;
-        return *(INT32*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return 0;
+        return *(INT32*)(mi->data() + pos);
     }
     UINT8 getUInt8(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 1) return 0;
-        return *(UINT8*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 1) return 0;
+        return *(UINT8*)(mi->data() + pos);
     }
     UINT16 getUInt16(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 2) return 0;
-        return *(UINT16*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 2) return 0;
+        return *(UINT16*)(mi->data() + pos);
     }
     UINT32 getUInt32(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return 0;
-        return *(UINT32*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return 0;
+        return *(UINT32*)(mi->data() + pos);
     }
     FLOAT32 getFloat32(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return 0;
-        return *(FLOAT32*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return 0;
+        return *(FLOAT32*)(mi->data() + pos);
     }
     FLOAT64 getFloat64(dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 8) return 0;
-        return *(FLOAT64*)(mi->Data + pos);
+        if (!mi || pos < 0 || pos >= mi->size() - 8) return 0;
+        return *(FLOAT64*)(mi->data() + pos);
     }
 
     void setString(const char* str, dword pos) {
         if (!mi) return;
-        pos = max(0U, min(pos, mi->Size));
+        pos = max(0U, min(pos, (dword)mi->size()));
         dword size = strlen(str);
-        size = max(0U, min(size, mi->Size - pos));
-        memcpy(mi->Data + pos, str, size);
+        size = max(0U, min(size, (dword)mi->size() - pos));
+        memcpy(mi->data() + pos, str, size);
     }
 
     void setInt8(INT8 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 1) return;
-        *(INT8*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 1) return;
+        *(INT8*)(mi->data() + pos) = val;
     }
     void setInt16(INT16 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 2) return;
-        *(INT16*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 2) return;
+        *(INT16*)(mi->data() + pos) = val;
     }
     void setInt32(INT32 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return;
-        *(INT32*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return;
+        *(INT32*)(mi->data() + pos) = val;
     }
     void setUInt8(UINT8 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 1) return;
-        *(UINT8*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 1) return;
+        *(UINT8*)(mi->data() + pos) = val;
     }
     void setUInt16(UINT16 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 2) return;
-        *(UINT16*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 2) return;
+        *(UINT16*)(mi->data() + pos) = val;
     }
     void setUInt32(UINT32 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return;
-        *(UINT32*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return;
+        *(UINT32*)(mi->data() + pos) = val;
     }
     void setFloat32(FLOAT32 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 4) return;
-        *(FLOAT32*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 4) return;
+        *(FLOAT32*)(mi->data() + pos) = val;
     }
     void setFloat64(FLOAT64 val, dword pos) {
-        if (!mi || pos < 0 || pos >= mi->Size - 8) return;
-        *(FLOAT64*)(mi->Data + pos) = val;
+        if (!mi || pos < 0 || pos >= mi->size() - 8) return;
+        *(FLOAT64*)(mi->data() + pos) = val;
     }
 };
 
-monapi_cmemoryinfo* SqSharedMemory::s_creating_mi = NULL;
+MonAPI::SharedMemory* SqSharedMemory::s_creating_mi = NULL;
 
 
 // Squirrel 内でのクラス名を宣言
@@ -492,10 +487,10 @@ SquirrelObject wrapper_syscall_get_memory_info() {
 
 SquirrelObject wrapper_monapi_file_read_directory(const char* path) {
     SquirrelObject array = SquirrelVM::CreateArray(0);
-    monapi_cmemoryinfo* mi = monapi_file_read_directory(path);//monapi_call_file_read_directory(path, prompt);
-    int dsize = *(int*)mi->Data;
+    MonAPI::SharedMemory* mi = monapi_file_read_directory(path);//monapi_call_file_read_directory(path, prompt);
+    int dsize = *(int*)mi->data();
     if (mi == NULL || dsize == 0) return SquirrelObject();
-    monapi_directoryinfo* pInfo = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    monapi_directoryinfo* pInfo = (monapi_directoryinfo*)&mi->data()[sizeof(int)];
     for (int i = 0; i < dsize; i++, pInfo++) {
         SquirrelObject table = SquirrelVM::CreateTable();
         table.SetValue( "name", pInfo->name );
@@ -503,8 +498,8 @@ SquirrelObject wrapper_monapi_file_read_directory(const char* path) {
         table.SetValue( "attr", (int)pInfo->attr );
         array.ArrayAppend( table );
     };
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+    mi->unmap();
+    delete mi;
     return array;
 }
 
@@ -513,7 +508,7 @@ int wrapper_monapi_file_read_all(HSQUIRRELVM v) {
     int nargs = sa.GetParamCount();
     if (nargs != 2) return 0;
     const char* file = sa.GetString(2);
-    monapi_cmemoryinfo* mi = monapi_file_read_all(file);
+    MonAPI::SharedMemory* mi = monapi_file_read_all(file);
     SqSharedMemory::push_memoryMap(mi);
     return 1;
 }
@@ -525,7 +520,7 @@ int wrapper_monapi_file_read(HSQUIRRELVM v) {
 
    int id = sa.GetInt(2);          // 引数１
    int size = sa.GetInt(3);      // 引数２
-   monapi_cmemoryinfo* mi = monapi_file_read(id, size);
+   MonAPI::SharedMemory* mi = monapi_file_read(id, size);
    SqSharedMemory::push_memoryMap(mi); // 新しい SqSharedMemory オブジェクトを作成してスタックに push
    return 1;                       // スタックに戻り値を１つ積んだので１を返す
 }
@@ -584,7 +579,6 @@ void monasq_init_monapi_lib(HSQUIRRELVM v)
         func(&SqSharedMemory::map, _T("map")).
         func(&SqSharedMemory::dispose, _T("dispose")).
         func(&SqSharedMemory::getHandle, _T("getHandle")).
-        func(&SqSharedMemory::getOwner, _T("getOwner")).
         func(&SqSharedMemory::getSize, _T("getSize")).
         func(&SqSharedMemory::getString, _T("getString")).
         func(&SqSharedMemory::getInt8, _T("getInt8")).

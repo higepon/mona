@@ -591,24 +591,20 @@ namespace gnote {
     {
         String* s = d.toString();
         if (s->length() > 0) {
-            monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-            monapi_cmemoryinfo_create(buffer, s->lengthBytes(), 0, 0);
-            memcpy(buffer->Data, s->getBytes(), buffer->Size);
+            MonAPI::SharedMemory buffer(s->lengthBytes());
+            buffer.map();
+            memcpy(buffer.data(), s->getBytes(), buffer.size());
             monapi_clipboard_set(buffer);
-            monapi_cmemoryinfo_dispose(buffer);
-            monapi_cmemoryinfo_delete(buffer);
             delete s;
         }
     }
     //
     bool Controller::Paste(Cursol& c, Document& d, const Document& cl) {
         Document clipped;
-        monapi_cmemoryinfo* cmi = monapi_clipboard_get();
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> cmi(monapi_clipboard_get());
         if (cmi != NULL) {
-            String text((const char*)cmi->Data, cmi->Size);
+            String text((const char*)cmi->data(), cmi->size());
             clipped.Append(text);
-            monapi_cmemoryinfo_dispose(cmi);
-            monapi_cmemoryinfo_delete(cmi);
         }
         return clipped.GetMaxLineNumber() > 0 && d.Insert(clipped, c.wy, c.wx) && GoRight(c, d, clipped.GetLength());
     }

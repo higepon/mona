@@ -159,8 +159,8 @@ static void test_fatfs_read_file()
     ASSERT_EQ(len, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
-    ASSERT_EQ(len, c.memory->Size);
-    EXPECT_TRUE(memcmp(expected, c.memory->Data, len) == 0);
+    ASSERT_EQ(len, c.memory->size());
+    EXPECT_TRUE(memcmp(expected, c.memory->data(), len) == 0);
 }
 
 static void test_fatfs_read_file_with_offset()
@@ -180,8 +180,8 @@ static void test_fatfs_read_file_with_offset()
     ASSERT_EQ(6, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
-    ASSERT_EQ(len, c.memory->Size);
-    EXPECT_TRUE(memcmp(expected, c.memory->Data, len) == 0);
+    ASSERT_EQ(len, c.memory->size());
+    EXPECT_TRUE(memcmp(expected, c.memory->data(), len) == 0);
 }
 
 static void test_fatfs_read_file_multiple_clusters()
@@ -198,11 +198,11 @@ static void test_fatfs_read_file_multiple_clusters()
     EXPECT_EQ(M_OK, fat->read(found, &c));
     ASSERT_EQ(1000, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
-    EXPECT_EQ(0x36, c.memory->Data[0]);
-    EXPECT_EQ(0x35, c.memory->Data[c.memory->Size - 4]);
-    EXPECT_EQ(0x0A, c.memory->Data[c.memory->Size - 3]);
-    EXPECT_EQ(0x34, c.memory->Data[c.memory->Size - 2]);
-    EXPECT_EQ(0x30, c.memory->Data[c.memory->Size - 1]);
+    EXPECT_EQ(0x36, c.memory->data()[0]);
+    EXPECT_EQ(0x35, c.memory->data()[c.memory->size() - 4]);
+    EXPECT_EQ(0x0A, c.memory->data()[c.memory->size() - 3]);
+    EXPECT_EQ(0x34, c.memory->data()[c.memory->size() - 2]);
+    EXPECT_EQ(0x30, c.memory->data()[c.memory->size() - 1]);
 }
 
 
@@ -242,7 +242,7 @@ static void test_fatfs_create_empty_file_need_new_cluster()
     EXPECT_EQ(38, entries->size());
 }
 
-static monapi_cmemoryinfo* readAll(FatFileSystem* fat, io::Context& c, Vnode* dir, const std::string& filename)
+static SharedMemory* readAll(FatFileSystem* fat, io::Context& c, Vnode* dir, const std::string& filename)
 {
     Vnode* found;
     ASSERT_EQ(M_OK, fat->lookup(dir, filename, &found, Vnode::REGULAR));
@@ -266,11 +266,11 @@ static void test_fatfs_write_file()
 
     const int BUFFER_SIZE = 1029;
 
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
-    memset(buffer->Data, 0, BUFFER_SIZE);
-    buffer->Data[0] = 0xde;
-    buffer->Data[BUFFER_SIZE - 1] = 0xad;
+    SharedMemory* buffer = new SharedMemory(BUFFER_SIZE);
+    ASSERT_EQ(M_OK, buffer->map());
+    memset(buffer->data(), 0, BUFFER_SIZE);
+    buffer->data()[0] = 0xde;
+    buffer->data()[BUFFER_SIZE - 1] = 0xad;
 
     io::Context c;
     c.offset = 0;
@@ -280,11 +280,11 @@ static void test_fatfs_write_file()
     ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
 
     io::Context readContext;
-    monapi_cmemoryinfo* cmi = readAll(fat, readContext, root, FILENAME);
+    SharedMemory* cmi = readAll(fat, readContext, root, FILENAME);
     ASSERT_TRUE(cmi != NULL);
-    ASSERT_TRUE(cmi->Data != NULL);
-    ASSERT_EQ(BUFFER_SIZE, cmi->Size);
-    EXPECT_TRUE(memcmp(buffer->Data, cmi->Data, BUFFER_SIZE) == 0);
+    ASSERT_TRUE(cmi->data() != NULL);
+    ASSERT_EQ(BUFFER_SIZE, cmi->size());
+    EXPECT_TRUE(memcmp(buffer->data(), cmi->data(), BUFFER_SIZE) == 0);
 }
 
 static void test_fatfs_write_file_overwrite()
@@ -299,11 +299,11 @@ static void test_fatfs_write_file_overwrite()
 
     const int BUFFER_SIZE = 10;
 
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
-    memset(buffer->Data, 0, BUFFER_SIZE);
+    SharedMemory* buffer = new SharedMemory(BUFFER_SIZE);
+    ASSERT_EQ(M_OK, buffer->map());
+    memset(buffer->data(), 0, BUFFER_SIZE);
     for (int i = 0; i < BUFFER_SIZE; i++) {
-        buffer->Data[i] = i;
+        buffer->data()[i] = i;
     }
 
     io::Context c;
@@ -314,13 +314,13 @@ static void test_fatfs_write_file_overwrite()
     ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
 
     io::Context readContext;
-    monapi_cmemoryinfo* cmi = readAll(fat, readContext, root, FILENAME);
+    SharedMemory* cmi = readAll(fat, readContext, root, FILENAME);
     ASSERT_TRUE(cmi != NULL);
-    ASSERT_TRUE(cmi->Data != NULL);
-    EXPECT_EQ(0xde, cmi->Data[0]);
-    EXPECT_EQ(0xad, cmi->Data[cmi->Size -1]);
+    ASSERT_TRUE(cmi->data() != NULL);
+    EXPECT_EQ(0xde, cmi->data()[0]);
+    EXPECT_EQ(0xad, cmi->data()[cmi->size() -1]);
     for (int i = 0; i < BUFFER_SIZE; i++) {
-        EXPECT_EQ(i, cmi->Data[513 + i]);
+        EXPECT_EQ(i, cmi->data()[513 + i]);
     }
 }
 
@@ -336,11 +336,11 @@ static void test_fatfs_write_file_overwrite_expand()
 
     const int BUFFER_SIZE = 1540;
 
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    monapi_cmemoryinfo_create(buffer, BUFFER_SIZE, 0, 0);
-    memset(buffer->Data, 0xce, BUFFER_SIZE);
-    buffer->Data[0] = 0xca;
-    buffer->Data[buffer->Size - 1] = 0xfe;
+    SharedMemory* buffer = new SharedMemory(BUFFER_SIZE);
+    ASSERT_EQ(M_OK, buffer->map());
+    memset(buffer->data(), 0xce, BUFFER_SIZE);
+    buffer->data()[0] = 0xca;
+    buffer->data()[buffer->size() - 1] = 0xfe;
 
     io::Context c;
     c.offset = 513;
@@ -350,13 +350,13 @@ static void test_fatfs_write_file_overwrite_expand()
     ASSERT_EQ(BUFFER_SIZE, fat->write(found, &c));
 
     io::Context readContext;
-    monapi_cmemoryinfo* cmi = readAll(fat, readContext, root, FILENAME);
+    SharedMemory* cmi = readAll(fat, readContext, root, FILENAME);
     ASSERT_TRUE(cmi != NULL);
-    ASSERT_TRUE(cmi->Data != NULL);
-    ASSERT_EQ(2053, cmi->Size);
-    EXPECT_EQ(0xde, cmi->Data[0]);
-    EXPECT_EQ(0xca, cmi->Data[513]);
-    EXPECT_EQ(0xfe, cmi->Data[513 + BUFFER_SIZE - 1]);
+    ASSERT_TRUE(cmi->data() != NULL);
+    ASSERT_EQ(2053, cmi->size());
+    EXPECT_EQ(0xde, cmi->data()[0]);
+    EXPECT_EQ(0xca, cmi->data()[513]);
+    EXPECT_EQ(0xfe, cmi->data()[513 + BUFFER_SIZE - 1]);
 }
 
 static void test_fatfs_delete_file()
@@ -404,15 +404,15 @@ static void test_fatfs_readdir()
     FatFileSystem* fat = fs.get();
     Vnode* root = fat->getRoot();
 
-    monapi_cmemoryinfo* cmi;
+    SharedMemory* cmi;
     ASSERT_EQ(M_OK, fat->readdir(root, &cmi));
     ASSERT_TRUE(cmi != NULL);
 
-    int size = *(int*)cmi->Data;
+    int size = *(int*)cmi->data();
 
     EXPECT_EQ(37, size);
 
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->Data[sizeof(int)];
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&cmi->data()[sizeof(int)];
 
     EXPECT_STR_EQ("TEST1.TXT", (const char*)CString(p[0].name));
 
@@ -421,9 +421,7 @@ static void test_fatfs_readdir()
             EXPECT_TRUE((p[i].attr & ATTRIBUTE_DIRECTORY) != 0);
         }
     }
-
-    monapi_cmemoryinfo_dispose(cmi);
-    monapi_cmemoryinfo_delete(cmi);
+    delete cmi;
 }
 
 static void test_fatfs_lookup_subdir()
@@ -457,8 +455,8 @@ static void test_fatfs_read_file_subdir(const char* fileName, const char* expect
     ASSERT_EQ(len, c.offset);
     ASSERT_EQ(len, c.resultSize);
     ASSERT_TRUE(c.memory != NULL);
-    ASSERT_EQ(len, c.memory->Size);
-    EXPECT_TRUE(memcmp(expectedContent, c.memory->Data, len) == 0);
+    ASSERT_EQ(len, c.memory->size());
+    EXPECT_TRUE(memcmp(expectedContent, c.memory->data(), len) == 0);
 }
 
 static void test_fatfs_lookup_file_long_name()

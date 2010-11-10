@@ -10,7 +10,7 @@ using namespace std;
 
 #define LISTEN_PORT 8181
 
-static monapi_cmemoryinfo clip;
+static SharedMemory* clip;
 static Mutex mutex;
 
 static void __fastcall listenThread(void* arg)
@@ -54,13 +54,14 @@ static void __fastcall listenThread(void* arg)
         } while ((readSize = recv(sockfd, buf, MAXDATA, 0)) > 0);
         closesocket(sockfd);
         mutex.lock();
-        if (clip.Handle != 0) {
-            monapi_cmemoryinfo_dispose(&clip);
+        if (clip != NULL) {
+            delete clip;
         }
-        if (monapi_cmemoryinfo_create(&clip, clip_data.size(), 0, 0) != M_OK ) {
+        clip = new SharedMemory(clip_data.size());
+        if (clip->map() != M_OK ) {
             monapi_fatal("map error");
         }
-        copy(clip_data.begin(), clip_data.end(), clip.Data);
+        copy(clip_data.begin(), clip_data.end(), clip->data());
         mutex.unlock();
     }
     closesocket(sock);
@@ -85,16 +86,14 @@ int main(int argc, char* argv[])
         case MSG_CLIPBOARD_SET:
         {
             mutex.lock();
-            if (clip.Handle != 0) {
-                monapi_cmemoryinfo_dispose(&clip);
+            if (clip != NULL) {
+                delete clip;
             }
-            clip.Handle = msg.arg1;
-            clip.Owner  = msg.from;
-            clip.Size   = msg.arg2;
-            ASSERT(clip.Handle != 0);
+            clip = new SharedMemory(msg.arg1, msg.arg2);
+            ASSERT(clip);
 
             // memory map referce should be greater than 0, so we map it.
-            intptr_t result = monapi_cmemoryinfo_map(&clip, false);
+            intptr_t result = clip->map();
             mutex.unlock();
             if (result != M_OK) {
                 Message::reply(&msg, result);
@@ -104,17 +103,18 @@ int main(int argc, char* argv[])
             break;
         }
         case MSG_CLIPBOARD_GET:
-            if (clip.Handle == 0) {
+            if (clip == NULL) {
                 Message::reply(&msg, M_OBJECT_NOT_FOUND);
             } else {
-                Message::reply(&msg, clip.Handle, clip.Size);
+                Message::reply(&msg, clip->handle(), clip->size());
             }
             break;
         case MSG_CLIPBOARD_CLEAR:
             mutex.lock();
-            if (clip.Handle != 0) {
-                monapi_cmemoryinfo_dispose(&clip);
+            if (clip!= NULL) {
+                delete clip;
             }
+            clip = NULL;
             mutex.unlock();
             Message::reply(&msg, M_OK);
             break;

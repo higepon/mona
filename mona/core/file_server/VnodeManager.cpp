@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace io;
+using namespace MonAPI;
 
 extern string upperCase(const string& s);
 
@@ -92,7 +93,7 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
     return ret;
 }
 
-int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
+int VnodeManager::readdir(const std::string&name, SharedMemory** mem)
 {
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return M_FILE_NOT_FOUND;
@@ -132,8 +133,8 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     cacher_->enumCaches(dir, caches);
     if (!caches.empty()) {
         std::map<std::string, bool> seen;
-        for (size_t i = sizeof(int); i < (*mem)->Size; i += sizeof(monapi_directoryinfo)) {
-            monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->Data[i]));
+        for (size_t i = sizeof(int); i < (*mem)->size(); i += sizeof(monapi_directoryinfo)) {
+            monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->data()[i]));
             seen.insert(std::pair<std::string, bool>(upperCase(p->name), true));
         }
 
@@ -145,17 +146,16 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         }
 
         if (!diff.empty()) {
-            monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-            int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
-            if (monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE, true) != M_OK) {
-                monapi_cmemoryinfo_delete(ret);
+            int size = (*mem)->size() + diff.size() * sizeof(monapi_directoryinfo);
+            SharedMemory* ret = new SharedMemory(size);
+            if (ret->map() != M_OK) {
                 return M_NO_MEMORY;
             }
-            MonAPI::Buffer dest(ret->Data, ret->Size);
-            MonAPI::Buffer src((*mem)->Data, (*mem)->Size);
-            bool isOK = MonAPI::Buffer::copy(dest, src, (*mem)->Size);
+            MonAPI::Buffer dest(ret->data(), ret->size());
+            MonAPI::Buffer src((*mem)->data(), (*mem)->size());
+            bool isOK = MonAPI::Buffer::copy(dest, src, (*mem)->size());
             ASSERT(isOK);
-            int entriesNum = *((int*)(*mem)->Data) + diff.size();
+            int entriesNum = *((int*)(*mem)->data()) + diff.size();
             MonAPI::Buffer src2(&entriesNum, sizeof(int));
             isOK = MonAPI::Buffer::copy(dest, src2, sizeof(int));
             ASSERT(isOK);
@@ -165,11 +165,9 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
                 strcpy(di.name, diff[i].c_str());
                 di.attr = ATTRIBUTE_DIRECTORY;
                 MonAPI::Buffer dirBuf(&di, sizeof(monapi_directoryinfo));
-                bool isOK = MonAPI::Buffer::copy(dest, (*mem)->Size + i * sizeof(monapi_directoryinfo), dirBuf, 0, sizeof(monapi_directoryinfo));
+                bool isOK = MonAPI::Buffer::copy(dest, (*mem)->size() + i * sizeof(monapi_directoryinfo), dirBuf, 0, sizeof(monapi_directoryinfo));
                 ASSERT(isOK);
             }
-            monapi_cmemoryinfo_dispose(*mem);
-            monapi_cmemoryinfo_delete(*mem);
             *mem = ret;
         }
     }
@@ -249,7 +247,7 @@ Vnode* VnodeManager::alloc()
     return v;
 }
 
-int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
+int VnodeManager::read(uint32_t fileID, uint32_t size, SharedMemory** mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end()) {
@@ -264,7 +262,7 @@ int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
     return result;
 }
 
-int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
+int VnodeManager::write(uint32_t fileID, uint32_t size, SharedMemory* mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end()) {

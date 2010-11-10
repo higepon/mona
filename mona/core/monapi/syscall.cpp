@@ -1130,15 +1130,11 @@ intptr_t syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
 
     parser.parseAll();
-    monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
-    if(cm == NULL)
+    scoped_ptr<SharedMemory> cm(parser.symbolInfos_.serialize());
+    if(cm.get() == NULL)
         return M_NO_MEMORY;
 
-    intptr_t res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->Data, cm->Size);
-
-    monapi_cmemoryinfo_dispose(cm);
-    monapi_cmemoryinfo_delete(cm);
-
+    intptr_t res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->data(), cm->size());
     return res;
 }
 void syscall_stack_trace_disable(uint32_t pid)

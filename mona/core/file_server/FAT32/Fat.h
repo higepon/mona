@@ -274,14 +274,15 @@ public:
         }
 
         // Even for the case when sizeToRead == 0, we need context->memory.
-        context->memory = monapi_cmemoryinfo_new();
+        context->memory = new MonAPI::SharedMemory(sizeToRead);
+        ASSERT(context->memory);
         if (sizeToRead == 0) {
             return M_OK;
         }
 
         // Use immediate map for performance reason.
-        if (monapi_cmemoryinfo_create(context->memory, sizeToRead, MONAPI_FALSE, true) != M_OK) {
-            monapi_cmemoryinfo_delete(context->memory);
+        if (context->memory->map(true) != M_OK) {
+            delete context->memory;
             return M_NO_SPACE;
         }
         uint32_t skipClusterCount = offset / getClusterSizeByte();
@@ -290,7 +291,7 @@ public:
         uint32_t sizeRead = 0;
         uint32_t offsetInBuf = context->offset - getClusterSizeByte() * skipClusterCount;
 
-        MonAPI::Buffer readBuf(context->memory->Data, context->memory->Size);
+        MonAPI::Buffer readBuf(context->memory->data(), context->memory->size());
         MonAPI::Buffer buf(buf_, getClusterSizeByte());
 
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
@@ -300,7 +301,7 @@ public:
             }
             uint32_t restSizeToRead = sizeToRead - sizeRead;
             uint32_t copySize = restSizeToRead > getClusterSizeByte() - offsetInBuf ? getClusterSizeByte() - offsetInBuf: restSizeToRead;
-            ASSERT(context->memory->Data + sizeRead + copySize <= context->memory->Data + context->memory->Size);
+            ASSERT(context->memory->data() + sizeRead + copySize <= context->memory->data() + context->memory->size());
             ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
             bool isOk = MonAPI::Buffer::copy(readBuf, sizeRead, buf, offsetInBuf, copySize);
             ASSERT(isOk);
@@ -343,7 +344,7 @@ public:
                     return M_READ_ERROR;
             }
 
-            MonAPI::Buffer writeBuf(context->memory->Data, context->memory->Size);
+            MonAPI::Buffer writeBuf(context->memory->data(), context->memory->size());
             MonAPI::Buffer buf(buf_, getClusterSizeByte());
 
             uint32_t copySize;
@@ -387,7 +388,7 @@ public:
         }
     }
 
-    virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)
+    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries)
     {
         typedef std::vector<monapi_directoryinfo> DirInfos;
         DirInfos dirInfos;
@@ -400,22 +401,21 @@ public:
             di.attr = (*it)->isDirectory() ? ATTRIBUTE_DIRECTORY : 0;
             dirInfos.push_back(di);
         }
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-
         int size = dirInfos.size();
-        if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK) {
-            monapi_cmemoryinfo_delete(ret);
+        MonAPI::SharedMemory* ret = new MonAPI::SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+        if (ret->map(true) != M_OK) {
+            delete ret;
             return M_NO_MEMORY;
         }
 
-        MonAPI::Buffer dest(ret->Data, ret->Size);
+        MonAPI::Buffer dest(ret->data(), ret->size());
         MonAPI::Buffer src(&size, sizeof(int));
         bool isOK = MonAPI::Buffer::copy(dest, src, sizeof(int));
         ASSERT(isOK);
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
         *entries = ret;
         for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it) {
-            ASSERT((uintptr_t)p < (uintptr_t)(ret->Data + ret->Size));
+            ASSERT((uintptr_t)p < (uintptr_t)(ret->data() + ret->size()));
             *p = *it;
             p++;
         }

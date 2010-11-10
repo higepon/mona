@@ -264,19 +264,17 @@ private:
     Image* openFile(const char* filename)
     {
         // ファイルを開く
-        monapi_cmemoryinfo* mi = NULL;
-        mi = monapi_file_read_all(filename);
-        if (mi == NULL)
+        scoped_ptr<SharedMemory> shm(monapi_file_read_all(filename));
+        if (shm.get() == NULL)
         {
             return NULL;
         }
 
         // JPEGデコーダ初期化
         CJPEGLS* jpeg = new CJPEGLS();
-        if (jpeg->Open(mi->Data, mi->Size) != 0)
+        if (jpeg->Open(shm->data(), shm->size()) != 0)
         {
-            monapi_cmemoryinfo_dispose(mi);
-            monapi_cmemoryinfo_delete(mi);
+            shm->unmap();
             return NULL;
         }
 
@@ -294,9 +292,7 @@ private:
 
         // 共有メモリ開放
         delete jpeg;
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
-
+        shm->unmap();
         return image;
     }
 

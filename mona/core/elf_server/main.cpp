@@ -38,7 +38,7 @@ static int CreateImage(SharedMemory** dest, uint32_t* entryPoint, SharedMemory* 
     if (!parser.load(dst->data()))
     {
         if (prompt) _printf("%s: load failed!\n", SVR);
-//        dst->unmap();
+        dst->unmap();
         delete dst;
         return 3;
     }

@@ -26,6 +26,9 @@ public:
 
     virtual ~SharedMemory()
     {
+        if (isMapped_) {
+            unmap();
+        }
     }
 
     bool isMapped() const
@@ -53,7 +56,7 @@ public:
         if (isMapped_) {
             return M_BUSY;
         }
-        if (handle_ != 0) {
+        if (handle_ == 0) {
             handle_ = MonAPI::MemoryMap::create(size_);
             if (0 == handle_) {
                 return M_MEMORY_MAP_ERROR;
@@ -76,6 +79,7 @@ public:
             data_ = NULL;
             return M_OK;
         } else {
+            _logprintf("Warning: SharedMemory::unmap failed handle=%x size=%x", handle(), size());
             return M_MEMORY_MAP_ERROR;
         }
     }

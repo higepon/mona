@@ -71,7 +71,7 @@ bool Monitor::Initialize()
         return false;
     }
     ParseConfig((char*)(shm->data()));
-    shm->unmap();
+//    shm->unmap();
     return true;
 }
 
@@ -132,7 +132,6 @@ void Monitor::CheckServers()
     {
         if (alive[i]) continue;
         if (!firstLoad && servers[i] == "OLDSHELL.EX5") continue;
-
         // sorry we can not use printf before process server starts.
         syscall_print("loading ");
         syscall_print((const char*)paths.get(i));

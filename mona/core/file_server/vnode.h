@@ -51,12 +51,11 @@ public:
     virtual ~Context()
     {
         if (NULL == memory) return;
-        monapi_cmemoryinfo_dispose(memory);
-        monapi_cmemoryinfo_delete(memory);
+        delete memory;
     }
 
     uint32_t tid;
-    monapi_cmemoryinfo* memory;
+    MonAPI::SharedMemory* memory;
     uint32_t offset;
     uint32_t origin;
     uint32_t size;

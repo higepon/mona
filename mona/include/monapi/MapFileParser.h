@@ -300,7 +300,7 @@ public:
         uint8_t *buf_;
     };
 
-    monapi_cmemoryinfo* serialize()
+    MonAPI::SharedMemory* serialize()
     {
         SymbolInfoEntrySerializer serializer;
         int size = 0;
@@ -308,16 +308,16 @@ public:
 
         std::for_each(Symbols.begin(), Symbols.end(), counter);
 
-        monapi_cmemoryinfo *buf = new monapi_cmemoryinfo();
+        MonAPI::SharedMemory *buf = new MonAPI::SharedMemory(size);
         if(!buf)
             return NULL;
-        if(M_OK != monapi_cmemoryinfo_create(buf, size, 0, true))
+        if(M_OK != buf->map(true))
         {
-            monapi_cmemoryinfo_delete(buf);
+            delete buf;
             return NULL;
         }
 
-        Serializer s(serializer, buf->Data, size);
+        Serializer s(serializer, buf->data(), size);
         std::for_each(Symbols.begin(), Symbols.end(), s);
         return buf;
     }

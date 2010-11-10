@@ -202,21 +202,19 @@ namespace RamDisk {
                 uint32_t readSize = context->size;
                 uint32_t rest = f->size - offset;
 
-                if (rest < readSize)
-                  {
+                if (rest < readSize) {
                       readSize = rest;
-                  }
-                context->memory = monapi_cmemoryinfo_new();
+                }
+                context->memory = new SharedMemory(readSize);
                 if(readSize == 0)
                   return M_OK;
 
                 // Use immediate map for performance reason.
-                if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, true) != M_OK)
-                  {
-                      monapi_cmemoryinfo_delete(context->memory);
-                      return M_NO_MEMORY;
-                  }
-                f->readChunks(offset, readSize, context->memory->Data);
+                if (context->memory->map(true) != M_OK) {
+                    delete context->memory;
+                    return M_NO_MEMORY;
+                }
+                f->readChunks(offset, readSize, context->memory->data());
 
                 context->resultSize = readSize;
                 context->offset += readSize;
@@ -232,16 +230,16 @@ namespace RamDisk {
                     return M_WRITE_ERROR;
                 }
                 FileInfo* f = (FileInfo*)file->fnode;
-                monapi_cmemoryinfo* memory = context->memory;
+                SharedMemory* memory = context->memory;
 
                 uint32_t offset = context->offset;
                 uint32_t writeSize = context->size;
-                f->writeChunks(offset, writeSize, memory->Data);
+                f->writeChunks(offset, writeSize, memory->data());
                 f->size = f->size > offset+writeSize ? f->size : offset+writeSize;
                 context->offset += writeSize;
                 return writeSize;
           }
-          virtual int readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+          virtual int readdir(Vnode* dir, SharedMemory** entries)
             {
                 typedef std::vector<monapi_directoryinfo*> Files;
                 Files files;
@@ -254,12 +252,11 @@ namespace RamDisk {
                       files.push_back(new monapi_directoryinfo(di));
                   }
 
-                monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-
                 int size = files.size();
-                if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK)
+                SharedMemory* ret = new SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+                if (ret->map(true) != M_OK)
                   {
-                      monapi_cmemoryinfo_delete(ret);
+                      delete ret;
                       for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
                         {
                             delete (*it);
@@ -267,8 +264,8 @@ namespace RamDisk {
                       return M_NO_MEMORY;
                   }
 
-                memcpy(ret->Data, &size, sizeof(int));
-                monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+                memcpy(ret->data(), &size, sizeof(int));
+                monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
 
                 for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
                   {

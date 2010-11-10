@@ -60,6 +60,8 @@ extern MonAPI::SharedMemory* monapi_file_read_directory(const char* path);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_st5(const MonAPI::SharedMemory& shm);
+extern intptr_t monapi_clipboard_set(const MonAPI::SharedMemory& shm);
+extern MonAPI::SharedMemory* monapi_clipboard_get();
 #ifdef __cplusplus
 extern "C"
 {
@@ -90,9 +92,7 @@ extern void monapi_deallocate_dma_memory(void* address, int size);
 extern intptr_t monapi_notify_server_start(const char*);
 extern intptr_t monapi_process_wait_terminated(uint32_t tid);
 extern const char* monapi_error_string(int error);
-extern intptr_t monapi_clipboard_set(monapi_cmemoryinfo* cmi);
 extern intptr_t monapi_clipboard_clear();
-extern monapi_cmemoryinfo* monapi_clipboard_get();
 
 typedef struct malloc_stat
 {

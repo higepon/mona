@@ -67,22 +67,18 @@ static void testISO9600_file_read()
 
 static void test_Page_fault_handler_should_be_fast()
 {
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
     const int SIZE = 3 * 1024 * 1024;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    ASSERT_EQ(M_OK, monapi_cmemoryinfo_create(mi, SIZE, MONAPI_FALSE, 1));
+    scoped_ptr<SharedMemory> mi(new SharedMemory(SIZE));
+    ASSERT_EQ(M_OK, mi->map(true));
     uint64_t s1 = MonAPI::Date::nowInMsec();
-    memset(mi->Data, 0, SIZE);
+    memset(mi->data(), 0, SIZE);
     uint64_t e1 = MonAPI::Date::nowInMsec();
     EXPECT_TRUE((e1 - s1) <= 10);
 
     uint64_t s2 = MonAPI::Date::nowInMsec();
-    memset(mi->Data, 0, SIZE);
+    memset(mi->data(), 0, SIZE);
     uint64_t e2 = MonAPI::Date::nowInMsec();
     EXPECT_EQ(0, e2 - s2);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-
 }
 
 static void testBuffer()

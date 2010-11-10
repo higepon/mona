@@ -52,7 +52,7 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
     }
     readsize = (int)shm->size();
     memcpy(p, shm->data(), readsize);
-    // shm->unmap();
+    shm->unmap();
     monapi_file_seek(fid, readsize, SEEK_CUR);
     return readsize;
 }

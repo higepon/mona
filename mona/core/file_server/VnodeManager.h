@@ -17,14 +17,14 @@ public:
     int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type = Vnode::REGULAR);
     int lookupOne(Vnode* directory, const std::string& file, Vnode** found, int type);
     int open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID);
-    int read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem);
-    int write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem);
+    int read(uint32_t fileID, uint32_t size, MonAPI::SharedMemory** mem);
+    int write(uint32_t fileID, uint32_t size, MonAPI::SharedMemory* mem);
     int seek(uint32_t fileID, int32_t offset, uint32_t origin);
     int stat(uint32_t fileID, Stat* st);
     int close(uint32_t fileID);
     int create(const std::string& name);
     int delete_file(const std::string& name);
-    int readdir(const std::string& name, monapi_cmemoryinfo** mem);
+    int readdir(const std::string& name, MonAPI::SharedMemory** mem);
     // N.B fileID should be posive, since negative values indicates error.
     intptr_t fileID(Vnode* file , uint32_t tid) {return abs((intptr_t)file | tid);} // temporary
     Vnode* alloc();

@@ -211,7 +211,7 @@ private:
 
 public:
     uint32_t EntryPoint;
-    monapi_cmemoryinfo* Binary;
+    SharedMemory* Binary;
     int Result;
 
     PELinker(const CString& path, bool prompt)
@@ -230,7 +230,7 @@ public:
 
     ~PELinker()
     {
-        if (this->Binary != NULL) monapi_cmemoryinfo_delete(this->Binary);
+        if (this->Binary != NULL) delete this->Binary;
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -330,10 +330,10 @@ private:
 
         imageSize += bootstrapSize;
 
-        monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-        if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt, true) != M_OK)
+        SharedMemory* dst = new SharedMemory(imageSize);
+        if (dst->map(true) != M_OK)
         {
-            monapi_cmemoryinfo_delete(dst);
+            delete dst;
             this->Result = 3;
             return false;
         }
@@ -341,13 +341,12 @@ private:
         for (PEDataList::size_type i = 0; i < len; i++)
         {
             PEData* data = this->list[i];
-            uint8_t* ptr = &dst->Data[addr];
+            uint8_t* ptr = &dst->data()[addr];
             if (!data->Parser.Load(ptr))
             {
                 if (this->prompt) _printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
-                monapi_cmemoryinfo_dispose(dst);
-                monapi_cmemoryinfo_delete(dst);
+                delete dst;
 #endif
                 this->Result = 3;
                 return false;
@@ -356,8 +355,7 @@ private:
             {
                 if (this->prompt) _printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
-                monapi_cmemoryinfo_dispose(dst);
-                monapi_cmemoryinfo_delete(dst);
+                delete dst;
 #endif
                 this->Result = 3;
                 return false;
@@ -373,7 +371,7 @@ private:
             {
                 CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
                 PEData* target = this->Find(dll);
-                if (target == NULL || !data->Parser.Link(&dst->Data[addr], j, &target->Parser))
+                if (target == NULL || !data->Parser.Link(&dst->data()[addr], j, &target->Parser))
                 {
                     if (this->prompt)
                     {
@@ -381,8 +379,7 @@ private:
                         _printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
                     }
 #ifdef NO_CACHE
-                    monapi_cmemoryinfo_dispose(dst);
-                    monapi_cmemoryinfo_delete(dst);
+                    delete dst;
 #endif
                     this->Result = 3;
                     return false;
@@ -391,7 +388,7 @@ private:
             addr += data->Parser.get_ImageSize();
         }
         // make bootstrap code
-        uint8_t* bootstrap = &dst->Data[dst->Size - bootstrapSize];
+        uint8_t* bootstrap = &dst->data()[dst->size() - bootstrapSize];
         uint8_t* start = &bootstrap[3];
         bootstrap[0] = 0x55; // push ebp
         bootstrap[1] = 0x89; // mov ebp
@@ -434,7 +431,7 @@ private:
         start[i * CALL_CODE_SIZE] = 0xC9;
         start[i * CALL_CODE_SIZE + 1] = 0xC3;
 
-        bootstrapEntryPoint = dst->Size - bootstrapSize + ORG;
+        bootstrapEntryPoint = dst->size() - bootstrapSize + ORG;
         // make bootstrap end
         this->Binary = dst;
         return true;
@@ -454,12 +451,12 @@ static void MessageLoop()
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
                 if (pe.Result == 0) {
                     char buf[16];
-                    sprintf(buf, "%d", pe.Binary->Size);
+                    sprintf(buf, "%d", pe.Binary->size());
 
                     // To prevent miss freeing of shared map, waits the client notification.
-                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->Handle, pe.EntryPoint, buf);
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
                     // we can safely unmap it.
-                    MemoryMap::unmap(pe.Binary->Handle);
+                    MemoryMap::unmap(pe.Binary->handle());
                 }
                 else
                 {

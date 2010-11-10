@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace iso9660;
+using namespace MonAPI;
 
 extern string upperCase(const string& s);
 
@@ -93,17 +94,17 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t sectorSize = sectorCount * SECTOR_SIZE;
 
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
-    context->memory = monapi_cmemoryinfo_new();
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
+    context->memory = new SharedMemory(readSize);
+    if (context->memory->map(true) != M_OK)
     {
-        monapi_cmemoryinfo_delete(context->memory);
+        delete context->memory;
         return M_NO_MEMORY;
     }
     // by junjunn
     if (0 == dataOffset) {
 // by higepon
-//        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
-        bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
+//        bool readResult = drive_->read(lba, context->memory->data(), sectorSize) == 0;
+        bool readResult = drive_->read(lba, context->memory->data(), readSize) == 0;
         if (!readResult) {
             return M_READ_ERROR;
         }
@@ -111,7 +112,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         uint8_t* temp = new uint8_t[sectorSize];
         if (temp == NULL) return M_NO_MEMORY;
         MonAPI::Buffer tempBuf(temp, sectorSize);
-        MonAPI::Buffer dest(context->memory->Data, context->memory->Size);
+        MonAPI::Buffer dest(context->memory->data(), context->memory->size());
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
         if (!readResult) {
             delete temp;
@@ -143,7 +144,7 @@ Vnode* ISO9660FileSystem::getRoot() const
     return root_;
 }
 
-int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+int ISO9660FileSystem::readdir(Vnode* dir, SharedMemory** entries)
 {
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
@@ -166,15 +167,15 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
         position += iEntry->length;
     }
     delete[] buffer;
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     int size = entryList.size();
-    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
+    SharedMemory* ret = new SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+    if (ret->map(true) != M_OK)
     {
-        monapi_cmemoryinfo_delete(ret);
+        delete ret;
         return M_NO_MEMORY;
     }
-    memcpy(ret->Data, &size, sizeof(int));
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+    memcpy(ret->data(), &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
     for (EntryList::iterator i = entryList.begin(); i != entryList.end(); ++i)
     {
         monapi_directoryinfo di;

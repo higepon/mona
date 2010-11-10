@@ -465,11 +465,11 @@ MONAPI_BOOL monapi_file_exists(const char* path)
     }
 }
 
-intptr_t monapi_clipboard_set(monapi_cmemoryinfo* cmi)
+intptr_t monapi_clipboard_set(const SharedMemory& shm)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
-    intptr_t ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_SET, cmi->Handle, cmi->Size);
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_SET, shm.handle(), shm.size());
     if (ret != M_OK) {
         return ret;
     }
@@ -487,25 +487,21 @@ intptr_t monapi_clipboard_clear()
     return M_OK;
 }
 
-monapi_cmemoryinfo* monapi_clipboard_get()
+SharedMemory* monapi_clipboard_get()
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_CLIPBOARD_GET) != M_OK) {
         return NULL;
     }
     if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (ret->Size == 0) {
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->size() == 0) {
         return ret;
     }
-    intptr_t mapResult = monapi_cmemoryinfo_map(ret, true);
+    intptr_t mapResult = ret->map(true);
     if (mapResult != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+        delete ret;
         monapi_warn("%s map error = %d\n", __func__, mapResult);
         return NULL;
     } else {
