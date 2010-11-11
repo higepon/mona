@@ -87,29 +87,6 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 }
 
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
-        return ret;
-    }
-}
-
 SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -129,6 +106,25 @@ SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL
         return shm;
     }
 }
+
+SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
+{
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, shm.handle(), shm.size()) != M_OK) {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->map(true) != M_OK) {
+        delete ret;
+        return NULL;
+    } else {
+        return ret;
+    }
+}
+
 
 SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
@@ -182,31 +178,6 @@ SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL
         return shm;
     }
 }
-
-#if 0
-monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, prompt, 0, 0, path) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
-        return ret;
-    }
-}
-#endif
 
 intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
@@ -459,7 +430,6 @@ MONAPI_BOOL monapi_file_exists(const char* path)
         if (shm.get() == NULL) {
             return MONAPI_FALSE;
         } else {
-            shm->unmap();
             return MONAPI_TRUE;
         }
     }

@@ -35,7 +35,6 @@ void copyToPath(int sd, const char *name)
     } while ((readSize = recv(sd, buf, MAXDATA, 0)) > 0);
 
     monapi_file_close(id);
-    shm.unmap();
 }
 
 

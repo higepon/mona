@@ -129,7 +129,6 @@ private:
 			this->addLine(temp);
 			memset(temp, 0, sizeof(temp));
 		}
-        shm->unmap();
 	#endif
 	}
 
@@ -193,7 +192,6 @@ private:
 			}
 		}
 		// ファイルを閉じる
-        shm->unmap();
         delete shm;
 
 	#endif
@@ -261,7 +259,6 @@ private:
 					break;
 				}
 			}
-            shm->unmap();
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
 		}
 	#endif
@@ -303,13 +300,11 @@ private:
 				}
 			}
 			if (strcmp(filename, p->name) == 0) {
-                shm->unmap();
 			    return true;
 			}
 		}
 
 		this->addLine("ファイルまたはディレクトリが見つかりません。\n");
-        shm->unmap();
 		return false;
 	#else
 		this->addLine("ファイルまたはディレクトリが見つかりません。\n");

@@ -30,7 +30,6 @@ int OpenJpeg(const char* filename)
     if (jpeg->Open(shm->data(), shm->size()) != 0)
     {
         printf("not supported image\n");
-        shm->unmap();
         return -1;
     }
 
@@ -68,7 +67,6 @@ int OpenJpeg(const char* filename)
 
     delete [] picture;
     delete jpeg;
-    shm->unmap();
     return 0;
 }
 
@@ -121,11 +119,9 @@ int main(int argc, char* argv[])
     if (filebuff == NULL)
     {
         printf("memory allocate error\n");
-        shm->unmap();
         return(-1);
     }
     memcpy(filebuff, shm->data(), shm->size());
-    shm->unmap();
 
     // ファイル解析
     HList<CString> list;

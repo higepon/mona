@@ -13,7 +13,7 @@
 #include "Rectangle.h"
 #define _R ::System::Drawing::Rectangle
 
-#include <servers/gui.h>
+#include "servers/gui.h"
 #include <monapi/messages.h>
 #include <monapi/CString.h>
 #include <monalibc.h>
@@ -255,7 +255,6 @@ static void ReadConfig(int argc, char* argv[])
             line[linepos++] = ch;
         }
     }
-    cfg->unmap();
     if (src.getLength() == 0 || src[0] == '\0')
     {
         return;
@@ -403,7 +402,6 @@ int main(int argc, char* argv[])
     // メッセージループ
     MessageLoop();
     // 共有メモリにロードしているフォント
-    default_font->unmap();
     delete default_font;
     // 壁紙の開放
     if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);

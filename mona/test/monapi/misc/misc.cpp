@@ -57,8 +57,6 @@ static void testISO9600_file_read()
     scoped_ptr<SharedMemory> shm(monapi_file_read(handle, 4096));
     ASSERT_TRUE(shm.get() != NULL);
     EXPECT_TRUE(shm->size() > 0);
-    shm->unmap();
-
     // reached EOF
     scoped_ptr<SharedMemory> shm2(monapi_file_read(handle, 4096));
     EXPECT_TRUE(NULL == shm2.get());

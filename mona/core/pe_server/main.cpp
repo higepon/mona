@@ -87,7 +87,7 @@ static PEData* OpenPE(const CString& path, bool prompt)
     if (!ret->Parser.Parse(ret->Data->data(), ret->Data->size()))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
-        ret->Data->unmap();
+//        ret->Data->unmap();
         delete ret->Data;
         ret->Data = NULL;
     }
@@ -128,12 +128,12 @@ public:
     {
         if (this->files1 != NULL)
         {
-            files1->unmap();
+//            files1->unmap();
             delete files1;
         }
         if (this->files2 != NULL)
         {
-            files2->unmap();
+//            files2->unmap();
             delete files2;
         }
     }
@@ -238,7 +238,7 @@ public:
             if (isDLL(data)) {
                 continue;
             }
-            data->Data->unmap();
+//            data->Data->unmap();
             delete data->Data;
             delete data;
         }

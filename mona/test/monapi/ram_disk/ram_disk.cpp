@@ -57,7 +57,6 @@ static void createFile(const char* path)
 
     monapi_file_write(id, shm, shm.size());
 
-    EXPECT_EQ(M_OK, shm.unmap());
     monapi_file_close(id);
 }
 
@@ -98,8 +97,6 @@ static void writeContentToPathWithSize(const char* path, const char* contents, i
         size -= copySize;
         contents += copySize;
     }
-    EXPECT_EQ(M_OK, shm.unmap());
-
     EXPECT_TRUE(res >= 0);
     monapi_file_close(id);
 }
@@ -145,7 +142,6 @@ static void testWriteFile_Content()
 
     EXPECT_EQ(len, actual->size());
     EXPECT_TRUE( 0 == memcmp(actual->data(), data, len));
-    actual->unmap();
     monapi_file_delete(path);
 }
 
@@ -174,7 +170,6 @@ static void testWriteTwice()
     EXPECT_EQ(expect_len, actual->size());
     EXPECT_TRUE( 0 == memcmp(actual->data(), expect, expect_len));
 
-    actual->unmap();
     monapi_file_delete(path);
 }
 
@@ -191,9 +186,6 @@ static void testWriteTwice_CreateTrue()
 
     EXPECT_EQ(expect_len, actual->size());
     EXPECT_TRUE( 0 == memcmp(actual->data(), expect, expect_len));
-
-    actual->unmap();
-
     monapi_file_delete(path);
 }
 
@@ -217,7 +209,6 @@ static void copyFile(const char *from, const char* to)
     scoped_ptr<SharedMemory> shm(monapi_file_read_all(from));
     ASSERT_TRUE(shm != NULL);
     writeContentToPathWithSize(to, (char*)shm->data(), shm->size());
-    shm->unmap();
 }
 
 // use stdio because I already have one.
@@ -231,9 +222,6 @@ static void expectFileEqual(const char* org, const char* to)
     ASSERT_TRUE(m2.get() != NULL);
     ASSERT_EQ(m1->size(), m2->size());
     EXPECT_TRUE(0 == memcmp(m1->data(), m2->data(), m1->size()));
-
-    EXPECT_EQ(M_OK, m1->unmap());
-    EXPECT_EQ(M_OK, m2->unmap());
 
     /* check with fread */
     char buf[256];
@@ -314,7 +302,6 @@ static void testReadDirectory_Empty()
     int size = *(int*)shm->data();
 
     EXPECT_EQ(0, size);
-    shm->unmap();
 }
 
 static void testReadDirectory_OneFile()
@@ -326,7 +313,6 @@ static void testReadDirectory_OneFile()
 
     EXPECT_EQ(1, size);
 
-    shm->unmap();
     monapi_file_delete("/MEM/TEST1.TXT");
 }
 
@@ -345,7 +331,6 @@ static void testReadDirectory_TwoFile()
     EXPECT_TRUE(CString(p[0].name) ==  "TEST1.TXT");
     EXPECT_TRUE(CString(p[1].name) ==  "TEST2.TXT");
 
-    shm->unmap();
 
     monapi_file_delete("/MEM/TEST2.TXT");
     monapi_file_delete("/MEM/TEST1.TXT");
@@ -367,7 +352,6 @@ static void testReadDirectory_Root()
         }
     }
     EXPECT_TRUE(ramdiskFound);
-    shm->unmap();
 }
 
 static void testFprintf()
@@ -383,7 +367,6 @@ static void testFprintf()
     // Be sure, \0 is not written
     EXPECT_EQ((int)strlen(expected), shm->size());
     EXPECT_EQ(0, memcmp(expected, shm->data(), shm->size()));
-    shm->unmap();
     monapi_file_delete(tmpFile);
 }
 
@@ -401,7 +384,6 @@ static void testFwrite()
     scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
     ASSERT_TRUE(shm.get() != NULL);
     EXPECT_STR_EQ(data, (char*)shm->data());
-    shm->unmap();
 }
 
 static void testMonAPIwrite()
@@ -423,8 +405,6 @@ static void testMonAPIwrite()
     scoped_ptr<SharedMemory> shm2(readContentFromPath(tmpFile));
     EXPECT_STR_EQ(data, (char*)shm2->data());
 
-    ASSERT_EQ(M_OK, shm.unmap());
-    ASSERT_EQ(M_OK, shm2->unmap());
     monapi_file_delete(tmpFile);
 }
 
@@ -440,7 +420,6 @@ static void testFwrite2()
     scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
     ASSERT_TRUE(shm.get() != NULL);
     EXPECT_STR_EQ(data, (char*)shm->data());
-    shm->unmap();
     monapi_file_delete(tmpFile);
 }
 
@@ -458,7 +437,6 @@ static void testFwrite_Overwrite()
     scoped_ptr<SharedMemory> shm(monapi_file_read_all(tmpFile));
     ASSERT_TRUE(shm.get() != NULL);
     EXPECT_STR_EQ(data, (char*)shm->data());
-    shm->unmap();
     monapi_file_delete(tmpFile);
     monapi_file_delete(tmpFile);
 }
@@ -491,7 +469,6 @@ static void testFwrite_Overwrite2()
     ASSERT_TRUE(shm.get() != NULL);
 
     EXPECT_TRUE(memcmp("Hello\n    \nWorld     \n", shm->data(), shm->size()) == 0);
-    shm->unmap();
     monapi_file_delete(tmpFile);
     monapi_file_delete(tmpFile);
 }

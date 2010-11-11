@@ -43,7 +43,6 @@ int closedir(DIR *dir)
 		errno = EBADF;
 		return -1;
 	}
-    dir->shm->unmap();
     delete dir->shm;
 	return 0;
 }

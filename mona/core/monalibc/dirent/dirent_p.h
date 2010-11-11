@@ -36,7 +36,6 @@
 
 #include <dirent.h>
 #include <stdint.h>
-#include <monapi/cmemoryinfo.h>
 #include <monapi/SharedMemory.h>
 
 struct _dir

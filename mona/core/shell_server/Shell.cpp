@@ -429,7 +429,6 @@ int Shell::makeApplicationList()
         }
     }
 
-    shm->unmap();
     return 0;
 }
 
@@ -503,7 +502,6 @@ void Shell::printFiles(const CString& dir)
     }
     formatWrite("\n");
     terminal_->flush();
-    shm->unmap();
 }
 
 void Shell::executeMSH(const CString& msh)
@@ -549,7 +547,6 @@ void Shell::executeMSH(const CString& msh)
             start = pos + 1;
         }
     }
-    shm->unmap();
 }
 
 bool Shell::changeDirecotory(const MonAPI::CString& path)

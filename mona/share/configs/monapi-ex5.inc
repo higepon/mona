@@ -33,6 +33,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:$(ADDTARGETDEP)
+	rm -f dependencies
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif

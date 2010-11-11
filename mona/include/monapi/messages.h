@@ -1,7 +1,6 @@
 #ifndef _MONAPI_MESSAGES_
 #define _MONAPI_MESSAGES_
 
-#include <monapi/cmemoryinfo.h>
 #include <monapi/MemoryMap.h>
 #include <monapi/SharedMemory.h>
 #include <servers/keyboard.h>
@@ -60,6 +59,7 @@ extern MonAPI::SharedMemory* monapi_file_read_directory(const char* path);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_st5(const MonAPI::SharedMemory& shm);
+extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2(const MonAPI::SharedMemory& shm);
 extern intptr_t monapi_clipboard_set(const MonAPI::SharedMemory& shm);
 extern MonAPI::SharedMemory* monapi_clipboard_get();
 #ifdef __cplusplus
@@ -69,7 +69,7 @@ extern "C"
 extern uint32_t monapi_get_server_thread_id(int id);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
-extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
+
 
 
 

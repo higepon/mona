@@ -30,6 +30,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX2 $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
+	rm -f dependencies
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif

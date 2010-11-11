@@ -103,6 +103,15 @@ depend:
 	cd test/monapi/misc && make $@
 	cd test/monapi/message && make $@
 	cd test/monapi/clipboard && make $@
+	cd test/monapi/die && make $@
+	cd test/monapi/mutex && make $@
+	cd test/monapi/condition && make $@
+	cd test/monapi/ram_disk && make $@
+	cd test/monapi/syscall && make $@
+	cd test/monapi/socket && make $@
+	cd test/ext/gmp && make $@
+	cd core/scheme && $(MAKE) -f Makefile.mona $@
+	cd core/mosh && $(MAKE) -f Makefile.mona $@
 
 .PHONY: clean doc
 

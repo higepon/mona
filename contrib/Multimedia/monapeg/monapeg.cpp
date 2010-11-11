@@ -246,11 +246,9 @@ int main(int argc, char* argv[]) {
 	filebuf = (BYTE *)malloc(shm->size());
 	if (filebuf == NULL) {
 		printf("memory allocate error\n");
-        shm->unmap();
 		return(-1);
 	}
 	memcpy(filebuf, shm->data(), shm->size());
-    shm->unmap();
 	mv.data.mem = filebuf;
 	mv.data.pos = 0;
 	mv.data.size = filesize;

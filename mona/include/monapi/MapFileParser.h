@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <monapi/cmemoryinfo.h>
 // #include <monalibc/stdio.h>
 #include <monalibc/limits.h>
 #include <monalibc/stdlib.h> // algorithm require rand()
@@ -67,7 +66,6 @@ class FileReader
     {
         if(shm_ != 0)
         {
-            shm_->unmap();
             delete shm_;
             shm_ = NULL;
         }

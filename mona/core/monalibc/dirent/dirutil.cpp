@@ -1,5 +1,4 @@
 #include <monapi/messages.h>
-#include <monapi/cmemoryinfo.h>
 #include "dirent_p.h"
 
 extern "C" size_t strlcpy(char *dst, const char *src, size_t siz);

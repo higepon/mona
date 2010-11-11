@@ -127,7 +127,6 @@ public:
                 playList_.push_back(file);
             }
         }
-        shm->unmap();
         return playList_.size() != 0;
     }
 

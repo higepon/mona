@@ -38,7 +38,6 @@ static int CreateImage(SharedMemory** dest, uint32_t* entryPoint, SharedMemory* 
     if (!parser.load(dst->data()))
     {
         if (prompt) _printf("%s: load failed!\n", SVR);
-        dst->unmap();
         delete dst;
         return 3;
     }
@@ -69,7 +68,6 @@ static int CreateImage(SharedMemory** dest, uint32_t* entryPoint, const CString&
     }
     SharedMemory* img;
     int result = CreateImage(&img, entryPoint, shm, prompt);
-    shm->unmap();
     if (result == 0) *dest = img;
     return result;
 }
@@ -94,7 +92,6 @@ static void MessageLoop()
 
                     // To prevent miss freeing of shared map, waits the client notification.
                     int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, shm->handle(), entryPoint, buf);
-                    shm->unmap();
                     delete shm;
                 }
                 else

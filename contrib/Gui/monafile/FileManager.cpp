@@ -37,7 +37,6 @@ static bool DirectoryExists(const char* path)
 	if (files.get() == NULL) return false;
 	
 	int size = *(int*)files->data();
-    files->unmap();
 	return size > 0;
 }
 
