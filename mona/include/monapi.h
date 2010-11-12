@@ -30,7 +30,7 @@
 #include <monapi/SharedMemory.h>
 
 #define monapi_fatal(...) _logprintf("Fatal (%s:%s:%d) : ", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _printf("Fatal (%s:%s:%d) :", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _printf(__VA_ARGS__), exit(-1)
-#define monapi_warn(...) _logprintf("Warning (%s:%s:%d) : ", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _logprintf(__VA_ARGS__)
+#define monapi_warn(...) _logprintf("Warning (%s:%s:%d) : ", MonAPI::System::getProcessInfo()->name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n")
 
 extern "C" __attribute__((constructor)) void monapi_initialize();
 

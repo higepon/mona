@@ -330,13 +330,12 @@ PROCEDURE(CallProcess, "call-process")
         } n;
 
     MonAPI::Stream hisStdin;
-        n.u64 = syscall_now_in_nanosec();
+    n.u64 = syscall_now_in_nanosec();
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s error=%d" , s->value().data(), result);
     }
-
     Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
     n.u64 = syscall_now_in_nanosec();
     env->setVaribale(new Variable("status", lineno()), status);

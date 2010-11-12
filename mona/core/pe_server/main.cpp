@@ -238,7 +238,6 @@ public:
             if (isDLL(data)) {
                 continue;
             }
-            data->Data->unmap();
             delete data->Data;
             delete data;
         }
@@ -455,8 +454,7 @@ static void MessageLoop()
 
                     // To prevent miss freeing of shared map, waits the client notification.
                     int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
-                    // we can safely unmap it.
-                    MemoryMap::unmap(pe.Binary->handle());
+                    // we can safely unmap after above.
                 }
                 else
                 {

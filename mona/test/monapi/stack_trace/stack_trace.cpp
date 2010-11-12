@@ -584,6 +584,7 @@ void testSymbolDictionary_Integrate()
 
 int main(int argc, char *argv[])
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testFileReader_Open();
     testFileReader_getLine_once();
     testFileReader_getLine_twice();

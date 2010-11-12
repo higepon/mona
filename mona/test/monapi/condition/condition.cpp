@@ -346,7 +346,6 @@ void testCondition5()
 
     delete cond;
     delete mut;
-    logprintf("mutex deleted\n");
     EXPECT_EQ(beforeCount, syscall_condition_count());
 }
 

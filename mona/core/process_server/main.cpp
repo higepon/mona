@@ -139,7 +139,6 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     else
     {
         result = ExecuteProcess(parent, *shm, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid);
-        shm->unmap();
         delete shm;
     }
     CommandOption* next;

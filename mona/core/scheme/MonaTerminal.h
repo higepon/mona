@@ -32,7 +32,6 @@ public:
     int formatWrite(const char* format, ...);
     uint32_t getScreenHandle() const { return screenHandle_; }
     void setKeySuppresed() {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         isKeySuppressed_ = true;
     }
     bool isKeySuppressed() const
