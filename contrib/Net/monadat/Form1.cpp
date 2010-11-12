@@ -592,7 +592,6 @@ public:
         if (shm.get() != NULL)
         {
             dat = new DatThread(_A<char>((char*)shm->data(), shm->size(), false));
-            shm->unmap();
         }
 #else
         FILE* f = fopen(path, "rb");

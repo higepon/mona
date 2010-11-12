@@ -274,7 +274,6 @@ private:
         CJPEGLS* jpeg = new CJPEGLS();
         if (jpeg->Open(shm->data(), shm->size()) != 0)
         {
-            shm->unmap();
             return NULL;
         }
 
@@ -292,7 +291,6 @@ private:
 
         // 共有メモリ開放
         delete jpeg;
-        shm->unmap();
         return image;
     }
 

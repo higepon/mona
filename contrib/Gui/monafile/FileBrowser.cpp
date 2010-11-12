@@ -36,7 +36,6 @@ void FileBrowser::Dispose()
     BASE::Dispose();
     if (this->files == NULL) return;
 
-    this->files->unmap();
     delete this->files;
     this->files = NULL;
 }
@@ -54,7 +53,6 @@ void FileBrowser::ReadDirectory(String path)
     buf[len] = '\0';
     if (this->files != NULL)
     {
-        this->files->unmap();
         delete this->files;
     }
     this->files = monapi_file_read_directory(buf);

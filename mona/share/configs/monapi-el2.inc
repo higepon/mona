@@ -31,6 +31,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2 $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
+	rm -f dependencies
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif

@@ -52,7 +52,6 @@ int __mlibc_mona_file_read(void *self, void *buf, size_t size)
     }
     readsize = (int)shm->size();
     memcpy(p, shm->data(), readsize);
-    shm->unmap();
     monapi_file_seek(fid, readsize, SEEK_CUR);
     return readsize;
 }
@@ -72,11 +71,7 @@ int __mlibc_mona_file_write(void *self, void *buf, size_t size)
 
     result = monapi_file_write((uint32_t)f->file, shm, shm.size());
 
-    if (shm.unmap() != M_OK) {
-        monapi_warn("SharedMemory::unmap failed");
-    }
     monapi_file_seek((uint32_t)f->file, (uint32_t)size+f->offset, SEEK_SET);
-
     return (int)result;
 }
 

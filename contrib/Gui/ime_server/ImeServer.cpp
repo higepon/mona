@@ -49,7 +49,6 @@ bool ImeServer::loadDictionary()
         if (basicDicSize > 0) {
             basicDic = (char *)malloc(basicDicSize);
             memcpy(basicDic, shm->data(), basicDicSize);
-            shm->unmap();
         }
         return true;
     } else {

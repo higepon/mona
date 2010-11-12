@@ -75,7 +75,6 @@ Glaunch::Glaunch()
 			}
 		 }
 	}
-    shm->unmap();
 #else
 	list->add("TEST1.EXE");
 	list->add("TEST2.EXE");

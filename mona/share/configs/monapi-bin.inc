@@ -26,6 +26,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET).BIN $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
+	rm -f dependencies
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif

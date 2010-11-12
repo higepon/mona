@@ -60,7 +60,6 @@ int _read(void *self, void *buf, size_t size)
     }
     readsize = (int)shm->size();
     memcpy(p, shm->data(), readsize);
-    shm->unmap();
     return readsize;
 }
 
@@ -79,9 +78,6 @@ int _write(void *self, void *buf, size_t size)
 
     result = monapi_file_write((uint32_t)f->_file, shm, shm.size());
 
-    if(shm.unmap() != M_OK) {
-        monapi_warn("SharedMemory::unmap failed");
-    }
     return (int)result;
 }
 

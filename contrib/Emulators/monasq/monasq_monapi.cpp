@@ -234,7 +234,6 @@ public:
     }
     void dispose() {
         if (mi) {
-            mi->unmap();
             delete mi;
             mi = NULL;
         }
@@ -498,7 +497,6 @@ SquirrelObject wrapper_monapi_file_read_directory(const char* path) {
         table.SetValue( "attr", (int)pInfo->attr );
         array.ArrayAppend( table );
     };
-    mi->unmap();
     delete mi;
     return array;
 }

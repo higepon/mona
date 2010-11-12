@@ -216,8 +216,6 @@ int InfoNES_ReadRom( const char *pszFileName )
 	}
 	fp1 = (BYTE *)malloc(shm->size());
 	memcpy(fp1, shm->data(), shm->size());
-    shm->unmap();
-
 	/* Read header */
 	for (i = 0; i < 4; i++) NesHeader.byID[i] = *fp1++;
 	NesHeader.byRomSize  = *fp1++;

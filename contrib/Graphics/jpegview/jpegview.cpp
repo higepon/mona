@@ -41,7 +41,6 @@ int main(int argc, char* argv[])
     if (jpeg.Open(shm->data(), shm->size()) != 0)
     {
         printf("not supported image\n");
-        shm->unmap();
         return -1;
     }
 
@@ -78,6 +77,5 @@ int main(int argc, char* argv[])
     }
 
     delete [] picture;
-    shm->unmap();
     return 0;
 }

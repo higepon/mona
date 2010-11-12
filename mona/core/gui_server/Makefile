@@ -39,7 +39,7 @@ clean:
 
 depend:
 	rm -f dependencies
-	$(CXX) -MM $(INCLUDE) -I. $(CXXFLAGS) $(SOURCES) > dependencies
+	$(CXX) -MM -I. $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 distclean: clean
 	rm dependencies

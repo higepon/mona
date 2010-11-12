@@ -176,11 +176,9 @@ static void DrawLoop()
 	if (filebuf == NULL)
 	{
 		printf("memory allocate error\n");
-        shm->unmap();
 		return;
 	}
 	memcpy(filebuf, shm->data(), shm->size());
-    shm->unmap();
 	mv.data.mem = filebuf;
 	mv.data.pos = 0;
 	mv.data.size = filesize;
@@ -224,7 +222,6 @@ int main(int argc, char* argv[])
 			printf("file read error\n");
 		    return(-1);
 		}
-        shm->unmap();
 	}
 
 	// Create thread

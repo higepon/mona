@@ -41,7 +41,6 @@ static void read_head_byte_many_times(const char* path, uint8_t expected)
         scoped_ptr<SharedMemory> shm(monapi_file_read(file, 1));
         EXPECT_EQ(1, shm->size());
         EXPECT_EQ(expected, shm->data()[0]);
-        EXPECT_EQ(M_OK, shm->unmap());
         monapi_file_close(file);
     }
 }

@@ -473,9 +473,6 @@ void MonaTerminal::addHistory(String line)
         if (sizeWritten != shm.size()) {
             monapi_warn("history file write failure");
         }
-        if (shm.unmap() != M_OK) {
-            monapi_warn("shm unmap error on addHistory");
-        }
         monapi_file_close(id);
     }
 

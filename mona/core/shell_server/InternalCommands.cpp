@@ -172,7 +172,6 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 *p = 0;
                 formatWrite((const char*)shm->data());
             }
-            shm->unmap();
             break;
         }
 
