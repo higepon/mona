@@ -1,3 +1,14 @@
+* Mona 0.3.1 RELEASE NOTE
+** Overview
+Added Socket API(experimental) and Mosh (R6RS Scheme Interpreter).
+
+- Added new Shared Memory API.
+- Removed monapi_cmemoryinfo family API.
+- Changed file API to use new Shared Memory API.
+- Supported long file name.
+- Added FAT32 file system.
+- Organized error number on API.
+
 * Mona 0.3.0 RELEASE NOTE
 ** Overview
 This the first release of Mona for daily use.
@@ -27,19 +38,19 @@ You can listen to music, run a web server and do some work with an interactive s
 See contrib/application_catalog.txt.
 
 ** Roadmap and Directions
-by version 0.0.3 (done)
+by version 0.3.0 (done)
 - interactive Shell
 - Sounds
 - Stable NIC driver
 
-by version 0.0.4
+by version 0.4.0
 - Port BSD Socket
 
-by version 0.0.5
+by version 0.5.0
 - Port Mosh Scheme
 - Some network applications
 
-by version 0.0.6
+by version 0.6.0
 - Web browser
 - Rewrote some core components in Scheme
 

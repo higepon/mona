@@ -24,7 +24,7 @@ static void open_close_many_times(const char* path)
 
 static void read_head_byte_many_times(const char* path, uint8_t expected)
 {
-    const int N = 10000;
+    const int N = 100000;
     for (int i = 0; i < N; i++) {
         if (i % 10 == 0) {
             logprintf(".");
