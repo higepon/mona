@@ -1,8 +1,10 @@
 #ifndef _MONAPI_MESSAGES_
 #define _MONAPI_MESSAGES_
 
+#ifdef __cplusplus
 #include <monapi/MemoryMap.h>
 #include <monapi/SharedMemory.h>
+#endif
 #include <servers/keyboard.h>
 #include <servers/mouse.h>
 #include <servers/process.h>
@@ -51,6 +53,7 @@ typedef struct
     } mouse;
 } CommonParameters;
 
+#ifdef __cplusplus
 class MonAPI::SharedMemory;
 extern intptr_t monapi_file_write(uint32_t fileID, const MonAPI::SharedMemory& mem, uint32_t size);
 extern MonAPI::SharedMemory* monapi_file_read(uint32_t fileID, uint32_t size);
@@ -62,6 +65,7 @@ extern MonAPI::SharedMemory* monapi_call_file_decompress_st5(const MonAPI::Share
 extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2(const MonAPI::SharedMemory& shm);
 extern intptr_t monapi_clipboard_set(const MonAPI::SharedMemory& shm);
 extern MonAPI::SharedMemory* monapi_clipboard_get();
+#endif
 #ifdef __cplusplus
 extern "C"
 {

@@ -5,7 +5,7 @@ all:
 	make clean
 	MONADIR=$(MONADIR) perl mkimg.pl
 	make iso
-	make backup_user
+	(test -f ./fat32_user.img && make backup_user) || true
 	make fat32
 	cp mona.img test.img
 
