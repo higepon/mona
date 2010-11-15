@@ -35,7 +35,15 @@ class BlockDeviceDriver : public IStorageDevice
 {
 public:
     BlockDeviceDriver(int deviceIndex) :
-        vb_(VirtioBlock::probe(deviceIndex))
+        vb_(VirtioBlock::probe(deviceIndex)),
+        sectorSize_(512)
+    {
+        ASSERT(vb_.get() != NULL);
+    }
+
+    BlockDeviceDriver(int deviceIndex, size_t sectorSize) :
+        vb_(VirtioBlock::probe(deviceIndex)),
+        sectorSize_(sectorSize)
     {
         ASSERT(vb_.get() != NULL);
     }
@@ -57,16 +65,25 @@ public:
     // ISO9660 assume sector size 2048, but our block device driver 512.
     int read(uint32_t lba, void* buf, int size)
     {
-        if (size == vb_->read(buf, lba * 4, size)) {
+        int64_t sizeRead = vb_->read(buf, lba * (sectorSize_ / 512), size);
+        if (size == sizeRead) {
             return M_OK;
         } else {
-            return -1;
+            if (sizeRead < 0) {
+                return sizeRead;
+            } else {
+                return M_READ_ERROR;
+            }
         }
     }
 
-    int write(uint32_t lba, void* buf, int size)
+    int write(uint32_t lba, const void* buf, int size)
     {
-        return M_NOT_SUPPORTED;
+        if (size == vb_->write(buf, lba * (sectorSize_ / 512), size)) {
+            return M_OK;
+        } else {
+            return M_WRITE_ERROR;
+        }
     }
 
     int ioctl(void* p)
@@ -75,6 +92,7 @@ public:
     }
 private:
     MonAPI::scoped_ptr<VirtioBlock> vb_;
+    const size_t sectorSize_;
 };
 
 #endif

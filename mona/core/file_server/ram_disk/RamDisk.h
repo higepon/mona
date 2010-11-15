@@ -3,7 +3,6 @@
 
 #include <monalibc.h>
 #include "FileSystem.h"
-#include "VnodeManager.h"
 #include <map>
 
 int ramdisk_debug_times = 0;
@@ -133,10 +132,8 @@ namespace RamDisk {
       {
         public:
 
-          RamDiskFileSystem(VnodeManager* vmanager) {
-              vmanager_ = vmanager;
-
-              root_ = vmanager_->alloc();
+          RamDiskFileSystem() {
+              root_ = new Vnode;
               // root_->fnode  = rootDir;
               root_->fs     = this;
               root_->type = Vnode::DIRECTORY;
@@ -150,45 +147,33 @@ namespace RamDisk {
 
 
         public:
-          virtual int initialize(){ return MONA_SUCCESS; }
+          virtual int initialize(){ return M_OK; }
           virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type)
             {
                 ramdisk_debug_times++;
-
-                Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-                if (v != NULL && v->type == type)
-                  {
-                      *found = v;
-                      return MONA_SUCCESS;
-                  }
-
-
                 FileMap::iterator it = files_.find(file);
                 if(it == files_.end())
-                  return MONA_ERROR_ENTRY_NOT_FOUND;
+                  return M_FILE_NOT_FOUND;
 
-
-
-                Vnode* newVnode = vmanager_->alloc(); //never return NULL?
+                Vnode* newVnode = new Vnode;
+                ASSERT(newVnode);
                 newVnode->fnode = (*it).second;
                 newVnode->type = type;
                 newVnode->fs = this;
-                vmanager_->cacher()->add(diretory, file, newVnode);
                 *found = newVnode;
-
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
           virtual int open(Vnode* file, intptr_t mode)
             {
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
           virtual int truncate(Vnode* file)
           {
               FileInfo* f = (FileInfo*)file->fnode;
               f->truncate();
-              return MONA_SUCCESS;
+              return M_OK;
           }
 
           virtual int create(Vnode* dir, const std::string& file)
@@ -198,7 +183,6 @@ namespace RamDisk {
                 {
                     // overwrite case. remove previous file.
                     FileInfo* fi  = (*it).second;
-                    vmanager_->cacher()->remove(root_, fi->name);
                     delete fi;
                     files_.erase(it);
                 }
@@ -206,37 +190,35 @@ namespace RamDisk {
                 finfo->name = file;
                 finfo->size = 0;
                 files_.insert(std::pair<std::string, FileInfo*>(file, finfo));
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
 
           virtual int read(Vnode* file, struct io::Context* context)
             {
-                if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+                if (file->type != Vnode::REGULAR) return M_FILE_NOT_FOUND;
                 FileInfo* f = (FileInfo*)file->fnode;
                 uint32_t offset = context->offset;
                 uint32_t readSize = context->size;
                 uint32_t rest = f->size - offset;
 
-                if (rest < readSize)
-                  {
+                if (rest < readSize) {
                       readSize = rest;
-                  }
-                context->memory = monapi_cmemoryinfo_new();
+                }
+                context->memory = new SharedMemory(readSize);
                 if(readSize == 0)
-                  return MONA_SUCCESS;
+                  return M_OK;
 
                 // Use immediate map for performance reason.
-                if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, true) != M_OK)
-                  {
-                      monapi_cmemoryinfo_delete(context->memory);
-                      return MONA_ERROR_MEMORY_NOT_ENOUGH;
-                  }
-                f->readChunks(offset, readSize, context->memory->Data);
+                if (context->memory->map(true) != M_OK) {
+                    delete context->memory;
+                    return M_NO_MEMORY;
+                }
+                f->readChunks(offset, readSize, context->memory->data());
 
                 context->resultSize = readSize;
                 context->offset += readSize;
-                return MONA_SUCCESS;
+                return M_OK;
 
             }
 
@@ -248,16 +230,16 @@ namespace RamDisk {
                     return M_WRITE_ERROR;
                 }
                 FileInfo* f = (FileInfo*)file->fnode;
-                monapi_cmemoryinfo* memory = context->memory;
+                SharedMemory* memory = context->memory;
 
                 uint32_t offset = context->offset;
                 uint32_t writeSize = context->size;
-                f->writeChunks(offset, writeSize, memory->Data);
+                f->writeChunks(offset, writeSize, memory->data());
                 f->size = f->size > offset+writeSize ? f->size : offset+writeSize;
                 context->offset += writeSize;
                 return writeSize;
           }
-          virtual int readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+          virtual int readdir(Vnode* dir, SharedMemory** entries)
             {
                 typedef std::vector<monapi_directoryinfo*> Files;
                 Files files;
@@ -265,26 +247,25 @@ namespace RamDisk {
                 currentIt_ = files_.begin();
 
 
-                while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
+                while (readdirInternal(di.name, &di.size, &di.attr) == M_OK)
                   {
                       files.push_back(new monapi_directoryinfo(di));
                   }
 
-                monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-
                 int size = files.size();
-                if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, true) != M_OK)
+                SharedMemory* ret = new SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+                if (ret->map(true) != M_OK)
                   {
-                      monapi_cmemoryinfo_delete(ret);
+                      delete ret;
                       for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
                         {
                             delete (*it);
                         }
-                      return MONA_ERROR_MEMORY_NOT_ENOUGH;
+                      return M_NO_MEMORY;
                   }
 
-                memcpy(ret->Data, &size, sizeof(int));
-                monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+                memcpy(ret->data(), &size, sizeof(int));
+                monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
 
                 for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
                   {
@@ -293,22 +274,22 @@ namespace RamDisk {
                       p++;
                   }
                 *entries = ret;
-                return MONA_SUCCESS;
+                return M_OK;
             }
-          virtual int close(Vnode* file) { return MONA_SUCCESS; }
+          virtual int close(Vnode* file) { return M_OK; }
           virtual int delete_file(Vnode* file)
             {
                 if(file == root_)
-                  return MONA_FAILURE; // root is undeletable
+                  return M_BAD_ARG; // root is undeletable
 
                 destroyVnode(file);
-                return MONA_SUCCESS;
+                return M_OK;
             }
           virtual int stat(Vnode* file, Stat* st)
             {
                 FileInfo* f = (FileInfo*)file->fnode;
                 st->size = f->size;
-                return MONA_SUCCESS;
+                return M_OK;
             }
           virtual Vnode* getRoot() const
             {
@@ -326,7 +307,6 @@ namespace RamDisk {
                   }
                 FileInfo* finfo = (FileInfo*)vnode->fnode;
                 std::string name = finfo->name;
-                vmanager_->cacher()->remove(root_, name);
                 FileMap::iterator it = files_.find(name);
                 ASSERT(it != files_.end());
                 delete finfo;
@@ -335,22 +315,19 @@ namespace RamDisk {
             }
 
         protected:
-          virtual int deviceOn(){ return MONA_SUCCESS; }
-          virtual int deviceOff(){ return MONA_SUCCESS; }
           virtual int readdirInternal(char* name, int* size, int* attribute)
             {
                 *attribute = 0;
                 if(currentIt_ == files_.end())
-                  return MONA_FAILURE;
+                  return M_FILE_NOT_FOUND;
 
                 strcpy(name, (*currentIt_).first.c_str());
                 *size = (*currentIt_).second->size;
 
                 currentIt_++;
-                return MONA_SUCCESS;
+                return M_OK;
             }
 
-          VnodeManager* vmanager_;
           Vnode* root_;
           FileMap files_;
           FileMap::iterator currentIt_;

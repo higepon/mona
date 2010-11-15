@@ -46,6 +46,28 @@ typedef struct GetaddrinfoPacket {
     char data[0];
 } GetaddrinfoPacket;
 
+struct AcceptArg
+{
+    int sockfd;
+    MessageInfo msg;
+};
+
+static void __fastcall acceptThread(void* arg)
+{
+    AcceptArg* acceptArg = (AcceptArg*)arg;
+    struct sockaddr_in waddr;
+    socklen_t writer_len;
+    int s = accept(acceptArg->sockfd, (struct sockaddr*)&waddr, &writer_len);
+    if (Message::sendBuffer(acceptArg->msg.from, &waddr, writer_len) != M_OK) {
+        MONAPI_WARN("failed to reply %s", __func__);
+    }
+    if (Message::reply(&acceptArg->msg, s, errno) != M_OK) {
+        MONAPI_WARN("failed to reply %s", __func__);
+    }
+    delete acceptArg;
+    exit(-1);
+}
+
 static void __fastcall messageLoop(void* arg)
 {
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK) {
@@ -154,14 +176,11 @@ static void __fastcall messageLoop(void* arg)
         }
         case MSG_NET_SOCKET_ACCEPT:
         {
-            int sockfd = msg.arg1;
-            struct sockaddr_in waddr;
-            socklen_t writer_len;
-            int s = accept(sockfd, (struct sockaddr*)&waddr, &writer_len);
-            if (Message::sendBuffer(msg.from, &waddr, writer_len) != M_OK) {
-                MONAPI_WARN("failed to reply %s", __func__);
-            }
-            if (Message::reply(&msg, s, errno) != M_OK) {
+            AcceptArg* arg = new AcceptArg;
+            arg->sockfd = msg.arg1;
+            arg->msg = msg;
+            uintptr_t waitId = syscall_mthread_create_with_arg(acceptThread, arg);
+            if (Message::reply(&msg, waitId) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             break;

@@ -36,8 +36,7 @@ void FileBrowser::Dispose()
     BASE::Dispose();
     if (this->files == NULL) return;
 
-    monapi_cmemoryinfo_dispose(this->files);
-    monapi_cmemoryinfo_delete(this->files);
+    delete this->files;
     this->files = NULL;
 }
 
@@ -54,8 +53,7 @@ void FileBrowser::ReadDirectory(String path)
     buf[len] = '\0';
     if (this->files != NULL)
     {
-        monapi_cmemoryinfo_dispose(this->files);
-        monapi_cmemoryinfo_delete(this->files);
+        delete this->files;
     }
     this->files = monapi_file_read_directory(buf);
     delete [] buf;
@@ -83,9 +81,9 @@ void FileBrowser::OnPaint()
     else
     {
         int x = VIEW_OFFSET_X, y = VIEW_OFFSET_Y;
-        int len = *(int*)this->files->Data;
+        int len = *(int*)this->files->data();
         this->skip = 0;
-        monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->Data[sizeof(int)];
+        monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->data()[sizeof(int)];
         for (int i = 0; i < len; i++, di++)
         {
             String name = di->name;
@@ -116,7 +114,7 @@ int FileBrowser::GetTarget(int ex, int ey)
     int nx = (this->get_ClientSize().Width - VIEW_OFFSET_X) / ARRANGE_WIDTH;
     if (x >= nx) return -1;
 
-    int len = *(int*)this->files->Data - this->skip;
+    int len = *(int*)this->files->data() - this->skip;
     int num = x + y * nx;
     if (num >= len) return -1;
 
@@ -163,10 +161,10 @@ void FileBrowser::Open(int target)
 {
     if (this->files == NULL) return;
 
-    int len = *(int*)this->files->Data - this->skip;
+    int len = *(int*)this->files->data() - this->skip;
     if (target < 0 || target >= len) return;
 
-    monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->Data[sizeof(int)] + this->skip + target;
+    monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->data()[sizeof(int)] + this->skip + target;
     String name = di->name;
     Icons icon = Icon::GetIcon(di);
     if (icon == Icons_Executable && (this->path == "/" || this->path == "/SERVERS")) icon = Icons_Server;

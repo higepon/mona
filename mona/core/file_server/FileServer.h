@@ -30,16 +30,20 @@ public:
     int initializeFileSystems();
     int initializeRootFileSystem();
     int initializeMountedFileSystems();
-    monapi_cmemoryinfo* readFileAll(const std::string& file);
-    monapi_cmemoryinfo* ST5DecompressFile(const char* file);
-    int64_t GetST5DecompressedSize(monapi_cmemoryinfo* mi);
-    monapi_cmemoryinfo* ST5Decompress(monapi_cmemoryinfo* mi);
+    MonAPI::SharedMemory* readFileAll(const std::string& file, intptr_t& lastError);
+    MonAPI::SharedMemory* ST5DecompressFile(const char* file);
+    int64_t GetST5DecompressedSize(SharedMemory* mi);
+    MonAPI::SharedMemory* ST5Decompress(SharedMemory* mi);
+
+private:
+    void send_and_release_shm(SharedMemory* mi, MessageInfo* msg);
 
 protected:
     typedef std::vector<FileSystem*> FileSystems;
-    VnodeManager* vmanager_;
+    VnodeManager vmanager_;
     IDEDriver* cd_;
     BlockDeviceDriver* bd_;
+    BlockDeviceDriver* bd4_;
     FDCDriver* fd_;
     FileSystem* rootFS_;
     FileSystems mountedFSs_;

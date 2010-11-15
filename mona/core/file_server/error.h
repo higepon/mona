@@ -13,39 +13,6 @@
 #ifndef _MONA_FILE_ERROR_
 #define _MONA_FILE_ERROR_
 
-// enum
-// {
-//     FS_NO_ERROR            = 0x00,
-//     FS_INIT_ERROR          = 0x01,
-//     FS_GET_ROOT_ERROR      = 0x02,
-//     FS_GET_DIR_ERROR       = 0x03,
-//     FS_DIR_NOT_EXIST_ERROR = 0x04,
-//     FS_ALREADY_OPEN_ERROR  = 0x05,
-//     FS_FILE_OPEN_ERROR     = 0x06,
-//     FS_FILE_NOT_FOUND      = 0x06,
-//     FS_FILE_IS_NOT_OPEN    = 0x07,
-//     FS_FILE_EXIST          = 0x08,
-//     FS_FILE_CREATE_ERROR   = 0x09
-// };
-
-// enum
-// {
-//     IDM_OBJECT_NOT_FOUND = -1,
-//     IDM_SECURITY_ERROR   = -2
-// };
-
-enum
-{
-    MONA_ERROR_DUMMY = 2, /* don't change */
-    MONA_ERROR_INVALID_ARGUMENTS,
-    MONA_ERROR_ENTRY_NOT_FOUND,
-    MONA_ERROR_ON_READ,
-    MONA_ERROR_ON_ACCESS,
-    MONA_ERROR_MEMORY_NOT_ENOUGH,
-    MONA_ERROR_ON_DEVICE,
-};
-
-
 #define	EPERM		1		/* Operation not permitted */
 #define	ENOENT		2		/* No such file or directory */
 #define	ESRCH		3		/* No such process */

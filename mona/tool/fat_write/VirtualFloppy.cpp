@@ -27,7 +27,7 @@ int VirtualFloppy::read (uint32_t lba, void* buf, int size)
         return result;
 }
 
-int VirtualFloppy::write(uint32_t lba, void* buf, int size)
+int VirtualFloppy::write(uint32_t lba, const void* buf, int size)
 {
         fseek(fp, lba * 512, SEEK_SET);
 

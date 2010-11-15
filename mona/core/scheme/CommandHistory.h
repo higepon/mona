@@ -23,16 +23,22 @@ public:
     CommandHistory() {}
     virtual ~CommandHistory() {}
 
-    void add(::util::String history)
+    bool add(::util::String history)
     {
-        if (history.size() == 0) return;
+        if (history.size() == 0) return false;
         if (history.last() == '\n')
         {
             history.chop();
         }
 
+        for (int i = 0; i < histories_.size(); i++) {
+          if (*(histories_[i]) == history) {
+            return false;
+          }
+        }
         histories_.add(new ::util::String(history));
         positionToNewest();
+        return true;
     }
 
     ::util::String* getOlderHistory()
@@ -45,6 +51,16 @@ public:
     {
         positionToNewer();
         return get();
+    }
+
+    ::util::String* findFirstMatch(::util::String text)
+    {
+        for (int i = 0; i < histories_.size(); i++) {
+            if (strstr(histories_[i]->data(), text.data()) != NULL) {
+                return histories_[i];
+            }
+        }
+        return NULL;
     }
 
 private:

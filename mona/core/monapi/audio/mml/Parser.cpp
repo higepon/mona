@@ -1,5 +1,5 @@
 #include <monapi/audio/mml/Parser.h>
-
+#include <sys/error.h>
 
 using namespace std;
 using namespace MonAPI::audio::mml;
@@ -136,7 +136,7 @@ int Parser::parseInternal()
         if (EOF == c)
         {
             channels_->push_back(channel_);
-            return MONA_SUCCESS;
+            return M_OK;
         }
         if (__isspace(c)) continue;
 

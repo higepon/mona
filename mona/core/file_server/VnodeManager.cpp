@@ -1,9 +1,13 @@
 #include "VnodeManager.h"
 #include "sys/error.h"
 #include <monapi.h>
+#include <monapi/Buffer.h>
 
 using namespace std;
 using namespace io;
+using namespace MonAPI;
+
+extern string upperCase(const string& s);
 
 VnodeManager::VnodeManager()
 {
@@ -18,47 +22,81 @@ VnodeManager::~VnodeManager()
 int VnodeManager::delete_file(const std::string& name)
 {
     // now fullpath only. fix me
-    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (name.compare(0, 1, "/") != 0) return M_BAD_ARG;
 
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_SUCCESS)
-    {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+    int ret = lookup(root_, filename, &file);
+    if (ret != M_OK) {
+        return ret;
     }
-    return file->fs->delete_file(file);
+    ret = file->fs->delete_file(file);
+    if (ret == M_OK) {
+        Vnode* targetDirectory = NULL;
+        uint32_t foundIndex = name.find_last_of('/');
+        string filename = name;
+        if (foundIndex == name.npos) {
+            targetDirectory = root_;
+        } else {
+            string dirPath = name.substr(1, foundIndex - 1);
+            int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY);
+            if (ret != M_OK) {
+                return ret;
+            }
+            filename = name.substr(foundIndex + 1, name.size() - foundIndex);
+        }
+        cacher_->remove(targetDirectory, filename);
+    }
+    return ret;
+}
+
+int VnodeManager::lookupOne(Vnode* directory, const string& file, Vnode** found, int type)
+{
+    Vnode* v = cacher_->lookup(directory, file);
+    if (v != NULL && v->type == type) {
+        *found = v;
+        return M_OK;
+    }
+    intptr_t ret =  directory->fs->lookup(directory, file, found, type);
+    if (ret == M_OK) {
+        cacher_->add(directory, file, *found);
+    }
+    return ret;
 }
 
 int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, int type)
 {
+    if (directory->type != Vnode::DIRECTORY) {
+        return M_BAD_ARG;
+    }
+
     vector<string> directories;
     split(file, '/', directories);
-    int ret = MONA_FAILURE;
+    int ret = M_FILE_NOT_FOUND;
     Vnode* root = directory;
-    for (uint32_t i = 0; i < directories.size(); i++)
-    {
+    for (uint32_t i = 0; i < directories.size(); i++) {
         string name = directories[i];
         int vtype = (i == directories.size() - 1) ? type : Vnode::DIRECTORY;
-        ret = root->fs->lookup(root, name, found, vtype);
-        if (ret != MONA_SUCCESS) return ret;
+        ret = lookupOne(root, name, found, vtype);
+        if (ret != M_OK) {
+            return ret;
+        }
         // link
-        if ((*found)->mountedVnode != NULL)
-        {
+        if ((*found)->mountedVnode != NULL) {
             *found = (*found)->mountedVnode;
         }
-        if (i != directories.size() -1)
-        {
+        if (i != directories.size() -1) {
             root = *found;
         }
     }
     return ret;
 }
 
-int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
+int VnodeManager::readdir(const std::string&name, SharedMemory** mem)
 {
     // now fullpath only. fix me
-    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (name.compare(0, 1, "/") != 0) return M_FILE_NOT_FOUND;
 
     // remove first '/'. fix me
     string filename;
@@ -77,13 +115,16 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     }
     else
     {
-        if (lookup(root_, filename, &dir, Vnode::DIRECTORY) != MONA_SUCCESS)
+        int ret = lookup(root_, filename, &dir, Vnode::DIRECTORY);
+        if (ret != M_OK)
         {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return ret;
         }
     }
-    if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) {
-        return MONA_FAILURE;
+    int ret = dir->fs->readdir(dir, mem);
+
+    if (ret != M_OK) {
+        return ret;
     }
 
     // check mounted directories on caches.
@@ -92,9 +133,9 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     cacher_->enumCaches(dir, caches);
     if (!caches.empty()) {
         std::map<std::string, bool> seen;
-        for (size_t i = sizeof(int); i < (*mem)->Size; i += sizeof(monapi_directoryinfo)) {
-            monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->Data[i]));
-            seen.insert(std::pair<std::string, bool>(p->name, true));
+        for (size_t i = sizeof(int); i < (*mem)->size(); i += sizeof(monapi_directoryinfo)) {
+            monapi_directoryinfo* p = (monapi_directoryinfo*)(&((*mem)->data()[i]));
+            seen.insert(std::pair<std::string, bool>(upperCase(p->name), true));
         }
 
         strings diff;
@@ -105,28 +146,32 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
         }
 
         if (!diff.empty()) {
-            monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-            int size = (*mem)->Size + diff.size() * sizeof(monapi_directoryinfo);
-            if (monapi_cmemoryinfo_create(ret, size, MONAPI_FALSE, true) != M_OK) {
-                monapi_cmemoryinfo_delete(ret);
-                return MONA_FAILURE;
+            int size = (*mem)->size() + diff.size() * sizeof(monapi_directoryinfo);
+            SharedMemory* ret = new SharedMemory(size);
+            if (ret->map() != M_OK) {
+                return M_NO_MEMORY;
             }
-            memcpy(ret->Data, (*mem)->Data, (*mem)->Size);
-            int entriesNum = *((int*)(*mem)->Data) + diff.size();
-            memcpy(ret->Data, &entriesNum, sizeof(int));
+            MonAPI::Buffer dest(ret->data(), ret->size());
+            MonAPI::Buffer src((*mem)->data(), (*mem)->size());
+            bool isOK = MonAPI::Buffer::copy(dest, src, (*mem)->size());
+            ASSERT(isOK);
+            int entriesNum = *((int*)(*mem)->data()) + diff.size();
+            MonAPI::Buffer src2(&entriesNum, sizeof(int));
+            isOK = MonAPI::Buffer::copy(dest, src2, sizeof(int));
+            ASSERT(isOK);
             for (size_t i = 0; i < diff.size(); i++) {
                 monapi_directoryinfo di;
                 di.size = 0;
                 strcpy(di.name, diff[i].c_str());
                 di.attr = ATTRIBUTE_DIRECTORY;
-                memcpy(&(ret->Data[(*mem)->Size + i * sizeof(monapi_directoryinfo)]), &di, sizeof(monapi_directoryinfo));
+                MonAPI::Buffer dirBuf(&di, sizeof(monapi_directoryinfo));
+                bool isOK = MonAPI::Buffer::copy(dest, (*mem)->size() + i * sizeof(monapi_directoryinfo), dirBuf, 0, sizeof(monapi_directoryinfo));
+                ASSERT(isOK);
             }
-            monapi_cmemoryinfo_dispose(*mem);
-            monapi_cmemoryinfo_delete(*mem);
             *mem = ret;
         }
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int VnodeManager::create(const std::string& name)
@@ -138,8 +183,9 @@ int VnodeManager::create(const std::string& name)
         targetDirectory = root_;
     } else {
         string dirPath = name.substr(1, foundIndex - 1);
-        if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS) {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+        int ret = lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY);
+        if (ret != M_OK) {
+            return ret;
         }
         filename = name.substr(foundIndex + 1, name.size() - foundIndex);
     }
@@ -148,45 +194,42 @@ int VnodeManager::create(const std::string& name)
 
 int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)
 {
-
     static bool tooLongWarnShown = false;
     // Joliet spec restriction.
     if (name.size() > 64 && !tooLongWarnShown) {
         monapi_warn("too long filename <%s>\n", name.c_str());
         tooLongWarnShown = true;
     }
-
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) {
-        return MONA_ERROR_INVALID_ARGUMENTS;
+        return M_UNKNOWN;
     }
-
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_SUCCESS) {
+    if (lookup(root_, filename, &file) != M_OK) {
         if (mode & FILE_CREATE) {
             int ret = create(name);
-            if (MONA_SUCCESS != ret) {
+            if (M_OK != ret) {
                 return ret;
             }
-            if (lookup(root_, filename, &file) != MONA_SUCCESS) {
-                return MONA_ERROR_ENTRY_NOT_FOUND;
+            if (lookup(root_, filename, &file) != M_OK) {
+                return M_FILE_NOT_FOUND;
             }
         } else {
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
     } else {
         // found case
         if (mode & FILE_TRUNCATE) {
             int ret = file->fs->truncate(file);
-            if (ret != MONA_SUCCESS) {
+            if (ret != M_OK) {
                 return ret;
             }
         }
     }
     int ret = file->fs->open(file, mode);
-    if (MONA_SUCCESS != ret) {
+    if (M_OK != ret) {
         return ret;
     }
     *fileID = this->fileID(file, tid);
@@ -194,7 +237,7 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
     fileInfoMap_.insert(pair< uint32_t, FileInfo* >(*fileID, fileInfo));
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 Vnode* VnodeManager::alloc()
@@ -204,22 +247,22 @@ Vnode* VnodeManager::alloc()
     return v;
 }
 
-int VnodeManager::read(uint32_t fileID, uint32_t size, monapi_cmemoryinfo** mem)
+int VnodeManager::read(uint32_t fileID, uint32_t size, SharedMemory** mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-    if (it == fileInfoMap_.end())
-    {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (it == fileInfoMap_.end()) {
+        return M_FILE_NOT_FOUND;
     }
     io::FileInfo* fileInfo = (*it).second;
     io::Context* context = &(fileInfo->context);
     context->size = size;
     int result = fileInfo->vnode->fs->read(fileInfo->vnode, context);
     *mem = context->memory;
+    context->memory = NULL;
     return result;
 }
 
-int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
+int VnodeManager::write(uint32_t fileID, uint32_t size, SharedMemory* mem)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end()) {
@@ -235,22 +278,20 @@ int VnodeManager::write(uint32_t fileID, uint32_t size, monapi_cmemoryinfo* mem)
 int VnodeManager::close(uint32_t fileID)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
-    if (it == fileInfoMap_.end())
-    {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (it == fileInfoMap_.end()) {
+        return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;
     fileInfo->context.memory = NULL;
     Vnode* file = fileInfo->vnode;
     int ret = file->fs->close(file);
-    if (MONA_SUCCESS != ret)
-    {
+    if (M_OK != ret) {
         return ret;
     }
     fileInfoMap_.erase(fileID);
     delete fileInfo;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int VnodeManager::stat(uint32_t fileID, Stat* st)
@@ -258,7 +299,7 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
     if (it == fileInfoMap_.end())
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     FileInfo* fileInfo = (*it).second;
@@ -292,8 +333,8 @@ int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
     {
         Stat st;
         intptr_t ret = file->fs->stat(file, &st);
-        if (MONA_SUCCESS != ret) {
-            return M_UNKNOWN;
+        if (M_OK != ret) {
+            return ret;
         }
         newOffset = st.size-offset;
         break;
@@ -313,7 +354,7 @@ int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
 int VnodeManager::mount(Vnode* a, const std::string& path, Vnode* b)
 {
     cacher_->add(a, path, b);
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 void VnodeManager::split(string str, char ch, vector<string>& v)

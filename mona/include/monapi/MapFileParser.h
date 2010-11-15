@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <monapi/cmemoryinfo.h>
 // #include <monalibc/stdio.h>
 #include <monalibc/limits.h>
 #include <monalibc/stdlib.h> // algorithm require rand()
@@ -26,12 +25,12 @@ class FileReader
 {
   public:
     static const int EOF = -1;
-    FileReader() : pos_(0), cm_(NULL), eof_(false){}
+    FileReader() : pos_(0), shm_(NULL), eof_(false){}
     inline bool end() { return eof_; }
     bool open(const std::string& path)
     {
-        cm_ = monapi_file_read_all(path.c_str());
-        return cm_ != NULL;
+        shm_ = monapi_file_read_all(path.c_str());
+        return shm_ != NULL;
     }
     void close()
     {
@@ -39,9 +38,9 @@ class FileReader
     }
     int getc()
     {
-        if(cm_->Size <= pos_)
+        if(shm_->size() <= pos_)
             return EOF;
-        return cm_->Data[pos_++];
+        return shm_->data()[pos_++];
     }
     std::string getLine()
     {
@@ -65,15 +64,14 @@ class FileReader
   private:
     void close_if_necessary()
     {
-        if(cm_ != 0)
+        if(shm_ != 0)
         {
-            monapi_cmemoryinfo_dispose(cm_);
-            monapi_cmemoryinfo_delete(cm_);
-            cm_ = NULL;
+            delete shm_;
+            shm_ = NULL;
         }
     }
     uint32_t pos_;
-    monapi_cmemoryinfo *cm_;
+    MonAPI::SharedMemory* shm_;
     bool eof_;
 };
 
@@ -300,7 +298,7 @@ public:
         uint8_t *buf_;
     };
 
-    monapi_cmemoryinfo* serialize()
+    MonAPI::SharedMemory* serialize()
     {
         SymbolInfoEntrySerializer serializer;
         int size = 0;
@@ -308,16 +306,16 @@ public:
 
         std::for_each(Symbols.begin(), Symbols.end(), counter);
 
-        monapi_cmemoryinfo *buf = new monapi_cmemoryinfo();
+        MonAPI::SharedMemory *buf = new MonAPI::SharedMemory(size);
         if(!buf)
             return NULL;
-        if(M_OK != monapi_cmemoryinfo_create(buf, size, 0, true))
+        if(M_OK != buf->map(true))
         {
-            monapi_cmemoryinfo_delete(buf);
+            delete buf;
             return NULL;
         }
 
-        Serializer s(serializer, buf->Data, size);
+        Serializer s(serializer, buf->data(), size);
         std::for_each(Symbols.begin(), Symbols.end(), s);
         return buf;
     }

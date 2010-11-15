@@ -36,29 +36,19 @@
 
 #include <dirent.h>
 #include <stdint.h>
-#include <monapi/cmemoryinfo.h>
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <monapi/SharedMemory.h>
 
 struct _dir
 {
 	const char *path; /* used in MonaOS. */
 	int32_t	fileno;	/* unused in MonaOS. */
 	int	index;	/* index of monapi_directoryinfo */
-	monapi_cmemoryinfo *cmi;	/* data buffer */
+    MonAPI::SharedMemory* shm;	/* data buffer */
 };
 
 
 struct dirent* convertFromDirInfo(monapi_directoryinfo* di, struct dirent* ent);
-monapi_directoryinfo *getDirInfo(monapi_cmemoryinfo* cmi, int index);
-int getDirInfoNum(monapi_cmemoryinfo* cmi);
-
-
-#ifdef __cplusplus
-}
-#endif
+monapi_directoryinfo *getDirInfo(MonAPI::SharedMemory& shm, int index);
+int getDirInfoNum(MonAPI::SharedMemory& shm);
 
 #endif

@@ -6,12 +6,13 @@
 #include "IStorageDevice.h"
 #include "VnodeManager.h"
 #include "ISO9660.h"
+#include <sys/error.h>
 #include <vector>
 
 class ISO9660FileSystem : public FileSystem
 {
 public:
-    ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager);
+    ISO9660FileSystem(IStorageDevice* drive);
     virtual ~ISO9660FileSystem();
 
 public:
@@ -21,10 +22,10 @@ public:
     virtual int create(Vnode* dir, const std::string& file);
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
-    virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
+    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries);
     virtual int close(Vnode* file);
-    virtual int truncate(Vnode* file) { return MONA_FAILURE; }
-    virtual int delete_file(Vnode* file) { return MONA_FAILURE; }
+    virtual int truncate(Vnode* file) { return M_WRITE_ERROR; }
+    virtual int delete_file(Vnode* file) { return M_WRITE_ERROR; }
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
@@ -61,7 +62,6 @@ private:
 
 protected:
     IStorageDevice* drive_;
-    VnodeManager* vmanager_;
     iso9660::PrimaryVolumeDescriptor pdescriptor_;
     iso9660::Entry* rootDirectory_;
     Vnode* root_;

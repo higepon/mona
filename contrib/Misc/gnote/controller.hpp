@@ -112,6 +112,7 @@ namespace gnote {
         bool New(Cursol& c, Document& d);
         bool isPrefixCtrlX();
         void SelectAll();
+        void setClipBoard(Document& d);
     };
 
 }

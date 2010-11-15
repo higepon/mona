@@ -26,13 +26,3 @@ bool KObject::releaseRef()
     ASSERT(referanceCount_ >= 0);
     return referanceCount_ == 0;
 }
-
-void KObject::setOwner(Process* owner)
-{
-    owner_ = owner;
-}
-
-Process* KObject::getOwner() const
-{
-    return owner_;
-}

@@ -4,6 +4,7 @@ include $(SRCTOP)/Makefile.inc
 TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
 INSTDIR = $(BINDIR)/SERVERS
+ADDCFLAGS= -I .
 
 SHAREDIR   = $(MONADIR)/share
 
@@ -38,7 +39,7 @@ clean:
 
 depend:
 	rm -f dependencies
-	$(CXX) -MM $(INCLUDE) -I. $(CXXFLAGS) $(SOURCES) > dependencies
+	$(CXX) -MM -I. $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 distclean: clean
 	rm dependencies

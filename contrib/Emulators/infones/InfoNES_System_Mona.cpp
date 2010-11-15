@@ -208,19 +208,14 @@ int InfoNES_ReadRom( const char *pszFileName )
 {
 	int i;
 	BYTE *fp1;
-	monapi_cmemoryinfo* mi = NULL;
-	
 	/* Read File */
-	mi = monapi_file_read_all(pszFileName);
-	if (mi == NULL || mi->Size == 0) {
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(pszFileName));
+	if (shm.get() == NULL || shm->size() == 0) {
 		syscall_print("ROM file not found!");
 		exit(1);
 	}
-	fp1 = (BYTE *)malloc(mi->Size);
-	memcpy(fp1, mi->Data, mi->Size);
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
-
+	fp1 = (BYTE *)malloc(shm->size());
+	memcpy(fp1, shm->data(), shm->size());
 	/* Read header */
 	for (i = 0; i < 4; i++) NesHeader.byID[i] = *fp1++;
 	NesHeader.byRomSize  = *fp1++;

@@ -7,10 +7,10 @@
 
 using namespace MonAPI;
 
-static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
+static int CreateImage(SharedMemory** dest, uint32_t* entryPoint, SharedMemory* shm, bool prompt)
 {
     ELFParser parser;
-    if (!parser.set(mi->Data, mi->Size))
+    if (!parser.set(shm->data(), shm->size()))
     {
         if (prompt) _printf("%s: file type is not ELF!\n", SVR);
         return 3;
@@ -30,17 +30,15 @@ static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_c
         return 3;
     }
 
-    monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-    if (monapi_cmemoryinfo_create(dst, parser.getImageSize(), prompt ? MONAPI_TRUE : MONAPI_FALSE, true) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(dst);
+    SharedMemory* dst = new SharedMemory(parser.getImageSize());
+    if (dst->map(true) != M_OK) {
+        delete dst;
         return 3;
     }
-
-    if (!parser.load(dst->Data))
+    if (!parser.load(dst->data()))
     {
         if (prompt) _printf("%s: load failed!\n", SVR);
-        monapi_cmemoryinfo_delete(dst);
+        delete dst;
         return 3;
     }
 
@@ -49,29 +47,27 @@ static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, monapi_c
     return 0;
 }
 
-static int CreateImage(monapi_cmemoryinfo** dest, uint32_t* entryPoint, const CString& path, bool prompt)
+static int CreateImage(SharedMemory** dest, uint32_t* entryPoint, const CString& path, bool prompt)
 {
-    monapi_cmemoryinfo* mi = NULL;
+    SharedMemory* shm = NULL;
     if (path.endsWith(".EL2"))
     {
-        mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        shm = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
     else if (path.endsWith(".EL5"))
     {
-        mi = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        shm = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
     else
     {
-        mi = monapi_file_read_all(path);
+        shm = monapi_file_read_all(path);
     }
-    if (mi == NULL)
+    if (shm == NULL)
     {
         return 1;
     }
-    monapi_cmemoryinfo* img;
-    int result = CreateImage(&img, entryPoint, mi, prompt);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+    SharedMemory* img;
+    int result = CreateImage(&img, entryPoint, shm, prompt);
     if (result == 0) *dest = img;
     return result;
 }
@@ -84,21 +80,19 @@ static void MessageLoop()
 
         switch (msg.header)
         {
-            case MSG_DISPOSE_HANDLE:
-                MemoryMap::unmap(msg.arg1);
-                Message::reply(&msg);
-                break;
             case MSG_PROCESS_CREATE_IMAGE:
             {
-                monapi_cmemoryinfo* mi = NULL;
+                SharedMemory* shm = NULL;
                 uint32_t entryPoint = 0;
-                int result = CreateImage(&mi, &entryPoint, msg.str, msg.arg1 == MONAPI_TRUE);
+                int result = CreateImage(&shm, &entryPoint, msg.str, msg.arg1 == MONAPI_TRUE);
                 if (result == 0)
                 {
                     char buf[16];
-                    sprintf(buf, "%d", mi->Size);
-                    Message::reply(&msg, mi->Handle, entryPoint, buf);
-                    monapi_cmemoryinfo_delete(mi);
+                    sprintf(buf, "%d", shm->size());
+
+                    // To prevent miss freeing of shared map, waits the client notification.
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, shm->handle(), entryPoint, buf);
+                    delete shm;
                 }
                 else
                 {

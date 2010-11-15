@@ -1,14 +1,13 @@
 #ifndef __MONAFILE_FILEBROWSER_H__
 #define __MONAFILE_FILEBROWSER_H__
 
-#include <monapi/cmemoryinfo.h>
 #include <gui/System/Mona/Forms/Form.h>
 
 class FileBrowser : public System::Mona::Forms::Control
 {
 private:
 	System::String path;
-	monapi_cmemoryinfo* files;
+    MonAPI::SharedMemory* files;
 	int target, clickTarget;
 	int skip;
 	

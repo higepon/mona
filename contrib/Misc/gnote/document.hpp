@@ -46,6 +46,7 @@ namespace gnote {
         Document GetSubDocument(int by, int bx, int ey, int ex) const;
         int GetMaxLineNumber() const;
         int GetLength() const;
+        String* toString() const;
         bool Delete(int y);
         bool Delete(int y, int x);
         bool Delete(int y, int x, int l);

@@ -404,4 +404,16 @@ namespace gnote {
         }
         return d;
     }
+
+    String* Document::toString() const
+    {
+        String* ret = new String("");
+        for (int i = 1; i <= line->size(); i++) {
+            String* tmp = GetLine(i);
+            if (tmp) {
+                *ret += *tmp;
+            }
+        }
+        return ret;
+    }
 }

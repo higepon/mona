@@ -1,6 +1,8 @@
 
+#include <monapi.h>
 #include "FileServer.h"
 #include "ram_disk/RamDisk.h"
+#include "FAT32/Fat.h"
 
 using namespace MonAPI;
 using namespace std;
@@ -10,19 +12,18 @@ using namespace std;
 
 string upperCase(const string& s)
 {
-    string result = s;
+    string result;
+    result = s;
     transform(result.begin(), result.end(), result.begin(), toupper);
     return result;
 }
 
 FileServer::FileServer()
 {
-    vmanager_ = new VnodeManager();
 }
 
 FileServer::~FileServer()
 {
-    delete vmanager_;
     delete rootFS_;
     for (FileSystems::const_iterator it = mountedFSs_.begin(); it != mountedFSs_.end(); ++it)
     {
@@ -35,61 +36,42 @@ FileServer::~FileServer()
 
 int FileServer::initializeFileSystems()
 {
-    if (initializeRootFileSystem() != MONA_SUCCESS)
-    {
-        _printf("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+    int ret = initializeRootFileSystem();
+    if (ret != M_OK) {
+        monapi_fatal("initialize RootFileSystem error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
-    if (initializeMountedFileSystems() != MONA_SUCCESS)
-    {
-        _printf("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+    ret = initializeMountedFileSystems();
+    if (ret != M_OK) {
+        monapi_fatal("initializeMountedFileSystems error %s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
-    vmanager_->setRoot(rootFS_->getRoot());
-    return MONA_SUCCESS;
+    vmanager_.setRoot(rootFS_->getRoot());
+    return M_OK;
 }
 
 int FileServer::initializeMountedFileSystems()
 {
-    // RamDiskFileSystem
-    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem(vmanager_);
-    if (rdf->initialize() != MONA_SUCCESS)
-    {
-        _printf("Warning RamDisk file system initialize failed \n");
+    RamDisk::RamDiskFileSystem* rdf = new RamDisk::RamDiskFileSystem();
+    if (rdf->initialize() != M_OK) {
+        monapi_warn("Warning RamDisk file system initialize failed \n");
         delete rdf;
-        return MONA_SUCCESS;
+        return M_OK;
     }
-    vmanager_->mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
+    vmanager_.mount(rootFS_->getRoot(), "MEM", rdf->getRoot());
     mountedFSs_.push_back(rdf);
 
-    // ProcessFileSystem
-#if 0
-    FileSystem* pfs = new ProcessFileSystem(vmanager_);
-    if (pfs->initialize() != MONA_SUCCESS)
-    {
-        _printf("ProcessFileSystem initialize Error\n");
-        delete pfs;
-        return MONA_FAILURE;
+    bd4_ = new BlockDeviceDriver(4);
+    FatFileSystem* fatfs = new FatFileSystem(*bd4_);
+    if (fatfs->initialize() != M_OK) {
+        monapi_warn("Fat fs mound error");
+        delete fatfs;
+        return M_OK;
     }
-    vmanager_->mount(rootFS_->getRoot(), "process", pfs->getRoot());
-    mountedFSs_.push_back(pfs);
-#endif
+    vmanager_.mount(rootFS_->getRoot(), "USER", fatfs->getRoot());
+    mountedFSs_.push_back(fatfs);
 
-#if 0
-    // FAT12FileSystem
-    fd_ = new FDCDriver();
-    FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
-    if (ffs->initialize() != MONA_SUCCESS)
-    {
-        _printf("Warning FAT12FileSystem initialize failed \n");
-        delete fd_;
-        delete ffs;
-        return MONA_SUCCESS;
-    }
-    vmanager_->mount(rootFS_->getRoot(), "FD", ffs->getRoot());
-    mountedFSs_.push_back(ffs);
-#endif
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FileServer::initializeRootFileSystem()
@@ -107,9 +89,9 @@ int FileServer::initializeRootFileSystem()
     int controller, deviceNo;
     if (!cd_->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
-        _printf("CD-ROM Not Found\n");
+        monapi_warn("CD-ROM Not Found\n");
         delete cd_;
-        return MONA_FAILURE;
+        return M_OK;
     }
 
     // set irq number
@@ -123,64 +105,62 @@ int FileServer::initializeRootFileSystem()
     {
         _printf("select device NG error code = %d\n", cd_->getLastError());
         delete cd_;
-        return MONA_FAILURE;
+        return M_BAD_ARG;
     }
     rootFS_ = new ISO9660FileSystem(cd_, vmanager_);
 #else
-    bd_ = new BlockDeviceDriver(0);
-    rootFS_ = new ISO9660FileSystem(bd_, vmanager_);
+    bd_ = new BlockDeviceDriver(0, 2048);
+    rootFS_ = new ISO9660FileSystem(bd_);
 #endif
 
-    if (rootFS_->initialize() != MONA_SUCCESS)
+    int ret = rootFS_->initialize();
+    if (ret != M_OK)
     {
-        _printf("CD Boot Initialize Error\n");
+        monapi_warn("CD Boot Initialize Error\n");
         delete rootFS_;
         delete cd_;
-        return MONA_FAILURE;
+        return ret;
     }
-// #endif
-// #if 0
-//     // FAT12FileSystem
-//     fd_ = new FDCDriver();
-//     rootFS_ = new FAT12FileSystem(fd_, vmanager_);
-//     if (rootFS_->initialize() != MONA_SUCCESS)
-//     {
-//         _printf("FD Boot initialize failed \n");
-//         delete fd_;
-//         delete rootFS_;
-//         return MONA_FAILURE;
-//     }
-// #endif
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
-monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
+SharedMemory * FileServer::readFileAll(const string& file, intptr_t& lastError)
 {
     uint32_t fileID;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    int ret = vmanager_->open(file, 0, tid, &fileID);
-    if (ret != MONA_SUCCESS) return NULL;
+    int ret = vmanager_.open(file, 0, tid, &fileID);
+    if (ret != M_OK) {
+        lastError = ret;
+        return NULL;
+    }
 
     Stat st;
-    ret = vmanager_->stat(fileID, &st);
-    if (ret != MONA_SUCCESS)
-    {
-        ret = vmanager_->close(fileID);
+    ret = vmanager_.stat(fileID, &st);
+    if (ret != M_OK) {
+        lastError = ret;
+        vmanager_.close(fileID);
         return NULL;
     }
-
-    monapi_cmemoryinfo* mi;
-    ret = vmanager_->read(fileID, st.size, &mi);
-    if (ret != MONA_SUCCESS)
-    {
-        ret = vmanager_->close(fileID);
+    SharedMemory* shm;
+    ret = vmanager_.read(fileID, st.size, &shm);
+    if (ret != M_OK) {
+        lastError = ret;
+        vmanager_.close(fileID);
         return NULL;
     }
-
-    ret = vmanager_->close(fileID);
-    return mi;
+    lastError = vmanager_.close(fileID);
+    return shm;
 }
 
+void FileServer::send_and_release_shm(SharedMemory* mi, MessageInfo* msg)
+{
+    // To prevent miss freeing of shared map, waits the client notification.
+    int ret = Message::sendReceive(msg, msg->from, MSG_RESULT_OK, msg->header, mi->handle(), mi->size());
+    if (ret != M_OK) {
+        monapi_warn("send failed\n", ret);
+    }
+    delete mi;
+}
 
 void FileServer::messageLoop()
 {
@@ -194,159 +174,133 @@ void FileServer::messageLoop()
             uint32_t tid = msg.from; // temporary
             uint32_t fildID;
             intptr_t mode = msg.arg1;
-            int ret = vmanager_->open(upperCase(msg.str).c_str(), mode, tid, &fildID);
-            Message::reply(&msg, ret == MONA_SUCCESS ? fildID : M_FILE_NOT_FOUND);
+            int ret = vmanager_.open(upperCase(msg.str).c_str(), mode, tid, &fildID);
+            Message::reply(&msg, ret == M_OK ? fildID : M_FILE_NOT_FOUND);
             break;
         }
         case MSG_FILE_READ_ALL:
         {
-            uint64_t start = MonAPI::Date::nowInMsec();
-            monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str());
-            uint64_t end = MonAPI::Date::nowInMsec();
-            if (NULL == mi)
-            {
-                Message::reply(&msg, MONA_FAILURE);
-            }
-            else
-            {
-                uint32_t handle = mi->Handle;
-                uint32_t size = mi->Size;
-                monapi_cmemoryinfo_delete(mi);
-                Message::reply(&msg, handle, size);
+            intptr_t lastError;
+            SharedMemory* mi = readFileAll(upperCase(msg.str).c_str(), lastError);
+            if (NULL == mi) {
+                monapi_warn("readFileAll(%s) error=%d", msg.str, lastError);
+                Message::reply(&msg, lastError);
+            } else {
+                send_and_release_shm(mi, &msg);
             }
             break;
         }
         case MSG_FILE_SEEK:
         {
-            int ret = vmanager_->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
+            int ret = vmanager_.seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
             Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_READ:
         {
             uint32_t fileID = msg.arg1;
-            monapi_cmemoryinfo* memory;
-            int ret = vmanager_->read(fileID, msg.arg2 /* size */, &memory);
-            if (ret != MONA_SUCCESS)
-            {
-                Message::reply(&msg, MONA_FAILURE);
-            }
-            else
-            {
-                uint32_t handle = memory->Handle;
-                uint32_t size = memory->Size;
-                monapi_cmemoryinfo_delete(memory);
-                Message::reply(&msg, handle, size);
+            SharedMemory* memory = NULL;
+            int ret = vmanager_.read(fileID, msg.arg2 /* size */, &memory);
+            if (ret != M_OK) {
+                Message::reply(&msg, ret);
+            } else {
+                ASSERT(memory);
+                send_and_release_shm(memory, &msg);
             }
             break;
         }
         case MSG_FILE_WRITE:
         {
             uint32_t fileID = msg.arg1;
-            monapi_cmemoryinfo* memory;
-            memory = monapi_cmemoryinfo_new();
-            memory->Handle = msg.arg3;
-            memory->Owner  = msg.from;
-            memory->Size   = msg.arg2;
+            SharedMemory* memory = new SharedMemory(msg.arg3, msg.arg2);
+            ASSERT(memory->handle() != 0);
             // Use immediate map
-            intptr_t result = monapi_cmemoryinfo_map(memory, true);
+            intptr_t result = memory->map(true);
             if (result != M_OK) {
-                logprintf("MSG_FILE_WRITE\n");
-                monapi_cmemoryinfo_delete(memory);
+                delete memory;
                 Message::replyError(&msg, result);
             } else {
-                int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
-
-                // We are sure that clients don't want to be notified with MSG_DISPOSE_HANDLE.
-                if (monapi_cmemoryinfo_dispose_no_notify(memory) != M_OK) {
-                    logprintf("[Warning] FileServer: MSG_FILE_WRITE. monapi_cmemoryinfo_dispose_no_notify error memory->Handle=%x\n", memory->Handle);
-                }
-                monapi_cmemoryinfo_delete(memory);
+                int ret = vmanager_.write(fileID, msg.arg2 /* size */, memory);
+                delete memory;
                 Message::reply(&msg, ret);
             }
             break;
         }
         case MSG_FILE_CLOSE:
         {
-            int ret = vmanager_->close(msg.arg1);
-            Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
+            int ret = vmanager_.close(msg.arg1);
+            int status = Message::reply(&msg, ret);
+            if (status != M_OK) {
+                monapi_warn("monapi_file_close never return: error [%s]\n", monapi_error_string(status));
+            }
             break;
         }
         case MSG_FILE_GET_SIZE:
         {
             Stat st;
-            int ret = vmanager_->stat(msg.arg1, &st);
-            Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE, st.size);
+            int ret = vmanager_.stat(msg.arg1, &st);
+            Message::reply(&msg, ret, st.size);
             break;
         }
         case MSG_FILE_READ_DIRECTORY:
         {
-            monapi_cmemoryinfo* memory;
-            int ret = vmanager_->readdir(upperCase(msg.str).c_str(), &memory);
-            if (ret != MONA_SUCCESS)
-            {
-                Message::reply(&msg, MONA_FAILURE);
-            }
-            else
-            {
-                uint32_t handle = memory->Handle;
-                uint32_t size = memory->Size;
-                monapi_cmemoryinfo_delete(memory);
-                Message::reply(&msg, handle, size);
+            SharedMemory* memory;
+            int ret = vmanager_.readdir(upperCase(msg.str).c_str(), &memory);
+            if (ret != M_OK) {
+                Message::reply(&msg, ret);
+            } else {
+                send_and_release_shm(memory, &msg);
             }
             break;
         }
         case MSG_FILE_DELETE:
         {
-            int ret = vmanager_->delete_file(upperCase(msg.str).c_str());
+            int ret = vmanager_.delete_file(upperCase(msg.str).c_str());
             Message::reply(&msg, ret);
             break;
         }
         case MSG_FILE_DECOMPRESS_ST5:
         {
-            monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
-            mi1->Handle = msg.arg1;
-            mi1->Size   = msg.arg2;
-            monapi_cmemoryinfo* mi2 = NULL;
-            if (monapi_cmemoryinfo_map(mi1, true) != M_OK)
-            {
-                mi2 = ST5Decompress(mi1);
-                monapi_cmemoryinfo_dispose(mi1);
-            }
-            if (mi2 != NULL)
-            {
-                Message::reply(&msg, mi2->Handle, mi2->Size);
-                monapi_cmemoryinfo_delete(mi2);
-            }
-            else
-            {
-                Message::reply(&msg);
-            }
-            monapi_cmemoryinfo_delete(mi1);
+            monapi_fatal("hige");
+            // SharedMemory* mi1 = monapi_cmemoryinfo_new();
+            // mi1->Handle = msg.arg1;
+            // mi1->Size   = msg.arg2;
+            // monapi_cmemoryinfo* mi2 = NULL;
+            // if (monapi_cmemoryinfo_map(mi1, true) != M_OK) {
+            //     mi2 = ST5Decompress(mi1);
+            //     monapi_cmemoryinfo_dispose(mi1);
+            // }
+            // logprintf("MSG_FILE_DECOMPRESS_ST5 %d\n", mi2->Handle);
+            // if (mi2 != NULL) {
+            //     Message::reply(&msg, mi2->Handle, mi2->Size);
+            //     monapi_cmemoryinfo_delete(mi2);
+            // }
+            // else
+            // {
+            //     Message::reply(&msg);
+            // }
+            // monapi_cmemoryinfo_delete(mi1);
             break;
         }
         case MSG_FILE_DECOMPRESS_ST5_FILE:
         {
-            monapi_cmemoryinfo* mi = ST5DecompressFile(upperCase(msg.str).c_str());
-            if (mi != NULL)
-            {
-                Message::reply(&msg, mi->Handle, mi->Size);
+            SharedMemory* mi = ST5DecompressFile(upperCase(msg.str).c_str());
+            if (mi != NULL) {
+                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, mi->handle(), mi->size());
+                if (ret != M_OK) {
+                    monapi_warn("send failed");
+                }
                 delete mi;
-            }
-            else
-            {
+                // we can safely unmap it.
+            } else {
                 Message::reply(&msg);
             }
             break;
         }
         case MSG_STOP_SERVER:
             // end
-            Message::reply(&msg, MONA_SUCCESS);
+            Message::reply(&msg, M_OK);
             return;
-            break;
-        case MSG_DISPOSE_HANDLE:
-            MemoryMap::unmap(msg.arg1);
-            Message::reply(&msg);
             break;
         default:
 //             PsInfo psInfo;
@@ -362,14 +316,14 @@ void FileServer::messageLoop()
     }
 }
 
-int64_t FileServer::GetST5DecompressedSize(monapi_cmemoryinfo* mi)
+int64_t FileServer::GetST5DecompressedSize(SharedMemory* mi)
 {
     int64_t ret = 0;
-    ret = tek_checkformat(mi->Size, (unsigned char*)mi->Data);
+    ret = tek_checkformat(mi->size(), (unsigned char*)mi->data());
     return ret;
 }
 
-monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
+SharedMemory* FileServer::ST5Decompress(SharedMemory* mi)
 {
     int64_t size = GetST5DecompressedSize(mi);
     if (size < 0) return NULL;
@@ -377,33 +331,31 @@ monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
     // if size >= 4GB abort...
     if ((size >> 32) > 0) return NULL;
 
-    monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
-    if (monapi_cmemoryinfo_create(ret, (uint32_t)(size + 1), 0, true) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory *ret = new SharedMemory((uint32_t)(size + 1));
+    if (ret->map(true) != M_OK) {
+        delete ret;
         return NULL;
     }
-    ret->Size--;
+//    ret->Size--;
 
-    if (tek_decode(mi->Size, mi->Data, ret->Data) != 0) {
+    if (tek_decode(mi->size(), mi->data(), ret->data()) != 0) {
         // Decompress failed
-        monapi_cmemoryinfo_dispose(ret);
-        monapi_cmemoryinfo_delete(ret);
+        delete ret;
         return NULL;
     }
 
-    ret->Data[ret->Size] = 0;
+    ret->data()[ret->size() - 1] = 0;
     return ret;
 }
 
-monapi_cmemoryinfo* FileServer::ST5DecompressFile(const char* file)
+SharedMemory* FileServer::ST5DecompressFile(const char* file)
 {
-    monapi_cmemoryinfo* mi = readFileAll(file);
-    monapi_cmemoryinfo* ret = NULL;
+    intptr_t lastError;
+    SharedMemory* mi = readFileAll(file, lastError);
+    SharedMemory* ret = NULL;
     if (mi == NULL) return ret;
 
     ret = ST5Decompress(mi);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+    delete mi;
     return ret;
 }

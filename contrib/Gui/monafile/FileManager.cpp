@@ -33,12 +33,10 @@ static bool ExistsProcess(const MonAPI::CString& self)
 
 static bool DirectoryExists(const char* path)
 {
-	monapi_cmemoryinfo* files = monapi_file_read_directory(path);
-	if (files == NULL) return false;
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> files(monapi_file_read_directory(path));
+	if (files.get() == NULL) return false;
 	
-	int size = *(int*)files->Data;
-	monapi_cmemoryinfo_dispose(files);
-	monapi_cmemoryinfo_delete (files);
+	int size = *(int*)files->data();
 	return size > 0;
 }
 

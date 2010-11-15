@@ -8,6 +8,7 @@
 #include <monapi/string.h>
 #include <monapi/Assert.h>
 #include <sys/error.h>
+#include <monapi.h>
 
 namespace MonAPI {
 
@@ -64,7 +65,11 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
 
 int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
 {
-    return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+    int ret = Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+    if (ret != M_OK) {
+        monapi_warn("Message::reply failed. This may cause hung up. %s\n", monapi_error_string(ret));
+    }
+    return ret;
 }
 
 int Message::replyError(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)

@@ -112,12 +112,12 @@ public:
 
     bool readPlayList()
     {
-        monapi_cmemoryinfo* mi = monapi_file_read_directory(APPLICATION_DATA_DIR);
-        if (NULL == mi) return false;
-        int size = *(int*)mi->Data;
+        scoped_ptr<SharedMemory> shm(monapi_file_read_directory(APPLICATION_DATA_DIR));
+        if (NULL == shm.get()) return false;
+        int size = *(int*)shm->data();
         if (size == 0) return false;
 
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+        monapi_directoryinfo* p = (monapi_directoryinfo*)shm->data()[sizeof(int)];
         for (int i = 0; i < size; i++, p++)
         {
             string file = p->name;
@@ -127,8 +127,6 @@ public:
                 playList_.push_back(file);
             }
         }
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
         return playList_.size() != 0;
     }
 
@@ -138,9 +136,9 @@ public:
         for (uint32_t i = playIndex_; i < playList_.size(); i++)
         {
             string path = APPLICATION_DATA_DIR"/" + playList_[i];
-            monapi_cmemoryinfo* mi = monapi_file_read_all(path.c_str());
-            if (NULL == mi || mi->Size == 0) return;
-            string mml = string((char*)mi->Data, mi->Size);
+            scoped_ptr<SharedMemory> shm(monapi_file_read_all(path.c_str()));
+            if (NULL == shm.get() || shm->size() == 0) return;
+            string mml = string((char*)shm->data(), shm->size());
             statusLabel_->setText(beeper_.title(mml.c_str()).c_str());
             beeper_.play(mml.c_str());
             beeper_.rest(1000);

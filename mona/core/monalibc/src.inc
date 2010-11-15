@@ -8,18 +8,18 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
 	  math/sinh.c math/round.c math/nearbyint.c math/nan.c \
 	  math/signbit.c \
-	  math/sqrt.c math/tan.c math/tanh.c stdio/fclose.c stdio/fileno.c \
-	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c stdio/fprintf.c \
+	  math/sqrt.c math/tan.c math/tanh.c stdio/fileno.c \
+	  stdio/fwrite.c stdio/fprintf.c \
 	  stdio/fseek.c stdio/rewind.c stdio/feof.c stdio/ferror.c \
 	  stdio/fflush.c stdio/clearerr.c stdio/sprintf.c  stdio/ungetc.c \
 	  stdio/fgetc.c stdio/fgets.c stdio/fscanf.c  stdio/fputc.c \
 	  stdio/putc.c stdio/putchar.c stdio/sscanf.c \
-	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
+	  stdio/setbuf.c stdio/perror.c \
 	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \
 	  stdio/fputs.c stdio/puts.c stdio/getc.c stdio/getchar.c \
 	  stdio/vsprintf.c stdio/vsnprintf.c stdio/vsscanf.c stdio/vfprintf.c \
 	  stdio/boshi/faccess.c stdio/boshi/dio.c stdio/boshi/cache.c \
-	  stdio/boshi/fposition.c stdio/boshi/lowio.c stdio/boshi/errhandle.c \
+	  stdio/boshi/fposition.c stdio/boshi/errhandle.c \
 	  stdio/boshi/cio.c \
 	  stdlib/abort.c stdlib/abs.c stdlib/atexit.c \
 	  stdlib/atof.c stdlib/atoi.c stdlib/atol.c stdlib/bsearch.c \
@@ -47,8 +47,6 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
 	  fenv/feholdexcept.c \
 	  setjmp/setjmp_c.c \
-	  dirent/opendir.c dirent/closedir.c dirent/dirutil.c dirent/readdir.c\
-	  dirent/rewinddir.c dirent/telldir.c dirent/seekdir.c \
 #	  inttypes/imaxdiv.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \

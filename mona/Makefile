@@ -48,12 +48,14 @@ endif
 	cd core/elf_server && $(MAKE) && $(MAKE) install
 	cd core/pe_server && $(MAKE) && $(MAKE) install
 	cd core/gui_server && $(MAKE) && $(MAKE) install
+	cd core/clipboard_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 	cd core/gmp && $(MAKE) && $(MAKE) install
 #	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 tests: tools cores
 	cd test/monapi/file && $(MAKE) && $(MAKE) install
+	cd test/monapi/file_load && $(MAKE) && $(MAKE) install
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdio && $(MAKE) && $(MAKE) install
 	cd test/monalibc/stdlib && $(MAKE) && $(MAKE) install
@@ -68,36 +70,11 @@ tests: tools cores
 	cd test/monapi/die && $(MAKE) && $(MAKE) install
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
+	cd test/monapi/clipboard && $(MAKE) && $(MAKE) install
 	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 	cd test/drivers/virtio && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
-
-depend: clean
-	cd core/kernel && $(MAKE) $@
-	cd core/monapi && $(MAKE) $@
-	cd core/libpci && $(MAKE) $@
-	cd core/monalibc && $(MAKE) $@
-	cd core/monitor_server && $(MAKE) $@
-	cd core/screen_server && $(MAKE) $@
-	cd core/keyboard_server && $(MAKE) $@
-	cd core/mouse_server && $(MAKE) $@
-	cd core/file_server && $(MAKE) $@
-	cd core/process_server && $(MAKE) $@
-	cd core/shell_server && $(MAKE) $@
-	cd core/elf_server && $(MAKE) $@&
-	cd core/pe_server && $(MAKE) $@
-	cd core/gui_server && $(MAKE) $@
-	cd core/net_server && $(MAKE) $@
-	cd test/monalibc/string && $(MAKE) $@
-	cd test/monalibc/stdio && $(MAKE) $@
-	cd test/monalibc/stdlib && $(MAKE) $@
-	cd test/monalibc/math && $(MAKE) $@
-	cd test/drivers/virtio && $(MAKE) $@
-	cd test/monapi/file && make $@
-	cd test/monapi/stack_trace && make $@
-	cd test/monapi/misc && make $@
-	cd test/monapi/message && make $@
 
 
 .PHONY: clean doc
@@ -113,43 +90,62 @@ check:
 	@tool/qemu/as_daemon.sh
 	@mosh tool/qemu/check_tests.scm
 
+TARGETS = \
+core/clipboard_server \
+core/elf_server \
+core/file_server \
+core/gmp \
+core/gui_server \
+core/kernel \
+core/keyboard_server \
+core/libpci \
+core/monalibc \
+core/monapi \
+core/monitor_server \
+core/mouse_server \
+core/net_server \
+core/pe_server \
+core/process_server \
+core/screen_server \
+core/secondboot \
+core/shell_server \
+external/libjpegls \
+external/onig \
+test/drivers/virtio \
+test/ext/gmp \
+test/monalibc/math \
+test/monalibc/stdio \
+test/monalibc/stdlib \
+test/monalibc/string \
+test/monapi/clipboard \
+test/monapi/condition \
+test/monapi/die \
+test/monapi/file \
+test/monapi/file_load \
+test/monapi/message \
+test/monapi/misc \
+test/monapi/mutex \
+test/monapi/ram_disk \
+test/monapi/socket \
+test/monapi/stack_trace \
+test/monapi/syscall \
+tool/fat_write \
+tool/messageHeader \
+tool/t5lzma
+
+export MONADIR
+
 clean:
-	$(MAKE) $@ -C core/firstboot
+	cd core/monapi/ && $(MAKE) uninstall
+	$(MAKE) $@ -C core/scheme -f Makefile.mona
+	$(MAKE) $@ -C core/mosh -f Makefile.mona
 ifdef CSC
 	$(MAKE) $@ -C core/PEAnalyzerLib
 	$(MAKE) $@ -C core/IL2Asm16
 endif
-	$(MAKE) $@ -C external/onig
-	$(MAKE) $@ -C core/secondboot
-	$(MAKE) $@ -C core/kernel
-	$(MAKE) $@ -C core/monapi
-	$(MAKE) $@ -C core/libpci
-	$(MAKE) $@ -C core/monitor_server
-	$(MAKE) $@ -C core/screen_server
-	$(MAKE) $@ -C core/keyboard_server
-	$(MAKE) $@ -C core/monalibc
-	$(MAKE) $@ -C core/mouse_server
-	$(MAKE) $@ -C core/file_server
-	$(MAKE) $@ -C core/process_server
-	$(MAKE) $@ -C core/shell_server
-	$(MAKE) $@ -C core/net_server
-	$(MAKE) $@ -C core/elf_server
-	$(MAKE) $@ -C core/pe_server
-	$(MAKE) $@ -C core/gui_server
-	$(MAKE) $@ -C core/scheme -f Makefile.mona
-#	$(MAKE) $@ -C core/mosh -f Makefile.mona
-	cd test/monalibc/string && make clean
-	cd test/monalibc/stdio && make clean
-	cd test/monalibc/stdlib && make clean
-	cd test/monalibc/math && make clean
-	cd test/monapi/mutex && make clean
-	cd test/monapi/file && make clean
-	cd test/monapi/stack_trace && make clean
-	cd test/monapi/die && make clean
-	cd test/monapi/misc && make clean
-	cd test/monapi/ram_disk && make clean
-	cd test/monapi/syscall && make clean
-	cd test/monapi/socket && make clean
-	cd test/monapi/message && make clean
-	cd test/monapi/condition && make clean
-	cd core/gmp && make clean
+	for i in `echo $(TARGETS)`; do (cd $$i && $(MAKE) $@) ;done
+
+depend:
+	cd core/scheme && $(MAKE) -f Makefile.mona $@
+	cd core/mosh && $(MAKE) -f Makefile.mona $@
+	for i in `echo $(TARGETS)`; do (cd $$i && $(MAKE) $@) ;done

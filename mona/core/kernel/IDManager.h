@@ -13,14 +13,14 @@ public:
 public:
     KObject* get(int objectID, int type);
     bool returnID(int id);
-    intptr_t allocateID(Process* owner, KObject* object);
-    int getLastError() const;
+    intptr_t allocateID(KObject* object);
+    intptr_t getLastError() const;
     intptr_t getCount(int type);
     void foreachKObject(void (*func)(int id, KObject* object));
 
 private:
     BinaryTree<KObject*> tree;
-    int lastError;
+    intptr_t lastError;
     intptr_t id;
 };
 

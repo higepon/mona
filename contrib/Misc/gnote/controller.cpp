@@ -27,6 +27,7 @@
  copyright holder.
 */
 #include "controller.hpp"
+#include <monapi.h>
 
 namespace gnote {
     Controller::Controller() : keyCode(0), keyModifiers(0), counter(0) {
@@ -326,6 +327,24 @@ namespace gnote {
                             window.GetCanvas()->repaint();
                         }
                         break;
+                    case 'k':
+                    {
+                        cursol.range = true;
+                        bool isOnHome = cursol.wx == 1;
+                        cursol.rx = cursol.wx;
+                        cursol.ry = cursol.wy;
+                        if (GoEnd(cursol, document)) {
+                            // special case, when cursor is on line head remove linefeed also.
+                            if (isOnHome) {
+                                GoRight(cursol, document);
+                            }
+                            if (Cut(cursol, document, clip)) {
+                                cursol.visible = true;
+                                window.GetCanvas()->repaint();
+                            }
+                        }
+                        break;
+                    }
 #else
                     case 'a':
                         SelectAll();
@@ -551,6 +570,7 @@ namespace gnote {
         bool r = false;
         if (c.range) {
             cl = d.GetSubDocument(c.ry, c.rx, c.wy, c.wx);
+            setClipBoard(cl);
             c.range = false;
             r = true;
         }
@@ -561,13 +581,32 @@ namespace gnote {
         bool r = false;
         if (c.range) {
             cl = d.GetSubDocument(c.ry, c.rx, c.wy, c.wx);
+            setClipBoard(cl);
             Delete(c, d);
         }
         return r;
     }
     //
+    void Controller::setClipBoard(Document& d)
+    {
+        String* s = d.toString();
+        if (s->length() > 0) {
+            MonAPI::SharedMemory buffer(s->lengthBytes());
+            buffer.map();
+            memcpy(buffer.data(), s->getBytes(), buffer.size());
+            monapi_clipboard_set(buffer);
+            delete s;
+        }
+    }
+    //
     bool Controller::Paste(Cursol& c, Document& d, const Document& cl) {
-        return cl.GetMaxLineNumber() > 0 && d.Insert(cl, c.wy, c.wx) && GoRight(c, d, cl.GetLength());
+        Document clipped;
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> cmi(monapi_clipboard_get());
+        if (cmi != NULL) {
+            String text((const char*)cmi->data(), cmi->size());
+            clipped.Append(text);
+        }
+        return clipped.GetMaxLineNumber() > 0 && d.Insert(clipped, c.wy, c.wx) && GoRight(c, d, clipped.GetLength());
     }
     //
     bool Controller::Delete(Cursol& c, Document& d) {
@@ -712,16 +751,16 @@ namespace gnote {
     }
     //
     bool Controller::ReadFile(const String& f, Document& d) {
-        monapi_cmemoryinfo* mi = monapi_file_read_all(f.getBytes());
-        if (!mi || mi->Size <= 0) {
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(f.getBytes()));
+        if (!shm.get() || shm->size() <= 0) {
             return false;
         }
-        for (unsigned int ii = 0; ii < mi->Size; ii++) {
-            if (mi->Data[ii] == '\r') {
+        for (unsigned int ii = 0; ii < shm->size(); ii++) {
+            if (shm->data()[ii] == '\r') {
                 continue;
             }
             // tooo bad :-)
-            d.Append(mi->Data[ii]);
+            d.Append(shm->data()[ii]);
         }
         return true;
     }
@@ -765,4 +804,3 @@ namespace gnote {
         }
     }
 }
-

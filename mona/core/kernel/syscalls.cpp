@@ -25,6 +25,11 @@
 extern const char* version;
 extern uint32_t version_number;
 
+inline static Process* getCurrentProcess()
+{
+    return g_currentThread->process;
+}
+
 inline intptr_t syscall1(intptr_t syscall_number, intptr_t arg1)
 {
     intptr_t ret = 0;
@@ -123,7 +128,7 @@ void syscall_entrance()
     }
     prevSize = km.getFreeSize();
     prevSyscall = info->ebx;
-    prevName =  g_currentThread->process->getName();
+    prevName =  getCurrentProcess()->getName();
 #endif
     switch(info->ebx)
     {
@@ -138,7 +143,7 @@ void syscall_entrance()
 
         LinearAddress laddress = SYSTEM_CALL_ARG_1;
         int pageNum = SYSTEM_CALL_ARG_2;
-        setReturnValue(info, g_page_manager->allocateContiguous(g_currentThread->process->getPageDirectory(),
+        setReturnValue(info, g_page_manager->allocateContiguous(getCurrentProcess()->getPageDirectory(),
                                                        laddress,
                                                        pageNum));
         break;
@@ -147,7 +152,7 @@ void syscall_entrance()
     {
         LinearAddress laddress = SYSTEM_CALL_ARG_1;
         int pageNum = SYSTEM_CALL_ARG_2;
-        g_page_manager->deallocateContiguous(g_currentThread->process->getPageDirectory(),
+        g_page_manager->deallocateContiguous(getCurrentProcess()->getPageDirectory(),
                                              laddress,
                                              pageNum);
         break;
@@ -179,7 +184,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_KILL:
     {
-        ThreadOperation::kill(g_currentThread->process, g_currentThread->thread);
+        ThreadOperation::kill(getCurrentProcess(), g_currentThread->thread);
         g_scheduler->SwitchToNext();
         break;
     }
@@ -236,7 +241,7 @@ void syscall_entrance()
     case SYSTEM_CALL_MTHREAD_CREATE:
     {
         uint32_t arg = SYSTEM_CALL_ARG_2;
-        Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
+        Thread* thread = ThreadOperation::create(getCurrentProcess(), SYSTEM_CALL_ARG_1);
         thread->tinfo->archinfo->ecx = arg;
         g_scheduler->Join(thread);
         setReturnValue(info, thread->id);
@@ -273,7 +278,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_CONDITION_ID);
         } else {
-            KObjectService::destroy(condition_id, object);
+            KObjectService::destroy(getCurrentProcess(), condition_id, object);
             setReturnValue(info, M_OK);
         }
         break;
@@ -455,7 +460,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_MUTEX_ID);
         } else {
-            if (KObjectService::destroy(id, object)) {
+            if (KObjectService::destroy(getCurrentProcess(), id, object)) {
                 // mutex is not no more referenced, so deleted.
                 setReturnValue(info, M_OK);
             } else {
@@ -482,7 +487,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
-            KObjectService::destroy(id, object);
+            KObjectService::destroy(getCurrentProcess(), id, object);
             setReturnValue(info, M_OK);
         }
         break;
@@ -554,7 +559,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_GET_PID:
 
-        setReturnValue(info, g_currentThread->process->getPid());
+        setReturnValue(info, getCurrentProcess()->getPid());
         break;
 
     case SYSTEM_CALL_GET_TID:
@@ -564,12 +569,12 @@ void syscall_entrance()
 
     case SYSTEM_CALL_ARGUMENTS_NUM:
 
-        setReturnValue(info, g_currentThread->process->getArguments()->size());
+        setReturnValue(info, getCurrentProcess()->getArguments()->size());
         break;
 
     case SYSTEM_CALL_GET_ARGUMENTS:
     {
-        List<char*>* list = g_currentThread->process->getArguments();
+        List<char*>* list = getCurrentProcess()->getArguments();
         char* buf = (char*)(SYSTEM_CALL_ARG_1);
         int index = (int)(SYSTEM_CALL_ARG_2);
 
@@ -625,7 +630,7 @@ void syscall_entrance()
 
     if (SYSTEM_CALL_ARG_1 == NULL)
     {
-        setReturnValue(info, g_scheduler->LookupMainThread(g_currentThread->process));
+        setReturnValue(info, g_scheduler->LookupMainThread(getCurrentProcess()));
     }
     else
     {
@@ -658,9 +663,9 @@ void syscall_entrance()
         uint32_t id = SYSTEM_CALL_ARG_1;
         SharedMemoryObject* object = SharedMemoryObject::find(id);
         if (object == NULL) {
-            logprintf("error map_get_size id = %x %s(%s):%d\n", id, __FILE__, __func__, __LINE__);
             setReturnValue(info, 0);
         } else {
+            ASSERT(object->getSize() != 0);
             setReturnValue(info, object->getSize());
         }
         break;
@@ -679,7 +684,7 @@ void syscall_entrance()
             Semaphore::up(&g_semaphore_shared);
             setReturnValue(info, M_BAD_MEMORY_MAP_ID);
         } else {
-            intptr_t ret = shm->attach(g_page_manager, g_currentThread->process, address, isImmediateMap);
+            intptr_t ret = shm->attach(g_page_manager, getCurrentProcess(), address, isImmediateMap);
             Semaphore::up(&g_semaphore_shared);
             Semaphore::up(&g_semaphore_shared);
             setReturnValue(info, ret);
@@ -689,13 +694,12 @@ void syscall_entrance()
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
     {
         uint32_t id = SYSTEM_CALL_ARG_1;
-
         while (Semaphore::down(&g_semaphore_shared));
         SharedMemoryObject* shm = SharedMemoryObject::find(id);
         if (shm == NULL) {
             setReturnValue(info, M_BAD_MEMORY_MAP_ID);
         } else {
-            intptr_t ret = shm->detach(g_page_manager, g_currentThread->process);
+            intptr_t ret = shm->detach(g_page_manager, getCurrentProcess());
             SharedMemoryObject::destroy(shm);
             setReturnValue(info, ret);
         }
@@ -765,7 +769,7 @@ void syscall_entrance()
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(SYSTEM_CALL_ARG_1);
-        setReturnValue(info, Loader::LoadFromMemoryMap(p->handle, p->entrypoint, p->name, p->list));
+        setReturnValue(info, Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list));
         break;
     }
 
@@ -837,7 +841,7 @@ void syscall_entrance()
     //     uint32_t address = SYSTEM_CALL_ARG_1;
     //     uint32_t size    = SYSTEM_CALL_ARG_2;
 
-    //     g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
+    //     g_page_manager->returnPages(getCurrentProcess()->getPageDirectory(), address, size);
     //     break;
     // }
 
@@ -859,12 +863,12 @@ void syscall_entrance()
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
     {
         uint32_t size = SYSTEM_CALL_ARG_1;
-        setReturnValue(info, (uint32_t)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true));
+        setReturnValue(info, (uint32_t)g_page_manager->allocateDMAMemory(getCurrentProcess()->getPageDirectory(), size, true));
         break;
     }
     case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
 
-        g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
+        g_page_manager->deallocateDMAMemory(getCurrentProcess()->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
         break;
     case SYSTEM_CALL_CHANGE_BASE_PRIORITY:
         g_scheduler->ChangeBasePriority(g_currentThread->thread, SYSTEM_CALL_ARG_1);

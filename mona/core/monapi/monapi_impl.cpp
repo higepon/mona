@@ -117,6 +117,15 @@ extern "C" void monapi_initialize_memory(int memorySize)
 ----------------------------------------------------------------------*/
 int user_start_impl(FuncMonaMain* monaMain)
 {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+
+        n.u64 = syscall_now_in_nanosec();
     bool dll = isInDLL(__CTOR_LIST__);
     if (dll) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 
@@ -134,6 +143,18 @@ int user_start_impl(FuncMonaMain* monaMain)
 
 extern "C" int user_start_c_impl(FuncMain* main)
 {
+        union {
+            struct {
+                uint32_t l;
+                uint32_t h;
+            } u32;
+            uint64_t u64;
+        } n;
+
+        n.u64 = syscall_now_in_nanosec();
+
+
+
     int argc = syscall_get_arg_count();
     char** _argv = new char*[argc];
     for (int i = 0; i < argc; i++)

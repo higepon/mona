@@ -298,7 +298,6 @@ intptr_t waitAndRedirect(uintptr_t tid, MonAPI::Stream* stream)
             break;
         case MSG_KEY_VIRTUAL_CODE:
         {
-
             const char* line = g_terminal->storeKeyAndGetLine(&msg);
             if (line != NULL) {
                 stream->write((uint8_t*)line, strlen(line));
@@ -321,16 +320,25 @@ PROCEDURE(CallProcess, "call-process")
 //    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
 
+    union {
+        struct {
+            uint32_t l;
+            uint32_t h;
+        } u32;
+        uint64_t u64;
+    } n;
+
     MonAPI::Stream hisStdin;
+    n.u64 = syscall_now_in_nanosec();
     int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     uint64_t start = MonAPI::Date::nowInMsec();
 
     if (result != 0)
     {
-        RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
+        RAISE_ERROR(lineno(), "system can't execute %s error=%d" , s->value().data(), result);
     }
-
     Number* status = new Number(waitAndRedirect(tid, &hisStdin), lineno());
+    n.u64 = syscall_now_in_nanosec();
     env->setVaribale(new Variable("status", lineno()), status);
     uint64_t end = MonAPI::Date::nowInMsec();
     logprintf("call-process execution time %d msec %s\n", end - start, s->value().data());

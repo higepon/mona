@@ -1,13 +1,15 @@
 #include "ISO9660FileSystem.h"
 #include <monapi.h>
 #include "sys/error.h"
+#include <monapi/Buffer.h>
 
 using namespace std;
 using namespace iso9660;
+using namespace MonAPI;
 
 extern string upperCase(const string& s);
 
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), isJoliet_(false)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive) : drive_(drive), isJoliet_(false)
 {
 }
 
@@ -21,67 +23,56 @@ ISO9660FileSystem::~ISO9660FileSystem()
 ----------------------------------------------------------------------*/
 int ISO9660FileSystem::initialize()
 {
-    if (readVolumeDescriptor() != MONA_SUCCESS)
-    {
-        _printf("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+    int ret = readVolumeDescriptor();
+    if (ret != M_OK) {
+        monapi_warn("read volume descriptor error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
 
-    if (setDirectoryCache() != MONA_SUCCESS)
-    {
-        return MONA_FAILURE;
+    ret = setDirectoryCache();
+    if (ret != M_OK) {
+        return ret;
     }
 
-    root_ = vmanager_->alloc();
+    root_ = new Vnode;
     root_->fnode  = rootDirectory_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
-    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-    if (v != NULL && v->type == type)
-    {
-        *found = v;
-        return MONA_SUCCESS;
-    }
     Entry* directoryEntry = (Entry*)diretory->fnode;
     Entry* target = NULL;
 
-    if (type == Vnode::REGULAR)
-    {
+    if (type == Vnode::REGULAR) {
         target = lookupFile(directoryEntry, file);
-    }
-    else
-    {
+    } else {
         target = lookupDirectory(directoryEntry, file);
     }
-    if (target == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
-    Vnode* newVnode = vmanager_->alloc();
+    if (target == NULL) return M_FILE_NOT_FOUND;
+    Vnode* newVnode = new Vnode;
     newVnode->fnode  = target;
     newVnode->type = type;
     newVnode->fs = this;
-    vmanager_->cacher()->add(diretory, file, newVnode);
     *found = newVnode;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::open(Vnode* file, intptr_t mode)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::create(Vnode* dir, const string& file)
 {
-    return MONA_FAILURE;
+    return M_WRITE_ERROR;
 }
 
 int ISO9660FileSystem::write(Vnode* file, struct io::Context* context)
 {
-    return MONA_ERROR_ON_ACCESS;
+    return M_WRITE_ERROR;
 }
 
 int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
@@ -90,10 +81,11 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     uint32_t offset = context->offset;
     uint32_t readSize = context->size;
     uint32_t rest = fileEntry->attribute.size - offset;
-    if (rest == 0) return MONA_FAILURE;
+    if (rest == 0) {
+        return M_READ_ERROR;
+    }
 
-    if (rest < readSize)
-    {
+    if (rest < readSize) {
         readSize = rest;
     }
 
@@ -101,78 +93,50 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     int sectorCount = (offset + readSize + SECTOR_SIZE - 1) / SECTOR_SIZE - offset / SECTOR_SIZE;
     uint32_t sectorSize = sectorCount * SECTOR_SIZE;
 
-#if 0
-    byte* temp = new byte[sectorSize];
-    if (temp == NULL) return MONA_FAILURE;
-
-    bool readResult = drive_->read(lba, temp, sectorSize) == 0;
-    if (!readResult)
-    {
-        delete[] temp;
-        return MONA_FAILURE;
-    }
-
-    context->memory = monapi_cmemoryinfo_new();
-
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(context->memory);
-        delete[] temp;
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
-    }
-    memcpy(context->memory->Data, temp + offset -(lba - fileEntry->attribute.extent) * SECTOR_SIZE, readSize);
-    delete[] temp;
-    context->resultSize = readSize;
-    return MONA_SUCCESS;
-#else
     int dataOffset = offset - (lba - fileEntry->attribute.extent) * SECTOR_SIZE;
-    context->memory = monapi_cmemoryinfo_new();
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
+    context->memory = new SharedMemory(readSize);
+    if (context->memory->map(true) != M_OK)
     {
-        monapi_cmemoryinfo_delete(context->memory);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+        delete context->memory;
+        return M_NO_MEMORY;
     }
     // by junjunn
-    if (0 == dataOffset)
-    {
+    if (0 == dataOffset) {
 // by higepon
-//        bool readResult = drive_->read(lba, context->memory->Data, sectorSize) == 0;
-        bool readResult = drive_->read(lba, context->memory->Data, readSize) == 0;
-        if (!readResult)
-        {
-            return MONA_FAILURE;
+//        bool readResult = drive_->read(lba, context->memory->data(), sectorSize) == 0;
+        bool readResult = drive_->read(lba, context->memory->data(), readSize) == 0;
+        if (!readResult) {
+            return M_READ_ERROR;
         }
-    }
-    else
-    {
+    } else {
         uint8_t* temp = new uint8_t[sectorSize];
-        if (temp == NULL) return MONA_FAILURE;
+        if (temp == NULL) return M_NO_MEMORY;
+        MonAPI::Buffer tempBuf(temp, sectorSize);
+        MonAPI::Buffer dest(context->memory->data(), context->memory->size());
         bool readResult = drive_->read(lba, temp, sectorSize) == 0;
-        if (!readResult)
-        {
+        if (!readResult) {
             delete temp;
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
-
-        memcpy(context->memory->Data, temp + dataOffset, readSize);
+        bool isOK = MonAPI::Buffer::copy(dest, 0, tempBuf, dataOffset, readSize);
+        ASSERT(isOK);
         delete[] temp;
     }
     context->resultSize = readSize;
     context->offset += readSize;
-    return MONA_SUCCESS;
-#endif
+    return M_OK;
 }
 
 int ISO9660FileSystem::close(Vnode* file)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int ISO9660FileSystem::stat(Vnode* file, Stat* st)
 {
     Entry* entry = (Entry*)file->fnode;
     st->size = entry->attribute.size;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 Vnode* ISO9660FileSystem::getRoot() const
@@ -180,13 +144,13 @@ Vnode* ISO9660FileSystem::getRoot() const
     return root_;
 }
 
-int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+int ISO9660FileSystem::readdir(Vnode* dir, SharedMemory** entries)
 {
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
     uint32_t readSize = ((uint32_t)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     uint8_t* buffer = readdirToBuffer(directory, readSize);
-    if (buffer == NULL) return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    if (buffer == NULL) return M_NO_MEMORY;
     EntryList entryList;
     for (uint32_t position = 0 ; position < readSize;)
     {
@@ -203,15 +167,15 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
         position += iEntry->length;
     }
     delete[] buffer;
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     int size = entryList.size();
-    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
+    SharedMemory* ret = new SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+    if (ret->map(true) != M_OK)
     {
-        monapi_cmemoryinfo_delete(ret);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+        delete ret;
+        return M_NO_MEMORY;
     }
-    memcpy(ret->Data, &size, sizeof(int));
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+    memcpy(ret->data(), &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
     for (EntryList::iterator i = entryList.begin(); i != entryList.end(); ++i)
     {
         monapi_directoryinfo di;
@@ -225,7 +189,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     }
     *entries = ret;
 
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 /*----------------------------------------------------------------------
@@ -286,8 +250,8 @@ int ISO9660FileSystem::readVolumeDescriptor()
     BaseVolumeDescriptor* descriptor = new BaseVolumeDescriptor;
     if (descriptor == NULL)
     {
-        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+        monapi_fatal("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_NO_MEMORY;
     }
     for (i = 16; i < 100; i++)
     {
@@ -297,7 +261,7 @@ int ISO9660FileSystem::readVolumeDescriptor()
         {
             delete descriptor;
             monapi_fatal("device read error%s %s:%d\n", __func__, __FILE__, __LINE__);
-            return MONA_FAILURE;
+            return M_READ_ERROR;
         }
         // read primary descriptor
         if (descriptor->type == ISO_PRIMARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
@@ -323,12 +287,12 @@ int ISO9660FileSystem::readVolumeDescriptor()
     // invalid
     if (i == 100 || !primaryVolumeDescriptorFound)
     {
-        _printf("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
-        return MONA_FAILURE;
+        monapi_fatal("BaseVolumeDescriptor allocate error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_READ_ERROR;
     }
 
     delete descriptor;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 uint8_t* ISO9660FileSystem::readPathTableIntoBuffer()
@@ -353,7 +317,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // read path table
     if ((buffer = readPathTableIntoBuffer()) == NULL)
     {
-        return MONA_FAILURE;
+        return M_NO_MEMORY;
     }
 
     // create DirectoryEntries from path table
@@ -365,7 +329,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // directory not found
     if (directoryList.size() == 0)
     {
-        return MONA_FAILURE;
+        return M_FILE_NOT_FOUND;
     }
 
     // set up root direcotyr
@@ -383,7 +347,7 @@ int ISO9660FileSystem::setDirectoryCache()
     // parent of root is root
     directoryList[0]->parent = directoryList[0];
 
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, uint8_t* buffer)

@@ -1,5 +1,6 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
+#include <monapi/SharedMemory.h>
 #include <monapi/Message.h>
 #include <monapi/Stream.h>
 #include <monapi/System.h>
@@ -19,12 +20,13 @@ static uint32_t server_ids[] =
     THREAD_UNKNOWN,  // ID_PE_SERVER
     THREAD_UNKNOWN,  // ID_MONITOR_SERVER
     THREAD_UNKNOWN,  // ID_SCHEME_SERVER
-    THREAD_UNKNOWN   // ID_NET_SERVER
+    THREAD_UNKNOWN,  // ID_NET_SERVER
+    THREAD_UNKNOWN   // ID_CLIPBOARD_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
 };
 
 uint32_t monapi_get_server_thread_id(int id)
@@ -45,16 +47,6 @@ uint32_t monapi_get_server_thread_id(int id)
         }
     }
     return server_ids[id];
-}
-
-MONAPI_BOOL monapi_call_dispose_handle(int id, uint32_t handle)
-{
-    uint32_t tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
-    if (Message::send(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != M_OK)
-    {
-        return MONAPI_FALSE;
-    }
-    return MONAPI_TRUE;
 }
 
 MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
@@ -95,32 +87,8 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 }
 
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
+SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
-        return ret;
-    }
-}
-
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
-{
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
@@ -130,44 +98,55 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     }
 
     if (msg.arg2 == 0) return NULL;
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory* shm = new SharedMemory(msg.arg2, msg.arg3);
+    if (shm->map(true) != M_OK) {
+        delete shm;
+        return NULL;
+    } else {
+        return shm;
+    }
+}
+
+SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
+{
+    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, shm.handle(), shm.size()) != M_OK) {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->map(true) != M_OK) {
+        delete ret;
         return NULL;
     } else {
         return ret;
     }
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
+
+SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, mi->Handle, mi->Size) != M_OK)
+    if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, shm.handle(), shm.size()) != M_OK)
     {
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
 
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->map(true) != M_OK) {
+        delete ret;
         return NULL;
     } else {
         return ret;
     }
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
+SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
@@ -176,50 +155,36 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
         return NULL;
     }
 
-    if (msg.arg2 == 0) return NULL;
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    if (msg.arg2 == 0) {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
+        return NULL;
+    }
+    SharedMemory* shm = new SharedMemory(msg.arg2, msg.arg3);
+    if (shm->map(true) != M_OK) {
+        delete shm;
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     } else {
-        return ret;
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
+        return shm;
     }
 }
 
-#if 0
-monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, prompt, 0, 0, path) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
-        return ret;
-    }
-}
-#endif
-
-int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
+intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
     return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);
 }
 
-int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
+intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
     uint32_t svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
     MessageInfo msg;
@@ -244,65 +209,64 @@ void monapi_deallocate_dma_memory(void* address, int size)
     syscall_deallocate_dma_memory(address, size);
 }
 
-monapi_cmemoryinfo* monapi_file_read_all(const char* file)
-{
-    monapi_cmemoryinfo* ret;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_ALL, 0, 0, 0, file) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == MONA_FAILURE) { return NULL;}
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
-        return ret;
-    }
-}
 
 intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file) != M_OK) {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_file_read(uint32_t fileID, uint32_t size)
+static SharedMemory* file_receive_shm(int header, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3, const char* str)
 {
-    static int count = 0;
-    count++;
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ, fileID, size) != M_OK)
-    {
+    if (Message::sendReceive(&msg, tid, header, arg1, arg2, arg3, str) != M_OK) {
         return NULL;
     }
-    if (msg.arg2 == MONA_FAILURE)
-    {
+    if ((intptr_t)msg.arg2 < M_OK) {
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     }
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
+    uintptr_t handle = msg.arg2;
+    uintptr_t size = msg.arg3;
+    SharedMemory* shm = new SharedMemory(handle, size);
+    if (shm->map(true) != M_OK) {
+        int status = Message::reply(&msg);
+        delete shm;
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
         return NULL;
     } else {
-        return ret;
+        int status = Message::reply(&msg);
+        if (status != M_OK) {
+            monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+        }
+        return shm;
     }
+}
+
+SharedMemory* monapi_file_read_all(const char* file)
+{
+    return file_receive_shm(MSG_FILE_READ_ALL, 0, 0, 0, file);
+}
+
+SharedMemory* monapi_file_read(uint32_t fileID, uint32_t size)
+{
+    return file_receive_shm(MSG_FILE_READ, fileID, size, 0, NULL);
+}
+
+SharedMemory* monapi_file_read_directory(const char* path)
+{
+    return file_receive_shm(MSG_FILE_READ_DIRECTORY, 0, 0, 0, path);
 }
 
 intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
@@ -316,82 +280,61 @@ intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
     return msg.arg2;
 }
 
-uint32_t monapi_file_close(uint32_t fileID)
+intptr_t monapi_file_close(uint32_t fileID)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID) != M_OK)
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID);
+    if (ret != M_OK)
     {
-        return MONA_FAILURE;
+        return ret;
     }
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_file_read_directory(const char* path)
+intptr_t monapi_file_get_file_size(uint32_t id)
 {
-    monapi_cmemoryinfo* ret;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, 0, 0, 0, path) != M_OK)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
 
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    if (monapi_cmemoryinfo_map(ret, true) != M_OK) {
-        monapi_cmemoryinfo_delete(ret);
-        return NULL;
-    } else {
+    MessageInfo msg;
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id);
+    if (ret != M_OK)
+    {
         return ret;
-    }
-}
-
-uint32_t monapi_file_get_file_size(uint32_t id)
-{
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id) != M_OK)
-    {
-        return MONA_FAILURE;
     }
     return msg.arg3;
 }
 
-uint32_t monapi_file_delete(const char* file)
+intptr_t monapi_file_delete(const char* file)
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file) != 0)
-    {
-        return MONA_FAILURE;
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
 
 
-int monapi_file_stop_server()
+intptr_t monapi_file_stop_server()
 {
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_STOP_SERVER) != M_OK)
-    {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_STOP_SERVER);
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
 
-intptr_t monapi_file_write(uint32_t fileID, monapi_cmemoryinfo* mem, uint32_t size)
+intptr_t monapi_file_write(uint32_t fileID, const SharedMemory& mem, uint32_t size)
 {
     MessageInfo msg;
     uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    if (Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem->Handle) != M_OK)
-    {
-        return MONA_FAILURE;
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem.handle());
+    if (ret != M_OK) {
+        return ret;
     }
     return msg.arg2;
 }
@@ -436,7 +379,7 @@ uint32_t monapi_stdin_unlock_for_read()
     return inStream->unlockForRead();
 }
 
-uint32_t monapi_process_wait_terminated(uint32_t tid)
+intptr_t monapi_process_wait_terminated(uint32_t tid)
 {
     for (MessageInfo msg;;)
     {
@@ -454,7 +397,7 @@ uint32_t monapi_process_wait_terminated(uint32_t tid)
             break;
         }
     }
-    return MONA_FAILURE;
+    return M_UNKNOWN;
 }
 
 intptr_t monapi_notify_server_start(const char* name)
@@ -483,13 +426,55 @@ MONAPI_BOOL monapi_file_exists(const char* path)
         monapi_file_close(desc);
         return MONAPI_TRUE;
     } else {
-        monapi_cmemoryinfo* cmi = monapi_file_read_directory(path);
-        if (cmi == NULL) {
+        scoped_ptr<SharedMemory> shm(monapi_file_read_directory(path));
+        if (shm.get() == NULL) {
             return MONAPI_FALSE;
         } else {
-            monapi_cmemoryinfo_dispose(cmi);
-            monapi_cmemoryinfo_delete(cmi);
             return MONAPI_TRUE;
         }
+    }
+}
+
+intptr_t monapi_clipboard_set(const SharedMemory& shm)
+{
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_SET, shm.handle(), shm.size());
+    if (ret != M_OK) {
+        return ret;
+    }
+    return M_OK;
+}
+
+intptr_t monapi_clipboard_clear()
+{
+    MessageInfo msg;
+    uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_CLEAR);
+    if (ret != M_OK) {
+        return ret;
+    }
+    return M_OK;
+}
+
+SharedMemory* monapi_clipboard_get()
+{
+    uint32_t tid = monapi_get_server_thread_id(ID_CLIPBOARD_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_CLIPBOARD_GET) != M_OK) {
+        return NULL;
+    }
+    if ((intptr_t)msg.arg2 < M_OK) { return NULL;}
+    SharedMemory* ret = new SharedMemory(msg.arg2, msg.arg3);
+    if (ret->size() == 0) {
+        return ret;
+    }
+    intptr_t mapResult = ret->map(true);
+    if (mapResult != M_OK) {
+        delete ret;
+        monapi_warn("%s map error = %d\n", __func__, mapResult);
+        return NULL;
+    } else {
+        return ret;
     }
 }

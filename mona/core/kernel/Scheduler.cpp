@@ -291,7 +291,7 @@ intptr_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 
     KTimer* timer = (KTimer*)object;
     timers.remove(timer);
-    KObjectService::destroy(id, object);
+    KObjectService::destroy(thread->tinfo->process, id, object);
     return M_OK;
 }
 

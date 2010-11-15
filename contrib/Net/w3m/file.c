@@ -242,8 +242,8 @@ loadSomething(URLFile *f,
 }
 
 #ifdef MONA
-#include <monapi/messages.h>
-extern uint32_t monapi_file_delete(const char* file);
+//#include <monapi/messages.h>
+extern intptr_t monapi_file_delete(const char* file);
 extern void logprintf(const char* format, ...);
 
 void
@@ -419,9 +419,7 @@ examineFile(char *path, URLFile *uf)
 	return;
 
     }
-    MALLOC_STATS();
     uf->stream = openIS(path);
-    MALLOC_STATS();
     if (!do_download) {
 	if (use_lessopen && getenv("LESSOPEN") != NULL) {
 #ifdef MONA
@@ -1778,7 +1776,6 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 #endif
     HRequest hr;
     ParsedURL *volatile auth_pu;
-    MALLOC_STATS();
     tpath = path;
     prevtrap = NULL;
     add_auth_cookie_flag = 0;

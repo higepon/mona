@@ -23,4 +23,4 @@
 ;; ;; (call-process "/APPS/MOSH.APP/MOSH.EXE /APPS/MOSH.APP/test/testing.scm")
 ;; ;; (call-process "/APPS/MOSH.APP/MOSH.EXE /APPS/MOSH.APP/test/misc.scm")
 ;; ;; (call-process "/APPS/MOSH.APP/MOSH.EXE -5 /APPS/MOSH.APP/all-tests.scm")
-(mosh)
+;(mosh)

@@ -274,12 +274,9 @@ void testSymbolInfoCollection_serialize() {
     col.addFunctionEntry("0x10000000", "firstFunc");
 
     col.sort();
-    monapi_cmemoryinfo* cm =  col.serialize();
+    scoped_ptr<SharedMemory> cm(col.serialize());
 
-    EXPECT_TRUE(NULL !=cm);
-
-    monapi_cmemoryinfo_dispose(cm);
-    monapi_cmemoryinfo_delete(cm);
+    EXPECT_TRUE(NULL !=cm.get());
 }
 
 
@@ -569,11 +566,11 @@ void testSymbolDictionary_Integrate()
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
 
     parser.parseAll();
-    monapi_cmemoryinfo* cm =  parser.symbolInfos_.serialize();
-    EXPECT_TRUE(NULL !=cm);
+    scoped_ptr<SharedMemory> cm(parser.symbolInfos_.serialize());
+    EXPECT_TRUE(NULL !=cm.get());
 
     SymbolDictionary::SymbolDictionary dict;
-    if(!dict.deserialize(cm->Data, cm->Size))
+    if(!dict.deserialize(cm->data(), cm->size()))
     {
         _printf("deserialize fail!\n");
     }
@@ -581,15 +578,13 @@ void testSymbolDictionary_Integrate()
     SymbolDictionary::SymbolEntry* ent = dict.lookup(0xa00010a0);
     EXPECT_STR_EQ("main.o", ent->FileName);
     EXPECT_STR_EQ("third()", ent->FunctionName);
-
-    monapi_cmemoryinfo_dispose(cm);
-    monapi_cmemoryinfo_delete(cm);
 }
 
 
 
 int main(int argc, char *argv[])
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testFileReader_Open();
     testFileReader_getLine_once();
     testFileReader_getLine_twice();

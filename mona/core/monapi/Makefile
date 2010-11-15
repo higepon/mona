@@ -29,7 +29,6 @@ SOURCES = monapi_impl.cpp \
           mt19937ar.cpp \
           Keys.cpp \
           messages.cpp \
-          cmemoryinfo.cpp \
           io.cpp \
           Stream.cpp \
           Thread.cpp \

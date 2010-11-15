@@ -96,5 +96,5 @@ int Util::flush()
         p += wroteSize;
         writtenSize_ -= wroteSize;
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }

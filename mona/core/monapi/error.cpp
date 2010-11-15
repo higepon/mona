@@ -62,7 +62,11 @@ const char* monapi_error_string(int error)
         return "not supported";
     case M_UNKNOWN:
         return "unknown error";
+    case M_BAD_ARG:
+        return "bad arguments";
+    case M_OBJECT_NOT_FOUND:
+        return "object not found";
     default:
-        return "BUG: unknown error";
+     _logprintf("unknown error %d\n", error);      return "unknown error see log";
     }
 }

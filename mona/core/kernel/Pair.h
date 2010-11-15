@@ -35,7 +35,6 @@ class Pair
 public:
     Pair() {}
     Pair(Car car, Cdr cdr) : car(car), cdr(cdr) {}
-
     Car car;
     Cdr cdr;
 };

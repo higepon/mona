@@ -379,8 +379,7 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(S
 Process::~Process()
 {
     /* shared MemorySegment */
-    for (int i = 0; i < shared_->size(); i++)
-    {
+    for (int i = 0; i < shared_->size(); i++) {
         SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
         shm->detach(g_page_manager, this);
         SharedMemoryObject::destroy(shm);

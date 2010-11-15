@@ -61,6 +61,7 @@ uint8_t* MemoryMap::map(uint32_t id, bool isImmediateMap /* = false */)
 
     if (size == 0) {
         MEMORY_MAP_TRACE("");
+
         lastError = ERROR_MEMORY_MAP_NOT_FOUND;
         return NULL;
     }

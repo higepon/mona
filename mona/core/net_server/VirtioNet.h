@@ -173,13 +173,13 @@ private:
             return false;
         }
 
-        VIRT_LOG("device found");
+//        VIRT_LOG("device found");
 
         // set up device specific data
         baseAddress_ = pciInf.baseAdress & ~1;
         irqLine_     = pciInf.irqLine;
 
-        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
+//        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
 
         setMacAddress();
 
@@ -326,9 +326,15 @@ public:
     bool send(const char* buf, int len)
     {
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
-            // Wait for last send is done.
-            // In almost case, we expect last send is already done.
-            VIRT_LOG("Waiting previous packet is sent");
+//            static int i = 0;
+            inp8(0x80);
+            // i++;
+            // if (i > 100) {
+            //     // Wait for last send is done.
+            //     // In almost case, we expect last send is already done.
+            //     VIRT_LOG("Waiting previous packet is sent 10 times");
+            //     i = 0;
+//            }
         }
         Ether::Frame* rframe = (Ether::Frame*)buf;
         memset(writeFrame_, 0, sizeof(Ether::Frame));

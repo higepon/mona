@@ -43,21 +43,15 @@ ImeServer::~ImeServer()
 /** 辞書ロード */
 bool ImeServer::loadDictionary()
 {
-    monapi_cmemoryinfo* mi = NULL;
-
-    // 辞書を開く
-//    mi = monapi_call_file_decompress_st5_file(BASICDIC_NAME, MONAPI_FALSE);
-    mi = monapi_file_read_all(BASICDIC_NAME);
-    basicDicSize = mi->Size;
-    if (mi != NULL && basicDicSize > 0) {
-        basicDic = (char *)malloc(basicDicSize);
-        memcpy(basicDic, mi->Data, basicDicSize);
-        monapi_cmemoryinfo_dispose(mi);
-        monapi_cmemoryinfo_delete(mi);
-        //printf("IME: Basic dictionary loaded (%dbyte)\n", basicDicSize);
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(BASICDIC_NAME));
+    if (shm.get() != NULL) {
+        basicDicSize = shm->size();
+        if (basicDicSize > 0) {
+            basicDic = (char *)malloc(basicDicSize);
+            memcpy(basicDic, shm->data(), basicDicSize);
+        }
         return true;
     } else {
-        printf("IME: Basic dictionary not found\n");
         return false;
     }
 }

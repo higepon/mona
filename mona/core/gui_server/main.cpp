@@ -13,7 +13,7 @@
 #include "Rectangle.h"
 #define _R ::System::Drawing::Rectangle
 
-#include <servers/gui.h>
+#include "servers/gui.h"
 #include <monapi/messages.h>
 #include <monapi/CString.h>
 #include <monalibc.h>
@@ -37,7 +37,7 @@ int we_creation = 0, we_destruction = 0, we_step = 6, we_wait = 30;
 // クライアントのリスト
 static HList<uint32_t> clients;
 // 共有メモリ上に確保するフォント
-static monapi_cmemoryinfo* default_font = NULL;
+static SharedMemory* default_font = NULL;
 // 壁紙を開くときにプロンプトに情報を表示するかどうか
 static bool wallpaper_prompt = false;
 // スタートアップアプリケーション
@@ -52,10 +52,10 @@ static HList<CString>* startup = NULL;
 */
 static void ReadFont(const char* file)
 {
-    monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(file, true);
-    if (mi == NULL) return;
+    SharedMemory* shm = monapi_call_file_decompress_st5_file(file, true);
+    if (shm == NULL) return;
 
-    default_font = mi;
+    default_font = shm;
 }
 
 /*!
@@ -164,7 +164,7 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 */
 static void ReadConfig(int argc, char* argv[])
 {
-    monapi_cmemoryinfo* cfg = monapi_file_read_all(argv[1]);
+    scoped_ptr<SharedMemory> cfg(monapi_file_read_all(argv[1]));
     if (cfg == NULL) return;
 
     if (startup != NULL)
@@ -176,9 +176,9 @@ static void ReadConfig(int argc, char* argv[])
     int linepos = 0, wppos = 5;
     unsigned int wptp = 0, bgcol = 0;
     CString section, src = "";
-    for (uint32_t pos = 0; pos <= cfg->Size; pos++)
+    for (uint32_t pos = 0; pos <= cfg->size(); pos++)
     {
-        char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
+        char ch = pos < cfg->size() ? (char)cfg->data()[pos] : '\n';
         if (ch == '\r' || ch == '\n')
         {
             if (linepos > 0)
@@ -255,8 +255,6 @@ static void ReadConfig(int argc, char* argv[])
             line[linepos++] = ch;
         }
     }
-    monapi_cmemoryinfo_dispose(cfg);
-    monapi_cmemoryinfo_delete(cfg);
     if (src.getLength() == 0 || src[0] == '\0')
     {
         return;
@@ -308,7 +306,7 @@ static void MessageLoop()
             // フォント取得要求
             case MSG_GUISERVER_GETFONT:
                 // フォントのハンドル、フォントのサイズ
-                Message::reply(&msg, default_font->Handle, default_font->Size);
+                Message::reply(&msg, default_font->handle(), default_font->size());
                 break;
             // 壁紙ロード要求
             case MSG_GUISERVER_SETWALLPAPER:
@@ -404,8 +402,7 @@ int main(int argc, char* argv[])
     // メッセージループ
     MessageLoop();
     // 共有メモリにロードしているフォント
-    monapi_cmemoryinfo_dispose(default_font);
-    monapi_cmemoryinfo_delete(default_font);
+    delete default_font;
     // 壁紙の開放
     if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
     DisposeScreen();

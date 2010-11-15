@@ -6,7 +6,7 @@
 using namespace std;
 using namespace FatFS;
 
-FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), fat_(NULL)
+FAT12FileSystem::FAT12FileSystem(FDCDriver* drive) : drive_(drive), fat_(NULL)
 {
     fd_ = drive;
 }
@@ -31,7 +31,7 @@ int FAT12FileSystem::initialize()
     syscall_set_irq_receiver(6, 0);
     if (!fd_->isInserted(0))
     {
-        return MONA_ERROR_ON_DEVICE;
+        return M_BUSY;
     }
 #endif
 
@@ -41,7 +41,7 @@ int FAT12FileSystem::initialize()
     {
         delete fat_;
         fat_ = NULL;
-        return MONA_ERROR_ON_DEVICE;
+        return M_BUSY;
     }
 
     fatroot_ = fat_->getRootDirectory();
@@ -51,26 +51,18 @@ int FAT12FileSystem::initialize()
     {
         delete fat_;
         fat_ = NULL;
-        return MONA_ERROR_ON_DEVICE;
+        return M_BUSY;
     }
-    root_ = vmanager_->alloc();
+    root_ = new Vnode;
     root_->fnode  = fatroot_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
-    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
-    if (v != NULL && v->type == type)
-    {
-        *found = v;
-        return MONA_SUCCESS;
-    }
-
-    if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return MONA_ERROR_ENTRY_NOT_FOUND;
+    if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return M_FILE_NOT_FOUND;
 
     int entry;
     int cursor;
@@ -80,7 +72,7 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
 
     if (d == NULL)
     {
-        return MONA_ERROR_ENTRY_NOT_FOUND;
+        return M_FILE_NOT_FOUND;
     }
 
     if (type == Vnode::REGULAR)
@@ -89,15 +81,14 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         if (f == NULL)
         {
             freeDirectory(d);
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
-        Vnode* newVnode = vmanager_->alloc();
+        Vnode* newVnode = new Vnode;
         newVnode->fnode  = f;
         newVnode->type = type;
         newVnode->fs = this;
-        vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
-        return MONA_SUCCESS;
+        return M_OK;
     }
     else // Vnode::DIRECTORY
     {
@@ -105,21 +96,20 @@ int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, 
         if (dir == NULL)
         {
             freeDirectory(d);
-            return MONA_ERROR_ENTRY_NOT_FOUND;
+            return M_FILE_NOT_FOUND;
         }
-        Vnode* newVnode = vmanager_->alloc();
+        Vnode* newVnode = new Vnode;
         newVnode->fnode  = dir;
         newVnode->type = type;
         newVnode->fs = this;
-        vmanager_->cacher()->add(diretory, file, newVnode);
         *found = newVnode;
-        return MONA_SUCCESS;
+        return M_OK;
     }
 }
 
 int FAT12FileSystem::open(Vnode* file, int mode)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::create(Vnode* dir, const string& file)
@@ -128,14 +118,14 @@ int FAT12FileSystem::create(Vnode* dir, const string& file)
     int entry = p->newFile((uint8_t*)file.c_str(), 0);
     if (-1 == entry)
     {
-        return MONA_FAILURE;
+        return M_NO_SPACE;
     }
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 {
-    if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+    if (file->type != Vnode::REGULAR) return M_BAD_ARG;
     File* f = (File*)file->fnode;
     uint32_t offset = context->offset;
     uint32_t readSize = context->size;
@@ -147,31 +137,28 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
     }
 
     f->seek(offset, SEEK_SET);
-    context->memory = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    context->memory = new MonAPI::SharedMemory(readSize);
 
-    if (monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE, 1) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(context->memory);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    if (context->memory->map(true) != M_OK) {
+        delete context->memory;
+        return M_NO_MEMORY;
     }
-    f->read(context->memory->Data, readSize);
-    return MONA_SUCCESS;
+    f->read(context->memory->data(), readSize);
+    return M_OK;
 }
 
 int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
 {
-    if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+    if (file->type != Vnode::REGULAR) return M_BAD_ARG;
     File* f = (File*)file->fnode;
-    monapi_cmemoryinfo* memory = context->memory;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    MonAPI::SharedMemory* memory = context->memory;
 
     uint32_t offset = context->offset;
     uint32_t writeSize = context->size;
     f->seek(offset, SEEK_SET);
-    f->write(memory->Data, writeSize);
+    f->write(memory->data(), writeSize);
     f->flush();
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::seek(Vnode* file, uint32_t offset, uint32_t origin)
@@ -181,14 +168,14 @@ int FAT12FileSystem::seek(Vnode* file, uint32_t offset, uint32_t origin)
 
 int FAT12FileSystem::close(Vnode* file)
 {
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::stat(Vnode* file, Stat* st)
 {
     File* f = (File*)file->fnode;
     st->size = f->size();
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 Vnode* FAT12FileSystem::getRoot() const
@@ -196,7 +183,7 @@ Vnode* FAT12FileSystem::getRoot() const
     return root_;
 }
 
-int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
+int FAT12FileSystem::readdir(Vnode* dir, MonAPI::SharedMemory** entries)
 {
     deviceOn();
     Directory* target = (Directory*)dir->fnode;
@@ -207,37 +194,31 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     typedef vector<monapi_directoryinfo*> Files;
     Files files;
     monapi_directoryinfo di;
-    while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
+    while (readdirInternal(di.name, &di.size, &di.attr) == M_OK)
     {
         files.push_back(new monapi_directoryinfo(di));
     }
     deviceOff();
 
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
     int size = files.size();
-    if (monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE, 1) != M_OK)
-    {
-        monapi_cmemoryinfo_delete(ret);
-        for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
-        {
+    MonAPI::SharedMemory* ret = new MonAPI::SharedMemory(sizeof(int) + size * sizeof(monapi_directoryinfo));
+    if (ret->map(true) != M_OK) {
+        delete ret;
+        for (Files::const_iterator it = files.begin(); it != files.end(); ++it) {
             delete (*it);
         }
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+        return M_NO_MEMORY;
     }
+    memcpy(ret->data(), &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
 
-    memcpy(ret->Data, &size, sizeof(int));
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
-
-    for (Files::const_iterator it = files.begin(); it != files.end(); ++it)
-    {
+    for (Files::const_iterator it = files.begin(); it != files.end(); ++it) {
         memcpy(p, (*it), sizeof(monapi_directoryinfo));
         delete (*it);
         p++;
     }
     *entries = ret;
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 void FAT12FileSystem::destroyVnode(Vnode* vnode)
@@ -265,7 +246,7 @@ int FAT12FileSystem::deviceOn()
     fd_->recalibrate();
     fd_->recalibrate();
     fd_->recalibrate();
-    return MONA_SUCCESS;
+    return M_OK;
 }
 
 int FAT12FileSystem::deviceOff()
@@ -391,14 +372,14 @@ int FAT12FileSystem::readdirInternal(char* name, int* size, int* attribute)
     {
 // don't free, we reuse vnode->fnode
 //        if (lsinfo_.p != current_) freeDirectory(lsinfo_.p);
-        return MONA_FAILURE;
+        return M_OK;
     }
 
     if (-1 == lsinfo_.p->getEntryName(lsinfo_.entry, (uint8_t*)name))
     {
 // don't free, we reuse vnode->fnode
 //        freeDirectory(lsinfo_.p);
-        return MONA_FAILURE;
+        return M_OK;
     }
 
     /* directory */
@@ -408,6 +389,6 @@ int FAT12FileSystem::readdirInternal(char* name, int* size, int* attribute)
     }
 
     lsinfo_.entry = lsinfo_.p->getNextEntry(lsinfo_.entry);
-    return MONA_SUCCESS;
+    return M_OK;
 }
 

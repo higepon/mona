@@ -229,7 +229,6 @@ int main(int argc, char* argv[]) {
 	_MVARG			mv;
 	MPEGFUNC		func;
 	MPEGERR			r;
-	monapi_cmemoryinfo* mi = NULL;
 
 	// check arguments
 	if (argc < 2) {
@@ -238,23 +237,18 @@ int main(int argc, char* argv[]) {
 	}
 
 	printf("loading %s...\n", argv[1]);
-	mi = monapi_file_read_all(argv[1]);
-	if (mi == NULL || mi->Size == 0) {
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(argv[1]));
+	if (shm.get() == NULL || shm->size() == 0) {
 		printf("file read error\n");
 		return(-1);
 	}
-	filesize = mi->Size;
-	filebuf = (BYTE *)malloc(mi->Size);
+	filesize = shm->size();
+	filebuf = (BYTE *)malloc(shm->size());
 	if (filebuf == NULL) {
 		printf("memory allocate error\n");
-		monapi_cmemoryinfo_dispose(mi);
-		monapi_cmemoryinfo_delete(mi);
 		return(-1);
 	}
-	memcpy(filebuf, mi->Data, mi->Size);
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
-
+	memcpy(filebuf, shm->data(), shm->size());
 	mv.data.mem = filebuf;
 	mv.data.pos = 0;
 	mv.data.size = filesize;

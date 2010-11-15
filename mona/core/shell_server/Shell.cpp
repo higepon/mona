@@ -98,7 +98,7 @@ void Shell::commandChar(char c)
     }
 
     // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
-    if (inStream_->tryLockForRead() == MONA_SUCCESS)
+    if (inStream_->tryLockForRead() == M_OK)
     {
         inStream_->unlockForRead();
         commandLine_[position_] = c;
@@ -409,14 +409,14 @@ _A<CString> Shell::parseCommandLine()
 int Shell::makeApplicationList()
 {
     if (apps_.size() > 0) return 0;
-    monapi_cmemoryinfo* mi = monapi_file_read_directory(APPSDIR);
-    int size = *(int*)mi->Data;
-    if (mi == NULL || size == 0)
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory(APPSDIR));
+    int size = *(int*)shm->data();
+    if (shm.get() == NULL || size == 0)
     {
         return 1;
     }
 
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
     for (int i = 0; i < size; i++, p++)
     {
         CString file = p->name;
@@ -429,8 +429,6 @@ int Shell::makeApplicationList()
         }
     }
 
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
     return 0;
 }
 
@@ -470,9 +468,9 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 
 void Shell::printFiles(const CString& dir)
 {
-    monapi_cmemoryinfo* mi = monapi_file_read_directory(dir);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory(dir));
     int size;
-    if (mi == NULL || (size = *(int*)mi->Data) == 0)
+    if (shm.get() == NULL || (size = *(int*)shm->data()) == 0)
     {
         formatWrite("%s: directory not found: %s\n", SVR, (const char*)dir);
         terminal_->flush();
@@ -482,7 +480,7 @@ void Shell::printFiles(const CString& dir)
     CString spc = "               ";
     int w = 0, sw = screen_.getWidth();
 
-    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&shm->data()[sizeof(int)];
     for (int i = 0; i < size; i++, p++)
     {
         CString file = p->name;
@@ -504,31 +502,29 @@ void Shell::printFiles(const CString& dir)
     }
     formatWrite("\n");
     terminal_->flush();
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
 }
 
 void Shell::executeMSH(const CString& msh)
 {
-    monapi_cmemoryinfo* mi = monapi_file_read_all(msh);
-    if (mi == NULL) return;
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all(msh));
+    if (shm.get() == NULL) return;
 
-    for (uint32_t pos = 0, start = 0; pos <= mi->Size; pos++)
+    for (uint32_t pos = 0, start = 0; pos <= shm->size(); pos++)
     {
-        char ch = pos < mi->Size ? (char)mi->Data[pos] : '\n';
+        char ch = pos < shm->size() ? (char)shm->data()[pos] : '\n';
         if (ch == '\r' || ch == '\n')
         {
             int len = pos - start;
             bool isPrompt = true;
             if (len > 0)
             {
-                if (mi->Data[start] == '@')
+                if (shm->data()[start] == '@')
                 {
                     start++;
                     len--;
                     isPrompt = false;
                 }
-                if (mi->Data[start] == '#')
+                if (shm->data()[start] == '#')
                 {
                     len = 0;
                 }
@@ -536,7 +532,7 @@ void Shell::executeMSH(const CString& msh)
             if (len > 0)
             {
                 if (len > 127) len = 127;
-                strncpy(commandLine_, (const char*)&mi->Data[start], len);
+                strncpy(commandLine_, (const char*)&shm->data()[start], len);
                 position_ = len;
                 commandLine_[len] = '\0';
                 if (isPrompt)
@@ -551,9 +547,6 @@ void Shell::executeMSH(const CString& msh)
             start = pos + 1;
         }
     }
-
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
 }
 
 bool Shell::changeDirecotory(const MonAPI::CString& path)

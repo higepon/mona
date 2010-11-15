@@ -3,8 +3,6 @@
 
 enum
 {
-    MSG_DISPOSE_HANDLE          = 0x0100,
-
     MSG_REGISTER_TO_SERVER      = 0x0110,
     MSG_STOP_SERVER,
     MSG_UNREGISTER_FROM_SERVER,

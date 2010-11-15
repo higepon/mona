@@ -17,7 +17,7 @@ using namespace std;
 typedef struct
 {
     CString Name, Path;
-    monapi_cmemoryinfo* Data;
+    SharedMemory* Data;
     PEParser Parser;
 } PEData;
 
@@ -84,14 +84,11 @@ static PEData* OpenPE(const CString& path, bool prompt)
         delete ret;
         return NULL;
     }
-
-    if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
+    if (!ret->Parser.Parse(ret->Data->data(), ret->Data->size()))
     {
         if (prompt) _printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
-//#ifdef NO_CACHE
-        monapi_cmemoryinfo_dispose(ret->Data);
-        monapi_cmemoryinfo_delete(ret->Data);
-//#endif
+//        ret->Data->unmap();
+        delete ret->Data;
         ret->Data = NULL;
     }
 
@@ -108,8 +105,8 @@ class DLLManager
 {
 private:
     bool initialized;
-    monapi_cmemoryinfo* files1;
-    monapi_cmemoryinfo* files2;
+    SharedMemory* files1;
+    SharedMemory* files2;
     CString path;
     bool prompt;
 
@@ -131,13 +128,13 @@ public:
     {
         if (this->files1 != NULL)
         {
-            monapi_cmemoryinfo_dispose(this->files1);
-            monapi_cmemoryinfo_delete(this->files1);
+//            files1->unmap();
+            delete files1;
         }
         if (this->files2 != NULL)
         {
-            monapi_cmemoryinfo_dispose(this->files2);
-            monapi_cmemoryinfo_delete(this->files2);
+//            files2->unmap();
+            delete files2;
         }
     }
 
@@ -158,12 +155,12 @@ private:
         return this->IsReady();
     }
 
-    CString Find(monapi_cmemoryinfo* files, const CString& path, const CString& dll)
+    CString Find(SharedMemory* files, const CString& path, const CString& dll)
     {
         if (files == NULL) return NULL;
 
-        int size = *(int*)files->Data;
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&files->Data[sizeof(int)];
+        int size = *(int*)files->data();
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&files->data()[sizeof(int)];
         for (int i = 0; i < size; i++, p++)
         {
             CString n = CString(p->name).toUpper();
@@ -190,10 +187,10 @@ public:
 
         if (dll.endsWith(".DLL")) dll = dll.substring(0, dll.getLength() - 4);
 
-        CString ret = this->Find(this->files1, this->path, dll);
+        CString ret = this->Find(files1, this->path, dll);
         if (ret != NULL) return ret;
 
-        ret = this->Find(this->files2, DLLPATH, dll);
+        ret = this->Find(files2, DLLPATH, dll);
         if (ret == NULL)
         {
             if (this->prompt) _printf("%s: can not find: %s.DLL\n", SVR, (const char*)dll);
@@ -214,7 +211,7 @@ private:
 
 public:
     uint32_t EntryPoint;
-    monapi_cmemoryinfo* Binary;
+    SharedMemory* Binary;
     int Result;
 
     PELinker(const CString& path, bool prompt)
@@ -231,8 +228,7 @@ public:
 
     ~PELinker()
     {
-        if (this->Binary != NULL) monapi_cmemoryinfo_delete(this->Binary);
-//#ifdef NO_CACHE
+        if (this->Binary != NULL) delete this->Binary;
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -240,11 +236,9 @@ public:
             if (isDLL(data)) {
                 continue;
             }
-            monapi_cmemoryinfo_dispose(data->Data);
-            monapi_cmemoryinfo_delete(data->Data);
+            delete data->Data;
             delete data;
         }
-//#endif
     }
 
 private:
@@ -275,27 +269,22 @@ private:
 
     bool Open(const CString& path)
     {
-        if (path == NULL)
-        {
+        if (path == NULL) {
             this->Result = 1;
             return false;
         }
 
         PEDataList::size_type len = this->list.size();
-        for (PEDataList::size_type i = 0; i < len; i++)
-        {
+        for (PEDataList::size_type i = 0; i < len; i++) {
             if (this->list[i]->Path == path) {
                 return true;
             }
         }
         PEData* pe = OpenPE(path, this->prompt);
-        if (pe == NULL)
-        {
+        if (pe == NULL) {
             this->Result = 1;
             return false;
-        }
-        else if (pe->Data == NULL)
-        {
+        } else if (pe->Data == NULL) {
 #ifdef NO_CACHE
             delete pe;
 #endif
@@ -306,8 +295,7 @@ private:
 
         HList<CString> dlls;
         int its = pe->Parser.get_ImportTableCount();
-        for (int i = 0; i < its; i++)
-        {
+        for (int i = 0; i < its; i++) {
             CString name = CString(pe->Parser.GetImportTableName(i)).toUpper();
             if (!name.endsWith(".DLL"))
             {
@@ -339,10 +327,10 @@ private:
 
         imageSize += bootstrapSize;
 
-        monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-        if (monapi_cmemoryinfo_create(dst, imageSize, this->prompt, true) != M_OK)
+        SharedMemory* dst = new SharedMemory(imageSize);
+        if (dst->map(true) != M_OK)
         {
-            monapi_cmemoryinfo_delete(dst);
+            delete dst;
             this->Result = 3;
             return false;
         }
@@ -350,13 +338,12 @@ private:
         for (PEDataList::size_type i = 0; i < len; i++)
         {
             PEData* data = this->list[i];
-            uint8_t* ptr = &dst->Data[addr];
+            uint8_t* ptr = &dst->data()[addr];
             if (!data->Parser.Load(ptr))
             {
                 if (this->prompt) _printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
-                monapi_cmemoryinfo_dispose(dst);
-                monapi_cmemoryinfo_delete(dst);
+                delete dst;
 #endif
                 this->Result = 3;
                 return false;
@@ -365,8 +352,7 @@ private:
             {
                 if (this->prompt) _printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
 #ifdef NO_CACHE
-                monapi_cmemoryinfo_dispose(dst);
-                monapi_cmemoryinfo_delete(dst);
+                delete dst;
 #endif
                 this->Result = 3;
                 return false;
@@ -382,7 +368,7 @@ private:
             {
                 CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
                 PEData* target = this->Find(dll);
-                if (target == NULL || !data->Parser.Link(&dst->Data[addr], j, &target->Parser))
+                if (target == NULL || !data->Parser.Link(&dst->data()[addr], j, &target->Parser))
                 {
                     if (this->prompt)
                     {
@@ -390,8 +376,7 @@ private:
                         _printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
                     }
 #ifdef NO_CACHE
-                    monapi_cmemoryinfo_dispose(dst);
-                    monapi_cmemoryinfo_delete(dst);
+                    delete dst;
 #endif
                     this->Result = 3;
                     return false;
@@ -400,7 +385,7 @@ private:
             addr += data->Parser.get_ImageSize();
         }
         // make bootstrap code
-        uint8_t* bootstrap = &dst->Data[dst->Size - bootstrapSize];
+        uint8_t* bootstrap = &dst->data()[dst->size() - bootstrapSize];
         uint8_t* start = &bootstrap[3];
         bootstrap[0] = 0x55; // push ebp
         bootstrap[1] = 0x89; // mov ebp
@@ -443,7 +428,7 @@ private:
         start[i * CALL_CODE_SIZE] = 0xC9;
         start[i * CALL_CODE_SIZE + 1] = 0xC3;
 
-        bootstrapEntryPoint = dst->Size - bootstrapSize + ORG;
+        bootstrapEntryPoint = dst->size() - bootstrapSize + ORG;
         // make bootstrap end
         this->Binary = dst;
         return true;
@@ -458,18 +443,16 @@ static void MessageLoop()
 
         switch (msg.header)
         {
-            case MSG_DISPOSE_HANDLE:
-                MemoryMap::unmap(msg.arg1);
-                Message::reply(&msg);
-                break;
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
-                if (pe.Result == 0)
-                {
+                if (pe.Result == 0) {
                     char buf[16];
-                    sprintf(buf, "%d", pe.Binary->Size);
-                    Message::reply(&msg, pe.Binary->Handle, pe.EntryPoint, buf);
+                    sprintf(buf, "%d", pe.Binary->size());
+
+                    // To prevent miss freeing of shared map, waits the client notification.
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
+                    // we can safely unmap after above.
                 }
                 else
                 {

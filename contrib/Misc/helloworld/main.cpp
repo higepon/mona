@@ -8,43 +8,43 @@
 int main(int argc, char* argv[])
 {
     KStat stat;
-    syscall_get_kstat(&stat);
-    logprintf("page1 fault = %d\n", stat.stats[PAGE_FAULT1]);
-    logprintf("page1 fault count = %d\n", stat.statsCount[PAGE_FAULT1]);
-    logprintf("page2 fault = %d\n", stat.stats[PAGE_FAULT2]);
-    logprintf("page2 fault count = %d\n", stat.statsCount[PAGE_FAULT2]);
-    logprintf("page3 fault = %d\n", stat.stats[PAGE_FAULT3]);
-    logprintf("page3 fault count = %d\n", stat.statsCount[PAGE_FAULT3]);
-    logprintf("page4 fault = %d\n", stat.stats[PAGE_FAULT4]);
-    logprintf("page4 fault count = %d\n", stat.statsCount[PAGE_FAULT4]);
+    // syscall_get_kstat(&stat);
+    // logprintf("page1 fault = %d\n", stat.stats[PAGE_FAULT1]);
+    // logprintf("page1 fault count = %d\n", stat.statsCount[PAGE_FAULT1]);
+    // logprintf("page2 fault = %d\n", stat.stats[PAGE_FAULT2]);
+    // logprintf("page2 fault count = %d\n", stat.statsCount[PAGE_FAULT2]);
+    // logprintf("page3 fault = %d\n", stat.stats[PAGE_FAULT3]);
+    // logprintf("page3 fault count = %d\n", stat.statsCount[PAGE_FAULT3]);
+    // logprintf("page4 fault = %d\n", stat.stats[PAGE_FAULT4]);
+    // logprintf("page4 fault count = %d\n", stat.statsCount[PAGE_FAULT4]);
 
-    logprintf("page5 fault = %d\n", stat.stats[PAGE_FAULT5]);
-    logprintf("page5 fault count = %d\n", stat.statsCount[PAGE_FAULT5]);
-    logprintf("page6 fault = %d\n", stat.stats[PAGE_FAULT6]);
-    logprintf("page6 fault count = %d\n", stat.statsCount[PAGE_FAULT6]);
-    logprintf("page7 fault = %d\n", stat.stats[PAGE_FAULT7]);
-    logprintf("page7 fault count = %d\n", stat.statsCount[PAGE_FAULT7]);
+    // logprintf("page5 fault = %d\n", stat.stats[PAGE_FAULT5]);
+    // logprintf("page5 fault count = %d\n", stat.statsCount[PAGE_FAULT5]);
+    // logprintf("page6 fault = %d\n", stat.stats[PAGE_FAULT6]);
+    // logprintf("page6 fault count = %d\n", stat.statsCount[PAGE_FAULT6]);
+    // logprintf("page7 fault = %d\n", stat.stats[PAGE_FAULT7]);
+    // logprintf("page7 fault count = %d\n", stat.statsCount[PAGE_FAULT7]);
 
-    logprintf("page8 fault = %d\n", stat.stats[PAGE_FAULT8]);
-    logprintf("page8 fault count = %d\n", stat.statsCount[PAGE_FAULT8]);
-    logprintf("page9 fault = %d\n", stat.stats[PAGE_FAULT9]);
-    logprintf("page9 fault count = %d\n", stat.statsCount[PAGE_FAULT9]);
-    logprintf("page10 fault = %d\n", stat.stats[PAGE_FAULT10]);
-    logprintf("page10 fault count = %d\n", stat.statsCount[PAGE_FAULT10]);
+    // logprintf("page8 fault = %d\n", stat.stats[PAGE_FAULT8]);
+    // logprintf("page8 fault count = %d\n", stat.statsCount[PAGE_FAULT8]);
+    // logprintf("page9 fault = %d\n", stat.stats[PAGE_FAULT9]);
+    // logprintf("page9 fault count = %d\n", stat.statsCount[PAGE_FAULT9]);
+    // logprintf("page10 fault = %d\n", stat.stats[PAGE_FAULT10]);
+    // logprintf("page10 fault count = %d\n", stat.statsCount[PAGE_FAULT10]);
 
-    logprintf("page11 fault = %d\n", stat.stats[PAGE_FAULT11]);
-    logprintf("page11 fault count = %d\n", stat.statsCount[PAGE_FAULT11]);
-    logprintf("page12 fault = %d\n", stat.stats[PAGE_FAULT12]);
-    logprintf("page12 fault count = %d\n", stat.statsCount[PAGE_FAULT12]);
+    // logprintf("page11 fault = %d\n", stat.stats[PAGE_FAULT11]);
+    // logprintf("page11 fault count = %d\n", stat.statsCount[PAGE_FAULT11]);
+    // logprintf("page12 fault = %d\n", stat.stats[PAGE_FAULT12]);
+    // logprintf("page12 fault count = %d\n", stat.statsCount[PAGE_FAULT12]);
 
-    logprintf("page13 fault = %d\n", stat.stats[PAGE_FAULT13]);
-    logprintf("page13 fault count = %d\n", stat.statsCount[PAGE_FAULT13]);
-    logprintf("page14 fault = %d\n", stat.stats[PAGE_FAULT14]);
-    logprintf("page14 fault count = %d\n", stat.statsCount[PAGE_FAULT14]);
-    logprintf("page15 fault = %d\n", stat.stats[PAGE_FAULT15]);
-    logprintf("page15 fault count = %d\n", stat.statsCount[PAGE_FAULT15]);
+    // logprintf("page13 fault = %d\n", stat.stats[PAGE_FAULT13]);
+    // logprintf("page13 fault count = %d\n", stat.statsCount[PAGE_FAULT13]);
+    // logprintf("page14 fault = %d\n", stat.stats[PAGE_FAULT14]);
+    // logprintf("page14 fault count = %d\n", stat.statsCount[PAGE_FAULT14]);
+    // logprintf("page15 fault = %d\n", stat.stats[PAGE_FAULT15]);
+    // logprintf("page15 fault count = %d\n", stat.statsCount[PAGE_FAULT15]);
 
-    printf("Hello, World");
+    // printf("Hello, World");
     return 0;
 }
 
@@ -4412,28 +4412,3 @@ int main(int argc, char* argv[])
     }
 #endif
 
-#if 0
-    uint32_t fileID = monapi_file_open("/AUTOEXEC.MSH", MONAPI_FALSE);
-    monapi_cmemoryinfo* mi = monapi_file_read(fileID, 486);
-    printf("AUTOEXEC.MSH size = 485, readResult size = %d\n", mi->Size);
-    monapi_file_close(fileID);
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
-#endif
-
-#if 0
-    const char* message = "Hello World\n";
-    monapi_cmemoryinfo* buffer = new monapi_cmemoryinfo();
-    if (!monapi_cmemoryinfo_create(buffer, strlen(message) + 1, 0))
-    {
-        monapi_cmemoryinfo_delete(buffer);
-        return -1;
-    }
-    memcpy(buffer->Data, message, buffer->Size);
-    uint32_t id = monapi_file_open("/FD/HELLO.TXT", true);
-    monapi_file_write(id, buffer, buffer->Size);
-    monapi_file_close(id);
-    return 0;
-}
-
-#endif

@@ -4,12 +4,15 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define skip-unit-test? #f)
 
-(define *tests-on-cui* '("/APPS/TVIRTIO.EX5"
+(define *tests-on-cui* '(
+                         "/APPS/TFLOAD.APP/TFLOAD.EX5"
+                         "/APPS/TCLIP.EX5"
                          "/APPS/TFILE.APP/TFILE.EX5"
+                         "/APPS/TVIRTIO.EX5"
                          "/APPS/TSTACK.APP/TSTACK.EX5"
                          "/APPS/TGMP.EX5"
                          "/APPS/HELLO.EX5"
@@ -23,7 +26,8 @@
                          "/APPS/TRAMDISK.EX5"
                          "/APPS/TDIE.EX5"
                          "/APPS/TSOCK.EX5"
-                         "/APPS/HELLO.EX5"))
+                         "/APPS/HELLO.EX5"
+                         ))
 
 (define *tests-on-gui* '("/APPS/BAYGUI/TBAYGUI.EX5"))
 
@@ -35,13 +39,17 @@
   (gnote))
 
 (define (on-gui-start)
+;  (ls "/USER/TEMP")
+  (call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
+;  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/WORDS.SCM")
+
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
 ;  (start-process "/APPS/NET.EX5")
 ;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
 ;  (start-process "/APPS/BAYGUI/MINE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
-(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
+;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.monaos.org/links.html")
 ;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
 ;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
@@ -103,6 +111,9 @@
 ;;              "output-port.scm"
 ;;               ))
 )
+;; (define (mosh)
+;;   (call-process "/APPS/FRECV.EX5 MOSH.EXE")
+;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM"))
 
 
 ;;   (call-process "/MEM/MOSH.EXE --loadpath=/LIBS/MOSH/lib /APPS/MOSH.APP/test/condition.scm")
@@ -134,3 +145,20 @@
       (for-each call-process *tests-on-cui*)
       (if (not mona-gui-auto-start)
           (test-end))))
+
+
+;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+;(mosh)
+;(call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/SUBDIR/show-words.scm /USER/SUBDIR/WORDS.SCM")
+;(ls "/USER/BIN")
+(define (cat file)
+  (call-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/CAT.SCM " file)))
+
+(define (c command arg)
+  (call-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/" command ".SCM " arg)))
+
+(define (rm file)
+  (c "RM" file))
+
+(if (file-exists? "/USER/ONSTART.SCM")
+    (load "/USER/ONSTART.SCM"))

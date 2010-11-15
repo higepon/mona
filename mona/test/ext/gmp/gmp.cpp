@@ -75,7 +75,6 @@ int main(int argc, char *argv[])
     mpq_set_z(x, a);
     mpq_set_z(y, b);
     mpq_div(ret, x, y);
-    logprintf("the answer is %s %s:%d <%s>\n", __func__, __FILE__, __LINE__, mpq_get_str(NULL, 10, ret));
     test_mpz();
     test_mpq();
     test_mpq_div();

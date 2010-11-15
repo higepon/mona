@@ -75,7 +75,7 @@ void testCondition()
     uintptr_t mainThread = System::getThreadID();
     syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
 
-    sleep(20);
+    sleep(50);
 
     // wait sub thread starting up
     waitSubThread();

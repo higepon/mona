@@ -27,7 +27,6 @@ $(TEST_TARGET) : $(TEST_OBJECTS)
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(TEST_SOURCES) >> dependencies
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) $(TEST_OBJECTS) $(TEST_TARGET)

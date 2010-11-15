@@ -30,6 +30,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN5 $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
+	rm -f dependencies
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif
@@ -39,3 +40,6 @@ endif
 ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
+
+check-syntax:
+	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}

@@ -12,9 +12,10 @@
 */
 #ifdef MONA
 
-#include "MonaTerminal.h"
+#include <sys/types.h>
 #include <monapi.h>
 #include <monapi/messages.h>
+#include "MonaTerminal.h"
 #include <servers/screen.h>
 
 using namespace util;
@@ -44,7 +45,7 @@ MonaTerminal::~MonaTerminal()
 const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
 {
     bool hasLine = false;
-    if ((msg->arg2 & KEY_MODIFIER_DOWN) != 0) {
+    if ((!isKeySuppressed_ && (msg->arg2 & KEY_MODIFIER_DOWN) != 0)) {
         hasLine = onKeyDown(msg->arg1, msg->arg2);
     } else if (msg->arg1 == 0) {
         hasLine = onKeyDown(msg->arg2, msg->arg3);
@@ -156,6 +157,25 @@ bool MonaTerminal::initialize()
 bool MonaTerminal::onKeyDown(int keycode, int modifiers)
 {
     switch(keycode) {
+    case (Keys::R):
+        if (modifiers & KEY_MODIFIER_CTRL)
+        {
+            backSpace();
+            ::util::String searchKey = getLine();
+            searchKey.chop();
+            ::util::String* foundHistory = histories_.findFirstMatch(searchKey);
+            if (foundHistory != NULL) {
+                outputLine(foundHistory->data());
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            }
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            break;
+        }
+        else
+        {
+            outputKey(keycode, modifiers);
+            break;
+        }
     case (Keys::H):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
@@ -260,7 +280,8 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
     case (Keys::D):
         if (modifiers & KEY_MODIFIER_CTRL)
         {
-            del();
+           del();
+            return true;
             break;
         }
         else
@@ -283,7 +304,7 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
     case(Keys::G):
     case(Keys::I):case(Keys::J):case(Keys::L):
     case(Keys::M):case(Keys::O):
-    case(Keys::Q):case(Keys::R):case(Keys::S):case(Keys::T):
+    case(Keys::Q):case(Keys::S):case(Keys::T):
     case(Keys::U):case(Keys::V):case(Keys::W):case(Keys::X):
     case(Keys::Y):case(Keys::Z):case(Keys::Decimal):case(Keys::D0):
     case(Keys::D1):case(Keys::D2):case(Keys::D3):case(Keys::D4):
@@ -434,7 +455,27 @@ void MonaTerminal::outputChar(char c)
 
 void MonaTerminal::addHistory(String line)
 {
-    histories_.add(line);
+    bool isAdded = histories_.add(line);
+    const char* USER_DIR = "/USER";
+    if (isAdded && monapi_file_exists(USER_DIR)) {
+        int id = monapi_file_open(HISTORY_FILE, FILE_CREATE);
+        if (id < M_OK) {
+            monapi_warn("history file open failure");
+        }
+        intptr_t size = monapi_file_get_file_size(id);
+        monapi_file_seek(id, size, SEEK_SET);
+        SharedMemory shm(line.size());
+        if (shm.map() != M_OK) {
+            monapi_warn("shm map error on addHistory");
+        }
+        memcpy(shm.data(), line.data(), line.size());
+        int sizeWritten = monapi_file_write(id, shm, shm.size());
+        if (sizeWritten != shm.size()) {
+            monapi_warn("history file write failure");
+        }
+        monapi_file_close(id);
+    }
+
 }
 
 #endif // MONA

@@ -35,11 +35,10 @@
 #include "io.h"
 #include "Condition.h"
 
-bool KObjectService::destroy(intptr_t id, KObject* obj)
+bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 {
-    if (obj->getOwner() != NULL) {
-        obj->getOwner()->removeKObject(id, obj);
-    }
+    bool isRemoved = who->removeKObject(id, obj);
+    ASSERT(isRemoved);
     // try delete by reference counting.
     return tryDelete(id, obj);
 }
@@ -56,12 +55,12 @@ bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 
 void KObjectService::cleanupKObjects(Process* owner)
 {
-    HList< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
+    HList2< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
     int size = kobjects->size();
     for (int i = 0; i < size; i++) {
         Pair<intptr_t, KObject*> p;
-        bool isDeleted = kobjects->removeAt(0, &p);
-        ASSERT(isDeleted);
+        bool isRemoved = kobjects->removeAt(0, &p);
+        ASSERT(isRemoved);
         KObjectService::tryDelete(p.car, p.cdr);
     }
 }

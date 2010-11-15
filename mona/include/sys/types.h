@@ -24,13 +24,6 @@
 
 #define KERNEL_TIMER_INTERVAL_MSEC 10
 
-/* todo remove*/
-/* USE M_OK instead. see error.h */
-typedef enum {
-    MONA_SUCCESS = 1, /* don't change */
-    MONA_FAILURE = 0  /* don't change */
-} MonaOldErrorType;
-
 #ifndef __uint64_t_defined
 typedef unsigned long long	uint64_t;
 # define __uint64_t_defined
@@ -41,7 +34,6 @@ typedef long long	int64_t;
 #endif
 
 #define PROCESS_HEAP_SIZE 512 * 1024 * 1024
-
 
 #ifndef __uintptr_t_defined
 typedef unsigned long int   uintptr_t;
@@ -153,8 +145,10 @@ struct CommandOption {
 typedef struct CommandOption CommandOption;
 
 typedef struct {
-    uint32_t handle;
+    uint8_t* image;
+    uint32_t size;
     uint32_t entrypoint;
+    const char* path;
     const char* name;
     CommandOption* list;
 } LoadProcessInfo;

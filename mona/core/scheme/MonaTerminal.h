@@ -18,6 +18,8 @@
 #include "CommandHistory.h"
 #include <monapi/terminal/Util.h>
 
+#define HISTORY_FILE "/USER/HISTORY.TXT"
+
 namespace monash {
 
 class MonaTerminal
@@ -29,7 +31,13 @@ public:
     ::util::String getLine();
     int formatWrite(const char* format, ...);
     uint32_t getScreenHandle() const { return screenHandle_; }
-    void setKeySuppresed() { isKeySuppressed_ = true; }
+    void setKeySuppresed() {
+        isKeySuppressed_ = true;
+    }
+    bool isKeySuppressed() const
+    {
+        return isKeySuppressed_;
+    }
     void outputChar(char c);
     void addHistory(::util::String line);
     const char* storeKeyAndGetLine(MessageInfo* msg);

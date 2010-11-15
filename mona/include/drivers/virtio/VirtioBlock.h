@@ -62,6 +62,7 @@ public:
 
         scoped_ptr<ContigousMemory> mem(ContigousMemory::allocate(sizeToWrite + sizeof(virtio_blk_outhdr) + 1));
         if (mem.get() == NULL) {
+            monapi_warn("ContigousMemory no space!");
             return M_NO_MEMORY;
         }
         struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)mem->get();
@@ -110,6 +111,57 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+        const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
+
+        int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
+        int restToRead = sizeToRead;
+        for (int i = 0; i < numBlocks; i++) {
+            int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
+            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / 512) * i, size);
+            if (ret < 0) {
+                return ret;
+            }
+            restToRead -= size;
+        }
+        ASSERT(restToRead == 0);
+        return sizeToRead;
+    }
+
+    uint64_t getSectorSize() const
+    {
+        return 512;
+    }
+
+    uint64_t getCapacity() const
+    {
+        struct virtio_blk_config config;
+        vdev_->getConfig(&config, 0, sizeof(struct virtio_blk_config));
+        return config.capacity;
+    }
+
+    static VirtioBlock* probe(int deviceIndex)
+    {
+        VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, deviceIndex);
+        if (vdev == NULL) {
+            return NULL;
+        } else {
+            return new VirtioBlock(vdev);
+        }
+    }
+
+    void waitWithBusyLoop(uintptr_t usec)
+    {
+        for (uintptr_t i = 0; i < usec; i++) {
+            delayMicrosec();
+            if (vq_->isUsedBufExist()) {
+                break;
+            }
+        }
+    }
+
+private:
+    int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
+    {
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   readBuf can be used directory using scatter gather system.
@@ -119,6 +171,7 @@ public:
 
         scoped_ptr<ContigousMemory> mem(ContigousMemory::allocate(adjSizeToRead + sizeof(virtio_blk_outhdr) + 1));
         if (mem.get() == NULL) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_NO_MEMORY;
         }
         struct virtio_blk_outhdr* hdr = (struct virtio_blk_outhdr*)mem->get();
@@ -165,39 +218,6 @@ public:
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
-    uint64_t getSectorSize() const
-    {
-        return 512;
-    }
-
-    uint64_t getCapacity() const
-    {
-        struct virtio_blk_config config;
-        vdev_->getConfig(&config, 0, sizeof(struct virtio_blk_config));
-        return config.capacity;
-    }
-
-    static VirtioBlock* probe(int deviceIndex)
-    {
-        VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, deviceIndex);
-        if (vdev == NULL) {
-            return NULL;
-        } else {
-            return new VirtioBlock(vdev);
-        }
-    }
-
-    void waitWithBusyLoop(uintptr_t usec)
-    {
-        for (uintptr_t i = 0; i < usec; i++) {
-            delayMicrosec();
-            if (vq_->isUsedBufExist()) {
-                break;
-            }
-        }
-    }
-
-private:
     MonAPI::scoped_ptr<VirtioDevice> vdev_;
     MonAPI::scoped_ptr<VirtQueue> vq_;
 };

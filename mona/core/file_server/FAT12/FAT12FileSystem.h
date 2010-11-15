@@ -11,7 +11,7 @@
 class FAT12FileSystem : public FileSystem
 {
 public:
-    FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager);
+    FAT12FileSystem(FDCDriver* drive);
     virtual ~FAT12FileSystem();
 
 public:
@@ -22,9 +22,9 @@ public:
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
     virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
-    virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
+    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries);
     virtual int close(Vnode* file);
-    virtual int delete_file(Vnode* file) { return MONA_FAILURE; }
+    virtual int delete_file(Vnode* file) { return M_NOT_SUPPORTED; }
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
@@ -53,7 +53,6 @@ protected:
     FatFS::Directory* current_;
     IStorageDevice* drive_;
     FDCDriver* fd_;
-    VnodeManager* vmanager_;
     Vnode* root_;
     LsInfo lsinfo_;
 };
