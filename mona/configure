@@ -219,6 +219,7 @@ case $DOTNET_TYPE in
     echo ' not found'
     ;;
 esac
+(cd core/mosh && make -f Makefile.mona gen)
 echo "CSC=$CSC" >> $MAKEINC
 echo "NETRT=$MONO" >> $MAKEINC
 echo "WINE=$WINE" >> $MAKEINC
