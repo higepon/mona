@@ -44,7 +44,7 @@ namespace gnote {
     public:
         enum {
             MAX_CANVASX = 90,
-            MAX_CANVASY = 50
+            MAX_CANVASY = 40
         };
     protected:
         TEventListener* listener;
