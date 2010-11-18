@@ -40,6 +40,7 @@ all:
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/display && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Emulators/monasq && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/w3m && touch dependencies && $(MAKE) && $(MAKE) install
@@ -80,6 +81,7 @@ clean:
 	cd Misc/upper && $(MAKE) clean
 	cd Misc/reverse && $(MAKE) clean
 	cd Misc/gnote && $(MAKE) clean
+	cd Misc/display && $(MAKE) clean
 	cd Multimedia/audio_server && $(MAKE) clean
 	cd Multimedia/audio_server/client && $(MAKE) clean
 	cd Multimedia/audio_server/happy && $(MAKE) clean
@@ -111,4 +113,5 @@ depend:
 	cd Multimedia/audio_server/happy && $(MAKE) depend
 	cd Shells/mshell/ && $(MAKE) depend
 	cd Misc/gnote/ && $(MAKE) depend
+	cd Misc/display/ && $(MAKE) depend
 	cd Gui/ime_server && $(MAKE) depend

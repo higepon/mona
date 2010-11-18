@@ -41,7 +41,8 @@
 (define (on-gui-start)
 ;  (ls "/USER/TEMP")
 ;  (call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
-  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/BIN/CAT.SCM")
+  (start-process "/APPS/BAYGUI/DISPLAY.EX5")
+;  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/BIN/CAT.SCM")
 
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
@@ -49,7 +50,7 @@
 ;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
 ;  (start-process "/APPS/BAYGUI/MINE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
-(start-process "/APPS/W3M.APP/W3M.EX5 http://www.google.com/")
+;(start-process "/APPS/W3M.APP/W3M.EX5 http://www.google.com/")
 ;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
 ;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)

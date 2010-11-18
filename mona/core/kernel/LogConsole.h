@@ -43,6 +43,7 @@ protected:
     void print(const char* str);
 
     Uart* com1_;
+    char* buf_;
 };
 
 #endif

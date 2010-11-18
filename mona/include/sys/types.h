@@ -241,6 +241,7 @@ enum
     MSG_READ_MEMORY_READY,
     MSG_WRITE_MEMORY_READY,
     MSG_STREAM_ID,
+    MSG_TEXT
 };
 
 enum

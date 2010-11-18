@@ -25,9 +25,11 @@
     \author Higepon
     \date   create:2004/03/05 update:
 */
+#define BUFFER_SIZE 4096
 LogConsole::LogConsole()
 {
     com1_ = new Uart(Uart::COM1);
+    buf_ = new char[4096];
 }
 
 /*!
@@ -61,16 +63,14 @@ void LogConsole::setCHColor(const char color)
 */
 void LogConsole::printf(const char *format, ...)
 {
-#define BUFFER_SIZE 1024
-    char buf[BUFFER_SIZE];
     va_list ap;
     va_start(ap, format);
-    int ret = vsprintf(buf, format, ap);
+    int ret = vsprintf(buf_, format, ap);
     va_end(ap);
     if (ret >= BUFFER_SIZE) {
         this->print("bufer over at VesaConsole::printf");
     }
-    print(buf);
+    print(buf_);
 }
 
 /*!
