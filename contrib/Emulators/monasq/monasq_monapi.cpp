@@ -108,31 +108,14 @@ struct MonapiConstantData {
     { SEEK_CUR,             "SEEK_CUR" },
     { SEEK_END,             "SEEK_END" },
 
-// TODO
-//  { FILE_OPEN_READ,           "FILE_OPEN_READ" },
-//  { FILE_OPEN_NORMAL_WRITE,   "FILE_OPEN_NORMAL_WRITE" },
-//  { FILE_OPEN_APPEND_WRITE,   "FILE_OPEN_APPEND_WRITE" },
 
     { WAIT_TIMER,           "WAIT_TIMER" },
     { WAIT_NONE,            "WAIT_NONE" },
     { THREAD_UNKNOWN,       "THREAD_UNKNOWN" },
 
-    { MSG_NONE,                 "MSG_NONE" },
-    { MSG_MAP,                  "MSG_MAP" },
-    { MSG_MEMORY_MAP_ID,        "MSG_MEMORY_MAP_ID" },
-    { MSG_RESULT_OK,            "MSG_RESULT_OK" },
-    { MSG_RESULT_ERROR,         "MSG_RESULT_ERROR" },
-    { MSG_SERVER_START_OK,      "MSG_SERVER_START_OK" },
+    { MSG_OK,            "MSG_OK" },
+    { MSG_STARTED,      "MSG_STARTED" },
     { MSG_INTERRUPTED,          "MSG_INTERRUPTED" },
-    { MSG_MONES_REGIST,         "MSG_MONES_REGIST" },
-    { MSG_MONES_IP_SEND,        "MSG_MONES_IP_SEND" },
-    { MSG_MONES_IP_NOTICE,      "MSG_MONES_IP_NOTICE" },
-    { MSG_MONES_ICMP_SEND,      "MSG_MONES_ICMP_SEND" },
-    { MSG_MONES_ICMP_NOTICE,    "MSG_MONES_ICMP_NOTICE" },
-    { MSG_MONES_FRAME_REQ,      "MSG_MONES_FRAME_REQ" },
-    { MSG_MONES_ARPTBL_REQ,     "MSG_MONES_ARPTBL_REQ" },
-    { MSG_MONES_WAKEUP_ARP_WAIT,"MSG_MONES_WAKEUP_ARP_WAIT" },
-    { MSG_THREAD_KILLED,        "MSG_THREAD_KILLED" },
     { MSG_TIMER,                "MSG_TIMER" },
 
     { ATTRIBUTE_DIRECTORY,  "ATTRIBUTE_DIRECTORY" },

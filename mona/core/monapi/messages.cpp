@@ -51,7 +51,8 @@ uint32_t monapi_get_server_thread_id(int id)
 
 MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 {
-    uint32_t tid = monapi_get_server_thread_id(id), header = MSG_NONE;
+    uint32_t tid = monapi_get_server_thread_id(id);
+    uint32_t header;
     switch (id)
     {
         case ID_KEYBOARD_SERVER:
@@ -411,7 +412,7 @@ intptr_t monapi_notify_server_start(const char* name)
     }
 
     /* send */
-    if(Message::send(targetID, MSG_SERVER_START_OK) != M_OK)
+    if(Message::send(targetID, MSG_STARTED) != M_OK)
     {
         MONAPI_WARN("%s:INIT error", name);
         return M_NAME_NOT_FOUND;

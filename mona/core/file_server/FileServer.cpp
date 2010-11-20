@@ -155,7 +155,7 @@ SharedMemory * FileServer::readFileAll(const string& file, intptr_t& lastError)
 void FileServer::send_and_release_shm(SharedMemory* mi, MessageInfo* msg)
 {
     // To prevent miss freeing of shared map, waits the client notification.
-    int ret = Message::sendReceive(msg, msg->from, MSG_RESULT_OK, msg->header, mi->handle(), mi->size());
+    int ret = Message::sendReceive(msg, msg->from, MSG_OK, msg->header, mi->handle(), mi->size());
     if (ret != M_OK) {
         monapi_warn("send failed\n", ret);
     }
@@ -218,7 +218,7 @@ void FileServer::messageLoop()
             intptr_t result = memory->map(true);
             if (result != M_OK) {
                 delete memory;
-                Message::replyError(&msg, result);
+                Message::reply(&msg, result);
             } else {
                 int ret = vmanager_.write(fileID, msg.arg2 /* size */, memory);
                 delete memory;
@@ -286,7 +286,7 @@ void FileServer::messageLoop()
         {
             SharedMemory* mi = ST5DecompressFile(upperCase(msg.str).c_str());
             if (mi != NULL) {
-                int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, mi->handle(), mi->size());
+                int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, mi->handle(), mi->size());
                 if (ret != M_OK) {
                     monapi_warn("send failed");
                 }

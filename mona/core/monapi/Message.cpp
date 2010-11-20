@@ -45,7 +45,7 @@ int Message::sendReceiveA(MessageInfo* dst, uint32_t tid, MessageInfo* info)
     if (result != M_OK) return result;
 
     src.from = tid;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = info->header;
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
@@ -57,7 +57,7 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
     int result = Message::send(tid, header, arg1, arg2, arg3, str);
     if (result != M_OK) return result;
     src.from = tid;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = header;
 
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
@@ -65,18 +65,12 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
 
 int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
 {
-    int ret = Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+    int ret = Message::send(info->from, MSG_OK, info->header, arg2, arg3, str);
     if (ret != M_OK) {
         monapi_warn("Message::reply failed. This may cause hung up. %s\n", monapi_error_string(ret));
     }
     return ret;
 }
-
-int Message::replyError(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
-{
-    return Message::send(info->from, MSG_RESULT_ERROR, info->header, arg2, arg3, str);
-}
-
 
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))
 {

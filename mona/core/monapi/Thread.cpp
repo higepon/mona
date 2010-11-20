@@ -9,13 +9,13 @@ using namespace MonAPI;
 static uint32_t parent_tid = 0;
 static void __fastcall runThread(void* arg)
 {
-    if (MonAPI::Message::send(parent_tid, MSG_SERVER_START_OK) != M_OK) {
+    if (MonAPI::Message::send(parent_tid, MSG_STARTED) != M_OK) {
         printf("Error %s:%d\n", __FILE__, __LINE__);
         exit(-1);
     }
     for (MessageInfo info;;) {
         if (MonAPI::Message::receive(&info) != 0) continue;
-        if (info.header == MSG_SERVER_START_OK) {
+        if (info.header == MSG_STARTED) {
             void (*run)(void*) = (void(*)(void*))info.arg1;
             void (*notify)(void*) = (void(*)(void*))info.arg2;
             run(arg);
@@ -41,12 +41,12 @@ Thread::~Thread()
 void Thread::start()
 {
     threadId_ = mthread_create_with_arg(runThread, arg_);
-    // wait for MSG_SERVER_START_OK message
+    // wait for MSG_STARTED message
     MessageInfo msg, src;
-    src.header = MSG_SERVER_START_OK;
+    src.header = MSG_STARTED;
     MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
     uint32_t child = msg.from;
-    if (MonAPI::Message::send(child, MSG_SERVER_START_OK, (uint32_t)run_, (uint32_t)notify_, (uint32_t)arg_) != M_OK) {
+    if (MonAPI::Message::send(child, MSG_STARTED, (uint32_t)run_, (uint32_t)notify_, (uint32_t)arg_) != M_OK) {
         printf("Error %s:%d\n", __FILE__, __LINE__);
         exit(-1);
     }

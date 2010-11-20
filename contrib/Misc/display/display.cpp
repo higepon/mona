@@ -24,6 +24,7 @@ public:
     void processEvent(Event* event)
     {
         if (event->getType() == Event::CUSTOM_EVENT) {
+            printf("event->header=%d arg1=%d MSG_TEXT=%d\n", event->header, event->arg1, MSG_TEXT);
             if (event->header == MSG_TEXT) {
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
                 string text(event->str, length);

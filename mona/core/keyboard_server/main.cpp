@@ -125,17 +125,6 @@ int main(int argc, char* argv[])
                 Message::reply(&info);
                 break;
 
-            case MSG_MEMORY_MAP_ID:
-
-                {
-                    uint32_t id = info.arg1;
-                    char* p = (char*)(MemoryMap::map(id));
-                    _printf("[share!]%s\n", p);
-                    MemoryMap::unmap(id);
-
-                }
-                break;
-
             default:
                 /* igonore this message */
 

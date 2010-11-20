@@ -91,7 +91,7 @@ static void MessageLoop()
                     sprintf(buf, "%d", shm->size());
 
                     // To prevent miss freeing of shared map, waits the client notification.
-                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, shm->handle(), entryPoint, buf);
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, shm->handle(), entryPoint, buf);
                     delete shm;
                 }
                 else

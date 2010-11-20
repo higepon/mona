@@ -377,7 +377,7 @@ void loadServer(const char* server, const char* name)
     {
         if (g_messenger->receive(g_currentThread->thread, &msg)) continue;
 
-        if (msg.header == MSG_SERVER_START_OK) break;
+        if (msg.header == MSG_STARTED) break;
     }
     return;
 }

@@ -162,7 +162,7 @@ static void DrawLoop()
 	MPEGFUNC	func;
 	MPEGERR		r;
 
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+	MonAPI::Message::send(my_tid, MSG_STARTED);
 
 	printf("loading %s...\n", filename);
     MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(filename));
@@ -228,7 +228,7 @@ int main(int argc, char* argv[])
 	my_tid = syscall_get_tid();
 	syscall_mthread_create(DrawLoop);
 	MessageInfo msg, src;
-	src.header = MSG_SERVER_START_OK;
+	src.header = MSG_STARTED;
 	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 	draw_tid = msg.from;
 

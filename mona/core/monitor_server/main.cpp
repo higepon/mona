@@ -157,7 +157,7 @@ void Monitor::CheckServers()
         for (;;)
         {
             if (Message::receive(&msg)) continue;
-            if (msg.header == MSG_SERVER_START_OK) break;
+            if (msg.header == MSG_STARTED) break;
         }
 
     }

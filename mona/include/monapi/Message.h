@@ -23,7 +23,6 @@ public:
     static int receive(MessageInfo* info);
     static BufferReceiver* receiveBuffer(uintptr_t tid);
     static int reply(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
-    static int replyError(MessageInfo* info, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static int peek(MessageInfo* info, int index, int flags = 0);
     static void create(MessageInfo* info, uint32_t header, uint32_t arg1 = 0, uint32_t arg2 = 0, uint32_t arg3 = 0, const char* str = NULL);
     static bool exist();

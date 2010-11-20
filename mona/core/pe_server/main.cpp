@@ -451,7 +451,7 @@ static void MessageLoop()
                     sprintf(buf, "%d", pe.Binary->size());
 
                     // To prevent miss freeing of shared map, waits the client notification.
-                    int ret = Message::sendReceive(&msg, msg.from, MSG_RESULT_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
                     // we can safely unmap after above.
                 }
                 else

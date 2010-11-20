@@ -118,7 +118,7 @@ static XInfoNES* xinfones;
 
 static void EventLoop()
 {
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+	MonAPI::Message::send(my_tid, MSG_STARTED);
 
 	/* The main loop of InfoNES */ 
 	InfoNES_Main();
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 // comment out by higepon
 //	syscall_mthread_join(id);
 	MessageInfo msg, src;
-	src.header = MSG_SERVER_START_OK;
+	src.header = MSG_STARTED;
 	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 	keyevt_tid = msg.from;
 

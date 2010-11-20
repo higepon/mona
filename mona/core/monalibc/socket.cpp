@@ -82,7 +82,7 @@ int getaddrinfo(const char *node, const char *service,
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_GET_ADDR_INFO;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -109,7 +109,7 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_CONN;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -153,7 +153,7 @@ int send(int sockfd, void* buf, size_t len, int flags)
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_SEND;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -177,7 +177,7 @@ int recv(int sockfd, void* buf, size_t len, int flags)
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_RECV;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -200,7 +200,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_SET_OPTION;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -226,7 +226,7 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_GET_OPTION;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -260,7 +260,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_BIND;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;
@@ -299,7 +299,7 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
     MessageInfo src;
     MessageInfo dst;
     src.from = waitId;
-    src.header = MSG_RESULT_OK;
+    src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_ACCEPT;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
         return EBADF;

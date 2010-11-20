@@ -28,11 +28,11 @@ namespace baygui {
 
 	/** Monaスレッド */
 	static void ExecRun() {
-		MonAPI::Message::send(parent_tid, MSG_SERVER_START_OK);
+		MonAPI::Message::send(parent_tid, MSG_STARTED);
 		dword child_tid = syscall_get_tid();
 		for (MessageInfo info;;) {
 			if (MonAPI::Message::receive(&info) != 0) continue;
-			if (info.header == MSG_SERVER_START_OK) {
+			if (info.header == MSG_STARTED) {
 				Runnable* runnable = (Runnable*)info.arg1;
 				runnable->run();
 				break;
@@ -52,12 +52,12 @@ namespace baygui {
 		dword thread_id = syscall_mthread_create(ExecRun);
 // comment out by higepon
 //		syscall_mthread_join(thread_id);
-		// MSG_SERVER_START_OKが返ってくるのを待つ
+		// MSG_STARTEDが返ってくるのを待つ
 		MessageInfo msg, src;
-		src.header = MSG_SERVER_START_OK;
+		src.header = MSG_STARTED;
 		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 		dword child_tid = msg.from;
 		// Runnable::run() を呼ばせる
-		MonAPI::Message::send(child_tid, MSG_SERVER_START_OK, (dword)this->runnable);
+		MonAPI::Message::send(child_tid, MSG_STARTED, (dword)this->runnable);
 	}
 }

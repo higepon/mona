@@ -192,7 +192,7 @@ void ImeServer::service()
         exit(1);
     }
 
-    if (MonAPI::Message::send(targetID, MSG_SERVER_START_OK, 0, 0, 0, NULL)) {
+    if (MonAPI::Message::send(targetID, MSG_STARTED, 0, 0, 0, NULL)) {
         printf("IME: Server start failed\n");
         exit(1);
     }
