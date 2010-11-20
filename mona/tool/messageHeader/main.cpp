@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     MessageUtil util;
-    printf("%s 0x%x\n", argv[1], util.stringToDword(argv[1]));
+    printf("0x%x /* \"%s\" */\n", util.stringToDword(argv[1]), argv[1]);
     return 0;
 }
 

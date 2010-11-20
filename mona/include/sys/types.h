@@ -219,17 +219,14 @@ typedef struct {
 
 #define THREAD_UNKNOWN 0xffffffff
 
-enum
-{
-    MSG_OK,
-    MSG_STARTED,
-    MSG_INTERRUPTED,
-    MSG_TIMER,
-    MSG_READ_MEMORY_READY,
-    MSG_WRITE_MEMORY_READY,
-    MSG_STREAM_ID,
-    MSG_TEXT
-};
+// common messages
+#define MSG_OK          0xfffff72a /* "   : OK" */
+#define MSG_STARTED     0xffff29c6 /* "   :STR" */
+#define MSG_INTERRUPTED 0xfffe86ce /* "   :INT" */
+#define MSG_TIMER       0xffff3646 /* "   :TMR" */
+#define MSG_READ_READY  0xffff11e2 /* "   :RDY" */
+#define MSG_WRITE_READY 0xffff61e2 /* "   :WDY" */
+#define MSG_TEXT        0xffff3bce /* "   :TXT" */
 
 enum
 {

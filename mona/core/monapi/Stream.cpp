@@ -108,7 +108,7 @@ uint32_t Stream::write(uint8_t* buffer, uint32_t size)
         {
             uint32_t thread = threads[i];
             if (THREAD_UNKNOWN == thread) continue;
-            if (Message::send(thread, MSG_READ_MEMORY_READY) != M_OK) {
+            if (Message::send(thread, MSG_READ_READY) != M_OK) {
                 printf("Error %s:%d\n", __FILE__, __LINE__);
                 exit(-1);
             }
@@ -178,7 +178,7 @@ uint32_t Stream::read(uint8_t* buffer, uint32_t size)
     {
         uint32_t thread = threads[i];
         if (THREAD_UNKNOWN == thread) continue;
-        if (Message::send(thread, MSG_WRITE_MEMORY_READY) != M_OK) {
+        if (Message::send(thread, MSG_WRITE_READY) != M_OK) {
             printf("Error %s:%d\n", __FILE__, __LINE__);
             exit(-1);
         }
@@ -209,7 +209,7 @@ void Stream::waitForWrite()
             i--;
             syscall_mthread_yield_message();
         }
-        else if (msg.header == MSG_WRITE_MEMORY_READY)
+        else if (msg.header == MSG_WRITE_READY)
         {
             if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
                 _printf("peek error %s:%d\n", __FILE__, __LINE__);
@@ -241,7 +241,7 @@ void Stream::waitForRead()
             i--;
             syscall_mthread_yield_message();
         }
-        else if (msg.header == MSG_READ_MEMORY_READY)
+        else if (msg.header == MSG_READ_READY)
         {
             if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
                 _printf("peek error %s:%d\n", __FILE__, __LINE__);
