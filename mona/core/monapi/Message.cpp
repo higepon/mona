@@ -25,6 +25,25 @@ int Message::send(uint32_t tid, uint32_t header, uint32_t arg1 /*= 0*/, uint32_t
     return Message::send(tid, &info);
 }
 
+// broadcast
+int Message::sendAll(uint32_t header, uint32_t arg1 /* = 0 */, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
+{
+    uint32_t self = System::getThreadID();
+    intptr_t ret = M_OK;
+    syscall_set_ps_dump();
+    PsInfo buf;
+    while (syscall_read_ps_dump(&buf) == M_OK) {
+        if (buf.tid == self) {
+            continue;
+        }
+        intptr_t msgRet = send(buf.tid, header, arg1, arg2, arg3, str);
+        if (M_OK != msgRet) {
+            ret = msgRet;
+        }
+    }
+    return ret;
+}
+
 int Message::receive(MessageInfo* info)
 {
     int result = syscall_receive(info);
