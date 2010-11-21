@@ -75,10 +75,6 @@ int main(int argc, char* argv[])
     /* user mode I/O */
     syscall_get_io();
 
-    if (monapi_name_add("/servers/keyboard") != M_OK) {
-        monapi_fatal("monapi_name_add failed");
-    }
-
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
@@ -101,6 +97,10 @@ int main(int argc, char* argv[])
     }
 
     syscall_set_irq_receiver(1, 0);
+
+    if (monapi_name_add("/servers/keyboard") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
 
     /* Message loop */
     for (;;)

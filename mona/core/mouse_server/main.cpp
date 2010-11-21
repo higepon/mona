@@ -476,6 +476,9 @@ int main(int argc, char* argv[])
     /* we receive MSG_INTERRUPTED from IRQ12 Handler */
     syscall_set_irq_receiver(12, 0);
 
+    if (monapi_name_add("/servers/mouse") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
     /* service start */
     server.MessageLoop();
 

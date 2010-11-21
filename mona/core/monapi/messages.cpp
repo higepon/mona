@@ -37,7 +37,6 @@ intptr_t monapi_name_where(const char* name, uint32_t& id)
 {
     uint32_t found = nameCache.get(name);
     if (found != 0) {
-        _printf("cache hit");
         id = found;
         return M_OK;
     }
@@ -160,7 +159,10 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 
 MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
+    uint32_t tid ;
+    if (monapi_name_where("/servers/mouse", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
     uint32_t header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, header) != M_OK)
@@ -173,7 +175,10 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 
 SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != M_OK)
@@ -193,7 +198,10 @@ SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL
 
 SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, shm.handle(), shm.size()) != M_OK) {
         return NULL;
@@ -212,7 +220,10 @@ SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
 
 SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, shm.handle(), shm.size()) != M_OK)
     {
@@ -231,7 +242,10 @@ SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 
 SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5_FILE, prompt, 0, 0, file) != M_OK)
@@ -296,7 +310,10 @@ void monapi_deallocate_dma_memory(void* address, int size)
 
 intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     MessageInfo msg;
     int ret = Message::sendReceive(&msg, tid, MSG_FILE_OPEN, mode, 0, 0, file);
     if (ret != M_OK) {
@@ -355,7 +372,10 @@ SharedMemory* monapi_file_read_directory(const char* path)
 
 intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_SEEK, fileID, offset, origin) != M_OK)
     {
@@ -366,7 +386,10 @@ intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 
 intptr_t monapi_file_close(uint32_t fileID)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     MessageInfo msg;
     int ret = Message::sendReceive(&msg, tid, MSG_FILE_CLOSE, fileID);
     if (ret != M_OK)
@@ -378,7 +401,10 @@ intptr_t monapi_file_close(uint32_t fileID)
 
 intptr_t monapi_file_get_file_size(uint32_t id)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
 
     MessageInfo msg;
     intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE, id);
@@ -391,7 +417,10 @@ intptr_t monapi_file_get_file_size(uint32_t id)
 
 intptr_t monapi_file_delete(const char* file)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     MessageInfo msg;
     intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_DELETE, 0, 0, 0, file);
     if (ret != M_OK) {
@@ -403,7 +432,10 @@ intptr_t monapi_file_delete(const char* file)
 
 intptr_t monapi_file_stop_server()
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     MessageInfo msg;
     int ret = Message::sendReceive(&msg, tid, MSG_STOP_SERVER);
     if (ret != M_OK) {
@@ -415,7 +447,10 @@ intptr_t monapi_file_stop_server()
 intptr_t monapi_file_write(uint32_t fileID, const SharedMemory& mem, uint32_t size)
 {
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_where("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem.handle());
     if (ret != M_OK) {
         return ret;

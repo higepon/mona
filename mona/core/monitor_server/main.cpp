@@ -169,6 +169,7 @@ void Monitor::CheckServers()
     if (firstLoad) firstLoad = false;
 }
 
+// Don't touch any files from this function, since it causes infinite loop on file server.
 static void __fastcall nameServer(void* arg)
 {
     map<string, uint32_t> nameMap;
@@ -200,6 +201,8 @@ static void __fastcall nameServer(void* arg)
 
 int main(int argc, char* argv[])
 {
+    syscall_mthread_create_with_arg(nameServer, NULL);
+
     Monitor monitor;
 
     monitor.Initialize();
@@ -207,7 +210,6 @@ int main(int argc, char* argv[])
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
-    syscall_mthread_create_with_arg(nameServer, NULL);
     monitor.Service();
 
     return 0;
