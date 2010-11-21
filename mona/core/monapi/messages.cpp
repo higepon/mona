@@ -29,10 +29,32 @@ static const char* server_names[] =
     "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
 };
 
+intptr_t monapi_name_where(const char* name, uint32_t& id)
+{
+    uint32_t name_server;
+    intptr_t ret = monapi_name_get_server(name_server);
+    if (ret != M_OK) {
+        monapi_warn("name server not found");
+        return ret;
+    }
+    MessageInfo dest;
+    ret = Message::sendReceive(&dest, name_server, MSG_WHERE, 0, 0, 0, name);
+    if (ret != M_OK) {
+        monapi_warn("name server returns error");
+        return ret;
+    }
+    if (ret != M_OK) {
+        monapi_warn("name %s not found", name);
+        return ret;
+    }
+    id = dest.arg3;
+    return M_OK;
+}
+
 intptr_t monapi_name_add(const char* name)
 {
     uint32_t name_server;
-    intptr_t ret = monapi_get_name_server(name_server);
+    intptr_t ret = monapi_name_get_server(name_server);
     if (ret != M_OK) {
         monapi_warn("name server not found :%s", monapi_error_string(ret));
         return ret;
@@ -41,7 +63,7 @@ intptr_t monapi_name_add(const char* name)
     return Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
 }
 
-intptr_t monapi_get_name_server(uint32_t& id)
+intptr_t monapi_name_get_server(uint32_t& id)
 {
     intptr_t ret = Message::sendAll(MSG_NAME);
     if (ret != M_OK) {
@@ -88,8 +110,10 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
     switch (id)
     {
         case ID_KEYBOARD_SERVER:
+        {
             header = enabled ? MSG_KEY_REGIST_TO_SERVER : MSG_KEY_UNREGIST_FROM_SERVER;
             break;
+        }
         case ID_MOUSE_SERVER:
             header = enabled ? MSG_MOUSE_REGIST_TO_SERVER : MSG_MOUSE_UNREGIST_FROM_SERVER;
             break;

@@ -79,17 +79,23 @@ int main(int argc, char* argv[])
     // MessageInfo src, dest;
     // src.header = MSG_OK;
     // src.arg1 = MSG_NAME;
+    if (monapi_name_add("/servers/keyboard") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
 
     // Message::receive(&dest, &src, Message::equalsHeaderArg1);
-    MessageInfo dest;
-    uint32_t nameserver;
-    monapi_get_name_server(nameserver);
+    // MessageInfo dest;
+    // uint32_t nameserver;
+    // monapi_get_name_server(nameserver);
     // _printf("nameserver=%d", nameserver);
     // Message::send(nameserver, MSG_ADD, 0, 0, 0, "/servers/keyboard");
-    monapi_name_add("/servers/keyboard");
+    // monapi_name_add("/servers/keyboard");
 
-    Message::sendReceive(&dest, nameserver, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
-    _printf("key=%d", dest.arg3);
+//    Message::sendReceive(&dest, nameserver, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
+    uint32_t keyboard;
+    monapi_name_where("/servers/keyboard", keyboard);
+    _printf("key=%d", keyboard);
+
 
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
     uint32_t pid = syscall_get_pid();

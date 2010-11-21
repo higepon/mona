@@ -56,7 +56,8 @@ typedef struct
 #ifdef __cplusplus
 class MonAPI::SharedMemory;
 extern intptr_t monapi_name_add(const char* name);
-extern intptr_t monapi_get_name_server(uint32_t& id);
+extern intptr_t monapi_name_where(const char* name, uint32_t& id);
+extern intptr_t monapi_name_get_server(uint32_t& id);
 extern intptr_t monapi_file_write(uint32_t fileID, const MonAPI::SharedMemory& mem, uint32_t size);
 extern MonAPI::SharedMemory* monapi_file_read(uint32_t fileID, uint32_t size);
 extern MonAPI::SharedMemory* monapi_file_read_all(const char* file);
