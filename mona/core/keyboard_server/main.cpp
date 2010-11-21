@@ -84,6 +84,9 @@ int main(int argc, char* argv[])
     _printf("name is = %d", dest.from);
     Message::send(dest.from, MSG_ADD, 0, 0, 0, "/servers/keyboard");
 
+    Message::sendReceive(&dest, dest.from, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
+    _printf("key=%d", dest.arg2);
+
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);

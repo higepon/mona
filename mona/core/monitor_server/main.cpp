@@ -15,8 +15,12 @@
 #include <monapi/CString.h>
 #include <servers/screen.h>
 #include <monapi/messages.h>
+#include <limits.h>
+#include <map>
+#include <string>
 
 using namespace MonAPI;
+using namespace std;;
 
 #define CHECK_INTERVAL 5000
 
@@ -167,16 +171,27 @@ void Monitor::CheckServers()
 
 static void __fastcall nameServer(void* arg)
 {
+    map<string, uint32_t> nameMap;
     for (;;) {
         MessageInfo msg;
         if (Message::receive(&msg) != M_OK) {
             continue;
         }
-        if (msg.header == MSG_NAME) {
-            _printf("added");
+        switch (msg.header) {
+        case MSG_NAME:
             Message::reply(&msg, M_OK);
-        } else if (msg.header == MSG_ADD) {
-            _printf("registered <%s>", msg.str);
+            break;
+        case MSG_ADD:
+            nameMap[msg.str] = msg.from;
+            break;
+        case MSG_WHERE:
+            map<string, uint32_t>::iterator it = nameMap.find(msg.str);
+            if (it == nameMap.end()) {
+                Message::reply(&msg, M_NAME_NOT_FOUND);
+            } else {
+                Message::reply(&msg, (*it).second);
+            }
+            break;
         }
     }
     exit(0);

@@ -229,6 +229,8 @@ typedef struct {
 #define MSG_TEXT        0xffff3bce /* "   :TXT" */
 #define MSG_ADD         0xfffe018e /* "   :ADD" */
 #define MSG_NAME        0xfffff6b2 /* "   : NM" */
+#define MSG_WHERE       0xffff63c6 /* "   :WHR" */
+
 enum
 {
     ATTRIBUTE_DIRECTORY = 0x10
