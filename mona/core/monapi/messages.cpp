@@ -29,6 +29,18 @@ static const char* server_names[] =
     "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
 };
 
+intptr_t monapi_name_add(const char* name)
+{
+    uint32_t name_server;
+    intptr_t ret = monapi_get_name_server(name_server);
+    if (ret != M_OK) {
+        monapi_warn("name server not found :%s", monapi_error_string(ret));
+        return ret;
+    }
+    ASSERT(strlen(name) < MESSAGE_INFO_MAX_STR_LENGTH);
+    return Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
+}
+
 intptr_t monapi_get_name_server(uint32_t& id)
 {
     intptr_t ret = Message::sendAll(MSG_NAME);

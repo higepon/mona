@@ -84,8 +84,9 @@ int main(int argc, char* argv[])
     MessageInfo dest;
     uint32_t nameserver;
     monapi_get_name_server(nameserver);
-    _printf("nameserver=%d", nameserver);
-    Message::send(nameserver, MSG_ADD, 0, 0, 0, "/servers/keyboard");
+    // _printf("nameserver=%d", nameserver);
+    // Message::send(nameserver, MSG_ADD, 0, 0, 0, "/servers/keyboard");
+    monapi_name_add("/servers/keyboard");
 
     Message::sendReceive(&dest, nameserver, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
     _printf("key=%d", dest.arg3);

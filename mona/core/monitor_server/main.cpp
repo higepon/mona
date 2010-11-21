@@ -183,6 +183,7 @@ static void __fastcall nameServer(void* arg)
             break;
         case MSG_ADD:
             nameMap[msg.str] = msg.from;
+            Message::reply(&msg, M_OK);
             break;
         case MSG_WHERE:
             map<string, uint32_t>::iterator it = nameMap.find(msg.str);
