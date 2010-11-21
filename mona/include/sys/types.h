@@ -227,7 +227,8 @@ typedef struct {
 #define MSG_READ_READY  0xffff11e2 /* "   :RDY" */
 #define MSG_WRITE_READY 0xffff61e2 /* "   :WDY" */
 #define MSG_TEXT        0xffff3bce /* "   :TXT" */
-
+#define MSG_ADD         0xfffe018e /* "   :ADD" */
+#define MSG_NAME        0xfffff6b2 /* "   : NM" */
 enum
 {
     ATTRIBUTE_DIRECTORY = 0x10

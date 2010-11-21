@@ -52,6 +52,11 @@ public:
         return (msg1->from == msg2->from) && (msg1->header == msg2->header);
     }
 
+    static bool equalsHeaderArg1(MessageInfo* msg1, MessageInfo* msg2)
+    {
+        return (msg1->header == msg2->header) && (msg1->arg1 == msg2->arg1);
+    }
+
     static bool equalsFromHeaderArg1(MessageInfo* msg1, MessageInfo* msg2)
     {
         return (msg1->from == msg2->from) && (msg1->header == msg2->header) && (msg1->arg1 == msg2->arg1);

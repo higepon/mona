@@ -165,17 +165,33 @@ void Monitor::CheckServers()
     if (firstLoad) firstLoad = false;
 }
 
+static void __fastcall nameServer(void* arg)
+{
+    for (;;) {
+        MessageInfo msg;
+        if (Message::receive(&msg) != M_OK) {
+            continue;
+        }
+        if (msg.header == MSG_NAME) {
+            _printf("added");
+            Message::reply(&msg, M_OK);
+        } else if (msg.header == MSG_ADD) {
+            _printf("registered <%s>", msg.str);
+        }
+    }
+    exit(0);
+}
+
 int main(int argc, char* argv[])
 {
     Monitor monitor;
 
     monitor.Initialize();
 
-    if (monapi_notify_server_start("INIT") != M_OK)
-    {
+    if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
-
+    syscall_mthread_create_with_arg(nameServer, NULL);
     monitor.Service();
 
     return 0;
