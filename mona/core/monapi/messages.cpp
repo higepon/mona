@@ -5,11 +5,13 @@
 #include <monapi/Stream.h>
 #include <monapi/System.h>
 #include <monapi/string.h>
+#include <sys/HashMap.h>
 #include <monapi.h>
 
 using namespace MonAPI;
 
 static uint32_t name_server_id = THREAD_UNKNOWN;
+static HashMap<uint32_t> nameCache(64);
 
 static uint32_t server_ids[] =
 {
@@ -33,6 +35,13 @@ static const char* server_names[] =
 
 intptr_t monapi_name_where(const char* name, uint32_t& id)
 {
+    uint32_t found = nameCache.get(name);
+    if (found != 0) {
+        _printf("cache hit");
+        id = found;
+        return M_OK;
+    }
+
     uint32_t name_server;
     intptr_t ret = monapi_name_get_server(name_server);
     if (ret != M_OK) {
@@ -50,6 +59,7 @@ intptr_t monapi_name_where(const char* name, uint32_t& id)
         return ret;
     }
     id = dest.arg3;
+    nameCache.put(name, id);
     return M_OK;
 }
 
