@@ -169,11 +169,16 @@ int main(int argc, char* argv[])
 {
     initCommonParameters();
 
-    if (monapi_notify_server_start("INIT") != M_OK)
-    {
+    if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
 
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (monapi_name_add("/servers/process") != M_OK) {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        monapi_fatal("monapi_name_add failed");
+    }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageLoop();
 
     return 0;

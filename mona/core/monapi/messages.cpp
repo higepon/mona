@@ -65,12 +65,17 @@ intptr_t monapi_name_where(const char* name, uint32_t& id)
 intptr_t monapi_name_add(const char* name)
 {
     uint32_t name_server;
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     intptr_t ret = monapi_name_get_server(name_server);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (ret != M_OK) {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_warn("name server not found :%s", monapi_error_string(ret));
         return ret;
     }
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT(strlen(name) < MESSAGE_INFO_MAX_STR_LENGTH);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
 }
 
@@ -177,7 +182,7 @@ SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL
 {
     uint32_t tid;
     if (monapi_name_where("/servers/file", tid) != M_OK) {
-        return MONAPI_FALSE;
+        return NULL;
     }
 
     MessageInfo msg;
@@ -200,7 +205,7 @@ SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
 {
     uint32_t tid;
     if (monapi_name_where("/servers/file", tid) != M_OK) {
-        return MONAPI_FALSE;
+        return NULL;
     }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, shm.handle(), shm.size()) != M_OK) {
@@ -222,7 +227,7 @@ SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
     uint32_t tid;
     if (monapi_name_where("/servers/file", tid) != M_OK) {
-        return MONAPI_FALSE;
+        return NULL;
     }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_ST5, shm.handle(), shm.size()) != M_OK)
@@ -244,7 +249,7 @@ SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL
 {
     uint32_t tid;
     if (monapi_name_where("/servers/file", tid) != M_OK) {
-        return MONAPI_FALSE;
+        return NULL;
     }
 
     MessageInfo msg;
@@ -284,9 +289,15 @@ intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL 
 
 intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
-    uint32_t svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+    uint32_t server;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (monapi_name_where("/servers/process", server) != M_OK) {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return M_NAME_NOT_FOUND;
+    }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != M_OK)
+    if (Message::sendReceive(&msg, server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != M_OK)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;
@@ -374,7 +385,7 @@ intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     uint32_t tid;
     if (monapi_name_where("/servers/file", tid) != M_OK) {
-        return MONAPI_FALSE;
+        return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_SEEK, fileID, offset, origin) != M_OK)
