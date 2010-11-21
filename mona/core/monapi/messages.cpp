@@ -119,6 +119,16 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
         case ID_KEYBOARD_SERVER:
         {
             header = enabled ? MSG_KEY_REGIST_TO_SERVER : MSG_KEY_UNREGIST_FROM_SERVER;
+            uint32_t server_id;
+            if (monapi_name_where("/servers/keyboard", server_id) != M_OK) {
+                monapi_warn("keyboard server not found");
+                return MONAPI_FALSE;
+            }
+            if (Message::sendReceive(NULL, server_id, header, syscall_get_tid()) != M_OK) {
+                MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
+                return MONAPI_FALSE;
+            }
+            return MONAPI_TRUE;
             break;
         }
         case ID_MOUSE_SERVER:

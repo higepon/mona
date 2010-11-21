@@ -75,29 +75,9 @@ int main(int argc, char* argv[])
     /* user mode I/O */
     syscall_get_io();
 
-    // Message::sendAll(MSG_NAME);
-    // MessageInfo src, dest;
-    // src.header = MSG_OK;
-    // src.arg1 = MSG_NAME;
     if (monapi_name_add("/servers/keyboard") != M_OK) {
         monapi_fatal("monapi_name_add failed");
     }
-
-    // Message::receive(&dest, &src, Message::equalsHeaderArg1);
-    // MessageInfo dest;
-    // uint32_t nameserver;
-    // monapi_get_name_server(nameserver);
-    // _printf("nameserver=%d", nameserver);
-    // Message::send(nameserver, MSG_ADD, 0, 0, 0, "/servers/keyboard");
-    // monapi_name_add("/servers/keyboard");
-
-//    Message::sendReceive(&dest, nameserver, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
-    uint32_t keyboard;
-    monapi_name_where("/servers/keyboard", keyboard);
-    _printf("key=%d", keyboard);
-    monapi_name_where("/servers/keyboard", keyboard);
-    _printf("key=%d", keyboard);
-
 
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
     uint32_t pid = syscall_get_pid();
@@ -106,7 +86,6 @@ int main(int argc, char* argv[])
         monapi_warn("syscall_stack_trace_enable error %d\n", ret);
         exit(-1);
     }
-
 
     /* initilize KeyBoardManager */
     KeyBoardManager* manager = new KeyBoardManager();
