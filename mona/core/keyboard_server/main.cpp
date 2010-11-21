@@ -75,17 +75,20 @@ int main(int argc, char* argv[])
     /* user mode I/O */
     syscall_get_io();
 
-    Message::sendAll(MSG_NAME);
-    MessageInfo src, dest;
-    src.header = MSG_OK;
-    src.arg1 = MSG_NAME;
+    // Message::sendAll(MSG_NAME);
+    // MessageInfo src, dest;
+    // src.header = MSG_OK;
+    // src.arg1 = MSG_NAME;
 
-    Message::receive(&dest, &src, Message::equalsHeaderArg1);
-    _printf("name is = %d", dest.from);
-    Message::send(dest.from, MSG_ADD, 0, 0, 0, "/servers/keyboard");
+    // Message::receive(&dest, &src, Message::equalsHeaderArg1);
+    MessageInfo dest;
+    uint32_t nameserver;
+    monapi_get_name_server(nameserver);
+    _printf("nameserver=%d", nameserver);
+    Message::send(nameserver, MSG_ADD, 0, 0, 0, "/servers/keyboard");
 
-    Message::sendReceive(&dest, dest.from, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
-    _printf("key=%d", dest.arg2);
+    Message::sendReceive(&dest, nameserver, MSG_WHERE, 0, 0, 0, "/servers/keyboard");
+    _printf("key=%d", dest.arg3);
 
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
     uint32_t pid = syscall_get_pid();

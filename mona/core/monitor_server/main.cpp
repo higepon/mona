@@ -189,7 +189,7 @@ static void __fastcall nameServer(void* arg)
             if (it == nameMap.end()) {
                 Message::reply(&msg, M_NAME_NOT_FOUND);
             } else {
-                Message::reply(&msg, (*it).second);
+                Message::reply(&msg, M_OK, (*it).second);
             }
             break;
         }

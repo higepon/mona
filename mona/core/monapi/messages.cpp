@@ -29,6 +29,26 @@ static const char* server_names[] =
     "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
 };
 
+intptr_t monapi_get_name_server(uint32_t& id)
+{
+    intptr_t ret = Message::sendAll(MSG_NAME);
+    if (ret != M_OK) {
+        monapi_warn("MSG_NAME broadcast failed : %s", monapi_error_string(ret));
+        return ret;
+    }
+
+    MessageInfo src, dest;
+    src.header = MSG_OK;
+    src.arg1 = MSG_NAME;
+    ret = Message::receive(&dest, &src, Message::equalsHeaderArg1);
+    if (ret != M_OK) {
+        monapi_warn("MSG_NAME receive failed : %s", monapi_error_string(ret));
+        return ret;
+    }
+    id = dest.from;
+    return M_OK;
+}
+
 uint32_t monapi_get_server_thread_id(int id)
 {
     if (id < 0 || ID_NUMBER_OF_SERVERS <= id) return THREAD_UNKNOWN;
