@@ -92,11 +92,17 @@ void testPeek()
     EXPECT_EQ(M_BAD_INDEX, Message::peek(&msg, 0));
 }
 
+static void testSendAll()
+{
+    EXPECT_EQ(M_OK, Message::sendAll(MSG_TEXT, 0, 1, 2, NULL));
+}
+
 int main(int argc, char *argv[])
 {
     testPeek();
 //    testMessageOverflow();
     testSendBuffer();
+    testSendAll();
     TEST_RESULTS(monapi_message);
     return 0;
 }
