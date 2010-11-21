@@ -95,6 +95,8 @@ int main(int argc, char* argv[])
     uint32_t keyboard;
     monapi_name_where("/servers/keyboard", keyboard);
     _printf("key=%d", keyboard);
+    monapi_name_where("/servers/keyboard", keyboard);
+    _printf("key=%d", keyboard);
 
 
     const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";

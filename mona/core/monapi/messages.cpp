@@ -9,6 +9,8 @@
 
 using namespace MonAPI;
 
+static uint32_t name_server_id = THREAD_UNKNOWN;
+
 static uint32_t server_ids[] =
 {
     THREAD_UNKNOWN,  // ID_MOUSE_SERVER
@@ -65,6 +67,10 @@ intptr_t monapi_name_add(const char* name)
 
 intptr_t monapi_name_get_server(uint32_t& id)
 {
+    if (name_server_id != THREAD_UNKNOWN) {
+        id = name_server_id;
+        return M_OK;
+    }
     intptr_t ret = Message::sendAll(MSG_NAME);
     if (ret != M_OK) {
         monapi_warn("MSG_NAME broadcast failed : %s", monapi_error_string(ret));
@@ -80,6 +86,7 @@ intptr_t monapi_name_get_server(uint32_t& id)
         return ret;
     }
     id = dest.from;
+    name_server_id = id;
     return M_OK;
 }
 
