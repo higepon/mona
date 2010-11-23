@@ -61,14 +61,18 @@ void Monitor::Service()
 {
     for (;;)
     {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         CheckServers();
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         sleep(CHECK_INTERVAL);
     }
 }
 
 bool Monitor::Initialize()
 {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scoped_ptr<SharedMemory> shm(monapi_file_read_all("/MONITOR.CFG"));
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (shm.get() == NULL)
     {
        MONAPI_WARN("Config file read error");
@@ -169,7 +173,7 @@ void Monitor::CheckServers()
     if (firstLoad) firstLoad = false;
 }
 
-static bool isNameServerStarted = false;
+static volatile bool isNameServerStarted = false;
 
 // Don't touch any files from this function, since it causes infinite loop on file server.
 static void __fastcall nameServer(void* arg)
@@ -183,6 +187,7 @@ static void __fastcall nameServer(void* arg)
         }
         switch (msg.header) {
         case MSG_NAME:
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, M_OK);
             break;
         case MSG_ADD:
@@ -213,16 +218,20 @@ static void __fastcall nameServer(void* arg)
 int main(int argc, char* argv[])
 {
     syscall_mthread_create_with_arg(nameServer, NULL);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     while (!isNameServerStarted );
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     Monitor monitor;
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     monitor.Initialize();
-
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monitor.Service();
-
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return 0;
 }

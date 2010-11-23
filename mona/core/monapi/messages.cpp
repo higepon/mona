@@ -65,7 +65,7 @@ intptr_t monapi_name_where(const char* name, uint32_t& id)
 intptr_t monapi_name_add(const char* name)
 {
     uint32_t name_server;
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    monapi_warn("<%s>%s %s:%d\n", name, __func__, __FILE__, __LINE__);
     intptr_t ret = monapi_name_get_server(name_server);
     monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (ret != M_OK) {
@@ -76,29 +76,40 @@ intptr_t monapi_name_add(const char* name)
     monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT(strlen(name) < MESSAGE_INFO_MAX_STR_LENGTH);
     monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    return Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
+    ret =  Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    return ret;
 }
 
 intptr_t monapi_name_get_server(uint32_t& id)
 {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (name_server_id != THREAD_UNKNOWN) {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         id = name_server_id;
         return M_OK;
     }
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     intptr_t ret = Message::sendAll(MSG_NAME);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (ret != M_OK) {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_warn("MSG_NAME broadcast failed : %s", monapi_error_string(ret));
         return ret;
     }
-
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo src, dest;
     src.header = MSG_OK;
     src.arg1 = MSG_NAME;
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ret = Message::receive(&dest, &src, Message::equalsHeaderArg1);
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (ret != M_OK) {
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         monapi_warn("MSG_NAME receive failed : %s", monapi_error_string(ret));
         return ret;
     }
+    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     id = dest.from;
     name_server_id = id;
     return M_OK;
