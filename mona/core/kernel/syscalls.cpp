@@ -744,7 +744,7 @@ void syscall_entrance()
             *dest = *current;
             psInfoMap.add(g_currentThread->thread->id, current->next);
             delete current;
-            setReturnValue(info, 0);
+            setReturnValue(info, M_OK);
             break;
         }
     }

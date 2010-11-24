@@ -75,7 +75,6 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 
 void invokeFuncList(FuncVoid** list, const char* file, int line)
 {
-    PsInfo pi = *MonAPI::System::getProcessInfo();
     int count = (int)*list++;
     list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
     if (count == -1)
@@ -167,7 +166,8 @@ extern "C" int user_start_c_impl(FuncMain* main)
         }
     }
     char** argv = new char*[argc + 1];
-    PsInfo pi = *MonAPI::System::getProcessInfo();
+    PsInfo pi;
+    MonAPI::System::getProcessInfo(&pi);
     argv[0] = pi.name;
     for (int i = 0; i < argc; i++)
     {

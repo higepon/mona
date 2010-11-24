@@ -43,7 +43,7 @@ class System
         return syscall_kill();
     }
 
-    static PsInfo* getProcessInfo();
+    static void getProcessInfo(PsInfo* dest);
     static uint32_t getParentThreadID();
     static const char* getProcessPath();
     static const char* getBundlePath();

@@ -6,11 +6,10 @@ extern MonAPI::Stream* outStream;
 
 namespace MonAPI
 {
-    static PsInfo psInfo;
     static char bundlePath[128];
     static char processPath[MESSAGE_INFO_MAX_STR_LENGTH];
 
-    PsInfo* System::getProcessInfo()
+    void System::getProcessInfo(PsInfo* dest)
     {
         uint32_t tid = getThreadID();
         syscall_set_ps_dump();
@@ -19,10 +18,10 @@ namespace MonAPI
         {
             if (buf.tid == tid) {
                 // Don't break here, which causes kernel memory leak.
-                psInfo = buf;
+                *dest = buf;
             }
         }
-        return &psInfo;
+        return;
     }
 
     uint32_t System::getParentThreadID()

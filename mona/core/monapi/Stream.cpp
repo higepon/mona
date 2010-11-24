@@ -279,13 +279,13 @@ bool Stream::initialize(uint32_t size)
     memoryHandle_ = MemoryMap::create(size + sizeof(StreamHeader));
     if (0 == memoryHandle_)
     {
-        monapi_warn("Stream: MemoryMap initialize error %d at %s \n", MemoryMap::getLastError(), System::getProcessInfo()->name);
+        monapi_warn("Stream: MemoryMap initialize error %d", MemoryMap::getLastError());
         return false;
     }
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        monapi_warn("Stream: MemoryMap map() error %d at %s\n", MemoryMap::getLastError(), System::getProcessInfo()->name);
+        monapi_warn("Stream: MemoryMap map() error %d", MemoryMap::getLastError());
         return false;
     }
     header_ = (StreamHeader*)address;
@@ -311,12 +311,11 @@ bool Stream::initialize(uint32_t size)
 
 bool Stream::initializeFromHandle(uint32_t handle)
 {
-    PsInfo pi = *MonAPI::System::getProcessInfo();
     memoryHandle_ = handle;
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {
-        monapi_warn("Stream: MemoryMap error handle=%x %d at %s \n", handle, MemoryMap::getLastError(),  System::getProcessInfo()->name);
+        monapi_warn("Stream: MemoryMap error handle=%x %d\n", handle, MemoryMap::getLastError());
         return false;
     }
     header_ = (StreamHeader*)address;
