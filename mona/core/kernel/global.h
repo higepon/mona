@@ -72,8 +72,6 @@ GLOBAL IDManager*   g_id;
 
 GLOBAL uint32_t gt[128];
 
-GLOBAL PsInfo g_ps;
-
 GLOBAL IRQInfo g_irqInfo[16];
 
 GLOBAL Thread* g_idleThread;

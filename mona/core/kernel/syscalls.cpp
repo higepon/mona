@@ -740,12 +740,13 @@ void syscall_entrance()
         if (current == NULL) {
             setReturnValue(info, 1);
             break;
+        } else {
+            *dest = *current;
+            psInfoMap.add(g_currentThread->thread->id, current->next);
+            delete current;
+            setReturnValue(info, 0);
+            break;
         }
-
-        *dest = *current;
-        delete current;
-        setReturnValue(info, 0);
-        break;
     }
 
     case SYSTEM_CALL_GET_TICK:

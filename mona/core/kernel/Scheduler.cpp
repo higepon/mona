@@ -455,14 +455,13 @@ PsInfo* Scheduler::GetAllDump()
 {
     PsInfo* start = new PsInfo;
     PsInfo* current = start;
+    PsInfo* prev = NULL;
+    current->next = NULL;
     FOREACH(Thread*, queue, runq)
     {
         FOREACH_N(queue, Thread*, thread)
         {
             ThreadInfo* i = thread->tinfo;
-            current->next = new PsInfo;
-            current  = current->next;
-
             strncpy(current->name, i->process->getName(), sizeof(current->name));
             current->name[sizeof(current->name) - 1] = '\0';
             current->cr3   = i->archinfo->cr3;
@@ -470,6 +469,9 @@ PsInfo* Scheduler::GetAllDump()
             current->esp   = i->archinfo->esp;
             current->tid   = thread->id;
             current->state = 1;
+            current->next = new PsInfo;
+            prev = current;
+            current  = current->next;
         }
     }
     END_FOREACH
@@ -480,69 +482,23 @@ PsInfo* Scheduler::GetAllDump()
         {
            ThreadInfo* i = thread->tinfo;
 
-            current->next = new PsInfo;
-            current  = current->next;
-
             strncpy(current->name, i->process->getName(), sizeof(current->name));
             current->cr3   = i->archinfo->cr3;
             current->eip   = i->archinfo->eip;
             current->esp   = i->archinfo->esp;
             current->tid   = thread->id;
             current->state = 0;
-        }
-    }
-    END_FOREACH
-    current->next = NULL;
-    return start->next;
-}
-
-void Scheduler::SetDump()
-{
-    g_ps.next = NULL;
-
-    PsInfo* current = &g_ps;
-
-    FOREACH(Thread*, queue, runq)
-    {
-        FOREACH_N(queue, Thread*, thread)
-        {
-            ThreadInfo* i = thread->tinfo;
-
             current->next = new PsInfo;
+            prev = current;
             current  = current->next;
-
-            strncpy(current->name, i->process->getName(), sizeof(current->name));
-            current->name[sizeof(current->name) - 1] = '\0';
-            current->cr3   = i->archinfo->cr3;
-            current->eip   = i->archinfo->eip;
-            current->esp   = i->archinfo->esp;
-            current->tid   = thread->id;
-            current->state = 1;
         }
     }
     END_FOREACH
-
-    FOREACH(Thread*, queue, waitq)
-    {
-        FOREACH_N(queue, Thread*, thread)
-        {
-           ThreadInfo* i = thread->tinfo;
-
-            current->next = new PsInfo;
-            current  = current->next;
-
-            strncpy(current->name, i->process->getName(), sizeof(current->name));
-            current->cr3   = i->archinfo->cr3;
-            current->eip   = i->archinfo->eip;
-            current->esp   = i->archinfo->esp;
-            current->tid   = thread->id;
-            current->state = 0;
-        }
+    if (prev != NULL) {
+        delete prev->next;
+        prev->next = NULL;
     }
-    END_FOREACH
-
-    dumpCurrent = g_ps.next;
-    current->next = NULL;
+    return start;
 }
 
 PsInfo* Scheduler::ReadDump()
