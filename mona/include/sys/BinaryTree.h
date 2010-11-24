@@ -16,7 +16,7 @@ template <class T> class BinaryTree {
   public:
     int  size() const;
     T get(const int key) const;
-    T get_lower_nearest(const int key) const; 
+    T get_lower_nearest(const int key) const;
     bool contains(const int key) const;
     T add(const int key, const T element);
     T remove(const int key);

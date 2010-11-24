@@ -21,9 +21,12 @@
 #include "sys/error.h"
 #include "Condition.h"
 #include "KObjectService.h"
+#include "sys/BinaryTree.h"
 
 extern const char* version;
 extern uint32_t version_number;
+
+static BinaryTree<PsInfo*> psInfoMap;
 
 inline static Process* getCurrentProcess()
 {
@@ -724,23 +727,23 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_PS_DUMP_SET:
-
-        g_scheduler->SetDump();
+    {
+        PsInfo* dump = g_scheduler->GetAllDump();
+        psInfoMap.add(g_currentThread->thread->id, dump);
         break;
-
+    }
     case SYSTEM_CALL_PS_DUMP_READ:
     {
-        PsInfo* p = (PsInfo*)(SYSTEM_CALL_ARG_1);
-        PsInfo* q = g_scheduler->ReadDump();
+        PsInfo* dest = (PsInfo*)(SYSTEM_CALL_ARG_1);
+        PsInfo* current = psInfoMap.get(g_currentThread->thread->id);
 
-        if (q == NULL)
-        {
+        if (current == NULL) {
             setReturnValue(info, 1);
             break;
         }
 
-        *p = *q;
-        delete q;
+        *dest = *current;
+        delete current;
         setReturnValue(info, 0);
         break;
     }
