@@ -22,10 +22,9 @@ namespace Mona
 			A20.Enable();
 			
 			ReadServer("KERNEL.BIN");
-			ReadServer("MONITOR.BIN");
 			ReadServer("FILE.BIN");
 			ReadServer("PROCESS.BIN");
-
+			ReadServer("MONITOR.BIN");
 			
 			ReadConfig("MONA.CFG");
 			SetVesaMode();

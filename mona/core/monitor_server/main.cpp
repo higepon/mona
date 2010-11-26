@@ -16,8 +16,6 @@
 #include <servers/screen.h>
 #include <monapi/messages.h>
 #include <limits.h>
-#include <map>
-#include <string>
 
 using namespace MonAPI;
 using namespace std;;
@@ -114,7 +112,7 @@ void Monitor::CheckServers()
 {
     //char buf[256];
     PsInfo info;
-
+    _logprintf("%s %s:%d servers.size=%d\n", __func__, __FILE__, __LINE__, servers.size());
     for (int i = 0; i < servers.size(); i++)
     {
         alive[i] = false;
@@ -139,6 +137,7 @@ void Monitor::CheckServers()
     for (int i = 0; i < servers.size(); i++)
     {
         if (alive[i]) continue;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!firstLoad && servers[i] == "OLDSHELL.EX5") continue;
         // sorry we can not use printf before process server starts.
         syscall_print("loading ");
@@ -173,55 +172,9 @@ void Monitor::CheckServers()
     if (firstLoad) firstLoad = false;
 }
 
-static volatile bool isNameServerStarted = false;
-
-// Don't touch any files from this function, since it causes infinite loop on file server.
-static void __fastcall nameServer(void* arg)
-{
-    isNameServerStarted = true;
-    map<string, uint32_t> nameMap;
-    for (;;) {
-        MessageInfo msg;
-        if (Message::receive(&msg) != M_OK) {
-            continue;
-        }
-        switch (msg.header) {
-        case MSG_NAME:
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            Message::reply(&msg, M_OK);
-            break;
-        case MSG_ADD:
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            nameMap[msg.str] = msg.from;
-            if (Message::reply(&msg, M_OK) != M_OK) {
-                monapi_warn("reply failed");
-            }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            break;
-        case MSG_WHERE:
-            map<string, uint32_t>::iterator it = nameMap.find(msg.str);
-            if (it == nameMap.end()) {
-                if (Message::reply(&msg, M_NAME_NOT_FOUND) != M_OK) {
-                    monapi_warn("reply failed");
-                }
-            } else {
-                if (Message::reply(&msg, M_OK, (*it).second) != M_OK) {
-                    monapi_warn("reply failed");
-                }
-            }
-            break;
-        }
-    }
-    exit(0);
-}
 
 int main(int argc, char* argv[])
 {
-    syscall_mthread_create_with_arg(nameServer, NULL);
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    while (!isNameServerStarted );
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
     Monitor monitor;
     monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
