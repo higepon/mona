@@ -2479,9 +2479,9 @@ Mona_Console__WriteLine__string:
 US_00000001 db 5, "/\ /\", 0x00
 US_0000000D db 23, " 'V `) < Booting MONA!!", 0x00
 US_00000045 db 10, "KERNEL.BIN", 0x00
-US_0000005B db 8, "FILE.BIN", 0x00
-US_0000006D db 11, "PROCESS.BIN", 0x00
-US_00000085 db 11, "MONITOR.BIN", 0x00
+US_00000085 db 11, "PROCESS.BIN", 0x00
+US_0000005B db 11, "MONITOR.BIN", 0x00
+US_0000006D db 8, "FILE.BIN", 0x00
 US_0000009D db 8, "MONA.CFG", 0x00
 US_000000AF db 14, "Boot failure!!", 0x00
 US_000000CD db 18, "System has halted.", 0x00
