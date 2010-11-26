@@ -112,7 +112,6 @@ void Monitor::CheckServers()
 {
     //char buf[256];
     PsInfo info;
-    _logprintf("%s %s:%d servers.size=%d\n", __func__, __FILE__, __LINE__, servers.size());
     for (int i = 0; i < servers.size(); i++)
     {
         alive[i] = false;
@@ -137,7 +136,6 @@ void Monitor::CheckServers()
     for (int i = 0; i < servers.size(); i++)
     {
         if (alive[i]) continue;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!firstLoad && servers[i] == "OLDSHELL.EX5") continue;
         // sorry we can not use printf before process server starts.
         syscall_print("loading ");

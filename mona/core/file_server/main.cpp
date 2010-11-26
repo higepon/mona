@@ -19,16 +19,13 @@ static void __fastcall nameServer(void* arg)
         }
         switch (msg.header) {
         case MSG_NAME:
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Message::reply(&msg, M_OK);
             break;
         case MSG_ADD:
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             nameMap[msg.str] = msg.from;
             if (Message::reply(&msg, M_OK) != M_OK) {
                 monapi_warn("reply failed");
             }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             break;
         case MSG_WHERE:
             map<string, uint32_t>::iterator it = nameMap.find(msg.str);
@@ -51,9 +48,7 @@ static void __fastcall nameServer(void* arg)
 int main(int argc, char* argv[])
 {
     syscall_mthread_create_with_arg(nameServer, NULL);
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     while (!isNameServerStarted );
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 
     if (monapi_notify_server_start("INIT") != M_OK)

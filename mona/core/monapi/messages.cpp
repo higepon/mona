@@ -33,7 +33,7 @@ static const char* server_names[] =
     "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
 };
 
-intptr_t monapi_name_where(const char* name, uint32_t& id)
+intptr_t monapi_name_whereis(const char* name, uint32_t& id)
 {
     uint32_t found = nameCache.get(name);
     if (found != 0) {
@@ -145,7 +145,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
         {
             header = enabled ? MSG_KEY_REGIST_TO_SERVER : MSG_KEY_UNREGIST_FROM_SERVER;
             uint32_t server_id;
-            if (monapi_name_where("/servers/keyboard", server_id) != M_OK) {
+            if (monapi_name_whereis("/servers/keyboard", server_id) != M_OK) {
                 monapi_warn("keyboard server not found");
                 return MONAPI_FALSE;
             }
@@ -176,7 +176,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 {
     uint32_t tid ;
-    if (monapi_name_where("/servers/mouse", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/mouse", tid) != M_OK) {
         return MONAPI_FALSE;
     }
     uint32_t header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
@@ -192,7 +192,7 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return NULL;
     }
 
@@ -215,7 +215,7 @@ SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL
 SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return NULL;
     }
     MessageInfo msg;
@@ -237,7 +237,7 @@ SharedMemory* monapi_call_file_decompress_bz2(const SharedMemory& shm)
 SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return NULL;
     }
     MessageInfo msg;
@@ -259,7 +259,7 @@ SharedMemory* monapi_call_file_decompress_st5(const SharedMemory& shm)
 SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return NULL;
     }
 
@@ -301,12 +301,9 @@ intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL 
 intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
     uint32_t server;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if (monapi_name_where("/servers/process", server) != M_OK) {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    if (monapi_name_whereis("/servers/process", server) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo msg;
     if (Message::sendReceive(&msg, server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != M_OK)
     {
@@ -333,7 +330,7 @@ void monapi_deallocate_dma_memory(void* address, int size)
 intptr_t monapi_file_open(const char* file, intptr_t mode)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
@@ -395,7 +392,7 @@ SharedMemory* monapi_file_read_directory(const char* path)
 intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
@@ -409,7 +406,7 @@ intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin)
 intptr_t monapi_file_close(uint32_t fileID)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
@@ -424,7 +421,7 @@ intptr_t monapi_file_close(uint32_t fileID)
 intptr_t monapi_file_get_file_size(uint32_t id)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
 
@@ -440,7 +437,7 @@ intptr_t monapi_file_get_file_size(uint32_t id)
 intptr_t monapi_file_delete(const char* file)
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
@@ -455,7 +452,7 @@ intptr_t monapi_file_delete(const char* file)
 intptr_t monapi_file_stop_server()
 {
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
@@ -470,7 +467,7 @@ intptr_t monapi_file_write(uint32_t fileID, const SharedMemory& mem, uint32_t si
 {
     MessageInfo msg;
     uint32_t tid;
-    if (monapi_name_where("/servers/file", tid) != M_OK) {
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
     int ret = Message::sendReceive(&msg, tid, MSG_FILE_WRITE, fileID, size, mem.handle());
