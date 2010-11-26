@@ -44,20 +44,17 @@ static void __fastcall nameServer(void* arg)
     exit(0);
 }
 
-
 int main(int argc, char* argv[])
 {
+    // Currently name server is running on file server for dependency problem.
     syscall_mthread_create_with_arg(nameServer, NULL);
     while (!isNameServerStarted );
 
-
-    if (monapi_notify_server_start("INIT") != M_OK)
-    {
+    if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
 
     // On file server, we can't read map file.
-
     FileServer server;
     if (server.initializeFileSystems() != M_OK)
     {
