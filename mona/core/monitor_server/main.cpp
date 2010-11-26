@@ -59,18 +59,14 @@ void Monitor::Service()
 {
     for (;;)
     {
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         CheckServers();
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
         sleep(CHECK_INTERVAL);
     }
 }
 
 bool Monitor::Initialize()
 {
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     scoped_ptr<SharedMemory> shm(monapi_file_read_all("/MONITOR.CFG"));
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (shm.get() == NULL)
     {
        MONAPI_WARN("Config file read error");
@@ -174,15 +170,11 @@ void Monitor::CheckServers()
 int main(int argc, char* argv[])
 {
     Monitor monitor;
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     monitor.Initialize();
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     monitor.Service();
-    monapi_warn("%s %s:%d\n", __func__, __FILE__, __LINE__);
     return 0;
 }
