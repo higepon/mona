@@ -77,6 +77,10 @@ int main(int argc, char* argv[])
 
     syscall_mthread_create_with_arg(listenThread, NULL);
 
+    if (monapi_name_add("/servers/clipboard") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
+
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;

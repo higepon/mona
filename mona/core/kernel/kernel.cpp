@@ -379,7 +379,6 @@ void loadServer(const char* server, const char* name)
 
         if (msg.header == MSG_STARTED) break;
     }
-    logprintf("<%s>MSG_STARTED", server);
     return;
 }
 

@@ -33,7 +33,6 @@ int Message::sendAll(uint32_t header, uint32_t arg1 /* = 0 */, uint32_t arg2 /* 
     syscall_set_ps_dump();
     PsInfo buf;
     while (syscall_read_ps_dump(&buf) == M_OK) {
-        _logprintf("buf.tid=%d\n", buf.tid);
         if (buf.tid == self) {
             continue;
         }
