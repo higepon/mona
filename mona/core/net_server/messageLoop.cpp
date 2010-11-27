@@ -75,6 +75,10 @@ static void __fastcall messageLoop(void* arg)
         exit(-1);
     }
 
+    if (monapi_name_add("/servers/net") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
+
     for (;;) {
         MessageInfo msg;
         if (Message::receive(&msg) != M_OK) {

@@ -62,7 +62,10 @@ int getaddrinfo(const char *node, const char *service,
         strcpy(pack->data + nodeLen, service);
     }
 
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
     if (Message::send(id, MSG_NET_GET_ADDR_INFO) != M_OK) {
         return EBADF;
     }
@@ -97,7 +100,11 @@ void freeaddrinfo(struct addrinfo *res)
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
+
     if (Message::send(id, MSG_NET_SOCKET_CONN, sockfd, namelen) != M_OK) {
         return EBADF;
     }
@@ -120,7 +127,11 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 
 int socket(int domain, int type, int protocol)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
+
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SOCK, domain, type, protocol) != M_OK) {
         return EINVAL;
@@ -131,7 +142,10 @@ int socket(int domain, int type, int protocol)
 
 int closesocket(int sockfd)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_CLOSE, sockfd) != M_OK) {
         return EINVAL;
@@ -141,7 +155,10 @@ int closesocket(int sockfd)
 
 int send(int sockfd, void* buf, size_t len, int flags)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     if (Message::send(id, MSG_NET_SOCKET_SEND, sockfd, len, flags) != M_OK) {
         return EBADF;
     }
@@ -164,7 +181,10 @@ int send(int sockfd, void* buf, size_t len, int flags)
 
 int recv(int sockfd, void* buf, size_t len, int flags)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
         return EBADF;
     }
@@ -188,7 +208,10 @@ int recv(int sockfd, void* buf, size_t len, int flags)
 
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     if (Message::send(id, MSG_NET_SOCKET_SET_OPTION, sockfd, level, optname) != M_OK) {
         return EBADF;
     }
@@ -211,7 +234,10 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
 int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     char buf[sizeof(socklen_t)];
     memcpy(buf, optlen, sizeof(socklen_t));
     if (Message::send(id, MSG_NET_SOCKET_GET_OPTION, sockfd, level, optname, buf) != M_OK) {
@@ -237,7 +263,10 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
 
 int shutdown(int sockfd, int how)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SHUTDOWN, sockfd, how) != M_OK) {
         return EINVAL;
@@ -248,7 +277,10 @@ int shutdown(int sockfd, int how)
 
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     if (Message::send(id, MSG_NET_SOCKET_BIND, sockfd, addrlen) != M_OK) {
         return EBADF;
     }
@@ -271,7 +303,10 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 
 int listen(int sockfd, int backlog)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_LISTEN, sockfd, backlog) != M_OK) {
         return EINVAL;
@@ -282,7 +317,10 @@ int listen(int sockfd, int backlog)
 
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo msg;
     if (Message::sendReceive(&msg, id, MSG_NET_SOCKET_ACCEPT, sockfd) != M_OK) {
         return EBADF;
@@ -338,7 +376,10 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
         memcpy(buf + 4 + sizeof(fd_set) * 3, timeout, sizeof(struct timeval));
     }
 
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SELECT, nfds, 0, 0, (char*)buf) != M_OK) {
         return EINVAL;
@@ -361,7 +402,10 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
 
 int ioctlsocket(int sockfd, long cmd, void *argp)
 {
-    uintptr_t id = monapi_get_server_thread_id(ID_NET_SERVER);
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
     MessageInfo ret;
     uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
     if (argp != NULL) {

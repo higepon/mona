@@ -371,7 +371,13 @@ int main(int argc, char* argv[])
     CheckGUIServer();
     if (!InitScreen()) exit(1);
     MessageInfo msg_cp;
-    if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
+    uint32_t process_tid;
+    if (monapi_name_whereis("/servers/process", process_tid) != M_OK) {
+        monapi_warn("process server not found");
+        exit(1);
+    }
+
+    if (Message::sendReceive(&msg_cp, process_tid, MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
     {
         printf("%s: can not get common parameters!\n", GUI_SERVER_NAME);
         exit(1);

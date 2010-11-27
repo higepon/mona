@@ -127,7 +127,10 @@ int FileServer::initializeRootFileSystem()
 SharedMemory * FileServer::readFileAll(const string& file, intptr_t& lastError)
 {
     uint32_t fileID;
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
+        return NULL;
+    }
     int ret = vmanager_.open(file, 0, tid, &fileID);
     if (ret != M_OK) {
         lastError = ret;
