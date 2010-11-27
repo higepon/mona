@@ -111,6 +111,10 @@ int scheme_batch(const String& file)
 
 void scheme_interactive()
 {
+    if (monapi_name_add("/servers/scheme") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
+
     env = new Environment();
     Interaction* interaction = new Interaction(env);
 #ifdef MONA

@@ -25,7 +25,11 @@ static void StdoutMessageLoop()
 {
     MonAPI::Stream stream;
     MessageInfo msg;
-    uint32_t shellServerID = monapi_get_server_thread_id(ID_SCHEME_SERVER);
+    uint32_t shellServerID;
+    if (monapi_name_whereis("/servers/scheme", shellServerID) != M_OK) {
+        monapi_fatal("server not found");
+    }
+
     MonAPI::Message::sendReceive(&msg, shellServerID, MSG_CHANGE_OUT_STREAM_BY_HANDLE, stream.handle());
     g_oldStreamOutHandle = msg.arg2;
 
