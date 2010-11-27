@@ -432,7 +432,10 @@ PROCEDURE(MonaGuiMoveWindow, "mona-gui-move-window")
     CAST(ARGV(1), Number, x);
     CAST(ARGV(2), Number, y);
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_warn("process server not found");
+    }
     if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle->value(), x->value(), y->value()) != M_OK)
     {
         RETURN_BOOLEAN(false);
@@ -452,7 +455,10 @@ PROCEDURE(MonaGuiGetWindowTitle, "mona-gui-get-window-title")
     CAST(ARGV(0), Number, handle);
     char buffer[WINDOW_TITLE_MAX_LENGTH];
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_warn("process server not found");
+    }
     if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_GETTITLE, handle->value()) != M_OK)
     {
         RETURN_BOOLEAN(false);
@@ -467,7 +473,10 @@ PROCEDURE(MonaGuiEnumWindows, "mona-gui-enum-windows")
 {
 #ifdef MONA
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_warn("process server not found");
+    }
     if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_ENUMWINDOWS) != M_OK)
     {
         RETURN_BOOLEAN(false);
