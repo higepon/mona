@@ -96,7 +96,12 @@ public:
     const char* getCommand()
     {
         // マウスカーソルを消して、壁紙を描画して、マウスカーソルを出す
-        Message::send(monapi_get_server_thread_id(ID_MOUSE_SERVER), MSG_MOUSE_SET_CURSOR_POSITION, 0, 0, 0, NULL);
+        uint32_t mouse_server;
+        if (monapi_name_whereis("/servers/mouse", mouse_server) != M_OK) {
+            monapi_fatal("server not found");
+        }
+
+        Message::send(mouse_server, MSG_MOUSE_SET_CURSOR_POSITION, 0, 0, 0, NULL);
         monapi_call_mouse_set_cursor(0);
         this->select(SELECT_WALLPAPER);
         monapi_call_mouse_set_cursor(1);

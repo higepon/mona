@@ -64,7 +64,10 @@ public:
     Form1() : first(true)
     {
         this->InitializeComponent();
-        this->shell = monapi_get_server_thread_id(ID_SCHEME_SERVER);
+        if (monapi_name_whereis("/servers/scheme", this->shell) != M_OK) {
+            monapi_fatal("server not found");
+        }
+
         _P<MonAPI::Screen> scr = GetDefaultScreen();
 //        this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
         this->set_Location(Point(250, 50));
