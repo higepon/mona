@@ -653,7 +653,7 @@ void monasq_init_monapi_lib(HSQUIRRELVM v)
     Register(v, hNamespace, monapi_set_irq, _T("monapi_set_irq"));
 //    Register(v, hNamespace, monapi_wait_interrupt, _T("monapi_wait_interrupt"));
 
-    Register(v, hNamespace, monapi_get_server_thread_id, _T("monapi_get_server_thread_id"));
+//    Register(v, hNamespace, monapi_get_server_thread_id, _T("monapi_get_server_thread_id"));
 // TODO
 //  Register(v, hNamespace, monapi_call_dispose_handle, _T("monapi_call_dispose_handle"));
     Register(v, hNamespace, monapi_register_to_server, _T("monapi_register_to_server"));
