@@ -73,7 +73,6 @@ extern MonAPI::SharedMemory* monapi_clipboard_get();
 extern "C"
 {
 #endif
-extern uint32_t monapi_get_server_thread_id(int id);
 extern intptr_t monapi_register_to_server(const char* server);
 extern intptr_t monapi_unregister_to_server(const char* server);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);

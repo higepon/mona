@@ -13,26 +13,6 @@ using namespace MonAPI;
 static uint32_t name_server_id = THREAD_UNKNOWN;
 static HashMap<uint32_t> nameCache(64);
 
-static uint32_t server_ids[] =
-{
-    THREAD_UNKNOWN,  // ID_MOUSE_SERVER
-    THREAD_UNKNOWN,  // ID_KEYBOARD_SERVER
-    THREAD_UNKNOWN,  // ID_FILE_SERVER
-    THREAD_UNKNOWN,  // ID_GUI_SERVER
-    THREAD_UNKNOWN,  // ID_ELF_SERVER
-    THREAD_UNKNOWN,  // ID_PROCESS_SERVER
-    THREAD_UNKNOWN,  // ID_PE_SERVER
-    THREAD_UNKNOWN,  // ID_MONITOR_SERVER
-    THREAD_UNKNOWN,  // ID_SCHEME_SERVER
-    THREAD_UNKNOWN,  // ID_NET_SERVER
-    THREAD_UNKNOWN   // ID_CLIPBOARD_SERVER
-};
-
-static const char* server_names[] =
-{
-    "MOUSE.EX5", "KEYBDMNG.EX5", "FILE.BIN", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN", "SCHEME.EX5", "NET.EX5", "CLIPBRD.EX5"
-};
-
 intptr_t monapi_name_whereis(const char* name, uint32_t& id)
 {
     uint32_t found = nameCache.get(name);
@@ -96,26 +76,6 @@ intptr_t monapi_name_get_server(uint32_t& id)
     id = dest.from;
     name_server_id = id;
     return M_OK;
-}
-
-uint32_t monapi_get_server_thread_id(int id)
-{
-    if (id < 0 || ID_NUMBER_OF_SERVERS <= id) return THREAD_UNKNOWN;
-
-    if (server_ids[id] == THREAD_UNKNOWN)
-    {
-        server_ids[id] = Message::lookupMainThread(server_names[id]);
-        if (server_ids[id] == THREAD_UNKNOWN)
-        {
-           MONAPI_WARN("ERROR: can not connect to %s", server_names[id]);
-        }
-
-        // quick hack.
-        if (id == ID_NET_SERVER) {
-            server_ids[id] = server_ids[id] + 2;
-        }
-    }
-    return server_ids[id];
 }
 
 static intptr_t register_to_server(const char* server, int header)

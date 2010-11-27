@@ -38,8 +38,8 @@ static dword sdl_timer_callback(dword interval, void* param) {
 	return SDL_PushEvent(&event);
 }
 
-/** MonAPIダミーメソッド */
-dword monapi_get_server_thread_id(dword serverID) { return 0; }
+// /** MonAPIダミーメソッド */
+// dword monapi_get_server_thread_id(dword serverID) { return 0; }
 
 /** MonAPIダミーメソッド */
 bool monapi_register_to_server(int serverID, int isCout) { return true; }
