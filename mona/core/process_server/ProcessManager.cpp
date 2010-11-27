@@ -178,11 +178,11 @@ bool processHandler(MessageInfo* msg)
 {
     switch (msg->header)
     {
-        case MSG_REGISTER_TO_SERVER:
+        case MSG_ADD:
             registerReceiver(msg->arg1);
             Message::reply(msg);
             break;
-        case MSG_UNREGISTER_FROM_SERVER:
+        case MSG_REMOVE:
             unregisterReceiver(msg->arg1);
             Message::reply(msg);
             break;

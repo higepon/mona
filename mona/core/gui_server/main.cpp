@@ -321,13 +321,13 @@ static void MessageLoop()
                 Message::reply(&msg);
                 break;
             // 登録要求
-            case MSG_REGISTER_TO_SERVER:
+            case MSG_ADD:
                 // threadID
                 clients.add(msg.arg1);
                 Message::reply(&msg);
                 break;
             // 削除要求
-            case MSG_UNREGISTER_FROM_SERVER:
+            case MSG_REMOVE:
                 // threadID
                 clients.remove(msg.arg1);
                 Message::reply(&msg);

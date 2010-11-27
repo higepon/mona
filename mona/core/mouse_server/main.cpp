@@ -301,13 +301,13 @@ public:
 
             switch(receive.header)
             {
-            case MSG_MOUSE_REGIST_TO_SERVER:
+            case MSG_ADD:
                 /* arg1 = tid */
                 this->destList->add(receive.arg1);
                 Message::reply(&receive);
                 break;
 
-            case MSG_MOUSE_UNREGIST_FROM_SERVER:
+            case MSG_REMOVE:
                 /* arg1 = tid */
                 this->destList->remove(receive.arg1);
                 Message::reply(&receive);

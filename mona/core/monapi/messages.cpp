@@ -126,7 +126,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
     {
         case ID_KEYBOARD_SERVER:
         {
-            header = enabled ? MSG_KEY_REGIST_TO_SERVER : MSG_KEY_UNREGIST_FROM_SERVER;
+            header = enabled ? MSG_ADD : MSG_REMOVE;
             uint32_t server_id;
             if (monapi_name_whereis("/servers/keyboard", server_id) != M_OK) {
                 monapi_warn("keyboard server not found");
@@ -140,10 +140,10 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
             break;
         }
         case ID_MOUSE_SERVER:
-            header = enabled ? MSG_MOUSE_REGIST_TO_SERVER : MSG_MOUSE_UNREGIST_FROM_SERVER;
+            header = enabled ? MSG_ADD : MSG_REMOVE;
             break;
         default:
-            header = enabled ? MSG_REGISTER_TO_SERVER : MSG_UNREGISTER_FROM_SERVER;
+            header = enabled ? MSG_ADD : MSG_REMOVE;
             break;
     }
     if (tid == THREAD_UNKNOWN) return MONAPI_FALSE;

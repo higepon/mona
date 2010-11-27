@@ -116,13 +116,13 @@ int main(int argc, char* argv[])
 
                 break;
 
-            case MSG_KEY_REGIST_TO_SERVER:
+            case MSG_ADD:
 
                 regist(destList, &info);
                 Message::reply(&info);
                 break;
 
-            case MSG_KEY_UNREGIST_FROM_SERVER:
+            case MSG_REMOVE:
 
                 unregist(destList, &info);
                 Message::reply(&info);
