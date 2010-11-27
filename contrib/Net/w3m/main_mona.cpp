@@ -2540,7 +2540,7 @@ int main(int argc, char* argv[]) {
 
   
 
-    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER))
+    if (M_OK != monapi_register_to_server("/servers/process"))
     {
         fprintf(stderr, "register to process server failed\n");
         return -1;
@@ -2568,7 +2568,7 @@ int main(int argc, char* argv[]) {
     if(g_debugMode)
         syscall_stack_trace_disable(pid);
 
-    monapi_unregister_to_server(ID_PROCESS_SERVER);
+    monapi_unregister_to_server("/servers/process");
     return 0;
 }
 
