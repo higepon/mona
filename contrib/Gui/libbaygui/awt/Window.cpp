@@ -52,11 +52,9 @@ namespace baygui {
 	Window::Window()
 	{
 		/* GUIサーバーを探す */
-		this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-		if (this->guisvrID == THREAD_UNKNOWN) {
-			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-			exit(1);
-		}
+        if (monapi_name_whereis("/servers/gui", guisvrID) != M_OK) {
+            monapi_fatal("server not found");
+        }
 		
 		/* GUIサーバーに自分を登録する */
 		if (M_OK != monapi_register_to_server("/servers/gui")) {
