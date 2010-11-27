@@ -11,7 +11,10 @@ namespace System { namespace Mona
 int gui_move_window(uint32_t handle, int x, int y)
 {
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_fatal("server not found");
+    }
     int ret = MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_MOVEWINDOW, handle, x, y);
     if (ret != M_OK) {
         return ret;
