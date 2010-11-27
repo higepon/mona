@@ -468,8 +468,11 @@ static void MessageLoop()
 
 int main(int argc, char* argv[])
 {
-    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
-    {
+    if (monapi_name_add("/servers/pe") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
+
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK) {
         exit(-1);
     }
 

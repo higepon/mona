@@ -70,46 +70,46 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     uint64_t s2 = MonAPI::Date::nowInMsec();
     SharedMemory* shm = NULL;
     uint32_t entryPoint = 0xa0000000;
-    int result = 1, svr_id = -1;
+    int result = 1;
+    const char* svr_id = NULL;
     uint64_t s3, s4;
     if (path.endsWith(".ELF") || path.endsWith(".EL2") || path.endsWith(".EL5"))
     {
-        svr_id = ID_ELF_SERVER;
+        svr_id = "/servers/elf";
     }
     else if (path.endsWith(".EXE") || path.endsWith(".EX2") || path.endsWith(".EX5"))
     {
-        svr_id = ID_PE_SERVER;
+        svr_id = "/servers/pe";
     }
-    if (svr_id != -1)
+    if (svr_id != NULL)
     {
         MessageInfo msg;
-        uint32_t tid = monapi_get_server_thread_id(svr_id);
-
-        if (tid != THREAD_UNKNOWN)
-        {
-            if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path) != M_OK) {
-                _printf("Error %s:%d\n", __FILE__, __LINE__);
+        uint32_t tid;
+        if (monapi_name_whereis(svr_id, tid) != M_OK) {
+            monapi_fatal("server not found");
+        }
+        if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path) != M_OK) {
+            _printf("Error %s:%d\n", __FILE__, __LINE__);
+            exit(-1);
+        }
+        if (msg.arg2 != 0) {
+            result = 0;
+            entryPoint = msg.arg3;
+            shm = new SharedMemory(msg.arg2, atoi(msg.str));
+            if (shm->map(true) != M_OK) {
+                monapi_fatal("Error %s:%d\n", __FILE__, __LINE__);
                 exit(-1);
             }
-            if (msg.arg2 != 0) {
-                result = 0;
-                entryPoint = msg.arg3;
-                shm = new SharedMemory(msg.arg2, atoi(msg.str));
-                if (shm->map(true) != M_OK) {
-                    monapi_fatal("Error %s:%d\n", __FILE__, __LINE__);
-                    exit(-1);
-                }
-                // notify map is done.
-                int status = Message::reply(&msg);
-                if (status != M_OK) {
-                    monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
-                }
+            // notify map is done.
+            int status = Message::reply(&msg);
+            if (status != M_OK) {
+                monapi_warn("%s reply failed : %s\n", __func__, monapi_error_string(status));
+            }
 
-            }
-            else
-            {
-                result = msg.arg3;
-            }
+        }
+        else
+        {
+            result = msg.arg3;
         }
     }
     else if (path.endsWith(".BN2"))
