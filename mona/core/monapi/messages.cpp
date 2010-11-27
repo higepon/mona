@@ -122,30 +122,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 {
     uint32_t tid = monapi_get_server_thread_id(id);
     uint32_t header;
-    switch (id)
-    {
-        case ID_KEYBOARD_SERVER:
-        {
-            header = enabled ? MSG_ADD : MSG_REMOVE;
-            uint32_t server_id;
-            if (monapi_name_whereis("/servers/keyboard", server_id) != M_OK) {
-                monapi_warn("keyboard server not found");
-                return MONAPI_FALSE;
-            }
-            if (Message::sendReceive(NULL, server_id, header, syscall_get_tid()) != M_OK) {
-                MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
-                return MONAPI_FALSE;
-            }
-            return MONAPI_TRUE;
-            break;
-        }
-        case ID_MOUSE_SERVER:
-            header = enabled ? MSG_ADD : MSG_REMOVE;
-            break;
-        default:
-            header = enabled ? MSG_ADD : MSG_REMOVE;
-            break;
-    }
+    header = enabled ? MSG_ADD : MSG_REMOVE;
     if (tid == THREAD_UNKNOWN) return MONAPI_FALSE;
 
     if (Message::sendReceive(NULL, tid, header, syscall_get_tid()) != M_OK)
