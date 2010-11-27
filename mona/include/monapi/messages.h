@@ -74,7 +74,7 @@ extern "C"
 {
 #endif
 extern uint32_t monapi_get_server_thread_id(int id);
-extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
+extern intptr_t monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 
 

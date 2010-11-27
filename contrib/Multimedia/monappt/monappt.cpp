@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
     // キーサーバーに登録する
     syscall_clear_screen();
     syscall_set_cursor(0,0);
-    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
 
     // １枚目のスライド
     int slideno = 0;

@@ -14,7 +14,7 @@ MonaApplication* monaApp;
 MonaApplication::MonaApplication() {
 
     monaApp = this;
-    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE))
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE))
     {
         MONAPI_WARN("MonaApplication:KeyBoardServer not found");
         exit(1);
@@ -23,7 +23,7 @@ MonaApplication::MonaApplication() {
 
 MonaApplication::~MonaApplication() {
 
-    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE)) {
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE)) {
         MONAPI_WARN("MonaApp: key unregist error");
     }
 }

@@ -59,7 +59,7 @@ namespace baygui {
 		}
 		
 		/* GUIサーバーに自分を登録する */
-		if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
+		if (M_OK != monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
 			printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
 			exit(1);
 		}

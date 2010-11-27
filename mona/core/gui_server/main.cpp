@@ -384,8 +384,8 @@ int main(int argc, char* argv[])
     }
     commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 
-    if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
-    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
     // フォントのロード
     ReadFont("/APPS/MONA12.MF5");
     if (default_font == NULL) exit(1);

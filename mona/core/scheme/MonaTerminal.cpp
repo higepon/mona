@@ -121,7 +121,7 @@ int MonaTerminal::formatWrite(const char* format, ...)
 
 bool MonaTerminal::initialize()
 {
-    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, 1))
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, 1))
     {
         fprintf(stderr, "register to keyboard server failed\n");
         return false;
@@ -136,7 +136,7 @@ bool MonaTerminal::initialize()
 //     histories_.add("(for-each (lambda (w) (print (mona.gui.window-title w))) (filter #/APPS/ (mona.gui.enum-windows)))");
 
 
-    if (!monapi_register_to_server(ID_PROCESS_SERVER, 1))
+    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER, 1))
     {
         fprintf(stderr, "register to process server failed\n");
         return false;
