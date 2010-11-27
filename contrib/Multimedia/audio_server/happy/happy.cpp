@@ -67,14 +67,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 //    dumpMemory();
-    if (monapi_get_server_thread_id(ID_GUI_SERVER) != THREAD_UNKNOWN)
-    {
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) == M_OK) {
         GUIPlayer* player = new GUIPlayer;
         player->run();
         delete player;
-    }
-    else
-    {
+    } else {
         cui_main(argc, argv);
     }
     return 0;
