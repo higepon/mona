@@ -384,8 +384,8 @@ int main(int argc, char* argv[])
     }
     commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 
-    if (M_OK != monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
-    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_MOUSE_SERVER)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER)) exit(1);
     // フォントのロード
     ReadFont("/APPS/MONA12.MF5");
     if (default_font == NULL) exit(1);
@@ -412,8 +412,8 @@ int main(int argc, char* argv[])
     // 壁紙の開放
     if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
     DisposeScreen();
-    monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
-    monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+    monapi_unregister_to_server(ID_MOUSE_SERVER);
+    monapi_unregister_to_server(ID_KEYBOARD_SERVER);
     MemoryMap::unmap(msg_cp.arg2);
 
     monapi_call_mouse_set_cursor(0);

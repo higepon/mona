@@ -7,8 +7,8 @@ using namespace MonAPI;
 
 int main(int argc, char* argv[])
 {
-    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, 1)) exit(1);
-    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER, 1)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER)) exit(1);
 
     /* Server start ok */
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     Shell shell(screenHandle);
     shell.run();
 
-    monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
-    monapi_register_to_server(ID_PROCESS_SERVER, 0);
+    monapi_register_to_server(ID_KEYBOARD_SERVER);
+    monapi_register_to_server(ID_PROCESS_SERVER);
     return 0;
 }

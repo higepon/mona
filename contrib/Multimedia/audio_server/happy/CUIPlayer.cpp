@@ -54,7 +54,7 @@ static void listOggfiles(const char* dirPath, strings& oggFiles)
 
 static void inputLoop()
 {
-    monapi_register_to_server(ID_KEYBOARD_SERVER, 1);
+    monapi_register_to_server(ID_KEYBOARD_SERVER);
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg) != 0) continue;
@@ -90,7 +90,7 @@ static void inputLoop()
         }
     }
 end:
-    monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
+    monapi_unregister_to_server(ID_KEYBOARD_SERVER);
     exit(0);
 }
 

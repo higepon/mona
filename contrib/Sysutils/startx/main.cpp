@@ -102,10 +102,10 @@ public:
         monapi_call_mouse_set_cursor(1);
 
         // マウスサーバーに登録する
-        if (M_OK != monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+        if (M_OK != monapi_register_to_server(ID_MOUSE_SERVER)) exit(1);
 
         // キーボードサーバーに登録する
-        if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+        if (M_OK != monapi_register_to_server(ID_KEYBOARD_SERVER)) exit(1);
 
         // メッセージループ
         for (MessageInfo info;;)
@@ -233,10 +233,10 @@ public:
         int selected = this->selected;
 
         // マウスサーバーから登録解除する
-        monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
+        monapi_unregister_to_server(ID_MOUSE_SERVER);
 
         // キーボードから登録解除する
-        monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+        monapi_unregister_to_server(ID_KEYBOARD_SERVER);
 
         // 画面クリア
         syscall_clear_screen();
@@ -394,7 +394,7 @@ int main(int argc, char* argv[])
     }
 
     // プロセスサーバーに登録する
-    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER, 1)) exit(1);
+    if (M_OK != monapi_register_to_server(ID_PROCESS_SERVER)) exit(1);
 
     // ログインオブジェクト初期化
     StartX* startx = new StartX();
@@ -417,7 +417,7 @@ int main(int argc, char* argv[])
     delete startx;
 
     // プロセスサーバーから登録解除する
-    monapi_register_to_server(ID_PROCESS_SERVER, MONAPI_FALSE);
+    monapi_unregister_to_server(ID_PROCESS_SERVER);
 
     return 0;
 }

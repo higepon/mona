@@ -59,7 +59,7 @@ namespace baygui {
 		}
 		
 		/* GUIサーバーに自分を登録する */
-		if (M_OK != monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
+		if (M_OK != monapi_register_to_server(ID_GUI_SERVER)) {
 			printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
 			exit(1);
 		}
@@ -167,7 +167,7 @@ namespace baygui {
 		kill_timer(this->timerID);
 		
 		/* GUIサーバーから自分を抹消する */
-		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
+		monapi_unregister_to_server(ID_GUI_SERVER);
 	}
 
 	Insets* Window::getInsets()

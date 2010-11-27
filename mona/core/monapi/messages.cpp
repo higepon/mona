@@ -118,14 +118,25 @@ uint32_t monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-intptr_t monapi_register_to_server(int id, MONAPI_BOOL enabled)
+intptr_t monapi_register_to_server(int id)
 {
     uint32_t tid = monapi_get_server_thread_id(id);
-    uint32_t header;
-    header = enabled ? MSG_ADD : MSG_REMOVE;
     if (tid == THREAD_UNKNOWN) return M_NAME_NOT_FOUND;
 
-    if (Message::sendReceive(NULL, tid, header, syscall_get_tid()) != M_OK)
+    if (Message::sendReceive(NULL, tid, MSG_ADD, syscall_get_tid()) != M_OK)
+    {
+        MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
+        return M_UNKNOWN;
+    }
+    return M_OK;
+}
+
+intptr_t monapi_unregister_to_server(int id)
+{
+    uint32_t tid = monapi_get_server_thread_id(id);
+    if (tid == THREAD_UNKNOWN) return M_NAME_NOT_FOUND;
+
+    if (Message::sendReceive(NULL, tid, MSG_REMOVE, syscall_get_tid()) != M_OK)
     {
         MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
         return M_UNKNOWN;
