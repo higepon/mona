@@ -118,33 +118,28 @@ uint32_t monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-intptr_t monapi_register_to_server(const char* server)
+static intptr_t register_to_server(const char* server, int header)
 {
-    uint32_t tid ;
+   uint32_t tid ;
     if (monapi_name_whereis(server, tid) != M_OK) {
         return M_NAME_NOT_FOUND;
     }
 
-    if (Message::sendReceive(NULL, tid, MSG_ADD, syscall_get_tid()) != M_OK)
-    {
-        MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
+    if (Message::sendReceive(NULL, tid, header, syscall_get_tid()) != M_OK) {
+        monapi_warn("ERROR: can not register to %s", server);
         return M_UNKNOWN;
     }
     return M_OK;
 }
 
+intptr_t monapi_register_to_server(const char* server)
+{
+    return register_to_server(server, MSG_ADD);
+}
+
 intptr_t monapi_unregister_to_server(const char* server)
 {
-    uint32_t tid ;
-    if (monapi_name_whereis(server, tid) != M_OK) {
-        return M_NAME_NOT_FOUND;
-    }
-    if (Message::sendReceive(NULL, tid, MSG_REMOVE, syscall_get_tid()) != M_OK)
-    {
-        MONAPI_WARN("ERROR: can not register to %s", server_names[id]);
-        return M_UNKNOWN;
-    }
-    return M_OK;
+    return register_to_server(server, MSG_REMOVE);
 }
 
 MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
