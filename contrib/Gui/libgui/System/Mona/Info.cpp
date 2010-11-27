@@ -27,7 +27,11 @@ int gui_move_window(uint32_t handle, int x, int y)
 uint32_t* gui_enum_windows(int* num)
 {
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_fatal("server not found");
+    }
+
     if (MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_ENUMWINDOWS) != 0)
     {
         *num = 0;
@@ -53,7 +57,10 @@ uint32_t* gui_enum_windows(int* num)
 int gui_get_window_title(uint32_t handle, char* buffer)
 {
     MessageInfo msg;
-    uint32_t tid = monapi_get_server_thread_id(ID_GUI_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/gui", tid) != M_OK) {
+        monapi_fatal("server not found");
+    }
     int ret = MonAPI::Message::sendReceive(&msg, tid, MSG_GUISERVER_GETTITLE, handle);
     if (M_OK != ret) {
         return ret;
