@@ -11,6 +11,9 @@ private:
 public:
     Display() : label_(new Label("", Label::CENTER))
     {
+        if (M_OK != monapi_name_add("/applications/display")) {
+            monapi_warn("name add failure");
+        }
         setBounds(40, 40, 200, 200);
         setTitle("Display");
         label_->setBounds(5, 5, 150, 150);

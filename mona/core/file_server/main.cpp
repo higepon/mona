@@ -50,6 +50,10 @@ int main(int argc, char* argv[])
     syscall_mthread_create_with_arg(nameServer, NULL);
     while (!isNameServerStarted );
 
+    if (monapi_name_add("/servers/file") != M_OK) {
+        monapi_fatal("monapi_name_add failed");
+    }
+
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
     }
@@ -60,9 +64,6 @@ int main(int argc, char* argv[])
     {
         _printf("fileserver filesystem initialize error\n");
         exit(1);
-    }
-    if (monapi_name_add("/servers/file") != M_OK) {
-        monapi_fatal("monapi_name_add failed");
     }
     server.messageLoop();
 
