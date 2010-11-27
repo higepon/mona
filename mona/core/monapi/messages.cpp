@@ -312,7 +312,10 @@ intptr_t monapi_file_open(const char* file, intptr_t mode)
 
 static SharedMemory* file_receive_shm(int header, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3, const char* str)
 {
-    uint32_t tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
+        return NULL;
+    }
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, header, arg1, arg2, arg3, str) != M_OK) {
         return NULL;
