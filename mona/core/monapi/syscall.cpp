@@ -164,7 +164,12 @@ int kill() {
 
 int exit(int error)
 {
-    if (MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/process", tid) != M_OK) {
+        monapi_warn("process server not found");
+    }
+
+    if (MonAPI::Message::send(tid,
                               MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID(), error) != M_OK) {
         printf("Error %s:%d\n", __FILE__, __LINE__);
     }

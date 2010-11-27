@@ -261,7 +261,12 @@ public:
     bool Initialize()
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
+        uint32_t tid;
+        if (monapi_name_whereis("/servers/process", tid) != M_OK) {
+            monapi_warn("process server not found");
+        }
+
+        if (Message::sendReceive(&msg, tid, MSG_PROCESS_GET_COMMON_PARAMS) != M_OK)
         {
             syscall_print("Mouse Server: can not get common parameters\n");
             return false;
