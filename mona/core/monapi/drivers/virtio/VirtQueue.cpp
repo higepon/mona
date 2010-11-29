@@ -64,17 +64,17 @@ VirtQueue* VirtQueue::findVirtQueue(int queueIndex, VirtioDevice& dev)
 {
     // Select the queue to use.
     dev.outp16(VIRTIO_PCI_QUEUE_SEL, queueIndex);
-
     // How many descriptors do the queue have?
     const int numberOfDesc = dev.inp16(VIRTIO_PCI_QUEUE_NUM);
     if (numberOfDesc == 0) {
         return NULL;
     }
 
+    // We once checked this, but seems necessary on Qemu 0.12.5
     // already activated?
-    if (dev.inp32(VIRTIO_PCI_QUEUE_PFN)) {
-        return NULL;
-    }
+    // if (dev.inp32(VIRTIO_PCI_QUEUE_PFN)) {
+    //     return NULL;
+    // }
     return new VirtQueue(queueIndex, dev);
 }
 
