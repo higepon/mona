@@ -33,11 +33,13 @@ public:
 
         for (int i = 0; i < histories_.size(); i++) {
           if (*(histories_[i]) == history) {
-            return false;
+              histories_.add(new ::util::String(history));
+              histories_.removeAt(i);
+              return false;
           }
         }
         histories_.add(new ::util::String(history));
-        positionToNewest();
+        resetPosition();
         return true;
     }
 
@@ -61,6 +63,11 @@ public:
             }
         }
         return NULL;
+    }
+
+    void resetPosition()
+    {
+        positionToNewest();
     }
 
 private:

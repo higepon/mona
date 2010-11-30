@@ -319,6 +319,7 @@ bool MonaTerminal::onKeyDown(int keycode, int modifiers)
         break;
     case(Keys::Enter):
         line_ += '\n';
+        histories_.resetPosition();
         return true;
         break;
 
