@@ -44,6 +44,7 @@ protected:
 public:
     InputArea(int buffer_size, bool draw_line)
         : TextArea(buffer_size, draw_line), mbModified(false) {}
+    virtual ~InputArea() {}
 
     // 変更フラグ
     bool isModified() { return mbModified; }
@@ -67,14 +68,12 @@ void InputArea::processEvent(Event *event) {
 
 class Display : public Frame {
 private:
-    scoped_ptr<Label> label_;
     scoped_ptr<InputArea> textArea_;
     scoped_ptr<MonasqScrollbar> scrollbar_;
 
 public:
-    Display() : //label_(new Label("", Label::CENTER))
-        textArea_(new InputArea(500, true)),
-        scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL))
+    Display() : textArea_(new InputArea(500, true)),
+                scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
             monapi_warn("name add failure");
@@ -82,15 +81,11 @@ public:
         setBounds(40, 40, 200, 200);
         setTitle("Display");
         textArea_->setBounds(5, 5, 150, 150);
-        scrollbar_->setBounds(155, 5, 155, 155);
+        scrollbar_->setBounds(150, 5, 155, 155);
         add(textArea_.get());
         add(scrollbar_.get());
-
         textArea_->linkScrollbar(scrollbar_.get());
         scrollbar_->linkTextArea(textArea_.get());
-
-//        label_->setBounds(5, 5, 150, 150);
-//        add(label_.get());
     }
 
     ~Display()
@@ -100,7 +95,6 @@ public:
     void processEvent(Event* event)
     {
         if (event->getType() == Event::CUSTOM_EVENT) {
-            printf("event->header=%d arg1=%d MSG_TEXT=%d\n", event->header, event->arg1, MSG_TEXT);
             if (event->header == MSG_TEXT) {
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
                 string text(event->str, length);
@@ -112,6 +106,12 @@ public:
 
 int main(int argc, char* argv[])
 {
+#define MAP_FILE_PATH "/APPS/BAYGUI/DISPLAY.MAP"
+    uint32_t pid = syscall_get_pid();
+    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    if (ret != M_OK) {
+        _printf("syscall_stack_trace_enable failed%d\n", ret);
+    }
     Display display;
     display.run();
     return 0;

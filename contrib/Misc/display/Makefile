@@ -7,6 +7,7 @@ TARGET  = DISPLAY
 SOURCES = display.cpp TextArea.cpp
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI
+INSTFILES = DISPLAY.map
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    =  -lmonalibc-imp -lbaygui-imp --enable-auto-import

@@ -26,6 +26,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <baygui.h>
+#include <monapi/CString.h>
+#include <baygui/awt/ImeManager.h>
 #include "TextArea.h"
 #ifndef max
 #define max(a,b) ((a>b)? a:b)
@@ -33,8 +35,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef min
 #define min(a,b) ((a>b)? b:a)
 #endif
-
-
 	#define WIDTH_BASE "T"   // 文字を縦にそろえるための、文字の幅の基準。W が最も広く、I が最も狭い事が多い。
 	#define TAB_SIZE   4
 
@@ -299,6 +299,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			if( *draw_text == '\0' ) break;
 			draw_text++;
 		}
+        int width = _imeManager->isOn() ? 100 : 0;
+        _imeManager->setBounds(getX() + _offset_x + fw, getY() + _offset_y, width, getHeight() - _offset_y * 2);
 	}
 
 	/** 1文字挿入 */
