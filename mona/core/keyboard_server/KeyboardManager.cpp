@@ -38,9 +38,16 @@ KeyBoardManager::~KeyBoardManager() {
     \author Higepon
     \date   create:2002/10/12 update:2003/12/24
 */
-KeyBoardManager::KeyBoardManager() {
-
-    isInit_ = false;
+KeyBoardManager::KeyBoardManager() :
+    isSpecialKey_(false),
+    isKeyboardId_(false),
+    isShift_(false),
+    isAlt_(false),
+    isCtrl_(false),
+    isWin_(false),
+    isMenu_(false),
+    isInit_(false)
+{
     return;
 }
 
