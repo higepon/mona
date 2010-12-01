@@ -142,7 +142,9 @@ namespace baygui {
         if (getFocused() == true && getEnabled() == true) {
             g->drawLine(offx + fw, offy, offx + fw, offy + 12);
         }
-        _imeManager->setBounds(getX() + offx + fw, getY() + offy, getWidth() - offx * 2 - fw, getHeight() - offy * 2);
+        // todo pullup
+        int width = _imeManager->isOn() ? 100 : 0;
+        _imeManager->setBounds(getX() + offx + fw, getY() + offy, width, getHeight() - offy * 2);
     }
 
     bool TextField::isImeOn() const

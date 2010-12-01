@@ -201,6 +201,8 @@ namespace baygui {
 			if( *draw_text == '\0' ) break;
 			draw_text++;
 		}
+        int width = _imeManager->isOn() ? 100 : 0;
+        _imeManager->setBounds(getX() + _offset_x + fw, getY() + _offset_y, width, getHeight() - _offset_y * 2);
 	}
 
 	/** 1文字挿入 */
