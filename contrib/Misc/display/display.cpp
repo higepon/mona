@@ -79,9 +79,15 @@ public:
             monapi_warn("name add failure");
         }
         setBounds(40, 40, 200, 200);
-        setTitle("Display");
-        textArea_->setBounds(5, 5, 150, 150);
-        scrollbar_->setBounds(150, 5, 155, 155);
+        const int width = 145;
+        const int height = 145;
+        const int x = 5;
+        const int y = 5;
+        const int x_padding = 4;
+        const int y_padding = 1;
+        const int scroll_width = 5;
+        textArea_->setBounds(x, y, x + width, y + height);
+        scrollbar_->setBounds(x + width + x_padding, y + y_padding, x + width + x_padding + scroll_width, height + y);
         add(textArea_.get());
         add(scrollbar_.get());
         textArea_->linkScrollbar(scrollbar_.get());
@@ -99,6 +105,7 @@ public:
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
                 string text(event->str, length);
                 textArea_->setText(text.c_str());
+                repaint();
             }
         }
     }
