@@ -34,57 +34,57 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class TextArea : public TextField
 {
 public:
-	TextArea(int buffer_size, bool draw_line);
-	virtual ~TextArea();
-	virtual void setText(const char* text);
-	virtual char* getText();
-	virtual void paint(Graphics* g);
-	virtual void processEvent(Event* event);
-	virtual void setBounds(int x, int y, int width, int height);
-	virtual void SetOverwrite(bool is_overwrite) { _overwrite = is_overwrite; }
-	virtual bool IsOverwrite() { return _overwrite; }
+    TextArea(int buffer_size, bool draw_line);
+    virtual ~TextArea();
+    virtual void setText(const char* text);
+    virtual char* getText();
+    virtual void paint(Graphics* g);
+    virtual void processEvent(Event* event);
+    virtual void setBounds(int x, int y, int width, int height);
+    virtual void SetOverwrite(bool is_overwrite) { _overwrite = is_overwrite; }
+    virtual bool IsOverwrite() { return _overwrite; }
 
-	// monasq ’Ç‰Á•ª
-	virtual void linkScrollbar(Scrollbar* v_scrollbar);
-	virtual void updateScrollbar(bool bMaxChange = false, bool bHeightChange = false);
-	virtual int getVScroll();
-	virtual void setVScroll(int y);
-	virtual void insertText(const char* text);
-	virtual void addText(const char* text);
-	virtual void moveCaret(int x, int y);
-	virtual int getCaretX() { return _ptr_x; }
-	virtual int getCaretY() { return _ptr_y; }
-	virtual int getCaretPos() { return XY2P(_ptr_x, _ptr_y); }
-	virtual int getCaretLineStart() { return Y2P(_ptr_y); }
-	virtual int getTextLength() { return _text_len; }
+    // monasq ’Ç‰Á•ª
+    virtual void linkScrollbar(Scrollbar* v_scrollbar);
+    virtual void updateScrollbar(bool bMaxChange = false, bool bHeightChange = false);
+    virtual int getVScroll();
+    virtual void setVScroll(int y);
+    virtual void insertText(const char* text);
+    virtual void addText(const char* text);
+    virtual void moveCaret(int x, int y);
+    virtual int getCaretX() { return _ptr_x; }
+    virtual int getCaretY() { return _ptr_y; }
+    virtual int getCaretPos() { return XY2P(_ptr_x, _ptr_y); }
+    virtual int getCaretLineStart() { return Y2P(_ptr_y); }
+    virtual int getTextLength() { return _text_len; }
 
 
 private:
-	virtual void insertCharacter(char c);
-	virtual void deleteCharacter();
-	virtual void OffsetChange();
-	virtual int Y2P(int y);
-	virtual int XY2P(int x, int y);
-	virtual void SetPos(int pos);
-	virtual int LineCount();
-	virtual void LineNoFormat(char* buff, int line, int size);
+    virtual void insertCharacter(char c);
+    virtual void deleteCharacter();
+    virtual void OffsetChange();
+    virtual int Y2P(int y);
+    virtual int XY2P(int x, int y);
+    virtual void SetPos(int pos);
+    virtual int LineCount();
+    virtual void LineNoFormat(char* buff, int line, int size);
 private:
-	char* text;
-	Event* _textEvent;
-	int _buffer_size;
-	int _text_len;
-	int _ptr_x;
-	int _ptr_y;
-	int _offset_x;
-	int _offset_y;
-	int _max_line;
-	int _max_col;
-	bool _overwrite;
-	bool _draw_line;
-	
-	// monasq ’Ç‰Á•ª
-	int _keta;
-	Scrollbar* _v_scrollbar;
+    char* text;
+    Event* _textEvent;
+    int _buffer_size;
+    int _text_len;
+    int _ptr_x;
+    int _ptr_y;
+    int _offset_x;
+    int _offset_y;
+    int _max_line;
+    int _max_col;
+    bool _overwrite;
+    bool _draw_line;
+
+    // monasq ’Ç‰Á•ª
+    int _keta;
+    Scrollbar* _v_scrollbar;
 };
 
 
