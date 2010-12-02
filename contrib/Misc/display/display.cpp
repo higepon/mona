@@ -72,14 +72,15 @@ private:
     scoped_ptr<MonasqScrollbar> scrollbar_;
 
 public:
-    Display() : textArea_(new InputArea(500, true)),
+    Display() : textArea_(new InputArea(1024 * 512, true)),
                 scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
             monapi_warn("name add failure");
         }
-        setBounds(40, 40, 200, 200);
-        const int width = 145;
+        setTitle("*Display*");
+        setBounds(40, 40, 400, 200);
+        const int width = 300;
         const int height = 145;
         const int x = 5;
         const int y = 5;
@@ -104,7 +105,9 @@ public:
             if (event->header == MSG_TEXT) {
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
                 string text(event->str, length);
-                textArea_->setText(text.c_str());
+                string content(textArea_->getText());
+                content += text;
+                textArea_->setText(content.c_str());
                 repaint();
             }
         }
