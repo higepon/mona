@@ -60,6 +60,9 @@ extern "C" {
     void bzero(void* to, size_t count);
     char* getcwd(char* buf, size_t size);
     int chdir(const char* path);
+    int vasprintf(char **strp, const char *fmt, va_list ap);
+    char* strsep(char **stringp, const char *delim);
+
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

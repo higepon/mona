@@ -10,6 +10,7 @@
 #include <ctype.h>
 #ifdef MONA
 #include <limits.h>
+#include <assert.h>
 #else
 #include "libgen.h"
 #endif
@@ -198,6 +199,9 @@ gid(int f, int n)
 struct buffer *
 compile_mode(const char *name, const char *command)
 {
+#ifdef MONA
+  assert(0);
+#else
 	struct buffer	*bp;
 	FILE	*fpipe;
 	char	*buf;
@@ -241,8 +245,12 @@ compile_mode(const char *name, const char *command)
 		addline(bp, buf);
 	}
 	ret = pclose(fpipe);
+#ifdef MONA
+    assert(0);
+#else
 	t = time(NULL);
 	strftime(timestr, sizeof(timestr), "%a %b %e %T %Y", localtime(&t));
+#endif
 	addline(bp, "");
 	if (ret != 0)
 		addlinef(bp, "Command exited abnormally with code %d"
@@ -262,6 +270,7 @@ compile_mode(const char *name, const char *command)
 		return (NULL);
 	}
 	return (bp);
+#endif
 }
 
 /* ARGSUSED */
