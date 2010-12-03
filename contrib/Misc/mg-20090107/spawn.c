@@ -6,12 +6,12 @@
  * Spawn.  Actually just suspends Mg.
  * Assumes POSIX job control.
  */
-#ifdef MONA
-#else
 #include "def.h"
 
+#ifndef MONA
 #include <termios.h>
 #include <term.h>
+#endif
 
 /*
  * This causes mg to send itself a stop signal.  It assumes the parent
@@ -22,6 +22,10 @@
 int
 spawncli(int f, int n)
 {
+#ifdef MONA
+  assert(0);
+  return 0;
+#else
 	sigset_t	oset;
 
 	/* Very similar to what vttidy() does. */
@@ -46,5 +50,5 @@ spawncli(int f, int n)
 	/* Force repaint. */
 	sgarbf = TRUE;
 	return (ttraw());
-}
 #endif
+}
