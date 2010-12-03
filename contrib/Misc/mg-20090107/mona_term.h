@@ -58,6 +58,7 @@ extern "C" {
     int mona_ttraw();
     void bcopy(const void* src, void* dest, size_t n);
     void bzero(void* to, size_t count);
+    char* getcwd(char* buf, size_t size);
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

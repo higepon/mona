@@ -6,6 +6,17 @@ int ttrow;
 int ncol;
 int nrow;
 
+char* getcwd(char* buf, size_t size)
+{
+    if (size > 1) {
+        strcpy(buf, "/");
+        return buf;
+    } else {
+        return NULL;
+    }
+}
+
+
 void bcopy(const void* src, void* dest, size_t n)
 {
     memcpy(dest, src, n);
