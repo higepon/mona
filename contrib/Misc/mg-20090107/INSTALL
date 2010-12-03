@@ -1,0 +1,19 @@
+Just run the usual:
+
+    ./configure
+    make
+    sudo make install
+
+
+If you want to add compilerflags do it like this:
+
+    make CFLAGS="-O2 -fstack-protector"
+
+
+If you don't like the installation path you can change them, for
+example, like this:
+
+    make install prefix=/usr mandir=/usr/share/man
+
+
+Take a closer look at the Makefile.in to see what's possible.

@@ -1,0 +1,240 @@
+#!/bin/sh
+
+# This configure script has been written by Han Boetes
+# <han@mijncomputer.nl> and is released in public domain.
+
+add_inc()
+{
+    echo "#define $1" >> config.h
+}
+
+note()
+{
+    echo -n "Looking for $@...  "
+    echo    "Looking for $@...  " >&3
+}
+
+case $1 in
+    -*)
+	echo "No help and options available. Just run ./configure"
+	exit 0;
+	;;
+esac
+
+
+# initial config.h. I think this can be more customizable.
+
+# (Common) compile-time options:
+#
+#	STARTUP		-- look for and handle initialization file
+#	FKEYS		-- add support for function key sequences.
+#	XKEYS		-- use termcap function key definitions.
+#                          Warning: XKEYS and bsmap mode do _not_ get along.
+#	REGEX		-- create regular expression functions
+
+cat << EOF > config.h
+#define FKEYS
+#define REGEX
+#define XKEYS
+#ifndef LOGIN_NAME_MAX
+#define MAXLOGNAME _POSIX_LOGIN_NAME_MAX
+#endif
+#ifndef MAXLOGNAME
+#define MAXLOGNAME LOGIN_NAME_MAX
+#endif
+EOF
+
+exec 3> config.log
+
+# Checks to see if GCC defines a given macro and returns true if it does.
+gcc_defines()
+{
+    DEFSTR=$1
+
+    cat << EOF > testfile.c
+#include <stdio.h>
+int main(void)
+{
+#ifdef ${DEFSTR}
+garbage that will make gcc fail
+#endif
+return 0;}
+EOF
+    ! gcc -Wall testfile.c -o testfile 2>&3
+}
+
+note 'internal arc4random'
+cat << EOF > testfile.c
+#include <stdlib.h>
+int main(void)
+{arc4random();return 0;}
+EOF
+if gcc testfile.c -o testfile 2>&3; then
+    echo Found.
+    add_inc HAVE_ARC4RANDOM
+else
+    echo Not Found.
+    note 'external arc4random'
+    cat << EOF > testfile.c
+#include <stdlib.h>
+#include <arc4random.h>
+int main(void)
+{arc4random();return 0;}
+EOF
+    if gcc -larc4random testfile.c -o testfile 2>&3; then
+	echo Found.
+	add_inc HAVE_ARC4RANDOM_EXT
+	extralibs="$extralibs -larc4random"
+    else
+	echo Not Found.
+    fi
+fi
+
+note 'strtonum'
+cat << EOF > testfile.c
+#include <stdlib.h>
+#include <limits.h>
+int main(void)
+{strtonum(NULL, 1, 1, NULL);return 0;}
+EOF
+if gcc -Wall testfile.c -o testfile 2>&3; then
+    echo 'Found.'
+else
+    echo 'Not Found, adding.'
+    add_inc HAVE_NOSTRTONUM
+    extraobjs="$extraobjs strtonum.o"
+fi
+
+
+note 'strlcpy'
+cat << EOF > testfile.c
+#include <string.h>
+int main(void)
+{strlcpy(NULL, NULL, 1);return 0;}
+EOF
+if gcc -Wall testfile.c -o testfile 2>&3; then
+    echo 'Found.'
+else
+    echo 'Not Found, adding.'
+    add_inc HAVE_NOSTRLCPY
+    extraobjs="$extraobjs strlcpy.o"
+fi
+
+note 'strlcat'
+cat << EOF > testfile.c
+#include <string.h>
+int main(void)
+{strlcat(NULL, NULL, 1);return 0;}
+EOF
+if gcc -Wall testfile.c -o testfile 2>&3; then
+    echo 'Found.'
+else
+    echo 'Not Found, adding.'
+    add_inc HAVE_NOSTRLCAT
+    extraobjs="$extraobjs strlcat.o"
+fi
+
+note 'fgetln'
+cat << EOF > testfile.c
+#include <stdio.h>
+int main(void)
+{fgetln(NULL, NULL);return 0;}
+EOF
+if gcc -Wall testfile.c -o testfile 2>&3; then
+    echo 'Found.'
+else
+    echo 'Not Found, adding.'
+    add_inc HAVE_NOFGETLN
+    extraobjs="$extraobjs fgetln.o"
+fi
+
+# With -O2 or higher you get a warning for strict-aliasing on
+# some versions of gcc.
+echo -n 'Testing for strict aliasing...  '
+echo 'Testing for strict aliasing...  ' >&3
+cat << EOF > testfile.c
+int main(void)
+{return 0;}
+EOF
+if gcc -Wno-strict-aliasing testfile.c -o testfile 2>&3; then
+    echo 'Works OK.'
+    extraflags="$extraflags -Wno-strict-aliasing"
+else
+    echo 'Fails.'
+fi
+
+
+if [ ! -r /usr/include/term.h ]; then
+    note 'term.h'
+    if [ -r /usr/include/ncurses/term.h ]; then
+	echo "Found in /usr/include/ncurses"
+	extraflags="$extraflags -I/usr/include/ncurses"
+    else
+	for i in pkg local; do
+	    if [ -r /usr/$i/include/term.h ]; then
+		echo "Found in /usr/$i/include"
+		extralibs="$extralibs -L/usr/$i/lib"
+		extraflags="$extraflags -I/usr/$i/include"
+		break
+	    else
+		false
+	    fi
+	done ||
+	{
+	    echo 'Not found!' >&2
+	    echo 'Do you have the ncurses devel package installed?' >&2
+	    echo 'If you know where term.h is, please email the author!' >&2
+	    exit 1
+	}
+    fi
+fi
+
+note 'base and dirname'
+if gcc_defines "__GLIBC__" || gcc_defines "__CYGWIN__" ; then
+    echo 'Not present, adding.'
+    extraobjs="$extraobjs dirname.o basename.o"
+else
+    echo 'Present on this system.'
+fi
+
+note 'version'
+if ls --version > testfile.o 2>&3; then
+    echo 'GNU ls'
+    add_inc GNU_LS
+else
+    echo 'Other ls'
+fi
+
+note '.exe extension'
+cat << EOF > testfile.c
+int main(void)
+{return 0;}
+EOF
+if gcc -Wall testfile.c -o testfile 2>&3; then
+    if [ -x testfile.exe ]; then
+	echo 'Yes.'
+	exe_ext='.exe'
+    else
+	echo 'No.'
+	exe_ext=''
+    fi
+else
+    echo 'Could not test for .exe extension!' >&2
+    exit 1
+fi
+
+# Suppress DLL auto-import error when linking on Cygwin
+if uname -s | grep -q '^CYGWIN' ; then
+    extralibs="$extralibs -Wl,--enable-auto-import"
+fi
+
+
+rm testfile*
+
+sed -e "s|@extraflags@|$extraflags|" \
+    -e "s|@extralibs@|$extralibs|" \
+    -e "s|@extraobjs@|$extraobjs|" \
+    -e "s|@exe_ext@|$exe_ext|" \
+    Makefile.in > Makefile
+
+echo "OK, now run \`make'."

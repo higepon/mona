@@ -1,0 +1,102 @@
+# Makefile for mg
+
+# This Makefile has been written by Han Boetes
+# <han@mijncomputer.nl> and is released in Public Domain.
+
+# *sigh* Those debian folks are really tidy on their licenses.
+
+name=		mg
+
+prefix=		/usr/local
+bindir=		$(prefix)/bin
+libdir=		$(prefix)/lib
+includedir=	$(prefix)/include
+mandir=		$(prefix)/man
+
+
+CC=		gcc
+CFLAGS?=	-O2 -pipe
+CFLAGS+=	-g -Wall -Werror
+LDFLAGS= 	-lncurses
+
+INSTALL=	/usr/bin/install
+STRIP=		/usr/bin/strip
+
+
+OBJS= 	autoexec.o \
+	basic.o \
+	buffer.o \
+	cinfo.o \
+	cmode.o \
+	dir.o \
+	dired.o \
+	display.o \
+	echo.o \
+	extend.o \
+	file.o \
+	fileio.o \
+	funmap.o \
+	help.o \
+	kbd.o \
+	keymap.o \
+	line.o \
+	macro.o \
+	main.o \
+	match.o \
+	modes.o \
+	paragraph.o \
+	random.o \
+	re_search.o \
+	region.o \
+	search.o \
+	spawn.o \
+	tty.o \
+	ttyio.o \
+	ttykbd.o \
+	undo.o \
+	version.o \
+	window.o \
+	word.o \
+	yank.o
+
+OBJS+=	grep.o theo.o
+
+# # Portability stuff.
+CFLAGS+= 	 -Wno-strict-aliasing
+OBJS+=		 strtonum.o strlcpy.o strlcat.o fgetln.o dirname.o basename.o
+LDFLAGS+= 	
+EXE_EXT=	
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+all: $(name)
+
+
+$(name): $(OBJS)
+	$(CC) $(OBJS) -o $(name) $(LDFLAGS)
+
+distclean: clean
+	-rm -f Makefile config.log config.h *~ *.core core.*
+
+clean:
+	-rm -f *.o $(name)$(EXE_EXT)
+
+
+install: $(name) $(name).1
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
+	$(INSTALL) -m 755 $(name)		$(DESTDIR)$(bindir)/$(name)
+	$(INSTALL) -m 444 $(name).1		$(DESTDIR)$(mandir)/man1/$(name).1
+
+install-strip: install
+	$(STRIP) $(DESTDIR)$(bindir)/$(name)
+
+uninstall:
+	rm -f \
+	$(DESTDIR)$(bindir)/$(name)$(EXE_EXT) \
+	$(DESTDIR)$(mandir)/man1/$(name).1
+
+rebuild:
+	./configure ;\
+	make clean all

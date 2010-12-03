@@ -1,0 +1,40 @@
+Looking for internal arc4random...  
+/tmp/cc9z1J9x.o: In function `main':
+testfile.c:(.text+0xa): undefined reference to `arc4random'
+collect2: ld returned 1 exit status
+Looking for external arc4random...  
+testfile.c:2: fatal error: arc4random.h: No such file or directory
+compilation terminated.
+Looking for strtonum...  
+testfile.c: In function ‘main’:
+testfile.c:4: warning: implicit declaration of function ‘strtonum’
+/tmp/cc4fgMIB.o: In function `main':
+testfile.c:(.text+0x1e): undefined reference to `strtonum'
+collect2: ld returned 1 exit status
+Looking for strlcpy...  
+testfile.c: In function ‘main’:
+testfile.c:3: warning: implicit declaration of function ‘strlcpy’
+/tmp/ccpYIrcF.o: In function `main':
+testfile.c:(.text+0x19): undefined reference to `strlcpy'
+collect2: ld returned 1 exit status
+Looking for strlcat...  
+testfile.c: In function ‘main’:
+testfile.c:3: warning: implicit declaration of function ‘strlcat’
+/tmp/cchAzVrz.o: In function `main':
+testfile.c:(.text+0x19): undefined reference to `strlcat'
+collect2: ld returned 1 exit status
+Looking for fgetln...  
+testfile.c: In function ‘main’:
+testfile.c:3: warning: implicit declaration of function ‘fgetln’
+/tmp/cctRH2VE.o: In function `main':
+testfile.c:(.text+0x14): undefined reference to `fgetln'
+collect2: ld returned 1 exit status
+Testing for strict aliasing...  
+Looking for base and dirname...  
+testfile.c: In function ‘main’:
+testfile.c:5: error: ‘garbage’ undeclared (first use in this function)
+testfile.c:5: error: (Each undeclared identifier is reported only once
+testfile.c:5: error: for each function it appears in.)
+testfile.c:5: error: expected ‘;’ before ‘that’
+Looking for version...  
+Looking for .exe extension...  
