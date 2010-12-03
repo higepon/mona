@@ -59,6 +59,7 @@ extern "C" {
     void bcopy(const void* src, void* dest, size_t n);
     void bzero(void* to, size_t count);
     char* getcwd(char* buf, size_t size);
+    int chdir(const char* path);
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

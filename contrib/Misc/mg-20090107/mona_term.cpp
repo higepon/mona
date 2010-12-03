@@ -16,6 +16,12 @@ char* getcwd(char* buf, size_t size)
     }
 }
 
+int chdir(const char* path)
+{
+    _logprintf("chdir to <%s>\n", path);
+    return 0;
+}
+
 
 void bcopy(const void* src, void* dest, size_t n)
 {

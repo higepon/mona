@@ -21,6 +21,10 @@
 #include <limits.h>
 #include <stdlib.h>
 
+#ifdef MONA
+#define strtoll strtol
+#endif
+
 #define INVALID 	1
 #define TOOSMALL 	2
 #define TOOLARGE 	3
