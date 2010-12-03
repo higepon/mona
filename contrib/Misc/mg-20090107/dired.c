@@ -6,7 +6,9 @@
  * by Robert A. Larson
  */
 
-#ifndef MONA
+#ifdef MONA
+#include <assert.h>
+#else
 #include "libgen.h"
 #endif
 
@@ -595,6 +597,9 @@ d_makename(struct line *lp, char *fn, size_t len)
 struct buffer *
 dired_(char *dname)
 {
+#ifdef MONA
+  assert(0);
+#else
 	struct buffer	*bp;
 	FILE	*dirpipe;
 	char	 line[256];
@@ -663,4 +668,5 @@ dired_(char *dname)
 	}
 	bp->b_nmodes = 1;
 	return (bp);
+#endif
 }

@@ -1,5 +1,5 @@
 /*
- * mona_term.h - 
+ * mona_term.h -
  *
  *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
@@ -56,6 +56,7 @@ extern "C" {
     void mona_ttclose();
     void mona_ttopen();
     int mona_ttraw();
+    void mona_ttresize();
     void bcopy(const void* src, void* dest, size_t n);
     void bzero(void* to, size_t count);
     char* getcwd(char* buf, size_t size);

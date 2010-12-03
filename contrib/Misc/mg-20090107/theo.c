@@ -28,6 +28,10 @@
 #include "kbd.h"
 #include "funmap.h"
 
+#ifdef MONA
+#include <assert.h>
+#endif
+
 #if defined HAVE_ARC4RANDOM_EXT
 #  define HAVE_ARC4RANDOM
 #  include <arc4random.h>
@@ -204,7 +208,7 @@ static int
 theo_analyze(int f, int n)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	const char	*str;
 	int		 len;
