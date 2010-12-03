@@ -8,7 +8,9 @@
  */
 #include "def.h"
 
-#ifndef MONA
+#ifdef MONA
+#include <assert.h>
+#else
 #include <termios.h>
 #include <term.h>
 #endif

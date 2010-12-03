@@ -18,7 +18,10 @@
 #include "funmap.h"
 
 #include <stdarg.h>
-#ifndef MONA
+#ifdef MONA
+#define MAX(a, b) ((a > b)? a : b)
+#include <assert.h>
+#else
 #include <term.h>
 #endif
 
@@ -208,7 +211,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 		if (esc > 0) { /* ESC sequence started */
 			match = 0;
 #ifdef MONA
-            ASSERT(0);
+            assert(0);
 #else
 			if (ml == esc && key_left[ml] && c == key_left[ml]) {
 				match++;
