@@ -22,7 +22,9 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <dirent.h>
-#ifndef MONA
+#ifdef MONA
+#include <assert.h>
+#else
 #include <pwd.h>
 #endif
 #include <string.h>
@@ -60,7 +62,7 @@ void
 ffstat(struct buffer *bp)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	struct stat	sb;
 
@@ -101,7 +103,7 @@ int
 ffwopen(const char *fn, struct buffer *bp)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	int	fd;
 	mode_t	fmode = DEFFILEMODE;
@@ -246,7 +248,7 @@ int
 fbackupfile(const char *fn)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	struct stat	 sb;
 	int		 from, to, serrno;
@@ -321,7 +323,7 @@ char *
 adjustname(const char *fn, int slashslash)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	static char	 fnb[MAXPATHLEN];
 	const char	*cp, *ep = NULL;
@@ -401,7 +403,7 @@ char *
 startupfile(char *suffix)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	static char	 file[NFILEN];
 	char		*home;
@@ -447,7 +449,7 @@ int
 copy(char *frname, char *toname)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	int	ifd, ofd;
 	char	buf[BUFSIZ];
@@ -503,7 +505,7 @@ struct list *
 make_file_list(char *buf)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	char		*dir, *file, *cp;
 	size_t		 len, preflen;
@@ -659,7 +661,7 @@ int
 fisdir(const char *fname)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	struct stat	statbuf;
 
@@ -682,7 +684,7 @@ int
 fchecktime(struct buffer *bp)
 {
 #ifdef MONA
-  ASSERT(0);
+  assert(0);
 #else
 	struct stat sb;
 
