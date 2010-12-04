@@ -47,6 +47,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
 	  fenv/feholdexcept.c \
 	  setjmp/setjmp_c.c \
+      unistd/getopt.c  \
 #	  inttypes/imaxdiv.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \

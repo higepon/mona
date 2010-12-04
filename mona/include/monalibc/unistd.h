@@ -37,6 +37,11 @@ extern "C" {
 extern char **environ;
 #define environ (*__environ())
 
+int getopt(int argc, char * const argv[],
+           const char *optstring);
+
+extern char *optarg;
+extern int optind, opterr, optopt;
 
 #ifdef __cplusplus
 }

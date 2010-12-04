@@ -11,7 +11,7 @@ basic.c     display.c  grep.c    main.c       search.c     ttyio.c \
 buffer.c    echo.c     help.c    match.c      spawn.c      ttykbd.c \
 cinfo.c     extend.c   kbd.c     modes.c      strlcat.c    undo.c \
 cmode.c     fgetln.c   keymap.c  paragraph.c  strlcpy.c    version.c \
-dir.c       file.c     line.c    random.c     strtonum.c   window.c getopt.c
+dir.c       file.c     line.c    random.c     strtonum.c   window.c
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 SHAREDIR   = $(MONADIR)/share
