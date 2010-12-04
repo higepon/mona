@@ -1,8 +1,6 @@
 #include "mona_term.h"
 #include <monapi.h>
 
-int ttcol;
-int ttrow;
 int ncol;
 int nrow;
 

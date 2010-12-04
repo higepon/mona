@@ -5,7 +5,9 @@
 #include "def.h"
 #include "funmap.h"
 
-#ifndef MONA
+#ifdef MONA
+#include <assert.h>
+#else
 #include <fnmatch.h>
 #endif
 
@@ -28,6 +30,9 @@ static int			 ready;
 PF *
 find_autoexec(const char *fname)
 {
+#ifdef MONA
+  assert(0);
+#else
 	PF		*pfl, *npfl;
 	int		 have, used;
 	struct autoexec *ae;
@@ -55,6 +60,7 @@ find_autoexec(const char *fname)
 		pfl[used] = NULL;
 
 	return (pfl);
+#endif
 }
 
 int

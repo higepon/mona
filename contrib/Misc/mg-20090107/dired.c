@@ -74,6 +74,7 @@ static PF diredcl[] = {
 	NULL			/* ^X */
 };
 
+#ifndef MONA
 static PF diredcz[] = {
 	spawncli,		/* ^Z */
 	NULL,			/* esc */
@@ -94,6 +95,7 @@ static PF diredcz[] = {
 	rescan,			/* * */
 	d_create_directory	/* + */
 };
+
 
 static PF diredc[] = {
 	d_copy,			/* c */
@@ -158,10 +160,13 @@ static struct KEYMAPE (6 + NDIRED_XMAPS + IMAPEXT) diredmap = {
 #endif /* DIRED_XMAPS */
 	}
 };
-
+#endif
 void
 dired_init(void)
 {
+#ifdef MONA
+  assert(0);
+#else
 	funmap_add(dired, "dired");
 	funmap_add(d_undelbak, "dired-backup-unflag");
 	funmap_add(d_copy, "dired-copy-file");
@@ -174,6 +179,7 @@ dired_init(void)
 	funmap_add(d_undel, "dired-unflag");
 	maps_add((KEYMAP *)&diredmap, "dired");
 	dobindkey(fundamental_map, "dired", "^Xd");
+#endif
 }
 
 /* ARGSUSED */
@@ -338,6 +344,9 @@ d_ffotherwindow(int f, int n)
 int
 d_expunge(int f, int n)
 {
+#ifdef MONA
+  assert(0);
+#else
 	struct line	*lp, *nlp;
 	char		 fname[NFILEN];
 
@@ -369,6 +378,7 @@ d_expunge(int f, int n)
 		}
 	}
 	return (TRUE);
+#endif
 }
 
 /* ARGSUSED */
@@ -405,6 +415,9 @@ d_copy(int f, int n)
 int
 d_rename(int f, int n)
 {
+#ifdef MONA
+  assert(0);
+#else
 	char		 frname[NFILEN], toname[NFILEN], *bufp;
 	int		 ret;
 	size_t		 off;
@@ -429,6 +442,7 @@ d_rename(int f, int n)
 		return (ret);
 	bp = dired_(curbp->b_fname);
 	return (showbuffer(bp, curwp, WFFULL | WFMODE));
+#endif
 }
 
 #ifndef MONA
