@@ -42,6 +42,7 @@
 ;  (ls "/USER/TEMP")
 ;  (call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
   (start-process "/APPS/BAYGUI/DISPLAY.EX5")
+  (start-process "/APPS/BAYGUI/MG.EX5")
 ;  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/BIN/CAT.SCM")
 
 ;  (as)

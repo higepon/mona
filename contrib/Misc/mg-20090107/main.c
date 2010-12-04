@@ -45,7 +45,6 @@ int
 main(int argc, char **argv)
 {
 #ifdef MONA
-#else
 	char	*cp, *init_fcn_name = NULL;
 	PF	 init_fcn = NULL;
 	int	 o, i, nfiles;
@@ -68,6 +67,8 @@ main(int argc, char **argv)
 		}
 	argc -= optind;
 	argv += optind;
+
+#else
 
 	maps_init();		/* Keymaps and modes.		*/
 	funmap_init();		/* Functions.			*/
