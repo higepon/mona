@@ -14,7 +14,14 @@
 #include "macro.h"
 #endif	/* NO_MACRO */
 
-#ifndef MONA
+#ifdef MONA
+#include <unistd.h>
+static void errx(int n, const char* msg)
+{
+  fprintf(stderr, msg);
+  exit(n);
+}
+#else
 #include <err.h>
 #endif
 
@@ -37,7 +44,11 @@ static void
 usage()
 {
 	fprintf(stderr, "usage: %s [-n] [-f mode] [+number] [file ...]\n",
+#ifdef MONA
+	    "MG.EXE");
+#else
 	    __progname);
+#endif
 	exit(1);
 }
 
