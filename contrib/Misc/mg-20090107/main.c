@@ -16,11 +16,8 @@
 
 #ifdef MONA
 #include <unistd.h>
-static void errx(int n, const char* msg)
-{
-  fprintf(stderr, msg);
-  exit(n);
-}
+#include <limits.h>
+#define errx(n, ...) fprintf(stderr, __VA_ARGS__), exit(n)
 #else
 #include <err.h>
 #endif
@@ -55,7 +52,6 @@ usage()
 int
 main(int argc, char **argv)
 {
-#ifdef MONA
 	char	*cp, *init_fcn_name = NULL;
 	PF	 init_fcn = NULL;
 	int	 o, i, nfiles;
@@ -78,8 +74,6 @@ main(int argc, char **argv)
 		}
 	argc -= optind;
 	argv += optind;
-
-#else
 
 	maps_init();		/* Keymaps and modes.		*/
 	funmap_init();		/* Functions.			*/
@@ -204,7 +198,6 @@ notnum:
 #endif	/* !NO_MACRO */
 		}
 	}
-#endif
 }
 
 /*
