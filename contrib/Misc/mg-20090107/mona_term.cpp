@@ -75,8 +75,50 @@ int mona_ttwait(int msec)
 int mona_charswaiting()
 {
 }
+
+// only support often-used char for a while
+static inline char keyToChar(int keycode, int modifiers, int charcode)
+{
+  if(modifiers & KEY_MODIFIER_CTRL) {
+    int basecode = keycode-'A'+1;
+    if(basecode >= 0 && basecode <= 32)
+      return basecode;
+    return -1;
+  }
+  if(charcode)
+    return charcode;
+  switch(keycode) {
+  case MonAPI::Keys::Enter:
+    return 0x0d;
+  case MonAPI::Keys::Right: 
+    return 6;
+  case MonAPI::Keys::Left: 
+    return 2;
+  // case MonAPI::Keys::Tab: 
+  case MonAPI::Keys::Back: 
+    return MonAPI::Keys::Back;
+  case MonAPI::Keys::Delete: 
+    return  127;
+  }
+  return -1;
+}
+
 int mona_ttgetc()
 {
+    MessageInfo info;
+    while(M_OK == MonAPI::Message::receive(&info)) {
+        if(info.header == MSG_KEY_VIRTUAL_CODE) {
+            int keycode  = info.arg1;
+            int modcode  = info.arg2;
+            int charcode = info.arg3;
+            if((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+                int converted =  keyToChar(keycode, modcode, charcode);
+                if(converted >= 0)
+                  return converted;
+            }
+        }
+    }
+    return '\n';
 }
 void mona_ttflush()
 {
