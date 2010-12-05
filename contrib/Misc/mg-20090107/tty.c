@@ -50,7 +50,7 @@ static void	 winchhandler(int);
 static void
 winchhandler(int sig)
 {
-	winch_flag = 1;
+  winch_flag = 1;
 }
 
 /*
@@ -60,7 +60,9 @@ winchhandler(int sig)
 void
 ttinit(void)
 {
-#ifndef MONA
+#ifdef MONA
+  ttresize();
+#else
 	int errret;
 
 	if (setupterm(NULL, 1, &errret))
@@ -448,12 +450,14 @@ ttcolor(int color)
  * We use `newrow' and `newcol' so vtresize() know the difference between the
  * new and old settings.
  */
+#ifdef MONA
+int lines = 0;
+int columns = 0;
+#endif
+
 void
 ttresize(void)
 {
-#ifdef MONA
-  mona_ttresize();
-#else
 	int newrow = 0, newcol = 0;
 
 #ifdef	TIOCGWINSZ
@@ -471,7 +475,6 @@ ttresize(void)
 	}
 	if (vtresize(1, newrow, newcol) != TRUE)
 		panic("vtresize failed");
-#endif
 }
 
 /*

@@ -12,3 +12,9 @@
 #define HAVE_NOSTRLCAT
 #define HAVE_NOFGETLN
 #define GNU_LS
+
+
+
+
+// temp
+#define NO_STARTUP

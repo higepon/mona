@@ -165,7 +165,7 @@ void
 dired_init(void)
 {
 #ifdef MONA
-  assert(0);
+  _logprintf("dired_init skipped");
 #else
 	funmap_add(dired, "dired");
 	funmap_add(d_undelbak, "dired-backup-unflag");

@@ -684,7 +684,7 @@ int
 fchecktime(struct buffer *bp)
 {
 #ifdef MONA
-  assert(0);
+  return (TRUE);
 #else
 	struct stat sb;
 

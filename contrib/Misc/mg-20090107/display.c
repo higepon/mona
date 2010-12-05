@@ -787,12 +787,17 @@ modeline(struct mgwin *wp)
 	struct buffer *bp;
 	char sl[21];		/* Overkill. Space for 2^64 in base 10. */
 	int len;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	n = wp->w_toprow + wp->w_ntrows;	/* Location.		 */
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    _logprintf("%s %s:%d\n", vscreen[0], __func__, __FILE__, __LINE__);
 	vscreen[n]->v_color = CMODE;		/* Mode line color.	 */
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	vscreen[n]->v_flag |= (VFCHG | VFHBAD);	/* Recompute, display.	 */
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	vtmove(n, 0);				/* Seek to right line.	 */
 	bp = wp->w_bufp;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	vtputc('-');
 	vtputc('-');
 	if ((bp->b_flag & BFREADONLY) != 0) {
@@ -811,6 +816,7 @@ modeline(struct mgwin *wp)
 	vtputc('-');
 	n = 5;
 	n += vtputs("Mg: ");
+
 	if (bp->b_bname[0] != '\0')
 		n += vtputs(&(bp->b_bname[0]));
 	while (n < 42) {			/* Pad out with blanks.	 */
