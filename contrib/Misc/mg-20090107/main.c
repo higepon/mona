@@ -118,30 +118,34 @@ main(int argc, char **argv)
 	 * the file I/O show up on the screen.	(and also an extra display of
 	 * the mode line if there are files specified on the command line.)
 	 */
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	update();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 #ifndef NO_STARTUP
 	/* user startup file */
 	if ((cp = startupfile(NULL)) != NULL)
 		(void)load(cp);
 #endif	/* !NO_STARTUP */
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	/*
 	 * Create scratch buffer now, killing old *init* buffer.
 	 * This causes *scratch* to be created and made curbp,
 	 * ensuring default modes are inherited from the startup
 	 * file correctly
 	 */
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if ((bp = bfind("*init*", FALSE)) != NULL)
 		killbuffer(bp);
 
 	/* Force FFOTHARG=1 so that this mode is enabled, not simply toggled */
 	if (init_fcn)
 		init_fcn(FFOTHARG, 1);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 	if (nobackups)
 		makebkfile(FFARG, 0);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 	for (nfiles = 0, i = 0; i < argc; i++) {
 		if (argv[i][0] == '+' && strlen(argv[i]) >= 2) {
@@ -175,25 +179,30 @@ notnum:
 			}
 		}
 	}
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if (nfiles > 2)
 		listbuffers(0, 1);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	/* fake last flags */
 	thisflag = 0;
 	for (;;) {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (epresf == KCLEAR)
 			eerase();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (epresf == TRUE)
 			epresf = KCLEAR;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (winch_flag) {
 			do_redraw(0, 0, TRUE);
 			winch_flag = 0;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		update();
 		lastflag = thisflag;
 		thisflag = 0;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		switch (doin()) {
 		case TRUE:
 			break;
