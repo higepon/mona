@@ -18,7 +18,8 @@ private:
     };
     uint32_t parentTid_;
     std::string lines[MAX_NUM_ROWS];
-    int currentLineIndex_;
+    uint16_t currentRow_;
+    uint16_t currentCol_;
 
     int fontWidth()
     {
@@ -31,7 +32,7 @@ private:
     }
 
 public:
-    MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentLineIndex_(0)
+    MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentRow_(0), currentCol_(0)
     {
         setTitle("mg");
         setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight());
@@ -53,17 +54,30 @@ public:
         }
     }
 
-    void moveCursor(int col, int row)
+    void moveCursor(uint16_t col, uint16_t row)
     {
         ASSERT(row < MAX_NUM_ROWS);
-        currentLineIndex_ = row;
+        ASSERT(col < MAX_NUM_COLS);
+        currentRow_ = row;
+        currentCol_ = col;
     }
 
     void putc(int c)
     {
         _logprintf("%s %s:%d<%c>\n", __func__, __FILE__, __LINE__, c);
-        ASSERT(currentLineIndex_ < MAX_NUM_ROWS);
-        lines[currentLineIndex_] += c;
+        ASSERT(currentRow_ < MAX_NUM_ROWS);
+        ASSERT(currentCol_ < MAX_NUM_COLS);
+        std::string& line = lines[currentRow_];
+        if (line.size() == currentCol_) {
+            line += c;
+        } else if (line.size() < currentCol_) {
+            for (uint16_t i = 0; i < currentCol_ - line.size() + 1; i++) {
+                line += ' ';
+            }
+            line += c;
+        } else {
+            line.insert(line.begin() + currentCol_, c);
+        }
     }
 
     virtual void paint(Graphics* g)
@@ -74,6 +88,10 @@ public:
             if (line.empty()) {
                 continue;
             }
+            g->setColor(getBackground());
+            g->fillRect(0, i * fontHeight(), MAX_NUM_COLS * fontWidth(), fontHeight());
+            g->setColor(getForeground());
+            _logprintf("line:<%s>\n", line.c_str());
             g->drawString(line.c_str(), 0, fontHeight() * i);
         }
   }
@@ -163,7 +181,7 @@ void bzero(void* to, size_t count)
 void mona_ttmove(int row, int col)
 {
     g_frame->moveCursor(col, row);
-    logprintf("%s %s:%d row=%d\n", __func__, __FILE__, __LINE__, row);
+    logprintf("%s %s:%d row=%d col=%d\n", __func__, __FILE__, __LINE__, row, col);
 }
 void mona_tteeol()
 {
