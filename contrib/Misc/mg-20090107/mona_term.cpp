@@ -56,6 +56,10 @@ public:
 
     void moveCursor(uint16_t col, uint16_t row)
     {
+        if (col >= MAX_NUM_COLS) {
+            _logprintf("col=%d\n", col);
+
+        }
         ASSERT(row < MAX_NUM_ROWS);
         ASSERT(col < MAX_NUM_COLS);
         currentRow_ = row;
@@ -76,8 +80,10 @@ public:
             }
             line += c;
         } else {
-            line.insert(line.begin() + currentCol_, c);
+            line.erase(line.begin() + currentCol_, line.end());
+            line += c;
         }
+        currentCol_++;
     }
 
     virtual void paint(Graphics* g)
