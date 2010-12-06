@@ -34,8 +34,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern char **environ;
-#define environ (*__environ())
+// extern char (**__environ)();
+// #define environ (*__environ())
 
 int getopt(int argc, char * const argv[],
            const char *optstring);

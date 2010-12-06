@@ -63,7 +63,8 @@ extern "C" {
     int chdir(const char* path);
     int vasprintf(char **strp, const char *fmt, va_list ap);
     char* strsep(char **stringp, const char *delim);
-
+    uint32_t mona_frame_init();
+    void mona_frame_wait_startup(uint32_t tid);
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

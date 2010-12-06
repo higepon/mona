@@ -85,6 +85,8 @@ main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
+    uint32_t tid = mona_frame_init();
+    mona_frame_wait_startup(tid);
 	maps_init();		/* Keymaps and modes.		*/
 	funmap_init();		/* Functions.			*/
 
