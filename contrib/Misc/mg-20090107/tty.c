@@ -182,6 +182,9 @@ ttmove(int row, int col)
 {
 #ifdef MONA
   mona_ttmove(row, col);
+		ttrow = row;
+		ttcol = col;
+
 #else
 	if (ttrow != row || ttcol != col) {
 		putpad(tgoto(cursor_address, col, row), 1);

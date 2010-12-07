@@ -160,7 +160,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 	int	 match;			/* esc match found */
 	int	 cc, rr;		/* saved ttcol, ttrow */
 	char	*ret;			/* return value */
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 #ifndef NO_MACRO
 	if (inmacro) {
 		if (dynbuf) {
@@ -174,6 +174,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 		return (buf);
 	}
 #endif /* !NO_MACRO */
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	epos = cpos = 0;
 	ml = mr = esc = 0;
 	cplflag = FALSE;
@@ -186,11 +187,14 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 		eputc(' ');
 	eformat(fp, ap);
 	if ((flag & EFDEF) != 0) {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (buf == NULL)
 			return (NULL);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		eputs(buf);
 		epos = cpos += strlen(buf);
 	}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	tteeol();
 	ttflush();
 	for (;;) {
@@ -207,7 +211,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 			continue;
 		}
 		cplflag = FALSE;
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (esc > 0) { /* ESC sequence started */
 			match = 0;
 #ifdef MONA
@@ -238,6 +242,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 				continue;
 			}
 		}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		switch (c) {
 		case CCHR('A'): /* start of line */
           _logprintf("ctrl-a");
@@ -262,6 +267,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 					buf[i] = buf[i + 1];
 					eputc(buf[i]);
 				}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				ttmove(rr, cc);
 				ttflush();
 			}
@@ -311,6 +317,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 				rr = ttrow;
 				for (t = cpos; t < epos; t++)
 					eputc(buf[t]);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				ttmove(rr, cc);
 			}
 			ttflush();
@@ -397,6 +404,7 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 					ttputc('\b');
 				}
 				ttputc('\b');
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				ttmove(rr, cc);
 				ttflush();
 			}
@@ -467,13 +475,16 @@ veread(const char *fp, char *buf, size_t nbuf, int flag, va_list ap)
 			eputc((char)c);
 			cc = ttcol;
 			rr = ttrow;
+            _logprintf("ttcol=%d", ttcol);
 			for (i = cpos; i < epos; i++)
 				eputc(buf[i]);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			ttmove(rr, cc);
 			ttflush();
 		}
 	}
 done:
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if (cwin == TRUE) {
 		/* blow away cpltion window */
 		bp = bfind("*Completions*", TRUE);
@@ -486,6 +497,7 @@ done:
 fail:
 	ewprintf("Out of memory");
 	free(buf);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return (NULL);
 }
 
