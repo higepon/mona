@@ -24,6 +24,7 @@
 #include <dirent.h>
 #ifdef MONA
 #include <assert.h>
+#include <monapi/messages.h>
 #else
 #include <pwd.h>
 #endif
@@ -323,7 +324,35 @@ char *
 adjustname(const char *fn, int slashslash)
 {
 #ifdef MONA
-  assert(0);
+	static char	 fnb[MAXPATHLEN];
+	const char	*cp, *ep = NULL;
+	char  path[MAXPATHLEN];
+	size_t		 ulen, plen;
+
+	path[0] = '\0';
+
+	if (slashslash == TRUE) {
+		cp = fn + strlen(fn) - 1;
+		for (; cp >= fn; cp--) {
+			if (ep && (*cp == '/')) {
+				fn = ep;
+				break;
+			}
+			if (*cp == '/' || *cp == '~')
+				ep = cp;
+			else
+				ep = NULL;
+		}
+	}
+
+	if (strlcat(path, fn, sizeof(path)) >= sizeof(path)) {
+		ewprintf("Path too long");
+		return (NULL);
+	}
+
+    (void)strlcpy(fnb, path, sizeof(fnb));
+
+	return (fnb);
 #else
 	static char	 fnb[MAXPATHLEN];
 	const char	*cp, *ep = NULL;
@@ -661,7 +690,7 @@ int
 fisdir(const char *fname)
 {
 #ifdef MONA
-  assert(0);
+  return monapi_file_is_directory(fname) == MONAPI_TRUE ? (TRUE) : (FALSE);
 #else
 	struct stat	statbuf;
 

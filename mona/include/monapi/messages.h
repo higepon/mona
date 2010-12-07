@@ -85,6 +85,7 @@ extern intptr_t monapi_file_close(uint32_t id);
 extern intptr_t monapi_file_get_file_size(uint32_t id);
 extern intptr_t monapi_file_delete(const char* file);
 extern MONAPI_BOOL monapi_file_exists(const char* path);
+extern MONAPI_BOOL monapi_file_is_directory(const char* path);
 extern intptr_t monapi_file_stop_server();
 extern uint32_t monapi_stdin_read(uint8_t* buffer, uint32_t size);
 extern uint32_t monapi_stdin_lock_for_read();

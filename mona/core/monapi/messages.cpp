@@ -505,6 +505,16 @@ MONAPI_BOOL monapi_file_exists(const char* path)
     }
 }
 
+MONAPI_BOOL monapi_file_is_directory(const char* path)
+{
+    scoped_ptr<SharedMemory> shm(monapi_file_read_directory(path));
+    if (shm.get() == NULL) {
+        return MONAPI_FALSE;
+    } else {
+        return MONAPI_TRUE;
+    }
+}
+
 intptr_t monapi_clipboard_set(const SharedMemory& shm)
 {
     MessageInfo msg;
