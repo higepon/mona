@@ -63,7 +63,7 @@ void
 ffstat(struct buffer *bp)
 {
 #ifdef MONA
-  assert(0);
+  _logprintf("%s is stub\n", __func__);
 #else
 	struct stat	sb;
 
