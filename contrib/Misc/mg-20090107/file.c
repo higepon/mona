@@ -252,7 +252,7 @@ readin(char *fname)
 	 * unless the file is a directory.
 	 */
 #ifdef MONA
-    ASSERT(0);
+    ro = FALSE;
 #else
 	if (access(fname, W_OK) && errno != ENOENT)
 		ro = TRUE;
@@ -346,10 +346,13 @@ insertfile(char *fname, char *newname, int replacebuf)
 			goto cleanup;
 		}
 		killbuffer(bp);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if ((bp = dired_(fname)) == NULL)
 			return (FALSE);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		undo_enable(FFRAND, x);
 		curbp = bp;
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return (showbuffer(bp, curwp, WFFULL | WFMODE));
 	} else {
 		dp = xdirname(fname);
@@ -493,6 +496,7 @@ cleanup:
 	undo_enable(FFRAND, x);
 
 	/* return FALSE if error */
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return (s != FIOERR);
 }
 

@@ -54,9 +54,10 @@ int _read(void *self, void *buf, size_t size)
     f = (FILE*)self;
     fid = f->_file;
     scoped_ptr<SharedMemory> shm(monapi_file_read(fid, (uint32_t)size));
+    // NULL means, EOF.
     if( shm.get() == NULL )
     {
-        return -1;
+        return 0;
     }
     readsize = (int)shm->size();
     memcpy(p, shm->data(), readsize);

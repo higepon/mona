@@ -230,6 +230,7 @@ ffgetline(char *buf, int nbuf, int *nbytes)
 		if (i >= nbuf)
 			return (FIOLONG);
 	}
+    _logprintf("c==EOF=%d ferror(ffp)=%d\n", c==EOF, ferror(ffp));
 	if (c == EOF && ferror(ffp) != FALSE) {
 		ewprintf("File read error");
 		return (FIOERR);

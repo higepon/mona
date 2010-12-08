@@ -559,7 +559,7 @@ bclear(struct buffer *bp)
 {
 	struct line	*lp;
 	int		 s;
-
+    _logprintf("[%s][%d]%s %s:%d\n", bp->b_fname, (bp->b_flag & BFCHG), __func__, __FILE__, __LINE__);
 	if ((bp->b_flag & BFCHG) != 0 &&	/* Changed. */
 	    (s = eyesno("Buffer modified; kill anyway")) != TRUE)
 		return (s);

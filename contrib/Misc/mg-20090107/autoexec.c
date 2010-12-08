@@ -31,7 +31,8 @@ PF *
 find_autoexec(const char *fname)
 {
 #ifdef MONA
-  assert(0);
+  // TODO
+  return NULL;
 #else
 	PF		*pfl, *npfl;
 	int		 have, used;
