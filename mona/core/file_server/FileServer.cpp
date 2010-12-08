@@ -248,6 +248,11 @@ void FileServer::messageLoop()
         case MSG_FILE_READ_DIRECTORY:
         {
             SharedMemory* memory;
+            // quick hack
+            int len = strlen(msg.str);
+            if (len > 1 && msg.str[len - 1] == '/') {
+                msg.str[len - 1] = 0;
+            }
             int ret = vmanager_.readdir(upperCase(msg.str).c_str(), &memory);
             if (ret != M_OK) {
                 Message::reply(&msg, ret);

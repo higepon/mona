@@ -22,6 +22,10 @@ typedef uint32_t uint;
 #define MAXPATHLEN 1024
 // todo pull up
 #define ENAMETOOLONG -1
+#define MAXNAMLEN 256
+#define DT_DIR ATTRIBUTE_DIRECTORY
+#define DT_UNKNOWN -1
+#define DT_LNK -1
 struct timespec
 {
 

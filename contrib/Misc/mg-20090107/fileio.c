@@ -25,6 +25,7 @@
 #ifdef MONA
 #include <assert.h>
 #include <monapi/messages.h>
+
 #else
 #include <pwd.h>
 #endif
@@ -534,7 +535,159 @@ struct list *
 make_file_list(char *buf)
 {
 #ifdef MONA
-  assert(0);
+	char		*dir, *file, *cp;
+	size_t		 len, preflen;
+	int		 ret;
+	DIR		*dirp;
+	struct dirent	*dent;
+	struct list	*last, *current;
+	char		 fl_name[NFILEN + 2];
+	char		 prefixx[NFILEN + 1];
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	/*
+	 * We need three different strings:
+
+	 * dir - the name of the directory containing what the user typed.
+	 *  Must be a real unix file name, e.g. no ~user, etc..
+	 *  Must not end in /.
+	 * prefix - the portion of what the user typed that is before the
+	 *  names we are going to find in the directory.  Must have a
+	 * trailing / if the user typed it.
+	 * names from the directory - We open dir, and return prefix
+	 * concatenated with names.
+	 */
+
+	/* first we get a directory name we can look up */
+	/*
+	 * Names ending in . are potentially odd, because adjustname will
+	 * treat foo/bar/.. as a foo/, whereas we are
+	 * interested in names starting with ..
+	 */
+	len = strlen(buf);
+	if (len && buf[len - 1] == '.') {
+		buf[len - 1] = 'x';
+		dir = adjustname(buf, TRUE);
+		buf[len - 1] = '.';
+	} else
+		dir = adjustname(buf, TRUE);
+	if (dir == NULL)
+		return (NULL);
+    _logprintf("dir=%s buf=%s %s %s:%d\n", dir, buf, __func__, __FILE__, __LINE__);
+	/*
+	 * If the user typed a trailing / or the empty string
+	 * he wants us to use his file spec as a directory name.
+	 */
+	if (len && buf[len - 1] != '/') {
+		file = strrchr(dir, '/');
+        _logprintf("file=%x", file);
+		if (file) {
+			*file = '\0';
+			if (*dir == '\0')
+				dir = "/";
+		} else {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+			return (NULL);
+        }
+	}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	/* Now we get the prefix of the name the user typed. */
+	if (strlcpy(prefixx, buf, sizeof(prefixx)) >= sizeof(prefixx))
+		return (NULL);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	cp = strrchr(prefixx, '/');
+	if (cp == NULL)
+		prefixx[0] = '\0';
+	else
+		cp[1] = '\0';
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	preflen = strlen(prefixx);
+	/* cp is the tail of buf that really needs to be compared. */
+	cp = buf + preflen;
+	len = strlen(cp);
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	/*
+	 * Now make sure that file names will fit in the buffers allocated.
+	 * SV files are fairly short.  For BSD, something more general would
+	 * be required.
+	 */
+#ifdef  __CYGWIN__  /* Cygwin uses NAME_MAX for dirents */
+	if (preflen > NFILEN - NAME_MAX)
+#else
+	if (preflen > NFILEN - MAXNAMLEN)
+#endif
+		return (NULL);
+
+	/* loop over the specified directory, making up the list of files */
+
+	/*
+	 * Note that it is worth our time to filter out names that don't
+	 * match, even though our caller is going to do so again, and to
+	 * avoid doing the stat if completion is being done, because stat'ing
+	 * every file in the directory is relatively expensive.
+	 */
+    _logprintf("dir=%s %s %s:%d\n", dir, __func__, __FILE__, __LINE__);
+	dirp = opendir(dir);
+	if (dirp == NULL)
+		return (NULL);
+	last = NULL;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	while ((dent = readdir(dirp)) != NULL) {
+		int isdir;
+#if defined (__CYGWIN__)	/* Cygwin lacks reclen/namlen. */
+		if (strlen(dent->d_name) < len
+		    || memcmp(cp, dent->d_name, len) != 0)
+#elif defined (__GLIBC__) || defined(MONA)		/* Linux uses reclen instead. */
+		if (dent->d_reclen < len || memcmp(cp, dent->d_name, len) != 0)
+#else
+		if (dent->d_namlen < len || memcmp(cp, dent->d_name, len) != 0)
+#endif
+			continue;
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+		isdir = 0;
+
+#ifndef __CYGWIN__      /* No support for d_type in Cygwin, do all
+			     type cheking with stat. */
+		if (dent->d_type == DT_DIR) {
+			isdir = 1;
+		} else if (dent->d_type == DT_LNK ||
+			    dent->d_type == DT_UNKNOWN)
+#endif
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+#ifndef MONA
+		{
+			struct stat	statbuf;
+			char		statname[NFILEN + 2];
+
+			statbuf.st_mode = 0;
+			ret = snprintf(statname, sizeof(statname), "%s/%s",
+			    dir, dent->d_name);
+			if (ret < 0 || ret > sizeof(statname) - 1)
+				continue;
+			if (stat(statname, &statbuf) < 0)
+				continue;
+			if (S_ISDIR(statbuf.st_mode))
+				isdir = 1;
+		}
+#endif
+		if ((current = malloc(sizeof(struct list))) == NULL) {
+			free_file_list(last);
+			return (NULL);
+		}
+		ret = snprintf(fl_name, sizeof(fl_name),
+		    "%s%s%s", prefixx, dent->d_name, isdir ? "/" : "");
+		if (ret < 0 || ret >= sizeof(fl_name)) {
+			free(current);
+			continue;
+		}
+		current->l_next = last;
+		current->l_name = strdup(fl_name);
+        _logprintf("[%s]", current->l_name);
+		last = current;
+	}
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+	closedir(dirp);
+
+	return (last);
 #else
 	char		*dir, *file, *cp;
 	size_t		 len, preflen;

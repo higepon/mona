@@ -34,7 +34,7 @@
 
 #include <string.h>
 
-char *strchr(const char *s, char c)
+char *strchr(const char *s, int c)
 {
     for (; *s != '\0'; s++) {
         if(*s == c) {

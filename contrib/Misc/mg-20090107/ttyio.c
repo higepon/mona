@@ -193,7 +193,7 @@ int
 ttgetc(void)
 {
 #ifdef MONA
-  mona_ttgetc();
+  return mona_ttgetc() & 0xff;
 #else
 	char	c;
 	ssize_t	ret;

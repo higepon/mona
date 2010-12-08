@@ -14,12 +14,14 @@ private:
     enum {
         MODE_LINE_COLS = 2,
         MAX_NUM_ROWS = 24 + MODE_LINE_COLS,
-        MAX_NUM_COLS = 80
+        MAX_NUM_COLS = 80,
+        TIMER_INTERVAL = 500
     };
     uint32_t parentTid_;
     std::string lines[MAX_NUM_ROWS];
     uint16_t currentRow_;
     uint16_t currentCol_;
+    bool cursorEnabled_;
 
     int fontWidth()
     {
@@ -32,10 +34,13 @@ private:
     }
 
 public:
-    MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentRow_(0), currentCol_(0)
+    MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentRow_(0), currentCol_(0), cursorEnabled_(false)
     {
         setTitle("mg");
-        setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight());
+        setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
+        setForeground(baygui::Color::white);
+        setForeground(baygui::Color::black);
+        setTimer(TIMER_INTERVAL);
     }
 
     ~MgFrame()
@@ -51,6 +56,10 @@ public:
             if (Message::send(parentTid_, MSG_KEY_VIRTUAL_CODE, keycode, modifiers) != M_OK) {
                 monapi_fatal("parent is not exist");
             }
+        } else if (event->getType() == Event::TIMER) {
+            cursorEnabled_ = !cursorEnabled_;
+            repaint();
+            setTimer(TIMER_INTERVAL);
         }
     }
 
@@ -86,19 +95,49 @@ public:
         currentCol_++;
     }
 
+// void repaint()
+// {
+//     if (this->__g == NULL) return;
+
+//     int w = getWidth();
+//     int h = getHeight();
+//     __g->setColor(33, 32, 33);
+//     __g->fillRect(0, 0, w, h);
+
+//     Container::repaint();
+// }
+
     virtual void paint(Graphics* g)
     {
-        g->setColor(getForeground());
         for (int i = 0; i < MAX_NUM_ROWS; i++) {
             std::string& line = lines[i];
+            g->setColor(baygui::Color::black);
+            g->fillRect(0, i * fontHeight(), MAX_NUM_COLS * fontWidth(), fontHeight());
             if (line.empty()) {
                 continue;
             }
-            g->setColor(getBackground());
-            g->fillRect(0, i * fontHeight(), MAX_NUM_COLS * fontWidth(), fontHeight());
-            g->setColor(getForeground());
+            g->setColor(baygui::Color::white);
             _logprintf("line:<%s>\n", line.c_str());
             g->drawString(line.c_str(), 0, fontHeight() * i);
+        }
+        if (cursorEnabled_) {
+            g->setColor(baygui::Color::white);
+            int leftOffset = 0;
+            std::string& line = lines[currentRow_];
+            for (int i = 0; i < currentCol_; i++) {
+                char buf[2];
+                buf[0] = line[i];
+                buf[1] = 0;
+                leftOffset += getFontMetrics()->getWidth(buf);
+            }
+            int cursorWidth = fontWidth();
+            if (line.size() > currentCol_) {
+                char buf[2];
+                buf[0] = line[currentCol_];
+                buf[1] = 0;
+                cursorWidth = getFontMetrics()->getWidth(buf);
+            }
+            g->fillRect(leftOffset, currentRow_ * fontHeight(), cursorWidth, fontHeight());
         }
   }
 
@@ -257,29 +296,59 @@ static inline char keyToChar(int keycode, int modifiers, int charcode)
   return -1;
 }
 
+// int mona_ttgetc()
+// {
+//     MessageInfo info;
+//     while(M_OK == MonAPI::Message::receive(&info)) {
+//         if(info.header == MSG_KEY_VIRTUAL_CODE) {
+//             int keycode  = info.arg1;
+//             int modifiers = info.arg2;
+//             logprintf("keycode=%x", keycode);
+//             if (modifiers == KeyEvent::VKEY_CTRL) {
+//                 logprintf("ctrl!!!");
+//                 return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
+//             }
+//             if (keycode == KeyEvent::VKEY_ENTER) {
+//                 _logprintf("ENTER");
+//                 return 0x0d;
+//             } else if (keycode == KeyEvent::VKEY_TAB) {
+//                 return '\t';
+//             } else {
+//                 return keycode;
+//             }
+//         }
+//     }
+//     return '\n';
+// }
+
 int mona_ttgetc()
 {
     MessageInfo info;
     while(M_OK == MonAPI::Message::receive(&info)) {
-        if(info.header == MSG_KEY_VIRTUAL_CODE) {
-            int keycode  = info.arg1;
-            int modifiers = info.arg2;
-            int mod = 0;
-            logprintf("keycode=%x", keycode);
-            if (modifiers & KeyEvent::VKEY_CTRL) {
-                logprintf("ctrl!!!");
-                return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
-            }
-            if (keycode == KeyEvent::VKEY_ENTER) {
-                _logprintf("ENTER");
-                return 0x0d | mod;
-            } else {
-                return keycode | mod;
-            }
+        if(info.header != MSG_KEY_VIRTUAL_CODE) {
+            continue;
+        }
+        int keycode  = info.arg1;
+        int modifiers = info.arg2;
+        logprintf("keycode=%x", keycode);
+        if (modifiers == KeyEvent::VKEY_CTRL) {
+            logprintf("ctrl!!!");
+            return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
+        }
+        switch (keycode) {
+        case KeyEvent::VKEY_ENTER:
+            return 0x0d;
+        case KeyEvent::VKEY_TAB:
+            return '\t';
+        case KeyEvent::VKEY_BACKSPACE:
+            return '\b';
+        default:
+            return keycode;
         }
     }
     return '\n';
 }
+
 void mona_ttflush()
 {
     ASSERT(g_frame);
