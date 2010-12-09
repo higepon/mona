@@ -65,6 +65,7 @@ extern "C" {
     char* strsep(char **stringp, const char *delim);
     uint32_t mona_frame_init();
     void mona_frame_wait_startup(uint32_t tid);
+    void mona_frame_stop(uint32_t tid);
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

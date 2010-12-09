@@ -19,6 +19,7 @@ private:
     };
     uint32_t parentTid_;
     std::string lines[MAX_NUM_ROWS];
+    bool colors[MAX_NUM_ROWS];
     uint16_t currentRow_;
     uint16_t currentCol_;
     bool cursorEnabled_;
@@ -36,6 +37,7 @@ private:
 public:
     MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentRow_(0), currentCol_(0), cursorEnabled_(false)
     {
+        std::fill(colors, colors + MAX_NUM_ROWS, false);
         setTitle("mg");
         setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
         setForeground(baygui::Color::white);
@@ -46,7 +48,6 @@ public:
     ~MgFrame()
     {
     }
-
 
     void processEvent(Event* event)
     {
@@ -60,7 +61,17 @@ public:
             cursorEnabled_ = !cursorEnabled_;
             repaint();
             setTimer(TIMER_INTERVAL);
+        } else if (event->getType() == Event::CUSTOM_EVENT) {
+            if (event->header == MSG_STOP) {
+                stop();
+            }
         }
+
+    }
+
+    void setColor(bool reversed)
+    {
+        colors[currentRow_] = reversed;
     }
 
     void moveCursor(uint16_t col, uint16_t row)
@@ -73,6 +84,28 @@ public:
         ASSERT(col < MAX_NUM_COLS);
         currentRow_ = row;
         currentCol_ = col;
+    }
+
+    void eraseToEndOfPage()
+    {
+        std::string& head = lines[currentRow_];
+        head.erase(head.begin() + currentCol_, head.end());
+        for (uint16_t i = currentRow_ + 1; i < MAX_NUM_ROWS; i++) {
+            lines[i].clear();
+        }
+    }
+
+    void eraseToEndOfLine()
+    {
+        std::string& line = lines[currentRow_];
+        line.erase(line.begin() + currentCol_, line.end());
+    }
+
+    void clearLines(int startRow, int endRow)
+    {
+        for (uint16_t i = startRow; i <= endRow; i++) {
+            lines[i].clear();
+        }
     }
 
     void putc(int c)
@@ -111,13 +144,13 @@ public:
     {
         for (int i = 0; i < MAX_NUM_ROWS; i++) {
             std::string& line = lines[i];
-            g->setColor(baygui::Color::black);
+            g->setColor(colors[i] ? baygui::Color::white : baygui::Color::black);
             g->fillRect(0, i * fontHeight(), MAX_NUM_COLS * fontWidth(), fontHeight());
             if (line.empty()) {
                 continue;
             }
-            g->setColor(baygui::Color::white);
-            _logprintf("line:<%s>\n", line.c_str());
+            g->setColor(colors[i] ? baygui::Color::black : baygui::Color::white);
+            _logprintf("line:<%s:%d>\n", line.c_str(), colors[i]);
             g->drawString(line.c_str(), 0, fontHeight() * i);
         }
         if (cursorEnabled_) {
@@ -165,6 +198,13 @@ static void __fastcall frameThread(void* arg)
     }
     g_frame->run();
     delete g_frame;
+}
+
+void mona_frame_stop(uint32_t tid)
+{
+    if (Message::send(tid, MSG_STOP) != M_OK) {
+        monapi_fatal("frame stop failed");
+    }
 }
 
 uint32_t mona_frame_init()
@@ -226,14 +266,15 @@ void bzero(void* to, size_t count)
 void mona_ttmove(int row, int col)
 {
     g_frame->moveCursor(col, row);
-    logprintf("%s %s:%d row=%d col=%d\n", __func__, __FILE__, __LINE__, row, col);
 }
 void mona_tteeol()
 {
+    g_frame->eraseToEndOfLine();
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_tteeop()
 {
+    g_frame->eraseToEndOfPage();
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_ttbeep()
@@ -242,7 +283,8 @@ void mona_ttbeep()
 }
 void mona_ttinsl(int row, int bot, int nchunk)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ASSERT(bot - row + 1 == nchunk);
+    g_frame->clearLines(row, bot);
 }
 void mona_ttdell(int row, int bot, int nchunk)
 {
@@ -258,6 +300,12 @@ void mona_ttnowindow()
 }
 void mona_ttcolor(int color)
 {
+    ASSERT(color == 1 || color == 2);
+    if (color == 1) {
+//        g_frame->setColor(false);
+    } else {
+        g_frame->setColor(true);
+    }
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 int mona_ttwait(int msec)
@@ -354,7 +402,6 @@ void mona_ttflush()
     ASSERT(g_frame);
     // todo message でやるほうが行儀が良い
     g_frame->repaint();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 int mona_ttputc(int c)
 {
@@ -363,7 +410,6 @@ int mona_ttputc(int c)
     #endif
     ASSERT(g_frame);
     g_frame->putc(c);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 int mona_ttcooked()
 {

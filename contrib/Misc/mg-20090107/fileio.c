@@ -105,7 +105,11 @@ int
 ffwopen(const char *fn, struct buffer *bp)
 {
 #ifdef MONA
-  assert(0);
+	if ((ffp = fopen(fn, "w+")) == NULL) {
+		ewprintf("Cannot open file for writing : %s", strerror(errno));
+		return (FIOERR);
+	}
+    return (FIOSUC);
 #else
 	int	fd;
 	mode_t	fmode = DEFFILEMODE;
@@ -251,7 +255,8 @@ int
 fbackupfile(const char *fn)
 {
 #ifdef MONA
-  assert(0);
+  // todo
+  return TRUE;
 #else
 	struct stat	 sb;
 	int		 from, to, serrno;

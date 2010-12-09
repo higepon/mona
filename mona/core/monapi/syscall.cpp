@@ -469,7 +469,6 @@ static void __fastcall thread_entry(void* arg)
 {
     st_thread_entry* entry = (st_thread_entry*)arg;
     (*(entry->func))(entry->arg);
-    _printf("\n\n************************************ thread exited"); // for debug.
     delete entry;
     exit(0);
 }

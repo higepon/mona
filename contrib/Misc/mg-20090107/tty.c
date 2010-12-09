@@ -224,6 +224,7 @@ tteeop(void)
 {
 #ifdef MONA
   mona_tteeop();
+  ttrow = ttcol = HUGE;
 #else
 	int	line;
 
@@ -269,7 +270,10 @@ void
 ttinsl(int row, int bot, int nchunk)
 {
 #ifdef MONA
+  _logprintf("ttinsl row=%d bot=%d nchunk=%d ", row, bot, nchunk);
   mona_ttinsl(row, bot, nchunk);
+  ttrow = HUGE;
+  ttcol = HUGE;
 #else
 	int	i, nl;
 
@@ -430,6 +434,7 @@ void
 ttcolor(int color)
 {
 #ifdef MONA
+  _logprintf("colr=%d", color);
   mona_ttcolor(color);
 #else
 	if (color != tthue) {

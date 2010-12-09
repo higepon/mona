@@ -70,6 +70,9 @@ int _write(void *self, void *buf, size_t size)
     FILE *f;
 
     f = (FILE*)self;
+    if (0 == size) {
+        return 0;
+    }
 
     MonAPI::SharedMemory shm(size);
     if(shm.map() != M_OK) {

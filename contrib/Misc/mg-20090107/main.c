@@ -50,6 +50,8 @@ usage()
 	exit(1);
 }
 
+static uint32_t frame_tid;
+
 int
 main(int argc, char **argv)
 {
@@ -85,8 +87,8 @@ main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-    uint32_t tid = mona_frame_init();
-    mona_frame_wait_startup(tid);
+    frame_tid = mona_frame_init();
+    mona_frame_wait_startup(frame_tid);
 	maps_init();		/* Keymaps and modes.		*/
 	funmap_init();		/* Functions.			*/
 
@@ -266,6 +268,7 @@ quit(int f, int n)
 #ifdef SYSCLEANUP
 		SYSCLEANUP;
 #endif	/* SYSCLEANUP */
+        mona_frame_stop(frame_tid);
 		exit(GOOD);
 	}
 	return (TRUE);
