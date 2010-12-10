@@ -110,10 +110,16 @@ public:
 
     void putc(int c)
     {
-        _logprintf("%s %s:%d<%c>\n", __func__, __FILE__, __LINE__, c);
+        _logprintf("%s %s:%d<%c=%x> row=%d col=%d\n", __func__, __FILE__, __LINE__, c, c, currentRow_, currentCol_);
         ASSERT(currentRow_ < MAX_NUM_ROWS);
         ASSERT(currentCol_ < MAX_NUM_COLS);
         std::string& line = lines[currentRow_];
+        if (c == '\b') {
+            ASSERT(currentRow_ != 0);
+            line.erase(line.begin() + currentCol_, line.begin() + currentCol_);
+            currentCol_--;
+            return;
+        }
         if (line.size() == currentCol_) {
             line += c;
         } else if (line.size() < currentCol_) {
@@ -283,7 +289,7 @@ void mona_ttbeep()
 }
 void mona_ttinsl(int row, int bot, int nchunk)
 {
-    ASSERT(bot - row + 1 == nchunk);
+//    ASSERT(bot - row + 1 == nchunk);
     g_frame->clearLines(row, bot);
 }
 void mona_ttdell(int row, int bot, int nchunk)
@@ -300,8 +306,8 @@ void mona_ttnowindow()
 }
 void mona_ttcolor(int color)
 {
-    ASSERT(color == 1 || color == 2);
-    if (color == 1) {
+    ASSERT(color == 0 || color == 1 || color == 2);
+    if (color == 0 || color == 1) {
 //        g_frame->setColor(false);
     } else {
         g_frame->setColor(true);
@@ -371,6 +377,12 @@ static inline char keyToChar(int keycode, int modifiers, int charcode)
 
 int mona_ttgetc()
 {
+    static bool hasUngetc = false;
+    static int ungetc;
+    if (hasUngetc) {
+        hasUngetc = false;
+        return ungetc;
+    }
     MessageInfo info;
     while(M_OK == MonAPI::Message::receive(&info)) {
         if(info.header != MSG_KEY_VIRTUAL_CODE) {
@@ -380,8 +392,18 @@ int mona_ttgetc()
         int modifiers = info.arg2;
         logprintf("keycode=%x", keycode);
         if (modifiers == KeyEvent::VKEY_CTRL) {
-            logprintf("ctrl!!!");
-            return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
+            if ('a' <= keycode && keycode <= 'z') {
+                return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
+            } else if (keycode == '/') {
+                return 0x1f;
+            } else {
+                ASSERT(false);
+            }
+
+        } else if (modifiers == KeyEvent::VKEY_ALT) {
+            hasUngetc = true;
+            ungetc = keycode;
+            return '\e';
         }
         switch (keycode) {
         case KeyEvent::VKEY_ENTER:
@@ -390,6 +412,9 @@ int mona_ttgetc()
             return '\t';
         case KeyEvent::VKEY_BACKSPACE:
             return '\b';
+        // case KeyEvent::VKEY_ALT:
+        // case KeyEvent::VKEY_LMENU:
+        //     return '\e';
         default:
             return keycode;
         }

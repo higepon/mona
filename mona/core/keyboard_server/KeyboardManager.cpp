@@ -120,7 +120,6 @@ int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
         /* make code means key down */
         modifiers |= KEY_MODIFIER_DOWN;
     }
-
     /* scancode to keycode */
     if (isSpecialKey_) {
         keycode       = keyMapE0[scancode];
