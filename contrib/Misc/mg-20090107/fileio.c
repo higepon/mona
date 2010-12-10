@@ -42,12 +42,27 @@ static FILE	*ffp;
 int
 ffropen(const char *fn, struct buffer *bp)
 {
+  // On Mona, we can't assume fopen succeed on directory.
+#ifdef MONA
+	/* If 'fn' is a directory open it with dired. */
+	if (fisdir(fn) == TRUE)
+		return (FIODIR);
+
 	if ((ffp = fopen(fn, "r")) == NULL) {
 		if (errno == ENOENT)
 			return (FIOFNF);
 		return (FIOERR);
 	}
+	ffstat(bp);
 
+	return (FIOSUC);
+
+#else
+	if ((ffp = fopen(fn, "r")) == NULL) {
+		if (errno == ENOENT)
+			return (FIOFNF);
+		return (FIOERR);
+	}
 	/* If 'fn' is a directory open it with dired. */
 	if (fisdir(fn) == TRUE)
 		return (FIODIR);
@@ -55,6 +70,7 @@ ffropen(const char *fn, struct buffer *bp)
 	ffstat(bp);
 
 	return (FIOSUC);
+#endif
 }
 
 /*

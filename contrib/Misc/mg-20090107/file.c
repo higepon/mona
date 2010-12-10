@@ -304,7 +304,6 @@ insertfile(char *fname, char *newname, int replacebuf)
 	int	 opos;			/* offset we started at */
 	int	 oline;			/* original line number */
 	char *dp;
-
 	if (replacebuf == TRUE)
 		x = undo_enable(FFRAND, 0);
 	else
