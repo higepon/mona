@@ -480,6 +480,14 @@ public:
     {
         File* entry = getFileByVnode(vnode);
         st->size = entry->getSize();
+        KDate date = entry->getDate();
+        st->year = date.year;
+           _logprintf("year3=%d", date.year);
+        st->month = date.month;
+        st->day = date.day;
+        st->hour = date.hour;
+        st->min = date.min;
+        st->sec = date.sec;
         return M_OK;
     }
 
@@ -621,6 +629,16 @@ public:
             childlen_->erase(std::remove(childlen_->begin(), childlen_->end(), entry), childlen_->end());
         }
 
+        void setDate(KDate date)
+        {
+            date_ = date;
+        }
+
+        KDate getDate() const
+        {
+            return date_;
+        }
+
     private:
         const std::string name_;
         uintptr_t size_;
@@ -631,6 +649,7 @@ public:
         MonAPI::scoped_ptr<Files> childlen_;
         bool isDirectory_;
         Vnode* vnode_;
+        KDate date_;
     };
 
 private:
@@ -801,6 +820,7 @@ private:
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
+                target->setDate(unpackDateTime(entry));
                 ASSERT(target);
                 childlen.push_back(target);
                 partialLongNames.clear();
@@ -974,6 +994,20 @@ private:
         return ((hours + 9) << 11) | (minitues << 5) | (seconds / 2);
     }
 
+    KDate unpackDateTime(struct de* entry)
+    {
+        KDate ret;
+        uint16_t* date = (uint16_t*)entry->date;
+        uint16_t* time = (uint16_t*)entry->time;
+        ret.year = ((*date) >> 9) + 1980;
+        ret.month = ((*date) >> 5) & 0x10;
+        ret.day = (*date) & 0x20;
+        ret.hour = (*date) >> 11;
+        ret.min = ((*time) >> 5) & 0x40;
+        ret.sec = ((*time) & 0x20) * 2;
+        return ret;
+    }
+
     void setEntry(struct de* entry, uint32_t cluster, uint32_t size)
     {
         *((uint32_t*)entry->size) = size;
@@ -1138,6 +1172,8 @@ private:
     {
         File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
         ASSERT(file);
+        MonAPI::Date now;
+        file->setDate(now.getKDate());
         File* d = getFileByVnode(dir);
         d->addChild(file);
         file->setParent(d);

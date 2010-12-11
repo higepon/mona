@@ -245,6 +245,21 @@ void FileServer::messageLoop()
             Message::reply(&msg, ret, st.size);
             break;
         }
+        case MSG_FILE_GET_DATE:
+        {
+            Stat st;
+            int ret = vmanager_.stat(msg.arg1, &st);
+            uint32_t* p = (uint32_t*)msg.str;
+            p[0] = st.year;
+            _logprintf("year2=%d", p[0]);
+            p[1] = st.month;
+            p[2] = st.day;
+            p[3] = st.hour;
+            p[4] = st.min;
+            p[5] = st.sec;
+            Message::reply(&msg, ret, 0, msg.str);
+            break;
+        }
         case MSG_FILE_READ_DIRECTORY:
         {
             SharedMemory* memory;

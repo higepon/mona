@@ -27,6 +27,16 @@ class Date {
         syscall_get_date(&date);
     }
 
+    Date(int year, int month, int day, int hour, int min, int sec)
+    {
+        date.year = year;
+        date.month = month;
+        date.day = day;
+        date.hour = hour;
+        date.min = min;
+        date.sec = sec;
+    }
+
     ~Date() {}
 
   public:
@@ -135,6 +145,10 @@ class Date {
         return date.dayofweek;
     }
 
+    KDate getKDate() const
+    {
+        return date;
+    }
   private:
     KDate date;
 };

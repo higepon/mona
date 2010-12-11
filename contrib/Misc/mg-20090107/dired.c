@@ -649,7 +649,9 @@ dired_(char *dname)
     assert(dirp);
 	while ((dent = readdir(dirp)) != NULL) {
       snprintf(line, sizeof(line), "%s/%s", dname, dent->d_name);
-      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   2039 Apr 27  2006 %s", fisdir(line) ? 'd' : '-', dent->d_name);
+      int year, month, day, hour, min, sec;
+      mona_get_file_datetime(line, &year, &month, &day, &hour, &min, &sec);
+      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   size Apr 27  %d %s", fisdir(line) ? 'd' : '-', year, dent->d_name);
       addline(bp, line);
     }
     closedir(dirp);

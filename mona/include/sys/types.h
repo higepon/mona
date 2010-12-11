@@ -126,6 +126,12 @@ typedef struct PsInfo {
 typedef struct
 {
     uint32_t size;
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    uint8_t hour;
+    uint8_t min;
+    uint8_t sec;
 } Stat;
 
 typedef struct {

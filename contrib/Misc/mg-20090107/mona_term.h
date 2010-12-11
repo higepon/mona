@@ -66,6 +66,7 @@ extern "C" {
     uint32_t mona_frame_init();
     void mona_frame_wait_startup(uint32_t tid);
     void mona_frame_stop(uint32_t tid);
+    void mona_get_file_datetime(const char* file, int* year, int* month, int* day, int* hour, int* min, int* sec);
     extern int ttcol;
     extern int ttrow;
     extern int ncol;

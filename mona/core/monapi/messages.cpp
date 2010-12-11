@@ -5,6 +5,7 @@
 #include <monapi/Stream.h>
 #include <monapi/System.h>
 #include <monapi/string.h>
+#include <monapi/Date.h>
 #include <sys/HashMap.h>
 #include <monapi.h>
 
@@ -571,4 +572,30 @@ SharedMemory* monapi_clipboard_get()
     } else {
         return ret;
     }
+}
+
+intptr_t monapi_file_get_date(const char* file, MonAPI::Date& dest)
+{
+    uint32_t tid;
+    intptr_t ret;
+    ret = monapi_name_whereis("/servers/file", tid);
+    if (ret != M_OK) {
+        return ret;
+    }
+
+    MessageInfo msg;
+    ret = Message::sendReceive(&msg, tid, MSG_FILE_GET_DATE, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
+    }
+    uint32_t* p = (uint32_t*)msg.str;
+    _logprintf("year=%d", p[0]);
+    dest = MonAPI::Date(p[0], // Year
+                        p[1], // Month
+                        p[2], // Day
+                        p[3], // Hour
+                        p[4], // Minute
+                        p[5]  // Second
+        );
+    return M_OK;
 }
