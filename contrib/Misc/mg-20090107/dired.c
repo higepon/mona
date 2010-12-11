@@ -8,6 +8,7 @@
 
 #ifdef MONA
 #include <assert.h>
+#include <dirent.h>
 #else
 #include "libgen.h"
 #endif
@@ -74,7 +75,6 @@ static PF diredcl[] = {
 	NULL			/* ^X */
 };
 
-#ifndef MONA
 static PF diredcz[] = {
 	spawncli,		/* ^Z */
 	NULL,			/* esc */
@@ -160,13 +160,10 @@ static struct KEYMAPE (6 + NDIRED_XMAPS + IMAPEXT) diredmap = {
 #endif /* DIRED_XMAPS */
 	}
 };
-#endif
+
 void
 dired_init(void)
 {
-#ifdef MONA
-  _logprintf("dired_init skipped");
-#else
 	funmap_add(dired, "dired");
 	funmap_add(d_undelbak, "dired-backup-unflag");
 	funmap_add(d_copy, "dired-copy-file");
@@ -179,7 +176,6 @@ dired_init(void)
 	funmap_add(d_undel, "dired-unflag");
 	maps_add((KEYMAP *)&diredmap, "dired");
 	dobindkey(fundamental_map, "dired", "^Xd");
-#endif
 }
 
 /* ARGSUSED */
@@ -445,16 +441,19 @@ d_rename(int f, int n)
 #endif
 }
 
-#ifndef MONA
 /* ARGSUSED */
 void
 reaper(int signo __attribute__((unused)))
 {
+#ifdef MONA
+  assert(0);
+#else
 	int	save_errno = errno, status;
 
 	while (waitpid(-1, &status, WNOHANG) >= 0)
 		;
 	errno = save_errno;
+#endif
 }
 
 /*
@@ -464,6 +463,9 @@ reaper(int signo __attribute__((unused)))
 int
 d_shell_command(int f, int n)
 {
+#ifdef MONA
+  assert(0);
+#else
 	char	 command[512], fname[MAXPATHLEN], buf[BUFSIZ], *bufp, *cp;
 	int	 infd, fds[2];
 	pid_t	 pid;
@@ -547,6 +549,7 @@ d_shell_command(int f, int n)
 	if (sigaction(SIGCHLD, &olda, NULL) == -1)
 		ewprintf("Warning, couldn't reset previous signal handler");
 	return (TRUE);
+#endif
 }
 
 
@@ -555,6 +558,9 @@ d_shell_command(int f, int n)
 int
 d_create_directory(int f, int n)
 {
+#ifdef MONA
+  assert(0);
+#else
 	char	 tocreate[MAXPATHLEN], *bufp;
 	size_t  off;
 	struct buffer	*bp;
@@ -574,8 +580,8 @@ d_create_directory(int f, int n)
 	}
 	bp = dired_(curbp->b_fname);
 	return (showbuffer(bp, curwp, WFFULL | WFMODE));
-}
 #endif
+}
 #define NAME_FIELD    8
 
 static int
@@ -611,13 +617,14 @@ d_makename(struct line *lp, char *fn, size_t len)
 struct buffer *
 dired_(char *dname)
 {
-#ifdef MONA
-  assert(0);
-#else
 	struct buffer	*bp;
 	FILE	*dirpipe;
 	char	 line[256];
 	int	 len, ret;
+#ifdef MONA
+	DIR		*dirp;
+	struct dirent	*dent;
+#endif
 
 	if ((dname = adjustname(dname, FALSE)) == NULL) {
 		ewprintf("Bad directory name");
@@ -637,6 +644,16 @@ dired_(char *dname)
 		return (NULL);
 	bp->b_flag |= BFREADONLY;
 
+#ifdef MONA
+	dirp = opendir(dname);
+    assert(dirp);
+	while ((dent = readdir(dirp)) != NULL) {
+      snprintf(line, sizeof(line), "%s/%s", dname, dent->d_name);
+      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   2039 Apr 27  2006 %s", fisdir(line) ? 'd' : '-', dent->d_name);
+      addline(bp, line);
+    }
+    closedir(dirp);
+#else
 #ifdef GNU_LS
 # ifdef __CYGWIN__
 	/* On Windows platforms the user or group name can be two
@@ -672,6 +689,7 @@ dired_(char *dname)
 		    strerror(errno));
 		return (NULL);
 	}
+#endif
 	bp->b_dotp = bfirstlp(bp);
 	(void)strlcpy(bp->b_fname, dname, sizeof(bp->b_fname));
 	(void)strlcpy(bp->b_cwd, dname, sizeof(bp->b_cwd));
@@ -682,5 +700,4 @@ dired_(char *dname)
 	}
 	bp->b_nmodes = 1;
 	return (bp);
-#endif
 }

@@ -45,14 +45,20 @@ ffropen(const char *fn, struct buffer *bp)
   // On Mona, we can't assume fopen succeed on directory.
 #ifdef MONA
 	/* If 'fn' is a directory open it with dired. */
-	if (fisdir(fn) == TRUE)
+  if (fisdir(fn) == TRUE) {
+      _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return (FIODIR);
+  }
 
 	if ((ffp = fopen(fn, "r")) == NULL) {
-		if (errno == ENOENT)
+		if (errno == ENOENT) {
+      _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return (FIOFNF);
+        }
+      _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return (FIOERR);
 	}
+      _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	ffstat(bp);
 
 	return (FIOSUC);
@@ -455,7 +461,8 @@ char *
 startupfile(char *suffix)
 {
 #ifdef MONA
-  assert(0);
+    _logprintf("startupfile is empty todo");
+    return NULL;
 #else
 	static char	 file[NFILEN];
 	char		*home;

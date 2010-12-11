@@ -12,7 +12,9 @@
 #include "kbd.h"
 
 #ifdef	XKEYS
+#ifndef MONA
 #include <term.h>
+#endif
 
 #ifdef  FKEYS
 /*
@@ -36,6 +38,7 @@ ttykeymapinit(void)
 	char	*cp;
 
 #ifdef FKEYS
+#ifndef MONA
 	/* Bind keypad function keys. */
 	if (key_left)
 		dobindkey(fundamental_map, "backward-char", key_left);
@@ -55,6 +58,7 @@ ttykeymapinit(void)
 		dobindkey(fundamental_map, "scroll-up", key_npage);
 	if (key_ppage)
 		dobindkey(fundamental_map, "scroll-down", key_ppage);
+#endif
 #endif /* FKEYS */
 
 #ifndef	NO_STARTUP
@@ -63,9 +67,11 @@ ttykeymapinit(void)
 			ewprintf("Error reading key initialization file");
 	}
 #endif /* !NO_STARTUP */
+#ifndef MONA
 	if (keypad_xmit)
 		/* turn on keypad */
 		putpad(keypad_xmit, 1);
+#endif
 }
 
 /*
@@ -74,9 +80,11 @@ ttykeymapinit(void)
 void
 ttykeymaptidy(void)
 {
+#ifndef MONA
 	if (keypad_local)
 		/* turn off keypad */
 		putpad(keypad_local, 1);
+#endif
 }
 
 #else

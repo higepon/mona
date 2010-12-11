@@ -1,6 +1,6 @@
-// #define FKEYS
+#define FKEYS
 // #define REGEX
-// #define XKEYS
+#define XKEYS
 #ifndef LOGIN_NAME_MAX
 #define MAXLOGNAME _POSIX_LOGIN_NAME_MAX
 #endif
@@ -17,4 +17,4 @@
 
 
 // temp
-#define NO_STARTUP
+//#define NO_STARTUP

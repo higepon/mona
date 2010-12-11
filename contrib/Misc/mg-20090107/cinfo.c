@@ -120,9 +120,11 @@ getkeyname(char *cp, size_t len, int k)
 		break;
 	default:
 #ifdef	FKEYS
+#ifndef MONA
 		if (k >= KFIRST && k <= KLAST &&
 		    (np = keystrings[k - KFIRST]) != NULL)
 			break;
+#endif
 #endif
 		if (k > CCHR('?')) {
 			*cp++ = '0';
