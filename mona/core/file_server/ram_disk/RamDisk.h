@@ -290,11 +290,8 @@ namespace RamDisk {
             }
           virtual int stat(Vnode* file, Stat* st)
             {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 FileInfo* f = (FileInfo*)file->fnode;
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 st->size = f->size;
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 return M_OK;
             }
           virtual Vnode* getRoot() const

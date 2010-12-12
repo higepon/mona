@@ -110,7 +110,6 @@ public:
 
     void putc(int c)
     {
-        _logprintf("%s %s:%d<%c=%x> row=%d col=%d\n", __func__, __FILE__, __LINE__, c, c, currentRow_, currentCol_);
         ASSERT(currentRow_ < MAX_NUM_ROWS);
         ASSERT(currentCol_ < MAX_NUM_COLS);
         std::string& line = lines[currentRow_];
@@ -461,9 +460,7 @@ void mona_ttresize()
 void mona_get_file_datetime_size(const char* file, int* year, int* month, int* day, int* hour, int* min, int* sec, int* size)
 {
     MonAPI::Date date;
-    _logprintf("name=%s\n", file);
     intptr_t ret = monapi_file_get_date(file, date);
-    _logprintf("name=%s ret=%s\n", file, monapi_error_string(ret));
     ASSERT(ret == M_OK);
     *year = date.year();
     *month = date.month();

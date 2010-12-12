@@ -999,7 +999,6 @@ private:
         ret.hour = (*date) >> 11;
         ret.min = ((*time) >> 5) & 0x3f;
         ret.sec = ((*time) & 0x1f) * 2;
-        _logprintf("%d/%d/%d %d:%d:%d\n", ret.year, ret.month, ret.day, ret.hour, ret.min, ret.sec);
         return ret;
     }
 
