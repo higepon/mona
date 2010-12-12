@@ -27,14 +27,8 @@ class Date {
         syscall_get_date(&date);
     }
 
-    Date(int year, int month, int day, int hour, int min, int sec)
+    Date(KDate date) : date(date)
     {
-        date.year = year;
-        date.month = month;
-        date.day = day;
-        date.hour = hour;
-        date.min = min;
-        date.sec = sec;
     }
 
     ~Date() {}

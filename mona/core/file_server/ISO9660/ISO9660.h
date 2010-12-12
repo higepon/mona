@@ -186,7 +186,7 @@ public:
     bool hasDetail;
     bool isDirectory;
     std::string name;
-    FileDate createDate;
+    KDate createDate;
 };
 
 }; // namespace iso9660

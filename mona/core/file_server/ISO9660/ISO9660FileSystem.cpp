@@ -136,12 +136,12 @@ int ISO9660FileSystem::stat(Vnode* file, Stat* st)
 {
     Entry* entry = (Entry*)file->fnode;
     st->size = entry->attribute.size;
-    st->year = entry->createDate.getYear();
-    st->month = entry->createDate.getMonth();
-    st->day = entry->createDate.getDay();
-    st->hour = entry->createDate.getHour();
-    st->min = entry->createDate.getMinute();
-    st->sec = entry->createDate.getSecond();
+    st->datetime.year = entry->createDate.year;
+    st->datetime.month = entry->createDate.month;
+    st->datetime.day = entry->createDate.day;
+    st->datetime.hour = entry->createDate.hour;
+    st->datetime.min = entry->createDate.min;
+    st->datetime.sec = entry->createDate.sec;
     return M_OK;
 }
 
@@ -423,17 +423,17 @@ string ISO9660FileSystem::nameToUtf8(const char* name, int nameSizeByte)
 
 void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 {
-    FileDate* createDate = &(to->createDate);
+    KDate& createDate = to->createDate;
 
     to->name = canonicalizeName(from->name, from->name_len);
     to->attribute.extent= from->extent_l;
     to->attribute.size  = from->size_l;
-    createDate->setYear(from->date[0] + 1900);
-    createDate->setMonth(from->date[1]);
-    createDate->setDay(from->date[2]);
-    createDate->setHour(from->date[3]);
-    createDate->setMinute(from->date[4]);
-    createDate->setSecond(from->date[5]);
+    createDate.year = from->date[0] + 1900;
+    createDate.month = from->date[1];
+    createDate.day = from->date[2];
+    createDate.hour = from->date[3];
+    createDate.min = from->date[4];
+    createDate.sec = from->date[5];
     to->hasDetail = true;
 }
 

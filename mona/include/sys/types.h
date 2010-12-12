@@ -123,17 +123,6 @@ typedef struct PsInfo {
     struct PsInfo* next;
 } PsInfo;
 
-typedef struct
-{
-    uint32_t size;
-    uint16_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t min;
-    uint8_t sec;
-} Stat;
-
 typedef struct {
     int year;
     int month;
@@ -143,6 +132,12 @@ typedef struct {
     int min;
     int sec;
 } KDate;
+
+typedef struct
+{
+    uint32_t size;
+    KDate datetime;
+} Stat;
 
 struct CommandOption {
     char str[MAX_PROCESS_ARGUMENT_LENGTH];

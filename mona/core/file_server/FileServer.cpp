@@ -256,14 +256,8 @@ void FileServer::messageLoop()
         {
             Stat st;
             int ret = vmanager_.stat(msg.str, &st);
-            uint32_t* p = (uint32_t*)msg.str;
-            p[0] = st.year;
-            _logprintf("year2=%d", p[0]);
-            p[1] = st.month;
-            p[2] = st.day;
-            p[3] = st.hour;
-            p[4] = st.min;
-            p[5] = st.sec;
+            KDate* p = (KDate*)msg.str;
+            *p = st.datetime;
             Message::reply(&msg, ret, 0, msg.str);
             break;
         }

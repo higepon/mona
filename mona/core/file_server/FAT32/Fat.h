@@ -480,19 +480,7 @@ public:
     {
         File* entry = getFileByVnode(vnode);
         st->size = entry->getSize();
-        KDate date = entry->getDate();
-        st->year = date.year;
-        _logprintf("name=%s\n", entry->getName().c_str());
-           _logprintf("year3=%d", date.year);
-           _logprintf("day3=%d", date.day);
-           _logprintf("day3=%d", date.month);
-           _logprintf("hour=%d", date.hour);
-           _logprintf("min=%d\n", date.min);
-        st->month = date.month;
-        st->day = date.day;
-        st->hour = date.hour;
-        st->min = date.min;
-        st->sec = date.sec;
+        st->datetime = entry->getDate();
         return M_OK;
     }
 
