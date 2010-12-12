@@ -136,7 +136,12 @@ int ISO9660FileSystem::stat(Vnode* file, Stat* st)
 {
     Entry* entry = (Entry*)file->fnode;
     st->size = entry->attribute.size;
-    st->year = entry->modifiedDate.getYear();
+    st->year = entry->createDate.getYear();
+    st->month = entry->createDate.getMonth();
+    st->day = entry->createDate.getDay();
+    st->hour = entry->createDate.getHour();
+    st->min = entry->createDate.getMinute();
+    st->sec = entry->createDate.getSecond();
     return M_OK;
 }
 

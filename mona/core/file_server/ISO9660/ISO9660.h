@@ -187,7 +187,6 @@ public:
     bool isDirectory;
     std::string name;
     FileDate createDate;
-    FileDate modifiedDate;
 };
 
 }; // namespace iso9660
