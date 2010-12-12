@@ -136,6 +136,7 @@ int ISO9660FileSystem::stat(Vnode* file, Stat* st)
 {
     Entry* entry = (Entry*)file->fnode;
     st->size = entry->attribute.size;
+    st->year = entry->modifiedDate.getYear();
     return M_OK;
 }
 

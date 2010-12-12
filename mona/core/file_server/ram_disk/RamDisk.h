@@ -134,6 +134,9 @@ namespace RamDisk {
 
           RamDiskFileSystem() {
               root_ = new Vnode;
+              FileInfo* info = new FileInfo;
+              info->size = 0;
+              root_->fnode = info;
               // root_->fnode  = rootDir;
               root_->fs     = this;
               root_->type = Vnode::DIRECTORY;
@@ -287,8 +290,11 @@ namespace RamDisk {
             }
           virtual int stat(Vnode* file, Stat* st)
             {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 FileInfo* f = (FileInfo*)file->fnode;
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 st->size = f->size;
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 return M_OK;
             }
           virtual Vnode* getRoot() const
