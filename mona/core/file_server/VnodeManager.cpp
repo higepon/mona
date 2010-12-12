@@ -314,9 +314,13 @@ int VnodeManager::stat(const string& path, Stat* st)
     Vnode* file;
     intptr_t ret = lookup(root_, path, &file);
     if (ret != M_OK) {
-        return ret;
+        intptr_t ret2 = lookup(root_, path, &file, Vnode::DIRECTORY);
+        if (ret2 != M_OK) {
+            return ret;
+        }
+        return file->fs->stat(file, st);
     }
-    file->fs->stat(file, st);
+    return file->fs->stat(file, st);
 }
 
 

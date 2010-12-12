@@ -588,6 +588,9 @@ intptr_t monapi_file_get_date(const char* file, MonAPI::Date& dest)
     if (ret != M_OK) {
         return ret;
     }
+    if (msg.arg2 != M_OK) {
+        return msg.arg2;
+    }
     uint32_t* p = (uint32_t*)msg.str;
     _logprintf("year=%d", p[0]);
     dest = MonAPI::Date(p[0], // Year

@@ -462,6 +462,7 @@ void mona_get_file_datetime(const char* file, int* year, int* month, int* day, i
 {
     MonAPI::Date date;
     intptr_t ret = monapi_file_get_date(file, date);
+    _logprintf("name=%s ret=%s\n", file, monapi_error_string(ret));
     ASSERT(ret == M_OK);
     *year = date.year();
     *month = date.month();
