@@ -248,7 +248,7 @@ void FileServer::messageLoop()
         case MSG_FILE_GET_DATE:
         {
             Stat st;
-            int ret = vmanager_.stat(msg.arg1, &st);
+            int ret = vmanager_.stat(msg.str, &st);
             uint32_t* p = (uint32_t*)msg.str;
             p[0] = st.year;
             _logprintf("year2=%d", p[0]);

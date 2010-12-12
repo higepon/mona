@@ -307,6 +307,19 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
     return file->fs->stat(file, st);
 }
 
+int VnodeManager::stat(const string& path, Stat* st)
+{
+    // remove first '/'. fix me
+    string filename = path.substr(1, path.size() - 1);
+    Vnode* file;
+    intptr_t ret = lookup(root_, path, &file);
+    if (ret != M_OK) {
+        return ret;
+    }
+    file->fs->stat(file, st);
+}
+
+
 int VnodeManager::seek(uint32_t fileID, int32_t offset, uint32_t origin)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);

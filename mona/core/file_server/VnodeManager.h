@@ -21,6 +21,7 @@ public:
     int write(uint32_t fileID, uint32_t size, MonAPI::SharedMemory* mem);
     int seek(uint32_t fileID, int32_t offset, uint32_t origin);
     int stat(uint32_t fileID, Stat* st);
+    int stat(const std::string& path, Stat* st);
     int close(uint32_t fileID);
     int create(const std::string& name);
     int delete_file(const std::string& name);

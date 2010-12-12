@@ -483,6 +483,10 @@ public:
         KDate date = entry->getDate();
         st->year = date.year;
            _logprintf("year3=%d", date.year);
+           _logprintf("day3=%d", date.day);
+           _logprintf("day3=%d", date.month);
+           _logprintf("hour=%d", date.hour);
+           _logprintf("min=%d", date.min);
         st->month = date.month;
         st->day = date.day;
         st->hour = date.hour;
@@ -1000,11 +1004,12 @@ private:
         uint16_t* date = (uint16_t*)entry->date;
         uint16_t* time = (uint16_t*)entry->time;
         ret.year = ((*date) >> 9) + 1980;
-        ret.month = ((*date) >> 5) & 0x10;
-        ret.day = (*date) & 0x20;
+        ret.month = ((*date) >> 5) & 0xf;
+        ret.day = (*date) & 0x1f;
         ret.hour = (*date) >> 11;
-        ret.min = ((*time) >> 5) & 0x40;
-        ret.sec = ((*time) & 0x20) * 2;
+        ret.min = ((*time) >> 5) & 0x3f;
+        ret.sec = ((*time) & 0x1f) * 2;
+        _logprintf("%d/%d/%d %d:%d:%d\n", ret.year, ret.month, ret.day, ret.hour, ret.min, ret.sec);
         return ret;
     }
 
