@@ -536,6 +536,7 @@ public:
 
         File(const std::string& name, uintptr_t startCluster, const Files& childlen, uint32_t clusterInParent, uint32_t indexInParentCluster) :
             name_(name),
+            size_(0),
             startCluster_(startCluster),
             parent_(NULL),
             clusterInParent_(clusterInParent),

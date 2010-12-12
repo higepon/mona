@@ -351,6 +351,27 @@ intptr_t monapi_file_close(uint32_t fileID)
     return msg.arg2;
 }
 
+intptr_t monapi_file_get_file_size_by_path(const char* file, uint32_t& size)
+{
+    uint32_t tid;
+    intptr_t ret;
+    ret = monapi_name_whereis("/servers/file", tid);
+    if (ret != M_OK) {
+        return ret;
+    }
+
+    MessageInfo msg;
+    ret = Message::sendReceive(&msg, tid, MSG_FILE_GET_SIZE_BY_PATH, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
+    }
+    if (msg.arg2 != M_OK) {
+        return msg.arg2;
+    }
+    size = msg.arg3;
+    return M_OK;
+}
+
 intptr_t monapi_file_get_file_size(uint32_t id)
 {
     uint32_t tid;

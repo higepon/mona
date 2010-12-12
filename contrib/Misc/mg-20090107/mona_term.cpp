@@ -458,7 +458,7 @@ void mona_ttresize()
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
-void mona_get_file_datetime(const char* file, int* year, int* month, int* day, int* hour, int* min, int* sec)
+void mona_get_file_datetime_size(const char* file, int* year, int* month, int* day, int* hour, int* min, int* sec, int* size)
 {
     MonAPI::Date date;
     intptr_t ret = monapi_file_get_date(file, date);
@@ -470,6 +470,10 @@ void mona_get_file_datetime(const char* file, int* year, int* month, int* day, i
     *hour = date.hour();
     *min = date.min();
     *sec = date.sec();
+    uint32_t s;
+    ret = monapi_file_get_file_size_by_path(file, s);
+    ASSERT(ret == M_OK);
+    *size = s;
 }
 
 /*      $OpenBSD: strsep.c,v 1.6 2005/08/08 08:05:37 espie Exp $        */

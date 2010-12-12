@@ -69,6 +69,7 @@ extern MonAPI::SharedMemory* monapi_call_file_decompress_st5_file(const char* fi
 extern MonAPI::SharedMemory* monapi_call_file_decompress_st5(const MonAPI::SharedMemory& shm);
 extern MonAPI::SharedMemory* monapi_call_file_decompress_bz2(const MonAPI::SharedMemory& shm);
 extern intptr_t monapi_file_get_date(const char* file, MonAPI::Date& dest);
+extern intptr_t monapi_file_get_file_size_by_path(const char* file, uint32_t& size);
 extern intptr_t monapi_clipboard_set(const MonAPI::SharedMemory& shm);
 extern MonAPI::SharedMemory* monapi_clipboard_get();
 #endif

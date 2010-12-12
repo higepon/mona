@@ -245,6 +245,13 @@ void FileServer::messageLoop()
             Message::reply(&msg, ret, st.size);
             break;
         }
+        case MSG_FILE_GET_SIZE_BY_PATH:
+        {
+            Stat st;
+            int ret = vmanager_.stat(msg.str, &st);
+            Message::reply(&msg, ret, st.size);
+            break;
+        }
         case MSG_FILE_GET_DATE:
         {
             Stat st;
