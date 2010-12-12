@@ -396,6 +396,7 @@ int mona_ttgetc()
             } else if (keycode == '/') {
                 return 0x1f;
             } else {
+                _logprintf("keycode=%x", keycode);
                 ASSERT(false);
             }
 

@@ -624,6 +624,8 @@ dired_(char *dname)
 #ifdef MONA
 	DIR		*dirp;
 	struct dirent	*dent;
+    char* month_names[] = {"Jan", "Feb" ,"Mar" ,"Apr" ,"May" ,"Jun",
+                           "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 #endif
 
 	if ((dname = adjustname(dname, FALSE)) == NULL) {
@@ -651,7 +653,14 @@ dired_(char *dname)
       snprintf(line, sizeof(line), "%s/%s", dname, dent->d_name);
       int year, month, day, hour, min, sec, size;
       mona_get_file_datetime_size(line, &year, &month, &day, &hour, &min, &sec, &size);
-      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   %d %04d-%02d-%02d %02d:%02d %s", fisdir(line) ? 'd' : '-', size, year, month, day, hour, min, dent->d_name);
+      char* month_name;
+      if (month <= 12 && month >= 1) {
+        month_name = month_names[month - 1];
+      } else {
+        assert(0);
+        month_name = "---";
+      }
+      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   %d %s %02d %02d:%02d %s", fisdir(line) ? 'd' : '-', size, month_name, day, hour, min, dent->d_name);
       addline(bp, line);
     }
     closedir(dirp);

@@ -833,7 +833,11 @@ private:
             return false;
         }
 
-        root_->fnode = new File("", getRootDirectoryCluster(), childlen, 0, 0);
+        File* r = new File("", getRootDirectoryCluster(), childlen, 0, 0);
+        MonAPI::Date date;
+        r->setDate(date.getKDate());
+        root_->fnode = r;
+
         ASSERT(root_->fnode);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
