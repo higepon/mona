@@ -99,6 +99,7 @@ public:
         }
         ASSERT(row < MAX_NUM_ROWS);
         ASSERT(col < MAX_NUM_COLS);
+        _logprintf("move (%d %d) to (%d %d)\n", currentRow_, currentCol_, row, col);
         currentRow_ = row;
         currentCol_ = col;
     }
@@ -130,20 +131,25 @@ public:
         ASSERT(currentRow_ < MAX_NUM_ROWS);
         ASSERT(currentCol_ < MAX_NUM_COLS);
         std::string& line = lines[currentRow_];
+        _logprintf("putc=<%c>", c);
         if (c == '\b') {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             ASSERT(currentRow_ != 0);
             line.erase(line.begin() + currentCol_, line.begin() + currentCol_);
             currentCol_--;
             return;
         }
         if (line.size() == currentCol_) {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             line += c;
         } else if (line.size() < currentCol_) {
-            for (uint16_t i = 0; i < currentCol_ - line.size() + 1; i++) {
+            size_t lineSize = line.size();
+            for (size_t i = 0; i < currentCol_ - lineSize + 1; i++) {
                 line += ' ';
             }
             line += c;
         } else {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             line.erase(line.begin() + currentCol_, line.end());
             line += c;
         }
