@@ -144,7 +144,7 @@ namespace baygui {
 			// 改行
 			if (str.charAt(i) == '\n') {
 				w = 0;
-				h += 12;
+				h += metrics.getHeight("W");
 			}
 			if (metrics.decodeCharacter(str.charAt(i), &offset, &width, &height, fp) == true) {
 				for (int j = 0; j < height; j++) {

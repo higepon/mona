@@ -1,5 +1,6 @@
 /*
 Copyright (c) 2005 bayside
+              2010 Higepon : Added BDF fixed font support.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
@@ -23,11 +24,35 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
+
 namespace baygui {
     // フォントデータとオフセットリストは毎回生成・開放していると遅くなるのでstaticで保持する
     int FontMetrics::offsetListLength = 0;
     int* FontMetrics::offsetList = NULL;
     unsigned char* FontMetrics::defaultFontData = NULL;
+
+    FontImage FontMetrics::getFixedFont(ucs4char c)
+    {
+        if (c <= 0xff) {
+            static BDFParser* parser = NULL;
+            if (parser == NULL) {
+                parser = new BDFParser("/APPS/BAYGUI/mplus_f12r.bdf");
+                if (!parser->parse()) {
+                    monapi_fatal("bdf parse error");
+                }
+            }
+            return parser->getFont(c);
+        } else {
+            static BDFParser* parser2 = NULL;
+            if (parser2 == NULL) {
+                parser2 = new BDFParser("/APPS/BAYGUI/mplus_j12r_u.bdf");
+                if (!parser2->parse()) {
+                    monapi_fatal("bdf parse error");
+                }
+            }
+            return parser2->getFont(c);
+        }
+    }
 
     FontMetrics::FontMetrics()
     {
@@ -108,25 +133,36 @@ namespace baygui {
 
     bool FontMetrics::decodeCharacter(wchar ucs4, int* offset, int* width, int* height, char* data)
     {
-        if (ucs4 <= 0xFFFF && defaultFontData != NULL && offsetList[ucs4] != 0) {
-            int fw = defaultFontData[offsetList[ucs4] + 4];
-            int fh = defaultFontData[offsetList[ucs4] + 5];
-            //printf("fontStyle = %d,", this->fontStyle);
-            if ((this->fontStyle & 0x100) == Font::FIXED) {
-                if (ucs4 < 128 || 0xff60 < ucs4) {
-                    *offset = 8;
-                } else {
-                    *offset = 12;
-                }
-            } else {
-                *offset = fw;
-            }
-            *width  = fw;
-            *height = fh;
-            memcpy(data, &defaultFontData[offsetList[ucs4] + 6], (int)((fw * fh + 7) / 8));
+        if ((fontStyle & 0x100) == Font::FIXED) {
+            FontImage font = getFixedFont(ucs4);
+            *offset = font.width;
+            *width = font.width;
+            *height = font.height;
+            uint8_t* packedData = font.getPackedBits();
+            memcpy(data, packedData, ((*width * *height + 7) / 8));
+            delete[] packedData;
             return true;
         } else {
-            return false;
+            if (ucs4 <= 0xFFFF && defaultFontData != NULL && offsetList[ucs4] != 0) {
+                int fw = defaultFontData[offsetList[ucs4] + 4];
+                int fh = defaultFontData[offsetList[ucs4] + 5];
+                //printf("fontStyle = %d,", this->fontStyle);
+                if ((this->fontStyle & 0x100) == Font::FIXED) {
+                    if (ucs4 < 128 || 0xff60 < ucs4) {
+                        *offset = 8;
+                    } else {
+                        *offset = 12;
+                    }
+                } else {
+                    *offset = fw;
+                }
+                *width  = fw;
+                *height = fh;
+                memcpy(data, &defaultFontData[offsetList[ucs4] + 6], (int)((fw * fh + 7) / 8));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -149,30 +185,41 @@ namespace baygui {
 
     int FontMetrics::getWidthChar(unsigned int c)
     {
-        if (c <= 0xFFFF) {
-            if ((this->fontStyle & 0x100) == Font::FIXED) {
-                if (c < 128 || 0xff60 < c) {
-                    return 8;
+        if ((fontStyle & 0x100) == Font::FIXED) {
+            FontImage font = getFixedFont(c);
+            return font.width;
+        } else {
+            if (c <= 0xFFFF) {
+                if ((this->fontStyle & 0x100) == Font::FIXED) {
+                    if (c < 128 || 0xff60 < c) {
+                        return 8;
+                    } else {
+                        return 12;
+                    }
                 } else {
-                    return 12;
+                    return defaultFontData[offsetList[c] + 4];
                 }
             } else {
-                return defaultFontData[offsetList[c] + 4];
+                return 0;
             }
-        } else {
-            return 0;
         }
     }
 
     int FontMetrics::getHeight(const String& str)
     {
-        int h = 12;
+        int fontHeight;
+        if ((fontStyle & 0x100) == Font::FIXED) {
+            FontImage font = getFixedFont('A');
+            fontHeight = font.height;
+        } else{
+            fontHeight = 12; // モナーフォントは高さが12ドット
+        }
+        int h = fontHeight;
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == '\n') {
-                h += 12; // モナーフォントは高さが12ドット
+                h += fontHeight;
             }
         }
-
         return h;
     }
 }

@@ -24,14 +24,31 @@ private:
     uint16_t currentCol_;
     bool cursorEnabled_;
 
+    int fontWidth(int ch)
+    {
+        char buf[2];
+        buf[0] = ch;
+        buf[1] = 0;
+        int style = getFontMetrics()->getFontStyle();
+        getFontMetrics()->setFontStyle(Font::FIXED);
+        int ret = getFontMetrics()->getWidth(buf);
+        getFontMetrics()->setFontStyle(style);
+        return ret;
+
+    }
+
     int fontWidth()
     {
-        return getFontMetrics()->getWidth("W");
+        return fontWidth('W');
     }
 
     int fontHeight()
     {
-        return getFontMetrics()->getHeight("W");
+        int style = getFontMetrics()->getFontStyle();
+        getFontMetrics()->setFontStyle(Font::FIXED);
+        int ret = getFontMetrics()->getHeight("W");
+        getFontMetrics()->setFontStyle(style);
+        return ret;
     }
 
 public:
@@ -147,6 +164,7 @@ public:
 
     virtual void paint(Graphics* g)
     {
+        g->setFontStyle(Font::FIXED);
         for (int i = 0; i < MAX_NUM_ROWS; i++) {
             std::string& line = lines[i];
             g->setColor(colors[i] ? baygui::Color::white : baygui::Color::black);
@@ -163,32 +181,15 @@ public:
             int leftOffset = 0;
             std::string& line = lines[currentRow_];
             for (int i = 0; i < currentCol_; i++) {
-                char buf[2];
-                buf[0] = line[i];
-                buf[1] = 0;
-                leftOffset += getFontMetrics()->getWidth(buf);
+                leftOffset += fontWidth(line[i]);
             }
             int cursorWidth = fontWidth();
             if (line.size() > currentCol_) {
-                char buf[2];
-                buf[0] = line[currentCol_];
-                buf[1] = 0;
-                cursorWidth = getFontMetrics()->getWidth(buf);
+                cursorWidth = fontWidth(line[currentCol_]);
             }
             g->fillRect(leftOffset, currentRow_ * fontHeight(), cursorWidth, fontHeight());
         }
   }
-
-        // if (event->getType() == Event::CUSTOM_EVENT) {
-        //     if (event->header == MSG_TEXT) {
-        //         size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
-        //         string text(event->str, length);
-        //         string content(textArea_->getText());
-        //         content += text;printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-        //         textArea_->setText(content.c_str());
-        //         repaint();
-        //     }
-        // }
 };
 
 MgFrame* g_frame;

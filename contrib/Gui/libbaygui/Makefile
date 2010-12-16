@@ -40,7 +40,7 @@ SOURCES = \
 	util/Vector.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE =  -I. -I.. -I$(INCDIR) -I ../ime_server
+INCLUDE =  -I. -I.. -I$(INCDIR) -I ../ime_server -I$(INCDIR)/stlport
 
 all : $(TARGET)
 
@@ -88,6 +88,9 @@ endif
 	mkdir -p $(INCDIR)/baygui/lang
 	mkdir -p $(INCDIR)/baygui/util
 	mkdir -p $(BINDIR)/APPS/
+	mkdir -p $(BINDIR)/APPS/BAYGUI
+	$(INSTALL) -p mplus_j12r_u.bdf $(BINDIR)/APPS/BAYGUI
+	$(INSTALL) -p mplus_f12r.bdf $(BINDIR)/APPS/BAYGUI
 	$(INSTALL) -p baygui.h $(INCDIR)
 	$(INSTALL) -p -m 0644 ./baygui/awt/*.h $(INCDIR)/baygui/awt
 	$(INSTALL) -p -m 0644 ./baygui/awt/event/*.h $(INCDIR)/baygui/awt/event
