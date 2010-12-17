@@ -3,6 +3,9 @@
 #include <monapi.h>
 #include <baygui.h>
 #include <string>
+extern "C" {
+#include "def.h"
+}
 
 using namespace MonAPI;
 
@@ -332,9 +335,6 @@ void mona_ttinsl(int row, int bot, int nchunk)
 //   delete_line: String of commands to delete the line the cursor is on. The following lines move up, and a blank line appears at the bottom of the screen (or bottom of the scroll region). If the terminal has the `db' flag, a nonblank line previously pushed off the screen bottom may reappear at the bottom.
 //   The cursor must be at the left margin before this command is used. This command does not move the cursor.
 
-extern "C" void ttmove(int row, int col);
-extern "C" int ttrow;
-extern "C" int ttcol;
 void mona_ttdell(int row, int bot, int nchunk)
 {
     ttmove(row, 0);
