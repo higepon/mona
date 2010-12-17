@@ -329,6 +329,7 @@ void
 ttdell(int row, int bot, int nchunk)
 {
 #ifdef MONA
+  _logprintf("ttdell(row=%d, bot=%d, nchunk=%d)", row, bot, nchunk);
   mona_ttdell(row, bot, nchunk);
 #else
 	int	i, nl;
@@ -358,7 +359,7 @@ ttdell(int row, int bot, int nchunk)
 			for (i = 0; i < nchunk; i++)
 				putpad(delete_line, nl);
 		ttmove(1 + bot - nchunk, 0);
-
+        
 		/* ttmove() changes ttrow */
 		nl = nrow - ttrow;
 		if (parm_insert_line)

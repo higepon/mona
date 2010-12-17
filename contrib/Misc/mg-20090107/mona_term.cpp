@@ -10,15 +10,16 @@ int ncol;
 int nrow;
 
 class MgFrame : public Frame {
-private:
+public:
     enum {
         MODE_LINE_COLS = 2,
         MAX_NUM_ROWS = 24 + MODE_LINE_COLS,
         MAX_NUM_COLS = 80,
         TIMER_INTERVAL = 500
     };
+private:
     uint32_t parentTid_;
-    std::string lines[MAX_NUM_ROWS];
+    std::vector<std::string> lines;
     bool colors[MAX_NUM_ROWS];
     uint16_t currentRow_;
     uint16_t currentCol_;
@@ -54,6 +55,9 @@ private:
 public:
     MgFrame(uint32_t parentTid) : parentTid_(parentTid), currentRow_(0), currentCol_(0), cursorEnabled_(false)
     {
+        for (int i = 0; i < MAX_NUM_ROWS; i++) {
+            lines.push_back("");
+        }
         std::fill(colors, colors + MAX_NUM_ROWS, false);
         setTitle("mg");
         setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
@@ -125,6 +129,27 @@ public:
             lines[i].clear();
         }
     }
+
+    void deleteLinesShiftUp(int numLines)
+    {
+        // delete current n lines and shift up
+        lines.erase(lines.begin() + currentRow_, lines.begin() + currentRow_ + numLines);
+
+        // empty lines are added to the bottom.
+        for (int i = 0; i < numLines; i++) {
+            lines.push_back("");
+        }
+    }
+
+    void insertLinesShiftDown(int numLines)
+    {
+        for (int i = 0; i < numLines; i++) {
+            lines.insert(lines.begin() + currentRow_, "");
+        }
+
+        lines.erase(lines.end() - currentRow_, lines.end());
+    }
+
 
     void putc(int c)
     {
@@ -298,9 +323,36 @@ void mona_ttinsl(int row, int bot, int nchunk)
 //    ASSERT(bot - row + 1 == nchunk);
     g_frame->clearLines(row, bot);
 }
+
+// putpad(str, num) : alias for tputs(str, num, ttputc)
+//   str : padding information such as delete_line or insert_line.
+//   num : number of lines affected
+//
+// padding information : http://chaos4.phy.ohiou.edu/~thomas/ref/info/termcap/Insdel_Line.html
+//   delete_line: String of commands to delete the line the cursor is on. The following lines move up, and a blank line appears at the bottom of the screen (or bottom of the scroll region). If the terminal has the `db' flag, a nonblank line previously pushed off the screen bottom may reappear at the bottom.
+//   The cursor must be at the left margin before this command is used. This command does not move the cursor.
+
+extern "C" void ttmove(int row, int col);
+extern "C" int ttrow;
+extern "C" int ttcol;
 void mona_ttdell(int row, int bot, int nchunk)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ttmove(row, 0);
+    int nl = MgFrame::MAX_NUM_ROWS - ttrow;
+
+    /* For all lines in the chunk    */
+    for (int i = 0; i < nchunk; i++) {
+        g_frame->deleteLinesShiftUp(nl);
+    }
+
+    ttmove(1 + bot - nchunk, 0);
+
+    for (int i = 0; i < nchunk; i++) {
+        g_frame->insertLinesShiftDown(nl);
+    }
+#define HUGE 1000
+    ttrow = HUGE;
+    ttcol = HUGE;
 }
 void mona_ttwindow(int top, int bot)
 {
@@ -322,11 +374,11 @@ void mona_ttcolor(int color)
 }
 int mona_ttwait(int msec)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    return 0;
 }
 int mona_charswaiting()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    return 0;
 }
 
 // only support often-used char for a while
@@ -450,14 +502,16 @@ int mona_ttcooked()
 void mona_ttclose()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    assert(0);
 }
 void mona_ttopen()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    /* do nothing */
 }
 int mona_ttraw()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    assert(0);
 }
 
 void mona_ttresize()
