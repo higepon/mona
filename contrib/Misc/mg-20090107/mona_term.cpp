@@ -184,18 +184,6 @@ public:
         currentCol_++;
     }
 
-// void repaint()
-// {
-//     if (this->__g == NULL) return;
-
-//     int w = getWidth();
-//     int h = getHeight();
-//     __g->setColor(33, 32, 33);
-//     __g->fillRect(0, 0, w, h);
-
-//     Container::repaint();
-// }
-
     virtual void paint(Graphics* g)
     {
         g->setFontStyle(Font::FIXED);
@@ -350,7 +338,6 @@ void mona_ttdell(int row, int bot, int nchunk)
     for (int i = 0; i < nchunk; i++) {
         g_frame->insertLinesShiftDown(nl);
     }
-#define HUGE 1000
     ttrow = HUGE;
     ttcol = HUGE;
 }
