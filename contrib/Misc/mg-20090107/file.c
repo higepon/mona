@@ -51,26 +51,20 @@ filevisit(int f, int n)
 	struct buffer	*bp;
 	char	 fname[NFILEN], *bufp, *adjf;
 	int	 status;
-    _logprintf("here we are");
 
 	if (getbufcwd(fname, sizeof(fname)) != TRUE)
 		fname[0] = '\0';
 	bufp = eread("Find file: ", fname, NFILEN,
 	    EFNEW | EFCR | EFFILE | EFDEF);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if (bufp == NULL)
 		return (ABORT);
 	else if (bufp[0] == '\0')
 		return (FALSE);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	adjf = adjustname(fname, TRUE);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if (adjf == NULL)
 		return (FALSE);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if ((bp = findbuffer(adjf)) == NULL)
 		return (FALSE);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	curbp = bp;
 	if (showbuffer(bp, curwp, WFFULL) != TRUE)
 		return (FALSE);
@@ -345,13 +339,10 @@ insertfile(char *fname, char *newname, int replacebuf)
 			goto cleanup;
 		}
 		killbuffer(bp);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if ((bp = dired_(fname)) == NULL)
 			return (FALSE);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		undo_enable(FFRAND, x);
 		curbp = bp;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		return (showbuffer(bp, curwp, WFFULL | WFMODE));
 	} else {
 		dp = xdirname(fname);
@@ -495,7 +486,6 @@ cleanup:
 	undo_enable(FFRAND, x);
 
 	/* return FALSE if error */
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return (s != FIOERR);
 }
 
