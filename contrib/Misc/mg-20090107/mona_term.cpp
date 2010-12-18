@@ -293,7 +293,6 @@ void mona_ttmove(int row, int col)
 
 void mona_tteeol()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->eraseToEndOfLine();
     // TODo
     // this causes crash
@@ -314,7 +313,7 @@ void mona_ttbeep()
 void mona_ttinsl(int row, int bot, int nchunk)
 {
     int i, nl;
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* Case of one line insert is special. */
     if (row == bot) {
         ttmove(row, 0);
@@ -338,10 +337,6 @@ void mona_ttinsl(int row, int bot, int nchunk)
     }
     ttrow = HUGE;
     ttcol = HUGE;
-
-//    ASSERT(bot - row + 1 == nchunk);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//    g_frame->clearLines(row, bot);
 }
 
 // putpad(str, num) : alias for tputs(str, num, ttputc)
@@ -445,14 +440,12 @@ int mona_ttgetc()
         }
         int keycode  = info.arg1;
         int modifiers = info.arg2;
-        logprintf("keycode=%x", keycode);
         if (modifiers == KeyEvent::VKEY_CTRL) {
             if ('a' <= keycode && keycode <= 'z') {
                 return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
             } else if (keycode == '/') {
                 return 0x1f;
             } else {
-                _logprintf("keycode=%x", keycode);
                 ASSERT(false);
             }
 
