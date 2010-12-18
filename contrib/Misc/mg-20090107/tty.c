@@ -62,6 +62,7 @@ ttinit(void)
 {
 #ifdef MONA
   ttresize();
+  insdel = 1;
 #else
 	int errret;
 
@@ -323,7 +324,7 @@ void
 ttdell(int row, int bot, int nchunk)
 {
 #ifdef MONA
-  _logprintf("ttdell(row=%d, bot=%d, nchunk=%d)", row, bot, nchunk);
+  _logprintf("insdel=%d ttdell(row=%d, bot=%d, nchunk=%d)", insdel, row, bot, nchunk);
   mona_ttdell(row, bot, nchunk);
 #else
 	int	i, nl;
