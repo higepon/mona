@@ -252,7 +252,6 @@ ffgetline(char *buf, int nbuf, int *nbytes)
 		if (i >= nbuf)
 			return (FIOLONG);
 	}
-    _logprintf("c==EOF=%d ferror(ffp)=%d\n", c==EOF, ferror(ffp));
 	if (c == EOF && ferror(ffp) != FALSE) {
 		ewprintf("File read error");
 		return (FIOERR);
@@ -568,7 +567,6 @@ make_file_list(char *buf)
 	struct list	*last, *current;
 	char		 fl_name[NFILEN + 2];
 	char		 prefixx[NFILEN + 1];
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	/*
 	 * We need three different strings:
 
@@ -597,7 +595,6 @@ make_file_list(char *buf)
 		dir = adjustname(buf, TRUE);
 	if (dir == NULL)
 		return (NULL);
-    _logprintf("dir=%s buf=%s %s %s:%d\n", dir, buf, __func__, __FILE__, __LINE__);
 	/*
 	 * If the user typed a trailing / or the empty string
 	 * he wants us to use his file spec as a directory name.
