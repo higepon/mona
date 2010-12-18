@@ -665,8 +665,11 @@ make_file_list(char *buf)
 		} else if (dent->d_type == DT_LNK ||
 			    dent->d_type == DT_UNKNOWN)
 #endif
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-#ifndef MONA
+
+#ifdef MONA
+        {
+        }
+#else
 		{
 			struct stat	statbuf;
 			char		statname[NFILEN + 2];
