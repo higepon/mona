@@ -295,6 +295,8 @@ void bzero(void* to, size_t count)
 void mona_ttmove(int row, int col)
 {
     g_frame->moveCursor(col, row);
+    ttrow = row;
+    ttcol = col;
 }
 
 void mona_tteeol()
@@ -310,6 +312,7 @@ void mona_tteeol()
 void mona_tteeop()
 {
     g_frame->eraseToEndOfPage();
+    ttrow = ttcol = HUGE;
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_ttbeep()

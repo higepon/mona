@@ -182,9 +182,6 @@ ttmove(int row, int col)
 {
 #ifdef MONA
   mona_ttmove(row, col);
-		ttrow = row;
-		ttcol = col;
-
 #else
 	if (ttrow != row || ttcol != col) {
 		putpad(tgoto(cursor_address, col, row), 1);
@@ -224,7 +221,6 @@ tteeop(void)
 {
 #ifdef MONA
   mona_tteeop();
-  ttrow = ttcol = HUGE;
 #else
 	int	line;
 
@@ -272,8 +268,6 @@ ttinsl(int row, int bot, int nchunk)
 #ifdef MONA
   _logprintf("ttinsl row=%d bot=%d nchunk=%d ", row, bot, nchunk);
   mona_ttinsl(row, bot, nchunk);
-  ttrow = HUGE;
-  ttcol = HUGE;
 #else
 	int	i, nl;
 
