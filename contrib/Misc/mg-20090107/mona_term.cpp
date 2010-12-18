@@ -383,7 +383,6 @@ void mona_ttcolor(int color)
     } else {
         g_frame->setColor(true);
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 // OK
