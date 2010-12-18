@@ -601,21 +601,17 @@ make_file_list(char *buf)
 	 */
 	if (len && buf[len - 1] != '/') {
 		file = strrchr(dir, '/');
-        _logprintf("file=%x", file);
 		if (file) {
 			*file = '\0';
 			if (*dir == '\0')
 				dir = "/";
 		} else {
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return (NULL);
         }
 	}
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	/* Now we get the prefix of the name the user typed. */
 	if (strlcpy(prefixx, buf, sizeof(prefixx)) >= sizeof(prefixx))
 		return (NULL);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	cp = strrchr(prefixx, '/');
 	if (cp == NULL)
 		prefixx[0] = '\0';
