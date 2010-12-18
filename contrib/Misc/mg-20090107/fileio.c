@@ -694,10 +694,8 @@ make_file_list(char *buf)
 		}
 		current->l_next = last;
 		current->l_name = strdup(fl_name);
-        _logprintf("[%s]", current->l_name);
 		last = current;
 	}
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	closedir(dirp);
 
 	return (last);
