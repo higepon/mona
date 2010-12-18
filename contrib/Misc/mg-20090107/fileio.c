@@ -617,12 +617,10 @@ make_file_list(char *buf)
 		prefixx[0] = '\0';
 	else
 		cp[1] = '\0';
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	preflen = strlen(prefixx);
 	/* cp is the tail of buf that really needs to be compared. */
 	cp = buf + preflen;
 	len = strlen(cp);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	/*
 	 * Now make sure that file names will fit in the buffers allocated.
 	 * SV files are fairly short.  For BSD, something more general would
@@ -643,12 +641,10 @@ make_file_list(char *buf)
 	 * avoid doing the stat if completion is being done, because stat'ing
 	 * every file in the directory is relatively expensive.
 	 */
-    _logprintf("dir=%s %s %s:%d\n", dir, __func__, __FILE__, __LINE__);
 	dirp = opendir(dir);
 	if (dirp == NULL)
 		return (NULL);
 	last = NULL;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	while ((dent = readdir(dirp)) != NULL) {
 		int isdir;
 #if defined (__CYGWIN__)	/* Cygwin lacks reclen/namlen. */
@@ -660,7 +656,6 @@ make_file_list(char *buf)
 		if (dent->d_namlen < len || memcmp(cp, dent->d_name, len) != 0)
 #endif
 			continue;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		isdir = 0;
 
 #ifndef __CYGWIN__      /* No support for d_type in Cygwin, do all
