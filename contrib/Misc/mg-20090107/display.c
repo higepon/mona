@@ -1053,6 +1053,7 @@ traceback(int offs, int size, int i, int j)
 		}
 		if (ndell != 0) {
 			ttcolor(CTEXT);
+            _logprintf("ndell=%d %s %s:%d\n", ndell, __func__, __FILE__, __LINE__);
 			ttdell(offs + i - ndell, offs + size - 1, ndell);
 		}
 		traceback(offs, size, itrace, jtrace);

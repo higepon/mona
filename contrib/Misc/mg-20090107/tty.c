@@ -63,6 +63,9 @@ ttinit(void)
 #ifdef MONA
   ttresize();
   insdel = 1;
+  tceeol = ncol;
+  tcinsl = nrow * ncol;
+  tcdell = nrow * ncol;
 #else
 	int errret;
 
@@ -229,7 +232,7 @@ tteeop(void)
 		putpad(clr_eos, nrow - ttrow);
 	else {
 		putpad(clr_eol, 1);
-		if (insdel)
+		if (insdel) 
 			ttdell(ttrow + 1, lines, lines - ttrow - 1);
 		else {
 			/* do it by hand */
