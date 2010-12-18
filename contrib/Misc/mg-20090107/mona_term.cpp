@@ -126,12 +126,12 @@ public:
         line.erase(line.begin() + currentCol_, line.end());
     }
 
-    void clearLines(int startRow, int endRow)
-    {
-        for (uint16_t i = startRow; i <= endRow; i++) {
-            lines[i].clear();
-        }
-    }
+    // void clearLines(int startRow, int endRow)
+    // {
+    //     for (uint16_t i = startRow; i <= endRow; i++) {
+    //         lines[i].clear();
+    //     }
+    // }
 
     void deleteLinesShiftUp(int numLines)
     {
