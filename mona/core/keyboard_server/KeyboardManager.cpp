@@ -155,11 +155,11 @@ int KeyBoardManager::setKeyScanCode(uint8_t scancode) {
           break;
     }
 
-    if      (isShift_) modifiers |= KEY_MODIFIER_SHIFT;
-    else if (isCtrl_)  modifiers |= KEY_MODIFIER_CTRL;
-    else if (isAlt_)   modifiers |= KEY_MODIFIER_ALT;
-    else if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
-    else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
+    if (isShift_) modifiers |= KEY_MODIFIER_SHIFT;
+    if (isCtrl_)  modifiers |= KEY_MODIFIER_CTRL;
+    if (isAlt_)   modifiers |= KEY_MODIFIER_ALT;
+    if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
+    if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
     //printf("{%2x:%2x} ", scancode, modifiers);
     /* allocate keyinfo */
