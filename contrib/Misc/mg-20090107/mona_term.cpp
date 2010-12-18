@@ -318,9 +318,35 @@ void mona_ttbeep()
 }
 void mona_ttinsl(int row, int bot, int nchunk)
 {
+    int i, nl;
+
+    /* Case of one line insert is special. */
+    if (row == bot) {
+        ttmove(row, 0);
+        tteeol();
+        return;
+    }
+    ttmove(1 + bot - nchunk, 0);
+    nl = nrow - ttrow;
+    /* For all lines in the chunk... */
+    for (i = 0; i < nchunk; i++) {
+        g_frame->deleteLinesShiftUp(nl);
+    }
+    ttmove(row, 0);
+
+    /* ttmove() changes ttrow */
+    nl = nrow - ttrow;
+
+    /* For all lines in the chunk */
+    for (i = 0; i < nchunk; i++) {
+        g_frame->insertLinesShiftDown(nl);
+    }
+    ttrow = HUGE;
+    ttcol = HUGE;
+
 //    ASSERT(bot - row + 1 == nchunk);
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    g_frame->clearLines(row, bot);
+//    g_frame->clearLines(row, bot);
 }
 
 // putpad(str, num) : alias for tputs(str, num, ttputc)
