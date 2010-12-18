@@ -291,15 +291,22 @@ void bzero(void* to, size_t count)
     memset (to, 0, count);
 }
 
+
 void mona_ttmove(int row, int col)
 {
     g_frame->moveCursor(col, row);
 }
+
 void mona_tteeol()
 {
-    g_frame->eraseToEndOfLine();
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    g_frame->eraseToEndOfLine();
+    // TODo
+    // this causes crash
+    // ttrow = HUGE;
+    // ttcol = HUGE;
 }
+
 void mona_tteeop()
 {
     g_frame->eraseToEndOfPage();
@@ -312,6 +319,7 @@ void mona_ttbeep()
 void mona_ttinsl(int row, int bot, int nchunk)
 {
 //    ASSERT(bot - row + 1 == nchunk);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->clearLines(row, bot);
 }
 
@@ -325,6 +333,7 @@ void mona_ttinsl(int row, int bot, int nchunk)
 
 void mona_ttdell(int row, int bot, int nchunk)
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ttmove(row, 0);
     int nl = MgFrame::MAX_NUM_ROWS - ttrow;
 
@@ -349,20 +358,25 @@ void mona_ttnowindow()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
+
 void mona_ttcolor(int color)
 {
     ASSERT(color == 0 || color == 1 || color == 2);
     if (color == 0 || color == 1) {
-//        g_frame->setColor(false);
+        // do nothing
     } else {
         g_frame->setColor(true);
     }
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
+
+// OK
 int mona_ttwait(int msec)
 {
     return 0;
 }
+
+// OK
 int mona_charswaiting()
 {
     return 0;
@@ -394,31 +408,6 @@ static inline char keyToChar(int keycode, int modifiers, int charcode)
   }
   return -1;
 }
-
-// int mona_ttgetc()
-// {
-//     MessageInfo info;
-//     while(M_OK == MonAPI::Message::receive(&info)) {
-//         if(info.header == MSG_KEY_VIRTUAL_CODE) {
-//             int keycode  = info.arg1;
-//             int modifiers = info.arg2;
-//             logprintf("keycode=%x", keycode);
-//             if (modifiers == KeyEvent::VKEY_CTRL) {
-//                 logprintf("ctrl!!!");
-//                 return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
-//             }
-//             if (keycode == KeyEvent::VKEY_ENTER) {
-//                 _logprintf("ENTER");
-//                 return 0x0d;
-//             } else if (keycode == KeyEvent::VKEY_TAB) {
-//                 return '\t';
-//             } else {
-//                 return keycode;
-//             }
-//         }
-//     }
-//     return '\n';
-// }
 
 int mona_ttgetc()
 {
@@ -468,12 +457,15 @@ int mona_ttgetc()
     return '\n';
 }
 
+// OK
 void mona_ttflush()
 {
     ASSERT(g_frame);
     // todo message でやるほうが行儀が良い
     g_frame->repaint();
 }
+
+// OK
 int mona_ttputc(int c)
 {
     #ifdef MONA
@@ -482,25 +474,33 @@ int mona_ttputc(int c)
     ASSERT(g_frame);
     g_frame->putc(c);
 }
+
+// OK
 int mona_ttcooked()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
+
+// OK
 void mona_ttclose()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     assert(0);
 }
+
+// OK
 void mona_ttopen()
 {
     /* do nothing */
 }
+
 int mona_ttraw()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     assert(0);
 }
 
+// OK
 void mona_ttresize()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
