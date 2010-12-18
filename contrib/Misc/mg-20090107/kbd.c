@@ -96,7 +96,6 @@ getkey(int flag)
 		pushed = FALSE;
 	} else
 		c = ttgetc();
-    _logprintf("getc=%x", c);
 
 #ifdef __CYGWIN__
 	/* Backspace is ^H on Cygwin. Interpreting ^H as ^? is the
