@@ -459,7 +459,7 @@ int mona_ttgetc()
         case KeyEvent::VKEY_TAB:
             return '\t';
         case KeyEvent::VKEY_BACKSPACE:
-            return '\b';
+            return 0x7f;
         // case KeyEvent::VKEY_ALT:
         // case KeyEvent::VKEY_LMENU:
         //     return '\e';
