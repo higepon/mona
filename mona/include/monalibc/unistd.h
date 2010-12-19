@@ -1,5 +1,5 @@
 /*
- * socket.h - BSD Socket
+ * unistd.h
  *
  *   Copyright (c) 2010 Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
@@ -34,13 +34,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-// extern char (**__environ)();
-// #define environ (*__environ())
 
 int getopt(int argc, char * const argv[],
            const char *optstring);
 
 int unlink(const char *path);
+int rmdir(const char *path);
 
 extern char *optarg;
 extern int optind, opterr, optopt;
