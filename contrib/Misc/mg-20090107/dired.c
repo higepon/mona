@@ -340,9 +340,6 @@ d_ffotherwindow(int f, int n)
 int
 d_expunge(int f, int n)
 {
-#ifdef MONA
-  assert(0);
-#else
 	struct line	*lp, *nlp;
 	char		 fname[NFILEN];
 
@@ -374,7 +371,6 @@ d_expunge(int f, int n)
 		}
 	}
 	return (TRUE);
-#endif
 }
 
 /* ARGSUSED */
