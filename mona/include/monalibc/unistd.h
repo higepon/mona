@@ -40,6 +40,8 @@ extern "C" {
 int getopt(int argc, char * const argv[],
            const char *optstring);
 
+int unlink(const char *path);
+
 extern char *optarg;
 extern int optind, opterr, optopt;
 
