@@ -96,7 +96,7 @@ getkey(int flag)
 		pushed = FALSE;
 	} else
 		c = ttgetc();
-
+    _logprintf("keycode=%x", c);
 #ifdef __CYGWIN__
 	/* Backspace is ^H on Cygwin. Interpreting ^H as ^? is the
 	 * standard way of solving this problem on Cygwin console

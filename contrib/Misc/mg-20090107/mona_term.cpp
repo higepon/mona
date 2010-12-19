@@ -106,6 +106,13 @@ public:
         ASSERT(row < MAX_NUM_ROWS);
         ASSERT(col < MAX_NUM_COLS);
         currentRow_ = row;
+        std::string& line = lines[row];
+        size_t lineSize = line.size();
+        if (col > lineSize) {
+            for (size_t i = 0; i < col - lineSize + 1; i++) {
+                line += ' ';
+            }
+        }
         currentCol_ = col;
     }
 
@@ -164,15 +171,19 @@ public:
             return;
         }
         if (line.size() == currentCol_) {
+            _logprintf("line += %x\n", c);
             line += c;
         } else if (line.size() < currentCol_) {
+            assert(0);
             size_t lineSize = line.size();
             for (size_t i = 0; i < currentCol_ - lineSize + 1; i++) {
                 line += ' ';
             }
+            _logprintf("line2 += %x currentCol_ - lineSize + 1=%d\n", c, currentCol_ - lineSize + 1);
             line += c;
         } else {
             line.erase(line.begin() + currentCol_, line.end());
+            _logprintf("line3 += %x\n", c);
             line += c;
         }
         currentCol_++;
@@ -190,6 +201,7 @@ public:
             }
             g->setColor(colors[i] ? baygui::Color::black : baygui::Color::white);
             g->drawString(line.c_str(), 0, fontHeight() * i);
+            _logprintf("line<%s>\n", line.c_str());
         }
         if (cursorEnabled_) {
             g->setColor(baygui::Color::white);
@@ -286,6 +298,7 @@ void bzero(void* to, size_t count)
 
 void mona_ttmove(int row, int col)
 {
+    _logprintf("row=%d col=%d %s %s:%d\n", row, col, __func__, __FILE__, __LINE__);
     g_frame->moveCursor(col, row);
     ttrow = row;
     ttcol = col;
@@ -453,6 +466,7 @@ int mona_ttgetc()
             ungetc = keycode;
             return '\e';
         }
+        logprintf("mona_ttgetc=%x\n", keycode);
         switch (keycode) {
         case KeyEvent::VKEY_ENTER:
             return 0x0d;
