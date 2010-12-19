@@ -407,9 +407,6 @@ d_copy(int f, int n)
 int
 d_rename(int f, int n)
 {
-#ifdef MONA
-  assert(0);
-#else
 	char		 frname[NFILEN], toname[NFILEN], *bufp;
 	int		 ret;
 	size_t		 off;
@@ -434,7 +431,6 @@ d_rename(int f, int n)
 		return (ret);
 	bp = dired_(curbp->b_fname);
 	return (showbuffer(bp, curwp, WFFULL | WFMODE));
-#endif
 }
 
 /* ARGSUSED */
