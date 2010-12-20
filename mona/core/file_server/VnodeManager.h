@@ -24,13 +24,18 @@ public:
     int stat(const std::string& path, Stat* st);
     int close(uint32_t fileID);
     int create(const std::string& name);
+    int create_directory(const std::string& name);
     int delete_file(const std::string& name);
-    int readdir(const std::string& name, MonAPI::SharedMemory** mem);
+    int delete_directory(const std::string& name);
+    int read_directory(const std::string& name, MonAPI::SharedMemory** mem);
     // N.B fileID should be posive, since negative values indicates error.
     intptr_t fileID(Vnode* file , uint32_t tid) {return abs((intptr_t)file | tid);} // temporary
     Vnode* alloc();
     VnodeCacher* cacher() {return cacher_;}
     void split(std::string str, char ch, std::vector<std::string>& v);
+private:
+    int delete_file(const std::string& name, bool isDirectory);
+    int create_file(const std::string& name, bool isDirectory);
 
 protected:
 

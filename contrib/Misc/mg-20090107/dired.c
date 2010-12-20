@@ -456,7 +456,8 @@ int
 d_shell_command(int f, int n)
 {
 #ifdef MONA
-  assert(0);
+  ewprintf("shell command is not supported");
+  return (FALSE);
 #else
 	char	 command[512], fname[MAXPATHLEN], buf[BUFSIZ], *bufp, *cp;
 	int	 infd, fds[2];

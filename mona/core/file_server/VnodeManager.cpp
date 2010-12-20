@@ -19,7 +19,7 @@ VnodeManager::~VnodeManager()
     delete cacher_;
 }
 
-int VnodeManager::delete_file(const std::string& name)
+int VnodeManager::delete_file(const std::string& name, bool isDirectory)
 {
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return M_BAD_ARG;
@@ -31,7 +31,11 @@ int VnodeManager::delete_file(const std::string& name)
     if (ret != M_OK) {
         return ret;
     }
-    ret = file->fs->delete_file(file);
+    if (isDirectory) {
+        ret = file->fs->delete_directory(file);
+    } else {
+        ret = file->fs->delete_file(file);
+    }
     if (ret == M_OK) {
         Vnode* targetDirectory = NULL;
         uint32_t foundIndex = name.find_last_of('/');
@@ -49,6 +53,20 @@ int VnodeManager::delete_file(const std::string& name)
         cacher_->remove(targetDirectory, filename);
     }
     return ret;
+}
+
+int VnodeManager::delete_file(const std::string& name)
+{
+    _logprintf("delete_file=<%s>", name.c_str());
+    const bool IS_DIRECTORY = false;
+    return delete_file(name, IS_DIRECTORY);
+}
+
+int VnodeManager::delete_directory(const std::string& name)
+{
+    _logprintf("delete_directory=<%s>", name.c_str());
+    const bool IS_DIRECTORY = true;
+    return delete_file(name, IS_DIRECTORY);
 }
 
 int VnodeManager::lookupOne(Vnode* directory, const string& file, Vnode** found, int type)
@@ -93,7 +111,7 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
     return ret;
 }
 
-int VnodeManager::readdir(const std::string&name, SharedMemory** mem)
+int VnodeManager::read_directory(const std::string&name, SharedMemory** mem)
 {
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return M_FILE_NOT_FOUND;
@@ -121,7 +139,7 @@ int VnodeManager::readdir(const std::string&name, SharedMemory** mem)
             return ret;
         }
     }
-    int ret = dir->fs->readdir(dir, mem);
+    int ret = dir->fs->read_directory(dir, mem);
 
     if (ret != M_OK) {
         return ret;
@@ -174,7 +192,7 @@ int VnodeManager::readdir(const std::string&name, SharedMemory** mem)
     return M_OK;
 }
 
-int VnodeManager::create(const std::string& name)
+int VnodeManager::create_file(const std::string& name, bool isDirectory)
 {
     Vnode* targetDirectory = NULL;
     uint32_t foundIndex = name.find_last_of('/');
@@ -189,7 +207,23 @@ int VnodeManager::create(const std::string& name)
         }
         filename = name.substr(foundIndex + 1, name.size() - foundIndex);
     }
-    return targetDirectory->fs->create(targetDirectory, filename);
+    if (isDirectory) {
+        return targetDirectory->fs->create_directory(targetDirectory, filename);
+    } else {
+        return targetDirectory->fs->create(targetDirectory, filename);
+    }
+}
+
+int VnodeManager::create(const std::string& name)
+{
+    const bool IS_DIRECTORY = false;
+    return create_file(name, IS_DIRECTORY);
+}
+
+int VnodeManager::create_directory(const std::string& name)
+{
+    const bool IS_DIRECTORY = true;
+    return create_file(name, IS_DIRECTORY);
 }
 
 int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uint32_t* fileID)

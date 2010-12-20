@@ -88,6 +88,8 @@ extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origi
 extern intptr_t monapi_file_close(uint32_t id);
 extern intptr_t monapi_file_get_file_size(uint32_t id);
 extern intptr_t monapi_file_delete(const char* file);
+extern intptr_t monapi_file_create_directory(const char* file);
+extern intptr_t monapi_file_delete_directory(const char* file);
 extern MONAPI_BOOL monapi_file_exists(const char* path);
 extern MONAPI_BOOL monapi_file_is_directory(const char* path);
 extern intptr_t monapi_file_stop_server();

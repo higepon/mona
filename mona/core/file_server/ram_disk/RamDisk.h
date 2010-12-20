@@ -179,6 +179,16 @@ namespace RamDisk {
               return M_OK;
           }
 
+          virtual int create_directory(Vnode* dir, const std::string& file)
+          {
+              return M_NOT_SUPPORTED;
+          }
+
+          virtual int delete_directory(Vnode* dir)
+          {
+              return M_NOT_SUPPORTED;
+          }
+
           virtual int create(Vnode* dir, const std::string& file)
             {
                 FileMap::iterator it = files_.find(file);
@@ -242,7 +252,7 @@ namespace RamDisk {
                 context->offset += writeSize;
                 return writeSize;
           }
-          virtual int readdir(Vnode* dir, SharedMemory** entries)
+          virtual int read_directory(Vnode* dir, SharedMemory** entries)
             {
                 typedef std::vector<monapi_directoryinfo*> Files;
                 Files files;
@@ -285,7 +295,7 @@ namespace RamDisk {
                 if(file == root_)
                   return M_BAD_ARG; // root is undeletable
 
-                destroyVnode(file);
+                destroy_vnode(file);
                 return M_OK;
             }
           virtual int stat(Vnode* file, Stat* st)
@@ -298,7 +308,7 @@ namespace RamDisk {
             {
                 return root_;
             }
-          virtual void destroyVnode(Vnode* vnode)
+          virtual void destroy_vnode(Vnode* vnode)
             {
                 if (vnode->type == Vnode::DIRECTORY)
                   {

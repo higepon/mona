@@ -402,6 +402,33 @@ intptr_t monapi_file_delete(const char* file)
     return msg.arg2;
 }
 
+intptr_t monapi_file_delete_directory(const char* file)
+{
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
+    MessageInfo msg;
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_DELETE_DIRECTORY, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
+    }
+    return msg.arg2;
+}
+
+intptr_t monapi_file_create_directory(const char* file)
+{
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
+    MessageInfo msg;
+    intptr_t ret = Message::sendReceive(&msg, tid, MSG_FILE_CREATE_DIRECTORY, 0, 0, 0, file);
+    if (ret != M_OK) {
+        return ret;
+    }
+    return msg.arg2;
+}
 
 intptr_t monapi_file_stop_server()
 {

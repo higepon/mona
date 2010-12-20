@@ -35,7 +35,7 @@ VnodeCacher::~VnodeCacher()
     {
         Vnode* v = (*it);
         // todo. v->fs will be destroyed before coming this line.
-//        v->fs->destroyVnode(v);
+//        v->fs->destroy_vnode(v);
     }
     delete directories_;
 }

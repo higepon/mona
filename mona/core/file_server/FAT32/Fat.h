@@ -373,6 +373,23 @@ public:
         return context->size;
     }
 
+    virtual int create_directory(Vnode* dir, const std::string& file)
+    {
+        _logprintf("fat:create_directory=<%s>", file.c_str());
+        ASSERT(dir->type == Vnode::DIRECTORY);
+        const bool IS_DIRECTORY = true;
+        if (isLongName(file)) {
+            intptr_t ret = createLongNameFile(dir, file, IS_DIRECTORY);
+            if (ret != M_OK) {
+                return ret;
+            } else {
+                return M_OK;
+            }
+        } else {
+            return createShortNameFile(dir, file, IS_DIRECTORY);
+        }
+    }
+
     virtual int create(Vnode* dir, const std::string& file)
     {
         ASSERT(dir->type == Vnode::DIRECTORY);
@@ -388,7 +405,7 @@ public:
         }
     }
 
-    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries)
+    virtual int read_directory(Vnode* directory, MonAPI::SharedMemory** entries)
     {
         typedef std::vector<monapi_directoryinfo> DirInfos;
         DirInfos dirInfos;
@@ -458,22 +475,50 @@ public:
         if(vnode == root_) {
             return M_BAD_ARG; // root is undeletable
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         File* entry = getFileByVnode(vnode);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         theEntry->name[0] = FREE_ENTRY;
+        theEntry->attr = 0;
+        _logprintf("getClusterInParent=%d:%d %s %s:%d\n", entry->getClusterInParent(), entry->getIndexInParentCluster(),  __func__, __FILE__, __LINE__);
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int ret = freeClusters(entry);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (ret != M_OK) {
             return ret;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         entry->getParent()->removeChild(entry);
-        destroyVnode(vnode);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        destroy_vnode(vnode);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_OK;
+    }
+
+    virtual int delete_directory(Vnode* vnode)
+    {
+        ASSERT(vnode->type == Vnode::DIRECTORY);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if(vnode == root_) {
+            return M_BAD_ARG; // root is undeletable
+        }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        File* entry = getFileByVnode(vnode);
+        _logprintf("%s %s:%dentry=<%x>\n", __func__, __FILE__, __LINE__, entry->getChildlen());
+        if (entry->getChildlen()->size() != 0) {
+            return M_FILE_EXISTS;
+        }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return delete_file(vnode);
     }
 
     virtual int stat(Vnode* vnode, Stat* st)
@@ -484,7 +529,7 @@ public:
         return M_OK;
     }
 
-    virtual void destroyVnode(Vnode* vnode)
+    virtual void destroy_vnode(Vnode* vnode)
     {
         File* entry = getFileByVnode(vnode);
         delete entry;
@@ -1015,11 +1060,11 @@ private:
         *((uint16_t*)entry->time) = packTime(date.hour(), date.min(), date.sec());
     }
 
-    void initializeEntry(struct de* entry, const std::string& name, const std::string& ext)
+    void initializeEntry(struct de* entry, const std::string& name, const std::string& ext, bool isDirectory)
     {
         ASSERT(name.size() <= 8);
         ASSERT(ext.size() <= 3);
-        entry->attr = 0;
+        entry->attr = isDirectory ? ATTR_SUBDIR : 0;
         memset(entry->name, ' ', 8);
         memcpy(entry->name, name.c_str(), name.size());
         memset(entry->ext, ' ', 3);
@@ -1027,11 +1072,14 @@ private:
         setEntry(entry, 0, 0);
     }
 
-    void initializeEntry(struct de* entry, const std::string& filename)
+    void initializeEntry(struct de* entry, const std::string& filename, bool isDirectory)
     {
         std::vector<std::string> nameAndExt = split(filename, '.');
-        ASSERT(nameAndExt.size() == 2);
-        initializeEntry(entry, nameAndExt[0], nameAndExt[1]);
+        if (nameAndExt.size() == 2) {
+            initializeEntry(entry, nameAndExt[0], nameAndExt[1], isDirectory);
+        } else if (nameAndExt.size() == 1) {
+            initializeEntry(entry, nameAndExt[0], "  ", isDirectory);
+        }
     }
 
     intptr_t updateParentCluster(File* entry)
@@ -1166,9 +1214,15 @@ private:
         return sum;
     }
 
-    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster)
+    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster, bool isDirectory)
     {
-        File* file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
+        File* file = NULL;
+        if (isDirectory) {
+            Files empty;
+            file = new File(name, 0, empty, clusterInParent, indexInParentCluster);
+        } else {
+            file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
+        }
         ASSERT(file);
         MonAPI::Date now;
         file->setDate(now.getKDate());
@@ -1177,7 +1231,7 @@ private:
         file->setParent(d);
     }
 
-    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster)
+    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, bool isDirectory)
     {
         if (!readCluster(cluster, buf_)) {
             return M_READ_ERROR;
@@ -1187,8 +1241,8 @@ private:
         struct de* entries = (struct de*)buf_;
         for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                createAndAddFile(dir, file, cluster, i);
-                initializeEntry(&entries[i], file);
+                createAndAddFile(dir, file, cluster, i, isDirectory);
+                initializeEntry(&entries[i], file, isDirectory);
                 if (writeCluster(cluster, buf_)) {
                     return M_OK;
                 } else {
@@ -1252,7 +1306,7 @@ private:
         }
     }
 
-    int createLongNameEntryInCluster(Vnode* dir, uint8_t* buf, uint32_t targetCluster, const std::string& file, uint32_t startIndex, uint32_t numEntries)
+    int createLongNameEntryInCluster(Vnode* dir, uint8_t* buf, uint32_t targetCluster, const std::string& file, uint32_t startIndex, uint32_t numEntries, bool isDirectory)
     {
         LFNEncoder encoder;
         uint32_t encodedLen;
@@ -1263,8 +1317,8 @@ private:
         for (uint32_t i = startIndex, seq = numEntries - 1; ; i++) {
             if (seq == 0) {
                 struct de* entry = (struct de*)buf + i;
-                initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT);
-                createAndAddFile(dir, file, targetCluster, i);
+                initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT, false);
+                createAndAddFile(dir, file, targetCluster, i, isDirectory);
                 break;
             } else {
                 struct lfn* p = (struct lfn*)(buf) + i;
@@ -1293,7 +1347,7 @@ private:
         return M_OK;
     }
 
-    int createLongNameFile(Vnode* dir, const std::string& file)
+    int createLongNameFile(Vnode* dir, const std::string& file, bool isDirectory = false)
     {
         if (file.size() > MAX_LONG_NAME) {
             return M_NO_SPACE;
@@ -1331,13 +1385,13 @@ private:
         }
         uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
         startIndex = inExtraCluster ? 0 :startIndex;
-        return createLongNameEntryInCluster(dir, buf_, targetCluster, file, startIndex, requiredNumEntries);
+        return createLongNameEntryInCluster(dir, buf_, targetCluster, file, startIndex, requiredNumEntries, isDirectory);
     }
 
-    int createShortNameFile(Vnode* dir, const std::string& file)
+    int createShortNameFile(Vnode* dir, const std::string& file, bool isDirectory = false)
     {
         uint32_t cluster = getLastClusterByVnode(dir);
-        int ret = tryCreateNewEntryInCluster(dir, file, cluster);
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster, isDirectory);
         if (ret == M_OK) {
             return M_OK;
         } else if (ret == M_NO_SPACE) {
@@ -1346,7 +1400,7 @@ private:
                 return M_NO_SPACE;
             }
 
-            int ret = tryCreateNewEntryInCluster(dir, file, newCluster);
+            int ret = tryCreateNewEntryInCluster(dir, file, newCluster, isDirectory);
             if (ret != M_OK) {
                 return ret;
             }

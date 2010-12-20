@@ -22,12 +22,12 @@ public:
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int write(Vnode* file, struct io::Context* context);
     virtual int seek(Vnode* file, uint32_t offset, uint32_t origin);
-    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries);
+    virtual int read_directory(Vnode* directory, MonAPI::SharedMemory** entries);
     virtual int close(Vnode* file);
     virtual int delete_file(Vnode* file) { return M_NOT_SUPPORTED; }
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
-    virtual void destroyVnode(Vnode* vnode);
+    virtual void destroy_vnode(Vnode* vnode);
 
     enum
     {

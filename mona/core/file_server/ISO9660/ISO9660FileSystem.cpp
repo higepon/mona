@@ -150,7 +150,7 @@ Vnode* ISO9660FileSystem::getRoot() const
     return root_;
 }
 
-int ISO9660FileSystem::readdir(Vnode* dir, SharedMemory** entries)
+int ISO9660FileSystem::read_directory(Vnode* dir, SharedMemory** entries)
 {
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
@@ -610,7 +610,7 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
     return true;
 }
 
-void ISO9660FileSystem::destroyVnode(Vnode* vnode)
+void ISO9660FileSystem::destroy_vnode(Vnode* vnode)
 {
     iso9660::Entry* entry = (iso9660::Entry*)vnode->fnode;
     if (vnode->type != Vnode::DIRECTORY) delete entry; // directory is deleted on destructor

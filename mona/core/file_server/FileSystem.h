@@ -41,12 +41,14 @@ public:
     virtual int write(Vnode* file, struct io::Context* context)                           = 0;
     virtual int create(Vnode* dir, const std::string& file)                               = 0;
     virtual int truncate(Vnode* file)                                                     = 0;
-    virtual int readdir(Vnode* directory, MonAPI::SharedMemory** entries)                 = 0;
+    virtual int read_directory(Vnode* directory, MonAPI::SharedMemory** entries)          = 0;
     virtual int close(Vnode* file)                                                        = 0;
     virtual int delete_file(Vnode* file)                                                  = 0;
+    virtual int delete_directory(Vnode* file)                                             = 0;
+    virtual int create_directory(Vnode* file, const std::string& name)                    = 0;
     virtual int stat(Vnode* file, Stat* st)                                               = 0;
     virtual Vnode* getRoot() const                                                        = 0;
-    virtual void destroyVnode(Vnode* vnode)                                               = 0;
+    virtual void destroy_vnode(Vnode* vnode)                                              = 0;
 };
 
 #endif

@@ -148,66 +148,73 @@
 #define M_FILE_NOT_FOUND -5017
 
 /*
+    constant: M_FILE_EXISTS
+
+    Indicates file exists
+*/
+#define M_FILE_EXISTS -5018
+
+/*
     constant: M_NO_SPACE
 
     Indicates no space
 */
-#define M_NO_SPACE -5018
+#define M_NO_SPACE -5019
 
 /*
     constant: M_READ_ERROR
 
     Indicates read error
 */
-#define M_READ_ERROR -5019
+#define M_READ_ERROR -5020
 
 /*
     constant: M_WRITE_ERROR
 
     Indicates write error
 */
-#define M_WRITE_ERROR -5020
+#define M_WRITE_ERROR -5021
 
 /*
     constant: M_BAD_OFFSET
 
     Indicates bad offset
 */
-#define M_BAD_OFFSET -5021
+#define M_BAD_OFFSET -5022
 
 /*
     constant: M_BAD_FILE_ID
 
     Indicates bad file id
 */
-#define M_BAD_FILE_ID -5022
+#define M_BAD_FILE_ID -5023
 
 /*
     constant: M_NOT_SUPPORTED
 
     Indicates not supported
 */
-#define M_NOT_SUPPORTED -5023
+#define M_NOT_SUPPORTED -5024
 
 /*
     constant: M_UNKNOWN
 
     Indicates unknown error
 */
-#define M_UNKNOWN -5024
+#define M_UNKNOWN -5025
 
 /*
     constant: M_BAD_ARG
 
     Indicates bad arguments
 */
-#define M_BAD_ARG -5025
+#define M_BAD_ARG -5026
 
 /*
     constant: M_OBJECT_NOT_FOUND
 
     Indicates object not found
 */
-#define M_OBJECT_NOT_FOUND -5026
+#define M_OBJECT_NOT_FOUND -5027
 
 #endif

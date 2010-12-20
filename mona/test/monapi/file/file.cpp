@@ -256,8 +256,6 @@ static void test_fatfs_write_file()
     Vnode* root = fat->getRoot();
     const char* FILENAME = "MY1.TXT";
 
-    FatFileSystem::File* rootDir = (FatFileSystem::File*)root->fnode;
-    FatFileSystem::Files* entries = rootDir->getChildlen();
     Vnode* found;
     ASSERT_EQ(M_OK, fat->lookup(root, FILENAME, &found, Vnode::REGULAR));
 
@@ -402,7 +400,7 @@ static void test_fatfs_readdir()
     Vnode* root = fat->getRoot();
 
     SharedMemory* cmi;
-    ASSERT_EQ(M_OK, fat->readdir(root, &cmi));
+    ASSERT_EQ(M_OK, fat->read_directory(root, &cmi));
     ASSERT_TRUE(cmi != NULL);
 
     int size = *(int*)cmi->data();
@@ -567,6 +565,79 @@ static void test_delete_create_should_remove_vnode_cache()
     monapi_file_close(file);
 }
 
+static void fatfs_create_directory(const char* name)
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    EXPECT_EQ(M_OK, fat->create_directory(root, name));
+
+    Vnode* found;
+    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+    FatFileSystem::File* file = (FatFileSystem::File*)(found->fnode);
+    EXPECT_STR_EQ(name, file->getName().c_str());
+    EXPECT_TRUE(file->isDirectory());
+}
+
+static void test_fatfs_create_directory()
+{
+    const char* shortname = "newdir";
+    fatfs_create_directory(shortname);
+
+    const char* longname = "longnamedirectory";
+    fatfs_create_directory(longname);
+}
+
+static void fatfs_delete_directory(const char* name)
+{
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    ASSERT_EQ(M_OK, fat->create_directory(root, name));
+
+    Vnode* found;
+    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+
+    ASSERT_EQ(M_OK, fat->delete_directory(found));
+    _logprintf("file = <%s>", name);
+    ASSERT_EQ(M_FILE_NOT_FOUND, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+}
+
+static void test_fatfs_delete_directory()
+{
+    const char* shortname = "newdir";
+    fatfs_delete_directory(shortname);
+
+    const char* longname = "longnamedirectory";
+    fatfs_delete_directory(longname);
+}
+
+static void test_fatfs_try_delete_not_empty_directory()
+{
+    const char* name = "higedir";
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    EXPECT_EQ(M_OK, fat->create_directory(root, name));
+
+    Vnode* found;
+    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+    EXPECT_EQ(M_OK, fat->create_directory(found, "higesub"));
+
+    EXPECT_EQ(M_FILE_EXISTS, fat->delete_directory(found));
+    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+}
+
+static void test_create_delete_directory()
+{
+    const char* filename = "/USER/TEMP/HIGEDIR";
+    ASSERT_EQ(M_OK, monapi_file_create_directory(filename));
+    ASSERT_TRUE(monapi_file_exists(filename));
+    ASSERT_EQ(M_OK, monapi_file_delete_directory(filename));
+    ASSERT_EQ(false, monapi_file_exists(filename));
+}
+
+
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
 int main(int argc, char *argv[])
@@ -610,9 +681,13 @@ int main(int argc, char *argv[])
     test_fatfs_create_long_file_name_need_new_cluster();
     test_fatfs_monapi_open();
     test_fatfs_truncate_and_write();
+    test_fatfs_create_directory();
+    test_fatfs_delete_directory();
+    test_fatfs_try_delete_not_empty_directory();
+
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();
-
+    test_create_delete_directory();
     TEST_RESULTS(file);
     return 0;
 }

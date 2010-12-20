@@ -183,7 +183,7 @@ Vnode* FAT12FileSystem::getRoot() const
     return root_;
 }
 
-int FAT12FileSystem::readdir(Vnode* dir, MonAPI::SharedMemory** entries)
+int FAT12FileSystem::read_directory(Vnode* dir, MonAPI::SharedMemory** entries)
 {
     deviceOn();
     Directory* target = (Directory*)dir->fnode;
@@ -221,7 +221,8 @@ int FAT12FileSystem::readdir(Vnode* dir, MonAPI::SharedMemory** entries)
     return M_OK;
 }
 
-void FAT12FileSystem::destroyVnode(Vnode* vnode)
+
+void FAT12FileSystem::destroy_vnode(Vnode* vnode)
 {
     if (vnode->type == Vnode::DIRECTORY)
     {

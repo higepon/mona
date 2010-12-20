@@ -48,6 +48,8 @@ const char* monapi_error_string(int error)
         return "no memory";
     case M_FILE_NOT_FOUND:
         return "file not found";
+    case M_FILE_EXISTS:
+        return "file exists";
     case M_NO_SPACE:
         return "no space";
     case M_READ_ERROR:

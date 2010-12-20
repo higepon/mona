@@ -133,8 +133,9 @@ extern FILE* __stderr;
  */
 
 /* ISO/IEC 9899:1999 7.19.4 Operatoins on files */
+int rename(const char *oldpath, const char *newpath);
 /*int remove(const char *filename); //stub */
-/*int rename(const char *old, const char *new); //stub */
+
 /*FILE *tmpfile(void); //stub */
 /*char *tmpnam(char *s); //stub */
 

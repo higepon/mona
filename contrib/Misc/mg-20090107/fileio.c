@@ -503,7 +503,33 @@ int
 copy(char *frname, char *toname)
 {
 #ifdef MONA
-  assert(0);
+    if (monapi_file_exists(toname)) {
+        return (FALSE);
+    }
+    if (!monapi_file_exists(frname)) {
+        return (FALSE);
+    }
+    char buf[512];
+    FILE* src = fopen(frname, "r");
+    if (src == NULL) {
+        return (FALSE);
+    }
+    FILE* dest = fopen(toname, "w");
+    if (dest == NULL) {
+        fclose(src);
+        return (FALSE);
+    }
+    size_t size;
+    while (size = fread(buf, 1, 512, src)) {
+        if (fwrite(buf, 1, size, dest) != size) {
+            fclose(dest);
+            fclose(src);
+            return (FALSE);
+        }
+    }
+    fclose(dest);
+    fclose(src);
+    return (TRUE);
 #else
 	int	ifd, ofd;
 	char	buf[BUFSIZ];

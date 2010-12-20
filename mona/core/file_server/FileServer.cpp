@@ -269,7 +269,7 @@ void FileServer::messageLoop()
             if (len > 1 && msg.str[len - 1] == '/') {
                 msg.str[len - 1] = 0;
             }
-            int ret = vmanager_.readdir(upperCase(msg.str).c_str(), &memory);
+            int ret = vmanager_.read_directory(upperCase(msg.str).c_str(), &memory);
             if (ret != M_OK) {
                 Message::reply(&msg, ret);
             } else {
@@ -280,6 +280,18 @@ void FileServer::messageLoop()
         case MSG_FILE_DELETE:
         {
             int ret = vmanager_.delete_file(upperCase(msg.str).c_str());
+            Message::reply(&msg, ret);
+            break;
+        }
+        case MSG_FILE_DELETE_DIRECTORY:
+        {
+            int ret = vmanager_.delete_directory(upperCase(msg.str).c_str());
+            Message::reply(&msg, ret);
+            break;
+        }
+        case MSG_FILE_CREATE_DIRECTORY:
+        {
+            int ret = vmanager_.create_directory(upperCase(msg.str).c_str());
             Message::reply(&msg, ret);
             break;
         }
