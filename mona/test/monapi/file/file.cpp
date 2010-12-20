@@ -628,6 +628,16 @@ static void test_fatfs_try_delete_not_empty_directory()
     ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
 }
 
+static void test_fatfs_try_create_duplicate_files()
+{
+    const char* name = "taro";
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    EXPECT_EQ(M_OK, fat->create_directory(root, name));
+    EXPECT_EQ(M_FILE_EXISTS, fat->create_directory(root, name));
+}
+
 static void test_create_delete_directory()
 {
     const char* filename = "/USER/TEMP/HIGEDIR";
@@ -684,6 +694,7 @@ int main(int argc, char *argv[])
     test_fatfs_create_directory();
     test_fatfs_delete_directory();
     test_fatfs_try_delete_not_empty_directory();
+    test_fatfs_try_create_duplicate_files();
 
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();
