@@ -581,10 +581,10 @@ static void fatfs_create_directory(const char* name)
 
 static void test_fatfs_create_directory()
 {
-    const char* shortname = "newdir";
+    const char* shortname = "newdir2";
     fatfs_create_directory(shortname);
 
-    const char* longname = "longnamedirectory";
+    const char* longname = "longnamedirectory2";
     fatfs_create_directory(longname);
 }
 

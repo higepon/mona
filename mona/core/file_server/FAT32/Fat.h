@@ -664,8 +664,16 @@ public:
 
         void removeChild(File* entry)
         {
+            _logprintf("try to remove child <%s:%s>\n", getName().c_str(), entry->getName().c_str());
+            for (int i = 0; i < childlen_->size(); i++) {
+                _logprintf("  child %s\n", (*(childlen_.get()))[i]->getName().c_str());
+            }
             ASSERT(isDirectory());
             childlen_->erase(std::remove(childlen_->begin(), childlen_->end(), entry), childlen_->end());
+            for (int i = 0; i < childlen_->size(); i++) {
+                _logprintf("after  child %s\n", (*(childlen_.get()))[i]->getName().c_str());
+            }
+
         }
 
         void setDate(KDate date)
