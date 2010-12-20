@@ -27,7 +27,7 @@ int VnodeManager::delete_file(const std::string& name, bool isDirectory)
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);
     Vnode* file;
-    int ret = lookup(root_, filename, &file);
+    int ret = lookup(root_, filename, &file, isDirectory ? Vnode::DIRECTORY : Vnode::REGULAR);
     if (ret != M_OK) {
         return ret;
     }
