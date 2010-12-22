@@ -484,12 +484,14 @@ public:
             return M_READ_ERROR;
         }
         _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        _logprintf("ass %s %s", entry->getName().c_str(), theEntry->name);
-        theEntry->name[0] = FREE_ENTRY;
-        theEntry->attr = 0;
-        _logprintf("getClusterInParent=%d:%d %s %s:%d\n", entry->getClusterInParent(), entry->getIndexInParentCluster(),  __func__, __FILE__, __LINE__);
+        for (uint32_t index = entry->getLongNamaeStartIndex(); index <= entry->getIndexInParentCluster(); index++) {
+            struct de* theEntry = ((struct de*)buf_) + index;
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            _logprintf("ass %s %s", entry->getName().c_str(), theEntry->name);
+            theEntry->name[0] = FREE_ENTRY;
+            theEntry->attr = 0;
+            _logprintf("getClusterInParent=%d:%d %s %s:%d\n", entry->getClusterInParent(), entry->getIndexInParentCluster(),  __func__, __FILE__, __LINE__);
+        }
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
