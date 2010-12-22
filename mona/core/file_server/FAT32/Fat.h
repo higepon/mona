@@ -563,6 +563,7 @@ public:
             name_(name),
             size_(size),
             startCluster_(startCluster),
+            longNameStartIndex_(indexInParentCluster),
             parent_(NULL),
             clusterInParent_(clusterInParent),
             indexInParentCluster_(indexInParentCluster),
@@ -576,6 +577,7 @@ public:
             name_(name),
             size_(0),
             startCluster_(startCluster),
+            longNameStartIndex_(indexInParentCluster),
             parent_(NULL),
             clusterInParent_(clusterInParent),
             indexInParentCluster_(indexInParentCluster),
@@ -631,9 +633,19 @@ public:
             startCluster_ = cluster;
         }
 
+        void setLongNameStartIndex(uintptr_t cluster)
+        {
+            longNameStartIndex_ = cluster;
+        }
+
         uintptr_t getStartCluster() const
         {
             return startCluster_;
+        }
+
+        uintptr_t getLongNamaeStartIndex() const
+        {
+            return longNameStartIndex_;
         }
 
         File* getParent() const
@@ -707,6 +719,7 @@ public:
         const std::string name_;
         uintptr_t size_;
         uintptr_t startCluster_;
+        uintptr_t longNameStartIndex_;
         File* parent_;
         uint32_t clusterInParent_;
         uint32_t indexInParentCluster_;
@@ -840,6 +853,7 @@ private:
                 return false;
             }
             bool hasLongName = false;
+            uintptr_t longNameStartIndex = 0xffffffff;
             std::vector<std::string> partialLongNames;
             uint32_t index = 0;
             for (struct de* entry = (struct de*)(buf.get()); (uint8_t*)entry < (uint8_t*)(&((buf.get()))[getClusterSizeByte()]); entry++, index++) {
@@ -848,6 +862,9 @@ private:
                 }
                 // Long file name
                 if (entry->attr == ATTR_LFN) {
+                    if (longNameStartIndex == 0xffffffff) {
+                        longNameStartIndex = index;
+                    }
                     struct lfn* lfn = (struct lfn*)entry;
                     decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
                     decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
@@ -891,11 +908,15 @@ private:
                 } else {
                     target = new File(filename, little2host32(entry->size), little2host16(entry->clus), cluster, index);
                 }
+                if (hasLongName) {
+                    target->setLongNameStartIndex(longNameStartIndex);
+                }
                 target->setDate(unpackDateTime(entry));
                 ASSERT(target);
                 childlen.push_back(target);
                 partialLongNames.clear();
                 if (hasLongName) {
+                    longNameStartIndex = 0xffffffff;
                     hasLongName = false;
                 }
             }
@@ -1248,7 +1269,7 @@ private:
         return sum;
     }
 
-    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster, bool isDirectory)
+    void createAndAddFile(Vnode* dir, const std::string& name, uint32_t clusterInParent, uint32_t indexInParentCluster, uint32_t longNameStartIndex, bool isDirectory)
     {
         File* file = NULL;
         if (isDirectory) {
@@ -1258,6 +1279,9 @@ private:
             file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
         }
         ASSERT(file);
+        if (indexInParentCluster != longNameStartIndex) {
+            file->setLongNameStartIndex(longNameStartIndex);
+        }
         MonAPI::Date now;
         file->setDate(now.getKDate());
         File* d = getFileByVnode(dir);
@@ -1275,7 +1299,7 @@ private:
         struct de* entries = (struct de*)buf_;
         for (int i = 0; i < ENTRIES_PER_CLUSTER; i++) {
             if (entries[i].name[0] == AVAILABLE_ENTRY || entries[i].name[0] == FREE_ENTRY) {
-                createAndAddFile(dir, file, cluster, i, isDirectory);
+                createAndAddFile(dir, file, cluster, i, i, isDirectory);
                 initializeEntry(&entries[i], file, isDirectory);
                 if (writeCluster(cluster, buf_)) {
                     return M_OK;
@@ -1352,7 +1376,7 @@ private:
             if (seq == 0) {
                 struct de* entry = (struct de*)buf + i;
                 initializeEntry(entry, DUMMY_SHORT_NAME, DUMMY_SHORT_EXT, isDirectory);
-                createAndAddFile(dir, file, targetCluster, i, isDirectory);
+                createAndAddFile(dir, file, targetCluster, i, startIndex, isDirectory);
                 break;
             } else {
                 struct lfn* p = (struct lfn*)(buf) + i;
