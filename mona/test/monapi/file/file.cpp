@@ -586,6 +586,13 @@ static void test_fatfs_create_directory()
 
     const char* longname = "longnamedirectory2";
     fatfs_create_directory(longname);
+
+    TestFatFS fs;
+    FatFileSystem* fat = fs.get();
+    Vnode* root = fat->getRoot();
+    Vnode* found;
+    ASSERT_EQ(M_OK, fat->lookup(root, shortname, &found, Vnode::DIRECTORY));
+    ASSERT_EQ(M_OK, fat->lookup(root, longname, &found, Vnode::DIRECTORY));
 }
 
 static void fatfs_delete_directory(const char* name)
@@ -614,27 +621,47 @@ static void test_fatfs_delete_directory()
 
 static void test_fatfs_try_delete_not_empty_directory()
 {
-    const char* name = "higedir";
-    TestFatFS fs;
-    FatFileSystem* fat = fs.get();
-    Vnode* root = fat->getRoot();
-    EXPECT_EQ(M_OK, fat->create_directory(root, name));
+    {
+        const char* name = "higedir";
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        Vnode* root = fat->getRoot();
+        ASSERT_EQ(M_OK, fat->create_directory(root, name));
 
-    Vnode* found;
-    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
-    EXPECT_EQ(M_OK, fat->create_directory(found, "higesub"));
+        Vnode* found;
+        ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+        ASSERT_EQ(M_OK, fat->create_directory(found, "higesub"));
 
-    EXPECT_EQ(M_FILE_EXISTS, fat->delete_directory(found));
-    ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+        ASSERT_EQ(M_FILE_EXISTS, fat->delete_directory(found));
+        ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+    }
+    {
+        const char* name = "higedir";
+        TestFatFS fs;
+        FatFileSystem* fat = fs.get();
+        Vnode* root = fat->getRoot();
+        Vnode* found;
+        ASSERT_EQ(M_OK, fat->lookup(root, "newdir2", &found, Vnode::DIRECTORY));
+        ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
+        Vnode* found2;
+        ASSERT_EQ(M_OK, fat->lookup(found, "higesub", &found2, Vnode::DIRECTORY));
+    }
+
 }
 
 static void test_fatfs_try_create_duplicate_files()
 {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     const char* name = "taro";
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TestFatFS fs;
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FatFileSystem* fat = fs.get();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* root = fat->getRoot();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(M_OK, fat->create_directory(root, name));
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(M_FILE_EXISTS, fat->create_directory(root, name));
 }
 
@@ -694,11 +721,16 @@ int main(int argc, char *argv[])
     test_fatfs_create_directory();
     test_fatfs_delete_directory();
     test_fatfs_try_delete_not_empty_directory();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_fatfs_try_create_duplicate_files();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     testReadDirectory_OneFile();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_delete_create_should_remove_vnode_cache();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_create_delete_directory();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS(file);
     return 0;
 }
