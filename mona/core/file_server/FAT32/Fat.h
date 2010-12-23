@@ -182,25 +182,19 @@ public:
         fat_(NULL),
         buf_(NULL)
     {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         ASSERT(root_.get());
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!readBootParameters()) {
             monapi_fatal("can't read boot parameter block");
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         buf_ = new uint8_t[getClusterSizeByte()];
         ASSERT(buf_);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!readFat()) {
             monapi_fatal("can't read file allocation table");
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
         if (!readAndSetupRootDirectory()) {
             monapi_fatal("can't read root directory");
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     ~FatFileSystem()
@@ -383,7 +377,6 @@ public:
         if (entry->hasChild(file)) {
             return M_FILE_EXISTS;
         }
-        _logprintf("fat:create_directory=<%s>", file.c_str());
         const bool IS_DIRECTORY = true;
         if (isLongName(file)) {
             return createLongNameFile(dir, file, IS_DIRECTORY);
@@ -477,53 +470,37 @@ public:
             return M_BAD_ARG; // root is undeletable
         }
         ASSERT(vnode->type == Vnode::DIRECTORY ? getFileByVnode(vnode)->getChildlen()->empty() : true);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         File* entry = getFileByVnode(vnode);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (uint32_t index = entry->getLongNamaeStartIndex(); index <= entry->getIndexInParentCluster(); index++) {
             struct de* theEntry = ((struct de*)buf_) + index;
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            _logprintf("ass %s %s", entry->getName().c_str(), theEntry->name);
             theEntry->name[0] = FREE_ENTRY;
             theEntry->attr = 0;
-            _logprintf("getClusterInParent=%d:%d %s %s:%d\n", entry->getClusterInParent(), entry->getIndexInParentCluster(),  __func__, __FILE__, __LINE__);
         }
         if (!writeCluster(entry->getClusterInParent(), buf_)) {
             return M_WRITE_ERROR;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int ret = freeClusters(entry);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (ret != M_OK) {
             return ret;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         entry->getParent()->removeChild(entry);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         destroy_vnode(vnode);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return M_OK;
     }
 
     virtual int delete_directory(Vnode* vnode)
     {
         ASSERT(vnode->type == Vnode::DIRECTORY);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if(vnode == root_) {
             return M_BAD_ARG; // root is undeletable
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         File* entry = getFileByVnode(vnode);
-        _logprintf("%s %s:%dentry=<%x>\n", __func__, __FILE__, __LINE__, entry->getChildlen());
         if (entry->getChildlen()->empty()) {
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return delete_file(vnode);
         } else {
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_FILE_EXISTS;
         }
     }
@@ -672,7 +649,6 @@ public:
         }
         void addChild(File* entry)
         {
-            _logprintf("add child <%s:%s>", getName().c_str(), entry->getName().c_str());
             ASSERT(isDirectory());
             childlen_->push_back(entry);
         }
@@ -684,22 +660,14 @@ public:
 
         void removeChild(File* entry)
         {
-            _logprintf("try to remove child <%s:%s>\n", getName().c_str(), entry->getName().c_str());
-            for (int i = 0; i < childlen_->size(); i++) {
-                _logprintf("  child %s\n", (*(childlen_.get()))[i]->getName().c_str());
-            }
             ASSERT(isDirectory());
             childlen_->erase(std::remove(childlen_->begin(), childlen_->end(), entry), childlen_->end());
-            for (int i = 0; i < childlen_->size(); i++) {
-                _logprintf("after  child %s\n", (*(childlen_.get()))[i]->getName().c_str());
-            }
         }
 
         bool hasChild(const std::string& file) const
         {
             ASSERT(childlen_.get());
             for (Files::const_iterator it = childlen_->begin(); it != childlen_->end(); ++it) {
-                _logprintf("hasChild <%s:%s>", file.c_str(), (*it)->getName().c_str());
                 if ((*it)->getName() == file) {
                     return true;
                 }
@@ -846,7 +814,6 @@ private:
         if (startCluster == 0) {
             return true;
         }
-        _logprintf("readDirectory %d\n", startCluster);
         MonAPI::scoped_ptr<uint8_t> buf(new uint8_t[getClusterSizeByte()]);
         ASSERT(buf.get());
         LFNDecoder decoder;
@@ -893,10 +860,8 @@ private:
                         filename += ext;
                     }
                 }
-                _logprintf("%s %s %s:%d\n", filename.c_str(), __func__, __FILE__, __LINE__);
                 File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
-                    _logprintf("%s %s %s:%d\n", filename.c_str(), __func__, __FILE__, __LINE__);
                     Files subChildlen;
                     // For now, we read all directories recursively.
                     // This may cause slower initialization.
@@ -928,26 +893,20 @@ private:
 
     bool readAndSetupRootDirectory()
     {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         Files childlen;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!readDirectory(getRootDirectoryCluster(), childlen)) {
             return false;
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         File* r = new File("", getRootDirectoryCluster(), childlen, 0, 0);
         MonAPI::Date date;
         r->setDate(date.getKDate());
         root_->fnode = r;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         ASSERT(root_->fnode);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (Files::iterator it = childlen.begin(); it != childlen.end(); ++it) {
             (*it)->setParent(getFileByVnode(root_.get()));
         }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return true;
     }
 
