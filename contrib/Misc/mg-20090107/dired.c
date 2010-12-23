@@ -649,7 +649,7 @@ dired_(char *dname)
         assert(0);
         month_name = "---";
       }
-      snprintf(line, sizeof(line), "%crwxrwxrwx 1 mona mona   %d %s %02d %02d:%02d %s", fisdir(line) ? 'd' : '-', size, month_name, day, hour, min, dent->d_name);
+      snprintf(line, sizeof(line), "  %crwxrwxrwx 1 mona mona   %d %s %02d %02d:%02d %s", fisdir(line) ? 'd' : '-', size, month_name, day, hour, min, dent->d_name);
       addline(bp, line);
     }
     closedir(dirp);
