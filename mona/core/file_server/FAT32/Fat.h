@@ -1369,6 +1369,12 @@ private:
         if (ret != M_OK) {
             return ret;
         }
+
+        memset(buf_, 0, getClusterSizeByte());
+        if (!writeCluster(cluster, buf_)) {
+            return M_WRITE_ERROR;
+        }
+
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
@@ -1433,29 +1439,9 @@ private:
     {
         uint32_t cluster = getLastClusterByVnode(dir);
         if (cluster == 0) {
-            cluster = allocateCluster();
-            if (isEndOfCluster(cluster)) {
-                return M_NO_SPACE;
-            }
-            updateFatNoFlush(cluster, END_OF_CLUSTER);
-            intptr_t ret = flushDirtyFat();
+            int ret = allocateStartCluster(getFileByVnode(dir), cluster);
             if (ret != M_OK) {
                 return ret;
-            }
-
-            memset(buf_, 0, getClusterSizeByte());
-            if (!writeCluster(cluster, buf_)) {
-                return M_WRITE_ERROR;
-            }
-            File* entry = getFileByVnode(dir);
-            if (!readCluster(entry->getClusterInParent(), buf_)) {
-                return M_READ_ERROR;
-            }
-            entry->setStartCluster(cluster);
-            struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
-            *((uint16_t*)theEntry->clus) = cluster;
-            if (!writeCluster(entry->getClusterInParent(), buf_)) {
-                return M_WRITE_ERROR;
             }
         }
         int ret = tryCreateNewEntryInCluster(dir, file, cluster, isDirectory);
