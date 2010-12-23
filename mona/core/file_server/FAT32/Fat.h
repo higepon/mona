@@ -1358,6 +1358,28 @@ private:
         return M_OK;
     }
 
+    int allocateStartCluster(File* entry, uint32_t& cluster)
+    {
+        cluster = allocateCluster();
+        if (isEndOfCluster(cluster)) {
+            return M_NO_SPACE;
+        }
+        updateFatNoFlush(cluster, END_OF_CLUSTER);
+        intptr_t ret = flushDirtyFat();
+        if (ret != M_OK) {
+            return ret;
+        }
+        if (!readCluster(entry->getClusterInParent(), buf_)) {
+            return M_READ_ERROR;
+        }
+        struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
+        *((uint16_t*)theEntry->clus) = cluster;
+        if (!writeCluster(entry->getClusterInParent(), buf_)) {
+            return M_WRITE_ERROR;
+        }
+        return M_OK;
+    }
+
     int createLongNameFile(Vnode* dir, const std::string& file, bool isDirectory = false)
     {
         if (file.size() > MAX_LONG_NAME) {
@@ -1373,23 +1395,9 @@ private:
         }
         uint32_t lastCluster = getLastClusterByVnode(dir);
         if (lastCluster == 0) {
-            lastCluster = allocateCluster();
-            if (isEndOfCluster(lastCluster)) {
-                return M_NO_SPACE;
-            }
-            updateFatNoFlush(lastCluster, END_OF_CLUSTER);
-            intptr_t ret = flushDirtyFat();
+            int ret = allocateStartCluster(getFileByVnode(dir), lastCluster);
             if (ret != M_OK) {
                 return ret;
-            }
-            File* entry = getFileByVnode(dir);
-            if (!readCluster(entry->getClusterInParent(), buf_)) {
-                return M_READ_ERROR;
-            }
-            struct de* theEntry = ((struct de*)buf_) + entry->getIndexInParentCluster();
-            *((uint16_t*)theEntry->clus) = lastCluster;
-            if (!writeCluster(entry->getClusterInParent(), buf_)) {
-                return M_WRITE_ERROR;
             }
         }
         if (!readCluster(lastCluster, buf_)) {
@@ -1415,7 +1423,7 @@ private:
             memset(buf_, 0, getClusterSizeByte());
         }
         uint32_t targetCluster = inExtraCluster ? extraCluster : lastCluster;
-        startIndex = inExtraCluster ? 0 :startIndex;
+        startIndex = inExtraCluster ? 0 : startIndex;
         return createLongNameEntryInCluster(dir, buf_, targetCluster, file, startIndex, requiredNumEntries, isDirectory);
     }
 
