@@ -38,7 +38,6 @@
 
 //  ToDo.
 //      Check allowed charactor set on file creation.
-//      Check duplicated name on same directory.
 //
 class StringUtil
 {
