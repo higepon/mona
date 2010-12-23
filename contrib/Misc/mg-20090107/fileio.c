@@ -272,8 +272,58 @@ int
 fbackupfile(const char *fn)
 {
 #ifdef MONA
-  // todo
-  return TRUE;
+    FILE* from;
+    FILE* to;
+    size_t       nread;
+    char         buf[BUFSIZ];
+    char        *nname, *tname;
+    nname = (char*)malloc(512);
+    tname = (char*)malloc(512);
+    if (!nname) {
+        ewprintf("Can't allocate temp file name");
+        return (ABORT);
+    }
+    if (!tname) {
+        ewprintf("Can't allocate temp file name");
+        return (ABORT);
+    }
+
+    sprintf(nname, "%s~", fn);
+    sprintf(tname, "%s.XXXXXXXXXX", fn);
+    from = fopen(fn, "r");
+    if (from == NULL) {
+        free(nname);
+        free(tname);
+        return (FALSE);
+    }
+    to = fopen(tname, "w");
+    if (to == NULL) {
+        fclose(from);
+        free(nname);
+        free(tname);
+        return (FALSE);
+    }
+   while ((nread = fread(buf, BUFSIZ, 1, from)) > 0) {
+     if (fwrite(buf, (size_t)nread, 1, to) != nread) {
+            nread = -1;
+            break;
+        }
+    }
+    fclose(from);
+    fclose(to);
+    if (nread == -1) {
+        if (unlink(tname) == -1)
+            ewprintf("Can't unlink temp : %s", strerror(errno));
+    } else {
+        if (rename(tname, nname) == -1) {
+            ewprintf("Can't rename temp : %s", strerror(errno));
+            (void) unlink(tname);
+            nread = -1;
+        }
+    }
+    free(nname);
+    free(tname);
+    return (nread == -1 ? FALSE : TRUE);
 #else
 	struct stat	 sb;
 	int		 from, to, serrno;
