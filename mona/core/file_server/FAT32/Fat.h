@@ -473,6 +473,8 @@ public:
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
         }
+
+        // mark all LFN entries as free entry.
         for (uint32_t index = entry->getLongNamaeStartIndex(); index <= entry->getIndexInParentCluster(); index++) {
             struct de* theEntry = ((struct de*)buf_) + index;
             theEntry->name[0] = FREE_ENTRY;
@@ -809,6 +811,7 @@ private:
 
     bool readDirectory(uint32_t startCluster, Files& childlen)
     {
+        const uintptr_t UNUSED_INDEX = 0xffffffff;
         // empty directory.
         if (startCluster == 0) {
             return true;
@@ -821,7 +824,7 @@ private:
                 return false;
             }
             bool hasLongName = false;
-            uintptr_t longNameStartIndex = 0xffffffff;
+            uintptr_t longNameStartIndex = UNUSED_INDEX;
             std::vector<std::string> partialLongNames;
             uint32_t index = 0;
             for (struct de* entry = (struct de*)(buf.get()); (uint8_t*)entry < (uint8_t*)(&((buf.get()))[getClusterSizeByte()]); entry++, index++) {
@@ -830,7 +833,7 @@ private:
                 }
                 // Long file name
                 if (entry->attr == ATTR_LFN) {
-                    if (longNameStartIndex == 0xffffffff) {
+                    if (longNameStartIndex == UNUSED_INDEX) {
                         longNameStartIndex = index;
                     }
                     struct lfn* lfn = (struct lfn*)entry;
@@ -882,7 +885,7 @@ private:
                 childlen.push_back(target);
                 partialLongNames.clear();
                 if (hasLongName) {
-                    longNameStartIndex = 0xffffffff;
+                    longNameStartIndex = UNUSED_INDEX;
                     hasLongName = false;
                 }
             }
