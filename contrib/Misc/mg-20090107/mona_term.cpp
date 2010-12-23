@@ -163,7 +163,7 @@ public:
     {
         ASSERT(currentRow_ < MAX_NUM_ROWS);
         ASSERT(currentCol_ < MAX_NUM_COLS);
-        if (c == 0x0d) {
+        if (c == 0x0d || c == '\t') {
             return; // is this right?
         }
         std::string& line = lines[currentRow_];
