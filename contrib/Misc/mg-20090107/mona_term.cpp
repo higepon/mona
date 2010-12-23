@@ -518,7 +518,6 @@ int mona_ttcooked()
 void mona_ttclose()
 {
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    assert(0);
 }
 
 // OK
