@@ -2,5 +2,9 @@
 
 char *getenv(const char *name)
 {
-	return NULL;
+    if (strcmp(name, "HOME") == 0) {
+        return "/USER";
+    } else {
+        return NULL;
+    }
 }

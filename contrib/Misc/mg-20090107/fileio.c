@@ -455,10 +455,6 @@ adjustname(const char *fn, int slashslash)
 char *
 startupfile(char *suffix)
 {
-#ifdef MONA
-    _logprintf("startupfile is empty todo");
-    return NULL;
-#else
 	static char	 file[NFILEN];
 	char		*home;
 	int		 ret;
@@ -476,8 +472,14 @@ startupfile(char *suffix)
 			return (NULL);
 	}
 
+#ifdef MONA
+    if (monapi_file_exists(file)) {
+      return (file);
+    }
+#else
 	if (access(file, R_OK) == 0)
 		return (file);
+#endif
 nohome:
 #ifdef STARTUPFILE
 	if (suffix == NULL) {
@@ -495,7 +497,6 @@ nohome:
 		return (file);
 #endif /* STARTUPFILE */
 	return (NULL);
-#endif
 }
 #endif /* !NO_STARTUP */
 
