@@ -4,7 +4,7 @@
                  (fs-path (fs-current-directory))
                  ">"))
 
-(define mona-gui-auto-start #f)
+(define mona-gui-auto-start #t)
 
 (define skip-unit-test? #f)
 
