@@ -1399,11 +1399,13 @@ private:
             if (ret != M_OK) {
                 return ret;
             }
+            memset(buf_, 0, getClusterSizeByte());
+        } else {
+            if (!readCluster(lastCluster, buf_)) {
+                return M_READ_ERROR;
+            }
         }
-        if (!readCluster(lastCluster, buf_)) {
-            return M_READ_ERROR;
-        }
-
+        ASSERT(lastCluster != 0);
         uint32_t extraCluster = END_OF_CLUSTER;
         int startIndex = 0;
         if ((startIndex = allocateContigousEntries((struct de*)buf_, requiredNumEntries)) < 0) {
