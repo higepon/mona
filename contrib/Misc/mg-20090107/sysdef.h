@@ -14,9 +14,9 @@
 
 #ifdef MONA
 #include <sys/types.h>
+#include <sys/stat.h>
 typedef uint32_t uid_t;
 typedef uint32_t gid_t;
-typedef uint32_t mode_t;
 typedef uint32_t sig_atomic_t;
 typedef uint32_t uint;
 #define MAXPATHLEN 1024

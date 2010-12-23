@@ -551,9 +551,6 @@ d_shell_command(int f, int n)
 int
 d_create_directory(int f, int n)
 {
-#ifdef MONA
-  assert(0);
-#else
 	char	 tocreate[MAXPATHLEN], *bufp;
 	size_t  off;
 	struct buffer	*bp;
@@ -573,7 +570,6 @@ d_create_directory(int f, int n)
 	}
 	bp = dired_(curbp->b_fname);
 	return (showbuffer(bp, curwp, WFFULL | WFMODE));
-#endif
 }
 #define NAME_FIELD    8
 
