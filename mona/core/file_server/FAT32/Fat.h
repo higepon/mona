@@ -837,10 +837,7 @@ private:
                         longNameStartIndex = index;
                     }
                     struct lfn* lfn = (struct lfn*)entry;
-                    decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
-                    decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
-                    decoder.pushBytes(lfn->name3, sizeof(lfn->name3));
-                    partialLongNames.push_back(decoder.decode());
+                    accumLongName(lfn, decoder, partialLongNames);
                     if ((lfn->seq & 0x3f) == 1) {
                         hasLongName = true;
                     }
@@ -1497,6 +1494,13 @@ private:
         return filename;
     }
 
+    void accumLongName(struct lfn* lfn, LFNDecoder& decoder, std::vector<std::string>& partialLongNames)
+    {
+        decoder.pushBytes(lfn->name1, sizeof(lfn->name1));
+        decoder.pushBytes(lfn->name2, sizeof(lfn->name2));
+        decoder.pushBytes(lfn->name3, sizeof(lfn->name3));
+        partialLongNames.push_back(decoder.decode());
+    }
 
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
