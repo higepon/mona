@@ -57,14 +57,12 @@ int VnodeManager::delete_file(const std::string& name, bool isDirectory)
 
 int VnodeManager::delete_file(const std::string& name)
 {
-    _logprintf("delete_file=<%s>", name.c_str());
     const bool IS_DIRECTORY = false;
     return delete_file(name, IS_DIRECTORY);
 }
 
 int VnodeManager::delete_directory(const std::string& name)
 {
-    _logprintf("delete_directory=<%s>", name.c_str());
     const bool IS_DIRECTORY = true;
     return delete_file(name, IS_DIRECTORY);
 }

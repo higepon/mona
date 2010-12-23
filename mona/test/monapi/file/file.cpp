@@ -606,7 +606,6 @@ static void fatfs_delete_directory(const char* name)
     ASSERT_EQ(M_OK, fat->lookup(root, name, &found, Vnode::DIRECTORY));
 
     ASSERT_EQ(M_OK, fat->delete_directory(found));
-    _logprintf("file = <%s>", name);
     ASSERT_EQ(M_FILE_NOT_FOUND, fat->lookup(root, name, &found, Vnode::DIRECTORY));
 }
 
@@ -651,17 +650,11 @@ static void test_fatfs_try_delete_not_empty_directory()
 
 static void test_fatfs_try_create_duplicate_files()
 {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     const char* name = "taro";
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TestFatFS fs;
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FatFileSystem* fat = fs.get();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Vnode* root = fat->getRoot();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(M_OK, fat->create_directory(root, name));
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(M_FILE_EXISTS, fat->create_directory(root, name));
 }
 
@@ -721,16 +714,11 @@ int main(int argc, char *argv[])
     test_fatfs_create_directory();
     test_fatfs_delete_directory();
     test_fatfs_try_delete_not_empty_directory();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_fatfs_try_create_duplicate_files();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     testReadDirectory_OneFile();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_delete_create_should_remove_vnode_cache();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_create_delete_directory();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS(file);
     return 0;
 }
