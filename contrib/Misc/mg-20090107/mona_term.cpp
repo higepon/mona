@@ -182,9 +182,9 @@ public:
             _logprintf("line2 += %x currentCol_ - lineSize + 1=%d\n", c, currentCol_ - lineSize + 1);
             line += c;
         } else {
-            line.erase(line.begin() + currentCol_, line.end());
+//            line.erase(line.begin() + currentCol_, line.end());
             _logprintf("line3 += %x\n", c);
-            line += c;
+            line[currentCol_] = c;
         }
         currentCol_++;
     }
@@ -306,6 +306,7 @@ void mona_ttmove(int row, int col)
 
 void mona_tteeol()
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->eraseToEndOfLine();
     // TODo
     // this causes crash
@@ -315,6 +316,7 @@ void mona_tteeol()
 
 void mona_tteeop()
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->eraseToEndOfPage();
     ttrow = ttcol = HUGE;
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -495,6 +497,7 @@ void mona_ttflush()
 // OK
 int mona_ttputc(int c)
 {
+    _logprintf("putc<%c>\n", c);
     #ifdef MONA
     // todo ttputc と同様にバッファリングすべき
     #endif
