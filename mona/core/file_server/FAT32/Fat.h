@@ -853,14 +853,7 @@ private:
                 if (hasLongName) {
                     filename = upperCase(StringUtil::reverseConcat(partialLongNames));
                 } else {
-                    filename = std::string((char*)entry->name, 8);
-                    StringUtil::rtrim(filename);
-                    std::string ext = std::string((char*)entry->ext, 3);
-                    StringUtil::rtrim(ext);
-                    if (!ext.empty()) {
-                        filename += '.';
-                        filename += ext;
-                    }
+                    filename = buildShortName((const char*)entry->name, (const char*)entry->ext);
                 }
                 File* target = NULL;
                 if (entry->attr & ATTR_SUBDIR) {
@@ -1490,6 +1483,20 @@ private:
         std::transform(result.begin(), result.end(), result.begin(), toupper);
         return result;
     }
+
+    std::string buildShortName(const char* name, const char* ext)
+    {
+        std::string filename = std::string(name, 8);
+        StringUtil::rtrim(filename);
+        std::string extention = std::string(ext, 3);
+        StringUtil::rtrim(extention);
+        if (!extention.empty()) {
+            filename += '.';
+            filename += extention;
+        }
+        return filename;
+    }
+
 
     uint8_t bootParameters_[SECTOR_SIZE];
     struct bsbpb* bsbpb_;
