@@ -1438,6 +1438,8 @@ private:
     int createShortNameFile(Vnode* dir, const std::string& file, bool isDirectory = false)
     {
         uint32_t cluster = getLastClusterByVnode(dir);
+
+        // directory is empty.
         if (cluster == 0) {
             int ret = allocateStartCluster(getFileByVnode(dir), cluster);
             if (ret != M_OK) {
