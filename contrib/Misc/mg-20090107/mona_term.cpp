@@ -406,7 +406,29 @@ void mona_ttcolor(int color)
 // OK
 int mona_ttwait(int msec)
 {
-    return 0;
+    uint32_t timerId = set_timer(msec);
+    MessageInfo msg;
+
+    for (int i = 0; ; i++) {
+        int result = MonAPI::Message::peek(&msg, i);
+
+        if (result != M_OK) {
+            i--;
+            syscall_mthread_yield_message();
+        } else if (msg.header == MSG_TIMER) {
+            if (msg.arg1 != timerId) {
+                continue;
+            }
+            kill_timer(timerId);
+            if (MonAPI::Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
+                monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+            }
+            return (FALSE);
+        } else if (msg.header == MSG_KEY_VIRTUAL_CODE) {
+            kill_timer(timerId);
+            return (TRUE);
+        }
+    }
 }
 
 // OK
