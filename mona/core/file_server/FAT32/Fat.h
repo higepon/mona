@@ -1244,10 +1244,14 @@ private:
         file->setParent(d);
     }
 
-    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, bool isDirectory)
+    int tryCreateNewEntryInCluster(Vnode* dir, const std::string&file, uint32_t cluster, bool isNewCluster, bool isDirectory)
     {
-        if (!readCluster(cluster, buf_)) {
-            return M_READ_ERROR;
+        if (isNewCluster) {
+            memset(buf_, 0, getClusterSizeByte());
+        } else {
+            if (!readCluster(cluster, buf_)) {
+                return M_READ_ERROR;
+            }
         }
 
         const int ENTRIES_PER_CLUSTER = getClusterSizeByte() / sizeof(struct de);
@@ -1373,6 +1377,7 @@ private:
     {
         cluster = allocateCluster();
         if (isEndOfCluster(cluster)) {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return M_NO_SPACE;
         }
         updateFatNoFlush(cluster, END_OF_CLUSTER);
@@ -1449,15 +1454,16 @@ private:
     int createShortNameFile(Vnode* dir, const std::string& file, bool isDirectory = false)
     {
         uint32_t cluster = getLastClusterByVnode(dir);
-
+        bool isNewCluster = false;
         // directory is empty.
         if (cluster == 0) {
             int ret = allocateStartCluster(getFileByVnode(dir), cluster);
             if (ret != M_OK) {
                 return ret;
             }
+            isNewCluster = true;
         }
-        int ret = tryCreateNewEntryInCluster(dir, file, cluster, isDirectory);
+        int ret = tryCreateNewEntryInCluster(dir, file, cluster, isNewCluster, isDirectory);
         if (ret == M_OK) {
             return M_OK;
         } else if (ret == M_NO_SPACE) {
@@ -1467,12 +1473,7 @@ private:
                 return M_NO_SPACE;
             }
 
-            memset(buf_, 0, getClusterSizeByte());
-            if (!writeCluster(newCluster, buf_)) {
-                return M_WRITE_ERROR;
-            }
-
-            int ret = tryCreateNewEntryInCluster(dir, file, newCluster, isDirectory);
+            int ret = tryCreateNewEntryInCluster(dir, file, newCluster, true, isDirectory);
             if (ret != M_OK) {
                 return ret;
             }
