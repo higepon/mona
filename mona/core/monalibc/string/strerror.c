@@ -62,7 +62,8 @@ char *strerror(int n)
 			strlcpy(err_s, EINVAL_MSG, 127);
 			break;
 		default:
-			return NULL;
+          sprintf(err_s, "unknown error %d", n);
+          break;
 	}
 	return err_s;
 }
