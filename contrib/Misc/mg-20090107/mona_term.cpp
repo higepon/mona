@@ -7,6 +7,12 @@ extern "C" {
 #include "def.h"
 }
 
+#if 1
+#define mona_trace /* */
+#else
+// #define mona_trace(...) _logprintf(__VA_ARGS__)
+#endif
+
 using namespace MonAPI;
 
 int ncol;
@@ -101,7 +107,7 @@ public:
     void moveCursor(uint16_t col, uint16_t row)
     {
         if (col >= MAX_NUM_COLS) {
-            _logprintf("col=%d\n", col);
+            mona_trace("col=%d\n", col);
         }
         ASSERT(row < MAX_NUM_ROWS);
         ASSERT(col < MAX_NUM_COLS);
@@ -174,7 +180,7 @@ public:
             return;
         }
         if (line.size() == currentCol_) {
-            _logprintf("line += %x\n", c);
+            mona_trace("line += %x\n", c);
             line += c;
         } else if (line.size() < currentCol_) {
             assert(0);
@@ -182,11 +188,11 @@ public:
             for (size_t i = 0; i < currentCol_ - lineSize + 1; i++) {
                 line += ' ';
             }
-            _logprintf("line2 += %x currentCol_ - lineSize + 1=%d\n", c, currentCol_ - lineSize + 1);
+            mona_trace("line2 += %x currentCol_ - lineSize + 1=%d\n", c, currentCol_ - lineSize + 1);
             line += c;
         } else {
 //            line.erase(line.begin() + currentCol_, line.end());
-            _logprintf("line3 += %x\n", c);
+            mona_trace("line3 += %x\n", c);
             line[currentCol_] = c;
         }
         currentCol_++;
@@ -204,7 +210,7 @@ public:
             }
             g->setColor(colors[i] ? baygui::Color::black : baygui::Color::white);
             g->drawString(line.c_str(), 0, fontHeight() * i);
-            _logprintf("line<%s>\n", line.c_str());
+            mona_trace("line<%s>\n", line.c_str());
         }
         if (cursorEnabled_) {
             g->setColor(baygui::Color::white);
@@ -283,7 +289,7 @@ char* getcwd(char* buf, size_t size)
 
 int chdir(const char* path)
 {
-    _logprintf("chdir to <%s>\n", path);
+    mona_trace("chdir to <%s>\n", path);
     return 0;
 }
 
@@ -301,7 +307,7 @@ void bzero(void* to, size_t count)
 
 void mona_ttmove(int row, int col)
 {
-    _logprintf("row=%d col=%d %s %s:%d\n", row, col, __func__, __FILE__, __LINE__);
+    mona_trace("row=%d col=%d %s %s:%d\n", row, col, __func__, __FILE__, __LINE__);
     g_frame->moveCursor(col, row);
     ttrow = row;
     ttcol = col;
@@ -309,7 +315,7 @@ void mona_ttmove(int row, int col)
 
 void mona_tteeol()
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->eraseToEndOfLine();
     // TODo
     // this causes crash
@@ -319,19 +325,19 @@ void mona_tteeol()
 
 void mona_tteeop()
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
     g_frame->eraseToEndOfPage();
     ttrow = ttcol = HUGE;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_ttbeep()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_ttinsl(int row, int bot, int nchunk)
 {
     int i, nl;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* Case of one line insert is special. */
     if (row == bot) {
         ttmove(row, 0);
@@ -367,7 +373,7 @@ void mona_ttinsl(int row, int bot, int nchunk)
 
 void mona_ttdell(int row, int bot, int nchunk)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ttmove(row, 0);
     int nl = MgFrame::MAX_NUM_ROWS - ttrow;
 
@@ -386,11 +392,11 @@ void mona_ttdell(int row, int bot, int nchunk)
 }
 void mona_ttwindow(int top, int bot)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 void mona_ttnowindow()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 void mona_ttcolor(int color)
@@ -493,7 +499,7 @@ int mona_ttgetc()
             ungetc = keycode;
             return '\e';
         }
-        logprintf("mona_ttgetc=%x\n", keycode);
+        mona_trace("mona_ttgetc=%x\n", keycode);
         switch (keycode) {
         case KeyEvent::VKEY_ENTER:
             return 0x0d;
@@ -522,7 +528,7 @@ void mona_ttflush()
 // OK
 int mona_ttputc(int c)
 {
-    _logprintf("putc<%c>\n", c);
+    mona_trace("putc<%c>\n", c);
     #ifdef MONA
     // todo ttputc と同様にバッファリングすべき
     #endif
@@ -533,13 +539,13 @@ int mona_ttputc(int c)
 // OK
 int mona_ttcooked()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 // OK
 void mona_ttclose()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 // OK
@@ -550,14 +556,14 @@ void mona_ttopen()
 
 int mona_ttraw()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
     assert(0);
 }
 
 // OK
 void mona_ttresize()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    mona_trace("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 void mona_get_file_datetime_size(const char* file, int* year, int* month, int* day, int* hour, int* min, int* sec, int* size)
