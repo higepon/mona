@@ -1304,7 +1304,16 @@ private:
 
     bool isLongName(const std::string name) const
     {
-        return name.size() > 12;
+        if (name.find('.') == std::string::npos) {
+            return name.size() > 8;
+        } else {
+            std::vector<std::string> v = StringUtil::split(name, '.');
+            if (v.size() > 1) {
+                return true;
+            } else {
+                return v[0].size() > 8 || v[1].size() > 3;
+            }
+        }
     }
 
     void copy(uint8_t* dest, int destLen, uint8_t* source, int size, int sourceOffset, int sourceLen)
