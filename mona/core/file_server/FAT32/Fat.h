@@ -1463,7 +1463,13 @@ private:
         } else if (ret == M_NO_SPACE) {
             uint32_t newCluster = allocateCluster();
             if (isEndOfCluster(newCluster)) {
+            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 return M_NO_SPACE;
+            }
+
+            memset(buf_, 0, getClusterSizeByte());
+            if (!writeCluster(newCluster, buf_)) {
+                return M_WRITE_ERROR;
             }
 
             int ret = tryCreateNewEntryInCluster(dir, file, newCluster, isDirectory);
