@@ -60,6 +60,26 @@ public:
             str.erase(e + 1);
         }
     }
+
+    static std::vector<std::string> split(std::string str, char delimiter)
+    {
+        std::vector<std::string> ret;
+        std::string::size_type index;
+
+        while (true) {
+            index = str.find(delimiter);
+            if (index == std::string::npos) {
+                ret.push_back(str);
+                break;
+            }
+            else {
+                ret.push_back(str.substr(0, index));
+                str = str.substr(++index);
+            }
+        }
+
+        return ret;
+    }
 };
 
 typedef std::vector<uint8_t> Bytes;
@@ -944,27 +964,6 @@ private:
         return ((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0]);
     }
 
-    std::vector<std::string> split(std::string str, char delimiter)
-    {
-        std::vector<std::string> ret;
-        std::string::size_type index;
-
-        while (true) {
-            index = str.find(delimiter);
-            if (index == std::string::npos) {
-                ret.push_back(str);
-                break;
-            }
-            else {
-                ret.push_back(str.substr(0, index));
-                str = str.substr(++index);
-            }
-        }
-
-        return ret;
-    }
-
-
     enum
     {
         AVAILABLE_ENTRY = 0x00,
@@ -1071,6 +1070,9 @@ private:
     void initializeEntry(struct de* entry, const std::string& name, const std::string& ext, bool isDirectory)
     {
         ASSERT(name.size() <= 8);
+        if (ext.size() > 3) {
+            monapi_warn("ext=%s", ext.c_str());
+        }
         ASSERT(ext.size() <= 3);
         entry->attr = isDirectory ? ATTR_SUBDIR : 0;
         memset(entry->name, ' ', 8);
@@ -1082,7 +1084,7 @@ private:
 
     void initializeEntry(struct de* entry, const std::string& filename, bool isDirectory)
     {
-        std::vector<std::string> nameAndExt = split(filename, '.');
+        std::vector<std::string> nameAndExt = StringUtil::split(filename, '.');
         if (nameAndExt.size() == 2) {
             initializeEntry(entry, nameAndExt[0], nameAndExt[1], isDirectory);
         } else if (nameAndExt.size() == 1) {
