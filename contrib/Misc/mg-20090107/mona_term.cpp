@@ -8,7 +8,7 @@ extern "C" {
 }
 
 #if 1
-#define mona_trace /* */
+#define mona_trace(...) /* */
 #else
 // #define mona_trace(...) _logprintf(__VA_ARGS__)
 #endif
