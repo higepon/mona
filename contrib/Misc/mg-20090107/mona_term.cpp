@@ -491,10 +491,14 @@ int mona_ttgetc()
             } else if (keycode == '/') {
                 return 0x1f;
             } else {
-                ASSERT(false);
+                assert(!hasUngetc);
+                hasUngetc = true;
+                ungetc = keycode;
+                return 0x18;
             }
 
         } else if (modifiers == KeyEvent::VKEY_ALT) {
+            assert(!hasUngetc);
             hasUngetc = true;
             ungetc = keycode;
             return '\e';
