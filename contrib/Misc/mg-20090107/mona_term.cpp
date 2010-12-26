@@ -488,6 +488,8 @@ int mona_ttgetc()
         if (modifiers == KeyEvent::VKEY_CTRL) {
             if ('a' <= keycode && keycode <= 'z') {
                 return keycode - 'a' + 1; // Ctrl-A = 1, Ctrl-Z = 26
+            } else if (keycode == 0x20) {
+                return 0;
             } else if (keycode == '/') {
                 return 0x1f;
             } else {
