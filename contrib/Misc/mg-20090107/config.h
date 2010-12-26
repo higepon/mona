@@ -13,7 +13,9 @@
 #define HAVE_NOFGETLN
 #define GNU_LS
 
-
+// MONA Only
+#define MG_NUM_ROWS (40)
+#define MG_NUM_COLS (80)
 
 
 // temp

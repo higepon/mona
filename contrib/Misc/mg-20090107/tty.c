@@ -474,8 +474,8 @@ ttresize(void)
 #endif
 	if ((newrow <= 0 || newcol <= 0) &&
 	    ((newrow = lines) <= 0 || (newcol = columns) <= 0)) {
-		newrow = 24;
-		newcol = 80;
+		newrow = MG_NUM_ROWS;
+		newcol = MG_NUM_COLS;
 	}
 	if (vtresize(1, newrow, newcol) != TRUE)
 		panic("vtresize failed");

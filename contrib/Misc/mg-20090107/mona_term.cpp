@@ -22,8 +22,8 @@ class MgFrame : public Frame {
 public:
     enum {
         MODE_LINE_COLS = 2,
-        MAX_NUM_ROWS = 24 + MODE_LINE_COLS,
-        MAX_NUM_COLS = 80,
+        MAX_NUM_ROWS = MG_NUM_ROWS + MODE_LINE_COLS,
+        MAX_NUM_COLS = MG_NUM_COLS,
         TIMER_INTERVAL = 500
     };
 private:
