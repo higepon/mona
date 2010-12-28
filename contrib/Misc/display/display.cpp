@@ -20,7 +20,6 @@ public:
     {
         if (value == getValue()) return;
 
-        // スーパークラスに処理を渡す
         Scrollbar::setValue(value);
 
         if (mLinkedTextArea) {
@@ -30,15 +29,11 @@ public:
 };
 
 
-/**
- *  入力欄テキストエリア
- */
 class InputArea : public TextArea {
 
     bool mbModified;
 
 protected:
-    //イベント処理
     void processEvent(Event *event);
 
 public:
@@ -46,7 +41,6 @@ public:
         : TextArea(buffer_size, draw_line), mbModified(false) {}
     virtual ~InputArea() {}
 
-    // 変更フラグ
     bool isModified() { return mbModified; }
     void setModifyFlag() { mbModified = true; }
     void resetModifyFlag() { mbModified = false; }
@@ -57,11 +51,9 @@ void InputArea::processEvent(Event *event) {
         KeyEvent* keyEvent = (KeyEvent*)event;
         int keycode = keyEvent->getKeycode();
         if (keycode < 128 || keycode == KeyEvent::VKEY_DELETE) {
-            // 変更フラグを立てる
             setModifyFlag();
         }
     }
-    // スーパークラスに処理を渡す
     TextArea::processEvent(event);
 }
 
@@ -106,11 +98,33 @@ public:
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
                 string text(event->str, length);
                 string content(textArea_->getText());
-                content += text;
+                content += foldLine(text);
                 textArea_->setText(content.c_str());
                 repaint();
             }
         }
+    }
+
+private:
+    string foldLine(const string& line)
+    {
+        const size_t MAX_LINE_LEN = 32;
+        size_t len = 0;
+        string ret;
+        for (string::const_iterator it = line.begin(); it != line.end(); ++it) {
+            ret += *it;
+            if ((*it) == '\n') {
+                len = 0;
+            } else {
+                len++;
+            }
+
+            if (len >= MAX_LINE_LEN) {
+                ret += '\n';
+                len = 0;
+            }
+        }
+        return ret;
     }
 };
 
