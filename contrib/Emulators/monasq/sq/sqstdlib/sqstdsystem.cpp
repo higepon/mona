@@ -9,7 +9,7 @@
 #include <baygui.h>
 #define system(cmdline)		monapi_call_process_execute_file(cmdline, MONAPI_TRUE)
 static int remove(const char*) { return -1; }
-static int rename(const char*, const char*) { return -1; }
+//static int rename(const char*, const char*) { return -1; }
 #else
 #include <time.h>
 #include <stdlib.h>
