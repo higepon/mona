@@ -246,11 +246,11 @@ loadSomething(URLFile *f,
 extern intptr_t monapi_file_delete(const char* file);
 extern void logprintf(const char* format, ...);
 
-void
-unlink(char *path)
-{
-    monapi_file_delete(path);
-}
+/* void */
+/* unlink(char *path) */
+/* { */
+/*     monapi_file_delete(path); */
+/* } */
 int
 file_exist(char *path)
 {
