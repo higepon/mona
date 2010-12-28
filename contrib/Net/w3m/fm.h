@@ -825,7 +825,7 @@ global char TrapSignal init(TRUE);
 extern int file_exist(char *path);
 extern int file_size(char *path);
 
-extern void unlink(char *path);
+//extern void unlink(char *path);
 extern int is_dir(char *path);
 extern struct tm* localtime(const time_t *timer);
 
