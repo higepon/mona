@@ -1,25 +1,19 @@
 * Mona 0.3.2 RELEASE NOTE
 ** Overview
-Ported mg (Emacs clone).
+This is internal release.
+Added new primitive server "name server" which knows all primitive servers.
 
-- Added new Shared Memory API.
-- Removed monapi_cmemoryinfo family API.
-- Changed file API to use new Shared Memory API.
-- Supported long file name.
-- Added FAT32 file system. Mounted on /USER.
-- Organized error number on API.
-- Refactored Kernel Objects management.
-- Performance tuning on Memory Map.
-- Added KVM virtio block driver.
-- Added scoped_ptr.
-- Re-enabled IME.
-- Added w3m (mumurik)
-- Added Ramdisk (mumurik). Mounted on /MEM.
-- Added stack trace on crash (mumurik).
-- Supported Joliet on CD-ROM.
-- Added Emacs like key binding to Gnote.
-- Performance tuning on BayGUI.
-- Supported GDB remote debug.
+- Ported mg (Emacs clone).
+- Added mplus fixed font to BayGUI.
+- Supported BDF font type.
+- Fixed and added libc functions.
+-- mkdir, rmdir, rename, unlink, strtoll, 
+- Fixed bugs on FAT32 long name files.
+- Fixed a bug on Meta key.
+- Added monapi_file_get_date.
+- monapi_file_is_directory.
+- Added some common message headers.
+- Added monapi library to Mosh.
 
 * Mona 0.3.1 RELEASE NOTE
 ** Overview
