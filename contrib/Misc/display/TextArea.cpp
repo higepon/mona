@@ -201,6 +201,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /** 再描画 */
     void TextArea::paint(Graphics *g)
     {
+        g->setFontStyle(Font::FIXED);
+        getFontMetrics()->setFontStyle(Font::FIXED);
         /*if( firstpaint == false ) firstpaint = true;*/
 
         // 色

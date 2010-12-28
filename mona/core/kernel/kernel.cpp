@@ -81,8 +81,8 @@
 #define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
 #endif
 
-const char* version = "Mona version.0.3.1 $Date::                           $";
-uint32_t version_number  = 0x00000300;
+const char* version = "Mona version.0.3.2";
+uint32_t version_number  = 0x00000320;
 void  mainProcess();
 
 typedef void (FuncVoid)();

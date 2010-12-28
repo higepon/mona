@@ -108,7 +108,7 @@ public:
 private:
     string foldLine(const string& line)
     {
-        const size_t MAX_LINE_LEN = 32;
+        const size_t MAX_LINE_LEN = 45;
         size_t len = 0;
         string ret;
         for (string::const_iterator it = line.begin(); it != line.end(); ++it) {
