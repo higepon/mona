@@ -228,7 +228,9 @@ typedef struct dtls1_state_st
 	struct dtls1_timeout_st timeout;
 
 	/* Indicates when the last handshake msg sent will timeout */
+#ifndef MONA
 	struct timeval next_timeout;
+#endif
 
 	/* Timeout duration */
 	unsigned short timeout_duration;

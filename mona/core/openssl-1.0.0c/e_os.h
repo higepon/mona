@@ -577,7 +577,7 @@ static unsigned int _strlen31(const char *str)
 #        include <sys/filio.h> /* Added for FIONBIO under unixware */
 #      endif
 #      include <netinet/in.h>
-#      if !defined(OPENSSL_SYS_BEOS_R5)
+#      if !defined(OPENSSL_SYS_BEOS_R5) && !defined(MONA)
 #      include <arpa/inet.h>
 #    endif
 #    endif
@@ -598,7 +598,7 @@ static unsigned int _strlen31(const char *str)
 #    if defined(sun)
 #      include <sys/filio.h>
 #    else
-#      ifndef VMS
+#      if !defined(VMS) && !defined(MONA)
 #        include <sys/ioctl.h>
 #      else
 	 /* ioctl is only in VMS > 7.0 and when socketshr is not used */
