@@ -1,12 +1,13 @@
 ### Generated automatically from Makefile.org by Configure.
-### perl Configure --cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
-### Modified for Mona
-ifndef $(MONADIR)
-export MONADIR=$(shell cd $(PWD)/../../../../mona; pwd)
-endif
 
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
+### Modified for Mona
+### perl Configure --cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+include $(SHAREDIR)/configs/monapi.inc	
+
+MONA_CFLAGS=$(CFLAGS)
+MONA_INCLUDE=$(INCLUDE)
 
 ##
 ## Makefile for OpenSSL
@@ -69,7 +70,7 @@ OPENSSLDIR=/usr/local/ssl
 
 CROSS_COMPILE= /usr/bin/i586-mingw32msvc-
 CC= $(CROSS_COMPILE)gcc
-CFLAG= -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -fomit-frame-pointer -O3 -march=i486 -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM
+CFLAG= -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -fomit-frame-pointer -O3 -march=i486 -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM $(MONA_CFLAGS) $(MONA_INCLUDE)
 DEPFLAG= -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_STORE
 PEX_LIBS= 
 EX_LIBS= -lws2_32 -lgdi32 -lcrypt32
