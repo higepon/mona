@@ -57,7 +57,7 @@
 #include <openssl/bio.h>
 #include <openssl/err.h>
 
-#ifndef OPENSSL_SYSNAME_NETWARE
+#if !defined(OPENSSL_SYSNAME_NETWARE) && !defined(MONA)
 #include <memory.h>
 #endif
 #include <stdio.h>

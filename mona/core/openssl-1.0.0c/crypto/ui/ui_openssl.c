@@ -114,7 +114,7 @@
  * [including the GNU Public Licence.]
  */
 
-
+#ifndef MONA
 #include <openssl/e_os2.h>
 
 /* need for #define _POSIX_C_SOURCE arises whenever you pass -ansi to gcc
@@ -709,4 +709,5 @@ static int noecho_fgets(char *buf, int size, FILE *tty)
 #endif
 	return(strlen(buf));
 	}
+#endif
 #endif
