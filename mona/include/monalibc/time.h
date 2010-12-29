@@ -76,7 +76,6 @@ struct timeval {
     long tv_usec;      /* Microseconds.  */
 };
 
-
 struct tm *gmtime_r(const time_t *timep, struct tm *result);
 
 #ifdef __cplusplus

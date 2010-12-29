@@ -65,6 +65,9 @@
 #include "cryptlib.h"
 
 #include <openssl/bio.h>
+#ifdef MONA
+#include <time.h>
+#endif
 
 #if defined(OPENSSL_SYS_WIN32) || defined(OPENSSL_SYS_VMS)
 #include <sys/timeb.h>
