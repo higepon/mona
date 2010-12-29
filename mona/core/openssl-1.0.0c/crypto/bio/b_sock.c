@@ -112,6 +112,35 @@ static struct ghbn_cache_st
 	} ghbn_cache[GHBN_NUM];
 #endif
 
+#ifdef MONA
+struct  hostent {
+  char  *h_name;        /* official name of host */
+  char  **h_aliases;    /* alias list */
+  int   h_addrtype;     /* host address type */
+  int   h_length;       /* length of address */
+  char  **h_addr_list;  /* list of addresses from name server */
+#define h_addr  h_addr_list[0]  /* address, for backward compatiblity */
+  unsigned int unused;  /* SENS defines this as ttl */
+};
+
+struct hostent *gethostbyaddr(const void *addr,
+                                     socklen_t len, int type)
+{
+  _logprintf("OpenSSL: gethostbyaddr always returns NULL\n");
+  return NULL;
+}
+
+struct servent
+{
+  char *s_name;                 /* Official service name.  */
+  char **s_aliases;             /* Alias list.  */
+  int s_port;                   /* Port number.  */
+  char *s_proto;                /* Protocol to use.  */
+};
+
+#endif
+
+
 static int get_ip(const char *str,unsigned char *ip);
 #if 0
 static void ghbn_free(struct hostent *a);
