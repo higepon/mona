@@ -44,6 +44,7 @@ typedef long int        intptr_t;
 typedef intptr_t mutex_t;
 typedef intptr_t cond_t;
 typedef uintptr_t off_t;
+typedef intptr_t ssize_t;
 
 enum {
     // Each value should be unique, it is used for identifing events on Scheduler.
