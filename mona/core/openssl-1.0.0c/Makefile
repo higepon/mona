@@ -11,11 +11,11 @@ SHLIB_VERSION_NUMBER=1.0.0
 SHLIB_VERSION_HISTORY=
 SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
-SHLIB_EXT=
-PLATFORM=dist
-OPTIONS= no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=dist
-SHLIB_TARGET=
+SHLIB_EXT=.dll.a
+PLATFORM=mingw
+OPTIONS=--cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-dso no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-threads no-zlib no-zlib-dynamic static-engine
+CONFIGURE_ARGS=--cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
+SHLIB_TARGET=cygwin-shared
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
 # where sub-Makefiles are expected to be.  Currently has very limited usage,
@@ -59,20 +59,21 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= cc
-CFLAG= -O
+CROSS_COMPILE= /usr/bin/i586-mingw32msvc-
+CC= $(CROSS_COMPILE)gcc
+CFLAG= -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -fomit-frame-pointer -O3 -march=i486 -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM
 DEPFLAG= -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_STORE
 PEX_LIBS= 
-EX_LIBS= 
-EXE_EXT= 
+EX_LIBS= -lws2_32 -lgdi32 -lcrypt32
+EXE_EXT= .exe
 ARFLAGS= 
-AR= ar $(ARFLAGS) r
-RANLIB= /usr/bin/ranlib
-NM= nm
-PERL= /usr/bin/perl
+AR= $(CROSS_COMPILE)ar $(ARFLAGS) r
+RANLIB= $(CROSS_COMPILE)ranlib
+NM= $(CROSS_COMPILE)nm
+PERL= perl
 TAR= tar
 TARFLAGS= --no-recursion
-MAKEDEPPROG=makedepend
+MAKEDEPPROG= $(CROSS_COMPILE)gcc
 LIBDIR=lib
 
 # We let the C compiler driver to take care of .s files. This is done in
@@ -88,20 +89,20 @@ ASFLAG=$(CFLAG)
 PROCESSOR= 
 
 # CPUID module collects small commonly used assembler snippets
-CPUID_OBJ= mem_clr.o
-BN_ASM= bn_asm.o
-DES_ENC= des_enc.o fcrypt_b.o
-AES_ENC= aes_core.o aes_cbc.o
-BF_ENC= bf_enc.o
-CAST_ENC= c_enc.o
-RC4_ENC= rc4_enc.o rc4_skey.o
-RC5_ENC= rc5_enc.o
-MD5_ASM_OBJ= 
-SHA1_ASM_OBJ= 
-RMD160_ASM_OBJ= 
-WP_ASM_OBJ= wp_block.o
-CMLL_ENC= camellia.o cmll_misc.o cmll_cbc.o
-PERLASM_SCHEME= 
+CPUID_OBJ= x86cpuid.o
+BN_ASM= bn-586.o co-586.o x86-mont.o
+DES_ENC= des-586.o crypt586.o
+AES_ENC= aes-586.o
+BF_ENC= bf-586.o
+CAST_ENC= cast-586.o
+RC4_ENC= rc4-586.o
+RC5_ENC= rc5-586.o
+MD5_ASM_OBJ= md5-586.o
+SHA1_ASM_OBJ= sha1-586.o sha256-586.o sha512-586.o
+RMD160_ASM_OBJ= rmd-586.o
+WP_ASM_OBJ= wp_block.o wp-mmx.o
+CMLL_ENC= cmll-x86.o
+PERLASM_SCHEME= coff
 
 # KRB5 stuff
 KRB5_INCLUDES=
