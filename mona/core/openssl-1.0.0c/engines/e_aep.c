@@ -247,6 +247,15 @@ static RAND_METHOD aep_random =
 /*Define an array of structures to hold connections*/
 static AEP_CONNECTION_ENTRY aep_app_conn_table[MAX_PROCESS_CONNECTIONS];
 
+#ifdef MONA
+typedef uint32_t pid_t;
+static pid_t getpid()
+{
+  _logprintf("get pid called");
+  return 1;
+}
+#endif
+
 /*Used to determine if this is a new process*/
 static pid_t    recorded_pid = 0;
 

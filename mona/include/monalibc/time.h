@@ -72,10 +72,10 @@ struct tm *gmtime(const time_t *timer);
 size_t strftime(char * s, size_t maxsize, const char * format, const struct tm * timeptr);
 
 struct timeval {
-    time_t tv_sec;            /* Seconds.  */
-      //__suseconds_t tv_usec;      /* Microseconds.  */
-      long tv_usec;      /* Microseconds.  */
+    time_t tv_sec;     /* Seconds.  */
+    long tv_usec;      /* Microseconds.  */
 };
+
 
 struct tm *gmtime_r(const time_t *timep, struct tm *result);
 
