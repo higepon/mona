@@ -1,4 +1,12 @@
 ### Generated automatically from Makefile.org by Configure.
+### perl Configure --cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
+### Modified for Mona
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../../mona; pwd)
+endif
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
 
 ##
 ## Makefile for OpenSSL
