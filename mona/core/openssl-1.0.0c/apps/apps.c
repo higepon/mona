@@ -118,7 +118,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if !defined(OPENSSL_SYSNAME_WIN32) && !defined(NETWARE_CLIB)
+#if !defined(OPENSSL_SYSNAME_WIN32) && !defined(NETWARE_CLIB) && !defined(MONA)
 #include <strings.h>
 #endif
 #include <sys/types.h>
@@ -2921,6 +2921,9 @@ double app_tminterval(int stop,int usertime)
 
 double app_tminterval(int stop,int usertime)
 	{
+#ifdef MONA
+      assert(0);
+#else
 	double		ret = 0;
 	struct rusage	rus;
 	struct timeval	now;
@@ -2934,6 +2937,7 @@ double app_tminterval(int stop,int usertime)
 					- (tmstart.tv_sec+tmstart.tv_usec*1e-6) );
 
 	return ret;
+#endif
 	}
 #endif
 
@@ -2975,7 +2979,7 @@ int app_isdir(const char *name)
 
 int app_isdir(const char *name)
 	{
-#if defined(S_ISDIR)
+#if defined(S_ISDIR) && !defined(MONA)
 	struct stat st;
 
 	if (stat(name,&st)==0)	return S_ISDIR(st.st_mode);
