@@ -5,7 +5,7 @@
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
+ * copies of the Software, and to permit persons to whom the Software is     * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -21,14 +21,14 @@
  *************************************************************/
 
 /* Please send bug reports to
-	Shotaro Tsuji
-	4-1010,
-	Sakasedai 1-chome,
-	Takaraduka-si,
-	Hyogo-ken,
-	665-0024
-	Japan
-	negi4d41@yahoo.co.jp
+    Shotaro Tsuji
+    4-1010,
+    Sakasedai 1-chome,
+    Takaraduka-si,
+    Hyogo-ken,
+    665-0024
+    Japan
+    negi4d41@yahoo.co.jp
 */
 
 #ifndef _TIME_H_
@@ -36,22 +36,22 @@
 
 #include <sys/types.h>
 
-#define CLOCKS_PER_SEC	100
+#define CLOCKS_PER_SEC  100
 
 typedef uint32_t clock_t;
 typedef long time_t;
 
 struct tm
 {
-	int tm_sec;
-	int tm_min;
-	int tm_hour;
-	int tm_mday;
-	int tm_mon;
-	int tm_year;
-	int tm_wday;
-	int tm_yday;
-	int tm_isdst;
+    int tm_sec;
+    int tm_min;
+    int tm_hour;
+    int tm_mday;
+    int tm_mon;
+    int tm_year;
+    int tm_wday;
+    int tm_yday;
+    int tm_isdst;
 };
 
 #ifdef __cplusplus
@@ -71,6 +71,11 @@ struct tm *gmtime(const time_t *timer);
 /*struct tm *localtime(const time_t *timer); */
 size_t strftime(char * s, size_t maxsize, const char * format, const struct tm * timeptr);
 
+struct timeval {
+    time_t tv_sec;            /* Seconds.  */
+      //__suseconds_t tv_usec;      /* Microseconds.  */
+      long tv_usec;      /* Microseconds.  */
+};
 
 struct tm *gmtime_r(const time_t *timep, struct tm *result);
 

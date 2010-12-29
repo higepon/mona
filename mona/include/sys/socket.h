@@ -143,11 +143,6 @@ typedef struct fd_set {
     unsigned char fd_bits [(FD_SETSIZE+7)/8];
 } fd_set;
 
-struct timeval {
-  long    tv_sec;         /* seconds */
-  long    tv_usec;        /* and microseconds */
-};
-
 
 // -[done]accept
 // -[done]bind
