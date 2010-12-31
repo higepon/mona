@@ -60,6 +60,7 @@ int strcoll(const char *s1, const char *s2);
 char *strncat(char *dst, const char *src, size_t n);
 //int strncmp(const char *s1, const char *s2, size_t n);
 int strncasecmp(const char *s1, const char *s2, size_t n);
+int strcasecmp(const char *s1, const char *s2);
 //char *strncpy(char *dst, const char *src, size_t n);
 char *strpbrk(const char *s, const char *accept);
 char *strrchr(const char *s, int c);
