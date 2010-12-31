@@ -1,8 +1,21 @@
-/* $Id: strcasecmp.c,v 1.2 2005/07/07 16:34:06 dron Exp $ */
+/* $Id: umoddi3.c,v 1.4 2004/02/16 10:21:18 cegger Exp $
+***************************************************************************
 
-/*
- * Copyright (c) 1987, 1993
+   LibGG - 64bit arithmetic
+
+***************************************************************************
+*/
+
+
+/* This code has been imported to GGI from NetBSD-current 2003-12-29 */
+
+/*-
+ * Copyright (c) 1992, 1993
  *      The Regents of the University of California.  All rights reserved.
+ *
+ * This software was developed by the Computer Systems Engineering group
+ * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
+ * contributed to Berkeley.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,24 +41,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+#include <monapi/Assert.h>
+typedef unsigned long long uint64;
 
-#if 0
-static char sccsid[] = "@(#)strcasecmp.c        8.1 (Berkeley) 6/4/93";
-__RCSID("$NetBSD: strcasecmp.c,v 1.16 2003/08/07 16:43:49 agc Exp $");
-#endif
-
-#include <ctype.h>
-#include <string.h>
-
-int
-strcasecmp(const char *s1, const char *s2)
+/*
+ * Return remainder after dividing two unsigned quads.
+ */
+uint64 __umoddi3(uint64 a, uint64 b)
 {
-        const unsigned char *us1 = (const unsigned char *)s1,
-                        *us2 = (const unsigned char *)s2;
+  ASSERT(sizeof(uint64) == 8);
+  uint64 r;
 
-        while (tolower(*us1) == tolower(*us2++))
-                if (*us1++ == '\0')
-                        return (0);
-        return (tolower(*us1) - tolower(*--us2));
+  (void)__qdivrem(a, b, &r);
+  return (r);
 }
-

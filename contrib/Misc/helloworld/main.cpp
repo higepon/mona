@@ -32,6 +32,7 @@
 
 int main(int argc, char* argv[])
 {
+    ASSERT(sizeof(unsigned long long) == 8);
   int ret;
   int s;
 
