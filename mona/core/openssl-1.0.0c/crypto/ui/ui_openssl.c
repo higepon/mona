@@ -114,7 +114,14 @@
  * [including the GNU Public Licence.]
  */
 
-#ifndef MONA
+#ifdef MONA
+void *UI_OpenSSL(void)
+{
+    _logprintf("UI_OpenSSL called\n");
+    exit(-1);
+    return 0;
+}
+#else
 #include <openssl/e_os2.h>
 
 /* need for #define _POSIX_C_SOURCE arises whenever you pass -ansi to gcc
