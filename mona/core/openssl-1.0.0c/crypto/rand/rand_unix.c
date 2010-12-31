@@ -393,8 +393,8 @@ int RAND_poll(void)
 #if defined(MONA)
 int RAND_poll(void)
 	{
-      _logprintf("Error:RAND_poll called");
-      exit(-1);
+      //      _logprintf("Error:RAND_poll called");
+      //      exit(-1);
 	return 0;
 	}
 #endif

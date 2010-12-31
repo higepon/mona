@@ -118,6 +118,10 @@
 #include <openssl/bio.h>
 #include <openssl/lhash.h>
 
+#ifdef MONA
+#define localtime(x) _logprintf("localtime called\n"), exit(-1)
+#endif
+
 static int mh_mode=CRYPTO_MEM_CHECK_OFF;
 /* The state changes to CRYPTO_MEM_CHECK_ON | CRYPTO_MEM_CHECK_ENABLE
  * when the application asks for it (usually after library initialisation

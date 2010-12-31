@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
 
   char request[BUF_LEN];
 
-  char *host = "www2.ggn.net";
-  char *path = "/cgi-bin/ssl";
+  char *host = "www.hatena.ne.jp";
+  char *path = "/";
 
 
   struct addrinfo hints;

@@ -4,12 +4,13 @@
 ### perl Configure --cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
 SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
-include $(SHAREDIR)/configs/monapi.inc	
+include $(SHAREDIR)/configs/monapi.inc
+include $(SHAREDIR)/configs/dirnames.inc
 
 MONA_D=-DNO_SYS_PARAM_H -DNO_SYSLOG -DGETPID_IS_MEANINGLESS -DOPENSSL_NO_POSIX_IO
 MONA_CFLAGS=$(CFLAGS)
 MONA_INCLUDE=$(INCLUDE)
-
+MONA_LIBDIR=$(SRCTOP)/lib
 ##
 ## Makefile for OpenSSL
 ##
@@ -506,6 +507,11 @@ dist_pem_h:
 	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
 
 install: all install_docs install_sw
+
+install-mona:
+	mkdir -p $(MONA_LIBDIR)
+	$(INSTALL) -p -m 0644 libssl.a $(MONA_LIBDIR)/
+	$(INSTALL) -p -m 0644 libcrypto.a $(MONA_LIBDIR)/
 
 install_sw:
 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
