@@ -389,3 +389,14 @@ int RAND_poll(void)
 	return 0;
 	}
 #endif
+
+#if defined(MONA)
+int RAND_poll(void)
+	{
+      _logprintf("Error:RAND_poll called");
+      exit(-1);
+	return 0;
+	}
+#endif
+
+
