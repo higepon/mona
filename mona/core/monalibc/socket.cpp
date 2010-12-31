@@ -34,6 +34,7 @@
 #include <monapi/messages.h>
 #include <servers/net.h>
 #include <monalibc/errno.h>
+#include <time.h>
 
 using namespace MonAPI;
 
