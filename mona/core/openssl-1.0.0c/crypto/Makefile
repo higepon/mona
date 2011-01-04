@@ -104,7 +104,11 @@ $(LIB):	$(LIBOBJ)
 	$(AR) $(LIB) $(LIBOBJ)
 	$(RANLIB) $(LIB) || echo Never mind.
 
-shared: buildinf.h lib subdirs
+../CRYPTO.DLL: $(LIBOBJ)
+	$(LD) -e _dllmain --export-all-symbols --out-implib ../libcrypto-imp.a -o $@ $(LIBOBJ) stack/stack.o err/err.o err/err_prn.o bio/bio_lib.o bio/b_print.o bio/bss_file.o lhash/lhash.o buffer/buffer.o objects/obj_dat.o asn1/asn1_lib.o asn1/a_object.o bn/bn_lib.o bn/bn_shift.o bn/bn_word.o bn/bn-586.o bn/bn_print.o objects/obj_lib.o -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
+	install -p -m 0644 ../libcrypto-imp.a $(MONADIR)/$(LIBDIR)
+
+shared: buildinf.h lib subdirs ../CRYPTO.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
 	fi

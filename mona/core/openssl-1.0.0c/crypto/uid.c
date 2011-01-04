@@ -65,7 +65,7 @@ int OPENSSL_issetugid(void)
 	return issetugid();
 	}
 
-#elif defined(OPENSSL_SYS_WIN32) || defined(OPENSSL_SYS_VXWORKS) || defined(OPENSSL_SYS_NETWARE)
+#elif defined(OPENSSL_SYS_WIN32) || defined(OPENSSL_SYS_VXWORKS) || defined(OPENSSL_SYS_NETWARE) || defined(MONA)
 
 int OPENSSL_issetugid(void)
 	{

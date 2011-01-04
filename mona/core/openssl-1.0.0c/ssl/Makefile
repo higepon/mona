@@ -1,7 +1,6 @@
 #
 # OpenSSL/ssl/Makefile
 #
-
 DIR=	ssl
 TOP=	..
 CC=	cc
@@ -60,7 +59,10 @@ lib:	$(LIBOBJ)
 	$(RANLIB) $(LIB) || echo Never mind.
 	@touch lib
 
-shared: lib
+../SSL.DLL: $(LIBOBJ)
+	$(LD) -e _dllmain --export-all-symbols --out-implib libssl-imp.a -o $@ $(LIBOBJ) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -lcrypto-imp
+
+shared: lib ../SSL.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
 	fi

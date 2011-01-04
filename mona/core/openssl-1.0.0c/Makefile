@@ -6,6 +6,7 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 include $(SHAREDIR)/configs/monapi.inc
 include $(SHAREDIR)/configs/dirnames.inc
+export LD
 
 MONA_D=-DNO_SYS_PARAM_H -DNO_SYSLOG -DGETPID_IS_MEANINGLESS -DOPENSSL_NO_POSIX_IO
 MONA_CFLAGS=$(CFLAGS)
