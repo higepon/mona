@@ -827,6 +827,8 @@ static void get_current_time(struct timeval *t)
 	ftime(&tb);
 	t->tv_sec = (long)tb.time;
 	t->tv_usec = (long)tb.millitm * 1000;
+#elif defined(MONA)
+    assert(0);
 #else
 	gettimeofday(t, NULL);
 #endif
