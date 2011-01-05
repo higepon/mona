@@ -60,7 +60,8 @@ lib:	$(LIBOBJ)
 	@touch lib
 
 ../SSL.DLL: $(LIBOBJ)
-	$(LD) -e _dllmain --export-all-symbols --out-implib libssl-imp.a -o $@ $(LIBOBJ) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -lcrypto-imp
+	$(LD) -e _dllmain --export-all-symbols --out-implib ../libssl-imp.a -o $@ $(LIBOBJ) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -lcrypto-imp
+	install -p -m 0644 ../libssl-imp.a $(MONADIR)/$(LIBDIR)
 
 shared: lib ../SSL.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \

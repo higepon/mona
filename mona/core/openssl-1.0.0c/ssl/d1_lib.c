@@ -374,6 +374,8 @@ static void get_current_time(struct timeval *t)
 	ftime(&tb);
 	t->tv_sec = (long)tb.time;
 	t->tv_usec = (long)tb.millitm * 1000;
+#elif defined(MONA)
+    _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
 #else
 	gettimeofday(t, NULL);
 #endif
