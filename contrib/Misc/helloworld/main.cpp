@@ -23,7 +23,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <openssl/crypto.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/rand.h>
@@ -121,6 +120,7 @@ int main(int argc, char* argv[])
 
     if ( read_size > 0 ){
       buf[read_size] = '\0';
+//      _logprintf("%s", buf);
       fwrite(buf, read_size, 1, stdout);
     } else if ( read_size == 0 ){
       /* FIN 受信 */

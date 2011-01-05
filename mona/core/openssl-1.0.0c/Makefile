@@ -517,6 +517,12 @@ install-mona:
 	$(INSTALL) -p -m 0644 libcrypto.a $(MONA_LIBDIR)/
 	$(MAKE) -C ssl $@
 	$(MAKE) -C crypto $@
+	@set -e; headerlist="$(EXHEADER)"; for i in $$headerlist;\
+	do \
+	(cp $$i $(MONADIR)/include/openssl/$$i; \
+	chmod 644 $(MONADIR)/include/openssl/$$i ); \
+	done;
+
 
 install_sw:
 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \

@@ -680,6 +680,11 @@ install-mona:
 	(cp $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
+	@headerlist=`find -name "*.h"`; for i in $$headerlist ; \
+	do  \
+	(cd `dirname $$i` && cp `basename $$i` $(MONADIR)/include/openssl/`basename $$i`; \
+	chmod 644 $(MONADIR)/include/openssl/`basename $$i`); \
+	done;
 
 
 lint:
