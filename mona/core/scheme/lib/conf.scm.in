@@ -15,9 +15,7 @@
                          "/APPS/TVIRTIO.EX5"
                          "/APPS/TSTACK.APP/TSTACK.EX5"
                          "/APPS/TGMP.EX5"
-                         "/APPS/HELLO.EX5"
                          "/APPS/TMISC.EX5"
-                         "/APPS/HELLO.EX5"
                          "/APPS/TMUTEX.EX5"
                          "/APPS/TCOND.EX5"
                          "/APPS/TSTDIO.APP/TSTDIO.EX5"
@@ -26,7 +24,6 @@
                          "/APPS/TRAMDISK.EX5"
                          "/APPS/TDIE.EX5"
                          "/APPS/TSOCK.EX5"
-                         "/APPS/HELLO.EX5"
                          ))
 
 (define *tests-on-gui* '("/APPS/BAYGUI/TBAYGUI.EX5"))
