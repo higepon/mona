@@ -305,7 +305,12 @@ static int dgram_read(BIO *b, char *out, int outl)
 		clear_socket_error();
 		memset(&sa.peer, 0x00, sizeof(sa.peer));
 		dgram_adjust_rcv_timeout(b);
+#ifdef MONA
+        _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
+        ret = -1;
+#else
 		ret=recvfrom(b->num,out,outl,0,&sa.peer.sa,(void *)&sa.len);
+#endif
 		if (sizeof(sa.len.i)!=sizeof(sa.len.s) && sa.len.i==0)
 			{
 			OPENSSL_assert(sa.len.s<=sizeof(sa.peer));
@@ -350,7 +355,12 @@ static int dgram_write(BIO *b, const char *in, int inl)
 #if defined(NETWARE_CLIB) && defined(NETWARE_BSDSOCK)
 		ret=sendto(b->num, (char *)in, inl, 0, &data->peer.sa, peerlen);
 #else
+#ifdef MONA
+        _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
+        ret = -1;
+#else
 		ret=sendto(b->num, in, inl, 0, &data->peer.sa, peerlen);
+#endif
 #endif
 		}
 
@@ -828,7 +838,7 @@ static void get_current_time(struct timeval *t)
 	t->tv_sec = (long)tb.time;
 	t->tv_usec = (long)tb.millitm * 1000;
 #elif defined(MONA)
-    assert(0);
+    _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
 #else
 	gettimeofday(t, NULL);
 #endif

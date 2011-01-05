@@ -221,7 +221,12 @@ int BIO_get_port(const char *str, unsigned short *port_ptr)
 		 * parameter is 'char *', instead of 'const char *'
 		 */
 #ifndef CONST_STRICT
+#ifdef MONA
+        _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
+        s=NULL;
+#else
 		s=getservbyname((char *)str,"tcp");
+#endif
 #else
 		s=getservbyname(str,"tcp");
 #endif
@@ -403,6 +408,10 @@ static void ghbn_free(struct hostent *a)
 
 struct hostent *BIO_gethostbyname(const char *name)
 	{
+#ifdef MONA
+        _logprintf("Error%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return NULL;
+#else
 #if 1
 	/* Caching gethostbyname() results forever is wrong,
 	 * so we have to let the true gethostbyname() worry about this */
@@ -493,6 +502,7 @@ end:
 	CRYPTO_w_unlock(CRYPTO_LOCK_GETHOSTBYNAME);
 #  endif
 	return(ret);
+#endif
 #endif
 	}
 

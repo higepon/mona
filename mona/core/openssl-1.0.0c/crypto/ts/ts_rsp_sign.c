@@ -111,6 +111,10 @@ static ASN1_INTEGER *def_serial_cb(struct TS_resp_ctx *ctx, void *data)
 static int def_time_cb(struct TS_resp_ctx *ctx, void *data, 
 		       long *sec, long *usec)
 	{
+#ifdef MONA
+      _logprintf("Warn :%s %s:%d\n", __func__, __FILE__, __LINE__);
+      return 0;
+#else
 	struct timeval tv;
 	if (gettimeofday(&tv, NULL) != 0) 
 		{
@@ -125,6 +129,7 @@ static int def_time_cb(struct TS_resp_ctx *ctx, void *data,
 	*usec = tv.tv_usec;
 
 	return 1;
+#endif
 	}
 
 #else
