@@ -104,8 +104,8 @@ $(LIB):	$(LIBOBJ)
 	$(AR) $(LIB) $(LIBOBJ)
 	$(RANLIB) $(LIB) || echo Never mind.
 
-../CRYPTO.DLL: $(LIBOBJ)
-	$(LD) -e _dllmain --export-all-symbols --out-implib ../libcrypto-imp.a -o $@ $(LIBOBJ) \
+CRYPTO.DLL: $(LIBOBJ)
+	$(LD) -e _dllmain --export-all-symbols --out-implib libcrypto-imp.a -o $@ $(LIBOBJ) \
 ./bf/bf_ofb64.o \
 ./bf/bf_skey.o \
 ./bf/bf_ecb.o \
@@ -655,7 +655,7 @@ $(LIB):	$(LIBOBJ)
 -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
 	install -p -m 0644 ../libcrypto-imp.a $(MONADIR)/$(LIBDIR)
 
-shared: buildinf.h lib subdirs ../CRYPTO.DLL
+shared: buildinf.h lib subdirs CRYPTO.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
 	fi
@@ -671,6 +671,16 @@ install:
 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
 	done;
 	@target=install; $(RECURSIVE_MAKE)
+
+install-mona:
+	install -p -m 0644 CRYPTO.DLL $(BINDIR)/LIBS
+	mkdir -p $(MONADIR)/include/openssl
+	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
+	do  \
+	(cp $$i $(MONADIR)/include/openssl/$$i; \
+	chmod 644 $(MONADIR)/include/openssl/$$i ); \
+	done;
+
 
 lint:
 	@target=lint; $(RECURSIVE_MAKE)

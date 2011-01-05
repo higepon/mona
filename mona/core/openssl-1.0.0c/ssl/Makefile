@@ -59,11 +59,11 @@ lib:	$(LIBOBJ)
 	$(RANLIB) $(LIB) || echo Never mind.
 	@touch lib
 
-../SSL.DLL: $(LIBOBJ)
-	$(LD) -e _dllmain --export-all-symbols --out-implib ../libssl-imp.a -o $@ $(LIBOBJ) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -lcrypto-imp
-	install -p -m 0644 ../libssl-imp.a $(MONADIR)/$(LIBDIR)
+SSL.DLL: $(LIBOBJ)
+	$(LD) -e _dllmain --export-all-symbols --out-implib libssl-imp.a -o $@ $(LIBOBJ) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -lcrypto-imp
+	install -p -m 0644 libssl-imp.a $(MONADIR)/$(LIBDIR)
 
-shared: lib ../SSL.DLL
+shared: lib SSL.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \
 		(cd ..; $(MAKE) $(SHARED_LIB)); \
 	fi
@@ -82,6 +82,15 @@ install:
 	do  \
 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+	done;
+
+install-mona:
+	install -p -m 0644 SSL.DLL $(BINDIR)/LIBS
+	mkdir -p $(MONADIR)/include/openssl
+	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
+	do  \
+	(cp $$i $(MONADIR)/include/openssl/$$i; \
+	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
 
 tags:

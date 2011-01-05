@@ -7,6 +7,8 @@ include $(SRCTOP)/Makefile.inc
 include $(SHAREDIR)/configs/monapi.inc
 include $(SHAREDIR)/configs/dirnames.inc
 export LD
+export BINDIR
+export MONADIR
 
 MONA_D=-DNO_SYS_PARAM_H -DNO_SYSLOG -DGETPID_IS_MEANINGLESS -DOPENSSL_NO_POSIX_IO -DOPENSSL_NO_HW -DOPENSSL_NO_GOST -DNO_CHMOD
 MONA_CFLAGS=$(CFLAGS)
@@ -513,6 +515,8 @@ install-mona:
 	mkdir -p $(MONA_LIBDIR)
 	$(INSTALL) -p -m 0644 libssl.a $(MONA_LIBDIR)/
 	$(INSTALL) -p -m 0644 libcrypto.a $(MONA_LIBDIR)/
+	$(MAKE) -C ssl $@
+	$(MAKE) -C crypto $@
 
 install_sw:
 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
