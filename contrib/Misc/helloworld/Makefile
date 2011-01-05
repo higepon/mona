@@ -7,10 +7,10 @@ TARGET  = HELLO
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 INSTFILES = HELLO.map
-ADDINCLUDE= -I /home/taro/mona/core/openssl-1.0.0c/include
+ADDINCLUDE= 
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    =   -lssl -lcrypto -lonigurum-imp -lmonalibc-imp --enable-auto-import
+ADDLINK    =   -lssl-imp -lcrypto-imp -lonigurum-imp -lmonalibc-imp --enable-auto-import
 #ADDLINK    = -ldlltest-imp
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
