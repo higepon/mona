@@ -653,7 +653,7 @@ CRYPTO.DLL: $(LIBOBJ)
 ./x509v3/v3_prn.o \
 ./txt_db/txt_db.o \
 -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
-	install -p -m 0644 ../libcrypto-imp.a $(MONADIR)/$(LIBDIR)
+	install -p -m 0644 libcrypto-imp.a $(MONADIR)/$(LIBDIR)
 
 shared: buildinf.h lib subdirs CRYPTO.DLL
 	if [ -n "$(SHARED_LIBS)" ]; then \
@@ -693,7 +693,7 @@ depend:
 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
 
 clean:
-	rm -f buildinf.h *.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
+	rm -f buildinf.h *.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff *.a *.DLL
 	@target=clean; $(RECURSIVE_MAKE)
 
 dclean:
