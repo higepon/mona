@@ -140,6 +140,7 @@ IMPLEMENT_ssl23_meth_func(SSLv23_client_method,
 
 int ssl23_connect(SSL *s)
 	{
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	BUF_MEM *buf=NULL;
 	unsigned long Time=(unsigned long)time(NULL);
 	void (*cb)(const SSL *ssl,int type,int val)=NULL;
@@ -172,6 +173,7 @@ int ssl23_connect(SSL *s)
 			if (s->session != NULL)
 				{
 				SSLerr(SSL_F_SSL23_CONNECT,SSL_R_SSL23_DOING_SESSION_ID_REUSE);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				ret= -1;
 				goto end;
 				}
@@ -185,11 +187,13 @@ int ssl23_connect(SSL *s)
 				{
 				if ((buf=BUF_MEM_new()) == NULL)
 					{
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					ret= -1;
 					goto end;
 					}
 				if (!BUF_MEM_grow(buf,SSL3_RT_MAX_PLAIN_LENGTH))
 					{
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 					ret= -1;
 					goto end;
 					}
@@ -197,7 +201,7 @@ int ssl23_connect(SSL *s)
 				buf=NULL;
 				}
 
-			if (!ssl3_setup_buffers(s)) { ret= -1; goto end; }
+			if (!ssl3_setup_buffers(s)) {                 _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);ret= -1; goto end; }
 
 			ssl3_init_finished_mac(s);
 
@@ -211,7 +215,10 @@ int ssl23_connect(SSL *s)
 
 			s->shutdown=0;
 			ret=ssl23_client_hello(s);
-			if (ret <= 0) goto end;
+			if (ret <= 0) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+              goto end;
+            }
 			s->state=SSL23_ST_CR_SRVR_HELLO_A;
 			s->init_num=0;
 
@@ -221,11 +228,13 @@ int ssl23_connect(SSL *s)
 		case SSL23_ST_CR_SRVR_HELLO_B:
 			ret=ssl23_get_server_hello(s);
 			if (ret >= 0) cb=NULL;
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			goto end;
 			/* break; */
 
 		default:
 			SSLerr(SSL_F_SSL23_CONNECT,SSL_R_UNKNOWN_STATE);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			ret= -1;
 			goto end;
 			/* break; */
@@ -267,6 +276,7 @@ static int ssl23_no_ssl2_ciphers(SSL *s)
 
 static int ssl23_client_hello(SSL *s)
 	{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	unsigned char *buf;
 	unsigned char *p,*d;
 	int i,ch_len;
@@ -319,6 +329,7 @@ static int ssl23_client_hello(SSL *s)
 		/* don't reuse session-id's */
 		if (!ssl_get_new_session(s,0))
 			{
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return(-1);
 			}
 #endif
@@ -326,8 +337,10 @@ static int ssl23_client_hello(SSL *s)
 		p=s->s3->client_random;
 		Time=(unsigned long)time(NULL);		/* Time */
 		l2n(Time,p);
-		if (RAND_pseudo_bytes(p,SSL3_RANDOM_SIZE-4) <= 0)
+		if (RAND_pseudo_bytes(p,SSL3_RANDOM_SIZE-4) <= 0) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return -1;
+        }
 
 		if (version == TLS1_VERSION)
 			{
@@ -347,6 +360,7 @@ static int ssl23_client_hello(SSL *s)
 		else
 			{
 			SSLerr(SSL_F_SSL23_CLIENT_HELLO,SSL_R_NO_PROTOCOLS_AVAILABLE);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			return(-1);
 			}
 
@@ -370,6 +384,7 @@ static int ssl23_client_hello(SSL *s)
 				{
 				/* no ciphers */
 				SSLerr(SSL_F_SSL23_CLIENT_HELLO,SSL_R_NO_CIPHERS_AVAILABLE);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
 				}
 			s2n(i,d);
@@ -397,8 +412,10 @@ static int ssl23_client_hello(SSL *s)
 				i=ch_len;
 			s2n(i,d);
 			memset(&(s->s3->client_random[0]),0,SSL3_RANDOM_SIZE);
-			if (RAND_pseudo_bytes(&(s->s3->client_random[SSL3_RANDOM_SIZE-i]),i) <= 0)
+			if (RAND_pseudo_bytes(&(s->s3->client_random[SSL3_RANDOM_SIZE-i]),i) <= 0) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
+            }
 
 			memcpy(p,&(s->s3->client_random[SSL3_RANDOM_SIZE-i]),i);
 			p+=i;
@@ -435,6 +452,7 @@ static int ssl23_client_hello(SSL *s)
 			if (i == 0)
 				{
 				SSLerr(SSL_F_SSL23_CLIENT_HELLO,SSL_R_NO_CIPHERS_AVAILABLE);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
 				}
 			s2n(i,p);
@@ -463,11 +481,13 @@ static int ssl23_client_hello(SSL *s)
 			if (ssl_prepare_clienthello_tlsext(s) <= 0)
 				{
 				SSLerr(SSL_F_SSL23_CLIENT_HELLO,SSL_R_CLIENTHELLO_TLSEXT);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
 				}
 			if ((p = ssl_add_clienthello_tlsext(s, p, buf+SSL3_RT_MAX_PLAIN_LENGTH)) == NULL)
 				{
 				SSLerr(SSL_F_SSL23_CLIENT_HELLO,ERR_R_INTERNAL_ERROR);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
 				}
 #endif
@@ -484,6 +504,7 @@ static int ssl23_client_hello(SSL *s)
 			if (l > SSL3_RT_MAX_PLAIN_LENGTH)
 				{
 				SSLerr(SSL_F_SSL23_CLIENT_HELLO,ERR_R_INTERNAL_ERROR);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				return -1;
 				}
 			
@@ -518,7 +539,7 @@ static int ssl23_client_hello(SSL *s)
 		else
 			s->msg_callback(1, version, SSL3_RT_HANDSHAKE, s->init_buf->data+5, ret-5, s, s->msg_callback_arg);
 		}
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	return ret;
 	}
 
@@ -530,7 +551,7 @@ static int ssl23_get_server_hello(SSL *s)
 	int n;
 
 	n=ssl23_read_bytes(s,7);
-
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 	if (n != 7) return(n);
 	p=s->packet;
 
@@ -541,6 +562,7 @@ static int ssl23_get_server_hello(SSL *s)
 		{
 #ifdef OPENSSL_NO_SSL2
 		SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,SSL_R_UNSUPPORTED_PROTOCOL);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		goto err;
 #else
 		/* we are talking sslv2 */
@@ -551,12 +573,15 @@ static int ssl23_get_server_hello(SSL *s)
 		if (s->options & SSL_OP_NO_SSLv2)
 			{
 			SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,SSL_R_UNSUPPORTED_PROTOCOL);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			goto err;
 			}
 		if (s->s2 == NULL)
 			{
-			if (!ssl2_new(s))
+              if (!ssl2_new(s)) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 				goto err;
+              }
 			}
 		else
 			ssl2_clear(s);
@@ -583,6 +608,7 @@ static int ssl23_get_server_hello(SSL *s)
 			SSL2_MAX_RECORD_LENGTH_3_BYTE_HEADER))
 			{
 			SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,ERR_R_BUF_LIB);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			goto err;
 			}
 
@@ -629,6 +655,7 @@ static int ssl23_get_server_hello(SSL *s)
 		else
 			{
 			SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,SSL_R_UNSUPPORTED_PROTOCOL);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			goto err;
 			}
 
@@ -656,10 +683,14 @@ static int ssl23_get_server_hello(SSL *s)
 
 			s->rwstate=SSL_NOTHING;
 			SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,SSL_AD_REASON_OFFSET+p[6]);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			goto err;
 			}
 
-		if (!ssl_init_wbio_buffer(s,1)) goto err;
+		if (!ssl_init_wbio_buffer(s,1)) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+          goto err;
+        }
 
 		/* we are in this state */
 		s->state=SSL3_ST_CR_SRVR_HELLO_A;
@@ -681,14 +712,17 @@ static int ssl23_get_server_hello(SSL *s)
 	else
 		{
 		SSLerr(SSL_F_SSL23_GET_SERVER_HELLO,SSL_R_UNKNOWN_PROTOCOL);
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		goto err;
 		}
 	s->init_num=0;
 
 	/* Since, if we are sending a ssl23 client hello, we are not
 	 * reusing a session-id */
-	if (!ssl_get_new_session(s,0))
+	if (!ssl_get_new_session(s,0)) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		goto err;
+    }
 
 	return(SSL_connect(s));
 err:
