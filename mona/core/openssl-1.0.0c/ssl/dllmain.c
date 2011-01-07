@@ -26,11 +26,9 @@ static void invokeFuncList(FuncVoid** list, const char* file, int line)
 
 int dllmain(uint32_t reason)
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     switch (reason)
     {
     case 0: // DLL_PROCESS_ATTACH
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // Prevent static class initialize invoked twice. (ex) BitMap on MemoryMap.
         if (!ssl_initialized) {
             invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);

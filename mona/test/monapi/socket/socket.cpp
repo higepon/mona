@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <monapi.h>
 #include <stdio.h>
+#include <limits.h>
+#include <string>
 #include <time.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -34,6 +36,12 @@ static void testGetAddrInfo()
     EXPECT_EQ(SOCK_STREAM, res->ai_socktype);
     EXPECT_EQ(AF_INET, res->ai_family);
     freeaddrinfo(res);
+}
+
+static bool endsWith(const std::string& s, const std::string& t)
+{
+    size_t i = s.rfind(t);
+    return (i != std::string::npos) && (i == (s.length() - t.length()));
 }
 
 static void testSocket()
@@ -231,95 +239,49 @@ static void testOpenManyTimes()
 #define BUF_LEN 256
 static void testSSLHttpGet()
 {
+    const char *host = "www.hatena.ne.jp";
+    const char *path = "/";
+
     ASSERT(sizeof(unsigned long long) == 8);
-    int ret;
-    int s;
-
-    SSL *ssl;
-    SSL_CTX *ctx;
-
-    char request[BUF_LEN];
-
-    char *host = "www.hatena.ne.jp";
-    char *path = "/";
-
 
     struct addrinfo hints;
-    struct addrinfo* res;
-
     memset(&hints, 0, sizeof(hints));
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_family = AF_INET;
 
+    struct addrinfo* res;
     ASSERT_EQ(0, getaddrinfo(host, "443", &hints, &res));
 
     int sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     ASSERT_TRUE(sock != -1);
 
-    ret = connect(sock, res->ai_addr, res->ai_addrlen);
-    _logprintf("ret = %d", ret);
-//    ASSERT_EQ(0, ret);
-    if (ret != 0) {
-        monapi_fatal("hige");
-    }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
+    int ret = connect(sock, res->ai_addr, res->ai_addrlen);
+    ASSERT_EQ(0, ret);
     SSL_load_error_strings();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     SSL_library_init();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    ctx = SSL_CTX_new(SSLv23_client_method());
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if ( ctx == NULL ){
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        ERR_print_errors_fp(stderr);
-        exit(1);
-    }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    ssl = SSL_new(ctx);
-    if ( ssl == NULL ){
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        ERR_print_errors_fp(stderr);
-        exit(1);
-    }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    ret = SSL_set_fd(ssl, s);
-    if ( ret == 0 ){
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        ERR_print_errors_fp(stderr);
-        exit(1);
-    }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    /* PRNG 初期化 */
+    SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());
+    ASSERT_TRUE(ctx != NULL);
+    SSL *ssl = SSL_new(ctx);
+    ASSERT_TRUE(ssl != NULL);
+    ret = SSL_set_fd(ssl, sock);
+    ASSERT_TRUE(ret != 0);
+
     RAND_poll();
-    while ( RAND_status() == 0 ){
+    while (RAND_status() == 0) {
         unsigned short rand_ret = rand() % 65536;
         RAND_seed(&rand_ret, sizeof(rand_ret));
     }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    /* SSL で接続 */
     ret = SSL_connect(ssl);
-    _logprintf("connect= %d", ret);
-    if ( ret != 1 ){
-        ERR_print_errors_fp(stderr);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        exit(1);
-    }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    /* リクエスト送信 */
+    ASSERT_TRUE(ret != -1);
+    char request[BUF_LEN];
     sprintf(request,
             "GET %s HTTP/1.0\r\n"
             "Host: %s\r\n\r\n",
             path, host);
 
     ret = SSL_write(ssl, request, strlen(request));
-    if ( ret < 1 ){
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        ERR_print_errors_fp(stderr);
-        exit(1);
-    }
-
-    printf("サーバからのレスポンス\n");
+    ASSERT_TRUE(ret > 0);
+    std::string content;
     while (1){
         char buf[BUF_LEN];
         int read_size;
@@ -327,33 +289,21 @@ static void testSSLHttpGet()
 
         if ( read_size > 0 ){
             buf[read_size] = '\0';
-//      _logprintf("%s", buf);
-            fwrite(buf, read_size, 1, stdout);
+            content += buf;
         } else if ( read_size == 0 ){
-            /* FIN 受信 */
             break;
         } else {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            ERR_print_errors_fp(stderr);
-            exit(1);
+            ASSERT_TRUE(false);
         }
     }
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ASSERT_TRUE(endsWith(content, "</html>\n"));
     ret = SSL_shutdown(ssl);
-    if ( ret != 1 ){
-        ERR_print_errors_fp(stderr);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        exit(1);
-    }
-    closesocket(s);
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ASSERT_EQ(1, ret);
+    closesocket(sock);
     SSL_free(ssl);
     SSL_CTX_free(ctx);
     ERR_free_strings();
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
 }
-
 
 int main(int argc, char *argv[])
 {

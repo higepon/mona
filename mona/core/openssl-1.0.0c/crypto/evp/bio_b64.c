@@ -376,7 +376,6 @@ static int b64_write(BIO *b, const char *in, int inl)
 	int n;
 	int i;
 	BIO_B64_CTX *ctx;
-
 	ctx=(BIO_B64_CTX *)b->ptr;
 	BIO_clear_retry_flags(b);
 

@@ -162,7 +162,6 @@ static int nbiof_write(BIO *b, const char *in, int inl)
 	int ret=0;
 	int num;
 	unsigned char n;
-
 	if ((in == NULL) || (inl <= 0)) return(0);
 	if (b->next_bio == NULL) return(0);
 	nt=(NBIO_TEST *)b->ptr;

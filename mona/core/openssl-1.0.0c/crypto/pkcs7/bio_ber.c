@@ -274,7 +274,6 @@ static int ber_write(BIO *b, char *in, int inl)
 	{
 	int ret=0,n,i;
 	BIO_ENC_CTX *ctx;
-
 	ctx=(BIO_ENC_CTX *)b->ptr;
 	ret=inl;
 

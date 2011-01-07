@@ -143,7 +143,6 @@ static int md_write(BIO *b, const char *in, int inl)
 	{
 	int ret=0;
 	EVP_MD_CTX *ctx;
-
 	if ((in == NULL) || (inl <= 0)) return(0);
 	ctx=b->ptr;
 

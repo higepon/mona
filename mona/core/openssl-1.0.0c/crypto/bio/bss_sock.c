@@ -153,7 +153,6 @@ static int sock_read(BIO *b, char *out, int outl)
 static int sock_write(BIO *b, const char *in, int inl)
 	{
 	int ret;
-	
 	clear_socket_error();
 	ret=writesocket(b->num,in,inl);
 	BIO_clear_retry_flags(b);

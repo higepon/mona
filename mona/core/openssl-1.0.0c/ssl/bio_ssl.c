@@ -231,7 +231,6 @@ static int ssl_write(BIO *b, const char *out, int outl)
 	int retry_reason=0;
 	SSL *ssl;
 	BIO_SSL *bs;
-
 	if (out == NULL) return(0);
 	bs=(BIO_SSL *)b->ptr;
 	ssl=bs->ssl;
@@ -241,7 +240,6 @@ static int ssl_write(BIO *b, const char *out, int outl)
 /*	ret=SSL_do_handshake(ssl);
 	if (ret > 0) */
 	ret=SSL_write(ssl,out,outl);
-
 	switch (SSL_get_error(ssl,ret))
 		{
 	case SSL_ERROR_NONE:

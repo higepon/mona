@@ -247,7 +247,6 @@ static int MS_CALLBACK file_read(BIO *b, char *out, int outl)
 static int MS_CALLBACK file_write(BIO *b, const char *in, int inl)
 	{
 	int ret=0;
-
 	if (b->init && (in != NULL))
 		{
 		if (b->flags&BIO_FLAGS_UPLINK)

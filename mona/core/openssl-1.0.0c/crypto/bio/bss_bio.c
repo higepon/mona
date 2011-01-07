@@ -354,7 +354,6 @@ static int bio_write(BIO *bio, const char *buf, int num_)
 	size_t num = num_;
 	size_t rest;
 	struct bio_bio_st *b;
-
 	BIO_clear_retry_flags(bio);
 
 	if (!bio->init || buf == NULL || num == 0)

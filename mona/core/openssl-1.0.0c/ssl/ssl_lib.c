@@ -976,7 +976,6 @@ int SSL_write(SSL *s,const void *buf,int num)
 		SSLerr(SSL_F_SSL_WRITE, SSL_R_UNINITIALIZED);
 		return -1;
 		}
-
 	if (s->shutdown & SSL_SENT_SHUTDOWN)
 		{
 		s->rwstate=SSL_NOTHING;

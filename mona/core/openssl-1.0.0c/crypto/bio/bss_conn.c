@@ -430,7 +430,6 @@ static int conn_write(BIO *b, const char *in, int inl)
 	{
 	int ret;
 	BIO_CONNECT *data;
-
 	data=(BIO_CONNECT *)b->ptr;
 	if (data->state != BIO_CONN_S_OK)
 		{

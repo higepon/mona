@@ -223,31 +223,27 @@ int BIO_write(BIO *b, const void *in, int inl)
 	{
 	int i;
 	long (*cb)(BIO *,int,const char *,int,long,long);
-
-	if (b == NULL)
+	if (b == NULL) {
 		return(0);
-
+    }
 	cb=b->callback;
 	if ((b->method == NULL) || (b->method->bwrite == NULL))
 		{
 		BIOerr(BIO_F_BIO_WRITE,BIO_R_UNSUPPORTED_METHOD);
 		return(-2);
 		}
-
 	if ((cb != NULL) &&
-		((i=(int)cb(b,BIO_CB_WRITE,in,inl,0L,1L)) <= 0))
+		((i=(int)cb(b,BIO_CB_WRITE,in,inl,0L,1L)) <= 0)) {
 			return(i);
+    }
 
 	if (!b->init)
 		{
 		BIOerr(BIO_F_BIO_WRITE,BIO_R_UNINITIALIZED);
 		return(-2);
 		}
-
 	i=b->method->bwrite(b,in,inl);
-
 	if (i > 0) b->num_write+=(unsigned long)i;
-
 	if (cb != NULL)
 		i=(int)cb(b,BIO_CB_WRITE|BIO_CB_RETURN,in,inl,
 			0L,(long)i);

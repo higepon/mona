@@ -323,7 +323,6 @@ static int acpt_write(BIO *b, const char *in, int inl)
 	{
 	int ret;
 	BIO_ACCEPT *data;
-
 	BIO_clear_retry_flags(b);
 	data=(BIO_ACCEPT *)b->ptr;
 

@@ -285,7 +285,6 @@ static int ok_write(BIO *b, const char *in, int inl)
 	{
 	int ret=0,n,i;
 	BIO_OK_CTX *ctx;
-
 	if (inl <= 0) return inl;
 
 	ctx=(BIO_OK_CTX *)b->ptr;

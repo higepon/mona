@@ -339,7 +339,6 @@ static int dgram_write(BIO *b, const char *in, int inl)
 	int ret;
 	bio_dgram_data *data = (bio_dgram_data *)b->ptr;
 	clear_socket_error();
-
 	if ( data->connected )
 		ret=writesocket(b->num,in,inl);
 	else

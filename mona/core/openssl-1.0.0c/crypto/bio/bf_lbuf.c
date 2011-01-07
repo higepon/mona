@@ -149,7 +149,6 @@ static int linebuffer_write(BIO *b, const char *in, int inl)
 	{
 	int i,num=0,foundnl;
 	BIO_LINEBUFFER_CTX *ctx;
-
 	if ((in == NULL) || (inl <= 0)) return(0);
 	ctx=(BIO_LINEBUFFER_CTX *)b->ptr;
 	if ((ctx == NULL) || (b->next_bio == NULL)) return(0);

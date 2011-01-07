@@ -198,7 +198,6 @@ static int buffer_write(BIO *b, const char *in, int inl)
 	{
 	int i,num=0;
 	BIO_F_BUFFER_CTX *ctx;
-
 	if ((in == NULL) || (inl <= 0)) return(0);
 	ctx=(BIO_F_BUFFER_CTX *)b->ptr;
 	if ((ctx == NULL) || (b->next_bio == NULL)) return(0);
