@@ -37,7 +37,7 @@ endif
 	cd core/kernel && $(MAKE) && $(MAKE) install
 	cd core/monapi && $(MAKE) && $(MAKE) install
 	cd core/monalibc && $(MAKE) && $(MAKE) install
-	cd core/openssl-1.0.0c && touch Makefile && $(MAKE) ; $(MAKE) install-mona #
+	cd core/openssl-1.0.0c && touch Makefile && MAKEFLAGS=-j1 $(MAKE) ; $(MAKE) install-mona #
 	cd core/monitor_server && $(MAKE) && $(MAKE) install
 	cd core/screen_server && $(MAKE) && $(MAKE) install
 	cd core/net_server && $(MAKE) && $(MAKE) install
