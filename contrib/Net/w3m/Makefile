@@ -35,7 +35,7 @@ DEFS = -DHAVE_CONFIG_H -DAUXBIN_DIR=\"$(AUXBIN_DIR)\" \
 	-DETC_DIR=\"$(ETC_DIR)\" -DCONF_DIR=\"$(CONF_DIR)\" \
 	-DRC_DIR=\"$(RC_DIR)\" \
         -DLOCALEDIR=\"$(LOCALE_DIR)\" \
-	-DUSE_UNICODE=1
+	-DUSE_UNICODE=1 -DUSE_SSL
 LIBS = 
 W3M_LIBS = 
 WCTARGET = 
@@ -97,7 +97,7 @@ CSOURCES=$(ALLCOBJS:.o=.c)
 OBJECTS=$(ALLOBJS)
 
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    =  -L. -lindep -lmonalibc-imp -lbaygui-imp --enable-auto-import
+ADDLINK    =  -L. -lindep -lmonalibc-imp -lbaygui-imp -lssl-imp -lcrypto-imp --enable-auto-import
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a libindep.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else

@@ -703,7 +703,11 @@ str_read(Str handle, char *buf, int len)
 static void
 ssl_close(struct ssl_handle *handle)
 {
+#if defined(MONA)
+    closesocket(handle->sock);
+#else
     close(handle->sock);
+#endif
     if (handle->ssl)
 	SSL_free(handle->ssl);
 }
@@ -731,8 +735,13 @@ ssl_read(struct ssl_handle *handle, char *buf, int len)
 	status = SSL_read(handle->ssl, buf, len);
 #endif				/* !defined(USE_SSL_VERIFY) */
     }
-    else
+    else {
+#if defined(MONA)
+    status = recv(handle->sock, buf, len, 0);
+#else
 	status = read(handle->sock, buf, len);
+#endif
+    }
     return status;
 }
 #endif				/* USE_SSL */
