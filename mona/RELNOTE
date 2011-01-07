@@ -1,6 +1,12 @@
+* Mona 0.3.3 RELEASE NOTE
+** Overview
+This is an internal release.
+Ported OpenSSL.
+Enable SSL on w3m.
+
 * Mona 0.3.2 RELEASE NOTE
 ** Overview
-This is internal release.
+This is an internal release.
 Added new primitive server "name server" which knows all primitive servers.
 
 - Ported mg (Emacs clone).
