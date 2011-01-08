@@ -22,7 +22,7 @@ $(TREMOR_DIR)/sharedbook.c      \
 $(TREMOR_DIR)/synthesis.c       \
 $(TREMOR_DIR)/vorbisfile.c      \
 $(TREMOR_DIR)/window.c
-TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o) _divdi3.o
+TREMOR_OBJECTS = $(TREMOR_SOURCES:.c=.o) #_divdi3.o
 
 INSTDIR = $(BINDIR)/MUSIC
 INSTFILES =  startup.ogg A.OGG B.OGG C.OGG FWD.JPG BACK.JPG
