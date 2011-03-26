@@ -62,10 +62,12 @@ class Display : public Frame {
 private:
     scoped_ptr<InputArea> textArea_;
     scoped_ptr<MonasqScrollbar> scrollbar_;
+    scoped_ptr<Button> button_;
 
 public:
     Display() : textArea_(new InputArea(1024 * 512, true)),
-                scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL))
+                scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL)),
+                button_(new Button("hige"))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
             monapi_warn("name add failure");
@@ -81,8 +83,11 @@ public:
         const int scroll_width = 5;
         textArea_->setBounds(x, y, x + width, y + height);
         scrollbar_->setBounds(x + width + x_padding, y + y_padding, x + width + x_padding + scroll_width, height + y);
+#if 0
         add(textArea_.get());
         add(scrollbar_.get());
+#endif
+        add(button_.get());
         textArea_->linkScrollbar(scrollbar_.get());
         scrollbar_->linkTextArea(textArea_.get());
     }
