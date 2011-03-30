@@ -96,8 +96,24 @@ public:
     {
     }
 
+    void executeMosh()
+    {
+        uint32_t tid;
+
+        int result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+    }
+
     void processEvent(Event* event)
     {
+        if (event->getSource() == button_.get()) {
+            if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+                executeMosh();
+            }
+
+        }
         if (event->getType() == Event::CUSTOM_EVENT) {
             if (event->header == MSG_TEXT) {
                 size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
