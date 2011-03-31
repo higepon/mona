@@ -100,7 +100,7 @@ public:
     {
         uint32_t tid;
 
-        int result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+        int result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM mmm", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
