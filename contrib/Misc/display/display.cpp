@@ -1,72 +1,69 @@
 #include <baygui.h>
 #include <string>
-#include "TextArea.h"
 
 using namespace std;
 using namespace MonAPI;
+//using namespace baygui;
+// class MonasqScrollbar : public Scrollbar {
+//     TextArea* mLinkedTextArea;
 
-class MonasqScrollbar : public Scrollbar {
-    TextArea* mLinkedTextArea;
+// public:
+//     MonasqScrollbar(int orientation) :
+//         Scrollbar(orientation), mLinkedTextArea(NULL) {}
 
-public:
-    MonasqScrollbar(int orientation) :
-        Scrollbar(orientation), mLinkedTextArea(NULL) {}
+//     void linkTextArea(TextArea* linkedTextArea) {
+//         mLinkedTextArea = linkedTextArea;
+//     }
 
-    void linkTextArea(TextArea* linkedTextArea) {
-        mLinkedTextArea = linkedTextArea;
-    }
+//     virtual void setValue(int value)
+//     {
+//         if (value == getValue()) return;
 
-    virtual void setValue(int value)
-    {
-        if (value == getValue()) return;
+//         Scrollbar::setValue(value);
 
-        Scrollbar::setValue(value);
-
-        if (mLinkedTextArea) {
-            mLinkedTextArea->setVScroll(value);
-        }
-    }
-};
+//         if (mLinkedTextArea) {
+//             mLinkedTextArea->setVScroll(value);
+//         }
+//     }
+// };
 
 
-class InputArea : public TextArea {
+// class InputArea : public TextArea {
 
-    bool mbModified;
+//     bool mbModified;
 
-protected:
-    void processEvent(Event *event);
+// protected:
+//     void processEvent(Event *event);
 
-public:
-    InputArea(int buffer_size, bool draw_line)
-        : TextArea(buffer_size, draw_line), mbModified(false) {}
-    virtual ~InputArea() {}
+// public:
+//     InputArea(int buffer_size, bool draw_line)
+//         : TextArea(buffer_size, draw_line), mbModified(false) {}
+//     virtual ~InputArea() {}
 
-    bool isModified() { return mbModified; }
-    void setModifyFlag() { mbModified = true; }
-    void resetModifyFlag() { mbModified = false; }
-};
+//     bool isModified() { return mbModified; }
+//     void setModifyFlag() { mbModified = true; }
+//     void resetModifyFlag() { mbModified = false; }
+// };
 
-void InputArea::processEvent(Event *event) {
-    if (event->getType() == Event::KEY_PRESSED) {
-        KeyEvent* keyEvent = (KeyEvent*)event;
-        int keycode = keyEvent->getKeycode();
-        if (keycode < 128 || keycode == KeyEvent::VKEY_DELETE) {
-            setModifyFlag();
-        }
-    }
-    TextArea::processEvent(event);
-}
+// void InputArea::processEvent(Event *event) {
+//     if (event->getType() == Event::KEY_PRESSED) {
+//         KeyEvent* keyEvent = (KeyEvent*)event;
+//         int keycode = keyEvent->getKeycode();
+//         if (keycode < 128 || keycode == KeyEvent::VKEY_DELETE) {
+//             setModifyFlag();
+//         }
+//     }
+//     TextArea::processEvent(event);
+// }
 
 
 class Display : public Frame {
 private:
-    scoped_ptr<InputArea> textArea_;
-    scoped_ptr<MonasqScrollbar> scrollbar_;
+    scoped_ptr<TextField> textArea_;
     scoped_ptr<Button> button_;
 
 public:
-    Display() : textArea_(new InputArea(1024 * 512, true)),
-                scrollbar_(new MonasqScrollbar(Scrollbar::VERTICAL)),
+    Display() : textArea_(new TextField()),
                 button_(new Button("hige"))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
@@ -78,18 +75,13 @@ public:
         const int height = 145;
         const int x = 5;
         const int y = 5;
-        const int x_padding = 4;
-        const int y_padding = 1;
-        const int scroll_width = 5;
         textArea_->setBounds(x, y, x + width, y + height);
-        scrollbar_->setBounds(x + width + x_padding, y + y_padding, x + width + x_padding + scroll_width, height + y);
 #if 0
         add(textArea_.get());
         add(scrollbar_.get());
 #endif
+        add(textArea_.get());
         add(button_.get());
-        textArea_->linkScrollbar(scrollbar_.get());
-        scrollbar_->linkTextArea(textArea_.get());
     }
 
     ~Display()
@@ -99,8 +91,9 @@ public:
     void executeMosh()
     {
         uint32_t tid;
-
-        int result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM mmm", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+        std::string ret = "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM ";
+        ret += textArea_->getText();
+        int result = monapi_call_process_execute_file_get_tid(ret.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
@@ -114,16 +107,16 @@ public:
             }
 
         }
-        if (event->getType() == Event::CUSTOM_EVENT) {
-            if (event->header == MSG_TEXT) {
-                size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
-                string text(event->str, length);
-                string content(textArea_->getText());
-                content += foldLine(text);
-                textArea_->setText(content.c_str());
-                repaint();
-            }
-        }
+        // if (event->getType() == Event::CUSTOM_EVENT) {
+        //     if (event->header == MSG_TEXT) {
+        //         size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
+        //         string text(event->str, length);
+        //         string content(textArea_->getText());
+        //         content += foldLine(text);
+        //         textArea_->setText(content.c_str());
+        //         repaint();
+        //     }
+        // }
     }
 
 private:

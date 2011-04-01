@@ -4,7 +4,7 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = DISPLAY
-SOURCES = display.cpp TextArea.cpp
+SOURCES = display.cpp
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 INSTFILES = DISPLAY.map
