@@ -3,59 +3,6 @@
 
 using namespace std;
 using namespace MonAPI;
-//using namespace baygui;
-// class MonasqScrollbar : public Scrollbar {
-//     TextArea* mLinkedTextArea;
-
-// public:
-//     MonasqScrollbar(int orientation) :
-//         Scrollbar(orientation), mLinkedTextArea(NULL) {}
-
-//     void linkTextArea(TextArea* linkedTextArea) {
-//         mLinkedTextArea = linkedTextArea;
-//     }
-
-//     virtual void setValue(int value)
-//     {
-//         if (value == getValue()) return;
-
-//         Scrollbar::setValue(value);
-
-//         if (mLinkedTextArea) {
-//             mLinkedTextArea->setVScroll(value);
-//         }
-//     }
-// };
-
-
-// class InputArea : public TextArea {
-
-//     bool mbModified;
-
-// protected:
-//     void processEvent(Event *event);
-
-// public:
-//     InputArea(int buffer_size, bool draw_line)
-//         : TextArea(buffer_size, draw_line), mbModified(false) {}
-//     virtual ~InputArea() {}
-
-//     bool isModified() { return mbModified; }
-//     void setModifyFlag() { mbModified = true; }
-//     void resetModifyFlag() { mbModified = false; }
-// };
-
-// void InputArea::processEvent(Event *event) {
-//     if (event->getType() == Event::KEY_PRESSED) {
-//         KeyEvent* keyEvent = (KeyEvent*)event;
-//         int keycode = keyEvent->getKeycode();
-//         if (keycode < 128 || keycode == KeyEvent::VKEY_DELETE) {
-//             setModifyFlag();
-//         }
-//     }
-//     TextArea::processEvent(event);
-// }
-
 
 class Display : public Frame {
 private:
@@ -104,16 +51,6 @@ public:
             }
 
         }
-        // if (event->getType() == Event::CUSTOM_EVENT) {
-        //     if (event->header == MSG_TEXT) {
-        //         size_t length = MESSAGE_INFO_MAX_STR_LENGTH < event->arg1 ? MESSAGE_INFO_MAX_STR_LENGTH : event->arg1;
-        //         string text(event->str, length);
-        //         string content(textArea_->getText());
-        //         content += foldLine(text);
-        //         textArea_->setText(content.c_str());
-        //         repaint();
-        //     }
-        // }
     }
 
 private:
