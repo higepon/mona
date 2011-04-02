@@ -64,7 +64,7 @@ private:
 
 public:
     Display() : textArea_(new TextField()),
-                button_(new Button("hige"))
+                button_(new Button("Post"))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
             monapi_warn("name add failure");
@@ -72,14 +72,11 @@ public:
         setTitle("*Display*");
         setBounds(40, 40, 400, 200);
         const int width = 300;
-        const int height = 145;
+        const int height = 15;
         const int x = 5;
         const int y = 5;
         textArea_->setBounds(x, y, x + width, y + height);
-#if 0
-        add(textArea_.get());
-        add(scrollbar_.get());
-#endif
+        button_->setBounds(255, 30, 50, 20);
         add(textArea_.get());
         add(button_.get());
     }
