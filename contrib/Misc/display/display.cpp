@@ -72,6 +72,7 @@ public:
 
     void updateFeed()
     {
+        setStatusUpdating();
         syscall_mthread_create_with_arg(updateFeedAsync, this);
     }
 
@@ -83,17 +84,29 @@ public:
     void processEvent(Event* event)
     {
         if (event->getSource() == pushButton_.get()) {
-            if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+            if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 postFeed();
             }
         } else if (event->getSource() == updateButton_.get()) {
-            if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+            if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 updateFeed();
             }
         }
     }
 
+    void setStatusDone()
+    {
+        updateButton_->setEnabled(true);
+        updateButton_->setLabel("update");
+    }
+
 private:
+    void setStatusUpdating()
+    {
+        updateButton_->setEnabled(false);
+        updateButton_->setLabel("updating");
+    }
+
     string foldLine(const string& line)
     {
         const size_t MAX_LINE_LEN = 45;
@@ -127,6 +140,7 @@ static void __fastcall updateFeedAsync(void* arg)
     wait(tid);
     scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
     display->setFeedText((char*)shm->data());
+    display->setStatusDone();
 }
 
 
