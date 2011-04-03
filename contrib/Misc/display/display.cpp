@@ -15,10 +15,7 @@ public:
                 outputArea_(new TextField()),
                 button_(new Button("Post"))
     {
-        if (M_OK != monapi_name_add("/applications/display")) {
-            monapi_warn("name add failure");
-        }
-        setTitle("*Display*");
+        setTitle("Facebook");
         setBounds(40, 40, 400, 200);
         const int width = 300;
         const int height = 15;
@@ -38,8 +35,7 @@ public:
 
     intptr_t wait(uintptr_t tid)
     {
-        for (MessageInfo msg;;)
-        {
+        for (MessageInfo msg;;) {
             if (MonAPI::Message::receive(&msg) != 0) continue;
             switch (msg.header)
             {
@@ -55,7 +51,6 @@ public:
             }
         }
     }
-
 
     void executeMosh()
     {
@@ -82,7 +77,6 @@ public:
             if (event->getType() == MouseEvent::MOUSE_PRESSED) {
                 executeMosh();
             }
-
         }
     }
 
