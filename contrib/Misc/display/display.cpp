@@ -4,25 +4,6 @@
 using namespace std;
 using namespace MonAPI;
 
-intptr_t wait(uintptr_t tid)
-{
-    for (MessageInfo msg;;) {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
-        switch (msg.header)
-        {
-        case MSG_PROCESS_TERMINATED:
-            if (tid == msg.arg1)
-            {
-                // exit status code
-                return msg.arg2;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-}
-
 static void __fastcall updateFeedAsync(void* arg);
 
 class Display : public Frame {
@@ -137,7 +118,7 @@ static void __fastcall updateFeedAsync(void* arg)
     if (result != 0) {
         monapi_fatal("can't exec Mosh");
     }
-    wait(tid);
+    monapi_process_wait_terminated(tid);
     scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
     display->setFeedText((char*)shm->data());
     display->setStatusDone();
