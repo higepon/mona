@@ -56,7 +56,7 @@ public:
         }
     }
 
-    void executeMosh()
+    void postFeed()
     {
         uint32_t tid;
         std::string ret = "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM ";
@@ -65,11 +65,15 @@ public:
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
-        result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/GET.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+    }
+
+    void updateFeed()
+    {
+        uint32_t tid;
+        intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/GET.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
-        pushButton_->setEnabled(false);
         wait(tid);
         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
         outputArea_->setText((char*)shm->data());
@@ -79,7 +83,11 @@ public:
     {
         if (event->getSource() == pushButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_PRESSED) {
-                executeMosh();
+                postFeed();
+            }
+        } else if (event->getSource() == updateButton_.get()) {
+            if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+                updateFeed();
             }
         }
     }
