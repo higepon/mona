@@ -39,13 +39,13 @@ public:
                 updateButton_(new Button("Update"))
     {
         setTitle("Facebook");
-        setBounds(40, 40, 400, 200);
+        setBounds(40, 40, 700, 400);
         const int width = 300;
         const int height = 15;
         const int x = 5;
         const int y = 5;
         inputArea_->setBounds(x, y, x + width, y + height);
-        outputArea_->setBounds(x, y + 100, x + width, y + 50);
+        outputArea_->setBounds(x, y + 100, 600, 370);
         pushButton_->setBounds(255, 30, 50, 20);
         updateButton_->setBounds(200, 30, 50, 20);
         add(inputArea_.get());
