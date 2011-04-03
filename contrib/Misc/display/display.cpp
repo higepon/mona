@@ -8,12 +8,12 @@ class Display : public Frame {
 private:
     scoped_ptr<TextField> inputArea_;
     scoped_ptr<TextField> outputArea_;
-    scoped_ptr<Button> button_;
+    scoped_ptr<Button> pushButton_;
 
 public:
     Display() : inputArea_(new TextField()),
                 outputArea_(new TextField()),
-                button_(new Button("Post"))
+                pushButton_(new Button("Post"))
     {
         setTitle("Facebook");
         setBounds(40, 40, 400, 200);
@@ -23,10 +23,10 @@ public:
         const int y = 5;
         inputArea_->setBounds(x, y, x + width, y + height);
         outputArea_->setBounds(x, y + 100, x + width, y + 50);
-        button_->setBounds(255, 30, 50, 20);
+        pushButton_->setBounds(255, 30, 50, 20);
         add(inputArea_.get());
         add(outputArea_.get());
-        add(button_.get());
+        add(pushButton_.get());
     }
 
     ~Display()
@@ -65,7 +65,7 @@ public:
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
-        button_->setEnabled(false);
+        pushButton_->setEnabled(false);
         wait(tid);
         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
         outputArea_->setText((char*)shm->data());
@@ -73,7 +73,7 @@ public:
 
     void processEvent(Event* event)
     {
-        if (event->getSource() == button_.get()) {
+        if (event->getSource() == pushButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_PRESSED) {
                 executeMosh();
             }
