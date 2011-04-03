@@ -6,11 +6,13 @@ using namespace MonAPI;
 
 class Display : public Frame {
 private:
-    scoped_ptr<TextField> textArea_;
+    scoped_ptr<TextField> inputArea_;
+    scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> button_;
 
 public:
-    Display() : textArea_(new TextField()),
+    Display() : inputArea_(new TextField()),
+                outputArea_(new TextField()),
                 button_(new Button("Post"))
     {
         if (M_OK != monapi_name_add("/applications/display")) {
@@ -22,9 +24,11 @@ public:
         const int height = 15;
         const int x = 5;
         const int y = 5;
-        textArea_->setBounds(x, y, x + width, y + height);
+        inputArea_->setBounds(x, y, x + width, y + height);
+        outputArea_->setBounds(x, y + 100, x + width, y + 50);
         button_->setBounds(255, 30, 50, 20);
-        add(textArea_.get());
+        add(inputArea_.get());
+        add(outputArea_.get());
         add(button_.get());
     }
 
@@ -32,11 +36,32 @@ public:
     {
     }
 
+    intptr_t wait(uintptr_t tid)
+    {
+        for (MessageInfo msg;;)
+        {
+            if (MonAPI::Message::receive(&msg) != 0) continue;
+            switch (msg.header)
+            {
+            case MSG_PROCESS_TERMINATED:
+                if (tid == msg.arg1)
+                {
+                    // exit status code
+                    return msg.arg2;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+
     void executeMosh()
     {
         uint32_t tid;
         std::string ret = "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/POST.SCM ";
-        ret += textArea_->getText();
+        ret += inputArea_->getText();
         int result = monapi_call_process_execute_file_get_tid(ret.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
@@ -45,7 +70,10 @@ public:
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
-
+        button_->setEnabled(false);
+        wait(tid);
+        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+        outputArea_->setText((char*)shm->data());
     }
 
     void processEvent(Event* event)
