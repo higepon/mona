@@ -12,12 +12,14 @@ private:
     scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> pushButton_;
     scoped_ptr<Button> updateButton_;
+    scoped_ptr<Image> image_;
 
 public:
     Display() : inputArea_(new TextField()),
                 outputArea_(new TextField()),
                 pushButton_(new Button("Post")),
-                updateButton_(new Button("Update"))
+                updateButton_(new Button("Update")),
+                image_(new Image("/USER/K.JPG"))
     {
         setTitle("Facebook");
         setBounds(40, 40, 700, 400);
@@ -80,6 +82,12 @@ public:
         updateButton_->setEnabled(true);
         updateButton_->setLabel("update");
     }
+
+    // void paint(Graphics *g) {
+    //     g->drawImage(image_.get(), 0, 0);
+    // }
+
+
 
 private:
     void setStatusUpdating()
