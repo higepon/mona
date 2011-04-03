@@ -9,11 +9,13 @@ private:
     scoped_ptr<TextField> inputArea_;
     scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> pushButton_;
+    scoped_ptr<Button> updateButton_;
 
 public:
     Display() : inputArea_(new TextField()),
                 outputArea_(new TextField()),
-                pushButton_(new Button("Post"))
+                pushButton_(new Button("Post")),
+                updateButton_(new Button("Update"))
     {
         setTitle("Facebook");
         setBounds(40, 40, 400, 200);
@@ -24,9 +26,11 @@ public:
         inputArea_->setBounds(x, y, x + width, y + height);
         outputArea_->setBounds(x, y + 100, x + width, y + 50);
         pushButton_->setBounds(255, 30, 50, 20);
+        updateButton_->setBounds(200, 30, 50, 20);
         add(inputArea_.get());
         add(outputArea_.get());
         add(pushButton_.get());
+        add(updateButton_.get());
     }
 
     ~Display()
