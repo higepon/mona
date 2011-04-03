@@ -4,6 +4,27 @@
 using namespace std;
 using namespace MonAPI;
 
+intptr_t wait(uintptr_t tid)
+{
+    for (MessageInfo msg;;) {
+        if (MonAPI::Message::receive(&msg) != 0) continue;
+        switch (msg.header)
+        {
+        case MSG_PROCESS_TERMINATED:
+            if (tid == msg.arg1)
+            {
+                // exit status code
+                return msg.arg2;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+static void __fastcall updateFeedAsync(void* arg);
+
 class Display : public Frame {
 private:
     scoped_ptr<TextField> inputArea_;
@@ -37,24 +58,6 @@ public:
     {
     }
 
-    intptr_t wait(uintptr_t tid)
-    {
-        for (MessageInfo msg;;) {
-            if (MonAPI::Message::receive(&msg) != 0) continue;
-            switch (msg.header)
-            {
-            case MSG_PROCESS_TERMINATED:
-                if (tid == msg.arg1)
-                {
-                    // exit status code
-                    return msg.arg2;
-                }
-                break;
-            default:
-                break;
-            }
-        }
-    }
 
     void postFeed()
     {
@@ -69,14 +72,12 @@ public:
 
     void updateFeed()
     {
-        uint32_t tid;
-        intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/GET.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
-        }
-        wait(tid);
-        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
-        outputArea_->setText((char*)shm->data());
+        syscall_mthread_create_with_arg(updateFeedAsync, this);
+    }
+
+    void setFeedText(const std::string& text)
+    {
+        outputArea_->setText(text.c_str());
     }
 
     void processEvent(Event* event)
@@ -114,6 +115,20 @@ private:
         return ret;
     }
 };
+
+static void __fastcall updateFeedAsync(void* arg)
+{
+    Display* display = (Display*)arg;
+    uint32_t tid;
+    intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/GET.SCM", MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+    if (result != 0) {
+        monapi_fatal("can't exec Mosh");
+    }
+    wait(tid);
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+    display->setFeedText((char*)shm->data());
+}
+
 
 int main(int argc, char* argv[])
 {
