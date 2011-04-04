@@ -258,6 +258,15 @@ static void test_TextField_remove_multi_byte_backspace()
 
     destroyTextField(t);
 }
+
+static void test_WebImage_create()
+{
+    const char* uri = "https://github.com/higepon/mona/raw/master/contrib/Graphics/bitmap/MONALISA.JPG";
+    const char* path = "/USER/TEMP/SAKEBI.JPG";
+    scoped_ptr<WebImage> image(new WebImage(uri, path));
+    EXPECT_TRUE(image->initialize());
+}
+
 int main(int argc, char* argv[])
 {
     test_TextField();
@@ -273,6 +282,8 @@ int main(int argc, char* argv[])
 //    check cursor on enter
 //    test_TextField_convert();
 //    test_TextField_convert_second_candidate();
+
+    test_WebImage_create();
 
     TEST_RESULTS(baygui);
     return 0;
