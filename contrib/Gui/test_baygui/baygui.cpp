@@ -265,6 +265,7 @@ static void test_WebImage_create()
     const char* path = "/USER/TEMP/SAKEBI.JPG";
     scoped_ptr<WebImage> image(new WebImage(uri, path));
     EXPECT_TRUE(image->initialize());
+    EXPECT_TRUE(monapi_file_exists(path));
 }
 
 int main(int argc, char* argv[])

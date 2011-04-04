@@ -90,6 +90,7 @@ typedef unsigned int wchar;
 #include "baygui/awt/Rectangle.h"
 #include "baygui/awt/FontMetrics.h"
 #include "baygui/awt/Image.h"
+#include "baygui/awt/WebImage.h"
 #include "baygui/awt/Graphics.h"
 #include "baygui/awt/Component.h"
 #include "baygui/awt/Checkbox.h"
