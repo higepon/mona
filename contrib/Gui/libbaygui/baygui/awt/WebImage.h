@@ -37,14 +37,34 @@
 class WebImage
 {
 public:
-    WebImage(const std::string& uri, const std::string& path)
+    WebImage(const std::string& uri, const std::string& path) : uri_(uri), path_(path)
     {
     }
 
     bool initialize()
     {
+        uint32_t tid;
+        std::string cmd("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /LIBS/MOSH/bin/http-get.sps");
+        cmd += + ' ';
+        cmd += uri_;
+        cmd += ' ';
+        cmd += path_;
+        _logprintf("[%s]", cmd.c_str());
+        intptr_t result = monapi_call_process_execute_file_get_tid(cmd.c_str(),
+                                                                   MONAPI_TRUE,
+                                                                   &tid,
+                                                                   MonAPI::System::getProcessStdinID(),
+                                                                   MonAPI::System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+            return false;
+        }
+        monapi_process_wait_terminated(tid);
         return true;
     }
+private:
+    const std::string uri_;
+    const std::string path_;
 };
 
 #endif // _BAYGUI_WEBIMAGE_
