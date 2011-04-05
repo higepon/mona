@@ -12,15 +12,17 @@ private:
     scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> pushButton_;
     scoped_ptr<Button> updateButton_;
-    scoped_ptr<Image> image_;
+    scoped_ptr<WebImage> image_;
 
 public:
     Display() : inputArea_(new TextField()),
                 outputArea_(new TextField()),
                 pushButton_(new Button("Post")),
                 updateButton_(new Button("Update")),
-                image_(new Image("/USER/K.JPG"))
+                image_(new WebImage("http://profile.ak.fbcdn.net/hprofile-ak-snc4/161274_631255029_7094648_q.jpg", "/USER/TEMP/YUSUKEBE.JPG"))
+
     {
+        image_->initialize();
         setTitle("Facebook");
         setBounds(40, 40, 700, 400);
         const int width = 300;
@@ -83,9 +85,9 @@ public:
         updateButton_->setLabel("update");
     }
 
-    // void paint(Graphics *g) {
-    //     g->drawImage(image_.get(), 0, 0);
-    // }
+    void paint(Graphics *g) {
+        g->drawImage(image_.get(), 0, 0);
+    }
 
 
 
