@@ -34,7 +34,9 @@
 #ifndef _BAYGUI_WEBIMAGE_
 #define _BAYGUI_WEBIMAGE_
 
-class WebImage
+namespace baygui {
+
+class WebImage : public Image
 {
 public:
     WebImage(const std::string& uri, const std::string& path) : uri_(uri), path_(path)
@@ -60,11 +62,13 @@ public:
             return false;
         }
         monapi_process_wait_terminated(tid);
+        initFromFilePath(path_.c_str());
         return true;
     }
 private:
     const std::string uri_;
     const std::string path_;
+};
 };
 
 #endif // _BAYGUI_WEBIMAGE_

@@ -43,7 +43,7 @@ namespace baygui {
         void initFromFilePath(const char* path);
 
     public:
-        Image();
+        Image() {}
 
         /**
          コンストラクタ
