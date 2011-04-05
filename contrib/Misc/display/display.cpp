@@ -48,7 +48,7 @@ public:
     {
         uint32_t tid;
         std::string ret(System::getMoshPath());
-        ret += " /USER/POST.SCM ";
+        ret += " /LIBS/MOSH/bin/fb-feed-post.sps ";
         ret += inputArea_->getText();
         int result = monapi_call_process_execute_file_get_tid(ret.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
         if (result != 0) {
@@ -126,7 +126,7 @@ static void __fastcall updateFeedAsync(void* arg)
     Display* display = (Display*)arg;
     uint32_t tid;
     std::string command(System::getMoshPath());
-    command += " /USER/GET.SCM";
+    command += " /LIBS/MOSH/bin/fb-feed-get.sps";
     intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
     if (result != 0) {
         monapi_fatal("can't exec Mosh");
