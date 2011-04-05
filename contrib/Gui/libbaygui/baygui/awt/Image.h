@@ -39,6 +39,9 @@ namespace baygui {
         /** GUIサーバー上のビットマップオブジェクト */
         guiserver_bitmap* bitmap;
 
+    protected:
+        void initFromFilePath(const char* path);
+
     public:
         Image();
 

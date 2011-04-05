@@ -66,6 +66,19 @@ namespace baygui {
 
     Image::Image(const String& path)
     {
+        initFromFilePath(path.getBytes());
+    }
+
+    Image::~Image()
+    {
+        // ビットマップ破棄要求
+        if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+            printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+        }
+    }
+
+    void Image::initFromFilePath(const char* path)
+    {
         this->width = this->height = 0;
         this->bitmap = NULL;
 
@@ -76,7 +89,7 @@ namespace baygui {
 
         // GUIサーバー上でビットマップをデコードする
         MessageInfo msg;
-        if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes())) {
+        if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
             printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
             return;
         }
@@ -94,11 +107,4 @@ namespace baygui {
         this->height = this->bitmap->Height;
     }
 
-    Image::~Image()
-    {
-        // ビットマップ破棄要求
-        if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
-            printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-        }
-    }
 }
