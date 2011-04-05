@@ -18,6 +18,11 @@ namespace MonAPI {
 class System
 {
   public:
+    static const char* getMoshPath()
+    {
+        return "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib";
+    }
+
     inline static uint32_t getProcessID()
     {
         return syscall_get_pid();
