@@ -55,7 +55,6 @@ public:
         field->setBounds(50, 50 + 60 * i, 500, 60);
         add(field);
         field->setText(text.c_str());
-        repaint();
         i++;
     }
 
@@ -99,6 +98,7 @@ public:
     {
         updateButton_->setEnabled(true);
         updateButton_->setLabel("update");
+        repaint();
     }
 
     void paint(Graphics *g) {
