@@ -1,5 +1,6 @@
 #include <baygui.h>
 #include <string>
+#include <monapi/StringHelper.h>
 
 using namespace std;
 using namespace MonAPI;
@@ -12,17 +13,17 @@ private:
     scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> pushButton_;
     scoped_ptr<Button> updateButton_;
-    scoped_ptr<WebImage> image_;
+    std::vector<TextField*> fields_;
+    WebImage* image_;
 
 public:
     Display() : inputArea_(new TextField()),
                 outputArea_(new TextField()),
                 pushButton_(new Button("Post")),
                 updateButton_(new Button("Update")),
-                image_(new WebImage("http://profile.ak.fbcdn.net/hprofile-ak-snc4/161274_631255029_7094648_q.jpg", "/USER/TEMP/YUSUKEBE.JPG"))
-
+                image_(NULL)
     {
-        image_->initialize();
+//        image_->initialize();
         setTitle("Facebook");
         setBounds(40, 40, 700, 400);
         const int width = 300;
@@ -43,6 +44,18 @@ public:
     {
     }
 
+    // temporary
+    void createWebImage(const std::string& url, const std::string& file, const std::string& text)
+    {
+        image_ = new WebImage(url, file);
+        image_->initialize();
+        TextField* field = new TextField();
+        fields_.push_back(field);
+        field->setBounds(50, 50, 500, 50);
+        add(field);
+        field->setText(text.c_str());
+        repaint();
+    }
 
     void postFeed()
     {
@@ -87,7 +100,9 @@ public:
     }
 
     void paint(Graphics *g) {
-        g->drawImage(image_.get(), 0, 0);
+        if (image_) {
+            g->drawImage(image_, 0, 50);
+        }
     }
 
 
@@ -133,6 +148,17 @@ static void __fastcall updateFeedAsync(void* arg)
     }
     monapi_process_wait_terminated(tid);
     scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+    if (shm.get() == NULL) {
+        monapi_fatal("can't read fb.data");
+    }
+    std::string text((char*)shm->data());
+    Strings lines = StringHelper::split("\n", text);
+    Strings line = StringHelper::split("$", lines[0]);
+    std::string imageUri = "http://graph.facebook.com/";
+    std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
+    imageUri += line[0];
+    imageUri += "/picture?type=small";
+    display->createWebImage(imageUri, filename, line[2]);
     display->setFeedText((char*)shm->data());
     display->setStatusDone();
 }
