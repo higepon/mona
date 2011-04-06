@@ -128,7 +128,7 @@ int print(const char* msg, int direct)
         {
             memcpy(buf, msg, PRINT_BUFFER_SIZE - 1);
             buf[PRINT_BUFFER_SIZE - 1] = '\0';
-            syscall_print("print overflow direct==1");
+            _logprintf("print overflow direct==1");
         }
         else
         {
@@ -147,7 +147,7 @@ int print(const char* msg, int direct)
         {
             memcpy(buf, msg, PRINT_BUFFER_SIZE - 1);
             buf[PRINT_BUFFER_SIZE - 1] = '\0';
-            syscall_print("print overflow direct==2");
+            _logprintf("print overflow direct==2");
         }
         else
         {

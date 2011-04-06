@@ -10,18 +10,17 @@ static void __fastcall updateFeedAsync(void* arg);
 class Display : public Frame {
 private:
     scoped_ptr<TextField> inputArea_;
-    scoped_ptr<TextField> outputArea_;
+//    scoped_ptr<TextField> outputArea_;
     scoped_ptr<Button> pushButton_;
     scoped_ptr<Button> updateButton_;
     std::vector<TextField*> fields_;
-    WebImage* image_;
+    std::vector<Image*> images_;
 
 public:
     Display() : inputArea_(new TextField()),
-                outputArea_(new TextField()),
+                //              outputArea_(new TextField()),
                 pushButton_(new Button("Post")),
-                updateButton_(new Button("Update")),
-                image_(NULL)
+                updateButton_(new Button("Update"))
     {
 //        image_->initialize();
         setTitle("Facebook");
@@ -31,11 +30,11 @@ public:
         const int x = 5;
         const int y = 5;
         inputArea_->setBounds(x, y, x + width, y + height);
-        outputArea_->setBounds(x, y + 100, 600, 370);
+//        outputArea_->setBounds(x, y + 100, 600, 370);
         pushButton_->setBounds(255, 30, 50, 20);
         updateButton_->setBounds(200, 30, 50, 20);
         add(inputArea_.get());
-        add(outputArea_.get());
+//        add(outputArea_.get());
         add(pushButton_.get());
         add(updateButton_.get());
     }
@@ -47,14 +46,17 @@ public:
     // temporary
     void createWebImage(const std::string& url, const std::string& file, const std::string& text)
     {
-        image_ = new WebImage(url, file);
-        image_->initialize();
+        static int i = 0;
+        WebImage* image = new WebImage(url, file);
+        image->initialize();
         TextField* field = new TextField();
         fields_.push_back(field);
-        field->setBounds(50, 50, 500, 50);
+        images_.push_back(image);
+        field->setBounds(50, 50 + 60 * i, 500, 60);
         add(field);
         field->setText(text.c_str());
         repaint();
+        i++;
     }
 
     void postFeed()
@@ -77,7 +79,7 @@ public:
 
     void setFeedText(const std::string& text)
     {
-        outputArea_->setText(text.c_str());
+//        outputArea_->setText(text.c_str());
     }
 
     void processEvent(Event* event)
@@ -100,8 +102,8 @@ public:
     }
 
     void paint(Graphics *g) {
-        if (image_) {
-            g->drawImage(image_, 0, 50);
+        for (int i = 0; i < images_.size(); i++) {
+            g->drawImage(images_[i], 0, 50 * i + 50);
         }
     }
 
@@ -153,13 +155,15 @@ static void __fastcall updateFeedAsync(void* arg)
     }
     std::string text((char*)shm->data());
     Strings lines = StringHelper::split("\n", text);
-    Strings line = StringHelper::split("$", lines[0]);
-    std::string imageUri = "http://graph.facebook.com/";
-    std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
-    imageUri += line[0];
-    imageUri += "/picture?type=small";
-    display->createWebImage(imageUri, filename, line[2]);
-    display->setFeedText((char*)shm->data());
+    for (int i = 0; i < lines.size() && i < 5; i++) {
+        Strings line = StringHelper::split("$", lines[i]);
+        std::string imageUri = "http://graph.facebook.com/";
+        std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
+        imageUri += line[0];
+        imageUri += "/picture?type=small";
+        display->createWebImage(imageUri, filename, line[2]);
+    }
+    // display->setFeedText((char*)shm->data());
     display->setStatusDone();
 }
 
