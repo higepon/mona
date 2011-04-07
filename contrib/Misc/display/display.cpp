@@ -49,10 +49,11 @@ public:
         static int i = 0;
         WebImage* image = new WebImage(url, file);
         image->initialize();
+        image->resize(20, 20);
         TextField* field = new TextField();
         fields_.push_back(field);
         images_.push_back(image);
-        field->setBounds(50, 50 + 60 * i, 500, 60);
+        field->setBounds(50, 50 + 50 * i, 500, 50);
         add(field);
         field->setText(text.c_str());
         i++;
@@ -160,7 +161,7 @@ static void __fastcall updateFeedAsync(void* arg)
         std::string imageUri = "http://graph.facebook.com/";
         std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
         imageUri += line[0];
-        imageUri += "/picture?type=small";
+        imageUri += "/picture";
         display->createWebImage(imageUri, filename, line[2]);
     }
     // display->setFeedText((char*)shm->data());
