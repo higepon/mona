@@ -74,6 +74,8 @@ namespace baygui {
         /** RGB24bitデータを得る */
         inline dword* getSource() { return this->bitmap->Data; }
 
+        void resize(int h, int w);
+
         /** 指定された点の色を得る */
         dword getPixel(int x, int y)
         {
