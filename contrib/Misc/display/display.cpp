@@ -48,6 +48,7 @@ public:
         add(inputArea_.get());
         add(pushButton_.get());
         add(updateButton_.get());
+        setTimer(TIMER_INTERVAL);
     }
 
     ~Display()
@@ -122,6 +123,14 @@ public:
                 }
                 setStatusDone();
             }
+        } else if (event->getType() == Event::TIMER) {
+            if (!updating_) {
+                idleTimeMsec_ += TIMER_INTERVAL;
+                if (idleTimeMsec_ > 1000) {
+                    updateFeed();
+                }
+            }
+            setTimer(TIMER_INTERVAL);
         }
     }
 
@@ -169,7 +178,6 @@ private:
         return ret;
     }
 };
-
 
 class Updater
 {
