@@ -235,6 +235,7 @@ typedef struct {
 #define MSG_NAME        0xfffff6b2 /* "   : NM" */
 #define MSG_WHERE       0xffff63c6 /* "   :WHR" */
 #define MSG_STOP        0xffff29be /* "   :STP" */
+#define MSG_UPDATE      0xffff478e /* "   :UPD" */
 
 enum
 {
