@@ -26,11 +26,26 @@ static void test_syscall_map_map_should_check_overlap()
     EXPECT_EQ(M_BAD_ADDRESS, syscall_memory_map_map(id2, 0x90050500, 0));
 }
 
+static void __fastcall task(void* arg)
+{
+    MessageInfo msg;
+    Message::receive(&msg);
+    exit(0);
+}
+
+static void test_syscall_many_threads()
+{
+    for (int i = 0; i < 20; i++) {
+        syscall_mthread_create_with_arg(task, NULL);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     test_syscall_allocate_contiguous();
     test_syscall_map_map_should_check_overlap();
 
+    test_syscall_many_threads();
     TEST_RESULTS(syscall);
     return 0;
 }
