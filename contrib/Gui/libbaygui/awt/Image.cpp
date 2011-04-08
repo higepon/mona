@@ -77,6 +77,38 @@ namespace baygui {
         }
     }
 
+    void Image::resize(int h, int w)
+    {
+        MessageInfo msg;
+        if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, w, h, Color::lightGray)) {
+            printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+            return;
+        }
+        if (msg.arg2 == 0) return;
+
+        // GUIサーバー上のビットマップオブジェクトを生成する
+        guiserver_bitmap* b = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
+        if (b == NULL) {
+            printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
+            return;
+        }
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                int x = (int)(((double)height/(double)h)*i);
+                int y = (int)(((double)width/(double)w)*j);
+                b->Data[i + w * j] = getPixel(x, y);
+            }
+        }
+
+        this->width = w;
+        this->height = h;
+        if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+            printf("%s:%d:error: can not connect to gui server!\n", __FILE__, __LINE__);
+        }
+        this->bitmap = b;
+    }
+
     void Image::initFromFilePath(const char* path)
     {
         this->width = this->height = 0;

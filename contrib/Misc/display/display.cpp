@@ -62,10 +62,15 @@ public:
         static int i = 0;
         WebImage* image = new WebImage(url, file);
         image->initialize();
+        image->resize(20, 20);
         TextField* field = new TextField();
         fields_.push_back(field);
         images_.push_back(image);
+<<<<<<< HEAD
         field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+=======
+        field->setBounds(50, 50 + 50 * i, 500, 50);
+>>>>>>> 0d4e0b39186224f51ae11071927ec5753cd04ae9
         add(field);
         field->setText(text.c_str());
         i++;
@@ -190,7 +195,11 @@ static void __fastcall updateFeedAsync(void* arg)
         std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
         imageUri += line[0];
         imageUri += "/picture";
+<<<<<<< HEAD
         display->createOnePost(imageUri, filename, line[2]);
+=======
+        display->createWebImage(imageUri, filename, line[2]);
+>>>>>>> 0d4e0b39186224f51ae11071927ec5753cd04ae9
     }
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     display->setStatusDone();
