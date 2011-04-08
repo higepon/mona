@@ -66,11 +66,7 @@ public:
         TextField* field = new TextField();
         fields_.push_back(field);
         images_.push_back(image);
-<<<<<<< HEAD
         field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
-=======
-        field->setBounds(50, 50 + 50 * i, 500, 50);
->>>>>>> 0d4e0b39186224f51ae11071927ec5753cd04ae9
         add(field);
         field->setText(text.c_str());
         i++;
@@ -107,7 +103,7 @@ public:
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 5000) {
+                if (idleTimeMsec_ > 1000) {
                     updateFeed();
                 }
             }
@@ -117,11 +113,16 @@ public:
 
     void setStatusDone()
     {
+        _logprintf("%s %s:%d[%x]\n", __func__, __FILE__, __LINE__, this);
+        _logprintf("%s %s:%d[%x]\n", __func__, __FILE__, __LINE__, updateButton_.get());
         updateButton_->setEnabled(true);
+        _logprintf("%s %s:%d[%x]\n", __func__, __FILE__, __LINE__, updateButton_.get());
         updateButton_->setLabel("update");
+    _logprintf("%s %s:%d[]\n", __func__, __FILE__, __LINE__);
         updating_ = false;
         idleTimeMsec_ = 0;
-        repaint();
+    _logprintf("%s %s:%d[]\n", __func__, __FILE__, __LINE__);
+//        repaint();
     }
 
     void paint(Graphics *g) {
@@ -162,51 +163,47 @@ private:
 
 static void __fastcall updateFeedAsync(void* arg)
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+   logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Display* display = (Display*)arg;
-    uint32_t tid;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    std::string command(System::getMoshPath());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    command += " /LIBS/MOSH/bin/fb-feed-get.sps";
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    System::getProcessStdinID();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if (result != 0) {
-        monapi_fatal("can't exec Mosh");
-    }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    monapi_process_wait_terminated(tid);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    if (shm.get() == NULL) {
-        monapi_fatal("can't read fb.data");
-    }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    std::string text((char*)shm->data());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    Strings lines = StringHelper::split("\n", text);
-    for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
-        Strings line = StringHelper::split("$", lines[i]);
-        std::string imageUri = "http://graph.facebook.com/";
-        std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
-        imageUri += line[0];
-        imageUri += "/picture";
-<<<<<<< HEAD
-        display->createOnePost(imageUri, filename, line[2]);
-=======
-        display->createWebImage(imageUri, filename, line[2]);
->>>>>>> 0d4e0b39186224f51ae11071927ec5753cd04ae9
-    }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // uint32_t tid;
+    logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, display);
+    // std::string command(System::getMoshPath());
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // command += " /LIBS/MOSH/bin/fb-feed-get.sps";
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // System::getProcessStdinID();
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // if (result != 0) {
+    //     monapi_fatal("can't exec Mosh");
+    // }
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // monapi_process_wait_terminated(tid);
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // if (shm.get() == NULL) {
+    //     monapi_fatal("can't read fb.data");
+    // }
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // std::string text((char*)shm->data());
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // Strings lines = StringHelper::split("\n", text);
+    // for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
+    //     Strings line = StringHelper::split("$", lines[i]);
+    //     std::string imageUri = "http://graph.facebook.com/";
+    //     std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
+    //     imageUri += line[0];
+    //     imageUri += "/picture";
+    //     display->createOnePost(imageUri, filename, line[2]);
+    // }
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     display->setStatusDone();
     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    MessageInfo msg;
-    Message::receive(&msg);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // MessageInfo msg;
+    // Message::receive(&msg);
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     exit(0);
 }
 
@@ -220,6 +217,7 @@ int main(int argc, char* argv[])
         _printf("syscall_stack_trace_enable failed%d\n", ret);
     }
     Display display;
+    logprintf("display=%x", &display);
     display.run();
     return 0;
 }

@@ -58,12 +58,7 @@ int Message::receive(MessageInfo* info)
 int Message::sendReceiveA(MessageInfo* dst, uint32_t tid, MessageInfo* info)
 {
     MessageInfo src;
-    PsInfo i;
-    System::getProcessInfo(&i);
-
-    _logprintf("%s %s:%d[%s]\n", __func__, __FILE__, __LINE__, i.name);
     int result = Message::send(tid, info);
-    _logprintf("%s %s:%d[%s]\n", __func__, __FILE__, __LINE__, i.name);
     if (result != M_OK) return result;
 
     src.from = tid;
@@ -75,11 +70,7 @@ int Message::sendReceiveA(MessageInfo* dst, uint32_t tid, MessageInfo* info)
 int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32_t arg1 /* = 0 */, uint32_t arg2 /* = 0 */, uint32_t arg3 /* = 0 */, const char* str /* = NULL */)
 {
     MessageInfo src;
-    PsInfo i;
-    System::getProcessInfo(&i);
-    _logprintf("%s %s:%d[%s]\n", __func__, __FILE__, __LINE__, i.name);
     int result = Message::send(tid, header, arg1, arg2, arg3, str);
-    _logprintf("%s %s:%d[%s]\n", __func__, __FILE__, __LINE__, i.name);
     if (result != M_OK) return result;
     src.from = tid;
     src.header = MSG_OK;

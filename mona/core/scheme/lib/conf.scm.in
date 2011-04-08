@@ -59,12 +59,7 @@
 ;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
-<<<<<<< HEAD
-  (ps)
-;  (my-display)
-=======
   (my-display)
->>>>>>> 0d4e0b39186224f51ae11071927ec5753cd04ae9
 ;; (gnote)
 ;  (w3m-auto-pilot)
 )
