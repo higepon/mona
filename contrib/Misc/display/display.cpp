@@ -75,6 +75,8 @@ public:
         disposeImages();
     }
 
+private:
+
     void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
     {
         WebImage* image = new WebImage(url, file);
@@ -170,7 +172,6 @@ public:
         }
     }
 
-private:
     void setStatusUpdating()
     {
         updating_ = true;
