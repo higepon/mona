@@ -19,6 +19,23 @@ private:
     bool updating_;
     int idleTimeMsec_;
 
+    void disposeImages()
+    {
+        for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
+            delete (*it);
+        }
+        images_.clear();
+    }
+
+    void disposeTextFields()
+    {
+        for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
+            remove(*it);
+            delete (*it);
+        }
+        fields_.clear();
+    }
+
 public:
     enum
     {
@@ -55,9 +72,7 @@ public:
 
     ~Display()
     {
-        for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
-            delete (*it);
-        }
+        disposeImages();
     }
 
     void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
@@ -111,16 +126,8 @@ public:
                 if (shm.get() == NULL) {
                     monapi_fatal("can't read fb.data");
                 }
-                for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
-                    delete (*it);
-                }
-                images_.clear();
-
-                for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
-                    delete (*it);
-                }
-                fields_.clear();
-
+                disposeImages();
+                disposeTextFields();
                 std::string text((char*)shm->data());
                 Strings lines = StringHelper::split("\n", text);
                 for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
