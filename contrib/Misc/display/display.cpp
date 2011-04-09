@@ -1,6 +1,7 @@
 #include <baygui.h>
 #include <string>
 #include <monapi/StringHelper.h>
+#include "Updater.h"
 
 using namespace std;
 using namespace MonAPI;
@@ -188,44 +189,6 @@ private:
     }
 };
 
-class Updater
-{
-public:
-    void run()
-    {
-        for (MessageInfo msg;;)
-        {
-            if (Message::receive(&msg)) continue;
-            switch (msg.header)
-            {
-            case MSG_UPDATE:
-            {
-                update();
-                int ret = Message::send(msg.from, MSG_OK);
-                if (ret != M_OK) {
-                    monapi_fatal("MSG_UPDATE send failed");
-                }
-                break;
-            }
-            default:
-                monapi_warn("unknown message %d\n", msg.header);
-                break;
-            }
-        }
-    }
-private:
-    void update()
-    {
-        std::string command(System::getMoshPath());
-        command += " /LIBS/MOSH/bin/fb-feed-get.sps";
-        uint32_t tid;
-        intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
-        }
-        monapi_process_wait_terminated(tid);
-    }
-};
 
 static void __fastcall updaterLauncher(void* arg)
 {
