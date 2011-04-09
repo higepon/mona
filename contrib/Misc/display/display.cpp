@@ -115,6 +115,27 @@ private:
         }
     }
 
+    void showFeedFromFile()
+    {
+        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+        if (shm.get() == NULL) {
+            monapi_fatal("can't read fb.data");
+        }
+        disposeImages();
+        disposeTextFields();
+        std::string text((char*)shm->data());
+        Strings lines = StringHelper::split("\n", text);
+        for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
+            Strings line = StringHelper::split("$", lines[i]);
+            std::string imageUri = "http://graph.facebook.com/";
+            std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
+            imageUri += line[0];
+            imageUri += "/picture";
+            createOnePost(imageUri, filename, line[2], i);
+        }
+        setStatusDone();
+    }
+
     void processEvent(Event* event)
     {
         if (event->getSource() == pushButton_.get()) {
@@ -127,23 +148,7 @@ private:
             }
         } else if (event->getType() == Event::CUSTOM_EVENT) {
             if (event->header == MSG_OK) {
-                scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
-                if (shm.get() == NULL) {
-                    monapi_fatal("can't read fb.data");
-                }
-                disposeImages();
-                disposeTextFields();
-                std::string text((char*)shm->data());
-                Strings lines = StringHelper::split("\n", text);
-                for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
-                    Strings line = StringHelper::split("$", lines[i]);
-                    std::string imageUri = "http://graph.facebook.com/";
-                    std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
-                    imageUri += line[0];
-                    imageUri += "/picture";
-                    createOnePost(imageUri, filename, line[2], i);
-                }
-                setStatusDone();
+                showFeedFromFile();
             }
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
@@ -165,7 +170,8 @@ private:
         repaint();
     }
 
-    void paint(Graphics *g) {
+    void paint(Graphics *g)
+    {
         for (size_t i = 0; i < images_.size(); i++) {
             g->drawImage(images_[i], 0, IMAGE_HEIGHT * i + 50);
         }
