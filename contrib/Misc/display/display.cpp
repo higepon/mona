@@ -79,11 +79,11 @@ public:
     {
         WebImage* image = new WebImage(url, file);
         image->initialize();
-// aririnn's smallest image.
-//        image->resize(20, 20);
+        image->resize(20, 20);
+        images_.push_back(image);
+
         TextField* field = new TextField();
         fields_.push_back(field);
-        images_.push_back(image);
         field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * index, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
         add(field);
         field->setText(text.c_str());
@@ -92,10 +92,14 @@ public:
     void postFeed()
     {
         uint32_t tid;
-        std::string ret(System::getMoshPath());
-        ret += " /LIBS/MOSH/bin/fb-feed-post.sps ";
-        ret += inputArea_->getText();
-        int result = monapi_call_process_execute_file_get_tid(ret.c_str(), MONAPI_TRUE, &tid, System::getProcessStdinID(), System::getProcessStdoutID());
+        std::string command(System::getMoshPath());
+        command += " /LIBS/MOSH/bin/fb-feed-post.sps ";
+        command += inputArea_->getText();
+        int result = monapi_call_process_execute_file_get_tid(command.c_str(),
+                                                              MONAPI_TRUE,
+                                                              &tid,
+                                                              System::getProcessStdinID(),
+                                                              System::getProcessStdoutID());
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
@@ -195,7 +199,6 @@ private:
         return ret;
     }
 };
-
 
 static void __fastcall updaterLauncher(void* arg)
 {
