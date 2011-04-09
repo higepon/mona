@@ -11,8 +11,9 @@ private:
     scoped_ptr<TextField> inputArea_;
     scoped_ptr<Button> pushButton_;
     scoped_ptr<Button> updateButton_;
-    std::vector<TextField*> fields_;
+    typedef std::vector<TextField*> TextFields;
     typedef std::vector<Image*> Images;
+    TextFields fields_;
     Images images_;
     bool updating_;
     int idleTimeMsec_;
@@ -58,9 +59,8 @@ public:
         }
     }
 
-    void createOnePost(const std::string& url, const std::string& file, const std::string& text)
+    void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
     {
-        static int i = 0;
         WebImage* image = new WebImage(url, file);
         image->initialize();
 // aririnn's smallest image.
@@ -68,10 +68,9 @@ public:
         TextField* field = new TextField();
         fields_.push_back(field);
         images_.push_back(image);
-        field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+        field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * index, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
         add(field);
         field->setText(text.c_str());
-        i++;
     }
 
     void postFeed()
@@ -111,6 +110,16 @@ public:
                 if (shm.get() == NULL) {
                     monapi_fatal("can't read fb.data");
                 }
+                for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
+                    delete (*it);
+                }
+                images_.clear();
+
+                for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
+                    delete (*it);
+                }
+                fields_.clear();
+
                 std::string text((char*)shm->data());
                 Strings lines = StringHelper::split("\n", text);
                 for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
@@ -119,7 +128,7 @@ public:
                     std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
                     imageUri += line[0];
                     imageUri += "/picture";
-                    createOnePost(imageUri, filename, line[2]);
+                    createOnePost(imageUri, filename, line[2], i);
                 }
                 setStatusDone();
             }
@@ -140,7 +149,7 @@ public:
         updateButton_->setLabel("update");
         updating_ = false;
         idleTimeMsec_ = 0;
-//        repaint();
+        repaint();
     }
 
     void paint(Graphics *g) {
