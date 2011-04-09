@@ -7,34 +7,6 @@ using namespace std;
 using namespace MonAPI;
 
 class Display : public Frame {
-private:
-    uintptr_t updaterId_;
-    scoped_ptr<TextField> inputArea_;
-    scoped_ptr<Button> pushButton_;
-    scoped_ptr<Button> updateButton_;
-    typedef std::vector<TextField*> TextFields;
-    typedef std::vector<Image*> Images;
-    TextFields fields_;
-    Images images_;
-    bool updating_;
-    int idleTimeMsec_;
-
-    void disposeImages()
-    {
-        for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
-            delete (*it);
-        }
-        images_.clear();
-    }
-
-    void disposeTextFields()
-    {
-        for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
-            remove(*it);
-            delete (*it);
-        }
-        fields_.clear();
-    }
 
 public:
     enum
@@ -76,6 +48,33 @@ public:
     }
 
 private:
+    uintptr_t updaterId_;
+    scoped_ptr<TextField> inputArea_;
+    scoped_ptr<Button> pushButton_;
+    scoped_ptr<Button> updateButton_;
+    typedef std::vector<TextField*> TextFields;
+    typedef std::vector<Image*> Images;
+    TextFields fields_;
+    Images images_;
+    bool updating_;
+    int idleTimeMsec_;
+
+    void disposeImages()
+    {
+        for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
+            delete (*it);
+        }
+        images_.clear();
+    }
+
+    void disposeTextFields()
+    {
+        for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
+            remove(*it);
+            delete (*it);
+        }
+        fields_.clear();
+    }
 
     void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
     {
