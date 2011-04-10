@@ -182,6 +182,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 
         // Shared memroy region will be returned by SharedMemoryObject::~SharedMemoryObject()
         if (baseLinerAddress >= 0x90000000 && baseLinerAddress < 0xA0000000) {
+            returnPageTable(table);
             continue;
         }
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++) {
