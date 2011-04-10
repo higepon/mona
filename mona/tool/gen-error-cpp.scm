@@ -5,7 +5,7 @@
         (srfi :26)
         (mosh file))
 
-(define (file->sexp-list file)
+#;(define (file->sexp-list file)
   (with-input-from-file file
     (lambda ()
       (let loop ([line (read)]
