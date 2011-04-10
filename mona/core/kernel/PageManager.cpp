@@ -437,7 +437,7 @@ void PageManager::unmapRange(PageEntry* directory, LinearAddress start, LinearAd
 void PageManager::returnPhysicalPage(PhysicalAddress address)
 {
     if (!memoryMap_->marked(address / ARCH_PAGE_SIZE)) {
-        logprintf("not marked %d\n", address / ARCH_PAGE_SIZE);
+        logprintf("not marked %x %x\n", address, address / ARCH_PAGE_SIZE);
     }
     ASSERT(memoryMap_->marked(address / ARCH_PAGE_SIZE));
     memoryMap_->clear(address / ARCH_PAGE_SIZE);

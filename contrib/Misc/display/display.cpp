@@ -40,6 +40,13 @@ public:
         add(pushButton_.get());
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL);
+
+        for (size_t i = 0; i < MAX_ROWS; i++) {
+            TextField* field = new TextField();
+            fields_.push_back(field);
+            field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+            add(field);
+        }
     }
 
     ~Display()
@@ -81,13 +88,11 @@ private:
         WebImage* image = new WebImage(url, file);
         image->initialize();
         image->resize(20, 20);
+        logprintf("image->width=%d\n", image->getWidth());
         images_.push_back(image);
-
-        TextField* field = new TextField();
-        fields_.push_back(field);
-        field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * index, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
-        add(field);
-        field->setText(text.c_str());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        fields_[index]->setText(text.c_str());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void postFeed()
@@ -122,10 +127,10 @@ private:
             monapi_fatal("can't read fb.data");
         }
         disposeImages();
-        disposeTextFields();
+//        disposeTextFields();
         std::string text((char*)shm->data());
         Strings lines = StringHelper::split("\n", text);
-        for (size_t i = 0; i < lines.size() && i < Display::MAX_ROWS; i++) {
+        for (size_t i = 0; i < lines.size() && i < MAX_ROWS; i++) {
             Strings line = StringHelper::split("$", lines[i]);
             std::string imageUri = "http://graph.facebook.com/";
             std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
