@@ -206,6 +206,7 @@ void PageManager::returnPageTable(PageEntry* table)
 {
     PhysicalAddress address = (PhysicalAddress)table;
     ASSERT(pageTablePool_->marked((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE));
+    logprintf("returnPageTable %d\n", (address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
@@ -250,6 +251,7 @@ PageEntry* PageManager::allocatePageTable() const
         g_console->printf("not enough memory %s %d", __FILE__, __LINE__);
         return NULL;
     }
+    logprintf("allocatePageTable %d\n", foundMemory);
     uint8_t* address = (uint8_t*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
     bzero(address, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     return (PageEntry*)(address);
