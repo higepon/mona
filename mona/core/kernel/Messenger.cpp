@@ -17,12 +17,16 @@ Messenger::~Messenger()
 
 intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 {
+    // ignore the idle thread.
+    if (thread == g_idleThread) {
+        return M_OK;
+    }
     ASSERT(message != NULL);
 
     if (thread->messageList->size() == MAX_MESSAGES) {
         #if 0
         for (int i = 0; i < thread->messageList->size(); i++) {
-            logprintf("h=%x 1=%x\n", thread->messageList->get(i)->header, thread->messageList->get(i)->arg1);
+            logprintf("h=%x %s1=%x\n", thread->messageList->get(i)->header, thread->tinfo->process->getName(), thread->messageList->get(i)->arg1);
         }
         #endif
         return M_MESSAGE_OVERFLOW;
