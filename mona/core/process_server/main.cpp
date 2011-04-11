@@ -8,7 +8,7 @@
 
 using namespace MonAPI;
 
-static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
+static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
 {
     LoadProcessInfo info;
     info.image = shm.data();
@@ -16,6 +16,7 @@ static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoin
     info.entrypoint = entryPoint;
     info.name = name;
     info.list = option;
+    info.observer = observer;
 
     addProcessInfo(name);
     intptr_t ret = syscall_load_process_image(&info);
@@ -44,7 +45,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid)
+static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
 {
     /* list initilize */
     CommandOption list;
@@ -131,7 +132,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     }
     else
     {
-        result = ExecuteProcess(parent, *shm, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid);
+        result = ExecuteProcess(parent, *shm, entryPoint, path, GetFileName(path), &list, prompt, stdin_id, stdout_id, tid, observer);
         delete shm;
     }
     CommandOption* next;
@@ -154,7 +155,7 @@ static void MessageLoop()
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
-                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid);
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid, msg.from);
                 Message::reply(&msg, result, tid);
                 break;
             }
