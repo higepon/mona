@@ -61,15 +61,16 @@ intptr_t monapi_name_get_server(uint32_t& id)
         id = name_server_id;
         return M_OK;
     }
-    intptr_t ret = Message::sendAll(MSG_NAME);
-    if (ret != M_OK) {
-        monapi_warn("MSG_NAME broadcast failed : %s", monapi_error_string(ret));
-        return ret;
-    }
+
+    //  N.B.
+    //  We don't check the return value of sendAll, since some threads such as SCREEN.EX5 never receive the message.
+    //  Though the messsage box of SCREEN.EX5 may be full, it is harmless.
+    Message::sendAll(MSG_NAME);
+
     MessageInfo src, dest;
     src.header = MSG_OK;
     src.arg1 = MSG_NAME;
-    ret = Message::receive(&dest, &src, Message::equalsHeaderArg1);
+    intptr_t ret = Message::receive(&dest, &src, Message::equalsHeaderArg1);
     if (ret != M_OK) {
         monapi_warn("MSG_NAME receive failed : %s", monapi_error_string(ret));
         return ret;
