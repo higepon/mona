@@ -3,6 +3,10 @@
 #include <monapi/MUnit.h>
 #include <monapi/net.h>
 #include <monapi/Buffer.h>
+#include <monapi.h>
+#include <stdio.h>
+#include <limits.h>
+#include <string>
 
 using namespace MonAPI;
 
@@ -148,6 +152,24 @@ static void testSharedMemory()
     EXPECT_EQ(false, shm.isMapped());
 }
 
+static void testCreateProcessManyTimes()
+{
+    std::string command(MonAPI::System::getMoshPath());
+    command += " /LIBS/MOSH/bin/fb-feed-get.sps";
+    for (int i = 0; i < 20; i++) {
+        logprintf("calling mosh test %d\n", i);
+        uint32_t tid;
+        intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(),
+                                                                   MONAPI_TRUE,
+                                                                   &tid,
+                                                                   MonAPI::System::getProcessStdinID(),
+                                                                   MonAPI::System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+        monapi_process_wait_terminated(tid);
+    }
+}
 int main(int argc, char *argv[])
 {
     testDate();
@@ -159,6 +181,7 @@ int main(int argc, char *argv[])
     testBuffer();
     testBufferOverCopyShouldFail();
     testSharedMemory();
+    testCreateProcessManyTimes();
     TEST_RESULTS(monapi_misc);
     return 0;
 }
