@@ -314,6 +314,9 @@ void panic(const char* msg)
 {
     g_console->setCHColor(GP_RED);
     g_console->printf("kernel panic\nMessage:%s\n", msg);
+    if (g_log) {
+        g_log->printf("kernel panic\nMessage:%s\n", msg);
+    }
     for (;;);
 }
 
