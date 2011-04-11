@@ -256,10 +256,9 @@ PageEntry* PageManager::allocatePageTable() const
     int foundMemory = pageTablePool_->find();
     if (foundMemory == -1)
     {
-        g_console->printf("not enough memory %s %d", __FILE__, __LINE__);
+        mona_warn("not enough memory %s %d", __FILE__, __LINE__);
         return NULL;
     }
-    logprintf("allocatePageTable %d\n", foundMemory);
     uint8_t* address = (uint8_t*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
     bzero(address, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     return (PageEntry*)(address);
