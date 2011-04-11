@@ -154,6 +154,7 @@ typedef struct {
     const char* path;
     const char* name;
     CommandOption* list;
+    uint32_t observer;
 } LoadProcessInfo;
 
 #define MESSAGE_INFO_MAX_STR_LENGTH 256
