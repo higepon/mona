@@ -42,10 +42,13 @@ static void test_syscall_many_threads()
 
 int main(int argc, char *argv[])
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_syscall_allocate_contiguous();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_syscall_map_map_should_check_overlap();
-
-    test_syscall_many_threads();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//    test_syscall_many_threads();
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS(syscall);
     return 0;
 }
