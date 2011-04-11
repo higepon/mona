@@ -388,7 +388,6 @@ class ProcessOperation
     static LinearAddress allocateKernelStack();
     static void freeKernelStack(LinearAddress address);
 
-  private:
     enum
     {
         KERNEL_STACK_START     = 0x100000,
@@ -397,7 +396,6 @@ class ProcessOperation
         KERNEL_STACK_UNIT_SIZE = 0x1000,
     };
 
-  public:
     static PageManager* pageManager;
     static const int USER_PROCESS   = 1;
     static const int KERNEL_PROCESS = 2;

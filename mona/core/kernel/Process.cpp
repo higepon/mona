@@ -55,13 +55,13 @@ LinearAddress ProcessOperation::allocateKernelStack()
 
 void ProcessOperation::freeKernelStack(LinearAddress address)
 {
-    if (address < KERNEL_STACK_START || address > KERNEL_STACK_SIZE)
+    if (address < KERNEL_STACK_START || address > KERNEL_STACK_START + KERNEL_STACK_SIZE)
     {
+        ASSERT(false);
         return;
     }
 
     int index = (address - KERNEL_STACK_START) / KERNEL_STACK_UNIT_SIZE;
-
     kernelStackMap->clear(index);
 }
 
@@ -144,7 +144,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
     ainfo->dpl     = DPL_USER;
     ainfo->esp     = stack;
     ainfo->ebp     = stack;
-    ainfo->esp0    = ProcessOperation::allocateKernelStack() + 0x1000;  //added by TAKA
+    ainfo->esp0    = ProcessOperation::allocateKernelStack() + ProcessOperation::KERNEL_STACK_UNIT_SIZE;  //added by TAKA
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 
@@ -265,7 +265,7 @@ intptr_t ThreadOperation::kill(Process* process, Thread* thread)
 
     //modified by TAKA
     //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
-    ProcessOperation::freeKernelStack(thread->kernelStackBottom);
+    ProcessOperation::freeKernelStack(thread->kernelStackBottom - ProcessOperation::KERNEL_STACK_UNIT_SIZE);
 
     if (process->threadNum < 1)
     {
