@@ -89,6 +89,7 @@ public:
     class Segment* stackSegment;
     //add by TAKA
     uint32_t kernelStackBottom;
+    uint32_t observer;
 private:
     // Waiting mutex.
     // If you want to add another waiting lock primitive,

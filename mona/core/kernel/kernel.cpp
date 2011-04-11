@@ -269,11 +269,11 @@ void startKernel()
     g_messenger = new Messenger(g_scheduler);
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
-    g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle);
+    g_idleThread = ThreadOperation::create(idleProcess, (uint32_t)monaIdle, THREAD_UNKNOWN);
     g_scheduler->Join(g_idleThread, ThreadPriority::Min);
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
-    Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess);
+    Thread*  initThread  = ThreadOperation::create(initProcess, (uint32_t)mainProcess, THREAD_UNKNOWN);
     g_scheduler->Join(initThread);
 
     disableTimer();
@@ -365,7 +365,7 @@ void loadServer(const char* server, const char* name)
             return;
         }
 
-        g_console->printf("%s\n", Loader::Load(image, size, Loader::ORG, name, true, NULL) == M_OK ? "OK" : "NG");
+        g_console->printf("%s\n", Loader::Load(image, size, Loader::ORG, name, true, NULL, THREAD_UNKNOWN) == M_OK ? "OK" : "NG");
     }
     else
     {

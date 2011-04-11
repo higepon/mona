@@ -16,7 +16,7 @@
 /*----------------------------------------------------------------------
     Loader
 ----------------------------------------------------------------------*/
-intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list)
+intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list, uint32_t observer)
 {
     ASSERT(size < MAX_IMAGE_SIZE);
 
@@ -47,13 +47,13 @@ intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const 
 
     setupArguments(process, list);
 
-    Thread*  thread = ThreadOperation::create(process, entrypoint);
+    Thread*  thread = ThreadOperation::create(process, entrypoint, observer);
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
     return M_OK;
 }
 
-intptr_t Loader::LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list)
+intptr_t Loader::LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list, uint32_t observer)
 {
     SharedMemoryObject* shm = SharedMemoryObject::find(handle);
     if (shm == NULL) {
@@ -71,7 +71,7 @@ intptr_t Loader::LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const c
     setupArguments(process, list);
 
     /* now process is loaded */
-    Thread*  thread = ThreadOperation::create(process, entrypoint);
+    Thread*  thread = ThreadOperation::create(process, entrypoint, observer);
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
     return M_OK;

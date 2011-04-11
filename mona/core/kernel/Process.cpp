@@ -88,7 +88,7 @@ Process* ProcessOperation::create(int type, const char* name)
     ThreadOperation
 ----------------------------------------------------------------------*/
 uint32_t ThreadOperation::id = FIRST_THREAD_ID;
-Thread* ThreadOperation::create(Process* process, uint32_t programCounter)
+Thread* ThreadOperation::create(Process* process, uint32_t programCounter, uint32_t observer)
 {
     Thread* thread = new Thread();
 
@@ -111,6 +111,7 @@ Thread* ThreadOperation::create(Process* process, uint32_t programCounter)
     }
 
     process->getThreadList()->add(thread);
+    thread->observer = observer;
     return thread;
 };
 
@@ -308,34 +309,51 @@ intptr_t ThreadOperation::kill(uint32_t tid)
     return Scheduler::YIELD;
 }
 
+// We don't broadcast MSG_PROCESS_TERMINATED.
+// Since it will cause message box overflow easily.
 void ThreadOperation::sendKilledMessage()
 {
-    uint32_t threadNum;
-    Thread** list;
+    uint32_t dest = g_currentThread->thread->observer;
+
+    // for INIT thread.
+    if (dest == THREAD_UNKNOWN) {
+        return;
+    }
+    Thread* thread =  g_scheduler->Find(dest);
     MessageInfo msg;
-
-    list = g_scheduler->GetAllThread(&threadNum);
-
-    /* set message */
     msg.header = MSG_PROCESS_TERMINATED;
     msg.arg1   = g_currentThread->thread->id;
     msg.arg2   = -1;
-
-    if (list == NULL) return;
-
-    for (uint32_t i = 0; i < threadNum; i++)
-    {
-
-        Thread* thread = list[i];
-        if (thread == g_currentThread->thread) {
-            continue;
-        }
-        if (g_messenger->send(thread, &msg) != M_OK) {
-            logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
-        }
+    if (g_messenger->send(thread, &msg) != M_OK) {
+        logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
     }
 
-    delete[] list;
+    // uint32_t threadNum;
+    // Thread** list;
+    // MessageInfo msg;
+
+    // list = g_scheduler->GetAllThread(&threadNum);
+
+    // /* set message */
+    // msg.header = MSG_PROCESS_TERMINATED;
+    // msg.arg1   = g_currentThread->thread->id;
+    // msg.arg2   = -1;
+
+    // if (list == NULL) return;
+
+    // for (uint32_t i = 0; i < threadNum; i++)
+    // {
+
+    //     Thread* thread = list[i];
+    //     if (thread == g_currentThread->thread) {
+    //         continue;
+    //     }
+    //     if (g_messenger->send(thread, &msg) != M_OK) {
+    //         logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
+    //     }
+    // }
+
+    // delete[] list;
 }
 
 /*----------------------------------------------------------------------

@@ -409,7 +409,7 @@ class ProcessOperation
 class ThreadOperation
 {
   public:
-    static Thread* create(Process* process, uint32_t programCounter);
+    static Thread* create(Process* process, uint32_t programCounter, uint32_t observer);
     static int switchThread(bool isProcessChanged, int i);
     static intptr_t kill(Process* process, Thread* thread);
     static intptr_t kill(uint32_t tid);

@@ -24,8 +24,8 @@
 class Loader
 {
 public:
-    static intptr_t LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list);
-    static intptr_t Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list);
+    static intptr_t LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const char* name, CommandOption* list, uint32_t observer);
+    static intptr_t Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list, uint32_t observer);
 private:
     static void setupArguments(Process* process, CommandOption* list);
 public:

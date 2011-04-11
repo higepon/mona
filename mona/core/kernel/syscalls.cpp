@@ -244,7 +244,7 @@ void syscall_entrance()
     case SYSTEM_CALL_MTHREAD_CREATE:
     {
         uint32_t arg = SYSTEM_CALL_ARG_2;
-        Thread* thread = ThreadOperation::create(getCurrentProcess(), SYSTEM_CALL_ARG_1);
+        Thread* thread = ThreadOperation::create(getCurrentProcess(), SYSTEM_CALL_ARG_1, g_currentThread->thread->id);
         thread->tinfo->archinfo->ecx = arg;
         g_scheduler->Join(thread);
         setReturnValue(info, thread->id);
@@ -773,7 +773,7 @@ void syscall_entrance()
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(SYSTEM_CALL_ARG_1);
-        setReturnValue(info, Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list));
+        setReturnValue(info, Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list, p->observer));
         break;
     }
 
