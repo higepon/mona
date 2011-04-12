@@ -320,6 +320,11 @@ void ThreadOperation::sendKilledMessage()
         return;
     }
     Thread* thread =  g_scheduler->Find(dest);
+
+    // observer may be dead already.
+    if (thread == NULL) {
+        return;
+    }
     MessageInfo msg;
     msg.header = MSG_PROCESS_TERMINATED;
     msg.arg1   = g_currentThread->thread->id;
@@ -327,33 +332,6 @@ void ThreadOperation::sendKilledMessage()
     if (g_messenger->send(thread, &msg) != M_OK) {
         logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
     }
-
-    // uint32_t threadNum;
-    // Thread** list;
-    // MessageInfo msg;
-
-    // list = g_scheduler->GetAllThread(&threadNum);
-
-    // /* set message */
-    // msg.header = MSG_PROCESS_TERMINATED;
-    // msg.arg1   = g_currentThread->thread->id;
-    // msg.arg2   = -1;
-
-    // if (list == NULL) return;
-
-    // for (uint32_t i = 0; i < threadNum; i++)
-    // {
-
-    //     Thread* thread = list[i];
-    //     if (thread == g_currentThread->thread) {
-    //         continue;
-    //     }
-    //     if (g_messenger->send(thread, &msg) != M_OK) {
-    //         logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
-    //     }
-    // }
-
-    // delete[] list;
 }
 
 /*----------------------------------------------------------------------

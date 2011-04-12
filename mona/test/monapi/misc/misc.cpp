@@ -154,42 +154,34 @@ static void testSharedMemory()
 
 static void testCreateProcessManyTimes()
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    const int NTIMES = 200;
     std::string command(MonAPI::System::getMoshPath());
     command += " /USER/empty.sps";
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    for (int i = 0; i < 2000; i++) {
-        logprintf("calling mosh test %d\n", i);
-        printf("[%d]", i);
+    logprintf("calling mosh test ... ");
+    for (int i = 0; i < NTIMES; i++) {
+        logprintf("[%d]", i);
         uint32_t tid;
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/TEMPTY.EX5", // command.c_str()
+            //command.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,
                                                                    MonAPI::System::getProcessStdinID(),
                                                                    MonAPI::System::getProcessStdoutID());
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
         monapi_process_wait_terminated(tid);
     }
+    logprintf("\n");
 }
 int main(int argc, char *argv[])
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testDate();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testThreadSelf();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testNet();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testThreadKill();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testISO9600_file_read();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_Page_fault_handler_should_be_fast();
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     testBuffer();
     testBufferOverCopyShouldFail();
     testSharedMemory();

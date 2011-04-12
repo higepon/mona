@@ -214,7 +214,6 @@ void PageManager::returnPageTable(PageEntry* table)
 {
     PhysicalAddress address = (PhysicalAddress)table;
     ASSERT(pageTablePool_->marked((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE));
-    logprintf("returnPageTable %d\n", (address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 

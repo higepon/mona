@@ -152,13 +152,15 @@ private:
                 updateFeed();
             }
         } else if (event->getType() == Event::CUSTOM_EVENT) {
-            if (event->header == MSG_OK) {
+            if (event->header == MSG_OK && event->from == updaterId_) {
+                logprintf("timer update feed done MSG_OK from=%d \n", event->from);
                 showFeedFromFile();
             }
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 1000) {
+                if (idleTimeMsec_ > 5000) {
+                    logprintf("timer update feed start\n");
                     updateFeed();
                 }
             }
