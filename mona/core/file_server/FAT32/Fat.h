@@ -1277,7 +1277,7 @@ private:
         // uint8_t* dirtyFat = (uint8_t*)fat_ + ((cluster * sizeof(uint32_t)) / SECTOR_SIZE) * SECTOR_SIZE;
         int ret = dev_.write(dirtyFatSector, dirtyFat, SECTOR_SIZE);
         if (ret != M_OK) {
-            monapi_warn("failed to update FAT");
+            monapi_warn("failed to update FAT sector=%d ret=%d", dirtyFatSector, ret);
             return ret;
         } else {
             return M_OK;
