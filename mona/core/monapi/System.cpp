@@ -59,10 +59,12 @@ namespace MonAPI
         MessageInfo msg;
         uint32_t id ;
         if (monapi_name_whereis("/servers/process", id) != M_OK) {
+            monapi_warn("/server/process not found");
             return NULL;
         }
         if (Message::sendReceive(&msg, id, MSG_PROCESS_GET_PROCESS_STDIO) != M_OK)
         {
+            monapi_warn("/server/process sendReceive failed");
             return NULL;
         }
         return msg.arg3;
@@ -103,17 +105,21 @@ namespace MonAPI
         if (outStream == NULL) {
             uint32_t handle = System::getProcessStdoutID();
             if (handle == THREAD_UNKNOWN) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 outStream = NULL;
             } else {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 outStream = Stream::FromHandle(handle);
             }
         }
 
         if (outStream == NULL) {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         } else if (outStream->getLastError() == M_OK) {
             return outStream;
         } else {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         }
     }
