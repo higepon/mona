@@ -32,8 +32,8 @@
 
 struct VirtBuffer
 {
-    VirtBuffer(void* addr, int len) : address(addr), length(len) {}
-    void* address;
+    VirtBuffer(volatile void* addr, int len) : address(addr), length(len) {}
+    volatile void* address;
     uintptr_t length;
     uintptr_t getPhysicalAddress() const
     {

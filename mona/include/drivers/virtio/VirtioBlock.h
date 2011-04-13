@@ -183,7 +183,9 @@ private:
         out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
 
         std::vector<VirtBuffer> in;
-        uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
+
+        // We need volatile keyword here, since status will be updated by host.
+        volatile uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
         *status = 0xff;
 
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
@@ -194,6 +196,7 @@ private:
 
         intptr_t addBufRet = vq_->addBuf(out, in, (void*)0xdeadbeaf);
         if (addBufRet != M_OK) {
+            monapi_warn("addBuf failed %d", addBufRet);
             return addBufRet;
         }
         vq_->kick();
@@ -209,7 +212,9 @@ private:
         void* cookie = vq_->getBuf(sizeRead);
 
         sizeRead -= sizeof(*status);
+        if (*status != 0) _logprintf("*status=%d", *status);
         if (*status != VIRTIO_BLK_S_OK) {
+            monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
         }
         ASSERT(0xdeadbeaf == (uintptr_t)cookie);
