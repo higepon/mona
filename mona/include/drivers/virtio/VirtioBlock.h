@@ -208,11 +208,17 @@ private:
             vdev_->waitInterrupt();
         }
 
+        __asm__ __volatile__("" : : : "memory");
+
         int sizeRead = 0;
         void* cookie = vq_->getBuf(sizeRead);
 
         sizeRead -= sizeof(*status);
         if (*status != 0) _logprintf("*status=%d", *status);
+        while (*status == 0xff) {
+            _logprintf("waiting");
+        }
+        _logprintf("after *status=%d", *status);
         if (*status != VIRTIO_BLK_S_OK) {
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
