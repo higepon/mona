@@ -140,6 +140,7 @@ SharedMemory * FileServer::readFileAll(const string& file, intptr_t& lastError)
     Stat st;
     ret = vmanager_.stat(fileID, &st);
     if (ret != M_OK) {
+        monapi_warn("stat failed %d\n", ret);
         lastError = ret;
         vmanager_.close(fileID);
         return NULL;
@@ -147,6 +148,7 @@ SharedMemory * FileServer::readFileAll(const string& file, intptr_t& lastError)
     SharedMemory* shm;
     ret = vmanager_.read(fileID, st.size, &shm);
     if (ret != M_OK) {
+        monapi_warn("read failed %d\n", ret);
         lastError = ret;
         vmanager_.close(fileID);
         return NULL;

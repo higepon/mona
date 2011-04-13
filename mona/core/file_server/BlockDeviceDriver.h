@@ -69,6 +69,7 @@ public:
         if (size == sizeRead) {
             return M_OK;
         } else {
+            monapi_warn("sizeRead =%d size=%d\n", sizeRead, size);
             if (sizeRead < 0) {
                 return sizeRead;
             } else {

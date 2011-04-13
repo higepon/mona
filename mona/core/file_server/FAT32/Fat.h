@@ -313,6 +313,7 @@ public:
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
             ASSERT(!isEndOfCluster(cluster));
             if (!readCluster(cluster, buf_)) {
+                monapi_warn("readCluster failed cluster=%d\n", cluster);
                 return M_READ_ERROR;
             }
             uint32_t restSizeToRead = sizeToRead - sizeRead;
