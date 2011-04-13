@@ -62,6 +62,7 @@ int FileServer::initializeMountedFileSystems()
     mountedFSs_.push_back(rdf);
 
     bd4_ = new BlockDeviceDriver(4);
+    logprintf("bd4_=%x", bd4_);
     FatFileSystem* fatfs = new FatFileSystem(*bd4_);
     if (fatfs->initialize() != M_OK) {
         monapi_warn("Fat fs mound error");
