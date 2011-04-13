@@ -805,6 +805,7 @@ private:
         ASSERT(fat_);
 
         if (dev_.read(fatStartSector, fat_, fatSizeByte) != M_OK) {
+            _logprintf("fatSizeByte=%d", fatSizeByte);
             return false;
         }
         return true;
@@ -815,6 +816,7 @@ private:
         uint32_t firstDataSector = getReservedSectors() + getNumberOfFats() * getSectorsPerFat();
         uint32_t absoluteCluster = firstDataSector / getSectorsPerCluster() + cluster - 2;
         if (dev_.read(absoluteCluster * getSectorsPerCluster(), buf, SECTOR_SIZE * getSectorsPerCluster()) != M_OK) {
+            _logprintf("SECTOR_SIZE * getSectorsPerCluster()=%d", SECTOR_SIZE * getSectorsPerCluster());
             return false;
         }
         return true;

@@ -316,6 +316,9 @@ void panic(const char* msg)
     g_console->printf("kernel panic\nMessage:%s\n", msg);
     if (g_log) {
         g_log->printf("kernel panic\nMessage:%s\n", msg);
+        if (g_currentThread) {
+            g_log->printf("process = %s", g_currentThread->thread->tinfo->process->getName());
+        }
     }
     for (;;);
 }

@@ -519,7 +519,7 @@ install-mona:
 	$(MAKE) -C crypto $@
 	@set -e; headerlist="$(EXHEADER)"; for i in $$headerlist;\
 	do \
-	(cp $$i $(MONADIR)/include/openssl/$$i; \
+	(cp -up $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
 

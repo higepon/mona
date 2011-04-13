@@ -29,7 +29,9 @@ bool Segment::faultHandler(PageManager* pageManager, Process* process, LinearAdd
                                            address,
                                            PageManager::PAGE_WRITABLE,
                                            process->isUserMode());
-    ASSERT(ret == M_OK);
+    if (ret != M_OK) {
+        panic("mapOnePage failed");
+    }
     return true;
 }
 
