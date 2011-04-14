@@ -53,6 +53,7 @@ class System
     static const char* getProcessPath();
     static const char* getBundlePath();
     static uint32_t getProcessStdoutID();
+    static uint32_t getProcessStdoutID(uint32_t tid);
     static uint32_t getProcessStdinID();
     static Stream* getStdinStream();
     static Stream* getStdoutStream();
