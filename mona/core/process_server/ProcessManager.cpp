@@ -26,6 +26,7 @@ ProcessInfo getProcessInfo(uint32_t tid)
     int size = infos.size();
     for (int i = 0; i < size; i++)
     {
+//        _logprintf("target tid = %x infos[i].tid=%x\n", tid, infos[i].tid);
         if (infos[i].tid == tid) return infos[i];
     }
     return ProcessInfo(tid);
@@ -183,25 +184,29 @@ bool processHandler(MessageInfo* msg)
             Message::reply(msg);
             break;
         case MSG_REMOVE:
+            ASSERT(false);
             unregisterReceiver(msg->arg1);
             Message::reply(msg);
             break;
         case MSG_PROCESS_GET_PROCESS_INFO:
         {
+            ASSERT(false);
             ProcessInfo pi = getProcessInfo(msg->from);
             Message::reply(msg, pi.parent, pi.stdout_id, pi.path);
             break;
         }
         case MSG_PROCESS_GET_PROCESS_STDIO:
         {
-            ProcessInfo pi = getProcessInfo(msg->from);
+            ProcessInfo pi = getProcessInfo(msg->arg1);
             Message::reply(msg, pi.stdin_id, pi.stdout_id);
             break;
         }
         case MSG_PROCESS_CREATED:
+            ASSERT(false);
             addProcessInfo(msg->arg1, msg->arg2, msg->str);
             break;
         case MSG_PROCESS_TERMINATED:
+            ASSERT(false);
             removeProcessInfo(msg->arg1, msg->arg2);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:
