@@ -135,13 +135,6 @@ bool MonaTerminal::initialize()
 //     histories_.add("(exec \"/LIBS/SCHEME/fib.scm\")");
 //     histories_.add("(for-each (lambda (w) (print (mona.gui.window-title w))) (filter #/APPS/ (mona.gui.enum-windows)))");
 
-
-    if (M_OK != monapi_register_to_server("/servers/process"))
-    {
-        fprintf(stderr, "register to process server failed\n");
-        return false;
-    }
-
     MessageInfo msg;
     uint32_t targetID = Message::lookupMainThread("SCREEN.EX5");
     if (targetID == THREAD_UNKNOWN || (Message::sendReceive(&msg, targetID, MSG_SCREEN_GET_STREAM_HANDLE) != M_OK)) {

@@ -2538,14 +2538,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-  
-
-    if (M_OK != monapi_register_to_server("/servers/process"))
-    {
-        fprintf(stderr, "register to process server failed\n");
-        return -1;
-    }
-
     uint32_t pid = syscall_get_pid();
 
     if(g_debugMode) {

@@ -180,6 +180,7 @@ bool processHandler(MessageInfo* msg)
     switch (msg->header)
     {
         case MSG_ADD:
+            ASSERT(false);
             registerReceiver(msg->arg1);
             Message::reply(msg);
             break;

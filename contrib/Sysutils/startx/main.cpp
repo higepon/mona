@@ -398,9 +398,6 @@ int main(int argc, char* argv[])
         printf("Mona GUI Selector Loading .....\n");
     }
 
-    // プロセスサーバーに登録する
-    if (M_OK != monapi_register_to_server("/servers/process")) exit(1);
-
     // ログインオブジェクト初期化
     StartX* startx = new StartX();
 

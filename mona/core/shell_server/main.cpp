@@ -8,7 +8,6 @@ using namespace MonAPI;
 int main(int argc, char* argv[])
 {
     if (M_OK != monapi_register_to_server("/servers/keyboard")) exit(1);
-    if (M_OK != monapi_register_to_server("/servers/process")) exit(1);
 
     /* Server start ok */
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
@@ -29,6 +28,5 @@ int main(int argc, char* argv[])
     shell.run();
 
     monapi_register_to_server("/servers/keyboard");
-    monapi_register_to_server("/servers/process");
     return 0;
 }
