@@ -48,6 +48,10 @@ intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const 
     setupArguments(process, list);
 
     Thread*  thread = ThreadOperation::create(process, entrypoint, observer);
+
+    // Ugly, workaround.
+    // We want to mark process_server as observer.
+    thread->observers.add(g_currentThread->thread->id);
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
     return M_OK;
@@ -72,6 +76,9 @@ intptr_t Loader::LoadFromMemoryMap(uint32_t handle, uint32_t entrypoint, const c
 
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint, observer);
+    // Ugly, workaround.
+    // We want to mark process_server as observer.
+    thread->observers.add(g_currentThread->thread->id);
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
     return M_OK;

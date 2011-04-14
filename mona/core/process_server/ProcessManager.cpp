@@ -206,7 +206,6 @@ bool processHandler(MessageInfo* msg)
             addProcessInfo(msg->arg1, msg->arg2, msg->str);
             break;
         case MSG_PROCESS_TERMINATED:
-            ASSERT(false);
             removeProcessInfo(msg->arg1, msg->arg2);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:

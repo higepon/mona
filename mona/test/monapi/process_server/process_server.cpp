@@ -35,7 +35,7 @@ static void test_returnsInvalidStdoutWhenThreadWasTerminated()
     const int TEST_STDOUT_HANDLE= 0x12345678;
     uint32_t tid = executeProcessWithStdout(TEST_STDOUT_HANDLE);;
     terminateProcess(tid);
-    sleep(500);
+    sleep(100);
     EXPECT_EQ(THREAD_UNKNOWN, System::getProcessStdoutID(tid));
 }
 
