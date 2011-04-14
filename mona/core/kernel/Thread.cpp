@@ -34,7 +34,7 @@
 #include "Thread.h"
 
 
-Thread::Thread() : lastCpuUsedTick(0), age(0), waitingMutex_(NULL), waitingCondition_(NULL)
+Thread::Thread() : lastCpuUsedTick(0), age(0), observers(2), waitingMutex_(NULL), waitingCondition_(NULL)
 {
     clearEventWaiting();
     /* thread information */

@@ -111,7 +111,7 @@ Thread* ThreadOperation::create(Process* process, uint32_t programCounter, uint3
     }
 
     process->getThreadList()->add(thread);
-    thread->observer = observer;
+    thread->observers.add(observer);
     return thread;
 };
 
@@ -313,24 +313,26 @@ intptr_t ThreadOperation::kill(uint32_t tid)
 // Since it will cause message box overflow easily.
 void ThreadOperation::sendKilledMessage()
 {
-    uint32_t dest = g_currentThread->thread->observer;
+    for (int i = 0; i < g_currentThread->thread->observers.size(); i++) {
+        uint32_t dest = g_currentThread->thread->observers[i];
 
-    // for INIT thread.
-    if (dest == THREAD_UNKNOWN) {
-        return;
-    }
-    Thread* thread =  g_scheduler->Find(dest);
+        // for INIT thread.
+        if (dest == THREAD_UNKNOWN) {
+            continue;
+        }
+        Thread* thread =  g_scheduler->Find(dest);
 
-    // observer may be dead already.
-    if (thread == NULL) {
-        return;
-    }
-    MessageInfo msg;
-    msg.header = MSG_PROCESS_TERMINATED;
-    msg.arg1   = g_currentThread->thread->id;
-    msg.arg2   = -1;
-    if (g_messenger->send(thread, &msg) != M_OK) {
-        logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
+        // observer may be dead already.
+        if (thread == NULL) {
+            continue;
+        }
+        MessageInfo msg;
+        msg.header = MSG_PROCESS_TERMINATED;
+        msg.arg1   = g_currentThread->thread->id;
+        msg.arg2   = -1;
+        if (g_messenger->send(thread, &msg) != M_OK) {
+            logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
+        }
     }
 }
 
