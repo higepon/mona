@@ -27,8 +27,8 @@
 
 #define ASSERT_TRUE(condition) {\
     if (!(condition)) {\
-        printf("MUnit:ASSERT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
-        logprintf("MUnit:ASSERT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
+        printf("MUnit:ASSERT_TRUE %s failure on [%s]:%d: %s\n", __PRETTY_FUNCTION__, __FILE__, __LINE__, #condition); \
+        logprintf("MUnit:ASSERT_TRUE %s failure on [%s]:%d: %s\n", __PRETTY_FUNCTION__, __FILE__, __LINE__, #condition); \
         exit(-1);\
     } else {\
         munit_number_of_passed++;\
@@ -38,8 +38,8 @@
 #define ASSERT_EQ(expected, actual) {                  \
     intptr_t ac = (actual); \
     if (expected != ac) {\
-        printf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
-        logprintf("MUnit:ASSERT_EQ failure expected %s, but got %d %s:%d: \n", #expected, ac, __FILE__, __LINE__); \
+        printf("MUnit:ASSERT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", __PRETTY_FUNCTION__, #expected, ac, __FILE__, __LINE__); \
+        logprintf("MUnit:ASSERT_EQ failure on [%s]s expected %s, but got %d %s:%d: \n", __PRETTY_FUNCTION__, #expected, ac, __FILE__, __LINE__); \
         exit(-1);\
     } else {\
         munit_number_of_passed++;\
@@ -50,16 +50,16 @@
 // EXPECT family never stop on error.
 #define EXPECT_TRUE(condition) {\
     if (!(condition)) {\
-        printf("MUnit:EXPECT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
-        logprintf("MUnit:EXPECT_TRUE failure %s:%d: %s\n", __FILE__, __LINE__, #condition);\
+        printf("MUnit:EXPECT_TRUE failure on [%s]:%d: %s\n", __FILE__, __LINE__, #condition);\
+        logprintf("MUnit:EXPECT_TRUE failure on [%s]:%d: %s\n", __FILE__, __LINE__, #condition);\
         munit_number_of_failed++;\
     } else {\
         munit_number_of_passed++;\
     }\
 }
 
-#define EXPECT_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __FILE__, __LINE__)
-#define EXPECT_STR_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __FILE__, __LINE__)
+#define EXPECT_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __PRETTY_FUNCTION__, __FILE__, __LINE__)
+#define EXPECT_STR_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 #define EXPECT_STR_EQ_MSG(expected, actual, msg) {                  \
     const char* ac = (actual); \
@@ -75,8 +75,8 @@
 #define EXPECT_EQ_MSG(expected, actual, msg) {                  \
     intptr_t ac = (actual); \
     if (expected != ac) {\
-        printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: msg: %s\n", #expected, ac, __FILE__, __LINE__, (msg)); \
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: msg: %s \n", #expected, ac, __FILE__, __LINE__, (msg)); \
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: msg: %s\n", __PRETTY_FUNCTION__, #expected, ac, __FILE__, __LINE__, (msg)); \
+        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: msg: %s \n", __PRETTY_FUNCTION__, #expected, ac, __FILE__, __LINE__, (msg)); \
         munit_number_of_failed++;\
     } else {\
         munit_number_of_passed++;\
@@ -104,11 +104,11 @@ inline void munit_show_test_results(const char* msg)
 }
 
 template <typename X, typename Y>
-void munit_expect_eq(X expected, Y actual, const char* expectedStr, const char* file, int line)
+void munit_expect_eq(X expected, Y actual, const char* expectedStr, const char* function, const char* file, int line)
 {
     if (expected != (X)actual) {
-        printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
         munit_number_of_passed++;
@@ -116,11 +116,11 @@ void munit_expect_eq(X expected, Y actual, const char* expectedStr, const char* 
 }
 
 template <>
-void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr, const char* file, int line)
+void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr, const char* function, const char* file, int line)
 {
     if (expected != actual) {
-        printf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got %d %s:%d: \n", expectedStr, actual, file, line);
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
         munit_number_of_passed++;
@@ -128,11 +128,11 @@ void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr
 }
 
 template <>
-void munit_expect_eq(const char* expected, char* actual, const char* expectedStr, const char* file, int line)
+void munit_expect_eq(const char* expected, char* actual, const char* expectedStr, const char* function, const char* file, int line)
 {
     if (0 != strcmp(expected, actual)) {
-        printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got (%s) %s:%d: \n", function, expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got (%s) %s:%d: \n", function, expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
         munit_number_of_passed++;
@@ -140,11 +140,11 @@ void munit_expect_eq(const char* expected, char* actual, const char* expectedStr
 }
 
 template <>
-void munit_expect_eq(const char* expected, const char* actual, const char* expectedStr, const char* file, int line)
+void munit_expect_eq(const char* expected, const char* actual, const char* expectedStr, const char* function, const char* file, int line)
 {
     if (0 != strcmp(expected, actual)) {
-        printf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d: \n", expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure expected %s, but got (%s) %s:%d:%s: \n", expectedStr, actual, file, line);
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got (%s) %s:%d: \n", function, expectedStr, actual, file, line);
+        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got (%s) %s:%d:%s: \n", function, expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
         munit_number_of_passed++;
