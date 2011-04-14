@@ -55,6 +55,8 @@ endif
 	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
 tests: tools cores
+	cd test/monapi/wait && $(MAKE) && $(MAKE) install
+	cd test/monapi/process_server && $(MAKE) && $(MAKE) install
 	cd test/monapi/file && $(MAKE) && $(MAKE) install
 	cd test/monapi/file_load && $(MAKE) && $(MAKE) install
 	cd test/monalibc/string && $(MAKE) && $(MAKE) install

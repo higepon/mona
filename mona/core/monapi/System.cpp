@@ -56,13 +56,17 @@ namespace MonAPI
 
     uint32_t System::getProcessStdoutID()
     {
+        return System::getProcessStdoutID(getThreadID());
+    }
+    uint32_t System::getProcessStdoutID(uint32_t tid)
+    {
         MessageInfo msg;
         uint32_t id ;
         if (monapi_name_whereis("/servers/process", id) != M_OK) {
             monapi_warn("/server/process not found");
             return NULL;
         }
-        if (Message::sendReceive(&msg, id, MSG_PROCESS_GET_PROCESS_STDIO) != M_OK)
+        if (Message::sendReceive(&msg, id, MSG_PROCESS_GET_PROCESS_STDIO, tid) != M_OK)
         {
             monapi_warn("/server/process sendReceive failed");
             return NULL;
