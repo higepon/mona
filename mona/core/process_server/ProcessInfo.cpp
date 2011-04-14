@@ -3,16 +3,13 @@
 
 using namespace MonAPI;
 
-ProcessInfo::ProcessInfo(uint32_t tid) : tid(THREAD_UNKNOWN), parent(THREAD_UNKNOWN), stdout_id(THREAD_UNKNOWN), name("unknown")
+ProcessInfo::ProcessInfo(uint32_t tid) :
+    tid(THREAD_UNKNOWN),
+    parent(THREAD_UNKNOWN),
+    stdout_id(THREAD_UNKNOWN),
+    stdin_id(THREAD_UNKNOWN),
+    name("unknown")
 {
-//     PsInfo psInfo;
-//     syscall_set_ps_dump();
-//     while (syscall_read_ps_dump(&psInfo) == 0)
-//     {
-//         if (psInfo.tid == tid) break;
-//     }
-//     _printf("%s You can't use printf, use _printf instead.\n", psInfo.name);
-//     _printf("Because you process is executed from monitor server, so you have no stdout\n at %s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 ProcessInfo::ProcessInfo(const ProcessInfo& pi)

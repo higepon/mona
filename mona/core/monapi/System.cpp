@@ -75,12 +75,16 @@ namespace MonAPI
     }
     uint32_t System::getProcessStdinID()
     {
+        return System::getProcessStdinID(getThreadID());
+    }
+    uint32_t System::getProcessStdinID(uint32_t tid)
+    {
         uint32_t id ;
         if (monapi_name_whereis("/servers/process", id) != M_OK) {
             return NULL;
         }
         MessageInfo msg;
-        if (Message::sendReceive(&msg, id, MSG_PROCESS_GET_PROCESS_STDIO) != M_OK)
+        if (Message::sendReceive(&msg, id, MSG_PROCESS_GET_PROCESS_STDIO, tid) != M_OK)
         {
             return NULL;
         }

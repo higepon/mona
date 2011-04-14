@@ -55,6 +55,7 @@ class System
     static uint32_t getProcessStdoutID();
     static uint32_t getProcessStdoutID(uint32_t tid);
     static uint32_t getProcessStdinID();
+    static uint32_t getProcessStdinID(uint32_t tid);
     static Stream* getStdinStream();
     static Stream* getStdoutStream();
 };
