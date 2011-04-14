@@ -89,7 +89,7 @@ install-mona:
 	mkdir -p $(MONADIR)/include/openssl
 	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
 	do  \
-	(cp $$i $(MONADIR)/include/openssl/$$i; \
+	(cp -pu $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
 
