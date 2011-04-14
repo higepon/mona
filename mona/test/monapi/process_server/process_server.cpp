@@ -23,8 +23,11 @@ static void terminateProcess(uint32_t tid)
     ASSERT_EQ(M_OK, ret);
 }
 
-static const int TEST_STDOUT_HANDLE = 0x12345678;
-static const int TEST_STDIN_HANDLE  = 0x87654321;
+static const int TEST_STDOUT_HANDLE  = 0x12345678;
+static const int TEST_STDIN_HANDLE   = 0x87654321;
+static const int TEST_STDOUT_HANDLE2 = 0x10000000;
+static const int TEST_STDIN_HANDLE2  = 0x20000000;
+
 
 static void test_returnsProcessStdHandle()
 {
@@ -43,10 +46,26 @@ static void test_returnsInvalidStdHandleWhenThreadWasTerminated()
     EXPECT_EQ(THREAD_UNKNOWN, System::getProcessStdinID(tid));
 }
 
+static void test_distinguishesTwoProcessesWhichHaveSameName()
+{
+    uint32_t tid1 = executeProcessWithStdHandle(TEST_STDIN_HANDLE, TEST_STDOUT_HANDLE);
+    uint32_t tid2 = executeProcessWithStdHandle(TEST_STDIN_HANDLE2, TEST_STDOUT_HANDLE2);
+
+    EXPECT_EQ(TEST_STDOUT_HANDLE, System::getProcessStdoutID(tid1));
+    EXPECT_EQ(TEST_STDIN_HANDLE, System::getProcessStdinID(tid1));
+    EXPECT_EQ(TEST_STDOUT_HANDLE2, System::getProcessStdoutID(tid2));
+    EXPECT_EQ(TEST_STDIN_HANDLE2, System::getProcessStdinID(tid2));
+
+    terminateProcess(tid1);
+    terminateProcess(tid2);
+}
+
 int main(int argc, char *argv[])
 {
     test_returnsProcessStdHandle();
     test_returnsInvalidStdHandleWhenThreadWasTerminated();
+
+    test_distinguishesTwoProcessesWhichHaveSameName();
     TEST_RESULTS(process_server);
     return 0;
 }
