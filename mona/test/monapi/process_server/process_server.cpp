@@ -4,14 +4,15 @@
 
 using namespace MonAPI;
 
-static uint32_t executeProcessWithStdout(uint32_t stdoutHandle)
+static uint32_t executeProcessWithStdHandle(uint32_t stdinHandle, uint32_t stdoutHandle)
 {
     uint32_t tid;
-    intptr_t ret = monapi_call_process_execute_file_get_tid("/APPS/TWAIT.EX5",
-                                             MONAPI_TRUE,
-                                             &tid,
-                                             System::getProcessStdinID(),
-                                             stdoutHandle);
+    intptr_t ret = monapi_call_process_execute_file_get_tid(
+        "/APPS/TWAIT.EX5",
+        MONAPI_TRUE,
+        &tid,
+        stdinHandle,
+        stdoutHandle);
     ASSERT_EQ(M_OK, ret);
     return tid;
 }
@@ -22,27 +23,30 @@ static void terminateProcess(uint32_t tid)
     ASSERT_EQ(M_OK, ret);
 }
 
-static void test_returnsProcessStdoutHandle()
+static const int TEST_STDOUT_HANDLE = 0x12345678;
+static const int TEST_STDIN_HANDLE  = 0x87654321;
+
+static void test_returnsProcessStdHandle()
 {
-    const int TEST_STDOUT_HANDLE= 0x12345678;
-    uint32_t tid = executeProcessWithStdout(TEST_STDOUT_HANDLE);;
+    uint32_t tid = executeProcessWithStdHandle(TEST_STDIN_HANDLE, TEST_STDOUT_HANDLE);
     EXPECT_EQ(TEST_STDOUT_HANDLE, System::getProcessStdoutID(tid));
+    EXPECT_EQ(TEST_STDIN_HANDLE, System::getProcessStdinID(tid));
     terminateProcess(tid);
 }
 
-static void test_returnsInvalidStdoutWhenThreadWasTerminated()
+static void test_returnsInvalidStdHandleWhenThreadWasTerminated()
 {
-    const int TEST_STDOUT_HANDLE= 0x12345678;
-    uint32_t tid = executeProcessWithStdout(TEST_STDOUT_HANDLE);;
+    uint32_t tid = executeProcessWithStdHandle(TEST_STDIN_HANDLE, TEST_STDOUT_HANDLE);
     terminateProcess(tid);
     sleep(100);
     EXPECT_EQ(THREAD_UNKNOWN, System::getProcessStdoutID(tid));
+    EXPECT_EQ(THREAD_UNKNOWN, System::getProcessStdinID(tid));
 }
 
 int main(int argc, char *argv[])
 {
-    test_returnsProcessStdoutHandle();
-    test_returnsInvalidStdoutWhenThreadWasTerminated();
+    test_returnsProcessStdHandle();
+    test_returnsInvalidStdHandleWhenThreadWasTerminated();
     TEST_RESULTS(process_server);
     return 0;
 }
