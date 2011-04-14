@@ -84,8 +84,11 @@ public:
 
         in.push_back(VirtBuffer(status, 1));
 
-        intptr_t addBufRet = vq_->addBuf(out, in, (void*)0xdeadcafe);
+        static uintptr_t cookie = 1;
+        cookie++;
+        intptr_t addBufRet = vq_->addBuf(out, in, (void*)cookie);
         if (addBufRet != M_OK) {
+            monapi_warn("addBuf failed");
             return addBufRet;
         }
         vq_->kick();
@@ -98,13 +101,14 @@ public:
         }
 
         int sizeWritten = 0;
-        void* cookie = vq_->getBuf(sizeWritten);
+        void* afterCookie = vq_->getBuf(sizeWritten);
 
         sizeWritten -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
+            monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
-        ASSERT(0xdeadcafe == (uintptr_t)cookie);
+        ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
     }
@@ -194,7 +198,9 @@ private:
 
         in.push_back(VirtBuffer(status, 1));
 
-        intptr_t addBufRet = vq_->addBuf(out, in, (void*)0xdeadbeaf);
+        static uintptr_t cookie = 1;
+        cookie++;
+        intptr_t addBufRet = vq_->addBuf(out, in, (void*)cookie);
         if (addBufRet != M_OK) {
             monapi_warn("addBuf failed %d", addBufRet);
             return addBufRet;
@@ -211,19 +217,18 @@ private:
         __asm__ __volatile__("" : : : "memory");
 
         int sizeRead = 0;
-        void* cookie = vq_->getBuf(sizeRead);
+        void* afterCookie = vq_->getBuf(sizeRead);
 
         sizeRead -= sizeof(*status);
         if (*status != 0) _logprintf("*status=%d", *status);
         while (*status == 0xff) {
             _logprintf("waiting");
         }
-        _logprintf("after *status=%d", *status);
         if (*status != VIRTIO_BLK_S_OK) {
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
         }
-        ASSERT(0xdeadbeaf == (uintptr_t)cookie);
+        ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
