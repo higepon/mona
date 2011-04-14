@@ -101,6 +101,7 @@ private:
         std::string command(System::getMoshPath());
         command += " /LIBS/MOSH/bin/fb-feed-post.sps ";
         command += inputArea_->getText();
+        _logprintf("stdout id of display = [%x]", System::getProcessStdoutID());
         int result = monapi_call_process_execute_file_get_tid(command.c_str(),
                                                               MONAPI_TRUE,
                                                               &tid,
@@ -159,7 +160,7 @@ private:
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 5000) {
+                if (idleTimeMsec_ > 500) {
                     logprintf("timer update feed start\n");
                     updateFeed();
                 }
