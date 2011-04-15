@@ -26,6 +26,13 @@ public:
     ProcessServer()
     {
         initCommonParameters();
+        if (monapi_notify_server_start("INIT") != M_OK) {
+            monapi_fatal("monapi_notify_server_start to INIT failed");
+        }
+
+        if (monapi_name_add("/servers/process") != M_OK) {
+            monapi_fatal("monapi_name_add failed");
+        }
     }
 
 private:
@@ -267,15 +274,6 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
 int main(int argc, char* argv[])
 {
     ProcessServer server;
-
-    if (monapi_notify_server_start("INIT") != M_OK) {
-        exit(-1);
-    }
-
-    if (monapi_name_add("/servers/process") != M_OK) {
-        monapi_fatal("monapi_name_add failed");
-    }
     server.MessageLoop();
-
     return 0;
 }
