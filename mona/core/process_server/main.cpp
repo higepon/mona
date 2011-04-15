@@ -23,13 +23,21 @@ private:
     vector<ProcessInfo> infos_;
 
 public:
-void initCommonParameters()
-{
-    commonParams_ = new SharedMemory(sizeof(CommonParameters));
-    if (commonParams_->map(false) != M_OK) {
-        exit(1);
+    ProcessServer()
+    {
+        initCommonParameters();
     }
-}
+
+private:
+    void initCommonParameters()
+    {
+        commonParams_ = new SharedMemory(sizeof(CommonParameters));
+        if (commonParams_->map(false) != M_OK) {
+            monapi_fatal("initCommonParameters failed");
+        }
+    }
+
+public:
 
 ProcessInfo getProcessInfo(uint32_t tid)
 {
@@ -259,7 +267,6 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
 int main(int argc, char* argv[])
 {
     ProcessServer server;
-    server.initCommonParameters();
 
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
