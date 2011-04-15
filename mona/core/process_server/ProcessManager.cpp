@@ -34,25 +34,6 @@ ProcessInfo getProcessInfo(uint32_t tid)
     return ProcessInfo(tid);
 }
 
-void addProcessInfo(const CString& name)
-{
-    ASSERT(false);
-    syscall_set_ps_dump();
-    PsInfo info;
-
-    while (syscall_read_ps_dump(&info) == 0)
-    {
-        if (name != info.name) continue;
-
-        ProcessInfo pi = getProcessInfo(info.tid);
-        if (pi.tid != THREAD_UNKNOWN) continue;
-
-        pi.tid  = info.tid;
-        pi.name = info.name;
-        infos.push_back(pi);
-    }
-}
-
 intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
 {
     ProcessInfo parent = getProcessInfo(parentTid);
@@ -65,54 +46,6 @@ intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
     return M_OK;
 }
 
-void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
-{
-    ASSERT(false);
-    ProcessInfo pi = getProcessInfo(tid);
-    if (pi.tid != THREAD_UNKNOWN) return;
-
-    syscall_set_ps_dump();
-    PsInfo info, found;
-    found.tid = THREAD_UNKNOWN;
-
-    while (syscall_read_ps_dump(&info) == 0)
-    {
-        if (found.tid == THREAD_UNKNOWN && info.tid == tid) found = info;
-    }
-    if (found.tid == THREAD_UNKNOWN) return;
-    pi.tid    = tid;
-    pi.parent = parent;
-    pi.name   = found.name;
-    pi.path   = path;
-    infos.push_back(pi);
-    notifyProcessCreated(tid, parent, path);
-}
-
-uint32_t addProcessInfo(uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
-{
-    ASSERT(false);
-    uint32_t ret = THREAD_UNKNOWN;
-    syscall_set_ps_dump();
-    PsInfo info;
-
-    while (syscall_read_ps_dump(&info) == 0)
-    {
-        if (ret != THREAD_UNKNOWN || name != info.name) continue;
-
-        ProcessInfo pi = getProcessInfo(info.tid);
-        if (pi.tid != THREAD_UNKNOWN) continue;
-
-        pi.tid    = info.tid;
-        pi.parent = parent;
-        pi.name   = name;
-        pi.path   = path;
-        pi.stdin_id = stdin_id;
-        pi.stdout_id = stdout_id;
-        infos.push_back(pi);
-        ret = info.tid;
-    }
-    return ret;
-}
 
 void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
 {
@@ -195,33 +128,12 @@ bool processHandler(MessageInfo* msg)
 {
     switch (msg->header)
     {
-        case MSG_ADD:
-            ASSERT(false);
-            registerReceiver(msg->arg1);
-            Message::reply(msg);
-            break;
-        case MSG_REMOVE:
-            ASSERT(false);
-            unregisterReceiver(msg->arg1);
-            Message::reply(msg);
-            break;
-        case MSG_PROCESS_GET_PROCESS_INFO:
-        {
-            ASSERT(false);
-            ProcessInfo pi = getProcessInfo(msg->from);
-            Message::reply(msg, pi.parent, pi.stdout_id, pi.path);
-            break;
-        }
         case MSG_PROCESS_GET_PROCESS_STDIO:
         {
             ProcessInfo pi = getProcessInfo(msg->arg1);
             Message::reply(msg, pi.stdin_id, pi.stdout_id);
             break;
         }
-        case MSG_PROCESS_CREATED:
-            ASSERT(false);
-            addProcessInfo(msg->arg1, msg->arg2, msg->str);
-            break;
         case MSG_PROCESS_TERMINATED:
             removeProcessInfo(msg->arg1, msg->arg2);
             break;
