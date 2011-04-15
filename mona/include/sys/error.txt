@@ -27,3 +27,4 @@
 (define-error M_UNKNOWN "unknown error")
 (define-error M_BAD_ARG "bad arguments")
 (define-error M_OBJECT_NOT_FOUND "object not found")
+(define-error M_NOT_FOUND     "not found"  )

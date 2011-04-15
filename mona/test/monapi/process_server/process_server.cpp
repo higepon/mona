@@ -50,6 +50,7 @@ static void test_distinguishesTwoProcessesWhichHaveSameName()
 {
     uint32_t tid1 = executeProcessWithStdHandle(TEST_STDIN_HANDLE, TEST_STDOUT_HANDLE);
     uint32_t tid2 = executeProcessWithStdHandle(TEST_STDIN_HANDLE2, TEST_STDOUT_HANDLE2);
+    logprintf("[tid1=%x tid2=%x]", tid1, tid2);
 
     EXPECT_EQ(TEST_STDOUT_HANDLE, System::getProcessStdoutID(tid1));
     EXPECT_EQ(TEST_STDIN_HANDLE, System::getProcessStdinID(tid1));
@@ -60,12 +61,37 @@ static void test_distinguishesTwoProcessesWhichHaveSameName()
     terminateProcess(tid2);
 }
 
+static void __fastcall subThread(void* arg)
+{
+    uint32_t mainThread = (uint32_t)arg;
+    uint32_t stdinHandle = System::getProcessStdinID();
+    Message::send(mainThread, MSG_STARTED, stdinHandle);
+}
+
+static void test_subThreadInheritsStdHandleFromMainThread()
+{
+    uintptr_t subThreadId = mthread_create_with_arg(subThread, (void*)System::getThreadID());
+
+    for (MessageInfo msg;;) {
+        if (Message::receive(&msg) != 0) {
+            continue;
+        }
+        if (msg.header == MSG_STARTED && msg.from == subThreadId) {
+            uintptr_t mainStdinHandle = System::getProcessStdinID();
+            uintptr_t subStdinHandle = msg.arg1;
+            EXPECT_EQ(mainStdinHandle, subStdinHandle);
+            break;
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     test_returnsProcessStdHandle();
     test_returnsInvalidStdHandleWhenThreadWasTerminated();
 
     test_distinguishesTwoProcessesWhichHaveSameName();
+    test_subThreadInheritsStdHandleFromMainThread();
     TEST_RESULTS(process_server);
     return 0;
 }

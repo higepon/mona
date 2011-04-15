@@ -17,22 +17,22 @@
 #define MONAPI_TRUE   1
 #define MONAPI_FALSE  0
 
-enum
-{
-    ID_MOUSE_SERVER,
-    ID_KEYBOARD_SERVER,
-    ID_FILE_SERVER,
-    ID_GUI_SERVER,
-    ID_ELF_SERVER,
-    ID_PROCESS_SERVER,
-    ID_PE_SERVER,
-    ID_MONITOR_SERVER,
-    ID_SCHEME_SERVER,
-//    ID_SCREEN_SERVER,
-    ID_NET_SERVER,
-    ID_CLIPBOARD_SERVER,
-    ID_NUMBER_OF_SERVERS
-};
+// enum
+// {
+//     ID_MOUSE_SERVER,
+//     ID_KEYBOARD_SERVER,
+//     ID_FILE_SERVER,
+//     ID_GUI_SERVER,
+//     ID_ELF_SERVER,
+//     ID_PROCESS_SERVER,
+//     ID_PE_SERVER,
+//     ID_MONITOR_SERVER,
+//     ID_SCHEME_SERVER,
+// //    ID_SCREEN_SERVER,
+//     ID_NET_SERVER,
+//     ID_CLIPBOARD_SERVER,
+//     ID_NUMBER_OF_SERVERS
+// };
 
 enum FileOpenMode {
     FILE_CREATE   = 0x00000010,
@@ -81,6 +81,7 @@ extern intptr_t monapi_register_to_server(const char* server);
 extern intptr_t monapi_unregister_to_server(const char* server);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 
+extern intptr_t monapi_process_register_thread(uint32_t tid);
 extern intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
 extern intptr_t monapi_file_open(const char* file, intptr_t mode);

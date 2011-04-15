@@ -26,14 +26,17 @@ ProcessInfo getProcessInfo(uint32_t tid)
     int size = infos.size();
     for (int i = 0; i < size; i++)
     {
-//        _logprintf("target tid = %x infos[i].tid=%x\n", tid, infos[i].tid);
-        if (infos[i].tid == tid) return infos[i];
+        if (infos[i].tid == tid) {
+            return infos[i];
+        }
     }
+    // todo tid not required
     return ProcessInfo(tid);
 }
 
 void addProcessInfo(const CString& name)
 {
+    ASSERT(false);
     syscall_set_ps_dump();
     PsInfo info;
 
@@ -50,8 +53,21 @@ void addProcessInfo(const CString& name)
     }
 }
 
+intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
+{
+    ProcessInfo parent = getProcessInfo(parentTid);
+    if (parent.tid == THREAD_UNKNOWN) {
+        return M_NOT_FOUND;
+    }
+    // todo copy constructor
+    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    infos.push_back(ProcessInfo(subThreadTid, parent.tid, parent.name, parent.path, parent.stdin_id, parent.stdin_id));
+    return M_OK;
+}
+
 void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
 {
+    ASSERT(false);
     ProcessInfo pi = getProcessInfo(tid);
     if (pi.tid != THREAD_UNKNOWN) return;
 
@@ -64,7 +80,6 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
         if (found.tid == THREAD_UNKNOWN && info.tid == tid) found = info;
     }
     if (found.tid == THREAD_UNKNOWN) return;
-
     pi.tid    = tid;
     pi.parent = parent;
     pi.name   = found.name;
@@ -75,6 +90,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& path)
 
 uint32_t addProcessInfo(uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
 {
+    ASSERT(false);
     uint32_t ret = THREAD_UNKNOWN;
     syscall_set_ps_dump();
     PsInfo info;
@@ -212,6 +228,14 @@ bool processHandler(MessageInfo* msg)
         case MSG_PROCESS_GET_COMMON_PARAMS:
             Message::reply(msg, commonParams->handle());
             break;
+        case MSG_PROCESS_REGISTER_THREAD:
+        {
+            uint32_t parentTid = msg->from;
+            uint32_t subThreadTid = msg->arg1;
+            intptr_t ret = addProcessInfo(parentTid, subThreadTid);
+            Message::reply(msg, ret);
+            break;
+        }
         default:
             return false;
     }

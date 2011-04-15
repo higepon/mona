@@ -217,4 +217,11 @@
 */
 #define M_OBJECT_NOT_FOUND -5027
 
+/*
+    constant: M_NOT_FOUND
+
+    Indicates not found
+*/
+#define M_NOT_FOUND -5028
+
 #endif

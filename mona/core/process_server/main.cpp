@@ -18,21 +18,13 @@ static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoin
     info.list = option;
     info.observer = observer;
 
-    addProcessInfo(name);
     intptr_t ret = syscall_load_process_image(&info);
-    *tid = addProcessInfo(parent, name, path, stdin_id, stdout_id);
-    if (prompt)
-    {
-        switch(ret)
-        {
-            case 4:
-                  monapi_warn("%s: Shared Memory error1", SVR);
-                  break;
-            case 5:
-                  monapi_warn("%s: Shared Memory error2", SVR);
-                  break;
-        }
+    if (ret != M_OK) {
+        monapi_warn("failed to execute process %s", (const char*)path);
     }
+    *tid = info.tid;
+    _logprintf("[execute process name=%s tid=%x stdout_id =%x stdin_id = %x]", (const char*)name, *tid, stdout_id, stdin_id);
+    addProcessInfo(*tid, parent, name, path, stdin_id, stdout_id);
     return ret;
 }
 
