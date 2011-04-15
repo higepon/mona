@@ -41,7 +41,6 @@ intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
         return M_NOT_FOUND;
     }
     // todo copy constructor
-    _printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     infos.push_back(ProcessInfo(subThreadTid, parent.tid, parent.name, parent.path, parent.stdin_id, parent.stdin_id));
     return M_OK;
 }
@@ -53,7 +52,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
     infos.push_back(pi);
 }
 
-void removeProcessInfo(uint32_t tid, int status /* = -1 */)
+static void removeProcessInfo(uint32_t tid, int status /* = -1 */)
 {
     int size = infos.size();
     for (int i = 0; i < size; i++)
