@@ -17,11 +17,12 @@ using namespace std;
 using namespace MonAPI;
 
 
-static SharedMemory* commonParams = NULL;
-static vector<ProcessInfo> infos;
-static HList<uint32_t> receivers;
-
 class ProcessServer {
+private:
+ SharedMemory* commonParams;
+ vector<ProcessInfo> infos;
+ HList<uint32_t> receivers;
+
 public:
 void initCommonParameters()
 {
