@@ -224,6 +224,20 @@ SharedMemory* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL
     }
 }
 
+intptr_t monapi_process_register_thread(uint32_t tid)
+{
+    uint32_t server;
+    if (monapi_name_whereis("/servers/process", server) != M_OK) {
+        return M_NAME_NOT_FOUND;
+    }
+    MessageInfo msg;
+    intptr_t ret = Message::sendReceive(&msg, server, MSG_PROCESS_REGISTER_THREAD, tid);
+    if (ret != M_OK) {
+        return ret;
+    }
+    return msg.arg2;
+}
+
 intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
     return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);

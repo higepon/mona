@@ -175,7 +175,11 @@ int mthread_create(void (*f)(void))
 
 int mthread_create_with_arg(void __fastcall(*f)(void*), void* arg)
 {
-    return syscall_mthread_create_with_arg(f, arg);
+    uint32_t tid = syscall_mthread_create_with_arg(f, arg);
+    if (monapi_process_register_thread(tid) != M_OK) {
+        monapi_warn("monapi_process_register_thread failed");
+    }
+    return tid;
 }
 
 int mthread_kill(uint32_t id)

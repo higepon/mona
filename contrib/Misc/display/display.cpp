@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
         _printf("syscall_stack_trace_enable failed%d\n", ret);
     }
 
-    uintptr_t updaterId = syscall_mthread_create_with_arg(updaterLauncher, NULL);
+    uintptr_t updaterId = mthread_create_with_arg(updaterLauncher, NULL);
     Display display(updaterId);
     display.run();
     return 0;

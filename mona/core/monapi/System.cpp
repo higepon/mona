@@ -116,7 +116,7 @@ namespace MonAPI
                 _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 outStream = NULL;
             } else {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                _logprintf("%s %s:%d handle=%x\n", __func__, __FILE__, __LINE__);
                 outStream = Stream::FromHandle(handle);
             }
         }
