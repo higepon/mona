@@ -16,7 +16,7 @@
 /*----------------------------------------------------------------------
     Loader
 ----------------------------------------------------------------------*/
-intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list, uint32_t observer)
+intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list, uint32_t observer, uint32_t& tid)
 {
     ASSERT(size < MAX_IMAGE_SIZE);
 
@@ -52,6 +52,7 @@ intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const 
     // Ugly, workaround.
     // We want to mark process_server as observer.
     thread->observers.add(g_currentThread->thread->id);
+    tid = thread->id;
     g_scheduler->Join(thread);
     exit_kernel_lock_mode();
     return M_OK;
