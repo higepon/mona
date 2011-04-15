@@ -248,7 +248,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
     return result;
 }
 
- void MessageLoop()
+ void service()
 {
     for (MessageInfo msg;;)
     {
@@ -274,6 +274,6 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
 int main(int argc, char* argv[])
 {
     ProcessServer server;
-    server.MessageLoop();
+    server.service();
     return 0;
 }
