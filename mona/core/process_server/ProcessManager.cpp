@@ -61,68 +61,9 @@ void removeProcessInfo(uint32_t tid, int status /* = -1 */)
         if (infos[i].tid != tid) continue;
 
         infos.erase(&infos[i]);
-        notifyProcessTerminated(tid, status);
         return;
     }
 }
-
-static void registerReceiver(uint32_t tid)
-{
-    int size = receivers.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (receivers[i] == tid) return;
-    }
-    receivers.add(tid);
-}
-
-static void unregisterReceiver(uint32_t tid)
-{
-    int size = receivers.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (receivers[i] != tid) continue;
-        receivers.removeAt(i);
-        return;
-    }
-}
-
-void notifyProcessCreated(uint32_t tid, uint32_t parent, const CString& path)
-{
-    int i = 0;
-    while (i < receivers.size())
-    {
-        if (Message::send(receivers[i], MSG_PROCESS_CREATED, tid, parent, 0, path) == M_OK)
-        {
-            i++;
-        }
-        else
-        {
-            _printf("%s: can not connect to %d\n", SVR, receivers[i]);
-            removeProcessInfo(receivers[i]);
-            receivers.removeAt(i);
-        }
-    }
-}
-
-void notifyProcessTerminated(uint32_t tid, int status)
-{
-    int i = 0;
-    while (i < receivers.size())
-    {
-        if (Message::send(receivers[i], MSG_PROCESS_TERMINATED, tid, status) == M_OK)
-        {
-            i++;
-        }
-        else
-        {
-            _printf("%s: can not connect to %d\n", SVR, receivers[i]);
-            removeProcessInfo(receivers[i]);
-            receivers.removeAt(i);
-        }
-    }
-}
-
 
 bool processHandler(MessageInfo* msg)
 {
