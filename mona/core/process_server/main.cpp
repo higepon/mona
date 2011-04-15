@@ -19,26 +19,25 @@ using namespace MonAPI;
 
 class ProcessServer {
 private:
- SharedMemory* commonParams;
- vector<ProcessInfo> infos;
- HList<uint32_t> receivers;
+    SharedMemory* commonParams_;
+    vector<ProcessInfo> infos_;
 
 public:
 void initCommonParameters()
 {
-    commonParams = new SharedMemory(sizeof(CommonParameters));
-    if (commonParams->map(false) != M_OK) {
+    commonParams_ = new SharedMemory(sizeof(CommonParameters));
+    if (commonParams_->map(false) != M_OK) {
         exit(1);
     }
 }
 
 ProcessInfo getProcessInfo(uint32_t tid)
 {
-    int size = infos.size();
+    int size = infos_.size();
     for (int i = 0; i < size; i++)
     {
-        if (infos[i].tid == tid) {
-            return infos[i];
+        if (infos_[i].tid == tid) {
+            return infos_[i];
         }
     }
     // todo tid not required
@@ -52,7 +51,7 @@ intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
         return M_NOT_FOUND;
     }
     // todo copy constructor
-    infos.push_back(ProcessInfo(subThreadTid, parent.tid, parent.name, parent.path, parent.stdin_id, parent.stdin_id));
+    infos_.push_back(ProcessInfo(subThreadTid, parent.tid, parent.name, parent.path, parent.stdin_id, parent.stdin_id));
     return M_OK;
 }
 
@@ -60,17 +59,17 @@ intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
 void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
 {
     ProcessInfo pi(tid, parent, name, path, stdin_id, stdout_id);
-    infos.push_back(pi);
+    infos_.push_back(pi);
 }
 
  void removeProcessInfo(uint32_t tid, int status /* = -1 */)
 {
-    int size = infos.size();
+    int size = infos_.size();
     for (int i = 0; i < size; i++)
     {
-        if (infos[i].tid != tid) continue;
+        if (infos_[i].tid != tid) continue;
 
-        infos.erase(&infos[i]);
+        infos_.erase(&infos_[i]);
         return;
     }
 }
@@ -89,7 +88,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
             removeProcessInfo(msg->arg1, msg->arg2);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:
-            Message::reply(msg, commonParams->handle());
+            Message::reply(msg, commonParams_->handle());
             break;
         case MSG_PROCESS_REGISTER_THREAD:
         {
