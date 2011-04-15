@@ -21,6 +21,8 @@ static SharedMemory* commonParams = NULL;
 static vector<ProcessInfo> infos;
 static HList<uint32_t> receivers;
 
+class ProcessServer {
+public:
 void initCommonParameters()
 {
     commonParams = new SharedMemory(sizeof(CommonParameters));
@@ -60,7 +62,7 @@ void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CS
     infos.push_back(pi);
 }
 
-static void removeProcessInfo(uint32_t tid, int status /* = -1 */)
+ void removeProcessInfo(uint32_t tid, int status /* = -1 */)
 {
     int size = infos.size();
     for (int i = 0; i < size; i++)
@@ -72,7 +74,7 @@ static void removeProcessInfo(uint32_t tid, int status /* = -1 */)
     }
 }
 
-bool processHandler(MessageInfo* msg)
+ bool processHandler(MessageInfo* msg)
 {
     switch (msg->header)
     {
@@ -103,7 +105,7 @@ bool processHandler(MessageInfo* msg)
 }
 
 
-static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
+ int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
 {
     LoadProcessInfo info;
     info.image = shm.data();
@@ -123,7 +125,7 @@ static int ExecuteProcess(uint32_t parent, SharedMemory& shm, uint32_t entryPoin
     return ret;
 }
 
-static CString GetFileName(const CString& path)
+ CString GetFileName(const CString& path)
 {
     int p = path.lastIndexOf('/');
     if (p < 0) return path;
@@ -132,7 +134,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
+ int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
 {
     /* list initilize */
     CommandOption list;
@@ -231,7 +233,7 @@ static int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt,
     return result;
 }
 
-static void MessageLoop()
+ void MessageLoop()
 {
     for (MessageInfo msg;;)
     {
@@ -252,10 +254,12 @@ static void MessageLoop()
         }
     }
 }
+};
 
 int main(int argc, char* argv[])
 {
-    initCommonParameters();
+    ProcessServer server;
+    server.initCommonParameters();
 
     if (monapi_notify_server_start("INIT") != M_OK) {
         exit(-1);
@@ -264,7 +268,7 @@ int main(int argc, char* argv[])
     if (monapi_name_add("/servers/process") != M_OK) {
         monapi_fatal("monapi_name_add failed");
     }
-    MessageLoop();
+    server.MessageLoop();
 
     return 0;
 }
