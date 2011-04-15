@@ -68,6 +68,8 @@ const char* monapi_error_string(int error)
         return "bad arguments";
     case M_OBJECT_NOT_FOUND:
         return "object not found";
+    case M_NOT_FOUND:
+        return "not found";
     default:
      _logprintf("unknown error %d\n", error);      return "unknown error see log";
     }
