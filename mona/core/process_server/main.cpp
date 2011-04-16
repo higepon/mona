@@ -207,7 +207,6 @@ private:
         return ProcessInfo();
     }
 
-
     void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
     {
         ProcessInfo pi(tid, parent, name, path, stdin_id, stdout_id);
@@ -215,37 +214,6 @@ private:
     }
 
 public:
-
-
-    bool processHandler(MessageInfo* msg)
-        {
-            switch (msg->header)
-            {
-            case MSG_PROCESS_GET_PROCESS_STDIO:
-            {
-                ProcessInfo pi = getProcessInfo(msg->arg1);
-                Message::reply(msg, pi.stdin_id, pi.stdout_id);
-                break;
-            }
-            case MSG_PROCESS_TERMINATED:
-                removeProcessInfo(msg->arg1);
-                break;
-            case MSG_PROCESS_GET_COMMON_PARAMS:
-                Message::reply(msg, commonParams_->handle());
-                break;
-            case MSG_PROCESS_REGISTER_THREAD:
-            {
-                uint32_t parentTid = msg->from;
-                uint32_t subThreadTid = msg->arg1;
-                intptr_t ret = addProcessInfo(parentTid, subThreadTid);
-                Message::reply(msg, ret);
-                break;
-            }
-            default:
-                return false;
-            }
-            return true;
-        }
 
     int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
         {
@@ -277,26 +245,41 @@ public:
             return ret;
         }
     void service()
-        {
-            for (MessageInfo msg;;)
-            {
-                if (Message::receive(&msg) != 0) continue;
+    {
+        for (MessageInfo msg;;) {
+            if (Message::receive(&msg) != 0) continue;
 
-                switch (msg.header)
-                {
-                case MSG_PROCESS_EXECUTE_FILE:
-                {
-                    uint32_t tid = 0;
-                    int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid, msg.from);
-                    Message::reply(&msg, result, tid);
-                    break;
-                }
-                default:
-                    if (processHandler(&msg)) break;
-                    break;
-                }
+            switch (msg.header) {
+            case MSG_PROCESS_EXECUTE_FILE:
+            {
+                uint32_t tid = 0;
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid, msg.from);
+                Message::reply(&msg, result, tid);
+                break;
+            }
+            case MSG_PROCESS_GET_PROCESS_STDIO:
+            {
+                ProcessInfo pi = getProcessInfo(msg.arg1);
+                Message::reply(&msg, pi.stdin_id, pi.stdout_id);
+                break;
+            }
+            case MSG_PROCESS_TERMINATED:
+                removeProcessInfo(msg.arg1);
+                break;
+            case MSG_PROCESS_GET_COMMON_PARAMS:
+                Message::reply(&msg, commonParams_->handle());
+                break;
+            case MSG_PROCESS_REGISTER_THREAD:
+            {
+                uint32_t parentTid = msg.from;
+                uint32_t subThreadTid = msg.arg1;
+                intptr_t ret = addProcessInfo(parentTid, subThreadTid);
+                Message::reply(&msg, ret);
+                break;
+            }
             }
         }
+    }
 };
 
 int main(int argc, char* argv[])
