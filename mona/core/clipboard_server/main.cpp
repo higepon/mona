@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
-    syscall_mthread_create_with_arg(listenThread, NULL);
+    monapi_thread_create_with_arg(listenThread, NULL);
 
     if (monapi_name_add("/servers/clipboard") != M_OK) {
         monapi_fatal("monapi_name_add failed");

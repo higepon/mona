@@ -44,7 +44,7 @@ static void __fastcall infiniteThread(void* arg)
 
 void testThreadKill()
 {
-    uintptr_t tid = syscall_mthread_create_with_arg(infiniteThread, NULL);
+    uintptr_t tid = monapi_thread_create_with_arg(infiniteThread, NULL);
     EXPECT_EQ(M_OK, Message::send(tid, MSG_SEND_TEST));
     EXPECT_EQ(M_OK, syscall_mthread_kill(tid));
     SKIP(EXPECT_EQ(M_BAD_THREAD_ID, Message::send(tid, MSG_SEND_TEST)));

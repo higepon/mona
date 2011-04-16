@@ -90,7 +90,7 @@ void timer_init(void)
     }
 
     const int INTERVAL_MSEC = 10;
-    syscall_mthread_create_with_arg(timerThread, (void*)INTERVAL_MSEC);
+    monapi_thread_create_with_arg(timerThread, (void*)INTERVAL_MSEC);
 }
 
 

@@ -183,7 +183,7 @@ static void __fastcall messageLoop(void* arg)
             AcceptArg* arg = new AcceptArg;
             arg->sockfd = msg.arg1;
             arg->msg = msg;
-            uintptr_t waitId = syscall_mthread_create_with_arg(acceptThread, arg);
+            uintptr_t waitId = monapi_thread_create_with_arg(acceptThread, arg);
             if (Message::reply(&msg, waitId) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }

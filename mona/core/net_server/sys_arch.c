@@ -201,7 +201,7 @@ sys_thread_new(char *name, void __fastcall (* function)(void *arg), void *arg, i
   uintptr_t tmp;
   struct sys_thread *st = NULL;
 
-  tmp = syscall_mthread_create_with_arg(function, arg);
+  tmp = monapi_thread_create_with_arg(function, arg);
 
   st = introduce_thread(tmp);
 

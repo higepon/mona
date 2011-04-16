@@ -64,7 +64,7 @@ void testSendBuffer()
 {
     const uintptr_t MAX_TEST_BUFFER_SIZE = MESSAGE_INFO_MAX_STR_LENGTH * 2 + 1;
     uintptr_t mainThread = System::getThreadID();
-    uintptr_t tid = syscall_mthread_create_with_arg(sendThread, NULL);
+    uintptr_t tid = monapi_thread_create_with_arg(sendThread, NULL);
 
     for (uintptr_t testBufferSize = 0; testBufferSize < MAX_TEST_BUFFER_SIZE; testBufferSize++) {
         TestInfo testInfo(mainThread, testBufferSize);
@@ -74,7 +74,7 @@ void testSendBuffer()
 
 void testMessageOverflow()
 {
-    uintptr_t tid = syscall_mthread_create_with_arg(receiverThread, NULL);
+    uintptr_t tid = monapi_thread_create_with_arg(receiverThread, NULL);
     int i;
     for (i = 0; i < MAX_MESSAGES + 1; i++) {
         if (i == MAX_MESSAGES) {

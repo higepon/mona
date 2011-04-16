@@ -36,7 +36,7 @@ static void __fastcall task(void* arg)
 static void test_syscall_many_threads()
 {
     for (int i = 0; i < 20; i++) {
-        syscall_mthread_create_with_arg(task, NULL);
+        monapi_thread_create_with_arg(task, NULL);
     }
 }
 

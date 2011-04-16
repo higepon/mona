@@ -97,7 +97,7 @@ end:
 
 int cui_main(int argc, char *argv[])
 {
-    uint32_t tid = syscall_mthread_create(inputLoop);
+    uint32_t tid = monapi_thread_create(inputLoop);
     struct audio_data_format defaultFormat = {0, 2, 16, 4400};
     Audio* audio = new Audio(&defaultFormat, AUDIO_OUTPUT);
     if (-1 == audio->start())

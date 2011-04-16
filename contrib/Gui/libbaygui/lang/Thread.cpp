@@ -49,7 +49,7 @@ namespace baygui {
 
 	void Thread::start()
 	{
-		dword thread_id = syscall_mthread_create(ExecRun);
+		dword thread_id = monapi_thread_create(ExecRun);
 // comment out by higepon
 //		syscall_mthread_join(thread_id);
 		// MSG_STARTEDが返ってくるのを待つ

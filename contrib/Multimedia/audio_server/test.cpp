@@ -335,7 +335,7 @@
 
 // //     driver->driver_start(dev);
 // //     puts("Start");
-// // //  while(is_stopped==0) syscall_mthread_yield_message();
+// // //  while(is_stopped==0) monapi_thread_yield_message();
 // //     while(1)
 // //     {
 // //         int isng = OK;

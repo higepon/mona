@@ -95,7 +95,7 @@ void testSyscallMutex()
     EXPECT_EQ(M_OK, syscall_mutex_unlock(&mutexid));
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(mutexSubThread, (void*)mainThread);
+    monapi_thread_create_with_arg(mutexSubThread, (void*)mainThread);
 
     // wait sub thread starting up
     uintptr_t tid = waitSubThread();
@@ -160,7 +160,7 @@ void testClassMutex()
     EXPECT_EQ(M_OK, mutex->unlock());
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(mutexClassSubThread, (void*)mainThread);
+    monapi_thread_create_with_arg(mutexClassSubThread, (void*)mainThread);
 
     // wait sub thread starting up
     uintptr_t tid = waitSubThread();

@@ -73,7 +73,7 @@ void testCondition()
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread, (void*)mainThread);
 
     sleep(50);
 
@@ -120,8 +120,8 @@ void testCondition2()
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
-    syscall_mthread_create_with_arg(conditionSubThread, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread, (void*)mainThread);
 
 
     // wait sub thread starting up
@@ -187,7 +187,7 @@ void testCondition3()
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(conditionSubThread3, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread3, (void*)mainThread);
 
     sleep(20);
 
@@ -258,7 +258,7 @@ void testCondition4()
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(conditionSubThread4, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread4, (void*)mainThread);
 
     // wait sub thread starting up
     waitSubThread();
@@ -328,7 +328,7 @@ void testCondition5()
     ASSERT_TRUE(mut != NULL);
 
     uintptr_t mainThread = System::getThreadID();
-    syscall_mthread_create_with_arg(conditionSubThread5, (void*)mainThread);
+    monapi_thread_create_with_arg(conditionSubThread5, (void*)mainThread);
 
     sleep(20);
 
