@@ -179,17 +179,15 @@ private:
 public:
 
     ProcessInfo getProcessInfo(uint32_t tid)
-        {
-            int size = infos_.size();
-            for (int i = 0; i < size; i++)
-            {
-                if (infos_[i].tid == tid) {
-                    return infos_[i];
-                }
+    {
+        for (vector<ProcessInfo>::const_iterator it = infos_.begin(); it != infos_.end(); ++it) {
+            if ((*it).tid == tid) {
+                return *it;
             }
-            // todo tid not required
-            return ProcessInfo(tid);
         }
+        // todo tid not required
+        return ProcessInfo(tid);
+    }
 
     intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
         {
