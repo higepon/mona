@@ -189,15 +189,14 @@ public:
     }
 
     intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
-        {
-            ProcessInfo parent = getProcessInfo(parentTid);
-            if (parent.tid == THREAD_UNKNOWN) {
-                return M_NOT_FOUND;
-            }
-            // todo copy constructor
-            infos_.push_back(ProcessInfo(subThreadTid, parent.tid, parent.name, parent.path, parent.stdin_id, parent.stdin_id));
-            return M_OK;
+    {
+        ProcessInfo parent = getProcessInfo(parentTid);
+        if (parent.tid == THREAD_UNKNOWN) {
+            return M_NOT_FOUND;
         }
+        infos_.push_back(ProcessInfo(subThreadTid, parent));
+        return M_OK;
+    }
 
 
     void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
