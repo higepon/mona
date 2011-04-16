@@ -2,7 +2,7 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET  = PROCESS
-SOURCES = main.cpp ProcessManager.cpp ProcessInfo.cpp
+SOURCES = main.cpp ProcessInfo.cpp
 INSTDIR = $(BINDIR)
 
 ADDLINK    = -lmonalibc
