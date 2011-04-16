@@ -47,8 +47,9 @@ public:
             return path.substring(p, path.getLength() - p);
         }
 
-    int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
+    int ExecuteFile(uint32_t parent, const CString& commandLine, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
         {
+            bool prompt = false; /* todo */
             /* list initilize */
             CommandOption list;
             list.next = NULL;
@@ -91,7 +92,7 @@ public:
                 if (monapi_name_whereis(svr_id, tid) != M_OK) {
                     monapi_fatal("server not found");
                 }
-                if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path) != M_OK) {
+                if (Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, MONAPI_TRUE /* TODO */, 0, 0, path) != M_OK) {
                     _printf("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
@@ -215,9 +216,9 @@ private:
 
 public:
 
-    int ExecuteFile(uint32_t parent, const CString& commandLine, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
+    int ExecuteFile(uint32_t parent, const CString& commandLine, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
         {
-            intptr_t ret = executer_.ExecuteFile(parent, commandLine, prompt, stdin_id, stdout_id, tid, observer);
+            intptr_t ret = executer_.ExecuteFile(parent, commandLine, stdin_id, stdout_id, tid, observer);
             if (ret == M_OK) {
                 CString path;
                 _A<CString> args = commandLine.split(' ');
@@ -253,7 +254,7 @@ public:
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
-                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, msg.arg3, &tid, msg.from);
+                int result = ExecuteFile(msg.from, msg.str, msg.arg2, msg.arg3, &tid, msg.from);
                 Message::reply(&msg, result, tid);
                 break;
             }
