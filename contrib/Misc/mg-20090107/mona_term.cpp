@@ -252,7 +252,7 @@ void mona_frame_stop(uint32_t tid)
 uint32_t mona_frame_init()
 {
     uint32_t parentTid = System::getThreadID();
-    uint32_t tid = mthread_create_with_arg(frameThread, (void*)parentTid);
+    uint32_t tid = monapi_thread_create_with_arg(frameThread, (void*)parentTid);
     return tid;
 }
 

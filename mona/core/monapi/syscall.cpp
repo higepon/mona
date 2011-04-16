@@ -167,18 +167,18 @@ int exit(int error)
     return syscall_kill();
 }
 
-int mthread_create(void (*f)(void))
+uintptr_t monapi_thread_create(void (*f)(void))
 {
-    uint32_t tid = syscall_mthread_create(f);
+    uintptr_t tid = syscall_mthread_create(f);
     if (monapi_process_register_thread(tid) != M_OK) {
         monapi_warn("monapi_process_register_thread failed");
     }
     return tid;
 }
 
-int mthread_create_with_arg(void __fastcall(*f)(void*), void* arg)
+uintptr_t monapi_thread_create_with_arg(void __fastcall(*f)(void*), void* arg)
 {
-    uint32_t tid = syscall_mthread_create_with_arg(f, arg);
+    uintptr_t tid = syscall_mthread_create_with_arg(f, arg);
     if (monapi_process_register_thread(tid) != M_OK) {
         monapi_warn("monapi_process_register_thread failed");
     }

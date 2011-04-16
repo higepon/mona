@@ -16,7 +16,7 @@ const string GUIPlayer::MUSIC_DIR = "/MUSIC";
 GUIPlayer::GUIPlayer() : PlayFrame(NULL), command(COMMAND_NONE)
 {
     initComponents();
-    tid = mthread_create_with_arg(wrapperPlayLoop, this);
+    tid = monapi_thread_create_with_arg(wrapperPlayLoop, this);
     setBackground(BACKGROUND_COLOR);
 }
 

@@ -40,7 +40,7 @@ Thread::~Thread()
 
 void Thread::start()
 {
-    threadId_ = mthread_create_with_arg(runThread, arg_);
+    threadId_ = monapi_thread_create_with_arg(runThread, arg_);
     // wait for MSG_STARTED message
     MessageInfo msg, src;
     src.header = MSG_STARTED;

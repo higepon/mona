@@ -70,7 +70,7 @@ static void __fastcall subThread(void* arg)
 
 static void test_subThreadInheritsStdHandleFromMainThread()
 {
-    uintptr_t subThreadId = mthread_create_with_arg(subThread, (void*)System::getThreadID());
+    uintptr_t subThreadId = monapi_thread_create_with_arg(subThread, (void*)System::getThreadID());
 
     for (MessageInfo msg;;) {
         if (Message::receive(&msg) != 0) {
