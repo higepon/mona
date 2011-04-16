@@ -419,7 +419,6 @@ intptr_t monapi_file_delete(const char* file)
 
 intptr_t monapi_file_delete_directory(const char* file)
 {
-    _logprintf("delete directory <%s>", file);
     uint32_t tid;
     if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;

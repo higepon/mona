@@ -46,7 +46,6 @@ class ProcessExecuter {
                 monapi_warn("failed to execute process %s", (const char*)path);
             }
             *tid = info.tid;
-            _logprintf("[execute process name=%s tid=%x stdout_id =%x stdin_id = %x]", (const char*)name, *tid, stdout_id, stdin_id);
 
             return ret;
         }

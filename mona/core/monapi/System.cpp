@@ -113,21 +113,17 @@ namespace MonAPI
         if (outStream == NULL) {
             uint32_t handle = System::getProcessStdoutID();
             if (handle == THREAD_UNKNOWN) {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 outStream = NULL;
             } else {
-                _logprintf("%s %s:%d handle=%x\n", __func__, __FILE__, __LINE__);
                 outStream = Stream::FromHandle(handle);
             }
         }
 
         if (outStream == NULL) {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         } else if (outStream->getLastError() == M_OK) {
             return outStream;
         } else {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             return NULL;
         }
     }

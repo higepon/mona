@@ -47,7 +47,8 @@ static void __fastcall nameServer(void* arg)
 int main(int argc, char* argv[])
 {
     // Currently name server is running on file server for dependency problem.
-    monapi_thread_create_with_arg(nameServer, NULL);
+    // Don't use monapi_thread_create, not to register the thread to process server.
+    syscall_mthread_create_with_arg(nameServer, NULL);
     while (!isNameServerStarted );
 
     if (monapi_name_add("/servers/file") != M_OK) {
