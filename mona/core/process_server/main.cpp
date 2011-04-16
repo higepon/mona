@@ -185,8 +185,7 @@ public:
                 return *it;
             }
         }
-        // todo tid not required
-        return ProcessInfo(tid);
+        return ProcessInfo();
     }
 
     intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)

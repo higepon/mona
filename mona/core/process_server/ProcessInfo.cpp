@@ -3,12 +3,13 @@
 
 using namespace MonAPI;
 
-ProcessInfo::ProcessInfo(uint32_t tid) :
+ProcessInfo::ProcessInfo() :
     tid(THREAD_UNKNOWN),
     parent(THREAD_UNKNOWN),
-    stdout_id(THREAD_UNKNOWN),
+    name("unknown"),
+    path("unknown"),
     stdin_id(THREAD_UNKNOWN),
-    name("unknown")
+    stdout_id(THREAD_UNKNOWN)
 {
 }
 
