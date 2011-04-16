@@ -214,29 +214,44 @@ private:
         infos_.push_back(pi);
     }
 
-public:
+    CString GetFileNameFromPath(const CString& path)
+    {
+        int p = path.lastIndexOf('/');
+        if (p < 0) return path;
+        p++;
+        return path.substring(p, path.getLength() - p);
+    }
+
+    CString GetPathFromCommandLins(const CString& commandLine)
+    {
+        CString path;
+        _A<CString> args = commandLine.split(' ');
+        FOREACH (CString, arg, args)
+        {
+            if (arg == NULL) {
+                continue;
+            }
+            if (path == NULL) {
+                path = arg.toUpper();
+                break;
+            }
+        }
+        END_FOREACH
+        return NULL;
+    }
 
     int ExecuteFile(uint32_t parent, const CString& commandLine, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
-        {
-            intptr_t ret = executer_.ExecuteFile(parent, commandLine, stdin_id, stdout_id, tid, observer);
-            if (ret == M_OK) {
-                CString path;
-                _A<CString> args = commandLine.split(' ');
-                FOREACH (CString, arg, args)
-                {
-                    if (arg == NULL) continue;
-
-                    if (path == NULL)
-                    {
-                        path = arg.toUpper();
-                        continue;
-                    }
-                }
-                END_FOREACH
-                addProcessInfo(*tid, parent, executer_.GetFileName(path), path, stdin_id, stdout_id);
-            }
-            return ret;
+    {
+        intptr_t ret = executer_.ExecuteFile(parent, commandLine, stdin_id, stdout_id, tid, observer);
+        if (ret == M_OK) {
+            CString path = GetPathFromCommandLins(commandLine);
+            addProcessInfo(*tid, parent, GetFileNameFromPath(path), path, stdin_id, stdout_id);
         }
+        return ret;
+    }
+
+public:
+
     void service()
     {
         for (MessageInfo msg;;) {
