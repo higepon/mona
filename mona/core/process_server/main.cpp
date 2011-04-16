@@ -157,16 +157,16 @@ private:
 
 public:
     ProcessServer()
-        {
-            initCommonParameters();
-            if (monapi_notify_server_start("INIT") != M_OK) {
-                monapi_fatal("monapi_notify_server_start to INIT failed");
-            }
-
-            if (monapi_name_add("/servers/process") != M_OK) {
-                monapi_fatal("monapi_name_add failed");
-            }
+    {
+        initCommonParameters();
+        if (monapi_notify_server_start("INIT") != M_OK) {
+            monapi_fatal("monapi_notify_server_start to INIT failed");
         }
+
+        if (monapi_name_add("/servers/process") != M_OK) {
+            monapi_fatal("monapi_name_add failed");
+        }
+    }
 
 private:
     void initCommonParameters()
