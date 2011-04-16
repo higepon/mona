@@ -231,14 +231,6 @@ public:
                         path = arg.toUpper();
                         continue;
                     }
-                    CommandOption list;
-                    list.next = NULL;
-
-                    CommandOption* option = NULL;
-                    option = new CommandOption;
-                    strncpy(option->str, arg, sizeof(option->str));
-                    option->next = list.next;
-                    list.next = option;
                 }
                 END_FOREACH
                 addProcessInfo(*tid, parent, executer_.GetFileName(path), path, stdin_id, stdout_id);
