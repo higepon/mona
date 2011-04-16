@@ -176,16 +176,15 @@ private:
             }
         }
 
-public:
-
-    ProcessInfo getProcessInfo(uint32_t tid)
+    void removeProcessInfo(uint32_t tid)
     {
-        for (vector<ProcessInfo>::const_iterator it = infos_.begin(); it != infos_.end(); ++it) {
+        for (vector<ProcessInfo>::iterator it = infos_.begin(); it != infos_.end(); ++it) {
             if ((*it).tid == tid) {
-                return *it;
+                infos_.erase(it);
+                return ;
             }
         }
-        return ProcessInfo();
+        ASSERT(false);
     }
 
     intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
@@ -198,24 +197,25 @@ public:
         return M_OK;
     }
 
-
-    void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
-        {
-            ProcessInfo pi(tid, parent, name, path, stdin_id, stdout_id);
-            infos_.push_back(pi);
-        }
-
-    void removeProcessInfo(uint32_t tid, int status /* = -1 */)
-        {
-            int size = infos_.size();
-            for (int i = 0; i < size; i++)
-            {
-                if (infos_[i].tid != tid) continue;
-
-                infos_.erase(&infos_[i]);
-                return;
+    ProcessInfo getProcessInfo(uint32_t tid)
+    {
+        for (vector<ProcessInfo>::const_iterator it = infos_.begin(); it != infos_.end(); ++it) {
+            if ((*it).tid == tid) {
+                return *it;
             }
         }
+        return ProcessInfo();
+    }
+
+
+    void addProcessInfo(uint32_t tid, uint32_t parent, const CString& name, const CString& path, uint32_t stdin_id, uint32_t stdout_id)
+    {
+        ProcessInfo pi(tid, parent, name, path, stdin_id, stdout_id);
+        infos_.push_back(pi);
+    }
+
+public:
+
 
     bool processHandler(MessageInfo* msg)
         {
@@ -228,7 +228,7 @@ public:
                 break;
             }
             case MSG_PROCESS_TERMINATED:
-                removeProcessInfo(msg->arg1, msg->arg2);
+                removeProcessInfo(msg->arg1);
                 break;
             case MSG_PROCESS_GET_COMMON_PARAMS:
                 Message::reply(msg, commonParams_->handle());
