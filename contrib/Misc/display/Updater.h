@@ -47,7 +47,7 @@ public:
                 if (ret != M_OK) {
                     monapi_warn("mosh abnormal exit");
                 }
-                ret = MonAPI::Message::send(msg.from, ret);
+                ret = MonAPI::Message::send(msg.from, MSG_OK, ret);
                 if (ret != M_OK) {
                     monapi_fatal("MSG_UPDATE send failed");
                 }
