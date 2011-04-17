@@ -262,7 +262,7 @@ void* malloc(unsigned long size) {
     enterGuard();
     void* ret = mspace_malloc(g_msp,size);
     leaveGuard();
-    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    if (ret == 0) monapi_warn("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
@@ -270,7 +270,7 @@ void* calloc(unsigned long n, unsigned long s) {
     enterGuard();
     void* ret =  mspace_calloc(g_msp,n,s);
     leaveGuard();
-    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    if (ret == 0) monapi_warn("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 
@@ -278,7 +278,7 @@ void* realloc(void* address, unsigned long size) {
     enterGuard();
     void* ret = mspace_realloc(g_msp, address, size);
     leaveGuard();
-    if (ret == 0) _printf("monapi warning %s return NULL\n", __func__);
+    if (ret == 0) monapi_warn("monapi warning %s return NULL\n", __func__);
     return ret;
 }
 

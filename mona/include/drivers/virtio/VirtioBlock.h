@@ -75,7 +75,7 @@ public:
         out.push_back(VirtBuffer(hdr, sizeof(struct virtio_blk_outhdr)));
 
         std::vector<VirtBuffer> in;
-        uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
+        volatile uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
         *status = 0xff;
 
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
@@ -103,6 +103,10 @@ public:
         int sizeWritten = 0;
         void* afterCookie = vq_->getBuf(sizeWritten);
 
+        if (*status != 0) _logprintf("[write]*status=%d", *status);
+        while (*status == 0xff) {
+            _logprintf("waiting");
+        }
         sizeWritten -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
             monapi_warn("write error=%d", *status);
