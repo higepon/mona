@@ -21,10 +21,9 @@ static void wait()
         }
     }
 }
-
+const int ABNORMAL_STATUS = 13;
 int main(int argc, char *argv[])
 {
     wait();
-    _logprintf("before die");
-    return 0;
+    exit(ABNORMAL_STATUS);
 }

@@ -85,6 +85,13 @@ static void test_subThreadInheritsStdHandleFromMainThread()
     }
 }
 
+static void test_notifiesExitStatusToParent()
+{
+    uint32_t tid = executeProcessWithStdHandle(TEST_STDIN_HANDLE, TEST_STDOUT_HANDLE);
+    terminateProcess(tid);
+    EXPECT_EQ(ABNORMAL_STATUS, monapi_process_wait_terminated(tid));
+}
+
 int main(int argc, char *argv[])
 {
     test_returnsProcessStdHandle();
@@ -92,6 +99,7 @@ int main(int argc, char *argv[])
 
     test_distinguishesTwoProcessesWhichHaveSameName();
     test_subThreadInheritsStdHandleFromMainThread();
+    test_notifiesExitStatusToParent();
     TEST_RESULTS(process_server);
     return 0;
 }
