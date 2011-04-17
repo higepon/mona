@@ -56,6 +56,7 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
+        _logprintf("sector=%d sizeToWrite=%d\n", (int)sector, (int)sizeToWrite);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -100,6 +101,8 @@ public:
             vdev_->waitInterrupt();
         }
 
+        memoryBarrier();
+
         int sizeWritten = 0;
         void* afterCookie = vq_->getBuf(sizeWritten);
 
@@ -119,6 +122,7 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+        _logprintf("sector=%d sizeToRead=%d\n", (int)sector, (int)sizeToRead);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
 
         int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
@@ -168,6 +172,11 @@ public:
     }
 
 private:
+    void memoryBarrier()
+    {
+
+    }
+
     int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
         // Possible enhancement
@@ -218,7 +227,7 @@ private:
             vdev_->waitInterrupt();
         }
 
-        __asm__ __volatile__("" : : : "memory");
+        memoryBarrier();
 
         int sizeRead = 0;
         void* afterCookie = vq_->getBuf(sizeRead);
