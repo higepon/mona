@@ -43,8 +43,11 @@ public:
             {
             case MSG_UPDATE:
             {
-                update();
-                int ret = MonAPI::Message::send(msg.from, MSG_OK);
+                intptr_t ret = update();
+                if (ret != M_OK) {
+                    monapi_warn("mosh abnormal exit");
+                }
+                ret = MonAPI::Message::send(msg.from, ret);
                 if (ret != M_OK) {
                     monapi_fatal("MSG_UPDATE send failed");
                 }
@@ -57,7 +60,7 @@ public:
         }
     }
 private:
-    void update()
+    intptr_t update()
     {
         std::string command(MonAPI::System::getMoshPath());
         command += " /LIBS/MOSH/bin/fb-feed-get.sps";
@@ -67,10 +70,11 @@ private:
                                                                    &tid,
                                                                    MonAPI::System::getProcessStdinID(),
                                                                    MonAPI::System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
+        if (result != M_OK) {
+            monapi_warn("can't exec Mosh");
+            return result;
         }
-        monapi_process_wait_terminated(tid);
+        return monapi_process_wait_terminated(tid);
     }
 };
 

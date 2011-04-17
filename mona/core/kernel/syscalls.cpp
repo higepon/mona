@@ -187,7 +187,8 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_KILL:
     {
-        ThreadOperation::kill(getCurrentProcess(), g_currentThread->thread);
+        int status = SYSTEM_CALL_ARG_1;
+        ThreadOperation::kill(getCurrentProcess(), g_currentThread->thread, status);
         g_scheduler->SwitchToNext();
         break;
     }

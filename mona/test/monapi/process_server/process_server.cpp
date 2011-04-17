@@ -27,6 +27,7 @@ static const int TEST_STDOUT_HANDLE  = 0x12345678;
 static const int TEST_STDIN_HANDLE   = 0x87654321;
 static const int TEST_STDOUT_HANDLE2 = 0x10000000;
 static const int TEST_STDIN_HANDLE2  = 0x20000000;
+static const int ABNORMAL_STATUS = 13;
 
 
 static void test_returnsProcessStdHandle()

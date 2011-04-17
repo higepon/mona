@@ -365,7 +365,7 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
 
     showPageFault(threadInfo, address);
 
-    ThreadOperation::kill(process, thread);
+    ThreadOperation::kill(process, thread, -1);
     return false;
 }
 

@@ -253,13 +253,11 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
     return NORMAL;
 }
 
-intptr_t ThreadOperation::kill(Process* process, Thread* thread)
+intptr_t ThreadOperation::kill(Process* process, Thread* thread, int status)
 {
     g_scheduler->Kill(thread);
 
-
-    /* if did this, FileOutputStream hanged up@hello.cpp */
-    sendKilledMessage();
+    sendKilledMessage(status);
 
     (process->threadNum)--;
 
@@ -311,7 +309,7 @@ intptr_t ThreadOperation::kill(uint32_t tid)
 
 // We don't broadcast MSG_PROCESS_TERMINATED.
 // Since it will cause message box overflow easily.
-void ThreadOperation::sendKilledMessage()
+void ThreadOperation::sendKilledMessage(int status)
 {
     for (int i = 0; i < g_currentThread->thread->observers.size(); i++) {
         uint32_t dest = g_currentThread->thread->observers[i];
@@ -329,7 +327,7 @@ void ThreadOperation::sendKilledMessage()
         MessageInfo msg;
         msg.header = MSG_PROCESS_TERMINATED;
         msg.arg1   = g_currentThread->thread->id;
-        msg.arg2   = -1;
+        msg.arg2   = status;
         if (g_messenger->send(thread, &msg) != M_OK) {
             logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
         }

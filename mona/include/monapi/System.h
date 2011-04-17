@@ -8,7 +8,7 @@ extern "C" uint32_t syscall_get_pid();
 extern "C" uint32_t syscall_get_tid();
 extern "C" uint32_t syscall_get_tick();
 extern "C" int syscall_kill_thread(uint32_t tid);
-extern "C" int syscall_kill();
+extern "C" int syscall_kill(int status);
 
 namespace MonAPI {
 
@@ -43,9 +43,9 @@ class System
         return syscall_kill_thread(tid);
     }
 
-    inline static int kill()
+    inline static int kill(int status = -1)
     {
-        return syscall_kill();
+        return syscall_kill(status);
     }
 
     static void getProcessInfo(PsInfo* dest);

@@ -56,7 +56,7 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
-        _logprintf("sector=%d sizeToWrite=%d\n", (int)sector, (int)sizeToWrite);
+//        _logprintf("sector=%d sizeToWrite=%d\n", (int)sector, (int)sizeToWrite);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -122,7 +122,7 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-        _logprintf("sector=%d sizeToRead=%d\n", (int)sector, (int)sizeToRead);
+//        _logprintf("sector=%d sizeToRead=%d\n", (int)sector, (int)sizeToRead);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
 
         int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;

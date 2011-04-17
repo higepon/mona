@@ -159,12 +159,12 @@ int print(const char* msg, int direct)
 }
 
 int kill() {
-    return syscall_kill();
+    return syscall_kill(-1);
 }
 
 int exit(int error)
 {
-    return syscall_kill();
+    return syscall_kill(error);
 }
 
 uintptr_t monapi_thread_create(void (*f)(void))
@@ -499,9 +499,9 @@ int syscall_print(const char* msg)
     return syscall1(SYSTEM_CALL_PRINT, (intptr_t)msg);
 }
 
-int syscall_kill()
+int syscall_kill(int status)
 {
-    intptr_t result = syscall0(SYSTEM_CALL_KILL);
+    intptr_t result = syscall1(SYSTEM_CALL_KILL, status);
 
     /* not reached */
     return result;

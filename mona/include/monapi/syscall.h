@@ -39,7 +39,7 @@ extern int syscall_log_print(const char* msg);
 extern int syscall_set_timer(uint32_t tick);
 extern int syscall_kill_timer(uint32_t id);
 extern int syscall_print(const char*);
-extern int syscall_kill();
+extern int syscall_kill(int status);
 extern int syscall_send(uint32_t id, MessageInfo* message);
 extern int syscall_receive(MessageInfo* message);
 extern int syscall_exist_message();

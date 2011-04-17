@@ -156,6 +156,9 @@ private:
             if (event->header == MSG_OK && event->from == updaterId_) {
                 logprintf("timer update feed done MSG_OK from=%d \n", event->from);
                 showFeedFromFile();
+            } else if (event->from == updaterId_) {
+                // error, just ignore and retry next.
+                setStatusDone();
             }
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
