@@ -118,7 +118,7 @@ inline void printBanner();
 void rdtscsub(uint32_t* timeL, uint32_t* timeH);
 void rdtsc(uint32_t* timeL, uint32_t* timeH);
 
-#define mona_warn(...) logprintf(__VA_ARGS__), g_console->printf(__VA_ARGS__)
+#define mona_warn(...) logprintf(__VA_ARGS__)
 
 #define DEBUG_MODE
 
