@@ -30,7 +30,8 @@ bool Segment::faultHandler(PageManager* pageManager, Process* process, LinearAdd
                                            PageManager::PAGE_WRITABLE,
                                            process->isUserMode());
     if (ret != M_OK) {
-        panic("mapOnePage failed");
+        mona_warn("mapOnePage is failed. No memory");
+        return false;
     }
     return true;
 }

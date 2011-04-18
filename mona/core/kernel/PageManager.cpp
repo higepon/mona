@@ -352,7 +352,13 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
         // Heap
         Segment* heap = process->getHeapSegment();
         if (heap->inRange(address)) {
-            return heap->faultHandler(this, process, address, FAULT_NOT_EXIST);
+            process->incHeapStats();
+            if (heap->faultHandler(this, process, address, FAULT_NOT_EXIST)) {
+                return true;
+            } else {
+                ThreadOperation::kill(process, thread, -1);
+                return false;
+            }
         }
 
         // Stack

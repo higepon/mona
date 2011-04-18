@@ -431,7 +431,8 @@ private:
     Process(const char* name, PageEntry* directory);
     virtual ~Process();
 
-  public:
+public:
+    void incHeapStats();
     bool hasSharedOverlap(uintptr_t start, uintptr_t end);
 
     uint32_t getStackBottom(Thread* thread);
@@ -542,6 +543,7 @@ private:
     PageEntry* pageDirectory_;
     char name_[16];
     uint32_t pid_;
+    uint32_t heapStats_;
 };
 
 /*----------------------------------------------------------------------

@@ -342,7 +342,7 @@ void ThreadOperation::sendKilledMessage(int status)
     Process
 ----------------------------------------------------------------------*/
 uint32_t Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE))
+Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)), heapStats_(0)
 {
     /* name */
     strncpy(name_, name, sizeof(name_));
@@ -433,6 +433,15 @@ bool Process::hasSharedOverlap(uintptr_t start, uintptr_t end)
     }
     return false;
 }
+
+void Process::incHeapStats()
+{
+    heapStats_++;
+    if ((heapStats_ * PageManager::ARCH_PAGE_SIZE >= 50 * 1024 * 1024) && (heapStats_ * PageManager::ARCH_PAGE_SIZE % (10 * 1024 * 1024)) == 0) {
+        mona_warn("%s heap size is huge = %d MB\n", name_, heapStats_ * PageManager::ARCH_PAGE_SIZE / 1024 / 1024);
+    }
+}
+
 
 /*----------------------------------------------------------------------
     UserProcess
