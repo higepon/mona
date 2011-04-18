@@ -83,7 +83,7 @@ int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* 
 {
     int ret = Message::send(info->from, MSG_OK, info->header, arg2, arg3, str);
     if (ret != M_OK) {
-        monapi_warn("Message::reply failed. This may cause hung up. %s\n", monapi_error_string(ret));
+        monapi_warn("Message::reply failed. This may cause hung up. %s:%x\n", monapi_error_string(ret), info->header);
     }
     return ret;
 }

@@ -209,7 +209,7 @@ void syscall_entrance()
         uintptr_t id = (uintptr_t)(SYSTEM_CALL_ARG_1);
         Thread* thread = g_scheduler->Find(id);
         if (NULL == thread) {
-            setReturnValue(info, -1);
+            setReturnValue(info, M_NOT_FOUND);
             break;
         } else {
             intptr_t ret = g_messenger->send(thread, (MessageInfo*)(SYSTEM_CALL_ARG_2));
