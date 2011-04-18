@@ -108,7 +108,7 @@ public:
 
 //        if (*status != 0) _logprintf("[write]*status=%d", *status);
         while (*status == 0xff) {
-//            _logprintf("waiting");
+            _logprintf("waiting");
         }
         sizeWritten -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
@@ -235,7 +235,7 @@ private:
         sizeRead -= sizeof(*status);
 //        if (*status != 0) _logprintf("*status=%d", *status);
         while (*status == 0xff) {
-//            _logprintf("waiting");
+            _logprintf("waiting");
         }
         if (*status != VIRTIO_BLK_S_OK) {
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
