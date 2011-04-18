@@ -42,6 +42,7 @@ void PageManager::initializePagePool()
 
 PageEntry* PageManager::createPageDirectory()
 {
+//    logprintf("createPageDirectory rest = %d\n", memoryMap_->countClear());
     PageEntry* directory = allocatePageTable();
 
     // map kernel region
@@ -76,7 +77,9 @@ void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
 int PageManager::mapOnePage(PageEntry* directory, PhysicalAddress& mappedAddres, LinearAddress laddress, bool isWritable, bool isUser)
 {
     int foundMemory = memoryMap_->find();
+//    if (g_log) logprintf("<%d:%d>\n", foundMemory, memoryMap_->countClear());
     if (foundMemory == -1) {
+        logprintf("map one page failed? %d", memoryMap_->countClear());
         return M_NO_MEMORY;
     }
     PhysicalAddress paddress = foundMemory * ARCH_PAGE_SIZE;
