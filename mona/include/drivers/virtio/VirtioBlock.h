@@ -56,7 +56,6 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
-//        _logprintf("sector=%d sizeToWrite=%d\n", (int)sector, (int)sizeToWrite);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -106,9 +105,11 @@ public:
         int sizeWritten = 0;
         void* afterCookie = vq_->getBuf(sizeWritten);
 
-//        if (*status != 0) _logprintf("[write]*status=%d", *status);
+        // In theory, this busy loop is not necessary.
+        // But on this driver, sometime after getBut is called, the status is not updated.
+        // This may be a bug of the driver.
         while (*status == 0xff) {
-            _logprintf("waiting");
+//            _logprintf("waiting");
         }
         sizeWritten -= sizeof(*status);
         if (*status != VIRTIO_BLK_S_OK) {
@@ -122,7 +123,6 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-//        _logprintf("sector=%d sizeToRead=%d\n", (int)sector, (int)sizeToRead);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
 
         int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
@@ -233,9 +233,12 @@ private:
         void* afterCookie = vq_->getBuf(sizeRead);
 
         sizeRead -= sizeof(*status);
-//        if (*status != 0) _logprintf("*status=%d", *status);
+
+        // In theory, this busy loop is not necessary.
+        // But on this driver, sometime after getBut is called, the status is not updated.
+        // This may be a bug of the driver.
         while (*status == 0xff) {
-            _logprintf("waiting");
+//            _logprintf("waiting");
         }
         if (*status != VIRTIO_BLK_S_OK) {
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
