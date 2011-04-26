@@ -10,6 +10,7 @@ BOEHM_GC_CFLAGS = -DPACKAGE_NAME=\"gc\"    \
 -DNO_EXECUTE_PERMISSION=1                  \
 -DALL_INTERIOR_POINTERS=1                  \
 -DATOMIC_UNCOLLECTABLE=1                   \
+-DDONT_ADD_BYTE_AT_END=1                   \
 -DNO_CLOCK                                 \
 -DGC_PRINT_STATS                           \
 -DLARGE_CONFIG=1 \
