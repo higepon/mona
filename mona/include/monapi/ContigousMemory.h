@@ -76,15 +76,16 @@ public:
         int pageNum = (size + MAP_PAGE_SIZE - 1) / MAP_PAGE_SIZE;
         int found = getPagesMap()->find(pageNum);
         if (found == -1) {
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            monapi_warn("ContigousMemory::allocate returns NULL");
             return NULL;
         }
+
         uintptr_t laddress = START_ADDRESS + (found * MAP_PAGE_SIZE);
         if (M_OK != syscall_allocate_contiguous(laddress, pageNum)) {
             for (int i = 0; i < pageNum; i++) {
                 getPagesMap()->clear(i + found);
             }
-            _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            monapi_warn("ContigousMemory::allocate returns NULL");
             return NULL;
         }
         memset((uint8_t*)laddress, 0, pageNum * MAP_PAGE_SIZE);
