@@ -43,7 +43,10 @@ public:
             {
             case MSG_UPDATE:
             {
+                uint64_t s = MonAPI::Date::nowInMsec();
                 intptr_t ret = update();
+                uint64_t e = MonAPI::Date::nowInMsec();
+                logprintf("update %d msec\n", (int)(e - s));
                 if (ret != M_OK) {
                     monapi_warn("mosh abnormal exit");
                 }
