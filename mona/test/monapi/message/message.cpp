@@ -103,6 +103,6 @@ int main(int argc, char *argv[])
 //    testMessageOverflow();
     testSendBuffer();
     testSendAll();
-    TEST_RESULTS(monapi_message);
+    TEST_RESULTS();
     return 0;
 }

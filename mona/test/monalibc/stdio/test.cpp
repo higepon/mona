@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
         test_fread_offset();
         test_vsnprintf();
         test_floor_inf();
-        TEST_RESULTS(stdio);
+        TEST_RESULTS();
         return 0;
     }
 }

@@ -719,6 +719,6 @@ int main(int argc, char *argv[])
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();
     test_create_delete_directory();
-    TEST_RESULTS(file);
+    TEST_RESULTS();
     return 0;
 }

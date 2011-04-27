@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
        test_float();
         test_strtod();
 
-        TEST_RESULTS(stdlib);
+        TEST_RESULTS();
         return 0;
     }
 }

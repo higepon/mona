@@ -357,6 +357,6 @@ int main(int argc, char *argv[])
     testCondition4();
     testCondition5();
 
-    TEST_RESULTS(condition);
+    TEST_RESULTS();
     return 0;
 }

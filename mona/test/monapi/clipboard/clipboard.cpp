@@ -43,6 +43,6 @@ int main(int argc, char *argv[])
 {
     testSetGet();
     testEmptyGet();
-    TEST_RESULTS(clipboard);
+    TEST_RESULTS();
     return 0;
 }

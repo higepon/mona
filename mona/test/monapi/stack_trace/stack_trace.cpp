@@ -619,6 +619,6 @@ int main(int argc, char *argv[])
     testBinaryTree_get_lower_nearest();
     testSymbolDictionary_Integrate();
     
-    TEST_RESULTS(stack_trace);
+    TEST_RESULTS();
     return 0;
 }

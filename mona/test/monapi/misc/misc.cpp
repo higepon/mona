@@ -161,8 +161,9 @@ static void testCreateProcessManyTimes()
     for (int i = 0; i < NTIMES; i++) {
         logprintf("[%d]", i);
         uint32_t tid;
-        intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/TEMPTY.EX5", // command.c_str()
-                                                                   //command.c_str(),
+        uint64_t s1 = MonAPI::Date::nowInMsec();
+        intptr_t result = monapi_call_process_execute_file_get_tid(//"/APPS/TEMPTY.EX5", // command.c_str()
+                                                                   command.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,
                                                                    MonAPI::System::getProcessStdinID(),
@@ -171,6 +172,8 @@ static void testCreateProcessManyTimes()
             monapi_fatal("can't exec Mosh");
         }
         monapi_process_wait_terminated(tid);
+        uint64_t s2 = MonAPI::Date::nowInMsec();
+        logprintf("empty.sps %d msec\n", (int)(s2 - s1));
     }
     logprintf("\n");
 }
@@ -186,6 +189,6 @@ int main(int argc, char *argv[])
     testBufferOverCopyShouldFail();
     testSharedMemory();
     testCreateProcessManyTimes();
-    TEST_RESULTS(monapi_misc);
+    TEST_RESULTS();
     return 0;
 }

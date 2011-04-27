@@ -59,6 +59,6 @@ int main(int argc, char *argv[])
     open_close_many_times(FAT32_FILE);
     open_close_many_times(ISO9660_FILE);
     read_head_byte_many_times(FAT32_FILE, 0x3b);
-    TEST_RESULTS(file_load);
+    TEST_RESULTS();
     return 0;
 }

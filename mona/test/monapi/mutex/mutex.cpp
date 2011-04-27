@@ -216,6 +216,6 @@ int main(int argc, char *argv[])
     testSyscallMutex();
     testClassMutex();
 
-    TEST_RESULTS(syscal_mutex);
+    TEST_RESULTS();
     return 0;
 }

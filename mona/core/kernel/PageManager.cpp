@@ -106,7 +106,7 @@ intptr_t PageManager::allocateContiguous(PageEntry* directory, LinearAddress lad
         return M_NO_MEMORY;
     }
 
-    logprintf("allocateContiguous from %d to %d numPages=%d\n", foundMemory, foundMemory + numPages, numPages);
+//    logprintf("allocateContiguous from %d to %d numPages=%d\n", foundMemory, foundMemory + numPages, numPages);
     for (int i = foundMemory; i < foundMemory + numPages; i++) {
         PhysicalAddress paddress = i * ARCH_PAGE_SIZE;
         LinearAddress laddressCurrent = laddress + (i - foundMemory) * ARCH_PAGE_SIZE;
@@ -124,7 +124,7 @@ intptr_t PageManager::deallocateContiguous(PageEntry* directory, LinearAddress l
     if ((laddress % ARCH_PAGE_SIZE) != 0) {
         return M_BAD_ADDRESS;
     }
-    logprintf("deallocateContiguous numPages=%d\n", pageNum);
+//    logprintf("deallocateContiguous numPages=%d\n", pageNum);
     for (int i = 0; i < pageNum; i++) {
         unmapOnePage(directory, laddress + i * ARCH_PAGE_SIZE);
     }
