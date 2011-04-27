@@ -32,19 +32,19 @@ static void testMoshPerformance(int targetTime, const std::string& script)
 {
     int msec = executeMoshWithTime(script);
     if (msec > targetTime) {
-        logprintf("%s %dmsec", __func__, msec);
+        logprintf("%s %dmsec\n", __func__, msec);
     }
-    ASSERT_TRUE(msec <= targetTime);
+    EXPECT_TRUE(msec <= targetTime);
 }
 
 static void testEmptyScriptShouldRunQuickly()
 {
-    testMoshPerformance(50, "/LIBS/MOSH/bin/empty.sps");
+    testMoshPerformance(60, "/LIBS/MOSH/bin/empty.sps");
 }
 
 static void testManyImportDoesNotHaveAnImpactOnPerformance()
 {
-    testMoshPerformance(70, "/LIBS/MOSH/bin/test-import.sps");
+    testMoshPerformance(120, "/LIBS/MOSH/bin/test-import.sps");
 }
 
 int main(int argc, char *argv[])
