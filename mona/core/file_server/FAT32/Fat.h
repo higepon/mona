@@ -252,13 +252,14 @@ public:
         File* dir = getFileByVnode(directory);
         Files* childlen = dir->getChildlen();
         for (Files::const_iterator it = childlen->begin(); it != childlen->end(); ++it) {
-            if (upperCase((*it)->getName()) == upperCase(file) && ((type == Vnode::REGULAR && !(*it)->isDirectory()) ||
+            if (upperCase((*it)->getName()) == upperCase(file) && ((type == Vnode::ANY) ||
+                                                                   (type == Vnode::REGULAR && !(*it)->isDirectory()) ||
                                                                    (type == Vnode::DIRECTORY && (*it)->isDirectory()))) {
                 if ((*it)->getVnode() == NULL) {
                     Vnode* newVnode = new Vnode;
                     ASSERT(newVnode);
                     newVnode->fnode = *it;
-                    newVnode->type = type;
+                    newVnode->type = (*it)->isDirectory() ? Vnode::DIRECTORY : Vnode::REGULAR;
                     newVnode->fs = this;
                     (*it)->setVnode(newVnode);
                     *found = newVnode;

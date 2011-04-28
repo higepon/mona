@@ -82,7 +82,8 @@ public:
         REGULAR,
         DIRECTORY,
         LINK,
-        BAD
+        BAD,
+        ANY // for search only
     };
     Vnode* mountedVnode;
 };

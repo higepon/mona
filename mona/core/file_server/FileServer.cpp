@@ -247,6 +247,12 @@ void FileServer::messageLoop()
             Message::reply(&msg, ret, st.size);
             break;
         }
+        case MSG_FILE_EXISTS:
+        {
+            bool fileExists = vmanager_.exists(upperCase(msg.str));
+            Message::reply(&msg, fileExists);
+            break;
+        }
         case MSG_FILE_GET_SIZE_BY_PATH:
         {
             Stat st;

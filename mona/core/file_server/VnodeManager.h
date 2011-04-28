@@ -24,6 +24,7 @@ public:
     int stat(const std::string& path, Stat* st);
     int close(uint32_t fileID);
     int create(const std::string& name);
+    bool exists(const std::string& path);
     int create_directory(const std::string& name);
     int delete_file(const std::string& name);
     int delete_directory(const std::string& name);

@@ -161,7 +161,7 @@ namespace RamDisk {
                 Vnode* newVnode = new Vnode;
                 ASSERT(newVnode);
                 newVnode->fnode = (*it).second;
-                newVnode->type = type;
+                newVnode->type = Vnode::REGULAR;
                 newVnode->fs = this;
                 *found = newVnode;
                 return M_OK;

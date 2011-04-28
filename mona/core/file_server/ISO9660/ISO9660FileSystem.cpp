@@ -46,15 +46,23 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     Entry* directoryEntry = (Entry*)diretory->fnode;
     Entry* target = NULL;
 
+    bool isDirectory = false;
     if (type == Vnode::REGULAR) {
         target = lookupFile(directoryEntry, file);
+    } else if (type == Vnode::ANY) {
+        target = lookupFile(directoryEntry, file);
+        if (target == NULL) {
+            isDirectory = true;
+            target = lookupDirectory(directoryEntry, file);
+        }
     } else {
+        isDirectory = true;
         target = lookupDirectory(directoryEntry, file);
     }
     if (target == NULL) return M_FILE_NOT_FOUND;
     Vnode* newVnode = new Vnode;
     newVnode->fnode  = target;
-    newVnode->type = type;
+    newVnode->type = isDirectory ? Vnode::DIRECTORY : Vnode::REGULAR;
     newVnode->fs = this;
     *found = newVnode;
     return M_OK;

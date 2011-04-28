@@ -555,18 +555,17 @@ intptr_t monapi_notify_server_start(const char* name)
 
 MONAPI_BOOL monapi_file_exists(const char* path)
 {
-    intptr_t desc = monapi_file_open(path, 0);
-    if (desc > 0) {
-        monapi_file_close(desc);
-        return MONAPI_TRUE;
-    } else {
-        scoped_ptr<SharedMemory> shm(monapi_file_read_directory(path));
-        if (shm.get() == NULL) {
-            return MONAPI_FALSE;
-        } else {
-            return MONAPI_TRUE;
-        }
+    static int totalReadDir = 0;
+    uint32_t tid;
+    if (monapi_name_whereis("/servers/file", tid) != M_OK) {
+        return M_NAME_NOT_FOUND;
     }
+    MessageInfo msg;
+    int ret = Message::sendReceive(&msg, tid, MSG_FILE_EXISTS, 0, 0, 0, path);
+    if (ret != M_OK) {
+        return MONAPI_FALSE;
+    }
+    return msg.arg2 ? MONAPI_TRUE : MONAPI_FALSE;
 }
 
 MONAPI_BOOL monapi_file_is_directory(const char* path)

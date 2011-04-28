@@ -70,7 +70,7 @@ int VnodeManager::delete_directory(const std::string& name)
 int VnodeManager::lookupOne(Vnode* directory, const string& file, Vnode** found, int type)
 {
     Vnode* v = cacher_->lookup(directory, file);
-    if (v != NULL && v->type == type) {
+    if (v != NULL && (v->type == type || type == Vnode::ANY)) {
         *found = v;
         return M_OK;
     }
@@ -337,6 +337,13 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
     FileInfo* fileInfo = (*it).second;
     Vnode* file = fileInfo->vnode;
     return file->fs->stat(file, st);
+}
+
+bool VnodeManager::exists(const std::string& path)
+{
+    string filename = path.substr(1, path.size() - 1);
+    Vnode* file;
+    return lookup(root_, path, &file, Vnode::ANY) == M_OK;
 }
 
 int VnodeManager::stat(const string& path, Stat* st)
