@@ -123,10 +123,13 @@ private:
 
     void showFeedFromFile()
     {
+        uint64_t s = MonAPI::Date::nowInMsec();
         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
         if (shm.get() == NULL) {
             monapi_fatal("can't read fb.data");
         }
+        uint64_t s0 = MonAPI::Date::nowInMsec();
+        logprintf("showFeedFromFile: readfile %d msec\n", (int)(s0 - s));
         disposeImages();
 //        disposeTextFields();
         std::string text((char*)shm->data());
@@ -137,8 +140,13 @@ private:
             std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
             imageUri += line[0];
             imageUri += "/picture";
+            uint64_t s1 = MonAPI::Date::nowInMsec();
             createOnePost(imageUri, filename, line[2], i);
+            uint64_t s2 = MonAPI::Date::nowInMsec();
+            logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
+        uint64_t e = MonAPI::Date::nowInMsec();
+        logprintf("showFeedFromFile %d msec\n", (int)(e - s));
         setStatusDone();
     }
 
@@ -180,7 +188,10 @@ private:
         updateButton_->setLabel("update");
         updating_ = false;
         idleTimeMsec_ = 0;
+        uint64_t s = MonAPI::Date::nowInMsec();
         repaint();
+        uint64_t e = MonAPI::Date::nowInMsec();
+        logprintf("repaint %d msec\n", (int)(e - s));
     }
 
     void paint(Graphics *g)

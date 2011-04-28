@@ -628,6 +628,6 @@ int main(int argc, char *argv[])
     testOpen_noCreate_truncate_file_exists();
     testOpen_noCreate_noTruncate_file_not_exist();
     testOpen_noCreate_noTruncate_file_exists();
-    TEST_RESULTS(ram_disk);
+    TEST_RESULTS();
     return 0;
 }

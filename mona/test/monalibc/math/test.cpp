@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     } else {
         test_log();
 
-        TEST_RESULTS(math);
+        TEST_RESULTS();
         return 0;
     }
 }

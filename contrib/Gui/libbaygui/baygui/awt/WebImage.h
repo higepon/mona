@@ -45,13 +45,13 @@ public:
 
     bool initialize()
     {
+        uint64_t s1 = MonAPI::Date::nowInMsec();
         uint32_t tid;
         std::string cmd("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /LIBS/MOSH/bin/http-get.sps");
         cmd += + ' ';
         cmd += uri_;
         cmd += ' ';
         cmd += path_;
-        _logprintf("[%s]", cmd.c_str());
         intptr_t result = monapi_call_process_execute_file_get_tid(cmd.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,
@@ -62,6 +62,8 @@ public:
             return false;
         }
         monapi_process_wait_terminated(tid);
+        uint64_t e1 = MonAPI::Date::nowInMsec();
+        logprintf("WebImage[%s] %d msec\n", path_.c_str(), (int)(e1 - s1));
         initFromFilePath(path_.c_str());
         return true;
     }

@@ -101,6 +101,6 @@ int main(int argc, char *argv[])
     test_distinguishesTwoProcessesWhichHaveSameName();
     test_subThreadInheritsStdHandleFromMainThread();
     test_notifiesExitStatusToParent();
-    TEST_RESULTS(process_server);
+    TEST_RESULTS();
     return 0;
 }

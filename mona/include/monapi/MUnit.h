@@ -152,6 +152,6 @@ void munit_expect_eq(const char* expected, const char* actual, const char* expec
 }
 
 
-#define TEST_RESULTS(x) munit_show_test_results(#x)
+#define TEST_RESULTS() munit_show_test_results(__FILE__)
 
 #endif // _MONAPI_MUNIT_

@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
 // Will die!
 //    test_contigous_memory_overflow_should_die();
 
-    TEST_RESULTS(virtio);
+    TEST_RESULTS();
     return 0;
 }
 

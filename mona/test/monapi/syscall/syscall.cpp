@@ -45,6 +45,6 @@ int main(int argc, char *argv[])
     test_syscall_allocate_contiguous();
     test_syscall_map_map_should_check_overlap();
     test_syscall_many_threads();
-    TEST_RESULTS(syscall);
+    TEST_RESULTS();
     return 0;
 }

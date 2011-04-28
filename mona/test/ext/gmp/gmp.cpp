@@ -78,6 +78,6 @@ int main(int argc, char *argv[])
     test_mpz();
     test_mpq();
     test_mpq_div();
-    TEST_RESULTS(gmp);
+    TEST_RESULTS();
     return 0;
 }

@@ -319,6 +319,6 @@ int main(int argc, char *argv[])
 
     // todo close
 
-    TEST_RESULTS(monapi_socket);
+    TEST_RESULTS();
     return 0;
 }
