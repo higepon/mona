@@ -65,6 +65,7 @@ public:
     // ISO9660 assume sector size 2048, but our block device driver 512.
     int read(uint32_t lba, void* buf, int size)
     {
+        std::map<uint32_t, void*> cache;
         int64_t sizeRead = vb_->read(buf, lba * (sectorSize_ / 512), size);
         if (size == sizeRead) {
             return M_OK;

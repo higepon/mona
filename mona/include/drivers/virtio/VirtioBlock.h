@@ -33,7 +33,7 @@
 #include <drivers/virtio/VirtQueue.h>
 #include <drivers/virtio/VirtioDevice.h>
 #include <vector>
-
+#include <map>
 class VirtioBlock
 {
 
@@ -56,6 +56,7 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -118,24 +119,90 @@ public:
         }
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
+        // for (int i = 0; i < ((int)sizeToWrite)/ 512; i++) {
+        //     Cache::iterator it = cache_.find((int)sector + i);
+
+        //     if (it != cache_.end()) {
+        //         uint8_t* p = (*it).second;
+        //         ASSERT(p);
+        //         delete[] p;
+        //         (*it).second = NULL;
+        //     }
+        // }
         return sizeWritten;
     }
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
+        // bool readDone[sizeToRead/512 + 1];
+        // //      std::fill(readDone, readDone+ sizeToRead/512 + 1, false);
+        // for (int i = 0; i < sizeToRead/512 + 1; i++) {
+        //     readDone[i] = false;
+        // }
 
-        int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
-        int restToRead = sizeToRead;
-        for (int i = 0; i < numBlocks; i++) {
-            int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / 512) * i, size);
-            if (ret < 0) {
-                return ret;
+        int nSector = sizeToRead / 512;
+        int cachHit = 0;
+        int restSize = sizeToRead;
+        for (int i = 0; i < sizeToRead/512 + 1; i++) {
+            Cache::iterator it = cache_.find((int)sector + i);
+            if (it != cache_.end()) {
+                //              _logprintf("Hit %s %s:%d\n", __func__, __FILE__, __LINE__);
+                cachHit++;
+                memcpy((uint8_t*)readBuf + i * 512, (*it).second, restSize < 512 ? restSize : 512);
+            } else {
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                int ret;
+                if (restSize < 512) {
+                    ret = readInternal(((uint8_t*)readBuf) + i * 512, i + sector, restSize);
+                } else {
+                ret = readInternal(((uint8_t*)readBuf) + i * 512, i + sector, 512);
+                if (ret < 0) {
+                    return ret;
+                } else {
+                    uint8_t* p = new uint8_t[512];
+                    ASSERT(p);
+                    memcpy(p, (uint8_t*)readBuf + i * 512, 512);
+                    cache_[(int)sector + i] = p;
+                }
+                }
+
             }
-            restToRead -= size;
+            restSize -= 512;
+            if (restSize <= 0) {
+                break;
+            }
         }
-        ASSERT(restToRead == 0);
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
+//         for (int i = 0; i < sizeToRead/512 + 1; i++) {
+//             if (!readDone[i]) {
+// //                logprintf("**%s %s:%d\n", __func__, __FILE__, __LINE__);
+//                 readDone[i] = true;
+//             } else {
+
+//             }
+//         }
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        // int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
+        // int restToRead = sizeToRead;
+        // for (int i = 0; i < numBlocks; i++) {
+        //     int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
+        //     int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / 512) * i, size);
+        //     if (ret < 0) {
+        //         return ret;
+        //     }
+        //     restToRead -= size;
+        // }
+//        ASSERT(restToRead == 0);
+        // for (int i = 0; i < ((int)sizeToRead)/ 512; i++) {
+        //     Cache::iterator it = cache_.find((int)sector + i);
+        //     if (it != cache_.end()) {
+        //     }
+        // }
+//        logprintf("%d/%d/%s %s:%d\n", cachHit, nSector, __func__, __FILE__, __LINE__);
+//        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return sizeToRead;
     }
 
@@ -250,6 +317,8 @@ private:
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
+    typedef std::map<int, uint8_t*> Cache;
+    Cache cache_;
     MonAPI::scoped_ptr<VirtioDevice> vdev_;
     MonAPI::scoped_ptr<VirtQueue> vq_;
 };

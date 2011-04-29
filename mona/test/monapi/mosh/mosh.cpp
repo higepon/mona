@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
 {
     testEmptyScriptShouldRunQuickly();
     testManyImportDoesNotHaveAnImpactOnPerformance();
+    testManyImportDoesNotHaveAnImpactOnPerformance();
     TEST_RESULTS();
     return 0;
 }
