@@ -11,7 +11,9 @@ static void testEmptyCacheHasNoCacheOf0thSector()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     CacheList cacheList;
-    EXPECT_EQ(false, bc.get(0, 1, cacheList));
+    const int startSector = 0;
+    const int numSectors = 1;
+    EXPECT_EQ(false, bc.get(startSector, numSectors, cacheList));
     EXPECT_EQ(0, cacheList.size());
 }
 
