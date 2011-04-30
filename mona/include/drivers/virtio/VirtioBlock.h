@@ -129,7 +129,7 @@ public:
         int restToRead = sizeToRead;
         for (int i = 0; i < numBlocks; i++) {
             int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / 512) * i, size);
+            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i, size);
             if (ret < 0) {
                 return ret;
             }
