@@ -124,6 +124,7 @@ public:
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
+        ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
 
         int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
         int restToRead = sizeToRead;
