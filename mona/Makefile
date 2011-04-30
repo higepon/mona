@@ -96,6 +96,11 @@ check:
 	@tool/qemu/as_daemon.sh
 	@mosh tool/qemu/check_tests.scm
 
+check-one:
+	@tool/qemu/as_daemon.sh
+	@mosh tool/qemu/check_tests.scm $(TEST_NAME)
+
+
 TARGETS = \
 core/clipboard_server \
 core/elf_server \
