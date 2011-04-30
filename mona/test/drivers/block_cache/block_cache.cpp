@@ -5,6 +5,24 @@
 
 using namespace std;
 
+typedef std::vector<int> CacheList;
+
+class BlockCache
+{
+public:
+    BlockCache(uintptr_t maxCacheSizeByte) : maxCacheSizeByte_(maxCacheSizeByte)
+    {
+    }
+
+    bool get(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList)
+    {
+        return false;
+    }
+
+private:
+    uintptr_t maxCacheSizeByte_;
+};
+
 static const int MAX_CACHE_SIZE = 1 * 1024 * 1024;
 
 static void testEmptyCacheHasNoCacheOf0thSector()
