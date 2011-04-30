@@ -78,6 +78,7 @@ tests: tools cores
 	cd test/monapi/empty && $(MAKE) && $(MAKE) install
 	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 	cd test/drivers/virtio && $(MAKE) && $(MAKE) install
+	cd test/drivers/block_cache && $(MAKE) && $(MAKE) install
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
