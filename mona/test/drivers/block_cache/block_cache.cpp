@@ -2,6 +2,7 @@
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -9,6 +10,7 @@ class Cache
 {
 public:
     Cache() {}
+    Cache(uintptr_t sector, void* cache) {}
 
     uintptr_t sector() const
     {
@@ -22,6 +24,7 @@ public:
 };
 
 typedef std::vector<Cache> CacheList;
+typedef std::map<uintptr_t, Cache> CacheMap;
 
 class BlockCache
 {
@@ -32,15 +35,23 @@ public:
 
     bool get(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList)
     {
-        return false;
+        CacheMap::iterator it = cacheMap_.find(startSector);
+        if (it == cacheMap_.end()) {
+            return false;
+        } else {
+            cacheList.push_back((*it).second);
+            return true;
+        }
     }
 
-    bool add(int sector, void* cache)
+    bool add(uintptr_t sector, void* cache)
     {
-        return NULL;
+        cacheMap_[sector] = Cache(sector, cache);
+        return true;
     }
 
 private:
+    CacheMap cacheMap_;
     uintptr_t maxCacheSizeByte_;
 };
 
@@ -55,7 +66,11 @@ static void testEmptyCacheHasNoCacheOf0thSector()
     EXPECT_EQ(false, bc.get(startSector, numSectors, cacheList));
     EXPECT_EQ(0, cacheList.size());
 }
+
+// todo overwrite cache
 // todo match sector
+// operator =
+// single, multiple
 static void testAddedCachedCanGet()
 {
     BlockCache bc(MAX_CACHE_SIZE);
