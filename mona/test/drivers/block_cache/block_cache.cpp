@@ -14,6 +14,17 @@ public:
         numSectors_(numSectors)
     {
     }
+
+    uintptr_t startSector() const
+    {
+        return startSector_;
+    }
+
+    uintptr_t numSectors() const
+    {
+        return numSectors_;
+    }
+
 private:
     uintptr_t startSector_;
     uintptr_t numSectors_;
@@ -65,6 +76,27 @@ public:
             cacheList.push_back((*it).second);
             return true;
         }
+    }
+
+    bool getCacheAndRest(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList, IORequests& rest)
+    {
+        CacheMap::const_iterator it = cacheMap_.lower_bound(startSector);
+        for (uintptr_t sector = startSector; sector < startSector + numSectors; sector++) {
+            if (it == cacheMap_.end()) {
+                uintptr_t restNumSectors = numSectors - sector + startSector;
+                rest.push_back(IORequest(sector, restNumSectors));
+                break;
+            } else {
+                if ((*it).first == sector) {
+                    cacheList.push_back((*it).second);
+                } else if ((*it).first > sector) {
+                    rest.push_back(IORequest(sector, 1));
+                } else {
+                    ++it;
+                }
+            }
+        }
+        return true;
     }
 
     bool add(Cache cache)
@@ -136,7 +168,8 @@ static void testFoundPartialCacheAndRestToRead()
 
 }
 
-
+// todo
+// const_iterator
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
