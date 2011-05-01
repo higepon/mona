@@ -69,7 +69,7 @@ public:
 
     bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
     {
-        CacheMap::iterator it = cacheMap_.find(startSector);
+        CacheMap::const_iterator it = cacheMap_.find(startSector);
         if (it == cacheMap_.end()) {
             return false;
         } else {
