@@ -103,22 +103,22 @@ public:
                 }
             }
         }
-        // if (rest.size () > 1) {
-        //     IORequests ret;
-        //     for (IORequests::const_iterator it = rest.begin(); it != rest.end(); ++it) {
-        //         if (ret.empty()) {
-        //             ret.push_back(*it);
-        //         } else {
-        //             IORequest& last = ret[ret.size() - 1];
-        //             if ((*it).startSector() == last.startSector() + last.numSectors()) {
-        //                 last.incrementNumSectors();
-        //             } else {
-        //                 ret.push_back(*it);
-        //             }
-        //         }
-        //     }
-        //     rest = ret;
-        // }
+        if (rest.size () > 1) {
+            IORequests ret;
+            for (IORequests::const_iterator it = rest.begin(); it != rest.end(); ++it) {
+                if (ret.empty()) {
+                    ret.push_back(*it);
+                } else {
+                    IORequest& last = ret[ret.size() - 1];
+                    if ((*it).startSector() == last.startSector() + last.numSectors()) {
+                        last.incrementNumSectors();
+                    } else {
+                        ret.push_back(*it);
+                    }
+                }
+            }
+            rest = ret;
+        }
         return true;
     }
 
