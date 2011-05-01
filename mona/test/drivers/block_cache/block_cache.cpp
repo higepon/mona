@@ -165,9 +165,11 @@ static void testFoundPartialCacheAndRestToRead()
     ASSERT_EQ(1, rest.size());
     EXPECT_EQ(0, rest[0].startSector());
     EXPECT_EQ(1, rest[0].numSectors());
-
 }
 
+
+// todo
+//  rest should be merged
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
