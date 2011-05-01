@@ -20,6 +20,11 @@ public:
         return startSector_;
     }
 
+    void incrementNumSectors()
+    {
+        numSectors_++;
+    }
+
     uintptr_t numSectors() const
     {
         return numSectors_;
@@ -84,11 +89,13 @@ public:
         for (uintptr_t sector = startSector; sector < startSector + numSectors; sector++) {
             if (it == cacheMap_.end()) {
                 uintptr_t restNumSectors = numSectors - sector + startSector;
+                logprintf("sector=%d:%d\n", sector, restNumSectors);
                 rest.push_back(IORequest(sector, restNumSectors));
                 break;
             } else {
                 if ((*it).first == sector) {
                     cacheList.push_back((*it).second);
+                    ++it;
                 } else if ((*it).first > sector) {
                     rest.push_back(IORequest(sector, 1));
                 } else {
@@ -96,6 +103,22 @@ public:
                 }
             }
         }
+        // if (rest.size () > 1) {
+        //     IORequests ret;
+        //     for (IORequests::const_iterator it = rest.begin(); it != rest.end(); ++it) {
+        //         if (ret.empty()) {
+        //             ret.push_back(*it);
+        //         } else {
+        //             IORequest& last = ret[ret.size() - 1];
+        //             if ((*it).startSector() == last.startSector() + last.numSectors()) {
+        //                 last.incrementNumSectors();
+        //             } else {
+        //                 ret.push_back(*it);
+        //             }
+        //         }
+        //     }
+        //     rest = ret;
+        // }
         return true;
     }
 
@@ -167,6 +190,18 @@ static void testFoundPartialCacheAndRestToRead()
     EXPECT_EQ(1, rest[0].numSectors());
 }
 
+static void testTheRestReturnedShouldBeMergedAsFarAsPossible()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
+    Caches cacheList;
+    IORequests rest;
+    EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
+    ASSERT_EQ(1, cacheList.size());
+    ASSERT_EQ(1, rest.size());
+    EXPECT_EQ(1, rest[0].startSector());
+    EXPECT_EQ(2, rest[0].numSectors());
+}
 
 // todo
 //  rest should be merged
@@ -176,6 +211,7 @@ int main(int argc, char *argv[])
     testAddedSingleCacheCanGet();
     testAddedMultipleCacheCanGetSingleCache();
     testFoundPartialCacheAndRestToRead();
+    testTheRestReturnedShouldBeMergedAsFarAsPossible();
     TEST_RESULTS();
     return 0;
 }
