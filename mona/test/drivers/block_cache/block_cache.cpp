@@ -168,8 +168,6 @@ static void testFoundPartialCacheAndRestToRead()
 
 }
 
-// todo
-// const_iterator
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
