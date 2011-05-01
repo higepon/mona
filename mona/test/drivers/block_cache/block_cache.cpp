@@ -190,7 +190,7 @@ static void testFoundPartialCacheAndRestToRead()
     EXPECT_EQ(1, rest[0].numSectors());
 }
 
-static void testTheRestReturnedShouldBeMergedAsFarAsPossible()
+static void testTailOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
     testAddedSingleCacheCanGet();
     testAddedMultipleCacheCanGetSingleCache();
     testFoundPartialCacheAndRestToRead();
-    testTheRestReturnedShouldBeMergedAsFarAsPossible();
+    testTailOfRestShouldBeMergedAsFarAsPossible();
     TEST_RESULTS();
     return 0;
 }
