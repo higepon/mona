@@ -203,6 +203,19 @@ static void testTailOfRestShouldBeMergedAsFarAsPossible()
     EXPECT_EQ(2, rest[0].numSectors());
 }
 
+static void testHeadOfRestShouldBeMergedAsFarAsPossible()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    EXPECT_TRUE(bc.add(Cache(2, (void*)0xdeadbeaf)));
+    Caches cacheList;
+    IORequests rest;
+    EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
+    ASSERT_EQ(1, cacheList.size());
+    ASSERT_EQ(1, rest.size());
+    EXPECT_EQ(0, rest[0].startSector());
+    EXPECT_EQ(2, rest[0].numSectors());
+}
+
 // todo
 //  rest should be merged
 int main(int argc, char *argv[])
@@ -212,6 +225,7 @@ int main(int argc, char *argv[])
     testAddedMultipleCacheCanGetSingleCache();
     testFoundPartialCacheAndRestToRead();
     testTailOfRestShouldBeMergedAsFarAsPossible();
+    testHeadOfRestShouldBeMergedAsFarAsPossible();
     TEST_RESULTS();
     return 0;
 }
