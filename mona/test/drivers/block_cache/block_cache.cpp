@@ -6,6 +6,19 @@
 
 using namespace std;
 
+class IORequest
+{
+public:
+    IORequest(uintptr_t startSector, uintptr_t numSectors) :
+        startSector_(startSector),
+        numSectors_(numSectors)
+    {
+    }
+private:
+    uintptr_t startSector_;
+    uintptr_t numSectors_;
+};
+
 class Cache
 {
 public:
@@ -33,6 +46,7 @@ private:
 };
 
 typedef std::vector<Cache> CacheList;
+typedef std::vector<IORequest> IORequests;
 typedef std::map<uintptr_t, Cache> CacheMap;
 
 class BlockCache
@@ -106,11 +120,29 @@ static void testAddedMultipleCacheCanGetSingleCache()
     EXPECT_CACHE_EQ(target, cacheList[0]);
 }
 
+static void testFoundPartialCacheAndRestToRead()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    Cache target(1, (void*)0xdeadbeaf);
+    EXPECT_TRUE(bc.add(target));
+    CacheList cacheList;
+    IORequests rest;
+    EXPECT_EQ(true, bc.getCacheAndRest(0, 2, cacheList, rest));
+    ASSERT_EQ(1, cacheList.size());
+    EXPECT_CACHE_EQ(target, cacheList[0]);
+    ASSERT_EQ(1, rest.size());
+    EXPECT_EQ(0, rest[0].startSector());
+    EXPECT_EQ(1, rest[0].numSectors());
+
+}
+
+
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
     testAddedSingleCacheCanGet();
     testAddedMultipleCacheCanGetSingleCache();
+    testFoundPartialCacheAndRestToRead();
     TEST_RESULTS();
     return 0;
 }
