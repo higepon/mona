@@ -71,7 +71,7 @@ static void testEmptyCacheHasNoCacheOf0thSector()
 // todo match sector
 // operator =
 // single, multiple
-static void testAddedCachedCanGet()
+static void testAddedSingleCacheCanGet()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     const int targetSector = 0;
@@ -88,7 +88,7 @@ static void testAddedCachedCanGet()
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
-    testAddedCachedCanGet();
+    testAddedSingleCacheCanGet();
     TEST_RESULTS();
     return 0;
 }
