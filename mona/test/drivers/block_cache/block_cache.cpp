@@ -5,7 +5,23 @@
 
 using namespace std;
 
-typedef std::vector<int> CacheList;
+class Cache
+{
+public:
+    Cache() {}
+
+    uintptr_t sector() const
+    {
+        return 0;
+    }
+
+    void* get() const
+    {
+        return NULL;
+    }
+};
+
+typedef std::vector<Cache> CacheList;
 
 class BlockCache
 {
@@ -17,6 +33,11 @@ public:
     bool get(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList)
     {
         return false;
+    }
+
+    bool add(int sector, void* cache)
+    {
+        return NULL;
     }
 
 private:
