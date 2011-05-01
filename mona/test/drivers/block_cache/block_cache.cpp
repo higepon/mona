@@ -56,7 +56,7 @@ private:
     void* data_;
 };
 
-typedef std::vector<Cache> CacheList;
+typedef std::vector<Cache> Caches;
 typedef std::vector<IORequest> IORequests;
 typedef std::map<uintptr_t, Cache> CacheMap;
 
@@ -67,7 +67,7 @@ public:
     {
     }
 
-    bool get(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList)
+    bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
     {
         CacheMap::iterator it = cacheMap_.find(startSector);
         if (it == cacheMap_.end()) {
@@ -78,7 +78,7 @@ public:
         }
     }
 
-    bool getCacheAndRest(uintptr_t startSector, uintptr_t numSectors, CacheList& cacheList, IORequests& rest)
+    bool getCacheAndRest(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList, IORequests& rest)
     {
         CacheMap::const_iterator it = cacheMap_.lower_bound(startSector);
         for (uintptr_t sector = startSector; sector < startSector + numSectors; sector++) {
@@ -120,7 +120,7 @@ static const int MAX_CACHE_SIZE = 1 * 1024 * 1024;
 static void testEmptyCacheHasNoCacheOf0thSector()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    CacheList cacheList;
+    Caches cacheList;
     const int startSector = 0;
     const int numSectors = 1;
     EXPECT_EQ(false, bc.get(startSector, numSectors, cacheList));
@@ -131,7 +131,7 @@ static void testAddedSingleCacheCanGet()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     const int targetSector = 0;
-    CacheList cacheList;
+    Caches cacheList;
     const int numSectors = 1;
     Cache cache(targetSector, NULL);
     EXPECT_TRUE(bc.add(cache));
@@ -146,7 +146,7 @@ static void testAddedMultipleCacheCanGetSingleCache()
     EXPECT_TRUE(bc.add(Cache(0, (void*)0x12345678)));
     Cache target(1, (void*)0xdeadbeaf);
     EXPECT_TRUE(bc.add(target));
-    CacheList cacheList;
+    Caches cacheList;
     EXPECT_EQ(true, bc.get(1, 1, cacheList));
     ASSERT_EQ(1, cacheList.size());
     EXPECT_CACHE_EQ(target, cacheList[0]);
@@ -157,7 +157,7 @@ static void testFoundPartialCacheAndRestToRead()
     BlockCache bc(MAX_CACHE_SIZE);
     Cache target(1, (void*)0xdeadbeaf);
     EXPECT_TRUE(bc.add(target));
-    CacheList cacheList;
+    Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 2, cacheList, rest));
     ASSERT_EQ(1, cacheList.size());
