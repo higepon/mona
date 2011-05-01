@@ -44,9 +44,9 @@ public:
         }
     }
 
-    bool add(uintptr_t sector, void* cache)
+    bool add(Cache cache)
     {
-        cacheMap_[sector] = Cache(sector, cache);
+        cacheMap_[cache.sector()] = cache;
         return true;
     }
 
@@ -54,6 +54,11 @@ private:
     CacheMap cacheMap_;
     uintptr_t maxCacheSizeByte_;
 };
+
+#define EXPECT_CACHE_EQ(lhs, rhs) {        \
+    EXPECT_EQ(lhs.sector(), rhs.sector()); \
+    EXPECT_EQ(lhs.get(), rhs.get());       \
+}
 
 static const int MAX_CACHE_SIZE = 1 * 1024 * 1024;
 
@@ -67,22 +72,17 @@ static void testEmptyCacheHasNoCacheOf0thSector()
     EXPECT_EQ(0, cacheList.size());
 }
 
-// todo overwrite cache
-// todo match sector
-// operator =
-// single, multiple
 static void testAddedSingleCacheCanGet()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     const int targetSector = 0;
     CacheList cacheList;
     const int numSectors = 1;
-    EXPECT_TRUE(bc.add(targetSector, NULL));
+    Cache cache(targetSector, NULL);
+    EXPECT_TRUE(bc.add(cache));
     EXPECT_EQ(true, bc.get(targetSector, numSectors, cacheList));
     ASSERT_EQ(1, cacheList.size());
-    Cache foundCache = cacheList[0];
-    EXPECT_EQ(0, foundCache.sector());
-    EXPECT_EQ(NULL, foundCache.get());
+    EXPECT_CACHE_EQ(cache, cacheList[0]);
 }
 
 int main(int argc, char *argv[])
