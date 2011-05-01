@@ -10,17 +10,26 @@ class Cache
 {
 public:
     Cache() {}
-    Cache(uintptr_t sector, void* cache) {}
+    Cache(uintptr_t sector, void* data) :
+        sector_(sector),
+        data_(data)
+    {
+
+    }
 
     uintptr_t sector() const
     {
-        return 0;
+        return sector_;
     }
 
     void* get() const
     {
-        return NULL;
+        return data_;
     }
+
+private:
+    uintptr_t sector_;
+    void* data_;
 };
 
 typedef std::vector<Cache> CacheList;
@@ -85,10 +94,23 @@ static void testAddedSingleCacheCanGet()
     EXPECT_CACHE_EQ(cache, cacheList[0]);
 }
 
+static void testAddedMultipleCacheCanGetSingleCache()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    EXPECT_TRUE(bc.add(Cache(0, (void*)0x12345678)));
+    Cache target(1, (void*)0xdeadbeaf);
+    EXPECT_TRUE(bc.add(target));
+    CacheList cacheList;
+    EXPECT_EQ(true, bc.get(1, 1, cacheList));
+    ASSERT_EQ(1, cacheList.size());
+    EXPECT_CACHE_EQ(target, cacheList[0]);
+}
+
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
     testAddedSingleCacheCanGet();
+    testAddedMultipleCacheCanGetSingleCache();
     TEST_RESULTS();
     return 0;
 }
