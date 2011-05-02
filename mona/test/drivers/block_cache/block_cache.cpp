@@ -80,8 +80,8 @@ public:
 
     virtual ~BlockCache()
     {
-        for (CacheMap::const_iterator it = cacheMap_.begin(); it != cacheMap_.end(); ++it) {
-            delete[] (uint8_t*)((*it).second.get());
+        for (CacheMap::iterator it = cacheMap_.begin(); it != cacheMap_.end(); ++it) {
+            (*it).second.destroy();
         }
     }
 
@@ -189,7 +189,7 @@ static void testAddedSingleCacheCanGet()
     const int targetSector = 0;
     Caches cacheList;
     const int numSectors = 1;
-    Cache cache(targetSector, NULL);
+    Cache cache(targetSector, new uint8_t[3]);
     EXPECT_FALSE(bc.add(cache));
     EXPECT_EQ(true, bc.get(targetSector, numSectors, cacheList));
     ASSERT_EQ(1, cacheList.size());
@@ -199,8 +199,8 @@ static void testAddedSingleCacheCanGet()
 static void testAddedMultipleCacheCanGetSingleCache()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_FALSE(bc.add(Cache(0, (void*)0x12345678)));
-    Cache target(1, (void*)0xdeadbeaf);
+    EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
+    Cache target(1, new uint8_t[3]);
     EXPECT_FALSE(bc.add(target));
     Caches cacheList;
     EXPECT_EQ(true, bc.get(1, 1, cacheList));
@@ -225,7 +225,7 @@ static void testFoundPartialCacheAndRestToRead()
 static void testTailOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_FALSE(bc.add(Cache(0, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
@@ -237,7 +237,7 @@ static void testTailOfRestShouldBeMergedAsFarAsPossible()
 static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_FALSE(bc.add(Cache(2, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(2, new uint8_t[3])));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
@@ -249,8 +249,8 @@ static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_FALSE(bc.add(Cache(0, (void*)0xdeadbeaf)));
-    EXPECT_FALSE(bc.add(Cache(3, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
+    EXPECT_FALSE(bc.add(Cache(3, new uint8_t[3])));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
@@ -262,7 +262,7 @@ static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
 static void testHandleRangeCacheAdded()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    uintptr_t cacheStartAddress = 0x1000000;
+    uint8_t* cacheStartAddress = new uint8_t[bc.sectorSize() * 2];
     EXPECT_TRUE(bc.addRange(1, 2, (void*)cacheStartAddress));
     Caches cacheList;
     IORequests rest;
@@ -279,8 +279,9 @@ static void testCacheProperyDestroyedWhenUpdated()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     uint8_t* p = new uint8_t[bc.sectorSize()];
+    uint8_t* q = new uint8_t[bc.sectorSize()];
     EXPECT_FALSE(bc.add(Cache(0, p)));
-    EXPECT_TRUE(bc.add(Cache(0, (void*)0xffffffff)));
+    EXPECT_TRUE(bc.add(Cache(0, q)));
 }
 
 // destroy all cachhe
