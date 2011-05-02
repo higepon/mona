@@ -171,7 +171,7 @@ static void testAddedSingleCacheCanGet()
     Caches cacheList;
     const int numSectors = 1;
     Cache cache(targetSector, NULL);
-    EXPECT_TRUE(bc.add(cache));
+    EXPECT_FALSE(bc.add(cache));
     EXPECT_EQ(true, bc.get(targetSector, numSectors, cacheList));
     ASSERT_EQ(1, cacheList.size());
     EXPECT_CACHE_EQ(cache, cacheList[0]);
@@ -180,9 +180,9 @@ static void testAddedSingleCacheCanGet()
 static void testAddedMultipleCacheCanGetSingleCache()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_TRUE(bc.add(Cache(0, (void*)0x12345678)));
+    EXPECT_FALSE(bc.add(Cache(0, (void*)0x12345678)));
     Cache target(1, (void*)0xdeadbeaf);
-    EXPECT_TRUE(bc.add(target));
+    EXPECT_FALSE(bc.add(target));
     Caches cacheList;
     EXPECT_EQ(true, bc.get(1, 1, cacheList));
     ASSERT_EQ(1, cacheList.size());
@@ -193,7 +193,7 @@ static void testFoundPartialCacheAndRestToRead()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     Cache target(1, (void*)0xdeadbeaf);
-    EXPECT_TRUE(bc.add(target));
+    EXPECT_FALSE(bc.add(target));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 2, cacheList, rest));
@@ -218,7 +218,7 @@ static void testTailOfRestShouldBeMergedAsFarAsPossible()
 static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_TRUE(bc.add(Cache(2, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(2, (void*)0xdeadbeaf)));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
@@ -230,8 +230,8 @@ static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
-    EXPECT_TRUE(bc.add(Cache(3, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(0, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(3, (void*)0xdeadbeaf)));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
@@ -256,7 +256,16 @@ static void testHandleRangeCacheAdded()
     EXPECT_IO_REQUEST_EQ(IORequest(3, 1), rest[1]);
 }
 
+static void testCacheProperyDestroyedWhenUpdated()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(0, (void*)0xffffffff)));
+}
+
 // overwrite when exists
+// handle max size
+// assert max size % 512
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
@@ -267,6 +276,7 @@ int main(int argc, char *argv[])
     testHeadOfRestShouldBeMergedAsFarAsPossible();
     testMiddleOfRestShouldBeMergedAsFarAsPossible();
     testHandleRangeCacheAdded();
+    testCacheProperyDestroyedWhenUpdated();
     TEST_RESULTS();
     return 0;
 }
