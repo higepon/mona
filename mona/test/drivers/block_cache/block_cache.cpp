@@ -85,6 +85,11 @@ public:
         }
     }
 
+    uintptr_t sectorSize() const
+    {
+        return 512;
+    }
+
     bool getCacheAndRest(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList, IORequests& rest)
     {
         CacheMap::const_iterator it = cacheMap_.lower_bound(startSector);
@@ -126,7 +131,7 @@ public:
     bool addRange(uintptr_t startSector, uintptr_t numSectors, void* data)
     {
         for (uintptr_t i = 0; i < numSectors; i++) {
-            Cache cache(startSector + i, (void*)((uintptr_t)data + i * 512));
+            Cache cache(startSector + i, (void*)((uintptr_t)data + i * sectorSize()));
             add(cache);
         }
         return true;
@@ -245,14 +250,13 @@ static void testHandleRangeCacheAdded()
     EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
     ASSERT_EQ(2, cacheList.size());
     EXPECT_CACHE_EQ(Cache(1, (void*)cacheStartAddress), cacheList[0]);
-    EXPECT_CACHE_EQ(Cache(2, (void*)(cacheStartAddress + 512)), cacheList[1]);
+    EXPECT_CACHE_EQ(Cache(2, (void*)(cacheStartAddress + bc.sectorSize())), cacheList[1]);
     ASSERT_EQ(2, rest.size());
     EXPECT_IO_REQUEST_EQ(IORequest(0, 1), rest[0]);
     EXPECT_IO_REQUEST_EQ(IORequest(3, 1), rest[1]);
 }
 
 // overwrite when exists
-// getSectorSize
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
