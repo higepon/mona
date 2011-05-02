@@ -72,6 +72,8 @@ public:
     {
     }
 
+    virtual ~BlockCache() {}
+
     bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
     {
         CacheMap::const_iterator it = cacheMap_.find(startSector);
