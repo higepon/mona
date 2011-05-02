@@ -221,10 +221,27 @@ static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
     EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
     ASSERT_EQ(2, cacheList.size());
     ASSERT_EQ(1, rest.size());
-    EXPECT_EQ(1, rest[0].startSector());
-    EXPECT_EQ(2, rest[0].numSectors());
+    EXPECT_IO_REQUEST_EQ(IORequest(1, 2), rest[0]);
 }
 
+static void testHandleRangeCacheAdded()
+{
+    BlockCache bc(MAX_CACHE_SIZE);
+    uintptr_t cacheStartAddress = 0x1000000;
+    EXPECT_TRUE(bc.addRange(Cache(1, 2, (void*)cacheStartAddress)));
+    Caches cacheList;
+    IORequests rest;
+    EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
+    ASSERT_EQ(2, cacheList.size());
+    EXPECT_CACHE_EQ(Cache(0, (void*)cacheStartAddress), cacheList[0]);
+    EXPECT_CACHE_EQ(Cache(0, (void*)(cacheStartAddress + 512)), cacheList[1]);
+    ASSERT_EQ(1, rest.size());
+    EXPECT_IO_REQUEST_EQ(IORequest(1, 2), rest[0]);
+}
+
+// add with range
+// overwrite when exists
+// getSectorSize
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
@@ -234,6 +251,7 @@ int main(int argc, char *argv[])
     testTailOfRestShouldBeMergedAsFarAsPossible();
     testHeadOfRestShouldBeMergedAsFarAsPossible();
     testMiddleOfRestShouldBeMergedAsFarAsPossible();
+    testHandleRangeCacheAdded();
     TEST_RESULTS();
     return 0;
 }
