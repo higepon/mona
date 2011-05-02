@@ -46,6 +46,11 @@ public:
 
     }
 
+    void destroy()
+    {
+        delete[] (uint8_t*)data_;
+    }
+
     uintptr_t sector() const
     {
         return sector_;
@@ -124,8 +129,16 @@ public:
 
     bool add(Cache cache)
     {
-        cacheMap_[cache.sector()] = cache;
-        return true;
+        CacheMap::iterator it = cacheMap_.find(cache.sector());
+        if (it == cacheMap_.end()) {
+            cacheMap_[cache.sector()] = cache;
+            return false;
+        } else {
+            // overwrite
+            (*it).second.destroy();
+            (*it).second = cache;
+            return true;
+        }
     }
 
     bool addRange(uintptr_t startSector, uintptr_t numSectors, void* data)
@@ -206,7 +219,7 @@ static void testFoundPartialCacheAndRestToRead()
 static void testTailOfRestShouldBeMergedAsFarAsPossible()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
+    EXPECT_FALSE(bc.add(Cache(0, (void*)0xdeadbeaf)));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
@@ -259,8 +272,9 @@ static void testHandleRangeCacheAdded()
 static void testCacheProperyDestroyedWhenUpdated()
 {
     BlockCache bc(MAX_CACHE_SIZE);
-    EXPECT_TRUE(bc.add(Cache(0, (void*)0xdeadbeaf)));
-    EXPECT_FALSE(bc.add(Cache(0, (void*)0xffffffff)));
+    uint8_t* p = new uint8_t[bc.sectorSize()];
+    EXPECT_FALSE(bc.add(Cache(0, p)));
+    EXPECT_TRUE(bc.add(Cache(0, (void*)0xffffffff)));
 }
 
 // overwrite when exists
