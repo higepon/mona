@@ -78,7 +78,12 @@ public:
         ASSERT((maxCacheSizeByte % sectorSize()) == 0);
     }
 
-    virtual ~BlockCache() {}
+    virtual ~BlockCache()
+    {
+        for (CacheMap::const_iterator it = cacheMap_.begin(); it != cacheMap_.end(); ++it) {
+            delete[] (uint8_t*)((*it).second.get());
+        }
+    }
 
     bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
     {
