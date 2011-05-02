@@ -126,6 +126,11 @@ private:
     uintptr_t maxCacheSizeByte_;
 };
 
+#define EXPECT_IO_REQUEST_EQ(lhs, rhs) {             \
+    EXPECT_EQ(lhs.startSector(), rhs.startSector()); \
+    EXPECT_EQ(lhs.numSectors(), rhs.numSectors());   \
+}
+
 #define EXPECT_CACHE_EQ(lhs, rhs) {        \
     EXPECT_EQ(lhs.sector(), rhs.sector()); \
     EXPECT_EQ(lhs.get(), rhs.get());       \
@@ -179,8 +184,7 @@ static void testFoundPartialCacheAndRestToRead()
     ASSERT_EQ(1, cacheList.size());
     EXPECT_CACHE_EQ(target, cacheList[0]);
     ASSERT_EQ(1, rest.size());
-    EXPECT_EQ(0, rest[0].startSector());
-    EXPECT_EQ(1, rest[0].numSectors());
+    EXPECT_IO_REQUEST_EQ(IORequest(0, 1), rest[0]);
 }
 
 static void testTailOfRestShouldBeMergedAsFarAsPossible()
@@ -192,8 +196,7 @@ static void testTailOfRestShouldBeMergedAsFarAsPossible()
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
     ASSERT_EQ(1, cacheList.size());
     ASSERT_EQ(1, rest.size());
-    EXPECT_EQ(1, rest[0].startSector());
-    EXPECT_EQ(2, rest[0].numSectors());
+    EXPECT_IO_REQUEST_EQ(IORequest(1, 2), rest[0]);
 }
 
 static void testHeadOfRestShouldBeMergedAsFarAsPossible()
@@ -205,8 +208,7 @@ static void testHeadOfRestShouldBeMergedAsFarAsPossible()
     EXPECT_EQ(true, bc.getCacheAndRest(0, 3, cacheList, rest));
     ASSERT_EQ(1, cacheList.size());
     ASSERT_EQ(1, rest.size());
-    EXPECT_EQ(0, rest[0].startSector());
-    EXPECT_EQ(2, rest[0].numSectors());
+    EXPECT_IO_REQUEST_EQ(IORequest(0, 2), rest[0]);
 }
 
 static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
