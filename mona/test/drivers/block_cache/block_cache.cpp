@@ -75,6 +75,7 @@ class BlockCache
 public:
     BlockCache(uintptr_t maxCacheSizeByte) : maxCacheSizeByte_(maxCacheSizeByte)
     {
+        ASSERT((maxCacheSizeByte % sectorSize()) == 0);
     }
 
     virtual ~BlockCache() {}
@@ -277,9 +278,8 @@ static void testCacheProperyDestroyedWhenUpdated()
     EXPECT_TRUE(bc.add(Cache(0, (void*)0xffffffff)));
 }
 
-// overwrite when exists
+// destroy all cachhe
 // handle max size
-// assert max size % 512
 int main(int argc, char *argv[])
 {
     testEmptyCacheHasNoCacheOf0thSector();
