@@ -57,6 +57,15 @@
         munit_number_of_passed++;\
     }\
 }
+#define EXPECT_FALSE(condition) {\
+    if ((condition)) {\
+        printf("MUnit:EXPECT_FALSE failure on [%s]:%d: %s\n", __FILE__, __LINE__, #condition);\
+        logprintf("MUnit:EXPECT_FALSE failure on [%s]:%d: %s\n", __FILE__, __LINE__, #condition);\
+        munit_number_of_failed++;\
+    } else {\
+        munit_number_of_passed++;\
+    }\
+}
 
 #define EXPECT_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 #define EXPECT_STR_EQ(expected, actual) munit_expect_eq(expected, actual, #expected, __PRETTY_FUNCTION__, __FILE__, __LINE__)
