@@ -121,6 +121,15 @@ public:
         return true;
     }
 
+    bool addRange(uintptr_t startSector, uintptr_t numSectors, void* data)
+    {
+        for (uintptr_t i = 0; i < numSectors; i++) {
+            Cache cache(startSector + i, (void*)((uintptr_t)data + i * 512));
+            add(cache);
+        }
+        return true;
+    }
+
 private:
     CacheMap cacheMap_;
     uintptr_t maxCacheSizeByte_;
@@ -228,18 +237,18 @@ static void testHandleRangeCacheAdded()
 {
     BlockCache bc(MAX_CACHE_SIZE);
     uintptr_t cacheStartAddress = 0x1000000;
-    EXPECT_TRUE(bc.addRange(Cache(1, 2, (void*)cacheStartAddress)));
+    EXPECT_TRUE(bc.addRange(1, 2, (void*)cacheStartAddress));
     Caches cacheList;
     IORequests rest;
     EXPECT_EQ(true, bc.getCacheAndRest(0, 4, cacheList, rest));
     ASSERT_EQ(2, cacheList.size());
-    EXPECT_CACHE_EQ(Cache(0, (void*)cacheStartAddress), cacheList[0]);
-    EXPECT_CACHE_EQ(Cache(0, (void*)(cacheStartAddress + 512)), cacheList[1]);
-    ASSERT_EQ(1, rest.size());
-    EXPECT_IO_REQUEST_EQ(IORequest(1, 2), rest[0]);
+    EXPECT_CACHE_EQ(Cache(1, (void*)cacheStartAddress), cacheList[0]);
+    EXPECT_CACHE_EQ(Cache(2, (void*)(cacheStartAddress + 512)), cacheList[1]);
+    ASSERT_EQ(2, rest.size());
+    EXPECT_IO_REQUEST_EQ(IORequest(0, 1), rest[0]);
+    EXPECT_IO_REQUEST_EQ(IORequest(3, 1), rest[1]);
 }
 
-// add with range
 // overwrite when exists
 // getSectorSize
 int main(int argc, char *argv[])
