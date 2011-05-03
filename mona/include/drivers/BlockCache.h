@@ -197,7 +197,7 @@ public:
         }
     }
 
-    bool addRange(uintptr_t startSector, uintptr_t numSectors, void* data)
+    bool addRange(uintptr_t startSector, uintptr_t numSectors, const void* data)
     {
         for (uintptr_t i = 0; i < numSectors; i++) {
             uint8_t* p = new uint8_t[sectorSize()];
@@ -205,7 +205,6 @@ public:
             Cache cache(startSector + i, p);
             add(cache);
         }
-        delete[] (uint8_t*)data;
         return true;
     }
 

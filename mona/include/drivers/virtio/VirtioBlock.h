@@ -117,6 +117,9 @@ public:
             monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
+        ASSERT((sizeToWrite % 512) == 0);
+        ASSERT((sizeWritten % 512) == 0);
+        bc_.addRange(sector, sizeWritten / 512, writeBuf);
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
@@ -248,9 +251,9 @@ private:
         }
 
         if (sizeRead == adjSizeToRead) {
-            uint8_t* p = new uint8_t[adjSizeToRead];
-            ASSERT(p);
-            bc_.addRange(sector, adjSizeToRead / 512, p);
+            MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
+            ASSERT(p.get());
+            bc_.addRange(sector, adjSizeToRead / 512, p.get());
         }
 
         ASSERT((uintptr_t)afterCookie == cookie);
