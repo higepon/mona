@@ -33,6 +33,7 @@
 #include <drivers/virtio/VirtQueue.h>
 #include <drivers/virtio/VirtioDevice.h>
 #include <vector>
+#include <drivers/BlockCache.h>
 
 class VirtioBlock
 {
@@ -41,7 +42,7 @@ class VirtioBlock
 //   We can issue multiple requests, and wait first response to come.
 //   But for now, since file_server requests are serialized, device requsts are also serialized.
 private:
-    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev)
+    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(6000)
     {
         ASSERT(vdev_.get() != NULL);
         vq_.reset(vdev_->findVirtQueue(0));
@@ -245,6 +246,13 @@ private:
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
         }
+
+        if (sizeRead == adjSizeToRead) {
+            uint8_t* p = new uint8_t[adjSizeToRead];
+            ASSERT(p);
+            bc_.addRange(sector, adjSizeToRead / 512, p);
+        }
+
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
@@ -253,6 +261,7 @@ private:
 
     MonAPI::scoped_ptr<VirtioDevice> vdev_;
     MonAPI::scoped_ptr<VirtQueue> vq_;
+    BlockCache bc_;
 };
 
 #endif // _VIRTIOBLOCK_
