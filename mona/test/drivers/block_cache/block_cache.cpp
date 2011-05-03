@@ -41,7 +41,8 @@ public:
     Cache() {}
     Cache(uintptr_t sector, void* data) :
         sector_(sector),
-        data_(data)
+        data_(data),
+        isRecentlyUsed_(false)
     {
 
     }
@@ -61,9 +62,26 @@ public:
         return data_;
     }
 
+    bool isRecentlyUsed() const
+    {
+        return isRecentlyUsed_;
+    }
+
+    void setAsNotUsed()
+    {
+        isRecentlyUsed_ = false;
+    }
+
+    void setAsUsed()
+    {
+        isRecentlyUsed_ = true;
+    }
+
+
 private:
     uintptr_t sector_;
     void* data_;
+    bool isRecentlyUsed_;
 };
 
 typedef std::vector<Cache> Caches;
@@ -73,9 +91,8 @@ typedef std::map<uintptr_t, Cache> CacheMap;
 class BlockCache
 {
 public:
-    BlockCache(uintptr_t maxCacheSizeByte) : maxCacheSizeByte_(maxCacheSizeByte)
+    BlockCache(uintptr_t maxNumCaches) : maxNumCaches_(maxNumCaches)
     {
-        ASSERT((maxCacheSizeByte % sectorSize()) == 0);
     }
 
     virtual ~BlockCache()
@@ -87,10 +104,11 @@ public:
 
     bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
     {
-        CacheMap::const_iterator it = cacheMap_.find(startSector);
+        CacheMap::iterator it = cacheMap_.find(startSector);
         if (it == cacheMap_.end()) {
             return false;
         } else {
+            (*it).second.setAsUsed();
             cacheList.push_back((*it).second);
             return true;
         }
@@ -135,6 +153,10 @@ public:
 
     bool add(Cache cache)
     {
+        if (isCacheFull()) {
+            invalidateNotRecentlyUsed();
+        }
+        ASSERT(!isCacheFull());
         CacheMap::iterator it = cacheMap_.find(cache.sector());
         if (it == cacheMap_.end()) {
             cacheMap_[cache.sector()] = cache;
@@ -157,8 +179,28 @@ public:
     }
 
 private:
+
+    void invalidateNotRecentlyUsed()
+    {
+        for (CacheMap::iterator it = cacheMap_.begin(); it != cacheMap_.end(); ) {
+            Cache& c = (*it).second;
+            if (c.isRecentlyUsed()) {
+                c.setAsNotUsed();
+                it++;
+            } else {
+                c.destroy();
+                cacheMap_.erase(it++);
+            }
+        }
+    }
+
+    bool isCacheFull() const
+    {
+        return cacheMap_.size() == maxNumCaches_;
+    }
+
     CacheMap cacheMap_;
-    uintptr_t maxCacheSizeByte_;
+    uintptr_t maxNumCaches_;
 };
 
 #define EXPECT_IO_REQUEST_EQ(lhs, rhs) {             \
@@ -171,11 +213,11 @@ private:
     EXPECT_EQ(lhs.get(), rhs.get());       \
 }
 
-static const int MAX_CACHE_SIZE = 1 * 1024 * 1024;
+static const int MAX_NUM_CACHES = 10;
 
 static void testEmptyCacheHasNoCacheOf0thSector()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     Caches cacheList;
     const int startSector = 0;
     const int numSectors = 1;
@@ -185,7 +227,7 @@ static void testEmptyCacheHasNoCacheOf0thSector()
 
 static void testAddedSingleCacheCanGet()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     const int targetSector = 0;
     Caches cacheList;
     const int numSectors = 1;
@@ -198,7 +240,7 @@ static void testAddedSingleCacheCanGet()
 
 static void testAddedMultipleCacheCanGetSingleCache()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
     Cache target(1, new uint8_t[3]);
     EXPECT_FALSE(bc.add(target));
@@ -210,7 +252,7 @@ static void testAddedMultipleCacheCanGetSingleCache()
 
 static void testFoundPartialCacheAndRestToRead()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     Cache target(1, (void*)0xdeadbeaf);
     EXPECT_FALSE(bc.add(target));
     Caches cacheList;
@@ -224,7 +266,7 @@ static void testFoundPartialCacheAndRestToRead()
 
 static void testTailOfRestShouldBeMergedAsFarAsPossible()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
     Caches cacheList;
     IORequests rest;
@@ -236,7 +278,7 @@ static void testTailOfRestShouldBeMergedAsFarAsPossible()
 
 static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     EXPECT_FALSE(bc.add(Cache(2, new uint8_t[3])));
     Caches cacheList;
     IORequests rest;
@@ -248,7 +290,7 @@ static void testHeadOfRestShouldBeMergedAsFarAsPossible()
 
 static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
     EXPECT_FALSE(bc.add(Cache(3, new uint8_t[3])));
     Caches cacheList;
@@ -261,7 +303,7 @@ static void testMiddleOfRestShouldBeMergedAsFarAsPossible()
 
 static void testHandleRangeCacheAdded()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     uint8_t* cacheStartAddress = new uint8_t[bc.sectorSize() * 2];
     EXPECT_TRUE(bc.addRange(1, 2, (void*)cacheStartAddress));
     Caches cacheList;
@@ -277,14 +319,32 @@ static void testHandleRangeCacheAdded()
 
 static void testCacheProperyDestroyedWhenUpdated()
 {
-    BlockCache bc(MAX_CACHE_SIZE);
+    BlockCache bc(MAX_NUM_CACHES);
     uint8_t* p = new uint8_t[bc.sectorSize()];
     uint8_t* q = new uint8_t[bc.sectorSize()];
     EXPECT_FALSE(bc.add(Cache(0, p)));
     EXPECT_TRUE(bc.add(Cache(0, q)));
 }
 
-// destroy all cachhe
+static void testNotRecentlyUsedCacheShouldBeDestroyedWhenFull()
+{
+    const int maxNumCaches = 2;
+    BlockCache bc(maxNumCaches);
+    uint8_t* p = new uint8_t[bc.sectorSize()];
+    uint8_t* q = new uint8_t[bc.sectorSize()];
+    EXPECT_FALSE(bc.add(Cache(0, p)));
+    EXPECT_FALSE(bc.add(Cache(1, q)));
+    Caches cacheList;
+    // The sector 1 is recently used.
+    ASSERT_EQ(true, bc.get(1, 1, cacheList));
+
+    uint8_t* r = new uint8_t[bc.sectorSize()];
+    EXPECT_FALSE(bc.add(Cache(2, r)));
+    // The sector 0 is destroyed.
+    EXPECT_FALSE(bc.get(0, 1, cacheList));
+    EXPECT_TRUE(bc.get(1, 1, cacheList));
+}
+
 // handle max size
 int main(int argc, char *argv[])
 {
@@ -297,6 +357,7 @@ int main(int argc, char *argv[])
     testMiddleOfRestShouldBeMergedAsFarAsPossible();
     testHandleRangeCacheAdded();
     testCacheProperyDestroyedWhenUpdated();
+    testNotRecentlyUsedCacheShouldBeDestroyedWhenFull();
     TEST_RESULTS();
     return 0;
 }
