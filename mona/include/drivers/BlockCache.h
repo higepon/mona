@@ -200,9 +200,12 @@ public:
     bool addRange(uintptr_t startSector, uintptr_t numSectors, void* data)
     {
         for (uintptr_t i = 0; i < numSectors; i++) {
-            Cache cache(startSector + i, (void*)((uintptr_t)data + i * sectorSize()));
+            uint8_t p = new uint8_t[sectorSize];
+            memcpy(p, ((uint8_t*)data) + i * sectorSize());
+            Cache cache(startSector + i, p);
             add(cache);
         }
+        delete[] (uint8_t*)data;
         return true;
     }
 
