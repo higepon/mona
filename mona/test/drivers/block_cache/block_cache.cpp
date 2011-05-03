@@ -102,14 +102,14 @@ public:
         }
     }
 
-    bool get(uintptr_t startSector, uintptr_t numSectors, Caches& cacheList)
+    bool get(uintptr_t startSector, uintptr_t numSectors, Cache& ret)
     {
         CacheMap::iterator it = cacheMap_.find(startSector);
         if (it == cacheMap_.end()) {
             return false;
         } else {
             (*it).second.setAsUsed();
-            cacheList.push_back((*it).second);
+            ret = (*it).second;
             return true;
         }
     }
@@ -226,24 +226,22 @@ static const int MAX_NUM_CACHES = 10;
 static void testEmptyCacheHasNoCacheOf0thSector()
 {
     BlockCache bc(MAX_NUM_CACHES);
-    Caches cacheList;
+    Cache cache;
     const int startSector = 0;
     const int numSectors = 1;
-    EXPECT_EQ(false, bc.get(startSector, numSectors, cacheList));
-    EXPECT_EQ(0, cacheList.size());
+    EXPECT_EQ(false, bc.get(startSector, numSectors, cache));
 }
 
 static void testAddedSingleCacheCanGet()
 {
     BlockCache bc(MAX_NUM_CACHES);
     const int targetSector = 0;
-    Caches cacheList;
+    Cache foundCache;
     const int numSectors = 1;
     Cache cache(targetSector, new uint8_t[3]);
     EXPECT_FALSE(bc.add(cache));
-    EXPECT_EQ(true, bc.get(targetSector, numSectors, cacheList));
-    ASSERT_EQ(1, cacheList.size());
-    EXPECT_CACHE_EQ(cache, cacheList[0]);
+    EXPECT_EQ(true, bc.get(targetSector, numSectors, foundCache));
+    EXPECT_CACHE_EQ(cache, foundCache);
 }
 
 static void testAddedMultipleCacheCanGetSingleCache()
@@ -252,10 +250,9 @@ static void testAddedMultipleCacheCanGetSingleCache()
     EXPECT_FALSE(bc.add(Cache(0, new uint8_t[3])));
     Cache target(1, new uint8_t[3]);
     EXPECT_FALSE(bc.add(target));
-    Caches cacheList;
-    EXPECT_EQ(true, bc.get(1, 1, cacheList));
-    ASSERT_EQ(1, cacheList.size());
-    EXPECT_CACHE_EQ(target, cacheList[0]);
+    Cache cache;
+    EXPECT_EQ(true, bc.get(1, 1, cache));
+    EXPECT_CACHE_EQ(target, cache);
 }
 
 static void testFoundPartialCacheAndRestToRead()
@@ -342,15 +339,15 @@ static void testNotRecentlyUsedCacheShouldBeDestroyedWhenFull()
     uint8_t* q = new uint8_t[bc.sectorSize()];
     EXPECT_FALSE(bc.add(Cache(0, p)));
     EXPECT_FALSE(bc.add(Cache(1, q)));
-    Caches cacheList;
+    Cache cache;
     // The sector 1 is recently used.
-    ASSERT_EQ(true, bc.get(1, 1, cacheList));
+    ASSERT_EQ(true, bc.get(1, 1, cache));
 
     uint8_t* r = new uint8_t[bc.sectorSize()];
     EXPECT_FALSE(bc.add(Cache(2, r)));
     // The sector 0 is destroyed.
-    EXPECT_FALSE(bc.get(0, 1, cacheList));
-    EXPECT_TRUE(bc.get(1, 1, cacheList));
+    EXPECT_FALSE(bc.get(0, 1, cache));
+    EXPECT_TRUE(bc.get(1, 1, cache));
 }
 
 // handle max size
