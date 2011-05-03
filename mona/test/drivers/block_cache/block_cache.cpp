@@ -192,6 +192,14 @@ private:
                 cacheMap_.erase(it++);
             }
         }
+        // A rare case, all cache is recently used.
+        if (isCacheFull()) {
+            for (CacheMap::iterator it = cacheMap_.begin(); it != cacheMap_.end(); ) {
+                Cache& c = (*it).second;
+                c.destroy();
+                cacheMap_.erase(it++);
+            }
+        }
     }
 
     bool isCacheFull() const
