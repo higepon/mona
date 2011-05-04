@@ -57,7 +57,7 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
-        logprintf("[read]%s %s:%d\n", __func__, __FILE__, __LINE__);
+        logprintf("[write]%s %s:%d\n", __func__, __FILE__, __LINE__);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -138,6 +138,7 @@ public:
         bc_.getCacheAndRest(sector, numSectors, caches, rest);
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
+//            ASSERT(false);
             if ((*it).sector() == numSectors - 1) {
                 // here is a bug on last sector 512
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
@@ -291,6 +292,7 @@ private:
         if (sizeRead == adjSizeToRead) {
             MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
             ASSERT(p.get());
+            memcpy(p.get(), buf, adjSizeToRead);
             bc_.addRange(sector, adjSizeToRead / 512, p.get());
         }
 
