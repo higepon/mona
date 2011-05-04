@@ -139,6 +139,7 @@ public:
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
             if ((*it).sector() == numSectors - 1) {
+                // here is a bug on last sector 512
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
             } else {
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
@@ -148,10 +149,13 @@ public:
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (IORequests::iterator it = rest.begin(); it != rest.end(); ++it) {
             logprintf("rest startSector=%d rest.numSectors=%d arg.numSectors=%d\n", (*it).startSector(),(*it).numSectors(), numSectors);
+            int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
-            int sizeToRead2 =  isLastSector ?
-                ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize()) :
-                (*it).numSectors() * bc_.sectorSize();
+            if (isLastSector) {
+                sizeToRead2 = ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize());
+            } else {
+                sizeToRead2 = (*it).numSectors() * bc_.sectorSize();
+            }
             int numBlocks = (sizeToRead2 + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
             logprintf("%s %s:%d numSectors=%d sizeToRead2=%d numBlocks==%d\n", __func__, __FILE__, __LINE__, (*it).numSectors(), sizeToRead2, numBlocks);
             int restToRead = sizeToRead2;
