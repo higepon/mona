@@ -57,6 +57,7 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
+        logprintf("[read]%s %s:%d\n", __func__, __FILE__, __LINE__);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -127,20 +128,52 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+        logprintf("[read] sector=%d sizeToRead=%d %s %s:%d\n", (int)sector, (int)sizeToRead, __func__, __FILE__, __LINE__);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
 
-        int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
-        int restToRead = sizeToRead;
-        for (int i = 0; i < numBlocks; i++) {
-            int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i, size);
-            if (ret < 0) {
-                return ret;
+        uintptr_t numSectors = (sizeToRead - 1 + bc_.sectorSize()) / bc_.sectorSize();
+        Caches caches;
+        IORequests rest;
+        bc_.getCacheAndRest(sector, numSectors, caches, rest);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
+            if ((*it).sector() == numSectors - 1) {
+                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
+            } else {
+                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
             }
-            restToRead -= size;
         }
-        ASSERT(restToRead == 0);
+        // todo : cache here.
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        for (IORequests::iterator it = rest.begin(); it != rest.end(); ++it) {
+            logprintf("rest startSector=%d rest.numSectors=%d arg.numSectors=%d\n", (*it).startSector(),(*it).numSectors(), numSectors);
+            int sizeToRead2 = ((*it).startSector() + (*it).numSectors() == sector + numSectors) ?
+                ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize()) :
+                (*it).numSectors() * bc_.sectorSize();
+            int numBlocks = (sizeToRead2 + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
+            logprintf("%s %s:%d numSectors=%d sizeToRead2=%d numBlocks==%d\n", __func__, __FILE__, __LINE__, (*it).numSectors(), sizeToRead2, numBlocks);
+            int restToRead = sizeToRead2;
+            for (int i = 0; i < numBlocks; i++) {
+                int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
+                logprintf("%s %s:%d restToRead=%d size=%d\n", __func__, __FILE__, __LINE__, restToRead, size);
+                logprintf("[readInternal] bufidx=%d sector=%d size=%d %s %s:%d\n",
+                          (int)(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE),
+                          (int)((*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i),
+                          (int)size, __func__, __FILE__, __LINE__);
+
+                int ret = readInternal(((uint8_t*)readBuf) + ((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE,
+                                       (*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i
+                                       , size);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                if (ret < 0) {
+                    return ret;
+                }
+                restToRead -= size;
+            }
+            ASSERT(restToRead == 0);
+        }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return sizeToRead;
     }
 
