@@ -42,7 +42,7 @@ class VirtioBlock
 //   We can issue multiple requests, and wait first response to come.
 //   But for now, since file_server requests are serialized, device requsts are also serialized.
 private:
-    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(6000)
+    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(60000)
     {
         ASSERT(vdev_.get() != NULL);
         vq_.reset(vdev_->findVirtQueue(0));
