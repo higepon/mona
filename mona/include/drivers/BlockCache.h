@@ -203,6 +203,7 @@ public:
         for (uintptr_t i = 0; i < numSectors; i++) {
             uint8_t* p = new uint8_t[sectorSize()];
             memcpy(p, ((uint8_t*)data) + i * sectorSize(), sectorSize());
+            logprintf("cached sector=%d address=%x\n", startSector + i, p);
             Cache cache(startSector + i, p);
             add(cache);
         }

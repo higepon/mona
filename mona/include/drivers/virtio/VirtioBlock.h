@@ -120,6 +120,7 @@ public:
         }
         ASSERT((sizeToWrite % 512) == 0);
         ASSERT((sizeWritten % 512) == 0);
+        logprintf("cached by write sector=%d - %d\n", (int)sector, (int)sector + sizeWritten / 512);
         bc_.addRange(sector, sizeWritten / 512, writeBuf);
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
@@ -128,6 +129,9 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+        // imakoko 正しい場所を cache して読んでいる気がする。読み込むサイズの問題？
+        // todo remove
+        memset(readBuf, '0', (int)sizeToRead);
         logprintf("[read] sector=%d sizeToRead=%d %s %s:%d\n", (int)sector, (int)sizeToRead, __func__, __FILE__, __LINE__);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
@@ -139,10 +143,26 @@ public:
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
 //            ASSERT(false);
-            if ((*it).sector() == numSectors - 1) {
+            if ((*it).sector() == (sector + numSectors - 1)) {
                 // here is a bug on last sector 512
-                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
+                if (((int)sizeToRead % 512)== 0) {
+                    logprintf("[1]Cache Hit sector=%d address=%x\n", (*it).sector(), (*it).get());
+                for (int i = 0; i < bc_.sectorSize(); i++) {
+                    logprintf("%c", ((uint8_t*)(*it).get())[i]);
+                }
+                logprintf("\n\n");
+
+                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
+                } else {
+                logprintf("[2]Cache Hit sector=%d\n", (*it).sector());
+                    memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
+                }
             } else {
+                logprintf("[3]Cache Hit sector=%d address=%x\n", (*it).sector(), (*it).get());
+                for (int i = 0; i < bc_.sectorSize(); i++) {
+                    logprintf("%c", ((uint8_t*)(*it).get())[i]);
+                }
+                logprintf("\n\n");
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
             }
         }
@@ -153,6 +173,7 @@ public:
             int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
             if (isLastSector) {
+                logprintf("(int)sizeToRead % bc_.sectorSize() == 0 = %d\n", (int)sizeToRead % bc_.sectorSize() == 0);
                 sizeToRead2 = ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize());
             } else {
                 sizeToRead2 = (*it).numSectors() * bc_.sectorSize();
@@ -168,7 +189,7 @@ public:
                           (int)((*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i),
                           (int)size, __func__, __FILE__, __LINE__);
 
-                int ret = readInternal(((uint8_t*)readBuf) + ((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE,
+                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE) * getSectorSize(),
                                        (*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i
                                        , size);
         logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -179,7 +200,12 @@ public:
             }
             ASSERT(restToRead == 0);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        logprintf("returned %d %s %s:%d\n", (int)sizeToRead, __func__, __FILE__, __LINE__);
+        logprintf("\n\n**************** RETURN");
+        for (int i = 0; i < (int)sizeToRead; i++) {
+            logprintf("%c", ((uint8_t*)readBuf)[i]);
+        }
+        logprintf("\n\n");
         return sizeToRead;
     }
 
@@ -293,6 +319,13 @@ private:
             MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
             ASSERT(p.get());
             memcpy(p.get(), buf, adjSizeToRead);
+
+            logprintf("cached by read sector=%d - %d\n", (int)sector, (int)sector + adjSizeToRead / 512);
+            for (int i = 0; i < adjSizeToRead; i++) {
+                logprintf("%c", buf[i]);
+            }
+            logprintf("\n\n");
+
             bc_.addRange(sector, adjSizeToRead / 512, p.get());
         }
 

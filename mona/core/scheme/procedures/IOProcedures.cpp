@@ -457,6 +457,7 @@ PROCEDURE(Load, "load")
     Parser parser(scanner);
     for (Object* sexp = parser.parse(); sexp != SCM_EOF; sexp = parser.parse())
     {
+        logprintf("sexp=%s", (const char*)(sexp->toString().data()));
         Kernel::eval(sexp, env);
     }
     inputPort->close();
