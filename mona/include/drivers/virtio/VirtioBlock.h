@@ -124,15 +124,8 @@ public:
         return sizeWritten;
     }
 
-    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
+    void fillFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
-        const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
-        ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
-
-        uintptr_t numSectors = (sizeToRead - 1 + bc_.sectorSize()) / bc_.sectorSize();
-        Caches caches;
-        IORequests rest;
-        bc_.getCacheAndRest(sector, numSectors, caches, rest);
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
             if ((*it).sector() == (sector + numSectors - 1)) {
                 if (((int)sizeToRead % getSectorSize())== 0) {
@@ -144,6 +137,18 @@ public:
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
             }
         }
+    }
+
+    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
+    {
+        const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
+        ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
+
+        uintptr_t numSectors = (sizeToRead - 1 + bc_.sectorSize()) / bc_.sectorSize();
+        Caches caches;
+        IORequests rest;
+        bc_.getCacheAndRest(sector, numSectors, caches, rest);
+        fillFromCache(readBuf, caches, sizeToRead, sector, numSectors);
         for (IORequests::iterator it = rest.begin(); it != rest.end(); ++it) {
             int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
