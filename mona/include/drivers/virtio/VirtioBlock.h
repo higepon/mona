@@ -42,7 +42,7 @@ class VirtioBlock
 //   We can issue multiple requests, and wait first response to come.
 //   But for now, since file_server requests are serialized, device requsts are also serialized.
 private:
-    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(60000)
+    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(600000)
     {
         ASSERT(vdev_.get() != NULL);
         vq_.reset(vdev_->findVirtQueue(0));
@@ -79,8 +79,8 @@ public:
         std::vector<VirtBuffer> in;
         volatile uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
         *status = 0xff;
-
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
+//        logprintf("dest=%x %s %s:%d\n", buf, __func__, __FILE__, __LINE__);
         memcpy(buf, writeBuf, sizeToWrite);
         out.push_back(VirtBuffer(buf, sizeToWrite));
 
@@ -131,6 +131,7 @@ public:
     {
         // imakoko 正しい場所を cache して読んでいる気がする。読み込むサイズの問題？
         // todo remove
+//        logprintf("dest=%x %s %s:%d\n", readBuf, __func__, __FILE__, __LINE__);
         memset(readBuf, '0', (int)sizeToRead);
 //        logprintf("[read] sector=%d sizeToRead=%d %s %s:%d\n", (int)sector, (int)sizeToRead, __func__, __FILE__, __LINE__);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
@@ -153,6 +154,7 @@ public:
                 // logprintf("\n\n");
 
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
+//                logprintf("dest=%x %s %s:%d\n", (uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), __func__, __FILE__, __LINE__);
                 } else {
 //                logprintf("[2]Cache Hit sector=%d\n", (*it).sector());
                     memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
@@ -164,6 +166,7 @@ public:
                 // }
                 // logprintf("\n\n");
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
+//                logprintf("dest=%x %s %s:%d\n", (uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), __func__, __FILE__, __LINE__);
             }
         }
         // todo : cache here.
@@ -188,8 +191,8 @@ public:
                 //           (int)(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE),
                 //           (int)((*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i),
                 //           (int)size, __func__, __FILE__, __LINE__);
-
-                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE) * getSectorSize(),
+//                logprintf("read readBuf=%x i=%d ((*it).startSector() - sector)= %d (*it).startSector()= %d(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE)=%x\n", readBuf, i, (int)(((*it).startSector() - sector)), (int)((*it).startSector()), (int)(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE));
+                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * getSectorSize() + i * MAX_CONTIGOUS_SIZE),
                                        (*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i
                                        , size);
 //        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -249,6 +252,7 @@ private:
 
     int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
+//        logprintf("readBuf=%x\n", readBuf);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   readBuf can be used directory using scatter gather system.
@@ -319,6 +323,7 @@ private:
             MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
             ASSERT(p.get());
             memcpy(p.get(), buf, adjSizeToRead);
+//            logprintf("dest=%x %s %s:%d\n", p.get(), __func__, __FILE__, __LINE__);
 
             // logprintf("cached by read sector=%d - %d\n", (int)sector, (int)sector + adjSizeToRead / 512);
             // for (int i = 0; i < adjSizeToRead; i++) {
@@ -332,6 +337,7 @@ private:
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
+//        logprintf("dest=%x %s %s:%d\n", readBuf, __func__, __FILE__, __LINE__);
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
