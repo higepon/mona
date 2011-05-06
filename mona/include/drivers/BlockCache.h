@@ -131,18 +131,6 @@ public:
         }
     }
 
-    bool get(uintptr_t startSector, uintptr_t numSectors, Cache& ret)
-    {
-        CacheMap::iterator it = cacheMap_.find(startSector);
-        if (it == cacheMap_.end()) {
-            return false;
-        } else {
-            (*it).second.setAsUsed();
-            ret = (*it).second;
-            return true;
-        }
-    }
-
     uintptr_t sectorSize() const
     {
         return 512;
@@ -197,7 +185,6 @@ public:
             // overwrite
             (*it).second.destroy();
             cacheMap_[cache.sector()] = cache;
-//            (*it).second = cache;
             return true;
         }
     }
