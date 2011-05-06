@@ -32,8 +32,6 @@
 #include <vector>
 #include <map>
 
-using namespace std;
-
 class IORequest
 {
 public:
