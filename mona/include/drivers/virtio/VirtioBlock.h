@@ -57,7 +57,6 @@ public:
 
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
-//        logprintf("[write]%s %s:%d\n", __func__, __FILE__, __LINE__);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   writeBuf can be used directory using scatter gather system.
@@ -80,7 +79,6 @@ public:
         volatile uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
         *status = 0xff;
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
-//        logprintf("dest=%x %s %s:%d\n", buf, __func__, __FILE__, __LINE__);
         memcpy(buf, writeBuf, sizeToWrite);
         out.push_back(VirtBuffer(buf, sizeToWrite));
 
@@ -118,10 +116,9 @@ public:
             monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
-        ASSERT((sizeToWrite % 512) == 0);
-        ASSERT((sizeWritten % 512) == 0);
-//        logprintf("cached by write sector=%d - %d\n", (int)sector, (int)sector + sizeWritten / 512);
-        bc_.addRange(sector, sizeWritten / 512, writeBuf);
+        ASSERT((sizeToWrite % getSectorSize()) == 0);
+        ASSERT((sizeWritten % getSectorSize()) == 0);
+        bc_.addRange(sector, sizeWritten / getSectorSize(), writeBuf);
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
@@ -129,11 +126,6 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-        // imakoko 正しい場所を cache して読んでいる気がする。読み込むサイズの問題？
-        // todo remove
-//        logprintf("dest=%x %s %s:%d\n", readBuf, __func__, __FILE__, __LINE__);
-        memset(readBuf, '0', (int)sizeToRead);
-//        logprintf("[read] sector=%d sizeToRead=%d %s %s:%d\n", (int)sector, (int)sizeToRead, __func__, __FILE__, __LINE__);
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
 
@@ -141,61 +133,32 @@ public:
         Caches caches;
         IORequests rest;
         bc_.getCacheAndRest(sector, numSectors, caches, rest);
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
-//            ASSERT(false);
             if ((*it).sector() == (sector + numSectors - 1)) {
-                // here is a bug on last sector 512
-                if (((int)sizeToRead % 512)== 0) {
-                //     logprintf("[1]Cache Hit sector=%d address=%x\n", (*it).sector(), (*it).get());
-                // for (int i = 0; i < bc_.sectorSize(); i++) {
-                //     logprintf("%c", ((uint8_t*)(*it).get())[i]);
-                // }
-                // logprintf("\n\n");
-
-                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
-//                logprintf("dest=%x %s %s:%d\n", (uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), __func__, __FILE__, __LINE__);
+                if (((int)sizeToRead % getSectorSize())== 0) {
+                    memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
                 } else {
-//                logprintf("[2]Cache Hit sector=%d\n", (*it).sector());
                     memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
                 }
             } else {
-                // logprintf("[3]Cache Hit sector=%d address=%x\n", (*it).sector(), (*it).get());
-                // for (int i = 0; i < bc_.sectorSize(); i++) {
-                //     logprintf("%c", ((uint8_t*)(*it).get())[i]);
-                // }
-                // logprintf("\n\n");
                 memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
-//                logprintf("dest=%x %s %s:%d\n", (uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), __func__, __FILE__, __LINE__);
             }
         }
-        // todo : cache here.
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for (IORequests::iterator it = rest.begin(); it != rest.end(); ++it) {
-//            logprintf("rest startSector=%d rest.numSectors=%d arg.numSectors=%d\n", (*it).startSector(),(*it).numSectors(), numSectors);
             int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
             if (isLastSector) {
-                //              logprintf("(int)sizeToRead % bc_.sectorSize() == 0 = %d\n", (int)sizeToRead % bc_.sectorSize() == 0);
                 sizeToRead2 = ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize());
             } else {
                 sizeToRead2 = (*it).numSectors() * bc_.sectorSize();
             }
             int numBlocks = (sizeToRead2 + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
-//            logprintf("%s %s:%d numSectors=%d sizeToRead2=%d numBlocks==%d\n", __func__, __FILE__, __LINE__, (*it).numSectors(), sizeToRead2, numBlocks);
             int restToRead = sizeToRead2;
             for (int i = 0; i < numBlocks; i++) {
                 int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-                // logprintf("%s %s:%d restToRead=%d size=%d\n", __func__, __FILE__, __LINE__, restToRead, size);
-                // logprintf("[readInternal] bufidx=%d sector=%d size=%d %s %s:%d\n",
-                //           (int)(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE),
-                //           (int)((*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i),
-                //           (int)size, __func__, __FILE__, __LINE__);
-//                logprintf("read readBuf=%x i=%d ((*it).startSector() - sector)= %d (*it).startSector()= %d(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE)=%x\n", readBuf, i, (int)(((*it).startSector() - sector)), (int)((*it).startSector()), (int)(((*it).startSector() - sector) + i * MAX_CONTIGOUS_SIZE));
                 int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * getSectorSize() + i * MAX_CONTIGOUS_SIZE),
                                        (*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i
                                        , size);
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 if (ret < 0) {
                     return ret;
                 }
@@ -203,12 +166,6 @@ public:
             }
             ASSERT(restToRead == 0);
         }
-        // logprintf("returned %d %s %s:%d\n", (int)sizeToRead, __func__, __FILE__, __LINE__);
-        // logprintf("\n\n**************** RETURN");
-        // for (int i = 0; i < (int)sizeToRead; i++) {
-        //     logprintf("%c", ((uint8_t*)readBuf)[i]);
-        // }
-        // logprintf("\n\n");
         return sizeToRead;
     }
 
@@ -252,7 +209,6 @@ private:
 
     int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-//        logprintf("readBuf=%x\n", readBuf);
         // Possible enhancement
         //   For now, we allocate ContigousMemory for each time, we can elminate allocating buffer.
         //   readBuf can be used directory using scatter gather system.
@@ -323,21 +279,12 @@ private:
             MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
             ASSERT(p.get());
             memcpy(p.get(), buf, adjSizeToRead);
-//            logprintf("dest=%x %s %s:%d\n", p.get(), __func__, __FILE__, __LINE__);
-
-            // logprintf("cached by read sector=%d - %d\n", (int)sector, (int)sector + adjSizeToRead / 512);
-            // for (int i = 0; i < adjSizeToRead; i++) {
-            //     logprintf("%c", buf[i]);
-            // }
-            // logprintf("\n\n");
-
-            bc_.addRange(sector, adjSizeToRead / 512, p.get());
+            bc_.addRange(sector, adjSizeToRead / getSectorSize(), p.get());
         }
 
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
-//        logprintf("dest=%x %s %s:%d\n", readBuf, __func__, __FILE__, __LINE__);
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }
 
