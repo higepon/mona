@@ -117,7 +117,10 @@ typedef std::map<uintptr_t, Cache> CacheMap;
 class BlockCache
 {
 public:
-    BlockCache(uintptr_t maxNumCaches) : maxNumCaches_(maxNumCaches)
+    BlockCache(uintptr_t maxNumCaches) :
+        maxNumCaches_(maxNumCaches),
+        numCacheHits_(0),
+        numReads_(0)
     {
     }
 
@@ -174,6 +177,9 @@ public:
                 }
             }
         }
+        numReads_ += numSectors;
+        numCacheHits_ += cacheMap_.size();
+//        logprintf("numCacheHits_=%d numReads_=%d\n", numCacheHits_, numReads_);
         return true;
     }
 
@@ -201,7 +207,6 @@ public:
         for (uintptr_t i = 0; i < numSectors; i++) {
             uint8_t* p = new uint8_t[sectorSize()];
             memcpy(p, ((uint8_t*)data) + i * sectorSize(), sectorSize());
-//            logprintf("cached sector=%d address=%x\n", startSector + i, p);
             Cache cache(startSector + i, p);
             add(cache);
         }
@@ -239,6 +244,8 @@ private:
 
     CacheMap cacheMap_;
     uintptr_t maxNumCaches_;
+    uintptr_t numCacheHits_;
+    uintptr_t numReads_;
 };
 
 #endif // _BLOCK_CACHE_
