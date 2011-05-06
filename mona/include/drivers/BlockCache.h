@@ -192,7 +192,8 @@ public:
         } else {
             // overwrite
             (*it).second.destroy();
-            (*it).second = cache;
+            cacheMap_[cache.sector()] = cache;
+//            (*it).second = cache;
             return true;
         }
     }
