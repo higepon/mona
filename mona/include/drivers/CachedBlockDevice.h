@@ -40,6 +40,10 @@ public:
         ASSERT(dev_);
     }
 
+    CachedBlockDevice(BlockDevice* dev, uintptr_t maxNumSectors) : dev_(dev), bc_(maxNumSectors)
+    {
+        ASSERT(dev_);
+    }
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
         int64_t sizeWritten = dev_->write(writeBuf, sector, sizeToWrite);
@@ -61,11 +65,17 @@ public:
         for (IORequests::const_iterator it = requests.begin(); it != requests.end(); ++it) {
             const IORequest& req = (*it);
             int64_t requestSizeToRead = calcRequestSizeByte(req, sector, numSectors, sizeToRead);
-            int64_t ret = dev_->read((uint8_t*)readBuf + (req.startSector() - sector) * sectorSize(), req.startSector(), requestSizeToRead);
+            uint8_t* dest = (uint8_t*)readBuf + (req.startSector() - sector) * sectorSize();
+            int64_t ret = dev_->read(dest, req.startSector(), requestSizeToRead);
             if (ret < 0) {
                 return ret;
             }
             ASSERT(ret == requestSizeToRead);
+            MonAPI::scoped_array<uint8_t> p(new uint8_t[requestSizeToRead]);
+            ASSERT(p.get());
+            memcpy(p.get(), dest, requestSizeToRead);
+            bc_.addRange(req.startSector(), requestSizeToRead / sectorSize(), p.get());
+
         }
         return sizeToRead;
     }
