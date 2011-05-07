@@ -48,6 +48,7 @@ private:
         vq_.reset(vdev_->findVirtQueue(0));
         ASSERT(vq_.get() != NULL);
         vdev_->enableInterrupt();
+        ASSERT(bc_.sectorSize() == sectorSize());
     }
 
 public:
@@ -116,14 +117,16 @@ public:
             monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
-        ASSERT((sizeToWrite % getSectorSize()) == 0);
-        ASSERT((sizeWritten % getSectorSize()) == 0);
-        bc_.addRange(sector, sizeWritten / getSectorSize(), writeBuf);
+        ASSERT((sizeToWrite % sectorSize()) == 0);
+        ASSERT((sizeWritten % sectorSize()) == 0);
+        bc_.addRange(sector, sizeWritten / sectorSize(), writeBuf);
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
     }
 
+    //todo
+    // unify sector size 
     void fillFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
@@ -131,10 +134,10 @@ public:
             int copySize = 0;
 
             if (isLastSector) {
-                if (((int)sizeToRead % getSectorSize())== 0) {
+                if ((sizeToRead % sectorSize())== 0) {
                     copySize = bc_.sectorSize();
                 } else {
-                    copySize = (int)sizeToRead % bc_.sectorSize();
+                    copySize = sizeToRead % bc_.sectorSize();
                 }
             } else {
                 copySize = bc_.sectorSize();
@@ -146,7 +149,7 @@ public:
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
-        ASSERT(MAX_CONTIGOUS_SIZE % getSectorSize() == 0);
+        ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
 
         uintptr_t numSectors = (sizeToRead - 1 + bc_.sectorSize()) / bc_.sectorSize();
         Caches caches;
@@ -165,8 +168,8 @@ public:
             int restToRead = sizeToRead2;
             for (int i = 0; i < numBlocks; i++) {
                 int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * getSectorSize() + i * MAX_CONTIGOUS_SIZE),
-                                       (*it).startSector() + (MAX_CONTIGOUS_SIZE / getSectorSize()) * i
+                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE),
+                                       (*it).startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i
                                        , size);
                 if (ret < 0) {
                     return ret;
@@ -178,7 +181,7 @@ public:
         return sizeToRead;
     }
 
-    uint64_t getSectorSize() const
+    uint64_t sectorSize() const
     {
         return 512;
     }
@@ -223,7 +226,7 @@ private:
         //   readBuf can be used directory using scatter gather system.
 
         // seems to less than 512 byte can't be read.
-        int64_t adjSizeToRead = ((sizeToRead + getSectorSize() - 1) / getSectorSize()) * getSectorSize();
+        int64_t adjSizeToRead = ((sizeToRead + sectorSize() - 1) / sectorSize()) * sectorSize();
 
         scoped_ptr<ContigousMemory> mem(ContigousMemory::allocate(adjSizeToRead + sizeof(virtio_blk_outhdr) + 1));
         if (mem.get() == NULL) {
@@ -288,7 +291,7 @@ private:
             MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
             ASSERT(p.get());
             memcpy(p.get(), buf, adjSizeToRead);
-            bc_.addRange(sector, adjSizeToRead / getSectorSize(), p.get());
+            bc_.addRange(sector, adjSizeToRead / sectorSize(), p.get());
         }
 
         ASSERT((uintptr_t)afterCookie == cookie);

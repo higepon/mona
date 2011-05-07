@@ -244,10 +244,10 @@ static void test_virtio_block_class_probe()
 {
     scoped_ptr<VirtioBlock> vb(VirtioBlock::probe(1));
     ASSERT_TRUE(vb.get() != NULL);
-    EXPECT_EQ(512, vb->getSectorSize());
+    EXPECT_EQ(512, vb->sectorSize());
 
     const int FLOPPY_CAPACITY = 1440 * 1024;
-    EXPECT_EQ(FLOPPY_CAPACITY / vb->getSectorSize(), vb->getCapacity());
+    EXPECT_EQ(FLOPPY_CAPACITY / vb->sectorSize(), vb->getCapacity());
 }
 
 static void test_virtio_block_class_read()
