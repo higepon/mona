@@ -139,21 +139,21 @@ public:
             memcpy((uint8_t*)readBuf + sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
         }
     }
-    // todo private
+
     int64_t readFromDisk(void* readBuf, const IORequests& requests, int64_t sector, int64_t sizeToRead, uintptr_t numSectors)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
         for (IORequests::const_iterator it = requests.begin(); it != requests.end(); ++it) {
-            int sizeToRead2 = 0;
-            bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
-            if (isLastSector) {
-                sizeToRead2 = ((*it).numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
+            int64_t requestSizeToRead = 0;
+            bool includesLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
+            if (includesLastSector) {
+                requestSizeToRead = ((*it).numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
             } else {
-                sizeToRead2 = (*it).numSectors() * sectorSize();
+                requestSizeToRead = (*it).numSectors() * sectorSize();
             }
-            int numBlocks = (sizeToRead2 + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
-            int restToRead = sizeToRead2;
+            int numBlocks = (requestSizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
+            int restToRead = requestSizeToRead;
             for (int i = 0; i < numBlocks; i++) {
                 int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
                 int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE),
