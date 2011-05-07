@@ -129,16 +129,13 @@ public:
     // unify sector size 
     void fillFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
+        bool isExactSectorSize = (sizeToRead % sectorSize())== 0;
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
             bool isLastSector = (*it).sector() == (sector + numSectors - 1);
             int copySize = 0;
 
-            if (isLastSector) {
-                if ((sizeToRead % sectorSize())== 0) {
-                    copySize = sectorSize();
-                } else {
-                    copySize = sizeToRead % sectorSize();
-                }
+            if (isLastSector && !isExactSectorSize) {
+                copySize = sizeToRead % sectorSize();
             } else {
                 copySize = sectorSize();
             }
