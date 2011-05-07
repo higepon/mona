@@ -125,6 +125,54 @@ public:
         return sizeWritten;
     }
 
+    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
+    {
+        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
+        Caches caches;
+        IORequests rest;
+        bc_.getCacheAndRest(sector, numSectors, caches, rest);
+        readFromCache(readBuf, caches, sizeToRead, sector, numSectors);
+        return readFromDisk(readBuf, rest, sector, sizeToRead, numSectors);
+    }
+
+    uint64_t sectorSize() const
+    {
+        return 512;
+    }
+
+    uint64_t getCapacity() const
+    {
+        struct virtio_blk_config config;
+        vdev_->getConfig(&config, 0, sizeof(struct virtio_blk_config));
+        return config.capacity;
+    }
+
+    static VirtioBlock* probe(int deviceIndex)
+    {
+        VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, deviceIndex);
+        if (vdev == NULL) {
+            return NULL;
+        } else {
+            return new VirtioBlock(vdev);
+        }
+    }
+
+    void waitWithBusyLoop(uintptr_t usec)
+    {
+        for (uintptr_t i = 0; i < usec; i++) {
+            delayMicrosec();
+            if (vq_->isUsedBufExist()) {
+                break;
+            }
+        }
+    }
+
+private:
+    void memoryBarrier()
+    {
+
+    }
+
     void readFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
         bool isExactSectorSize = (sizeToRead % sectorSize())== 0;
@@ -172,54 +220,6 @@ public:
             ASSERT(restToRead == 0);
         }
         return sizeToRead;
-    }
-
-    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
-    {
-        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
-        Caches caches;
-        IORequests rest;
-        bc_.getCacheAndRest(sector, numSectors, caches, rest);
-        readFromCache(readBuf, caches, sizeToRead, sector, numSectors);
-        return readFromDisk(readBuf, rest, sector, sizeToRead, numSectors);
-    }
-
-    uint64_t sectorSize() const
-    {
-        return 512;
-    }
-
-    uint64_t getCapacity() const
-    {
-        struct virtio_blk_config config;
-        vdev_->getConfig(&config, 0, sizeof(struct virtio_blk_config));
-        return config.capacity;
-    }
-
-    static VirtioBlock* probe(int deviceIndex)
-    {
-        VirtioDevice* vdev = VirtioDevice::probe(PCI_DEVICE_ID_VIRTIO_BLOCK, deviceIndex);
-        if (vdev == NULL) {
-            return NULL;
-        } else {
-            return new VirtioBlock(vdev);
-        }
-    }
-
-    void waitWithBusyLoop(uintptr_t usec)
-    {
-        for (uintptr_t i = 0; i < usec; i++) {
-            delayMicrosec();
-            if (vq_->isUsedBufExist()) {
-                break;
-            }
-        }
-    }
-
-private:
-    void memoryBarrier()
-    {
-
     }
 
     int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
