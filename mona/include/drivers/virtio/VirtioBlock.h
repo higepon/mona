@@ -135,14 +135,14 @@ public:
 
             if (isLastSector) {
                 if ((sizeToRead % sectorSize())== 0) {
-                    copySize = bc_.sectorSize();
+                    copySize = sectorSize();
                 } else {
-                    copySize = sizeToRead % bc_.sectorSize();
+                    copySize = sizeToRead % sectorSize();
                 }
             } else {
-                copySize = bc_.sectorSize();
+                copySize = sectorSize();
             }
-            memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
+            memcpy((uint8_t*)readBuf + sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
         }
     }
 
@@ -151,7 +151,7 @@ public:
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
 
-        uintptr_t numSectors = (sizeToRead - 1 + bc_.sectorSize()) / bc_.sectorSize();
+        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
         Caches caches;
         IORequests rest;
         bc_.getCacheAndRest(sector, numSectors, caches, rest);
@@ -160,9 +160,9 @@ public:
             int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
             if (isLastSector) {
-                sizeToRead2 = ((*it).numSectors() - 1) * bc_.sectorSize() + ((int)sizeToRead % bc_.sectorSize() == 0 ? bc_.sectorSize() : (int)sizeToRead % bc_.sectorSize());
+                sizeToRead2 = ((*it).numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
             } else {
-                sizeToRead2 = (*it).numSectors() * bc_.sectorSize();
+                sizeToRead2 = (*it).numSectors() * sectorSize();
             }
             int numBlocks = (sizeToRead2 + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
             int restToRead = sizeToRead2;
