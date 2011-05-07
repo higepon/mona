@@ -97,7 +97,7 @@ public:
         return M_NOT_SUPPORTED;
     }
 private:
-    MonAPI::scoped_ptr<VirtioBlock> rawDevice_;
+    MonAPI::scoped_ptr<BlockDevice> rawDevice_;
     MonAPI::scoped_ptr<BlockDevice> cachedDevice_;
     const size_t sectorSize_;
 };
