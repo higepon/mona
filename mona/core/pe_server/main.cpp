@@ -4,6 +4,8 @@
 #include <monalibc.h>
 #include <vector>
 #include <algorithm>
+#include <map>
+#include <string>
 
 //#define NO_CACHE
 //#define SEARCH_CURRENT
@@ -228,7 +230,7 @@ public:
 
     ~PELinker()
     {
-        if (this->Binary != NULL) delete this->Binary;
+//        if (this->Binary != NULL) delete this->Binary;
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -445,13 +447,36 @@ static void MessageLoop()
         {
             case MSG_PROCESS_CREATE_IMAGE:
             {
+                static std::map<std::string, SharedMemory*> cache;
+                static std::map<std::string, uint32_t> cache2;
+                uint64_t s1 = MonAPI::Date::nowInMsec();
+                std::map<std::string, SharedMemory*>::iterator it = cache.find(msg.str);
+                if (it != cache.end()) {
+                    _logprintf("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                    char buf[16];
+                    sprintf(buf, "%d", (*it).second->size());
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, (*it).second->handle(), cache2[msg.str], buf);
+                    break;
+                }
                 PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
+                uint64_t s2 = MonAPI::Date::nowInMsec();
+                _logprintf("s2-s1=%d\n", (int)(s2 - s1));
                 if (pe.Result == 0) {
                     char buf[16];
                     sprintf(buf, "%d", pe.Binary->size());
 
+                    std::string path(msg.str);
+                    bool isReadOnlyPath = strncmp(msg.str, "/APPS", 5) == 0;
+                    logprintf("isReadOnlyPath=%d\n", isReadOnlyPath);
+                    bool isCachable = isReadOnlyPath;
                     // To prevent miss freeing of shared map, waits the client notification.
                     int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
+                    if (isReadOnlyPath) {
+                        cache[path] = pe.Binary;
+                        cache2[path] = pe.EntryPoint;
+                    } else {
+                        delete pe.Binary;
+                    }
                     // we can safely unmap after above.
                 }
                 else
