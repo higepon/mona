@@ -32,9 +32,8 @@
 #include <drivers/virtio/virtio_blk.h>
 #include <drivers/virtio/VirtQueue.h>
 #include <drivers/virtio/VirtioDevice.h>
-#include <vector>
-#include <drivers/BlockCache.h>
 #include <drivers/BlockDevice.h>
+#include <vector>
 
 class VirtioBlock : public BlockDevice
 {
@@ -43,13 +42,12 @@ class VirtioBlock : public BlockDevice
 //   We can issue multiple requests, and wait first response to come.
 //   But for now, since file_server requests are serialized, device requsts are also serialized.
 private:
-    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev), bc_(600000)
+    VirtioBlock(VirtioDevice* vdev) : vdev_(vdev)
     {
         ASSERT(vdev_.get() != NULL);
         vq_.reset(vdev_->findVirtQueue(0));
         ASSERT(vq_.get() != NULL);
         vdev_->enableInterrupt();
-        ASSERT(bc_.sectorSize() == sectorSize());
     }
 
 public:
@@ -80,6 +78,7 @@ public:
         std::vector<VirtBuffer> in;
         volatile uint8_t* status = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr));
         *status = 0xff;
+
         uint8_t* buf = (uint8_t*)((uintptr_t)mem->get() + sizeof(struct virtio_blk_outhdr) + 1);
         memcpy(buf, writeBuf, sizeToWrite);
         out.push_back(VirtBuffer(buf, sizeToWrite));
@@ -118,9 +117,6 @@ public:
             monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
-        ASSERT((sizeToWrite % sectorSize()) == 0);
-        ASSERT((sizeWritten % sectorSize()) == 0);
-        bc_.addRange(sector, sizeWritten / sectorSize(), writeBuf);
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
@@ -128,12 +124,21 @@ public:
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
-        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
-        Caches caches;
-        IORequests rest;
-        bc_.getCacheAndRest(sector, numSectors, caches, rest);
-        readFromCache(readBuf, caches, sizeToRead, sector, numSectors);
-        return readFromDisk(readBuf, rest, sector, sizeToRead, numSectors);
+        const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
+        ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
+
+        int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
+        int restToRead = sizeToRead;
+        for (int i = 0; i < numBlocks; i++) {
+            int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
+            int ret = readInternal(((uint8_t*)readBuf) + i * MAX_CONTIGOUS_SIZE, sector + (MAX_CONTIGOUS_SIZE / sectorSize()) * i, size);
+            if (ret < 0) {
+                return ret;
+            }
+            restToRead -= size;
+        }
+        ASSERT(restToRead == 0);
+        return sizeToRead;
     }
 
     uint64_t sectorSize() const
@@ -172,55 +177,6 @@ private:
     void memoryBarrier()
     {
 
-    }
-
-    void readFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
-    {
-        bool isExactSectorSize = (sizeToRead % sectorSize())== 0;
-        for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
-            bool isLastSector = (*it).sector() == (sector + numSectors - 1);
-            int copySize = 0;
-            if (isLastSector && !isExactSectorSize) {
-                copySize = sizeToRead % sectorSize();
-            } else {
-                copySize = sectorSize();
-            }
-            memcpy((uint8_t*)readBuf + sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
-        }
-    }
-
-    int64_t calcRequestSizeByte(const IORequest& req, int64_t sector, uintptr_t numSectors, int64_t sizeToRead) const
-    {
-        bool includesLastSector = (req.startSector() + req.numSectors() == sector + numSectors);
-        if (includesLastSector) {
-            return (req.numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
-        } else {
-            return req.numSectors() * sectorSize();
-        }
-    }
-
-    int64_t readFromDisk(void* readBuf, const IORequests& requests, int64_t sector, int64_t sizeToRead, uintptr_t numSectors)
-    {
-        const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
-        ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
-        for (IORequests::const_iterator it = requests.begin(); it != requests.end(); ++it) {
-            const IORequest& req = (*it);
-            int64_t requestSizeToRead = calcRequestSizeByte(req, sector, numSectors, sizeToRead);
-            int numBlocks = (requestSizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
-            int restToRead = requestSizeToRead;
-            for (int i = 0; i < numBlocks; i++) {
-                int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-                int startSector = req.startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i;
-                uint8_t* dest = ((uint8_t*)readBuf) + ((req.startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE);
-                int64_t ret = readInternal(dest, startSector, size);
-                if (ret < 0) {
-                    return ret;
-                }
-                restToRead -= size;
-            }
-            ASSERT(restToRead == 0);
-        }
-        return sizeToRead;
     }
 
     int64_t readInternal(void* readBuf, int64_t sector, int64_t sizeToRead)
@@ -290,12 +246,6 @@ private:
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
         }
-
-        ASSERT(sizeRead == adjSizeToRead);
-        MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
-        ASSERT(p.get());
-        memcpy(p.get(), buf, adjSizeToRead);
-        bc_.addRange(sector, adjSizeToRead / sectorSize(), p.get());
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
@@ -304,7 +254,6 @@ private:
 
     MonAPI::scoped_ptr<VirtioDevice> vdev_;
     MonAPI::scoped_ptr<VirtQueue> vq_;
-    BlockCache bc_;
 };
 
 #endif // _VIRTIOBLOCK_
