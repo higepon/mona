@@ -34,8 +34,9 @@
 #include <drivers/virtio/VirtioDevice.h>
 #include <vector>
 #include <drivers/BlockCache.h>
+#include <drivers/BlockDevice.h>
 
-class VirtioBlock
+class VirtioBlock : public BlockDevice
 {
 
 // Possible enhancement

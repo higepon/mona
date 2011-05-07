@@ -30,19 +30,23 @@
 
 #include <monapi.h>
 #include <drivers/virtio/VirtioBlock.h>
+#include <drivers/CachedBlockDevice.h>
 
 class BlockDeviceDriver : public IStorageDevice
 {
 public:
     BlockDeviceDriver(int deviceIndex) :
         vb_(VirtioBlock::probe(deviceIndex)),
+        bd_(new CachedBlockDevice(vb_.get())),
         sectorSize_(512)
     {
         ASSERT(vb_.get() != NULL);
+        ASSERT(bd_.get() != NULL);
     }
 
     BlockDeviceDriver(int deviceIndex, size_t sectorSize) :
         vb_(VirtioBlock::probe(deviceIndex)),
+        bd_(new CachedBlockDevice(vb_.get())),
         sectorSize_(sectorSize)
     {
         ASSERT(vb_.get() != NULL);
@@ -65,7 +69,7 @@ public:
     // ISO9660 assume sector size 2048, but our block device driver 512.
     int read(uint32_t lba, void* buf, int size)
     {
-        int64_t sizeRead = vb_->read(buf, lba * (sectorSize_ / 512), size);
+        int64_t sizeRead = bd_->read(buf, lba * (sectorSize_ / 512), size);
         if (size == sizeRead) {
             return M_OK;
         } else {
@@ -80,7 +84,7 @@ public:
 
     int write(uint32_t lba, const void* buf, int size)
     {
-        if (size == vb_->write(buf, lba * (sectorSize_ / 512), size)) {
+        if (size == bd_->write(buf, lba * (sectorSize_ / 512), size)) {
             return M_OK;
         } else {
             return M_WRITE_ERROR;
@@ -93,6 +97,7 @@ public:
     }
 private:
     MonAPI::scoped_ptr<VirtioBlock> vb_;
+    MonAPI::scoped_ptr<BlockDevice> bd_;
     const size_t sectorSize_;
 };
 
