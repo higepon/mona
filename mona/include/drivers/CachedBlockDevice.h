@@ -110,4 +110,4 @@ private:
     BlockCache bc_;
 };
 
-#endif // _BLOCK_DEVICE_
+#endif // _CACHED_BLOCK_DEVICE_
