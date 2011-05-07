@@ -128,15 +128,18 @@ public:
     {
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
             bool isLastSector = (*it).sector() == (sector + numSectors - 1);
+            int copySize = 0;
+
             if (isLastSector) {
                 if (((int)sizeToRead % getSectorSize())== 0) {
-                    memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
+                    copySize = bc_.sectorSize();
                 } else {
-                    memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), (int)sizeToRead % bc_.sectorSize());
+                    copySize = (int)sizeToRead % bc_.sectorSize();
                 }
             } else {
-                memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), bc_.sectorSize());
+                copySize = bc_.sectorSize();
             }
+            memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
         }
     }
 
