@@ -140,24 +140,29 @@ public:
         }
     }
 
+    int64_t calcRequestSizeByte(const IORequest& req, int64_t sector, uintptr_t numSectors, int64_t sizeToRead) const
+    {
+        bool includesLastSector = (req.startSector() + req.numSectors() == sector + numSectors);
+        if (includesLastSector) {
+            return (req.numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
+        } else {
+            return req.numSectors() * sectorSize();
+        }
+    }
+
     int64_t readFromDisk(void* readBuf, const IORequests& requests, int64_t sector, int64_t sizeToRead, uintptr_t numSectors)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
         for (IORequests::const_iterator it = requests.begin(); it != requests.end(); ++it) {
-            int64_t requestSizeToRead = 0;
-            bool includesLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
-            if (includesLastSector) {
-                requestSizeToRead = ((*it).numSectors() - 1) * sectorSize() + ((int)sizeToRead % sectorSize() == 0 ? sectorSize() : (int)sizeToRead % sectorSize());
-            } else {
-                requestSizeToRead = (*it).numSectors() * sectorSize();
-            }
+            const IORequest& req = (*it);
+            int64_t requestSizeToRead = calcRequestSizeByte(req, sector, numSectors, sizeToRead);
             int numBlocks = (requestSizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
             int restToRead = requestSizeToRead;
             for (int i = 0; i < numBlocks; i++) {
                 int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-                int ret = readInternal(((uint8_t*)readBuf) + (((*it).startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE),
-                                       (*it).startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i
+                int ret = readInternal(((uint8_t*)readBuf) + ((req.startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE),
+                                       req.startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i
                                        , size);
                 if (ret < 0) {
                     return ret;
