@@ -127,7 +127,8 @@ public:
     void fillFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
-            if ((*it).sector() == (sector + numSectors - 1)) {
+            bool isLastSector = (*it).sector() == (sector + numSectors - 1);
+            if (isLastSector) {
                 if (((int)sizeToRead % getSectorSize())== 0) {
                     memcpy((uint8_t*)readBuf + bc_.sectorSize() * ((*it).sector() - (int)sector), (*it).get(), bc_.sectorSize());
                 } else {
