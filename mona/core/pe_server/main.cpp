@@ -4,6 +4,8 @@
 #include <monalibc.h>
 #include <vector>
 #include <algorithm>
+#include <map>
+#include <string>
 
 //#define NO_CACHE
 //#define SEARCH_CURRENT
@@ -226,9 +228,15 @@ public:
         this->EntryPoint = bootstrapEntryPoint;
     }
 
+    void destroy()
+    {
+        if (this->Binary != NULL) {
+            delete this->Binary;
+        }
+    }
+
     ~PELinker()
     {
-        if (this->Binary != NULL) delete this->Binary;
         PEDataList::size_type len = this->list.size();
         for (PEDataList::size_type i = 0; i < len; i++)
         {
@@ -435,6 +443,22 @@ private:
     }
 };
 
+struct PECache
+{
+    PECache() : shm(NULL), entryPoint(0) {}
+    PECache(SharedMemory* shm, uint32_t entryPoint) : shm(shm), entryPoint(entryPoint) {}
+    SharedMemory* shm;
+    uint32_t entryPoint;
+};
+
+typedef std::map<std::string, PECache> PECaches;
+
+static bool isCachablePath(const std::string& path)
+{
+    // For now, /APPS is mapped to CD-ROM which is read only device.
+    return strncmp(path.c_str(), "/APPS", 5) == 0;
+}
+
 static void MessageLoop()
 {
     for (MessageInfo msg;;)
@@ -445,20 +469,42 @@ static void MessageLoop()
         {
             case MSG_PROCESS_CREATE_IMAGE:
             {
-                PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
-                if (pe.Result == 0) {
+                static PECaches caches;
+                uint64_t s1 = MonAPI::Date::nowInMsec();
+                PECaches::const_iterator it = caches.find(msg.str);
+                if (it != caches.end()) {
                     char buf[16];
-                    sprintf(buf, "%d", pe.Binary->size());
+                    sprintf(buf, "%d", (*it).second.shm->size());
+                    int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, (*it).second.shm->handle(), (*it).second.entryPoint, buf);
+                    if (ret != M_OK) {
+                        monapi_warn("sendReceive failed status=%d\n", ret);
+                    }
+                    break;
+                } else {
+                    PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
+                    uint64_t s2 = MonAPI::Date::nowInMsec();
+                    _logprintf("s2-s1=%d\n", (int)(s2 - s1));
+                    if (pe.Result == 0) {
+                        char buf[16];
+                        sprintf(buf, "%d", pe.Binary->size());
 
-                    // To prevent miss freeing of shared map, waits the client notification.
-                    int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
-                    // we can safely unmap after above.
-                }
-                else
-                {
-                    Message::reply(&msg, 0, pe.Result);
-                }
+                        std::string path(msg.str);
+                        // To prevent miss freeing of shared map, waits the client notification.
+                        int ret = Message::sendReceive(&msg, msg.from, MSG_OK, msg.header, pe.Binary->handle(), pe.EntryPoint, buf);
+                        if (ret != M_OK) {
+                            monapi_warn("sendReceive failed status=%d\n", ret);
+                        }
+                        if (isCachablePath(path)) {
+                            caches[path] = PECache(pe.Binary, pe.EntryPoint);
+                        } else {
+                            pe.destroy();
+                        }
+                        // we can safely unmap after above.
+                    } else {
+                        Message::reply(&msg, 0, pe.Result);
+                    }
                 break;
+                }
             }
             default:
                 break;
