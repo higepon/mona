@@ -125,7 +125,7 @@ public:
         return sizeWritten;
     }
 
-    void fillFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
+    void readFromCache(void* readBuf, const Caches& caches, int64_t sizeToRead, int64_t sector, uintptr_t numSectors)
     {
         bool isExactSectorSize = (sizeToRead % sectorSize())== 0;
         for (Caches::const_iterator it = caches.begin(); it != caches.end(); ++it) {
@@ -139,18 +139,12 @@ public:
             memcpy((uint8_t*)readBuf + sectorSize() * ((*it).sector() - sector), (*it).get(), copySize);
         }
     }
-
-    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
+    // todo private
+    int64_t readFromDisk(void* readBuf, const IORequests& requests, int64_t sector, int64_t sizeToRead, uintptr_t numSectors)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
         ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
-
-        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
-        Caches caches;
-        IORequests rest;
-        bc_.getCacheAndRest(sector, numSectors, caches, rest);
-        fillFromCache(readBuf, caches, sizeToRead, sector, numSectors);
-        for (IORequests::iterator it = rest.begin(); it != rest.end(); ++it) {
+        for (IORequests::const_iterator it = requests.begin(); it != requests.end(); ++it) {
             int sizeToRead2 = 0;
             bool isLastSector = ((*it).startSector() + (*it).numSectors() == sector + numSectors);
             if (isLastSector) {
@@ -173,6 +167,16 @@ public:
             ASSERT(restToRead == 0);
         }
         return sizeToRead;
+    }
+
+    int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
+    {
+        uintptr_t numSectors = (sizeToRead - 1 + sectorSize()) / sectorSize();
+        Caches caches;
+        IORequests rest;
+        bc_.getCacheAndRest(sector, numSectors, caches, rest);
+        readFromCache(readBuf, caches, sizeToRead, sector, numSectors);
+        return readFromDisk(readBuf, rest, sector, sizeToRead, numSectors);
     }
 
     uint64_t sectorSize() const
