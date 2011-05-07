@@ -161,9 +161,9 @@ public:
             int restToRead = requestSizeToRead;
             for (int i = 0; i < numBlocks; i++) {
                 int size = restToRead > MAX_CONTIGOUS_SIZE ? MAX_CONTIGOUS_SIZE : restToRead;
-                int ret = readInternal(((uint8_t*)readBuf) + ((req.startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE),
-                                       req.startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i
-                                       , size);
+                int startSector = req.startSector() + (MAX_CONTIGOUS_SIZE / sectorSize()) * i;
+                uint8_t* dest = ((uint8_t*)readBuf) + ((req.startSector() - sector) * sectorSize() + i * MAX_CONTIGOUS_SIZE);
+                int64_t ret = readInternal(dest, startSector, size);
                 if (ret < 0) {
                     return ret;
                 }
