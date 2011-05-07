@@ -290,13 +290,11 @@ private:
             return M_READ_ERROR;
         }
 
-        if (sizeRead == adjSizeToRead) {
-            MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
-            ASSERT(p.get());
-            memcpy(p.get(), buf, adjSizeToRead);
-            bc_.addRange(sector, adjSizeToRead / sectorSize(), p.get());
-        }
-
+        ASSERT(sizeRead == adjSizeToRead);
+        MonAPI::scoped_ptr<uint8_t> p(new uint8_t[adjSizeToRead]);
+        ASSERT(p.get());
+        memcpy(p.get(), buf, adjSizeToRead);
+        bc_.addRange(sector, adjSizeToRead / sectorSize(), p.get());
         ASSERT((uintptr_t)afterCookie == cookie);
         ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
