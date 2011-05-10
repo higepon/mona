@@ -23,8 +23,6 @@ static int executeMoshWithTime(const std::string& scriptPath)
         EXPECT_TRUE(false);
         return false;
     }
-    uint64_t s11 = MonAPI::Date::nowInMsec();
-    logprintf("s11-s1=%d\n", (int)(s11 - s1));
     monapi_process_wait_terminated(tid);
     uint64_t s2 = MonAPI::Date::nowInMsec();
     return (int)(s2 - s1);
