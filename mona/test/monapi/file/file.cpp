@@ -686,7 +686,7 @@ int main(int argc, char *argv[])
     EXPECT_TRUE(testDirectoryHasFile("/", "LIBS"));
     EXPECT_TRUE(testDirectoryHasFile("/LIBS", "MOSH"));
     EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB", "SRFI"));
-    EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB/SRFI", "%3A8.SLS"));
+    EXPECT_TRUE(testDirectoryHasFile("/LIBS/MOSH/LIB/SRFI", "%3A8.MOSH.SLS"));
 
     test_seek_minus_offset_should_raise_error();
     test_fatfs_parameters();
