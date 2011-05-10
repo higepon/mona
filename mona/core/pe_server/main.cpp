@@ -470,7 +470,6 @@ static void MessageLoop()
             case MSG_PROCESS_CREATE_IMAGE:
             {
                 static PECaches caches;
-                uint64_t s1 = MonAPI::Date::nowInMsec();
                 PECaches::const_iterator it = caches.find(msg.str);
                 if (it != caches.end()) {
                     char buf[16];
@@ -482,8 +481,6 @@ static void MessageLoop()
                     break;
                 } else {
                     PELinker pe(msg.str, msg.arg1 == MONAPI_TRUE);
-                    uint64_t s2 = MonAPI::Date::nowInMsec();
-                    _logprintf("s2-s1=%d\n", (int)(s2 - s1));
                     if (pe.Result == 0) {
                         char buf[16];
                         sprintf(buf, "%d", pe.Binary->size());

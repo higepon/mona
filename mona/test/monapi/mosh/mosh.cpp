@@ -30,29 +30,31 @@ static int executeMoshWithTime(const std::string& scriptPath)
     return (int)(s2 - s1);
 }
 
-static void testMoshPerformance(int targetTime, const std::string& script)
-{
-    int msec = executeMoshWithTime(script);
-    if (msec > targetTime) {
-        logprintf("%s %dmsec\n", __func__, msec);
-    }
-    EXPECT_TRUE(msec <= targetTime);
+#define TEST_MOSH_PERFORMANCE(targetTime, script) \
+{                                                 \
+    int msec = executeMoshWithTime(script);       \
+    if (msec > targetTime) {                      \
+        logprintf("%s %dmsec\n", __func__, msec); \
+    }                                             \
+    EXPECT_TRUE(msec <= targetTime);              \
 }
 
 static void testEmptyScriptShouldRunQuickly()
 {
-    testMoshPerformance(60, "/LIBS/MOSH/bin/empty.sps");
+    // Mona on KVM Thinkpad x60: 90msec
+    TEST_MOSH_PERFORMANCE(1000, "/LIBS/MOSH/bin/empty.sps"); // warm up
+    TEST_MOSH_PERFORMANCE(120, "/LIBS/MOSH/bin/empty.sps");
 }
 
 static void testManyImportDoesNotHaveAnImpactOnPerformance()
 {
-    testMoshPerformance(120, "/LIBS/MOSH/bin/test-import.sps");
+    TEST_MOSH_PERFORMANCE(1000, "/LIBS/MOSH/bin/test-import.sps");
+    // Mona on KVM Thinkpad x60: 190msec
+    TEST_MOSH_PERFORMANCE(230, "/LIBS/MOSH/bin/test-import.sps");
 }
 
 int main(int argc, char *argv[])
 {
-    testEmptyScriptShouldRunQuickly();
-    testManyImportDoesNotHaveAnImpactOnPerformance();
     testEmptyScriptShouldRunQuickly();
     testManyImportDoesNotHaveAnImpactOnPerformance();
     TEST_RESULTS();

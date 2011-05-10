@@ -62,7 +62,6 @@ public:
 
     int ExecuteFile(uint32_t parent, const MonAPI::CString& commandLine, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
         {
-            uint64_t s1 = MonAPI::Date::nowInMsec();
             bool prompt = false; /* todo */
             /* list initilize */
             CommandOption list;
@@ -85,7 +84,6 @@ public:
                 list.next = option;
             }
             END_FOREACH
-            uint64_t s2 = MonAPI::Date::nowInMsec();
             MonAPI::SharedMemory* shm = NULL;
             uint32_t entryPoint = 0xa0000000;
             int result = 1;
@@ -105,14 +103,11 @@ public:
                 if (monapi_name_whereis(svr_id, tid) != M_OK) {
                     monapi_fatal("server not found");
                 }
-                uint64_t ss1 = MonAPI::Date::nowInMsec();
 
                 if (MonAPI::Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, MONAPI_TRUE /* TODO */, 0, 0, path) != M_OK) {
                     _printf("Error %s:%d\n", __FILE__, __LINE__);
                     exit(-1);
                 }
-                uint64_t ss2 = MonAPI::Date::nowInMsec();
-                _logprintf("ss2-ss1=%d\n", (int)(ss2 - ss1));
                 if (msg.arg2 != 0) {
                     result = 0;
                     entryPoint = msg.arg3;
@@ -145,7 +140,6 @@ public:
             {
                 shm = monapi_file_read_all(path);
             }
-            uint64_t s3 = MonAPI::Date::nowInMsec();
             if (shm == NULL)
             {
                 return result;
@@ -161,8 +155,6 @@ public:
                 next = option->next;
                 delete option;
             }
-            uint64_t s4 = MonAPI::Date::nowInMsec();
-            _logprintf("s4 - s3 = %d s3 - s2 = %d s2 - s1 = %d\n", (int)(s4 - s3), (int)(s3 - s2), (int)(s2 - s1));
             return result;
         }
 };
