@@ -143,7 +143,7 @@ public:
         }
     }
 
-    uintptr_t sectorSize() const
+    static uintptr_t sectorSize()
     {
         return 512;
     }

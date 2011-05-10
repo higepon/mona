@@ -10,7 +10,7 @@
 
 #define EXPECT_CACHE_EQ(lhs, rhs) {        \
     EXPECT_EQ(lhs.sector(), rhs.sector()); \
-    EXPECT_EQ(lhs.get(), rhs.get());       \
+    EXPECT_TRUE(memcmp(lhs.get(), rhs.get(), BlockCache::sectorSize()) == 0); \
 }
 
 static const int MAX_NUM_CACHES = 10;
