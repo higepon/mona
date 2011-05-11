@@ -314,9 +314,9 @@ void ShortCut::processEvent(Event* event) {
 		}
 		// アプリケーション実行
 		if (this->type == DISKICON) {
-			monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
+			monapi_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
 		} else if (this->type == TERMINALICON) {
-			monapi_call_process_execute_file("/APPS/BAYGUI/GSHELL.EX5", MONAPI_FALSE);
+			monapi_process_execute_file("/APPS/BAYGUI/GSHELL.EX5", MONAPI_FALSE);
 		}
 	}
 #endif

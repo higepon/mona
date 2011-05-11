@@ -237,7 +237,7 @@ PROCEDURE(CallPipe, "|")
     for (int i = 0; i < ARGC; i++)
     {
         CAST(ARGV(i), SString, s);
-        int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, streamHandles[i], streamHandles[i + 1]);
+        int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, streamHandles[i], streamHandles[i + 1]);
         if (result != 0)
         {
             RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
@@ -317,7 +317,7 @@ PROCEDURE(CallProcess, "call-process")
     CAST(ARGV(0), SString, s);
     uint32_t tid;
 // don't use outStream directory! auto-import trap!
-//    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
+//    int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
 //    ::MonAPI::Stream* out = ::MonAPI::System::getStdoutStream();
 
     union {
@@ -330,7 +330,7 @@ PROCEDURE(CallProcess, "call-process")
 
     MonAPI::Stream hisStdin;
     n.u64 = syscall_now_in_nanosec();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
+    int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, hisStdin.handle(), g_terminal->getScreenHandle());
     uint64_t start = MonAPI::Date::nowInMsec();
 
     if (result != 0)
@@ -361,9 +361,9 @@ PROCEDURE(StartProcess, "start-process")
     }
     uint32_t tid;
 // don't use outStream directory! auto-import trap!
-//    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
+//    int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, outStream->handle(), outStream->handle());
     ::MonAPI::System::getStdoutStream();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, g_terminal->getScreenHandle(), g_terminal->getScreenHandle());
+    int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, g_terminal->getScreenHandle(), g_terminal->getScreenHandle());
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());
@@ -383,7 +383,7 @@ PROCEDURE(CallProcessOutString, "call-process-out-string")
     uint32_t tid;
     // fix me who release?
     MonAPI::Stream* in = new MonAPI::Stream();
-    int result = monapi_call_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, in->handle(), in->handle());
+    int result = monapi_process_execute_file_get_tid(s->value().data(), MONAPI_TRUE, &tid, in->handle(), in->handle());
     if (result != 0)
     {
         RAISE_ERROR(lineno(), "system can't execute %s" , s->value().data());

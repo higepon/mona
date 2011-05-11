@@ -406,7 +406,7 @@ int main(int argc, char* argv[])
     while ((args = startx->getCommand()) != NULL)
     {
         uint32_t child_id;
-        int result = monapi_call_process_execute_file_get_tid(args, MONAPI_FALSE, &child_id, syscall_get_tid(), NULL);
+        int result = monapi_process_execute_file_get_tid(args, MONAPI_FALSE, &child_id, syscall_get_tid(), NULL);
         if (result != 0) break;
         for (MessageInfo info;;)
         {

@@ -109,6 +109,7 @@ clean:
 	cd Sysutils/gclock && $(MAKE) clean
 	cd Sysutils/gtimer && $(MAKE) clean
 	cd Sysutils/startx && $(MAKE) clean
+	cd Gui/test_baygui && $(MAKE) clean
 
 	cd Devel/gcc && $(MAKE) clean
 depend:

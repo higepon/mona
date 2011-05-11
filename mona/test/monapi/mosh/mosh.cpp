@@ -13,7 +13,7 @@ static int executeMoshWithTime(const std::string& scriptPath)
     command += scriptPath;
     uint32_t tid;
     uint64_t s1 = MonAPI::Date::nowInMsec();
-    intptr_t result = monapi_call_process_execute_file_get_tid(
+    intptr_t result = monapi_process_execute_file_get_tid(
         command.c_str(),
         MONAPI_TRUE,
         &tid,

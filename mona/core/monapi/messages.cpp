@@ -238,12 +238,12 @@ intptr_t monapi_process_register_thread(uint32_t tid)
     return msg.arg2;
 }
 
-intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
+intptr_t monapi_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
-    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);
+    return monapi_process_execute_file_get_tid(command_line, prompt, NULL, NULL, NULL);
 }
 
-intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
+intptr_t monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdin_id /* = NULL */, uint32_t stdout_id /* NULL */)
 {
     uint32_t server;
     if (monapi_name_whereis("/servers/process", server) != M_OK) {

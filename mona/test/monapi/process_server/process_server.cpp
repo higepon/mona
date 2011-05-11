@@ -7,7 +7,7 @@ using namespace MonAPI;
 static uint32_t executeProcessWithStdHandle(uint32_t stdinHandle, uint32_t stdoutHandle)
 {
     uint32_t tid;
-    intptr_t ret = monapi_call_process_execute_file_get_tid(
+    intptr_t ret = monapi_process_execute_file_get_tid(
         "/APPS/TWAIT.EX5",
         MONAPI_TRUE,
         &tid,

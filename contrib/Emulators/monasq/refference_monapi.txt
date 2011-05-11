@@ -161,8 +161,8 @@ MonaOS の API のラッパーライブラリです。
 			attr = 0,
 		}
 
-	function monapi_call_process_execute_file(command_line, prompt)
-	function monapi_call_process_execute_file_get_tid(command_line, prompt, stdout_id)
+	function monapi_process_execute_file(command_line, prompt)
+	function monapi_process_execute_file_get_tid(command_line, prompt, stdout_id)
 	function monapi_call_change_drive(drive, prompt)
 	function monapi_call_get_current_drive()
 	function monapi_call_get_current_directory()

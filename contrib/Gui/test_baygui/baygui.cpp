@@ -36,8 +36,8 @@
 using namespace MonAPI;
 
 #define EXPECT_EQ_TEXT_FIELD(expectedText, expectedCursor, t) \
-    munit_expect_eq(expectedText, t->getText(), #expectedText, __FILE__, __LINE__); \
-    munit_expect_eq(expectedCursor, t->getCursor(), #expectedCursor, __FILE__, __LINE__);
+    munit_expect_eq(expectedText, t->getText(), #expectedText, __PRETTY_FUNCTION__, __FILE__, __LINE__); \
+    munit_expect_eq(expectedCursor, t->getCursor(), #expectedCursor,__PRETTY_FUNCTION__, __FILE__, __LINE__);
 
 class TestingTextField : public TextField
 {
@@ -286,7 +286,8 @@ int main(int argc, char* argv[])
 
     test_WebImage_create();
 
-    TEST_RESULTS(baygui);
+    TEST_RESULTS();
     return 0;
 }
+
 

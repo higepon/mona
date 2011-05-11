@@ -68,7 +68,7 @@ private:
         std::string command(MonAPI::System::getMoshPath());
         command += " /LIBS/MOSH/bin/fb-feed-get.sps";
         uint32_t tid;
-        intptr_t result = monapi_call_process_execute_file_get_tid(command.c_str(),
+        intptr_t result = monapi_process_execute_file_get_tid(command.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,
                                                                    MonAPI::System::getProcessStdinID(),

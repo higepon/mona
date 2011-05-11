@@ -138,15 +138,6 @@ struct MonapiConstantData {
     // { FS_FILE_EXIST,            "FS_FILE_EXIST" },
     // { FS_FILE_CREATE_ERROR,     "FS_FILE_CREATE_ERROR" },
 
-    { ID_MOUSE_SERVER,      "ID_MOUSE_SERVER" },
-    { ID_KEYBOARD_SERVER,   "ID_KEYBOARD_SERVER" },
-    { ID_FILE_SERVER,       "ID_FILE_SERVER" },
-    { ID_GUI_SERVER,        "ID_GUI_SERVER" },
-    { ID_ELF_SERVER,        "ID_ELF_SERVER" },
-    { ID_PROCESS_SERVER,    "ID_PROCESS_SERVER" },
-    { ID_PE_SERVER,         "ID_PE_SERVER" },
-    { ID_MONITOR_SERVER,    "ID_MONITOR_SERVER" },
-    { ID_NUMBER_OF_SERVERS, "ID_NUMBER_OF_SERVERS" },
 
 };
 
@@ -506,9 +497,9 @@ int wrapper_monapi_file_read(HSQUIRRELVM v) {
    return 1;                       // スタックに戻り値を１つ積んだので１を返す
 }
 
-int wrapper_monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword stdout_id) {
+int wrapper_monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword stdout_id) {
     dword tid;
-    int result = monapi_call_process_execute_file_get_tid(command_line, prompt, &tid, stdout_id, stdout_id);
+    int result = monapi_process_execute_file_get_tid(command_line, prompt, &tid, stdout_id, stdout_id);
     if (result != 0) return -1;
     return tid;
 }
@@ -668,8 +659,8 @@ void monasq_init_monapi_lib(HSQUIRRELVM v)
     Register(v, hNamespace, wrapper_monapi_file_read_directory, _T("monapi_file_read_directory"));
     RegisterVarArgs(v, hNamespace, wrapper_monapi_file_read_all, _T("monapi_file_read_all"));
 
-    Register(v, hNamespace, monapi_call_process_execute_file, _T("monapi_call_process_execute_file"));
-    Register(v, hNamespace, wrapper_monapi_call_process_execute_file_get_tid, _T("monapi_call_process_execute_file_get_tid"));
+    Register(v, hNamespace, monapi_process_execute_file, _T("monapi_process_execute_file"));
+    Register(v, hNamespace, wrapper_monapi_process_execute_file_get_tid, _T("monapi_process_execute_file_get_tid"));
 // TODO
 //  Register(v, hNamespace, monapi_call_change_drive, _T("monapi_call_change_drive"));
 //  Register(v, hNamespace, monapi_call_get_current_drive, _T("monapi_call_get_current_drive"));

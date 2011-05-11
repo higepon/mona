@@ -52,7 +52,7 @@ public:
         cmd += uri_;
         cmd += ' ';
         cmd += path_;
-        intptr_t result = monapi_call_process_execute_file_get_tid(cmd.c_str(),
+        intptr_t result = monapi_process_execute_file_get_tid(cmd.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,
                                                                    MonAPI::System::getProcessStdinID(),

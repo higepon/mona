@@ -30,9 +30,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int main(int argc, char* argv[])
 {
 	if (argc == 1) {
-		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISKICON", MONAPI_FALSE);
-		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERMINALICON", MONAPI_FALSE);
-		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASHBOXICON", MONAPI_FALSE);
+		monapi_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISKICON", MONAPI_FALSE);
+		monapi_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERMINALICON", MONAPI_FALSE);
+		monapi_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASHBOXICON", MONAPI_FALSE);
 	} else {
 		char* arg0 = argv[1];
 		if (strcmp(arg0, "DISKICON") == 0) {

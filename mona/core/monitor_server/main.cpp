@@ -148,11 +148,11 @@ void Monitor::CheckServers()
                 syscall_print("SCREEN.EX5 not found\n");
                 continue;
             }
-            syscall_print(monapi_call_process_execute_file_get_tid((const char*)paths.get(i), MONAPI_FALSE, &tid, msg.arg2, msg.arg2) == 0? "OK\n" : "NG\n");
+            syscall_print(monapi_process_execute_file_get_tid((const char*)paths.get(i), MONAPI_FALSE, &tid, msg.arg2, msg.arg2) == 0? "OK\n" : "NG\n");
         }
         else
         {
-            syscall_print(monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK\n" : "NG\n");
+            syscall_print(monapi_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK\n" : "NG\n");
         }
 
         for (;;)

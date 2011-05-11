@@ -109,7 +109,7 @@ void Glaunch::execute()
 	}
 	// アプリ実行
 	prevIndex = -1;
-	monapi_call_process_execute_file(name, MONAPI_TRUE);
+	monapi_process_execute_file(name, MONAPI_TRUE);
 #endif
 }
 

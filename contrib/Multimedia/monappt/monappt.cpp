@@ -84,7 +84,7 @@ int OpenSlide(List<CString>* list, int i)
         CString cstr = "/APPS/MONAPEG.EX5 ";
         cstr += list->get(i);
         syscall_set_cursor(0,0);
-        return monapi_call_process_execute_file((const char*)cstr, MONAPI_FALSE);
+        return monapi_process_execute_file((const char*)cstr, MONAPI_FALSE);
     }
     else
     {

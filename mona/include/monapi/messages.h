@@ -82,8 +82,8 @@ extern intptr_t monapi_unregister_to_server(const char* server);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 
 extern intptr_t monapi_process_register_thread(uint32_t tid);
-extern intptr_t monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
-extern intptr_t monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
+extern intptr_t monapi_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
+extern intptr_t monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, uint32_t* tid, uint32_t stdout_id, uint32_t stdin_id);
 extern intptr_t monapi_file_open(const char* file, intptr_t mode);
 extern intptr_t monapi_file_seek(uint32_t fileID, int32_t offset, uint32_t origin);
 extern intptr_t monapi_file_close(uint32_t id);

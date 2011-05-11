@@ -1485,7 +1485,7 @@ mySystem(char *command, int background)
 {
 #ifdef MONA
     uint32_t tid;
-    int result = monapi_call_process_execute_file_get_tid(command,  MONAPI_TRUE, &tid, NULL, NULL);
+    int result = monapi_process_execute_file_get_tid(command,  MONAPI_TRUE, &tid, NULL, NULL);
     if( result != 0)
     {
         fprintf(stderr, "system can't execute %s", command);

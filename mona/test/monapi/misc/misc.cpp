@@ -162,7 +162,7 @@ static void testCreateProcessManyTimes()
         logprintf("[%d]", i);
         uint32_t tid;
         uint64_t s1 = MonAPI::Date::nowInMsec();
-        intptr_t result = monapi_call_process_execute_file_get_tid("/APPS/TEMPTY.EX5", // command.c_str()
+        intptr_t result = monapi_process_execute_file_get_tid("/APPS/TEMPTY.EX5", // command.c_str()
                                                                    //command.c_str(),
                                                                    MONAPI_TRUE,
                                                                    &tid,

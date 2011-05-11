@@ -398,7 +398,7 @@ int main(int argc, char* argv[])
     if (startup != NULL)
     {
         for (int i = 0; i < startup->size(); i++) {
-            monapi_call_process_execute_file(startup->get(i), MONAPI_FALSE);
+            monapi_process_execute_file(startup->get(i), MONAPI_FALSE);
         }
     }
 

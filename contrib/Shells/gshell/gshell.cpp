@@ -232,7 +232,7 @@ private:
 					arg3
 				);
 			}
-			monapi_call_process_execute_file(temp, MONAPI_FALSE);
+			monapi_process_execute_file(temp, MONAPI_FALSE);
 		// APP形式
 		} else if (s.endsWith(".app") || s.endsWith(".APP")) {
 			char temp[128];
@@ -259,7 +259,7 @@ private:
 					break;
 				}
 			}
-			monapi_call_process_execute_file(temp, MONAPI_FALSE);
+			monapi_process_execute_file(temp, MONAPI_FALSE);
 		}
 	#endif
 	}

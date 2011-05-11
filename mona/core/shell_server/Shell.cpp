@@ -246,7 +246,7 @@ bool Shell::commandExecute(_A<CString> args, uint32_t stdin_id, uint32_t stdout_
     }
 
     uint32_t tid;
-    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, stdin_id, stdout_id);
+    int result = monapi_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, stdin_id, stdout_id);
 
     if (result == 0 && !doExec_)
     {
