@@ -42,26 +42,36 @@ static uintptr_t waitSubThread()
 // =====================================
 static void __fastcall conditionSubThread(void* mainThread)
 {
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // waiting thread should get lock
     EXPECT_EQ(M_OK, syscall_mutex_lock(&mutex));
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MessageInfo msg;
     intptr_t ret = Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT_EQ(M_OK, ret);
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     while (!conditionOK) {
         EXPECT_EQ(M_OK, syscall_condition_wait(&condition, &mutex));
     }
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(M_OK, syscall_mutex_unlock(&mutex));
-
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Message::send((uintptr_t)mainThread, MSG_STARTUP, System::getThreadID());
-    // wait forever
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     for (;;) {
-        if (Message::receive(&msg) != M_OK) {
-            continue;
+        if (Message::receive(&msg) == M_OK && msg.header == MSG_STOP) {
+            break;
         }
     }
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    exit(0);
+}
+
+
+static void killSubThread(uintptr_t tid)
+{
+    ASSERT_EQ(M_OK, Message::send(tid, MSG_STOP));
 }
 
 void testCondition()
@@ -73,7 +83,7 @@ void testCondition()
     ASSERT_EQ(M_OK, syscall_mutex_create(&mutex));
 
     uintptr_t mainThread = System::getThreadID();
-    monapi_thread_create_with_arg(conditionSubThread, (void*)mainThread);
+    uintptr_t tid = monapi_thread_create_with_arg(conditionSubThread, (void*)mainThread);
 
     sleep(50);
 
@@ -97,6 +107,7 @@ void testCondition()
     EXPECT_EQ(M_BAD_CONDITION_ID, syscall_condition_destroy(&invalidCond));
 
     EXPECT_EQ(M_OK, syscall_mutex_destroy(&mutex));
+    killSubThread(tid);
 }
 
 // Test case (2)
@@ -353,9 +364,9 @@ int main(int argc, char *argv[])
 {
     testCondition();
     testCondition2();
-    testCondition3();
-    testCondition4();
-    testCondition5();
+     testCondition3();
+    // testCondition4();
+    // testCondition5();
 
     TEST_RESULTS();
     return 0;
