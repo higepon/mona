@@ -17,7 +17,7 @@ public:
         IMAGE_HEIGHT = 50,
         MARGIN = 15,
         MAX_ROWS = 6,
-        TIMER_INTERVAL = 1000,
+        TIMER_INTERVAL = 5000,
         forbidden_comma
     };
 
@@ -99,6 +99,7 @@ private:
 
     void postFeed()
     {
+        pushButton_->setEnabled(false);
         uint32_t tid;
         std::string command(System::getMoshPath());
         command += " /LIBS/MOSH/bin/fb-feed-post.sps ";
@@ -112,6 +113,11 @@ private:
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
+        if (0 == monapi_process_wait_terminated(tid)) {
+            inputArea_->setText("");
+        }
+        pushButton_->setEnabled(true);
+        updateFeed();
     }
 
     void updateFeed()
@@ -175,7 +181,7 @@ private:
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 500) {
+                if (idleTimeMsec_ > 5000) {
                     logprintf("timer update feed start\n");
                     updateFeed();
                 }
