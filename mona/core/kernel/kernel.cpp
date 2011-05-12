@@ -295,9 +295,7 @@ void startKernel()
     g_console->printf("%s:%d\n", __FILE__, __LINE__);
 */
     enableTimer();
-#ifdef HIGE
-
-#endif
+    g_log->printf("this functio is necessary for gcc 4.5.2. Don't omit enableTimer() call");
 
     for (;;);
 }

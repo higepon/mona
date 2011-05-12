@@ -21,7 +21,7 @@ uint8_t inp8(uint32_t port) {
 }
 
 void outp8(uint32_t port, uint8_t value) {
-   asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
+    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
 }
 
 uint16_t inp16(uint32_t port) {
