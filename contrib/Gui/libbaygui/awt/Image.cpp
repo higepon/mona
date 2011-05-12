@@ -79,9 +79,12 @@ namespace baygui {
 
     void Image::resize(int h, int w)
     {
+//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (height == 0 || width == 0) {
+//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return;
         }
+//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         MessageInfo msg;
         if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, w, h, Color::lightGray)) {
             printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);

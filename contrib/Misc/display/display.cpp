@@ -87,12 +87,14 @@ private:
     {
         WebImage* image = new WebImage(url, file);
         image->initialize();
-        image->resize(20, 20);
-        logprintf("image->width=%d\n", image->getWidth());
+
+        // this is workaround, should be check on Image class, but doesn't work
+        if (image->getWidth() != 0) {
+            image->resize(20, 20);
+        }
         images_.push_back(image);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        fields_[index]->setText(text.c_str());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        String x = text.c_str();
+        fields_[index]->setText(foldLine(text, 70).c_str());
     }
 
     void postFeed()
@@ -208,9 +210,8 @@ private:
         updateButton_->setLabel("updating");
     }
 
-    string foldLine(const string& line)
+    string foldLine(const string& line, size_t maxLineLength)
     {
-        const size_t MAX_LINE_LEN = 45;
         size_t len = 0;
         string ret;
         for (string::const_iterator it = line.begin(); it != line.end(); ++it) {
@@ -221,7 +222,7 @@ private:
                 len++;
             }
 
-            if (len >= MAX_LINE_LEN) {
+            if (len >= maxLineLength) {
                 ret += '\n';
                 len = 0;
             }
