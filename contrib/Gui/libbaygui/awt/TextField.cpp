@@ -208,7 +208,7 @@ namespace baygui {
         int modifiers = event->getModifiers();
 
         // Toggle IME ON/OFF
-        if (keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) {
+        if ((keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) || (keycode == 'o' && modifiers == KeyEvent::VKEY_CTRL)) {
             _imeManager->processEvent(event);
             return;
         }

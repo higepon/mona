@@ -251,6 +251,7 @@ void ImeManager::processEvent(Event *event)
         // IMEオン・オフ切り替え
         if (imesvrID != THREAD_UNKNOWN &&
             ((modifiers == KeyEvent::VKEY_CTRL && keycode == '\\') ||
+             (modifiers == KeyEvent::VKEY_CTRL && keycode == 'o') ||
             (modifiers == KeyEvent::VKEY_LSHIFT && keycode == ' '))) {
             clearBuffer();
             clearKanjiList();
