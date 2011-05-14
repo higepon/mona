@@ -47,6 +47,8 @@ public:
             if (c == ' ') {
                 dest.push_back(accum);
                 accum = "";
+            } else if (accum.empty() &&  c == '"') {
+                dest.push_back(readQuoated(++i, options));
             } else {
                 accum += c;
             }
@@ -55,6 +57,22 @@ public:
             dest.push_back(accum);
         }
         return M_OK;
+    }
+
+private:
+    std::string readQuoated(size_t& index, const std::string& options)
+    {
+        std::string accum;
+        for (; index < options.size(); index++) {
+            int c = options[index];
+            if (c == '"') {
+                index++;
+                break;
+            } else {
+                accum += c;
+            }
+        }
+        return accum;
     }
 };
 
