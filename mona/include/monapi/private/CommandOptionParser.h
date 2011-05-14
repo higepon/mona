@@ -31,5 +31,32 @@
 #ifndef _COMMAND_OPTION_PARSER_
 #define _COMMAND_OPTION_PARSER_
 
+namespace MonAPI {
 
+class CommandOptionParser
+{
+public:
+    CommandOptionParser() {}
+    virtual ~CommandOptionParser() {}
+
+    intptr_t parse(std::vector<std::string>& dest, const std::string& options)
+    {
+        std::string accum;
+        for (size_t i = 0; i < options.size(); i++) {
+            int c = options[i];
+            if (c == ' ') {
+                dest.push_back(accum);
+                accum = "";
+            } else {
+                accum += c;
+            }
+        }
+        if (!accum.empty()) {
+            dest.push_back(accum);
+        }
+        return M_OK;
+    }
+};
+
+}; // MonAPI
 #endif // _COMMAND_OPTION_PARSER_
