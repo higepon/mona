@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string>
+#include <vector>
 
 using namespace MonAPI;
 
@@ -177,6 +178,20 @@ static void testCreateProcessManyTimes()
     }
     logprintf("\n");
 }
+
+#include <monapi/private/CommandOptionParser.h>
+
+static void testCommandOptionParserParsesWhiteSeperatedOptions()
+{
+    std::vector<std::string> options;
+    CommandOptionParser parser("abc def ghi");
+    EXPECT_TRUE(M_OK, parser.parse(options));
+    ASSERT_EQ(3, options.size());
+    EXPECT_STR_EQ("abc", options[0].c_str());
+    EXPECT_STR_EQ("def", options[0].c_str());
+    EXPECT_STR_EQ("ghi", options[0].c_str());
+}
+
 int main(int argc, char *argv[])
 {
     testDate();
@@ -189,6 +204,8 @@ int main(int argc, char *argv[])
     testBufferOverCopyShouldFail();
     testSharedMemory();
     testCreateProcessManyTimes();
+
+    testCommandOptionParserParsesWhiteSeperatedOptions();
     TEST_RESULTS();
     return 0;
 }
