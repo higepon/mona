@@ -187,18 +187,26 @@ static void testCommandOptionParserParsesWhiteSeperatedOptions()
     CommandOptionParser parser;
     EXPECT_EQ(M_OK, parser.parse(options, "abc def ghi"));
     ASSERT_EQ(3, options.size());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_STR_EQ("abc", options[0].c_str());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_STR_EQ("def", options[1].c_str());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_STR_EQ("ghi", options[2].c_str());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+}
+
+static void testCommandOptionParserParsesTheOptionIncludedDoubleQuatation()
+{
+    std::vector<std::string> options;
+    CommandOptionParser parser;
+    EXPECT_EQ(M_OK, parser.parse(options, "abc \"cd e\" fg"));
+    ASSERT_EQ(3, options.size());
+    EXPECT_STR_EQ("abc", options[0].c_str());
+    EXPECT_STR_EQ("cd e", options[1].c_str());
+    EXPECT_STR_EQ("fg", options[2].c_str());
 }
 
 int main(int argc, char *argv[])
 {
     testCommandOptionParserParsesWhiteSeperatedOptions();
+    testCommandOptionParserParsesTheOptionIncludedDoubleQuatation();
     testDate();
     testThreadSelf();
     testNet();
