@@ -144,12 +144,19 @@ private:
         Strings lines = StringHelper::split("\n", text);
         for (size_t i = 0; i < lines.size() && i < MAX_ROWS; i++) {
             Strings line = StringHelper::split("$", lines[i]);
+            ASSERT(line.size() == 4);
             std::string imageUri = "http://graph.facebook.com/";
             std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
             imageUri += line[0];
             imageUri += "/picture";
             uint64_t s1 = MonAPI::Date::nowInMsec();
-            createOnePost(imageUri, filename, line[2], i);
+            std::string content = line[2];
+            if (atoi(line[3].c_str()) > 0) {
+                content += "\n";
+                content += line[3];
+                content += "人がいいね！と言っています。";
+            }
+            createOnePost(imageUri, filename, content, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
