@@ -46,12 +46,18 @@ public:
             fields_.push_back(field);
             field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             add(field);
+
+            Button* button = new Button("いいね！");
+            likeButtons_.push_back(button);
+            button->setBounds(0, 50 + IMAGE_HEIGHT * i + 20, 40, 20);
+            add(button);
         }
     }
 
     ~Display()
     {
         disposeImages();
+        disposeLikeButtons();
     }
 
 private:
@@ -61,8 +67,12 @@ private:
     scoped_ptr<Button> updateButton_;
     typedef std::vector<TextField*> TextFields;
     typedef std::vector<Image*> Images;
+    typedef std::vector<Button*> Buttons;
+    typedef std::vector<std::string> strings;
     TextFields fields_;
     Images images_;
+    Buttons likeButtons_;
+    strings postIds_;
     bool updating_;
     int idleTimeMsec_;
 
@@ -73,6 +83,15 @@ private:
         }
         images_.clear();
     }
+
+    void disposeLikeButtons()
+    {
+        for (Buttons::const_iterator it = likeButtons_.begin(); it != likeButtons_.end(); ++it) {
+            delete (*it);
+        }
+        likeButtons_.clear();
+    }
+
 
     void disposeTextFields()
     {
@@ -95,6 +114,26 @@ private:
         images_.push_back(image);
         String x = text.c_str();
         fields_[index]->setText(foldLine(text, 70).c_str());
+    }
+
+    void postLike(const std::string& postId)
+    {
+        uint32_t tid;
+        std::string command(System::getMoshPath());
+        command += " /LIBS/MOSH/bin/fb-like-post.sps ";
+        command += postId;
+        int result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                              MONAPI_TRUE,
+                                                              &tid,
+                                                              System::getProcessStdinID(),
+                                                              System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+        if (0 == monapi_process_wait_terminated(tid)) {
+            inputArea_->setText("");
+        }
+        updateFeed();
     }
 
     void postFeed()
@@ -142,9 +181,10 @@ private:
 //        disposeTextFields();
         std::string text((char*)shm->data());
         Strings lines = StringHelper::split("\n", text);
+        postIds_.clear();
         for (size_t i = 0; i < lines.size() && i < MAX_ROWS; i++) {
             Strings line = StringHelper::split("$", lines[i]);
-            ASSERT(line.size() == 4);
+            ASSERT(line.size() == 5);
             std::string imageUri = "http://graph.facebook.com/";
             std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
             imageUri += line[0];
@@ -156,6 +196,7 @@ private:
                 content += line[3];
                 content += "人がいいね！と言っています。";
             }
+            postIds_.push_back(line[4]);
             createOnePost(imageUri, filename, content, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
@@ -163,6 +204,16 @@ private:
         uint64_t e = MonAPI::Date::nowInMsec();
         logprintf("showFeedFromFile %d msec\n", (int)(e - s));
         setStatusDone();
+    }
+
+    int sourceIsLikeButton(Event* event)
+    {
+        for (size_t i = 0; i < likeButtons_.size(); i++) {
+            if (event->getSource() == likeButtons_[i]) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     void processEvent(Event* event)
@@ -194,6 +245,14 @@ private:
                 }
             }
             setTimer(TIMER_INTERVAL);
+        } else {
+            int likeButtonIndex = sourceIsLikeButton(event);
+            if (likeButtonIndex != -1) {
+                if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+                    ASSERT((size_t)likeButtonIndex < postIds_.size());
+                    postLike(postIds_[likeButtonIndex]);
+                }
+            }
         }
     }
 
