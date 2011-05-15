@@ -351,9 +351,9 @@ int VnodeManager::stat(const string& path, Stat* st)
     // remove first '/'. fix me
     string filename = path.substr(1, path.size() - 1);
     Vnode* file;
-    intptr_t ret = lookup(root_, path, &file);
+    intptr_t ret = lookup(root_, filename, &file);
     if (ret != M_OK) {
-        intptr_t ret2 = lookup(root_, path, &file, Vnode::DIRECTORY);
+        intptr_t ret2 = lookup(root_, filename, &file, Vnode::DIRECTORY);
         if (ret2 != M_OK) {
             return ret;
         }

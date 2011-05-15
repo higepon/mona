@@ -263,7 +263,7 @@ void FileServer::messageLoop()
         case MSG_FILE_GET_DATE:
         {
             Stat st;
-            int ret = vmanager_.stat(msg.str, &st);
+            int ret = vmanager_.stat(upperCase(msg.str), &st);
             KDate* p = (KDate*)msg.str;
             *p = st.datetime;
             Message::reply(&msg, ret, 0, msg.str);
