@@ -35,6 +35,22 @@ class Date {
 
   public:
     /*
+       function: toUnixTime
+
+       Returns current time in unixtime
+
+       Returns:
+
+         current time in unixtime.
+    */
+    uint64_t toUnixTime() const
+    {
+        const uint64_t EPOC_TIME = 719161;
+        return ((365 * year() + (year() / 4) - (year() / 100) + (year() / 400) + (306 * (month() + 1) / 10) - 428 + day()) -  EPOC_TIME) * 86400 + (hour() * 3600) + (min() * 60) + sec();
+
+    }
+
+    /*
        function: nowInMsec
 
        Returns current time in msec since 1970/1/1 0:00
