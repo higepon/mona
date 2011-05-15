@@ -102,9 +102,9 @@ private:
         pushButton_->setEnabled(false);
         uint32_t tid;
         std::string command(System::getMoshPath());
-        command += " /LIBS/MOSH/bin/fb-feed-post.sps ";
+        command += " /LIBS/MOSH/bin/fb-feed-post.sps \"";
         command += inputArea_->getText();
-        _logprintf("stdout id of display = [%x]", System::getProcessStdoutID());
+        command += "\"";
         int result = monapi_process_execute_file_get_tid(command.c_str(),
                                                               MONAPI_TRUE,
                                                               &tid,
