@@ -30,6 +30,8 @@
 #ifndef _PROCESS_EXECUTER_
 #define _PROCESS_EXECUTER_
 
+#include <monapi/private/CommandOptionParser.h>
+
 class ProcessExecuter {
     int ExecuteProcess(uint32_t parent, MonAPI::SharedMemory& shm, uint32_t entryPoint, const MonAPI::CString& path, const MonAPI::CString& name, CommandOption* option, bool prompt, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
         {
@@ -68,22 +70,22 @@ public:
             list.next = NULL;
             CommandOption* option = NULL;
             MonAPI::CString path;
-            _A<MonAPI::CString> args = commandLine.split(' ');
-            FOREACH (MonAPI::CString, arg, args)
-            {
-                if (arg == NULL) continue;
+            std::vector<std::string> parsedOptions;
+            MonAPI::CommandOptionParser parser;
+            if (parser.parse(parsedOptions, (const char*)commandLine) != M_OK) {
+                return M_UNKNOWN;
+            }
 
-                if (path == NULL)
-                {
-                    path = arg.toUpper();
+            for (size_t i = 0; i < parsedOptions.size(); i++) {
+                if (i == 0) {
+                    path = MonAPI::CString(parsedOptions[0].c_str()).toUpper();
                     continue;
                 }
                 option = new CommandOption;
-                strncpy(option->str, arg, sizeof(option->str));
+                strncpy(option->str, parsedOptions[i].c_str(), MAX_PROCESS_ARGUMENT_LENGTH);
                 option->next = list.next;
                 list.next = option;
             }
-            END_FOREACH
             MonAPI::SharedMemory* shm = NULL;
             uint32_t entryPoint = 0xa0000000;
             int result = 1;

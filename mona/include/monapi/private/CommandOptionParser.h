@@ -31,6 +31,9 @@
 #ifndef _COMMAND_OPTION_PARSER_
 #define _COMMAND_OPTION_PARSER_
 
+#include <string>
+#include <vector>
+
 namespace MonAPI {
 
 class CommandOptionParser
