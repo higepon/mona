@@ -6,6 +6,84 @@
 using namespace std;
 using namespace MonAPI;
 
+struct FacebookPost
+{
+    FacebookPost(const std::string& imageId,
+                 const std::string& name,
+                 const std::string& text,
+                 uint32_t numLikes,
+                 const std::string& postId
+        ) :
+        imageId(imageId),
+        name(name),
+        text(text),
+        numLikes(numLikes),
+        postId(postId)
+    {
+    }
+
+    std::string imageUrl()
+    {
+        std::string ret = "http://graph.facebook.com/";
+        ret += imageId;
+        ret += "/picture";
+        return ret;
+    }
+
+    std::string localImagePath()
+    {
+        std::string ret = "/USER/TEMP/" + imageId + ".JPG";
+        return ret;
+    }
+
+    std::string imageId;
+    std::string name;
+    std::string text;
+    uint32_t numLikes;
+    std::string postId;
+};
+
+
+class FacebookService
+{
+public:
+    static bool postFeed(const std::string& text)
+    {
+        return executeMosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
+    }
+
+    static bool addLike(const std::string& postId)
+    {
+        return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", postId);
+    }
+
+private:
+    static bool executeMosh(const std::string& script, const std::string& arg)
+    {
+       uint32_t tid;
+        std::string command(System::getMoshPath());
+        command += " ";
+        command += script;
+        command += " ";
+        command += arg;
+        int result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                              MONAPI_TRUE,
+                                                              &tid,
+                                                              System::getProcessStdinID(),
+                                                              System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+        if (0 == monapi_process_wait_terminated(tid)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
+
+
+
 class Display : public Frame {
 
 public:
@@ -24,20 +102,23 @@ public:
     Display(uintptr_t updaterId) :
         updaterId_(updaterId),
         inputArea_(new TextField()),
-        pushButton_(new Button("Post")),
-                updateButton_(new Button("Update")),
-                updating_(false),
-                idleTimeMsec_(5000)
+        postButton_(new Button("Post")),
+        downButton_(new Button("Down")),
+        updateButton_(new Button("Update")),
+        updating_(false),
+        idleTimeMsec_(2000),
+        offset_(0)
     {
         setTitle("Facebook");
         setBounds(40, 40, WIDTH, HEIGHT);
         const int x = 5;
         const int y = 5;
         inputArea_->setBounds(x, y, x + 300, y + 15);
-        pushButton_->setBounds(255, 30, 50, 20);
+        postButton_->setBounds(255, 30, 50, 20);
         updateButton_->setBounds(200, 30, 50, 20);
         add(inputArea_.get());
-        add(pushButton_.get());
+        add(postButton_.get());
+        add(downButton_.get());
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL);
 
@@ -63,18 +144,21 @@ public:
 private:
     uintptr_t updaterId_;
     scoped_ptr<TextField> inputArea_;
-    scoped_ptr<Button> pushButton_;
+    scoped_ptr<Button> postButton_;
+    scoped_ptr<Button> downButton_;
     scoped_ptr<Button> updateButton_;
     typedef std::vector<TextField*> TextFields;
     typedef std::vector<Image*> Images;
     typedef std::vector<Button*> Buttons;
     typedef std::vector<std::string> strings;
+    typedef std::vector<FacebookPost> FacebookPosts;
+    FacebookPosts posts_;
     TextFields fields_;
     Images images_;
     Buttons likeButtons_;
-    strings postIds_;
     bool updating_;
     int idleTimeMsec_;
+    int offset_;
 
     void disposeImages()
     {
@@ -118,19 +202,7 @@ private:
 
     void postLike(const std::string& postId)
     {
-        uint32_t tid;
-        std::string command(System::getMoshPath());
-        command += " /LIBS/MOSH/bin/fb-like-post.sps ";
-        command += postId;
-        int result = monapi_process_execute_file_get_tid(command.c_str(),
-                                                              MONAPI_TRUE,
-                                                              &tid,
-                                                              System::getProcessStdinID(),
-                                                              System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
-        }
-        if (0 == monapi_process_wait_terminated(tid)) {
+        if (FacebookService::addLike(postId)) {
             inputArea_->setText("");
         }
         updateFeed();
@@ -138,24 +210,11 @@ private:
 
     void postFeed()
     {
-        pushButton_->setEnabled(false);
-        uint32_t tid;
-        std::string command(System::getMoshPath());
-        command += " /LIBS/MOSH/bin/fb-feed-post.sps \"";
-        command += inputArea_->getText();
-        command += "\"";
-        int result = monapi_process_execute_file_get_tid(command.c_str(),
-                                                              MONAPI_TRUE,
-                                                              &tid,
-                                                              System::getProcessStdinID(),
-                                                              System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
+        postButton_->setEnabled(false);
+        if (FacebookService::postFeed(inputArea_->getText())) {
+           inputArea_->setText("");
         }
-        if (0 == monapi_process_wait_terminated(tid)) {
-            inputArea_->setText("");
-        }
-        pushButton_->setEnabled(true);
+        postButton_->setEnabled(true);
         updateFeed();
     }
 
@@ -168,41 +227,54 @@ private:
         }
     }
 
-    void showFeedFromFile()
+    bool readFeedFromFile()
     {
-        uint64_t s = MonAPI::Date::nowInMsec();
         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
         if (shm.get() == NULL) {
-            monapi_fatal("can't read fb.data");
+            return false;
         }
-        uint64_t s0 = MonAPI::Date::nowInMsec();
-        logprintf("showFeedFromFile: readfile %d msec\n", (int)(s0 - s));
-        disposeImages();
-//        disposeTextFields();
         std::string text((char*)shm->data());
         Strings lines = StringHelper::split("\n", text);
-        postIds_.clear();
-        for (size_t i = 0; i < lines.size() && i < MAX_ROWS; i++) {
+        posts_.clear();
+        for (size_t i = 0; i < lines.size(); i++) {
             Strings line = StringHelper::split("$", lines[i]);
-            ASSERT(line.size() == 5);
-            std::string imageUri = "http://graph.facebook.com/";
-            std::string filename = "/USER/TEMP/" + line[0] + ".JPG";
-            imageUri += line[0];
-            imageUri += "/picture";
+            if (line.size() != 5) {
+                logprintf("lines[i]=%s size=<%d>", lines[i].c_str(), line.size());
+            }
+            if (line.size() == 5) {
+                posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4]));
+            }
+        }
+        return true;
+    }
+
+    void show()
+    {
+        if (!readFeedFromFile()) {
+            monapi_fatal("can't read fb.data");
+        }
+        showFeedFromFile();
+    }
+
+    void showFeedFromFile(size_t offset = 0)
+    {
+        disposeImages();
+//        disposeTextFields();
+
+        for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
-            std::string content = line[2];
-            if (atoi(line[3].c_str()) > 0) {
+            std::string content = posts_[i].text;
+            if (posts_[i].numLikes > 0) {
                 content += "\n";
-                content += line[3];
+                char buf[32];
+                sprintf(buf, "%d", posts_[i].numLikes);
+                content += buf;
                 content += "人がいいね！と言っています。";
             }
-            postIds_.push_back(line[4]);
-            createOnePost(imageUri, filename, content, i);
+            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
-        uint64_t e = MonAPI::Date::nowInMsec();
-        logprintf("showFeedFromFile %d msec\n", (int)(e - s));
         setStatusDone();
     }
 
@@ -218,9 +290,13 @@ private:
 
     void processEvent(Event* event)
     {
-        if (event->getSource() == pushButton_.get()) {
+        if (event->getSource() == postButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 postFeed();
+            }
+        } else if (event->getSource() == downButton_.get()) {
+            if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+                showFeedFromFile(++offset_);
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
@@ -230,7 +306,7 @@ private:
             if (event->header == MSG_OK && event->from == updaterId_) {
                 if (event->arg1 == M_OK) {
                     logprintf("timer update feed done MSG_OK from=%d \n", event->from);
-                    showFeedFromFile();
+                    show();
                 } else {
                     // error, just ignore and retry next.
                     setStatusDone();
@@ -239,7 +315,7 @@ private:
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 5000) {
+                if (idleTimeMsec_ > 2000) {
                     logprintf("timer update feed start\n");
                     updateFeed();
                 }
@@ -249,8 +325,8 @@ private:
             int likeButtonIndex = sourceIsLikeButton(event);
             if (likeButtonIndex != -1) {
                 if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-                    ASSERT((size_t)likeButtonIndex < postIds_.size());
-                    postLike(postIds_[likeButtonIndex]);
+                    ASSERT((size_t)likeButtonIndex < posts_.size());
+                    postLike(posts_[likeButtonIndex].postId);
                 }
             }
         }
