@@ -46,11 +46,12 @@ struct FacebookPost
 class FacebookPostView : public Container
 {
 public:
-    FacebookPostView() :
+    FacebookPostView(int x, int y, int w, int h) :
         likeButton_(new Button("いいね!")),
         text_(new TextField()),
         image_(new WebImage())
     {
+        setBounds(x, y, w, h);
         text_->setBounds(getX() + SIDE_BAR_WIDTH, getY() + 0, TEXT_FIELD_WIDTH, HEIGHT);
         likeButton_->setBounds(getX() + 0, getY() + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
         add(text_.get());
@@ -197,9 +198,8 @@ public:
         // }
 
         for (size_t i = 0; i < MAX_ROWS; i++) {
-            FacebookPostView* view = new FacebookPostView();
+            FacebookPostView* view = new FacebookPostView(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             views_.push_back(view);
-            view->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             add(view);
         }
     }
