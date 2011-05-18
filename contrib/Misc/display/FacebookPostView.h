@@ -39,8 +39,8 @@ public:
         image_(new WebImage())
     {
         setBounds(x, y, w, h);
-        text_->setBounds(getX() + SIDE_BAR_WIDTH, getY() + 0, TEXT_FIELD_WIDTH, HEIGHT);
-        likeButton_->setBounds(getX() + 0, getY() + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        text_->setBounds(SIDE_BAR_WIDTH, 0, TEXT_FIELD_WIDTH, HEIGHT);
+        likeButton_->setBounds(0, IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
         add(text_.get());
         add(likeButton_.get());
     }
@@ -77,6 +77,16 @@ private:
         }
 
         Container::repaint();
+    }
+
+    void processEvent(Event* event)
+    {
+        if (event->getSource() == likeButton_.get()) {
+            if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+                logprintf("like!");
+            }
+        }
+        Container::processEvent(event);
     }
 
     enum
