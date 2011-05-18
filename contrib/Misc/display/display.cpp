@@ -2,46 +2,12 @@
 #include <string>
 #include <monapi/StringHelper.h>
 #include "Updater.h"
+#include "FacebookService.h"
+#include "FacebookPost.h"
 
 using namespace std;
 using namespace MonAPI;
 
-struct FacebookPost
-{
-    FacebookPost(const std::string& imageId,
-                 const std::string& name,
-                 const std::string& text,
-                 uint32_t numLikes,
-                 const std::string& postId
-        ) :
-        imageId(imageId),
-        name(name),
-        text(text),
-        numLikes(numLikes),
-        postId(postId)
-    {
-    }
-
-    std::string imageUrl()
-    {
-        std::string ret = "http://graph.facebook.com/";
-        ret += imageId;
-        ret += "/picture";
-        return ret;
-    }
-
-    std::string localImagePath()
-    {
-        std::string ret = "/USER/TEMP/" + imageId + ".JPG";
-        return ret;
-    }
-
-    std::string imageId;
-    std::string name;
-    std::string text;
-    uint32_t numLikes;
-    std::string postId;
-};
 
 class FacebookPostView : public Container
 {
@@ -107,43 +73,6 @@ private:
     scoped_ptr<WebImage> image_;
 };
 
-class FacebookService
-{
-public:
-    static bool postFeed(const std::string& text)
-    {
-        return executeMosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
-    }
-
-    static bool addLike(const std::string& postId)
-    {
-        return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", postId);
-    }
-
-private:
-    static bool executeMosh(const std::string& script, const std::string& arg)
-    {
-       uint32_t tid;
-        std::string command(System::getMoshPath());
-        command += " ";
-        command += script;
-        command += " ";
-        command += arg;
-        int result = monapi_process_execute_file_get_tid(command.c_str(),
-                                                              MONAPI_TRUE,
-                                                              &tid,
-                                                              System::getProcessStdinID(),
-                                                              System::getProcessStdoutID());
-        if (result != 0) {
-            monapi_fatal("can't exec Mosh");
-        }
-        if (0 == monapi_process_wait_terminated(tid)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-};
 
 
 
