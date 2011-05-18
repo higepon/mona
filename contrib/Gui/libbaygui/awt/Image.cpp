@@ -71,20 +71,14 @@ namespace baygui {
 
     Image::~Image()
     {
-        // ビットマップ破棄要求
-        if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
-            printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-        }
+        disposeImage();
     }
 
     void Image::resize(int h, int w)
     {
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (height == 0 || width == 0) {
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return;
         }
-//        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         MessageInfo msg;
         if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, w, h, Color::lightGray)) {
             printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
@@ -109,10 +103,18 @@ namespace baygui {
 
         this->width = w;
         this->height = h;
-        if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
-            printf("%s:%d:error: can not connect to gui server!\n", __FILE__, __LINE__);
-        }
+        disposeImage();
         this->bitmap = b;
+    }
+
+    void Image::disposeImage()
+    {
+        if (this->bitmap) {
+            if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+                printf("%s:%d:error: can not connect to gui server!\n", __FILE__, __LINE__);
+            }
+            this->bitmap = NULL;
+        }
     }
 
     void Image::initFromFilePath(const char* path)

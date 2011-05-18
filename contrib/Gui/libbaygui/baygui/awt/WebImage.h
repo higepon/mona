@@ -39,19 +39,20 @@ namespace baygui {
 class WebImage : public Image
 {
 public:
-    WebImage(const std::string& uri, const std::string& path) : uri_(uri), path_(path)
+    WebImage()
     {
     }
 
-    bool initialize()
+    bool initialize(const std::string& uri, const std::string& path)
     {
-        if (!monapi_file_exists(path_.c_str())) {
+        disposeImage();
+        if (!monapi_file_exists(path.c_str())) {
             uint32_t tid;
             std::string cmd("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /LIBS/MOSH/bin/http-get.sps");
             cmd += + ' ';
-            cmd += uri_;
+            cmd += uri;
             cmd += ' ';
-            cmd += path_;
+            cmd += path;
             intptr_t result = monapi_process_execute_file_get_tid(cmd.c_str(),
                                                                   MONAPI_TRUE,
                                                                   &tid,
@@ -63,12 +64,9 @@ public:
             }
             monapi_process_wait_terminated(tid);
         }
-        initFromFilePath(path_.c_str());
+        initFromFilePath(path.c_str());
         return true;
     }
-private:
-    const std::string uri_;
-    const std::string path_;
 };
 };
 

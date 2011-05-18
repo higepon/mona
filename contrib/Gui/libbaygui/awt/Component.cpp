@@ -95,6 +95,8 @@ namespace baygui {
 	void Component::update(int x, int y, int w, int h)
 	{
 		Frame* c = (Frame *)getMainWindow();
+        ASSERT(c);
+        ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
 		c->getGraphics()->drawImage(this->_buffer, getX(), getY());
 		c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
 	}

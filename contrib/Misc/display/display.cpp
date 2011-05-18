@@ -43,6 +43,68 @@ struct FacebookPost
     std::string postId;
 };
 
+class FacebookPostView : public Container
+{
+public:
+    FacebookPostView() :
+        likeButton_(new Button("いいね!")),
+        text_(new TextField()),
+        image_(new WebImage())
+    {
+        text_->setBounds(getX() + SIDE_BAR_WIDTH, getY() + 0, TEXT_FIELD_WIDTH, HEIGHT);
+        likeButton_->setBounds(getX() + 0, getY() + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        add(text_.get());
+        add(likeButton_.get());
+    }
+
+    virtual ~FacebookPostView()
+    {
+    }
+
+    void setImagePath(const std::string& uri, const std::string& path)
+    {
+        image_->initialize(uri, path);
+        if (isImageValid()) {
+            image_->resize(IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+    }
+
+    void setText(const std::string& text)
+    {
+        text_->setText(text.c_str());
+    }
+
+private:
+
+    bool isImageValid() const
+    {
+        return image_->getWidth() != 0;
+    }
+
+
+    void repaint()
+    {
+        if (isImageValid()) {
+            getGraphics()->drawImage(image_.get(), 0, 0);
+        }
+
+        Container::repaint();
+    }
+
+    enum
+    {
+        SIDE_BAR_WIDTH = 50,
+        HEIGHT = 50,
+        IMAGE_HEIGHT = 20,
+        IMAGE_WIDTH = 20,
+        LIKE_BUTTON_WIDTH = 40,
+        LIKE_BUTTON_HEIGHT = 20,
+        TEXT_FIELD_WIDTH = 600
+    };
+    scoped_ptr<Button> likeButton_;
+    scoped_ptr<TextField> text_;
+    scoped_ptr<WebImage> image_;
+};
 
 class FacebookService
 {
@@ -122,16 +184,23 @@ public:
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL);
 
-        for (size_t i = 0; i < MAX_ROWS; i++) {
-            TextField* field = new TextField();
-            fields_.push_back(field);
-            field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
-            add(field);
+        // for (size_t i = 0; i < MAX_ROWS; i++) {
+        //     TextField* field = new TextField();
+        //     fields_.push_back(field);
+        //     field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+        //     add(field);
 
-            Button* button = new Button("いいね！");
-            likeButtons_.push_back(button);
-            button->setBounds(0, 50 + IMAGE_HEIGHT * i + 20, 40, 20);
-            add(button);
+        //     Button* button = new Button("いいね！");
+        //     likeButtons_.push_back(button);
+        //     button->setBounds(0, 50 + IMAGE_HEIGHT * i + 20, 40, 20);
+        //     add(button);
+        // }
+
+        for (size_t i = 0; i < MAX_ROWS; i++) {
+            FacebookPostView* view = new FacebookPostView();
+            views_.push_back(view);
+            view->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+            add(view);
         }
     }
 
@@ -147,57 +216,53 @@ private:
     scoped_ptr<Button> postButton_;
     scoped_ptr<Button> downButton_;
     scoped_ptr<Button> updateButton_;
-    typedef std::vector<TextField*> TextFields;
-    typedef std::vector<Image*> Images;
-    typedef std::vector<Button*> Buttons;
+//    typedef std::vector<TextField*> TextFields;
+//    typedef std::vector<Image*> Images;
+//    typedef std::vector<Button*> Buttons;
     typedef std::vector<std::string> strings;
     typedef std::vector<FacebookPost> FacebookPosts;
+    typedef std::vector<FacebookPostView*> FacebookPostViews;
     FacebookPosts posts_;
-    TextFields fields_;
-    Images images_;
-    Buttons likeButtons_;
+//    TextFields fields_;
+//    Images images_;
+//    Buttons likeButtons_;
     bool updating_;
     int idleTimeMsec_;
     int offset_;
+    FacebookPostViews views_;
 
     void disposeImages()
     {
-        for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
-            delete (*it);
-        }
-        images_.clear();
+        // for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
+        //     delete (*it);
+        // }
+        // images_.clear();
     }
 
     void disposeLikeButtons()
     {
-        for (Buttons::const_iterator it = likeButtons_.begin(); it != likeButtons_.end(); ++it) {
-            delete (*it);
-        }
-        likeButtons_.clear();
+        // for (Buttons::const_iterator it = likeButtons_.begin(); it != likeButtons_.end(); ++it) {
+        //     delete (*it);
+        // }
+        // likeButtons_.clear();
     }
 
 
     void disposeTextFields()
     {
-        for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
-            remove(*it);
-            delete (*it);
-        }
-        fields_.clear();
+        // for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
+        //     remove(*it);
+        //     delete (*it);
+        // }
+        // fields_.clear();
     }
 
     void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
     {
-        WebImage* image = new WebImage(url, file);
-        image->initialize();
-
-        // this is workaround, should be check on Image class, but doesn't work
-        if (image->getWidth() != 0) {
-            image->resize(20, 20);
-        }
-        images_.push_back(image);
+        FacebookPostView* view = views_[index];
+        view->setImagePath(url, file);
         String x = text.c_str();
-        fields_[index]->setText(foldLine(text, 70).c_str());
+        view->setText(foldLine(text, 70));
     }
 
     void postLike(const std::string& postId)
@@ -258,19 +323,19 @@ private:
 
     void showFeedFromFile(size_t offset = 0)
     {
-        disposeImages();
+//        disposeImages();
 //        disposeTextFields();
 
         for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
             std::string content = posts_[i].text;
-            if (posts_[i].numLikes > 0) {
-                content += "\n";
-                char buf[32];
-                sprintf(buf, "%d", posts_[i].numLikes);
-                content += buf;
-                content += "人がいいね！と言っています。";
-            }
+            // if (posts_[i].numLikes > 0) {
+            //     content += "\n";
+            //     char buf[32];
+            //     sprintf(buf, "%d", posts_[i].numLikes);
+            //     content += buf;
+            //     content += "人がいいね！と言っています。";
+            // }
             createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
@@ -280,11 +345,11 @@ private:
 
     int sourceIsLikeButton(Event* event)
     {
-        for (size_t i = 0; i < likeButtons_.size(); i++) {
-            if (event->getSource() == likeButtons_[i]) {
-                return i;
-            }
-        }
+        // for (size_t i = 0; i < likeButtons_.size(); i++) {
+        //     if (event->getSource() == likeButtons_[i]) {
+        //         return i;
+        //     }
+        // }
         return -1;
     }
 
@@ -346,9 +411,9 @@ private:
 
     void paint(Graphics *g)
     {
-        for (size_t i = 0; i < images_.size(); i++) {
-            g->drawImage(images_[i], 0, IMAGE_HEIGHT * i + 50);
-        }
+        // for (size_t i = 0; i < images_.size(); i++) {
+        //     g->drawImage(images_[i], 0, IMAGE_HEIGHT * i + 50);
+        // }
     }
 
     void setStatusUpdating()

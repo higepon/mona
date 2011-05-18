@@ -41,6 +41,7 @@ namespace baygui {
 
     protected:
         void initFromFilePath(const char* path);
+        void disposeImage();
 
     public:
         Image() {}

@@ -105,16 +105,22 @@ namespace baygui {
 
     void TextField::setText(const String& text)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         text_ = text;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         cursor_ = text_.length();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         repaint();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void TextField::paint(Graphics* g)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int w = getWidth(), h = getHeight();
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 外枠
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (getFocused() == true && getEnabled() == true) {
             g->setColor(0, 128, 255);
             g->drawRect(0, 0, w, h);
@@ -122,29 +128,35 @@ namespace baygui {
             g->setColor(getParent()->getBackground());
             g->drawRect(0, 0, w, h);
         }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 内枠
         g->setColor(getBackground());
         g->fillRect(1, 1, w - 2, h - 2);
         g->setColor(getForeground());
         g->drawRect(1, 1, w - 2, h - 2);
         // 文字
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int fh = getFontMetrics()->getHeight(getText());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int fw = getFontMetrics()->getWidth(getText());
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (getEnabled() == true) {
             g->setColor(getForeground());
         } else {
             g->setColor(Color::gray);
         }
         g->drawString(getText(), this->offx, (h - fh) / 2);
-
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // キャレット
         if (getFocused() == true && getEnabled() == true) {
             g->drawLine(offx + fw, offy, offx + fw, offy + 12);
         }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // todo pullup
         int width = _imeManager->isOn() ? 100 : 0;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         _imeManager->setBounds(getX() + offx + fw, getY() + offy, width, getHeight() - offy * 2);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     bool TextField::isImeOn() const
