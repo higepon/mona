@@ -263,8 +263,8 @@ static void test_WebImage_create()
 {
     const char* uri = "https://github.com/higepon/mona/raw/master/contrib/Graphics/bitmap/MONALISA.JPG";
     const char* path = "/USER/TEMP/SAKEBI.JPG";
-    scoped_ptr<WebImage> image(new WebImage());
-    EXPECT_TRUE(image->initialize(uri, path));
+    scoped_ptr<WebImage> image(new WebImage(uri, path));
+    EXPECT_TRUE(image->initialize());
     EXPECT_TRUE(monapi_file_exists(path));
 }
 

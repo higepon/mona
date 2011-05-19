@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui.h"
 
 namespace baygui {
-	Component::Component() : typeTag(TAG_COMPONENT)
+	Component::Component()
 	{
 		this->parent = NULL;
 		this->enabled = true;
