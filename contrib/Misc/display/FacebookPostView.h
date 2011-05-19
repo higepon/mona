@@ -35,6 +35,8 @@ class FacebookPostView
 {
 public:
     FacebookPostView(int x, int y, int w, int h) :
+        x_(x),
+        y_(y),
         likeButton_(new Button("いいね!")),
         text_(new TextField()),
         image_(new WebImage())
@@ -72,6 +74,16 @@ public:
         return image_.get();
     }
 
+    int imageX() const
+    {
+        return x_;
+    }
+
+    int imageY() const
+    {
+        return y_;
+    }
+
 private:
 
     bool isImageValid() const
@@ -89,6 +101,8 @@ private:
         LIKE_BUTTON_HEIGHT = 20,
         TEXT_FIELD_WIDTH = 600
     };
+    int x_;
+    int y_;
     MonAPI::scoped_ptr<Button> likeButton_;
     MonAPI::scoped_ptr<TextField> text_;
     MonAPI::scoped_ptr<WebImage> image_;
