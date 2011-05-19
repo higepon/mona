@@ -69,6 +69,13 @@ public:
         text_->setText(text.c_str());
     }
 
+    void drawImage(Graphics* g)
+    {
+        g->drawImage(image(), imageX(), imageY());
+    }
+
+private:
+
     Image* image()
     {
         return image_.get();
@@ -84,7 +91,6 @@ public:
         return y_;
     }
 
-private:
 
     bool isImageValid() const
     {

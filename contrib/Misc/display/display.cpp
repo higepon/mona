@@ -277,9 +277,8 @@ private:
 
     void paint(Graphics *g)
     {
-        for (size_t i = 0; i < views_.size(); i++) {
-            FacebookPostView* view = views_[i];
-            g->drawImage(view->image(), view->imageX(), view->imageY());
+        for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
+            (*it)->drawImage(g);
         }
     }
 
