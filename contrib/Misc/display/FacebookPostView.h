@@ -74,6 +74,11 @@ public:
         g->drawImage(image(), imageX(), imageY());
     }
 
+    Button* likeButton()
+    {
+        return likeButton_.get();
+    }
+
 private:
 
     Image* image()

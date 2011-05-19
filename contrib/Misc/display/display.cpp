@@ -171,6 +171,19 @@ private:
         return -1;
     }
 
+    bool handleLikeButtonEvent(Event* event)
+    {
+        if (event->getType() != MouseEvent::MOUSE_RELEASED) {
+            return false;
+        }
+        for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
+            if ((*it)->likeButton() == event->getSource()) {
+                (*it)->addLike();
+            }
+        }
+        return false;
+    }
+
     void processEvent(Event* event)
     {
         if (event->getSource() == postButton_.get()) {
