@@ -30,7 +30,8 @@
 #ifndef _FACEBOOK_POST_VIEW_
 #define _FACEBOOK_POST_VIEW_
 
-class FacebookPostView : public Container
+typedef std::vector<Component*> Components;
+class FacebookPostView
 {
 public:
     FacebookPostView(int x, int y, int w, int h) :
@@ -38,15 +39,19 @@ public:
         text_(new TextField()),
         image_(new WebImage())
     {
-        setBounds(x, y, w, h);
-        text_->setBounds(SIDE_BAR_WIDTH, 0, TEXT_FIELD_WIDTH, HEIGHT);
-        likeButton_->setBounds(0, IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
-        add(text_.get());
-        add(likeButton_.get());
+        // todo w, h limit
+        text_->setBounds(x + SIDE_BAR_WIDTH, y, TEXT_FIELD_WIDTH, HEIGHT);
+        likeButton_->setBounds(x, y + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
     }
 
     virtual ~FacebookPostView()
     {
+    }
+
+    void components(Components& ret)
+    {
+        ret.push_back(likeButton_.get());
+        ret.push_back(text_.get());
     }
 
     void setImagePath(const std::string& uri, const std::string& path)
@@ -62,31 +67,16 @@ public:
         text_->setText(text.c_str());
     }
 
+    Image* image()
+    {
+        return image_.get();
+    }
+
 private:
 
     bool isImageValid() const
     {
         return image_->getWidth() != 0;
-    }
-
-
-    void repaint()
-    {
-        if (isImageValid()) {
-            getGraphics()->drawImage(image_.get(), 0, 0);
-        }
-
-        Container::repaint();
-    }
-
-    void processEvent(Event* event)
-    {
-        if (event->getSource() == likeButton_.get()) {
-            if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-                logprintf("like!");
-            }
-        }
-        Container::processEvent(event);
     }
 
     enum

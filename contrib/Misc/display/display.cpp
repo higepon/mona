@@ -62,7 +62,11 @@ public:
         for (size_t i = 0; i < MAX_ROWS; i++) {
             FacebookPostView* view = new FacebookPostView(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             views_.push_back(view);
-            add(view);
+            Components c;
+            view->components(c);
+            for (Components::const_iterator it = c.begin(); it != c.end(); ++it) {
+                add(*it);
+            }
         }
     }
 
@@ -273,9 +277,9 @@ private:
 
     void paint(Graphics *g)
     {
-        // for (size_t i = 0; i < images_.size(); i++) {
-        //     g->drawImage(images_[i], 0, IMAGE_HEIGHT * i + 50);
-        // }
+        for (size_t i = 0; i < views_.size(); i++) {
+            g->drawImage(views_[i]->image(), 0, IMAGE_HEIGHT * i + 50);
+        }
     }
 
     void setStatusUpdating()
