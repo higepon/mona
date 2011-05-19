@@ -38,9 +38,13 @@ public:
         text_(new TextField()),
         image_(new WebImage())
     {
+        logprintf("tag type = %d this=%x enabled=%d button=%x", getTypeTag(), this, getEnabled(), likeButton_.get());
         setBounds(x, y, w, h);
-        text_->setBounds(SIDE_BAR_WIDTH, 0, TEXT_FIELD_WIDTH, HEIGHT);
-        likeButton_->setBounds(0, IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        text_->setBounds(x + SIDE_BAR_WIDTH, y + 0, TEXT_FIELD_WIDTH, HEIGHT);
+        likeButton_->setBounds(x, y + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        // text_->setBounds(SIDE_BAR_WIDTH, 0, TEXT_FIELD_WIDTH, HEIGHT);
+        // likeButton_->setBounds(0, IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+
         add(text_.get());
         add(likeButton_.get());
     }

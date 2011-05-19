@@ -62,10 +62,15 @@ namespace baygui {
 		Image* _buffer;
 		/** フォント情報 */
 		FontMetrics* _metrics;
-
 	protected:
+        enum {
+            TAG_CONTAINER = 1000,
+            TAG_COMPONENT
+        };
+
 		/** フォーカスイベント */
 		Event focusEvent;
+        int typeTag;
 
 	public:
 		/** コンストラクタ */
@@ -106,6 +111,8 @@ namespace baygui {
 		
 		/** 親部品を得る */
 		inline Container* getParent() { return this->parent; }
+
+        inline int getTypeTag() const { return this->typeTag; }
 		
 		/** 活性・非活性を得る */
 		inline bool getEnabled() { return this->enabled; }

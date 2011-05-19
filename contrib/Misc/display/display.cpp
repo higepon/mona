@@ -61,6 +61,7 @@ public:
 
         for (size_t i = 0; i < MAX_ROWS; i++) {
             FacebookPostView* view = new FacebookPostView(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+            logprintf("typeTag=%d", view->getTypeTag());
             views_.push_back(view);
             add(view);
         }

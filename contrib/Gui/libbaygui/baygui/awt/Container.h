@@ -68,6 +68,8 @@ namespace baygui {
 		
 		/** ƒCƒxƒ“ƒgˆ— */
 		virtual void dispatchEvent(Event* event);
+
+        void dispatchOrProcessEvent(Component* c, Event* event);
 		
 		/** Ä•`‰æ */
 		virtual void repaint();

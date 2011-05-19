@@ -26,6 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
     Container::Container()
     {
+        this->typeTag = TAG_CONTAINER;
     }
 
     Container::~Container()
@@ -57,6 +58,8 @@ namespace baygui {
         for (int i = I - 1; i >= 0; i--) {
             Component* c = (Component *)this->componentList.get(i);
             Rectangle* bounds = c->getBounds();
+
+            logprintf("this=%x c=%x x=%d y=%d bounds->x = %d bounds->y=%d[%d]\n", this, c, x, y, bounds->x, bounds->y, bounds->x <= x && x <= bounds->x + bounds->width &&  bounds->y <= y && y <= bounds->y + bounds->height);
             // マウスカーソルがある範囲に部品があるかどうかチェック
             if (bounds->x <= x && x <= bounds->x + bounds->width &&
                 bounds->y <= y && y <= bounds->y + bounds->height)
@@ -79,6 +82,19 @@ namespace baygui {
         this->componentList.remove(component);
     }
 
+    void Container::dispatchOrProcessEvent(Component* c, Event* event)
+    {
+        if (c->getTypeTag() == TAG_CONTAINER) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            ((Container*)c)->dispatchEvent(event);
+        } else if (c->getTypeTag() == TAG_COMPONENT) {
+            c->processEvent(event);
+        } else {
+            monapi_warn("typeTag=%d", c->getTypeTag());
+            ASSERT(false);
+        }
+    }
+
     void Container::dispatchEvent(Event* event)
     {
         // 非活性の時はイベントを受け付けない
@@ -90,7 +106,7 @@ namespace baygui {
             // 部品でイベントが起こった
             if (component != NULL) {
                 event->setSource(component);
-                component->processEvent(event);
+                dispatchOrProcessEvent(component, event);
             }
             // 部品以外でイベントが起こった
             processEvent(event);
@@ -111,11 +127,13 @@ namespace baygui {
                 }
                 component->setFocused(true);
                 event->setSource(component);
-                Rectangle* bounds = component->getBounds();
-                me->setX(me->getX() - bounds->x);
-                me->setY(me->getY() - bounds->y);
+                if (component->getTypeTag() != TAG_CONTAINER) {
+                    Rectangle* bounds = component->getBounds();
+                    me->setX(me->getX() - bounds->x);
+                    me->setY(me->getY() - bounds->y);
+                }
                 //syscall_print("MOUSE_PRESSED,");
-                component->processEvent(event);
+                dispatchOrProcessEvent(component, event);
             // 部品以外でイベントが起こった
             } else {
                 // 部品をフォーカスアウト状態にする
@@ -138,10 +156,12 @@ namespace baygui {
             // 部品でイベントが起こった
             if (component != NULL) {
                 event->setSource(component);
-                Rectangle* bounds = component->getBounds();
-                me->setX(me->getX() - bounds->x);
-                me->setY(me->getY() - bounds->y);
-                component->processEvent(event);
+                if (component->getTypeTag() != TAG_CONTAINER) {
+                    Rectangle* bounds = component->getBounds();
+                    me->setX(me->getX() - bounds->x);
+                    me->setY(me->getY() - bounds->y);
+                }
+                dispatchOrProcessEvent(component, event);
             // 部品以外でイベントが起こった
             } else {
                 event->setSource(this);
