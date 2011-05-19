@@ -47,18 +47,6 @@ public:
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL);
 
-        // for (size_t i = 0; i < MAX_ROWS; i++) {
-        //     TextField* field = new TextField();
-        //     fields_.push_back(field);
-        //     field->setBounds(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
-        //     add(field);
-
-        //     Button* button = new Button("いいね！");
-        //     likeButtons_.push_back(button);
-        //     button->setBounds(0, 50 + IMAGE_HEIGHT * i + 20, 40, 20);
-        //     add(button);
-        // }
-
         for (size_t i = 0; i < MAX_ROWS; i++) {
             FacebookPostView* view = new FacebookPostView(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             views_.push_back(view);
@@ -72,8 +60,6 @@ public:
 
     ~Display()
     {
-        disposeImages();
-        disposeLikeButtons();
     }
 
 private:
@@ -82,46 +68,14 @@ private:
     scoped_ptr<Button> postButton_;
     scoped_ptr<Button> downButton_;
     scoped_ptr<Button> updateButton_;
-//    typedef std::vector<TextField*> TextFields;
-//    typedef std::vector<Image*> Images;
-//    typedef std::vector<Button*> Buttons;
     typedef std::vector<std::string> strings;
     typedef std::vector<FacebookPost> FacebookPosts;
     typedef std::vector<FacebookPostView*> FacebookPostViews;
     FacebookPosts posts_;
-//    TextFields fields_;
-//    Images images_;
-//    Buttons likeButtons_;
     bool updating_;
     int idleTimeMsec_;
     int offset_;
     FacebookPostViews views_;
-
-    void disposeImages()
-    {
-        // for (Images::const_iterator it = images_.begin(); it != images_.end(); ++it) {
-        //     delete (*it);
-        // }
-        // images_.clear();
-    }
-
-    void disposeLikeButtons()
-    {
-        // for (Buttons::const_iterator it = likeButtons_.begin(); it != likeButtons_.end(); ++it) {
-        //     delete (*it);
-        // }
-        // likeButtons_.clear();
-    }
-
-
-    void disposeTextFields()
-    {
-        // for (TextFields::const_iterator it = fields_.begin(); it != fields_.end(); ++it) {
-        //     remove(*it);
-        //     delete (*it);
-        // }
-        // fields_.clear();
-    }
 
     void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
     {
@@ -189,8 +143,6 @@ private:
 
     void showFeedFromFile(size_t offset = 0)
     {
-//        disposeImages();
-//        disposeTextFields();
 
         for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
