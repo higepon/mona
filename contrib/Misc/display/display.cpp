@@ -86,14 +86,6 @@ private:
         view->setText(foldLine(text, 70));
     }
 
-    void postLike(const std::string& postId)
-    {
-        if (FacebookService::addLike(postId)) {
-            inputArea_->setText("");
-        }
-        updateFeed();
-    }
-
     void postFeed()
     {
         postButton_->setEnabled(false);
@@ -101,10 +93,10 @@ private:
            inputArea_->setText("");
         }
         postButton_->setEnabled(true);
-        updateFeed();
+        updateFeedAsync();
     }
 
-    void updateFeed()
+    void updateFeedAsync()
     {
         setStatusUpdating();
         int ret = Message::send(updaterId_, MSG_UPDATE);
@@ -162,16 +154,6 @@ private:
         setStatusDone();
     }
 
-    int sourceIsLikeButton(Event* event)
-    {
-        // for (size_t i = 0; i < likeButtons_.size(); i++) {
-        //     if (event->getSource() == likeButtons_[i]) {
-        //         return i;
-        //     }
-        // }
-        return -1;
-    }
-
     bool handleLikeButtonEvent(Event* event)
     {
         if (event->getType() != MouseEvent::MOUSE_RELEASED) {
@@ -200,7 +182,7 @@ private:
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-                updateFeed();
+                updateFeedAsync();
             }
         } else if (event->getType() == Event::CUSTOM_EVENT) {
             if (event->header == MSG_OK && event->from == updaterId_) {
@@ -217,18 +199,11 @@ private:
                 idleTimeMsec_ += TIMER_INTERVAL;
                 if (idleTimeMsec_ > 2000) {
                     logprintf("timer update feed start\n");
-                    updateFeed();
+                    updateFeedAsync();
                 }
             }
             setTimer(TIMER_INTERVAL);
         } else {
-            int likeButtonIndex = sourceIsLikeButton(event);
-            if (likeButtonIndex != -1) {
-                if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-                    ASSERT((size_t)likeButtonIndex < posts_.size());
-                    postLike(posts_[likeButtonIndex].postId);
-                }
-            }
         }
     }
 
