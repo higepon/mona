@@ -87,6 +87,13 @@ public:
         numLikes_ = post.numLikes;
     }
 
+    void setEmpty()
+    {
+        setText("");
+        postId_ = "";
+        numLikes_ = 0;
+    }
+
     void drawImage(Graphics* g)
     {
         g->drawImage(image(), imageX(), imageY());

@@ -10,6 +10,21 @@ using namespace std;
 using namespace MonAPI;
 
 class Display : public Frame {
+private:
+    uintptr_t updaterId_;
+    scoped_ptr<TextField> inputArea_;
+    scoped_ptr<Button> postButton_;
+    scoped_ptr<Button> downButton_;
+    scoped_ptr<Button> updateButton_;
+    typedef std::vector<std::string> strings;
+    typedef std::vector<FacebookPost> FacebookPosts;
+    typedef std::vector<FacebookPostView*> FacebookPostViews;
+    FacebookPosts posts_;
+    bool updating_;
+    int idleTimeMsec_;
+    int offset_;
+    FacebookPostViews views_;
+    bool isAutoUpdate_;
 
 public:
     enum
@@ -32,7 +47,8 @@ public:
         updateButton_(new Button("Update")),
         updating_(false),
         idleTimeMsec_(2000),
-        offset_(0)
+        offset_(0),
+        isAutoUpdate_(true)
     {
         setTitle("Facebook");
         setBounds(40, 40, WIDTH, HEIGHT);
@@ -63,20 +79,6 @@ public:
     }
 
 private:
-    uintptr_t updaterId_;
-    scoped_ptr<TextField> inputArea_;
-    scoped_ptr<Button> postButton_;
-    scoped_ptr<Button> downButton_;
-    scoped_ptr<Button> updateButton_;
-    typedef std::vector<std::string> strings;
-    typedef std::vector<FacebookPost> FacebookPosts;
-    typedef std::vector<FacebookPostView*> FacebookPostViews;
-    FacebookPosts posts_;
-    bool updating_;
-    int idleTimeMsec_;
-    int offset_;
-    FacebookPostViews views_;
-
     void postFeed()
     {
         postButton_->setEnabled(false);
@@ -108,7 +110,7 @@ private:
         for (size_t i = 0; i < lines.size(); i++) {
             Strings line = StringHelper::split("$", lines[i]);
             if (line.size() != 5) {
-                logprintf("lines[i]=%s size=<%d>", lines[i].c_str(), line.size());
+//                logprintf("lines[i]=%s size=<%d>", lines[i].c_str(), line.size());
             }
             if (line.size() == 5) {
                 posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4]));
@@ -127,11 +129,15 @@ private:
 
     void setupFacebookPostViews(size_t offset = 0)
     {
-        for (size_t i = 0; i < posts_.size() && i < MAX_ROWS; i++) {
-            uint64_t s1 = MonAPI::Date::nowInMsec();
-            views_[i]->setupFromFacebookPost(posts_[i + offset]);
-            uint64_t s2 = MonAPI::Date::nowInMsec();
-            logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
+        for (size_t i = 0; i < MAX_ROWS; i++) {
+            //uint64_t s1 = MonAPI::Date::nowInMsec();
+            if (i + offset < posts_.size()) {
+                views_[i]->setupFromFacebookPost(posts_[i + offset]);
+            } else {
+                views_[i]->setEmpty();
+            }
+            //uint64_t s2 = MonAPI::Date::nowInMsec();
+//            logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
         setStatusDone();
     }
@@ -160,17 +166,19 @@ private:
 
         } else if (event->getSource() == downButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+                isAutoUpdate_ = false;
                 setupFacebookPostViews(++offset_);
                 repaint();
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+                isAutoUpdate_ = true;
                 updateFeedAsync();
             }
         } else if (event->getType() == Event::CUSTOM_EVENT) {
             if (event->header == MSG_OK && event->from == updaterId_) {
                 if (event->arg1 == M_OK) {
-                    logprintf("timer update feed done MSG_OK from=%d \n", event->from);
+//                    logprintf("timer update feed done MSG_OK from=%d \n", event->from);
                     show();
                 } else {
                     // error, just ignore and retry next.
@@ -180,8 +188,8 @@ private:
         } else if (event->getType() == Event::TIMER) {
             if (!updating_) {
                 idleTimeMsec_ += TIMER_INTERVAL;
-                if (idleTimeMsec_ > 2000) {
-                    logprintf("timer update feed start\n");
+                if (isAutoUpdate_ && idleTimeMsec_ > 2000) {
+//                    logprintf("timer update feed start\n");
                     updateFeedAsync();
                 }
             }
@@ -196,10 +204,10 @@ private:
         updateButton_->setLabel("update");
         updating_ = false;
         idleTimeMsec_ = 0;
-        uint64_t s = MonAPI::Date::nowInMsec();
+//        uint64_t s = MonAPI::Date::nowInMsec();
         repaint();
-        uint64_t e = MonAPI::Date::nowInMsec();
-        logprintf("repaint %d msec\n", (int)(e - s));
+        //uint64_t e = MonAPI::Date::nowInMsec();
+//        logprintf("repaint %d msec\n", (int)(e - s));
     }
 
     void paint(Graphics *g)
