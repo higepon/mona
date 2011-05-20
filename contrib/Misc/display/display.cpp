@@ -96,7 +96,7 @@ private:
         }
     }
 
-    bool readFeedFromFile()
+    bool readFacebookPostFromFile()
     {
         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
         if (shm.get() == NULL) {
@@ -119,7 +119,7 @@ private:
 
     void show()
     {
-        if (!readFeedFromFile()) {
+        if (!readFacebookPostFromFile()) {
             monapi_fatal("can't read fb.data");
         }
         setupFacebookPostViews();
