@@ -122,10 +122,10 @@ private:
         if (!readFeedFromFile()) {
             monapi_fatal("can't read fb.data");
         }
-        showFeedFromFile();
+        setupFacebookPostViews();
     }
 
-    void showFeedFromFile(size_t offset = 0)
+    void setupFacebookPostViews(size_t offset = 0)
     {
         for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
@@ -160,7 +160,7 @@ private:
 
         } else if (event->getSource() == downButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-                showFeedFromFile(++offset_);
+                setupFacebookPostViews(++offset_);
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
