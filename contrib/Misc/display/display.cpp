@@ -82,8 +82,7 @@ private:
         FacebookPostView* view = views_[index];
         view->setImagePath(url, file);
         view->setPostId(postId);
-        String x = text.c_str();
-        view->setText(foldLine(text, 70));
+        view->setText(text);
     }
 
     void postFeed()
@@ -233,25 +232,6 @@ private:
         updateButton_->setLabel("updating");
     }
 
-    string foldLine(const string& line, size_t maxLineLength)
-    {
-        size_t len = 0;
-        string ret;
-        for (string::const_iterator it = line.begin(); it != line.end(); ++it) {
-            ret += *it;
-            if ((*it) == '\n') {
-                len = 0;
-            } else {
-                len++;
-            }
-
-            if (len >= maxLineLength) {
-                ret += '\n';
-                len = 0;
-            }
-        }
-        return ret;
-    }
 };
 
 static void __fastcall updaterLauncher(void* arg)

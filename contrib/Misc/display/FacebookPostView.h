@@ -67,7 +67,7 @@ public:
 
     void setText(const std::string& text)
     {
-        text_->setText(text.c_str());
+        text_->setText(foldLine(text, 70).c_str());
     }
 
     void drawImage(Graphics* g)
@@ -89,6 +89,26 @@ public:
     {
         ASSERT(!postId_.empty());
         FacebookService::addLike(postId_);
+    }
+
+    std::string foldLine(const std::string& line, size_t maxLineLength)
+    {
+        size_t len = 0;
+        std::string ret;
+        for (std::string::const_iterator it = line.begin(); it != line.end(); ++it) {
+            ret += *it;
+            if ((*it) == '\n') {
+                len = 0;
+            } else {
+                len++;
+            }
+
+            if (len >= maxLineLength) {
+                ret += '\n';
+                len = 0;
+            }
+        }
+        return ret;
     }
 
 private:
