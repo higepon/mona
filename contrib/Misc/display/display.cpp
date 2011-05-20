@@ -48,7 +48,7 @@ public:
         setTimer(TIMER_INTERVAL);
 
         for (size_t i = 0; i < MAX_ROWS; i++) {
-            FacebookPostView* view = new FacebookPostView(IMAGE_WIDTH, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+            FacebookPostView* view = new FacebookPostView(5, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
             views_.push_back(view);
             Components c;
             view->components(c);
@@ -127,9 +127,9 @@ private:
 
     void setupFacebookPostViews(size_t offset = 0)
     {
-        for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
+        for (size_t i = 0; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
-            views_[i]->setupFromFacebookPost(posts_[i]);
+            views_[i]->setupFromFacebookPost(posts_[i + offset]);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
@@ -161,6 +161,7 @@ private:
         } else if (event->getSource() == downButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 setupFacebookPostViews(++offset_);
+                repaint();
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
@@ -214,7 +215,6 @@ private:
         updateButton_->setEnabled(false);
         updateButton_->setLabel("updating");
     }
-
 };
 
 static void __fastcall updaterLauncher(void* arg)

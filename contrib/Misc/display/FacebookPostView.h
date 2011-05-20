@@ -82,14 +82,9 @@ public:
     void setupFromFacebookPost(const FacebookPost& post)
     {
         setImagePath(post.imageUrl(), post.localImagePath());
-        setPostId(post.postId);
-        setNumLikes(post.numLikes);
         setText(post.text);
-    }
-
-    void setNumLikes(int numLikes)
-    {
-        numLikes_ = numLikes;
+        postId_ = post.postId;
+        numLikes_ = post.numLikes;
     }
 
     void drawImage(Graphics* g)
@@ -100,11 +95,6 @@ public:
     Button* likeButton()
     {
         return likeButton_.get();
-    }
-
-    void setPostId(const std::string& postId)
-    {
-        postId_ = postId;
     }
 
     void addLike()
@@ -149,7 +139,6 @@ private:
     {
         return y_;
     }
-
 
     bool isImageValid() const
     {
