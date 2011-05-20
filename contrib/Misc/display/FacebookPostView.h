@@ -40,7 +40,8 @@ public:
         likeButton_(new Button("いいね!")),
         text_(new TextField()),
         image_(new WebImage()),
-        postId_("")
+        postId_(""),
+        numLikes_(0)
     {
         // todo w, h limit
         text_->setBounds(x + SIDE_BAR_WIDTH, y, TEXT_FIELD_WIDTH, HEIGHT);
@@ -67,7 +68,20 @@ public:
 
     void setText(const std::string& text)
     {
-        text_->setText(foldLine(text, 70).c_str());
+        std::string content = foldLine(text, 70);
+        if (numLikes_ > 0) {
+            content += "\n";
+            char buf[32];
+            sprintf(buf, "%d", numLikes_);
+            content += buf;
+            content += "人がいいね！と言っています。";
+        }
+        text_->setText(content.c_str());
+    }
+
+    void setNumLikes(int numLikes)
+    {
+        numLikes_ = numLikes;
     }
 
     void drawImage(Graphics* g)
@@ -150,6 +164,7 @@ private:
     MonAPI::scoped_ptr<TextField> text_;
     MonAPI::scoped_ptr<WebImage> image_;
     std::string postId_;
+    int numLikes_;
 };
 
 #endif // _FACEBOOK_POST_VIEW_

@@ -77,11 +77,12 @@ private:
     int offset_;
     FacebookPostViews views_;
 
-    void createOnePost(const std::string& url, const std::string& file, const std::string& text, const std::string& postId, int index)
+    void createOnePost(const std::string& url, const std::string& file, const std::string& text, const std::string& postId, int numLikes, int index)
     {
         FacebookPostView* view = views_[index];
         view->setImagePath(url, file);
         view->setPostId(postId);
+        view->setNumLikes(numLikes);
         view->setText(text);
     }
 
@@ -146,7 +147,7 @@ private:
             //     content += buf;
             //     content += "人がいいね！と言っています。";
             // }
-            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, posts_[i].postId, i);
+            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, posts_[i].postId, posts_[i].numLikes, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
