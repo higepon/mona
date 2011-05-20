@@ -139,15 +139,7 @@ private:
 
         for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
-            std::string content = posts_[i].text;
-            // if (posts_[i].numLikes > 0) {
-            //     content += "\n";
-            //     char buf[32];
-            //     sprintf(buf, "%d", posts_[i].numLikes);
-            //     content += buf;
-            //     content += "人がいいね！と言っています。";
-            // }
-            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, posts_[i].postId, posts_[i].numLikes, i);
+            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), posts_[i].text, posts_[i].postId, posts_[i].numLikes, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
