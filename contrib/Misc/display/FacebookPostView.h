@@ -79,6 +79,14 @@ public:
         text_->setText(content.c_str());
     }
 
+    void setupFromFacebookPost(const FacebookPost& post)
+    {
+        setImagePath(post.imageUrl(), post.localImagePath());
+        setPostId(post.postId);
+        setNumLikes(post.numLikes);
+        setText(post.text);
+    }
+
     void setNumLikes(int numLikes)
     {
         numLikes_ = numLikes;

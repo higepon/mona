@@ -77,15 +77,6 @@ private:
     int offset_;
     FacebookPostViews views_;
 
-    void createOnePost(const std::string& url, const std::string& file, const std::string& text, const std::string& postId, int numLikes, int index)
-    {
-        FacebookPostView* view = views_[index];
-        view->setImagePath(url, file);
-        view->setPostId(postId);
-        view->setNumLikes(numLikes);
-        view->setText(text);
-    }
-
     void postFeed()
     {
         postButton_->setEnabled(false);
@@ -136,10 +127,9 @@ private:
 
     void showFeedFromFile(size_t offset = 0)
     {
-
         for (size_t i = offset; i < posts_.size() && i < MAX_ROWS; i++) {
             uint64_t s1 = MonAPI::Date::nowInMsec();
-            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), posts_[i].text, posts_[i].postId, posts_[i].numLikes, i);
+            views_[i]->setupFromFacebookPost(posts_[i]);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }

@@ -46,7 +46,7 @@ struct FacebookPost
     {
     }
 
-    std::string imageUrl()
+    std::string imageUrl() const
     {
         std::string ret = "http://graph.facebook.com/";
         ret += imageId;
@@ -54,7 +54,7 @@ struct FacebookPost
         return ret;
     }
 
-    std::string localImagePath()
+    std::string localImagePath() const
     {
         std::string ret = "/USER/TEMP/" + imageId + ".JPG";
         return ret;
