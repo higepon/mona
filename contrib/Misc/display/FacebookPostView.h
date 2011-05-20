@@ -39,7 +39,8 @@ public:
         y_(y),
         likeButton_(new Button("いいね!")),
         text_(new TextField()),
-        image_(new WebImage())
+        image_(new WebImage()),
+        postId_("")
     {
         // todo w, h limit
         text_->setBounds(x + SIDE_BAR_WIDTH, y, TEXT_FIELD_WIDTH, HEIGHT);
@@ -77,6 +78,17 @@ public:
     Button* likeButton()
     {
         return likeButton_.get();
+    }
+
+    void setPostId(const std::string& postId)
+    {
+        postId_ = postId;
+    }
+
+    void addLike()
+    {
+        ASSERT(!postId_.empty());
+        FacebookService::addLike(postId_);
     }
 
 private:
@@ -117,6 +129,7 @@ private:
     MonAPI::scoped_ptr<Button> likeButton_;
     MonAPI::scoped_ptr<TextField> text_;
     MonAPI::scoped_ptr<WebImage> image_;
+    std::string postId_;
 };
 
 #endif // _FACEBOOK_POST_VIEW_

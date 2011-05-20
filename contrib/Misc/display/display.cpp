@@ -77,10 +77,11 @@ private:
     int offset_;
     FacebookPostViews views_;
 
-    void createOnePost(const std::string& url, const std::string& file, const std::string& text, int index)
+    void createOnePost(const std::string& url, const std::string& file, const std::string& text, const std::string& postId, int index)
     {
         FacebookPostView* view = views_[index];
         view->setImagePath(url, file);
+        view->setPostId(postId);
         String x = text.c_str();
         view->setText(foldLine(text, 70));
     }
@@ -154,7 +155,7 @@ private:
             //     content += buf;
             //     content += "人がいいね！と言っています。";
             // }
-            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, i);
+            createOnePost(posts_[i].imageUrl(), posts_[i].localImagePath(), content, posts_[i].postId, i);
             uint64_t s2 = MonAPI::Date::nowInMsec();
             logprintf("showFeedFromFile: createOnePost %d msec\n", (int)(s2 - s1));
         }
@@ -179,6 +180,7 @@ private:
         for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
             if ((*it)->likeButton() == event->getSource()) {
                 (*it)->addLike();
+                return true;
             }
         }
         return false;
@@ -190,6 +192,8 @@ private:
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 postFeed();
             }
+        } else if (handleLikeButtonEvent(event)) {
+
         } else if (event->getSource() == downButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 showFeedFromFile(++offset_);
