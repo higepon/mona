@@ -3,11 +3,11 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
-TARGET  = DISPLAY
-SOURCES = display.cpp
+TARGET  = FACEBOOK
+SOURCES = facebook.cpp
 
 INSTDIR = $(BINDIR)/APPS/BAYGUI
-INSTFILES = DISPLAY.map
+INSTFILES = $(TARGET).map
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    =  -lmonalibc-imp -lbaygui-imp --enable-auto-import
