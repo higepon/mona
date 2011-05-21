@@ -20,3 +20,5 @@ install: $(TARGET)
 
 uninstall:
 	rm -f $(PREFIX)/bin/$(TARGET)
+
+depend:
