@@ -202,20 +202,6 @@ void ImeManager::paint(Graphics* g)
     g->fillRect(0, 0, getWidth(), getHeight());
     // 塗りつぶし
     g->setColor(getBackground());
-    // if (isOn_) {
-    //     g->setColor(0, 0, 255);
-    // } else {
-    //     g->setColor(255, 0, 0);
-    // }
-    g->setColor(255, 255, 255);
-    g->fillRect(0, 0, getWidth(), getHeight());
-
-    // 確定文字列
-    //if (strlen(decideBuffer) > 0) {
-    //  fw1 = FontMetrics::getInstance()->getWidth(decideBuffer);
-    //  g->setColor(foreColor);
-    //  g->drawText(decideBuffer, 0, (getHeight() - fh) / 2);
-    //}
 
     // 変換対象文字列
     if (strlen(translateBuffer) > 0) {
@@ -225,23 +211,11 @@ void ImeManager::paint(Graphics* g)
         g->drawLine(0, 13, fw1, 13);
     }
 
-    // 入力中文字列
-    //if (strlen(inputBuffer) > 0) {
-    //  fw2 = FontMetrics::getInstance()->getWidth(inputBuffer);
-    //  g->setColor(0, 0, 255);
-    //  g->drawText(inputBuffer, fw1, (getHeight() - fh) / 2);
-    //  g->drawLine(fw1, 13, fw1 + fw2, 13);
-    //}
-
     // キャレット
     if (getFocused() == true && getEnabled() == true) {
         g->setColor(0, 0, 0);
         g->drawLine(fw1 + fw2, 0, fw1 + fw2, 13);
     }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    g->setColor(255, 0, 0);
-    g->fillRect(0, 0, getWidth(), getHeight());
-
 }
 
 /** イベント処理 */

@@ -142,10 +142,6 @@ namespace baygui {
         // todo pullup
         int width = _imeManager->isOn() ? 100 : 0;
         int height = _imeManager->isOn() ? getHeight() - offy * 2 : 0;
-        if (!_imeManager->isOn()) {
-            _imeManager->setLocation(1000, 1000);
-        }
-        logprintf("_imeManager->setBounds %d %d %d %d %s %s:%d\n", getX() + offx + fw, getY() + offy, width, height, __func__, __FILE__, __LINE__);
         _imeManager->setBounds(getX() + offx + fw, getY() + offy, width, height);
     }
 
