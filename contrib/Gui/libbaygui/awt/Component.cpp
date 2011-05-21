@@ -1,197 +1,189 @@
 /*
 Copyright (c) 2005 bayside
 
-Permission is hereby granted, free of charge, to any person 
-obtaining a copy of this software and associated documentation files 
-(the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, 
-publish, distribute, sublicense, and/or sell copies of the Software, 
-and to permit persons to whom the Software is furnished to do so, 
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so,
 subject to the following conditions:
 
-The above copyright notice and this permission notice shall be 
+The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "baygui.h"
 
 namespace baygui {
-	Component::Component()
-	{
-		this->parent = NULL;
-		this->enabled = true;
-		this->focused = false;
-		this->visible = true;
-		this->x = this->y = this->height = this->width = 10;
-		this->backColor = Color::lightGray;
-		this->foreColor = Color::black;
-		this->fontStyle = Font::PLAIN;
-		this->_g = NULL;
-		this->_buffer = NULL;
-		this->_metrics = new FontMetrics();
-		this->focusEvent.setType(Event::FOCUS_IN);
-		this->focusEvent.setSource(this);
-	}
+    Component::Component()
+    {
+        this->parent = NULL;
+        this->enabled = true;
+        this->focused = false;
+        this->visible = true;
+        this->x = this->y = this->height = this->width = 10;
+        this->backColor = Color::lightGray;
+        this->foreColor = Color::black;
+        this->fontStyle = Font::PLAIN;
+        this->_g = NULL;
+        this->_buffer = NULL;
+        this->_metrics = new FontMetrics();
+        this->focusEvent.setType(Event::FOCUS_IN);
+        this->focusEvent.setSource(this);
+    }
 
-	Component::~Component()
-	{
-		removeNotify();
-	}
+    Component::~Component()
+    {
+        removeNotify();
+    }
 
-	void Component::addNotify()
-	{
-		if (this->_buffer != NULL) return;
+    void Component::addNotify()
+    {
+        if (this->_buffer != NULL) return;
 
-		// 内部バッファー、描画オブジェクトの生成
-		this->_buffer = new Image(width, height);
-		this->_g = new Graphics(this->_buffer);
-	}
+        // 内部バッファー、描画オブジェクトの生成
+        this->_buffer = new Image(width, height);
+        this->_g = new Graphics(this->_buffer);
+    }
 
-	void Component::removeNotify()
-	{
-		delete(_buffer);
-		delete(_g);
-		delete(_metrics);
-	}
+    void Component::removeNotify()
+    {
+        delete(_buffer);
+        delete(_g);
+        delete(_metrics);
+    }
 
-	void Component::processEvent(Event* event)
-	{
-	}
+    void Component::processEvent(Event* event)
+    {
+    }
 
-	void Component::paint(Graphics* g)
-	{
-	}
+    void Component::paint(Graphics* g)
+    {
+    }
 
-	void Component::dispatchEvent(Event *event)
-	{
-		processEvent(event);
-		// 親部品にイベントを投げる
-		if (getParent() != NULL) {
-			getParent()->processEvent(event);
-		}
-	}
+    void Component::dispatchEvent(Event *event)
+    {
+        processEvent(event);
+        // 親部品にイベントを投げる
+        if (getParent() != NULL) {
+            getParent()->processEvent(event);
+        }
+    }
 
-	void Component::repaint()
-	{
-		if (this->_buffer == NULL) return;
-		setFontStyle(this->fontStyle);
-		paint(this->_g);
-		update();
-	}
+    void Component::repaint()
+    {
+        if (this->_buffer == NULL) return;
+        setFontStyle(this->fontStyle);
+        paint(this->_g);
+        update();
+    }
 
-	void Component::update()
-	{
-		update(getX(), getY(), getWidth(), getHeight());
-	}
+    void Component::update()
+    {
+        update(getX(), getY(), getWidth(), getHeight());
+    }
 
-	void Component::update(int x, int y, int w, int h)
-	{
-		Frame* c = (Frame *)getMainWindow();
+    void Component::update(int x, int y, int w, int h)
+    {
+        Frame* c = (Frame *)getMainWindow();
         ASSERT(c);
         ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
-		c->getGraphics()->drawImage(this->_buffer, getX(), getY());
-		c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
-	}
+        c->getGraphics()->drawImage(this->_buffer, getX(), getY());
+        c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
+    }
 
-	Component* Component::getMainWindow()
-	{
-		return (this->parent == NULL) ? this : this->parent->getMainWindow();
-	}
+    Component* Component::getMainWindow()
+    {
+        return (this->parent == NULL) ? this : this->parent->getMainWindow();
+    }
 
-	void Component::setEnabled(bool enabled)
-	{
-		this->enabled = enabled;
-	}
+    void Component::setEnabled(bool enabled)
+    {
+        this->enabled = enabled;
+    }
 
-	void Component::setFocused(bool focused)
-	{
-		if (this->focused == true && focused == false) {
-			//syscall_print("FOCUS_OUT,");
-			this->focused = focused;
-			this->focusEvent.setType(Event::FOCUS_OUT);
-			dispatchEvent(&this->focusEvent);
-		} else if (this->focused == false && focused == true) {
-			//syscall_print("FOCUS_IN,");
-			this->focused = focused;
-			this->focusEvent.setType(Event::FOCUS_IN);
-			dispatchEvent(&this->focusEvent);
-		}
-	}
-
-	void Component::setVisible(bool visible)
-	{
-		this->visible = visible;
-	}
-
-	void Component::setBounds(int x, int y, int width, int height)
-	{
-		this->x = x;
-		this->y = y;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        if (this->width != width || this->height != height) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            if (this->_buffer != NULL) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                delete this->_buffer;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            if (this->_g != NULL) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-                delete this->_g;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            this->_buffer = new Image(width, height);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            this->_g = new Graphics(this->_buffer);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    void Component::setFocused(bool focused)
+    {
+        if (this->focused == true && focused == false) {
+            //syscall_print("FOCUS_OUT,");
+            this->focused = focused;
+            this->focusEvent.setType(Event::FOCUS_OUT);
+            dispatchEvent(&this->focusEvent);
+        } else if (this->focused == false && focused == true) {
+            //syscall_print("FOCUS_IN,");
+            this->focused = focused;
+            this->focusEvent.setType(Event::FOCUS_IN);
+            dispatchEvent(&this->focusEvent);
         }
-		this->height = height;
-		this->width = width;
-		this->bounds.setBounds(x, y, width, height);
-	}
+    }
 
-	void Component::setLocation(int x, int y)
-	{
-		if (this->x == x && this->y == y) return;
-		
-		this->x = x;
-		this->y = y;
-		this->bounds.setLocation(x, y);
-	}
+    void Component::setVisible(bool visible)
+    {
+        this->visible = visible;
+    }
 
-	void Component::setParent(Container *parent)
-	{
-		this->parent = parent;
-	}
+    void Component::setBounds(int x, int y, int width, int height)
+    {
+        this->x = x;
+        this->y = y;
+        // Some components such like IME will be resized dynamically.
+        // So we should re-create and resize graphics and images. by higepon
+        if (this->width != width || this->height != height) {
+            if (this->_buffer != NULL) {
+                delete this->_buffer;
+            }
+            if (this->_g != NULL) {
+                delete this->_g;
+            }
+            this->_buffer = new Image(width, height);
+            this->_g = new Graphics(this->_buffer);
+        }
+        this->height = height;
+        this->width = width;
+        this->bounds.setBounds(x, y, width, height);
+    }
 
-	void Component::setBackground(dword backColor)
-	{
-		this->backColor = backColor;
-	}
+    void Component::setLocation(int x, int y)
+    {
+        if (this->x == x && this->y == y) return;
 
-	void Component::setForeground(dword foreColor)
-	{
-		this->foreColor = foreColor;
-	}
+        this->x = x;
+        this->y = y;
+        this->bounds.setLocation(x, y);
+    }
 
-	void Component::setFontStyle(int style)
-	{
-		if (this->_metrics != NULL) {
-			_metrics->setFontStyle(style);
-		}
-		if (this->_g != NULL) {
-			_g->setFontStyle(style);
-		}
-		this->fontStyle = style;
-	}
+    void Component::setParent(Container *parent)
+    {
+        this->parent = parent;
+    }
+
+    void Component::setBackground(dword backColor)
+    {
+        this->backColor = backColor;
+    }
+
+    void Component::setForeground(dword foreColor)
+    {
+        this->foreColor = foreColor;
+    }
+
+    void Component::setFontStyle(int style)
+    {
+        if (this->_metrics != NULL) {
+            _metrics->setFontStyle(style);
+        }
+        if (this->_g != NULL) {
+            _g->setFontStyle(style);
+        }
+        this->fontStyle = style;
+    }
 }

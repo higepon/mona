@@ -48,8 +48,8 @@ ImeManager::ImeManager() : isOn_(false)
     _imeEvent = new Event(Event::Event::IME_SETCONTEXT, this);
     imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
     kanjiListPtr = -1;
-    // TODO:To resized with setBounds by parent, we need enoug w x h for graphic buffer.
-    setBounds(0, 0, 100, 30);
+    // we need default graphics and image
+    setBounds(0, 0, 100, 100);
 }
 
 /** デストラクタ */
