@@ -159,6 +159,7 @@ private:
         for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
             if ((*it)->likeButton() == event->getSource()) {
                 (*it)->addLike();
+                updateFeedAsync();
                 return true;
             }
         }

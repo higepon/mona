@@ -82,16 +82,16 @@ public:
     void setupFromFacebookPost(const FacebookPost& post)
     {
         setImagePath(post.imageUrl(), post.localImagePath());
-        setText(post.text);
         postId_ = post.postId;
         numLikes_ = post.numLikes;
+        setText(post.text);
     }
 
     void setEmpty()
     {
-        setText("");
         postId_ = "";
         numLikes_ = 0;
+        setText("");
     }
 
     void drawImage(Graphics* g)
