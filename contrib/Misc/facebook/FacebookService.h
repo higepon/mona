@@ -50,8 +50,9 @@ private:
         std::string command(MonAPI::System::getMoshPath());
         command += " ";
         command += script;
-        command += " ";
+        command += " \"";
         command += arg;
+        command += "\"";
         int result = monapi_process_execute_file_get_tid(command.c_str(),
                                                          MONAPI_TRUE,
                                                          &tid,

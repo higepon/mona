@@ -9,7 +9,7 @@
 using namespace std;
 using namespace MonAPI;
 
-class Display : public Frame {
+class Facebook : public Frame {
 private:
     uintptr_t updaterId_;
     scoped_ptr<TextField> inputArea_;
@@ -43,7 +43,7 @@ public:
         forbidden_comma
     };
 
-    Display(uintptr_t updaterId) :
+    Facebook(uintptr_t updaterId) :
         updaterId_(updaterId),
         inputArea_(new TextField()),
         postButton_(new Button("Post")),
@@ -83,7 +83,7 @@ public:
         }
     }
 
-    ~Display()
+    ~Facebook()
     {
     }
 
@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
     }
 
     uintptr_t updaterId = monapi_thread_create_with_arg(updaterLauncher, NULL);
-    Display display(updaterId);
-    display.run();
+    Facebook facebook(updaterId);
+    facebook.run();
     return 0;
 }
