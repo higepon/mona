@@ -135,6 +135,26 @@ namespace baygui {
 	{
 		this->x = x;
 		this->y = y;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        if (this->width != width || this->height != height) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            if (this->_buffer != NULL) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                delete this->_buffer;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            if (this->_g != NULL) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                delete this->_g;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            }
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            this->_buffer = new Image(width, height);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            this->_g = new Graphics(this->_buffer);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        }
 		this->height = height;
 		this->width = width;
 		this->bounds.setBounds(x, y, width, height);

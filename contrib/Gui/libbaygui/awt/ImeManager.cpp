@@ -49,7 +49,7 @@ ImeManager::ImeManager() : isOn_(false)
     imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
     kanjiListPtr = -1;
     // TODO:To resized with setBounds by parent, we need enoug w x h for graphic buffer.
-    setBounds(0, 0, 100, 100);
+    setBounds(0, 0, 100, 30);
 }
 
 /** デストラクタ */
@@ -238,6 +238,10 @@ void ImeManager::paint(Graphics* g)
         g->setColor(0, 0, 0);
         g->drawLine(fw1 + fw2, 0, fw1 + fw2, 13);
     }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    g->setColor(255, 0, 0);
+    g->fillRect(0, 0, getWidth(), getHeight());
+
 }
 
 /** イベント処理 */
