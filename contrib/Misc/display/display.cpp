@@ -38,7 +38,8 @@ public:
         HEIGHT = 420,
         POST_HEIGHT = 50,
         MAX_ROWS = 7,
-        TIMER_INTERVAL = 5000,
+        TIMER_INTERVAL_MSEC = 1000,
+        UPDATE_INTERVAL_MSEC = 30 * 1000,
         forbidden_comma
     };
 
@@ -68,7 +69,7 @@ public:
         add(postButton_.get());
         add(downButton_.get());
         add(updateButton_.get());
-        setTimer(TIMER_INTERVAL);
+        setTimer(TIMER_INTERVAL_MSEC);
 
         y += BUTTON_HEIGHT + BUTTON_MARGIN;
         for (size_t i = 0; i < MAX_ROWS; i++) {
@@ -194,14 +195,16 @@ private:
                 }
             }
         } else if (event->getType() == Event::TIMER) {
+            static bool isFirstTime = true;
             if (!updating_) {
-                idleTimeMsec_ += TIMER_INTERVAL;
-                if (isAutoUpdate_ && idleTimeMsec_ > 2000) {
+                idleTimeMsec_ += TIMER_INTERVAL_MSEC;
+                if (isFirstTime || (isAutoUpdate_ && idleTimeMsec_ > UPDATE_INTERVAL_MSEC)) {
+                    isFirstTime = false;
 //                    logprintf("timer update feed start\n");
                     updateFeedAsync();
                 }
             }
-            setTimer(TIMER_INTERVAL);
+            setTimer(TIMER_INTERVAL_MSEC);
         } else {
         }
     }
