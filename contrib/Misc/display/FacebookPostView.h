@@ -37,15 +37,15 @@ public:
     FacebookPostView(int x, int y, int w, int h) :
         x_(x),
         y_(y),
-        likeButton_(new Button("いいね!")),
+        likeButton_(new Button("Like!")),
         text_(new TextField()),
         image_(new WebImage()),
         postId_(""),
         numLikes_(0)
     {
         // todo w, h limit
-        text_->setBounds(x + SIDE_BAR_WIDTH, y, TEXT_FIELD_WIDTH, HEIGHT);
-        likeButton_->setBounds(x, y + IMAGE_HEIGHT, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        text_->setBounds(x + SIDE_BAR_WIDTH, y, w - MARGIN - LIKE_BUTTON_WIDTH, h);
+        likeButton_->setBounds(x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
     }
 
     virtual ~FacebookPostView()
@@ -144,7 +144,7 @@ private:
 
     int imageY() const
     {
-        return y_;
+        return y_ + IMAGE_MARGIN_TOP;
     }
 
     bool isImageValid() const
@@ -154,13 +154,14 @@ private:
 
     enum
     {
-        SIDE_BAR_WIDTH = 50,
-        HEIGHT = 50,
+        MARGIN = 25,
+        IMAGE_MARGIN_TOP = 5,
         IMAGE_HEIGHT = 20,
         IMAGE_WIDTH = 20,
         LIKE_BUTTON_WIDTH = 40,
         LIKE_BUTTON_HEIGHT = 20,
-        TEXT_FIELD_WIDTH = 600
+        LIKE_BUTTON_MARGIN_TOP = 2,
+        SIDE_BAR_WIDTH = LIKE_BUTTON_WIDTH
     };
     int x_;
     int y_;

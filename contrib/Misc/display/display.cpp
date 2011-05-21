@@ -29,12 +29,15 @@ private:
 public:
     enum
     {
+        BUTTON_WIDTH = 50,
+        BUTTON_HEIGHT = 20,
+        BUTTON_MARGIN = 5,
+        INPUT_AREA_WIDTH = 300,
+        INPUT_AREA_HEIGHT = BUTTON_HEIGHT,
         WIDTH = 700,
-        HEIGHT = 400,
-        IMAGE_WIDTH = 50,
-        IMAGE_HEIGHT = 50,
-        MARGIN = 15,
-        MAX_ROWS = 6,
+        HEIGHT = 420,
+        POST_HEIGHT = 50,
+        MAX_ROWS = 7,
         TIMER_INTERVAL = 5000,
         forbidden_comma
     };
@@ -52,19 +55,24 @@ public:
     {
         setTitle("Facebook");
         setBounds(40, 40, WIDTH, HEIGHT);
-        const int x = 5;
-        const int y = 5;
-        inputArea_->setBounds(x, y, x + 300, y + 15);
-        postButton_->setBounds(255, 30, 50, 20);
-        updateButton_->setBounds(200, 30, 50, 20);
+        int x = 5;
+        int y = 5;
+        inputArea_->setBounds(x, y, INPUT_AREA_WIDTH, INPUT_AREA_HEIGHT);
+        x += INPUT_AREA_WIDTH + BUTTON_MARGIN;
+        postButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        x += BUTTON_WIDTH + BUTTON_MARGIN;
+        updateButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        x += BUTTON_WIDTH + BUTTON_MARGIN;
+        downButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
         add(inputArea_.get());
         add(postButton_.get());
         add(downButton_.get());
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL);
 
+        y += BUTTON_HEIGHT + BUTTON_MARGIN;
         for (size_t i = 0; i < MAX_ROWS; i++) {
-            FacebookPostView* view = new FacebookPostView(5, 50 + IMAGE_HEIGHT * i, WIDTH - IMAGE_WIDTH - MARGIN, IMAGE_HEIGHT);
+            FacebookPostView* view = new FacebookPostView(5, y + POST_HEIGHT * i, WIDTH, POST_HEIGHT);
             views_.push_back(view);
             Components c;
             view->components(c);
