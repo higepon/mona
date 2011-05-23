@@ -29,7 +29,7 @@
 #ifndef __GNOTE_ROOTWINDOW_HPP__
 #define __GNOTE_ROOTWINDOW_HPP__
 
-#include "baygui.h"
+#include "monagui.h"
 
 #include "trash/tmenubar.hpp"
 #include "trash/tpopupmenu.hpp"

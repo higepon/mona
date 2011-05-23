@@ -29,7 +29,7 @@
                          "/APPS/TSOCK.EX5"
                          ))
 
-(define *tests-on-gui* '("/APPS/BAYGUI/TBAYGUI.EX5"))
+(define *tests-on-gui* '("/APPS/MONAGUI/TMONAGUI.EX5"))
 
 (define (test-end) (print "all tests done"))
 
@@ -39,30 +39,30 @@
   (gnote))
 
 (define (my-display)
-  (call-process "/APPS/FRECV.EX5 DISPLAY.EX5")
-  (call-process "/MEM/DISPLAY.EX5")
+  (call-process "/APPS/FRECV.EX5 FACEBOOK.EX5")
+  (call-process "/MEM/FACEBOOk.EX5")
   (my-display))
 
 
 (define (on-gui-start)
 ;  (ls "/USER/TEMP")
 ;  (call-process "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/show-words.scm /USER/WORDS.SCM")
-;  (start-process "/APPS/BAYGUI/DISPLAY.EX5")
-  (start-process "/APPS/BAYGUI/MG.EX5")
-;  (start-process "/APPS/BAYGUI/GNOTE.EX5 /USER/BIN/CAT.SCM")
+;  (start-process "/APPS/MONAGUI/DISPLAY.EX5")
+  (start-process "/APPS/MONAGUI/MG.EX5")
+;  (start-process "/APPS/MONAGUI/GNOTE.EX5 /USER/BIN/CAT.SCM")
 
 ;  (as)
 ;  (start-process "/MUSIC/HAPPY.EX5 -d /MUSIC/")
-;  (start-process "/APPS/NET.EX5")
+ (start-process "/APPS/MONAGUI/MONASQ.EX5")
 ;  (start-process "/APPS/MONAFRMS/BITMAP.EX5 /APPS/MONAFRMS/MONALISA.JPG 50 300")
-;  (start-process "/APPS/BAYGUI/MINE.EX5")
+;  (start-process "/APPS/MONAGUI/MINE.EX5")
 ;  (start-process "/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5")
 (start-process "/APPS/W3M.APP/W3M.EX5 http://www.google.com/")
 ;  (start-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
-;  (start-process "/APPS/BAYGUI/GTIMER.EX5")
+;  (start-process "/APPS/MONAGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
-  (call-process "/APPS/BAYGUI/DISPLAY.EX5")
+  (call-process "/APPS/MONAGUI/FACEBOOK.EX5")
   (my-display)
 ;; (gnote)
 ;  (w3m-auto-pilot)

@@ -3,7 +3,7 @@ SOURCES = main.cpp ImeServer.cpp
 INSTDIR = $(BINDIR)/APPS/
 INSTFILES  = BASICDIC.TXT IME.map
 CLEANFILES = BASICDIC.TX5
-ADDLINK = -lmonalibc-imp -lbaygui-imp --enable-auto-import
+ADDLINK = -lmonalibc-imp -lamonagui-imp --enable-auto-import
 $(TARGET).EX5: $(CLEANFILES)
 
 SHAREDIR   = $(MONADIR)/share

@@ -10,7 +10,7 @@
 
 //#include <monapi.h>
 //#include <monapi/messages.h>
-#include <baygui.h>
+#include <monagui.h>
 
 #include "InfoNES.h"
 #include "InfoNES_System.h"

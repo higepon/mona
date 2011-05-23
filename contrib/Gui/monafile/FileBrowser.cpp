@@ -223,7 +223,7 @@ void FileBrowser::Open(int target)
             }
             else if (exe.EndsWith(".NES") || exe.EndsWith(".NE5"))
             {
-                ProcessStart("/APPS/BAYGUI/INFONES.EX5 " + exe);
+                ProcessStart("/APPS/MONAGUI/INFONES.EX5 " + exe);
             }
             else
             {
@@ -237,7 +237,7 @@ void FileBrowser::Open(int target)
             String img = PathCombine(this->path, name);
             if (img.EndsWith(".MPG"))
             {
-                ProcessStart("/APPS/BAYGUI/XMONAPEG.EX5 " + img);
+                ProcessStart("/APPS/MONAGUI/XMONAPEG.EX5 " + img);
             }
             else
             {

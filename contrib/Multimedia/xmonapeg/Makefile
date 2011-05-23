@@ -1,6 +1,6 @@
 TARGET  = XMONAPEG
 SOURCES = monapeg.cpp
-INSTDIR = $(BINDIR)/APPS/BAYGUI
+INSTDIR = $(BINDIR)/APPS/MONAGUI
 
 #INSTFILES = SAMPLE.MPG
 
@@ -11,6 +11,6 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-ADDLINK = -L. -llen-cygwin -lbaygui-imp --enable-auto-import
+ADDLINK = -L. -llen-cygwin -lamonagui-imp --enable-auto-import
 
 -include dependencies

@@ -120,7 +120,7 @@ MonaADK (Mona Application Development Kit) を使用しています。
 monasq.cpp
 monasq.h
 monasq_base.h
-monasq_baygui.cpp
+monasq_monagui.cpp
 monasq_monapi.cpp
 init_script.cpp
   このプログラムのメインルーチン。
@@ -161,11 +161,11 @@ misc/fcvt.cpp
 
 misc/TextArea.h
 misc/TextArea.cpp
-  baygui/TextArea.h をインクルードしても
+  monagui/TextArea.h をインクルードしても
   リンカに参照が見つからないと怒られる現象に遭遇したため、
-  独自に定義してあります（現在の libbaygui.a には含まれていないっぽい？）。
+  独自に定義してあります（現在の libmonagui.a には含まれていないっぽい？）。
   以下を元に、少し改変してあります。
-    /trunk/contrib/Graphics/libbaygui/awt/TextArea.cpp
+    /trunk/contrib/Graphics/libmonagui/awt/TextArea.cpp
     Revision 3120
 
 
@@ -174,14 +174,14 @@ misc/TextArea.cpp
 
 ・ハングアップバグ
   現象：
-    bayguiコンポーネントが使用中なのに破棄されることがある
+    monaguiコンポーネントが使用中なのに破棄されることがある
   詳細：
     MonaSq が参照カウントを考慮していないため、
-    Squirrel 変数がスコープを出ると bayguiコンポーネントであっても
+    Squirrel 変数がスコープを出ると monaguiコンポーネントであっても
     GC に回収されてしまいます。その結果、無効なポインタに
     対するアクセスが発生し MonaSq はハングアップします。
   対処方法：
-    泥縄的ですが、bayguiコンポーネントは使用期間以上の変数スコープで
+    泥縄的ですが、monaguiコンポーネントは使用期間以上の変数スコープで
     保持するようにしてください。
 
 

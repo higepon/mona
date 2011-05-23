@@ -31,7 +31,7 @@
 
 #define COLOR_BLUEGRAY 0xffdfdfff
 
-#include "baygui.h"
+#include "monagui.h"
 #include "trash/teventlistener.hpp"
 
 namespace trash {

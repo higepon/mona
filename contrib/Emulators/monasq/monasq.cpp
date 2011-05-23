@@ -44,8 +44,8 @@ extern void monasq_init_monasq_lib(HSQUIRRELVM v);
 // MonaSq/monapi ライブラリの初期化
 extern void monasq_init_monapi_lib(HSQUIRRELVM v);
 
-// MonaSq/baygui ライブラリの初期化
-extern void monasq_init_baygui_lib(HSQUIRRELVM v);
+// MonaSq/monagui ライブラリの初期化
+extern void monasq_init_monagui_lib(HSQUIRRELVM v);
 
 
 
@@ -131,8 +131,8 @@ bool SqEnvironment::init() {
     // MonaSq/monapi ライブラリの初期化
     monasq_init_monapi_lib(v);
 
-    // MonaSq/baygui ライブラリの初期化
-    monasq_init_baygui_lib(v);
+    // MonaSq/monagui ライブラリの初期化
+    monasq_init_monagui_lib(v);
 
     return true;
 }

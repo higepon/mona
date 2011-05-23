@@ -1,7 +1,7 @@
 #ifndef _SONG_BUTTON_
 #define _SONG_BUTTON_
 
-#include <baygui.h>
+#include <monagui.h>
 
 class SongButton : public Component
 {

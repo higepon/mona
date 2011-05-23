@@ -1,14 +1,14 @@
 
-簡易 MonaSq/baygui ライブラリ リファレンス
+簡易 MonaSq/monagui ライブラリ リファレンス
 
 
-baygui とは、MonaOS 上に実装された C++ 言語用の GUI ライブラリです。
+monagui とは、MonaOS 上に実装された C++ 言語用の GUI ライブラリです。
 
-MonaSq では、Squirrel スクリプト上から baygui ライブラリを呼び出す
-ラッパーライブラリ MonaSq/baygui が用意されています。
+MonaSq では、Squirrel スクリプト上から monagui ライブラリを呼び出す
+ラッパーライブラリ MonaSq/monagui が用意されています。
 
-MonaSq/baygui は、MonaSq のデモンストレーションのために作られました。
-全ての baygui コンポーネントが扱えるわけではありません。
+MonaSq/monagui は、MonaSq のデモンストレーションのために作られました。
+全ての monagui コンポーネントが扱えるわけではありません。
 また、現状ではやや不安定です。
 
 
@@ -275,11 +275,11 @@ MonaSq/baygui は、MonaSq のデモンストレーションのために作られました。
 
 ■イベントハンドラの登録
 
-イベントハンドラは、baygui で発生したイベントを
+イベントハンドラは、monagui で発生したイベントを
 処理するための関数で、必要に応じて定義します。
 
 イベントハンドラは、イベントの種類によって引数が異なります。
-例えば、キー押し下げイベント baygui.KEY_PRESSED を処理するハンドラは
+例えば、キー押し下げイベント monagui.KEY_PRESSED を処理するハンドラは
 引数を二つ渡され、以下のように定義できます（関数名はなんでも良い）。
 
 	function onKeyPressed(keycode, modifiers) {
@@ -291,7 +291,7 @@ MonaSq/baygui は、MonaSq のデモンストレーションのために作られました。
 
 	local frame = Frame();				// ウインドウオブジェクト作成
 	frame.setBounds(10, 10, 120, 120);	// ウインドウの大きさを設定
-	frame.setHandler( baygui.KEY_PRESSED, this, onKeyPressed );
+	frame.setHandler( monagui.KEY_PRESSED, this, onKeyPressed );
 										// イベントハンドラを登録
 	frame.run();						// ウインドウを実行
 
@@ -306,100 +306,100 @@ false を返した場合は、何も返さないのと同じです。
 
 true を返した場合は、イベントを完全に処理し終えたことを意味します。
 スーパークラスはそれ以上そのイベントを処理しません。
-例えば、baygui.PAINT イベントに対してハンドラが true を返すと、
-baygui 側はそのコンポーネントを描画しなくなります。
+例えば、monagui.PAINT イベントに対してハンドラが true を返すと、
+monagui 側はそのコンポーネントを描画しなくなります。
 特定のイベント処理を完全に置き換えたい場合だけ true を返してください。
 
 
 
 ■イベント定数
 
-baygui.PAINT
+monagui.PAINT
 	説明：描画要求
 	ハンドラ：function handler( g )
 	引数：g コンポーネントへ描画可能な Graphics クラスオブジェクト
 
-baygui.KEY_PRESSED
+monagui.KEY_PRESSED
 	説明：キーが押された
 	ハンドラ：function handler( keycode, modifiers, src )
 	引数：keycode キーコード
 	引数：modifiers 修飾キー
 	引数：src イベント発生元コンポーネント
 
-baygui.KEY_RELEASED
+monagui.KEY_RELEASED
 	説明：キーが離された
 	ハンドラ：function handler( keycode, modifiers, src )
 	引数：keycode キーコード
 	引数：modifiers 修飾キー
 	引数：src イベント発生元コンポーネント
 
-baygui.MOUSE_PRESSED
+monagui.MOUSE_PRESSED
 	説明：マウスボタンが押された
 	ハンドラ：function handler( x, y, button, src )
 	引数：x Ｘ座標
 	引数：y Ｙ座標
-	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：button ボタン（monagui.BUTTON_LEFT, monagui.BUTTON_RIGHT, monagui.BUTTON_MIDDLE）
 	引数：src イベント発生元コンポーネント
 
-baygui.MOUSE_RELEASED
+monagui.MOUSE_RELEASED
 	説明：マウスボタンが離された
 	ハンドラ：function handler( x, y, button, src )
 	引数：x Ｘ座標
 	引数：y Ｙ座標
-	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：button ボタン（monagui.BUTTON_LEFT, monagui.BUTTON_RIGHT, monagui.BUTTON_MIDDLE）
 	引数：src イベント発生元コンポーネント
 
-baygui.MOUSE_DRAGGED
+monagui.MOUSE_DRAGGED
 	説明：ドラッグされた
 	ハンドラ：function handler( x, y, button, src )
 	引数：x Ｘ座標
 	引数：y Ｙ座標
-	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：button ボタン（monagui.BUTTON_LEFT, monagui.BUTTON_RIGHT, monagui.BUTTON_MIDDLE）
 	引数：src イベント発生元コンポーネント
 
-baygui.MOUSE_MOVED
+monagui.MOUSE_MOVED
 	説明：マウスポインタが移動した
 	ハンドラ：function handler( x, y, src )
 	引数：x Ｘ座標
 	引数：y Ｙ座標
 	引数：src イベント発生元コンポーネント
 
-baygui.FOCUS_IN
+monagui.FOCUS_IN
 	説明：アクティブになった
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.FOCUS_OUT
+monagui.FOCUS_OUT
 	説明：非アクティブになった
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.TIMER
+monagui.TIMER
 	説明：タイマーイベント（Frame.setTimer() 参照）
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.TEXT_CHANGED
+monagui.TEXT_CHANGED
 	説明：テキストフィールドのテキストが変更された
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.ITEM_SELECTED
+monagui.ITEM_SELECTED
 	説明：リスト部品の項目が選択された
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.BLOCK_INCLEMENT
+monagui.BLOCK_INCLEMENT
 	説明：
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.BLOCK_DECLEMENT
+monagui.BLOCK_DECLEMENT
 	説明：
 	ハンドラ：function handler(src)
 	引数：src イベント発生元コンポーネント
 
-baygui.CUSTOM_EVENT
+monagui.CUSTOM_EVENT
 	説明：カスタムイベント
 	ハンドラ：function handler(header, arg1, arg2, arg3, from, str, src)
 	引数：header
@@ -415,9 +415,9 @@ baygui.CUSTOM_EVENT
 
 ■マウスボタン定数
 
-	baygui.BUTTON_LEFT =	1
-	baygui.BUTTON_RIGHT =	2
-	baygui.BUTTON_MIDDLE =	3
+	monagui.BUTTON_LEFT =	1
+	monagui.BUTTON_RIGHT =	2
+	monagui.BUTTON_MIDDLE =	3
 
 
 
@@ -425,22 +425,22 @@ baygui.CUSTOM_EVENT
 
 Frame.setColor() の引数として指定できます。
 
-	baygui.black     = 0xff000000
-	baygui.maroon    = 0xff800000
-	baygui.green     = 0xff008000
-	baygui.olive     = 0xff808000
-	baygui.navy      = 0xff000080
-	baygui.purple    = 0xff800080
-	baygui.teal      = 0xff008080
-	baygui.lightGray = 0xffC0C0C0
-	baygui.gray      = 0xff808080
-	baygui.red       = 0xffff0000
-	baygui.lime      = 0xff00ff00
-	baygui.yellow    = 0xffffff00
-	baygui.blue      = 0xff0000ff
-	baygui.magenta   = 0xffff00ff
-	baygui.cyan      = 0xff00ffff
-	baygui.white     = 0xffffffff
+	monagui.black     = 0xff000000
+	monagui.maroon    = 0xff800000
+	monagui.green     = 0xff008000
+	monagui.olive     = 0xff808000
+	monagui.navy      = 0xff000080
+	monagui.purple    = 0xff800080
+	monagui.teal      = 0xff008080
+	monagui.lightGray = 0xffC0C0C0
+	monagui.gray      = 0xff808080
+	monagui.red       = 0xffff0000
+	monagui.lime      = 0xff00ff00
+	monagui.yellow    = 0xffffff00
+	monagui.blue      = 0xff0000ff
+	monagui.magenta   = 0xffff00ff
+	monagui.cyan      = 0xff00ffff
+	monagui.white     = 0xffffffff
 
 
 

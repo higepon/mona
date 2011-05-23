@@ -34,7 +34,7 @@ ifneq ($(CSOURCES),)
 	$(CC) -MM $(INCLUDE) $(CFLAGS) $(SOURCES) >> dependencies
 endif
 ifneq ($(NASMSRCS),)
-	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
+	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/": $$asm` >> dependencies; done
 endif
 
 check-syntax:

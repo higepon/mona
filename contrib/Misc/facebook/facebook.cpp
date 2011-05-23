@@ -1,4 +1,4 @@
-#include <baygui.h>
+#include <monagui.h>
 #include <string>
 #include <monapi/StringHelper.h>
 #include "Updater.h"
@@ -245,7 +245,7 @@ static void __fastcall updaterLauncher(void* arg)
 
 int main(int argc, char* argv[])
 {
-#define MAP_FILE_PATH "/APPS/BAYGUI/DISPLAY.MAP"
+#define MAP_FILE_PATH "/APPS/MONAGUI/FACEBOOK.MAP"
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
     if (ret != M_OK) {

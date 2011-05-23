@@ -251,7 +251,7 @@ public:
         // GUI(1) 起動
         if (selected == SELECT_GUI_1)
         {
-            return "/SERVERS/GUI.EX5 /APPS/BAYGUI.INI";
+            return "/SERVERS/GUI.EX5 /APPS/MONAGUI.INI";
         }
         // GUI(2) 起動
         else if (selected == SELECT_GUI_2)

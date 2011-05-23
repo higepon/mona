@@ -1,18 +1,18 @@
 TARGET  = GNULLPO
 SOURCES = gnullpo.cpp 
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI/GNULLPO.APP
+INSTDIR = $(BINDIR)/APPS/MONAGUI/GNULLPO.APP
 INSTFILES = NULLPO.BM5 GAT.BM5
 CLEANFILES = $(INSTFILES)
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lbaygui-imp -lmonalibc-imp -lmonapi-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp -lmonapi-imp
+ADDLINKDEP = $(MONADIR)/lib/libamonagui.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

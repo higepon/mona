@@ -29,7 +29,7 @@
 #ifndef __TRASH_TPOPUPMENU_HPP__
 #define __TRASH_TPOPUPMENU_HPP__
 
-#include "baygui.h"
+#include "monagui.h"
 #include "trash/tmenuitem.hpp"
 #include "trash/teventlistener.hpp"
 

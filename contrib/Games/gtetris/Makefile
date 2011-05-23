@@ -1,18 +1,18 @@
 TARGET  = GTETRIS
 SOURCES = gtetris.cpp block.cpp tetromino.cpp field.cpp
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI/GTETRIS.APP
+INSTDIR = $(BINDIR)/APPS/MONAGUI/GTETRIS.APP
 INSTFILES = BLOCK0.BM5 BLOCK1.BM5 BLOCK2.BM5 BLOCK3.BM5 BLOCK4.BM5 BLOCK5.BM5 BLOCK6.BM5 MAIN.BM5
 CLEANFILES = $(INSTFILES)
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lbaygui-imp -lmonalibc-imp -lmonapi-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp -lmonapi-imp
+ADDLINKDEP = $(MONADIR)/lib/libamonagui.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

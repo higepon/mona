@@ -26,7 +26,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*  stack:4k malloc:304k   */
 /*  動けばいいんだ、動けば。 */
 
-#include <baygui.h>
+#include <monagui.h>
 
 /* ----------- these are from Noiz2sa by Kenta Cho ------------ */
 

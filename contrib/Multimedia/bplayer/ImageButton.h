@@ -1,7 +1,7 @@
 #ifndef _IMAGE_BUTTON_
 #define _IMAGE_BUTTON_
 
-#include <baygui.h>
+#include <monagui.h>
 
 class ImageButton : public Component
 {

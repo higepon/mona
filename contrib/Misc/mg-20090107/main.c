@@ -62,7 +62,7 @@ main(int argc, char **argv)
 	struct buffer *bp;
 
 #ifdef MONA
-#define MAP_FILE_PATH "/APPS/BAYGUI/MG.MAP"
+#define MAP_FILE_PATH "/APPS/MONAGUI/MG.MAP"
     uint32_t pid = syscall_get_pid();
         intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
         if (ret != M_OK) {

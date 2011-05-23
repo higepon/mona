@@ -2488,7 +2488,7 @@ Str wtf_to_utf8(char **pc, l_prop *pr, int len)
 
 int main(int argc, char* argv[]) {
     CurrentDir = "/APPS/W3M/W3M.APP";
-    //  CurrentPid = syscall_get_tid();  this code make baygui setup fail. (fail to connect to GUI server)
+    //  CurrentPid = syscall_get_tid();  this code make monagui setup fail. (fail to connect to GUI server)
     CurrentPid = 111; // tekito-
     tmp_dir = "/MEM";
     fileToDelete = newTextList();

@@ -130,7 +130,7 @@ print(\"Hello, World.\\n\");\n\
 
 ,
 
-"//baygui: Window and Event Handler Sample\n\
+"//monagui: Window and Event Handler Sample\n\
 \n\
 function onMouseDown(x, y, button, src) {\n\
 	print(\"mouse down (\" + x + \", \" + y + \")\\n\");\n\
@@ -138,25 +138,25 @@ function onMouseDown(x, y, button, src) {\n\
 \n\
 local frame = Frame(\"sample\");\n\
 frame.setBounds(10, 10, 250, 200);\n\
-frame.setHandler(baygui.MOUSE_PRESSED,\n\
+frame.setHandler(monagui.MOUSE_PRESSED,\n\
 	this, onMouseDown);\n\
 frame.run();\n"
 
 ,
 
-"//baygui: Drawing String Sample\n\
+"//monagui: Drawing String Sample\n\
 \n\
 class MyFrame extends Frame {\n\
 	texts = [\"Hello, MonaOS.\", \"Hello, MonaSq.\"];\n\
-	colors = [baygui.blue, baygui.green];\n\
+	colors = [monagui.blue, monagui.green];\n\
 	i = 0;\n\
 \n\
 	constructor() {\n\
 		Frame.constructor(\"Hello\");\n\
 		setBounds(10, 10, 120, 120);\n\
-		setHandler(baygui.MOUSE_PRESSED,\n\
+		setHandler(monagui.MOUSE_PRESSED,\n\
 			this, onMouseDown);\n\
-		setHandler(baygui.PAINT,\n\
+		setHandler(monagui.PAINT,\n\
 			this, onPaint);\n\
 	}\n\
 	function onMouseDown(x, y, button, src) {\n\
@@ -165,7 +165,7 @@ class MyFrame extends Frame {\n\
 		repaint();\n\
 	}\n\
 	function onPaint(g) {\n\
-		g.setColor(baygui.white);\n\
+		g.setColor(monagui.white);\n\
 		g.fillRect(0, 0, 120, 120);\n\
 		g.setColor(colors[i]);\n\
 		g.drawString(texts[i], 15, 35);\n\
@@ -177,7 +177,7 @@ frame.run();\n"
 
 ,
 
-"//baygui: Drawing Image Sample\n\
+"//monagui: Drawing Image Sample\n\
 \n\
 class MyFrame extends Frame {\n\
 	image = null;\n\
@@ -188,7 +188,7 @@ class MyFrame extends Frame {\n\
 		Frame.constructor(\"Image\");\n\
 		setBounds(10, 10,\n\
 			image.getWidth(), image.getHeight());\n\
-		setHandler(baygui.PAINT, this, onPaint);\n\
+		setHandler(monagui.PAINT, this, onPaint);\n\
 	}\n\
 	function onPaint(g) {\n\
 		g.drawImage(image, 0, 0);\n\
@@ -200,7 +200,7 @@ frame.run();\n"
 
 ,
 
-"//baygui: Component Sample\n\
+"//monagui: Component Sample\n\
 \n\
 local frame = Frame(\"sample\");\n\
 frame.setBounds(10, 10, 250, 200);\n\
@@ -245,8 +245,8 @@ foreach(i, v in dirInfo) {\n\
 	print(str+\"\\n\");\n\
 }\n\
 \n\
-// read file \"/BAYGUI.INI\"\n\
-local sharedMem = monapi.monapi_call_file_read_data(\"/BAYGUI.INI\", 0);\n\
+// read file \"/MONAGUI.INI\"\n\
+local sharedMem = monapi.monapi_call_file_read_data(\"/MONAGUI.INI\", 0);\n\
 print( sharedMem.getString(0, -1) );\n\
 \n"
 

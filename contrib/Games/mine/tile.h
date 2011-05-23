@@ -12,7 +12,7 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 #ifndef tile_h_
 #define tile_h_
 
-#include <baygui.h>
+#include <monagui.h>
 
 class mine_tile : public Component {
 public:

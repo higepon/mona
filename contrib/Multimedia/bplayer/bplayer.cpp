@@ -22,7 +22,7 @@
 using namespace std;
 using namespace MonAPI;
 
-#define APPLICATION_DATA_DIR "/APPS/BAYGUI/BPLAYER.APP"
+#define APPLICATION_DATA_DIR "/APPS/MONAGUI/BPLAYER.APP"
 
 static void wrapperPlay(void* p);
 static void wrapperStopped(void* p);
@@ -281,7 +281,7 @@ protected:
         statusLabel_ = new Label("ready");
         statusLabel_->setBounds(START_X, START_Y, ICON_WIDTH * 4, ICON_HEIGHT);
         statusLabel_->setBackground(BG_COLOR);
-        statusLabel_->setForeground(baygui::Color::gray);
+        statusLabel_->setForeground(monagui::Color::gray);
         add(statusLabel_);
 
         playButton_ = new ImageSinkButton(playImage_, stopImage_, playImageFocused_);

@@ -1,6 +1,6 @@
 //#define DEBUG__
 
-#include <baygui.h>
+#include <monagui.h>
 #include "gtetris.h"
 #include "tetromino.h"
 

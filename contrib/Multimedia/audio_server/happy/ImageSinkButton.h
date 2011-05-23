@@ -1,7 +1,7 @@
 #ifndef _IMAGE_SINK_BUTTON_
 #define _IMAGE_SINK_BUTTON_
 
-#include <baygui.h>
+#include <monagui.h>
 
 class ImageSinkButton : public Component
 {
@@ -31,7 +31,7 @@ public:
         g->drawImage(image_, 0, 0);
     }
 
-    // MOUSE_ENTERED/MOUSE_EXITは baygui に実装されていない
+    // MOUSE_ENTERED/MOUSE_EXITは monagui に実装されていない
     void processEvent(Event* event)
     {
         switch(event->getType())

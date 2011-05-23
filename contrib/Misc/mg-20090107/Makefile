@@ -13,11 +13,11 @@ cinfo.c     extend.c   kbd.c     modes.c      strlcat.c    undo.c \
 cmode.c     fgetln.c   keymap.c  paragraph.c  strlcpy.c    version.c \
 dir.c       file.c     line.c    random.c     strtonum.c   window.c
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI
+INSTDIR = $(BINDIR)/APPS/MONAGUI
 INSTFILES  = MG.map
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
 -include dependencies

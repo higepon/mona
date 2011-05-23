@@ -29,12 +29,12 @@
 #ifndef __GNOTE_CANVAS_HPP__
 #define __GNOTE_CANVAS_HPP__
 
-#include "baygui.h"
+#include "monagui.h"
 #include "trash/teventlistener.hpp"
 #include "document.hpp"
 #include "cursol.hpp"
 #include <monapi/CString.h>
-#include "baygui/awt/ImeManager.h"
+#include "monagui/awt/ImeManager.h"
 
 
 using namespace trash;

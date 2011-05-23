@@ -10,9 +10,9 @@ all:
 ### libraries
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Gui/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/libmonagui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Gui/test_baygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Gui/test_monagui && touch dependencies && $(MAKE) && $(MAKE) install
 
 ### non-gui applications
 	cd Emulators/infones && touch dependencies && $(MAKE)  && $(MAKE) install
@@ -36,7 +36,7 @@ all:
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
-### BayGUI applications
+### Monagui applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
@@ -67,11 +67,12 @@ all:
 	cd $(MONADIR)/tool/mkimg && $(MAKE)
 
 clean:
+	cd Net/frecv && $(MAKE) clean
 	cd Emulators/infones && $(MAKE) clean
 	cd Emulators/monasq && $(MAKE) clean
 	cd Emulators/monamona && $(MAKE) clean
 	cd Graphics/jpegview && $(MAKE) clean
-	cd Gui/libbaygui && $(MAKE) clean
+	cd Gui/libmonagui && $(MAKE) clean
 	cd Gui/libgui && $(MAKE) clean
 	cd Gui/ime_server && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
@@ -85,7 +86,9 @@ clean:
 	cd Misc/mg-20090107 && $(MAKE) clean
 	cd Misc/facebook && $(MAKE) clean
 	cd Multimedia/audio_server && $(MAKE) clean
+	cd Multimedia/bplayer && $(MAKE) clean
 	cd Multimedia/audio_server/client && $(MAKE) clean
+	cd Multimedia/audio_server/api && $(MAKE) clean
 	cd Multimedia/audio_server/happy && $(MAKE) clean
 	cd Multimedia/monapeg && $(MAKE) clean
 	cd Multimedia/monappt && $(MAKE) clean
@@ -109,10 +112,12 @@ clean:
 	cd Sysutils/gclock && $(MAKE) clean
 	cd Sysutils/gtimer && $(MAKE) clean
 	cd Sysutils/startx && $(MAKE) clean
-	cd Gui/test_baygui && $(MAKE) clean
+	cd Gui/test_monagui && $(MAKE) clean
 
 	cd Devel/gcc && $(MAKE) clean
 depend:
+	cd Benchmarks/gfire && $(MAKE) && $(MAKE) depend
+	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) depend
 	cd Multimedia/audio_server/happy && $(MAKE) depend
 	cd Shells/mshell/ && $(MAKE) depend
 	cd Misc/gnote/ && $(MAKE) depend

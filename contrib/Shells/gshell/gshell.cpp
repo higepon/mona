@@ -22,7 +22,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <baygui.h>
+#include <monagui.h>
 #ifndef MONA
 #include <time.h>
 #endif
@@ -58,7 +58,7 @@ public:
 		memset(lineBuffer, 0, sizeof(lineBuffer));
 		memset(commandBuffer, 0, sizeof(commandBuffer));
 		memset(currentPath, 0, sizeof(currentPath));
-		strcpy(currentPath, "/apps/baygui");
+		strcpy(currentPath, "/apps/monagui");
 	}
 
 	/** デストラクタ */
@@ -431,7 +431,7 @@ private:
 			syscall_get_kernel_version(uname, 128);
 			this->addLine(uname);
 		#else
-			this->addLine(BAYGUI_VERSION);
+			this->addLine(MONAGUI_VERSION);
 		#endif
 		//
 		// clear/cls

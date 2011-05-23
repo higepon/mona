@@ -14,9 +14,9 @@
 #ifndef _PLAY_FRAME_
 #define _PLAY_FRAME_
 
-#include <baygui.h>
+#include <monagui.h>
 
-namespace baygui
+namespace monagui
 {
 class PlayFrame : public Window
 {

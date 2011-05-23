@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <baygui.h>
+#include <monagui.h>
 #ifdef MONA
 #include <monapi/CString.h>
 #endif
@@ -43,11 +43,11 @@ Glaunch::Glaunch()
 
 #if defined(MONA)
 	// APPSに移動
-//	if (monapi_call_change_directory("/APPS/BAYGUI") == MONA_FAILURE) {
+//	if (monapi_call_change_directory("/APPS/MONAGUI") == MONA_FAILURE) {
 //		return;
 //	}
 
-    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory("/APPS/BAYGUI"));
+    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_directory("/APPS/MONAGUI"));
 
 	int dsize = *(int*)shm->data();
 	if (shm.get() == NULL || dsize == 0) return;
@@ -96,7 +96,7 @@ void Glaunch::execute()
 	char *item = list->getSelectedItem();
 	if (prevIndex == -1 || item == NULL || strlen(item) == 0) return;
 	memset(name, '\0', sizeof(name));
-	strcpy(name, "/APPS/BAYGUI/");
+	strcpy(name, "/APPS/MONAGUI/");
 	strcat(name, item);
 	// *.APP の場合
 	if (item[strlen(item) - 1] == 'P') {

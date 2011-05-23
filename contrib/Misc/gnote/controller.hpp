@@ -29,8 +29,8 @@
 #ifndef __GNOTE_CONTROLLER_HPP__
 #define __GNOTE_CONTROLLER_HPP__
 
-#include "baygui.h"
-#include "baygui/awt/event/TimerEvent.h"
+#include "monagui.h"
+#include "monagui/awt/event/TimerEvent.h"
 #include "trash/tactionevent.hpp"
 #include "trash/teventlistener.hpp"
 #include "rootwindow.hpp"

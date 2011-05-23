@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <baygui.h>
+#include <monagui.h>
 #include "gshortcut.h"
 
 #if 0
@@ -314,9 +314,9 @@ void ShortCut::processEvent(Event* event) {
 		}
 		// アプリケーション実行
 		if (this->type == DISKICON) {
-			monapi_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
+			monapi_process_execute_file("/APPS/MONAGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
 		} else if (this->type == TERMINALICON) {
-			monapi_process_execute_file("/APPS/BAYGUI/GSHELL.EX5", MONAPI_FALSE);
+			monapi_process_execute_file("/APPS/MONAGUI/GSHELL.EX5", MONAPI_FALSE);
 		}
 	}
 #endif

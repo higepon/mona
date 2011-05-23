@@ -29,7 +29,7 @@
 #ifndef __GNOTE_DOCUMENT_HPP__
 #define __GNOTE_DOCUMENT_HPP__
 
-#include "baygui.h"
+#include "monagui.h"
 
 namespace gnote {
     class Document {

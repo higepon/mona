@@ -1,18 +1,18 @@
 TARGET  = GHEBTN
 SOURCES = ghebtn.cpp
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI/GHEBTN.APP
+INSTDIR = $(BINDIR)/APPS/MONAGUI/GHEBTN.APP
 INSTFILES = 0.BM5 1.BM5 2.BM5 3.BM5 4.BM5 5.BM5 6.BM5 7.BM5 8.BM5 9.BM5 HENORMAL.BM5 HEPUSHED.BM5
 CLEANFILES = $(INSTFILES)
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lbaygui-imp -lmonalibc-imp -lmonapi-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp -lmonapi-imp
+ADDLINKDEP = $(MONADIR)/lib/libamonagui.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

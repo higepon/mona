@@ -1,7 +1,7 @@
 #ifndef _PROGRESS_ICON_
 #define _PROGRESS_ICON_
 
-#include <baygui.h>
+#include <monagui.h>
 #include <monapi/StringHelper.h>
 
 class ProgressIcon : public Component

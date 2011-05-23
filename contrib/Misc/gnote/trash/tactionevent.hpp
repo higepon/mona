@@ -32,8 +32,8 @@
 // :-)
 //#define ACTION_PERFORMED Event::CUSTOM_EVENT + 1
 
-#include "baygui.h"
-#include "baygui/awt/event/ActionEvent.h"
+#include "monagui.h"
+#include "monagui/awt/event/ActionEvent.h"
 
 namespace trash {
 	class TActionEvent : public ActionEvent {

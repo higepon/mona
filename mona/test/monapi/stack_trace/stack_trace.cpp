@@ -89,7 +89,7 @@ void testMapFileScanner_lineType()
     EXPECT_LINETYPE(" *(.ctors)", MAP_FILE_LINE_TYPE_OTHER);
     EXPECT_LINETYPE(".text           0xa0001000    0x5d210", MAP_FILE_LINE_TYPE_BEGIN_TEXT_SECTION);
     EXPECT_LINETYPE("                0xa0001009                __fu0__monapi_memory_initialized", MAP_FILE_LINE_TYPE_FUNCTION);
-    EXPECT_LINETYPE(" .text$_ZN7W3MPane5paintEPN6baygui8GraphicsE", MAP_FILE_LINE_TYPE_OTHER); // tenuki-
+    EXPECT_LINETYPE(" .text$_ZN7W3MPane5paintEPN6monaguii8GraphicsE", MAP_FILE_LINE_TYPE_OTHER); // tenuki-
     EXPECT_LINETYPE("                0xa005db60      0x550 main_mona.o", MAP_FILE_LINE_TYPE_FILE);
     EXPECT_LINETYPE("                0xa005db60      0x550 a", MAP_FILE_LINE_TYPE_FILE);
     EXPECT_LINETYPE("", MAP_FILE_LINE_TYPE_OTHER);
@@ -211,7 +211,7 @@ static void expectFunctionNameWithLine(const char *input, const char *expect, in
 void testMapFileScanner_functionName()
 {
     EXPECT_FUNCTION_NAME("                0xa0001009                __fu0__monapi_memory_initialized", "__fu0__monapi_memory_initialized");
-    EXPECT_FUNCTION_NAME("                0xa005dab0                baygui::Frame::getTitlebarClicked(int, int)", "baygui::Frame::getTitlebarClicked(int, int)");
+    EXPECT_FUNCTION_NAME("                0xa005dab0                monagui::Frame::getTitlebarClicked(int, int)", "monagui::Frame::getTitlebarClicked(int, int)");
 }
 
 

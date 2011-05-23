@@ -100,7 +100,7 @@
 #define NOWRAP
 #define MATRIX
 
-#define DEF_EDITOR "/APPS/BAYGUI/GNOTE.EX5"
+#define DEF_EDITOR "/APPS/MONAGUI/GNOTE.EX5"
 #define DEF_MAILER "/usr/bin/mail"
 #define DEF_EXT_BROWSER "/usr/bin/mozilla"
 

@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <baygui.h>
+#include <monagui.h>
 
 class GNullpo : public Frame {
 private:
@@ -33,8 +33,8 @@ public:
 		setBounds((800 - 191) / 2, (600 - 205) / 2, 191, 205);
 		setTitle("ぬるぽボタン");
 		pushed = false;
-		image_normal = new Image("/APPS/BAYGUI/GNULLPO.APP/NULLPO.BM5");
-		image_pushed = new Image("/APPS/BAYGUI/GNULLPO.APP/GAT.BM5");
+		image_normal = new Image("/APPS/MONAGUI/GNULLPO.APP/NULLPO.BM5");
+		image_pushed = new Image("/APPS/MONAGUI/GNULLPO.APP/GAT.BM5");
 	}
 	
 	~GNullpo(){

@@ -1,7 +1,7 @@
 #ifndef GTETRIS__
 #define GTETRIS__
 #define BLOCKNUM	7
-#include <baygui.h>
+#include <monagui.h>
 #include "block.h"
 #include "tetromino.h"
 #include "field.h"

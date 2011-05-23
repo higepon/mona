@@ -1,7 +1,7 @@
 #ifndef _PLAY_BUTTON_
 #define _PLAY_BUTTON_
 
-#include <baygui.h>
+#include <monagui.h>
 
 class PlayButton : public Component
 {

@@ -1,7 +1,7 @@
 #include "mona_term.h"
 #include "chrdef.h"
 #include <monapi.h>
-#include <baygui.h>
+#include <monagui.h>
 #include <string>
 extern "C" {
 #include "def.h"
@@ -70,8 +70,8 @@ public:
         std::fill(colors, colors + MAX_NUM_ROWS, false);
         setTitle("mg");
         setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
-        setForeground(baygui::Color::white);
-        setForeground(baygui::Color::black);
+        setForeground(monagui::Color::white);
+        setForeground(monagui::Color::black);
         setTimer(TIMER_INTERVAL);
     }
 
@@ -203,17 +203,17 @@ public:
         g->setFontStyle(Font::FIXED);
         for (int i = 0; i < MAX_NUM_ROWS; i++) {
             std::string& line = lines[i];
-            g->setColor(colors[i] ? baygui::Color::white : baygui::Color::black);
+            g->setColor(colors[i] ? monagui::Color::white : monagui::Color::black);
             g->fillRect(0, i * fontHeight(), MAX_NUM_COLS * fontWidth(), fontHeight());
             if (line.empty()) {
                 continue;
             }
-            g->setColor(colors[i] ? baygui::Color::black : baygui::Color::white);
+            g->setColor(colors[i] ? monagui::Color::black : monagui::Color::white);
             g->drawString(line.c_str(), 0, fontHeight() * i);
             mona_trace("line<%s>\n", line.c_str());
         }
         if (cursorEnabled_) {
-            g->setColor(baygui::Color::white);
+            g->setColor(monagui::Color::white);
             int leftOffset = 0;
             std::string& line = lines[currentRow_];
             for (int i = 0; i < currentCol_; i++) {

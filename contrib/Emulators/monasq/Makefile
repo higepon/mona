@@ -6,7 +6,7 @@ endif
 TARGET  = MONASQ
 SOURCES = monasq.cpp \
 	monasq_monapi.cpp \
-	monasq_baygui.cpp \
+	monasq_monagui.cpp \
 	init_script.cpp \
 	misc/TextArea.cpp \
 	misc/vsprintf.cpp \
@@ -37,16 +37,16 @@ SOURCES = monasq.cpp \
 	sqplus/SquirrelBindingsUtils.cpp
 #	misc/setjmp.cpp \
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI
+INSTDIR = $(BINDIR)/APPS/MONAGUI
 
 SHAREDIR = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lbaygui -lmonalibc
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a $(MONADIR)/lib/libmonalibc.a
+ADDLINK    = -lmonagui -lmonalibc
+ADDLINKDEP = $(MONADIR)/lib/libmonagui.a $(MONADIR)/lib/libmonalibc.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

@@ -13,7 +13,7 @@
 
 #include "PlayFrame.h"
 
-namespace baygui
+namespace monagui
 {
 
 PlayFrame::PlayFrame(const char* iconPath)
@@ -143,4 +143,4 @@ void PlayFrame::repaint()
     Container::repaint();
 }
 
-} // namespace baygui
+} // namespace monagui

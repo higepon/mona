@@ -28,8 +28,8 @@
 
 #include "monasq_base.h"
 
-// include monAPI / BayGUI
-#include <baygui.h>
+// include monAPI / MonaGUI
+#include <monagui.h>
 
 // include Squirrel header
 #include <squirrel.h>

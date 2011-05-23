@@ -34,7 +34,7 @@
 
 (Gui
  ("glaunch" "bayside" "contrib/Gui/glaunch/" "Launcher" #t GUI)
- ("libbaygui" "bayside" "contrib/Gui/libbaygui" "GUI library" #t LIBRARY)
+ ("libmonagui" "bayside" "contrib/Gui/libmonagui" "GUI library" #t LIBRARY)
  ("libgui" "Tino" "contrib/Gui/libgui" "GUI library" #t LIBRARY)
  ("monafile" "unknown" "contrib/Gui/monafile/" "Desktop Window" #t GUI))
 

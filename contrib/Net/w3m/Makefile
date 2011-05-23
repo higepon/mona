@@ -6,7 +6,7 @@ TARGET  = W3M
 INSTDIR = $(BINDIR)/APPS/$(TARGET).APP
 DOCDIR=doc-jp
 INSTFILES  = $(DOCDIR)/MANUAL.html $(DOCDIR)/FAQ.html  $(DOCDIR)/STORY.html  $(DOCDIR)/README  $(DOCDIR)/README.cygwin  $(DOCDIR)/README.dict  $(DOCDIR)/README.func  $(DOCDIR)/README.img  $(DOCDIR)/README.m17n  $(DOCDIR)/README.mouse  $(DOCDIR)/README.pre_form  $(DOCDIR)/README.tab  $(DOCDIR)/keymap.default  $(DOCDIR)/keymap.lynx  $(DOCDIR)/menu.default  $(DOCDIR)/menu.submenu W3M.map
-CLEANFILES = funcname.c funcname1.h funcname2.h
+CLEANFILES = funcname.c funcname1.h funcname2.h libindep.a allchblk.o alloc.o backgraph.o blacklst.o dbg_mlc.o dyn_load.o finalize.o gc_cpp.o hash.o headers.o indep.o mach_dep.o malloc.o mallocx.o mark.o mark_rts.o misc.o myctype.o new_hblk.o obj_map.o os_dep.o parsetag.o reclaim.o textlist.o Str.o
 MONADIR=../../../mona
 SHAREDIR   = $(MONADIR)/share
 include Makefile.boehm_gc.inc
@@ -97,12 +97,12 @@ CSOURCES=$(ALLCOBJS:.o=.c)
 OBJECTS=$(ALLOBJS)
 
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    =  -L. -lindep -lmonalibc-imp -lbaygui-imp -lssl-imp -lcrypto-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a $(MONADIR)/lib/libmonalibc-imp.a libindep.a
+ADDLINK    =  --enable-auto-import  -L. -lindep -lssl-imp -lamonagui-imp -lcrypto-imp -lmonalibc-imp
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a libindep.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -L. -lindep -lbaygui-imp -lmonalibc-imp -lmonapi-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a $(MONADIR)/lib/libmonalibc.a libindep.a
+ADDLINK    = -L. -lindep -lamonagui-imp -lmonalibc-imp -lmonapi-imp
+ADDLINKDEP = $(MONADIR)/lib/libamonagui.a $(MONADIR)/lib/libmonalibc.a libindep.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

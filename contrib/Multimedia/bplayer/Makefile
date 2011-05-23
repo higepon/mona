@@ -6,7 +6,7 @@ endif
 TARGET  = BPLAYER
 SOURCES = bplayer.cpp PlayFrame.cpp
 
-INSTDIR = $(BINDIR)/APPS/BAYGUI/BPLAYER.APP
+INSTDIR = $(BINDIR)/APPS/MONAGUI/BPLAYER.APP
 INSTFILES = PLAY.JPG\
             PLAY_F.JPG\
             STOP_F.JPG\
@@ -29,12 +29,12 @@ $(TARGET).EX5: $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp -lmonalibc-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp
+ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
-ADDLINK    = -lbaygui-imp -lmonalibc-imp -lmonapi-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
+ADDLINK    = -lamonagui-imp -lmonalibc-imp -lmonapi-imp
+ADDLINKDEP = $(MONADIR)/lib/libamonagui.a
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 

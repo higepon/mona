@@ -25,7 +25,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include <monagui.h>
 
 class GTimer : public Frame {
 private:
@@ -97,7 +97,7 @@ public:
 
 int main(int argc, char* argv[]){
 
-#define MAP_FILE_PATH "/APPS/BAYGUI/GTIMER.MAP"
+#define MAP_FILE_PATH "/APPS/MONAGUI/GTIMER.MAP"
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
     if (ret != M_OK) {

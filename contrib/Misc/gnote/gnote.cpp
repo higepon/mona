@@ -28,7 +28,7 @@
 */
 #include "controller.hpp"
 
-#define MAP_FILE_PATH "/APPS/BAYGUI/GNOTE.MAP"
+#define MAP_FILE_PATH "/APPS/MONAGUI/GNOTE.MAP"
 
 int main(int argc, char* argv[]) {
     uint32_t pid = syscall_get_pid();
