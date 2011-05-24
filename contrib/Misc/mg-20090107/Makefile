@@ -17,7 +17,7 @@ INSTDIR = $(BINDIR)/APPS/MONAGUI
 INSTFILES  = MG.map
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
+ADDLINKDEP = $(MONADIR)/lib/libamonagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 
 -include dependencies

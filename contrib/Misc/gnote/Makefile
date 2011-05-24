@@ -20,7 +20,7 @@ INSTFILES = GNOTE.map
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
-ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
+ADDLINKDEP = $(MONADIR)/lib/libamonagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 ADDLINK    = -lamonagui-imp -lmonalibc-imp -lmonapi-imp
