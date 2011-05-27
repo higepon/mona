@@ -43,6 +43,9 @@
   (call-process "/MEM/FACEBOOk.EX5")
   (my-display))
 
+(define (m command)
+  (start-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/" command ".sps")))
+
 
 (define (on-gui-start)
 ;  (ls "/USER/TEMP")
@@ -62,8 +65,8 @@
 ;  (start-process "/APPS/MONAGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
-  (call-process "/APPS/MONAGUI/FACEBOOK.EX5")
-  (my-display)
+;  (call-process "/APPS/MONAGUI/FACEBOOK.EX5")
+;  (my-display)
 ;; (gnote)
 ;  (w3m-auto-pilot)
 )
