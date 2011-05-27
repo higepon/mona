@@ -98,7 +98,7 @@ OBJECTS=$(ALLOBJS)
 
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    =  --enable-auto-import  -L. -lindep -lssl-imp -lamonagui-imp -lcrypto-imp -lmonalibc-imp
-ADDLINKDEP = $(MONADIR)/lib/libagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a libindep.a
+ADDLINKDEP = $(MONADIR)/lib/libamonagui-imp.a $(MONADIR)/lib/libmonalibc-imp.a libindep.a
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 ADDLINK    = -L. -lindep -lamonagui-imp -lmonalibc-imp -lmonapi-imp
