@@ -3,6 +3,11 @@
 (monapi-name-add! "/servers/shell")
 
 (let loop ()
-  (receive msg (monapi-message-receive)
-   (format #t "received ~a" msg)
-   (loop)))
+  (receive (from header arg1 arg2 arg3 str) (monapi-message-receive)
+   (format #t "~a ~a \n" header MSG_STOP)
+   (cond
+    [(= header MSG_STOP)
+      (display "shell stopped\n")]
+    [else
+      (format #t "received ~a" header)]))
+   (loop))
