@@ -69,7 +69,7 @@ public:
         }
         std::fill(colors, colors + MAX_NUM_ROWS, false);
         setTitle("mg");
-        setBounds(450, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
+        setBounds(200, 40, MAX_NUM_COLS * fontWidth(), MAX_NUM_ROWS * fontHeight() + 4);
         setForeground(monagui::Color::white);
         setForeground(monagui::Color::black);
         setTimer(TIMER_INTERVAL);
