@@ -74,9 +74,10 @@ public:
         add(button_.get());
         add(scrollbar_.get());
         scrollbar_->setMinimum(0);
-        scrollbar_->setMaximum(outputNumRows_ - 1);
+        scrollbar_->setMaximum(0);
         scrollbar_->setBlocksize(1);
         if (isTestMode) {
+            // start tests with timer.
             setTimer(50);
         }
     }
@@ -93,24 +94,24 @@ public:
         } else if (event->getType() == Event::TIMER) {
             test();
         } else if (event->getSource() == scrollbar_.get()) {
-            if (event->getType() == Event::BLOCK_INCLEMENT) {
-                currentLineNo_ = scrollbar_->getValue();
-            } else {
-                currentLineNo_ = scrollbar_->getValue();
-            }
-            logprintf("currentLineNo_=%d\n", currentLineNo_);
-            std::string content;
-        for (uintptr_t i = 0; i + currentLineNo_ < lines_.size() && i < outputNumRows_; i++) {
-            content += lines_[i + currentLineNo_];
-            content += "\n";
-        }
-        output_->setText(content.c_str());
-
+            int currentLineNo = scrollbar_->getValue();
+            updateOutputView(currentLineNo);
             repaint();
         }
     }
 
 private:
+    void updateOutputView(int currentLineNo)
+    {
+        currentLineNo_ = currentLineNo;
+        std::string content;
+        for (uintptr_t i = 0; i + currentLineNo_ < lines_.size() && i < outputNumRows_; i++) {
+            content += lines_[i + currentLineNo_];
+            content += "\n";
+        }
+        output_->setText(content.c_str());
+    }
+
     void appendOutput(const std::string& content)
     {
         Strings lines = StringHelper::split("\n", content);
