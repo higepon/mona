@@ -90,14 +90,20 @@ private:
         return true;
     }
 
-    void test()
+    void testLSCommandReturnsLFSeperatedListOfFiles()
     {
         output_->setText("test start");
         command_->setText("ls /APPS/");
         MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
         processEvent(&event);
-        EXPECT_TRUE(strstr(output_->getText(), "TEST.RAW") != NULL);
+        EXPECT_TRUE(strstr(output_->getText(), "TEST.RAW\n") != NULL);
+    }
+
+    void test()
+    {
+        testLSCommandReturnsLFSeperatedListOfFiles();
         TEST_RESULTS();
+        stop();
     }
 };
 
