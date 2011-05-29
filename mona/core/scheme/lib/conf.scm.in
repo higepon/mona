@@ -66,6 +66,8 @@
 ;  (start-process "/APPS/MONAGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
+  (m "shell")
+  (terminal)
  ; (start-process "/APPS/MONAGUI/FACEBOOK.EX5")
 ;  (my-display)
 ;; (gnote)
@@ -78,7 +80,9 @@
 
 (define (terminal)
   (call-process "/APPS/FRECV.EX5 TERMINAL.EX5")
-  (start-process "/MEM/TERMINAL.EX5 -t")
+;  (start-process "/MEM/TERMINAL.EX5 -t")
+  (start-process "/MEM/TERMINAL.EX5")
+  (terminal)
   )
 
 

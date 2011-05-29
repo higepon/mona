@@ -28,6 +28,7 @@
 #include <monagui.h>
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
+#include <monapi/StringHelper.h>
 
 using namespace MonAPI;
 
@@ -37,23 +38,56 @@ private:
     scoped_ptr<TextField> command_;
     scoped_ptr<TextField> output_;
     scoped_ptr<Button> button_;
+    scoped_ptr<Scrollbar> scrollbar_;
     Stream outStream_;
+    Strings lines_;
+    uintptr_t currentLineNo_;
+    uintptr_t outputNumRows_;
+
+    enum
+    {
+        OUTPUT_HIGHT = 200,
+        forbidden_comma
+    };
 
 public:
     Terminal(bool isTestMode = false) :
         command_(new TextField()),
         output_(new TextField()),
-        button_(new Button("go"))
+        button_(new Button("go")),
+        scrollbar_(new Scrollbar()),
+        currentLineNo_(0)
     {
         setBounds(50, 200, 300, 400);
         setTitle("Terminal");
         command_->setText("ls /APPS/");
+
+        int height = getFontMetrics()->getHeight("H");
+        outputNumRows_ = OUTPUT_HIGHT / height - 1;
+
+        std::string content;
+        for (uintptr_t i = 0; i < outputNumRows_ + 20; i++) {
+            char buf[8];
+            sprintf(buf, "%d", i);
+            lines_.push_back(buf);
+        }
+
+        for (uintptr_t i = currentLineNo_; i < lines_.size() && i < outputNumRows_; i++) {
+            content += lines_[i];
+            content += "\n";
+        }
+        output_->setText(content.c_str());
         command_->setBounds(0, 0, 200, 30);
-        output_->setBounds(0, 30, 250, 200);
-        button_->setBounds(200, 0, 80, 30);
+        output_->setBounds(0, 30, 250, OUTPUT_HIGHT);
+        button_->setBounds(200, 0, 40, 30);
+        scrollbar_->setBounds(250, 30, 16, OUTPUT_HIGHT);
         add(command_.get());
         add(output_.get());
         add(button_.get());
+        add(scrollbar_.get());
+        scrollbar_->setMinimum(0);
+        scrollbar_->setMaximum(outputNumRows_ - 1);
+        scrollbar_->setBlocksize(1);
         if (isTestMode) {
             setTimer(50);
         }
@@ -70,10 +104,41 @@ public:
             }
         } else if (event->getType() == Event::TIMER) {
             test();
+        } else if (event->getSource() == scrollbar_.get()) {
+            if (event->getType() == Event::BLOCK_INCLEMENT) {
+                currentLineNo_ = scrollbar_->getValue();
+            } else {
+                currentLineNo_ = scrollbar_->getValue();
+            }
+            logprintf("currentLineNo_=%d\n", currentLineNo_);
+            std::string content;
+        for (uintptr_t i = 0; i + currentLineNo_ < lines_.size() && i < outputNumRows_; i++) {
+            content += lines_[i + currentLineNo_];
+            content += "\n";
+        }
+        output_->setText(content.c_str());
+
+            repaint();
         }
     }
 
 private:
+    void appendOutput(const std::string& content)
+    {
+        Strings lines = StringHelper::split("\n", content);
+        for (Strings::const_iterator it = lines.begin(); it != lines.end(); ++it) {
+            lines_.push_back(*it);
+        }
+        // Adjust scrollbar
+        scrollbar_->setMaximum(lines_.size() - outputNumRows_);
+        scrollbar_->setValue(scrollbar_->getMaximum());
+        if (lines_.size() - outputNumRows_ > 0) {
+            currentLineNo_ = lines_.size() - outputNumRows_;
+        } else {
+            currentLineNo_ = 0;
+        }
+    }
+
     bool sendCommand(const std::string& command)
     {
         uint32_t tid;
@@ -86,7 +151,8 @@ private:
         }
         uint8_t buf[10240];
         int sizeRead = outStream_.read(buf, 10240);
-        output_->setText(std::string((const char*)buf, sizeRead).c_str());
+        appendOutput(std::string((const char*)buf, sizeRead).c_str());
+
         return true;
     }
 
