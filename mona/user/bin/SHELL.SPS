@@ -15,8 +15,10 @@
          [("ls" dir)
            (for-each
              (^f
-	       (monapi-stream-write (monapi-make-stream handle) (string->utf8z f)))
+               (write (string->utf8 f))
+	       (monapi-stream-write (monapi-make-stream handle) (string->utf8 f)))
 	     (directory-list dir))
+           (monapi-stream-write (monapi-make-stream handle) #vu8(0))
            (monapi-message-reply from header MSG_OK)]
          [x
            (error 'shell "unknown command" x)]))

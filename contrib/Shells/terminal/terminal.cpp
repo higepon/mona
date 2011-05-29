@@ -26,10 +26,13 @@
  *
  */
 #include <monagui.h>
+#define MUNIT_GLOBAL_VALUE_DEFINED
+#include <monapi/MUnit.h>
 
 using namespace MonAPI;
 
-class Terminal : public Frame {
+class Terminal : public Frame
+{
 private:
     scoped_ptr<TextField> command_;
     scoped_ptr<TextField> output_;
@@ -37,7 +40,7 @@ private:
     Stream outStream_;
 
 public:
-    Terminal() :
+    Terminal(bool isTestMode = false) :
         command_(new TextField()),
         output_(new TextField()),
         button_(new Button("go"))
@@ -51,6 +54,9 @@ public:
         add(command_.get());
         add(output_.get());
         add(button_.get());
+        if (isTestMode) {
+            setTimer(50);
+        }
     }
 
     ~Terminal() {}
@@ -62,6 +68,8 @@ public:
             if (!sendCommand(command_->getText())) {
                 output_->setText("command failed");
             }
+        } else if (event->getType() == Event::TIMER) {
+            test();
         }
     }
 
@@ -81,16 +89,32 @@ private:
         output_->setText(std::string((const char*)buf, sizeRead).c_str());
         return true;
     }
+
+    void test()
+    {
+        output_->setText("test start");
+        command_->setText("ls /APPS/");
+        MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
+        processEvent(&event);
+        EXPECT_TRUE(strstr(output_->getText(), "TEST.RAW") != NULL);
+        TEST_RESULTS();
+    }
 };
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
     const char* MAP_FILE_PATH  = "/APPS/MONAGUI/TERMINAL.MAP";
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
     if (ret != M_OK) {
         fprintf(stderr, "terminal: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
     }
-    Terminal terminal;
+    bool isTestMode = false;
+    if (argc == 2 && strcmp(argv[1], "-t") == 0) {
+        isTestMode = true;
+    }
+
+    Terminal terminal(isTestMode);
     terminal.run();
     return 0;
 }
