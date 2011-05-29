@@ -21,8 +21,7 @@
   (monapi-stream-write stream (string->utf8 "tid name"))
   (for-each
     (^p
-      (monapi-stream-write stream (string->utf8 (assoc-ref p 'name)))
-      (monapi-stream-write stream (string->utf8 "\n")))
+      (monapi-stream-write stream (string->utf8 (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name)))))
     (process-list))
   (monapi-stream-write stream (string->utf8 "tid name"))
   (monapi-stream-write stream #vu8(0)))
@@ -41,6 +40,11 @@
            (monapi-message-reply from header MSG_OK)]
          [("ps")
            (ps stream)
+           (monapi-message-reply from header MSG_OK)]
+         [("kill" id)
+           (monapi-stream-write stream (string->utf8 (format "~a\n" (if (process-terminate! id)
+                                                                        "process killed"
+                                                                        "can't kill the process"))))
            (monapi-message-reply from header MSG_OK)]
          [x
            (error 'shell "unknown command" x)]))
