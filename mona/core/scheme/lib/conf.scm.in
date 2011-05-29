@@ -80,8 +80,8 @@
 
 (define (terminal)
   (call-process "/APPS/FRECV.EX5 TERMINAL.EX5")
-;  (start-process "/MEM/TERMINAL.EX5 -t")
-  (start-process "/MEM/TERMINAL.EX5")
+  (start-process "/MEM/TERMINAL.EX5 -t")
+;  (start-process "/MEM/TERMINAL.EX5")
   (terminal)
   )
 

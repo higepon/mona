@@ -29,6 +29,7 @@
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 #include <monapi/StringHelper.h>
+#include <algorithm>
 
 using namespace MonAPI;
 
@@ -151,12 +152,26 @@ private:
         command_->setText("ls /APPS/");
         MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
         processEvent(&event);
-        EXPECT_TRUE(strstr(output_->getText(), "TEST.RAW\n") != NULL);
+        EXPECT_TRUE(find(lines_.begin(), lines_.end(), "TEST.RAW") != lines_.end());
+    }
+
+    void testLSCausesScrollToTheLastLine()
+    {
+        int originLineNo = scrollbar_->getValue();
+        output_->setText("test start");
+        command_->setText("ls /APPS/");
+        MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
+        processEvent(&event);
+        int newLineNo = scrollbar_->getValue();
+        EXPECT_TRUE(newLineNo > originLineNo);
+        // On the output, we should include the last line.
+        EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
     }
 
     void test()
     {
         testLSCommandReturnsLFSeperatedListOfFiles();
+        testLSCausesScrollToTheLastLine();
         TEST_RESULTS();
         stop();
     }
