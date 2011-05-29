@@ -24,7 +24,7 @@
     (let1 ret (utf8->string (monapi-stream-read out 64000))
       ret))))
 
-(process-terminate! 336)         
+(call-process "/APPS/BAYGUI/MG.EX5")
 (test-true (#/GUI\.DL./ (ls "/LIBS/")))
 (test-true (#/\d+ GUI.EX5\n/ (ps)))
 

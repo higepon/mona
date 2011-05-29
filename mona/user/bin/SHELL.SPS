@@ -42,7 +42,7 @@
            (ps stream)
            (monapi-message-reply from header MSG_OK)]
          [("kill" id)
-           (monapi-stream-write stream (string->utf8 (format "~a\n" (if (process-terminate! id)
+           (monapi-stream-write stream (string->utf8 (format "~a\n" (if (process-terminate! (string->number id))
                                                                         "process killed"
                                                                         "can't kill the process"))))
            (monapi-message-reply from header MSG_OK)]

@@ -389,6 +389,14 @@ Process::~Process()
         delete[](arguments_->get(i));
     }
 
+    // debug
+    logprintf("something bad happened\n");
+    if (kobjects_.size() != 0) {
+        for (int i = 0; i < kobjects_.size(); i++) {
+            logprintf("kobject %d\n", kobjects_[i].cdr->getType());
+        }
+    }
+
     ASSERT(kobjects_.size() == 0);
     delete messageList_;
     delete arguments_;
