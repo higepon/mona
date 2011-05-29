@@ -1,23 +1,23 @@
 /*
 Copyright (c) 2005 bayside
 
-Permission is hereby granted, free of charge, to any person 
-obtaining a copy of this software and associated documentation files 
-(the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, 
-publish, distribute, sublicense, and/or sell copies of the Software, 
-and to permit persons to whom the Software is furnished to do so, 
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so,
 subject to the following conditions:
 
-The above copyright notice and this permission notice shall be 
+The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
@@ -25,79 +25,49 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _SCROLLBAR_H_INCLUDED_
 
 namespace monagui {
-	/**
-	 水平・垂直スクロールバークラス
-	*/
-	class Scrollbar : public Component {
-	public:
-		/** 水平スクロールバー */
-		static const int HORIZONTAL = 0;
-		/** 垂直スクロールバー */
-		static const int VERTICAL   = 1;
-		
-	private:
-		/** スクロールバーの種類 */
-		int orientation;
-		/** 最小値 */
-		int minimum;
-		/** 最大値 */
-		int maximum;
-		/** 一度に増減する量 */
-		int blocksize;
-		/** 一つ前の値 */
-		int preValue;
-		/** 現在の値 */
-		int value;
-		/** 調整イベント */
-		Event adjustmentEvent;
-		
-	public:
-		/** デフォルトコンストラクタ */
-		Scrollbar();
+    class Scrollbar : public Component {
+    public:
+        static const int HORIZONTAL = 0;
+        static const int VERTICAL   = 1;
 
-		/** コンストラクタ */
-		Scrollbar(int orientation);
+    private:
+        int orientation;
+        int minimum;
+        int maximum;
+        int blocksize;
+        int preValue;
+        int value;
+        Event adjustmentEvent;
 
-		/** デストラクタ */
-		virtual ~Scrollbar();
+    public:
+        Scrollbar();
 
-		/** 最小値を得る（初期値は0） */
-		inline int getMinimum() { return this->minimum; }
+        Scrollbar(int orientation);
 
-		/** 最大値を得る（初期値は100） */
-		inline int getMaximum() { return this->maximum; }
+        virtual ~Scrollbar();
 
-		/** 一度に増減する量を得る（初期値は10） */
-		inline int getBlocksize() { return this->blocksize; }
+        inline int getMinimum() { return this->minimum; }
 
-		/** 値を得る */
-		inline int getValue() { return this->value; }
+        inline int getMaximum() { return this->maximum; }
 
-		/** 最小値を設定する */
-		inline void setMinimum(int n) { this->minimum = n; }
+        inline int getBlocksize() { return this->blocksize; }
 
-		/** 最大値を設定する */
-		inline void setMaximum(int n) { this->maximum = n; }
+        inline int getValue() { return this->value; }
 
-		/** 一度に増減する量を設定する */
-		inline void setBlocksize(int n) { this->blocksize = n; }
+        inline void setMinimum(int n) { this->minimum = n; }
 
-		/** 値を設定する */
-		virtual void setValue(int value);
+        inline void setMaximum(int n) { this->maximum = n; }
 
-		/**
-		 部品の大きさを設定する.
-		 垂直スクロールバーの時は幅16固定、水平スクロールバーのときは高さ16固定。
-		 それ以外の値を設定しても16になる。
-		*/
-		virtual void setBounds(int x, int y, int w, int h);
+        inline void setBlocksize(int n) { this->blocksize = n; }
 
-		/** 描画ハンドラ */
-		virtual void paint(Graphics* g);
+        virtual void setValue(int value);
 
-		/** イベントハンドラ */
-		virtual void processEvent(Event* event);
-	};
+        virtual void setBounds(int x, int y, int w, int h);
+
+        virtual void paint(Graphics* g);
+
+        virtual void processEvent(Event* event);
+    };
 }
 
 #endif /* _SCROLLBAR_H_INCLUDED_ */
