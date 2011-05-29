@@ -16,7 +16,14 @@
   (receive (from header . rest) (monapi-message-send-receive shell MSG_TEXT handle 0 0 (string->utf8z (string-append "ls " dir)))
     (let1 ret (utf8->string (monapi-stream-read out 64000))
       ret))))
-
+         
+(define (ps)
+  (let1 shell (monapi-name-whereis "/servers/shell")
+  (receive (from header . rest) (monapi-message-send-receive shell MSG_TEXT handle 0 0 (string->utf8z "ps"))
+    (let1 ret (utf8->string (monapi-stream-read out 64000))
+      ret))))
+         
 (test-true (#/GUI\.DL./ (ls "/LIBS/")))
+(test-true (#/GUI.EX5/ (ps)))
 
 (test-results)

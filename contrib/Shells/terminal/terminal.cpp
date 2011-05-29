@@ -168,10 +168,20 @@ private:
         EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
     }
 
+    void testPSShowsHeaderAndProcess()
+    {
+        output_->setText("test start");
+        command_->setText("ps");
+        MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
+        processEvent(&event);
+        EXPECT_TRUE(strstr(output_->getText(), "tid name") != NULL);
+    }
+
     void test()
     {
         testLSCommandReturnsLFSeperatedListOfFiles();
         testLSCausesScrollToTheLastLine();
+        testPSShowsHeaderAndProcess();
         TEST_RESULTS();
         stop();
     }
