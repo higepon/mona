@@ -20,4 +20,5 @@
            (error 'shell "unknown command" x)]))
       (loop)]
     [else
-      (format #t "received ~a" header)])))
+      (format #t "received ~a" header)
+      (loop)])))

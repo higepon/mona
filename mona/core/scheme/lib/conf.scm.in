@@ -66,6 +66,8 @@
 ;  (start-process "/APPS/MONAGUI/GTIMER.EX5")
   (for-each call-process *tests-on-gui*)
   (test-end)
+  (call-process "/APPS/MONAGUI/TERMINAL.EX5")
+  (terminal)
  ; (start-process "/APPS/MONAGUI/FACEBOOK.EX5")
 ;  (my-display)
 ;; (gnote)
@@ -75,6 +77,11 @@
 (define (w3m-auto-pilot)
   (call-process "/APPS/W3M.APP/W3M.EX5 -a 300 -d")
   (w3m-auto-pilot))
+
+(define (terminal)
+  (call-process "/APPS/FRECV.EX5 TERMINAL.EX5")
+  (call-process "/MEM/TERMINAL.EX5")
+  (terminal))
 
 
 (define (recv name)

@@ -38,6 +38,7 @@ all:
 	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
 ### Monagui applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
+	cd Shells/terminal && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/mg-20090107 && touch dependencies && $(MAKE) && $(MAKE) install
@@ -98,6 +99,7 @@ clean:
 	cd Net/uip && $(MAKE) clean
 	cd Shells/gshell && $(MAKE) clean
 	cd Shells/mshell && $(MAKE) clean
+	cd Shells/terminal && $(MAKE) clean
 	cd Gui/glaunch && $(MAKE) clean
 	cd Gui/monafile && $(MAKE) clean
 	cd Benchmarks/gfire && $(MAKE) clean
