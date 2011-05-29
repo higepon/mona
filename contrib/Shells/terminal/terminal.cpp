@@ -65,18 +65,6 @@ public:
         int height = getFontMetrics()->getHeight("H");
         outputNumRows_ = OUTPUT_HIGHT / height - 1;
 
-        std::string content;
-        for (uintptr_t i = 0; i < outputNumRows_ + 20; i++) {
-            char buf[8];
-            sprintf(buf, "%d", i);
-            lines_.push_back(buf);
-        }
-
-        for (uintptr_t i = currentLineNo_; i < lines_.size() && i < outputNumRows_; i++) {
-            content += lines_[i];
-            content += "\n";
-        }
-        output_->setText(content.c_str());
         command_->setBounds(0, 0, 200, 30);
         output_->setBounds(0, 30, 250, OUTPUT_HIGHT);
         button_->setBounds(200, 0, 40, 30);
