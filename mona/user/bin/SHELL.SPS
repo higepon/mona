@@ -6,9 +6,11 @@
 
 (let loop ()
   (receive (from header handle arg2 arg3 str) (monapi-message-receive)
+   (write str)
    (cond
     [(= header MSG_TEXT)
       (let ([command-line (null-terminated-utf8->string str)])
+        (write command-line)
         (match (string-split command-line #\space)
          [("ls" dir)
            (for-each

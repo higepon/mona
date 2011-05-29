@@ -34,13 +34,15 @@ private:
     scoped_ptr<TextField> command_;
     scoped_ptr<TextField> output_;
     scoped_ptr<Button> button_;
+    Stream outStream_;
+
 public:
     Terminal() :
         command_(new TextField()),
         output_(new TextField()),
         button_(new Button("go"))
     {
-        setBounds(200, 200, 300, 400);
+        setBounds(50, 200, 300, 400);
         setTitle("Terminal");
         command_->setText("ls /APPS/");
         command_->setBounds(0, 0, 200, 30);
@@ -57,10 +59,28 @@ public:
     {
         if (event->getType() == MouseEvent::MOUSE_RELEASED &&
             event->getSource() == button_.get()) {
-            logprintf("hige");
+            if (!sendCommand(command_->getText())) {
+                output_->setText("command failed");
+            }
         }
     }
 
+private:
+    bool sendCommand(const std::string& command)
+    {
+        uint32_t tid;
+        if (monapi_name_whereis("/servers/shell", tid) != M_OK) {
+            return false;
+        }
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, tid, MSG_TEXT, outStream_.handle(), 0, 0, command.c_str()) != M_OK) {
+            return false;
+        }
+        uint8_t buf[10240];
+        int sizeRead = outStream_.read(buf, 10240);
+        output_->setText(std::string((const char*)buf, sizeRead).c_str());
+        return true;
+    }
 };
 
 int main(int argc, char* argv[]){
