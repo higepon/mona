@@ -1,7 +1,7 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002-2010 Higepon
+    Copyright (c) 2002-2011 Higepon
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
@@ -154,7 +154,7 @@ void startKernel()
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  %s\n", version);
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
-    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2010 higepon\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2011 higepon\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
 
