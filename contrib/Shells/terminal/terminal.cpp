@@ -31,19 +31,23 @@ using namespace MonAPI;
 
 class Terminal : public Frame {
 private:
-    scoped_ptr<TextField> text_;
+    scoped_ptr<TextField> command_;
+    scoped_ptr<TextField> output_;
     scoped_ptr<Button> button_;
 public:
     Terminal() :
-        text_(new TextField()),
+        command_(new TextField()),
+        output_(new TextField()),
         button_(new Button("go"))
     {
-        setBounds(200,200,300,80);
+        setBounds(200, 200, 300, 400);
         setTitle("Terminal");
-        text_->setText("ls /APPS/");
-        text_->setBounds(0, 0, 200, 30);
+        command_->setText("ls /APPS/");
+        command_->setBounds(0, 0, 200, 30);
+        output_->setBounds(0, 30, 250, 200);
         button_->setBounds(200, 0, 80, 30);
-        add(text_.get());
+        add(command_.get());
+        add(output_.get());
         add(button_.get());
     }
 
