@@ -390,8 +390,8 @@ Process::~Process()
     }
 
     // debug
-    logprintf("something bad happened\n");
     if (kobjects_.size() != 0) {
+        logprintf("something bad happened %s %s:%d\n", __func__, __FILE__, __LINE__);
         for (int i = 0; i < kobjects_.size(); i++) {
             logprintf("kobject %d\n", kobjects_[i].cdr->getType());
         }
