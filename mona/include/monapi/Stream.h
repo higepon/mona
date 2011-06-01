@@ -35,6 +35,7 @@ public:
     int tryLockForWrite();
     uint32_t size() const;
     uint32_t capacity() const;
+    uint8_t* header() const; // for debug
     uint32_t handle() const { return memoryHandle_; }
 
 protected:

@@ -396,3 +396,7 @@ int Stream::tryLockForWrite()
     return writeAccess_->tryLock();
 }
 
+uint8_t* Stream::header() const
+{
+    return (uint8_t*)header_;
+}

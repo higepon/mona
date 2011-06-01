@@ -2,6 +2,9 @@
 
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
+#include <limits.h>
+#include <stdio.h>
+#include <string>
 
 using namespace MonAPI;
 
@@ -12,9 +15,7 @@ static void testOneProcessReadsEmptyStreamImmediatlyReturnsZero()
     EXPECT_EQ(0, s.read(buf, sizeof(buf)));
 }
 
-static const uint8_t TEST_DATA[] = {0x01, 0x02, 0x03};
-static const int DATA_SIZE = sizeof(TEST_DATA);
-static uintptr_t mainThread = THREAD_UNKNOWN;
+#include "../stream/test_data.c"
 
 static void testOneProcessWritesAndReadsExactSameData()
 {
@@ -26,36 +27,42 @@ static void testOneProcessWritesAndReadsExactSameData()
     EXPECT_EQ(0, s.read(buf, DATA_SIZE));
 }
 
-static void notifyDone(uintptr_t dest)
+static int executeSubProcess(const std::string& funcName, uint32_t streamHandle)
 {
-    ASSERT_EQ(M_OK, Message::send(dest, MSG_OK));
+    std::string command("/APPS/TSUBSTRM.EX5");
+    command += " ";
+    command += funcName;
+    char buf[32];
+    sprintf(buf, " %x", streamHandle);
+    command += buf;
+    uint32_t tid;
+    intptr_t result = monapi_process_execute_file_get_tid(
+        command.c_str(),
+        MONAPI_TRUE,
+        &tid,
+        MonAPI::System::getProcessStdinID(),
+        MonAPI::System::getProcessStdoutID());
+    if (result != 0) {
+        EXPECT_TRUE(false);
+        return -1;
+    }
+    return monapi_process_wait_terminated(tid);
 }
 
-static void waitSubThreadDone(uintptr_t tid)
-{
-    MessageInfo dst, src;
-    src.header = MSG_OK;
-    int ret = Message::receive(&dst, &src, Message::equalsHeader);
-    ASSERT_EQ(M_OK, ret);
-    ASSERT_TRUE(dst.from == tid);
-}
-
-static void __fastcall readSubThread(void* arg)
-{
-    scoped_ptr<Stream> s(Stream::FromHandle((uintptr_t)arg));
-    uint8_t buf[DATA_SIZE];
-    EXPECT_EQ(DATA_SIZE, s->read(buf, DATA_SIZE));
-    EXPECT_EQ(0, memcmp(TEST_DATA, buf, DATA_SIZE));
-    notifyDone(mainThread);
-}
 
 static void testOneProcessWritesTheOtherProcessReadsExactSameData()
 {
     Stream s;
     ASSERT_EQ(DATA_SIZE, s.write(TEST_DATA, DATA_SIZE));
-    mainThread = System::getThreadID();
-    uintptr_t tid = monapi_thread_create_with_arg(readSubThread, (void*)s.handle());
-    waitSubThreadDone(tid);
+    EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
+}
+
+static void testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero()
+{
+    const int STREAM_SIZE_BYTE = 3;
+    Stream s(STREAM_SIZE_BYTE);
+    ASSERT_EQ(STREAM_SIZE_BYTE, s.write(TEST_DATA, STREAM_SIZE_BYTE));
+    EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
 }
 
 int main(int argc, char *argv[])
@@ -63,7 +70,7 @@ int main(int argc, char *argv[])
     testOneProcessReadsEmptyStreamImmediatlyReturnsZero();
     testOneProcessWritesAndReadsExactSameData();
     testOneProcessWritesTheOtherProcessReadsExactSameData();
-    // testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero();
+    testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero();
     // testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
     // fromHandle
     // tryLock is used?
@@ -71,6 +78,9 @@ int main(int argc, char *argv[])
     // we never require three mutex.
     // Ensures only one thread waiting.
     // remove uint8_t*
+    // make clean doesn't work for some tests
+    // Stream.cpp:288
+    // semaphore on syscalls.cpp is necessar?
     TEST_RESULTS();
     return 0;
 }
