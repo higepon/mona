@@ -65,6 +65,7 @@ static void testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero()
     EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
 }
 
+// Some of following tests depend on test/stream-sub/.
 int main(int argc, char *argv[])
 {
     testOneProcessReadsEmptyStreamImmediatlyReturnsZero();
