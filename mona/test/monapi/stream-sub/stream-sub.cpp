@@ -22,9 +22,16 @@ static void processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZ
     ASSERT_EQ(0, s->write(TEST_DATA, DATA_SIZE));
 }
 
+static void processForTestOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess(uintptr_t streamHandle)
+{
+    scoped_ptr<Stream> s(Stream::FromHandle(streamHandle));
+    ASSERT_EQ(3, s->write(TEST_DATA, DATA_SIZE));
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
+        ASSERT(false);
         return -1;
     }
     uintptr_t streamHandle = strtol(argv[2], NULL, 16);
@@ -32,7 +39,10 @@ int main(int argc, char *argv[])
         processForTestOneProcessWritesTheOtherProcessReadsExactSameData(streamHandle);
     } else if (strcmp(argv[1], "testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero") == 0) {
         processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero(streamHandle);
+    } else if (strcmp(argv[1], "testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess") == 0) {
+         processForTestOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess(streamHandle);
     } else {
+        ASSERT(false);
         return -1;
     }
     TEST_RESULTS();

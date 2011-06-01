@@ -69,7 +69,7 @@
 (let loop ()
   (let ([text (file->string test-results-file)]
         [quick-test (and (= (length (command-line)) 2) (cadr (command-line)))])
-    (when (or (#/all tests done/ text) (and quick-test ((string->regexp quick-test) text)))
+    (when (or (#/all tests done/ text) (and quick-test ((string->regexp (string-append quick-test "\\.cpp[^:]")) text)))
       (let* ([results (string-split text #\newline)]
              [passed (filter #/test passed/ results)]
              [each-errors (filter #/MUnit:[^S]/ results)]

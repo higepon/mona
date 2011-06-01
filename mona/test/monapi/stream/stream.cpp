@@ -27,7 +27,7 @@ static void testOneProcessWritesAndReadsExactSameData()
     EXPECT_EQ(0, s.read(buf, DATA_SIZE));
 }
 
-static int executeSubProcess(const std::string& funcName, uint32_t streamHandle)
+static uint32_t startSubProcess(const std::string& funcName, uint32_t streamHandle)
 {
     std::string command("/APPS/TSUBSTRM.EX5");
     command += " ";
@@ -44,11 +44,19 @@ static int executeSubProcess(const std::string& funcName, uint32_t streamHandle)
         MonAPI::System::getProcessStdoutID());
     if (result != 0) {
         EXPECT_TRUE(false);
+        return THREAD_UNKNOWN;
+    }
+    return tid;
+}
+
+static int executeSubProcess(const std::string& funcName, uint32_t streamHandle)
+{
+    uint32_t tid = startSubProcess(funcName, streamHandle);
+    if (tid == THREAD_UNKNOWN) {
         return -1;
     }
     return monapi_process_wait_terminated(tid);
 }
-
 
 static void testOneProcessWritesTheOtherProcessReadsExactSameData()
 {
@@ -65,6 +73,25 @@ static void testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero()
     EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
 }
 
+// we have dead lock possiblity here.
+static void testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess()
+{
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    Stream s;
+    uint8_t buf[DATA_SIZE];
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    ASSERT_EQ(0, s.read(buf, DATA_SIZE));
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    uint32_t tid = startSubProcess(__func__, s.handle());
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    s.waitForRead();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    EXPECT_EQ(DATA_SIZE, s.read(buf, DATA_SIZE));
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    EXPECT_EQ(0, memcmp(TEST_DATA, buf, DATA_SIZE));
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+}
+
 // Some of following tests depend on test/stream-sub/.
 int main(int argc, char *argv[])
 {
@@ -72,7 +99,7 @@ int main(int argc, char *argv[])
     testOneProcessWritesAndReadsExactSameData();
     testOneProcessWritesTheOtherProcessReadsExactSameData();
     testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero();
-    // testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
+    testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
     // fromHandle
     // tryLock is used?
     // isInvalid work?
