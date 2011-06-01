@@ -7,6 +7,12 @@ using namespace MonAPI;
 
 int main(int argc, char *argv[])
 {
+    // testOneProcessReadsEmptyStreamImmediatlyReturnsZero();
+    // testOneProcessWritesAndReadsExactSameData();
+    // testTwoOneProcessWritesTheOtherProcessReadsExactSameData();
+    // testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero();
+    // testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
+    // Ensures only one thread waiting.
     TEST_RESULTS();
     return 0;
 }
