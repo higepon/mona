@@ -75,6 +75,7 @@ tests: tools cores
 	cd test/monapi/ram_disk && $(MAKE) && $(MAKE) install
 	cd test/monapi/syscall && $(MAKE) && $(MAKE) install
 	cd test/monapi/clipboard && $(MAKE) && $(MAKE) install
+	cd test/monapi/stream && $(MAKE) && $(MAKE) install
 	cd test/monapi/empty && $(MAKE) && $(MAKE) install
 	cd test/ext/gmp && $(MAKE) && $(MAKE) install
 	cd test/drivers/virtio && $(MAKE) && $(MAKE) install
