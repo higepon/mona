@@ -24,14 +24,14 @@ static void processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZ
 
 int main(int argc, char *argv[])
 {
-    logprintf("argc = %d %s %s:%d\n", argc, __func__, __FILE__, __LINE__);
     if (argc != 3) {
         return -1;
     }
+    uintptr_t streamHandle = strtol(argv[2], NULL, 16);
     if (strcmp(argv[1], "testOneProcessWritesTheOtherProcessReadsExactSameData") == 0) {
-        processForTestOneProcessWritesTheOtherProcessReadsExactSameData(strtol(argv[2], NULL, 16));
+        processForTestOneProcessWritesTheOtherProcessReadsExactSameData(streamHandle);
     } else if (strcmp(argv[1], "testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero") == 0) {
-        processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero(strtol(argv[2], NULL, 16));
+        processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero(streamHandle);
     } else {
         return -1;
     }

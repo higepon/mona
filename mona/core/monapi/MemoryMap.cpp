@@ -76,7 +76,7 @@ uint8_t* MemoryMap::map(uint32_t id, bool isImmediateMap /* = false */)
     }
 
     uint8_t* address = (uint8_t*)(START_ADDRESS + (found * MAP_PAGE_SIZE));
-
+    _logprintf("address id=%x to map is = %x %x\n", id, address, address + pageNum * 4096);
     intptr_t ret = syscall_memory_map_map(id, (uintptr_t)address, isImmediateMap);
     if (ret != M_OK) {
         MEMORY_MAP_TRACE("");
@@ -95,10 +95,12 @@ bool MemoryMap::unmap(uint32_t id)
     int pageNum = (size + MAP_PAGE_SIZE) / MAP_PAGE_SIZE;
     if (syscall_memory_map_unmap(id))
     {
+        monapi_warn("");
         lastError = M_MEMORY_MAP_ERROR;
         return false;
     }
     int startIndex = addresses.get(id);
+    _logprintf("unmap id= %x address = %x to %x %s %s:%d\n", id, (uint8_t*)(START_ADDRESS + (startIndex * MAP_PAGE_SIZE)), (uint8_t*)(START_ADDRESS + (startIndex * MAP_PAGE_SIZE)) + pageNum * 4096, __func__, __FILE__, __LINE__);
     for (int i = 0; i < pageNum; i++) {
         bitmap.clear(startIndex + i);
     }
