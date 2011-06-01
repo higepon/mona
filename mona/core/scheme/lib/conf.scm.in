@@ -10,6 +10,7 @@
 
 (define *tests-on-cui* '(
 ;                         "/APPS/TFLOAD.APP/TFLOAD.EX5"
+                         "/APPS/TSTREAM.EX5"
                          "/APPS/TBLOCK.EX5"
                          "/APPS/TMOSH.EX5"
                          "/APPS/TPROCESS.EX5"
