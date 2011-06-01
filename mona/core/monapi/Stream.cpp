@@ -51,7 +51,7 @@ Stream* Stream::FromHandle(uint32_t handle)
     return new Stream(0, handle);
 }
 
-uint32_t Stream::write(uint8_t* buffer, uint32_t size)
+uint32_t Stream::write(const uint8_t* buffer, uint32_t size)
 {
     access_->lock();
     uint32_t memorySize = header_->size;

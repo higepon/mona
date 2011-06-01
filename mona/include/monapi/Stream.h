@@ -23,7 +23,7 @@ public:
 
 public:
     static Stream* FromHandle(uint32_t handle);
-    uint32_t write(uint8_t* buffer, uint32_t size);
+    uint32_t write(const uint8_t* buffer, uint32_t size);
     uint32_t read(uint8_t* buffer, uint32_t size);
     void waitForWrite();
     void waitForRead();
