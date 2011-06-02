@@ -91,7 +91,7 @@ const char* MonaTerminal::storeKeyAndGetLine(MessageInfo* msg)
                 }
                 screenHandle_ = msg.arg1;
                 uint32_t s = m.arg2;
-                terminal_ = new terminal::Util(Stream::FromHandle(msg.arg1));
+                terminal_ = new terminal::Util(Stream::createFromHandle(msg.arg1));
                 Message::reply(&msg, s);
                 break;
             }
@@ -142,7 +142,7 @@ bool MonaTerminal::initialize()
         return false;
     }
     screenHandle_ = msg.arg2;
-    terminal_ = new terminal::Util(Stream::FromHandle(screenHandle_));
+    terminal_ = new terminal::Util(Stream::createFromHandle(screenHandle_));
     return true;
 
 }

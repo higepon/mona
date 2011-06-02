@@ -12,7 +12,7 @@ using namespace MonAPI;
 Shell::Shell(uint32_t outHandle) : position_(0), doExec_(false), waiting_(THREAD_UNKNOWN)
 {
     inStream_ = new Stream();
-    outStream_ = Stream::FromHandle(outHandle);
+    outStream_ = Stream::createFromHandle(outHandle);
     terminal_ = new terminal::Util(outStream_);
     formatBuffer_ = new char[FORMAT_BUFFER_SIZE];
     changeDirecotory(APPSDIR);
@@ -64,7 +64,7 @@ void Shell::run()
             {
                 uint32_t oldHandle = outStream_->handle();
                 // delete outStream_;
-                outStream_ = Stream::FromHandle(msg.arg1);
+                outStream_ = Stream::createFromHandle(msg.arg1);
                 terminal_ = new terminal::Util(outStream_);
                 Message::reply(&msg, oldHandle);
                 break;
@@ -97,17 +97,19 @@ void Shell::commandChar(char c)
         terminal_->flush();
     }
 
-    // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
-    if (inStream_->tryLockForRead() == M_OK)
-    {
-        inStream_->unlockForRead();
-        commandLine_[position_] = c;
-        position_++;
-    }
-    else
-    {
-        inStream_->write((uint8_t*)&c, 1);
-    }
+    // not used 
+    ASSERT(false);
+    // // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
+    // if (inStream_->tryLockForRead() == M_OK)
+    // {
+    //     inStream_->unlockForRead();
+    //     commandLine_[position_] = c;
+    //     position_++;
+    // }
+    // else
+    // {
+    //     inStream_->write((uint8_t*)&c, 1);
+    // }
 }
 
 bool Shell::isPipeCommand()

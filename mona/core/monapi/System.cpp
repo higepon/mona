@@ -105,7 +105,7 @@ namespace MonAPI
     {
         if (NULL != inStream) return inStream;
         uint32_t handle = System::getProcessStdinID();
-        inStream = Stream::FromHandle(handle);
+        inStream = Stream::createFromHandle(handle);
         return inStream;
     }
     Stream* System::getStdoutStream()
@@ -115,13 +115,13 @@ namespace MonAPI
             if (handle == THREAD_UNKNOWN) {
                 outStream = NULL;
             } else {
-                outStream = Stream::FromHandle(handle);
+                outStream = Stream::createFromHandle(handle);
             }
         }
 
         if (outStream == NULL) {
             return NULL;
-        } else if (outStream->getLastError() == M_OK) {
+        } else if (outStream->lastError() == M_OK) {
             return outStream;
         } else {
             return NULL;

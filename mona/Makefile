@@ -125,6 +125,7 @@ core/shell_server \
 external/libjpegls \
 external/onig \
 test/drivers/virtio \
+test/drivers/block_cache \
 test/ext/gmp \
 test/monalibc/math \
 test/monalibc/stdio \
@@ -142,6 +143,12 @@ test/monapi/ram_disk \
 test/monapi/socket \
 test/monapi/stack_trace \
 test/monapi/syscall \
+test/monapi/mosh \
+test/monapi/wait \
+test/monapi/empty \
+test/monapi/process_server \
+test/monapi/stream-sub \
+test/monapi/stream \
 tool/fat_write \
 tool/messageHeader \
 tool/t5lzma

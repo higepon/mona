@@ -495,23 +495,23 @@ intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     return outStream->write(buffer, size);
 }
 
-uint32_t monapi_stdin_lock_for_read()
-{
-    System::getStdinStream();
-    return inStream->lockForRead();
-}
+// uint32_t monapi_stdin_lock_for_read()
+// {
+//     System::getStdinStream();
+//     return inStream->lockForRead();
+// }
 
-uint32_t monapi_stdin_try_lock_for_read()
-{
-    System::getStdinStream();
-    return inStream->tryLockForRead();
-}
+// uint32_t monapi_stdin_try_lock_for_read()
+// {
+//     System::getStdinStream();
+//     return inStream->tryLockForRead();
+// }
 
-uint32_t monapi_stdin_unlock_for_read()
-{
-    System::getStdinStream();
-    return inStream->unlockForRead();
-}
+// uint32_t monapi_stdin_unlock_for_read()
+// {
+//     System::getStdinStream();
+//     return inStream->unlockForRead();
+// }
 
 intptr_t monapi_process_wait_terminated(uint32_t tid)
 {

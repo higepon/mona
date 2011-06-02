@@ -49,7 +49,7 @@ static uint32_t startSubProcess(const std::string& funcName, uint32_t streamHand
     return tid;
 }
 
-static int executeSubProcess(const std::string& funcName, uint32_t streamHandle)
+static int callSubProcess(const std::string& funcName, uint32_t streamHandle)
 {
     uint32_t tid = startSubProcess(funcName, streamHandle);
     if (tid == THREAD_UNKNOWN) {
@@ -62,7 +62,7 @@ static void testOneProcessWritesTheOtherProcessReadsExactSameData()
 {
     Stream s;
     ASSERT_EQ(DATA_SIZE, s.write(TEST_DATA, DATA_SIZE));
-    EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
+    EXPECT_EQ(0, callSubProcess(__func__, s.handle()));
 }
 
 static void testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero()
@@ -70,26 +70,61 @@ static void testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero()
     const int STREAM_SIZE_BYTE = 3;
     Stream s(STREAM_SIZE_BYTE);
     ASSERT_EQ(STREAM_SIZE_BYTE, s.write(TEST_DATA, STREAM_SIZE_BYTE));
-    EXPECT_EQ(0, executeSubProcess(__func__, s.handle()));
+    EXPECT_EQ(0, callSubProcess(__func__, s.handle()));
 }
 
-// we have dead lock possiblity here.
 static void testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     Stream s;
     uint8_t buf[DATA_SIZE];
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     ASSERT_EQ(0, s.read(buf, DATA_SIZE));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-    uint32_t tid = startSubProcess(__func__, s.handle());
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    startSubProcess(__func__, s.handle());
     s.waitForRead();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(DATA_SIZE, s.read(buf, DATA_SIZE));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(0, memcmp(TEST_DATA, buf, DATA_SIZE));
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+}
+
+static void testOneProcessWaitsToReadWithWaitsFullFlagTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess()
+{
+    Stream s;
+    uint8_t buf[DATA_SIZE];
+    ASSERT_EQ(0, s.read(buf, DATA_SIZE));
+    startSubProcess("testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess", s.handle());
+    EXPECT_EQ(DATA_SIZE, s.read(buf, DATA_SIZE, true));
+    EXPECT_EQ(0, memcmp(TEST_DATA, buf, DATA_SIZE));
+}
+
+static void testOneProcessWritesToFullStreamImmediatlyReturnsZero()
+{
+    const int STREAM_SIZE_BYTE = 3;
+    Stream s(STREAM_SIZE_BYTE);
+    ASSERT_EQ(STREAM_SIZE_BYTE, s.write(TEST_DATA, STREAM_SIZE_BYTE));
+    EXPECT_EQ(0, callSubProcess(__func__, s.handle()));
+}
+
+static void testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess()
+{
+    Stream s(SMALL_STREAM_SIZE_BYTE);
+    ASSERT_EQ(SMALL_STREAM_SIZE_BYTE, s.write(TEST_DATA, SMALL_STREAM_SIZE_BYTE));
+    ASSERT_EQ(0, s.write(TEST_DATA, SMALL_STREAM_SIZE_BYTE));
+    startSubProcess(__func__, s.handle());
+    s.waitForWrite();
+    ASSERT_EQ(SMALL_STREAM_SIZE_BYTE, s.write(TEST_DATA, SMALL_STREAM_SIZE_BYTE));
+}
+
+static void testOneProcessWaitsToWriteWithWaitEmptyFlagTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess()
+{
+    Stream s(SMALL_STREAM_SIZE_BYTE);
+    ASSERT_EQ(SMALL_STREAM_SIZE_BYTE, s.write(TEST_DATA, SMALL_STREAM_SIZE_BYTE));
+    // Same sub process that testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess uses.
+    startSubProcess("testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess", s.handle());
+    ASSERT_EQ(SMALL_STREAM_SIZE_BYTE, s.write(TEST_DATA, SMALL_STREAM_SIZE_BYTE, true));
+}
+
+static void testIsInvalidReturnsTrueForBadStreamHandle()
+{
+    scoped_ptr<Stream> s(Stream::createFromHandle(0x1234));
+    EXPECT_TRUE(s->isInvalid());
 }
 
 // Some of following tests depend on test/stream-sub/.
@@ -100,15 +135,11 @@ int main(int argc, char *argv[])
     testOneProcessWritesTheOtherProcessReadsExactSameData();
     testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero();
     testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
-    // fromHandle
-    // tryLock is used?
-    // isInvalid work?
-    // we never require three mutex.
-    // Ensures only one thread waiting.
-    // remove uint8_t*
-    // make clean doesn't work for some tests
-    // Stream.cpp:288
-    // semaphore on syscalls.cpp is necessar?
+    testOneProcessWaitsToReadWithWaitsFullFlagTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess();
+    testOneProcessWritesToFullStreamImmediatlyReturnsZero();
+    testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess();
+    testOneProcessWaitsToWriteWithWaitEmptyFlagTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess();
+    testIsInvalidReturnsTrueForBadStreamHandle();
     TEST_RESULTS();
     return 0;
 }

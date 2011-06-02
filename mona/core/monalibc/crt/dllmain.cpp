@@ -44,10 +44,10 @@ __attribute__((constructor)) void monalibc_initialize()
     uint32_t handle;
     handle = MonAPI::System::getProcessStdinID();
     _logprintf("%s:%d stdin handle=%x\n", __FILE__, __LINE__, handle);
-    inStream = MonAPI::Stream::FromHandle(handle);
+    inStream = MonAPI::Stream::createFromHandle(handle);
     handle = MonAPI::System::getProcessStdoutID();
     _logprintf("%s:%d stdout handle=%x\n", __FILE__, __LINE__, handle);
-    outStream = MonAPI::Stream::FromHandle(handle);
+    outStream = MonAPI::Stream::createFromHandle(handle);
 #endif
     init_stdio();
 }

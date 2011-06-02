@@ -10,7 +10,7 @@ using namespace MonAPI;
 
 static void processForTestOneProcessWritesTheOtherProcessReadsExactSameData(uintptr_t streamHandle)
 {
-    scoped_ptr<Stream> s(Stream::FromHandle(streamHandle));
+    scoped_ptr<Stream> s(Stream::createFromHandle(streamHandle));
     uint8_t buf[DATA_SIZE];
     EXPECT_EQ(DATA_SIZE, s->read(buf, DATA_SIZE));
     EXPECT_EQ(0, memcmp(TEST_DATA, buf, DATA_SIZE));
@@ -18,14 +18,28 @@ static void processForTestOneProcessWritesTheOtherProcessReadsExactSameData(uint
 
 static void processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero(uintptr_t streamHandle)
 {
-    scoped_ptr<Stream> s(Stream::FromHandle(streamHandle));
+    scoped_ptr<Stream> s(Stream::createFromHandle(streamHandle));
     ASSERT_EQ(0, s->write(TEST_DATA, DATA_SIZE));
 }
 
 static void processForTestOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess(uintptr_t streamHandle)
 {
-    scoped_ptr<Stream> s(Stream::FromHandle(streamHandle));
+    scoped_ptr<Stream> s(Stream::createFromHandle(streamHandle));
     ASSERT_EQ(3, s->write(TEST_DATA, DATA_SIZE));
+}
+
+static void processForTestOneProcessWritesToFullStreamImmediatlyReturnsZero(uintptr_t streamHandle)
+{
+    scoped_ptr<Stream> s(Stream::createFromHandle(streamHandle));
+    ASSERT_EQ(0, s->write(TEST_DATA, DATA_SIZE));
+}
+
+static void processForTestOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess(uintptr_t streamHandle)
+{
+    scoped_ptr<Stream> s(Stream::createFromHandle(streamHandle));
+    uint8_t buf[SMALL_STREAM_SIZE_BYTE];
+    EXPECT_EQ(DATA_SIZE, s->read(buf, SMALL_STREAM_SIZE_BYTE));
+    EXPECT_EQ(0, memcmp(TEST_DATA, buf, SMALL_STREAM_SIZE_BYTE));
 }
 
 int main(int argc, char *argv[])
@@ -40,7 +54,11 @@ int main(int argc, char *argv[])
     } else if (strcmp(argv[1], "testOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero") == 0) {
         processForTestOneProcessFillsStreamTheOtherProcessTryToWriteReturnsZero(streamHandle);
     } else if (strcmp(argv[1], "testOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess") == 0) {
-         processForTestOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess(streamHandle);
+        processForTestOneProcessWaitsToReadTheOtherProcessWritesSomeAndNotifiesToTheWaitingProcess(streamHandle);
+    } else if (strcmp(argv[1], "testOneProcessWritesToFullStreamImmediatlyReturnsZero") == 0) {
+        processForTestOneProcessWritesToFullStreamImmediatlyReturnsZero(streamHandle);
+    } else if (strcmp(argv[1], "testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess") == 0) {
+        processForTestOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess(streamHandle);
     } else {
         ASSERT(false);
         return -1;

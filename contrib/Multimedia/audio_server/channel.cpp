@@ -29,7 +29,7 @@ int Channel::getFormat(struct audio_data_format *format)
 
 int Channel::setStream(uint32_t handle)
 {
-	stream_ = MonAPI::Stream::FromHandle(handle);
+	stream_ = MonAPI::Stream::createFromHandle(handle);
 	dprintf("stream_ = %x\n", stream_);
 	return 0;
 }

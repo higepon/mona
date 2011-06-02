@@ -16,56 +16,42 @@ class Stream
 public:
     Stream();
     Stream(uint32_t size, uint32_t handle = 0);
+    static Stream* createFromHandle(uint32_t handle);
     virtual ~Stream();
 
     bool isInvalid() const { return M_OK != lastError_; }
-    intptr_t getLastError() const { return lastError_; }
-
-public:
-    static Stream* FromHandle(uint32_t handle);
-    uint32_t write(const uint8_t* buffer, uint32_t size);
-    uint32_t read(uint8_t* buffer, uint32_t size);
+    intptr_t lastError() const { return lastError_; }
+    uint32_t write(const void* buffer, uint32_t size, bool waitsOnFull = false);
+    uint32_t read(void* buffer, uint32_t size, bool waitsOnEmpty = false);
     void waitForWrite();
     void waitForRead();
-    int lockForRead();
-    int unlockForRead();
-    int tryLockForRead();
-    int lockForWrite();
-    int unlockForWrite();
-    int tryLockForWrite();
     uint32_t size() const;
     uint32_t capacity() const;
-    uint8_t* header() const; // for debug
+    uint8_t* header() const;
     uint32_t handle() const { return memoryHandle_; }
 
 protected:
-    enum
-    {
-        MAX_WAIT_THREADS_NUM = 4
-    };
-
     typedef struct
     {
         uint32_t size;
         uint32_t capacity;
         mutex_t accessMutexHandle;
-        mutex_t readMutexHandle;
-        mutex_t writeMutexHandle;
-        uint32_t waitForReadThreads[MAX_WAIT_THREADS_NUM];
-        uint32_t waitForWriteThreads[MAX_WAIT_THREADS_NUM];
+        uint32_t waitForReadThread;
+        uint32_t waitForWriteThread;
     } StreamHeader;
 
+    uint32_t readInternal(void* buffer, uint32_t size);
+    uint32_t writeInternal(const void* buffer, uint32_t size);
     bool initialize(uint32_t size);
     bool initializeFromHandle(uint32_t handle);
     void setWaitForRead();
     void setWaitForWrite();
+    void waitMessage(uint32_t messageHeaderToWait);
 
     uint32_t memoryHandle_;
     void* memoryAddress_;
     StreamHeader* header_;
     Mutex* access_;
-    Mutex* readAccess_;
-    Mutex* writeAccess_;
     intptr_t lastError_;
 };
 

@@ -22,8 +22,6 @@ all:
 	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/print && touch dependencies && $(MAKE) # && $(MAKE) install
-	cd Misc/upper && touch dependencies && $(MAKE) # && $(MAKE) install
-	cd Misc/reverse && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Multimedia/audio_server && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server/api && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Multimedia/audio_server/client && touch dependencies && $(MAKE) && $(MAKE) install
@@ -81,8 +79,6 @@ clean:
 	cd Graphics/MesaDemos && $(MAKE) clean
 	cd Misc/helloworld && $(MAKE) clean
 	cd Misc/print && $(MAKE) clean
-	cd Misc/upper && $(MAKE) clean
-	cd Misc/reverse && $(MAKE) clean
 	cd Misc/gnote && $(MAKE) clean
 	cd Misc/mg-20090107 && $(MAKE) clean
 	cd Misc/facebook && $(MAKE) clean
