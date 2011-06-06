@@ -33,8 +33,35 @@
 
 using namespace MonAPI;
 
+static Stream* outStream;
+static Terminal* terminal;
+static std::string sharedString;
+
+static void __fastcall stdoutStreamReader(void* mainThread)
+{
+//    scoped_array<char> buf(new char[outStream->size()]);
+    char* buf = new char[outStream->size()];
+    // read from outStream, accumulates as string.
+    // Then notifies data come.
+    for (;;) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        uint32_t sizeRead = outStream->read(buf, outStream->size(), true);
+        // sharedString.clear();
+        // sharedString += std::string(buf.get(), sizeRead);
+        // logprintf("sharedString=<%s>\n", sharedString.c_str());
+        // MessageInfo info;
+        // logprintf("%s %s:%d mainThread=%x\n", __func__, __FILE__, __LINE__, (uint32_t)mainThread);
+        // if (Message::sendReceive(&info, (uint32_t)mainThread, MSG_UPDATE) != M_OK) {
+        //     logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        //     monapi_fatal("main thread is dead?");
+        // }
+        // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    }
+}
+
 int main(int argc, char* argv[])
 {
+    DebuggerService::breakpoint();
     const char* MAP_FILE_PATH  = "/APPS/MONAGUI/TERMINAL.MAP";
     uint32_t pid = syscall_get_pid();
     intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
@@ -46,7 +73,13 @@ int main(int argc, char* argv[])
         isTestMode = true;
     }
 
-    scoped_ptr<Terminal> terminal(isTestMode ? new TestTerminal() : new Terminal());
+    outStream = new Stream;
+//    terminal = isTestMode ? new TestTerminal(*outStream, sharedString) : new Terminal(*outStream, sharedString);
+    terminal = isTestMode ? new TestTerminal(outStream, sharedString) : new Terminal(outStream, sharedString);
+    uintptr_t mainThread = System::getThreadID();
+    monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
     terminal->run();
+    delete outStream;
+    delete terminal;
     return 0;
 }

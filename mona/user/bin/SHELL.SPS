@@ -12,8 +12,9 @@
 (define (ls stream dir)
   (for-each
     (^f
-      (monapi-stream-write stream (string->utf8 f))
-      (monapi-stream-write stream (string->utf8 "\n")))
+      (write f)
+      (newline)
+      (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
     (directory-list dir))
     (monapi-stream-write stream #vu8(0)))
 

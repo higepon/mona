@@ -34,7 +34,7 @@
 class TestTerminal : public Terminal
 {
 public:
-    TestTerminal()
+    TestTerminal(MonAPI::Stream* outStream, std::string& sharedString) : Terminal(outStream, sharedString)
     {
         // Starts test with timer
         setTimer(50);
@@ -82,7 +82,9 @@ private:
         clearOutput();
         command_->setText("ls /APPS/");
         buttonClick();
-        EXPECT_TRUE(find(lines_.begin(), lines_.end(), "TEST.RAW") != lines_.end());
+        while (find(lines_.begin(), lines_.end(), "TEST.RAW") == lines_.end()) {
+        }
+        EXPECT_TRUE(true);
     }
 
     void testEnterKeyDownRunsLSCommand()
@@ -124,11 +126,17 @@ private:
 
     void test()
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testLSCommandReturnsLFSeperatedListOfFiles();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testLSCausesScrollToTheLastLine();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testPSShowsHeaderAndProcess();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testEnterKeyDownRunsLSCommand();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testCommandEnteredAppearsOnHistory();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         TEST_RESULTS();
         stop();
     }

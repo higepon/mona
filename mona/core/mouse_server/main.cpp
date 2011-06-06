@@ -396,7 +396,7 @@ protected:
         {
             if (Message::send(this->destList->get(i), &info) != M_OK)
             {
-                _printf("Mouse Server: send error to thread id = %x", this->destList->get(i));
+                monapi_warn("Mouse Server: send error to thread id = %x", this->destList->get(i));
                 this->destList->removeAt(i);
             }
         }

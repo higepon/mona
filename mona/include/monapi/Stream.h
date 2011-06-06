@@ -29,8 +29,12 @@ public:
     uint32_t capacity() const;
     uint8_t* header() const;
     uint32_t handle() const { return memoryHandle_; }
-
 protected:
+    enum
+    {
+        DETECT_CORRUPT_MAGIC = 0x12334478,
+        forbidden_comma
+    };
     typedef struct
     {
         uint32_t size;
@@ -38,7 +42,17 @@ protected:
         mutex_t accessMutexHandle;
         uint32_t waitForReadThread;
         uint32_t waitForWriteThread;
+        uint32_t detectCorrupt;
     } StreamHeader;
+
+    void checkCorruptAndDie(const char* file, int lineNo)
+    {
+        if (header_->detectCorrupt != DETECT_CORRUPT_MAGIC) {
+            _logprintf("Warning:Stream is corrupted %s:%d", file, lineNo);
+            uint8_t* p = (uint8_t*)0;
+            *p = 0;
+        }
+    }
 
     uint32_t readInternal(void* buffer, uint32_t size);
     uint32_t writeInternal(const void* buffer, uint32_t size);

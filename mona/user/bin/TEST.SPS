@@ -23,8 +23,12 @@
   (receive (from header . rest) (monapi-message-send-receive shell MSG_TEXT handle 0 0 (string->utf8z "ps"))
     (let1 ret (utf8->string (monapi-stream-read out 64000))
       ret))))
+(start-process "/APPS/HELLO.EX5" out)
 
-(call-process "/APPS/MONAGUI/MG.EX5")
+(let loop ()
+	(display (utf8->string (monapi-stream-read out 64000)))
+	(loop))
+
 (test-true (#/GUI\.DL./ (ls "/LIBS/")))
 (test-true (#/\d+ GUI.EX5\n/ (ps)))
 

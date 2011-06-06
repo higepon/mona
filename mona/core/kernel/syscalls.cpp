@@ -862,7 +862,11 @@ void syscall_entrance()
 
     case SYSTEM_CALL_LOG_PRINT:
     {
-        logprintf("%s", (const char*)(SYSTEM_CALL_ARG_1));
+        if (g_log) {
+            logprintf("%s", (const char*)(SYSTEM_CALL_ARG_1));
+        } else {
+            g_console->printf("glog is null: %s", (const char*)(SYSTEM_CALL_ARG_1));
+        }
         break;
     }
 

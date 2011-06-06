@@ -67,7 +67,7 @@
 ;  (start-process "/APPS/MONAGUI/GTIMER.EX5")
   (m "shell")
   (for-each call-process *tests-on-gui*)
-  (start-process "/APPS/MONAGUI/TERMINAL.EX5 -t")
+;  (start-process "/APPS/MONAGUI/TERMINAL.EX5 -t")
   (test-end)
 ;  (terminal)
  (start-process "/APPS/MONAGUI/FACEBOOK.EX5")

@@ -106,8 +106,8 @@ static void ActivateWindow(guiserver_window* w)
 {
     if (activeWindow != NULL) {
         if (Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle) != M_OK) {
-            printf("Error %s:%d\n", __FILE__, __LINE__);
-            exit(-1);
+            monapi_warn("can't activate  window(%x), ignored.");
+            return;
         }
     }
     if (w != NULL) {
@@ -345,14 +345,12 @@ static void ProcessMouseInfo(MessageInfo* msg)
     {
         if (prevWindow != NULL) {
             if (Message::send(prevWindow->ThreadID, MSG_GUISERVER_MOUSELEAVE, prevWindow->Handle) != M_OK) {
-                printf("Error %s:%d\n", __FILE__, __LINE__);
-                exit(-1);
+                monapi_warn("Error %s:%d\n", __FILE__, __LINE__);
             }
         }
         if (target != NULL) {
             if (Message::send(target->ThreadID, MSG_GUISERVER_MOUSEENTER, target->Handle) != M_OK) {
-                printf("Error %s:%d\n", __FILE__, __LINE__);
-                exit(-1);
+                monapi_warn("Error %s:%d\n", __FILE__, __LINE__);
             }
         }
         prevWindow = target;

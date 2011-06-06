@@ -75,7 +75,6 @@ int Message::sendReceive(MessageInfo* dst, uint32_t tid, uint32_t header, uint32
     src.from = tid;
     src.header = MSG_OK;
     src.arg1 = header;
-
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 
@@ -94,7 +93,6 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
     for (int i = 0; ; i++)
     {
         int result = Message::peek(&msg, i);
-
         if (result != M_OK)
         {
             i--;
@@ -108,7 +106,6 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
             break;
         }
     }
-
     if (dst != NULL) *dst = msg;
     return M_OK;
 }

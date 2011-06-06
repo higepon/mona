@@ -37,12 +37,25 @@ namespace monagui
 			this->buffer = NULL;
 			this->_len = 0;
 		} else {
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
 			if (length == -1) length = strlen(text);
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
+            logprintf("%s %s:%d length=%d this=%d\n", __func__, __FILE__, __LINE__, length, this);
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
+            logprintf("%s %s:%d %d this->buffer = %d \n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID(), this->buffer);
 			this->buffer = new char[length + 1];
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
 			//ASSERT(this->buffer)
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
 			memcpy(this->buffer, text, length);
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
 			this->buffer[length] = '\0';
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
+            logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
 			this->_len = length;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		}
 	}
 
@@ -60,15 +73,23 @@ namespace monagui
 
 	String& String::operator =(const char* text)
 	{
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (this->buffer != NULL) delete [] this->buffer;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		if (text == NULL) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			this->buffer = NULL;
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			this->_len = 0;
 		} else {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			this->_len = strlen(text);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			this->buffer = new char[this->_len + 1];
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			//ASSERT(this->buffer)
 			memcpy(this->buffer, text, this->_len);
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			this->buffer[this->_len] = '\0';
 		}
 		return *this;
