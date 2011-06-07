@@ -466,7 +466,6 @@ namespace monagui {
                     //Container::dispatchEvent(&this->mouseEvent);
 
                     monapi_call_mouse_set_cursor(1);
-
                     break;
                 }
                 case MSG_GUISERVER_ACTIVATED:
@@ -486,19 +485,14 @@ namespace monagui {
                     dispatchEvent(&this->timerEvent);
                     break;
                 default:
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     this->customEvent.header = info.header;
                     this->customEvent.arg1   = info.arg1;
                     this->customEvent.arg2   = info.arg2;
                     this->customEvent.arg3   = info.arg3;
                     this->customEvent.from   = info.from;
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     memcpy(this->customEvent.str, info.str, sizeof(this->customEvent.str));
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     this->customEvent.length = info.length;
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     dispatchEvent(&this->customEvent);
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                     break;
                 }
             }

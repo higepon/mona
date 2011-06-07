@@ -107,13 +107,11 @@ namespace monagui {
     {
         text_ = text;
         cursor_ = text_.length();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         repaint();
     }
 
     void TextField::paint(Graphics* g)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int w = getWidth(), h = getHeight();
         // 外枠
         if (getFocused() == true && getEnabled() == true) {
@@ -123,37 +121,28 @@ namespace monagui {
             g->setColor(getParent()->getBackground());
             g->drawRect(0, 0, w, h);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 内枠
         g->setColor(getBackground());
         g->fillRect(1, 1, w - 2, h - 2);
         g->setColor(getForeground());
         g->drawRect(1, 1, w - 2, h - 2);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 文字
         int fh = getFontMetrics()->getHeight(getText());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int fw = getFontMetrics()->getWidth(getText());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (getEnabled() == true) {
             g->setColor(getForeground());
         } else {
             g->setColor(Color::gray);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         g->drawString(getText(), this->offx, (h - fh) / 2);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // キャレット
         if (getFocused() == true && getEnabled() == true) {
             g->drawLine(offx + fw, offy, offx + fw, offy + 12);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // todo pullup
         int width = _imeManager->isOn() ? 100 : 0;
         int height = _imeManager->isOn() ? getHeight() - offy * 2 : 0;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         _imeManager->setBounds(getX() + offx + fw, getY() + offy, width, height);
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     }
 
     bool TextField::isImeOn() const

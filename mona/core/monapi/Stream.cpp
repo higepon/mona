@@ -96,9 +96,7 @@ uint32_t Stream::read(void* buffer, uint32_t size, bool waitsOnEmpty /* = false 
 {
     uint32_t sizeRead = readInternal(buffer, size);
     if (sizeRead == 0 && waitsOnEmpty) {
-        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         waitForRead();
-        _logprintf("after waitForRead %s %s:%d\n", __func__, __FILE__, __LINE__);
         return readInternal(buffer, size);
     } else {
         return sizeRead;
@@ -107,51 +105,37 @@ uint32_t Stream::read(void* buffer, uint32_t size, bool waitsOnEmpty /* = false 
 
 uint32_t Stream::readInternal(void* buffer, uint32_t size)
 {
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     access_->lock();
     uint32_t memorySize = header_->size;
     uint32_t readSize;
     if (0 == memorySize || size <= 0) {
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         readSize = 0;
     } else if (size < memorySize) {
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         memcpy(buffer, memoryAddress_, size);
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         CHECK_CORRUPT_AND_DIE();
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         memmove(memoryAddress_, (uint8_t*)((uint32_t)memoryAddress_ + size), memorySize - size);
         CHECK_CORRUPT_AND_DIE();
         header_->size = memorySize - size;
         readSize = size;
     } else {
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         memcpy(buffer, memoryAddress_, memorySize);
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         CHECK_CORRUPT_AND_DIE();
         header_->size = 0;
         readSize = memorySize;
     }
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     if (readSize ==  0) {
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         access_->unlock();
         CHECK_CORRUPT_AND_DIE();
         return readSize;
     }
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     uint32_t waitingThread = header_->waitForWriteThread;
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     header_->waitForWriteThread = THREAD_UNKNOWN;
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     access_->unlock();
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     if (waitingThread != THREAD_UNKNOWN) {
         if (Message::send(waitingThread, MSG_WRITE_READY) != M_OK) {
             monapi_warn("waiting process is gone\n");
         }
     }
-    _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     CHECK_CORRUPT_AND_DIE();
     return readSize;
 }
@@ -198,7 +182,7 @@ void Stream::waitForRead()
     waitMessage(MSG_READ_READY);
 }
 
-uint32_t Stream::size() const
+uint32_t Stream::availableDataSize() const
 {
     access_->lock();
     uint32_t size = header_->size;

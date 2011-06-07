@@ -34,7 +34,7 @@
 class TestTerminal : public Terminal
 {
 public:
-    TestTerminal(MonAPI::Stream* outStream, std::string& sharedString) : Terminal(outStream, sharedString)
+    TestTerminal(MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString)
     {
         // Starts test with timer
         setTimer(50);
@@ -126,17 +126,11 @@ private:
 
     void test()
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testLSCommandReturnsLFSeperatedListOfFiles();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testLSCausesScrollToTheLastLine();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testPSShowsHeaderAndProcess();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testEnterKeyDownRunsLSCommand();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         testCommandEnteredAppearsOnHistory();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         TEST_RESULTS();
         stop();
     }

@@ -81,39 +81,24 @@ namespace monagui {
 
     void Component::repaint()
     {
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         setFontStyle(this->fontStyle);
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         paint(this->_g);
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         update();
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     }
 
     void Component::update()
     {
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         update(getX(), getY(), getWidth(), getHeight());
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     }
 
     void Component::update(int x, int y, int w, int h)
     {
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         Frame* c = (Frame *)getMainWindow();
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         ASSERT(c);
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
-        logprintf("%s %s:%d %d c->getGraphics()=%x\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID(), c->getGraphics());
-        logprintf("%s %s:%d %d this->_buffer()=%x\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID(), this->_buffer);
         c->getGraphics()->drawImage(this->_buffer, getX(), getY());
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
-        logprintf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
     }
 
     Component* Component::getMainWindow()

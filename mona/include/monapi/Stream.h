@@ -25,7 +25,7 @@ public:
     uint32_t read(void* buffer, uint32_t size, bool waitsOnEmpty = false);
     void waitForWrite();
     void waitForRead();
-    uint32_t size() const;
+    uint32_t availableDataSize() const;
     uint32_t capacity() const;
     uint8_t* header() const;
     uint32_t handle() const { return memoryHandle_; }

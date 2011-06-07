@@ -96,85 +96,56 @@ namespace monagui {
             processEvent(event);
         // マウスクリック
         } else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             MouseEvent* me = (MouseEvent *)event;
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // マウスイベントが起こった部品を探す
             Component* component = getComponentAt(me->getX(), me->getY());
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // 部品でイベントが起こった
             if (component != NULL) {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 // イベントが起こった部品以外をフォーカスアウト状態にする
                 int I = this->componentList.size();
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 for (int i = 0; i < I; i++) {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                     Component* c = (Component *)this->componentList.get(i);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                     if (c != component) {
                         c->setFocused(false);
                     }
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 }
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 component->setFocused(true);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 event->setSource(component);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 Rectangle* bounds = component->getBounds();
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 me->setX(me->getX() - bounds->x);
                 me->setY(me->getY() - bounds->y);
                 //syscall_print("MOUSE_PRESSED,");
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 component->processEvent(event);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // 部品以外でイベントが起こった
             } else {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 // 部品をフォーカスアウト状態にする
                 int I = this->componentList.size();
                 for (int i = 0; i < I; i++) {
                     Component* c = (Component *)this->componentList.get(i);
                     c->setFocused(false);
                 }
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 event->setSource(this);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 processEvent(event);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             }
         // マウスクリック以外のマウスイベント
         } else if (event->getType() == MouseEvent::MOUSE_RELEASED ||
                     event->getType() == MouseEvent::MOUSE_DRAGGED ||
                     event->getType() == MouseEvent::MOUSE_MOVED)
         {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             MouseEvent* me = (MouseEvent *)event;
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // マウスイベントが起こった部品を探す
             Component* component = getComponentAt(me->getX(), me->getY());
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // 部品でイベントが起こった
             if (component != NULL) {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 event->setSource(component);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 Rectangle* bounds = component->getBounds();
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 me->setX(me->getX() - bounds->x);
                 me->setY(me->getY() - bounds->y);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 component->processEvent(event);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             // 部品以外でイベントが起こった
             } else {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 event->setSource(this);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
                 processEvent(event);
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             }
         } else {
             processEvent(event);
@@ -183,24 +154,16 @@ namespace monagui {
 
     void Container::repaint()
     {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         if (getBuffer() == NULL) return;
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         ASSERT(getGraphics()); // don't use getGraphics(), before add()
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         paint(getGraphics());
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         // 自分の領域を更新する
         update();
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         // 子部品を再描画する
         int I = this->componentList.size();
         for(int i = 0; i < I; i++) {
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             Component* component = (Component *)(componentList.get(i));
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
             component->repaint();
-        _logprintf("%s %s:%d thread(%d)\n", __func__, __FILE__, __LINE__, MonAPI::System::getThreadID());
         }
     }
 }

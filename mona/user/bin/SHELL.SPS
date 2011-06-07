@@ -31,6 +31,7 @@
 
 (let loop ()
   (receive (from header handle arg2 arg3 str) (monapi-message-receive)
+	(format #t "header=~a ~a" header MSG_TEXT)
    (let1 stream (monapi-make-stream handle)
    (cond
     [(= header MSG_TEXT)
