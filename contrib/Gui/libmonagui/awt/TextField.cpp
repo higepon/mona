@@ -236,9 +236,10 @@ namespace monagui {
             //     }
             //     break;
         default:
-            ASSERT(keycode < 128);
-            insertCharacter(keycode);
-            repaint();
+            if (keycode < 128) {
+                insertCharacter(keycode);
+                repaint();
+            }
             break;
         }
     }

@@ -18,8 +18,8 @@
 
 using namespace MonAPI;
 
-int regist(List<uint32_t>* destList, MessageInfo* info);
-int unregist(List<uint32_t>* destList, MessageInfo* info);
+int Register(List<uint32_t>* destList, MessageInfo* info);
+int unregister(List<uint32_t>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8_t scancode);
 
 
@@ -117,6 +117,7 @@ int main(int argc, char* argv[])
 
             case MSG_KEY_PRESS:
             {
+                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 MessageInfo message;
                 Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_DOWN, info.arg1, NULL);
                 for (int i = destList->size() - 1; i >= 0; i--)
@@ -128,17 +129,19 @@ int main(int argc, char* argv[])
                         destList->removeAt(i, &temp);
                     }
                 }
+                Message::reply(&info);
+                break;
             }
 
             case MSG_ADD:
 
-                regist(destList, &info);
+                Register(destList, &info);
                 Message::reply(&info);
                 break;
 
             case MSG_REMOVE:
 
-                unregist(destList, &info);
+                unregister(destList, &info);
                 Message::reply(&info);
                 break;
 
@@ -178,14 +181,14 @@ int sendKeyInformation(KeyBoardManager* manager, List<uint32_t>* destList, uint8
     return 0;
 }
 
-int regist(List<uint32_t>* destList, MessageInfo* info)
+int Register(List<uint32_t>* destList, MessageInfo* info)
 {
     uint32_t id = info->arg1;
     destList->add(id);
     return 0;
 }
 
-int unregist(List<uint32_t>* destList, MessageInfo* info)
+int unregister(List<uint32_t>* destList, MessageInfo* info)
 {
     uint32_t id = info->arg1;
     destList->remove(id);

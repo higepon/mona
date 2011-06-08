@@ -420,6 +420,7 @@ namespace monagui {
                         key = charcode;
                     }
 
+                        logprintf("%s %s:%d key=%d\n", __func__, __FILE__, __LINE__, key);
                     /* キーコードが０ならイベントを投げない */
                     if (key > 0) {
                         this->keyEvent.setKeycode(key);

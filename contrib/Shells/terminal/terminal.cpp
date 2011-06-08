@@ -56,81 +56,62 @@ static void __fastcall stdoutStreamReader(void* mainThread)
 
 class Robot
 {
-public:
-    void mouseMove(int x, int y)
+private:
+    uint32_t mouseServer_;
+    uint32_t keyboardServer_;
+
+    void doKeyboardAction(uint32_t actionHeader, uint32_t arg1)
     {
-        uint32_t tid;
-        if (monapi_name_whereis("/servers/mouse", tid) != M_OK) {
-            monapi_warn("mouse server not found");
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, keyboardServer_, actionHeader, arg1) != M_OK) {
+            monapi_warn("keyboard server is dead?");
             return;
         }
+    }
 
+    void doMouseAction(uint32_t actionHeader, uint32_t arg1 = 0, uint32_t arg2 = 0)
+    {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, tid, MSG_MOUSE_SET_CURSOR_POSITION, x, y) != M_OK) {
+        if (Message::sendReceive(&msg, mouseServer_, actionHeader, arg1, arg2) != M_OK) {
             monapi_warn("mouse server is dead?");
             return;
         }
+    }
+
+public:
+    Robot()
+    {
+        if (monapi_name_whereis("/servers/mouse", mouseServer_) != M_OK) {
+            monapi_fatal("mouse server not found");
+        }
+        if (monapi_name_whereis("/servers/keyboard", keyboardServer_) != M_OK) {
+            monapi_fatal("keyboard server not found");
+        }
+    }
+
+    void mouseMove(int x, int y)
+    {
+        doMouseAction(MSG_MOUSE_SET_CURSOR_POSITION, x, y);
     }
 
     void keyPress(int keycode)
     {
-        uint32_t tid;
-        if (monapi_name_whereis("/servers/keyboard", tid) != M_OK) {
-            monapi_warn("keyboard server not found");
-            return;
-        }
-
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, tid, MSG_KEY_PRESS, keycode) != M_OK) {
-            monapi_warn("keyboard server is dead?");
-            return;
-        }
+        doKeyboardAction(MSG_KEY_PRESS, keycode);
     }
 
     void keyRelease(int keycode)
     {
-        uint32_t tid;
-        if (monapi_name_whereis("/servers/keyboard", tid) != M_OK) {
-            monapi_warn("keyboard server not found");
-            return;
-        }
-
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, tid, MSG_KEY_RELEASE, keycode) != M_OK) {
-            monapi_warn("keyboard server is dead?");
-            return;
-        }
+        doKeyboardAction(MSG_KEY_RELEASE, keycode);
     }
 
-    // todo refacor
     void mousePress()
     {
-        uint32_t tid;
-        if (monapi_name_whereis("/servers/mouse", tid) != M_OK) {
-            monapi_warn("mouse server not found");
-            return;
-        }
-
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, tid, MSG_MOUSE_PRESS) != M_OK) {
-            monapi_warn("mouse server is dead?");
-            return;
-        }
+        doMouseAction(MSG_MOUSE_PRESS);
     }
 
     void mouseRelease()
     {
-        uint32_t tid;
-        if (monapi_name_whereis("/servers/mouse", tid) != M_OK) {
-            monapi_warn("mouse server not found");
-            return;
-        }
-
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, tid, MSG_MOUSE_RELEASE) != M_OK) {
-            monapi_warn("mouse server is dead?");
-            return;
-        }
+        doMouseAction(MSG_MOUSE_RELEASE);
     }
 };
 
@@ -148,7 +129,7 @@ static void __fastcall robotThread(void* arg)
         robot.mousePress();
         sleep(300);
         robot.mouseRelease();
-        robot.keyPress('a');
+        robot.keyPress('A');
     }
 }
 
