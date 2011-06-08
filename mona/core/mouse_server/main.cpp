@@ -243,7 +243,6 @@ private:
     char dx, dy;
     uint8_t button, prevButton;
     int w, h;
-//    Screen* vscreen;
     List<uint32_t>* destList;
     Cursor cursor;
 
@@ -254,10 +253,8 @@ public:
 
     virtual ~MouseServer()
     {
-//        delete this->vscreen;
     }
 
-public:
     bool Initialize()
     {
         MessageInfo msg;
@@ -338,13 +335,19 @@ public:
                 break;
 
             case MSG_MOUSE_SET_CURSOR_POSITION:
+                // used for GUI test.
                 this->posX = receive.arg1;
                 this->posY = receive.arg2;
                 Paint();
                 Message::reply(&receive);
                 SendMouseInformation();
                 break;
-
+            case MSG_MOUSE_PRESS:
+                mouseActionAndReply(&receive, true);
+                break;
+            case MSG_MOUSE_RELEASE:
+                mouseActionAndReply(&receive, false);
+                break;
             case MSG_INTERRUPTED:
                 /* we get not all data */
                 if (GetMouseData() != 2) break;
@@ -354,9 +357,7 @@ public:
 
                 Paint();
                 SendMouseInformation();
-
                 break;
-
             default:
                 /* ignore */
 //                _printf("mouse:header=%x", receive.header);
@@ -366,6 +367,14 @@ public:
     }
 
 protected:
+    void mouseActionAndReply(MessageInfo* msg, bool presses)
+    {
+        this->button = presses ? 1 : 0;
+        Paint();
+        Message::reply(msg);
+        SendMouseInformation();
+    }
+
     void Paint()
     {
         if (this->disableCount == 0)

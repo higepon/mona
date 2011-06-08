@@ -85,6 +85,13 @@ public:
 
     virtual ~Terminal() {}
 
+    Rectangle getButtonAbsoluteBounds()
+    {
+        Rectangle ret = *(button_->getBounds());
+        ret.x += getBounds()->x;
+        ret.y += getBounds()->y;
+        return ret;
+    }
 
     void processEvent(Event* event)
     {

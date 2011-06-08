@@ -113,8 +113,22 @@ int main(int argc, char* argv[])
             case MSG_INTERRUPTED:
 
                 sendKeyInformation(manager, destList, inp8(0x60));
-
                 break;
+
+            case MSG_KEY_PRESS:
+            {
+                MessageInfo message;
+                Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_DOWN, info.arg1, NULL);
+                for (int i = destList->size() - 1; i >= 0; i--)
+                {
+                    if (Message::send(destList->get(i), &message) != M_OK)
+                    {
+                        monapi_warn("send error to pid = %x", destList->get(i));
+                        uint32_t temp;
+                        destList->removeAt(i, &temp);
+                    }
+                }
+            }
 
             case MSG_ADD:
 

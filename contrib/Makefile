@@ -118,6 +118,7 @@ depend:
 	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) depend
 	cd Multimedia/audio_server/happy && $(MAKE) depend
 	cd Shells/mshell/ && $(MAKE) depend
+	cd Shells/terminal/ && $(MAKE) depend
 	cd Misc/gnote/ && $(MAKE) depend
 	cd Misc/mg-20090107/ && $(MAKE) depend
 	cd Misc/facebook/ && $(MAKE) depend
