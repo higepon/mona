@@ -70,6 +70,19 @@ bool WaitInterruptWithTimeout(uint32_t ms, uint8_t irq, const char* file, int li
     return false;
 }
 
+static void sendToClients(List<uint32_t>& destList, MessageInfo* msg)
+{
+    for (int i = destList.size() - 1; i >= 0; i--)
+    {
+        if (Message::send(destList.get(i), msg) != M_OK)
+        {
+            monapi_warn("send error to pid = %x", destList.get(i));
+            uint32_t temp;
+            destList.removeAt(i, &temp);
+        }
+    }
+}
+
 int main(int argc, char* argv[])
 {
     /* user mode I/O */
@@ -88,7 +101,7 @@ int main(int argc, char* argv[])
     manager->init();
 
     /* initilize destination list */
-    List<uint32_t>* destList = new HList<uint32_t>();
+    HList<uint32_t> destList;
     MessageInfo info;
 
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
@@ -112,36 +125,34 @@ int main(int argc, char* argv[])
             {
             case MSG_INTERRUPTED:
 
-                sendKeyInformation(manager, destList, inp8(0x60));
+                sendKeyInformation(manager, &destList, inp8(0x60));
                 break;
 
             case MSG_KEY_PRESS:
             {
-                _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 MessageInfo message;
                 Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_DOWN, info.arg1, NULL);
-                for (int i = destList->size() - 1; i >= 0; i--)
-                {
-                    if (Message::send(destList->get(i), &message) != M_OK)
-                    {
-                        monapi_warn("send error to pid = %x", destList->get(i));
-                        uint32_t temp;
-                        destList->removeAt(i, &temp);
-                    }
-                }
+                sendToClients(destList, &message);
                 Message::reply(&info);
                 break;
             }
-
+            case MSG_KEY_RELEASE:
+            {
+                MessageInfo message;
+                Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_UP, info.arg1, NULL);
+                sendToClients(destList, &message);
+                Message::reply(&info);
+                break;
+            }
             case MSG_ADD:
 
-                Register(destList, &info);
+                Register(&destList, &info);
                 Message::reply(&info);
                 break;
 
             case MSG_REMOVE:
 
-                unregister(destList, &info);
+                unregister(&destList, &info);
                 Message::reply(&info);
                 break;
 
