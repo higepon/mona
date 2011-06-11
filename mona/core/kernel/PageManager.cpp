@@ -341,14 +341,9 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
     Thread* thread = threadInfo->thread;
 
     if ((error & 0x01) == ARCH_FAULT_NOT_EXIST) {
-        // SharedMemorySegment
-        List<SharedMemorySegment*>* list = process->getSharedList();
-        for (int i = 0; i < list->size(); i++) {
-            SharedMemorySegment* segment = list->get(i);
-            if (segment->inRange(address)) {
-                bool ret =  segment->faultHandler(this, process, address, FAULT_NOT_EXIST);
-                return ret;
-            }
+        SharedMemorySegment* segment = process->getSharedMemorySegmentInRange(address);
+        if (segment) {
+            return segment->faultHandler(this, process, address, FAULT_NOT_EXIST);
         }
 
         // Heap

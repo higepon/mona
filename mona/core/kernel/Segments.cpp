@@ -140,7 +140,7 @@ intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, 
         if (segment == NULL) {
             return M_NO_MEMORY;
         }
-        process->getSharedList()->add(segment);
+        process->addSharedMemorySegment(segment);
         addRef();
 
         //  If we know all memory region will be accessed,
@@ -163,7 +163,7 @@ intptr_t SharedMemoryObject::detach(PageManager* pageManager, Process* process)
     }
 
     pageManager->unmapRange(process->getPageDirectory(), segment->getStart(), segment->getStart() + segment->getSize(), false);
-    process->getSharedList()->remove(segment);
+    process->removeSharedMemorySegment(segment);
     delete segment;
     return M_OK;
 }

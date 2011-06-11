@@ -466,9 +466,24 @@ public:
         return pageDirectory_;
     }
 
-    inline virtual List<class SharedMemorySegment*>* getSharedList() const
+    void addSharedMemorySegment(SharedMemorySegment* segment)
     {
-        return shared_;
+        shared_.add(segment);
+    }
+
+    void removeSharedMemorySegment(SharedMemorySegment* segment)
+    {
+        shared_.remove(segment);
+    }
+
+    SharedMemorySegment* getSharedMemorySegmentInRange(LinearAddress address)
+    {
+        for (int i = 0; i < shared_.size(); i++) {
+            if (shared_[i]->inRange(address)) {
+                return shared_[i];
+            }
+        }
+        return NULL;
     }
 
     inline virtual class Segment* getHeapSegment()
@@ -548,8 +563,7 @@ public:
     HList<Thread*> threadList_;
     HList<char*> arguments_;
     class Segment heap_;
-//    class SharedMemorySegment* dllsegment_;
-    List<SharedMemorySegment*>* shared_;
+    HList<SharedMemorySegment*> shared_;
     List<MessageInfo*>* messageList_;
     HList2< Pair<intptr_t, KObject*> > kobjects_;
     bool isUserMode_;

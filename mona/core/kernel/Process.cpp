@@ -346,7 +346,6 @@ Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
-    shared_(new HList<SharedMemorySegment*>()),
     messageList_(new HList<MessageInfo*>()),
     kobjects_(HList2< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
@@ -360,17 +359,13 @@ Process::Process(const char* name, PageEntry* directory) :
 Process::~Process()
 {
     /* shared MemorySegment */
-    for (int i = 0; i < shared_->size(); i++) {
-        SharedMemoryObject* shm = shared_->get(i)->getSharedMemoryObject();
+    for (int i = 0; i < shared_.size(); i++) {
+        SharedMemoryObject* shm = shared_[i]->getSharedMemoryObject();
         shm->detach(g_page_manager, this);
         SharedMemoryObject::destroy(shm);
     }
-
-    delete(shared_);
-
     /* arguments */
-    for (int i = 0; i < arguments_.size(); i++)
-    {
+    for (int i = 0; i < arguments_.size(); i++) {
         delete[](arguments_[i]);
     }
 
@@ -389,8 +384,8 @@ Process::~Process()
 
 SharedMemorySegment* Process::findSharedSegment(uint32_t id) const
 {
-    for (int i = 0; i < shared_->size(); i++) {
-        SharedMemorySegment* segment = shared_->get(i);
+    for (int i = 0; i < shared_.size(); i++) {
+        SharedMemorySegment* segment = shared_[i];
         if (id == segment->getId()) {
             return segment;
         }
@@ -412,8 +407,8 @@ uint32_t Process::getStackBottom(Thread* thread)
 
 bool Process::hasSharedOverlap(uintptr_t start, uintptr_t end)
 {
-    for (int i = 0; i < shared_->size(); i++) {
-        SharedMemorySegment* sh = shared_->get(i);
+    for (int i = 0; i < shared_.size(); i++) {
+        SharedMemorySegment* sh = shared_[i];
         uintptr_t shStart = sh->getStart();
         uintptr_t shEnd = shStart + sh->getSize();
         if (start <= shStart && shStart <= end) {

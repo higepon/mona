@@ -21,7 +21,7 @@ template <class T> class HList : public List<T> {
   public:
     void add(T element);
     T get(int index) const;
-    T operator[](int index);
+    T operator[](int index) const;
     bool removeAt(int index, T* found = NULL);
     bool remove(T element);
     int size() const;
@@ -195,7 +195,7 @@ template <class T> T HList<T>::get(int index) const {
     \author Higepon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::operator[](int index) {
+template <class T> T HList<T>::operator[](int index) const {
 
     return (this->get(index));
 }
