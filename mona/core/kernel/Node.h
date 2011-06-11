@@ -18,8 +18,10 @@ public:
 
     Node(const Node& src) : prev(src.prev), next(src.next)
     {
-
     }
+
+    Node() : prev(NULL), next(NULL) {}
+
 
     virtual ~Node() {}
 

@@ -16,7 +16,7 @@ template <class T> class HList : public List<T> {
     HList(int size, int increase);
     virtual ~HList();
 
-    HList& operator=(const HList& src);
+    HList<T>& operator=(const HList<T>& src);
 
   public:
     void add(T element);
@@ -85,7 +85,7 @@ template <class T> HList<T>::HList(int size, int increase) {
     return;
 }
 
-HList::HList(const HList& src) :
+template <class T> HList<T>::HList(const HList<T>& src) :
     data_(src.data_),
     size_(src.size_),
     numElements_(src.numElements_),
@@ -93,7 +93,8 @@ HList::HList(const HList& src) :
 {
 }
 
-HList& HList::operator=(const HList& src)
+
+template <class T> HList<T>& HList<T>::operator=(const HList<T>& src)
 {
     data_ = src.data_;
     size_ = src.size_;

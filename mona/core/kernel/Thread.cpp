@@ -64,7 +64,7 @@ Thread::Thread() :
 }
 
 Thread::Thread(const Thread& src) :
-    Node(src.prev, src.next),
+    Node(src),
     priority(src.priority),
     basePriority(src.basePriority),
     index(src.index),
