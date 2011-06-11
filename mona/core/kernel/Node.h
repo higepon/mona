@@ -16,6 +16,8 @@ class Node
 {
 public:
 
+    virtual ~Node() {}
+
     void Initialize()
     {
         this->prev = this;

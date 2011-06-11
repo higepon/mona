@@ -95,6 +95,7 @@ public:
 
     void processEvent(Event* event)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         bool runsCommand =
             (event->getType() == MouseEvent::MOUSE_RELEASED && event->getSource() == button_.get()) ||
             (event->getType() == KeyEvent::KEY_PRESSED &&

@@ -18,87 +18,117 @@
 
 using namespace MonAPI;
 
-int Register(List<uint32_t>* destList, MessageInfo* info);
-int unregister(List<uint32_t>* destList, MessageInfo* info);
-int sendKeyInformation(KeyBoardManager& manager, HList<uint32_t>& destList, uint8_t scancode);
-
-static void sendToClients(HList<uint32_t>& destList, MessageInfo* msg)
+class KeyboardServer
 {
-    for (int i = destList.size() - 1; i >= 0; i--)
+private:
+    HList<uint32_t> clients_;
+public:
+    void messageLoop(KeyBoardManager& manager)
     {
-        if (Message::send(destList.get(i), msg) != M_OK)
+        MessageInfo info;
+
+        /* Message loop */
+        for (;;)
         {
-            monapi_warn("send error to pid = %x", destList.get(i));
-            uint32_t temp;
-            destList.removeAt(i, &temp);
-        }
-    }
-}
-
-static void messageLoop(KeyBoardManager& manager)
-{
-    /* initilize destination list */
-    HList<uint32_t> destList;
-    MessageInfo info;
-
-    /* Message loop */
-    for (;;)
-    {
-        /* receive */
-        if (!Message::receive(&info))
-        {
-            switch(info.header)
+            /* receive */
+            if (!Message::receive(&info))
             {
-            case MSG_INTERRUPTED:
+                switch(info.header)
+                {
+                case MSG_INTERRUPTED:
 
-                sendKeyInformation(manager, destList, inp8(0x60));
-                break;
+                    sendKeyInformation(manager, inp8(0x60));
+                    break;
 
-            case MSG_KEY_PRESS:
-            {
-                MessageInfo message;
-                Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_DOWN, info.arg1, NULL);
-                sendToClients(destList, &message);
-                Message::reply(&info);
-                break;
-            }
-            case MSG_KEY_RELEASE:
-            {
-                MessageInfo message;
-                Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, KEY_MODIFIER_UP, info.arg1, NULL);
-                sendToClients(destList, &message);
-                Message::reply(&info);
-                break;
-            }
-            case MSG_ADD:
+                case MSG_KEY_PRESS:
+                {
+                    MessageInfo message;
+                    int charcode = info.arg1;
+                    int modifiers = KEY_MODIFIER_DOWN;
+                    if (charcode >= 'A' && charcode <= 'Z') {
+                        modifiers |= KEY_MODIFIER_SHIFT;
+                    }
+                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, 0, modifiers, charcode, NULL);
+                    sendToClients(&message);
+                    Message::reply(&info);
+                    break;
+                }
+                case MSG_KEY_RELEASE:
+                {
+                    MessageInfo message;
+                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, info.arg1, info.arg2 | KEY_MODIFIER_UP, info.arg1, NULL);
+                    sendToClients(&message);
+                    Message::reply(&info);
+                    break;
+                }
+                case MSG_ADD:
 
-                Register(&destList, &info);
-                Message::reply(&info);
-                break;
+                    registerClient(info.arg1);
+                    Message::reply(&info);
+                    break;
 
-            case MSG_REMOVE:
+                case MSG_REMOVE:
 
-                unregister(&destList, &info);
-                Message::reply(&info);
-                break;
+                    unRegisterClient(info.arg1);
+                    Message::reply(&info);
+                    break;
 
-            default:
-                /* igonore this message */
+                default:
+                    /* igonore this message */
 
-                break;
+                    break;
+                }
             }
         }
     }
-}
+
+private:
+    void sendToClients(MessageInfo* msg)
+    {
+        for (int i = clients_.size() - 1; i >= 0; i--)
+        {
+            if (Message::send(clients_[i], msg) != M_OK)
+            {
+                monapi_warn("send error to pid = %x", clients_[i]);
+                uint32_t temp;
+                clients_.removeAt(i, &temp);
+            }
+        }
+    }
+
+    void sendKeyInformation(KeyBoardManager& manager, uint8_t scancode)
+    {
+        MessageInfo message;
+        KeyInfo keyinfo;
+
+        /* scan code to virtual key information */
+        if(manager.setKeyScanCode(scancode) == 0) {
+            return;
+        }
+        manager.getKeyInfo(&keyinfo);
+
+        memset(&message, 0, sizeof(MessageInfo));
+        Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, keyinfo.charcode, NULL);
+
+        sendToClients(&message);
+    }
+
+    void registerClient(uint32_t id)
+    {
+        clients_.add(id);
+    }
+
+    void unRegisterClient(uint32_t id)
+    {
+        clients_.remove(id);
+    }
+};
 
 int main(int argc, char* argv[])
 {
-    /* user mode I/O */
     syscall_get_io();
 
-    const char* MAP_FILE_PATH = "/SERVERS/KEYBDMNG.map";
-    uint32_t pid = syscall_get_pid();
-    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    intptr_t ret = monapi_enable_stacktrace("/SERVERS/KEYBDMNG.map");
     if (ret != M_OK) {
         monapi_warn("syscall_stack_trace_enable error %d\n", ret);
         exit(-1);
@@ -108,8 +138,7 @@ int main(int argc, char* argv[])
     KeyBoardManager manager;
     manager.init();
 
-    if (monapi_notify_server_start("MONITOR.BIN") != M_OK)
-    {
+    if (monapi_notify_server_start("MONITOR.BIN") != M_OK) {
         exit(-1);
     }
 
@@ -118,37 +147,8 @@ int main(int argc, char* argv[])
     if (monapi_name_add("/servers/keyboard") != M_OK) {
         monapi_fatal("monapi_name_add failed");
     }
-    messageLoop(manager);
+    KeyboardServer server;
+    server.messageLoop(manager);
     return 0;
 }
 
-int sendKeyInformation(KeyBoardManager& manager, HList<uint32_t>& destList, uint8_t scancode)
-{
-    MessageInfo message;
-    KeyInfo keyinfo;
-
-    /* scan code to virtual key information */
-    if(manager.setKeyScanCode(scancode) == 0) return 0;
-    manager.getKeyInfo(&keyinfo);
-
-    /* create message */
-    memset(&message, 0, sizeof(MessageInfo));
-    Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, keyinfo.charcode, NULL);
-
-    sendToClients(destList, &message);
-    return 0;
-}
-
-int Register(List<uint32_t>* destList, MessageInfo* info)
-{
-    uint32_t id = info->arg1;
-    destList->add(id);
-    return 0;
-}
-
-int unregister(List<uint32_t>* destList, MessageInfo* info)
-{
-    uint32_t id = info->arg1;
-    destList->remove(id);
-    return 0;
-}

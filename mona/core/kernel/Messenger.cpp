@@ -23,7 +23,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     }
     ASSERT(message != NULL);
 
-    if (thread->messageList->size() == MAX_MESSAGES) {
+    if (thread->messageList.size() == MAX_MESSAGES) {
         #if 0
         for (int i = 0; i < thread->messageList->size(); i++) {
             logprintf("h=%x %s1=%x\n", thread->messageList->get(i)->header, thread->tinfo->process->getName(), thread->messageList->get(i)->arg1);
@@ -42,7 +42,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     info->from = g_currentThread->thread->id;
 
     thread->flags |= MEvent::MESSAGE;
-    thread->messageList->add(info);
+    thread->messageList.add(info);
     scheduler_->EventComes(thread, MEvent::MESSAGE);
     return M_OK;
 }
@@ -50,7 +50,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 intptr_t Messenger::receive(Thread* thread, MessageInfo* message)
 {
     MessageInfo* from = NULL;
-    if (!thread->messageList->removeAt(0, &from)) {
+    if (!thread->messageList.removeAt(0, &from)) {
         return M_MESSAGE_NOT_FOUND;
     }
 
@@ -62,18 +62,18 @@ intptr_t Messenger::receive(Thread* thread, MessageInfo* message)
 
 intptr_t Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
 {
-    List<MessageInfo*>* list = thread->messageList;
+    HList<MessageInfo*>& list = thread->messageList;
 
-    if (index >= list->size()) {
+    if (index >= list.size()) {
         return M_BAD_INDEX;
     }
 
     ASSERT(index >= 0);
     MessageInfo* from = NULL;
     if (flags & PEEK_REMOVE) {
-        list->removeAt(index, &from);
+        list.removeAt(index, &from);
     } else {
-        from = list->get(index);
+        from = list.get(index);
     }
 
     thread->flags &= ~MEvent::MESSAGE;

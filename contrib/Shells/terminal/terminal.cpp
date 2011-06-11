@@ -30,6 +30,7 @@
 #include <monapi/MUnit.h>
 #include "Terminal.h"
 #include "TestTerminal.h"
+#include <monapi/Robot.h>
 
 using namespace MonAPI;
 
@@ -44,7 +45,9 @@ static void __fastcall stdoutStreamReader(void* mainThread)
     // read from outStream, accumulates as string.
     // Then notifies data has come.
     for (;;) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint32_t sizeRead = outStream->read(buf.get(), outStream->capacity(), true);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         sharedString.clear();
         sharedString += std::string(buf.get(), sizeRead);
         MessageInfo info;
@@ -54,90 +57,40 @@ static void __fastcall stdoutStreamReader(void* mainThread)
     }
 }
 
-class Robot
+
+static uintptr_t waitSubThread(uintptr_t id)
 {
-private:
-    uint32_t mouseServer_;
-    uint32_t keyboardServer_;
-
-    void doKeyboardAction(uint32_t actionHeader, uint32_t arg1)
-    {
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, keyboardServer_, actionHeader, arg1) != M_OK) {
-            monapi_warn("keyboard server is dead?");
-            return;
-        }
-    }
-
-    void doMouseAction(uint32_t actionHeader, uint32_t arg1 = 0, uint32_t arg2 = 0)
-    {
-        MessageInfo msg;
-        if (Message::sendReceive(&msg, mouseServer_, actionHeader, arg1, arg2) != M_OK) {
-            monapi_warn("mouse server is dead?");
-            return;
-        }
-    }
-
-public:
-    Robot()
-    {
-        if (monapi_name_whereis("/servers/mouse", mouseServer_) != M_OK) {
-            monapi_fatal("mouse server not found");
-        }
-        if (monapi_name_whereis("/servers/keyboard", keyboardServer_) != M_OK) {
-            monapi_fatal("keyboard server not found");
-        }
-    }
-
-    void mouseMove(int x, int y)
-    {
-        doMouseAction(MSG_MOUSE_SET_CURSOR_POSITION, x, y);
-    }
-
-    void keyPress(int keycode)
-    {
-        doKeyboardAction(MSG_KEY_PRESS, keycode);
-    }
-
-    void keyRelease(int keycode)
-    {
-        doKeyboardAction(MSG_KEY_RELEASE, keycode);
-    }
-
-    void mousePress()
-    {
-        doMouseAction(MSG_MOUSE_PRESS);
-    }
-
-    void mouseRelease()
-    {
-        doMouseAction(MSG_MOUSE_RELEASE);
-    }
-};
-
-static void waitMainThreadStartup()
-{
-
+    MessageInfo dst, src;
+    src.header = MSG_STARTED;
+    src.from = id;
+    int ret = Message::receive(&dst, &src, Message::equalsFromHeader);
+    ASSERT_EQ(M_OK, ret);
+    uintptr_t tid = dst.from;
+    return tid;
 }
 
-static void __fastcall robotThread(void* arg)
+static void stopSubThread(uintptr_t id)
 {
-    waitMainThreadStartup();
-    Robot robot;
-    robot.mouseMove(200, 240);
-    for (;;) {
-        robot.mousePress();
-        sleep(300);
-        robot.mouseRelease();
-        robot.keyPress('A');
-    }
+    ASSERT_EQ(M_OK, Message::send(id, MSG_STOP));
+}
+
+
+static void __fastcall testTerminalThread(void* arg)
+{
+    uintptr_t mainThread = (uintptr_t)arg;
+    outStream = new Stream;
+    TestTerminal terminal(mainThread, *outStream, sharedString);
+    terminal.run();
+}
+
+static void test()
+{
+    TEST_RESULTS();
 }
 
 int main(int argc, char* argv[])
 {
-    const char* MAP_FILE_PATH  = "/APPS/MONAGUI/TERMINAL.MAP";
-    uint32_t pid = syscall_get_pid();
-    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/TERMINAL.MAP");
     if (ret != M_OK) {
         fprintf(stderr, "terminal: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
     }
@@ -147,14 +100,21 @@ int main(int argc, char* argv[])
     }
 
     outStream = new Stream;
-    terminal = isTestMode ? new TestTerminal(*outStream, sharedString) : new Terminal(*outStream, sharedString);
     uintptr_t mainThread = System::getThreadID();
-    monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
-    monapi_thread_create_with_arg(robotThread, (void*)mainThread);
-    Rectangle r = terminal->getButtonAbsoluteBounds();
-    logprintf("r.x=%d r.y=%d", r.x, r.y);
-    terminal->run();
-    delete outStream;
-    delete terminal;
-    return 0;
+    if (isTestMode) {
+        uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
+        uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
+        waitSubThread(id);
+        test();
+        stopSubThread(id);
+    } else {
+        terminal = new Terminal(*outStream, sharedString);
+        monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
+//        Rectangle r = terminal->getButtonAbsoluteBounds();
+//        logprintf("r.x=%d r.y=%d", r.x, r.y);
+        terminal->run();
+        delete outStream;
+        delete terminal;
+        return 0;
+    }
 }

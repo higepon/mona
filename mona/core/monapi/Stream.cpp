@@ -145,7 +145,6 @@ void Stream::waitMessage(uint32_t messageHeaderToWait)
     MessageInfo msg;
     for (int i = 0; ; i++) {
         int result = MonAPI::Message::peek(&msg, i);
-
         if (result != M_OK) {
             i--;
             syscall_mthread_yield_message();

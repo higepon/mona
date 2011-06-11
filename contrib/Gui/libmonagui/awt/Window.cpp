@@ -366,6 +366,9 @@ namespace monagui {
             if (!MonAPI::Message::receive(&info)) {
             //if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) { // CPU 100%
                 switch(info.header){
+                case MSG_STOP:
+                    this->isRunning = false;
+                    break;
                 case MSG_KEY_VIRTUAL_CODE:
                 {
                     int key = 0;
@@ -420,7 +423,6 @@ namespace monagui {
                         key = charcode;
                     }
 
-                        logprintf("%s %s:%d key=%d\n", __func__, __FILE__, __LINE__, key);
                     /* キーコードが０ならイベントを投げない */
                     if (key > 0) {
                         this->keyEvent.setKeycode(key);

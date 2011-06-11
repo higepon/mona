@@ -79,7 +79,7 @@ public:
     uint32_t basePriority;
     int index; // for debug only
     ThreadInfo* tinfo;
-    List<MessageInfo*>* messageList;
+    HList<MessageInfo*> messageList;
     uint32_t id;
     uint32_t lastCpuUsedTick;
     uint32_t age;

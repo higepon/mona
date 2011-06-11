@@ -224,7 +224,7 @@ int first(int a, int b)
 }
 
 int main(){
-    if(!syscall_stack_trace_enable(syscall_get_pid(), "/MEM/TEST.MAP")){
+    if(!monapi_enable_stacktrace("/MEM/TEST.MAP")){
         printf("can't find map?\n");
         // return 1;
     }

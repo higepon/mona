@@ -28,13 +28,10 @@
 */
 #include "controller.hpp"
 
-#define MAP_FILE_PATH "/APPS/MONAGUI/GNOTE.MAP"
-
 int main(int argc, char* argv[]) {
-    uint32_t pid = syscall_get_pid();
-    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/GNOTE.MAP");
     if (ret != M_OK) {
-        _printf("syscall_stack_trace_enable failed%d\n", ret);
+        monapi_warn("syscall_stack_trace_enable failed%d\n", ret);
     }
     gnote::Controller c;
     if (argc > 1) {

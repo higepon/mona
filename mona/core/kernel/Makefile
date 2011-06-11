@@ -9,7 +9,7 @@ REL_KERNEL_ADDR  = 0x0200
 KERNEL_START_ADDR= 0x1200 # REL_KERNEL_ADDR + KERNEL_BASE_ADDR
 MONA_CFG_ADDR    = 0x90000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
-CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR) -momit-leaf-frame-pointer -fomit-frame-pointer -march=i686
+CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR) -momit-leaf-frame-pointer -fomit-frame-pointer -march=i686 -Wextra  -Weffc++
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
 INCLUDE      = -I. -I$(INCDIR)
 SOURCES      = cstart.cpp            \

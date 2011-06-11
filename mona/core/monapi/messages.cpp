@@ -657,3 +657,9 @@ intptr_t monapi_file_get_date(const char* file, MonAPI::Date& dest)
     dest = MonAPI::Date(*date);
     return M_OK;
 }
+
+intptr_t monapi_enable_stacktrace(const char* mapFilePath)
+{
+    uint32_t pid = syscall_get_pid();
+    return syscall_stack_trace_enable(pid, mapFilePath);
+}

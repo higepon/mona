@@ -229,7 +229,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_EXIST_MESSAGE:
     {
-        bool existMessage = !(g_currentThread->thread->messageList->isEmpty());
+        bool existMessage = !(g_currentThread->thread->messageList.isEmpty());
         setReturnValue(info, existMessage ? 1 : 0);
         break;
     }

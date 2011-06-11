@@ -30,9 +30,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 int main(int argc, char* argv[])
 {
-    const char* MAP_FILE_PATH = "/APPS/IME.MAP";
-    uint32_t pid = syscall_get_pid();
-    intptr_t ret = syscall_stack_trace_enable(pid, MAP_FILE_PATH);
+    intptr_t ret = monapi_enable_stacktrace("/APPS/IME.MAP");
     if (ret != M_OK) {
         fprintf(stderr, "syscall_stack_trace_enable error %d\n", ret);
         exit(-1);

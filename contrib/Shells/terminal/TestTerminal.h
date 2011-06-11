@@ -33,25 +33,29 @@
 
 class TestTerminal : public Terminal
 {
+private:
+    uint32_t observer_;
 public:
-    TestTerminal(MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString)
+    TestTerminal(uint32_t observer, MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString), observer_(observer)
     {
-        // Starts test with timer
-        setTimer(50);
+        // // Starts test with timer
+        // setTimer(50);
     }
 
     virtual ~TestTerminal() {}
 
-    void processEvent(Event* event)
+    void run()
     {
-        if (event->getType() == Event::TIMER) {
-            test();
-        } else {
-            Terminal::processEvent(event);
+        static bool first = true;
+        if (first) {
+            int ret = MonAPI::Message::send(observer_, MSG_STARTED);
+            if (ret != M_OK) {
+                monapi_fatal("message failed %d", ret);
+            }
+            first = false;
         }
+        Terminal::run();
     }
-
-private:
     void buttonClick()
     {
         MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);

@@ -34,7 +34,9 @@
 #include "Thread.h"
 
 
-Thread::Thread() : lastCpuUsedTick(0), age(0), observers(2), waitingMutex_(NULL), waitingCondition_(NULL)
+Thread::Thread() : 
+    priority(ThreadPriority::Normal),
+    lastCpuUsedTick(0), age(0), flags(0), observers(2), waitingMutex_(NULL), waitingCondition_(NULL)
 {
     clearEventWaiting();
     /* thread information */
@@ -45,19 +47,14 @@ Thread::Thread() : lastCpuUsedTick(0), age(0), observers(2), waitingMutex_(NULL)
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
     ASSERT(tinfo->archinfo);
-
-    messageList = new HList<MessageInfo*>();
-    ASSERT(messageList);
 }
 
 Thread::~Thread()
 {
-    for (int i = 0; i < messageList->size(); i++) {
-        delete messageList->get(i);
+    for (int i = 0; i < messageList.size(); i++) {
+        delete messageList[i];
     }
 
-    /* free memory */
-    delete messageList;
     delete tinfo->archinfo;
     delete tinfo;
 }
