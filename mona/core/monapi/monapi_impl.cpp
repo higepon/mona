@@ -107,7 +107,7 @@ bool isInDLL(FuncVoid** ctors)
 ----------------------------------------------------------------------*/
 extern "C" void monapi_initialize_memory(int memorySize)
 {
-    g_msp=create_mspace_with_base((void*)(0xC0000000), memorySize, 0);
+    g_msp=create_mspace_with_base((void*)(PROCESS_HEAP_START), memorySize, 0);
     MonAPI::MemoryMap::initialize();
 }
 

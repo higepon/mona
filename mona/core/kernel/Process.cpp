@@ -344,7 +344,7 @@ void ThreadOperation::sendKilledMessage(int status)
 uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
-    heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
+    heap_(Segment(PROCESS_HEAP_START, PROCESS_HEAP_SIZE)),
     kobjects_(HList< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
     pageDirectory_(directory),
