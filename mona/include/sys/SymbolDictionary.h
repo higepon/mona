@@ -14,17 +14,17 @@ namespace SymbolDictionary {
 
 class SymbolEntry {
 public:
-    SymbolEntry(char* fname, int fnlen, char *funcName, int funcLen, uint32_t address)
+    SymbolEntry(char* fname, int fnlen, char *funcName, int funcLen, uint32_t address) :
+        FileName(allocCString(fname, fnlen)),
+        FunctionName(allocCString(funcName, funcLen)),
+        Address(address)
     {
-        FileName = allocCString(fname, fnlen);
-        FunctionName = allocCString(funcName, funcLen);
-        Address = address;
     }
-    SymbolEntry(const SymbolEntry& ent)
+    SymbolEntry(const SymbolEntry& ent) :
+        FileName(allocCString(ent.FileName, strlen(ent.FileName))),
+        FunctionName(allocCString(ent.FunctionName, strlen(ent.FunctionName))),
+        Address(ent.Address)
     {
-        Address = ent.Address;
-        FileName = allocCString(ent.FileName, strlen(ent.FileName));
-        FunctionName = allocCString(ent.FunctionName, strlen(ent.FunctionName));
     }
     bool operator ! () const { return (FileName == NULL) || (FunctionName == NULL); }
     ~SymbolEntry()
@@ -48,7 +48,7 @@ private:
         ret[strlen] = '\0';
         return ret;
     }
-    
+
 };
 
 template <class T> class SymbolsDeserializer
@@ -89,6 +89,13 @@ public:
 class SymbolDictionary
 {
 public:
+    SymbolDictionary() :
+        tree_(BinaryTree<SymbolEntry*>()),
+        list_(HList<SymbolEntry*>())
+    {
+
+    }
+
     ~SymbolDictionary()
     {
         for(int i = 0; i < list_.size(); i++)
@@ -161,4 +168,3 @@ public:
 
 
 }
-
