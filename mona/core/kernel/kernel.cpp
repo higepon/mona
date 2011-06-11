@@ -88,7 +88,7 @@ void  mainProcess();
 typedef void (FuncVoid)();
 extern "C" FuncVoid* __CTOR_LIST__[];
 
-void invokeFuncList(FuncVoid** list, const char* file, int line)
+void invokeFuncList(FuncVoid** list)
 {
     int count = (int)*list++;
     list = (FuncVoid**)((((uint32_t)list) + 3) & ~3);
@@ -119,7 +119,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 */
 void startKernel()
 {
-    invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+    invokeFuncList(__CTOR_LIST__);
 
     /* kernel memory range */
     km = FirstFitAllocator(0x200000, 0xBfffff);

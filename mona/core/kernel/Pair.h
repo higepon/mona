@@ -33,7 +33,7 @@ template <class Car, class Cdr>
 class Pair
 {
 public:
-    Pair() {}
+    Pair() : car(Car()), cdr(Cdr()) {}
     Pair(Car car, Cdr cdr) : car(car), cdr(cdr) {}
     Car car;
     Cdr cdr;

@@ -52,7 +52,7 @@ template <class T> class Array
     T& operator [](uint32_t index)
     {
 #if 1
-        if (index < 0 || index >= length)
+        if (index >= length)
         {
             g_console->printf("array index outof range %d\n", index);
             panic("array");
