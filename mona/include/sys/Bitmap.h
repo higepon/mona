@@ -16,8 +16,8 @@ public:
     // This constructor will allocate on a uint32_t boundary. If |clear_bits| is
     // false, the bitmap bits will not be initialized.
     Bitmap(int num_bits, bool clear_bits)
-        : num_bits_(num_bits), array_size_(RequiredArraySize(num_bits)),
-          alloc_(true) {
+        : map_(NULL), num_bits_(num_bits), array_size_(RequiredArraySize(num_bits)),
+          alloc_(true), last_index_(0) {
         map_ = new uint32_t[array_size_];
 
         // Initialize all of the bits.
@@ -176,7 +176,7 @@ public:
           // If size is larger than necessary, trim because array_size_ is used
           // as a bound by various methods.
           array_size_(temp_min(RequiredArraySize(num_bits), num_words)),
-          alloc_(false) {}
+          alloc_(false), last_index_(0) {}
 
     ~Bitmap() {
         if (alloc_)
