@@ -342,7 +342,19 @@ void ThreadOperation::sendKilledMessage(int status)
     Process
 ----------------------------------------------------------------------*/
 uint32_t Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0), heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)), heapStats_(0)
+Process::Process(const char* name, PageEntry* directory) :
+    threadNum(0),
+    lallocator(NULL),
+    threadList_(NULL),
+    arguments_(NULL),
+    heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
+    shared_(NULL),
+    messageList_(NULL),
+    kobjects_(HList2< Pair<intptr_t, KObject*> >()),
+    isUserMode_(false),
+    pageDirectory_(NULL),
+    pid_(0),
+    heapStats_(0)
 {
     /* name */
     strncpy(name_, name, sizeof(name_));
