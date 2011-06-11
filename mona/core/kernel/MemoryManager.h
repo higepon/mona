@@ -20,7 +20,20 @@ class MemoryManager
 {
   public:
     MemoryManager();
-    ~MemoryManager();
+    MemoryManager(const MemoryManager& src) :
+        freeList(src.freeList),
+        start(src.start),
+        end(src.end)
+    {
+    }
+    virtual ~MemoryManager();
+    MemoryManager& operator=(const MemoryManager& src)
+    {
+        freeList = src.freeList;
+        start = src.start;
+        end = src.end;
+        return *this;
+    }
 
   public:
     void initialize(uint32_t size, uint32_t end);
