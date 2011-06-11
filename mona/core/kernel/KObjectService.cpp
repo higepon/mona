@@ -55,7 +55,7 @@ bool KObjectService::tryDelete(intptr_t id, KObject* obj)
 
 void KObjectService::cleanupKObjects(Process* owner)
 {
-    HList2< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
+    HList< Pair<intptr_t, KObject*> >* kobjects = owner->getKObjects();
     int size = kobjects->size();
     for (int i = 0; i < size; i++) {
         Pair<intptr_t, KObject*> p;

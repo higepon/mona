@@ -346,7 +346,7 @@ Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
-    kobjects_(HList2< Pair<intptr_t, KObject*> >()),
+    kobjects_(HList< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
     pageDirectory_(directory),
     pid_(++pid_),
