@@ -437,9 +437,9 @@ public:
 
     inline int getThreadIndex(Thread* thread)
     {
-        for (int i = 0; i < threadList_->size(); i++)
+        for (int i = 0; i < threadList_.size(); i++)
         {
-            if (threadList_->get(i) == thread) {
+            if (threadList_[i] == thread) {
                 return i;
             }
         }
@@ -491,7 +491,7 @@ public:
         return STACK_START - (STACK_SIZE + STACK_SIZE) * (threadNum - 1);
     }
 
-    inline List<Thread*>* getThreadList() const
+    inline HList<Thread*>& getThreadList()
     {
         return threadList_;
     }
@@ -530,7 +530,7 @@ public:
   protected:
     static uint32_t pid;
     MemoryAllocator* lallocator;
-    List<Thread*>* threadList_;
+    HList<Thread*> threadList_;
     List<char*>* arguments_;
     class Segment heap_;
 //    class SharedMemorySegment* dllsegment_;

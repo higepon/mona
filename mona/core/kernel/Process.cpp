@@ -110,7 +110,7 @@ Thread* ThreadOperation::create(Process* process, uint32_t programCounter, uint3
         archCreateThread(thread, programCounter, directory, stack);
     }
 
-    process->getThreadList()->add(thread);
+    process->getThreadList().add(thread);
     thread->observers.add(observer);
     return thread;
 };
@@ -345,7 +345,6 @@ uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
-    threadList_(new HList<Thread*>()),
     arguments_(new HList<char*>()),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
     shared_(new HList<SharedMemorySegment*>()),
@@ -387,7 +386,6 @@ Process::~Process()
     ASSERT(kobjects_.size() == 0);
     delete messageList_;
     delete arguments_;
-    delete threadList_;
     if (this->lallocator != NULL) delete this->lallocator;
 }
 
@@ -405,9 +403,9 @@ SharedMemorySegment* Process::findSharedSegment(uint32_t id) const
 
 uint32_t Process::getStackBottom(Thread* thread)
 {
-    for (int i = 0; i < threadList_->size(); i++)
+    for (int i = 0; i < threadList_.size(); i++)
     {
-        if (threadList_->get(i) != thread) continue;
+        if (threadList_[i] != thread) continue;
 
         return STACK_START - (STACK_SIZE + STACK_SIZE) * i - STACK_SIZE;
     }
