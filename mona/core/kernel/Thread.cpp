@@ -88,6 +88,8 @@ Thread::Thread(const Thread& src) :
 Thread& Thread::operator=(const Thread& src)
 {
     ASSERT(false);
+    basePriority = src.basePriority;
+    return *this;
 }
 
 Thread::~Thread()

@@ -25,6 +25,21 @@ template <class T> class Array
     {
     }
 
+    Array(const Array& src) : array(src.array)
+                              length(src.length),
+                              alloc(src.alloc)
+    {
+        ASSERT(false);
+    }
+
+    Array& operator=(const Array& src)
+    {
+        array = src.array;
+        length = src.length;
+        array = src.alloc;
+        return *this;
+    }
+
     virtual ~Array()
     {
         if (this->alloc)
