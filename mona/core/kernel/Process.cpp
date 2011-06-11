@@ -345,43 +345,18 @@ uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
-    threadList_(NULL),
-    arguments_(NULL),
+    threadList_(new HList<Thread*>()),
+    arguments_(new HList<char*>()),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
-    shared_(NULL),
-    messageList_(NULL),
+    shared_(new HList<SharedMemorySegment*>()),
+    messageList_(new HList<MessageInfo*>()),
     kobjects_(HList2< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
-    pageDirectory_(NULL),
-    pid_(0),
+    pageDirectory_(directory),
+    pid_(++pid_),
     heapStats_(0)
 {
-    /* name */
     strncpy(name_, name, sizeof(name_));
-
-    /* address space */
-    pageDirectory_ = directory;
-
-    /* shared list */
-    shared_ = new HList<SharedMemorySegment*>();
-
-//    dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
-//    this->getSharedList()->add(dllsegment_);
-    //  g_dllSharedObject->addRef();
-
-    /* message list */
-    messageList_ = new HList<MessageInfo*>();
-
-    /* argument list */
-    arguments_ = new HList<char*>();
-
-    threadList_ = new HList<Thread*>();
-
-    /* pid */
-    pid++;
-    pid_ = pid;
-
-    lallocator = NULL;
 }
 
 Process::~Process()
