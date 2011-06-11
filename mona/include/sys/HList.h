@@ -47,7 +47,7 @@ template <class T> class HList : public List<T> {
     \author Higepon
     \date   create:2002/10/22 update:
 */
-template <class T> HList<T>::HList() {
+template <class T> HList<T>::HList() : data_(NULL), size_(0), numElements_(0), increase_(0) {
     init(5, 5);
     return;
 }
@@ -62,7 +62,7 @@ template <class T> HList<T>::HList() {
     \author Higepon
     \date   create:2003/12/07 update:
 */
-template <class T> HList<T>::HList(int size) {
+template <class T> HList<T>::HList(int size) : data_(NULL), size_(0), numElements_(0), increase_(0){
 
     init(size, 5);
     return;
@@ -79,13 +79,14 @@ template <class T> HList<T>::HList(int size) {
     \author Higepon
     \date   create:2003/12/07 update:
 */
-template <class T> HList<T>::HList(int size, int increase) {
+template <class T> HList<T>::HList(int size, int increase) : data_(NULL), size_(0), numElements_(0), increase_(0){
 
     init(size, increase);
     return;
 }
 
 template <class T> HList<T>::HList(const HList<T>& src) :
+    List<T>(src),
     data_(src.data_),
     size_(src.size_),
     numElements_(src.numElements_),

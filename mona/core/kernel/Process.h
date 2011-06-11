@@ -425,8 +425,6 @@ class ThreadOperation
 ----------------------------------------------------------------------*/
 class Process
 {
-private:
-    Process() {}
   public:
     Process(const char* name, PageEntry* directory);
     virtual ~Process();
