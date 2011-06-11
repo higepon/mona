@@ -76,8 +76,8 @@ public:
     }
 
 public:
-    Node* next;
     Node* prev;
+    Node* next;
 };
 
 #endif
