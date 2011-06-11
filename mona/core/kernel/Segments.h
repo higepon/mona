@@ -82,7 +82,7 @@ public:
 class Segment
 {
 public:
-    Segment() {}
+    Segment() : start_(0), size_(0) {}
     Segment(LinearAddress start, uint32_t size) : start_(start), size_(size)
     {
     }
