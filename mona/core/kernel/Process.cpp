@@ -346,7 +346,6 @@ Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
-    messageList_(new HList<MessageInfo*>()),
     kobjects_(HList2< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
     pageDirectory_(directory),
@@ -378,7 +377,6 @@ Process::~Process()
     }
 
     ASSERT(kobjects_.size() == 0);
-    delete messageList_;
     if (this->lallocator != NULL) delete this->lallocator;
 }
 

@@ -491,12 +491,6 @@ public:
         return &heap_;
     }
 
-    inline virtual List<MessageInfo*>* getMessageList() const
-    {
-        return messageList_;
-    }
-
-
     void addStartupArgument(char* argument)
     {
         arguments_.add(argument);
@@ -564,7 +558,6 @@ public:
     HList<char*> arguments_;
     class Segment heap_;
     HList<SharedMemorySegment*> shared_;
-    List<MessageInfo*>* messageList_;
     HList2< Pair<intptr_t, KObject*> > kobjects_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
