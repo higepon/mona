@@ -344,7 +344,6 @@ void ThreadOperation::sendKilledMessage(int status)
 uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
-    lallocator(NULL),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
     kobjects_(HList< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
@@ -377,7 +376,6 @@ Process::~Process()
     }
 
     ASSERT(kobjects_.size() == 0);
-    if (this->lallocator != NULL) delete this->lallocator;
 }
 
 uint32_t Process::findMainThreadId() const

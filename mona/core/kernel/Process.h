@@ -149,8 +149,7 @@ public:
 
     int getThreadIndex(Thread* thread)
     {
-        for (int i = 0; i < threadList_.size(); i++)
-        {
+        for (int i = 0; i < threadList_.size(); i++) {
             if (threadList_[i] == thread) {
                 return i;
             }
@@ -239,14 +238,6 @@ public:
         return STACK_START - (STACK_SIZE + STACK_SIZE) * (threadNum - 1);
     }
 
-    void* AllocateLinearAddress(uint32_t size) {
-        if (this->lallocator == NULL)
-        {
-            this->lallocator = new MemoryAllocator(0xd0000000, 256 * 1024 * 1024);
-        }
-        return this->lallocator->Allocate(size);
-    }
-
     void addKObject(intptr_t id, KObject* obj)
     {
         kobjects_.add(Pair<intptr_t, KObject*>(id, obj));
@@ -272,7 +263,6 @@ public:
 
   protected:
     static uint32_t pid;
-    MemoryAllocator* lallocator;
     HList<Thread*> threadList_;
     HList<char*> arguments_;
     class Segment heap_;
