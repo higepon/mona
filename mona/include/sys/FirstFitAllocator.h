@@ -62,7 +62,7 @@ public:
         MAGIC = 0xDEADCAFE
     };
 
-    FirstFitAllocator() : start_(0), end_(0), freeList_(NULL) {}
+    FirstFitAllocator() {}
 
     FirstFitAllocator(uintptr_t start, uintptr_t end) :
         start_(start),
