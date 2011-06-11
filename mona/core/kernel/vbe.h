@@ -86,32 +86,6 @@ class kScreen {
         return vram_;
     }
 
-  private:
-
-    static inline void copyPixel16(uint8_t* dvram, int destX, int destY, uint8_t* svram, int sourceX, int sourceY, int xResolution, int raster) {
-        Pixel16* dpixel = (Pixel16*)dvram;
-        Pixel16* spixel = (Pixel16*)svram;
-        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
-    }
-
-    static inline void copyPixel24(uint8_t* dvram, int destX, int destY, uint8_t* svram, int sourceX, int sourceY, int xResolution, int raster) {
-        Pixel24* dpixel = (Pixel24*)dvram;
-        Pixel24* spixel = (Pixel24*)svram;
-        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
-    }
-
-    static inline void copyPixel32(uint8_t* dvram, int destX, int destY, uint8_t* svram, int sourceX, int sourceY, int xResolution, int raster) {
-        Pixel32* dpixel = (Pixel32*)dvram;
-        Pixel32* spixel = (Pixel32*)svram;
-        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
-    }
-
-    static inline void copyPixel8(uint8_t* dvram, int destX, int destY, uint8_t* svram, int sourceX, int sourceY, int xResolution, int raster) {
-        Pixel8* dpixel = (Pixel8*)dvram;
-        Pixel8* spixel = (Pixel8*)svram;
-        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
-    }
-
   public:
     static bool bitblt(kScreen* destScreen, int destX, int destY, int width, int height
                        , kScreen* sourceScreen, int sourceX, int sourceY, uint32_t raster);
