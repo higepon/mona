@@ -345,7 +345,6 @@ uint32_t Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) :
     threadNum(0),
     lallocator(NULL),
-    arguments_(new HList<char*>()),
     heap_(Segment(0xC0000000, PROCESS_HEAP_SIZE)),
     shared_(new HList<SharedMemorySegment*>()),
     messageList_(new HList<MessageInfo*>()),
@@ -370,9 +369,9 @@ Process::~Process()
     delete(shared_);
 
     /* arguments */
-    for (int i = 0; i < arguments_->size(); i++)
+    for (int i = 0; i < arguments_.size(); i++)
     {
-        delete[](arguments_->get(i));
+        delete[](arguments_[i]);
     }
 
     // debug
@@ -385,7 +384,6 @@ Process::~Process()
 
     ASSERT(kobjects_.size() == 0);
     delete messageList_;
-    delete arguments_;
     if (this->lallocator != NULL) delete this->lallocator;
 }
 

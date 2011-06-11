@@ -573,23 +573,22 @@ void syscall_entrance()
 
     case SYSTEM_CALL_ARGUMENTS_NUM:
 
-        setReturnValue(info, getCurrentProcess()->getArguments()->size());
+        setReturnValue(info, getCurrentProcess()->getNumStartupArguments());
         break;
 
     case SYSTEM_CALL_GET_ARGUMENTS:
     {
-        List<char*>* list = getCurrentProcess()->getArguments();
         char* buf = (char*)(SYSTEM_CALL_ARG_1);
         int index = (int)(SYSTEM_CALL_ARG_2);
 
-        if (index - 1 > list->size())
-        {
-            setReturnValue(info, 1);
-            break;
-        }
+        char* argument = getCurrentProcess()->getNthStartupArgument(index);
 
-        strncpy(buf, list->get(index), MAX_PROCESS_ARGUMENT_LENGTH);
-        setReturnValue(info, 0);
+        if (NULL == argument) {
+            setReturnValue(info, 1);
+        } else {
+            strncpy(buf, argument, MAX_PROCESS_ARGUMENT_LENGTH);
+            setReturnValue(info, 0);
+        }
         break;
     }
 

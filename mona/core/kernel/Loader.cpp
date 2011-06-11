@@ -92,7 +92,6 @@ void Loader::setupArguments(Process* process, CommandOption* list)
     }
     char* p;
     CommandOption* option;
-    List<char*>* target = process->getArguments();
 
     for (option = list->next; option; option = option->next)
     {
@@ -111,6 +110,6 @@ void Loader::setupArguments(Process* process, CommandOption* list)
         {
             p[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
         }
-        target->add(p);
+        process->addStartupArgument(p);
     }
 }

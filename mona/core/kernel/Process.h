@@ -481,9 +481,24 @@ public:
         return messageList_;
     }
 
-    inline virtual List<char*>* getArguments()
+
+    void addStartupArgument(char* argument)
     {
-        return arguments_;
+        arguments_.add(argument);
+    }
+
+    int getNumStartupArguments() const
+    {
+        return arguments_.size();
+    }
+
+    char* getNthStartupArgument(int nth)
+    {
+        if (nth < arguments_.size()) {
+            return arguments_[nth];
+        } else {
+            return NULL;
+        }
     }
 
     inline uint32_t allocateStack() const
@@ -531,7 +546,7 @@ public:
     static uint32_t pid;
     MemoryAllocator* lallocator;
     HList<Thread*> threadList_;
-    List<char*>* arguments_;
+    HList<char*> arguments_;
     class Segment heap_;
 //    class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
