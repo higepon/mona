@@ -16,6 +16,11 @@ class Node
 {
 public:
 
+    Node(const Node& src) : prev(src.prev), next(src.next)
+    {
+
+    }
+
     virtual ~Node() {}
 
     void Initialize()

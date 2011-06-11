@@ -36,7 +36,21 @@
 
 Thread::Thread() : 
     priority(ThreadPriority::Normal),
-    lastCpuUsedTick(0), age(0), flags(0), observers(2), waitingMutex_(NULL), waitingCondition_(NULL)
+    basePriority(ThreadPriority::Normal),
+    index(0),
+    tinfo(NULL),
+    messageList(HList<MessageInfo*>()),
+    id(0),
+    lastCpuUsedTick(0),
+    age(0),
+    schedulerTotalTick(0),
+    flags(0),
+    wakeupSleep(0),
+    stackSegment(NULL),
+    kernelStackBottom(0),
+    observers(2),
+    waitingMutex_(NULL),
+    waitingCondition_(NULL)
 {
     clearEventWaiting();
     /* thread information */
@@ -47,6 +61,33 @@ Thread::Thread() :
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
     ASSERT(tinfo->archinfo);
+}
+
+Thread::Thread(const Thread& src) :
+    Node(src.prev, src.next),
+    priority(src.priority),
+    basePriority(src.basePriority),
+    index(src.index),
+    tinfo(src.tinfo),
+    messageList(src.messageList),
+    id(src.id),
+    lastCpuUsedTick(src.lastCpuUsedTick),
+    age(src.age),
+    schedulerTotalTick(src.schedulerTotalTick),
+    flags(src.flags),
+    wakeupSleep(src.wakeupSleep),
+    stackSegment(src.stackSegment),
+    kernelStackBottom(src.kernelStackBottom),
+    observers(src.observers),
+    waitingMutex_(src.waitingMutex_),
+    waitingCondition_(src.waitingCondition_)
+{
+    ASSERT(false);
+}
+
+Thread& Thread::operator=(const Thread& src)
+{
+    ASSERT(false);
 }
 
 Thread::~Thread()

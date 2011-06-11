@@ -21,7 +21,10 @@ class Thread : public Node
 {
 public:
     Thread();
+    Thread(const Thread& src);
     virtual ~Thread();
+
+    Thread& operator=(const Thread& src);
 
     int isWaiting(int event) const
     {
