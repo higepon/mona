@@ -435,7 +435,7 @@ public:
 
     uint32_t getStackBottom(Thread* thread);
 
-    inline int getThreadIndex(Thread* thread)
+    int getThreadIndex(Thread* thread)
     {
         for (int i = 0; i < threadList_.size(); i++)
         {
@@ -446,22 +446,22 @@ public:
         return -1;
     }
 
-    inline virtual const char* getName() const
+    virtual const char* getName() const
     {
         return name_;
     }
 
-    inline virtual uint32_t getPid()
+    virtual uint32_t getPid()
     {
         return pid_;
     }
 
-    inline virtual bool isUserMode() const
+    virtual bool isUserMode() const
     {
         return isUserMode_;
     }
 
-    inline virtual PageEntry* getPageDirectory() const
+    virtual PageEntry* getPageDirectory() const
     {
         return pageDirectory_;
     }
@@ -486,7 +486,7 @@ public:
         return NULL;
     }
 
-    inline virtual class Segment* getHeapSegment()
+    virtual class Segment* getHeapSegment()
     {
         return &heap_;
     }
@@ -510,17 +510,24 @@ public:
         }
     }
 
-    inline uint32_t allocateStack() const
+    void addThread(Thread* thread)
+    {
+        threadList_.add(thread);
+    }
+
+    void removeThread(Thread* thread)
+    {
+        threadList_.remove(thread);
+    }
+
+    uint32_t findMainThreadId() const;
+
+    uint32_t allocateStack() const
     {
         return STACK_START - (STACK_SIZE + STACK_SIZE) * (threadNum - 1);
     }
 
-    inline HList<Thread*>& getThreadList()
-    {
-        return threadList_;
-    }
-
-    inline void* AllocateLinearAddress(uint32_t size) {
+    void* AllocateLinearAddress(uint32_t size) {
         if (this->lallocator == NULL)
         {
             this->lallocator = new MemoryAllocator(0xd0000000, 256 * 1024 * 1024);
@@ -528,19 +535,19 @@ public:
         return this->lallocator->Allocate(size);
     }
 
-    inline void addKObject(intptr_t id, KObject* obj)
+    void addKObject(intptr_t id, KObject* obj)
     {
         kobjects_.add(Pair<intptr_t, KObject*>(id, obj));
     }
 
-    inline bool removeKObject(intptr_t id, KObject* obj)
+    bool removeKObject(intptr_t id, KObject* obj)
     {
         return kobjects_.remove(Pair<intptr_t, KObject*>(id, obj));
     }
 
     SharedMemorySegment* findSharedSegment(uint32_t id) const;
 
-    inline HList2< Pair<intptr_t, KObject*> >* getKObjects()
+    HList2< Pair<intptr_t, KObject*> >* getKObjects()
     {
         return &kobjects_;
     }

@@ -110,7 +110,7 @@ Thread* ThreadOperation::create(Process* process, uint32_t programCounter, uint3
         archCreateThread(thread, programCounter, directory, stack);
     }
 
-    process->getThreadList().add(thread);
+    process->addThread(thread);
     thread->observers.add(observer);
     return thread;
 };
@@ -378,6 +378,18 @@ Process::~Process()
 
     ASSERT(kobjects_.size() == 0);
     if (this->lallocator != NULL) delete this->lallocator;
+}
+
+uint32_t Process::findMainThreadId() const
+{
+    uint32_t found = THREAD_UNKNOWN;
+    for (int i = 0; i < threadList_.size(); i++) {
+        uint32_t id = threadList_[i]->id;
+        if (id < found) {
+            found = id;
+        }
+    }
+    return found;
 }
 
 SharedMemorySegment* Process::findSharedSegment(uint32_t id) const

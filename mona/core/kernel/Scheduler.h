@@ -80,7 +80,6 @@ public:
     Process* FindProcess(const char* name);
     Thread* Find(uint32_t id);
     uint32_t LookupMainThread(const char* name);
-    uint32_t LookupMainThread(Process* process);
     uint32_t Lookup(const char* name);
     PsInfo* ReadDump();
     Thread** GetAllThread(uint32_t* threadNum);

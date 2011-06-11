@@ -377,33 +377,14 @@ Process* Scheduler::FindProcess(uint32_t pid)
 }
 
 
-uint32_t Scheduler::LookupMainThread(Process* process)
-{
-    HList<Thread*>& list = process->getThreadList();
-    uint32_t found = THREAD_UNKNOWN;
-
-    for (int i = 0; i < list.size(); i++)
-    {
-        uint32_t id = list[i]->id;
-
-        if (id < found)
-        {
-            found = id;
-        }
-    }
-    return found;
-}
-
 uint32_t Scheduler::LookupMainThread(const char* name)
 {
     Process* process = FindProcess(name);
-
-    if (process == NULL)
-    {
+    if (process == NULL) {
         return THREAD_UNKNOWN;
     }
 
-    return LookupMainThread(process);
+    return process->findMainThreadId();
 }
 
 Thread* Scheduler::Find(uint32_t id)
@@ -445,8 +426,7 @@ uint32_t Scheduler::Lookup(const char* name)
 
 int Scheduler::Kill(Thread* thread)
 {
-    HList<Thread*>& list = thread->tinfo->process->getThreadList();
-    list.remove(thread);
+    thread->tinfo->process->removeThread(thread);
     thread->Remove();
     return NORMAL;
 }

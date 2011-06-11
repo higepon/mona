@@ -631,14 +631,11 @@ void syscall_entrance()
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
-    if (SYSTEM_CALL_ARG_1 == NULL)
-    {
-        setReturnValue(info, g_scheduler->LookupMainThread(getCurrentProcess()));
-    }
-    else
-    {
-        setReturnValue(info, g_scheduler->LookupMainThread((char*)(SYSTEM_CALL_ARG_1)));
-    }
+        if (SYSTEM_CALL_ARG_1 == NULL) {
+            setReturnValue(info, getCurrentProcess()->findMainThreadId());
+        } else {
+            setReturnValue(info, g_scheduler->LookupMainThread((char*)(SYSTEM_CALL_ARG_1)));
+        }
         break;
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:
