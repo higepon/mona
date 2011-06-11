@@ -119,8 +119,11 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 */
 void startKernel()
 {
+    invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+
     /* kernel memory range */
     km = FirstFitAllocator(0x200000, 0xBfffff);
+
 
     /* APM */
     g_apmInfo = new APMInfo;
@@ -213,9 +216,6 @@ void startKernel()
     g_com2 = new Uart(Uart::COM2);
 
 //    g_console->printf("read from COM2<%c>:", g_com2->readChar());
-
-
-
     pic_init();
     RTC::init();
     printOK("Setting PIC        ");
@@ -253,8 +253,6 @@ void startKernel()
     g_page_directory = g_page_manager->createPageDirectory();
     g_page_manager->startPaging((PhysicalAddress)g_page_directory);
 
-    // Just after the paging is on, we call static initializer.
-    invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
