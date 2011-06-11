@@ -144,7 +144,7 @@ uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isU
     for (int i = foundMemory; i < foundMemory + pageNum; i++)
     {
         PhysicalAddress address = i * ARCH_PAGE_SIZE + 0xC00000;
-        mapAsLinearEqPhysical(directory, address, PAGE_WRITABLE, PAGE_USER);
+        mapAsLinearEqPhysical(directory, address, PAGE_WRITABLE, isUser);
     }
     return (uint8_t*)(foundMemory * ARCH_PAGE_SIZE + 0xC00000);
 }

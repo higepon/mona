@@ -17,7 +17,7 @@
 
 class Condition : public KObject {
 public:
-    Condition() {}
+    Condition() : waitList_(HList<Thread*>()) {}
     virtual ~Condition()
     {
         ASSERT(waitList_.size() == 0);

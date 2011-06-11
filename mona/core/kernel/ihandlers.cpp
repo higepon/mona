@@ -284,10 +284,10 @@ extern "C" void segmentNotProcessHandler()
 
 extern "C" void stackFaultHandler(uintptr_t error)
 {
-//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     if (g_isRemoteDebug) {
         gdbCatchException(VECTOR_STACK_FAULT_EXCEPTION);
     }
+    logprintf("%s:error=%d\n", __func__, error);
     terminateCurrentThread(__func__);
 }
 

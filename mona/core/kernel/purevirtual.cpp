@@ -65,7 +65,10 @@ void __pure_virtual()
     \author Higepon
     \date   create:2002/08/08 update:2002/02/25
 */
-int atexit( void (*func)(void)) {return -1;}
+int atexit(void (*func)(void))
+{
+    return -1;
+}
 
 /*!
     \brief dummy for gcc3.3
