@@ -74,20 +74,44 @@ static void stopSubThread(uintptr_t id)
     ASSERT_EQ(M_OK, Message::send(id, MSG_STOP));
 }
 
+TestTerminal* testTerminal;
 
 static void __fastcall testTerminalThread(void* arg)
 {
-    uintptr_t mainThread = (uintptr_t)arg;
+    uintptr_t mainThread = System::getThreadID();
+    uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
+    uintptr_t mainThread2 = (uintptr_t)arg;
     outStream = new Stream;
-    TestTerminal terminal(mainThread, *outStream, sharedString);
-    terminal.run();
+    testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
+    testTerminal->run();
+    delete testTerminal;
 }
 
 static void test()
 {
+    Robot r;
+    r.mouseMove(260, 240);
+    sleep(1000);
+    r.mousePress();
+    r.mouseRelease();
+    while (true) {
+        if (!testTerminal->getOutput().empty()) {
+            logprintf("<%s>\n", testTerminal->getOutput().c_str());
+        }
+
+        if (testTerminal->getOutput().find("HELLO.EX5") != std::string::npos) {
+            break;
+        }
+    }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS();
 }
 
+// wait thread
+// remove constant
+// remove unused
+// extract test function
+// refactor
 int main(int argc, char* argv[])
 {
     intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/TERMINAL.MAP");
@@ -102,7 +126,6 @@ int main(int argc, char* argv[])
     outStream = new Stream;
     uintptr_t mainThread = System::getThreadID();
     if (isTestMode) {
-        uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
         uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
         waitSubThread(id);
         test();

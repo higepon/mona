@@ -62,6 +62,11 @@ public:
         processEvent(&event);
     }
 
+    std::string getOutput() const
+    {
+        return output_->getText();
+    }
+
     void enterCommand(const std::string& command)
     {
         command_->setText(command.c_str());
