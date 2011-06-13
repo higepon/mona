@@ -106,11 +106,6 @@ static void __fastcall testTerminalThread(void* arg)
 static void test()
 {
     MonaGUIRobot r;
-    // Rectangle button = testTerminal->getButtonAbsoluteBounds();
-    // r.mouseMove(button.x, button.y);
-    // sleep(1000);
-    // r.mousePress();
-    // r.mouseRelease();
     r.click(testTerminal->getButton());
     while (true) {
         if (!testTerminal->getOutput().empty()) {
@@ -125,9 +120,6 @@ static void test()
     TEST_RESULTS();
 }
 
-// wait thread
-// remove constant
-// title bar width / axis
 // remove unused
 // extract test function
 // refactor
