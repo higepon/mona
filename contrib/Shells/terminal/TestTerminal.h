@@ -49,6 +49,11 @@ public:
         return *(button_.get());
     }
 
+    TextField& getCommandField()
+    {
+        return *(command_.get());
+   }
+
     void run()
     {
         static bool first = true;
@@ -67,9 +72,19 @@ public:
         processEvent(&event);
     }
 
+
     std::string getOutput() const
     {
         return output_->getText();
+    }
+
+    std::string getLastLine() const
+    {
+        if (lines_.empty()) {
+            return "*empty*";
+        } else {
+            return lines_[lines_.size() - 1];
+        }
     }
 
     void enterCommand(const std::string& command)

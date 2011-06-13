@@ -109,6 +109,25 @@ public:
         mousePress();
         mouseRelease();
     }
+
+    void clearInput(TextField& input)
+    {
+        input.setText("");
+    }
+
+    void input(Component& input, const std::string& text)
+    {
+        Rectangle r = *(input.getBounds());
+        Frame* parent = (Frame*)input.getParent();
+        ASSERT(parent);
+        r.x += parent->getBounds()->x + parent->getInsets()->left;
+        r.y += parent->getBounds()->y + parent->getInsets()->top;
+        mouseMove(r.x, r.y);
+        sleep(100);
+        mousePress();
+        mouseRelease();
+        type(text.c_str());
+    }
 };
 
 static uintptr_t waitSubThread(uintptr_t id)
@@ -140,23 +159,69 @@ static void __fastcall testTerminalThread(void* arg)
     delete testTerminal;
 }
 
-static void test()
+static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
     MonaGUIRobot r;
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
     ASSERT_EVENTUALLY(probe);
+}
 
-    // while (true) {
-    //     if (!testTerminal->getOutput().empty()) {
-    //         logprintf("<%s>\n", testTerminal->getOutput().c_str());
-    //     }
+static void testPSShowsHeaderAndProcess()
+{
+    MonaGUIRobot r;
+    r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ps");
+    r.click(testTerminal->getButton());
+    TerminalOutputProbe probe(*testTerminal, "tid name");
+    ASSERT_EVENTUALLY(probe);
+}
 
-    //     if (testTerminal->getOutput().find(".") != std::string::npos) {
-    //         break;
-    //     }
+
+    // void testEnterKeyDownRunsLSCommand()
+    // {
+    //     clearOutput();
+    //     enterCommand("ls /APPS/");
+    //     EXPECT_TRUE(find(lines_.begin(), lines_.end(), "TEST.RAW") != lines_.end());
     // }
-    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+
+    // void testLSCausesScrollToTheLastLine()
+    // {
+    //     clearOutput();
+    //     command_->setText("ls /APPS/");
+    //     buttonClick();
+    //     // On the output, we should include the last line.
+    //     EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
+    // }
+
+
+    // void testCommandEnteredAppearsOnHistory()
+    // {
+    //     clearOutput();
+    //     enterCommand("ls /LIBS/");
+    //     enterCommand("ls /USER/");
+
+    //     pressCtrlKey('p');
+    //     EXPECT_EQ(0, strcmp("ls /LIBS/", command_->getText()));
+
+    //     pressCtrlKey('n');
+    //     EXPECT_EQ(0, strcmp("ls /USER/", command_->getText()));
+    // }
+
+
+// static void testLSCausesScrollToTheLastLine()
+// {
+//     command_->setText("ls /APPS/");
+//         buttonClick();
+//         // On the output, we should include the last line.
+//         EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
+//     }
+
+
+static void test()
+{
+    testLSCommandReturnsLFSeperatedListOfFiles();
+    testPSShowsHeaderAndProcess();
     TEST_RESULTS();
 }
 
