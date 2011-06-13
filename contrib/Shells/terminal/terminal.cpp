@@ -34,6 +34,100 @@
 
 using namespace MonAPI;
 
+
+class Probe {
+public:
+    virtual bool isSatisfied() = 0;
+    virtual void sample() = 0;
+    virtual void describeTo(std::string& d) = 0;
+    virtual void describeFailureTo(std::string& d) = 0;
+};
+
+class Poller {
+private:
+    int timeoutMillis_;
+    int currentTimeMillis_;
+    int pollDellayMillis_;
+public:
+    Poller(int timeoutMillis, int pollDellayMillis) :
+        timeoutMillis_(timeoutMillis),
+        currentTimeMillis_(0),
+        pollDellayMillis_(pollDellayMillis)
+    {
+    }
+
+    bool check(Probe& probe, std::string& description)
+    {
+        while (!probe.isSatisfied()) {
+            if (currentTimeMillis_ > timeoutMillis_) {
+                description += describeFailureOf(probe);
+                return false;
+            }
+            sleep(pollDellayMillis_);
+            currentTimeMillis_ += pollDellayMillis_;
+            probe.sample();
+        }
+        return true;
+    }
+private:
+    virtual std::string describeFailureOf(Probe& probe)
+    {
+        std::string description;
+        description += "\n    Tried to find:\n        ";
+        probe.describeTo(description);
+        description += "\n    but:\n    ";
+        probe.describeFailureTo(description);
+        return description;
+    }
+};
+
+#define ASSERT_EVENTUALLY(probe) assertEventually(probe, __FILE__, __LINE__)
+
+static void assertEventually(Probe& probe, const char* file, int line)
+{
+    std::string description;
+    if (!Poller(10000, 100).check(probe, description)) {
+        fail(description.c_str(), file, line);
+    }
+}
+
+class TerminalOutputProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastContent_;
+    std::string contentToMatch_;
+public:
+    TerminalOutputProbe(TestTerminal& terminal, const std::string& contentToMatch) : 
+        terminal_(terminal),
+        contentToMatch_(contentToMatch)
+    {
+    }
+
+    void sample()
+    {
+        lastContent_ = terminal_.getOutput();
+    }
+    bool isSatisfied()
+    {
+        return lastContent_.find(contentToMatch_) != std::string::npos;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "<";
+        d += contentToMatch_;
+        d += ">";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastContent_;
+        d += "> ";
+    }
+};
+
 static Stream* outStream;
 static Terminal* terminal;
 static std::string sharedString;
@@ -107,16 +201,19 @@ static void test()
 {
     MonaGUIRobot r;
     r.click(testTerminal->getButton());
-    while (true) {
-        if (!testTerminal->getOutput().empty()) {
-            logprintf("<%s>\n", testTerminal->getOutput().c_str());
-        }
+    TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
+    ASSERT_EVENTUALLY(probe);
 
-        if (testTerminal->getOutput().find(".") != std::string::npos) {
-            break;
-        }
-    }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    // while (true) {
+    //     if (!testTerminal->getOutput().empty()) {
+    //         logprintf("<%s>\n", testTerminal->getOutput().c_str());
+    //     }
+
+    //     if (testTerminal->getOutput().find(".") != std::string::npos) {
+    //         break;
+    //     }
+    // }
+    // logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS();
 }
 

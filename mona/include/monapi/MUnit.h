@@ -22,6 +22,8 @@
 #define MUNIT_GLOBAL_VAL(v) /* */
 #endif
 
+#define FAIL(msg) fail(msg, __FILE__, __LINE__)
+
 #define SKIP(condition) printf("MUnit:Skipped %s %s:%d %s\n", #condition, __FILE__, __LINE__,  __PRETTY_FUNCTION__); \
                         logprintf("MUnit:Skipped %s %s:%d\n", #condition, __FILE__, __LINE__);
 
@@ -100,6 +102,14 @@
 
 MUNIT_GLOBAL int munit_number_of_failed MUNIT_GLOBAL_VAL(0);
 MUNIT_GLOBAL int munit_number_of_passed MUNIT_GLOBAL_VAL(0);
+
+inline void fail(const char* msg, const char* file, int line)
+{
+    printf("MUnit:FAIL failure on [%s]:%d: %s\n", file, line, msg);
+    logprintf("MUnit:FAIL failure on [%s]:%d: %s\n", file, line, msg);
+    munit_number_of_failed++;
+}
+
 
 inline void munit_show_test_results(const char* msg)
 {
