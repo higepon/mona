@@ -88,8 +88,8 @@ public:
     Rectangle getButtonAbsoluteBounds()
     {
         Rectangle ret = *(button_->getBounds());
-        ret.x += getBounds()->x;
-        ret.y += getBounds()->y;
+        ret.x += getBounds()->x + insets.left;
+        ret.y += getBounds()->y + insets.top;
         return ret;
     }
 

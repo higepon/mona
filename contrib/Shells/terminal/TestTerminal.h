@@ -44,6 +44,11 @@ public:
 
     virtual ~TestTerminal() {}
 
+    Button& getButton()
+    {
+        return *(button_.get());
+    }
+
     void run()
     {
         static bool first = true;

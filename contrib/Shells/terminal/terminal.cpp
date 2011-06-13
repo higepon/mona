@@ -57,6 +57,22 @@ static void __fastcall stdoutStreamReader(void* mainThread)
     }
 }
 
+class MonaGUIRobot : public Robot
+{
+public:
+    void click(Component& button)
+    {
+        Rectangle r = *(button.getBounds());
+        Frame* parent = (Frame*)button.getParent();
+        ASSERT(parent);
+        r.x += parent->getBounds()->x + parent->getInsets()->left;
+        r.y += parent->getBounds()->y + parent->getInsets()->top;
+        mouseMove(r.x, r.y);
+        sleep(1000);
+        mousePress();
+        mouseRelease();
+    }
+};
 
 static uintptr_t waitSubThread(uintptr_t id)
 {
@@ -89,17 +105,19 @@ static void __fastcall testTerminalThread(void* arg)
 
 static void test()
 {
-    Robot r;
-    r.mouseMove(260, 240);
-    sleep(1000);
-    r.mousePress();
-    r.mouseRelease();
+    MonaGUIRobot r;
+    // Rectangle button = testTerminal->getButtonAbsoluteBounds();
+    // r.mouseMove(button.x, button.y);
+    // sleep(1000);
+    // r.mousePress();
+    // r.mouseRelease();
+    r.click(testTerminal->getButton());
     while (true) {
         if (!testTerminal->getOutput().empty()) {
             logprintf("<%s>\n", testTerminal->getOutput().c_str());
         }
 
-        if (testTerminal->getOutput().find("HELLO.EX5") != std::string::npos) {
+        if (testTerminal->getOutput().find(".") != std::string::npos) {
             break;
         }
     }
@@ -109,6 +127,7 @@ static void test()
 
 // wait thread
 // remove constant
+// title bar width / axis
 // remove unused
 // extract test function
 // refactor
