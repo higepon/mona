@@ -29,29 +29,31 @@
 #ifndef _MONAPI_POLLER_
 #define _MONAPI_POLLER_
 
+namespace MonAPI {
+
 class Poller {
 private:
     int timeoutMillis_;
-    int currentTimeMillis_;
     int pollDellayMillis_;
 
 public:
     Poller(int timeoutMillis, int pollDellayMillis) :
         timeoutMillis_(timeoutMillis),
-        currentTimeMillis_(0),
         pollDellayMillis_(pollDellayMillis)
     {
     }
 
     bool check(Probe& probe, std::string& description)
     {
+        uint64_t now = MonAPI::Date::nowInMsec();
+        uint64_t end = now + timeoutMillis_;
         while (!probe.isSatisfied()) {
-            if (currentTimeMillis_ > timeoutMillis_) {
+            if (now > end) {
                 description += describeFailureOf(probe);
                 return false;
             }
             sleep(pollDellayMillis_);
-            currentTimeMillis_ += pollDellayMillis_;
+            now = MonAPI::Date::nowInMsec();
             probe.sample();
         }
         return true;
@@ -67,6 +69,8 @@ private:
         probe.describeFailureTo(description);
         return description;
     }
+};
+
 };
 
 #endif // _MONAPI_POLLER_

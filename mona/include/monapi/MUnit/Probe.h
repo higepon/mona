@@ -29,12 +29,16 @@
 #ifndef _PROBE_
 #define _PROBE_
 
+namespace MonAPI {
+
 class Probe {
 public:
     virtual bool isSatisfied() = 0;
     virtual void sample() = 0;
     virtual void describeTo(std::string& d) = 0;
     virtual void describeFailureTo(std::string& d) = 0;
+};
+
 };
 
 #endif // _PROBE_
