@@ -9,10 +9,14 @@
     \version $Revision: 3946 $
     \date   create:2009/11/14
 */
-#include<sys/types.h>
 
 #ifndef _MONAPI_MUNIT_
 #define _MONAPI_MUNIT_
+
+#include <sys/types.h>
+#include <string>
+#include <monapi/MUnit/Probe.h>
+#include <monapi/MUnit/Poller.h>
 
 #ifdef MUNIT_GLOBAL_VALUE_DEFINED
 #define MUNIT_GLOBAL /* */
@@ -170,6 +174,15 @@ void munit_expect_eq(const char* expected, const char* actual, const char* expec
     }
 }
 
+#define ASSERT_EVENTUALLY(probe) assertEventually(probe, __FILE__, __LINE__)
+
+inline void assertEventually(Probe& probe, const char* file, int line, int timeoutMillis = 500, int pollDellayMillis = 50)
+{
+    std::string description;
+    if (!Poller(500, 50).check(probe, description)) {
+        fail(description.c_str(), file, line);
+    }
+}
 
 #define TEST_RESULTS() munit_show_test_results(__FILE__)
 

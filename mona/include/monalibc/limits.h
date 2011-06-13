@@ -29,7 +29,9 @@ extern "C" {
 #define SHRT_MIN (-32767-1)
 
 #define INT_MIN -2147483647
+#ifndef INT_MAX
 #define INT_MAX 2147483647
+#endif
 #define UINT_MAX 4294967295U
 
 #define LONG_MIN -2147483647

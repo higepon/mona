@@ -24,6 +24,10 @@
 
 #define KERNEL_TIMER_INTERVAL_MSEC 10
 
+#ifndef INT_MAX
+#define INT_MAX 2147483647
+#endif
+
 #ifndef __uint64_t_defined
 typedef unsigned long long	uint64_t;
 # define __uint64_t_defined
