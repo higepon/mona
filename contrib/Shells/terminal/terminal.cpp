@@ -71,6 +71,40 @@ public:
     }
 };
 
+class TerminalLastLineProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastContent_;
+public:
+    TerminalLastLineProbe(TestTerminal& terminal) : 
+        terminal_(terminal)
+    {
+    }
+
+    void sample()
+    {
+        lastContent_ = terminal_.getOutput();
+    }
+    bool isSatisfied()
+    {
+        return lastContent_.find(terminal_.getLastLine()) != std::string::npos;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "<>";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastContent_;
+        d += "> ";
+    }
+};
+
+
 static Stream* outStream;
 static Terminal* terminal;
 static std::string sharedString;
@@ -177,6 +211,17 @@ static void testPSShowsHeaderAndProcess()
     ASSERT_EVENTUALLY(probe);
 }
 
+static void testLSCausesScrollToTheLastLine()
+{
+    MonaGUIRobot r;
+    r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ls /APPS/");
+    r.click(testTerminal->getButton());
+    TerminalLastLineProbe probe(*testTerminal);
+    ASSERT_EVENTUALLY(probe);
+}
+
+
 
     // void testEnterKeyDownRunsLSCommand()
     // {
@@ -209,19 +254,13 @@ static void testPSShowsHeaderAndProcess()
     // }
 
 
-// static void testLSCausesScrollToTheLastLine()
-// {
-//     command_->setText("ls /APPS/");
-//         buttonClick();
-//         // On the output, we should include the last line.
-//         EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
-//     }
 
 
 static void test()
 {
     testLSCommandReturnsLFSeperatedListOfFiles();
     testPSShowsHeaderAndProcess();
+    testLSCausesScrollToTheLastLine();
     TEST_RESULTS();
 }
 
