@@ -95,7 +95,13 @@ public:
 
     void processEvent(Event* event)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        logprintf("%s %s:%d event type=%d ENTER[%d] ENTER without [%d]\n", __func__, __FILE__, __LINE__,
+                  event->getType(),
+                  (event->getType() == KeyEvent::KEY_PRESSED &&
+                   event->getSource() == command_.get() &&
+                   ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER),
+                  (event->getSource() == command_.get() &&
+                   ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER));
         bool runsCommand =
             (event->getType() == MouseEvent::MOUSE_RELEASED && event->getSource() == button_.get()) ||
             (event->getType() == KeyEvent::KEY_PRESSED &&

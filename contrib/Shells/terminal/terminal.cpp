@@ -34,6 +34,44 @@
 
 using namespace MonAPI;
 
+class TerminalCommandLineProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastCommand_;
+    std::string expectedCommand_;
+public:
+    TerminalCommandLineProbe(TestTerminal& terminal, const std::string& expectedCommand) :
+        terminal_(terminal),
+        expectedCommand_(expectedCommand)
+    {
+    }
+
+    void sample()
+    {
+        lastCommand_ = terminal_.getCommandLine();
+    }
+    bool isSatisfied()
+    {
+        return lastCommand_ == expectedCommand_;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "<";
+        d += expectedCommand_;
+        d += ">";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastCommand_;
+        d += "> ";
+    }
+};
+
+
 class TerminalOutputProbe : public Probe
 {
 private:
@@ -41,7 +79,7 @@ private:
     std::string lastContent_;
     std::string contentToMatch_;
 public:
-    TerminalOutputProbe(TestTerminal& terminal, const std::string& contentToMatch) : 
+    TerminalOutputProbe(TestTerminal& terminal, const std::string& contentToMatch) :
         terminal_(terminal),
         contentToMatch_(contentToMatch)
     {
@@ -71,13 +109,14 @@ public:
     }
 };
 
-class TerminalLastLineProbe : public Probe
+class TerminalLastDataShouldBeShownProbe : public Probe
 {
 private:
     TestTerminal& terminal_;
     std::string lastContent_;
+    std::string lastLine_;
 public:
-    TerminalLastLineProbe(TestTerminal& terminal) : 
+    TerminalLastDataShouldBeShownProbe(TestTerminal& terminal) :
         terminal_(terminal)
     {
     }
@@ -85,15 +124,19 @@ public:
     void sample()
     {
         lastContent_ = terminal_.getOutput();
+        lastLine_ = terminal_.getLastLine();
     }
     bool isSatisfied()
     {
-        return lastContent_.find(terminal_.getLastLine()) != std::string::npos;
+        return lastContent_.find(lastLine_) != std::string::npos;
     }
 
     void describeTo(std::string& d)
     {
-        d += "<>";
+        logprintf("[[%s]]", lastLine_.c_str());
+        d += "    last line<";
+        d += lastLine_;
+        d += ">";
     }
 
     void describeFailureTo(std::string& d)
@@ -217,50 +260,63 @@ static void testLSCausesScrollToTheLastLine()
     r.clearInput(testTerminal->getCommandField());
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
-    TerminalLastLineProbe probe(*testTerminal);
+    TerminalLastDataShouldBeShownProbe probe(*testTerminal);
     ASSERT_EVENTUALLY(probe);
 }
 
+// todo refactor tests
+static void testEnterKeyDownRunsLSCommand()
+{
+    MonaGUIRobot r;
+    r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ls /APPS/");
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
+    TerminalLastDataShouldBeShownProbe probe(*testTerminal);
+    ASSERT_EVENTUALLY(probe);
+}
 
+static void testCommandEnteredAppearsOnHistory()
+{
+    logprintf("**** HISTORY test start\n");
 
-    // void testEnterKeyDownRunsLSCommand()
-    // {
-    //     clearOutput();
-    //     enterCommand("ls /APPS/");
-    //     EXPECT_TRUE(find(lines_.begin(), lines_.end(), "TEST.RAW") != lines_.end());
-    // }
+    MonaGUIRobot r;
 
-    // void testLSCausesScrollToTheLastLine()
-    // {
-    //     clearOutput();
-    //     command_->setText("ls /APPS/");
-    //     buttonClick();
-    //     // On the output, we should include the last line.
-    //     EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
-    // }
-
-
-    // void testCommandEnteredAppearsOnHistory()
-    // {
-    //     clearOutput();
-    //     enterCommand("ls /LIBS/");
-    //     enterCommand("ls /USER/");
-
-    //     pressCtrlKey('p');
-    //     EXPECT_EQ(0, strcmp("ls /LIBS/", command_->getText()));
-
-    //     pressCtrlKey('n');
-    //     EXPECT_EQ(0, strcmp("ls /USER/", command_->getText()));
-    // }
+    logprintf("before clear =<%s>\n", testTerminal->getCommandField().getText());
+    r.clearInput(testTerminal->getCommandField());
+    logprintf("after clear =<%s>\n", testTerminal->getCommandField().getText());
+    sleep(5000);
+    // r.input(testTerminal->getCommandField(), "ls /LIBS/");
+    // r.keyPress(Keys::Enter);
+    // r.keyRelease(Keys::Enter);
 
 
 
+    // r.clearInput(testTerminal->getCommandField());
+
+    // r.input(testTerminal->getCommandField(), "ls /USER/");
+    // r.keyPress(Keys::Enter);
+    // r.keyRelease(Keys::Enter);
+
+    // logprintf("**** before ctrl p\n");
+    // r.keyPress('p', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
+    // ASSERT_EVENTUALLY(probe);
+
+    // logprintf("**** before ctrl n\n");
+
+    // r.keyPress('n', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
+    // ASSERT_EVENTUALLY(probe2);
+}
 
 static void test()
 {
     testLSCommandReturnsLFSeperatedListOfFiles();
     testPSShowsHeaderAndProcess();
     testLSCausesScrollToTheLastLine();
+    testEnterKeyDownRunsLSCommand();
+    testCommandEnteredAppearsOnHistory();
     TEST_RESULTS();
 }
 

@@ -26,7 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "monagui/awt/ImeManager.h"
 
 namespace monagui {
-    TextField::TextField() : text_(String("")),
+    TextField::TextField() : text_(""),
                              cursor_(0),
                              _imeManager(new ImeManager)
     {

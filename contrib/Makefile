@@ -64,6 +64,7 @@ all:
 #	cd Devel/gcc && $(MAKE) # && $(MAKE) install
 ### $(MAKE) disk images
 	cd $(MONADIR)/tool/mkimg && $(MAKE)
+	cd Gui/libmonagui/test_on_linux && $(MAKE)
 
 clean:
 	cd Net/frecv && $(MAKE) clean

@@ -239,24 +239,35 @@ static void test_TextField_ime_convert()
 
 static void test_TextField_remove_multi_byte_backspace()
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TextField* t = createTextField();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     toggleIme(t);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     keyPress(t, 'a');
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     keyPress(t, 'i');
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     keyPress(t, KeyEvent::VKEY_ENTER);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ_TEXT_FIELD("あい", 2, t);
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     toggleIme(t);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     keyPress(t, KeyEvent::VKEY_BACKSPACE);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_EQ(1, t->getCursor());
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     EXPECT_STR_EQ("あ", t->getText());
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // keyPress(t, KeyEvent::VKEY_BACKSPACE);
     // EXPECT_EQ(0, t->getCursor());
     // EXPECT_STR_EQ("", t->getText());
 
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     destroyTextField(t);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 static void test_WebImage_create()
@@ -270,22 +281,31 @@ static void test_WebImage_create()
 
 int main(int argc, char* argv[])
 {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_cursor();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_ime_off();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_ime_on();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_backspace_ime_on();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_backspace_empty_ime_on();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     test_TextField_ime_convert();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     test_TextField_remove_multi_byte_backspace();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
 //    check cursor on enter
 //    test_TextField_convert();
 //    test_TextField_convert_second_candidate();
 
     test_WebImage_create();
-
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TEST_RESULTS();
     return 0;
 }

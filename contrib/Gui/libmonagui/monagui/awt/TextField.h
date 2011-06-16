@@ -96,9 +96,9 @@ namespace monagui {
          */
         virtual void setText(const String & text);
         /** テキストを得る */
-        inline const char *getText()
+        inline const char* getText()
         {
-            return (const char*)(text_); }
+            return (const char*)text_; }
 
         /** 描画ハンドラ */
         virtual void paint(Graphics* g);

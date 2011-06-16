@@ -44,11 +44,12 @@ public:
                 {
                     MessageInfo message;
                     int charcode = info.arg1;
-                    int modifiers = KEY_MODIFIER_DOWN;
+                    int modifiers = info.arg2 | KEY_MODIFIER_DOWN;
+                    logprintf("keyboard server modifiers=%d\n", modifiers);
                     if (charcode >= 'A' && charcode <= 'Z') {
                         modifiers |= KEY_MODIFIER_SHIFT;
                     }
-                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, 0, modifiers, charcode, NULL);
+                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, charcode, modifiers, charcode, NULL);
                     sendToClients(&message);
                     Message::reply(&info);
                     break;

@@ -107,10 +107,10 @@
 MUNIT_GLOBAL int munit_number_of_failed MUNIT_GLOBAL_VAL(0);
 MUNIT_GLOBAL int munit_number_of_passed MUNIT_GLOBAL_VAL(0);
 
-inline void fail(const char* msg, const char* file, int line)
+inline void fail(const char* msg, const char* function, const char* file, int line)
 {
-    printf("MUnit:FAIL failure on [%s]:%d: %s\n", file, line, msg);
-    logprintf("MUnit:FAIL failure on [%s]:%d: %s\n", file, line, msg);
+    printf("MUnit:FAIL failure on [%s] [%s]:%d: %s\n", function, file, line, msg);
+    logprintf("MUnit:FAIL failure on [%s] [%s]:%d: %s\n", function, file, line, msg);
     munit_number_of_failed++;
 }
 
@@ -142,7 +142,7 @@ template <>
 void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr, const char* function, const char* file, int line)
 {
     if (expected != actual) {
-        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
+        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %ld %s:%d: \n", function, expectedStr, actual, file, line);
         logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
         munit_number_of_failed++;
     } else {
@@ -174,17 +174,21 @@ void munit_expect_eq(const char* expected, const char* actual, const char* expec
     }
 }
 
-#define ASSERT_EVENTUALLY(probe) assertEventually(probe, __FILE__, __LINE__)
+#define ASSERT_EVENTUALLY(probe) assertEventually(probe, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
-inline void assertEventually(MonAPI::Probe& probe, const char* file, int line, int timeoutMillis = 500, int pollDellayMillis = 50)
+#ifdef MONA
+
+inline void assertEventually(MonAPI::Probe& probe, const char* function, const char* file, int line, int timeoutMillis = 500, int pollDellayMillis = 50)
 {
     std::string description;
-    if (!MonAPI::Poller(500, 50).check(probe, description)) {
-        fail(description.c_str(), file, line);
+    if (!MonAPI::Poller(1000, 50).check(probe, description)) {
+        fail(description.c_str(), function, file, line);
     } else {
         munit_number_of_passed++;
     }
 }
+
+#endif
 
 #define TEST_RESULTS() munit_show_test_results(__FILE__)
 

@@ -52,7 +52,12 @@ public:
     TextField& getCommandField()
     {
         return *(command_.get());
-   }
+    }
+
+    std::string getCommandLine() const
+    {
+        return command_->getText();
+    }
 
     void run()
     {

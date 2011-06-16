@@ -37,10 +37,10 @@ private:
     uint32_t mouseServer_;
     uint32_t keyboardServer_;
 
-    void doKeyboardAction(uint32_t actionHeader, uint32_t arg1)
+    void doKeyboardAction(uint32_t actionHeader, uint32_t arg1, uint32_t arg2 = 0)
     {
         MessageInfo msg;
-        if (Message::sendReceive(&msg, keyboardServer_, actionHeader, arg1) != M_OK) {
+        if (Message::sendReceive(&msg, keyboardServer_, actionHeader, arg1, arg2) != M_OK) {
             monapi_warn("keyboard server is dead?");
             return;
         }
@@ -71,9 +71,9 @@ public:
         doMouseAction(MSG_MOUSE_SET_CURSOR_POSITION, x, y);
     }
 
-    void keyPress(int keycode)
+    void keyPress(int keycode, int modifiers = 0)
     {
-        doKeyboardAction(MSG_KEY_PRESS, keycode);
+        doKeyboardAction(MSG_KEY_PRESS, keycode, modifiers);
     }
 
     void keyRelease(int keycode)

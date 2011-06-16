@@ -15,8 +15,8 @@
       (write f)
       (newline)
       (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
-    (directory-list dir))
-    (monapi-stream-write stream #vu8(0)))
+    (directory-list dir)))
+
 
 (define (ps stream)
   (monapi-stream-write stream (string->utf8 "tid name"))
@@ -24,8 +24,8 @@
     (^p
       (monapi-stream-write stream (string->utf8 (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name)))))
     (process-list))
-  (monapi-stream-write stream (string->utf8 "tid name"))
-  (monapi-stream-write stream #vu8(0)))
+  (monapi-stream-write stream (string->utf8 "tid name")))
+
 
 (monapi-name-add! "/servers/shell")
 

@@ -80,6 +80,7 @@ public:
 
     virtual void processEvent(Event* event)
     {
+        logprintf("(KeyEvent*)event)->getModifiers()=%d isctrl=%d\n", ((KeyEvent*)event)->getModifiers(), ((KeyEvent*)event)->getModifiers() == KeyEvent::VKEY_CTRL);
         if (event->getType() == KeyEvent::KEY_PRESSED &&
             ((KeyEvent*)event)->getModifiers() == KeyEvent::VKEY_CTRL) {
             if (((KeyEvent*)event)->getKeycode() == 'p') {
