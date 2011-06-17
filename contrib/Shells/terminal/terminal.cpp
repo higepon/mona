@@ -236,6 +236,14 @@ static void __fastcall testTerminalThread(void* arg)
     delete testTerminal;
 }
 
+static void testInputSpace()
+{
+    MonaGUIRobot r;
+    r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), " ");
+    TerminalCommandLineProbe probe(*testTerminal, " ");
+}
+
 static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
     MonaGUIRobot r;
@@ -285,33 +293,41 @@ static void testCommandEnteredAppearsOnHistory()
     logprintf("before clear =<%s>\n", testTerminal->getCommandField().getText());
     r.clearInput(testTerminal->getCommandField());
     logprintf("after clear =<%s>\n", testTerminal->getCommandField().getText());
+//    sleep(5000);
+    logprintf("before input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
+    r.input(testTerminal->getCommandField(), "ls /LIBS/");
+    logprintf("after input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
+
     sleep(5000);
-    // r.input(testTerminal->getCommandField(), "ls /LIBS/");
-    // r.keyPress(Keys::Enter);
-    // r.keyRelease(Keys::Enter);
+    logprintf("after input 5000 msec ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
 
 
+    r.clearInput(testTerminal->getCommandField());
 
-    // r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ls /USER/");
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
 
-    // r.input(testTerminal->getCommandField(), "ls /USER/");
-    // r.keyPress(Keys::Enter);
-    // r.keyRelease(Keys::Enter);
+    logprintf("before ctrl p =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress('p', KEY_MODIFIER_CTRL);
+    logprintf("after ctrl p =<%s>\n", testTerminal->getCommandField().getText());
+    TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
+    ASSERT_EVENTUALLY(probe);
 
-    // logprintf("**** before ctrl p\n");
-    // r.keyPress('p', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
-    // ASSERT_EVENTUALLY(probe);
+    logprintf("**** before ctrl n\n");
 
-    // logprintf("**** before ctrl n\n");
-
-    // r.keyPress('n', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
-    // ASSERT_EVENTUALLY(probe2);
+    logprintf("before ctrl n =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress('n', KEY_MODIFIER_CTRL);
+    logprintf("after ctrl n =<%s>\n", testTerminal->getCommandField().getText());
+    TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
+    ASSERT_EVENTUALLY(probe2);
 }
 
 static void test()
 {
+    testInputSpace();
     testLSCommandReturnsLFSeperatedListOfFiles();
     testPSShowsHeaderAndProcess();
     testLSCausesScrollToTheLastLine();
