@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "monagui.h"
 
 namespace monagui {
-    Component::Component()
+    Component::Component() : threadId_(MonAPI::System::getThreadID())
     {
         this->parent = NULL;
         this->enabled = true;
@@ -81,10 +81,17 @@ namespace monagui {
 
     void Component::repaint()
     {
+        // don't call thread unsafe methods from another threads.
+        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (this->_buffer == NULL) return;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         setFontStyle(this->fontStyle);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         paint(this->_g);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         update();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void Component::update()

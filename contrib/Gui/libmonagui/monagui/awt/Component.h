@@ -31,6 +31,8 @@ namespace monagui {
 	 部品クラス
 	 */
 	class Component : public Object {
+    protected:
+        uint32_t threadId_;
 	private:
 		/** 親部品 */
 		Container* parent;

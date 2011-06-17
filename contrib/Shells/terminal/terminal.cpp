@@ -189,7 +189,9 @@ public:
 
     void clearInput(TextField& input)
     {
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         input.setText("");
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void input(Component& input, const std::string& text)
@@ -234,6 +236,20 @@ static void __fastcall testTerminalThread(void* arg)
     testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
     testTerminal->run();
     delete testTerminal;
+}
+
+static void testInputSpace()
+{
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    MonaGUIRobot r;
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    TextField& field = testTerminal->getCommandField();
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    r.clearInput(field);
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    r.input(testTerminal->getCommandField(), " ");
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+    TerminalCommandLineProbe probe(*testTerminal, " ");
 }
 
 static void testLSCommandReturnsLFSeperatedListOfFiles()
@@ -285,40 +301,48 @@ static void testCommandEnteredAppearsOnHistory()
     logprintf("before clear =<%s>\n", testTerminal->getCommandField().getText());
     r.clearInput(testTerminal->getCommandField());
     logprintf("after clear =<%s>\n", testTerminal->getCommandField().getText());
+//    sleep(5000);
+    logprintf("before input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
-    logprintf("after2 clear =<%s>\n", testTerminal->getCommandField().getText());
+    logprintf("after input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
+
     sleep(5000);
-
-    // r.keyPress(Keys::Enter);
-    // r.keyRelease(Keys::Enter);
+    logprintf("after input 5000 msec ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
 
 
+    r.clearInput(testTerminal->getCommandField());
 
-    // r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ls /USER/");
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
 
-    // r.input(testTerminal->getCommandField(), "ls /USER/");
-    // r.keyPress(Keys::Enter);
-    // r.keyRelease(Keys::Enter);
+    logprintf("before ctrl p =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress('p', KEY_MODIFIER_CTRL);
+    logprintf("after ctrl p =<%s>\n", testTerminal->getCommandField().getText());
+    TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
+    ASSERT_EVENTUALLY(probe);
 
-    // logprintf("**** before ctrl p\n");
-    // r.keyPress('p', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
-    // ASSERT_EVENTUALLY(probe);
+    logprintf("**** before ctrl n\n");
 
-    // logprintf("**** before ctrl n\n");
-
-    // r.keyPress('n', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
-    // ASSERT_EVENTUALLY(probe2);
+    logprintf("before ctrl n =<%s>\n", testTerminal->getCommandField().getText());
+    r.keyPress('n', KEY_MODIFIER_CTRL);
+    logprintf("after ctrl n =<%s>\n", testTerminal->getCommandField().getText());
+    TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
+    ASSERT_EVENTUALLY(probe2);
 }
 
 static void test()
 {
-    testLSCommandReturnsLFSeperatedListOfFiles();
-    testPSShowsHeaderAndProcess();
-    testLSCausesScrollToTheLastLine();
-    testEnterKeyDownRunsLSCommand();
-    testCommandEnteredAppearsOnHistory();
+    logprintf("testInputSpace START : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    testInputSpace();
+    logprintf("testInputSpace END   : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    // testLSCommandReturnsLFSeperatedListOfFiles();
+    // testPSShowsHeaderAndProcess();
+    // testLSCausesScrollToTheLastLine();
+    // testEnterKeyDownRunsLSCommand();
+    // testCommandEnteredAppearsOnHistory();
     TEST_RESULTS();
 }
 

@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "monagui.h"
 
 namespace monagui {
-    Container::Container()
+    Container::Container() : threadId_(MonAPI::System::getThreadID())
     {
     }
 
@@ -154,16 +154,27 @@ namespace monagui {
 
     void Container::repaint()
     {
+        // don't call thread unsafe methods from another threads.
+        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (getBuffer() == NULL) return;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         ASSERT(getGraphics()); // don't use getGraphics(), before add()
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         paint(getGraphics());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 自分の領域を更新する
         update();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         // 子部品を再描画する
         int I = this->componentList.size();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         for(int i = 0; i < I; i++) {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             Component* component = (Component *)(componentList.get(i));
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             component->repaint();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         }
     }
 }

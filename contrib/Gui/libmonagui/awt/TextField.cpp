@@ -105,9 +105,13 @@ namespace monagui {
 
     void TextField::setText(const String& text)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         text_ = text;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         cursor_ = text_.length();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         repaint();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void TextField::paint(Graphics* g)
