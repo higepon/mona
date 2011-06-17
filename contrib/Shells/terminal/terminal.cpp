@@ -285,8 +285,10 @@ static void testCommandEnteredAppearsOnHistory()
     logprintf("before clear =<%s>\n", testTerminal->getCommandField().getText());
     r.clearInput(testTerminal->getCommandField());
     logprintf("after clear =<%s>\n", testTerminal->getCommandField().getText());
+    r.input(testTerminal->getCommandField(), "ls /LIBS/");
+    logprintf("after2 clear =<%s>\n", testTerminal->getCommandField().getText());
     sleep(5000);
-    // r.input(testTerminal->getCommandField(), "ls /LIBS/");
+
     // r.keyPress(Keys::Enter);
     // r.keyRelease(Keys::Enter);
 
