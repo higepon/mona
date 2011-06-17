@@ -95,6 +95,7 @@ namespace monagui {
          @param text
          */
         virtual void setText(const String & text);
+        virtual void setTextWithoutRepaint(const String & text);
         /** テキストを得る */
         inline const char* getText()
         {

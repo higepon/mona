@@ -189,9 +189,8 @@ public:
 
     void clearInput(TextField& input)
     {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-        input.setText("");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        // For thread safety.
+        input.setTextWithoutRepaint("");
     }
 
     void input(Component& input, const std::string& text)
@@ -338,11 +337,11 @@ static void test()
     logprintf("testInputSpace START : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     testInputSpace();
     logprintf("testInputSpace END   : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    // testLSCommandReturnsLFSeperatedListOfFiles();
-    // testPSShowsHeaderAndProcess();
-    // testLSCausesScrollToTheLastLine();
-    // testEnterKeyDownRunsLSCommand();
-    // testCommandEnteredAppearsOnHistory();
+    testLSCommandReturnsLFSeperatedListOfFiles();
+    testPSShowsHeaderAndProcess();
+    testLSCausesScrollToTheLastLine();
+    testEnterKeyDownRunsLSCommand();
+    testCommandEnteredAppearsOnHistory();
     TEST_RESULTS();
 }
 
