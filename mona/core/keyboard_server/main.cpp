@@ -44,11 +44,18 @@ public:
                 {
                     MessageInfo message;
                     int charcode = info.arg1;
+                    int keycode = charcode;
                     int modifiers = info.arg2 | KEY_MODIFIER_DOWN;
                     if (charcode >= 'A' && charcode <= 'Z') {
                         modifiers |= KEY_MODIFIER_SHIFT;
                     }
-                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, charcode, modifiers, charcode, NULL);
+
+                    // workaround
+                    if ('a' <= charcode && charcode <= 'z') {
+                        // see MonaAi::Keys
+                        keycode = charcode + 'a' - 'A';
+                    }
+                    Message::create(&message, MSG_KEY_VIRTUAL_CODE, keycode, modifiers, charcode, NULL);
                     sendToClients(&message);
                     Message::reply(&info);
                     break;

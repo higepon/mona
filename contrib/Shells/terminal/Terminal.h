@@ -100,6 +100,8 @@ public:
             (event->getType() == KeyEvent::KEY_PRESSED &&
              event->getSource() == command_.get() &&
              ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER);
+
+        logprintf("Terminal.h processEvent keycode=%d button?=%d\n", ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER, event->getSource() == command_.get());
         if (runsCommand) {
             if (!sendCommand(command_->getText())) {
                 output_->setText("command failed");

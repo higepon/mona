@@ -293,25 +293,30 @@ static void testCommandEnteredAppearsOnHistory()
     r.clearInput(testTerminal->getCommandField());
 //    sleep(5000);
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
+    logprintf("before enter \n");
+
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
 
-    sleep(5000);
+   TerminalOutputProbe probe(*testTerminal, "GUI.DL5");
+   ASSERT_EVENTUALLY(probe);
 
-
+    logprintf("ls /LIBS done\n");
     r.clearInput(testTerminal->getCommandField());
 
     r.input(testTerminal->getCommandField(), "ls /USER/");
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
+    TerminalOutputProbe probe2(*testTerminal, "TEMP");
+    ASSERT_EVENTUALLY(probe2);
 
     r.keyPress('p', KEY_MODIFIER_CTRL);
-    TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
-    ASSERT_EVENTUALLY(probe);
+    TerminalCommandLineProbe probe3(*testTerminal, "ls /LIBS/");
+    ASSERT_EVENTUALLY(probe3);
 
     r.keyPress('n', KEY_MODIFIER_CTRL);
-    TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
-    ASSERT_EVENTUALLY(probe2);
+    TerminalCommandLineProbe probe4(*testTerminal, "ls /USER/");
+    ASSERT_EVENTUALLY(probe4);
 }
 
 static void test()
@@ -321,6 +326,7 @@ static void test()
     testPSShowsHeaderAndProcess();
     testLSCausesScrollToTheLastLine();
     testEnterKeyDownRunsLSCommand();
+
     testCommandEnteredAppearsOnHistory();
     TEST_RESULTS();
 }

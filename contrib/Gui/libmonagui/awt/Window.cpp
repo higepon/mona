@@ -435,6 +435,7 @@ namespace monagui {
                         } else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
                             this->keyEvent.setType(KeyEvent::KEY_RELEASED);
                         }
+                        logprintf("window.cpp before dispatch keycode=%d\n", keyEvent.getKeycode());
                         dispatchEvent(&this->keyEvent);
                     }
 
