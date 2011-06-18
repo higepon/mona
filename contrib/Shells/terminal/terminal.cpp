@@ -241,11 +241,14 @@ static void testInputSpace()
     r.clearInput(field);
     r.input(testTerminal->getCommandField(), " ");
     TerminalCommandLineProbe probe(*testTerminal, " ");
+    ASSERT_EVENTUALLY(probe);
 }
 
 static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
     MonaGUIRobot r;
+    r.clearInput(testTerminal->getCommandField());
+    r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
     ASSERT_EVENTUALLY(probe);
@@ -342,7 +345,7 @@ int main(int argc, char* argv[])
         uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
         waitSubThread(id);
         test();
-        stopSubThread(id);
+//        stopSubThread(id);
     } else {
         terminal = new Terminal(*outStream, sharedString);
         monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);

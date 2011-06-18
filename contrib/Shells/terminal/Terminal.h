@@ -158,6 +158,7 @@ protected:
 
     bool sendCommand(const std::string& command)
     {
+        logprintf("sendCommand <%s>\n", command.c_str());
         uint32_t tid;
         if (monapi_name_whereis("/servers/shell", tid) != M_OK) {
             return false;

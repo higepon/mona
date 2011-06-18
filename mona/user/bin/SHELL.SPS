@@ -48,7 +48,9 @@
                                                                         "can't kill the process"))))
            (monapi-message-reply from header MSG_OK)]
          [x
-           (apply call-process x)]))
+           #;(apply call-process x)
+           (format #t "unknown command ~a" x)
+           (monapi-message-reply from header MSG_OK)]))
       (loop)]
     [else
       (format #t "received ~a\n" header)

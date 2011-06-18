@@ -155,7 +155,9 @@ namespace monagui {
     void Container::repaint()
     {
         // don't call thread unsafe methods from another threads.
-        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        if (threadId_ != MonAPI::System::getThreadID()) {
+            monapi_warn("");
+        }
         if (getBuffer() == NULL) return;
         ASSERT(getGraphics()); // don't use getGraphics(), before add()
         paint(getGraphics());
