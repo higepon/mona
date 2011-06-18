@@ -45,7 +45,6 @@ public:
                     MessageInfo message;
                     int charcode = info.arg1;
                     int modifiers = info.arg2 | KEY_MODIFIER_DOWN;
-                    logprintf("keyboard server modifiers=%d\n", modifiers);
                     if (charcode >= 'A' && charcode <= 'Z') {
                         modifiers |= KEY_MODIFIER_SHIFT;
                     }

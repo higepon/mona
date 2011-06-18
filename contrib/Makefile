@@ -124,3 +124,4 @@ depend:
 	cd Misc/mg-20090107/ && $(MAKE) depend
 	cd Misc/facebook/ && $(MAKE) depend
 	cd Gui/ime_server && $(MAKE) depend
+	cd Shells/terminal && $(MAKE) depend

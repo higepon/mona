@@ -133,7 +133,6 @@ public:
 
     void describeTo(std::string& d)
     {
-        logprintf("[[%s]]", lastLine_.c_str());
         d += "    last line<";
         d += lastLine_;
         d += ">";
@@ -159,9 +158,7 @@ static void __fastcall stdoutStreamReader(void* mainThread)
     // read from outStream, accumulates as string.
     // Then notifies data has come.
     for (;;) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         uint32_t sizeRead = outStream->read(buf.get(), outStream->capacity(), true);
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         sharedString.clear();
         sharedString += std::string(buf.get(), sizeRead);
         MessageInfo info;
@@ -239,15 +236,10 @@ static void __fastcall testTerminalThread(void* arg)
 
 static void testInputSpace()
 {
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     MonaGUIRobot r;
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TextField& field = testTerminal->getCommandField();
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     r.clearInput(field);
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     r.input(testTerminal->getCommandField(), " ");
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     TerminalCommandLineProbe probe(*testTerminal, " ");
 }
 
@@ -293,22 +285,15 @@ static void testEnterKeyDownRunsLSCommand()
 
 static void testCommandEnteredAppearsOnHistory()
 {
-    logprintf("**** HISTORY test start\n");
-
     MonaGUIRobot r;
 
-    logprintf("before clear =<%s>\n", testTerminal->getCommandField().getText());
     r.clearInput(testTerminal->getCommandField());
-    logprintf("after clear =<%s>\n", testTerminal->getCommandField().getText());
 //    sleep(5000);
-    logprintf("before input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
-    logprintf("after input ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
 
     sleep(5000);
-    logprintf("after input 5000 msec ls /LIBS/ =<%s>\n", testTerminal->getCommandField().getText());
 
 
     r.clearInput(testTerminal->getCommandField());
@@ -317,26 +302,18 @@ static void testCommandEnteredAppearsOnHistory()
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
 
-    logprintf("before ctrl p =<%s>\n", testTerminal->getCommandField().getText());
     r.keyPress('p', KEY_MODIFIER_CTRL);
-    logprintf("after ctrl p =<%s>\n", testTerminal->getCommandField().getText());
     TerminalCommandLineProbe probe(*testTerminal, "ls /LIBS/");
     ASSERT_EVENTUALLY(probe);
 
-    logprintf("**** before ctrl n\n");
-
-    logprintf("before ctrl n =<%s>\n", testTerminal->getCommandField().getText());
     r.keyPress('n', KEY_MODIFIER_CTRL);
-    logprintf("after ctrl n =<%s>\n", testTerminal->getCommandField().getText());
     TerminalCommandLineProbe probe2(*testTerminal, "ls /USER/");
     ASSERT_EVENTUALLY(probe2);
 }
 
 static void test()
 {
-    logprintf("testInputSpace START : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     testInputSpace();
-    logprintf("testInputSpace END   : %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     testLSCommandReturnsLFSeperatedListOfFiles();
     testPSShowsHeaderAndProcess();
     testLSCausesScrollToTheLastLine();
