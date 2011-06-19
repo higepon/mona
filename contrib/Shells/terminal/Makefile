@@ -1,5 +1,5 @@
 TARGET  = TERMINAL
-SOURCES = terminal.cpp
+SOURCES = terminal.cpp test.cpp
 
 ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)

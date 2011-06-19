@@ -1,0 +1,283 @@
+/*
+ * test.cpp - 
+ *
+ *   Copyright (c) 2009  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
+ *
+ *   Redistribution and use in source and binary forms, with or without
+ *   modification, are permitted provided that the following conditions
+ *   are met:
+ *
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *
+ *   2. Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ *   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ *   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *  $Id: test.cpp 183 2008-07-04 06:19:28Z higepon $
+ */
+
+#include <monagui.h>
+#define MUNIT_GLOBAL_VALUE_DEFINED
+#include <monapi/MUnit.h>
+#include "TestTerminal.h"
+
+using namespace MonAPI;
+
+class TerminalCommandLineProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastCommand_;
+    std::string expectedCommand_;
+public:
+    TerminalCommandLineProbe(TestTerminal& terminal, const std::string& expectedCommand) :
+        terminal_(terminal),
+        expectedCommand_(expectedCommand)
+    {
+    }
+
+    void sample()
+    {
+        lastCommand_ = terminal_.getCommandLine();
+    }
+    bool isSatisfied()
+    {
+        return lastCommand_ == expectedCommand_;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "<";
+        d += expectedCommand_;
+        d += ">";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastCommand_;
+        d += "> ";
+    }
+};
+
+
+class TerminalOutputProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastContent_;
+    std::string contentToMatch_;
+public:
+    TerminalOutputProbe(TestTerminal& terminal, const std::string& contentToMatch) :
+        terminal_(terminal),
+        contentToMatch_(contentToMatch)
+    {
+    }
+
+    void sample()
+    {
+        lastContent_ = terminal_.getOutput();
+    }
+    bool isSatisfied()
+    {
+        return lastContent_.find(contentToMatch_) != std::string::npos;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "<";
+        d += contentToMatch_;
+        d += ">";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastContent_;
+        d += "> ";
+    }
+};
+
+class TerminalLastDataShouldBeShownProbe : public Probe
+{
+private:
+    TestTerminal& terminal_;
+    std::string lastContent_;
+    std::string lastLine_;
+public:
+    TerminalLastDataShouldBeShownProbe(TestTerminal& terminal) :
+        terminal_(terminal)
+    {
+    }
+
+    void sample()
+    {
+        lastContent_ = terminal_.getOutput();
+        lastLine_ = terminal_.getLastLine();
+    }
+    bool isSatisfied()
+    {
+        bool ret = lastContent_.find(lastLine_) != std::string::npos;
+        return ret;
+    }
+
+    void describeTo(std::string& d)
+    {
+        d += "    last line<";
+        d += lastLine_;
+        d += ">";
+    }
+
+    void describeFailureTo(std::string& d)
+    {
+        d += "<";
+        d += lastContent_;
+        d += "> ";
+    }
+};
+
+static uintptr_t waitSubThread(uintptr_t id)
+{
+    MessageInfo dst, src;
+    src.header = MSG_STARTED;
+    src.from = id;
+    int ret = Message::receive(&dst, &src, Message::equalsFromHeader);
+    ASSERT_EQ(M_OK, ret);
+    uintptr_t tid = dst.from;
+    return tid;
+}
+
+static void stopSubThread(uintptr_t id)
+{
+    ASSERT_EQ(M_OK, Message::send(id, MSG_STOP));
+}
+
+TestTerminal* testTerminal;
+uintptr_t terminalThread;
+extern void __fastcall stdoutStreamReader(void* mainThread);
+extern Stream* outStream;
+extern std::string sharedString;
+static void __fastcall testTerminalThread(void* arg)
+{
+    terminalThread = System::getThreadID();
+    uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)terminalThread);
+    uintptr_t mainThread2 = (uintptr_t)arg;
+    outStream = new Stream;
+    testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
+    testTerminal->run();
+    delete testTerminal;
+}
+
+static void testInputSpace()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), " ");
+    TerminalCommandLineProbe probe(*testTerminal, " ");
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void enterCommandAndClickButton(const std::string& command)
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), command.c_str());
+    r.click(testTerminal->getButton());
+}
+
+
+static void testLSCommandReturnsLFSeperatedListOfFiles()
+{
+    enterCommandAndClickButton("ls /APPS/");
+    TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
+    ASSERT_EVENTUALLY(probe);
+}
+
+
+static void testPSShowsHeaderAndProcess()
+{
+    enterCommandAndClickButton("ps");
+    TerminalOutputProbe probe(*testTerminal, "tid name");
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void testLSCausesScrollToTheLastLine()
+{
+    enterCommandAndClickButton("ls /APPS/");
+    TerminalLastDataShouldBeShownProbe probe(*testTerminal);
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void enterCommand(const std::string& command)
+{
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
+
+    MonaGUIRobot r;
+    r.input(testTerminal->getCommandField(), command.c_str());
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
+}
+
+// todo refactor tests
+static void testEnterKeyDownRunsLSCommand()
+{
+    enterCommand("ls /APPS/");
+    TerminalLastDataShouldBeShownProbe probe(*testTerminal);
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void testCommandEnteredAppearsOnHistory()
+{
+    enterCommand("ls /LIBS/");
+    TerminalOutputProbe probe(*testTerminal, "GUI.DL5");
+    ASSERT_EVENTUALLY(probe);
+
+    enterCommand("ls /USER/");
+    TerminalOutputProbe probe2(*testTerminal, "TEMP");
+    ASSERT_EVENTUALLY(probe2);
+
+    MonaGUIRobot r;
+    r.keyPress('p', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe3(*testTerminal, "ls /LIBS/");
+    ASSERT_EVENTUALLY(probe3);
+
+    r.keyPress('n', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe4(*testTerminal, "ls /USER/");
+    ASSERT_EVENTUALLY(probe4);
+}
+
+static void test()
+{
+    testInputSpace();
+    testLSCommandReturnsLFSeperatedListOfFiles();
+    testPSShowsHeaderAndProcess();
+    testLSCausesScrollToTheLastLine();
+    testEnterKeyDownRunsLSCommand();
+
+    testCommandEnteredAppearsOnHistory();
+    TEST_RESULTS();
+}
+
+void test(uint32_t mainThread)
+{
+    uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
+    waitSubThread(id);
+    test();
+    stopSubThread(id);
+}
+
+
