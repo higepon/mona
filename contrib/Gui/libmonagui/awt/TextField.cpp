@@ -204,7 +204,6 @@ namespace monagui {
     {
         int keycode = event->getKeycode();
         int modifiers = event->getModifiers();
-        logprintf("TextField keycode=%x\n", keycode);
 
         // Toggle IME ON/OFF
         if ((keycode == '\\' && modifiers == KeyEvent::VKEY_CTRL) || (keycode == 'o' && modifiers == KeyEvent::VKEY_CTRL)) {

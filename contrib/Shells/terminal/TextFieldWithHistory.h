@@ -49,7 +49,6 @@ private:
 
     void showPreviousHistory()
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (historyIndex_ == 0) {
             return;
         }
@@ -59,7 +58,6 @@ private:
 
     void showNextHistory()
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (historyIndex_ == (int)histories_.size() - 1) {
             return;
         }
@@ -69,7 +67,6 @@ private:
 
     void showHistory()
     {
-        logprintf("%s %s:%d<%s>\n", __func__, __FILE__, __LINE__, histories_[historyIndex_].c_str());
         ASSERT(historyIndex_ >= 0);
         ASSERT(historyIndex_ < (int)histories_.size());
         setText(histories_[historyIndex_].c_str());
@@ -83,7 +80,6 @@ public:
 
     virtual void processEvent(Event* event)
     {
-        logprintf("TextFieldWithHistory keycode=%d (KeyEvent*)event)->getModifiers()=%d isctrl=%d\n", ((KeyEvent*)event)->getKeycode(), ((KeyEvent*)event)->getModifiers(), ((KeyEvent*)event)->getModifiers() == KeyEvent::VKEY_CTRL);
         if (event->getType() == KeyEvent::KEY_PRESSED &&
             ((KeyEvent*)event)->getModifiers() == KeyEvent::VKEY_CTRL) {
             if (((KeyEvent*)event)->getKeycode() == 'p') {

@@ -124,34 +124,26 @@ public:
     void sample()
     {
         lastContent_ = terminal_.getOutput();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         lastLine_ = terminal_.getLastLine();
-        logprintf("%s %s:%d<%s:%s>\n", __func__, __FILE__, __LINE__, lastContent_.c_str(), lastLine_.c_str());
     }
     bool isSatisfied()
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         bool ret = lastContent_.find(lastLine_) != std::string::npos;
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return ret;
     }
 
     void describeTo(std::string& d)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         d += "    last line<";
         d += lastLine_;
         d += ">";
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void describeFailureTo(std::string& d)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         d += "<";
         d += lastContent_;
         d += "> ";
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 };
 
@@ -297,7 +289,6 @@ static void testCommandEnteredAppearsOnHistory()
     ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
 //    sleep(5000);
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
-    logprintf("before enter \n");
 
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
@@ -305,7 +296,6 @@ static void testCommandEnteredAppearsOnHistory()
    TerminalOutputProbe probe(*testTerminal, "GUI.DL5");
    ASSERT_EVENTUALLY(probe);
 
-    logprintf("ls /LIBS done\n");
 
     ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "ls /USER/");
