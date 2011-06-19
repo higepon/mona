@@ -169,37 +169,6 @@ static void __fastcall stdoutStreamReader(void* mainThread)
     }
 }
 
-class MonaGUIRobot : public Robot
-{
-public:
-    void click(Component& button)
-    {
-        Rectangle r = *(button.getBounds());
-        Frame* parent = (Frame*)button.getParent();
-        ASSERT(parent);
-        r.x += parent->getBounds()->x + parent->getInsets()->left;
-        r.y += parent->getBounds()->y + parent->getInsets()->top;
-        mouseMove(r.x, r.y);
-        sleep(1000);
-        mousePress();
-        mouseRelease();
-    }
-
-    void input(Component& input, const std::string& text)
-    {
-        Rectangle r = *(input.getBounds());
-        Frame* parent = (Frame*)input.getParent();
-        ASSERT(parent);
-        r.x += parent->getBounds()->x + parent->getInsets()->left;
-        r.y += parent->getBounds()->y + parent->getInsets()->top;
-        mouseMove(r.x, r.y);
-        sleep(100);
-        mousePress();
-        mouseRelease();
-        type(text.c_str());
-    }
-};
-
 static uintptr_t waitSubThread(uintptr_t id)
 {
     MessageInfo dst, src;
