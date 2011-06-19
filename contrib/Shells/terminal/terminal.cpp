@@ -34,25 +34,6 @@
 
 using namespace MonAPI;
 
-static void sendClearInput(uint32_t dest)
-{
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, dest, MSG_TEST_CLEAR_INPUT) != M_OK) {
-        monapi_fatal("send failed");
-    }
-}
-
-static void sendClearOutput(uint32_t dest)
-{
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, dest, MSG_TEST_CLEAR_OUTPUT) != M_OK) {
-        monapi_fatal("send failed");
-    }
-}
-
-
-
-
 class TerminalCommandLineProbe : public Probe
 {
 private:
@@ -266,7 +247,7 @@ static void __fastcall testTerminalThread(void* arg)
 static void testInputSpace()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), " ");
     TerminalCommandLineProbe probe(*testTerminal, " ");
     ASSERT_EVENTUALLY(probe);
@@ -275,7 +256,7 @@ static void testInputSpace()
 static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
@@ -285,7 +266,7 @@ static void testLSCommandReturnsLFSeperatedListOfFiles()
 static void testPSShowsHeaderAndProcess()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "ps");
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "tid name");
@@ -295,7 +276,7 @@ static void testPSShowsHeaderAndProcess()
 static void testLSCausesScrollToTheLastLine()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
     TerminalLastDataShouldBeShownProbe probe(*testTerminal);
@@ -306,8 +287,8 @@ static void testLSCausesScrollToTheLastLine()
 static void testEnterKeyDownRunsLSCommand()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
-    sendClearOutput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
     r.clearInput(testTerminal->getCommandField());
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.keyPress(Keys::Enter);
@@ -319,8 +300,8 @@ static void testEnterKeyDownRunsLSCommand()
 static void testCommandEnteredAppearsOnHistory()
 {
     MonaGUIRobot r;
-    sendClearInput(terminalThread);
-    sendClearOutput(terminalThread);
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
 //    sleep(5000);
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
     logprintf("before enter \n");

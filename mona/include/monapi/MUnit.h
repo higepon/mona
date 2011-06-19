@@ -26,6 +26,27 @@
 #define MUNIT_GLOBAL_VAL(v) /* */
 #endif
 
+class MUnitService
+{
+private:
+    static intptr_t sendClear(uint32_t dest, uint32_t header)
+    {
+        MessageInfo msg;
+        return MonAPI::Message::sendReceive(&msg, dest, header);
+    }
+
+public:
+    static intptr_t clearInput(uint32_t dest)
+    {
+        return sendClear(dest, MSG_TEST_CLEAR_INPUT);
+    }
+
+    static intptr_t clearOutput(uint32_t dest)
+    {
+        return sendClear(dest, MSG_TEST_CLEAR_OUTPUT);
+    }
+};
+
 #define FAIL(msg) fail(msg, __FILE__, __LINE__)
 
 #define SKIP(condition) printf("MUnit:Skipped %s %s:%d %s\n", #condition, __FILE__, __LINE__,  __PRETTY_FUNCTION__); \
