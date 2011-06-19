@@ -110,12 +110,6 @@ namespace monagui {
         repaint();
     }
 
-    void TextField::setTextWithoutRepaint(const String& text)
-    {
-        text_ = text;
-        cursor_ = text_.length();
-    }
-
     void TextField::paint(Graphics* g)
     {
         int w = getWidth(), h = getHeight();

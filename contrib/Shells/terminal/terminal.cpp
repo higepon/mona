@@ -193,12 +193,6 @@ public:
         mouseRelease();
     }
 
-    void clearInput(TextField& input)
-    {
-        // For thread safety.
-        input.setTextWithoutRepaint("");
-    }
-
     void input(Component& input, const std::string& text)
     {
         Rectangle r = *(input.getBounds());
@@ -289,7 +283,6 @@ static void testEnterKeyDownRunsLSCommand()
     MonaGUIRobot r;
     ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
-    r.clearInput(testTerminal->getCommandField());
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
@@ -313,8 +306,8 @@ static void testCommandEnteredAppearsOnHistory()
    ASSERT_EVENTUALLY(probe);
 
     logprintf("ls /LIBS done\n");
-    r.clearInput(testTerminal->getCommandField());
 
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "ls /USER/");
     r.keyPress(Keys::Enter);
     r.keyRelease(Keys::Enter);
@@ -362,7 +355,7 @@ int main(int argc, char* argv[])
         uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
         waitSubThread(id);
         test();
-//        stopSubThread(id);
+        stopSubThread(id);
     } else {
         terminal = new Terminal(*outStream, sharedString);
         monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
