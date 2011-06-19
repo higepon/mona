@@ -54,9 +54,8 @@ protected:
     MonAPI::scoped_ptr<TextField> output_;
     MonAPI::scoped_ptr<Button> button_;
     MonAPI::scoped_ptr<Scrollbar> scrollbar_;
-    MonAPI::Stream& outStream_;
+    TerminalInfo& terminalInfo_;
     MonAPI::Strings lines_;
-    std::string& sharedString_;
     uintptr_t currentLineNo_;
     uintptr_t outputNumRows_;
 
@@ -67,13 +66,12 @@ protected:
     };
 
 public:
-    Terminal(MonAPI::Stream& outStream, std::string& sharedString) :
+    Terminal(TerminalInfo& terminalInfo) :
         command_(new TextFieldWithHistory()),
         output_(new TextField()),
         button_(new Button("go")),
         scrollbar_(new Scrollbar()),
-        outStream_(outStream),
-        sharedString_(sharedString),
+        terminalInfo_(terminalInfo),
         currentLineNo_(0)
     {
         setBounds(50, 200, 300, 400);
@@ -124,7 +122,7 @@ public:
             repaint();
         } else if (event->getType() == Event::CUSTOM_EVENT &&
                    event->header == MSG_UPDATE) {
-            appendOutput(sharedString_);
+            appendOutput(terminalInfo_.sharedString);
 
             if (MonAPI::Message::send(event->from, MSG_OK, event->header) != M_OK) {
                 monapi_fatal("sub thread is dead");
@@ -177,7 +175,7 @@ protected:
             return false;
         }
         MessageInfo msg;
-        if (MonAPI::Message::sendReceive(&msg, tid, MSG_TEXT, outStream_.handle(), 0, 0, command.c_str()) != M_OK) {
+        if (MonAPI::Message::sendReceive(&msg, tid, MSG_TEXT, terminalInfo_.outStream.handle(), 0, 0, command.c_str()) != M_OK) {
             return false;
         }
         return true;

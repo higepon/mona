@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     if (isTestMode) {
         test(&info);
     } else {
-        Terminal terminal(info.outStream, info.sharedString);
+        Terminal terminal(info);
         monapi_thread_create_with_arg(stdoutStreamReader, &info);
         terminal.run();
     }

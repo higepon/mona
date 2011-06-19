@@ -43,7 +43,7 @@ private:
         ASSERT(ret == M_OK);
     }
 public:
-    TestTerminal(uint32_t observer, MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString), observer_(observer)
+    TestTerminal(uint32_t observer, TerminalInfo& terminalInfo) : Terminal(terminalInfo), observer_(observer)
     {
     }
 
