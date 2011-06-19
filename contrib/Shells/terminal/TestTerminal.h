@@ -93,12 +93,6 @@ public:
         }
         Terminal::run();
     }
-    // void buttonClick()
-    // {
-    //     MouseEvent event(MouseEvent::MOUSE_RELEASED, button_.get(), 0, 0);
-    //     processEvent(&event);
-    // }
-
 
     std::string getOutput() const
     {
@@ -113,83 +107,6 @@ public:
             return lines_[lines_.size() - 1];
         }
     }
-
-    // void enterCommand(const std::string& command)
-    // {
-    //     command_->setText(command.c_str());
-    //     pressEnterKey();
-    // }
-
-    // void pressEnterKey()
-    // {
-    //     KeyEvent event(KeyEvent::KEY_PRESSED, command_.get(), KeyEvent::VKEY_ENTER, 0);
-    //     command_->processEvent(&event);
-    //     processEvent(&event);
-    // }
-
-    // void pressCtrlKey(char c)
-    // {
-    //     KeyEvent event(KeyEvent::KEY_PRESSED, command_.get(), c, KeyEvent::VKEY_CTRL);
-    //     command_->processEvent(&event);
-    // }
-
-    // void testLSCommandReturnsLFSeperatedListOfFiles()
-    // {
-    //     clearOutput();
-    //     command_->setText("ls /APPS/");
-    //     buttonClick();
-    //     while (find(lines_.begin(), lines_.end(), "TEST.RAW") == lines_.end()) {
-    //     }
-    //     EXPECT_TRUE(true);
-    // }
-
-    // void testEnterKeyDownRunsLSCommand()
-    // {
-    //     clearOutput();
-    //     enterCommand("ls /APPS/");
-    //     EXPECT_TRUE(find(lines_.begin(), lines_.end(), "TEST.RAW") != lines_.end());
-    // }
-
-    // void testLSCausesScrollToTheLastLine()
-    // {
-    //     clearOutput();
-    //     command_->setText("ls /APPS/");
-    //     buttonClick();
-    //     // On the output, we should include the last line.
-    //     EXPECT_TRUE(strstr(output_->getText(), lines_[lines_.size() - 1].c_str()) != NULL);
-    // }
-
-    // void testPSShowsHeaderAndProcess()
-    // {
-    //     clearOutput();
-    //     command_->setText("ps");
-    //     buttonClick();
-    //     EXPECT_TRUE(strstr(output_->getText(), "tid name") != NULL);
-    // }
-
-    // void testCommandEnteredAppearsOnHistory()
-    // {
-    //     clearOutput();
-    //     enterCommand("ls /LIBS/");
-    //     enterCommand("ls /USER/");
-
-    //     pressCtrlKey('p');
-    //     EXPECT_EQ(0, strcmp("ls /LIBS/", command_->getText()));
-
-    //     pressCtrlKey('n');
-    //     EXPECT_EQ(0, strcmp("ls /USER/", command_->getText()));
-    // }
-
-    // void test()
-    // {
-    //     testLSCommandReturnsLFSeperatedListOfFiles();
-    //     testLSCausesScrollToTheLastLine();
-    //     testPSShowsHeaderAndProcess();
-    //     testEnterKeyDownRunsLSCommand();
-    //     testCommandEnteredAppearsOnHistory();
-    //     TEST_RESULTS();
-    //     stop();
-    // }
 };
 
 #endif // _TEST_TERMINAL_
