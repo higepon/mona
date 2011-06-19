@@ -269,41 +269,36 @@ static void testLSCausesScrollToTheLastLine()
     ASSERT_EVENTUALLY(probe);
 }
 
+static void enterCommand(const std::string& command)
+{
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
+
+    MonaGUIRobot r;
+    r.input(testTerminal->getCommandField(), command.c_str());
+    r.keyPress(Keys::Enter);
+    r.keyRelease(Keys::Enter);
+}
+
 // todo refactor tests
 static void testEnterKeyDownRunsLSCommand()
 {
-    MonaGUIRobot r;
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
-    r.input(testTerminal->getCommandField(), "ls /APPS/");
-    r.keyPress(Keys::Enter);
-    r.keyRelease(Keys::Enter);
+    enterCommand("ls /APPS/");
     TerminalLastDataShouldBeShownProbe probe(*testTerminal);
     ASSERT_EVENTUALLY(probe);
 }
 
 static void testCommandEnteredAppearsOnHistory()
 {
-    MonaGUIRobot r;
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    ASSERT_EQ(M_OK, MUnitService::clearOutput(terminalThread));
-//    sleep(5000);
-    r.input(testTerminal->getCommandField(), "ls /LIBS/");
+    enterCommand("ls /LIBS/");
+    TerminalOutputProbe probe(*testTerminal, "GUI.DL5");
+    ASSERT_EVENTUALLY(probe);
 
-    r.keyPress(Keys::Enter);
-    r.keyRelease(Keys::Enter);
-
-   TerminalOutputProbe probe(*testTerminal, "GUI.DL5");
-   ASSERT_EVENTUALLY(probe);
-
-
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    r.input(testTerminal->getCommandField(), "ls /USER/");
-    r.keyPress(Keys::Enter);
-    r.keyRelease(Keys::Enter);
+    enterCommand("ls /USER/");
     TerminalOutputProbe probe2(*testTerminal, "TEMP");
     ASSERT_EVENTUALLY(probe2);
 
+    MonaGUIRobot r;
     r.keyPress('p', KEY_MODIFIER_CTRL);
     TerminalCommandLineProbe probe3(*testTerminal, "ls /LIBS/");
     ASSERT_EVENTUALLY(probe3);

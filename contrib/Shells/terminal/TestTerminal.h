@@ -45,8 +45,6 @@ private:
 public:
     TestTerminal(uint32_t observer, MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString), observer_(observer)
     {
-        // // Starts test with timer
-        // setTimer(50);
     }
 
     virtual ~TestTerminal() {}
