@@ -38,21 +38,26 @@
 #include "probe/TerminalLastDataShouldBeShownProbe.h"
 using namespace MonAPI;
 
-static uintptr_t waitSubThread(uintptr_t id)
+class Helper
 {
-    MessageInfo dst, src;
-    src.header = MSG_STARTED;
-    src.from = id;
-    int ret = Message::receive(&dst, &src, Message::equalsFromHeader);
-    ASSERT_EQ(M_OK, ret);
-    uintptr_t tid = dst.from;
-    return tid;
-}
+public:
+    static uintptr_t waitSubThread(uintptr_t id)
+    {
+        MessageInfo dst, src;
+        src.header = MSG_STARTED;
+        src.from = id;
+        int ret = Message::receive(&dst, &src, Message::equalsFromHeader);
+        ASSERT_EQ(M_OK, ret);
+        uintptr_t tid = dst.from;
+        return tid;
+    }
 
-static void stopSubThread(uintptr_t id)
-{
-    ASSERT_EQ(M_OK, Message::send(id, MSG_STOP));
-}
+    static void stopSubThread(uintptr_t id)
+    {
+        ASSERT_EQ(M_OK, Message::send(id, MSG_STOP));
+    }
+};
+
 
 TestTerminal* testTerminal;
 uintptr_t terminalThread;
@@ -62,7 +67,7 @@ extern std::string sharedString;
 static void __fastcall testTerminalThread(void* arg)
 {
     terminalThread = System::getThreadID();
-    uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)terminalThread);
+    monapi_thread_create_with_arg(stdoutStreamReader, (void*)terminalThread);
     uintptr_t mainThread2 = (uintptr_t)arg;
     outStream = new Stream;
     testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
@@ -86,7 +91,6 @@ static void enterCommandAndClickButton(const std::string& command)
     r.input(testTerminal->getCommandField(), command.c_str());
     r.click(testTerminal->getButton());
 }
-
 
 static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
@@ -121,7 +125,6 @@ static void enterCommand(const std::string& command)
     r.keyRelease(Keys::Enter);
 }
 
-// todo refactor tests
 static void testEnterKeyDownRunsLSCommand()
 {
     enterCommand("ls /APPS/");
@@ -149,14 +152,13 @@ static void testCommandEnteredAppearsOnHistory()
     ASSERT_EVENTUALLY(probe4);
 }
 
-static void test()
+static void testAll()
 {
     testInputSpace();
     testLSCommandReturnsLFSeperatedListOfFiles();
     testPSShowsHeaderAndProcess();
     testLSCausesScrollToTheLastLine();
     testEnterKeyDownRunsLSCommand();
-
     testCommandEnteredAppearsOnHistory();
     TEST_RESULTS();
 }
@@ -164,9 +166,7 @@ static void test()
 void test(uint32_t mainThread)
 {
     uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
-    waitSubThread(id);
-    test();
-    stopSubThread(id);
+    Helper::waitSubThread(id);
+    testAll();
+    Helper::stopSubThread(id);
 }
-
-
