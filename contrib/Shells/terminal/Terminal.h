@@ -124,6 +124,12 @@ public:
         }
     }
 
+    void clearOutput()
+    {
+        lines_.clear();
+    }
+
+
 protected:
 
     void appendOutput(const std::string& content)
@@ -151,11 +157,6 @@ protected:
             content += "\n";
         }
        output_->setText(content.c_str());
-    }
-
-    void clearOutput()
-    {
-        lines_.clear();
     }
 
     bool sendCommand(const std::string& command)

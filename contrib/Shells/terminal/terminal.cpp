@@ -34,6 +34,25 @@
 
 using namespace MonAPI;
 
+static void sendClearInput(uint32_t dest)
+{
+    MessageInfo msg;
+    if (MonAPI::Message::sendReceive(&msg, dest, MSG_TEST_CLEAR_INPUT) != M_OK) {
+        monapi_fatal("send failed");
+    }
+}
+
+static void sendClearOutput(uint32_t dest)
+{
+    MessageInfo msg;
+    if (MonAPI::Message::sendReceive(&msg, dest, MSG_TEST_CLEAR_OUTPUT) != M_OK) {
+        monapi_fatal("send failed");
+    }
+}
+
+
+
+
 class TerminalCommandLineProbe : public Probe
 {
 private:
@@ -124,25 +143,34 @@ public:
     void sample()
     {
         lastContent_ = terminal_.getOutput();
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         lastLine_ = terminal_.getLastLine();
+        logprintf("%s %s:%d<%s:%s>\n", __func__, __FILE__, __LINE__, lastContent_.c_str(), lastLine_.c_str());
     }
     bool isSatisfied()
     {
-        return lastContent_.find(lastLine_) != std::string::npos;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        bool ret = lastContent_.find(lastLine_) != std::string::npos;
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        return ret;
     }
 
     void describeTo(std::string& d)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         d += "    last line<";
         d += lastLine_;
         d += ">";
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 
     void describeFailureTo(std::string& d)
     {
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         d += "<";
         d += lastContent_;
         d += "> ";
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     }
 };
 
@@ -222,11 +250,12 @@ static void stopSubThread(uintptr_t id)
 }
 
 TestTerminal* testTerminal;
+uintptr_t terminalThread;
 
 static void __fastcall testTerminalThread(void* arg)
 {
-    uintptr_t mainThread = System::getThreadID();
-    uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
+    terminalThread = System::getThreadID();
+    uintptr_t hoge = monapi_thread_create_with_arg(stdoutStreamReader, (void*)terminalThread);
     uintptr_t mainThread2 = (uintptr_t)arg;
     outStream = new Stream;
     testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
@@ -237,8 +266,7 @@ static void __fastcall testTerminalThread(void* arg)
 static void testInputSpace()
 {
     MonaGUIRobot r;
-    TextField& field = testTerminal->getCommandField();
-    r.clearInput(field);
+    sendClearInput(terminalThread);
     r.input(testTerminal->getCommandField(), " ");
     TerminalCommandLineProbe probe(*testTerminal, " ");
     ASSERT_EVENTUALLY(probe);
@@ -247,7 +275,7 @@ static void testInputSpace()
 static void testLSCommandReturnsLFSeperatedListOfFiles()
 {
     MonaGUIRobot r;
-    r.clearInput(testTerminal->getCommandField());
+    sendClearInput(terminalThread);
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
@@ -257,7 +285,7 @@ static void testLSCommandReturnsLFSeperatedListOfFiles()
 static void testPSShowsHeaderAndProcess()
 {
     MonaGUIRobot r;
-    r.clearInput(testTerminal->getCommandField());
+    sendClearInput(terminalThread);
     r.input(testTerminal->getCommandField(), "ps");
     r.click(testTerminal->getButton());
     TerminalOutputProbe probe(*testTerminal, "tid name");
@@ -267,7 +295,7 @@ static void testPSShowsHeaderAndProcess()
 static void testLSCausesScrollToTheLastLine()
 {
     MonaGUIRobot r;
-    r.clearInput(testTerminal->getCommandField());
+    sendClearInput(terminalThread);
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.click(testTerminal->getButton());
     TerminalLastDataShouldBeShownProbe probe(*testTerminal);
@@ -278,6 +306,8 @@ static void testLSCausesScrollToTheLastLine()
 static void testEnterKeyDownRunsLSCommand()
 {
     MonaGUIRobot r;
+    sendClearInput(terminalThread);
+    sendClearOutput(terminalThread);
     r.clearInput(testTerminal->getCommandField());
     r.input(testTerminal->getCommandField(), "ls /APPS/");
     r.keyPress(Keys::Enter);
@@ -289,8 +319,8 @@ static void testEnterKeyDownRunsLSCommand()
 static void testCommandEnteredAppearsOnHistory()
 {
     MonaGUIRobot r;
-
-    r.clearInput(testTerminal->getCommandField());
+    sendClearInput(terminalThread);
+    sendClearOutput(terminalThread);
 //    sleep(5000);
     r.input(testTerminal->getCommandField(), "ls /LIBS/");
     logprintf("before enter \n");

@@ -35,6 +35,13 @@ class TestTerminal : public Terminal
 {
 private:
     uint32_t observer_;
+
+    void reply(Event* event)
+    {
+        ASSERT(event->getType() == Event::CUSTOM_EVENT);
+        int ret = MonAPI::Message::send(event->from, MSG_OK, event->header);
+        ASSERT(ret == M_OK);
+    }
 public:
     TestTerminal(uint32_t observer, MonAPI::Stream& outStream, std::string& sharedString) : Terminal(outStream, sharedString), observer_(observer)
     {
@@ -57,6 +64,21 @@ public:
     std::string getCommandLine() const
     {
         return command_->getText();
+    }
+
+    void processEvent(Event* event)
+    {
+        if (event->getType() == Event::CUSTOM_EVENT) {
+            if (event->header == MSG_TEST_CLEAR_INPUT) {
+                command_->setText("");
+                reply(event);
+            } else if (event->header == MSG_TEST_CLEAR_OUTPUT) {
+                clearOutput();
+                output_->setText("");
+                reply(event);
+            }
+        }
+        Terminal::processEvent(event);
     }
 
     void run()

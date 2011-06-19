@@ -138,17 +138,17 @@ void munit_expect_eq(X expected, Y actual, const char* expectedStr, const char* 
     }
 }
 
-template <>
-void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr, const char* function, const char* file, int line)
-{
-    if (expected != actual) {
-        printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %ld %s:%d: \n", function, expectedStr, actual, file, line);
-        logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
-        munit_number_of_failed++;
-    } else {
-        munit_number_of_passed++;
-    }
-}
+// template <>
+// void munit_expect_eq(uint64_t expected, uint64_t actual, const char* expectedStr, const char* function, const char* file, int line)
+// {
+//     if (expected != actual) {
+//         printf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %ld %s:%d: \n", function, expectedStr, actual, file, line);
+//         logprintf("MUnit:EXPECT_EQ failure on [%s] expected %s, but got %d %s:%d: \n", function, expectedStr, actual, file, line);
+//         munit_number_of_failed++;
+//     } else {
+//         munit_number_of_passed++;
+//     }
+// }
 
 template <>
 void munit_expect_eq(const char* expected, char* actual, const char* expectedStr, const char* function, const char* file, int line)
