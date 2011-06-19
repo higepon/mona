@@ -239,32 +239,33 @@ static void testInputSpace()
     ASSERT_EVENTUALLY(probe);
 }
 
-static void testLSCommandReturnsLFSeperatedListOfFiles()
+static void enterCommandAndClickButton(const std::string& command)
 {
     MonaGUIRobot r;
     ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    r.input(testTerminal->getCommandField(), "ls /APPS/");
+    r.input(testTerminal->getCommandField(), command.c_str());
     r.click(testTerminal->getButton());
+}
+
+
+static void testLSCommandReturnsLFSeperatedListOfFiles()
+{
+    enterCommandAndClickButton("ls /APPS/");
     TerminalOutputProbe probe(*testTerminal, "HELLO.EX5");
     ASSERT_EVENTUALLY(probe);
 }
 
+
 static void testPSShowsHeaderAndProcess()
 {
-    MonaGUIRobot r;
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    r.input(testTerminal->getCommandField(), "ps");
-    r.click(testTerminal->getButton());
+    enterCommandAndClickButton("ps");
     TerminalOutputProbe probe(*testTerminal, "tid name");
     ASSERT_EVENTUALLY(probe);
 }
 
 static void testLSCausesScrollToTheLastLine()
 {
-    MonaGUIRobot r;
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    r.input(testTerminal->getCommandField(), "ls /APPS/");
-    r.click(testTerminal->getButton());
+    enterCommandAndClickButton("ls /APPS/");
     TerminalLastDataShouldBeShownProbe probe(*testTerminal);
     ASSERT_EVENTUALLY(probe);
 }
