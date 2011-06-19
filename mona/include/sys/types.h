@@ -230,19 +230,21 @@ typedef struct {
 #define THREAD_UNKNOWN 0xffffffff
 
 // common messages
-#define MSG_OK          0xfffff72a /* "   : OK" */
-#define MSG_STARTED     0xffff29c6 /* "   :STR" */
-#define MSG_INTERRUPTED 0xfffe86ce /* "   :INT" */
-#define MSG_TIMER       0xffff3646 /* "   :TMR" */
-#define MSG_READ_READY  0xffff11e2 /* "   :RDY" */
-#define MSG_WRITE_READY 0xffff61e2 /* "   :WDY" */
-#define MSG_TEXT        0xffff3bce /* "   :TXT" */
-#define MSG_ADD         0xfffe018e /* "   :ADD" */
-#define MSG_REMOVE      0xffff1656 /* "   :RMV" */
-#define MSG_NAME        0xfffff6b2 /* "   : NM" */
-#define MSG_WHERE       0xffff63c6 /* "   :WHR" */
-#define MSG_STOP        0xffff29be /* "   :STP" */
-#define MSG_UPDATE      0xffff478e /* "   :UPD" */
+#define MSG_OK                0xfffff72a /* "   : OK" */
+#define MSG_STARTED           0xffff29c6 /* "   :STR" */
+#define MSG_INTERRUPTED       0xfffe86ce /* "   :INT" */
+#define MSG_TIMER             0xffff3646 /* "   :TMR" */
+#define MSG_READ_READY        0xffff11e2 /* "   :RDY" */
+#define MSG_WRITE_READY       0xffff61e2 /* "   :WDY" */
+#define MSG_TEXT              0xffff3bce /* "   :TXT" */
+#define MSG_ADD               0xfffe018e /* "   :ADD" */
+#define MSG_REMOVE            0xffff1656 /* "   :RMV" */
+#define MSG_NAME              0xfffff6b2 /* "   : NM" */
+#define MSG_WHERE             0xffff63c6 /* "   :WHR" */
+#define MSG_STOP              0xffff29be /* "   :STP" */
+#define MSG_UPDATE            0xffff478e /* "   :UPD" */
+#define MSG_TEST_CLEAR_INPUT  0x9ca625a2 /* "TST:CLI" */
+#define MSG_TEST_CLEAR_OUTPUT 0x9ca625ba /* "TST:CLO" */
 
 enum
 {
