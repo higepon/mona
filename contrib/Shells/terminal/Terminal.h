@@ -36,15 +36,13 @@
 
 struct TerminalInfo
 {
-    TerminalInfo() : outStream(new MonAPI::Stream())
-                   , mainThread(MonAPI::System::getThreadID())
+    TerminalInfo() : mainThread(MonAPI::System::getThreadID())
     {
     }
     ~TerminalInfo()
     {
-        delete outStream;
     }
-    MonAPI::Stream* outStream;
+    MonAPI::Stream outStream;
     std::string sharedString;
     uint32_t mainThread;
 };

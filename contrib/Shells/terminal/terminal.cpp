@@ -35,12 +35,12 @@ extern void test(TerminalInfo* info);
 void __fastcall stdoutStreamReader(void* arg)
 {
     TerminalInfo* info = (TerminalInfo*)arg;
-    scoped_array<char> buf(new char[info->outStream->capacity()]);
+    scoped_array<char> buf(new char[info->outStream.capacity()]);
 
     // read from outStream, accumulates as string.
     // Then notifies data has come.
     for (;;) {
-        uint32_t sizeRead = info->outStream->read(buf.get(), info->outStream->capacity(), true);
+        uint32_t sizeRead = info->outStream.read(buf.get(), info->outStream.capacity(), true);
         info->sharedString.clear();
         info->sharedString += std::string(buf.get(), sizeRead);
         MessageInfo msg;
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     if (isTestMode) {
         test(&info);
     } else {
-        Terminal terminal(*info.outStream, info.sharedString);
+        Terminal terminal(info.outStream, info.sharedString);
         monapi_thread_create_with_arg(stdoutStreamReader, &info);
         terminal.run();
     }

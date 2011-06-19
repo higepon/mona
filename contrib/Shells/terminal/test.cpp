@@ -69,7 +69,7 @@ static void __fastcall testTerminalThread(void* arg)
     uint32_t mainThread = info->mainThread;
     info->mainThread = terminalThread;
     monapi_thread_create_with_arg(stdoutStreamReader, info);
-    testTerminal = new TestTerminal(mainThread, *info->outStream, info->sharedString);
+    testTerminal = new TestTerminal(mainThread, info->outStream, info->sharedString);
     testTerminal->run();
     delete testTerminal;
 }
