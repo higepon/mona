@@ -124,13 +124,12 @@ public:
         }
     }
 
+protected:
+
     void clearOutput()
     {
         lines_.clear();
     }
-
-
-protected:
 
     void appendOutput(const std::string& content)
     {
