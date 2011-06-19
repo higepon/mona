@@ -34,6 +34,21 @@
 #include <algorithm>
 #include <string>
 
+struct TerminalInfo
+{
+    TerminalInfo() : outStream(new MonAPI::Stream())
+                   , mainThread(MonAPI::System::getThreadID())
+    {
+    }
+    ~TerminalInfo()
+    {
+        delete outStream;
+    }
+    MonAPI::Stream* outStream;
+    std::string sharedString;
+    uint32_t mainThread;
+};
+
 class Terminal : public Frame
 {
 protected:

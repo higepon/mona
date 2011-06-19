@@ -30,23 +30,21 @@
 
 using namespace MonAPI;
 
-extern void test(uint32_t mainThread);
+extern void test(TerminalInfo* info);
 
-Stream* outStream;
-std::string sharedString;
-
-void __fastcall stdoutStreamReader(void* mainThread)
+void __fastcall stdoutStreamReader(void* arg)
 {
-    scoped_array<char> buf(new char[outStream->capacity()]);
+    TerminalInfo* info = (TerminalInfo*)arg;
+    scoped_array<char> buf(new char[info->outStream->capacity()]);
 
     // read from outStream, accumulates as string.
     // Then notifies data has come.
     for (;;) {
-        uint32_t sizeRead = outStream->read(buf.get(), outStream->capacity(), true);
-        sharedString.clear();
-        sharedString += std::string(buf.get(), sizeRead);
-        MessageInfo info;
-        if (Message::sendReceive(&info, (uint32_t)mainThread, MSG_UPDATE) != M_OK) {
+        uint32_t sizeRead = info->outStream->read(buf.get(), info->outStream->capacity(), true);
+        info->sharedString.clear();
+        info->sharedString += std::string(buf.get(), sizeRead);
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, info->mainThread, MSG_UPDATE) != M_OK) {
             monapi_fatal("main thread is dead?");
         }
     }
@@ -63,15 +61,13 @@ int main(int argc, char* argv[])
         isTestMode = true;
     }
 
-    outStream = new Stream;
-    uintptr_t mainThread = System::getThreadID();
+    TerminalInfo info;
     if (isTestMode) {
-        test(mainThread);
+        test(&info);
     } else {
-        Terminal terminal(*outStream, sharedString);
-        monapi_thread_create_with_arg(stdoutStreamReader, (void*)mainThread);
+        Terminal terminal(*info.outStream, info.sharedString);
+        monapi_thread_create_with_arg(stdoutStreamReader, &info);
         terminal.run();
     }
-    delete outStream;
     return 0;
 }

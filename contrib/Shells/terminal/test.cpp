@@ -61,16 +61,15 @@ public:
 
 TestTerminal* testTerminal;
 uintptr_t terminalThread;
-extern void __fastcall stdoutStreamReader(void* mainThread);
-extern Stream* outStream;
-extern std::string sharedString;
+extern void __fastcall stdoutStreamReader(void* arg);
 static void __fastcall testTerminalThread(void* arg)
 {
+    TerminalInfo* info = (TerminalInfo*)arg;
     terminalThread = System::getThreadID();
-    monapi_thread_create_with_arg(stdoutStreamReader, (void*)terminalThread);
-    uintptr_t mainThread2 = (uintptr_t)arg;
-    outStream = new Stream;
-    testTerminal = new TestTerminal(mainThread2, *outStream, sharedString);
+    uint32_t mainThread = info->mainThread;
+    info->mainThread = terminalThread;
+    monapi_thread_create_with_arg(stdoutStreamReader, info);
+    testTerminal = new TestTerminal(mainThread, *info->outStream, info->sharedString);
     testTerminal->run();
     delete testTerminal;
 }
@@ -163,9 +162,9 @@ static void testAll()
     TEST_RESULTS();
 }
 
-void test(uint32_t mainThread)
+void test(TerminalInfo* info)
 {
-    uint32_t id = monapi_thread_create_with_arg(testTerminalThread, (void*)mainThread);
+    uint32_t id = monapi_thread_create_with_arg(testTerminalThread, info);
     Helper::waitSubThread(id);
     testAll();
     Helper::stopSubThread(id);
