@@ -376,6 +376,8 @@ namespace monagui {
                     int modcode  = info.arg2;
                     int charcode = info.arg3;
 
+                    logprintf("window.cpp keycode=%d charcode=%d\n", keycode, charcode);
+
                     /* 修飾キーの判別 */
                     if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
                         this->modifiers = 0;
@@ -432,6 +434,7 @@ namespace monagui {
                         } else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
                             this->keyEvent.setType(KeyEvent::KEY_RELEASED);
                         }
+                        logprintf("window.cpp keycode=%d charcode=%d\n", keyEvent.getKeycode());
                         dispatchEvent(&this->keyEvent);
                     }
 

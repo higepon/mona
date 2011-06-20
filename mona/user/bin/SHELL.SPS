@@ -7,6 +7,7 @@
         (mosh file)
         (shorten)
         (mosh process)
+        (only (srfi :13) string-contains string-join)
         (only (mosh ffi) null-terminated-utf8->string string->utf8z))
 
 (define (ls stream dir)
@@ -26,6 +27,13 @@
     (process-list))
   (monapi-stream-write stream (string->utf8 "tid name")))
 
+(define (complete-path command*)
+  (cond
+    [(and (pair? command*) (not (string-contains (car command*) "/")))
+      (if (file-exists? (string-append "/APPS/" (car command*)))     
+          (cons (string-append "/APPS/" (car command*)) (cdr command*))
+          command*)]
+    [else command*]))
 
 (monapi-name-add! "/servers/shell")
 
@@ -48,8 +56,9 @@
                                                                         "can't kill the process"))))
            (monapi-message-reply from header MSG_OK)]
          [x
-           #;(apply call-process x)
-           (format #t "unknown command ~a" x)
+           (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "call-process failed : ~a" x)))]]
+           (apply call-process (list (string-join (complete-path x) " ") stream)))
+#;           (format #t "unknown command ~a" x)
            (monapi-message-reply from header MSG_OK)]))
       (loop)]
     [else

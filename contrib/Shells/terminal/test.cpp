@@ -150,6 +150,27 @@ static void testCommandEnteredAppearsOnHistory()
     ASSERT_EVENTUALLY(probe4);
 }
 
+static void testOutputOfCalledProcessIsShown()
+{
+    enterCommand("/APPS/HELLO.EX5");
+    TerminalOutputProbe probe(*testTerminal, "Hello, World");
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void testCanCallProcessWithoutPath()
+{
+    enterCommand("HELLO.EX5");
+    TerminalOutputProbe probe(*testTerminal, "Hello, World");
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void testCallProcessErrorIsShown()
+{
+    enterCommand("HOGE");
+    TerminalOutputProbe probe(*testTerminal, "call-process failed : (HOGE)");
+    ASSERT_EVENTUALLY(probe);
+}
+
 static void testAll()
 {
     testInputSpace();
@@ -158,6 +179,9 @@ static void testAll()
     testLSCausesScrollToTheLastLine();
     testEnterKeyDownRunsLSCommand();
     testCommandEnteredAppearsOnHistory();
+    testOutputOfCalledProcessIsShown();
+    testCanCallProcessWithoutPath();
+    testCallProcessErrorIsShown();
     TEST_RESULTS();
 }
 

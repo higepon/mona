@@ -406,6 +406,13 @@ static void ProcessKeyInfo(MessageInfo* msg)
     }
 }
 
+static void RotateActiveWindow()
+{
+    if (windows.size() > 1) {
+        ActivateWindow(windows[1]);
+    }
+}
+
 bool WindowHandler(MessageInfo* msg)
 {
     switch (msg->header)
@@ -494,6 +501,10 @@ bool WindowHandler(MessageInfo* msg)
             break;
         // キー情報
         case MSG_KEY_VIRTUAL_CODE:
+            if (msg->arg1 == MonAPI::Keys::Tab && msg->arg2 & KEY_MODIFIER_ALT) {
+                RotateActiveWindow();
+                break;
+            }
             ProcessKeyInfo(msg);
             break;
         // キャプチャー要求

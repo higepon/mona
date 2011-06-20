@@ -5,6 +5,12 @@
 #include <monapi.h>
 #include <sys/KStat.h>
 
+int main(int argc, char* argv[])
+{
+    printf("Hello, World");
+}
+
+#if 0
 /*
  * $Id: https-client.c,v 1.10 2005/02/19 16:01:53 68user Exp $
  *
@@ -144,7 +150,7 @@ int main(int argc, char* argv[])
 
   exit(0);
 }
-
+#endif
 #if 0
 int main(int argc, char* argv[])
 {
