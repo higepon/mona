@@ -272,6 +272,23 @@ static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning()
     ASSERT_EVENTUALLY(probe5);
 }
 
+static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtEnd()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+
+    r.keyPress('e', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 3);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe2(*testTerminal, "abc");
+    ASSERT_EVENTUALLY(probe2);
+
+    TerminalCommandLineCursorProbe probe3(*testTerminal, 3);
+    ASSERT_EVENTUALLY(probe3);
+}
 
 
     // r.keyPress('b', KEY_MODIFIER_CTRL);
@@ -307,6 +324,7 @@ static void testAll()
     testTextFieldEmacsKeybindCtrlBBackwardChar();
     testTextFieldEmacsKeybindCtrlHDeleteBackwardChar();
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning();
+    testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtEnd();
     TEST_RESULTS();
 }
 
