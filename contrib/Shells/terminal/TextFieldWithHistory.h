@@ -87,6 +87,14 @@ public:
         }
     }
 
+    void moveEndOfLine()
+    {
+        if (cursor_ != text_.length()) {
+            cursor_ = text_.length();
+            repaint();
+        }
+    }
+
     virtual void processEvent(Event* event)
     {
         if (event->getType() == KeyEvent::KEY_PRESSED &&
@@ -97,6 +105,8 @@ public:
                 showNextHistory();
             } else if (((KeyEvent*)event)->getKeycode() == 'a') {
                 moveBeginningOfLine();
+            } else if (((KeyEvent*)event)->getKeycode() == 'e') {
+                moveEndOfLine();
             }
         } else if (event->getType() == KeyEvent::KEY_PRESSED &&
                    ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) {
