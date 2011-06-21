@@ -103,8 +103,9 @@ public:
             } else if (cursor_ == text_.length() - 1) {
                 text_ = text_.substring(0, cursor_);
             } else {
-                String head = text_.substring(0, cursor_ - 1);
+                String head = text_.substring(0, cursor_);
                 String rest = text_.substring(cursor_ + 1, text_.length() - cursor_ - 1);
+                logprintf("head=%s rest=%s\n", (const char*)head, (const char*)rest);
                 text_ = head;
                 text_ += rest;
             }

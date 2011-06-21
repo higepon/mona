@@ -290,22 +290,32 @@ static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtEnd()
     ASSERT_EVENTUALLY(probe3);
 }
 
+static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtMiddle()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abcd");
 
-    // r.keyPress('b', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineCursorProbe probe(*testTerminal, 2);
-    // ASSERT_EVENTUALLY(probe);
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    r.keyPress('b', KEY_MODIFIER_CTRL);
 
-    // r.keyPress('d', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe1(*testTerminal, "ab");
-    // ASSERT_EVENTUALLY(probe1);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe);
 
-    // r.keyPress('a', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
-    // ASSERT_EVENTUALLY(probe2);
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe2(*testTerminal, "abd");
+    ASSERT_EVENTUALLY(probe2);
 
-    // r.keyPress('d', KEY_MODIFIER_CTRL);
-    // TerminalCommandLineProbe probe3(*testTerminal, "b");
-    // ASSERT_EVENTUALLY(probe3);
+    TerminalCommandLineCursorProbe probe3(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe3);
+
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe4(*testTerminal, "ab");
+    ASSERT_EVENTUALLY(probe4);
+
+    TerminalCommandLineCursorProbe probe5(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe5);
+}
 
 static void testAll()
 {
@@ -325,6 +335,7 @@ static void testAll()
     testTextFieldEmacsKeybindCtrlHDeleteBackwardChar();
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning();
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtEnd();
+    testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtMiddle();
     TEST_RESULTS();
 }
 
