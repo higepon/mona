@@ -171,7 +171,7 @@ static void testCallProcessErrorIsShown()
     ASSERT_EVENTUALLY(probe);
 }
 
-static void testTextFieldEmacsKeybindCtrlAHeadOfLine()
+static void testTextFieldEmacsKeybindCtrlABeginningOfLine()
 {
     MonaGUIRobot r;
     ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
@@ -196,7 +196,7 @@ static void testAll()
     testOutputOfCalledProcessIsShown();
     testCanCallProcessWithoutPath();
     testCallProcessErrorIsShown();
-    testTextFieldEmacsKeybindCtrlAHeadOfLine();
+    testTextFieldEmacsKeybindCtrlABeginningOfLine();
     TEST_RESULTS();
 }
 
