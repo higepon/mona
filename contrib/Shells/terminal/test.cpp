@@ -33,6 +33,7 @@
 #include <monapi/MUnit.h>
 #include "TestTerminal.h"
 #include "probe/TerminalCommandLineProbe.h"
+#include "probe/TerminalCommandLineCursorProbe.h"
 #include "probe/TerminalOutputProbe.h"
 #include "probe/TerminalLastDataShouldBeShownProbe.h"
 using namespace MonAPI;
@@ -180,20 +181,56 @@ static void testTextFieldEmacsKeybindCtrlABeginningOfLine()
     ASSERT_EVENTUALLY(probe1);
 
     r.keyPress('a', KEY_MODIFIER_CTRL);
-    r.input(testTerminal->getCommandField(), "def");
-    TerminalCommandLineProbe probe2(*testTerminal, "defabc");
+    TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
     ASSERT_EVENTUALLY(probe2);
 }
 
 static void testTextFieldEmacsKeybindCtrlEEndOfLine()
 {
     testTextFieldEmacsKeybindCtrlABeginningOfLine();
-
     MonaGUIRobot r;
     r.keyPress('e', KEY_MODIFIER_CTRL);
-    r.input(testTerminal->getCommandField(), "g");
-    TerminalCommandLineProbe probe3(*testTerminal, "defabcg");
+    TerminalCommandLineCursorProbe probe(*testTerminal, 3);
+    ASSERT_EVENTUALLY(probe);
+}
+
+static void testTextFieldEmacsKeybindCtrlFForwardChar()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+    r.keyPress('f', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe(*testTerminal, 3);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
+    ASSERT_EVENTUALLY(probe2);
+
+    r.keyPress('f', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe3(*testTerminal, 1);
     ASSERT_EVENTUALLY(probe3);
+}
+
+static void testTextFieldEmacsKeybindCtrlBBackwardChar()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe1(*testTerminal, 1);
+    ASSERT_EVENTUALLY(probe1);
+
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
+    ASSERT_EVENTUALLY(probe2);
 }
 
 static void testAll()
@@ -209,6 +246,8 @@ static void testAll()
     testCallProcessErrorIsShown();
     testTextFieldEmacsKeybindCtrlABeginningOfLine();
     testTextFieldEmacsKeybindCtrlEEndOfLine();
+    testTextFieldEmacsKeybindCtrlFForwardChar();
+    testTextFieldEmacsKeybindCtrlBBackwardChar();
     TEST_RESULTS();
 }
 

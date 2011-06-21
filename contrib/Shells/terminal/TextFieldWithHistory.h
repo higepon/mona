@@ -107,6 +107,12 @@ public:
                 moveBeginningOfLine();
             } else if (((KeyEvent*)event)->getKeycode() == 'e') {
                 moveEndOfLine();
+            } else if (((KeyEvent*)event)->getKeycode() == 'f') {
+                cursorRight();
+                repaint();
+            } else if (((KeyEvent*)event)->getKeycode() == 'b') {
+                cursorLeft();
+                repaint();
             }
         } else if (event->getType() == KeyEvent::KEY_PRESSED &&
                    ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) {
