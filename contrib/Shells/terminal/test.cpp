@@ -247,28 +247,48 @@ static void testTextFieldEmacsKeybindCtrlHDeleteBackwardChar()
     ASSERT_EVENTUALLY(probe1);
 }
 
-static void testTextFieldEmacsKeybindCtrlDDeleteForwardChar()
+static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning()
 {
     MonaGUIRobot r;
     ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
     r.input(testTerminal->getCommandField(), "abc");
 
-    r.keyPress('b', KEY_MODIFIER_CTRL);
-    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 0);
     ASSERT_EVENTUALLY(probe);
 
     r.keyPress('d', KEY_MODIFIER_CTRL);
-    TerminalCommandLineProbe probe1(*testTerminal, "ab");
-    ASSERT_EVENTUALLY(probe1);
-
-    r.keyPress('a', KEY_MODIFIER_CTRL);
-    TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
+    TerminalCommandLineProbe probe2(*testTerminal, "bc");
     ASSERT_EVENTUALLY(probe2);
 
-    r.keyPress('d', KEY_MODIFIER_CTRL);
-    TerminalCommandLineProbe probe3(*testTerminal, "b");
+    TerminalCommandLineCursorProbe probe3(*testTerminal, 0);
     ASSERT_EVENTUALLY(probe3);
+
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe4(*testTerminal, "c");
+    ASSERT_EVENTUALLY(probe4);
+
+    TerminalCommandLineCursorProbe probe5(*testTerminal, 0);
+    ASSERT_EVENTUALLY(probe5);
 }
+
+
+
+    // r.keyPress('b', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    // ASSERT_EVENTUALLY(probe);
+
+    // r.keyPress('d', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineProbe probe1(*testTerminal, "ab");
+    // ASSERT_EVENTUALLY(probe1);
+
+    // r.keyPress('a', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
+    // ASSERT_EVENTUALLY(probe2);
+
+    // r.keyPress('d', KEY_MODIFIER_CTRL);
+    // TerminalCommandLineProbe probe3(*testTerminal, "b");
+    // ASSERT_EVENTUALLY(probe3);
 
 static void testAll()
 {
@@ -286,7 +306,7 @@ static void testAll()
     testTextFieldEmacsKeybindCtrlFForwardChar();
     testTextFieldEmacsKeybindCtrlBBackwardChar();
     testTextFieldEmacsKeybindCtrlHDeleteBackwardChar();
-    testTextFieldEmacsKeybindCtrlDDeleteForwardChar();
+    testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning();
     TEST_RESULTS();
 }
 
