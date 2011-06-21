@@ -95,6 +95,24 @@ public:
         }
     }
 
+    void deleteForward()
+    {
+        if (cursor_ < text_.length()) {
+            if (cursor_ == 0) {
+                text_ = text_.substring(1, text_.length() - 1);
+            } else if (cursor_ == text_.length() - 1) {
+                text_ = text_.substring(0, cursor_);
+            } else {
+                String head = text_.substring(0, cursor_ - 1);
+                String rest = text_.substring(cursor_ + 1, text_.length() - cursor_ - 1);
+                text_ = head;
+                text_ += rest;
+            }
+            repaint();
+        }
+
+    }
+
     virtual void processEvent(Event* event)
     {
         if (event->getType() == KeyEvent::KEY_PRESSED &&
@@ -113,6 +131,10 @@ public:
             } else if (((KeyEvent*)event)->getKeycode() == 'b') {
                 cursorLeft();
                 repaint();
+            } else if (((KeyEvent*)event)->getKeycode() == 'h') {
+                backspace();
+            } else if (((KeyEvent*)event)->getKeycode() == 'd') {
+                deleteForward();
             }
         } else if (event->getType() == KeyEvent::KEY_PRESSED &&
                    ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) {

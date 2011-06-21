@@ -233,6 +233,43 @@ static void testTextFieldEmacsKeybindCtrlBBackwardChar()
     ASSERT_EVENTUALLY(probe2);
 }
 
+static void testTextFieldEmacsKeybindCtrlHDeleteBackwardChar()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+
+    r.keyPress('h', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe);
+
+    TerminalCommandLineProbe probe1(*testTerminal, "ab");
+    ASSERT_EVENTUALLY(probe1);
+}
+
+static void testTextFieldEmacsKeybindCtrlDDeleteForwardChar()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe1(*testTerminal, "ab");
+    ASSERT_EVENTUALLY(probe1);
+
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe2(*testTerminal, 0);
+    ASSERT_EVENTUALLY(probe2);
+
+    r.keyPress('d', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe3(*testTerminal, "b");
+    ASSERT_EVENTUALLY(probe3);
+}
+
 static void testAll()
 {
     testInputSpace();
@@ -248,6 +285,8 @@ static void testAll()
     testTextFieldEmacsKeybindCtrlEEndOfLine();
     testTextFieldEmacsKeybindCtrlFForwardChar();
     testTextFieldEmacsKeybindCtrlBBackwardChar();
+    testTextFieldEmacsKeybindCtrlHDeleteBackwardChar();
+    testTextFieldEmacsKeybindCtrlDDeleteForwardChar();
     TEST_RESULTS();
 }
 
