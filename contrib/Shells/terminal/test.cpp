@@ -187,19 +187,10 @@ static void testTextFieldEmacsKeybindCtrlABeginningOfLine()
 
 static void testTextFieldEmacsKeybindCtrlEEndOfLine()
 {
+    testTextFieldEmacsKeybindCtrlABeginningOfLine();
+
     MonaGUIRobot r;
-    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
-    r.input(testTerminal->getCommandField(), "abc");
-    TerminalCommandLineProbe probe1(*testTerminal, "abc");
-    ASSERT_EVENTUALLY(probe1);
-
-    r.keyPress('a', KEY_MODIFIER_CTRL);
-    r.input(testTerminal->getCommandField(), "def");
-    TerminalCommandLineProbe probe2(*testTerminal, "defabc");
-    ASSERT_EVENTUALLY(probe2);
-
     r.keyPress('e', KEY_MODIFIER_CTRL);
-
     r.input(testTerminal->getCommandField(), "g");
     TerminalCommandLineProbe probe3(*testTerminal, "defabcg");
     ASSERT_EVENTUALLY(probe3);
