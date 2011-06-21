@@ -1,5 +1,6 @@
 /*
 Copyright (c) 2005 bayside
+Copyright (c) 2011 Higepon
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
@@ -34,7 +35,7 @@ namespace monagui {
      テキストボックスクラス
     */
     class TextField : public Container {
-    private:
+    protected:
         String text_;
         int cursor_;
         String accumUtf8_;
@@ -49,7 +50,7 @@ namespace monagui {
         Event textEvent;
         ImeManager* _imeManager;
 
-    private:
+    protected:
 
         virtual void initialize();
 

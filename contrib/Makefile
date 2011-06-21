@@ -114,14 +114,45 @@ clean:
 	cd Gui/test_monagui && $(MAKE) clean
 
 	cd Devel/gcc && $(MAKE) clean
+
+TARGETS = \
+Benchmarks/gfire \
+Benchmarks/gnoiz2bg \
+Emulators/infones \
+Emulators/monamona \
+Emulators/monasq \
+Graphics/Mesa \
+Graphics/Mesa-gears \
+Graphics/MesaDemos \
+Graphics/jpegview \
+Gui/glaunch \
+Gui/ime_server \
+Gui/libbaygui \
+Gui/libgui \
+Gui/libmonagui \
+Gui/monafile \
+Gui/test_baygui \
+Gui/test_monagui \
+Misc/display \
+Misc/facebook/ \
+Misc/gnote/ \
+Misc/helloworld \
+Misc/mg-20090107/ \
+Misc/print \
+Misc/reverse \
+Misc/upper \
+Multimedia/audio_server \
+Multimedia/audio_server/api \
+Multimedia/audio_server/happy \
+Multimedia/bplayer \
+Multimedia/monapeg \
+Multimedia/monappt \
+Multimedia/xmonapeg \
+Net/frecv \
+Net/monadat \
+Shells/gshell \
+Shells/mshell/ \
+Shells/terminal
+
 depend:
-	cd Benchmarks/gfire && $(MAKE) && $(MAKE) depend
-	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) depend
-	cd Multimedia/audio_server/happy && $(MAKE) depend
-	cd Shells/mshell/ && $(MAKE) depend
-	cd Shells/terminal/ && $(MAKE) depend
-	cd Misc/gnote/ && $(MAKE) depend
-	cd Misc/mg-20090107/ && $(MAKE) depend
-	cd Misc/facebook/ && $(MAKE) depend
-	cd Gui/ime_server && $(MAKE) depend
-	cd Shells/terminal && $(MAKE) depend
+	for i in `echo $(TARGETS)`; do (cd $$i && $(MAKE) $@) ;done

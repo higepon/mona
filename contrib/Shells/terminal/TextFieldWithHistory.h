@@ -78,6 +78,15 @@ public:
 
     virtual ~TextFieldWithHistory() {}
 
+    // protected virtual
+    void moveBeginningOfLine()
+    {
+        if(cursor_ != 0) {
+            cursor_ = 0;
+            repaint();
+        }
+    }
+
     virtual void processEvent(Event* event)
     {
         if (event->getType() == KeyEvent::KEY_PRESSED &&
@@ -86,6 +95,8 @@ public:
                 showPreviousHistory();
             } else if (((KeyEvent*)event)->getKeycode() == 'n') {
                 showNextHistory();
+            } else if (((KeyEvent*)event)->getKeycode() == 'a') {
+                moveBeginningOfLine();
             }
         } else if (event->getType() == KeyEvent::KEY_PRESSED &&
                    ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) {

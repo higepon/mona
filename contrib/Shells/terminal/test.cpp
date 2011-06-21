@@ -1,5 +1,5 @@
 /*
- * test.cpp - 
+ * test.cpp -
  *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
@@ -171,6 +171,20 @@ static void testCallProcessErrorIsShown()
     ASSERT_EVENTUALLY(probe);
 }
 
+static void testTextFieldEmacsKeybindCtrlAHeadOfLine()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abc");
+    TerminalCommandLineProbe probe1(*testTerminal, "abc");
+    ASSERT_EVENTUALLY(probe1);
+
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    r.input(testTerminal->getCommandField(), "def");
+    TerminalCommandLineProbe probe2(*testTerminal, "defabc");
+    ASSERT_EVENTUALLY(probe2);
+}
+
 static void testAll()
 {
     testInputSpace();
@@ -182,6 +196,7 @@ static void testAll()
     testOutputOfCalledProcessIsShown();
     testCanCallProcessWithoutPath();
     testCallProcessErrorIsShown();
+    testTextFieldEmacsKeybindCtrlAHeadOfLine();
     TEST_RESULTS();
 }
 
