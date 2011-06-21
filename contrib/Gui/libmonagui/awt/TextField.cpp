@@ -137,7 +137,8 @@ namespace monagui {
         g->drawString(getText(), this->offx, (h - fh) / 2);
         // キャレット
         if (getFocused() == true && getEnabled() == true) {
-            g->drawLine(offx + fw, offy, offx + fw, offy + 12);
+            int offsetToCursor = getFontMetrics()->getWidth(text_.substring(0, cursor_));
+            g->drawLine(offx + offsetToCursor, offy, offx + offsetToCursor, offy + 12);
         }
         // todo pullup
         int width = _imeManager->isOn() ? 100 : 0;
