@@ -131,22 +131,14 @@ namespace monagui {
         int fw = getFontMetrics()->getWidth(getText());
 
         if (selected_ && selectBeginningOffset_ != cursor_) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             g->setColor(Color::gray);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (cursor_ > selectBeginningOffset_) {
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 int headOffset = getFontMetrics()->getWidth(text_.substring(0, selectBeginningOffset_));
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 int selectedWidth = getFontMetrics()->getWidth(text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_));
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 g->fillRect(offx + headOffset, offy + 3, offx + selectedWidth, offy + 12);
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             } else {
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
                 ASSERT(false);
             }
-                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         }
 
         if (getEnabled() == true) {
@@ -237,6 +229,15 @@ namespace monagui {
             return;
         }
 
+        if (event->getModifiers() == KeyEvent::VKEY_ALT) {
+            switch(event->getKeycode()) {
+            case 'w':
+                copy();
+                return;
+            }
+        }
+
+
         if (event->getModifiers() == KeyEvent::VKEY_CTRL) {
             switch(event->getKeycode()) {
             case 'a':
@@ -263,7 +264,6 @@ namespace monagui {
             case 'k':
                 killLine();
                 return;
-            case 'v':
             case 'y':
                 paste();
                 return;
@@ -309,6 +309,7 @@ namespace monagui {
             toCopy = text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_);
             String tail = text_.substring(cursor_);
             text_ = head + tail;
+            cursor_ = selectBeginningOffset_;
         } else {
             String head = text_.substring(0, cursor_);
             toCopy = text_.substring(cursor_, selectBeginningOffset_ - cursor_);
@@ -322,6 +323,7 @@ namespace monagui {
         if (ret != M_OK) {
             monapi_warn("clipboard copy failed");
         }
+        repaint();
     }
 
     void TextField::copy()
@@ -347,6 +349,7 @@ namespace monagui {
 
     void TextField::paste()
     {
+        selected_ = false;
         MonAPI::scoped_ptr<MonAPI::SharedMemory> data(monapi_clipboard_get());
         if (data.get() == NULL) {
             return;

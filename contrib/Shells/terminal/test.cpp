@@ -365,6 +365,23 @@ static void testTextFieldEmacsKeybindCutCopyPaste()
 
     TerminalCommandLineProbe probe6(*testTerminal, "abcd");
     ASSERT_EVENTUALLY(probe6);
+
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe7(*testTerminal, 0);
+    ASSERT_EVENTUALLY(probe7);
+
+    r.keyPress(' ', KEY_MODIFIER_CTRL);
+    r.keyPress('e', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe8(*testTerminal, 4);
+    ASSERT_EVENTUALLY(probe8);
+
+    r.keyPress('w', KEY_MODIFIER_ALT);
+    r.keyPress('y', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe9(*testTerminal, 8);
+    ASSERT_EVENTUALLY(probe9);
+
+    TerminalCommandLineProbe probe10(*testTerminal, "abcdabcd");
+    ASSERT_EVENTUALLY(probe10);
 }
 
 static void testAll()
