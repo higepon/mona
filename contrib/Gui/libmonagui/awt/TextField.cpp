@@ -1,6 +1,8 @@
 /*
 Copyright (c) 2005 bayside
-              2010 Higepon : Refactoring and added testability.
+              2011 Higepon : Refactoring and added testability.
+                             Added Emacs keybind
+                             Added clipboard support
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
 (the "Software"), to deal in the Software without restriction,
@@ -28,6 +30,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace monagui {
     TextField::TextField() : text_(""),
                              cursor_(0),
+                             selected_(false),
+                             selectBeginningOffset_(0),
                              _imeManager(new ImeManager)
     {
         initialize();
@@ -83,23 +87,19 @@ namespace monagui {
         cursor_--;
     }
 
-    bool TextField::cursorLeft()
+    void TextField::forward()
     {
         if (cursor_ > 0) {
             cursor_--;
-            return true;
-        } else {
-            return false;
+            repaint();
         }
     }
 
-    bool TextField::cursorRight()
+    void TextField::backward()
     {
         if (cursor_ < text_.length()) {
             cursor_++;
-            return true;
-        } else {
-            return false;
+            repaint();
         }
     }
 
@@ -126,9 +126,29 @@ namespace monagui {
         g->fillRect(1, 1, w - 2, h - 2);
         g->setColor(getForeground());
         g->drawRect(1, 1, w - 2, h - 2);
-        // 文字
+
         int fh = getFontMetrics()->getHeight(getText());
         int fw = getFontMetrics()->getWidth(getText());
+
+        if (selected_ && selectBeginningOffset_ != cursor_) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            g->setColor(Color::gray);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            if (cursor_ > selectBeginningOffset_) {
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                int headOffset = getFontMetrics()->getWidth(text_.substring(0, selectBeginningOffset_));
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                int selectedWidth = getFontMetrics()->getWidth(text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_));
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                g->fillRect(offx + headOffset, offy + 3, offx + selectedWidth, offy + 12);
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            } else {
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                ASSERT(false);
+            }
+                logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        }
+
         if (getEnabled() == true) {
             g->setColor(getForeground());
         } else {
@@ -175,7 +195,7 @@ namespace monagui {
         }
         case Event::IME_BACKSPACE:
         {
-            backspace();
+            deleteBackward();
             break;
         }
         case KeyEvent::KEY_PRESSED:
@@ -193,7 +213,7 @@ namespace monagui {
         }
     }
 
-    void TextField::backspace()
+    void TextField::deleteBackward()
     {
         if(cursor_ > 0){
             deleteCharacter();
@@ -217,25 +237,57 @@ namespace monagui {
             return;
         }
 
+        if (event->getModifiers() == KeyEvent::VKEY_CTRL) {
+            switch(event->getKeycode()) {
+            case 'a':
+                moveBeginningOfLine();
+                return;
+            case 'e':
+                moveEndOfLine();
+                return;
+            case 'f':
+                backward();
+                return;
+            case 'b':
+                forward();
+                return;
+            case 'c':
+                copy();
+                return;
+            case 'h':
+                deleteBackward();
+                return;
+            case 'd':
+                deleteForward();
+                return;
+            case 'k':
+                killLine();
+                return;
+            case 'v':
+            case 'y':
+                paste();
+                return;
+            case 'w':
+                cut();
+                return;
+            case ' ':
+                toggleSelect();
+                return;
+            default:
+                break;
+        }
+        }
+
         switch(keycode) {
         case  KeyEvent::VKEY_BACKSPACE:
-            backspace();
+            deleteBackward();
             break;
         case KeyEvent::VKEY_LEFT:
-            if (cursorLeft()) {
-                repaint();
-            }
+            backward();
             break;
         case KeyEvent::VKEY_RIGHT:
-            if (cursorRight()) {
-                repaint();
-            }
+            forward();
             break;
-            // case KeyEvent::VKEY_ENTER:
-            //     if (getParent()) {
-            //         getParent()->processEvent(&this->textEvent);
-            //     }
-            //     break;
         default:
             if (keycode < 128) {
                 insertCharacter(keycode);
@@ -244,4 +296,66 @@ namespace monagui {
             break;
         }
     }
+
+    void TextField::cut()
+    {
+        if (!selected_) {
+            return;
+        }
+
+        String toCopy;
+        if (cursor_ > selectBeginningOffset_) {
+            String head = text_.substring(0, selectBeginningOffset_);
+            toCopy = text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_);
+            String tail = text_.substring(cursor_);
+            text_ = head + tail;
+        } else {
+            String head = text_.substring(0, cursor_);
+            toCopy = text_.substring(cursor_, selectBeginningOffset_ - cursor_);
+            String tail = text_.substring(cursor_);
+            text_ = head + tail;
+        }
+        MonAPI::SharedMemory data(toCopy.lengthBytes());
+        data.map();
+        memcpy(data.data(), toCopy.getBytes(), data.size());
+        intptr_t ret = monapi_clipboard_set(data);
+        if (ret != M_OK) {
+            monapi_warn("clipboard copy failed");
+        }
+    }
+
+    void TextField::copy()
+    {
+        if (!selected_) {
+            return;
+        }
+
+        String toCopy;
+        if (cursor_ > selectBeginningOffset_) {
+            toCopy = text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_);
+        } else {
+            toCopy = text_.substring(cursor_, selectBeginningOffset_ - cursor_);
+        }
+        MonAPI::SharedMemory data(toCopy.lengthBytes());
+        data.map();
+        memcpy(data.data(), toCopy.getBytes(), data.size());
+        intptr_t ret = monapi_clipboard_set(data);
+        if (ret != M_OK) {
+            monapi_warn("clipboard copy failed");
+        }
+    }
+
+    void TextField::paste()
+    {
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> data(monapi_clipboard_get());
+        if (data.get() == NULL) {
+            return;
+        }
+        String s((const char*)data->data(), data->size());
+        for (int i = 0; i < data->size(); i++) {
+            insertCharacter(s.getBytes()[i]);
+        }
+        repaint();
+    }
+
 }

@@ -89,16 +89,16 @@ static void test_TextField()
     t->deleteCharacter();
     EXPECT_EQ_TEXT_FIELD("ABC", 3, t);
 
-    EXPECT_TRUE(t->cursorLeft());
+    t->forward();
     t->insertCharacter('E');
     EXPECT_EQ_TEXT_FIELD("ABEC", 3, t);
 
-    EXPECT_TRUE(t->cursorLeft());
+    t->backward();
     t->deleteCharacter();
     EXPECT_EQ_TEXT_FIELD("AEC", 1, t);
 
-    EXPECT_TRUE(t->cursorRight());
-    EXPECT_TRUE(t->cursorRight());
+    t->forward();
+    t->forward();
     t->insertCharacter('Z');
     EXPECT_EQ_TEXT_FIELD("AECZ", 4, t);
     destroyTextField(t);
@@ -116,14 +116,14 @@ static void test_TextField_cursor()
     EXPECT_STR_EQ("Hello", t->getText());
 
     for (size_t i = 0; i < strlen(text); i++) {
-        EXPECT_TRUE(t->cursorLeft());
+        t->backward();
     }
-    EXPECT_EQ(false, t->cursorLeft());
+    t->backward();
 
     for (size_t i = 0; i < strlen(text); i++) {
-        EXPECT_TRUE(t->cursorRight());
+        t->forward();
     }
-    EXPECT_EQ(false, t->cursorRight());
+    t->forward();
 
     t->insertCharacter('Z');
     EXPECT_STR_EQ("HelloZ", t->getText());

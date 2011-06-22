@@ -377,7 +377,6 @@ bool MainFrame::sendConsoleAddText(char* text) {
  *  初期化
  */
 MainFrame::MainFrame(List<char*>* pekoe) {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     s_inst = this;
     s_mainThreadId = MonAPI::System::getThreadID();
 
@@ -427,7 +426,6 @@ MainFrame::MainFrame(List<char*>* pekoe) {
     mRunStopButton->setHandler(buttonHandler);
     updateRunStopButton();
     add(mRunStopButton);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     // 入力欄スクロールバー
     mInputScrollbar = new MonasqScrollbar( Scrollbar::VERTICAL );
     mInputScrollbar->setBounds(373, 21, 16, 235);
@@ -455,7 +453,6 @@ MainFrame::MainFrame(List<char*>* pekoe) {
     // ※タイマーイベントをウインドウ生成完了イベントとして代用
     mbCreated = false;
     setTimer(1);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 /**

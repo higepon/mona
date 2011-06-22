@@ -44,7 +44,7 @@ public:
         r.x += parent->getBounds()->x + parent->getInsets()->left;
         r.y += parent->getBounds()->y + parent->getInsets()->top;
         mouseMove(r.x, r.y);
-        sleep(1000);
+        sleep(100);
         mousePress();
         mouseRelease();
     }

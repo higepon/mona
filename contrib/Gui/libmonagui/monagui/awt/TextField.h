@@ -39,24 +39,22 @@ namespace monagui {
         String text_;
         int cursor_;
         String accumUtf8_;
-
-        /** オフセットX */
         int offx;
-        /** オフセットY */
         int offy;
-
-    protected:
-        /** テキストイベント */
+        bool selected_;
+        int selectBeginningOffset_;
         Event textEvent;
         ImeManager* _imeManager;
 
+    public:
+        void forward();  // public for testability
+        void backward(); // public for testability
     protected:
 
-        virtual void initialize();
+        void initialize();
 
         virtual void processKeyEvent(KeyEvent* event);
 
-        void backspace();
         virtual void accumulateUtf8(char c)
         {
             accumUtf8_ += c;
@@ -72,14 +70,69 @@ namespace monagui {
             accumUtf8_ = "";
         }
 
+        void deleteBackward();
+
+        void moveBeginningOfLine()
+        {
+            if(cursor_ != 0) {
+                cursor_ = 0;
+                repaint();
+           }
+        }
+
+        void copy();
+        void paste();
+        void cut();
+
+        void moveEndOfLine()
+        {
+            if (cursor_ != text_.length()) {
+                cursor_ = text_.length();
+                repaint();
+            }
+        }
+        void deleteForward()
+        {
+            if (cursor_ < text_.length()) {
+                if (cursor_ == 0) {
+                    text_ = text_.substring(1, text_.length() - 1);
+                } else if (cursor_ == text_.length() - 1) {
+                    text_ = text_.substring(0, cursor_);
+                } else {
+                    String head = text_.substring(0, cursor_);
+                    String rest = text_.substring(cursor_ + 1, text_.length() - cursor_ - 1);
+                    text_ = head;
+                    text_ += rest;
+                }
+                repaint();
+            }
+        }
+
+        void killLine()
+        {
+            if (cursor_ == text_.length()) {
+                return;
+            } else {
+                text_ = text_.substring(0, cursor_);
+                repaint();
+            }
+        }
+
+        void toggleSelect()
+        {
+            if (selected_) {
+                selected_ = false;
+            } else {
+                selected_ = true;
+                selectBeginningOffset_ = cursor_;
+            }
+        }
     public: /* public for testability */
         /** 1文字挿入する */
         virtual void insertCharacter(char c);
         virtual void insertStringTail(const String & c);
         /** 一文字削除する */
         virtual void deleteCharacter();
-        virtual bool cursorLeft();
-        virtual bool cursorRight();
         virtual int getCursor() const
         {
             return cursor_;
@@ -91,6 +144,8 @@ namespace monagui {
         /** デストラクタ */
         virtual ~TextField();
         virtual bool isImeOn() const;
+
+
         /**
          テキストを設定する
          @param text

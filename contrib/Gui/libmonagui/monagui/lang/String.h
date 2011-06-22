@@ -150,7 +150,7 @@ namespace monagui {
          @param start ŠJnˆÊ’u
          @param length ’·‚³
         */
-        String substring(int start, int length) const;
+        String substring(int start, int length = -1) const;
 
         /** ‚·‚×‚Ä‚Ì•¶š‚ğ¬•¶š‚É•ÏŠ·‚·‚é */
         String toLowerCase() const;

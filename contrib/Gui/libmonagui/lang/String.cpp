@@ -360,8 +360,9 @@ namespace monagui
         return -1;
     }
 
-    String String::substring(int start, int length) const
+    String String::substring(int start, int length /* = -1 */) const
     {
+        int len = length == -1 ? (_len - start) : length;
         if (start < 0 || this->_len <= start || length < 1) return NULL;
         String ret;
         for (int i = 0; i < length; i++) {

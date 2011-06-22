@@ -57,7 +57,7 @@ public:
                     } else if (' ' <= charcode && charcode <= '@') {
                         keycode = 0;
                     }
-                    logprintf("keyboard server keyboard=%d charcode=%d\n", keycode, charcode);
+//                    logprintf("keyboard server keyboard=%d charcode=%d\n", keycode, charcode);
                     Message::create(&message, MSG_KEY_VIRTUAL_CODE, keycode, modifiers, charcode, NULL);
                     sendToClients(&message);
                     Message::reply(&info);

@@ -317,6 +317,56 @@ static void testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtMiddle()
     ASSERT_EVENTUALLY(probe5);
 }
 
+static void testTextFieldEmacsKeybindCtrlKKillLine()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abcd");
+
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+    r.keyPress('b', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe(*testTerminal, 2);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress('k', KEY_MODIFIER_CTRL);
+    TerminalCommandLineProbe probe2(*testTerminal, "ab");
+    ASSERT_EVENTUALLY(probe2);
+}
+
+static void testTextFieldEmacsKeybindCutCopyPaste()
+{
+    MonaGUIRobot r;
+    ASSERT_EQ(M_OK, MUnitService::clearInput(terminalThread));
+    r.input(testTerminal->getCommandField(), "abcd");
+
+    r.keyPress('a', KEY_MODIFIER_CTRL);
+    r.keyPress('f', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe(*testTerminal, 1);
+    ASSERT_EVENTUALLY(probe);
+
+    r.keyPress(' ', KEY_MODIFIER_CTRL);
+    r.keyPress('e', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe2(*testTerminal, 4);
+    ASSERT_EVENTUALLY(probe2);
+
+    r.keyPress('w', KEY_MODIFIER_CTRL);
+
+    TerminalCommandLineCursorProbe probe3(*testTerminal, 1);
+    ASSERT_EVENTUALLY(probe3);
+    TerminalCommandLineProbe probe4(*testTerminal, "a");
+    ASSERT_EVENTUALLY(probe4);
+
+    r.keyPress('y', KEY_MODIFIER_CTRL);
+    TerminalCommandLineCursorProbe probe5(*testTerminal, 4);
+    ASSERT_EVENTUALLY(probe5);
+
+    TerminalCommandLineProbe probe6(*testTerminal, "abcd");
+    ASSERT_EVENTUALLY(probe6);
+}
+
 static void testAll()
 {
     testInputSpace();
@@ -336,6 +386,8 @@ static void testAll()
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtBeginning();
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtEnd();
     testTextFieldEmacsKeybindCtrlDDeleteForwardCharAtMiddle();
+    testTextFieldEmacsKeybindCtrlKKillLine();
+    testTextFieldEmacsKeybindCutCopyPaste();
     TEST_RESULTS();
 }
 

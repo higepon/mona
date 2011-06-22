@@ -78,42 +78,6 @@ public:
 
     virtual ~TextFieldWithHistory() {}
 
-    // protected virtual
-    void moveBeginningOfLine()
-    {
-        if(cursor_ != 0) {
-            cursor_ = 0;
-            repaint();
-        }
-    }
-
-    void moveEndOfLine()
-    {
-        if (cursor_ != text_.length()) {
-            cursor_ = text_.length();
-            repaint();
-        }
-    }
-
-    void deleteForward()
-    {
-        if (cursor_ < text_.length()) {
-            if (cursor_ == 0) {
-                text_ = text_.substring(1, text_.length() - 1);
-            } else if (cursor_ == text_.length() - 1) {
-                text_ = text_.substring(0, cursor_);
-            } else {
-                String head = text_.substring(0, cursor_);
-                String rest = text_.substring(cursor_ + 1, text_.length() - cursor_ - 1);
-                logprintf("head=%s rest=%s\n", (const char*)head, (const char*)rest);
-                text_ = head;
-                text_ += rest;
-            }
-            repaint();
-        }
-
-    }
-
     virtual void processEvent(Event* event)
     {
         if (event->getType() == KeyEvent::KEY_PRESSED &&
@@ -122,20 +86,8 @@ public:
                 showPreviousHistory();
             } else if (((KeyEvent*)event)->getKeycode() == 'n') {
                 showNextHistory();
-            } else if (((KeyEvent*)event)->getKeycode() == 'a') {
-                moveBeginningOfLine();
-            } else if (((KeyEvent*)event)->getKeycode() == 'e') {
-                moveEndOfLine();
-            } else if (((KeyEvent*)event)->getKeycode() == 'f') {
-                cursorRight();
-                repaint();
-            } else if (((KeyEvent*)event)->getKeycode() == 'b') {
-                cursorLeft();
-                repaint();
-            } else if (((KeyEvent*)event)->getKeycode() == 'h') {
-                backspace();
-            } else if (((KeyEvent*)event)->getKeycode() == 'd') {
-                deleteForward();
+            } else {
+                TextField::processEvent(event);
             }
         } else if (event->getType() == KeyEvent::KEY_PRESSED &&
                    ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) {
