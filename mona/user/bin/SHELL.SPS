@@ -45,7 +45,8 @@
       (let ([command-line (null-terminated-utf8->string str)])
         (match (string-split command-line #\space)
          [("ls" dir)
-           (ls stream dir)
+           (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "ls failed ~a" dir)))]]
+           (ls stream dir))
            (monapi-message-reply from header MSG_OK)]
          [("ps")
            (ps stream)
