@@ -18,14 +18,16 @@
       (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
     (directory-list dir)))
 
+(define (write-string stream s)
+  (monapi-stream-write stream (string->utf8 s)))
 
 (define (ps stream)
-  (monapi-stream-write stream (string->utf8 "tid name"))
+  (write-string "tid name")
   (for-each
     (^p
-      (monapi-stream-write stream (string->utf8 (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name)))))
+      (write-string stream (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name))))
     (process-list))
-  (monapi-stream-write stream (string->utf8 "tid name")))
+  (write-string "tid name"))
 
 (define (complete-path command*)
   (cond

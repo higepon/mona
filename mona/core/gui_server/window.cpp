@@ -106,14 +106,16 @@ static void ActivateWindow(guiserver_window* w)
 {
     if (activeWindow != NULL) {
         if (Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle) != M_OK) {
-            monapi_warn("can't activate  window(%x), ignored.");
+            monapi_warn("can't activate  window(%x), ignored.", w);
+            DisposeWindow(w->Handle);
             return;
         }
     }
     if (w != NULL) {
         if (Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle) != M_OK) {
-            printf("Error %s:%d\n", __FILE__, __LINE__);
-            exit(-1);
+            DisposeWindow(w->Handle);
+            monapi_warn("can't activate  window(%x), ignored. message failed", w);
+            return;
         }
     }
     activeWindow = w;
