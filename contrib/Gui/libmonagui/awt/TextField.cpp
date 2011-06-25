@@ -87,7 +87,7 @@ namespace monagui {
         cursor_--;
     }
 
-    void TextField::forward()
+    void TextField::backward()
     {
         if (cursor_ > 0) {
             cursor_--;
@@ -95,7 +95,7 @@ namespace monagui {
         }
     }
 
-    void TextField::backward()
+    void TextField::forward()
     {
         if (cursor_ < text_.length()) {
             cursor_++;

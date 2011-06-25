@@ -89,7 +89,7 @@ static void test_TextField()
     t->deleteCharacter();
     EXPECT_EQ_TEXT_FIELD("ABC", 3, t);
 
-    t->forward();
+    t->backward();
     t->insertCharacter('E');
     EXPECT_EQ_TEXT_FIELD("ABEC", 3, t);
 
