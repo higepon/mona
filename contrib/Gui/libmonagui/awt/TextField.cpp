@@ -247,10 +247,10 @@ namespace monagui {
                 moveEndOfLine();
                 return;
             case 'f':
-                backward();
+                forward();
                 return;
             case 'b':
-                forward();
+                backward();
                 return;
             case 'c':
                 copy();

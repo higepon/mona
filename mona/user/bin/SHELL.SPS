@@ -22,12 +22,12 @@
   (monapi-stream-write stream (string->utf8 s)))
 
 (define (ps stream)
-  (write-string "tid name")
+  (write-string stream "tid name")
   (for-each
     (^p
       (write-string stream (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name))))
     (process-list))
-  (write-string "tid name"))
+  (write-string stream "tid name"))
 
 (define (complete-path command*)
   (cond
