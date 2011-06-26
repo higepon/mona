@@ -67,7 +67,7 @@ protected:
 
 public:
     Terminal(TerminalInfo& terminalInfo) :
-        command_(new TextFieldWithHistory()),
+        command_(new TextFieldWithHistory("/USER/HISTORY2.TXT")),
         output_(new TextField()),
         button_(new Button("go")),
         scrollbar_(new Scrollbar()),
