@@ -70,6 +70,18 @@ private:
         monapi_file_close(id);
     }
 
+    void loadHistoriesFromFile(const std::string& path)
+    {
+        MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(path.c_str()));
+        if (shm.get() == NULL) {
+            monapi_warn("failed");
+            return;
+        }
+        std::string content((const char*)shm->data(), shm->size());
+        histories_ = MonAPI::StringHelper::split("\n", content);
+        historyIndex_ = histories_.size() - 1;
+    }
+
     void showPreviousHistory()
     {
         if (historyIndex_ == 0) {
@@ -97,7 +109,9 @@ private:
 public:
     TextFieldWithHistory(const std::string& historyPath) : TextField(), historyIndex_(0), historyPath_(historyPath)
     {
+        loadHistoriesFromFile(historyPath);
     }
+
 
     virtual ~TextFieldWithHistory() {}
 
