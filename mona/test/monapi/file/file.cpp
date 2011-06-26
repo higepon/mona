@@ -667,6 +667,11 @@ static void test_create_delete_directory()
     ASSERT_EQ(false, monapi_file_exists(filename));
 }
 
+static void test_fatfs_write_causes_date_change()
+{
+    
+}
+
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -714,6 +719,7 @@ int main(int argc, char *argv[])
     test_fatfs_delete_directory();
     test_fatfs_try_delete_not_empty_directory();
     test_fatfs_try_create_duplicate_files();
+    test_fatfs_write_causes_date_change();
 
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();
