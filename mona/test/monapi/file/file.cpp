@@ -669,7 +669,20 @@ static void test_create_delete_directory()
 
 static void test_fatfs_write_causes_date_change()
 {
-    
+    const char* filename = "/USER/TEMP/HELLO.TXT";
+    intptr_t file = monapi_file_open(filename, FILE_CREATE);
+    EXPECT_TRUE(file > M_OK);
+
+    SharedMemory shm(1);
+    ASSERT_EQ(M_OK, shm.map());
+    shm.data()[0] = 0xff;
+    EXPECT_EQ(1, monapi_file_write(file, shm, 1));
+    monapi_file_close(file);
+
+    Date now;
+    Date fileDate;
+    EXPECT_EQ(M_OK, monapi_file_get_date(filename, fileDate));
+    EXPECT_TRUE(fileDate.toUnixTime() - now.toUnixTime() < 2);
 }
 
 
