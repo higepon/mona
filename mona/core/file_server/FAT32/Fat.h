@@ -698,6 +698,12 @@ public:
             return false;
         }
 
+        void setDateNow()
+        {
+            MonAPI::Date now;
+            setDate(now.getKDate());
+        }
+
         void setDate(KDate date)
         {
             date_ = date;
@@ -914,8 +920,7 @@ private:
             return false;
         }
         File* r = new File("", getRootDirectoryCluster(), childlen, 0, 0);
-        MonAPI::Date date;
-        r->setDate(date.getKDate());
+        r->setDateNow();
         root_->fnode = r;
         ASSERT(root_->fnode);
         root_->fs = this;
@@ -1127,6 +1132,8 @@ private:
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         uint32_t newNumClusters = tailOffset > entry->getSize() ? sizeToNumClusters(tailOffset) : currentNumClusters;
 
+        entry->setDateNow();
+
         if (newNumClusters == currentNumClusters) {
             if (tailOffset > entry->getSize()) {
                 entry->setSize(tailOffset);
@@ -1241,8 +1248,7 @@ private:
         if (indexInParentCluster != longNameStartIndex) {
             file->setLongNameStartIndex(longNameStartIndex);
         }
-        MonAPI::Date now;
-        file->setDate(now.getKDate());
+        file->setDateNow();
         File* d = getFileByVnode(dir);
         d->addChild(file);
         file->setParent(d);
