@@ -2,7 +2,7 @@
          (export complement)
          (import (rnrs))
 
-(define (complement) 'higeaa)
+(define (complement command) (string-append "/APPS/" command ".EX5"))
 
 
 )

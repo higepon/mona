@@ -34,8 +34,8 @@ backup_user:
 	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
 	(test -d ~/Dropbox/mona_images/ && sudo tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H_%M_%S'`.tar.gz tmp --exclude temp)
 	cp tmp/bin/*.SPS ../../user/bin/
-	cp -r tmp/lib/* ../../user/lib
-	cp -r tmp/test/* ../../user/test
+	cp -r tmp/lib/* ../../user/lib || true
+	cp -r tmp/test/* ../../user/test || true
 	git add ../../user/bin/* || true
 	git add ../../user/lib/*.SLS || true
 	git add ../../user/lib/*/*.SLS || true

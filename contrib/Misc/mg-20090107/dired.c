@@ -646,7 +646,7 @@ dired_(char *dname)
       if (month <= 12 && month >= 1) {
         month_name = month_names[month - 1];
       } else {
-        assert(0);
+        //        assert(0);
         month_name = "---";
       }
       snprintf(line, sizeof(line), "  %crwxrwxrwx 1 mona mona   %d %s %02d %02d:%02d %s", fisdir(line) ? 'd' : '-', size, month_name, day, hour, min, dent->d_name);

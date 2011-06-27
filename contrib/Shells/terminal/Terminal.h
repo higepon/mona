@@ -74,7 +74,7 @@ public:
         terminalInfo_(terminalInfo),
         currentLineNo_(0)
     {
-        const int EXTRA_WIDTH = 300;
+        const int EXTRA_WIDTH = 350;
         setBounds(50, 200, 300 + EXTRA_WIDTH, 400);
         setTitle("Terminal");
         command_->setText("ls /APPS/");

@@ -25,7 +25,7 @@ int
 spawncli(int f, int n)
 {
 #ifdef MONA
-  assert(0);
+  logprintf("[warning] spawncli stub is called");
   return 0;
 #else
 	sigset_t	oset;

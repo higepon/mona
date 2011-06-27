@@ -1,4 +1,7 @@
 (import (rnrs)
+        (mosh test)
         (shell path))
 
-(display (complement))
+(test-equal "/APPS/HELLO.EX5" (complement "HELLO"))
+
+(test-results)
