@@ -667,6 +667,24 @@ static void test_create_delete_directory()
     ASSERT_EQ(false, monapi_file_exists(filename));
 }
 
+static void test_fatfs_write_causes_date_change()
+{
+    const char* filename = "/USER/TEMP/HELLO.TXT";
+    intptr_t file = monapi_file_open(filename, FILE_CREATE);
+    EXPECT_TRUE(file > M_OK);
+
+    SharedMemory shm(1);
+    ASSERT_EQ(M_OK, shm.map());
+    shm.data()[0] = 0xff;
+    EXPECT_EQ(1, monapi_file_write(file, shm, 1));
+    monapi_file_close(file);
+
+    Date now;
+    Date fileDate;
+    EXPECT_EQ(M_OK, monapi_file_get_date(filename, fileDate));
+    EXPECT_TRUE(fileDate.toUnixTime() - now.toUnixTime() < 2);
+}
+
 
 #define MAP_FILE_PATH "/APPS/TFILE.APP/TFILE.MAP"
 
@@ -714,6 +732,7 @@ int main(int argc, char *argv[])
     test_fatfs_delete_directory();
     test_fatfs_try_delete_not_empty_directory();
     test_fatfs_try_create_duplicate_files();
+    test_fatfs_write_causes_date_change();
 
     testReadDirectory_OneFile();
     test_delete_create_should_remove_vnode_cache();

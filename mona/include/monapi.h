@@ -32,6 +32,9 @@
 #define monapi_fatal(...) {PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Fatal (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _printf("Fatal (%s:%s:%d) :", psinfo.name, __FILE__, __LINE__), _printf(__VA_ARGS__), exit(-1); }
 #define monapi_warn(...) { PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Warning (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n"); }
 
+#define monapi_warn_once(...) { static bool warningShown = false; if (!warningShown) {PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Warning (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n"); warningShown = true;} }
+
+
 extern "C" __attribute__((constructor)) void monapi_initialize();
 
 

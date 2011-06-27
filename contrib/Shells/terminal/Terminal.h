@@ -61,30 +61,31 @@ protected:
 
     enum
     {
-        OUTPUT_HIGHT = 200,
+        OUTPUT_HIGHT = 320,
         forbidden_comma
     };
 
 public:
     Terminal(TerminalInfo& terminalInfo) :
-        command_(new TextFieldWithHistory()),
+        command_(new TextFieldWithHistory("/USER/HISTORY2.TXT")),
         output_(new TextField()),
         button_(new Button("go")),
         scrollbar_(new Scrollbar()),
         terminalInfo_(terminalInfo),
         currentLineNo_(0)
     {
-        setBounds(50, 200, 300, 400);
+        const int EXTRA_WIDTH = 300;
+        setBounds(50, 200, 300 + EXTRA_WIDTH, 400);
         setTitle("Terminal");
         command_->setText("ls /APPS/");
 
         int height = getFontMetrics()->getHeight("H");
         outputNumRows_ = OUTPUT_HIGHT / height - 1;
 
-        command_->setBounds(0, 0, 200, 30);
-        output_->setBounds(0, 30, 250, OUTPUT_HIGHT);
-        button_->setBounds(200, 0, 40, 30);
-        scrollbar_->setBounds(250, 30, 16, OUTPUT_HIGHT);
+        command_->setBounds(0, 0, 200 + EXTRA_WIDTH, 30);
+        output_->setBounds(0, 30, 250 + EXTRA_WIDTH, OUTPUT_HIGHT);
+        button_->setBounds(200 + EXTRA_WIDTH, 0, 40, 30);
+        scrollbar_->setBounds(250 + EXTRA_WIDTH, 30, 16, OUTPUT_HIGHT);
         add(command_.get());
         add(output_.get());
         add(button_.get());

@@ -18,14 +18,16 @@
       (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
     (directory-list dir)))
 
+(define (write-string stream s)
+  (monapi-stream-write stream (string->utf8 s)))
 
 (define (ps stream)
-  (monapi-stream-write stream (string->utf8 "tid name"))
+  (write-string stream "tid name")
   (for-each
     (^p
-      (monapi-stream-write stream (string->utf8 (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name)))))
+      (write-string stream (format "~d ~a\n" (assoc-ref p 'tid) (assoc-ref p 'name))))
     (process-list))
-  (monapi-stream-write stream (string->utf8 "tid name")))
+  (write-string stream "tid name"))
 
 (define (complete-path command*)
   (cond
@@ -45,7 +47,8 @@
       (let ([command-line (null-terminated-utf8->string str)])
         (match (string-split command-line #\space)
          [("ls" dir)
-           (ls stream dir)
+           (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "ls failed ~a" dir)))]]
+           (ls stream dir))
            (monapi-message-reply from header MSG_OK)]
          [("ps")
            (ps stream)
