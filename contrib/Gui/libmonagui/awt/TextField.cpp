@@ -132,13 +132,11 @@ namespace monagui {
 
         if (selected_ && selectBeginningOffset_ != cursor_) {
             g->setColor(Color::gray);
-            if (cursor_ > selectBeginningOffset_) {
-                int headOffset = getFontMetrics()->getWidth(text_.substring(0, selectBeginningOffset_));
-                int selectedWidth = getFontMetrics()->getWidth(text_.substring(selectBeginningOffset_, cursor_ - selectBeginningOffset_));
-                g->fillRect(offx + headOffset, offy + 3, offx + selectedWidth, offy + 12);
-            } else {
-                ASSERT(false);
-            }
+            int begin = cursor_ < selectBeginningOffset_ ? cursor_ : selectBeginningOffset_;
+            int end = cursor_ < selectBeginningOffset_ ? selectBeginningOffset_ : cursor_;
+            int headOffset = getFontMetrics()->getWidth(text_.substring(0, begin));
+            int selectedWidth = getFontMetrics()->getWidth(text_.substring(begin, end - begin));
+            g->fillRect(offx + headOffset, offy + 3, offx + selectedWidth, offy + 12);
         }
 
         if (getEnabled() == true) {
