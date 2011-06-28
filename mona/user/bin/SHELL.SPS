@@ -6,6 +6,7 @@
         (mosh control)
         (mosh file)
         (shorten)
+        (shell path)
         (mosh process)
         (only (srfi :13) string-contains string-join)
         (only (mosh ffi) null-terminated-utf8->string string->utf8z))
@@ -32,10 +33,16 @@
 (define (complete-path command*)
   (cond
     [(and (pair? command*) (not (string-contains (car command*) "/")))
-      (if (file-exists? (string-append "/APPS/" (car command*)))     
-          (cons (string-append "/APPS/" (car command*)) (cdr command*))
-          command*)]
+      (cons (complement (car command*)) (cdr command*))]
     [else command*]))
+
+;(define (complete-path command*)
+;  (cond
+;    [(and (pair? command*) (not (string-contains (car command*) "/")))
+;      (if (file-exists? (string-append "/APPS/" (car command*)))     
+;          (cons (string-append "/APPS/" (car command*)) (cdr command*))
+;          command*)]
+;    [else command*]))
 
 (monapi-name-add! "/servers/shell")
 

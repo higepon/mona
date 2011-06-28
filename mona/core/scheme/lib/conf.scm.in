@@ -45,7 +45,7 @@
   (my-display))
 
 (define (m command)
-  (start-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /USER/BIN/" command ".sps")))
+  (start-process (string-append "/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib:/USER/LIB /USER/BIN/" command ".sps")))
 
 
 (define (on-gui-start)
