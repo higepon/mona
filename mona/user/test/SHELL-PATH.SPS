@@ -6,5 +6,6 @@
 (test-equal "/APPS/MONAGUI/FACEBOOK.EX5" (complement "FACEBOOK"))
 (test-equal "/APPS/HELLO.EX5" (complement "HELLO.EX5"))
 (test-equal "/APPS/MOSH.APP/MOSH.EXE" (complement "MOSH"))
-(test-equal "" (find-app-dir "/APPS/" "MOSH"))
+(test-equal "MOSH.APP" (find-app-dir "/APPS/" "MOSH"))
+(test-equal "MOSH.APP" (find-app-dir "/APPS/" "MOSH.EXE"))
 (test-results)
