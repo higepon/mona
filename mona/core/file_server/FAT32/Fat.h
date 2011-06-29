@@ -1082,6 +1082,8 @@ private:
         if (ext.size() > 3) {
             monapi_warn("ext=%s", ext.c_str());
         }
+        // N.B. entry->rsvd should be all zero.
+        memset(entry, 0, sizeof(struct de));
         ASSERT(ext.size() <= 3);
         entry->attr = isDirectory ? ATTR_SUBDIR : 0;
         memset(entry->name, ' ', 8);

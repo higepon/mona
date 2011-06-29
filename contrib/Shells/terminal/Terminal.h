@@ -151,7 +151,7 @@ protected:
         // Adjust scrollbar
         scrollbar_->setMaximum(lines_.size() - outputNumRows_);
         scrollbar_->setValue(scrollbar_->getMaximum());
-        if (lines_.size() - outputNumRows_ > 0) {
+        if (lines_.size() > outputNumRows_) {
             currentLineNo_ = lines_.size() - outputNumRows_;
         } else {
             currentLineNo_ = 0;
@@ -166,7 +166,7 @@ protected:
             content += lines_[i + currentLineNo_];
             content += "\n";
         }
-       output_->setText(content.c_str());
+        output_->setText(content.c_str());
     }
 
     bool sendCommand(const std::string& command)

@@ -138,7 +138,7 @@ int print(const char* msg, int direct)
     }
     else if (direct == 0)
     {
-        monapi_stdout_write((uint8_t*)msg, strlen(msg) + 1);
+        monapi_stdout_write((uint8_t*)msg, strlen(msg));
     }
     else if (direct == 2)
     {

@@ -33,7 +33,7 @@
 (define (complete-path command*)
   (cond
     [(and (pair? command*) (not (string-contains (car command*) "/")))
-      (cons (complement (car command*)) (cdr command*))]
+      (cons (complement (string-upcase (car command*))) (cdr command*))]
     [else command*]))
 
 ;(define (complete-path command*)
@@ -60,6 +60,10 @@
          [("ps")
            (ps stream)
            (monapi-message-reply from header MSG_OK)]
+         [("test-all")
+           (monapi-message-reply from header MSG_OK)
+           (apply call-process (list (string-join (complete-path '("MOSH" "/USER/BIN/TEST-ALL.SPS")) " ") stream))
+         ]
          [("kill" id)
            (monapi-stream-write stream (string->utf8 (format "~a\n" (if (process-terminate! (string->number id))
                                                                         "process killed"
