@@ -142,7 +142,7 @@ namespace monagui {
 			bit = 1;
 			char fp[256];
 			// 改行
-			if (str.charAt(i) == '\n') {
+			if (str.charAt(i) == '\n' || w >= cw) {
 				w = 0;
 				h += metrics.getHeight("W");
 			}

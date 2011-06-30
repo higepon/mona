@@ -402,12 +402,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    // MONITORサーバへの正常起動通知
-    if (Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_STARTED) != M_OK) {
-        printf("GUI Server: can't find MONITOR.BIN\n");
-        exit(1);
-
-    }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
     // メッセージループ
     MessageLoop();
