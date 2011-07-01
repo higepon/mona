@@ -60,6 +60,4 @@
       (loop)]
     [(= header MSG_NAME) (loop)]
     [else
-      (write (process-list))
-      (format #t "received ~a str=~a\n" header str)
       (loop)]))))

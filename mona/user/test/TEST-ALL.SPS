@@ -23,4 +23,4 @@
                 tsock))
 
 (for-each (^n (call-process+ (list (symbol->string n)))) test*)
-;(display "all tests done\n")
+(display "all tests done\n")
