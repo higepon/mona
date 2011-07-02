@@ -14,6 +14,12 @@ using namespace MonAPI;
 static uint32_t name_server_id = THREAD_UNKNOWN;
 static HashMap<uint32_t> nameCache(64);
 
+intptr_t monapi_name_clear_cache(const char* name)
+{
+    nameCache.remove(name);
+    return M_OK;
+}
+
 intptr_t monapi_name_whereis(const char* name, uint32_t& id)
 {
     uint32_t found = nameCache.get(name);
