@@ -261,18 +261,16 @@ public:
       clear(g);
       first_time = false;
     }
-
     int fh = colHeight();
 
-
     g->setColor(getForeground());
-
     if(ScreenImage != NULL)
       {
         for(int line = 0; line < LINES; line++) {
           drawString(g, ScreenImage[line],  _xoffset, line*fh+_yoffset);
         }
       }
+      ASSERT(Currentbuf);
       drawCursor(g, Currentbuf->cursorX, Currentbuf->cursorY);
   }
     void drawCursor(Graphics *g, int col, int row)
