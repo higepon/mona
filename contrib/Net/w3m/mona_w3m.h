@@ -316,13 +316,13 @@ public:
 
   void initW3M(char* url) {
     m_pane->initW3M();
-
     Buffer *newbuf = NULL;
     newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
     Firstbuf = Currentbuf = newbuf;
 
-    if(newbuf == NULL)
-      MONA_TRACE("newbuf == null\n");
+    if(newbuf == NULL) {
+        monapi_fatal("load file failed url=<%s>\n", url);
+    }
 
     displayBuffer(newbuf, B_FORCE_REDRAW);
     if(m_isAuto)
