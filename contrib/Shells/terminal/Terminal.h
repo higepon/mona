@@ -115,7 +115,7 @@ public:
 
         if (runsCommand) {
             if (!sendCommand(command_->getText())) {
-                output_->setText("command failed");
+                output_->setText("send command failed");
             }
         } else if (event->getSource() == scrollbar_.get()) {
             int currentLineNo = scrollbar_->getValue();
@@ -171,14 +171,34 @@ protected:
 
     bool sendCommand(const std::string& command)
     {
+        const char* SHELL_SERVER = "/servers/shell";
         uint32_t tid;
-        if (monapi_name_whereis("/servers/shell", tid) != M_OK) {
+        if (monapi_name_whereis(SHELL_SERVER, tid) != M_OK) {
             return false;
         }
         MessageInfo msg;
-        if (MonAPI::Message::sendReceive(&msg, tid, MSG_TEXT, terminalInfo_.outStream.handle(), 0, 0, command.c_str()) != M_OK) {
+        intptr_t ret = MonAPI::Message::sendReceive(&msg, tid, MSG_TEXT, terminalInfo_.outStream.handle(), 0, 0, command.c_str());
+        if (ret != M_OK) {
+            monapi_warn("send command to server<%d> failed error = %d\n", tid, ret);
             return false;
         }
+
+        // Restart shell server for debug
+        if (command == "restart") {
+            uint32_t tid;
+            std::string command(MonAPI::System::getMoshPath());
+            command += " \"/USER/BIN/SHELL.SPS\" restart";
+            int result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                             MONAPI_TRUE,
+                                                             &tid,
+                                                             MonAPI::System::getProcessStdinID(),
+                                                             terminalInfo_.outStream.handle());
+            if (result != 0) {
+                monapi_fatal("can't exec Mosh");
+            }
+            monapi_name_clear_cache(SHELL_SERVER);
+        }
+
         return true;
     }
 };
