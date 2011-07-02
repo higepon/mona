@@ -169,8 +169,36 @@ protected:
         output_->setText(content.c_str());
     }
 
+    void restartShellServer()
+    {
+        const char* SHELL_SERVER = "/servers/shell";
+        uint32_t tid;
+        if (monapi_name_whereis(SHELL_SERVER, tid) != M_OK) {
+            return;
+        }
+        MessageInfo msg;
+
+        // we ignore the return value of sendReceive, since shell server may be dead already.
+        MonAPI::Message::sendReceive(&msg, tid, MSG_TEXT, terminalInfo_.outStream.handle(), 0, 0, "restart");
+        std::string command(MonAPI::System::getMoshPath());
+        command += " \"/USER/BIN/SHELL.SPS\" restart";
+        int result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                         MONAPI_TRUE,
+                                                         &tid,
+                                                         MonAPI::System::getProcessStdinID(),
+                                                         terminalInfo_.outStream.handle());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+        monapi_name_clear_cache(SHELL_SERVER);
+    }
+
     bool sendCommand(const std::string& command)
     {
+        if (command == "restart") {
+            restartShellServer();
+            return true;
+        }
         const char* SHELL_SERVER = "/servers/shell";
         uint32_t tid;
         if (monapi_name_whereis(SHELL_SERVER, tid) != M_OK) {
