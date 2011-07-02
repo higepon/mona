@@ -494,9 +494,13 @@ intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     System::getStdoutStream();
     if (NULL == outStream || outStream->isInvalid())
     {
-        monapi_warn("You can't use printf, use _printf instead.");
-        monapi_warn("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
-        return -1;
+        bool warnOnce = false;
+        if (!warnOnce) {
+            _logprintf("You can't use printf, use _printf instead.");
+            _logprintf("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
+            warnOnce = true;
+            return -1;
+        }
     }
     return outStream->write(buffer, size);
 }
