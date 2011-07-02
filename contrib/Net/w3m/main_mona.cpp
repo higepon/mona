@@ -2504,7 +2504,7 @@ int main(int argc, char* argv[]) {
     DefaultType = NULL;
     CurrentTab = NULL;
 
-    char *initUrl = "file:///APPS/W3M.APP/MANUAL.HTM";
+    char *initUrl = "file:///APPS/W3M.APP/MANUAL.HTML";
 
     for(int i = 1; i < argc; i++)
     {
