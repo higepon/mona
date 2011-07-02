@@ -107,7 +107,9 @@ static void ActivateWindow(guiserver_window* w)
     if (activeWindow != NULL) {
         if (Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle) != M_OK) {
             monapi_warn("can't activate  window(%x), ignored.", w);
-            DisposeWindow(w->Handle);
+            if (w != NULL) {
+                DisposeWindow(w->Handle);
+            }
             return;
         }
     }
@@ -172,7 +174,12 @@ void DisposeWindowFromThreadID(uint32_t tid)
         if (w->ThreadID == tid)
         {
             if (prevWindow == w) prevWindow = NULL;
-            if (activeWindow == w) ActivateWindow(NULL);
+            logprintf("%s %s:%d w=%x\n", __func__, __FILE__, __LINE__, w);
+            if (activeWindow == w) {
+                activeWindow = NULL;
+//                ActivateWindow(NULL);
+            }
+    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (w->FormBufferHandle != 0)
             {
                 w->Visible = false;
