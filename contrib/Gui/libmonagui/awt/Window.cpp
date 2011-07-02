@@ -364,7 +364,7 @@ namespace monagui {
         MessageInfo info;
         while (this->isRunning) {
             if (!MonAPI::Message::receive(&info)) {
-                logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, info.header);
+//                logprintf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, info.header);
             //if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) { // CPU 100%
                 switch(info.header){
                 case MSG_STOP:
