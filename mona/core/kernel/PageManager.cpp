@@ -315,7 +315,7 @@ public:
             dumpAddress<T>(eip, dict);
 
             void**bp = (void**)ebp;
-            while(bp && ((uint32_t)bp) < stackStart)
+            while(bp && ((uint32_t)bp) > stackStart)
             {
                 // caller = bp[1];
                 dumpAddress<T>((uint32_t)bp[1], dict);
