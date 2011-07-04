@@ -2556,11 +2556,8 @@ int main(int argc, char* argv[]) {
     g_frame->initW3M(initUrl);
     g_frame->run();
     delete(g_frame);
-
     if(g_debugMode)
         syscall_stack_trace_disable(pid);
-
-    monapi_unregister_to_server("/servers/process");
     return 0;
 }
 

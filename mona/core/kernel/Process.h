@@ -121,11 +121,11 @@ class ThreadOperation
   public:
     static Thread* create(Process* process, uint32_t programCounter, uint32_t observer);
     static int switchThread(bool isProcessChanged, int i);
-    static intptr_t kill(Process* process, Thread* thread, int status);
+    static intptr_t kill(Thread* thread, int status = -1);
     static intptr_t kill(uint32_t tid);
 
   private:
-    static void sendKilledMessage(int status);
+    static void sendKilledMessage(Thread* thread, int status);
     static void archCreateUserThread(Thread* thread, uint32_t programCounter, PageEntry* directory, LinearAddress stack);
     static void archCreateThread(Thread* thread, uint32_t programCounter, PageEntry* directory, LinearAddress stack);
     static uint32_t id;

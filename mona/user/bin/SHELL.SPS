@@ -29,6 +29,12 @@
            (ls stream dir))
            (monapi-message-reply from header MSG_OK)
            (server)]
+         [("cat" path)
+           (guard [ex [#t (write-string stream (format "cat failed (~s):~a\n" path (condition-printer ex)))]]
+             (cat stream path))
+           (monapi-message-reply from header MSG_OK)
+           (server)]
+
          [("ps")
            (ps stream)
            (monapi-message-reply from header MSG_OK)

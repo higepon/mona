@@ -26,7 +26,7 @@ private:
 public:
     enum
     {
-        KMUTEX,
+        KMUTEX = 0x1234,
         USER_SEMAPHORE,
         KTIMER,
         CONDITION

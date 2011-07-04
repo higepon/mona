@@ -353,7 +353,7 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
             if (heap->faultHandler(this, process, address, FAULT_NOT_EXIST)) {
                 return true;
             } else {
-                ThreadOperation::kill(process, thread, -1);
+                ThreadOperation::kill(thread);
                 return false;
             }
         }
@@ -371,7 +371,7 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
 
     showPageFault(threadInfo, address);
 
-    ThreadOperation::kill(process, thread, -1);
+    ThreadOperation::kill(thread);
     return false;
 }
 

@@ -164,7 +164,7 @@ static void terminateCurrentThread(const char* reason)
     g_console->printf("%s : Process killed %s thread-index=%d eip=%x\n", reason, current->getName(),
                       g_currentThread->process->getThreadIndex(g_currentThread->thread), g_currentThread->archinfo->eip);
     logprintf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
-    ThreadOperation::kill(current, g_currentThread->thread, -1);
+    ThreadOperation::kill(g_currentThread->thread);
 }
 
 /*----------------------------------------------------------------------

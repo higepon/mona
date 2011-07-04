@@ -188,7 +188,7 @@ void syscall_entrance()
     case SYSTEM_CALL_KILL:
     {
         int status = SYSTEM_CALL_ARG_1;
-        ThreadOperation::kill(getCurrentProcess(), g_currentThread->thread, status);
+        ThreadOperation::kill(g_currentThread->thread, status);
         g_scheduler->SwitchToNext();
         break;
     }
@@ -196,7 +196,7 @@ void syscall_entrance()
     {
         uint32_t tid = SYSTEM_CALL_ARG_1;
         intptr_t ret = ThreadOperation::kill(tid);
-        if (ret == Scheduler::YIELD) {
+        if (ret == M_OK) {
             g_scheduler->SwitchToNext();
         } else {
             setReturnValue(info, ret);

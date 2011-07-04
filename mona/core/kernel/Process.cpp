@@ -253,82 +253,62 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
     return NORMAL;
 }
 
-intptr_t ThreadOperation::kill(Process* process, Thread* thread, int status)
+intptr_t ThreadOperation::kill(Thread* thread, int status /* = -1 */)
 {
     g_scheduler->Kill(thread);
 
-    sendKilledMessage(status);
+    sendKilledMessage(thread, status);
 
+    Process* process = thread->tinfo->process;
     (process->threadNum)--;
-
     //modified by TAKA
     //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
     ProcessOperation::freeKernelStack(thread->kernelStackBottom - ProcessOperation::KERNEL_STACK_UNIT_SIZE);
 
-    if (process->threadNum < 1)
-    {
+    if (process->threadNum < 1) {
         KObjectService::cleanupKObjects(process);
         PageEntry* directory = process->getPageDirectory();
         delete process;
         g_page_manager->returnPhysicalPages(directory);
     }
-
     delete thread;
     return M_OK;
 }
 
 intptr_t ThreadOperation::kill(uint32_t tid)
 {
-    Thread* thread   = g_scheduler->Find(tid);
+    Thread* thread  = g_scheduler->Find(tid);
     if (thread == NULL) {
         return M_BAD_THREAD_ID;
     }
     if (thread->id == FIRST_THREAD_ID) {
         return M_BAD_THREAD_ID;
     }
-
-    Process* process = thread->tinfo->process;
-
-    g_scheduler->Kill(thread);
-
-    ProcessOperation::freeKernelStack(thread->kernelStackBottom);
-
-    (process->threadNum)--;
-
-    if (process->threadNum < 1)
-    {
-        PageEntry* directory = process->getPageDirectory();
-        delete process;
-        g_page_manager->returnPhysicalPages(directory);
-    }
-
-    delete thread;
-
-    return Scheduler::YIELD;
+    return ThreadOperation::kill(thread, -1);
 }
 
 // We don't broadcast MSG_PROCESS_TERMINATED.
 // Since it will cause message box overflow easily.
-void ThreadOperation::sendKilledMessage(int status)
+void ThreadOperation::sendKilledMessage(Thread* killedThread, int status)
 {
-    for (int i = 0; i < g_currentThread->thread->observers.size(); i++) {
-        uint32_t dest = g_currentThread->thread->observers[i];
+    for (int i = 0; i < killedThread->observers.size(); i++) {
+        uint32_t dest = killedThread->observers[i];
 
         // for INIT thread.
         if (dest == THREAD_UNKNOWN) {
             continue;
         }
-        Thread* thread =  g_scheduler->Find(dest);
+        Thread* observer = g_scheduler->Find(dest);
 
         // observer may be dead already.
-        if (thread == NULL) {
+        if (observer == NULL) {
             continue;
         }
         MessageInfo msg;
         msg.header = MSG_PROCESS_TERMINATED;
-        msg.arg1   = g_currentThread->thread->id;
+        msg.arg1   = killedThread->id;
         msg.arg2   = status;
-        if (g_messenger->send(thread, &msg) != M_OK) {
+        if (g_messenger->send(observer, &msg) != M_OK) {
             logprintf("Warn %s %s:%d: send failure MSG_PROCESS_TERMINATED\n", __func__, __FILE__, __LINE__);
         }
     }
@@ -371,7 +351,7 @@ Process::~Process()
     if (kobjects_.size() != 0) {
         logprintf("something bad happened %s %s:%d\n", __func__, __FILE__, __LINE__);
         for (int i = 0; i < kobjects_.size(); i++) {
-            logprintf("kobject %d\n", kobjects_[i].cdr->getType());
+            logprintf("kobject %x\n", kobjects_[i].cdr->getType());
         }
     }
 

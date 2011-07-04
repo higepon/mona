@@ -61,7 +61,9 @@ protected:
 
     enum
     {
-        OUTPUT_HIGHT = 320,
+        OUTPUT_HIGHT = 340,
+        OUTPUT_WIDTH = 270,
+        COMMAND_INPUT_WIDTH = 250,
         forbidden_comma
     };
 
@@ -82,10 +84,15 @@ public:
         int height = getFontMetrics()->getHeight("H");
         outputNumRows_ = OUTPUT_HIGHT / height - 1;
 
-        command_->setBounds(0, 0, 200 + EXTRA_WIDTH, 30);
-        output_->setBounds(0, 30, 250 + EXTRA_WIDTH, OUTPUT_HIGHT);
-        button_->setBounds(200 + EXTRA_WIDTH, 0, 40, 30);
-        scrollbar_->setBounds(250 + EXTRA_WIDTH, 30, 16, OUTPUT_HIGHT);
+        command_->setBounds(0, 0, COMMAND_INPUT_WIDTH + EXTRA_WIDTH, 30);
+        command_->setFontStyle(Font::FIXED);
+        output_->setBounds(0, 30, OUTPUT_WIDTH + EXTRA_WIDTH, OUTPUT_HIGHT);
+        button_->setBounds(COMMAND_INPUT_WIDTH + EXTRA_WIDTH, 0, 40, 30);
+        scrollbar_->setBounds(OUTPUT_WIDTH + EXTRA_WIDTH, 30, 16, OUTPUT_HIGHT);
+        output_->setFontStyle(Font::FIXED);
+        output_->setFocused(false);
+        output_->setBackground(0x05070035);
+        output_->setForeground(0xffffffff);
         add(command_.get());
         add(output_.get());
         add(button_.get());

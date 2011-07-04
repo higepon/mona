@@ -93,6 +93,6 @@ int main(int argc, char *argv[])
     copyToPath(s, argv[1]);
     closesocket(s);
     closesocket(sock);
-
+    fprintf(stderr, "done\n");
     return 0;
 }

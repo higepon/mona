@@ -1,5 +1,5 @@
 (library (shell)
-         (export call-process+ start-process+ ps ls)
+         (export call-process+ start-process+ ps ls cat)
          (import (rnrs) (shorten) (monapi) (mosh) (mosh file) 
                  (shell path) (mosh process) (only (srfi :13) string-join string-contains))
 
@@ -9,6 +9,16 @@
       (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
     (directory-list dir)))
 
+(define (cat stream path)
+  (call-with-port (open-input-file path)
+    (^p
+      (let loop ([line (get-line p)])
+        (cond
+          [(eof-object? line) '()]
+          [else
+            (write-string stream line)
+            (write-string stream "\n")
+            (loop (get-line p))])))))
 
 (define (ps stream)
   (write-string stream "tid name")
