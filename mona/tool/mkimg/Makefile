@@ -5,6 +5,7 @@ all:
 	make clean
 	MONADIR=$(MONADIR) perl mkimg.pl
 	make iso
+	mosh check_image_backup.scm
 	(test -f ./fat32_user.img && make backup_user) || true
 	make fat32
 	cp mona.img test.img
