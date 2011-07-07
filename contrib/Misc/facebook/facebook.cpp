@@ -9,11 +9,54 @@
 using namespace std;
 using namespace MonAPI;
 
+class ShareButton : public Button
+{
+public:
+    ShareButton() : Button("Share")
+    {
+    }
+
+    virtual ~ShareButton()
+    {
+    }
+
+    void paint(Graphics* g)
+    {
+        int w = getWidth();
+        int h = getHeight();
+
+        g->setColor(0x29, 0x45, 0x7f);
+        g->fillRect(0, 0, w, h);
+        g->setColor(0x5f, 0x78, 0xab);
+        g->fillRect(1, 1, w - 2, h - 2);
+        if (getPushed()) {
+            g->setColor(monagui::Color::white);
+            g->drawLine(2, h - 2, w - 3, h - 2);
+            g->drawLine(w - 2, 2, w - 2, h - 3);
+            g->drawLine(w - 3 , h - 3, w - 3, h - 3);
+            g->setColor(monagui::Color::gray);
+            g->drawLine(1, 2, 1, h - 3);
+            g->drawLine(2, 1, w - 3, 1);
+        }
+        int fw = getFontMetrics()->getWidth(getLabel());
+        int fh = getFontMetrics()->getHeight(getLabel());
+        int x = (w - fw) / 2;
+        int y = (h - fh) / 2;
+        if (getPushed()) {
+            x++;
+            y++;
+        }
+        g->setColor(monagui::Color::white);
+        g->setFontStyle(Font::BOLD);
+        g->drawString(getLabel(), x, y);
+    }
+};
+
 class Facebook : public Frame {
 private:
     uintptr_t updaterId_;
     scoped_ptr<TextField> inputArea_;
-    scoped_ptr<Button> postButton_;
+    scoped_ptr<Button> shareButton_;
     scoped_ptr<Button> downButton_;
     scoped_ptr<Button> updateButton_;
     typedef std::vector<std::string> strings;
@@ -35,7 +78,7 @@ public:
         INPUT_AREA_WIDTH = 300,
         INPUT_AREA_HEIGHT = BUTTON_HEIGHT,
         WIDTH = 700,
-        HEIGHT = 420,
+        HEIGHT = 435,
         POST_HEIGHT = 50,
         MAX_ROWS = 7,
         TIMER_INTERVAL_MSEC = 1000,
@@ -46,27 +89,30 @@ public:
     Facebook(uintptr_t updaterId) :
         updaterId_(updaterId),
         inputArea_(new TextField()),
-        postButton_(new Button("Post")),
-        downButton_(new Button("Down")),
-        updateButton_(new Button("Update")),
+        shareButton_(new ShareButton()),
+        downButton_(new FBButton(">>>")),
+        updateButton_(new FBButton("Update")),
         updating_(false),
         idleTimeMsec_(2000),
         offset_(0),
         isAutoUpdate_(true)
     {
         setTitle("Facebook");
+        setBackground(monagui::Color::white);
         setBounds(40, 40, WIDTH, HEIGHT);
+        inputArea_->setForeground(0xffcccccc);
         int x = 5;
         int y = 5;
         inputArea_->setBounds(x, y, INPUT_AREA_WIDTH, INPUT_AREA_HEIGHT);
         x += INPUT_AREA_WIDTH + BUTTON_MARGIN;
-        postButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        shareButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
         x += BUTTON_WIDTH + BUTTON_MARGIN;
         updateButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
         x += BUTTON_WIDTH + BUTTON_MARGIN;
-        downButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        downButton_->setBounds(640, 385, BUTTON_WIDTH, BUTTON_HEIGHT);
+        downButton_->setFontStyle(Font::BOLD);
         add(inputArea_.get());
-        add(postButton_.get());
+        add(shareButton_.get());
         add(downButton_.get());
         add(updateButton_.get());
         setTimer(TIMER_INTERVAL_MSEC);
@@ -90,11 +136,11 @@ public:
 private:
     void postFeed()
     {
-        postButton_->setEnabled(false);
+        shareButton_->setEnabled(false);
         if (FacebookService::postFeed(inputArea_->getText())) {
            inputArea_->setText("");
         }
-        postButton_->setEnabled(true);
+        shareButton_->setEnabled(true);
         updateFeedAsync();
     }
 
@@ -168,7 +214,7 @@ private:
 
     void processEvent(Event* event)
     {
-        if (event->getSource() == postButton_.get()) {
+        if (event->getSource() == shareButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 postFeed();
             }
@@ -222,10 +268,60 @@ private:
 //        logprintf("repaint %d msec\n", (int)(e - s));
     }
 
+    void paintTitleGradation(Graphics* g)
+    {
+        int w = getWidth();
+        dword c = g->getColor();
+        g->setColor(0x29, 0x3e, 0x6a);
+        g->fillRect(1, 0, w - 2, 1);
+        g->setColor(0x6c, 0x83, 0xb2);
+        g->fillRect(1, 1, w - 2, 1);
+        g->setColor(0x3b, 0x59, 0x98);
+        g->fillRect(1, 2, w - 2, 16);
+        g->setColor(0x62, 0x7a, 0xad);
+        g->fillRect(1, 18, w - 2, 2);
+        g->setColor(0x89, 0x9b, 0xc1);
+        g->fillRect(0, 20, w - 2, 1);
+        g->setColor(0x29, 0x3e, 0x6b);
+        g->fillRect(0, 21, w - 2, 1);
+        g->setColor(c);
+    }
+
+    void paintTitleString(Graphics* g)
+    {
+        int w = getWidth();
+        int fw = getFontMetrics()->getWidth(getTitle());
+        int fh = getFontMetrics()->getHeight(getTitle());
+
+        if (getFocused()) {
+            g->setColor(monagui::Color::white);
+        } else {
+            g->setColor(monagui::Color::gray);
+        }
+        g->setFontStyle(Font::BOLD);
+        g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
+    }
+
+    void paintFrame()
+    {
+        Graphics* g = getFrameGrapics();
+        paintTitleGradation(g);
+        drawCloseButton(g);
+        paintTitleString(g);
+    }
+
     void paint(Graphics *g)
     {
+        g->setColor(getBackground());
+        g->fillRect(0, 0, getWidth(), getHeight());
+
+        paintFrame();
+
+        g->setColor(monagui::Color::gray);
+        g->drawLine(5, 9 + BUTTON_HEIGHT, getWidth(),  9 + BUTTON_HEIGHT);
+
         for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
-            (*it)->drawImage(g);
+            (*it)->draw(g);
         }
     }
 

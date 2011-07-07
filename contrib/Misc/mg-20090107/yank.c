@@ -21,6 +21,11 @@ static RSIZE	 kstart = 0;	/* # of first used byte in KB.	 */
 
 static int	 kgrow(int);
 
+#ifdef MONA
+#include <assert.h>
+extern intptr_t monapi_clipboard_clear();
+#endif
+
 /*
  * Delete all of the text saved in the kill buffer.  Called by commands when
  * a new kill context is created. The kill buffer array is released, just in
@@ -29,11 +34,15 @@ static int	 kgrow(int);
 void
 kdelete(void)
 {
+#ifdef MONA
+  monapi_clipboard_clear();
+#else
 	if (kbufp != NULL) {
 		free(kbufp);
 		kbufp = NULL;
 		kstart = kused = ksize = 0;
 	}
+#endif
 }
 
 /*
@@ -54,9 +63,17 @@ kinsert(int c, int dir)
 	if (kstart == 0 && dir == KBACK && kgrow(dir) == FALSE)
 		return (FALSE);
 	if (dir == KFORW)
+#ifdef MONA
+		monapi_clipboard_append(c);
+#else
 		kbufp[kused++] = c;
+#endif
 	else if (dir == KBACK)
+#ifdef MONA
+      assert(0);
+#else
 		kbufp[--kstart] = c;
+#endif
 	else
 		panic("broken kinsert call");	/* Oh shit! */
 	return (TRUE);
@@ -105,6 +122,10 @@ kremove(int n)
 	return (CHARMASK(kbufp[n + kstart]));
 }
 
+#ifdef MONA
+extern void monapi_clipboard_set(const char* s, size_t len);
+#endif
+
 /*
  * Copy a string into the kill buffer. kflag gives direction.
  * if KNONE, do nothing.
@@ -124,12 +145,14 @@ kchunk(char *cp1, RSIZE chunk, int kflag)
 			if (kgrow(kflag) == FALSE)
 				return (FALSE);
 		bcopy(cp1, &(kbufp[kused]), (int)chunk);
+		monapi_clipboard_set(cp1, chunk);
 		kused += chunk;
 	} else if (kflag == KBACK) {
 		while (kstart < chunk)
 			if (kgrow(kflag) == FALSE)
 				return (FALSE);
 		bcopy(cp1, &(kbufp[kstart - chunk]), (int)chunk);
+		monapi_clipboard_set(cp1, chunk);
 		kstart -= chunk;
 	} else if (kflag != KNONE)
 		panic("broken ldelete call");
@@ -227,7 +250,11 @@ yank(int f, int n)
 		/* mark around last yank */
 		isetmark();
 		i = 0;
+#ifdef MONA
+		while ((c = mona_kremove(i)) >= 0) {
+#else
 		while ((c = kremove(i)) >= 0) {
+#endif
 			if (c == '\n') {
 				if (newline(FFRAND, 1) == FALSE)
 					return (FALSE);

@@ -72,11 +72,11 @@ namespace monagui {
 		/** 配置位置 */
 		Insets insets;
 		/** 描画領域 */
-		Graphics* _g;
+		Graphics* _g; // 枠を除く部分
 		/** 描画バッファー */
 		Image* _buffer;
 		/** 内部描画領域 */
-		Graphics* __g;
+		Graphics* __g; // タイトルバーなど
 		/** 内部描画バッファー */
 		Image* __buffer;
 		/** GUIサーバーID */

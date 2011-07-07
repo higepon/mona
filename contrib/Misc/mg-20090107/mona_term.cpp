@@ -589,6 +589,53 @@ void mona_get_file_datetime_size(const char* file, int* year, int* month, int* d
     *size = s;
 }
 
+extern "C" int mona_kremove(int i)
+{
+    static std::string content;
+    if (i == 0) {
+        scoped_ptr<SharedMemory> cmi(monapi_clipboard_get());
+        if (cmi == NULL) {
+            return -1;
+        }
+        content = std::string((const char*)cmi->data(), cmi->size());
+        if (content.size() > 0) {
+            return content[0];
+        } else {
+            return -1;
+        }
+    } else {
+        if (i < (int)content.size()) {
+            return content[i];
+        } else {
+            return -1;
+        }
+    }
+}
+
+extern "C" void monapi_clipboard_set(const char* s, size_t len)
+{
+    scoped_ptr<SharedMemory> buffer(new SharedMemory(len));
+    buffer->map();
+    memcpy(buffer->data(), s, len);
+    intptr_t ret = monapi_clipboard_set(*(buffer.get()));
+    if (M_OK != ret) {
+        monapi_warn("monapi_clipboard_set failed %d", ret);
+    }
+}
+
+extern "C" void monapi_clipboard_append(char c)
+{
+    scoped_ptr<SharedMemory> cmi(monapi_clipboard_get());
+    if (cmi == NULL) {
+        monapi_clipboard_set(&c, 1);
+        return;
+    }
+    std::string content((const char*)cmi->data(), cmi->size());
+    content += c;
+    monapi_clipboard_set(content.c_str(), content.size());
+}
+
+
 /*      $OpenBSD: strsep.c,v 1.6 2005/08/08 08:05:37 espie Exp $        */
 
 /*-

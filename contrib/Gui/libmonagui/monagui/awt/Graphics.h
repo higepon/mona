@@ -174,6 +174,8 @@ namespace monagui {
 		 @param color (0x0-0xFFFFFF)
 		 */
 		void setColor(dword color);
+
+        dword getColor() const { return rgb24; }
 		
 		/**
 		 フォントスタイル（通常、太字、斜字、固定幅）を設定する.

@@ -45,6 +45,7 @@ namespace monagui {
         int selectBeginningOffset_;
         Event textEvent;
         ImeManager* _imeManager;
+        dword borderColor_;
 
     public:
         void forward();  // public for testability
@@ -161,6 +162,10 @@ namespace monagui {
 
         /** イベントハンドラ */
         virtual void processEvent(Event* event);
+        virtual void setBorderColor(dword c)
+        {
+            borderColor_ = c;
+        }
     };
 }
 

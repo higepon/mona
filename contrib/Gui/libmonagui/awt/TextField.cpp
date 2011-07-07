@@ -32,7 +32,8 @@ namespace monagui {
                              cursor_(0),
                              selected_(false),
                              selectBeginningOffset_(0),
-                             _imeManager(new ImeManager)
+                             _imeManager(new ImeManager),
+                             borderColor_(Color::black)
     {
         initialize();
     }
@@ -124,7 +125,7 @@ namespace monagui {
         // 内枠
         g->setColor(getBackground());
         g->fillRect(1, 1, w - 2, h - 2);
-        g->setColor(getForeground());
+        g->setColor(borderColor_);
         g->drawRect(1, 1, w - 2, h - 2);
 
         int fh = getFontMetrics()->getHeight(getText());
