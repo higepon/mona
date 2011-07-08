@@ -99,12 +99,15 @@ namespace monagui {
 		
 		/** 再描画 */
 		virtual void repaint();
+
+		virtual void repaintSelf();
 		
 		/** 部品更新 */
 		virtual void update();
 		
 		/** 部品部分更新 */
 		virtual void update(int x, int y, int w, int h);
+		virtual void updateSelf(int x, int y, int w, int h);
 		
 		/** 親部品を得る */
 		inline Container* getParent() { return this->parent; }

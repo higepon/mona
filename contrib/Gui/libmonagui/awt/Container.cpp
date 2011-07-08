@@ -161,13 +161,14 @@ namespace monagui {
         if (getBuffer() == NULL) return;
         ASSERT(getGraphics()); // don't use getGraphics(), before add()
         paint(getGraphics());
-        // 自分の領域を更新する
-        update();
         // 子部品を再描画する
         int I = this->componentList.size();
         for(int i = 0; i < I; i++) {
             Component* component = (Component *)(componentList.get(i));
-            component->repaint();
+            component->repaintSelf();
         }
+        // 自分の領域を更新する
+        update();
+
     }
 }

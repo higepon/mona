@@ -244,7 +244,13 @@ namespace monagui {
             __g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
         }
 
+        // static int i = 0;
+        // if ((i++ % 10) == 0) {
+//        uint64_t s = MonAPI::Date::nowInMsec();
         MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
+        // uint64_t e = MonAPI::Date::nowInMsec();
+        // logprintf("update=%d msec\n", e - s);
+//        }
 
     #ifdef SDL
         {

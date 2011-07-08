@@ -224,7 +224,10 @@ private:
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                 isAutoUpdate_ = false;
                 setupFacebookPostViews(++offset_);
+                uint64_t s = MonAPI::Date::nowInMsec();
                 repaint();
+                uint64_t e = MonAPI::Date::nowInMsec();
+                logprintf("repaint=%d msec\n", e - s);
             }
         } else if (event->getSource() == updateButton_.get()) {
             if (event->getType() == MouseEvent::MOUSE_RELEASED) {

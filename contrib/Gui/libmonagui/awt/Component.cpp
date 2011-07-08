@@ -79,6 +79,17 @@ namespace monagui {
         }
     }
 
+    // Just repaint itself, not to call parent's update
+    void Component::repaintSelf()
+    {
+        // don't call thread unsafe methods from another threads.
+        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        if (this->_buffer == NULL) return;
+        setFontStyle(this->fontStyle);
+        paint(this->_g);
+        updateSelf(getX(), getY(), getWidth(), getHeight());
+    }
+
     void Component::repaint()
     {
         // don't call thread unsafe methods from another threads.
@@ -96,12 +107,21 @@ namespace monagui {
 
     void Component::update(int x, int y, int w, int h)
     {
+        updateSelf(x, y, w, h);
+        Frame* c = (Frame *)getMainWindow();
+        ASSERT(c);
+        ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
+        c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
+    }
+
+    void Component::updateSelf(int x, int y, int w, int h)
+    {
         Frame* c = (Frame *)getMainWindow();
         ASSERT(c);
         ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
         c->getGraphics()->drawImage(this->_buffer, getX(), getY());
-        c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
     }
+
 
     Component* Component::getMainWindow()
     {
