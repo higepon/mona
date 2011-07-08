@@ -69,37 +69,73 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
     bool mouse = r1.IntersectsWith(r2);
     if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
 
-    for (int yy = y1; yy < y2; yy++)
-    {
-        int pos = x1 + yy * sw;
-        unsigned int* pSBuf = &screen_buffer->Data[pos];
-        unsigned int* pVBuf = &vram_buffer->Data[pos];
-        uint8_t* pVram = &vram[pos * bypp];
-        for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
+    if (bpp == 16) {
+        for (int yy = y1; yy < y2; yy++)
         {
-            if (*pVBuf == *pSBuf) continue;
-
-            *pVBuf = *pSBuf;
-            uint8_t* p = (uint8_t*)pSBuf;
-            switch (bpp)
+            int pos = x1 + yy * sw;
+            unsigned int* pSBuf = &screen_buffer->Data[pos];
+            unsigned int* pVBuf = &vram_buffer->Data[pos];
+            uint8_t* pVram = &vram[pos * bypp];
+            for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
             {
-                case 8: // broken
-                    *pVram = (p[0] + p[1] + p[2]) / 3;
-                    break;
-                case 16: // 565
-                    *(unsigned short*)pVram = Color::bpp24to565(p);
-                    break;
-                case 24:
-                    pVram[0] = p[0];
-                    pVram[1] = p[1];
-                    pVram[2] = p[2];
-                    break;
-                case 32:
-                    *(unsigned int*)pVram = *pSBuf;
-                    break;
+                if (*pVBuf == *pSBuf) continue;
+                *pVBuf = *pSBuf;
+                uint8_t* p = (uint8_t*)pSBuf;
+                *(unsigned short*)pVram = Color::bpp24to565(p);
             }
         }
-    }
+    } else if (bpp == 8) {
+        for (int yy = y1; yy < y2; yy++)
+        {
+            int pos = x1 + yy * sw;
+            unsigned int* pSBuf = &screen_buffer->Data[pos];
+            unsigned int* pVBuf = &vram_buffer->Data[pos];
+            uint8_t* pVram = &vram[pos * bypp];
+            for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
+            {
+                if (*pVBuf == *pSBuf) continue;
 
+                *pVBuf = *pSBuf;
+                uint8_t* p = (uint8_t*)pSBuf;
+                *pVram = (p[0] + p[1] + p[2]) / 3;
+            }
+        }
+    } else if (bpp == 24) {
+        for (int yy = y1; yy < y2; yy++)
+        {
+            int pos = x1 + yy * sw;
+            unsigned int* pSBuf = &screen_buffer->Data[pos];
+            unsigned int* pVBuf = &vram_buffer->Data[pos];
+            uint8_t* pVram = &vram[pos * bypp];
+            for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
+            {
+                if (*pVBuf == *pSBuf) continue;
+
+                *pVBuf = *pSBuf;
+                uint8_t* p = (uint8_t*)pSBuf;
+                pVram[0] = p[0];
+                pVram[1] = p[1];
+                pVram[2] = p[2];
+            }
+        }
+    } else if (bpp == 32) {
+        for (int yy = y1; yy < y2; yy++)
+        {
+            int pos = x1 + yy * sw;
+            unsigned int* pSBuf = &screen_buffer->Data[pos];
+            unsigned int* pVBuf = &vram_buffer->Data[pos];
+            uint8_t* pVram = &vram[pos * bypp];
+            for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
+            {
+                if (*pVBuf == *pSBuf) continue;
+
+                *pVBuf = *pSBuf;
+                uint8_t* p = (uint8_t*)pSBuf;
+                *(unsigned int*)pVram = *pSBuf;
+            }
+        }
+    } else {
+        ASSERT(false);
+    }
     if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
