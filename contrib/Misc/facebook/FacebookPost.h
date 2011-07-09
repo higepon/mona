@@ -30,6 +30,17 @@
 #ifndef _FACEBOOK_POST_
 #define _FACEBOOK_POST_
 
+struct Comment
+{
+    Comment(const std::string& id, const std::string& body) : id(id), body(body)
+    {
+    }
+    std::string id;
+    std::string body;
+ };
+
+typedef std::vector<Comment> Comments;
+
 struct FacebookPost
 {
     FacebookPost(const std::string& imageId,
@@ -37,14 +48,16 @@ struct FacebookPost
                  const std::string& text,
                  uint32_t numLikes,
                  const std::string& postId,
-                 uint32_t numComments
+                 uint32_t numComments,
+                 const Comments& comments
         ) :
         imageId(imageId),
         name(name),
         text(text),
         numLikes(numLikes),
         postId(postId),
-        numComments(numComments)
+        numComments(numComments),
+        comments(comments)
     {
     }
 
@@ -68,6 +81,7 @@ struct FacebookPost
     uint32_t numLikes;
     std::string postId;
     uint32_t numComments;
+    Comments comments;
 };
 
 #endif // _FACEBOOK_POST_

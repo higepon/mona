@@ -126,11 +126,20 @@ public:
             sprintf(buf, "%d", numLikes_);
             content += buf;
             content += "人がいいね！と言っています。";
+        }
 
+        if (numComments_ > 0) {
+            char buf[32];
             sprintf(buf, "%d", numComments_);
             content += buf;
             content += "個のコメント";
+
+            for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
+                content += (*it).body;
+                content += "\n";
+            }
         }
+
         text_->setText(content.c_str());
     }
 
@@ -141,6 +150,7 @@ public:
         numLikes_ = post.numLikes;
         numComments_ = post.numComments;
         setText(post.text);
+        comments_ = post.comments;
     }
 
     void setEmpty()
@@ -234,6 +244,7 @@ private:
     std::string postId_;
     int numLikes_;
     int numComments_;
+    Comments comments_;
 };
 
 #endif // _FACEBOOK_POST_VIEW_
