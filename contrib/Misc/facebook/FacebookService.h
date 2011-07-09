@@ -40,11 +40,11 @@ public:
 
     static bool addLike(const std::string& postId)
     {
-        return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", postId);
+        return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", postId, false);
     }
 
 private:
-    static bool executeMosh(const std::string& script, const std::string& arg)
+    static bool executeMosh(const std::string& script, const std::string& arg, bool waits = true)
     {
         uint32_t tid;
         std::string command(MonAPI::System::getMoshPath());
@@ -61,10 +61,14 @@ private:
         if (result != 0) {
             monapi_fatal("can't exec Mosh");
         }
-        if (0 == monapi_process_wait_terminated(tid)) {
-            return true;
+        if (waits) {
+            if (0 == monapi_process_wait_terminated(tid)) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            return true;
         }
     }
 };

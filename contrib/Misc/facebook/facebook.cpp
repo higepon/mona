@@ -100,7 +100,7 @@ public:
         setTitle("Facebook");
         setBackground(monagui::Color::white);
         setBounds(40, 40, WIDTH, HEIGHT);
-        inputArea_->setForeground(0xffcccccc);
+        inputArea_->setBorderColor(0xffcccccc);
         int x = 5;
         int y = 5;
         inputArea_->setBounds(x, y, INPUT_AREA_WIDTH, INPUT_AREA_HEIGHT);
@@ -164,11 +164,8 @@ private:
         posts_.clear();
         for (size_t i = 0; i < lines.size(); i++) {
             Strings line = StringHelper::split("$", lines[i]);
-            if (line.size() != 5) {
-//                logprintf("lines[i]=%s size=<%d>", lines[i].c_str(), line.size());
-            }
-            if (line.size() == 5) {
-                posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4]));
+            if (line.size() == 6) {
+                posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str())));
             }
         }
         return true;

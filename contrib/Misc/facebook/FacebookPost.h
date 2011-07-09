@@ -36,13 +36,15 @@ struct FacebookPost
                  const std::string& name,
                  const std::string& text,
                  uint32_t numLikes,
-                 const std::string& postId
+                 const std::string& postId,
+                 uint32_t numComments
         ) :
         imageId(imageId),
         name(name),
         text(text),
         numLikes(numLikes),
-        postId(postId)
+        postId(postId),
+        numComments(numComments)
     {
     }
 
@@ -65,6 +67,7 @@ struct FacebookPost
     std::string text;
     uint32_t numLikes;
     std::string postId;
+    uint32_t numComments;
 };
 
 #endif // _FACEBOOK_POST_

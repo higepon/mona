@@ -87,7 +87,8 @@ public:
         text_(new TextField()),
         image_(new WebImage()),
         postId_(""),
-        numLikes_(0)
+        numLikes_(0),
+        numComments_(0)
     {
         // todo w, h limit
         text_->setBounds(x + SIDE_BAR_WIDTH, y, w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
@@ -125,6 +126,10 @@ public:
             sprintf(buf, "%d", numLikes_);
             content += buf;
             content += "人がいいね！と言っています。";
+
+            sprintf(buf, "%d", numComments_);
+            content += buf;
+            content += "個のコメント";
         }
         text_->setText(content.c_str());
     }
@@ -134,6 +139,7 @@ public:
         setImagePath(post.imageUrl(), post.localImagePath());
         postId_ = post.postId;
         numLikes_ = post.numLikes;
+        numComments_ = post.numComments;
         setText(post.text);
     }
 
@@ -227,6 +233,7 @@ private:
     MonAPI::scoped_ptr<WebImage> image_;
     std::string postId_;
     int numLikes_;
+    int numComments_;
 };
 
 #endif // _FACEBOOK_POST_VIEW_
