@@ -46,10 +46,21 @@ namespace monagui {
         Event textEvent;
         ImeManager* _imeManager;
         dword borderColor_;
+        bool isEditable_;
 
     public:
         void forward();  // public for testability
         void backward(); // public for testability
+
+        bool isEditable() const
+        {
+            return isEditable_;
+        }
+
+        void setEditable(bool isEditable)
+        {
+            isEditable_ = isEditable;
+        }
     protected:
 
         void initialize();

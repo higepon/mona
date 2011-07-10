@@ -3,6 +3,8 @@ Copyright (c) 2005 bayside
               2011 Higepon : Refactoring and added testability.
                              Added Emacs keybind
                              Added clipboard support
+                             Added setEditable.
+                             Fixed some bugs.
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
 (the "Software"), to deal in the Software without restriction,
@@ -33,7 +35,8 @@ namespace monagui {
                              selected_(false),
                              selectBeginningOffset_(0),
                              _imeManager(new ImeManager),
-                             borderColor_(Color::black)
+                             borderColor_(Color::black),
+                             isEditable_(true)
     {
         initialize();
     }
@@ -119,8 +122,10 @@ namespace monagui {
     void TextField::paint(Graphics* g)
     {
         int w = getWidth(), h = getHeight();
-        // 外枠
-        if (getFocused() == true && getEnabled() == true) {
+        if (!isEditable()) {
+            g->setColor(getParent()->getBackground());
+            g->drawRect(0, 0, w, h);
+        } else if (getFocused() == true && getEnabled() == true) {
             g->setColor(0, 128, 255);
             g->drawRect(0, 0, w, h);
         } else {
@@ -152,7 +157,7 @@ namespace monagui {
         }
         g->drawString(getText(), this->offx, (h - fh) / 2);
         // キャレット
-        if (getFocused() == true && getEnabled() == true) {
+        if (isEditable() && getFocused() && getEnabled()) {
             int offsetToCursor = getFontMetrics()->getWidth(text_.substring(0, cursor_));
             g->drawLine(offx + offsetToCursor, offy, offx + offsetToCursor, offy + 12);
         }
@@ -219,6 +224,9 @@ namespace monagui {
 
     void TextField::processKeyEvent(KeyEvent* event)
     {
+        if (!isEditable_) {
+            return;
+        }
         int keycode = event->getKeycode();
         int modifiers = event->getModifiers();
 

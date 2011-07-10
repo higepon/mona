@@ -94,6 +94,7 @@ public:
         // todo w, h limit
         text_->setBounds(x + SIDE_BAR_WIDTH, y, w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
         text_->setForeground(monagui::Color::black);
+        text_->setEditable(false);
         text_->setBorderColor(monagui::Color::white);
         likeButton_->setBackground(monagui::Color::white);
         likeButton_->setForeground(0xff6d84b4);
