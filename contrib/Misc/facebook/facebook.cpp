@@ -9,6 +9,8 @@
 using namespace std;
 using namespace MonAPI;
 
+typedef std::vector<FacebookPost> FacebookPosts;
+
 class Facebook : public FacebookFrame {
  private:
      uintptr_t updaterId_;
@@ -17,7 +19,7 @@ class Facebook : public FacebookFrame {
      scoped_ptr<Button> downButton_;
      scoped_ptr<Button> updateButton_;
      typedef std::vector<std::string> strings;
-     typedef std::vector<FacebookPost> FacebookPosts;
+
      typedef std::vector<FacebookPostView*> FacebookPostViews;
      FacebookPosts posts_;
      bool updating_;
@@ -256,11 +258,59 @@ class Facebook : public FacebookFrame {
 
 
 class CommentFrame : public FacebookFrame {
- public:
-  CommentFrame() : FacebookFrame("Facebook comment")
-  {
-      setBounds(80, 80, 300, 300);
-  }
+private:
+    scoped_ptr<TextField> body_;
+    std::string bodyText_;
+public:
+    CommentFrame(const std::string& postId) : FacebookFrame("Facebook comment"),
+                                              body_(new TextField())
+    {
+        setBounds(80, 80, 300, 300);
+        body_->setBounds(0, 0, 280, 280);
+        add(body_.get());
+        FacebookPosts posts;
+        if (!readFacebookPostFromFile(posts)) {
+            bodyText_ = "unknown post";
+        }
+
+        for (FacebookPosts::const_iterator it = posts.begin(); it != posts.end(); ++it) {
+            if ((*it).postId == postId) {
+                bodyText_ = (*it).text;
+                return;
+            }
+        }
+        bodyText_ = "unknown post";
+    }
+
+    bool readFacebookPostFromFile(FacebookPosts& posts)
+    {
+        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
+        if (shm.get() == NULL) {
+            return false;
+        }
+        std::string text((char*)shm->data());
+        Strings lines = StringHelper::split("\n", text);
+        for (size_t i = 0; i < lines.size(); i++) {
+            Strings line = StringHelper::split("$", lines[i]);
+            if (line.size() == 7) {
+                Comments comments;
+                Strings cs = StringHelper::split(";", line[6]);
+                for (Strings::const_iterator it = cs.begin(); it != cs.end(); ++it) {
+                    Strings idAndMessage = StringHelper::split(":", *it);
+                    ASSERT(idAndMessage.size() == 2);
+                    comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
+                }
+                posts.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str()), comments));
+            }
+        }
+        return true;
+    }
+
+     void paint(Graphics* g)
+     {
+         body_->setText(bodyText_.c_str());
+         FacebookFrame::paint(g);
+     }
 };
 
 static void __fastcall updaterLauncher(void* arg)
@@ -281,7 +331,8 @@ int main(int argc, char* argv[])
         Facebook facebook(updaterId);
         facebook.run();
     } else {
-        CommentFrame commentFrame;
+        string postId(argv[1]);
+        CommentFrame commentFrame(postId);
         commentFrame.run();
     }
     return 0;
