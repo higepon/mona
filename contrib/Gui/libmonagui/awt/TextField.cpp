@@ -106,9 +106,14 @@ namespace monagui {
 
     void TextField::setText(const String& text)
     {
+        setTextNoRepaint(text);
+        repaint();
+    }
+
+    void TextField::setTextNoRepaint(const String & text)
+    {
         text_ = text;
         cursor_ = text_.length();
-        repaint();
     }
 
     void TextField::paint(Graphics* g)

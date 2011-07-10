@@ -47,6 +47,7 @@ public:
         paintTitleString(frameGraphics);
     }
 
+
 protected:
 
     void paintTitleGradation(Graphics* g)

@@ -128,8 +128,9 @@ class Facebook : public FacebookFrame {
                  Strings cs = StringHelper::split(";", line[6]);
                  for (Strings::const_iterator it = cs.begin(); it != cs.end(); ++it) {
                      Strings idAndMessage = StringHelper::split(":", *it);
-                     ASSERT(idAndMessage.size() == 2);
-                     comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
+                     if (idAndMessage.size() == 2) {
+                         comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
+                     }
                 }
                  posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str()), comments));
              }
@@ -170,6 +171,8 @@ class Facebook : public FacebookFrame {
                  (*it)->addLike();
                  updateFeedAsync();
                  return true;
+             } else if ((*it)->commentButton() == event->getSource()) {
+                 (*it)->openComment();
              }
          }
          return false;
@@ -261,12 +264,14 @@ class CommentFrame : public FacebookFrame {
 private:
     scoped_ptr<TextField> body_;
     std::string bodyText_;
+    Comments comments_;
+    std::vector<TextField*> commentFields_;
 public:
     CommentFrame(const std::string& postId) : FacebookFrame("Facebook comment"),
                                               body_(new TextField())
     {
         setBounds(80, 80, 300, 300);
-        body_->setBounds(0, 0, 280, 280);
+        body_->setBounds(0, 0, 280, 100);
         add(body_.get());
         FacebookPosts posts;
         if (!readFacebookPostFromFile(posts)) {
@@ -276,6 +281,19 @@ public:
         for (FacebookPosts::const_iterator it = posts.begin(); it != posts.end(); ++it) {
             if ((*it).postId == postId) {
                 bodyText_ = (*it).text;
+                logprintf("(*it).comment.size()= %d\n", (*it).comments.size());
+                comments_ = (*it).comments;
+        int i = 0;
+        for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
+            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+            TextField* textField = new TextField;
+            textField->setTextNoRepaint((*it).body.c_str());
+            textField->setBounds(0, 100 + i * 25, 280, 25);
+            textField->setBackground(monagui::Color::red);
+            add(textField);
+            i++;
+        }
+
                 return;
             }
         }
@@ -297,7 +315,11 @@ public:
                 Strings cs = StringHelper::split(";", line[6]);
                 for (Strings::const_iterator it = cs.begin(); it != cs.end(); ++it) {
                     Strings idAndMessage = StringHelper::split(":", *it);
-                    ASSERT(idAndMessage.size() == 2);
+                    logprintf("idAndMessage.size=%d\n", idAndMessage.size());
+                    for (int i = 0; i < idAndMessage.size(); i++) {
+                        logprintf("[%d]=<%s>\n", i, idAndMessage[i].c_str());
+                    }
+                    ASSERT(idAndMessage.size() >= 2);
                     comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
                 }
                 posts.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str()), comments));

@@ -152,6 +152,7 @@ namespace monagui {
          @param text
          */
         virtual void setText(const String & text);
+        virtual void setTextNoRepaint(const String & text);
         /** テキストを得る */
         inline const char* getText()
         {

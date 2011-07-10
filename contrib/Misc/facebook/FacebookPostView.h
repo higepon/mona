@@ -84,6 +84,7 @@ public:
         w_(w),
         h_(h),
         likeButton_(new FBButton("Like")),
+        commentButton_(new FBButton("comment")),
         text_(new TextField()),
         image_(new WebImage()),
         postId_(""),
@@ -97,6 +98,9 @@ public:
         likeButton_->setBackground(monagui::Color::white);
         likeButton_->setForeground(0xff6d84b4);
         likeButton_->setBounds(x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+        commentButton_->setForeground(0xff6d84b4);
+        commentButton_->setBounds(x, y, 50, 50);
+
     }
 
     virtual ~FacebookPostView()
@@ -107,6 +111,7 @@ public:
     {
         ret.push_back(likeButton_.get());
         ret.push_back(text_.get());
+        ret.push_back(commentButton_.get());
     }
 
     void setImagePath(const std::string& uri, const std::string& path)
@@ -174,6 +179,31 @@ public:
         return likeButton_.get();
     }
 
+    Button* commentButton()
+    {
+        return commentButton_.get();
+    }
+
+    void openComment()
+    {
+        uint32_t tid;
+        std::string command;
+        if (monapi_file_exists("/MEM/FACEBOOK.EX5")) {
+            command = "/MEM/FACEBOOK.EX5 ";
+        } else {
+            command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
+        }
+        command += postId_;
+        int result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                         MONAPI_TRUE,
+                                                         &tid,
+                                                         MonAPI::System::getProcessStdinID(),
+                                                         MonAPI::System::getProcessStdoutID());
+        if (result != 0) {
+            monapi_fatal("can't exec Mosh");
+        }
+    }
+
     void addLike()
     {
         if (!postId_.empty()) {
@@ -239,6 +269,7 @@ private:
     int w_;
     int h_;
     MonAPI::scoped_ptr<Button> likeButton_;
+    MonAPI::scoped_ptr<Button> commentButton_;
     MonAPI::scoped_ptr<TextField> text_;
     MonAPI::scoped_ptr<WebImage> image_;
     std::string postId_;
