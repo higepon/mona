@@ -1,6 +1,7 @@
 #include <monagui.h>
 #include <string>
 #include <monapi/StringHelper.h>
+#include "FacebookFrame.h"
 #include "Updater.h"
 #include "FacebookService.h"
 #include "FacebookPost.h"
@@ -52,7 +53,7 @@ public:
      }
  };
 
- class Facebook : public Frame {
+ class Facebook : public FacebookFrame {
  private:
      uintptr_t updaterId_;
      scoped_ptr<TextField> inputArea_;
@@ -87,6 +88,7 @@ public:
      };
 
      Facebook(uintptr_t updaterId) :
+         FacebookFrame("Facebook"),
          updaterId_(updaterId),
          inputArea_(new TextField()),
          shareButton_(new ShareButton()),
@@ -97,7 +99,6 @@ public:
          offset_(0),
          isAutoUpdate_(true)
      {
-         setTitle("Facebook");
          setBackground(monagui::Color::white);
          setBounds(40, 40, WIDTH, HEIGHT);
          inputArea_->setBorderColor(0xffcccccc);
@@ -275,55 +276,11 @@ public:
  //        logprintf("repaint %d msec\n", (int)(e - s));
      }
 
-     void paintTitleGradation(Graphics* g)
-     {
-         int w = getWidth();
-         dword c = g->getColor();
-         g->setColor(0x29, 0x3e, 0x6a);
-         g->fillRect(1, 0, w - 2, 1);
-         g->setColor(0x6c, 0x83, 0xb2);
-         g->fillRect(1, 1, w - 2, 1);
-         g->setColor(0x3b, 0x59, 0x98);
-         g->fillRect(1, 2, w - 2, 16);
-         g->setColor(0x62, 0x7a, 0xad);
-         g->fillRect(1, 18, w - 2, 2);
-         g->setColor(0x89, 0x9b, 0xc1);
-         g->fillRect(0, 20, w - 2, 1);
-         g->setColor(0x29, 0x3e, 0x6b);
-         g->fillRect(0, 21, w - 2, 1);
-         g->setColor(c);
-     }
-
-     void paintTitleString(Graphics* g)
-     {
-         int w = getWidth();
-         int fw = getFontMetrics()->getWidth(getTitle());
-         int fh = getFontMetrics()->getHeight(getTitle());
-
-         if (getFocused()) {
-             g->setColor(monagui::Color::white);
-         } else {
-             g->setColor(monagui::Color::gray);
-         }
-         g->setFontStyle(Font::BOLD);
-         g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
-     }
-
-     void paintFrame()
-     {
-         Graphics* g = getFrameGrapics();
-         paintTitleGradation(g);
-         drawCloseButton(g);
-         paintTitleString(g);
-     }
-
      void paint(Graphics *g)
      {
+         FacebookFrame::paint(g);
          g->setColor(getBackground());
          g->fillRect(0, 0, getWidth(), getHeight());
-
-         paintFrame();
-
          g->setColor(monagui::Color::gray);
          g->drawLine(5, 9 + BUTTON_HEIGHT, getWidth(),  9 + BUTTON_HEIGHT);
 
@@ -340,6 +297,16 @@ public:
     }
 };
 
+
+
+class CommentFrame : public FacebookFrame {
+ public:
+  CommentFrame() : FacebookFrame("Facebook comment")
+  {
+      setBounds(80, 80, 300, 300);
+  }
+};
+
 static void __fastcall updaterLauncher(void* arg)
 {
     Updater updater;
@@ -350,11 +317,16 @@ int main(int argc, char* argv[])
 {
     intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/FACEBOOK.MAP");
     if (ret != M_OK) {
-        _printf("syscall_stack_trace_enable failed%d\n", ret);
+        monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
     }
 
-    uintptr_t updaterId = monapi_thread_create_with_arg(updaterLauncher, NULL);
-    Facebook facebook(updaterId);
-    facebook.run();
+    if (argc == 1) {
+        uintptr_t updaterId = monapi_thread_create_with_arg(updaterLauncher, NULL);
+        Facebook facebook(updaterId);
+        facebook.run();
+    } else {
+        CommentFrame commentFrame;
+        commentFrame.run();
+    }
     return 0;
 }

@@ -49,7 +49,7 @@ namespace monagui {
             return (0 <= px && px < getWidth() && 0 <= py && py < getInsets()->top);
         }
 
-        Graphics* getFrameGrapics() const
+        Graphics* getFrameGraphics() const
         {
             return __g;
         }
