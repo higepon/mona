@@ -11,6 +11,7 @@ using namespace MonAPI;
 
 typedef std::vector<FacebookPost> FacebookPosts;
 
+
 class Facebook : public FacebookFrame {
  private:
      uintptr_t updaterId_;
@@ -240,8 +241,6 @@ class Facebook : public FacebookFrame {
      void paint(Graphics *g)
      {
          FacebookFrame::paint(g);
-         g->setColor(getBackground());
-         g->fillRect(0, 0, getWidth(), getHeight());
          g->setColor(monagui::Color::gray);
          g->drawLine(5, 9 + BUTTON_HEIGHT, getWidth(),  9 + BUTTON_HEIGHT);
 
@@ -263,41 +262,94 @@ class Facebook : public FacebookFrame {
 class CommentFrame : public FacebookFrame {
 private:
     scoped_ptr<TextField> body_;
-    std::string bodyText_;
     Comments comments_;
     std::vector<TextField*> commentFields_;
+    scoped_ptr<WebImage> iconImage_;
+    scoped_ptr<ImageIcon> icon_;
 public:
+
+    // // todo remove duplicates
+    // bool isImageValid(WebImage* image)
+    // {
+    //     return image->getWidth() != 0;
+    // }
+
+
+    // // todo remove duplicates
+    // void setImagePath(WebImage* image, const std::string& uri, const std::string& path)
+    // {
+    //     image->initialize(uri, path);
+    //     if (isImageValid(image)) {
+    //         image->resize(30, 30);
+    //     }
+    // }
+
+
+
+
     CommentFrame(const std::string& postId) : FacebookFrame("Facebook comment"),
-                                              body_(new TextField())
+                                              body_(new TextField()),
+                                              iconImage_(new WebImage()),
+                                              icon_(new ImageIcon(iconImage_.get()))
     {
-        setBounds(80, 80, 300, 300);
-        body_->setBounds(0, 0, 280, 100);
+        const int WIDTH = 300;
+        setBounds(80, 80, WIDTH, 300);
+        setBackground(monagui::Color::white);
+        body_->setBorderColor(monagui::Color::white);
+        body_->setEditable(false);
         add(body_.get());
+        const int ICON_MARGIN = 5;
+        const int ICON_SIZE = 30;
+        icon_->setBounds(ICON_MARGIN, ICON_MARGIN, ICON_SIZE, ICON_SIZE);
+        add(icon_.get());
         FacebookPosts posts;
         if (!readFacebookPostFromFile(posts)) {
-            bodyText_ = "unknown post";
+            body_->setTextNoRepaint("unknown post");
         }
 
+        // TODO: image, field, destruct.
         for (FacebookPosts::const_iterator it = posts.begin(); it != posts.end(); ++it) {
             if ((*it).postId == postId) {
-                bodyText_ = (*it).text;
-                logprintf("(*it).comment.size()= %d\n", (*it).comments.size());
+                iconImage_->initialize((*it).imageUrl(), (*it).localImagePath());
+                const int BODY_RIGHT_MARGIN = 20;
+                const int BODY_MAX_WIDTH = WIDTH - ICON_MARGIN * 2 - ICON_SIZE - BODY_RIGHT_MARGIN;
+                int bodyHeight = body_->getHeightByTextAndMaxWidth((*it).text.c_str(), BODY_MAX_WIDTH);
+                body_->setBounds(ICON_MARGIN * 2 + ICON_SIZE, 0, BODY_MAX_WIDTH, bodyHeight);
+                body_->setTextNoRepaint((*it).text.c_str());
                 comments_ = (*it).comments;
-        int i = 0;
-        for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
-            logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-            TextField* textField = new TextField;
-            textField->setTextNoRepaint((*it).body.c_str());
-            textField->setBounds(0, 100 + i * 25, 280, 25);
-            textField->setBackground(monagui::Color::red);
-            add(textField);
-            i++;
-        }
-
+                int i = 0;
+                int commentY = bodyHeight;
+                for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
+                    WebImage* commentIconImage = new WebImage();
+                    ImageIcon* commentIcon = new ImageIcon(commentIconImage);
+                    std::string imageUrl("http://graph.facebook.com/");
+                    imageUrl += (*it).id;
+                    imageUrl += "/picture";
+                    std::string localImagePath("/USER/TEMP/");
+                    localImagePath += (*it).id;
+                    localImagePath += ".JPG";
+                    commentIcon->setBounds(0, commentY, ICON_SIZE, ICON_SIZE);
+//                    add(commentIcon);
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+//                    commentIconImage->initialize(imageUrl, localImagePath);
+                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                    TextField* textField = new TextField;
+                    const int COMMENT_WIDTH = 200;
+                    int commentHeight = body_->getHeightByTextAndMaxWidth((*it).body.c_str(), COMMENT_WIDTH);
+                    textField->setTextNoRepaint((*it).body.c_str());
+                    textField->setBounds(30, commentY, COMMENT_WIDTH, commentHeight);
+                    commentY += commentHeight;
+                    textField->setBackground(0xffedeff4);
+//                    textField->setBorderColor(0xffffffff);
+                    textField->setBorderColor(monagui::Color::black);
+                    textField->setEditable(false);
+                    add(textField);
+                    i++;
+                }
                 return;
             }
         }
-        bodyText_ = "unknown post";
+        body_->setTextNoRepaint("unknown post");
     }
 
     bool readFacebookPostFromFile(FacebookPosts& posts)
@@ -330,7 +382,6 @@ public:
 
      void paint(Graphics* g)
      {
-         body_->setText(bodyText_.c_str());
          FacebookFrame::paint(g);
      }
 };

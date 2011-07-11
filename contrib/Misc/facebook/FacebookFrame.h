@@ -41,6 +41,8 @@ public:
 
     void paint(Graphics *g)
     {
+        g->setColor(getBackground());
+        g->fillRect(0, 0, getWidth(), getHeight());
         Graphics* frameGraphics = getFrameGraphics();
         paintTitleGradation(frameGraphics);
         drawCloseButton(frameGraphics);

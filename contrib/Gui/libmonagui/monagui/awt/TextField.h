@@ -139,10 +139,12 @@ namespace monagui {
                 selectBeginningOffset_ = cursor_;
             }
         }
+
     public: /* public for testability */
         /** 1文字挿入する */
         virtual void insertCharacter(char c);
         virtual void insertStringTail(const String & c);
+        int getHeightByTextAndMaxWidth(const String& text, int maxWidth);
         /** 一文字削除する */
         virtual void deleteCharacter();
         virtual int getCursor() const

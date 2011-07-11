@@ -49,6 +49,8 @@ namespace monagui {
 		/** 内部バッファー */
 		Image* image;
 
+    protected:
+        int drawStringInternal(const String& str, int x, int y, int maxWidth, bool draws);
 	public:
 		/** コンストラクタ */
 		Graphics();
@@ -122,6 +124,8 @@ namespace monagui {
 		 @param y 始点Y
 		 */
 		void drawString(const String& str, int x, int y);
+		void drawString(const String& str, int x, int y, int maxWidth);
+        int getHeightByString(const String& str, int x, int y, int maxWidth);
 		
 		/**
 		 円塗りつぶし描画

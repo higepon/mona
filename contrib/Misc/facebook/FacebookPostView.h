@@ -30,6 +30,41 @@
 #ifndef _FACEBOOK_POST_VIEW_
 #define _FACEBOOK_POST_VIEW_
 
+class ImageIcon : public Component
+{
+protected:
+    MonAPI::scoped_ptr<Image> image_;
+
+    bool isImageValid() const
+    {
+        return image_->getWidth() != 0;
+    }
+
+public:
+    ImageIcon(Image* image) : image_(image)
+    {
+        setBounds(0, 0, 40, 40);
+    }
+
+    virtual ~ImageIcon()
+    {
+    }
+
+    void paint(Graphics* g)
+    {
+        if ((image_->getWidth() != getWidth() || image_->getHeight() != getHeight()) &&
+            isImageValid()) {
+            image_->resize(getWidth(), getHeight());
+        }
+        g->drawImage(image_.get(), 0, 0);
+    }
+
+    Image* getImage()
+    {
+        return image_.get();
+    }
+};
+
 class FBButton : public Button
 {
 public:
@@ -86,13 +121,14 @@ public:
         likeButton_(new FBButton("Like")),
         commentButton_(new FBButton("comment")),
         text_(new TextField()),
-        image_(new WebImage()),
+        icon_(new ImageIcon(new WebImage())),
         postId_(""),
         numLikes_(0),
         numComments_(0)
     {
         // todo w, h limit
         text_->setBounds(x + SIDE_BAR_WIDTH, y, w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
+        icon_->setBounds(0, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
         text_->setForeground(monagui::Color::black);
         text_->setEditable(false);
         text_->setBorderColor(monagui::Color::white);
@@ -101,6 +137,7 @@ public:
         likeButton_->setBounds(x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
         commentButton_->setForeground(0xff6d84b4);
         commentButton_->setBounds(x, y, 50, 50);
+
 
     }
 
@@ -113,14 +150,12 @@ public:
         ret.push_back(likeButton_.get());
         ret.push_back(text_.get());
         ret.push_back(commentButton_.get());
+        ret.push_back(icon_.get());
     }
 
     void setImagePath(const std::string& uri, const std::string& path)
     {
-        image_->initialize(uri, path);
-        if (isImageValid()) {
-            image_->resize(IMAGE_WIDTH, IMAGE_HEIGHT);
-        }
+        ((WebImage*)(icon_->getImage()))->initialize(uri, path);
     }
 
     void setText(const std::string& text)
@@ -168,7 +203,7 @@ public:
 
     void draw(Graphics* g)
     {
-        g->drawImage(image(), imageX(), imageY());
+//        g->drawImage(image(), imageX(), imageY());
         dword c = g->getColor();
         g->setColor(monagui::Color::gray);
         g->drawLine(x_, y_ + h_ - 2, x_ + w_, y_ + h_ - 2);
@@ -234,25 +269,25 @@ public:
 
 private:
 
-    Image* image()
-    {
-        return image_.get();
-    }
+    // Image* image()
+    // {
+    //     return image_.get();
+    // }
 
-    int imageX() const
-    {
-        return x_;
-    }
+    // int imageX() const
+    // {
+    //     return x_;
+    // }
 
-    int imageY() const
-    {
-        return y_ + IMAGE_MARGIN_TOP;
-    }
+    // int imageY() const
+    // {
+    //     return y_ + IMAGE_MARGIN_TOP;
+    // }
 
-    bool isImageValid() const
-    {
-        return image_->getWidth() != 0;
-    }
+    // bool isImageValid() const
+    // {
+    //     return image_->getWidth() != 0;
+    // }
 
     enum
     {
@@ -272,7 +307,7 @@ private:
     MonAPI::scoped_ptr<Button> likeButton_;
     MonAPI::scoped_ptr<Button> commentButton_;
     MonAPI::scoped_ptr<TextField> text_;
-    MonAPI::scoped_ptr<WebImage> image_;
+    MonAPI::scoped_ptr<ImageIcon> icon_;
     std::string postId_;
     int numLikes_;
     int numComments_;

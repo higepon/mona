@@ -5,6 +5,7 @@ Copyright (c) 2005 bayside
                              Added clipboard support
                              Added setEditable.
                              Fixed some bugs.
+                             Added getHeightByContent
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
 (the "Software"), to deal in the Software without restriction,
@@ -119,6 +120,13 @@ namespace monagui {
         cursor_ = text_.length();
     }
 
+    int TextField::getHeightByTextAndMaxWidth(const String& text, int maxWidth)
+    {
+        Graphics* g = getGraphics();
+        ASSERT(g);
+        return offy * 2 + g->getHeightByString(text, offx, offy, maxWidth - offx);
+    }
+
     void TextField::paint(Graphics* g)
     {
         int w = getWidth(), h = getHeight();
@@ -138,7 +146,6 @@ namespace monagui {
         g->setColor(borderColor_);
         g->drawRect(1, 1, w - 2, h - 2);
 
-        int fh = getFontMetrics()->getHeight(getText());
         int fw = getFontMetrics()->getWidth(getText());
 
         if (selected_ && selectBeginningOffset_ != cursor_) {
@@ -155,7 +162,7 @@ namespace monagui {
         } else {
             g->setColor(Color::gray);
         }
-        g->drawString(getText(), this->offx, (h - fh) / 2);
+        g->drawString(getText(), this->offx, this->offy, getWidth() - this->offx * 2);
         // キャレット
         if (isEditable() && getFocused() && getEnabled()) {
             int offsetToCursor = getFontMetrics()->getWidth(text_.substring(0, cursor_));

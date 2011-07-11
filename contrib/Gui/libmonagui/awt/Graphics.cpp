@@ -1,5 +1,7 @@
 /*
 Copyright (c) 2005 bayside
+              2011 Higepon : Refactoring and added testability.
+                             Added proper folding strings.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation files
@@ -127,46 +129,58 @@ namespace monagui {
         drawString(str->getBytes(), x, y);
     }
 
-    void Graphics::drawString(const String& str, int x, int y)
+    int Graphics::drawStringInternal(const String& text, int x, int y, int maxWidth, bool draws)
     {
-        int pos, bit, offset, width, height, w = 0, h = 0;
         FontMetrics metrics;
-
-        // NULLチェック
-        if (str.length() == 0) return;
-
         metrics.setFontStyle(getFontStyle());
-        int I = str.length();
-        for (int i = 0; i < I; i++) {
-            pos = 0;
-            bit = 1;
+        const int FONT_HEIGHT = metrics.getHeight("W");
+
+        if (text.length() == 0) {
+            return FONT_HEIGHT;
+        }
+
+        int w = 0;
+        int h = 0;
+        int len = text.length();
+        for (int i = 0; i < len; i++) {
+            int pos = 0;
+            int bit = 1;
             char fp[256];
             // 改行
-            if (str.charAt(i) == '\n' || w >= cw) {
+            if (text.charAt(i) == '\n' || w >= maxWidth) {
                 w = 0;
-                h += metrics.getHeight("W");
+                h += FONT_HEIGHT;
                 continue;
             }
-            if (metrics.decodeCharacter(str.charAt(i), &offset, &width, &height, fp) == true) {
+            int offset = 0;
+            int width = 0;
+            int height = 0;
+            if (metrics.decodeCharacter(text.charAt(i), &offset, &width, &height, fp)) {
+                if (w + offset > maxWidth) {
+                    w = 0;
+                    h += FONT_HEIGHT;
+                }
                 for (int j = 0; j < height; j++) {
                     for (int k = 0; k < width; k++) {
-                        int x0 = x + w + k + (offset - width) / 2;
-                        // 行パディングなし
-                        if ((fp[pos] & bit) != 0) {
-                            // 通常書体
-                            if ((getFontStyle() & 0x011) == Font::PLAIN) {
-                                drawPixel(x0, y + h + j, this->rgb24);
-                            // 太字体
-                            } else if ((getFontStyle() & 0x011) == Font::BOLD) {
-                                drawPixel(x0, y + j, this->rgb24);
-                                drawPixel(x0 + 1, y + j, this->rgb24);
-                            // 斜字体
-                            } else if ((getFontStyle() & 0x011) == Font::ITALIC) {
-                                drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
-                            // 太字体＋斜字体
-                            } else if ((getFontStyle() & 0x011) == Font::BOLD | Font::ITALIC) {
-                                drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
-                                drawPixel(x0 + (height - j) / 4 + 1, y + j, this->rgb24);
+                        if (draws) {
+                            int x0 = x + w + k + (offset - width) / 2;
+                            // 行パディングなし
+                            if ((fp[pos] & bit) != 0) {
+                                // 通常書体
+                                if ((getFontStyle() & 0x011) == Font::PLAIN) {
+                                    drawPixel(x0, y + h + j, this->rgb24);
+                                    // 太字体
+                                } else if ((getFontStyle() & 0x011) == Font::BOLD) {
+                                    drawPixel(x0, y + j, this->rgb24);
+                                    drawPixel(x0 + 1, y + j, this->rgb24);
+                                    // 斜字体
+                                } else if ((getFontStyle() & 0x011) == Font::ITALIC) {
+                                    drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
+                                    // 太字体＋斜字体
+                                } else if ((getFontStyle() & 0x011) == Font::BOLD | Font::ITALIC) {
+                                    drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
+                                    drawPixel(x0 + (height - j) / 4 + 1, y + j, this->rgb24);
+                                }
                             }
                         }
                         bit <<= 1;
@@ -179,6 +193,23 @@ namespace monagui {
                 w += offset;
             }
         }
+        return h + FONT_HEIGHT;
+    }
+
+    int Graphics::getHeightByString(const String& str, int x, int y, int maxWidth)
+    {
+        const bool draws = false;
+        return drawStringInternal(str, x, y, maxWidth, draws);
+    }
+
+    void Graphics::drawString(const String& str, int x, int y, int maxWidth)
+    {
+        drawStringInternal(str, x, y, maxWidth, true);
+    }
+
+    void Graphics::drawString(const String& str, int x, int y)
+    {
+        drawString(str, x, y, cw);
     }
 
     void Graphics::fillCircle(int x0, int y0, int r)
