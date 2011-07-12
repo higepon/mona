@@ -12,7 +12,7 @@ endif
 ifeq ($(OBJECTS),)
 OBJECTS   = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o) $(JSOURCES:.java=.o)
 endif
-INCLUDE   = -I$(INCDIR) -I$(INCDIR)/monalibc -I$(INCDIR)/stlport $(ADDINCLUDE)
+INCLUDE   = -I$(INCDIR) -I$(INCDIR)/monalibc -I$(INCDIR)/stlport -I$(INCDIR)/c++ $(ADDINCLUDE)
 LINK      = $(ADDLINK) -lmonapi$(IMPSFX) $(IMPORTFLAGS)
 LINKDEP   = $(LIBDIR)/monapi_crt.o $(LIBDIR)/libmonapi$(IMPSFX).a $(ADDLINKDEP)
  

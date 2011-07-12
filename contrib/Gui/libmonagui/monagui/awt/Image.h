@@ -39,12 +39,13 @@ namespace monagui {
         /** GUIサーバー上のビットマップオブジェクト */
         guiserver_bitmap* bitmap;
 
+        Image() {}
     protected:
         void initFromFilePath(const char* path);
         void disposeImage();
 
     public:
-        Image() {}
+
 
         /**
          コンストラクタ

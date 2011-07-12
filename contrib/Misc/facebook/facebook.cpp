@@ -5,6 +5,7 @@
 #include "FacebookService.h"
 #include "FacebookPost.h"
 #include "FacebookPostView.h"
+#include "picojson.h"
 
 using namespace std;
 using namespace MonAPI;
@@ -311,9 +312,11 @@ public:
         for (FacebookPosts::const_iterator it = posts.begin(); it != posts.end(); ++it) {
             if ((*it).postId == postId) {
                 iconImage_->initialize((*it).imageUrl(), (*it).localImagePath());
+                const int BODY_MINIMUM_HEIGHT = ICON_SIZE + 10;
                 const int BODY_RIGHT_MARGIN = 20;
                 const int BODY_MAX_WIDTH = WIDTH - ICON_MARGIN * 2 - ICON_SIZE - BODY_RIGHT_MARGIN;
                 int bodyHeight = body_->getHeightByTextAndMaxWidth((*it).text.c_str(), BODY_MAX_WIDTH);
+                bodyHeight = bodyHeight < BODY_MINIMUM_HEIGHT ? BODY_MINIMUM_HEIGHT : bodyHeight;
                 body_->setBounds(ICON_MARGIN * 2 + ICON_SIZE, 0, BODY_MAX_WIDTH, bodyHeight);
                 body_->setTextNoRepaint((*it).text.c_str());
                 comments_ = (*it).comments;
@@ -328,16 +331,14 @@ public:
                     std::string localImagePath("/USER/TEMP/");
                     localImagePath += (*it).id;
                     localImagePath += ".JPG";
-                    commentIcon->setBounds(0, commentY, ICON_SIZE, ICON_SIZE);
-//                    add(commentIcon);
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-//                    commentIconImage->initialize(imageUrl, localImagePath);
-                    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+                    commentIcon->setBounds(ICON_MARGIN, commentY, ICON_SIZE, ICON_SIZE);
+                    add(commentIcon);
+                    commentIconImage->initialize(imageUrl, localImagePath);
                     TextField* textField = new TextField;
-                    const int COMMENT_WIDTH = 200;
+                    const int COMMENT_WIDTH = WIDTH - ICON_MARGIN * 2 - ICON_SIZE - 20;
                     int commentHeight = body_->getHeightByTextAndMaxWidth((*it).body.c_str(), COMMENT_WIDTH);
                     textField->setTextNoRepaint((*it).body.c_str());
-                    textField->setBounds(30, commentY, COMMENT_WIDTH, commentHeight);
+                    textField->setBounds(ICON_SIZE + ICON_MARGIN * 2, commentY, COMMENT_WIDTH, commentHeight);
                     commentY += commentHeight;
                     textField->setBackground(0xffedeff4);
 //                    textField->setBorderColor(0xffffffff);
@@ -392,6 +393,8 @@ static void __fastcall updaterLauncher(void* arg)
     updater.run();
 }
 
+using namespace picojson;
+
 int main(int argc, char* argv[])
 {
     intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/FACEBOOK.MAP");
@@ -399,6 +402,19 @@ int main(int argc, char* argv[])
         monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
     }
 
+    
+    string err;
+    value v;
+    const char* p = "{\"name\": \"John Smith\", \"age\": 33}";
+    int len = strlen(p);
+    parse(v, p, p + len, &err);
+
+    if (err.empty() && v.is<object>()) {
+        object obj = v.get<object>();
+        logprintf("obj=%s", obj["name"].to_str().c_str());
+    } else {
+        logprintf("parse eror = %s", err.c_str());
+    }
     if (argc == 1) {
         uintptr_t updaterId = monapi_thread_create_with_arg(updaterLauncher, NULL);
         Facebook facebook(updaterId);

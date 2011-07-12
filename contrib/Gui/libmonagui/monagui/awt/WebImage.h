@@ -39,17 +39,14 @@ namespace monagui {
 class WebImage : public Image
 {
 public:
-    WebImage()
+    WebImage() : Image(30, 30)
     {
     }
 
     bool initialize(const std::string& uri, const std::string& path)
     {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         disposeImage();
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (!monapi_file_exists(path.c_str())) {
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             uint32_t tid;
             std::string cmd("/APPS/MOSH.APP/MOSH.EXE --loadpath=/LIBS/MOSH/lib /LIBS/MOSH/bin/http-get.sps");
             cmd += + ' ';
@@ -67,9 +64,7 @@ public:
             }
             monapi_process_wait_terminated(tid);
         }
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         initFromFilePath(path.c_str());
-        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return true;
     }
 };
