@@ -402,16 +402,76 @@ int main(int argc, char* argv[])
         monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
     }
 
-    
+    scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.json"));
+    if (shm.get() == NULL) {
+        monapi_warn("fb.json failed");
+        return -1;
+    }
+
     string err;
     value v;
-    const char* p = "{\"name\": \"John Smith\", \"age\": 33}";
-    int len = strlen(p);
-    parse(v, p, p + len, &err);
+    parse(v, shm->data(), shm->data() + shm->size(), &err);
+
+    string errorString;
 
     if (err.empty() && v.is<object>()) {
         object obj = v.get<object>();
-        logprintf("obj=%s", obj["name"].to_str().c_str());
+        value expectedComments = obj["data"];
+        if (obj["data"].is<array>()) {
+            array posts = obj["data"].get<array>();
+            for (array::const_iterator it = posts.begin(); it != posts.end(); ++it) {
+                if ((*it).is<object>()) {
+                    object post = (*it).get<object>();
+                    string message = post["message"].to_str();
+                    if (post["from"].is<object>()) {
+                        object from = post["from"].get<object>();
+                        string name = from["name"].to_str();
+                        string id = from["id"].to_str();
+                        int numLikes = 0;
+                        if (post["likes"].is<object>()) {
+                            object likes = post["likes"].get<object>();
+                            if (likes["count"].is<double>()) {
+                                numLikes = likes["count"].get<double>();
+                            }
+                        }
+                        if (post["comments"].is<object>()) {
+                            object comments = post["comments"].get<object>();
+                            if (comments["data"].is<array>()) {
+                                array commentPosts = comments["data"].get<array>();
+                                for (array::const_iterator i = commentPosts.begin(); i != commentPosts.end(); ++i) {
+                                    if ((*i).is<object>()) {
+                                        object comment = (*i).get<object>();
+                                        string message = comment["message"].to_str();
+                                        if (comment["from"].is<object>()) {
+                                            object from = comment["from"].get<object>();
+                                            string fromId = from["id"].to_str();
+                                            string fromName = from["name"].to_str();
+                                        logprintf("fromName=%s message=%s\n", fromName.c_str(), message.c_str());
+                                        } else {
+                                            errorString = "comment[from] is not hash";
+                                        }
+                                    } else {
+                                        errorString = "comment is not hash";
+                                    }
+
+                                }
+                            }
+                        }
+
+                        logprintf("name=%s id=%s message=%s numLikes=%d\n", name.c_str(), id.c_str(), message.c_str(), numLikes);
+                    } else {
+                        errorString = "post[from] is not hash";
+                    }
+
+                } else {
+                    errorString = "one of elements of posts is not hash";
+                }
+
+            }
+        } else {
+            errorString = "value of key \"data\" is not array";
+        }
+        logprintf("obj=%s", obj["data"].to_str().c_str());
     } else {
         logprintf("parse eror = %s", err.c_str());
     }
