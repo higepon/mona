@@ -27,99 +27,25 @@
  *
  */
 
-#ifndef _FACEBOOK_POST_VIEW_
-#define _FACEBOOK_POST_VIEW_
+#ifndef _FEED_VIEW_
+#define _FEED_VIEW_
 
-class ImageIcon : public Component
-{
-protected:
-    MonAPI::scoped_ptr<Image> image_;
+#include "Feed.h"
 
-    bool isImageValid() const
-    {
-        return image_->getWidth() != 0;
-    }
-
-public:
-    ImageIcon(Image* image) : image_(image)
-    {
-        setBounds(0, 0, 40, 40);
-    }
-
-    virtual ~ImageIcon()
-    {
-    }
-
-    void paint(Graphics* g)
-    {
-        if ((image_->getWidth() != getWidth() || image_->getHeight() != getHeight()) &&
-            isImageValid()) {
-            image_->resize(getWidth(), getHeight());
-        }
-        g->drawImage(image_.get(), 0, 0);
-    }
-
-    Image* getImage()
-    {
-        return image_.get();
-    }
-};
-
-class FBButton : public Button
-{
-public:
-    FBButton(const char* title) : Button(title)
-    {
-        setBackground(monagui::Color::white);
-        setForeground(0xff6d84b4);
-    }
-
-    virtual ~FBButton()
-    {
-    }
-
-    void paint(Graphics* g)
-    {
-        int w = getWidth();
-        int h = getHeight();
-
-        g->setColor(getBackground());
-        g->fillRect(0, 0, w, h);
-
-        if (getPushed()) {
-            g->setColor(Color::white);
-            g->drawLine(2, h - 2, w - 3, h - 2);
-            g->drawLine(w - 2, 2, w - 2, h - 3);
-            g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-            g->setColor(Color::gray);
-            g->drawLine(1, 2, 1, h - 3);
-            g->drawLine(2, 1, w - 3, 1);
-        }
-        int fw = getFontMetrics()->getWidth(getLabel());
-        int fh = getFontMetrics()->getHeight(getLabel());
-        int x = (w - fw) / 2;
-        int y = (h - fh) / 2;
-        if (getPushed()) {
-            x++;
-            y++;
-        }
-
-        g->setColor(getForeground());
-        g->drawString(getLabel(), x, y);
-    }
-};
+namespace facebook {
 
 typedef std::vector<Component*> Components;
-class FacebookPostView
+
+class FeedView
 {
 public:
-    FacebookPostView(int x, int y, int w, int h) :
+    FeedView(int x, int y, int w, int h) :
         x_(x),
         y_(y),
         w_(w),
         h_(h),
-        likeButton_(new FBButton("Like")),
-        commentButton_(new FBButton("comment")),
+        likeButton_(new facebook::Button("Like")),
+        commentButton_(new facebook::Button("comment")),
         text_(new TextField()),
         icon_(new ImageIcon(new WebImage())),
         postId_(""),
@@ -141,7 +67,7 @@ public:
 
     }
 
-    virtual ~FacebookPostView()
+    virtual ~FeedView()
     {
     }
 
@@ -184,14 +110,14 @@ public:
         text_->setText(content.c_str());
     }
 
-    void setupFromFacebookPost(const FacebookPost& post)
+    void setupFromFeed(const Feed& feed)
     {
-        setImagePath(post.imageUrl(), post.localImagePath());
-        postId_ = post.postId;
-        numLikes_ = post.numLikes;
-        numComments_ = post.numComments;
-        setText(post.text);
-        comments_ = post.comments;
+        setImagePath(feed.imageUrl(), feed.localImagePath());
+        postId_ = feed.postId;
+        numLikes_ = feed.numLikes;
+        numComments_ = feed.numComments;
+        setText(feed.text);
+        comments_ = feed.comments;
     }
 
     void setEmpty()
@@ -314,4 +240,6 @@ private:
     Comments comments_;
 };
 
-#endif // _FACEBOOK_POST_VIEW_
+};
+
+#endif // _FEED_VIEW_

@@ -1,5 +1,4 @@
 /*
- *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -27,61 +26,46 @@
  *
  */
 
-#ifndef _FACEBOOK_POST_
-#define _FACEBOOK_POST_
+#ifndef _MONAGUI_IMAGE_ICON_
+#define _MONAGUI_IMAGE_ICON_
 
-struct Comment
+namespace monagui {
+
+class ImageIcon : public Component
 {
-    Comment(const std::string& id, const std::string& body) : id(id), body(body)
+protected:
+    MonAPI::scoped_ptr<Image> image_;
+
+    bool isImageValid() const
     {
+        return image_->getWidth() != 0;
     }
-    std::string id;
-    std::string body;
- };
 
-typedef std::vector<Comment> Comments;
+public:
+    ImageIcon(Image* image) : image_(image)
+    {
+        setBounds(0, 0, 40, 40);
+    }
 
-struct FacebookPost
-{
-    FacebookPost(const std::string& imageId,
-                 const std::string& name,
-                 const std::string& text,
-                 uint32_t numLikes,
-                 const std::string& postId,
-                 uint32_t numComments,
-                 const Comments& comments
-        ) :
-        imageId(imageId),
-        name(name),
-        text(text),
-        numLikes(numLikes),
-        postId(postId),
-        numComments(numComments),
-        comments(comments)
+    virtual ~ImageIcon()
     {
     }
 
-    std::string imageUrl() const
+    void paint(Graphics* g)
     {
-        std::string ret = "http://graph.facebook.com/";
-        ret += imageId;
-        ret += "/picture";
-        return ret;
+        if ((image_->getWidth() != getWidth() || image_->getHeight() != getHeight()) &&
+            isImageValid()) {
+            image_->resize(getWidth(), getHeight());
+        }
+        g->drawImage(image_.get(), 0, 0);
     }
 
-    std::string localImagePath() const
+    Image* getImage()
     {
-        std::string ret = "/USER/TEMP/" + imageId + ".JPG";
-        return ret;
+        return image_.get();
     }
-
-    std::string imageId;
-    std::string name;
-    std::string text;
-    uint32_t numLikes;
-    std::string postId;
-    uint32_t numComments;
-    Comments comments;
 };
 
-#endif // _FACEBOOK_POST_
+};
+
+#endif // _MONAGUI_IMAGE_ICON_

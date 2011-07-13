@@ -104,6 +104,7 @@ typedef unsigned int wchar;
 #include "monagui/awt/Window.h"
 #include "monagui/awt/Frame.h"
 #include "monagui/util/MonaGUIRobot.h"
+#include "monagui/awt/ImageIcon.h"
 
 using namespace monagui;
 

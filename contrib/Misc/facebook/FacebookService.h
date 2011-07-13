@@ -30,9 +30,16 @@
 #ifndef _FACEBOOK_SERVICE_
 #define _FACEBOOK_SERVICE_
 
+namespace facebook {
+
 class FacebookService
 {
 public:
+    static bool postComment(const std::string& postId, const std::string& text)
+    {
+        return executeMosh("/LIBS/MOSH/bin/fb-comment-post.sps", postId, text);
+    }
+
     static bool postFeed(const std::string& text)
     {
         return executeMosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
@@ -44,15 +51,9 @@ public:
     }
 
 private:
-    static bool executeMosh(const std::string& script, const std::string& arg, bool waits = true)
+    static bool executeCommand(const std::string& command, bool waits)
     {
         uint32_t tid;
-        std::string command(MonAPI::System::getMoshPath());
-        command += " ";
-        command += script;
-        command += " \"";
-        command += arg;
-        command += "\"";
         int result = monapi_process_execute_file_get_tid(command.c_str(),
                                                          MONAPI_TRUE,
                                                          &tid,
@@ -71,6 +72,32 @@ private:
             return true;
         }
     }
+    static bool executeMosh(const std::string& script, const std::string& arg1, const std::string& arg2, bool waits = true)
+    {
+
+        std::string command(MonAPI::System::getMoshPath());
+        command += " ";
+        command += script;
+        command += " \"";
+        command += arg1;
+        command += "\" ";
+        command += "\"";
+        command += arg2;
+        command += "\"";
+        return executeCommand(command, waits);
+    }
+    static bool executeMosh(const std::string& script, const std::string& arg, bool waits = true)
+    {
+        std::string command(MonAPI::System::getMoshPath());
+        command += " ";
+        command += script;
+        command += " \"";
+        command += arg;
+        command += "\"";
+        return executeCommand(command, waits);
+    }
+};
+
 };
 
 #endif // _FACEBOOK_SERVICE_

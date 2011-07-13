@@ -32,10 +32,12 @@
 #include <monagui.h>
 #include <string>
 
-class FacebookFrame : public Frame {
+namespace facebook {
+
+class Frame : public monagui::Frame {
 public:
 
-    FacebookFrame(const std::string& title) : Frame(title.c_str())
+    Frame(const std::string& title) : monagui::Frame(title.c_str())
     {
     }
 
@@ -85,6 +87,8 @@ protected:
         g->setFontStyle(Font::BOLD);
         g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
     }
+};
+
 };
 
 #endif // _FACEBOOK_FRAME_

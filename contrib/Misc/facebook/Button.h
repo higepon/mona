@@ -26,24 +26,21 @@
  *
  */
 
-#ifndef _SHARE_BUTTON_
-#define _SHARE_BUTTON_
+#ifndef _FACEBOOK_BUTTON_
+#define _FACEBOOK_BUTTON_
 
 namespace facebook {
 
-class ShareButton : public Button
+class Button : public monagui::Button
 {
 public:
-
-    ShareButton() : Button("Share")
+    Button(const char* title) : monagui::Button(title)
     {
+        setBackground(monagui::Color::white);
+        setForeground(0xff6d84b4);
     }
 
-    ShareButton(const char* label) : Button(label)
-    {
-    }
-
-    virtual ~ShareButton()
+    virtual ~Button()
     {
     }
 
@@ -52,16 +49,15 @@ public:
         int w = getWidth();
         int h = getHeight();
 
-        g->setColor(0x29, 0x45, 0x7f);
+        g->setColor(getBackground());
         g->fillRect(0, 0, w, h);
-        g->setColor(0x5f, 0x78, 0xab);
-        g->fillRect(1, 1, w - 2, h - 2);
+
         if (getPushed()) {
-            g->setColor(monagui::Color::white);
+            g->setColor(Color::white);
             g->drawLine(2, h - 2, w - 3, h - 2);
             g->drawLine(w - 2, 2, w - 2, h - 3);
             g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-            g->setColor(monagui::Color::gray);
+            g->setColor(Color::gray);
             g->drawLine(1, 2, 1, h - 3);
             g->drawLine(2, 1, w - 3, 1);
         }
@@ -73,12 +69,12 @@ public:
             x++;
             y++;
         }
-        g->setColor(monagui::Color::white);
-        g->setFontStyle(Font::BOLD);
+
+        g->setColor(getForeground());
         g->drawString(getLabel(), x, y);
     }
 };
 
 };
 
-#endif // _SHARE_BUTTON_
+#endif // _FACEBOOK_BUTTON_

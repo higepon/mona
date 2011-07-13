@@ -1,4 +1,5 @@
 /*
+ *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -26,59 +27,59 @@
  *
  */
 
-#ifndef _SHARE_BUTTON_
-#define _SHARE_BUTTON_
+#ifndef _FEED_
+#define _FEED_
+
+#include "Comment.h"
 
 namespace facebook {
 
-class ShareButton : public Button
+class Feed
 {
 public:
-
-    ShareButton() : Button("Share")
+    Feed(const std::string& imageId,
+                 const std::string& name,
+                 const std::string& text,
+                 uint32_t numLikes,
+                 const std::string& postId,
+                 uint32_t numComments,
+                 const Comments& comments
+        ) :
+        imageId(imageId),
+        name(name),
+        text(text),
+        numLikes(numLikes),
+        postId(postId),
+        numComments(numComments),
+        comments(comments)
     {
     }
 
-    ShareButton(const char* label) : Button(label)
+    std::string imageUrl() const
     {
+        std::string ret = "http://graph.facebook.com/";
+        ret += imageId;
+        ret += "/picture";
+        return ret;
     }
 
-    virtual ~ShareButton()
+    std::string localImagePath() const
     {
+        std::string ret = "/USER/TEMP/" + imageId + ".JPG";
+        return ret;
     }
 
-    void paint(Graphics* g)
-    {
-        int w = getWidth();
-        int h = getHeight();
-
-        g->setColor(0x29, 0x45, 0x7f);
-        g->fillRect(0, 0, w, h);
-        g->setColor(0x5f, 0x78, 0xab);
-        g->fillRect(1, 1, w - 2, h - 2);
-        if (getPushed()) {
-            g->setColor(monagui::Color::white);
-            g->drawLine(2, h - 2, w - 3, h - 2);
-            g->drawLine(w - 2, 2, w - 2, h - 3);
-            g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-            g->setColor(monagui::Color::gray);
-            g->drawLine(1, 2, 1, h - 3);
-            g->drawLine(2, 1, w - 3, 1);
-        }
-        int fw = getFontMetrics()->getWidth(getLabel());
-        int fh = getFontMetrics()->getHeight(getLabel());
-        int x = (w - fw) / 2;
-        int y = (h - fh) / 2;
-        if (getPushed()) {
-            x++;
-            y++;
-        }
-        g->setColor(monagui::Color::white);
-        g->setFontStyle(Font::BOLD);
-        g->drawString(getLabel(), x, y);
-    }
+    std::string imageId;
+    std::string name;
+    std::string text;
+    uint32_t numLikes;
+    std::string postId;
+    uint32_t numComments;
+    Comments comments;
 };
 
+typedef std::vector<Feed> Feeds;
+
 };
 
-#endif // _SHARE_BUTTON_
+#endif // _FEED_

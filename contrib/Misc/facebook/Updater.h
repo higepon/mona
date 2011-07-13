@@ -31,6 +31,8 @@
 #ifndef _UPDATER_
 #define _UPDATER_
 
+namespace facebook{
+
 class Updater
 {
 public:
@@ -43,14 +45,13 @@ public:
             {
             case MSG_UPDATE:
             {
-//                uint64_t s = MonAPI::Date::nowInMsec();
-//                intptr_t ret = update();
-//                uint64_t e = MonAPI::Date::nowInMsec();
-//                logprintf("update %d msec\n", (int)(e - s));
-                // if (ret != M_OK) {
-                //     monapi_warn("mosh abnormal exit");
-                // }
-                intptr_t ret = MonAPI::Message::send(msg.from, MSG_OK, ret);
+               uint64_t s = MonAPI::Date::nowInMsec();
+               intptr_t ret = update();
+               uint64_t e = MonAPI::Date::nowInMsec();
+                if (ret != M_OK) {
+                    monapi_warn("mosh abnormal exit");
+                }
+                ret = MonAPI::Message::send(msg.from, MSG_OK, ret);
                 if (ret != M_OK) {
                     monapi_fatal("MSG_UPDATE send failed");
                 }
@@ -79,6 +80,8 @@ private:
         }
         return monapi_process_wait_terminated(tid);
     }
+};
+
 };
 
 #endif // _UPDATER_

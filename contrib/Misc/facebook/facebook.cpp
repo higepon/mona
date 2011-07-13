@@ -1,33 +1,31 @@
 #include <monapi/StringHelper.h>
-#include "FacebookFrame.h"
+#include "Frame.h"
+#include "Button.h"
 #include "ShareButton.h"
 #include "Updater.h"
 #include "FacebookService.h"
-#include "FacebookPost.h"
-#include "FacebookPostView.h"
-#include "picojson.h"
+#include "FeedView.h"
+#include "Parser.h"
 
 using namespace std;
 using namespace MonAPI;
+using namespace facebook;
 
-typedef std::vector<FacebookPost> FacebookPosts;
-
-
-class Facebook : public FacebookFrame {
- private:
-     uintptr_t updaterId_;
-     scoped_ptr<TextField> inputArea_;
-     scoped_ptr<Button> shareButton_;
-     scoped_ptr<Button> downButton_;
-     scoped_ptr<Button> updateButton_;
+class Facebook : public facebook::Frame {
+private:
+    uintptr_t updaterId_;
+    scoped_ptr<TextField> inputArea_;
+    scoped_ptr<facebook::Button> shareButton_;
+    scoped_ptr<facebook::Button> downButton_;
+    scoped_ptr<facebook::Button> updateButton_;
      typedef std::vector<std::string> strings;
 
-     typedef std::vector<FacebookPostView*> FacebookPostViews;
-     FacebookPosts posts_;
+     typedef std::vector<FeedView*> FeedViews;
+     Feeds feeds_;
      bool updating_;
      int idleTimeMsec_;
      int offset_;
-     FacebookPostViews views_;
+     FeedViews views_;
      bool isAutoUpdate_;
 
  public:
@@ -48,12 +46,12 @@ class Facebook : public FacebookFrame {
      };
 
      Facebook(uintptr_t updaterId) :
-         FacebookFrame("Facebook"),
+         facebook::Frame("Facebook"),
          updaterId_(updaterId),
          inputArea_(new TextField()),
          shareButton_(new ShareButton()),
-         downButton_(new FBButton(">>>")),
-         updateButton_(new FBButton("Update")),
+         downButton_(new facebook::Button(">>>")),
+         updateButton_(new facebook::Button("Update")),
          updating_(false),
          idleTimeMsec_(2000),
          offset_(0),
@@ -80,7 +78,7 @@ class Facebook : public FacebookFrame {
 
          y += BUTTON_HEIGHT + BUTTON_MARGIN;
          for (size_t i = 0; i < MAX_ROWS; i++) {
-             FacebookPostView* view = new FacebookPostView(5, y + POST_HEIGHT * i, WIDTH, POST_HEIGHT);
+             FeedView* view = new FeedView(5, y + POST_HEIGHT * i, WIDTH, POST_HEIGHT);
              views_.push_back(view);
              Components c;
              view->components(c);
@@ -94,66 +92,50 @@ class Facebook : public FacebookFrame {
      {
      }
 
- private:
-     void postFeed()
-     {
-         shareButton_->setEnabled(false);
-         if (FacebookService::postFeed(inputArea_->getText())) {
+private:
+    void postFeed()
+    {
+        shareButton_->setEnabled(false);
+        if (FacebookService::postFeed(inputArea_->getText())) {
             inputArea_->setText("");
-         }
-         shareButton_->setEnabled(true);
-         updateFeedAsync();
-     }
+        }
+        shareButton_->setEnabled(true);
+        updateFeedAsync();
+    }
 
-     void updateFeedAsync()
-     {
-         setStatusUpdating();
-         int ret = Message::send(updaterId_, MSG_UPDATE);
-         if (ret != M_OK) {
-             monapi_fatal("MSG_UPDATE send failed");
-         }
-     }
+    void updateFeedAsync()
+    {
+        setStatusUpdating();
+        int ret = Message::send(updaterId_, MSG_UPDATE);
+        if (ret != M_OK) {
+            monapi_fatal("MSG_UPDATE send failed");
+        }
+    }
 
-     bool readFacebookPostFromFile()
-     {
-         scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
-         if (shm.get() == NULL) {
-             return false;
-         }
-         std::string text((char*)shm->data());
-         Strings lines = StringHelper::split("\n", text);
-         posts_.clear();
-         for (size_t i = 0; i < lines.size(); i++) {
-             Strings line = StringHelper::split("$", lines[i]);
-             if (line.size() == 7) {
-                 Comments comments;
-                 Strings cs = StringHelper::split(";", line[6]);
-                 for (Strings::const_iterator it = cs.begin(); it != cs.end(); ++it) {
-                     Strings idAndMessage = StringHelper::split(":", *it);
-                     if (idAndMessage.size() == 2) {
-                         comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
-                     }
-                }
-                 posts_.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str()), comments));
-             }
-         }
-         return true;
+    bool readFeedFromFile()
+    {
+        Parser parser("/USER/TEMP/fb.json");
+        bool ret = parser.parse(feeds_);
+        if (!ret) {
+            logprintf("err=%s\n", parser.lastError().c_str());
+        }
+        return ret;
      }
 
      void show()
      {
-         if (!readFacebookPostFromFile()) {
+         if (!readFeedFromFile()) {
              monapi_fatal("can't read fb.data");
          }
-         setupFacebookPostViews();
+         setupFeedViews();
      }
 
-     void setupFacebookPostViews(size_t offset = 0)
+     void setupFeedViews(size_t offset = 0)
      {
          for (size_t i = 0; i < MAX_ROWS; i++) {
              //uint64_t s1 = MonAPI::Date::nowInMsec();
-             if (i + offset < posts_.size()) {
-                 views_[i]->setupFromFacebookPost(posts_[i + offset]);
+             if (i + offset < feeds_.size()) {
+                 views_[i]->setupFromFeed(feeds_[i + offset]);
              } else {
                  views_[i]->setEmpty();
              }
@@ -168,7 +150,7 @@ class Facebook : public FacebookFrame {
          if (event->getType() != MouseEvent::MOUSE_RELEASED) {
              return false;
          }
-         for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
+         for (FeedViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
              if ((*it)->likeButton() == event->getSource()) {
                  (*it)->addLike();
                  updateFeedAsync();
@@ -191,7 +173,7 @@ class Facebook : public FacebookFrame {
          } else if (event->getSource() == downButton_.get()) {
              if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                  isAutoUpdate_ = false;
-                 setupFacebookPostViews(++offset_);
+                 setupFeedViews(++offset_);
                  uint64_t s = MonAPI::Date::nowInMsec();
                  repaint();
                  uint64_t e = MonAPI::Date::nowInMsec();
@@ -241,11 +223,11 @@ class Facebook : public FacebookFrame {
 
      void paint(Graphics *g)
      {
-         FacebookFrame::paint(g);
+         facebook::Frame::paint(g);
          g->setColor(monagui::Color::gray);
          g->drawLine(5, 9 + BUTTON_HEIGHT, getWidth(),  9 + BUTTON_HEIGHT);
 
-         for (FacebookPostViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
+         for (FeedViews::const_iterator it = views_.begin(); it != views_.end(); ++it) {
              (*it)->draw(g);
         }
     }
@@ -258,70 +240,79 @@ class Facebook : public FacebookFrame {
     }
 };
 
-
-
-class CommentFrame : public FacebookFrame {
+class CommentFrame : public facebook::Frame {
 private:
     scoped_ptr<TextField> body_;
+    scoped_ptr<TextField> likes_;
+    scoped_ptr<TextField> commentInput_;
+    scoped_ptr<ShareButton> commentButton_;
     Comments comments_;
     std::vector<TextField*> commentFields_;
     scoped_ptr<WebImage> iconImage_;
     scoped_ptr<ImageIcon> icon_;
+    std::string postId_;
 public:
 
-    // // todo remove duplicates
-    // bool isImageValid(WebImage* image)
-    // {
-    //     return image->getWidth() != 0;
-    // }
-
-
-    // // todo remove duplicates
-    // void setImagePath(WebImage* image, const std::string& uri, const std::string& path)
-    // {
-    //     image->initialize(uri, path);
-    //     if (isImageValid(image)) {
-    //         image->resize(30, 30);
-    //     }
-    // }
-
-
-
-
-    CommentFrame(const std::string& postId) : FacebookFrame("Facebook comment"),
+    CommentFrame(const std::string& postId) : facebook::Frame("Facebook comment"),
                                               body_(new TextField()),
+                                              likes_(new TextField()),
+                                              commentInput_(new TextField()),
+                                              commentButton_(new ShareButton("Post")),
                                               iconImage_(new WebImage()),
-                                              icon_(new ImageIcon(iconImage_.get()))
+                                              icon_(new ImageIcon(iconImage_.get())),
+                                              postId_("")
     {
         const int WIDTH = 300;
-        setBounds(80, 80, WIDTH, 300);
         setBackground(monagui::Color::white);
         body_->setBorderColor(monagui::Color::white);
         body_->setEditable(false);
         add(body_.get());
+
+        likes_->setBackground(0xffedeff4);
+        likes_->setBorderColor(0xffedeff4);
+        likes_->setForeground(0xff293e6a);
+        likes_->setEditable(false);
+        add(likes_.get());
+
         const int ICON_MARGIN = 5;
         const int ICON_SIZE = 30;
         icon_->setBounds(ICON_MARGIN, ICON_MARGIN, ICON_SIZE, ICON_SIZE);
         add(icon_.get());
-        FacebookPosts posts;
-        if (!readFacebookPostFromFile(posts)) {
+        Feeds posts;
+        if (!readFeedFromFile(posts)) {
             body_->setTextNoRepaint("unknown post");
         }
 
+        int componentY = 0;
         // TODO: image, field, destruct.
-        for (FacebookPosts::const_iterator it = posts.begin(); it != posts.end(); ++it) {
+        for (Feeds::const_iterator it = posts.begin(); it != posts.end(); ++it) {
             if ((*it).postId == postId) {
+                postId_ = postId;
                 iconImage_->initialize((*it).imageUrl(), (*it).localImagePath());
+
+                // message body
                 const int BODY_MINIMUM_HEIGHT = ICON_SIZE + 10;
                 const int BODY_RIGHT_MARGIN = 20;
                 const int BODY_MAX_WIDTH = WIDTH - ICON_MARGIN * 2 - ICON_SIZE - BODY_RIGHT_MARGIN;
                 int bodyHeight = body_->getHeightByTextAndMaxWidth((*it).text.c_str(), BODY_MAX_WIDTH);
                 bodyHeight = bodyHeight < BODY_MINIMUM_HEIGHT ? BODY_MINIMUM_HEIGHT : bodyHeight;
-                body_->setBounds(ICON_MARGIN * 2 + ICON_SIZE, 0, BODY_MAX_WIDTH, bodyHeight);
+                body_->setBounds(ICON_MARGIN * 2 + ICON_SIZE, componentY, BODY_MAX_WIDTH, bodyHeight);
                 body_->setTextNoRepaint((*it).text.c_str());
-                comments_ = (*it).comments;
+                componentY += bodyHeight;
+
+                // likes
+                if ((*it).numLikes > 0) {
+                    add(likes_.get());
+                    componentY += ICON_MARGIN;
+                    const int LIKES_HEIGHT = 25;
+                    likes_->setBounds(ICON_MARGIN, componentY, WIDTH - 25, LIKES_HEIGHT);
+                    componentY += LIKES_HEIGHT;
+                    char buf[64];
+                    sprintf(buf, "%d人", (*it).numLikes);
+                    likes_->setTextNoRepaint(buf);
+                }
                 int i = 0;
-                int commentY = bodyHeight;
+                comments_ = (*it).comments;
                 for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
                     WebImage* commentIconImage = new WebImage();
                     ImageIcon* commentIcon = new ImageIcon(commentIconImage);
@@ -331,69 +322,76 @@ public:
                     std::string localImagePath("/USER/TEMP/");
                     localImagePath += (*it).id;
                     localImagePath += ".JPG";
-                    commentIcon->setBounds(ICON_MARGIN, commentY, ICON_SIZE, ICON_SIZE);
+                    commentIcon->setBounds(ICON_MARGIN, componentY, ICON_SIZE, ICON_SIZE);
                     add(commentIcon);
                     commentIconImage->initialize(imageUrl, localImagePath);
                     TextField* textField = new TextField;
                     const int COMMENT_WIDTH = WIDTH - ICON_MARGIN * 2 - ICON_SIZE - 20;
+                    const int COMMENT_MINIMUM_HEIGHT = ICON_SIZE + 10;
                     int commentHeight = body_->getHeightByTextAndMaxWidth((*it).body.c_str(), COMMENT_WIDTH);
+                    commentHeight = commentHeight < COMMENT_MINIMUM_HEIGHT ? COMMENT_MINIMUM_HEIGHT : commentHeight;
                     textField->setTextNoRepaint((*it).body.c_str());
-                    textField->setBounds(ICON_SIZE + ICON_MARGIN * 2, commentY, COMMENT_WIDTH, commentHeight);
-                    commentY += commentHeight;
+                    textField->setBounds(ICON_SIZE + ICON_MARGIN * 2, componentY, COMMENT_WIDTH, commentHeight);
+                    componentY += commentHeight;
                     textField->setBackground(0xffedeff4);
+                    textField->setBorderColor(0xffedeff4);
 //                    textField->setBorderColor(0xffffffff);
-                    textField->setBorderColor(monagui::Color::black);
+//                    textField->setBorderColor(monagui::Color::black);
                     textField->setEditable(false);
                     add(textField);
                     i++;
                 }
+                commentInput_->setBorderColor(0xffcccccc);
+                commentInput_->setBounds(0, componentY, WIDTH - 50, 20);
+                commentButton_->setBounds(WIDTH - 50, componentY, 30, 20);
+                componentY += 100;
+                add(commentInput_.get());
+                add(commentButton_.get());
+                const int MINIMUM_WINDOW_HEIGHT = 300;
+                componentY = componentY < MINIMUM_WINDOW_HEIGHT ? MINIMUM_WINDOW_HEIGHT : componentY;
+                setBounds(80, 80, WIDTH, componentY);
                 return;
             }
         }
         body_->setTextNoRepaint("unknown post");
+
     }
 
-    bool readFacebookPostFromFile(FacebookPosts& posts)
+     void processEvent(Event* event)
+     {
+         if (event->getSource() == commentButton_.get() &&
+             event->getType() == MouseEvent::MOUSE_RELEASED) {
+             string message(commentInput_->getText());
+             if (FacebookService::postComment(postId_, message)) {
+                 commentInput_->setText("comment published");
+             } else {
+                 message += " : comment publis error";
+                 commentInput_->setText(message.c_str());
+             }
+        }
+    }
+
+
+    bool readFeedFromFile(Feeds& feeds)
     {
-        scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.data"));
-        if (shm.get() == NULL) {
-            return false;
+        Parser parser("/USER/TEMP/fb.json");
+        bool ret = parser.parse(feeds);
+        if (!ret) {
+            logprintf("err=%s\n", parser.lastError().c_str());
         }
-        std::string text((char*)shm->data());
-        Strings lines = StringHelper::split("\n", text);
-        for (size_t i = 0; i < lines.size(); i++) {
-            Strings line = StringHelper::split("$", lines[i]);
-            if (line.size() == 7) {
-                Comments comments;
-                Strings cs = StringHelper::split(";", line[6]);
-                for (Strings::const_iterator it = cs.begin(); it != cs.end(); ++it) {
-                    Strings idAndMessage = StringHelper::split(":", *it);
-                    logprintf("idAndMessage.size=%d\n", idAndMessage.size());
-                    for (int i = 0; i < idAndMessage.size(); i++) {
-                        logprintf("[%d]=<%s>\n", i, idAndMessage[i].c_str());
-                    }
-                    ASSERT(idAndMessage.size() >= 2);
-                    comments.push_back(Comment(idAndMessage[0], idAndMessage[1]));
-                }
-                posts.push_back(FacebookPost(line[0], line[1], line[2], atoi(line[3].c_str()), line[4], atoi(line[5].c_str()), comments));
-            }
-        }
-        return true;
+        return ret;
     }
 
      void paint(Graphics* g)
      {
-         FacebookFrame::paint(g);
+         facebook::Frame::paint(g);
      }
 };
-
 static void __fastcall updaterLauncher(void* arg)
 {
     Updater updater;
     updater.run();
 }
-
-using namespace picojson;
 
 int main(int argc, char* argv[])
 {
@@ -402,79 +400,6 @@ int main(int argc, char* argv[])
         monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
     }
 
-    scoped_ptr<SharedMemory> shm(monapi_file_read_all("/USER/TEMP/fb.json"));
-    if (shm.get() == NULL) {
-        monapi_warn("fb.json failed");
-        return -1;
-    }
-
-    string err;
-    value v;
-    parse(v, shm->data(), shm->data() + shm->size(), &err);
-
-    string errorString;
-
-    if (err.empty() && v.is<object>()) {
-        object obj = v.get<object>();
-        value expectedComments = obj["data"];
-        if (obj["data"].is<array>()) {
-            array posts = obj["data"].get<array>();
-            for (array::const_iterator it = posts.begin(); it != posts.end(); ++it) {
-                if ((*it).is<object>()) {
-                    object post = (*it).get<object>();
-                    string message = post["message"].to_str();
-                    if (post["from"].is<object>()) {
-                        object from = post["from"].get<object>();
-                        string name = from["name"].to_str();
-                        string id = from["id"].to_str();
-                        int numLikes = 0;
-                        if (post["likes"].is<object>()) {
-                            object likes = post["likes"].get<object>();
-                            if (likes["count"].is<double>()) {
-                                numLikes = likes["count"].get<double>();
-                            }
-                        }
-                        if (post["comments"].is<object>()) {
-                            object comments = post["comments"].get<object>();
-                            if (comments["data"].is<array>()) {
-                                array commentPosts = comments["data"].get<array>();
-                                for (array::const_iterator i = commentPosts.begin(); i != commentPosts.end(); ++i) {
-                                    if ((*i).is<object>()) {
-                                        object comment = (*i).get<object>();
-                                        string message = comment["message"].to_str();
-                                        if (comment["from"].is<object>()) {
-                                            object from = comment["from"].get<object>();
-                                            string fromId = from["id"].to_str();
-                                            string fromName = from["name"].to_str();
-                                        logprintf("fromName=%s message=%s\n", fromName.c_str(), message.c_str());
-                                        } else {
-                                            errorString = "comment[from] is not hash";
-                                        }
-                                    } else {
-                                        errorString = "comment is not hash";
-                                    }
-
-                                }
-                            }
-                        }
-
-                        logprintf("name=%s id=%s message=%s numLikes=%d\n", name.c_str(), id.c_str(), message.c_str(), numLikes);
-                    } else {
-                        errorString = "post[from] is not hash";
-                    }
-
-                } else {
-                    errorString = "one of elements of posts is not hash";
-                }
-
-            }
-        } else {
-            errorString = "value of key \"data\" is not array";
-        }
-        logprintf("obj=%s", obj["data"].to_str().c_str());
-    } else {
-        logprintf("parse eror = %s", err.c_str());
-    }
     if (argc == 1) {
         uintptr_t updaterId = monapi_thread_create_with_arg(updaterLauncher, NULL);
         Facebook facebook(updaterId);
