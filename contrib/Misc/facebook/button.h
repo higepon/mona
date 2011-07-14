@@ -26,15 +26,15 @@
  *
  */
 
-#ifndef _FACEBOOK_BUTTON_
-#define _FACEBOOK_BUTTON_
+#ifndef MONA_FACEBOOK_BUTTON_H
+#define MONA_FACEBOOK_BUTTON_H
 
 namespace facebook {
 
 class Button : public monagui::Button
 {
 public:
-    Button(const char* title) : monagui::Button(title)
+    explicit Button(const char* title) : monagui::Button(title)
     {
         setBackground(monagui::Color::white);
         setForeground(0xff6d84b4);
@@ -44,37 +44,12 @@ public:
     {
     }
 
-    void paint(Graphics* g)
-    {
-        int w = getWidth();
-        int h = getHeight();
+    void paint(Graphics* g);
 
-        g->setColor(getBackground());
-        g->fillRect(0, 0, w, h);
-
-        if (getPushed()) {
-            g->setColor(Color::white);
-            g->drawLine(2, h - 2, w - 3, h - 2);
-            g->drawLine(w - 2, 2, w - 2, h - 3);
-            g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-            g->setColor(Color::gray);
-            g->drawLine(1, 2, 1, h - 3);
-            g->drawLine(2, 1, w - 3, 1);
-        }
-        int fw = getFontMetrics()->getWidth(getLabel());
-        int fh = getFontMetrics()->getHeight(getLabel());
-        int x = (w - fw) / 2;
-        int y = (h - fh) / 2;
-        if (getPushed()) {
-            x++;
-            y++;
-        }
-
-        g->setColor(getForeground());
-        g->drawString(getLabel(), x, y);
-    }
+private:
+    DISALLOW_COPY_AND_ASSIGN(Button);
 };
 
-};
+}
 
-#endif // _FACEBOOK_BUTTON_
+#endif // MONA_FACEBOOK_BUTTON_H

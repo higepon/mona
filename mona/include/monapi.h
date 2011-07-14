@@ -37,6 +37,12 @@
 #define monapi_warn_once(...) { static bool warningShown = false; if (!warningShown) {PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Warning (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n"); warningShown = true;} }
 
 
+// A macro to disallow the copy constructor and operator= functions
+// This should be used in the private: declarations for a class
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  TypeName(const TypeName&);               \
+  void operator=(const TypeName&)
+
 extern "C" __attribute__((constructor)) void monapi_initialize();
 
 

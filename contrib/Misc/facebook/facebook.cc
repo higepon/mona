@@ -1,11 +1,11 @@
 #include <monapi/StringHelper.h>
-#include "Frame.h"
-#include "Button.h"
-#include "ShareButton.h"
-#include "Updater.h"
-#include "FacebookService.h"
-#include "FeedView.h"
-#include "Parser.h"
+#include "frame.h"
+#include "button.h"
+#include "share_button.h"
+#include "updater.h"
+#include "facebook_service.h"
+#include "feed_view.h"
+#include "parser.h"
 
 using namespace std;
 using namespace MonAPI;
@@ -288,7 +288,7 @@ public:
         for (Feeds::const_iterator it = posts.begin(); it != posts.end(); ++it) {
             if ((*it).postId == postId) {
                 postId_ = postId;
-                iconImage_->initialize((*it).imageUrl(), (*it).localImagePath());
+                iconImage_->initialize((*it).profileImageUrl(), (*it).localImagePath());
 
                 // message body
                 const int BODY_MINIMUM_HEIGHT = ICON_SIZE + 10;

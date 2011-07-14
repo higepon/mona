@@ -1,4 +1,5 @@
 /*
+ * Updater.h -
  *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
@@ -27,59 +28,25 @@
  *
  */
 
-#ifndef _FEED_
-#define _FEED_
+#ifndef MONA_FACEBOOK_UPDATER_H
+#define MONA_FACEBOOK_UPDATER_H
 
-#include "Comment.h"
+#include <stdint.h>
+#include <monapi.h>
 
 namespace facebook {
 
-class Feed
+class Updater
 {
 public:
-    Feed(const std::string& imageId,
-                 const std::string& name,
-                 const std::string& text,
-                 uint32_t numLikes,
-                 const std::string& postId,
-                 uint32_t numComments,
-                 const Comments& comments
-        ) :
-        imageId(imageId),
-        name(name),
-        text(text),
-        numLikes(numLikes),
-        postId(postId),
-        numComments(numComments),
-        comments(comments)
-    {
-    }
+    Updater();
+    void run();
 
-    std::string imageUrl() const
-    {
-        std::string ret = "http://graph.facebook.com/";
-        ret += imageId;
-        ret += "/picture";
-        return ret;
-    }
-
-    std::string localImagePath() const
-    {
-        std::string ret = "/USER/TEMP/" + imageId + ".JPG";
-        return ret;
-    }
-
-    std::string imageId;
-    std::string name;
-    std::string text;
-    uint32_t numLikes;
-    std::string postId;
-    uint32_t numComments;
-    Comments comments;
+private:
+    intptr_t update();
+    DISALLOW_COPY_AND_ASSIGN(Updater);
 };
 
-typedef std::vector<Feed> Feeds;
+}
 
-};
-
-#endif // _FEED_
+#endif // MONA_FACEBOOK_UPDATER_H

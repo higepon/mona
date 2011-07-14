@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _FACEBOOK_FRAME_
-#define _FACEBOOK_FRAME_
+#ifndef MONA_FACEBOOK_FRAME_H
+#define MONA_FACEBOOK_FRAME_H
 
 #include <monagui.h>
 #include <string>
@@ -37,58 +37,18 @@ namespace facebook {
 class Frame : public monagui::Frame {
 public:
 
-    Frame(const std::string& title) : monagui::Frame(title.c_str())
-    {
-    }
-
-    void paint(Graphics *g)
-    {
-        g->setColor(getBackground());
-        g->fillRect(0, 0, getWidth(), getHeight());
-        Graphics* frameGraphics = getFrameGraphics();
-        paintTitleGradation(frameGraphics);
-        drawCloseButton(frameGraphics);
-        paintTitleString(frameGraphics);
-    }
-
+    explicit Frame(const std::string& title);
+    void paint(Graphics *g);
 
 protected:
 
-    void paintTitleGradation(Graphics* g)
-    {
-        int w = getWidth();
-        dword c = g->getColor();
-        g->setColor(0x29, 0x3e, 0x6a);
-        g->fillRect(1, 0, w - 2, 1);
-        g->setColor(0x6c, 0x83, 0xb2);
-        g->fillRect(1, 1, w - 2, 1);
-        g->setColor(0x3b, 0x59, 0x98);
-        g->fillRect(1, 2, w - 2, 16);
-        g->setColor(0x62, 0x7a, 0xad);
-        g->fillRect(1, 18, w - 2, 2);
-        g->setColor(0x89, 0x9b, 0xc1);
-        g->fillRect(0, 20, w - 2, 1);
-        g->setColor(0x29, 0x3e, 0x6b);
-        g->fillRect(0, 21, w - 2, 1);
-        g->setColor(c);
-    }
+    void paintTitleGradation(Graphics* g);
+    void paintTitleString(Graphics* g);
 
-    void paintTitleString(Graphics* g)
-    {
-        int w = getWidth();
-        int fw = getFontMetrics()->getWidth(getTitle());
-        int fh = getFontMetrics()->getHeight(getTitle());
-
-        if (getFocused()) {
-            g->setColor(monagui::Color::white);
-        } else {
-            g->setColor(monagui::Color::gray);
-        }
-        g->setFontStyle(Font::BOLD);
-        g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
-    }
+private:
+    DISALLOW_COPY_AND_ASSIGN(Frame);
 };
 
-};
+}
 
-#endif // _FACEBOOK_FRAME_
+#endif // MONA_FACEBOOK_FRAME_H

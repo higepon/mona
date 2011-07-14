@@ -26,27 +26,28 @@
  *
  */
 
-#ifndef _COMMENT_
-#define _COMMENT_
+#ifndef MONA_FACEBOOK_SHARE_BUTTON_H
+#define MONA_FACEBOOK_SHARE_BUTTON_H
+
+#include <monagui.h>
+#include "button.h"
 
 namespace facebook {
 
-class Comment
+class ShareButton : public facebook::Button
 {
 public:
-    Comment(const std::string& id, const std::string& body) : id(id), body(body)
-    {
-    }
-    virtual ~Comment()
-    {
-    }
 
-    std::string id;
-    std::string body;
+    ShareButton();
+    explicit ShareButton(const char* label);
+    virtual ~ShareButton();
+
+    void paint(Graphics* g);
+
+private:
+    DISALLOW_COPY_AND_ASSIGN(ShareButton);
 };
 
-typedef std::vector<Comment> Comments;
+}
 
-};
-
-#endif // _COMMENT_
+#endif // MONA_FACEBOOK_SHARE_BUTTON_H

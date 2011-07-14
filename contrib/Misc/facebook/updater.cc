@@ -26,59 +26,54 @@
  *
  */
 
-#ifndef _SHARE_BUTTON_
-#define _SHARE_BUTTON_
+#include "updater.h"
+
+#include <string>
+#include <monapi.h>
 
 namespace facebook {
 
-class ShareButton : public Button
+Updater::Updater()
 {
-public:
+}
 
-    ShareButton() : Button("Share")
+void Updater::run()
+{
+    for (MessageInfo msg;;)
     {
-    }
-
-    ShareButton(const char* label) : Button(label)
-    {
-    }
-
-    virtual ~ShareButton()
-    {
-    }
-
-    void paint(Graphics* g)
-    {
-        int w = getWidth();
-        int h = getHeight();
-
-        g->setColor(0x29, 0x45, 0x7f);
-        g->fillRect(0, 0, w, h);
-        g->setColor(0x5f, 0x78, 0xab);
-        g->fillRect(1, 1, w - 2, h - 2);
-        if (getPushed()) {
-            g->setColor(monagui::Color::white);
-            g->drawLine(2, h - 2, w - 3, h - 2);
-            g->drawLine(w - 2, 2, w - 2, h - 3);
-            g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-            g->setColor(monagui::Color::gray);
-            g->drawLine(1, 2, 1, h - 3);
-            g->drawLine(2, 1, w - 3, 1);
+        if (MonAPI::Message::receive(&msg)) continue;
+        switch (msg.header)
+        {
+        case MSG_UPDATE:
+        {
+            intptr_t ret = MonAPI::Message::send(msg.from, MSG_OK);
+            if (ret != M_OK) {
+                monapi_fatal("MSG_UPDATE send failed");
+            }
+            break;
         }
-        int fw = getFontMetrics()->getWidth(getLabel());
-        int fh = getFontMetrics()->getHeight(getLabel());
-        int x = (w - fw) / 2;
-        int y = (h - fh) / 2;
-        if (getPushed()) {
-            x++;
-            y++;
+        default:
+            monapi_warn("unknown message %d\n", msg.header);
+            break;
         }
-        g->setColor(monagui::Color::white);
-        g->setFontStyle(Font::BOLD);
-        g->drawString(getLabel(), x, y);
     }
-};
+}
 
-};
+intptr_t Updater::update()
+{
+    std::string command(MonAPI::System::getMoshPath());
+    command += " /LIBS/MOSH/bin/fb-feed-get.sps";
+    uint32_t tid;
+    intptr_t result = monapi_process_execute_file_get_tid(command.c_str(),
+                                                               MONAPI_TRUE,
+                                                               &tid,
+                                                               MonAPI::System::getProcessStdinID(),
+                                                               MonAPI::System::getProcessStdoutID());
+    if (result != M_OK) {
+        monapi_warn("can't exec Mosh");
+        return result;
+    }
+    return monapi_process_wait_terminated(tid);
+}
 
-#endif // _SHARE_BUTTON_
+}

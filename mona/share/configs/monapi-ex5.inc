@@ -5,6 +5,10 @@ include $(SHAREDIR)/configs/monapi.inc
 .cpp.o:
 	$(CXX) -c -o $@ $(CXXFLAGS) $(INCLUDE) $<
 
+.SUFFIXES: .cc .o
+.cc.o:
+	$(CXX) -c -o $@ $(CXXFLAGS) $(INCLUDE) $<
+
 .SUFFIXES: .c .o
 .c.o:
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
