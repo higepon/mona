@@ -34,7 +34,7 @@
 
 namespace facebook {
 
-class Comment
+struct Comment
 {
 public:
     Comment(const std::string& id, const std::string& body) : id(id), body(body)
