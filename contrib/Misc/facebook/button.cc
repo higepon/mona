@@ -49,17 +49,19 @@ void Button::paint(Graphics* g)
         g->drawLine(1, 2, 1, h - 3);
         g->drawLine(2, 1, w - 3, 1);
     }
-    int fw = getFontMetrics()->getWidth(getLabel());
-    int fh = getFontMetrics()->getHeight(getLabel());
-    int x = (w - fw) / 2;
-    int y = (h - fh) / 2;
+
+    const char* label = getLabel();
+    int text_width = getFontMetrics()->getWidth(label);
+    int text_height = getFontMetrics()->getHeight(label);
+    int x = (w - text_width) / 2;
+    int y = (h - text_height) / 2;
     if (getPushed()) {
         x++;
         y++;
     }
 
     g->setColor(getForeground());
-    g->drawString(getLabel(), x, y);
+    g->drawString(label, x, y);
 }
 
 }
