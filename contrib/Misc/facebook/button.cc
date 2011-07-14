@@ -28,12 +28,11 @@
 
 #include <monagui.h>
 
-#include "button.h"
+#include "./button.h"
 
 namespace facebook {
 
-void Button::paint(Graphics* g)
-{
+void Button::paint(Graphics* g) {
     int w = getWidth();
     int h = getHeight();
 
@@ -63,5 +62,6 @@ void Button::paint(Graphics* g)
     g->setColor(getForeground());
     g->drawString(label, x, y);
 }
+ 
 
 }

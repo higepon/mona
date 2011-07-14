@@ -35,7 +35,7 @@
 
 namespace facebook {
 
-class Feed
+struct Feed
 {
 public:
     Feed(const std::string& imageId,
