@@ -40,7 +40,7 @@ public:
     static std::string profileImageUrl(const std::string id);
     static bool postComment(const std::string& postId, const std::string& text);
     static bool postFeed(const std::string& text);
-    static bool addLike(const std::string& postId);
+    static bool addLike(const std::string& post_id);
 
 private:
     static bool executeCommand(const std::string& command, bool waits);
