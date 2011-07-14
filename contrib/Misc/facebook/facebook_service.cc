@@ -40,9 +40,9 @@ std::string FacebookService::profileImageUrl(const std::string id)
     return ret;
 }
 
-bool FacebookService::postComment(const std::string& postId, const std::string& text)
+bool FacebookService::postComment(const std::string& post_id, const std::string& text)
 {
-    return executeMosh("/LIBS/MOSH/bin/fb-comment-post.sps", postId, text);
+    return executeMosh("/LIBS/MOSH/bin/fb-comment-post.sps", post_id, text);
 }
 
 bool FacebookService::postFeed(const std::string& text)
@@ -50,9 +50,9 @@ bool FacebookService::postFeed(const std::string& text)
     return executeMosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
 }
 
-bool FacebookService::addLike(const std::string& postId)
+bool FacebookService::addLike(const std::string& post_id)
 {
-    return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", postId, false);
+    return executeMosh("/LIBS/MOSH/bin/fb-like-post.sps", post_id, false);
 }
 
 bool FacebookService::executeCommand(const std::string& command, bool waits)
