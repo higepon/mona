@@ -31,7 +31,7 @@
 
 namespace facebook {
 
-Parser::Parser(const char* file) : file_(file) {
+Parser::Parser(const std::string& file) : file_(file) {
 }
 
 const std::string& Parser::last_error() const {
@@ -39,7 +39,8 @@ const std::string& Parser::last_error() const {
 }
 
 bool Parser::parse(Feeds* dest_feeds) {
-  MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(file_));
+  MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(
+      monapi_file_read_all(file_.c_str()));
   if (shm.get() == NULL) {
     last_error_ = "read file error";
     return false;

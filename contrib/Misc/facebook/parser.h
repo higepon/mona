@@ -41,13 +41,13 @@ namespace facebook {
 
 class Parser {
  public:
-  explicit Parser(const char* file);
+  explicit Parser(const std::string& file);
 
   const std::string& last_error() const;
   bool parse(Feeds* dest_feeds);
 
  private:
-  const char* file_;
+  const std::string file_;
   std::string last_error_;
   DISALLOW_COPY_AND_ASSIGN(Parser);
 };

@@ -40,22 +40,21 @@ namespace facebook {
 
 class CommentWindow : public facebook::Frame {
  public:
-  explicit CommentWindow(const std::string& post_id);
+  explicit CommentWindow(const Feed& feed);
   void processEvent(Event* event);
-  bool read_feed_from_file(Feeds* feeds);
-
   void paint(Graphics* g);
 
  private:
+
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;
   MonAPI::scoped_ptr<TextField> comment_input_;
   MonAPI::scoped_ptr<ShareButton> comment_button_;
-  Comments comments_;
-  std::vector<TextField*> comment_fields_;
   MonAPI::scoped_ptr<WebImage> icon_image_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
-  std::string post_id_;
+  Comments comments_;
+  std::vector<TextField*> comment_fields_;
+  const Feed& feed_;
 };
 }
 #endif  // CONTRIB_MISC_FACEBOOK_COMMENT_WINDOW_H_

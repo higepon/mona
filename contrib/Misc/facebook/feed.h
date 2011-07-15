@@ -42,9 +42,11 @@ struct Feed {
        const std::string& name,
        const std::string& text,
        uint32_t num_likes,
-       const std::string& post_i,
+       const std::string& feed_id,
        uint32_t num_comments,
        const Comments& comments);
+  Feed() {
+  }
   virtual ~Feed();
 
   std::string profile_image_url() const;
@@ -54,7 +56,7 @@ struct Feed {
   std::string name;
   std::string text;
   uint32_t num_likes;
-  std::string post_id;
+  std::string feed_id;
   uint32_t num_comments;
   Comments comments;
 };

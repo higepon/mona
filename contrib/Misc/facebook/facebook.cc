@@ -29,10 +29,29 @@
 #include "./updater.h"
 #include "./main_window.h"
 #include "./comment_window.h"
+#include "./parser.h"
 
 static void __fastcall updaterLauncher(void* arg) {
   facebook::Updater updater;
   updater.run();
+}
+
+static bool read_feed(const std::string& feed_id, facebook::Feed* dest) {
+  facebook::Parser parser("/USER/TEMP/fb.json");
+  facebook::Feeds feeds;
+  bool ret = parser.parse(&feeds);
+  if (!ret) {
+    monapi_warn("err=%s\n", parser.last_error().c_str());
+    return false;
+  }
+  for (facebook::Feeds::const_iterator i = feeds.begin();
+       i != feeds.end(); ++i) {
+    if ((*i).feed_id == feed_id) {
+      *dest = *i;
+      return true;
+    }
+  }
+  return false;
 }
 
 int main(int argc, char* argv[]) {
@@ -47,9 +66,14 @@ int main(int argc, char* argv[]) {
     facebook::MainWindow window(updater_id);
     window.run();
   } else {
-    std::string post_id(argv[1]);
-    facebook::CommentWindow window(post_id);
-    window.run();
+    std::string feed_id(argv[1]);
+    facebook::Feed feed;
+    if (read_feed(feed_id, &feed)) {
+      facebook::CommentWindow window(feed);
+      window.run();
+    } else {
+      fprintf(stderr, "can't read feed file");
+    }
   }
   return 0;
 }

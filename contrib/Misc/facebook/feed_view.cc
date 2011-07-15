@@ -43,7 +43,7 @@ FeedView::FeedView(int x, int y, int w, int h)
     comment_button_(new facebook::Button("comment")),
     text_(new TextField()),
     icon_(new ImageIcon(new WebImage())),
-    post_id_(""),
+    feed_id_(""),
     num_likes_(0),
     num_comments_(0) {
   // todo w, h limit
@@ -103,7 +103,7 @@ void FeedView::set_text(const std::string& text) {
 
 void FeedView::setup_from_feed(const Feed& feed) {
   set_image_path(feed.profile_image_url(), feed.local_image_path());
-  post_id_ = feed.post_id;
+  feed_id_ = feed.feed_id;
   num_likes_ = feed.num_likes;
   num_comments_ = feed.num_comments;
   set_text(feed.text);
@@ -111,7 +111,7 @@ void FeedView::setup_from_feed(const Feed& feed) {
 }
 
 void FeedView::set_empty() {
-  post_id_ = "";
+  feed_id_ = "";
   num_likes_ = 0;
   set_text("");
 }
@@ -131,7 +131,7 @@ void FeedView::open_comment() {
   } else {
     command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
   }
-  command += post_id_;
+  command += feed_id_;
   int result = monapi_process_execute_file_get_tid(
       command.c_str(),
       MONAPI_TRUE,
@@ -144,8 +144,8 @@ void FeedView::open_comment() {
 }
 
 void FeedView::add_like() {
-  if (!post_id_.empty()) {
-    FacebookService::add_like(post_id_);
+  if (!feed_id_.empty()) {
+    FacebookService::add_like(feed_id_);
   }
 }
 

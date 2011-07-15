@@ -35,14 +35,14 @@ Feed::Feed(const std::string& image_id,
            const std::string& name,
            const std::string& text,
            uint32_t num_likes,
-           const std::string& post_id,
+           const std::string& feed_id,
            uint32_t num_comments,
            const Comments& comments) :
     image_id(image_id),
     name(name),
     text(text),
     num_likes(num_likes),
-    post_id(post_id),
+    feed_id(feed_id),
     num_comments(num_comments),
     comments(comments) {
 }

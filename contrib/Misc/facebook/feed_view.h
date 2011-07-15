@@ -83,7 +83,7 @@ class FeedView {
   MonAPI::scoped_ptr<Button> comment_button_;
   MonAPI::scoped_ptr<TextField> text_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
-  std::string post_id_;
+  std::string feed_id_;
   int num_likes_;
   int num_comments_;
   Comments comments_;
