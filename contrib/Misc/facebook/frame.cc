@@ -26,26 +26,23 @@
  *
  */
 
-#include "frame.h"
+#include "./frame.h"
 
 namespace facebook {
 
-Frame::Frame(const std::string& title) : monagui::Frame(title.c_str())
-{
+Frame::Frame(const std::string& title) : monagui::Frame(title.c_str()) {
 }
 
-void Frame::paint(Graphics *g)
-{
+void Frame::paint(Graphics *g) {
     g->setColor(getBackground());
     g->fillRect(0, 0, getWidth(), getHeight());
     Graphics* frameGraphics = getFrameGraphics();
-    paintTitleGradation(frameGraphics);
+    paint_title_gradation(frameGraphics);
     drawCloseButton(frameGraphics);
-    paintTitleString(frameGraphics);
+    paint_title_string(frameGraphics);
 }
 
-void Frame::paintTitleGradation(Graphics* g)
-{
+void Frame::paint_title_gradation(Graphics* g) {
     int w = getWidth();
     dword c = g->getColor();
     g->setColor(0x29, 0x3e, 0x6a);
@@ -63,8 +60,7 @@ void Frame::paintTitleGradation(Graphics* g)
     g->setColor(c);
 }
 
-void Frame::paintTitleString(Graphics* g)
-{
+void Frame::paint_title_string(Graphics* g) {
     int w = getWidth();
     int fw = getFontMetrics()->getWidth(getTitle());
     int fh = getFontMetrics()->getHeight(getTitle());
@@ -77,5 +73,4 @@ void Frame::paintTitleString(Graphics* g)
     g->setFontStyle(Font::BOLD);
     g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
 }
-
 }

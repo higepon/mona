@@ -50,5 +50,5 @@ ifneq ($(NASMSRCS),)
 endif
 
 check-syntax:
-	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES}
-#	LANG=C python /home/taro/contrib/Misc/facebook/cpplint.py ${CHK_SOURCES}
+	LANG=C $(CXX) -o nul -fsyntax-only $(CXXFLAGS) $(INCLUDE) -S ${CHK_SOURCES} && python $(MONADIR)/tool/cpplint.py ${CHK_SOURCES}
+	

@@ -26,93 +26,90 @@
  *
  */
 
-#include "parser.h"
-#include "ext/picojson.h"
+#include "./parser.h"
+#include "./ext/picojson.h"
 
 namespace facebook {
 
-Parser::Parser(const char* file) : file_(file)
-{
+Parser::Parser(const char* file) : file_(file) {
 }
 
-const std::string& Parser::lastError() const
-{
-    return lastError_;
+const std::string& Parser::last_error() const {
+  return last_error_;
 }
 
-bool Parser::parse(Feeds& destFeeds)
-{
-    MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(file_));
-    if (shm.get() == NULL) {
-        lastError_ = "read file error";
-        return false;
+bool Parser::parse(Feeds* dest_feeds) {
+  MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(monapi_file_read_all(file_));
+  if (shm.get() == NULL) {
+    last_error_ = "read file error";
+    return false;
+  }
+
+  std::string errors;
+  picojson::value v;
+  picojson::parse(v, shm->data(), shm->data() + shm->size(), &errors);
+  if (!errors.empty() || !v.is<picojson::object>()) {
+    return false;
+  }
+  picojson::object obj = v.get<picojson::object>();
+  picojson::value expectedComments = obj["data"];
+  if (!obj["data"].is<picojson::array>()) {
+    last_error_ = "picojson::value of key \"data\" is not array";
+    return false;
+  }
+  picojson::array feeds = obj["data"].get<picojson::array>();
+  for (picojson::array::const_iterator it = feeds.begin();
+       it != feeds.end(); ++it) {
+    if (!(*it).is<picojson::object>()) {
+      last_error_ = "one of elements of posts is not hash";
+      return false;
     }
-
-    std::string errors;
-    picojson::value v;
-    picojson::parse(v, shm->data(), shm->data() + shm->size(), &errors);
-    if (errors.empty() && v.is<picojson::object>()) {
-        picojson::object obj = v.get<picojson::object>();
-        picojson::value expectedComments = obj["data"];
-        if (obj["data"].is<picojson::array>()) {
-            picojson::array feeds = obj["data"].get<picojson::array>();
-            for (picojson::array::const_iterator it = feeds.begin(); it != feeds.end(); ++it) {
-                if ((*it).is<picojson::object>()) {
-                    picojson::object feed = (*it).get<picojson::object>();
-                    std::string message = feed["message"].to_str();
-                    std::string postId = feed["id"].to_str();
-                    if (feed["from"].is<picojson::object>()) {
-                        picojson::object from = feed["from"].get<picojson::object>();
-                        std::string name = from["name"].to_str();
-                        std::string id = from["id"].to_str();
-                        int numLikes = 0;
-                        if (feed["likes"].is<picojson::object>()) {
-                            picojson::object likes = feed["likes"].get<picojson::object>();
-                            if (likes["count"].is<double>()) {
-                                numLikes = likes["count"].get<double>();
-                            }
-                        }
-                        Comments comments;
-                        if (feed["comments"].is<picojson::object>()) {
-                            picojson::object cs = feed["comments"].get<picojson::object>();
-                            if (cs["data"].is<picojson::array>()) {
-                                picojson::array commentPosts = cs["data"].get<picojson::array>();
-                                for (picojson::array::const_iterator i = commentPosts.begin(); i != commentPosts.end(); ++i) {
-                                    if ((*i).is<picojson::object>()) {
-                                        picojson::object comment = (*i).get<picojson::object>();
-                                        std::string message = comment["message"].to_str();
-                                        if (comment["from"].is<picojson::object>()) {
-                                            picojson::object from = comment["from"].get<picojson::object>();
-                                            std::string fromId = from["id"].to_str();
-                                            std::string fromName = from["name"].to_str();
-                                            comments.push_back(Comment(fromId, message));
-                                        } else {
-                                            lastError_ = "comment[from] is not hash";
-                                            return false;
-                                        }
-                                    } else {
-                                        lastError_ = "comment is not hash";
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                        destFeeds.push_back(Feed(id, name, message, numLikes, postId, comments.size() /* todo */, comments));
-                    } else {
-                        lastError_ = "post[from] is not hash";
-                        return false;
-                    }
-
-                } else {
-                    lastError_ = "one of elements of posts is not hash";
-                }
-
+    picojson::object feed = (*it).get<picojson::object>();
+    std::string message = feed["message"].to_str();
+    std::string post_id = feed["id"].to_str();
+    if (!feed["from"].is<picojson::object>()) {
+      last_error_ = "post[from] is not hash";
+      return false;
+    }
+    picojson::object from = feed["from"].get<picojson::object>();
+    std::string name = from["name"].to_str();
+    std::string id = from["id"].to_str();
+    int num_likes = 0;
+    if (feed["likes"].is<picojson::object>()) {
+      picojson::object likes = feed["likes"].get<picojson::object>();
+      if (likes["count"].is<double>()) {
+        num_likes = likes["count"].get<double>();
+      }
+    }
+    Comments comments;
+    if (feed["comments"].is<picojson::object>()) {
+      picojson::object cs = feed["comments"].get<picojson::object>();
+      if (cs["data"].is<picojson::array>()) {
+        picojson::array commentPosts = cs["data"].get<picojson::array>();
+        for (picojson::array::const_iterator i = commentPosts.begin();
+             i != commentPosts.end(); ++i) {
+          if ((*i).is<picojson::object>()) {
+            picojson::object comment = (*i).get<picojson::object>();
+            std::string message = comment["message"].to_str();
+            if (comment["from"].is<picojson::object>()) {
+              picojson::object from = comment["from"].get<picojson::object>();
+              std::string fromId = from["id"].to_str();
+              std::string fromName = from["name"].to_str();
+              comments.push_back(Comment(fromId, message));
+            } else {
+              last_error_ = "comment[from] is not hash";
+              return false;
             }
-        } else {
-            lastError_ = "picojson::value of key \"data\" is not array";
+          }
         }
+      }
     }
-    return true;
-}
 
+    dest_feeds->
+        push_back(Feed(id, name, message,
+                       num_likes, post_id, comments.size() /* todo */,
+                       comments));
+  }
+  return true;
+}
 }

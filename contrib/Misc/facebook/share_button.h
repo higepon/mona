@@ -26,28 +26,26 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_SHARE_BUTTON_H
-#define MONA_FACEBOOK_SHARE_BUTTON_H
+#ifndef CONTRIB_MISC_FACEBOOK_SHARE_BUTTON_H_
+#define CONTRIB_MISC_FACEBOOK_SHARE_BUTTON_H_
 
 #include <monagui.h>
-#include "button.h"
+#include "./button.h"
 
 namespace facebook {
 
-class ShareButton : public facebook::Button
-{
-public:
+class ShareButton : public facebook::Button {
+ public:
 
-    ShareButton();
-    explicit ShareButton(const char* label);
-    virtual ~ShareButton();
+  ShareButton();
+  explicit ShareButton(const char* label);
+  virtual ~ShareButton();
 
-    void paint(Graphics* g);
+  void paint(Graphics* g);
 
-private:
-    DISALLOW_COPY_AND_ASSIGN(ShareButton);
+ private:
+  DISALLOW_COPY_AND_ASSIGN(ShareButton);
 };
-
 }
 
-#endif // MONA_FACEBOOK_SHARE_BUTTON_H
+#endif  // CONTRIB_MISC_FACEBOOK_SHARE_BUTTON_H_

@@ -26,41 +26,36 @@
  *
  */
 
-#include "feed.h"
-#include "facebook_service.h"
+#include "./feed.h"
+#include "./facebook_service.h"
 
 namespace facebook {
 
-Feed::Feed(const std::string& imageId,
+Feed::Feed(const std::string& image_id,
            const std::string& name,
            const std::string& text,
-           uint32_t numLikes,
-           const std::string& postId,
-           uint32_t numComments,
+           uint32_t num_likes,
+           const std::string& post_id,
+           uint32_t num_comments,
            const Comments& comments) :
-    imageId(imageId),
+    image_id(image_id),
     name(name),
     text(text),
-    numLikes(numLikes),
-    postId(postId),
-    numComments(numComments),
-    comments(comments)
-{
+    num_likes(num_likes),
+    post_id(post_id),
+    num_comments(num_comments),
+    comments(comments) {
 }
 
-Feed::~Feed()
-{
+Feed::~Feed() {
 }
 
-std::string Feed::profileImageUrl() const
-{
-    return FacebookService::profileImageUrl(imageId);
+std::string Feed::profile_image_url() const {
+  return FacebookService::profile_image_url(image_id);
 }
 
-std::string Feed::localImagePath() const
-{
-    std::string ret = "/USER/TEMP/" + imageId + ".JPG";
-    return ret;
+std::string Feed::local_image_path() const {
+  std::string ret = "/USER/TEMP/" + image_id + ".JPG";
+  return ret;
 }
-
 }

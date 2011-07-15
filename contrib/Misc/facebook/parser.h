@@ -26,31 +26,31 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_PARSER_H
-#define MONA_FACEBOOK_PARSER_H
+#ifndef CONTRIB_MISC_FACEBOOK_PARSER_H_
+#define CONTRIB_MISC_FACEBOOK_PARSER_H_
 
-#include <string>
 #include <monapi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "feed.h"
+
+#include <string>
+
+#include "./feed.h"
 
 namespace facebook {
 
-class Parser
-{
-private:
-    const char* file_;
-    std::string lastError_;
-    DISALLOW_COPY_AND_ASSIGN(Parser);
+class Parser {
+ public:
+  explicit Parser(const char* file);
 
-public:
-    explicit Parser(const char* file);
+  const std::string& last_error() const;
+  bool parse(Feeds* dest_feeds);
 
-    const std::string& lastError() const;
-    bool parse(Feeds& destFeeds);
+ private:
+  const char* file_;
+  std::string last_error_;
+  DISALLOW_COPY_AND_ASSIGN(Parser);
 };
-
 }
 
-#endif // MONA_FACEBOOK_PARSER_H
+#endif  // CONTRIB_MISC_FACEBOOK_PARSER_H_

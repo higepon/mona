@@ -27,40 +27,40 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_FEED_H
-#define MONA_FACEBOOK_FEED_H
+#ifndef CONTRIB_MISC_FACEBOOK_FEED_H_
+#define CONTRIB_MISC_FACEBOOK_FEED_H_
 
 #include <string>
-#include "comment.h"
+#include <vector>
+#include "./comment.h"
 
 namespace facebook {
 
-struct Feed
-{
-public:
-    Feed(const std::string& imageId,
-         const std::string& name,
-         const std::string& text,
-         uint32_t numLikes,
-         const std::string& postId,
-         uint32_t numComments,
-         const Comments& comments);
-    virtual ~Feed();
+struct Feed {
+ public:
+  Feed(const std::string& image_id,
+       const std::string& name,
+       const std::string& text,
+       uint32_t num_likes,
+       const std::string& post_i,
+       uint32_t num_comments,
+       const Comments& comments);
+  virtual ~Feed();
 
-    std::string profileImageUrl() const;
-    std::string localImagePath() const;
+  std::string profile_image_url() const;
+  std::string local_image_path() const;
 
-    std::string imageId;
-    std::string name;
-    std::string text;
-    uint32_t numLikes;
-    std::string postId;
-    uint32_t numComments;
-    Comments comments;
+  std::string image_id;
+  std::string name;
+  std::string text;
+  uint32_t num_likes;
+  std::string post_id;
+  uint32_t num_comments;
+  Comments comments;
 };
 
 typedef std::vector<Feed> Feeds;
-
 }
 
-#endif // MONA_FACEBOOK_FEED_H
+#endif  // CONTRIB_MISC_FACEBOOK_FEED_H_
+

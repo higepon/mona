@@ -26,31 +26,29 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_COMMENT_H
-#define MONA_FACEBOOK_COMMENT_H
+#ifndef CONTRIB_MISC_FACEBOOK_COMMENT_H_
+#define CONTRIB_MISC_FACEBOOK_COMMENT_H_
 
 #include <string>
 #include <vector>
 
 namespace facebook {
 
-struct Comment
-{
-public:
-    Comment(const std::string& id, const std::string& body) : id(id), body(body)
-    {
-    }
+struct Comment {
+ public:
+  Comment(const std::string& id, const std::string& body) : id(id), body(body)
+  {
+  }
 
-    virtual ~Comment()
-    {
-    }
+  virtual ~Comment()
+  {
+  }
 
-    std::string id;
-    std::string body;
+  std::string id;
+  std::string body;
 };
 
 typedef std::vector<Comment> Comments;
-
 }
 
-#endif // MONA_FACEBOOK_COMMENT_H
+#endif  // CONTRIB_MISC_FACEBOOK_COMMENT_H_

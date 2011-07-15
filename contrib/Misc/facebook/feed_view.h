@@ -27,72 +27,69 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_FEED_VIEW_H
-#define MONA_FACEBOOK_FEED_VIEW_H
+#ifndef CONTRIB_MISC_FACEBOOK_FEED_VIEW_H_
+#define CONTRIB_MISC_FACEBOOK_FEED_VIEW_H_
 
 #include <monagui.h>
-#include "feed.h"
+#include <vector>
+#include <string>
+#include "./feed.h"
 
 namespace facebook {
 
 typedef std::vector<Component*> Components;
 
-class FeedView
-{
-public:
-    FeedView(int x, int y, int w, int h);
-    virtual ~FeedView();
+class FeedView {
+ public:
+  FeedView(int x, int y, int w, int h);
+  virtual ~FeedView();
 
-    void components(Components& ret);
-    void setImagePath(const std::string& uri, const std::string& path);
-    void setText(const std::string& text);
-    void setupFromFeed(const Feed& feed);
-    void setEmpty();
-    void draw(Graphics* g);
+  void components(Components* ret);
+  void set_image_path(const std::string& uri, const std::string& path);
+  void set_text(const std::string& text);
+  void setup_from_feed(const Feed& feed);
+  void set_empty();
+  void draw(Graphics* g);
 
-    Button* likeButton()
-    {
-        return likeButton_.get();
-    }
+  Button* like_button() {
+    return like_button_.get();
+  }
 
-    Button* commentButton()
-    {
-        return commentButton_.get();
-    }
+  Button* comment_button() {
+    return comment_button_.get();
+  }
 
-    void openComment();
-    void addLike();
-    std::string foldLine(const std::string& line, size_t maxLineLength);
+  void open_comment();
+  void add_like();
+  std::string fold_line(const std::string& line, size_t max_line_length);
 
-private:
+ private:
 
-    enum
-    {
-        MARGIN = 25,
-        IMAGE_MARGIN_TOP = 5,
-        IMAGE_HEIGHT = 20,
-        IMAGE_WIDTH = 20,
-        LIKE_BUTTON_WIDTH = 40,
-        LIKE_BUTTON_HEIGHT = 20,
-        LIKE_BUTTON_MARGIN_TOP = 2,
-        SIDE_BAR_WIDTH = LIKE_BUTTON_WIDTH
-    };
-    int x_;
-    int y_;
-    int w_;
-    int h_;
-    MonAPI::scoped_ptr<Button> likeButton_;
-    MonAPI::scoped_ptr<Button> commentButton_;
-    MonAPI::scoped_ptr<TextField> text_;
-    MonAPI::scoped_ptr<ImageIcon> icon_;
-    std::string postId_;
-    int numLikes_;
-    int numComments_;
-    Comments comments_;
+  enum {
+    MARGIN = 25,
+    IMAGE_MARGIN_TOP = 5,
+    IMAGE_HEIGHT = 20,
+    IMAGE_WIDTH = 20,
+    LIKE_BUTTON_WIDTH = 40,
+    LIKE_BUTTON_HEIGHT = 20,
+    LIKE_BUTTON_MARGIN_TOP = 2,
+    SIDE_BAR_WIDTH = LIKE_BUTTON_WIDTH
+  };
+  int x_;
+  int y_;
+  int w_;
+  int h_;
+  MonAPI::scoped_ptr<Button> like_button_;
+  MonAPI::scoped_ptr<Button> comment_button_;
+  MonAPI::scoped_ptr<TextField> text_;
+  MonAPI::scoped_ptr<ImageIcon> icon_;
+  std::string post_id_;
+  int num_likes_;
+  int num_comments_;
+  Comments comments_;
 
-    DISALLOW_COPY_AND_ASSIGN(FeedView);
+  DISALLOW_COPY_AND_ASSIGN(FeedView);
 };
-
 }
 
-#endif // MONA_FACEBOOK_FEED_VIEW_H
+#endif  // CONTRIB_MISC_FACEBOOK_FEED_VIEW_H_

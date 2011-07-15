@@ -26,30 +26,27 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_BUTTON_H
-#define MONA_FACEBOOK_BUTTON_H
+#ifndef CONTRIB_MISC_FACEBOOK_BUTTON_H_
+#define CONTRIB_MISC_FACEBOOK_BUTTON_H_
+
+#include <monagui.h>
 
 namespace facebook {
 
-class Button : public monagui::Button
-{
-public:
-    explicit Button(const char* title) : monagui::Button(title)
-    {
-        setBackground(monagui::Color::white);
-        setForeground(0xff6d84b4);
-    }
+class Button : public monagui::Button {
+ public:
+  explicit Button(const char* title) : monagui::Button(title) {
+    setBackground(monagui::Color::white);
+    setForeground(0xff6d84b4);
+  }
 
-    virtual ~Button()
-    {
-    }
+  virtual ~Button() {
+  }
 
-    void paint(Graphics* g);
+  void paint(Graphics* g);
 
-private:
-    DISALLOW_COPY_AND_ASSIGN(Button);
+ private:
+  DISALLOW_COPY_AND_ASSIGN(Button);
 };
-
 }
-
-#endif // MONA_FACEBOOK_BUTTON_H
+#endif  // CONTRIB_MISC_FACEBOOK_BUTTON_H_

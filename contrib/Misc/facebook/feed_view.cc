@@ -26,151 +26,146 @@
  *
  */
 
-#include "facebook_service.h"
-#include "feed_view.h"
-#include "button.h"
-
 #include <monapi.h>
+
+#include "./facebook_service.h"
+#include "./feed_view.h"
+#include "./button.h"
 
 namespace facebook {
 
-FeedView::FeedView(int x, int y, int w, int h) :
-    x_(x),
+FeedView::FeedView(int x, int y, int w, int h)
+  : x_(x),
     y_(y),
     w_(w),
     h_(h),
-    likeButton_(new facebook::Button("Like")),
-    commentButton_(new facebook::Button("comment")),
+    like_button_(new facebook::Button("Like")),
+    comment_button_(new facebook::Button("comment")),
     text_(new TextField()),
     icon_(new ImageIcon(new WebImage())),
-    postId_(""),
-    numLikes_(0),
-    numComments_(0)
-{
-    // todo w, h limit
-    text_->setBounds(x + SIDE_BAR_WIDTH, y, w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
-    icon_->setBounds(0, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
-    text_->setForeground(monagui::Color::black);
-    text_->setEditable(false);
-    text_->setBorderColor(monagui::Color::white);
-    likeButton_->setBackground(monagui::Color::white);
-    likeButton_->setBounds(x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP, LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
-    commentButton_->setBounds(x, y, 50, 50);
+    post_id_(""),
+    num_likes_(0),
+    num_comments_(0) {
+  // todo w, h limit
+  text_->setBounds(x + SIDE_BAR_WIDTH, y,
+                   w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
+  icon_->setBounds(0, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP,
+                   IMAGE_WIDTH, IMAGE_HEIGHT);
+  text_->setForeground(monagui::Color::black);
+  text_->setEditable(false);
+  text_->setBorderColor(monagui::Color::white);
+  like_button_->setBackground(monagui::Color::white);
+  like_button_->setBounds(
+      x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP,
+      LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
+  comment_button_->setBounds(x, y, 50, 50);
 }
 
-FeedView::~FeedView()
-{
+FeedView::~FeedView() {
 }
 
-void FeedView::components(Components& ret)
-{
-    ret.push_back(likeButton_.get());
-    ret.push_back(text_.get());
-    ret.push_back(commentButton_.get());
-    ret.push_back(icon_.get());
+void FeedView::components(Components* ret) {
+  ret->push_back(like_button_.get());
+  ret->push_back(text_.get());
+  ret->push_back(comment_button_.get());
+  ret->push_back(icon_.get());
 }
 
-void FeedView::setImagePath(const std::string& uri, const std::string& path)
-{
-    ((WebImage*)(icon_->getImage()))->initialize(uri, path);
+void FeedView::set_image_path(const std::string& uri, const std::string& path) {
+  (static_cast<WebImage*>(icon_->getImage()))->initialize(uri, path);
 }
 
-void FeedView::setText(const std::string& text)
-{
-    std::string content = foldLine(text, 70);
-    if (numLikes_ > 0) {
-        content += "\n";
-        char buf[32];
-        sprintf(buf, "%d", numLikes_);
-        content += buf;
-        content += "人がいいね！と言っています。";
+void FeedView::set_text(const std::string& text) {
+  std::string content = fold_line(text, 70);
+  if (num_likes_ > 0) {
+    content += "\n";
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", num_likes_);
+    content += buf;
+    content += "人がいいね！と言っています。";
+  }
+
+  if (num_comments_ > 0) {
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", num_comments_);
+    content += buf;
+    content += "個のコメント";
+
+    for (Comments::const_iterator it = comments_.begin();
+         it != comments_.end(); ++it) {
+      content += (*it).body;
+      content += "\n";
     }
+  }
 
-    if (numComments_ > 0) {
-        char buf[32];
-        sprintf(buf, "%d", numComments_);
-        content += buf;
-        content += "個のコメント";
-
-        for (Comments::const_iterator it = comments_.begin(); it != comments_.end(); ++it) {
-            content += (*it).body;
-            content += "\n";
-        }
-    }
-
-    text_->setText(content.c_str());
+  text_->setText(content.c_str());
 }
 
-void FeedView::setupFromFeed(const Feed& feed)
-{
-    setImagePath(feed.profileImageUrl(), feed.localImagePath());
-    postId_ = feed.postId;
-    numLikes_ = feed.numLikes;
-    numComments_ = feed.numComments;
-    setText(feed.text);
-    comments_ = feed.comments;
+void FeedView::setup_from_feed(const Feed& feed) {
+  set_image_path(feed.profile_image_url(), feed.local_image_path());
+  post_id_ = feed.post_id;
+  num_likes_ = feed.num_likes;
+  num_comments_ = feed.num_comments;
+  set_text(feed.text);
+  comments_ = feed.comments;
 }
 
-void FeedView::setEmpty()
-{
-    postId_ = "";
-    numLikes_ = 0;
-    setText("");
+void FeedView::set_empty() {
+  post_id_ = "";
+  num_likes_ = 0;
+  set_text("");
 }
 
-void FeedView::draw(Graphics* g)
-{
-    dword c = g->getColor();
-    g->setColor(monagui::Color::gray);
-    g->drawLine(x_, y_ + h_ - 2, x_ + w_, y_ + h_ - 2);
-    g->setColor(c);
+void FeedView::draw(Graphics* g) {
+  dword c = g->getColor();
+  g->setColor(monagui::Color::gray);
+  g->drawLine(x_, y_ + h_ - 2, x_ + w_, y_ + h_ - 2);
+  g->setColor(c);
 }
 
-void FeedView::openComment()
-{
-    uint32_t tid;
-    std::string command;
-    if (monapi_file_exists("/MEM/FACEBOOK.EX5")) {
-        command = "/MEM/FACEBOOK.EX5 ";
+void FeedView::open_comment() {
+  uint32_t tid;
+  std::string command;
+  if (monapi_file_exists("/MEM/FACEBOOK.EX5")) {
+    command = "/MEM/FACEBOOK.EX5 ";
+  } else {
+    command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
+  }
+  command += post_id_;
+  int result = monapi_process_execute_file_get_tid(
+      command.c_str(),
+      MONAPI_TRUE,
+      &tid,
+      MonAPI::System::getProcessStdinID(),
+      MonAPI::System::getProcessStdoutID());
+  if (result != 0) {
+    monapi_fatal("can't exec Mosh");
+  }
+}
+
+void FeedView::add_like() {
+  if (!post_id_.empty()) {
+    FacebookService::add_like(post_id_);
+  }
+}
+
+std::string FeedView::fold_line(const std::string& line,
+                                size_t max_line_length) {
+  size_t len = 0;
+  std::string ret;
+  for (std::string::const_iterator it = line.begin(); it != line.end(); ++it) {
+    ret += *it;
+    if ((*it) == '\n') {
+      len = 0;
     } else {
-        command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
+      len++;
     }
-    command += postId_;
-    int result = monapi_process_execute_file_get_tid(command.c_str(),
-                                                     MONAPI_TRUE,
-                                                     &tid,
-                                                     MonAPI::System::getProcessStdinID(),
-                                                     MonAPI::System::getProcessStdoutID());
-    if (result != 0) {
-        monapi_fatal("can't exec Mosh");
+
+    if (len >= max_line_length) {
+      ret += '\n';
+      len = 0;
     }
+  }
+  return ret;
 }
-
-void FeedView::addLike()
-{
-    if (!postId_.empty()) {
-        FacebookService::addLike(postId_);
-    }
-}
-
-std::string FeedView::foldLine(const std::string& line, size_t maxLineLength)
-{
-    size_t len = 0;
-    std::string ret;
-    for (std::string::const_iterator it = line.begin(); it != line.end(); ++it) {
-        ret += *it;
-        if ((*it) == '\n') {
-            len = 0;
-        } else {
-            len++;
-        }
-
-        if (len >= maxLineLength) {
-            ret += '\n';
-            len = 0;
-        }
-    }
-    return ret;
-}
-
 }

@@ -1,6 +1,4 @@
 /*
- * Updater.h -
- *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -27,24 +25,69 @@
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef CONTRIB_MISC_FACEBOOK_MAIN_WINDOW_H_
+#define CONTRIB_MISC_FACEBOOK_MAIN_WINDOW_H_
 
-#ifndef CONTRIB_MISC_FACEBOOK_UPDATER_H_
-#define CONTRIB_MISC_FACEBOOK_UPDATER_H_
+#include <vector>
+#include <string>
 
-#include <stdint.h>
-#include <monapi.h>
+#include "./frame.h"
+#include "./feed.h"
 
 namespace facebook {
 
-class Updater {
+class Button;
+class FeedView;
+
+class MainWindow : public facebook::Frame {
  public:
-  Updater();
-  void run();
+  explicit MainWindow(uintptr_t updater_id);
+  ~MainWindow();
 
  private:
-  intptr_t update();
-  DISALLOW_COPY_AND_ASSIGN(Updater);
+  uintptr_t updater_id_;
+  MonAPI::scoped_ptr<TextField> input_area_;
+  MonAPI::scoped_ptr<facebook::Button> share_button_;
+  MonAPI::scoped_ptr<facebook::Button> down_button_;
+  MonAPI::scoped_ptr<facebook::Button> updateButton_;
+  typedef std::vector<std::string> strings;
+
+  typedef std::vector<FeedView*> FeedViews;
+  Feeds feeds_;
+  bool updating_;
+  int idle_time_msec_;
+  int offset_;
+  FeedViews views_;
+  bool is_auto_update_;
+
+ public:
+  enum {
+    BUTTON_WIDTH = 50,
+    BUTTON_HEIGHT = 20,
+    BUTTON_MARGIN = 5,
+    INPUT_AREA_WIDTH = 300,
+    INPUT_AREA_HEIGHT = BUTTON_HEIGHT,
+    WIDTH = 700,
+    HEIGHT = 435,
+    POST_HEIGHT = 50,
+    MAX_ROWS = 7,
+    TIMER_INTERVAL_MSEC = 1000,
+    UPDATE_INTERVAL_MSEC = 30 * 1000,
+    forbidden_comma
+  };
+
+ private:
+  void post_feed();
+  void update_feed_async();
+  bool read_feed_from_file();
+  void show();
+  void setup_feed_views(size_t offset = 0);
+  bool handle_like_button_event(Event* event);
+  void processEvent(Event* event);
+  void set_status_done();
+  void paint(Graphics *g);
+  void set_status_updating();
 };
 }
 
-#endif  // CONTRIB_MISC_FACEBOOK_UPDATER_H_
+#endif  // CONTRIB_MISC_FACEBOOK_MAIN_WINDOW_H_

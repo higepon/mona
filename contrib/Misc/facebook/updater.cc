@@ -26,54 +26,50 @@
  *
  */
 
-#include "updater.h"
+#include "./updater.h"
 
-#include <string>
 #include <monapi.h>
+#include <string>
 
 namespace facebook {
 
-Updater::Updater()
-{
+Updater::Updater() {
 }
 
-void Updater::run()
-{
-    for (MessageInfo msg;;)
-    {
-        if (MonAPI::Message::receive(&msg)) continue;
-        switch (msg.header)
+void Updater::run() {
+  for (MessageInfo msg;;) {
+    if (MonAPI::Message::receive(&msg)) continue;
+    switch (msg.header) {
+      case MSG_UPDATE:
         {
-        case MSG_UPDATE:
-        {
-            intptr_t ret = MonAPI::Message::send(msg.from, MSG_OK);
-            if (ret != M_OK) {
-                monapi_fatal("MSG_UPDATE send failed");
-            }
-            break;
+          intptr_t ret = MonAPI::Message::send(msg.from, MSG_OK);
+          if (ret != M_OK) {
+            monapi_fatal("MSG_UPDATE send failed");
+          }
+          break;
         }
-        default:
-            monapi_warn("unknown message %d\n", msg.header);
-            break;
-        }
+      default:
+        monapi_warn("unknown message %d\n", msg.header);
+        break;
     }
+  }
 }
 
 intptr_t Updater::update()
 {
-    std::string command(MonAPI::System::getMoshPath());
-    command += " /LIBS/MOSH/bin/fb-feed-get.sps";
-    uint32_t tid;
-    intptr_t result = monapi_process_execute_file_get_tid(command.c_str(),
-                                                               MONAPI_TRUE,
-                                                               &tid,
-                                                               MonAPI::System::getProcessStdinID(),
-                                                               MonAPI::System::getProcessStdoutID());
-    if (result != M_OK) {
-        monapi_warn("can't exec Mosh");
-        return result;
-    }
-    return monapi_process_wait_terminated(tid);
+  std::string command(MonAPI::System::getMoshPath());
+  command += " /LIBS/MOSH/bin/fb-feed-get.sps";
+  uint32_t tid;
+  intptr_t result = monapi_process_execute_file_get_tid(
+      command.c_str(),
+      MONAPI_TRUE,
+      &tid,
+      MonAPI::System::getProcessStdinID(),
+      MonAPI::System::getProcessStdoutID());
+  if (result != M_OK) {
+    monapi_warn("can't exec Mosh");
+    return result;
+  }
+  return monapi_process_wait_terminated(tid);
 }
-
 }

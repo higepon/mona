@@ -33,35 +33,33 @@
 namespace facebook {
 
 void Button::paint(Graphics* g) {
-    int w = getWidth();
-    int h = getHeight();
+  int w = getWidth();
+  int h = getHeight();
 
-    g->setColor(getBackground());
-    g->fillRect(0, 0, w, h);
+  g->setColor(getBackground());
+  g->fillRect(0, 0, w, h);
 
-    if (getPushed()) {
-        g->setColor(Color::white);
-        g->drawLine(2, h - 2, w - 3, h - 2);
-        g->drawLine(w - 2, 2, w - 2, h - 3);
-        g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-        g->setColor(Color::gray);
-        g->drawLine(1, 2, 1, h - 3);
-        g->drawLine(2, 1, w - 3, 1);
-    }
+  if (getPushed()) {
+    g->setColor(Color::white);
+    g->drawLine(2, h - 2, w - 3, h - 2);
+    g->drawLine(w - 2, 2, w - 2, h - 3);
+    g->drawLine(w - 3 , h - 3, w - 3, h - 3);
+    g->setColor(Color::gray);
+    g->drawLine(1, 2, 1, h - 3);
+    g->drawLine(2, 1, w - 3, 1);
+  }
 
-    const char* label = getLabel();
-    int text_width = getFontMetrics()->getWidth(label);
-    int text_height = getFontMetrics()->getHeight(label);
-    int x = (w - text_width) / 2;
-    int y = (h - text_height) / 2;
-    if (getPushed()) {
-        x++;
-        y++;
-    }
+  const char* label = getLabel();
+  int text_width = getFontMetrics()->getWidth(label);
+  int text_height = getFontMetrics()->getHeight(label);
+  int x = (w - text_width) / 2;
+  int y = (h - text_height) / 2;
+  if (getPushed()) {
+    x++;
+    y++;
+  }
 
-    g->setColor(getForeground());
-    g->drawString(label, x, y);
+  g->setColor(getForeground());
+  g->drawString(label, x, y);
 }
- 
-
 }

@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_FRAME_H
-#define MONA_FACEBOOK_FRAME_H
+#ifndef CONTRIB_MISC_FACEBOOK_FRAME_H_
+#define CONTRIB_MISC_FACEBOOK_FRAME_H_
 
 #include <monagui.h>
 #include <string>
@@ -35,20 +35,19 @@
 namespace facebook {
 
 class Frame : public monagui::Frame {
-public:
+ public:
 
-    explicit Frame(const std::string& title);
-    void paint(Graphics *g);
+  explicit Frame(const std::string& title);
+  void paint(Graphics *g);
 
-protected:
+ protected:
 
-    void paintTitleGradation(Graphics* g);
-    void paintTitleString(Graphics* g);
+  void paint_title_gradation(Graphics* g);
+  void paint_title_string(Graphics* g);
 
-private:
-    DISALLOW_COPY_AND_ASSIGN(Frame);
+ private:
+  DISALLOW_COPY_AND_ASSIGN(Frame);
 };
-
 }
 
-#endif // MONA_FACEBOOK_FRAME_H
+#endif  // CONTRIB_MISC_FACEBOOK_FRAME_H_

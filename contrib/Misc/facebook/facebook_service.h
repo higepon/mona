@@ -27,27 +27,30 @@
  *
  */
 
-#ifndef MONA_FACEBOOK_SERVICE_H
-#define MONA_FACEBOOK_SERVICE_H
+#ifndef CONTRIB_MISC_FACEBOOK_FACEBOOK_SERVICE_H_
+#define CONTRIB_MISC_FACEBOOK_FACEBOOK_SERVICE_H_
 
 #include <string>
 
 namespace facebook {
 
-class FacebookService
-{
-public:
-    static std::string profile_image_url(const std::string id);
-    static bool post_comment(const std::string& post_id, const std::string& text);
-    static bool post_feed(const std::string& text);
-    static bool add_like(const std::string& post_id);
+class FacebookService {
+ public:
+  static std::string profile_image_url(const std::string id);
+  static bool post_comment(const std::string& post_id, const std::string& text);
+  static bool post_feed(const std::string& text);
+  static bool add_like(const std::string& post_id);
 
-private:
-    static bool execute_command(const std::string& command, bool waits);
-    static bool execute_mosh(const std::string& script, const std::string& arg1, const std::string& arg2, bool waits = true);
-    static bool execute_mosh(const std::string& script, const std::string& arg, bool waits = true);
+ private:
+  static bool execute_command(const std::string& command, bool waits);
+  static bool execute_mosh(const std::string& script,
+                           const std::string& arg1,
+                           const std::string& arg2,
+                           bool waits = true);
+  static bool execute_mosh(const std::string& script,
+                           const std::string& arg,
+                           bool waits = true);
 };
-
 }
 
-#endif // MONA_FACEBOOK_SERVICE_H
+#endif  // CONTRIB_MISC_FACEBOOK_FACEBOOK_SERVICE_H_

@@ -1,6 +1,4 @@
 /*
- * Updater.h -
- *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -27,24 +25,37 @@
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef CONTRIB_MISC_FACEBOOK_COMMENT_WINDOW_H_
+#define CONTRIB_MISC_FACEBOOK_COMMENT_WINDOW_H_
 
-#ifndef CONTRIB_MISC_FACEBOOK_UPDATER_H_
-#define CONTRIB_MISC_FACEBOOK_UPDATER_H_
+#include <vector>
+#include <string>
 
-#include <stdint.h>
-#include <monapi.h>
+#include "./frame.h"
+#include "./comment.h"
+#include "./feed.h"
+#include "./share_button.h"
 
 namespace facebook {
 
-class Updater {
+class CommentWindow : public facebook::Frame {
  public:
-  Updater();
-  void run();
+  explicit CommentWindow(const std::string& post_id);
+  void processEvent(Event* event);
+  bool read_feed_from_file(Feeds* feeds);
+
+  void paint(Graphics* g);
 
  private:
-  intptr_t update();
-  DISALLOW_COPY_AND_ASSIGN(Updater);
+  MonAPI::scoped_ptr<TextField> body_;
+  MonAPI::scoped_ptr<TextField> likes_;
+  MonAPI::scoped_ptr<TextField> comment_input_;
+  MonAPI::scoped_ptr<ShareButton> comment_button_;
+  Comments comments_;
+  std::vector<TextField*> comment_fields_;
+  MonAPI::scoped_ptr<WebImage> icon_image_;
+  MonAPI::scoped_ptr<ImageIcon> icon_;
+  std::string post_id_;
 };
 }
-
-#endif  // CONTRIB_MISC_FACEBOOK_UPDATER_H_
+#endif  // CONTRIB_MISC_FACEBOOK_COMMENT_WINDOW_H_
