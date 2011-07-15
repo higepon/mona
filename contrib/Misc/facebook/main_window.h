@@ -49,7 +49,7 @@ class MainWindow : public facebook::Frame {
   MonAPI::scoped_ptr<TextField> input_area_;
   MonAPI::scoped_ptr<facebook::Button> share_button_;
   MonAPI::scoped_ptr<facebook::Button> down_button_;
-  MonAPI::scoped_ptr<facebook::Button> updateButton_;
+  MonAPI::scoped_ptr<facebook::Button> update_button_;
   typedef std::vector<std::string> strings;
 
   typedef std::vector<FeedView*> FeedViews;

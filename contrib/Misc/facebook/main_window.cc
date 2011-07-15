@@ -25,7 +25,8 @@
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#include "main_window.h"
+
+#include "./main_window.h"
 #include "./share_button.h"
 #include "./feed_view.h"
 #include "./facebook_service.h"
@@ -39,7 +40,7 @@ MainWindow::MainWindow(uintptr_t updater_id)
       input_area_(new TextField()),
       share_button_(new facebook::ShareButton()),
       down_button_(new facebook::Button(">>>")),
-      updateButton_(new facebook::Button("Update")),
+      update_button_(new facebook::Button("Update")),
       updating_(false),
       idle_time_msec_(2000),
       offset_(0),
@@ -53,14 +54,14 @@ MainWindow::MainWindow(uintptr_t updater_id)
   x += INPUT_AREA_WIDTH + BUTTON_MARGIN;
   share_button_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
   x += BUTTON_WIDTH + BUTTON_MARGIN;
-  updateButton_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+  update_button_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
   x += BUTTON_WIDTH + BUTTON_MARGIN;
   down_button_->setBounds(640, 385, BUTTON_WIDTH, BUTTON_HEIGHT);
   down_button_->setFontStyle(Font::BOLD);
   add(input_area_.get());
   add(share_button_.get());
   add(down_button_.get());
-  add(updateButton_.get());
+  add(update_button_.get());
   setTimer(TIMER_INTERVAL_MSEC);
 
   y += BUTTON_HEIGHT + BUTTON_MARGIN;
@@ -154,7 +155,7 @@ void MainWindow::processEvent(Event* event) {
       uint64_t e = MonAPI::Date::nowInMsec();
       logprintf("repaint=%d msec\n", e - s);
     }
-  } else if (event->getSource() == updateButton_.get()) {
+  } else if (event->getSource() == update_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = true;
       update_feed_async();
@@ -185,8 +186,8 @@ void MainWindow::processEvent(Event* event) {
 }
 
 void MainWindow::set_status_done() {
-  updateButton_->setEnabled(true);
-  updateButton_->setLabel("update");
+  update_button_->setEnabled(true);
+  update_button_->setLabel("update");
   updating_ = false;
   idle_time_msec_ = 0;
   repaint();
@@ -205,7 +206,7 @@ void MainWindow::paint(Graphics *g) {
 
 void MainWindow::set_status_updating() {
   updating_ = true;
-  updateButton_->setEnabled(false);
-  updateButton_->setLabel("updating");
+  update_button_->setEnabled(false);
+  update_button_->setLabel("updating");
 }
 }
