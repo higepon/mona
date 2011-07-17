@@ -151,15 +151,8 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     WebImage* comment_icon_image = new WebImage();
     ImageIcon* comment_icon = new ImageIcon(comment_icon_image);
     comment_icon->setBounds(kIconMargin, component_y, kIconSize, kIconSize);
-    add(comment_icon);
     comment_icon_image->initialize((*it).profile_image_url(),
                                    (*it).local_image_path());
-    TextField* text_field = new TextField;
-    int commentHeight =
-        body_->getHeightByTextAndMaxWidth((*it).body.c_str(),
-                                          kCommentWidth);
-    commentHeight = std::max(commentHeight,
-                             static_cast<int>(kCommentMinimumHeight));
 
     std::string content = (*it).body;
     if ((*it).num_likes > 0) {
@@ -167,24 +160,43 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
       snprintf(buf, sizeof(buf), "%d likes", (*it).num_likes);
       content += buf;
     }
+    TextField* text_field = new TextField;
+    int commentHeight =
+        body_->getHeightByTextAndMaxWidth(content.c_str(),
+                                          kCommentWidth);
     text_field->setTextNoRepaint(content.c_str());
     text_field->setBounds(kIconSize + kIconMargin * 2, component_y,
-                         kCommentWidth, commentHeight);
+                          kCommentWidth, commentHeight);
     text_field->setBackground(0xffedeff4);
     text_field->setBorderColor(0xffedeff4);
     text_field->setEditable(false);
+
+    TextField* backGround = new TextField();
+    backGround->setBounds(0,
+                          component_y,
+                          kCommentWidth + kIconSize + kIconMargin * 2,
+                          commentHeight + kLikesHeight);
+    backGround->setBackground(0xffedeff4);
+    backGround->setBorderColor(0xffedeff4);
+    backGround->setEditable(false);
+
+    // Keep the call order of add() to make sure backGround is drawn first.
+    add(backGround);
     add(text_field);
+    add(comment_icon);
     component_y += commentHeight;
     facebook::Button* like_button = new facebook::Button("like!");
     like_button->setBounds(kIconSize + kIconMargin * 2, component_y,
-                           kCommentWidth, 30);
+                           kLikeButtonWidth, kLikesHeight);
+    like_button->setBackground(0xffedeff4);
     add(like_button);
-    component_y += 30;
+    component_y += kLikesHeight;
     like_buttons_.push_back(like_button);
 
     // keep them for destruction
     comment_fields_.push_back(text_field);
     comment_icons_.push_back(comment_icon);
+    component_y += 4;
   }
   return component_y;
 }

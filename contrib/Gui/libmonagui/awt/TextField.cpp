@@ -131,7 +131,7 @@ namespace monagui {
     {
         int w = getWidth(), h = getHeight();
         if (!isEditable()) {
-            g->setColor(getParent()->getBackground());
+            g->setColor(getBackground());
             g->drawRect(0, 0, w, h);
         } else if (getFocused() == true && getEnabled() == true) {
             g->setColor(0, 128, 255);

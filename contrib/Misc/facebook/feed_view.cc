@@ -126,8 +126,8 @@ void FeedView::draw(Graphics* g) {
 void FeedView::open_comment() {
   uint32_t tid;
   std::string command;
-  if (monapi_file_exists("/MEM/FACEBOOK.EX5")) {
-    command = "/MEM/FACEBOOK.EX5 ";
+  if (monapi_file_exists("/MEM/FB.EX5")) {
+    command = "/MEM/FB.EX5 ";
   } else {
     command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
   }

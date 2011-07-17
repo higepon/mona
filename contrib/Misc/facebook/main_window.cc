@@ -150,10 +150,7 @@ void MainWindow::processEvent(Event* event) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = false;
       setup_feed_views(++offset_);
-      uint64_t s = MonAPI::Date::nowInMsec();
       repaint();
-      uint64_t e = MonAPI::Date::nowInMsec();
-      logprintf("repaint=%d msec\n", e - s);
     }
   } else if (event->getSource() == update_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
