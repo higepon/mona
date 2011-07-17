@@ -42,7 +42,6 @@ class CommentWindow : public facebook::Frame {
  public:
   explicit CommentWindow(const Feed& feed);
   void processEvent(Event* event);
-  void paint(Graphics* g);
 
  private:
   enum ComponentLayout {

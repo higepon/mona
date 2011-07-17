@@ -42,7 +42,7 @@ namespace facebook {
 // delete objects
 // const rename
 CommentWindow::CommentWindow(const Feed& feed)
-    : facebook::Frame("Facebook comment"),
+    : facebook::Frame("Facebook"),
       body_(new TextField()),
       likes_(new TextField()),
       comment_input_(new TextField()),
@@ -72,10 +72,6 @@ void CommentWindow::processEvent(Event* event) {
       comment_input_->setText(message.c_str());
     }
   }
-}
-
-void CommentWindow::paint(Graphics* g) {
-  facebook::Frame::paint(g);
 }
 
 int CommentWindow::InitBody(const Feed& feed, int componentY) {
