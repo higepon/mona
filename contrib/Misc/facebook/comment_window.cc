@@ -133,7 +133,14 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
                                           kCommentWidth);
     commentHeight = std::max(commentHeight,
                              static_cast<int>(kCommentMinimumHeight));
-    text_field->setTextNoRepaint((*it).body.c_str());
+
+    std::string content = (*it).body;
+    if ((*it).num_likes > 0) {
+      char buf[16];
+      snprintf(buf, sizeof(buf), "%d likes", (*it).num_likes);
+      content += buf;
+    }
+    text_field->setTextNoRepaint(content.c_str());
     text_field->setBounds(kIconSize + kIconMargin * 2, component_y,
                          kCommentWidth, commentHeight);
     text_field->setBackground(0xffedeff4);

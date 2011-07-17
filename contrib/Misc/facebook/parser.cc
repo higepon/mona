@@ -96,7 +96,11 @@ bool Parser::parse(Feeds* dest_feeds) {
               picojson::object from = comment["from"].get<picojson::object>();
               std::string fromId = from["id"].to_str();
               std::string fromName = from["name"].to_str();
-              comments.push_back(Comment(fromId, message));
+              int num_likes = 0;
+              if (comment["likes"].is<double>()) {
+                num_likes = comment["like"].get<double>();
+              }
+              comments.push_back(Comment(fromId, message, num_likes));
             } else {
               last_error_ = "comment[from] is not hash";
               return false;

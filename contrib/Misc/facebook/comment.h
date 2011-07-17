@@ -36,7 +36,9 @@ namespace facebook {
 
 struct Comment {
  public:
-  Comment(const std::string& id, const std::string& body) : id(id), body(body) {
+  Comment(const std::string& id,
+          const std::string& body,
+          int num_likes) : id(id), body(body), num_likes(num_likes) {
   }
 
   virtual ~Comment() {
@@ -58,6 +60,7 @@ struct Comment {
 
   std::string id;
   std::string body;
+  int num_likes;
 };
 
 typedef std::vector<Comment> Comments;
