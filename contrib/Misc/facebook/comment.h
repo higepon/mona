@@ -36,12 +36,24 @@ namespace facebook {
 
 struct Comment {
  public:
-  Comment(const std::string& id, const std::string& body) : id(id), body(body)
-  {
+  Comment(const std::string& id, const std::string& body) : id(id), body(body) {
   }
 
-  virtual ~Comment()
-  {
+  virtual ~Comment() {
+  }
+
+  std::string profile_image_url() const {
+    std::string url("http://graph.facebook.com/");
+    url += id;
+    url += "/picture";
+    return url;
+  }
+
+  std::string local_image_path() const {
+    std::string path("/USER/TEMP/");
+    path += id;
+    path += ".JPG";
+    return path;
   }
 
   std::string id;

@@ -74,6 +74,35 @@ int CommentWindow::InitLikes(const Feed& feed, int componentY) {
   return componentY += kLikesHeight;
 }
 
+int CommentWindow::InitComments(const Comments& comments, int componentY) {
+  for (Comments::const_iterator it = comments.begin();
+       it != comments.end(); ++it) {
+    WebImage* commentIconImage = new WebImage();
+    ImageIcon* commentIcon = new ImageIcon(commentIconImage);
+    commentIcon->setBounds(kIconMargin, componentY, kIconSize, kIconSize);
+    add(commentIcon);
+    commentIconImage->initialize((*it).profile_image_url(),
+                                 (*it).local_image_path());
+    TextField* textField = new TextField;
+    int commentHeight =
+        body_->getHeightByTextAndMaxWidth((*it).body.c_str(),
+                                          kCommentWidth);
+    commentHeight = std::max(commentHeight,
+                             static_cast<int>(kCommentMinimumHeight));
+    textField->setTextNoRepaint((*it).body.c_str());
+    textField->setBounds(kIconSize + kIconMargin * 2, componentY,
+                         kCommentWidth, commentHeight);
+    textField->setBackground(0xffedeff4);
+    textField->setBorderColor(0xffedeff4);
+    textField->setEditable(false);
+    add(textField);
+    componentY += commentHeight;
+  }
+  return componentY;
+}
+
+
+
 // refactor
 // post_id
 // delete objects
@@ -93,40 +122,8 @@ CommentWindow::CommentWindow(const Feed& feed)
   int componentY = 0;
   componentY = InitBody(feed, componentY);
   componentY = InitLikes(feed, componentY);
+  componentY = InitComments(feed.comments, componentY);
 
-  int i = 0;
-  comments_ = feed.comments;
-  for (Comments::const_iterator it = comments_.begin();
-       it != comments_.end(); ++it) {
-    WebImage* commentIconImage = new WebImage();
-    ImageIcon* commentIcon = new ImageIcon(commentIconImage);
-    std::string imageUrl("http://graph.facebook.com/");
-    imageUrl += (*it).id;
-    imageUrl += "/picture";
-    std::string localImagePath("/USER/TEMP/");
-    localImagePath += (*it).id;
-    localImagePath += ".JPG";
-    commentIcon->setBounds(kIconMargin, componentY, kIconSize, kIconSize);
-    add(commentIcon);
-    commentIconImage->initialize(imageUrl, localImagePath);
-    TextField* textField = new TextField;
-    const int COMMENT_WIDTH = kWidth - kIconMargin * 2 - kIconSize - 20;
-    const int COMMENT_MINIMUM_HEIGHT = kIconSize + 10;
-    int commentHeight =
-        body_->getHeightByTextAndMaxWidth((*it).body.c_str(),
-                                          COMMENT_WIDTH);
-    commentHeight = commentHeight < COMMENT_MINIMUM_HEIGHT ?
-        COMMENT_MINIMUM_HEIGHT :commentHeight;
-    textField->setTextNoRepaint((*it).body.c_str());
-    textField->setBounds(kIconSize + kIconMargin * 2, componentY,
-                         COMMENT_WIDTH, commentHeight);
-    componentY += commentHeight;
-    textField->setBackground(0xffedeff4);
-    textField->setBorderColor(0xffedeff4);
-    textField->setEditable(false);
-    add(textField);
-    i++;
-  }
   comment_input_->setBorderColor(0xffcccccc);
   comment_input_->setBounds(0, componentY, kWidth - 50, 20);
   comment_button_->setBounds(kWidth - 50, componentY, 30, 20);

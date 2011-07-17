@@ -52,12 +52,15 @@ class CommentWindow : public facebook::Frame {
     kBodyMinimumHeight = kIconSize + 10,
     kBodyRightMargin = 20,
     kBodyMaxWidth = kWidth - kIconMargin * 2 - kIconSize - kBodyRightMargin,
-    kLikesHeight = 25
+    kLikesHeight = 25,
+    kCommentWidth = kWidth - kIconMargin * 2 - kIconSize - 20,
+    kCommentMinimumHeight = kIconSize + 10
   };
 
   int InitBody(const Feed& feed, int componentY);
   void InitIcon(const Feed& feed);
   int InitLikes(const Feed& feed, int componentY);
+  int InitComments(const Comments& comments, int componentY);
 
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;
@@ -65,7 +68,6 @@ class CommentWindow : public facebook::Frame {
   MonAPI::scoped_ptr<ShareButton> comment_button_;
   MonAPI::scoped_ptr<WebImage> icon_image_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
-  Comments comments_;
   std::vector<TextField*> comment_fields_;
   const Feed& feed_;
 };
