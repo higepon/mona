@@ -45,6 +45,7 @@ CommentWindow::CommentWindow(const Feed& feed)
       comment_button_(new ShareButton("Post")),
       icon_image_(new WebImage()),
       icon_(new ImageIcon(icon_image_.get())),
+      comments_(feed.comments),
       feed_(feed) {
   InitIcon(feed);
   int component_y = 0;
@@ -58,6 +59,10 @@ CommentWindow::CommentWindow(const Feed& feed)
 }
 
 CommentWindow::~CommentWindow() {
+  for (std::vector<facebook::Button*>::const_iterator i = like_buttons_.begin();
+       i != like_buttons_.end(); ++i) {
+    delete (*i);
+  }
   for (std::vector<TextField*>::const_iterator i = comment_fields_.begin();
        i != comment_fields_.end(); ++i) {
     delete (*i);
@@ -80,6 +85,28 @@ void CommentWindow::processEvent(Event* event) {
       comment_input_->setText(message.c_str());
     }
   }
+  if (HandleLikeButtonEvent(event)) {
+    return;
+  }
+}
+
+bool CommentWindow::HandleLikeButtonEvent(Event* event) {
+  if (event->getType() != MouseEvent::MOUSE_RELEASED) {
+    return false;
+  }
+  size_t index = 0;
+  for (std::vector<facebook::Button*>::const_iterator i = like_buttons_.begin();
+       i != like_buttons_.end(); ++i, ++index) {
+    if ((*i) == event->getSource()) {
+      logprintf("index=%d comments.size() %d\n", index, comments_.size());
+      assert(index < comments_.size());
+      if (!FacebookService::add_like(comments_[index].comment_id)) {
+        monapi_warn("add like failed");
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 int CommentWindow::InitBody(const Feed& feed, int component_y) {
@@ -147,10 +174,17 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     text_field->setBorderColor(0xffedeff4);
     text_field->setEditable(false);
     add(text_field);
+    component_y += commentHeight;
+    facebook::Button* like_button = new facebook::Button("like!");
+    like_button->setBounds(kIconSize + kIconMargin * 2, component_y,
+                           kCommentWidth, 30);
+    add(like_button);
+    component_y += 30;
+    like_buttons_.push_back(like_button);
+
     // keep them for destruction
     comment_fields_.push_back(text_field);
     comment_icons_.push_back(comment_icon);
-    component_y += commentHeight;
   }
   return component_y;
 }

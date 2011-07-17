@@ -65,6 +65,7 @@ class CommentWindow : public facebook::Frame {
   int InitLikes(const Feed& feed, int component_y);
   int InitComments(const Comments& comments, int component_y);
   int InitCommentInput(int component_y);
+  bool HandleLikeButtonEvent(Event* e);
 
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;
@@ -74,6 +75,8 @@ class CommentWindow : public facebook::Frame {
   MonAPI::scoped_ptr<ImageIcon> icon_;
   std::vector<TextField*> comment_fields_;
   std::vector<ImageIcon*> comment_icons_;
+  std::vector<facebook::Button*> like_buttons_;
+  Comments comments_;
   const Feed& feed_;
 };
 }

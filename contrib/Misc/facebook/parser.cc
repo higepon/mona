@@ -91,6 +91,7 @@ bool Parser::parse(Feeds* dest_feeds) {
              i != commentPosts.end(); ++i) {
           if ((*i).is<picojson::object>()) {
             picojson::object comment = (*i).get<picojson::object>();
+            std::string comment_id = comment["id"].to_str();
             std::string message = comment["message"].to_str();
             if (comment["from"].is<picojson::object>()) {
               picojson::object from = comment["from"].get<picojson::object>();
@@ -100,7 +101,8 @@ bool Parser::parse(Feeds* dest_feeds) {
               if (comment["likes"].is<double>()) {
                 num_likes = comment["like"].get<double>();
               }
-              comments.push_back(Comment(fromId, message, num_likes));
+              comments.push_back(Comment(fromId, message,
+                                         comment_id, num_likes));
             } else {
               last_error_ = "comment[from] is not hash";
               return false;

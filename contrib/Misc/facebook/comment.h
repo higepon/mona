@@ -38,7 +38,11 @@ struct Comment {
  public:
   Comment(const std::string& id,
           const std::string& body,
-          int num_likes) : id(id), body(body), num_likes(num_likes) {
+          const std::string& comment_id,
+          int num_likes) : id(id),
+                           body(body),
+                           comment_id(comment_id),
+                           num_likes(num_likes) {
   }
 
   virtual ~Comment() {
@@ -60,6 +64,7 @@ struct Comment {
 
   std::string id;
   std::string body;
+  std::string comment_id;
   int num_likes;
 };
 
