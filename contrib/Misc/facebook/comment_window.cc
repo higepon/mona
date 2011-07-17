@@ -26,6 +26,9 @@
  *
  */
 
+#include <stdlib.h>
+#include <algorithm>
+
 #include "./comment_window.h"
 #include "./share_button.h"
 #include "./feed.h"
@@ -33,6 +36,21 @@
 #include "./parser.h"
 
 namespace facebook {
+
+
+int CommentWindow::InitBody(const Feed& feed)
+{
+  body_->setBorderColor(monagui::Color::white);
+  body_->setEditable(false);
+  add(body_.get());
+  int bodyHeight = body_->getHeightByTextAndMaxWidth(feed_.text.c_str(),
+                                                     kBodyMaxWidth);
+  bodyHeight = std::max(bodyHeight, static_cast<int>(kBodyMinimumHeight));
+  body_->setBounds(kIconMargin * 2 + kIconSize,
+                   0, kBodyMaxWidth, bodyHeight);
+  body_->setTextNoRepaint(feed.text.c_str());
+  return bodyHeight;
+}
 
 // refactor
 // post_id
@@ -47,11 +65,8 @@ CommentWindow::CommentWindow(const Feed& feed)
       icon_image_(new WebImage()),
       icon_(new ImageIcon(icon_image_.get())),
       feed_(feed) {
-  const int kWidth = 300;
   setBackground(monagui::Color::white);
-  body_->setBorderColor(monagui::Color::white);
-  body_->setEditable(false);
-  add(body_.get());
+  int bodyHeight = InitBody(feed);
 
   likes_->setBackground(0xffedeff4);
   likes_->setBorderColor(0xffedeff4);
@@ -59,9 +74,7 @@ CommentWindow::CommentWindow(const Feed& feed)
   likes_->setEditable(false);
   add(likes_.get());
 
-  const int ICON_MARGIN = 5;
-  const int ICON_SIZE = 30;
-  icon_->setBounds(ICON_MARGIN, ICON_MARGIN, ICON_SIZE, ICON_SIZE);
+  icon_->setBounds(kIconMargin, kIconMargin, kIconSize, kIconSize);
   add(icon_.get());
 
   int componentY = 0;
@@ -69,25 +82,14 @@ CommentWindow::CommentWindow(const Feed& feed)
                           feed_.local_image_path());
 
   // message body
-  const int BODY_MINIMUM_HEIGHT = ICON_SIZE + 10;
-  const int BODY_RIGHT_MARGIN = 20;
-  const int BODY_MAX_WIDTH = kWidth - ICON_MARGIN * 2
-      - ICON_SIZE - BODY_RIGHT_MARGIN;
-  int bodyHeight = body_->getHeightByTextAndMaxWidth(feed_.text.c_str(),
-                                                     BODY_MAX_WIDTH);
-  bodyHeight = bodyHeight < BODY_MINIMUM_HEIGHT ?
-      BODY_MINIMUM_HEIGHT : bodyHeight;
-  body_->setBounds(ICON_MARGIN * 2 + ICON_SIZE,
-                   componentY, BODY_MAX_WIDTH, bodyHeight);
-  body_->setTextNoRepaint(feed.text.c_str());
   componentY += bodyHeight;
 
   // likes
   if (feed.num_likes > 0) {
     add(likes_.get());
-    componentY += ICON_MARGIN;
+    componentY += kIconSize;
     const int LIKES_HEIGHT = 25;
-    likes_->setBounds(ICON_MARGIN, componentY, kWidth - 25, LIKES_HEIGHT);
+    likes_->setBounds(kIconMargin, componentY, kWidth - 25, LIKES_HEIGHT);
     componentY += LIKES_HEIGHT;
     char buf[64];
     snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
@@ -105,19 +107,19 @@ CommentWindow::CommentWindow(const Feed& feed)
     std::string localImagePath("/USER/TEMP/");
     localImagePath += (*it).id;
     localImagePath += ".JPG";
-    commentIcon->setBounds(ICON_MARGIN, componentY, ICON_SIZE, ICON_SIZE);
+    commentIcon->setBounds(kIconMargin, componentY, kIconSize, kIconSize);
     add(commentIcon);
     commentIconImage->initialize(imageUrl, localImagePath);
     TextField* textField = new TextField;
-    const int COMMENT_WIDTH = kWidth - ICON_MARGIN * 2 - ICON_SIZE - 20;
-    const int COMMENT_MINIMUM_HEIGHT = ICON_SIZE + 10;
+    const int COMMENT_WIDTH = kWidth - kIconMargin * 2 - kIconSize - 20;
+    const int COMMENT_MINIMUM_HEIGHT = kIconSize + 10;
     int commentHeight =
         body_->getHeightByTextAndMaxWidth((*it).body.c_str(),
                                           COMMENT_WIDTH);
     commentHeight = commentHeight < COMMENT_MINIMUM_HEIGHT ?
         COMMENT_MINIMUM_HEIGHT :commentHeight;
     textField->setTextNoRepaint((*it).body.c_str());
-    textField->setBounds(ICON_SIZE + ICON_MARGIN * 2, componentY,
+    textField->setBounds(kIconSize + kIconMargin * 2, componentY,
                          COMMENT_WIDTH, commentHeight);
     componentY += commentHeight;
     textField->setBackground(0xffedeff4);
