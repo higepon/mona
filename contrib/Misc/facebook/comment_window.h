@@ -46,21 +46,25 @@ class CommentWindow : public facebook::Frame {
 
  private:
   enum ComponentLayout {
-    kWidth = 300,
+    kWindowWidth = 300,
+    kWindowMinimumHeight = 300,
     kIconMargin = 5,
     kIconSize = 30,
     kBodyMinimumHeight = kIconSize + 10,
     kBodyRightMargin = 20,
-    kBodyMaxWidth = kWidth - kIconMargin * 2 - kIconSize - kBodyRightMargin,
+    kBodyMaxWidth =
+      kWindowWidth - kIconMargin * 2 - kIconSize - kBodyRightMargin,
     kLikesHeight = 25,
-    kCommentWidth = kWidth - kIconMargin * 2 - kIconSize - 20,
-    kCommentMinimumHeight = kIconSize + 10
+    kCommentWidth = kWindowWidth - kIconMargin * 2 - kIconSize - 20,
+    kCommentMinimumHeight = kIconSize + 10,
+    kCommentInputHeight = 100
   };
 
   int InitBody(const Feed& feed, int componentY);
   void InitIcon(const Feed& feed);
   int InitLikes(const Feed& feed, int componentY);
   int InitComments(const Comments& comments, int componentY);
+  int InitCommentInput(int componentY);
 
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;

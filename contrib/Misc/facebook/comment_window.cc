@@ -37,6 +37,46 @@
 
 namespace facebook {
 
+// refactor
+// post_id
+// delete objects
+// const rename
+CommentWindow::CommentWindow(const Feed& feed)
+    : facebook::Frame("Facebook comment"),
+      body_(new TextField()),
+      likes_(new TextField()),
+      comment_input_(new TextField()),
+      comment_button_(new ShareButton("Post")),
+      icon_image_(new WebImage()),
+      icon_(new ImageIcon(icon_image_.get())),
+      feed_(feed) {
+  InitIcon(feed);
+  int componentY = 0;
+  componentY = InitBody(feed, componentY);
+  componentY = InitLikes(feed, componentY);
+  componentY = InitComments(feed.comments, componentY);
+  componentY = InitCommentInput(componentY);
+  setBounds(80, 80, kWindowWidth, componentY);
+  setBackground(monagui::Color::white);
+  return;
+}
+
+void CommentWindow::processEvent(Event* event) {
+  if (event->getSource() == comment_button_.get() &&
+      event->getType() == MouseEvent::MOUSE_RELEASED) {
+    std::string message(comment_input_->getText());
+    if (FacebookService::post_comment(feed_.feed_id, message)) {
+      comment_input_->setText("comment published");
+    } else {
+      message += " : comment publis error";
+      comment_input_->setText(message.c_str());
+    }
+  }
+}
+
+void CommentWindow::paint(Graphics* g) {
+  facebook::Frame::paint(g);
+}
 
 int CommentWindow::InitBody(const Feed& feed, int componentY) {
   body_->setBorderColor(monagui::Color::white);
@@ -67,7 +107,7 @@ int CommentWindow::InitLikes(const Feed& feed, int componentY) {
   likes_->setForeground(0xff293e6a);
   likes_->setEditable(false);
   add(likes_.get());
-  likes_->setBounds(kIconMargin, componentY, kWidth - 25, kLikesHeight);
+  likes_->setBounds(kIconMargin, componentY, kWindowWidth - 25, kLikesHeight);
   char buf[64];
   snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
   likes_->setTextNoRepaint(buf);
@@ -101,56 +141,13 @@ int CommentWindow::InitComments(const Comments& comments, int componentY) {
   return componentY;
 }
 
-
-
-// refactor
-// post_id
-// delete objects
-// const rename
-CommentWindow::CommentWindow(const Feed& feed)
-    : facebook::Frame("Facebook comment"),
-      body_(new TextField()),
-      likes_(new TextField()),
-      comment_input_(new TextField()),
-      comment_button_(new ShareButton("Post")),
-      icon_image_(new WebImage()),
-      icon_(new ImageIcon(icon_image_.get())),
-      feed_(feed) {
-  setBackground(monagui::Color::white);
-
-  InitIcon(feed);
-  int componentY = 0;
-  componentY = InitBody(feed, componentY);
-  componentY = InitLikes(feed, componentY);
-  componentY = InitComments(feed.comments, componentY);
-
+int CommentWindow::InitCommentInput(int componentY) {
   comment_input_->setBorderColor(0xffcccccc);
-  comment_input_->setBounds(0, componentY, kWidth - 50, 20);
-  comment_button_->setBounds(kWidth - 50, componentY, 30, 20);
-  componentY += 100;
+  comment_input_->setBounds(0, componentY, kWindowWidth - 50, 20);
+  comment_button_->setBounds(kWindowWidth - 50, componentY, 30, 20);
   add(comment_input_.get());
   add(comment_button_.get());
-  const int MINIMUM_WINDOW_HEIGHT = 300;
-  componentY = componentY < MINIMUM_WINDOW_HEIGHT ?
-      MINIMUM_WINDOW_HEIGHT : componentY;
-  setBounds(80, 80, kWidth, componentY);
-  return;
-}
-
-void CommentWindow::processEvent(Event* event) {
-  if (event->getSource() == comment_button_.get() &&
-      event->getType() == MouseEvent::MOUSE_RELEASED) {
-    std::string message(comment_input_->getText());
-    if (FacebookService::post_comment(feed_.feed_id, message)) {
-      comment_input_->setText("comment published");
-    } else {
-      message += " : comment publis error";
-      comment_input_->setText(message.c_str());
-    }
-  }
-}
-
-void CommentWindow::paint(Graphics* g) {
-  facebook::Frame::paint(g);
+  return std::max(componentY + kCommentInputHeight,
+                  static_cast<int>(kWindowMinimumHeight));
 }
 };
