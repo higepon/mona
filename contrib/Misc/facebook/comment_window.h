@@ -51,10 +51,13 @@ class CommentWindow : public facebook::Frame {
     kIconSize = 30,
     kBodyMinimumHeight = kIconSize + 10,
     kBodyRightMargin = 20,
-    kBodyMaxWidth = kWidth - kIconMargin * 2 - kIconSize - kBodyRightMargin
+    kBodyMaxWidth = kWidth - kIconMargin * 2 - kIconSize - kBodyRightMargin,
+    kLikesHeight = 25
   };
 
-  int InitBody(const Feed& Feed);
+  int InitBody(const Feed& feed, int componentY);
+  void InitIcon(const Feed& feed);
+  int InitLikes(const Feed& feed, int componentY);
 
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;

@@ -38,18 +38,40 @@
 namespace facebook {
 
 
-int CommentWindow::InitBody(const Feed& feed)
-{
+int CommentWindow::InitBody(const Feed& feed, int componentY) {
   body_->setBorderColor(monagui::Color::white);
   body_->setEditable(false);
   add(body_.get());
-  int bodyHeight = body_->getHeightByTextAndMaxWidth(feed_.text.c_str(),
+  int bodyHeight = body_->getHeightByTextAndMaxWidth(feed.text.c_str(),
                                                      kBodyMaxWidth);
   bodyHeight = std::max(bodyHeight, static_cast<int>(kBodyMinimumHeight));
-  body_->setBounds(kIconMargin * 2 + kIconSize,
-                   0, kBodyMaxWidth, bodyHeight);
+  body_->setBounds(kIconMargin * 2 + kIconSize, componentY,
+                   kBodyMaxWidth, bodyHeight);
   body_->setTextNoRepaint(feed.text.c_str());
-  return bodyHeight;
+  return bodyHeight + componentY;
+}
+
+void CommentWindow::InitIcon(const Feed& feed) {
+  icon_->setBounds(kIconMargin, kIconMargin, kIconSize, kIconSize);
+  add(icon_.get());
+  icon_image_->initialize(feed.profile_image_url(),
+                          feed.local_image_path());
+}
+
+int CommentWindow::InitLikes(const Feed& feed, int componentY) {
+  if (feed.num_likes <= 0) {
+    return componentY;
+  }
+  likes_->setBackground(0xffedeff4);
+  likes_->setBorderColor(0xffedeff4);
+  likes_->setForeground(0xff293e6a);
+  likes_->setEditable(false);
+  add(likes_.get());
+  likes_->setBounds(kIconMargin, componentY, kWidth - 25, kLikesHeight);
+  char buf[64];
+  snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
+  likes_->setTextNoRepaint(buf);
+  return componentY += kLikesHeight;
 }
 
 // refactor
@@ -66,35 +88,12 @@ CommentWindow::CommentWindow(const Feed& feed)
       icon_(new ImageIcon(icon_image_.get())),
       feed_(feed) {
   setBackground(monagui::Color::white);
-  int bodyHeight = InitBody(feed);
 
-  likes_->setBackground(0xffedeff4);
-  likes_->setBorderColor(0xffedeff4);
-  likes_->setForeground(0xff293e6a);
-  likes_->setEditable(false);
-  add(likes_.get());
-
-  icon_->setBounds(kIconMargin, kIconMargin, kIconSize, kIconSize);
-  add(icon_.get());
-
+  InitIcon(feed);
   int componentY = 0;
-  icon_image_->initialize(feed_.profile_image_url(),
-                          feed_.local_image_path());
+  componentY = InitBody(feed, componentY);
+  componentY = InitLikes(feed, componentY);
 
-  // message body
-  componentY += bodyHeight;
-
-  // likes
-  if (feed.num_likes > 0) {
-    add(likes_.get());
-    componentY += kIconSize;
-    const int LIKES_HEIGHT = 25;
-    likes_->setBounds(kIconMargin, componentY, kWidth - 25, LIKES_HEIGHT);
-    componentY += LIKES_HEIGHT;
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
-    likes_->setTextNoRepaint(buf);
-  }
   int i = 0;
   comments_ = feed.comments;
   for (Comments::const_iterator it = comments_.begin();
