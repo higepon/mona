@@ -41,6 +41,7 @@ namespace facebook {
 class CommentWindow : public facebook::Frame {
  public:
   explicit CommentWindow(const Feed& feed);
+  virtual ~CommentWindow();
   void processEvent(Event* event);
 
  private:
@@ -59,11 +60,11 @@ class CommentWindow : public facebook::Frame {
     kCommentInputHeight = 100
   };
 
-  int InitBody(const Feed& feed, int componentY);
+  int InitBody(const Feed& feed, int component_y);
   void InitIcon(const Feed& feed);
-  int InitLikes(const Feed& feed, int componentY);
-  int InitComments(const Comments& comments, int componentY);
-  int InitCommentInput(int componentY);
+  int InitLikes(const Feed& feed, int component_y);
+  int InitComments(const Comments& comments, int component_y);
+  int InitCommentInput(int component_y);
 
   MonAPI::scoped_ptr<TextField> body_;
   MonAPI::scoped_ptr<TextField> likes_;
@@ -72,6 +73,7 @@ class CommentWindow : public facebook::Frame {
   MonAPI::scoped_ptr<WebImage> icon_image_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
   std::vector<TextField*> comment_fields_;
+  std::vector<ImageIcon*> comment_icons_;
   const Feed& feed_;
 };
 }
