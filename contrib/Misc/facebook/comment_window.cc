@@ -44,7 +44,7 @@ CommentWindow::CommentWindow(const Feed& feed)
       comment_input_(new TextField()),
       comment_button_(new ShareButton("Post")),
       icon_image_(new WebImage()),
-      icon_(new ImageIcon(icon_image_.get())),
+      icon_(new ImageIcon(icon_image_)),
       comments_(feed.comments),
       feed_(feed) {
   InitIcon(feed);

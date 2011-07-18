@@ -72,7 +72,7 @@ class CommentWindow : public facebook::Frame {
   MonAPI::scoped_ptr<TextField> likes_;
   MonAPI::scoped_ptr<TextField> comment_input_;
   MonAPI::scoped_ptr<ShareButton> comment_button_;
-  MonAPI::scoped_ptr<WebImage> icon_image_;
+  WebImage* icon_image_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
   typedef std::vector<Component*> Components;
   Components components_to_delete_;
