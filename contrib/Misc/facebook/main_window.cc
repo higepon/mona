@@ -35,53 +35,9 @@
 // toto
 // private is oke?
 // refactor feed view
+// destruct componentns.
 
 namespace facebook {
-
-int MainWindow::InitInput(int component_x) {
-  input_->setBorderColor(0xffcccccc);
-  input_->setBounds(component_x, kInputY, kInputWidth, kInputHeight);
-  add(input_.get());
-  return component_x + kInputWidth;
-}
-
-int MainWindow::InitShareButton(int component_x) {
-  share_button_->setBounds(component_x + kButtonMargin, kInputY,
-                           kButtonWidth, kButtonHeight);
-  add(share_button_.get());
-  return component_x + kButtonWidth;
-}
-
-int MainWindow::InitUpdateButton(int component_x) {
-  update_button_->setBounds(component_x + kButtonHeight, kInputY,
-                            kButtonWidth, kButtonHeight);
-  add(update_button_.get());
-  return component_x + kButtonWidth;
-}
-
-int MainWindow::InitFeedViews(int component_y) {
-  int this_y = component_y;
-  for (size_t i = 0; i < kMaxRows; i++) {
-    FeedView* view =
-        new FeedView(kInputX, this_y, kWindowWidth, kPostHeight);
-    views_.push_back(view);
-    Components c;
-    view->SetComponents(&c);
-    for (Components::const_iterator it = c.begin(); it != c.end(); ++it) {
-      add(*it);
-    }
-    this_y += kPostHeight;
-  }
-  return this_y;
-}
-
-int MainWindow::InitDownbutton(int component_y) {
-  down_button_->setBounds(kDownButtonX, component_y + kButtonMargin,
-                          kButtonWidth, kButtonHeight);
-  down_button_->setFontStyle(Font::BOLD);
-  add(down_button_.get());
-  return component_y + kButtonHeight;
-}
 
 MainWindow::MainWindow(uintptr_t updater_id)
     : facebook::Frame("Facebook"),
@@ -236,5 +192,50 @@ void MainWindow::SetStatusUpdating() {
   updating_ = true;
   update_button_->setEnabled(false);
   update_button_->setLabel("updating");
+}
+
+int MainWindow::InitInput(int component_x) {
+  input_->setBorderColor(0xffcccccc);
+  input_->setBounds(component_x, kInputY, kInputWidth, kInputHeight);
+  add(input_.get());
+  return component_x + kInputWidth;
+}
+
+int MainWindow::InitShareButton(int component_x) {
+  share_button_->setBounds(component_x + kButtonMargin, kInputY,
+                           kButtonWidth, kButtonHeight);
+  add(share_button_.get());
+  return component_x + kButtonWidth;
+}
+
+int MainWindow::InitUpdateButton(int component_x) {
+  update_button_->setBounds(component_x + kButtonHeight, kInputY,
+                            kButtonWidth, kButtonHeight);
+  add(update_button_.get());
+  return component_x + kButtonWidth;
+}
+
+int MainWindow::InitFeedViews(int component_y) {
+  int this_y = component_y;
+  for (size_t i = 0; i < kMaxRows; i++) {
+    FeedView* view =
+        new FeedView(kInputX, this_y, kWindowWidth, kPostHeight);
+    views_.push_back(view);
+    Components c;
+    view->SetComponents(&c);
+    for (Components::const_iterator it = c.begin(); it != c.end(); ++it) {
+      add(*it);
+    }
+    this_y += kPostHeight;
+  }
+  return this_y;
+}
+
+int MainWindow::InitDownbutton(int component_y) {
+  down_button_->setBounds(kDownButtonX, component_y + kButtonMargin,
+                          kButtonWidth, kButtonHeight);
+  down_button_->setFontStyle(Font::BOLD);
+  add(down_button_.get());
+  return component_y + kButtonHeight;
 }
 }
