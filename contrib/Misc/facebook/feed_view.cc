@@ -46,7 +46,6 @@ FeedView::FeedView(int x, int y, int w, int h)
     feed_id_(""),
     num_likes_(0),
     num_comments_(0) {
-  // todo w, h limit
   text_->setBounds(x + kSideBarWidth, y,
                    w - kMargin - kLikeButtonWidth, h - 5);
   icon_->setBounds(0, y + kImageHeight + kImageMarginTop,
@@ -98,7 +97,6 @@ void FeedView::SetText(const std::string& text) {
       content += "\n";
     }
   }
-
   text_->setText(content.c_str());
 }
 
