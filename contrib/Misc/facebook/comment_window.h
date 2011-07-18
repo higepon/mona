@@ -74,8 +74,8 @@ class CommentWindow : public facebook::Frame {
   MonAPI::scoped_ptr<ShareButton> comment_button_;
   MonAPI::scoped_ptr<WebImage> icon_image_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
-  std::vector<TextField*> comment_fields_;
-  std::vector<ImageIcon*> comment_icons_;
+  typedef std::vector<Component*> Components;
+  Components components_to_delete_;
   std::vector<facebook::Button*> like_buttons_;
   Comments comments_;
   const Feed& feed_;

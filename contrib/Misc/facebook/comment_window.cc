@@ -60,18 +60,8 @@ CommentWindow::CommentWindow(const Feed& feed)
 
 CommentWindow::~CommentWindow() {
   logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  for (std::vector<facebook::Button*>::const_iterator i = like_buttons_.begin();
-       i != like_buttons_.end(); ++i) {
-    delete (*i);
-  }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  for (std::vector<TextField*>::const_iterator i = comment_fields_.begin();
-       i != comment_fields_.end(); ++i) {
-    delete (*i);
-  }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-  for (std::vector<ImageIcon*>::const_iterator i = comment_icons_.begin();
-       i != comment_icons_.end(); ++i) {
+  for (Components::const_iterator i = components_to_delete_.begin();
+       i != components_to_delete_.end(); ++i) {
     delete (*i);
   }
   logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
@@ -174,7 +164,7 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     text_field->setBorderColor(0xffedeff4);
     text_field->setEditable(false);
 
-    Canvas * backGround = new Canvas();
+    Canvas* backGround = new Canvas();
     backGround->setBounds(0,
                           component_y,
                           kCommentWidth + kIconSize + kIconMargin * 2,
@@ -194,9 +184,10 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     component_y += kLikesHeight;
     like_buttons_.push_back(like_button);
 
-    // keep them for destruction
-    comment_fields_.push_back(text_field);
-    comment_icons_.push_back(comment_icon);
+    components_to_delete_.push_back(text_field);
+    components_to_delete_.push_back(backGround);
+    components_to_delete_.push_back(like_button);
+    components_to_delete_.push_back(comment_icon);
     component_y += 4;
   }
   return component_y;
