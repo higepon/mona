@@ -34,6 +34,34 @@
 
 namespace facebook {
 
+int FeedView::InitIcon(int component_x, int component_y) {
+  icon_->setBounds(component_x + kIconMarginLeft, component_y + kIconMarginTop,
+                   kIconWidth, kIconHeight);
+  return component_x + kIconMarginLeft + kIconWidth;
+}
+
+int FeedView::InitBodyText(int component_x, int component_y, int w, int h) {
+  text_->setBounds(component_x + kMargin, component_y,
+                   w - kMargin * 2 - kIconWidth, h - kLikeButtonHeight - kMargin);
+  text_->setForeground(monagui::Color::black);
+  text_->setEditable(false);
+  text_->setBorderColor(monagui::Color::white);
+  return component_y + (h - kLikeButtonHeight - kMargin);
+}
+
+int FeedView::InitLike(int component_x, int component_y) {
+  like_button_->setBackground(monagui::Color::white);
+  like_button_->setBounds(component_x + kMargin, component_y,
+                          kLikeButtonWidth, kLikeButtonHeight);
+  return component_x + kLikeButtonWidth + kMargin;
+}
+
+int FeedView::InitCommentButton(int component_x, int component_y) {
+  comment_button_->setBounds(component_x, component_y,
+                             kCommentButtonWidth, kCommentButtonHeight);
+  return component_y + kCommentButtonHeight;
+}
+
 FeedView::FeedView(int x, int y, int w, int h)
   : x_(x),
     y_(y),
@@ -46,18 +74,12 @@ FeedView::FeedView(int x, int y, int w, int h)
     feed_id_(""),
     num_likes_(0),
     num_comments_(0) {
-  text_->setBounds(x + kSideBarWidth, y,
-                   w - kMargin - kLikeButtonWidth, h - 5);
-  icon_->setBounds(0, y + kImageHeight + kImageMarginTop,
-                   kImageWidth, kImageHeight);
-  text_->setForeground(monagui::Color::black);
-  text_->setEditable(false);
-  text_->setBorderColor(monagui::Color::white);
-  like_button_->setBackground(monagui::Color::white);
-  like_button_->setBounds(
-      x, y + kImageHeight + kImageMarginTop + kLikeButtonMarginTop,
-      kLikeButtonWidth, kLikeButtonHeight);
-  comment_button_->setBounds(x, y, kCommentButtonWidth, kCommentButtonHeight);
+  int component_x = x;
+  int component_y = y;
+  component_x = InitIcon(component_x, component_y);
+  component_y = InitBodyText(component_x, component_y, w, h);
+  component_x = InitLike(component_x, component_y);
+  component_y = InitCommentButton(component_x, component_y);
 }
 
 FeedView::~FeedView() {

@@ -64,23 +64,27 @@ class FeedView {
   std::string FoldLine(const std::string& line, size_t max_line_length);
 
  private:
+  int InitIcon(int component_x, int component_y);
+  int InitBodyText(int component_x, int component_y, int w, int h);
+  int InitLike(int component_x, int component_y);
+  int InitCommentButton(int component_x, int component_y);
 
   enum {
-    kMargin = 25,
-    kCommentButtonWidth = 50,
-    kCommentButtonHeight = 50,
-    kImageMarginTop = 5,
-    kImageHeight = 20,
-    kImageWidth = 20,
+    kMargin = 5,
+    kIconMarginLeft = 5,
+    kIconMarginTop = 5,
+    kIconHeight = 30,
+    kIconWidth = 30,
     kLikeButtonWidth = 40,
     kLikeButtonHeight = 20,
-    kLikeButtonMarginTop = 2,
-    kSideBarWidth = kLikeButtonWidth
+    kCommentButtonWidth = 50,
+    kCommentButtonHeight = kLikeButtonHeight,
+    kLikeButtonMarginTop = 2
   };
-  int x_;
-  int y_;
-  int w_;
-  int h_;
+  const int x_;
+  const int y_;
+  const int w_;
+  const int h_;
   MonAPI::scoped_ptr<Button> like_button_;
   MonAPI::scoped_ptr<Button> comment_button_;
   MonAPI::scoped_ptr<TextField> text_;
