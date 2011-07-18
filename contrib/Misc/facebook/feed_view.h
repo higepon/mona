@@ -44,7 +44,7 @@ class FeedView {
   FeedView(int x, int y, int w, int h);
   virtual ~FeedView();
 
-  void components(Components* ret);
+  void SetComponents(Components* ret);
   void set_image_path(const std::string& uri, const std::string& path);
   void set_text(const std::string& text);
   void setup_from_feed(const Feed& feed);

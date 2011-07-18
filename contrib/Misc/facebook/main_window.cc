@@ -34,6 +34,7 @@
 
 // toto
 // private is oke?
+// refactor feed view
 
 namespace facebook {
 
@@ -58,6 +59,22 @@ int MainWindow::InitUpdateButton(int component_x) {
   return component_x + kButtonWidth;
 }
 
+int MainWindow::InitFeedViews(int component_y) {
+  int this_y = component_y;
+  for (size_t i = 0; i < kMaxRows; i++) {
+    FeedView* view =
+        new FeedView(kInputX, this_y, kWindowWidth, kPostHeight);
+    views_.push_back(view);
+    Components c;
+    view->SetComponents(&c);
+    for (Components::const_iterator it = c.begin(); it != c.end(); ++it) {
+      add(*it);
+    }
+    this_y += kPostHeight;
+  }
+  return this_y;
+}
+
 MainWindow::MainWindow(uintptr_t updater_id)
     : facebook::Frame("Facebook"),
       updater_id_(updater_id),
@@ -71,28 +88,18 @@ MainWindow::MainWindow(uintptr_t updater_id)
       is_auto_update_(true) {
   setBackground(monagui::Color::white);
   setBounds(40, 40, kWindowWidth, kWindowHeight);
-  int component_x = 5;
+  int component_x = kInputX;
   component_x = InitInput(component_x);
   component_x = InitShareButton(component_x);
   component_x = InitUpdateButton(component_x);
-  down_button_->setBounds(640, 385, kButtonWidth, kButtonHeight);
-  down_button_->setFontStyle(Font::BOLD);
-
-
-  add(down_button_.get());
-  setTimer(kTimerIntervalMsec);
 
   int component_y = kInputY + kButtonHeight + kButtonMargin;
-  for (size_t i = 0; i < kMaxRows; i++) {
-    FeedView* view =
-        new FeedView(5, component_y + kPostHeight * i, kWindowWidth, kPostHeight);
-    views_.push_back(view);
-    Components c;
-    view->components(&c);
-    for (Components::const_iterator it = c.begin(); it != c.end(); ++it) {
-      add(*it);
-    }
-  }
+  component_y = InitFeedViews(component_y);
+
+  down_button_->setBounds(640, 385, kButtonWidth, kButtonHeight);
+  down_button_->setFontStyle(Font::BOLD);
+  add(down_button_.get());
+  setTimer(kTimerIntervalMsec);
 }
 
 MainWindow::~MainWindow() {

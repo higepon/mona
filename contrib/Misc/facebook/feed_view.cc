@@ -64,7 +64,7 @@ FeedView::FeedView(int x, int y, int w, int h)
 FeedView::~FeedView() {
 }
 
-void FeedView::components(Components* ret) {
+void FeedView::SetComponents(Components* ret) {
   ret->push_back(like_button_.get());
   ret->push_back(text_.get());
   ret->push_back(comment_button_.get());

@@ -65,6 +65,7 @@ class MainWindow : public facebook::Frame {
     kButtonWidth = 50,
     kButtonHeight = 20,
     kButtonMargin = 5,
+    kInputX = 5,
     kInputY = 5,
     kInputWidth = 300,
     kInputHeight = kButtonHeight,
@@ -84,6 +85,7 @@ class MainWindow : public facebook::Frame {
   int InitInput(int component_x);
   int InitShareButton(int component_x);
   int InitUpdateButton(int component_x);
+  int InitFeedViews(int component_y);
 
   void PostFeed();
   void UpdateFeedAsync();
