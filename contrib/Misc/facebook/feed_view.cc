@@ -75,9 +75,7 @@ FeedView::FeedView(int x, int y, int w, int h)
     comment_button_(new facebook::Button("")),
     text_(new TextField()),
     icon_(new ImageIcon(new WebImage())),
-    feed_id_(""),
-    num_likes_(0),
-    num_comments_(0) {
+    feed_id_("") {
   int component_x = x;
   int component_y = y;
   component_x = InitIcon(component_x, component_y);
@@ -118,15 +116,11 @@ void FeedView::SetupFromFeed(const Feed& feed) {
   snprintf(buf, sizeof(buf), "コメント%d件", feed.num_comments);
   comment_button_->setLabelNoRepaint(buf);
   feed_id_ = feed.feed_id;
-  num_likes_ = feed.num_likes;
-  num_comments_ = feed.num_comments;
   SetText(feed.text);
-  comments_ = feed.comments;
 }
 
 void FeedView::SetEmpty() {
   feed_id_ = "";
-  num_likes_ = 0;
   SetText("");
 }
 

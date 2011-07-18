@@ -90,9 +90,6 @@ class FeedView {
   MonAPI::scoped_ptr<TextField> text_;
   MonAPI::scoped_ptr<ImageIcon> icon_;
   std::string feed_id_;
-  int num_likes_;
-  int num_comments_;
-  Comments comments_;
 
   DISALLOW_COPY_AND_ASSIGN(FeedView);
 };
