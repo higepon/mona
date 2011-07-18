@@ -72,6 +72,7 @@ class MainWindow : public facebook::Frame {
     kWindowWidth = 700,
     kWindowHeight = 435,
     kPostHeight = 50,
+    kDownButtonX = 640,
     kMaxRows = 7,
     kTimerIntervalMsec = 1000,
     kUpdateInterbalMsec = 30 * 1000,
@@ -86,6 +87,7 @@ class MainWindow : public facebook::Frame {
   int InitShareButton(int component_x);
   int InitUpdateButton(int component_x);
   int InitFeedViews(int component_y);
+  int InitDownbutton(int component_y);
 
   void PostFeed();
   void UpdateFeedAsync();

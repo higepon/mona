@@ -75,6 +75,14 @@ int MainWindow::InitFeedViews(int component_y) {
   return this_y;
 }
 
+int MainWindow::InitDownbutton(int component_y) {
+  down_button_->setBounds(kDownButtonX, component_y + kButtonMargin,
+                          kButtonWidth, kButtonHeight);
+  down_button_->setFontStyle(Font::BOLD);
+  add(down_button_.get());
+  return component_y + kButtonHeight;
+}
+
 MainWindow::MainWindow(uintptr_t updater_id)
     : facebook::Frame("Facebook"),
       updater_id_(updater_id),
@@ -95,10 +103,7 @@ MainWindow::MainWindow(uintptr_t updater_id)
 
   int component_y = kInputY + kButtonHeight + kButtonMargin;
   component_y = InitFeedViews(component_y);
-
-  down_button_->setBounds(640, 385, kButtonWidth, kButtonHeight);
-  down_button_->setFontStyle(Font::BOLD);
-  add(down_button_.get());
+  component_y = InitDownbutton(component_y);
   setTimer(kTimerIntervalMsec);
 }
 
