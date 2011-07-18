@@ -53,6 +53,7 @@ namespace monagui {
 		 @param label ƒ‰ƒxƒ‹
 		 */
 		virtual void setLabel(const String& label);
+        virtual void setLabelNoRepaint(const String & text);
 		
 		/** ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚©‚ğ“¾‚é */
 		inline bool getPushed() { return this->pushed; }

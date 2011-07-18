@@ -58,6 +58,8 @@ public:
             isImageValid()) {
             image_->resize(getWidth(), getHeight());
         }
+        g->setColor(getBackground());
+        g->fillRect(0, 0, image_->getWidth(), image_->getHeight());
         g->drawImage(image_.get(), 0, 0);
     }
 

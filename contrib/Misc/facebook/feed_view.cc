@@ -35,6 +35,7 @@
 namespace facebook {
 
 int FeedView::InitIcon(int component_x, int component_y) {
+  icon_->setBackground(monagui::Color::white);
   icon_->setBounds(component_x + kIconMarginLeft, component_y + kIconMarginTop,
                    kIconWidth, kIconHeight);
   return component_x + kIconMarginLeft + kIconWidth;
@@ -52,13 +53,14 @@ int FeedView::InitBodyText(int component_x, int component_y, int w, int h) {
 }
 
 int FeedView::InitLike(int component_x, int component_y) {
-  like_button_->setBackground(monagui::Color::white);
+  like_button_->setBackground(0xffedeff4);
   like_button_->setBounds(component_x + kMargin, component_y,
                           kLikeButtonWidth, kLikeButtonHeight);
   return component_x + kLikeButtonWidth + kMargin;
 }
 
 int FeedView::InitCommentButton(int component_x, int component_y) {
+  comment_button_->setBackground(0xffedeff4);
   comment_button_->setBounds(component_x, component_y,
                              kCommentButtonWidth, kCommentButtonHeight);
   return component_y + kCommentButtonHeight;
@@ -69,8 +71,8 @@ FeedView::FeedView(int x, int y, int w, int h)
     y_(y),
     w_(w),
     h_(h),
-    like_button_(new facebook::Button("Like")),
-    comment_button_(new facebook::Button("comment")),
+    like_button_(new facebook::Button("")),
+    comment_button_(new facebook::Button("")),
     text_(new TextField()),
     icon_(new ImageIcon(new WebImage())),
     feed_id_(""),
@@ -101,31 +103,20 @@ void FeedView::SetImagePath(const std::string& uri, const std::string& path) {
 void FeedView::SetText(const std::string& text) {
   const int kNumCharPerLine = 70;
   std::string content = FoldLine(text, kNumCharPerLine);
-  if (num_likes_ > 0) {
-    content += "\n";
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", num_likes_);
-    content += buf;
-    content += "人がいいね！と言っています。";
-  }
-
-  if (num_comments_ > 0) {
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", num_comments_);
-    content += buf;
-    content += "個のコメント";
-
-    for (Comments::const_iterator it = comments_.begin();
-         it != comments_.end(); ++it) {
-      content += (*it).body;
-      content += "\n";
-    }
-  }
   text_->setText(content.c_str());
 }
 
 void FeedView::SetupFromFeed(const Feed& feed) {
   SetImagePath(feed.profile_image_url(), feed.local_image_path());
+  char buf[32];
+  if (feed.num_likes > 0) {
+    snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
+    like_button_->setLabelNoRepaint(buf);
+  } else {
+    like_button_->setLabelNoRepaint("Like");
+  }
+  snprintf(buf, sizeof(buf), "コメント%d件", feed.num_comments);
+  comment_button_->setLabelNoRepaint(buf);
   feed_id_ = feed.feed_id;
   num_likes_ = feed.num_likes;
   num_comments_ = feed.num_comments;

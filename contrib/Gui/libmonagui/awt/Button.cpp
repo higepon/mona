@@ -42,6 +42,10 @@ namespace monagui {
 	{
 	}
 
+    void Button::setLabelNoRepaint(const String& label)
+    {
+		this->label = label;
+    }
 	void Button::setLabel(const String& label)
 	{
 		this->label = label;
