@@ -174,14 +174,12 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     text_field->setBorderColor(0xffedeff4);
     text_field->setEditable(false);
 
-    TextField* backGround = new TextField();
+    Canvas * backGround = new Canvas();
     backGround->setBounds(0,
                           component_y,
                           kCommentWidth + kIconSize + kIconMargin * 2,
                           commentHeight + kLikesHeight);
     backGround->setBackground(0xffedeff4);
-    backGround->setBorderColor(0xffedeff4);
-    backGround->setEditable(false);
 
     // Keep the call order of add() to make sure backGround is drawn first.
     add(backGround);
