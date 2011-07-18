@@ -64,6 +64,9 @@ MainWindow::MainWindow(uintptr_t updater_id)
 }
 
 MainWindow::~MainWindow() {
+  for (FeedViews::const_iterator i = views_.begin(); i != views_.end(); ++i) {
+    delete *i;
+  }
 }
 
 void MainWindow::PostFeed() {

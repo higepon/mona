@@ -51,8 +51,8 @@ class MainWindow : public facebook::Frame {
   MonAPI::scoped_ptr<facebook::Button> down_button_;
   MonAPI::scoped_ptr<facebook::Button> update_button_;
   typedef std::vector<std::string> strings;
-
   typedef std::vector<FeedView*> FeedViews;
+
   Feeds feeds_;
   bool updating_;
   int idle_time_msec_;
