@@ -59,19 +59,22 @@ CommentWindow::CommentWindow(const Feed& feed)
 }
 
 CommentWindow::~CommentWindow() {
+  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   for (std::vector<facebook::Button*>::const_iterator i = like_buttons_.begin();
        i != like_buttons_.end(); ++i) {
     delete (*i);
   }
+  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   for (std::vector<TextField*>::const_iterator i = comment_fields_.begin();
        i != comment_fields_.end(); ++i) {
     delete (*i);
   }
+  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   for (std::vector<ImageIcon*>::const_iterator i = comment_icons_.begin();
        i != comment_icons_.end(); ++i) {
-    delete (*i)->getImage();
     delete (*i);
   }
+  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 void CommentWindow::processEvent(Event* event) {

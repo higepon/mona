@@ -43,6 +43,10 @@ public:
     {
     }
 
+    virtual~ WebImage()
+    {
+    }
+
     bool initialize(const std::string& uri, const std::string& path)
     {
         disposeImage();

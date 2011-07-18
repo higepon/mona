@@ -42,7 +42,8 @@ protected:
     }
 
 public:
-    ImageIcon(Image* image) : image_(image)
+
+    explicit ImageIcon(Image* image) : image_(image)
     {
         setBounds(0, 0, 40, 40);
     }

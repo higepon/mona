@@ -30,6 +30,8 @@
 #define _TEXTFIELD_WITH_HISTORY_
 
 #include <monapi/StringHelper.h>
+#include <stdio.h>
+#include <map>
 #include <algorithm>
 
 class TextFieldWithHistory : public TextField
@@ -78,7 +80,14 @@ private:
             return;
         }
         std::string content((const char*)shm->data(), shm->size());
-        histories_ = MonAPI::StringHelper::split("\n", content);
+        MonAPI::Strings allHistories = MonAPI::StringHelper::split("\n", content);
+        for (MonAPI::Strings::reverse_iterator it = allHistories.rbegin(); it != allHistories.rend(); ++it) {
+          MonAPI::Strings::iterator found = find(histories_.begin(), histories_.end(), *it);
+          if (found == histories_.end()) {
+            histories_.push_back(*it);
+          }
+        }
+        reverse(histories_.begin(), histories_.end());
         historyIndex_ = histories_.size() - 1;
     }
 
