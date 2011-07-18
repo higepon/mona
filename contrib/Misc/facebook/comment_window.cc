@@ -59,12 +59,10 @@ CommentWindow::CommentWindow(const Feed& feed)
 }
 
 CommentWindow::~CommentWindow() {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
   for (Components::const_iterator i = components_to_delete_.begin();
        i != components_to_delete_.end(); ++i) {
     delete (*i);
   }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 }
 
 void CommentWindow::processEvent(Event* event) {
