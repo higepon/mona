@@ -41,12 +41,14 @@ int FeedView::InitIcon(int component_x, int component_y) {
 }
 
 int FeedView::InitBodyText(int component_x, int component_y, int w, int h) {
+  const int kBodyHeight = h - kLikeButtonHeight - kMargin;
+  assert(kBodyHeight >= 0);
   text_->setBounds(component_x + kMargin, component_y,
-                   w - kMargin * 2 - kIconWidth, h - kLikeButtonHeight - kMargin);
+                   w - kMargin * 2 - kIconWidth, kBodyHeight);
   text_->setForeground(monagui::Color::black);
   text_->setEditable(false);
   text_->setBorderColor(monagui::Color::white);
-  return component_y + (h - kLikeButtonHeight - kMargin);
+  return component_y + kBodyHeight;
 }
 
 int FeedView::InitLike(int component_x, int component_y) {
