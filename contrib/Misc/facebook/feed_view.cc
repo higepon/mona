@@ -47,18 +47,18 @@ FeedView::FeedView(int x, int y, int w, int h)
     num_likes_(0),
     num_comments_(0) {
   // todo w, h limit
-  text_->setBounds(x + SIDE_BAR_WIDTH, y,
-                   w - MARGIN - LIKE_BUTTON_WIDTH, h - 5);
-  icon_->setBounds(0, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP,
-                   IMAGE_WIDTH, IMAGE_HEIGHT);
+  text_->setBounds(x + kSideBarWidth, y,
+                   w - kMargin - kLikeButtonWidth, h - 5);
+  icon_->setBounds(0, y + kImageHeight + kImageMarginTop,
+                   kImageWidth, kImageHeight);
   text_->setForeground(monagui::Color::black);
   text_->setEditable(false);
   text_->setBorderColor(monagui::Color::white);
   like_button_->setBackground(monagui::Color::white);
   like_button_->setBounds(
-      x, y + IMAGE_HEIGHT + IMAGE_MARGIN_TOP + LIKE_BUTTON_MARGIN_TOP,
-      LIKE_BUTTON_WIDTH, LIKE_BUTTON_HEIGHT);
-  comment_button_->setBounds(x, y, 50, 50);
+      x, y + kImageHeight + kImageMarginTop + kLikeButtonMarginTop,
+      kLikeButtonWidth, kLikeButtonHeight);
+  comment_button_->setBounds(x, y, kCommentButtonWidth, kCommentButtonHeight);
 }
 
 FeedView::~FeedView() {
@@ -71,12 +71,13 @@ void FeedView::SetComponents(Components* ret) {
   ret->push_back(icon_.get());
 }
 
-void FeedView::set_image_path(const std::string& uri, const std::string& path) {
+void FeedView::SetImagePath(const std::string& uri, const std::string& path) {
   (static_cast<WebImage*>(icon_->getImage()))->initialize(uri, path);
 }
 
-void FeedView::set_text(const std::string& text) {
-  std::string content = fold_line(text, 70);
+void FeedView::SetText(const std::string& text) {
+  const int kNumCharPerLine = 70;
+  std::string content = FoldLine(text, kNumCharPerLine);
   if (num_likes_ > 0) {
     content += "\n";
     char buf[32];
@@ -101,29 +102,29 @@ void FeedView::set_text(const std::string& text) {
   text_->setText(content.c_str());
 }
 
-void FeedView::setup_from_feed(const Feed& feed) {
-  set_image_path(feed.profile_image_url(), feed.local_image_path());
+void FeedView::SetupFromFeed(const Feed& feed) {
+  SetImagePath(feed.profile_image_url(), feed.local_image_path());
   feed_id_ = feed.feed_id;
   num_likes_ = feed.num_likes;
   num_comments_ = feed.num_comments;
-  set_text(feed.text);
+  SetText(feed.text);
   comments_ = feed.comments;
 }
 
-void FeedView::set_empty() {
+void FeedView::SetEmpty() {
   feed_id_ = "";
   num_likes_ = 0;
-  set_text("");
+  SetText("");
 }
 
-void FeedView::draw(Graphics* g) {
+void FeedView::Draw(Graphics* g) {
   dword c = g->getColor();
   g->setColor(monagui::Color::gray);
   g->drawLine(x_, y_ + h_ - 2, x_ + w_, y_ + h_ - 2);
   g->setColor(c);
 }
 
-void FeedView::open_comment() {
+void FeedView::OpenComment() {
   uint32_t tid;
   std::string command;
   if (monapi_file_exists("/MEM/FB.EX5")) {
@@ -143,13 +144,13 @@ void FeedView::open_comment() {
   }
 }
 
-void FeedView::add_like() {
+void FeedView::AddLike() {
   if (!feed_id_.empty()) {
     FacebookService::add_like(feed_id_);
   }
 }
 
-std::string FeedView::fold_line(const std::string& line,
+std::string FeedView::FoldLine(const std::string& line,
                                 size_t max_line_length) {
   size_t len = 0;
   std::string ret;

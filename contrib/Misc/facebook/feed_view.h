@@ -45,11 +45,11 @@ class FeedView {
   virtual ~FeedView();
 
   void SetComponents(Components* ret);
-  void set_image_path(const std::string& uri, const std::string& path);
-  void set_text(const std::string& text);
-  void setup_from_feed(const Feed& feed);
-  void set_empty();
-  void draw(Graphics* g);
+  void SetImagePath(const std::string& uri, const std::string& path);
+  void SetText(const std::string& text);
+  void SetupFromFeed(const Feed& feed);
+  void SetEmpty();
+  void Draw(Graphics* g);
 
   Button* like_button() {
     return like_button_.get();
@@ -59,21 +59,23 @@ class FeedView {
     return comment_button_.get();
   }
 
-  void open_comment();
-  void add_like();
-  std::string fold_line(const std::string& line, size_t max_line_length);
+  void OpenComment();
+  void AddLike();
+  std::string FoldLine(const std::string& line, size_t max_line_length);
 
  private:
 
   enum {
-    MARGIN = 25,
-    IMAGE_MARGIN_TOP = 5,
-    IMAGE_HEIGHT = 20,
-    IMAGE_WIDTH = 20,
-    LIKE_BUTTON_WIDTH = 40,
-    LIKE_BUTTON_HEIGHT = 20,
-    LIKE_BUTTON_MARGIN_TOP = 2,
-    SIDE_BAR_WIDTH = LIKE_BUTTON_WIDTH
+    kMargin = 25,
+    kCommentButtonWidth = 50,
+    kCommentButtonHeight = 50,
+    kImageMarginTop = 5,
+    kImageHeight = 20,
+    kImageWidth = 20,
+    kLikeButtonWidth = 40,
+    kLikeButtonHeight = 20,
+    kLikeButtonMarginTop = 2,
+    kSideBarWidth = kLikeButtonWidth
   };
   int x_;
   int y_;

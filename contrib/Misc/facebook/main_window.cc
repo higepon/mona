@@ -104,9 +104,9 @@ void MainWindow::Show() {
 void MainWindow::SetupFeedViews(size_t offset) {
   for (size_t i = 0; i < kMaxRows; i++) {
     if (i + offset < feeds_.size()) {
-      views_[i]->setup_from_feed(feeds_[i + offset]);
+      views_[i]->SetupFromFeed(feeds_[i + offset]);
     } else {
-      views_[i]->set_empty();
+      views_[i]->SetEmpty();
     }
   }
   SetStatusDone();
@@ -119,11 +119,11 @@ bool MainWindow::HandleLikeButtonEvent(Event* event) {
   for (FeedViews::const_iterator it = views_.begin();
        it != views_.end(); ++it) {
     if ((*it)->like_button() == event->getSource()) {
-      (*it)->add_like();
+      (*it)->AddLike();
       UpdateFeedAsync();
       return true;
     } else if ((*it)->comment_button() == event->getSource()) {
-      (*it)->open_comment();
+      (*it)->OpenComment();
     }
   }
   return false;
@@ -185,7 +185,7 @@ void MainWindow::paint(Graphics* g) {
 
   for (FeedViews::const_iterator it = views_.begin();
        it != views_.end(); ++it) {
-    (*it)->draw(g);
+    (*it)->Draw(g);
   }
 }
 
