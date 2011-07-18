@@ -32,11 +32,6 @@
 #include "./facebook_service.h"
 #include "./parser.h"
 
-// toto
-// private is oke?
-// refactor feed view
-// destruct componentns.
-
 namespace facebook {
 
 MainWindow::MainWindow(uintptr_t updater_id)
@@ -73,6 +68,10 @@ void MainWindow::PostFeed() {
   share_button_->setEnabled(false);
   if (FacebookService::post_feed(input_->getText())) {
     input_->setText("");
+  } else {
+    std::string input_text(input_->getText());
+    input_text += " Post feed failed";
+    input_->setText(input_text.c_str());
   }
   share_button_->setEnabled(true);
   UpdateFeedAsync();
@@ -90,7 +89,7 @@ bool MainWindow::ReadFeedFromFile() {
   Parser parser("/USER/TEMP/fb.json");
   bool ret = parser.parse(&feeds_);
   if (!ret) {
-    logprintf("err=%s\n", parser.last_error().c_str());
+    monapi_warn("err=%s\n", parser.last_error().c_str());
   }
   return ret;
 }
@@ -157,13 +156,12 @@ void MainWindow::processEvent(Event* event) {
       }
     }
   } else if (event->getType() == Event::TIMER) {
-    static bool isFirstTime = true;
+    static bool is_first_time = true;
     if (!updating_) {
       idle_time_msec_ += kTimerIntervalMsec;
-      if (isFirstTime || (is_auto_update_ &&
+      if (is_first_time || (is_auto_update_ &&
                           idle_time_msec_ > kUpdateInterbalMsec)) {
-        isFirstTime = false;
-        //                    logprintf("timer update feed start\n");
+        is_first_time = false;
         UpdateFeedAsync();
       }
     }
@@ -180,7 +178,7 @@ void MainWindow::SetStatusDone() {
   repaint();
 }
 
-void MainWindow::paint(Graphics *g) {
+void MainWindow::paint(Graphics* g) {
   facebook::Frame::paint(g);
   g->setColor(monagui::Color::gray);
   g->drawLine(5, 9 + kButtonHeight, getWidth(),  9 + kButtonHeight);
