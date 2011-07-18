@@ -37,19 +37,19 @@ namespace facebook {
 class FacebookService {
  public:
   static std::string profile_image_url(const std::string id);
-  static bool post_comment(const std::string& post_id, const std::string& text);
-  static bool post_feed(const std::string& text);
-  static bool add_like(const std::string& post_id);
+  static bool PostComment(const std::string& post_id, const std::string& text);
+  static bool PostFeed(const std::string& text);
+  static bool AddLike(const std::string& post_id);
 
  private:
-  static bool execute_command(const std::string& command, bool waits);
-  static bool execute_mosh(const std::string& script,
-                           const std::string& arg1,
-                           const std::string& arg2,
-                           bool waits = true);
-  static bool execute_mosh(const std::string& script,
-                           const std::string& arg,
-                           bool waits = true);
+  static bool ExecuteCommand(const std::string& command, bool waits);
+  static bool ExecuteMosh(const std::string& script,
+                          const std::string& arg1,
+                          const std::string& arg2,
+                          bool waits = true);
+  static bool ExecuteMosh(const std::string& script,
+                          const std::string& arg,
+                          bool waits = true);
 };
 }
 

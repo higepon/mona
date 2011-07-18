@@ -38,7 +38,7 @@ const std::string& Parser::last_error() const {
   return last_error_;
 }
 
-bool Parser::parse(Feeds* dest_feeds) {
+bool Parser::Parse(Feeds* dest_feeds) {
   MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(
       monapi_file_read_all(file_.c_str()));
   if (shm.get() == NULL) {

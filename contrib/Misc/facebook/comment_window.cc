@@ -81,7 +81,7 @@ void CommentWindow::processEvent(Event* event) {
   if (event->getSource() == comment_button_.get() &&
       event->getType() == MouseEvent::MOUSE_RELEASED) {
     std::string message(comment_input_->getText());
-    if (FacebookService::post_comment(feed_.feed_id, message)) {
+    if (FacebookService::PostComment(feed_.feed_id, message)) {
       comment_input_->setText("comment published");
     } else {
       message += " : comment publis error";
@@ -103,7 +103,7 @@ bool CommentWindow::HandleLikeButtonEvent(Event* event) {
     if ((*i) == event->getSource()) {
       logprintf("index=%d comments.size() %d\n", index, comments_.size());
       assert(index < comments_.size());
-      if (!FacebookService::add_like(comments_[index].comment_id)) {
+      if (!FacebookService::AddLike(comments_[index].comment_id)) {
         monapi_warn("add like failed");
       }
       return true;

@@ -33,13 +33,13 @@
 
 static void __fastcall updaterLauncher(void* arg) {
   facebook::Updater updater;
-  updater.run();
+  updater.Run();
 }
 
 static bool read_feed(const std::string& feed_id, facebook::Feed* dest) {
   facebook::Parser parser("/USER/TEMP/fb.json");
   facebook::Feeds feeds;
-  bool ret = parser.parse(&feeds);
+  bool ret = parser.Parse(&feeds);
   if (!ret) {
     monapi_warn("err=%s\n", parser.last_error().c_str());
     return false;

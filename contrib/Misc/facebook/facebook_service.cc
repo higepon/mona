@@ -39,20 +39,20 @@ std::string FacebookService::profile_image_url(const std::string id) {
   return ret;
 }
 
-bool FacebookService::post_comment(const std::string& post_id,
-                                   const std::string& text) {
-  return execute_mosh("/LIBS/MOSH/bin/fb-comment-post.sps", post_id, text);
+bool FacebookService::PostComment(const std::string& post_id,
+                                  const std::string& text) {
+  return ExecuteMosh("/LIBS/MOSH/bin/fb-comment-post.sps", post_id, text);
 }
 
-bool FacebookService::post_feed(const std::string& text) {
-  return execute_mosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
+bool FacebookService::PostFeed(const std::string& text) {
+  return ExecuteMosh("/LIBS/MOSH/bin/fb-feed-post.sps", text);
 }
 
-bool FacebookService::add_like(const std::string& post_id) {
-  return execute_mosh("/LIBS/MOSH/bin/fb-like-post.sps", post_id, false);
+bool FacebookService::AddLike(const std::string& post_id) {
+  return ExecuteMosh("/LIBS/MOSH/bin/fb-like-post.sps", post_id, false);
 }
 
-bool FacebookService::execute_command(const std::string& command, bool waits) {
+bool FacebookService::ExecuteCommand(const std::string& command, bool waits) {
   uint32_t tid;
   int result = monapi_process_execute_file_get_tid(
       command.c_str(),
@@ -74,10 +74,10 @@ bool FacebookService::execute_command(const std::string& command, bool waits) {
   }
 }
 
-bool FacebookService::execute_mosh(const std::string& script,
-                                   const std::string& arg1,
-                                   const std::string& arg2,
-                                   bool waits /* = true */) {
+bool FacebookService::ExecuteMosh(const std::string& script,
+                                  const std::string& arg1,
+                                  const std::string& arg2,
+                                  bool waits /* = true */) {
   std::string command(MonAPI::System::getMoshPath());
   command += " ";
   command += script;
@@ -87,18 +87,18 @@ bool FacebookService::execute_mosh(const std::string& script,
   command += "\"";
   command += arg2;
   command += "\"";
-  return execute_command(command, waits);
+  return ExecuteCommand(command, waits);
 }
 
-bool FacebookService::execute_mosh(const std::string& script,
-                                   const std::string& arg,
-                                   bool waits /*  = true */) {
+bool FacebookService::ExecuteMosh(const std::string& script,
+                                  const std::string& arg,
+                                  bool waits /*  = true */) {
   std::string command(MonAPI::System::getMoshPath());
   command += " ";
   command += script;
   command += " \"";
   command += arg;
   command += "\"";
-  return execute_command(command, waits);
+  return ExecuteCommand(command, waits);
 }
 }

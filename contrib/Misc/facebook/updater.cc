@@ -36,7 +36,7 @@ namespace facebook {
 Updater::Updater() {
 }
 
-void Updater::run() {
+void Updater::Run() {
   for (MessageInfo msg;;) {
     if (MonAPI::Message::receive(&msg)) continue;
     switch (msg.header) {
@@ -56,8 +56,7 @@ void Updater::run() {
   }
 }
 
-intptr_t Updater::update()
-{
+intptr_t Updater::Update() {
   std::string command(MonAPI::System::getMoshPath());
   command += " /LIBS/MOSH/bin/fb-feed-get.sps";
   uint32_t tid;

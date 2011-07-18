@@ -44,7 +44,7 @@ class Parser {
   explicit Parser(const std::string& file);
 
   const std::string& last_error() const;
-  bool parse(Feeds* dest_feeds);
+  bool Parse(Feeds* dest_feeds);
 
  private:
   const std::string file_;

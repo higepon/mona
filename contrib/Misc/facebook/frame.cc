@@ -37,12 +37,12 @@ void Frame::paint(Graphics *g) {
     g->setColor(getBackground());
     g->fillRect(0, 0, getWidth(), getHeight());
     Graphics* frameGraphics = getFrameGraphics();
-    paint_title_gradation(frameGraphics);
+    PaintTitleGradation(frameGraphics);
     drawCloseButton(frameGraphics);
-    paint_title_string(frameGraphics);
+    PaintTitleString(frameGraphics);
 }
 
-void Frame::paint_title_gradation(Graphics* g) {
+void Frame::PaintTitleGradation(Graphics* g) {
     int w = getWidth();
     dword c = g->getColor();
     g->setColor(0x29, 0x3e, 0x6a);
@@ -60,7 +60,7 @@ void Frame::paint_title_gradation(Graphics* g) {
     g->setColor(c);
 }
 
-void Frame::paint_title_string(Graphics* g) {
+void Frame::PaintTitleString(Graphics* g) {
     int w = getWidth();
     int fw = getFontMetrics()->getWidth(getTitle());
     int fh = getFontMetrics()->getHeight(getTitle());

@@ -66,7 +66,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::PostFeed() {
   share_button_->setEnabled(false);
-  if (FacebookService::post_feed(input_->getText())) {
+  if (FacebookService::PostFeed(input_->getText())) {
     input_->setText("");
   } else {
     std::string input_text(input_->getText());
@@ -87,7 +87,7 @@ void MainWindow::UpdateFeedAsync() {
 
 bool MainWindow::ReadFeedFromFile() {
   Parser parser("/USER/TEMP/fb.json");
-  bool ret = parser.parse(&feeds_);
+  bool ret = parser.Parse(&feeds_);
   if (!ret) {
     monapi_warn("err=%s\n", parser.last_error().c_str());
   }

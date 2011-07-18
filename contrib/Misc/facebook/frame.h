@@ -42,8 +42,8 @@ class Frame : public monagui::Frame {
 
  protected:
 
-  void paint_title_gradation(Graphics* g);
-  void paint_title_string(Graphics* g);
+  void PaintTitleGradation(Graphics* g);
+  void PaintTitleString(Graphics* g);
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Frame);

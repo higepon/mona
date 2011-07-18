@@ -39,10 +39,10 @@ namespace facebook {
 class Updater {
  public:
   Updater();
-  void run();
+  void Run();
 
  private:
-  intptr_t update();
+  intptr_t Update();
   DISALLOW_COPY_AND_ASSIGN(Updater);
 };
 }

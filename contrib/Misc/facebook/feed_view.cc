@@ -159,7 +159,7 @@ void FeedView::OpenComment() {
 
 void FeedView::AddLike() {
   if (!feed_id_.empty()) {
-    FacebookService::add_like(feed_id_);
+    FacebookService::AddLike(feed_id_);
   }
 }
 
