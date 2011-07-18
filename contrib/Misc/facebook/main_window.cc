@@ -32,6 +32,9 @@
 #include "./facebook_service.h"
 #include "./parser.h"
 
+// toto
+// private is oke?
+
 namespace facebook {
 
 MainWindow::MainWindow(uintptr_t updater_id)
@@ -46,27 +49,28 @@ MainWindow::MainWindow(uintptr_t updater_id)
       offset_(0),
       is_auto_update_(true) {
   setBackground(monagui::Color::white);
-  setBounds(40, 40, WIDTH, HEIGHT);
+  setBounds(40, 40, kWindowWidth, kWindowHeight);
   input_area_->setBorderColor(0xffcccccc);
   int x = 5;
   int y = 5;
-  input_area_->setBounds(x, y, INPUT_AREA_WIDTH, INPUT_AREA_HEIGHT);
-  x += INPUT_AREA_WIDTH + BUTTON_MARGIN;
-  share_button_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
-  x += BUTTON_WIDTH + BUTTON_MARGIN;
-  update_button_->setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
-  x += BUTTON_WIDTH + BUTTON_MARGIN;
-  down_button_->setBounds(640, 385, BUTTON_WIDTH, BUTTON_HEIGHT);
+  input_area_->setBounds(x, y, kInputAreaWidth, kInputAreaHeight);
+  x += kInputAreaWidth + kButtonMargin;
+  share_button_->setBounds(x, y, kButtonWidth, kButtonHeight);
+  x += kButtonWidth + kButtonMargin;
+  update_button_->setBounds(x, y, kButtonWidth, kButtonHeight);
+  x += kButtonWidth + kButtonMargin;
+  down_button_->setBounds(640, 385, kButtonWidth, kButtonHeight);
   down_button_->setFontStyle(Font::BOLD);
   add(input_area_.get());
   add(share_button_.get());
   add(down_button_.get());
   add(update_button_.get());
-  setTimer(TIMER_INTERVAL_MSEC);
+  setTimer(kTimerIntervalMsec);
 
-  y += BUTTON_HEIGHT + BUTTON_MARGIN;
-  for (size_t i = 0; i < MAX_ROWS; i++) {
-    FeedView* view = new FeedView(5, y + POST_HEIGHT * i, WIDTH, POST_HEIGHT);
+  y += kButtonHeight + kButtonMargin;
+  for (size_t i = 0; i < kMaxRows; i++) {
+    FeedView* view =
+        new FeedView(5, y + kPostHeight * i, kWindowWidth, kPostHeight);
     views_.push_back(view);
     Components c;
     view->components(&c);
@@ -79,24 +83,24 @@ MainWindow::MainWindow(uintptr_t updater_id)
 MainWindow::~MainWindow() {
 }
 
-void MainWindow::post_feed() {
+void MainWindow::PostFeed() {
   share_button_->setEnabled(false);
   if (FacebookService::post_feed(input_area_->getText())) {
     input_area_->setText("");
   }
   share_button_->setEnabled(true);
-  update_feed_async();
+  UpdateFeedAsync();
 }
 
-void MainWindow::update_feed_async() {
-  set_status_updating();
+void MainWindow::UpdateFeedAsync() {
+  SetStatusUpdating();
   int ret = MonAPI::Message::send(updater_id_, MSG_UPDATE);
   if (ret != M_OK) {
     monapi_fatal("MSG_UPDATE send failed");
   }
 }
 
-bool MainWindow::read_feed_from_file() {
+bool MainWindow::ReadFeedFromFile() {
   Parser parser("/USER/TEMP/fb.json");
   bool ret = parser.parse(&feeds_);
   if (!ret) {
@@ -105,25 +109,25 @@ bool MainWindow::read_feed_from_file() {
   return ret;
 }
 
-void MainWindow::show() {
-  if (!read_feed_from_file()) {
+void MainWindow::Show() {
+  if (!ReadFeedFromFile()) {
     monapi_fatal("can't read fb.data");
   }
-  setup_feed_views();
+  SetupFeedViews();
 }
 
-void MainWindow::setup_feed_views(size_t offset) {
-  for (size_t i = 0; i < MAX_ROWS; i++) {
+void MainWindow::SetupFeedViews(size_t offset) {
+  for (size_t i = 0; i < kMaxRows; i++) {
     if (i + offset < feeds_.size()) {
       views_[i]->setup_from_feed(feeds_[i + offset]);
     } else {
       views_[i]->set_empty();
     }
   }
-  set_status_done();
+  SetStatusDone();
 }
 
-bool MainWindow::handle_like_button_event(Event* event) {
+bool MainWindow::HandleLikeButtonEvent(Event* event) {
   if (event->getType() != MouseEvent::MOUSE_RELEASED) {
     return false;
   }
@@ -131,7 +135,7 @@ bool MainWindow::handle_like_button_event(Event* event) {
        it != views_.end(); ++it) {
     if ((*it)->like_button() == event->getSource()) {
       (*it)->add_like();
-      update_feed_async();
+      UpdateFeedAsync();
       return true;
     } else if ((*it)->comment_button() == event->getSource()) {
       (*it)->open_comment();
@@ -143,46 +147,46 @@ bool MainWindow::handle_like_button_event(Event* event) {
 void MainWindow::processEvent(Event* event) {
   if (event->getSource() == share_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-      post_feed();
+      PostFeed();
     }
-  } else if (handle_like_button_event(event)) {
+  } else if (HandleLikeButtonEvent(event)) {
   } else if (event->getSource() == down_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = false;
-      setup_feed_views(++offset_);
+      SetupFeedViews(++offset_);
       repaint();
     }
   } else if (event->getSource() == update_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = true;
-      update_feed_async();
+      UpdateFeedAsync();
     }
   } else if (event->getType() == Event::CUSTOM_EVENT) {
     if (event->header == MSG_OK && event->from == updater_id_) {
       if (event->arg1 == M_OK) {
-        show();
+        Show();
       } else {
         // error, just ignore and retry next.
-        set_status_done();
+        SetStatusDone();
       }
     }
   } else if (event->getType() == Event::TIMER) {
     static bool isFirstTime = true;
     if (!updating_) {
-      idle_time_msec_ += TIMER_INTERVAL_MSEC;
+      idle_time_msec_ += kTimerIntervalMsec;
       if (isFirstTime || (is_auto_update_ &&
-                          idle_time_msec_ > UPDATE_INTERVAL_MSEC)) {
+                          idle_time_msec_ > kUpdateInterbalMsec)) {
         isFirstTime = false;
         //                    logprintf("timer update feed start\n");
-        update_feed_async();
+        UpdateFeedAsync();
       }
     }
-    setTimer(TIMER_INTERVAL_MSEC);
+    setTimer(kTimerIntervalMsec);
   } else {
   }
 }
 
-void MainWindow::set_status_done() {
+void MainWindow::SetStatusDone() {
   update_button_->setEnabled(true);
   update_button_->setLabel("update");
   updating_ = false;
@@ -193,7 +197,7 @@ void MainWindow::set_status_done() {
 void MainWindow::paint(Graphics *g) {
   facebook::Frame::paint(g);
   g->setColor(monagui::Color::gray);
-  g->drawLine(5, 9 + BUTTON_HEIGHT, getWidth(),  9 + BUTTON_HEIGHT);
+  g->drawLine(5, 9 + kButtonHeight, getWidth(),  9 + kButtonHeight);
 
   for (FeedViews::const_iterator it = views_.begin();
        it != views_.end(); ++it) {
@@ -201,7 +205,7 @@ void MainWindow::paint(Graphics *g) {
   }
 }
 
-void MainWindow::set_status_updating() {
+void MainWindow::SetStatusUpdating() {
   updating_ = true;
   update_button_->setEnabled(false);
   update_button_->setLabel("updating");

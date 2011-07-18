@@ -42,7 +42,7 @@ class FeedView;
 class MainWindow : public facebook::Frame {
  public:
   explicit MainWindow(uintptr_t updater_id);
-  ~MainWindow();
+  virtual ~MainWindow();
 
  private:
   uintptr_t updater_id_;
@@ -62,31 +62,32 @@ class MainWindow : public facebook::Frame {
 
  public:
   enum {
-    BUTTON_WIDTH = 50,
-    BUTTON_HEIGHT = 20,
-    BUTTON_MARGIN = 5,
-    INPUT_AREA_WIDTH = 300,
-    INPUT_AREA_HEIGHT = BUTTON_HEIGHT,
-    WIDTH = 700,
-    HEIGHT = 435,
-    POST_HEIGHT = 50,
-    MAX_ROWS = 7,
-    TIMER_INTERVAL_MSEC = 1000,
-    UPDATE_INTERVAL_MSEC = 30 * 1000,
+    kButtonWidth = 50,
+    kButtonHeight = 20,
+    kButtonMargin = 5,
+    kInputAreaWidth = 300,
+    kInputAreaHeight = kButtonHeight,
+    kWindowWidth = 700,
+    kWindowHeight = 435,
+    kPostHeight = 50,
+    kMaxRows = 7,
+    kTimerIntervalMsec = 1000,
+    kUpdateInterbalMsec = 30 * 1000,
     forbidden_comma
   };
 
  private:
-  void post_feed();
-  void update_feed_async();
-  bool read_feed_from_file();
-  void show();
-  void setup_feed_views(size_t offset = 0);
-  bool handle_like_button_event(Event* event);
-  void processEvent(Event* event);
-  void set_status_done();
   void paint(Graphics *g);
-  void set_status_updating();
+  void processEvent(Event* event);
+
+  void PostFeed();
+  void UpdateFeedAsync();
+  bool ReadFeedFromFile();
+  void Show();
+  void SetupFeedViews(size_t offset = 0);
+  bool HandleLikeButtonEvent(Event* event);
+  void SetStatusDone();
+  void SetStatusUpdating();
 };
 }
 
