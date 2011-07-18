@@ -37,10 +37,31 @@
 
 namespace facebook {
 
+int MainWindow::InitInput(int component_x) {
+  input_->setBorderColor(0xffcccccc);
+  input_->setBounds(component_x, kInputY, kInputWidth, kInputHeight);
+  add(input_.get());
+  return component_x + kInputWidth;
+}
+
+int MainWindow::InitShareButton(int component_x) {
+  share_button_->setBounds(component_x + kButtonMargin, kInputY,
+                           kButtonWidth, kButtonHeight);
+  add(share_button_.get());
+  return component_x + kButtonWidth;
+}
+
+int MainWindow::InitUpdateButton(int component_x) {
+  update_button_->setBounds(component_x + kButtonHeight, kInputY,
+                            kButtonWidth, kButtonHeight);
+  add(update_button_.get());
+  return component_x + kButtonWidth;
+}
+
 MainWindow::MainWindow(uintptr_t updater_id)
     : facebook::Frame("Facebook"),
       updater_id_(updater_id),
-      input_area_(new TextField()),
+      input_(new TextField()),
       share_button_(new facebook::ShareButton()),
       down_button_(new facebook::Button(">>>")),
       update_button_(new facebook::Button("Update")),
@@ -50,27 +71,21 @@ MainWindow::MainWindow(uintptr_t updater_id)
       is_auto_update_(true) {
   setBackground(monagui::Color::white);
   setBounds(40, 40, kWindowWidth, kWindowHeight);
-  input_area_->setBorderColor(0xffcccccc);
-  int x = 5;
-  int y = 5;
-  input_area_->setBounds(x, y, kInputAreaWidth, kInputAreaHeight);
-  x += kInputAreaWidth + kButtonMargin;
-  share_button_->setBounds(x, y, kButtonWidth, kButtonHeight);
-  x += kButtonWidth + kButtonMargin;
-  update_button_->setBounds(x, y, kButtonWidth, kButtonHeight);
-  x += kButtonWidth + kButtonMargin;
+  int component_x = 5;
+  component_x = InitInput(component_x);
+  component_x = InitShareButton(component_x);
+  component_x = InitUpdateButton(component_x);
   down_button_->setBounds(640, 385, kButtonWidth, kButtonHeight);
   down_button_->setFontStyle(Font::BOLD);
-  add(input_area_.get());
-  add(share_button_.get());
+
+
   add(down_button_.get());
-  add(update_button_.get());
   setTimer(kTimerIntervalMsec);
 
-  y += kButtonHeight + kButtonMargin;
+  int component_y = kInputY + kButtonHeight + kButtonMargin;
   for (size_t i = 0; i < kMaxRows; i++) {
     FeedView* view =
-        new FeedView(5, y + kPostHeight * i, kWindowWidth, kPostHeight);
+        new FeedView(5, component_y + kPostHeight * i, kWindowWidth, kPostHeight);
     views_.push_back(view);
     Components c;
     view->components(&c);
@@ -85,8 +100,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::PostFeed() {
   share_button_->setEnabled(false);
-  if (FacebookService::post_feed(input_area_->getText())) {
-    input_area_->setText("");
+  if (FacebookService::post_feed(input_->getText())) {
+    input_->setText("");
   }
   share_button_->setEnabled(true);
   UpdateFeedAsync();

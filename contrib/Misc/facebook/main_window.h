@@ -46,7 +46,7 @@ class MainWindow : public facebook::Frame {
 
  private:
   uintptr_t updater_id_;
-  MonAPI::scoped_ptr<TextField> input_area_;
+  MonAPI::scoped_ptr<TextField> input_;
   MonAPI::scoped_ptr<facebook::Button> share_button_;
   MonAPI::scoped_ptr<facebook::Button> down_button_;
   MonAPI::scoped_ptr<facebook::Button> update_button_;
@@ -65,8 +65,9 @@ class MainWindow : public facebook::Frame {
     kButtonWidth = 50,
     kButtonHeight = 20,
     kButtonMargin = 5,
-    kInputAreaWidth = 300,
-    kInputAreaHeight = kButtonHeight,
+    kInputY = 5,
+    kInputWidth = 300,
+    kInputHeight = kButtonHeight,
     kWindowWidth = 700,
     kWindowHeight = 435,
     kPostHeight = 50,
@@ -79,6 +80,10 @@ class MainWindow : public facebook::Frame {
  private:
   void paint(Graphics *g);
   void processEvent(Event* event);
+
+  int InitInput(int component_x);
+  int InitShareButton(int component_x);
+  int InitUpdateButton(int component_x);
 
   void PostFeed();
   void UpdateFeedAsync();
