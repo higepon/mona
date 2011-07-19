@@ -145,11 +145,6 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
                                       (*it).local_image_path());
 
     std::string content = (*it).body;
-    if ((*it).num_likes > 0) {
-      char buf[16];
-      snprintf(buf, sizeof(buf), "%d likes", (*it).num_likes);
-      content += buf;
-    }
     TextField* text_field = new TextField;
     int commentHeight =
         body_->getHeightByTextAndMaxWidth(content.c_str(),
@@ -173,7 +168,16 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     add(text_field);
     add(comment_icon);
     component_y += commentHeight;
-    facebook::Button* like_button = new facebook::Button("like!");
+    std::string like_label;
+    if ((*it).num_likes > 0) {
+      char buf[16];
+      snprintf(buf, sizeof(buf), "%d likes", (*it).num_likes);
+      like_label = buf;
+    } else {
+      like_label = "like!";
+    }
+
+    facebook::Button* like_button = new facebook::Button(like_label.c_str());
     like_button->setBounds(kIconSize + kIconMargin * 2, component_y,
                            kLikeButtonWidth, kLikesHeight);
     like_button->setBackground(0xffedeff4);
