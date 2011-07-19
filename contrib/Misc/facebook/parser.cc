@@ -73,7 +73,7 @@ bool Parser::ParseComments(Comments* dest_comments) {
       std::string fromName = from["name"].to_str();
       int num_likes = 0;
       if (comment["likes"].is<double>()) {
-        num_likes = comment["like"].get<double>();
+        num_likes = comment["likes"].get<double>();
       }
       dest_comments->push_back(Comment(fromId, message,
                                        comment_id, num_likes));
@@ -146,7 +146,7 @@ bool Parser::Parse(Feeds* dest_feeds) {
               std::string fromName = from["name"].to_str();
               int num_likes = 0;
               if (comment["likes"].is<double>()) {
-                num_likes = comment["like"].get<double>();
+                num_likes = comment["likes"].get<double>();
               }
               comments.push_back(Comment(fromId, message,
                                          comment_id, num_likes));

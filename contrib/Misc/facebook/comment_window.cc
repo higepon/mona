@@ -114,9 +114,9 @@ int CommentWindow::InitBody(const Feed& feed, int component_y) {
 
 void CommentWindow::InitIcon(const Feed& feed) {
   icon_->setBounds(kIconMargin, kIconMargin, kIconSize, kIconSize);
+  icon_->image()->initialize(feed.profile_image_url(),
+                             feed.local_image_path());
   add(icon_.get());
-  icon_image_->initialize(feed.profile_image_url(),
-                          feed.local_image_path());
 }
 
 int CommentWindow::InitLikes(const Feed& feed, int component_y) {
