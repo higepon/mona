@@ -30,6 +30,7 @@
 #include "./main_window.h"
 #include "./comment_window.h"
 #include "./parser.h"
+#include "./facebook_service.h"
 
 static void __fastcall updaterLauncher(void* arg) {
   facebook::Updater updater;
@@ -69,6 +70,17 @@ int main(int argc, char* argv[]) {
     std::string feed_id(argv[1]);
     facebook::Feed feed;
     if (read_feed(feed_id, &feed)) {
+      if (!facebook::FacebookService::GetComments(feed_id)) {
+        fprintf(stderr, "can't read feed file");
+        return -1;
+      }
+      facebook::Parser parser("/USER/TEMP/fb.comments.json");
+      facebook::Comments comments;
+      if (!parser.ParseComments(&comments)) {
+        fprintf(stderr, "can't parse comments");
+        return -1;
+      }
+      feed.comments = comments;
       facebook::CommentWindow window(feed);
       window.run();
     } else {

@@ -63,7 +63,7 @@ public:
         g->drawImage(image_.get(), 0, 0);
     }
 
-    T* getImage()
+    T* image()
     {
         return image_.get();
     }

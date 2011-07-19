@@ -95,7 +95,7 @@ void FeedView::SetComponents(Components* ret) {
 }
 
 void FeedView::SetImagePath(const std::string& uri, const std::string& path) {
-  (static_cast<WebImage*>(icon_->getImage()))->initialize(uri, path);
+  icon_->image()->initialize(uri, path);
 }
 
 void FeedView::SetText(const std::string& text) {

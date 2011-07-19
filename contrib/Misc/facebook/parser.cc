@@ -38,9 +38,56 @@ const std::string& Parser::last_error() const {
   return last_error_;
 }
 
+bool Parser::ParseComments(Comments* dest_comments) {
+  MonAPI::scoped_ptr<MonAPI::SharedMemory>
+      shm(monapi_file_read_all(file_.c_str()));
+  if (shm.get() == NULL) {
+    last_error_ = "read file error";
+    return false;
+  }
+  std::string errors;
+  picojson::value v;
+  picojson::parse(v, shm->data(), shm->data() + shm->size(), &errors);
+  if (!errors.empty() || !v.is<picojson::object>()) {
+    return false;
+  }
+  picojson::object obj = v.get<picojson::object>();
+  picojson::value expectedComments = obj["data"];
+  if (!obj["data"].is<picojson::array>()) {
+    last_error_ = "picojson::value of key \"data\" is not array";
+    return false;
+  }
+  picojson::array comments = obj["data"].get<picojson::array>();
+  for (picojson::array::const_iterator i = comments.begin();
+       i != comments.end(); ++i) {
+    if (!(*i).is<picojson::object>()) {
+      last_error_ = "one of elements of comments is not hash";
+      return false;
+    }
+    picojson::object comment = (*i).get<picojson::object>();
+    std::string comment_id = comment["id"].to_str();
+    std::string message = comment["message"].to_str();
+    if (comment["from"].is<picojson::object>()) {
+      picojson::object from = comment["from"].get<picojson::object>();
+      std::string fromId = from["id"].to_str();
+      std::string fromName = from["name"].to_str();
+      int num_likes = 0;
+      if (comment["likes"].is<double>()) {
+        num_likes = comment["like"].get<double>();
+      }
+      dest_comments->push_back(Comment(fromId, message,
+                                       comment_id, num_likes));
+    } else {
+      last_error_ = "comment[from] is not hash";
+      return false;
+    }
+  }
+  return true;
+}
+
 bool Parser::Parse(Feeds* dest_feeds) {
-  MonAPI::scoped_ptr<MonAPI::SharedMemory> shm(
-      monapi_file_read_all(file_.c_str()));
+  MonAPI::scoped_ptr<MonAPI::SharedMemory>
+      shm(monapi_file_read_all(file_.c_str()));
   if (shm.get() == NULL) {
     last_error_ = "read file error";
     return false;

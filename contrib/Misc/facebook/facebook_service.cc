@@ -39,6 +39,10 @@ std::string FacebookService::profile_image_url(const std::string id) {
   return ret;
 }
 
+bool FacebookService::GetComments(const std::string& post_id) {
+  return ExecuteMosh("/LIBS/MOSH/bin/fb-comments-get.sps", post_id);
+}
+
 bool FacebookService::PostComment(const std::string& post_id,
                                   const std::string& text) {
   return ExecuteMosh("/LIBS/MOSH/bin/fb-comment-post.sps", post_id, text);

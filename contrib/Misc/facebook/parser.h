@@ -45,6 +45,7 @@ class Parser {
 
   const std::string& last_error() const;
   bool Parse(Feeds* dest_feeds);
+  bool ParseComments(Comments* dest_comments);
 
  private:
   const std::string file_;
