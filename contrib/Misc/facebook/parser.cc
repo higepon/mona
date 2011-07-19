@@ -27,7 +27,6 @@
  */
 
 #include "./parser.h"
-#include "./ext/picojson.h"
 
 namespace facebook {
 
@@ -57,7 +56,12 @@ bool Parser::ParseComments(Comments* dest_comments) {
     last_error_ = "picojson::value of key \"data\" is not array";
     return false;
   }
-  picojson::array comments = obj["data"].get<picojson::array>();
+  return ParseCommentsInternal(obj["data"].get<picojson::array>(),
+                               dest_comments);
+}
+
+bool Parser::ParseCommentsInternal(const picojson::array& comments,
+                                   Comments* dest_comments) {
   for (picojson::array::const_iterator i = comments.begin();
        i != comments.end(); ++i) {
     if (!(*i).is<picojson::object>()) {
@@ -133,32 +137,12 @@ bool Parser::Parse(Feeds* dest_feeds) {
     if (feed["comments"].is<picojson::object>()) {
       picojson::object cs = feed["comments"].get<picojson::object>();
       if (cs["data"].is<picojson::array>()) {
-        picojson::array commentPosts = cs["data"].get<picojson::array>();
-        for (picojson::array::const_iterator i = commentPosts.begin();
-             i != commentPosts.end(); ++i) {
-          if ((*i).is<picojson::object>()) {
-            picojson::object comment = (*i).get<picojson::object>();
-            std::string comment_id = comment["id"].to_str();
-            std::string message = comment["message"].to_str();
-            if (comment["from"].is<picojson::object>()) {
-              picojson::object from = comment["from"].get<picojson::object>();
-              std::string fromId = from["id"].to_str();
-              std::string fromName = from["name"].to_str();
-              int num_likes = 0;
-              if (comment["likes"].is<double>()) {
-                num_likes = comment["likes"].get<double>();
-              }
-              comments.push_back(Comment(fromId, message,
-                                         comment_id, num_likes));
-            } else {
-              last_error_ = "comment[from] is not hash";
-              return false;
-            }
-          }
+        if (!ParseCommentsInternal(cs["data"].get<picojson::array>(),
+                                   &comments)) {
+          return false;
         }
       }
     }
-
     dest_feeds->
         push_back(Feed(id, name, message,
                        num_likes, post_id, comments.size() /* todo */,

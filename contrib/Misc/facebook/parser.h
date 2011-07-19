@@ -36,6 +36,7 @@
 #include <string>
 
 #include "./feed.h"
+#include "./ext/picojson.h"
 
 namespace facebook {
 
@@ -48,6 +49,8 @@ class Parser {
   bool ParseComments(Comments* dest_comments);
 
  private:
+  bool ParseCommentsInternal(const picojson::array& comments,
+                             Comments* dest_comments);
   const std::string file_;
   std::string last_error_;
   DISALLOW_COPY_AND_ASSIGN(Parser);
