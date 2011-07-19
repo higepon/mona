@@ -88,7 +88,7 @@ class FeedView {
   MonAPI::scoped_ptr<Button> like_button_;
   MonAPI::scoped_ptr<Button> comment_button_;
   MonAPI::scoped_ptr<TextField> text_;
-  MonAPI::scoped_ptr<ImageIcon> icon_;
+  MonAPI::scoped_ptr<ImageIcon<WebImage> > icon_;
   std::string feed_id_;
 
   DISALLOW_COPY_AND_ASSIGN(FeedView);

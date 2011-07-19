@@ -44,7 +44,7 @@ CommentWindow::CommentWindow(const Feed& feed)
       comment_input_(new TextField()),
       comment_button_(new ShareButton("Post")),
       icon_image_(new WebImage()),
-      icon_(new ImageIcon(icon_image_)),
+      icon_(new ImageIcon<WebImage>(icon_image_)),
       comments_(feed.comments),
       feed_(feed) {
   InitIcon(feed);
@@ -140,7 +140,8 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
   for (Comments::const_iterator it = comments.begin();
        it != comments.end(); ++it) {
     WebImage* comment_icon_image = new WebImage();
-    ImageIcon* comment_icon = new ImageIcon(comment_icon_image);
+    ImageIcon<WebImage>* comment_icon =
+        new ImageIcon<WebImage>(comment_icon_image);
     comment_icon->setBounds(kIconMargin, component_y, kIconSize, kIconSize);
     comment_icon_image->initialize((*it).profile_image_url(),
                                    (*it).local_image_path());

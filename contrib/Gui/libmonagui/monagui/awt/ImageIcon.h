@@ -31,10 +31,10 @@
 
 namespace monagui {
 
-class ImageIcon : public Component
+template <class T> class ImageIcon : public Component
 {
 protected:
-    MonAPI::scoped_ptr<Image> image_;
+    MonAPI::scoped_ptr<T> image_;
 
     bool isImageValid() const
     {
@@ -43,7 +43,7 @@ protected:
 
 public:
 
-    explicit ImageIcon(Image* image) : image_(image)
+    explicit ImageIcon() : image_(new T())
     {
         setBounds(0, 0, 40, 40);
     }
@@ -63,7 +63,7 @@ public:
         g->drawImage(image_.get(), 0, 0);
     }
 
-    Image* getImage()
+    T* getImage()
     {
         return image_.get();
     }

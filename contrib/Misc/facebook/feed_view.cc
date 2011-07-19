@@ -74,7 +74,7 @@ FeedView::FeedView(int x, int y, int w, int h)
     like_button_(new facebook::Button("")),
     comment_button_(new facebook::Button("")),
     text_(new TextField()),
-    icon_(new ImageIcon(new WebImage())),
+    icon_(new ImageIcon<WebImage>()),
     feed_id_("") {
   int component_x = x;
   int component_y = y;
