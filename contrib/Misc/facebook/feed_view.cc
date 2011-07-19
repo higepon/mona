@@ -108,12 +108,12 @@ void FeedView::SetupFromFeed(const Feed& feed) {
   SetImagePath(feed.profile_image_url(), feed.local_image_path());
   char buf[32];
   if (feed.num_likes > 0) {
-    snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
+    snprintf(buf, sizeof(buf), "%d people", feed.num_likes);
     like_button_->setLabelNoRepaint(buf);
   } else {
     like_button_->setLabelNoRepaint("Like");
   }
-  snprintf(buf, sizeof(buf), "コメント%d件", feed.num_comments);
+  snprintf(buf, sizeof(buf), "%d comments", feed.num_comments);
   comment_button_->setLabelNoRepaint(buf);
   feed_id_ = feed.feed_id;
   SetText(feed.text);

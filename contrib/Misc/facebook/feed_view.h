@@ -75,9 +75,9 @@ class FeedView {
     kIconMarginTop = 5,
     kIconHeight = 30,
     kIconWidth = 30,
-    kLikeButtonWidth = 35,
+    kLikeButtonWidth = 55,
     kLikeButtonHeight = 20,
-    kCommentButtonWidth = 60,
+    kCommentButtonWidth = 70,
     kCommentButtonHeight = kLikeButtonHeight,
     kLikeButtonMarginTop = 2
   };

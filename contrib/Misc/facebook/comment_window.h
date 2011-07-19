@@ -58,7 +58,7 @@ class CommentWindow : public facebook::Frame {
     kCommentWidth = kWindowWidth - kIconMargin * 2 - kIconSize - 20,
     kCommentInputHeight = 100,
     kLikeButtonHeight = 30,
-    kLikeButtonWidth = 40
+    kLikeButtonWidth = 50
   };
 
   int InitBody(const Feed& feed, int component_y);

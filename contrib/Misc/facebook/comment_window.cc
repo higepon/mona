@@ -130,7 +130,7 @@ int CommentWindow::InitLikes(const Feed& feed, int component_y) {
   add(likes_.get());
   likes_->setBounds(kIconMargin, component_y, kWindowWidth - 25, kLikesHeight);
   char buf[64];
-  snprintf(buf, sizeof(buf), "%d人", feed.num_likes);
+  snprintf(buf, sizeof(buf), "%d people", feed.num_likes);
   likes_->setTextNoRepaint(buf);
   return component_y += kLikesHeight;
 }
@@ -171,7 +171,7 @@ int CommentWindow::InitComments(const Comments& comments, int component_y) {
     std::string like_label;
     if ((*it).num_likes > 0) {
       char buf[16];
-      snprintf(buf, sizeof(buf), "%d likes", (*it).num_likes);
+      snprintf(buf, sizeof(buf), "%d people", (*it).num_likes);
       like_label = buf;
     } else {
       like_label = "like!";
