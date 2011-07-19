@@ -134,8 +134,12 @@ bool Parser::Parse(Feeds* dest_feeds) {
       }
     }
     Comments comments;
+    int num_comments = 0;
     if (feed["comments"].is<picojson::object>()) {
       picojson::object cs = feed["comments"].get<picojson::object>();
+      if (cs["count"].is<double>()) {
+        num_comments = cs["count"].get<double>();
+      }
       if (cs["data"].is<picojson::array>()) {
         if (!ParseCommentsInternal(cs["data"].get<picojson::array>(),
                                    &comments)) {
@@ -145,7 +149,7 @@ bool Parser::Parse(Feeds* dest_feeds) {
     }
     dest_feeds->
         push_back(Feed(id, name, message,
-                       num_likes, post_id, comments.size() /* todo */,
+                       num_likes, post_id, num_comments,
                        comments));
   }
   return true;
