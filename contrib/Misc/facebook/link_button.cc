@@ -1,5 +1,4 @@
 /*
- *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -27,45 +26,48 @@
  *
  */
 
-#ifndef CONTRIB_MISC_FACEBOOK_FEED_H_
-#define CONTRIB_MISC_FACEBOOK_FEED_H_
+#include <monagui.h>
 
-#include <string>
-#include <vector>
-#include "./comment.h"
+#include "./link_button.h"
+#include "./facebook_service.h"
 
 namespace facebook {
 
-struct Feed {
- public:
-  Feed(const std::string& image_id,
-       const std::string& name,
-       const std::string& text,
-       const std::string& feed_id,
-       const std::string& link,
-       uint32_t num_likes,
-       uint32_t num_comments,
-       const Comments& comments
-);
-  Feed() {
-  }
-  virtual ~Feed();
-
-  std::string profile_image_url() const;
-  std::string local_image_path() const;
-
-  std::string image_id;
-  std::string name;
-  std::string text;
-  std::string feed_id;
-  std::string link;
-  uint32_t num_likes;
-  uint32_t num_comments;
-  Comments comments;
-};
-
-typedef std::vector<Feed> Feeds;
+LinkButton::LinkButton() : facebook::Button("") {
 }
 
-#endif  // CONTRIB_MISC_FACEBOOK_FEED_H_
+void LinkButton::set_url(const std::string& url) {
+    url_ = url;
+    FontMetrics* fm = getFontMetrics();
+    int url_width = fm->getWidth(url.c_str());
+    int width = getWidth();
+    if (url_width < width) {
+      setLabelNoRepaint(url.c_str());
+    } else {
+      for (size_t i = url.size() - 1; i > 0; i--) {
+        std::string sub_url = url.substr(0, i);
+        int url_width = fm->getWidth(sub_url.c_str());
+        if (url_width < width) {
+          setLabelNoRepaint(sub_url.c_str());
+          break;
+        }
+      }
+    }
+}
 
+void LinkButton::processEvent(Event* event) {
+  if (event->getSource() == this &&
+      event->getType() == MouseEvent::MOUSE_RELEASED) {
+    OpenBrowser(url_);
+  }
+}
+
+void LinkButton::OpenBrowser(const std::string& url) {
+  std::string command = "/APPS/W3M.APP/W3M.EX5 ";
+  command += "\"";
+  command += url;
+  command += "\"";
+  bool waits = false;
+  FacebookService::ExecuteCommand(command, waits);
+}
+}

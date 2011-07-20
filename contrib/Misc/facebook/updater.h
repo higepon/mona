@@ -36,6 +36,8 @@
 
 namespace facebook {
 
+#define OFF_LINE
+
 class Updater {
  public:
   Updater();

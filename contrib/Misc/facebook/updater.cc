@@ -42,7 +42,9 @@ void Updater::Run() {
     switch (msg.header) {
       case MSG_UPDATE:
         {
+#ifndef OFF_LINE
           Update();
+#endif
           intptr_t ret = MonAPI::Message::send(msg.from, MSG_OK);
           if (ret != M_OK) {
             monapi_fatal("MSG_UPDATE send failed");

@@ -30,7 +30,7 @@
 
 #include "./facebook_service.h"
 #include "./feed_view.h"
-#include "./button.h"
+#include "./link_button.h"
 
 namespace facebook {
 
@@ -63,7 +63,14 @@ int FeedView::InitCommentButton(int component_x, int component_y) {
   comment_button_->setBackground(0xffedeff4);
   comment_button_->setBounds(component_x, component_y,
                              kCommentButtonWidth, kCommentButtonHeight);
-  return component_y + kCommentButtonHeight;
+  return component_x + kCommentButtonWidth;
+}
+
+int FeedView::InitLinkButton(int component_x, int component_y) {
+  link_button_->setBackground(0xffedeff4);
+  link_button_->setBounds(component_x, component_y,
+                          kLinkButtonWidth, kLinkButtonHeight);
+  return component_y + kLinkButtonHeight;
 }
 
 FeedView::FeedView(int x, int y, int w, int h)
@@ -73,6 +80,7 @@ FeedView::FeedView(int x, int y, int w, int h)
     h_(h),
     like_button_(new facebook::Button("")),
     comment_button_(new facebook::Button("")),
+    link_button_(new facebook::LinkButton()),
     text_(new TextField()),
     icon_(new ImageIcon<WebImage>()),
     feed_id_("") {
@@ -81,7 +89,8 @@ FeedView::FeedView(int x, int y, int w, int h)
   component_x = InitIcon(component_x, component_y);
   component_y = InitBodyText(component_x, component_y, w, h);
   component_x = InitLike(component_x, component_y);
-  component_y = InitCommentButton(component_x, component_y);
+  component_x = InitCommentButton(component_x, component_y);
+  component_x = InitLinkButton(component_x, component_y);
 }
 
 FeedView::~FeedView() {
@@ -89,6 +98,7 @@ FeedView::~FeedView() {
 
 void FeedView::SetComponents(Components* ret) {
   ret->push_back(like_button_.get());
+  ret->push_back(link_button_.get());
   ret->push_back(text_.get());
   ret->push_back(comment_button_.get());
   ret->push_back(icon_.get());
@@ -115,6 +125,9 @@ void FeedView::SetupFromFeed(const Feed& feed) {
   }
   snprintf(buf, sizeof(buf), "%d comments", feed.num_comments);
   comment_button_->setLabelNoRepaint(buf);
+  if (!feed.link.empty()) {
+    link_button_->set_url(feed.link.c_str());
+  }
   feed_id_ = feed.feed_id;
   SetText(feed.text);
 }

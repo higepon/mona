@@ -34,6 +34,8 @@
 #include <algorithm>
 #include <string>
 
+#define START_UP_FILE "/USER/.STARTUP"
+
 struct TerminalInfo
 {
     TerminalInfo() : mainThread(MonAPI::System::getThreadID())
@@ -100,6 +102,9 @@ public:
         scrollbar_->setMinimum(0);
         scrollbar_->setMaximum(0);
         scrollbar_->setBlocksize(1);
+        if (monapi_file_exists(START_UP_FILE)) {
+          setTimer(200);
+        }
     }
 
     virtual ~Terminal() {}
@@ -114,6 +119,22 @@ public:
 
     void processEvent(Event* event)
     {
+        if (event->getType() == Event::TIMER) {
+          MonAPI::scoped_ptr<MonAPI::SharedMemory>
+              shm(monapi_file_read_all(START_UP_FILE));
+          if (shm.get() == NULL) {
+              monapi_warn("can't read %s", START_UP_FILE);
+          } else {
+              MonAPI::Strings lines = MonAPI::StringHelper::split("\n", (const char*)shm->data());
+              for (MonAPI::Strings::const_iterator it = lines.begin();
+                   it != lines.end(); ++it) {
+                if (!sendCommand((*it))) {
+                    monapi_warn("start up command %s failed", (*it).c_str());
+                }
+              }
+           }
+        }
+
         bool runsCommand =
             (event->getType() == MouseEvent::MOUSE_RELEASED && event->getSource() == button_.get()) ||
             (event->getType() == KeyEvent::KEY_PRESSED &&

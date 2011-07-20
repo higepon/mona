@@ -41,9 +41,8 @@ class FacebookService {
   static bool PostFeed(const std::string& text);
   static bool AddLike(const std::string& post_id);
   static bool GetComments(const std::string& post_id);
-
- private:
   static bool ExecuteCommand(const std::string& command, bool waits);
+ private:
   static bool ExecuteMosh(const std::string& script,
                           const std::string& arg1,
                           const std::string& arg2,

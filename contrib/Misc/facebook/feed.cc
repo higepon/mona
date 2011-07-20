@@ -34,15 +34,17 @@ namespace facebook {
 Feed::Feed(const std::string& image_id,
            const std::string& name,
            const std::string& text,
-           uint32_t num_likes,
            const std::string& feed_id,
+           const std::string& link,
+           uint32_t num_likes,
            uint32_t num_comments,
            const Comments& comments) :
     image_id(image_id),
     name(name),
     text(text),
-    num_likes(num_likes),
     feed_id(feed_id),
+    link(link),
+    num_likes(num_likes),
     num_comments(num_comments),
     comments(comments) {
 }

@@ -4,7 +4,7 @@ export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
 TARGET  = FACEBOOK
-SOURCES = facebook.cc button.cc facebook_service.cc feed_view.cc frame.cc parser.cc feed.cc share_button.cc updater.cc comment_window.cc main_window.cc
+SOURCES = facebook.cc button.cc facebook_service.cc feed_view.cc frame.cc parser.cc feed.cc share_button.cc updater.cc comment_window.cc main_window.cc link_button.cc
 
 INSTDIR = $(BINDIR)/APPS/MONAGUI
 INSTFILES = $(TARGET).map

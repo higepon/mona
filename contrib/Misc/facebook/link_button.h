@@ -1,5 +1,4 @@
 /*
- *
  *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
@@ -27,45 +26,29 @@
  *
  */
 
-#ifndef CONTRIB_MISC_FACEBOOK_FEED_H_
-#define CONTRIB_MISC_FACEBOOK_FEED_H_
+#ifndef CONTRIB_MISC_FACEBOOK_LINK_BUTTON_H_
+#define CONTRIB_MISC_FACEBOOK_LINK_BUTTON_H_
 
+#include <monagui.h>
 #include <string>
-#include <vector>
-#include "./comment.h"
+
+#include "./button.h"
 
 namespace facebook {
 
-struct Feed {
+class LinkButton : public facebook::Button {
  public:
-  Feed(const std::string& image_id,
-       const std::string& name,
-       const std::string& text,
-       const std::string& feed_id,
-       const std::string& link,
-       uint32_t num_likes,
-       uint32_t num_comments,
-       const Comments& comments
-);
-  Feed() {
+  LinkButton();
+  virtual ~LinkButton() {
   }
-  virtual ~Feed();
 
-  std::string profile_image_url() const;
-  std::string local_image_path() const;
+  void set_url(const std::string& url);
+ private:
+  void processEvent(Event* event);
+  void OpenBrowser(const std::string& url);
 
-  std::string image_id;
-  std::string name;
-  std::string text;
-  std::string feed_id;
-  std::string link;
-  uint32_t num_likes;
-  uint32_t num_comments;
-  Comments comments;
+  std::string url_;
+  DISALLOW_COPY_AND_ASSIGN(LinkButton);
 };
-
-typedef std::vector<Feed> Feeds;
 }
-
-#endif  // CONTRIB_MISC_FACEBOOK_FEED_H_
-
+#endif  // CONTRIB_MISC_FACEBOOK_LINK_BUTTON_H_

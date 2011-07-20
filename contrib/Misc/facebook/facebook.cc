@@ -49,6 +49,19 @@ static bool read_feed(const std::string& feed_id, facebook::Feed* dest) {
        i != feeds.end(); ++i) {
     if ((*i).feed_id == feed_id) {
       *dest = *i;
+#ifndef OFF_LINE
+      if (!facebook::FacebookService::GetComments(feed_id)) {
+        fprintf(stderr, "can't read feed file");
+        return -1;
+      }
+#endif
+      facebook::Parser parser("/USER/TEMP/fb.comments.json");
+      facebook::Comments comments;
+      if (!parser.ParseComments(&comments)) {
+        fprintf(stderr, "can't parse comments");
+        return -1;
+      }
+      dest->comments = comments;
       return true;
     }
   }
@@ -70,17 +83,6 @@ int main(int argc, char* argv[]) {
     std::string feed_id(argv[1]);
     facebook::Feed feed;
     if (read_feed(feed_id, &feed)) {
-      if (!facebook::FacebookService::GetComments(feed_id)) {
-        fprintf(stderr, "can't read feed file");
-        return -1;
-      }
-      facebook::Parser parser("/USER/TEMP/fb.comments.json");
-      facebook::Comments comments;
-      if (!parser.ParseComments(&comments)) {
-        fprintf(stderr, "can't parse comments");
-        return -1;
-      }
-      feed.comments = comments;
       facebook::CommentWindow window(feed);
       window.run();
     } else {

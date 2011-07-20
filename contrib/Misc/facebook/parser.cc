@@ -119,6 +119,7 @@ bool Parser::Parse(Feeds* dest_feeds) {
     picojson::object feed = (*it).get<picojson::object>();
     std::string message = feed["message"].to_str();
     std::string post_id = feed["id"].to_str();
+    std::string link = feed["link"].to_str();
     if (!feed["from"].is<picojson::object>()) {
       last_error_ = "post[from] is not hash";
       return false;
@@ -148,9 +149,8 @@ bool Parser::Parse(Feeds* dest_feeds) {
       }
     }
     dest_feeds->
-        push_back(Feed(id, name, message,
-                       num_likes, post_id, num_comments,
-                       comments));
+        push_back(Feed(id, name, message, post_id, link == "null" ? "" : link,
+                       num_likes, num_comments, comments));
   }
   return true;
 }

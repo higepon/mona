@@ -37,6 +37,7 @@
 
 namespace facebook {
 
+class LinkButton;
 typedef std::vector<Component*> Components;
 
 class FeedView {
@@ -68,6 +69,7 @@ class FeedView {
   int InitBodyText(int component_x, int component_y, int w, int h);
   int InitLike(int component_x, int component_y);
   int InitCommentButton(int component_x, int component_y);
+  int InitLinkButton(int component_x, int component_y);
 
   enum {
     kMargin = 5,
@@ -79,6 +81,9 @@ class FeedView {
     kLikeButtonHeight = 20,
     kCommentButtonWidth = 70,
     kCommentButtonHeight = kLikeButtonHeight,
+    kLinkButtonWidth = 300,
+    kLinkButtonHeight = kLikeButtonHeight,
+    kLinkButtonMaxWidth = 300,
     kLikeButtonMarginTop = 2
   };
   const int x_;
@@ -87,6 +92,7 @@ class FeedView {
   const int h_;
   MonAPI::scoped_ptr<Button> like_button_;
   MonAPI::scoped_ptr<Button> comment_button_;
+  MonAPI::scoped_ptr<LinkButton> link_button_;
   MonAPI::scoped_ptr<TextField> text_;
   MonAPI::scoped_ptr<ImageIcon<WebImage> > icon_;
   std::string feed_id_;
