@@ -115,7 +115,6 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	{
 		return __nida_nonebuf_fwrite(ptr, size*nmemb, stream);
 	}
-
 	errno = EBADF;
 	return 0;
 }

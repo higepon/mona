@@ -38,7 +38,7 @@ SOURCES = monasq.cpp \
 #	misc/setjmp.cpp \
 
 INSTDIR = $(BINDIR)/APPS/MONAGUI
-
+INSTFILES  = MONASQ.map
 SHAREDIR = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import

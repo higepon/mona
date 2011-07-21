@@ -59,34 +59,38 @@ public:
     static void Main(_A<String> args)
     {
         if (ExistsProcess("MONAFILE.EX5")) return;
-        intptr_t ret = monapi_enable_stacktrace("/APPS/MONAFILE.MAP");
+        intptr_t ret = monapi_enable_stacktrace("/APPS/MONAFRMS/MONAFILE.APP/MONAFILE.MAP");
         if (ret != M_OK) {
             monapi_warn("syscall_stack_trace_enable error %d\n", ret);
             exit(-1);
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (monapi_name_whereis("/servers/gui", gui_server) != M_OK) {
             monapi_fatal("server not found");
         }
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         String bundlePath = MonAPI::System::getBundlePath();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         icons = new System::Drawing::Bitmap(bundlePath + "/ICONS.BMP");
         int len = icons->get_Width() * icons->get_Height();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         Color* ptr = icons->get();
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         Color trans = TRANSPARENT_COLOR, ept = Color::get_Empty();
         for (int i = 0; i < len; i++, ptr++)
         {
             if (*ptr == trans) *ptr = ept;
         }
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         int offsetX = 0;
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         _P<Icon> root = new Icon();
         root->set_Location(Point(0, offsetX));
         root->set_Text("/APPS/MONAGUI");
         root->set_Icon(Icons_Floppy);
         root->Show();
         offsetX += 64;
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //      _P<Icon> terminal = new Icon();
 //      terminal->set_Location(Point(0, offsetX));
 //      terminal->set_Text("Terminal");
@@ -97,6 +101,7 @@ public:
 
         if (DirectoryExists("/APPS/MONAFRMS/MESA"))
         {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             _P<Icon> mesa = new Icon();
             mesa->set_Location(Point(0, offsetX));
             mesa->set_Text("3D Demos");
@@ -106,6 +111,7 @@ public:
             offsetX += 64;
         }
 
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
         {
             _P<Icon> mesa = new Icon();
@@ -116,6 +122,7 @@ public:
             mesa->Show();
             offsetX += 64;
         }
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 //      if (DirectoryExists("/MUSIC"))
 //      {
 //          _P<Icon> mesa = new Icon();
@@ -126,7 +133,7 @@ public:
 //          mesa->Show();
 //          offsetX += 64;
 //      }
-
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 
         Application::Run();
     }

@@ -39,6 +39,7 @@ MainWindow::MainWindow(uintptr_t updater_id)
       updater_id_(updater_id),
       input_(new TextField()),
       share_button_(new facebook::ShareButton()),
+      up_button_(new facebook::Button("<<<")),
       down_button_(new facebook::Button(">>>")),
       update_button_(new facebook::Button("Update")),
       updating_(false),
@@ -54,7 +55,7 @@ MainWindow::MainWindow(uintptr_t updater_id)
 
   int component_y = kInputY + kButtonHeight + kButtonMargin;
   component_y = InitFeedViews(component_y);
-  component_y = InitDownbutton(component_y);
+  component_y = InitUpDownbutton(component_y);
   setTimer(kTimerIntervalMsec);
 }
 
@@ -104,6 +105,7 @@ void MainWindow::Show() {
 void MainWindow::SetupFeedViews(size_t offset) {
   for (size_t i = 0; i < kMaxRows; i++) {
     if (i + offset < feeds_.size()) {
+      views_[i]->SetEmpty();
       views_[i]->SetupFromFeed(feeds_[i + offset]);
     } else {
       views_[i]->SetEmpty();
@@ -139,6 +141,15 @@ void MainWindow::processEvent(Event* event) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = false;
       SetupFeedViews(++offset_);
+      repaint();
+    }
+  } else if (event->getSource() == up_button_.get()) {
+    if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+      is_auto_update_ = false;
+      if (--offset_ < 0) {
+        offset_ = 0;
+      }
+      SetupFeedViews(offset_);
       repaint();
     }
   } else if (event->getSource() == update_button_.get()) {
@@ -232,11 +243,16 @@ int MainWindow::InitFeedViews(int component_y) {
   return this_y;
 }
 
-int MainWindow::InitDownbutton(int component_y) {
+int MainWindow::InitUpDownbutton(int component_y) {
   down_button_->setBounds(kDownButtonX, component_y + kButtonMargin,
                           kButtonWidth, kButtonHeight);
   down_button_->setFontStyle(Font::BOLD);
   add(down_button_.get());
+
+  up_button_->setBounds(kUpButtonX, component_y + kButtonMargin,
+                          kButtonWidth, kButtonHeight);
+  up_button_->setFontStyle(Font::BOLD);
+  add(up_button_.get());
   return component_y + kButtonHeight;
 }
 }

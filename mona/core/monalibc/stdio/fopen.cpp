@@ -116,6 +116,15 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	fp->_extra->filesize = (fpos_t)monapi_file_get_file_size(fp->_file);
+
+    // temporary by higepon
+    // todo fix
+    // if and only if read mode.
+    //    if ((fp->_flags & __SRD) && !(fp->_flags & __SWR)) {
+      if (fp->_extra->filesize == 0) {
+        fp->_flags |= __SEOF;
+        //      }
+    }
 	fp->_ungetcbuf = EOF;
 
 	// if read+write, nobuffer.

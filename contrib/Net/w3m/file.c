@@ -254,15 +254,23 @@ extern void logprintf(const char* format, ...);
 int
 file_exist(char *path)
 {
+#ifdef MONA
+    int ret = monapi_file_exists(path);
+    logprintf("%s exist= %d\n", path, ret);
+    return ret;
+#else
    FILE* fp = fopen(path, "r");
    if(fp == NULL)
      return 0;
    fclose(fp);
    return 1;
+#endif
 }
 int is_dir(char *path)
 {
-   return 0;
+    int ret = monapi_file_is_directory(path);
+    logprintf("%s dir?= %d\n", path, ret);
+    return ret;
 }
 #endif
 

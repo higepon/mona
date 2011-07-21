@@ -381,7 +381,7 @@ int vfprintf(FILE *stream, const char *format, va_list ap)
 
 	do
 	{
-		if( feof(stream) ) break;
+	if( feof(stream) ) break;
 		if( *fp == '%' )
 		{
 			result += __nc_vfprintf_format(stream, fpp, ap);

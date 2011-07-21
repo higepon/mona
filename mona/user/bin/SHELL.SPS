@@ -52,13 +52,13 @@
          [("restart") (monapi-message-reply from header MSG_OK)]
          [x
            (cond
-             [(string=? (last x) "&")
-               (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "start-process failed : ~a" x)))]]
-                 (start-process+ (drop-right x 1) stream))
+             [(string=? (last x) "!")
+               (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "call-process failed : ~a" x)))]]
+                (call-process+ (drop-right x 1) stream))
                (monapi-message-reply from header MSG_OK)]
              [else
-               (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "call-process failed : ~a" x)))]]
-                 (call-process+ x stream))
+               (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "start-process failed : ~a" x)))]]
+                  (start-process+ x stream))
                (monapi-message-reply from header MSG_OK)])
             (server)
           ]))]

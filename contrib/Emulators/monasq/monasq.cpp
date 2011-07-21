@@ -424,22 +424,20 @@ MainFrame::MainFrame(List<char*>* pekoe) {
     mRunStopButton   = new MonasqButton();
     mRunStopButton->setBounds(251,0,110,20);
     mRunStopButton->setHandler(buttonHandler);
-    updateRunStopButton();
     add(mRunStopButton);
+    updateRunStopButton();
     // 入力欄スクロールバー
     mInputScrollbar = new MonasqScrollbar( Scrollbar::VERTICAL );
     mInputScrollbar->setBounds(373, 21, 16, 235);
     add(mInputScrollbar);
-
     // 入力欄
     mInputArea = new InputArea(1024 * 32, true);
     mInputArea->setBounds(0, 21, 372, 235);
-    mInputArea->setText( getCurrentHistoryString().c_str() );
+    mInputArea->setTextNoRepaint(getCurrentHistoryString().c_str() );
 //  mInputArea->setText( g_startup_script );
-    mInputArea->moveCaret(0, 0);
-    mInputArea->setFocused(true);
+    //    mInputArea->setFocused(true);
     add(mInputArea);
-
+    //    mInputArea->moveCaret(0, 0);
     // コンソール欄
     string text = fmtString("%s\n%s\n%s\n\n%s",
         MONASQ_VERSION,
@@ -447,9 +445,8 @@ MainFrame::MainFrame(List<char*>* pekoe) {
         bSqEnvOK ? "" : "Squirrel VM initialize failed.\n");
     mConsoleArea = new ConsoleArea(1024 * 64, true);
     mConsoleArea->setBounds(0, 256, 389, 181);
-    mConsoleArea->setText( text.c_str() );
+    mConsoleArea->setTextNoRepaint( text.c_str() );
     add(mConsoleArea);
-
     // ※タイマーイベントをウインドウ生成完了イベントとして代用
     mbCreated = false;
     setTimer(1);
@@ -570,9 +567,10 @@ void MainFrame::processEvent(Event *event) {
  */
 void MainFrame::updateRunStopButton() {
     if (getSqEnvironment()->isRunning()) {
-        mRunStopButton->setLabel("停止");
+        mRunStopButton->setLabelNoRepaint("停止");
     } else {
-        mRunStopButton->setLabel("実行 (Alt+Enter)");
+      // norepaint にすると無限ループ？
+      mRunStopButton->setLabelNoRepaint("実行 (Alt+Enter)");
     }
 }
 
@@ -802,6 +800,10 @@ bool monasq_break_hook(HSQUIRRELVM v) {
  */
 //int MonaMain(List<char*>* pekoe) {
 int main(int argc, char* argv[]) {
+    intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/MONASQ.map");
+    if (ret != M_OK) {
+       fprintf(stderr, "monasq: stack_trace_enable failed error=%d %d.\n", ret, syscall_get_tid());
+    }
     // ウインドウ初期化
     MainFrame* frame = new MainFrame(NULL);
     if (frame == NULL) return -1;

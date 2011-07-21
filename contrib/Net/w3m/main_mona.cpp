@@ -2555,6 +2555,9 @@ int main(int argc, char* argv[]) {
         g_frame->autoPilot(AUTOPILOT_URL, g_autoPilotCount);
     g_frame->initW3M(initUrl);
     g_frame->run();
+#ifdef USE_COOKIE
+    save_cookies();
+#endif				/* USE_COOKIE */
     delete(g_frame);
     if(g_debugMode)
         syscall_stack_trace_disable(pid);

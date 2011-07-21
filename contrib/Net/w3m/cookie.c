@@ -426,6 +426,7 @@ save_cookies(void)
 
     check_expired_cookies();
 
+    _logprintf("!First_cookie=%d is_saved=%d no_rc_dir=%d\n", !First_cookie, is_saved, no_rc_dir);
     if (!First_cookie || is_saved || no_rc_dir)
 	return;
 
@@ -434,8 +435,10 @@ save_cookies(void)
 	return;
 
     for (p = First_cookie; p; p = p->next) {
+      _logprintf("flags %d %d\n", !(p->flag & COO_USE), p->flag & COO_DISCARD);
 	if (!(p->flag & COO_USE) || p->flag & COO_DISCARD)
 	    continue;
+    _logprintf("hoge");
 	fprintf(fp, "%s\t%s\t%s\t%ld\t%s\t%s\t%d\t%d\t%s\t%s\t%s\n",
 		parsedURL2Str(&p->url)->ptr,
 		p->name->ptr, p->value->ptr, p->expires,

@@ -638,6 +638,7 @@ dired_(char *dname)
 #ifdef MONA
 	dirp = opendir(dname);
     assert(dirp);
+
 	while ((dent = readdir(dirp)) != NULL) {
       snprintf(line, sizeof(line), "%s/%s", dname, dent->d_name);
       int year, month, day, hour, min, sec, size;

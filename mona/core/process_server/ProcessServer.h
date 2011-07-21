@@ -118,7 +118,7 @@ private:
             }
         }
         END_FOREACH
-        return NULL;
+        return path;
     }
 
     int ExecuteFile(uint32_t parent, const MonAPI::CString& commandLine, uint32_t stdin_id, uint32_t stdout_id, uint32_t* tid, uint32_t observer)
@@ -126,6 +126,7 @@ private:
         intptr_t ret = executer_.ExecuteFile(parent, commandLine, stdin_id, stdout_id, tid, observer);
         if (ret == M_OK) {
             MonAPI::CString path = GetPathFromCommandLins(commandLine);
+            _logprintf("path=%s, commandLine=%s\n", (const char*)path ? (const char*)path : "null", (const char*)commandLine ? (const char*)commandLine : "null");
             addProcessInfo(*tid, parent, GetFileNameFromPath(path), path, stdin_id, stdout_id);
         }
         return ret;
@@ -150,6 +151,12 @@ public:
             {
                 ProcessInfo pi = getProcessInfo(msg.arg1);
                 MonAPI::Message::reply(&msg, pi.stdin_id, pi.stdout_id);
+                break;
+            }
+            case MSG_PROCESS_GET_PROCESS_INFO:
+            {
+                ProcessInfo pi = getProcessInfo(msg.from);
+                MonAPI::Message::reply(&msg, 0, 0, (const char*)pi.path);
                 break;
             }
             case MSG_PROCESS_TERMINATED:

@@ -149,7 +149,10 @@ bool Parser::Parse(Feeds* dest_feeds) {
       }
     }
     dest_feeds->
-        push_back(Feed(id, name, message, post_id, link == "null" ? "" : link,
+        push_back(Feed(id, name,
+                       message == "null" ? "" : message,
+                       post_id,
+                       link == "null" ? "" : link,
                        num_likes, num_comments, comments));
   }
   return true;

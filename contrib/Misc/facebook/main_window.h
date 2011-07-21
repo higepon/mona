@@ -48,6 +48,7 @@ class MainWindow : public facebook::Frame {
   uintptr_t updater_id_;
   MonAPI::scoped_ptr<TextField> input_;
   MonAPI::scoped_ptr<facebook::Button> share_button_;
+  MonAPI::scoped_ptr<facebook::Button> up_button_;
   MonAPI::scoped_ptr<facebook::Button> down_button_;
   MonAPI::scoped_ptr<facebook::Button> update_button_;
   typedef std::vector<std::string> strings;
@@ -73,6 +74,7 @@ class MainWindow : public facebook::Frame {
     kWindowHeight = 435,
     kPostHeight = 50,
     kDownButtonX = 640,
+    kUpButtonX = 590,
     kMaxRows = 7,
     kTimerIntervalMsec = 1000,
     kUpdateInterbalMsec = 30 * 1000,
@@ -87,7 +89,7 @@ class MainWindow : public facebook::Frame {
   int InitShareButton(int component_x);
   int InitUpdateButton(int component_x);
   int InitFeedViews(int component_y);
-  int InitDownbutton(int component_y);
+  int InitUpDownbutton(int component_y);
 
   void PostFeed();
   void UpdateFeedAsync();

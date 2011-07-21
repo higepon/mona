@@ -135,6 +135,10 @@ void FeedView::SetupFromFeed(const Feed& feed) {
 void FeedView::SetEmpty() {
   feed_id_ = "";
   SetText("");
+  link_button_->set_url("");
+  like_button_->setLabelNoRepaint("");
+  comment_button_->setLabelNoRepaint("");
+  icon_->image()->resize(1, 1);
 }
 
 void FeedView::Draw(Graphics* g) {
