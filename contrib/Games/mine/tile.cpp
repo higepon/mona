@@ -45,7 +45,7 @@ void mine_tile::initialize(){
 	@brief タイルの中身を設定する
 	@param new_value タイルの中身（-1:爆弾 0:非爆弾）
 */
-void mine_tile::setTileValue(int new_value){
+void mine_tile::setTileValue(int new_value, bool repaints /* = true */){
 	if(value == BOMB && new_value != BOMB){
 		bombs_num--;
 	}
@@ -53,8 +53,9 @@ void mine_tile::setTileValue(int new_value){
 		bombs_num++;
 	}
 	value = new_value;
-	
-	repaint();
+	if (repaints) {
+      repaint();
+    }
 }
 
 /*!

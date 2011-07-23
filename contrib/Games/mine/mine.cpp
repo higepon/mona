@@ -30,12 +30,13 @@ mine::mine(){
 void mine::tile_init(){
 	bool* bomb_pos = new bool[81];
 	make_bombs_position(bomb_pos);
+    const bool repaints = false;
 	for(int x=0; x<9; x++){
 		for(int y=0; y<9; y++){
 			tiles[x][y] = new mine_tile((x << 4), (y << 4));
 			
 			//とりあえず、そのタイルが爆弾か、爆弾じゃないかを設定
-			tiles[x][y]->setTileValue(bomb_pos[((x << 3) + x) + y] ? -1 : 0);
+			tiles[x][y]->setTileValue(bomb_pos[((x << 3) + x) + y] ? -1 : 0, repaints);
 			
 		}
 	}
@@ -160,6 +161,10 @@ void mine::processEvent(Event* evt){
 }
 
 int main(int argc, char* argv[]){
+  intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/MINE.MAP");
+  if (ret != M_OK) {
+    monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
+  }
 	mine* app = new mine();
 	app->run();
 	delete app;

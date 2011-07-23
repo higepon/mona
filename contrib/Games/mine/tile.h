@@ -65,7 +65,7 @@ public:
 
 	void paint(Graphics*);
 	void processEvent(Event*);
-	void setTileValue(int);
+  void setTileValue(int, bool repaints = true);
 	void setState(tile_state);
 	int getTileValue();
 	void setAround(mine_tile*, mine_tile*, mine_tile*, mine_tile*, mine_tile*, mine_tile*, mine_tile*, mine_tile*);

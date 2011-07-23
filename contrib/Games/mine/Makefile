@@ -2,6 +2,7 @@ TARGET = MINE
 SOURCES = mine.cpp tile.cpp
 
 INSTDIR = $(BINDIR)/APPS/MONAGUI
+INSTFILES = MINE.map
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lamonagui-imp -lmonalibc-imp --enable-auto-import
