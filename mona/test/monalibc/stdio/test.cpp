@@ -22,6 +22,7 @@ void test_sprintf();
 void test_fread_offset();
 void test_vsnprintf();
 void test_floor_inf();
+void test_fprintf();
 
 int main(int argc, char* argv[])
 {
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
         test_fread_offset();
         test_vsnprintf();
         test_floor_inf();
+        test_fprintf();
         TEST_RESULTS();
         return 0;
     }
@@ -386,4 +388,9 @@ void test_vsnprintf()
     char buf2[5];
     EXPECT_EQ(15, my_snprintf(buf2, sizeof(buf2), "%d:%s", 10, "Hello, World"));
     EXPECT_STR_EQ("10:H", buf2);
+}
+
+void test_fprintf()
+{
+  fprintf(stderr, "%ld", 3);
 }

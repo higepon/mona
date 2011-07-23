@@ -180,6 +180,11 @@ static int __nc_vfprintf_format(FILE *stream, char **formatp, va_list argp)
 			{
 				flags |= PRINTF_FLAG_ZERO; break;
 			}
+      case 'l': // just ignore. quick hack for "%ld"
+			if( *(format-1) == '%' )
+			{
+              break;
+			}
 		case '.':
 			prec = 0;
 			while(*++format)

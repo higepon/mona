@@ -132,7 +132,6 @@ FILE *fopen(const char *path, const char *mode)
             fp->_bf._size = BUFSIZ;
             fp->_flags |= __SALD|__SFBF|__SOAL;
         }
-    _logprintf("fopen fp=%x mode=%s name=%s\n", fp, mode, path);
 	return fp;
 }
 
