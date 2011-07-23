@@ -55,7 +55,7 @@ FILE *fopen(const char *path, const char *mode)
     } else {
       truncate = 0;
     }
-	if( !strcmp(mode, "r") || !strcmp(mode, "rb") )
+	if( !strcmp(mode, "r") || !strcmp(mode, "rb") || !strcmp(mode, "rt"))
 	{
 		fp->_flags = __SRD;
 	}
@@ -78,7 +78,10 @@ FILE *fopen(const char *path, const char *mode)
 	else if( !strcmp(mode, "a+") || !strcmp(mode, "ab+") )
 	{
 		fp->_flags = __SAP|__SRD;
-	}
+	} else {
+      _logprintf("unknown mode fopen %s:%s", path, mode);
+      exit(0);
+    }
     if (truncate) {
       fileno = monapi_file_open(path, FILE_TRUNCATE);
     } else {
@@ -116,15 +119,6 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	fp->_extra->filesize = (fpos_t)monapi_file_get_file_size(fp->_file);
-
-    // temporary by higepon
-    // todo fix
-    // if and only if read mode.
-    //    if ((fp->_flags & __SRD) && !(fp->_flags & __SWR)) {
-      if (fp->_extra->filesize == 0) {
-        fp->_flags |= __SEOF;
-        //      }
-    }
 	fp->_ungetcbuf = EOF;
 
 	// if read+write, nobuffer.
@@ -138,7 +132,7 @@ FILE *fopen(const char *path, const char *mode)
             fp->_bf._size = BUFSIZ;
             fp->_flags |= __SALD|__SFBF|__SOAL;
         }
-
+    _logprintf("fopen fp=%x mode=%s name=%s\n", fp, mode, path);
 	return fp;
 }
 

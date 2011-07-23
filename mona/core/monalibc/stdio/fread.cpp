@@ -67,99 +67,101 @@ size_t __nida_nonebuf_fread(void *buf, size_t size, FILE *stream)
 
 size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 {
-    size_t readsize = 0;
-    size_t retsize = 0;
-    if( stream->_bf._range == 0 )
+  size_t readsize = 0;
+  size_t retsize = 0;
+  if( stream->_bf._range == 0 )
+  {
+    if(size > stream->_bf._size)
     {
-	if(size > stream->_bf._size)
-	{
-		/* do not cache this case for simplicity. */
-        	return stream->_read(stream, buf,
-                            size);
-	}
+      /* do not cache this case for simplicity. */
+      return stream->_read(stream, buf,
+                           size);
+    }
 
-        retsize = stream->_read(stream, stream->_bf._base,
+    retsize = stream->_read(stream, stream->_bf._base,
                             stream->_bf._size);
-        if( retsize == -1 )
-        {
-            stream->_flags |= __SERR;
-            return 0;
-        }
-        if( retsize < size )
-        {
-            stream->_flags |= __SEOF;
-        }
+    if( retsize == -1 )
+    {
+      stream->_flags |= __SERR;
+      return 0;
+    }
+    if( retsize < size )
+    {
+      stream->_flags |= __SEOF;
+    }
+    readsize = retsize > size ? size : retsize;
 
-	readsize = retsize > size ? size : retsize; 
+    memcpy(buf, stream->_bf._base, readsize);
+    stream->_bf._offset = stream->_extra->offset;
+    stream->_bf._range = retsize;
+  }
+  else
+  {
+#if 0
+    static int i = 0;
+    if (i++ % 1000 == 0) {
+    _logprintf("stream->_bf._offset = %d\n", stream->_bf._offset);
+    _logprintf("stream->_extra->offset = %d\n", stream->_extra->offset);
+    _logprintf("stream->_bf._size = %d\n", stream->_bf._size);
+    _logprintf("stream->_bf._range = %d\n", stream->_bf._range);
+    _logprintf("size = %d\n", size);
+    }
+#endif
+    if( stream->_bf._offset == stream->_extra->offset )
+    {
+      if( size <= stream->_bf._range )
+      {
+        memcpy(buf, stream->_bf._base, size);
+        //memcpy(buf, stream->_bf._base, stream->_bf._size);
 
-	memcpy(buf, stream->_bf._base, readsize);
-        stream->_bf._offset = stream->_extra->offset;
-        stream->_bf._range = retsize;
+        readsize = size;
+      }
+    }
+    else if( stream->_bf._offset < stream->_extra->offset &&
+             stream->_bf._offset+stream->_bf._range > stream->_extra->offset+size )
+    {
+      memcpy(buf,
+             stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
+             size);
+      readsize = size;
     }
     else
     {
-    #if 0
-        _printf("stream->_bf._offset = %d\n", stream->_bf._offset);
-        _printf("stream->_extra->offset = %d\n", stream->_extra->offset);
-        _printf("stream->_bf._size = %d\n", stream->_bf._size);
-        _printf("stream->_bf._range = %d\n", stream->_bf._range);
-        _printf("size = %d\n", size);
-    #endif
-        if( stream->_bf._offset == stream->_extra->offset )
+      stream->_seek(stream, stream->_extra->offset, SEEK_SET);
+      readsize = stream->_read(stream,
+                               stream->_bf._base,
+                               stream->_bf._size);
+      if( readsize == -1 )
+      {
+        stream->_flags |= __SERR;
+        return 0;
+      }
+      if( readsize < size )
+      {
+        stream->_flags |= __SEOF;
+        memcpy(buf, stream->_bf._base, readsize);
+      }
+      else
+      {
+        memcpy(buf, stream->_bf._base, size);
+        stream->_bf._offset = stream->_extra->offset;
+        stream->_bf._range = readsize;
+        if( size > stream->_bf._size )
         {
-            if( size <= stream->_bf._range )
-            {
-              memcpy(buf, stream->_bf._base, size);
-              //memcpy(buf, stream->_bf._base, stream->_bf._size);
-
-              readsize = size;
-            }
-        }
-        else if( stream->_bf._offset < stream->_extra->offset &&
-                 stream->_bf._offset+stream->_bf._range > stream->_extra->offset+size )
-        {
-            memcpy(buf,
-                   stream->_bf._base+(stream->_extra->offset-stream->_bf._offset),
-                   size);
-            readsize = size;
+          retsize = stream->_read(stream, (uint8_t*)buf+readsize, size-readsize);
+          readsize += retsize;
         }
         else
         {
-            stream->_seek(stream, stream->_extra->offset, SEEK_SET);
-            readsize = stream->_read(stream,
-                            stream->_bf._base,
-                            stream->_bf._size);
-            if( readsize == -1 )
-            {
-                stream->_flags |= __SERR;
-                return 0;
-            }
-            if( readsize < size )
-            {
-                stream->_flags |= __SEOF;
-                memcpy(buf, stream->_bf._base, readsize);
-            }
-            else
-            {
-                memcpy(buf, stream->_bf._base, size);
-                stream->_bf._offset = stream->_extra->offset;
-                stream->_bf._range = readsize;
-                if( size > stream->_bf._size )
-                {
-                    retsize = stream->_read(stream, (uint8_t*)buf+readsize, size-readsize);
-                    readsize += retsize;
-                }
-                else
-                {
-                    readsize = size;
-                }
-            }
+          readsize = size;
         }
+      }
     }
+  }
 
-    stream->_extra->offset += readsize;
+  stream->_extra->offset += readsize;
 
-    return readsize;
+  return readsize;
 }
 
 size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
