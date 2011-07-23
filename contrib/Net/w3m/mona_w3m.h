@@ -177,6 +177,11 @@ public:
     LINES = (h-_yoffset*2 - ((int)(fh/2.0)))/fh-1;
 
     init_rc();
+#ifdef USE_COOKIE
+    initCookie();
+#endif				/* USE_COOKIE */
+
+
     accept_cookie = true;
     use_cookie = true;
 
