@@ -145,8 +145,14 @@ void MainWindow::processEvent(Event* event) {
         _logprintf("try next next_url_=%s\n", next_url_.c_str());
         if (!next_url_.empty()) {
           _logprintf("try next ");
-          FacebookService::HttpGetToFile(next_url_, "/USER/TEMP/next.json");
-          Parser parser("/USER/TEMP/next.json");
+          static int i = 1;
+          char json_path[64];
+          snprintf(json_path, sizeof(buf), "/USER/TEMP/fb.next%d.json", i++);
+          if (!FacebookService::HttpGetToFile(next_url_, json_path)) {
+            monapi_warn("HttpGetToFile: failed %s ", next_url_.c_str());
+            return;
+          }
+          Parser parser(json_path);
           Feeds feeds;
           bool ret = parser.Parse(&feeds, &next_url_);
           if (!ret) {

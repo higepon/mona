@@ -1,7 +1,7 @@
 TARGET  = MONAFILE
 SOURCES = FileManager.cpp FileWindow.cpp FileBrowser.cpp Icon.cpp
 INSTDIR = $(BINDIR)/APPS/MONAFRMS/$(TARGET).APP
-INSTFILES  = ICONS.BMP MONAFILE.map
+INSTFILES  = ICONS.BMP $(TARGET).map
 CLEANFILES =
 
 SHAREDIR   = $(MONADIR)/share
@@ -17,7 +17,7 @@ endif
 
 CXXFLAGS += -DDEBUG
 
-$(TARGET).EXE: $(LIBDIR)/libgui.a $(INSTFILES)
+$(TARGET).EXE: $(LIBDIR)/libgui.a
 
 ICONS.BM5: icons.bmp
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0

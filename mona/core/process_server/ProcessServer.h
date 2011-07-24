@@ -143,7 +143,11 @@ public:
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
-                int result = ExecuteFile(msg.from, msg.str, msg.arg2, msg.arg3, &tid, msg.from);
+                MonAPI::Message::reply(&msg);
+                MonAPI::scoped_ptr<MonAPI::BufferReceiver> buf(MonAPI::Message::receiveBuffer(msg.from));
+                ASSERT(buf.get());
+                std::string command_line((const char*)buf->buffer(), buf->bufferSize());
+                int result = ExecuteFile(msg.from, command_line.c_str(), msg.arg2, msg.arg3, &tid, msg.from);
                 MonAPI::Message::reply(&msg, result, tid);
                 break;
             }

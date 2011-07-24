@@ -256,11 +256,25 @@ intptr_t monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BO
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
-    if (Message::sendReceive(&msg, server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id, command_line) != M_OK)
+    if (Message::sendReceive(&msg, server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id) != M_OK)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;
     }
+    if (Message::sendBuffer(server, command_line, strlen(command_line)) != M_OK)
+    {
+        if (tid != NULL) *tid = THREAD_UNKNOWN;
+        return -1;
+    }
+
+    MessageInfo src;
+    src.from = server;
+    src.header = MSG_OK;
+    src.arg1 = MSG_PROCESS_EXECUTE_FILE;
+    if (Message::receive(&msg, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return -1;
+    }
+
     if (tid != NULL) *tid = msg.arg3;
     return msg.arg2;
 }
