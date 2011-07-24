@@ -37,8 +37,9 @@ static void __fastcall updaterLauncher(void* arg) {
   updater.Run();
 }
 
-static bool read_feed(const std::string& feed_id, facebook::Feed* dest, std::string* next_url) {
-  facebook::Parser parser("/USER/TEMP/fb.json");
+static bool read_feed(const std::string& feed_id, const std::string& json_file,
+                      facebook::Feed* dest, std::string* next_url) {
+  facebook::Parser parser(json_file);
   facebook::Feeds feeds;
   bool ret = parser.Parse(&feeds, next_url);
   if (!ret) {
@@ -79,16 +80,19 @@ int main(int argc, char* argv[]) {
         monapi_thread_create_with_arg(updaterLauncher, NULL);
     facebook::MainWindow window(updater_id);
     window.run();
-  } else {
+  } else if (argc == 3) {
     std::string feed_id(argv[1]);
+    std::string json_file(argv[2]);
     facebook::Feed feed;
     std::string next_url;
-    if (read_feed(feed_id, &feed, &next_url)) {
+    if (read_feed(feed_id, json_file, &feed, &next_url)) {
       facebook::CommentWindow window(feed);
       window.run();
     } else {
       fprintf(stderr, "can't read feed file");
     }
+  } else {
+      fprintf(stderr, "facebook bad arguments");
   }
   return 0;
 }

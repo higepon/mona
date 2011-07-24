@@ -129,6 +129,7 @@ void FeedView::SetupFromFeed(const Feed& feed) {
     link_button_->set_url(feed.link.c_str());
   }
   feed_id_ = feed.feed_id;
+  json_file_ = feed.json_file;
   SetText(feed.text);
 }
 
@@ -157,6 +158,9 @@ void FeedView::OpenComment() {
     command = "/APPS/MONAGUI/FACEBOOK.EX5 ";
   }
   command += feed_id_;
+  command += " \"";
+  command += json_file_;
+  command += "\"";
   int result = monapi_process_execute_file_get_tid(
       command.c_str(),
       MONAPI_TRUE,

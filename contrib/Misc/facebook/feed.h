@@ -43,6 +43,7 @@ struct Feed {
        const std::string& text,
        const std::string& feed_id,
        const std::string& link,
+       const std::string& json_file,
        uint32_t num_likes,
        uint32_t num_comments,
        const Comments& comments
@@ -59,6 +60,7 @@ struct Feed {
   std::string text;
   std::string feed_id;
   std::string link;
+  std::string json_file;
   uint32_t num_likes;
   uint32_t num_comments;
   Comments comments;

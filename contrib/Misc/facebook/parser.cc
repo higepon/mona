@@ -157,6 +157,7 @@ bool Parser::Parse(Feeds* dest_feeds, std::string* next_url) {
                        message == "null" ? "" : message,
                        post_id,
                        link == "null" ? "" : link,
+                       file_,
                        num_likes, num_comments, comments));
   }
   return true;
