@@ -88,7 +88,7 @@ void MainWindow::UpdateFeedAsync() {
 
 bool MainWindow::ReadFeedFromFile() {
   Parser parser("/USER/TEMP/fb.json");
-  bool ret = parser.Parse(&feeds_);
+  bool ret = parser.Parse(&feeds_, &next_url_);
   if (!ret) {
     monapi_warn("err=%s\n", parser.last_error().c_str());
   }
@@ -140,7 +140,24 @@ void MainWindow::processEvent(Event* event) {
   } else if (event->getSource() == down_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = false;
-      SetupFeedViews(++offset_);
+      if ((++offset_) + kMaxRows >= static_cast<int>(feeds_.size())) {
+        down_button_->setLabel("loading");
+        _logprintf("try next next_url_=%s\n", next_url_.c_str());
+        if (!next_url_.empty()) {
+          _logprintf("try next ");
+          FacebookService::HttpGetToFile(next_url_, "/USER/TEMP/next.json");
+          Parser parser("/USER/TEMP/next.json");
+          Feeds feeds;
+          bool ret = parser.Parse(&feeds, &next_url_);
+          if (!ret) {
+            monapi_warn("err=%s\n", parser.last_error().c_str());
+          }
+          _logprintf("try found %d ", feeds.size());
+          feeds_.insert(feeds_.end(), feeds.begin(), feeds.end());
+          down_button_->setLabel(">>>");
+        }
+      }
+      SetupFeedViews(offset_);
       repaint();
     }
   } else if (event->getSource() == up_button_.get()) {

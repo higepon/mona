@@ -37,10 +37,10 @@ static void __fastcall updaterLauncher(void* arg) {
   updater.Run();
 }
 
-static bool read_feed(const std::string& feed_id, facebook::Feed* dest) {
+static bool read_feed(const std::string& feed_id, facebook::Feed* dest, std::string* next_url) {
   facebook::Parser parser("/USER/TEMP/fb.json");
   facebook::Feeds feeds;
-  bool ret = parser.Parse(&feeds);
+  bool ret = parser.Parse(&feeds, next_url);
   if (!ret) {
     monapi_warn("err=%s\n", parser.last_error().c_str());
     return false;
@@ -82,7 +82,8 @@ int main(int argc, char* argv[]) {
   } else {
     std::string feed_id(argv[1]);
     facebook::Feed feed;
-    if (read_feed(feed_id, &feed)) {
+    std::string next_url;
+    if (read_feed(feed_id, &feed, &next_url)) {
       facebook::CommentWindow window(feed);
       window.run();
     } else {

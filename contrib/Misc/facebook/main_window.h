@@ -55,6 +55,7 @@ class MainWindow : public facebook::Frame {
   typedef std::vector<FeedView*> FeedViews;
 
   Feeds feeds_;
+  std::string next_url_;
   bool updating_;
   int idle_time_msec_;
   int offset_;

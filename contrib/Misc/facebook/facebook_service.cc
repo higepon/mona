@@ -105,4 +105,9 @@ bool FacebookService::ExecuteMosh(const std::string& script,
   command += "\"";
   return ExecuteCommand(command, waits);
 }
+
+bool FacebookService::HttpGetToFile(const std::string& url,
+                                    const std::string& dest_file) {
+  return ExecuteMosh("/LIBS/MOSH/bin/http-get.sps", url, dest_file);
+}
 }

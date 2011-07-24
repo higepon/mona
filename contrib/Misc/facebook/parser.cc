@@ -89,7 +89,7 @@ bool Parser::ParseCommentsInternal(const picojson::array& comments,
   return true;
 }
 
-bool Parser::Parse(Feeds* dest_feeds) {
+bool Parser::Parse(Feeds* dest_feeds, std::string* next_url) {
   MonAPI::scoped_ptr<MonAPI::SharedMemory>
       shm(monapi_file_read_all(file_.c_str()));
   if (shm.get() == NULL) {
@@ -104,7 +104,11 @@ bool Parser::Parse(Feeds* dest_feeds) {
     return false;
   }
   picojson::object obj = v.get<picojson::object>();
-  picojson::value expectedComments = obj["data"];
+  if (obj["paging"].is<picojson::object>()) {
+    picojson::object paging = obj["paging"].get<picojson::object>();
+    *next_url = paging["next"].to_str();
+  }
+
   if (!obj["data"].is<picojson::array>()) {
     last_error_ = "picojson::value of key \"data\" is not array";
     return false;
