@@ -27,26 +27,22 @@ extern "C" int dllmain(uint32_t flag);
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
 
-bool monapi_memory_initialized = false;
-static bool monapi_initialized = false;
+static void monapi_dll_static_intializer();
 
 int dllmain(uint32_t reason)
 {
     switch (reason)
     {
-    case 0: // DLL_PROCESS_ATTACH
-        // Prevent static class initialize invoked twice. (ex) BitMap on MemoryMap.
-        if (!monapi_initialized) {
-            monapi_initialize_memory(PROCESS_HEAP_SIZE);
-            invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
-            monapi_memory_initialized = true;
-            // see user_start_c_impl
-            MonAPI::System::getStdoutStream();
-        }
-        break;
-    case 1: // DLL_PROCESS_DETACH
+    case DLL_PROCESS_ATTACH:
+      monapi_initialize_memory(PROCESS_HEAP_SIZE);
+      monapi_dll_static_intializer();
+      MonAPI::System::getStdoutStream();
+      break;
+    case DLL_PROCESS_DETACH:
+      {
         invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
         break;
+      }
     default:
         break;
     }
@@ -55,8 +51,8 @@ int dllmain(uint32_t reason)
 
 __attribute__((constructor)) void monapi_initialize()
 {
-    if (monapi_initialized) return;
-    monapi_initialized = true;
+  monapi_initialize_memory(PROCESS_HEAP_SIZE);
+  monapi_dll_static_intializer();
 }
 
 __attribute__((destructor)) void monapi_finalize()
@@ -72,6 +68,18 @@ __attribute__((destructor)) void monapi_finalize()
 ----------------------------------------------------------------------*/
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
+
+bool monapi_dll_static_intializer_called;
+
+static void monapi_dll_static_intializer() {
+  if (monapi_dll_static_intializer_called) {
+    return;
+  }
+
+  // To prevent infinite loop make this before call invokeFuncList.
+  monapi_dll_static_intializer_called = true;
+  invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+}
 
 void invokeFuncList(FuncVoid** list, const char* file, int line)
 {
@@ -105,10 +113,15 @@ bool isInDLL(FuncVoid** ctors)
 /*----------------------------------------------------------------------
     memory management
 ----------------------------------------------------------------------*/
+bool monapi_initialize_memory_called = false;
 extern "C" void monapi_initialize_memory(int memorySize)
 {
-    g_msp=create_mspace_with_base((void*)(PROCESS_HEAP_START), memorySize, 0);
-    MonAPI::MemoryMap::initialize();
+  if (monapi_initialize_memory_called) {
+    return;
+  }
+  monapi_initialize_memory_called = true;
+  g_msp=create_mspace_with_base((void*)(PROCESS_HEAP_START), memorySize, 0);
+  MonAPI::MemoryMap::initialize();
 }
 
 /*----------------------------------------------------------------------

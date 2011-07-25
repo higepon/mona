@@ -105,6 +105,8 @@ public:
         if (monapi_file_exists(START_UP_FILE)) {
           setTimer(200);
         }
+        // I'm logger.
+        syscall_set_logger();
     }
 
     virtual ~Terminal() {}
@@ -160,6 +162,9 @@ public:
             int currentLineNo = scrollbar_->getValue();
             updateOutputView(currentLineNo);
             repaint();
+        } else if (event->getType() == Event::CUSTOM_EVENT &&
+                   event->header == MSG_TEXT) {
+          appendOutput(event->str);
         }
     }
 

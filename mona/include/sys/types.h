@@ -22,6 +22,9 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
+#define DLL_PROCESS_ATTACH 0
+#define DLL_PROCESS_DETACH 1
+
 #define KERNEL_TIMER_INTERVAL_MSEC 10
 
 #ifndef INT_MAX
@@ -380,6 +383,7 @@ enum
 #define SYSTEM_CALL_MUTEX_COUNT               0x0071 /* for testablity */
 #define SYSTEM_CALL_CONDITION_COUNT           0x0072 /* for testablity */
 #define SYSTEM_CALL_GET_KSTAT                 0x0073
+#define SYSTEM_CALL_SET_LOGGER                0x0074
 enum
 {
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,

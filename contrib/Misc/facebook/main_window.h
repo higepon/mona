@@ -95,6 +95,7 @@ class MainWindow : public facebook::Frame {
   void PostFeed();
   void UpdateFeedAsync();
   bool ReadFeedFromFile();
+  bool ReadNextFeeds(Feeds* dest_feeds);
   void Show();
   void SetupFeedViews(size_t offset = 0);
   bool HandleLikeButtonEvent(Event* event);

@@ -31,6 +31,7 @@
 #include "./feed_view.h"
 #include "./facebook_service.h"
 #include "./parser.h"
+#include "./updater.h"
 
 namespace facebook {
 
@@ -131,6 +132,28 @@ bool MainWindow::HandleLikeButtonEvent(Event* event) {
   return false;
 }
 
+bool MainWindow::ReadNextFeeds(Feeds* dest_feeds) {
+  if (next_url_.empty()) {
+    return false;
+  }
+  static int i = 1;
+  char json_path[64];
+  snprintf(json_path, sizeof(buf), "/USER/TEMP/fb.next%d.json", i++);
+#ifndef OFF_LINE
+  if (!FacebookService::HttpGetToFile(next_url_, json_path)) {
+    monapi_warn("HttpGetToFile: failed %s ", next_url_.c_str());
+    return false;
+  }
+#endif
+  Parser parser(json_path);
+  bool ret = parser.Parse(dest_feeds, &next_url_);
+  if (!ret) {
+    monapi_warn("err=%s\n", parser.last_error().c_str());
+    return false;
+  }
+  return true;
+}
+
 void MainWindow::processEvent(Event* event) {
   if (event->getSource() == share_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
@@ -142,30 +165,17 @@ void MainWindow::processEvent(Event* event) {
       is_auto_update_ = false;
       if ((++offset_) + kMaxRows >= static_cast<int>(feeds_.size())) {
         down_button_->setLabel("loading");
-        _logprintf("try next next_url_=%s\n", next_url_.c_str());
-        if (!next_url_.empty()) {
-          _logprintf("try next ");
-          static int i = 1;
-          char json_path[64];
-          snprintf(json_path, sizeof(buf), "/USER/TEMP/fb.next%d.json", i++);
-          if (!FacebookService::HttpGetToFile(next_url_, json_path)) {
-            monapi_warn("HttpGetToFile: failed %s ", next_url_.c_str());
-            return;
-          }
-          Parser parser(json_path);
-          Feeds feeds;
-          bool ret = parser.Parse(&feeds, &next_url_);
-          if (!ret) {
-            monapi_warn("err=%s\n", parser.last_error().c_str());
-          }
-          _logprintf("try found %d ", feeds.size());
-          feeds_.insert(feeds_.end(), feeds.begin(), feeds.end());
-          down_button_->setLabel(">>>");
+        Feeds new_feeds;
+        if (ReadNextFeeds(&new_feeds)) {
+          feeds_.insert(feeds_.end(), new_feeds.begin(), new_feeds.end());
+        } else {
+          monapi_warn("ReadNextFeeds failed");
         }
+        down_button_->setLabel(">>>");
       }
-      SetupFeedViews(offset_);
-      repaint();
     }
+    SetupFeedViews(offset_);
+    repaint();
   } else if (event->getSource() == up_button_.get()) {
     if (event->getType() == MouseEvent::MOUSE_RELEASED) {
       is_auto_update_ = false;

@@ -124,6 +124,7 @@ struct KStat;
 extern void syscall_get_kstat(struct KStat* dest);
 extern intptr_t syscall_allocate_contiguous(uint32_t laddress, int pageNum);
 extern void syscall_deallocate_contiguous(uint32_t laddress, int pageNum);
+extern void syscall_set_logger();
 
 extern void* malloc(unsigned long size);
 extern void* calloc(unsigned long n, unsigned long s);

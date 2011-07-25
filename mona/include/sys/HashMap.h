@@ -42,6 +42,7 @@ template <class T> class HashMap : public Map<T> {
 };
 
 template <class T> HashMap<T>::HashMap(int hashsize) {
+    ASSERT(hashsize != 0);
     hashsize_ = hashsize;
     tree_     = new BinaryTree<T>;
 }
@@ -53,12 +54,12 @@ template <class T> HashMap<T>::~HashMap() {
 template <class T> int HashMap<T>::hash(const char* str) {
 
     int value = 0;
-
     /* get hash */
     for (; *str; str++) {
         value = rol(value);
         value = value ^ *str;
     }
+    ASSERT(hashsize_ != 0);
     return value % hashsize_;
 }
 

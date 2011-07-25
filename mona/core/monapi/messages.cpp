@@ -256,7 +256,7 @@ intptr_t monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BO
         return M_NAME_NOT_FOUND;
     }
     MessageInfo msg;
-    if (Message::sendReceive(&msg, server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id) != M_OK)
+    if (Message::send(server, MSG_PROCESS_EXECUTE_FILE, prompt, stdin_id, stdout_id) != M_OK)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;

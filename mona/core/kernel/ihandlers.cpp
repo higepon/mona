@@ -158,13 +158,25 @@ void irqHandler_6()
 
 static void terminateCurrentThread(const char* reason)
 {
-//    g_console->printf("%s:%d", __FILE__, __LINE__); for (;;);
     Process* current = g_currentThread->process;
-
-    g_console->printf("%s : Process killed %s thread-index=%d eip=%x\n", reason, current->getName(),
-                      g_currentThread->process->getThreadIndex(g_currentThread->thread), g_currentThread->archinfo->eip);
     logprintf("%s: Process killed %s eip=%x\n", reason, current->getName(),  g_currentThread->archinfo->eip);
-    ThreadOperation::kill(g_currentThread->thread);
+    if (g_logger_id != THREAD_UNKNOWN) {
+      Thread* thread  = g_scheduler->Find(g_logger_id);
+      if (thread == NULL) {
+        logprintf("logger is dead?");
+        g_logger_id = THREAD_UNKNOWN;
+      } else {
+        MessageInfo msg;
+        msg.header = MSG_TEXT;
+        strncpy(msg.str, "process is dead", MAX_PROCESS_ARGUMENT_LENGTH);
+        int ret = g_messenger->send(thread, &msg);
+        ASSERT(ret == M_OK);
+      }
+    }
+    g_page_manager->showCurrentStackTrace();
+    int ret = ThreadOperation::kill(g_currentThread->thread);
+    ASSERT(ret == M_OK);
+    g_scheduler->SwitchToNext();
 }
 
 /*----------------------------------------------------------------------

@@ -189,25 +189,20 @@ int main(int argc, char *argv[])
   glutInitWindowPosition(0, 0);
   glutInitWindowSize(600, 450);
 
-
   IndexMode = argc > 1 && strcmp(argv[1], "-ci") == 0;
   if (IndexMode)
      glutInitDisplayMode(GLUT_INDEX | GLUT_DOUBLE);
   else
      glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-
-  glutCreateWindow("Bounce");
   Ball = make_ball();
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
   glDisable(GL_DITHER);
   glShadeModel(GL_FLAT);
-
   glutDisplayFunc(draw);
   glutReshapeFunc(reshape);
   glutVisibilityFunc(visible);
   glutKeyboardFunc(key);
-
   if (IndexMode) {
     glutSetColor(RED, 1.0, 0.0, 0.0);
     glutSetColor(WHITE, 1.0, 1.0, 1.0);

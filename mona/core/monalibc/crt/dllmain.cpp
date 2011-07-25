@@ -26,18 +26,12 @@ int dllmain(uint32_t reason)
 
 bool monalibc_initialized = false;
 extern "C" void monapi_initialize_memory(int);
-extern bool monapi_memory_initialized;
 
 __attribute__((constructor)) void monalibc_initialize()
 {
     if (monalibc_initialized) return;
     monalibc_initialized = true;
-    if (!monapi_memory_initialized)
-    {
-        monapi_initialize_memory(64 * 1024 * 1024);
-        monapi_memory_initialized = true;
-    }
-
+    monapi_initialize_memory(PROCESS_HEAP_SIZE);
     monapi_initialize();
 // known bug.
 #if 0

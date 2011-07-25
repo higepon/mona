@@ -34,9 +34,9 @@
 #include <stdint.h>
 #include <monapi.h>
 
-namespace facebook {
+#define OFF_LINE
 
-// #define OFF_LINE
+namespace facebook {
 
 class Updater {
  public:

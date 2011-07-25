@@ -457,9 +457,49 @@ void _mona_exit(int code)
 	}
 }
 
+extern "C" __attribute__((constructor)) void libglut_initialize();
+extern "C" __attribute__((destructor)) void libglut_finalize();
+
+extern "C" int dllmain(uint32_t reason);
+extern "C" FuncVoid* __CTOR_LIST__[];
+extern "C" FuncVoid* __DTOR_LIST__[];
+
+int dllmain(uint32_t reason)
+{
+    switch (reason)
+    {
+    case 0: // DLL_PROCESS_ATTACH
+        invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
+        break;
+    case 1: // DLL_PROCESS_DETACH
+        invokeFuncList(__DTOR_LIST__, __FILE__, __LINE__);
+        break;
+    default:
+        _printf("%s:%s:%d\n", __FILE__, __func__, __LINE__);
+        break;
+    }
+    return 1;
+}
+
+extern "C" __attribute__((constructor)) void monalibc_initialize();
+
+bool libglut_initialized = false;
+
+__attribute__((constructor)) void libglut_initialize()
+{
+    if (libglut_initialized) return;
+    monapi_initialize();
+    monalibc_initialize();
+    libglut_initialized = true;
+}
+
+__attribute__((destructor)) void libglut_finalize()
+{
+}
+
+
 GLUTAPI void GLUTAPIENTRY glutInit(int *argcp, char **argv)
 {
-	if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 	Application::Initialize();
 	windows = new ArrayList<_P<_glut_window> >;
 	__glutProgramName = argv[0];

@@ -126,7 +126,6 @@ private:
         intptr_t ret = executer_.ExecuteFile(parent, commandLine, stdin_id, stdout_id, tid, observer);
         if (ret == M_OK) {
             MonAPI::CString path = GetPathFromCommandLins(commandLine);
-            _logprintf("path=%s, commandLine=%s\n", (const char*)path ? (const char*)path : "null", (const char*)commandLine ? (const char*)commandLine : "null");
             addProcessInfo(*tid, parent, GetFileNameFromPath(path), path, stdin_id, stdout_id);
         }
         return ret;
@@ -143,7 +142,6 @@ public:
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 uint32_t tid = 0;
-                MonAPI::Message::reply(&msg);
                 MonAPI::scoped_ptr<MonAPI::BufferReceiver> buf(MonAPI::Message::receiveBuffer(msg.from));
                 ASSERT(buf.get());
                 std::string command_line((const char*)buf->buffer(), buf->bufferSize());

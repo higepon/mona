@@ -315,8 +315,13 @@ public:
             dumpAddress<T>(eip, dict);
 
             void**bp = (void**)ebp;
+            uint32_t last_bp = 0;
             while(bp && ((uint32_t)bp) > stackStart)
             {
+                if ((uint32_t)bp == last_bp) {
+                  break;
+                }
+                last_bp = (uint32_t)bp;
                 // caller = bp[1];
                 dumpAddress<T>((uint32_t)bp[1], dict);
                 bp = (void**)(*bp);

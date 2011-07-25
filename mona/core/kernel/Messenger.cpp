@@ -14,7 +14,7 @@ Messenger::~Messenger()
 {
 }
 
-
+// don't logprint inside this function. See LogConsole::print
 intptr_t Messenger::send(Thread* thread, MessageInfo* message)
 {
     // ignore the idle thread.
@@ -33,9 +33,6 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     }
 
     MessageInfo* info = new MessageInfo;
-    if (NULL == info) {
-        logprintf("from=%s to=%s", g_currentThread->thread->tinfo->process->getName(), thread->tinfo->process->getName());
-    }
     ASSERT(info != NULL);
 
     *info = *message;

@@ -51,7 +51,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -s --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
+	$(LD) -e _dllmain -s --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
 endif
 
 .SUFFIXES: .cpp .o

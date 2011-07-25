@@ -44,33 +44,25 @@ namespace System { namespace Mona { namespace Forms
 
     void Application::Initialize()
     {
-// move to stub.cpp
-// #ifdef MONA
-//      if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
-// #endif
         Application::forms = new ArrayList<_P<Form> >;
         Application::messageFilters = new ArrayList<IMessageFilter*>;
-
 #ifdef MONA
         MessageInfo msg;
         uint32_t process_tid;
         if (monapi_name_whereis("/servers/process", process_tid) != M_OK) {
             monapi_fatal("server not found");
         }
-
         if (MonAPI::Message::sendReceive(&msg, process_tid, MSG_PROCESS_GET_COMMON_PARAMS) != 0)
         {
-            printf("MouseServer: can not get common parameters\n");
+            monapi_warn("MouseServer: can not get common parameters\n");
             ::exit(1);
         }
         commonParamsHandle = msg.arg2;
         __commonParams = (CommonParameters*)MonAPI::MemoryMap::map(commonParamsHandle);
-
         if (M_OK != monapi_register_to_server("/servers/gui")) ::exit(1);
         if (monapi_name_whereis("/servers/gui", __gui_server) != M_OK) {
             monapi_fatal("server not found");
         }
-
         if (__gui_server == THREAD_UNKNOWN) ::exit(1);
         if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
         {
@@ -80,7 +72,7 @@ namespace System { namespace Mona { namespace Forms
         uint8_t* font_data = MonAPI::MemoryMap::map(msg.arg2);
         if (font_data == NULL)
         {
-            ::printf("%s:%d:ERROR: Can not get font data!\n", __FILE__, __LINE__);
+            monapi_warn("%s:%d:ERROR: Can not get font data!\n", __FILE__, __LINE__);
             ::exit(1);
         }
         Application::defaultFontData = new unsigned char[msg.arg3];

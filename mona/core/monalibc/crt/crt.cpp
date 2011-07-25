@@ -40,7 +40,6 @@ extern "C" void monapi_initialize_memory(int);
 extern "C" int user_start_c_impl(FuncMain*);
 extern "C" FuncVoid* __CTOR_LIST__[];
 extern "C" FuncVoid* __DTOR_LIST__[];
-extern bool monapi_memory_initialized;
 
 /*
 FILE __sF[3];
@@ -53,10 +52,7 @@ extern "C" void fini_stdio(void);
 
 extern "C" int user_start()
 {
-    if (!monapi_memory_initialized)
-    {
-        monapi_initialize_memory(64 * 1024 * 1024);
-    }
+    monapi_initialize_memory(PROCESS_HEAP_SIZE);
     setConstructorList(__CTOR_LIST__);
     invokeFuncList(__CTOR_LIST__, __FILE__, __LINE__);
 

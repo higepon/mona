@@ -60,7 +60,7 @@ GLOBAL PageManager* g_page_manager;
 
 GLOBAL FirstFitAllocator km; /* Kernel Memory Management */
 
-
+GLOBAL uint32_t g_logger_id GLOBAL_VAL(THREAD_UNKNOWN);
 GLOBAL ThreadInfo* g_currentThread GLOBAL_VAL(NULL);
 GLOBAL ThreadInfo* g_prevThread;
 GLOBAL Scheduler* g_scheduler;

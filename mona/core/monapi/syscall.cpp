@@ -1153,3 +1153,8 @@ void syscall_get_kstat(KStat* dest)
 {
     syscall1(SYSTEM_CALL_GET_KSTAT, (intptr_t)dest);
 }
+
+void syscall_set_logger()
+{
+    syscall0(SYSTEM_CALL_SET_LOGGER);
+}

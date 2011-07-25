@@ -185,6 +185,11 @@ void syscall_entrance()
         setReturnValue(info, g_currentThread->thread->id);
         break;
     }
+    case SYSTEM_CALL_SET_LOGGER:
+    {
+        g_logger_id = g_currentThread->thread->id;
+        break;
+    }
     case SYSTEM_CALL_KILL:
     {
         int status = SYSTEM_CALL_ARG_1;
