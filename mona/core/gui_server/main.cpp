@@ -335,10 +335,10 @@ static void MessageLoop()
             // ESCキーによる終了チェック
             case MSG_KEY_VIRTUAL_CODE:
             {
-                if (msg.arg1 == Keys::Escape) {
-                    DisposeAllWindow();
-                    return;
-                }
+                // if (msg.arg1 == Keys::Escape) {
+                //     DisposeAllWindow();
+                //     return;
+                // }
                 if (ImageHandler(&msg)) break;
                 if (WindowHandler(&msg)) break;
                 break;
