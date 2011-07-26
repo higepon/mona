@@ -810,7 +810,7 @@ global char DecodeCTE init(FALSE);
 global char AutoUncompress init(FALSE);
 global char PreserveTimestamp init(TRUE);
 global char ArgvIsURL init(FALSE);
-global char MetaRefresh init(FALSE);
+global char MetaRefresh init(TRUE); // changed for Mona.
 
 global char fmInitialized init(FALSE);
 global char QuietMessage init(FALSE);

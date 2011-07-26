@@ -47,9 +47,10 @@ searchKeyNum(void)
 void
 pushEvent(int cmd, void *data)
 {
-  _logprintf("push Event called");
-  w3mFuncList[cmd].func();
-
+  // _logprintf("push Event called");
+  // w3mFuncList[cmd].func();
+  CurrentCmdData = (char*)data;
+  set_timer(100);
     // W3MEvent *event;
 
     // event = New(W3MEvent);
@@ -2351,9 +2352,14 @@ void W3MFrame::processEvent(Event* event)
        // I'm not sure this is correct.
        if (buf != Currentbuf) {
            delBuffer(buf);
-       }
+       } 
    setTimer(100);
    return;
+ } else if (event->getType() == Event::TIMER) {
+   kill_timer(event->arg1);
+   //   CurrentCmdData = "http://google.com";
+      w3mFuncList[FUNCNAME_gorURL].func();
+   _logprintf("timer!!!");
  }
  Frame::processEvent(event);
 }

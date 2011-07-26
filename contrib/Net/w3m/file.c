@@ -5084,6 +5084,7 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
 	}
 	else
 #endif
+            _logprintf("p=<%s>", p ? p : "null");
 	if (p && q && !strcasecmp(p, "refresh")) {
 	    int refresh_interval;
 	    tmp = NULL;
@@ -5869,6 +5870,7 @@ HTMLlineproc2body(Buffer *buf, Str (*feed) (), int llimit)
 		    p = q = NULL;
 		    parsedtag_get_value(tag, ATTR_HTTP_EQUIV, &p);
 		    parsedtag_get_value(tag, ATTR_CONTENT, &q);
+                    _logprintf("** p=%s q=%d MetaRefresh=%d\n", p? p : "null", q, MetaRefresh);
 		    if (p && q && !strcasecmp(p, "refresh") && MetaRefresh) {
 			Str tmp = NULL;
 			int refresh_interval = getMetaRefreshParam(q, &tmp);
@@ -5888,7 +5890,8 @@ HTMLlineproc2body(Buffer *buf, Str (*feed) (), int llimit)
 						       FUNCNAME_reload, NULL);
 #else
             _logprintf("tmp =%d refresh_interval=%d %s %s:%d\n", tmp, refresh_interval, __func__, __FILE__, __LINE__);
-			if (tmp && refresh_interval == 0) {
+            //			if (tmp && refresh_interval == 0) {
+			if (tmp) {
 			    p = url_quote_conv(remove_space(tmp->ptr),
 					       buf->document_charset);
         _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
