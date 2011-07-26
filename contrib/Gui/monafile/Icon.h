@@ -23,6 +23,8 @@ enum Icons
 	Icons_Terminal,
 	Icons_Text,
 	Icons_Player,
+	Icons_Facebook,
+	Icons_Twitter
 };
 
 class Icon : public System::Mona::Forms::Form

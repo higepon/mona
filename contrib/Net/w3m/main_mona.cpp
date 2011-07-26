@@ -47,17 +47,20 @@ searchKeyNum(void)
 void
 pushEvent(int cmd, void *data)
 {
-    W3MEvent *event;
+  _logprintf("push Event called");
+  w3mFuncList[cmd].func();
 
-    event = New(W3MEvent);
-    event->cmd = cmd;
-    event->data = data;
-    event->next = NULL;
-    if (CurrentEvent)
-	LastEvent->next = event;
-    else
-	CurrentEvent = event;
-    LastEvent = event;
+    // W3MEvent *event;
+
+    // event = New(W3MEvent);
+    // event->cmd = cmd;
+    // event->data = data;
+    // event->next = NULL;
+    // if (CurrentEvent)
+	// LastEvent->next = event;
+    // else
+	// CurrentEvent = event;
+    // LastEvent = event;
 }
 
 void

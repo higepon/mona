@@ -5090,11 +5090,14 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
 	    refresh_interval = getMetaRefreshParam(q, &tmp);
 	    if (tmp) {
 		q = html_quote(tmp->ptr);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		tmp = Sprintf("Refresh (%d sec) <a href=\"%s\">%s</a>",
 			      refresh_interval, q, q);
 	    }
-	    else if (refresh_interval > 0)
+	    else if (refresh_interval > 0) {
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 		tmp = Sprintf("Refresh (%d sec)", refresh_interval);
+        }
 	    if (tmp) {
 		HTMLlineproc1(tmp->ptr, h_env);
 		do_blankline(h_env, obuf, envs[h_env->envc].indent, 0,
@@ -5884,9 +5887,11 @@ HTMLlineproc2body(Buffer *buf, Str (*feed) (), int llimit)
 						       AL_IMPLICIT,
 						       FUNCNAME_reload, NULL);
 #else
+            _logprintf("tmp =%d refresh_interval=%d %s %s:%d\n", tmp, refresh_interval, __func__, __FILE__, __LINE__);
 			if (tmp && refresh_interval == 0) {
 			    p = url_quote_conv(remove_space(tmp->ptr),
 					       buf->document_charset);
+        _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
 			    pushEvent(FUNCNAME_gorURL, p);
 			}
 #endif

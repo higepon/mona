@@ -535,11 +535,8 @@ Strfgets(FILE * f)
 {
     Str s = Strnew();
     char c;
-    _logprintf("<a0>\n");
     while (1) {
-      _logprintf("<a>\n");
 	c = fgetc(f);
-    _logprintf("<b:%d>\n", c);
 	if (feof(f) || ferror(f))
 	    break;
 	Strcat_char(s, c);

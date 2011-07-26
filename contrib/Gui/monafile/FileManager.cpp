@@ -102,6 +102,29 @@ public:
             offsetX += 64;
         }
 
+        if (monapi_file_exists("/APPS/MONAGUI/FACEBOOK.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("Facebook");
+            mesa->set_Icon(Icons_Facebook);
+            mesa->set_Target("/APPS/MONAGUI/FACEBOOK.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+        if (monapi_file_exists("/APPS/W3M.APP/W3M.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("Twitter");
+            mesa->set_Icon(Icons_Twitter);
+            mesa->set_Target("/APPS/W3M.APP/W3M.EX5 https://mobile.twitter.com/session/new");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+
         if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
         {
             _P<Icon> mesa = new Icon();
