@@ -426,7 +426,6 @@ save_cookies(void)
 
     check_expired_cookies();
 
-    _logprintf("!First_cookie=%d is_saved=%d no_rc_dir=%d\n", !First_cookie, is_saved, no_rc_dir);
     if (!First_cookie || is_saved || no_rc_dir)
 	return;
 
