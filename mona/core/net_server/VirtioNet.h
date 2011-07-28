@@ -503,7 +503,7 @@ public:
 //    _logprintf("%s:%d\n", __FILE__, __LINE__);
         lastUsedIndexRead_++;
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
-            VIRT_LOG("NOTIFY");
+          //            VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
         return true;

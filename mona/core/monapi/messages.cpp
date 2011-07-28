@@ -607,16 +607,12 @@ intptr_t monapi_clipboard_set(const SharedMemory& shm)
     MessageInfo msg;
     uint32_t tid ;
     if (monapi_name_whereis("/servers/clipboard", tid) != M_OK) {
-        monapi_warn("");
         return M_NAME_NOT_FOUND;
     }
-        monapi_warn("");
     intptr_t ret = Message::sendReceive(&msg, tid, MSG_CLIPBOARD_SET, shm.handle(), shm.size());
     if (ret != M_OK) {
-        monapi_warn("");
         return ret;
     }
-        monapi_warn("");
     return M_OK;
 }
 
