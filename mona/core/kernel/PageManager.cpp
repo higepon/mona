@@ -298,21 +298,22 @@ class StackTracer
 {
 public:
     StackTracer(SymbolDictionary::SymbolDictionaryMap& dictMap) : dictMap_(dictMap) {}
-    template <class T> void dumpAddress(uint32_t address, SymbolDictionary::SymbolDictionary* dict)
+    template <class T> void dumpAddress(uint32_t address, SymbolDictionary::SymbolDictionary* dict, int index)
     {
         SymbolDictionary::SymbolEntry* ent = dict->lookup(address);
         if(ent != NULL)
-            T::printf("  %s: %s (%x)\n", ent->FunctionName, ent->FileName, address);
+          T::printf("     %d. (%08x) %s: %s \n", index, address, ent->FunctionName, ent->FileName);
         else
-            T::printf("(unknown)  %x\n", address);
+          T::printf("     %d. (%08x)   (unknown)  \n", index, address);
     }
     template <class T> void dump(uint32_t pid, uint32_t ebp, uint32_t eip, uint32_t stackStart)
     {
         SymbolDictionary::SymbolDictionary *dict = dictMap_.get(pid);
         if(dict != NULL)
         {
-            T::printf("nullpo! stack trace:\n");
-            dumpAddress<T>(eip, dict);
+            int i = 1;
+            T::printf(" Stack trace:\n");
+            dumpAddress<T>(eip, dict, i++);
 
             void**bp = (void**)ebp;
             uint32_t last_bp = 0;
@@ -323,7 +324,7 @@ public:
                 }
                 last_bp = (uint32_t)bp;
                 // caller = bp[1];
-                dumpAddress<T>((uint32_t)bp[1], dict);
+                dumpAddress<T>((uint32_t)bp[1], dict, i++);
                 bp = (void**)(*bp);
             }
         }
@@ -382,30 +383,31 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
 
 void PageManager::showPageFault(ThreadInfo* threadInfo, uint32_t address)
 {
-    Process* process = threadInfo->process;
     Thread* thread = threadInfo->thread;
+    Process* process = threadInfo->process;
+    uint32_t stackButtom = process->getStackBottom(thread);
+    bool stackOver = address < stackButtom && stackButtom - ARCH_PAGE_SIZE < address;
     ArchThreadInfo* i = threadInfo->archinfo;
-    mona_warn("name=%s\n", process->getName());
-    mona_warn("tid =%d\n", thread->id);
-    mona_warn("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
-    mona_warn("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    mona_warn("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
-    mona_warn("eflags=%x eip=%x\n", i->eflags, i->eip);
+    mona_warn("\n\n");
+    mona_warn("================================================================================\n");
+    mona_warn("Killed %s (thread %dth)\n\n", process->getName(), process->getThreadIndex(thread));
+    mona_warn(" Reason:\n");
+    if (stackOver) {
+      mona_warn("    Stack overflow\n\n");
+    } else {
+      mona_warn("    Access denied\n\n");
+    }
 
     showCurrentStackTrace();
+    mona_warn("\n");
+
+    mona_warn(" Registers:\n");
+    mona_warn("    eax : %08x ebx : %08x ecx : %08x edx : %08x\n", i->eax, i->ebx, i->ecx, i->edx);
+    mona_warn("    esp : %08x ebp : %08x esi : %08x edi : %08x\n", i->esp, i->ebp, i->esi, i->edi);
+    mona_warn("    cs  : %08x ds  : %08x ss  : %08x cr3 : %08x\n\n", i->cs , i->ds , i->ss , i->cr3);
 
     // remove: if dict of this pid does not exist, just ignore.
     symbolDictionaryMap_.remove(process->getPid());
-
-    uint32_t stackButtom = process->getStackBottom(thread);
-    bool stackOver = address < stackButtom && stackButtom - ARCH_PAGE_SIZE < address;
-
-    uint32_t eip = i->eip;
-    if (stackOver) {
-        mona_warn("\nstack overflow \n\n access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, process->getName(), process->getThreadIndex(thread), eip);
-    } else {
-        mona_warn("access denied.address = %x Process  killed %s thread-index=%d eip=%x\n", address, process->getName(), process->getThreadIndex(thread), eip);
-    }
 }
 
 bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser)
