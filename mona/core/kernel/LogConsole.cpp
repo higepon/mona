@@ -219,6 +219,7 @@ void LogConsole::print(const char* str)
              str += MAX_PROCESS_ARGUMENT_LENGTH - 1;
            } else {
              strncpy(msg.str, str, rest);
+             msg.str[rest] = '\0';
              rest = 0;
            }
            int ret = g_messenger->send(thread, &msg);
