@@ -24,7 +24,8 @@ enum Icons
 	Icons_Text,
 	Icons_Player,
 	Icons_Facebook,
-	Icons_Twitter
+	Icons_Twitter,
+    Icons_Gmail
 };
 
 class Icon : public System::Mona::Forms::Form

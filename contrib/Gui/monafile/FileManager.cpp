@@ -91,6 +91,18 @@ public:
 //      terminal->Show();
 //      offsetX += 64;
 
+        if (monapi_file_exists("/APPS/MONAGUI/TERMINAL.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("Terminal");
+            mesa->set_Icon(Icons_Terminal);
+            mesa->set_Target("/APPS/MONAGUI/TERMINAL.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+
         if (DirectoryExists("/APPS/MONAFRMS/MESA"))
         {
             _P<Icon> mesa = new Icon();
@@ -109,6 +121,17 @@ public:
             mesa->set_Text("Facebook");
             mesa->set_Icon(Icons_Facebook);
             mesa->set_Target("/APPS/MONAGUI/FACEBOOK.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+        if (monapi_file_exists("/APPS/W3M.APP/W3M.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("Gmail");
+            mesa->set_Icon(Icons_Gmail);
+            mesa->set_Target("/APPS/W3M.APP/W3M.EX5 https://mail.google.com/mail/h/");
             mesa->Show();
             offsetX += 64;
         }
