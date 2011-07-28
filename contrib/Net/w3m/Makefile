@@ -77,7 +77,7 @@ M17NOBJS = libwc/big5.o \
 		libwc/wtf.o
 
 
-CPPOBJS=main_mona.o terms_mona.o
+CPPOBJS=main_mona.o terms_mona.o facebook.o
 OBJS=file.o buffer.o display.o etc.o search.o linein.o table.o local.o\
 	form.o map.o frame.o rc.o menu.o mailcap.o image.o \
 	symbol.o entity.o url.o ftp.o mimehead.o regex.o news.o \
