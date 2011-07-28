@@ -44,8 +44,15 @@ void __fastcall stdoutStreamReader(void* arg)
         info->sharedString.clear();
         info->sharedString += std::string(buf.get(), sizeRead);
         MessageInfo msg;
-        if (Message::sendReceive(&msg, info->mainThread, MSG_UPDATE) != M_OK) {
-            monapi_fatal("main thread is dead?");
+        for (;;) {
+          intptr_t ret = Message::sendReceive(&msg, info->mainThread, MSG_UPDATE);
+          if (ret == M_MESSAGE_OVERFLOW) {
+            sleep(50);
+          } else if (ret == M_OK) {
+            break;
+          } else {
+            monapi_fatal("main thread is dead? = %d", ret);
+          }
         }
     }
 }
