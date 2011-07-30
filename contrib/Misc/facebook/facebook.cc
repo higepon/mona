@@ -69,7 +69,7 @@ static bool read_feed(const std::string& feed_id, const std::string& json_file,
   return false;
 }
 
-#define FACEBOOK_OAUTH_COMMAND "/APPS/W3M.APP/W3M.EX5 https://www.facebook.com/dialog/oauth?client_id=179761552055871&redirect_uri=http://lovamimi.com/login_monaos.scm&scope=publish_stream,offline_access,read_stream&display=wap"
+#define FACEBOOK_OAUTH_COMMAND "/APPS/W3M.APP/W3M.EX5 https://www.facebook.com/dialog/oauth?client_id=179761552055871&redirect_uri=http://lovamimi.com/login_monaos.scm&scope=publish_stream,offline_access,read_stream&display=wap" // NOLINT?
 
 int main(int argc, char* argv[]) {
   intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/FACEBOOK.MAP");
