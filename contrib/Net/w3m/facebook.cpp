@@ -37,7 +37,8 @@
 
 extern "C" int ISFacebookOAuthResultUrl(const char* u) {
   std::string url(u);
-  if (url.find("code=") == std::string::npos) {
+  if (url.find("http://lovamimi.com/login_monaos.scm?code=")
+      == std::string::npos) {
     return 0;
   } else {
     return 1;

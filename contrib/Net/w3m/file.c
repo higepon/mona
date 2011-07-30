@@ -256,7 +256,6 @@ file_exist(char *path)
 {
 #ifdef MONA
     int ret = monapi_file_exists(path);
-    logprintf("%s exist= %d\n", path, ret);
     return ret;
 #else
    FILE* fp = fopen(path, "r");
@@ -269,7 +268,6 @@ file_exist(char *path)
 int is_dir(char *path)
 {
     int ret = monapi_file_is_directory(path);
-    logprintf("%s dir?= %d\n", path, ret);
     return ret;
 }
 #endif
@@ -1803,6 +1801,7 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
 	case SCM_LOCAL:
 	    {
 #ifdef MONA
+
                 if (!file_exist(pu.real_file))
                     return NULL;
                 if (is_dir(pu.real_file)) {
@@ -2256,7 +2255,11 @@ loadGeneralFile(char *path, ParsedURL *volatile current, char *referer,
     }
 #endif
 
-    if (!strcasecmp(t, "text/html"))
+    if (!strcasecmp(t, "text/html")
+#ifdef MONA
+        || (t && strcasecmp(t, "application/xhtml+xml") == 0)
+#endif
+)
 	proc = loadHTMLBuffer;
     else if (is_plain_text_type(t))
 	proc = loadBuffer;
@@ -7119,6 +7122,13 @@ loadHTMLstream(URLFile *f, Buffer *newBuf, FILE * src, int internal)
     obuf.status = R_ST_NORMAL;
     completeHTMLstream(&htmlenv1, &obuf);
     flushline(&htmlenv1, &obuf, 0, 2, htmlenv1.limit);
+
+#ifdef MONA
+    if (ISFacebookOAuthResultUrl(f->url)) {
+        SaveFacebookToken(htmlenv1.buf->first);
+    }
+#endif
+
     if (htmlenv1.title)
 	newBuf->buffername = htmlenv1.title;
     if (w3m_halfdump) {

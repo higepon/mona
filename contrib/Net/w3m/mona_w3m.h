@@ -321,9 +321,10 @@ public:
     m_pane->initW3M();
     Buffer *newbuf = NULL;
     newbuf = loadGeneralFile(url, NULL, NO_REFERER, 0, NULL);
+    _logprintf("newbuf=%x \n", newbuf);
     Firstbuf = Currentbuf = newbuf;
 
-    if(newbuf == NULL) {
+    if(newbuf == NULL || newbuf == NO_BUFFER) {
         monapi_fatal("load file failed url=<%s>\n", url);
     }
 
