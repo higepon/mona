@@ -33,7 +33,7 @@
 #include "./Str.h"
 #include "./textlist.h"
 
-#define TOKEN_FILE_PATH "/USER/FB2.TOKEN"
+#define TOKEN_FILE_PATH "/USER/FB.TOKEN"
 
 extern "C" int ISFacebookOAuthResultUrl(const char* u) {
   std::string url(u);
@@ -45,6 +45,8 @@ extern "C" int ISFacebookOAuthResultUrl(const char* u) {
   }
 }
 
+extern "C" void w3m_exit(int s);
+
 extern "C" void SaveFacebookToken(TextLineListItem* item) {
   FILE* fp = fopen(TOKEN_FILE_PATH, "w");
   if (fp == NULL) {
@@ -55,4 +57,5 @@ extern "C" void SaveFacebookToken(TextLineListItem* item) {
     fwrite(item->ptr->line->ptr, 1, item->ptr->line->length, fp);
   }
   fclose(fp);
+  w3m_exit(0);
 }

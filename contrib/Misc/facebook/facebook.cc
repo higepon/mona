@@ -69,10 +69,20 @@ static bool read_feed(const std::string& feed_id, const std::string& json_file,
   return false;
 }
 
+#define FACEBOOK_OAUTH_COMMAND "/APPS/W3M.APP/W3M.EX5 https://www.facebook.com/dialog/oauth?client_id=179761552055871&redirect_uri=http://lovamimi.com/login_monaos.scm&scope=publish_stream,offline_access,read_stream&display=wap"
+
 int main(int argc, char* argv[]) {
   intptr_t ret = monapi_enable_stacktrace("/APPS/MONAGUI/FACEBOOK.MAP");
   if (ret != M_OK) {
     monapi_fatal("syscall_stack_trace_enable failed%d\n", ret);
+  }
+
+  if (!monapi_file_exists("/USER/FB.TOKEN")) {
+    bool waits = true;
+    if (!facebook::FacebookService::ExecuteCommand(
+            FACEBOOK_OAUTH_COMMAND, waits)) {
+      monapi_fatal("oauth2 failed");
+    }
   }
 
   if (argc == 1) {
