@@ -121,7 +121,6 @@ bool Icon::Open(int cx, int cy, String dir)
 Size Icon::DrawIcon(_P<Graphics> g, String name, Icons icon, int x, int y, bool emboss, bool selection)
 {
 	g->DrawImage(icons, x + (ARRANGE_WIDTH - 32) / 2, y, Rectangle(0, 32 * (int)icon, 32, 32));
-	
 	_P<Font> f = Control::get_DefaultFont();
 	Size ret = g->MeasureString(name, f);
 	x += (ARRANGE_WIDTH - ret.Width) / 2;
