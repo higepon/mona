@@ -305,7 +305,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_DECOMPRESS_ST5:
         {
-            monapi_fatal("hige");
+          //            monapi_fatal("hige");
             // SharedMemory* mi1 = monapi_cmemoryinfo_new();
             // mi1->Handle = msg.arg1;
             // mi1->Size   = msg.arg2;

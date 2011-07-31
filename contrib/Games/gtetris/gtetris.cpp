@@ -13,7 +13,7 @@ GTetris::GTetris()
 	setTitle("GTetris");
 	setBounds((800-638)/2, (600-413)/2, 638, 413);
 
-	background = new Image("/APPS/MONAGUI/GTETRIS.APP/MAIN.BM5");
+	background = new Image("/APPS/MONAGUI/GTETRIS.APP/MAIN.BMP");
 
 	field = new Field();
 	/*
@@ -372,13 +372,13 @@ void GTetris::newGame()
 
 int main(int argc, char* argv[])
 {
-	Block::imgs[0] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK0.BM5");
-	Block::imgs[1] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK1.BM5");
-	Block::imgs[2] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK2.BM5");
-	Block::imgs[3] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK3.BM5");
-	Block::imgs[4] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK4.BM5");
-	Block::imgs[5] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK5.BM5");
-	Block::imgs[6] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK6.BM5");
+	Block::imgs[0] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK0.BMP");
+	Block::imgs[1] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK1.BMP");
+	Block::imgs[2] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK2.BMP");
+	Block::imgs[3] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK3.BMP");
+	Block::imgs[4] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK4.BMP");
+	Block::imgs[5] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK5.BMP");
+	Block::imgs[6] = new Image("/APPS/MONAGUI/GTETRIS.APP/BLOCK6.BMP");
 
 	GTetris* watch = new GTetris();
 	watch->run();

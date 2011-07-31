@@ -147,6 +147,39 @@ public:
             offsetX += 64;
         }
 
+        if (monapi_file_exists("/APPS/MONAGUI/MG.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("mg editor");
+            mesa->set_Icon(Icons_Executable);
+            mesa->set_Target("/APPS/MONAGUI/MG.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+        if (monapi_file_exists("/APPS/MONAGUI/MINE.EX5"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("mine sweeper");
+            mesa->set_Icon(Icons_Executable);
+            mesa->set_Target("/APPS/MONAGUI/MINE.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
+        if (monapi_file_exists("/APPS/MONAGUI/GTETRIS.APP"))
+        {
+            _P<Icon> mesa = new Icon();
+            mesa->set_Location(Point(0, offsetX));
+            mesa->set_Text("TETRIS");
+            mesa->set_Icon(Icons_Executable);
+            mesa->set_Target("/APPS/MONAGUI/GTETRIS.APP/GTETRIS.EX5");
+            mesa->Show();
+            offsetX += 64;
+        }
+
 
         // if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
         // {

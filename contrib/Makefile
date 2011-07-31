@@ -51,8 +51,7 @@ all:
 	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) install
 	cd Games/ghebtn && $(MAKE) && $(MAKE) install
 	cd Games/gnullpo && $(MAKE) && $(MAKE) install
-# gtetris can't be exec, bug of file server?
-	cd Games/gtetris && $(MAKE) # &&  $(MAKE) install
+	cd Games/gtetris && $(MAKE) &&  $(MAKE) install
 	cd Games/mblupin && $(MAKE) && $(MAKE) install
 	cd Games/mine && $(MAKE) && $(MAKE) install
 	cd Games/mtorz && $(MAKE) && $(MAKE) install
