@@ -20,7 +20,7 @@
 
 #define NULL     0
 #define NORMAL   0
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 #define DLL_PROCESS_ATTACH 0
 #define DLL_PROCESS_DETACH 1

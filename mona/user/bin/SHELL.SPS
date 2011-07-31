@@ -71,7 +71,7 @@
     [(= 2 (length (command-line)))
       (display "shell server restarted\n")]
     [else
-      (call-process "/APPS/MOSH.APP/MOSH.EXE /USER/TEST/TEST-ALL.SPS")
+;      (call-process "/APPS/MOSH.APP/MOSH.EXE /USER/TEST/TEST-ALL.SPS")
       (start-process "/SERVERS/GUI.EX5 /APPS/MONAFRMS.INI")])
   (server))
 

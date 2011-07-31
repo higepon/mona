@@ -3,7 +3,7 @@ SOURCES = gtetris.cpp block.cpp tetromino.cpp field.cpp
 
 INSTDIR = $(BINDIR)/APPS/MONAGUI/GTETRIS.APP
 INSTFILES = block0.bmp block1.bmp block2.bmp block3.bmp block4.bmp block5.bmp block6.bmp main.bmp
-CLEANFILES = $(INSTFILES)
+CLEANFILES =
 $(TARGET).EX5: $(INSTFILES)
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
