@@ -81,10 +81,10 @@ public:
         const int EXTRA_WIDTH = 350;
         setBounds(80, 100, 300 + EXTRA_WIDTH, 400);
         setTitle("Terminal");
-        command_->setText("ls /APPS/");
+        command_->setText("help");
 
         int height = getFontMetrics()->getHeight("H");
-        outputNumRows_ = OUTPUT_HIGHT / height - 1;
+        outputNumRows_ = OUTPUT_HIGHT / height - 3;
 
         command_->setBounds(0, 0, COMMAND_INPUT_WIDTH + EXTRA_WIDTH, 30);
         command_->setFontStyle(Font::FIXED);
@@ -93,6 +93,7 @@ public:
         scrollbar_->setBounds(OUTPUT_WIDTH + EXTRA_WIDTH, 30, 16, OUTPUT_HIGHT);
         output_->setFontStyle(Font::FIXED);
         output_->setFocused(false);
+        output_->setEditable(false);
         output_->setBackground(0x05070035);
         output_->setForeground(0xffffffff);
         add(command_.get());

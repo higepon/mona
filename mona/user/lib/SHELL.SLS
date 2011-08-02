@@ -1,5 +1,5 @@
 (library (shell)
-         (export call-process+ start-process+ ps ls cat)
+         (export call-process+ start-process+ ps ls cat help)
          (import (rnrs) (shorten) (monapi) (mosh) (mosh file) 
                  (shell path) (mosh process) (only (srfi :13) string-join string-contains))
 
@@ -9,6 +9,9 @@
       (monapi-stream-write stream (string->utf8 (string-append f "\n"))))
     (directory-list dir)))
 
+(define (help stream)
+  (write-string stream
+    "Commands\n    ps\n    ls [dir]\n    cat [path]\n    kill [tid]\n    application executable\n\n\n"))
 (define (cat stream path)
   (call-with-port (open-input-file path)
     (^p
