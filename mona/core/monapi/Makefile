@@ -51,7 +51,7 @@ SOURCES = monapi_impl.cpp \
           text/Line.cpp \
           ContigousMemory.cpp\
           drivers/virtio/VirtQueue.cpp
-CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c FreeBSD/divdi3.c FreeBSD/umoddi3.c
+CSOURCES = FreeBSD/qdivrem.c FreeBSD/udivdi3.c FreeBSD/divdi3.c FreeBSD/umoddi3.c _vsnprintf.c
 
 
 NASMSRCS = _alloca.asm

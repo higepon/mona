@@ -165,7 +165,7 @@ static struct pbuf* low_level_input(struct netif* netif)
     } else {
         /* drop packet(); */
 //        snmp_inc_ifindiscards(netif);
-        printf("Could not allocate pbufs\n");
+      monapi_warn("Could not allocate pbufs\n");
     }
 
     return p;

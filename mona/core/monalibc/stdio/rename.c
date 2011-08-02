@@ -30,27 +30,19 @@
 #define RENAME_BUF_SIZE 512
 int rename(const char *oldpath, const char *newpath)
 {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
-
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (!monapi_file_exists(oldpath)) {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return -1;
     }
     char buf[RENAME_BUF_SIZE];
     FILE* src = fopen(oldpath, "r");
     if (src == NULL) {
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return -1;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     FILE* dest = fopen(newpath, "w");
     if (dest == NULL) {
         fclose(src);
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         return -1;
     }
-    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     size_t size;
     while (size = fread(buf, 1, RENAME_BUF_SIZE, src)) {
         if (fwrite(buf, 1, size, dest) != size) {

@@ -383,70 +383,105 @@ void _printf(const char* format, ...)
     }
 }
 
-void _logprintf(const char* format, ...)
+typedef char* va_list;
+#define va_start(ap,last) (void)((ap)=(va_list)&(last)+sizeof(last))
+#define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
+#define va_end(ap) (void)((ap)=NULL)
+#define va_copy(dest, src) (void)(dest = src)
+
+extern "C" int _vsnprintf (char *str, size_t count, const char *fmt, va_list arg);
+
+int
+_vsprintf(char *buf, const char *fmt, va_list ap)
 {
-    int direct = 2;
-    // output directry
-    static char buf[128];
-    int bufpos = 0;
-    void** list = (void**)&format;
-    list++;
-    for (int i = 0; format[i] != '\0'; i++)
-    {
-        if (format[i] == '%')
-        {
-            if (bufpos > 0)
-            {
-                buf[bufpos] = '\0';
-                print(buf, direct);
-                bufpos = 0;
-            }
-            i++;
 
-            switch (format[i]) {
-              case 's':
-                  print((char*)*list, direct);
-                  list++;
-                  break;
-              case 'd':
-                  putInt(*(int*)list, 10, direct);
-                  list++;
-                  break;
-              case 'x':
-                  print("0x", direct);
-                  putInt(*(int*)list, 16, direct);
-                  list++;
-                  break;
-              case 'c':
-                  putCharacter((char)*(int*)(list), direct);
-                  list++;
-                  break;
-              case '%':
-                  putCharacter('%', direct);
-                  break;
-              case '\0':
-                  i--;
-                  break;
-            }
-        }
-        else
-        {
-            buf[bufpos] = format[i];
-            bufpos++;
-            if (bufpos == 127) {
-                buf[bufpos] = '\0';
-                print(buf, direct);
-                bufpos = 0;
-            }
-        }
-    }
-
-    if (bufpos > 0)
-    {
-        buf[bufpos] = '\0';
-        print(buf, direct);
-    }
+  return _vsnprintf(buf, INT_MAX, fmt, ap);
 }
+
+
+void _logprintf(const char* format, ...) {
+
+    char str[4096];
+    str[0] = '\0';
+    va_list args;
+    int result;
+
+    va_start(args, format);
+    result = _vsprintf(str, format, args);
+    va_end(args);
+    if(result > 4096) {
+        /* over flow */
+        syscall_log_print("logprintf:overflow");
+    }
+
+    syscall_log_print(str);
+}
+
+
+// void _logprintf(const char* format, ...)
+// {
+//     int direct = 2;
+//     // output directry
+//     static char buf[128];
+//     int bufpos = 0;
+//     void** list = (void**)&format;
+//     list++;
+//     for (int i = 0; format[i] != '\0'; i++)
+//     {
+//         if (format[i] == '%')
+//         {
+//             if (bufpos > 0)
+//             {
+//                 buf[bufpos] = '\0';
+//                 print(buf, direct);
+//                 bufpos = 0;
+//             }
+//             i++;
+
+//             switch (format[i]) {
+//               case 's':
+//                   print((char*)*list, direct);
+//                   list++;
+//                   break;
+//               case 'd':
+//                   putInt(*(int*)list, 10, direct);
+//                   list++;
+//                   break;
+//               case 'x':
+//                   print("0x", direct);
+//                   putInt(*(int*)list, 16, direct);
+//                   list++;
+//                   break;
+//               case 'c':
+//                   putCharacter((char)*(int*)(list), direct);
+//                   list++;
+//                   break;
+//               case '%':
+//                   putCharacter('%', direct);
+//                   break;
+//               case '\0':
+//                   i--;
+//                   break;
+//             }
+//         }
+//         else
+//         {
+//             buf[bufpos] = format[i];
+//             bufpos++;
+//             if (bufpos == 127) {
+//                 buf[bufpos] = '\0';
+//                 print(buf, direct);
+//                 bufpos = 0;
+//             }
+//         }
+//     }
+
+//     if (bufpos > 0)
+//     {
+//         buf[bufpos] = '\0';
+//         print(buf, direct);
+//     }
+// }
 
 /*----------------------------------------------------------------------
     System call

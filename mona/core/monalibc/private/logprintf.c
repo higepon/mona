@@ -20,7 +20,7 @@ void logprintf(const char* format, ...) {
     va_start(args, format);
     result = vsprintf(str, format, args);
     va_end(args);
-    if(result > 512) {
+    if(result > 4096) {
         /* over flow */
         syscall_log_print("logprintf:overflow");
     }
