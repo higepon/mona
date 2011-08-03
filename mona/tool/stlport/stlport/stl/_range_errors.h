@@ -53,6 +53,8 @@ _STLP_END_NAMESPACE
 #else
 # if defined (_STLP_WINCE)
 #  define _STLP_THROW_MSG(ex,msg)  TerminateProcess(GetCurrentProcess(), 0)
+#elif defined(MONA)
+#  define _STLP_THROW_MSG(ex,msg)  { _logprintf("STL execption: %s : %s:%d", msg, __FILE__, __LINE__); int* p = (int*)0; *p = 0;}
 # else
 ///#  include <cstdlib>
 ///#  include <cstdio>
