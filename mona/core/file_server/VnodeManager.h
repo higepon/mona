@@ -41,6 +41,7 @@ private:
 protected:
 
 private:
+    std::string removeHead(const std::string& path);
     typedef std::map<uint32_t, io::FileInfo*> FileInfoMap;
     Vnode* root_;
     FileInfoMap fileInfoMap_;

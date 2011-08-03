@@ -19,13 +19,22 @@ VnodeManager::~VnodeManager()
     delete cacher_;
 }
 
+// remove first '/'. fix me
+std::string VnodeManager::removeHead(const std::string& path)
+{
+  if (path.empty()) {
+      return path;
+    } else {
+       return path.substr(1, path.size() - 1);
+    }
+}
+
 int VnodeManager::delete_file(const std::string& name, bool isDirectory)
 {
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return M_BAD_ARG;
 
-    // remove first '/'. fix me
-    string filename = name.substr(1, name.size() - 1);
+    string filename = removeHead(name);
     Vnode* file;
     int ret = lookup(root_, filename, &file, isDirectory ? Vnode::DIRECTORY : Vnode::REGULAR);
     if (ret != M_OK) {
@@ -122,7 +131,7 @@ int VnodeManager::read_directory(const std::string&name, SharedMemory** mem)
     }
     else
     {
-        filename = name.substr(1, name.size() - 1);
+        filename = removeHead(name);
     }
 
     Vnode* dir;
@@ -237,7 +246,7 @@ int VnodeManager::open(const std::string& name, intptr_t mode, uint32_t tid, uin
         return M_UNKNOWN;
     }
     // remove first '/'. fix me
-    string filename = name.substr(1, name.size() - 1);
+    string filename = removeHead(name);
     Vnode* file;
     if (lookup(root_, filename, &file) != M_OK) {
         if (mode & FILE_CREATE) {
@@ -341,7 +350,7 @@ int VnodeManager::stat(uint32_t fileID, Stat* st)
 
 bool VnodeManager::exists(const std::string& path)
 {
-    string filename = path.substr(1, path.size() - 1);
+    string filename = removeHead(path);
     Vnode* file;
     return lookup(root_, path, &file, Vnode::ANY) == M_OK;
 }
@@ -349,7 +358,7 @@ bool VnodeManager::exists(const std::string& path)
 int VnodeManager::stat(const string& path, Stat* st)
 {
     // remove first '/'. fix me
-    string filename = path.substr(1, path.size() - 1);
+    string filename = removeHead(path);
     Vnode* file;
     intptr_t ret = lookup(root_, filename, &file);
     if (ret != M_OK) {
