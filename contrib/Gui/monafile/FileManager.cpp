@@ -131,7 +131,7 @@ public:
             mesa->set_Location(Point(0, offsetX));
             mesa->set_Text("Gmail");
             mesa->set_Icon(Icons_Gmail);
-            mesa->set_Target("/APPS/W3M.APP/W3M.EX5 https://mail.google.com/mail/h/");
+            mesa->set_Target("/APPS/W3M.APP/W3M.EX5 -d https://mail.google.com/mail/h/");
             mesa->Show();
             offsetX += 64;
         }

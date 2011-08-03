@@ -111,7 +111,7 @@ clean:
 	cd Sysutils/gtimer && $(MAKE) clean
 	cd Sysutils/startx && $(MAKE) clean
 	cd Gui/test_monagui && $(MAKE) clean
-
+	cd Net/w3m && $(MAKE) clean
 	cd Devel/gcc && $(MAKE) clean
 
 TARGETS = \
@@ -148,6 +148,7 @@ Multimedia/monapeg \
 Multimedia/monappt \
 Multimedia/xmonapeg \
 Net/frecv \
+Net/w3m \
 Net/monadat \
 Shells/gshell \
 Shells/mshell/ \
