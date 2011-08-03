@@ -509,12 +509,17 @@ intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     if (NULL == outStream || outStream->isInvalid())
     {
         bool warnOnce = false;
-        if (!warnOnce) {
+        //        if (!warnOnce) {
             _logprintf("You can't use printf, use _printf instead.");
             _logprintf("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
-            warnOnce = true;
+            _logprintf("content=[");
+            for (int i = 0; i < size; i++) {
+              _logprintf("%c", buffer[i]);
+            }
+            monapi_warn("]");
+            //            warnOnce = true;
             return -1;
-        }
+            //        }
     }
     return outStream->write(buffer, size);
 }

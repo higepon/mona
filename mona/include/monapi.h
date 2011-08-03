@@ -29,7 +29,8 @@
 #include <monapi/scoped_ptr.h>
 #include <monapi/SharedMemory.h>
 
-#define monapi_fatal(...) {PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Fatal (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), printf("Fatal (%s:%s:%d) :", psinfo.name, __FILE__, __LINE__), printf(__VA_ARGS__), exit(-1); }
+// we use nullpo to show stacktrace.
+#define monapi_fatal(...) {PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Fatal (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__); _logprintf(__VA_ARGS__); printf("Fatal (%s:%s:%d) :", psinfo.name, __FILE__, __LINE__); printf(__VA_ARGS__); char* p = (char*)0; *p = 0; }
 
 // warnings is not to be written to stdout, since it causes infinite loop.
 #define monapi_warn(...) { PsInfo psinfo; MonAPI::System::getProcessInfo(&psinfo); _logprintf("Warning (%s:%s:%d) : ", psinfo.name, __FILE__, __LINE__), _logprintf(__VA_ARGS__), _logprintf("\n"); }
