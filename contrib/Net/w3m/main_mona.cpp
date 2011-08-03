@@ -2366,6 +2366,9 @@ void W3MFrame::processEvent(Event* event)
    CurrentCmdData = NULL;
    return;
  }
+ if (event->getType() == WindowEvent::WINDOW_ACTIVATED) {
+   m_pane->setFocused(true);
+ }
  Frame::processEvent(event);
 }
 int file_size(char *path)

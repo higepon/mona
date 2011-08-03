@@ -167,6 +167,10 @@ public:
                    event->header == MSG_TEXT) {
           appendOutput(event->str);
         }
+
+        if (event->getType() == WindowEvent::WINDOW_ACTIVATED) {
+            command_->setFocused(true);
+        }
     }
 
 protected:

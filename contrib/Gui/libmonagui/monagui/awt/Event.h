@@ -81,6 +81,7 @@ namespace monagui {
         /** 文字を確定した */
         static const int IME_ENDCOMPOSITION = 403;
         static const int IME_BACKSPACE = 404;
+        static const int WINDOW_ACTIVATED = 405;
 
     private:
         /** イベントタイプ */

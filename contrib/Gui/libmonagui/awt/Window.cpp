@@ -88,6 +88,8 @@ namespace monagui {
         this->customEvent.setType(Event::CUSTOM_EVENT);
         this->customEvent.setSource(this);
 
+        this->windowEvent.setSource(this);
+
         /* 配置位置 */
         this->insets.top = 0;
         this->insets.bottom = 0;
@@ -483,6 +485,8 @@ namespace monagui {
                 }
                 case MSG_GUISERVER_ACTIVATED:
                     setFocused(true);
+                    this->windowEvent.setType(WindowEvent::WINDOW_ACTIVATED);
+                    dispatchEvent(&this->windowEvent);
                     repaint();
                     break;
                 case MSG_GUISERVER_DEACTIVATE:
