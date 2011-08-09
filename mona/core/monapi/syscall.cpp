@@ -401,7 +401,9 @@ _vsprintf(char *buf, const char *fmt, va_list ap)
 
 void _logprintf(const char* format, ...) {
 
-    char str[4096];
+    // this buffer size was 4096, but it caused second boot failure.
+    // which may be size problem on size of MONITOR.BIN
+    char str[2048];
     str[0] = '\0';
     va_list args;
     int result;
@@ -409,7 +411,7 @@ void _logprintf(const char* format, ...) {
     va_start(args, format);
     result = _vsprintf(str, format, args);
     va_end(args);
-    if(result > 4096) {
+    if(result > 2048) {
         /* over flow */
         syscall_log_print("logprintf:overflow");
     }

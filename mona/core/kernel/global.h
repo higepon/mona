@@ -8,9 +8,9 @@
 #define GLOBAL extern "C"
 #define GLOBAL_VAL(v) /* */
 #endif
-#ifdef DEBUG_MODE
+//#ifdef DEBUG_MODE
 #define assert(x) if (!x) {panic(x);}
-#endif
+//#endif
 #include <sys/types.h>
 #include "kernel.h"
 #include "VirtualConsole.h"
