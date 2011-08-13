@@ -308,7 +308,7 @@
 #define _STLP_HAS_NO_NEW_C_HEADERS 1
 #define _STLP_NO_WCHAR_T 1
 #define _STLP_NO_VENDOR_STDLIB_L 1
-
+#define _STLP_NO_BAD_ALLOC 1
 
 /*==========================================================*/
 
