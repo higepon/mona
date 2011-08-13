@@ -222,8 +222,9 @@
  * Uncomment to get feedback at compilation time about result of build environment
  * introspection.
  */
+/*
 #define _STLP_VERBOSE 1
-
+*/
 /*
  * Use minimum set of default arguments on template classes that have more
  * than one - for example map<>, set<>.
@@ -303,6 +304,8 @@
 /*
 #define _STLP_USE_BOOST_SUPPORT 1
 */
+
+#define _STLP_HAS_NO_NEW_C_HEADERS 1
 
 
 /*==========================================================*/
