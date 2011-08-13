@@ -1,0 +1,2 @@
+Since we don't use locale and iostream, we have no need to compile stlport library.
+Configurations should be written in STLport-5.2.1/stlport/stl/config/user_config.h.
