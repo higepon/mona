@@ -44,6 +44,7 @@ typedef char* va_list;
 #define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
 #define va_end(ap) (void)((ap)=NULL)
 #define va_copy(dest, src) (void)(dest = src)
+int vprintf(const char *format, va_list ap);
 
 
 #ifdef __cplusplus

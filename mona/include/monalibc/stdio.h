@@ -175,7 +175,13 @@ int	 fputc(int c, FILE *stream);
 int	 fputs(const char * s, FILE * stream);
 int	 getc(FILE *stream);
 int	 getchar(void);
-/*char	*gets(char *s); //stub */
+/* required by STL port 5.2.1 START */
+char *gets(char *s);
+int remove(const char *pathname);
+FILE *tmpfile(void);
+char *tmpnam(char *s);
+int scanf(const char *format, ...);
+/* required by STL port 5.2.1 END */
 int	 putc(int c, FILE *stream);
 int	 putchar(int c);
 int	 puts(const char *s);
@@ -203,6 +209,7 @@ void	 perror(const char *);
 int	 fileno(FILE *);
 
 /* #define perror(err) printf(err) */
+
 
 #ifdef __cplusplus
 }
