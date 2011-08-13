@@ -23,7 +23,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/boshi/cio.c \
 	  stdlib/abort.c stdlib/abs.c stdlib/atexit.c \
 	  stdlib/atof.c stdlib/atoi.c stdlib/atol.c stdlib/bsearch.c \
-	  stdlib/div.c stdlib/getenv.c stdlib/labs.c stdlib/ldiv.c \
+	  stdlib/div.c stdlib/getenv.c stdlib/labs.c stdlib/ldiv.c stdlib/system.c \
 	  stdlib/llabs.c stdlib/mblen.c stdlib/mbstowcs.c stdlib/mbtowc.c \
 	  stdlib/strtod.c stdlib/strtol.c stdlib/strtoul.c stdlib/strtoi.c \
 	  stdlib/wcstombs.c stdlib/wctomb.c string/memccpy.c string/memchr.c \

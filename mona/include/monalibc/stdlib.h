@@ -105,6 +105,8 @@ int wctomb(char *s, wchar_t wc);
 
 void qsort(void *base, size_t n, size_t size, int (*fnc)(const void*, const void*));
 
+int system(const char *command);
+
 #ifdef __cplusplus
 }
 #endif

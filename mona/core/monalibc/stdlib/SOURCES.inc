@@ -20,3 +20,4 @@ strtoul.c \
 strtoi.c \
 wcstombs.c \
 wctomb.c \
+system.c
