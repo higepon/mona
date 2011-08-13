@@ -113,6 +113,9 @@ _STLP_END_NAMESPACE
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
 #    endif
+#ifdef MONA
+extern "C" int exit(int status);
+#endif
 #    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
 #  else
 #    define _STLP_THROW_BAD_ALLOC _STLP_THROW(_STLP_STD::bad_alloc())

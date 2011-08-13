@@ -2,7 +2,7 @@
 #define __FILESERVER_H__
 
 #include <sys/error.h>
-#include "monalibc.h"
+#include <stdio.h>
 #include "servers/file.h"
 #include "servers/servers.h"
 #include "vnode.h"

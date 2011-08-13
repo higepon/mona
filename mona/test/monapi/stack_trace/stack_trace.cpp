@@ -1,8 +1,8 @@
+#include <assert.h>
 #include <monapi.h>
 #define MUNIT_GLOBAL_VALUE_DEFINED
 #include <monapi/MUnit.h>
 
-#include <assert.h>
 #include <monapi/MapFileParser.h>
 #include <stdio.h>
 

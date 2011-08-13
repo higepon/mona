@@ -10,10 +10,12 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
+#include <stdlib.h>
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
 #include "scheme.h"
 #include "Nil.h"
+
 //#include "Parser.h"
 using namespace util;
 using namespace std;

@@ -13,6 +13,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <stdlib.h>
 #include "Object.h"
 #include "Environment.h"
 #include "Cons.h"

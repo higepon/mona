@@ -7,7 +7,7 @@ TARGET  = TFILE
 SOURCES = file.cpp
 INSTDIR = $(BINDIR)/APPS/$(TARGET).APP
 INSTFILES = this.is.my_long_file_name.file.txt this.is.my_unicode_file_name.あいう.file.txt TFILE.map
-ADDCFLAGS = -DDEBUG -I . -I $(INCDIR)/monalibc -mno-stack-arg-probe -I $(MONADIR)/core/file_server
+ADDCFLAGS = -DDEBUG -I .  -mno-stack-arg-probe -I $(MONADIR)/core/file_server
 
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    =  -lmonalibc-imp --enable-auto-import

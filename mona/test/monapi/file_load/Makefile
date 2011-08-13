@@ -7,7 +7,7 @@ TARGET  = TFLOAD
 SOURCES = file_load.cpp
 INSTDIR = $(BINDIR)/APPS/$(TARGET).APP
 INSTFILES = TFLOAD.map
-ADDCFLAGS = -DDEBUG -I . -I $(INCDIR)/monalibc -mno-stack-arg-probe -I $(MONADIR)/core/file_server
+ADDCFLAGS = -DDEBUG -I .  -mno-stack-arg-probe -I $(MONADIR)/core/file_server
 
 SHAREDIR   = $(MONADIR)/share
 ADDLINK    =  -lmonalibc-imp --enable-auto-import

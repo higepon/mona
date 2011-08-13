@@ -47,7 +47,9 @@
  * in STLport iostreams mode, namespace customization guaranty that you
  * link to the right library.
  */
+/*
 #define _STLP_DEBUG 1
+*/
 /*
  * You can also choose the debug level:
  * STLport debug level: Default value
@@ -309,6 +311,8 @@
 #define _STLP_NO_WCHAR_T 1
 #define _STLP_NO_VENDOR_STDLIB_L 1
 #define _STLP_NO_BAD_ALLOC 1
+#define _STLP_NO_NATIVE_MBSTATE_T 1
+#define _STLP_NO_CSTD_FUNCTION_IMPORTS 1
 
 /*==========================================================*/
 

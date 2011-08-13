@@ -30,7 +30,7 @@ public:
     int delete_directory(const std::string& name);
     int read_directory(const std::string& name, MonAPI::SharedMemory** mem);
     // N.B fileID should be posive, since negative values indicates error.
-    intptr_t fileID(Vnode* file , uint32_t tid) {return abs((intptr_t)file | tid);} // temporary
+    intptr_t fileID(Vnode* file , uint32_t tid) {return abs((int)file | (int)tid);} // temporary
     Vnode* alloc();
     VnodeCacher* cacher() {return cacher_;}
     void split(std::string str, char ch, std::vector<std::string>& v);

@@ -10,6 +10,7 @@
     \version $Revision$
     \date   create:2007/07/14 update:$Date$
 */
+#include <stdlib.h>
 #include "procedures/Procedure.h"
 #include "primitive_procedures.h"
 #include "libcont/cont.h"

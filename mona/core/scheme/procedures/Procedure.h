@@ -13,6 +13,7 @@
 #ifndef __PRIMITIVE_PROCEDURE_PROCEDURE_H__
 #define __PRIMITIVE_PROCEDURE_PROCEDURE_H__
 
+#include <stdlib.h>
 #include "PrimitiveProcedure.h"
 #include "Kernel.h"
 #include "scheme.h"

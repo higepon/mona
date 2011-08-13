@@ -20,11 +20,13 @@
 #define MAP_FILE_ASSERT(cond) {}
 #endif
 
+#ifndef EOF
+#define EOF -1
+#endif
 
 class FileReader
 {
   public:
-    static const int EOF = -1;
     FileReader() : pos_(0), shm_(NULL), eof_(false){}
     inline bool end() { return eof_; }
     bool open(const std::string& path)
