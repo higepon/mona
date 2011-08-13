@@ -36,9 +36,7 @@
  * If you want iostreams, you have to compile library in ../build/lib
  * and supply resulting library at link time.
  */
-/*
 #define _STLP_NO_IOSTREAMS 1
-*/
 
 /*
  * Set _STLP_DEBUG to turn the "Debug Mode" on.
@@ -49,9 +47,7 @@
  * in STLport iostreams mode, namespace customization guaranty that you
  * link to the right library.
  */
-/*
 #define _STLP_DEBUG 1
-*/
 /*
  * You can also choose the debug level:
  * STLport debug level: Default value
@@ -87,9 +83,7 @@
  * your program without optimization. Option does not affect STLport library build; you
  * may use the same binary library with and without this option, on per-project basis.
  */
-/*
 #define _STLP_NO_CUSTOM_IO
-*/
 
 /*
  * _STLP_NO_RELOPS_NAMESPACE: if defined, don't put the relational
@@ -169,17 +163,13 @@
  *  Define this macro to disable anachronistic constructs (like the ones used in HP STL and
  *  not included in final standard, etc.
  */
-/*
 #define _STLP_NO_ANACHRONISMS 1
-*/
 
 /*
  *  Define this macro to disable STLport extensions (for example, to make sure your code will
  *  compile with some other implementation )
  */
-/*
 #define _STLP_NO_EXTENSIONS 1
-*/
 
 /*
  * You should define this macro if compiling with MFC - STLport <stl/config/_windows.h>
@@ -232,9 +222,7 @@
  * Uncomment to get feedback at compilation time about result of build environment
  * introspection.
  */
-/*
 #define _STLP_VERBOSE 1
-*/
 
 /*
  * Use minimum set of default arguments on template classes that have more
