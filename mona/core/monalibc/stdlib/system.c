@@ -1,6 +1,7 @@
 #include <stdlib.h>
+#include <assert.h>
 
 int system(const char *command) {
-  ASSERT(0);
+  assert(0);
   return -1;
 }
