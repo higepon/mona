@@ -21,6 +21,10 @@ namespace Mona
 			new Inline("cli");
 			A20.Enable();
 			
+            // N.B.
+            // Total file size bytes should be less than 0xF000 * 16 byte = 960KB.
+            // Otherwise secondboot itself will be overwritten.
+            // since secondboot is loaded LDRSEG=0xF000.(Defined on firstboot).
 			ReadServer("KERNEL.BIN");
 			ReadServer("FILE.BIN");
 			ReadServer("PROCESS.BIN");
