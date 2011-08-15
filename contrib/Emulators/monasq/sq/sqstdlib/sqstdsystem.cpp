@@ -2,13 +2,13 @@
 #include <squirrel.h>
 #if defined( MONASQ )
 #include <monapi.h>
-#include <monalibc/assert.h>
+#include <assert.h>
 //#include "misc/setjmp.h"
 #include <monalibc/setjmp.h>
 #include <monalibc/time.h>
 #include <monagui.h>
 #define system(cmdline)		monapi_process_execute_file(cmdline, MONAPI_TRUE)
-static int remove(const char*) { return -1; }
+//static int remove(const char*) { return -1; }
 //static int rename(const char*, const char*) { return -1; }
 #else
 #include <time.h>

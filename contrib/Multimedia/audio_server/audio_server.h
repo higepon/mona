@@ -6,7 +6,6 @@
 #include "circular_buffer.h"
 #include <monapi/Stream.h>
 #include <monapi/Thread.h>
-#include <stlport/list>
 
 class Mixer
 {

@@ -5,7 +5,6 @@
 #include <monapi/StringHelper.h>
 #include <stdio.h>
 #include <audio.h>
-#include <assert.h>
 #include <math.h>
 #include <dirent.h>
 #include <ivorbisfile.h>

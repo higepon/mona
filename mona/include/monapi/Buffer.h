@@ -16,7 +16,7 @@ public:
 
     Buffer(void* data, uintptr_t size) : data_((uint8_t*)data), size_(size)
     {
-        ASSERT(data_);
+        MONA_ASSERT(data_);
     }
 
     virtual ~Buffer()
@@ -42,8 +42,8 @@ public:
 
     static bool copy(Buffer& dest, uintptr_t destOffset, const Buffer& source, uintptr_t sourceOffset, uintptr_t size)
     {
-        ASSERT(dest.data_);
-        ASSERT(source.data_);
+        MONA_ASSERT(dest.data_);
+        MONA_ASSERT(source.data_);
         if (dest.size() - destOffset < size) {
             monapi_warn("copy failed");
             return false;

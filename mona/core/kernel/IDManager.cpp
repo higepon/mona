@@ -61,7 +61,7 @@ intptr_t IDManager::getLastError() const
 intptr_t IDManager::allocateID(KObject* object)
 {
     int id = this->id++;
-    ASSERT(!tree.contains(id));
+    MONA_ASSERT(!tree.contains(id));
     tree.add(id, object);
     object->addRef();
     object->setId(id);

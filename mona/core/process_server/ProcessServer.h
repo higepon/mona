@@ -66,7 +66,7 @@ private:
                 return ;
             }
         }
-        ASSERT(false);
+        MONA_ASSERT(false);
     }
 
     intptr_t addProcessInfo(uint32_t parentTid, uint32_t subThreadTid)
@@ -143,7 +143,7 @@ public:
             {
                 uint32_t tid = 0;
                 MonAPI::scoped_ptr<MonAPI::BufferReceiver> buf(MonAPI::Message::receiveBuffer(msg.from));
-                ASSERT(buf.get());
+                MONA_ASSERT(buf.get());
                 std::string command_line((const char*)buf->buffer(), buf->bufferSize());
                 int result = ExecuteFile(msg.from, command_line.c_str(), msg.arg2, msg.arg3, &tid, msg.from);
                 MonAPI::Message::reply(&msg, result, tid);

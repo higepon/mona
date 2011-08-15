@@ -208,7 +208,7 @@ BufferReceiver* Message::receiveBuffer(uintptr_t tid)
             receiver = new BufferReceiver(bufferSize);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         } else if (msg.header == Message::MSG_SEND_BUFFER_PACKET) {
-            ASSERT(receiver != NULL);
+            MONA_ASSERT(receiver != NULL);
             receiver->receive(msg.str, MESSAGE_INFO_MAX_STR_LENGTH);
         }
         if (receiver->isDone()) {

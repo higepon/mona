@@ -157,8 +157,8 @@ class PageManager {
 
     void map(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool isWritable, bool isUser)
     {
-        ASSERT((paddress % ARCH_PAGE_SIZE) == 0);
-        ASSERT((laddress % ARCH_PAGE_SIZE) == 0);
+        MONA_ASSERT((paddress % ARCH_PAGE_SIZE) == 0);
+        MONA_ASSERT((laddress % ARCH_PAGE_SIZE) == 0);
         PageEntry* table = getOrAllocateTable(directory, laddress, isWritable, isUser);
         uint32_t tableIndex = getTableIndex(laddress);
         setAttribute(&(table[tableIndex]), true, isWritable, isUser, paddress);

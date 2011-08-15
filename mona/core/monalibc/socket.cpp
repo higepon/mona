@@ -79,7 +79,7 @@ int getaddrinfo(const char *node, const char *service,
         memcpy(ainfo, receiver->buffer(), sizeof(struct addrinfo));
         ainfo->ai_addr = (struct sockaddr*)(new uint8_t[ainfo->ai_addrlen]);
         memcpy(ainfo->ai_addr, receiver->buffer() + sizeof(struct addrinfo), ainfo->ai_addrlen);
-        ASSERT(receiver->bufferSize() == (sizeof(struct addrinfo) + ainfo->ai_addrlen));
+        MONA_ASSERT(receiver->bufferSize() == (sizeof(struct addrinfo) + ainfo->ai_addrlen));
         *res = ainfo;
     }
     delete receiver;
@@ -351,7 +351,7 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout)
 {
-    ASSERT((4 + sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
+    MONA_ASSERT((4 + sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
     uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
 
     bool haveReadFds = readfds != NULL;

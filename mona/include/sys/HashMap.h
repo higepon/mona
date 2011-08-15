@@ -42,7 +42,7 @@ template <class T> class HashMap : public Map<T> {
 };
 
 template <class T> HashMap<T>::HashMap(int hashsize) {
-    ASSERT(hashsize != 0);
+    MONA_ASSERT(hashsize != 0);
     hashsize_ = hashsize;
     tree_     = new BinaryTree<T>;
 }
@@ -59,7 +59,7 @@ template <class T> int HashMap<T>::hash(const char* str) {
         value = rol(value);
         value = value ^ *str;
     }
-    ASSERT(hashsize_ != 0);
+    MONA_ASSERT(hashsize_ != 0);
     return value % hashsize_;
 }
 

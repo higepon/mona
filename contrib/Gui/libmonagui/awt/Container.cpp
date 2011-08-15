@@ -159,7 +159,7 @@ namespace monagui {
             monapi_warn_once("don't call thread unsafe methods from another threads.");
         }
         if (getBuffer() == NULL) return;
-        ASSERT(getGraphics()); // don't use getGraphics(), before add()
+        MONA_ASSERT(getGraphics()); // don't use getGraphics(), before add()
         paint(getGraphics());
         // 子部品を再描画する
         int I = this->componentList.size();

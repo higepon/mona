@@ -46,7 +46,7 @@ SOURCES = \
 	util/Vector.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE =  -I. -I.. -I$(INCDIR) -I ../ime_server -I$(INCDIR)/stlport
+INCLUDE =  -I. -I.. -I$(INCDIR) -I ../ime_server -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++
 
 all : $(TARGET)
 

@@ -21,7 +21,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     if (thread == g_idleThread) {
         return M_OK;
     }
-    ASSERT(message != NULL);
+    MONA_ASSERT(message != NULL);
 
     if (thread->messageList.size() == MAX_MESSAGES) {
         #if 0
@@ -33,7 +33,7 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     }
 
     MessageInfo* info = new MessageInfo;
-    ASSERT(info != NULL);
+    MONA_ASSERT(info != NULL);
 
     *info = *message;
     info->from = g_currentThread->thread->id;
@@ -65,7 +65,7 @@ intptr_t Messenger::peek(Thread* thread, MessageInfo* message, int index, int fl
         return M_BAD_INDEX;
     }
 
-    ASSERT(index >= 0);
+    MONA_ASSERT(index >= 0);
     MessageInfo* from = NULL;
     if (flags & PEEK_REMOVE) {
         list.removeAt(index, &from);

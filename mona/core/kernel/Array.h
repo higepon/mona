@@ -29,7 +29,7 @@ template <class T> class Array
                               length(src.length),
                               alloc(src.alloc)
     {
-        ASSERT(false);
+        MONA_ASSERT(false);
     }
 
     Array& operator=(const Array& src)

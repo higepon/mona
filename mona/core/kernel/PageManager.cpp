@@ -21,7 +21,7 @@
 PageManager::PageManager(uintptr_t systemMemorySizeByte, PhysicalAddress vramAddress, uintptr_t vramSizeByte)
     : systemMemorySizeByte_(systemMemorySizeByte), vramAddress_(vramAddress), vramSizeByte_(vramSizeByte)
 {
-    ASSERT((vramAddress_ % ARCH_PAGE_SIZE) == 0);
+    MONA_ASSERT((vramAddress_ % ARCH_PAGE_SIZE) == 0);
     initializePageTablePool(PAGE_TABLE_POOL_SIZE_BYTE);
     initializePagePool();
 }
@@ -30,7 +30,7 @@ void PageManager::initializePagePool()
 {
     uintptr_t numPages = bytesToPageNumber(systemMemorySizeByte_);
     memoryMap_ = new Bitmap(numPages, true);
-    ASSERT(memoryMap_);
+    MONA_ASSERT(memoryMap_);
 
     // After the kernel_reserved_region, region for DMA.
     reservedDMAMap_ = new Bitmap(bytesToPageNumber(DMA_RESERVED_REGION_SIZE_BYTE), true);
@@ -64,13 +64,13 @@ PageEntry* PageManager::createPageDirectory()
 void PageManager::initializePageTablePool(uintptr_t poolSizeByte)
 {
     uintptr_t pool = (uintptr_t)malloc(poolSizeByte);
-    ASSERT(pool);
+    MONA_ASSERT(pool);
 
     pageTablePoolAddress_ = align4Kb((PhysicalAddress)pool);
 
     uintptr_t numTables = (pool + poolSizeByte - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
     pageTablePool_ = new Bitmap(numTables, true);
-    ASSERT(pageTablePool_);
+    MONA_ASSERT(pageTablePool_);
 }
 
 
@@ -134,7 +134,7 @@ intptr_t PageManager::deallocateContiguous(PageEntry* directory, LinearAddress l
 
 uint8_t* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
-    ASSERT(false);
+    MONA_ASSERT(false);
     size = (size + 4095) & 0xFFFFF000;
     int pageNum = size / ARCH_PAGE_SIZE;
     int foundMemory = reservedDMAMap_->find(pageNum);
@@ -218,7 +218,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 void PageManager::returnPageTable(PageEntry* table)
 {
     PhysicalAddress address = (PhysicalAddress)table;
-    ASSERT(pageTablePool_->marked((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE));
+    MONA_ASSERT(pageTablePool_->marked((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE));
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
@@ -461,7 +461,7 @@ void PageManager::returnPhysicalPage(PhysicalAddress address)
     if (!memoryMap_->marked(address / ARCH_PAGE_SIZE)) {
         logprintf("not marked %x %x\n", address, address / ARCH_PAGE_SIZE);
     }
-    ASSERT(memoryMap_->marked(address / ARCH_PAGE_SIZE));
+    MONA_ASSERT(memoryMap_->marked(address / ARCH_PAGE_SIZE));
     memoryMap_->clear(address / ARCH_PAGE_SIZE);
 }
 

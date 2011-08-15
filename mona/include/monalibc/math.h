@@ -97,6 +97,7 @@ double exp(double x);
 double fabs(double x);
 float fabsf(float x);
 double floor(double x);
+double trunc(double x);
 double fmod(double x, double y);
 double frexp(double value, int *exp);
 double ldexp(double x, int n);

@@ -83,7 +83,7 @@ namespace monagui {
     void Component::repaintSelf()
     {
         // don't call thread unsafe methods from another threads.
-        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
         setFontStyle(this->fontStyle);
         paint(this->_g);
@@ -93,7 +93,7 @@ namespace monagui {
     void Component::repaint()
     {
         // don't call thread unsafe methods from another threads.
-        ASSERT(threadId_ == MonAPI::System::getThreadID());
+        MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
         setFontStyle(this->fontStyle);
         paint(this->_g);
@@ -109,16 +109,16 @@ namespace monagui {
     {
         updateSelf(x, y, w, h);
         Frame* c = (Frame *)getMainWindow();
-        ASSERT(c);
-        ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
+        MONA_ASSERT(c);
+        MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
         c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
     }
 
     void Component::updateSelf(int x, int y, int w, int h)
     {
         Frame* c = (Frame *)getMainWindow();
-        ASSERT(c);
-        ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
+        MONA_ASSERT(c);
+        MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
         c->getGraphics()->drawImage(this->_buffer, getX(), getY());
     }
 

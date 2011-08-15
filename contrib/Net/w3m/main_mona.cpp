@@ -6,6 +6,7 @@ long g_autoPilotCount = 0;
 #include <monapi.h>
 #define MAINPROGRAM
 extern "C" {
+#include <assert.h>
 #include "fm.h"
 #undef init
 #include <monapi/Message.h>

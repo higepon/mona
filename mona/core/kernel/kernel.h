@@ -124,9 +124,9 @@ void rdtsc(uint32_t* timeL, uint32_t* timeH);
 
 #ifdef DEBUG_MODE
 #define onAssertError() panic("assert");
-#define ASSERT(condition) {if (!(condition)) {g_console->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition); g_log->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);onAssertError();}}
+#define MONA_ASSERT(condition) {if (!(condition)) {g_console->printf("MONA_ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition); g_log->printf("MONA_ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);onAssertError();}}
 #else
-#define ASSERT(condition) {}
+#define MONA_ASSERT(condition) {}
 #endif
 
 #endif

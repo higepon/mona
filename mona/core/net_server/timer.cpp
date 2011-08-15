@@ -102,7 +102,7 @@ void timer_init(void)
  */
 void timer_set_interval(unsigned char tmr, unsigned int interval)
 {
-    ASSERT(tmr < TIMER_NUM);
+    MONA_ASSERT(tmr < TIMER_NUM);
     timers[tmr].interval = interval;
 }
 
@@ -112,7 +112,7 @@ void timer_set_interval(unsigned char tmr, unsigned int interval)
  */
 unsigned char timer_testclr_evt(unsigned char tmr)
 {
-    ASSERT(tmr < TIMER_NUM);
+    MONA_ASSERT(tmr < TIMER_NUM);
     unsigned char evt;
     struct itmr *tp;
 

@@ -302,7 +302,7 @@ void syscall_entrance()
             Condition* condition = (Condition*)object;
             intptr_t ret = condition->notifyAll();
             setReturnValue(info, M_OK);
-            ASSERT(ret == Scheduler::YIELD);
+            MONA_ASSERT(ret == Scheduler::YIELD);
             g_scheduler->SwitchToNext();
 
             /* Not reached */
@@ -328,7 +328,7 @@ void syscall_entrance()
             // unlock and wait should be atomic.
             mutex->unlock();
             intptr_t ret = condition->wait(g_currentThread->thread);
-            ASSERT(ret == Scheduler::YIELD);
+            MONA_ASSERT(ret == Scheduler::YIELD);
             g_scheduler->SwitchToNext();
             setReturnValue(info, ret);
         }
@@ -355,7 +355,7 @@ void syscall_entrance()
             // unlock and wait should be atomic.
             mutex->unlock();
             intptr_t ret = condition->waitTimeout(g_currentThread->thread, timeoutTick);
-            ASSERT(ret == Scheduler::YIELD);
+            MONA_ASSERT(ret == Scheduler::YIELD);
             g_scheduler->SwitchToNext();
             setReturnValue(info, ret);
         }
@@ -365,7 +365,7 @@ void syscall_entrance()
         if (SYSTEM_CALL_ARG_1 == MUTEX_CREATE_NEW) {
             Process* owner = g_currentThread->thread->tinfo->process;
             intptr_t mutexid = KObjectService::create<KMutex>(owner);
-            ASSERT(mutexid > 0);
+            MONA_ASSERT(mutexid > 0);
             setReturnValue(info, mutexid);
         } else {
             KObject* object = g_id->get(SYSTEM_CALL_ARG_1, KObject::KMUTEX);
@@ -670,7 +670,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, 0);
         } else {
-            ASSERT(object->getSize() != 0);
+            MONA_ASSERT(object->getSize() != 0);
             setReturnValue(info, object->getSize());
         }
         break;

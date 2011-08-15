@@ -179,11 +179,11 @@ int VnodeManager::read_directory(const std::string&name, SharedMemory** mem)
             MonAPI::Buffer dest(ret->data(), ret->size());
             MonAPI::Buffer src((*mem)->data(), (*mem)->size());
             bool isOK = MonAPI::Buffer::copy(dest, src, (*mem)->size());
-            ASSERT(isOK);
+            MONA_ASSERT(isOK);
             int entriesNum = *((int*)(*mem)->data()) + diff.size();
             MonAPI::Buffer src2(&entriesNum, sizeof(int));
             isOK = MonAPI::Buffer::copy(dest, src2, sizeof(int));
-            ASSERT(isOK);
+            MONA_ASSERT(isOK);
             for (size_t i = 0; i < diff.size(); i++) {
                 monapi_directoryinfo di;
                 di.size = 0;
@@ -191,7 +191,7 @@ int VnodeManager::read_directory(const std::string&name, SharedMemory** mem)
                 di.attr = ATTRIBUTE_DIRECTORY;
                 MonAPI::Buffer dirBuf(&di, sizeof(monapi_directoryinfo));
                 bool isOK = MonAPI::Buffer::copy(dest, (*mem)->size() + i * sizeof(monapi_directoryinfo), dirBuf, 0, sizeof(monapi_directoryinfo));
-                ASSERT(isOK);
+                MONA_ASSERT(isOK);
             }
             *mem = ret;
         }

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #endif
 
-#define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
+#define MONA_ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 
 namespace MonAPI
 {
@@ -29,7 +29,7 @@ namespace MonAPI
         {
             if (length == -1) length = strlen(text);
             this->buffer = new char[length + 1];
-            ASSERT(this->buffer)
+            MONA_ASSERT(this->buffer)
             memcpy(this->buffer, text, length);
             this->buffer[length] = '\0';
             this->length = length;
@@ -50,7 +50,7 @@ namespace MonAPI
 
     char CString::operator [](int index) const
     {
-        ASSERT(!(index < 0 || this->length <= index))
+        MONA_ASSERT(!(index < 0 || this->length <= index))
         return this->buffer[index];
     }
 
@@ -81,7 +81,7 @@ namespace MonAPI
         {
             this->length = strlen(text);
             this->buffer = new char[this->length + 1];
-            ASSERT(this->buffer)
+            MONA_ASSERT(this->buffer)
             memcpy(this->buffer, text, this->length);
             this->buffer[this->length] = '\0';
         }
@@ -100,7 +100,7 @@ namespace MonAPI
         {
             this->length = text.length;
             this->buffer = new char[this->length + 1];
-            ASSERT(this->buffer)
+            MONA_ASSERT(this->buffer)
             memcpy(this->buffer, text.buffer, this->length);
             this->buffer[this->length] = '\0';
         }
@@ -119,7 +119,7 @@ namespace MonAPI
         else
         {
             buf = new char[this->length + 1];
-            ASSERT(buf)
+            MONA_ASSERT(buf)
             if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
             if (text != NULL) memcpy(&buf[len1], text, len2);
             buf[this->length] = '\0';
@@ -140,7 +140,7 @@ namespace MonAPI
         else
         {
             buf = new char[this->length + 1];
-            ASSERT(buf)
+            MONA_ASSERT(buf)
             if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
             if (text .buffer != NULL) memcpy(&buf[len1], text.buffer, len2);
             buf[this->length] = '\0';
@@ -152,7 +152,7 @@ namespace MonAPI
     void CString::operator +=(char ch)
     {
         char* buf = new char[this->length + 2];
-        ASSERT(buf)
+        MONA_ASSERT(buf)
         memcpy(buf, this->buffer, this->length);
         buf[this->length++] = ch;
         buf[this->length] = '\0';
@@ -445,11 +445,11 @@ namespace MonAPI
        else
        {
            char *buf1 = new char[start + 1];
-           ASSERT(buf1)
+           MONA_ASSERT(buf1)
            memcpy(buf1, this->buffer, start);
            buf1[start] = '\0';
            char *buf2 = new char[this->length - start + 1];
-           ASSERT(buf2)
+           MONA_ASSERT(buf2)
            memcpy(buf2, &(this->buffer[start]), this->length - start);
            buf2[this->length - start] = '\0';
            *this = buf1 + text + buf2;
@@ -532,7 +532,7 @@ namespace MonAPI
         else if ( (start + length) >= this->length)
         {
             buf = new char[start + 1];
-            ASSERT(buf)
+            MONA_ASSERT(buf)
             memcpy(buf, this->buffer, start);
             delete [] this->buffer;
             this->buffer = buf;
@@ -543,7 +543,7 @@ namespace MonAPI
         else
         {
             buf = new char[this->length - length + 1];
-            ASSERT(buf)
+            MONA_ASSERT(buf)
             memcpy(buf, this->buffer, start);
             memcpy(&buf[start], &(this->buffer[start + length]), this->length - start - length);
             delete [] this->buffer;

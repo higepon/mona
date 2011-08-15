@@ -33,7 +33,7 @@ public:
 
     void AddToNext(Node* q)
     {
-        ASSERT(q);
+        MONA_ASSERT(q);
 
         q->next = this->next;
         q->prev = this;
@@ -43,7 +43,7 @@ public:
 
     void AddToPrev(Node* q)
     {
-        ASSERT(q);
+        MONA_ASSERT(q);
 
         q->prev = this->prev;
         q->next = this;

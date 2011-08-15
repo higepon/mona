@@ -27,7 +27,7 @@ public:
     Condition()
     {
         intptr_t ret = syscall_condition_create(&condition_);
-        ASSERT(M_OK == ret);
+        MONA_ASSERT(M_OK == ret);
     }
 
 
@@ -39,7 +39,7 @@ public:
     ~Condition()
     {
         intptr_t ret = syscall_condition_destroy(&condition_);
-        ASSERT(M_OK == ret);
+        MONA_ASSERT(M_OK == ret);
     }
 
 

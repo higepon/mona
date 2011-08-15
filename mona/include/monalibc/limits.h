@@ -22,11 +22,13 @@ extern "C" {
 #define SCHAR_MIN -127
 #define SCHAR_MAX 127
 #define UCHAR_MAX 255
-#define CHAR_MIN M_SCHAR_MIN
-#define CHAR_MAX M_UCHAR_MAX
+#define CHAR_MIN SCHAR_MIN
+#define CHAR_MAX UCHAR_MAX
 
 #define SHRT_MAX 32767
 #define SHRT_MIN (-32767-1)
+
+#define USHRT_MAX 65535
 
 #define INT_MIN -2147483647
 #ifndef INT_MAX

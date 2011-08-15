@@ -31,6 +31,6 @@ install: all
 
 
 CXXFLAGS += -fpermissive -DDEBUG
-INCLUDE += -I . -I$(MONADIR)/include/monalibc
+INCLUDE += -I .
 
 -include dependencies

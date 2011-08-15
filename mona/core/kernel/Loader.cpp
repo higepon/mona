@@ -18,7 +18,7 @@
 ----------------------------------------------------------------------*/
 intptr_t Loader::Load(uint8_t* image, uint32_t size, uint32_t entrypoint, const char* name, bool isUser, CommandOption* list, uint32_t observer, uint32_t& tid)
 {
-    ASSERT(size < MAX_IMAGE_SIZE);
+    MONA_ASSERT(size < MAX_IMAGE_SIZE);
 
     int memSize = ((size + PageManager::ARCH_PAGE_SIZE - 1) / PageManager::ARCH_PAGE_SIZE) * PageManager::ARCH_PAGE_SIZE; 
 

@@ -127,7 +127,7 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
             return M_READ_ERROR;
         }
         bool isOK = MonAPI::Buffer::copy(dest, 0, tempBuf, dataOffset, readSize);
-        ASSERT(isOK);
+        MONA_ASSERT(isOK);
         delete[] temp;
     }
     context->resultSize = readSize;

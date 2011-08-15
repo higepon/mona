@@ -36,7 +36,7 @@ public:
     bool releaseRef()
     {
         refCount_--;
-        ASSERT(refCount_ >= 0);
+        MONA_ASSERT(refCount_ >= 0);
         return refCount_ == 0;
     }
 
@@ -52,7 +52,7 @@ public:
 
     uint32_t getMappedPhysicalAddress(int physicalIndex) const
     {
-        ASSERT(physicalIndex < physicalPageCount_);
+        MONA_ASSERT(physicalIndex < physicalPageCount_);
         return physicalPages_[physicalIndex];
     }
 

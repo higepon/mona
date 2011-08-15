@@ -46,14 +46,14 @@ public:
     void setReturnValue(intptr_t value);
 
     void setWaitingMutex(KMutex* mutex) {
-        ASSERT((mutex != NULL && waitingMutex_ == NULL) ||
+        MONA_ASSERT((mutex != NULL && waitingMutex_ == NULL) ||
                (mutex == NULL && waitingMutex_ == NULL) ||
                (mutex == NULL && waitingMutex_ != NULL));
         waitingMutex_ = mutex;
     }
 
     void setWaitingCondition(Condition* condition) {
-        ASSERT((condition != NULL && waitingCondition_ == NULL) ||
+        MONA_ASSERT((condition != NULL && waitingCondition_ == NULL) ||
                (condition == NULL && waitingCondition_ == NULL) ||
                (condition == NULL && waitingCondition_ != NULL));
         waitingCondition_ = condition;

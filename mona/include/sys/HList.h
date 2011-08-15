@@ -181,7 +181,7 @@ template <class T> void HList<T>::add(T element) {
 template <class T> T HList<T>::get(int index) const {
 
     /* check range */
-    ASSERT(0 <= index  && index < numElements_);
+    MONA_ASSERT(0 <= index  && index < numElements_);
     return data_[index];
 }
 

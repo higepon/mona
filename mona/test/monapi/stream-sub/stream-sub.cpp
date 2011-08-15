@@ -45,7 +45,7 @@ static void processForTestOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotif
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
-        ASSERT(false);
+        MONA_ASSERT(false);
         return -1;
     }
     uintptr_t streamHandle = strtol(argv[2], NULL, 16);
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     } else if (strcmp(argv[1], "testOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess") == 0) {
         processForTestOneProcessWaitsToWriteTheOtherProcessReadsSomeAndNotifiesToTheWaitingProcess(streamHandle);
     } else {
-        ASSERT(false);
+        MONA_ASSERT(false);
         return -1;
     }
     TEST_RESULTS();

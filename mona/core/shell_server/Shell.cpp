@@ -98,7 +98,7 @@ void Shell::commandChar(char c)
     }
 
     // not used 
-    ASSERT(false);
+    MONA_ASSERT(false);
     // // failure of locking means that other process wants shell to write key information and he or she wants to read them from their stdin.
     // if (inStream_->tryLockForRead() == M_OK)
     // {

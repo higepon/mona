@@ -37,12 +37,12 @@ class CachedBlockDevice : public BlockDevice
 public:
     CachedBlockDevice(BlockDevice* dev) : dev_(dev), bc_(60000)
     {
-        ASSERT(dev_);
+        MONA_ASSERT(dev_);
     }
 
     CachedBlockDevice(BlockDevice* dev, uintptr_t maxNumSectors) : dev_(dev), bc_(maxNumSectors)
     {
-        ASSERT(dev_);
+        MONA_ASSERT(dev_);
     }
     int64_t write(const void* writeBuf, int64_t sector, int64_t sizeToWrite)
     {
@@ -70,9 +70,9 @@ public:
             if (ret < 0) {
                 return ret;
             }
-            ASSERT(ret == requestSizeToRead);
+            MONA_ASSERT(ret == requestSizeToRead);
             MonAPI::scoped_array<uint8_t> p(new uint8_t[requestSizeToRead]);
-            ASSERT(p.get());
+            MONA_ASSERT(p.get());
             memcpy(p.get(), dest, requestSizeToRead);
             bc_.addRange(req.startSector(), requestSizeToRead / sectorSize(), p.get());
 

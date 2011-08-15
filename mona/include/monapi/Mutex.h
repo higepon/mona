@@ -27,7 +27,7 @@ public:
     Mutex() : destroyed_(false), lastError_(M_OK)
     {
         intptr_t ret = syscall_mutex_create(&mutex_);
-        ASSERT(M_OK == ret);
+        MONA_ASSERT(M_OK == ret);
     }
 
 

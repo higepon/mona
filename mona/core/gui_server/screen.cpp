@@ -135,7 +135,7 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
             }
         }
     } else {
-        ASSERT(false);
+        MONA_ASSERT(false);
     }
     if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }

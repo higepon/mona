@@ -38,9 +38,9 @@ private:
 
     void reply(Event* event)
     {
-        ASSERT(event->getType() == Event::CUSTOM_EVENT);
+        MONA_ASSERT(event->getType() == Event::CUSTOM_EVENT);
         int ret = MonAPI::Message::send(event->from, MSG_OK, event->header);
-        ASSERT(ret == M_OK);
+        MONA_ASSERT(ret == M_OK);
     }
 public:
     TestTerminal(uint32_t observer, TerminalInfo& terminalInfo) : Terminal(terminalInfo), observer_(observer)

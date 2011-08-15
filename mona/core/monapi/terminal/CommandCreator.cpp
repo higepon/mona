@@ -30,8 +30,8 @@ Command CommandCreator::backSpace()
 // ESC [ Ps Direction
 Command CommandCreator::moveCursorTo(uint32_t n, char direction)
 {
-    ASSERT(n >= 0);
-    ASSERT('A' <= direction && direction <= 'D');
+    MONA_ASSERT(n >= 0);
+    MONA_ASSERT('A' <= direction && direction <= 'D');
     static uint8_t command[32];
     command[0] = 0x1b;
     command[1] = '[';
@@ -44,7 +44,7 @@ Command CommandCreator::moveCursorTo(uint32_t n, char direction)
 // ESC [ Ps ; Ps H
 Command CommandCreator::moveCursor(uint32_t x, uint32_t y)
 {
-    ASSERT(x > 0 && y > 0);
+    MONA_ASSERT(x > 0 && y > 0);
     static uint8_t command[32];
     command[0] = 0x1b;
     command[1] = '[';

@@ -29,7 +29,7 @@ KMutex::~KMutex()
 {
     if (waitList_.size() != 0) {
         g_console->printf("KMutex has waiting threads!!\n");
-        ASSERT(false);
+        MONA_ASSERT(false);
     }
 }
 
@@ -94,7 +94,7 @@ intptr_t KMutex::unlock()
         owner_ = NULL;
     } else {
         bool isRemoved = waitList_.removeAt(0, &owner_);
-        ASSERT(isRemoved);
+        MONA_ASSERT(isRemoved);
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         return Scheduler::YIELD;
     }

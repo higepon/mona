@@ -38,7 +38,7 @@
 bool KObjectService::destroy(Process* who, intptr_t id, KObject* obj)
 {
     bool isRemoved = who->removeKObject(id, obj);
-    ASSERT(isRemoved);
+    MONA_ASSERT(isRemoved);
     // try delete by reference counting.
     return tryDelete(id, obj);
 }
@@ -60,7 +60,7 @@ void KObjectService::cleanupKObjects(Process* owner)
     for (int i = 0; i < size; i++) {
         Pair<intptr_t, KObject*> p;
         bool isRemoved = kobjects->removeAt(0, &p);
-        ASSERT(isRemoved);
+        MONA_ASSERT(isRemoved);
         KObjectService::tryDelete(p.car, p.cdr);
     }
 }

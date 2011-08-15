@@ -26,6 +26,7 @@
  *
  */
 
+#include <monapi.h>
 #include "./feed.h"
 #include "./facebook_service.h"
 

@@ -57,7 +57,7 @@ void ProcessOperation::freeKernelStack(LinearAddress address)
 {
     if (address < KERNEL_STACK_START || address > KERNEL_STACK_START + KERNEL_STACK_SIZE)
     {
-        ASSERT(false);
+        MONA_ASSERT(false);
         return;
     }
 
@@ -125,7 +125,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, uint32_t programCount
                                                              stack - 4096,
                                                              PageManager::PAGE_WRITABLE,
                                                              PageManager::PAGE_USER);
-    ASSERT(ret == M_OK);
+    MONA_ASSERT(ret == M_OK);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
@@ -355,7 +355,7 @@ Process::~Process()
         }
     }
 
-    ASSERT(kobjects_.size() == 0);
+    MONA_ASSERT(kobjects_.size() == 0);
 }
 
 uint32_t Process::findMainThreadId() const

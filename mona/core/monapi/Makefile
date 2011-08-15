@@ -59,7 +59,7 @@ ASSRCS = memset.S memcpy.S memcmp.S memmove.S strlen.S
 
 OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o) $(CSOURCES:.c=.o) $(ASSRCS:.S=.o)
 #INCLUDE = -I$(INCDIR) -I. -I..
-INCLUDE = -I. -I.. -I$(INCDIR) -I$(INCDIR)/stlport/
+INCLUDE = -I. -I.. -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++
 all : $(TARGET)
 
 $(CRT_OBJECT): monapi_crt.cpp

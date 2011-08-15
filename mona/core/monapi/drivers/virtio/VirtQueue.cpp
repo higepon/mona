@@ -39,8 +39,8 @@ VirtQueue::VirtQueue(uint16_t queueIndex, VirtioDevice& dev) :
     mem_(ContigousMemory::allocate(vring_size(freeDescCount_, MAP_PAGE_SIZE))),
     requestCookies_(new void*[freeDescCount_])
 {
-    ASSERT(freeDescCount_ > 0);
-    ASSERT(mem_.get());
+    MONA_ASSERT(freeDescCount_ > 0);
+    MONA_ASSERT(mem_.get());
     vring_init(&vring_, freeDescCount_, mem_->get(), MAP_PAGE_SIZE);
     activate(mem_->getPhysicalAddress());
 

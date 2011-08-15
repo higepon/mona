@@ -14,7 +14,8 @@ CPPOBJECTS = $(SOURCES:.cpp=.o)
 CPPOBJECTS2 = $(patsubst %.cc,%.o, $(CPPOBJECTS))
 OBJECTS   = $(CPPOBJECTS2) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o) $(JSOURCES:.java=.o)
 endif
-INCLUDE   = -I$(INCDIR) -I$(MONADIR)/tool/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++ $(ADDINCLUDE)
+# N.B Don't include monalibc before stlport. stlport should come first.
+INCLUDE   = -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++ $(ADDINCLUDE)
 LINK      = $(ADDLINK) -lmonapi$(IMPSFX) $(IMPORTFLAGS)
 LINKDEP   = $(LIBDIR)/monapi_crt.o $(LIBDIR)/libmonapi$(IMPSFX).a $(ADDLINKDEP)
  

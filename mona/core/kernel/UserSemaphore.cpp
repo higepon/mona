@@ -90,7 +90,7 @@ intptr_t UserSemaphore::up()
         // So we don't modify sem_
         Thread* thread = NULL;
         bool isRemoved = waitList_->removeAt(0, &thread);
-        ASSERT(isRemoved);
+        MONA_ASSERT(isRemoved);
         g_scheduler->EventComes(thread, MEvent::SEMAPHORE_UPPED);
         return Scheduler::YIELD;
     }

@@ -237,7 +237,7 @@ static volatile mutex_t guardMutex = -1;
 static inline void enterGuard() {
     if (-1 == guardMutex) {
         intptr_t ret = syscall_mutex_create(&guardMutex);
-        ASSERT(M_OK == ret);
+        MONA_ASSERT(M_OK == ret);
     }
     _printf("%s:%d\n", __FILE__, __LINE__);
     syscall_mutex_lock(&guardMutex);
@@ -335,7 +335,6 @@ void* operator new(size_t size, void* base) {
 
 void operator delete(void *base, void* address) {
 }
-
 
 void* operator new[](size_t size, void* base) {
     return base;

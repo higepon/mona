@@ -79,7 +79,7 @@ namespace monagui {
 
     void TextField::deleteCharacter()
     {
-        ASSERT(cursor_ > 0);
+        MONA_ASSERT(cursor_ > 0);
         // cursor is at tail.
         if (text_.length() == cursor_) {
             text_ = text_.substring(0, text_.length() - 1);
@@ -123,7 +123,7 @@ namespace monagui {
     int TextField::getHeightByTextAndMaxWidth(const String& text, int maxWidth)
     {
         Graphics* g = getGraphics();
-        ASSERT(g);
+        MONA_ASSERT(g);
         return offy * 2 + g->getHeightByString(text, offx, offy, maxWidth - offx);
     }
 

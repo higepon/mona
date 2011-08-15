@@ -40,7 +40,7 @@ extern "C" {
 #include <uip.h>
 #include <uip_arp.h>
 }
-
+        MONA_ASSERT(parent);
 #define UIP_ASSERT(condition) {if (!(condition)) {_printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);exit(-1);}}
 
 
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
         // QEMU will offer 10.0.2.x (x >= 15).
         UIP_ASSERT(addr[0] == 0x000a);
         UIP_ASSERT((addr[1] & 0xff) == 2);
-        UIP_ASSERT((addr[1] >> 8) >= 15);
+        UIP_ASSERTn((addr[1] >> 8) >= 15);
         uip_sethostaddr(addr);
         uip_setdraddr(Util::ipAddressToU16Array(addr, gatewayAddress));
         uip_setnetmask(Util::ipAddressToU16Array(addr, 0x00ffffff /* 255.255.255.0 */));

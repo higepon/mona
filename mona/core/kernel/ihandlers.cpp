@@ -170,12 +170,12 @@ static void terminateCurrentThread(const char* reason)
         msg.header = MSG_TEXT;
         strncpy(msg.str, "process is dead", MAX_PROCESS_ARGUMENT_LENGTH);
         int ret = g_messenger->send(thread, &msg);
-        ASSERT(ret == M_OK);
+        MONA_ASSERT(ret == M_OK);
       }
     }
     g_page_manager->showCurrentStackTrace();
     int ret = ThreadOperation::kill(g_currentThread->thread);
-    ASSERT(ret == M_OK);
+    MONA_ASSERT(ret == M_OK);
     g_scheduler->SwitchToNext();
 }
 

@@ -188,7 +188,7 @@ public:
         if (isCacheFull()) {
             invalidateNotRecentlyUsed();
         }
-        ASSERT(!isCacheFull());
+        MONA_ASSERT(!isCacheFull());
         CacheMap::iterator it = cacheMap_.find(cache.sector());
         if (it == cacheMap_.end()) {
             cacheMap_[cache.sector()] = cache;

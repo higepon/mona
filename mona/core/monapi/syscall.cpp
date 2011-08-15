@@ -4,9 +4,22 @@
     Primitive system calls.
 */
 
+// trick for use STL inside monapi.
+#define puts monapi_puts
+#define abort monapi_abort
+
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <sys/KStat.h>
+
+extern "C" int monapi_puts(const char *s) {
+  printf(s);
+  return 0;
+}
+
+extern "C" void monapi_abort(void) {
+  exit(-1);
+}
 
 using namespace MonAPI;
 
@@ -740,7 +753,7 @@ intptr_t syscall_mutex_create(mutex_t* mutex)
 intptr_t syscall_mutex_fetch(mutex_t* dest, mutex_t* mutex)
 {
     intptr_t mutex_id = *mutex;
-    ASSERT(mutex_id != MUTEX_CREATE_NEW);
+    MONA_ASSERT(mutex_id != MUTEX_CREATE_NEW);
     intptr_t ret = syscall1(SYSTEM_CALL_MUTEX_CREATE, mutex_id);
     if (ret > 0) {
         *dest = ret;

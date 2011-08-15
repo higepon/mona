@@ -65,7 +65,7 @@ uint64_t RTC::readEpochNanoSeconds()
     static int DAYS_IN_MONTH[]= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31};
     KDate date;
     readDateOnce(&date);
-    ASSERT(date.year >= 1970);
+    MONA_ASSERT(date.year >= 1970);
 
     uint64_t days = 0;
     for (int i = 1970; i < date.year; i++) {

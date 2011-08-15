@@ -17,7 +17,6 @@ core/monapi/error.cpp: include/sys/error.txt
 	mosh tool/gen-error-cpp.scm $< > $@
 
 tools: include/sys/error.h core/monapi/error.cpp
-	cd tool/stlport && $(MAKE) && $(MAKE) install
 	cd tool/fat_write && $(MAKE) && $(MAKE) install
 	cd tool/t5lzma && $(MAKE) && $(MAKE) install
 	cd tool/bim2bin && $(MAKE) && $(MAKE) install

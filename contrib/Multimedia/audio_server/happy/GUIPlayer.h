@@ -13,7 +13,6 @@
 #include <monapi/Stream.h>
 #include <monapi/StringHelper.h>
 #include <stdio.h>
-#include <assert.h>
 #include <math.h>
 #include <dirent.h>
 #include <ivorbisfile.h>

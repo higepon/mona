@@ -29,6 +29,7 @@
 #ifndef BDF_PARSER_
 #define BDF_PARSER_
 
+#include <assert.h>
 #include <string>
 #include <map>
 #include <vector>

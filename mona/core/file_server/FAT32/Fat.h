@@ -97,7 +97,7 @@ public:
     {
         size = longName.size() * 2 + 2;
         uint8_t* buf = new uint8_t[size];
-        ASSERT(buf);
+        MONA_ASSERT(buf);
         int index = 0;
         for (std::string::const_iterator it = longName.begin(); it != longName.end(); ++it) {
             buf[index++] = *it;
@@ -201,12 +201,12 @@ public:
         fat_(NULL),
         buf_(NULL)
     {
-        ASSERT(root_.get());
+        MONA_ASSERT(root_.get());
         if (!readBootParameters()) {
             monapi_fatal("can't read boot parameter block");
         }
         buf_ = new uint8_t[getClusterSizeByte()];
-        ASSERT(buf_);
+        MONA_ASSERT(buf_);
         if (!readFat()) {
             monapi_fatal("can't read file allocation table");
         }
@@ -257,7 +257,7 @@ public:
                                                                    (type == Vnode::DIRECTORY && (*it)->isDirectory()))) {
                 if ((*it)->getVnode() == NULL) {
                     Vnode* newVnode = new Vnode;
-                    ASSERT(newVnode);
+                    MONA_ASSERT(newVnode);
                     newVnode->fnode = *it;
                     newVnode->type = (*it)->isDirectory() ? Vnode::DIRECTORY : Vnode::REGULAR;
                     newVnode->fs = this;
@@ -292,7 +292,7 @@ public:
 
         // Even for the case when sizeToRead == 0, we need context->memory.
         context->memory = new MonAPI::SharedMemory(sizeToRead);
-        ASSERT(context->memory);
+        MONA_ASSERT(context->memory);
         if (sizeToRead == 0) {
             return M_OK;
         }
@@ -312,17 +312,17 @@ public:
         MonAPI::Buffer buf(buf_, getClusterSizeByte());
 
         for (uint32_t cluster = startCluster; ; cluster = fat_[cluster]) {
-            ASSERT(!isEndOfCluster(cluster));
+            MONA_ASSERT(!isEndOfCluster(cluster));
             if (!readCluster(cluster, buf_)) {
                 monapi_warn("readCluster failed cluster=%d\n", cluster);
                 return M_READ_ERROR;
             }
             uint32_t restSizeToRead = sizeToRead - sizeRead;
             uint32_t copySize = restSizeToRead > getClusterSizeByte() - offsetInBuf ? getClusterSizeByte() - offsetInBuf: restSizeToRead;
-            ASSERT(context->memory->data() + sizeRead + copySize <= context->memory->data() + context->memory->size());
-            ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
+            MONA_ASSERT(context->memory->data() + sizeRead + copySize <= context->memory->data() + context->memory->size());
+            MONA_ASSERT(buf_ + offsetInBuf + copySize <= buf_ + getClusterSizeByte());
             bool isOk = MonAPI::Buffer::copy(readBuf, sizeRead, buf, offsetInBuf, copySize);
-            ASSERT(isOk);
+            MONA_ASSERT(isOk);
             sizeRead += copySize;
             offsetInBuf = 0;
             if (sizeRead == sizeToRead) {
@@ -342,8 +342,8 @@ public:
 
     virtual int write(Vnode* vnode, struct io::Context* context)
     {
-        ASSERT(vnode->type == Vnode::REGULAR);
-        ASSERT(context->memory);
+        MONA_ASSERT(vnode->type == Vnode::REGULAR);
+        MONA_ASSERT(context->memory);
         File* entry = getFileByVnode(vnode);
         uint32_t currentNumClusters = sizeToNumClusters(entry->getSize());
         int ret = expandFileAsNecessary(entry, context);
@@ -352,7 +352,7 @@ public:
         }
         uint32_t startClusterIndex = offsetToClusterIndex(context->offset);
         uint32_t startCluster = getClusterAt(entry, startClusterIndex);
-        ASSERT(!isEndOfCluster(startCluster));
+        MONA_ASSERT(!isEndOfCluster(startCluster));
         uint32_t sizeToWrite = context->size;
         uint32_t sizeWritten = 0;
         for (uint32_t cluster = startCluster, clusterIndex = startClusterIndex; !isEndOfCluster(cluster); clusterIndex++, cluster = fat_[cluster]) {
@@ -370,11 +370,11 @@ public:
                 uint32_t offsetInCluster = context->offset % getClusterSizeByte();
                 copySize = restSizeToWrite > getClusterSizeByte() - offsetInCluster ? getClusterSizeByte() - offsetInCluster: restSizeToWrite;
                 bool isOk = MonAPI::Buffer::copy(buf, offsetInCluster, writeBuf, sizeWritten, copySize);
-                ASSERT(isOk);
+                MONA_ASSERT(isOk);
             } else {
                 copySize = restSizeToWrite > getClusterSizeByte() ? getClusterSizeByte() : restSizeToWrite;
                 bool isOK = MonAPI::Buffer::copy(buf, 0, writeBuf, sizeWritten, copySize);
-                ASSERT(isOK);
+                MONA_ASSERT(isOK);
             }
             sizeWritten += copySize;
             if (!writeCluster(cluster, buf_)) {
@@ -393,7 +393,7 @@ public:
 
     virtual int create_directory(Vnode* dir, const std::string& file)
     {
-        ASSERT(dir->type == Vnode::DIRECTORY);
+        MONA_ASSERT(dir->type == Vnode::DIRECTORY);
         File* entry = getFileByVnode(dir);
         if (entry->hasChild(file)) {
             return M_FILE_EXISTS;
@@ -408,7 +408,7 @@ public:
 
     virtual int create(Vnode* dir, const std::string& file)
     {
-        ASSERT(dir->type == Vnode::DIRECTORY);
+        MONA_ASSERT(dir->type == Vnode::DIRECTORY);
         File* entry = getFileByVnode(dir);
         if (entry->hasChild(file)) {
             return M_FILE_EXISTS;
@@ -424,7 +424,7 @@ public:
     {
         typedef std::vector<monapi_directoryinfo> DirInfos;
         DirInfos dirInfos;
-        ASSERT(directory->type == Vnode::DIRECTORY);
+        MONA_ASSERT(directory->type == Vnode::DIRECTORY);
         File* dir = getFileByVnode(directory);
         for (Files::const_iterator it = dir->getChildlen()->begin(); it != dir->getChildlen()->end(); ++it) {
             monapi_directoryinfo di;
@@ -443,11 +443,11 @@ public:
         MonAPI::Buffer dest(ret->data(), ret->size());
         MonAPI::Buffer src(&size, sizeof(int));
         bool isOK = MonAPI::Buffer::copy(dest, src, sizeof(int));
-        ASSERT(isOK);
+        MONA_ASSERT(isOK);
         monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->data()[sizeof(int)];
         *entries = ret;
         for (DirInfos::const_iterator it = dirInfos.begin(); it != dirInfos.end(); ++it) {
-            ASSERT((uintptr_t)p < (uintptr_t)(ret->data() + ret->size()));
+            MONA_ASSERT((uintptr_t)p < (uintptr_t)(ret->data() + ret->size()));
             *p = *it;
             p++;
         }
@@ -461,7 +461,7 @@ public:
 
     virtual int truncate(Vnode* vnode)
     {
-        ASSERT(vnode->type == Vnode::REGULAR);
+        MONA_ASSERT(vnode->type == Vnode::REGULAR);
         File* entry = getFileByVnode(vnode);
         if (entry->getSize() == 0) {
             return M_OK;
@@ -490,7 +490,7 @@ public:
         if(vnode == root_) {
             return M_BAD_ARG; // root is undeletable
         }
-        ASSERT(vnode->type == Vnode::DIRECTORY ? getFileByVnode(vnode)->getChildlen()->empty() : true);
+        MONA_ASSERT(vnode->type == Vnode::DIRECTORY ? getFileByVnode(vnode)->getChildlen()->empty() : true);
         File* entry = getFileByVnode(vnode);
         if (!readCluster(entry->getClusterInParent(), buf_)) {
             return M_READ_ERROR;
@@ -516,7 +516,7 @@ public:
 
     virtual int delete_directory(Vnode* vnode)
     {
-        ASSERT(vnode->type == Vnode::DIRECTORY);
+        MONA_ASSERT(vnode->type == Vnode::DIRECTORY);
         if(vnode == root_) {
             return M_BAD_ARG; // root is undeletable
         }
@@ -652,7 +652,7 @@ public:
 
         File* getParent() const
         {
-            ASSERT(parent_);
+            MONA_ASSERT(parent_);
             return parent_;
         }
 
@@ -672,7 +672,7 @@ public:
         }
         void addChild(File* entry)
         {
-            ASSERT(isDirectory());
+            MONA_ASSERT(isDirectory());
             childlen_->push_back(entry);
         }
 
@@ -683,13 +683,13 @@ public:
 
         void removeChild(File* entry)
         {
-            ASSERT(isDirectory());
+            MONA_ASSERT(isDirectory());
             childlen_->erase(std::remove(childlen_->begin(), childlen_->end(), entry), childlen_->end());
         }
 
         bool hasChild(const std::string& file) const
         {
-            ASSERT(childlen_.get());
+            MONA_ASSERT(childlen_.get());
             for (Files::const_iterator it = childlen_->begin(); it != childlen_->end(); ++it) {
                 if ((*it)->getName() == file) {
                     return true;
@@ -771,7 +771,7 @@ private:
     {
         uint32_t cluster = entry->getStartCluster();
         for (uint32_t i = 0; i < index; i++, cluster = fat_[cluster]) {
-            ASSERT(!isEndOfCluster(cluster));
+            MONA_ASSERT(!isEndOfCluster(cluster));
         }
         return cluster;
     }
@@ -798,9 +798,9 @@ private:
         bsbpb_ = (struct bsbpb*)(bootParameters_ + sizeof(struct bs));
         bsxbpb_ = (struct bsxbpb*)(bootParameters_ + sizeof(struct bs) + sizeof(struct bsbpb));
 
-        ASSERT(getBytesPerSector() == 512);
-        ASSERT(getSectorsPerCluster() <= 64); // Max 32KB
-        ASSERT(getNumberOfFats() == 2);
+        MONA_ASSERT(getBytesPerSector() == 512);
+        MONA_ASSERT(getSectorsPerCluster() <= 64); // Max 32KB
+        MONA_ASSERT(getNumberOfFats() == 2);
         return true;
     }
 
@@ -809,7 +809,7 @@ private:
         uint32_t fatStartSector = getReservedSectors();
         uint32_t fatSizeByte = getSectorsPerFat() * SECTOR_SIZE;
         fat_ = new uint32_t[fatSizeByte / sizeof(uint32_t)];
-        ASSERT(fat_);
+        MONA_ASSERT(fat_);
 
         if (dev_.read(fatStartSector, fat_, fatSizeByte) != M_OK) {
             _logprintf("fatSizeByte=%d", fatSizeByte);
@@ -847,7 +847,7 @@ private:
             return true;
         }
         MonAPI::scoped_ptr<uint8_t> buf(new uint8_t[getClusterSizeByte()]);
-        ASSERT(buf.get());
+        MONA_ASSERT(buf.get());
         LFNDecoder decoder;
         for (uint32_t cluster = startCluster; !isEndOfCluster(cluster); cluster = fat_[cluster]) {
             if (!readCluster(cluster, buf.get()) != M_OK) {
@@ -901,7 +901,7 @@ private:
                     target->setLongNameStartIndex(longNameStartIndex);
                 }
                 target->setDate(unpackDateTime(entry));
-                ASSERT(target);
+                MONA_ASSERT(target);
                 childlen.push_back(target);
                 partialLongNames.clear();
                 if (hasLongName) {
@@ -922,7 +922,7 @@ private:
         File* r = new File("", getRootDirectoryCluster(), childlen, 0, 0);
         r->setDateNow();
         root_->fnode = r;
-        ASSERT(root_->fnode);
+        MONA_ASSERT(root_->fnode);
         root_->fs = this;
         root_->type = Vnode::DIRECTORY;
         for (Files::iterator it = childlen.begin(); it != childlen.end(); ++it) {
@@ -959,7 +959,7 @@ private:
     uint32_t getSectorsPerFat() const
     {
         // For Fat32, small spf should be zero.
-        ASSERT(little2host16(bsbpb_->spf) == 0);
+        MONA_ASSERT(little2host16(bsbpb_->spf) == 0);
         return little2host32(bsxbpb_->bspf);
     }
 
@@ -1078,13 +1078,13 @@ private:
 
     void initializeEntry(struct de* entry, const std::string& name, const std::string& ext, bool isDirectory)
     {
-        ASSERT(name.size() <= 8);
+        MONA_ASSERT(name.size() <= 8);
         if (ext.size() > 3) {
             monapi_warn("ext=%s", ext.c_str());
         }
         // N.B. entry->rsvd should be all zero.
         memset(entry, 0, sizeof(struct de));
-        ASSERT(ext.size() <= 3);
+        MONA_ASSERT(ext.size() <= 3);
         entry->attr = isDirectory ? ATTR_SUBDIR : 0;
         memset(entry->name, ' ', 8);
         memcpy(entry->name, name.c_str(), name.size());
@@ -1149,7 +1149,7 @@ private:
         if (!allocateClusters(clusters, newNumClusters - currentNumClusters)) {
             return M_NO_SPACE;
         }
-        ASSERT(clusters.size() > 0);
+        MONA_ASSERT(clusters.size() > 0);
         uint32_t orgSize = entry->getSize();
 
         bool isParentClusterDirty = false;
@@ -1227,8 +1227,8 @@ private:
     uint8_t checksum(const std::string& name, const std::string& ext)
     {
         // name and ext should be rpad with space.
-        ASSERT(name.size() == 8);
-        ASSERT(ext.size() == 3);
+        MONA_ASSERT(name.size() == 8);
+        MONA_ASSERT(ext.size() == 3);
         std::string file = name + ext;
         unsigned char sum = 0;
         for (std::string::const_iterator it = file.begin(); it != file.end(); ++it) {
@@ -1246,7 +1246,7 @@ private:
         } else {
             file = new File(name, 0, 0, clusterInParent, indexInParentCluster);
         }
-        ASSERT(file);
+        MONA_ASSERT(file);
         if (indexInParentCluster != longNameStartIndex) {
             file->setLongNameStartIndex(longNameStartIndex);
         }
@@ -1340,7 +1340,7 @@ private:
             MonAPI::Buffer d(dest, destLen);
             MonAPI::Buffer s(source, sourceLen);
             bool isOK = MonAPI::Buffer::copy(d, 0, s, sourceOffset, copySize);
-            ASSERT(isOK);
+            MONA_ASSERT(isOK);
         }
     }
 
@@ -1439,11 +1439,11 @@ private:
                 return M_READ_ERROR;
             }
         }
-        ASSERT(lastCluster != 0);
+        MONA_ASSERT(lastCluster != 0);
         uint32_t extraCluster = END_OF_CLUSTER;
         int startIndex = 0;
         if ((startIndex = allocateContigousEntries((struct de*)buf_, requiredNumEntries)) < 0) {
-            ASSERT(startIndex == M_NO_SPACE);
+            MONA_ASSERT(startIndex == M_NO_SPACE);
             extraCluster = allocateCluster();
             if (isEndOfCluster(extraCluster)) {
                 return M_NO_SPACE;

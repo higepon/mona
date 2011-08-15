@@ -20,7 +20,7 @@ public:
     Condition() : waitList_(HList<Thread*>()) {}
     virtual ~Condition()
     {
-        ASSERT(waitList_.size() == 0);
+        MONA_ASSERT(waitList_.size() == 0);
     }
 
     intptr_t getType() const
@@ -56,7 +56,7 @@ public:
         while (!waitList_.isEmpty()) {
             Thread* thread = NULL;
             bool isRemoved = waitList_.removeAt(0, &thread);
-            ASSERT(isRemoved);
+            MONA_ASSERT(isRemoved);
             thread->setWaitingCondition(NULL);
             g_scheduler->EventComes(thread, MEvent::CONDITION_NOTIFY);
         }

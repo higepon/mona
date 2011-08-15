@@ -23,6 +23,6 @@ void KObject::addRef()
 bool KObject::releaseRef()
 {
     referanceCount_--;
-    ASSERT(referanceCount_ >= 0);
+    MONA_ASSERT(referanceCount_ >= 0);
     return referanceCount_ == 0;
 }

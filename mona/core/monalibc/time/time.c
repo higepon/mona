@@ -33,6 +33,7 @@
 
 #include <monalibc/time.h>
 #include <monapi/syscall.h>
+#include <monapi/Assert.h>
 #include "time_util.h"
 
 time_t time(time_t *t) {
@@ -43,4 +44,13 @@ time_t time(time_t *t) {
 	result = KDate2time_t(&date);
 	if( t != NULL ) *t = result;
 	return result;
+}
+
+struct tm *localtime(const time_t *timep) {
+  MONA_ASSERT(0);
+}
+
+int gettimeofday(struct timeval *tv, struct timezone *tz)
+{
+  MONA_ASSERT(0);
 }

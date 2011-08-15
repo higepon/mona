@@ -20,8 +20,8 @@ HList<SharedMemoryObject*> SharedMemoryObject::sharedList_;
 
 bool Segment::faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
 {
-    ASSERT(inRange(address));
-    ASSERT(error == PageManager::FAULT_NOT_EXIST);
+    MONA_ASSERT(inRange(address));
+    MONA_ASSERT(error == PageManager::FAULT_NOT_EXIST);
 
     PhysicalAddress mappedResultAddress;
     intptr_t ret = pageManager->mapOnePage(process->getPageDirectory(),
@@ -38,8 +38,8 @@ bool Segment::faultHandler(PageManager* pageManager, Process* process, LinearAdd
 
 bool SharedMemorySegment::faultHandler(PageManager* pageManager, Process* process, LinearAddress address, uint32_t error)
 {
-    ASSERT(inRange(address));
-    ASSERT(error == PageManager::FAULT_NOT_EXIST);
+    MONA_ASSERT(inRange(address));
+    MONA_ASSERT(error == PageManager::FAULT_NOT_EXIST);
 
     uint32_t faultTableIndex = PageManager::getTableIndex(address);
     uint32_t faultDirectoryIndex = PageManager::getDirectoryIndex(address);
@@ -75,10 +75,10 @@ SharedMemoryObject::SharedMemoryObject(uint32_t id, uint32_t size) :
     refCount_(0),
     physicalPageCount_(size / PageManager::ARCH_PAGE_SIZE)
 {
-    ASSERT(size != 0);
+    MONA_ASSERT(size != 0);
 
     physicalPages_ = new uint32_t[physicalPageCount_];
-    ASSERT(physicalPages_);
+    MONA_ASSERT(physicalPages_);
     memset(physicalPages_, UN_MAPPED, sizeof(uint32_t) * physicalPageCount_);
 }
 
@@ -121,7 +121,7 @@ SharedMemoryObject* SharedMemoryObject::create(uint32_t size)
     }
 
     SharedMemoryObject* shm = new SharedMemoryObject(id++, size);
-    ASSERT(shm);
+    MONA_ASSERT(shm);
     sharedList_.add(shm);
     return shm;
 }
@@ -133,7 +133,7 @@ intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, 
     uintptr_t end = start + getSize();
 
     if (process->hasSharedOverlap(start, end)) {
-        ASSERT(true); // Bug!
+        MONA_ASSERT(true); // Bug!
         return M_BAD_ADDRESS;
     } else {
         SharedMemorySegment* segment = new SharedMemorySegment(address, getSize(), this);
@@ -148,7 +148,7 @@ intptr_t SharedMemoryObject::attach(PageManager* pageManager, Process* process, 
         if (isImmediateMap) {
             for (LinearAddress start = address; start < end; start += PageManager::ARCH_PAGE_SIZE) {
                 bool isSucceed = segment->faultHandler(pageManager, process, start, PageManager::FAULT_NOT_EXIST);
-                ASSERT(isSucceed);
+                MONA_ASSERT(isSucceed);
             }
         }
         return M_OK;

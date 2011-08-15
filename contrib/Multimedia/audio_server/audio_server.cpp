@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <monapi/Stream.h>
 #include <monapi/Message.h>
-#include <assert.h>
 
 struct audio_data_format default_format =
 {

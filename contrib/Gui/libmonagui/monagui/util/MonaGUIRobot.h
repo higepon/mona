@@ -40,7 +40,7 @@ public:
     {
         Rectangle r = *(button.getBounds());
         Frame* parent = (Frame*)button.getParent();
-        ASSERT(parent);
+        MONA_ASSERT(parent);
         r.x += parent->getBounds()->x + parent->getInsets()->left;
         r.y += parent->getBounds()->y + parent->getInsets()->top;
         mouseMove(r.x, r.y);
@@ -53,7 +53,7 @@ public:
     {
         Rectangle r = *(input.getBounds());
         Frame* parent = (Frame*)input.getParent();
-        ASSERT(parent);
+        MONA_ASSERT(parent);
         r.x += parent->getBounds()->x + parent->getInsets()->left;
         r.y += parent->getBounds()->y + parent->getInsets()->top;
         mouseMove(r.x, r.y);

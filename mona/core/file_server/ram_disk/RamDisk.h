@@ -47,7 +47,7 @@ namespace RamDisk {
               for(int i = 0; i < chunkNum; i++)
                 {
                     it++;
-                    ASSERT(it != chunks.end());
+                    MONA_ASSERT(it != chunks.end());
                 }
               return it;
           }
@@ -62,7 +62,7 @@ namespace RamDisk {
         inline Chunks::iterator extendOneChunk()
           {
               char* ptr = new char[CHUNK_SIZE];
-              ASSERT(ptr);
+              MONA_ASSERT(ptr);
               chunks.push_back(ptr);
               Chunks::iterator it = chunks.end();
               it--;
@@ -88,11 +88,11 @@ namespace RamDisk {
 
               extendToOffset(offset);
               Chunks::iterator it = findChunk(offset);
-              ASSERT(it != chunks.end());
+              MONA_ASSERT(it != chunks.end());
 
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
-                  ASSERT(copySize > 0);
+                  MONA_ASSERT(copySize > 0);
 
                   char *ptr = *it;
                   memcpy(ptr + chunkOffset, src, copySize);
@@ -113,14 +113,14 @@ namespace RamDisk {
               Chunks::iterator it = findChunk(offset);
               while(rest > 0) {
                   int copySize = chunkRemainLen(chunkOffset, rest);
-                  ASSERT(copySize > 0);
+                  MONA_ASSERT(copySize > 0);
                   char *ptr = *it;
                   memcpy(dest, ptr+chunkOffset, copySize);
                   dest += copySize;
                   it++;
                   chunkOffset = 0; // only none-zero at first chunk.
                   rest -= copySize;
-                  ASSERT(it != chunks.end());
+                  MONA_ASSERT(it != chunks.end());
               }
           }
 
@@ -144,8 +144,8 @@ namespace RamDisk {
           virtual ~RamDiskFileSystem() {
               // should already removed at VnodeCacher's destructor
               // We had better also destruct correctly here, but now I just confirm my understanding by assert.
-              ASSERT(root_ == NULL);
-              ASSERT(files_.size() == 0);
+              MONA_ASSERT(root_ == NULL);
+              MONA_ASSERT(files_.size() == 0);
           }
 
 
@@ -159,7 +159,7 @@ namespace RamDisk {
                   return M_FILE_NOT_FOUND;
 
                 Vnode* newVnode = new Vnode;
-                ASSERT(newVnode);
+                MONA_ASSERT(newVnode);
                 newVnode->fnode = (*it).second;
                 newVnode->type = Vnode::REGULAR;
                 newVnode->fs = this;
@@ -313,7 +313,7 @@ namespace RamDisk {
                 if (vnode->type == Vnode::DIRECTORY)
                   {
                       // vnode must be root
-                      ASSERT(vnode == root_);
+                      MONA_ASSERT(vnode == root_);
                       delete vnode;
                       root_ = NULL;
                       return;
@@ -321,7 +321,7 @@ namespace RamDisk {
                 FileInfo* finfo = (FileInfo*)vnode->fnode;
                 std::string name = finfo->name;
                 FileMap::iterator it = files_.find(name);
-                ASSERT(it != files_.end());
+                MONA_ASSERT(it != files_.end());
                 delete finfo;
                 files_.erase(it);
                 delete vnode;

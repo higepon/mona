@@ -38,14 +38,14 @@ public:
         thread->priority     = thread->basePriority;
 
 
-        ASSERT(thread->priority < maxPriority);
+        MONA_ASSERT(thread->priority < maxPriority);
 
         runq[thread->priority]->AddToPrev(thread);
     }
 
     void ChangeBasePriority(Thread* thread, uint32_t basePriority)
     {
-        ASSERT(thread);
+        MONA_ASSERT(thread);
 
         if(thread->basePriority >= maxPriority)
         {
@@ -95,7 +95,7 @@ protected:
 
     void MoveToNewPosition(Array<Thread*>& queue, Thread* thread)
     {
-        ASSERT(thread->priority < maxPriority);
+        MONA_ASSERT(thread->priority < maxPriority);
 
         thread->Remove();
         queue[thread->priority]->AddToPrev(thread);

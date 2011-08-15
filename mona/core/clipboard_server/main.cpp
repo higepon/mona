@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
                 delete clip;
             }
             clip = new SharedMemory(msg.arg1, msg.arg2);
-            ASSERT(clip);
+            MONA_ASSERT(clip);
 
             // memory map referce should be greater than 0, so we map it.
             intptr_t result = clip->map();

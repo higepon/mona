@@ -109,8 +109,8 @@ public:
         if (col >= MAX_NUM_COLS) {
             mona_trace("col=%d\n", col);
         }
-        ASSERT(row < MAX_NUM_ROWS);
-        ASSERT(col < MAX_NUM_COLS);
+        MONA_ASSERT(row < MAX_NUM_ROWS);
+        MONA_ASSERT(col < MAX_NUM_COLS);
         currentRow_ = row;
         std::string& line = lines[row];
         size_t lineSize = line.size();
@@ -167,14 +167,14 @@ public:
 
     void putc(int c)
     {
-        ASSERT(currentRow_ < MAX_NUM_ROWS);
-        ASSERT(currentCol_ < MAX_NUM_COLS);
+        MONA_ASSERT(currentRow_ < MAX_NUM_ROWS);
+        MONA_ASSERT(currentCol_ < MAX_NUM_COLS);
         if (c == 0x0d || c == '\t') {
             return; // is this right?
         }
         std::string& line = lines[currentRow_];
         if (c == '\b') {
-            ASSERT(currentRow_ != 0);
+            MONA_ASSERT(currentRow_ != 0);
             line.erase(line.begin() + currentCol_, line.begin() + currentCol_);
             currentCol_--;
             return;
@@ -401,7 +401,7 @@ void mona_ttnowindow()
 
 void mona_ttcolor(int color)
 {
-    ASSERT(color == 0 || color == 1 || color == 2);
+    MONA_ASSERT(color == 0 || color == 1 || color == 2);
     if (color == 0 || color == 1) {
         // do nothing
     } else {
@@ -526,7 +526,7 @@ int mona_ttgetc()
 // OK
 void mona_ttflush()
 {
-    ASSERT(g_frame);
+    MONA_ASSERT(g_frame);
     // todo message でやるほうが行儀が良い
     g_frame->repaint();
 }
@@ -538,7 +538,7 @@ int mona_ttputc(int c)
     #ifdef MONA
     // todo ttputc と同様にバッファリングすべき
     #endif
-    ASSERT(g_frame);
+    MONA_ASSERT(g_frame);
     g_frame->putc(c);
 }
 
@@ -576,7 +576,7 @@ void mona_get_file_datetime_size(const char* file, int* year, int* month, int* d
 {
     MonAPI::Date date;
     intptr_t ret = monapi_file_get_date(file, date);
-    ASSERT(ret == M_OK);
+    MONA_ASSERT(ret == M_OK);
     *year = date.year();
     *month = date.month();
     *day = date.day();
@@ -585,7 +585,7 @@ void mona_get_file_datetime_size(const char* file, int* year, int* month, int* d
     *sec = date.sec();
     uint32_t s;
     ret = monapi_file_get_file_size_by_path(file, s);
-    ASSERT(ret == M_OK);
+    MONA_ASSERT(ret == M_OK);
     *size = s;
 }
 

@@ -195,7 +195,7 @@ private:
 
         // How many descriptors do the queue have?
         const int numberOfDesc = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_NUM);
-        ASSERT(numberOfDesc == 256);
+        MONA_ASSERT(numberOfDesc == 256);
 
         // Check whether the queue is already set vring (necessary?).
         uint16_t pfn = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_PFN);
@@ -214,7 +214,7 @@ private:
         const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)readDesc->get());
         const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
 
-        ASSERT((alignedAddress % PAGE_SIZE) == 0);
+        MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
         // vring.desc is page aligned
         vring->desc = (struct vring_desc*)((uintptr_t)readDesc->get() + alignedAddress - physicalAddress);
@@ -235,11 +235,11 @@ private:
         // vring.used is also page aligned
         const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring->avail->ring[numberOfDesc]));
         const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-        ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+        MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
         vring->used = (struct vring_used*)((uintptr_t)&(vring->avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
-        ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc) == 8192);
-        ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc)) % PAGE_SIZE) == 0);
+        MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc) == 8192);
+        MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc)) % PAGE_SIZE) == 0);
         return vring;
     }
 
@@ -410,7 +410,7 @@ public:
                 }
             } else {
                 _printf("oooooooooooooooooooooo");
-                ASSERT(false);
+                MONA_ASSERT(false);
             }
         }
 
@@ -419,7 +419,7 @@ public:
         uint32_t id = readVring_->used->ring[index].id;
 
         // assume ring size = 5
-        ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
+        MONA_ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
 
@@ -476,7 +476,7 @@ public:
                 }
             } else {
                 _printf("peek error");
-                ASSERT(false);
+                MONA_ASSERT(false);
             }
         }
 
@@ -484,7 +484,7 @@ public:
         *len = readVring_->used->ring[index].len - sizeof(struct virtio_net_hdr);
         uint32_t id = readVring_->used->ring[index].id;
         // assume ring size = 5
-        ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
+        MONA_ASSERT(id == 0 || id == 2 || id == 4 || id == 6 || id == 8);
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
 

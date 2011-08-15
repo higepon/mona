@@ -125,7 +125,7 @@ namespace gnote {
                 int writtenSize = snprintf(szNo, BUFFER_SIZE, "%4d", (c.top + ii - 1) % 10000);
                 // For now, snprint is just an alias for sprintf
                 // So we check the size.
-                ASSERT(writtenSize + 1 <= BUFFER_SIZE);
+                MONA_ASSERT(writtenSize + 1 <= BUFFER_SIZE);
                 g->setColor(Color::blue);
                 g->drawString(szNo, 0, ii * gridHeight + 1);
                 //

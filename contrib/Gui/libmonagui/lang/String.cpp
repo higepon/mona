@@ -41,7 +41,7 @@ namespace monagui
         } else {
             if (length == -1) length = strlen(text);
             this->buffer = new char[length + 1];
-            //ASSERT(this->buffer)
+            //MONA_ASSERT(this->buffer)
             memcpy(this->buffer, text, length);
             this->buffer[length] = '\0';
             this->_len = length;
@@ -69,7 +69,7 @@ namespace monagui
         } else {
             this->_len = strlen(text);
             this->buffer = new char[this->_len + 1];
-            //ASSERT(this->buffer)
+            //MONA_ASSERT(this->buffer)
             memcpy(this->buffer, text, this->_len);
             this->buffer[this->_len] = '\0';
         }
@@ -85,7 +85,7 @@ namespace monagui
         } else {
             this->_len = text._len;
             this->buffer = new char[this->_len + 1];
-            //ASSERT(this->buffer)
+            //MONA_ASSERT(this->buffer)
             memmove(this->buffer, text.buffer, this->_len);
             this->buffer[this->_len] = '\0';
         }
@@ -101,7 +101,7 @@ namespace monagui
             buf = NULL;
         } else {
             buf = new char[this->_len + 1];
-            //ASSERT(buf)
+            //MONA_ASSERT(buf)
             if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
             if (text != NULL) memcpy(&buf[len1], text, len2);
             buf[this->_len] = '\0';
@@ -119,7 +119,7 @@ namespace monagui
             buf = NULL;
         } else {
             buf = new char[this->_len + 1];
-            //ASSERT(buf)
+            //MONA_ASSERT(buf)
             if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
             if (text .buffer != NULL) memcpy(&buf[len1], text.buffer, len2);
             buf[this->_len] = '\0';
@@ -131,7 +131,7 @@ namespace monagui
     void String::operator +=(char ch)
     {
         char* buf = new char[this->_len + 2];
-        //ASSERT(buf)
+        //MONA_ASSERT(buf)
         memcpy(buf, this->buffer, this->_len);
         buf[this->_len++] = ch;
         buf[this->_len] = '\0';

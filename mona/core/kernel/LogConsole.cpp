@@ -223,7 +223,7 @@ void LogConsole::print(const char* str)
              rest = 0;
            }
            int ret = g_messenger->send(thread, &msg);
-           //           ASSERT(ret == M_OK);
+           //           MONA_ASSERT(ret == M_OK);
          }
     }
     }

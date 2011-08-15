@@ -55,12 +55,12 @@ Thread::Thread() :
     clearEventWaiting();
     /* thread information */
     tinfo = new ThreadInfo;
-    ASSERT(tinfo);
+    MONA_ASSERT(tinfo);
     tinfo->thread = this;
 
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
-    ASSERT(tinfo->archinfo);
+    MONA_ASSERT(tinfo->archinfo);
 }
 
 Thread::Thread(const Thread& src) :
@@ -82,12 +82,12 @@ Thread::Thread(const Thread& src) :
     waitingMutex_(src.waitingMutex_),
     waitingCondition_(src.waitingCondition_)
 {
-    ASSERT(false);
+    MONA_ASSERT(false);
 }
 
 Thread& Thread::operator=(const Thread& src)
 {
-    ASSERT(false);
+    MONA_ASSERT(false);
     basePriority = src.basePriority;
     return *this;
 }

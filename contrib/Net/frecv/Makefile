@@ -8,14 +8,13 @@ SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
-ADDLINK    =  -lonigurum-imp -lmonalibc-imp --enable-auto-import
-#ADDLINK    = -ldlltest-imp
+ADDLINK    =  -lmonalibc-imp --enable-auto-import
 ifneq ($(BUILD_TARGET),ELF)
 include $(SHAREDIR)/configs/monapi-ex5.inc
 else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-CXXFLAGS += -g -DDEBUG -I . -I ./boost -I $(INCDIR)/onig
+CXXFLAGS += -g -DDEBUG -I .
 
 -include dependencies

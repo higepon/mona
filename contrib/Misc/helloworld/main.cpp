@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    ASSERT(sizeof(unsigned long long) == 8);
+    MONA_ASSERT(sizeof(unsigned long long) == 8);
   int ret;
   int s;
 
@@ -687,7 +687,7 @@ private:
 
         // How many descriptors do the queue have?
         const int numberOfDesc = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_NUM);
-        ASSERT(numberOfDesc == 256);
+        MONA_ASSERT(numberOfDesc == 256);
 
         // Check whether the queue is already set vring (necessary?).
         uint16_t pfn = inp16(baseAddress_ + VIRTIO_PCI_QUEUE_PFN);
@@ -703,7 +703,7 @@ private:
         const uintptr_t physicalAddress = syscall_get_physical_address((uintptr_t)readDesc->data());
         const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
 
-        ASSERT((alignedAddress % PAGE_SIZE) == 0);
+        MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
         // vring.desc is page aligned
         vring->desc = (struct vring_desc*)(readDesc->data() + alignedAddress - physicalAddress);
@@ -724,11 +724,11 @@ private:
         // vring.used is also page aligned
         const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring->avail->ring[numberOfDesc]));
         const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-        ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+        MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
         vring->used = (struct vring_used*)((uintptr_t)&(vring->avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
-        ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc) == 8192);
-        ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc)) % PAGE_SIZE) == 0);
+        MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc) == 8192);
+        MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring->used) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring->desc)) % PAGE_SIZE) == 0);
         return vring;
 
     }
@@ -1012,7 +1012,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -1031,7 +1031,7 @@ int main(int argc, char* argv[])
     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -1050,11 +1050,11 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
@@ -1163,7 +1163,7 @@ int main(int argc, char* argv[])
 
 
        int next_used = vring2.used->idx;
-//       ASSERT(1 == next_used - last_used_idx);
+//       MONA_ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -1249,7 +1249,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -1268,7 +1268,7 @@ int main(int argc, char* argv[])
     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -1287,11 +1287,11 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
@@ -1375,7 +1375,7 @@ int main(int argc, char* argv[])
        }
 
        int next_used = vring2.used->idx;
-       ASSERT(1 == next_used - last_used_idx);
+       MONA_ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -1463,7 +1463,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -1482,7 +1482,7 @@ int main(int argc, char* argv[])
     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -1501,11 +1501,11 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
@@ -1566,7 +1566,7 @@ int main(int argc, char* argv[])
        }
 
        int next_used = vring2.used->idx;
-       ASSERT(1 == next_used - last_used_idx);
+       MONA_ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -1678,7 +1678,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -1697,7 +1697,7 @@ int main(int argc, char* argv[])
     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -1716,11 +1716,11 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
@@ -1768,7 +1768,7 @@ int main(int argc, char* argv[])
        }
 
        int next_used = vring2.used->idx;
-       ASSERT(1 == next_used - last_used_idx);
+       MONA_ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -1871,7 +1871,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -1890,7 +1890,7 @@ int main(int argc, char* argv[])
     const uintptr_t physicalAddress2 = syscall_get_physical_address((uintptr_t)readDesc.data(), NULL);
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -1909,11 +1909,11 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring2.desc, NULL) >> 12);
@@ -1942,9 +1942,9 @@ int main(int argc, char* argv[])
 
     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
 
-   ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
-   ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
-   ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+   MONA_ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+   MONA_ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+   MONA_ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
 
    while (true) {
        printf("waiting \n");
@@ -1953,7 +1953,7 @@ int main(int argc, char* argv[])
        }
 
        int next_used = vring2.used->idx;
-       ASSERT(1 == next_used - last_used_idx);
+       MONA_ASSERT(1 == next_used - last_used_idx);
 
        printf("used_idx %d => %d\n", last_used_idx, next_used);
 
@@ -2040,7 +2040,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
 #endif
-    ASSERT(numberOfDesc == 256);
+    MONA_ASSERT(numberOfDesc == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -2070,7 +2070,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 #endif
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(writeDesc.data() + alignedAddress - physicalAddress);
@@ -2083,13 +2083,13 @@ int main(int argc, char* argv[])
 
     // vring.avail is follow after the array of desc
     vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
-    ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
+    MONA_ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
 
 
     //vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
 #if 0
     _printf("usedAligendAddress - usedPhysicalAddress= %d\n", usedAligendAddress - usedPhysicalAddress);
 #endif
@@ -2101,9 +2101,9 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
 #endif
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
 
-    ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
+    MONA_ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
     // 9. set up pfn
 
 #if 0
@@ -2169,7 +2169,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -2193,7 +2193,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 //    printf("[virtio] alignedAddress2=%x\n", alignedAddress2);
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -2212,7 +2212,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
 //     printf("vring2.desc=%x vring2.used=%x diff=%d\n"
@@ -2220,8 +2220,8 @@ int main(int argc, char* argv[])
 //            , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
 //            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
 //    printf("[virtio] set up PFN\n");
@@ -2249,12 +2249,12 @@ int main(int argc, char* argv[])
     vring2.avail->ring[0] =0;
 
     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-    ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
-    ASSERT(vring.desc[1].flags == 0);
+    MONA_ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
+    MONA_ASSERT(vring.desc[1].flags == 0);
 
-    ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
-    ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
-    ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+    MONA_ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+    MONA_ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+    MONA_ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
 
 
     CHECK_BUFFER(writeDesc);
@@ -2588,7 +2588,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
 #endif
-    ASSERT(numberOfDesc == 256);
+    MONA_ASSERT(numberOfDesc == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -2618,7 +2618,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 #endif
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(writeDesc.data() + alignedAddress - physicalAddress);
@@ -2631,13 +2631,13 @@ int main(int argc, char* argv[])
 
     // vring.avail is follow after the array of desc
     vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
-    ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
+    MONA_ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
 
 
     //vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
 #if 0
     _printf("usedAligendAddress - usedPhysicalAddress= %d\n", usedAligendAddress - usedPhysicalAddress);
 #endif
@@ -2649,9 +2649,9 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
 #endif
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
 
-    ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
+    MONA_ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
     // 9. set up pfn
 
 #if 0
@@ -2750,7 +2750,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -2774,7 +2774,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 //    printf("[virtio] alignedAddress2=%x\n", alignedAddress2);
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -2793,7 +2793,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
 //     printf("vring2.desc=%x vring2.used=%x diff=%d\n"
@@ -2801,8 +2801,8 @@ int main(int argc, char* argv[])
 //            , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
 //            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
 //    printf("[virtio] set up PFN\n");
@@ -2830,12 +2830,12 @@ int main(int argc, char* argv[])
     vring2.avail->ring[0] =0;
 
     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-    ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
-    ASSERT(vring.desc[1].flags == 0);
+    MONA_ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
+    MONA_ASSERT(vring.desc[1].flags == 0);
 
-    ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
-    ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
-    ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+    MONA_ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+    MONA_ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+    MONA_ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
 
 
     CHECK_BUFFER(writeDesc);
@@ -3004,7 +3004,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
 #endif
-    ASSERT(numberOfDesc == 256);
+    MONA_ASSERT(numberOfDesc == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3034,7 +3034,7 @@ int main(int argc, char* argv[])
 #if 0
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 #endif
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(writeDesc.data() + alignedAddress - physicalAddress);
@@ -3047,13 +3047,13 @@ int main(int argc, char* argv[])
 
     // vring.avail is follow after the array of desc
     vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
-    ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
+    MONA_ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
 
 
     //vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
 #if 0
     _printf("usedAligendAddress - usedPhysicalAddress= %d\n", usedAligendAddress - usedPhysicalAddress);
 #endif
@@ -3065,9 +3065,9 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
 #endif
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
 
-    ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
+    MONA_ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
     // 9. set up pfn
 
 #if 0
@@ -3133,7 +3133,7 @@ int main(int argc, char* argv[])
 
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
 #endif
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3157,7 +3157,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
 //    printf("[virtio] alignedAddress2=%x\n", alignedAddress2);
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -3176,7 +3176,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
 //     printf("vring2.desc=%x vring2.used=%x diff=%d\n"
@@ -3184,8 +3184,8 @@ int main(int argc, char* argv[])
 //            , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
 //            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
 //    printf("[virtio] set up PFN\n");
@@ -3213,12 +3213,12 @@ int main(int argc, char* argv[])
     vring2.avail->ring[0] =0;
 
     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-    ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
-    ASSERT(vring.desc[1].flags == 0);
+    MONA_ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
+    MONA_ASSERT(vring.desc[1].flags == 0);
 
-    ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
-    ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
-    ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+    MONA_ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+    MONA_ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+    MONA_ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
 
 
     CHECK_BUFFER(writeDesc);
@@ -3382,7 +3382,7 @@ int main(int argc, char* argv[])
     // 5. how many descriptors do the queue have?
     const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
-    ASSERT(numberOfDesc == 256);
+    MONA_ASSERT(numberOfDesc == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3406,7 +3406,7 @@ int main(int argc, char* argv[])
     printf("[virtio] physicalAddress=%x\n", physicalAddress);
     const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(writeDesc.data() + alignedAddress - physicalAddress);
@@ -3419,13 +3419,13 @@ int main(int argc, char* argv[])
 
     // vring.avail is follow after the array of desc
     vring.avail = (struct vring_avail *)&vring.desc[numberOfDesc];
-    ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
+    MONA_ASSERT((syscall_get_physical_address((uintptr_t)vring.avail, NULL) % PAGE_SIZE) == 0)
 
 
     //vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
     _printf("usedAligendAddress - usedPhysicalAddress= %d\n", usedAligendAddress - usedPhysicalAddress);
     vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
@@ -3434,9 +3434,9 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL));
 
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring.desc, NULL))) == 8192);
 
-    ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
+    MONA_ASSERT((uintptr_t)(&(vring.used->ring[numberOfDesc])) <= (uintptr_t)(writeDesc.data() + writeDesc.size()));
     // 9. set up pfn
     printf("[virtio] set up PFN\n");
     outp32(baseAddress + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring.desc, NULL) >> 12);
@@ -3493,7 +3493,7 @@ int main(int argc, char* argv[])
     // 5. how many descriptors do the queue have?
     const int numberOfDesc2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc2=%d\n", numberOfDesc2);
-    ASSERT(numberOfDesc2 == 256);
+    MONA_ASSERT(numberOfDesc2 == 256);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn2 = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3516,7 +3516,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress2 = (physicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
     printf("[virtio] alignedAddress2=%x\n", alignedAddress2);
 
-    ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress2 % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring2.desc = (struct vring_desc*)(readDesc.data() + alignedAddress2 - physicalAddress2);
@@ -3535,7 +3535,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress2 = syscall_get_physical_address((uintptr_t)&(vring2.avail->ring[numberOfDesc2]), NULL);
     const uintptr_t usedAligendAddress2 = (usedPhysicalAddress2 + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress2 % PAGE_SIZE) == 0);
     vring2.used = (struct vring_used*)((uintptr_t)&(vring2.avail->ring[numberOfDesc2]) + usedAligendAddress2 - usedPhysicalAddress2);
 
     printf("vring2.desc=%x vring2.used=%x diff=%d\n"
@@ -3543,8 +3543,8 @@ int main(int argc, char* argv[])
            , syscall_get_physical_address((uintptr_t)vring2.used, NULL)
            , (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL));
 
-    ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
-    ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
+    MONA_ASSERT((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL) == 8192);
+    MONA_ASSERT((((uintptr_t)syscall_get_physical_address((uintptr_t)vring2.used, NULL) - (uintptr_t)syscall_get_physical_address((uintptr_t)vring2.desc, NULL)) % PAGE_SIZE) == 0);
 
     // 9. set up pfn
     printf("[virtio] set up PFN\n");
@@ -3572,12 +3572,12 @@ int main(int argc, char* argv[])
     vring2.avail->ring[0] =0;
 
     outp16(baseAddress + VIRTIO_PCI_QUEUE_NOTIFY, 0);
-    ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
-    ASSERT(vring.desc[1].flags == 0);
+    MONA_ASSERT(vring.desc[0].flags == VRING_DESC_F_NEXT);
+    MONA_ASSERT(vring.desc[1].flags == 0);
 
-    ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
-    ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
-    ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
+    MONA_ASSERT(vring2.desc[0].flags & VRING_DESC_F_NEXT);
+    MONA_ASSERT((vring2.desc[1].flags & VRING_DESC_F_NEXT) == 0);
+    MONA_ASSERT(vring2.desc[1].flags & VRING_DESC_F_WRITE);
 
 
     CHECK_BUFFER(writeDesc);
@@ -3747,7 +3747,7 @@ int main(int argc, char* argv[])
     // 5. how many descriptors do the queue have?
     const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
-    ASSERT(numberOfDesc > 0);
+    MONA_ASSERT(numberOfDesc > 0);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3771,7 +3771,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
@@ -3788,7 +3788,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
     vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
     // 9. set up pfn
@@ -3915,7 +3915,7 @@ int main(int argc, char* argv[])
     // 5. how many descriptors do the queue have?
     const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
-    ASSERT(numberOfDesc > 0);
+    MONA_ASSERT(numberOfDesc > 0);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -3939,7 +3939,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
@@ -3956,7 +3956,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
     vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
     // 9. set up pfn
@@ -4028,7 +4028,7 @@ int main(int argc, char* argv[])
 //     p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
 //     struct vring_desc* desc = (struct vring_desc*)p;
 
-//     ASSERT(((uint32_t)desc % 4096) == 0);
+//     MONA_ASSERT(((uint32_t)desc % 4096) == 0);
 
 //     char* q = new char[4096];
 //     memset(q, 0xfe, 4096);
@@ -4036,7 +4036,7 @@ int main(int argc, char* argv[])
 
 //     strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 //     desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
-//     ASSERT(((uint32_t)q % 4096) == 0);
+//     MONA_ASSERT(((uint32_t)q % 4096) == 0);
 //     desc->len = strlen(q) + 1;
 
 //     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0
@@ -4082,7 +4082,7 @@ int main(int argc, char* argv[])
     // 5. how many descriptors do the queue have?
     const int numberOfDesc = inp16(baseAddress + VIRTIO_PCI_QUEUE_NUM);
     printf("[virtio] numberOfDesc=%d\n", numberOfDesc);
-    ASSERT(numberOfDesc > 0);
+    MONA_ASSERT(numberOfDesc > 0);
 
     // 6. Check wheter the queue is already set vring (necessary?).
     uint16_t pfn = inp16(baseAddress + VIRTIO_PCI_QUEUE_PFN);
@@ -4106,7 +4106,7 @@ int main(int argc, char* argv[])
     const uintptr_t alignedAddress = (physicalAddress + PAGE_MASK) & ~PAGE_MASK;
     printf("[virtio] alignedAddress=%x\n", alignedAddress);
 
-    ASSERT((alignedAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((alignedAddress % PAGE_SIZE) == 0);
 
     // vring.desc is page aligned
     vring.desc = (struct vring_desc*)(queueData + alignedAddress - physicalAddress);
@@ -4123,7 +4123,7 @@ int main(int argc, char* argv[])
     // vring.used is also page aligned
     const uintptr_t usedPhysicalAddress = syscall_get_physical_address((uintptr_t)&(vring.avail->ring[numberOfDesc]), NULL);
     const uintptr_t usedAligendAddress = (usedPhysicalAddress + PAGE_MASK) & ~PAGE_MASK;
-    ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
+    MONA_ASSERT((usedAligendAddress % PAGE_SIZE) == 0);
     vring.used = (struct vring_used*)((uintptr_t)&(vring.avail->ring[numberOfDesc]) + usedAligendAddress - usedPhysicalAddress);
 
     // 9. set up pfn
@@ -4182,7 +4182,7 @@ int main(int argc, char* argv[])
 //     p = (char*)(((uint32_t)p + PAGE_MASK) & ~PAGE_MASK);
 //     struct vring_desc* desc = (struct vring_desc*)p;
 
-//     ASSERT(((uint32_t)desc % 4096) == 0);
+//     MONA_ASSERT(((uint32_t)desc % 4096) == 0);
 
 //     char* q = new char[4096];
 //     memset(q, 0xfe, 4096);
@@ -4190,7 +4190,7 @@ int main(int argc, char* argv[])
 
 //     strcpy(q, "Hello world aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 //     desc->addr = syscall_get_physical_address((uint32_t)q, NULL) >> 12;
-//     ASSERT(((uint32_t)q % 4096) == 0);
+//     MONA_ASSERT(((uint32_t)q % 4096) == 0);
 //     desc->len = strlen(q) + 1;
 
 //     outp32((pciInf.baseAdress & ~1) + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uint32_t)desc, NULL) >> 12); // sel = 0

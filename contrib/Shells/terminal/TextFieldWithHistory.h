@@ -111,8 +111,8 @@ private:
 
     void showHistory()
     {
-        ASSERT(historyIndex_ >= 0);
-        ASSERT(historyIndex_ < (int)histories_.size());
+        MONA_ASSERT(historyIndex_ >= 0);
+        MONA_ASSERT(historyIndex_ < (int)histories_.size());
         setText(histories_[historyIndex_].c_str());
     }
 public:

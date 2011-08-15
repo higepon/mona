@@ -55,7 +55,7 @@ public:
 
         int headBufIndex = vring_.used->ring[lastUsedIndex_ % vring_.num].id;
         size = vring_.used->ring[lastUsedIndex_ % vring_.num].len;
-        ASSERT((uintptr_t)headBufIndex < vring_.num);
+        MONA_ASSERT((uintptr_t)headBufIndex < vring_.num);
         lastUsedIndex_++;
         void* ret = (requestCookies_.get())[headBufIndex];
         requestCookies_.get()[headBufIndex] = NULL;

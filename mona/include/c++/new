@@ -1,0 +1,4 @@
+// stub
+// required by WebKit/JavaScriptCore
+// include for native new operator
+#include <monapi.h>

@@ -97,7 +97,7 @@ void VnodeCacher::add(Vnode* directory, const string& name, Vnode* entry)
 
 void VnodeCacher::remove(Vnode* directory, const string& name)
 {
-    ASSERT(directory->type == Vnode::DIRECTORY);
+    MONA_ASSERT(directory->type == Vnode::DIRECTORY);
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
     if (it == directories_->end()) {

@@ -209,7 +209,7 @@ void FileServer::messageLoop()
             if (ret != M_OK) {
                 Message::reply(&msg, ret);
             } else {
-                ASSERT(memory);
+                MONA_ASSERT(memory);
                 send_and_release_shm(memory, &msg);
             }
             break;
@@ -218,7 +218,7 @@ void FileServer::messageLoop()
         {
             uint32_t fileID = msg.arg1;
             SharedMemory* memory = new SharedMemory(msg.arg3, msg.arg2);
-            ASSERT(memory->handle() != 0);
+            MONA_ASSERT(memory->handle() != 0);
             // Use immediate map
             intptr_t result = memory->map(true);
             if (result != M_OK) {

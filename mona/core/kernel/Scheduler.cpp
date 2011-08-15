@@ -15,7 +15,7 @@ Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0), 
     {
         runq[i] = new Thread();
 
-        ASSERT(runq[i]);
+        MONA_ASSERT(runq[i]);
 
         runq[i]->Initialize();
     }
@@ -24,7 +24,7 @@ Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0), 
     {
         waitq[i] = new Thread();
 
-        ASSERT(waitq[i]);
+        MONA_ASSERT(waitq[i]);
 
         waitq[i]->Initialize();
     }
@@ -156,7 +156,7 @@ void Scheduler::WakeupSleep()
 
 bool Scheduler::WakeupSleep(Thread* thread)
 {
-    ASSERT(thread);
+    MONA_ASSERT(thread);
     int eventIndex = thread->isWaiting(MEvent::SLEEP);
     if (-1 == eventIndex) {
         return false;
@@ -171,19 +171,19 @@ bool Scheduler::WakeupSleep(Thread* thread)
     int mutexIndex = thread->isWaiting(MEvent::MUTEX_UNLOCKED);
     if (-1 != mutexIndex) {
         KMutex* waitingMutex = thread->getWaitingMutex();
-        ASSERT(waitingMutex != NULL);
+        MONA_ASSERT(waitingMutex != NULL);
         thread->setWaitingMutex(NULL);
         bool removed = waitingMutex->removeFromWaitList(thread);
-        ASSERT(removed);
+        MONA_ASSERT(removed);
     }
 
     int conditionIndex = thread->isWaiting(MEvent::CONDITION_NOTIFY);
     if (-1 != conditionIndex) {
         Condition* waitingCondition = thread->getWaitingCondition();
-        ASSERT(waitingCondition != NULL);
+        MONA_ASSERT(waitingCondition != NULL);
         thread->setWaitingCondition(NULL);
         bool removed = waitingCondition->removeFromWaitList(thread);
-        ASSERT(removed);
+        MONA_ASSERT(removed);
     }
 
 
@@ -228,7 +228,7 @@ bool Scheduler::SetNextThread()
 
     g_prevThread = g_currentThread;
 
-    ASSERT(root);
+    MONA_ASSERT(root);
 
 //    g_currentThread = (root == NULL) ? g_idleThread->tinfo : ((Thread*)(root->Top()))->tinfo;
     g_currentThread = ((Thread*)(root->Top()))->tinfo;
@@ -297,8 +297,8 @@ intptr_t Scheduler::KillTimer(uint32_t id, Thread* thread)
 
 void Scheduler::Sleep(Thread* thread, uint32_t tick)
 {
-    ASSERT(thread);
-    ASSERT(tick > 0);
+    MONA_ASSERT(thread);
+    MONA_ASSERT(tick > 0);
 
     uint32_t now = this->totalTick;
     thread->wakeupSleep = now + tick;
@@ -313,7 +313,7 @@ void Scheduler::WaitEvent(Thread* thread, int eventForWait)
 
 void Scheduler::WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2)
 {
-    ASSERT(thread);
+    MONA_ASSERT(thread);
 
     thread->eventsWaiting[0] = eventForWait1;
     thread->eventsWaiting[1] = eventForWait2;
@@ -324,7 +324,7 @@ void Scheduler::WaitEvent2(Thread* thread, int eventForWait1, int eventForWait2)
 
 int Scheduler::EventComes(Thread* thread, int eventForWait)
 {
-    ASSERT(thread);
+    MONA_ASSERT(thread);
 
     int eventIndex = thread->isWaiting(eventForWait);
     if (eventIndex == -1) {

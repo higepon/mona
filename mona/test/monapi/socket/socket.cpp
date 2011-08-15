@@ -242,7 +242,7 @@ static void testSSLHttpGet()
     const char *host = "www.hatena.ne.jp";
     const char *path = "/";
 
-    ASSERT(sizeof(unsigned long long) == 8);
+    MONA_ASSERT(sizeof(unsigned long long) == 8);
 
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));

@@ -40,8 +40,8 @@ public:
         cachedDevice_(new CachedBlockDevice(rawDevice_.get())),
         sectorSize_(512)
     {
-        ASSERT(rawDevice_.get() != NULL);
-        ASSERT(cachedDevice_.get() != NULL);
+        MONA_ASSERT(rawDevice_.get() != NULL);
+        MONA_ASSERT(cachedDevice_.get() != NULL);
     }
 
     BlockDeviceDriver(int deviceIndex, size_t sectorSize) :
@@ -49,8 +49,8 @@ public:
         cachedDevice_(new CachedBlockDevice(rawDevice_.get())),
         sectorSize_(sectorSize)
     {
-        ASSERT(rawDevice_.get() != NULL);
-        ASSERT(cachedDevice_.get() != NULL);
+        MONA_ASSERT(rawDevice_.get() != NULL);
+        MONA_ASSERT(cachedDevice_.get() != NULL);
     }
 
     virtual ~BlockDeviceDriver()

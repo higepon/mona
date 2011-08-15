@@ -44,9 +44,9 @@ class VirtioBlock : public BlockDevice
 private:
     VirtioBlock(VirtioDevice* vdev) : vdev_(vdev)
     {
-        ASSERT(vdev_.get() != NULL);
+        MONA_ASSERT(vdev_.get() != NULL);
         vq_.reset(vdev_->findVirtQueue(0));
-        ASSERT(vq_.get() != NULL);
+        MONA_ASSERT(vq_.get() != NULL);
         vdev_->enableInterrupt();
     }
 
@@ -117,15 +117,15 @@ public:
             monapi_warn("write error=%d", *status);
             return M_WRITE_ERROR;
         }
-        ASSERT((uintptr_t)afterCookie == cookie);
-        ASSERT(sizeWritten <= sizeToWrite);
+        MONA_ASSERT((uintptr_t)afterCookie == cookie);
+        MONA_ASSERT(sizeWritten <= sizeToWrite);
         return sizeWritten;
     }
 
     int64_t read(void* readBuf, int64_t sector, int64_t sizeToRead)
     {
         const int MAX_CONTIGOUS_SIZE = 3 * 1024 * 1024;
-        ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
+        MONA_ASSERT(MAX_CONTIGOUS_SIZE % sectorSize() == 0);
 
         int numBlocks = (sizeToRead + MAX_CONTIGOUS_SIZE - 1) / MAX_CONTIGOUS_SIZE;
         int restToRead = sizeToRead;
@@ -137,7 +137,7 @@ public:
             }
             restToRead -= size;
         }
-        ASSERT(restToRead == 0);
+        MONA_ASSERT(restToRead == 0);
         return sizeToRead;
     }
 
@@ -246,8 +246,8 @@ private:
             monapi_warn("getBuf failed %d:%d", (int)(*status), (*status != VIRTIO_BLK_S_OK));
             return M_READ_ERROR;
         }
-        ASSERT((uintptr_t)afterCookie == cookie);
-        ASSERT(sizeRead <= adjSizeToRead);
+        MONA_ASSERT((uintptr_t)afterCookie == cookie);
+        MONA_ASSERT(sizeRead <= adjSizeToRead);
         memcpy(readBuf, buf, sizeToRead);
         return sizeRead >= sizeToRead ? sizeToRead : sizeRead;
     }

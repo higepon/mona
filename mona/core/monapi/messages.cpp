@@ -56,7 +56,7 @@ intptr_t monapi_name_add(const char* name)
         monapi_warn("name server not found :%s", monapi_error_string(ret));
         return ret;
     }
-    ASSERT(strlen(name) < MESSAGE_INFO_MAX_STR_LENGTH);
+    MONA_ASSERT(strlen(name) < MESSAGE_INFO_MAX_STR_LENGTH);
     ret =  Message::sendReceive(NULL, name_server, MSG_ADD, 0, 0, 0, name);
     return ret;
 }

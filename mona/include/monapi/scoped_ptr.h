@@ -46,7 +46,8 @@
 //#include <cstddef>
 
 #ifndef assert
-#define assert ASSERT
+#define ASSERT_DEFINED
+#define assert MONA_ASSERT
 #endif
 #if defined(__GNUC__)
 	#if defined(__PTRDIFF_TYPE__)
@@ -395,5 +396,8 @@ bool operator!=(C* p, const scoped_ptr_malloc<C, FP>& b) {
 }
 
 };
+#ifdef ASSERT_DEFINED
+#undef assert
+#endif
 
 #endif  // BASE_SCOPED_PTR_H_

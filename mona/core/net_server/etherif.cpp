@@ -138,7 +138,7 @@ static struct pbuf* low_level_input(struct netif* netif)
     etherif = (struct etherif*)netif->state;
     /* Obtain the size of the packet and put it into the "len"
        variable. */
-    ASSERT(sizeof(buf) > sizeof(Ether::Frame));
+    MONA_ASSERT(sizeof(buf) > sizeof(Ether::Frame));
     unsigned int readSzie = 0;
     // todo timeout
     if (!etherif->virtioNet->receive(buf, &readSzie)) {
