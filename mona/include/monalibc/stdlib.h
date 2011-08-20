@@ -79,7 +79,7 @@ int __nc_atexit(void (*function)(void));
 #endif
 #define atexit __nc_atexit
 
-void abort(void);
+void abort();
 int abs(int);
 double atof(const char*);
 int atoi(const char*);

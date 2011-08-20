@@ -54,6 +54,15 @@ struct tm
     int tm_isdst;
 };
 
+struct timezone {
+
+};
+
+struct timeval {
+    time_t tv_sec;     /* Seconds.  */
+    long tv_usec;      /* Microseconds.  */
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,10 +82,6 @@ struct tm *gmtime(const time_t *timer);
 size_t strftime(char * s, size_t maxsize, const char * format, const struct tm * timeptr);
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 
-struct timeval {
-    time_t tv_sec;     /* Seconds.  */
-    long tv_usec;      /* Microseconds.  */
-};
 
 struct tm *gmtime_r(const time_t *timep, struct tm *result);
 

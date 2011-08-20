@@ -1,3 +1,4 @@
+#include <monapi/private/stlstub.h>
 #include "monapi/terminal/CommandParser.h"
 
 using namespace MonAPI::terminal;

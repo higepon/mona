@@ -1,3 +1,4 @@
+#include <monapi/private/stlstub.h>
 #include <monapi/audio/mml/Parser.h>
 #include <sys/error.h>
 

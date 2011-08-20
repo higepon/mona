@@ -1,5 +1,6 @@
 #include <monapi.h>
 #include <monapi/io.h>
+#include <monapi/private/stlstub.h>
 #include <monapi/audio/Beep.h>
 
 using namespace MonAPI::audio;

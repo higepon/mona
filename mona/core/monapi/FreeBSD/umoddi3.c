@@ -49,7 +49,7 @@ typedef unsigned long long uint64;
  */
 uint64 __umoddi3(uint64 a, uint64 b)
 {
-  ASSERT(sizeof(uint64) == 8);
+  MONA_ASSERT(sizeof(uint64) == 8);
   uint64 r;
 
   (void)__qdivrem(a, b, &r);
