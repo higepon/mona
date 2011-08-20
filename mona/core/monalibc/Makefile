@@ -29,7 +29,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -e _dllmain --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK) -Map monalibc.map
+	$(LD) -e _dllmain --export-all-symbols --enable-auto-import --disable-runtime-pseudo-reloc --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK) -Map monalibc.map
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
@@ -38,7 +38,7 @@ endif
 
 .SUFFIXES: .o .c
 .c.o:
-	$(CC) -c -o $@ $<  $(INCLUDE) -fno-builtin
+	$(CC) -c -o $@ $<  $(INCLUDE) -fno-builtin -mno-stack-arg-probe  -fno-stack-check -fno-stack-protector
 
 crt: $(CRT_OBJECT)
 

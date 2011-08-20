@@ -37,7 +37,7 @@ SOURCES = \
 	System/Text/Encoding.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I..
+INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++ -I..
 
 all : $(TARGET)
 

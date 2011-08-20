@@ -40,7 +40,7 @@ class MemoryManager
         uint32_t size;
         uint32_t magic;
         uint32_t padding;
-    };
+    } Header;
 
     void setNext(Header* p, Header* next);
 

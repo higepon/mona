@@ -8,7 +8,7 @@ CONFIG_NAME = mona
 
 # Compiler and flags
 MONAINCDIR = -I$(MONADIR)/include -I$(MONADIR)/include/monalibc -I$(MONADIR)/include/monapi
-CMONAFLAGS = -nostdlib -Wall -fno-builtin -nostdinc $(MONAINCDIR)
+CMONAFLAGS = -nostdlib -Wall -fno-builtin -nostdinc $(MONAINCDIR) -mno-stack-arg-probe  -fno-stack-check -fno-stack-protector 
 
 #CC = gcc
 #CXX = g++

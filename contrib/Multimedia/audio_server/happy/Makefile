@@ -36,6 +36,6 @@ include $(SHAREDIR)/configs/monapi-ex5.inc
 
 CXXFLAGS += -fpermissive -nostdinc -fno-builtin -D_LOW_ACCURACY_
 INCLUDE += -I . -I$(MONADIR)/include/monalibc
-CFLAGS = -I $(TREMOR_DIR) -nostdinc -fno-builtin  -D_LOW_ACCURACY_
+CFLAGS += -I $(TREMOR_DIR) -nostdinc -fno-builtin  -D_LOW_ACCURACY_
 
 -include dependencies
