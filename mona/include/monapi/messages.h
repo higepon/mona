@@ -55,8 +55,6 @@ typedef struct
 } CommonParameters;
 
 #ifdef __cplusplus
-class MonAPI::SharedMemory;
-class MonAPI::Date;
 extern intptr_t monapi_name_clear_cache(const char* name);
 extern intptr_t monapi_name_add(const char* name);
 extern intptr_t monapi_name_whereis(const char* name, uint32_t& id);

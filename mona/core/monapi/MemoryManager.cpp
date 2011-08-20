@@ -98,13 +98,12 @@ void MemoryManager::free(void* address)
     Header* p;
     bool inBetween = false;
     Header* tail = NULL;
-    Header* prev;
 
     if (bp->magic != MM_MAGIC) {
 	syscall_print("memory leaked?");
     }
 
-    for (p = freeList, prev = freeList; ;prev = p, p = p->next)
+    for (p = freeList ; ; p = p->next)
     {
 	if (p <= bp && bp <= p->next)
 	{

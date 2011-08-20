@@ -510,7 +510,7 @@ typedef struct st_thread_entry
 {
     void __fastcall(*func)(void*);
     void* arg;
-};
+} st_thread_entry;
 
 
 static void __fastcall thread_entry(void* arg)

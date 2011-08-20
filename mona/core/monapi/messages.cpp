@@ -508,12 +508,12 @@ intptr_t monapi_stdout_write(uint8_t* buffer, uint32_t size)
     System::getStdoutStream();
     if (NULL == outStream || outStream->isInvalid())
     {
-        bool warnOnce = false;
+      //        bool warnOnce = false;
         //        if (!warnOnce) {
             _logprintf("You can't use printf, use _printf instead.");
             _logprintf("outStream=%x isInvalid=%d", outStream, outStream ? outStream->isInvalid() : 1);
             _logprintf("content=[");
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
               _logprintf("%c", buffer[i]);
             }
             monapi_warn("]");
@@ -584,7 +584,6 @@ intptr_t monapi_notify_server_start(const char* name)
 
 MONAPI_BOOL monapi_file_exists(const char* path)
 {
-    static int totalReadDir = 0;
     uint32_t tid;
     if (monapi_name_whereis("/servers/file", tid) != M_OK) {
         return M_NAME_NOT_FOUND;
