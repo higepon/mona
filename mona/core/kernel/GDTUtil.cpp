@@ -83,9 +83,10 @@ void GDTUtil::lgdt(GDTR* gdtr) {
     \date   create:2002/12/02 update:
 */
 void GDTUtil::ltr(uint16_t selector) {
-
+    asm volatile("#---");
     /* ltr */
     asm volatile("ltr %0\n": "=m" (selector));
+    asm volatile("#---");
     return;
 }
 
@@ -95,14 +96,20 @@ void GDTUtil::ltr(uint16_t selector) {
     \author Higepon
     \date   create:2003/06/07 update:2003/07/18
 */
+#include <Uart.h>
 void GDTUtil::setup() {
 
+  Uart u(Uart::COM1);
+  u.writeChar('a');
     g_gdt = (SegDesc*)malloc(sizeof(SegDesc) * GDT_ENTRY_NUM);
+  u.writeChar('b');
     checkMemoryAllocate(g_gdt, "GDT Memory allocate");
-
+  u.writeChar('c');
     /* NULL */
     setSegDesc(&g_gdt[0], 0, 0, 0);
+  u.writeChar('d');
     g_gdt[0].limitH = 0;
+  u.writeChar('e');
 
     /* allcate TSS */
     g_tss = (TSS*)malloc(sizeof(TSS));
@@ -140,17 +147,17 @@ void GDTUtil::setup() {
         setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
                             SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
     }
-
+  u.writeChar('f');
 
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (uint32_t)g_gdt;
     gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
     lgdt(&gdtr);
-
+  u.writeChar('g');
     /* setup TSS */
     setupTSS(0x20);
-
+  u.writeChar('d');
     return;
 }
 
@@ -166,9 +173,9 @@ void GDTUtil::setupTSS(uint16_t selector) {
     memset((void*)g_tss, 0, sizeof(TSS));
     g_tss->esp0 = 0x90000;
     g_tss->ss0  = KERNEL_SS;
-
     /* load TSS */
-    ltr(selector);
-
+    /* calling GDTUtil::ltr will causes miss optimizatio on gcc 4.6.1 */
+    /* so we do ltr directory here */
+    asm volatile("ltr %0\n": "=m" (selector));
     return;
 }

@@ -120,22 +120,18 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 void startKernel()
 {
     invokeFuncList(__CTOR_LIST__);
-
     /* kernel memory range */
     km = FirstFitAllocator(0x200000, 0xBfffff);
-
 
     /* APM */
     g_apmInfo = new APMInfo;
     memcpy(g_apmInfo, (APMInfo*)0x900, sizeof(APMInfo));
-
+  
     /* set segment */
     GDTUtil::setup();
-
     /* VESA */
     g_vesaInfo = new VesaInfo;
     memcpy(g_vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
-
     /* console */
     if (g_vesaInfo->sign[0] == 'N')
     {
@@ -152,7 +148,6 @@ void startKernel()
         g_console->setBGColor(GP_WHITE);
         g_console->clearScreen();
     }
-
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  %s\n", version);
@@ -160,7 +155,6 @@ void startKernel()
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2011 higepon\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
-
 #if 1
     int w = g_vesaDetail->xResolution;
     int bpp = g_vesaDetail->bitsPerPixel / 8;
@@ -209,7 +203,6 @@ void startKernel()
             break;
     }
 #endif
-
     // use COM1 serial port
     g_log = new LogConsole();
     // use COM2 serial port
