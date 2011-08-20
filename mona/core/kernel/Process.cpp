@@ -198,7 +198,7 @@ void ThreadOperation::archCreateThread(Thread* thread, uint32_t programCounter
     thread->kernelStackBottom = stack;
 }
 
-int ThreadOperation::switchThread(bool isProcessChanged, int num)
+int ThreadOperation::switchThread(bool isProcessChanged)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
@@ -328,7 +328,7 @@ Process::Process(const char* name, PageEntry* directory) :
     kobjects_(HList< Pair<intptr_t, KObject*> >()),
     isUserMode_(false),
     pageDirectory_(directory),
-    pid_(++pid_),
+    pid_(++pid),
     heapStats_(0)
 {
     strncpy(name_, name, sizeof(name_));

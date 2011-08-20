@@ -23,7 +23,7 @@ typedef struct VesaInfo {
     uint32_t oemStringPtr;
     uint8_t  capabilities[4];
     uint32_t videoModePtr;
-};
+} VesaInfo;
 #pragma pack()
 
 typedef struct VesaInfoDetail {
@@ -57,7 +57,7 @@ typedef struct VesaInfoDetail {
     uint8_t  rsvdFieldPos;             //20
     uint8_t  directColorModeInfo;
     uint32_t physBasePtr;              //21 22
-};
+} VesaInfoDetail;
 
 class kScreen {
 

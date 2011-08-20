@@ -54,7 +54,7 @@ bool SharedMemorySegment::faultHandler(PageManager* pageManager, Process* proces
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
         PhysicalAddress mappedResultAddress;
         intptr_t ret = pageManager->mapOnePage(process->getPageDirectory(), mappedResultAddress, address, writable_, PageManager::PAGE_USER);
-        sharedMemoryObject_->map(physicalIndex, ret == M_OK ? mappedResultAddress : SharedMemoryObject::UN_MAPPED);
+        sharedMemoryObject_->map(physicalIndex, ret == M_OK ? mappedResultAddress : (int)SharedMemoryObject::UN_MAPPED);
     } else {
         pageManager->mapOnePageByPhysicalAddress(process->getPageDirectory(),
                                                  address,

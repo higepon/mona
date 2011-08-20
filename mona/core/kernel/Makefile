@@ -11,7 +11,7 @@ MONA_CFG_ADDR    = 0x90000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
 # To check -Weffc++ use this 
 # mcm 1>/dev/null 2>&1 |grep -v 'pointer data'| grep -v 'operator='| grep -v 'does not overrid' | less
-CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR) -momit-leaf-frame-pointer -fomit-frame-pointer -march=i686 -Wextra  #-Weffc++
+CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR) -momit-leaf-frame-pointer -fomit-frame-pointer -march=i686 -Wextra -O1 #-Weffc++
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
 INCLUDE      = -I. -I$(INCDIR)
 SOURCES      = cstart.cpp            \
@@ -43,7 +43,6 @@ SOURCES      = cstart.cpp            \
                Scheduler.cpp         \
                RTC.cpp               \
                Messenger.cpp         \
-               MemoryAllocator.cpp   \
                apm.cpp               \
                shutdown.cpp          \
                vsprintf.cpp          \

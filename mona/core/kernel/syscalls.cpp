@@ -430,7 +430,7 @@ void syscall_entrance()
         if (object == NULL) {
             setReturnValue(info, M_BAD_SEMAPHORE_ID);
         } else {
-            setReturnValue(info, ((UserSemaphore*)object)->tryDown(g_currentThread->thread));
+            setReturnValue(info, ((UserSemaphore*)object)->tryDown());
         }
         break;
     }
@@ -626,7 +626,7 @@ void syscall_entrance()
         setReturnValue(info, 0);
         {
             bool isProcessChange = g_scheduler->SetNextThread();
-            ThreadOperation::switchThread(isProcessChange, 17);
+            ThreadOperation::switchThread(isProcessChange);
         }
         break;
 

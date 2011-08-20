@@ -54,7 +54,7 @@ intptr_t UserSemaphore::down(Thread* thread)
     return M_OK;
 }
 
-intptr_t UserSemaphore::tryDown(Thread* thread)
+intptr_t UserSemaphore::tryDown()
 {
     intptr_t result;
 

@@ -52,7 +52,7 @@ bool Scheduler::Schedule1()
 void Scheduler::SwitchToNext()
 {
     bool isProcessChanged = SetNextThread();
-    ThreadOperation::switchThread(isProcessChanged, 6532);
+    ThreadOperation::switchThread(isProcessChanged);
 
     /* not reached */
 }

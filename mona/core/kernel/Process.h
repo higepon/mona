@@ -24,7 +24,6 @@
 #include "UserSemaphore.h"
 #include "KObject.h"
 #include "Thread.h"
-#include "MemoryAllocator.h"
 #include "Pair.h"
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -77,7 +76,7 @@ typedef struct ArchThreadInfo
     uint32_t  ss0;       // 72
     uint32_t  cr3;       // 76
     uint32_t  fpu[27];   // 80
-};
+} ArchThreadInfo;
 
 /*----------------------------------------------------------------------
     ThreadInfo
@@ -87,7 +86,7 @@ typedef struct ThreadInfo
     ArchThreadInfo* archinfo;
     Thread* thread;
     Process* process;
-};
+} ThreadInfo;
 
 /*----------------------------------------------------------------------
     ProcessOperation
@@ -120,7 +119,7 @@ class ThreadOperation
 {
   public:
     static Thread* create(Process* process, uint32_t programCounter, uint32_t observer);
-    static int switchThread(bool isProcessChanged, int i);
+    static int switchThread(bool isProcessChanged);
     static intptr_t kill(Thread* thread, int status = -1);
     static intptr_t kill(uint32_t tid);
 

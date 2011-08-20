@@ -65,8 +65,10 @@ void __pure_virtual()
     \author Higepon
     \date   create:2002/08/08 update:2002/02/25
 */
+static void (*f)(void);
 int atexit(void (*func)(void))
 {
+    f = func;
     return -1;
 }
 
