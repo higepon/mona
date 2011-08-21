@@ -1180,11 +1180,11 @@ intptr_t syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
 
     MapFileScanner<FileReader> scanner(reader);
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
-
     parser.parseAll();
     scoped_ptr<SharedMemory> cm(parser.symbolInfos_.serialize());
-    if(cm.get() == NULL)
+    if(cm.get() == NULL) {
         return M_NO_MEMORY;
+    }
 
     intptr_t res =  syscall3(SYSTEM_CALL_STACKTRACE_ENABLE, pid, (intptr_t)cm->data(), cm->size());
     return res;

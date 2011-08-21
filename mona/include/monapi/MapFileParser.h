@@ -305,10 +305,9 @@ public:
         SymbolInfoEntrySerializer serializer;
         int size = 0;
         SizeCounter counter(serializer, size);
-
         std::for_each(Symbols.begin(), Symbols.end(), counter);
-
-        MonAPI::SharedMemory *buf = new MonAPI::SharedMemory(size);
+        // size should be size + 1? by higepon
+        MonAPI::SharedMemory *buf = new MonAPI::SharedMemory(size + 1);
         if(!buf)
             return NULL;
         if(M_OK != buf->map(true))
@@ -316,7 +315,6 @@ public:
             delete buf;
             return NULL;
         }
-
         Serializer s(serializer, buf->data(), size);
         std::for_each(Symbols.begin(), Symbols.end(), s);
         return buf;
