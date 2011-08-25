@@ -38,6 +38,7 @@ See detailed information on http://www.monaos.org.
 ## Building Mingw
 If you use Ubuntu, you can get mingw as "apt-get install mingw32". If you use other OS or need the latest gcc, build as follows.
 You need
+
 - gcc-4.6.1.tar.bz2
 - binutils-2.21.1.tar.gz
 - w32api-3.17-2-mingw32-dev.tar.lzma
