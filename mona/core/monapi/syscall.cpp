@@ -1182,6 +1182,8 @@ intptr_t syscall_stack_trace_enable(uint32_t pid, const char* map_file_path)
     MapFileParser<MapFileScanner<FileReader> > parser(scanner);
     parser.parseAll();
     scoped_ptr<SharedMemory> cm(parser.symbolInfos_.serialize());
+    // BUG. without this _logprintf keyborad server hung up
+    _logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if(cm.get() == NULL) {
         return M_NO_MEMORY;
     }
