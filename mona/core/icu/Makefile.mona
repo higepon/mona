@@ -169,14 +169,15 @@ uloc_tag.c \
 icudataver.c \
 icuplug.c
 
-COMMON_CXXSOURCES=$(patsubst %.cpp, source/common/%.cpp, $(_COMMON_CXXSOURCES))
-COMMON_CSOURCES=$(patsubst %.c, source/common/%.c, $(_COMMON_CSOURCES))
+COMMON_CXXSOURCES=$(patsubst %.cpp, icu/source/common/%.cpp, $(_COMMON_CXXSOURCES))
+COMMON_CSOURCES=$(patsubst %.c, icu/source/common/%.c, $(_COMMON_CSOURCES))
 
-COMMON_CFLAGS=-D_REENTRANT -I souce/common -I source/i18n   "-DDEFAULT_ICU_PLUGINS=\"/usr/local/lib/icu\" "  -DU_COMMON_IMPLEMENTATION -DHAVE_CONFIG_H  -g -O2 -Wall -ansi -pedantic -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long  -fvisibility=hidden -c -DPIC -fPIC -o putil.o putil.c
+COMMON_CFLAGS=-D_REENTRANT -I icu/source/common -I icu/source/i18n   "-DDEFAULT_ICU_PLUGINS=\"/usr/local/lib/icu\" "  -DU_COMMON_IMPLEMENTATION -DHAVE_CONFIG_H  -g -O2 -Wall -ansi -pedantic -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long  -fvisibility=hidden
 
 OBJECTS = $(COMMON_CSOURCES:.c=.o) #$(COMMON_CXXSOURCES:.cpp=.o) 
 
 INCLUDE =  -I. -I.. -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++
+CFLAGS+=$(COMMON_CFLAGS)
 
 all : $(TARGET)
 	echo $(COMMON_CXXSOURCES)
