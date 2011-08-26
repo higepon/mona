@@ -36,7 +36,7 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT
-	patch -p0 < ${NAME}-${VERSION}.mona.diff
+	TMPDIR=$(TMP) patch -p0 < ${NAME}-${VERSION}.mona.diff
 	cp config.h ${WORKDIR}/
 	cp alloca.c ${WORKDIR}/
 	touch $@

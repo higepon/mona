@@ -37,7 +37,7 @@ ${SOURCE1}:
 
 .PATCH: .EXTRACT Makefile.mona config.h dll_main.cpp
 	(cd $(WORKDIR) && ./configure --enable-assert=yes --enable-cxx=no --build=i586 --host=i586-mingw32msvc && make)
-	patch -p0 < patch-aa
+	TMPDIR=$(TMP) patch -p0 < patch-aa
 	cp dll_main.cpp $(WORKDIR)/
 	cp config.h $(WORKDIR)/
 	cp Makefile.mona $(WORKDIR)/

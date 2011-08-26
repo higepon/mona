@@ -9,6 +9,7 @@ include $(SHAREDIR)/configs/dirnames.inc
 export LD
 export BINDIR
 export MONADIR
+export CP_COMMAND
 
 MONA_D=-DNO_SYS_PARAM_H -DNO_SYSLOG -DGETPID_IS_MEANINGLESS -DOPENSSL_NO_POSIX_IO -DOPENSSL_NO_HW -DOPENSSL_NO_GOST -DNO_CHMOD
 MONA_CFLAGS=$(CFLAGS)
@@ -27,8 +28,8 @@ SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
 SHLIB_EXT=.dll.a
 PLATFORM=mingw
-OPTIONS=--cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-dso no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-threads no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=--cross-compile-prefix=/usr/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
+OPTIONS=--cross-compile-prefix=~/mona-ming/bin/i586-mingw32msvc- no-dso no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-threads no-zlib no-zlib-dynamic static-engine
+CONFIGURE_ARGS=--cross-compile-prefix=~/mona-mingw/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
 SHLIB_TARGET=cygwin-shared
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
@@ -73,7 +74,7 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CROSS_COMPILE= /usr/bin/i586-mingw32msvc-
+CROSS_COMPILE= ~/mona-mingw/bin/i586-mingw32msvc-
 CC= $(CROSS_COMPILE)gcc
 CFLAG= -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -fomit-frame-pointer -O3 -march=i486 -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM $(MONA_CFLAGS) $(MONA_INCLUDE) $(MONA_D)
 DEPFLAG= -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_STORE
@@ -519,7 +520,7 @@ install-mona:
 	$(MAKE) -C crypto $@
 	@set -e; headerlist="$(EXHEADER)"; for i in $$headerlist;\
 	do \
-	(cp -up $$i $(MONADIR)/include/openssl/$$i; \
+	($(CP_COMMAND) -p $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
 

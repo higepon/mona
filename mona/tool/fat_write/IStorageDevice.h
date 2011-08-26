@@ -12,6 +12,7 @@
 #ifndef _MONA_ISTORAGE_DEVICE_
 #define _MONA_ISTORAGE_DEVICE_
 
+#include <stdint.h>
 #include "types.h"
 
 class IStorageDevice

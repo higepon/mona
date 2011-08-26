@@ -677,12 +677,12 @@ install-mona:
 	mkdir -p $(MONADIR)/include/openssl
 	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
 	do  \
-	(cp -pu $$i $(MONADIR)/include/openssl/$$i; \
+	($(CP_COMMAND) -p $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done;
-	@headerlist=`find -name "*.h"`; for i in $$headerlist ; \
+	@headerlist=`find . -name "*.h"`; for i in $$headerlist ; \
 	do  \
-	(cd `dirname $$i` && cp -pu `basename $$i` $(MONADIR)/include/openssl/`basename $$i`; \
+	(cd `dirname $$i` && $(CP_COMMAND) -p `basename $$i` $(MONADIR)/include/openssl/`basename $$i`; \
 	chmod 644 $(MONADIR)/include/openssl/`basename $$i`); \
 	done;
 

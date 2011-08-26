@@ -90,6 +90,17 @@ if [ "x$HOST" = x ]; then
     esac
   fi
 fi
+
+case $OSTYPE in
+    darwin)
+      CP_COMMAND=cp
+      ;;
+    *)
+      CP_COMMAND=cp -u
+      ;;
+    *)
+esac
+
 case $HOST in
 MINGW)
   echo 'Mingw32'
@@ -223,7 +234,7 @@ esac
 echo "CSC=$CSC" >> $MAKEINC
 echo "NETRT=$MONO" >> $MAKEINC
 echo "WINE=$WINE" >> $MAKEINC
-
+echo "CP_COMMAND=$CP_COMMAND" >> $MAKEINC
 echo -n 'Checking C Compiler for bim2bin... '
 #if [ x$BIM2BIN_CC == x ]; then
 if [ x$BIM2BIN_CC = x ]; then

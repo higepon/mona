@@ -12,6 +12,7 @@
 #ifdef MONA
 #include <sys/types.h>
 #else
+#include <stdint.h>
 #include "types.h"
 #endif
 
