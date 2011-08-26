@@ -23,6 +23,9 @@
 #ifndef _PLATFORM_H
 #define _PLATFORM_H
 
+#ifdef MONA
+#include <stdint.h>
+#endif
 /**
  * \file 
  * \brief Basic types for the platform 
@@ -45,9 +48,9 @@
 #ifndef CYGWINMSVC
 
 /** Define the platform we're on. */
-#ifndef U_DARWIN
+/* #ifndef U_DARWIN
 #define U_DARWIN
-#endif
+#endif */
 
 /**
  * \def U_HAVE_DIRENT_H

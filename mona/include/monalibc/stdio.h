@@ -134,10 +134,6 @@ extern FILE* __stderr;
 
 /* ISO/IEC 9899:1999 7.19.4 Operatoins on files */
 int rename(const char *oldpath, const char *newpath);
-/*int remove(const char *filename); //stub */
-
-/*FILE *tmpfile(void); //stub */
-/*char *tmpnam(char *s); //stub */
 
 /* ISO/IEC 9899:1999 7.19.5 File access functions */
 int	 fclose(FILE *);
@@ -150,9 +146,9 @@ int	 setvbuf(FILE *, char *, int, size_t);
 /* ISO/IEC 9899:1999 7.19.6 Formatted input/output functions*/
 int	 fprintf(FILE *, const char *, ...);
 int fscanf(FILE *fp, const char *format, ...);
-int	 printf(const char *, ...); //stub
-/*int	 scanf(const char *, ...); //stub */
-/*int	 snprintf(char *, size_t, char *, ...); //stub */
+int	 printf(const char *, ...); /* stub */
+/*int	 scanf(const char *, ...); stub */
+/*int	 snprintf(char *, size_t, char *, ...); stub */
 int sprintf(char *str, const char *format, ...);
 
 /* fix me */
@@ -160,9 +156,9 @@ int sprintf(char *str, const char *format, ...);
 
 int sscanf(const char *str, const char *format, ...);
 int vfprintf(FILE *stream, const char *format, va_list ap);
-/*int vfscanf(FILE *, const char *, va_list); //stub */
-/*int vprintf(const char *, va_list); //stub */
-/*int vscanf(const char *, va_list); //stub */
+/*int vfscanf(FILE *, const char *, va_list); stub */
+/*int vprintf(const char *, va_list); stub */
+/*int vscanf(const char *, va_list); stub */
 int vsprintf(char *str, const char *format, va_list ap);
 int vsnprintf(char *str, size_t size, const char *format, va_list ap);
 int vsscanf(const char *str, const char *format, va_list ap);
