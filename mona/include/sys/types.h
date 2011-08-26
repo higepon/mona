@@ -14,7 +14,7 @@
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
-//#define DEBUG_READ_TRACE
+/* #define DEBUG_READ_TRACE */
 
 #define MAP_PAGE_SIZE 4096
 
@@ -55,7 +55,7 @@ typedef uintptr_t off_t;
 typedef intptr_t ssize_t;
 
 enum {
-    // Each value should be unique, it is used for identifing events on Scheduler.
+    /* Each value should be unique, it is used for identifing events on Scheduler. */
     M_EVENT_NONE             = 64,
     M_EVENT_SLEEP            = 20,
     M_EVENT_TIMER_MESSAGE    = 19,
@@ -107,7 +107,7 @@ typedef unsigned long int   uintptr_t;
 #  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
 #endif
 
-// Independent from length of MessageInfo.str.
+/* Independent from length of MessageInfo.str. */
 #define MAX_PROCESS_ARGUMENT_LENGTH 256
 
 typedef uint32_t linear_addr;  /* 32bit */
@@ -232,7 +232,7 @@ typedef struct {
 
 #define THREAD_UNKNOWN 0xffffffff
 
-// common messages
+/* common messages */
 #define MSG_OK                0xfffff72a /* "   : OK" */
 #define MSG_STARTED           0xffff29c6 /* "   :STR" */
 #define MSG_INTERRUPTED       0xfffe86ce /* "   :INT" */
@@ -268,7 +268,7 @@ enum
 {
     DRIVE_NONE = -1,
     DRIVE_FD0  = 0,
-    DRIVE_CD0  = 1,
+    DRIVE_CD0  = 1
 };
 
 enum
@@ -279,9 +279,8 @@ enum
         SHUTDOWN_SUSPEND,
         SHUTDOWN_FEATURE,
         SHUTDOWN_FEATURE_APM = 0x0001,
-
         SHUTDOWN_DEVICE_ALL = 0x0001,
-        SHUTDOWN_DEVICE_DISPLAY_ALL = 0x01FF,
+        SHUTDOWN_DEVICE_DISPLAY_ALL = 0x01FF
 };
 
 #define SHARED_FDC_BUFFER 0x4000
@@ -292,7 +291,7 @@ enum
 #define SYSTEM_CALL_RECEIVE                   0x0004
 #define SYSTEM_CALL_EXIST_MESSAGE             0x0005
 #define SYSTEM_CALL_MTHREAD_CREATE            0x0006
-//#define SYSTEM_CALL_MTHREAD_JOIN              0x0007  // not used
+/* #define SYSTEM_CALL_MTHREAD_JOIN              0x0007  */ /* not used */
 #define SYSTEM_CALL_MTHREAD_SLEEP             0x0008
 #define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE     0x0009
 #define SYSTEM_CALL_MUTEX_CREATE              0x000A
@@ -389,7 +388,7 @@ enum
     DEBUG_BREAK_ONLY_ON_EXECUTE    = 0,
     DEBUG_BREAK_ONLY_ON_WRITE      = 1,
     DEBUG_BREAK_ONLY_ON_IO         = 2,
-    DEBUG_BREAK_ONLY_ON_READ_WRITE = 3,
+    DEBUG_BREAK_ONLY_ON_READ_WRITE = 3
 };
 
 #endif
