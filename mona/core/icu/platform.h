@@ -26,6 +26,9 @@
 #ifdef MONA
 #include <stdint.h>
 #endif
+
+#define U_WCHAR_IS_UTF16 1
+#define U_ICU_ENTRY_POINT_RENAME(x)    x
 /**
  * \file 
  * \brief Basic types for the platform 
@@ -282,13 +285,13 @@
 #define U_NL_LANGINFO_CODESET       CODESET
 #endif
 
-#if 1
+#if 0
 #define U_TZSET         tzset
 #endif
-#if 1
+#if 0
 #define U_TIMEZONE      timezone
 #endif
-#if 1
+#if 0
 #define U_TZNAME        tzname
 #endif
 
@@ -391,6 +394,7 @@
  * @internal
  */
 # define U_HAVE_LIB_SUFFIX 0
+
 
 #if U_HAVE_LIB_SUFFIX
 # ifndef U_ICU_ENTRY_POINT_RENAME
