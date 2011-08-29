@@ -2,6 +2,11 @@ CATEGORY = Devel
 NAME     = icu4c
 VERSION  = 4_4_2
 
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+include $(MONADIR)/share/configs/Makefile.inc
+
 SOURCE1 = ${NAME}-${VERSION}-src.tgz
 DATA= icudt44l_dat.s.tar.bz2
 SRCS = ${SOURCE1}
@@ -44,7 +49,7 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT Makefile.i18n platform.h Makefile.uc
-	TMPDIR=$(TMP) patch -p2 < patch-aa
+	$(PATCH_COMMAND) -p2 < patch-aa
 	cp platform.h icu/source/common/unicode/
 	cp icudt44l_dat.s icu/source/common/
 	touch $@
