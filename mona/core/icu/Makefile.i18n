@@ -1,0 +1,220 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
+LIB_STATIC   = libicuin.a
+TARGET       = $(LIB_STATIC)
+
+LIB_IMPORT   = libicuin-imp.a
+LIB_DYNAMIC  = ICUIN.DLL
+LIB_DYNAMIC5 = ICUIN.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+# tztrans.cpp ztrans.cpp zrule.cpp vzone.cpp
+
+_I18N_CXXSOURCES=\
+fmtable.cpp \
+format.cpp \
+msgfmt.cpp \
+umsg.cpp \
+numfmt.cpp \
+unum.cpp \
+decimfmt.cpp \
+dcfmtsym.cpp \
+ucurr.cpp \
+digitlst.cpp \
+fmtable_cnv.cpp \
+choicfmt.cpp \
+datefmt.cpp \
+smpdtfmt.cpp \
+reldtfmt.cpp \
+dtfmtsym.cpp \
+udat.cpp \
+dtptngen.cpp \
+nfrs.cpp \
+nfrule.cpp \
+nfsubs.cpp \
+rbnf.cpp \
+numsys.cpp \
+ucsdet.cpp \
+ucal.cpp \
+calendar.cpp \
+gregocal.cpp \
+timezone.cpp \
+simpletz.cpp \
+olsontz.cpp \
+astro.cpp \
+taiwncal.cpp \
+buddhcal.cpp \
+persncal.cpp \
+islamcal.cpp \
+japancal.cpp \
+gregoimp.cpp \
+hebrwcal.cpp \
+indiancal.cpp \
+chnsecal.cpp \
+cecal.cpp \
+coptccal.cpp \
+ethpccal.cpp \
+coleitr.cpp \
+coll.cpp \
+tblcoll.cpp \
+sortkey.cpp \
+ucoleitr.cpp \
+ucol.cpp \
+ucol_res.cpp \
+ucol_bld.cpp \
+ucol_sit.cpp \
+ucol_tok.cpp \
+ucol_wgt.cpp \
+ucol_cnt.cpp \
+ucol_elm.cpp \
+strmatch.cpp \
+usearch.cpp \
+search.cpp \
+stsearch.cpp \
+translit.cpp \
+utrans.cpp \
+esctrn.cpp \
+unesctrn.cpp \
+funcrepl.cpp \
+strrepl.cpp \
+tridpars.cpp \
+cpdtrans.cpp \
+rbt.cpp \
+rbt_data.cpp \
+rbt_pars.cpp \
+rbt_rule.cpp \
+rbt_set.cpp \
+nultrans.cpp \
+remtrans.cpp \
+casetrn.cpp \
+titletrn.cpp \
+tolowtrn.cpp \
+toupptrn.cpp \
+anytrans.cpp \
+name2uni.cpp \
+uni2name.cpp \
+nortrans.cpp \
+quant.cpp \
+transreg.cpp \
+brktrans.cpp \
+regexcmp.cpp \
+rematch.cpp \
+repattrn.cpp \
+regexst.cpp \
+regextxt.cpp \
+udatpg.cpp \
+uregex.cpp \
+uregexc.cpp \
+measfmt.cpp \
+currfmt.cpp \
+curramt.cpp \
+currunit.cpp \
+measure.cpp \
+csdetect.cpp \
+csmatch.cpp \
+csr2022.cpp \
+csrecog.cpp \
+csrmbcs.cpp \
+csrsbcs.cpp \
+csrucode.cpp \
+csrutf8.cpp \
+inputext.cpp \
+wintzimpl.cpp \
+windtfmt.cpp \
+winnmfmt.cpp \
+basictz.cpp \
+dtrule.cpp \
+rbtz.cpp \
+tzrule.cpp \
+tztrans.cpp \
+vtzone.cpp \
+zonemeta.cpp \
+zstrfmt.cpp \
+plurrule.cpp \
+plurfmt.cpp \
+selfmt.cpp \
+dtitvfmt.cpp \
+dtitvinf.cpp \
+tmunit.cpp \
+tmutamt.cpp \
+tmutfmt.cpp \
+colldata.cpp \
+bmsearch.cpp \
+bms.cpp \
+currpinf.cpp \
+uspoof.cpp \
+uspoof_impl.cpp \
+uspoof_build.cpp \
+uspoof_conf.cpp \
+uspoof_wsconf.cpp \
+fphdlimp.cpp \
+fpositer.cpp \
+locdspnm.cpp \
+decnumstr.cpp
+
+_I18N_CSOURCES= \
+ucln_in.c \
+decNumber.c \
+bocsu.c \
+ulocdata.c \
+utmscale.c \
+decContext.c
+
+I18N_CXXSOURCES=$(patsubst %.cpp, icu/source/i18n/%.cpp, $(_I18N_CXXSOURCES))
+I18N_CSOURCES=$(patsubst %.c, icu/source/i18n/%.c, $(_I18N_CSOURCES))
+
+I18N_CFLAGS=-DU_I18N_IMPLEMENTATION -I icu/source/common -I icu/source/i18n  -g -O2 -Wall -ansi -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long  -fvisibility=hidden -fno-common
+I18N_CXXFLAGS=-DU_I18N_IMPLEMENTATION -I icu/source/common -I icu/source/i18n   -g -O2 -W -Wall -ansi -Wpointer-arith -Wwrite-strings -Wno-long-long  -fvisibility=hidden -fno-common
+
+OBJECTS = $(I18N_CSOURCES:.c=.o) $(I18N_CXXSOURCES:.cpp=.o)
+
+INCLUDE =  -I. -I.. -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++
+
+all : $(TARGET)
+	echo $(I18N_CXXSOURCES)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+ifneq ($(BUILD_TARGET),ELF)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --disable-runtime-pseudo-reloc --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -L . -licuuc-imp
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+	`which bim2bin` in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+endif
+
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(I18N_CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .o .c
+.c.o:
+	$(CC) -c -o $@ $< $(CFLAGS) $(I18N_CFLAGS) $(INCLUDE) -fno-builtin
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS)  $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+
+uninstall:
+
+-include dependencies
+

@@ -29,6 +29,11 @@
 
 #define U_WCHAR_IS_UTF16 1
 #define U_ICU_ENTRY_POINT_RENAME(x)    x
+#define U_DEF_ICUDATA_ENTRY_POINT(major, minor) icudt####major##minor##_dat
+#define U_DISABLE_RENAMING 1
+#define U_POSIX_LOCALE 0
+#define UCONFIG_NO_FORMATTING 1
+#define UCONFIG_NO_TRANSLITERATION 1
 /**
  * \file 
  * \brief Basic types for the platform 

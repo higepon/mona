@@ -1,0 +1,34 @@
+diff -ur -x '*.o' /tmp/icu/source/common/putil.c /Users/taro/mona/core/icu/icu/source/common/putil.c
+--- /tmp/icu/source/common/putil.c	2010-09-30 03:37:22.000000000 +0900
++++ /Users/taro/mona/core/icu/icu/source/common/putil.c	2011-08-26 22:52:23.000000000 +0900
+@@ -170,8 +170,8 @@
+   will sometimes work for non-POSIX platforms as well (e.g., the NaN-related
+   functions).
+   ---------------------------------------------------------------------------*/
+-
+-#if defined(U_WINDOWS) || defined(XP_MAC) || defined(OS400)
++ 
++#if defined(U_WINDOWS) || defined(XP_MAC) || defined(OS400) || defined(MONA)
+ #   undef U_POSIX_LOCALE
+ #else
+ #   define U_POSIX_LOCALE    1
+Only in /Users/taro/mona/core/icu/icu/source/common/unicode: platform.h
+diff -ur -x '*.o' /tmp/icu/source/i18n/decContext.c /Users/taro/mona/core/icu/icu/source/i18n/decContext.c
+--- /tmp/icu/source/i18n/decContext.c	2010-09-30 03:37:08.000000000 +0900
++++ /Users/taro/mona/core/icu/icu/source/i18n/decContext.c	2011-08-29 13:16:02.000000000 +0900
+@@ -210,7 +210,14 @@
+ /* ------------------------------------------------------------------ */
+ U_CAPI decContext *  U_EXPORT2 uprv_decContextSetStatus(decContext *context, uInt status) {
+   context->status|=status;
+-  if (status & context->traps) raise(SIGFPE);
++  if (status & context->traps) {
++#ifdef MONA
++    _logprintf("fatal: %s:%d", __FILE__, __LINE__);
++    exit(-1);
++#else
++    raise(SIGFPE);
++#endif
++  }
+   return context;} /* decContextSetStatus  */
+ 
+ /* ------------------------------------------------------------------ */

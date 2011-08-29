@@ -2,12 +2,12 @@ ifndef $(MONADIR)
 export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
 endif
 
-LIB_STATIC   = libicu.a
+LIB_STATIC   = libicuuc.a
 TARGET       = $(LIB_STATIC)
 
-LIB_IMPORT   = libicu-imp.a
-LIB_DYNAMIC  = ICU.DLL
-LIB_DYNAMIC5 = ICU.DL5
+LIB_IMPORT   = libicuuc-imp.a
+LIB_DYNAMIC  = ICUUC.DLL
+LIB_DYNAMIC5 = ICUUC.DL5
 TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 
 include $(MONADIR)/share/configs/Makefile.inc
@@ -175,12 +175,11 @@ COMMON_CSOURCES=$(patsubst %.c, icu/source/common/%.c, $(_COMMON_CSOURCES))
 COMMON_CFLAGS=-D_REENTRANT -I icu/source/common -I icu/source/i18n   "-DDEFAULT_ICU_PLUGINS=\"/usr/local/lib/icu\" "  -DU_COMMON_IMPLEMENTATION -g -O2 -Wall -ansi -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long  -fvisibility=hidden #-pedantic
 COMMON_CXXFLAGS=-D_REENTRANT -I icu/source/common -I icu/source/i18n   "-DDEFAULT_ICU_PLUGINS=\"/usr/local/lib/icu\" "  -DU_COMMON_IMPLEMENTATION -g -O2 -Wall -ansi -Wshadow -Wpointer-arith -Wwrite-strings -Wno-long-long  -fvisibility=hidden
 
-OBJECTS = $(COMMON_CSOURCES:.c=.o) $(COMMON_CXXSOURCES:.cpp=.o) 
+OBJECTS = $(COMMON_CSOURCES:.c=.o) $(COMMON_CXXSOURCES:.cpp=.o) icudt44l_dat.o
 
 INCLUDE =  -I. -I.. -I$(INCDIR) -I$(INCDIR)/STLport-5.2.1/stlport -I$(INCDIR)/monalibc -I$(INCDIR)/c++
 
 all : $(TARGET)
-	echo $(COMMON_CXXSOURCES)
 
 $(LIB_STATIC): $(OBJECTS)
 	rm -f $@
@@ -190,12 +189,15 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
+	$(LD) -e _dllmain --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
-	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
+
+icudt44l_dat.o : icudt44l_dat.s
+	$(CC) -g -O2 -Wall -ansi -pedantic -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long  -fno-common -c -I icu/common -I  -dynamic -o icudt44l_dat.o icudt44l_dat.s
 
 .SUFFIXES: .cpp .o
 .cpp.o:

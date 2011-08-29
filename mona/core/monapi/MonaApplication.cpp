@@ -1,63 +1,63 @@
-#include <monapi.h>
-#include <monapi/messages.h>
+// #include <monapi.h>
+// #include <monapi/messages.h>
 
-namespace MonAPI {
+// namespace MonAPI {
 
-/*----------------------------------------------------------------------
-    Global
-----------------------------------------------------------------------*/
-MonaApplication* monaApp;
+// /*----------------------------------------------------------------------
+//     Global
+// ----------------------------------------------------------------------*/
+// MonaApplication* monaApp;
 
-/*----------------------------------------------------------------------
-    MonaApplication
-----------------------------------------------------------------------*/
-MonaApplication::MonaApplication() {
+// /*----------------------------------------------------------------------
+//     MonaApplication
+// ----------------------------------------------------------------------*/
+// MonaApplication::MonaApplication() {
 
-    monaApp = this;
-    if (M_OK != monapi_register_to_server("/servers/keyboard"))
-    {
-        MONAPI_WARN("MonaApplication:KeyBoardServer not found");
-        exit(1);
-    }
-}
+//     monaApp = this;
+//     if (M_OK != monapi_register_to_server("/servers/keyboard"))
+//     {
+//         MONAPI_WARN("MonaApplication:KeyBoardServer not found");
+//         exit(1);
+//     }
+// }
 
-MonaApplication::~MonaApplication() {
+// MonaApplication::~MonaApplication() {
 
-    if (M_OK != monapi_unregister_to_server("/server/keyboard")) {
-        MONAPI_WARN("MonaApp: key unregist error");
-    }
-}
+//     if (M_OK != monapi_unregister_to_server("/server/keyboard")) {
+//         MONAPI_WARN("MonaApp: key unregist error");
+//     }
+// }
 
-/*----------------------------------------------------------------------
-    messageLoop for MonaApplication
-----------------------------------------------------------------------*/
-void MonaApplication::run() {
+// /*----------------------------------------------------------------------
+//     messageLoop for MonaApplication
+// ----------------------------------------------------------------------*/
+// void MonaApplication::run() {
 
-    volatile MessageInfo message;
+//     volatile MessageInfo message;
 
-    for (;;) {
-        if (!Message::receive((MessageInfo*)(&message))) {
+//     for (;;) {
+//         if (!Message::receive((MessageInfo*)(&message))) {
 
-            switch(message.header) {
+//             switch(message.header) {
 
-            case MSG_KEY_VIRTUAL_CODE:
+//             case MSG_KEY_VIRTUAL_CODE:
 
-                this->onKeyDown(message.arg1, message.arg2);
-                break;
+//                 this->onKeyDown(message.arg1, message.arg2);
+//                 break;
 
-            case MSG_MOUSE_INFO:
+//             case MSG_MOUSE_INFO:
 
-                if (message.arg3 & 0x01) {
-                    this->onMouseClick((int)(message.arg1), (int)(message.arg2));
-                }
-                break;
-            default:
+//                 if (message.arg3 & 0x01) {
+//                     this->onMouseClick((int)(message.arg1), (int)(message.arg2));
+//                 }
+//                 break;
+//             default:
 
-                /* ignore this message */
-                break;
-            }
-        }
-    }
-}
+//                 /* ignore this message */
+//                 break;
+//             }
+//         }
+//     }
+// }
 
-}
+// }
