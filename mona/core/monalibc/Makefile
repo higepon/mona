@@ -33,7 +33,7 @@ $(LIB_DYNAMIC): $(OBJECTS)
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
-	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
 
 .SUFFIXES: .o .c
