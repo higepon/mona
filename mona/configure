@@ -96,7 +96,7 @@ case $OSTYPE in
       CP_COMMAND=cp
       ;;
     *)
-      CP_COMMAND=cp -u
+      CP_COMMAND="cp -u"
       ;;
     *)
 esac
