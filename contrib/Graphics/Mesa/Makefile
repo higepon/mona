@@ -8,7 +8,7 @@ MASTERSITE = http://www.monaos.org/downloads
 #WORKDIR = ${NAME}-${VERSION}
 WORKDIR = Mesa-${VERSION}
 
-TMPDIR = tmp
+MONA_TMPDIR = tmp
 DSTDIR = .
 
 PROCESSES = .FETCH .EXTRACT .PATCH .MAKE .INSTALL
@@ -25,11 +25,11 @@ distclean: clean
 
 .FETCH: ${SRCS}
 	@if [ ! -f $@ ]; then touch $@; fi
-DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget
+DOWNLOAD = mkdir -p ${MONA_TMPDIR} ${DSTDIR} && cd ${MONA_TMPDIR} && rm -f $@ && wget
 ${SOURCE1}:
 	@if [ ! -f ${DSTDIR}/$@ ]; then \
 	  (${DOWNLOAD} ${MASTERSITE}/$@) && \
-	  mv ${TMPDIR}/$@ ${DSTDIR}; \
+	  mv ${MONA_TMPDIR}/$@ ${DSTDIR}; \
 	fi
 
 .EXTRACT: .FETCH

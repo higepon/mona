@@ -13,7 +13,7 @@ SRCS = ${SOURCE1}
 MASTERSITE = http://monaos.org/downloads
 WORKDIR = ${NAME}-${VERSION}
 
-TMPDIR = tmp
+MONA_TMPDIR = tmp
 DSTDIR = .
 
 PROCESSES = .FETCH .EXTRACT .PATCH .MAKE .INSTALL
@@ -35,11 +35,11 @@ distclean: clean
 
 .FETCH: ${SRCS}
 	@if [ ! -f $@ ]; then touch $@; fi
-DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget
+DOWNLOAD = mkdir -p ${MONA_TMPDIR} ${DSTDIR} && cd ${MONA_TMPDIR} && rm -f $@ && wget
 ${SOURCE1}:
 	@if [ ! -f ${DSTDIR}/$@ ]; then \
 	  (${DOWNLOAD} ${MASTERSITE}/$@) && \
-	  mv ${TMPDIR}/$@ ${DSTDIR} && \
+	  mv ${MONA_TMPDIR}/$@ ${DSTDIR} && \
 	  wget $(MASTERSITE)/$(DATA); \
 	fi
 
@@ -49,7 +49,7 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT Makefile.i18n platform.h Makefile.uc
-	$(PATCH_COMMAND) -p2 < patch-aa
+	patch -p2 < patch-aa
 	cp platform.h icu/source/common/unicode/
 	cp icudt44l_dat.s icu/source/common/
 	touch $@

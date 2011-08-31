@@ -7,7 +7,7 @@ SRCS = ${SOURCE1}
 MASTERSITE = http://monaos.org/downloads
 WORKDIR = ${NAME}-${VERSION}
 
-TMPDIR = tmp
+MONA_TMPDIR = tmp
 DSTDIR = .
 
 PROCESSES = .FETCH .EXTRACT .PATCH .MAKE .INSTALL
@@ -24,11 +24,11 @@ distclean: clean
 
 .FETCH: ${SRCS}
 	@if [ ! -f $@ ]; then touch $@; fi
-DOWNLOAD = mkdir -p ${TMPDIR} ${DSTDIR} && cd ${TMPDIR} && rm -f $@ && wget
+DOWNLOAD = mkdir -p ${MONA_TMPDIR} ${DSTDIR} && cd ${MONA_TMPDIR} && rm -f $@ && wget
 ${SOURCE1}:
 	@if [ ! -f ${DSTDIR}/$@ ]; then \
 	  (${DOWNLOAD} ${MASTERSITE}/$@) && \
-	  mv ${TMPDIR}/$@ ${DSTDIR}; \
+	  mv ${MONA_TMPDIR}/$@ ${DSTDIR}; \
 	fi
 
 .EXTRACT: .FETCH
@@ -37,7 +37,7 @@ ${SOURCE1}:
 
 .PATCH: .EXTRACT Makefile.mona config.h dll_main.cpp
 	(cd $(WORKDIR) && ./configure --enable-assert=yes --enable-cxx=no --build=i586 --host=i586-mingw32msvc && make)
-	TMPDIR=$(TMP) patch -p0 < patch-aa
+	patch -p0 < patch-aa
 	cp dll_main.cpp $(WORKDIR)/
 	cp config.h $(WORKDIR)/
 	cp Makefile.mona $(WORKDIR)/
