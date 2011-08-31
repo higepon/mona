@@ -158,6 +158,8 @@ long double tanl(long double x);
 float tanhf(float x);
 long double tanhl(long double x);
 
+double nextafter(double x, double y);
+
 #ifdef __cplusplus
 }
 #endif
