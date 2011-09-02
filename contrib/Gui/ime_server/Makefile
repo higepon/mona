@@ -12,7 +12,7 @@ include $(SHAREDIR)/configs/monapi-ex5.inc
 ADDINCLUDE= -I .
 
 BASICDIC.TX5: BASICDIC.TXT
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 install-ime:
 	$(INSTALL) BASICDIC.TX5 $(MONADIR)/bin/iso

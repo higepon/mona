@@ -20,7 +20,7 @@ include $(SHAREDIR)/configs/monapi.inc
 all: $(TARGET).EX5
 
 $(TARGET).EX5: $(TARGET).EXE
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).EXE:  $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP)
 	#echo  "test" $(ADDTARGETDEP) $(LINKDEP) $(OBJECTS) $(LINKDEP)

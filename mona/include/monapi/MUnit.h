@@ -25,16 +25,16 @@
 #define MUNIT_GLOBAL extern "C"
 #define MUNIT_GLOBAL_VAL(v) /* */
 #endif
-
+#ifdef MONA
 class MUnitService
 {
 private:
+
     static intptr_t sendClear(uint32_t dest, uint32_t header)
     {
         MessageInfo msg;
         return MonAPI::Message::sendReceive(&msg, dest, header);
     }
-
 public:
     static intptr_t clearInput(uint32_t dest)
     {
@@ -46,6 +46,7 @@ public:
         return sendClear(dest, MSG_TEST_CLEAR_OUTPUT);
     }
 };
+#endif
 
 #define FAIL(msg) fail(msg, __FILE__, __LINE__)
 

@@ -25,11 +25,11 @@ $(TARGET).EXE: $(INSTFILES)
 
 .SUFFIXES: .dat .DT5
 .dat.DT5:
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 #mumurik	PATH="$(PATH):$(MONADIR)/tool/t5lzma" bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 dat/MONALOGO.BM5: dat/MonaLogo.bmp
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 -include dependencies

@@ -9,7 +9,7 @@
 ;-------------------------------------------------------------------------------
 %define KERNEL   0x1000
 %define TEMPSEG  0x9f00
-%define LDRSEG   0xF000
+%define LDRSEG   0x8000
 %define FATSEG   0x9000
 %define FATADDR  0x6000
 

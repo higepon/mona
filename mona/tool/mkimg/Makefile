@@ -1,6 +1,9 @@
 SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
+FAT32IMG=fat32_user.img
+TESTIMG=fat32_test.img
+
 all:
 	make clean
 	MONADIR=$(MONADIR) perl mkimg.pl
@@ -13,27 +16,23 @@ all:
 clean:
 	rm -f mona.img
 	rm -f $(MONADIR)/bin/mona.img
-	rm -f fat32_test.img
 
 create_user_image_once:
-	rm -f fat32_user.img
-	rm -rf tmp
-	mkdir tmp
-	mkfs.vfat -C -F32 fat32_user.img 100000
-	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
-	mkdir -p bin
-	cp CAT.SCM bin/
-	mkdir -p temp
-	cp -f show-words.scm bin/
-	sudo mv bin tmp
-	sudo mv temp tmp
-	sudo cp -f words.scm tmp
-	sudo umount -l tmp/
+	rm -f $(FAT32IMG)
+	bunzip2 -dc fat32empty.img.bz2 > $(FAT32IMG)
+	mmd -i $(FAT32IMG) bin
+	mmd -i $(FAT32IMG) lib
+	mmd -i $(FAT32IMG) test
+	mcopy -/ -i fat32_user.img ../../user/bin/* ::bin/
+	mcopy -/ -i fat32_user.img ../../user/lib/* ::lib/
+	mcopy -/ -i fat32_user.img ../../user/test/* ::test/
+	mmd -i $(FAT32IMG) temp
 	@if [ ! -f $@ ]; then touch $@; fi
 
 backup_user:
-	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
-	(test -d ~/Dropbox/mona_images/ && sudo tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H_%M_%S'`.tar.gz tmp --exclude temp)
+	mkdir -p tmp
+	mcopy -/ -n -i $(FAT32IMG) :: tmp/
+	(test -d ~/Dropbox/mona_images/ && tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H_%M_%S'`.tar.gz tmp)
 	cp tmp/bin/*.SPS ../../user/bin/ || true
 	cp -r tmp/lib/* ../../user/lib || true
 	cp -r tmp/test/* ../../user/test || true
@@ -41,33 +40,30 @@ backup_user:
 	git add ../../user/lib/*.SLS || true
 	git add ../../user/lib/*/*.SLS || true
 	git add ../../user/test/*.SPS || true
-	sudo umount -l tmp/
-#	(test -d ~/Dropbox/mona_images/ && gzip -c fat32_user.img > ~/Dropbox/mona_images/fat32_user.img.`date '+%Y_%m_%d_%H%_M_%S'`.gz) || true
 
-restore_backup_user:
-	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
-	mkdir work
-	(cd work && tar zvxf $(BACKUP) && sudo cp -r tmp/* ../tmp)
-	rm -r work
-	sudo umount -l tmp/
+# restore_backup_user:
+# 	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
+# 	mkdir work
+# 	(cd work && tar zvxf $(BACKUP) && sudo cp -r tmp/* ../tmp)
+# 	rm -r work
+# 	sudo umount -l tmp/
 
-create_test_image_always:
-	rm -rf tmp
-	mkdir tmp
-	mkfs.vfat -C -F32 fat32_test.img 100000
-	sudo mount ./fat32_test.img tmp/ -t vfat -o loop
-	for i in `seq 1 18`; do echo "Hello" > test$$i.txt; sudo mv -f test$$i.txt tmp; done
-	touch empty.txt; sudo mv -f empty.txt tmp
-	mkdir -p subdir
-	echo "Hello" > subdir.txt; sudo mv -f subdir.txt subdir; done
-	sudo cp -f show-words.scm subdir/
-	sudo cp -f words.scm subdir/
-	echo "Hello World" > this_is_very_long_file_name.txt; sudo mv -f this_is_very_long_file_name.txt subdir; done
-	sudo mv subdir tmp
-	seq 1 1000 > hige.txt; sudo mv -f hige.txt tmp
-	sudo umount -l tmp/
+create_test_image_once:
+	bunzip2 -dc fat32empty.img.bz2 > $(TESTIMG)
+	@if [ ! -f $@ ]; then touch $@; fi
 
-fat32: create_test_image_always create_user_image_once
+setup_test_image: create_test_image_once
+	for i in `mdir -b -i fat32_test.img`; do mdeltree -i fat32_user.img $$i; done
+	for i in `$(SEQ_COMMAND) 1 18`; do echo "Hello" > test$$i.txt; mcopy -b -i $(TESTIMG) test$$i.txt ::test$$i.txt; done
+	touch empty.txt; mcopy -i $(TESTIMG) ./empty.txt ::
+	mmd -i $(TESTIMG) subdir
+	echo "Hello" > subdir.txt %% mmove -i $(TESTIMG) subdir.txt ::subdir
+	mcopy -i $(TESTIMG) show-words.scm ::subdir
+	mcopy -i $(TESTIMG) words.scm ::subdir
+	echo "Hello World" > this_is_very_long_file_name.txt; mcopy -i $(TESTIMG) this_is_very_long_file_name.txt ::subdir
+	$(SEQ_COMMAND) 1 1000 > hige.txt && mcopy -i $(TESTIMG) hige.txt ::
+
+fat32: setup_test_image create_user_image_once
 
 iso:
 	$(INSTALL) -p mona.img $(MONADIR)/bin

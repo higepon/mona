@@ -22,9 +22,12 @@ namespace Mona
 			A20.Enable();
 			
             // N.B.
-            // Total file size bytes should be less than 0xF000 * 16 byte = 960KB.
+            // Total file size bytes should be less than 0x8000 * 16 byte
             // Otherwise secondboot itself will be overwritten.
-            // since secondboot is loaded LDRSEG=0xF000.(Defined on firstboot).
+            // since secondboot is loaded LDRSEG=0x8000.(Defined on firstboot).
+            // The LDRSEG value was once became 0xf000, but it causes hung up when kvm is disabled.
+            // Seem load secondboot to LDRSEG:0000 failed. You can check it with qemu consol.
+            // Type "x /x 0xf0000" should show head of secondboot.bin
 			ReadServer("KERNEL.BIN");
 			ReadServer("FILE.BIN");
 			ReadServer("PROCESS.BIN");

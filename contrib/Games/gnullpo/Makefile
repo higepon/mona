@@ -20,9 +20,9 @@ CXXFLAGS += -DDEBUG
 INCLUDE += -I .
 
 NULLPO.BM5: nullpo.bmp
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 GAT.BM5: gat.bmp
-	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+	`which bim2bin` in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 -include dependencies
