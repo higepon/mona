@@ -86,12 +86,11 @@ install:
 
 install-mona:
 	install -p -m 0644 SSL.DLL $(BINDIR)/LIBS
-	mkdir -p $(MONADIR)/include/openssl
-	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
-	do  \
-	($(CP_COMMAND) -p $$i $(MONADIR)/include/openssl/$$i; \
-	chmod 644 $(MONADIR)/include/openssl/$$i ); \
-	done;
+	@headerlist="$(EXHEADER)"
+	if [ ! -e $(MONADIR)/include/openssl/ssl.h ]; then \
+		mkdir -p $(MONADIR)/include/openssl; \
+		for i in $$headerlist ; do ($(CP_COMMAND) -p $$i $(MONADIR)/include/openssl/$$i; chmod 644 $(MONADIR)/include/openssl/$$i ); done;  \
+	fi
 
 tags:
 	ctags $(SRC)
