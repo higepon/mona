@@ -53,7 +53,7 @@ create_test_image_once:
 	@if [ ! -f $@ ]; then touch $@; fi
 
 setup_test_image: create_test_image_once
-	for i in `mdir -b -i fat32_test.img`; do mdeltree -i fat32_user.img $$i; done
+	for i in `mdir -b -i fat32_test.img`; do mdeltree -i fat32_test.img $$i; done
 	for i in `$(SEQ_COMMAND) 1 18`; do echo "Hello" > test$$i.txt; mcopy -b -i $(TESTIMG) test$$i.txt ::test$$i.txt; done
 	touch empty.txt; mcopy -i $(TESTIMG) ./empty.txt ::
 	mmd -i $(TESTIMG) subdir
@@ -70,7 +70,7 @@ iso:
 	$(INSTALL) -p AUTOEXEC.MSH $(MONADIR)/bin
 	$(INSTALL) -p MONITOR.CFG $(MONADIR)/bin
 	$(INSTALL) -p MONA.CFG $(MONADIR)/bin
-	cd $(MONADIR) && mkisofs -v -iso-level 1 -joliet -b mona.img -o mona.iso bin
+	cd $(MONADIR) && mkisofs -iso-level 1 -joliet -b mona.img -o mona.iso bin
 	mv $(MONADIR)/mona.iso .
 	rm -f $(MONADIR)/bin/mona.img
 
