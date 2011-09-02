@@ -83,6 +83,8 @@ tests: tools cores
 mkimg: cores externals tools tests
 	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
+without-mkimg: cores externals tools tests
+
 
 .PHONY: clean doc
 
