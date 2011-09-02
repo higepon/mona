@@ -42,11 +42,9 @@ backup_user:
 	git add ../../user/test/*.SPS || true
 
 # restore_backup_user:
-# 	sudo mount ./fat32_user.img tmp/ -t vfat -o loop
 # 	mkdir work
-# 	(cd work && tar zvxf $(BACKUP) && sudo cp -r tmp/* ../tmp)
+# 	(cd work && tar zvxf $(BACKUP) && cd tmp && for i in `ls`; do mcopy -/ -n -i $(FAT32IMG) $$i; done)
 # 	rm -r work
-# 	sudo umount -l tmp/
 
 create_test_image_once:
 	bunzip2 -dc fat32empty.img.bz2 > $(TESTIMG)
