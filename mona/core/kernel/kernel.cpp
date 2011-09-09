@@ -155,7 +155,7 @@ void startKernel()
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2011 higepon\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
-#if 1
+#if 0
     int w = g_vesaDetail->xResolution;
     int bpp = g_vesaDetail->bitsPerPixel / 8;
     uint8_t *vram = (uint8_t*)g_vesaDetail->physBasePtr;
