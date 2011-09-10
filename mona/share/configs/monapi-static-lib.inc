@@ -3,7 +3,7 @@ include $(MONADIR)/share/configs/monapi.inc
 OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
 CXXFLAGS+=$(ADDCXXFLAGS)
 
-all : $(TARGET)
+all : $(DEP_TARGET) $(TARGET)
 
 $(LIB_STATIC): $(OBJECTS)
 	rm -f $@
