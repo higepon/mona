@@ -250,7 +250,7 @@ int ThreadOperation::switchThread(bool isProcessChanged)
     }
 
     /* does not come here */
-    return NORMAL;
+    return M_OK;
 }
 
 intptr_t ThreadOperation::kill(Thread* thread, int status /* = -1 */)

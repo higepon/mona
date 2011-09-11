@@ -19,7 +19,6 @@
 #define MAP_PAGE_SIZE 4096
 
 #define NULL     0
-#define NORMAL   0
 #define DEBUG_MODE
 
 #define DLL_PROCESS_ATTACH 0

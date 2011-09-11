@@ -428,7 +428,7 @@ int Scheduler::Kill(Thread* thread)
 {
     thread->tinfo->process->removeThread(thread);
     thread->Remove();
-    return NORMAL;
+    return M_OK;
 }
 
 PsInfo* Scheduler::GetAllDump()
