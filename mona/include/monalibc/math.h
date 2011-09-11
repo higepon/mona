@@ -107,6 +107,8 @@ double modf(double x, double *buf);
 double nearbyint(double x);
 double pow(double x, double y);
 double round(double x);
+long int lroundf(float x);
+float roundf(float x);
 double sin(double angle);
 double sinh(double x);
 double sqrt(double num);
