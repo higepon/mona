@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef _MLIBC_PRIVATE_VARS_H_
 #define _MLIBC_PRIVATE_VARS_H_
 
-#include "file.h"
+#include "mona_file.h"
 
 extern struct cache_operators_ fullbuf_operators;
 extern struct cache_operators_ linebuf_operators;

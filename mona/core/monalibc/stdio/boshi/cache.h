@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef _MLIBC_FILE_CACHE_H_
 #define _MLIBC_FILE_CACHE_H_
 
-#include "file.h"
+#include "mona_file.h"
 
 void __mlibc_init_cache(FILE *file, char *buf, size_t size, int mode);
 int  __mlibc_is_out_of_cache(FILE *f);

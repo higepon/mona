@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <monapi/Assert.h>
 #include <sys/List.h>
 #include <sys/HList.h>
-#include "file.h"
+#include "mona_file.h"
 
 extern "C"
 {
