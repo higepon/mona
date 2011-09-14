@@ -614,7 +614,7 @@ dired_(char *dname)
 	DIR		*dirp;
 	struct dirent	*dent;
     char* month_names[] = {"Jan", "Feb" ,"Mar" ,"Apr" ,"May" ,"Jun",
-                           "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
+                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 #endif
 
 	if ((dname = adjustname(dname, FALSE)) == NULL) {
