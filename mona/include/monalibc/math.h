@@ -159,6 +159,7 @@ float tanf(float x);
 long double tanl(long double x);
 float tanhf(float x);
 long double tanhl(long double x);
+float nextafterf(float x, float y);
 
 double nextafter(double x, double y);
 
