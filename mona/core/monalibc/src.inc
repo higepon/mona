@@ -4,7 +4,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  ctype/isupper.c ctype/isxdigit.c ctype/tolower.c ctype/toupper.c \
 	  math/acos.c math/asin.c math/atan.c math/atan2.c math/fpclassify.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
-	  math/floor.c math/newlib/w_fmod.c  math/newlib/nextafter.c math/newlib/trunc.c math/newlib/e_fmod.c math/frexp.c math/ldexp.c math/newlib/e_log.c math/newlib/w_log.c \
+	  math/floor.c math/newlib/w_fmod.c  math/newlib/sf_round.c math/newlib/nextafter.c math/newlib/trunc.c math/newlib/e_fmod.c math/frexp.c math/ldexp.c math/newlib/e_log.c math/newlib/w_log.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
 	  math/sinh.c math/round.c math/nearbyint.c math/nan.c \
 	  math/signbit.c \
