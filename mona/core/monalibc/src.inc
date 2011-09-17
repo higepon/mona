@@ -4,7 +4,14 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  ctype/isupper.c ctype/isxdigit.c ctype/tolower.c ctype/toupper.c \
 	  math/acos.c math/asin.c math/atan.c math/atan2.c math/fpclassify.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
-	  math/floor.c math/newlib/w_fmod.c  math/newlib/sf_round.c math/newlib/sf_lround.c math/newlib/sf_ceil.c  math/newlib/sf_modf.c math/newlib/nextafter.c math/newlib/trunc.c math/newlib/e_fmod.c math/frexp.c math/ldexp.c math/newlib/e_log.c math/newlib/w_log.c \
+	  math/floor.c math/newlib/w_fmod.c  math/newlib/sf_round.c math/newlib/sf_lround.c math/newlib/sf_ceil.c \
+      math/newlib/sf_modf.c math/newlib/nextafter.c math/newlib/trunc.c math/newlib/e_fmod.c math/frexp.c math/ldexp.c \
+      math/newlib/e_log.c math/newlib/w_log.c math/newlib/sf_sin.c math/newlib/sf_cos.c math/newlib/sf_fabs.c \
+      math/newlib/k_cos.c math/newlib/k_sin.c math/newlib/kf_cos.c math/newlib/kf_sin.c math/newlib/ef_rem_pio2.c math/newlib/kf_rem_pio2.c \
+      math/newlib/sf_floor.c math/newlib/s_scalbn.c math/newlib/sf_scalbn.c math/newlib/sf_copysign.c math/newlib/s_copysign.c \
+      math/newlib/sf_sqrt.c math/newlib/sf_fmod.c math/newlib/sf_atan2.c math/newlib/sf_tan.c  math/newlib/s_lround.c \
+      math/newlib/sf_atangent.c math/newlib/sf_frexp.c math/newlib/sf_ispos.c math/newlib/sf_ldexp.c math/newlib/sf_numtest.c \
+      math/newlib/s_mathcnst.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
 	  math/sinh.c math/round.c math/nearbyint.c math/nan.c \
 	  math/signbit.c \

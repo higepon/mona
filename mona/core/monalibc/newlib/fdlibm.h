@@ -16,6 +16,11 @@
 #include <sys/types.h>
 #include <machine/ieeefp.h>
 
+/* MONA */
+#define	_DEFUN(name, arglist, args)	name(args)
+#define	_AND ,
+/* MONA */
+
 /* REDHAT LOCAL: Default to XOPEN_MODE.  */
 #define _XOPEN_MODE
 
