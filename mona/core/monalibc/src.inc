@@ -9,7 +9,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
       math/newlib/e_log.c math/newlib/w_log.c math/newlib/sf_sin.c math/newlib/sf_cos.c math/newlib/sf_fabs.c \
       math/newlib/k_cos.c math/newlib/k_sin.c math/newlib/kf_cos.c math/newlib/kf_sin.c math/newlib/ef_rem_pio2.c math/newlib/kf_rem_pio2.c \
       math/newlib/sf_floor.c math/newlib/s_scalbn.c math/newlib/sf_scalbn.c math/newlib/sf_copysign.c math/newlib/s_copysign.c \
-      math/newlib/sf_sqrt.c math/newlib/sf_fmod.c math/newlib/sf_atan2.c math/newlib/sf_tan.c  math/newlib/s_lround.c \
+      math/newlib/sf_sqrt.c math/newlib/sf_fmod.c math/newlib/sf_atan2.c math/newlib/sf_tan.c  math/newlib/s_lround.c math/newlib/s_nan.c \
       math/newlib/sf_atangent.c math/newlib/sf_frexp.c math/newlib/sf_ispos.c math/newlib/sf_ldexp.c math/newlib/sf_numtest.c \
       math/newlib/s_mathcnst.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
