@@ -40,6 +40,8 @@ int getopt(int argc, char * const argv[],
 
 int unlink(const char *path);
 int rmdir(const char *path);
+char* getcwd(char *buf, size_t size);
+
 
 extern char *optarg;
 extern int optind, opterr, optopt;
