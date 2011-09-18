@@ -1,0 +1,109 @@
+LIB_STATIC   = libxml2.a
+TARGET       = $(LIB_STATIC)
+
+LIB_IMPORT   = libxml2-imp.a
+LIB_DYNAMIC  = XML2.DLL
+LIB_DYNAMIC5 = XML2.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+SOURCES= # dll_main.cpp
+
+TOP_CSOURCES=\
+SAX.c \
+entities.c \
+encoding.c \
+error.c \
+parserInternals.c \
+parser.c \
+tree.c \
+hash.c \
+list.c \
+xmlIO.c \
+xmlmemory.c \
+uri.c \
+valid.c \
+xlink.c \
+HTMLparser.c \
+HTMLtree.c \
+debugXML.c \
+xpath.c \
+xpointer.c \
+xinclude.c \
+nanohttp.c \
+nanoftp.c \
+DOCBparser.c \
+catalog.c \
+globals.c \
+threads.c \
+c14n.c \
+xmlstring.c \
+xmlregexp.c \
+xmlschemas.c \
+xmlschemastypes.c \
+xmlunicode.c \
+xmlreader.c \
+relaxng.c \
+dict.c \
+SAX2.c \
+xmlwriter.c \
+legacy.c \
+chvalid.c \
+pattern.c \
+xmlsave.c \
+xmlmodule.c \
+schematron.c \
+
+CSOURCES = $(TOP_CSOURCES)
+CFLAGS+=-DHAVE_CONFIG_H -I. -I./include
+
+OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
+export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
+
+all :$(TARGET)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+#	bzip2 -c $(LIB_DYNAMIC) > $@
+	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c -o $(<:.c=.o) $(CFLAGS) -pedantic -std=gnu99 $(INCLUDE) $<
+
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+	mkdir -p $(LIBDIR)
+	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+	mkdir -p $(BINDIR)/LIBS
+	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+	mkdir -p $(INCDIR)/libxml2/libxml
+	for i in `ls include/libxml/*.h`; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/libxml2/libxml/; done
+
+-include dependencies
