@@ -34,6 +34,7 @@ all:
 	cd Gui/monafile && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/libxml2 && touch dependencies && $(MAKE) && $(MAKE) install
 ### Monagui applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Shells/terminal && touch dependencies && $(MAKE) && $(MAKE) install
