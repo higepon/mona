@@ -18,6 +18,7 @@
 
 /* MONA */
 #define	_DEFUN(name, arglist, args)	name(args)
+#define  _DEFUN_VOID(name)               name()
 #define	_AND ,
 /* MONA */
 

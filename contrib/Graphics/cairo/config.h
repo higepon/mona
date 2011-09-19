@@ -64,3 +64,21 @@
    attribute */
 #define WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
 
+/* quick hack */
+#define __builtin_popcount(x) popcount_mona(x)
+#include <stdint.h>
+static int popcount_mona (uint32_t mask);
+
+#if defined(_CAIROINT_H_) && !defined(MONA_QUICK_HACK_ONCE)
+#define MONA_QUICK_HACK_ONCE
+
+static inline int popcount_mona (uint32_t mask)
+{
+    register int y;
+
+    y = (mask >> 1) &033333333333;
+    y = mask - y - ((y >>1) & 033333333333);
+    return (((y + (y >> 3)) & 030707070707) % 077);
+}
+
+#endif
