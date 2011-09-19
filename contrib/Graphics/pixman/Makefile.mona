@@ -1,9 +1,9 @@
-LIB_STATIC   = libcairo.a
+LIB_STATIC   = libpixman.a
 TARGET       = $(LIB_STATIC)
 
-LIB_IMPORT   = libcairo-imp.a
-LIB_DYNAMIC  = CAIRO.DLL
-LIB_DYNAMIC5 = CAIRO.DL5
+LIB_IMPORT   = libpixman-imp.a
+LIB_DYNAMIC  = PIXMAN.DLL
+LIB_DYNAMIC5 = PIXMAN.DL5
 TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 
 include $(MONADIR)/share/configs/Makefile.inc
@@ -11,10 +11,35 @@ include $(MONADIR)/share/configs/dirnames.inc
 
 SOURCES= # dll_main.cpp
 
-TOP_CSOURCES= cairo-analysis-surface.c
+TOP_CSOURCES=\
+pixman-access-accessors.c\
+pixman-access.c\
+pixman-bits-image.c\
+pixman-combine32.c\
+pixman-combine64.c\
+pixman-conical-gradient.c\
+pixman-cpu.c\
+pixman-edge-accessors.c\
+pixman-edge.c\
+pixman-fast-path.c\
+pixman-general.c\
+pixman-gradient-walker.c\
+pixman-image.c\
+pixman-implementation.c\
+pixman-linear-gradient.c\
+pixman-matrix.c\
+pixman-mmx.c\
+pixman-radial-gradient.c\
+pixman-region16.c\
+pixman-region32.c\
+pixman-solid-fill.c\
+pixman-timer.c\
+pixman-trap.c\
+pixman-utils.c\
+pixman.c\
 
 CSOURCES = $(TOP_CSOURCES)
-CFLAGS+=-DHAVE_CONFIG_H -D_FORTIFY_SOURCE=2 -I. -I.. -I./include
+CFLAGS+=-DHAVE_CONFIG_H -I. -I.. -DPIXMAN_NO_TLS=1
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
 export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
@@ -60,8 +85,8 @@ install: $(TARGET)
 	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
 	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
-	mkdir -p $(INCDIR)/libxml2/libxml
-	for i in `ls include/libxml/*.h`; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/libxml2/libxml/; done
+	mkdir -p $(INCDIR)/pixman-1/
+	for i in "pixman-version.h pixman.h"; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/pixman-1/; done
 
 -include dependencies
 
