@@ -54,3 +54,4 @@ ${SOURCE1}:
 	install -p ${WORKDIR}/lib*.a ${MONADIR}/lib
 	mkdir -p ${MONADIR}/include/
 	install -p ${WORKDIR}/gmp.h ${MONADIR}/include/
+	touch $@
