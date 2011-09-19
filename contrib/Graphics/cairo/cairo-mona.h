@@ -1,4 +1,3 @@
-/* -*- Mode: c; tab-width: 8; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2011 Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
@@ -28,10 +27,32 @@
  *
  * The Original Code is the cairo graphics library.
  *
- * The Initial Developer of the Original Code is University of Southern
- * California.
+ * The Initial Developer of the Original Code is Christian Biesinger
+ * <cbiesinger@web.de>
  *
  * Contributor(s):
  */
 
-// This is a C++ file in order to use the C++ Mona API
+#ifndef CAIRO_MONA_H
+#define CAIRO_MONA_H
+
+#include "cairo.h"
+
+#if CAIRO_HAS_MONA_SURFACE
+
+CAIRO_BEGIN_DECLS
+
+// cairo_public cairo_surface_t *
+// cairo_mona_surface_create (BView* view);
+
+// cairo_public cairo_surface_t *
+// cairo_mona_surface_create_for_bitmap (BView*   view,
+//                                       BBitmap* bmp);
+
+CAIRO_END_DECLS
+
+#else  /* CAIRO_HAS_MONA_SURFACE */
+# error Cairo was not compiled with support for the mona backend
+#endif /* CAIRO_HAS_MONA_SURFACE */
+
+#endif /* CAIRO_MONA_H */
