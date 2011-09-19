@@ -42,7 +42,7 @@ ${SOURCE1}:
 	touch $@
 
 .MAKE: .PATCH
-	cd ${WORKDIR} && make && touch $@
+	(cd ${WORKDIR} && make) && touch $@
 
 .INSTALL: .MAKE
-	cd ${WORKDIR} && make install && touch $@
+	(cd ${WORKDIR} && make install) && touch $@
