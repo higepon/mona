@@ -18,7 +18,9 @@ TOP_CSOURCES= cairo-analysis-surface.c cairo-arc.c cairo-array.c cairo-atomic.c 
 
 
 CSOURCES = $(TOP_CSOURCES)
-CFLAGS+=-DHAVE_CONFIG_H -D_FORTIFY_SOURCE=2 -DCAIRO_NO_MUTEX=1 -Wno-attributes -Wno-enum-compare -Wno-unused-but-set-variable
+
+# if __WIN32__ is defined, hypot and snprint are renamed with _ prefix.
+CFLAGS+=-DHAVE_CONFIG_H -D_FORTIFY_SOURCE=2 -DCAIRO_NO_MUTEX=1 -U__WIN32__ -Wno-attributes -Wno-enum-compare -Wno-unused-but-set-variable
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
 INCLUDE = -I. -I.. -I$(INCDIR)/ -I$(INCDIR)/monalibc -I$(INCDIR)/pixman-1
