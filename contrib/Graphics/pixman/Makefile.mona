@@ -39,10 +39,10 @@ pixman-utils.c\
 pixman.c\
 
 CSOURCES = $(TOP_CSOURCES)
-CFLAGS+=-DHAVE_CONFIG_H -I. -I.. -DPIXMAN_NO_TLS=1
+CFLAGS+=-DHAVE_CONFIG_H -DPIXMAN_NO_TLS=1
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
-export INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/stlport -I$(INCDIR)/monalibc
+INCLUDE = -I. -I.. -I$(INCDIR)/ -I$(INCDIR)/monalibc
 
 all :$(TARGET)
 
