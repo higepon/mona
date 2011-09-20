@@ -62,8 +62,9 @@ install: $(TARGET)
 	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
 	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
-	mkdir -p $(INCDIR)/libxml2/libxml
-	for i in `ls include/libxml/*.h`; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/libxml2/libxml/; done
+	mkdir -p $(INCDIR)/cairo/
+	for i in "cairo-deprecated.h cairo-features.h cairo-version.h cairo.h cairo-mona.h"; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/cairo/; done
+	touch $@
 
 -include dependencies
 
