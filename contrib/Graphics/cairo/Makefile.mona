@@ -64,7 +64,6 @@ install: $(TARGET)
 	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 	mkdir -p $(INCDIR)/cairo/
 	for i in "cairo-deprecated.h cairo-features.h cairo-version.h cairo.h cairo-mona.h"; do $(INSTALL) -p -m 0644 $$i $(INCDIR)/cairo/; done
-	touch $@
 
 -include dependencies
 
