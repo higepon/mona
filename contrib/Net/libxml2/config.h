@@ -310,3 +310,5 @@
 
 /* Win32 Std C name mangling work-around */
 /* #undef vsnprintf */
+
+#define write(fd, buf, size) _logprintf("FATAL: write called on %s:%d\n", __FILE__, __LINE__), exit(-1)
