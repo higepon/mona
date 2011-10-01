@@ -423,3 +423,62 @@ int ioctlsocket(int sockfd, long cmd, void *argp)
     errno = ret.arg3;
     return ret.arg2;
 }
+
+int getpeername(int sockfd, struct sockaddr* address, socklen_t* address_len)
+{
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
+    char buf[sizeof(socklen_t)];
+    memcpy(buf, address_len, sizeof(socklen_t));
+    if (Message::send(id, MSG_NET_GET_PEERNAME, sockfd, 0, 0, buf) != M_OK) {
+        return EBADF;
+    }
+
+    BufferReceiver* receiver = Message::receiveBuffer(id);
+    *address_len = receiver->bufferSize();
+    memcpy(address, receiver->buffer(), *address_len);
+    delete receiver;
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_OK;
+    src.arg1 = MSG_NET_GET_PEERNAME;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
+}
+
+int getsockname(int sockfd, struct sockaddr* address, socklen_t* address_len)
+{
+    uint32_t id ;
+    if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        return EBADF;
+    }
+    char buf[sizeof(socklen_t)];
+    memcpy(buf, address_len, sizeof(socklen_t));
+    if (Message::send(id, MSG_NET_GET_SOCKNAME, sockfd, 0, 0, buf) != M_OK) {
+        return EBADF;
+    }
+
+    BufferReceiver* receiver = Message::receiveBuffer(id);
+    *address_len = receiver->bufferSize();
+    memcpy(address, receiver->buffer(), *address_len);
+    delete receiver;
+
+    MessageInfo src;
+    MessageInfo dst;
+    src.from = id;
+    src.header = MSG_OK;
+    src.arg1 = MSG_NET_GET_SOCKNAME;
+    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        return EBADF;
+    }
+    errno = dst.arg3;
+    return dst.arg2;
+}
+

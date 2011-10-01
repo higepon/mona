@@ -34,6 +34,10 @@
 #include <sys/types.h>
 
 # define EAI_AGAIN   -3    /* Temporary failure in name resolution.  */
+#define EAI_NONAME      200
+#define EAI_SERVICE     201
+#define EAI_FAIL        202
+#define EAI_MEMORY      203
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,6 +70,19 @@ int getaddrinfo(const char *node, const char *service,
 
 */
 void freeaddrinfo(struct addrinfo *res);
+
+struct hostent {
+    char  *h_name;      /* Official name of the host. */
+    char **h_aliases;   /* A pointer to an array of pointers to alternative host names,
+                           terminated by a null pointer. */
+    int    h_addrtype;  /* Address type. */
+    int    h_length;    /* The length, in bytes, of the address. */
+    char **h_addr_list; /* A pointer to an array of pointers to network addresses (in
+                           network byte order) for the host, terminated by a null pointer. */
+#define h_addr h_addr_list[0] /* for backward compatibility */
+};
+
+#define NI_MAXSERV      32
 
 #ifdef __cplusplus
 }

@@ -14,7 +14,7 @@ endif
 
 include src.inc
 
-OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o stdio/fclose.o stdio/fopen.o stdio/fread.o stdio/futil.o stdio/setvbuf.o stdio/boshi/filelist.o stdio/boshi/lowio.o socket.o dirent/opendir.o dirent/closedir.o dirent/dirutil.o dirent/readdir.o dirent/rewinddir.o dirent/telldir.o dirent/seekdir.o
+OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o crt/dllmain.o stdio/stream.o stdio/fclose.o stdio/fopen.o stdio/fread.o stdio/futil.o stdio/setvbuf.o stdio/boshi/filelist.o stdio/boshi/lowio.o socket.o dirent/opendir.o dirent/closedir.o dirent/dirutil.o dirent/readdir.o dirent/rewinddir.o dirent/telldir.o dirent/seekdir.o sys/stat.o
 INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc -I ./newlib -DMONA -D BUILD_MONALIBC
 
 LINK = -L$(SRCTOP)/lib -lmonapi-imp
@@ -55,6 +55,9 @@ crt/dllmain.o: crt/dllmain.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
 
 stdio/stream.o: stdio/stream.cpp
+	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
+
+sys/stat.o: sys/stat.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
 
 stdio/fclose.o: stdio/fclose.cpp

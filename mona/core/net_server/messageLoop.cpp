@@ -206,6 +206,36 @@ static void __fastcall messageLoop(void* arg)
             }
             break;
         }
+        case MSG_NET_GET_PEERNAME:
+        {
+            int sockfd = msg.arg1;
+            socklen_t len = *((socklen_t*)&msg.str);
+            uint8_t* buf = new uint8_t[len];
+            int ret = getpeername(sockfd, (sockaddr*)buf, &len);
+            if (Message::sendBuffer(msg.from, buf, len) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            delete[] buf;
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
+        case MSG_NET_GET_SOCKNAME:
+        {
+            int sockfd = msg.arg1;
+            socklen_t len = *((socklen_t*)&msg.str);
+            uint8_t* buf = new uint8_t[len];
+            int ret = getsockname(sockfd, (sockaddr*)buf, &len);
+            if (Message::sendBuffer(msg.from, buf, len) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            delete[] buf;
+            if (Message::reply(&msg, ret, errno) != M_OK) {
+                MONAPI_WARN("failed to reply %s", __func__);
+            }
+            break;
+        }
         case MSG_NET_SOCKET_RECV:
         {
             static uint8_t* buffer = NULL;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) 2010  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
+ *   Copyright (c) 2011  Higepon(Taro Minowa)  <higepon@users.sourceforge.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -26,17 +26,13 @@
  *
  */
 
-#ifndef _SYS_STAT_
-#define _SYS_STAT_
+#include <monapi.h>
 
-typedef int mode_t;
-int mkdir(const char *pathname, mode_t mode);
-
-// currently st_size only
-struct stat {
-  unsigned int st_size;
-};
-
-int stat(const char* path, struct stat* dest);
-
-#endif // _SYS_STAT_
+extern "C" int stat(const char* path, struct stat* dest) {
+  uint32_t size = 0;
+  if (M_OK == monapi_file_get_file_size_by_path(path, size)) {
+    return size;
+  } else {
+    return 0;
+  }
+}

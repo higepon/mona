@@ -55,7 +55,7 @@ struct tm
 };
 
 struct timezone {
-
+  int dummy;
 };
 
 struct timeval {

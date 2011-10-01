@@ -35,6 +35,7 @@ all:
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/libxml2 && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/curl && touch dependencies && $(MAKE) && $(MAKE) install
 ### Monagui applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Shells/terminal && touch dependencies && $(MAKE) && $(MAKE) install
@@ -150,6 +151,8 @@ Multimedia/monappt \
 Multimedia/xmonapeg \
 Net/frecv \
 Net/w3m \
+Net/curl \
+Net/libxml2 \
 Net/monadat \
 Shells/gshell \
 Shells/mshell/ \
