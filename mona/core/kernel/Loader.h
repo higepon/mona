@@ -32,7 +32,7 @@ public:
     enum
     {
         ORG            = 0xA0000000,
-        MAX_IMAGE_SIZE = (40 * 1024 * 1024)
+        MAX_IMAGE_SIZE = (1000 * 1024 * 1024)
     };
 
 };
