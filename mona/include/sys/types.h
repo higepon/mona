@@ -70,7 +70,10 @@ enum {
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
 #endif
+#ifndef __size_t_defined
+#define __size_t_defined
 typedef __SIZE_TYPE__ size_t;
+#endif
 
 #ifndef __uint8_t_defined
 typedef unsigned char       uint8_t;
