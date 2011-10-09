@@ -28,8 +28,8 @@ SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
 SHLIB_EXT=.dll.a
 PLATFORM=mingw
-OPTIONS=--cross-compile-prefix=~/mona-ming/bin/i586-mingw32msvc- no-dso no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-threads no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=--cross-compile-prefix=~/mona-mingw/bin/i586-mingw32msvc- no-threads no-shared no-zlib no-dso mingw
+OPTIONS=--cross-compile-prefix=$(MINGWPREFIX) no-dso no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-threads no-zlib no-zlib-dynamic static-engine
+CONFIGURE_ARGS=--cross-compile-prefix=$(MINGWPREFIX) no-threads no-shared no-zlib no-dso mingw
 SHLIB_TARGET=cygwin-shared
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
@@ -74,7 +74,7 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CROSS_COMPILE= ~/mona-mingw/bin/i586-mingw32msvc-
+CROSS_COMPILE= $(MINGWPREFIX)
 CC= $(CROSS_COMPILE)gcc
 CFLAG= -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -fomit-frame-pointer -O3 -march=i486 -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM $(MONA_CFLAGS) $(MONA_INCLUDE) $(MONA_D)
 DEPFLAG= -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_STORE
