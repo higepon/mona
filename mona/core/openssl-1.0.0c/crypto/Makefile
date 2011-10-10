@@ -675,13 +675,13 @@ install:
 install-mona:
 	install -p -m 0644 CRYPTO.DLL $(BINDIR)/LIBS
 	if [ ! -e $(MONADIR)/include/openssl/crypto.h ]; then \
-	mkdir -p $(MONADIR)/include/openssl \
-	@headerlist="$(EXHEADER)"; for i in $$headerlist ; \
+	mkdir -p $(MONADIR)/include/openssl; \
+	headerlist="$(EXHEADER)"; for i in $$headerlist ; \
 	do  \
 	($(CP_COMMAND) -p $$i $(MONADIR)/include/openssl/$$i; \
 	chmod 644 $(MONADIR)/include/openssl/$$i ); \
 	done; \
-	@headerlist=`find . -name "*.h"`; for i in $$headerlist ; \
+	headerlist=`find . -name "*.h"`; for i in $$headerlist ; \
 	do  \
 	(cd `dirname $$i` && $(CP_COMMAND) -p `basename $$i` $(MONADIR)/include/openssl/`basename $$i`; \
 	chmod 644 $(MONADIR)/include/openssl/`basename $$i`); \
