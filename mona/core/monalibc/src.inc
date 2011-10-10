@@ -12,6 +12,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
       math/newlib/sf_sqrt.c math/newlib/sf_fmod.c math/newlib/sf_atan2.c math/newlib/sf_tan.c  math/newlib/s_lround.c math/newlib/s_nan.c \
       math/newlib/sf_atangent.c math/newlib/sf_frexp.c math/newlib/sf_ispos.c math/newlib/sf_ldexp.c math/newlib/sf_numtest.c \
       math/newlib/s_mathcnst.c math/newlib/ffs.c math/newlib/w_hypot.c math/newlib/e_hypot.c math/newlib/e_sqrt.c math/newlib/sf_nextafter.c\
+      math/newlib/e_acos.c math/newlib/ef_acos.c math/newlib/ef_sqrt.c \
       math/newlib/wf_acos.c \
 	  math/log2.c math/log10.c math/modf.c math/pow.c math/sin.c \
 	  math/sinh.c math/round.c math/nearbyint.c math/nan.c \

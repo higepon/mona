@@ -35,6 +35,15 @@
 extern "C" {
 #endif
 
+#ifndef __SIZE_TYPE__
+#define __SIZE_TYPE__ unsigned long
+#endif
+#ifndef __size_t_defined
+#define __size_t_defined
+typedef __SIZE_TYPE__ size_t;
+#endif
+
+
 int getopt(int argc, char * const argv[],
            const char *optstring);
 

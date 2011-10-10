@@ -113,15 +113,6 @@ static struct ghbn_cache_st
 #endif
 
 #ifdef MONA
-struct  hostent {
-  char  *h_name;        /* official name of host */
-  char  **h_aliases;    /* alias list */
-  int   h_addrtype;     /* host address type */
-  int   h_length;       /* length of address */
-  char  **h_addr_list;  /* list of addresses from name server */
-#define h_addr  h_addr_list[0]  /* address, for backward compatiblity */
-  unsigned int unused;  /* SENS defines this as ttl */
-};
 
 struct hostent *gethostbyaddr(const void *addr,
                                      socklen_t len, int type)
