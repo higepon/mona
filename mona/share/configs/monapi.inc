@@ -5,7 +5,7 @@ ifeq ($(IMPSFX),-imp)
 LFLAGS    = $(MONAELF_LDS) -n --image-base=0xa0000000 --disable-runtime-pseudo-reloc -e $(USER_START_FUNCTION)
 IMPORTFLAGS = --enable-auto-import
 else
-LFLAGS    = $(MONAELF_LDS) -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstatic
+LFLAGS    = $(MONAELF_LDS) -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstatic --gc-sections
 OFLAGS    = --output-target=elf32-i386
 endif
 #mumurik
