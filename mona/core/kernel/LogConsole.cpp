@@ -202,30 +202,33 @@ void LogConsole::print(const char* str)
         com1_->writeChar(*p++);
     }
 
-    if (g_logger_id != THREAD_UNKNOWN) {
-    Thread* thread  = g_scheduler->Find(g_logger_id);
-    if (thread == NULL) {
-         g_logger_id = THREAD_UNKNOWN;
-    } else {
-         int len = strlen(str);
-         int rest = len;
-         MessageInfo msg;
-         msg.header = MSG_TEXT;
-         while (rest > 0) {
-           if (rest >= MAX_PROCESS_ARGUMENT_LENGTH) {
-             strncpy(msg.str, str, MAX_PROCESS_ARGUMENT_LENGTH - 1);
-             msg.str[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
-             rest -= MAX_PROCESS_ARGUMENT_LENGTH - 1;
-             str += MAX_PROCESS_ARGUMENT_LENGTH - 1;
-           } else {
-             strncpy(msg.str, str, rest);
-             msg.str[rest] = '\0';
-             rest = 0;
-           }
-           int ret = g_messenger->send(thread, &msg);
-           //           MONA_ASSERT(ret == M_OK);
-         }
-    }
-    }
+    // N.B.
+    // This logger makes kernel error condition obscure.
+    // So should be enabled only when kernel is stable.
+    // if (g_logger_id != THREAD_UNKNOWN) {
+    // Thread* thread  = g_scheduler->Find(g_logger_id);
+    // if (thread == NULL) {
+    //      g_logger_id = THREAD_UNKNOWN;
+    // } else {
+    //      int len = strlen(str);
+    //      int rest = len;
+    //      MessageInfo msg;
+    //      msg.header = MSG_TEXT;
+    //      while (rest > 0) {
+    //        if (rest >= MAX_PROCESS_ARGUMENT_LENGTH) {
+    //          strncpy(msg.str, str, MAX_PROCESS_ARGUMENT_LENGTH - 1);
+    //          msg.str[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
+    //          rest -= MAX_PROCESS_ARGUMENT_LENGTH - 1;
+    //          str += MAX_PROCESS_ARGUMENT_LENGTH - 1;
+    //        } else {
+    //          strncpy(msg.str, str, rest);
+    //          msg.str[rest] = '\0';
+    //          rest = 0;
+    //        }
+    //        int ret = g_messenger->send(thread, &msg);
+    //        //           MONA_ASSERT(ret == M_OK);
+    //      }
+    // }
+    // }
     return;
 }
