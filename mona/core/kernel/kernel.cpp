@@ -121,7 +121,7 @@ void startKernel()
 {
     invokeFuncList(__CTOR_LIST__);
     /* kernel memory range */
-    km = FirstFitAllocator(0x200000, 0xBfffff);
+    km = FirstFitAllocator(0x200000, PageManager::KERNEL_RESERVED_REGION_END);
 
     /* APM */
     g_apmInfo = new APMInfo;

@@ -177,16 +177,17 @@ class PageManager {
     Bitmap* reservedDMAMap_;
     SymbolDictionary::SymbolDictionaryMap symbolDictionaryMap_;
     void setPageDirectory(PhysicalAddress address);
+
+  public:
     enum {
         PAGE_TABLE_POOL_SIZE_BYTE   = 2 * 1024 * 1024,
-        KERNEL_RESERVED_REGION_END = 0xC00000,
+        KERNEL_RESERVED_REGION_END = 0x1600000,
         DMA_RESERVED_REGION_START  = KERNEL_RESERVED_REGION_END,
         DMA_RESERVED_REGION_SIZE_BYTE = 1 * 1024 * 1024,
         SHARED_MEMORY_REGION_START = 0x90000000,
         SHARED_MEMORY_REGION_END   = 0x9FFFFFFF
     };
 
-  public:
     enum {
         PAGE_WRITABLE  = true,
         PAGE_READ_ONLY = false,
