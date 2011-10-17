@@ -4,6 +4,10 @@
 #include <sys/types.h>
 #include <sys/List.h>
 
+#ifndef HLIST_ASSERT
+#define HLIST_ASSERT(x)
+#endif
+
 /*----------------------------------------------------------------------
     HList Class
 ----------------------------------------------------------------------*/
@@ -150,6 +154,7 @@ template <class T> void HList<T>::add(T element) {
         size_ += increase_;
         increase_ += increase_ * 0.5;
         T* temp = new T[size_];
+        HLIST_ASSERT(temp);
 
         /* optimize ? */
         int numElements = numElements_;
@@ -295,6 +300,7 @@ template <class T> void HList<T>::init(int size, int increase) {
 
     /* create internal array */
     data_ = new T[size_];
+    HLIST_ASSERT(data_);
     return;
 }
 

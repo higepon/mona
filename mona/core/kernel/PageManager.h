@@ -14,6 +14,10 @@
 
 
 #include <sys/Bitmap.h>
+#if 0
+#define AVL_ASSERT(x) if (!x) { if (g_log) g_log->printf("ASSERT failure %s %s:%d\n", #x, __FILE__, __LINE__); }
+#define HLIST_ASSERT(x) if (!x) { if (g_log) g_log->printf("ASSERT failure %s %s:%d\n", #x, __FILE__, __LINE__); }
+#endif
 #include <sys/SymbolDictionary.h>
 #include <sys/KStat.h>
 

@@ -33,6 +33,10 @@
 // http://www.cmcrossroads.com/bradapp/ftp/src/libs/C++/AvlTrees.html
 // See LICENSE_AvlTrees.txt
 
+#ifndef AVL_ASSERT
+#define AVL_ASSERT(x)
+#endif
+
 template <class KeyType, class ValueType> class AVLTree {
  private:
   enum CompareResult {
@@ -182,6 +186,7 @@ template <class KeyType, class ValueType> class AVLTree {
     static Comparable* Insert(Comparable* item, Node*& root, int& change) { // NOLINT
       if (root == NULL) {
         root = new Node(item);
+        AVL_ASSERT(root);
         change = kHeightChange;
         return NULL;
       }
@@ -325,6 +330,7 @@ template <class KeyType, class ValueType> class AVLTree {
 
   void Add(const KeyType key, const ValueType value) {
     Comparable* item = new Comparable(key, value);
+    AVL_ASSERT(item);
     Comparable* result = Node::Insert(item, root_);
     if (result) {
       result->SetValue(value);
