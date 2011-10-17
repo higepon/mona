@@ -148,6 +148,7 @@ template <class T> void HList<T>::add(T element) {
 
         /* resize array */
         size_ += increase_;
+        increase_ += increase_ * 0.5;
         T* temp = new T[size_];
 
         /* optimize ? */
