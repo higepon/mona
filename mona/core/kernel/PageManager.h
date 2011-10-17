@@ -79,21 +79,9 @@ class PageManager {
         return entry & ARCH_PAGE_PRESENT;
     }
 
-    bool enableStackTrace(uint32_t pid, uint8_t *data, uint32_t size) {
-        SymbolDictionary::SymbolDictionary* dict = new SymbolDictionary::SymbolDictionary();
-        if(!dict->deserialize(data, size)) // deserialize use many memory, so I check error only here.
-        {
-            delete dict;
-            return false;
-        }
-        symbolDictionaryMap_.add(pid, dict);
-        return true;
-    }
-    void disableStackTrace(uint32_t pid) {
-        symbolDictionaryMap_.remove(pid);
-    }
-
     void showCurrentStackTrace();
+    bool enableStackTrace(uint32_t pid, uint8_t *data, uint32_t size);
+    void disableStackTrace(uint32_t pid);
 
   public:
     inline static int getDirectoryIndex(LinearAddress address) {

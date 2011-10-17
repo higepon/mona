@@ -487,3 +487,20 @@ void PageManager::getPagePoolInfo(uint32_t* freeNum, uint32_t* totalNum, uint32_
     *totalNum = memoryMap_->getBitsNumber();
     *pageSize = ARCH_PAGE_SIZE;
 }
+
+bool PageManager::enableStackTrace(uint32_t pid, uint8_t *data, uint32_t size)
+{
+    SymbolDictionary::SymbolDictionary* dict = new SymbolDictionary::SymbolDictionary();
+    if(!dict->deserialize(data, size)) // deserialize use many memory, so I check error only here.
+    {
+      delete dict;
+      return false;
+    }
+    symbolDictionaryMap_.add(pid, dict);
+    return true;
+}
+
+void PageManager::disableStackTrace(uint32_t pid)
+{
+    symbolDictionaryMap_.remove(pid);
+}

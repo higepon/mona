@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sys/BinaryTree.h>
+#include <sys/avl_tree.h>
 #include <sys/HList.h>
 
 // ugh!
@@ -90,7 +90,7 @@ class SymbolDictionary
 {
 public:
     SymbolDictionary() :
-        tree_(BinaryTree<SymbolEntry*>()),
+        tree_(AVLTree<uint32_t, SymbolEntry*>()),
         list_(HList<SymbolEntry*>())
     {
 
@@ -105,7 +105,12 @@ public:
         }
     }
     SymbolEntry* lookup(uint32_t address) const {
-        return tree_.get_lower_nearest(address);
+        AVLTree<uint32_t, SymbolEntry*>::Comparable* n = tree_.GetLowerNearest(address);
+        if (n == NULL) {
+          return NULL;
+        } else {
+          return n->Value();
+        }
     }
     bool add(char* fname, int fnlen, char*funcName, int funcLen, uint32_t address)
     {
@@ -114,7 +119,7 @@ public:
             return false;
 
         list_.add(ent);
-        tree_.add(address, ent);
+        tree_.Add(address, ent);
         return true;
     }
     bool deserialize(uint8_t* data, int size)
@@ -123,7 +128,7 @@ public:
         return des.deserialize(data, size);
     }
 
-    BinaryTree<SymbolEntry*> tree_;
+    AVLTree<uint32_t, SymbolEntry*> tree_;
     HList<SymbolEntry*> list_;
 };
 
@@ -141,27 +146,27 @@ public:
     void add(uint32_t pid, SymbolDictionary* dict)
     {
         list_.add(dict);
-        tree_.add(pid, dict);
+        tree_.Add(pid, dict);
     }
     SymbolDictionary* get(uint32_t pid)
     {
-        SymbolDictionary *ret = tree_.get(pid);
+        AVLTree<uint32_t, SymbolDictionary*>::Comparable* ret = tree_.Get(pid);
         if(ret == NULL)
             return &nullDict_;
-        return ret;
+        return ret->Value();
     }
     void remove(uint32_t pid)
     {
-        if(tree_.contains(pid))
+        if(tree_.Get(pid))
         {
-            SymbolDictionary* ent = tree_.get(pid);
+            AVLTree<uint32_t, SymbolDictionary*>::Comparable* ent = tree_.Get(pid);
             // assert(ent != &nullDict_);
-            list_.remove(ent);
-            tree_.remove(pid);
+            list_.remove(ent->Value());
+            tree_.Remove(pid);
             delete ent;
         }
     }
-    BinaryTree<SymbolDictionary*> tree_;
+    AVLTree<uint32_t, SymbolDictionary*> tree_;
     HList<SymbolDictionary*> list_;
     SymbolDictionary nullDict_;
 };
