@@ -26,10 +26,8 @@ SOURCES      = cstart.cpp            \
                pic.cpp               \
                io.cpp                \
                syscalls.cpp          \
-               Process.cpp           \
                GDTUtil.cpp           \
                IDTUtil.cpp           \
-               PageManager.cpp       \
                MemoryManager.cpp     \
                Segments.cpp          \
                Mutex.cpp             \
@@ -52,8 +50,11 @@ SOURCES      = cstart.cpp            \
                KObjectService.cpp    \
                addressmap.cpp
 
+# To reduce the kernel size, we compile them using -Os.
+LARGE_SOURCES = PageManager.cpp Process.cpp
+
 ASSRCS = memset.S memcpy.S memcmp.S memmove.S strlen.S
-OBJECTS = $(SOURCES:.cpp=.o) $(ASSRCS:.S=.o)
+OBJECTS = $(SOURCES:.cpp=.o) $(LARGE_SOURCES:.cpp=.o) $(ASSRCS:.S=.o)
 
 all: $(TARGET)
 
@@ -63,6 +64,12 @@ $(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
 	$(STRIP) -O binary $@
 
 .SUFFIXES: .cpp .o
+
+PageManager.o : PageManager.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -Os -c $< -o $@
+
+Process.o : Process.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -Os -c $< -o $@
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
