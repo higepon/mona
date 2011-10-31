@@ -5,7 +5,6 @@
     Copyright (c) 2002-2003 Guripon
     Copyright (c) 2003      .mjt
     Copyright (c) 2004      Gaku
-
     All rights reserved.
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
