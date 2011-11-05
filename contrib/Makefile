@@ -8,6 +8,7 @@ all:
 ### servers
 #mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
+	cd Net/curl && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libmonagui && touch dependencies && $(MAKE) && $(MAKE) install
@@ -35,7 +36,7 @@ all:
 	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/frecv && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Net/libxml2 && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Net/curl && touch dependencies && $(MAKE) && $(MAKE) install
+
 ### Monagui applications
 	cd Shells/gshell && touch dependencies && $(MAKE) #&& $(MAKE) install
 	cd Shells/terminal && touch dependencies && $(MAKE) && $(MAKE) install
