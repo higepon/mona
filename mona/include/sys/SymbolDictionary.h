@@ -160,9 +160,12 @@ public:
         if(tree_.Get(pid))
         {
             AVLTree<uint32_t, SymbolDictionary*>::Comparable* ent = tree_.Get(pid);
-            // assert(ent != &nullDict_);
+            // if (ent->Value() == &nullDict_) {
+            //   for (;;);
+            // }
             list_.remove(ent->Value());
             tree_.Remove(pid);
+            delete ent->Value();
             delete ent;
         }
     }

@@ -267,6 +267,9 @@ intptr_t ThreadOperation::kill(Thread* thread, int status /* = -1 */)
 
     if (process->threadNum < 1) {
         KObjectService::cleanupKObjects(process);
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        g_page_manager->disableStackTrace(process->getPid());
+        logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         PageEntry* directory = process->getPageDirectory();
         delete process;
         g_page_manager->returnPhysicalPages(directory);

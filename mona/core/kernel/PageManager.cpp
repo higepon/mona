@@ -203,9 +203,17 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
                 continue;
             }
             LinearAddress linearAddress = baseLinerAddress + ARCH_PAGE_SIZE * j;
-            if (linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_) {
+
+            // N.B.
+            // Since KERNEL_RESERVED_REGION_END / (ARCH_PAGE_TABLE_NUM * ARCH_PAGE_SIZE) may not be integer.
+            // We should check here too.
+            bool inKernelRegion = linearAddress <= KERNEL_RESERVED_REGION_END;
+
+            bool inVramRegion = linearAddress >= vramAddress_ && linearAddress <= vramAddress_ + vramSizeByte_;
+            if (inVramRegion || inKernelRegion) {
                 continue;
             }
+
             PhysicalAddress address = ((uint32_t)(table[j])) & 0xfffff000;
             returnPhysicalPage(address);
         }
