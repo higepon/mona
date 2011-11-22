@@ -67,7 +67,7 @@ void ProcessOperation::freeKernelStack(LinearAddress address)
 
 Process* ProcessOperation::create(int type, const char* name)
 {
-    logprintf("[INFO] Kernel Heap Free = %d kb\n", km.getFreeSize() / 1024);
+    logprintf("[INFO] Kernel Heap Free = %d kb on creating %s\n", km.getFreeSize() / 1024, name ? name : "unknown");
     Process* result;
 
     switch (type)
