@@ -37,6 +37,8 @@
 #define AVL_ASSERT(x)
 #endif
 
+#include <sys/HList.h>
+
 template <class KeyType, class ValueType> class AVLTree {
  private:
   enum CompareResult {
@@ -93,6 +95,9 @@ template <class KeyType, class ValueType> class AVLTree {
     }
 
     ~Node() {
+      if (item) {
+        delete item;
+      }
       if (Left()) {
         delete Left();
       }
@@ -344,6 +349,19 @@ template <class KeyType, class ValueType> class AVLTree {
 
   Comparable* Get(const KeyType key, CompareResult cmp = kEqCmp) const {
     return Node::Get(key, root_, cmp);
+  }
+
+  void GetKeys(HList<KeyType>& keys) {
+    GetKeys(keys, root_);
+  }
+
+  void GetKeys(HList<KeyType>& keys, Node* n) {
+    if (n == NULL) {
+      return;
+    }
+    keys.add(n->item->Key());
+    GetKeys(keys, n->Left());
+    GetKeys(keys, n->Right());
   }
 
   Comparable* GetLowerNearest(const KeyType key) const {

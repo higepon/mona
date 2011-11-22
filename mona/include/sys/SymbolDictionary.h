@@ -90,19 +90,20 @@ class SymbolDictionary
 {
 public:
     SymbolDictionary() :
-        tree_(AVLTree<uint32_t, SymbolEntry*>()),
-        list_(HList<SymbolEntry*>())
+        tree_(AVLTree<uint32_t, SymbolEntry*>())
     {
-
     }
 
     ~SymbolDictionary()
     {
-        for(int i = 0; i < list_.size(); i++)
-        {
-            SymbolEntry * ent = list_[i];
-            delete ent;
+      HList<uint32_t> ids;
+      tree_.GetKeys(ids);
+      for(int i = 0; i < ids.size(); i++) {
+        AVLTree<uint32_t, SymbolEntry*>::Comparable* c = tree_.Get(ids[i]);
+        if (c) {
+          delete c->Value();
         }
+      }
     }
     SymbolEntry* lookup(uint32_t address) const {
         AVLTree<uint32_t, SymbolEntry*>::Comparable* n = tree_.GetLowerNearest(address);
@@ -118,7 +119,6 @@ public:
         if(!ent)
             return false;
 
-        list_.add(ent);
         tree_.Add(address, ent);
         return true;
     }
@@ -129,7 +129,6 @@ public:
     }
 
     AVLTree<uint32_t, SymbolEntry*> tree_;
-    HList<SymbolEntry*> list_;
 };
 
 class SymbolDictionaryMap
@@ -137,15 +136,17 @@ class SymbolDictionaryMap
 public:
     ~SymbolDictionaryMap()
     {
-        for(int i = 0; i < list_.size(); i++)
-        {
-            SymbolDictionary * ent = list_[i];
-            delete ent;
+        HList<uint32_t> ids;
+        tree_.GetKeys(ids);
+        for(int i = 0; i < ids.size(); i++) {
+          AVLTree<uint32_t, SymbolDictionary*>::Comparable* c = tree_.Get(ids[i]);
+          if (c) {
+            delete c->Value();
+          }
         }
     }
     void add(uint32_t pid, SymbolDictionary* dict)
     {
-        list_.add(dict);
         tree_.Add(pid, dict);
     }
     SymbolDictionary* get(uint32_t pid)
@@ -163,14 +164,12 @@ public:
             // if (ent->Value() == &nullDict_) {
             //   for (;;);
             // }
-            list_.remove(ent->Value());
             tree_.Remove(pid);
             delete ent->Value();
             delete ent;
         }
     }
     AVLTree<uint32_t, SymbolDictionary*> tree_;
-    HList<SymbolDictionary*> list_;
     SymbolDictionary nullDict_;
 };
 

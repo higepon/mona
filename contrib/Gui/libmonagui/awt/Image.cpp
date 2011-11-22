@@ -109,8 +109,9 @@ namespace monagui {
 
     void Image::disposeImage()
     {
+        MessageInfo msg;
         if (this->bitmap) {
-            if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+            if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
                 printf("%s:%d:error: can not connect to gui server!\n", __FILE__, __LINE__);
             }
             this->bitmap = NULL;
