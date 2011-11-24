@@ -431,6 +431,14 @@ int Scheduler::Kill(Thread* thread)
 {
     thread->tinfo->process->removeThread(thread);
     thread->Remove();
+    for (int i = timers.size() - 1; i >= 0; i--)
+    {
+        KTimer* timer = timers[i];
+        if (timer->getOwnerThread() == thread) {
+          timers.removeAt(i);
+        }
+    }
+
     return M_OK;
 }
 
