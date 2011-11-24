@@ -6,6 +6,7 @@
 #include "Condition.h"
 #include "KObjectService.h"
 #include "global.h"
+#include "Thread.h"
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
@@ -123,6 +124,7 @@ void Scheduler::WakeupTimer()
         if (!timer->timer(this->totalTick)) continue;
 
         Thread* thread = timer->getOwnerThread();
+        ASSERT_THREAD_IS_ALIVE(thread);
 
         MessageInfo msg;
         memset(&msg, 0, sizeof(MessageInfo));
@@ -149,6 +151,7 @@ void Scheduler::WakeupSleep()
             if (!WakeupSleep(thread)) continue;
 
             thread = prev;
+            ASSERT_THREAD_IS_ALIVE(thread);
         }
     }
     END_FOREACH

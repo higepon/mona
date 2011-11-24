@@ -12,6 +12,9 @@
 
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
 #define MULTIPLE_EVENT_MAX 2
+
+#define ASSERT_THREAD_IS_ALIVE(thread) MONA_ASSERT(thread->isAlive())
+
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
@@ -76,6 +79,10 @@ public:
         lastCpuUsedTick++;
     }
 
+    bool isAlive() const {
+      return isAlive_;
+    }
+
 public:
     int eventsWaiting[MULTIPLE_EVENT_MAX];
     uint32_t priority;
@@ -99,6 +106,7 @@ private:
     // Make this waitingMutex_ to a pointer to lockPrimitive struct.
     KMutex* waitingMutex_;
     Condition* waitingCondition_;
+    bool isAlive_;
 };
 
 #endif

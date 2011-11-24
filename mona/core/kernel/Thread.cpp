@@ -50,7 +50,8 @@ Thread::Thread() :
     kernelStackBottom(0),
     observers(2),
     waitingMutex_(NULL),
-    waitingCondition_(NULL)
+    waitingCondition_(NULL),
+    isAlive_(true)
 {
     clearEventWaiting();
     /* thread information */
@@ -80,7 +81,8 @@ Thread::Thread(const Thread& src) :
     kernelStackBottom(src.kernelStackBottom),
     observers(src.observers),
     waitingMutex_(src.waitingMutex_),
-    waitingCondition_(src.waitingCondition_)
+    waitingCondition_(src.waitingCondition_),
+    isAlive_(true)
 {
     MONA_ASSERT(false);
 }
@@ -94,6 +96,7 @@ Thread& Thread::operator=(const Thread& src)
 
 Thread::~Thread()
 {
+    isAlive_ = false;
     for (int i = 0; i < messageList.size(); i++) {
         delete messageList[i];
     }

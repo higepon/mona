@@ -353,6 +353,7 @@ bool PageManager::pageFaultHandler(ThreadInfo* threadInfo, LinearAddress address
 {
     Process* process = threadInfo->process;
     Thread* thread = threadInfo->thread;
+    ASSERT_THREAD_IS_ALIVE(thread);
 
     if ((error & 0x01) == ARCH_FAULT_NOT_EXIST) {
         SharedMemorySegment* segment = process->getSharedMemorySegmentInRange(address);
