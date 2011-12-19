@@ -1,6 +1,8 @@
 include $(MONADIR)/share/configs/monapi.inc
 
-OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
+CPPOBJECTS = $(SOURCES:.cpp=.o)
+CPPOBJECTS2 = $(patsubst %.cc,%.o, $(CPPOBJECTS))
+OBJECTS   = $(CPPOBJECTS2) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o) $(JSOURCES:.java=.o)
 CXXFLAGS+=$(ADDCXXFLAGS)
 
 all : $(DEP_TARGET) $(TARGET)
@@ -13,6 +15,10 @@ $(LIB_STATIC): $(OBJECTS)
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $< -o $@
+
+.SUFFIXES: .cc .o
+.cc.o:
+	$(CXX) -c -o $@ $(CXXFLAGS) $(INCLUDE) $<
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
