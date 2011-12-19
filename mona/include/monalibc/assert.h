@@ -31,8 +31,8 @@
 	negi4d41@yahoo.co.jp
 */
 
-#ifndef _ASSERT_H_
-#define _ASSERT_H_
+#ifndef _MONA_ASSERT_H_
+#define _MONA_ASSERT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,13 +40,14 @@ extern "C" {
 
 #undef assert
 
+void __assert(const char*, int, const char*);
+
 #ifdef NDEBUG
 #define assert(p)	((void)0)
 #else
 #define assert(e)	((e) ? (void)0 : __assert(__FILE__, __LINE__, #e))
 #endif
 
-void __assert(const char*, int, const char*);
 
 #ifdef __cplusplus
 }
