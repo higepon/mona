@@ -9,7 +9,7 @@ all:
 #mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Net/curl && touch dependencies && $(MAKE) && $(MAKE) install
-	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
+#	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libmonagui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
@@ -19,8 +19,8 @@ all:
 	cd Emulators/infones && touch dependencies && $(MAKE)  && $(MAKE) install
 	cd Emulators/monamona && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Graphics/jpegview && touch dependencies && $(MAKE) #&& $(MAKE) install
-	cd Graphics/Mesa-gears && touch dependencies && $(MAKE)  && $(MAKE) install
-	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
+#	cd Graphics/Mesa-gears && touch dependencies && $(MAKE)  && $(MAKE) install
+#	cd Graphics/MesaDemos && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Misc/print && touch dependencies && $(MAKE) # && $(MAKE) install
 	cd Multimedia/audio_server && touch dependencies && $(MAKE) && $(MAKE) install

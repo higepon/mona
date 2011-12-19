@@ -17,6 +17,12 @@
 (define (write-string stream s)
   (monapi-stream-write stream (string->utf8 s)))
 
+(define (webkit stream)
+  (call-process+ '("/APPS/FRECV.EX5" "M.EXE") stream)
+  (ls stream "/MEM/")
+  (call-process+ '("/MEM/M.EXE") stream)
+  (webkit stream))
+
 (define (server)
   (receive (from header handle arg2 arg3 str) (monapi-message-receive)
    (let1 stream (monapi-make-stream handle)
@@ -24,6 +30,8 @@
     [(= header MSG_TEXT)
       (let ([command-line (null-terminated-utf8->string str)])
         (match (string-split command-line #\space)
+         [("webkit")
+          (webkit stream)]
          [("ls" dir)
            (guard [ex [#t (monapi-stream-write stream (string->utf8 (format "ls failed ~a" dir)))]]
            (ls stream dir))
