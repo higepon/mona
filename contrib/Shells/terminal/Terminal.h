@@ -35,6 +35,7 @@
 #include <string>
 
 #define START_UP_FILE "/USER/.STARTUP"
+#define MSG_ENTER 0x1234
 
 struct TerminalInfo
 {
@@ -81,7 +82,11 @@ public:
         const int EXTRA_WIDTH = 350;
         setBounds(80, 100, 300 + EXTRA_WIDTH, 400);
         setTitle("Terminal");
-        command_->setText("help");
+        command_->setText("/APPS/MLAUNCH.EXE");
+
+        if (MonAPI::Message::send(MonAPI::System::getThreadID(), MSG_ENTER) != M_OK) {
+          monapi_warn("message send failure");
+        }
 
         int height = getFontMetrics()->getHeight("H");
         outputNumRows_ = OUTPUT_HIGHT / height - 3;
@@ -142,7 +147,9 @@ public:
             (event->getType() == MouseEvent::MOUSE_RELEASED && event->getSource() == button_.get()) ||
             (event->getType() == KeyEvent::KEY_PRESSED &&
              event->getSource() == command_.get() &&
-             ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER);
+             ((KeyEvent*)event)->getKeycode() == KeyEvent::VKEY_ENTER) ||
+             (event->getType() == Event::CUSTOM_EVENT &&
+              event->header == MSG_ENTER);
 
         if (runsCommand) {
             if (!sendCommand(command_->getText())) {
