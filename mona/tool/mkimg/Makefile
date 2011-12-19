@@ -32,7 +32,7 @@ create_user_image_once:
 backup_user:
 	mkdir -p tmp
 	mcopy -/ -n -i $(FAT32IMG) :: tmp/
-	(test -d ~/Dropbox/mona_images/ && tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H_%M_%S'`.tar.gz tmp)
+#	(test -d ~/Dropbox/mona_images/ && tar czvf ~/Dropbox/mona_images/backup.`date '+%Y_%m_%d_%H_%M_%S'`.tar.gz tmp)
 	cp tmp/bin/*.SPS ../../user/bin/ || true
 	cp -r tmp/lib/* ../../user/lib || true
 	cp -r tmp/test/* ../../user/test || true
