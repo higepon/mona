@@ -49,7 +49,7 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT Makefile.i18n platform.h Makefile.uc
-	patch -p2 < patch-aa
+	patch -p0 < patch-aa
 	cp platform.h icu/source/common/unicode/
 	cp icudt44l_dat.s icu/source/common/
 	touch $@

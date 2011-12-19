@@ -1,6 +1,6 @@
-diff -ur -x '*.o' /tmp/icu/source/common/putil.c /Users/taro/mona/core/icu/icu/source/common/putil.c
---- /tmp/icu/source/common/putil.c	2010-09-30 03:37:22.000000000 +0900
-+++ /Users/taro/mona/core/icu/icu/source/common/putil.c	2011-08-26 22:52:23.000000000 +0900
+diff -ur icu.orig/source/common/putil.c icu/source/common/putil.c
+--- icu.orig/source/common/putil.c	2010-09-30 03:37:22.000000000 +0900
++++ icu/source/common/putil.c	2011-12-19 21:33:42.000000000 +0900
 @@ -170,8 +170,8 @@
    will sometimes work for non-POSIX platforms as well (e.g., the NaN-related
    functions).
@@ -12,10 +12,18 @@ diff -ur -x '*.o' /tmp/icu/source/common/putil.c /Users/taro/mona/core/icu/icu/s
  #   undef U_POSIX_LOCALE
  #else
  #   define U_POSIX_LOCALE    1
-Only in /Users/taro/mona/core/icu/icu/source/common/unicode: platform.h
-diff -ur -x '*.o' /tmp/icu/source/i18n/decContext.c /Users/taro/mona/core/icu/icu/source/i18n/decContext.c
---- /tmp/icu/source/i18n/decContext.c	2010-09-30 03:37:08.000000000 +0900
-+++ /Users/taro/mona/core/icu/icu/source/i18n/decContext.c	2011-08-29 13:16:02.000000000 +0900
+@@ -1606,6 +1606,8 @@
+     }
+ 
+     return correctedLocale;
++#else
++    return "en_US_POSIX";
+ #endif
+ 
+ }
+diff -ur icu.orig/source/i18n/decContext.c icu/source/i18n/decContext.c
+--- icu.orig/source/i18n/decContext.c	2010-09-30 03:37:08.000000000 +0900
++++ icu/source/i18n/decContext.c	2011-12-19 21:30:49.000000000 +0900
 @@ -210,7 +210,14 @@
  /* ------------------------------------------------------------------ */
  U_CAPI decContext *  U_EXPORT2 uprv_decContextSetStatus(decContext *context, uInt status) {
