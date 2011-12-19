@@ -1,45 +1,123 @@
-/*************************************************************
- * Copyright (c) 2006 Shotaro Tsuji
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is     * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- *************************************************************/
+/*
+FUNCTION
+	<<strchr>>---search for character in string
 
-/* Please send bug reports to
-    Shotaro Tsuji
-    4-1010,
-    Sakasedai 1-chome,
-    Takaraduka-si,
-    Hyogo-ken,
-    665-0024
-    Japan
-    negi4d41@yahoo.co.jp
-    \author Shotaro Tsuji, Higepon
+INDEX
+	strchr
+
+ANSI_SYNOPSIS
+	#include <string.h>
+	char * strchr(const char *<[string]>, int <[c]>);
+
+TRAD_SYNOPSIS
+	#include <string.h>
+	char * strchr(<[string]>, <[c]>);
+	const char *<[string]>;
+	int <[c]>;
+
+DESCRIPTION
+	This function finds the first occurence of <[c]> (converted to
+	a char) in the string pointed to by <[string]> (including the
+	terminating null character).
+
+RETURNS
+	Returns a pointer to the located character, or a null pointer
+	if <[c]> does not occur in <[string]>.
+
+PORTABILITY
+<<strchr>> is ANSI C.
+
+<<strchr>> requires no supporting OS subroutines.
+
+QUICKREF
+	strchr ansi pure
 */
-
+#include <fdlibm.h>
 #include <string.h>
+#include <limits.h>
 
-char *strchr(const char *s, int c)
+/* Nonzero if X is not aligned on a "long" boundary.  */
+#define UNALIGNED(X) ((long)X & (sizeof (long) - 1))
+
+/* How many bytes are loaded each iteration of the word copy loop.  */
+#define LBLOCKSIZE (sizeof (long))
+
+#if LONG_MAX == 2147483647L
+#define DETECTNULL(X) (((X) - 0x01010101) & ~(X) & 0x80808080)
+#else
+#if LONG_MAX == 9223372036854775807L
+/* Nonzero if X (a long int) contains a NULL byte. */
+#define DETECTNULL(X) (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
+#else
+#error long int is not a 32bit or 64bit type.
+#endif
+#endif
+
+/* DETECTCHAR returns nonzero if (long)X contains the byte used
+   to fill (long)MASK. */
+#define DETECTCHAR(X,MASK) (DETECTNULL(X ^ MASK))
+
+char *
+_DEFUN (strchr, (s1, i),
+	_CONST char *s1 _AND
+	int i)
 {
-    for (; *s != '\0'; s++) {
-        if(*s == c) {
-            return (char*)s;
+  _CONST unsigned char *s = (_CONST unsigned char *)s1;
+  unsigned char c = i;
+
+#if !defined(PREFER_SIZE_OVER_SPEED) && !defined(__OPTIMIZE_SIZE__)
+  unsigned long mask,j;
+  unsigned long *aligned_addr;
+
+  /* Special case for finding 0.  */
+  if (!c)
+    {
+      while (UNALIGNED (s))
+        {
+          if (!*s)
+            return (char *) s;
+          s++;
         }
+      /* Operate a word at a time.  */
+      aligned_addr = (unsigned long *) s;
+      while (!DETECTNULL (*aligned_addr))
+        aligned_addr++;
+      /* Found the end of string.  */
+      s = (const unsigned char *) aligned_addr;
+      while (*s)
+        s++;
+      return (char *) s;
     }
-    return NULL;
+
+  /* All other bytes.  Align the pointer, then search a long at a time.  */
+  while (UNALIGNED (s))
+    {
+      if (!*s)
+        return NULL;
+      if (*s == c)
+        return (char *) s;
+      s++;
+    }
+
+  mask = c;
+  for (j = 8; j < LBLOCKSIZE * 8; j <<= 1)
+    mask = (mask << j) | mask;
+
+  aligned_addr = (unsigned long *) s;
+  while (!DETECTNULL (*aligned_addr) && !DETECTCHAR (*aligned_addr, mask))
+    aligned_addr++;
+
+  /* The block of bytes currently pointed to by aligned_addr
+     contains either a null or the target char, or both.  We
+     catch it using the bytewise search.  */
+
+  s = (unsigned char *) aligned_addr;
+
+#endif /* not PREFER_SIZE_OVER_SPEED */
+
+  while (*s && *s != c)
+    s++;
+  if (*s == c)
+    return (char *)s;
+  return NULL;
 }
