@@ -1,0 +1,76 @@
+diff -ur zlib-1.2.5/gzclose.c zlib-1.2.5.success/gzclose.c
+--- zlib-1.2.5/gzclose.c	2010-02-14 09:12:48.000000000 +0900
++++ zlib-1.2.5.success/gzclose.c	2011-12-20 12:00:48.000000000 +0900
+@@ -12,6 +12,7 @@
+     gzFile file;
+ {
+ #ifndef NO_GZCOMPRESS
++#ifndef MONA
+     gz_statep state;
+ 
+     if (file == NULL)
+@@ -19,7 +20,9 @@
+     state = (gz_statep)file;
+ 
+     return state->mode == GZ_READ ? gzclose_r(file) : gzclose_w(file);
++#endif
+ #else
+     return gzclose_r(file);
+ #endif
++
+ }
+diff -ur zlib-1.2.5/gzlib.c zlib-1.2.5.success/gzlib.c
+--- zlib-1.2.5/gzlib.c	2010-04-19 02:53:22.000000000 +0900
++++ zlib-1.2.5.success/gzlib.c	2011-12-20 21:30:25.000000000 +0900
+@@ -83,6 +83,7 @@
+     state->strm.avail_in = 0;       /* no input data yet */
+ }
+ 
++#ifndef MONA
+ /* Open a gzip file either by name or file descriptor. */
+ local gzFile gz_open(path, fd, mode)
+     const char *path;
+@@ -224,6 +225,8 @@
+     return gz;
+ }
+ 
++#endif
++
+ /* -- see zlib.h -- */
+ int ZEXPORT gzbuffer(file, size)
+     gzFile file;
+@@ -249,6 +252,8 @@
+     return 0;
+ }
+ 
++#ifndef MONA
++
+ /* -- see zlib.h -- */
+ int ZEXPORT gzrewind(file)
+     gzFile file;
+@@ -419,6 +424,8 @@
+     return ret == (z_off_t)ret ? (z_off_t)ret : -1;
+ }
+ 
++#endif
++
+ /* -- see zlib.h -- */
+ int ZEXPORT gzeof(file)
+     gzFile file;
+diff -ur zlib-1.2.5/gzwrite.c zlib-1.2.5.success/gzwrite.c
+--- zlib-1.2.5/gzwrite.c	2010-03-13 11:27:25.000000000 +0900
++++ zlib-1.2.5.success/gzwrite.c	2011-12-20 21:29:53.000000000 +0900
+@@ -52,6 +52,7 @@
+     return 0;
+ }
+ 
++#ifndef MONA
+ /* Compress whatever is at avail_in and next_in and write to the output file.
+    Return -1 if there is an error writing to the output file, otherwise 0.
+    flush is assumed to be a valid deflate() flush value.  If flush is Z_FINISH,
+@@ -529,3 +530,5 @@
+     free(state);
+     return ret ? Z_ERRNO : Z_OK;
+ }
++
++#endif

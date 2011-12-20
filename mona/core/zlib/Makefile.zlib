@@ -1,0 +1,77 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
+LIB_STATIC   = libz.a
+TARGET       = $(LIB_STATIC)
+
+LIB_IMPORT   = libz-imp.a
+LIB_DYNAMIC  = ZLIB.DLL
+LIB_DYNAMIC5 = ZLIB.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+_ZLIB_CSOURCES=\
+adler32.c \
+compress.c \
+crc32.c \
+deflate.c \
+gzclose.c \
+gzlib.c \
+gzread.c \
+gzwrite.c \
+infback.c \
+inffast.c \
+inflate.c \
+inftrees.c \
+trees.c \
+uncompr.c \
+zutil.c \
+
+ZLIB_CSOURCES=$(patsubst %.c, zlib-1.2.5/%.c, $(_ZLIB_CSOURCES))
+
+ZLIB_CFLAGS=-O3
+
+OBJECTS = $(ZLIB_CSOURCES:.c=.o)
+
+INCLUDE =  -I. -I.. -I$(INCDIR) -I$(INCDIR)/monalibc
+
+all : $(TARGET)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+ifneq ($(BUILD_TARGET),ELF)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --disable-runtime-pseudo-reloc --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp -lmonalibc-imp -L . -licuuc-imp
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+	`which bim2bin` in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+endif
+
+.SUFFIXES: .o .c
+.c.o:
+	$(CC) -c -o $@ $< $(CFLAGS) $(ZLIB_CFLAGS) $(INCLUDE) -fno-builtin
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS)  $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+
+uninstall:
+
+-include dependencies
+
