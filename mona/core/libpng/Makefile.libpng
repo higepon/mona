@@ -1,0 +1,78 @@
+ifndef $(MONADIR)
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
+LIB_STATIC   = libpng.a
+TARGET       = $(LIB_STATIC)
+
+LIB_IMPORT   = libpng-imp.a
+LIB_DYNAMIC  = PNG.DLL
+LIB_DYNAMIC5 = PNG.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
+
+_PNG_CSOURCES=\
+png.c \
+pngerror.c \
+pngget.c \
+pngmem.c \
+pngpread.c \
+pngread.c \
+pngrio.c \
+pngrtran.c \
+pngrutil.c \
+pngset.c \
+pngtrans.c \
+pngwio.c \
+pngwrite.c \
+pngwtran.c \
+pngwutil.c \
+pngwutil.c \
+
+PNG_CSOURCES=$(patsubst %.c, libpng-1.5.7/%.c, $(_PNG_CSOURCES))
+
+PNG_CFLAGS=-O3
+
+OBJECTS = $(PNG_CSOURCES:.c=.o)
+
+INCLUDE =  -I. -I.. -I$(INCDIR) -I$(INCDIR)/monalibc
+
+all : $(TARGET)
+
+$(LIB_STATIC): $(OBJECTS)
+	rm -f $@
+	$(AR) $@ $(OBJECTS)
+	$(RANLIB) $@
+
+ifneq ($(BUILD_TARGET),ELF)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	$(LD) -e _dllmain --export-all-symbols --disable-runtime-pseudo-reloc --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lz-imp -lmonapi-imp -lmonalibc-imp -L . -licuuc-imp
+	$(STRIP) $@
+
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+	`which bim2bin` in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
+endif
+
+.SUFFIXES: .o .c
+.c.o:
+	$(CC) -c -o $@ $< $(CFLAGS) $(PNG_CFLAGS) $(INCLUDE) -fno-builtin
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS)  $(SOURCES) > dependencies
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+distclean: clean
+	rm dependencies
+	touch dependencies
+
+install: $(TARGET)
+
+uninstall:
+
+-include dependencies
+
