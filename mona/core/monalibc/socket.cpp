@@ -36,6 +36,14 @@
 #include <monalibc/errno.h>
 #include <time.h>
 
+#if 1
+#define SOCKET_LOG() _logprintf("[socket] %s %s:%d\n", __func__, __FILE__, __LINE__)
+#define SOCKET_LOGF(...) _logprintf("[socket] %s %s:%d", __func__, __FILE__, __LINE__), _logprintf(__VA_ARGS__)
+#else
+#define SOCKET_LOG()
+#define SOCKET_LOGF(...)
+#endif
+
 using namespace MonAPI;
 
 typedef struct GetaddrinfoPacket {
@@ -101,16 +109,20 @@ void freeaddrinfo(struct addrinfo *res)
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 {
+    SOCKET_LOG();
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
     if (Message::send(id, MSG_NET_SOCKET_CONN, sockfd, namelen) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
     if (Message::sendBuffer(id, name, namelen) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
@@ -120,24 +132,30 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
     src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_CONN;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     errno = dst.arg3;
+    SOCKET_LOGF("ret=%d\n", dst.arg2);
     return dst.arg2;
 }
 
 int socket(int domain, int type, int protocol)
 {
+    SOCKET_LOG();
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_SOCK, domain, type, protocol) != M_OK) {
+        SOCKET_LOG();
         return EINVAL;
     }
     errno = ret.arg3;
+    SOCKET_LOGF("ret=%d\n", ret.arg2);
     return ret.arg2;
 }
 
@@ -157,14 +175,18 @@ int closesocket(int sockfd)
 int send(int sockfd, void* buf, size_t len, int flags)
 {
     uint32_t id ;
+    SOCKET_LOG();
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     if (Message::send(id, MSG_NET_SOCKET_SEND, sockfd, len, flags) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
     if (Message::sendBuffer(id, buf, len) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
@@ -174,9 +196,11 @@ int send(int sockfd, void* buf, size_t len, int flags)
     src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_SEND;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     errno = dst.arg3;
+    SOCKET_LOGF("ret=%d\n", dst.arg2);
     return dst.arg2;
 }
 
@@ -184,9 +208,11 @@ int recv(int sockfd, void* buf, size_t len, int flags)
 {
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
 
@@ -201,9 +227,11 @@ int recv(int sockfd, void* buf, size_t len, int flags)
     src.header = MSG_OK;
     src.arg1 = MSG_NET_SOCKET_RECV;
     if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     errno = dst.arg3;
+    SOCKET_LOGF("ret=%d\n", dst.arg2);
     return dst.arg2;
 }
 
@@ -351,6 +379,7 @@ int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout)
 {
+    SOCKET_LOG();
     MONA_ASSERT((4 + sizeof(fd_set) * 3 + sizeof(struct timeval)) <= MESSAGE_INFO_MAX_STR_LENGTH);
     uint8_t buf[MESSAGE_INFO_MAX_STR_LENGTH];
 
@@ -365,36 +394,46 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
     buf[3] = haveTimeout;
 
     if (haveReadFds) {
+        SOCKET_LOG();
         memcpy(buf + 4, readfds, sizeof(fd_set));
     }
     if (haveWritefds) {
+        SOCKET_LOG();
         memcpy(buf + 4 + sizeof(fd_set), writefds, sizeof(fd_set));
     }
     if (haveExceptFds) {
+        SOCKET_LOG();
         memcpy(buf + 4 + sizeof(fd_set) * 2, exceptfds, sizeof(fd_set));
     }
     if (haveTimeout) {
+        SOCKET_LOG();
         memcpy(buf + 4 + sizeof(fd_set) * 3, timeout, sizeof(struct timeval));
     }
 
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
+        SOCKET_LOG();
         return EBADF;
     }
     MessageInfo ret;
     if (Message::sendReceive(&ret, id, MSG_NET_SELECT, nfds, 0, 0, (char*)buf) != M_OK) {
+        SOCKET_LOG();
         return EINVAL;
     }
     if (haveReadFds) {
+        SOCKET_LOG();
         memcpy(readfds, ret.str, sizeof(fd_set));
     }
     if (haveWritefds) {
+        SOCKET_LOG();
         memcpy(writefds, ret.str + sizeof(fd_set), sizeof(fd_set));
     }
     if (haveExceptFds) {
+        SOCKET_LOG();
         memcpy(exceptfds, ret.str + sizeof(fd_set) * 2, sizeof(fd_set));
     }
     if (haveTimeout) {
+        SOCKET_LOG();
         memcpy(timeout, ret.str + sizeof(fd_set) * 3, sizeof(struct timeval));
     }
     errno = ret.arg3;
@@ -421,6 +460,7 @@ int ioctlsocket(int sockfd, long cmd, void *argp)
         *((uint32_t*)argp) = *((uint32_t*)buf);
     }
     errno = ret.arg3;
+    SOCKET_LOGF("ret=%d\n", ret.arg2);
     return ret.arg2;
 }
 
