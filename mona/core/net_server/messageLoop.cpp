@@ -326,7 +326,7 @@ static void __fastcall messageLoop(void* arg)
             if (haveTimeout) {
                 *((struct timeval*)(&msg.str[sizeof(fd_set) * 3])) = *timeout;
             }
-            if (Message::reply(&msg, ret, errno) != M_OK) {
+            if (Message::reply(&msg, ret, errno, msg.str) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             break;
