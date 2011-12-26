@@ -314,19 +314,21 @@ static void __fastcall messageLoop(void* arg)
             struct timeval* timeout = haveTimeout ? (struct timeval*)&msg.str[4 + sizeof(fd_set) * 3] : NULL;
 
             int ret = select(nfds, readfds, writefds, exceptfds, timeout);
+
+            char buf[MESSAGE_INFO_MAX_STR_LENGTH];
             if (haveReadFds) {
-                *((fd_set*)msg.str) = *readfds;
+                *((fd_set*)buf) = *readfds;
             }
             if (haveWriteFds) {
-                *((fd_set*)(&msg.str[sizeof(fd_set)])) = *writefds;
+                *((fd_set*)(&buf[sizeof(fd_set)])) = *writefds;
             }
             if (haveExceptFds) {
-                *((fd_set*)(&msg.str[sizeof(fd_set) * 2])) = *exceptfds;
+                *((fd_set*)(&buf[sizeof(fd_set) * 2])) = *exceptfds;
             }
             if (haveTimeout) {
-                *((struct timeval*)(&msg.str[sizeof(fd_set) * 3])) = *timeout;
+                *((struct timeval*)(&buf[sizeof(fd_set) * 3])) = *timeout;
             }
-            if (Message::reply(&msg, ret, errno, msg.str) != M_OK) {
+            if (Message::reply(&msg, ret, errno, buf) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
             break;
