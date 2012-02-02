@@ -60,8 +60,6 @@ ${SOURCE1}:
 	touch $@
 
 .INSTALL: .MAKE
-	install -p -m 0644 ${WORKDIR}/*.DLL ${MONADIR}/bin/LIBS
-	install -p ${WORKDIR}/lib*.a ${MONADIR}/lib
-	mkdir -p ${MONADIR}/include/
-	install -p ${WORKDIR}/gmp.h ${MONADIR}/include/
+	install -p -m 0644 *.DLL ${MONADIR}/bin/LIBS
+	install -p $/lib*.a ${MONADIR}/lib
 	touch $@

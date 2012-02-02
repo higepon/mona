@@ -121,7 +121,9 @@ case "$OSTYPE" in
 esac
 
 export MINGWPREFIX
+echo "configure fat_write"
 (cd tool/fat_write && ./configure MONADIR=$script_dir --prefix=$script_dir/local) || exit 1
+echo "configure t5lzma"
 (cd tool/t5lzma && ./configure) || exit 1
 
 echo "HOSTDEF=-DHOST_$HOST" > $MAKEINC

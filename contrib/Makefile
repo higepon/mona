@@ -9,7 +9,9 @@ all:
 #mumurik	cd Net/uip && $(MAKE) && $(MAKE) install
 ### libraries
 	cd Net/curl && touch dependencies && $(MAKE) && $(MAKE) install
-#	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
+#	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) instal
+	cd Graphics/pixman && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/cairo && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libgui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/libmonagui && touch dependencies && $(MAKE) && $(MAKE) install
 	cd Gui/ime_server && touch dependencies && $(MAKE) && $(MAKE) install
