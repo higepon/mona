@@ -45,6 +45,8 @@ You need
 - mingwrt-3.18-mingw32-dev.tar.gz
 
 ### Build
+    % export CC=clang    # For OSX only
+    % export CXX=clang++ # For OSX only
     % export PATH=~/mona-mingw/bin/:$PATH
     % mkdir ~/mingw
     % cd ~/mingw
@@ -67,5 +69,5 @@ You need
       --with-as=~/mona-mingw/bin/i586-mingw32msvc-as --with-ld=~/mona-mingw/bin/i586-mingw32msvc-ld \
       --enable-sjlj-exceptions --enable-version-specific-runtime-libs
 
-And then configure Mona with "export PATH=/Users/taro/mona-mingw/bin/:$PATH; ./configure --mingw-prefix=/home/taro/mona-mingw/bin/i586-mingw32msvc- && make"
+And then configure Mona with "export PATH=~/mona-mingw/bin/:$PATH; ./configure --mingw-prefix=~/mona-mingw/bin/i586-mingw32msvc- && make"
 
