@@ -135,7 +135,7 @@ echo '
 SHAREDIR=$(MONADIR)/share
 PATH:=$(PATH):$(PREFIX)/bin
 export PATH
-CFLAGS=-nostdinc -UWIN32 -U_WIN32 -Wall -fno-builtin -O2 -DMONA -DDEBUG_BUILD $(HOSTDEF) -DMONASH_DONT_FREE_MEMORY -mno-stack-arg-probe  -fno-stack-check -fno-stack-protector $(ADDCFLAGS)
+CFLAGS=-nostdinc -UWIN32 -U_WIN32 -U__WIN32__ -Wall -fno-builtin -O2 -DMONA -DDEBUG_BUILD $(HOSTDEF) -DMONASH_DONT_FREE_MEMORY -mno-stack-arg-probe  -fno-stack-check -fno-stack-protector $(ADDCFLAGS)
 CXXFLAGS=$(CFLAGS) -fno-threadsafe-statics -fno-exceptions -fno-rtti -fno-strict-aliasing
 NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32 -DMONA \' >> $MAKEINC
 echo " $BUILD_DEF" >> $MAKEINC
