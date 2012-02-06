@@ -157,7 +157,7 @@ CXX=`which "$CXX"`
 [ "x$CXX" = x ] && { echo 'g++ not found'; exit 1; }
 echo "ok"
 echo "CXX=$CXX" >> $MAKEINC
-
+echo ${TOOLPREFIX}
 echo -n 'Checking ld... '
 [ "x$LD" = x ] && LD=${TOOLPREFIX}ld
 LD=`which "$LD"`

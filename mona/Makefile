@@ -51,6 +51,8 @@ endif
 	cd core/clipboard_server && $(MAKE) && $(MAKE) install
 	cd core/scheme && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 	cd core/gmp && $(MAKE) && $(MAKE) install
+	cd core/zlib && $(MAKE) && $(MAKE) install
+	cd core/libpng && $(MAKE) && $(MAKE) install
 	cd core/icu && $(MAKE) && $(MAKE) install
 	cd core/mosh && $(MAKE) -f Makefile.mona && $(MAKE) -f Makefile.mona install
 
