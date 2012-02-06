@@ -125,6 +125,9 @@ core/pe_server \
 core/process_server \
 core/screen_server \
 core/secondboot \
+core/libpng \
+core/icu \
+core/zlib \
 core/shell_server \
 external/libjpegls \
 external/onig \

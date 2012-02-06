@@ -80,6 +80,8 @@ clean:
 	cd Gui/libgui && $(MAKE) clean
 	cd Gui/ime_server && $(MAKE) clean
 	cd Graphics/Mesa && $(MAKE) clean
+	cd Graphics/cairo && $(MAKE) clean
+	cd Graphics/pixman && $(MAKE) clean
 	cd Graphics/Mesa-gears && $(MAKE) clean
 	cd Graphics/MesaDemos && $(MAKE) clean
 	cd Misc/helloworld && $(MAKE) clean
@@ -117,6 +119,8 @@ clean:
 	cd Sysutils/startx && $(MAKE) clean
 	cd Gui/test_monagui && $(MAKE) clean
 	cd Net/w3m && $(MAKE) clean
+	cd Net/curl && $(MAKE) clean
+	cd Net/libxml2 && $(MAKE) clean
 	cd Devel/gcc && $(MAKE) clean
 
 TARGETS = \
