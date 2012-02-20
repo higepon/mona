@@ -47,6 +47,30 @@ static const char* cursor[] =
     NULL
 };
 
+// both cursors should be same height
+static const char* pointor_cursor[] =
+{
+    "     ",
+    "     2",
+    "     22",
+    "    2112",
+    "    2112",
+    "    2112",
+    "    21122222",
+    "    2112111122",
+    "22  21111111212",
+    "212 21111111112",
+    "211121212121112",
+    " 21111212121112",
+    "  2111212121112",
+    "  211111111112",
+    "   21111111112",
+    "    211111112",
+    "      222222",
+    NULL
+};
+
+
 /*----------------------------------------------------------------------
     Cursor
 ----------------------------------------------------------------------*/
@@ -55,15 +79,21 @@ class Cursor
 private:
     int width, height, sw, sh, bypp, bx, by;
     uint8_t* buffer;
+    bool isMovedOver_;
 
 public:
-    Cursor() : width(0), height(0), bx(0), by(0), buffer(NULL)
+    Cursor() : width(0), height(0), bx(0), by(0), buffer(NULL), isMovedOver_(false)
     {
         for (int i = 0; cursor[i] != NULL; i++)
         {
             int len = strlen(cursor[i]);
             if (this->width < len) this->width = len;
             this->height = i + 1;
+        }
+        for (int i = 0; pointor_cursor[i] != NULL; i++)
+        {
+            int len = strlen(pointor_cursor[i]);
+            if (this->width < len) this->width = len;
         }
         this->sw = screen.getWidth();
         this->sh = screen.getHeight();
@@ -78,12 +108,12 @@ public:
     void Erase()
     {
         if (this->buffer == NULL) return;
-
+        const char** current_cursor = isMovedOver_ ? pointor_cursor : cursor;
         uint8_t* p1 = this->buffer;
         uint8_t* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
         for (int y = 0; y < this->height; y++)
         {
-            const char* data = cursor[y];
+            const char* data = current_cursor[y];
             int yy = this->by + y, len = strlen(data);
             for (int x = 0; x < this->width; x++)
             {
@@ -100,6 +130,9 @@ public:
     }
 
 public:
+    void setMovedOver(bool over) {
+        isMovedOver_ = over;
+    }
     void Paint(int pos_x, int pos_y)
     {
         this->bx = pos_x;
@@ -107,9 +140,10 @@ public:
         if (this->buffer == NULL) this->buffer = new uint8_t[this->width * this->height * this->bypp];
         uint8_t* p1 = this->buffer;
         uint8_t* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
+        const char** current_cursor = isMovedOver_ ? pointor_cursor : cursor;
         for (int y = 0; y < this->height; y++)
         {
-            const char* data = cursor[y];
+            const char* data = current_cursor[y];
             int yy = this->by + y, len = strlen(data);
             for (int x = 0; x < this->width; x++)
             {
@@ -347,6 +381,10 @@ public:
                 break;
             case MSG_MOUSE_RELEASE:
                 mouseActionAndReply(&receive, false);
+                break;
+            case MSG_MOUSE_OVER:
+                cursor.setMovedOver(receive.arg1);
+                Message::reply(&receive);
                 break;
             case MSG_INTERRUPTED:
                 /* we get not all data */

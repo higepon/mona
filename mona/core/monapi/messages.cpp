@@ -125,6 +125,21 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
     return MONAPI_TRUE;
 }
 
+MONAPI_BOOL monapi_call_mouse_set_moved_over(MONAPI_BOOL enabled)
+{
+    uint32_t tid ;
+    if (monapi_name_whereis("/servers/mouse", tid) != M_OK) {
+        return MONAPI_FALSE;
+    }
+    uint32_t header = MSG_MOUSE_OVER;
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, header, enabled) != M_OK)
+    {
+        return MONAPI_FALSE;
+    }
+    return MONAPI_TRUE;
+}
+
 
 SharedMemory* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {

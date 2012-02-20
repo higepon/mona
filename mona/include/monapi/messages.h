@@ -79,6 +79,7 @@ extern "C"
 extern intptr_t monapi_register_to_server(const char* server);
 extern intptr_t monapi_unregister_to_server(const char* server);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
+extern MONAPI_BOOL monapi_call_mouse_set_moved_over(MONAPI_BOOL enabled);
 
 extern intptr_t monapi_enable_stacktrace(const char* mapFilePath);
 extern intptr_t monapi_process_register_thread(uint32_t tid);
