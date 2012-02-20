@@ -36,7 +36,7 @@
 #include <monalibc/errno.h>
 #include <time.h>
 
-#if 1
+#if 0
 #define SOCKET_LOG() _logprintf("[socket] %s %s:%d\n", __func__, __FILE__, __LINE__)
 #define SOCKET_LOGF(...) _logprintf("[socket] %s %s:%d", __func__, __FILE__, __LINE__), _logprintf(__VA_ARGS__)
 #else

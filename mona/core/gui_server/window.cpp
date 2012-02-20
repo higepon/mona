@@ -174,12 +174,10 @@ void DisposeWindowFromThreadID(uint32_t tid)
         if (w->ThreadID == tid)
         {
             if (prevWindow == w) prevWindow = NULL;
-            logprintf("%s %s:%d w=%x\n", __func__, __FILE__, __LINE__, w);
             if (activeWindow == w) {
                 activeWindow = NULL;
 //                ActivateWindow(NULL);
             }
-    logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
             if (w->FormBufferHandle != 0)
             {
                 w->Visible = false;
