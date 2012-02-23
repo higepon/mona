@@ -131,7 +131,6 @@ err_t etherif_init(struct netif* netif)
 static struct pbuf* low_level_input(struct netif* netif)
 {
     struct pbuf *p, *q;
-//    char buf[1514];
     char buf[1600]; // is this safe? Mona
     char *bufptr;
     struct etherif* etherif;
@@ -165,7 +164,7 @@ static struct pbuf* low_level_input(struct netif* netif)
     } else {
         /* drop packet(); */
 //        snmp_inc_ifindiscards(netif);
-      monapi_warn("Could not allocate pbufs\n");
+      monapi_warn("We dropped packet!!!! Could not allocate pbufs\n");
     }
 
     return p;
