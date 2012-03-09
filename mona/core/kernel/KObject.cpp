@@ -2,7 +2,7 @@
 #include "kernel.h"
 #include "global.h"
 
-KObject::KObject() : referanceCount_(0)
+KObject::KObject() : referanceCount_(0), id_(0)
 {
 }
 

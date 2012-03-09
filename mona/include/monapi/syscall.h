@@ -9,9 +9,6 @@ typedef int (FuncMain)(int argc, char* argv[]);
 #ifdef __cplusplus
 #include <sys/List.h>
 
-
-
-
 typedef int (FuncMonaMain)(List<char*>*);
 
 extern void invokeFuncList(FuncVoid** list, const char* file, int line);
@@ -25,6 +22,7 @@ extern void setConstructorList(FuncVoid** crots);
 extern int user_start();
 extern int sleep(uint32_t ms);
 extern int set_timer(uint32_t ms);
+extern int set_one_shot_timer(uint32_t ms);
 extern int  kill_timer(uint32_t id);
 extern int heavy();
 extern int print(const char*, int direct);
@@ -36,7 +34,8 @@ extern int mthread_kill(uint32_t id);
 extern int syscall_test(uint32_t laddress);
 extern int syscall_sleep(uint32_t tick);
 extern int syscall_log_print(const char* msg);
-extern int syscall_set_timer(uint32_t tick);
+extern int syscall_set_timer(uint32_t tick, int isOneShot);
+extern int syscall_set_one_shot_timer(uint32_t tick);
 extern int syscall_kill_timer(uint32_t id);
 extern int syscall_print(const char*);
 extern int syscall_kill(int status);

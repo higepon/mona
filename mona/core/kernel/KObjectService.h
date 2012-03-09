@@ -56,9 +56,9 @@ public:
         return id;
     }
 
-    static intptr_t createTimer(KTimer** timer, Process* owner, Thread* thread, int tick)
+    static intptr_t createTimer(KTimer** timer, Process* owner, Thread* thread, int tick, bool isOneShot)
     {
-        KTimer* obj = new KTimer(thread, tick);
+        KTimer* obj = new KTimer(thread, tick, isOneShot);
         *timer = obj;
         intptr_t id = g_id->allocateID(obj);
         owner->addKObject(id, obj);

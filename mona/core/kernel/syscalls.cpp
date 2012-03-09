@@ -161,10 +161,10 @@ void syscall_entrance()
         break;
     }
     case SYSTEM_CALL_SET_TIMER:
-
-        setReturnValue(info, g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1));
+    {
+        setReturnValue(info, g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2));
         break;
-
+    }
     case SYSTEM_CALL_KILL_TIMER:
 
         setReturnValue(info, g_scheduler->KillTimer(SYSTEM_CALL_ARG_1, g_currentThread->thread));
