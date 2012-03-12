@@ -4,11 +4,7 @@
 class KTimer : public KObject {
 
   public:
-    KTimer(Thread* thread, uint32_t interval, bool isOneShot = false) :
-        thread_(thread),
-        interval_(interval),
-        waitTick_(0),
-        isOneShot_(isOneShot)
+    KTimer(Thread* thread, uint32_t interval) : thread_(thread), interval_(interval), waitTick_(0)
     {
     }
 
@@ -17,10 +13,6 @@ class KTimer : public KObject {
     }
 
   public:
-
-    bool isOneShot() const {
-        return isOneShot_;
-    }
 
     intptr_t getType() const
     {
@@ -47,7 +39,6 @@ class KTimer : public KObject {
     Thread* thread_;
     uint32_t interval_;
     uint32_t waitTick_;
-    const bool isOneShot_;
 };
 
 #endif

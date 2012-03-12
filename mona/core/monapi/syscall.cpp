@@ -114,27 +114,15 @@ int sleep(uint32_t ms) {
     return syscall_sleep(tick);
 }
 
-static int internal_set_timer(uint32_t ms, int isOneShot)
+int set_timer(uint32_t ms)
 {
     uint32_t tick = ms / KERNEL_TIMER_INTERVAL_MSEC;
 
-    if (tick == 0)
+    if (tick <= 0)
     {
         tick = 1;
     }
-    return syscall_set_timer(tick, isOneShot);
-}
-
-int set_one_shot_timer(uint32_t ms)
-{
-    const int IS_ONE_SHOT = 1;
-    return internal_set_timer(ms, IS_ONE_SHOT);
-}
-
-int set_timer(uint32_t ms)
-{
-    const int IS_ONE_SHOT = 0;
-    return internal_set_timer(ms, IS_ONE_SHOT);
+    return syscall_set_timer(tick);
 }
 
 int kill_timer(uint32_t id)
@@ -1108,9 +1096,9 @@ uint32_t syscall_deallocate_dma_memory(void* address, int size)
     return syscall2(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, (intptr_t)address, size);
 }
 
-int syscall_set_timer(uint32_t tick, int isOneShot)
+int syscall_set_timer(uint32_t tick)
 {
-    return syscall2(SYSTEM_CALL_SET_TIMER, tick, isOneShot);
+    return syscall1(SYSTEM_CALL_SET_TIMER, tick);
 }
 
 int syscall_kill_timer(uint32_t id)
@@ -1143,10 +1131,10 @@ int syscall_log_print(const char* msg)
     return syscall1(SYSTEM_CALL_LOG_PRINT, (intptr_t)msg);
 }
 
-// int syscall_set_watch_point(void* address, int flag)
-// {
-//     return syscall2(SYSTEM_CALL_SET_WATCH_POINT, (intptr_t)address, flag);
-// }
+int syscall_set_watch_point(void* address, int flag)
+{
+    return syscall2(SYSTEM_CALL_SET_WATCH_POINT, (intptr_t)address, flag);
+}
 
 int syscall_get_physical_address(uint32_t linearAddress)
 {

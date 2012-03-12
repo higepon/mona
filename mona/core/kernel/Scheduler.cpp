@@ -136,13 +136,7 @@ void Scheduler::WakeupTimer()
         if (g_messenger->send(thread, &msg)) {
             KTimer* timer;
             timers.removeAt(i, &timer);
-            KObjectService::destroy(thread->tinfo->process, timer->getId(), timer);
             g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
-            //            continue;
-        }
-        if (timer->isOneShot()) {
-          timers.remove(timer);
-          KObjectService::destroy(thread->tinfo->process, timer->getId(), timer);
         }
     }
 }
@@ -280,11 +274,11 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-intptr_t Scheduler::SetTimer(Thread* thread, uint32_t tick, bool isOneShot)
+intptr_t Scheduler::SetTimer(Thread* thread, uint32_t tick)
 {
     Process* owner = thread->tinfo->process;
     KTimer* timer = NULL;
-    intptr_t id = KObjectService::createTimer(&timer, owner, thread, tick, isOneShot);
+    intptr_t id = KObjectService::createTimer(&timer, owner, thread, tick);
     timers.add(timer);
     timer->setNextTimer(this->totalTick);
     return id;
