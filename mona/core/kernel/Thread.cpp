@@ -40,6 +40,7 @@ Thread::Thread() :
     index(0),
     tinfo(NULL),
     messageList(HList<MessageInfo*>()),
+    timerMessage(NULL),
     id(0),
     lastCpuUsedTick(0),
     age(0),
