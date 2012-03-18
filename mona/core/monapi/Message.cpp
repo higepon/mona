@@ -90,22 +90,23 @@ int Message::reply(MessageInfo* info, uint32_t arg2 /* = 0 */, uint32_t arg3 /* 
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))
 {
     MessageInfo msg;
-    for (int i = 0; ; i++) {
+    for (int i = 0; ; i++)
+    {
         int result = Message::peek(&msg, i);
-        // MSG_TIMER is always on the tail of queue.
-        if (result != M_OK || msg.header == MSG_TIMER) {
+        if (result != M_OK)
+        {
             i--;
             syscall_mthread_yield_message();
-        } else if ((*equals)(&msg, src)) {
+        }
+        else if ((*equals)(&msg, src))
+        {
             if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
-              monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+                _printf("peek error %s:%d\n", __FILE__, __LINE__);
             }
             break;
         }
     }
-    if (dst != NULL) {
-      *dst = msg;
-    }
+    if (dst != NULL) *dst = msg;
     return M_OK;
 }
 

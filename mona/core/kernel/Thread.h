@@ -90,8 +90,7 @@ public:
     int index; // for debug only
     ThreadInfo* tinfo;
     HList<MessageInfo*> messageList;
-    MessageInfo* timerMessage;
-      uint32_t id;
+    uint32_t id;
     uint32_t lastCpuUsedTick;
     uint32_t age;
     uint32_t schedulerTotalTick;

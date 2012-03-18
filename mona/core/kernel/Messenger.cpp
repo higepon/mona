@@ -23,34 +23,23 @@ intptr_t Messenger::send(Thread* thread, MessageInfo* message)
     }
     MONA_ASSERT(message != NULL);
 
-    // Merge MSG_TIMER into one message
-    if (message->header == MSG_TIMER) {
-        if (thread->timerMessage == NULL) {
-          MessageInfo* info = new MessageInfo;
-          MONA_ASSERT(info != NULL);
-          *info = *message;
-          info->from = g_currentThread->thread->id;
-          thread->timerMessage = info;
-        } else {
-
+    if (thread->messageList.size() == MAX_MESSAGES) {
+        #if 0
+        for (int i = 0; i < thread->messageList->size(); i++) {
+            logprintf("h=%x %s1=%x\n", thread->messageList->get(i)->header, thread->tinfo->process->getName(), thread->messageList->get(i)->arg1);
         }
-    } else {
-      if (thread->messageList.size() == MAX_MESSAGES) {
-#if 0
-           for (int i = 0; i < thread->messageList->size(); i++) {
-               logprintf("h=%x %s1=%x\n", thread->messageList->get(i)->header, thread->tinfo->process->getName(), thread->messageList->get(i)->arg1);
-           }
-#endif
-           return M_MESSAGE_OVERFLOW;
-      }
-
-      MessageInfo* info = new MessageInfo;
-      MONA_ASSERT(info != NULL);
-      *info = *message;
-      info->from = g_currentThread->thread->id;
-      thread->messageList.add(info);
+        #endif
+        return M_MESSAGE_OVERFLOW;
     }
+
+    MessageInfo* info = new MessageInfo;
+    MONA_ASSERT(info != NULL);
+
+    *info = *message;
+    info->from = g_currentThread->thread->id;
+
     thread->flags |= MEvent::MESSAGE;
+    thread->messageList.add(info);
     scheduler_->EventComes(thread, MEvent::MESSAGE);
     return M_OK;
 }
@@ -59,16 +48,9 @@ intptr_t Messenger::receive(Thread* thread, MessageInfo* message)
 {
     MessageInfo* from = NULL;
     if (!thread->messageList.removeAt(0, &from)) {
-      if (thread->timerMessage) {
-        thread->flags &= ~MEvent::MESSAGE;
-        *message = *(thread->timerMessage);
-        delete thread->timerMessage;
-        thread->timerMessage = NULL;
-        return M_OK;
-      } else {
         return M_MESSAGE_NOT_FOUND;
-      }
     }
+
     thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
     delete from;
@@ -78,26 +60,6 @@ intptr_t Messenger::receive(Thread* thread, MessageInfo* message)
 intptr_t Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
 {
     HList<MessageInfo*>& list = thread->messageList;
-
-    if (list.size() == 0 && index == 0 && thread->timerMessage) {
-      MessageInfo* from = thread->timerMessage;
-      if (flags & PEEK_REMOVE) {
-        delete thread->timerMessage;
-        thread->timerMessage = NULL;
-      }
-      thread->flags &= ~MEvent::MESSAGE;
-      *message = *from;
-      return M_OK;
-    } else if (list.size() == index && thread->timerMessage) {
-      MessageInfo* from = thread->timerMessage;
-      if (flags & PEEK_REMOVE) {
-        delete thread->timerMessage;
-        thread->timerMessage = NULL;
-      }
-      thread->flags &= ~MEvent::MESSAGE;
-      *message = *from;
-      return M_OK;
-    }
 
     if (index >= list.size()) {
         return M_BAD_INDEX;
