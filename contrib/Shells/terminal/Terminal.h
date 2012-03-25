@@ -80,7 +80,7 @@ public:
         currentLineNo_(0)
     {
         const int EXTRA_WIDTH = 350;
-        setBounds(80, 100, 300 + EXTRA_WIDTH, 400);
+        setBounds(80, 20, 300 + EXTRA_WIDTH, 400);
         setTitle("Terminal");
         command_->setText("/APPS/MLAUNCH.EXE");
 

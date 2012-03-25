@@ -98,7 +98,7 @@ int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageIn
             syscall_mthread_yield_message();
         } else if ((*equals)(&msg, src)) {
             if (Message::peek(&msg, i, PEEK_REMOVE) != M_OK) {
-              monapi_fatal("peek error %s:%d\n", __FILE__, __LINE__);
+              _printf("peek error %s:%d\n", __FILE__, __LINE__);
             }
             break;
         }

@@ -169,7 +169,7 @@ typedef struct {
 } LoadProcessInfo;
 
 #define MESSAGE_INFO_MAX_STR_LENGTH 256
-#define MAX_MESSAGES 1024
+#define MAX_MESSAGES 10000
 
 typedef struct {
     uintptr_t header;
