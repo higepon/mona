@@ -47,7 +47,8 @@ time_t time(time_t *t) {
 }
 
 struct tm *localtime(const time_t *timep) {
-  MONA_ASSERT(0);
+  static struct tm ret;
+  return &ret;
 }
 
 int gettimeofday(struct timeval *tv, struct timezone *tz)
