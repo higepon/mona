@@ -39,7 +39,7 @@ pixman-utils.c\
 pixman.c\
 
 CSOURCES = $(TOP_CSOURCES)
-CFLAGS+=-DHAVE_CONFIG_H -DPIXMAN_NO_TLS=1
+CFLAGS+=-DHAVE_CONFIG_H -DPIXMAN_NO_TLS=1 -O3
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
 INCLUDE = -I. -I.. -I$(INCDIR)/ -I$(INCDIR)/monalibc
