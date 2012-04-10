@@ -93,6 +93,15 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	_logprintf("monalibc: stream->_extra = %x\n", stream->_extra);
 	_logprintf("monalibc: stream->_extra->stds = %x\n", stream->_extra->stds);
 #endif
+    int i;
+    int j;
+    if (stream->_extra->stds == __STDERR) {
+      for (i = 0; i < nmemb; i++) {
+        for (j = 0; j < size; j++) {
+          _logprintf("%c", ((char*)ptr)[i * size + j]);
+        }
+      }
+    }
 	if( stream->_extra->stds == __STDOUT
 				|| stream->_extra->stds == __STDERR )
 	{
