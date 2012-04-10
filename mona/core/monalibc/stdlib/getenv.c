@@ -6,6 +6,8 @@ char *getenv(const char *name)
         return "/USER";
     } else if (strcmp(name, "MOSH_LOADPATH") == 0) {
       return "/USER/LIB";
+    } else if (strcmp(name, "DEBUG_CURL") == 0) {
+      return "TRUE";
     } else {
         return NULL;
     }
