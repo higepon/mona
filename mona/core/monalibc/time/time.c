@@ -40,12 +40,6 @@ time_t time(time_t *t) {
     KDate date;
     time_t result;
     syscall_get_date(&date);
-    _logprintf("%d %s %s:%d\n", date.year, __func__, __FILE__, __LINE__);
-    _logprintf("%d %s %s:%d\n", date.month, __func__, __FILE__, __LINE__);
-    _logprintf("%d %s %s:%d\n", date.day, __func__, __FILE__, __LINE__);
-    _logprintf("%d %s %s:%d\n", date.hour, __func__, __FILE__, __LINE__);
-    _logprintf("%d %s %s:%d\n", date.min, __func__, __FILE__, __LINE__);
-
     result = KDate2time_t(&date);
     if( t != NULL ) *t = result;
     return result;
