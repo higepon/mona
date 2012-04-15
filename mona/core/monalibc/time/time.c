@@ -39,15 +39,53 @@
 time_t time(time_t *t) {
     KDate date;
     time_t result;
-
     syscall_get_date(&date);
+    _logprintf("%d %s %s:%d\n", date.year, __func__, __FILE__, __LINE__);
+    _logprintf("%d %s %s:%d\n", date.month, __func__, __FILE__, __LINE__);
+    _logprintf("%d %s %s:%d\n", date.day, __func__, __FILE__, __LINE__);
+    _logprintf("%d %s %s:%d\n", date.hour, __func__, __FILE__, __LINE__);
+    _logprintf("%d %s %s:%d\n", date.min, __func__, __FILE__, __LINE__);
+
     result = KDate2time_t(&date);
     if( t != NULL ) *t = result;
     return result;
 }
 
+#define SECONDS_DAY (24 * 60 * 60)
+#define IS_LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400)))
+#define DAYS_YEAR(year) (IS_LEAPYEAR(year) ? 366 : 365)
+
+const int _num_days[2][12] = 
+{
+  {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
+  {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+};
+
 struct tm *localtime(const time_t *timep) {
   static struct tm ret;
+  time_t now = *timep;
+
+  int year = 1970;
+  unsigned long dayclock = (unsigned long) now % SECONDS_DAY;
+  unsigned long dayno = (unsigned long) now / SECONDS_DAY;
+
+  ret.tm_sec = dayclock % 60;
+  ret.tm_min = (dayclock % 3600) / 60;
+  ret.tm_hour = dayclock / 3600;
+  ret.tm_wday = (dayno + 4) % 7;
+  while (dayno >= (unsigned long) DAYS_YEAR(year))  {
+    dayno -= DAYS_YEAR(year);
+    year++;
+  }
+  ret.tm_year = year - 1900;
+  ret.tm_yday = dayno;
+  ret.tm_mon = 0;
+  while (dayno >= (unsigned long) _num_days[IS_LEAPYEAR(year)][ret.tm_mon]) {
+    dayno -= _num_days[IS_LEAPYEAR(year)][ret.tm_mon];
+    ret.tm_mon++;
+  }
+  ret.tm_mday = dayno + 1;
+  ret.tm_isdst = 0;
   return &ret;
 }
 
