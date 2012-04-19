@@ -316,4 +316,8 @@ a lot of data that needs to be copied, this should be set high. */
 
 #endif /* PPP_SUPPORT > 0 */
 
+/* static hosts file support */
+#define DNS_LOCAL_HOSTLIST 1
+#define DNS_LOCAL_HOSTLIST_INIT {{"localhost.twitter.com", 0x0202000a}, {"myhost", 0x0202000a}}
+
 #endif /* __LWIPOPTS_H__ */
