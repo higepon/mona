@@ -257,7 +257,7 @@ static void __fastcall messageLoop(void* arg)
             }
 
             int ret = recv(sockfd, buffer, len, flags);
-
+            _logprintf("real recv returns %d\n", ret);
             if (Message::sendBuffer(msg.from, buffer, ret > 0 ? ret : 0) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }
