@@ -426,7 +426,8 @@
 #define HAVE_LIBSSL 1
 
 /* if zlib is available */
-/* #define HAVE_LIBZ 1 */
+#define HAVE_LIBZ 1
+#include <zlib.h>
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1

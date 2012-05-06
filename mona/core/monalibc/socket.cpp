@@ -37,8 +37,8 @@
 #include <time.h>
 
 #if 1
-#define SOCKET_LOG() _logprintf("[socket] %s %s:%d\n", __func__, __FILE__, __LINE__)
-#define SOCKET_LOGF(...) _logprintf("[socket] %s %s:%d %d", __func__, __FILE__, __LINE__, (unsigned int)syscall_now_in_nanosec()), _logprintf(__VA_ARGS__)
+#define SOCKET_LOG() { uint64_t x = syscall_now_in_nanosec() / 1000000; _logprintf("[socket] %s %s:%d %d\n", __func__, __FILE__, __LINE__, (unsigned int)x);}
+#define SOCKET_LOGF(...) { uint64_t x = syscall_now_in_nanosec() / 1000000; _logprintf("[socket] %s %s:%d %d", __func__, __FILE__, __LINE__, (unsigned int)x), _logprintf(__VA_ARGS__); }
 #else
 #define SOCKET_LOG()
 #define SOCKET_LOGF(...)
@@ -109,7 +109,7 @@ void freeaddrinfo(struct addrinfo *res)
 
 int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
 {
-    SOCKET_LOG();
+    SOCKET_LOGF("sock=%d\n", sockfd);
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
         SOCKET_LOG();
@@ -136,7 +136,7 @@ int connect(int sockfd, const struct sockaddr* name, socklen_t namelen)
         return EBADF;
     }
     errno = dst.arg3;
-    SOCKET_LOGF("ret=%d\n", dst.arg2);
+    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, dst.arg2);
     return dst.arg2;
 }
 
@@ -175,7 +175,7 @@ int closesocket(int sockfd)
 int send(int sockfd, void* buf, size_t len, int flags)
 {
     uint32_t id ;
-    SOCKET_LOG();
+    SOCKET_LOGF("sockfd=%d\n", sockfd);
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
         SOCKET_LOG();
         return EBADF;
@@ -200,12 +200,13 @@ int send(int sockfd, void* buf, size_t len, int flags)
         return EBADF;
     }
     errno = dst.arg3;
-    SOCKET_LOGF("ret=%d\n", dst.arg2);
+    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, dst.arg2);
     return dst.arg2;
 }
 
 int recv(int sockfd, void* buf, size_t len, int flags)
 {
+    SOCKET_LOGF("sockfd=%d\n", sockfd);
     uint32_t id ;
     if (monapi_name_whereis("/servers/net", id) != M_OK) {
         SOCKET_LOG();
@@ -231,7 +232,7 @@ int recv(int sockfd, void* buf, size_t len, int flags)
         return EBADF;
     }
     errno = dst.arg3;
-    SOCKET_LOGF("ret=%d\n", dst.arg2);
+    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, dst.arg2);
     return dst.arg2;
 }
 
