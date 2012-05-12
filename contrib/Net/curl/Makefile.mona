@@ -15,7 +15,7 @@ TOP_CSOURCES= file.c timeval.c base64.c hostip.c progress.c formdata.c cookie.c 
 
 CSOURCES = $(TOP_CSOURCES)
 
-CFLAGS+=-DHAVE_CONFIG_H -DCURL_DISABLE_FILE=1 -DCURL_DISABLE_TFTP=1 -UWIN32 -U_WIN32 -U__WIN32__
+CFLAGS+=-DHAVE_CONFIG_H -DCURL_DISABLE_FILE=1 -DCURL_DISABLE_TFTP=1 -UWIN32 -U_WIN32 -U__WIN32__ -DDEBUGBUILD -O3
 
 OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
 INCLUDE = -I../include/curl -I../include -I. -I$(INCDIR)/ -I$(INCDIR)/monalibc -I$(INCDIR)/pixman-1
