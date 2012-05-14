@@ -238,32 +238,15 @@ static void __fastcall messageLoop(void* arg)
         }
         case MSG_NET_SOCKET_RECV:
         {
-            // static uint8_t* buffer = NULL;
-            // static uintptr_t bufferSize = 127;
-            // if (NULL == buffer) {
-            //     buffer = new uint8_t[bufferSize];
-            // }
-
             int sockfd = msg.arg1;
             size_t len = msg.arg2;
             int flags = msg.arg3;
-            uint32_t* p = (uint32_t*)(msg.str);
-            SharedMemory shm(p[0], p[1]);
+            uint32_t* param = (uint32_t*)(msg.str);
+            uint32_t handle = param[0];
+            uint32_t size = param[1];
+            SharedMemory shm(handle, size);
             shm.map(true);
-            // if (len > bufferSize) {
-            //     if (buffer != NULL) {
-            //         delete[] buffer;
-            //     }
-            //     bufferSize = len;
-            //     buffer = new uint8_t[bufferSize];
-            // }
-
             int ret = recv(sockfd, shm.data(), len, flags);
-            _logprintf("real recv returns %d\n", ret);
-            // if (Message::sendBuffer(msg.from, buffer, ret > 0 ? ret : 0) != M_OK) {
-            //     MONAPI_WARN("failed to reply %s", __func__);
-            // }
-
             if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
             }

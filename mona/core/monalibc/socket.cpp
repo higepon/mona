@@ -213,37 +213,23 @@ int recv(int sockfd, void* buf, size_t len, int flags)
         return EBADF;
     }
 
-    SharedMemory* shm = new SharedMemory(len);
-    shm->map(true);
+    SharedMemory shm(len);
+    shm.map(true);
     uint32_t param[2];
-    param[0] = shm->handle();
-    param[1] = shm->size();
-    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags, (char*)param) != M_OK) {
+    param[0] = shm.handle();
+    param[1] = shm.size();
+    MessageInfo ret;
+    if (Message::sendReceive(&ret, id, MSG_NET_SOCKET_RECV, sockfd, len, flags, (char*)param) != M_OK) {
         SOCKET_LOG();
         return EBADF;
     }
     SOCKET_LOGF("sockfd=%d\n", sockfd);
-    // BufferReceiver* receiver = Message::receiveBuffer(id);
-    // if (receiver->bufferSize() > 0) {
-    //     memcpy(buf, receiver->buffer(), receiver->bufferSize());
-    // }
-    SOCKET_LOGF("sockfd=%d\n", sockfd);
-    MessageInfo src;
-    MessageInfo dst;
-    src.from = id;
-    src.header = MSG_OK;
-    src.arg1 = MSG_NET_SOCKET_RECV;
-    if (Message::receive(&dst, &src, Message::equalsFromHeaderArg1) != M_OK) {
-        SOCKET_LOG();
-        return EBADF;
+    if ((int)(ret.arg2) > 0) {
+        memcpy(buf, shm.data(), ret.arg2);
     }
-    if (dst.arg2 > 0) {
-      memcpy(buf, shm->data(), dst.arg2);
-    }
-    delete shm;
-    errno = dst.arg3;
-    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, dst.arg2);
-    return dst.arg2;
+    errno = ret.arg3;
+    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, ret.arg2);
+    return ret.arg2;
 }
 
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
