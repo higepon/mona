@@ -36,7 +36,7 @@
 #include <monalibc/errno.h>
 #include <time.h>
 
-#if 1
+#if 0
 #define SOCKET_LOG() { uint64_t x = syscall_now_in_nanosec() / 1000000; _logprintf("[socket] %s %s:%d %d\n", __func__, __FILE__, __LINE__, (unsigned int)x);}
 #define SOCKET_LOGF(...) { uint64_t x = syscall_now_in_nanosec() / 1000000; _logprintf("[socket] %s %s:%d %d", __func__, __FILE__, __LINE__, (unsigned int)x), _logprintf(__VA_ARGS__); }
 #else
@@ -212,16 +212,22 @@ int recv(int sockfd, void* buf, size_t len, int flags)
         SOCKET_LOG();
         return EBADF;
     }
-    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags) != M_OK) {
+
+    SharedMemory* shm = new SharedMemory(len);
+    shm->map(true);
+    uint32_t param[2];
+    param[0] = shm->handle();
+    param[1] = shm->size();
+    if (Message::send(id, MSG_NET_SOCKET_RECV, sockfd, len, flags, (char*)param) != M_OK) {
         SOCKET_LOG();
         return EBADF;
     }
-
-    BufferReceiver* receiver = Message::receiveBuffer(id);
-    if (receiver->bufferSize() > 0) {
-        memcpy(buf, receiver->buffer(), receiver->bufferSize());
-    }
-
+    SOCKET_LOGF("sockfd=%d\n", sockfd);
+    // BufferReceiver* receiver = Message::receiveBuffer(id);
+    // if (receiver->bufferSize() > 0) {
+    //     memcpy(buf, receiver->buffer(), receiver->bufferSize());
+    // }
+    SOCKET_LOGF("sockfd=%d\n", sockfd);
     MessageInfo src;
     MessageInfo dst;
     src.from = id;
@@ -231,6 +237,10 @@ int recv(int sockfd, void* buf, size_t len, int flags)
         SOCKET_LOG();
         return EBADF;
     }
+    if (dst.arg2 > 0) {
+      memcpy(buf, shm->data(), dst.arg2);
+    }
+    delete shm;
     errno = dst.arg3;
     SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, dst.arg2);
     return dst.arg2;

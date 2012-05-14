@@ -238,29 +238,31 @@ static void __fastcall messageLoop(void* arg)
         }
         case MSG_NET_SOCKET_RECV:
         {
-            static uint8_t* buffer = NULL;
-            static uintptr_t bufferSize = 127;
-            if (NULL == buffer) {
-                buffer = new uint8_t[bufferSize];
-            }
+            // static uint8_t* buffer = NULL;
+            // static uintptr_t bufferSize = 127;
+            // if (NULL == buffer) {
+            //     buffer = new uint8_t[bufferSize];
+            // }
 
             int sockfd = msg.arg1;
             size_t len = msg.arg2;
             int flags = msg.arg3;
+            uint32_t* p = (uint32_t*)(msg.str);
+            SharedMemory shm(p[0], p[1]);
+            shm.map(true);
+            // if (len > bufferSize) {
+            //     if (buffer != NULL) {
+            //         delete[] buffer;
+            //     }
+            //     bufferSize = len;
+            //     buffer = new uint8_t[bufferSize];
+            // }
 
-            if (len > bufferSize) {
-                if (buffer != NULL) {
-                    delete[] buffer;
-                }
-                bufferSize = len;
-                buffer = new uint8_t[bufferSize];
-            }
-
-            int ret = recv(sockfd, buffer, len, flags);
+            int ret = recv(sockfd, shm.data(), len, flags);
             _logprintf("real recv returns %d\n", ret);
-            if (Message::sendBuffer(msg.from, buffer, ret > 0 ? ret : 0) != M_OK) {
-                MONAPI_WARN("failed to reply %s", __func__);
-            }
+            // if (Message::sendBuffer(msg.from, buffer, ret > 0 ? ret : 0) != M_OK) {
+            //     MONAPI_WARN("failed to reply %s", __func__);
+            // }
 
             if (Message::reply(&msg, ret, errno) != M_OK) {
                 MONAPI_WARN("failed to reply %s", __func__);
@@ -313,7 +315,10 @@ static void __fastcall messageLoop(void* arg)
             fd_set* exceptfds = haveExceptFds ? (fd_set*)&msg.str[4 + sizeof(fd_set) * 2] : NULL;
             struct timeval* timeout = haveTimeout ? (struct timeval*)&msg.str[4 + sizeof(fd_set) * 3] : NULL;
 
+            uint64_t x = syscall_now_in_nanosec() / 1000000;
             int ret = select(nfds, readfds, writefds, exceptfds, timeout);
+            uint64_t y = syscall_now_in_nanosec() / 1000000;
+            _logprintf("REAL select msec = %d\n", (int)y - (int)x);
 
             char buf[MESSAGE_INFO_MAX_STR_LENGTH];
             if (haveReadFds) {

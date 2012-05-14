@@ -171,7 +171,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_SNDLOWAT        (TCP_SND_BUF/2)
 
 /* TCP receive window. */
-#define TCP_WND                 8096
+#define TCP_WND                 0xFFFF /* MAX */
 
 /* Maximum number of retransmissions of data segments. */
 #define TCP_MAXRTX              12
@@ -320,4 +320,14 @@ a lot of data that needs to be copied, this should be set high. */
 #define DNS_LOCAL_HOSTLIST 1
 #define DNS_LOCAL_HOSTLIST_INIT {{"localhost.twitter.com", 0x0202000a}, {"api.localhost.twitter.com", 0x0202000a}, {"myhost", 0x0202000a}}
 
+// for performance
+#define CHECKSUM_CHECK_IP   0
+#define CHECKSUM_CHECK_UDP  0
+#define CHECKSUM_CHECK_TCP  0
+
+// If your memory allows it,
+// set MEM_USE_POOLS to 1 and define LWIP_MALLOC_MEMPOOL's in lwippools.h. This may waste memory, but pools are way faster than a heap!
+// #define MEM_USE_POOLS 1
+// #define LWIP_MALLOC_MEMPOOL
+#define LWIP_RAW 0
 #endif /* __LWIPOPTS_H__ */

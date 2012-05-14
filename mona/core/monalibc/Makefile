@@ -76,7 +76,7 @@ stdio/fopen.o: stdio/fopen.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
 
 socket.o: socket.cpp
-	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin
+	$(CXX) -c -o $@ $< $(INCLUDE) -fno-builtin -fno-rtti
 
 stdio/boshi/filelist.o: stdio/boshi/filelist.cpp
 	$(CXX) -c -o $@ $< $(INCLUDE) $(CXXFLAGS) -fno-builtin
