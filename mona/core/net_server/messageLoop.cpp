@@ -298,10 +298,10 @@ static void __fastcall messageLoop(void* arg)
             fd_set* exceptfds = haveExceptFds ? (fd_set*)&msg.str[4 + sizeof(fd_set) * 2] : NULL;
             struct timeval* timeout = haveTimeout ? (struct timeval*)&msg.str[4 + sizeof(fd_set) * 3] : NULL;
 
-            uint64_t x = syscall_now_in_nanosec() / 1000000;
+            //            uint64_t x = syscall_now_in_nanosec() / 1000000;
             int ret = select(nfds, readfds, writefds, exceptfds, timeout);
-            uint64_t y = syscall_now_in_nanosec() / 1000000;
-            _logprintf("REAL select msec = %d\n", (int)y - (int)x);
+            //            uint64_t y = syscall_now_in_nanosec() / 1000000;
+            //            _logprintf("REAL select msec = %d\n", (int)y - (int)x);
 
             char buf[MESSAGE_INFO_MAX_STR_LENGTH];
             if (haveReadFds) {
