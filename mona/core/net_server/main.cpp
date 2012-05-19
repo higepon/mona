@@ -88,34 +88,6 @@ u8_t syslocation_len = 0;
 /* enable == 1, disable == 2 */
 u8_t snmpauthentraps_set = 2;
 
-// static struct option longopts[] = {
-//   /* turn on debugging output (if build with LWIP_DEBUG) */
-//   {"debug", no_argument,        NULL, 'd'},
-//   /* help */
-//   {"help", no_argument, NULL, 'h'},
-//   /* gateway address */
-//   {"gateway", required_argument, NULL, 'g'},
-//   /* ip address */
-//   {"ipaddr", required_argument, NULL, 'i'},
-//   /* netmask */
-//   {"netmask", required_argument, NULL, 'm'},
-//   /* ping destination */
-//   {"trap_destination", required_argument, NULL, 't'},
-//   /* new command line options go here! */
-//   {NULL,   0,                 NULL,  0}
-// };
-// #define NUM_OPTS ((sizeof(longopts) / sizeof(struct option)) - 1)
-
-// void usage(void)
-// {
-//   unsigned char i;
-
-//   printf("options:\n");
-//   for (i = 0; i < NUM_OPTS; i++) {
-//     printf("-%c --%s\n",longopts[i].val, longopts[i].name);
-//   }
-// }
-
 #define USE_QEMU_USER_NETWORK 1
 
 VirtioNet* g_virtioNet = NULL;
@@ -126,8 +98,7 @@ void init_virtio(uint32_t& hostAddress, uint32_t& gatewayAddress)
   const int numberOfReadBufferes = 5;
   enum VirtioNet::DeviceState state = g_virtioNet->probe(numberOfReadBufferes);
   if (state != VirtioNet::DEVICE_FOUND) {
-      _printf("[virtio] virtio-net device not found\n");
-      exit(-1);
+      monapi_fatal("[virtio] virtio-net device not found\n");
   }
 // qemu -net user mode:
 //   we send DHCP request to QEMU and get an ip address.
@@ -151,9 +122,7 @@ int main(int argc, char **argv)
 {
   struct netif netif;
   struct in_addr inaddr;
-//  int ch;
   char ip_str[16] = {0}, nm_str[16] = {0}, gw_str[16] = {0};
-//  DebuggerService::breakpoint();
 
   uint32_t hostAddress = 0;
   uint32_t gatewayAddress = 0;
@@ -165,10 +134,9 @@ int main(int argc, char **argv)
   IP4_ADDR(&netmask, 255,255,255,0);
 
   trap_flag = 0;
+
   /* use debug flags defined by debug.h */
   debug_flags = LWIP_DBG_OFF;
-//  debug_flags |= (LWIP_DBG_ON|SOCKETS_DEBUG|API_MSG_DEBUG);
-//  debug_flags |= (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT);
 
   inaddr.s_addr = ipaddr.addr;
   strncpy(ip_str,inet_ntoa(inaddr),sizeof(ip_str));
@@ -178,11 +146,9 @@ int main(int argc, char **argv)
   strncpy(gw_str,inet_ntoa(inaddr),sizeof(gw_str));
   printf("Host at %s mask %s gateway %s\n", ip_str, nm_str, gw_str);
 
-
 #ifdef PERF
   perf_init("/tmp/minimal.perf");
 #endif /* PERF */
-
 
   // for multi thread
   sys_sem_t sem = sys_sem_new(0);
@@ -190,12 +156,6 @@ int main(int argc, char **argv)
   sys_sem_wait(sem);
   sys_sem_free(sem);
 
-  // for single thread
-  //lwip_init();
-
-  printf("TCP/IP initialized.\n");
-
-//  netif_add(&netif, &ipaddr, &netmask, &gw, NULL, etherif_init, ip_input);
   netif_add(&netif, &ipaddr, &netmask, &gw, NULL, etherif_init, tcpip_input);
   netif_set_default(&netif);
   netif_set_up(&netif);
@@ -215,7 +175,6 @@ int main(int argc, char **argv)
 //   snmp_set_syslocation(syslocation_str,&syslocation_len);
 //   snmp_set_snmpenableauthentraps(&snmpauthentraps_set);
 //   snmp_init();
-
 
   echo_init();
   socket_examples_init();

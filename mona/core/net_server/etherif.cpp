@@ -139,12 +139,11 @@ static struct pbuf* low_level_input(struct netif* netif)
        variable. */
     MONA_ASSERT(sizeof(buf) > sizeof(Ether::Frame));
     unsigned int readSzie = 0;
-    // todo timeout
+
     if (!etherif->virtioNet->receive(buf, &readSzie, 10)) {
-      //        logprintf("virtio receive timeout\n");
         return NULL;
     }
-//    snmp_add_ifinoctets(netif, readSzie);
+    //  snmp_add_ifinoctets(netif, readSzie);
 
     /* We allocate a pbuf chain of pbufs from the pool. */
     p = pbuf_alloc(PBUF_LINK, readSzie, PBUF_POOL);
@@ -163,7 +162,7 @@ static struct pbuf* low_level_input(struct netif* netif)
         /* acknowledge that packet has been read(); */
     } else {
         /* drop packet(); */
-//        snmp_inc_ifindiscards(netif);
+        /* snmp_inc_ifindiscards(netif); */
       monapi_warn("We dropped packet!!!! Could not allocate pbufs\n");
     }
 
@@ -219,30 +218,6 @@ static bool etherif_input(struct netif *netif)
         return false;
     }
 }
-
-
-// int
-// mintapif_select(struct netif *netif)
-// {
-//   fd_set fdset;
-//   int ret;
-//   struct timeval tv;
-//   struct mintapif *mintapif;
-
-//   mintapif = netif->state;
-
-//   tv.tv_sec = 0;
-//   tv.tv_usec = 0; /* usec_to; */
-  
-//   FD_ZERO(&fdset);
-//   FD_SET(mintapif->fd, &fdset);
-
-//   ret = select(mintapif->fd + 1, &fdset, NULL, NULL, &tv);
-//   if (ret > 0) {
-//     mintapif_input(netif);   
-//   }
-//   return ret;
-// }
 
 // returns a positive number if data is read.
 int etherif_select(struct netif *netif)
