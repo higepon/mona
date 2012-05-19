@@ -173,13 +173,11 @@ private:
             return false;
         }
 
-        VIRT_LOG("device found");
-
         // set up device specific data
         baseAddress_ = pciInf.baseAdress & ~1;
         irqLine_     = pciInf.irqLine;
 
-        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
+        // VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
         setMacAddress();
 
         // reset the device

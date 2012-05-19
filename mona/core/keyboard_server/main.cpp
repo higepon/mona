@@ -57,7 +57,6 @@ public:
                     } else if (' ' <= charcode && charcode <= '@') {
                         keycode = 0;
                     }
-//                    logprintf("keyboard server keyboard=%d charcode=%d\n", keycode, charcode);
                     Message::create(&message, MSG_KEY_VIRTUAL_CODE, keycode, modifiers, charcode, NULL);
                     sendToClients(&message);
                     Message::reply(&info);
@@ -136,27 +135,20 @@ private:
 
 int main(int argc, char* argv[])
 {
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     syscall_get_io();
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     intptr_t ret = monapi_enable_stacktrace("/SERVERS/KEYBDMNG.map");
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (ret != M_OK) {
         monapi_warn("syscall_stack_trace_enable error %d\n", ret);
         exit(-1);
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     /* initilize KeyBoardManager */
     KeyBoardManager manager;
     manager.init();
 
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_notify_server_start("MONITOR.BIN") != M_OK) {
         exit(-1);
     }
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     syscall_set_irq_receiver(1, 0);
-  logprintf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (monapi_name_add("/servers/keyboard") != M_OK) {
         monapi_fatal("monapi_name_add failed");
     }

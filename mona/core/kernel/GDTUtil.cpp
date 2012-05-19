@@ -99,17 +99,12 @@ void GDTUtil::ltr(uint16_t selector) {
 #include <Uart.h>
 void GDTUtil::setup() {
 
-  Uart u(Uart::COM1);
-  u.writeChar('a');
+    Uart u(Uart::COM1);
     g_gdt = (SegDesc*)malloc(sizeof(SegDesc) * GDT_ENTRY_NUM);
-  u.writeChar('b');
     checkMemoryAllocate(g_gdt, "GDT Memory allocate");
-  u.writeChar('c');
     /* NULL */
     setSegDesc(&g_gdt[0], 0, 0, 0);
-  u.writeChar('d');
     g_gdt[0].limitH = 0;
-  u.writeChar('e');
 
     /* allcate TSS */
     g_tss = (TSS*)malloc(sizeof(TSS));
@@ -147,17 +142,14 @@ void GDTUtil::setup() {
         setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
                             SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
     }
-  u.writeChar('f');
 
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (uint32_t)g_gdt;
     gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
     lgdt(&gdtr);
-  u.writeChar('g');
     /* setup TSS */
     setupTSS(0x20);
-  u.writeChar('d');
     return;
 }
 
