@@ -173,14 +173,13 @@ private:
             return false;
         }
 
-//        VIRT_LOG("device found");
+        VIRT_LOG("device found");
 
         // set up device specific data
         baseAddress_ = pciInf.baseAdress & ~1;
         irqLine_     = pciInf.irqLine;
 
-//        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
-
+        VIRT_LOG("baseAdress=%x irqLine=%d", baseAddress_, pciInf.irqLine);
         setMacAddress();
 
         // reset the device
@@ -256,8 +255,9 @@ private:
         }
         vring->avail->idx = numberOfDescToCreate;
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)vring->desc) >> 12);
-// Not necessary
-//        waitInterrupt();
+
+        // Not necessary
+        // waitInterrupt();
 
         lastUsedIndexRead_ = vring->used->idx;
         numberOfReadDesc_ = numberOfDescToCreate;
@@ -299,7 +299,7 @@ public:
         // this flags should be set before VIRTIO_PCI_QUEUE_PFN.
         writeVring_->avail->flags |= VRING_AVAIL_F_NO_INTERRUPT;
         outp32(baseAddress_ + VIRTIO_PCI_QUEUE_PFN, syscall_get_physical_address((uintptr_t)writeVring_->desc) >> 12);
-//        waitInterrupt();
+
         // prepare the data to write
         // virtio_net_hdr is *necessary*
         struct virtio_net_hdr* hdr = (struct virtio_net_hdr*) (allocateAlignedPage());
@@ -326,15 +326,7 @@ public:
     bool send(const char* buf, int len)
     {
         while (lastUsedIndexWrite_ != writeVring_->used->idx) {
-//            static int i = 0;
             inp8(0x80);
-            // i++;
-            // if (i > 100) {
-            //     // Wait for last send is done.
-            //     // In almost case, we expect last send is already done.
-            //     VIRT_LOG("Waiting previous packet is sent 10 times");
-            //     i = 0;
-//            }
         }
         Ether::Frame* rframe = (Ether::Frame*)buf;
         memset(writeFrame_, 0, sizeof(Ether::Frame));
@@ -409,8 +401,7 @@ public:
                     continue;
                 }
             } else {
-                _printf("oooooooooooooooooooooo");
-                MONA_ASSERT(false);
+              monapi_fatal("should never happen");
             }
         }
 
@@ -475,8 +466,7 @@ public:
                     continue;
                 }
             } else {
-                _printf("peek error");
-                MONA_ASSERT(false);
+                monapi_fatal("peek error");
             }
         }
 
@@ -488,27 +478,16 @@ public:
         Ether::Frame* rframe = readFrames_[id / 2];
         memcpy(dst, rframe, *len);
 
-//        IP::Header* ipHeader = (IP::Header*)(rframe->data);
-//        logprintf("receive:ip packet %d %x %d\n", ipHeader->tos, ipHeader->srcip, ipHeader->len);
-//         for (int i = 0; i < *len; i++) {
-//             _printf("[%c]", dst[i]);
-//         }
-
         // current used buffer is no more necessary, give it back to tail of avail->ring
         readVring_->avail->ring[readVring_->avail->idx % readVring_->num] = id;
         // increment avail->idx, we should not take remainder of avail->idx ?
-//        _logprintf("%s:%d %d\n", __FILE__, __LINE__, readVring_->avail->idx);
         readVring_->avail->idx++;
-//    readVring_->avail->idx = (readVring_->avail->idx + 1) % readVring_->num;
-//    _logprintf("%s:%d\n", __FILE__, __LINE__);
         lastUsedIndexRead_++;
         if (!(readVring_->used->flags & VRING_USED_F_NO_NOTIFY)) {
-          //            VIRT_LOG("NOTIFY");
             outp16(baseAddress_ + VIRTIO_PCI_QUEUE_NOTIFY, 0);
         }
         return true;
     }
-
 };
 
 
