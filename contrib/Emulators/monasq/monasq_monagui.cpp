@@ -103,11 +103,8 @@ public:
 	void drawPixel(int x, int y, dword color) { if (g) g->drawPixel(x, y, color); }
 	void drawLine(int x0, int y0, int x1, int y1) { if (g) g->drawLine(x0, y0, x1, y1); }
 	void drawRect(int x, int y, int width, int height) { if (g) g->drawLine(x, y, width, height); }
-	void drawCircle(int x0, int y0, int r) { if (g) g->drawCircle(x0, y0, r); }
 	void drawString(const char* str, int x, int y) { if (g) g->drawString(str, x, y); }
-	void fillCircle(int x0, int y0, int r) { if (g) g->fillCircle(x0, y0, r); }
 	void fillRect(int x, int y, int width, int height) { if (g) g->fillRect(x, y, width, height); }
-	void translate(int x, int y) { if (g) g->translate(x, y); }
 	int getFontStyle() { return g ? g->getFontStyle() : 0; }
 	void setClip(int cx, int cy, int cw, int ch) { if (g) g->setClip(cx, cy, cw, ch); }
 	void setFontStyle(int style) { if (g) g->setFontStyle(style); }
@@ -1371,11 +1368,8 @@ void monasq_init_monagui_lib(HSQUIRRELVM v)
 		func(&SqGraphicsProxy::drawImage, _T("drawImage")).
 		func(&SqGraphicsProxy::drawLine, _T("drawLine")).
 		func(&SqGraphicsProxy::drawRect, _T("drawRect")).
-		func(&SqGraphicsProxy::drawCircle, _T("drawCircle")).
 		func(&SqGraphicsProxy::drawString, _T("drawString")).
-		func(&SqGraphicsProxy::fillCircle, _T("fillCircle")).
 		func(&SqGraphicsProxy::fillRect, _T("fillRect")).
-		func(&SqGraphicsProxy::translate, _T("translate")).
 		func(&SqGraphicsProxy::getFontStyle, _T("getFontStyle")).
 		func(&SqGraphicsProxy::setClip, _T("setClip")).
 		funcVarArgs(&SqGraphicsProxy::setColor, _T("setColor")).

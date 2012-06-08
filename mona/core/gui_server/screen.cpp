@@ -68,7 +68,6 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
     _R r2(commonParams->mouse.x - 8, commonParams->mouse.y - 8, 32, 32);
     bool mouse = r1.IntersectsWith(r2);
     if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
-
     if (bpp == 16) {
         for (int yy = y1; yy < y2; yy++)
         {

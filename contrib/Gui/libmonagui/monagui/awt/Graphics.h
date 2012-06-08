@@ -25,169 +25,166 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _GRAPHICS_H_INCLUDED_
 
 namespace monagui {
-	/**
-	 描画クラス
-	*/
-	class Graphics : public Object {
-	private:
-		/** 描画開始X座標 */
-		int tx;
-		/** 描画開始Y座標 */
-		int ty;
-		/** クリッピング領域X座標 */
-		int cx;
-		/** クリッピング領域Y座標 */
-		int cy;
-		/** クリッピング領域幅 */
-		int cw;
-		/** クリッピング領域高さ*/
-		int ch;
-		/** 色（4バイト） */
-		dword rgb24;
-		/** フォントスタイル */
-		int fontStyle;
-		/** 内部バッファー */
-		Image* image;
 
-    protected:
-        int drawStringInternal(const String& str, int x, int y, int maxWidth, bool draws);
-	public:
-		/** コンストラクタ */
-		Graphics();
+class Graphics : public Object {
+ public:
 
-		/**
-		 コンストラクタ
-		 @param image 内部バッファー
-		*/
-		Graphics(Image* image);
-		
-		/** デストラクタ */
-		virtual ~Graphics();
-		
-		/**
-		 点描画
-		 @param x X座標
-		 @param y Y座標
-		 @param color 描画する色
-		 */
-		void drawPixel(int x, int y, dword color)
-        {
-            this->image->setPixel(tx + x, ty + y, color);
+  Graphics(Image* image);
+  virtual ~Graphics();
+
+  void drawPixelDirect(int x, int y, dword color)
+  {
+    image_->setPixel(x, y, color);
+  }
+
+  int getFontStyle() const {
+    return fontStyle_;
+  }
+
+  uint32_t getColor() const {
+    return rgb24_;
+  }
+
+  void drawImage(Image* image, int x, int y);
+  void drawRect(int x, int y, int width, int height);
+  void drawString(String* str, int x, int y);
+  void drawString(const String& str, int x, int y);
+  void drawString(const String& str, int x, int y, int maxWidth);
+  int getHeightByString(const String& str, int x, int y, int maxWidth);
+  void invartRect(int x, int y, int width, int height);
+  void setColor(unsigned char r, unsigned char g, unsigned char b);
+  void setColor(dword color);
+  void setFontStyle(int style);
+
+
+  void setClip(int x, int y, int w, int h) {
+    x_min_ = x;
+    x_max_ = x + w;
+    y_min_ = y;
+    y_max_ = y + h;
+  }
+
+  void drawLine(int x1, int y1, int x2, int y2) {
+    cohenSutherlandLineClip(x1, y1, x2, y2);
+  }
+
+  void fillRect(int x, int y, int w, int h) {
+    int x_to = x + w;
+    int y_to = y + h;
+    for (int j = y; j < y_to; j++) {
+      drawLine(x, j, x_to - 1, j);
+    }
+  }
+
+  void drawPixel(int x, int y, uint32_t c) {
+    if (x >= x_min_ && x <= x_max_ && y >= y_min_ && y <= y_max_) {
+      drawPixelDirect(x, y, c);
+    }
+  }
+
+ private:
+  typedef int OutCode;
+  enum {
+    INSIDE = 0,  // 0000
+    LEFT = 1,    // 0001
+    RIGHT = 2,   // 0010
+    BOTTOM = 4,  // 0100
+    TOP = 8      // 1000
+  };
+
+  OutCode ComputeOutCode(double x, double y) {
+    OutCode code;
+    code = INSIDE;
+    if (x < x_min_) {
+      code |= LEFT;
+    } else if (x > x_max_) {
+      code |= RIGHT;
+    }
+    if (y < y_min_) {
+      code |= BOTTOM;
+    } else if (y > y_max_) {
+      code |= TOP;
+    }
+    return code;
+  }
+
+  // http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
+  void cohenSutherlandLineClip(double x0, double y0, double x1, double y1) {
+    OutCode outcode0 = ComputeOutCode(x0, y0);
+    OutCode outcode1 = ComputeOutCode(x1, y1);
+    bool accept = false;
+    while (true) {
+      if (!(outcode0 | outcode1)) {
+        // Bitwise OR is 0. Trivially accept and get out of loop
+        accept = true;
+        break;
+
+      } else if (outcode0 & outcode1) {
+        // Bitwise AND is not 0. Trivially reject and get out of loop
+        break;
+      } else {
+        // failed both tests, so calculate the line segment to clip
+        // from an outside point to an intersection with clip edge
+        double x = 0.0;
+        double y = 0.0;
+        // At least one endpoint is outside the clip rectangle; pick it.
+        OutCode outcodeOut = outcode0? outcode0 : outcode1;
+        // Now find the intersection point;
+        // use formulas y = y0 + slope * (x - x0),
+        //              x = x0 + (1 / slope) * (y - y0)
+        if (outcodeOut & TOP) {
+          // point is above the clip rectangle
+          x = x0 + (x1 - x0) * (y_max_ - y0) / (y1 - y0);
+          y = y_max_;
+        } else if (outcodeOut & BOTTOM) {
+          // point is below the clip rectangle
+          x = x0 + (x1 - x0) * (y_min_ - y0) / (y1 - y0);
+          y = y_min_;
+        } else if (outcodeOut & RIGHT) {
+          // point is to the right of clip rectangle
+          y = y0 + (y1 - y0) * (x_max_- x0) / (x1 - x0);
+          x = x_max_;
+        } else if (outcodeOut & LEFT) {
+          // point is to the left of clip rectangle
+          y = y0 + (y1 - y0) * (x_min_ - x0) / (x1 - x0);
+          x = x_min_;
+        } else {
+          MONA_ASSERT(false);
         }
-		
-		/**
-		 イメージ描画
-		 @param image イメージ
-		 @param x 描画開始X座標
-		 @param y 描画開始Y座標
-		 */
-		void drawImage(Image* image, int x, int y);
-		
-		/**
-		 直線描画
-		 @param x0 始点X
-		 @param y0 始点Y
-		 @param x1 終点X
-		 @param y1 終点Y
-		 */
-		void drawLine(int x0, int y0, int x1, int y1);
-		
-		/**
-		 矩形描画
-		 @param x 始点X
-		 @param y 始点Y
-		 @param width 幅
-		 @param height 高さ
-		 */
-		void drawRect(int x, int y, int width, int height);
-		
-		/**
-		 円描画
-		 @param x0 中心X
-		 @param y0 中心Y
-		 @param r  半径
-		 */
-		void drawCircle(int x0, int y0, int r);
-		
-		/**
-		 文字列描画
-		 @param str 文字列（複数行対応）
-		 @param x 始点X
-		 @param y 始点Y
-		 */
-		void drawString(String* str, int x, int y);
-		
-		/**
-		 文字列描画
-		 @param str 文字列（複数行対応）
-		 @param x 始点X
-		 @param y 始点Y
-		 */
-		void drawString(const String& str, int x, int y);
-		void drawString(const String& str, int x, int y, int maxWidth);
-        int getHeightByString(const String& str, int x, int y, int maxWidth);
-		
-		/**
-		 円塗りつぶし描画
-		 @param x0 中心X
-		 @param y0 中心Y
-		 @param r  半径
-		 */
-		void fillCircle(int x0, int y0, int r);
-		
-		/**
-		 矩形ぬりつぶし描画
-		 @param x 始点X
-		 @param y 始点Y
-		 @param width 幅
-		 @param height 高さ
-		 */
-		void fillRect(int x, int y, int width, int height);
 
-		void invartRect(int x, int y, int width, int height);
-		
-		/**
-		 座標設定
-		 @param x 始点X
-		 @param y 始点Y
-		 */
-		void translate(int x, int y);
-		
-		/** フォントスタイルを得る */
-		inline int getFontStyle() { return this->fontStyle; }
-		
-		/**
-		 クリッピング領域設定
-		 @param cx 始点X
-		 @param cy 始点Y
-		 @param cw 終点X
-		 @param ch 終点Y
-		 */
-		void setClip(int cx, int cy, int cw, int ch);
-		
-		/**
-		 色設定
-		 @param r 赤(0-255)
-		 @param g 緑(0-255)
-		 @param b 青(0-255)
-		 */
-		void setColor(unsigned char r, unsigned char g, unsigned char b);
-		
-		/**
-		 色設定
-		 @param color (0x0-0xFFFFFF)
-		 */
-		void setColor(dword color);
+        // Now we move outside point to intersection point to clip
+        // and get ready for next pass.
+        if (outcodeOut == outcode0) {
+          x0 = x;
+          y0 = y;
+          outcode0 = ComputeOutCode(x0, y0);
+        } else {
+          x1 = x;
+          y1 = y;
+          outcode1 = ComputeOutCode(x1, y1);
+        }
+      }
+    }
+    if (accept) {
+      //      DrawRectangle(xmin, ymin, xmax, ymax);
+      //      LineSegment(x0, y0, x1, y1);
+      drawLineDirect(x0, y0, x1, y1);
+    }
+  }
 
-        dword getColor() const { return rgb24; }
-		
-		/**
-		 フォントスタイル（通常、太字、斜字、固定幅）を設定する.
-		 各スタイルを"|"で組み合わせることも可能。
-		 @param style フォントスタイル (Font::PLAIN / Font::BOLD / Font::ITALIC / Font::FIXED )
-		*/
-		void setFontStyle(int style);
-	};
+  void drawLineDirect(int x0, int y0, int x1, int y1);
+
+  int drawStringInternal(const String& str, int x, int y, int maxWidth, bool draws);
+
+ private:
+  double x_min_;
+  double x_max_;
+  double y_min_;
+  double y_max_;
+  uint32_t rgb24_;
+  int fontStyle_;
+  Image* image_;
+};
 }
 
 #endif // _GRAPHICS_H_INCLUDED_
