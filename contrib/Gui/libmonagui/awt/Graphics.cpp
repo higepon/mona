@@ -1,26 +1,27 @@
 /*
-Copyright (c) 2005 bayside
-              2011 Higepon : Refactoring and added testability.
-                             Added proper folding strings.
+  Copyright (c) 2005 bayside
+                2011 Higepon : Refactoring and added testability.
+                               Added proper folding strings.
+                2012 Higepon : Added clipping support
 
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation files
-(the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software,
-and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "monagui.h"
@@ -45,52 +46,63 @@ void Graphics::drawImage(Image* image, int x, int y) {
 }
 
 void Graphics::drawLineDirect(int x1, int y1, int x2, int y2) {
-  // abs
-  int dx = (x1 > x2) ? (x1 - x2) : (x2 - x1);
-  int dy = (y1 > y2) ? (y1 - y2) : (y2 - y1);
+  int dx = abs(x1 - x2);
+  int dy = abs(y1 - y2);
 
   if (dx == 0 && dy == 0) {
-    this->drawPixelDirect(x1, y1, rgb24_);
+    drawPixelDirect(x1, y1, rgb24_);
   } else if (dx >= dy) {
     if (x1 > x2) {
-      // swap
-      int tx = x1; x1 = x2; x2 = tx;
-      int ty = y1; y1 = y2; y2 = ty;
+      std::swap(x1, x2);
+      std::swap(y1, y2);
     }
     for (int x = x1; x <= x2; x++) {
-      this->drawPixelDirect(x, ((2 * y1 + 2 * (y2 - y1) * (x - x1) / (x2 - x1)) + 1) / 2, rgb24_);
+      drawPixelDirect(x, ((2 * y1 + 2 * (y2 - y1) * (x - x1) / (x2 - x1)) + 1) / 2, rgb24_);
     }
   } else {
     if (y1 > y2) {
-      int tx = x1; x1 = x2; x2 = tx;
-      int ty = y1; y1 = y2; y2 = ty;
+      std::swap(x1, x2);
+      std::swap(y1, y2);
     }
     for (int y = y1; y <= y2; y++) {
-      this->drawPixelDirect((2 * x1 + 2 * (x2 - x1) * (y - y1) / (y2 - y1) + 1) / 2, y, rgb24_);
+      drawPixelDirect((2 * x1 + 2 * (x2 - x1) * (y - y1) / (y2 - y1) + 1) / 2, y, rgb24_);
     }
   }
 }
 
 void Graphics::drawRect(int x, int y, int width, int height)
 {
-  if (width < 0) {
-    x += width;
-    width = -width;
-  }
-  if (height < 0) {
-    y += height;
-    height = -height;
-  }
+  MONA_ASSERT(width >= 0 && height >= 0);
   int xw = x + width - 1, yh = y + height - 1;
   for (int xx = x; xx <= xw; xx++) {
-    this->drawPixel(xx, y , rgb24_);
-    this->drawPixel(xx, yh, rgb24_);
+    drawPixel(xx, y , rgb24_);
+    drawPixel(xx, yh, rgb24_);
   }
   for (int yy = y + 1; yy <= yh - 1; yy++) {
-    this->drawPixel(x , yy, rgb24_);
-    this->drawPixel(xw, yy, rgb24_);
+    drawPixel(x , yy, rgb24_);
+    drawPixel(xw, yy, rgb24_);
   }
 }
+
+void Graphics::drawClip()
+{
+  int width = x_max_ - x_min_;
+  int height = y_max_ - y_min_;
+  int x = x_min_;
+  int y = y_min_;
+
+  MONA_ASSERT(width >= 0 && height >= 0);
+  int xw = x + width - 1, yh = y + height - 1;
+  for (int xx = x; xx <= xw; xx++) {
+    drawPixel(xx, y , rgb24_);
+    drawPixel(xx, yh, rgb24_);
+  }
+  for (int yy = y + 1; yy <= yh - 1; yy++) {
+    drawPixel(x , yy, rgb24_);
+    drawPixel(xw, yy, rgb24_);
+  }
+}
+
 
 void Graphics::drawString(String* str, int x, int y)
 {
@@ -177,7 +189,7 @@ void Graphics::drawString(const String& str, int x, int y, int maxWidth)
 
 void Graphics::drawString(const String& str, int x, int y)
 {
-  drawString(str, x, y, y_max_);
+  drawString(str, x, y, x_max_);
 }
 
 void Graphics::invartRect(int x, int y, int width, int height)
@@ -197,7 +209,7 @@ void Graphics::invartRect(int x, int y, int width, int height)
     for (int xx = x; xx < xw; xx++) {
       dword c = image_->getPixel(xx, yy);
       c = (0xff000000) | (~c);
-      this->drawPixel(xx, yy, c);
+      drawPixel(xx, yy, c);
     }
   }
 }

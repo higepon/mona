@@ -55,6 +55,7 @@ class Graphics : public Object {
   void setColor(unsigned char r, unsigned char g, unsigned char b);
   void setColor(dword color);
   void setFontStyle(int style);
+  void drawClip();
 
 
   void setClip(int x, int y, int w, int h) {
@@ -173,10 +174,8 @@ class Graphics : public Object {
   }
 
   void drawLineDirect(int x0, int y0, int x1, int y1);
-
   int drawStringInternal(const String& str, int x, int y, int maxWidth, bool draws);
 
- private:
   double x_min_;
   double x_max_;
   double y_min_;
