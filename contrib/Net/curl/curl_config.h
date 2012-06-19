@@ -1065,3 +1065,4 @@
 /* #undef ssize_t */
 
 #define CURL_DISABLE_LDAP 1
+#define close closesocket
