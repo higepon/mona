@@ -227,8 +227,13 @@ int recv(int sockfd, void* buf, size_t len, int flags)
     if ((int)(ret.arg2) > 0) {
         memcpy(buf, shm.data(), ret.arg2);
     }
+    // if ((int)(ret.arg2) > 0) {
+    //   for (int i = 0; i < (int)(ret.arg2); i++) {
+    //     _logprintf("%c", ((uint8_t*)buf)[i]);
+    //   }
+    // }
     errno = ret.arg3;
-    SOCKET_LOGF("sockfd=%d ret=%d\n", sockfd, ret.arg2);
+    SOCKET_LOGF("\nsockfd=%d ret=%d\n", sockfd, ret.arg2);
     return ret.arg2;
 }
 
