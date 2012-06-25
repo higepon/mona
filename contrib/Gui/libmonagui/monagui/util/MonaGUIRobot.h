@@ -41,9 +41,9 @@ public:
         Rectangle r = *(button.getBounds());
         Frame* parent = (Frame*)button.getParent();
         MONA_ASSERT(parent);
-        r.x += parent->getBounds()->x + parent->getInsets()->left;
-        r.y += parent->getBounds()->y + parent->getInsets()->top;
-        mouseMove(r.x, r.y);
+        r.setX(r.getX() + parent->getBounds()->getX() + parent->getInsets()->left);
+        r.setY(r.getY() + parent->getBounds()->getY() + parent->getInsets()->top);
+        mouseMove(r.getX(), r.getY());
         sleep(100);
         mousePress();
         mouseRelease();
@@ -54,9 +54,9 @@ public:
         Rectangle r = *(input.getBounds());
         Frame* parent = (Frame*)input.getParent();
         MONA_ASSERT(parent);
-        r.x += parent->getBounds()->x + parent->getInsets()->left;
-        r.y += parent->getBounds()->y + parent->getInsets()->top;
-        mouseMove(r.x, r.y);
+        r.setX(r.getX() + parent->getBounds()->getX() + parent->getInsets()->left);
+        r.setY(r.getY() + parent->getBounds()->getY() + parent->getInsets()->top);
+        mouseMove(r.getX(), r.getY());
         sleep(100);
         mousePress();
         mouseRelease();

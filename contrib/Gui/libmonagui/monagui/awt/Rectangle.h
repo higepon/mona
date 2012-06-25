@@ -24,72 +24,34 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_RECTANGLE_H_INCLUDED_)
 #define _RECTANGLE_H_INCLUDED_
 
-#include <algorithm>
-
 namespace monagui {
-    /**
-     矩形クラス
-    */
-    class Rectangle : public Object {
-    public:
-        /** x（絶対座標）*/
-        int x;
-        /** y（絶対座標）*/
-        int y;
-        /** 高さ */
-        int height;
-        /** 幅 */
-        int width;
+class Rectangle : public Object {
+ private:
+  int x_;
+  int y_;
+  int width_;
+  int height_;
 
-    public:
-        /** デフォルトコンストラクタ */
-        Rectangle() {
-            this->x = this->y = this->width = this->height = 0;
-        }
+ public:
+  Rectangle();
+  Rectangle(int x, int y, int w, int h);
+  virtual ~Rectangle() {}
+  
+  int getX() const;
+  int getY() const;
+  int getWidth() const;
+  int getHeight() const;
+  void setX(int x);
+  void setY(int y);
+  void setWidth(int width);
+  void setHeight(int height);
 
-        /** コンストラクタ */
-        Rectangle(int x, int y, int w, int h)
-        {
-            this->x = x;
-            this->y = y;
-            this->width = w;
-            this->height = h;
-        }
-
-        /** デストラクタ */
-        virtual ~Rectangle() {}
-
-        Rectangle createUnion(const Rectangle& r)
-        {
-            if (r.isEmpty()) {
-              return *this;
-            } else if (isEmpty()) {
-              return r;
-            }
-            int nx = std::min(x, r.x);
-            int ny = std::min(y, r.y);
-            int nx_max = std::max(x + width, r.x + r.width);
-            int ny_max = std::max(y + height, r.y + r.height);
-            return Rectangle(nx, ny, nx_max - nx, ny_max - ny);
-        }
-
-        bool isEmpty() const {
-            return width == 0 && height == 0;
-        }
-
-        /** 位置と大きさを設定する */
-        inline void setBounds(int x, int y, int w, int h)
-        {
-            setLocation(x, y);
-            setSize(w, h);
-        }
-
-        /** 位置を設定する */
-        inline void setLocation(int x, int y) { this->x = x; this->y = y; }
-
-        /** 大きさを設定する */
-        inline void setSize(int w, int h) { this->width = w; this->height = h; }
-    };
+  Rectangle createUnion(const Rectangle& r);
+  bool isEmpty() const;
+  void setBounds(int x, int y, int w, int h);
+  void setLocation(int x, int y);
+  void setSize(int w, int h);
+};
 }
 
 #endif // _RECTANGLE_H_INCLUDED_

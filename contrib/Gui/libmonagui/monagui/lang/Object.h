@@ -27,9 +27,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace monagui {
     /** すべてのクラスの元になるクラス */
     class Object {
-    public:
-        /** 参照カウント */
-        int refCount;
+    // public:
+    //     /** 参照カウント */
+    //     int refCount;
 
     public:
         /** デフォルトコンストラクタ */
