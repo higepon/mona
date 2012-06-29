@@ -165,7 +165,7 @@ namespace monagui {
         int I = this->componentList.size();
         for(int i = 0; i < I; i++) {
             Component* component = (Component *)(componentList.get(i));
-            component->repaintSelf();
+            component->repaint();
         }
         // 自分の領域を更新する
         update();

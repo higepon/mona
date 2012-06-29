@@ -79,38 +79,21 @@ namespace monagui {
         }
     }
 
-    // Just repaint itself, not to call parent's update
-    void Component::repaintSelf()
-    {
-        // don't call thread unsafe methods from another threads.
-        MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
-        if (this->_buffer == NULL) return;
-        setFontStyle(this->fontStyle);
-        this->_g->setClip(0, 0, width, height);
-        paint(this->_g);
-        updateSelf(getX(), getY(), getWidth(), getHeight());
-    }
-
     void Component::repaint(int x, int y, int width, int height)
     {
+        _logprintf("repaint(%d, %d, %d, %d)\n", x, y, width, height);
         // don't call thread unsafe methods from another threads.
         MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
-        setFontStyle(this->fontStyle);
-        this->_g->setClip(x, y, width, height);
-        paint(this->_g);
-        update(x, y, width, height);
+        Frame* c = (Frame *)getMainWindow();
+        MONA_ASSERT(c);
+        MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
+        c->addRepaintRequest(this, Rectangle(x, y, width, height));
     }
 
     void Component::repaint()
     {
-        // don't call thread unsafe methods from another threads.
-        MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
-        if (this->_buffer == NULL) return;
-        setFontStyle(this->fontStyle);
-        //        this->_g->setClip(0, 0, width, height);
-        paint(this->_g);
-        update();
+        repaint(0, 0, getWidth(), getHeight());
     }
 
     void Component::update()
@@ -125,21 +108,15 @@ namespace monagui {
 
     void Component::update(int x, int y, int w, int h)
     {
-        updateSelf(x, y, w, h);
+        _logprintf("update(%d, %d, %d, %d)\n", x, y, w, h);
         Frame* c = (Frame *)getMainWindow();
         MONA_ASSERT(c);
         MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
-        c->addRepaintRequest(this, Rectangle(x, y, w, h));
-    }
-
-    void Component::updateSelf(int x, int y, int w, int h)
-    {
-        Frame* c = (Frame *)getMainWindow();
-        MONA_ASSERT(c);
-        MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
+        setFontStyle(this->fontStyle);
+        this->_g->setClip(x, y, w, h);
+        paint(this->_g);
         c->getGraphics()->drawImage(this->_buffer, getX(), getY());
     }
-
 
     Component* Component::getMainWindow()
     {
