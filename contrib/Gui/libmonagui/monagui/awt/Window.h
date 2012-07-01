@@ -24,8 +24,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_WINDOW_H_INCLUDED_)
 #define _WINDOW_H_INCLUDED_
 
-#include <sys/BinaryTree.h>
-
 namespace monagui {
     /**
      ウィンドウクラス
@@ -68,8 +66,7 @@ namespace monagui {
         Event windowEvent;
         /** カスタムイベント */
         Event customEvent;
-        typedef std::map<Component*, Rectangle> RepaintRequests;
-        RepaintRequests repaintRequests_;
+
     protected:
         /** フチの状態 */
         int border;
@@ -89,8 +86,6 @@ namespace monagui {
         guiserver_window* _window;
 
     protected:
-        void consumeRepaintRequests();
-      
         /** 閉じるボタンがクリックされたかどうか */
         virtual bool getCloseButtonClicked(int px, int py)
         {
@@ -109,8 +104,6 @@ namespace monagui {
 
         /** デストラクタ */
         virtual ~Window();
-
-        void addRepaintRequest(Component* component, const Rectangle& r);
 
         /**
          部品生成時ハンドラ.

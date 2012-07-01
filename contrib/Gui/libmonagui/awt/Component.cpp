@@ -105,18 +105,13 @@ namespace monagui {
         update(getX(), getY(), getWidth(), getHeight());
     }
 
-    void Component::update(const Rectangle& rect)
-    {
-        update(rect.x, rect.y, rect.width, rect.height); 
-    }
-
     void Component::update(int x, int y, int w, int h)
     {
         updateSelf(x, y, w, h);
         Frame* c = (Frame *)getMainWindow();
         MONA_ASSERT(c);
         MONA_ASSERT(c->getGraphics()); // don't user c->getGraphics before c is added().
-        c->addRepaintRequest(this, Rectangle(x, y, w, h));
+        c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
     }
 
     void Component::updateSelf(int x, int y, int w, int h)
