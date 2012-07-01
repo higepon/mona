@@ -61,7 +61,7 @@ typedef unsigned int wchar;
 #include "monagui/awt/Font.h"
 #include "monagui/awt/Color.h"
 #include "monagui/lang/Object.h"
-#include "monagui/lang/Pointer.h"
+//#include "monagui/lang/Pointer.h"
 #include "monagui/lang/String.h"
 #include "monagui/lang/Runnable.h"
 #include "monagui/lang/Thread.h"

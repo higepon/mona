@@ -684,11 +684,11 @@ void Window::consumeRepaintRequests()
     Component* c = it->first;
     Rectangle rect = it->second;
     c->update(rect);
-    Rectangle myRect(getX() + getInsets()->left + c->getX() + rect.x, getY() + getInsets()->top + c->getY() + rect.y, rect.width, rect.height);
+    Rectangle myRect(getX() + getInsets()->left + c->getX() + rect.getX(), getY() + getInsets()->top + c->getY() + rect.getY(), rect.getWidth(), rect.getHeight());
     updateRect = myRect.createUnion(updateRect);
   }
   if (!updateRect.isEmpty()) {
-    update(updateRect.x, updateRect.y, updateRect.width, updateRect.height);
+    update(updateRect.getX(), updateRect.getY(), updateRect.getWidth(), updateRect.getHeight());
   }
   repaintRequests_.clear();
 }

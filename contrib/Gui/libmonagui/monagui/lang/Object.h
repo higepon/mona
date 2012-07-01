@@ -25,15 +25,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _OBJECT_H_INCLUDED_
 
 namespace monagui {
-    class Object {
-    public:
-      Object() {}
-      virtual ~Object() {}
-
-      virtual bool equals(Object* obj) {
-        return (this == obj) ? true : false;
-      }
-    };
+class Object {
+ public:
+  Object() {}
+  virtual ~Object() {}
+  virtual bool equals(Object* obj) {
+    return (this == obj) ? true : false;
+  }
+};
 }
 
 #endif // _OBJECT_H_INCLUDED_
