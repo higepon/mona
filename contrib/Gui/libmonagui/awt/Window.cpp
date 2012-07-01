@@ -515,8 +515,8 @@ void Window::run()
       }
     }
 
-    // Only when we have no pending event,
-    // We repaint the window.
+    // Only when we have no pending events,
+    // repaint the window.
     MessageInfo msg;
     int result = MonAPI::Message::peek(&msg, 0);
     if (result != M_OK) {
