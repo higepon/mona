@@ -25,24 +25,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _OBJECT_H_INCLUDED_
 
 namespace monagui {
-    /** すべてのクラスの元になるクラス */
     class Object {
     public:
-        /** 参照カウント */
-        int refCount;
+      Object() {}
+      virtual ~Object() {}
 
-    public:
-        /** デフォルトコンストラクタ */
-        Object();
-
-        /** デストラクタ */
-        virtual ~Object();
-
-        /**
-         指定されたオブジェクトと等しいかどうかを得る
-         @param obj 比較対象のオブジェクト
-        */
-        virtual bool equals(Object* obj);
+      virtual bool equals(Object* obj) {
+        return (this == obj) ? true : false;
+      }
     };
 }
 

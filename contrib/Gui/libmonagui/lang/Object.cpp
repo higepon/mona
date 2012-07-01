@@ -24,16 +24,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "monagui.h"
 
 namespace monagui {
-    Object::Object() : refCount(0)
-    {
-    }
+//Object::Object();// : refCount(0)
+    // {
+    // }
 
-    Object::~Object()
-    {
-    }
+    // Object::~Object()
+    // {
+    // }
 
-    bool Object::equals(Object* obj)
-    {
-        return (this == obj) ? true : false;
-    }
+    // bool Object::equals(Object* obj)
+    // {
+    //     return (this == obj) ? true : false;
+    // }
 }
