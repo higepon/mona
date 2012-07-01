@@ -222,7 +222,6 @@ static void DrawWindowInternal(guiserver_window* w, const _R& r)
 
 void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_screen /*= true*/)
 {
-  _logprintf("DrawWindow (%d, %d, %d, %d)\n", wx, wy, ww, wh);
     if (w == NULL || w->FormBufferHandle == 0) return;
 
     if (!w->__internal2) CreationEffect(w);

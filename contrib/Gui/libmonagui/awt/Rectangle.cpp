@@ -43,6 +43,9 @@ Rectangle::Rectangle(int x, int y, int w, int h) :
     height_(h) {
 }
 
+// Rectangle::~Rectangle() {
+// }
+
 Rectangle Rectangle::createUnion(const Rectangle& r) {
   if (r.isEmpty()) {
     return *this;
@@ -88,7 +91,7 @@ int Rectangle::getWidth() const {
 }
 
 int Rectangle::getHeight() const {
-  return height_;
+  return width_;
 }
 
 void Rectangle::setX(int x) {
