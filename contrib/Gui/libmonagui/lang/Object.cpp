@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "monagui.h"
 
 namespace monagui {
-    Object::Object()
+    Object::Object() : refCount(0)
     {
     }
 

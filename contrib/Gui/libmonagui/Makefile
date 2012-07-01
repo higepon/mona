@@ -30,7 +30,6 @@ SOURCES = \
 	awt/Component.cpp \
 	awt/Container.cpp \
 	awt/FontMetrics.cpp \
-	awt/Rectangle.cpp \
 	awt/Frame.cpp \
 	awt/Graphics.cpp \
 	awt/Image.cpp \

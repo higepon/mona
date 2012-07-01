@@ -120,7 +120,7 @@ namespace monagui {
 
     void Component::update(const Rectangle& rect)
     {
-        update(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight()); 
+        update(rect.x, rect.y, rect.width, rect.height); 
     }
 
     void Component::update(int x, int y, int w, int h)

@@ -58,8 +58,8 @@ namespace monagui {
             Component* c = (Component *)this->componentList.get(i);
             Rectangle* bounds = c->getBounds();
             // マウスカーソルがある範囲に部品があるかどうかチェック
-            if (bounds->getX() <= x && x <= bounds->getX() + bounds->getWidth() &&
-                bounds->getY() <= y && y <= bounds->getY() + bounds->getHeight())
+            if (bounds->x <= x && x <= bounds->x + bounds->width &&
+                bounds->y <= y && y <= bounds->y + bounds->height)
             {
                 return c;
             }
@@ -112,8 +112,8 @@ namespace monagui {
                 component->setFocused(true);
                 event->setSource(component);
                 Rectangle* bounds = component->getBounds();
-                me->setX(me->getX() - bounds->getX());
-                me->setY(me->getY() - bounds->getY());
+                me->setX(me->getX() - bounds->x);
+                me->setY(me->getY() - bounds->y);
                 //syscall_print("MOUSE_PRESSED,");
                 component->processEvent(event);
             // 部品以外でイベントが起こった
@@ -139,8 +139,8 @@ namespace monagui {
             if (component != NULL) {
                 event->setSource(component);
                 Rectangle* bounds = component->getBounds();
-                me->setX(me->getX() - bounds->getX());
-                me->setY(me->getY() - bounds->getY());
+                me->setX(me->getX() - bounds->x);
+                me->setY(me->getY() - bounds->y);
                 component->processEvent(event);
             // 部品以外でイベントが起こった
             } else {
