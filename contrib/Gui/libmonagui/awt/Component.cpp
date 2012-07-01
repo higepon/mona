@@ -86,8 +86,20 @@ namespace monagui {
         MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
         setFontStyle(this->fontStyle);
+        this->_g->setClip(0, 0, width, height);
         paint(this->_g);
         updateSelf(getX(), getY(), getWidth(), getHeight());
+    }
+
+    void Component::repaint(int x, int y, int width, int height)
+    {
+        // don't call thread unsafe methods from another threads.
+        MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
+        if (this->_buffer == NULL) return;
+        setFontStyle(this->fontStyle);
+        this->_g->setClip(x, y, width, height);
+        paint(this->_g);
+        update(x, y, width, height);
     }
 
     void Component::repaint()
@@ -96,6 +108,7 @@ namespace monagui {
         MONA_ASSERT(threadId_ == MonAPI::System::getThreadID());
         if (this->_buffer == NULL) return;
         setFontStyle(this->fontStyle);
+        //        this->_g->setClip(0, 0, width, height);
         paint(this->_g);
         update();
     }

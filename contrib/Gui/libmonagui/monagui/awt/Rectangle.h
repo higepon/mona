@@ -61,6 +61,11 @@ namespace monagui {
 
         Rectangle createUnion(const Rectangle& r)
         {
+            if (r.isEmpty()) {
+              return *this;
+            } else if (isEmpty()) {
+              return r;
+            }
             int nx = std::min(x, r.x);
             int ny = std::min(y, r.y);
             int nx_max = std::max(x + width, r.x + r.width);
