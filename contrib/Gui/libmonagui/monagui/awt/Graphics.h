@@ -57,9 +57,6 @@ class Graphics : public Object {
   void setFontStyle(int style);
   void drawClip();
 
-  Rectangle getClipBound() const {
-    return Rectangle(x_min_, y_min_, x_max_ - x_min_, y_max_ - y_min_);
-  }
 
   void setClip(int x, int y, int w, int h) {
     x_min_ = x;

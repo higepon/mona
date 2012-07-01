@@ -98,7 +98,6 @@ namespace monagui {
 		virtual void dispatchEvent(Event* event);
 		
 		/** Ä•`‰æ */
-        virtual void repaint(int x, int y, int width, int height);
 		virtual void repaint();
 
 		virtual void repaintSelf();
