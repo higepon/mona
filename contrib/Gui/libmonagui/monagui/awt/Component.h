@@ -107,6 +107,7 @@ namespace monagui {
 		
 		/** 部品部分更新 */
 		virtual void update(int x, int y, int w, int h);
+		virtual void update(const Rectangle& rect);
 		virtual void updateSelf(int x, int y, int w, int h);
 		
 		/** 親部品を得る */
