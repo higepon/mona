@@ -2,6 +2,8 @@
 MonaOS is a free operating system.
 See detailed information on http://www.monaos.org.
 
+![screenshot](http://www.monaos.org/img/0.3.4d.png)
+
 # Building and Running Mona
 ## Requirements
 - git
