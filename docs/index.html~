@@ -4,7 +4,6 @@
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <meta name="keywords" content="Free,Operating,System,download,OS,Mona,MonaOS">
    <meta name="description" content="MonaOS is a free operating system. You can get MonaOS and source code for free. MonaOS is new, small, simple, open source and well structured.">
-   <meta property="fb:admins" content="649065487" />
    <link rel="stylesheet" type="text/css" media="screen" href="mona.css">
    <title>MonaOS - Free Operating System</title>
 </head>
@@ -35,7 +34,7 @@ var FRAME=0;
     <li><a href="http://higepon.blogspot.com/">Blog (English)</a></li>
     <li><a href="http://d.hatena.ne.jp/higepon/">Blog (Japanese)</a></li>
     <li><a href="http://wiki.monaos.org/pukiwiki.php">Wiki (Japanese)</a></li>
-    <!--<li><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.monaos.org&amp;layout=standard&amp;show_faces=false&amp;width=50&amp;action=like&amp;colorscheme=light" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:50px; height:20px"></iframe></li>//-->
+    <li><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.monaos.org&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:450px; height:px"></iframe></li>
   </ul>
   <div id="sidemenu-end"></div>
 </div><!-- id="sidemenu" //-->
@@ -47,72 +46,34 @@ var FRAME=0;
 <img src="baygui.png" alt="screenshot of BayGUI GUI">
 </div><!-- id="images" //-->
 <div id="ad">
-<!-- <script type="text/javascript"><\!-- -->
-<!-- google_ad_client = "pub-9643724897248991"; -->
-<!-- google_ad_width = 468; -->
-<!-- google_ad_height = 60; -->
-<!-- google_ad_format = "468x60_as"; -->
-<!-- google_ad_type = "text"; -->
-<!-- google_ad_channel ="3194652874"; -->
-<!-- google_color_border = "FFFFFF"; -->
-<!-- google_color_bg = "FFFFFF"; -->
-<!-- google_color_link = "6666FF"; -->
-<!-- google_color_text = "000000"; -->
-<!-- google_color_url = "6666FF"; -->
-<!-- //-\-></script> -->
-<!-- <script type="text/javascript" -->
-<!--   src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> -->
-<!-- </script> -->
+<script type="text/javascript"><!--
+google_ad_client = "pub-9643724897248991";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text";
+google_ad_channel ="3194652874";
+google_color_border = "FFFFFF";
+google_color_bg = "FFFFFF";
+google_color_link = "6666FF";
+google_color_text = "000000";
+google_color_url = "6666FF";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
 </div><!-- id="ad" //-->
 <!-- google_ad_section_start -->
 <p>
 MonaOS is a free operating system.<br>
 It's new, small, simple, open source and well structured.<br>
 So, MonaOS may be suitable for education of operating system and program at school.<br>
-You can download MonaOS for free at <a href="download.html" title="Download free operating system.">Download</a>.
+You can down load MonaOS for free at <a href="download.html" title="Download free operating system.">Download</a>.
 </p>
- <!-- news //-->
-<div class="news-date">Aug 5, 2011 <span style="color:red; font-wight:bold">new</span> </div>Mona OS ver.0.3.4(<a
- href="https://sourceforge.net/projects/monaos/files/mona-0.3.4/">Download</a>/<a href="https://github.com/higepon/mona/blob/mona-0.3.4/mona/RELNOTE">Release notes</a>/Screenshots <a href="/img/0.3.4a.png">1</a> | <a href="/img/0.3.4c.png">2</a> | <a href="/img/0.3.4d.png">3</a> | <a href="/img/0.3.4b.png">4</a>).
-<ul>
-  <li>Facebook viewer.</li>
-  <li>Gmail and Twitter using w3m browser</li>
-  <li>New shell</li>
-</ul>
-
- <!-- news //-->
-<div class="news-date">Jan 8, 2011</div>Mona OS ver.0.3.3(Internal Release) (<a
- href="https://sourceforge.net/projects/monaos/files/mona-0.3.3/">Download</a>/<a href="https://github.com/higepon/mona/blob/mona-0.3.3/mona/RELNOTE">Release notes</a>).
-<ul>
-  <li>Ported OpenSSL.</li>
-</ul>
-
- <!-- news //-->
-<div class="news-date">Dec 29, 2010 </div>Mona OS ver.0.3.2(Internal Release) (<a
- href="https://sourceforge.net/projects/monaos/files/mona-0.3.2/">Download</a>/<a href="https://github.com/higepon/mona/blob/mona-0.3.2/mona/RELNOTE">Release notes</a>).
-<ul>
-  <li>Ported mg(Emacs clone).</li>
-  <li>Name server.</li>
-</ul>
-
 <!-- news //-->
-<div class="news-date">Nov 17, 2010 </div>Mona OS ver.0.3.1 (<a
- href="https://sourceforge.net/projects/monaos/files/mona-0.3.1/">Download</a>/<a href="/img/0.3.1.png">Screen Shot</a>/<a href="https://github.com/higepon/mona/blob/mona-0.3.1/mona/RELNOTE">Release notes</a>).
-<ul>
-  <li>BSD Socket.</li>
-  <li>w3m browser.</li>
-  <li>Mosh Scheme Interpreter.</li>
-  <li>FAT32.</li>
-  <li>KVM virtio-block driver.</li>
-  <li>New file API.</li>
-</ul>
-
+<div class="news-date">Mar 3, 2010 <span style="color:red; font-wight:bold">new</span> </div>Mona OS is moved to <a href="http://github.com/higepon/mona">GitHub</a>
 <!-- news //-->
-<div class="news-date">Nov 7, 2010  </div>Mosh 0.2.6 released. <a href="http://code.google.com/p/mosh-scheme/downloads/list">Download</a>
-<!-- news //-->
-<div class="news-date">Mar 3, 2010  </div>Mona OS is moved to <a href="http://github.com/higepon/mona">GitHub</a>
-<!-- news //-->
-<div class="news-date">Oct 10, 2009  </div>Mona OS ver.0.3.0 (<a
+<div class="news-date">Oct 10, 2009 <span style="color:red; font-wight:bold">new</span> </div>Mona OS ver.0.3.0 (<a
  href="https://sourceforge.net/projects/monaos/files/mona-0.3.0/">Download</a>/Screen Shot <a href="/img/mona-0.3.0alpha9-1.png">1</a> <a href="/img/mona-0.3.0alpha9-2.png">2</a> <a href="/img/mona-0.3.0alpha9-3.png">3</a>/<a href="http://monaos.svn.sourceforge.net/viewvc/monaos/trunk/mona/RELNOTE?revision=5393&view=markup">Release notes</a>).
 <ul>
   <li>Sound Player.</li>
