@@ -71,5 +71,12 @@ You need
       --with-as=~/mona-mingw/bin/i586-mingw32msvc-as --with-ld=~/mona-mingw/bin/i586-mingw32msvc-ld \
       --enable-sjlj-exceptions --enable-version-specific-runtime-libs
 
-And then configure Mona with "export PATH=~/mona-mingw/bin/:$PATH; ./configure --mingw-prefix=~/mona-mingw/bin/i586-mingw32msvc- && make"
+And then configure Mona:
+`export PATH=~/mona-mingw/bin/:$PATH; ./configure --mingw-prefix=~/mona-mingw/bin/i586-mingw32msvc- && make`
 
+Separate steps:
+```
+export PATH=~/mona-mingw/bin/:$PATH
+./configure --mingw-prefix=~/mona-mingw/bin/i586-mingw32msvc-
+make
+```
